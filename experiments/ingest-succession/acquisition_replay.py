@@ -88,6 +88,21 @@ def science(pg, native, inputs):
 
 
 class Model(live.Model):
+    def __init__(self, *args, compacted_history=False):
+        super().__init__(*args, compacted_history=compacted_history)
+        self.scope = '\\x422b7d8b33d4b55977806fb711e2d082' if compacted_history else SCOPE
+        self.grant_revision = 1 if compacted_history else 4
+        self.login_started = None
+        if compacted_history:
+            # This finite fixture has no XID wrap. First claim must follow
+            # every retained row, then inherited fresh() orders each phase.
+            self.previous_xid = max(int(v) for v in self.used)
+
+    def fresh(self, xid, top=None):
+        if self.compacted_history:
+            assert int(xid) > self.previous_xid
+        return super().fresh(xid, top)
+
     def audit(self, observed, action, subject, xid, at=None):
         row = only(observed['management_audit'],action=action,subject_id=subject)
         ident = self.identity(row['audit_id'][2:])
@@ -105,14 +120,17 @@ class Model(live.Model):
             row = only(self.pg['login_buckets'],kind=kind,bucket=n)
             assert at-row['window_started_at_us'] >= 60_000_000
             row.update(window_started_at_us=at,attempts=1,xmin=xid)
+        if self.compacted_history: self.login_started = at
         same(self.pg,observed)
 
     def login_finish(self, observed):
         account = only(self.pg['local_accounts'],principal_id=ACTOR)
-        assert account['active'] and (account['credential_revision'],account['authentication_revision'],account['grant_revision']) == (1,1,4)
+        assert account['active'] and (account['credential_revision'],account['authentication_revision'],account['grant_revision']) == (1,1,self.grant_revision)
         session = only(observed['browser_sessions'])
         at,xid = self.at(session['issued_at_us']),self.fresh(session['xmin'])
         assert at < self.control['lease_expires_at_us']
+        if self.compacted_history:
+            assert self.login_started is not None and 0 <= at-self.login_started < 20_000_000
         sid = self.identity(session['session_id'][2:])
         for row in self.pg['browser_sessions']:
             assert row['principal_id'] == ACTOR and (row['revoked_at_us'] is not None or row['expires_at_us'] <= at or row['idle_expires_at_us'] <= at)
@@ -132,7 +150,7 @@ class Model(live.Model):
         at,xid = self.at(command['accepted_at_us']),self.fresh(command['xmin'])
         assert at < self.control['lease_expires_at_us']
         digest = '\\x'+sha(b'bigbrotr/acquisition-job/1\0'+binary(self.ds['dataset_id'])+binary(ACTOR)
-            +binary(key)+binary(SCOPE)+be(30_000_000)+be(1)*2)
+            +binary(key)+binary(self.scope)+be(30_000_000)+be(1)*2)
         audit = self.audit(observed,'job.acquisition.accept',key,xid,at)
         self.pg['management_commands'].append(dict(dataset_id=self.ds['dataset_id'],actor_id=ACTOR,request_key=key,
             request_digest=digest,action='job.acquisition.accept',accepted_at_us=at,expected_config_revision=1,
@@ -144,9 +162,9 @@ class Model(live.Model):
             created_at_us=at,input_complete=True,request_digest=digest,completed_at_us=None,config_revision=1,policy_revision=1,
             owner_incarnation=None,owner_resource_id=None,checkpoint_revision=0,export_job_protocol=None,
             result_manifest_digest=None,acquisition_job_protocol=1,input_topology_generation=None))
-        self.pg['acquisition_jobs'].append(dict(xmin=xid,job_id=ident,actor_id=ACTOR,scope_id=SCOPE,dataset_id=self.ds['dataset_id'],
+        self.pg['acquisition_jobs'].append(dict(xmin=xid,job_id=ident,actor_id=ACTOR,scope_id=self.scope,dataset_id=self.ds['dataset_id'],
             session_id=only(self.pg['browser_sessions'])['session_id'],duration_us=30_000_000,request_key=key,
-            deadline_at_us=at+30_000_000,actor_grant_revision=4,actor_credential_revision=1,actor_authentication_revision=1))
+            deadline_at_us=at+30_000_000,actor_grant_revision=self.grant_revision,actor_credential_revision=1,actor_authentication_revision=1))
         ordinal = max(r['admission_ordinal'] for r in self.pg['job_admissions'])+1
         self.pg['job_admissions'].append(dict(job_id=ident,admission_ordinal=ordinal,xmin=xid))
         same(self.pg,observed)
@@ -174,30 +192,34 @@ class Model(live.Model):
         same(self.pg,observed)
 
     def abandon(self, observed, known, key, retry):
-        job = only(self.pg['jobs'],request_key=key)
-        activator = only(self.pg['ingest_activations'],target_epoch=3)
-        head = only(self.pg['source_streams'],owner_epoch=3)
-        assert head['state']=='closed' and head['last_complete_sequence']==0
-        assert head['closure_digest']=='\\x'+known['summaries'][-1]['digest']
-        if retry:
-            assert job['state']=='cancelled' and job['job_revision']==4
-            same(self.pg,observed)
-            return
-        assert job['state']=='queued' and job['job_revision']==2 and job['checkpoint_revision']==0
-        assert (job['owner_resource_id'],job['owner_epoch'],job['owner_incarnation']) == tuple(activator[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
-        row = only(observed['acquisition_gaps'],job_id=job['job_id'])
-        at,xid=self.at(row['abandoned_at_us'],head['closed_at_us']),self.fresh(row['xmin'])
-        assert at < self.control['lease_expires_at_us']
-        self.pg['acquisition_gaps'].append(dict(xmin=xid,job_id=job['job_id'],reason='ingest_successor_abandoned',shard_id=0,
-            dataset_id=self.ds['dataset_id'],owner_role='control',issuer_epoch=self.control['epoch'],producer_epoch=3,
-            abandoned_at_us=at,issuer_resource=self.control['resource_id'],producer_slot_id=self.slot,
-            issuer_incarnation=self.control['process_incarnation'],source_owner_epoch=3,previous_owner_epoch=job['owner_epoch'],
-            previous_job_revision=2,source_closure_digest=head['closure_digest'],last_complete_sequence=0,
-            previous_owner_resource=job['owner_resource_id'],previous_owner_incarnation=job['owner_incarnation']))
-        job.update(state='cancelled',job_revision=4,reason_code='ingest_successor_abandoned',completed_at_us=at,
-            owner_resource_id=self.control['resource_id'],owner_epoch=self.control['epoch'],owner_incarnation=self.control['process_incarnation'],xmin=xid)
-        same(self.pg,observed)
+        abandon_rows(self.pg,observed,known,key,retry,self.control,self.slot,self.ds,self.at,self.fresh)
 
+
+def abandon_rows(pg,observed,known,key,retry,control,slot,dataset,at_value,fresh):
+    """One exact gap/job reducer; callers retain their own clock/Control contract."""
+    job = only(pg['jobs'],request_key=key)
+    activator = only(pg['ingest_activations'],target_epoch=3)
+    head = only(pg['source_streams'],owner_epoch=3)
+    assert head['state']=='closed' and head['last_complete_sequence']==0
+    assert head['closure_digest']=='\\x'+known['summaries'][-1]['digest']
+    if retry:
+        assert job['state']=='cancelled' and job['job_revision']==4
+        same(pg,observed)
+        return
+    assert job['state']=='queued' and job['job_revision']==2 and job['checkpoint_revision']==0
+    assert (job['owner_resource_id'],job['owner_epoch'],job['owner_incarnation']) == tuple(activator[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    row = only(observed['acquisition_gaps'],job_id=job['job_id'])
+    at,xid=at_value(row['abandoned_at_us'],head['closed_at_us']),fresh(row['xmin'])
+    assert at < control['lease_expires_at_us']
+    pg['acquisition_gaps'].append(dict(xmin=xid,job_id=job['job_id'],reason='ingest_successor_abandoned',shard_id=0,
+        dataset_id=dataset['dataset_id'],owner_role='control',issuer_epoch=control['epoch'],producer_epoch=3,
+        abandoned_at_us=at,issuer_resource=control['resource_id'],producer_slot_id=slot,
+        issuer_incarnation=control['process_incarnation'],source_owner_epoch=3,previous_owner_epoch=job['owner_epoch'],
+        previous_job_revision=2,source_closure_digest=head['closure_digest'],last_complete_sequence=0,
+        previous_owner_resource=job['owner_resource_id'],previous_owner_incarnation=job['owner_incarnation']))
+    job.update(state='cancelled',job_revision=4,reason_code='ingest_successor_abandoned',completed_at_us=at,
+        owner_resource_id=control['resource_id'],owner_epoch=control['epoch'],owner_incarnation=control['process_incarnation'],xmin=xid)
+    same(pg,observed)
 
 class Transcript(source.Transcript):
     def live(self, name):
@@ -227,17 +249,26 @@ def finish(t, m, backend, stage, complete):
 
 
 def checked(m,t,case,scope):
-    return dict(status='PASS',case=case['name'],database=case['database'],snapshots=t.snapshots,tables=75,
+    return dict(status='PASS',case=case['name'],database=case['database'],snapshots=t.snapshots,tables=77 if m.compacted_history else 75,
         native_rows=len(m.native['rows']),sequence=m.native['sequence'],inputs=len(m.inputs),
         control_epoch=m.control['epoch'],refreshes=m.refreshes,scope=scope)
 
 
-def verify_seed(events,before,native,inputs,case,server_window):
+def verify_seed(events,before,native,inputs,case,server_window,*,compacted=False,initial=None):
     origin,operation,target='empty','acquisition-claims',3
-    history.baseline(before,native,inputs,origin,server_window)
-    history.science(before,native,inputs,origin)
-    m = Model(before, native, inputs, server_window)
-    known = transition.lineage(before, native, origin)
+    assert type(compacted) is bool and (initial is not None) == compacted
+    if compacted:
+        import installed_compacted_reader_oracle as oracle
+        known = oracle.history_lineage((before,native,inputs),initial,compacted=True)
+        for event in events:
+            fields = ('compacted_requests','original_requests_replayed') if event['event']=='lineage-history-compacted-initial' else (
+                ('compacted_initial_requests','original_initial_requests_replayed') if event['event']=='lineage-history-compacted-proof' else ())
+            assert all(type(event[k]) is int for k in fields)
+    else:
+        history.baseline(before,native,inputs,origin,server_window)
+        history.science(before,native,inputs,origin)
+        known = transition.lineage(before, native, origin)
+    m = Model(before, native, inputs, server_window,compacted_history=compacted)
     assert known['head'] == target - 1 and known['state'] == 'Terminal'
     t = Transcript(events, m)
     candidate = t.take('candidate', True)
@@ -248,6 +279,10 @@ def verify_seed(events,before,native,inputs,case,server_window):
     assert len(set(ids)) == 11
     assert all(re.fullmatch('[0-9a-f]{32}', v) and int(v, 16) and v not in m.identities for v in ids)
     exact(t.acq('resources'),dict(event='lineage-acquisition-resources',purpose='claims',data_bytes=65*1024**2,native_bytes=0,max_jobs=2,admission=False))
+    if compacted:
+        extra=t.take('compacted',True)
+        exact(extra,dict(event='lineage-transition-compacted',command='successor-compacted-acquisition-claims',compacted_outcome_bytes=extra['compacted_outcome_bytes']))
+        assert type(extra['compacted_outcome_bytes']) is int and 0<extra['compacted_outcome_bytes']<=256*1024**2
     resource = t.take('resources')
     exact(resource, dict(event='lineage-history-resources', metadata_bytes=262144,
         metadata_scratch_bytes=131072, metadata_entry_bytes=512, native_bytes=128 * 1024**2,
@@ -255,8 +290,11 @@ def verify_seed(events,before,native,inputs,case,server_window):
         frame_bytes=16 * 1024**2, **{k: resource[k] for k in ('input_bytes', 'outcome_bytes', 'effect_bytes')}))
     for field in ('input_bytes', 'outcome_bytes', 'effect_bytes'):
         assert type(resource[field]) is int and 0 < resource[field] <= 256 * 1024**2
+    if compacted:
+        assert sum(resource[k] for k in ('metadata_bytes','input_bytes','outcome_bytes','effect_bytes',
+            'transport_bytes','observation_bytes'))+extra['compacted_outcome_bytes']+65*1024**2+8192<=1024**3
     exact(t.take('resources', True), dict(event='lineage-transition-resources', operation=operation,
-        mutation_data_bytes=8192, mutation_native_bytes=8192, lease_ttl_us='20000000', outstanding_request_limit=32))
+        mutation_data_bytes=8192, mutation_native_bytes=8192, lease_ttl_us='20000000', outstanding_request_limit=m.request_limit))
     planned = t.take('control')
     assert set(planned) == {'event', 'phase', 'role', 'incarnation', 'lease_ttl_us'}
     assert planned['phase'] == 'claim-planned' and planned['lease_ttl_us'] == '20000000'
@@ -271,7 +309,8 @@ def verify_seed(events,before,native,inputs,case,server_window):
         control_epoch=m.control['epoch'], present=True))
     t.policy(policy, 'acquired', None, None)
     t.snapshot('before-read')
-    t.history(known)
+    if compacted: oracle.later_prefix(t,(before,native,inputs),initial)
+    else: t.history(known)
     event = t.take('plan', True)
     created, deadline = event['created_at_us'], event['lease_expires_at_us']
     assert re.fullmatch('[1-9][0-9]*', created) and re.fullmatch('[1-9][0-9]*', deadline)
@@ -280,7 +319,7 @@ def verify_seed(events,before,native,inputs,case,server_window):
     record = transition.record_value(plan['record'], target)
     exact(event, dict(event='lineage-transition-plan', operation='prepare', record=record,
         role=candidate['role'], created_at_us=created, lease_expires_at_us=deadline,
-        outstanding_request_limit=32, policy=dict(config_revision=m.ds['config_revision'],
+        outstanding_request_limit=m.request_limit, policy=dict(config_revision=m.ds['config_revision'],
             policy_revision=m.ds['policy_revision'],
             config_digest=only(m.pg['config_revisions'], revision=m.ds['config_revision'])['document_digest'][2:],
             policy_digest=only(m.pg['policy_revisions'], revision=m.ds['policy_revision'])['document_digest'][2:])))
@@ -300,7 +339,7 @@ def verify_seed(events,before,native,inputs,case,server_window):
     exact(t.live('renewal'), dict(event='lineage-live-renewal', commit_started=True, error=None))
     t.snapshot('live-renew-returned', lambda pg: m.renew_ingest(pg, target))
     t.snapshot('before-acquisition-claims')
-    exact(t.acq('seed-plan'),dict(event='lineage-acquisition-seed-plan',target_epoch=3,scope=SCOPE[2:],
+    exact(t.acq('seed-plan'),dict(event='lineage-acquisition-seed-plan',target_epoch=3,scope=m.scope[2:],
         claimed_key='a6'*16,unclaimed_key='a7'*16,duration_us=30000000,config_revision=1,policy_revision=1,
         username='alice',peer='127.0.0.1',session_maximum_us='28800000000',session_idle_us='1800000000',executions=0))
     for phase,mutation in [('begin',m.login_begin),('verify',None),('finish',m.login_finish)]:
@@ -318,9 +357,16 @@ def verify_seed(events,before,native,inputs,case,server_window):
         if purpose=='claimed':
             t.snapshot('acquisition-claim-returned',lambda pg:m.claim_job(pg,'\\x'+key))
             exact(t.acq('claim'),dict(event='lineage-acquisition-claim',error=None,commit_started=True,
-                job=dict(id=job['job_id'][2:],scope=SCOPE[2:],state='queued',job_revision=2,checkpoint_revision=0,
+                job=dict(id=job['job_id'][2:],scope=m.scope[2:],state='queued',job_revision=2,checkpoint_revision=0,
                     accepted_at_us=job['created_at_us'],deadline_at_us=job['created_at_us']+30000000,
                     owner=dict(resource=m.control['resource_id'][2:],epoch=m.control['epoch'],incarnation=m.control['process_incarnation'][2:]))))
+    if compacted:
+        claimed=only(m.pg['jobs'],request_key='\\x'+'a6'*16)
+        unclaimed=only(m.pg['jobs'],request_key='\\x'+'a7'*16)
+        # No invented claim timestamp: the actual guarded claim is between
+        # these two successful accepts on the same live Control.
+        assert claimed['created_at_us']<=unclaimed['created_at_us']<min(
+            claimed['created_at_us']+30_000_000,m.control['lease_expires_at_us'])
     t.snapshot('acquisition-claims-returned')
     preserved=t.acq('seed-state')
     raw=preserved['inputs_before']
@@ -328,7 +374,7 @@ def verify_seed(events,before,native,inputs,case,server_window):
     for value in raw:
         data=bytes.fromhex(value['bytes'])
         assert data.hex()==value['bytes'] and dict(bytes=len(data),sha256=sha(data))==inputs[value['name']]
-    exact(preserved,dict(event='lineage-acquisition-seed-state',target_epoch=3,native_rows=55,native_sequence=67,
+    exact(preserved,dict(event='lineage-acquisition-seed-state',target_epoch=3,native_rows=93 if compacted else 55,native_sequence=138 if compacted else 67,
         inputs_before=raw,inputs_after=raw,unchanged=True,executions=0,error=None))
     observation=dict(target_epoch=3,claimed_job=only(m.pg['jobs'],request_key='\\x'+'a6'*16)['job_id'][2:],
         unclaimed_job=only(m.pg['jobs'],request_key='\\x'+'a7'*16)['job_id'][2:],requests=0,source_cut=0,executions=0,
@@ -336,8 +382,9 @@ def verify_seed(events,before,native,inputs,case,server_window):
     exact(t.acq('result'),dict(event='lineage-acquisition-result',operation=operation,stage='complete',epoch=None,sequence=None,error=None,observation=observation))
     finish(t,m,backend,'after-acquisition',dict(event='lineage-acquisition-complete',operation=operation,
         writer=False,activation=True,admission=False,source_closure=False,workflow=False,retirement=False))
-    assert len(m.native['rows'])==55 and m.native['sequence']==67 and m.inputs==inputs
-    science(m.pg,m.native,m.inputs)
+    assert (len(m.native['rows']),m.native['sequence'])==((93,138) if compacted else (55,67)) and m.inputs==inputs
+    if compacted: oracle.later_source_basis((m.pg,m.native,m.inputs),True)
+    else: science(m.pg,m.native,m.inputs)
     return checked(m,t,case,'Genuine activated3 zero-request claim plus accepted-unclaimed intent; no acquisition execution or terminal authority')
 
 

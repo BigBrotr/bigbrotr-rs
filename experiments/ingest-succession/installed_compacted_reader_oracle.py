@@ -61,9 +61,11 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False,later_recovery=False,later_source=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
+    assert type(later_acquisition) is bool and not (later_acquisition and (later_empty or later_live or later_recovery or later_source))
     assert type(later_source) is bool and not (later_source and (later_empty or later_live or later_recovery))
     assert type(later_recovery) is bool and (not later_recovery or empty_initial) and not (later_recovery and (later_empty or later_live))
+    if later_acquisition: assert empty_initial and source == LATER_ACQUISITION_PRODUCT
     if later_source: assert empty_initial and source == LATER_SOURCE_PRODUCT
     if later_recovery: assert LATER_RECOVERY_PRODUCT is not None and source == LATER_RECOVERY_PRODUCT
     assert type(later_live) is bool and (not later_live or empty_initial) and not (later_live and later_empty)
@@ -88,13 +90,14 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
     if initial_preparation or compacted_activated or empty_initial:
         selectors |= {'claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live or later_recovery or later_source: selectors.add('successor_transition')
-    if later_live or later_recovery or later_source: selectors.add('successor_activation')
-    if later_recovery or later_source: selectors.add('successor_recovery')
-    if later_source: selectors.add('successor_source')
+    if later_empty or later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_transition')
+    if later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_activation')
+    if later_recovery or later_source or later_acquisition: selectors.add('successor_recovery')
+    if later_source or later_acquisition: selectors.add('successor_source')
+    if later_acquisition: selectors.add('successor_acquisition')
     assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
-    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == (2 if later_recovery or later_source else 1)
+    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == (2 if later_recovery or later_source or later_acquisition else 1)
     assert set(component['test_names']) == set(counts)
     for name, names in component['test_names'].items():
         assert len(names) == len(set(names)) == counts[name]
@@ -107,7 +110,7 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
         'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']
     assert set(component['test_names']['compacted_prefix']) == {
         'storage::rocks::store::admission_tests::compacted_prefix_tests::'+n for n in expected}
-    if later_recovery or later_source:
+    if later_recovery or later_source or later_acquisition:
         assert len(LATER_RECOVERY_PROGRESS_CONTROLS)==2
         assert set(component['test_names']['compacted_progress'])==set(LATER_RECOVERY_PROGRESS_CONTROLS)
     else:
@@ -145,14 +148,15 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source)
+    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
-    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source)
-    if later_empty or later_live or later_recovery or later_source: later_qualification(component)
-    if later_live or later_recovery or later_source: later_live_qualification(component)
+    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
+    if later_empty or later_live or later_recovery or later_source or later_acquisition: later_qualification(component)
+    if later_live or later_recovery or later_source or later_acquisition: later_live_qualification(component)
     if later_recovery: later_recovery_qualification(component)
-    if later_source: later_source_qualification(component)
+    if later_source or later_acquisition: later_source_qualification(component)
+    if later_acquisition: later_acquisition_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -949,7 +953,8 @@ def history_mutation_checked(record,expected,seed):
     return expected[0],wanted,expected[2]
 
 
-def history_quarantine_checked(record,expected,seed,clone,step):
+def history_quarantine_checked(record,expected,seed,clone,step,*,acquisition=False):
+    assert type(acquisition) is bool and (not acquisition or (clone=='claims' and step=='absent'))
     assert set(record)=={'kind','status','path','before','after','quarantine_after','files','replacement'}
     assert record['kind']=='reversible-history-input-quarantine' and record['status']=='RETAINED'
     assert record['path']==clone+'/quarantined-'+step
@@ -965,7 +970,7 @@ def history_quarantine_checked(record,expected,seed,clone,step):
     if step!='corrupt-residual': assert record['replacement'] is None
     initial=sorted(n for n in expected[2] if n in seed[2])
     if step=='partial': names=initial[:3]; assert len(initial)==7
-    elif step=='absent': names=initial; assert len(initial)==4
+    elif step=='absent': names=initial; assert len(initial)==(7 if acquisition else 4)
     elif step=='missing-required': names=[n for n in expected[2] if n not in seed[2]]; assert len(names)==1
     else: assert step=='corrupt-residual'; names=[initial[0]]; assert len(initial)==7
     assert sorted(record['files'])==names
@@ -2132,17 +2137,19 @@ class InitialPreparationProfile:
         'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
 
 
-def preparation_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False):
+def preparation_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
+    assert type(later_acquisition) is bool and not (later_acquisition and (later_empty or later_live or later_recovery or later_source))
     assert type(later_source) is bool and not (later_source and (later_empty or later_live or later_recovery))
     assert type(later_recovery) is bool and not (later_recovery and (later_empty or later_live))
     assert type(later_empty) is bool and type(later_live) is bool and not (later_empty and later_live)
     names=component['test_names']
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
         'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live or later_recovery or later_source: selectors.add('successor_transition')
-    if later_live or later_recovery or later_source: selectors.add('successor_activation')
-    if later_recovery or later_source: selectors.add('successor_recovery')
-    if later_source: selectors.add('successor_source')
+    if later_empty or later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_transition')
+    if later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_activation')
+    if later_recovery or later_source or later_acquisition: selectors.add('successor_recovery')
+    if later_source or later_acquisition: selectors.add('successor_source')
+    if later_acquisition: selectors.add('successor_acquisition')
     assert set(names)==selectors
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
     assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
@@ -4797,8 +4804,8 @@ def empty_fault_guard_delta(value,*,epoch=2):
     else: assert value['catalog_restored'] is None
 
 
-def empty_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False):
-    preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source)
+def empty_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
+    preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::'
     assert {prefix+n for n in (
         'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
@@ -6209,9 +6216,11 @@ def later_live_inputs_checked(record,expected,initial,name,*,loss=False):
     return expected[0],expected[1],{n:v for n,v in expected[2].items() if n not in removed}
 
 
-def verify_later_live(context,initial,expected,*,proxy_port=None):
+def verify_later_live(context,initial,expected,*,proxy_port=None,acquisition=False):
     import live_replay as live
-    name=later_live_specification(context['case'])
+    assert type(acquisition) is bool and (not acquisition or proxy_port is None)
+    name='claims' if acquisition else later_live_specification(context['case'])
+    if acquisition:assert later_acquisition_specification(context['case'])=='claims'
     assert proxy_port is None or (name=='absent' and type(proxy_port) is int and 1<=proxy_port<=65535)
     if name=='installed': return verify_later_live_installed(context,initial,expected)
     assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
@@ -6225,7 +6234,7 @@ def verify_later_live(context,initial,expected,*,proxy_port=None):
         {'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'})
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
     number(response['seconds'],0,120)
-    args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
+    args=['successor-compacted-acquisition-claims' if acquisition else 'successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
     if proxy_port is not None:
         assert name=='absent' and type(proxy_port) is int and 1<=proxy_port<=65535
         args.append(str(proxy_port))
@@ -6235,7 +6244,10 @@ def verify_later_live(context,initial,expected,*,proxy_port=None):
     assert context['arguments']==args
     events=[loads(line) for line in response['stdout'].splitlines()]
     known_history=history_lineage(expected,initial,compacted=True)
-    result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial,proxy_port=proxy_port)
+    if acquisition:
+        import acquisition_replay as acquisition_model
+        result=acquisition_model.verify_seed(events,*expected,case,context['server_window'],compacted=True,initial=initial)
+    else:result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial,proxy_port=proxy_port)
     final=only(events,event='lineage-history-state',stage='final')
     same(context['after'],{n:loads(v) for n,v in final['state']['control_tables']})
     assert context['native_after']==dict(event='dump-state',rows=final['rows'],sequence=final['state']['sequence'])
@@ -6254,7 +6266,7 @@ def verify_later_live(context,initial,expected,*,proxy_port=None):
             assert b['pid']==backend['pid'] and retained.instant(b['backend_start'])==retained.instant(backend['backend_start'])
     assert absence['attempts'][-1]['backends']==[];number(absence['seconds'],elapsed,6)
     return dict(result,compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=1,
-        target_checkpoint=1,target_acknowledged=1)
+        target_checkpoint=0 if acquisition else 1,target_acknowledged=0 if acquisition else 1)
 
 
 def verify_later_live_installed(context,initial,expected):
@@ -7266,8 +7278,11 @@ def later_loss_recovery_controls(context,loss,initial,original,wire,baseline,exp
     return dict(status='PASS',count=len(rejected),rejected=rejected)
 
 
-def later_source_closed(response,case,*,faults=False):
-    _,step=later_source_specification(case,faults=faults);failure=step=='loss' if faults else step in LATER_SOURCE_ERRORS;code=4 if failure else 0
+def later_source_closed(response,case,*,faults=False,acquisition=False):
+    assert type(acquisition) is bool and not (acquisition and faults)
+    step=later_acquisition_specification(case) if acquisition else later_source_specification(case,faults=faults)[1]
+    assert not acquisition or step!='claims'
+    failure=False if acquisition else step=='loss' if faults else step in LATER_SOURCE_ERRORS;code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -7346,13 +7361,17 @@ def later_source_diagnostic(record,case,window,control):
         error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
 
 
-def verify_later_source(context,seed,expected,*,delivery=False,faults=False,baseline=None):
+def verify_later_source(context,seed,expected,*,delivery=False,faults=False,baseline=None,acquisition=False):
+    assert type(acquisition) is bool and not (acquisition and (delivery or faults))
     assert type(delivery) is bool and type(faults) is bool and not (delivery and faults)
     if faults:assert baseline['publication_commit']==15 and baseline['product_source']==LATER_SOURCE_PRODUCT
     else:assert baseline is None
     if delivery:assert later_source_specification(context['case'])==('finite','source')
-    case=context['case'];name,step=later_source_specification(case,faults=faults);quiet=name=='quiet'
-    loss=faults and step=='loss';failure=loss or step in LATER_SOURCE_ERRORS
+    case=context['case']
+    name,step=('claims',later_acquisition_specification(case)) if acquisition else later_source_specification(case,faults=faults)
+    assert not acquisition or step in ('source','abandon','retry')
+    quiet=acquisition or name=='quiet'
+    loss=faults and step=='loss';failure=not acquisition and (loss or step in LATER_SOURCE_ERRORS)
     assert set(context)==CONTEXT_FIELDS|({'source_diagnostic'} if step=='closed-positive' else set())
     assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
@@ -7368,7 +7387,7 @@ def verify_later_source(context,seed,expected,*,delivery=False,faults=False,base
     for n,v in context['input_contents'].items():
         data=bytes.fromhex(v);assert wanted_inputs[n]==dict(bytes=len(data),sha256=sha(data))
     backend_checked(context['backend'],case['database'],context['before'],context['after'])
-    report=later_source_closed(context['response'],case,faults=faults);basis=later_source_basis(seed,quiet)
+    report=later_source_closed(context['response'],case,faults=faults,acquisition=acquisition);basis=later_source_basis(seed,quiet)
     issued,ack,cut,digest=(basis[k] for k in ('issued','ack','cut','digest'))
     m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=loss)
     if loss:m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
@@ -7406,7 +7425,22 @@ def verify_later_source(context,seed,expected,*,delivery=False,faults=False,base
                 claim=only(context['after']['owner_epochs'],role='control',epoch=m.control['epoch']-1)
                 assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(claim['xmin'])<int(actual['xmin'])
         source.update(state='closed',closed_at_us=at,last_complete_sequence=cut,closure_digest='\\x'+digest,xmin=actual['xmin'])
+    if acquisition and step in ('abandon','retry'):
+        import acquisition_replay as acquisition_model
+        lower=max(int(r['xmin']) for rows in expected[0].values() for r in rows)
+        def at_value(value,minimum=None):
+            model.clock(value,w)
+            assert max(minimum or 0,m.control['acquired_at_us'])<=value<=m.control['released_at_us']<m.control['lease_expires_at_us']
+            return value
+        def fresh(value):
+            model.fresh_xmin(value,m.pg)
+            assert lower<int(value)<int(m.control['xmin'])
+            return value
+        acquisition_model.abandon_rows(m.pg,context['after'],dict(summaries=[dict(digest=digest)]),'\\x'+'a6'*16,
+            step=='retry',m.control,m.slot,m.ds,at_value,fresh)
     same(m.pg,context['after']);assert m.native==context['native_after']
+    if acquisition:
+        assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(m.control['xmin'])
     guard=None
     if step=='closed-positive':
         control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
@@ -7416,6 +7450,8 @@ def verify_later_source(context,seed,expected,*,delivery=False,faults=False,base
             owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='3',issued_through=str(issued),reserved_through=str(issued),
             resolved_requests=str(issued),verified_through='3',source_closure=dict(last_complete_sequence=str(cut),sha256=digest),native='closed',owner_release='committed',ready=False,
             recovery_basis='closed-producer-floor-v3',compacted_requests='7')
+        if acquisition and step in ('abandon','retry'):
+            wanted.update(state='successor-acquisition-abandoned',acquisition_abandonment=dict(jobs='1',reason='ingest_successor_abandoned',coverage='unknown'))
         assert report==wanted
     result=dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
         input_files=len(wanted_inputs),producer_epoch=3,target_requests=issued,target_checkpoint=ack,target_acknowledged=ack,source_cut=cut,source_digest=digest,
@@ -7789,3 +7825,150 @@ def later_source_fault_controls(reject,context,name,step):
     reject('coordinated-delivered-publication',lambda c:change_wire(c,lambda es:[e.update(client_commit_complete=15) for e in es[1:]]))
     reject('coordinated-later-ACK-or-release',lambda c:change_wire(c,lambda es:[e.update(commits_seen=16,commits_forwarded=16,server_commit_complete=16) for e in es[1:]]))
     reject('coordinated-wire-census',lambda c:change_wire(c,lambda es:es[-1]['frames'].update(frontend=es[-1]['frames']['frontend']+1)))
+
+
+LATER_ACQUISITION_PRODUCT='2d5e161363b71b1c1c475e5eb654185011238eb1'
+
+
+class LaterAcquisitionProfile:
+    DIRECTORY='installed-compacted-later-acquisition'
+    LABEL='org.bigbrotr.installed-compacted-later-acquisition'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_ACQUISITION'
+    DATABASE_PREFIX='bb_compacted_later_acquisition_'
+    CLIENT_PREFIX='bigbrotr-compacted-later-acquisition-'
+    CLONES=('claims',)
+    STEPS={'claims':('claims','source','abandon','retry')}
+    CASES=tuple('claims-'+s for s in STEPS['claims'])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Zero-job finite C1/A1 and quiet abandonment as separate origins',
+        'Abandonment COMMIT loss, lock cancellation/UTC expiry and post-proof drift',
+        'Malformed/foreign/unresolved claim batches, nonzero Event/Sync/import execution',
+        'Retirement, Archive, reclamation and capacity qualification')
+
+
+def later_acquisition_qualification(component):
+    prefix='storage::postgres::control_owner::successor_transition::recovery::source::acquisition::tests::'
+    assert set(component['test_names']['successor_acquisition'])=={prefix+n for n in (
+        'abandonment_requires_exact_basis_and_spends_before_refusal',
+        'abandonment_requires_previously_closed_source_without_retirement_veto',
+        'abandonment_bound_counts_retained_and_zero_request_claims_together')}
+
+
+def later_acquisition_specification(case):
+    assert case['clone']=='claims' and case['origin']=='later-terminal'
+    steps=LaterAcquisitionProfile.STEPS['claims']
+    assert case['name'].startswith('claims-');step=case['name'][7:];index=steps.index(step)
+    assert case['predecessor']==('claims-'+steps[index-1] if index else None)
+    assert case['operation']==('successor-compacted-acquisition-claims' if step=='claims' else 'source' if step=='source' else 'abandon')
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return step
+
+
+def verify_later_acquisition(context,initial,seed,expected):
+    assert set(context['case'])=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert context['case']['status']=='RUNNING' and context['case']['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    step=later_acquisition_specification(context['case'])
+    if step=='claims':
+        assert len(expected[2])==1 and set(expected[2])=={
+            '36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor'}
+        result=verify_later_live(context,initial,expected,acquisition=True)
+    else:result=verify_later_source(context,seed,expected,acquisition=True)
+    after=context['after'];pg=context['after']
+    assert len(pg)==77 and sum(map(len,pg.values()))=={'claims':224,'source':226,'abandon':229,'retry':231}[step]
+    assert (len(context['native_after']['rows']),context['native_after']['sequence'])==(93,138 if step=='claims' else 139)
+    assert context['inputs_after']==expected[2] and len(expected[2])==1
+    for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies','acquisition_progress'):
+        assert not any(r.get('producer_epoch')==3 for r in pg[table])
+    activation=only(pg['ingest_activations'],target_epoch=3)
+    claimed=only(pg['jobs'],request_key='\\x'+'a6'*16);unclaimed=only(pg['jobs'],request_key='\\x'+'a7'*16)
+    assert unclaimed['state']=='accepted' and unclaimed['job_revision']==1 and all(unclaimed[k] is None for k in ('owner_resource_id','owner_epoch','owner_incarnation'))
+    assert claimed['checkpoint_revision']==unclaimed['checkpoint_revision']==0
+    if step in ('claims','source'):
+        assert claimed['state']=='queued' and claimed['job_revision']==2
+        assert tuple(claimed[k] for k in ('owner_resource_id','owner_epoch','owner_incarnation'))==tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    else:
+        gap=only(pg['acquisition_gaps'],job_id=claimed['job_id'])
+        assert tuple(gap[k] for k in ('previous_owner_resource','previous_owner_epoch','previous_owner_incarnation'))==tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    return dict(result,sql_rows=sum(map(len,after.values())),claimed_jobs=1,unclaimed_jobs=1,
+        abandoned_jobs=int(step=='abandon'),retained_gaps=int(step in ('abandon','retry')))
+
+
+def later_acquisition_controls(context,initial,seed,expected):
+    verify_later_acquisition(context,initial,seed,expected);step=later_acquisition_specification(context['case']);rejected=[]
+    def reject(name,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_acquisition(c,initial,seed,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration,IndexError,OverflowError):rejected.append(name)
+        else:raise AssertionError('accepted acquisition alteration: '+name)
+    reject('unknown-process',lambda c:c['response'].update(**(dict(returncode=None) if step=='claims' else dict(outcome='OUTCOME_UNKNOWN'))))
+    reject('unknown-native-custody',lambda c:c['case'].update(custody='OUTCOME_UNKNOWN'))
+    reject('extra-native-write',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('required-input-lost',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after']))))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed'))
+    reject('old-science-copy-rewritten',lambda c:c['after']['producer_outcomes'][0].update(xmin='4294967000'))
+    reject('unclaimed-job-owned',lambda c:only(c['after']['jobs'],request_key='\\x'+'a7'*16).update(owner_epoch=10))
+    reject('foreign-activator',lambda c:only(c['after']['ingest_activations'],target_epoch=3).update(activated_by_epoch=9))
+    def marker(c):
+        row=next(r for r in c['native_after']['rows'] if r['cf']=='receipts' and r['key'].startswith('0131') and r['key'].endswith('0000000000000003'))
+        b=bytes.fromhex(row['value']);row['value']=(b[:10]+be(1)+b[18:]).hex()
+    reject('invented-native-ACK',marker)
+    if step=='claims':
+        reject('live-backend',lambda c:c['backends'].append(dict(pid=1)))
+        reject('wrong-probe-argv',lambda c:c['arguments'].__setitem__(0,'successor-acquisition-claims'))
+        def telemetry(c,change):
+            events=[loads(line) for line in c['response']['stdout'].splitlines()];change(events)
+            c['response']['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+        reject('unjoined-Control-driver',lambda c:telemetry(c,lambda es:only(es,event='lineage-history-driver',driver='control').update(joined=False)))
+        reject('false-original-replay',lambda c:telemetry(c,lambda es:only(es,event='lineage-history-compacted-initial').update(original_requests_replayed=False)))
+        def rows(c,change):
+            def mutate(es):
+                for e in es:
+                    if e['event']=='lineage-history-state':
+                        pg={n:loads(v) for n,v in e['state']['control_tables']};change(pg,e['stage'])
+                        tables=[[n,model.encoded(pg[n]).decode()] for n in sorted(pg)]
+                        e['state']['control_tables']=tables;e['state']['control_sha256']=sha(model.encoded(tables))
+            telemetry(c,mutate);change(c['after'],'final')
+        reject('coordinated-old-grant',lambda c:rows(c,lambda pg,stage:[r.update(actor_grant_revision=4) for r in pg['acquisition_jobs'] if r['request_key'] in ('\\x'+'a6'*16,'\\x'+'a7'*16)]))
+        reject('coordinated-old-scope',lambda c:rows(c,lambda pg,stage:[r.update(scope_id='\\xa39723d7c49af2c99498fb2f59c03b16') for r in pg['acquisition_jobs'] if r['request_key']=='\\x'+'a6'*16]))
+        retained_xids={int(r['xmin']) for rs in expected[0].values() for r in rs}
+        old=max(retained_xids)-1
+        while old in retained_xids:old-=1
+        assert old>0
+        def older(pg,stage):
+            for table in ('owner_epochs','role_instances'):
+                for row in pg[table]:
+                    if row['role']=='control' and ((table=='owner_epochs' and row['epoch']==10) or (table=='role_instances' and row['created_at_us']>=context['server_window']['before_us'])):
+                        if row.get('released_at_us') is None and row.get('retired_at_us') is None:row['xmin']=str(old)
+        reject('coordinated-claim-before-retained-XIDs',lambda c:rows(c,older))
+        def old_bucket(pg,stage):
+            if stage=='before-claim':
+                for r in pg['login_buckets']:
+                    if (r['kind'],r['bucket']) in (('account',97),('peer',13)):r['window_started_at_us']=context['server_window']['after_us']
+        reject('retained-login-bucket-rewritten',lambda c:rows(c,old_bucket))
+        reject('false-seed-execution',lambda c:telemetry(c,lambda es:only(es,event='lineage-acquisition-seed-state').update(executions=1)))
+    else:
+        reject('unreaped-child',lambda c:c['response']['terminal'].update(reaped=False))
+        reject('live-backend',lambda c:c['backend'].update(all=[dict(pid=1)]))
+        reject('wrong-installed-argv',lambda c:c['response']['terminal']['command'].append('--activate-successor'))
+        def report(c,change):
+            r=loads(c['response']['stdout']);change(r);c['response']['stdout']=model.encoded(r).decode()+'\n'
+        reject('false-compacted-count',lambda c:report(c,lambda r:r.update(compacted_requests='0')))
+        reject('false-target-count',lambda c:report(c,lambda r:r.update(resolved_requests='7')))
+        reject('wrong-source-cut',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(last_complete_sequence=1))
+        reject('wrong-source-digest',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closure_digest='\\x'+'00'*32))
+        if step=='source':
+            reject('source-before-native-barrier',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(xmin=only(c['after']['producer_epochs'],producer_epoch=3)['xmin']))
+        else:
+            reject('report-new-instead-of-total-jobs',lambda c:report(c,lambda r:r['acquisition_abandonment'].update(jobs='0')))
+            reject('wrong-gap-activator',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=3).update(previous_owner_epoch=9))
+            reject('gap-job-XID-split',lambda c:only(c['after']['jobs'],request_key='\\x'+'a6'*16).update(xmin='4294967001'))
+            reject('unclaimed-job-abandoned',lambda c:only(c['after']['jobs'],request_key='\\x'+'a7'*16).update(state='cancelled',job_revision=4))
+            reject('source-republished',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(xmin='4294967002'))
+            def old_gap(c):
+                used={int(r['xmin']) for rows in expected[0].values() for r in rows};value=max(used)-1
+                while value in used:value-=1
+                assert value>0;xid=str(value)
+                only(c['after']['acquisition_gaps'],producer_epoch=3)['xmin']=xid
+                only(c['after']['jobs'],request_key='\\x'+'a6'*16)['xmin']=xid
+            reject('coordinated-gap-before-retained-XIDs',old_gap)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)

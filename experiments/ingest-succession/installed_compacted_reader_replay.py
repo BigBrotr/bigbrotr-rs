@@ -19,15 +19,16 @@ from installed_family_capture import inventory_checked, physical, spool_checked
 loads,sha,same,only,number = oracle.loads,oracle.sha,oracle.same,oracle.only,oracle.number
 
 
-def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False,initial_preparation_faults=False,activated=False,activated_terminal=False,activated_terminal_faults=False,activated_source_proof=False,activated_terminal_guards=False,empty_initial=False,empty_initial_faults=False,empty_initial_locks=False,empty_initial_proof_shapes=False,empty_initial_malformed_floor=False,empty_initial_preparer=False,later_empty=False,later_live=False,later_input_proof=False,later_recovery=False,later_recovery_delivery=False,later_recovery_faults=False,later_source=False,later_source_delivery=False,later_source_faults=False):
-    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal,activated_terminal_faults,activated_source_proof,activated_terminal_guards,empty_initial,empty_initial_faults,empty_initial_locks,empty_initial_proof_shapes,empty_initial_malformed_floor,empty_initial_preparer,later_empty,later_live,later_input_proof,later_recovery,later_recovery_delivery,later_recovery_faults,later_source,later_source_delivery,later_source_faults))
-    assert sum((history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal,activated_terminal_faults,activated_source_proof,activated_terminal_guards,empty_initial,empty_initial_faults,empty_initial_locks,empty_initial_proof_shapes,empty_initial_malformed_floor,empty_initial_preparer,later_empty,later_live,later_input_proof,later_recovery,later_recovery_delivery,later_recovery_faults,later_source,later_source_delivery,later_source_faults))<=1
-    profile=oracle.LaterSourceFaultProfile if later_source_faults else oracle.LaterSourceDeliveryProfile if later_source_delivery else oracle.LaterSourceProfile if later_source else oracle.LaterRecoveryFaultProfile if later_recovery_faults else oracle.LaterRecoveryDeliveryProfile if later_recovery_delivery else oracle.LaterRecoveryProfile if later_recovery else oracle.LaterLiveProfile if later_live else oracle.LaterInputProofProfile if later_input_proof else oracle.LaterEmptyProfile if later_empty else oracle.EmptyInitialPreparerProfile if empty_initial_preparer else oracle.EmptyInitialMalformedProfile if empty_initial_malformed_floor else oracle.EmptyInitialShapeProfile if empty_initial_proof_shapes else oracle.EmptyInitialLockProfile if empty_initial_locks else oracle.EmptyInitialDeliveryProfile if empty_initial_faults else oracle.EmptyInitialProfile if empty_initial else oracle.ActivatedTerminalGuardProfile if activated_terminal_guards else oracle.ActivatedSourceProofProfile if activated_source_proof else oracle.ActivatedTerminalFaultProfile if activated_terminal_faults else oracle.ActivatedTerminalProfile if activated_terminal else oracle.ActivatedProfile if activated else oracle.InitialPreparationDeliveryProfile if initial_preparation_faults else oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
+def replay(root, product_source, *, history_profile=False,fault_profile=False,initial_journey=False,initial_preparation=False,initial_preparation_faults=False,activated=False,activated_terminal=False,activated_terminal_faults=False,activated_source_proof=False,activated_terminal_guards=False,empty_initial=False,empty_initial_faults=False,empty_initial_locks=False,empty_initial_proof_shapes=False,empty_initial_malformed_floor=False,empty_initial_preparer=False,later_empty=False,later_live=False,later_input_proof=False,later_recovery=False,later_recovery_delivery=False,later_recovery_faults=False,later_source=False,later_source_delivery=False,later_source_faults=False,later_acquisition=False):
+    assert all(type(v) is bool for v in (history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal,activated_terminal_faults,activated_source_proof,activated_terminal_guards,empty_initial,empty_initial_faults,empty_initial_locks,empty_initial_proof_shapes,empty_initial_malformed_floor,empty_initial_preparer,later_empty,later_live,later_input_proof,later_recovery,later_recovery_delivery,later_recovery_faults,later_source,later_source_delivery,later_source_faults,later_acquisition))
+    assert sum((history_profile,fault_profile,initial_journey,initial_preparation,initial_preparation_faults,activated,activated_terminal,activated_terminal_faults,activated_source_proof,activated_terminal_guards,empty_initial,empty_initial_faults,empty_initial_locks,empty_initial_proof_shapes,empty_initial_malformed_floor,empty_initial_preparer,later_empty,later_live,later_input_proof,later_recovery,later_recovery_delivery,later_recovery_faults,later_source,later_source_delivery,later_source_faults,later_acquisition))<=1
+    profile=oracle.LaterAcquisitionProfile if later_acquisition else oracle.LaterSourceFaultProfile if later_source_faults else oracle.LaterSourceDeliveryProfile if later_source_delivery else oracle.LaterSourceProfile if later_source else oracle.LaterRecoveryFaultProfile if later_recovery_faults else oracle.LaterRecoveryDeliveryProfile if later_recovery_delivery else oracle.LaterRecoveryProfile if later_recovery else oracle.LaterLiveProfile if later_live else oracle.LaterInputProofProfile if later_input_proof else oracle.LaterEmptyProfile if later_empty else oracle.EmptyInitialPreparerProfile if empty_initial_preparer else oracle.EmptyInitialMalformedProfile if empty_initial_malformed_floor else oracle.EmptyInitialShapeProfile if empty_initial_proof_shapes else oracle.EmptyInitialLockProfile if empty_initial_locks else oracle.EmptyInitialDeliveryProfile if empty_initial_faults else oracle.EmptyInitialProfile if empty_initial else oracle.ActivatedTerminalGuardProfile if activated_terminal_guards else oracle.ActivatedSourceProofProfile if activated_source_proof else oracle.ActivatedTerminalFaultProfile if activated_terminal_faults else oracle.ActivatedTerminalProfile if activated_terminal else oracle.ActivatedProfile if activated else oracle.InitialPreparationDeliveryProfile if initial_preparation_faults else oracle.InitialPreparationProfile if initial_preparation else oracle.InitialJourneyProfile if initial_journey else oracle.HistoryFaultProfile if fault_profile else oracle.HistoryProfile if history_profile else oracle
     if later_source_delivery or later_source_faults:later_source=True
     if later_input_proof:later_empty=True
     if activated_terminal_faults or activated_source_proof or activated_terminal_guards: activated_terminal=True
     if initial_preparation_faults: initial_preparation=True
     if later_recovery or later_recovery_delivery or later_recovery_faults:assert oracle.LATER_RECOVERY_PRODUCT is not None and product_source==oracle.LATER_RECOVERY_PRODUCT
+    if later_acquisition:assert product_source==oracle.LATER_ACQUISITION_PRODUCT
     if later_source:assert product_source==oracle.LATER_SOURCE_PRODUCT
     if later_live:assert product_source==oracle.LATER_LIVE_PRODUCT
     if later_empty:assert product_source==oracle.LATER_PRODUCT and oracle.LATER_PRODUCT is not None
@@ -63,7 +64,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     assert started <= finished
     if later_recovery or later_source:
         seeds=oracle.later_recovery_origins_checked(root,raw);pins=oracle.LATER_SOURCE_ORIGINS[:1] if later_source_delivery or later_source_faults else oracle.LATER_SOURCE_ORIGINS if later_source else oracle.LATER_RECOVERY_ORIGINS
-    elif later_live or later_recovery_delivery or later_recovery_faults:
+    elif later_live or later_recovery_delivery or later_recovery_faults or later_acquisition:
         seed,initial=oracle.qualified_endpoint(root,raw,initial_journey=False,later_terminal=True)
         seeds={'later-terminal':seed};pins=(oracle.LATER_TERMINAL_ORIGIN,)
     elif later_empty:
@@ -122,8 +123,8 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     build = Path(mount['Source']); assert build.is_absolute()
     built,component,qualification = [read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
     oracle.qualification_checked(built,component,qualification,product_source,
-        initial_journey=initial_journey or initial_preparation or activated or activated_terminal or empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source,initial_preparation=initial_preparation,
-        compacted_activated=activated or activated_terminal,compacted_terminal=activated_terminal,empty_initial=empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery or later_recovery_delivery or later_recovery_faults,later_source=later_source)
+        initial_journey=initial_journey or initial_preparation or activated or activated_terminal or empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source or later_acquisition,initial_preparation=initial_preparation,
+        compacted_activated=activated or activated_terminal,compacted_terminal=activated_terminal,empty_initial=empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source or later_acquisition,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery or later_recovery_delivery or later_recovery_faults,later_source=later_source,later_acquisition=later_acquisition)
     if initial_preparation: oracle.preparation_qualification(component)
     assert report['build'] == built and report['component'] == component
     data = raw(build.parent/'build/source-manifest.json'); assert sha(data) == built['source_manifest_sha256']
@@ -149,7 +150,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
         name = clone['name']; directory = folder/name
         if later_recovery or later_source:
             origin_name='live-absent' if later_source_faults else (oracle.LATER_SOURCE_ORIGIN_NAMES if later_source else oracle.LATER_RECOVERY_ORIGIN_NAMES)[name];seed=seeds[origin_name];declaration=report['origins'][origin_name]
-        elif later_live or later_recovery_delivery or later_recovery_faults:
+        elif later_live or later_recovery_delivery or later_recovery_faults or later_acquisition:
             origin_name='later-terminal';seed=seeds[origin_name];declaration=report['origins'][origin_name]
         elif later_empty:
             origin_name=(oracle.LATER_INPUT_ORIGINS if later_input_proof else oracle.LATER_ORIGIN_NAMES)[name];seed=seeds[origin_name];declaration=report['origins'][origin_name]
@@ -165,7 +166,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
             origin_name=(oracle.DELIVERY_ORIGIN_NAMES if initial_preparation_faults else oracle.PREPARATION_ORIGIN_NAMES)[name]
             seed=seeds[origin_name]; declaration=report['origins'][origin_name]
         assert clone['origin'] == origin_name and clone['directory'] == name and clone['status'] == 'PASS'
-        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation or activated or activated_terminal or empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
+        assert clone['database'] == (profile.DATABASE_PREFIX if history_profile or fault_profile or initial_journey or initial_preparation or activated or activated_terminal or empty_initial or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source or later_acquisition else 'bb_compacted_reader_')+report['source'][:7]+'_'+name.replace('-','_')
         assert clone['config'] == '/lab/'+clone['database']+'.toml' and clone['final_backends'] == []
         assert clone['final_case'] == name+'-'+profile.STEPS[name][-1]
         same(read(folder/(name+'-copy-before.json')),seed[0]); same(read(folder/(name+'-migrated.json')),seed[0])
@@ -181,7 +182,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
         elif activated_terminal: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.TERMINAL_GRANTS)
         elif activated: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.ACTIVATED_GRANTS)
         elif initial_journey or initial_preparation: oracle.history_catalog_checked(declaration['catalog'],clone['catalog_before'],grants=oracle.JOURNEY_GRANTS)
-        elif fault_profile or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source: assert declaration['catalog']==clone['catalog_before']
+        elif fault_profile or later_empty or later_live or later_recovery or later_recovery_delivery or later_recovery_faults or later_source or later_acquisition: assert declaration['catalog']==clone['catalog_before']
         else: (oracle.history_catalog_checked if history_profile else oracle.catalog_checked)(declaration['catalog'],clone['catalog_before'])
         config = tomllib.loads(raw(folder/Path(clone['config']).name).decode()); ds = only(seed[0]['datasets'])
         assert config['storage']['ingest_root'] == '/lab/'+name+'/store'
@@ -197,6 +198,11 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
                 lease_ttl='6s',heartbeat_interval='1s',renewal_timeout='1s',authorization_ttl='5s',graceful_shutdown_timeout='2s')
         for filename in (name+'-config-validation.json',clone['database']+'-installed-config-validation.json'):
             v = read(folder/filename); assert type(v['returncode']) is int and v['returncode'] == 0 and v['stderr'] == ''; loads(v['stdout'])
+        if later_acquisition:
+            checked,previous_time,claims_seed=later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,acquisition=True)
+            results.extend(checked)
+            checked,previous_time=later_recovery_clone_replay(folder,clone,report,claims_seed,raw,read,absent,previous_time,finished,acquisition=True,initial=initial)
+            results.extend(checked);continue
         if later_recovery_faults:
             checked,previous_time,basis=later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,loss=True,baseline=baseline)
             results.extend(checked);loss,wire,original=basis
@@ -309,7 +315,7 @@ def replay(root, product_source, *, history_profile=False,fault_profile=False,in
     return dict(status=profile.STATUS+'_CAPTURE_REPLAY',source=report['source'],product_source=product_source,
         cases=results,bound_files=bound,not_run=list(profile.NOT_RUN),
         preservation='Original files reread; original SQL/catalog and engine/process closure are captured-run evidence',
-        scope=('Measured Source publication before/after loss, fresh Source completion or exact retry preserving C1/A1/cut4' if later_source_faults else 'Measured held-success compacted later Source publication COMMIT at cut4/C1/A1; publication losses NOT_RUN' if later_source_delivery else 'Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals' if later_source else 'Actual measured dictionary outcome loss before/after completion, fresh installed missing-copy repair or ACK advancement and exact retries' if later_recovery_faults else 'Measured first compacted later dictionary outcome/progress COMMIT held/released baseline; loss and fresh repair NOT_RUN' if later_recovery_delivery else 'Fresh compacted later positive recovery through equal-watermark final ACK, exact retries and required-input refusals' if later_recovery else 'Finite compacted later live with residual shapes and actual installed quiet activation/renewal/join' if later_live else 'Actual optional-absent preparation, required-later-input refusals and H/D proof-use with measured installed refresh' if later_input_proof else 'Actual compacted later preparation, measured preparation COMMIT loss and installed OPEN/gap/CLOSING retirement with terminal retry' if later_empty else 'Actual compacted original-preparer import claim, fresh installed completion and named empty-retirement veto' if empty_initial_preparer else 'One exact malformed compacted floor: fixture write, pre-Control installed refusal and complete preservation' if empty_initial_malformed_floor else 'Compacted empty post-proof H/D, source-only partial SQL, fixed missing handoff and terminal-SQL/older-native refusal shapes' if empty_initial_proof_shapes else 'Compacted empty current-Control claim ordering, actual installed cancellation and DB-UTC expiry' if empty_initial_locks else 'Compacted empty initial final COMMIT observed baseline, loss and fresh completion/retry' if empty_initial_faults else 'Compacted/original empty initial target retirement, native-first continuation and selected refusals' if empty_initial else 'Compacted terminal unresolved import, positive draining retirement and isolated native OPEN refusal' if activated_terminal_guards else 'Compacted Source/abandon ancestor H/D after actual source proof and server-completed refresh response hold' if activated_source_proof else 'Compacted terminal final COMMIT delivery, real job-lock waits and retirement post-proof drift captures' if activated_terminal_faults else 'Compacted activated terminal positive/refusal captures; final delivery/cancellation gates NOT_RUN' if activated_terminal else 'Installed compacted activated-initial recovery and ACK with authentic COMMIT loss seeds' if activated else 'Installed compacted initial completion delivery faults and fresh retries only' if initial_preparation_faults else 'Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
+        scope=('Genuine compacted zero-request acquisition claim and accepted-unclaimed intent; installed Source, abandonment and retry' if later_acquisition else 'Measured Source publication before/after loss, fresh Source completion or exact retry preserving C1/A1/cut4' if later_source_faults else 'Measured held-success compacted later Source publication COMMIT at cut4/C1/A1; publication losses NOT_RUN' if later_source_delivery else 'Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals' if later_source else 'Actual measured dictionary outcome loss before/after completion, fresh installed missing-copy repair or ACK advancement and exact retries' if later_recovery_faults else 'Measured first compacted later dictionary outcome/progress COMMIT held/released baseline; loss and fresh repair NOT_RUN' if later_recovery_delivery else 'Fresh compacted later positive recovery through equal-watermark final ACK, exact retries and required-input refusals' if later_recovery else 'Finite compacted later live with residual shapes and actual installed quiet activation/renewal/join' if later_live else 'Actual optional-absent preparation, required-later-input refusals and H/D proof-use with measured installed refresh' if later_input_proof else 'Actual compacted later preparation, measured preparation COMMIT loss and installed OPEN/gap/CLOSING retirement with terminal retry' if later_empty else 'Actual compacted original-preparer import claim, fresh installed completion and named empty-retirement veto' if empty_initial_preparer else 'One exact malformed compacted floor: fixture write, pre-Control installed refusal and complete preservation' if empty_initial_malformed_floor else 'Compacted empty post-proof H/D, source-only partial SQL, fixed missing handoff and terminal-SQL/older-native refusal shapes' if empty_initial_proof_shapes else 'Compacted empty current-Control claim ordering, actual installed cancellation and DB-UTC expiry' if empty_initial_locks else 'Compacted empty initial final COMMIT observed baseline, loss and fresh completion/retry' if empty_initial_faults else 'Compacted/original empty initial target retirement, native-first continuation and selected refusals' if empty_initial else 'Compacted terminal unresolved import, positive draining retirement and isolated native OPEN refusal' if activated_terminal_guards else 'Compacted Source/abandon ancestor H/D after actual source proof and server-completed refresh response hold' if activated_source_proof else 'Compacted terminal final COMMIT delivery, real job-lock waits and retirement post-proof drift captures' if activated_terminal_faults else 'Compacted activated terminal positive/refusal captures; final delivery/cancellation gates NOT_RUN' if activated_terminal else 'Installed compacted activated-initial recovery and ACK with authentic COMMIT loss seeds' if activated else 'Installed compacted initial completion delivery faults and fresh retries only' if initial_preparation_faults else 'Installed existing initial preparation completion and exact retries only' if initial_preparation else 'Synthetic compacted initial preparation/gap/activation and installed startup only' if initial_journey else 'Synthetic compacted successor history delivery faults' if fault_profile else 'Synthetic connected compacted initial ancestor only' if history_profile else 'Synthetic post-GC initial reader only')+'; separate run-owner driver exit verification required')
 
 
 
@@ -819,26 +825,39 @@ def later_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
 
 
 
-def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,delivery=False,loss=False,baseline=None):
+def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,previous_time,finished,*,delivery=False,loss=False,baseline=None,acquisition=False):
+    assert type(acquisition) is bool and not (acquisition and (delivery or loss))
     assert type(loss) is bool and not (loss and delivery)
     name=clone['name'];assert not delivery or name=='absent';assert not loss or name in oracle.LaterRecoveryFaultProfile.CLONES
-    directory=folder/name;label=name+('-loss' if loss else '-live');wire=None
+    directory=folder/name;label=name+('-claims' if acquisition else '-loss' if loss else '-live');wire=None
     absent(name+'-residual',clone['database'])
-    record=read(folder/(name+'-residual-selection.json'))
-    expected=oracle.later_live_inputs_checked(record,seed,initial,name,loss=loss)
-    assert read(folder/(name+'-residual-before-native.json'))==seed[1]
-    response=read(folder/(name+'-residual-before-dump-response.json'))
-    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
-    assert loads(response['stdout'])==seed[1];number(response['seconds'],0,120)
-    saved=directory/'quarantined-initial';attribution=directory/'terminal-seed-inputs'
-    assert set(p.name for p in saved.iterdir())==set(record['files'])
-    for n,value in record['files'].items():assert raw(saved/n).hex()==value['hex']
-    a=record['attribution'];assert set(p.name for p in attribution.iterdir())=={a['name']}
-    assert raw(attribution/a['name']).hex()==a['hex']
-    # The files retained outside the mutable native root are never reopened by
-    # a native engine. Bind their actual physical identities as well as bytes.
-    assert physical(saved,raw)==record['quarantine']
-    assert physical(attribution,raw)[a['name']]==a['metadata']
+    if acquisition:
+        record=read(folder/(name+'-absent-quarantine.json'))
+        expected=oracle.history_quarantine_checked(record,seed,initial,name,'absent',acquisition=True)
+        same(read(folder/(name+'-residual-before.json')),seed[0]);same(read(folder/(name+'-residual-after.json')),seed[0])
+        assert read(folder/(name+'-residual-before-native.json'))==seed[1]
+        response=read(folder/(name+'-residual-before-dump-response.json'))
+        assert set(response)=={'returncode','stdout','stderr','seconds'}
+        assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+        number(response['seconds'],0,120);assert loads(response['stdout'])==seed[1]
+        saved=folder/record['path'];assert physical(saved,raw)==record['quarantine_after']
+        for n,value in record['files'].items():assert raw(saved/n).hex()==value['hex']
+    else:
+        record=read(folder/(name+'-residual-selection.json'))
+        expected=oracle.later_live_inputs_checked(record,seed,initial,name,loss=loss)
+        assert read(folder/(name+'-residual-before-native.json'))==seed[1]
+        response=read(folder/(name+'-residual-before-dump-response.json'))
+        assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+        assert loads(response['stdout'])==seed[1];number(response['seconds'],0,120)
+        saved=directory/'quarantined-initial';attribution=directory/'terminal-seed-inputs'
+        assert set(p.name for p in saved.iterdir())==set(record['files'])
+        for n,value in record['files'].items():assert raw(saved/n).hex()==value['hex']
+        a=record['attribution'];assert set(p.name for p in attribution.iterdir())=={a['name']}
+        assert raw(attribution/a['name']).hex()==a['hex']
+        # The files retained outside the mutable native root are never reopened by
+        # a native engine. Bind their actual physical identities as well as bytes.
+        assert physical(saved,raw)==record['quarantine']
+        assert physical(attribution,raw)[a['name']]==a['metadata']
     case=only(report['cases'],name=label)
     assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
     item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
@@ -873,7 +892,7 @@ def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,pre
         assert item('backends')==context['backends'] and context['custody']==custody
         # Default capture has four fields; delivery uses the Process record.
         # Both bind this exact argv to the retained client and product ELF.
-        args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
+        args=['successor-compacted-acquisition-claims' if acquisition else 'successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
         if delivery or loss:
             wire=item('wire');assert raw(folder/'fault_proxy.py')==raw(folder.parent/'source'/oracle.ACTIVATED_PROXY)
             args.append(str(wire['ready']['listen_port']))
@@ -884,20 +903,23 @@ def later_live_clone_replay(folder,clone,report,seed,initial,raw,read,absent,pre
         result=oracle.verify_later_loss(context,initial,expected,wire,baseline);controls=oracle.later_loss_controls(context,initial,expected,wire,baseline)
     elif delivery:
         result=oracle.verify_later_recovery_delivery(context,initial,expected,wire);controls=oracle.later_recovery_delivery_controls(context,initial,expected,wire)
+    elif acquisition:result=oracle.verify_later_acquisition(context,initial,expected,expected);controls=oracle.later_acquisition_controls(context,initial,expected,expected)
     else:result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
     assert case['oracle']==result and case['negative_controls']==controls
-    if not loss:same(read(folder/(name+'-final-sql.json')),context['after'])
+    if not (loss or acquisition):same(read(folder/(name+'-final-sql.json')),context['after'])
     spool_checked(directory/'store/producer-inputs-v1',context['inputs_after'],raw,complete=True)
     physical(directory/'store',raw)
     checked=[dict(name=label,oracle=result,negative_controls=controls)]
+    if acquisition:return checked,previous_time,(context['after'],context['native_after'],context['inputs_after'])
     return (checked,previous_time,(context,wire,expected)) if loss else (checked,previous_time)
 
 
-def later_recovery_clone_replay(folder,clone,report,seed,raw,read,absent,previous_time,finished,*,source=False,recovery_basis=None,source_delivery=False,source_faults=False,baseline=None):
+def later_recovery_clone_replay(folder,clone,report,seed,raw,read,absent,previous_time,finished,*,source=False,recovery_basis=None,source_delivery=False,source_faults=False,baseline=None,acquisition=False,initial=None):
+    assert type(acquisition) is bool and not (acquisition and (source or recovery_basis is not None or source_delivery or source_faults))
     assert type(source) is bool and not (source and recovery_basis is not None)
     assert type(source_faults) is bool and not (source_faults and source_delivery)
     assert type(source_delivery) is bool and (not (source_delivery or source_faults) or source)
-    profile=oracle.LaterSourceFaultProfile if source_faults else oracle.LaterSourceDeliveryProfile if source_delivery else oracle.LaterSourceProfile if source else oracle.LaterRecoveryProfile
+    profile=oracle.LaterAcquisitionProfile if acquisition else oracle.LaterSourceFaultProfile if source_faults else oracle.LaterSourceDeliveryProfile if source_delivery else oracle.LaterSourceProfile if source else oracle.LaterRecoveryProfile
     verify,controls=(oracle.verify_later_source,oracle.later_source_controls) if source else (oracle.verify_later_recovery,oracle.later_recovery_controls)
     name=clone['name'];directory=folder/name;expected=seed;results=[]
     if recovery_basis is not None:assert name in oracle.LaterRecoveryFaultProfile.CLONES
@@ -913,7 +935,7 @@ def later_recovery_clone_replay(folder,clone,report,seed,raw,read,absent,previou
         expected=oracle.history_quarantine_checked(record,seed,oracle.later_recovery_missing_basis(seed,name),name,'missing-required')
         saved=folder/record['path'];assert physical(saved,raw)==record['quarantine_after']
         for n,v in record['files'].items():assert raw(saved/n).hex()==v['hex']
-    for step in (('recover','retry') if recovery_basis is not None else profile.STEPS[name]):
+    for step in (('recover','retry') if recovery_basis is not None else profile.STEPS[name][1:] if acquisition else profile.STEPS[name]):
         label=name+'-'+step;case=only(report['cases'],name=label);item=lambda suffix:read(folder/(label+'-'+suffix+'.json'))
         assert case['status']=='PASS' and case['custody']=='OBSERVED_CLOSED_AND_JOINED' and case['catalog_after']==clone['catalog_before']
         context=item('verification')
@@ -952,7 +974,9 @@ def later_recovery_clone_replay(folder,clone,report,seed,raw,read,absent,previou
         assert item('external')==dict(control=context['after'],native=context['native_after'],inputs=context['inputs_after'],backend=context['backend'],catalog=context['catalog_after'])
         for stage,key in [('sql','after'),('inputs','inputs_after')]:assert item('provisional-'+stage)==context[key]
         assert context['input_contents']=={n:raw(directory/'store/producer-inputs-v1'/n).hex() for n in expected[2]}
-        if recovery_basis is None:
+        if acquisition:
+            result=oracle.verify_later_acquisition(context,initial,seed,expected);checked_controls=oracle.later_acquisition_controls(context,initial,seed,expected)
+        elif recovery_basis is None:
             options=dict(delivery=source_delivery,faults=source_faults,baseline=baseline if source_faults else None) if source else {}
             result=verify(context,seed,expected,**options);checked_controls=controls(context,seed,expected,**options)
         else:
@@ -986,6 +1010,7 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true')
     profile.add_argument('--empty-initial-malformed-floor',action='store_true')
     profile.add_argument('--empty-initial-proof-shapes',action='store_true')
+    profile.add_argument('--later-acquisition',action='store_true',help='Replay actual compacted acquisition claims and installed Source/Abandon/retry')
     profile.add_argument('--later-source-faults',action='store_true',help='Replay measured Source publication loss and fresh completion/exact retry')
     profile.add_argument('--later-source-delivery',action='store_true',help='Measure the held-success later Source publication COMMIT')
     profile.add_argument('--later-source',action='store_true',help='Compacted later Source closure and named refusals')
@@ -994,5 +1019,5 @@ if __name__ == '__main__':
     profile.add_argument('--later-input-proof',action='store_true',help='Later original-input obligations and measured H/D proof-use')
     profile.add_argument('--later-empty',action='store_true',help='Actual later compacted preparation and installed empty recovery')
     profile.add_argument('--empty-initial-preparer',action='store_true')
-    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation,initial_preparation_faults=args.initial_preparation_faults,activated=args.activated,activated_terminal=args.activated_terminal,activated_terminal_faults=args.activated_terminal_faults,activated_source_proof=args.activated_source_proof,activated_terminal_guards=args.activated_terminal_guards,empty_initial=args.empty_initial,empty_initial_faults=args.empty_initial_faults,empty_initial_locks=args.empty_initial_locks,empty_initial_proof_shapes=args.empty_initial_proof_shapes,empty_initial_preparer=args.empty_initial_preparer,empty_initial_malformed_floor=args.empty_initial_malformed_floor,later_empty=args.later_empty,later_input_proof=args.later_input_proof,later_live=args.later_live,later_recovery=args.later_recovery,later_recovery_delivery=args.later_recovery_delivery,later_recovery_faults=args.later_recovery_faults,later_source=args.later_source,later_source_delivery=args.later_source_delivery,later_source_faults=args.later_source_faults)
+    args = parser.parse_args(); result = replay(args.root,args.product_source,history_profile=args.history,fault_profile=args.history_faults,initial_journey=args.initial_journey,initial_preparation=args.initial_preparation,initial_preparation_faults=args.initial_preparation_faults,activated=args.activated,activated_terminal=args.activated_terminal,activated_terminal_faults=args.activated_terminal_faults,activated_source_proof=args.activated_source_proof,activated_terminal_guards=args.activated_terminal_guards,empty_initial=args.empty_initial,empty_initial_faults=args.empty_initial_faults,empty_initial_locks=args.empty_initial_locks,empty_initial_proof_shapes=args.empty_initial_proof_shapes,empty_initial_preparer=args.empty_initial_preparer,empty_initial_malformed_floor=args.empty_initial_malformed_floor,later_empty=args.later_empty,later_input_proof=args.later_input_proof,later_live=args.later_live,later_recovery=args.later_recovery,later_recovery_delivery=args.later_recovery_delivery,later_recovery_faults=args.later_recovery_faults,later_source=args.later_source,later_source_delivery=args.later_source_delivery,later_source_faults=args.later_source_faults,later_acquisition=args.later_acquisition)
     with args.output.open('x') as stream: json.dump(result,stream,indent=2); stream.write('\n')
