@@ -61,10 +61,12 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False,later_retirement=False):
+    assert type(later_retirement) is bool and not (later_retirement and (later_empty or later_live or later_recovery or later_source or later_acquisition))
     assert type(later_acquisition) is bool and not (later_acquisition and (later_empty or later_live or later_recovery or later_source))
     assert type(later_source) is bool and not (later_source and (later_empty or later_live or later_recovery))
     assert type(later_recovery) is bool and (not later_recovery or empty_initial) and not (later_recovery and (later_empty or later_live))
+    if later_retirement: assert empty_initial and source == LATER_RETIREMENT_PRODUCT
     if later_acquisition: assert empty_initial and source == LATER_ACQUISITION_PRODUCT
     if later_source: assert empty_initial and source == LATER_SOURCE_PRODUCT
     if later_recovery: assert LATER_RECOVERY_PRODUCT is not None and source == LATER_RECOVERY_PRODUCT
@@ -90,14 +92,15 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
     if initial_preparation or compacted_activated or empty_initial:
         selectors |= {'claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_transition')
-    if later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_activation')
-    if later_recovery or later_source or later_acquisition: selectors.add('successor_recovery')
-    if later_source or later_acquisition: selectors.add('successor_source')
-    if later_acquisition: selectors.add('successor_acquisition')
+    if later_empty or later_live or later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_transition')
+    if later_live or later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_activation')
+    if later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_recovery')
+    if later_source or later_acquisition or later_retirement: selectors.add('successor_source')
+    if later_acquisition or later_retirement: selectors.add('successor_acquisition')
+    if later_retirement: selectors.add('successor_retirement')
     assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
-    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == (2 if later_recovery or later_source or later_acquisition else 1)
+    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == (2 if later_recovery or later_source or later_acquisition or later_retirement else 1)
     assert set(component['test_names']) == set(counts)
     for name, names in component['test_names'].items():
         assert len(names) == len(set(names)) == counts[name]
@@ -110,7 +113,7 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
         'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']
     assert set(component['test_names']['compacted_prefix']) == {
         'storage::rocks::store::admission_tests::compacted_prefix_tests::'+n for n in expected}
-    if later_recovery or later_source or later_acquisition:
+    if later_recovery or later_source or later_acquisition or later_retirement:
         assert len(LATER_RECOVERY_PROGRESS_CONTROLS)==2
         assert set(component['test_names']['compacted_progress'])==set(LATER_RECOVERY_PROGRESS_CONTROLS)
     else:
@@ -148,15 +151,16 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
+    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition,later_retirement=later_retirement)
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
-    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
-    if later_empty or later_live or later_recovery or later_source or later_acquisition: later_qualification(component)
-    if later_live or later_recovery or later_source or later_acquisition: later_live_qualification(component)
+    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition,later_retirement=later_retirement)
+    if later_empty or later_live or later_recovery or later_source or later_acquisition or later_retirement: later_qualification(component)
+    if later_live or later_recovery or later_source or later_acquisition or later_retirement: later_live_qualification(component)
     if later_recovery: later_recovery_qualification(component)
-    if later_source or later_acquisition: later_source_qualification(component)
-    if later_acquisition: later_acquisition_qualification(component)
+    if later_source or later_acquisition or later_retirement: later_source_qualification(component)
+    if later_acquisition or later_retirement: later_acquisition_qualification(component)
+    if later_retirement: later_retirement_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -2137,7 +2141,8 @@ class InitialPreparationProfile:
         'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
 
 
-def preparation_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
+def preparation_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False,later_retirement=False):
+    assert type(later_retirement) is bool and not (later_retirement and (later_empty or later_live or later_recovery or later_source or later_acquisition))
     assert type(later_acquisition) is bool and not (later_acquisition and (later_empty or later_live or later_recovery or later_source))
     assert type(later_source) is bool and not (later_source and (later_empty or later_live or later_recovery))
     assert type(later_recovery) is bool and not (later_recovery and (later_empty or later_live))
@@ -2145,11 +2150,12 @@ def preparation_qualification(component,*,later_empty=False,later_live=False,lat
     names=component['test_names']
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
         'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_transition')
-    if later_live or later_recovery or later_source or later_acquisition: selectors.add('successor_activation')
-    if later_recovery or later_source or later_acquisition: selectors.add('successor_recovery')
-    if later_source or later_acquisition: selectors.add('successor_source')
-    if later_acquisition: selectors.add('successor_acquisition')
+    if later_empty or later_live or later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_transition')
+    if later_live or later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_activation')
+    if later_recovery or later_source or later_acquisition or later_retirement: selectors.add('successor_recovery')
+    if later_source or later_acquisition or later_retirement: selectors.add('successor_source')
+    if later_acquisition or later_retirement: selectors.add('successor_acquisition')
+    if later_retirement: selectors.add('successor_retirement')
     assert set(names)==selectors
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
     assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
@@ -4804,8 +4810,8 @@ def empty_fault_guard_delta(value,*,epoch=2):
     else: assert value['catalog_restored'] is None
 
 
-def empty_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False):
-    preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition)
+def empty_qualification(component,*,later_empty=False,later_live=False,later_recovery=False,later_source=False,later_acquisition=False,later_retirement=False):
+    preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery,later_source=later_source,later_acquisition=later_acquisition,later_retirement=later_retirement)
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::'
     assert {prefix+n for n in (
         'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
@@ -7971,4 +7977,272 @@ def later_acquisition_controls(context,initial,seed,expected):
                 only(c['after']['acquisition_gaps'],producer_epoch=3)['xmin']=xid
                 only(c['after']['jobs'],request_key='\\x'+'a6'*16)['xmin']=xid
             reject('coordinated-gap-before-retained-XIDs',old_gap)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+LATER_RETIREMENT_PRODUCT='06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4'
+LATER_RETIREMENT_ORIGIN=dict(name='claims-terminal',run='installed-compacted-later-acquisition-5b2f7f3',
+    subdirectory='installed-compacted-later-acquisition',database='bb_compacted_later_acquisition_5b2f7f3_claims',
+    status=LaterAcquisitionProfile.STATUS,source='5b2f7f3072c0480aee05c9021c405802de866951',
+    owner='a3a005286129d05ef3600a3f0d24f68b',label=LaterAcquisitionProfile.LABEL,
+    client_id='ecaad6f6fdbeb30f19b81d12f5b180f0947f60c052853c5e5b43134a81f6b89f',source_clone='claims',final_case='claims-retry',
+    catalog_sha256='5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+    result_sha256='77b0c1e6c574a088bf23b410f6a9435440e131e57c34fff2862331ae194d8dd2',
+    snapshot='claims-retry-after.json',snapshot_sha256='b9c58fbd5be3284dd0a8a0f31049883c831d8e855258b03dec801845fca9ffe5',
+    native_file='claims-retry-after-native.json',native_sha256='4d7712788ce4898576e32ff55a8e900b064c032f8ca40c6a42a69cecc28c1eae',
+    inputs_file='claims-retry-after-inputs.json',inputs_sha256='15e7ed66e33d9e60b4ae83cffd66cf4feab4175c23364eab859060b8c3477840',store='claims/store')
+
+
+class LaterRetirementProfile:
+    DIRECTORY='installed-compacted-later-retirement'
+    LABEL='org.bigbrotr.installed-compacted-later-retirement'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_RETIREMENT'
+    DATABASE_PREFIX='bb_compacted_later_retirement_'
+    CLIENT_PREFIX='bigbrotr-compacted-later-retirement-'
+    CLONES=('retirement',)
+    STEPS={'retirement':('retire','retry')}
+    CASES=tuple('retirement-'+s for s in STEPS['retirement'])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Genuine unabandoned/import job and missing required input retirement refusals',
+        'Nonzero/Event/Sync retirement and ACK advancement',
+        'Retirement COMMIT loss, lock cancellation/UTC expiry and post-proof H/D/input drift',
+        'Archive, reclamation, mixed restore and capacity qualification')
+
+
+def later_retirement_qualification(component):
+    prefix='storage::postgres::control_owner::successor_transition::recovery::retirement::tests::'
+    assert set(component['test_names']['successor_retirement'])=={prefix+n for n in (
+        'native_event_mask_requires_each_exact_binding_but_not_evidence_jobs',
+        'retirement_accepts_only_complete_ready_or_unchanged_terminal_heads',
+        'retirement_consumers_require_the_exact_retained_basis',
+        'retirement_retained_prefix_is_independent_of_outstanding_credit',
+        'terminal_retry_preserves_source_and_original_transaction_under_fresh_control')}
+    prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::compacted_successor_recovery_tests::'
+    assert {prefix+n for n in (
+        'compacted_successor_retirement_ack_keeps_required_and_residual_census',
+        'compacted_successor_retirement_observes_only_and_preserves_typed_ack',
+        'compacted_successor_retirement_rechecks_canonical_floor_without_residuals',
+        'compacted_successor_retirement_requires_exact_basis_closed_state_and_no_tail',
+        'compacted_successor_retirement_wrong_prefix_and_cancelled_proof_stay_spent')}<=set(component['test_names']['initial_reconstruction'])
+
+
+def later_retirement_origin_checked(root,raw=None):
+    """Bind the qualified final claims endpoint; never rerun its old verifier."""
+    import history
+    assert history.bootstrap_oracle.__file__==str(Path(__file__).resolve().parents[1]/'ingest-bootstrap/oracle.py')
+    from installed_family_capture import physical,spool_checked
+    raw=raw or retained.regular_read;pin=LATER_RETIREMENT_ORIGIN
+    basis=Path(root).parent/pin['run']/pin['subdirectory']
+    data=raw(basis.parent/'verified-run.json');assert sha(data)=='71a16e175cc11bda325115579f006927494dc3e3c8c17d95c037ba2b182ac817'
+    receipt=loads(data)
+    assert receipt['status']=='PASS_EXACT_COMPACTED_ACQUISITION_SOURCE_ABANDON_RETRY_AND_RAW'
+    assert receipt['source']==pin['source'] and receipt['product_source']==LATER_ACQUISITION_PRODUCT
+    assert receipt['driver']==dict(exit=0,joined=True,session=81154) and receipt['raw_driver']==dict(exit=0,joined=True,session=8098)
+    assert (receipt['commands'],receipt['controls'],receipt['raw_file_bindings'])==(4,79,5811)
+    for name,digest in receipt['evidence'].items():assert sha(raw(basis.parent/name))==digest
+    data=raw(basis.parent/'raw-replay.json');assert sha(data)=='284feb6c146bde182e97c600e357eeec2e68e7742f865673339909e36b7b48e2'
+    replay=loads(data)
+    assert replay['status']==LaterAcquisitionProfile.STATUS+'_CAPTURE_REPLAY'
+    assert replay['source']==pin['source'] and replay['product_source']==LATER_ACQUISITION_PRODUCT
+    assert len(replay['bound_files'])==5811 and [c['name'] for c in replay['cases']]==list(LaterAcquisitionProfile.CASES)
+    assert sum(c['negative_controls']['count'] for c in replay['cases'])==79
+    def bound(path):
+        path=Path(path);data=raw(path);assert sha(data)==replay['bound_files'][str(path)];return data
+    def read(path):return loads(bound(path))
+    report=read(basis/'result.json');assert sha(raw(basis/'result.json'))==pin['result_sha256']
+    assert all(report[k]==pin[k] for k in ('status','source','owner','label')) and report['client']==pin['client_id']
+    assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
+    clone=only(report['clones'],name=pin['source_clone']);case=only(report['cases'],name=pin['final_case'])
+    assert clone['database']==pin['database'] and clone['status']==case['status']=='PASS'
+    assert clone['final_case']==case['name'] and clone['directory']+'/store'==pin['store']
+    assert case['custody']=='OBSERVED_CLOSED_AND_JOINED' and type(case['returncode']) is int and case['returncode']==0
+    assert sha(clone['final_catalog'].encode())==pin['catalog_sha256']
+    endpoint=[]
+    for file_key,hash_key in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
+        data=bound(basis/pin[file_key]);assert sha(data)==pin[hash_key];endpoint.append(loads(data))
+    endpoint=tuple(endpoint);label=pin['final_case'];context=read(basis/(label+'-verification.json'))
+    assert sha(raw(basis/(label+'-verification.json')))== '17084d20dd3b39367e07240f747aa76ae708a233a640424b012cc6f3a0315199'
+    assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
+    assert context['response']==read(basis/(label+'-response.json'))
+    # Preserve this prior operation's actual argv and terminal identity.
+    later_source_closed(context['response'],context['case'],acquisition=True)
+    assert context['response']['terminal']==read(basis/(label+'.terminal.json'))
+    assert read(basis/(label+'-custody.json'))==dict(status='OBSERVED_CLOSED_AND_JOINED',database=pin['database'],backend_absent=True,errors=[])
+    assert context['backend']==read(basis/(label+'-backends.json'))
+    backend_checked(context['backend'],pin['database'],context['before'],context['after'])
+    terminal=read(basis/'client-terminal.json');assert terminal['Id']==pin['client_id']
+    state=terminal['State'];assert state['Status']=='exited' and state['Pid']==0 and state['ExitCode']==143 and state['OOMKilled'] is False
+    build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
+    built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
+    qualification_checked(built,component,qualification,LATER_ACQUISITION_PRODUCT,initial_journey=True,empty_initial=True,later_acquisition=True)
+    assert report['build']==built and report['component']==component
+    manifest=read(build.parent/'build/source-manifest.json');assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
+    for name,digest in component['executables_sha256'].items():assert sha(bound(build/name))==digest
+    provenance=read(basis/'progress-source.json');source=basis.parent/'source'
+    assert provenance['revision']==pin['source'] and provenance['tree']==report['tree'] and provenance['source']==str(source)
+    for name,digest in provenance['files_sha256'].items():
+        assert not Path(name).is_absolute() and '..' not in Path(name).parts
+        assert sha(bound(source/name))==digest
+        if not name.startswith(('docs/','experiments/')):assert manifest['files_sha256'][name]==digest
+    pg,native,inputs=endpoint
+    assert len(pg)==77 and sum(map(len,pg.values()))==231
+    assert (len(native['rows']),native['sequence'],len(inputs))==(93,139,1)
+    assert max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])['epoch']==13
+    later_retirement_basis(endpoint)
+    store=basis/pin['store'];files=physical(store,bound)
+    wanted={str(Path(p).relative_to(store)):digest for p,digest in replay['bound_files'].items() if p.startswith(str(store)+'/')}
+    actual={n:m['sha256'] for n,m in files.items() if stat.S_ISREG(m['mode'])}
+    assert actual==wanted
+    directories={'.'}|{str(p) for n in actual for p in Path(n).parents if str(p)!='.'}
+    assert set(files)==set(actual)|directories
+    spool_checked(store/'producer-inputs-v1',inputs,bound,complete=True)
+    return endpoint
+
+
+def later_retirement_basis(seed):
+    pg,native,inputs=seed
+    producer=only(pg['producer_epochs'],producer_epoch=3);source=only(pg['source_streams'],owner_epoch=3)
+    intent=only(pg['ingest_successions'],target_epoch=3);slot=binary(producer['producer_slot_id'])
+    assert producer['state']=='closing' and producer['reserved_through_request']==0
+    assert source['state']=='closed' and source['last_complete_sequence']==0
+    assert not [r for r in pg['ingest_terminal_transactions'] if r['target_epoch']==3]
+    assert all(not [r for r in pg[t] if r['producer_epoch']==3] for t in (
+        'producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies','acquisition_progress'))
+    assert sha(binary(intent['handoff']))==intent['handoff_sha256'][2:]
+    assert sha(binary(intent['target_manifest']))==intent['target_manifest_sha256'][2:]
+    digest=sha(b'bigbrotr/ingest-successor-source-closure/1\0'+binary(intent['handoff_sha256'])+
+        binary(intent['target_manifest_sha256'])+slot+be(3)+be(0)+be(0))
+    assert digest=='985c7198beb0ce34a224e74288e0afb30f430e8a48e008e2e35df86ef6bbbdeb' and source['closure_digest']=='\\x'+digest
+    values=model.native_map(native)
+    assert (len(native['rows']),native['sequence'])==(93,139)
+    assert values['receipts',(b'\x01\x31'+slot+be(3)).hex()]==(b'\x02\x31'+bytes(24)+b'\x01').hex()
+    assert inputs=={'36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor':
+        dict(bytes=298,sha256='aa8343efd7d8c712b050819fd9d089f3d3bdfa4f7e778d44dfb93ecda62b5798')}
+    activation=only(pg['ingest_activations'],target_epoch=3)
+    claimed=only(pg['jobs'],request_key='\\x'+'a6'*16);unclaimed=only(pg['jobs'],request_key='\\x'+'a7'*16)
+    gap=only(pg['acquisition_gaps'],job_id=claimed['job_id'])
+    assert claimed['state']=='cancelled' and claimed['job_revision']==4 and claimed['reason_code']=='ingest_successor_abandoned'
+    assert gap['producer_epoch']==3 and gap['previous_job_revision']==2 and gap['reason']=='ingest_successor_abandoned'
+    assert tuple(gap[k] for k in ('previous_owner_resource','previous_owner_epoch','previous_owner_incarnation'))==tuple(
+        activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    assert gap['source_closure_digest']=='\\x'+digest and gap['last_complete_sequence']==0
+    assert unclaimed['state']=='accepted' and unclaimed['job_revision']==1
+    assert all(unclaimed[k] is None for k in ('owner_resource_id','owner_epoch','owner_incarnation'))
+    return dict(head=3,issued=0,cut=0,digest=digest)
+
+
+def later_retirement_specification(case):
+    assert case['clone']=='retirement' and case['origin']=='claims-terminal' and case['operation']=='retire'
+    assert case['name'] in LaterRetirementProfile.CASES
+    step=case['name'].removeprefix('retirement-')
+    assert case['predecessor']==('retirement-retire' if step=='retry' else None)
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return step
+
+
+def later_retirement_closed(response,case):
+    later_retirement_specification(case)
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==0
+    t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True);number(t['start_ticks'],1,integer=True);number(t['elapsed_seconds'],0,60)
+    assert t['command']==argv('retire',Path(case['config'])) and t['config']==case['config'] and t['prefix']=='/lab/'+case['name']
+    assert type(t['exit_code']) is int and t['exit_code']==0 and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    assert response['stderr']=='';report,=[loads(line) for line in response['stdout'].splitlines()]
+    assert report['native']=='closed' and report['owner_release']=='committed' and report['ready'] is False
+    return report
+
+
+def verify_later_retirement(context,seed,expected):
+    assert set(context)==CONTEXT_FIELDS
+    case=context['case'];step=later_retirement_specification(case)
+    assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert set(context['after'])==set(expected[0])==set(seed[0]) and len(seed[0])==77
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[]
+    assert context['fixture']==dict(cleanup_errors=[])
+    w=context['server_window'];assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    assert context['native_after']==expected[1]==seed[1] and context['inputs_after']==expected[2]==seed[2]
+    assert set(context['input_contents'])==set(seed[2])
+    for name,value in context['input_contents'].items():
+        data=bytes.fromhex(value);assert seed[2][name]==dict(bytes=len(data),sha256=sha(data))
+    backend_checked(context['backend'],case['database'],context['before'],context['after'])
+    report=later_retirement_closed(context['response'],case);known=later_retirement_basis(seed)
+    if step=='retire':same(expected[0],seed[0])
+    else:assert only(expected[0]['producer_epochs'],producer_epoch=3)['state']=='retired'
+    m=model.Model(*expected,w);m.completed_control(context['after'])
+    assert m.control['epoch']==(14 if step=='retire' else 15)
+    max_xid=max(int(r['xmin']) for rows in expected[0].values() for r in rows)
+    assert max_xid<int(m.control['xmin'])
+    m.mutation(context['after'],'retire',known,retirement_claim_key='a6'*16)
+    terminal=only(m.pg['producer_epochs'],producer_epoch=3)
+    if step=='retire':assert max_xid<int(terminal['xmin'])<int(m.control['xmin'])
+    assert sum(map(len,m.pg.values()))==(234 if step=='retire' else 236)
+    assert m.native==context['native_after'] and m.inputs==context['inputs_after']
+    wanted=dict(format='bigbrotr-ingest-recovery/1',state='successor-retired',dataset_id=m.ds['dataset_id'][2:],
+        owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='3',issued_through='0',reserved_through='0',
+        resolved_requests='0',verified_through='3',source_closure=dict(last_complete_sequence='0',sha256=known['digest']),
+        native='closed',owner_release='committed',ready=False,recovery_basis='closed-producer-floor-v3',compacted_requests='7',
+        ingest_retirement=dict(allocation_domains='9',acquisition_gaps='1',owner_release='committed',native_acknowledged='0',native_retired='0'))
+    assert report==wanted
+    return dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=93,native_sequence=139,
+        input_files=1,producer_epoch=3,target_requests=0,target_checkpoint=0,target_acknowledged=0,source_cut=0,source_digest=known['digest'],
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=1,native_writes=0,
+        lifecycle_updates=12 if step=='retire' else 0,terminal_receipts_inserted=int(step=='retire'),retained_gaps=1)
+
+
+def later_retirement_controls(context,seed,expected):
+    verify_later_retirement(context,seed,expected);step=later_retirement_specification(context['case']);rejected=[]
+    def reject(name,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_retirement(c,seed,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,OverflowError):rejected.append(name);return
+        raise AssertionError('retirement control accepted: '+name)
+    def reported(c,key,value):
+        report=loads(c['response']['stdout']);report[key]=value;c['response']['stdout']=model.encoded(report).decode()+'\n'
+    def producer(c):return only(c['after']['producer_epochs'],producer_epoch=3)
+    def receipt(c):return only(c['after']['ingest_terminal_transactions'],target_epoch=3)
+    def terminal_xmin(c,value):
+        for table in ('producer_epochs','allocation_domains'):
+            for row in c['after'][table]:
+                if row.get('producer_epoch',row.get('owner_epoch'))==3:row['xmin']=str(value)
+        owner=only(c['after']['owner_epochs'],role='ingest',epoch=3);owner['xmin']=str(value)
+        only(c['after']['role_instances'],role_instance_id=owner['role_instance_id'])['xmin']=str(value)
+        receipt(c).update(xmin=str(value),terminal_transaction=str(value))
+    reject('unknown-custody',lambda c:c['case'].update(custody='OUTCOME_UNKNOWN'))
+    reject('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('forced-process',lambda c:c['response']['terminal'].update(forced=True))
+    reject('backend-present',lambda c:c['backend'].update(all=[dict(pid=1)]))
+    reject('cleanup-error',lambda c:c['fixture']['cleanup_errors'].append('unjoined'))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'\nALTER ROLE unrelated;'))
+    reject('native-write',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('missing-required-input',lambda c:c['inputs_after'].clear())
+    reject('input-bytes-changed',lambda c:c['input_contents'].update({next(iter(c['input_contents'])):'00'}))
+    reject('false-compacted-count',lambda c:reported(c,'compacted_requests','0'))
+    reject('false-target-count',lambda c:reported(c,'resolved_requests','7'))
+    reject('false-retirement-report',lambda c:reported(c,'ingest_retirement',dict(allocation_domains='9',acquisition_gaps='0',owner_release='committed',native_acknowledged='0',native_retired='1')))
+    reject('missing-terminal-receipt',lambda c:c['after']['ingest_terminal_transactions'].remove(receipt(c)))
+    reject('wrong-terminal-issuer',lambda c:receipt(c).update(control_epoch=13))
+    reject('source-time-rewritten',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=producer(c)['retired_at_us']))
+    reject('gap-attribution-rewritten',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=3).update(previous_owner_epoch=14))
+    reject('unclaimed-job-rewritten',lambda c:only(c['after']['jobs'],request_key='\\x'+'a7'*16).update(job_revision=2))
+    reject('partial-domain-retirement',lambda c:only(c['after']['allocation_domains'],owner_epoch=3,dictionary_kind=1).update(state='active'))
+    reject('initial-head-rewritten',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(complete_through_request=6))
+    if step=='retire':
+        used={int(r['xmin']) for rows in expected[0].values() for r in rows};old=next(v for v in range(max(used)-1,0,-1) if v not in used)
+        reject('coordinated-older-unused-terminal-xmin',lambda c:terminal_xmin(c,old))
+        reject('coordinated-terminal-after-Control',lambda c:terminal_xmin(c,int(only(c['after']['owner_epochs'],role='control',epoch=14)['xmin'])+1))
+        def early(c):
+            at=only(expected[0]['source_streams'],owner_epoch=3)['closed_at_us']-1
+            producer(c)['retired_at_us']=at
+            owner=only(c['after']['owner_epochs'],role='ingest',epoch=3);owner['released_at_us']=at
+            only(c['after']['role_instances'],role_instance_id=owner['role_instance_id'])['retired_at_us']=at
+            for row in c['after']['allocation_domains']:
+                if row['owner_epoch']==3:row['closed_at_us']=at
+        reject('coordinated-terminal-before-Source',early)
+    else:
+        reject('retry-terminal-xmin-rewritten',lambda c:terminal_xmin(c,int(only(c['after']['owner_epochs'],role='control',epoch=15)['xmin'])-1))
+        reject('retry-issuer-adopted',lambda c:receipt(c).update(control_epoch=15))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
