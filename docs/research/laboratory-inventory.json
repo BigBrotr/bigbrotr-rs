@@ -63791,7 +63791,7 @@
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-empty-20261024",
           "branch": "work/compacted-later-empty",
           "base": "b57116901324111742f04faa175e4386647cac2d",
-          "state": "PAUSED_CLEAN_SOURCE_BUILD_PASS; not integrated into main; installed/runtime NOT_RUN",
+          "state": "QUALIFIED_CLEAN_PRODUCT2bdf; integration pending, later empty runtime scoped",
           "scope": "Explicit compacted later preparation/gap and existing --retire-empty-successor four-state recovery; source/probe/component controls only, no new CLI/SQLformat/migration, activation/live/Archive remain gated",
           "owner": "/root/compacted_reader_fixture; reused verified Astra/xhigh",
           "source": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
@@ -63830,12 +63830,12 @@
           "branch": "work/compacted-later-empty-fixture",
           "base": "3b30393fc6619bf4dd08aef314cb55793911922a",
           "owner": "/root/empty_malformed_floor; reused verified Astra/xhigh",
-          "state": "PAUSED_CLEAN_WIP; not integrated into main; final diagnostics/review/runtime NOT_RUN",
+          "state": "QUALIFIED_CLEAN; integration pending, source28cd/2bdf runtime scoped",
           "scope": "Four isolated copies/eight stages: real preparation+installed empty+exact retry; captured PreparedOpen; observed preparation COMMIT-response loss+fresh installed gap/empty; late SQL failure after native close+fresh Closing completion. Independent whole-state/native/input/custody expectations and negative checker controls. Existing harness/client only; actual product revision pending freeze.",
-          "source": "d8ceb01354d781acf682472c5f1ed5cd74fa414d",
-          "tree": "de96e05ed6d44151416c9e6afacf2c259d20fa7f",
+          "source": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
+          "tree": "71d1abcb04e038eeb4f8cbcd083fea88d72c1ee9",
           "merged_product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
-          "current_product_pin": "c1b834e3c3f0f74ddf5eef95b5f1ebf84e058e66",
+          "current_product_pin": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
           "remote": "origin/work/compacted-later-empty-fixture atd8ceb013; push47771 joined0",
           "source_receipt": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-empty-fixture-paused-source-v1.json",
@@ -63897,6 +63897,89 @@
           },
           "retained": "All .research/worktrees/datasets/database volumes/raw captures/artifacts and original failures, including fb4/c1 builds and v1/v3/v4 diagnostic failures. No cleanup; unrelated workloads untouched.",
           "remote_save": "Both work branches pushed successfully by driver47771 joined0; main receives only checkpoint/evidence/inventory documentation."
+        },
+        "later_empty_runtime": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-28cd644",
+          "source": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
+          "tree": "71d1abcb04e038eeb4f8cbcd083fea88d72c1ee9",
+          "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "driver_session": 43206,
+          "status": "PASS_INSTALLED_AND_RAW_STOPPED_RETAINED",
+          "free_bytes_before": 250881310720,
+          "driver_exit": 0,
+          "raw_driver_session": 53590,
+          "raw_driver_exit": 0,
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-28cd644/verified-run.json",
+            "sha256": "f6d9cdb29040d5780708bf5aad70923057b02722a1d89c2493e2a27126360d13"
+          },
+          "free_bytes_after": 250666803200,
+          "resources": "Actualclient437b85de exited143/PG71775507 exited0/PID0/noOOM; owner439b2efdb6a978b748e083771e3d6f3e; originals2x5true; cleanup/unrelated/missing/unexpected[]"
+        },
+        "later_empty_runtime_attempts": [
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-c843710",
+            "source": "c843710c7effe2841d6912e83ce29cd80ccc7262",
+            "tree": "2f295fd33ea4fed9728521f0b3c1d655c96083b9",
+            "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+            "status": "FAIL_QUALIFICATION_PREFLIGHT_NESTED_SELECTOR_MISMATCH",
+            "free_bytes_before": 251260919808,
+            "preflight": "root-preflight.json; existing transition.run owns actual engine/origin/isolation preflight and teardown",
+            "driver_session": 81311,
+            "driver_exit": 1,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-c843710/verified-failure.json",
+              "sha256": "ab7e43048e0e0a05f52ab4191a762bc0d6498089c7048440b66e4425ac9acdc4"
+            },
+            "resources": "No runtime output directory, engine or clone created. Actual borrowedPG exited0/PID0/noOOM; no BigBrotr container running."
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-887c9f6",
+            "source": "887c9f6d3d8f95b421dbbb78a82187697f0d74d7",
+            "tree": "990353d1b029f30df788b44a9f73ef44cea91455",
+            "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+            "driver_session": 55083,
+            "status": "FAIL_HELD_BASELINE_ASSERTION_UNKNOWN_PROCESS_OUTCOME",
+            "free_bytes_before": 251064107008,
+            "driver_exit": 1,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-887c9f6/verified-failure.json",
+              "sha256": "c537951b48d8d006e8cbf61b63382009bb99c340a791aee58ba04942a6ef9e98"
+            },
+            "resources": "Actualclient548a1864 exited143 andPG71775507 exited0/PID0/noOOM; original2x5 preservation true; unknown case native-after NOT_RUN"
+          },
+          {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-f645f2a",
+            "source": "f645f2a681be479b56e33e446811cae157637e3e",
+            "tree": "025ce273c947eadd02708761254449e9725c4161",
+            "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+            "driver_session": 40435,
+            "status": "FAIL_WIRE_CHECKER_PROXY_VERSION_MISMATCH",
+            "free_bytes_before": 250973278208,
+            "driver_exit": 1,
+            "receipt": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-f645f2a/verified-failure.json",
+              "sha256": "f8c6f92f6b36602571369f9fca6bc19f8db6945b4758328b2838037633c5dc04"
+            },
+            "resources": "Actualclient151ce42d exited143, PG71775507 exited0/PID0/noOOM; originals2x5true, cleanup_errors[]; actual normal+4 captured, fullqualificationFAIL"
+          }
+        ],
+        "later_live_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-live-20261025",
+          "branch": "work/compacted-later-live",
+          "base": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
+          "owner": "/root/compacted_reader_fixture; reused Astra/xhigh",
+          "state": "SOURCE_IMPLEMENTATION_ASSIGNED; observed clean28cd; no engine/build",
+          "scope": "Explicit compacted continuous activation and same live frontier/admission/read/progress/ACK/renewal. Private shared native/canonical view and retained check/grant. Fresh activated3 recovery and Archive remain separate explicit gates.",
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-activation-frontier-audit-20261025.json",
+            "sha256": "6f8c34bf1ca320ae8bf2e10bd6abdb6f3b3b2e0c206b5800c65c1877a085e928"
+          }
+        },
+        "later_remaining_fixture_audit": {
+          "owner": "/root/empty_malformed_floor; reused Astra/xhigh",
+          "state": "READ_ONLY_SOURCE_AUDIT_ACTIVE",
+          "scope": "Remaining later original-input/proof-use qualification using existing runner/origins; no edits or engine activity."
         }
       }
     }

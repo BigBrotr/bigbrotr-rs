@@ -1131,6 +1131,26 @@ claim guard before refresh or native close. The first fixture failure remains
 recorded separately. Import execution, remaining proof-use/physical uncertainty
 and original-input delivery remain separate qualification gates.
 
+Later compacted preparation, SQL/native gap completion and the existing
+`ingest recover --retire-empty-successor --file ROOT` have bounded qualification
+at product `2bdf513c` with fixture `28cd644d`. A separately retained compacted
+check authenticates the initial floor and canonical PostgreSQL history while
+later ancestors still require their original inputs. Preparation keeps the
+existing four-write handoff; recovery of a committed intent never creates a
+writer. An unactivated empty target can close once, finish retirement from an
+existing native CLOSING state, or verify an unchanged terminal retry. Compacted
+ancestor requests remain separate from original predecessor and target counts.
+
+The four-copy/eight-stage profile and exact-source raw replay cover a measured
+preparation COMMIT response loss, fresh gap completion, installed OPEN retirement,
+a real SQL rejection after native close, fresh CLOSING completion and exact retry.
+Complete SQL rows, terminal timestamps/xmins, native bytes and input maps are
+checked. Prepared OPEN/CLOSING cases retain only the required later original;
+preparation itself retained the optional initial originals. Preparation with
+those absent, actual missing-required-original refusal, H/D use-time faults,
+remaining delivery/cancellation/native uncertainty and original-basis regression
+remain separate gates. Later activation/live and Archive consumers remain gated.
+
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that
 witness without weakening their guarantees. Fresh-process replay, exact retry,

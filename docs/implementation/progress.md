@@ -1,92 +1,80 @@
 # Current execution checkpoint
 
-Observed 2026-10-24 on Tux. Execution stopped at the owner's explicit pause
-request; resume only on explicit instruction. M1–M5 remain incomplete.
-Root will set the actual goal control to **PAUSED** after saving/pushing this
-checkpoint; documentation alone is not confirmation of that control state.
-Q37/Q38 apply. No new implementation, build or runtime campaign during shutdown.
+Observed 2026-10-25 on Tux. Goal **ACTIVE** after explicit owner resume.
+M1–M5 remain incomplete; Q37/Q38 apply. Root owns integration/runtime.
 
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Integrated main/pushed parent is `3b30393fc6619bf4dd08aef314cb55793911922a`
-(driver65869 joined0), containing the reviewed original-preparer/malformed fixture
-integration. This checkpoint's containing commit changes only progress, evidence
-and inventory. No merge/rebase is pending; later product/fixture work remains
-separate from main until its outstanding qualification is complete.
-
-Both clean work branches were pushed (driver47771 joined0):
-
-- `work/compacted-later-empty`: `2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f`,
-  `.research/compacted-later-empty-20261024`. Reviewed product plus finite-probe
-  corrections; build/components qualified, installed runtime NOT_RUN.
-- `work/compacted-later-empty-fixture`: `d8ceb01354d781acf682472c5f1ed5cd74fa414d`,
-  `.research/compacted-later-empty-fixture-20261024`. Explicit WIP commit preserves
-  six Python files; product2bdf is already merged via4643302b. The sole product pin
-  still names c1b834e3: align it before any execution; the exact reuse guard is
-  unchanged. Final review and runtime are pending.
+Observed main/pushed `8de6972dcf04d899a7ab24ca5e6ee73b184bf4c1`; current main
+changes record the newly qualified later consumer, its contract and resource state.
+No merge/rebase pending. Next integration source is
+`28cd644df26b29ab2c5a05d61a4ac5a5faad2c32` on `work/compacted-later-empty-fixture`,
+which contains exact qualified product `2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f`.
+Both old worktrees remain preserved under `.research/compacted-later-empty*-20261024`.
+Remote fixture branch still names saved WIPd8ceb013 until this integration is pushed.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), under
 `initial_successor_preparation_20261012.repeatable_succession_20261015.
 producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.
 compacted_successor_preparation.later_empty_consumer_work`, owns exact source,
-review, diagnostic/build receipts and original failures. The
-[inventory](../research/laboratory-inventory.json) owns resource/worktree records.
+review, diagnostics, qualifications and failures. The
+[inventory](../research/laboratory-inventory.json) owns resources/worktrees.
 
-## Verified result and partial work
+## Verified result
 
-Existing build1741 completed and joined0 before shutdown. Exact product2bdf/tree
-32d76869 passed CLI/probe compilation,196 component tests/87 mandatory controls
-and all11 checks including Clippy. Root reconciled clean source, result identities,
-retained ELF hashes and actual container exits; receipt:
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-floor-2bdf513/verified-build.json`.
-Earlier fb4 probe compilation FAIL and c1 ClippyFAIL remain preserved, including
-c1's valid component result. Connected later four-state installed qualification
-and its raw replay are **NOT_RUN**, not implied by component PASS.
+Exact product2bdf build1741 joined0: CLI/probe,196 component tests/87 mandatory
+controls and all11 checks including Clippy PASS; retained ELFs unchanged at resume.
+Fixture28cd installed43206 and raw53590 both joined0: four copies/eight stages
+(two probes/six installed commands),121 case controls and5935 raw file bindings.
+Run and root receipt:
+`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-empty-28cd644/verified-run.json`.
+Critical source/correction/outcome reviews found no unresolved scoped blocker.
 
-All three subagents stopped after preserving their work:
+The measured preparation COMMIT6 baseline completes native+4 before it supplies
+the loss selector. Lost reply leaves SQL prepared/native old, then fresh recovery
+performs+4 handoff/+1 close. OPEN retirement adds one close; genuine late SQL
+failure leaves native CLOSING, then fresh completion adds no native write. Exact
+terminal retry preserves target SQL metadata/xmins and native bytes. Complete77
+SQL tables and input maps checked; both origins retain all five preservation facts.
 
-- `/root/empty_malformed_floor`: WIP fixture commit above and paused-source receipt.
-  Author synthetic diagnostics v2/v5/v6/v7 PASS (120 altered-evidence refusals);
-  v1/v3/v4 FAIL preserved. Latest strict absence tuple/seconds and late-trigger-hit
-  checks were saved but not rerun. Final AST, final review, raw replay and product
-  runtime NOT_RUN. Six source hashes and all25 diagnostic artifact identities
-  were checked during save; synthetic evidence is not product qualification.
-- `/root/compacted_reader_review`: partial critical review saved; row-order and
-  planned-frame wait corrections confirmed. Final oracle delta, product pin and
-  immutable-source reconciliation remain pending.
-- `/root/compacted_reader_fixture`: partial advisory on later activation/live-frontier
-  saved, with read boundaries and unresolved check custody/recovery questions.
-  It is not completed architecture approval or implemented functionality.
+Three earlier fixture attempts remain FAIL: c843 nested qualification mismatch
+before engines;887 timestamp comparison caused unreleased/UNKNOWN native-after;
+f645 proxy-version checker failed after captured native+4/closed custody. All
+captures, fixes, synthetic diagnostic limits and original failures remain linked.
+Earlier fb4 compilation/c1 Clippy failures, preparer83 unknown outcome and original
+Sync timeout are unchanged. Existing valid preparer16/malformed2b results are reused.
 
-Their immutable receipts are linked from the report and retained under
-`.research/producer-checkpoint-ack-review-20261020/`. Previously qualified preparer16,
-malformed2b and merged-capture diagnostics remain valid for their recorded sources;
-no new merged-source runtime claim. Original83f1de3 unknown native-after remains.
+## Work and resources
 
-## Resources and exact next step
+No root build/installed/raw runner active. Actual client437b85de exited143 and
+borrowedPG71775507 exited0, both PID0/noOOM, with owner labels checked. No cleanup
+errors, unrelated changes, missing resources or unexpected containers. All
+.research, worktrees, databases, raw captures, ELFs and failures preserved.
+Measured free space after the run:250666803200 bytes; check before allocation.
 
-No build, installed/raw runner or agent-owned laboratory activity remains active.
-Build fetchbadec7d2/nativee3a524ee exited0; borrowed PG71775507 exited0 and prior
-preparer client605d1360 exited143, all freshly observed PID0/noOOM. No running
-BigBrotr container was present at shutdown; unrelated workloads were untouched.
-No cleanup occurred. All .research, worktrees, databases, raw captures, retained
-ELFs, diagnostics and original failures remain available. Build's measured free
-space after completion:251705139200 bytes; recheck before significant allocation.
+`/root/compacted_reader_fixture` implements the next continuous activation/live
+frontier responsibility in `.research/compacted-later-live-20261025`, branch
+`work/compacted-later-live`, base28cd644d (clean when allocated). Existing installed
+entrypoint; shared compacted native/canonical checks and retained grants must span
+admission/read/progress/ACK/renewal. No engine/build, new format or Archive scope.
+`/root/empty_malformed_floor` performs a read-only audit of remaining original-input
+and proof-use cases against2bdf; no new fixture implementation/engine authorized
+by that audit. `/root/compacted_reader_review` completed the scoped runtime review.
+All reuse verified Astra/xhigh continuity; root remains sole runtime/integration owner.
 
-After explicit resume: reconcile these clean worktrees and saved receipts, then
-align the fixture's sole product pin with already merged/qualified2bdf. Finish
-only the affected final-delta diagnostics and critical review, preserving earlier
-captures. Freeze the fixture before root runs the four-clone/eight-stage installed
-qualification and same-source raw replay with the retained2bdf artifacts. Verify
-actual ownership/isolation and space before allocating clones. Do not repeat the
-unchanged qualified build without a changed premise or anomaly.
+## Next action and open gates
 
-## Open gates
+Commit the coherent qualification record, integrate exact28cd source into main,
+reconcile merged product/fixture identities without rerunning unchanged engines,
+push and retire only redundant old refs after actual ancestry/cleanliness checks.
+Preserve their worktrees and ignored/external evidence. Then reconcile the new
+source implementation and remaining-fixture audit under the same task plan.
 
-Current later installed qualification, remaining proof-use/uncertainty,
-original-input delivery, activation/live/Archive consumers, physical64-file/32MiB
-bounds, physical loss/mixed restore, backup/capacity and remaining M1–M5 stay open
-before floor writer/unlink or product completion. Original a99 Sync timeout cause
-is still unknown. Q33 CI billing, arm64 and signing/registry are separate gates.
+Preparation without optional initial files, actual missing required later input,
+H/D use-time drift, remaining delivery/cancellation/native uncertainty and ordinary
+basis regression remain open. Later activation/live and Archive, physical64-file/
+32MiB bounds, loss/mixed restore, backup/capacity and M1–M5 remain incomplete.
+No product floor writer/unlink qualified. Original a99 Sync timeout cause remains
+unknown. Q33 CI billing, arm64 and signing/registry remain separate gates.
