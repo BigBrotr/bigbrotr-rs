@@ -64890,8 +64890,22 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-custody-supplement-20261025.json",
             "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
           },
-          "owners": "empty_malformed_floor source; compacted_reader_review critical on stable delta; compacted_reader_fixture read-only installed first-publication/retry fixture audit; root sole formatting/build/runtime/integration owner",
+          "owners": "empty_malformed_floor source; compacted_reader_review critical; compacted_reader_fixture independent fixture; root runtime/integration",
           "resources": "Only source worktree allocated; no Archive build/engine/catalog/database yet. Existing retirement origin4d9 preserved; real virgin initialization must be verified."
+        },
+        "later_archive_fixture_work": {
+          "status": "DESIGN_READ; SOURCE_IMPLEMENTATION_AUTHORIZED; BUILD_RUNTIME_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
+          "branch": "work/compacted-later-archive-fixture",
+          "base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-audit-v1.json",
+            "sha256": "6bf32a9efae58b21ffc7c1e36c0c1bf851841929ade9ddf2c34c7701fd704fc0"
+          },
+          "owner": "compacted_reader_fixture; root sole runtime/integration",
+          "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
+          "prerequisites": "Exact final Archive product components plus separate same-source archive-installed worker+embedded CLI qualification; complete pinned virgin mapping/stat source read. No arbitrary historical worker; final product pins pending.",
+          "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained."
         }
       }
     }

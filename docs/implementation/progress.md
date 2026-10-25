@@ -6,11 +6,11 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `8d430debd5a0ece4e4db4dc280e92a89eecb0e01` is pushed (67901 joined0),
+Main `112824ff10c14046fbc42c83e6fe9bd0d7c2695b` is pushed (24851 joined0),
 integrating qualified import fixture
 `4dc280a6f38200e33eb15d5dd79d5edb86b7d727` (tree4b64f933), four Python files.
-This follow-up records that push and preserved ref retirement; no merge/rebase
-pending. Product/native runner remain exact
+Integration8d430deb and ref retirement4afbae64 are retained. This follow-up
+records the separate Archive fixture owner; no merge/rebase pending. Product/native runner remain exact
 `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
 Targeted integration receipt3d0eebfc binds unchanged product and exact fixture.
 
@@ -65,9 +65,16 @@ Freeafter185,074,425,856bytes. No artifact, cache, worktree or container deleted
   Existing frontier owner reserves Check before connection; borrowed loader/bind
   must preserve it on failure, then native-first teardown transfers it to the
   supervised driver. Wrong-phase access refuses rather than inferring absence.
-- `compacted_reader_review`: critical review when Archive delta becomes stable.
-  `compacted_reader_fixture`: read-only actual Archive initialization and independent
-  first-publication/retry model audit. No new Archive runtime resources allocated.
+- `compacted_reader_review`: critical Archive source review in progress. Keeper
+  identity and final catalog-deadline ordering findings are being reconciled;
+  components/build/runtime remain NOT_RUN, including actual SQL cancellation.
+- `compacted_reader_fixture`: audit6bf32a9e fully read; fixture implementation
+  authorized in `.research/compacted-later-archive-fixture-20261025`, branch
+  `work/compacted-later-archive-fixture`, base112824ff. Expected5mutating commands,
+  SQL236->240->267->269,8batches/families12,4,4,4,4/frontier1/snapshot9.
+  Virgin mappings/stats need pinned source-derived expectations. Actual runtime
+  requires same-source Archive components plus archive-installed worker/CLI
+  identity, not a worker attached to the old06 CLI. No runtime resources allocated.
 
 ## Next action
 

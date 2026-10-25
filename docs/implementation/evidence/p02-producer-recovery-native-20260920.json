@@ -46858,7 +46858,7 @@
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
                       },
-                      "owners": "empty_malformed_floor source; compacted_reader_review critical on stable delta; compacted_reader_fixture read-only installed first-publication/retry fixture audit; root sole formatting/build/runtime/integration owner",
+                      "owners": "empty_malformed_floor source; compacted_reader_review critical; compacted_reader_fixture fixture source; root sole formatting/build/runtime/integration owner",
                       "scope": "Explicit compacted pending/frontier/issuance ownership using existing Check and kernels. Initial retirement origin has8batches/28facts/cuts27,1,0 and no Archive tables; real initialization required. Publication-before-succession/read/export is a separate outstanding journey.",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-20261025",
                       "branch": "work/compacted-later-archive",
@@ -46871,7 +46871,21 @@
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-custody-supplement-20261025.json",
                         "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
                       },
-                      "custody": "Existing frontier owner Reserved/Loaded/Bound retains same Check before connection, across fallible borrowed loader/bind; native-first transfer to existing supervised driver. Wrong phase refuses, not virgin absence. Actual implementation review remains pending."
+                      "custody": "Existing frontier owner Reserved/Loaded/Bound retains same Check before connection, across fallible borrowed loader/bind; native-first transfer to existing supervised driver. Wrong phase refuses, not virgin absence. Actual implementation review remains pending.",
+                      "fixture_work": {
+                        "status": "DESIGN_READ; SOURCE_IMPLEMENTATION_AUTHORIZED; BUILD_RUNTIME_NOT_RUN",
+                        "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
+                        "branch": "work/compacted-later-archive-fixture",
+                        "base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
+                        "audit": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-fixture-audit-v1.json",
+                          "sha256": "6bf32a9efae58b21ffc7c1e36c0c1bf851841929ade9ddf2c34c7701fd704fc0"
+                        },
+                        "owner": "compacted_reader_fixture; root sole runtime/integration",
+                        "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
+                        "prerequisites": "Exact final Archive product components plus separate same-source archive-installed worker+embedded CLI qualification; complete pinned virgin mapping/stat source read. No arbitrary historical worker; final product pins pending.",
+                        "resources": "Only source worktree allocated. No new Archive engine/catalog/database/build yet; all prior resources retained."
+                      }
                     },
                     "next_import_work": {
                       "status": "PASS_INTEGRATED_PUSHED; CLEAN_DETACHED_SOURCE_PRESERVED",
