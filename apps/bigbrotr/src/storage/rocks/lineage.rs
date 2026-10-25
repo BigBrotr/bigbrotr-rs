@@ -46,7 +46,8 @@ mod recovery;
 #[cfg(test)]
 pub(super) use recovery::PendingSuccessorRequest;
 pub(in crate::storage) use recovery::{
-    NativeSuccessorRecovery, ResolvedSuccessorRecovery, SuccessorRecoveryResolution,
+    CompactedRecoveryPredecessor, NativeSuccessorRecovery, ResolvedSuccessorRecovery,
+    SuccessorRecoveryResolution,
 };
 
 #[path = "successor_retirement.rs"]

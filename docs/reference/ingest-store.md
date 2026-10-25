@@ -438,7 +438,8 @@ bigbrotr ingest recover --file ROOT --retire-successor
 ```
 
 These modes require migration0038, the existing application recovery grants,
-local Control/Ingest, the entire native store and every original input. Each
+local Control/Ingest and the entire native store. The ordinary basis requires
+every original input. Each
 opens the native store before protected connection setup and acquires fresh
 Control authority under current accepted policy. They select the retained
 activated head, without caller-supplied identities or a resumed writer.
@@ -446,6 +447,30 @@ activated head, without caller-supplied identities or a resumed writer.
 `--successor` closes that producer and resolves positive outcomes while its
 source remains open. It can copy missing current outcomes; historical copies
 must already be exact. It preserves unresolved reservations and staged inputs.
+Completion acknowledges only the current typed PostgreSQL checkpoint, which may
+be below the issued prefix; unresolved reservations or a retained staged tail
+prevent complete recovery and ACK.
+
+The explicit compacted positive branch accepts an initial closed-producer floor
+under a later activated head. It authenticates the initial checkpoint and canonical
+closure separately, then replays every required original from epochs2 through
+the current head. Initial originals may be absent; any retained residual must
+still authenticate. Required later originals cannot be replaced by those residuals.
+The complete mixed input census, native root/sequence, current Control authority
+and cancellation are rechecked through the final ACK, including an unchanged ACK
+watermark. The owned ACK token retains fixed per-epoch input bounds without a
+second lineage allocation. Selecting the actual retained basis only chooses the
+reservation envelope before Control acquisition; it grants no recovery authority
+and malformed compacted state never falls back to the ordinary reader.
+
+This new compacted positive path is source implementation awaiting component and
+installed qualification. It adds `recovery_basis = closed-producer-floor-v3` and
+`compacted_requests = N` to the existing successful report; `resolved_requests`
+still counts current-head original requests. It does not enable source closure,
+acquisition abandonment, retirement or Archive consumption on this basis. Those
+entrypoints retain their strict original-history readers. Fault/Sync, physical
+loss/restore and capacity qualification remain separate gates.
+
 `--close-successor-source` proves the complete ordered history and publishes the
 source cut and digest. A closed retry requires existing exact outcome copies.
 
@@ -459,8 +484,9 @@ Unresolved import obligations and unbound historical Events refuse retirement.
 
 Retry a mode only while its prerequisites remain valid: positive recovery is
 source-open-only, and terminal retirement has its own retry. No mode starts
-acquisition, resolves an unactivated preparation, acknowledges inputs or reclaims
-space. A successful `bigbrotr-ingest-recovery/1` report contains the actual epoch,
+acquisition, resolves an unactivated preparation or reclaims space. On the compacted
+basis, only this positive recovery path performs its final typed-checkpoint ACK. A successful
+`bigbrotr-ingest-recovery/1` report contains the actual epoch,
 request bounds and verified history; it is published after native closure,
 Control release and driver join. Preserve state after errors or unknown outcomes.
 Once retirement is complete, `serve --activate-successor` can prepare the next

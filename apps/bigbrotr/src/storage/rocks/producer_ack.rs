@@ -7,8 +7,9 @@ use crate::runtime::OwnedPermit;
 use crate::storage::postgres::control_owner::ConfirmedAcknowledgement;
 use crate::storage::rocks::keys::IngestKey;
 use crate::storage::rocks::{
-    manifest::IngestManifest, producer_floor::ClosedProducerFloor,
-    succession::LINEAGE_SCRATCH_BYTES,
+    manifest::IngestManifest,
+    producer_floor::ClosedProducerFloor,
+    succession::{LINEAGE_SCRATCH_BYTES, MAX_LINEAGE_EPOCHS},
 };
 use bigbrotr_model::{ProducerEpoch, ProducerSlotId};
 use sha2::{Digest, Sha256};
@@ -17,40 +18,93 @@ use std::sync::atomic::AtomicBool;
 struct CompactedRecoveryBasis {
     manifest: IngestManifest,
     floor: ClosedProducerFloor,
-    inputs: [u8; 32],
-    optional_through: u64,
 }
 
 #[derive(Clone, Copy)]
 struct CompactedInputStamp {
     slot: ProducerSlotId,
-    issued: u64,
     floor: u64,
-    optional_through: u64,
     inputs: [u8; 32],
+    ranges: CompactedInputRanges,
+}
+
+// Fixed per-epoch bounds fit the existing ACK scratch. No second lineage Vec
+// or uncharged allocation follows the borrowed recovery proof into final ACK.
+#[derive(Clone, Copy)]
+#[allow(
+    clippy::large_enum_variant,
+    reason = "fixed per-epoch bounds are charged to ACK scratch; no second lineage allocation"
+)]
+enum CompactedInputRanges {
+    Activated {
+        issued: u64,
+        optional_through: u64,
+    },
+    Later {
+        epochs: u8,
+        issued: [u8; MAX_LINEAGE_EPOCHS as usize],
+    },
 }
 impl CompactedInputStamp {
-    fn require(&self, store: &IngestStore, cancelled: &AtomicBool) -> Result<(), AdmissionError> {
+    fn input_set(&self) -> Result<super::request_inputs::LineageInputSet, BootstrapError> {
+        let required = match &self.ranges {
+            CompactedInputRanges::Activated { issued, .. } => *issued,
+            CompactedInputRanges::Later { epochs, issued } => {
+                if *epochs < 3
+                    || issued[0] != 0
+                    || issued[usize::from(*epochs)..].iter().any(|n| *n != 0)
+                {
+                    return Err(BootstrapError::StateMismatch);
+                }
+                issued[1..usize::from(*epochs)]
+                    .iter()
+                    .try_fold(0_u64, |total, n| {
+                        if u64::from(*n) > RETAINED_PRODUCER_REQUEST_LIMIT {
+                            return Err(BootstrapError::Limit);
+                        }
+                        total
+                            .checked_add(u64::from(*n))
+                            .ok_or(BootstrapError::Limit)
+                    })?
+            }
+        };
         let inputs = super::request_inputs::LineageInputSet::with_compacted_initial(
-            self.issued,
-            self.slot,
-            self.floor,
-        )?
-        .with_optional_inputs(
-            self.slot,
-            ProducerEpoch::new(2).expect("activated target"),
-            self.issued,
-            self.optional_through,
+            required, self.slot, self.floor,
         )?;
-        if store.lineage_input_census(
-            inputs,
-            |id| {
-                id.producer_slot_id == self.slot
-                    && id.producer_epoch.get() == 2
-                    && id.request_sequence.get() <= self.issued
-            },
-            cancelled,
-        )? != self.inputs
+        match self.ranges {
+            CompactedInputRanges::Activated {
+                issued,
+                optional_through,
+            } => inputs.with_optional_inputs(
+                self.slot,
+                ProducerEpoch::new(2).expect("activated target"),
+                issued,
+                optional_through,
+            ),
+            CompactedInputRanges::Later { .. } => Ok(inputs),
+        }
+    }
+    fn accepts(&self, id: bigbrotr_model::ProducerRequestId) -> bool {
+        if id.producer_slot_id != self.slot {
+            return false;
+        }
+        let epoch = id.producer_epoch.get();
+        match &self.ranges {
+            CompactedInputRanges::Activated { issued, .. } => {
+                epoch == 2 && id.request_sequence.get() <= *issued
+            }
+            CompactedInputRanges::Later { epochs, issued } => {
+                (2..=u64::from(*epochs)).contains(&epoch)
+                    && usize::try_from(epoch)
+                        .ok()
+                        .and_then(|epoch| issued.get(epoch - 1))
+                        .is_some_and(|issued| id.request_sequence.get() <= u64::from(*issued))
+            }
+        }
+    }
+    fn require(&self, store: &IngestStore, cancelled: &AtomicBool) -> Result<(), AdmissionError> {
+        if store.lineage_input_census(self.input_set()?, |id| self.accepts(id), cancelled)?
+            != self.inputs
         {
             return Err(AdmissionError::StateMismatch);
         }
@@ -261,15 +315,12 @@ impl RecoveryAcknowledgement {
             floor: *lineage
                 .compacted_floor()
                 .ok_or(BootstrapError::StateMismatch)?,
-            inputs: lineage.input_stamp(),
-            optional_through: lineage.activated_optional_through()?,
         });
         let AckStamp::Recovery { compacted, .. } = &mut result.stamp else {
             unreachable!("recovery constructor")
         };
         *compacted = Some(CompactedInputStamp {
             slot: result.slot,
-            issued: result.issued,
             floor: result
                 .compacted
                 .as_ref()
@@ -277,9 +328,69 @@ impl RecoveryAcknowledgement {
                 .floor
                 .fields()
                 .issued_through,
-            optional_through: lineage.activated_optional_through()?,
             inputs: lineage.input_stamp(),
+            ranges: CompactedInputRanges::Activated {
+                issued: result.issued,
+                optional_through: lineage.activated_optional_through()?,
+            },
         });
+        Ok(result)
+    }
+    pub(in crate::storage::rocks::store) fn from_compacted_successor_replay(
+        recovery: &IngestRecovery,
+        proof: &super::ResolvedSuccessorRecovery<'_>,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        let owner = proof.acknowledgement_owner(recovery, cancelled)?;
+        let lineage = owner.lineage();
+        let floor = *lineage
+            .compacted_floor()
+            .ok_or(BootstrapError::StateMismatch)?;
+        let epochs = u8::try_from(owner.head().manifest().identity().owner_epoch.get())
+            .map_err(|_| BootstrapError::Limit)?;
+        if epochs < 3
+            || lineage.entries().len() != usize::from(epochs)
+            || owner.staged_input().is_some()
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let mut issued = [0; MAX_LINEAGE_EPOCHS as usize];
+        for (index, entry) in lineage.entries().iter().enumerate().skip(1) {
+            issued[index] =
+                u8::try_from(entry.issued_through()).map_err(|_| BootstrapError::Limit)?;
+        }
+        let inputs = CompactedInputStamp {
+            slot: owner.producer_slot_id(),
+            floor: floor.fields().issued_through,
+            inputs: lineage.input_stamp(),
+            ranges: CompactedInputRanges::Later { epochs, issued },
+        };
+        if recovery.store.lineage_input_census(
+            inputs.input_set()?,
+            |id| inputs.accepts(id),
+            cancelled,
+        )? != inputs.inputs
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let mut result = Self::from_replay(
+            recovery,
+            *owner.head().manifest(),
+            owner.producer_slot_id(),
+            owner.issued_through(),
+        )?;
+        result.compacted = Some(CompactedRecoveryBasis {
+            manifest: *lineage
+                .entry(1)
+                .ok_or(BootstrapError::StateMismatch)?
+                .manifest(),
+            floor,
+        });
+        let AckStamp::Recovery { compacted, .. } = &mut result.stamp else {
+            unreachable!("recovery constructor")
+        };
+        *compacted = Some(inputs);
+        proof.validate(cancelled)?;
         Ok(result)
     }
     pub fn compacted_requests(&self) -> u64 {
@@ -386,22 +497,17 @@ impl<'a> CompactedAcknowledgementPredecessor<'a> {
         self.owner.slot
     }
     fn input_set(&self) -> Result<super::request_inputs::LineageInputSet, BootstrapError> {
-        super::request_inputs::LineageInputSet::with_compacted_initial(
-            self.owner.issued,
-            self.owner.slot,
-            self.floor().fields().issued_through,
-        )?
-        .with_optional_inputs(
-            self.owner.slot,
-            ProducerEpoch::new(2).expect("activated target"),
-            self.owner.issued,
-            self.basis().optional_through,
-        )
+        self.owner
+            .stamp
+            .compacted()
+            .ok_or(BootstrapError::StateMismatch)?
+            .input_set()
     }
     fn accepts(&self, id: bigbrotr_model::ProducerRequestId) -> bool {
-        id.producer_slot_id == self.owner.slot
-            && id.producer_epoch.get() == 2
-            && id.request_sequence.get() <= self.owner.issued
+        self.owner
+            .stamp
+            .compacted()
+            .is_some_and(|inputs| inputs.accepts(id))
     }
     pub fn validate(
         &self,
@@ -424,7 +530,12 @@ impl<'a> CompactedAcknowledgementPredecessor<'a> {
             |id| self.accepts(id),
             checked,
             cancelled,
-        )? != self.basis().inputs
+        )? != self
+            .owner
+            .stamp
+            .compacted()
+            .ok_or(AdmissionError::StateMismatch)?
+            .inputs
         {
             return Err(AdmissionError::StateMismatch);
         }

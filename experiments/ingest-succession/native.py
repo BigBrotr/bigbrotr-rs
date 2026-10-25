@@ -341,6 +341,7 @@ if producer_floor:
         ('successor_history', 'storage::postgres::control_owner::successor_history::tests::'),
         ('successor_transition', 'storage::postgres::control_owner::successor_transition::tests::'),
         ('successor_activation', 'storage::postgres::control_owner::successor_transition::activation::tests::'),
+        ('successor_recovery', 'storage::postgres::control_owner::successor_transition::recovery::tests::'),
         ('archive_retained_frontier', 'storage::postgres::control_owner::archive_retained_frontier::tests::'),
         ('initial_reconstruction', 'initial_reconstruction_tests'),
         ('request_inputs', 'request_input_tests'),
@@ -536,7 +537,9 @@ if producer_floor:
             'positive_summary_binds_kind_epoch_count_cut_and_digest',
             'compacted_initial_summary_is_separate_from_original_replay']]
     required_controls['compacted_progress'] = [
-        'storage::postgres::control_owner::producer_progress::recovery::tests::compacted_floor_requires_exact_retained_checkpoint']
+        'storage::postgres::control_owner::producer_progress::recovery::tests::' + name for name in [
+            'compacted_floor_requires_exact_retained_checkpoint',
+            'compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint']]
     required_controls['compacted_prefix'] = [
         'storage::rocks::store::admission_tests::compacted_prefix_tests::' + name for name in [
             'compacted_floor_codec_has_exact_bytes_and_legacy_refusal',
@@ -638,6 +641,14 @@ if producer_floor:
             'successor_activation_attempt_is_spent_before_any_result',
             'successor_binding_requires_full_target_manifest_and_actual_control',
             'successor_binding_keeps_dynamic_epoch_and_accepted_window']]
+    required_controls['successor_recovery'] = [
+        'storage::postgres::control_owner::successor_transition::recovery::tests::' + name for name in [
+            'activated_recovery_accepts_only_the_native_first_barrier_gap',
+            'reserved_suffix_is_bounded_but_never_a_complete_prefix',
+            'recovered_retained_count_is_separate_from_acknowledged_outstanding_window',
+            'compacted_recovery_requires_positive_purpose_and_matching_private_basis',
+            'tail_bytes_are_observation_until_an_exact_reservation_binds_them',
+            'close_attempt_is_spent_before_any_fallible_dispatch']]
     required_controls['initial_reconstruction'].extend(
         'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::' + name for name in [
             'compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry',
@@ -653,6 +664,16 @@ if producer_floor:
             'compacted_live_checkpoint_ack_preserves_inputs_and_poisons_failed_final_authority',
             'compacted_live_reads_and_event_replay_keep_complete_science_but_not_fresh_adoption',
             'compacted_live_ack_refuses_sidecar_drift_without_using_checkpoint_stamp_as_census'])
+    required_controls['initial_reconstruction'].extend(
+        'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::compacted_successor_recovery_tests::' + name for name in [
+            'compacted_successor_recovery_closes_once_and_retries_without_replaying_floor_originals',
+            'compacted_successor_recovery_requires_each_later_original_even_with_all_residuals',
+            'compacted_successor_recovery_proof_binds_owner_cancel_grant_and_refuses_other_capabilities',
+            'compacted_successor_recovery_authenticates_residuals_and_rejects_changed_canonical_digest',
+            'compacted_successor_recovery_budget_selector_keeps_ordinary_and_malformed_distinct',
+            'compacted_successor_recovery_stale_sequence_and_failed_final_close_poison_owner',
+            'compacted_successor_recovery_tail_is_stamped_but_cannot_complete_or_acknowledge',
+            'compacted_successor_recovery_equal_ack_rechecks_inputs_grant_and_final_authority'])
 missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     for name, required in required_controls.items()
                     if not set(required) <= set(test_names.get(name, []))}

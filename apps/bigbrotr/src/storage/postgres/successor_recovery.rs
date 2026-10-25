@@ -1,5 +1,6 @@
 //! Activated-family positive recovery under a replacement Control. The native
 //! handle stays with the caller; this owner never adopts a recorded incarnation.
+use super::compacted as successor_compaction;
 use super::*;
 use crate::storage::{
     postgres::{producer_outcomes, producer_requests},
@@ -82,6 +83,7 @@ pub struct ActivatedSuccessorRecovery {
     control: ingest_registry::ControlOwner,
     state: ClosingState,
     purpose: Purpose,
+    compacted: Option<successor_compaction::Check>,
 }
 
 /// Ordered whole-history replay. Only this connected owner can accept a native
@@ -147,6 +149,9 @@ impl ActivatedSuccessorRecovery {
                 reserved: tail.request.request_sequence.get() <= self.head.reserved,
             })
     }
+    pub fn compacted_requests(&self) -> u64 {
+        self.native.compacted_requests()
+    }
     pub fn resolution<'a>(
         &'a self,
         recovery: &'a IngestRecovery,
@@ -165,6 +170,9 @@ impl ActivatedSuccessorRecovery {
     }
 }
 impl ActivatedSuccessorResolution<'_> {
+    pub fn needs_compacted_initial(&self) -> bool {
+        self.native.needs_compacted_initial()
+    }
     pub fn current_epoch(&self) -> Option<u64> {
         self.native.current_epoch()
     }
@@ -217,11 +225,44 @@ impl ControlSession {
             metadata_permit,
             input_permit,
             Purpose::Positive,
+            None,
             validate,
         )
         .await
     }
 
+    /// Require the retained compacted basis for positive recovery only. Ordinary
+    /// state is refused; original and source/retirement factories stay strict.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "distinct native metadata, original input and retained canonical effect grants"
+    )]
+    pub async fn inspect_activated_successor_producer_with_compacted(
+        &mut self,
+        recovery: &IngestRecovery,
+        input: SuccessorReplayRequest<'_>,
+        metadata_permit: OwnedPermit,
+        input_permit: OwnedPermit,
+        effects: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<ActivatedSuccessorRecovery, ProducerResolveError> {
+        let check = successor_compaction::Check::new(input.limits.event, effects)?;
+        self.inspect_successor_recovery(
+            recovery,
+            input,
+            metadata_permit,
+            input_permit,
+            Purpose::Positive,
+            Some(check),
+            validate,
+        )
+        .await
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "private purpose and optional retained compacted proof-use grant"
+    )]
     async fn inspect_successor_recovery(
         &mut self,
         recovery: &IngestRecovery,
@@ -229,8 +270,12 @@ impl ControlSession {
         metadata_permit: OwnedPermit,
         input_permit: OwnedPermit,
         purpose: Purpose,
+        compacted: Option<successor_compaction::Check>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedSuccessorRecovery, ProducerResolveError> {
+        if compacted.is_some() && purpose != Purpose::Positive {
+            return Err(OwnerError::InvalidInput.into());
+        }
         let current = self.identity;
         let operation = history_request(&input);
         let (tx, mut lease, policy) = self
@@ -243,8 +288,21 @@ impl ControlSession {
         projection::require_context(&tx, &intent, current, purpose).await?;
         let activation = projection::activation(&tx, &intent).await?;
         let head = history_rows::read_epoch(&tx, recovery, epoch).await?;
-        let native = NativeSuccessorRecovery::inspect(recovery, metadata_permit, input.cancelled)
-            .map_err(native_error)?;
+        let native = if compacted.is_some() {
+            NativeSuccessorRecovery::inspect_with_compacted_initial(
+                recovery,
+                metadata_permit,
+                input.cancelled,
+            )
+        } else {
+            NativeSuccessorRecovery::inspect(recovery, metadata_permit, input.cancelled)
+        }
+        .map_err(native_error)?;
+        require_recovery_basis(
+            purpose,
+            compacted.is_some(),
+            native.compacted_requests() != 0,
+        )?;
         let owner = ActivatedSuccessorRecovery {
             native,
             intent,
@@ -253,11 +311,27 @@ impl ControlSession {
             control: current,
             state: ClosingState::Inspected,
             purpose,
+            compacted,
         };
         projection::require_native(&tx, recovery, &owner, input.cancelled).await?;
+        if let Some(check) = &owner.compacted {
+            check
+                .resolve_recovery(
+                    &tx,
+                    recovery,
+                    &owner.native,
+                    &mut lease,
+                    policy,
+                    input.cancelled,
+                )
+                .await?;
+        }
         // The original-input grant has not begun decoding. Its existing 64KiB
         // staging allowance covers this sequential 4KiB closure reader.
         for epoch in 1..=owner.epoch() {
+            if epoch == 1 && owner.compacted.is_some() {
+                continue;
+            }
             let entry = owner
                 .native
                 .entry(epoch)
@@ -282,6 +356,9 @@ impl ControlSession {
             .native
             .validate(recovery, input.cancelled)
             .map_err(native_error)?;
+        if let Some(check) = &owner.compacted {
+            check.validate_recovery(recovery, &owner.native, input.cancelled)?;
+        }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
         if self.client.is_closed() {
             return Err(ProducerResolveError::DeliveryUnknown);
@@ -339,6 +416,18 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
             projection::require_context(&tx, &owner.intent, current, owner.purpose).await?;
+            if let Some(check) = &owner.compacted {
+                check
+                    .resolve_recovery(
+                        &tx,
+                        recovery,
+                        &owner.native,
+                        &mut lease,
+                        policy,
+                        input.cancelled,
+                    )
+                    .await?;
+            }
             owner
                 .native
                 .validate(recovery, input.cancelled)
@@ -350,6 +439,9 @@ impl ControlSession {
                 .map_err(|_| ProducerResolveError::CommitUnknown)?;
         }
         // Never reset the monotonic deadline after COMMIT or native validation.
+        if let Some(check) = &owner.compacted {
+            check.validate_recovery(recovery, &owner.native, input.cancelled)?;
+        }
         owner
             .native
             .validate(recovery, input.cancelled)
@@ -362,6 +454,62 @@ impl ControlSession {
         owner.state = ClosingState::Closed;
         self.available = true;
         Ok(())
+    }
+
+    /// Confirm the compacted initial step under the same recovery owner. The
+    /// cursor advances only after a known read completion and final authority.
+    pub async fn inspect_activated_successor_compacted_initial(
+        &mut self,
+        resolution: &mut ActivatedSuccessorResolution<'_>,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<crate::storage::rocks::store::CompactedInitialSummary, ProducerResolveError> {
+        let result = async {
+            if !resolution.native.needs_compacted_initial() {
+                return Err(OwnerError::InvalidInput.into());
+            }
+            let current = self.identity;
+            let (tx, mut lease, policy) = self
+                .begin_checked_successor_recovery(
+                    resolution.recovery,
+                    resolution.owner,
+                    &input,
+                    validate,
+                )
+                .await?;
+            let check = resolution
+                .owner
+                .compacted
+                .as_ref()
+                .ok_or(OwnerError::InvalidInput)?;
+            let proof = check
+                .resolve_recovery(
+                    &tx,
+                    resolution.recovery,
+                    &resolution.owner.native,
+                    &mut lease,
+                    policy,
+                    resolution.cancelled,
+                )
+                .await?;
+            successor_history::finish_read(tx, &mut lease, policy, input.cancelled, current)
+                .await?;
+            resolution
+                .native
+                .accept_compacted_initial(&proof, || {
+                    if self.client.is_closed() {
+                        return Err(AdmissionError::AuthorityUnavailable);
+                    }
+                    producer_progress::recovery::authority(&mut lease, policy, input.cancelled)
+                })
+                .map_err(|error| ProducerResolveError::Native(error.into()))
+        }
+        .await;
+        if result.is_err() {
+            resolution.native.poison();
+        }
+        self.available = result.is_ok();
+        result
     }
 
     /// Ancestors require their existing terminal copies. Only the current head
@@ -607,7 +755,7 @@ impl ControlSession {
         if owner.control != self.identity {
             return Err(OwnerError::InvalidInput.into());
         }
-        let (tx, lease, policy) = self
+        let (tx, mut lease, policy) = self
             .begin_activated_successor_recovery(recovery, input, validate)
             .await?;
         projection::require_context(&tx, &owner.intent, owner.control, owner.purpose).await?;
@@ -618,6 +766,26 @@ impl ControlSession {
         }
         projection::require_native(&tx, recovery, owner, input.cancelled).await?;
         projection::require_tail(&tx, owner).await?;
+        require_recovery_basis(
+            owner.purpose,
+            owner.compacted.is_some(),
+            owner.compacted_requests() != 0,
+        )?;
+        if let Some(check) = &owner.compacted {
+            if owner.purpose != Purpose::Positive {
+                return Err(OwnerError::InvalidInput.into());
+            }
+            check
+                .resolve_recovery(
+                    &tx,
+                    recovery,
+                    &owner.native,
+                    &mut lease,
+                    policy,
+                    input.cancelled,
+                )
+                .await?;
+        }
         Ok((tx, lease, policy))
     }
 }
@@ -628,6 +796,16 @@ fn history_request<'a>(input: &SuccessorReplayRequest<'a>) -> InitialHistoryRequ
         policy_ttl: input.policy_ttl,
         cancelled: input.cancelled,
     }
+}
+fn require_recovery_basis(
+    purpose: Purpose,
+    check: bool,
+    retained: bool,
+) -> Result<(), ProducerResolveError> {
+    if check && purpose != Purpose::Positive {
+        return Err(OwnerError::InvalidInput.into());
+    }
+    successor_compaction::require_basis_presence(check, retained, check)
 }
 fn native_error(error: BootstrapError) -> ProducerResolveError {
     ProducerResolveError::Native(AdmissionError::from(error).into())

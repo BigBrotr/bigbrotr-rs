@@ -16,6 +16,15 @@ pub(in crate::storage) struct NativeSuccessorRecovery {
     failed: bool,
 }
 
+/// Borrows the one recovery allocation and its exact tail-aware input census.
+/// This is not an ordinary lineage ancestor, a writer or a handoff witness.
+#[derive(Clone, Copy)]
+pub(in crate::storage) struct CompactedRecoveryPredecessor<'a> {
+    owner: &'a NativeSuccessorRecovery,
+    recovery: &'a IngestRecovery,
+    cancelled: &'a AtomicBool,
+}
+
 pub(in crate::storage) struct SuccessorRecoveryResolution<'a> {
     owner: &'a NativeSuccessorRecovery,
     recovery: &'a IngestRecovery,
@@ -38,6 +47,7 @@ pub(in crate::storage) struct PendingSuccessorRequest<'step, 'owner> {
 pub(in crate::storage) struct ResolvedSuccessorRecovery<'a> {
     owner: &'a NativeSuccessorRecovery,
     recovery: &'a IngestRecovery,
+    cancelled: &'a AtomicBool,
     last: LineageEpochSummary,
 }
 
@@ -51,6 +61,7 @@ const _: () = assert!(
         + size_of::<SuccessorRecoveryResolution<'_>>()
         + size_of::<PendingSuccessorRequest<'_, '_>>()
         + size_of::<ResolvedSuccessorRecovery<'_>>()
+        + size_of::<CompactedRecoveryPredecessor<'_>>()
         + size_of::<InitialHandoffRecord>()
         + 2 * size_of::<SuccessionRecord>()
         + super::census::COUNTER_BYTES
@@ -64,10 +75,32 @@ impl NativeSuccessorRecovery {
         permit: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<Self, BootstrapError> {
+        Self::inspect_in(recovery, permit, cancelled, false)
+    }
+    pub(in crate::storage) fn inspect_with_compacted_initial(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, BootstrapError> {
+        Self::inspect_in(recovery, permit, cancelled, true)
+    }
+    fn inspect_in(
+        recovery: &IngestRecovery,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        compacted: bool,
+    ) -> Result<Self, BootstrapError> {
         if recovery.manifest().identity().owner_epoch.get() < 3 {
             return Err(BootstrapError::InvalidIntent);
         }
-        let lineage = RetainedLineage::inspect_structure(recovery, None, permit, cancelled)?;
+        let lineage = if compacted {
+            RetainedLineage::inspect_structure_in(recovery, None, permit, cancelled, true)?
+        } else {
+            RetainedLineage::inspect_structure(recovery, None, permit, cancelled)?
+        };
+        if compacted && !lineage.has_compacted_initial() {
+            return Err(BootstrapError::StateMismatch);
+        }
         let mut owner = Self {
             lineage,
             tail: None,
@@ -98,6 +131,42 @@ impl NativeSuccessorRecovery {
     pub(in crate::storage) fn staged_input(&self) -> Option<SuccessorStagedInput> {
         self.tail
     }
+    pub(in crate::storage) fn compacted_requests(&self) -> u64 {
+        self.lineage
+            .compacted_floor()
+            .map_or(0, |floor| floor.fields().issued_through)
+    }
+    pub(in crate::storage) fn compacted_predecessor<'a>(
+        &'a self,
+        recovery: &'a IngestRecovery,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<CompactedRecoveryPredecessor<'a>, AdmissionError> {
+        if self.compacted_requests() == 0 {
+            return Err(AdmissionError::StateMismatch);
+        }
+        if effects.request().units().items() == 0
+            || effects.request().units().data_bytes()
+                < limits.required_dictionary_replay_data_bytes()?
+        {
+            return Err(AdmissionError::InsufficientReservation);
+        }
+        self.validate(recovery, cancelled)?;
+        self.lineage.census().verify_effect_census(
+            recovery,
+            self.head().manifest.identity().owner_epoch.get(),
+            limits,
+            effects,
+            cancelled,
+        )?;
+        self.validate(recovery, cancelled)?;
+        Ok(CompactedRecoveryPredecessor {
+            owner: self,
+            recovery,
+            cancelled,
+        })
+    }
     // No PG/public escape to ordinary lineage resolution or handoff proof.
     pub(in crate::storage::rocks::store) fn lineage(&self) -> &RetainedLineage {
         &self.lineage
@@ -107,32 +176,21 @@ impl NativeSuccessorRecovery {
         recovery: &IngestRecovery,
         cancelled: &AtomicBool,
     ) -> Result<([u8; 32], Option<SuccessorStagedInput>), BootstrapError> {
-        let count = self
-            .lineage
-            .entries
-            .iter()
-            .try_fold(0_u64, |n, entry| n.checked_add(entry.issued))
-            .filter(|n| *n <= 64)
-            .ok_or(BootstrapError::Limit)?;
-        let tail = ProducerRequestId {
+        recovery.store.successor_recovery_inputs(
+            self.lineage.input_set()?,
+            |id| self.lineage.accepts_input(id),
+            self.tail_request()?,
+            cancelled,
+        )
+    }
+    fn tail_request(&self) -> Result<ProducerRequestId, BootstrapError> {
+        Ok(ProducerRequestId {
             producer_slot_id: self.producer_slot_id(),
             producer_epoch: ProducerEpoch::new(self.head().manifest.identity().owner_epoch.get())
                 .map_err(|_| BootstrapError::InvalidIntent)?,
             request_sequence: RequestSequence::new(self.issued_through() + 1)
                 .map_err(|_| BootstrapError::InvalidIntent)?,
-        };
-        recovery.store.successor_recovery_inputs(
-            count,
-            |id| {
-                id.producer_slot_id == self.lineage.slot
-                    && self
-                        .lineage
-                        .at(id.producer_epoch.get())
-                        .is_some_and(|entry| id.request_sequence.get() <= entry.issued)
-            },
-            tail,
-            cancelled,
-        )
+        })
     }
     pub(in crate::storage) fn validate(
         &self,
@@ -312,6 +370,23 @@ impl NativeSuccessorRecovery {
 }
 
 impl<'a> SuccessorRecoveryResolution<'a> {
+    pub(in crate::storage) fn needs_compacted_initial(&self) -> bool {
+        self.cursor.needs_compacted_initial()
+    }
+    pub(in crate::storage) fn accept_compacted_initial(
+        &mut self,
+        proof: &super::super::VerifiedCompactedPrefix<'_>,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<super::super::CompactedInitialSummary, AdmissionError> {
+        let result = self
+            .validate()
+            .map_err(AdmissionError::from)
+            .and_then(|()| self.cursor.accept_compacted_initial(proof, authority));
+        if result.is_err() {
+            self.poison();
+        }
+        result
+    }
     pub(in crate::storage) fn current_epoch(&self) -> Option<u64> {
         self.cursor.current_epoch()
     }
@@ -395,8 +470,74 @@ impl<'a> SuccessorRecoveryResolution<'a> {
         Ok(ResolvedSuccessorRecovery {
             owner: self.owner,
             recovery: self.recovery,
+            cancelled: self.cancelled,
             last,
         })
+    }
+}
+
+impl<'a> CompactedRecoveryPredecessor<'a> {
+    pub(in crate::storage) fn manifest(&self) -> &IngestManifest {
+        self.owner
+            .lineage
+            .entry(1)
+            .expect("inspected initial ancestor")
+            .manifest()
+    }
+    pub(in crate::storage) fn floor(&self) -> &ClosedProducerFloor {
+        self.owner
+            .lineage
+            .compacted_floor()
+            .expect("sealed recovery basis")
+    }
+    pub(in crate::storage) fn producer_slot_id(&self) -> ProducerSlotId {
+        self.owner.producer_slot_id()
+    }
+    pub(in crate::storage) fn progress_scratch(&self) -> &OwnedPermit {
+        self.owner.lineage.progress_scratch()
+    }
+    pub(in crate::storage::rocks::store) fn matches_owner(
+        &self,
+        owner: &NativeSuccessorRecovery,
+    ) -> bool {
+        std::ptr::eq(self.owner, owner)
+    }
+    pub(in crate::storage) fn validate(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        check_cancelled(self.cancelled)?;
+        if !std::ptr::eq(self.recovery, recovery) {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.owner.validate(recovery, cancelled)?;
+        check_cancelled(self.cancelled).map_err(Into::into)
+    }
+    pub(in crate::storage::rocks::store) fn require_input(
+        &self,
+        recovery: &IngestRecovery,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        self.validate(recovery, cancelled)?;
+        let observed = recovery.store.require_compacted_recovery_input(
+            self.owner.lineage.input_set()?,
+            |id| self.owner.lineage.accepts_input(id),
+            self.owner.tail_request()?,
+            checked,
+            cancelled,
+        )?;
+        if observed != (self.owner.lineage.inputs, self.owner.tail) {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.validate(recovery, cancelled)
+    }
+    pub(in crate::storage) fn resolution(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<super::super::CompactedPrefixResolution<'a>, AdmissionError> {
+        super::super::CompactedPrefixResolution::from_recovery(*self, self.recovery, cancelled)
     }
 }
 impl PendingSuccessorRequest<'_, '_> {
@@ -431,11 +572,29 @@ impl Drop for PendingSuccessorRequest<'_, '_> {
     }
 }
 impl ResolvedSuccessorRecovery<'_> {
+    pub(in crate::storage::rocks::store) fn acknowledgement_owner(
+        &self,
+        recovery: &IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<&NativeSuccessorRecovery, BootstrapError> {
+        if !std::ptr::eq(self.recovery, recovery) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.validate(cancelled)?;
+        Ok(self.owner)
+    }
     pub(in crate::storage) fn recovery_acknowledgement(
         &self,
         cancelled: &AtomicBool,
     ) -> Result<super::super::RecoveryAcknowledgement, BootstrapError> {
         self.validate(cancelled)?;
+        if self.owner.compacted_requests() != 0 {
+            return super::super::RecoveryAcknowledgement::from_compacted_successor_replay(
+                self.recovery,
+                self,
+                cancelled,
+            );
+        }
         super::super::RecoveryAcknowledgement::from_replay(
             self.recovery,
             *self.owner.head().manifest(),
@@ -447,7 +606,14 @@ impl ResolvedSuccessorRecovery<'_> {
         &self,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
-        self.owner.validate(self.recovery, cancelled)
+        if self.owner.compacted_requests() != 0 {
+            check_cancelled(self.cancelled)?;
+        }
+        self.owner.validate(self.recovery, cancelled)?;
+        if self.owner.compacted_requests() != 0 {
+            check_cancelled(self.cancelled)?;
+        }
+        Ok(())
     }
     pub(in crate::storage) fn matches_owner(&self, owner: &NativeSuccessorRecovery) -> bool {
         std::ptr::eq(self.owner, owner)

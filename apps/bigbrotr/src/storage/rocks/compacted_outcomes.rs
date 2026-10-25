@@ -55,6 +55,13 @@ impl RetainedCompactedPrefix {
 }
 
 impl<'a> CompactedPrefixResolution<'a> {
+    pub(in crate::storage::rocks::store) fn from_recovery(
+        view: CompactedRecoveryPredecessor<'a>,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new(PrefixOwner::Recovery(view), recovery, cancelled)
+    }
     pub(in crate::storage::rocks::store) fn from_successor(
         view: crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>,
         recovery: &'a IngestRecovery,
@@ -338,6 +345,7 @@ impl VerifiedCompactedPrefix<'_> {
             PrefixOwner::Live(_)
             | PrefixOwner::Handoff(_)
             | PrefixOwner::Successor(_)
+            | PrefixOwner::Recovery(_)
             | PrefixOwner::Acknowledgement(_)
             | PrefixOwner::EmptyRetirement(_) => {
                 return Err(AdmissionError::StateMismatch);
@@ -351,6 +359,12 @@ impl VerifiedCompactedPrefix<'_> {
         lineage: &RetainedLineage,
     ) -> bool {
         matches!(self.prefix, PrefixOwner::Ancestor(owner) if std::ptr::eq(owner, lineage))
+    }
+    pub(in crate::storage::rocks::store) fn matches_successor_recovery(
+        &self,
+        owner: &NativeSuccessorRecovery,
+    ) -> bool {
+        matches!(self.prefix, PrefixOwner::Recovery(view) if view.matches_owner(owner))
     }
     pub fn floor(&self) -> &ClosedProducerFloor {
         self.prefix.floor()
