@@ -363,7 +363,7 @@ def verify(events, before, native, inputs, case, server_window):
     return verify_live(events, before, native, inputs, case, server_window, known)
 
 
-def verify_live(events, before, native, inputs, case, server_window, known, *, compacted=False, initial=None):
+def verify_live(events, before, native, inputs, case, server_window, known, *, compacted=False, initial=None, proxy_port=None, dictionary_prefix=False):
     """Unchanged finite live protocol after an independently checked terminal head.
 
     Callers own the original pins and literal complete-history reconstruction.
@@ -371,6 +371,9 @@ def verify_live(events, before, native, inputs, case, server_window, known, *, c
     preparation/admission oracle or weakening the original case specification.
     """
     assert type(compacted) is bool and (initial is not None) == compacted
+    assert type(dictionary_prefix) is bool
+    assert proxy_port is None or (compacted and type(proxy_port) is int and 1 <= proxy_port <= 65535)
+    assert not dictionary_prefix or (compacted and proxy_port is not None)
     if compacted:
         for event in events:
             fields = ('compacted_requests', 'original_requests_replayed') if event['event'] == 'lineage-history-compacted-initial' else (
@@ -417,6 +420,9 @@ def verify_live(events, before, native, inputs, case, server_window, known, *, c
     assert planned['phase'] == 'claim-planned' and planned['lease_ttl_us'] == '20000000'
     assert not ({planned['role'], planned['incarnation']} & set(ids))
     t.snapshot('before-claim')
+    if proxy_port is not None:
+        exact(t.take('transport', True), dict(event='lineage-transition-transport',
+            control_port=proxy_port, observer_port=5432, proxied=True))
     claimed, policy, backend = t.take('control'), t.take('policy'), t.take('backend')
     t.snapshot('after-claim', lambda pg: m.claim(pg, planned))
     exact(claimed, dict(event='lineage-history-control', phase='claimed', resource=m.control['resource_id'][2:],
@@ -479,6 +485,11 @@ def verify_live(events, before, native, inputs, case, server_window, known, *, c
                 preimage=raw.hex(), request_digest=sha(raw), recorded_at_us=str(900_000_001 + 2 * (n - 1) + retry),
                 signed_event=None if n == 1 else old_event if n == 2 else new_event, provenance=False))
             t.snapshot('before-' + stage)
+            if dictionary_prefix:
+                assert n == 1 and not retry and t.position == len(events)
+                # An independently reduced prefix, never a complete verdict or
+                # a native observation made while the live writer is retained.
+                return m, science
             if not retry:
                 science.advance(n)
                 if compacted and n == 1:

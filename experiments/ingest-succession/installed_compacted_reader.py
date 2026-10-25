@@ -2225,15 +2225,81 @@ def later_live_inputs(output,directory,expected,initial):
     return wanted
 
 
-def later_live_probe(pg,client,output,case,directory,expected,catalog,initial):
+def later_live_delivery_invoke(pg,client,output,case,directory,expected,initial):
+    from fault_cases import Process, safe_event
+    from initial_empty_locks import Probe
+    label=case['name'];database=case['database'];proxy=probe=None;started=time.monotonic()
+    window=dict(before_us=history.server_clock(pg,database))
+    wire=dict(command=None,source_sha256=history.digest(output/'fault_proxy.py'),ready=None,held=None,receipt=None,
+        events=[],stdout='',stderr='',exit_code=None,readers_joined=False,overflow=False,forced_wrapper_stop=False,errors=[])
+    response=dict(returncode=None,stdout='',stderr='',seconds=None,outcome='UNKNOWN',readers_joined=False,overflow=False,command=None)
+    args=None
+    def save():
+        lab.write_json(output/(label+'-wire.json'),wire);lab.write_json(output/(label+'-clock.json'),window)
+    try:
+        command=['docker','exec','-i',client,'python3','-B','/lab/fault_proxy.py','--upstream-port','5432','--listen-port','0',
+            '--mode','hold','--commit-number',str(oracle.LATER_DICTIONARY_COMMIT),'--later-commits',
+            str(oracle.LATER_LIVE_FINAL_COMMITS-oracle.LATER_DICTIONARY_COMMIT),'--deadline-seconds','30']
+        wire['command']=command;proxy=Process(command,input_pipe=True);ready=proxy.event('ready',5);wire['ready']=ready
+        assert ready['proxy_sha256']==wire['source_sha256']
+        args=['successor-compacted-live',database,'/run/secrets/application',case['config'],'262144',str(ready['listen_port'])]
+        response['command']=['docker','exec',client,'/build/ingest_bootstrap_probe',*args];save();probe=Probe(response['command'])
+        held=proxy.event('held',15)
+        until=time.monotonic()+1
+        while True:
+            probe.observe()
+            if any(e['event']=='lineage-history-state' and e.get('stage')=='before-dictionary' for e in probe.parsed):break
+            assert probe.process.poll() is None and time.monotonic()<until,'complete first-dictionary prefix unobserved'
+            with probe.condition:probe.condition.wait(.01)
+        prefix=copy.deepcopy(probe.parsed)
+        assert prefix[-1]['event']=='lineage-history-state' and prefix[-1]['stage']=='before-dictionary'
+        backend=oracle.only(prefix,event='lineage-history-backend',present=True)
+        capture=dict(event=held,prefix=prefix,before_us=history.server_clock(pg,database),after_us=None,
+            release_before_us=None,release_after_us=None,control=schema.rows(pg,database),inputs=history.inputs_at(directory/'store'),backend=None)
+        wire['held']=capture;save()
+        assert type(backend['pid']) is int and backend['pid']>0 and backend['database']==database
+        assert oracle.re.fullmatch('[0-9T:.+ Z-]+',backend['backend_start'])
+        statement="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
+            "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
+            "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(backend['pid'])+ \
+            " AND backend_start='"+backend['backend_start']+"'::timestamptz AND datname=current_database();"
+        capture['backend']=json.loads(lab.sql(pg,database,statement));capture['after_us']=history.server_clock(pg,database);save()
+        oracle.later_dictionary_held(capture,case,expected,initial,window,ready['listen_port'],released=False)
+        capture['release_before_us']=history.server_clock(pg,database);proxy.send('release')
+        capture['release_after_us']=history.server_clock(pg,database);proxy.event('released',5);save()
+        response.update(returncode=probe.wait(20),outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+        wire['receipt']=proxy.event('receipt',5);wire['exit_code']=proxy.wait(5)
+    except BaseException as error:wire['errors'].append(dict(stage='invoke',error=repr(error)))
+    finally:
+        if probe is not None:
+            code=probe.process.poll()
+            if code is not None:
+                for thread in probe.threads:thread.join(1)
+                response.update(returncode=code,outcome='PROCESS_EXITED',readers_joined=not any(t.is_alive() for t in probe.threads),overflow=probe.overflow)
+            else:wire['errors'].append(dict(stage='probe-stop',error='forced-wrapper-stop'))
+            response.update(stdout=bytes(probe.stdout).decode(errors='replace'),stderr=bytes(probe.stderr).decode(errors='replace'));probe.stop()
+        if proxy is not None:
+            forced=proxy.process.poll() is None;proxy.stop()
+            wire.update(stdout=bytes(proxy.stdout).decode(errors='replace'),stderr=bytes(proxy.stderr).decode(errors='replace'),
+                exit_code=proxy.process.returncode,readers_joined=not any(t.is_alive() for t in proxy.threads),overflow=proxy.overflow,forced_wrapper_stop=forced)
+            try:wire['events']=[safe_event(json.loads(v)) for v in wire['stdout'].splitlines()]
+            except BaseException as error:wire['errors'].append(dict(stage='proxy-metadata',error=repr(error)))
+        response['seconds']=time.monotonic()-started;window['after_us']=history.server_clock(pg,database)
+        lab.write_json(output/(label+'-response.json'),response);save()
+    return response,window,wire,args
+
+
+def later_live_probe(pg,client,output,case,directory,expected,catalog,initial,*,delivery=False):
     name=case['name'];database=case['database']
     before=schema.rows(pg,database);oracle.same(before,expected[0]);lab.write_json(output/(name+'-before.json'),before)
     native=history.dump(client,output,name+'-before',directory);inputs=history.inputs_at(directory/'store')
     assert (native,inputs)==expected[1:];lab.write_json(output/(name+'-inputs.json'),inputs)
     window=dict(before_us=history.server_clock(pg,database));lab.write_json(output/(name+'-clock.json'),window)
     args=['successor-compacted-live',database,'/run/secrets/application',case['config'],'262144']
-    response=dict(returncode=None,stdout='',stderr='',outcome='UNKNOWN');errors=[]
-    try:history.capture(client,output,name,*args)
+    response=dict(returncode=None,stdout='',stderr='',outcome='UNKNOWN');errors=[];wire=None
+    try:
+        if delivery:response,window,wire,args=later_live_delivery_invoke(pg,client,output,case,directory,expected,initial)
+        else:history.capture(client,output,name,*args)
     except BaseException as error:errors.append(dict(stage='capture',error=repr(error)))
     finally:
         path=output/(name+'-response.json')
@@ -2245,23 +2311,30 @@ def later_live_probe(pg,client,output,case,directory,expected,catalog,initial):
         try:window['after_us']=history.server_clock(pg,database)
         except BaseException as error:errors.append(dict(stage='clock',error=repr(error)))
         lab.write_json(output/(name+'-capture-errors.json'),errors);lab.write_json(output/(name+'-clock.json'),window)
-        events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,completion_event='lineage-live-complete')
+        proxy_closed=not delivery or (wire is not None and wire['errors']==[] and wire['exit_code']==0 and wire['readers_joined'] is True
+            and wire['overflow'] is False and wire['forced_wrapper_stop'] is False and wire['stderr']=='')
+        events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,proxy_closed=proxy_closed,completion_event='lineage-live-complete')
     assert not errors
     context=dict(case=dict(case),before=before,after=after,native_before=native,native_after=after_native,inputs_before=inputs,inputs_after=after_inputs,
         response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,database),
         backend_absence=transition.read(output/(name+'-control-backends.json')),backends=transition.read(output/(name+'-backends.json')),
         custody=transition.read(output/(name+'-custody.json')),arguments=args)
     lab.write_json(output/(name+'-verification.json'),context)
-    result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
+    if delivery:
+        result=oracle.verify_later_recovery_delivery(context,initial,expected,wire);controls=oracle.later_recovery_delivery_controls(context,initial,expected,wire)
+    else:result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
     case.update(status='PASS',returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
     return after,after_native,after_inputs
 
 
-def run_later_live_sequence(pg,client,output,clone,directory,expected,report,*,seed,initial):
-    name=clone['name'];assert expected==seed and clone['origin']=='later-terminal'
+def run_later_live_sequence(pg,client,output,clone,directory,expected,report,*,seed,initial,delivery=False):
+    name=clone['name'];assert not delivery or name=='absent';assert expected==seed and clone['origin']=='later-terminal'
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
     assert clone['catalog_before']==report['origins']['later-terminal']['catalog']
     configure(pg,client,output,clone['config'],ack=True)
+    if delivery:
+        source=history.SOURCE/oracle.ACTIVATED_PROXY;target=output/'fault_proxy.py'
+        shutil.copy2(source,target);assert history.digest(target)==history.digest(source)
     source=Path(__file__).with_name('installed_cycle_client.py');path=output/source.name
     if not path.exists():shutil.copy2(source,path)
     assert history.digest(path)==history.digest(source)
@@ -2277,7 +2350,7 @@ def run_later_live_sequence(pg,client,output,clone,directory,expected,report,*,s
         from installed_cycle_replay import process_closed
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
             checks=(lambda c,s:oracle.verify_later_live(c,initial,expected),lambda c,s:oracle.later_live_controls(c,initial,expected),process_closed))
-    else:expected=later_live_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial)
+    else:expected=later_live_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial,delivery=delivery)
     case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
     lab.write_json(output/'result.json',report);return case['name']
 
@@ -2292,6 +2365,18 @@ def run_later_live(root,build,product_source):
     return transition.run(root,build,suite=suite,sequence=partial(run_later_live_sequence,seed=seed,initial=initial),
         origin_specs=(oracle.LATER_TERMINAL_ORIGIN,),origin_for_clone={n:'later-terminal' for n in profile.CLONES},extra_grants=profile.GRANTS,
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_live=True,product_source=product_source)
+
+
+def run_later_recovery_delivery(root,build,product_source):
+    assert product_source==oracle.LATER_RECOVERY_PRODUCT
+    seed,initial=oracle.qualified_endpoint(root,None,initial_journey=False,later_terminal=True)
+    profile=oracle.LaterRecoveryDeliveryProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
+        client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Measured first compacted later dictionary outcome/progress COMMIT baseline, held then released to full finite completion',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_live_sequence,seed=seed,initial=initial,delivery=True),
+        origin_specs=(oracle.LATER_TERMINAL_ORIGIN,),origin_for_clone={'absent':'later-terminal'},extra_grants=profile.GRANTS,
+        producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_recovery=True,product_source=product_source)
 
 
 def run_later_recovery_sequence(pg,client,output,clone,directory,expected,report,*,seeds):
@@ -2338,6 +2423,7 @@ if __name__ == '__main__':
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
     profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
     profile.add_argument('--later-recovery',action='store_true',help='Fresh compacted positive recovery, equal-watermark ACK, retries and required-input refusals')
     profile.add_argument('--later-input-proof',action='store_true',help='Later original-input obligations and H/D proof-use at actual preparation/installed boundaries')
     profile.add_argument('--later-live',action='store_true',help='Finite compacted continuous live plus separate installed quiet activation and renewal')
@@ -2359,4 +2445,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)

@@ -6199,25 +6199,33 @@ def later_live_inputs_checked(record,expected,initial,name):
     return expected[0],expected[1],{n:v for n,v in expected[2].items() if n not in removed}
 
 
-def verify_later_live(context,initial,expected):
+def verify_later_live(context,initial,expected,*,proxy_port=None):
     import live_replay as live
     name=later_live_specification(context['case'])
+    assert proxy_port is None or (name=='absent' and type(proxy_port) is int and 1<=proxy_port<=65535)
     if name=='installed': return verify_later_live_installed(context,initial,expected)
     assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
         'catalog_before','catalog_after','backend_absence','backends','custody','arguments'}
     same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert context['catalog_before']==context['catalog_after']
     case=context['case']; response=context['response']
-    # history.capture uses synchronous subprocess.run, not the fault Process
-    # wrapper. Native/client closure is independently required by the transcript.
-    assert set(response)=={'returncode','stdout','stderr','seconds'}
+    # The default history.capture is synchronous; only the explicit delivery
+    # branch uses Process. Both require independent native/client closure.
+    assert set(response)==({'returncode','stdout','stderr','seconds'} if proxy_port is None else
+        {'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'})
     assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
     number(response['seconds'],0,120)
     args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
+    if proxy_port is not None:
+        assert name=='absent' and type(proxy_port) is int and 1<=proxy_port<=65535
+        args.append(str(proxy_port))
+        assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
+        assert response['command'][:2]==['docker','exec'] and response['command'][3:]==['/build/ingest_bootstrap_probe',*args]
+        assert re.fullmatch('bigbrotr-compacted-recovery-delivery-[0-9a-f]{7}',response['command'][2])
     assert context['arguments']==args
     events=[loads(line) for line in response['stdout'].splitlines()]
     known_history=history_lineage(expected,initial,compacted=True)
-    result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial)
+    result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial,proxy_port=proxy_port)
     final=only(events,event='lineage-history-state',stage='final')
     same(context['after'],{n:loads(v) for n,v in final['state']['control_tables']})
     assert context['native_after']==dict(event='dump-state',rows=final['rows'],sequence=final['state']['sequence'])
@@ -6289,11 +6297,11 @@ def verify_later_live_installed(context,initial,expected):
         input_files=len(inputs),compacted_requests=7,later_original_requests_replayed=1,target_requests=0,renewed=True)
 
 
-def later_live_controls(context,initial,expected):
-    verify_later_live(context,initial,expected); rejected=[]
+def later_live_controls(context,initial,expected,*,proxy_port=None):
+    verify_later_live(context,initial,expected,proxy_port=proxy_port); rejected=[]
     def reject(name,change):
         c=copy.deepcopy(context); change(c)
-        try: verify_later_live(c,initial,expected)
+        try: verify_later_live(c,initial,expected,proxy_port=proxy_port)
         except (AssertionError,KeyError,ValueError,TypeError,StopIteration,OverflowError): rejected.append(name)
         else: raise AssertionError('accepted later-live alteration: '+name)
     reject('unknown-process',lambda c:c['response'].update(**(dict(outcome='OUTCOME_UNKNOWN') if c['case']['clone']=='installed' else dict(returncode=None))))
@@ -6701,3 +6709,170 @@ LATER_RECOVERY_PG_CONTROLS = tuple('storage::postgres::control_owner::successor_
 LATER_RECOVERY_PROGRESS_CONTROLS = tuple('storage::postgres::control_owner::producer_progress::recovery::tests::'+n for n in (
     'compacted_floor_requires_exact_retained_checkpoint',
     'compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint'))
+
+
+class LaterRecoveryDeliveryProfile:
+    DIRECTORY='installed-compacted-later-recovery-delivery'
+    LABEL='org.bigbrotr.installed-compacted-later-recovery-delivery'
+    STATUS='PASS_COMPACTED_LATER_RECOVERY_DELIVERY_BASELINE'
+    DATABASE_PREFIX='bb_later_recovery_delivery_'
+    CLIENT_PREFIX='bigbrotr-compacted-recovery-delivery-'
+    CLONES=('absent',)
+    STEPS={'absent':('live',)}
+    CASES=('absent-live',)
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Outcome COMMIT loss and fresh repair/ACK recovery await this measured baseline',
+        'Native intermediate state while held is not externally opened or observed',
+        *LaterRecoveryProfile.NOT_RUN)
+
+
+# Candidate from the current compacted call chain, never prior profile ordinals.
+# Only a complete held/released baseline matching the query and whole state
+# qualifies this wire index. These constants do not assert runtime measurement.
+LATER_DICTIONARY_COMMIT=11
+LATER_LIVE_FINAL_COMMITS=22
+LATER_DICTIONARY_QUERY='''INSERT INTO control.producer_checkpoints
+        (dataset_id,producer_slot_id,producer_epoch,checkpoint_revision,complete_through_request,
+            checkpoint_digest,committed_at_us,progress_format,manifest_sha256,progress_jobs,
+            dependency_count,issuer_resource,issuer_epoch,issuer_incarnation)
+        VALUES($1::bytea,$2::bytea,$3::text::numeric,$4::text::numeric,$5::text::numeric,$6::bytea,
+            (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,1,$7::bytea,$8::integer,
+            $9::integer,$10::bytea,$11::text::numeric,$12::bytea)
+        '''
+
+
+def later_dictionary_held(held,case,expected,initial,window,port,*,released):
+    import live_replay as live
+    assert set(held)=={'event','prefix','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
+    end=number(held['after_us'],held['before_us'],window['before_us']+120_000_000,integer=True)
+    number(held['before_us'],window['before_us'],end,integer=True)
+    known_history=history_lineage(expected,initial,compacted=True)
+    m,science=live.verify_live(held['prefix'],*expected,case,dict(before_us=window['before_us'],after_us=end),
+        known_history,compacted=True,initial=initial,proxy_port=port,dictionary_prefix=True)
+    assert len(m.pg)==77 and (len(m.native['rows']),m.native['sequence'])==(93,138)
+    assert len(m.inputs)==1 and science.inputs=={}
+    raw=science.request(1);c=m.control
+    request=only(held['control']['producer_requests'],producer_epoch=3,request_sequence=1)
+    reserved=m.at(request['reserved_at_us']);assert reserved<=held['before_us'];rx=m.fresh(request['xmin'])
+    base=dict(producer_slot_id=m.slot,producer_epoch=3,request_sequence=1,dataset_id=m.ds['dataset_id'],
+        request_digest='\\x'+sha(raw),manifest_sha256='\\x'+sha(science.manifest))
+    wanted=dict(base,input_bytes=len(raw),input_profile=1,issuer_resource=c['resource_id'],issuer_epoch=c['epoch'],
+        issuer_role='control',issuer_incarnation=c['process_incarnation'],reserved_at_us=reserved,xmin=rx,
+        relay_endpoint_id=None,relay_access_scope_id=None,relay_enrollment_generation=None,relay_route_id=None,
+        acquisition_scope_id=None,acquisition_job_id=None,progress_request_id=None,progress_event_ordinal=None,
+        progress_wire_sequence=None,progress_input_sha256=None)
+    m.pg['producer_requests'].append(wanted)
+    only(m.pg['producer_epochs'],producer_epoch=3).update(reserved_through_request=1,xmin=rx)
+    same(m.pg,held['control'])
+    filename=m.slot[2:]+'-0000000000000003-0000000000000001.cbor'
+    assert held['inputs']==dict(m.inputs,**{filename:dict(bytes=len(raw),sha256=sha(raw))})
+    backend=held['backend'];assert set(backend)=={'observed_at_us','pid','backend_start','database','user','state','xact_start','query'}
+    assert backend['pid']==c['control_backend_pid'] and retained.instant(backend['backend_start'])==retained.instant(c['control_backend_start'])
+    assert backend['database']==case['database'] and backend['user']=='bigbrotr_control'
+    assert backend['state']=='idle in transaction' and backend['query']==LATER_DICTIONARY_QUERY
+    started=retained.instant(backend['xact_start']);number(started,reserved,held['before_us'],integer=True)
+    number(backend['observed_at_us'],held['before_us'],end,integer=True)
+    # The policy ticket starts before the transaction. The prior reservation
+    # clock is a conservative anchor; sufficient owner time avoids TTL clamping.
+    assert c['lease_expires_at_us']>end+5_000_000
+    assert only(m.pg['owner_epochs'],role='ingest',epoch=3)['lease_expires_at_us']>end+5_000_000
+    deadline=reserved+5_000_000
+    assert end<deadline
+    if released:
+        number(held['release_before_us'],end,deadline-1,integer=True)
+        number(held['release_after_us'],held['release_before_us'],deadline-1,integer=True)
+    else:assert held['release_before_us'] is None and held['release_after_us'] is None
+    return wanted
+
+
+def later_live_wire_checked(wire,context,expected,initial):
+    from fault_cases import safe_event
+    assert set(wire)=={'command','source_sha256','ready','held','receipt','events','stdout','stderr','exit_code',
+        'readers_joined','overflow','forced_wrapper_stop','errors'}
+    assert wire['source_sha256']==sha((Path(__file__).resolve().parents[2]/ACTIVATED_PROXY).read_bytes())
+    assert wire['errors']==[] and wire['exit_code']==0 and wire['stderr']==''
+    assert wire['readers_joined'] is True and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
+    events=[safe_event(loads(v)) for v in wire['stdout'].splitlines()];assert events==wire['events']
+    assert [e['event'] for e in events]==['ready','held','released','receipt']
+    ready,held_event,released,receipt=events
+    assert wire['ready']==ready and wire['held']['event']==held_event and wire['receipt']==receipt
+    assert ready['proxy_sha256']==wire['source_sha256'] and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    assert ready['max_frame_bytes']==1024**2 and ready['max_wire_bytes']==64*1024**2 and ready['max_messages']==20000 and ready['deadline_seconds']==30
+    port=ready['listen_port'];number(port,1,65535,integer=True)
+    args=['docker','exec','-i',context['response']['command'][2],'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
+        '--listen-port','0','--mode','hold','--commit-number',str(LATER_DICTIONARY_COMMIT),'--later-commits',
+        str(LATER_LIVE_FINAL_COMMITS-LATER_DICTIONARY_COMMIT),'--deadline-seconds','30']
+    assert wire['command']==args
+    previous=0
+    for i,e in enumerate(events):
+        previous=number(e['elapsed_ns'],previous,30_000_000_000,integer=True)
+        assert all(type(e[k]) is int for k in ('faults','commit_number','commits_seen','commits_forwarded','server_commit_complete','client_commit_complete'))
+        assert e['mode']=='hold' and e['commit_number']==LATER_DICTIONARY_COMMIT and e['faults']==int(i>0)
+        assert e['held'] is (i==1) and e['hold_action']==('release' if i>=2 else None)
+        assert [e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==(
+            [0]*4 if i==0 else [11,10,10,10] if i<3 else [22]*4)
+    assert receipt['reason'] in ('frontend-eof','backend-eof') and sum(receipt['frames'].values())<=20000
+    number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
+    request=later_dictionary_held(wire['held'],context['case'],expected,initial,context['server_window'],port,released=True)
+    full=[loads(v) for v in context['response']['stdout'].splitlines()]
+    prefix=wire['held']['prefix'];assert full[:len(prefix)]==prefix
+    after=only(full,event='lineage-history-state',stage='after-dictionary')
+    tables={n:loads(v) for n,v in after['state']['control_tables']}
+    assert only(tables['producer_requests'],producer_epoch=3,request_sequence=1)==request
+    return port
+
+
+def verify_later_recovery_delivery(context,initial,expected,wire):
+    port=later_live_wire_checked(wire,context,expected,initial)
+    result=verify_later_live(context,initial,expected,proxy_port=port)
+    return dict(result,wire=dict(outcome_commit=LATER_DICTIONARY_COMMIT,reservation_commit=LATER_DICTIONARY_COMMIT-1,
+        final_commits=LATER_LIVE_FINAL_COMMITS,boundary='hold-before-forward-released'))
+
+
+def later_recovery_delivery_controls(context,initial,expected,wire):
+    verify_later_recovery_delivery(context,initial,expected,wire)
+    result=later_live_controls(context,initial,expected,proxy_port=wire['ready']['listen_port']);rejected=list(result['rejected'])
+    def reject(label,change):
+        w=copy.deepcopy(wire);change(w)
+        try:verify_later_recovery_delivery(context,initial,expected,w)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted later delivery baseline '+label)
+    reject('proxy-not-joined',lambda w:w.update(readers_joined=False))
+    reject('proxy-forced-stop',lambda w:w.update(forced_wrapper_stop=True))
+    reject('wrong-held-query',lambda w:w['held']['backend'].update(query='COMMIT'))
+    reject('held-backend-not-in-transaction',lambda w:w['held']['backend'].update(state='idle',xact_start=None))
+    reject('held-missing-reservation',lambda w:w['held']['control']['producer_requests'].pop())
+    reject('held-missing-required-input',lambda w:w['held']['inputs'].pop(next(iter(expected[2]))))
+    reject('held-prefix-incomplete',lambda w:w['held']['prefix'].pop())
+    reject('late-policy-release',lambda w:w['held'].update(release_after_us=retained.instant(w['held']['backend']['xact_start'])+5_000_000))
+    def between_policy_anchors(w):
+        from datetime import datetime,timezone
+        h=w['held'];reserved=only(h['control']['producer_requests'],producer_epoch=3,request_sequence=1)['reserved_at_us']
+        started=max(retained.instant(h['backend']['xact_start']),reserved+1)
+        h['backend']['xact_start']=datetime.fromtimestamp(started//1_000_000,timezone.utc).replace(microsecond=started%1_000_000).isoformat()
+        h['before_us']=max(h['before_us'],started);h['after_us']=max(h['after_us'],h['before_us'])
+        h['backend']['observed_at_us']=h['after_us']
+        h['release_before_us']=h['release_after_us']=reserved+5_000_000
+        assert h['after_us']<h['release_after_us']<started+5_000_000
+    reject('release-between-reservation-and-transaction-deadlines',between_policy_anchors)
+    reject('held-old-outcome-version',lambda w:w['held']['control']['producer_outcomes'][0].update(xmin='4000000000'))
+    reject('held-wrong-backend',lambda w:w['held']['backend'].update(pid=w['held']['backend']['pid']+1))
+    full=[loads(v) for v in context['response']['stdout'].splitlines()]
+    first=only(full,event='lineage-history-state',stage='after-dictionary')
+    completed={n:loads(v) for n,v in first['state']['control_tables']}
+    reject('prefix-with-postdictionary-tail',lambda w:w['held']['prefix'].append(copy.deepcopy(first)))
+    for table in ('producer_outcomes','producer_checkpoints'):
+        row=only(completed[table],producer_epoch=3)
+        reject('uncommitted-held-'+table,lambda w,table=table,row=row:w['held']['control'][table].append(copy.deepcopy(row)))
+    def counter(w,index,field,value):
+        events=[loads(v) for v in w['stdout'].splitlines()];events[index][field]=value
+        w['events']=events;w['ready']=events[0];w['held']['event']=events[1];w['receipt']=events[-1]
+        w['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+    reject('coordinated-held-completion',lambda w:counter(w,1,'server_commit_complete',11))
+    reject('coordinated-final-count',lambda w:counter(w,3,'client_commit_complete',21))
+    truncated=copy.deepcopy(context)
+    truncated['response']['stdout']='\n'.join(model.encoded(e).decode() for e in wire['held']['prefix'])+'\n'
+    try:verify_later_recovery_delivery(truncated,initial,expected,wire)
+    except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append('prefix-is-not-completed-baseline')
+    else:raise AssertionError('prefix accepted as completed baseline')
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
