@@ -6168,8 +6168,9 @@ def later_live_specification(case):
     return name
 
 
-def later_live_inputs_checked(record,expected,initial,name):
-    assert name in LaterLiveProfile.CLONES
+def later_live_inputs_checked(record,expected,initial,name,*,loss=False):
+    assert type(loss) is bool
+    assert name in (LaterRecoveryFaultProfile.CLONES if loss else LaterLiveProfile.CLONES)
     assert set(record)=={'kind','clone','before','after','quarantine','files','attribution'}
     assert record['kind']=='reversible-later-live-residual-selection' and record['clone']==name
     original=sorted(initial[2]); assert len(original)==7 and set(expected[2])==set(original)|{
@@ -6569,8 +6570,9 @@ def later_recovery_missing_basis(expected,name):
     return expected[0],expected[1],{n:v for n,v in expected[2].items() if n!=filename}
 
 
-def later_recovery_closed(response,case):
-    _,step=later_recovery_specification(case);failure=step=='refuse';code=4 if failure else 0
+def later_recovery_closed(response,case,*,delivery=False):
+    assert type(delivery) is bool
+    _,step=(later_loss_specification(case) if delivery else later_recovery_specification(case));failure=step=='refuse';code=4 if failure else 0
     assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
     t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
@@ -6741,6 +6743,24 @@ LATER_DICTIONARY_QUERY='''INSERT INTO control.producer_checkpoints
         '''
 
 
+def later_dictionary_reservation(m,science,observed):
+    raw=science.request(1);c=m.control
+    request=only(observed['producer_requests'],producer_epoch=3,request_sequence=1)
+    reserved=m.at(request['reserved_at_us']);rx=m.fresh(request['xmin'])
+    assert reserved<min(c['lease_expires_at_us'],only(m.pg['owner_epochs'],role='ingest',epoch=3)['lease_expires_at_us'])
+    base=dict(producer_slot_id=m.slot,producer_epoch=3,request_sequence=1,dataset_id=m.ds['dataset_id'],
+        request_digest='\\x'+sha(raw),manifest_sha256='\\x'+sha(science.manifest))
+    wanted=dict(base,input_bytes=len(raw),input_profile=1,issuer_resource=c['resource_id'],issuer_epoch=c['epoch'],
+        issuer_role='control',issuer_incarnation=c['process_incarnation'],reserved_at_us=reserved,xmin=rx,
+        relay_endpoint_id=None,relay_access_scope_id=None,relay_enrollment_generation=None,relay_route_id=None,
+        acquisition_scope_id=None,acquisition_job_id=None,progress_request_id=None,progress_event_ordinal=None,
+        progress_wire_sequence=None,progress_input_sha256=None)
+    m.pg['producer_requests'].append(wanted)
+    only(m.pg['producer_epochs'],producer_epoch=3).update(reserved_through_request=1,xmin=rx)
+    same(m.pg,observed)
+    return wanted
+
+
 def later_dictionary_held(held,case,expected,initial,window,port,*,released):
     import live_replay as live
     assert set(held)=={'event','prefix','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
@@ -6751,19 +6771,9 @@ def later_dictionary_held(held,case,expected,initial,window,port,*,released):
         known_history,compacted=True,initial=initial,proxy_port=port,dictionary_prefix=True)
     assert len(m.pg)==77 and (len(m.native['rows']),m.native['sequence'])==(93,138)
     assert len(m.inputs)==1 and science.inputs=={}
+    wanted=later_dictionary_reservation(m,science,held['control'])
+    reserved=wanted['reserved_at_us'];assert reserved<=held['before_us']
     raw=science.request(1);c=m.control
-    request=only(held['control']['producer_requests'],producer_epoch=3,request_sequence=1)
-    reserved=m.at(request['reserved_at_us']);assert reserved<=held['before_us'];rx=m.fresh(request['xmin'])
-    base=dict(producer_slot_id=m.slot,producer_epoch=3,request_sequence=1,dataset_id=m.ds['dataset_id'],
-        request_digest='\\x'+sha(raw),manifest_sha256='\\x'+sha(science.manifest))
-    wanted=dict(base,input_bytes=len(raw),input_profile=1,issuer_resource=c['resource_id'],issuer_epoch=c['epoch'],
-        issuer_role='control',issuer_incarnation=c['process_incarnation'],reserved_at_us=reserved,xmin=rx,
-        relay_endpoint_id=None,relay_access_scope_id=None,relay_enrollment_generation=None,relay_route_id=None,
-        acquisition_scope_id=None,acquisition_job_id=None,progress_request_id=None,progress_event_ordinal=None,
-        progress_wire_sequence=None,progress_input_sha256=None)
-    m.pg['producer_requests'].append(wanted)
-    only(m.pg['producer_epochs'],producer_epoch=3).update(reserved_through_request=1,xmin=rx)
-    same(m.pg,held['control'])
     filename=m.slot[2:]+'-0000000000000003-0000000000000001.cbor'
     assert held['inputs']==dict(m.inputs,**{filename:dict(bytes=len(raw),sha256=sha(raw))})
     backend=held['backend'];assert set(backend)=={'observed_at_us','pid','backend_start','database','user','state','xact_start','query'}
@@ -6881,4 +6891,314 @@ def later_recovery_delivery_controls(context,initial,expected,wire):
     try:verify_later_recovery_delivery(truncated,initial,expected,wire)
     except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append('prefix-is-not-completed-baseline')
     else:raise AssertionError('prefix accepted as completed baseline')
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+class LaterRecoveryFaultProfile:
+    DIRECTORY='installed-compacted-later-recovery-faults'
+    LABEL='org.bigbrotr.installed-compacted-later-recovery-faults'
+    STATUS='PASS_COMPACTED_LATER_RECOVERY_OUTCOME_LOSS'
+    DATABASE_PREFIX='bb_later_recovery_fault_'
+    CLIENT_PREFIX='bigbrotr-compacted-recovery-fault-'
+    CLONES=('outcome-before','outcome-after')
+    STEPS={n:('loss','recover','retry') for n in CLONES}
+    CASES=tuple(n+'-'+s for n in CLONES for s in ('loss','recover','retry'))
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Other COMMIT boundaries, cancellation/expiry, staged tails and physical uncertainty',
+        'Sync Event progress, Source/abandonment/retirement, adoption, Archive and capacity',
+        'Product floor writing, GC/unlink and mixed restore workflows')
+
+
+def later_delivery_baseline_checked(root,raw=None):
+    """Bind the measured baseline, never requalify it under the new verifier."""
+    raw=raw or retained.regular_read
+    run=Path(root).parent/'installed-compacted-later-recovery-delivery-9f6fa4b'
+    data=raw(run/'verified-run.json');assert sha(data)=='437c239e83cccebe84229a4736c7d118553901787d8a93fb41311b0a20a8171d'
+    verified=loads(data);assert verified['status']=='PASS_EXACT_SOURCE_BASELINE_AND_RAW'
+    assert verified['source']=='9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b' and verified['product_source']==LATER_RECOVERY_PRODUCT
+    assert verified['driver']==dict(session=91467,joined=True,exit=0) and verified['raw_driver']==dict(session=40051,joined=True,exit=0)
+    assert (verified['commands'],verified['controls'],verified['raw_file_bindings'])==(1,39,5743)
+    for path,digest in verified['files_sha256'].items():assert sha(raw(Path(path)))==digest
+    replay=loads(raw(run/'raw-replay.json'));assert len(replay['bound_files'])==5743
+    assert replay['status']==LaterRecoveryDeliveryProfile.STATUS+'_CAPTURE_REPLAY' and replay['source']==verified['source'] and replay['product_source']==LATER_RECOVERY_PRODUCT
+    def bound(path):
+        data=raw(path);assert sha(data)==replay['bound_files'][str(path)];return data
+    folder=run/LaterRecoveryDeliveryProfile.DIRECTORY
+    report=loads(bound(folder/'result.json'));assert report['status']==LaterRecoveryDeliveryProfile.STATUS
+    assert report['source']==verified['source'] and report['tree']==verified['tree']
+    case,=report['cases'];assert case['name']=='absent-live' and case['status']=='PASS' and case['returncode']==0
+    assert case['oracle']==verified['oracle']==replay['cases'][0]['oracle']
+    assert case['negative_controls']['count']==39 and case['negative_controls']==replay['cases'][0]['negative_controls']
+    assert case['oracle']['wire']==dict(outcome_commit=11,reservation_commit=10,final_commits=22,boundary='hold-before-forward-released')
+    assert verified['preservation']==dict.fromkeys(('rows_unchanged','catalog_unchanged','native_unchanged','inputs_unchanged','physical_unchanged'),True)
+    assert all(v==[] for v in verified['isolation'].values())
+    terminal=loads(bound(folder/'client-terminal.json'));assert terminal['Id']==report['client']
+    state=terminal['State'];assert state['Status']=='exited' and state['Pid']==0 and state['ExitCode']==143 and state['OOMKilled'] is False
+    build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
+    built,component,qualification=[loads(bound(p)) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
+    qualification_checked(built,component,qualification,LATER_RECOVERY_PRODUCT,initial_journey=True,empty_initial=True,later_recovery=True)
+    provenance=loads(bound(folder/'progress-source.json'));assert provenance['revision']==verified['source'] and provenance['tree']==verified['tree']
+    for name,digest in provenance['files_sha256'].items():assert sha(bound(run/'source'/name))==digest
+    for name,digest in component['executables_sha256'].items():assert sha(bound(build/name))==digest
+    wire=loads(bound(folder/'absent-live-wire.json'));context=loads(bound(folder/'absent-live-verification.json'))
+    assert context['response']==loads(bound(folder/'absent-live-response.json'))
+    assert context['custody']==verified['custody']==loads(bound(folder/'absent-live-custody.json'))
+    assert context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    assert wire['source_sha256']==sha(bound(run/'source'/ACTIVATED_PROXY))==sha((Path(__file__).resolve().parents[2]/ACTIVATED_PROXY).read_bytes())
+    assert wire['errors']==[] and wire['exit_code']==0 and wire['readers_joined'] is True and wire['forced_wrapper_stop'] is False
+    assert [[e['event'],*[e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]] for e in wire['events']]==verified['wire_counts']
+    assert verified['wire_counts']==[['ready',0,0,0,0],['held',11,10,10,10],['released',11,10,10,10],['receipt',22,22,22,22]]
+    assert wire['held']['backend']['query']==LATER_DICTIONARY_QUERY
+    return dict(source=verified['source'],product_source=LATER_RECOVERY_PRODUCT,verified_sha256=sha(data),
+        wire_sha256=sha(raw(folder/'absent-live-wire.json')),raw_sha256=sha(raw(run/'raw-replay.json')),outcome_commit=11,final_commits=22)
+
+
+def later_loss_specification(case):
+    name=case['clone'];assert name in LaterRecoveryFaultProfile.CLONES
+    assert case['name'].startswith(name+'-');step=case['name'][len(name)+1:];assert step in ('loss','recover','retry')
+    assert case['origin']=='later-terminal' and case['operation']==('successor-compacted-live' if step=='loss' else 'recover')
+    assert case['predecessor']==(None if step=='loss' else name+'-'+('loss' if step=='recover' else 'recover'))
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def later_loss_wire(wire,context,baseline):
+    from fault_cases import safe_event
+    name,step=later_loss_specification(context['case']);assert step=='loss'
+    mode='before-forward' if name=='outcome-before' else 'after-complete'
+    assert baseline['outcome_commit']==11 and baseline['product_source']==LATER_RECOVERY_PRODUCT
+    assert set(wire)=={'command','source_sha256','ready','held','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop','errors'}
+    assert wire['held'] is None and wire['errors']==[] and type(wire['exit_code']) is int and wire['exit_code']==0 and wire['stderr']==''
+    assert wire['readers_joined'] is True and wire['overflow'] is False and wire['forced_wrapper_stop'] is False
+    assert wire['source_sha256']==sha((Path(__file__).resolve().parents[2]/ACTIVATED_PROXY).read_bytes())
+    events=[safe_event(loads(v)) for v in wire['stdout'].splitlines()];assert events==wire['events'] and [e['event'] for e in events]==['ready','fault','receipt']
+    ready,_,receipt=events;assert wire['ready']==ready and wire['receipt']==receipt
+    assert ready['proxy_sha256']==wire['source_sha256'] and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    port=number(ready['listen_port'],1,65535,integer=True);assert port!=5432
+    number(ready['pid'],1,integer=True)
+    assert ready['max_frame_bytes']==1024**2 and ready['max_wire_bytes']==64*1024**2 and ready['max_messages']==20000 and ready['deadline_seconds']==30
+    assert wire['command']==['docker','exec','-i',context['response']['command'][2],'python3','-B','/lab/fault_proxy.py','--upstream-port','5432',
+        '--listen-port','0','--mode',mode,'--commit-number','11','--later-commits','0','--deadline-seconds','30']
+    elapsed=0;vector=[11,10,10,10] if mode=='before-forward' else [11,11,11,10]
+    for i,e in enumerate(events):
+        elapsed=number(e['elapsed_ns'],elapsed,30_000_000_000,integer=True)
+        assert e['mode']==mode and type(e['commit_number']) is int and e['commit_number']==11 and type(e['faults']) is int and e['faults']==int(i>0)
+        assert e['held'] is False and e['hold_action'] is None
+        assert all(type(e[k]) is int for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete'))
+        assert [e[k] for k in ('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')]==(vector if i else [0]*4)
+        if i:assert e['reason']==mode
+    assert set(receipt['frames'])==set(receipt['tags'])=={'frontend','backend'}
+    for direction,tags in receipt['tags'].items():
+        assert all(re.fullmatch('[0-9a-f]{2}',k) and type(n) is int and n>0 for k,n in tags.items())
+        assert type(receipt['frames'][direction]) is int and receipt['frames'][direction]==sum(tags.values())>0
+    assert sum(receipt['frames'].values())<=20000
+    assert receipt['tags']['frontend']['51']>=11 and receipt['tags']['backend']['43']>=receipt['server_commit_complete']
+    number(receipt['declared_wire_bytes'],1,64*1024**2,integer=True)
+    return port
+
+
+def later_loss_state(context,initial,expected,wire,baseline):
+    import live_replay as live
+    name,step=later_loss_specification(context['case']);assert step=='loss'
+    assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments'}
+    case=context['case'];assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['catalog_before']==context['catalog_after'];port=later_loss_wire(wire,context,baseline)
+    response=context['response'];assert set(response)=={'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'}
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
+    number(response['seconds'],0,120)
+    args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144',str(port)]
+    assert context['arguments']==args and response['command'][:2]==['docker','exec'] and response['command'][3:]==['/build/ingest_bootstrap_probe',*args]
+    assert re.fullmatch(LaterRecoveryFaultProfile.CLIENT_PREFIX+'[0-9a-f]{7}',response['command'][2])
+    events=[loads(v) for v in response['stdout'].splitlines()]
+    at=[i for i,e in enumerate(events) if e['event']=='lineage-history-state' and e['stage']=='before-dictionary'];assert len(at)==1
+    end=at[0]+1;known=history_lineage(expected,initial,compacted=True)
+    m,science=live.verify_live(events[:end],*expected,case,context['server_window'],known,compacted=True,initial=initial,proxy_port=port,dictionary_prefix=True)
+    assert (len(m.native['rows']),m.native['sequence'],len(m.inputs))==(93,138,1)
+    science.advance(1)
+    t=live.Transcript(events[end:],m)
+    t.snapshot('after-dictionary',lambda pg:m.admit(pg,science,1) if name=='outcome-after' else later_dictionary_reservation(m,science,pg))
+    live.exact(t.live('result'),dict(event='lineage-live-result',operation='live-new',stage='dictionary',epoch=3,sequence=1,error='Outcome(CommitUnknown)',observation=None))
+    t.snapshot('after-transition')
+    live.exact(t.take('native'),dict(event='lineage-history-native',state='closed'));t.snapshot('before-control-end')
+    driver=t.take('driver');assert type(driver['failed']) is bool
+    live.exact(driver,dict(event='lineage-history-driver',driver='control',failed=driver['failed'],joined=True))
+    backend=only(events[:end],event='lineage-history-backend',present=True)
+    live.exact(t.take('backend'),dict(backend,present=False))
+    live.exact(t.take('control'),dict(event='lineage-history-control',phase='dropped-and-joined',resource=m.control['resource_id'][2:],epoch=m.control['epoch']))
+    t.snapshot('after-control-end');t.snapshot('final')
+    live.exact(t.take('driver'),dict(event='lineage-history-driver',driver='observer',failed=False,joined=True))
+    live.exact(t.live('complete'),dict(event='lineage-live-complete',operation='live-new',native='closed',control='dropped-and-joined',observer='joined',success=False,writer=False,activation=True,admission=None))
+    assert t.position==len(t.events) and t.snapshots==5
+    same(context['after'],m.pg);assert (context['native_after'],context['inputs_after'])==(m.native,m.inputs)
+    assert (len(m.native['rows']),m.native['sequence'],len(m.inputs))==(99,146,2)
+    assert m.control['state']=='active' and m.control['released_at_us'] is None
+    assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    absence=context['backend_absence'];assert set(absence)=={'database','user','limit_seconds','status','attempts','seconds'}
+    assert absence['database']==case['database'] and absence['user']=='bigbrotr_control' and absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    elapsed=0
+    for i,item in enumerate(absence['attempts']):
+        assert set(item)=={'seconds','count','backends'};elapsed=number(item['seconds'],elapsed,5)
+        assert type(item['count']) is int and item['count']==len(item['backends']) and item['count'] in (0,1)
+        assert (item['count']==0)==(i==len(absence['attempts'])-1)
+        for b in item['backends']:assert b['pid']==backend['pid'] and retained.instant(b['backend_start'])==retained.instant(backend['backend_start'])
+    number(absence['seconds'],elapsed,6)
+    return m,science
+
+
+def verify_later_loss(context,initial,expected,wire,baseline):
+    m,science=later_loss_state(context,initial,expected,wire,baseline)
+    return dict(status='PASS',case=context['case']['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=99,native_sequence=146,
+        input_files=2,target_requests=1,target_checkpoint=int(context['case']['clone']=='outcome-after'),target_acknowledged=0,
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=1,
+        caller_error='Outcome(CommitUnknown)',outcome_commit=11,native_writes=12,control_release=False)
+
+
+def verify_later_loss_recovery(context,loss,initial,original,wire,baseline,expected):
+    # Reconstruct the genuine failed writer from its immutable transcript; no
+    # captured native receipt or rewritten capture supplies expected science.
+    _,science=later_loss_state(loss,initial,original,wire,baseline)
+    case=context['case'];name,step=later_loss_specification(case);assert step in ('recover','retry') and name==loss['case']['clone']
+    assert set(context)==CONTEXT_FIELDS and set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['catalog_before']==context['catalog_after']==loss['catalog_before'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert case['database']==loss['case']['database'] and case['config']==loss['case']['config']
+    w=context['server_window'];assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],loss['server_window']['after_us'],integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    assert context['inputs_after']==expected[2]==loss['inputs_after'] and len(expected[2])==2
+    assert set(context['input_contents'])==set(expected[2])
+    for n,value in context['input_contents'].items():
+        raw=bytes.fromhex(value);assert expected[2][n]==dict(bytes=len(raw),sha256=sha(raw))
+    backend_checked(context['backend'],case['database'],context['before'],context['after'])
+    report=later_recovery_closed(context['response'],case,delivery=True)
+    m=model.Model(*expected,w);preparation_control(m,context['after'],success=True)
+    producer=only(m.pg['producer_epochs'],producer_epoch=3);assert producer['reserved_through_request']==1 and producer['state']==('open' if step=='recover' else 'closing')
+    ack=int(name=='outcome-after' and step=='retry');values=model.native_map(m.native)
+    key=('receipts',(b'\x01\x31'+binary(m.slot)+be(3)).hex())
+    assert values[key]==((b'\x01\x31'+be(1)+bytes(16)) if step=='recover' else (b'\x02\x31'+be(1)+be(ack)+be(0)+b'\x01')).hex()
+    assert (len(m.native['rows']),m.native['sequence'])==(99,146 if step=='recover' else 148 if name=='outcome-after' else 147)
+    if step=='recover':
+        actual=only(context['after']['producer_epochs'],producer_epoch=3);model.fresh_xmin(actual['xmin'],m.pg)
+        assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(actual['xmin'])<int(m.control['xmin'])
+        producer.update(state='closing',xmin=actual['xmin'])
+        if name=='outcome-before':
+            observed=only(context['after']['producer_outcomes'],producer_epoch=3,request_sequence=1)
+            at=observed['recorded_at_us'];model.clock(at,w);model.fresh_xmin(observed['xmin'],m.pg)
+            assert m.control['acquired_at_us']<=at<=m.control['released_at_us']<m.control['lease_expires_at_us']
+            assert int(producer['xmin'])<int(observed['xmin'])<int(m.control['xmin'])
+            request=only(m.pg['producer_requests'],producer_epoch=3,request_sequence=1)
+            receipt=science.receipts[1]
+            outcome={k:request[k] for k in ('producer_slot_id','producer_epoch','request_sequence','dataset_id','request_digest','manifest_sha256')}
+            outcome.update(outcome_kind=1,policy_epoch=m.ds['policy_revision'],outcome_bytes='\\x'+receipt.hex(),outcome_sha256='\\x'+sha(receipt),
+                recorder_resource=m.control['resource_id'],recorder_epoch=m.control['epoch'],recorder_role='control',
+                recorder_incarnation=m.control['process_incarnation'],recorded_at_us=at,xmin=observed['xmin'])
+            m.pg['producer_outcomes'].append(outcome)
+        values[key]=(b'\x02\x31'+be(1)+be(int(name=='outcome-after'))+be(0)+b'\x01').hex()
+        m.native.update(rows=model.native_rows(values),sequence=m.native['sequence']+1+int(name=='outcome-after'))
+    same(m.pg,context['after']);assert m.native==context['native_after']
+    assert report==dict(format='bigbrotr-ingest-recovery/1',state='successor-positive-outcomes-resolved',dataset_id=m.ds['dataset_id'][2:],
+        owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='3',issued_through='1',reserved_through='1',resolved_requests='1',
+        verified_through='3',source_closure='not-performed',native='closed',owner_release='committed',ready=False,recovery_basis='closed-producer-floor-v3',compacted_requests='7')
+    return dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=99,native_sequence=m.native['sequence'],input_files=2,
+        target_requests=1,target_checkpoint=int(name=='outcome-after'),target_acknowledged=int(name=='outcome-after'),compacted_requests=7,
+        original_initial_requests_replayed=0,later_original_requests_replayed=2,outcomes_repaired=int(name=='outcome-before' and step=='recover'),
+        native_writes=0 if step=='retry' else 1+int(name=='outcome-after'))
+
+
+def later_loss_controls(context,initial,expected,wire,baseline):
+    verify_later_loss(context,initial,expected,wire,baseline);rejected=[]
+    def reject(label,change):
+        c,w=copy.deepcopy(context),copy.deepcopy(wire);change(c,w)
+        try:verify_later_loss(c,initial,expected,w,baseline)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted later outcome loss '+label)
+    def event(c,name,change):
+        events=[loads(v) for v in c['response']['stdout'].splitlines()];change(only(events,event=name))
+        c['response']['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+    def wire_event(w,change):
+        events=[loads(v) for v in w['stdout'].splitlines()];change(events)
+        w['events']=events;w['ready']=events[0];w['receipt']=events[-1];w['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+    reject('unknown-process',lambda c,w:c['response'].update(outcome='UNKNOWN'))
+    reject('unjoined-child-reader',lambda c,w:c['response'].update(readers_joined=False))
+    reject('unjoined-proxy',lambda c,w:w.update(readers_joined=False))
+    reject('forced-proxy-stop',lambda c,w:w.update(forced_wrapper_stop=True))
+    reject('backend-present',lambda c,w:c['backends'].append(dict(pid=1)))
+    reject('unknown-native-custody',lambda c,w:c['custody'].update(status='UNKNOWN_PROCESS_OUTCOME'))
+    reject('catalog-drift',lambda c,w:c.update(catalog_after=c['catalog_after']+'changed'))
+    reject('required-input-lost',lambda c,w:c['inputs_after'].pop(next(iter(c['inputs_after']))))
+    reject('extra-native-write',lambda c,w:c['native_after'].update(sequence=147))
+    reject('wrong-operation-error',lambda c,w:event(c,'lineage-live-result',lambda e:e.update(error='Control(Backend)')))
+    reject('false-admission-success',lambda c,w:event(c,'lineage-live-complete',lambda e:e.update(success=True,admission=True)))
+    def unjoined(c,w):
+        events=[loads(v) for v in c['response']['stdout'].splitlines()]
+        only(events,event='lineage-history-driver',driver='control')['joined']=False
+        c['response']['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+    reject('unjoined-Control-driver',unjoined)
+    reject('wrong-wire-boundary',lambda c,w:wire_event(w,lambda es:es[-1].update(client_commit_complete=11)))
+    reject('wire-frame-tag-mismatch',lambda c,w:wire_event(w,lambda es:es[-1]['frames'].update(frontend=es[-1]['frames']['frontend']+1)))
+    def coordinated(c,w,table,change):
+        events=[loads(v) for v in c['response']['stdout'].splitlines()];active=False
+        for e in events:
+            if e['event']!='lineage-history-state':continue
+            if e['stage']=='after-dictionary':active=True
+            if active:
+                pg={n:loads(v) for n,v in e['state']['control_tables']};change(pg[table])
+                e['state']['control_tables']=[[n,model.encoded(pg[n]).decode()] for n in sorted(pg)]
+                e['state']['control_sha256']=sha(model.encoded(e['state']['control_tables']))
+        change(c['after'][table]);c['response']['stdout']='\n'.join(model.encoded(e).decode() for e in events)+'\n'
+    reject('coordinated-reservation-attribution',lambda c,w:coordinated(c,w,'producer_requests',lambda rs:only(rs,producer_epoch=3,request_sequence=1).update(issuer_epoch=1)))
+    reject('coordinated-old-outcome-version',lambda c,w:coordinated(c,w,'producer_outcomes',lambda rs:rs[0].update(xmin='4294967000')))
+    if context['case']['clone']=='outcome-after':
+        reject('coordinated-checkpoint-revision',lambda c,w:coordinated(c,w,'producer_checkpoints',lambda rs:only(rs,producer_epoch=3).update(checkpoint_revision=2)))
+        reject('coordinated-outcome-missing',lambda c,w:coordinated(c,w,'producer_outcomes',lambda rs:rs.remove(only(rs,producer_epoch=3))))
+    else:
+        def invented(rs):
+            row=copy.deepcopy(rs[0]);row['producer_epoch']=3;rs.append(row)
+        reject('coordinated-invented-checkpoint',lambda c,w:coordinated(c,w,'producer_checkpoints',invented))
+        reject('coordinated-invented-outcome',lambda c,w:coordinated(c,w,'producer_outcomes',invented))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_loss_recovery_controls(context,loss,initial,original,wire,baseline,expected):
+    verify_later_loss_recovery(context,loss,initial,original,wire,baseline,expected);name,step=later_loss_specification(context['case']);rejected=[]
+    def reject(label,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_loss_recovery(c,loss,initial,original,wire,baseline,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted loss recovery '+label)
+    reject('unknown-process',lambda c:c['response'].update(outcome='UNKNOWN'))
+    reject('unreaped-child',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('wrong-installed-mode',lambda c:c['response']['terminal']['command'].append('--activate-successor'))
+    reject('backend-present',lambda c:c['backend'].update(all=[dict(pid=1)]))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed'))
+    reject('required-input-loss',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after']))))
+    reject('extra-native-write',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('reservation-rewritten',lambda c:only(c['after']['producer_requests'],producer_epoch=3).update(xmin='4294967000'))
+    reject('ancestor-outcome-version',lambda c:only(c['after']['producer_outcomes'],producer_epoch=2).update(xmin='4294967001'))
+    reject('source-closure-invented',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(state='closed',last_complete_sequence=1))
+    reject('missing-Control-release',lambda c:max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch']).update(state='active'))
+    if step=='recover':
+        reject('failed-owner-not-fenced',lambda c:only(c['after']['owner_epochs'],role='control',epoch=only(loss['after']['producer_requests'],producer_epoch=3)['issuer_epoch']).update(state='active',released_at_us=None))
+    else:reject('retry-producer-rewritten',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(xmin='4294967002'))
+    def reported(c,key,value):
+        r=loads(c['response']['stdout']);r[key]=value;c['response']['stdout']=model.encoded(r).decode()+'\n'
+    reject('false-target-count',lambda c:reported(c,'resolved_requests','7'))
+    reject('boolean-compacted-count',lambda c:reported(c,'compacted_requests',True))
+    reject('wrong-recovery-basis',lambda c:reported(c,'recovery_basis','original-inputs'))
+    def marker(c,ack):
+        key=(b'\x01\x31'+binary(only(c['after']['producer_epochs'],producer_epoch=3)['producer_slot_id'])+be(3)).hex()
+        row=only(c['native_after']['rows'],cf='receipts',key=key);raw=bytes.fromhex(row['value']);row['value']=(raw[:10]+be(ack)+raw[18:]).hex()
+    reject('ACK-outruns-checkpoint' if name=='outcome-before' else 'missing-ACK-advance',lambda c:marker(c,1 if name=='outcome-before' else 0))
+    reject('outcome-not-retained',lambda c:c['after']['producer_outcomes'].remove(only(c['after']['producer_outcomes'],producer_epoch=3)))
+    if name=='outcome-before' and step=='recover':
+        reject('repair-false-historical-recorder',lambda c:only(c['after']['producer_outcomes'],producer_epoch=3).update(recorder_epoch=only(loss['after']['producer_requests'],producer_epoch=3)['issuer_epoch']))
+    else:reject('existing-copy-rewritten',lambda c:only(c['after']['producer_outcomes'],producer_epoch=3).update(xmin='4294967003'))
+    if name=='outcome-before':
+        def checkpoint(c):
+            row=copy.deepcopy(c['after']['producer_checkpoints'][0]);row['producer_epoch']=3;c['after']['producer_checkpoints'].append(row)
+        reject('repair-invents-typed-checkpoint',checkpoint)
+    else:reject('retained-checkpoint-rewritten',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=3).update(checkpoint_revision=2))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
