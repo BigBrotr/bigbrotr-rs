@@ -11,8 +11,8 @@ is pushed (driver5568 joined0) and integrates qualified delivery baseline
 `9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b`. The existing product remains
 `83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c` and fixture
 `d8f45b8ab793f8c82ca317e5cc23444e683ed3cb` remains qualified for positive recovery.
-All product bytes still match qualified837. Source extension5ed remains separate,
-reviewed and built but not installed-qualified or integrated. No merge/rebase or
+All product bytes still match qualified837. The current merge additionally integrates qualified fault fixturec814. Source extension5ed remains separate,
+reviewed, built and now installed-qualified, but not yet integrated. No merge/rebase or
 conflict is pending; this documentation update follows the successful build.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json), at
@@ -29,8 +29,13 @@ worktrees/resources. Reuse unchanged evidence rather than rerunning it.
 **PASS:** Source5ed exact build driver44010 joined0:226 tests,117 mandatory controls,
 12 selectors and all14 checks, including Clippy. Both owned build containers are
 stopped/PID0/noOOM; inventory unchanged. Its `verified-build.json` and final source/
-critical receipts are linked from `next_source_work_20261025`. Installed Source
-first/retry/refusal and raw replay remain NOT_RUN.
+critical receipts are linked from `next_source_work_20261025`. Installed Source b370 drivers99804/90689 joined0:7 commands/152 controls/4519 raw
+bindings PASS; receipt saved in its run directory, integration next.
+
+**PASS:** fault c814 drivers8509/86742 joined0:6 commands/112 controls/7978 raw
+bindings. Authentic COMMIT11 loss qualifies copy repair without C invention and
+ACK advancement from retained C1, then native-zero retries. Exact837 evidence
+is linked from `next_delivery_work.faults`; no exact5ed fault claim.
 
 **PASS:** delivery baseline9f drivers91467/40051 joined0: one command, 39 controls,
 5,743 raw bindings. Exact held SQL/backend/input/prefix state identifies outcome
@@ -92,16 +97,11 @@ failure, provisional captures and the review miss remain preserved;9f adds one i
 
 ## Next action
 
-Use measured baseline9f to implement/review authentic COMMIT11 loss and installed
-positive recovery/retry. Before-forward loss should leave a
-missing current copy/no checkpoint, after-complete loss should leave C1>A0.
-Use the existing proxy and fresh installed recovery/retry; never manufacture
-these origins by deleting SQL rows or infer an ordinal from an older profile.
-Finish/review the separate Source fixture and run its installed first/retry/refusal
-matrix on the already qualified5ed build. Keep root engine ownership serial;
-no additional build is needed for fixture-only changes.
+Integrate the already qualified Source5ed/b370 result with c814, review shared
+verifier reconciliation and replay retained captures with the integrated verifier.
+Then measure Source publication delivery and fault recovery using existing owners.
 
-Actual copy repair/ACK advancement, Sync/fault schedules, staged/reserved tails,
+Remaining Sync/fault schedules, staged/reserved tails,
 Source/retirement/Archive, physical limits under live load, mixed restore/backup/
 capacity and M1–M5 remain incomplete. No floor writer/unlink is qualified.
 Original a99 Sync cause remains unknown; Q33 CI billing, arm64 and signing/registry

@@ -465,7 +465,10 @@ and malformed compacted state never falls back to the ordinary reader.
 
 Installed qualification covers a three-request head at checkpoint/ACK1, a quiet
 head at checkpoint/ACK0, exact retries and missing required-original refusals.
-It does not yet establish missing-copy repair or ACK advancement. The path adds
+Authentic outcome COMMIT-response loss before forwarding also qualifies fresh
+missing-copy repair without inventing a checkpoint. Loss after server completion
+qualifies ACK advancement from the retained checkpoint; exact retries add no
+native writes. These fault results use product837 and measured COMMIT11. The path adds
 `recovery_basis = closed-producer-floor-v3` and
 `compacted_requests = N` to the existing successful report; `resolved_requests`
 still counts current-head original requests. It does not enable source closure,

@@ -46386,14 +46386,14 @@
                 "retired_branch": "work/compacted-later-recovery",
                 "fixture_retired_branch": "work/compacted-later-recovery-fixture",
                 "next_delivery_work": {
-                  "status": "BASELINE_QUALIFIED; AUTHENTIC_LOSS_AND_FRESH_REPAIR_SOURCE_IN_PROGRESS",
+                  "status": "BASELINE_AND_AUTHENTIC_LOSS_RECOVERY_QUALIFIED",
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
                   "branch": "work/compacted-later-recovery-delivery-fixture",
                   "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
                   "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
                   "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
                   "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
-                  "next": "Review source for two genuine COMMIT11 loss clones and installed recover/retry (six commands). Before copy repair must not invent C; after C1 permits ACK1. Exact actual driver flag/joins and independent state required.",
+                  "next": "Source closure publication/ACK fault boundaries, then remaining selected compacted consumer gates.",
                   "source": "9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b",
                   "tree": "b9ecdda37f3aa429a7f08ce547627cc51db4e4ad",
                   "source_receipt": {
@@ -46426,6 +46426,24 @@
                   "import_review": {
                     "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-import-critical-v1.json",
                     "sha256": "a039c0b19c122fe5317d108e4c6a61b9413327b4432e52854ed0442723c5e84f"
+                  },
+                  "faults": {
+                    "source": "c814b152d80080f0fa63fb63b823e2ca3dbac3a6",
+                    "tree": "697566db409ee9d395fedcedda54fce63561c372",
+                    "source_receipt": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fault-fixture-source-v1.json",
+                      "sha256": "67456ad211c387758bbde5fd5e5e3e297eedd866646dc48c31aa4fe62a02b83a"
+                    },
+                    "critical_review": {
+                      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-fault-fixture-critical-v1.json",
+                      "sha256": "9611fa6a3fedfccfbfea654c6df49925d7c7f88a0e6b5c6df9ef975c714385ba"
+                    },
+                    "runtime": {
+                      "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-faults-c814b15/verified-run.json",
+                      "sha256": "f7be6e377bd3908a1b1261b95c5f5123967b90c644ad0b500a80ddae89207faf"
+                    },
+                    "result": "PASS: two clones/six commands/112 controls/7978 raw bindings. Before-forward COMMIT11 loss: fresh recovery repairs one copy, C0/A0 preserved; after-complete loss: retained C1 permits ACK1. Exact retries add no native writes. All77 SQL tables, native/input/custody/originals checked. Exact product837; Positive branch equivalence on5ed is source review, not exact5ed connected evidence.",
+                    "integration": "Included by the current main merge; exact revision obtained from containing Git commit."
                   }
                 }
               },

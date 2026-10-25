@@ -64431,16 +64431,16 @@
           }
         },
         "later_fresh_recovery_delivery_fixture_work": {
-          "status": "BASELINE_QUALIFIED; AUTHENTIC_LOSS_AND_FRESH_REPAIR_SOURCE_IN_PROGRESS",
+          "status": "BASELINE_AND_AUTHENTIC_LOSS_RECOVERY_QUALIFIED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
           "branch": "work/compacted-later-recovery-delivery-fixture",
           "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
           "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
           "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
           "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
-          "next": "Review source for two genuine COMMIT11 loss clones and installed recover/retry (six commands). Before copy repair must not invent C; after C1 permits ACK1. Exact actual driver flag/joins and independent state required.",
-          "source": "9f6fa4b8fc4dda5ecc904033b6bc3cc5df886d0b",
-          "state": "Baseline9f integrated by current merge; author continuing separate loss fixture in same worktree. All original frozen revisions/runs preserved.",
+          "next": "Source closure publication/ACK fault boundaries, then remaining selected compacted consumer gates.",
+          "source": "c814b152d80080f0fa63fb63b823e2ca3dbac3a6",
+          "state": "Clean frozen c814; qualified baseline and loss/recovery included by current main merge. Worktree and all artifacts retained. Author read-only next-boundary audit.",
           "runtime": {
             "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-delivery-9f6fa4b/verified-run.json",
             "sha256": "437c239e83cccebe84229a4736c7d118553901787d8a93fb41311b0a20a8171d"
@@ -64449,10 +64449,14 @@
             "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-delivery-0169de4/failed-run.json",
             "sha256": "e80cce801346299ea4d16eaec21c26b2557be86d6df0c6df7832f3f08fbc9444"
           },
-          "processes": "Root drivers91467/40051 joined0; last observed client06102bb1 exited143/PG71775507 exited0, bothPID0/noOOM. No active engine. Future source edits only.",
+          "processes": "Root8509/86742 joined0; client148fe012 exited143 and PG71775507 exited0/PID0/noOOM. Source99804/90689 also joined0; no root engine active.",
           "main_integration": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-delivery-main-integration-20261025.json",
             "sha256": "3074d27ad2d1f86891dbd9350a8f4a4586d02d7306e7f0afd6a2f5eb98529caf"
+          },
+          "fault_runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-faults-c814b15/verified-run.json",
+            "sha256": "f7be6e377bd3908a1b1261b95c5f5123967b90c644ad0b500a80ddae89207faf"
           }
         },
         "later_source_work": {
