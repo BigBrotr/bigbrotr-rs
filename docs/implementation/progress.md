@@ -6,11 +6,11 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main base `4e353c494f4031cf264fe9830fc157f61a35488e` is pushed.
-This integration records qualified import fixture
-`4dc280a6f38200e33eb15d5dd79d5edb86b7d727` (tree4b64f933), four Python files,
-with the checkpoint/evidence/inventory update. Its final commit is discoverable
-from Git; no future hash is guessed. Product/native runner remain exact
+Main `8d430debd5a0ece4e4db4dc280e92a89eecb0e01` is pushed (67901 joined0),
+integrating qualified import fixture
+`4dc280a6f38200e33eb15d5dd79d5edb86b7d727` (tree4b64f933), four Python files.
+This follow-up records that push and preserved ref retirement; no merge/rebase
+pending. Product/native runner remain exact
 `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
 Targeted integration receipt3d0eebfc binds unchanged product and exact fixture.
 
@@ -53,8 +53,8 @@ active row, not a process. Origin preservation5true; isolation arrays empty.
 Freeafter185,074,425,856bytes. No artifact, cache, worktree or container deleted.
 
 - `.research/compacted-later-retirement-import-20261025`: clean4dc280a6 on
-  `work/compacted-later-retirement-import`; source ready for ref retirement after
-  successful main push. External run
+  DETACHED; merged local ref retired after push, remote absent. Archive ref and
+  verified18,936,995-byte0600 bundle retained (receipt4afbae64). External run
   `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-import-4dc280a`
   retains exact detached source, database, all captures/quarantines and verified-run.
 - Prior d7,06,4d9,85,2d,5b worktrees are clean detached with archive refs and verified
@@ -71,9 +71,7 @@ Freeafter185,074,425,856bytes. No artifact, cache, worktree or container deleted
 
 ## Next action
 
-Finish this integration/push and preserve the redundant import ref in the existing
-archive/bundle scheme. Continue the bounded Archive implementation and independent
-fixture audit; review the complete changed ownership/error/transaction paths before
+Continue the bounded Archive implementation and independent fixture audit; review the complete changed ownership/error/transaction paths before
 root formatting/build. Real initialization must establish physical virgin roots;
 first publication does not satisfy the separate pre-succession signed-event,
 read/export and restart journey. Retain same-transaction H/D guards and final

@@ -46874,7 +46874,7 @@
                       "custody": "Existing frontier owner Reserved/Loaded/Bound retains same Check before connection, across fallible borrowed loader/bind; native-first transfer to existing supervised driver. Wrong phase refuses, not virgin absence. Actual implementation review remains pending."
                     },
                     "next_import_work": {
-                      "status": "PASS_EXACT_SOURCE_AND_INSTALLED_RAW; INTEGRATION_PREPARED",
+                      "status": "PASS_INTEGRATED_PUSHED; CLEAN_DETACHED_SOURCE_PRESERVED",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-import-20261025",
                       "branch": "work/compacted-later-retirement-import",
                       "base": "0e714001dbc692bd52520452de6af3f3f84af444",
@@ -46901,7 +46901,17 @@
                       },
                       "result": "One clone, three installed commands; full77SQL215/217/219, native93/138->139->139, required2:1 retained. Actual ordinary-role import under live activatingControl10; renewal/join; Source11; exact import refusalControl12 with observed26/73 log.68controls/5802raw bindings. No retirement mutation; import remains queued/admitted.",
                       "integration_base": "4e353c494f4031cf264fe9830fc157f61a35488e",
-                      "limitations": "No import execution/closure/input binding; nonzero/Event/Sync retirement, COMMIT loss/waits/drift and broader selected product remain NOT_RUN. Initial a99 Sync timeout unresolved."
+                      "limitations": "No import execution/closure/input binding; nonzero/Event/Sync retirement, COMMIT loss/waits/drift and broader selected product remain NOT_RUN. Initial a99 Sync timeout unresolved.",
+                      "integration": "8d430debd5a0ece4e4db4dc280e92a89eecb0e01",
+                      "push": {
+                        "session": 67901,
+                        "joined": true,
+                        "exit": 0
+                      },
+                      "ref_retirement": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-ref-retirement-20261025.json",
+                        "sha256": "4afbae647af408a56d350837714572437687310acc66665d046fa557d2eccd99"
+                      }
                     }
                   },
                   "integration": {

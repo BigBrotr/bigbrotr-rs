@@ -64849,9 +64849,9 @@
           "main": "01557819292c67eff5b2613750c45705707cd472"
         },
         "later_retirement_import_work": {
-          "status": "PASS_RUNTIME_RAW; PRESERVED; INTEGRATION_PREPARED",
+          "status": "PASS_INTEGRATED_PUSHED; PRESERVED_CLEAN_DETACHED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-import-20261025",
-          "branch": "work/compacted-later-retirement-import",
+          "branch": "DETACHED",
           "base": "0e714001dbc692bd52520452de6af3f3f84af444",
           "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
           "audit": {
@@ -64870,7 +64870,12 @@
           },
           "client": "19c0bf2d406ba48b63b80377206cccff85ae2c2f9a5e0dde8ae3872297490ec1",
           "owner": "9b1346c2d2520c2a98d9501830fc5bee",
-          "last_observed": "Client exited143 and borrowedPG717 exited0, PID0/noOOM;3custody receipts closed/joined/backend absent; actor270 exit0/absence0; original preservation5true, isolation empty. No resources deleted."
+          "last_observed": "Client exited143 and borrowedPG717 exited0, PID0/noOOM;3custody receipts closed/joined/backend absent; actor270 exit0/absence0; original preservation5true, isolation empty. No resources deleted.",
+          "original_branch": "work/compacted-later-retirement-import",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-ref-retirement-20261025.json",
+            "sha256": "4afbae647af408a56d350837714572437687310acc66665d046fa557d2eccd99"
+          }
         },
         "later_archive_work": {
           "status": "DESIGN_CLEAR; SOURCE_IMPLEMENTATION_IN_PROGRESS; BUILD_RUNTIME_NOT_RUN",
