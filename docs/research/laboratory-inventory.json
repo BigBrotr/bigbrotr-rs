@@ -64849,7 +64849,7 @@
           "main": "01557819292c67eff5b2613750c45705707cd472"
         },
         "later_retirement_import_work": {
-          "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "status": "PASS_RUNTIME_RAW; PRESERVED; INTEGRATION_PREPARED",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-import-20261025",
           "branch": "work/compacted-later-retirement-import",
           "base": "0e714001dbc692bd52520452de6af3f3f84af444",
@@ -64860,7 +64860,33 @@
           },
           "owners": "compacted_reader_fixture implementation; compacted_reader_review critical after current Archive design audit; root sole engine/integration owner",
           "scope": "One clone/three installed commands: quiet real activating-Control10 callback commits ordinary import and admission; Source11 then exact import-veto Retire12. Expected77SQL215/217/219,native93/138->139->139,input1. Four existing Python owners; no new Rust/client/proxy/model. Callback/actor closure must gate external native inspection; renewals modeled only in expected state.",
-          "resources": "Only writable worktree allocated; no engine/container/database allocated for new profile."
+          "resources": "Detached exact source; database bb_compacted_retirement_import_4dc280a_installed; raw/captures/inputs/quarantines preserved. Runtime51324 and raw85629 joined0; no root engine active.",
+          "source": "4dc280a6f38200e33eb15d5dd79d5edb86b7d727",
+          "tree": "4b64f9337895189ff99785b3125f0c04a3397eb4",
+          "run": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-import-4dc280a",
+          "verified_run": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-import-4dc280a/verified-run.json",
+            "sha256": "fdbd0e47638c36a0b3368d04e5ae7bb475720440a82c859433deeb94999fc358"
+          },
+          "client": "19c0bf2d406ba48b63b80377206cccff85ae2c2f9a5e0dde8ae3872297490ec1",
+          "owner": "9b1346c2d2520c2a98d9501830fc5bee",
+          "last_observed": "Client exited143 and borrowedPG717 exited0, PID0/noOOM;3custody receipts closed/joined/backend absent; actor270 exit0/absence0; original preservation5true, isolation empty. No resources deleted."
+        },
+        "later_archive_work": {
+          "status": "DESIGN_CLEAR; SOURCE_IMPLEMENTATION_IN_PROGRESS; BUILD_RUNTIME_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-20261025",
+          "branch": "work/compacted-later-archive",
+          "base": "4e353c494f4031cf264fe9830fc157f61a35488e",
+          "critical_design": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-critical-design-v1.json",
+            "sha256": "9e19d0d5e152bf0359465ca8c1a72f36cf8573985f2e91a534996c7d5fa11846"
+          },
+          "custody_supplement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-custody-supplement-20261025.json",
+            "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
+          },
+          "owners": "empty_malformed_floor source; compacted_reader_review critical on stable delta; compacted_reader_fixture read-only installed first-publication/retry fixture audit; root sole formatting/build/runtime/integration owner",
+          "resources": "Only source worktree allocated; no Archive build/engine/catalog/database yet. Existing retirement origin4d9 preserved; real virgin initialization must be verified."
         }
       }
     }

@@ -46853,16 +46853,28 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "READ_ONLY_PREREQUISITE_AUDIT_COMPLETE; DESIGN_REVIEW_PENDING; IMPLEMENTATION_NOT_STARTED",
+                      "status": "DESIGN_CLEAR; SOURCE_IMPLEMENTATION_IN_PROGRESS; BUILD_RUNTIME_NOT_RUN",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
                       },
-                      "owners": "empty_malformed_floor audit; compacted_reader_review critical; root integrating/runtime owner",
-                      "scope": "Explicit compacted pending/frontier/issuance ownership using existing Check and kernels. Initial retirement origin has8batches/28facts/cuts27,1,0 and no Archive tables; real initialization required. Publication-before-succession/read/export is a separate outstanding journey."
+                      "owners": "empty_malformed_floor source; compacted_reader_review critical on stable delta; compacted_reader_fixture read-only installed first-publication/retry fixture audit; root sole formatting/build/runtime/integration owner",
+                      "scope": "Explicit compacted pending/frontier/issuance ownership using existing Check and kernels. Initial retirement origin has8batches/28facts/cuts27,1,0 and no Archive tables; real initialization required. Publication-before-succession/read/export is a separate outstanding journey.",
+                      "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-20261025",
+                      "branch": "work/compacted-later-archive",
+                      "base": "4e353c494f4031cf264fe9830fc157f61a35488e",
+                      "critical_design": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-critical-design-v1.json",
+                        "sha256": "9e19d0d5e152bf0359465ca8c1a72f36cf8573985f2e91a534996c7d5fa11846"
+                      },
+                      "custody_supplement": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-custody-supplement-20261025.json",
+                        "sha256": "a88ddf1612745f1e5af29ffa2694113a2c889d6958dfbbddc96384d73dfdad9e"
+                      },
+                      "custody": "Existing frontier owner Reserved/Loaded/Bound retains same Check before connection, across fallible borrowed loader/bind; native-first transfer to existing supervised driver. Wrong phase refuses, not virgin absence. Actual implementation review remains pending."
                     },
                     "next_import_work": {
-                      "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+                      "status": "PASS_EXACT_SOURCE_AND_INSTALLED_RAW; INTEGRATION_PREPARED",
                       "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-import-20261025",
                       "branch": "work/compacted-later-retirement-import",
                       "base": "0e714001dbc692bd52520452de6af3f3f84af444",
@@ -46871,8 +46883,25 @@
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-audit-v1.json",
                         "sha256": "e826282c347f69dd925d77f859fddbc34dffca72b65b2df5f8dc3de797c087a8"
                       },
-                      "owners": "compacted_reader_fixture implementation; compacted_reader_review critical after current Archive design audit; root sole engine/integration owner",
-                      "scope": "One clone/three installed commands: quiet real activating-Control10 callback commits ordinary import and admission; Source11 then exact import-veto Retire12. Expected77SQL215/217/219,native93/138->139->139,input1. Four existing Python owners; no new Rust/client/proxy/model. Callback/actor closure must gate external native inspection; renewals modeled only in expected state."
+                      "owners": "Root integrated/runtime; compacted_reader_fixture source and compacted_reader_review independent critical complete",
+                      "scope": "One clone/three installed commands: quiet real activating-Control10 callback commits ordinary import and admission; Source11 then exact import-veto Retire12. Expected77SQL215/217/219,native93/138->139->139,input1. Four existing Python owners; no new Rust/client/proxy/model. Callback/actor closure must gate external native inspection; renewals modeled only in expected state.",
+                      "source": "4dc280a6f38200e33eb15d5dd79d5edb86b7d727",
+                      "tree": "4b64f9337895189ff99785b3125f0c04a3397eb4",
+                      "source_receipt": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-source-v1.json",
+                        "sha256": "b67a2954c80ef449408cf3f22ae8e24717fa00d98a69aeff8673e4f408b1a936"
+                      },
+                      "critical": {
+                        "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-critical-v1.json",
+                        "sha256": "23a64f3d7fafa081f11a891070a163de7e13af6a7aa26e12871be0090caa320c"
+                      },
+                      "verified_run": {
+                        "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-retirement-import-4dc280a/verified-run.json",
+                        "sha256": "fdbd0e47638c36a0b3368d04e5ae7bb475720440a82c859433deeb94999fc358"
+                      },
+                      "result": "One clone, three installed commands; full77SQL215/217/219, native93/138->139->139, required2:1 retained. Actual ordinary-role import under live activatingControl10; renewal/join; Source11; exact import refusalControl12 with observed26/73 log.68controls/5802raw bindings. No retirement mutation; import remains queued/admitted.",
+                      "integration_base": "4e353c494f4031cf264fe9830fc157f61a35488e",
+                      "limitations": "No import execution/closure/input binding; nonzero/Event/Sync retirement, COMMIT loss/waits/drift and broader selected product remain NOT_RUN. Initial a99 Sync timeout unresolved."
                     }
                   },
                   "integration": {

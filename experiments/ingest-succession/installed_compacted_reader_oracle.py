@@ -3221,7 +3221,8 @@ def terminal_import_checked(value,pg,control,activated_at,case,window,waiting,re
     return terminal_import_rows(value,pg,control)
 
 
-def terminal_import_rows(value,pg,control):
+def terminal_import_rows(value,pg,control,*,later_live=False,window=None):
+    assert type(later_live) is bool and (window is not None)==later_live
     from initial_empty_preparer_oracle import claim_statements,JOB,PRINCIPAL,REQUEST,DIGEST
     assert value['statements']==claim_statements(control,value['created_at_us'])
     responses=value['transactions']; assert len(responses)==5
@@ -3240,6 +3241,10 @@ def terminal_import_rows(value,pg,control):
         assert response==dict(sqlstate='00000',rows=1,lines=response['lines']) and [loads(line) for line in response['lines']]==[row]
     wanted=copy.deepcopy(pg); wanted['jobs'].append(queued)
     wanted['job_admissions'].append(dict(job_id=JOB,admission_ordinal=max(r['admission_ordinal'] for r in pg['job_admissions'])+1,xmin=xid))
+    if later_live:
+        assert control['epoch']==10 and max(int(r['xmin']) for rows in pg.values() for r in rows)<int(xid)
+        assert all(r['xmin']!=xid for table,rows in value['after'].items() for r in rows if table not in ('jobs','job_admissions') or r.get('job_id')!=JOB)
+        model.leases(wanted,value['after'],pg,window,control['epoch'],3)
     same(value['after'],wanted)
     return wanted
 
@@ -6275,7 +6280,8 @@ def verify_later_live(context,initial,expected,*,proxy_port=None,acquisition=Fal
         target_checkpoint=0 if acquisition else 1,target_acknowledged=0 if acquisition else 1)
 
 
-def verify_later_live_installed(context,initial,expected):
+def verify_later_live_installed(context,initial,expected,*,import_claim=False):
+    assert type(import_claim) is bool
     from installed_cycle_replay import process_closed
     assert later_live_specification(context['case'])=='installed' and set(context)==CONTEXT_FIELDS
     before,after=context['before'],context['after']; inputs=context['inputs_before']; window=context['server_window']
@@ -6297,6 +6303,9 @@ def verify_later_live_installed(context,initial,expected):
     m=model.Model(before,context['native_before'],inputs,dict(window,after_us=snapshots[0]['observed_by_us']))
     m.startup(snapshots[0]['control'],reports[0],compacted=True);m.window=window
     control_epoch=m.control['epoch']; previous=snapshots[0]['control']
+    if import_claim:
+        m.pg=later_import_checked(context['fixture']['after_activated'],m.pg,snapshots[0],context['case'],window,inputs)
+        previous=context['fixture']['after_activated']['after']
     for i,s in enumerate(snapshots):
         if i:
             model.leases(m.pg,s['control'],previous,window,control_epoch,3);same(m.pg,s['control'])
@@ -6304,7 +6313,7 @@ def verify_later_live_installed(context,initial,expected):
         target=only(s['control']['owner_epochs'],role='ingest',epoch=3)
         assert c['lease_expires_at_us']>=target['lease_expires_at_us']>s['server_us']
         assert c['xmin']!=target['xmin']
-        previous=s['control']
+        if not (import_claim and i==0):previous=s['control']
     model.leases(m.pg,after,previous,window,control_epoch,3,stopped=True);same(m.pg,after)
     c=only(after['owner_epochs'],role='control',epoch=control_epoch);target=only(after['owner_epochs'],role='ingest',epoch=3)
     assert c['xmin']!=target['xmin'] and c['lease_expires_at_us']>=target['lease_expires_at_us']
@@ -6318,7 +6327,8 @@ def verify_later_live_installed(context,initial,expected):
     assert signal['identity']=={k:context['response']['terminal'][k] for k in ('pid','start_ticks','command','config','prefix')}
     number(signal['before_us'],snapshots[-1]['observed_by_us'],window['after_us'],integer=True)
     number(signal['after_us'],signal['before_us'],window['after_us'],integer=True)
-    assert c['released_at_us']>=signal['before_us'] and set(context['fixture'])=={'cleanup_errors','renewal','signal'}
+    assert c['released_at_us']>=signal['before_us'] and set(context['fixture'])=={'cleanup_errors','renewal','signal'}|({'after_activated'} if import_claim else set())
+    if import_claim:assert context['fixture']['after_activated']['closed_by_us']<=snapshots[1]['server_us']
     assert context['native_after']==m.native and (len(m.native['rows']),m.native['sequence'])==(93,138)
     assert not any(r['producer_epoch']==3 for table in ('producer_requests','producer_outcomes','producer_checkpoints') for r in after[table])
     return dict(status='PASS',case=context['case']['name'],operation='live',states=5,tables=77,native_rows=93,native_sequence=138,
@@ -7336,11 +7346,12 @@ def later_source_basis(seed,quiet):
     return dict(issued=issued,ack=ack,cut=cut,digest=sha(preimage+be(cut)))
 
 
-def later_source_diagnostic(record,case,window,control,*,retirement_guard=False):
+def later_source_diagnostic(record,case,window,control,*,retirement_guard=False,import_guard=False):
     """Exact named positive-purpose SQL refusal, bound to its actual claim."""
     from datetime import datetime,timezone
-    assert type(retirement_guard) is bool
-    if retirement_guard:assert later_retirement_guard_specification(case)==('claims','refuse')
+    assert type(retirement_guard) is bool and type(import_guard) is bool and not (retirement_guard and import_guard)
+    if import_guard:assert later_retirement_import_specification(case)=='refuse'
+    elif retirement_guard:assert later_retirement_guard_specification(case)==('claims','refuse')
     else:assert case['clone']=='finite' and later_source_specification(case)[1]=='closed-positive'
     assert set(record)=={'command','returncode','stdout','stderr'} and type(record['returncode']) is int and record['returncode']==0
     bounds=[datetime.fromtimestamp(window[k]/1_000_000,timezone.utc).isoformat() for k in ('before_us','after_us')]
@@ -7360,31 +7371,33 @@ def later_source_diagnostic(record,case,window,control,*,retirement_guard=False)
     index,=[i for i,r in enumerate(records) if r['level']=='ERROR'];error=records[index]
     message=error['message'];sqlstate=None
     if message.startswith('23514:  '):sqlstate='23514';message=message[len('23514:  '):]
-    assert message==('lineage acquisition claims remain unresolved' if retirement_guard else 'lineage purpose requires active owner and open source')
+    assert message==('lineage import claims remain unresolved' if import_guard else 'lineage acquisition claims remain unresolved' if retirement_guard else 'lineage purpose requires active owner and open source')
     start=retained.instant(control['control_backend_start'])
     assert window['before_us']<=start<=control['acquired_at_us']<error['time']+1000 and error['time']<=window['after_us']
     context=records[index+1];assert context['level']=='CONTEXT' and error['time']<=context['time']<=window['after_us']
-    if retirement_guard:
-        assert context['message']=='PL/pgSQL function control.require_ingest_lineage_workflows(bytea,numeric,numeric) line 22 at RAISE'
+    if retirement_guard or import_guard:
+        assert context['message']=='PL/pgSQL function control.require_ingest_lineage_workflows(bytea,numeric,numeric) line '+('26' if import_guard else '22')+' at RAISE'
         assert context['lines'][1:]==[
             '\tSQL statement "SELECT control.require_ingest_lineage_workflows(wanted_resource,wanted_epoch,c.epoch)"',
             '\tPL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 73 at PERFORM']
     else:
         assert context['message']=='PL/pgSQL function control.require_ingest_successor(bytea,numeric,text) line 43 at RAISE' and len(context['lines'])==1
-    return dict(boundary='SQL_RETIREMENT_REQUIRES_ABANDONED_ACQUISITION' if retirement_guard else 'SQL_POSITIVE_REQUIRES_OPEN_SOURCE',backend=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database']),
+    return dict(boundary='SQL_RETIREMENT_REQUIRES_RESOLVED_IMPORT' if import_guard else 'SQL_RETIREMENT_REQUIRES_ABANDONED_ACQUISITION' if retirement_guard else 'SQL_POSITIVE_REQUIRES_OPEN_SOURCE',backend=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database']),
         error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
 
 
-def verify_later_source(context,seed,expected,*,delivery=False,faults=False,baseline=None,acquisition=False):
+def verify_later_source(context,seed,expected,*,delivery=False,faults=False,baseline=None,acquisition=False,import_claim=False):
+    assert type(import_claim) is bool and not (import_claim and (delivery or faults or acquisition))
     assert type(acquisition) is bool and not (acquisition and (delivery or faults))
     assert type(delivery) is bool and type(faults) is bool and not (delivery and faults)
     if faults:assert baseline['publication_commit']==15 and baseline['product_source']==LATER_SOURCE_PRODUCT
     else:assert baseline is None
     if delivery:assert later_source_specification(context['case'])==('finite','source')
     case=context['case']
-    name,step=('claims',later_acquisition_specification(case)) if acquisition else later_source_specification(case,faults=faults)
+    name,step=('installed',later_retirement_import_specification(case)) if import_claim else ('claims',later_acquisition_specification(case)) if acquisition else later_source_specification(case,faults=faults)
+    assert not import_claim or step=='source'
     assert not acquisition or step in ('source','abandon','retry')
-    quiet=acquisition or name=='quiet'
+    quiet=import_claim or acquisition or name=='quiet'
     loss=faults and step=='loss';failure=not acquisition and (loss or step in LATER_SOURCE_ERRORS)
     assert set(context)==CONTEXT_FIELDS|({'source_diagnostic'} if step=='closed-positive' else set())
     assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
@@ -7401,7 +7414,7 @@ def verify_later_source(context,seed,expected,*,delivery=False,faults=False,base
     for n,v in context['input_contents'].items():
         data=bytes.fromhex(v);assert wanted_inputs[n]==dict(bytes=len(data),sha256=sha(data))
     backend_checked(context['backend'],case['database'],context['before'],context['after'])
-    report=later_source_closed(context['response'],case,faults=faults,acquisition=acquisition);basis=later_source_basis(seed,quiet)
+    report=later_retirement_import_closed(context['response'],case) if import_claim else later_source_closed(context['response'],case,faults=faults,acquisition=acquisition);basis=later_source_basis(seed,quiet)
     issued,ack,cut,digest=(basis[k] for k in ('issued','ack','cut','digest'))
     m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure,renewed=loss)
     if loss:m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
@@ -8390,4 +8403,200 @@ def later_retirement_guard_controls(context,initial,seed,expected):
     else:
         reject('quarantined-input-restored',lambda c:c['inputs_after'].update(seed[2]))
         reject('gap-history-rewritten',lambda c:only(c['after']['acquisition_gaps'],producer_epoch=3).update(previous_owner_epoch=current(c)['epoch']))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+class LaterRetirementImportProfile:
+    DIRECTORY='installed-compacted-later-retirement-import'
+    LABEL='org.bigbrotr.installed-compacted-later-retirement-import'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_RETIREMENT_IMPORT'
+    DATABASE_PREFIX='bb_compacted_retirement_import_'
+    CLIENT_PREFIX='bigbrotr-compacted-retirement-import-'
+    CLONES=('installed',)
+    STEPS={'installed':('live','source','refuse')}
+    CASES=tuple('installed-'+s for s in STEPS['installed'])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Import execution, closure, input binding or checkpoint; claim is ordinary guarded relational work',
+        *LaterRetirementProfile.NOT_RUN[1:])
+
+
+def later_retirement_import_specification(case):
+    assert case['clone']=='installed' and case['origin']=='later-terminal'
+    assert case['name'].startswith('installed-');step=case['name'][len('installed-'):]
+    steps=LaterRetirementImportProfile.STEPS['installed'];index=steps.index(step)
+    assert case['predecessor']==('installed-'+steps[index-1] if index else None)
+    assert case['operation']==('retire' if step=='refuse' else step)
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return step
+
+
+def later_retirement_import_closed(response,case):
+    step=later_retirement_import_specification(case)
+    if step!='refuse':
+        from installed_cycle_replay import process_closed
+        reports=process_closed(response,case)
+        return reports if step=='live' else reports[0]
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==4
+    t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True);number(t['start_ticks'],1,integer=True);number(t['elapsed_seconds'],0,60)
+    assert t['command']==argv('retire',Path(case['config'])) and t['config']==case['config'] and t['prefix']=='/lab/'+case['name']
+    assert type(t['exit_code']) is int and t['exit_code']==4 and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    assert response['stdout']=='' and response['stderr']==LATER_RETIREMENT_GUARD_ERRORS['claims']
+
+
+def later_import_checked(value,pg,activated,case,window,inputs):
+    from initial_empty_locks_oracle import app_identity,guards as guard_catalog
+    assert set(value)=={'status','cleanup_errors','postgres','transactions','actor_exit_code','actor_absence','server_window',
+        'before','before_observed_us','control','inputs_before','guards_before','live_before','backend','identity',
+        'created_at_us','statements','after','inputs_after','guards_after','live_after','observed_by_us','closed_by_us'}
+    owner=value['postgres'];assert set(owner)=={'id','name','owner'}
+    assert re.fullmatch('[0-9a-f]{64}',owner['id']) and re.fullmatch('/[a-zA-Z0-9_.-]+',owner['name']) and re.fullmatch('[0-9a-f]{32}',owner['owner'])
+    assert value['status']=='CAPTURED' and value['cleanup_errors']==[] and value['actor_absence']=='0' and type(value['actor_exit_code']) is int
+    assert set(value['server_window'])=={'before_us','after_us'}
+    times=[activated['observed_by_us'],value['server_window']['before_us'],value['before_observed_us'],value['created_at_us'],
+        value['server_window']['after_us'],value['observed_by_us'],value['closed_by_us'],window['after_us']]
+    assert all(type(v) is int for v in times) and times==sorted(times)
+    wanted=copy.deepcopy(pg);model.leases(wanted,value['before'],pg,window,10,3);same(wanted,value['before'])
+    control=only(wanted['owner_epochs'],role='control',epoch=10);activation=only(wanted['ingest_activations'],target_epoch=3)
+    assert value['control']==control and control['state']=='active'
+    assert tuple(control[k] for k in ('resource_id','epoch','process_incarnation'))==tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    assert activation['activated_at_us']<=value['server_window']['before_us']
+    assert value['observed_by_us']<control['lease_expires_at_us']
+    assert value['inputs_before']==value['inputs_after']==inputs and len(inputs)==1
+    live=dict(pid=control['control_backend_pid'],backend_start=control['control_backend_start'],database=case['database'],user='bigbrotr_control')
+    assert value['live_before']==value['live_after']==live
+    actor=value['backend'];assert set(actor)=={'pid','backend_start','database','user','application','isolation','synchronous_commit'}
+    number(actor['pid'],1,integer=True);assert actor['pid']!=live['pid'] and actor['database']==case['database']
+    assert actor['user']=='bigbrotr_control' and actor['application']=='later_import_claim' and actor['isolation']=='read committed' and actor['synchronous_commit']=='on'
+    assert value['server_window']['before_us']<=retained.instant(actor['backend_start'])<=value['created_at_us']
+    app_identity(value['identity'],actor);guard_catalog(value['guards_before']);assert value['guards_after']==value['guards_before']
+    return terminal_import_rows(value,wanted,control,later_live=True,window=window)
+
+
+def later_import_obligation(pg):
+    from initial_empty_preparer_oracle import JOB,PRINCIPAL,REQUEST,DIGEST
+    activation=only(pg['ingest_activations'],target_epoch=3);job=only(pg['jobs'],job_id=JOB)
+    assert activation['activated_by_epoch']==10 and job['kind']=='import' and job['state']=='queued' and job['job_revision']==2
+    assert (job['principal_id'],job['request_key'],job['request_digest'])==(PRINCIPAL,REQUEST,DIGEST)
+    assert job['input_complete'] is True and job['checkpoint_revision']==0 and job['completed_at_us'] is None
+    identity=tuple(activation[k] for k in ('activated_by_resource','activated_by_epoch','activated_by_incarnation'))
+    assert tuple(job[k] for k in ('owner_resource_id','owner_epoch','owner_incarnation'))==identity
+    assert not [r for r in pg['jobs'] if r['kind']=='acquisition' and tuple(r[k] for k in ('owner_resource_id','owner_epoch','owner_incarnation'))==identity]
+    assert only(pg['job_admissions'],job_id=JOB)==dict(job_id=JOB,admission_ordinal=2,xmin=job['xmin'])
+    assert not [r for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_input_bindings','acquisition_gaps') for r in pg[table] if r['producer_epoch']==3]
+    assert not [r for r in pg['job_input_bounds'] if r['job_id']==JOB]
+    return job
+
+
+def verify_later_retirement_import(context,initial,seed,expected):
+    step=later_retirement_import_specification(context['case']);case=context['case']
+    assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    if step=='live':
+        assert seed is None
+        result=verify_later_live_installed(context,initial,expected,import_claim=True)
+        assert sum(map(len,context['after'].values()))==215;later_import_obligation(context['after'])
+        return dict(result,sql_rows=215,import_claim='actual-activator',admission_ordinal=2)
+    assert seed is not None;later_import_obligation(seed[0]);later_import_obligation(context['after'])
+    if step=='source':
+        result=verify_later_source(context,seed,expected,import_claim=True)
+        assert sum(map(len,context['after'].values()))==217
+        return dict(result,import_claim='preserved')
+    assert set(context)==CONTEXT_FIELDS|{'guard_diagnostic'}
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert set(context['after'])==set(expected[0])==set(seed[0]) and len(seed[0])==77
+    assert context['catalog_before']==context['catalog_after'] and context['fixture']==dict(cleanup_errors=[]) and context['snapshots']==[]
+    window=context['server_window'];assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True);number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    assert context['native_after']==expected[1] and (len(expected[1]['rows']),expected[1]['sequence'])==(93,139)
+    assert context['inputs_after']==expected[2]==seed[2] and len(seed[2])==1
+    assert set(context['input_contents'])==set(seed[2])
+    for n,v in context['input_contents'].items():
+        data=bytes.fromhex(v);assert seed[2][n]==dict(bytes=len(data),sha256=sha(data))
+    basis=later_source_basis(seed,True);source=only(expected[0]['source_streams'],owner_epoch=3)
+    assert source['state']=='closed' and source['last_complete_sequence']==0 and source['closure_digest']=='\\x'+basis['digest']
+    assert only(expected[0]['producer_epochs'],producer_epoch=3)['state']=='closing'
+    assert not [r for r in expected[0]['ingest_terminal_transactions'] if r['target_epoch']==3]
+    backend_checked(context['backend'],case['database'],context['before'],context['after']);later_retirement_import_closed(context['response'],case)
+    m=model.Model(*expected,window);preparation_control(m,context['after'],success=False)
+    control=only(m.pg['owner_epochs'],role='control',epoch=12)
+    assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(control['xmin'])
+    same(m.pg,context['after']);assert sum(map(len,m.pg.values()))==219
+    diagnostic=later_source_diagnostic(context['guard_diagnostic'],case,window,control,import_guard=True)
+    return dict(status='PASS',case=case['name'],tables=77,sql_rows=219,native_rows=93,native_sequence=139,input_files=1,
+        target_requests=0,target_checkpoint=0,target_acknowledged=0,source_cut=0,source_digest=basis['digest'],compacted_requests=7,
+        native_writes=0,lifecycle_updates=0,terminal_receipts_inserted=0,control_released=False,import_claim='preserved',refusal_guard=diagnostic)
+
+
+def later_retirement_import_controls(context,initial,seed,expected):
+    verify_later_retirement_import(context,initial,seed,expected);step=later_retirement_import_specification(context['case']);rejected=[]
+    def reject(label,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_retirement_import(c,initial,seed,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration,OverflowError,IndexError):rejected.append(label);return
+        raise AssertionError('import retirement control accepted: '+label)
+    def job(pg):return only(pg['jobs'],job_id='\\x'+'e6'*16)
+    def current(c):return max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    reject('unknown-custody',lambda c:c['case'].update(custody='OUTCOME_UNKNOWN'))
+    reject('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('forced-process',lambda c:c['response']['terminal'].update(forced=True))
+    reject('backend-present',lambda c:c['backend'].update(all=[dict(pid=1)]))
+    reject('cleanup-error',lambda c:c['fixture']['cleanup_errors'].append('unjoined'))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed'))
+    reject('native-write',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('required-input-lost',lambda c:c['inputs_after'].clear())
+    reject('input-bytes-rewritten',lambda c:c['input_contents'].update({next(iter(c['input_contents'])):'00'}))
+    reject('import-attribution-rewritten',lambda c:job(c['after']).update(owner_epoch=11))
+    reject('import-completed',lambda c:job(c['after']).update(state='succeeded',job_revision=3))
+    reject('admission-ordinal-rewritten',lambda c:only(c['after']['job_admissions'],job_id='\\x'+'e6'*16).update(admission_ordinal=3))
+    reject('initial-head-rewritten',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=1).update(complete_through_request=6))
+    if step=='live':
+        def claim(c):return c['fixture']['after_activated']
+        reject('callback-incomplete',lambda c:claim(c).update(status='INCOMPLETE'))
+        reject('callback-failure',lambda c:claim(c).update(failure='unknown'))
+        reject('actor-unjoined',lambda c:claim(c).update(actor_exit_code=None))
+        reject('actor-still-present',lambda c:claim(c).update(actor_absence='1'))
+        reject('actor-cleanup-failure',lambda c:claim(c)['cleanup_errors'].append('unjoined'))
+        reject('actor-superuser',lambda c:claim(c)['identity'].update(superuser=True))
+        reject('actor-replica-bypass',lambda c:claim(c)['identity'].update(session_replication_role='replica'))
+        reject('different-live-backend',lambda c:claim(c)['live_after'].update(pid=1))
+        reject('different-claim-database',lambda c:claim(c)['backend'].update(database='unrelated'))
+        reject('uncommitted-import',lambda c:claim(c)['transactions'][-1].update(sqlstate='23514'))
+        reject('wrong-claim-SQL',lambda c:claim(c)['statements'].__setitem__(0,'BEGIN; SET LOCAL session_replication_role=replica;'))
+        def late(c):
+            v=claim(c);at=v['control']['lease_expires_at_us'];v['server_window']['after_us']=at;v['observed_by_us']=at;v['closed_by_us']=max(at,v['closed_by_us'])
+        reject('coordinated-claim-after-current-lease',late)
+        used={int(r['xmin']) for rows in context['fixture']['after_activated']['before'].values() for r in rows}
+        old=str(next(v for v in range(max(used)-1,0,-1) if v not in used))
+        def old_claim(c):
+            v=claim(c)
+            for pg in (v['after'],*(s['control'] for s in c['snapshots'][1:]),c['after']):
+                job(pg)['xmin']=old;only(pg['job_admissions'],job_id='\\x'+'e6'*16)['xmin']=old
+            for response in v['transactions'][1:4]:
+                row=loads(response['lines'][0]);row['xmin']=old;response['lines']=[model.encoded(row).decode()]
+            c['fixture']['renewal']['current']=copy.deepcopy(c['snapshots'][1])
+        reject('coordinated-older-unused-import-xmin',old_claim)
+        reject('guards-disabled',lambda c:claim(c)['guards_after'].clear())
+        reject('missing-renewal',lambda c:c['snapshots'].pop(1))
+        reject('early-signal',lambda c:c['fixture']['signal'].update(before_us=c['server_window']['before_us']))
+    elif step=='source':
+        reject('wrong-source-cut',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(last_complete_sequence=7))
+        reject('wrong-source-digest',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closure_digest='\\x'+'00'*32))
+        reject('Control-not-released',lambda c:current(c).update(state='active'))
+        def report(c):
+            r=loads(c['response']['stdout']);r['compacted_requests']='0';c['response']['stdout']=model.encoded(r).decode()+'\n'
+        reject('wrong-compacted-count',report)
+    else:
+        reject('false-success',lambda c:c['response'].update(returncode=0,stderr='',stdout='{}\n'))
+        reject('wrong-refusal-boundary',lambda c:c['response'].update(stderr=LATER_RETIREMENT_GUARD_ERRORS['missing-required']))
+        reject('Control-released',lambda c:current(c).update(state='released'))
+        reject('producer-retired',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(state='retired'))
+        reject('source-time-rewritten',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(closed_at_us=current(c)['acquired_at_us']))
+        def log(c,old,new):
+            for stream in ('stdout','stderr'):c['guard_diagnostic'][stream]=c['guard_diagnostic'][stream].replace(old,new)
+        reject('wrong-named-veto',lambda c:log(c,'lineage import claims remain unresolved','lineage acquisition claims remain unresolved'))
+        reject('wrong-error-backend',lambda c:log(c,'['+str(current(c)['control_backend_pid'])+']','[1]'))
+        reject('wrong-inner-context',lambda c:log(c,'line 26 at RAISE','line 22 at RAISE'))
+        reject('wrong-outer-context',lambda c:log(c,'line 73 at PERFORM','line 72 at PERFORM'))
     return dict(status='PASS',count=len(rejected),rejected=rejected)
