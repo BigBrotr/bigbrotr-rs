@@ -703,8 +703,7 @@ def later_clone_replay(folder,clone,report,seed,initial,raw,read,previous_time,f
     name=clone['name'];directory=folder/name;expected=seed;results=[]
     proxy=raw(folder/'fault_proxy.py')
     assert proxy==raw(folder.parent/'source/experiments/control-migrations/fault_proxy.py')
-    from transition_fault_replay import PROXY_SHA256
-    assert sha(proxy)==PROXY_SHA256
+    assert sha(proxy)==oracle.LATER_PROXY_SHA256
     fault=read(folder/'closing-late-sql.json') if name=='closing' else None
     if fault is not None:
         oracle.empty_fault_guard_delta(fault,epoch=3)

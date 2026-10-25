@@ -5447,6 +5447,7 @@ class EmptyInitialMalformedProfile:
 # One finite later-attempt profile. The product pin is filled only after the
 # integrating owner freezes the reviewed source; historical pins stay exact.
 LATER_PRODUCT = '2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f'
+LATER_PROXY_SHA256 = '81d559d9eadf82a5f7733eadeee6a86a05ff104d9a6f2db83e28d2addd6b734e'
 LATER_TERMINAL_ORIGIN = dict(FAULT_ORIGIN,name='later-terminal',
     database='bb_compacted_history_6ece98c_history_terminal',source_clone='history-terminal',
     final_case='history-terminal-full',snapshot='history-terminal-final-sql.json',
@@ -5598,7 +5599,7 @@ def later_held_checked(held,events,expected,initial,case,window):
 
 def later_wire_checked(value,case,baseline):
     from fault_cases import safe_event
-    from transition_fault_replay import PROXY_SHA256,COUNTERS
+    from transition_fault_replay import COUNTERS
     name,step=later_specification(case); normal=step=='prepare'; target=value['target']
     assert set(value)=={'mode','target','held','prefix','wire','errors'} and value['errors']==[]
     assert type(target) is int
@@ -5609,7 +5610,7 @@ def later_wire_checked(value,case,baseline):
         assert value['held'] is None and value['prefix'] is None
     mode='hold-after-complete' if normal else 'after-complete'; assert value['mode']==mode
     w=value['wire']; assert set(w)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
-    assert w['source_sha256']==PROXY_SHA256 and w['stderr']=='' and w['exit_code']==0
+    assert w['source_sha256']==LATER_PROXY_SHA256 and w['stderr']=='' and w['exit_code']==0
     assert w['readers_joined'] is True and w['overflow'] is False and w['forced_wrapper_stop'] is False
     assert w['command'][0:3]==['docker','exec','-i']
     assert re.fullmatch('bigbrotr-compacted-later-[0-9a-f]{7}',w['command'][3])
@@ -5624,11 +5625,12 @@ def later_wire_checked(value,case,baseline):
         assert e['mode']==mode and e['commit_number']==target
         wanted=[0]*5 if i==0 else [target,target,target,target-1,1]
         if normal and i==3:wanted=[target+1]*4+[1]
+        assert all(type(e[k]) is int for k in COUNTERS)
         assert [e[k] for k in COUNTERS]==wanted
-        assert e['held'] is (normal and i>0)
+        assert e['held'] is (normal and i==1)
         assert e['hold_action']==('release' if normal and i>=2 else None)
     ready,receipt=events[0],events[-1]
-    assert ready['proxy_sha256']==PROXY_SHA256 and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
+    assert ready['proxy_sha256']==LATER_PROXY_SHA256 and ready['listen_host']=='127.0.0.1' and ready['upstream_port']==5432
     assert ready['listen_port']==case['proxy_port'] and ready['deadline_seconds']==30
     number(ready['pid'],1,integer=True); number(case['proxy_port'],1,65535,integer=True)
     assert case['proxy_port']!=5432 and ready['max_frame_bytes']==1024**2
