@@ -6,68 +6,62 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798` is pushed
-(25651 joined0), integrating qualified fixturee040. All12blobs exactly match the
-runtime source; product paths exactlyc49 (integrationd7c742b3). No merge pending.
-This follow-up updates evidence/inventory; new loader work is isolated below.
+Main parent `0c9bb861508aa7cb4b361db8544e503ec905987a` is pushed.
+This merge integrates qualified loader fixture
+`d6a6b6f112742b9360fac17e1480a3019b6ca42e` and its evidence; push pending.
+Six changed Python owners; product remains exact qualifiedc49. No product build
+or Rust change was needed. Source and independent critical reviews are complete.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
 identities/results under `initial_successor_preparation_20261012.
 repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.compacted_successor_preparation.
 later_empty_consumer_work.next_source_work_20261025.next_abandonment_work_20261025.
-next_retirement_work.next_archive_work.fixture_work`.
+next_retirement_work.next_archive_work.next_loader_work`.
 The [inventory](../research/laboratory-inventory.json) owns retained resources.
 
 ## Result and remaining gates
 
-- **PASS:** e040 runtime83701/raw54019 both joined0:1clone/5mutatingcommands,
-  62negativecontrols (18setup/24first/20retry),4394rawbindings. Receipt36e2da4f.
-  Genuine initialization SQL236/236/240, first267/retry269; native93/139/input1
-  unchanged. First8attempts, frontier1/snapshot9/topology2/cuts27,1,0, complete
-  signed families12/4/4/4/4, catalog/physical/journals. Retry adds no attempt or
-  frontier; only fresh Control rows. Actual child/client/backend custody passed.
-- **Reused:** exact c49 component45/installed56 tests, required controls, Clippy,
-  worker identity and pinned bundle. No product source changed for fixture fixes.
-- **FAIL, preserved:**995 wrong structural checksum expectation (750882e1);
-  598 omitted virgin parent-directory expectation (a2340c2a). Separate reviewed
-  corrections retain all original data/results and diagnostic limits. Original280
-  test-assumption failure remains. No prior failed run recertified.
-- **NOT_RUN:** loader cancellation/loss, post-proof H/D/input/capacity faults,
-  UTC/COMMIT delivery/interruption and pre-succession signed-event/read/export/
-  restart journey. Floor writer/unlink, restore and selected product incomplete.
-  Initial a99 Sync timeout cause unknown. Q33 CI billing, arm64 and signing/
-  registry remain separate gates. No task closed.
+- **PASS:** d6a runtime18069/raw45851 joined0:2clones/8commands/86negative
+  controls/4401rawbindings; receipt852a502c. Each genuine initialization reaches
+  SQL236/236/240, then loader refusal242: only fresh failed activeControl/role.
+  Exact SIGTERM and backend loss occurred before refresh+1s by663362us/663686us.
+  Both actual exit4 errors, unforced/reaped child, rollback/reaped holder and
+  exact/all backend absence passed. Native93/139/input1/catalog/journals unchanged.
+- **Reused:** e040 first publication/retry62controls/4394bindings, full signed
+  families and physical evidence; c49 component45/installed56 tests and required
+  checks. Their exact identities remain in the linked report.
+- **FAIL, preserved:** original995 structural-checksum expectation and598 virgin
+  parent-directory expectation; original280 test assumptions. Loader diagnosticv1
+  default62 passed then exposed missing tomllib import; corrected before freeze,
+  v2 reran only affected synthetic50 controls. No failed run recertified.
+- **NOT_RUN:** actual fixture exception/deferred-holder cleanup (source reviewed),
+  post-proof H/D/input/capacity faults, UTC/COMMIT delivery/interruption and
+  pre-succession signed-event/read/export/restart journey. Floor writer/unlink,
+  restore and selected product incomplete. Initial a99 Sync timeout cause unknown.
+  Q33 CI billing, arm64 and signing/registry remain separate gates. No task closed.
 
 ## Owners and resources
 
-No active root engine/build. Source author and reviewer are active on the new
-loader fixture; they have no engine authority. Actual e040 client6a1bdcce
+No active engine/build or author/reviewer process. Actual loader cliente9bff81d
 exited143/PID0/noOOM; borrowed PostgreSQL71775507 exited0/PID0/noOOM.
-Both actual catch-up children reaped/unforced; exclusion before external native/
-CAPI opens, origin preservation and empty cleanup/isolation arrays verified.
+Root verified actual owned resource state after both driver handles joined.
+Origin preservation and empty cleanup/isolation arrays passed.
 
-- `.research/compacted-later-archive-fixture-20261025`, branch
-  formerly `work/compacted-later-archive-fixture`, now clean detachede040. Merged
-  local ref retired; archive ref/bundle preserved (7b1dbe5e). Source233c404d, correction
-  1cbb737f/b55192a0 and critical86a7c3a0/3544aee0/66ad1db1 bind final source.
-- External `/home/tux/bigbrotr-implementation-20260917/runs/` retains
-  `installed-compacted-later-archive-995e71d`, `...-59807b5`, `...-e0401d9`:
-  exact source worktrees, all databases/native copies/Archive roots/journals/logs.
-  Freeaftere040176,579,837,952bytes. Preserve all artifacts and prior laboratories.
-- Product worktree remains detachedc49 with archived ref/bundle. Qualified dual
-  builds and original280 remain inventoried. No dataset/cache/container deleted.
-- `.research/compacted-later-archive-loader-fixture-20261025`, branch
-  `work/compacted-later-archive-loader-fixture`, basef0efa93a. Source author
-  `compacted_reader_fixture` and independent `compacted_reader_review` own the
-  bounded next fixture. Audit58f59342/criticala9fbee10 accepted; no runtime yet.
-  Report `next_archive_work.next_loader_work` and inventory own its details.
+- `.research/compacted-later-archive-loader-fixture-20261025`, clean branch
+  `work/compacted-later-archive-loader-fixture`, source d6a. Sourcec56da1d8 and
+  criticala2973d85 bind six blobs and reviewed cleanup. Branch retirement follows
+  integration/push; keep the worktree and ignored evidence.
+- `/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f`
+  retains exact source, four databases, two native/input/Archive roots and all
+  logs/raw results. Freeafter175383117824bytes. Prior995/598/e040 and all other
+  inventories remain retained. No datasets, caches or containers deleted.
 
 ## Next action
 
-Review and freeze the two audited loader cases on fresh genuine initializations:
-SIGTERM and exact Control-backend loss while PREREQUISITES waits on consumers.
-Act before last-refresh anchor+1s; retain holder until child terminal, then
-rollback/join and exclude all backends before native reopen. No full77snapshot
-while AXheld. Existing6/1/5 clocks and full independent state expectations remain.
-Reuse currentc49 builds; root alone runs frozen-source actual cases and raw replay.
+Finish integration/push and retire only the redundant merged branch ref with
+archive/bundle preservation. Then qualify the audited successful reader hold and
+release baseline: bind the existing proxy to the actual provisioned reader and
+catalog database before separate post-proof H and D mutations. Reuse audit58f59342,
+criticala9fbee10 and currentc49 builds. Preserve existing limits and complete
+independent expectations; root alone runs engines and strict raw replay.

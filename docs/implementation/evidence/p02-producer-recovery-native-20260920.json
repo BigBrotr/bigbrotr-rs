@@ -47008,8 +47008,8 @@
                         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5/verified-build.json",
                         "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
-                      "result": "Unchanged c49 dual builds PASS (45component+56installed tests and required Clippy/worker controls); e040 exact installed first-publication/retry and raw PASS62controls. Original280,995 and598 failures preserved. No phase/task closure; next real loader cancellation/loss remains unqualified.",
-                      "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held.",
+                      "result": "Unchanged c49 dual builds PASS (45component+56installed tests and required Clippy/worker controls); e040 first-publication/retry and raw PASS62controls; d6a actual loader cancellation/loss and raw PASS86controls. Original280,995,598 and loader diagnosticv1 failures preserved. No phase/task closure.",
+                      "next": "Loader qualified; integrate and push, then audited successful post-proof reader hold baseline before H/D mutations. M1-M5 and remaining task gates incomplete.",
                       "integration": {
                         "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "push": {
@@ -47039,12 +47039,12 @@
                         "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
                       },
                       "next_loader_work": {
-                        "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+                        "status": "D6A_QUALIFIED; INTEGRATION_IN_CURRENT_MERGE",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
                         "branch": "work/compacted-later-archive-loader-fixture",
                         "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
                         "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
-                        "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240\u2192242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
+                        "scope": "Two actual genuinely initialized roots from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control-backend loss. Scope limits and immutable diagnostic v1 NameError are in linked source/critical/runtime receipts.",
                         "prerequisites": {
                           "audit": {
                             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-audit-20261025.json",
@@ -47054,11 +47054,38 @@
                             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
                             "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
                           },
-                          "state": "SOURCE_AUDIT_ACCEPTED; IMPLEMENTATION_IN_PROGRESS",
+                          "state": "QUALIFIED_AT_D6A; conservative refresh anchor/actions observed",
                           "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
                         },
-                        "resources": "Only isolated source worktree allocated; no new runtime resources or source product build.",
-                        "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held."
+                        "resources": "Actual cliente9bff81d exit143/PID0/noOOM; borrowedPG71775507 exit0/PID0/noOOM. All data/worktrees/artifacts retained; no active engine.",
+                        "next": "Qualify successful actual-reader hold/release before separate post-proof H and D faults using audit58f59342; exact provisioned reader/catalog proxy binding is required. Existing c49 builds and full independent expectations remain.",
+                        "source": "d6a6b6f112742b9360fac17e1480a3019b6ca42e",
+                        "tree": "f595f322cdc0a97b29d52584f527370edbf4db02",
+                        "source_receipt": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-loader-fixture-source-v1.json",
+                          "sha256": "c56da1d804383c2ca3fb7182f8e3b3332360942680b7e409518e35315e13d386"
+                        },
+                        "critical": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-loader-critical-v1.json",
+                          "sha256": "a2973d855c8c98b71460548f243cb3807d3fb1f01c79097a6fbc718c64e56408"
+                        },
+                        "qualified_runtime": {
+                          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f/verified-run.json",
+                          "sha256": "852a502c7b591383abe685ad880a13dfce58de798272cc269bc18f577632d722"
+                        },
+                        "result": "Runtime18069 and raw45851 joined0;2clones/8commands/86controls/4401bindings. Per clone236/236/240/242; exact failed activeControl+role only, native93/139/input1/catalog/journals unchanged. Actions before conservative refresh+1s by663362us/663686us; actual unforced child/holder closure and all backend absence before native-after.",
+                        "integration": {
+                          "parent": "0c9bb861508aa7cb4b361db8544e503ec905987a",
+                          "fixture": "d6a6b6f112742b9360fac17e1480a3019b6ca42e",
+                          "status": "Part of current merge; push pending"
+                        },
+                        "not_run": [
+                          "Archive post-proof H/D/input drift and capacity refusals",
+                          "Issuance/frontier lock waits, UTC expiry and publication/COMMIT delivery loss",
+                          "Internal grant lifetime telemetry, read/export, adoption and retention/GC",
+                          "Power-loss, reboot, mixed restore and hostile filesystem mutation",
+                          "Actual harness exception/deferred-holder cleanup path; source-reviewed only"
+                        ]
                       }
                     },
                     "next_import_work": {

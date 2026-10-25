@@ -608,6 +608,8 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         # Never inspect a clone natively here: a failed wrapper may still own it.
         for clone in report['clones']:
             try:
+                pending=[r for r in report.get('archive_resources',[]) if r['control_database']==clone['database'] and r.get('loader_holder_unknown')]
+                assert not pending, 'loader holder remains retained; final full SQL capture deliberately skipped'
                 lab.write_json(output / (clone['name'] + '-final-sql.json'), schema.rows(pg, clone['database']))
                 clone['final_backends'] = schema.absence(pg, clone['database'])
                 clone['final_catalog'] = catalog(pg, clone['database'])
@@ -620,7 +622,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                     database=resource['catalog_database']
                     assert resource['control_database'] in {c['database'] for c in report['clones']}
                     assert database==resource['control_database']+'_cat' and database in report['databases']
-                    observe_origin_absence(pg,database,output,'archive-catalog-final')
+                    observe_origin_absence(pg,database,output,Path(resource['home']).name+'-catalog-final')
                 except BaseException as error:
                     errors.append(dict(archive_resource=resource['catalog_database'],error=repr(error)))
         for origin in origin_specs:
@@ -669,6 +671,13 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
                 item, = json.loads(lab.docker('inspect', ident).stdout)
                 assert not item['State']['Running'] and not item['State']['Pid'] and not item['State']['OOMKilled']
                 lab.write_json(output / ('postgres-terminal.json' if ident == borrowed['Id'] else 'client-terminal.json'), projection(item))
+                if ident==report['client'] and any(r.get('loader_holder_unknown') for r in report.get('archive_resources',[])):
+                    from installed_archive_catch_up_refusals import close_loader_holder_after_client_stop
+                    def owned_pg():
+                        current,=json.loads(lab.docker('inspect',borrowed['Id']).stdout)
+                        assert current['Id']==borrowed['Id'] and current['Config']['Labels'].get(lab.LABEL)==pg['owner']
+                        assert current['State']['Running'] and current['State']['Pid']>0
+                    close_loader_holder_after_client_stop(pg,client,owned_pg)
             except BaseException as error:
                 errors.append(dict(container=ident, error=repr(error)))
         try:

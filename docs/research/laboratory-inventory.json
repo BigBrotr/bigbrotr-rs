@@ -64939,7 +64939,7 @@
           },
           "owner": "compacted_reader_fixture; root sole runtime/integration",
           "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-          "prerequisites": "Unchanged c49 builds and exacte040 runtime/raw qualified. Next loaderfixture not yet started.",
+          "prerequisites": "Exact c49 builds and e040 runtime/raw remain qualified; later loader run is separately inventoried.",
           "resources": "Root83701/runtime and54019/raw joined0. Actualclient6a1bdcce exit143/PID0/noOOM and borrowedPG71775507 exit0/PID0/noOOM.995/598/e040 resources all retained; no active author/reviewer processes.",
           "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
           "source": "e0401d9165cd5d881842a81e066e26bdde36d597",
@@ -64998,7 +64998,7 @@
           }
         },
         "later_archive_loader_fixture_work": {
-          "status": "SOURCE_IMPLEMENTATION_AND_CRITICAL_REVIEW_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "status": "D6A_QUALIFIED_STOPPED_RETAINED; INTEGRATION_PENDING",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-loader-fixture-20261025",
           "branch": "work/compacted-later-archive-loader-fixture",
           "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
@@ -65013,11 +65013,36 @@
               "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
               "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
             },
-            "state": "SOURCE_AUDIT_ACCEPTED; IMPLEMENTATION_IN_PROGRESS",
+            "state": "QUALIFIED_AT_D6A; exact c49 builds reused",
             "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
           },
-          "resources": "Only isolated source worktree allocated; no new runtime resources or source product build.",
-          "next": "Review narrow existing-owner fixture/profile and strict raw changes; freeze exact source, then root runs with unchangedc49 builds. Enforce conservative last-refresh+1s action and no snapshots while consumersAX held."
+          "resources": "Actual cliente9bff81d exit143/PID0/noOOM; borrowedPG71775507 exit0/PID0/noOOM. All data/worktrees/artifacts retained; no active engine.",
+          "next": "Qualify successful actual-reader hold/release before separate post-proof H and D faults using audit58f59342; exact provisioned reader/catalog proxy binding is required. Existing c49 builds and full independent expectations remain.",
+          "source": "d6a6b6f112742b9360fac17e1480a3019b6ca42e",
+          "qualified_runtime": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f/verified-run.json",
+            "sha256": "852a502c7b591383abe685ad880a13dfce58de798272cc269bc18f577632d722"
+          },
+          "runtime_runs": [
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f",
+              "state": "passed-stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f/verified-run.json",
+                "sha256": "852a502c7b591383abe685ad880a13dfce58de798272cc269bc18f577632d722"
+              },
+              "databases": [
+                "bb_compacted_archive_loader_d6a6b6f_loader_cancel",
+                "bb_compacted_archive_loader_d6a6b6f_loader_cancel_cat",
+                "bb_compacted_archive_loader_d6a6b6f_loader_control_loss",
+                "bb_compacted_archive_loader_d6a6b6f_loader_control_loss_cat"
+              ],
+              "owner": "c0911df658c9a42504fd7694cc6bc060",
+              "client": "e9bff81d358f87bc2c3050360a462bed4b844c7aa2f43b0a1cd26f99adbc614d",
+              "free_after": 175383117824
+            }
+          ],
+          "preservation": "Source worktree and runtime source, all four databases, two native/input/Archive roots, process/SQL/raw logs and original diagnostic failures retained. No resources deleted."
         }
       }
     }

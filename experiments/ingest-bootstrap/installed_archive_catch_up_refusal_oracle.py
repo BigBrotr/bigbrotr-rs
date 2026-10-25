@@ -28,9 +28,99 @@ ERRORS={
 }
 
 
-def process_checked(response,case,config,name):
+LOADER_CASES=('loader-cancel','loader-control-loss')
+LOADER_QUERY="SELECT\n    EXISTS(SELECT 1 FROM control.archive_coordinators WHERE dataset_id=$1::bytea AND catalog_id=$2::bytea AND binding_sha256=$3::bytea AND protocol_version=1)\n    AND EXISTS(SELECT 1 FROM control.archive_persistence WHERE dataset_id=$1::bytea AND catalog_id=$2::bytea AND coordinator_binding_sha256=$3::bytea AND protocol_version=1 AND protection_class='local-synced' AND baseline_snapshot=1)\n    AND (SELECT count(*) FROM (SELECT 1 FROM control.archive_attempts WHERE dataset_id=$1::bytea LIMIT 129)b)=$4::text::numeric\n    AND NOT EXISTS(SELECT 1 FROM control.archive_attempts WHERE dataset_id=$1::bytea AND NOT coalesce(catalog_id=$2::bytea AND ordinal BETWEEN 1 AND $4::text::numeric AND expected_predecessor=ordinal-1 AND schema_version=1 AND persistence_protocol=1 AND coordinator_binding_sha256=$3::bytea,false))\n    AND NOT EXISTS(SELECT 1 FROM control.consumers WHERE dataset_id=$1::bytea AND consumer_role='archive' AND consumer_id<>$2::bytea)"
+
+def loader_observation_sql(database,holder):
+    """Small live observation only; the held consumers relation is never read."""
+    assert re.fullmatch('[a-z0-9_]+',database)
+    pid=holder['pid'];assert type(pid) is int and pid>0
+    start=holder['backend_start'];assert "'" not in start
+    statement=f"""SELECT coalesce(json_agg(json_build_object(
+      'pid',a.pid,'backend_start',a.backend_start,'database',a.datname,'user',a.usename,
+      'state',a.state,'query',a.query,'query_start',a.query_start,'xact_start',a.xact_start,
+      'wait_type',a.wait_event_type,'wait_event',a.wait_event,'blockers',pg_blocking_pids(a.pid),
+      'server_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+      'control',to_jsonb(o)||jsonb_build_object('xmin',o.xmin::text),
+      'role',to_jsonb(r)||jsonb_build_object('xmin',r.xmin::text),
+      'holder',(SELECT json_build_object('pid',h.pid,'backend_start',h.backend_start,'database',h.datname,
+        'user',h.usename,'application',h.application_name,'state',h.state,'xact_start',h.xact_start,
+        'locks',(SELECT json_agg(json_build_object('relation',relation::regclass::text,'mode',mode,'granted',granted))
+          FROM pg_locks WHERE pid=h.pid AND relation='control.consumers'::regclass))
+        FROM pg_stat_activity h WHERE h.pid={pid} AND h.backend_start='{start}'::timestamptz
+          AND h.datname=current_database() AND h.usename='bigbrotr_migrator' AND h.application_name='bb_catchup_loader_holder'),
+      'waiting_locks',(SELECT json_agg(json_build_object('relation',relation::regclass::text,'mode',mode,'granted',granted))
+         FROM pg_locks WHERE pid=a.pid AND NOT granted))), '[]')
+      FROM pg_stat_activity a JOIN control.owner_epochs o ON o.control_backend_pid=a.pid
+        AND o.control_backend_start=a.backend_start AND o.role='control' AND o.state='active'
+      JOIN control.role_instances r ON r.role_instance_id=o.role_instance_id
+      WHERE a.datname=current_database() AND a.usename='bigbrotr_control'
+        AND a.wait_event_type='Lock' AND {pid}=ANY(pg_blocking_pids(a.pid))"""
+    return statement
+
+
+def loader_termination_sql(waiter,holder,database):
+    assert re.fullmatch('[a-z0-9_]+',database)
+    start=waiter['backend_start'];assert "'" not in start
+    assert type(waiter['pid']) is int and waiter['pid']>0 and type(holder['pid']) is int and holder['pid']>0
+    query=LOADER_QUERY.replace("'","''")
+    return f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid={waiter['pid']} AND backend_start='{start}'::timestamptz AND datname='{database}' AND usename='bigbrotr_control' AND state='active' AND wait_event_type='Lock' AND {holder['pid']}=ANY(pg_blocking_pids(pid)) AND query='{query}'"
+
+
+def loader_wait_checked(b,h,database):
+    assert h['database']==database and h['user']=='bigbrotr_migrator' and h['application']=='bb_catchup_loader_holder'
+    assert h['isolation']=='read committed' and h['synchronous_commit']=='on'
+    assert type(h['pid']) is int and h['pid']>0
+    current=b['control']
+    assert type(b['pid']) is int and b['pid']>0 and b['pid']!=h['pid']
+    assert b['pid']==current['control_backend_pid'] and instant(b['backend_start'])==instant(current['control_backend_start'])
+    assert b['database']==database and b['user']=='bigbrotr_control' and b['state']=='active'
+    assert current['state']=='active' and current['role']=='control' and current['released_at_us'] is None
+    assert b['query']==LOADER_QUERY and b['wait_type']=='Lock' and b['wait_event']=='relation' and b['blockers']==[h['pid']]
+    assert b['waiting_locks']==[dict(relation='control.consumers',mode='AccessShareLock',granted=False)]
+    held=b['holder'];assert held==dict(pid=h['pid'],backend_start=held['backend_start'],database=database,
+        user=h['user'],application=h['application'],state='idle in transaction',xact_start=held['xact_start'],
+        locks=[dict(relation='control.consumers',mode='AccessExclusiveLock',granted=True)])
+    assert instant(held['backend_start'])==instant(h['backend_start'])
+    refreshed=current['lease_expires_at_us']-6_000_000
+    assert current['acquired_at_us']<refreshed<=instant(b['xact_start'])<=instant(b['query_start'])<=b['server_us']
+    assert instant(held['backend_start'])<=instant(held['xact_start'])<=instant(b['xact_start'])
+    assert b['server_us']<refreshed+1_000_000
+
+
+def loader_schedule_checked(phase):
+    schedule=phase['schedule'];case=phase['step'];window=phase['window']
+    assert case in LOADER_CASES and schedule['mode']==case and schedule['status']=='OBSERVED_CLOSED_AND_JOINED'
+    assert schedule['cleanup_errors']==[]
+    holder=schedule['holder'];h=holder['identity'];b=schedule['blocked']
+    loader_wait_checked(b,h,phase['database'])
+    assert schedule['observation_sql']==loader_observation_sql(phase['database'],h)
+    assert type(holder['exit']) is int and holder['exit']==0
+    for key in ('begin','held','rollback'):assert holder[key]==dict(sqlstate='00000',rows=0,lines=[])
+    assert holder['absence']==[dict(pid=h['pid'],backend_start=h['backend_start'],database=phase['database'],present=False)]
+    current=max((r for r in phase['after']['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    assert b['control']==current and b['role']==only(phase['after']['control']['role_instances'],role_instance_id=current['role_instance_id'])
+    times=[b['server_us'],schedule['action_before_us'],schedule['action_after_us'],schedule['terminal_observed_us'],schedule['release_before_us'],schedule['release_after_us']]
+    for at in times:assert type(at) is int;clock(at,window)
+    assert times==sorted(times)
+    # inventory.refresh precedes the whole bounded loader operation. Query
+    # start follows costly canonical checks and is not its timeout anchor.
+    assert times[2]<current['lease_expires_at_us']-6_000_000+1_000_000
+    assert times[2]<current['lease_expires_at_us'] and times[3]-times[2]<=6_500_000
+    assert schedule['terminal_before_release']==phase['response']
+    if case=='loader-cancel':
+        t=phase['response']['terminal'];assert schedule['signal']=={k:t[k] for k in ('pid','start_ticks','command','config','prefix')}
+        assert schedule['action_response']=='SIGTERM_SENT_TO_EXACT_PROCESS' and 'termination_sql' not in schedule
+    else:
+        assert schedule['action_response']=='t' and 'signal' not in schedule
+        assert schedule['termination_sql']==loader_termination_sql(b,h,phase['database'])
+
+
+def process_checked(response,case,config,name,*,loader=False):
+    assert type(loader) is bool
+    error=ERRORS[{"loader-cancel":"frontier-cancel","loader-control-loss":"frontier-control-loss"}[case]] if loader else ERRORS[case]
     assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==4
-    assert response['stdout']=='' and response['stderr']==ERRORS[case]
+    assert response['stdout']=='' and response['stderr']==error
     t=response['terminal']
     assert t['command']==argv('catchup',Path(config)) and t['config']==config and t['prefix']=='/lab/'+name
     assert t['reaped'] is True and t['forced'] is False and t['error'] is None and t['exit_code']==4
