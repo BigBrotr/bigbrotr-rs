@@ -46270,19 +46270,19 @@
                 "sha256": "c4839b5e63cce132790f87e5b8e75c82463b74e2bc56299f906de88a3065219c"
               },
               "next_fresh_recovery_work_20261025": {
-                "status": "QUALIFIED_EXACT_PRODUCT837_AND_FIXTUREd8_MAIN_INTEGRATION",
+                "status": "QUALIFIED_INTEGRATED_AND_PUSHED_MAIN5414; NEXT_DELIVERY_GATE_IN_PROGRESS",
                 "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-20261025",
-                "branch": "work/compacted-later-recovery",
+                "branch": null,
                 "base": "fa76466a65d55a106cdf541e1fe4332d85eca031",
                 "scope": "Existing positive --successor only, private tail-aware recovery prefix/one retained allocation, separate H/D authority and owned later mixed-census ACK seal. Ordinary defaults and Source/retirement/Archive remain strict.",
                 "owners": "empty_malformed_floor implementation; compacted_reader_review critical; compacted_reader_fixture independent installed matrix design; root builds/engines/integration",
-                "next": "Integrate/push qualified source and retire only verified redundant refs while preserving worktrees/artifacts. Then existing genuine interruption gate: measured first dictionary outcome COMMIT baseline, before-forward missing copy and after-complete C1>A0 using existing proxy; no synthetic row deletion. Actual Sync and all broader remaining gates stay open.",
+                "next": "Reconcile existing proxy trace/hold mode and source-only baseline fixture, critically review it, then root actual baseline measurement. Fault execution waits for the measured boundary and independently reviewed exact expected states.",
                 "fixture_audit": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-fresh-recovery-fixture-audit-20261025.json",
                   "sha256": "2d72e0f454fc83bdbd4ec05242342a07a721ce12fedc1e3b4b171f25c99ec7b8"
                 },
                 "fixture_worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
-                "fixture_branch": "work/compacted-later-recovery-fixture",
+                "fixture_branch": null,
                 "fixture_base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
                 "review_findings": "Original cancellation before/after borrowed proof and final ACK conversion corrected; actual-basis preflight preserves ordinary reservation minimum. Stale unselected window assertion replaced using explicit A/C contract, no production-bound change. Critical source gate clear; execution qualification pending.",
                 "source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
@@ -46373,6 +46373,27 @@
                 "main_integration": {
                   "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-main-integration-20261025.json",
                   "sha256": "4d01079877cbfa84f57be3be2906640f3a0f4beca0d0cdd054ec2de4cd7641da"
+                },
+                "main_revision": "5414e1be61eea1fd827a9cda72a241de4c56a950",
+                "main_push": {
+                  "session": 62019,
+                  "exit": 0
+                },
+                "ref_retirement": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-ref-retirement-20261025.json",
+                  "sha256": "7dff2657240c406fe69058d84b16bac42887f15856bef9e897e299fe741bf4d1"
+                },
+                "retired_branch": "work/compacted-later-recovery",
+                "fixture_retired_branch": "work/compacted-later-recovery-fixture",
+                "next_delivery_work": {
+                  "status": "BASELINE_SOURCE_AND_CRITICAL_REVIEW_IN_PROGRESS_NO_EXECUTION",
+                  "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
+                  "branch": "work/compacted-later-recovery-delivery-fixture",
+                  "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
+                  "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+                  "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
+                  "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
+                  "next": "Reconcile existing proxy trace/hold mode and source-only baseline fixture, critically review it, then root actual baseline measurement. Fault execution waits for the measured boundary and independently reviewed exact expected states."
                 }
               }
             }

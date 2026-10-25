@@ -64318,9 +64318,9 @@
         },
         "later_fresh_recovery_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-20261025",
-          "branch": "work/compacted-later-recovery",
+          "branch": null,
           "base": "fa76466a65d55a106cdf541e1fe4332d85eca031",
-          "state": "CLEAN837_BUILD_AND_INSTALLED_PROFILE_QUALIFIED; main integration underway; branch retained until verified push",
+          "state": "CLEAN_DETACHED_SOURCE_PRESERVED; integrated/pushedmain5414; redundant local branch ref retired with archive and verified bundle",
           "owner": "empty_malformed_floor author, compacted_reader_review critical; existing verified Astra/xhigh assignments",
           "scope": "Positive-only fresh --successor through final ACK, private proof and mixed census. Root solely owns builds/engines/SQL/integration; independent fixture now in separately inventoried worktree.",
           "source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
@@ -64372,14 +64372,19 @@
               "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json",
               "sha256": "60c4cde595e95bf79970f1236350d247f5db3dc2aa42ca967defb138dbc60bde"
             }
+          },
+          "retired_branch": "work/compacted-later-recovery",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-ref-retirement-20261025.json",
+            "sha256": "7dff2657240c406fe69058d84b16bac42887f15856bef9e897e299fe741bf4d1"
           }
         },
         "later_fresh_recovery_fixture_work": {
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-fixture-20261025",
-          "branch": "work/compacted-later-recovery-fixture",
+          "branch": null,
           "base": "ee2f3c6d292c802d0c5610abfdcb071d3427d407",
           "owner": "compacted_reader_fixture, existing verified Astra/xhigh; root sole engine/build/integration owner",
-          "state": "CLEANd8_EXACT_INSTALLED_AND_RAW_PASS; original15daFAIL and all sources retained",
+          "state": "CLEAN_DETACHED_SOURCE_PRESERVED; integrated/pushedmain5414; redundant local branch ref retired with archive and verified bundle",
           "scope": "Four clones/six existing installed --successor commands, literal77-table/native/input expectations from qualifiedfa endpoints; existing reader/oracle/raw/transition owners, no new runner.",
           "product_integration": "047998512a3219ef0a4ecdc6432053e9b3834b2d",
           "source": "d8f45b8ab793f8c82ca317e5cc23444e683ed3cb",
@@ -64418,7 +64423,22 @@
               "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-recovery-d8f45b8/verified-run.json",
               "sha256": "60c4cde595e95bf79970f1236350d247f5db3dc2aa42ca967defb138dbc60bde"
             }
+          },
+          "retired_branch": "work/compacted-later-recovery-fixture",
+          "ref_retirement": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-recovery-ref-retirement-20261025.json",
+            "sha256": "7dff2657240c406fe69058d84b16bac42887f15856bef9e897e299fe741bf4d1"
           }
+        },
+        "later_fresh_recovery_delivery_fixture_work": {
+          "status": "BASELINE_SOURCE_AND_CRITICAL_REVIEW_IN_PROGRESS_NO_EXECUTION",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-recovery-delivery-fixture-20261025",
+          "branch": "work/compacted-later-recovery-delivery-fixture",
+          "base": "5414e1be61eea1fd827a9cda72a241de4c56a950",
+          "product_source": "83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c",
+          "owners": "compacted_reader_fixture author; compacted_reader_review critical; root solely executes engines/builds/SQL/native and integrates",
+          "scope": "Existing positive recovery gates: measure the actual first dictionary outcome/progress COMMIT on proxy-capable compacted live path, then authentic missing current copy and C>A recovery/retry. Reuse current complete models/transport; no synthetic SQL deletion, new Rust hook or inferred old ordinal.",
+          "next": "Reconcile existing proxy trace/hold mode and source-only baseline fixture, critically review it, then root actual baseline measurement. Fault execution waits for the measured boundary and independently reviewed exact expected states."
         }
       }
     }
