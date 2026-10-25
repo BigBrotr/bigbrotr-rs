@@ -46853,7 +46853,7 @@
                       "worktree_state": "CLEAN_DETACHED_PRESERVED"
                     },
                     "next_archive_work": {
-                      "status": "SOURCE_INTEGRATED_PUSHED; DUAL_BUILD_PASS; FIXTURE_SETUP_CORRECTION_IN_PROGRESS",
+                      "status": "PRODUCT_INTEGRATED_PUSHED; DUAL_BUILD_AND_INSTALLED_ARCHIVE_PASS; FIXTURE_INTEGRATION_READY",
                       "audit": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-prerequisite-audit-20261025.json",
                         "sha256": "305ae9a5b56d37dcb97f2862c385cadf1abf6a17bda02448f0a653bd2dea2932"
@@ -46873,7 +46873,7 @@
                       },
                       "custody": "Source reviewed: Reserved/Loaded/Bound holds one Check before connection; errors preserve it; native closes before named supervised driver receives keeper, transport drops before keeper. Pure owner and synthetic transport controls do not demonstrate actual SQL cancellation.",
                       "fixture_work": {
-                        "status": "995_FROZEN_REVIEWED; ACTUAL_SETUP_ORACLE_FAIL; CORRECTION_IN_PROGRESS",
+                        "status": "PASS_EXACT_E040_RUNTIME_AND_RAW; INTEGRATION_READY",
                         "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
                         "branch": "work/compacted-later-archive-fixture",
                         "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
@@ -46883,8 +46883,8 @@
                         },
                         "owner": "compacted_reader_fixture; root sole runtime/integration",
                         "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-                        "prerequisites": "Exact c49 dual builds unchanged and qualified. Fixture995 source review missed wrong layout checksum domain; author and critical reviewer independently diagnosed actual failure.",
-                        "resources": "Runtime74804 joined1; actual client8a9ad616 exit143/PID0 and borrowed PostgreSQL71775507 exit0/PID0/noOOM. Both clone databases, virgin initialized roots, native copy, original captures and all logs retained.",
+                        "prerequisites": "Source995 +layout598 +parentse040 reviewed; both unchanged c49 builds reused at exact identities.",
+                        "resources": "All995/598/e040 runs stopped/retained. Root e040 runtime83701/raw54019 joined0; actualclient6a1bdcce exit143/PID0 and borrowedPG71775507 exit0/PID0/noOOM. No root engine active.",
                         "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
                         "source": "995e71d7430f4f9d8eb5b08a71990a7e1cd2b7ac",
                         "tree": "853b9d868af2f10d52a742808761dd4aa6066f50",
@@ -46905,7 +46905,52 @@
                           "sha256": "750882e1331ee8ed8ed84e8f8c720136841a9e437df6d1fc1e4b7a334d6f8296"
                         },
                         "result": "Three initializer commands exited0, SQL236/236/240; full setup validator FAIL at installation.layout_checksum before reader/publication. Stored hash is ordered PostgreSQL structural definitions, while checker wrongly used native declaration file hash. Original RUNNING case labels preserved and do not imply live work. Cleanup/isolation arrays empty; all54 new controls/raw/publication/retry NOT_RUN.",
-                        "next": "Reuse existing independent structural query/framing oracle; critically review correction and raw binding, then run exact new fixture on fresh clone. Do not recertify original995 failure or rebuild unchanged product."
+                        "next": "Integrate verified12-file fixture and evidence; then two fresh initialized copies for loader cancellation and exact Control-backend loss, implementing audit58/criticala9fbee timing condition. Read/export/pre-succession/fault delivery remain separate.",
+                        "layout_correction": {
+                          "source": "59807b5f974c8471d776d865e37df1233cb3dd1c",
+                          "tree": "a0e92083fd3bf597dc27c0592737357742dd2f87",
+                          "source_receipt": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-layout-correction-source-v1.json",
+                            "sha256": "1cbb737fb88af22db3a41dc295d06cd15a7eca66ef31bfb0bc48b5568d5ce9b2"
+                          },
+                          "critical": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-layout-correction-critical-v1.json",
+                            "sha256": "3544aee0a8ac9aa9e14969313f8b2e9cb453001deee9953fb1eb67baac074445"
+                          },
+                          "static": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-layout-correction-static-v1.json",
+                            "sha256": "9797b407ca05f42c0142b8708c181dca73f517f427c0c79d0cd90311338cb7fa"
+                          },
+                          "runtime_failure": {
+                            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-59807b5/verified-run-failure.json",
+                            "sha256": "a2340c2afb8a275fb2aede6d87705c85052dd09934d0248f81a4b3ea9ecb6194"
+                          },
+                          "result": "Three initializer cases and18controls PASS; firstCLI exits0/reaped/unforced, SQL267/native93/139/input1, but fullfirstverifier FAIL on omitted7 virgin schema/table directories. Complete first20controls/retry/raw NOT_RUN. Exact native/input unchanged, reader0 and allbackendabsence, actualownedcontainers stopped; no overall qualification."
+                        },
+                        "parent_path_correction": {
+                          "source": "e0401d9165cd5d881842a81e066e26bdde36d597",
+                          "tree": "f7b07ae1c66325c241cdca0d51087fdf7c6d9744",
+                          "source_receipt": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-parent-correction-source-v1.json",
+                            "sha256": "b55192a0cc18b9713ab7d7da509d3489dacc79c69f922cbb78d346b5f5581024"
+                          },
+                          "critical": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-parent-correction-critical-v1.json",
+                            "sha256": "66ad1db133455e679aebab73d222af58f46eac03a5656e809c12fe90b37aab31"
+                          },
+                          "static": {
+                            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-parent-correction-static-v1.json",
+                            "sha256": "9efa32846a637cc7c0f2871c820e0f4a0d9b6b60412a5f077a56e0c822d6329d"
+                          },
+                          "diagnostic": "Unchanged598 fullsetup18+first24 PASS offline only; original598 overallFAIL preserved. Exact virgin ancestor paths and safe directory metadata, no universal umask assumption."
+                        },
+                        "qualified_runtime": {
+                          "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-e0401d9/verified-run.json",
+                          "sha256": "36e2da4f9be13368cbd8c723b0c42cc2ee3773a86a828c52e53b37a57267310b"
+                        },
+                        "qualified_source": "e0401d9165cd5d881842a81e066e26bdde36d597",
+                        "qualified_tree": "f7b07ae1c66325c241cdca0d51087fdf7c6d9744",
+                        "qualified_result": "1clone/5mutatingcommands/62negativecontrols/4394rawbindings PASS. SQL236/236/240/267/269;93native rows/sequence139/input1 preserved. First8attempts/frontier1/snapshot9/topology2/cuts27,1,0; complete signed families12,4,4,4,4,8digests/catalog/BBINPUT/BBFRONT/physical maps; retry adds0attempts/0frontiers and onlyfreshControl rows. Actual child/client/backend custody and origin/isolation checks passed."
                       },
                       "source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
                       "tree": "60d9d237a06b85eb8b10d9b5feba56620d7d353a",
@@ -46945,8 +46990,8 @@
                         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-succession-archive-installed-c49cfe5/verified-build.json",
                         "sha256": "7ea05b5c46cfbdcf4076c5808e2f1929c147366bfe218cb82991f230d84570e5"
                       },
-                      "result": "c49 components80612 joined0:45 tests/7mandatory/6selectors/all7checks incl library Clippy. Installed42512 joined0:56tests/4mandatory/3selectors/all5checks incl Clippy; actual CLI/probe/worker, embedded identity and pinned bundle postchecks PASS. Original280 test-premise failures retained. Actual first publication/retry and SQL cancellation remain unqualified.",
-                      "next": "Reuse existing independent structural query/framing oracle; critically review correction and raw binding, then run exact new fixture on fresh clone. Do not recertify original995 failure or rebuild unchanged product.",
+                      "result": "Unchanged c49 dual builds PASS (45component+56installed tests and required Clippy/worker controls); e040 exact installed first-publication/retry and raw PASS62controls. Original280,995 and598 failures preserved. No phase/task closure; next real loader cancellation/loss remains unqualified.",
+                      "next": "Integrate verified12-file fixture and evidence; then two fresh initialized copies for loader cancellation and exact Control-backend loss, implementing audit58/criticala9fbee timing condition. Read/export/pre-succession/fault delivery remain separate.",
                       "integration": {
                         "commit": "eb4933afaba61c505594d4502fb0774da5cec91e",
                         "push": {
@@ -46962,6 +47007,18 @@
                       "ref_retirement": {
                         "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-ref-retirement-20261025.json",
                         "sha256": "dcaf38cf1c6f02ef95de8277f91b8b920dec2e9710665e79ea4438dcaf3368c0"
+                      },
+                      "refusal_prerequisites": {
+                        "audit": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-audit-20261025.json",
+                          "sha256": "58f5934266f6b9474b198cb1dacc965fc7a290a2c6e007d386e262f9d6ce27a2"
+                        },
+                        "critical": {
+                          "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-critical-v1.json",
+                          "sha256": "a9fbee1030aa649d8eb487b3f8edff17295206d59dec185e5af2e546636e46a0"
+                        },
+                        "state": "SOURCE_AUDIT_ONLY; IMPLEMENTATION_NOT_STARTED",
+                        "condition": "After positive installed qualification: loader cancellation and exact Control backend loss must act before conservative last-refresh anchor+1s; query_start+1s alone is insufficient. Existing6/1/5 clocks unchanged."
                       }
                     },
                     "next_import_work": {

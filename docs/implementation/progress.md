@@ -6,64 +6,63 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `f8b1bd0a6574bd635f29730174445b639fe0dcf2` is pushed, containing product
-c49 via eb4933af and its qualified dual-build evidence. Main has only this
-checkpoint/evidence/inventory update in progress; no merge/rebase pending.
-Independent fixture995 is committed in its separate worktree, unintegrated.
+Main `d11903b7` is pushed (59872 joined0), containing integrated productc49 and
+its dual builds. This record saves qualified independent fixturee040 before
+integration; only the existing checkpoint/evidence/inventory are locally modified.
+Fixture worktree is clean at `e0401d9165cd5d881842a81e066e26bdde36d597`
+(treef7b07ae1), parent59807b5/995e71d; all12combined files reviewed and qualified.
 
 The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
-exact identities under `initial_successor_preparation_20261012.
+identities/results under `initial_successor_preparation_20261012.
 repeatable_succession_20261015.producer_checkpoint_ack_preparation_20261020.
 closed_producer_reclamation_preparation_20261023.compacted_successor_preparation.
 later_empty_consumer_work.next_source_work_20261025.next_abandonment_work_20261025.
 next_retirement_work.next_archive_work.fixture_work`.
 The [inventory](../research/laboratory-inventory.json) owns retained resources.
 
-## Current result and remaining gates
+## Result and remaining gates
 
-- **PASS, reused:** c49 component build45tests and installed build56tests, required
-  controls/Clippy and actual worker/bundle identities. Product is unchanged.
-- **FAIL, preserved:** fixture995 runtime74804 joined1. Three initializer commands
-  exited0, SQL236/236/240; independent full setup validation failed before reader
-  provisioning or publication. New checker confused the PostgreSQL structural
-  layout checksum with SHA256 of the native declaration JSON. Author and reviewer
-  independently confirmed this source-level expectation error; product unchanged.
-  Receipt `installed-compacted-later-archive-995e71d/verified-run-failure.json`
-  (750882e1) binds original evidence and actual stopped resource states.
-- **NOT_RUN:** first Archive publication/retry,54 new actual negative controls and
-  raw replay. Refusal/cancellation/H/D/input/waits/UTC/COMMIT-loss qualification and
-  pre-succession signed-event/read/export/restart journey remain separate gates.
-  Floor writer/unlink, restore/capacity and selected product remain incomplete.
-- Initial a99 Sync timeout cause unknown. Q33 CI billing, arm64 and signing/
-  registry remain separate gates. Original280 and all older failures remain.
-  No task closed.
+- **PASS:** e040 runtime83701/raw54019 both joined0:1clone/5mutatingcommands,
+  62negativecontrols (18setup/24first/20retry),4394rawbindings. Receipt36e2da4f.
+  Genuine initialization SQL236/236/240, first267/retry269; native93/139/input1
+  unchanged. First8attempts, frontier1/snapshot9/topology2/cuts27,1,0, complete
+  signed families12/4/4/4/4, catalog/physical/journals. Retry adds no attempt or
+  frontier; only fresh Control rows. Actual child/client/backend custody passed.
+- **Reused:** exact c49 component45/installed56 tests, required controls, Clippy,
+  worker identity and pinned bundle. No product source changed for fixture fixes.
+- **FAIL, preserved:**995 wrong structural checksum expectation (750882e1);
+  598 omitted virgin parent-directory expectation (a2340c2a). Separate reviewed
+  corrections retain all original data/results and diagnostic limits. Original280
+  test-assumption failure remains. No prior failed run recertified.
+- **NOT_RUN:** loader cancellation/loss, post-proof H/D/input/capacity faults,
+  UTC/COMMIT delivery/interruption and pre-succession signed-event/read/export/
+  restart journey. Floor writer/unlink, restore and selected product incomplete.
+  Initial a99 Sync timeout cause unknown. Q33 CI billing, arm64 and signing/
+  registry remain separate gates. No task closed.
 
 ## Owners and resources
 
-No active root build/engine. Runtime74804 is joined1; actual client8a9ad616
-exited143/PID0/noOOM and borrowed PostgreSQL71775507 exited0/PID0/noOOM.
-Both databases had zero sessions after every initializer. Cleanup/isolation
-arrays empty; original origin preservation checks true. Original case labels
-RUNNING are preserved failed-run metadata, not active processes.
+No active root engine/build or author/reviewer process. Actual e040 client6a1bdcce
+exited143/PID0/noOOM; borrowed PostgreSQL71775507 exited0/PID0/noOOM.
+Both actual catch-up children reaped/unforced; exclusion before external native/
+CAPI opens, origin preservation and empty cleanup/isolation arrays verified.
 
 - `.research/compacted-later-archive-fixture-20261025`, branch
-  `work/compacted-later-archive-fixture`, freeze995e71d7/tree853b9d86, parenteb4933af.
-  `compacted_reader_fixture` owns minimal source correction;
-  `compacted_reader_review` critically checks it. Their source follow-ups are
-  active, with no engine authority. Final995 receipts233c404d/86a7c3a0 remain.
-- `/home/tux/bigbrotr-implementation-20260917/runs/
-  installed-compacted-later-archive-995e71d` retains exact detached source, both
-  databases, native copy, initialized Archive data/state, all stages/logs and
-  original failure. Free after run177,141,972,992bytes. Preserve all artifacts,
-  .research, worktrees, credentials and prior laboratories; no deletion.
-- Product source worktree remains clean detachedc49 with archived ref/bundle.
-  Prior qualified dual builds and original280 failure remain inventoried.
-- Next refusal audit58f59342 is read-only, with no implementation yet. Its critical
-  review will resume after this fixture correction.
+  `work/compacted-later-archive-fixture`, cleane040. Source233c404d, correction
+  1cbb737f/b55192a0 and critical86a7c3a0/3544aee0/66ad1db1 bind final source.
+- External `/home/tux/bigbrotr-implementation-20260917/runs/` retains
+  `installed-compacted-later-archive-995e71d`, `...-59807b5`, `...-e0401d9`:
+  exact source worktrees, all databases/native copies/Archive roots/journals/logs.
+  Freeaftere040176,579,837,952bytes. Preserve all artifacts and prior laboratories.
+- Product worktree remains detachedc49 with archived ref/bundle. Qualified dual
+  builds and original280 remain inventoried. No dataset/cache/container deleted.
+- Next refusal audit58f59342/criticala9fbee10 is source-only. No next code started.
 
 ## Next action
 
-Correct the independent structural checksum expectation using the existing frozen
-query/framing oracle, review its capture/raw binding, then root runs the new exact
-fixture on a fresh isolated clone with unchanged c49 builds. Preserve original995
-as FAIL; verify actual closure/backend absence before any external native opening.
+Integrate qualifiede040 plus evidence on main and retire only redundant branch refs
+with worktrees/artifacts preserved. Then implement the two audited loader cases on
+fresh genuine initializations: SIGTERM and exact Control-backend loss while the
+PREREQUISITES query waits on consumers. Act before last-refresh anchor+1s; retain
+holder until child terminal, then rollback/join and exclude all backends before
+native reopen. Existing6/1/5 clocks and full independent state expectations remain.

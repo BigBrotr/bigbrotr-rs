@@ -64929,7 +64929,7 @@
           "free_after_installed_build": 182015471616
         },
         "later_archive_fixture_work": {
-          "status": "995_RUNTIME_FAILED_STOPPED_RETAINED; SOURCE_CORRECTION_IN_PROGRESS",
+          "status": "E040_RUNTIME_RAW_PASS_STOPPED_RETAINED; INTEGRATION_READY",
           "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-archive-fixture-20261025",
           "branch": "work/compacted-later-archive-fixture",
           "base": "eb4933afaba61c505594d4502fb0774da5cec91e",
@@ -64939,10 +64939,10 @@
           },
           "owner": "compacted_reader_fixture; root sole runtime/integration",
           "scope": "Actual virgin initialization/state/coordinator then compacted Archive first publication/retry. Five mutating commands, expected77SQL236->240->267->269,8batches topology2/families12,4,4,4,4/frontier1/snapshot9. Full signed bodies, catalog/journal/physical/raw checks required.",
-          "prerequisites": "Unchanged c49 qualified dual builds. Independent structural checksum correction and critical review pending.",
-          "resources": "Original995 run stopped and retained; root handle74804 joined1. No active root build/engine. Author/reviewer source-only follow-up active.",
+          "prerequisites": "Unchanged c49 builds and exacte040 runtime/raw qualified. Next loaderfixture not yet started.",
+          "resources": "Root83701/runtime and54019/raw joined0. Actualclient6a1bdcce exit143/PID0/noOOM and borrowedPG71775507 exit0/PID0/noOOM.995/598/e040 resources all retained; no active author/reviewer processes.",
           "original_base": "112824ff10c14046fbc42c83e6fe9bd0d7c2695b",
-          "source": "995e71d7430f4f9d8eb5b08a71990a7e1cd2b7ac",
+          "source": "e0401d9165cd5d881842a81e066e26bdde36d597",
           "runtime_runs": [
             {
               "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-995e71d",
@@ -64958,6 +64958,36 @@
               "owner": "14f0a33791763ebfe379fd8bb519969a",
               "client": "8a9ad6167422c0dcb947e0d26be76449a63c8d2ee5c846e4625d3bba98d18dc8",
               "free_after": 177141972992
+            },
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-59807b5",
+              "state": "failed-stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-59807b5/verified-run-failure.json",
+                "sha256": "a2340c2afb8a275fb2aede6d87705c85052dd09934d0248f81a4b3ea9ecb6194"
+              },
+              "databases": [
+                "bb_compacted_later_archive_59807b5_archive",
+                "bb_compacted_later_archive_59807b5_archive_cat"
+              ],
+              "owner": "065787830d0ce8184647d5853811f23c",
+              "client": "88507d7d4b1fec39270a8b3c53224b51daa938f9d1dd924800c4e9658ca7b58a",
+              "free_after": 176778022912
+            },
+            {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-e0401d9",
+              "state": "passed-stopped-retained",
+              "receipt": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-e0401d9/verified-run.json",
+                "sha256": "36e2da4f9be13368cbd8c723b0c42cc2ee3773a86a828c52e53b37a57267310b"
+              },
+              "databases": [
+                "bb_compacted_later_archive_e0401d9_archive",
+                "bb_compacted_later_archive_e0401d9_archive_cat"
+              ],
+              "owner": "d58ea3c489a8b5589328e00e33505215",
+              "client": "6a1bdcce0f9da34f51b41da1ca5a20a8fe8c726a2dcba8c4cbf14f4f8dd24d93",
+              "free_after": 176579837952
             }
           ],
           "preservation": "All original three-command output/stages, native copy, virgin initialized Archive state/data and credentials remain under the exact run. No data/worktree/cache/container deletion."
