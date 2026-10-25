@@ -8145,6 +8145,25 @@ def later_archive_modules():
     return archive,journal
 
 
+def later_archive_structure_checked(record,database):
+    import sys
+    sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'archive-engine'))
+    from scientific_layout_oracle import structural_checksum,structural_statement
+    assert set(record)=={'database','sql','stdout'} and record['database']==database
+    assert record['sql']==structural_statement() and len(record['stdout'].encode())<=2*1024*1024
+    rows=[loads(line) for line in record['stdout'].splitlines()]
+    assert 1<=len(rows)<=1024
+    identities=[]
+    for row in rows:
+        assert type(row) is list and len(row)==4
+        assert all(type(field) is str and len(field.encode())<=8192 for field in row)
+        assert row[0] in ('table','column','constraint','index','trigger','function','rule')
+        assert row[1] in ('public','bigbrotr_archive')
+        identities.append(tuple(field.encode() for field in row[:3]))
+    assert identities==sorted(identities) and len(set(identities))==len(identities)
+    return '\\x'+structural_checksum(rows)
+
+
 def later_archive_setup_checked(value,seed):
     archive,_=later_archive_modules();later_archive_basis(seed)
     assert value['status']=='OBSERVED_INITIALIZERS_CLOSED' and value['native_opened'] is False
@@ -8206,7 +8225,7 @@ def later_archive_setup_checked(value,seed):
     source=Path(__file__).resolve().parents[2]
     checksum=lambda name:'\\x'+sha((source/name).read_bytes())
     assert installation==dict(singleton=True,protocol=1,dataset_id=ds,catalog_id=cid,data_root='/lab/archive/data/',
-        sql_checksum=checksum('migrations/catalog/0001_writer_guard.sql'),layout_checksum=checksum('contracts/archive/catalog-native-v1.json'),xmin=installation['xmin'])
+        sql_checksum=checksum('migrations/catalog/0001_writer_guard.sql'),layout_checksum=later_archive_structure_checked(value['structure'],catalog),xmin=installation['xmin'])
     assert schema==dict(singleton=True,format_version=1,declaration_checksum=checksum('contracts/archive/v1/schema.json'),
         native_layout_checksum=checksum('contracts/archive/v1/native-layout.json'),sql_checksum=checksum('migrations/catalog/0002_scientific_schema.sql'),
         initialization_snapshot=1,xmin=installation['xmin'])
@@ -8255,7 +8274,8 @@ def later_archive_setup_checked(value,seed):
     identity=resource['roles'];assert identity['manager']==resource['manager'] and identity['bootstrap_retired'] is True
     assert {r['rolname'] for r in added}=={identity['manager'],identity['bootstrap'],identity['reservation']} and len(added)==3
     manager=only(added,rolname=identity['manager']);bootstrap=only(added,rolname=identity['bootstrap'])
-    assert manager['oid']==identity['manager_oid'] and bootstrap['oid']==identity['bootstrap_oid']
+    for field in ('manager_oid','bootstrap_oid'):number(identity[field],1,integer=True)
+    assert manager['oid']==str(identity['manager_oid']) and bootstrap['oid']==str(identity['bootstrap_oid'])
     assert manager['rolcanlogin'] is True and manager['rolcreaterole'] is True and manager['credential_present'] is True
     assert not any(manager[k] for k in ('rolsuper','rolcreatedb','rolinherit','rolreplication','rolbypassrls'))
     assert bootstrap['rolcanlogin'] is False and bootstrap['credential_present'] is False
@@ -8341,6 +8361,13 @@ def later_archive_setup_controls(value,seed):
     reject('nonvirgin-data-root',lambda c:c['virgin_files'].update({'data/old.parquet':dict(c['virgin_files']['data'])}))
     reject('false-first-installation',lambda c:c['commands']['initialize'].update(stdout=c['commands']['initialize']['stdout'].replace('true','false')))
     reject('wrong-initializer-argv',lambda c:c['commands']['initialize']['command']['args'].append('--unknown'))
+    def changed_structure(c):
+        import json
+        rows=[loads(line) for line in c['structure']['stdout'].splitlines()];rows[0][3]+=' changed'
+        c['structure']['stdout']='\n'.join(json.dumps(row) for row in rows)
+    reject('structural-definition-rewritten',changed_structure)
+    reject('structural-order-reversed',lambda c:c['structure'].update(stdout='\n'.join(reversed(c['structure']['stdout'].splitlines()))))
+    reject('wrong-structural-database',lambda c:c['structure'].update(database=c['resource']['control_database']))
     reject('failed-initializer',lambda c:c['commands']['state']['command'].update(exit_code=4))
     reject('coordinator-binding-rewritten',lambda c:c.update(binding_hex='00'+c['binding_hex'][2:]))
     reject('initialization-root-rewritten',lambda c:c.update(initialization_hex='00'+c['initialization_hex'][2:]))
@@ -8349,6 +8376,7 @@ def later_archive_setup_controls(value,seed):
     reject('old-coordinator-xmin',lambda c:only(c['control']['archive_coordinators']).update(xmin='1'))
     reject('native-store-mutated-during-initialization',lambda c:c['stages'][0]['files']['store'].update(inode=1))
     reject('bootstrap-login-retained',lambda c:only(c['setup_roles']['after']['roles'],rolname=c['resource']['roles']['bootstrap']).update(rolcanlogin=True))
+    reject('wrong-bootstrap-role-oid',lambda c:c['resource']['roles'].update(bootstrap_oid=c['resource']['roles']['bootstrap_oid']+1))
     if 'baseline' in value:
         reject('unrelated-role-rewritten-during-reader-provisioning',lambda c:only(
             c['baseline']['system_roles']['roles'],rolname=c['resource']['manager']).update(rolcreatedb=True))

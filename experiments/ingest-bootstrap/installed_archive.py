@@ -339,6 +339,12 @@ def prepare(pg, client, output, database, name, rows, resources, save, build, bu
     lab.write_json(output / (name + '-setup-files.json'), local)
     setup=dict(config=config, home=home, resource=resource, control=current, catalog=empty, files=local, roles=final_roles)
     if compacted:
+        from scientific_layout_oracle import structural_statement
+        statement=structural_statement()
+        structure=dict(database=catalog_db,sql=statement,stdout=lab.sql(pg,catalog_db,statement))
+        assert len(structure['stdout'].encode())<=2*1024*1024
+        setup['structure']=structure
+        lab.write_json(output/(name+'-setup-structure.json'),structure)
         # No external native or C API opening is permitted until every genuine
         # initializer has delivered success and both databases are absent.
         setup_window['after_us']=server_clock(pg,database)

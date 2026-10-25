@@ -15,6 +15,32 @@ ROOT = Path(__file__).resolve().parents[2]
 TYPES = {'BLOB':'blob', 'USMALLINT':'uint16', 'UINTEGER':'uint32',
          'UBIGINT':'uint64', 'BIGINT':'int64', 'VARCHAR':'varchar'}
 
+# Frozen independent query from scientific_guard_cases.layout_cases (91af8a9).
+# Kept separate from the product wire projection and its overflow sentinel.
+STRUCTURAL_SQL = '''WITH objects(kind,ns,name,definition) AS (
+SELECT 'table',n.nspname::text,c.relname::text,ROW(c.relkind,c.relpersistence,c.relrowsecurity,c.relforcerowsecurity,c.relispartition,c.reloptions)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind<>'i'
+UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,a.attcollation::regcollation::text,a.attstorage,a.attcompression,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
+UNION ALL SELECT 'constraint',n.nspname,c.relname||'.'||p.conname,pg_get_constraintdef(p.oid,false) FROM pg_constraint p JOIN pg_class c ON c.oid=p.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i.indisvalid,i.indisready,i.indislive)::text FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+UNION ALL SELECT 'function',n.nspname,p.proname||'('||pg_get_function_identity_arguments(p.oid)||')',pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.prokind IN ('f','p')
+UNION ALL SELECT 'rule',n.nspname,c.relname||'.'||r.rulename,pg_get_ruledef(r.oid,false) FROM pg_rewrite r JOIN pg_class c ON c.oid=r.ev_class JOIN pg_namespace n ON n.oid=c.relnamespace
+) SELECT kind,ns,name,definition FROM objects WHERE ns IN ('public','bigbrotr_archive') ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C"'''
+
+
+def structural_checksum(rows):
+    digest=hashlib.sha256(b'bigbrotr/catalog-guard-layout/1\0')
+    for row in rows:
+        for field in row:
+            encoded=field.encode('utf-8')
+            digest.update(len(encoded).to_bytes(8,'big'));digest.update(encoded)
+    return digest.hexdigest()
+
+
+def structural_statement():
+    return ('SET search_path=pg_catalog; SELECT json_build_array(kind,ns,name,definition) FROM ('+
+        STRUCTURAL_SQL+') AS captured_layout ORDER BY kind COLLATE "C",ns COLLATE "C",name COLLATE "C" LIMIT 1025')
+
 class Declaration:
     def __init__(self, text):
         self.tokens = re.findall(r'[A-Za-z_]+|[(),\[\]]', text)

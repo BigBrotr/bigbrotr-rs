@@ -1067,7 +1067,7 @@ def later_archive_clone_replay(folder,clone,report,seed,raw,read,absent,previous
     absent('archive-catalog-final',resource['catalog_database'])
     for key,file in (('before','setup-before'),('control','setup-control'),('catalog','setup-catalog'),
             ('files','setup-files'),('stages','setup-stages'),('setup_roles','setup-roles'),('virgin_files','virgin-files'),
-            ('reader_privileges','reader-privileges')):
+            ('reader_privileges','reader-privileges'),('structure','setup-structure')):
         assert value[key]==read(folder/('archive-'+file+'.json'))
     assert read(folder/'archive-setup-boundaries.json')=={k:value[k] for k in ('window','coordinator_window','backend_absence')}
     assert raw(home/'state/coordinator.json').hex()==raw(home/'data/.bigbrotr-initialization/coordinator.json').hex()==value['binding_hex']
