@@ -5443,7 +5443,7 @@ class EmptyInitialMalformedProfile:
 
 # One finite later-attempt profile. The product pin is filled only after the
 # integrating owner freezes the reviewed source; historical pins stay exact.
-LATER_PRODUCT = 'c1b834e3c3f0f74ddf5eef95b5f1ebf84e058e66'
+LATER_PRODUCT = '2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f'
 LATER_TERMINAL_ORIGIN = dict(FAULT_ORIGIN,name='later-terminal',
     database='bb_compacted_history_6ece98c_history_terminal',source_clone='history-terminal',
     final_case='history-terminal-full',snapshot='history-terminal-final-sql.json',
