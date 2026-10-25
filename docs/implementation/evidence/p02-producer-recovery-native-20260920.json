@@ -46048,6 +46048,32 @@
                 },
                 "agents": "All three stopped with receipts; only source author has uncommitted code in its separate worktree. No pending runtime process; final live source review remains partial.",
                 "preservation": "Integrated qualified increment already pushed. All incomplete source, ignored patches/receipts, .research, exact worktrees, databases, logs, captures and original failures preserved. No WIP merge or runtime PASS claim."
+              },
+              "ordinary_regression_20261025": {
+                "status": "PASS_INSTALLED_ORDINARY_PREPARED4_RETIREMENT_AND_EXACT_RETRY",
+                "source": "c3bec54ca864be9fd1316bf7b9b2f64d732ba1d2",
+                "tree": "8c82ece1012cc7f43c51ffb5e04890003f0f6649",
+                "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+                "source_receipt": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-source-v1.json",
+                  "sha256": "d7d6b8a122fd166e05ccf1b31d9a0e909113d709d817f6e8952d8eddd831c123"
+                },
+                "critical_review": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-profile-critical-review-v1.json",
+                  "sha256": "d565ae64725078a58e48a03f981ae5ada64dafc8e644081d8a90ac9064826725"
+                },
+                "offline_diagnostic": {
+                  "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-profile-diagnostic-v1.json",
+                  "sha256": "3eb0205c8c5b740a7648c84d0b66becf21a92f3a050f301f109afda3d8079a29"
+                },
+                "runtime": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ordinary-successor-c3bec54/verified-run.json",
+                  "sha256": "a907dff811b387f86265221185007be3bf14b5be2f618cdd98ad4421ced3afb8"
+                },
+                "scope": "One genuine ordinary PreparedOpen4 copy/two installed commands with exact qualified2bdf artifacts. Full75-table state, four original inputs and native58rows/sequence72->73->73. Retirement13target updates+terminal receipt; retry changes only two current-Control rows and preserves target timestamps/xmins/receipt. No compacted report fields or floor inferred.",
+                "validation": "Root driver12103 joined0; raw driver completed0,787boundfiles and30case counterexamples. Actual owned client69c1d0a4 exited143/PG71775507 exited0/PID0/noOOM; original5preservation facts true; cleanup/unrelated/missing/unexpected empty. No new build.",
+                "integration": "Fast-forward integrated into main at exactc3bec54; current documentation-only record follows. No product/fixture byte change or new merged-source runtime claim.",
+                "remaining": "Broader ordinary lifecycle/faults, compacted input/H/D qualification, continuous activation/live, Archive and reclamation/restore/capacity remain separate gates."
               }
             }
           }

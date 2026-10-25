@@ -1148,8 +1148,17 @@ Complete SQL rows, terminal timestamps/xmins, native bytes and input maps are
 checked. Prepared OPEN/CLOSING cases retain only the required later original;
 preparation itself retained the optional initial originals. Preparation with
 those absent, actual missing-required-original refusal, H/D use-time faults,
-remaining delivery/cancellation/native uncertainty and original-basis regression
-remain separate gates. Later activation/live and Archive consumers remain gated.
+remaining delivery/cancellation/native uncertainty remain separate gates. Later
+activation/live and Archive consumers remain gated.
+
+The same product `2bdf513c` also passes an ordinary-basis regression at fixture
+`c3bec54c`: one genuine PreparedOpen4 copy, installed empty retirement and exact
+terminal retry. The unchanged independent75-table model compares all rows, four
+original inputs and native bytes. Retirement adds one native close and the exact
+terminal transaction; retry preserves terminal timestamps/xmins, receipt and
+native sequence. Thirty counterexamples and raw replay over787 files pass. The
+ordinary report contains no compacted basis/count. This does not qualify broader
+ordinary lifecycle faults, activation/live or Archive.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

@@ -63983,7 +63983,7 @@
           "branch": "work/compacted-later-live",
           "base": "28cd644df26b29ab2c5a05d61a4ac5a5faad2c32",
           "owner": "/root/compacted_reader_fixture; reused Astra/xhigh",
-          "state": "PARTIAL_PAUSED;10 UNSTAGED_UNCOMMITTED_FILES;NOT_BUILDABLE_FREEZE",
+          "state": "RESUMED_PARTIAL_IMPLEMENTATION; ten saved WIP identities matched before edits",
           "scope": "Explicit compacted continuous activation and same live frontier/admission/read/progress/ACK/renewal. Private shared native/canonical view and retained check/grant. Fresh activated3 recovery and Archive remain separate explicit gates.",
           "audit": {
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-activation-frontier-audit-20261025.json",
@@ -64002,9 +64002,9 @@
             "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-live-pause-wip-20261025.patch",
             "sha256": "ee4162b40c73a9774d22ef9f7d2b689ddb723fbc66fc8469ac2433d169cceb7f"
           },
-          "git_status": "Ten modified tracked Rust files only; no staged or untracked source. Root matched exact author file hashes and saved binary diff. Worktree/branch preserved, no commit or integration of this incomplete draft.",
+          "git_status": "At resume ten modified tracked Rust files matched the saved exact hashes/binary diff, with no staged/untracked source. Author has since resumed implementation in the same separate worktree; final source freeze and integration remain pending.",
           "validation": "diff-check PASS by author; format/compile/tests/Clippy/runtime/raw/final review NOT_RUN",
-          "processes": "None; author and reviewer stopped, all commands completed."
+          "processes": "Author and critical reviewer resumed source-only; root owns runtime/integration."
         },
         "later_remaining_fixture_audit": {
           "owner": "/root/empty_malformed_floor; reused Astra/xhigh",
@@ -64040,6 +64040,60 @@
           "retained": "All .research, worktrees, databases, logs, results, original failures and incomplete source. Known client437b85de exited143 and borrowedPG71775507 exited0, both PID0/noOOM; unrelated running containers untouched.",
           "git": "Main qualification mergeae913a4f already pushed; this closure changes only checkpoint/report/inventory. Incomplete live code remains local in its original worktree with exact saved patch; not merged or claimed verified.",
           "goal_control": "After checkpoint commit/push apply actual PAUSED; do not mark complete or resume without explicit owner instruction."
+        },
+        "later_input_proof_fixture_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-input-proof-20261025",
+          "branch": "work/compacted-later-input-proof",
+          "base": "e23dc24523a54ba38ad04b3404e05ddd8796b82e",
+          "owner": "/root/empty_malformed_floor; continuing verified Astra/xhigh",
+          "state": "SOURCE_IMPLEMENTATION_ASSIGNED; clean base observed at allocation",
+          "scope": "Existing runner/oracle/raw,7copies/9stages input/H/D with independently measured installed baseline; exact product2bdf reused; ordinary75-table regression remains separate. No product edits, root-only engines/build/push.",
+          "free_bytes_before_worktree": 249876307968,
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-consumer-fixture-audit-20261025.json",
+            "sha256": "6ed48c11a4fbccc1e95a1f0170dcb1b88bb6b6b40f00cdd9870464796fbfef49"
+          }
+        },
+        "resume_20261025_after_safe_pause": {
+          "observed_at": "2026-10-25T08:21:06.767155+00:00",
+          "goal": "ACTIVE verified by control after explicit owner resume",
+          "main": "e23dc24523a54ba38ad04b3404e05ddd8796b82e",
+          "reconciliation": "Root observed clean main equal remote, exact10 saved WIP hashes/patch and all four pause/source/review/audit receipt identities. Root fully read remaining-fixture audit and matched27 source hashes/4 reused receipts. No broad evidence rerun.",
+          "resources": "No project container running at resume; no lab mutation. Existing root ownership and preservation obligations continue."
+        },
+        "ordinary_regression_fixture_work": {
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-ordinary-regression-20261025",
+          "branch": "work/compacted-ordinary-regression",
+          "source": "c3bec54ca864be9fd1316bf7b9b2f64d732ba1d2",
+          "tree": "8c82ece1012cc7f43c51ffb5e04890003f0f6649",
+          "base": "e23dc24523a54ba38ad04b3404e05ddd8796b82e",
+          "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "owner": "/root; sole runtime/integration owner",
+          "state": "QUALIFIED_CLEAN_INTEGRATED_MAIN_c3bec54; worktree retained",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-source-v1.json",
+            "sha256": "d7d6b8a122fd166e05ccf1b31d9a0e909113d709d817f6e8952d8eddd831c123"
+          },
+          "scope": "Existing P02-T02 ordinary-basis regression on current compacted product: genuine PreparedOpen4 -> terminal4 -> exact retry; one clone/two installed commands, strict75-table model, four originals; no compacted floor claim.",
+          "critical_review": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/ordinary-regression-profile-critical-review-v1.json",
+            "sha256": "d565ae64725078a58e48a03f981ae5ada64dafc8e644081d8a90ac9064826725"
+          }
+        },
+        "ordinary_regression_runtime": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ordinary-successor-c3bec54",
+          "source": "c3bec54ca864be9fd1316bf7b9b2f64d732ba1d2",
+          "product": "2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f",
+          "driver_session": 12103,
+          "driver_exit": 0,
+          "raw_driver_exit": 0,
+          "state": "PASS_INSTALLED_AND_RAW_STOPPED_RETAINED",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-ordinary-successor-c3bec54/verified-run.json",
+            "sha256": "a907dff811b387f86265221185007be3bf14b5be2f618cdd98ad4421ced3afb8"
+          },
+          "free_bytes_after": 249528254464,
+          "resources": "Actual owned client69c1d0a4 exited143 and borrowedPG71775507 exited0/PID0/noOOM; original5preserved, no cleanup errors or unrelated changes."
         }
       }
     }

@@ -1,17 +1,16 @@
 # Current execution checkpoint
 
-Observed 2026-10-25 on Tux. Development **STOPPED** on explicit owner pause.
-M1–M5 remain incomplete; Q37/Q38 apply. The only remaining closure actions are
-saving/pushing this checkpoint and setting the actual goal control to **PAUSED**.
-Do not resume development without the owner's explicit resume.
+Observed 2026-10-25 on Tux. Goal **ACTIVE**, verified after explicit owner resume.
+M1–M5 remain incomplete; Q37/Q38 apply. Root owns runtime and integration.
+The preceding pause saved all work; no prior qualification is reclassified.
 
 ## Objective and revision
 
 P02-T02 Steps4/5/7: safe receipt/input reclamation for a closed producer.
-Integrated/pushed main is `ae913a4fec9f495c5752b2e2f9984ee5debe4276`; remote
-identity rechecked at pause. Main was clean before this documentation-only closure
-commit; no merge/rebase pending. Resolve this checkpoint's commit with Git rather
-than treating its observed parent as a guessed final revision.
+Main now contains qualified ordinary fixture `c3bec54ca864be9fd1316bf7b9b2f64d732ba1d2`
+by fast-forward; origin was reconciled ate23dc245 before this coherent record.
+Current root edits are documentation only; no merge/rebase pending. The product
+integration remains `ae913a4fec9f495c5752b2e2f9984ee5debe4276`.
 
 Qualified fixture `28cd644df26b29ab2c5a05d61a4ac5a5faad2c32` and product
 `2bdf513cf2cc7c6cee6873f1c7ba6bf6c541c33f` are integrated. The merged delta
@@ -42,17 +41,26 @@ comparison with unknown native-after;f645 proxy checker failure after captured
 native+4/closed custody. Earlier fb4 compilation/c1 Clippy failures, preparer83
 unknown outcome and original a99 Sync timeout remain recorded, not relabeled.
 
+Ordinary regression atc3bec54/2bdf also **PASS**: driver12103 joined0, raw exit0,
+1 copy/2 installed commands,30controls and787file bindings. Full75-table ordinary
+PreparedOpen4 retirement adds one native close; retry preserves target metadata
+and native bytes. Root receipt:
+`/home/tux/bigbrotr-implementation-20260917/runs/installed-ordinary-successor-c3bec54/verified-run.json`.
+
 **NOT_RUN:** final validation of the live draft below, remaining original-input/
-H/D use-time/ordinary-basis cases and all broader open gates. Existing valid
+H/D use-time cases and all broader open gates. Existing valid
 preparer16/malformed2b results remain reusable at their recorded identities.
 
-## Partial work and stopped agents
+## Resumed partial work
 
-`/root/compacted_reader_fixture` stopped with10 unstaged, uncommitted Rust files
+`/root/compacted_reader_fixture` resumed from10 unstaged, uncommitted Rust files
 in `.research/compacted-later-live-20261025`, branch `work/compacted-later-live`,
 HEAD28cd644d. This is an incomplete borrowed-store/canonical-read/frontier draft,
-not a buildable source freeze. No staged or untracked source; no WIP integration.
-Root matched all10 file hashes and the saved exact binary patch.
+not a buildable source freeze. The saved pause snapshot had no staged/untracked
+source; subsequent author changes remain separate until a reviewed freeze.
+At resume root matched all10 file hashes and the saved exact binary patch.
+Author is now implementing the missing activation/live connections in this worktree;
+`/root/compacted_reader_review` resumed its incomplete critical review.
 
 The existing review folder `.research/producer-checkpoint-ack-review-20261020/`
 contains `compacted-later-live-pause-source-20261025.json` and
@@ -63,29 +71,42 @@ Author diff-check PASS; format/compile/components/Clippy/runtime/raw NOT_RUN.
 reviewer's findings: final capability/census/grant/cancellation/ACK/PG delivery
 review is pending, with no WIP approval.
 
-`/root/empty_malformed_floor` stopped after saving the read-only
-`compacted-later-consumer-fixture-audit-20261025.json`. Input/H/D/ordinary proposals
-are unimplemented; preparation COMMIT6 does not establish the separate installed
-retirement baseline. No agent-owned background process or exec session remains.
+Root fully read `compacted-later-consumer-fixture-audit-20261025.json` and
+reconciled27 source identities plus4 reused receipts. `/root/empty_malformed_floor`
+now implements its input/H/D fixture in `.research/compacted-later-input-proof-20261025`,
+branch `work/compacted-later-input-proof`, clean allocated basee23dc245. Scope:
+7 copies/9 stages using existing runner/oracle/raw; optional-absent preparation,
+missing-required preparation and installed refusal with residuals, H/D use-time
+checks. Installed retirement needs its own measured successful hold baseline;
+preparation COMMIT6 alone does not establish it. Ordinary75-table regression stays
+separate. Root froze its1-copy/2-command fixture atc3bec54c in
+`.research/compacted-ordinary-regression-20261025`, branch
+`work/compacted-ordinary-regression`; critical review and installed/raw PASS,
+source integrated on main. The existing75-table oracle is reused unchanged;
+source/diagnostic receipts are in the review folder. Fixture authors remain
+source-only; root owns actual engines. Both fixture profiles reuse product2bdf.
 
 ## Resources and next action
 
-Fresh readable /proc command/cwd inspection found no repository/laboratory
-process outside the checkpoint inspection ancestry. No project container runs.
-Client437b85de exited143; borrowedPG71775507 exited0, both PID0/noOOM. Detailed
+At pause readable /proc command/cwd inspection found no repository/laboratory
+process outside its inspection ancestry. At resume no project container runs.
+Latest ordinary client69c1d0a4 exited143; borrowedPG71775507 exited0, both PID0/noOOM
+freshly checked after that run. Earlier detailed pause
 observation: review folder `compacted-later-pause-resources-20261025.json`.
 All .research, worktrees, databases, raw captures, ELFs, logs and original failures
 remain preserved; unrelated workloads untouched. No operation required stopping.
 
-On explicit resume, first reconcile main/remote and the exact ten-file live WIP
-with its source/review receipts. Continue its missing type/visibility and retained
+Resumption identities matched. Continue missing type/visibility and retained
 Check/grant wiring through activation and the same live frontier/ACK/renewal;
 finish focused source controls and critical review before root-owned build/runtime.
-Use the saved remaining-fixture audit when selecting subsequent qualification.
+In parallel review/freeze the input/H/D fixture, then run it with the unchanged
+qualified2bdf artifacts under root custody. Record results in the existing report.
+Free bytes after ordinary run:249528254464; recheck before large runs.
 
 Preparation without optional initial files, missing required later input, H/D
-use-time drift, remaining delivery/cancellation/native uncertainty and ordinary
-basis regression remain open. Later activation/live and Archive, physical64-file/
+use-time drift and remaining delivery/cancellation/native uncertainty remain open.
+The measured ordinary PreparedOpen4 path passes; broader ordinary faults stay
+open. Later activation/live and Archive, physical64-file/
 32MiB bounds, loss/mixed restore, backup/capacity and M1–M5 remain incomplete.
 No product floor writer/unlink qualified. Original a99 Sync timeout cause remains
 unknown. Q33 CI billing, arm64 and signing/registry remain separate gates.
