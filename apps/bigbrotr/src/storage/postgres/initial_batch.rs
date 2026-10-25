@@ -48,6 +48,8 @@ pub enum InitialOperationError<E> {
     InputBinding(InputBindingError),
     ImportCheckpoint(ImportCheckpointError),
     Progress(ProducerProgressError),
+    /// Explicit compacted predecessor authentication within the same live operation.
+    Compacted(ProducerResolveError),
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
     /// Native work was dispatched but later cleanup/delivery is unavailable.
@@ -105,6 +107,7 @@ fn event_source<'a>(
 struct InitialIngestContext<'a> {
     ingest_root: &'a std::path::Path,
     authority: NativeAuthority<'a>,
+    cancelled: &'a AtomicBool,
     policy_ttl: Duration,
     request: Option<(ProducerRequestId, RequestPhase)>,
     source: Option<CurrentSourceCheck<'a>>,
@@ -416,6 +419,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: false,
                     ingest_root: input.ingest_root,
                     authority,
@@ -445,6 +449,13 @@ impl ControlSession {
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
+        }
+        store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if result.is_ok() {
+            store.delivered();
         }
         self.available = true;
         result.map_err(InitialEventError::Native)
@@ -510,6 +521,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: false,
                     ingest_root: input.ingest_root,
                     authority,
@@ -538,6 +550,13 @@ impl ControlSession {
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
+        }
+        store.validate_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if result.is_ok() {
+            store.delivered();
         }
         self.available = true;
         result.map_err(InitialEventError::Native)
@@ -626,6 +645,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
@@ -691,6 +711,7 @@ impl ControlSession {
             {
                 return Err(InitialEventError::DeliveryUnknown);
             }
+            store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
             tx.commit()
                 .await
                 .map_err(|_| InitialEventError::Progress(ProducerProgressError::CommitUnknown))?;
@@ -707,6 +728,13 @@ impl ControlSession {
         }
         // A completed read refusal does not make a new commit ambiguous. The
         // caller may correct its limits and re-evaluate on this current session.
+        store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if result.is_ok() {
+            store.delivered();
+        }
         self.available = true;
         result.map_err(InitialEventError::Native)
     }
@@ -738,6 +766,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -802,6 +831,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -1017,6 +1047,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
@@ -1074,6 +1105,14 @@ impl ControlSession {
             .commit()
             .await
             .map_err(|_| InitialEventError::Reservation(ReservationError::CommitUnknown))?;
+        store.validate_delivery(
+            input.cancelled,
+            &mut reservation_lease,
+            identity.policy_epoch,
+        )?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         self.available = true;
         // COMMIT precedes native dispatch. Acquire a new complete policy/registry
         // snapshot and a new local lease, accounting for both PG round trips.
@@ -1081,6 +1120,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
@@ -1160,6 +1200,7 @@ impl ControlSession {
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
         let confirmed = match pending_ack {
             Some(pending) => Some(
                 pending
@@ -1180,21 +1221,35 @@ impl ControlSession {
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         if let Some(confirmed) = confirmed {
             store
-                .acknowledge_checkpoint(confirmed, progress.expect("ACK grant").permit(), || {
-                    if input.cancelled.load(Ordering::Relaxed) {
-                        return Err(AdmissionError::AuthorityUnavailable);
-                    }
-                    lease
-                        .check_delivery(identity.policy_epoch)
-                        .map_err(|_| AdmissionError::AuthorityUnavailable)
-                })
+                .acknowledge_checkpoint(
+                    confirmed,
+                    progress.expect("ACK grant").permit(),
+                    input.cancelled,
+                    || {
+                        if input.cancelled.load(Ordering::Relaxed) {
+                            return Err(AdmissionError::AuthorityUnavailable);
+                        }
+                        lease
+                            .check_delivery(identity.policy_epoch)
+                            .map_err(|_| AdmissionError::AuthorityUnavailable)
+                    },
+                )
                 .map_err(InitialEventError::Native)?;
         }
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        store.delivered();
         self.available = true;
         Ok(receipt)
     }
@@ -1280,6 +1335,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
@@ -1360,11 +1416,20 @@ impl ControlSession {
             .commit()
             .await
             .map_err(|_| InitialEventError::Reservation(ReservationError::CommitUnknown))?;
+        store.validate_delivery(
+            input.cancelled,
+            &mut reservation_lease,
+            identity.policy_epoch,
+        )?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         self.available = true;
         let (tx, mut lease) = self
             .begin_initial_native_operation(
                 &store,
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: progress.is_some(),
                     ingest_root: input.ingest_root,
                     authority,
@@ -1444,6 +1509,7 @@ impl ControlSession {
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
         let confirmed = match pending_ack {
             Some(pending) => Some(
                 pending
@@ -1464,11 +1530,16 @@ impl ControlSession {
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         if let Some(confirmed) = confirmed {
             store
                 .acknowledge_checkpoint(
                     confirmed,
                     progress.expect("ACK grant").grant().permit(),
+                    cancelled,
                     || {
                         if cancelled.load(Ordering::Relaxed) {
                             return Err(AdmissionError::AuthorityUnavailable);
@@ -1483,6 +1554,11 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
+        store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        store.delivered();
         self.available = true;
         Ok(outcome)
     }
@@ -1533,6 +1609,7 @@ impl ControlSession {
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
                 InitialIngestContext {
+                    cancelled: input.cancelled,
                     progress: false,
                     ingest_root: input.ingest_root,
                     authority: NativeAuthority::Initial(spec),
@@ -1648,7 +1725,7 @@ impl ControlSession {
         self.begin_operation()?;
         let tx = application_transaction(
             &mut self.client,
-            if input.progress {
+            if input.progress || store.compacted() {
                 40
             } else {
                 authority.schema()
@@ -1750,6 +1827,10 @@ impl ControlSession {
                 },
             )
             .map_err(|_| OwnerError::Unavailable)?;
+        store
+            .require_compacted(&tx, &mut lease, identity.policy_epoch, input.cancelled)
+            .await
+            .map_err(InitialOperationError::Compacted)?;
         Ok((tx, lease))
     }
 }
@@ -1763,7 +1844,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredObservation>, InitialEventError> {
         self.read_native_observation(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -1779,7 +1860,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<Option<StoredVisibility>, InitialEventError> {
         self.read_native_visibility(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -1795,7 +1876,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
     ) -> Result<StoredCertification, InitialEventError> {
         self.certify_native_event(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -1812,7 +1893,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
         self.append_native_dictionaries(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
@@ -1829,7 +1910,7 @@ impl ControlSession {
         validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<StoredOutcome, InitialEventError> {
         self.admit_native_event(
-            NativeOwner::Successor(&mut writer.native),
+            NativeOwner::successor(&mut writer.native, writer.check.as_ref()),
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,

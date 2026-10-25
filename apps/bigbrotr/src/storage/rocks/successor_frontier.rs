@@ -8,6 +8,8 @@ pub(in crate::storage::rocks::store) struct AdmittedFrontier {
     // The original allocation is moved, never copied or grown for the new head.
     entries: Vec<RetainedLineageEntry>,
     manifest: IngestManifest,
+    compacted: Option<ClosedProducerFloor>,
+    incoming: [u8; 32],
     slot: ProducerSlotId,
     root: (u64, u64),
     sequence: u64,
@@ -39,6 +41,8 @@ impl RetainedLineage {
         AdmittedFrontier {
             entries: self.entries,
             manifest: fields.next_manifest,
+            compacted: self.compacted,
+            incoming: Sha256::digest(handoff.record().encode().as_bytes()).into(),
             slot: self.slot,
             root: self.root,
             sequence,
@@ -54,6 +58,9 @@ impl RetainedLineage {
 }
 
 impl AdmittedFrontier {
+    pub(in crate::storage::rocks::store) fn has_compacted_initial(&self) -> bool {
+        self.compacted.is_some()
+    }
     #[cfg(test)]
     pub(in crate::storage::rocks::store) fn entries_identity(
         &self,
@@ -160,6 +167,9 @@ impl AdmittedFrontier {
         if id.producer_epoch.get() == self.manifest.identity().owner_epoch.get() {
             return id.request_sequence.get() <= staged;
         }
+        if self.compacted.is_some() && id.producer_epoch.get() == 1 {
+            return false;
+        }
         id.producer_epoch
             .get()
             .checked_sub(1)
@@ -170,9 +180,50 @@ impl AdmittedFrontier {
     fn input_count(&self, staged: u64) -> Result<u64, AdmissionError> {
         self.entries
             .iter()
+            .filter(|entry| {
+                self.compacted.is_none() || entry.manifest.identity().owner_epoch.get() != 1
+            })
             .try_fold(staged, |total, entry| total.checked_add(entry.issued))
             .filter(|total| *total <= 64)
             .ok_or(AdmissionError::Limit)
+    }
+    fn input_set(
+        &self,
+        staged: u64,
+    ) -> Result<super::super::request_inputs::LineageInputSet, AdmissionError> {
+        let required = self.input_count(staged)?;
+        Ok(match self.compacted.as_ref() {
+            Some(floor) => super::super::request_inputs::LineageInputSet::with_compacted_initial(
+                required,
+                self.slot,
+                floor.fields().issued_through,
+            )?,
+            None => required.into(),
+        })
+    }
+    fn current_entry(&self, store: &IngestStore) -> Result<RetainedLineageEntry, BootstrapError> {
+        entry_coordinates_in(
+            store,
+            self.manifest,
+            self.incoming,
+            None,
+            ProducerState {
+                issued: self.issued,
+                acknowledged: self.acknowledged,
+                retired: 0,
+                closing: false,
+            },
+        )
+    }
+    fn census<'a>(&'a self, current: &'a RetainedLineageEntry) -> Census<'a> {
+        Census {
+            entries: CensusEntries {
+                retained: &self.entries,
+                current: Some(current),
+            },
+            slot: self.slot,
+            compacted: self.compacted.as_ref(),
+        }
     }
     pub(in crate::storage::rocks::store) fn validate(
         &self,
@@ -183,12 +234,17 @@ impl AdmittedFrontier {
             check_cancelled(cancelled)?;
             self.require_identity(store, None)?;
             let stamp = store.lineage_input_census(
-                self.input_count(self.staged)?,
+                self.input_set(self.staged)?,
                 |id| self.accepts(id, self.staged),
                 cancelled,
             )?;
             if stamp != self.inputs {
                 return Err(AdmissionError::StateMismatch);
+            }
+            if self.compacted.is_some() {
+                let current = self.current_entry(store)?;
+                self.census(&current)
+                    .inspect_store_census(store, cancelled)?;
             }
             self.require_identity(store, None)?;
             check_cancelled(cancelled)?;
@@ -234,7 +290,7 @@ impl AdmittedFrontier {
         };
         let addition = added.then(|| (request, Sha256::digest(bytes).into(), bytes.len() as u64));
         let (all, prior) = store.lineage_input_delta(
-            self.input_count(staged)?,
+            self.input_set(staged)?,
             |id| self.accepts(id, staged),
             addition,
             cancelled,
@@ -305,5 +361,117 @@ impl AdmittedFrontier {
     ) {
         self.acknowledged = acknowledged;
         self.sequence = sequence;
+    }
+}
+
+/// A private read view over the continuously held live owner. This carries no
+/// IngestRecovery reference/conversion and cannot mint a historical handoff.
+#[derive(Clone, Copy)]
+pub(in crate::storage) struct CompactedLiveSuccessor<'a> {
+    frontier: &'a AdmittedFrontier,
+    store: &'a IngestStore,
+    cancelled: &'a AtomicBool,
+}
+impl<'a> CompactedLiveSuccessor<'a> {
+    pub(in crate::storage::rocks::store) fn new(
+        store: &'a IngestStore,
+        limits: super::super::AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        let frontier = store
+            .live_successor
+            .as_ref()
+            .ok_or(AdmissionError::StateMismatch)?;
+        let view = Self {
+            frontier,
+            store,
+            cancelled,
+        };
+        let result = (|| {
+            view.validate(cancelled)?;
+            if frontier.compacted.is_none() {
+                return Err(AdmissionError::StateMismatch);
+            }
+            let current = frontier.current_entry(store)?;
+            frontier.census(&current).verify_store_effect_census(
+                store,
+                frontier.manifest.identity().owner_epoch.get(),
+                limits,
+                effects,
+                cancelled,
+            )?;
+            view.validate(cancelled)
+        })();
+        if result.is_err() {
+            frontier.poison();
+        }
+        result?;
+        Ok(view)
+    }
+    pub(in crate::storage) fn manifest(&self) -> &IngestManifest {
+        &self.frontier.entries[0].manifest
+    }
+    pub(in crate::storage) fn floor(&self) -> &ClosedProducerFloor {
+        self.frontier.compacted.as_ref().expect("sealed live floor")
+    }
+    pub(in crate::storage) fn producer_slot_id(&self) -> ProducerSlotId {
+        self.frontier.slot
+    }
+    pub(in crate::storage) fn progress_scratch(&self) -> &OwnedPermit {
+        &self.frontier._permit
+    }
+    pub(in crate::storage::rocks::store) fn store(&self) -> &'a IngestStore {
+        self.store
+    }
+    pub(in crate::storage) fn validate(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        if self.cancelled.load(Ordering::Relaxed) {
+            self.frontier.poison();
+            return Err(AdmissionError::AuthorityUnavailable);
+        }
+        self.frontier.validate(self.store, cancelled)?;
+        if self.cancelled.load(Ordering::Relaxed) || cancelled.load(Ordering::Relaxed) {
+            self.frontier.poison();
+            return Err(AdmissionError::AuthorityUnavailable);
+        }
+        Ok(())
+    }
+    pub(in crate::storage::rocks::store) fn require_input(
+        &self,
+        checked: (ProducerRequestId, [u8; 32], u64),
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        let result = (|| {
+            self.validate(cancelled)?;
+            let stamp = self.store.require_compacted_lineage_input(
+                self.frontier.input_set(self.frontier.staged)?,
+                |id| self.frontier.accepts(id, self.frontier.staged),
+                checked,
+                cancelled,
+            )?;
+            if stamp != self.frontier.inputs {
+                return Err(AdmissionError::StateMismatch);
+            }
+            self.validate(cancelled)
+        })();
+        if result.is_err() {
+            self.frontier.poison();
+        }
+        result
+    }
+    pub(in crate::storage) fn progress_read(
+        &self,
+    ) -> Result<super::super::ProgressRead<'_>, AdmissionError> {
+        self.validate(self.cancelled)?;
+        self.store.progress_read(self.progress_scratch())
+    }
+    pub(in crate::storage) fn resolution(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedPrefixResolution<'a>, AdmissionError> {
+        CompactedPrefixResolution::from_live(*self, cancelled)
     }
 }

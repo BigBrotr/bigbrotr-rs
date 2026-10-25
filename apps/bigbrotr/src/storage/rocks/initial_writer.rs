@@ -113,9 +113,7 @@ impl InitialWriterCandidate {
         policy: PolicyEpoch,
         cancelled: &AtomicBool,
     ) -> Result<InitialHandoff, AdmissionError> {
-        if !std::ptr::eq(source.recovery(), &self.recovery)
-            || self.recovery.manifest() != &self.previous
-        {
+        if !source.matches_recovery(&self.recovery) || self.recovery.manifest() != &self.previous {
             return Err(AdmissionError::StateMismatch);
         }
         InitialHandoff::from_compacted(source, self.target_manifest(policy)?, cancelled)

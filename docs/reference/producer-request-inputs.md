@@ -1146,10 +1146,12 @@ preparation COMMIT response loss, fresh gap completion, installed OPEN retiremen
 a real SQL rejection after native close, fresh CLOSING completion and exact retry.
 Complete SQL rows, terminal timestamps/xmins, native bytes and input maps are
 checked. Prepared OPEN/CLOSING cases retain only the required later original;
-preparation itself retained the optional initial originals. Preparation with
-those absent, actual missing-required-original refusal, H/D use-time faults,
-remaining delivery/cancellation/native uncertainty remain separate gates. Later
-activation/live and Archive consumers remain gated.
+preparation itself retained the optional initial originals. Separate fixture
+`82103420` qualifies preparation without those optional originals, required-input
+refusal despite residual initial files, and H/D changes at measured preparation
+and installed proof-use boundaries. D corruption reaches the earlier SQL
+closed-source commitment guard; it does not qualify the later Rust D recheck.
+Remaining delivery/cancellation/native uncertainty and Archive remain gated.
 
 The same product `2bdf513c` also passes an ordinary-basis regression at fixture
 `c3bec54c`: one genuine PreparedOpen4 copy, installed empty retirement and exact
@@ -1159,6 +1161,26 @@ terminal transaction; retry preserves terminal timestamps/xmins, receipt and
 native sequence. Thirty counterexamples and raw replay over787 files pass. The
 ordinary report contains no compacted basis/count. This does not qualify broader
 ordinary lifecycle faults, activation/live or Archive.
+
+Product `5df6b942`, with fixture `fa76466a`, additionally qualifies a compacted
+current writer for later activation. The existing `serve --activate-successor`
+selects this basis; the profile exercises admission through its finite consumer
+and installed quiet activation separately. The writer retains one charged lineage
+allocation and a private compacted ancestor proof. Dictionaries, Event admission,
+reads, certification, checkpoint/ACK and renewal recheck the same native/input
+census and retained PostgreSQL H/D authority. Failed or interrupted proof use
+poisons that owner; it cannot supply a fresh recovery or Archive capability.
+
+The independent four-copy profile covers full, partial and absent initial
+residuals, with every later original still required. Finite dictionary progress
+reaches checkpoint1/ACK1; subsequent existing/new Event admissions and retries
+preserve that watermark. A separate installed quiet activation renews beyond its
+initial deadline and joins after SIGTERM without issuing a target request.
+Exact-source raw replay binds all SQL rows/xmins, native bytes and input files.
+The [recovery evidence](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+owns counts, identities and preserved failures. Real Sync Event/certification
+progress, delivery faults, fresh activated-later recovery, Archive and capacity
+remain separate requirements; this does not implement floor writing or unlink.
 
 Reclamation stays unavailable until initial recovery and the
 existing successor preparation, activation and recovery consumers support that

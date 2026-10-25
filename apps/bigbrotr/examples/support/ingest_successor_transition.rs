@@ -104,6 +104,7 @@ async fn run_inner(
             | "successor-compacted-gap"
             | "successor-compacted-empty"
             | "successor-compacted-empty-retry"
+            | "successor-compacted-live"
     );
     let operation = match command {
         "successor-prepare" | "successor-compacted-prepare" => "prepare",
@@ -111,7 +112,7 @@ async fn run_inner(
         "successor-empty-retry" | "successor-compacted-empty-retry" => "empty-retry",
         "successor-gap" | "successor-compacted-gap" => "gap",
         "successor-lineage-live" => "live",
-        "successor-lineage-live-new" => "live-new",
+        "successor-lineage-live-new" | "successor-compacted-live" => "live-new",
         "successor-lineage-recover" => "recover",
         "successor-lineage-source" => "source",
         "successor-lineage-abandon" => "abandon",
@@ -148,7 +149,11 @@ async fn run_inner(
             n("baseline_bytes"),
             ResourceLimits::new(
                 n("payload_bytes"),
-                8,
+                if command == "successor-compacted-live" {
+                    9
+                } else {
+                    8
+                },
                 n("native_bytes"),
                 n("completion_reserve_bytes"),
             ),
@@ -209,12 +214,19 @@ async fn run_inner(
     drop(replay_grants(&budget));
     drop(effect_grant(&budget));
     if compacted {
-        drop(compacted_grant(&budget));
+        let _canonical = compacted_grant(&budget);
+        if live {
+            live::preflight(
+                &budget,
+                root.number("ingest.producer_outstanding_requests"),
+                true,
+            );
+        }
         emit(serde_json::json!({"event":"lineage-transition-compacted",
             "command":command,"compacted_outcome_bytes":compacted_outcome_data_bytes(recovery_limits().event).unwrap()}));
     }
-    if live {
-        live::preflight(&budget);
+    if live && !compacted {
+        live::preflight(&budget, 32, false);
     }
     if acquisition {
         acquisition::preflight(&budget, claims);
@@ -342,6 +354,7 @@ async fn run_inner(
                 metadata,
                 mutation_permit.unwrap(),
                 operation == "live-new",
+                compacted,
             )
             .await
     } else if operation == "recover" {

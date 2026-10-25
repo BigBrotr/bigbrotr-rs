@@ -6,7 +6,7 @@ use crate::storage::rocks::store::{
 };
 use std::sync::atomic::AtomicBool;
 
-pub(super) struct Check {
+pub(in crate::storage::postgres::control_owner) struct Check {
     limits: AdmissionLimits,
     effects: OwnedPermit,
 }
@@ -22,6 +22,78 @@ impl Check {
             return Err(effect_error(AdmissionError::InsufficientReservation));
         }
         Ok(Self { limits, effects })
+    }
+
+    pub(super) fn validate_activation(
+        &self,
+        owner: &crate::storage::rocks::store::NativeSuccessorActivation,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        owner
+            .compacted_predecessor(self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        Ok(())
+    }
+    pub(super) async fn require_activation(
+        &self,
+        tx: &Transaction<'_>,
+        owner: &crate::storage::rocks::store::NativeSuccessorActivation,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        let view = owner
+            .compacted_predecessor(self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        self.require(
+            tx,
+            owner.recovery().ok_or(OwnerError::Unavailable)?,
+            owner.lineage().ok_or(OwnerError::Unavailable)?,
+            &view,
+            lease,
+            policy,
+            cancelled,
+        )
+        .await
+    }
+    pub(in crate::storage::postgres::control_owner) fn validate_live(
+        &self,
+        native: &crate::storage::rocks::store::ActiveSuccessorWriter,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        native
+            .compacted_view(self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        Ok(())
+    }
+    pub(in crate::storage::postgres::control_owner) async fn require_live(
+        &self,
+        tx: &Transaction<'_>,
+        native: &crate::storage::rocks::store::ActiveSuccessorWriter,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<(), ProducerResolveError> {
+        let view = native
+            .compacted_view(self.limits, &self.effects, cancelled)
+            .map_err(effect_error)?;
+        producer_progress::recovery::require_compacted_live(tx, &view, cancelled, || {
+            producer_progress::recovery::authority(lease, policy, cancelled)
+        })
+        .await?;
+        let verified = producer_compaction::resolve_initial_outcomes(
+            tx,
+            view.resolution(cancelled).map_err(effect_error)?,
+            self.limits,
+            &self.effects,
+            lease,
+            policy,
+            cancelled,
+        )
+        .await
+        .map_err(super::super::successor_history::compacted_error)?;
+        verified.validate_live(cancelled).map_err(effect_error)?;
+        initial_history::check_delivery(lease, policy, cancelled)
     }
 
     pub(super) fn handoff<'a>(

@@ -1261,7 +1261,7 @@ own complete selected journeys are demonstrated.
 `serve --activate-successor` consumes a genuinely terminal epoch2-or-later head,
 using the same bounded history, preparation and activation adapters as the finite
 consumer. It owns the exclusive native handle before protected connection setup,
-verifies original inputs and exact retained outcomes for every earlier stream,
+verifies the selected input basis and exact retained outcomes for every earlier stream,
 and transfers only a freshly delivered `LiveSuccessorWriter` into the installed
 HTTP/Sync worker. A historical `InitialRegistration` never stands in for the
 current writer. Existing initial and epoch2 consumers retain their original
@@ -1288,6 +1288,16 @@ new/historical/retried signed events, provenance off/on, renewal and joined SIGT
 The independent capture reader binds all75SQL tables, complete native/input bytes
 and original preservation. Current sources remain open and jobs queued revision2;
 recovery/source/workflow/retirement cycles and Archive remain separate gates.
+
+The separately qualified compacted branch selects an authenticated closed initial
+floor while retaining every required later original. Its current writer keeps
+the same private proof, native/input census and PostgreSQL H/D checks through
+admission, reads, checkpoint/ACK and renewal. Product `5df6b942` with fixture
+`fa76466a` qualifies finite dictionary/Event admission on three residual shapes
+and a separate installed quiet activation/renewal/join. Compacted requests are
+reported separately from original replays. This branch does not yet qualify real
+Sync progress, fresh activated-later recovery or Archive; see the
+[input-basis qualification](producer-request-inputs.md) and existing evidence.
 
 ### Installed activated successor recovery (under implementation)
 

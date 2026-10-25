@@ -231,6 +231,7 @@ impl<'a> CommandOwner<'a> {
                         .renew_live_successor_ingest(
                             writer,
                             ttl,
+                            &self.cancellation.requested,
                             |doc, digest| validate_owner(self.root, self.profile, doc, digest),
                             &Cell::new(false),
                         )
@@ -760,10 +761,7 @@ mod tests {
     #[tokio::test]
     async fn renewal_admission_does_not_wait_for_a_timer_tick() {
         let mut context = std::task::Context::from_waker(std::task::Waker::noop());
-        for due in [
-            Instant::now() + Duration::from_millis(50),
-            Instant::now(),
-        ] {
+        for due in [Instant::now() + Duration::from_millis(50), Instant::now()] {
             let mut renewal = std::pin::pin!(renewal_due(due));
             assert!(renewal.as_mut().poll(&mut context).is_ready());
         }

@@ -99,7 +99,8 @@ class Model:
         self.ids.add(value)
         return '\\x' + value
 
-    def startup(self, observed, report):
+    def startup(self, observed, report, *, compacted=False):
+        assert type(compacted) is bool
         before, ds = copy.deepcopy(self.pg), self.ds['dataset_id']
         previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'), key=lambda r: r['epoch'])
         assert previous['state'] == 'released'
@@ -121,7 +122,7 @@ class Model:
             control_backend_start=actual['control_backend_start'], xmin=actual['xmin'])
         self.pg['owner_epochs'].append(self.control)
         epoch = max(r['producer_epoch'] for r in before['producer_epochs']) + 1
-        assert epoch in (4, 5)
+        assert epoch == 3 if compacted else epoch in (4, 5)
         intent = only(observed['ingest_successions'], target_epoch=epoch)
         at, deadline, tx = intent['created_at_us'], intent['lease_expires_at_us'], intent['xmin']
         clock(at, self.window)
@@ -227,7 +228,8 @@ class Model:
             predecessor=dict(producer_epoch=str(epoch - 1), resolved_requests=str(producer['reserved_through_request']),
                 last_complete_sequence=str(source['last_complete_sequence']), sha256=source['closure_digest'][2:]),
             acquisition='not-started', ready=False, listeners=[dict(kind='private-session-http',
-                host='127.0.0.1', port=18081, profile='initial-source-commands')])
+                host='127.0.0.1', port=18081, profile='initial-source-commands')],
+            **(dict(recovery_basis='closed-producer-floor-v3', compacted_requests='7') if compacted else {}))
         values = native_map(self.native)
         for cf, key, value in [('default', b'\x01\x01', manifest),
             ('default', b'\x01\x0a' + binary(ds) + binary(self.resource) + be(epoch - 1), record),

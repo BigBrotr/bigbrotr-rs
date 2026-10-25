@@ -37,6 +37,14 @@ NEW_EVENT = dict(
     sig='051b8c5ac03828f2e6ab0b4d99de9a57a455e3549e652eda67df061ef39ec1f73c01aee2ccb43a2dad348f51e9aa09ffc63ba189f9ec0449f96606d1f3632092')
 
 
+# Modern retained seed1:5, independently pinned to source1:13/14/15.
+COMPACTED_OLD_EVENT = dict(
+    id='32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791',
+    pubkey='79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798',
+    created_at=23, kind=1, tags=[['t', 'allowed']], content='included',
+    sig='a7f054f4f22d05778e3ecabda6daf07f1d37422b2a31c5dbc8836395b7f7616258632a2adc978a353d1181bd89a51953b1f9a13e51577bf8657c9f2c9eef6d3d')
+
+
 def cbor(value):
     """Small deterministic CBOR encoder for this literal fixture vocabulary."""
     def head(major, n):
@@ -91,7 +99,15 @@ def transition_case(case):
 
 class Science:
     """Exact native puts, sidecars and receipts; no receipt supplies expectations."""
-    def __init__(self, model, plan, corpus):
+    def __init__(self, model, plan, corpus, *, compacted=False):
+        assert type(compacted) is bool
+        self.compacted = compacted
+        if compacted:
+            self.old_event, self.new_event = COMPACTED_OLD_EVENT, OLD_EVENT
+            self.old_sources = (3, 13, 14, 15)
+        else:
+            self.old_event, self.new_event = OLD_EVENT, NEW_EVENT
+            self.old_sources = (3, 8, 9, 10)
         self.m, self.plan, self.corpus = model, plan, corpus
         self.values = native_map(model.native)
         self.ds, self.slot = binary(model.ds['dataset_id']), binary(model.slot)
@@ -102,7 +118,7 @@ class Science:
         self.lineage = self.ref(9)
         self.refs, self.inputs, self.receipts, self.deps = {}, {}, {}, {}
         self.writes = 0
-        for n in (3, 8, 9, 10):
+        for n in self.old_sources:
             raw = bytes.fromhex(self.values['facts', (b'\x01\x20' + self.source(1, n)).hex()])
             assert raw[:2] == b'\x01\x20' and sha(raw[34:]) == raw[2:34].hex()
             self.refs[1, n] = [[self.ds, 0, 1, n], raw[2:34]]
@@ -110,8 +126,8 @@ class Science:
         # eligibility remain source1 even when the immediate parent is epoch3.
         scope_index = self.values['default', (b'\x01\x04' + self.ref_key(self.scope)).hex()]
         assert scope_index == (b'\x01\x04' + self.source(1, 3) + self.refs[1, 3][1]).hex()
-        assert ('default', (b'\x01\x06' + self.ds + bytes.fromhex(NEW_EVENT['id'])).hex()) not in self.values
-        assert [json.loads(corpus)[i] for i in range(2)] == [OLD_EVENT, NEW_EVENT]
+        assert ('default', (b'\x01\x06' + self.ds + bytes.fromhex(self.new_event['id'])).hex()) not in self.values
+        assert [json.loads(corpus)[i] for i in range(2)] == [self.old_event, self.new_event]
 
     def ref(self, kind, ordinal=1):
         assert type(ordinal) is int and 1<=ordinal<=3
@@ -164,7 +180,7 @@ class Science:
             intent = [1, self.scope, [['dictionary', 1, [self.lineage, *descriptor]]]]
             operation = 'admit-evidence'
         else:
-            intent, operation = self.intent(OLD_EVENT if n == 2 else NEW_EVENT), 'admit'
+            intent, operation = self.intent(self.old_event if n == 2 else self.new_event), 'admit'
         return b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, n], operation, 1, intent])
 
     def advance(self, n):
@@ -175,9 +191,9 @@ class Science:
                 format_version=1, source_dataset_id=None, source_artifact_digest=bytes.fromhex(sha(self.corpus))), 900_000_001)
             members, deps = [1], [(1, 3), (self.epoch, 1)]
         elif n == 2:
-            members, deps = [], [(1, k) for k in (3, 8, 9, 10)] + [(self.epoch, 1)]
+            members, deps = [], [(1, k) for k in self.old_sources] + [(self.epoch, 1)]
         else:
-            at, event = 900_000_005, NEW_EVENT
+            at, event = 900_000_005, self.new_event
             event_id = bytes.fromhex(event['id'])
             self.dictionary(2, 8, 'event', dict(event_id=event_id), at)
             self.fact(3, 'event-payload', [*body(event), self.ref(8)], at)
@@ -196,7 +212,8 @@ class Science:
             pending = sha(b'bigbrotr/admission-batch/1\0' + cbor([self.ds, 0, self.epoch, first, last, batch]))
             self.put('facts', b'\x01\x21' + self.source(self.epoch, first), b'\x01\x21' + be(last) + bytes.fromhex(pending))
         self.put('receipts', b'\x01\x30' + self.slot + be(self.epoch) + be(n), receipt)
-        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n) + bytes(16))
+        self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch),
+            b'\x01\x31' + be(n) + be(1 if self.compacted and n > 1 else 0) + be(0))
         self.inputs[n], self.receipts[n], self.deps[n] = raw, receipt, dependencies
         name = self.slot.hex() + f'-{self.epoch:016x}-{n:016x}.cbor'
         assert name not in self.m.inputs
@@ -206,8 +223,15 @@ class Science:
         self.writes = 0
         return receipt
 
+    def acknowledge_dictionary(self):
+        assert self.compacted and set(self.receipts) == {1}
+        key = ('receipts', (b'\x01\x31' + self.slot + be(self.epoch)).hex())
+        assert self.values[key] == (b'\x01\x31' + be(1) + bytes(16)).hex()
+        self.values[key] = (b'\x01\x31' + be(1) + be(1) + be(0)).hex()
+        self.m.native.update(rows=native_rows(self.values), sequence=self.m.native['sequence'] + 1)
+
     def certification(self, n):
-        intent = self.intent(OLD_EVENT if n == 2 else NEW_EVENT)
+        intent = self.intent(self.old_event if n == 2 else self.new_event)
         digest = sha(b'bigbrotr/producer-request/1\0' + cbor([[bytes(16), 0, 0], 'certify-existing', 1, intent]))
         context = self.context()
         proof = sha(b'bigbrotr/existing-proof/1\0' + cbor([*context[:2], 'local-synced',
@@ -256,7 +280,9 @@ class Model(transition.Model):
             issuer_resource=c['resource_id'], issuer_epoch=c['epoch'], issuer_role='control',
             issuer_incarnation=c['process_incarnation'], reserved_at_us=reserved,
             relay_endpoint_id=None, relay_access_scope_id=None, relay_enrollment_generation=None,
-            relay_route_id=None, acquisition_scope_id=None, acquisition_job_id=None, xmin=rx))
+            relay_route_id=None, acquisition_scope_id=None, acquisition_job_id=None, xmin=rx,
+            **(dict(progress_request_id=None, progress_event_ordinal=None,
+                progress_wire_sequence=None, progress_input_sha256=None) if science.compacted else {})))
         self.pg['producer_outcomes'].append(dict(base, outcome_kind=2 if n == 2 else 1,
             policy_epoch=self.ds['policy_revision'], outcome_bytes=bx(receipt), outcome_sha256='\\x' + sha(receipt),
             recorder_resource=c['resource_id'], recorder_epoch=c['epoch'], recorder_role='control',
@@ -264,6 +290,24 @@ class Model(transition.Model):
         producer = only(self.pg['producer_epochs'], producer_slot_id=self.slot, producer_epoch=epoch)
         assert producer['reserved_through_request'] == n - 1
         producer.update(reserved_through_request=n, xmin=rx)
+        if science.compacted and n == 1:
+            import installed_progress_replay as progress
+            common = {k: base[k] for k in ('dataset_id', 'producer_slot_id', 'producer_epoch')}
+            actual = only(observed['producer_checkpoints'], producer_epoch=epoch)
+            committed = self.at(actual['committed_at_us'], at)
+            assert committed < min(c['lease_expires_at_us'], target['lease_expires_at_us'])
+            head = dict(common, progress_format=1, manifest_sha256=manifest, checkpoint_revision=1,
+                complete_through_request=1, progress_jobs=0, dependency_count=2,
+                issuer_resource=c['resource_id'], issuer_epoch=c['epoch'], issuer_incarnation=c['process_incarnation'],
+                committed_at_us=committed, xmin=ox, checkpoint_digest='\\x'+'00'*32)
+            deps = [dict(common, source_shard=0, source_epoch=e, source_sequence=s,
+                payload_digest=bx(science.refs[e, s][1]), xmin=ox) for e, s in ((1, 3), (epoch, 1))]
+            def check(row):
+                key = ('facts', (b'\x01\x20'+science.source(row['source_epoch'], row['source_sequence'])).hex())
+                assert bytes.fromhex(science.values[key])[2:34] == binary(row['payload_digest'])
+            head['checkpoint_digest'] = bx(progress.head_digest(head, [], deps, check))
+            self.pg['producer_checkpoints'].append(head)
+            self.pg['producer_checkpoint_dependencies'].extend(deps)
         same(self.pg, observed)
 
 
@@ -319,16 +363,24 @@ def verify(events, before, native, inputs, case, server_window):
     return verify_live(events, before, native, inputs, case, server_window, known)
 
 
-def verify_live(events, before, native, inputs, case, server_window, known):
+def verify_live(events, before, native, inputs, case, server_window, known, *, compacted=False, initial=None):
     """Unchanged finite live protocol after an independently checked terminal head.
 
     Callers own the original pins and literal complete-history reconstruction.
     This shared body permits an activated predecessor without inventing another
     preparation/admission oracle or weakening the original case specification.
     """
+    assert type(compacted) is bool and (initial is not None) == compacted
+    if compacted:
+        for event in events:
+            fields = ('compacted_requests', 'original_requests_replayed') if event['event'] == 'lineage-history-compacted-initial' else (
+                ('compacted_initial_requests', 'original_initial_requests_replayed') if event['event'] == 'lineage-history-compacted-proof' else ())
+            assert all(type(event[field]) is int for field in fields)
     target, operation = known['head'] + 1, 'live-new'
+    limit = 2 if compacted else 32
+    old_event, new_event = (COMPACTED_OLD_EVENT, OLD_EVENT) if compacted else (OLD_EVENT, NEW_EVENT)
     assert known['state'] == 'Terminal' and known['through'] == target - 1
-    m = Model(before, native, inputs, server_window)
+    m = Model(before, native, inputs, server_window, compacted_history=compacted)
     t = Transcript(events, m)
     candidate = t.take('candidate', True)
     assert set(candidate) == {'event', 'role', 'incarnation', 'namespaces'}
@@ -341,9 +393,14 @@ def verify_live(events, before, native, inputs, case, server_window, known):
     exact(live_resource, dict(event='lineage-live-resources', prepared_input_bytes=1024**2,
         operation_data_bytes=live_resource['operation_data_bytes'], operation_native_bytes=live_resource['operation_native_bytes'],
         max_input_bytes=8192, max_event_bytes=256 * 1024, max_dependencies=256,
-        outstanding_request_limit=32, provenance=False))
+        outstanding_request_limit=limit, provenance=False))
     for name in ('operation_data_bytes', 'operation_native_bytes'):
         assert type(live_resource[name]) is int and 0 < live_resource[name] <= 256 * 1024**2
+    if compacted:
+        extra = t.take('compacted', True)
+        assert extra == dict(event='lineage-transition-compacted', command='successor-compacted-live',
+            compacted_outcome_bytes=extra['compacted_outcome_bytes'])
+        assert type(extra['compacted_outcome_bytes']) is int and 0 < extra['compacted_outcome_bytes'] <= 256*1024**2
     resource = t.take('resources')
     exact(resource, dict(event='lineage-history-resources', metadata_bytes=262144,
         metadata_scratch_bytes=131072, metadata_entry_bytes=512, native_bytes=128 * 1024**2,
@@ -354,7 +411,7 @@ def verify_live(events, before, native, inputs, case, server_window, known):
     assert sum(resource[k] for k in ('metadata_bytes', 'input_bytes', 'outcome_bytes', 'effect_bytes',
         'transport_bytes', 'observation_bytes')) + 8192 + live_resource['prepared_input_bytes'] + live_resource['operation_data_bytes'] <= 1024**3
     exact(t.take('resources', True), dict(event='lineage-transition-resources', operation=operation,
-        mutation_data_bytes=8192, mutation_native_bytes=8192, lease_ttl_us='20000000', outstanding_request_limit=32))
+        mutation_data_bytes=8192, mutation_native_bytes=8192, lease_ttl_us='20000000', outstanding_request_limit=limit))
     planned = t.take('control')
     assert set(planned) == {'event', 'phase', 'role', 'incarnation', 'lease_ttl_us'}
     assert planned['phase'] == 'claim-planned' and planned['lease_ttl_us'] == '20000000'
@@ -369,7 +426,11 @@ def verify_live(events, before, native, inputs, case, server_window, known):
         control_epoch=m.control['epoch'], present=True))
     t.policy(policy, 'acquired', None, None)
     t.snapshot('before-read')
-    t.history(known)
+    if compacted:
+        import installed_compacted_reader_oracle as compacted_oracle
+        compacted_oracle.later_prefix(t, (before, native, inputs), initial)
+    else:
+        t.history(known)
     event = t.take('plan', True)
     created, deadline = event['created_at_us'], event['lease_expires_at_us']
     assert re.fullmatch('[1-9][0-9]*', created) and re.fullmatch('[1-9][0-9]*', deadline)
@@ -378,7 +439,7 @@ def verify_live(events, before, native, inputs, case, server_window, known):
     record = transition.record_value(plan['record'], target)
     exact(event, dict(event='lineage-transition-plan', operation='prepare', record=record,
         role=candidate['role'], created_at_us=created, lease_expires_at_us=deadline,
-        outstanding_request_limit=32, policy=dict(config_revision=m.ds['config_revision'],
+        outstanding_request_limit=limit, policy=dict(config_revision=m.ds['config_revision'],
             policy_revision=m.ds['policy_revision'],
             config_digest=only(m.pg['config_revisions'], revision=m.ds['config_revision'])['document_digest'][2:],
             policy_digest=only(m.pg['policy_revisions'], revision=m.ds['policy_revision'])['document_digest'][2:])))
@@ -400,26 +461,28 @@ def verify_live(events, before, native, inputs, case, server_window, known):
     fixture = t.live('fixture')
     # Struct field order is explicit; unlike arbitrary observed JSON, these
     # bytes independently bind the exact two signed events in the finite import.
-    corpus = json.dumps([OLD_EVENT, NEW_EVENT], separators=(',', ':'), ensure_ascii=False).encode()
-    science = Science(m, plan, corpus)
-    old_name = m.slot[2:] + '-0000000000000001-0000000000000004.cbor'
+    corpus = json.dumps([old_event, new_event], separators=(',', ':'), ensure_ascii=False).encode()
+    science = Science(m, plan, corpus, compacted=compacted)
+    old_name = m.slot[2:] + ('-0000000000000001-0000000000000005.cbor' if compacted else '-0000000000000001-0000000000000004.cbor')
     original = bytes.fromhex(fixture['original_bytes'])
-    assert dict(bytes=len(original), sha256=sha(original)) == inputs[old_name]
-    assert sha(original) == '19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977'
+    assert dict(bytes=len(original), sha256=sha(original)) == (initial[2] if compacted else inputs)[old_name]
+    assert sha(original) == ('4add1a3691de324ebdc7202debd5f0187cbd895a997d16ec499cdfea16827a26' if compacted else '19820e2cea792c8780de0d8542baa76dabbdb611ab96237eed2230a228d82977')
     exact(fixture, dict(event='lineage-live-fixture', original_name=old_name,
         original_bytes=original.hex(), original_sha256=sha(original), scope=ref_json(science.scope),
         lineage=ref_json(science.lineage), artifact_bytes=corpus.hex(), artifact_sha256=sha(corpus),
-        old_event=OLD_EVENT, new_event=NEW_EVENT, provenance=False, installed_import=False))
+        old_event=old_event, new_event=new_event, provenance=False, installed_import=False))
     for n, label in ((1, 'dictionary'), (2, 'already-durable'), (3, 'new-event')):
         for retry in (False, True):
             stage = label + ('-retry' if retry else '')
             raw = science.request(n)
             exact(t.live('input'), dict(event='lineage-live-input', stage=stage, request=request_json(science, n),
                 preimage=raw.hex(), request_digest=sha(raw), recorded_at_us=str(900_000_001 + 2 * (n - 1) + retry),
-                signed_event=None if n == 1 else OLD_EVENT if n == 2 else NEW_EVENT, provenance=False))
+                signed_event=None if n == 1 else old_event if n == 2 else new_event, provenance=False))
             t.snapshot('before-' + stage)
             if not retry:
                 science.advance(n)
+                if compacted and n == 1:
+                    science.acknowledge_dictionary()
             t.snapshot('after-' + stage, None if retry else lambda pg: m.admit(pg, science, n))
             receipt = science.receipts[n]
             exact(t.live('receipt'), dict(event='lineage-live-receipt', stage=stage,
@@ -435,7 +498,7 @@ def verify_live(events, before, native, inputs, case, server_window, known):
         digest, proof = science.certification(n)
         context = science.context()
         exact(t.live('certification'), dict(event='lineage-live-certification', kind=kind,
-            event_id=(OLD_EVENT if n == 2 else NEW_EVENT)['id'], intent_digest=digest, proof_digest=proof,
+            event_id=(old_event if n == 2 else new_event)['id'], intent_digest=digest, proof_digest=proof,
             context=dict(dataset_id=science.ds.hex(), topology_generation=str(context[1]), protection_class='local-synced',
                 recovery_generation=context[3].hex(), policy_epoch=str(context[4])),
             dependencies=dependencies_json(science.deps[n])))
@@ -455,11 +518,11 @@ def verify_live(events, before, native, inputs, case, server_window, known):
     exact(t.live('complete'), dict(event='lineage-live-complete', operation=operation, native='closed',
         control='released-and-joined', observer='joined', success=True, writer=False, activation=True, admission=True))
     assert t.position == len(events), 'unclassified trailing events'
-    assert t.snapshots == 33 + 2 * (sum(known['counts']) + len(known['counts']))
-    assert m.refreshes == sum(known['counts']) + len(known['counts']) + 2
+    assert t.snapshots == (39 if compacted else 33 + 2 * (sum(known['counts']) + len(known['counts'])))
+    assert m.refreshes == (5 if compacted else sum(known['counts']) + len(known['counts']) + 2)
     assert len(m.native['rows']) == len(native['rows']) + 20
-    assert m.native['sequence'] == native['sequence'] + 26 and len(m.inputs) == len(inputs) + 3
-    return dict(status='PASS', case=case['name'], database=case['database'], snapshots=t.snapshots, tables=75,
+    assert m.native['sequence'] == native['sequence'] + (27 if compacted else 26) and len(m.inputs) == len(inputs) + 3
+    return dict(status='PASS', case=case['name'], database=case['database'], snapshots=t.snapshots, tables=77 if compacted else 75,
         native_rows=len(m.native['rows']), sequence=m.native['sequence'], inputs=len(m.inputs),
         control_epoch=m.control['epoch'], refreshes=m.refreshes, target_epoch=target, requests=3,
         scope='Finite same-process activation/import admission and reads; no network/installed acquisition or retirement claim')

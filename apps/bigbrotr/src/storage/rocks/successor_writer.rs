@@ -47,12 +47,51 @@ impl NativeSuccessorActivation {
             .parts
             .as_ref()
             .ok_or(BootstrapError::AuthorityUnavailable)?;
-        // Live input staging/frontier transfer has not adopted the floor yet.
-        // Refuse at the prepared gate, before the connected activation COMMIT.
+        // The ordinary entrypoint cannot select a compacted capability.
         if lineage.has_compacted_initial() {
             return Err(BootstrapError::StateMismatch);
         }
         candidate.require_prepared_handoff(lineage, handoff, cancelled)
+    }
+    pub(in crate::storage) fn require_prepared_compacted(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        let (candidate, lineage, handoff) = self
+            .parts
+            .as_ref()
+            .ok_or(BootstrapError::AuthorityUnavailable)?;
+        candidate.require_prepared_compacted_handoff(lineage, handoff, cancelled)
+    }
+    pub(in crate::storage) fn compacted_predecessor<'a>(
+        &'a self,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<super::CompactedSuccessorPredecessor<'a>, AdmissionError> {
+        self.require_prepared_compacted(cancelled)?;
+        let (candidate, lineage, handoff) = self
+            .parts
+            .as_ref()
+            .ok_or(AdmissionError::AuthorityUnavailable)?;
+        super::CompactedSuccessorPredecessor::handoff(
+            lineage,
+            candidate.recovery(),
+            handoff,
+            limits,
+            effects,
+            cancelled,
+        )
+    }
+    pub(in crate::storage) fn lineage(&self) -> Option<&RetainedLineage> {
+        self.parts.as_ref().map(|(_, lineage, _)| lineage)
+    }
+    pub(in crate::storage) fn activate_compacted(
+        &mut self,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ActiveSuccessorWriter, BootstrapError> {
+        self.activate_in(cancelled, authority, true)
     }
     /// Called only after the distinct activation COMMIT and the final actual
     /// Control/policy/deadline/driver checks. The final callback follows bounded
@@ -60,13 +99,25 @@ impl NativeSuccessorActivation {
     pub(in crate::storage) fn activate(
         &mut self,
         cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<ActiveSuccessorWriter, BootstrapError> {
+        self.activate_in(cancelled, authority, false)
+    }
+    fn activate_in(
+        &mut self,
+        cancelled: &AtomicBool,
         mut authority: impl FnMut() -> Result<(), BootstrapError>,
+        compacted: bool,
     ) -> Result<ActiveSuccessorWriter, BootstrapError> {
         if self.attempted {
             return Err(BootstrapError::AuthorityUnavailable);
         }
         self.attempted = true;
-        self.require_prepared(cancelled)?;
+        if compacted {
+            self.require_prepared_compacted(cancelled)?;
+        } else {
+            self.require_prepared(cancelled)?;
+        }
         authority()?;
         if cancelled.load(std::sync::atomic::Ordering::Relaxed) {
             return Err(BootstrapError::AuthorityUnavailable);
@@ -102,6 +153,23 @@ const _: () = assert!(
         < crate::storage::rocks::succession::LINEAGE_SCRATCH_BYTES as usize
 );
 impl ActiveSuccessorWriter {
+    pub(in crate::storage) fn compacted_view<'a>(
+        &'a self,
+        limits: AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &'a AtomicBool,
+    ) -> Result<super::CompactedLiveSuccessor<'a>, AdmissionError> {
+        super::CompactedLiveSuccessor::new(&self.store, limits, effects, cancelled)
+    }
+    pub(in crate::storage) fn has_compacted_initial(&self) -> bool {
+        self.store
+            .live_successor
+            .as_ref()
+            .is_some_and(|frontier| frontier.has_compacted_initial())
+    }
+    pub(in crate::storage) fn poison(&self) {
+        self.store.poison_successor();
+    }
     pub fn producer_credit(&self) -> Result<super::ProducerCredit, AdmissionError> {
         self.store.producer_credit(self.producer_slot_id())
     }
@@ -109,10 +177,33 @@ impl ActiveSuccessorWriter {
         &mut self,
         confirmed: crate::storage::postgres::control_owner::ConfirmedAcknowledgement,
         permit: &OwnedPermit,
+        cancelled: &AtomicBool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<(), AdmissionError> {
-        self.store
-            .acknowledge_checkpoint(confirmed, permit, authority)
+        self.acknowledge_in(cancelled, authority, |store, authority| {
+            store.acknowledge_checkpoint(confirmed, permit, authority)
+        })
+    }
+    fn acknowledge_in(
+        &mut self,
+        cancelled: &AtomicBool,
+        mut authority: impl FnMut() -> Result<(), AdmissionError>,
+        dispatch: impl FnOnce(
+            &mut IngestStore,
+            &mut dyn FnMut() -> Result<(), AdmissionError>,
+        ) -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        let result = (|| {
+            self.validate(cancelled)?;
+            authority()?;
+            dispatch(&mut self.store, &mut authority)?;
+            self.validate(cancelled)?;
+            authority()
+        })();
+        if result.is_err() && self.has_compacted_initial() {
+            self.poison();
+        }
+        result
     }
     #[allow(
         clippy::too_many_arguments,
@@ -397,8 +488,19 @@ impl ActiveSuccessorWriter {
         permit: &OwnedPermit,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<(), AdmissionError> {
-        self.store
-            .test_acknowledge_target(target, permit, authority)
+        self.test_acknowledge_target_cancelled(target, permit, &AtomicBool::new(false), authority)
+    }
+    #[cfg(test)]
+    pub(super) fn test_acknowledge_target_cancelled(
+        &mut self,
+        target: super::AckTarget,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        self.acknowledge_in(cancelled, authority, |store, authority| {
+            store.test_acknowledge_target(target, permit, authority)
+        })
     }
     #[cfg(test)]
     pub(super) fn store(&self) -> &IngestStore {

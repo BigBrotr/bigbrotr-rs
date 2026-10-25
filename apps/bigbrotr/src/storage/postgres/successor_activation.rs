@@ -35,6 +35,7 @@ impl ActivationState {
 /// supervisor's drop order until success moves native into the returned writer.
 pub struct SuccessorActivation {
     native: NativeSuccessorActivation,
+    check: Option<compacted::Check>,
     intent: Intent,
     history_control: ingest_registry::ControlOwner,
     state: ActivationState,
@@ -53,6 +54,7 @@ impl SuccessorActivation {
                 preparation.history.into_lineage(),
                 preparation.plan.native,
             ),
+            check: preparation.plan.check,
             intent: preparation.plan.intent,
             history_control,
             state,
@@ -72,6 +74,7 @@ impl SuccessorActivation {
 pub struct LiveSuccessorWriter {
     pub(in crate::storage::postgres::control_owner) native: ActiveSuccessorWriter,
     pub(in crate::storage::postgres::control_owner) binding: LiveSuccessorBinding,
+    pub(in crate::storage::postgres::control_owner) check: Option<compacted::Check>,
 }
 #[derive(Clone, Copy)]
 pub(in crate::storage::postgres::control_owner) struct LiveSuccessorBinding {
@@ -214,19 +217,54 @@ impl LiveSuccessorBinding {
     }
 }
 
+// Renewal borrows the immutable writer across awaits. A dropped/failed future
+// cannot leave a compacted live capability reusable after uncertain delivery.
+struct RenewalDelivery<'a> {
+    writer: &'a LiveSuccessorWriter,
+    delivered: bool,
+}
+impl Drop for RenewalDelivery<'_> {
+    fn drop(&mut self) {
+        if self.writer.check.is_some() && !self.delivered {
+            self.writer.native.poison();
+        }
+    }
+}
+
 impl ControlSession {
     pub async fn activate_successor_writer(
         &mut self,
         owner: &mut SuccessorActivation,
         input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<LiveSuccessorWriter, ProducerResolveError> {
+        self.activate_successor_writer_in(owner, input, validate, false)
+            .await
+    }
+    pub async fn activate_compacted_successor_writer(
+        &mut self,
+        owner: &mut SuccessorActivation,
+        input: InitialHistoryRequest<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<LiveSuccessorWriter, ProducerResolveError> {
+        self.activate_successor_writer_in(owner, input, validate, true)
+            .await
+    }
+    async fn activate_successor_writer_in(
+        &mut self,
+        owner: &mut SuccessorActivation,
+        input: InitialHistoryRequest<'_>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        compacted_basis: bool,
     ) -> Result<LiveSuccessorWriter, ProducerResolveError> {
         let result = async {
             // Spend before cancellation, allocation validation or any I/O. A
             // future dropped at an await also leaves this envelope spent.
             owner.state.start()?;
             require_control(owner.history_control, owner.intent.preparer, self.identity)?;
-            owner.native.require_prepared(input.cancelled).map_err(native_error)?;
+            compacted::require_basis_presence(owner.check.is_some(), owner.native.lineage().is_some_and(|l| l.has_compacted_initial()), compacted_basis)?;
+            if compacted_basis { owner.native.require_prepared_compacted(input.cancelled).map_err(native_error)?; }
+            else { owner.native.require_prepared(input.cancelled).map_err(native_error)?; }
             let recovery = owner.recovery().ok_or(OwnerError::Unavailable)?;
             let intent = owner.intent;
             let id = *intent.record.fields().next_manifest.identity();
@@ -240,7 +278,7 @@ impl ControlSession {
                 .map_err(|_|OwnerError::Unavailable)?;
             let ticket = lease.begin_refresh().map_err(|_|OwnerError::Unavailable)?;
             self.begin_operation()?;
-            let tx = application_transaction(&mut self.client,38).await.map_err(transaction_error)?;
+            let tx = application_transaction(&mut self.client,if compacted_basis {40} else {38}).await.map_err(transaction_error)?;
             rows::lock_control(&tx,current).await?;
             require(&tx,id.dataset_id,current).await?;
             if snapshot(&tx,&self.request,&mut validate).await? != intent.policy {
@@ -253,7 +291,9 @@ impl ControlSession {
                 process_incarnation:id.process_incarnation,policy_epoch:id.policy_epoch,
                 ttl:input.policy_ttl.min(Duration::from_micros(remaining))})
                 .map_err(|_|OwnerError::Unavailable)?;
-            owner.native.require_prepared(input.cancelled).map_err(native_error)?;
+            if let Some(check) = &owner.check {
+                check.require_activation(&tx, &owner.native, &mut lease, id.policy_epoch, input.cancelled).await?;
+            } else { owner.native.require_prepared(input.cancelled).map_err(native_error)?; }
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             let row = tx.query_one("INSERT INTO control.ingest_activations(dataset_id,owner_resource_id,target_epoch,
                 target_incarnation,target_role_instance_id,producer_slot_id,producer_epoch,target_manifest_sha256,handoff_sha256,
@@ -269,27 +309,36 @@ impl ControlSession {
             drop(row);
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             tx.commit().await.map_err(|_|ProducerResolveError::CommitUnknown)?;
+            if let Some(check) = &owner.check { check.validate_activation(&owner.native, input.cancelled)?; }
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
+            if compacted_basis && self.client.is_closed() { return Err(ProducerResolveError::DeliveryUnknown); }
 
             // A fresh SQL observation never restarts the pre-COMMIT monotonic
             // lease. Promotion is postponed until this rollback is known.
-            let tx = application_transaction(&mut self.client,38).await.map_err(transaction_error)?;
+            let tx = application_transaction(&mut self.client,if compacted_basis {40} else {38}).await.map_err(transaction_error)?;
             rows::lock_control(&tx,current).await?;
             require(&tx,id.dataset_id,current).await?;
             if snapshot(&tx,&self.request,&mut validate).await? != intent.policy {
                 return Err(OwnerError::InvalidPolicy.into());
             }
             binding.require(&tx).await?;
-            owner.native.require_prepared(input.cancelled).map_err(native_error)?;
+            if let Some(check) = &owner.check {
+                check.require_activation(&tx, &owner.native, &mut lease, id.policy_epoch, input.cancelled).await?;
+            } else { owner.native.require_prepared(input.cancelled).map_err(native_error)?; }
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             tx.rollback().await.map_err(|_|ProducerResolveError::DeliveryUnknown)?;
+            if let Some(check) = &owner.check { check.validate_activation(&owner.native, input.cancelled)?; }
+            initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             // The callback follows native's last complete validation and precedes
             // its infallible custody transfer. Nothing fallible follows the take.
-            let native = owner.native.activate(input.cancelled,|| {
+            let authority = || {
+                native_authority(&mut lease,id.policy_epoch,input.cancelled)?;
                 if self.client.is_closed() { return Err(BootstrapError::AuthorityUnavailable); }
-                native_authority(&mut lease,id.policy_epoch,input.cancelled)
-            }).map_err(native_error)?;
-            Ok(LiveSuccessorWriter {native,binding})
+                Ok(())
+            };
+            let native = if compacted_basis { owner.native.activate_compacted(input.cancelled, authority) }
+                else { owner.native.activate(input.cancelled, authority) }.map_err(native_error)?;
+            Ok(LiveSuccessorWriter {native,binding,check:owner.check.take()})
         }.await;
         self.available = result.is_ok();
         result
@@ -301,9 +350,14 @@ impl ControlSession {
         &mut self,
         writer: &LiveSuccessorWriter,
         policy_ttl: Duration,
+        cancelled: &AtomicBool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
         commit_started: &Cell<bool>,
     ) -> Result<(), OwnerError> {
+        let mut delivery = RenewalDelivery {
+            writer,
+            delivered: false,
+        };
         let binding = &writer.binding;
         binding.require_manifest(writer.manifest(), self.identity)?;
         if binding.dataset() != self.request.dataset
@@ -311,10 +365,9 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput);
         }
-        let cancelled = AtomicBool::new(false);
         writer
             .native
-            .validate(&cancelled)
+            .validate(cancelled)
             .map_err(|_| OwnerError::InvalidMetadata)?;
         let id = writer.manifest().identity();
         let mut lease = PolicyLeaseTracker::new(
@@ -326,9 +379,12 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 38)
-            .await
-            .map_err(transaction_error)?;
+        let tx = application_transaction(
+            &mut self.client,
+            if writer.check.is_some() { 40 } else { 38 },
+        )
+        .await
+        .map_err(transaction_error)?;
         binding.lock_control(&tx).await?;
         require(&tx, self.request.dataset, self.identity).await?;
         if snapshot(&tx, &self.request, &mut validate).await? != binding.policy() {
@@ -346,6 +402,12 @@ impl ControlSession {
                 },
             )
             .map_err(|_| OwnerError::Unavailable)?;
+        if let Some(check) = &writer.check {
+            check
+                .require_live(&tx, &writer.native, &mut lease, id.policy_epoch, cancelled)
+                .await
+                .map_err(sql_error)?;
+        }
         let changed = tx.execute("WITH observed AS MATERIALIZED(SELECT (extract(epoch FROM clock_timestamp())*1000000)::bigint AS now_us)
             UPDATE control.owner_epochs i SET lease_expires_at_us=c.lease_expires_at_us FROM control.owner_epochs c,observed
             WHERE c.resource_id=$1::bytea AND c.epoch=$2::text::numeric AND i.resource_id=$3::bytea AND i.epoch=$4::text::numeric
@@ -358,16 +420,33 @@ impl ControlSession {
         binding.require(&tx).await?;
         writer
             .native
-            .validate(&cancelled)
+            .validate(cancelled)
             .map_err(|_| OwnerError::InvalidMetadata)?;
+        if let Some(check) = &writer.check {
+            check
+                .validate_live(&writer.native, cancelled)
+                .map_err(sql_error)?;
+        }
+        if cancelled.load(Ordering::Relaxed) {
+            return Err(OwnerError::Unavailable);
+        }
         lease
             .check_delivery(id.policy_epoch)
             .map_err(|_| OwnerError::Unavailable)?;
         commit_started.set(true);
         tx.commit().await.map_err(|_| OwnerError::CommitUnknown)?;
-        if self.client.is_closed() || lease.check_delivery(id.policy_epoch).is_err() {
+        if let Some(check) = &writer.check {
+            check
+                .validate_live(&writer.native, cancelled)
+                .map_err(sql_error)?;
+        }
+        if cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(id.policy_epoch).is_err()
+            || self.client.is_closed()
+        {
             return Err(OwnerError::Unavailable);
         }
+        delivery.delivered = true;
         self.available = true;
         Ok(())
     }

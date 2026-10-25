@@ -1,7 +1,7 @@
 //! Retained lineage inspection. Structural history is never a positive frontier.
 use super::bootstrap::read_options;
 use super::producer_closing::ProducerState;
-use super::{BootstrapError, IngestRecovery, InitialHandoffRecord};
+use super::{BootstrapError, IngestRecovery, IngestStore, InitialHandoffRecord};
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::{
     keys::{ColumnFamily, IngestKey, decode_key},
@@ -24,6 +24,7 @@ use std::{
 #[path = "successor_frontier.rs"]
 mod frontier;
 pub(super) use frontier::AdmittedFrontier;
+pub(in crate::storage) use frontier::CompactedLiveSuccessor;
 
 #[path = "lineage_census.rs"]
 mod census;
@@ -122,9 +123,44 @@ pub struct RetainedLineage {
 
 /// Shared native key/effect view; constructing it grants no PG authority.
 pub(super) struct Census<'a> {
-    entries: &'a [RetainedLineageEntry],
+    entries: CensusEntries<'a>,
     slot: ProducerSlotId,
     compacted: Option<&'a ClosedProducerFloor>,
+}
+// A live frontier reuses its original allocation and borrows one stack head.
+// No reconstructed lineage or positive recovery capability is manufactured.
+struct CensusEntries<'a> {
+    retained: &'a [RetainedLineageEntry],
+    current: Option<&'a RetainedLineageEntry>,
+}
+impl CensusEntries<'_> {
+    fn len(&self) -> usize {
+        self.retained.len() + usize::from(self.current.is_some())
+    }
+    fn get(&self, index: usize) -> Option<&RetainedLineageEntry> {
+        self.retained.get(index).or_else(|| {
+            (index == self.retained.len())
+                .then_some(self.current)
+                .flatten()
+        })
+    }
+    fn iter(&self) -> impl Iterator<Item = &RetainedLineageEntry> {
+        self.retained.iter().chain(self.current)
+    }
+}
+impl std::ops::Index<usize> for CensusEntries<'_> {
+    type Output = RetainedLineageEntry;
+    fn index(&self, index: usize) -> &Self::Output {
+        self.get(index).expect("checked census entry")
+    }
+}
+impl<'a> From<&'a [RetainedLineageEntry]> for CensusEntries<'a> {
+    fn from(retained: &'a [RetainedLineageEntry]) -> Self {
+        Self {
+            retained,
+            current: None,
+        }
+    }
 }
 impl Census<'_> {
     pub(super) fn entry(&self, epoch: u64) -> Option<&RetainedLineageEntry> {
@@ -161,7 +197,7 @@ pub(super) struct LineageStamp {
 impl RetainedLineage {
     pub(super) fn census(&self) -> Census<'_> {
         Census {
-            entries: &self.entries,
+            entries: self.entries.as_slice().into(),
             slot: self.slot,
             compacted: self.compacted.as_ref(),
         }
@@ -680,8 +716,23 @@ fn entry_coordinates(
     terminal: Option<(RetainedTerminalKind, u64, u64, [u8; 32])>,
     producer: ProducerState,
 ) -> Result<RetainedLineageEntry, BootstrapError> {
+    entry_coordinates_in(
+        &recovery.store,
+        manifest,
+        incoming_sha256,
+        terminal,
+        producer,
+    )
+}
+fn entry_coordinates_in(
+    store: &IngestStore,
+    manifest: IngestManifest,
+    incoming_sha256: [u8; 32],
+    terminal: Option<(RetainedTerminalKind, u64, u64, [u8; 32])>,
+    producer: ProducerState,
+) -> Result<RetainedLineageEntry, BootstrapError> {
     let epoch = manifest.identity().owner_epoch.get();
-    let source = counter(recovery, source_key(&manifest))?;
+    let source = store_counter(store, source_key(&manifest))?;
     // Legacy genesis could close at zero after no-fact requests, without ever
     // creating a counter. Exact originals still need their later positive replay.
     if source.is_none()
@@ -704,8 +755,8 @@ fn entry_coordinates(
     for number in 1..=9 {
         let kind = DictionaryKind::try_from(number).expect("assigned kind");
         if let Some(domain) = manifest.allocation_namespaces().domain(kind) {
-            let value = counter(
-                recovery,
+            let value = store_counter(
+                store,
                 IngestKey::AllocationStream {
                     dataset_id: manifest.identity().dataset_id,
                     dictionary_kind: kind,
@@ -795,13 +846,17 @@ fn value(
     recovery: &IngestRecovery,
     key: IngestKey,
 ) -> Result<rocksdb::DBPinnableSlice<'_>, BootstrapError> {
+    store_value(&recovery.store, key)
+}
+fn store_value(
+    store: &IngestStore,
+    key: IngestKey,
+) -> Result<rocksdb::DBPinnableSlice<'_>, BootstrapError> {
     let key = key.encode().map_err(|_| BootstrapError::InvalidIntent)?;
-    recovery
-        .store
+    store
         .db
         .get_pinned_cf_opt(
-            recovery
-                .store
+            store
                 .db
                 .cf_handle(key.column_family().name())
                 .ok_or(BootstrapError::EngineRead)?,
@@ -811,10 +866,9 @@ fn value(
         .map_err(|_| BootstrapError::EngineRead)?
         .ok_or(BootstrapError::StateMismatch)
 }
-fn counter(recovery: &IngestRecovery, key: IngestKey) -> Result<Option<u64>, BootstrapError> {
+fn store_counter(store: &IngestStore, key: IngestKey) -> Result<Option<u64>, BootstrapError> {
     let encoded = key.encode().map_err(|_| BootstrapError::InvalidIntent)?;
-    let bytes = recovery
-        .store
+    let bytes = store
         .db
         .get_pinned_opt(encoded.as_bytes(), &read_options())
         .map_err(|_| BootstrapError::EngineRead)?;

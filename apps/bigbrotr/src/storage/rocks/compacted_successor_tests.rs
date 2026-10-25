@@ -388,3 +388,6 @@ fn compacted_successor_dispatch_failure_keeps_exact_completed_retry() {
         }
     }
 }
+
+#[path = "compacted_live_successor_tests.rs"]
+mod compacted_live_successor_tests;
