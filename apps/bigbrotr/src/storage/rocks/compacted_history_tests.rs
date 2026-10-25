@@ -652,13 +652,42 @@ fn compacted_archive_pending_preserves_complete_original_bytes_with_optional_res
 
 #[test]
 fn compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch() {
+    {
+        // A predecessor-only positive cursor requires the immediate native
+        // successor to be empty. The populated fixture below has I=2/cut=1 and
+        // correctly cannot produce this proof in the first place.
+        let f = prepared_fixture();
+        let r = valid_empty_third(&f);
+        install_floor(&f, &r);
+        let lineage = inspect_compacted(&f, &r).unwrap();
+        assert_eq!(
+            lineage
+                .native_head()
+                .manifest()
+                .identity()
+                .owner_epoch
+                .get(),
+            3
+        );
+        assert_eq!(lineage.native_head().issued_through(), 0);
+        assert_eq!(lineage.native_head().source_through(), 0);
+        assert!(!lineage.native_head().is_closing());
+        assert_eq!(lineage.pending_target(), None);
+        let prefix = complete(&f, &r, &lineage, 2, None);
+        assert_eq!(prefix.verified_through(), 2);
+        let before = kv(&r.store);
+        let originals = inputs(&f.path());
+        let sequence = r.store.db.latest_sequence_number();
+        assert_eq!(
+            archive_pending(&f, &prefix, fact_id(1, 1)).err(),
+            Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+        );
+        assert_eq!(kv(&r.store), before);
+        assert_eq!(inputs(&f.path()), originals);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence);
+    }
     let (f, r) = fixture();
     let lineage = inspect_compacted(&f, &r).unwrap();
-    let prefix = complete(&f, &r, &lineage, 2, None);
-    assert_eq!(
-        archive_pending(&f, &prefix, fact_id(1, 1)).err(),
-        Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
-    );
     let pending = RetainedLineage::inspect_compacted_initial(
         &r,
         Some(4),
@@ -666,6 +695,7 @@ fn compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch()
         &NOT_CANCELLED,
     )
     .unwrap();
+    assert_eq!(pending.pending_target(), Some(4));
     let pending_proof = complete(
         &f,
         &r,
@@ -744,7 +774,7 @@ fn compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch()
 
 #[test]
 fn compacted_archive_pending_rechecks_required_inputs_native_stamp_and_grants() {
-    use crate::storage::rocks::store::PendingError;
+    use crate::storage::rocks::store::{PendingError, RequestInputError};
     for fault in 0..4 {
         let (f, r) = fixture();
         let lineage = inspect_compacted(&f, &r).unwrap();
@@ -811,7 +841,13 @@ fn compacted_archive_pending_rechecks_required_inputs_native_stamp_and_grants() 
         );
         assert_eq!(
             archive_pending(&f, &proof, fact_id(1, 1)).err(),
-            Some(LineagePendingError::Proof(BootstrapError::StateMismatch))
+            Some(LineagePendingError::Proof(if fault == 1 {
+                // A missing required original refuses inside the scanner before
+                // a complete census exists to compare with the retained stamp.
+                BootstrapError::RequestInput(RequestInputError::Missing)
+            } else {
+                BootstrapError::StateMismatch
+            }))
         );
         assert_eq!(f.budget.snapshot().active_permits(), permits);
         assert_eq!(kv(&r.store), before);
