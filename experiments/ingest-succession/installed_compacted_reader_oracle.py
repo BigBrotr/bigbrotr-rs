@@ -61,7 +61,9 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False,later_recovery=False):
+    assert type(later_recovery) is bool and (not later_recovery or empty_initial) and not (later_recovery and (later_empty or later_live))
+    if later_recovery: assert LATER_RECOVERY_PRODUCT is not None and source == LATER_RECOVERY_PRODUCT
     assert type(later_live) is bool and (not later_live or empty_initial) and not (later_live and later_empty)
     if later_live: assert source == LATER_LIVE_PRODUCT
     assert type(later_empty) is bool and (not later_empty or empty_initial)
@@ -84,11 +86,12 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
     if initial_preparation or compacted_activated or empty_initial:
         selectors |= {'claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live: selectors.add('successor_transition')
-    if later_live: selectors.add('successor_activation')
+    if later_empty or later_live or later_recovery: selectors.add('successor_transition')
+    if later_live or later_recovery: selectors.add('successor_activation')
+    if later_recovery: selectors.add('successor_recovery')
     assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
-    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == 1
+    assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == (2 if later_recovery else 1)
     assert set(component['test_names']) == set(counts)
     for name, names in component['test_names'].items():
         assert len(names) == len(set(names)) == counts[name]
@@ -101,8 +104,12 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
         'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']
     assert set(component['test_names']['compacted_prefix']) == {
         'storage::rocks::store::admission_tests::compacted_prefix_tests::'+n for n in expected}
-    assert component['test_names']['compacted_progress'] == [
-        'storage::postgres::control_owner::producer_progress::recovery::tests::compacted_floor_requires_exact_retained_checkpoint']
+    if later_recovery:
+        assert len(LATER_RECOVERY_PROGRESS_CONTROLS)==2
+        assert set(component['test_names']['compacted_progress'])==set(LATER_RECOVERY_PROGRESS_CONTROLS)
+    else:
+        assert component['test_names']['compacted_progress'] == [
+            'storage::postgres::control_owner::producer_progress::recovery::tests::compacted_floor_requires_exact_retained_checkpoint']
     assert set(component['test_names']['successor_history']) == {
         'storage::postgres::control_owner::successor_history::tests::'+n for n in (
         'terminal_genesis_kind_comes_from_activation_even_at_zero',
@@ -135,12 +142,13 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live)
+    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery)
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
-    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live)
-    if later_empty or later_live: later_qualification(component)
-    if later_live: later_live_qualification(component)
+    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery)
+    if later_empty or later_live or later_recovery: later_qualification(component)
+    if later_live or later_recovery: later_live_qualification(component)
+    if later_recovery: later_recovery_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -2120,13 +2128,15 @@ class InitialPreparationProfile:
         'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
 
 
-def preparation_qualification(component,*,later_empty=False,later_live=False):
+def preparation_qualification(component,*,later_empty=False,later_live=False,later_recovery=False):
+    assert type(later_recovery) is bool and not (later_recovery and (later_empty or later_live))
     assert type(later_empty) is bool and type(later_live) is bool and not (later_empty and later_live)
     names=component['test_names']
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
         'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
-    if later_empty or later_live: selectors.add('successor_transition')
-    if later_live: selectors.add('successor_activation')
+    if later_empty or later_live or later_recovery: selectors.add('successor_transition')
+    if later_live or later_recovery: selectors.add('successor_activation')
+    if later_recovery: selectors.add('successor_recovery')
     assert set(names)==selectors
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
     assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
@@ -4781,8 +4791,8 @@ def empty_fault_guard_delta(value,*,epoch=2):
     else: assert value['catalog_restored'] is None
 
 
-def empty_qualification(component,*,later_empty=False,later_live=False):
-    preparation_qualification(component,later_empty=later_empty,later_live=later_live)
+def empty_qualification(component,*,later_empty=False,later_live=False,later_recovery=False):
+    preparation_qualification(component,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery)
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::'
     assert {prefix+n for n in (
         'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
@@ -6355,3 +6365,339 @@ def later_live_controls(context,initial,expected):
             transcript(c,alter)
         reject('coordinated-native-ACK-zero',ack_zero)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+# Fresh activated-later recovery retains its own exact product qualification.
+LATER_RECOVERY_PRODUCT = '83791a5c282c4d5cd9c61c5de2c5973e1ea9fe6c'
+# Source-derived factory refusal, before the native barrier and after Control claim.
+LATER_RECOVERY_MISSING = 'error: successor recovery unavailable: producer operation unavailable: Native(Native(RequestInput(Missing)))\n'
+LATER_RECOVERY_ORIGINS = ({'name': 'live-absent',
+  'run': 'installed-compacted-later-live-fa76466',
+  'subdirectory': 'installed-compacted-later-live',
+  'database': 'bb_compacted_later_live_fa76466_absent',
+  'status': 'PASS_INSTALLED_COMPACTED_LATER_LIVE_FINITE',
+  'source': 'fa76466a65d55a106cdf541e1fe4332d85eca031',
+  'owner': '5faf9702a62147dbe2809b4a3861cc22',
+  'label': 'org.bigbrotr.installed-compacted-later-live',
+  'client_id': 'e6ff888d05f88445c6c8b501959b6f25d81c2a6fa988e31a44422387c88265ea',
+  'source_clone': 'absent',
+  'final_case': 'absent-live',
+  'catalog_sha256': '5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+  'result_sha256': 'f5bdd0c08d0a51ef85f563e66ae18c178fc610b93ccc3d2404ff0d29356bc5d0',
+  'snapshot': 'absent-live-after.json',
+  'snapshot_sha256': 'b2f464041bca127c96bb1824488f270a1af029f21b6475e3b982ff23092c684d',
+  'native_file': 'absent-live-after-native.json',
+  'native_sha256': '891296cd75e817156084734fdea1e313722accd73d2c49fc2ccd8784671a09d1',
+  'inputs_file': 'absent-live-after-inputs.json',
+  'inputs_sha256': '5475068e152b5dc10fe8fbe7edc45242bb262a5bdebb52035826b7281f0807ac',
+  'store': 'absent/store'},
+ {'name': 'live-installed',
+  'run': 'installed-compacted-later-live-fa76466',
+  'subdirectory': 'installed-compacted-later-live',
+  'database': 'bb_compacted_later_live_fa76466_installed',
+  'status': 'PASS_INSTALLED_COMPACTED_LATER_LIVE_FINITE',
+  'source': 'fa76466a65d55a106cdf541e1fe4332d85eca031',
+  'owner': '5faf9702a62147dbe2809b4a3861cc22',
+  'label': 'org.bigbrotr.installed-compacted-later-live',
+  'client_id': 'e6ff888d05f88445c6c8b501959b6f25d81c2a6fa988e31a44422387c88265ea',
+  'source_clone': 'installed',
+  'final_case': 'installed-live',
+  'catalog_sha256': '5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+  'result_sha256': 'f5bdd0c08d0a51ef85f563e66ae18c178fc610b93ccc3d2404ff0d29356bc5d0',
+  'snapshot': 'installed-live-after.json',
+  'snapshot_sha256': '4762ab862cae41411bf1bc5772a3ceb1268a01493a118846c2d4f204cddeb93b',
+  'native_file': 'installed-live-after-native.json',
+  'native_sha256': '29208ccf93d0a863917e7ccd4cd93604b215ff6ce193ecf6b6b090b28793c0c0',
+  'inputs_file': 'installed-live-after-inputs.json',
+  'inputs_sha256': '15e7ed66e33d9e60b4ae83cffd66cf4feab4175c23364eab859060b8c3477840',
+  'store': 'installed/store'},
+ {'name': 'live-full',
+  'run': 'installed-compacted-later-live-fa76466',
+  'subdirectory': 'installed-compacted-later-live',
+  'database': 'bb_compacted_later_live_fa76466_full',
+  'status': 'PASS_INSTALLED_COMPACTED_LATER_LIVE_FINITE',
+  'source': 'fa76466a65d55a106cdf541e1fe4332d85eca031',
+  'owner': '5faf9702a62147dbe2809b4a3861cc22',
+  'label': 'org.bigbrotr.installed-compacted-later-live',
+  'client_id': 'e6ff888d05f88445c6c8b501959b6f25d81c2a6fa988e31a44422387c88265ea',
+  'source_clone': 'full',
+  'final_case': 'full-live',
+  'catalog_sha256': '5d81aff0c2679613b5269de7cf2d718bd2bc74d9d0ceca75d3053033dde094b5',
+  'result_sha256': 'f5bdd0c08d0a51ef85f563e66ae18c178fc610b93ccc3d2404ff0d29356bc5d0',
+  'snapshot': 'full-live-after.json',
+  'snapshot_sha256': '9b103827eb8200dd94561c6a9b22e6b791acb48e7931641cba3e3eab9414b574',
+  'native_file': 'full-live-after-native.json',
+  'native_sha256': 'c07c71b10141c1c3a984c8ac969b15f6a0809b3afd6535371a2c7adb5a0da3ba',
+  'inputs_file': 'full-live-after-inputs.json',
+  'inputs_sha256': 'a37ad46dd730123e336895f5561b8577bdeb4d74cf0e80afb7bf2eaba36f97ad',
+  'store': 'full/store'})
+LATER_RECOVERY_CONTEXTS = {'live-absent': 'dc6f87ef0eb027a58866bdd442e5d178949d3c7fc2914ceb4ac51c05758749bb',
+ 'live-installed': 'fae68fed35c790d56aa190ff96f855233d5efa027924f99269abf553a6a1e5da',
+ 'live-full': 'dd3ad3a2d984515803dfa5be9bf2db225d274cfab2c770a952f74ae0fa99cdcf'}
+LATER_RECOVERY_STEPS = dict(finite=('recover','retry'),quiet=('recover','retry'),missing_ancestor=('refuse',),missing_current=('refuse',))
+LATER_RECOVERY_ORIGIN_NAMES = dict(finite='live-absent',quiet='live-installed',missing_ancestor='live-full',missing_current='live-absent')
+
+
+class LaterRecoveryProfile:
+    DIRECTORY='installed-compacted-later-recovery'
+    LABEL='org.bigbrotr.installed-compacted-later-recovery'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_RECOVERY'
+    DATABASE_PREFIX='bb_compacted_recovery_'
+    CLIENT_PREFIX='bigbrotr-compacted-recovery-'
+    CLONES=tuple(LATER_RECOVERY_STEPS)
+    STEPS=LATER_RECOVERY_STEPS
+    CASES=tuple(n+'-'+s for n in CLONES for s in LATER_RECOVERY_STEPS[n])
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Authentic missing-copy repair and ACK advancement; these endpoints already retain C1/A1 or C0/A0',
+        'Staged/reserved/unissued tails, delivery faults, cancellation, UTC expiry and proof-use drift',
+        'Source/abandonment/retirement, adoption, Archive, ordinary-basis regression and capacity',
+        'Product floor writing, GC/unlink and mixed restore workflows')
+
+
+def later_recovery_origins_checked(root,raw=None):
+    """Reuse exact fa qualification without running its verifier under new imports."""
+    # Register the same bounded bootstrap codec imported by the connected
+    # capture owner; the reused Control reducer needs its exclusion encoder.
+    import history
+    assert history.bootstrap_oracle.__file__==str(Path(__file__).resolve().parents[1]/'ingest-bootstrap/oracle.py')
+    from installed_family_capture import physical,spool_checked
+    raw=raw or retained.regular_read;root=Path(root)
+    pin=LATER_RECOVERY_ORIGINS[0];basis=root.parent/pin['run']/pin['subdirectory']
+    receipt_data=raw(basis.parent/'verified-run.json')
+    assert sha(receipt_data)=='d9bb1bb39ac122b14ce0a830e4c2e18e5795fd42b8827e74012ce50f8aecbdc4'
+    receipt=loads(receipt_data)
+    assert receipt['status']=='PASS_EXACT_SOURCE_INSTALLED_FINITE_AND_RAW'
+    assert receipt['source']==pin['source'] and receipt['product_source']==LATER_LIVE_PRODUCT
+    assert receipt['driver_exit']==receipt['raw_exit']==0 and (receipt['commands'],receipt['controls'],receipt['raw_file_bindings'])==(4,77,5911)
+    for path,digest in receipt['identities'].items(): assert sha(raw(Path(path)))==digest
+    data=raw(basis.parent/'raw-replay.json');assert sha(data)=='edd04718eacd414c28af68a77262e9e2630e7d3f4e736ae144ca3ff4ed7376b9'
+    replay=loads(data)
+    assert replay['source']==pin['source'] and replay['product_source']==LATER_LIVE_PRODUCT
+    assert replay['status']==LaterLiveProfile.STATUS+'_CAPTURE_REPLAY'
+    assert len(replay['bound_files'])==5911 and len(replay['cases'])==4
+    assert sum(c['negative_controls']['count'] for c in replay['cases'])==77
+    def bound(path):
+        path=Path(path);data=raw(path);assert sha(data)==replay['bound_files'][str(path)];return data
+    def read(path):return loads(bound(path))
+    report=read(basis/'result.json')
+    assert sha(raw(basis/'result.json'))==pin['result_sha256']
+    assert all(report[k]==pin[k] for k in ('status','source','owner','label')) and report['client']==pin['client_id']
+    assert all(report[k]==[] for k in ('cleanup_errors','missing_owned','unrelated_changed','unexpected_containers'))
+    terminal=read(basis/'client-terminal.json');assert terminal['Id']==pin['client_id']
+    state=terminal['State'];assert state['Status']=='exited' and state['Pid']==0 and state['ExitCode']==143 and state['OOMKilled'] is False
+    build=Path(only(terminal['Mounts'],Destination='/build')['Source'])
+    built,component,qualification=[read(p) for p in (build/'build-result.json',build/'component-result.json',build.parent/'qualification.json')]
+    qualification_checked(built,component,qualification,LATER_LIVE_PRODUCT,initial_journey=True,empty_initial=True,later_live=True)
+    assert report['build']==built and report['component']==component
+    manifest=read(build.parent/'build/source-manifest.json')
+    assert sha(raw(build.parent/'build/source-manifest.json'))==built['source_manifest_sha256']
+    for name,digest in component['executables_sha256'].items():assert sha(bound(build/name))==digest
+    provenance=read(basis/'progress-source.json');source=basis.parent/'source'
+    assert provenance['revision']==pin['source'] and provenance['tree']==report['tree'] and provenance['source']==str(source)
+    for name,digest in provenance['files_sha256'].items():
+        assert not Path(name).is_absolute() and '..' not in Path(name).parts
+        assert sha(bound(source/name))==digest
+        if not name.startswith(('docs/','experiments/')):assert manifest['files_sha256'][name]==digest
+    seeds={}
+    for pin in LATER_RECOVERY_ORIGINS:
+        clone=only(report['clones'],name=pin['source_clone']);case=only(report['cases'],name=pin['final_case'])
+        assert clone['database']==pin['database'] and clone['status']==case['status']=='PASS'
+        assert clone['final_case']==case['name'] and clone['directory']+'/store'==pin['store']
+        assert case['custody']=='OBSERVED_CLOSED_AND_JOINED' and type(case['returncode']) is int and case['returncode']==0
+        assert sha(clone['final_catalog'].encode())==pin['catalog_sha256']
+        endpoint=[]
+        for file_key,hash_key in (('snapshot','snapshot_sha256'),('native_file','native_sha256'),('inputs_file','inputs_sha256')):
+            data=bound(basis/pin[file_key]);assert sha(data)==pin[hash_key];endpoint.append(loads(data))
+        endpoint=tuple(endpoint);label=pin['final_case'];context=read(basis/(label+'-verification.json'))
+        assert sha(raw(basis/(label+'-verification.json')))==LATER_RECOVERY_CONTEXTS[pin['name']]
+        assert (context['after'],context['native_after'],context['inputs_after'])==endpoint
+        assert context['response']==read(basis/(label+'-response.json')) and context['response']['returncode']==0
+        assert context['response']['stderr']==''
+        custody=read(basis/(label+'-custody.json'))
+        assert custody==dict(status='OBSERVED_CLOSED_AND_JOINED',database=pin['database'],backend_absent=True,errors=[])
+        if pin['source_clone']=='installed':
+            t=context['response']['terminal'];assert t==read(basis/(label+'.terminal.json'))
+            assert t['reaped'] is True and t['forced'] is False and t['error'] is None and t['exit_code']==0
+            assert context['backend']==read(basis/(label+'-backends.json')) and context['backend']['all']==[]
+        else:
+            assert context['custody']==custody and context['backends']==read(basis/(label+'-backends.json'))==[]
+        pg,native,inputs=endpoint;quiet=pin['source_clone']=='installed'
+        assert len(pg)==77 and sum(map(len,pg.values()))==(213 if quiet else 222)
+        assert (len(native['rows']),native['sequence'],len(inputs))==((93,138,1) if quiet else (110,161,11 if pin['source_clone']=='full' else 4))
+        producer=only(pg['producer_epochs'],producer_epoch=3);assert producer['state']=='open' and producer['reserved_through_request']==(0 if quiet else 3)
+        assert only(pg['source_streams'],owner_epoch=3)['state']=='open'
+        assert max((r for r in pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])['state']=='released'
+        key=('receipts',(b'\x01\x31'+binary(producer['producer_slot_id'])+be(3)).hex())
+        assert model.native_map(native)[key]==(b'\x01\x31'+be(0 if quiet else 3)+be(0 if quiet else 1)+be(0)).hex()
+        checkpoints=[r for r in pg['producer_checkpoints'] if r['producer_epoch']==3]
+        assert len(checkpoints)==(0 if quiet else 1)
+        if checkpoints:assert (checkpoints[0]['complete_through_request'],checkpoints[0]['checkpoint_revision'],checkpoints[0]['dependency_count'])==(1,1,2)
+        store=basis/pin['store'];files=physical(store,bound)
+        expected_files={str(Path(p).relative_to(store)):digest for p,digest in replay['bound_files'].items() if p.startswith(str(store)+'/')}
+        actual_files={n:m['sha256'] for n,m in files.items() if stat.S_ISREG(m['mode'])}
+        assert actual_files==expected_files and len(actual_files)==(18 if quiet else 28 if pin['source_clone']=='full' else 21)
+        directories={'.'}|{str(p) for n in actual_files for p in Path(n).parents if str(p)!='.'}
+        assert set(files)==set(actual_files)|directories
+        spool_checked(store/'producer-inputs-v1',inputs,bound,complete=True)
+        seeds[pin['name']]=endpoint
+    return seeds
+
+
+def later_recovery_specification(case):
+    name=case['clone'];assert name in LATER_RECOVERY_STEPS
+    assert case['origin']==LATER_RECOVERY_ORIGIN_NAMES[name] and case['operation']=='recover'
+    assert case['name'].startswith(name+'-');step=case['name'][len(name)+1:];assert step in LATER_RECOVERY_STEPS[name]
+    assert case['predecessor']==(name+'-recover' if step=='retry' else None)
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    return name,step
+
+
+def later_recovery_missing_basis(expected,name):
+    """Selection-only membership for the existing exact single-file quarantine."""
+    assert name in ('missing_ancestor','missing_current')
+    epoch,sequence=(2,1) if name=='missing_ancestor' else (3,2)
+    filename='36a0253e6d94c18099f6c4dae9b7e040-'+format(epoch,'016x')+'-'+format(sequence,'016x')+'.cbor'
+    assert filename in expected[2]
+    return expected[0],expected[1],{n:v for n,v in expected[2].items() if n!=filename}
+
+
+def later_recovery_closed(response,case):
+    _,step=later_recovery_specification(case);failure=step=='refuse';code=4 if failure else 0
+    assert set(response)=={'returncode','stdout','stderr','outcome','terminal'}
+    assert response['outcome']=='PROCESS_EXITED' and type(response['returncode']) is int and response['returncode']==code
+    t=response['terminal'];assert set(t)=={'pid','start_ticks','config','prefix','command','exit_code','reaped','forced','error','elapsed_seconds'}
+    number(t['pid'],1,integer=True);number(t['start_ticks'],1,integer=True);number(t['elapsed_seconds'],0,60)
+    assert t['command']==argv('recover',Path(case['config'])) and t['config']==case['config'] and t['prefix']=='/lab/'+case['name']
+    assert type(t['exit_code']) is int and t['exit_code']==code and t['reaped'] is True and t['forced'] is False and t['error'] is None
+    if failure:
+        assert LATER_RECOVERY_MISSING is not None
+        assert response['stdout']=='' and response['stderr']==LATER_RECOVERY_MISSING
+        return None
+    assert response['stderr']=='';report,=[loads(line) for line in response['stdout'].splitlines()]
+    assert report['native']=='closed' and report['owner_release']=='committed' and report['ready'] is False
+    return report
+
+
+def verify_later_recovery(context,seed,expected):
+    assert set(context)==CONTEXT_FIELDS
+    case=context['case'];name,step=later_recovery_specification(case);quiet=name=='quiet';failure=step=='refuse'
+    assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert set(context['before'])==set(context['after'])==set(seed[0]) and len(seed[0])==77
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    w=context['server_window'];assert set(w)=={'before_us','after_us'}
+    number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
+    assert context['inputs_after']==expected[2] and set(context['input_contents'])==set(expected[2])
+    for n,v in context['input_contents'].items():
+        data=bytes.fromhex(v);assert expected[2][n]==dict(bytes=len(data),sha256=sha(data))
+    wanted_inputs=seed[2] if not failure else later_recovery_missing_basis(seed,name)[2]
+    assert expected[2]==wanted_inputs and len(wanted_inputs)==(10 if name=='missing_ancestor' else 3 if failure else 1 if quiet else 4)
+    backend_checked(context['backend'],case['database'],context['before'],context['after'])
+    report=later_recovery_closed(context['response'],case)
+    m=model.Model(*expected,w);preparation_control(m,context['after'],success=not failure)
+    producer=only(m.pg['producer_epochs'],producer_epoch=3)
+    issued,ack=(0,0) if quiet else (3,1)
+    assert producer['reserved_through_request']==issued and producer['state']==('closing' if step=='retry' else 'open')
+    key=('receipts',(b'\x01\x31'+binary(producer['producer_slot_id'])+be(3)).hex())
+    opened=(b'\x01\x31'+be(issued)+be(ack)+be(0)).hex();closed=(b'\x02\x31'+be(issued)+be(ack)+be(0)+b'\x01').hex()
+    values=model.native_map(m.native);assert values[key]==(closed if step=='retry' else opened)
+    assert (len(m.native['rows']),m.native['sequence'])==((93,138+(step=='retry')) if quiet else (110,161+(step=='retry')))
+    if not failure and step=='recover':
+        row=only(context['after']['producer_epochs'],producer_epoch=3);model.fresh_xmin(row['xmin'],m.pg)
+        assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(row['xmin'])<int(m.control['xmin'])
+        producer.update(state='closing',xmin=row['xmin'])
+        values[key]=closed;m.native.update(rows=model.native_rows(values),sequence=m.native['sequence']+1)
+    same(m.pg,context['after']);assert m.native==context['native_after']
+    if not failure:
+        wanted=dict(format='bigbrotr-ingest-recovery/1',state='successor-positive-outcomes-resolved',dataset_id=m.ds['dataset_id'][2:],
+            owner_resource_id=m.resource[2:],producer_slot_id=m.slot[2:],producer_epoch='3',issued_through=str(issued),reserved_through=str(issued),
+            resolved_requests=str(issued),verified_through='3',source_closure='not-performed',native='closed',owner_release='committed',ready=False,
+            recovery_basis='closed-producer-floor-v3',compacted_requests='7')
+        assert report==wanted
+    return dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
+        input_files=len(wanted_inputs),producer_epoch=3,target_requests=issued,target_checkpoint=ack,target_acknowledged=ack,
+        compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=0 if failure else issued+1,
+        native_writes=int(not failure and step=='recover'),refused_before_barrier=failure)
+
+
+def later_recovery_controls(context,seed,expected):
+    verify_later_recovery(context,seed,expected);name,step=later_recovery_specification(context['case']);rejected=[]
+    def reject(label,change):
+        c=copy.deepcopy(context);change(c)
+        try:verify_later_recovery(c,seed,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration):rejected.append(label)
+        else:raise AssertionError('accepted later recovery control '+label)
+    reject('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
+    reject('unjoined-child',lambda c:c['response']['terminal'].update(reaped=False))
+    reject('wrong-installed-command',lambda c:c['response']['terminal']['command'].append('--activate-successor'))
+    reject('live-backend',lambda c:c['backend'].update(all=[{'pid':1}]))
+    reject('native-extra-write',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('required-input-loss',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after']))))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed'))
+    reject('old-outcome-version',lambda c:c['after']['producer_outcomes'][0].update(xmin='4294967000'))
+    reject('old-activation-version',lambda c:c['after']['ingest_activations'][0].update(xmin='4294967001'))
+    reject('invented-source-closure',lambda c:only(c['after']['source_streams'],owner_epoch=3).update(state='closed',last_complete_sequence=0))
+    reject('lost-Control-release' if step!='refuse' else 'fabricated-Control-release',lambda c:max((r for r in c['after']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch']).update(state='active' if step!='refuse' else 'released'))
+    if step=='refuse':
+        reject('false-success-report',lambda c:c['response'].update(stdout='{}\n'))
+        reject('wrong-refusal-boundary',lambda c:c['response'].update(stderr='error: successor recovery unavailable: Control(Backend)\n'))
+        reject('refusal-closes-producer',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(state='closing'))
+    else:
+        def reported(c,key,value):
+            r=loads(c['response']['stdout']);r[key]=value;c['response']['stdout']=model.encoded(r).decode()+'\n'
+        reject('false-compacted-count',lambda c:reported(c,'compacted_requests','0'))
+        reject('boolean-compacted-count',lambda c:reported(c,'compacted_requests',True))
+        reject('false-target-count',lambda c:reported(c,'resolved_requests','1' if name=='quiet' else '7'))
+        reject('invented-recovery-field',lambda c:reported(c,'original_initial_requests_replayed','7'))
+        if step=='retry':reject('retry-producer-xmin',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(xmin='4294967002'))
+        else:
+            retained_xmins={int(r['xmin']) for rows in expected[0].values() for r in rows}
+            older=next(n for n in range(1,max(retained_xmins)) if n not in retained_xmins)
+            reject('older-unused-producer-xmin',lambda c:only(c['after']['producer_epochs'],producer_epoch=3).update(xmin=str(older)))
+    def marker(c,ack):
+        row=next(r for r in c['native_after']['rows'] if r['cf']=='receipts' and r['key'].endswith('0000000000000003') and r['key'].startswith('0131'))
+        data=bytes.fromhex(row['value']);row['value']=(data[:10]+be(ack)+data[18:]).hex()
+    reject('native-ACK-changed',lambda c:marker(c,1 if name=='quiet' else 0))
+    if name!='quiet':
+        reject('ACK-outruns-checkpoint',lambda c:marker(c,3))
+        reject('checkpoint-rewritten',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=3).update(checkpoint_revision=2))
+        def false_sync(c):
+            r=only(c['after']['producer_requests'],producer_epoch=3,request_sequence=2)
+            r.update(progress_request_id='\\x'+'11'*16,progress_event_ordinal=1,progress_wire_sequence=1,progress_input_sha256=r['request_digest'])
+        reject('coordinated-false-Sync-binding',false_sync)
+    else:
+        def false_checkpoint(c):
+            r=copy.deepcopy(c['after']['producer_checkpoints'][0]);r['producer_epoch']=3;c['after']['producer_checkpoints'].append(r)
+        reject('quiet-invented-checkpoint',false_checkpoint)
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+def later_recovery_qualification(component):
+    # Literal names from the frozen product controls; runtime is root-owned.
+    assert LATER_RECOVERY_PRODUCT is not None
+    assert LATER_RECOVERY_NATIVE_CONTROLS and LATER_RECOVERY_PG_CONTROLS
+    assert set(LATER_RECOVERY_NATIVE_CONTROLS) <= set(component['test_names']['initial_reconstruction'])
+    assert set(LATER_RECOVERY_PG_CONTROLS) == set(component['test_names']['successor_recovery'])
+
+LATER_RECOVERY_NATIVE_CONTROLS = tuple(
+    'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::compacted_successor_recovery_tests::'+n
+    for n in (
+        'compacted_successor_recovery_closes_once_and_retries_without_replaying_floor_originals',
+        'compacted_successor_recovery_requires_each_later_original_even_with_all_residuals',
+        'compacted_successor_recovery_proof_binds_owner_cancel_grant_and_refuses_other_capabilities',
+        'compacted_successor_recovery_authenticates_residuals_and_rejects_changed_canonical_digest',
+        'compacted_successor_recovery_budget_selector_keeps_ordinary_and_malformed_distinct',
+        'compacted_successor_recovery_stale_sequence_and_failed_final_close_poison_owner',
+        'compacted_successor_recovery_tail_is_stamped_but_cannot_complete_or_acknowledge',
+        'compacted_successor_recovery_equal_ack_rechecks_inputs_grant_and_final_authority'))
+LATER_RECOVERY_PG_CONTROLS = tuple('storage::postgres::control_owner::successor_transition::recovery::tests::'+n for n in (
+    'activated_recovery_accepts_only_the_native_first_barrier_gap',
+    'reserved_suffix_is_bounded_but_never_a_complete_prefix',
+    'recovered_retained_count_is_separate_from_acknowledged_outstanding_window',
+    'compacted_recovery_requires_positive_purpose_and_matching_private_basis',
+    'tail_bytes_are_observation_until_an_exact_reservation_binds_them',
+    'close_attempt_is_spent_before_any_fallible_dispatch'))
+LATER_RECOVERY_PROGRESS_CONTROLS = tuple('storage::postgres::control_owner::producer_progress::recovery::tests::'+n for n in (
+    'compacted_floor_requires_exact_retained_checkpoint',
+    'compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint'))

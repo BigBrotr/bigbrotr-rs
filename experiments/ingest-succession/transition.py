@@ -288,16 +288,17 @@ def observe_origin_absence(pg, database, output, name):
 def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         origin_for_clone=None, extra_grants=(), producer_progress=False, producer_ack=False,
         preparation_hole=False, compacted_reader=False, compacted_history=False,
-        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, later_live=False, product_source=None, ordinary_regression=False):
+        compacted_initial=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False, later_empty=False, later_live=False, later_recovery=False, product_source=None, ordinary_regression=False):
     assert type(ordinary_regression) is bool
     if ordinary_regression:
         assert not any((producer_progress, producer_ack, preparation_hole, compacted_reader,
             compacted_history, compacted_initial, initial_preparation, compacted_activated,
-            compacted_terminal, empty_initial, later_empty, later_live))
+            compacted_terminal, empty_initial, later_empty, later_live, later_recovery))
         from installed_prepared_model import PINS as ordinary_pins
         assert origin_specs == (ordinary_pins['open'],)
         assert origin_for_clone == {'open': 'open'}
         assert suite.clones == ('open',) and suite.cases == ('open-retire', 'open-retry')
+    assert type(later_recovery) is bool and (not later_recovery or compacted_history) and not (later_recovery and (later_empty or later_live))
     assert type(later_live) is bool and (not later_live or compacted_history) and not (later_live and later_empty)
     assert type(later_empty) is bool and (not later_empty or compacted_history)
     assert type(producer_progress) is bool
@@ -385,7 +386,7 @@ def run(root, build, *, suite=None, sequence=run_sequence, origin_specs=None,
         ordinary_qualification(built, component, qualification)
     if compacted_reader:
         qualification_checked(built,component,qualification,product_source,
-            initial_journey=compacted_initial or later_empty or later_live,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial or later_empty or later_live,later_empty=later_empty,later_live=later_live)
+            initial_journey=compacted_initial or later_empty or later_live or later_recovery,initial_preparation=initial_preparation,compacted_activated=compacted_activated,compacted_terminal=compacted_terminal,empty_initial=empty_initial or later_empty or later_live or later_recovery,later_empty=later_empty,later_live=later_live,later_recovery=later_recovery)
     elif preparation_hole:
         from installed_progress_replay import preparation_hole_qualification
         preparation_hole_qualification(built,component,qualification)
