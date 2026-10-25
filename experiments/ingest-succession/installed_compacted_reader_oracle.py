@@ -61,7 +61,9 @@ def catalog_checked(original, current):
     assert [line for line in after if line not in added] == before
 
 
-def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False):
+def qualification_checked(built, component, qualification, source, *, initial_journey=False, initial_preparation=False, compacted_activated=False, compacted_terminal=False, empty_initial=False,later_empty=False,later_live=False):
+    assert type(later_live) is bool and (not later_live or empty_initial) and not (later_live and later_empty)
+    if later_live: assert source == LATER_LIVE_PRODUCT
     assert type(later_empty) is bool and (not later_empty or empty_initial)
     if later_empty: assert source == LATER_PRODUCT
     assert type(empty_initial) is bool and (not empty_initial or initial_journey)
@@ -82,7 +84,8 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history','archive_retained_frontier'}
     if initial_preparation or compacted_activated or empty_initial:
         selectors |= {'claim_custody','control_runtime_entrypoint'}
-    if later_empty: selectors.add('successor_transition')
+    if later_empty or later_live: selectors.add('successor_transition')
+    if later_live: selectors.add('successor_activation')
     assert set(counts) == selectors
     assert all(type(n) is int and n > 0 for n in counts.values())
     assert counts['compacted_prefix'] == 7 and counts['compacted_progress'] == 1
@@ -132,11 +135,12 @@ def qualification_checked(built, component, qualification, source, *, initial_jo
             'compacted_handoff_postwrite_authority_refusal_retains_exact_retry')}
         required_handoff.add('storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_later_ancestor_cannot_mint_initial_handoff')
         assert required_handoff <= set(component['test_names']['initial_reconstruction'])
-    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty)
+    if initial_preparation or compacted_activated or empty_initial: preparation_qualification(component,later_empty=later_empty,later_live=later_live)
     if compacted_activated: activated_qualification(component)
     if compacted_terminal: terminal_qualification(component)
-    if empty_initial: empty_qualification(component,later_empty=later_empty)
-    if later_empty: later_qualification(component)
+    if empty_initial: empty_qualification(component,later_empty=later_empty,later_live=later_live)
+    if later_empty or later_live: later_qualification(component)
+    if later_live: later_live_qualification(component)
     executables={'bigbrotr','ingest_bootstrap_probe','native_components'}
     if initial_preparation or compacted_activated or empty_initial: executables |= {'claim_custody','control_runtime_entrypoint'}
     assert set(component['executables_sha256']) == executables
@@ -2116,12 +2120,13 @@ class InitialPreparationProfile:
         'Mixed restore/backup and capacity; synthetic target-closing is not a product closing journey')
 
 
-def preparation_qualification(component,*,later_empty=False):
-    assert type(later_empty) is bool
+def preparation_qualification(component,*,later_empty=False,later_live=False):
+    assert type(later_empty) is bool and type(later_live) is bool and not (later_empty and later_live)
     names=component['test_names']
     selectors={'compacted_prefix','compacted_progress','initial_reconstruction','request_inputs','successor_history',
         'archive_retained_frontier','claim_custody','control_runtime_entrypoint'}
-    if later_empty: selectors.add('successor_transition')
+    if later_empty or later_live: selectors.add('successor_transition')
+    if later_live: selectors.add('successor_activation')
     assert set(names)==selectors
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::'
     assert {prefix+n for n in ('initial_preparation_selector_accepts_original_and_compacted_without_writes',
@@ -4776,8 +4781,8 @@ def empty_fault_guard_delta(value,*,epoch=2):
     else: assert value['catalog_restored'] is None
 
 
-def empty_qualification(component,*,later_empty=False):
-    preparation_qualification(component,later_empty=later_empty)
+def empty_qualification(component,*,later_empty=False,later_live=False):
+    preparation_qualification(component,later_empty=later_empty,later_live=later_live)
     prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_empty_tests::'
     assert {prefix+n for n in (
         'compacted_empty_exact_one_write_preserves_science_and_fresh_closing_retry',
@@ -5801,4 +5806,247 @@ def later_controls(context,initial,expected,baseline=None):
             reject('missing-late-trigger',lambda v:v['context']['later_fault']['installed'].update(statement='COMMIT;'))
             reject('unobserved-late-trigger-hit',lambda v:v['context']['later_fault'].update(hit='1false'))
             reject('invented-terminal-receipt',lambda v:v['context']['after']['ingest_terminal_transactions'].append(dict(target_epoch=3)))
+    return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+LATER_LIVE_PRODUCT = '5df6b94264300103a7385b174f6272070dc94e98'
+LATER_LIVE_STEPS = dict(full=('live',), partial=('live',), absent=('live',), installed=('live',))
+
+
+class LaterLiveProfile:
+    DIRECTORY='installed-compacted-later-live'
+    LABEL='org.bigbrotr.installed-compacted-later-live'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_LIVE_FINITE'
+    CLIENT_PREFIX='bigbrotr-compacted-later-live-'
+    DATABASE_PREFIX='bb_compacted_later_live_'
+    CLONES=tuple(LATER_LIVE_STEPS)
+    STEPS=LATER_LIVE_STEPS
+    CASES=tuple(n+'-live' for n in CLONES)
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Real Sync Event progress and certification progress; finite import Events do not advance the dictionary checkpoint',
+        'Activation/admission/ACK delivery loss, cancellation, UTC expiry and native/canonical proof-use drift',
+        'Fresh activated3 recovery/adoption, Archive, further successor retirement and capacity',
+        'Product floor writing, GC/unlink and ordinary-basis regression remain separate qualifications')
+
+
+def later_live_qualification(component):
+    prefix='storage::postgres::control_owner::successor_transition::activation::tests::'
+    assert set(component['test_names']['successor_activation'])=={prefix+n for n in (
+        'successor_activation_attempt_is_spent_before_any_result',
+        'successor_binding_requires_full_target_manifest_and_actual_control',
+        'successor_binding_keeps_dynamic_epoch_and_accepted_window')}
+    prefix='storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::compacted_ancestor_tests::compacted_history_tests::compacted_successor_tests::compacted_live_successor_tests::'
+    assert {prefix+n for n in (
+        'compacted_live_promotes_one_allocation_with_full_partial_and_absent_residuals',
+        'compacted_live_required_original_cannot_be_masked_by_residual_and_failure_poison_persists',
+        'compacted_live_view_binds_grant_original_cancel_and_canonical_digest',
+        'compacted_live_checkpoint_ack_preserves_inputs_and_poisons_failed_final_authority',
+        'compacted_live_reads_and_event_replay_keep_complete_science_but_not_fresh_adoption',
+        'compacted_live_ack_refuses_sidecar_drift_without_using_checkpoint_stamp_as_census')} <= set(component['test_names']['initial_reconstruction'])
+
+
+def later_live_specification(case):
+    name=case['clone']; assert name in LaterLiveProfile.CLONES
+    assert case['name']==name+'-live' and case['origin']=='later-terminal' and case['predecessor'] is None
+    assert case['operation']==('live' if name=='installed' else 'successor-compacted-live')
+    assert re.fullmatch('[a-z0-9_]{1,63}',case['database']) and case['config']=='/lab/'+case['database']+'.toml'
+    assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
+    return name
+
+
+def later_live_inputs_checked(record,expected,initial,name):
+    assert name in LaterLiveProfile.CLONES
+    assert set(record)=={'kind','clone','before','after','quarantine','files','attribution'}
+    assert record['kind']=='reversible-later-live-residual-selection' and record['clone']==name
+    original=sorted(initial[2]); assert len(original)==7 and set(expected[2])==set(original)|{
+        '36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor'}
+    retained=original if name=='full' else original[:1] if name=='partial' else []
+    removed=sorted(set(original)-set(retained)); assert sorted(record['files'])==removed
+    before,after,q=record['before'],record['after'],record['quarantine']
+    assert set(before)=={'.',*expected[2]} and set(after)=={'.',*(set(expected[2])-set(removed))} and set(q)=={'.',*removed}
+    for m in (before['.'],after['.'],q['.']):
+        assert stat.S_ISDIR(m['mode']) and m['mode']&0o777==0o700 and m['sha256'] is None
+    assert all(before['.'][k]==after['.'][k] for k in ('mode','inode','device','links'))
+    for filename,description in expected[2].items():
+        m=before[filename]; assert stat.S_ISREG(m['mode']) and m['mode']&0o777==0o600 and m['links']==1
+        assert {k:m[k] for k in ('bytes','sha256')}==description
+        if filename in removed:
+            saved=record['files'][filename]; assert set(saved)=={'hex','metadata'}
+            raw=bytes.fromhex(saved['hex']); assert description==dict(bytes=len(raw),sha256=sha(raw))
+            assert m==saved['metadata']==q[filename]
+        else: assert m==after[filename]
+    a=record['attribution']; assert set(a)=={'name','hex','metadata'}
+    filename='36a0253e6d94c18099f6c4dae9b7e040-0000000000000001-0000000000000005.cbor'
+    raw=bytes.fromhex(a['hex']); assert a['name']==filename
+    assert initial[2][filename]==dict(bytes=len(raw),sha256=sha(raw))==dict(bytes=462,sha256='4add1a3691de324ebdc7202debd5f0187cbd895a997d16ec499cdfea16827a26')
+    m=a['metadata']; assert stat.S_ISREG(m['mode']) and m['mode']&0o777==0o600 and m['links']==1
+    assert {k:m[k] for k in ('bytes','sha256')}==initial[2][filename]
+    assert (m['device'],m['inode'])!=(before[filename]['device'],before[filename]['inode'])
+    return expected[0],expected[1],{n:v for n,v in expected[2].items() if n not in removed}
+
+
+def verify_later_live(context,initial,expected):
+    import live_replay as live
+    name=later_live_specification(context['case'])
+    if name=='installed': return verify_later_live_installed(context,initial,expected)
+    assert set(context)=={'case','before','after','native_before','native_after','inputs_before','inputs_after','response','server_window',
+        'catalog_before','catalog_after','backend_absence','backends','custody','arguments'}
+    same(context['before'],expected[0]); assert (context['native_before'],context['inputs_before'])==expected[1:]
+    assert context['catalog_before']==context['catalog_after']
+    case=context['case']; response=context['response']
+    assert set(response)=={'returncode','stdout','stderr','seconds','outcome','readers_joined','overflow','command'}
+    assert type(response['returncode']) is int and response['returncode']==0 and response['stderr']==''
+    assert response['outcome']=='PROCESS_EXITED' and response['readers_joined'] is True and response['overflow'] is False
+    number(response['seconds'],0,120)
+    args=['successor-compacted-live',case['database'],'/run/secrets/application',case['config'],'262144']
+    assert context['arguments']==args
+    command=response['command']; assert len(command)==9 and command[:2]==['docker','exec']
+    assert re.fullmatch(LaterLiveProfile.CLIENT_PREFIX+'[0-9a-f]{7}',command[2])
+    assert command[3:]==['/build/ingest_bootstrap_probe',*args]
+    events=[loads(line) for line in response['stdout'].splitlines()]
+    known_history=history_lineage(expected,initial,compacted=True)
+    result=live.verify_live(events,*expected,case,context['server_window'],known_history,compacted=True,initial=initial)
+    final=only(events,event='lineage-history-state',stage='final')
+    same(context['after'],{n:loads(v) for n,v in final['state']['control_tables']})
+    assert context['native_after']==dict(event='dump-state',rows=final['rows'],sequence=final['state']['sequence'])
+    assert context['inputs_after']==dict(final['state']['originals'])
+    assert context['backends']==[] and context['custody']==dict(status='OBSERVED_CLOSED_AND_JOINED',database=case['database'],backend_absent=True,errors=[])
+    absence=context['backend_absence']; assert absence['database']==case['database'] and absence['user']=='bigbrotr_control'
+    assert set(absence)=={'database','user','limit_seconds','status','attempts','seconds'}
+    assert absence['status']=='OBSERVED_ABSENT' and absence['limit_seconds']==5 and absence['attempts']
+    elapsed=0
+    backend=only(events,event='lineage-history-backend',present=True)
+    for observed in absence['attempts']:
+        assert set(observed)=={'seconds','count','backends'}
+        elapsed=number(observed['seconds'],elapsed,5)
+        assert type(observed['count']) is int and observed['count']==len(observed['backends']) and observed['count'] in (0,1)
+        for b in observed['backends']:
+            assert b['pid']==backend['pid'] and retained.instant(b['backend_start'])==retained.instant(backend['backend_start'])
+    assert absence['attempts'][-1]['backends']==[];number(absence['seconds'],elapsed,6)
+    return dict(result,compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=1,
+        target_checkpoint=1,target_acknowledged=1)
+
+
+def verify_later_live_installed(context,initial,expected):
+    from installed_cycle_replay import process_closed
+    assert later_live_specification(context['case'])=='installed' and set(context)==CONTEXT_FIELDS
+    before,after=context['before'],context['after']; inputs=context['inputs_before']; window=context['server_window']
+    same(before,expected[0]); assert (context['native_before'],inputs)==expected[1:]
+    assert len(before)==77 and set(before)==set(after) and inputs==context['inputs_after']
+    assert set(context['input_contents'])==set(inputs)
+    for n,value in context['input_contents'].items():
+        raw=bytes.fromhex(value);assert inputs[n]==dict(bytes=len(raw),sha256=sha(raw))
+    assert context['catalog_before']==context['catalog_after'] and context['fixture']['cleanup_errors']==[]
+    reports=process_closed(context['response'],context['case'])
+    backend_checked(context['backend'],context['case']['database'],before,after)
+    assert set(window)=={'before_us','after_us'}
+    number(window['before_us'],1,integer=True);number(window['after_us'],window['before_us'],window['before_us']+120_000_000,integer=True)
+    snapshots=context['snapshots']; assert [s['stage'] for s in snapshots]==['activated','renewed','before-stop']
+    at=window['before_us']
+    for s in snapshots:
+        assert set(s)=={'stage','server_us','observed_by_us','control','inputs'} and s['inputs']==inputs
+        number(s['server_us'],at,window['after_us'],integer=True);at=number(s['observed_by_us'],s['server_us'],window['after_us'],integer=True)
+    m=model.Model(before,context['native_before'],inputs,dict(window,after_us=snapshots[0]['observed_by_us']))
+    m.startup(snapshots[0]['control'],reports[0],compacted=True);m.window=window
+    control_epoch=m.control['epoch']; previous=snapshots[0]['control']
+    for i,s in enumerate(snapshots):
+        if i:
+            model.leases(m.pg,s['control'],previous,window,control_epoch,3);same(m.pg,s['control'])
+        c=only(s['control']['owner_epochs'],role='control',epoch=control_epoch)
+        target=only(s['control']['owner_epochs'],role='ingest',epoch=3)
+        assert c['lease_expires_at_us']>=target['lease_expires_at_us']>s['server_us']
+        assert c['xmin']!=target['xmin']
+        previous=s['control']
+    model.leases(m.pg,after,previous,window,control_epoch,3,stopped=True);same(m.pg,after)
+    c=only(after['owner_epochs'],role='control',epoch=control_epoch);target=only(after['owner_epochs'],role='ingest',epoch=3)
+    assert c['xmin']!=target['xmin'] and c['lease_expires_at_us']>=target['lease_expires_at_us']
+    initial_target=only(snapshots[0]['control']['owner_epochs'],role='ingest',epoch=3)
+    renewal=context['fixture']['renewal']
+    assert renewal==dict(initial_deadline_us=int(reports[0]['lease_expires_at_us']),observed_at_us=renewal['observed_at_us'],initial_target=initial_target,current=snapshots[1])
+    number(renewal['observed_at_us'],max(snapshots[0]['observed_by_us'],int(reports[0]['lease_expires_at_us'])+1,int(reports[0]['prepared_at_us'])+6_000_001),snapshots[1]['server_us'],integer=True)
+    renewed=only(snapshots[1]['control']['owner_epochs'],role='ingest',epoch=3)
+    assert renewed['lease_expires_at_us']>max(initial_target['lease_expires_at_us'],snapshots[1]['observed_by_us'])
+    signal=context['fixture']['signal'];assert set(signal)=={'kind','identity','before_us','after_us'} and signal['kind']=='SIGTERM'
+    assert signal['identity']=={k:context['response']['terminal'][k] for k in ('pid','start_ticks','command','config','prefix')}
+    number(signal['before_us'],snapshots[-1]['observed_by_us'],window['after_us'],integer=True)
+    number(signal['after_us'],signal['before_us'],window['after_us'],integer=True)
+    assert c['released_at_us']>=signal['before_us'] and set(context['fixture'])=={'cleanup_errors','renewal','signal'}
+    assert context['native_after']==m.native and (len(m.native['rows']),m.native['sequence'])==(93,138)
+    assert not any(r['producer_epoch']==3 for table in ('producer_requests','producer_outcomes','producer_checkpoints') for r in after[table])
+    return dict(status='PASS',case=context['case']['name'],operation='live',states=5,tables=77,native_rows=93,native_sequence=138,
+        input_files=len(inputs),compacted_requests=7,later_original_requests_replayed=1,target_requests=0,renewed=True)
+
+
+def later_live_controls(context,initial,expected):
+    verify_later_live(context,initial,expected); rejected=[]
+    def reject(name,change):
+        c=copy.deepcopy(context); change(c)
+        try: verify_later_live(c,initial,expected)
+        except (AssertionError,KeyError,ValueError,TypeError,StopIteration,OverflowError): rejected.append(name)
+        else: raise AssertionError('accepted later-live alteration: '+name)
+    reject('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
+    reject('native-sequence',lambda c:c['native_after'].update(sequence=c['native_after']['sequence']+1))
+    reject('required-later-input-lost',lambda c:c['inputs_after'].pop('36a0253e6d94c18099f6c4dae9b7e040-0000000000000002-0000000000000001.cbor'))
+    reject('old-outcome-version',lambda c:c['after']['producer_outcomes'][0].update(xmin='4000000000'))
+    reject('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'\nchanged'))
+    reject('unknown-custody',lambda c:c['case'].update(custody='OUTCOME_UNKNOWN'))
+    if context['case']['clone']=='installed':
+        reject('not-reaped',lambda c:c['response']['terminal'].update(reaped=False))
+        reject('live-backend',lambda c:c['backend'].update(all=[{'pid':1}]))
+        reject('missing-renewal',lambda c:c['snapshots'].pop(1))
+        reject('early-signal',lambda c:c['fixture']['signal'].update(before_us=c['server_window']['before_us']))
+        reject('renewal-clock-before-activation',lambda c:c['fixture']['renewal'].update(observed_at_us=c['snapshots'][0]['server_us']-1))
+        def report(c):
+            values=[loads(line) for line in c['response']['stdout'].splitlines()];values[0]['compacted_requests']='0'
+            c['response']['stdout']='\n'.join(model.encoded(v).decode() for v in values)+'\n'
+        reject('false-compacted-count',report)
+        def stale(c):
+            for s in c['snapshots'][1:]:
+                row=only(s['control']['owner_epochs'],role='control',epoch=max(r['epoch'] for r in s['control']['owner_epochs'] if r['role']=='control'))
+                row['lease_expires_at_us']=s['server_us']-1
+            c['fixture']['renewal']['current']=copy.deepcopy(c['snapshots'][1])
+        reject('coordinated-expired-Control',stale)
+        def same_xid(c):
+            for s in c['snapshots'][1:]:
+                row=max((r for r in s['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                only(s['control']['owner_epochs'],role='ingest',epoch=3)['xmin']=row['xmin']
+            c['fixture']['renewal']['current']=copy.deepcopy(c['snapshots'][1])
+        reject('coordinated-renewal-xid',same_xid)
+    else:
+        reject('unjoined-reader',lambda c:c['response'].update(readers_joined=False))
+        reject('backend-still-present',lambda c:c.update(backends=[{'pid':1}]))
+        def transcript(c,change):
+            events=[loads(v) for v in c['response']['stdout'].splitlines()];change(events)
+            c['response']['stdout']='\n'.join(model.encoded(v).decode() for v in events)+'\n'
+        def event(c,event_kind,change,**fields):transcript(c,lambda es:change(only(es,event=event_kind,**fields)))
+        reject('false-original-replay',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(original_initial_requests_replayed=7)))
+        reject('boolean-original-count',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(original_initial_requests_replayed=False)))
+        reject('false-compacted-count',lambda c:event(c,'lineage-history-compacted-proof',lambda e:e.update(compacted_initial_requests=0)))
+        reject('activation-no-writer',lambda c:event(c,'lineage-live-activation-result',lambda e:e.update(writer=False)))
+        reject('uncommitted-renewal',lambda c:event(c,'lineage-live-renewal',lambda e:e.update(commit_started=False)))
+        reject('historic-signature',lambda c:event(c,'lineage-live-input',lambda e:e['signed_event'].update(sig='00'*64),stage='already-durable'))
+        reject('false-visibility',lambda c:event(c,'lineage-live-visibility',lambda e:e.update(**{'class':'public'})))
+        reject('false-current-certification',lambda c:event(c,'lineage-live-certification',lambda e:e.update(proof_digest='00'*32),kind='current'))
+        reject('retained-live-writer',lambda c:event(c,'lineage-live-complete',lambda e:e.update(writer=True)))
+        def sql_tail(c,change):
+            def alter(es):
+                for e in es:
+                    if e['event']!='lineage-history-state':continue
+                    tables={n:loads(v) for n,v in e['state']['control_tables']}
+                    change(tables)
+                    e['state']['control_tables']=[[n,model.encoded(rows).decode()] for n,rows in sorted(tables.items())]
+                    e['state']['control_sha256']=sha(model.encoded(e['state']['control_tables']))
+            transcript(c,alter)
+        reject('coordinated-checkpoint-revision',lambda c:sql_tail(c,lambda p:[r.update(checkpoint_revision=2) for r in p['producer_checkpoints'] if r['producer_epoch']==3]))
+        reject('coordinated-checkpoint-dependency',lambda c:sql_tail(c,lambda p:[r.update(source_sequence=1) for r in p['producer_checkpoint_dependencies'] if r['producer_epoch']==3 and r['source_epoch']==1]))
+        def ack_zero(c):
+            def alter(es):
+                for e in es:
+                    if e['event']!='lineage-history-state':continue
+                    for r in e['rows']:
+                        if r['cf']=='receipts' and r['key']=='013136a0253e6d94c18099f6c4dae9b7e0400000000000000003':
+                            value=bytearray.fromhex(r['value']);value[10:18]=bytes(8);r['value']=value.hex()
+                    e['state']['native_sha256']=sha(model.encoded(e['rows']))
+            transcript(c,alter)
+        reject('coordinated-native-ACK-zero',ack_zero)
     return dict(status='PASS',count=len(rejected),rejected=rejected)

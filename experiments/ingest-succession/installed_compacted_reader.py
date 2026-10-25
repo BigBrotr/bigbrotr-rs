@@ -2101,11 +2101,109 @@ def run_later_empty(root,build,product_source):
         compacted_reader=True,compacted_history=True,later_empty=True,product_source=product_source)
 
 
+
+def later_live_inputs(output,directory,expected,initial):
+    name=directory.name; spool=directory/'store/producer-inputs-v1'; quarantine=directory/'quarantined-initial'
+    attribution=directory/'terminal-seed-inputs'; quarantine.mkdir(mode=0o700); attribution.mkdir(mode=0o700)
+    before=history.census(spool);original=sorted(initial[2])
+    keep=original if name=='full' else original[:1] if name=='partial' else []
+    removed=sorted(set(original)-set(keep))
+    filename='36a0253e6d94c18099f6c4dae9b7e040-0000000000000001-0000000000000005.cbor'
+    raw=oracle.retained.regular_read(spool/filename)
+    fd=os.open(attribution/filename,os.O_CREAT|os.O_EXCL|os.O_WRONLY|os.O_NOFOLLOW,0o600)
+    try:
+        os.fchmod(fd,0o600)
+        with os.fdopen(fd,'wb',closefd=False) as stream:stream.write(raw);stream.flush();os.fsync(fd)
+    finally:os.close(fd)
+    files={n:dict(hex=oracle.retained.regular_read(spool/n).hex(),metadata=before[n]) for n in removed}
+    for n in removed:(spool/n).rename(quarantine/n)
+    for p in (spool,quarantine,attribution,directory):
+        fd=os.open(p,os.O_RDONLY|os.O_DIRECTORY)
+        try:os.fsync(fd)
+        finally:os.close(fd)
+    record=dict(kind='reversible-later-live-residual-selection',clone=name,before=before,after=history.census(spool),
+        quarantine=history.census(quarantine),files=files,attribution=dict(name=filename,hex=raw.hex(),metadata=history.census(attribution)[filename]))
+    lab.write_json(output/(name+'-residual-selection.json'),record)
+    wanted=oracle.later_live_inputs_checked(record,expected,initial,name)
+    assert history.inputs_at(directory/'store')==wanted[2]
+    return wanted
+
+
+def later_live_probe(pg,client,output,case,directory,expected,catalog,initial):
+    name=case['name'];database=case['database']
+    before=schema.rows(pg,database);oracle.same(before,expected[0]);lab.write_json(output/(name+'-before.json'),before)
+    native=history.dump(client,output,name+'-before',directory);inputs=history.inputs_at(directory/'store')
+    assert (native,inputs)==expected[1:];lab.write_json(output/(name+'-inputs.json'),inputs)
+    window=dict(before_us=history.server_clock(pg,database));lab.write_json(output/(name+'-clock.json'),window)
+    args=['successor-compacted-live',database,'/run/secrets/application',case['config'],'262144']
+    response=dict(returncode=None,stdout='',stderr='',outcome='UNKNOWN');errors=[]
+    try:history.capture(client,output,name,*args)
+    except BaseException as error:errors.append(dict(stage='capture',error=repr(error)))
+    finally:
+        path=output/(name+'-response.json')
+        if path.exists():
+            try:
+                response=transition.read(path);assert isinstance(response,dict)
+            except BaseException as error:errors.append(dict(stage='response',error=repr(error)))
+        else:lab.write_json(path,response)
+        try:window['after_us']=history.server_clock(pg,database)
+        except BaseException as error:errors.append(dict(stage='clock',error=repr(error)))
+        lab.write_json(output/(name+'-capture-errors.json'),errors);lab.write_json(output/(name+'-clock.json'),window)
+        events,after,after_native,after_inputs=transition.external(pg,client,output,case,directory,response,completion_event='lineage-live-complete')
+    assert not errors
+    context=dict(case=dict(case),before=before,after=after,native_before=native,native_after=after_native,inputs_before=inputs,inputs_after=after_inputs,
+        response=response,server_window=window,catalog_before=catalog,catalog_after=history.catalog(pg,database),
+        backend_absence=transition.read(output/(name+'-control-backends.json')),backends=transition.read(output/(name+'-backends.json')),
+        custody=transition.read(output/(name+'-custody.json')),arguments=args)
+    lab.write_json(output/(name+'-verification.json'),context)
+    result=oracle.verify_later_live(context,initial,expected);controls=oracle.later_live_controls(context,initial,expected)
+    case.update(status='PASS',returncode=response['returncode'],oracle=result,negative_controls=controls,server_window=window)
+    return after,after_native,after_inputs
+
+
+def run_later_live_sequence(pg,client,output,clone,directory,expected,report,*,seed,initial):
+    name=clone['name'];assert expected==seed and clone['origin']=='later-terminal'
+    assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
+    assert clone['catalog_before']==report['origins']['later-terminal']['catalog']
+    configure(pg,client,output,clone['config'],ack=True)
+    source=Path(__file__).with_name('installed_cycle_client.py');path=output/source.name
+    if not path.exists():shutil.copy2(source,path)
+    assert history.digest(path)==history.digest(source)
+    transition.observe_origin_absence(pg,clone['database'],output,name+'-residual')
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    assert history.dump(client,output,name+'-residual-before',directory)==expected[1]
+    expected=later_live_inputs(output,directory,expected,initial)
+    oracle.same(schema.rows(pg,clone['database']),expected[0])
+    case=dict(name=name+'-live',clone=name,origin='later-terminal',operation='live' if name=='installed' else 'successor-compacted-live',
+        predecessor=None,database=clone['database'],config=clone['config'],status='RUNNING')
+    report['cases'].append(case);lab.write_json(output/'result.json',report)
+    if name=='installed':
+        from installed_cycle_replay import process_closed
+        expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],initial,
+            checks=(lambda c,s:oracle.verify_later_live(c,initial,expected),lambda c,s:oracle.later_live_controls(c,initial,expected),process_closed))
+    else:expected=later_live_probe(pg,client,output,case,directory,expected,clone['catalog_before'],initial)
+    case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
+    lab.write_json(output/'result.json',report);return case['name']
+
+
+def run_later_live(root,build,product_source):
+    assert product_source==oracle.LATER_LIVE_PRODUCT
+    seed,initial=oracle.qualified_endpoint(root,None,initial_journey=False,later_terminal=True)
+    profile=oracle.LaterLiveProfile
+    suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
+        client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
+        scope='Three finite compacted continuous live histories with optional residuals, plus independent installed quiet activation/renewal/join',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_live_sequence,seed=seed,initial=initial),
+        origin_specs=(oracle.LATER_TERMINAL_ORIGIN,),origin_for_clone={n:'later-terminal' for n in profile.CLONES},extra_grants=profile.GRANTS,
+        producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_live=True,product_source=product_source)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root',type=Path); parser.add_argument('build',type=Path)
     parser.add_argument('--product-source',required=True,help='Exact reviewed and qualified integrated build revision')
     profile=parser.add_mutually_exclusive_group()
+    profile.add_argument('--later-live',action='store_true',help='Finite compacted continuous live plus separate installed quiet activation and renewal')
     profile.add_argument('--later-empty',action='store_true',help='Actual compacted later preparation and installed gap/OPEN/CLOSING retirement')
     profile.add_argument("--history",action="store_true",help="Explicit connected Terminal2/PreparedOpen3 synthetic floor profile")
     profile.add_argument('--history-faults',action='store_true',help='Exact retained PreparedOpen3 delivery fault profile')
@@ -2124,4 +2222,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (run_later_live if args.later_live else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
