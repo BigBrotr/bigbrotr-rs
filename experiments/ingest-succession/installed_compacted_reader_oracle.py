@@ -5921,23 +5921,26 @@ def later_input_set(case,expected,initial):
     assert inputs and all(inputs[n]==initial[2][n] for n in residual)
 
 
-def later_input_wire(w,case,mode,target,total,*,held,later,port):
+def later_input_wire(w,case,mode,target,total,*,held,later,port,source_publication=False):
     from fault_cases import safe_event
     from transition_fault_replay import COUNTERS
     assert set(w)=={'command','source_sha256','ready','receipt','events','stdout','stderr','exit_code','readers_joined','overflow','forced_wrapper_stop'}
     assert w['source_sha256']==LATER_PROXY_SHA256 and w['stderr']=='' and type(w['exit_code']) is int and w['exit_code']==0
     assert w['readers_joined'] is True and w['overflow'] is False and w['forced_wrapper_stop'] is False
-    revision=case['database'].removeprefix(LaterInputProofProfile.DATABASE_PREFIX)[:7]
-    assert w['command']==['docker','exec','-i',LaterInputProofProfile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py',
+    assert type(source_publication) is bool
+    if source_publication:assert held is True and mode=='hold'
+    profile=LaterSourceDeliveryProfile if source_publication else LaterInputProofProfile
+    revision=case['database'].removeprefix(profile.DATABASE_PREFIX)[:7]
+    assert w['command']==['docker','exec','-i',profile.CLIENT_PREFIX+revision,'python3','-B','/lab/fault_proxy.py',
         '--upstream-port','5432','--listen-port','0','--mode',mode,'--commit-number',str(target),'--later-commits',str(later),'--deadline-seconds','30']
     events=[safe_event(loads(line)) for line in w['stdout'].splitlines()]
     assert events==w['events'] and events[0]==w['ready'] and events[-1]==w['receipt']
     assert [e['event'] for e in events]==(['ready','held','released','receipt'] if held else ['ready','receipt'])
     elapsed=0
     for i,e in enumerate(events):
-        number(e['elapsed_ns'],elapsed,35_000_000_000,integer=True);elapsed=e['elapsed_ns']
+        number(e['elapsed_ns'],elapsed,30_000_000_000 if source_publication else 35_000_000_000,integer=True);elapsed=e['elapsed_ns']
         assert e['mode']==mode and type(e['commit_number']) is int and e['commit_number']==target
-        counts=[0]*5 if i==0 else [total]*4+[int(held)] if i==len(events)-1 else [target,target,target,target-1,1]
+        counts=[0]*5 if i==0 else [total]*4+[int(held)] if i==len(events)-1 else [target,target-1,target-1,target-1,1] if source_publication else [target,target,target,target-1,1]
         assert all(type(e[k]) is int for k in COUNTERS) and [e[k] for k in COUNTERS]==counts
         assert e['held'] is (held and i==1)
         assert e['hold_action']==('release' if held and i>=2 else None)
@@ -7341,14 +7344,17 @@ def later_source_diagnostic(record,case,window,control):
         error_lines=error['lines'],context_lines=context['lines'],observed_sqlstate=sqlstate,log_precision_us=1000)
 
 
-def verify_later_source(context,seed,expected):
+def verify_later_source(context,seed,expected,*,delivery=False):
+    assert type(delivery) is bool
+    if delivery:assert later_source_specification(context['case'])==('finite','source')
     case=context['case'];name,step=later_source_specification(case);quiet=name=='quiet';failure=step in LATER_SOURCE_ERRORS
     assert set(context)==CONTEXT_FIELDS|({'source_diagnostic'} if step=='closed-positive' else set())
     assert set(case)=={'name','clone','origin','operation','predecessor','database','config','status','custody'}
     assert case['status']=='RUNNING' and case['custody']=='OBSERVED_CLOSED_AND_JOINED'
     same(context['before'],expected[0]);assert (context['native_before'],context['inputs_before'])==expected[1:]
     assert set(context['before'])==set(context['after'])==set(seed[0]) and len(seed[0])==77
-    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[] and context['fixture']==dict(cleanup_errors=[])
+    assert context['catalog_before']==context['catalog_after'] and context['snapshots']==[]
+    assert set(context['fixture'])==({'cleanup_errors','delivery_fault'} if delivery else {'cleanup_errors'}) and context['fixture']['cleanup_errors']==[]
     w=context['server_window'];assert set(w)=={'before_us','after_us'}
     number(w['before_us'],1,integer=True);number(w['after_us'],w['before_us'],w['before_us']+120_000_000,integer=True)
     wanted_inputs=later_recovery_missing_basis(seed,name)[2] if step=='refuse' else seed[2]
@@ -7389,17 +7395,19 @@ def verify_later_source(context,seed,expected):
             resolved_requests=str(issued),verified_through='3',source_closure=dict(last_complete_sequence=str(cut),sha256=digest),native='closed',owner_release='committed',ready=False,
             recovery_basis='closed-producer-floor-v3',compacted_requests='7')
         assert report==wanted
-    return dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
+    result=dict(status='PASS',case=case['name'],tables=77,sql_rows=sum(map(len,m.pg.values())),native_rows=len(m.native['rows']),native_sequence=m.native['sequence'],
         input_files=len(wanted_inputs),producer_epoch=3,target_requests=issued,target_checkpoint=ack,target_acknowledged=ack,source_cut=cut,source_digest=digest,
         compacted_requests=7,original_initial_requests_replayed=0,later_original_requests_replayed=0 if failure else issued+1,
         native_writes=int(step=='source'),refused_before_barrier=failure,refusal_guard=guard)
+    if delivery:result['publication_commit']=later_source_delivery_checked(context['fixture']['delivery_fault'],case,w,expected,context['after'])
+    return result
 
 
-def later_source_controls(context,seed,expected):
-    verify_later_source(context,seed,expected);name,step=later_source_specification(context['case']);failure=step in LATER_SOURCE_ERRORS;rejected=[]
+def later_source_controls(context,seed,expected,*,delivery=False):
+    verify_later_source(context,seed,expected,delivery=delivery);name,step=later_source_specification(context['case']);failure=step in LATER_SOURCE_ERRORS;rejected=[]
     def reject(label,change):
         c=copy.deepcopy(context);change(c)
-        try:verify_later_source(c,seed,expected)
+        try:verify_later_source(c,seed,expected,delivery=delivery)
         except (AssertionError,KeyError,ValueError,TypeError,StopIteration,IndexError):rejected.append(label)
         else:raise AssertionError('accepted later Source control '+label)
     reject('unknown-process',lambda c:c['response'].update(outcome='OUTCOME_UNKNOWN'))
@@ -7449,4 +7457,141 @@ def later_source_controls(context,seed,expected):
     if name!='quiet':
         reject('ACK-outruns-checkpoint',lambda c:marker(c,3))
         reject('checkpoint-rewritten',lambda c:only(c['after']['producer_checkpoints'],producer_epoch=3).update(checkpoint_revision=2))
+    if delivery:later_source_delivery_controls(reject,context)
     return dict(status='PASS',count=len(rejected),rejected=rejected)
+
+
+# Source5ed call-chain candidate, not a measured ordinal until this baseline
+# validates the held publication transaction and its complete successful result.
+LATER_SOURCE_PUBLICATION_CANDIDATE = 15
+LATER_SOURCE_PUBLICATION_QUERY = "SELECT control.require_control_owner(dataset_id,resource_id,epoch,process_incarnation), lease_expires_at_us>(extract(epoch FROM clock_timestamp())*1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric AND process_incarnation=$3::bytea"
+
+
+class LaterSourceDeliveryProfile:
+    DIRECTORY='installed-compacted-later-source-delivery'
+    LABEL='org.bigbrotr.installed-compacted-later-source-delivery'
+    STATUS='PASS_INSTALLED_COMPACTED_LATER_SOURCE_DELIVERY_BASELINE'
+    DATABASE_PREFIX='bb_later_source_delivery_'
+    CLIENT_PREFIX='bigbrotr-later-source-delivery-'
+    CLONES=('finite',)
+    STEPS={'finite':('source',)}
+    CASES=('finite-source',)
+    GRANTS=HISTORY_GRANTS
+    NOT_RUN=('Source publication before/after COMMIT loss and fresh retries',
+        'Final ACK loss, cancellation, UTC expiry and Source post-proof H/D drift',
+        'Quiet Source faults, missing-copy Source repair, compacted abandonment/retirement/Archive',
+        'Real Sync, capacity and physical/mixed restore; existing Source7 and recovery fault6 remain separate')
+
+
+def later_source_held(expected,held,case,window):
+    """Committed SQL plus actual publication locks; never a native-held dump."""
+    assert later_source_specification(case)==('finite','source')
+    assert set(held)=={'event','before_us','after_us','release_before_us','release_after_us','control','inputs','backend'}
+    event=held['event'];target=LATER_SOURCE_PUBLICATION_CANDIDATE
+    assert event['event']=='held' and event['mode']=='hold' and event['commit_number']==target
+    assert event['held'] is True and event['hold_action'] is None and event['faults']==1
+    counters=('commits_seen','commits_forwarded','server_commit_complete','client_commit_complete')
+    assert all(type(event[k]) is int for k in counters) and [event[k] for k in counters]==[target,target-1,target-1,target-1]
+    assert held['inputs']==expected[2] and len(held['inputs'])==4
+    m=model.Model(*expected,window);preparation_control(m,held['control'],success=False,renewed=True)
+    m.control=max((r for r in m.pg['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    c=m.control;producer=only(m.pg['producer_epochs'],producer_epoch=3)
+    actual=only(held['control']['producer_epochs'],producer_epoch=3)
+    role=only(m.pg['role_instances'],role_instance_id=c['role_instance_id'])
+    assert producer['state']=='open';model.fresh_xmin(actual['xmin'],m.pg)
+    assert max(int(r['xmin']) for rows in expected[0].values() for r in rows)<int(role['xmin'])<int(actual['xmin'])<int(c['xmin'])
+    producer.update(state='closing',xmin=actual['xmin']);same(held['control'],m.pg)
+    # This is the committed refresh immediately before publication. Its server
+    # sample precedes the new operation/ticket, so +1s is conservative for the
+    # unchanged installed phase; the actual final successful Result is required.
+    refreshed=c['lease_expires_at_us']-6_000_000
+    number(held['before_us'],max(window['before_us'],refreshed),window['after_us'],integer=True)
+    number(held['after_us'],held['before_us'],min(window['after_us'],refreshed+999_999),integer=True)
+    assert c['lease_expires_at_us']>held['after_us']+5_000_000
+    previous=held['after_us']
+    for key in ('release_before_us','release_after_us'):
+        if held[key] is not None:previous=number(held[key],previous,min(window['after_us'],refreshed+999_999),integer=True)
+    b=held['backend'];assert set(b)=={'pid','backend_start','database','user','state','xact_start','query','observed_at_us','source_locks'}
+    assert type(b['pid']) is int and b['pid']==c['control_backend_pid']
+    assert retained.instant(b['backend_start'])==retained.instant(c['control_backend_start'])
+    assert (b['database'],b['user'],b['state'])==(case['database'],'bigbrotr_control','idle in transaction')
+    number(b['observed_at_us'],held['before_us'],held['after_us'],integer=True)
+    assert b['xact_start'] is not None
+    number(retained.instant(b['xact_start']),refreshed,b['observed_at_us'],integer=True)
+    assert ' '.join(b['query'].split())==LATER_SOURCE_PUBLICATION_QUERY
+    lock,=b['source_locks'];assert type(lock['pid']) is int and type(lock['granted']) is bool
+    assert lock==dict(pid=c['control_backend_pid'],database=case['database'],schema='control',relation='source_streams',mode='RowExclusiveLock',granted=True)
+    return m
+
+
+def later_source_delivery_checked(record,case,window,expected,after):
+    import tomllib
+    assert set(record)=={'status','operation','mode','target_commit','wire','held','configuration','errors'}
+    assert record['status']=='JOINED_CONFIG_RESTORED' and record['errors']==[]
+    target=LATER_SOURCE_PUBLICATION_CANDIDATE
+    assert (record['operation'],record['mode'],record['target_commit'])==('source','hold',target)
+    settings=record['configuration'];assert set(settings)=={'path','direct','proxied','restored'}
+    assert settings['path']==case['config'] and settings['direct']==settings['restored']
+    direct,proxied=(tomllib.loads(settings[k]) for k in ('direct','proxied'))
+    empty_delivery_config(direct,case)
+    dataset=only(expected[0]['datasets'])
+    assert direct['topology']['dataset_id']==dataset['dataset_id'][2:] and direct['topology']['instance_id']==dataset['instance_id'][2:]
+    assert direct['topology']['local_roles']==['control','ingest','sync','archive']
+    assert direct['network']['dns']['resolver']=='127.0.0.1:9' and direct['network']['tls']['extra_roots']==[]
+    assert direct['network']['private']['rules']==[dict(endpoint='ws://127.0.0.1:7447/installed-successor-fixture',cidr='127.0.0.1/32',port=7447)]
+    wire=record['wire'];port=wire['ready']['listen_port'];wanted=copy.deepcopy(direct)
+    wanted['postgres']['control']['endpoint']='127.0.0.1:'+str(port);assert proxied==wanted
+    later_input_wire(wire,case,'hold',target,target+3,held=True,later=3,port=port,source_publication=True)
+    held=record['held'];assert held['event']==wire['events'][1]
+    assert held['release_before_us'] is not None and held['release_after_us'] is not None
+    m=later_source_held(expected,held,case,window);c=m.control
+    ended=only(after['owner_epochs'],role='control',epoch=c['epoch'])
+    for key in ('resource_id','role_instance_id','process_incarnation','acquired_at_us','control_backend_pid','control_backend_start'):
+        assert ended[key]==c[key]
+    assert ended['lease_expires_at_us']>c['lease_expires_at_us']
+    assert held['release_before_us']<=ended['lease_expires_at_us']-6_000_000<=ended['released_at_us']
+    producer=only(after['producer_epochs'],producer_epoch=3);source=only(after['source_streams'],owner_epoch=3)
+    assert producer==only(m.pg['producer_epochs'],producer_epoch=3)
+    assert int(c['xmin'])<int(source['xmin'])<int(ended['xmin'])
+    assert c['lease_expires_at_us']-6_000_000<=source['closed_at_us']<=held['before_us']
+    assert held['release_before_us']<=ended['released_at_us']
+    return dict(boundary='later-source-publication-held-before-forward-released',selected_commit=target,total_successful_commits=target+3,
+        source_cut=4,target_checkpoint=1,target_acknowledged=1,held_native_observation='NOT_RUN_OWNER_LIVE')
+
+
+def later_source_delivery_controls(reject,context):
+    def fault(c):return c['fixture']['delivery_fault']
+    def held(c):return fault(c)['held']
+    reject('proxy-not-joined',lambda c:fault(c)['wire'].update(readers_joined=False))
+    reject('proxy-forced-stop',lambda c:fault(c)['wire'].update(forced_wrapper_stop=True))
+    reject('proxy-source-drift',lambda c:fault(c)['wire'].update(source_sha256='00'*32))
+    reject('proxy-cleanup-error',lambda c:fault(c)['errors'].append(dict(phase='child-joined',error='unknown')))
+    reject('configuration-not-restored',lambda c:fault(c)['configuration'].update(restored=''))
+    reject('wrong-publication-selector',lambda c:fault(c).update(target_commit=11))
+    reject('wrong-held-query',lambda c:held(c)['backend'].update(query='COMMIT'))
+    reject('held-without-transaction',lambda c:held(c)['backend'].update(xact_start=None))
+    reject('foreign-held-backend',lambda c:held(c)['backend'].update(pid=held(c)['backend']['pid']+1))
+    reject('foreign-held-database',lambda c:held(c)['backend'].update(database='foreign'))
+    reject('missing-Source-write-lock',lambda c:held(c)['backend'].update(source_locks=[]))
+    reject('ungranted-Source-write-lock',lambda c:held(c)['backend']['source_locks'][0].update(granted=False))
+    reject('foreign-lock-owner',lambda c:held(c)['backend']['source_locks'][0].update(pid=held(c)['backend']['pid']+1))
+    reject('wrong-lock-relation',lambda c:held(c)['backend']['source_locks'][0].update(relation='producer_epochs'))
+    reject('read-lock-is-not-publication',lambda c:held(c)['backend']['source_locks'][0].update(mode='RowShareLock'))
+    reject('held-required-input-loss',lambda c:held(c)['inputs'].pop(next(iter(held(c)['inputs']))))
+    reject('held-source-prematurely-visible',lambda c:only(held(c)['control']['source_streams'],owner_epoch=3).update(state='closed'))
+    reject('held-producer-not-closed',lambda c:only(held(c)['control']['producer_epochs'],producer_epoch=3).update(state='open'))
+    reject('held-initial-head-drift',lambda c:only(held(c)['control']['producer_checkpoints'],producer_epoch=1).update(checkpoint_revision=only(held(c)['control']['producer_checkpoints'],producer_epoch=1)['checkpoint_revision']+1))
+    def late(c):
+        h=held(c);control=max((r for r in h['control']['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        h['release_before_us']=h['release_after_us']=control['lease_expires_at_us']-5_000_000
+        ended=only(c['after']['owner_epochs'],role='control',epoch=control['epoch'])
+        ended.update(lease_expires_at_us=h['release_after_us']+6_000_010,released_at_us=h['release_after_us']+20)
+        only(c['after']['role_instances'],role_instance_id=ended['role_instance_id']).update(retired_at_us=h['release_after_us']+30)
+        c['server_window']['after_us']=max(c['server_window']['after_us'],h['release_after_us']+40)
+    reject('release-after-conservative-phase',late)
+    def wire_change(c,change):
+        w=fault(c)['wire'];change(w['events']);w['ready']=w['events'][0];w['receipt']=w['events'][-1]
+        held(c)['event']=w['events'][1];w['stdout']=''.join(model.encoded(e).decode()+'\n' for e in w['events'])
+    reject('coordinated-premature-COMMIT-delivery',lambda c:wire_change(c,lambda events:events[1].update(client_commit_complete=15)))
+    reject('coordinated-missing-final-ACK-or-release',lambda c:wire_change(c,lambda events:events[-1].update(commits_seen=17,commits_forwarded=17,server_commit_complete=17,client_commit_complete=17)))
+    reject('coordinated-inconsistent-wire-census',lambda c:wire_change(c,lambda events:events[-1]['frames'].update(frontend=events[-1]['frames']['frontend']+1)))

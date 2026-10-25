@@ -46536,7 +46536,7 @@
                   "sha256": "7b20c592ca455da8bcd5d0198de59198bb565d4839a62152bae8b4ad07c21bbd"
                 },
                 "next_delivery_work": {
-                  "status": "SOURCE_IN_PROGRESS; NEW_RUNTIME_NOT_RUN",
+                  "status": "BASELINE_QUALIFIED; SOURCE_PUBLICATION_LOSS_SOURCE_IN_PROGRESS",
                   "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-source-delivery-fixture-20261025",
                   "branch": "work/compacted-later-source-delivery-fixture",
                   "base": "689e94fb2e1a3f8b97762524fd4119feca73cff9",
@@ -46545,9 +46545,38 @@
                     "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-delivery-reuse-audit-v1.json",
                     "sha256": "42be23b140560cb249317005d6b83e9554239cfa932194ae3932a7fa2a5f9e2f"
                   },
-                  "scope": "One finite clone/one held-success Source baseline first. Explicit exact5ed12 profile, independent77-table/input model, exact held backend/query plus Source RowExclusiveLock, immutable H/D and C1/A1/cut4. C15/18 candidates unmeasured. Preserve installed6s/1s/5s timing. Existing proxy/owners only; no Rust change.",
+                  "scope": "Measured held-success Source publication boundary on exact5ed; later response loss remains separate pending work.",
                   "owners": "compacted_reader_fixture source; compacted_reader_review critical; root only actual engines/runtime/integration",
-                  "next": "Freeze/review baseline source, execute and independently replay actual measured successful boundary; only then implement before/after-publication response loss and fresh Source completion/retry."
+                  "next": "Implement/review before-forward and after-complete publication loss with fresh Source completion/exactretry (2clones4commands), pinning the successful baseline. Same owners and exact5edbuild; no ordinal inference from older paths.",
+                  "source": "b2c9b72394f25a8b4e302d3ae5e534b83a35acc3",
+                  "tree": "a0d251a633485721ae8ef3b3f9705fa222bb2b31",
+                  "source_receipt": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-delivery-baseline-source-v1.json",
+                    "sha256": "5e699680184745559f6168e14f624ca592b5a184166372abd523b25541dcfcc6"
+                  },
+                  "critical_review": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-source-delivery-baseline-critical-v1.json",
+                    "sha256": "26a1c882865b64cc0c672306e0809b17d06a202e63a6ccd06e7bd1856f7f1ef2"
+                  },
+                  "runtime": {
+                    "path": "/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-source-delivery-b2c9b72/verified-run.json",
+                    "sha256": "d99c27e1a2c8487035df6214b8a240897c6732b92fca9257808807d4bca1371d"
+                  },
+                  "result": "Actual1command/45controls/4317rawbindings PASS. Measured publicationC15 and successful total18; held full77tables/input/currentbackend/query/Source RowExclusiveLock, release327366us afterrefresh under unchanged6s/1s/5s. Final110/162, C1/A1/cut4 and original preserved. No native read while held.",
+                  "integration": "Included by current main merge; original frozen source/runtime/raw receipts retain exact identities."
+                },
+                "next_abandonment_work_20261025": {
+                  "status": "SOURCE_IN_PROGRESS; BUILD_AND_RUNTIME_NOT_RUN",
+                  "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-abandonment-20261025",
+                  "branch": "work/compacted-later-abandonment",
+                  "base": "cb9a2bb2118b0983bd040bfd8c587e71a8f869ed",
+                  "audit": {
+                    "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-acquisition-abandonment-audit-20261025.json",
+                    "sha256": "6714adb05dbeda91b432e0e71793aad503eb20d7450583d9cea9b492eb879ba6"
+                  },
+                  "owners": "empty_malformed_floor author; compacted_reader_review critical; root formatting/build/engines/integration",
+                  "scope": "Explicit compacted abandonment API to existing bounded transaction with matching private basis; original API remains strict/spent. Installed Abandon selects actual basis, requires CLOSED Source and retains final typed ACK. Explicit job grant overlap while Check retained; existing ACK preflight dominates, no demonstrated budget failure. No retirement/Archive enablement.",
+                  "next": "Review bounded product/source and component declarations, root format/freeze/build. Genuine claimed-job origin requires actual compacted activating Control plus authenticated claim before release; current finite/quiet endpoints only prove jobs0. Full existing acceptance including waits/H-D/loss stays required."
                 }
               }
             }

@@ -1292,13 +1292,20 @@ def terminal_mutation(pg,client,output,clone,directory,expected,initial,step,kin
 
 
 
-def later_input_observation(pg,database,actor=None):
+def later_input_observation(pg,database,actor=None,*,source_publication=False):
     from installed_empty import bounded_sql,exact_absence_sql
+    assert type(source_publication) is bool and not (source_publication and actor is not None)
     clock='SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint;\n'
     if actor is None:
+        source_locks=",'source_locks',(SELECT COALESCE(json_agg(json_build_object('pid',l.pid," \
+            "'database',current_database(),'schema',n.nspname,'relation',c.relname,'mode',l.mode,'granted',l.granted)), '[]'::json) " \
+            "FROM pg_catalog.pg_locks l JOIN pg_catalog.pg_class c ON c.oid=l.relation " \
+            "JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE l.pid=pg_stat_activity.pid " \
+            "AND l.database=(SELECT oid FROM pg_catalog.pg_database WHERE datname=current_database()) " \
+            "AND l.locktype='relation' AND n.nspname='control' AND c.relname='source_streams' AND l.mode='RowExclusiveLock')" if source_publication else ''
         backend="SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint," \
             "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
-            "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid=" \
+            "'xact_start',xact_start,'query',query"+source_locks+") FROM pg_catalog.pg_stat_activity WHERE pid=" \
             "(SELECT control_backend_pid FROM control.owner_epochs WHERE role='control' ORDER BY epoch DESC LIMIT 1)" \
             " AND datname=current_database() AND usename='bigbrotr_control';\n"
         # Separate statements retain actual PG order; no volatile expression/CTE ordering premise.
@@ -1317,13 +1324,17 @@ def later_input_observation(pg,database,actor=None):
         observations=[dict(actor,present=False)],after_us=after_absence))
 
 
-def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None):
+def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,expected=None,initial=None,empty_initial=False,empty_proof=False,later_input=False,baseline=None,later_source=False):
     from fault_cases import Process,safe_event
     assert type(empty_proof) is bool and not (empty_proof and (empty_initial or post_proof))
     assert type(later_input) is bool and not (later_input and (post_proof or empty_proof or empty_initial))
+    assert type(later_source) is bool and not (later_source and (post_proof or empty_proof or empty_initial or later_input))
     proof=post_proof or empty_proof or later_input
     assert type(empty_initial) is bool and not (empty_initial and post_proof)
-    if later_input:
+    if later_source:
+        assert oracle.later_source_specification(case)==('finite','source')
+        target,later=oracle.LATER_SOURCE_PUBLICATION_CANDIDATE,3;operation='source';normal=True;mode='hold'
+    elif later_input:
         name,step=oracle.later_specification(case,input_proof=True);assert step=='retire' and name in ('absent','empty_head','empty_digest')
         normal=name=='absent';operation='retire-empty-successor';later=2;mode='hold-after-complete'
         target=oracle.LATER_EMPTY_PROOF_CANDIDATE if normal else baseline['empty_proof_commit']['ordinal']
@@ -1363,10 +1374,10 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
             elif phase=='launched':
                 if normal or proof:
                     held=proxy.event('held',10)
-                    if later_input:
+                    if later_input or later_source:
                         # SQL clocks bracket the batch; local file census follows
                         # under the same gate and precedes the final release clock.
-                        capture=dict(event=held,**later_input_observation(pg,case['database']),release_before_us=None,
+                        capture=dict(event=held,**later_input_observation(pg,case['database'],source_publication=later_source),release_before_us=None,
                             release_after_us=None,inputs=history.inputs_at(directory/'store'))
                     else:
                         capture=dict(event=held,before_us=history.server_clock(pg,case['database']),after_us=None,release_before_us=None,
@@ -1378,10 +1389,14 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                         "'pid',pid,'backend_start',backend_start,'database',datname,'user',usename,'state',state," \
                         "'xact_start',xact_start,'query',query) FROM pg_catalog.pg_stat_activity WHERE pid="+str(pid)+ \
                         " AND datname=current_database() AND usename='bigbrotr_control';"
-                    if not later_input:
+                    if not (later_input or later_source):
                         capture['backend']=json.loads(lab.sql(pg,case['database'],statement))
                         capture['after_us']=history.server_clock(pg,case['database'])
                     save()
+                    if later_source:
+                        assert expected is not None
+                        window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
+                        checked=oracle.later_source_held(expected,capture,case,window)
                     if empty_initial:
                         assert expected is not None
                         window=dict(before_us=transition.read(output/(label+'-clock.json'))['before_us'],after_us=capture['after_us'])
@@ -1419,11 +1434,13 @@ def terminal_delivery_hook(pg,client,output,case,directory,*,post_proof=False,ex
                             mutation['after']=schema.rows(pg,case['database']); mutation['after_us']=history.server_clock(pg,case['database']); save()
                             oracle.terminal_drift_checked(mutation,capture['control'],initial,kind,dict(before_us=window['before_us'],after_us=mutation['after_us']))
                     capture['release_before_us']=history.server_clock(pg,case['database'])
-                    if later_input:
+                    if later_input or later_source:
                         refreshed=checked.control['lease_expires_at_us']-6_000_000
                         assert capture['release_before_us']<=refreshed+1_000_000
+                    if later_source:assert capture['release_before_us']<refreshed+1_000_000
                     proxy.send('release');capture['release_after_us']=history.server_clock(pg,case['database'])
                     if later_input:assert capture['release_after_us']<=refreshed+1_000_000
+                    if later_source:assert capture['release_after_us']<refreshed+1_000_000
                     proxy.event('released',5); save()
             else:
                 assert phase=='child-joined'
@@ -2480,7 +2497,7 @@ def run_later_recovery(root,build,product_source):
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_recovery=True,product_source=product_source)
 
 
-def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*,seeds):
+def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*,seeds,delivery=False):
     name=clone['name'];seed=seeds[clone['origin']]
     oracle.same(expected[0],seed[0]);assert expected[1:]==seed[1:]
     assert clone['grants']==[dict(statement=s,stdout='') for s in oracle.HISTORY_GRANTS]
@@ -2497,7 +2514,12 @@ def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*
         expected=history_quarantine(output,directory,expected,selection,'missing-required')
         after=schema.rows(pg,clone['database']);oracle.same(after,seed[0]);lab.write_json(output/(label+'-after.json'),after)
     predecessor=None
-    for step in oracle.LATER_SOURCE_STEPS[name]:
+    profile=oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
+    if delivery:
+        source=history.SOURCE/oracle.ACTIVATED_PROXY;path=output/source.name
+        if not path.exists():shutil.copy2(source,path)
+        assert history.digest(path)==history.digest(source)==oracle.LATER_PROXY_SHA256
+    for step in profile.STEPS[name]:
         case=dict(name=name+'-'+step,clone=name,origin=clone['origin'],operation={'closed-positive':'recover','abandon':'abandon'}.get(step,'source'),predecessor=predecessor,
             database=clone['database'],config=clone['config'],status='RUNNING')
         report['cases'].append(case);lab.write_json(output/'result.json',report)
@@ -2505,22 +2527,25 @@ def run_later_source_sequence(pg,client,output,clone,directory,expected,report,*
             if step=='closed-positive':
                 context['source_diagnostic']=later_digest_log(pg,output,case,context['server_window'])
                 lab.write_json(output/(case['name']+'-verification.json'),context)
-            return oracle.verify_later_source(context,seed,expected)
+            return oracle.verify_later_source(context,seed,expected,delivery=delivery)
         expected=installed_cycle.execute(pg,client,output,case,directory,expected,clone['catalog_before'],seed,
-            checks=(verify,lambda c,s:oracle.later_source_controls(c,seed,expected),oracle.later_source_closed))
+            checks=(verify,lambda c,s:oracle.later_source_controls(c,seed,expected,delivery=delivery),oracle.later_source_closed),
+            fault=terminal_delivery_hook(pg,client,output,case,directory,expected=expected,later_source=True) if delivery else None)
         case['catalog_after']=history.catalog(pg,clone['database']);assert case['catalog_after']==clone['catalog_before']
         predecessor=case['name'];lab.write_json(output/'result.json',report)
     return predecessor
 
 
-def run_later_source(root,build,product_source):
+def run_later_source(root,build,product_source,*,delivery=False):
     assert oracle.LATER_SOURCE_PRODUCT is not None and product_source==oracle.LATER_SOURCE_PRODUCT
-    seeds=oracle.later_recovery_origins_checked(root);profile=oracle.LaterSourceProfile
+    assert type(delivery) is bool
+    seeds=oracle.later_recovery_origins_checked(root);profile=oracle.LaterSourceDeliveryProfile if delivery else oracle.LaterSourceProfile
     suite=transition.Suite(directory=profile.DIRECTORY,label=profile.LABEL,status=profile.STATUS,
         client_prefix=profile.CLIENT_PREFIX,database_prefix=profile.DATABASE_PREFIX,clones=profile.CLONES,cases=profile.CASES,
-        scope='Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals',not_run=profile.NOT_RUN)
-    return transition.run(root,build,suite=suite,sequence=partial(run_later_source_sequence,seeds=seeds),
-        origin_specs=oracle.LATER_SOURCE_ORIGINS,origin_for_clone=oracle.LATER_SOURCE_ORIGIN_NAMES,extra_grants=profile.GRANTS,
+        scope='Measured held-success later Source publication boundary at cut4/C1/A1; losses NOT_RUN' if delivery else 'Compacted later Source closure at cut4/C1 or quiet cut0, exact retries and three named installed refusals',not_run=profile.NOT_RUN)
+    return transition.run(root,build,suite=suite,sequence=partial(run_later_source_sequence,seeds=seeds,delivery=delivery),
+        origin_specs=oracle.LATER_SOURCE_ORIGINS[:1] if delivery else oracle.LATER_SOURCE_ORIGINS,
+        origin_for_clone={n:oracle.LATER_SOURCE_ORIGIN_NAMES[n] for n in profile.CLONES},extra_grants=profile.GRANTS,
         producer_progress=True,producer_ack=True,preparation_hole=True,compacted_reader=True,compacted_history=True,later_source=True,product_source=product_source)
 
 
@@ -2531,6 +2556,7 @@ if __name__ == '__main__':
     profile=parser.add_mutually_exclusive_group()
     profile.add_argument('--later-recovery-faults',action='store_true',help='Measured dictionary outcome loss and fresh installed repair/ACK/retry')
     profile.add_argument('--later-recovery-delivery',action='store_true',help='Measure first dictionary outcome/progress COMMIT before any fault schedule')
+    profile.add_argument('--later-source-delivery',action='store_true',help='Measure the exact later Source publication COMMIT with a joined held-success baseline')
     profile.add_argument('--later-source',action='store_true',help='Compacted later Source closure, exact retries and strict installed refusals')
     profile.add_argument('--later-recovery',action='store_true',help='Fresh compacted positive recovery, equal-watermark ACK, retries and required-input refusals')
     profile.add_argument('--later-input-proof',action='store_true',help='Later original-input obligations and H/D proof-use at actual preparation/installed boundaries')
@@ -2553,4 +2579,4 @@ if __name__ == '__main__':
     profile.add_argument('--empty-initial-locks',action='store_true',help='Current-Control import ordering, real cancellation and database UTC expiry')
     profile.add_argument('--empty-initial-preparer',action='store_true',help='Actual original-preparer import claim through fresh installed completion and empty-retirement refusal')
     args = parser.parse_args()
-    (run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
+    (partial(run_later_source,delivery=True) if args.later_source_delivery else run_later_source if args.later_source else run_later_recovery_faults if args.later_recovery_faults else run_later_recovery_delivery if args.later_recovery_delivery else run_later_recovery if args.later_recovery else run_later_live if args.later_live else partial(run_later_empty,input_proof=True) if args.later_input_proof else run_later_empty if args.later_empty else run_empty_preparer if args.empty_initial_preparer else partial(run_empty_initial,malformed=True) if args.empty_initial_malformed_floor else partial(run_empty_initial,shapes=True) if args.empty_initial_proof_shapes else partial(run_empty_initial,locks=True) if args.empty_initial_locks else partial(run_empty_initial,delivery=True) if args.empty_initial_faults else run_empty_initial if args.empty_initial else partial(run_activated_terminal,guards=True) if args.activated_terminal_guards else partial(run_activated_terminal,post_proof=True) if args.activated_source_proof else partial(run_activated_terminal,faults=True) if args.activated_terminal_faults else run_activated_terminal if args.activated_terminal else run_activated if args.activated else run_initial_preparation_faults if args.initial_preparation_faults else run_initial_preparation if args.initial_preparation else run_initial_journey if args.initial_journey else run_history_faults if args.history_faults else run_history if args.history else run)(args.root.resolve(strict=True),args.build.resolve(strict=True),args.product_source)
