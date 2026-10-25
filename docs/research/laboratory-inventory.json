@@ -64847,6 +64847,20 @@
             "sha256": "4397dab5681ed1ab6e040624b4d0d9bdba5ae4be5efca5f62da798978a588d04"
           },
           "main": "01557819292c67eff5b2613750c45705707cd472"
+        },
+        "later_retirement_import_work": {
+          "status": "SOURCE_IN_PROGRESS; RUNTIME_NOT_RUN",
+          "worktree": "/home/tux/bigbrotr-rs/.research/compacted-later-retirement-import-20261025",
+          "branch": "work/compacted-later-retirement-import",
+          "base": "0e714001dbc692bd52520452de6af3f3f84af444",
+          "product_source": "06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4",
+          "audit": {
+            "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-retirement-import-audit-v1.json",
+            "sha256": "e826282c347f69dd925d77f859fddbc34dffca72b65b2df5f8dc3de797c087a8"
+          },
+          "owners": "compacted_reader_fixture implementation; compacted_reader_review critical after current Archive design audit; root sole engine/integration owner",
+          "scope": "One clone/three installed commands: quiet real activating-Control10 callback commits ordinary import and admission; Source11 then exact import-veto Retire12. Expected77SQL215/217/219,native93/138->139->139,input1. Four existing Python owners; no new Rust/client/proxy/model. Callback/actor closure must gate external native inspection; renewals modeled only in expected state.",
+          "resources": "Only writable worktree allocated; no engine/container/database allocated for new profile."
         }
       }
     }

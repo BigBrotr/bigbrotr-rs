@@ -6,8 +6,9 @@ Q37/Q38 apply. Root owns builds, engines and integration.
 ## Objective and revision
 
 P02-T02 Steps4/5/7: compacted later consumers and reclamation prerequisites.
-Main `01557819292c67eff5b2613750c45705707cd472` is pushed (88562 joined0),
-including qualified fixture `d7c4ad2bf5d28708f70135214d2c049dd5395875`.
+Main `0e714001dbc692bd52520452de6af3f3f84af444` is pushed (10588 joined0),
+including qualified fixture `d7c4ad2bf5d28708f70135214d2c049dd5395875`
+via integration01557819 (88562 joined0).
 Product/native runner remain exact `06d85a8948ad5aeb554e0d1131a2bb79e66d2ab4`.
 Integration checks1e19cb3e verified unchanged product and exact fixture identities;
 no merge/rebase pending. This follow-up records push and preserved ref retirement.
@@ -60,9 +61,12 @@ arrays empty. Freeafter185,373,667,328bytes. Preserve every database, dataset,
   Missing2:1 remains298B in private quarantine; optional originals also retained.
 - Previous06/4d9 and85/2d/5b worktrees are clean detached with archive refs and
   verified bundles (receipts78f4ba10/3bec2bb2). No artifact/cache deletion occurred.
-- `compacted_reader_fixture`: read-only audit of genuine live-activator import
-  capture using the existing quiet activation lifecycle/callback; no implementation
-  or new engine assigned yet.
+- `compacted_reader_fixture` implements genuine live-activator import capture in
+  `.research/compacted-later-retirement-import-20261025`, branch
+  `work/compacted-later-retirement-import`, base0e714001. Audite826282c fully read;
+  four Python owners, expected3commands/215->217->219rows, runtime NOT_RUN.
+  Callback actor closure must gate native inspection even on failure; expected
+  renewals must not normalize actual captures. Product/client/proxy unchanged.
 - `empty_malformed_floor`: Archive audit305ae9a5 complete, no implementation.
   `compacted_reader_review`: critical design audit of that proposed boundary.
   Native proof.validate alone is not SQL H/D revalidation; same-transaction guards
@@ -70,7 +74,8 @@ arrays empty. Freeafter185,373,667,328bytes. Preserve every database, dataset,
 
 ## Next action
 
-Review the import capture audit and assign the minimal existing-runner extension
-in a new worktree. Reuse exact06 build. Read and reconcile
-Archive audit305ae9a5 with critical review before any product implementation;
+Review/freeze the minimal import fixture and callback custody, then root executes
+its three commands and raw replay using exact06 build. Root read Archive audit
+305ae9a5 completely; reconcile critical design review and missing trigger/custody
+boundaries before any Archive product implementation;
 new real Archive initialization must not rebind historical physical roots.
