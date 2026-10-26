@@ -20,6 +20,7 @@ ALTER TABLE control.projection_generations
 -- The old FK accidentally made a generation's origin its permanent authority.
 -- Retain every original attribution and the separate chunk owner FK; new chunks
 -- after recovery carry the new origin, within the same immutable installation.
+-- The NULL-protocol guard below retains the original generation/creator association.
 DO $$ DECLARE relation_constraint name; BEGIN
     SELECT conname INTO STRICT relation_constraint FROM pg_constraint
         WHERE conrelid = 'control.projection_chunks'::regclass
@@ -462,6 +463,15 @@ BEGIN
         IF NOT FOUND OR (TG_OP = 'INSERT' AND NOT EXISTS (SELECT 1 FROM control.owner_epochs
             WHERE resource_id = NEW.owner_resource_id AND epoch = NEW.owner_epoch AND state = 'active')) THEN
             RAISE EXCEPTION 'projection-chunk mutation requires its exact live Index owner' USING ERRCODE = '23514';
+        END IF;
+        -- Only qualified sessions can change creator attribution within a
+        -- generation. Preserve the owner tuple formerly enforced by the FK.
+        IF NOT EXISTS (SELECT 1 FROM control.projection_generations g
+            WHERE g.generation_id = NEW.generation_id
+                AND ROW(g.owner_resource_id, g.owner_epoch, g.owner_role, g.owner_incarnation)
+                    = ROW(NEW.owner_resource_id, NEW.owner_epoch, NEW.owner_role, NEW.owner_incarnation)) THEN
+            RAISE EXCEPTION 'unqualified projection chunk owner must match its generation origin'
+                USING ERRCODE = '23503';
         END IF;
     END IF;
     RETURN NEW;
