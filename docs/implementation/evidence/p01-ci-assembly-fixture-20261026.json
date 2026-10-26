@@ -1,0 +1,71 @@
+{
+  "format": "bigbrotr-ci-assembly-fixture-correction/1",
+  "date": "2026-10-26",
+  "base_revision": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+  "status": "PASS targeted Linux reproduction; corrected hosted macOS NOT_RUN",
+  "problem": "The assembly fixture passed its new TemporaryDirectory path through a symlinked system temporary ancestor. Production safe_path correctly rejects linked parents, so macOS /var prevented the fixture from reaching its intended checks. CandidateIntake composes this same setup.",
+  "change": "Resolve only Path(self.temp.name) with strict=True immediately after creating the owned directory. Preserve TemporaryDirectory cleanup, all test methods, assembler/intake production code and symlink/FIFO/output refusal expectations.",
+  "source_review": [
+    "Complete tests/acceptance/test_assemble.py and test_candidate.py",
+    "Complete packaging/release/assemble.py and tests/acceptance/candidate.py",
+    "Complete tools/archive_bundle.py; tools.build.git and CI acceptance command boundary"
+  ],
+  "hosted_original": {
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031/job/121664855289",
+    "status": "FAIL",
+    "all_acceptance_tests": 105,
+    "failures": 5,
+    "errors": 16,
+    "skipped": 3,
+    "assembly_intake_affected_cases": 21,
+    "log_sha256": "888fde6ffedb13af8365cc24c3c6442226a0c0ee2adbc76f4792812b3da6ebe8",
+    "result_sha256": "9cff71f2af7b32f00a2119301cd7e6551b19f901aedfcc593c2936f9a8a1f6b0",
+    "observed": "All21 failing test identities and linked-parent errors match the isolated Linux reproduction. Broader run/security custody remains with the existing CI audit."
+  },
+  "local_controls": {
+    "command": "PYTHONPATH=tests/acceptance TMPDIR=<owned-temp-path> python3 -B -m unittest -v test_assemble test_candidate",
+    "baseline_linked_tmpdir": {
+      "tests": 22,
+      "failures": 5,
+      "errors": 16,
+      "exit_code": 1
+    },
+    "corrected_linked_tmpdir": {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0
+    },
+    "corrected_direct_tmpdir": {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0
+    },
+    "unchanged_oracles": "AST equality for all11 assembly test methods; byte equality for the entire11-test CandidateIntake file. Production assembler/intake/archive helper hashes unchanged.",
+    "diff_check": "PASS"
+  },
+  "production_sha256": {
+    "packaging/release/assemble.py": "eb76ce7c1bbb88d644cb920e54b5e19f526d01298eaf92217303506311fe008c",
+    "tests/acceptance/candidate.py": "80492e9ed30587ebf5f4e3e44b283785f4e53ffbe5cdd10ee3b1801e71a7afd8",
+    "tools/archive_bundle.py": "ffbe8de58b7a53ff24c57d1e4694041eb269bee3473b579cc798e63ee3cf49d7"
+  },
+  "test_before_sha256": "9e64c14762dffe0e96e22b4377226009dc5d62a8b1cdffcdbca958e0c95ac685",
+  "test_after_sha256": "ac6e5b6e5a386c5e7a1e9f605f8e92e1c2b1033b95b09cabfbc98b28155b2a9f",
+  "receipt_sha256": "fc4535ad4247a8c834300776506f2d502abed079d865e31d45a38fdb1b73a9f8",
+  "logs_sha256": {
+    "red.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "red.stderr": "ab33264cc19c1d00c16b5a4457975984867e8d4252d7eceb29565c0f0427fc9b",
+    "green-linked.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "green-linked.stderr": "6b88af0ff2deb1a072661564cd7995a1798f9ce1ac4c492ed65e1d52887ee21d",
+    "green-direct.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "green-direct.stderr": "1df8eb72a888ebd97233bc38091f2b1857849b6a6a38066f209e55ecffcc25d1"
+  },
+  "inventory_key": "implementation_ci_assembly_fixture_20261026",
+  "not_run": [
+    "corrected hosted macOS/CI run",
+    "new native build or engine execution",
+    "unrelated acceptance suites"
+  ],
+  "resources": "Fresh owned worktree and ignored probe only; existing tests cleaned every temporary fixture. Empty real directory, symlink and logs retained. No container, network or product process started."
+}

@@ -29,7 +29,8 @@ class CandidateAssembly(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.home = Path(self.temp.name)
+        # Canonicalize our new fixture root, including macOS /var -> /private/var.
+        self.home = Path(self.temp.name).resolve(strict=True)
         self.source, self.artifacts = self.home / 'assembly', self.home / 'artifacts'
         self.source.mkdir(); self.artifacts.mkdir()
         self.manifest = self.home / 'explicit-source-manifest.json'

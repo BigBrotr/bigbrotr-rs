@@ -73883,5 +73883,17 @@
     "status": "Bounded cache retirement assessment active; no new deletion yet",
     "owner": "ci_native_cancel_review",
     "scope": "Up to3 obsolete/reconstructible substantial compiler caches; ownership, actual process/mount use and retained artifact/input obligations required before root deletion. Current Index/security caches and unique evidence preserved."
+  },
+  "implementation_ci_assembly_fixture_20261026": {
+    "observed_at": "2026-10-26T16:37:00.084952+00:00",
+    "status": "targeted Linux RED/GREEN verified; corrected hosted macOS NOT_RUN",
+    "worktree": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026",
+    "branch": "work/assembly-fixture-canonical",
+    "base_revision": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+    "root": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026/.research/assembly-canonical-probe",
+    "receipt_sha256": "fc4535ad4247a8c834300776506f2d502abed079d865e31d45a38fdb1b73a9f8",
+    "evidence": "docs/implementation/evidence/p01-ci-assembly-fixture-20261026.json",
+    "resources": "Owned empty real-tmp directory and linked-tmp symlink plus reproduction logs. No native build, engine, container or network. Existing unittest fixture temporary directories cleaned.",
+    "retention": "Retain original RED and both GREEN logs through integrated hosted qualification; no prior resources changed."
   }
 }
