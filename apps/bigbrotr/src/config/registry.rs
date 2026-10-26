@@ -343,6 +343,19 @@ pub fn keys() -> Vec<Key> {
             true
         );
     }
+    for (field, kind) in [
+        ("initialize_user", Text),
+        ("initialize_password_ref", Secret),
+    ] {
+        add!(
+            format!("clickhouse.{field}"),
+            kind,
+            Value::Null,
+            "initialization",
+            "index",
+            true
+        );
+    }
     for connection in ["postgres.control", "postgres.catalog", "clickhouse"] {
         add!(
             format!("{connection}.tls.mode"),

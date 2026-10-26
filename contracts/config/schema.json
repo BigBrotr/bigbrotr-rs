@@ -312,6 +312,21 @@
           "x-bigbrotr-owner": "index",
           "x-bigbrotr-reload": "restart"
         },
+        "initialize_password_ref": {
+          "format": "bigbrotr-file-secret-reference",
+          "type": "string",
+          "writeOnly": true,
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "initialization"
+        },
+        "initialize_user": {
+          "maxLength": 8192,
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "initialization"
+        },
         "placement": {
           "default": "local",
           "enum": [

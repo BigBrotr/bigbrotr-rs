@@ -102,6 +102,8 @@ def configuration(args, checks, inputs, runner):
         hidden = base.replace("file:/run/secrets/bigbrotr-control", "file:" + str(secret))
         hidden = hidden.replace("wss://relay.example/", "wss://relay.example/" + CANARY.decode() + "?token=" + CANARY.decode())
         hidden = hidden.replace("/var/lib/bigbrotr", str(inputs_root / "uncreated-storage"))
+        hidden = hidden.replace("[clickhouse]\n", "[clickhouse]\ninitialize_user='bigbrotr_initialize'\ninitialize_password_ref="
+                                + json.dumps("file:" + str(secret)) + "\n")
         hidden += "\n[monitor.active_write]\nsigner=" + json.dumps("file:" + str(secret)) + "\n"
         hidden = hidden.replace("[sync]\n", "[sync]\nrequest_timeout='45s'\nlinear_limit=250\n")
         hidden_path = stage("redacted", hidden.encode())
@@ -115,6 +117,7 @@ def configuration(args, checks, inputs, runner):
             "unsafe_memory": (base + "\n[runtime]\nhost_memory_bytes='1GiB'\n").encode(),
             "disabled_proxy": (base + "\n[network.tor]\nproxy='socks5://user:" + CANARY.decode() + "@127.0.0.1:9050'\n").encode(),
             "disabled_engine": documents["archive-only"].replace(b"http://127.0.0.1:8123", b"http://user:" + CANARY + b"@db.example:8123"),
+            "partial_initializer": base.replace("[clickhouse]\n", "[clickhouse]\ninitialize_password_ref=" + json.dumps("file:" + str(secret)) + "\n").encode(),
             "unconfigured_signer": (base + "\n[monitor.active_write]\nenabled=true\n").encode(),
             "integer_overflow": split.replace(b"18446744073709551615", b"18446744073709551616"),
             "invalid_utf8": b"\xff" + CANARY,
@@ -141,12 +144,15 @@ def configuration(args, checks, inputs, runner):
             check("redacted_values_and_attribution", report_matches(result, expected["sync-only"], hidden.encode())
                   and CANARY not in result.stdout + result.stderr
                   and all(settings.get(key, {}).get("value") == "[redacted]" for key in
-                          ("postgres.control.password_ref", "monitor.active_write.signer", "sync.endpoints.urls"))
+                          ("postgres.control.password_ref", "clickhouse.initialize_password_ref", "monitor.active_write.signer", "sync.endpoints.urls"))
                   and all(settings.get("sync.request_timeout", {}).get(key) == value for key, value in
                           {"value": "45000000", "source": "file", "reload": "connection", "applicability": "selected"}.items())
                   and settings.get("sync.request_timeout", {}).get("deployment_locked") is False
                   and settings.get("sync.linear_limit", {}).get("value") == "250"
                   and settings.get("monitor.active_write.signer", {}).get("applicability") == "staged-unselected"
+                  and all(settings.get(key, {}).get("applicability") == "staged-unselected"
+                          and settings.get(key, {}).get("deployment_locked") is True
+                          for key in ("clickhouse.initialize_user", "clickhouse.initialize_password_ref"))
                   and settings.get("clickhouse.write_password_ref", {}).get("applicability") == "staged-unselected")
             result = invoke(working, "u64", ["config", "show", "--file", str(split_path)])
             check("lossless_owner_epoch", report_matches(result, expected["split-role"], split)

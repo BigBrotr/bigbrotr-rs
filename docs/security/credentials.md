@@ -45,6 +45,26 @@ credential rotation are separate implementation and acceptance gates. Filesystem
 I/O is synchronous; `O_NONBLOCK` does not bound regular-file I/O on a stalled
 filesystem. Runtime loading must use its owning bounded blocking boundary.
 
+For explicit Index initialization, stage a separate ClickHouse initializer login
+and protected password reference in the existing `[clickhouse]` table:
+
+```toml
+[clickhouse]
+initialize_user = "bigbrotr_initialize"
+initialize_password_ref = "file:/run/secrets/bigbrotr-ch-initialize"
+```
+
+These are additional fields alongside the configured endpoint, database and TLS
+settings, not a complete connection configuration. Both fields may be omitted
+for ordinary read/write startup. If either is staged, both are required; the
+initializer cannot be `default` or either configured read/write login. Keep its
+DDL grants separate from the ordinary writer account. Only explicit Index
+initialization may require and open this pair, with no fallback to read, write or
+default credentials. Offline commands leave it `staged-unselected`, redact the
+password reference and exclude both roots from accepted policy bytes. Staging
+the pair neither creates an account nor performs initialization; the explicit
+consumer owns live privilege checks and initialization evidence.
+
 Cursor keys use this reader plus a dedicated mode0700 parent, single-link files
 and an explicit preparation operation. Set `read.cursor.keyring_ref` to a
 protected file in a separately provisioned directory, then run

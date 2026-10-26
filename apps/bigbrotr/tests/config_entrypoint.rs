@@ -559,6 +559,82 @@ fn configuration_preserves_full_unsigned_owner_epoch_without_float_rounding() {
 }
 
 #[test]
+fn clickhouse_initializer_is_optional_staged_redacted_and_outside_policy() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    for recipe in ["full", "serve-existing", "sync-only"] {
+        let base = example(path, recipe);
+        assert!(!base.contains("initialize_user"));
+        assert!(!base.contains("initialize_password_ref"));
+        fs::write(path.join("input.toml"), &base).unwrap();
+        let ordinary = success(run(path, &["config", "show", "--file", "input.toml"]));
+        let input = base.replace(
+            "[clickhouse]\n",
+            "[clickhouse]\ninitialize_user='bigbrotr_initialize'\ninitialize_password_ref='file:/missing/SECRET_SENTINEL'\n",
+        );
+        assert_ne!(input, base);
+        fs::write(path.join("input.toml"), &input).unwrap();
+        let staged = success(run(path, &["config", "show", "--file", "input.toml"]));
+        assert_eq!(staged["initial_policy"], ordinary["initial_policy"]);
+        assert_eq!(
+            staged["required_dependencies"],
+            ordinary["required_dependencies"]
+        );
+        assert!(!staged.to_string().contains("SECRET_SENTINEL"));
+        for key in [
+            "clickhouse.initialize_user",
+            "clickhouse.initialize_password_ref",
+        ] {
+            assert_eq!(ordinary["settings"][key]["value"], Value::Null);
+            assert_eq!(staged["settings"][key]["source"], "file");
+            assert_eq!(staged["settings"][key]["reload"], "initialization");
+            assert_eq!(staged["settings"][key]["deployment_locked"], true);
+            assert_eq!(
+                staged["settings"][key]["applicability"],
+                "staged-unselected"
+            );
+        }
+        assert_eq!(
+            staged["settings"]["clickhouse.initialize_password_ref"]["value"],
+            "[redacted]"
+        );
+        for key in [
+            "read_user",
+            "read_password_ref",
+            "write_user",
+            "write_password_ref",
+        ] {
+            let key = format!("clickhouse.{key}");
+            assert_eq!(staged["settings"][&key], ordinary["settings"][&key]);
+        }
+    }
+}
+
+#[test]
+fn clickhouse_initializer_requires_a_protected_pair_and_distinct_nondefault_login() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    for recipe in ["full", "serve-existing", "sync-only"] {
+        let base = example(path, recipe);
+        let parsed = base.parse::<toml::Table>().unwrap();
+        let read = parsed["clickhouse"]["read_user"].as_str().unwrap();
+        let write = parsed["clickhouse"]["write_user"].as_str().unwrap();
+        for fields in [
+            "initialize_user='SECRET_SENTINEL'".to_owned(),
+            "initialize_password_ref='file:/missing/SECRET_SENTINEL'".to_owned(),
+            "initialize_user='initializer'\ninitialize_password_ref='SECRET_SENTINEL'".to_owned(),
+            "initialize_user='initializer'\ninitialize_password_ref='file:/missing/SECRET_SENTINEL/'".to_owned(),
+            "initialize_user='default'\ninitialize_password_ref='file:/missing/SECRET_SENTINEL'".to_owned(),
+            format!("initialize_user='{read}'\ninitialize_password_ref='file:/missing/SECRET_SENTINEL'"),
+            format!("initialize_user='{write}'\ninitialize_password_ref='file:/missing/SECRET_SENTINEL'"),
+        ] {
+            let input = base.replace("[clickhouse]\n", &format!("[clickhouse]\n{fields}\n"));
+            assert!(invalid_error(path, &input).contains("clickhouse.initialize_"));
+        }
+    }
+}
+
+#[test]
 fn generated_consumers_match_registry_and_examples_validate_outside_checkout() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path();

@@ -638,6 +638,12 @@ impl Resolved {
                 return Err("clickhouse verify-full requires HTTPS".into());
             }
         }
+        clickhouse_initializer(
+            self.text("clickhouse.initialize_user"),
+            self.text("clickhouse.initialize_password_ref"),
+            self.text("clickhouse.read_user"),
+            self.text("clickhouse.write_user"),
+        )?;
         for (required, process) in [
             (true, "application"),
             (
@@ -1225,6 +1231,10 @@ impl Resolved {
         if name.starts_with("clickhouse.write_") {
             return self.local("index");
         }
+        if name.starts_with("clickhouse.initialize_") {
+            // Only an explicit initialization operation may select these roots.
+            return false;
+        }
         if name.starts_with("clickhouse.") {
             return self.local("read") || self.local("index");
         }
@@ -1276,6 +1286,28 @@ impl Resolved {
     }
 }
 
+fn clickhouse_initializer(
+    user: Option<&str>,
+    password_ref: Option<&str>,
+    read_user: Option<&str>,
+    write_user: Option<&str>,
+) -> Result<(), String> {
+    if user.is_some() != password_ref.is_some() {
+        return Err("clickhouse.initialize_user and initialize_password_ref must be paired".into());
+    }
+    if let Some(user) = user {
+        if user == "default" {
+            return Err("clickhouse.initialize_user must not use the default account".into());
+        }
+        if Some(user) == read_user || Some(user) == write_user {
+            return Err(
+                "clickhouse.initialize_user must differ from read_user and write_user".into(),
+            );
+        }
+    }
+    Ok(())
+}
+
 fn pg_endpoint(raw: &str) -> Result<url::Url, String> {
     let port = raw
         .rsplit_once(':')
@@ -1305,4 +1337,45 @@ fn endpoint(raw: &str, require_https: bool) -> Result<url::Url, String> {
         return Err("infrastructure endpoint requires explicit HTTP(S) authority without path/credentials/query".into());
     }
     Ok(url)
+}
+
+#[cfg(test)]
+mod clickhouse_initializer_tests {
+    use super::clickhouse_initializer;
+
+    #[test]
+    fn initialization_is_optional_and_separate_from_service_accounts() {
+        for (read, write) in [
+            (None, None),
+            (Some("reader"), None),
+            (None, Some("writer")),
+            (Some("reader"), Some("writer")),
+        ] {
+            assert!(clickhouse_initializer(None, None, read, write).is_ok());
+            assert!(
+                clickhouse_initializer(
+                    Some("initializer"),
+                    Some("file:/missing/SECRET_SENTINEL"),
+                    read,
+                    write
+                )
+                .is_ok()
+            );
+        }
+    }
+
+    #[test]
+    fn partial_default_and_service_account_credentials_are_refused_without_values() {
+        for (user, password) in [
+            (Some("SECRET_SENTINEL"), None),
+            (None, Some("file:/missing/SECRET_SENTINEL")),
+            (Some("default"), Some("file:/missing/SECRET_SENTINEL")),
+            (Some("reader"), Some("file:/missing/SECRET_SENTINEL")),
+            (Some("writer"), Some("file:/missing/SECRET_SENTINEL")),
+        ] {
+            let error =
+                clickhouse_initializer(user, password, Some("reader"), Some("writer")).unwrap_err();
+            assert!(!error.contains("SECRET_SENTINEL"));
+        }
+    }
 }
