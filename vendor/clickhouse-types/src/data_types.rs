@@ -965,7 +965,7 @@ fn parse_inner_types(input: &str) -> Result<Vec<DataTypeNode>, TypesError> {
 
     let input_bytes = input.as_bytes();
 
-    let mut open_parens = 0;
+    let mut open_parens = 0usize;
     let mut quote_open = false;
     let mut char_escaped = false;
     let mut last_element_index = 0;
@@ -982,8 +982,11 @@ fn parse_inner_types(input: &str) -> Result<Vec<DataTypeNode>, TypesError> {
             if input_bytes[i] == b'(' {
                 open_parens += 1;
             } else if input_bytes[i] == b')' {
-                open_parens -= 1;
+                open_parens = open_parens.checked_sub(1).ok_or_else(framing_error)?;
             } else if input_bytes[i] == b',' && open_parens == 0 {
+                if last_element_index == i {
+                    return Err(framing_error());
+                }
                 let data_type_str = String::from_utf8(input_bytes[last_element_index..i].to_vec())
                     .map_err(|_| {
                         TypesError::TypeParsingError(format!(
@@ -1006,18 +1009,20 @@ fn parse_inner_types(input: &str) -> Result<Vec<DataTypeNode>, TypesError> {
         i += 1;
     }
 
-    // Push the remaining part of the type if it seems to be valid (at least all parentheses are closed)
-    if open_parens == 0 && last_element_index < input_bytes.len() {
-        let data_type_str =
-            String::from_utf8(input_bytes[last_element_index..].to_vec()).map_err(|_| {
-                TypesError::TypeParsingError(format!(
-                    "Invalid UTF-8 sequence in input for the inner data type: {}",
-                    &input[last_element_index..]
-                ))
-            })?;
-        let data_type = DataTypeNode::new(&data_type_str)?;
-        inner_types.push(data_type);
+    // Never validate a smaller schema by silently dropping an unfinished or
+    // empty final element, even when an outer framing check accepted quotes.
+    if open_parens != 0 || quote_open || char_escaped || last_element_index >= input_bytes.len() {
+        return Err(framing_error());
     }
+    let data_type_str =
+        String::from_utf8(input_bytes[last_element_index..].to_vec()).map_err(|_| {
+            TypesError::TypeParsingError(format!(
+                "Invalid UTF-8 sequence in input for the inner data type: {}",
+                &input[last_element_index..]
+            ))
+        })?;
+    let data_type = DataTypeNode::new(&data_type_str)?;
+    inner_types.push(data_type);
 
     Ok(inner_types)
 }

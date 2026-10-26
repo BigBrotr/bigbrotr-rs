@@ -55,8 +55,8 @@
   },
   "patched_members": {
     "src/data_types.rs": {
-      "bytes": 90285,
-      "sha256": "7ca61e7509d2fda4cc8b28a3382bf3e7a588a5e6b34bcdc4eb706306cbea08eb"
+      "bytes": 90535,
+      "sha256": "e940f9509d3a94f84af12a97421ffe765693bad5015667f43391a9b121b0bf9b"
     },
     "src/decoders.rs": {
       "bytes": 1592,
@@ -79,8 +79,8 @@
       "source": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/dad4c6dd8a40aaeaa7534abf38155219f6fd73b5/LICENSE-MIT"
     },
     "src/bounded_tests.rs": {
-      "bytes": 4138,
-      "sha256": "e92a66b079f69f667e58d6f5ecfc72ef58751423d9370b2b96d04577f73b9157"
+      "bytes": 5124,
+      "sha256": "36b83bc1b86d3d9f3c40f5e2a82c89c15ebbd2998caf4488f4e8d38a3e9af2d1"
     }
   },
   "scope": "Complete verified upstream package retained. Narrow bounded metadata correction; root Cargo.lock controls builds. See README.md for limits, review scope and upstream replacement condition."

@@ -86,6 +86,29 @@ fn valid_header_keeps_row_validation_and_decoding() {
 }
 
 #[test]
+fn malformed_inner_type_cannot_match_smaller_rust_tuple() {
+    #[derive(Debug, Deserialize, clickhouse::Row, PartialEq)]
+    struct OneTuple {
+        id: (u64,),
+    }
+    run(async {
+        for ty in ["Tuple(UInt64, `(`)", "Tuple(UInt64,)", "Tuple(UInt64, )"] {
+            let mut bytes = header(&["id"], &[ty]);
+            bytes.extend_from_slice(&42u64.to_le_bytes());
+            let (client, server) = peer(bytes).await;
+            let result = client.query("SELECT id").fetch_one::<OneTuple>().await;
+            server.await.unwrap();
+            assert!(matches!(result, Err(Error::InvalidColumnsHeader(_))), "{ty}: {result:?}");
+        }
+        let mut bytes = header(&["id"], &["Tuple(UInt64)"]);
+        bytes.extend_from_slice(&42u64.to_le_bytes());
+        let (client, server) = peer(bytes).await;
+        assert_eq!(client.query("SELECT id").fetch_one::<OneTuple>().await.unwrap(), OneTuple { id: (42,) });
+        server.await.unwrap();
+    });
+}
+
+#[test]
 fn expected_count_preserves_primitive_vector_and_tuple_rows() {
     run(async {
         let mut bytes = header(&["id"], &["UInt64"]);

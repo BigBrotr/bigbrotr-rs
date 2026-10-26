@@ -119,3 +119,33 @@ fn truncated_and_unicode_wrapper_framing_never_panics() {
         }
     }
 }
+
+#[test]
+fn unfinished_inner_type_lists_never_become_smaller_schemas() {
+    for malformed in [
+        "Tuple(UInt64, `(`)",
+        "Map(String, UInt64, `(`)",
+        "Variant(`(`)",
+        "Tuple(UInt64,)",
+        "Tuple(UInt64, )",
+        "Map(String, UInt64,)",
+        "Variant(UInt64,)",
+        "Tuple(,UInt64)",
+        "Tuple(UInt64), Tuple(UInt64)",
+    ] {
+        assert!(DataTypeNode::new_bounded(malformed).is_err(), "{malformed}");
+    }
+    // The inner parser's own end-state checks also protect the legacy entry.
+    for malformed in ["Tuple(UInt64, Array(String)", "Tuple(UInt64, ')", "Tuple(UInt64, \\)"] {
+        assert!(DataTypeNode::new(malformed).is_err(), "{malformed}");
+    }
+    for valid in [
+        "Tuple(UInt64)",
+        "Tuple(UInt64, Array(String))",
+        "Map(String, UInt64)",
+        "Variant(UInt64, String)",
+        "Tuple(Enum8('(' = 1), UInt64)",
+    ] {
+        assert!(DataTypeNode::new_bounded(valid).is_ok(), "{valid}");
+    }
+}
