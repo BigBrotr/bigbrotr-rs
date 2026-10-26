@@ -1,5 +1,5 @@
-//! Ordinary Control observations at the existing exact-ID reader/export scope.
-//! A successful selected read is not a complete current Archive readiness proof.
+//! Ordinary observations combine complete current Archive verification with a
+//! completed exact-ID read/export. This cache grants no authority or retention.
 use crate::interfaces::management;
 use bigbrotr::{
     management::{
@@ -14,34 +14,122 @@ use bigbrotr::{
         OwnedPermit, ResourceBudget, ResourceRequest,
         policy_authority::{AuthorityClock, AuthorityTick, SuspendAwareClock},
     },
-    storage::postgres::{control_owner::PolicySnapshot, ingest_registry::ControlOwner},
+    storage::postgres::{
+        control_owner::{ArchiveReadSelection, PolicySnapshot},
+        ingest_registry::ControlOwner,
+    },
 };
-use bigbrotr_model::{CompleteThrough, DatasetId, OwnerEpoch, SourceCut, StreamBound, StreamId};
-use bigbrotr_protocol::archive_event::EventQuery;
+use bigbrotr_model::{
+    CompleteThrough, DatasetId, OwnerEpoch, OwnerResourceId, SourceCut, StreamBound, StreamId,
+    TopologyGeneration,
+};
+use bigbrotr_protocol::{archive_cut::CutBound, archive_event::EventQuery};
 use std::time::Duration;
 
 const FRESH_FOR: Duration = Duration::from_secs(30);
-// Two retained cuts plus two in-flight replacements, each at most1024 bounds.
+// Three retained cuts, three candidates, latest current selection and one
+// replacement allocation, each at most1024 bounds. No receipt/fact bodies live here.
 // The request's64KiB grant separately owns any response snapshot clone.
-const CACHE_BYTES: u64 = 128 * 1024;
+const CACHE_BYTES: u64 = 256 * 1024;
+const _: () = assert!(
+    8 * MAX_SNAPSHOT_STREAM_BOUNDS * std::mem::size_of::<StreamBound>()
+        + std::mem::size_of::<Observations>()
+        + 16 * 1024
+        <= CACHE_BYTES as usize
+);
 #[derive(Clone, Copy)]
 pub(super) enum ReadCapability {
     History,
     Export,
 }
-struct Evidence {
+struct Selection {
+    catalog: OwnerResourceId,
+    snapshot_id: u64,
     published: PublishedCut,
+}
+impl Selection {
+    fn new(
+        dataset: DatasetId,
+        catalog: OwnerResourceId,
+        revision: u64,
+        snapshot_id: u64,
+        topology: TopologyGeneration,
+        input: &[CutBound],
+    ) -> Result<Self, SessionError> {
+        if snapshot_id == 0 || snapshot_id > i64::MAX as u64 {
+            return Err(SessionError::InvalidMetadata);
+        }
+        if input.len() > MAX_SNAPSHOT_STREAM_BOUNDS {
+            return Err(SessionError::Capacity);
+        }
+        let mut bounds = Vec::new();
+        bounds
+            .try_reserve_exact(input.len())
+            .map_err(|_| SessionError::Capacity)?;
+        for b in input {
+            bounds.push(StreamBound {
+                stream: StreamId {
+                    shard_id: b.shard_id,
+                    owner_epoch: OwnerEpoch::new(b.owner_epoch)
+                        .map_err(|_| SessionError::InvalidMetadata)?,
+                },
+                last_complete_sequence: CompleteThrough::new(b.complete_through),
+            });
+        }
+        Ok(Self {
+            catalog,
+            snapshot_id,
+            published: PublishedCut {
+                revision: revision
+                    .to_string()
+                    .try_into()
+                    .map_err(|_| SessionError::InvalidMetadata)?,
+                cut: SourceCut::new(dataset, topology, bounds)
+                    .map_err(|_| SessionError::InvalidMetadata)?,
+            },
+        })
+    }
+    fn from_current(
+        dataset: DatasetId,
+        selected: &ArchiveReadSelection,
+    ) -> Result<Self, SessionError> {
+        if selected.dataset_id != dataset {
+            return Err(SessionError::InvalidMetadata);
+        }
+        Self::new(
+            dataset,
+            selected.catalog_id,
+            selected.frontier_revision,
+            selected.snapshot_id,
+            selected.topology_generation,
+            &selected.bounds,
+        )
+    }
+    fn matches(&self, other: &Self) -> bool {
+        self.catalog == other.catalog
+            && self.snapshot_id == other.snapshot_id
+            && self.published.revision == other.published.revision
+            && self.published.cut == other.published.cut
+    }
+}
+struct Evidence {
+    selection: Selection,
     started: AuthorityTick,
 }
 struct Attempt {
     started: AuthorityTick,
-    candidate: Option<PublishedCut>,
+    candidate: Option<Selection>,
 }
 struct Slot {
     selected: bool,
     last: Option<Evidence>,
     attempt: Option<Attempt>,
     failure: Option<StatusReason>,
+}
+struct ProbeView<'a> {
+    slot: &'a Slot,
+    changed: bool,
+    age: Option<Duration>,
 }
 impl Slot {
     fn new(selected: bool) -> Self {
@@ -55,24 +143,37 @@ impl Slot {
     fn observation(
         &self,
         capability: CapabilityKind,
-        age: Option<Duration>,
+        operation_age: Option<Duration>,
+        probe: ProbeView<'_>,
         observed_at_us: i64,
     ) -> Result<CapabilityObservation, SessionError> {
+        let matches = self
+            .last
+            .as_ref()
+            .zip(probe.slot.last.as_ref())
+            .is_some_and(|(operation, full)| operation.selection.matches(&full.selection));
+        // Only a matching full observation contributes to the shown historical
+        // operation cut. Ready uses the oldest of both required observations.
+        let age = if matches {
+            operation_age.zip(probe.age).map(|(a, b)| a.max(b))
+        } else {
+            operation_age
+        };
         let (state, reason) = if !self.selected {
             (CapabilityState::Disabled, StatusReason::NotSelected)
-        } else if let Some(reason) = self.failure {
+        } else if let Some(reason) = self.failure.or(probe.slot.failure) {
             (CapabilityState::Unavailable, reason)
-        } else if self.attempt.is_some() {
+        } else if self.attempt.is_some() || probe.slot.attempt.is_some() {
             (
                 CapabilityState::Building,
                 StatusReason::VerificationInFlight,
             )
-        } else if self.last.is_some() {
-            // Full current-selection/physical readiness is deliberately not
-            // established by one exact-ID operation, even inside its30s TTL.
-            (CapabilityState::Stale, StatusReason::VerificationStale)
-        } else {
+        } else if self.last.is_none() {
             (CapabilityState::Building, StatusReason::NotObserved)
+        } else if !probe.changed && matches && age.is_some_and(|age| age < FRESH_FOR) {
+            (CapabilityState::Ready, StatusReason::Current)
+        } else {
+            (CapabilityState::Stale, StatusReason::VerificationStale)
         };
         let freshness = match age {
             Some(age) if age < FRESH_FOR => Freshness::Fresh,
@@ -94,12 +195,61 @@ impl Slot {
             freshness,
             time,
             published: self.last.as_ref().map(|e| PublishedCut {
-                revision: e.published.revision,
-                cut: e.published.cut.clone(),
+                revision: e.selection.published.revision,
+                cut: e.selection.published.cut.clone(),
             }),
             generation: None,
             storage_incarnation: None,
         })
+    }
+    fn begin(&mut self) {
+        if !self.selected || self.attempt.is_some() {
+            return;
+        }
+        // A repeated start cannot extend an in-flight observation's age. A
+        // later retry cannot clear a previous failed observation.
+        match SuspendAwareClock.read() {
+            Ok(started) => self.begin_at(started),
+            Err(_) => self.failure = Some(StatusReason::AuthorityUnavailable),
+        }
+    }
+    fn begin_at(&mut self, started: AuthorityTick) {
+        if self.selected && self.attempt.is_none() {
+            self.attempt = Some(Attempt {
+                started,
+                candidate: None,
+            });
+        }
+    }
+    fn stage(&mut self, candidate: Result<Selection, SessionError>) {
+        let Some(attempt) = self.attempt.as_mut() else {
+            return;
+        };
+        attempt.candidate = None;
+        match candidate {
+            Ok(value) => attempt.candidate = Some(value),
+            Err(SessionError::Capacity) => self.failure = Some(StatusReason::ResourceUnavailable),
+            Err(_) => self.failure = Some(StatusReason::DependencyUnavailable),
+        }
+    }
+    fn finish(&mut self, terminal: bool, failure: StatusReason) -> bool {
+        let Some(attempt) = self.attempt.take() else {
+            return false;
+        };
+        match attempt.candidate.filter(|_| terminal) {
+            Some(selection) => {
+                self.last = Some(Evidence {
+                    selection,
+                    started: attempt.started,
+                });
+                self.failure = None;
+                true
+            }
+            None => {
+                self.failure.get_or_insert(failure);
+                false
+            }
+        }
     }
 }
 
@@ -107,6 +257,9 @@ pub(super) struct Observations {
     dataset: DatasetId,
     history: Slot,
     export: Slot,
+    probe: Slot,
+    current: Option<Selection>,
+    changed: bool,
     _permit: OwnedPermit,
 }
 impl Observations {
@@ -123,6 +276,9 @@ impl Observations {
             dataset,
             history: Slot::new(history),
             export: Slot::new(export),
+            probe: Slot::new(history || export),
+            current: None,
+            changed: false,
             _permit: permit,
         })
     }
@@ -133,21 +289,12 @@ impl Observations {
         }
     }
     pub(super) fn begin(&mut self, kind: ReadCapability) {
-        let slot = self.slot(kind);
-        if !slot.selected {
-            return;
-        }
-        // Beginning a retry never clears a previous failed observation.
-        slot.attempt = None;
-        match SuspendAwareClock.read() {
-            Ok(started) => {
-                slot.attempt = Some(Attempt {
-                    started,
-                    candidate: None,
-                });
-            }
-            Err(_) => slot.failure = Some(StatusReason::AuthorityUnavailable),
-        }
+        self.slot(kind).begin();
+    }
+    /// Export records this clock sample before destination/scratch checks, but
+    /// starts the cache attempt only after known positive job authorization.
+    pub(super) fn begin_at(&mut self, kind: ReadCapability, started: AuthorityTick) {
+        self.slot(kind).begin_at(started);
     }
     /// A known job authority/CAS denial is neither a successful physical probe
     /// nor a physical dependency failure. Keep all prior observations unchanged.
@@ -157,68 +304,117 @@ impl Observations {
 
     /// Stage only the query actually returned by the native reader and checked
     /// against its selected snapshot; final cleanup/join must still succeed.
-    pub(super) fn observed(&mut self, kind: ReadCapability, query: &EventQuery, revision: u64) {
+    pub(super) fn observed(
+        &mut self,
+        kind: ReadCapability,
+        query: &EventQuery,
+        catalog: OwnerResourceId,
+        revision: u64,
+    ) {
         let dataset = self.dataset;
         let slot = self.slot(kind);
-        let Some(attempt) = slot.attempt.as_mut() else {
+        if slot.attempt.is_none() {
             return;
-        };
-        attempt.candidate = None;
-        let candidate = (|| {
-            if query.dataset != dataset {
-                return Err(SessionError::InvalidMetadata);
-            }
-            if query.bounds.len() > MAX_SNAPSHOT_STREAM_BOUNDS {
-                return Err(SessionError::Capacity);
-            }
-            let mut bounds = Vec::new();
-            bounds
-                .try_reserve_exact(query.bounds.len())
-                .map_err(|_| SessionError::Capacity)?;
-            for b in &query.bounds {
-                bounds.push(StreamBound {
-                    stream: StreamId {
-                        shard_id: b.shard_id,
-                        owner_epoch: OwnerEpoch::new(b.owner_epoch)
-                            .map_err(|_| SessionError::InvalidMetadata)?,
-                    },
-                    last_complete_sequence: CompleteThrough::new(b.complete_through),
-                });
-            }
-            Ok(PublishedCut {
-                revision: revision
-                    .to_string()
-                    .try_into()
-                    .map_err(|_| SessionError::InvalidMetadata)?,
-                cut: SourceCut::new(dataset, query.topology_generation, bounds)
-                    .map_err(|_| SessionError::InvalidMetadata)?,
-            })
-        })();
-        match candidate {
-            Ok(value) => attempt.candidate = Some(value),
-            Err(SessionError::Capacity) => slot.failure = Some(StatusReason::ResourceUnavailable),
-            Err(_) => slot.failure = Some(StatusReason::DependencyUnavailable),
         }
+        let candidate = if query.dataset != dataset {
+            Err(SessionError::InvalidMetadata)
+        } else {
+            Selection::new(
+                dataset,
+                catalog,
+                revision,
+                query.snapshot_id,
+                query.topology_generation,
+                &query.bounds,
+            )
+        };
+        slot.stage(candidate);
     }
     /// A known unsuccessful attempt invalidates usability but keeps the old
     /// observed cut/time. Unknown outcomes fail-stop the owning supervisor.
     pub(super) fn finish(&mut self, kind: ReadCapability, terminal: bool) {
-        let slot = self.slot(kind);
-        let Some(attempt) = slot.attempt.take() else {
+        self.slot(kind)
+            .finish(terminal, StatusReason::ReadPathUnavailable);
+    }
+
+    /// Called before the probe's first I/O. HTTP only observes this state; it
+    /// cannot start or advance a physical probe. The caller coalesces attempts.
+    pub(super) fn begin_probe(&mut self) {
+        self.probe.begin();
+    }
+
+    /// Only an independently loaded CURRENT selection belongs here, never a
+    /// pinned export's historical selection. A changed head invalidates the old
+    /// proof without claiming a physical failure. Returning to the old head
+    /// cannot revive it; only a successful full probe clears `changed`.
+    pub(super) fn note_current(&mut self, selected: &ArchiveReadSelection) {
+        if !self.probe.selected {
             return;
-        };
-        match attempt.candidate.filter(|_| terminal) {
-            Some(published) => {
-                slot.last = Some(Evidence {
-                    published,
-                    started: attempt.started,
+        }
+        match Selection::from_current(self.dataset, selected) {
+            Ok(current) => {
+                if self
+                    .probe
+                    .last
+                    .as_ref()
+                    .is_some_and(|full| !full.selection.matches(&current))
+                {
+                    self.changed = true;
+                }
+                self.current = Some(current);
+            }
+            Err(error) => {
+                // Invalid current metadata cannot leave the old selection
+                // eligible to accept a candidate already in flight.
+                self.current = None;
+                self.probe.failure = Some(if matches!(error, SessionError::Capacity) {
+                    StatusReason::ResourceUnavailable
+                } else {
+                    StatusReason::DependencyUnavailable
                 });
-                slot.failure = None;
             }
-            None => {
-                slot.failure
-                    .get_or_insert(StatusReason::ReadPathUnavailable);
-            }
+        }
+    }
+
+    /// Inert candidate only. The caller has verified every selected receipt and
+    /// physical row, then compared this exact selection to the current PG head.
+    /// Cleanup and actual driver/worker joins still precede finish_probe(true).
+    pub(super) fn observed_probe(&mut self, selected: &ArchiveReadSelection) {
+        if self.probe.attempt.is_some() {
+            self.probe
+                .stage(Selection::from_current(self.dataset, selected));
+        }
+    }
+
+    /// A known changed selection/auth refusal is not a physical failure. Call
+    /// only after cleanup/join; preserve both the last proof and any failure.
+    pub(super) fn discard_probe(&mut self) {
+        self.probe.attempt = None;
+    }
+
+    pub(super) fn finish_probe(&mut self, terminal: bool) {
+        if terminal
+            && let Some(candidate) = self
+                .probe
+                .attempt
+                .as_ref()
+                .and_then(|attempt| attempt.candidate.as_ref())
+            && self
+                .current
+                .as_ref()
+                .is_none_or(|current| !candidate.matches(current))
+        {
+            // Even an otherwise successful old capture cannot certify the
+            // independently observed current selection.
+            self.changed = true;
+            self.discard_probe();
+            return;
+        }
+        if self
+            .probe
+            .finish(terminal, StatusReason::DependencyUnavailable)
+        {
+            self.changed = false;
         }
     }
     fn snapshot(
@@ -235,12 +431,12 @@ impl Observations {
             .history
             .last
             .as_ref()
-            .map_or(0, |e| e.published.cut.bounds().len())
+            .map_or(0, |e| e.selection.published.cut.bounds().len())
             .checked_add(
                 self.export
                     .last
                     .as_ref()
-                    .map_or(0, |e| e.published.cut.bounds().len()),
+                    .map_or(0, |e| e.selection.published.cut.bounds().len()),
             )
             .ok_or(SessionError::Capacity)?;
         if total > MAX_SNAPSHOT_STREAM_BOUNDS {
@@ -257,11 +453,18 @@ impl Observations {
         };
         let history_age = age(&self.history)?;
         let export_age = age(&self.export)?;
+        let probe_age = age(&self.probe)?;
+        let probe = || ProbeView {
+            slot: &self.probe,
+            changed: self.changed,
+            age: probe_age,
+        };
         let mut capabilities = Vec::with_capacity(2);
         if self.history.selected {
             capabilities.push(self.history.observation(
                 CapabilityKind::PrivateHistory,
                 history_age,
+                probe(),
                 observed_at_us,
             )?);
         }
@@ -269,6 +472,7 @@ impl Observations {
             capabilities.push(self.export.observation(
                 CapabilityKind::SignedEventExport,
                 export_age,
+                probe(),
                 observed_at_us,
             )?);
         }
