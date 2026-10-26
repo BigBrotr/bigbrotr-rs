@@ -15,6 +15,8 @@ use bigbrotr_model::{
 use bigbrotr_protocol::archive_receipt::ReceiptRange;
 use std::sync::atomic::AtomicBool;
 
+mod owned_reader;
+
 fn permit() -> OwnedPermit {
     ResourceBudget::new(
         ProcessEnvelope::new(
