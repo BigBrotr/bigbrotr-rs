@@ -9,8 +9,8 @@ use crate::{
         clickhouse::verified::{VerifiedIndexPlan, VerifiedIndexRecovery},
         indexer::{custody::HeldIndexCustody, plan::PlannedBatch},
         postgres::{
-            ControlSession, IndexBinding, IndexOwnerIdentity, IndexRecoveryState,
-            MAX_INDEX_STREAMS, RetainedIndexPlan,
+            IndexBinding, IndexOwnerIdentity, IndexRecoveryState, MAX_INDEX_STREAMS,
+            RetainedIndexPlan, control_owner::ControlSession,
         },
     },
 };

@@ -13,11 +13,13 @@ same known relative inventory path fingerprint; documentation checks PASS.
 Main remains in `.research/assembly-fixture-canonical-20261026`.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`6b15dab3` before this checkpoint. Published main is merged. Rows, PG publication,
+`99d669ae` before this import-correction checkpoint. Published main is merged. Rows, PG publication,
 retained custody/state, bounded physical adapter/proofs and actual storage module
 wiring are committed locally. The selected ClickHouse client/type parser fixes
 and separate optional initializer credentials are integrated on this branch.
-Full application compilation and runtime integration are still NOT_RUN; no partial
+The first full application compilation found an incorrect ControlSession import;
+the import is corrected and the next exact-revision check is pending. Runtime
+integration is still NOT_RUN; no partial
 Index implementation is represented as integrated main behavior.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns resource
@@ -64,8 +66,11 @@ two concrete DDL assumptions: a constant partition expression is invalid, and
 the server persists an omitted default index granularity. Unpartitioned tables
 with explicit granularity now create successfully and match all ten complete
 definitions. Run3 also exercised writer constraints/refusals and duplicate rows;
-its overall FAIL is a JSON numeric-representation verifier defect. The original
-three runs are retained; remaining partition/concurrency/TTL controls are pending.
+its overall FAIL is a JSON numeric-representation verifier defect. Corrected
+oracles reuse the original captures; a bounded continuation passed actual type,
+partition and concurrency checks. The intended column-TTL negative is NOT_RUN
+after its constant-expression fixture was refused. All three servers are stopped.
+The [SQL report](evidence/p02-initial-index-clickhouse-sql-20261026.json) owns details.
 These failures are not Rust-driver, complete publication or recovery evidence.
 
 ## Hosted CI and public exposure
@@ -109,16 +114,21 @@ billing/failure observations remain unchanged in their original reports.
 
 Actions watch54174 still observes run40363410510; all three foundation jobs were
 last observed running, with no terminal result yet. No installed-journey or PG SQL
-product process remains active. The CH SQL owner retains the three failed runs
-and is completing its remaining finite checks. Delegates own deployment
-preparation and SQL qualification; the maintained native Index check profile is
-integrated and its five Python verifier controls PASS.
+product process remains active. The CH SQL owner retains three stopped runs and is tightening only the maintained
+runner's child/resource shutdown. Deployment preparation is integrated as an
+unwired partial consumer (`9396ca19`); seven scoped controls PASS, actual binary
+consumer/Clippy NOT_RUN. Its accepted-policy/state/driver integration remains
+root work, with the initial actor delegated. The native profile's five Python
+verifier controls PASS.
 Root owns integration and service wiring. Q37 configurations remain as verified.
 
-The next native check will reuse the existing exclusively locked compiler cache,
-with actual application/PG/CH modules and no diagnostic substitutes. Its original
-cache containers are stopped/PID0 and no live consumer overlaps the cache;
-154,848,296,960bytes were free before preparation. Build launch remains NOT_RUN.
+The first actual application build, source `fadc6bbd`, is FAIL at compilation
+(E0432 wrong ControlSession import); tests and Clippy were NOT_RUN. Its fetch and
+native containers are stopped/PID0, with no unrelated inventory change. Original
+source/logs/resources remain in external `runs/initial-index-fadc6bb`. The corrected
+import uses the actual control_owner module; repeat the same maintained profile
+from a new exact revision, reusing the exclusively locked mutable cache. No SQL
+rerun is needed. Three documentation checks at fadc6bbd PASS.
 
 The bounded cache retirement removed4446 obsolete compiler intermediates from
 three completed September18 Archive targets. All11120 nonselected entries and35

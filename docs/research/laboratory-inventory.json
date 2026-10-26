@@ -73884,7 +73884,7 @@
   "implementation_index_foundation_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
     "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
-    "status": "Partial Index source integrated locally through6b15dab3; actual storage module wiring and maintained native profile ready. Full application compile/runtime NOT_RUN. Product schema assumptions corrected; run3 JSON verifier FAIL preserved, remaining engine controls pending.",
+    "status": "Source integrated through99d669ae. First actual application build fadc6bb FAIL E0432 ControlSession import; import correction ready, next native check pending. Scoped SQL report integrated, column-TTL negative remains NOT_RUN. Runtime consumer incomplete.",
     "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
     "dependency_source": {
       "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
@@ -74035,20 +74035,56 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026",
       "root": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026/.research/ch-lab-a",
       "owner": "initial_index_rows",
-      "status": "Run1 FAIL invalid constant PARTITION BY; run2 FAIL omitted persisted index_granularity. Run3 ten complete definitions and writer constraints/refusals observed correct, then FAIL in diagnostic JSON integer-vs-string representation. Original runs retained; pending partition/concurrency/TTL and verifier capture correction owned by initial_index_rows. No actual Rust driver or PG integration claim."
+      "status": "Scoped schema/grants/typed values/partition/concurrency PASS; intended columnTTL negative NOT_RUN after invalid constant fixture. See implementation_initial_index_clickhouse_sql_20261026 and its report; originals retained, all servers stopped."
     },
     "native_preparation": {
       "owner": "root; ci_native_cancel_review prepares maintained profile",
       "source": "6b15dab3 before checkpoint",
       "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build",
-      "status": "NOT_RUN; original cache containers verified stopped PID0, ownership labels match, no running cache consumers, no Cargo credential/config files; runner must reacquire exclusive lock and recheck preflight at launch.",
+      "status": "First build stopped-retained; next exact-source check pending after import correction. Same exclusive cache can be reused; no deletion or SQL rerun.",
       "free_bytes_before_preparation": 154848296960,
       "profile_commit": "9523f5ae",
       "runner_receipt": {
         "path": "/home/tux/bigbrotr-rs/.research/initial-index-diagnostic-20261026/.research/runner-review/inventory.json",
         "sha256": "08e4ba3b89b75593993c770c5797ab000c50468f1d78fe63f7ccfa9026be5136"
       },
-      "verification": "Five Python verifier controls PASS; root read complete new verifier/tests and owning existing runner/native/inventory files. Full native launch NOT_RUN."
+      "verification": "Five Python verifier controls PASS; root read complete new verifier/tests and owning existing runner/native/inventory files. Full native launch NOT_RUN.",
+      "first_build": {
+        "source": "fadc6bbde59d5db2ee10fc5ff67341d5e4ac64b0",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-fadc6bb",
+        "status": "FAIL_COMPILATION_E0432; tests and Clippy NOT_RUN; stopped-retained",
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-fadc6bb/resources.json",
+          "sha256": "e229f0c888972aab839a81d494135d5bd134c60b61d582d686575eaa8b52f58a"
+        },
+        "qualification": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-fadc6bb/out/qualification.json",
+          "sha256": "6e2879f51929bf66b17449798590bba22b9d0b7b99eeb41c23512bf753e4c608"
+        },
+        "compile_result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-fadc6bb/out/build-checks/result.json",
+          "sha256": "9c144ce5f7e44ada937f885f1c1d172a102a721f9cd3aa62029e94477a866f29"
+        },
+        "correction": "Import actual storage::postgres::control_owner::ControlSession; no alias added to conceal diagnostic mismatch.",
+        "documentation_result": {
+          "path": "/home/tux/bigbrotr-rs/.research/index-foundation-docs-20261026/result.json",
+          "sha256": "200aa3f97624ccd6fbc23fae0c19701185dd578bb0885067369bf55ef2cb2f47"
+        }
+      }
+    },
+    "deployment_preparation": {
+      "source": "521c41013d19ad336772213c6f9626cbd4f1db2b",
+      "integrated_as": "9396ca19",
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-prepare-20261026/.research/prepare-components-20261026/result.json",
+        "sha256": "d86f1a4d5ef9d94a3667b223168f1d8570fe5546e055aae9c0b84e294e802527"
+      },
+      "status": "Unwired partial binary consumer; seven scoped controls PASS using extracted Resolved getters, actual full binary/config/DNS/Clippy NOT_RUN. Root read complete final source/tests; no remote or journal effects.",
+      "next": "Initial actor and real runtime/CLI with accepted-policy, actual cross-root checks and PGdriver custody; no fake restart."
+    },
+    "ci_reuse_assessment": {
+      "path": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/ci-compilation-reuse-assessment-20261026.json",
+      "sha256": "53a3ab646ff23be64e03d20358277a4074605cac8831512f7db51516436facf7"
     }
   },
   "implementation_checkpoint_space_20261026": {
