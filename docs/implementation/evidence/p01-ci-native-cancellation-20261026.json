@@ -1,0 +1,102 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P01-T08 / P08-T02 native cancellation during Control waits",
+  "date": "2026-10-26",
+  "status": "PASS",
+  "scope": "Exact-helper Linux diagnostic and focused source review only; corrected whole application, native engines and hosted targets remain NOT_RUN.",
+  "source": {
+    "base_revision": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
+    "path": "apps/bigbrotr/src/interfaces/serve/native_grants.rs",
+    "candidate_file_sha256": "6d24235891ae9a5bde042f980ef016a8953e1c0892f84acb02f0c5be0e53a724",
+    "baseline_file_sha256": "34458971fa90978c7cd240cd3d4f76ca5d914d8b83b7242accf72c1545c5c654",
+    "extracted_helper_and_tests_sha256": "f58234d0ebde0faa1ab4ad37c9a19659995541d0c566da21709cf91bbbc6ec73",
+    "original_100ms_test_unchanged": true,
+    "workspace_lock_sha256": "5e84342a2b6ef96ddfe243cb003ac07e8faa1d8f603064b01300d171a65c0db9"
+  },
+  "original_hosted_failure": {
+    "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813",
+    "target": "macOS arm64",
+    "status": "FAIL",
+    "passing_checks": [
+      "format",
+      "clippy",
+      "rust-doc",
+      "exact-source-build"
+    ],
+    "library_tests": {
+      "passed": 466,
+      "failed": 0,
+      "ignored": 1
+    },
+    "binary_tests": {
+      "passed": 120,
+      "failed": 1
+    },
+    "failed_test": "interfaces::serve::native_grants::tests::native_cancellation_remains_observed_while_control_waits",
+    "assertion": "native cancellation observer was suspended",
+    "acceptance_controls": "NOT_RUN",
+    "retained_directory": ".research/ci-publication-20261026/run-40332283813-macos"
+  },
+  "diagnosis": {
+    "classification": "Product polling defect with a timing-dependent original test; the exact hosted scheduling delay was not captured.",
+    "cause": "The cancellation monitor ran before entering biased select, not before each resumed poll. Control can resume while the monitor timer is pending or ready, without re-entering the surrounding loop. A ready Control result can complete before cancellation is observed.",
+    "related_boundary": "external_monitored also awaited refresh_authority without its supplied native cancellation observer. collect_refresh bounds SQL by renewal_timeout and policy validity, independently of native disconnect/action expiry.",
+    "correction": "Wrap the same pinned Control future with poll_fn to observe cancellation before every poll. Reuse monitored for policy refresh as well as management execution; retain the 25 ms idle wakeup, original SQL deadlines, result collection and fail-stop semantics.",
+    "upstream_inspection": "Locked Tokio 1.53.1 src/macros/select.rs: biased order is top to bottom inside select poll_fn; resumed branch polling does not re-enter the caller loop."
+  },
+  "diagnostic": {
+    "host": "Linux x86_64, Tux",
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "tokio": "1.53.1",
+    "dependencies": "Every diagnostic registry dependency version and checksum matches the base workspace lock; only rt/time/sync/macros Tokio features are enabled.",
+    "construction": "Extract the exact monitored function and complete test module from the owning source, preceded only by their std imports, into an isolated unpublished Tokio-only crate. No product implementation is rewritten in the diagnostic.",
+    "deterministic_oracle": "Explicitly poll a oneshot-blocked Control future, revoke permission, then poll it either still pending or ready. Cancellation must be visible before Control resumes, pending Control must remain pending, and the same final result must be collected. No timer advancement or scheduler speed is assumed.",
+    "red": {
+      "status": "EXPECTED_FAIL",
+      "exit_code": 101,
+      "finding": "Unchanged helper plus the new test fails immediately: pending Control suspended cancellation."
+    },
+    "green": {
+      "status": "PASS",
+      "exit_code": 0,
+      "passed": 2,
+      "scope": "Both pending/ready schedules in the new deterministic test and the unchanged original 100 ms test."
+    },
+    "helper_clippy": "PASS with -D warnings",
+    "format": "PASS cargo fmt --all --check",
+    "diff": "PASS git diff --check",
+    "source_equivalence": "The final candidate additionally wraps refresh_authority at its callsite; the tested helper and complete test module remain byte-identical. That callsite has source review and formatting only, not a full application compile."
+  },
+  "review_boundary": {
+    "inspected": [
+      "Complete native_grants.rs",
+      "serve dispatch and refresh_authority/collect_refresh",
+      "Management::execute/sql and Completion::abandoned",
+      "history/export/resume blocking_while callsites and result/cleanup paths",
+      "Relevant private-administration and operations contracts",
+      "Locked Tokio biased select expansion"
+    ],
+    "not_reaudited": [
+      "All PostgreSQL method bodies and native worker engines",
+      "Unrelated serve startup, transport and export code"
+    ]
+  },
+  "retained": {
+    "directory": ".research/ci-native-cancellation-20261026/.research/diagnostic",
+    "contents": [
+      "Baseline, RED, GREEN and final candidate source copies",
+      "Cargo manifest, lock and rust-toolchain",
+      "Exact extracted helper/tests",
+      "RED/GREEN logs and result JSON",
+      "Focused check logs/results"
+    ],
+    "compiler_cache": ".research/ci-native-cancellation-20261026/.research/targets/product",
+    "processes": "All diagnostic commands completed; no engine or container was started."
+  },
+  "not_run": [
+    "Corrected full-application compilation and Rust tests",
+    "Corrected hosted Linux/macOS CI",
+    "Real PostgreSQL renewal and management interleavings with a native worker",
+    "Release, capacity or whole-product qualification"
+  ]
+}

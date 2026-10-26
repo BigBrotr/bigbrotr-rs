@@ -112,8 +112,10 @@ impl Supervisor<'_> {
                 },
                 _ = tokio::time::sleep_until(deadline) => return Ok(None),
                 _ = tokio::time::sleep_until(*self.refresh_due) => {
-                    let current = refresh_authority(self.owner, self.lease, self.renewed,
-                        self.dataset, self.root, self.stop).await?;
+                    // Policy SQL also retains Control custody while native
+                    // disconnect/action-expiry cancellation remains observable.
+                    let current = monitored(refresh_authority(self.owner, self.lease, self.renewed,
+                        self.dataset, self.root, self.stop), &monitor).await?;
                     if current != self.snapshot {
                         return Err((4, "accepted policy changed during native grant".into()));
                     }
@@ -556,11 +558,18 @@ pub(super) async fn execute(
 /// Keep a native cancellation observer live while collecting one Control call.
 async fn monitored<T>(future: impl Future<Output = T>, monitor: &impl Fn()) -> T {
     tokio::pin!(future);
-    loop {
+    let observed = std::future::poll_fn(|context| {
+        // A resumed select can poll Control before the timer branch and before
+        // the loop body runs again. Observe cancellation before every such poll,
+        // including a ready result, while collecting the same Control future.
         monitor();
+        future.as_mut().poll(context)
+    });
+    tokio::pin!(observed);
+    loop {
         tokio::select! {
             biased;
-            result = &mut future => return result,
+            result = &mut observed => return result,
             _ = tokio::time::sleep(Duration::from_millis(25)) => {},
         }
     }
@@ -569,6 +578,52 @@ async fn monitored<T>(future: impl Future<Output = T>, monitor: &impl Fn()) -> T
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn native_cancellation_precedes_pending_and_ready_control_polls() {
+        use std::task::{Context, Poll, Waker};
+
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_time()
+            .build()
+            .unwrap();
+        let _entered = runtime.enter();
+        for ready_on_cancellation in [false, true] {
+            let allowed = Cell::new(true);
+            let cancelled = Cell::new(false);
+            let (release, completion) = tokio::sync::oneshot::channel();
+            let control = async {
+                let result = completion.await.unwrap();
+                assert!(
+                    cancelled.get(),
+                    "Control resumed before native cancellation was observed"
+                );
+                result
+            };
+            let monitor = || {
+                if !allowed.get() {
+                    cancelled.set(true);
+                }
+            };
+            let mut supervised = std::pin::pin!(monitored(control, &monitor));
+            let mut context = Context::from_waker(Waker::noop());
+            assert_eq!(supervised.as_mut().poll(&mut context), Poll::Pending);
+            assert!(!cancelled.get());
+
+            // Drive the next Control poll explicitly, without advancing a timer
+            // or depending on how promptly the executor schedules this task.
+            allowed.set(false);
+            if ready_on_cancellation {
+                release.send(42).unwrap();
+            } else {
+                assert_eq!(supervised.as_mut().poll(&mut context), Poll::Pending);
+                assert!(cancelled.get(), "pending Control suspended cancellation");
+                release.send(42).unwrap();
+            }
+            assert_eq!(supervised.as_mut().poll(&mut context), Poll::Ready(42));
+            assert!(cancelled.get());
+        }
+    }
 
     #[test]
     fn native_cancellation_remains_observed_while_control_waits() {
