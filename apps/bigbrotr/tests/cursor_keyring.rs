@@ -288,6 +288,16 @@ fn modes_links_and_nonregular_files_are_refused_without_modification() {
     fs::create_dir(&path).unwrap();
     assert!(Keyring::open(&reference, dataset, permit(KEYRING_RESERVATION)).is_err());
     fs::remove_dir(&path).unwrap();
+    // A Linux child can inherit another test's flock until exec, even when
+    // its descriptor is CLOEXEC. Create this fixture without spawning one.
+    #[cfg(target_os = "linux")]
+    rustix::fs::mkfifoat(
+        rustix::fs::CWD,
+        &path,
+        rustix::fs::Mode::RUSR | rustix::fs::Mode::WUSR,
+    )
+    .unwrap();
+    #[cfg(not(target_os = "linux"))]
     assert!(
         std::process::Command::new("mkfifo")
             .arg(&path)
