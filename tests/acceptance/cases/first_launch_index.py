@@ -25,7 +25,8 @@ STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
 LIMITS = [
     'Fresh installed signed source publishes all ten Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
     'Authenticated initial role/source/publication observations must match the independent signed cut and current PG identity without touching session idle time.',
-    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query, negative/ordinary readiness, outage/capacity and complete M1.',
+    'After positive readiness, one independently inserted conflicting event row must make Index unavailable while authenticated Control and the original Archive read/export journey remain usable; the fault is retained.',
+    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query, ordinary readiness, independent service outages/capacity and complete M1.',
     'The signed fixture has empty tags: event_tag_index has an explicit zero outcome; nonempty tag projection retains its separate fixture qualification.',
     'Configured process/disk limits are not empirical capacity qualification; local candidate identity is not release authentication.',
 ]
@@ -33,6 +34,17 @@ HTTP_PORT, TCP_PORT = 18123, 19000
 DATABASE = 'serving_fixture'
 ROLES = ('provisioner', 'initializer', 'writer', 'reader')
 SYSTEM_TABLES = ('databases', 'disks', 'storage_policies', 'settings', 'tables', 'columns', 'projections')
+
+
+def content_conflict_sql(schema):
+    """Closed fixture mutation; no schema supplied by the implementation."""
+    columns, = [columns for name, columns, _ in schema.FAMILIES if name == 'events']
+    names = [name for name, _ in schema.COMMON + columns]
+    assert names.count('content') == 1 and "'" not in oracle.CONFLICTING_CONTENT
+    fields = ','.join('`' + name + '`' for name in names)
+    values = ','.join("'" + oracle.CONFLICTING_CONTENT + "'" if name == 'content'
+                      else '`' + name + '`' for name in names)
+    return f'INSERT INTO {DATABASE}.events ({fields}) SELECT {values} FROM {DATABASE}.events LIMIT 1'
 
 
 def recipe(text, set_value):
@@ -292,7 +304,7 @@ class IndexRuntime(Runtime):
             'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
         observations = []
         last = 0
-        def ready():
+        def observed(invalidated=False):
             nonlocal last
             if time.monotonic() - last < .25:
                 return False
@@ -313,10 +325,12 @@ class IndexRuntime(Runtime):
             save(output/'role-observations.json', observations)
             require(value['format'] == 'bigbrotr-role-status/1' and value['authority'] == 'observation-only',
                     'role observation authority/format')
-            return len(value['capabilities']) == 4 and all(c['state'] == 'ready' for c in value['capabilities'])
+            caps = value['capabilities']
+            return (len(caps) == 4 and all(c['state'] == 'ready' for c in caps[:3])
+                    and caps[-1]['state'] == ('unavailable' if invalidated else 'ready'))
         # The existing signed-client65s gate still bounds this whole operation.
         # Slow or absent physical verification is a failure, not a timeout uplift.
-        self.wait(ready, 'fresh physical Index and Archive role observations', 45, entry, self.client)
+        self.wait(observed, 'fresh physical Index and Archive role observations', 45, entry, self.client)
         clock_after = int(self.sql('bigbrotr_control',
             'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
         save(output/'role-clock.json', dict(before_us=str(clock_before),after_us=str(clock_after)))
@@ -326,6 +340,38 @@ class IndexRuntime(Runtime):
         save(output/'role-verdict.json', dict(status='PASS', observations=len(observations),
             source_through=12, archive_revision=4, index_revision=4,
             session_idle='unchanged', negative_readiness='NOT_RUN', ordinary_readiness='NOT_RUN'))
+
+        # Retain the successful baseline before the fault, even if any following
+        # step fails. Exact duplicates are harmless to DISTINCT readback, so add
+        # one conflicting typed value at the same source/discriminator instead.
+        mutation = dict(kind='append_conflicting_event_content', original_capture='clickhouse-live.json',
+            positive_observation=len(observations)-1, verification='not_observed')
+        save(output/'role-invalidation.json', mutation)
+        self.ch(content_conflict_sql(self.schema), 'provisioner')
+        corrupted = {name:self.ch(oracle.select_rows(self.schema, DATABASE, name), rows=True)
+                     for name, _, _ in self.schema.FAMILIES}
+        save(output/'clickhouse-corrupted.json', corrupted)
+        oracle.content_conflict(self.index_rows, corrupted)
+        clock_invalidated = int(self.sql('bigbrotr_control',
+            'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        save(output/'role-invalidation.json', dict(mutation, verification='independently_observed',
+            captured_at_us=str(clock_invalidated), original_events=1, conflicting_events=1))
+        # Index's coalesced full verification is due every15s. This wait neither
+        # resets nor extends the signed client's existing65s submitted barrier.
+        self.wait(lambda: observed(True), 'Index unavailable after conflicting physical row',
+                  30, entry, self.client)
+        clock_failed = int(self.sql('bigbrotr_control',
+            'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        save(output/'role-invalidated-clock.json', dict(before_us=str(clock_invalidated),after_us=str(clock_failed)))
+        failed, _ = self.capture(output, 'roles-invalidated')
+        oracle.unchanged_publication(after, failed)
+        oracle.live_roles(observations[-1], failed, clock_invalidated, clock_failed, invalidated=True)
+        require(self.inspect(entry)['State']['Running'] and self.archive_published(),
+                'combined owner/Archive stopped after physical invalidation')
+        save(output/'role-invalidation-verdict.json', dict(status='PASS', observations=len(observations),
+            index='unavailable', reason='dependency_unavailable', control='ready', authenticated_http=200,
+            source_through=12, archive_revision=4, index_revision=4, original_events=1, conflicting_events=1,
+            publication='unchanged', session_idle='unchanged', physical_fault='retained', ordinary_readiness='NOT_RUN'))
 
     def verify_index(self):
         output = self.root/'index'; output.mkdir(mode=0o700)
@@ -339,6 +385,10 @@ class IndexRuntime(Runtime):
         science = self.science_checks.first_science(view, self.initialized, load(self.home/'event.jsonl'),
             wires, census, self.state/'data/ingest', owner['released_at_us'])
         result = oracle.publication(self.index_live, after, self.index_rows, science, self.schema, self.state/'data/index')
+        # publication() still checks the original typed bytes against the signed
+        # source. Its positive census precedes the separately retained fault.
+        result.update(physical_rows_scope='before_intentional_content_conflict',
+            readiness='positive_then_physical_invalidation', physical_fault='retained')
         final = [json.loads(line) for line in (self.root/'initial/serve.stdout').read_text().splitlines()][-1]
         require(final['index']['published_revision'] == '4'
                 and final['index']['complete_through'] == [dict(shard_id=0, owner_epoch='1', sequence='12')]

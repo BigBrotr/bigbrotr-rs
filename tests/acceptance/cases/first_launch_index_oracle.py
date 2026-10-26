@@ -16,6 +16,7 @@ TARGETS = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_f
 COUNTS = (8, 1, 1, 1, 1, 1, 1, 0, 1, 1)
 # Largest single target in one literal source batch, not the cumulative census.
 BATCH_MAX_ROWS = 4
+CONFLICTING_CONTENT = 'independent physical readiness corruption'
 RANGES = ((1, 2), (3, 3), (4, 7), (8, 12))
 PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -58,7 +59,7 @@ def accepted_profile(state):
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
-def live_roles(value, state, clock_before, clock_after):
+def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
     """Literal signed fixture frontier plus separately captured SQL identities."""
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
@@ -75,25 +76,65 @@ def live_roles(value, state, clock_before, clock_after):
     assert clock_before <= observed <= clock_after
     cut = dict(dataset_id=raw(dataset['dataset_id'],16).hex(), topology_generation='0',
         bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
-    def fresh(observation):
-        assert observation['freshness'] == 'fresh' and observation['reason'] == 'current'
+    def timed(observation):
         stamp = observation['time']
         assert set(stamp) == {'observed_at_us','age_us'} and stamp['observed_at_us'] == str(observed)
-        assert re.fullmatch('0|[1-9][0-9]*',stamp['age_us']) and int(stamp['age_us']) < 30_000_000
+        assert re.fullmatch('0|[1-9][0-9]*',stamp['age_us']) and int(stamp['age_us']) < 1 << 64
+        age = int(stamp['age_us'])
+        assert observation['freshness'] == ('fresh' if age < 30_000_000 else 'stale')
+    def fresh(observation):
+        assert observation['freshness'] == 'fresh' and observation['reason'] == 'current'
+        timed(observation)
     assert set(value['source']) == {'cut','freshness','time','reason'}
     exact(value['source']['cut'],cut)
     fresh(value['source'])
-    exact(value['roles'], [dict(role=role,state='ready' if role=='control' else 'idle',reason='current')
+    exact(value['roles'], [dict(role=role,
+        state='degraded' if invalidated and role=='index' else 'ready' if role=='control' else 'idle',
+        reason='dependency_unavailable' if invalidated and role=='index' else 'current')
         for role in ('control','ingest','sync','archive','index')])
     caps = value['capabilities']
     assert len(caps) == 4
     for cap,kind in zip(caps, ('signed_event_admission','finite_acquisition','archive_publication','index_publication')):
         assert set(cap) == {'capability','state','reason','freshness','time','published','generation','storage_incarnation'}
-        assert cap['capability'] == kind and cap['state'] == 'ready'
-        fresh(cap)
+        assert cap['capability'] == kind
+        if invalidated and kind == 'index_publication':
+            assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
+            timed(cap)  # Retain the last full verified cut, never a zero/unknown replacement.
+        else:
+            assert cap['state'] == 'ready'
+            fresh(cap)
         exact(cap['published'],dict(revision='4',cut=cut) if kind.endswith('_publication') else None)
         assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
         assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
+
+
+def content_conflict(before, after):
+    """One independently introduced distinct row, not harmless exact duplication.
+
+    The original all-family capture is separately checked against the signed
+    source by publication(). Equal source/discriminator with different content
+    must survive SELECT DISTINCT and invalidate complete typed verification.
+    """
+    exact(sorted(before), sorted(TARGETS))
+    exact(sorted(after), sorted(TARGETS))
+    exact([len(before[name]) for name in TARGETS], list(COUNTS))
+    original, = before['events']
+    assert original['content'] == 'import then network'
+    conflicting = dict(original, content=CONFLICTING_CONTENT)
+    # The two rows have equal ORDER BY keys; SQL need not order the tie.
+    exact(sorted(after['events'], key=lambda row: row['content']),
+          sorted([original, conflicting], key=lambda row: row['content']))
+    for name in TARGETS:
+        if name != 'events':
+            exact(before[name], after[name])
+
+
+def unchanged_publication(before, after):
+    """Physical invalidation cannot manufacture a new source/publication head."""
+    for table in (*INDEX_TABLES, 'consumers', 'consumer_frontiers',
+                  'consumer_frontier_revisions', 'datasets', 'config_revisions',
+                  'policy_revisions', 'browser_sessions'):
+        exact(before[table], after[table])
 
 
 def retained(root):

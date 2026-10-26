@@ -144,6 +144,77 @@ class InitialIndexControls(unittest.TestCase):
             with self.subTest(timestamp=timestamp),self.assertRaises(AssertionError):
                 check.live_roles(changed,state,123456000,123457000)
 
+        invalidated = copy.deepcopy(value)
+        invalidated['roles'][-1].update(state='degraded',reason='dependency_unavailable')
+        invalidated['capabilities'][-1].update(state='unavailable',reason='dependency_unavailable')
+        check.live_roles(invalidated,state,123456000,123457000,invalidated=True)
+        with self.assertRaises(AssertionError):
+            check.live_roles(invalidated,state,123456000,123457000)
+        for change in (
+            lambda v:v['capabilities'][-1].update(state='ready'),
+            lambda v:v['capabilities'][-1].update(state='building',reason='verification_in_flight'),
+            lambda v:v['capabilities'][-1].update(state='stale',reason='verification_stale'),
+            lambda v:v['capabilities'][-1].update(reason='remote_outcome_unknown'),
+            lambda v:v['capabilities'][-1].update(published=None),
+            lambda v:v['capabilities'][-1].update(time=None),
+            lambda v:v['capabilities'][-1].update(generation='99'*16),
+            lambda v:v['capabilities'][2].update(state='unavailable'),
+            lambda v:v['roles'][0].update(state='degraded'),
+            lambda v:v['roles'][-1].update(state='idle',reason='current'),
+            lambda v:v['source']['cut']['bounds'][0].update(last_complete_sequence='13'),
+            lambda v:v['capabilities'][-1]['time'].update(observed_at_us='123456788'),
+        ):
+            changed=copy.deepcopy(invalidated); change(changed)
+            with self.subTest(negative_change=change),self.assertRaises((AssertionError,TypeError)):
+                check.live_roles(changed,state,123456000,123457000,invalidated=True)
+        # The failed physical check retains the last cut even when its age
+        # crosses30s. Staleness by itself never passes this negative oracle.
+        invalidated['capabilities'][-1].update(freshness='stale',
+            time=dict(clock,age_us='30000000'))
+        check.live_roles(invalidated,state,123456000,123457000,invalidated=True)
+
+    def test_physical_content_conflict_is_exact_and_preserves_the_original_oracle(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); state,rows,science=metadata_fixture(root)
+            check.publication(state,state,rows,science,schema,root)
+            corrupted=copy.deepcopy(rows)
+            corrupted['events'].append(dict(corrupted['events'][0],content=check.CONFLICTING_CONTENT))
+            check.content_conflict(rows,corrupted)
+            corrupted['events'].reverse()  # Equal ORDER BY keys have no tie order.
+            check.content_conflict(rows,corrupted)
+            with self.assertRaises(AssertionError):
+                check.publication(state,state,corrupted,science,schema,root)
+            for change in (
+                lambda r:r.update(events=copy.deepcopy(rows['events'])),
+                lambda r:r.update(events=copy.deepcopy(rows['events'])*2),
+                lambda r:r['events'].pop(),
+                lambda r:r['events'][0].update(content='different corruption'),
+                lambda r:r['events'][0].update(discriminator=1),
+                lambda r:r['dictionaries'].pop(),
+                lambda r:r.update(event_tag_index=[dict(unexpected=True)]),
+            ):
+                changed=copy.deepcopy(corrupted); change(changed)
+                with self.subTest(change=change),self.assertRaises(AssertionError):
+                    check.content_conflict(rows,changed)
+            check.publication(state,state,rows,science,schema,root)
+            state.update(config_revisions=[dict(revision=1)],policy_revisions=[dict(revision=1)],
+                browser_sessions=[dict(id='fixture',idle_expires_at_us=300)])
+            check.unchanged_publication(state,copy.deepcopy(state))
+            for table,field,value in [('consumers','current_revision',5),
+                    ('projection_chunks','rows_digest','forged'),('datasets','config_revision',2),
+                    ('browser_sessions','idle_expires_at_us',301)]:
+                changed=copy.deepcopy(state); changed[table][0][field]=value
+                with self.subTest(table=table),self.assertRaises(AssertionError):
+                    check.unchanged_publication(state,changed)
+        self.assertEqual(case.content_conflict_sql(schema),
+            'INSERT INTO serving_fixture.events (`projection_generation`,`source`,`record_schema_version`,'
+            '`visibility_scope`,`recorded_at`,`payload_digest`,`discriminator`,`event_id`,`pubkey`,'
+            '`created_at`,`kind`,`tags`,`content`,`event_ordinal`,`body_digest`) SELECT '
+            '`projection_generation`,`source`,`record_schema_version`,`visibility_scope`,`recorded_at`,'
+            '`payload_digest`,`discriminator`,`event_id`,`pubkey`,`created_at`,`kind`,`tags`,'
+            "'independent physical readiness corruption',`event_ordinal`,`body_digest` "
+            'FROM serving_fixture.events LIMIT 1')
+
     def test_all_zero_chunk_digests_match_existing_independent_row_vectors(self):
         fixture()  # Load the maintained independent canonical encoder.
         golden=json.loads((ROOT/'apps/bigbrotr/src/storage/clickhouse/rows/fixtures/golden.json').read_text())
