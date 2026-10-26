@@ -13,11 +13,13 @@ import re
 import secrets
 import shutil
 import socket
+import stat
+import subprocess
 import sys
 import time
 
 from cases.first_launch import (Runtime, MissingPrerequisite, LABEL, digest, load,
-                               require, save)
+                               require, save, stop_process)
 from cases import first_launch_index_oracle as oracle
 
 STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
@@ -26,7 +28,9 @@ LIMITS = [
     'Fresh installed signed source publishes all ten Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
     'Authenticated initial role/source/publication observations must match the independent signed cut and current PG identity without touching session idle time.',
     'After positive readiness, one independently inserted conflicting event row must make Index unavailable while authenticated Control and the original Archive read/export journey remain usable; the fault is retained.',
-    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query, ordinary readiness, independent service outages/capacity and complete M1.',
+    'Ordinary Control must report both private capabilities Ready at rev4/cut12/snapshot5, then refuse full readiness while one exact retained input is withheld; a narrow read cannot revive it, and exact restoration permits full-probe recovery.',
+    'Original ordinary journey40s/export12s gates remain; five added readiness phases each have an absolute30s bound (overall190s). Status-only barriers must not refresh session idle time.',
+    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query, independent service outages/capacity and complete M1.',
     'The signed fixture has empty tags: event_tag_index has an explicit zero outcome; nonempty tag projection retains its separate fixture qualification.',
     'Configured process/disk limits are not empirical capacity qualification; local candidate identity is not release authentication.',
 ]
@@ -34,6 +38,56 @@ HTTP_PORT, TCP_PORT = 18123, 19000
 DATABASE = 'serving_fixture'
 ROLES = ('provisioner', 'initializer', 'writer', 'reader')
 SYSTEM_TABLES = ('databases', 'disks', 'storage_policies', 'settings', 'tables', 'columns', 'projections')
+
+
+def input_identity(path, *, directory=False):
+    require(path.is_absolute() and path.resolve(strict=True) == path, 'input custody path alias')
+    flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+    descriptor = os.open(path, flags | (os.O_DIRECTORY if directory else 0))
+    try:
+        metadata = os.fstat(descriptor)
+        require((stat.S_ISDIR(metadata.st_mode) if directory else stat.S_ISREG(metadata.st_mode))
+                and metadata.st_uid == os.geteuid()
+                and stat.S_IMODE(metadata.st_mode) == (0o700 if directory else 0o600), 'input custody metadata')
+        value = dict(device=metadata.st_dev, inode=metadata.st_ino, uid=metadata.st_uid,
+                     gid=metadata.st_gid, mode=stat.S_IMODE(metadata.st_mode))
+        if not directory:
+            require(metadata.st_nlink == 1 and 0 < metadata.st_size <= 65536, 'retained input size/link bound')
+            with os.fdopen(os.dup(descriptor), 'rb') as opened:
+                encoded = opened.read(65537)
+            require(len(encoded) == metadata.st_size, 'retained input changed while reading')
+            value.update(links=metadata.st_nlink, bytes=metadata.st_size,
+                         mtime_ns=metadata.st_mtime_ns, sha256=hashlib.sha256(encoded).hexdigest())
+        return value
+    finally:
+        os.close(descriptor)
+
+
+def move_input(journal, *, restore=False):
+    """Rename only this recorded private input; never overwrite a replacement."""
+    root = Path(journal['directory'])
+    require(input_identity(root, directory=True) == journal['directory_identity'], 'input directory changed')
+    source, target = journal['original'], journal['withheld']
+    if restore:
+        source, target = target, source
+    require(re.fullmatch(r'[0-9a-f]{32}\.inputs', journal['original'])
+            and journal['withheld'] == journal['original'] + '.ordinary-readiness-withheld', 'input rename names')
+    require(input_identity(root/source) == journal['before'], 'retained input changed')
+    require(not os.path.lexists(root/target), 'input rename destination already exists')
+    descriptor = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        metadata = os.fstat(descriptor)
+        require((metadata.st_dev,metadata.st_ino) ==
+                (journal['directory_identity']['device'],journal['directory_identity']['inode']), 'input directory replaced')
+        os.rename(source, target, src_dir_fd=descriptor, dst_dir_fd=descriptor)
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    require(not os.path.lexists(root/source) and input_identity(root/target) == journal['before'], 'input rename incomplete')
+    journal['status'] = 'restored' if restore else 'withheld'
+    journal['events'].append(journal['status'])
+    if restore:
+        journal['after'] = input_identity(root/target)
 
 
 def content_conflict_sql(schema):
@@ -386,6 +440,7 @@ class IndexRuntime(Runtime):
         wires = [load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
         science = self.science_checks.first_science(view, self.initialized, load(self.home/'event.jsonl'),
             wires, census, self.state/'data/ingest', owner['released_at_us'])
+        self.index_science = science
         result = oracle.publication(self.index_live, after, self.index_rows, science, self.schema, self.state/'data/index')
         # publication() still checks the original typed bytes against the signed
         # source. Its positive census precedes the separately retained fault.
@@ -397,6 +452,140 @@ class IndexRuntime(Runtime):
                 and final['index']['readiness'] == 'not-qualified', 'Index terminal diagnostic differs')
         save(output/'verdict.json', result)
         self.inputs['index'] = result
+
+    def ordinary_client(self, output, entry):
+        from installed_archive_export_client import (READINESS_MODE, READINESS_PHASES, PHASE_SECONDS, CLIENT_SECONDS)
+        selected = load(self.home/'export-input.json')
+        save(self.home/'export-input.json', dict(selected, readiness_mode=READINESS_MODE))
+        command = [sys.executable, '-B', str(self.source/'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)]
+        observations, completed, journal = [], [], None
+        overall = time.monotonic() + CLIENT_SECONDS
+        with (output/'ordinary-client.stdout').open('w') as stdout, (output/'ordinary-client.stderr').open('w') as stderr:
+            client = subprocess.Popen(command, env=self.environment, cwd=self.root, stdin=subprocess.DEVNULL,
+                stdout=stdout, stderr=stderr, start_new_session=True)
+            self.processes.append(client)
+            save(output/'ordinary-client-process.json', dict(argv=command,pid=client.pid,status='running',timeout_seconds=CLIENT_SECONDS))
+            try:
+                for phase in READINESS_PHASES:
+                    marker = self.home/('ordinary-'+phase+'.json')
+                    self.wait(lambda: marker.exists(), 'ordinary '+phase+' barrier',
+                              max(.001,overall-time.monotonic()), entry, client)
+                    signal = load(marker)
+                    require(signal['phase'] == phase and type(signal['started_ns']) is int
+                            and signal['deadline_ns'] - signal['started_ns'] == PHASE_SECONDS*1_000_000_000,
+                            'ordinary phase deadline declaration')
+                    deadline = min(overall, signal['deadline_ns']/1_000_000_000)
+                    require(signal['started_ns']/1_000_000_000 <= time.monotonic() < deadline, 'ordinary phase deadline')
+                    if phase == 'restored':
+                        self.inspect(entry)
+                        move_input(journal, restore=True)
+                        save(output/'ordinary-input-journal.json', journal)
+                    before, _ = self.capture(output, 'ordinary-'+phase+'-before')
+                    clock_before = int(self.sql('bigbrotr_control', 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+                    if phase == 'missing':
+                        self.inspect(entry)  # Exact recorded app, labels and mounted data root.
+                        directory = self.state/'data/archive-state'
+                        identity = input_identity(directory, directory=True)
+                        initialization = bytes.fromhex(digest(self.state/'data/archive/.bigbrotr-initialization/intent.json'))
+                        row, expected = oracle.ordinary_input(before, self.index_science, initialization)
+                        binding = directory/'coordinator.json'
+                        require(input_identity(binding)['sha256'] == oracle.raw(row['coordinator_binding_sha256'],32).hex(), 'coordinator binding differs')
+                        oracle.exact(load(binding), dict(format='bigbrotr-local-coordinator/1', initialization_sha256=list(initialization),
+                            state_root='/var/lib/bigbrotr/archive-state', state_device=identity['device'], state_inode=identity['inode']))
+                        name = oracle.raw(row['attempt_id'],16).hex()+'.inputs'
+                        original = input_identity(directory/name)
+                        require(original['sha256'] == hashlib.sha256(expected).hexdigest()
+                                and original['bytes'] == len(expected), 'independent retained input bytes differ')
+                        journal = dict(owner=self.owner,container_id=entry['id'],directory=str(directory),
+                            directory_identity=identity,original=name,withheld=name+'.ordinary-readiness-withheld',
+                            before=original,after=None,status='prepared',events=['prepared'])
+                        save(output/'ordinary-input-journal.json', journal)
+                        move_input(journal)
+                        save(output/'ordinary-input-journal.json', journal)
+                    if phase == 'narrow':
+                        # This response was captured before the parent's SQL;
+                        # do not poll until a subsequent probe hides a false Ready.
+                        require(len(observations) < 256, 'ordinary observation bound')
+                        observations.append(dict(phase='narrow-immediate',value=signal['payload']))
+                        save(output/'ordinary-role-observations.json',observations)
+                        oracle.ordinary_roles(signal['payload'], before, failure_clock,
+                                              clock_before, phase='narrow')
+                    last_poll = 0
+                    def observed():
+                        nonlocal last_poll
+                        if time.monotonic() - last_poll < .75:
+                            return False
+                        last_poll = time.monotonic()
+                        saved = load(self.home/'export-session.private')
+                        require(saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == 'http://127.0.0.1:18081', 'ordinary session binding')
+                        connection = http.client.HTTPConnection('127.0.0.1',18081,timeout=min(3,max(.001,deadline-time.monotonic())))
+                        try:
+                            connection.request('GET','/management/v1/roles',headers=dict(Origin=saved['origin'],
+                                Cookie='BigBrotrLocalSession='+saved['session'], **{'X-CSRF-Token':saved['csrf']}))
+                            response = connection.getresponse(); raw = response.read(131073)
+                            if response.status != 200 or len(raw) > 131072:
+                                save(output/('ordinary-'+phase+'-http-failure.json'),dict(status=response.status,
+                                    retained_body_hex=raw.hex(),body_limit_bytes=131072))
+                            require(response.status == 200 and len(raw) <= 131072, 'ordinary authenticated role observation failed')
+                            value = json.loads(raw)
+                        finally:
+                            connection.close()
+                        require(len(observations) < 256 and time.monotonic() < deadline, 'ordinary observation bound')
+                        observations.append(dict(phase=phase,value=value))
+                        save(output/'ordinary-role-observations.json', observations)
+                        # SQL brackets are finalized below; identity/source/cut
+                        # checks also apply to every intermediate response.
+                        oracle.ordinary_roles(value,before,clock_before,(1 << 63)-1)
+                        caps = value['capabilities']
+                        if phase == 'setup':
+                            return all(c['reason'] == 'not_observed' for c in caps)
+                        if phase in ('missing','narrow'):
+                            return all(c['state'] == 'unavailable' for c in caps) if phase == 'missing' else True
+                        return all(c['state'] == 'ready' for c in caps) if phase == 'positive' else caps[0]['state'] == 'ready'
+                    self.wait(observed, 'ordinary '+phase+' roles', max(.001,deadline-time.monotonic()), entry, client)
+                    clock_after = int(self.sql('bigbrotr_control', 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+                    after, _ = self.capture(output, 'ordinary-'+phase+'-after')
+                    oracle.ordinary_unchanged(before, after)
+                    oracle.ordinary_roles(observations[-1]['value'],after,clock_before,clock_after,phase)
+                    require(time.monotonic() < deadline, 'ordinary phase capture exceeded deadline')
+                    save(output/('ordinary-'+phase+'-verdict.json'), dict(status='PASS',phase=phase,
+                        clock_before_us=str(clock_before),clock_after_us=str(clock_after),session_idle='unchanged'))
+                    if phase == 'missing':
+                        failure_clock = clock_before
+                    completed.append(phase)
+                    (self.home/('ordinary-'+phase+'.continue')).write_text('independent observation checked\n')
+                client.wait(timeout=max(.001,overall-time.monotonic()))
+                require(client.returncode == 0 and time.monotonic() < overall, 'ordinary client failed or timed out')
+                require(not (output/'ordinary-client.stderr').read_bytes(), 'ordinary client diagnostic output')
+                oracle.ordinary_complete(completed,load(self.home/'ordinary-timing.json'),journal)
+                save(output/'ordinary-readiness-verdict.json', dict(status='PASS',phases=completed,
+                    source='unknown',control='ready',archive_revision=4,cut=12,snapshot=5,restoration='exact',
+                    original_export_gate='pending existing independent signed export oracle'))
+            except BaseException as error:
+                save(output/'ordinary-readiness-failure.json', dict(error_type=type(error).__name__,reason=str(error),completed=completed))
+                raise
+            finally:
+                # Restore even after client/status/capture failure, but never
+                # overwrite a replacement or discard the original failure.
+                pending_error = sys.exc_info()[0] is not None
+                try:
+                    if journal and os.path.lexists(Path(journal['directory'])/journal['withheld']):
+                        self.inspect(entry)
+                        move_input(journal, restore=True)
+                        save(output/'ordinary-input-journal.json',journal)
+                    elif journal:
+                        require(input_identity(Path(journal['directory'])/journal['original']) == journal['before'],
+                                'original retained input not restored')
+                except Exception as error:
+                    self.resources['cleanup_errors'].append(dict(resource='ordinary-retained-input',error=type(error).__name__))
+                    save(output/'ordinary-input-restore-failure.json',dict(error_type=type(error).__name__,reason=str(error)))
+                    if not pending_error:
+                        raise
+                finally:
+                    stop_process(client)
+                    self.processes.remove(client)
+                    save(output/'ordinary-client-process.json',dict(argv=command,pid=client.pid,status='joined',
+                        exit_code=client.returncode,timeout_seconds=CLIENT_SECONDS))
 
     def cleanup(self):
         # Preserve the base ownership/reaping checks; stop every application

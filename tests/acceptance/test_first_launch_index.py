@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import time
 import tomllib
 from types import SimpleNamespace
 import unittest
@@ -98,7 +99,204 @@ def metadata_fixture(root):
     return state,actual,science
 
 
+def ordinary_fixture():
+    """Literal current ordinary publication; no product constructor participates."""
+    dataset,catalog='\\x'+'22'*16,'\\x'+'55'*16
+    state={name:[] for name in base.expected_tables(ROOT,{})}
+    state.update(datasets=[dict(dataset_id=dataset,config_revision=1,policy_revision=1)],
+        owner_epochs=[dict(role='control',state='active',dataset_id=dataset,process_incarnation='\\x'+'77'*16)],
+        consumers=[dict(consumer_role='archive',consumer_id=catalog,dataset_id=dataset,current_revision=4,current_topology_generation=0)],
+        archive_frontier_snapshots=[dict(consumer_id=catalog,frontier_revision=4,dataset_id=dataset,catalog_id=catalog,
+            topology_generation=0,snapshot_id=5,dictionary_count=8,payload_count=1,eligibility_count=1,receive_count=1,provenance_count=1)],
+        consumer_frontiers=[dict(consumer_id=catalog,frontier_revision=4,dataset_id=dataset,
+            topology_generation=0,shard_id=0,owner_epoch=1,last_complete_sequence=12)],
+        archive_frontier_batches=[dict(consumer_id=catalog,frontier_revision=4,attempt_id='\\x'+f'{n:032x}') for n in range(1,5)],
+        archive_attempts=[dict(attempt_id='\\x'+f'{n:032x}',ordinal=n,dataset_id=dataset,catalog_id=catalog) for n in range(1,5)],
+        browser_sessions=[dict(session_id='fixture',idle_expires_at_us=999999999,revoked_at_us=None)])
+    cut=dict(dataset_id='22'*16,topology_generation='0',bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
+    value=dict(format='bigbrotr-role-status/1',authority='observation-only',observed_at_us='123456789',
+        identity=dict(dataset_id='22'*16,process_incarnation='77'*16,config_revision='1',policy_revision='1'),
+        source=dict(cut=None,freshness='unknown',time=None,reason='not_selected'),
+        roles=[dict(role='control',state='ready',reason='current')],
+        capabilities=[dict(capability=k,state='ready',reason='current',freshness='fresh',
+            time=dict(observed_at_us='123456789',age_us='1000'),published=dict(revision='4',cut=cut),
+            generation=None,storage_incarnation=None) for k in ('private_history','signed_event_export')])
+    return state,value
+
+
 class InitialIndexControls(unittest.TestCase):
+    def test_ordinary_ready_requires_actual_identity_unknown_source_and_literal_publication(self):
+        state,value=ordinary_fixture()
+        check.ordinary_roles(value,state,123456000,123457000,'positive')
+        for change in (
+            lambda v:v['identity'].update(process_incarnation='99'*16),
+            lambda v:v['source'].update(freshness='fresh'),
+            lambda v:v['roles'].append(dict(role='archive',state='ready',reason='current')),
+            lambda v:v['capabilities'].pop(),
+            lambda v:v['capabilities'][0]['published'].update(revision='3'),
+            lambda v:v['capabilities'][0]['published']['cut']['bounds'][0].update(last_complete_sequence='11'),
+            lambda v:v['capabilities'][0].update(generation='66'*16),
+            lambda v:v['capabilities'][0]['time'].update(observed_at_us='123456788'),
+            lambda v:v['capabilities'][0].update(state='stale',reason='verification_stale'),
+        ):
+            changed=copy.deepcopy(value);change(changed)
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                check.ordinary_roles(changed,state,123456000,123457000,'positive')
+        for table,field,replacement in (('archive_frontier_snapshots','snapshot_id',4),
+                ('consumers','current_revision',3),('consumer_frontiers','last_complete_sequence',11)):
+            changed=copy.deepcopy(state);changed[table][0][field]=replacement
+            with self.subTest(table=table),self.assertRaises(AssertionError):
+                check.ordinary_roles(value,changed,123456000,123457000,'positive')
+
+    def test_ordinary_narrow_success_cannot_revive_failed_full_proof_and_export_can_expire(self):
+        state,value=ordinary_fixture()
+        failed=copy.deepcopy(value)
+        for cap in failed['capabilities']:
+            cap.update(state='unavailable',reason='dependency_unavailable')
+        for phase in ('missing','narrow'):
+            check.ordinary_roles(failed,state,123456000,123457000,phase)
+            for replacement in ('ready','building','stale'):
+                changed=copy.deepcopy(failed);changed['capabilities'][0]['state']=replacement
+                with self.subTest(phase=phase,replacement=replacement),self.assertRaises(AssertionError):
+                    check.ordinary_roles(changed,state,123456000,123457000,phase)
+        recovered=copy.deepcopy(value)
+        recovered['capabilities'][1].update(state='stale',reason='verification_stale',freshness='stale',
+            time=dict(observed_at_us='123456789',age_us='30000000'))
+        check.ordinary_roles(recovered,state,123456000,123457000,'restored')
+        for change in (
+            lambda v:v['capabilities'][1].update(state='ready',reason='current'),
+            lambda v:v['capabilities'][0].update(state='stale',reason='verification_stale'),
+            lambda v:v['capabilities'][1]['time'].update(age_us='29999999'),
+            lambda v:v['capabilities'][0].update(state='unavailable',reason='dependency_unavailable'),
+        ):
+            changed=copy.deepcopy(recovered);change(changed)
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                check.ordinary_roles(changed,state,123456000,123457000,'restored')
+
+    def test_ordinary_status_barrier_refuses_session_touch_and_publication_mutation(self):
+        state,_=ordinary_fixture()
+        check.ordinary_unchanged(state,copy.deepcopy(state))
+        for table,field,value in (('browser_sessions','idle_expires_at_us',1000000000),
+                ('archive_frontier_snapshots','snapshot_id',6),('consumers','current_revision',5)):
+            changed=copy.deepcopy(state);changed[table][0][field]=value
+            with self.subTest(table=table),self.assertRaises(AssertionError):check.ordinary_unchanged(state,changed)
+
+    def test_ordinary_completion_requires_every_phase_original_limits_and_restored_identity(self):
+        phases=['setup','positive','missing','narrow','restored']
+        timing=dict(mode='ordinary-readiness/1',original_limit_seconds=40,export_limit_seconds=12,
+            overall_limit_seconds=190,original_active_ns=10_000_000_000,
+            phases=[dict(phase=p,started_ns=n*30_000_000_000,finished_ns=n*30_000_000_000+1,limit_seconds=30)
+                    for n,p in enumerate(phases)])
+        journal=dict(status='restored',events=['prepared','withheld','restored'],before=dict(inode=7),after=dict(inode=7))
+        check.ordinary_complete(phases,timing,journal)
+        for missing in ('positive','missing','narrow','restored'):
+            with self.subTest(missing=missing),self.assertRaises(AssertionError):
+                check.ordinary_complete([p for p in phases if p!=missing],timing,journal)
+        for change in (lambda t:t.update(original_limit_seconds=41),lambda t:t.update(export_limit_seconds=13),
+                lambda t:t.update(original_active_ns=40_000_000_001),lambda t:t['phases'][0].update(finished_ns=30_000_000_000)):
+            changed=copy.deepcopy(timing);change(changed)
+            with self.assertRaises(AssertionError):check.ordinary_complete(phases,changed,journal)
+        for changed in (dict(journal,status='withheld'),dict(journal,after=dict(inode=8)),dict(journal,events=['prepared','restored'])):
+            with self.assertRaises(AssertionError):check.ordinary_complete(phases,timing,changed)
+
+    def test_owned_input_rename_restores_same_inode_and_refuses_changed_or_replacement_bytes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary).resolve();root.chmod(0o700)
+            name='ab'*16+'.inputs';path=root/name;path.write_bytes(b'independent original input');path.chmod(0o600)
+            journal=dict(directory=str(root),directory_identity=case.input_identity(root,directory=True),
+                original=name,withheld=name+'.ordinary-readiness-withheld',before=case.input_identity(path),events=['prepared'])
+            original=journal['before']
+            case.move_input(journal)
+            self.assertFalse(path.exists())
+            case.move_input(journal,restore=True)
+            self.assertEqual(case.input_identity(path),original)
+            self.assertEqual(journal['events'],['prepared','withheld','restored'])
+            case.move_input(journal)
+            withheld=root/journal['withheld'];withheld.chmod(0o644)
+            with self.assertRaises(ValueError):case.move_input(journal,restore=True)
+            withheld.chmod(0o600)
+            path.write_bytes(b'unrelated replacement');path.chmod(0o600)
+            with self.assertRaises(ValueError):case.move_input(journal,restore=True)
+            self.assertEqual(path.read_bytes(),b'unrelated replacement')
+            path.unlink()
+            withheld.write_bytes(b'changed')
+            with self.assertRaises(ValueError):case.move_input(journal,restore=True)
+            withheld.unlink();withheld.symlink_to(root/'absent')
+            with self.assertRaises((OSError,ValueError)):case.move_input(journal,restore=True)
+
+    def exercise_missing_status(self, replacement):
+        from test_first_launch import arguments
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary).resolve(); runtime=case.IndexRuntime(arguments(root),{})
+            runtime.home=root/'home';runtime.home.mkdir()
+            output=root/'out';output.mkdir()
+            directory=runtime.state/'data/archive-state';directory.mkdir(parents=True,mode=0o700)
+            initialization=runtime.state/'data/archive/.bigbrotr-initialization/intent.json'
+            initialization.parent.mkdir(parents=True);initialization.write_bytes(b'independent initialization fixture')
+            state,positive=ordinary_fixture();science=fixture()[3].first;runtime.index_science=science
+            row=state['archive_attempts'][0]
+            row.update(coordinator_incarnation='\\x'+'88'*16,worker_incarnation='\\x'+'99'*16,
+                       batch_digest='\\x'+science['batches'][0]['archive_digest'])
+            identity=case.input_identity(directory,directory=True)
+            initial=bytes.fromhex(base.digest(initialization))
+            binding=directory/'coordinator.json'
+            base.save(binding,dict(format='bigbrotr-local-coordinator/1',initialization_sha256=list(initial),
+                state_root='/var/lib/bigbrotr/archive-state',state_device=identity['device'],state_inode=identity['inode']))
+            binding.chmod(0o600);row['coordinator_binding_sha256']='\\x'+base.digest(binding)
+            _,encoded=check.ordinary_input(state,science,initial)
+            original=directory/(row['attempt_id'][2:]+'.inputs');original.write_bytes(encoded);original.chmod(0o600)
+            original_identity=case.input_identity(original)
+            base.save(runtime.home/'export-input.json',dict(scope={},catalog_id='55'*16,destination_id='aa'*16))
+            base.save(runtime.home/'export-session.private',dict(format='bigbrotr-cli-session/1',
+                origin='http://127.0.0.1:18081',session='synthetic',csrf='synthetic'))
+            for phase in ('setup','positive','missing'):
+                started=time.monotonic_ns()
+                base.save(runtime.home/('ordinary-'+phase+'.json'),dict(phase=phase,
+                    started_ns=started,deadline_ns=started+30_000_000_000,payload=None))
+            setup=copy.deepcopy(positive)
+            for cap in setup['capabilities']:
+                cap.update(state='building',reason='not_observed',time=None,published=None,freshness='unknown')
+            values=iter([(200,setup),(200,positive),(503,{})])
+            class Connection:
+                def __init__(self,*args,**kwargs):pass
+                def request(self,*args,**kwargs):pass
+                def getresponse(self):
+                    status,value=next(values)
+                    if status == 503 and replacement:
+                        original.write_bytes(b'foreign replacement');original.chmod(0o600)
+                    return SimpleNamespace(status=status,read=lambda maximum:json.dumps(value).encode())
+                def close(self):pass
+            client=SimpleNamespace(pid=123,returncode=None)
+            def wait(test,*args):
+                result=test();self.assertTrue(result);return result
+            with patch.object(runtime,'capture',side_effect=lambda *args:(copy.deepcopy(state),{})),\
+                    patch.object(runtime,'sql',side_effect=['123456000','123457000','123456000','123457000','123456000']),\
+                    patch.object(runtime,'inspect',return_value={}),patch.object(runtime,'wait',side_effect=wait),\
+                    patch.object(case.subprocess,'Popen',return_value=client),patch.object(case,'stop_process') as stopped,\
+                    patch.object(case.http.client,'HTTPConnection',Connection):
+                with self.assertRaisesRegex(ValueError,'authenticated role observation failed'):
+                    runtime.ordinary_client(output,dict(id='a'*64))
+                stopped.assert_called_once_with(client)
+            self.assertFalse(runtime.processes)
+            if replacement:
+                self.assertEqual(original.read_bytes(),b'foreign replacement')
+                self.assertTrue((output/'ordinary-input-restore-failure.json').exists())
+                self.assertEqual(runtime.resources['cleanup_errors'],[dict(resource='ordinary-retained-input',error='ValueError')])
+                self.assertEqual(base.load(output/'ordinary-input-journal.json')['status'],'withheld')
+            else:
+                self.assertEqual(case.input_identity(original),original_identity)
+                self.assertEqual(base.load(output/'ordinary-input-journal.json')['events'],['prepared','withheld','restored'])
+            self.assertEqual(base.load(output/'ordinary-readiness-failure.json')['completed'],['setup','positive'])
+            self.assertEqual(base.load(output/'ordinary-missing-http-failure.json')['status'],503)
+            self.assertTrue((output/'ordinary-positive-verdict.json').exists())
+            self.assertFalse((output/'ordinary-readiness-verdict.json').exists())
+
+    def test_missing_status_preserves_positive_capture_restores_input_and_joins_client(self):
+        self.exercise_missing_status(False)
+
+    def test_failed_restore_preserves_original_status_failure_and_foreign_replacement(self):
+        self.exercise_missing_status(True)
+
     def test_live_roles_require_literal_cut_freshness_identity_and_all_capabilities(self):
         state = dict(
             datasets=[dict(dataset_id='\\x'+'22'*16,config_revision=1,policy_revision=1)],

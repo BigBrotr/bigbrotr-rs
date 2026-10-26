@@ -181,6 +181,22 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(requests[-2][2]['password'], 'Independent owner password 2026')
         self.assertEqual(requests[-1][1], '/management/v1/principals/' + '10' * 16 + '/grants')
 
+    def test_optional_readiness_phase_is_absolute_and_rejects_missing_or_late_release(self):
+        with self.assertRaises(AssertionError):export.phase(self.home,'other')
+        # An absent parent cannot turn the client barrier into successful status.
+        with patch.object(export.time,'monotonic_ns',side_effect=[10,30_000_000_010]):
+            with self.assertRaisesRegex(AssertionError,'timed out'):export.phase(self.home,'setup')
+        marker=json.loads((self.home/'ordinary-setup.json').read_text())
+        self.assertEqual(marker['deadline_ns'],30_000_000_010)
+        (self.home/'ordinary-positive.continue').write_text('synthetic release')
+        with patch.object(export.time,'monotonic_ns',side_effect=[10,30_000_000_010]):
+            with self.assertRaisesRegex(AssertionError,'exceeded deadline'):export.phase(self.home,'positive')
+        (self.home/'ordinary-narrow.continue').write_text('synthetic release')
+        with patch.object(export.time,'monotonic_ns',side_effect=[100,200]):
+            result=export.phase(self.home,'narrow',lambda:dict(independent='response'))
+        self.assertEqual(result,dict(phase='narrow',started_ns=100,finished_ns=200,limit_seconds=30))
+        self.assertEqual(json.loads((self.home/'ordinary-narrow.json').read_text())['payload'],dict(independent='response'))
+
 
 if __name__ == '__main__':
     unittest.main()

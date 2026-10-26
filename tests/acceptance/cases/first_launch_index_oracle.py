@@ -132,6 +132,109 @@ def content_conflict(before, after):
             exact(before[name], after[name])
 
 
+def ordinary_selection(state):
+    """Current complete Archive membership, independently fixed rev4/cut12/5."""
+    dataset = only(state['datasets'])['dataset_id']
+    consumer = only(state['consumers'], consumer_role='archive')
+    assert consumer['dataset_id'] == dataset
+    exact([consumer['current_revision'], consumer['current_topology_generation']], [4, 0])
+    catalog = consumer['consumer_id']
+    snapshot = only(state['archive_frontier_snapshots'], consumer_id=catalog, frontier_revision=4)
+    exact([snapshot[k] for k in ('dataset_id', 'catalog_id', 'topology_generation', 'snapshot_id',
+          'dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')],
+          [dataset, catalog, 0, 5, 8, 1, 1, 1, 1])
+    bound = only(state['consumer_frontiers'], consumer_id=catalog, frontier_revision=4)
+    exact([bound[k] for k in ('dataset_id', 'topology_generation', 'shard_id', 'owner_epoch', 'last_complete_sequence')],
+          [dataset, 0, 0, 1, 12])
+    members = [r for r in state['archive_frontier_batches'] if r['consumer_id'] == catalog and r['frontier_revision'] == 4]
+    assert len(members) == len({r['attempt_id'] for r in members}) == 4
+    attempts = sorted((only(state['archive_attempts'], attempt_id=r['attempt_id']) for r in members), key=lambda r:r['ordinal'])
+    exact([r['ordinal'] for r in attempts], [1, 2, 3, 4])
+    assert all(r['dataset_id'] == dataset and r['catalog_id'] == catalog for r in attempts)
+    return attempts
+
+
+def ordinary_roles(value, state, clock_before, clock_after, phase=None):
+    ordinary_selection(state)
+    dataset = only(state['datasets'])
+    control = only(state['owner_epochs'], role='control', state='active')
+    assert control['dataset_id'] == dataset['dataset_id']
+    exact(sorted(value), sorted(('format', 'identity', 'observed_at_us', 'source', 'roles', 'capabilities', 'authority')))
+    assert value['format'] == 'bigbrotr-role-status/1' and value['authority'] == 'observation-only'
+    exact(value['identity'], dict(dataset_id=raw(dataset['dataset_id'],16).hex(),
+        process_incarnation=raw(control['process_incarnation'],16).hex(), config_revision='1', policy_revision='1'))
+    exact([dataset['config_revision'],dataset['policy_revision']], [1,1])
+    assert re.fullmatch('-?(0|[1-9][0-9]*)', value['observed_at_us'])
+    observed = int(value['observed_at_us'])
+    assert -(1 << 63) <= observed < (1 << 63) and clock_before <= observed <= clock_after
+    exact(value['source'], dict(cut=None,freshness='unknown',time=None,reason='not_selected'))
+    exact(value['roles'], [dict(role='control',state='ready',reason='current')])
+    caps = value['capabilities']
+    assert len(caps) == 2
+    published = dict(revision='4',cut=dict(dataset_id=raw(dataset['dataset_id'],16).hex(),
+        topology_generation='0', bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')]))
+    for cap,kind in zip(caps, ('private_history','signed_event_export')):
+        exact(sorted(cap), sorted(('capability','state','reason','freshness','time','published','generation','storage_incarnation')))
+        assert cap['capability'] == kind and cap['generation'] is cap['storage_incarnation'] is None
+        age = None
+        if cap['time'] is not None:
+            exact(sorted(cap['time']), ['age_us','observed_at_us'])
+            assert cap['time']['observed_at_us'] == str(observed)
+            assert re.fullmatch('0|[1-9][0-9]*',cap['time']['age_us'])
+            age = int(cap['time']['age_us'])
+            assert age < 1 << 64
+            assert cap['freshness'] == ('fresh' if age < 30_000_000 else 'stale')
+            exact(cap['published'], published)
+        else:
+            assert cap['freshness'] == 'unknown' and cap['published'] is None
+        if phase == 'setup':
+            assert cap['state'] == 'building' and cap['reason'] == 'not_observed' and age is None
+        elif phase in ('missing', 'narrow'):
+            assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable' and age is not None
+        elif phase in ('positive', 'restored'):
+            assert age is not None
+            if phase == 'restored' and kind == 'signed_event_export' and age >= 30_000_000:
+                assert cap['state'] == 'stale' and cap['reason'] == 'verification_stale'
+            else:
+                assert age < 30_000_000 and cap['state'] == 'ready' and cap['reason'] == 'current'
+        else:
+            assert phase is None
+
+
+def ordinary_input(state, science, initialization):
+    """Select by current membership, then reconstruct original input bytes."""
+    row = ordinary_selection(state)[0]
+    batch = science['batches'][0]
+    exact([batch['first'],batch['last']], [1,2])
+    assert row['batch_digest'] == '\\x' + batch['archive_digest']
+    body = (b'BBINPUT\x01' + initialization + b''.join(raw(row[k],16) for k in
+        ('attempt_id','dataset_id','catalog_id','coordinator_incarnation','worker_incarnation'))
+        + be(1) + be(0) + bytes.fromhex(batch['archive_digest']) + be(1,4)
+        + be(0,4) + be(1) + be(1) + b'\x01\x21' + be(2) + bytes.fromhex(batch['admission_digest']))
+    return row, body + hashlib.sha256(body).digest()
+
+
+def ordinary_unchanged(before, after):
+    # Status may renew Control and the coalesced probe may add/release pins.
+    # Every source/publication/job/auth row is otherwise unchanged in this barrier.
+    exact(sorted(before), sorted(after))
+    assert len(before) == 81
+    for table in before.keys() - {'owner_epochs','snapshot_leases','archive_snapshot_pins','retention_claims'}:
+        exact(before[table], after[table])
+
+
+def ordinary_complete(phases, timing, journal):
+    exact(phases, ['setup','positive','missing','narrow','restored'])
+    assert journal['status'] == 'restored' and journal['after'] == journal['before']
+    assert journal['events'] == ['prepared','withheld','restored']
+    assert timing['mode'] == 'ordinary-readiness/1'
+    exact([timing[k] for k in ('original_limit_seconds','export_limit_seconds','overall_limit_seconds')], [40,12,190])
+    assert type(timing['original_active_ns']) is int and 0 < timing['original_active_ns'] <= 40_000_000_000
+    exact([p['phase'] for p in timing['phases']], phases)
+    for p in timing['phases']:
+        assert p['limit_seconds'] == 30 and 0 < p['finished_ns'] - p['started_ns'] < 30_000_000_000
+
+
 def unchanged_publication(before, after):
     """Physical invalidation cannot manufacture a new source/publication head."""
     for table in (*INDEX_TABLES, 'consumers', 'consumer_frontiers',

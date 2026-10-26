@@ -8,14 +8,45 @@ import sys
 import time
 from installed_archive_profile import load as load_profile, password_file
 
+READINESS_MODE = 'ordinary-readiness/1'
+READINESS_PHASES = ('setup', 'positive', 'missing', 'narrow', 'restored')
+PHASE_SECONDS = 30
+JOURNEY_SECONDS = 40
+CLIENT_SECONDS = JOURNEY_SECONDS + len(READINESS_PHASES) * PHASE_SECONDS
+
+
+def phase(home, name, action=None):
+    """One closed added phase, including its action, with an absolute deadline."""
+    assert name in READINESS_PHASES
+    started = time.monotonic_ns()
+    deadline = started + PHASE_SECONDS * 1_000_000_000
+    payload = action() if action else None
+    marker = home / ('ordinary-' + name + '.json')
+    assert not marker.exists()
+    temporary = marker.with_suffix('.tmp')
+    temporary.write_text(json.dumps(dict(phase=name, started_ns=started,
+        deadline_ns=deadline, payload=payload)) + '\n')
+    temporary.rename(marker)
+    release = home / ('ordinary-' + name + '.continue')
+    while not release.exists():
+        assert time.monotonic_ns() < deadline, 'ordinary readiness phase timed out: ' + name
+        time.sleep(.05)
+    finished = time.monotonic_ns()
+    assert finished < deadline, 'ordinary readiness phase exceeded deadline: ' + name
+    return dict(phase=name, started_ns=started, finished_ns=finished, limit_seconds=PHASE_SECONDS)
+
 
 def run(home):
+    started = time.monotonic_ns()
     profile = load_profile(home)
     binary = profile['product_binary'] if profile else '/build/bigbrotr'
     principal = profile['expected_principal_id'] if profile else '10'*16
     actions = profile['expected_actions'] if profile else ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
     password_ref = profile['password_ref'] if profile else 'file:' + str(home / 'password.private')
     expected = json.loads((home / 'export-input.json').read_text())
+    mode = expected.get('readiness_mode')
+    assert mode in (None, READINESS_MODE), 'unknown ordinary fixture mode'
+    phases = []
     event = json.loads((home / 'event.jsonl').read_text())
     origin = 'http://127.0.0.1:18081'
     observations = []
@@ -24,14 +55,22 @@ def run(home):
         observations.append(dict(case=case, **fields))
         (home / 'export-observations.json').write_text(json.dumps(observations, indent=2) + '\n')
 
+    def active_ns():
+        return time.monotonic_ns() - started - sum(p['finished_ns'] - p['started_ns'] for p in phases)
+
+    def barrier(name, action=None):
+        assert active_ns() <= JOURNEY_SECONDS * 1_000_000_000, 'original ordinary journey exceeded40s'
+        phases.append(phase(home, name, action))
+
     def request(method, path, body=None, headers=None):
         connection = http.client.HTTPConnection('127.0.0.1', 18081, timeout=6)
         try:
             connection.request(method, path, None if body is None else json.dumps(body),
                 {'Origin': origin, 'Content-Type': 'application/json', **(headers or {})})
             response = connection.getresponse()
-            raw = response.read(65537)
-            assert len(raw) <= 65536
+            maximum = 131072 if path == '/management/v1/roles' else 65536
+            raw = response.read(maximum + 1)
+            assert len(raw) <= maximum
             return response.status, json.loads(raw)
         finally:
             connection.close()
@@ -49,6 +88,8 @@ def run(home):
     status, me = request('GET', '/management/v1/me', headers=auth)
     assert status == 200 and me['principal_id'] == principal
     assert me['stored_actions'] == actions
+    if mode:
+        barrier('setup')
     query = dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
         filters=[dict(ids=[event['id']])])
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
@@ -98,8 +139,33 @@ def run(home):
         time.sleep(.25)
     assert observed['checkpoint_revision'] == '1'
     assert request('POST', '/management/v1/jobs', body, keyed) == (200, dict(receipt, created=False))
+    if mode:
+        barrier('positive')
+        barrier('missing')
+        def narrow():
+            status, repeated = request('POST', '/v1/resources/event_history', query, auth)
+            record('narrow-history-after-full-failure', status=status, response=repeated)
+            assert status == 200 and repeated['items'] == [event] and repeated['next_cursor'] is None
+            assert int(repeated['view_stamp']['visibility_as_of_us']) >= int(history['view_stamp']['visibility_as_of_us'])
+            comparable = dict(repeated, view_stamp=dict(repeated['view_stamp'],
+                visibility_as_of_us=history['view_stamp']['visibility_as_of_us']))
+            assert comparable == history, 'original narrow history changed'
+            # Observe immediately: a later full-probe failure must not hide a
+            # transient erroneous Ready promotion caused by this narrow read.
+            status, roles = request('GET', '/management/v1/roles', headers=auth)
+            record('roles-immediately-after-narrow-history', status=status, response=roles)
+            assert status == 200
+            return roles
+        barrier('narrow', narrow)
+        barrier('restored')
     record('logout', response=cli('logout', '--session-ref', 'file:' + str(session)))
     assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+    if mode:
+        active = active_ns()
+        assert active <= JOURNEY_SECONDS * 1_000_000_000, 'original ordinary journey exceeded40s'
+        (home / 'ordinary-timing.json').write_text(json.dumps(dict(mode=mode,
+            original_limit_seconds=JOURNEY_SECONDS, export_limit_seconds=12,
+            overall_limit_seconds=CLIENT_SECONDS, original_active_ns=active, phases=phases), indent=2) + '\n')
     return dict(status='PASS', job_id=receipt['job_id'], history=history, completed=observed)
 
 

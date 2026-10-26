@@ -637,6 +637,12 @@ class Runtime:
         save(output / 'backend-absence.json', observed)
         require(set(observed.values()) == {'0'}, 'application database backend remains')
 
+    def ordinary_client(self, output, entry):
+        result = self.command([sys.executable, '-B', str(self.source /
+            'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)],
+            timeout=40, label='ordinary-client')
+        require(not result.stderr, 'ordinary client diagnostic output')
+
     def ordinary(self):
         self.source_unchanged()
         output = self.root / 'ordinary'
@@ -664,10 +670,7 @@ class Runtime:
         first = self.wait(lambda: self.logs(entry, output), 'ordinary Control', 20, entry=entry)[0]
         require(first['state'] == 'idle', 'ordinary Control did not start')
         save(output / 'initialized.json', first)
-        result = self.command([sys.executable, '-B', str(self.source /
-            'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)],
-            timeout=40, label='ordinary-client')
-        require(not result.stderr, 'ordinary client diagnostic output')
+        self.ordinary_client(output, entry)
         terminal = self.stop_container(entry, output)
         require(terminal['State']['ExitCode'] == 0, 'ordinary Control failed to stop')
         after, catalog_after = self.capture(output, 'after')
