@@ -130,7 +130,7 @@ fn explicit_initial_ingest_refuses_omitted_roles_and_unsupported_consumers_befor
         assert!(wrong.stdout.is_empty());
         assert!(
             String::from_utf8_lossy(&wrong.stderr)
-                .contains("requires control,ingest with optional sync and archive roles")
+                .contains("requires control,ingest with optional sync, archive and index roles")
         );
     }
     let administration = invoke("control,ingest");
