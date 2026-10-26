@@ -74127,5 +74127,50 @@
       "capacity, power-loss and remote-host qualification"
     ],
     "integration_note": "Evidence document and source are currently on local work/initial-index at8b74cd4a; not yet in main."
+  },
+  "implementation_initial_index_clickhouse_sql_20261026": {
+    "observed_at": "2026-10-26T17:45:41.155127+00:00",
+    "status": "SCOPED_SCHEMA_GRANTS_PASS; COLUMN_TTL_NEGATIVE_NOT_RUN",
+    "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026",
+    "branch": "work/initial-index-ch-sql",
+    "base_revision": "22d75a57e0f08209660b6f3edee52feb34105f86",
+    "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
+    "root": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026/.research/ch-lab-a",
+    "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json",
+    "terminal_receipt_sha256": "5cf6bba29ba39064e7e8cbc42e24a54fe08728b55738f8ba5ab1fc029f6cc49e",
+    "containers": [
+      {
+        "name": "bigbrotr-index-schema-20261026a",
+        "id": "cb01d6187eed546f974d1f2a500b10ac21f988661126e2afda2d5120155b8f8f",
+        "running": false,
+        "pid": 0,
+        "exit_code": 0,
+        "oom_killed": false,
+        "finished_at": "2026-10-26T17:19:26.246886562Z"
+      },
+      {
+        "name": "bigbrotr-index-schema-20261026b",
+        "id": "f08c36436426033777dd0867610941d435edf54de8ccd679efb9d12392b92755",
+        "running": false,
+        "pid": 0,
+        "exit_code": 0,
+        "oom_killed": false,
+        "finished_at": "2026-10-26T17:28:53.294869621Z"
+      },
+      {
+        "name": "bigbrotr-index-schema-20261026c",
+        "id": "ef1ccf82ac71df5ff01723eacb8119dd9a73c7d3cab9769e9e00ab3c6069ad0f",
+        "running": false,
+        "pid": 0,
+        "exit_code": 0,
+        "oom_killed": false,
+        "finished_at": "2026-10-26T17:41:43.784033206Z"
+      }
+    ],
+    "image": "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+    "network": "none; no host ports",
+    "retained_bytes": 7874720,
+    "retention": "Keep all original failures, source/recipe snapshots, generated private credentials, catalog captures and databases through actual adapter/product qualification. No existing environment was mutated.",
+    "next": "Engines stopped during native compile; column-dependent TTL negative joins next already-required adapter run."
   }
 }

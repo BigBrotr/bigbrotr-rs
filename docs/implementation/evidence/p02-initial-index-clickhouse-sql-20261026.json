@@ -1,0 +1,173 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P01-T09 initial Index physical schema assumptions",
+  "date": "2026-10-26",
+  "status": "PARTIAL",
+  "summary": "SQL-only schema, catalog, typed-value and narrow-writer checks PASS at the recorded scope; intended column-TTL negative remains NOT_RUN.",
+  "scope": "Fresh isolated official ClickHouse26.8.35.10 amd64 servers, native SQL client via docker exec. No HTTP or Rust/product qualification.",
+  "source": {
+    "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
+    "schema_sha256": "b83807768847a743f0e585831c81cba699e9ba789595d3899e155c062b96469c",
+    "inspect_sha256": "74cd53ef21e11e23a599b0bf4e8e87bdc60fc5596cf655661fa6e3e5d3e165f5",
+    "recipe": "experiments/clickhouse-frontier/initial_schema.py",
+    "recipe_sha256": "e7913e27036f90e1e56ca12905d1f78afee3cab9a41b801ef60573293ebf5d09",
+    "final_unexecuted_delta": "Column-dependent TTL expression prepared after the constant-TTL fixture refusal; repeated retained continuation refuses before engine start."
+  },
+  "engine": {
+    "image": "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+    "platform": "linux/amd64",
+    "observed_version": "26.8.35.10",
+    "observed_git_hash": "9fe0099bcfff9acabbae3c4e6c3e743e3d0a6c59",
+    "observed_version_describe": "v26.8.35.10-lts",
+    "source_limit": "Immutable commit/tag raw source requests returned404. Retained26.8 branch source explains the two observed schema mismatches; it is not asserted byte-identical to the binary."
+  },
+  "oracle": {
+    "method": "Literal independent ten-family field/key/UUID inventory compared against actual system catalogs, DESCRIBE, SHOW CREATE and physical parts. Expected definitions never copied from observed metadata.",
+    "tables": 10,
+    "columns": 160,
+    "column_counts": [
+      35,
+      15,
+      13,
+      15,
+      12,
+      12,
+      12,
+      10,
+      18,
+      18
+    ],
+    "table_identity_digest": "ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106",
+    "table_identity_preimage_bytes": 9463,
+    "json": "Exact Python integers, explicit output_format_json_quote_64bit_integers=0. Corrected oracle first replayed retained captures; actual type-name checks then confirmed UInt64 and Nullable(String)."
+  },
+  "checks": [
+    {
+      "name": "Version, Atomic database, Local default disk and single default policy",
+      "status": "PASS"
+    },
+    {
+      "name": "All10 UUIDs, engines, complete key/settings expressions, empty partition keys and dependency arrays",
+      "status": "PASS_RETAINED_CAPTURE"
+    },
+    {
+      "name": "All160 column names, types, positions and empty defaults",
+      "status": "PASS_RETAINED_CAPTURE"
+    },
+    {
+      "name": "All10 complete canonical CREATE comparisons including UUID visibility",
+      "status": "PASS"
+    },
+    {
+      "name": "All10 DESCRIBE seven-field layouts and zero native projections",
+      "status": "PASS"
+    },
+    {
+      "name": "Persistent writer concurrency value/min/max exactly1",
+      "status": "PASS"
+    },
+    {
+      "name": "Narrow runtime grants",
+      "status": "PASS",
+      "details": "SELECT+INSERT on exactly10 owned tables; SELECT on seven required system tables. Actual writer inspection/DESCRIBE/inserts succeed. CREATE, ALTER, TRUNCATE, DROP, GRANT and ALTER USER each refuse ACCESS_DENIED; settings0 and2 each refuse SETTING_CONSTRAINT_VIOLATION."
+    },
+    {
+      "name": "Typed storage values and append-only rows",
+      "status": "PASS",
+      "details": "All10 table inserts; identical tag-index row retained twice; created_at18446744073709551615 and nonempty/empty/Unicode nested tags roundtrip exactly. Synthetic SQL values, not signed Fact mapping."
+    },
+    {
+      "name": "Physical partition IDs",
+      "status": "PASS",
+      "details": "Every active table part reports partition_id all; expected total12 rows across ten tables after tiny inserts."
+    },
+    {
+      "name": "Actual fixed-account concurrency",
+      "status": "PASS",
+      "details": "Initializer independently observed the first writer query in system.processes; second writer refused TOO_MANY_SIMULTANEOUS_QUERIES; a writer query succeeds after completion."
+    },
+    {
+      "name": "Hidden per-column TTL refusal by complete-definition guard",
+      "status": "NOT_RUN",
+      "details": "Constant TTL mutation itself refused BAD_ARGUMENTS before changing the table. Column-dependent replacement is prepared but scheduled with the next required actual Rust adapter run."
+    }
+  ],
+  "preserved_failures": [
+    {
+      "run": "run-1",
+      "physical_revision": "7a904e695104350d4f3e97bd0684a43b1c1b7589",
+      "status": "FAIL_PRODUCT_DECLARATION",
+      "finding": "PARTITION BY 'all' rejected Code44 ILLEGAL_COLUMN: constant partition key.",
+      "correction": "Omit partition clause; inspect empty key; logical and actual physical partition IDs remain all."
+    },
+    {
+      "run": "run-2",
+      "physical_revision": "a34d0fa6533f4e52c46a9dc1a8ff89cdd9ad2d4a",
+      "status": "FAIL_PRODUCT_DECLARATION",
+      "finding": "Server persists immutable default index_granularity8192, causing exact CREATE equality0.",
+      "correction": "Pin8192 explicitly in declaration and independent table identity, preserving exact comparison."
+    },
+    {
+      "run": "run-3",
+      "status": "FAIL_VERIFIER",
+      "finding": "JSON oracle expected quoted UInt64; server returned exact unquoted integers.",
+      "correction": "Exact integer oracle passed existing captures before restarting only to complete missing checks; original result unchanged."
+    },
+    {
+      "run": "run-3 retained tail",
+      "status": "FAIL_FIXTURE",
+      "finding": "Constant toDateTime(4294967295) column TTL refuses Code36 BAD_ARGUMENTS because it depends on no table column.",
+      "correction": "Prepared toDateTime(recorded_at)+INTERVAL100YEAR; no successful guard refusal claimed."
+    }
+  ],
+  "commands": {
+    "acquisition": "docker pull --platform linux/amd64 clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+    "fresh": "python3 -B experiments/clickhouse-frontier/initial_schema.py --lab-root <new-owned-run> --container bigbrotr-index-schema-<unique> --schema-source <frozen-schema.rs> --inspect-source <frozen-inspect.rs>",
+    "retained_tail": "Same maintained command with --complete-retained-tail, verified existing run-3/container c; no prior table insertion/grant suite repeated.",
+    "raw": "Exact per-query SQL, stdout/stderr/exit outcomes, container start argv, source snapshots and executed recipe snapshots are retained privately."
+  },
+  "resources": {
+    "network": "none",
+    "host_ports": [],
+    "ram_bytes": 4294967296,
+    "memory_swap_bytes": 4294967296,
+    "cpus": 2,
+    "pids": 256,
+    "disk_stop_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592,
+    "monitoring": "Data/log bytes and host free space checked between bounded commands; server and Docker log rotation configured. Samples are not capacity measurements.",
+    "credentials": "Separate generated initializer/writer files mode0600 below0700 ignored roots; values never printed or committed.",
+    "final": "All three owned containers exited0/PID0/noOOM; data and raw logs retained. No further engine starts during root native compile."
+  },
+  "evidence_root": ".research/initial-index-ch-sql-20261026/.research/ch-lab-a",
+  "terminal_receipt_sha256": "5cf6bba29ba39064e7e8cbc42e24a54fe08728b55738f8ba5ab1fc029f6cc49e",
+  "private_receipts": {
+    "run-1/result.json": "d83633c172e4c7b792363c0f0a8d64df8a9c7ec4aea9413074295c986e44d848",
+    "run-1/recipe.py": "ea6a38f51eca19515e7c73b83ce65c2ce875e7884a5f62a4e365873459b37977",
+    "run-1/results/008-initializer.stderr": "fe0c5342dbd0e9583b5e40fae27ecd2f0959a95a64c0aca8f389b36f4456812f",
+    "run-2/result.json": "4a7d52157a70152f1a1eac2b72decf3ec6c7d17f45e3b7824a07a405451bf252",
+    "run-2-recipe.py": "b8f2a137216ad9c0b8956f58efed1dd76638064742819f7f055e712e8c1fd341",
+    "run-2/results/039-create-definition-facts.stdout": "ce63b34270cddff77653bf1836823e847ed95f9e5889b751b00d373d928d0004",
+    "run-2/results/041-create-definition-equality.stdout": "2c48ae3a69d79e9fab75be0825797c95531ef84673f3b442f25b3ba659ec4b46",
+    "run-3/result.json": "be085c2cff34f53a99a81a1066645351319b4cf8953e0e274335eea528b05ed7",
+    "run-3-recipe.py": "897175772e740ccded82419bbf9572daac8f14b144e91da800b621b0cdf114df",
+    "run-3/retained-json-oracle.json": "89f1115598fa6a2091121e3658a87c7703f799b0e8bd793580948fdb70286a35",
+    "run-3/tail-result.json": "651fef64547a4c3f1e33c064d4e2dbe01fa02f0ace2b13d52a28536d37756059",
+    "tail-recipe.py": "19d41d68b05302a8e130315ce523b61ee08d7e3a3c4a6935aff5025d75d57373",
+    "run-3/results/139-column-ttl-control.stderr": "4fb1408a546ebc69baf54eb91ac0c64ebf4804007d376d673c0ee7d04c222624"
+  },
+  "references": [
+    "https://clickhouse.com/docs/reference/engines/table-engines/mergetree-family/mergetree",
+    "https://raw.githubusercontent.com/ClickHouse/ClickHouse/26.8/src/Storages/MergeTree/MergeTreeData.cpp",
+    "https://raw.githubusercontent.com/ClickHouse/ClickHouse/26.8/src/Storages/MergeTree/MergeTreePartition.cpp",
+    "https://raw.githubusercontent.com/ClickHouse/ClickHouse/26.8/src/Storages/MergeTree/MergeTreeSettings.cpp"
+  ],
+  "not_run": [
+    "Column-dependent TTL negative",
+    "HTTP/RowBinary selected Rust client and actual adapter",
+    "PostgreSQL physical proofs/publication/lost-COMMIT",
+    "Packaged product and meaningful signed-event Fact mapping",
+    "Unclean restart/power-loss/fsync durability and cancellation",
+    "Capacity, TLS and remote-host qualification"
+  ]
+}
