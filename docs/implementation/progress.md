@@ -7,7 +7,7 @@ Official releases, packages and production remain unauthorized.
 ## Current increment and revision
 
 P01-T09 initial Index is on `work/initial-index` in the canonical checkout,
-HEAD `9a105e29` before this source-bound correction checkpoint. Runtime wiring is complete
+HEAD `b5333d53` before this native/retirement checkpoint. Runtime wiring is complete
 at its initial-only scope: explicit `--initialize-index`, accepted-policy checks,
 actual PG driver custody, bounded physical operations, serialized renewal/timer
 work and joined shutdown. The first real installed attempt exposed a write-adapter defect described below.
@@ -81,8 +81,10 @@ used the per-target4-row ceiling as the whole source read limit. The known final
 source batch8–12 contains five facts while every target fits its accepted ceiling.
 The correction separates the existing bounded64-fact source allowance from insert
 rows, preserves per-target refusal and recalculates reservations; errors now name
-the safe PendingError discriminant. Critical source review and format/whitespace PASS; changed native controls
-and actual installed execution are pending. The original generic error did not
+the safe PendingError discriminant. Critical review, actual current library/CLI/test builds, strict Clippy and all 96
+selected controls PASS on exact `b5333d53`. Root verified all 22 evidence hashes
+and three retained executables. The native profile safely reused its exclusive
+compiler cache; the worker-bound build is active, installed execution pending. The original generic error did not
 retain its discriminant, so the diagnosed cause still needs the corrected run.
 All16 r3 containers are stopped/PID0/noOOM (owner exit4, others0); cleanupPASS,
 borrowed bridge empty/unchanged. Original data/logs and r1/r2 outcomes are preserved.
@@ -172,10 +174,11 @@ or asynchronous provider scan completion.
 
 Native sessions62389 (FAIL) and5554 (PASS) ended and were reaped; both runs'
 containers are stopped-retained, with unrelated inventory unchanged. No owned
-engine or build is active. The034 andf7 candidate build containers are stopped-retained;
+engine is active. The034 andf7 candidate build containers are stopped-retained;
 monitor77182 ended/exit0 and was reaped. Installed r3 session23616 ended/exit1 and
-was reaped. The source-limit correction passed independent critical review;
-other delegates completed their scoped work. Worktrees and receipts are retained.
+was reaped. Native session75010 ended/exit0 and was reaped. Root session76528 monitors the
+ordinary fresh `b5333d53` candidate build under the same recorded resource limits.
+All delegates completed their scoped work; worktrees and receipts are retained.
 Root owns integration and all native/lab execution. Q37 settings remain as verified.
 
 The earlier bounded cache retirement removed4446 obsolete compiler intermediates
@@ -184,11 +187,15 @@ entries and35 outside pins were checked. Inventory
 `archive_read_headroom.checkpoint_20261026` owns its manifest/journal/reconstruction
 procedure. No dataset, executable, source, worktree or container was removed;
 never replay that deletion or incrementally resume the partly retired caches.
-Latest post-native free space is154,385,682,432bytes. Check headroom before the
-next significant allocation; no broad cleanup is needed to unlock this increment.
+The now-obsolete034 compiler target was also retired after ownership/use checks:
+1,389,359,104 allocated bytes, observed free-space gain1,389,355,008 bytes. Its
+11 artifact/source/log pins remain unchanged; the precise journal and4422-entry
+inventory are linked by `implementation_checkpoint_space_20261026`. This removes
+only a rebuildable cache, not original failed-run evidence. Docker visibility
+limits of host lsof are documented alongside actual container/mount checks.
+Headroom was checked before the active build; no broad cleanup is underway.
 
-Next: qualify the changed source-bound control, build the corrected worker-bound
-candidate and execute the same signed-event admission → Archive and Index publication →
+Next: verify the active corrected worker-bound build and execute the same signed-event admission → Archive and Index publication →
 independent read/export checks with the4-row accepted policy. Preserve failure
 classification and original captures. Exercise the pending real TTL rejection
 and independent outages at their relevant acceptance boundaries; do not claim

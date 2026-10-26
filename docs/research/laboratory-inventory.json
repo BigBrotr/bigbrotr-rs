@@ -74204,7 +74204,7 @@
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Initial runtime4404 component evidence retained; fresh worker-boundf7buildPASS. r3 exposes source-fact vs target-row coupling; corrected source pending qualification. Restart/unknown-query/readiness remain open.",
+      "state": "Source/metadata/write corrections have exactb533native96PASS; real worker-bound build active. r1/r2/r3 originals preserved; installed rerun required. Restart/unknown-query/readiness open.",
       "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
       "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
       "first_actual_run": {
@@ -74246,7 +74246,8 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/out/config-preflight/result.json",
           "sha256": "d2cbd6f342748665dab34e075fc53e0761199407f421ddd81932e26149c74f59",
           "result": "Actual03464fcf candidate config validate PASS for882f84f4 recipe; separate bounded network-none container5911eb70 stopped/exit0/PID0/noOOM. No secrets resolved or engine opened; preliminary import/stopped-container preparation attempts were NOT_RUN."
-        }
+        },
+        "compiler_cache": "target retired after verified ownership/nonuse; copied artifacts/source/manifests/logs retained; see implementation_checkpoint_space_20261026"
       },
       "maintained_installed_case": {
         "author_commit": "882f84f4f76f779ff3c37d292c61c2a1ef893348",
@@ -74326,17 +74327,44 @@
       },
       "source_limit_correction": {
         "behavior": "Keep bounded64-fact source batch allowance independent from accepted4-row per-target insert ceiling; unchanged output checks and reservation accounting. Retain safe PendingError discriminant in diagnostic.",
-        "state": "Independent critical source review PASS; format/whitespacePASS; actual changed native controls/installed rerun pending",
-        "review": "initial_index_rows checked immutable pending marker count, all-family bounds before PG preparation, both planner passes, charged source/planner allowances and safe enum-only diagnostics. Original generic error leaves direct variant unobserved; no new engine/build by reviewer."
+        "state": "Critical review and exact-source native96 controls/strict Clippy PASS; corrected worker-bound build running; installed engine rerun pending",
+        "review": "initial_index_rows checked immutable pending marker count, all-family bounds before PG preparation, both planner passes, charged source/planner allowances and safe enum-only diagnostics. Original generic error leaves direct variant unobserved; no new engine/build by reviewer.",
+        "commit": "b5333d531655cc6e79039c9fb755ece0643a3978",
+        "review_receipt": ".research/implementation/index-foundation-20261026/runtime-review-47f8fde5/source-limit-write-api-followup-review.json",
+        "review_sha256": "9adc61a38094330c2e342fc6d01b7898c39299d554733c511611c78a6b74385c"
+      },
+      "source_limit_components": {
+        "source": "b5333d531655cc6e79039c9fb755ece0643a3978",
+        "tree": "45496b115750dc59b51e11f130aa982378520a22",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-b5333d5",
+        "qualification_sha256": "802464372691ca80087ad68078554d7ac15e8e3fe2a6c0bdbdd8b527dd29f726",
+        "result": "Actual lib/CLI/test-executable builds and strictClippyPASS;65 library+31binary controlsPASS, no ignored/failed in selected scope. Root checked22 evidence digests/3 artifact hashes. Native cache reused exclusively; source/retained executables checked. No worker binding or installed/engine claim.",
+        "process": "session75010 exit0/reaped; both owned containers stopped/exit0/PID0/noOOM; unrelated inventory unchanged"
+      },
+      "source_limit_candidate_build": {
+        "source": "b5333d531655cc6e79039c9fb755ece0643a3978",
+        "tree": "45496b115750dc59b51e11f130aa982378520a22",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-b5333d5",
+        "container_id": "a65017f63801aa71e4cdf8dbdb947acf93ad5a8b75ee50a4c64bfed7f35d3c84",
+        "session": 76528,
+        "state": "RUNNING",
+        "limits": "Same reviewed f7ordinary recipe, new source/root/owner only;2CPU6GiB512PIDs/65GiBfree/40GiBoutput/7200sdeadline. Fresh worker-before-parent with pinned native assets. launch.json/resources.json retain actual command and identity."
       }
     }
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",
     "observed": "92% used,145GiB available after security integration",
-    "status": "Bounded cache retirement assessment active; no new deletion yet",
-    "owner": "ci_native_cancel_review",
-    "scope": "Up to3 obsolete/reconstructible substantial compiler caches; ownership, actual process/mount use and retained artifact/input obligations required before root deletion. Current Index/security caches and unique evidence preserved."
+    "status": "Bounded retirement complete; no general cleanup underway",
+    "owner": "root",
+    "scope": "Only obsolete034 compiler target retired; native115 cache, activeb533build, all evidence/datasets/worktrees retained",
+    "latest_retirement": {
+      "journal": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/target-retirement.json",
+      "sha256": "7c82d861069648de7ec7fee5d7ffd7971164ace2b06fef2e34b77784fdf3c9b9",
+      "allocated_bytes": 1389359104,
+      "observed_free_delta": 1389355008,
+      "preservation": "11 copied artifact/source/log pins rehashed after deletion; exact4422-entry inventory retained. Lsof Docker visibility limitation documented; actual builder state and active container mounts checked. Rebuild via retained exact-source launch command."
+    }
   },
   "implementation_ci_assembly_fixture_20261026": {
     "observed_at": "2026-10-26T16:37:00.084952+00:00",
