@@ -49,8 +49,9 @@ The `initial-index` profile uses the same owned cache, pinned image, source expo
 offline container, resource limits and terminal inventory checks. Its run directory
 is `runs/initial-index-<first-seven-commit-digits>`; pass `initial-index` as the final
 `lab.py` argument. It builds the actual `bigbrotr` library and CLI with the selected
-locked dependencies, compiles the actual library test executable and runs strict
-Clippy for both library and CLI. No source substitution or signature stub is used.
+locked dependencies, compiles separate actual library and binary unit-test
+executables and runs strict Clippy for both library and CLI. No source
+substitution or signature stub is used.
 The separate Archive worker is neither built nor bound by this diagnostic.
 
 The retained library executable lists its compiled tests before selecting
@@ -59,7 +60,14 @@ The retained library executable lists its compiled tests before selecting
 `storage::postgres::transport::route_tests::`. Every expected owning module must
 be present. Two existing Archive transport-custody controls also cover the shared
 future-before-guard destruction boundary changed by late Index attachment.
-Executed names and counts must match that inventory with zero failed
+The separate binary test executable must contain the closed 30-test service
+scope: six Index actor and seven preparation controls, two explicit initial
+Ingest/Index CLI controls, seven command-admission controls including actual
+loopback HTTP, six supervision controls and two phase-watchdog controls. Names
+and counts are declared from the owning source; missing, renamed or additional
+tests within that scope require a reviewed inventory update. Both executables
+are listed before execution, and every group records which executable ran it.
+Executed names and counts must match their inventory with zero failed
 or ignored tests; an empty filter cannot pass. The copied CLI's `build-info` must
 match the source/tree/manifest and input hashes. Exact binary/test bytes, selected
 test names, command logs and result hashes remain outside the mutable compiler

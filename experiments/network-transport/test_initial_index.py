@@ -4,11 +4,91 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from initial_index import (GROUPS, REQUIRED_MODULES, completed_tests,
-                           listed_tests, retain_executable, selected_tests)
+from initial_index import (BINARY_EXACT, BINARY_GROUPS, BINARY_REQUIRED, GROUPS,
+                           REQUIRED_MODULES, build_commands, completed_tests,
+                           listed_tests, retain_executable, selected_tests,
+                           test_commands)
 
 
 class IndexResultControls(unittest.TestCase):
+    def test_binary_scope_requires_all_thirty_named_controls(self):
+        names = sorted(test for tests in BINARY_REQUIRED.values() for test in tests)
+        self.assertEqual(len(names), 30)
+        self.assertEqual(len(set(names)), 30)
+        self.assertEqual({name: len(tests) for name, tests in BINARY_REQUIRED.items()}, {
+            'initial-index': 13, 'initial-commands': 7, 'initial-supervision': 6,
+            'initial-watchdog': 2, 'initial-cli': 1, 'index-cli': 1,
+        })
+        self.assertEqual(sum('::index::tests::' in name for name in names), 6)
+        self.assertEqual(sum('::index::prepare::tests::' in name for name in names), 7)
+
+        def select(inventory):
+            return selected_tests(inventory, groups=BINARY_GROUPS, required_modules=(),
+                                  required_tests=BINARY_REQUIRED)
+
+        text = '\n'.join(name + ': test' for name in names) + '\n\n30 tests, 0 benchmarks\n'
+        selected = select(listed_tests(text))
+        self.assertEqual({key: sorted(value) for key, value in BINARY_REQUIRED.items()}, selected)
+        # Unrelated compiled CLI tests are not part of this focused profile.
+        self.assertEqual(select(names + ['interfaces::unrelated::fixture']), selected)
+        for name in names:
+            without = [test for test in names if test != name]
+            for invalid in (without, without + [name + '_different'], names + [name]):
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    select(invalid)
+        for prefix in BINARY_GROUPS.values():
+            with self.assertRaises(ValueError):
+                select([name for name in names if not name.startswith(prefix)])
+            with self.assertRaises(ValueError):
+                select(names + [prefix + 'unexpected'])
+        # The old library-only inventory cannot satisfy a binary module.
+        with self.assertRaises(ValueError):
+            select([prefix + 'control' for prefix in GROUPS.values()])
+        for invalid in (text.replace('30 tests', '29 tests'),
+                        text.replace(names[0] + ': test', names[1] + ': test'),
+                        '0 tests, 0 benchmarks\n'):
+            with self.assertRaises(ValueError):
+                listed_tests(invalid)
+
+    def test_actual_binary_target_is_compiled_and_each_group_runs_its_retained_elf(self):
+        commands = dict(build_commands())
+        for command in commands.values():
+            for flag in ('--locked', '--offline', '--release', '--lib', '--bin'):
+                self.assertIn(flag, command)
+            self.assertEqual(command[command.index('--bin') + 1], 'bigbrotr')
+        self.assertEqual(commands['compile-tests'][:2], ['cargo', 'test'])
+        self.assertIn('--no-run', commands['compile-tests'])
+        self.assertEqual(commands['clippy'][-3:], ['--', '-D', 'warnings'])
+        artifact_root = Path('/synthetic/retained-artifacts')
+        selected = dict(test_commands(artifact_root))
+        self.assertEqual(set(selected), set(GROUPS) | set(BINARY_GROUPS))
+        for groups, executable in ((GROUPS, 'bigbrotr-lib-tests'),
+                                   (BINARY_GROUPS, 'bigbrotr-bin-tests')):
+            for name, prefix in groups.items():
+                command = selected[name]
+                self.assertEqual(command[:2], [str(artifact_root / executable), prefix])
+                self.assertEqual(command[-1], '--test-threads=1')
+                self.assertEqual('--exact' in command, name in BINARY_EXACT)
+
+    def test_binary_results_cannot_omit_replace_ignore_or_only_report_a_count(self):
+        for group, expected in BINARY_REQUIRED.items():
+            lines = ['test ' + name + ' ... ok' for name in expected]
+            summary = (f'test result: ok. {len(expected)} passed; 0 failed; 0 ignored; '
+                       '0 measured; 999 filtered out; finished in 0.01s')
+            valid = '\n'.join([*lines, summary]) + '\n'
+            completed_tests(valid, expected)
+            for invalid in (
+                summary + '\n',
+                '\n'.join([*lines[1:], summary]) + '\n',
+                valid.replace(expected[0] + ' ... ok', expected[0] + '_different ... ok'),
+                valid.replace(f'{len(expected)} passed', f'{len(expected) - 1} passed'),
+                valid.replace('0 ignored', '1 ignored'),
+                valid.replace(expected[0] + ' ... ok', expected[0] + ' ... ignored'),
+                lines[0] + '\n' + valid,
+            ):
+                with self.subTest(group=group), self.assertRaises(ValueError):
+                    completed_tests(invalid, expected)
+
     def test_inventory_requires_each_real_owning_module(self):
         names = sorted({prefix + 'control' for prefix in (*GROUPS.values(), *REQUIRED_MODULES)})
         text = '\n'.join(name + ': test' for name in names) + f'\n\n{len(names)} tests, 0 benchmarks\n'
@@ -67,6 +147,30 @@ class IndexResultControls(unittest.TestCase):
             log.write_text(json.dumps(dict(item, executable=str(link))))
             with self.assertRaises(ValueError):
                 retain_executable(log, 'lib', True, root / 'never-created', target)
+
+    def test_binary_test_artifact_is_distinct_from_library_and_ordinary_cli(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / 'target'
+            target.mkdir()
+            entries = []
+            for name, kind, is_test in [('cli', 'bin', False), ('library', 'lib', True),
+                                       ('binary-tests', 'bin', True)]:
+                path = target / name
+                path.write_bytes(('synthetic compiler identity ' + name).encode())
+                entries.append(dict(reason='compiler-artifact', executable=str(path),
+                                    target=dict(name='bigbrotr', kind=[kind]),
+                                    profile=dict(test=is_test)))
+            log = root / 'compile.log'
+            log.write_text('\n'.join(json.dumps(item) for item in entries) + '\n')
+            retained = root / 'retained-bin-tests'
+            retain_executable(log, 'bin', True, retained, target)
+            self.assertEqual(retained.read_bytes(), (target / 'binary-tests').read_bytes())
+            for invalid in (entries[:2], entries + [entries[-1]],
+                            [dict(entries[-1], target=dict(name='other', kind=['bin']))]):
+                log.write_text('\n'.join(json.dumps(item) for item in invalid) + '\n')
+                with self.assertRaises(ValueError):
+                    retain_executable(log, 'bin', True, root / 'not-created', target)
 
 
 if __name__ == '__main__':

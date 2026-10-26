@@ -32,6 +32,59 @@ REQUIRED_MODULES = (
     'storage::indexer::state::tests::',
 )
 
+# Closed initial service scope, derived from the owning source rather than an
+# observed successful listing. Library test inventory cannot stand in for these
+# binary-only modules. Names/counts change only with a reviewed scope change.
+INITIAL = 'interfaces::serve::initial_ingest::'
+BINARY_GROUPS = {
+    'initial-index': INITIAL + 'index::',
+    'initial-commands': INITIAL + 'commands::tests::',
+    'initial-supervision': INITIAL + 'supervision::tests::',
+    'initial-watchdog': INITIAL + 'tests::',
+    'initial-cli': 'interfaces::serve::tests::initial_ingest_startup_requires_an_explicit_flag',
+    'index-cli': 'interfaces::serve::tests::index_initialization_requires_explicit_fresh_ingest_and_refuses_successors',
+}
+BINARY_EXACT = ('initial-cli', 'index-cli')
+BINARY_REQUIRED = {
+    'initial-index': tuple(INITIAL + 'index::' + name for name in (
+        'tests::accepted_profile_preserves_provenance_and_both_documents_actual_ceilings',
+        'tests::source_validation_refuses_foreign_successor_policy_and_allocation_identity',
+        'tests::initial_cut_has_no_publication_and_advances_only_the_same_complete_stream',
+        'tests::all_ten_family_outcomes_obey_counts_zero_and_checked_wire_ceiling_before_prepare',
+        'tests::reservations_distinguish_unavailable_from_impossible_and_do_not_wait',
+        'tests::cancellation_and_expiry_refuse_before_dispatch',
+        'prepare::tests::ordinary_preparation_never_opens_initializer_or_creates_state_and_retains_credit',
+        'prepare::tests::explicit_initialization_requires_the_separate_protected_pair',
+        'prepare::tests::reservation_and_tls_profile_refusals_precede_dns_and_secret_reads',
+        'prepare::tests::every_dns_answer_must_match_the_fixed_boundary_and_answer_limit',
+        'prepare::tests::numeric_mapped_loopback_needs_no_resolver_and_unsafe_endpoint_forms_refuse',
+        'prepare::tests::root_and_credential_refusals_preserve_input_and_return_the_grant',
+        'prepare::tests::engine_envelope_preserves_independent_control_credit_and_never_waits',
+    )),
+    'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
+        'renewal_admission_does_not_wait_for_a_timer_tick',
+        'admission_is_rechecked_after_a_select_wait',
+        'a_short_archive_horizon_defers_instead_of_borrowing_new_budget',
+        'slow_valid_renewals_cannot_create_an_unbounded_renewal_only_loop',
+        'external_deadline_and_cancellation_precede_first_nested_poll',
+        'nested_phase_publication_keeps_the_absolute_archive_ceiling',
+        'a_selected_http_request_retains_its_permit_until_consumed_or_dropped',
+    )),
+    'initial-supervision': tuple(BINARY_GROUPS['initial-supervision'] + name for name in (
+        'parent_watchdog_freezes_sync_stage_before_grace',
+        'a_stopped_preparer_returns_owned_state_only_after_join',
+        'published_phase_wins_an_expired_cached_deadline',
+        'stop_collects_the_blocking_worker_after_its_cleanup',
+        'grace_expiry_never_reports_or_aborts_a_blocked_worker',
+        'stop_revokes_a_listener_published_after_the_supervisor_snapshot',
+    )),
+    'initial-watchdog': tuple(BINARY_GROUPS['initial-watchdog'] + name for name in (
+        'a_late_native_completion_cannot_reset_the_phase_watchdog',
+        'a_phase_refusal_retains_the_prior_static_callsite',
+    )),
+    **{name: (BINARY_GROUPS[name],) for name in BINARY_EXACT},
+}
+
 
 def listed_tests(text):
     names = re.findall(r'^([\w:]+): test$', text, re.M)
@@ -42,13 +95,19 @@ def listed_tests(text):
     return sorted(names)
 
 
-def selected_tests(names):
+def selected_tests(names, *, groups=GROUPS, required_modules=REQUIRED_MODULES,
+                   required_tests=None):
     selected = {name: [test for test in names if test.startswith(prefix)]
-                for name, prefix in GROUPS.items()}
+                for name, prefix in groups.items()}
     if (not all(selected.values())
             or any(not any(test.startswith(prefix) for test in names)
-                   for prefix in REQUIRED_MODULES)):
+                   for prefix in required_modules)):
         raise ValueError('required Index test module is absent from actual application')
+    if required_tests is not None and (
+            selected.keys() != required_tests.keys()
+            or any(sorted(selected[name]) != sorted(expected)
+                   for name, expected in required_tests.items())):
+        raise ValueError('compiled binary tests differ from the required initial service scope')
     return selected
 
 
@@ -86,9 +145,29 @@ def retain_executable(log, kind, test, destination, target):
     return digest
 
 
+def build_commands():
+    common = ['--locked', '--offline', '--release', '-p', 'bigbrotr']
+    return [
+        ('compile', ['cargo', 'build', *common, '--lib', '--bin', 'bigbrotr', '--message-format=json']),
+        ('compile-tests', ['cargo', 'test', *common, '--lib', '--bin', 'bigbrotr', '--no-run', '--message-format=json']),
+        ('clippy', ['cargo', 'clippy', *common, '--lib', '--bin', 'bigbrotr', '--', '-D', 'warnings']),
+    ]
+
+
+def test_commands(artifacts):
+    return [
+        (name, [str(artifacts / 'bigbrotr-lib-tests'), prefix, '--test-threads=1'])
+        for name, prefix in GROUPS.items()
+    ] + [
+        (name, [str(artifacts / 'bigbrotr-bin-tests'), prefix,
+                *(['--exact'] if name in BINARY_EXACT else []), '--test-threads=1'])
+        for name, prefix in BINARY_GROUPS.items()
+    ]
+
+
 def run(source, build, env, identity, sources):
     original = sources()
-    identity = dict(identity, scope='Actual bigbrotr library and CLI build, focused Index/PG route unit tests and strict Clippy; no stubs, engine transactions, installed service, release or capacity qualification',
+    identity = dict(identity, scope='Actual bigbrotr library and CLI build, focused library Index/PG route and binary initial-service unit tests and strict Clippy; no stubs, engine transactions, installed service, release or capacity qualification',
                     profile='initial-index', archive_worker='not built or bound')
     output = build.parent
     qualification = output / 'qualification.json'
@@ -106,15 +185,8 @@ def run(source, build, env, identity, sources):
 
     record()
     try:
-        packages = ['-p', 'bigbrotr']
-        common = ['--locked', '--offline', '--release', *packages]
         checks = output / 'build-checks'
-        commands = [
-            ('compile', ['cargo', 'build', *common, '--lib', '--bin', 'bigbrotr', '--message-format=json']),
-            ('compile-tests', ['cargo', 'test', *common, '--lib', '--no-run', '--message-format=json']),
-            ('clippy', ['cargo', 'clippy', *common, '--lib', '--bin', 'bigbrotr', '--', '-D', 'warnings']),
-        ]
-        if execute(commands, checks, source, env, identity, remaining(1800))['status'] != 'PASS':
+        if execute(build_commands(), checks, source, env, identity, remaining(1800))['status'] != 'PASS':
             raise ValueError('actual application build or Clippy failed')
         artifacts = output / 'artifacts'
         artifacts.mkdir()
@@ -123,6 +195,7 @@ def run(source, build, env, identity, sources):
             for name, log, kind, test in [
                 ('bigbrotr', 'compile.log', 'bin', False),
                 ('bigbrotr-lib-tests', 'compile-tests.log', 'lib', True),
+                ('bigbrotr-bin-tests', 'compile-tests.log', 'bin', True),
             ]
         }
         identity['executables_sha256'] = executables
@@ -131,6 +204,7 @@ def run(source, build, env, identity, sources):
         inventory = output / 'test-inventory'
         if execute([
             ('list', [str(artifacts / 'bigbrotr-lib-tests'), '--list', '--format', 'pretty']),
+            ('list-bin', [str(artifacts / 'bigbrotr-bin-tests'), '--list', '--format', 'pretty']),
             ('build-info', [str(artifacts / 'bigbrotr'), 'build-info']),
         ], inventory, source, env, identity, remaining(60))['status'] != 'PASS':
             raise ValueError('application identity or test listing failed')
@@ -145,13 +219,20 @@ def run(source, build, env, identity, sources):
                     'contracts/protocol/versions.json', 'contracts/protocol/nip01-event.json')}):
             raise ValueError('application build identity mismatch')
         tests = selected_tests(listed_tests((inventory / 'list.log').read_text()))
+        binary_tests = selected_tests(
+            listed_tests((inventory / 'list-bin.log').read_text()), groups=BINARY_GROUPS,
+            required_modules=(), required_tests=BINARY_REQUIRED)
+        tests.update(binary_tests)
         (inventory / 'selected.json').write_text(json.dumps(tests, indent=2) + '\n')
         identity['selected_tests'] = tests
+        identity['test_executables'] = {
+            **{name: 'bigbrotr-lib-tests' for name in GROUPS},
+            **{name: 'bigbrotr-bin-tests' for name in BINARY_GROUPS},
+        }
         report.update(identity)
         record()
         checks_run = output / 'tests'
-        if execute([(name, [str(artifacts / 'bigbrotr-lib-tests'), prefix, '--test-threads=1'])
-                    for name, prefix in GROUPS.items()], checks_run, source, env, identity, remaining(120))['status'] != 'PASS':
+        if execute(test_commands(artifacts), checks_run, source, env, identity, remaining(120))['status'] != 'PASS':
             raise ValueError('focused actual application tests failed')
         for name, expected in tests.items():
             completed_tests((checks_run / (name + '.log')).read_text(), expected)
