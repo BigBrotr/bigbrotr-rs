@@ -344,6 +344,8 @@ class IndexRuntime(Runtime):
         # Retain the successful baseline before the fault, even if any following
         # step fails. Exact duplicates are harmless to DISTINCT readback, so add
         # one conflicting typed value at the same source/discriminator instead.
+        # The extra row rejects before cursor EOF; the remote slot must remain
+        # uncertain even after its local executor joins.
         mutation = dict(kind='append_conflicting_event_content', original_capture='clickhouse-live.json',
             positive_observation=len(observations)-1, verification='not_observed')
         save(output/'role-invalidation.json', mutation)
@@ -369,7 +371,7 @@ class IndexRuntime(Runtime):
         require(self.inspect(entry)['State']['Running'] and self.archive_published(),
                 'combined owner/Archive stopped after physical invalidation')
         save(output/'role-invalidation-verdict.json', dict(status='PASS', observations=len(observations),
-            index='unavailable', reason='dependency_unavailable', control='ready', authenticated_http=200,
+            index='unavailable', reason='remote_outcome_unknown', control='ready', authenticated_http=200,
             source_through=12, archive_revision=4, index_revision=4, original_events=1, conflicting_events=1,
             publication='unchanged', session_idle='unchanged', physical_fault='retained', ordinary_readiness='NOT_RUN'))
 

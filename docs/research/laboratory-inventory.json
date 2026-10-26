@@ -74392,7 +74392,7 @@
       }
     },
     "live_readiness": {
-      "state": "native122-qualified-fresh-worker-bound-build-running",
+      "state": "native-qualified-installed-r5-fixture-failed-correction-ready",
       "branch": "work/live-readiness",
       "observed_revision": "1d263af616a996c29843ddad9a113c761bd8be98",
       "worktrees": [
@@ -74415,7 +74415,7 @@
           "sha256": "963337d12e46713c7240e6ebfd6df46073ef7a1fe626817e17b0f3de7a4fbb02"
         }
       ],
-      "active_local_engines_or_builds": true,
+      "active_local_engines_or_builds": false,
       "ci": {
         "run": 40393162501,
         "watcher": 91567,
@@ -74473,19 +74473,48 @@
       ],
       "installed_candidate_build": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-a295da6",
-        "session": 80251,
+        "session": "80251 ended exit0/reaped",
         "source": "a295da606aa95093530532d8e576bae1c01992b9",
         "container": "2636be56c57987784fcff5fb7f13cd9f3e36856fdd453c003c15c969357658bd",
-        "state": "RUNNING; no installed engines active",
+        "state": "PASS_FRESH_WORKER_BOUND_BUILD",
         "recipe": "Same retained fresh worker-before-parent recipe, separate Cargo home/target;2CPU6GiB512PIDs/65GiBfree/40GiBoutput/7200s",
-        "concurrency": "Started after native preflight. Product builds/Clippy pass at4ac; onlydictionary test grant differs. Current native fixture validation remains pending; no combined PASS claim."
+        "concurrency": "Started after native preflight. Product builds/Clippy pass at4ac; onlydictionary test grant differs. Current native fixture validation remains pending; no combined PASS claim.",
+        "terminal": "container stopped/exit0/PID0/noOOM",
+        "root_verification": "root-verification.json",
+        "root_verification_sha256": "76d34785f120ae137c8e7c58034147d372ba84c0b06778f702f4d7f81e2e833d"
       },
       "negative_acceptance": {
         "author_commit": "04ce548c1a5a9ecfcdeefd5c33469cfcd4dd271f",
         "integrated_commit": "1ae90220",
         "root_review": ".research/live-readiness-20261026/negative-acceptance-root-review.json",
         "root_review_sha256": "52383712cb538455ac4edf2996c2260565aecd1e4d4c7998bbb08f50a5a7d851",
-        "controls": "14 targeted Python controls PASS; actual physical transition NOT_RUN"
+        "controls": "14 targeted controls PASS after exact uncertainty-reason correction; corrected retained r5 capture replay PASS; fresh complete case pending"
+      },
+      "installed_executions": [
+        {
+          "root": ".research/first-launch-index-r5-20261026",
+          "product": "a295da606aa95093530532d8e576bae1c01992b9",
+          "assembly": "55df797ac75d8873f5bad369302babfa29cf4c2e",
+          "acceptance": "55df797ac75d8873f5bad369302babfa29cf4c2e",
+          "result": "FAIL_FIXTURE_EXPECTED_REASON",
+          "result_sha256": "e9f01bdee4e57afe1735c54fe2608e2fffcaf2e1133ec7ab4188228e1ac541c5",
+          "positive": "Authenticated full initial observations PASS; exact conflicting event row independently captured",
+          "cause": "Second distinct row exceeds one-row chunk before cursor EOF; remote query uncertainty is correctly retained. Fixture wrongly required known dependency failure.",
+          "correction": "Require exact remote_outcome_unknown and reject dependency_unavailable for this early-abort fixture; no product or timeout changes.",
+          "replay": "corrected-oracle-replay.json",
+          "replay_sha256": "43b32fef2948ce6b8ad183280f832462efaa2c39009022756880a33b30ca3662",
+          "process": "session51261 exit1/reaped; all16 owned containers stopped/exit0/PID0/noOOM",
+          "not_run": [
+            "final publication oracle",
+            "ordinary history/export"
+          ]
+        }
+      ],
+      "source_audit": {
+        "through": "55df797ac75d8873f5bad369302babfa29cf4c2e",
+        "receipt": ".research/ci-publication-20261026/source-55df797a-exposure/receipt.json",
+        "sha256": "7500152a8e49741cbee6d83c7caa4ba60b02691f9fba498b4134b22f9b8f9765",
+        "result": "99 objects;14 occurrences/7 known fingerprints, all matched lines unchanged from audited007; no new confirmed exposure. Later delta pending."
       }
     }
   },

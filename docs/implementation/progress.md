@@ -45,7 +45,13 @@ The maintained installed case now includes positive role observations and one
 independent conflicting event row. It must detect Index unavailability while
 Control and the original Archive journey remain usable. Acceptance source
 `1ae90220` integrates author `04ce548c`; 14 targeted oracle/refusal controls and
-critical review PASS. Actual positive/negative installed transition is NOT_RUN.
+critical review PASS. Installed r5 confirms positive readiness and detects the independently added
+conflicting row with Index unavailable while Control/other capabilities stay ready.
+Its original result is FAIL: the fixture expected `dependency_unavailable`, but
+the second row rejects before cursor EOF, correctly retaining remote query
+uncertainty. The corrected oracle requires exactly `remote_outcome_unknown` and
+rejects a falsely known outcome. Fourteen controls and replay on retained captures
+PASS; final publication/history/export were NOT_RUN in r5 and need a fresh case.
 31 client controls, TypeScript and contract drift also pass at the recorded source.
 Protected source reviews are linked from the inventory; both implementation and
 negative-acceptance delegates have finished, with their changes integrated.
@@ -106,14 +112,13 @@ be checked before push. Keep raw captures protected and out of public uploads.
 
 ## Resources and next action
 
-Fresh worker-before-parent build is RUNNING, session80251, root
-`runs/initial-index-installed-a295da6`, container
-`2636be56c57987784fcff5fb7f13cd9f3e36856fdd453c003c15c969357658bd`.
-It uses a separate fresh Cargo home/target with the existing pinned native assets,
-2 CPUs/6 GiB/512 PIDs, 65 GiB minimum free space and 40 GiB output ceiling.
-Native session10299 ended exit0/reaped; its owned containers are stopped/PID0/
-noOOM. No installed engine case is active. No delegate owns an active build,
-engine or GitHub watcher.
+Fresh worker-before-parent build `a295da60` is PASS: source/CLI/worker hashes and
+all 2365 source files verified. Session80251 ended exit0/reaped; its container is
+stopped/PID0/noOOM. Native session10299 likewise ended cleanly. Installed r5
+session51261 ended exit1/reaped; all16 owned containers are stopped/exit0/PID0/
+noOOM with original databases and captures preserved. No engine or build is active.
+Current source audit through `55df797a` found no new exposure; a final delta check
+is required before push. The existing documentation checks passed at that revision.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026.live_readiness`, owns exact resource and
@@ -123,11 +128,13 @@ pins and other target entries. Earlier cache and obsolete034 target retirements
 remain journaled. Current native/build caches, unique data, original failures and
 pending worktrees are retained. No broad cleanup is underway.
 
-Next: collect and verify the fresh `a295da60` worker-bound build; assemble from a
-clean checkout containing `1ae90220` and execute `p01-first-launch-index`, including
-the positive/physical-invalidation status checks. Reuse the native qualification;
-an acceptance/documentation edit alone does not require another product build.
-Record the real outcome, classify any failure, and publish the coherent verified
-increment to main with the known CI fixture correction. Then collect the actual
-new hosted run while continuing the remaining M1 gates above. Never turn FAIL,
+Next: commit the corrected uncertainty oracle and rerun `p01-first-launch-index`
+with the existing `a295da60` product and `55df797a` assembly; journey files are
+unchanged. No product rebuild is required. Record the actual full outcome, then
+publish the coherent verified increment to main with the known CI fixture fix.
+Collect the new hosted run while continuing M1. The next ordinary readiness slice
+needs a bounded authoritative bridge from current Archive selection/sealed batches
+to complete input expectations for the existing native verifier; narrow successful
+history/export alone cannot certify a complete cut. Source remains Unknown without
+an Ingest owner. Retain all other M1 and later gates above. Never turn FAIL,
 NOT_RUN, interruption or missing prerequisites into PASS.

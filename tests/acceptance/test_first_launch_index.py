@@ -145,8 +145,8 @@ class InitialIndexControls(unittest.TestCase):
                 check.live_roles(changed,state,123456000,123457000)
 
         invalidated = copy.deepcopy(value)
-        invalidated['roles'][-1].update(state='degraded',reason='dependency_unavailable')
-        invalidated['capabilities'][-1].update(state='unavailable',reason='dependency_unavailable')
+        invalidated['roles'][-1].update(state='degraded',reason='remote_outcome_unknown')
+        invalidated['capabilities'][-1].update(state='unavailable',reason='remote_outcome_unknown')
         check.live_roles(invalidated,state,123456000,123457000,invalidated=True)
         with self.assertRaises(AssertionError):
             check.live_roles(invalidated,state,123456000,123457000)
@@ -154,7 +154,7 @@ class InitialIndexControls(unittest.TestCase):
             lambda v:v['capabilities'][-1].update(state='ready'),
             lambda v:v['capabilities'][-1].update(state='building',reason='verification_in_flight'),
             lambda v:v['capabilities'][-1].update(state='stale',reason='verification_stale'),
-            lambda v:v['capabilities'][-1].update(reason='remote_outcome_unknown'),
+            lambda v:v['capabilities'][-1].update(reason='dependency_unavailable'),
             lambda v:v['capabilities'][-1].update(published=None),
             lambda v:v['capabilities'][-1].update(time=None),
             lambda v:v['capabilities'][-1].update(generation='99'*16),

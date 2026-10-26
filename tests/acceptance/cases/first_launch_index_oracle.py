@@ -90,7 +90,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
     fresh(value['source'])
     exact(value['roles'], [dict(role=role,
         state='degraded' if invalidated and role=='index' else 'ready' if role=='control' else 'idle',
-        reason='dependency_unavailable' if invalidated and role=='index' else 'current')
+        reason='remote_outcome_unknown' if invalidated and role=='index' else 'current')
         for role in ('control','ingest','sync','archive','index')])
     caps = value['capabilities']
     assert len(caps) == 4
@@ -98,7 +98,10 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
         assert set(cap) == {'capability','state','reason','freshness','time','published','generation','storage_incarnation'}
         assert cap['capability'] == kind
         if invalidated and kind == 'index_publication':
-            assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
+            # The second distinct row exceeds the declared one-row chunk.
+            # Rejection precedes cursor EOF, so local join cannot establish
+            # remote query cessation or return its retained engine credit.
+            assert cap['state'] == 'unavailable' and cap['reason'] == 'remote_outcome_unknown'
             timed(cap)  # Retain the last full verified cut, never a zero/unknown replacement.
         else:
             assert cap['state'] == 'ready'
