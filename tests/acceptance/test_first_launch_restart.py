@@ -279,5 +279,68 @@ class RestartControls(unittest.TestCase):
             self.assertEqual(rows['first_launch_cleanup'], 'PASS')
 
 
+class LoginWindowControls(unittest.TestCase):
+    def observation(self, elapsed, account=5, peer=6):
+        return dict(now_us=1_000_000 + elapsed, buckets=[
+            dict(dataset_id='22' * 16, kind=kind, bucket=bucket, attempts=attempts,
+                window_started_at_us=1_000_000)
+            for kind, bucket, attempts in [('account', 97, account), ('peer', 13, peer)]])
+
+    def test_password_attempts_expire_at_the_original_sixty_second_boundary(self):
+        self.assertEqual(check.login_buckets(), {'account': (97, 5), 'peer': (13, 20)})
+        self.assertEqual(check.login_delay(self.observation(59_999_999), '22' * 16), 1)
+        self.assertEqual(check.login_delay(self.observation(60_000_000), '22' * 16), 0)
+        self.assertEqual(check.login_delay(self.observation(1, account=4), '22' * 16), 0)
+        self.assertEqual(check.login_delay(self.observation(1, account=4, peer=20), '22' * 16), 59_999_999)
+        self.assertEqual(check.login_delay(dict(now_us=1, buckets=[]), '22' * 16), 0)
+        observed = self.observation(60_000_000, peer=20)
+        observed['buckets'][1]['window_started_at_us'] += 10_000_000
+        self.assertEqual(check.login_delay(observed, '22' * 16), 10_000_000)
+
+    def test_malformed_or_unrelated_gate_state_is_not_permission(self):
+        for key, value in [('dataset_id', '33' * 16), ('bucket', 98), ('bucket', True),
+                ('attempts', 6), ('attempts', True), ('kind', 'unknown'),
+                ('window_started_at_us', 2_000_000)]:
+            observed = self.observation(1)
+            observed['buckets'][0][key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(AssertionError):
+                check.login_delay(observed, '22' * 16)
+        observed = self.observation(1)
+        observed['buckets'][1] = observed['buckets'][0]
+        with self.assertRaises(AssertionError):
+            check.login_delay(observed, '22' * 16)
+
+    def test_window_is_reobserved_after_wait_without_charging_or_resetting_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            instance = object.__new__(case.Runtime)
+            instance.ids = {'dataset': '22' * 16}
+            instance.restart_checks = check
+            observations = [self.observation(48_000_000), self.observation(60_000_000)]
+            statements = []
+            def read(database, statement):
+                self.assertEqual(database, 'bigbrotr_control')
+                statements.append(statement)
+                return json.dumps(observations.pop(0))
+            instance.sql = read
+            with patch.object(case.time, 'monotonic', return_value=100), patch.object(case.time, 'sleep') as wait:
+                instance.wait_login_capacity(Path(temporary))
+            wait.assert_called_once_with(12)
+            self.assertEqual(len(statements), 2)
+            self.assertTrue(all(s.startswith('SELECT ') for s in statements))
+            receipt = json.loads((Path(temporary) / 'login-admission.json').read_text())
+            self.assertEqual([r['wait_us'] for r in receipt], [12_000_000, 0])
+
+    def test_late_database_observation_cannot_certify_admission(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            instance = object.__new__(case.Runtime)
+            instance.ids = {'dataset': '22' * 16}
+            instance.restart_checks = check
+            instance.sql = lambda *_: json.dumps(self.observation(60_000_000))
+            with patch.object(case.time, 'monotonic', side_effect=[100, 100, 166]), \
+                    self.assertRaisesRegex(ValueError, 'observation exceeded'):
+                instance.wait_login_capacity(Path(temporary))
+            self.assertFalse((Path(temporary) / 'login-admission.json').exists())
+
+
 if __name__ == '__main__':
     unittest.main()

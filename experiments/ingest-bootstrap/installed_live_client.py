@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 import re
 import socket
+import stat
 import subprocess
 import threading
 import time
@@ -85,11 +86,38 @@ def request(method, path, body=None, headers=None):
         connection.close()
 
 
-def access(*arguments, binary='/build/bigbrotr'):
-    result = subprocess.run([binary, 'access', *arguments], env={},
-        capture_output=True, timeout=5)
-    assert result.returncode == 0 and not result.stderr, 'private CLI command refused'
-    return json.loads(result.stdout)
+def access(*arguments, binary='/build/bigbrotr', failure_directory=None):
+    parent = None
+    try:
+        if failure_directory is not None:
+            assert arguments[0] in ('login', 'logout')
+            parent = os.open(failure_directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+            metadata = os.fstat(parent)
+            assert metadata.st_uid == os.geteuid() and stat.S_IMODE(metadata.st_mode) == 0o700, 'private evidence directory required'
+
+        def retain(stdout, stderr, exit_code, timed_out=False):
+            if parent is None:
+                return
+            descriptor = os.open(arguments[0] + '-failure.private',
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=parent)
+            with os.fdopen(descriptor, 'w') as stream:
+                json.dump(dict(exit_code=exit_code, timed_out=timed_out,
+                    stdout_base64=base64.b64encode(stdout or b'').decode('ascii'),
+                    stderr_base64=base64.b64encode(stderr or b'').decode('ascii')), stream)
+
+        try:
+            result = subprocess.run([binary, 'access', *arguments], env={},
+                capture_output=True, timeout=5)
+        except subprocess.TimeoutExpired as error:
+            retain(error.stdout, error.stderr, None, timed_out=True)
+            raise AssertionError('private CLI command timed out') from None
+        if result.returncode != 0 or result.stderr:
+            retain(result.stdout, result.stderr, result.returncode)
+            raise AssertionError('private CLI command refused')
+        return json.loads(result.stdout)
+    finally:
+        if parent is not None:
+            os.close(parent)
 
 
 def relay(directory, listener, finished, errors):
@@ -214,7 +242,7 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         password = password_file(password_ref)
     session = directory / 'session.private'
     logged_in = access('login', '--origin', ORIGIN, '--username', 'alice',
-        '--password-ref', password_ref, '--session-output', str(session), binary=binary)
+        '--password-ref', password_ref, '--session-output', str(session), binary=binary, failure_directory=directory)
     saved = json.loads(session.read_text())
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == ORIGIN
     assert session.stat().st_mode & 0o777 == 0o600
@@ -275,7 +303,7 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,
             observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
-        logged_out = access('logout', '--session-ref', 'file:' + str(session), binary=binary)
+        logged_out = access('logout', '--session-ref', 'file:' + str(session), binary=binary, failure_directory=directory)
         assert json.loads(session.read_text()) == saved
         assert request('GET', '/management/v1/me', headers=auth)[0] == 401
         barrier('commands-finished')

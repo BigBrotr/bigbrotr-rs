@@ -7,13 +7,11 @@ repository transition. Official releases, packages and production remain unautho
 ## Current increment and revision
 
 P01-T08: maintain the installed first-event journey, then prove Ingest succession,
-resend and Archive catch-up on the same stores. `main` is at `f674c72e` before this
-observer correction/checkpoint; published base is `4652f577`. Local commits
-`e153bca4`, `4302f71e`, `88fd929d`, `97888493`, `f674c72e` contain the macOS FIFO
-fixture correction, parameterized live client, restart scenario and its reviewed
-historical-checkpoint preservation, and the current CLI capability-scope assertion.
-Pending changes map the independent host observer to the container's physical
-Archive files, check catalog immutability per census and record actual outcomes.
+resend and Archive catch-up on the same stores. Published `main` is
+`59729703e39569696b605ad4eeec2fe137732ae5`: coherent FIFO/CLI contract corrections,
+parameterized client, restart scenario and independent observer mount mapping.
+Pending changes coordinate the fixture with the actual password-attempt window,
+preserve private CLI failures/timeouts and record the second connected outcome.
 
 Agent work is integrated. Sol's live-client `b1f8c787` and CLI-test `258ca3f2`,
 and Astra's restart `063c8aed` remain in their clean separate worktrees. Locations
@@ -49,9 +47,21 @@ the original FAIL is unchanged. The diagnostic database was stopped, exit0/PID0.
 The corrected full connected scenario remains **NOT_RUN**. No product rebuild,
 resource-limit change or weaker scientific expectation was needed.
 
-Affected first-launch offline controls: **25 PASS**, including after the observer
-correction. The live-client seam had 10 focused and 7 existing profile controls
-PASS. Original deep c49 evidence remains valid at its recorded identities:
+The corrected connected run at `59729703`, under
+`.research/first-launch-restart-r2-20261026`, passed the independent initial
+baseline, initial retirement and epoch2 activation. It then failed the client
+login before successor source registration. Five earlier password operations
+(initial login, ordinary login and three grant reauthentications) had consumed
+the account's 60-second window. Read-only postfailure counters show account5/peer6
+in that unchanged window; the original raw CLI status was not retained and is not
+invented. Cleanup and the bounded counter diagnostic ended with all owned
+containers stopped. Catch-up, exact retry and successor history remain NOT_RUN.
+The local correction waits for observed eligibility before finite owner startup;
+it does not reset counters, change limits or retry login. Future CLI failures
+retain their original bytes privately. Full corrected run remains NOT_RUN.
+
+Affected controls: **29 first-launch and 12 live-client PASS**. The earlier
+profile controls remain valid. Original deep c49 evidence remains valid at its recorded identities:
 independent native rows/inputs, typed C4/A4 progress, C API readback and ordinary
 history/export. Its report is external
 `runs/m1-first-launch-0f80280/read-profile-v3/journey-verified.json` under
@@ -76,8 +86,10 @@ admission problem, and no full hosted PASS is claimed.
 
 The [CI observation](evidence/ci-billing-block-20260918.json) preserves the original
 billing refusal and first executed failures. The inventory links later protected
-native logs/results. No old run was canceled to publish a correction; group the
-next push around this coherent reviewed increment.
+native logs/results. The corrected significant revision `59729703` is executing in
+[run40323472991](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991).
+Do not cancel useful native checks with an intermediate push; no full hosted PASS
+is claimed before their actual completion.
 
 Completed public-exposure scope: 1,606 commits, 10,050 blobs, 501 historical log
 snapshots, then all four artifacts and 38 log members of run40309278610. No
@@ -93,17 +105,19 @@ must never be uploaded; public CI retains a bounded synthetic diagnostic allowli
 
 ## Open gates, resources and next action
 
-No local product, build or test process is active at this checkpoint; the completed
-Actions watch was reaped. Both agents are complete; their work and scoped reviews
-are preserved. Q37 configurations retain their verified Astra/xhigh
-and Sol/xhigh settings. Unique state, original failures, stopped resources and
-source worktrees remain protected; no general cleanup is underway.
+No local product/build/test process is active at this checkpoint. The read-only
+Actions watch is active (session47734); Astra cleared the narrow admission
+gate and failure-retention changes; the inventory links source hashes and scope. Sol hit provider capacity after creating a
+clean empty diagnostic worktree; root Astra handled that bounded implementation.
+Previously verified Q37 settings remain. Unique state, original failures,
+stopped resources and source worktrees remain protected.
 
-Next publish the coherent corrections and run the corrected `p01-first-launch-restart` from a fresh immutable source worktree
-against the retained4652 candidate under `.research/first-launch-restart-r2-20261026`. Bundled journey
-bytes are unchanged. Run the missing connected path: initial recovery/retirement,
-epoch2 activation and resend, activated recovery/retirement, Archive catch-up,
-exact retry and ordinary history. No extra empty epoch3 is required.
+Next run `p01-first-launch-restart` from a new immutable source worktree
+under `.research/first-launch-restart-r3-20261026`. Reuse the4652 candidate: bundled
+journey and product bytes are unchanged. Finish epoch2 resend, activated
+recovery/retirement, Archive catch-up, exact retry and ordinary history. No extra
+empty epoch3 is needed. Provenance-off source analysis is preserved by Astra;
+complete this blocking on-profile proof first.
 
 M1 still needs that connected restart/catch-up proof, minimal Index/readiness and
 dependency-outage evidence. The initial a99 Sync timeout remains **unknown**.

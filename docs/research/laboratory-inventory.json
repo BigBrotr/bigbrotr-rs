@@ -73437,7 +73437,8 @@
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-exposure/receipt.json",
       "sha256": "3c97e8e4980b50a6aec6a0a7bbe6ff87f9f6e395e43b67b6589baa88062e9512",
       "scope": "Published delta8commits/54blobs; pending throughf674c72e5commits/23blobs; run40313846572 four artifacts/21members and24log members. No operational credentials confirmed,0 log/artifact candidates and0 provider alerts. Current observer/doc delta excluded from automated receipt; root publication review applies."
-    }
+    },
+    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991"
   },
   "implementation_first_launch_maintained_20261026": {
     "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
@@ -73513,7 +73514,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "First connected run FAIL in independent observer mount mapping after base journey PASS; bounded corrected C API diagnostic PASS; corrected full connected rerun pending",
+      "status": "Connected r2 reached independent baseline and epoch2 activation; FAIL at fixture sixth password attempt within unchanged60s gate. Admission scheduling and protected failure retention corrected locally; new full run pending.",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73544,6 +73545,26 @@
               "status": "PASS exact bundled C API; full catalog including xmin and Archive files unchanged. Not full restart qualification."
             }
           ]
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r2-20261026",
+          "source_revision": "59729703e39569696b605ad4eeec2fe137732ae5",
+          "result": "FAIL",
+          "reason": "Base journey and independent restart baseline PASS; initial retirement/epoch2 activation completed, but client login refused before new source registration. Persisted account5/peer6 within original60s window establishes intended throttle after five earlier password operations. Original raw CLI status unavailable, no fabricated HTTP receipt.",
+          "report_sha256": "55bff9d0e5d88f70456faf2352a499d066733ef32e6dce323bfe290793c6edf5",
+          "resources": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r2-20261026/resources.json",
+          "terminal": {
+            "containers": 21,
+            "states": [
+              "stopped-retained"
+            ],
+            "cleanup_errors": []
+          },
+          "diagnostic": {
+            "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r2-20261026/restart/login-gate-diagnostic/receipt.json",
+            "sha256": "af716633cb90ff58bd6186015c01eba3759135b26b5d2a6f75940b024c17c1e9",
+            "scope": "Read-only original counters, exact owned PG stopped exit0/PID0 afterwards; no authentication retry."
+          }
         }
       ],
       "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
@@ -73552,7 +73573,13 @@
         "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
         "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
       },
-      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r2-20261026"
+      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r3-20261026",
+      "unused_diagnostic_worktree": "/home/tux/bigbrotr-live-access-private-failure",
+      "model_availability": "Sol/xhigh failed at provider capacity after clean WT creation; root Astra/xhigh completed bounded diagnostic retention. No silent model substitution.",
+      "login_gate_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026/login-gate-review.json",
+        "sha256": "5b79c9d9f87919eed38a395cfd3a6b3b625f3312a31da10165e4a5d2af930510"
+      }
     }
   }
 }

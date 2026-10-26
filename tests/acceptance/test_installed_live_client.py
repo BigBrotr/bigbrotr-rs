@@ -1,5 +1,6 @@
 """Offline live-client wiring controls; no installed or engine qualification."""
 import argparse
+import base64
 import copy
 import json
 import os
@@ -34,7 +35,7 @@ class LiveClientControls(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.home = Path(temporary.name).resolve()
         self.directory = self.home / 'journey'
-        self.directory.mkdir()
+        self.directory.mkdir(mode=0o700)
         self.profile_directory = self.home / 'profile'
         self.profile_directory.mkdir()
         self.secret = self.home / 'owner.private'
@@ -129,7 +130,7 @@ class LiveClientControls(unittest.TestCase):
     def test_profile_secret_in_cli_result_is_refused_before_result_publication(self):
         for number, password in enumerate((PASSWORD, 'Independent "quoted" \\ password 2026 \u00e8')):
             self.directory = self.home / ('leak-' + str(number))
-            self.directory.mkdir()
+            self.directory.mkdir(mode=0o700)
             self.secret.write_text(password)
             with self.subTest(number=number), self.assertRaisesRegex(AssertionError, 'sensitive bytes'):
                 self.exercise(leak=password)
@@ -140,6 +141,34 @@ class LiveClientControls(unittest.TestCase):
                 [], 1, b'', PASSWORD.encode())):
             with self.assertRaisesRegex(AssertionError, '^private CLI command refused$'):
                 live.access('login', binary=sys.executable)
+
+    def test_failure_and_timeout_keep_original_bytes_in_exclusive_private_evidence(self):
+        stdout, stderr = b'\x00private session bytes', PASSWORD.encode()
+        for timeout in (False, True):
+            directory = self.home / ('failed-' + str(timeout))
+            directory.mkdir(mode=0o700)
+            result = subprocess.CompletedProcess([], 3, stdout, stderr)
+            error = subprocess.TimeoutExpired(['private-command'], 5, output=stdout, stderr=stderr)
+            with patch.object(live.subprocess, 'run', side_effect=error if timeout else None,
+                    return_value=result), self.assertRaisesRegex(AssertionError, '^private CLI command (refused|timed out)$'):
+                live.access('login', binary=sys.executable, failure_directory=directory)
+            evidence = directory / 'login-failure.private'
+            self.assertEqual(evidence.stat().st_mode & 0o777, 0o600)
+            retained = json.loads(evidence.read_text())
+            self.assertEqual(base64.b64decode(retained['stdout_base64']), stdout)
+            self.assertEqual(base64.b64decode(retained['stderr_base64']), stderr)
+            self.assertEqual(retained['exit_code'], None if timeout else 3)
+            self.assertEqual(retained['timed_out'], timeout)
+            original = evidence.read_bytes()
+            with patch.object(live.subprocess, 'run', return_value=result), self.assertRaises(FileExistsError):
+                live.access('login', binary=sys.executable, failure_directory=directory)
+            self.assertEqual(evidence.read_bytes(), original)
+
+    def test_nonprivate_evidence_directory_refuses_before_cli_execution(self):
+        self.directory.chmod(0o755)
+        with patch.object(live.subprocess, 'run') as command, self.assertRaisesRegex(AssertionError, 'private evidence'):
+            live.access('login', binary=sys.executable, failure_directory=self.directory)
+        command.assert_not_called()
 
     def test_legacy_journey_keeps_binary_password_identity_and_revision_defaults(self):
         # An unrelated profile in the journey directory must not opt in.

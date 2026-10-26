@@ -19,6 +19,33 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def login_buckets():
+    # Independent fixture identities from the local session contract. The base
+    # export includes three reauthentications, charged like password logins.
+    prefix = b'bigbrotr/login-bucket/1\0'
+    return {'account': (hashlib.sha256(prefix + b'account\0alice').digest()[0], 5),
+            'peer': (hashlib.sha256(prefix + b'peer4\0\x7f\0\0\x01').digest()[0], 20)}
+
+
+def login_delay(observed, dataset):
+    """Microseconds until the existing fixture may submit one fresh login."""
+    assert isinstance(observed, dict) and set(observed) == {'now_us', 'buckets'}
+    now = clock(observed['now_us'], 1, 2**63 - 1)
+    assert isinstance(observed['buckets'], list) and len(observed['buckets']) <= 2
+    expected, seen, delay = login_buckets(), set(), 0
+    for row in observed['buckets']:
+        assert isinstance(row, dict) and set(row) == {'dataset_id', 'kind', 'bucket', 'attempts', 'window_started_at_us'}
+        assert row['dataset_id'] == dataset and row['kind'] in expected and row['kind'] not in seen
+        seen.add(row['kind'])
+        bucket, maximum = expected[row['kind']]
+        assert type(row['bucket']) is int and row['bucket'] == bucket
+        attempts = clock(row['attempts'], 1, maximum)
+        started = clock(row['window_started_at_us'], 1, now)
+        if attempts == maximum:
+            delay = max(delay, 60_000_000 - (now - started))
+    return delay
+
+
 def exact(actual, expected, reason):
     # JSON integer1, booleantrue and float1.0 must not impersonate one another.
     assert json.dumps(actual, sort_keys=True, allow_nan=False) == json.dumps(expected, sort_keys=True, allow_nan=False), reason

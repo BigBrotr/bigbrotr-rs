@@ -697,6 +697,34 @@ class Runtime:
         self.original_inputs = self.files(self.state / 'data/ingest/producer-inputs-v1')
         save(output / 'original-input-files.json', self.original_inputs)
 
+    def wait_login_capacity(self, output):
+        """Observe the real password window before starting a finite owner."""
+        account, peer = (self.restart_checks.login_buckets()[kind][0] for kind in ('account', 'peer'))
+        dataset = self.ids['dataset']
+        require(re.fullmatch('[0-9a-f]{32}', dataset), 'invalid fixture dataset')
+        statement = f"""SELECT json_build_object(
+            'now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+            'buckets',(SELECT coalesce(json_agg(r),'[]') FROM (
+                SELECT encode(dataset_id,'hex') AS dataset_id,kind,bucket,attempts,window_started_at_us
+                FROM control.login_buckets WHERE dataset_id=decode('{dataset}','hex')
+                AND ((kind='account' AND bucket={account}) OR (kind='peer' AND bucket={peer}))
+                ORDER BY kind) r))"""
+        observations, deadline = [], time.monotonic() + 65
+        while True:
+            require(time.monotonic() < deadline, 'fixture login window did not become eligible')
+            observed = json.loads(self.sql('bigbrotr_control', statement))
+            require(time.monotonic() < deadline, 'fixture login observation exceeded its deadline')
+            delay = self.restart_checks.login_delay(observed, dataset)
+            observations.append(dict(observed, wait_us=delay))
+            save(output / 'login-admission.json', observations)
+            if delay == 0:
+                return
+            require(len(observations) < 8 and delay / 1_000_000 < deadline - time.monotonic(),
+                'fixture login window exceeded its bound')
+            # Re-read PostgreSQL's clock at expiry; sleeping alone is not proof
+            # of eligibility. No bucket rewrite, login retry or limit change.
+            time.sleep(delay / 1_000_000)
+
     def restart_ingest(self):
         output = self.restart_output
         self.config.write_text((self.root / 'ordinary/initial-config.toml').read_text())
@@ -708,6 +736,7 @@ class Runtime:
         self.retired_initial, _ = self.capture(output, 'retired-initial')
         self.restart_checks.retired(self.retired_initial, retired, 1, self.first_science, cut=12)
         self.backend_absence(output)
+        self.wait_login_capacity(output)
         home = self.root / 'successor-client'
         home.mkdir(mode=0o700)
         self.successor_home = home
@@ -817,6 +846,7 @@ class Runtime:
         save(output / 'read-input.json', dict(scope=self.initialized['private_scope'], catalog_id=self.ids['catalog'],
             frontier_revision=6, snapshot_id=8, config_revision='1', policy_revision='1'))
         before, catalog = self.capture(output, 'before')
+        self.wait_login_capacity(output)
         entry = self.launch('successor-history', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml', '--roles', 'control')
         first = self.wait(lambda: self.logs(entry, output), 'successor ordinary Control', 20, entry=entry)[0]
         require(first['state'] == 'idle', 'ordinary successor reader did not start')

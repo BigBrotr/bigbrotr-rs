@@ -234,6 +234,16 @@ event and the distinct event again. After closing and retiring that producer,
 it catches Archive up, checks an exact no-op retry, and reads both full signed
 events through a new ordinary Control lifetime.
 
+Before each new post-export client lifetime, the fixture observes its actual
+account/loopback-peer password buckets and PostgreSQL clock. Login and grant
+reauthentication share the existing 5-account/20-peer attempts per 60 seconds;
+the fixture waits for eligibility before starting the finite owner. The admission
+decision has a 65-second deadline, including a check after each independently
+bounded SQL observation. It neither resets buckets nor retries a refused login.
+Live-client CLI failures/timeouts retain original bytes in exclusive mode0600
+`*-failure.private` files under the owned mode0700 evidence directory; these are
+sensitive local diagnostics and must not be uploaded.
+
 ```sh
 python3 tests/acceptance/run.py p01-first-launch-restart \
   --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
