@@ -415,8 +415,8 @@ fn predictable_invalid_plans_fail_before_staging_and_leave_request_identity_avai
     }
     assert_eq!(store.db.latest_sequence_number(), before);
     // If any rejected input was staged, its different original digest poisons this request.
-    drop(
-        store
+    {
+        let _staged = store
             .stage_dictionary_append(
                 next_request(2),
                 &bundle,
@@ -424,8 +424,8 @@ fn predictable_invalid_plans_fail_before_staging_and_leave_request_identity_avai
                 limits(),
                 &permit,
             )
-            .unwrap(),
-    );
+            .unwrap();
+    }
     drop(permit);
     drop(append(&mut store, &b, 2, &bundle).unwrap());
 }
@@ -677,8 +677,8 @@ fn preview_charges_the_actual_timestamp_before_staging() {
             .err(),
         Some(AdmissionError::Limit)
     );
-    drop(
-        store
+    {
+        let _staged = store
             .stage_dictionary_append(
                 next_request(2),
                 &value,
@@ -689,8 +689,8 @@ fn preview_charges_the_actual_timestamp_before_staging() {
                 },
                 &permit,
             )
-            .unwrap(),
-    );
+            .unwrap();
+    }
     drop(permit);
     drop(
         store

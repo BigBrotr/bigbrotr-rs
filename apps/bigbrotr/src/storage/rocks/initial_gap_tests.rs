@@ -23,7 +23,7 @@ fn literal_manifests() -> (Vec<u8>, Vec<u8>) {
     target[26..34].copy_from_slice(&2_u64.to_be_bytes());
     target[54..62].copy_from_slice(&2_u64.to_be_bytes());
     target[62..78].fill(44);
-    for entry in target[104..].chunks_exact_mut(18) {
+    for entry in target[104..].as_chunks_mut::<18>().0.iter_mut() {
         let domain = entry[1] + 32;
         entry[2..].fill(domain);
     }
@@ -170,27 +170,29 @@ fn reopened_initial_gap_requires_all_positive_originals_before_exact_four_write_
     assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
     assert_eq!(inputs(&fixture.path()), original_inputs);
 
-    let handoff = rebuild(&fixture, &recovery);
-    let wanted = expected_rows(&fixture);
-    let mut authority_calls = 0;
-    let observed = recovery
-        .apply_initial_handoff(&handoff, grant(&fixture.budget, 8192, 8192), || {
-            authority_calls += 1;
-            Ok(())
-        })
-        .unwrap();
-    assert_eq!(
-        observed.handoff().encode().as_bytes(),
-        literal_handoff(&fixture)
-    );
-    assert_eq!(authority_calls, 3); // Native seam only; actual Control is a separate fixture.
-    drop(observed);
-    assert_eq!(kv(&recovery.store), wanted);
-    assert_eq!(wanted.len(), before.len() + 3);
-    assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 4);
-    assert_eq!(inputs(&fixture.path()), original_inputs);
-    assert_eq!(recovery.manifest(), &fixture.next);
-    drop(handoff);
+    let wanted = {
+        let handoff = rebuild(&fixture, &recovery);
+        let wanted = expected_rows(&fixture);
+        let mut authority_calls = 0;
+        let observed = recovery
+            .apply_initial_handoff(&handoff, grant(&fixture.budget, 8192, 8192), || {
+                authority_calls += 1;
+                Ok(())
+            })
+            .unwrap();
+        assert_eq!(
+            observed.handoff().encode().as_bytes(),
+            literal_handoff(&fixture)
+        );
+        assert_eq!(authority_calls, 3); // Native seam only; actual Control is a separate fixture.
+        drop(observed);
+        assert_eq!(kv(&recovery.store), wanted);
+        assert_eq!(wanted.len(), before.len() + 3);
+        assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(inputs(&fixture.path()), original_inputs);
+        assert_eq!(recovery.manifest(), &fixture.next);
+        wanted
+    };
     drop(recovery);
 
     let mut recovery = fixture.reopen();

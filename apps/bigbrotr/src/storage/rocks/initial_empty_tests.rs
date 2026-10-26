@@ -24,7 +24,7 @@ fn literal_manifests() -> (Vec<u8>, Vec<u8>) {
     target[26..34].copy_from_slice(&2_u64.to_be_bytes());
     target[54..62].copy_from_slice(&2_u64.to_be_bytes());
     target[62..78].fill(44);
-    for entry in target[104..].chunks_exact_mut(18) {
+    for entry in target[104..].as_chunks_mut::<18>().0.iter_mut() {
         let domain = entry[1] + 32;
         entry[2..].fill(domain);
     }
@@ -201,53 +201,59 @@ fn empty_attempt_closes_exactly_one_marker_and_reconstructs_closed_history_after
         [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
     );
     let old_handoff = reconstruct(&fixture, &recovery).unwrap();
-    let plan = retirement(&fixture, &recovery).unwrap();
-    assert!(!plan.initially_closing());
-    preserved(&fixture, &recovery, &before, sequence, &originals);
-    let wanted = closed_rows(&before);
-    let mut calls = 0;
-    let observed = recovery
-        .close_empty_initial_attempt(&plan, grant(&fixture.budget, 4096, 4096), || {
-            calls += 1;
-            Ok(())
-        })
-        .unwrap();
-    assert_eq!(calls, 3);
-    assert_eq!(
-        observed.retirement().closure_digest(),
-        empty_digest(&fixture)
-    );
-    assert_eq!(
-        observed.retirement().handoff().as_bytes(),
-        literal_handoff(&fixture)
-    );
-    drop(observed);
-    preserved(&fixture, &recovery, &wanted, sequence + 1, &originals);
-    assert!(
-        recovery
-            .historical_initial(&literal_handoff(&fixture))
-            .is_err()
-    );
-    assert!(matches!(
-        recovery.validate_initial_handoff(&old_handoff),
-        Err(BootstrapError::StateMismatch)
-    ));
-    assert!(matches!(
-        recovery.apply_initial_handoff(&old_handoff, grant(&fixture.budget, 8192, 8192), || Ok(())),
-        Err(BootstrapError::StateMismatch)
-    ));
-    drop(recovery);
+    let (recovery, wanted) = {
+        let plan = retirement(&fixture, &recovery).unwrap();
+        assert!(!plan.initially_closing());
+        preserved(&fixture, &recovery, &before, sequence, &originals);
+        let wanted = closed_rows(&before);
+        let mut calls = 0;
+        let observed = recovery
+            .close_empty_initial_attempt(&plan, grant(&fixture.budget, 4096, 4096), || {
+                calls += 1;
+                Ok(())
+            })
+            .unwrap();
+        assert_eq!(calls, 3);
+        assert_eq!(
+            observed.retirement().closure_digest(),
+            empty_digest(&fixture)
+        );
+        assert_eq!(
+            observed.retirement().handoff().as_bytes(),
+            literal_handoff(&fixture)
+        );
+        drop(observed);
+        preserved(&fixture, &recovery, &wanted, sequence + 1, &originals);
+        assert!(
+            recovery
+                .historical_initial(&literal_handoff(&fixture))
+                .is_err()
+        );
+        assert!(matches!(
+            recovery.validate_initial_handoff(&old_handoff),
+            Err(BootstrapError::StateMismatch)
+        ));
+        assert!(matches!(
+            recovery.apply_initial_handoff(
+                &old_handoff,
+                grant(&fixture.budget, 8192, 8192),
+                || Ok(())
+            ),
+            Err(BootstrapError::StateMismatch)
+        ));
+        drop(recovery);
 
-    // Same directory, new native handle. The local OPEN plan may observe the
-    // one permitted close write, but cannot return it to OPEN or activate it.
-    let mut recovery = fixture.reopen();
-    drop(
-        recovery
-            .close_empty_initial_attempt(&plan, grant(&fixture.budget, 4096, 4096), || Ok(()))
-            .unwrap(),
-    );
-    preserved(&fixture, &recovery, &wanted, sequence + 1, &originals);
-    drop(plan);
+        // Same directory, new native handle. The local OPEN plan may observe the
+        // one permitted close write, but cannot return it to OPEN or activate it.
+        let mut recovery = fixture.reopen();
+        drop(
+            recovery
+                .close_empty_initial_attempt(&plan, grant(&fixture.budget, 4096, 4096), || Ok(()))
+                .unwrap(),
+        );
+        preserved(&fixture, &recovery, &wanted, sequence + 1, &originals);
+        (recovery, wanted)
+    };
     drop(recovery);
 
     let mut recovery = fixture.reopen();

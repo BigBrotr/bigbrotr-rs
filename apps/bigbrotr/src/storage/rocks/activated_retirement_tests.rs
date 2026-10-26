@@ -134,27 +134,28 @@ fn activated_retirement_observation_checks_grants_and_authority_without_writes()
         let closed = view
             .observe_closed_producer(&recovery, grant(&fixture.budget, 4096, 4096), || Ok(()))
             .unwrap();
-        let source = full_prefix(&fixture, &recovery, &closed, 0)
-            .finish()
-            .unwrap();
-        assert_eq!(source.event_request_mask(), 0);
-        assert_eq!(
-            source.digest(),
-            expected_closure(&fixture, &recovery, 0, 0).0
-        );
-        let held = fixture.budget.snapshot();
-        assert_eq!(
-            held.used().data_bytes(),
-            baseline.used().data_bytes() + 4096
-        );
-        assert_eq!(
-            held.used().native_bytes(),
-            baseline.used().native_bytes() + 4096
-        );
-        assert_eq!(held.used().items(), baseline.used().items() + 1);
-        assert_eq!(held.active_permits(), baseline.active_permits() + 1);
-        unchanged(&fixture, &recovery.store, &before);
-        drop(source);
+        {
+            let source = full_prefix(&fixture, &recovery, &closed, 0)
+                .finish()
+                .unwrap();
+            assert_eq!(source.event_request_mask(), 0);
+            assert_eq!(
+                source.digest(),
+                expected_closure(&fixture, &recovery, 0, 0).0
+            );
+            let held = fixture.budget.snapshot();
+            assert_eq!(
+                held.used().data_bytes(),
+                baseline.used().data_bytes() + 4096
+            );
+            assert_eq!(
+                held.used().native_bytes(),
+                baseline.used().native_bytes() + 4096
+            );
+            assert_eq!(held.used().items(), baseline.used().items() + 1);
+            assert_eq!(held.active_permits(), baseline.active_permits() + 1);
+            unchanged(&fixture, &recovery.store, &before);
+        }
         drop(closed);
         assert_eq!(fixture.budget.snapshot(), baseline);
     }

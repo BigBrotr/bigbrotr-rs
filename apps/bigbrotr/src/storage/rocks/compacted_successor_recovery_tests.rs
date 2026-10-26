@@ -741,26 +741,27 @@ fn compacted_successor_retirement_observes_only_and_preserves_typed_ack() {
             let mut owner = retirement_owner(&f, &recovery);
             let allocation = owner.entry(1).unwrap() as *const _;
             assert_eq!(owner.compacted_requests(), 4);
-            let proof = retirement_complete(&f, &recovery, &mut owner, &NOT_CANCELLED);
-            assert_eq!(proof.verified_through(), 4);
-            assert_eq!(
-                proof.last_epoch().resolved_requests,
-                match case {
-                    0 => 0,
-                    3 => 3,
-                    _ => 1,
-                }
-            );
-            assert_eq!(
-                proof.last_epoch().event_request_mask,
-                if case == 3 { 0b110 } else { 0 }
-            );
-            let ack = proof.recovery_acknowledgement(&NOT_CANCELLED).unwrap();
-            assert_eq!(ack.acknowledged(), u64::from(case >= 2));
-            // A=C is an explicit typed-head premise; issued3 never supplies C3.
-            let acknowledged = ack.acknowledged();
-            let target = ack.compacted_target(acknowledged).unwrap();
-            drop(proof);
+            let target = {
+                let proof = retirement_complete(&f, &recovery, &mut owner, &NOT_CANCELLED);
+                assert_eq!(proof.verified_through(), 4);
+                assert_eq!(
+                    proof.last_epoch().resolved_requests,
+                    match case {
+                        0 => 0,
+                        3 => 3,
+                        _ => 1,
+                    }
+                );
+                assert_eq!(
+                    proof.last_epoch().event_request_mask,
+                    if case == 3 { 0b110 } else { 0 }
+                );
+                let ack = proof.recovery_acknowledgement(&NOT_CANCELLED).unwrap();
+                assert_eq!(ack.acknowledged(), u64::from(case >= 2));
+                // A=C is an explicit typed-head premise; issued3 never supplies C3.
+                let acknowledged = ack.acknowledged();
+                ack.compacted_target(acknowledged).unwrap()
+            };
             assert_eq!(owner.entry(1).unwrap() as *const _, allocation);
             assert!(owner.resolution(&recovery, &NOT_CANCELLED).is_err());
             recovery
@@ -923,12 +924,13 @@ fn compacted_successor_retirement_wrong_prefix_and_cancelled_proof_stay_spent() 
     assert!(owner.resolution(&recovery, &NOT_CANCELLED).is_err());
     let mut owner = retirement_owner(&f, &recovery);
     let retained = AtomicBool::new(false);
-    let proof = retirement_complete(&f, &recovery, &mut owner, &retained);
-    retained.store(true, Ordering::Relaxed);
-    let replacement = AtomicBool::new(false);
-    assert!(proof.validate(&replacement).is_err());
-    assert!(proof.recovery_acknowledgement(&replacement).is_err());
-    drop(proof);
+    {
+        let proof = retirement_complete(&f, &recovery, &mut owner, &retained);
+        retained.store(true, Ordering::Relaxed);
+        let replacement = AtomicBool::new(false);
+        assert!(proof.validate(&replacement).is_err());
+        assert!(proof.recovery_acknowledgement(&replacement).is_err());
+    }
     retained.store(false, Ordering::Relaxed);
     assert!(owner.resolution(&recovery, &retained).is_err());
     assert_eq!(retirement_snapshot(&f, &recovery), before);
@@ -949,10 +951,11 @@ fn compacted_successor_retirement_ack_keeps_required_and_residual_census() {
             .unwrap();
         drop(barrier);
         let mut owner = retirement_owner(&f, &recovery);
-        let proof = retirement_complete(&f, &recovery, &mut owner, &NOT_CANCELLED);
-        let ack = proof.recovery_acknowledgement(&NOT_CANCELLED).unwrap();
-        let target = ack.compacted_target(1).unwrap();
-        drop(proof);
+        let target = {
+            let proof = retirement_complete(&f, &recovery, &mut owner, &NOT_CANCELLED);
+            let ack = proof.recovery_acknowledgement(&NOT_CANCELLED).unwrap();
+            ack.compacted_target(1).unwrap()
+        };
         let path = f
             .path()
             .join("producer-inputs-v1")

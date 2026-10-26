@@ -276,28 +276,30 @@ fn compacted_history_cannot_mint_handoff_gap_empty_or_activation_capabilities() 
     let old = inspect(&f, candidate.recovery(), Some(3)).unwrap();
     // A genuine original-only plan supplies portable target bytes for the gap
     // refusal. It cannot acquire a new compacted native witness by being reused.
-    let proof = replay(
-        &f,
-        candidate.recovery(),
-        &old,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    )
-    .unwrap();
-    let record = SuccessionRecord::new(SuccessionFields {
-        terminal_kind: PredecessorTerminalKind::UnactivatedEmpty,
-        producer_slot_id: old.producer_slot_id(),
-        predecessor_epoch: ProducerEpoch::new(2).unwrap(),
-        issued_through: 0,
-        last_complete_sequence: 0,
-        closure_digest: proof.last_epoch().digest,
-        incoming_handoff_sha256: old.native_head().incoming_handoff_sha256(),
-        previous_manifest: *candidate.recovery().manifest(),
-        next_manifest: later_manifest(*candidate.recovery().manifest(), 3),
-    })
-    .unwrap();
-    let old_plan = SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).unwrap();
-    drop(proof);
+    let (record, old_plan) = {
+        let proof = replay(
+            &f,
+            candidate.recovery(),
+            &old,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        )
+        .unwrap();
+        let record = SuccessionRecord::new(SuccessionFields {
+            terminal_kind: PredecessorTerminalKind::UnactivatedEmpty,
+            producer_slot_id: old.producer_slot_id(),
+            predecessor_epoch: ProducerEpoch::new(2).unwrap(),
+            issued_through: 0,
+            last_complete_sequence: 0,
+            closure_digest: proof.last_epoch().digest,
+            incoming_handoff_sha256: old.native_head().incoming_handoff_sha256(),
+            previous_manifest: *candidate.recovery().manifest(),
+            next_manifest: later_manifest(*candidate.recovery().manifest(), 3),
+        })
+        .unwrap();
+        let old_plan = SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).unwrap();
+        (record, old_plan)
+    };
     drop(old);
     install_floor(&f, candidate.recovery());
     let lineage = RetainedLineage::inspect_compacted_initial(
@@ -307,29 +309,31 @@ fn compacted_history_cannot_mint_handoff_gap_empty_or_activation_capabilities() 
         &NOT_CANCELLED,
     )
     .unwrap();
-    let positive = complete(
-        &f,
-        candidate.recovery(),
-        &lineage,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    );
-    assert!(SuccessorHandoff::reconstruct_gap(&positive, record, &NOT_CANCELLED).is_err());
-    drop(positive);
+    {
+        let positive = complete(
+            &f,
+            candidate.recovery(),
+            &lineage,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        );
+        assert!(SuccessorHandoff::reconstruct_gap(&positive, record, &NOT_CANCELLED).is_err());
+    }
     let local = inspect_compacted(&f, candidate.recovery()).unwrap();
-    let positive = complete(
-        &f,
-        candidate.recovery(),
-        &local,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    );
-    assert!(
-        candidate
-            .handoff(&positive, PolicyEpoch::new(7), &NOT_CANCELLED)
-            .is_err()
-    );
-    drop(positive);
+    {
+        let positive = complete(
+            &f,
+            candidate.recovery(),
+            &local,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        );
+        assert!(
+            candidate
+                .handoff(&positive, PolicyEpoch::new(7), &NOT_CANCELLED)
+                .is_err()
+        );
+    }
     drop(local);
     let activation = NativeSuccessorActivation::new(candidate, lineage, old_plan);
     assert!(activation.require_prepared(&NOT_CANCELLED).is_err());

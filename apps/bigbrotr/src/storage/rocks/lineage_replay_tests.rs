@@ -410,17 +410,18 @@ fn lineage_replays_zero_source_rejections_without_inventing_empty_history() {
     let f = zero_fixture(1);
     let r = f.reopen();
     let l = inspect(&f, &r, None).unwrap();
-    let prefix = replay(&f, &r, &l, 1, None).unwrap();
-    assert_eq!(
-        (
-            prefix.last_epoch().resolved_requests,
-            prefix.last_epoch().last_complete_sequence,
-            prefix.last_epoch().event_request_mask
-        ),
-        (1, 0, 1)
-    );
-    assert_eq!(prefix.last_epoch().digest, f.closure);
-    drop(prefix);
+    {
+        let prefix = replay(&f, &r, &l, 1, None).unwrap();
+        assert_eq!(
+            (
+                prefix.last_epoch().resolved_requests,
+                prefix.last_epoch().last_complete_sequence,
+                prefix.last_epoch().event_request_mask
+            ),
+            (1, 0, 1)
+        );
+        assert_eq!(prefix.last_epoch().digest, f.closure);
+    }
     drop(l);
     drop(r);
     let r = valid_empty_third(&f);
@@ -816,45 +817,46 @@ fn lineage_positive_closure_checks_ancestor_digest_and_head_kind_separately() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
     let l = inspect(&f, &r, None).unwrap();
-    let prefix = replay(&f, &r, &l, 2, None).unwrap();
-    assert_eq!(
-        prefix.last_epoch().digest,
-        epoch_digest(&f, &r, 2, 0, 0, true)
-    );
-    assert!(
-        l.resolution(
-            &r,
-            3,
-            Some(PredecessorTerminalKind::Activated),
-            &NOT_CANCELLED
-        )
-        .is_err(),
-        "OPEN is not CLOSING"
-    );
-    drop(prefix);
+    {
+        let prefix = replay(&f, &r, &l, 2, None).unwrap();
+        assert_eq!(
+            prefix.last_epoch().digest,
+            epoch_digest(&f, &r, 2, 0, 0, true)
+        );
+        assert!(
+            l.resolution(
+                &r,
+                3,
+                Some(PredecessorTerminalKind::Activated),
+                &NOT_CANCELLED
+            )
+            .is_err(),
+            "OPEN is not CLOSING"
+        );
+    }
     drop(l);
     put(&r.store, producer_key(3), &marker(true, 0));
     let l = inspect(&f, &r, None).unwrap();
-    let active = replay(&f, &r, &l, 3, Some(PredecessorTerminalKind::Activated)).unwrap();
-    let empty = replay(
-        &f,
-        &r,
-        &l,
-        3,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    )
-    .unwrap();
-    assert_ne!(active.last_epoch().digest, empty.last_epoch().digest);
-    assert_eq!(
-        active.last_epoch().digest,
-        epoch_digest(&f, &r, 3, 0, 0, false)
-    );
-    assert_eq!(
-        empty.last_epoch().digest,
-        epoch_digest(&f, &r, 3, 0, 0, true)
-    );
-    drop(active);
-    drop(empty);
+    {
+        let active = replay(&f, &r, &l, 3, Some(PredecessorTerminalKind::Activated)).unwrap();
+        let empty = replay(
+            &f,
+            &r,
+            &l,
+            3,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        )
+        .unwrap();
+        assert_ne!(active.last_epoch().digest, empty.last_epoch().digest);
+        assert_eq!(
+            active.last_epoch().digest,
+            epoch_digest(&f, &r, 3, 0, 0, false)
+        );
+        assert_eq!(
+            empty.last_epoch().digest,
+            epoch_digest(&f, &r, 3, 0, 0, true)
+        );
+    }
     drop(l);
     let key = IngestKey::OwnerHandoff {
         dataset_id: f.previous.identity().dataset_id,

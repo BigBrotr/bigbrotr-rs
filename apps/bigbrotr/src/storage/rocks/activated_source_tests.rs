@@ -106,12 +106,14 @@ fn activated_ack_handoff_requires_all_predecessor_originals_before_target() {
     assert!(target_only.finish().is_err());
     let mut prefix = full_prefix(&fixture, &recovery, &closed, 1);
     prefix.record(&result).unwrap();
-    let source = prefix.finish().unwrap();
-    let token = source.recovery_acknowledgement().unwrap();
-    assert_eq!((token.issued(), token.acknowledged()), (1, 0));
-    token.validate(&recovery).unwrap();
-    let stale = source.recovery_acknowledgement().unwrap();
-    drop(source);
+    let (token, stale) = {
+        let source = prefix.finish().unwrap();
+        let token = source.recovery_acknowledgement().unwrap();
+        assert_eq!((token.issued(), token.acknowledged()), (1, 0));
+        token.validate(&recovery).unwrap();
+        let stale = source.recovery_acknowledgement().unwrap();
+        (token, stale)
+    };
     drop(result);
     drop(closed);
     let before = capture(&fixture, &recovery.store);
@@ -206,41 +208,42 @@ fn activated_source_closure_covers_the_complete_two_stream_prefix_and_exact_dige
         let resolved = resolve(&fixture, &recovery, &closed, sequence).unwrap();
         prefix.record(&resolved).unwrap();
     }
-    let source = prefix.finish().unwrap();
-    assert_eq!(source.resolved_requests(), 3);
-    assert_eq!(source.last_complete_sequence(), 5);
-    assert_eq!(source.digest(), expected);
-    // Dictionary request1 is not an Event; NewFacts2 and AlreadyDurable3 are.
-    assert_eq!(source.event_request_mask(), 0b110);
-    assert!(!source.has_compacted_initial());
-    assert_eq!(source.compacted_requests(), 0);
-    assert_eq!(
-        source.validate_compacted(&std::sync::atomic::AtomicBool::new(false)),
-        Err(BootstrapError::StateMismatch)
-    );
-    assert_eq!(source.validate(), Ok(()));
-    assert!(source.matches_closed(&closed));
-    assert!(std::ptr::eq(source.recovery(), &recovery));
-    assert_eq!(source.manifest(), recovery.manifest());
-    assert_eq!(source.producer_slot_id(), next_request(1).producer_slot_id);
-    assert!(source.matches_recorded(records.clone()));
-    for fault in ["missing", "duplicate", "order", "input", "outcome"] {
-        let mut changed = records.clone();
-        match fault {
-            "missing" => {
-                changed.pop();
+    {
+        let source = prefix.finish().unwrap();
+        assert_eq!(source.resolved_requests(), 3);
+        assert_eq!(source.last_complete_sequence(), 5);
+        assert_eq!(source.digest(), expected);
+        // Dictionary request1 is not an Event; NewFacts2 and AlreadyDurable3 are.
+        assert_eq!(source.event_request_mask(), 0b110);
+        assert!(!source.has_compacted_initial());
+        assert_eq!(source.compacted_requests(), 0);
+        assert_eq!(
+            source.validate_compacted(&std::sync::atomic::AtomicBool::new(false)),
+            Err(BootstrapError::StateMismatch)
+        );
+        assert_eq!(source.validate(), Ok(()));
+        assert!(source.matches_closed(&closed));
+        assert!(std::ptr::eq(source.recovery(), &recovery));
+        assert_eq!(source.manifest(), recovery.manifest());
+        assert_eq!(source.producer_slot_id(), next_request(1).producer_slot_id);
+        assert!(source.matches_recorded(records.clone()));
+        for fault in ["missing", "duplicate", "order", "input", "outcome"] {
+            let mut changed = records.clone();
+            match fault {
+                "missing" => {
+                    changed.pop();
+                }
+                "duplicate" => changed.push(records[2]),
+                "order" => changed.swap(0, 1),
+                "input" => changed[0].1[0] ^= 1,
+                "outcome" => changed[1].2[0] ^= 1,
+                _ => unreachable!(),
             }
-            "duplicate" => changed.push(records[2]),
-            "order" => changed.swap(0, 1),
-            "input" => changed[0].1[0] ^= 1,
-            "outcome" => changed[1].2[0] ^= 1,
-            _ => unreachable!(),
+            assert!(!source.matches_recorded(changed), "{fault}");
         }
-        assert!(!source.matches_recorded(changed), "{fault}");
+        unchanged(&fixture, &recovery.store, &before);
+        originals(&fixture, &recovery.store);
     }
-    unchanged(&fixture, &recovery.store, &before);
-    originals(&fixture, &recovery.store);
-    drop(source);
     drop(closed);
     drop(recovery);
     let mut recovery = fixture.reopen();
@@ -354,14 +357,15 @@ fn activated_source_closure_refuses_omissions_duplicates_order_and_reserved_tail
     assert_eq!(prefix.record(&one), Err(BootstrapError::StateMismatch));
     prefix.record(&two).unwrap();
     assert_eq!(prefix.record(&two), Err(BootstrapError::StateMismatch));
-    let source = prefix.finish().unwrap();
-    assert_eq!(
-        source.digest(),
-        expected_closure(&fixture, &recovery, 2, 5).0
-    );
-    assert_eq!(source.event_request_mask(), 0b10);
-    unchanged(&fixture, &recovery.store, &before);
-    drop(source);
+    {
+        let source = prefix.finish().unwrap();
+        assert_eq!(
+            source.digest(),
+            expected_closure(&fixture, &recovery, 2, 5).0
+        );
+        assert_eq!(source.event_request_mask(), 0b10);
+        unchanged(&fixture, &recovery.store, &before);
+    }
     drop(one);
     drop(two);
     drop(closed);
@@ -448,22 +452,24 @@ fn activated_source_closure_binds_root_sequence_and_the_exact_closed_owner() {
     let foreign_source = foreign_prefix.finish().unwrap();
     let mut prefix = full_prefix(&fixture, &recovery, &closed, 1);
     prefix.record(&result).unwrap();
-    let source = prefix.finish().unwrap();
-    assert!(source.matches_closed(&closed));
-    assert!(!source.matches_closed(&another));
-    assert!(!source.matches_closed(&foreign_closed));
-    assert_eq!(source.digest(), foreign_source.digest());
-    let mut stale = full_prefix(&fixture, &recovery, &closed, 1);
-    stale.record(&result).unwrap();
-    // A privileged identical-value rewrite changes only the native sequence.
-    let bytes = value(&recovery.store, handoff_key());
-    put(&recovery.store, handoff_key(), &bytes);
-    let before = capture(&fixture, &recovery.store);
-    assert_eq!(source.validate(), Err(BootstrapError::StateMismatch));
-    assert_eq!(stale.record(&result), Err(BootstrapError::StateMismatch));
-    assert!(matches!(stale.finish(), Err(BootstrapError::StateMismatch)));
-    unchanged(&fixture, &recovery.store, &before);
-    drop(source);
+    let before = {
+        let source = prefix.finish().unwrap();
+        assert!(source.matches_closed(&closed));
+        assert!(!source.matches_closed(&another));
+        assert!(!source.matches_closed(&foreign_closed));
+        assert_eq!(source.digest(), foreign_source.digest());
+        let mut stale = full_prefix(&fixture, &recovery, &closed, 1);
+        stale.record(&result).unwrap();
+        // A privileged identical-value rewrite changes only the native sequence.
+        let bytes = value(&recovery.store, handoff_key());
+        put(&recovery.store, handoff_key(), &bytes);
+        let before = capture(&fixture, &recovery.store);
+        assert_eq!(source.validate(), Err(BootstrapError::StateMismatch));
+        assert_eq!(stale.record(&result), Err(BootstrapError::StateMismatch));
+        assert!(matches!(stale.finish(), Err(BootstrapError::StateMismatch)));
+        unchanged(&fixture, &recovery.store, &before);
+        before
+    };
     drop(result);
     drop(another);
     drop(closed);

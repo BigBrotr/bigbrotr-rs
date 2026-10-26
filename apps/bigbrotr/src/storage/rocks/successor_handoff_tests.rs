@@ -21,18 +21,18 @@ fn local_plan(
     kind: PredecessorTerminalKind,
 ) -> (RetainedLineage, SuccessorHandoff) {
     let l = inspect(f, c.recovery(), None).unwrap();
-    let proof = replay(
-        f,
-        c.recovery(),
-        &l,
-        c.recovery().manifest().identity().owner_epoch.get(),
-        Some(kind),
-    )
-    .unwrap();
-    let plan = c
-        .handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+    let plan = {
+        let proof = replay(
+            f,
+            c.recovery(),
+            &l,
+            c.recovery().manifest().identity().owner_epoch.get(),
+            Some(kind),
+        )
         .unwrap();
-    drop(proof);
+        c.handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+            .unwrap()
+    };
     (l, plan)
 }
 
@@ -45,7 +45,7 @@ fn literal_next(previous: &[u8], c: &SuccessorCandidate) -> Vec<u8> {
     }
     bytes[62..78].copy_from_slice(c.process_incarnation().as_bytes());
     bytes[94..102].copy_from_slice(&7_u64.to_be_bytes());
-    for pair in bytes[104..].chunks_exact_mut(18) {
+    for pair in bytes[104..].as_chunks_mut::<18>().0.iter_mut() {
         let kind =
             DictionaryKind::try_from(u16::from_be_bytes(pair[..2].try_into().unwrap())).unwrap();
         pair[2..].copy_from_slice(c.allocation_namespaces().domain(kind).unwrap().as_bytes());
@@ -184,74 +184,80 @@ fn successor_gap_reconstructs_exact_intent_without_adopting_candidate() {
     let f = prepared_fixture();
     let c = SuccessorCandidate::new(terminal_second(&f)).unwrap();
     let (l, local) = local_plan(&f, &c, PredecessorTerminalKind::UnactivatedEmpty);
-    let proof = replay(
-        &f,
-        c.recovery(),
-        &l,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    )
-    .unwrap();
-    assert!(SuccessorHandoff::reconstruct_gap(&proof, *local.record(), &NOT_CANCELLED).is_err());
-    drop(proof);
+    {
+        let proof = replay(
+            &f,
+            c.recovery(),
+            &l,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        )
+        .unwrap();
+        assert!(
+            SuccessorHandoff::reconstruct_gap(&proof, *local.record(), &NOT_CANCELLED).is_err()
+        );
+    }
     drop(l);
     let l = inspect(&f, c.recovery(), Some(3)).unwrap();
-    let proof = replay(
-        &f,
-        c.recovery(),
-        &l,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    )
-    .unwrap();
-    assert!(
-        c.handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
-            .is_err()
-    );
-    for mutation in 0..5 {
-        let mut fields = *local.record().fields();
-        match mutation {
-            0 => fields.closure_digest[0] ^= 1,
-            1 => fields.incoming_handoff_sha256[0] ^= 1,
-            2 => {
-                let mut id = *fields.next_manifest.identity();
-                id.process_incarnation = f.previous.identity().process_incarnation;
-                fields.next_manifest = IngestManifest::for_repeatable_successor(
-                    id,
-                    *fields.next_manifest.allocation_namespaces(),
-                );
-            }
-            3 => {
-                let next = fields.next_manifest;
-                let domains: Vec<_> = (1..=9)
-                    .filter_map(|number| {
-                        let kind = DictionaryKind::try_from(number).unwrap();
-                        next.allocation_namespaces().domain(kind).map(|domain| {
-                            (
-                                kind,
-                                if kind == DictionaryKind::Event {
-                                    f.previous.allocation_namespaces().domain(kind).unwrap()
-                                } else {
-                                    domain
-                                },
-                            )
+    let gap = {
+        let proof = replay(
+            &f,
+            c.recovery(),
+            &l,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        )
+        .unwrap();
+        assert!(
+            c.handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+                .is_err()
+        );
+        for mutation in 0..5 {
+            let mut fields = *local.record().fields();
+            match mutation {
+                0 => fields.closure_digest[0] ^= 1,
+                1 => fields.incoming_handoff_sha256[0] ^= 1,
+                2 => {
+                    let mut id = *fields.next_manifest.identity();
+                    id.process_incarnation = f.previous.identity().process_incarnation;
+                    fields.next_manifest = IngestManifest::for_repeatable_successor(
+                        id,
+                        *fields.next_manifest.allocation_namespaces(),
+                    );
+                }
+                3 => {
+                    let next = fields.next_manifest;
+                    let domains: Vec<_> = (1..=9)
+                        .filter_map(|number| {
+                            let kind = DictionaryKind::try_from(number).unwrap();
+                            next.allocation_namespaces().domain(kind).map(|domain| {
+                                (
+                                    kind,
+                                    if kind == DictionaryKind::Event {
+                                        f.previous.allocation_namespaces().domain(kind).unwrap()
+                                    } else {
+                                        domain
+                                    },
+                                )
+                            })
                         })
-                    })
-                    .collect();
-                fields.next_manifest = IngestManifest::for_repeatable_successor(
-                    *next.identity(),
-                    AllocationNamespaces::from_entries(&domains).unwrap(),
-                );
+                        .collect();
+                    fields.next_manifest = IngestManifest::for_repeatable_successor(
+                        *next.identity(),
+                        AllocationNamespaces::from_entries(&domains).unwrap(),
+                    );
+                }
+                _ => fields.producer_slot_id = [8; 16].try_into().unwrap(),
             }
-            _ => fields.producer_slot_id = [8; 16].try_into().unwrap(),
+            let record = SuccessionRecord::new(fields).unwrap();
+            assert!(SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).is_err());
         }
-        let record = SuccessionRecord::new(fields).unwrap();
-        assert!(SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).is_err());
-    }
-    let gap = SuccessorHandoff::reconstruct_gap(&proof, *local.record(), &NOT_CANCELLED).unwrap();
-    assert_eq!(gap.encode().as_bytes(), local.encode().as_bytes());
-    assert!(c.require_handoff(&l, &gap, &NOT_CANCELLED).is_err());
-    drop(proof);
+        let gap =
+            SuccessorHandoff::reconstruct_gap(&proof, *local.record(), &NOT_CANCELLED).unwrap();
+        assert_eq!(gap.encode().as_bytes(), local.encode().as_bytes());
+        assert!(c.require_handoff(&l, &gap, &NOT_CANCELLED).is_err());
+        gap
+    };
     let before = kv(&c.recovery().store);
     let sequence = c.recovery().store.db.latest_sequence_number();
     let originals = inputs(&f.path());
@@ -299,19 +305,20 @@ fn successor_plans_bind_root_sequence_sidecars_and_future_capacity() {
         &NOT_CANCELLED,
     )
     .unwrap();
-    let proof = replay(
-        &f,
-        c.recovery(),
-        &l,
-        2,
-        Some(PredecessorTerminalKind::UnactivatedEmpty),
-    )
-    .unwrap();
-    assert!(matches!(
-        c.handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED),
-        Err(BootstrapError::InsufficientReservation)
-    ));
-    drop(proof);
+    {
+        let proof = replay(
+            &f,
+            c.recovery(),
+            &l,
+            2,
+            Some(PredecessorTerminalKind::UnactivatedEmpty),
+        )
+        .unwrap();
+        assert!(matches!(
+            c.handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED),
+            Err(BootstrapError::InsufficientReservation)
+        ));
+    }
     drop(l);
     let (l, p) = local_plan(&f, &c, PredecessorTerminalKind::UnactivatedEmpty);
     let other = prepared_fixture();
@@ -435,11 +442,13 @@ fn successor_empty_closes_once_and_rebuilds_after_reopen_without_future_epoch_ca
         &NOT_CANCELLED,
     )
     .unwrap();
-    let proof = replay(&f, &r, &l, 2, None).unwrap();
-    let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
-    assert!(!empty.initially_closing());
-    assert_eq!(empty.closure_digest(), epoch_digest(&f, &r, 3, 0, 0, true));
-    drop(proof);
+    let empty = {
+        let proof = replay(&f, &r, &l, 2, None).unwrap();
+        let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
+        assert!(!empty.initially_closing());
+        assert_eq!(empty.closure_digest(), epoch_digest(&f, &r, 3, 0, 0, true));
+        empty
+    };
     let before = kv(&r.store);
     let sequence = r.store.db.latest_sequence_number();
     let originals = inputs(&f.path());
@@ -473,10 +482,12 @@ fn successor_empty_closes_once_and_rebuilds_after_reopen_without_future_epoch_ca
     drop(r);
     let mut r = f.reopen();
     let l = inspect(&f, &r, None).unwrap();
-    let proof = replay(&f, &r, &l, 2, None).unwrap();
-    let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
-    assert!(empty.initially_closing());
-    drop(proof);
+    let empty = {
+        let proof = replay(&f, &r, &l, 2, None).unwrap();
+        let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
+        assert!(empty.initially_closing());
+        empty
+    };
     r.close_empty_successor(
         &l,
         &empty,
@@ -503,9 +514,10 @@ fn successor_empty_refuses_stale_marker_or_input_and_preserves_full_spool() {
     drop(c);
     let mut r = f.reopen();
     let l = inspect(&f, &r, None).unwrap();
-    let proof = replay(&f, &r, &l, 2, None).unwrap();
-    let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
-    drop(proof);
+    let empty = {
+        let proof = replay(&f, &r, &l, 2, None).unwrap();
+        EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap()
+    };
     let before = kv(&r.store);
     let sequence = r.store.db.latest_sequence_number();
     let originals = inputs(&f.path());
@@ -552,9 +564,10 @@ fn successor_empty_refuses_stale_marker_or_input_and_preserves_full_spool() {
     );
     drop(l);
     let l = inspect(&f, &r, None).unwrap();
-    let proof = replay(&f, &r, &l, 2, None).unwrap();
-    let empty = EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap();
-    drop(proof);
+    let empty = {
+        let proof = replay(&f, &r, &l, 2, None).unwrap();
+        EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).unwrap()
+    };
     stored_input(&f, 3, 1, &originals[0].1);
     let injected = inputs(&f.path());
     assert_eq!(injected.len(), 65);

@@ -29,17 +29,18 @@ fn prepared(
     let mut candidate = SuccessorCandidate::new(r).unwrap();
     let lineage = inspect_compacted(&f, candidate.recovery()).unwrap();
     let pointer = lineage.entries().as_ptr();
-    let proof = complete(
-        &f,
-        candidate.recovery(),
-        &lineage,
-        3,
-        Some(PredecessorTerminalKind::Activated),
-    );
-    let handoff = candidate
-        .handoff_compacted(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
-        .unwrap();
-    drop(proof);
+    let handoff = {
+        let proof = complete(
+            &f,
+            candidate.recovery(),
+            &lineage,
+            3,
+            Some(PredecessorTerminalKind::Activated),
+        );
+        candidate
+            .handoff_compacted(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+            .unwrap()
+    };
     candidate
         .apply_compacted_handoff(
             &lineage,

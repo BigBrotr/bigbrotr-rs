@@ -11,22 +11,23 @@ fn plan(f: &Fixture, r: &IngestRecovery) -> (RetainedLineage, SuccessorHandoff) 
         &NOT_CANCELLED,
     )
     .unwrap();
-    let proof = complete(f, r, &lineage, 3, Some(PredecessorTerminalKind::Activated));
-    let record = SuccessionRecord::new(SuccessionFields {
-        terminal_kind: PredecessorTerminalKind::Activated,
-        producer_slot_id: lineage.producer_slot_id(),
-        predecessor_epoch: ProducerEpoch::new(3).unwrap(),
-        issued_through: 2,
-        last_complete_sequence: 1,
-        closure_digest: proof.last_epoch().digest,
-        incoming_handoff_sha256: lineage.native_head().incoming_handoff_sha256(),
-        previous_manifest: *r.manifest(),
-        next_manifest: later_manifest(*r.manifest(), 4),
-    })
-    .unwrap();
-    assert!(SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).is_err());
-    let plan = SuccessorHandoff::reconstruct_compacted_gap(&proof, record, &NOT_CANCELLED).unwrap();
-    drop(proof);
+    let plan = {
+        let proof = complete(f, r, &lineage, 3, Some(PredecessorTerminalKind::Activated));
+        let record = SuccessionRecord::new(SuccessionFields {
+            terminal_kind: PredecessorTerminalKind::Activated,
+            producer_slot_id: lineage.producer_slot_id(),
+            predecessor_epoch: ProducerEpoch::new(3).unwrap(),
+            issued_through: 2,
+            last_complete_sequence: 1,
+            closure_digest: proof.last_epoch().digest,
+            incoming_handoff_sha256: lineage.native_head().incoming_handoff_sha256(),
+            previous_manifest: *r.manifest(),
+            next_manifest: later_manifest(*r.manifest(), 4),
+        })
+        .unwrap();
+        assert!(SuccessorHandoff::reconstruct_gap(&proof, record, &NOT_CANCELLED).is_err());
+        SuccessorHandoff::reconstruct_compacted_gap(&proof, record, &NOT_CANCELLED).unwrap()
+    };
     (lineage, plan)
 }
 
@@ -139,15 +140,17 @@ fn compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry() {
     drop(lineage);
     for retry in [false, true] {
         let lineage = inspect_compacted(&f, &r).unwrap();
-        let proof = complete(&f, &r, &lineage, 3, None);
-        assert_eq!(proof.compacted_initial_requests(), 4);
-        assert_eq!(proof.last_epoch().resolved_requests, 2);
-        assert!(EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).is_err());
-        let empty =
-            EmptySuccessorRetirement::from_compacted_lineage(&proof, &NOT_CANCELLED).unwrap();
-        assert_eq!(empty.initially_closing(), retry);
-        assert_eq!(empty.closure_digest(), epoch_digest(&f, &r, 4, 0, 0, true));
-        drop(proof);
+        let empty = {
+            let proof = complete(&f, &r, &lineage, 3, None);
+            assert_eq!(proof.compacted_initial_requests(), 4);
+            assert_eq!(proof.last_epoch().resolved_requests, 2);
+            assert!(EmptySuccessorRetirement::from_lineage(&proof, &NOT_CANCELLED).is_err());
+            let empty =
+                EmptySuccessorRetirement::from_compacted_lineage(&proof, &NOT_CANCELLED).unwrap();
+            assert_eq!(empty.initially_closing(), retry);
+            assert_eq!(empty.closure_digest(), epoch_digest(&f, &r, 4, 0, 0, true));
+            empty
+        };
         checked(
             &f,
             &CompactedSuccessorPredecessor::empty(
@@ -292,22 +295,23 @@ fn compacted_successor_candidate_preserves_original_and_activation_refusals() {
     let (f, r) = fixture();
     let mut candidate = SuccessorCandidate::new(r).unwrap();
     let lineage = inspect_compacted(&f, candidate.recovery()).unwrap();
-    let proof = complete(
-        &f,
-        candidate.recovery(),
-        &lineage,
-        3,
-        Some(PredecessorTerminalKind::Activated),
-    );
-    assert!(
+    let handoff = {
+        let proof = complete(
+            &f,
+            candidate.recovery(),
+            &lineage,
+            3,
+            Some(PredecessorTerminalKind::Activated),
+        );
+        assert!(
+            candidate
+                .handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+                .is_err()
+        );
         candidate
-            .handoff(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
-            .is_err()
-    );
-    let handoff = candidate
-        .handoff_compacted(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
-        .unwrap();
-    drop(proof);
+            .handoff_compacted(&proof, PolicyEpoch::new(7), &NOT_CANCELLED)
+            .unwrap()
+    };
     let sequence = candidate.recovery().store.db.latest_sequence_number();
     candidate
         .apply_compacted_handoff(

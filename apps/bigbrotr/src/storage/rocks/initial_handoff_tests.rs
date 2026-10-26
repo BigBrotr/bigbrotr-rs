@@ -98,7 +98,7 @@ fn expected(
     successor[26..34].copy_from_slice(&2_u64.to_be_bytes());
     successor[54..62].copy_from_slice(&2_u64.to_be_bytes());
     successor[62..78].fill(44);
-    for entry in successor[104..].chunks_exact_mut(18) {
+    for entry in successor[104..].as_chunks_mut::<18>().0.iter_mut() {
         let domain = entry[1] + 32;
         entry[2..].fill(domain);
     }
@@ -400,7 +400,9 @@ fn initial_handoff_proof_cannot_move_to_another_equal_sequence_store() {
     )
     .unwrap();
     let handoff = plan(&mut a, &budget_a, 1);
-    drop(plan(&mut b, &budget_b, 1));
+    {
+        let _handoff = plan(&mut b, &budget_b, 1);
+    }
     assert_eq!(
         a.store.db.latest_sequence_number(),
         b.store.db.latest_sequence_number()

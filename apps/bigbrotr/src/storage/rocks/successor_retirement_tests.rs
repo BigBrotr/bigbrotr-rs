@@ -165,53 +165,54 @@ fn successor_retirement_replays_three_and_four_with_exact_event_discrimination_a
             let other = retirement(&f, &r);
             let cursor = observed.resolution(&r, &NOT_CANCELLED).unwrap();
             assert_eq!(cursor.owner().entry(1).unwrap() as *const _, pointer);
-            let proof = complete(&f, cursor).unwrap();
-            assert!(proof.matches_owner(proof.owner()));
-            assert_eq!(proof.owner().entry(1).unwrap() as *const _, pointer);
-            assert!(!proof.matches_owner(&other));
-            assert_eq!(proof.verified_through(), epoch);
-            let summary = proof.last_epoch();
-            assert_eq!(summary.terminal_kind, RetainedTerminalKind::Activated);
-            assert_eq!(summary.resolved_requests, u64::from(kind != 0));
-            assert_eq!(summary.last_complete_sequence, u64::from(kind == 1));
-            assert_eq!(summary.event_request_mask, u64::from(kind >= 2));
-            assert_eq!(
-                summary.digest,
-                epoch_digest(
-                    &f,
-                    &r,
-                    epoch,
-                    u64::from(kind != 0),
-                    u64::from(kind == 1),
-                    false
-                )
-            );
-            proof.validate(&NOT_CANCELLED).unwrap();
-            let records: Vec<_> = (1..=u64::from(kind != 0))
-                .map(|n| {
-                    (
-                        n,
-                        *input_hash(&f, at(epoch, n)).as_bytes(),
-                        Sha256::digest(value(
-                            &r.store,
-                            IngestKey::Request {
-                                request_id: at(epoch, n),
-                            },
-                        ))
-                        .into(),
+            {
+                let proof = complete(&f, cursor).unwrap();
+                assert!(proof.matches_owner(proof.owner()));
+                assert_eq!(proof.owner().entry(1).unwrap() as *const _, pointer);
+                assert!(!proof.matches_owner(&other));
+                assert_eq!(proof.verified_through(), epoch);
+                let summary = proof.last_epoch();
+                assert_eq!(summary.terminal_kind, RetainedTerminalKind::Activated);
+                assert_eq!(summary.resolved_requests, u64::from(kind != 0));
+                assert_eq!(summary.last_complete_sequence, u64::from(kind == 1));
+                assert_eq!(summary.event_request_mask, u64::from(kind >= 2));
+                assert_eq!(
+                    summary.digest,
+                    epoch_digest(
+                        &f,
+                        &r,
+                        epoch,
+                        u64::from(kind != 0),
+                        u64::from(kind == 1),
+                        false
                     )
-                })
-                .collect();
-            assert!(proof.matches_recorded(epoch, records.iter().copied()));
-            let mut false_records = records;
-            if let Some(row) = false_records.first_mut() {
-                row.2[0] ^= 1;
-            } else {
-                false_records.push((1, [0; 32], [0; 32]));
+                );
+                proof.validate(&NOT_CANCELLED).unwrap();
+                let records: Vec<_> = (1..=u64::from(kind != 0))
+                    .map(|n| {
+                        (
+                            n,
+                            *input_hash(&f, at(epoch, n)).as_bytes(),
+                            Sha256::digest(value(
+                                &r.store,
+                                IngestKey::Request {
+                                    request_id: at(epoch, n),
+                                },
+                            ))
+                            .into(),
+                        )
+                    })
+                    .collect();
+                assert!(proof.matches_recorded(epoch, records.iter().copied()));
+                let mut false_records = records;
+                if let Some(row) = false_records.first_mut() {
+                    row.2[0] ^= 1;
+                } else {
+                    false_records.push((1, [0; 32], [0; 32]));
+                }
+                assert!(!proof.matches_recorded(epoch, false_records));
+                assert_eq!(snapshot(&f, &r.store), before);
             }
-            assert!(!proof.matches_recorded(epoch, false_records));
-            assert_eq!(snapshot(&f, &r.store), before);
-            drop(proof);
             drop(other);
             assert_eq!(observed.entry(1).unwrap() as *const _, pointer);
             assert_eq!(f.budget.snapshot(), retained);
@@ -441,30 +442,32 @@ fn successor_retirement_completed_proof_revalidates_after_wait_without_rearming(
         let r = closed_recovery(&f);
         let mut observed = retirement(&f, &r);
         observe(&f, &r, &mut observed);
-        let proof = complete(&f, observed.resolution(&r, &NOT_CANCELLED).unwrap()).unwrap();
-        let cancelled = AtomicBool::new(changed == 0);
-        if changed == 1 {
-            put(
-                &r.store,
-                IngestKey::Manifest,
-                r.manifest().encode().as_bytes(),
+        let (cancelled, before) = {
+            let proof = complete(&f, observed.resolution(&r, &NOT_CANCELLED).unwrap()).unwrap();
+            let cancelled = AtomicBool::new(changed == 0);
+            if changed == 1 {
+                put(
+                    &r.store,
+                    IngestKey::Manifest,
+                    r.manifest().encode().as_bytes(),
+                );
+            } else if changed == 2 {
+                let path = f.path().join("producer-inputs-v1").join(input_name(1, 1));
+                let mut bytes = std::fs::read(&path).unwrap();
+                bytes[0] ^= 1;
+                std::fs::write(path, bytes).unwrap();
+            }
+            let before = snapshot(&f, &r.store);
+            assert_eq!(
+                proof.validate(&cancelled),
+                Err(if changed == 0 {
+                    BootstrapError::AuthorityUnavailable
+                } else {
+                    BootstrapError::StateMismatch
+                })
             );
-        } else if changed == 2 {
-            let path = f.path().join("producer-inputs-v1").join(input_name(1, 1));
-            let mut bytes = std::fs::read(&path).unwrap();
-            bytes[0] ^= 1;
-            std::fs::write(path, bytes).unwrap();
-        }
-        let before = snapshot(&f, &r.store);
-        assert_eq!(
-            proof.validate(&cancelled),
-            Err(if changed == 0 {
-                BootstrapError::AuthorityUnavailable
-            } else {
-                BootstrapError::StateMismatch
-            })
-        );
-        drop(proof);
+            (cancelled, before)
+        };
         cancelled.store(false, Ordering::Relaxed);
         assert!(observed.resolution(&r, &cancelled).is_err());
         assert_eq!(snapshot(&f, &r.store), before);

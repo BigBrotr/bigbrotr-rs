@@ -357,29 +357,30 @@ fn successor_recovery_closes_and_replays_real_writer_three_and_four_with_literal
         );
         assert_eq!(summary.digest, epoch_digest(&f, &r, epoch, 1, 1, false));
         let limits = AdmissionLimits::default();
-        let proof = cursor
-            .finish(
-                limits,
-                grant(
-                    &f.budget,
-                    limits.required_dictionary_replay_data_bytes().unwrap(),
-                    0,
-                ),
-            )
-            .unwrap();
-        assert!(proof.matches_owner(&observed));
-        assert_eq!(proof.verified_through(), epoch);
-        assert!(proof.matches_recorded(
-            epoch,
-            [(
-                1,
-                Sha256::digest(&literal.input).into(),
-                Sha256::digest(&literal.receipt).into()
-            )]
-        ));
-        assert!(!proof.matches_recorded(epoch, []));
-        proof.validate(&NOT_CANCELLED).unwrap();
-        drop(proof);
+        {
+            let proof = cursor
+                .finish(
+                    limits,
+                    grant(
+                        &f.budget,
+                        limits.required_dictionary_replay_data_bytes().unwrap(),
+                        0,
+                    ),
+                )
+                .unwrap();
+            assert!(proof.matches_owner(&observed));
+            assert_eq!(proof.verified_through(), epoch);
+            assert!(proof.matches_recorded(
+                epoch,
+                [(
+                    1,
+                    Sha256::digest(&literal.input).into(),
+                    Sha256::digest(&literal.receipt).into()
+                )]
+            ));
+            assert!(!proof.matches_recorded(epoch, []));
+            proof.validate(&NOT_CANCELLED).unwrap();
+        }
         assert_eq!(snapshot(&f, &r.store), closed);
         drop(observed);
         drop(r);
@@ -718,16 +719,17 @@ fn successor_recovery_keeps_epoch_255_and_full_original_spool_with_one_allocatio
     assert!(SuccessionProfile::for_preparation(255).is_err());
     close(&f, &mut r, &mut observed);
     assert_eq!(observed.entry(1).unwrap() as *const _, allocation);
-    let proof = finish(&f, &r, &observed).unwrap();
-    assert_eq!(proof.verified_through(), 255);
-    assert_eq!(
-        proof.last_epoch().digest,
-        epoch_digest(&f, &r, 255, 0, 0, false)
-    );
-    let mut wanted = before.0;
-    replace(&mut wanted, producer_key(255), &marker(true, 0));
-    assert_eq!(snapshot(&f, &r.store), (wanted, before.1 + 1, before.2));
-    drop(proof);
+    {
+        let proof = finish(&f, &r, &observed).unwrap();
+        assert_eq!(proof.verified_through(), 255);
+        assert_eq!(
+            proof.last_epoch().digest,
+            epoch_digest(&f, &r, 255, 0, 0, false)
+        );
+        let mut wanted = before.0;
+        replace(&mut wanted, producer_key(255), &marker(true, 0));
+        assert_eq!(snapshot(&f, &r.store), (wanted, before.1 + 1, before.2));
+    }
     drop(observed);
     drop(r);
 
