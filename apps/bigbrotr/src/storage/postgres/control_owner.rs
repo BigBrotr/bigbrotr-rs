@@ -19,8 +19,8 @@ mod archive_frontier;
 #[path = "archive_retained_frontier.rs"]
 mod archive_retained_frontier;
 pub use archive_retained_frontier::{
-    BoundRetainedArchiveFrontier, RetainedArchiveError, RetainedArchiveFrontier,
-    RetainedArchiveRequest,
+    ArchiveReadExpectations, BoundArchiveReadExpectations, BoundRetainedArchiveFrontier,
+    RetainedArchiveError, RetainedArchiveFrontier, RetainedArchiveRequest,
 };
 #[path = "archive_persistence.rs"]
 mod archive_persistence;

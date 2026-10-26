@@ -476,6 +476,37 @@ are legitimate; a failed attempt does not allocate another source sequence.
 An empty topology and explicit zero streams remain distinct valid structures.
 The caller still proves original admission grouping and topology membership.
 
+Ordinary complete-current-selection observation uses
+`ControlSession::read_current_archive_expectations`. This read-only bridge loads
+the published revision's sealed snapshot, exact topology bounds and selected
+`archive_frontier_batches` through the existing immutable-attempt parser. It
+requires a 512 KiB/one-item metadata grant before SQL and pre-counts at most 128
+selected attempts and 1024 bounds/streams before allocating vectors. Individual
+SQL projections are bounded; every selected retained input separately keeps its
+existing 1 MiB/one-item grant and actual coordinator custody. No filesystem read or
+sync occurs in the asynchronous PostgreSQL loader.
+
+Binding the original local headers reuses the complete-cut validator: exact
+selected identities, complete ranges including zero streams, original topology
+and publication ordinals, request digest, family totals and final attestations
+must agree. Later unselected attempts do not replace the published snapshot or
+count toward this selected-input bound. A positively absent publication returns
+no selection; missing metadata beneath an existing head refuses. Historical
+publisher attribution is checked without requiring that old publisher to remain
+live. This bridge establishes neither current native SourceStream state nor
+physical presence, recovery permission, a pin or readiness.
+
+`BoundArchiveReadExpectations::into_parts` transfers the exact `CutRead` without
+cloning it and returns its metadata permit. The ordinary observer retains that
+permit, original inputs and actual custody through the joined native inspection,
+then rechecks current selection and current policy under its catalog barrier.
+An older published selection remains valid historical metadata but cannot imply
+current readiness after the head changes. Control/schema checks and explicit
+rollback precede reuse of the SQL session; cancelled or failed loaders retain
+the existing poisoned-session behavior. Source remains Unknown without an Ingest
+observation. The bridge's source and focused controls do not themselves qualify
+the ordinary runtime/native journey.
+
 One native transaction scans all receipt fields through bounded EOF once, checks
 each original batch's complete source/digest/file membership, then resolves
 references through views restricted to this SAME source cut. The initial five

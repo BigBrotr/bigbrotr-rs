@@ -308,95 +308,115 @@ impl RetainedArchiveFrontier {
         inputs: impl Iterator<Item = Input<'a>> + Clone,
     ) -> Result<Option<CutRead>, Error> {
         self.require_phase(Phase::Loaded)?;
-        let count = inputs.clone().take(MAX_ATTEMPTS as usize + 1).count();
-        if count > MAX_ATTEMPTS as usize {
-            return Err(Error::ResourceLimit);
-        }
-        for (index, input) in inputs.clone().enumerate() {
-            let request = input.request;
-            if request.dataset() != self.dataset
-                || request.catalog() != self.catalog
-                || input.binding != self.binding
-                || request.ordinal() == 0
-                || request.ordinal() > self.issued
-                || inputs.clone().take(index).any(|old| {
-                    old.request.attempt_id() == request.attempt_id()
-                        || old.request.ordinal() == request.ordinal()
-                })
-            {
-                return Err(Error::InvalidMetadata);
-            }
-        }
-        let Some(current) = &self.current else {
-            return Ok(None);
-        };
-        let mut receipts = Vec::new();
-        receipts
-            .try_reserve_exact(current.attempts.len())
-            .map_err(|_| Error::ResourceLimit)?;
-        let mut ranges = 0_usize;
-        for selected in &current.attempts {
-            let input = inputs
-                .clone()
-                .find(|input| *input.request.attempt_id() == selected.id)
-                .ok_or(Error::InvalidMetadata)?;
-            if !selected.matches(input.request) {
-                return Err(Error::InvalidMetadata);
-            }
-            ranges = ranges
-                .checked_add(input.expectation.input_ranges.len())
-                .filter(|count| *count <= MAX_RANGES)
-                .ok_or(Error::ResourceLimit)?;
-            require_headers(&input)?;
-            receipts.push(input.expectation.clone());
-        }
-        let mut bounds = Vec::new();
-        bounds
-            .try_reserve_exact(current.bounds.len())
-            .map_err(|_| Error::ResourceLimit)?;
-        bounds.extend(current.bounds.iter().map(|bound| bound.value));
-        let read = CutRead {
-            dataset_id: self.dataset,
-            topology_generation: current.topology,
-            bounds,
-            receipts,
-            snapshot_id: Some(current.receipt.snapshot_id),
-        };
-        let count = read
-            .validate(usize::MAX)
-            .map_err(|_| Error::InvalidMetadata)?;
-        if read.digest() != current.receipt.request_digest
-            || current
-                .receipt
-                .family_counts
-                .iter()
-                .try_fold(0_u64, |n, value| n.checked_add(*value))
-                != Some(count)
+        bind_current(
+            self.dataset,
+            self.catalog,
+            self.binding,
+            self.issued,
+            self.current.as_ref(),
+            inputs,
+        )
+    }
+}
+/// Shared structural reconstruction only. The caller supplies its separately
+/// checked metadata basis; this does not establish source or native authority.
+fn bind_current<'a>(
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    binding: Digest256,
+    issued: u64,
+    current: Option<&Current>,
+    inputs: impl Iterator<Item = Input<'a>> + Clone,
+) -> Result<Option<CutRead>, Error> {
+    let count = inputs.clone().take(MAX_ATTEMPTS as usize + 1).count();
+    if count > MAX_ATTEMPTS as usize {
+        return Err(Error::ResourceLimit);
+    }
+    for (index, input) in inputs.clone().enumerate() {
+        let request = input.request;
+        if request.dataset() != dataset
+            || request.catalog() != catalog
+            || input.binding != binding
+            || request.ordinal() == 0
+            || request.ordinal() > issued
+            || inputs.clone().take(index).any(|old| {
+                old.request.attempt_id() == request.attempt_id()
+                    || old.request.ordinal() == request.ordinal()
+            })
         {
             return Err(Error::InvalidMetadata);
         }
-        for bound in &current.bounds {
-            let digest = read
-                .receipts
-                .iter()
-                .find(|receipt| {
-                    receipt.input_ranges.iter().any(|range| {
-                        (range.shard_id, range.owner_epoch, range.last_sequence)
-                            == (
-                                bound.value.shard_id,
-                                bound.value.owner_epoch,
-                                bound.value.complete_through,
-                            )
-                    })
-                })
-                .map(|receipt| receipt.batch_digest);
-            if digest != bound.attestation {
-                return Err(Error::InvalidMetadata);
-            }
-        }
-        Ok(Some(read))
     }
+    let Some(current) = current else {
+        return Ok(None);
+    };
+    let mut receipts = Vec::new();
+    receipts
+        .try_reserve_exact(current.attempts.len())
+        .map_err(|_| Error::ResourceLimit)?;
+    let mut ranges = 0_usize;
+    for selected in &current.attempts {
+        let input = inputs
+            .clone()
+            .find(|input| *input.request.attempt_id() == selected.id)
+            .ok_or(Error::InvalidMetadata)?;
+        if !selected.matches(input.request) {
+            return Err(Error::InvalidMetadata);
+        }
+        ranges = ranges
+            .checked_add(input.expectation.input_ranges.len())
+            .filter(|count| *count <= MAX_RANGES)
+            .ok_or(Error::ResourceLimit)?;
+        require_headers(&input)?;
+        receipts.push(input.expectation.clone());
+    }
+    let mut bounds = Vec::new();
+    bounds
+        .try_reserve_exact(current.bounds.len())
+        .map_err(|_| Error::ResourceLimit)?;
+    bounds.extend(current.bounds.iter().map(|bound| bound.value));
+    let read = CutRead {
+        dataset_id: dataset,
+        topology_generation: current.topology,
+        bounds,
+        receipts,
+        snapshot_id: Some(current.receipt.snapshot_id),
+    };
+    let count = read
+        .validate(usize::MAX)
+        .map_err(|_| Error::InvalidMetadata)?;
+    if read.digest() != current.receipt.request_digest
+        || current
+            .receipt
+            .family_counts
+            .iter()
+            .try_fold(0_u64, |n, value| n.checked_add(*value))
+            != Some(count)
+    {
+        return Err(Error::InvalidMetadata);
+    }
+    for bound in &current.bounds {
+        let digest = read
+            .receipts
+            .iter()
+            .find(|receipt| {
+                receipt.input_ranges.iter().any(|range| {
+                    (range.shard_id, range.owner_epoch, range.last_sequence)
+                        == (
+                            bound.value.shard_id,
+                            bound.value.owner_epoch,
+                            bound.value.complete_through,
+                        )
+                })
+            })
+            .map(|receipt| receipt.batch_digest);
+        if digest != bound.attestation {
+            return Err(Error::InvalidMetadata);
+        }
+    }
+    Ok(Some(read))
 }
+
 impl BoundRetainedArchiveFrontier {
     pub fn current_receipt(&self) -> Option<ArchiveFrontierReceipt> {
         self.receipt
@@ -762,32 +782,8 @@ async fn load(
             current: None,
         });
     };
-    if row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true) {
-        return Err(Error::InvalidMetadata);
-    }
-    let revision = positive(&row, 1)?;
-    let topology = TopologyGeneration::new(number(&row, 2)?);
-    let receipt = ArchiveFrontierReceipt {
-        operation_id: fixed(&row, 3)?,
-        consumer_id: catalog,
-        revision,
-        snapshot_id: u64::try_from(row.try_get::<_, i64>(4).map_err(backend)?)
-            .ok()
-            .filter(|n| *n > 0)
-            .ok_or(Error::InvalidMetadata)?,
-        request_digest: Digest256::from_bytes(fixed(&row, 5)?),
-        family_counts: [
-            number(&row, 6)?,
-            number(&row, 7)?,
-            number(&row, 8)?,
-            number(&row, 9)?,
-            number(&row, 10)?,
-        ],
-        created: false,
-    };
-    if receipt.operation_id == [0; 16] {
-        return Err(Error::InvalidMetadata);
-    }
+    let (receipt, topology) = decode_current(&row, catalog)?;
+    let revision = receipt.revision;
     drop(row);
     let lineage = proof.history().lineage();
     let epochs = lineage
@@ -933,6 +929,39 @@ async fn load(
     })
 }
 
+fn decode_current(
+    row: &Row,
+    catalog: OwnerResourceId,
+) -> Result<(ArchiveFrontierReceipt, TopologyGeneration), Error> {
+    if row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true) {
+        return Err(Error::InvalidMetadata);
+    }
+    let revision = positive(row, 1)?;
+    let topology = TopologyGeneration::new(number(row, 2)?);
+    let receipt = ArchiveFrontierReceipt {
+        operation_id: fixed(row, 3)?,
+        consumer_id: catalog,
+        revision,
+        snapshot_id: u64::try_from(row.try_get::<_, i64>(4).map_err(backend)?)
+            .ok()
+            .filter(|n| *n > 0)
+            .ok_or(Error::InvalidMetadata)?,
+        request_digest: Digest256::from_bytes(fixed(row, 5)?),
+        family_counts: [
+            number(row, 6)?,
+            number(row, 7)?,
+            number(row, 8)?,
+            number(row, 9)?,
+            number(row, 10)?,
+        ],
+        created: false,
+    };
+    if receipt.operation_id == [0; 16] {
+        return Err(Error::InvalidMetadata);
+    }
+    Ok((receipt, topology))
+}
+
 fn require_absent(contradictory: bool) -> Result<(), Error> {
     if contradictory {
         Err(Error::InvalidMetadata)
@@ -1042,3 +1071,7 @@ const _: () = assert!(
 #[cfg(test)]
 #[path = "archive_retained_frontier_tests.rs"]
 mod tests;
+
+#[path = "archive_read_expectations.rs"]
+mod read_expectations;
+pub use read_expectations::{ArchiveReadExpectations, BoundArchiveReadExpectations};

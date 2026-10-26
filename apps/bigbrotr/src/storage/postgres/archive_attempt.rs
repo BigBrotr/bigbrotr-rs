@@ -150,9 +150,9 @@ pub(super) async fn read(
 
 // Bound every returned field even on an incompatible restore. A page contains
 // at most 64 fixed-size observations; no event bodies or retained input payloads.
-const OBSERVATION: &str = "substring(a.dataset_id FROM 1 FOR 17),substring(a.catalog_id FROM 1 FOR 17),CASE WHEN length(a.expected_predecessor::text)<=20 THEN a.expected_predecessor::text END,CASE WHEN length(a.ordinal::text)<=20 THEN a.ordinal::text END,a.schema_version=1,CASE WHEN length(a.topology_generation::text)<=20 THEN a.topology_generation::text END,substring(a.batch_digest FROM 1 FOR 33),substring(a.coordinator_incarnation FROM 1 FOR 17),substring(a.worker_incarnation FROM 1 FOR 17),NOT EXISTS(SELECT 1 FROM control.archive_attempts newer WHERE newer.dataset_id=a.dataset_id AND newer.ordinal>a.ordinal),substring(a.attempt_id FROM 1 FOR 17)";
+pub(super) const OBSERVATION: &str = "substring(a.dataset_id FROM 1 FOR 17),substring(a.catalog_id FROM 1 FOR 17),CASE WHEN length(a.expected_predecessor::text)<=20 THEN a.expected_predecessor::text END,CASE WHEN length(a.ordinal::text)<=20 THEN a.ordinal::text END,a.schema_version=1,CASE WHEN length(a.topology_generation::text)<=20 THEN a.topology_generation::text END,substring(a.batch_digest FROM 1 FOR 33),substring(a.coordinator_incarnation FROM 1 FOR 17),substring(a.worker_incarnation FROM 1 FOR 17),NOT EXISTS(SELECT 1 FROM control.archive_attempts newer WHERE newer.dataset_id=a.dataset_id AND newer.ordinal>a.ordinal),substring(a.attempt_id FROM 1 FOR 17)";
 
-fn decode(
+pub(super) fn decode(
     row: &Row,
     dataset: DatasetId,
     catalog: OwnerResourceId,
