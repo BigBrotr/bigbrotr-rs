@@ -234,6 +234,53 @@ SELECT pg_temp.expect_error('source_close_cannot_erase_prepared_bound','23514',$
     closed_at_us=3,last_complete_sequence=3,closure_digest=pg_temp.digest(600) WHERE shard_id=7$$);
 SELECT pg_temp.expect_error('publication_receipt_is_immutable','23514',$$UPDATE control.index_frontier_plans SET engine_receipt_digest=pg_temp.digest(999)$$);
 SELECT pg_temp.expect_error('prepared_plan_cannot_be_deleted','23514',$$DELETE FROM control.projection_plans WHERE frontier_revision=2$$);
+
+-- The original ownership oracle runs at schema2. Exercise its NULL-protocol
+-- association at schema41 as well, with two independently live legacy owners.
+-- Force deferred checks, then roll back these local rows to preserve the exact
+-- qualified inventory consumed by index_publication_races.py. Capture only the
+-- two completed assertions before rollback; any SQL error stops this script.
+BEGIN;
+INSERT INTO control.role_instances VALUES
+    (pg_temp.id(140),pg_temp.id(1),'index',0,NULL),
+    (pg_temp.id(141),pg_temp.id(1),'index',0,NULL);
+INSERT INTO control.owner_epochs(resource_id,epoch,dataset_id,role,role_instance_id,process_incarnation,
+    acquired_at_us,lease_expires_at_us,state,index_publication_protocol) VALUES
+    (pg_temp.id(142),1,pg_temp.id(1),'index',pg_temp.id(140),pg_temp.id(143),0,
+        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint+300000000,'active',NULL),
+    (pg_temp.id(144),1,pg_temp.id(1),'index',pg_temp.id(141),pg_temp.id(145),0,
+        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint+300000000,'active',NULL);
+INSERT INTO control.projection_generations(generation_id,dataset_id,storage_incarnation,table_identity_digest,
+    owner_resource_id,owner_epoch,owner_incarnation,created_at_us,index_publication_protocol,custody_binding_digest,provenance)
+    VALUES(pg_temp.id(146),pg_temp.id(1),pg_temp.id(147),pg_temp.digest(148),
+        pg_temp.id(142),1,pg_temp.id(143),0,NULL,NULL,NULL);
+SELECT pg_temp.expect_error('legacy_wrong_generation_owner_at_41','23503',$$
+    INSERT INTO control.projection_chunks(generation_id,chunk_id,dataset_id,storage_incarnation,
+        table_identity_digest,target,target_schema_version,topology_generation,chunk_ordinal,row_count,
+        owner_resource_id,owner_epoch,owner_incarnation,prepared_at_us)
+        VALUES(pg_temp.id(146),pg_temp.digest(149),pg_temp.id(1),pg_temp.id(147),pg_temp.digest(148),
+            'events',1,0,0,0,pg_temp.id(144),1,pg_temp.id(145),0)
+$$);
+INSERT INTO control.projection_chunks(generation_id,chunk_id,dataset_id,storage_incarnation,
+    table_identity_digest,target,target_schema_version,topology_generation,chunk_ordinal,row_count,
+    owner_resource_id,owner_epoch,owner_incarnation,prepared_at_us)
+    VALUES(pg_temp.id(146),pg_temp.digest(149),pg_temp.id(1),pg_temp.id(147),pg_temp.digest(148),
+        'events',1,0,0,0,pg_temp.id(142),1,pg_temp.id(143),0);
+SET CONSTRAINTS ALL IMMEDIATE;
+SELECT pg_temp.assert_true('legacy_same_generation_owner_at_41',
+    (SELECT count(*)=1 AND bool_and(chunk_id=pg_temp.digest(149) AND state='prepared'
+        AND owner_resource_id=pg_temp.id(142) AND owner_epoch=1 AND owner_role='index'
+        AND owner_incarnation=pg_temp.id(143)) FROM control.projection_chunks WHERE generation_id=pg_temp.id(146))
+    AND EXISTS(SELECT 1 FROM control.projection_generations WHERE generation_id=pg_temp.id(146)
+        AND owner_resource_id=pg_temp.id(142) AND owner_epoch=1 AND owner_role='index'
+        AND owner_incarnation=pg_temp.id(143) AND index_publication_protocol IS NULL));
+SELECT count(*) FILTER(WHERE case_name='legacy_wrong_generation_owner_at_41')=1 AS legacy_wrong_owner_checked,
+    count(*) FILTER(WHERE case_name='legacy_same_generation_owner_at_41')=1 AS legacy_same_owner_checked
+    FROM pg_temp.results \gset
+ROLLBACK;
+SELECT pg_temp.assert_true('legacy_wrong_generation_owner_at_41', :'legacy_wrong_owner_checked'::boolean);
+SELECT pg_temp.assert_true('legacy_same_generation_owner_at_41', :'legacy_same_owner_checked'::boolean);
+
 SELECT jsonb_build_object('format','bigbrotr-index-publication-sql-cases/1','status','PASS',
     'case_count',count(*),'cases',jsonb_agg(case_name ORDER BY case_name),
     'physical_evidence','NOT_RUN','concurrent_after_wait_lease','NOT_RUN') FROM pg_temp.results;
