@@ -65,6 +65,18 @@ the selected settings, not their complete durability guarantee. Preserve a faile
 run and its recipe; change an expectation only after correcting the owning
 physical contract and reviewing the independent reason.
 
+Local lifecycle controls use real short-lived child processes and Docker command
+doubles, without starting an engine:
+
+```sh
+python3 -B -m unittest discover -s experiments/clickhouse-frontier -p test_initial_schema.py -v
+```
+
+The runner kills and reaps a timed-out local `docker exec` child before returning
+its failure. Container cleanup freshly checks the recorded ID, image, ownership
+label and mounts, then stops and inspects that ID. Local client exit alone does
+not establish remote query cessation.
+
 The narrow `--complete-retained-tail` option is only for the recorded JSON integer
 oracle failure: it first verifies the retained literal table/column/event facts,
 then checks the same stopped container's ID, image, mounts, labels and limits.

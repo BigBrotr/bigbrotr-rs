@@ -10,8 +10,8 @@
     "schema_sha256": "b83807768847a743f0e585831c81cba699e9ba789595d3899e155c062b96469c",
     "inspect_sha256": "74cd53ef21e11e23a599b0bf4e8e87bdc60fc5596cf655661fa6e3e5d3e165f5",
     "recipe": "experiments/clickhouse-frontier/initial_schema.py",
-    "recipe_sha256": "e7913e27036f90e1e56ca12905d1f78afee3cab9a41b801ef60573293ebf5d09",
-    "final_unexecuted_delta": "Column-dependent TTL expression prepared after the constant-TTL fixture refusal; repeated retained continuation refuses before engine start."
+    "recipe_sha256": "58a5df8191bf9779c0e42fd7d48a942fde762ee1c4022e7ef34c09ea2d6a6045",
+    "final_unexecuted_delta": "Column-dependent TTL remains NOT_RUN; local lifecycle changes have real-child and command-boundary controls only, no engine rerun."
   },
   "engine": {
     "image": "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
@@ -169,5 +169,19 @@
     "Packaged product and meaningful signed-event Fact mapping",
     "Unclean restart/power-loss/fsync durability and cancellation",
     "Capacity, TLS and remote-host qualification"
-  ]
+  ],
+  "lifecycle_followup": {
+    "base_revision": "0897db112d562881896d6672c6bdcf3fbbc09a18",
+    "status": "PASS_LOCAL_ONLY",
+    "changes": [
+      "Timeout kills and reaps the owned local docker-exec child, retains output and propagates the timeout.",
+      "Stop freshly verifies recorded container ID, image, ownership label and exact mounts; stop/logs/final inspect all address the ID."
+    ],
+    "controls": 4,
+    "command": "python3 -B -m unittest discover -s experiments/clickhouse-frontier -p test_initial_schema.py -v",
+    "tests_sha256": "cb225e8d18bbddecdeb3ea29560425985766bbf0ad42e95da9b2afce77fc91dc",
+    "log": ".research/initial-index-ch-sql-20261026/.research/ch-lab-a/lifecycle-controls/tests.log",
+    "log_sha256": "860f84fbe4fbb29d3326f328c50653d59e1505cf1a2fe52e976afd0114f56beb",
+    "scope": "Two actual local child lifecycle controls, plus recorded-ID positive and wrong-ID/label/image/mount negative command controls. Docker commands are doubles; no Docker/SQL/engine operation occurred. Earlier SQL outcomes unchanged."
+  }
 }

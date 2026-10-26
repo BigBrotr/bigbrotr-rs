@@ -417,22 +417,48 @@ class Lab:
                 raise AssertionError("no independently observed concurrent writer query")
             self.query("SELECT 1", "writer", error="TOO_MANY_SIMULTANEOUS_QUERIES", name="second-writer-refused")
         finally:
-            stdout, stderr = child.communicate(timeout=10)
-            (self.root/"concurrent.stdout").write_bytes(stdout)
-            (self.root/"concurrent.stderr").write_bytes(stderr)
+            stdout, stderr = b"", b""
+            try:
+                try:
+                    stdout, stderr = child.communicate(timeout=10)
+                except subprocess.TimeoutExpired:
+                    # Reap the local docker-exec client before preserving its
+                    # timeout. Remote query cessation still requires owned stop.
+                    child.kill()
+                    child.wait(timeout=5)
+                    stdout, stderr = child.communicate(timeout=5)
+                    raise
+            finally:
+                (self.root/"concurrent.stdout").write_bytes(stdout)
+                (self.root/"concurrent.stderr").write_bytes(stderr)
         assert child.returncode == 0
         assert self.query("SELECT 1", "writer") == "1"
         self.checks.append(dict(name="writer succeeds after finite prior query completes", status="PASS"))
 
     def stop(self):
         if self.started:
-            result = self.command(["docker", "stop", "--time", "30", self.name], timeout=40)
+            ident = json.loads((self.root/"container-id.json").read_text())
+            assert isinstance(ident, str) and len(ident) == 64 and all(c in "0123456789abcdef" for c in ident)
+            inspection = self.command(["docker", "inspect", ident])
+            assert inspection.returncode == 0
+            owned = json.loads(inspection.stdout)
+            assert len(owned) == 1 and owned[0]["Id"] == ident
+            owned = owned[0]
+            assert owned["Config"]["Image"] == IMAGE
+            assert owned["Config"]["Labels"]["org.bigbrotr.research"] == "initial-index-schema-20261026"
+            assert {m["Destination"]:m["Source"] for m in owned["Mounts"]} == {
+                "/var/lib/clickhouse":str(self.root/"data"),
+                "/var/log/clickhouse-server":str(self.root/"logs"),
+                "/lab-private":str(self.root/"private"),
+            }
+            self.save(self.phase + "container-before-stop.json", owned)
+            result = self.command(["docker", "stop", "--time", "30", ident], timeout=40)
             (self.root/(self.phase + "stop.stdout")).write_bytes(result.stdout)
             (self.root/(self.phase + "stop.stderr")).write_bytes(result.stderr)
-            logs = self.command(["docker", "logs", self.name])
+            logs = self.command(["docker", "logs", ident])
             (self.root/(self.phase + "docker.stdout")).write_bytes(logs.stdout)
             (self.root/(self.phase + "docker.stderr")).write_bytes(logs.stderr)
-            inspect = self.command(["docker", "inspect", self.name])
+            inspect = self.command(["docker", "inspect", ident])
             self.save(self.phase + "container-final.json", json.loads(inspect.stdout))
             state = json.loads(inspect.stdout)[0]["State"]
             assert result.returncode == 0 and not state["Running"] and state["Pid"] == 0
