@@ -21,6 +21,9 @@ pub(super) struct CommandOwner<'a> {
     sync: Option<&'a mut sync::Sync>,
     index: Option<&'a mut index::Index>,
     archive_selected: bool,
+    source_observation: readiness::Source,
+    archive_observation: Option<readiness::ArchiveObservation>,
+    archive_verifying: bool,
     // One already-selected request retains its existing grant while awaiting
     // renewal or the end of independent Archive work. Never a second queue.
     pending: Option<management::Work>,
@@ -330,8 +333,34 @@ impl<'a> CommandOwner<'a> {
             ),
         )
         .await?;
-        let management::Execution::Complete(response) = execution else {
-            return Err((4, "unexpected operation on initial session surface".into()));
+        let response = match execution {
+            management::Execution::Complete(response) => response,
+            management::Execution::RoleStatus(work) => {
+                // Bind to the actual owner and accepted policy, independently
+                // of the authorization metadata that complete() compares.
+                let snapshot = (|| {
+                    let identity = bigbrotr::management::roles::SnapshotIdentity {
+                        dataset_id: self.dataset,
+                        process_incarnation: self.owner.identity().process_incarnation,
+                        config_revision: self.policy.config_revision.to_string().try_into()?,
+                        policy_revision: self.policy.policy_revision.to_string().try_into()?,
+                    };
+                    readiness::snapshot(
+                        identity,
+                        work.observed_at_us(),
+                        self.source_observation,
+                        self.sync.is_some(),
+                        self.archive_selected
+                            .then_some((self.archive_observation, self.archive_verifying)),
+                        self.index.as_deref(),
+                    )
+                })();
+                Some(match snapshot {
+                    Ok(snapshot) => work.complete(snapshot),
+                    Err(error) => work.refuse(error),
+                })
+            }
+            _ => return Err((4, "unexpected operation on initial session surface".into())),
         };
         if !self.cancellation.requested.load(Ordering::Acquire) {
             self.lease
@@ -554,10 +583,16 @@ async fn maintain_context(
         sync: sync.as_mut(),
         index: index.as_mut(),
         archive_selected: archive.is_some(),
+        source_observation: readiness::Source::default(),
+        archive_observation: None,
+        archive_verifying: false,
         pending: None,
         pending_renewed: false,
     };
     let started = state.renew_for(Some(store)).await?;
+    state
+        .source_observation
+        .refresh(store, &cancellation.requested);
     // Measure the actual renewal, before independent startup work consumes time.
     // An overdue due time after startup is still handled by the renewal arm.
     let mut due = state.next_renewal(started)?;
@@ -697,8 +732,14 @@ async fn maintain_context(
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
                     let archive = archive.as_mut().expect("selected Archive");
+                    // A catalog failure can become known to its driver while
+                    // joined native cleanup still services private commands.
+                    // Old evidence must not remain Ready during that operation.
+                    state.archive_verifying = true;
                     let published = archive.publish(store.initial()?, budget, &mut state, &mut due,
                         &mut management, &cancellation.requested).await?;
+                    state.archive_observation = archive.observation();
+                    state.archive_verifying = false;
                     // Drain available complete batches without another formation
                     // delay, but allow management/renewal between each pass.
                     publish_due = Instant::now() + if published { sync::INTERVAL } else { archive.delay() };
@@ -744,6 +785,7 @@ async fn maintain_context(
                         .map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))
                         .and_then(|result| result);
                     trace.finish(result)?;
+                    state.source_observation.refresh(store, &cancellation.requested);
                     // A timed gap lets HTTP run even under continuous work;
                     // the priority timer prevents continuous HTTP starving Sync.
                     dispatch_due = Instant::now() + sync::INTERVAL;
@@ -770,6 +812,13 @@ async fn maintain_context(
                     state.idle_phase(due)?;
                 },
                 work = next_command(&mut state.pending, &mut management) => {
+                    // The native owner remains serial and supervised. Nested
+                    // Archive work uses this fixed cached observation and its
+                    // age; it cannot borrow an Ingest handle concurrently.
+                    if admission(Instant::now(), due, None) == Admission::Ready {
+                        phase(progress, state.maximum()?.min(due.saturating_duration_since(Instant::now())))?;
+                        state.source_observation.refresh(store, &cancellation.requested);
+                    }
                     state.command(work, &mut management, due, None).await?;
                 },
             }

@@ -5,6 +5,7 @@ mod commands;
 mod dictionaries;
 mod index;
 mod owner;
+mod readiness;
 pub(super) mod successor;
 pub(super) mod successor_family;
 use owner::{NativeOwner, Profile};

@@ -17,6 +17,7 @@ use bigbrotr::{
 use bigbrotr_model::{ProcessIncarnation, ProjectionGenerationId};
 
 pub const FRESHNESS: Duration = Duration::from_secs(30);
+pub(super) const INTERVAL: Duration = Duration::from_secs(15);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Failure {
@@ -129,10 +130,8 @@ impl Readiness {
         })
     }
     fn due(&self, now: AuthorityTick) -> bool {
-        self.last_attempt.is_none_or(|last| {
-            now.elapsed_since(last)
-                .is_ok_and(|elapsed| elapsed >= FRESHNESS)
-        })
+        self.last_attempt
+            .is_none_or(|last| now.elapsed_since(last).is_ok_and(probe_due))
     }
     fn remaining(&self, now: AuthorityTick) -> Result<Duration> {
         let started = self
@@ -152,6 +151,9 @@ impl Readiness {
 
 fn within_window(elapsed: Duration) -> bool {
     elapsed < FRESHNESS
+}
+fn probe_due(elapsed: Duration) -> bool {
+    elapsed >= INTERVAL
 }
 
 fn source_matches(manifest: &IngestManifest, through: CompleteThrough, cut: &SourceCut) -> bool {

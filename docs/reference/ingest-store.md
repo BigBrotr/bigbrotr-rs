@@ -241,8 +241,8 @@ rechecks and a new native source observation. Status requests read this fixed-si
 cache; they do not launch engine work. Authority and current source/cut agreement
 remain separate requirements of the status consumer.
 
-Sweeps coalesce on a 30-second interval independent of publication count. The
-same 30 seconds bound the whole sweep and its freshness from the oldest read,
+Sweeps coalesce on a 15-second interval independent of publication count. A
+separate 30 seconds bound the whole sweep and its freshness from the oldest read,
 using the suspend-aware authority clock. New source work takes priority between
 joined steps. Failed, expired or cancelled work cannot refresh the last good
 observation; unresolved remote work retains its query reservation and parks Index.
@@ -251,6 +251,24 @@ bounded recovery metadata replaces the source/planner reservation. Complete
 history verification and the final whole-cut engine scan still grow with retained
 history. This initial M1 profile does not qualify large-history readiness capacity,
 Index restart or automatic unknown-query resolution.
+
+The initial Archive publisher refreshes its full captured native cut at a
+coalesced15-second idle interval, capped by the accepted maximum publication
+delay. This reuses the complete receipt/file verification and checks the actual
+Control frontier revision, snapshot and exact cut inside the catalog barrier;
+it neither publishes another frontier nor adopts different history. Nested status
+requests report verification in progress until the actual catalog/native work is
+joined. Archive failures still stop this combined initial owner; independent
+outage operation remains P01-T09 Step5, not a guarantee of this observation path.
+
+`GET /management/v1/roles` exposes these observations only after current
+`status.read` authorization, without refreshing session activity. Source lag is
+represented by the observed native source and published cuts, never an invented
+pending-byte count. Each time entry carries the authenticated report's PostgreSQL
+timestamp and a separate suspend-aware age from its oldest dependency observation.
+Unknown, stale and unavailable remain explicit. The ordinary Control reader/export
+profile retains only scoped exact-ID success evidence and never promotes it to
+full current Archive readiness; that positive gate remains open.
 
 Accepted administration enables login, self inspection, logout,
 [URL registration](relay-endpoint-registry.md#authenticated-registration-consumer),

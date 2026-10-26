@@ -163,6 +163,8 @@ fn readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_he
 
 #[test]
 fn readiness_uses_oldest_read_and_a_strict_whole_sweep_window() {
+    assert!(!probe_due(Duration::from_nanos(14_999_999_999)));
+    assert!(probe_due(Duration::from_secs(15)));
     assert!(within_window(Duration::ZERO));
     assert!(within_window(Duration::from_nanos(29_999_999_999)));
     assert!(!within_window(Duration::from_secs(30)));

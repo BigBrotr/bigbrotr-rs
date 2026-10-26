@@ -5,6 +5,7 @@ use super::commands::CommandOwner;
 use super::*;
 use crate::interfaces::archive_preflight as preflight;
 use bigbrotr::{
+    runtime::policy_authority::{AuthorityClock, SuspendAwareClock},
     secrets::{SecretBytes, SecretFile},
     storage::{
         archive::{
@@ -40,6 +41,7 @@ pub(super) struct Archive {
     next: u64,
     revision: u64,
     profile: Option<(Duration, u64)>,
+    observation: Option<readiness::ArchiveObservation>,
 }
 fn error(error: impl std::fmt::Debug) -> (u8, String) {
     (
@@ -126,6 +128,7 @@ impl Archive {
             next: 1,
             revision: 0,
             profile: None,
+            observation: None,
         })
     }
 
@@ -144,7 +147,14 @@ impl Archive {
         Ok(())
     }
     pub(super) fn delay(&self) -> Duration {
-        self.profile.expect("accepted archive profile").0
+        self.profile
+            .expect("accepted archive profile")
+            .0
+            .min(readiness::FRESHNESS / 2)
+    }
+
+    pub(super) fn observation(&self) -> Option<readiness::ArchiveObservation> {
+        self.observation
     }
 
     fn runtime_root(&self, root: &Resolved) -> Resolved {
@@ -199,6 +209,16 @@ impl Archive {
             )
             .map_err(error)?
         else {
+            // Recheck the complete physical cut only at a coalesced interval.
+            // An empty pending lookup alone proves neither an empty source nor
+            // continued availability of an already published Archive.
+            if let Some(previous) = self.observation {
+                let now = SuspendAwareClock.read().map_err(error)?;
+                if now.elapsed_since(previous.started).map_err(error)? >= readiness::FRESHNESS / 2 {
+                    self.capture(budget, state, due, management, previous.through, false)
+                        .await?;
+                }
+            }
             return Ok(false);
         };
         let end = pending.batch().last().sequence.get();
@@ -289,7 +309,8 @@ impl Archive {
             })
             .await?;
         self.inputs.push(retained);
-        self.capture(budget, state, due, management, end).await?;
+        self.capture(budget, state, due, management, end, true)
+            .await?;
         self.next = last;
         Ok(true)
     }
@@ -301,7 +322,10 @@ impl Archive {
         due: &mut Instant,
         management: &mut Option<management::Management>,
         end: u64,
+        publish: bool,
     ) -> Result<()> {
+        // Freshness includes preparation, every physical read and cleanup.
+        let started = SuspendAwareClock.read().map_err(error)?;
         let deadline = Instant::now() + OPERATION;
         let root = self.runtime_root(state.root);
         let app = budget.clone();
@@ -367,29 +391,70 @@ impl Archive {
                         capture.accept(observed).await.map_err(error)
                     })
                     .await?;
-                let operation = super::super::fresh_process_incarnation().map_err(error)?;
                 let maximum = state.operation_window(deadline)?;
-                let frontier = bounded(maximum, state.cancellation, async {
-                    state
-                        .owner
-                        .publish_archive_frontier(
-                            &captured,
-                            &self.inputs,
-                            *operation.as_bytes(),
-                            self.revision,
-                            &Cell::new(false),
-                        )
-                        .await
-                        .map_err(error)
-                })
-                .await?;
-                self.revision = frontier.revision;
+                if publish {
+                    let operation = super::super::fresh_process_incarnation().map_err(error)?;
+                    let frontier = bounded(maximum, state.cancellation, async {
+                        state
+                            .owner
+                            .publish_archive_frontier(
+                                &captured,
+                                &self.inputs,
+                                *operation.as_bytes(),
+                                self.revision,
+                                &Cell::new(false),
+                            )
+                            .await
+                            .map_err(error)
+                    })
+                    .await?;
+                    self.revision = frontier.revision;
+                } else {
+                    // This read-only probe cannot create a frontier or adopt
+                    // a different native snapshot. Recheck the actual PG head
+                    // inside the retained catalog barrier after all rows.
+                    let selected = bounded(maximum, state.cancellation, async {
+                        state
+                            .owner
+                            .read_current_archive_selection(self.coordinator.identity().catalog())
+                            .await
+                            .map_err(error)
+                    })
+                    .await?
+                    .ok_or_else(|| error("published Archive selection missing"))?;
+                    let spec = state.initial_registration()?;
+                    if selected.dataset_id != spec.dataset_id
+                        || selected.catalog_id != self.coordinator.identity().catalog()
+                        || selected.frontier_revision != self.revision
+                        || selected.snapshot_id != capture.snapshot_id()
+                        || selected.topology_generation != spec.target_topology().map_err(error)?
+                        || selected.bounds
+                            != [CutBound {
+                                shard_id: spec.shard_id,
+                                owner_epoch: 1,
+                                complete_through: end,
+                            }]
+                    {
+                        return Err(error(
+                            "published Archive selection changed during observation",
+                        ));
+                    }
+                }
                 drop(captured);
                 state
                     .external(due, management, deadline, async {
                         capture.finish().await.map_err(error)
                     })
                     .await?;
+                let spec = state.initial_registration()?;
+                self.observation = Some(readiness::ArchiveObservation {
+                    dataset: spec.dataset_id,
+                    topology: spec.target_topology().map_err(error)?,
+                    shard: spec.shard_id,
+                    revision: self.revision,
+                    through: end,
+                    started,
+                });
                 Ok(())
             }
             .await;

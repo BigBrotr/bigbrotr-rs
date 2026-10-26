@@ -60,10 +60,16 @@ The retained library executable lists its compiled tests before selecting
 `storage::postgres::transport::route_tests::`. Every expected owning module must
 be present. Two existing Archive transport-custody controls also cover the shared
 future-before-guard destruction boundary changed by late Index attachment.
-The separate binary test executable must contain the closed 31-test service
-scope: seven Index actor and seven preparation controls, two explicit initial
-Ingest/Index CLI controls, seven command-admission controls including actual
-loopback HTTP, six supervision controls and two phase-watchdog controls. Names
+The library selection also covers native source-head observation and its signed
+admission/reopen boundary, bounded role DTOs and suspend-aware elapsed time.
+The separate binary test executable must contain the closed 47-test service
+scope: seven Index actor and seven preparation controls, five physical-probe
+scheduling/refusal controls, two explicit initial Ingest/Index CLI controls,
+seven command-admission controls including actual loopback HTTP, six supervision
+controls, two phase-watchdog controls, two initial observation controls, three
+role HTTP controls, five ordinary observation-cache controls and the initial
+route-selection control. These observations do not qualify live dependency
+readiness, PostgreSQL authorization transactions or installed failures. Names
 and counts are declared from the owning source; missing, renamed or additional
 tests within that scope require a reviewed inventory update. Both executables
 are listed before execution, and every group records which executable ran it.

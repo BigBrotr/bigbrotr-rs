@@ -11,13 +11,14 @@ from initial_index import (BINARY_EXACT, BINARY_GROUPS, BINARY_REQUIRED, GROUPS,
 
 
 class IndexResultControls(unittest.TestCase):
-    def test_binary_scope_requires_all_thirty_one_named_controls(self):
+    def test_binary_scope_requires_all_forty_seven_named_controls(self):
         names = sorted(test for tests in BINARY_REQUIRED.values() for test in tests)
-        self.assertEqual(len(names), 31)
-        self.assertEqual(len(set(names)), 31)
+        self.assertEqual(len(names), 47)
+        self.assertEqual(len(set(names)), 47)
         self.assertEqual({name: len(tests) for name, tests in BINARY_REQUIRED.items()}, {
-            'initial-index': 14, 'initial-commands': 7, 'initial-supervision': 6,
+            'initial-index': 19, 'initial-commands': 7, 'initial-supervision': 6,
             'initial-watchdog': 2, 'initial-cli': 1, 'index-cli': 1,
+            'initial-readiness': 2, 'role-status-http': 3, 'ordinary-observations': 5, 'initial-role-route': 1,
         })
         self.assertEqual(sum('::index::tests::' in name for name in names), 7)
         self.assertEqual(sum('::index::prepare::tests::' in name for name in names), 7)
@@ -26,7 +27,7 @@ class IndexResultControls(unittest.TestCase):
             return selected_tests(inventory, groups=BINARY_GROUPS, required_modules=(),
                                   required_tests=BINARY_REQUIRED)
 
-        text = '\n'.join(name + ': test' for name in names) + '\n\n31 tests, 0 benchmarks\n'
+        text = '\n'.join(name + ': test' for name in names) + '\n\n47 tests, 0 benchmarks\n'
         selected = select(listed_tests(text))
         self.assertEqual({key: sorted(value) for key, value in BINARY_REQUIRED.items()}, selected)
         # Unrelated compiled CLI tests are not part of this focused profile.
@@ -44,7 +45,7 @@ class IndexResultControls(unittest.TestCase):
         # The old library-only inventory cannot satisfy a binary module.
         with self.assertRaises(ValueError):
             select([prefix + 'control' for prefix in GROUPS.values()])
-        for invalid in (text.replace('31 tests', '30 tests'),
+        for invalid in (text.replace('47 tests', '46 tests'),
                         text.replace(names[0] + ': test', names[1] + ': test'),
                         '0 tests, 0 benchmarks\n'):
             with self.assertRaises(ValueError):

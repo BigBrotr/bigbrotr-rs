@@ -74371,6 +74371,51 @@
         "sha256": "5e8f435b9bc7d95b75c7c0b5f0993e1358245f36250d1be2c675b1461db5e11a",
         "result": "38 new objects/12 paths; five matches repeat one historical inventory reference fingerprint, no operational credential confirmed. Final documentation-only delta still to review."
       }
+    },
+    "live_readiness": {
+      "state": "partial-native-installed-not-run",
+      "branch": "work/live-readiness",
+      "observed_revision": "a8b7a8ecbca5e5547c279e72a760f3ba1ff7a843",
+      "worktrees": [
+        ".research/readiness-source-head-20261026",
+        ".research/readiness-index-probe-20261026",
+        ".research/live-role-status-20261026"
+      ],
+      "protected_evidence": ".research/live-readiness-20261026",
+      "reviews": [
+        {
+          "path": ".research/live-readiness-20261026/initial-owner-source-review.json",
+          "sha256": "a1eb57841323a97bdfb7c00bbbef28e220bf5404f27f4117199b95a347cc79f9"
+        },
+        {
+          "path": ".research/live-role-status-20261026/.research/role-status-controls/peer-review-104e6e88.json",
+          "sha256": "ecf249de937dd000145875455e21a573d4db01ee62717d60528687902975148e"
+        },
+        {
+          "path": ".research/live-role-status-20261026/.research/role-status-controls/peer-acceptance-review.json",
+          "sha256": "963337d12e46713c7240e6ebfd6df46073ef7a1fe626817e17b0f3de7a4fbb02"
+        }
+      ],
+      "active_local_engines_or_builds": false,
+      "ci": {
+        "run": 40393162501,
+        "watcher": 91567,
+        "macos": "FAIL-stale-entrypoint-test-expectation",
+        "linux": "IN_PROGRESS",
+        "local_correction": "a8b7a8ec"
+      },
+      "valid_local_checks": [
+        "seven native-profile verifier fault controls PASS",
+        "new installed-role oracle mutation control PASS",
+        "formatting/diff PASS"
+      ],
+      "not_run": [
+        "candidate Rust compilation/native controls",
+        "installed positive role readiness",
+        "installed negative readiness",
+        "ordinary complete-current-readiness"
+      ],
+      "resource_scope": "No new engine data or compiler allocation yet; all former protected captures and failures retained. Existing network-1154757 remains the exclusive compiler-cache candidate."
     }
   },
   "implementation_checkpoint_space_20261026": {

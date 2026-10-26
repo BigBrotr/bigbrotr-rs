@@ -6,12 +6,14 @@ Official releases, packages and production remain unauthorized.
 
 ## Current capability and revision
 
-Canonical checkout: `work/initial-index`, HEAD `2d0bdc81` before this qualification
-checkpoint. Pending edits are only the owning evidence, task and resource records.
-Published `main` remains `1cfd6eb5` in
-`.research/assembly-fixture-canonical-20261026`; the next coherent integration
-contains the qualified initial Index runtime, maintained installed case and
-reviewed CI reuse changes.
+Canonical checkout: `work/live-readiness`. This checkpoint freezes the current
+readiness source candidate, based on published `00714653`; the next qualification
+will record its exact commit/tree. Integrated parents through `6779a5e9` include
+the CI diagnostic correction and report-time contract. Native/installed checks
+remain NOT_RUN; this candidate has not been merged or pushed.
+`main` and `origin/main` now contain that coherent qualification commit in
+`.research/assembly-fixture-canonical-20261026`. The push completed; the new
+readiness increment is being developed in isolated owning worktrees.
 
 **P01-T09 Step2 is qualified at its initial scope.** Installed product
 `b5333d53`, assembly/acceptance `2d0bdc81`, passes all eight maintained
@@ -89,25 +91,46 @@ Local `74337306`/`2c3e5071` move cheap dependency checks early, keep the fresh
 worker-before-parent build, and share its frozen source/Cargo home/target with
 complete default/debug Clippy, rustdoc and workspace tests. Critical review fixed
 undeclared ancestor Cargo configuration; 21 CI and three builder controls PASS.
-**Changed full hosted execution and timing benefit remain NOT_RUN.** Qualify them
-through the next necessary coherent main push, retaining all selected platforms,
-artifact/install checks and declared costly-test placement.
+[Run40393162501](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40393162501)
+on `00714653` remains in progress on both Linux platforms. macOS FAILED at
+Rust integration: `control_runtime_entrypoint` still expected the pre-Index role
+diagnostic. Build, Clippy and rustdoc passed; later acceptance controls NOT_RUN.
+This is a stale test expectation, not billing or a proven product failure. The
+one-line correction is local `a8b7a8ec`; the original log/artifact is retained in
+`.research/ci-publication-20261026/run-40393162501-exposure`. Delegate
+`ci_native_cancel_review` owns watcher91567 and terminal/output review. Full
+changed-helper qualification and timing benefit are not yet claimed. Retain all selected platforms, artifact/install checks and
+declared costly-test placement.
 
 Bounded public-source review through `2d0bdc81` found no operational credential
 exposure: five matches repeat one already-reviewed inventory reference. Earlier
-source/hosted audits remain valid at their recorded revisions. Review the final
-qualification-documentation delta before push; keep raw credentials/captures
-protected and out of uploads. Current documentation checks pass 3/3 before this
-final evidence/task update; rerun the affected inexpensive checks after commit.
+source/hosted audits remain valid at their recorded revisions. The final four-document delta through `00714653` also has no confirmed exposure;
+its protected receipt is `.research/ci-publication-20261026/source-00714653-exposure/receipt.json`.
+All three documentation checks pass on that published revision. Keep raw
+credentials/captures protected and out of uploads.
 
 ## Resources and immediate action
 
 No owned build or engine is active. Native session75010, fresh builder76528 and
 installed case80184 ended and were reaped. All r4 containers are stopped/exit0/
-PID0/noOOM; the borrowed bridge is unchanged and empty. Delegates completed
-source review, readiness mapping and a read-only cache assessment; no pending
-implementation edits. Root owns integration and lab execution; Q37 settings remain
-as previously verified.
+PID0/noOOM; the borrowed bridge is unchanged and empty. The readiness candidate integrates source-head observation (`23d9a839`,
+`5ad2bd95`), authenticated role status (`104e6e88`), the complete Index read-only
+probe (`59186d6f`) and conservative ordinary observations (`85233c12`,
+`531e6373`). Native compilation/tests/engines/installed qualification are NOT_RUN.
+Root owns the initial runtime/cache and existing acceptance/native-profile changes.
+Index and Archive probes now use15s scheduling with strict30s oldest-read freshness;
+Archive verification in flight suppresses prior Ready through actual driver join.
+Ordinary exact-ID evidence never certifies complete current Archive readiness.
+
+Critical source reviews found and resolved the snapshot ReadOptions signature,
+Archive cadence, old Ready during joined cleanup, invalid test ID constructors,
+export auth/CAS misclassification and an unconstrained acceptance timestamp.
+Protected reviews live under `.research/live-readiness-20261026` and
+`.research/live-role-status-20261026/.research/role-status-controls`. Both implementation delegates have finished; report-time DTO/contract alignment
+is integrated at `6779a5e9`, with31 client controls, TypeScript and contract drift
+PASS. Every present nested timestamp now equals the authenticated PG report time;
+only suspend-aware age determines freshness. Existing new native tests are NOT_RUN; seven harness fault controls
+and the new acceptance mutation control PASS. All Q37 settings remain verified.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026`, owns exact sources, resource identities
@@ -119,8 +142,18 @@ read-only proposal identifies 1.94 GiB of obsolete receipt-compiler intermediate
 freeze/hash and fresh ownership/use checks remain necessary before any deletion.
 The active native115 cache and current candidate are excluded.
 
-Immediate action: commit/check the coherent qualification records, review their
-public delta, integrate/push main, and observe the resulting required GitHub run.
-Then implement the live-readiness increment above while CI proceeds. Retain all
-remaining gates and classify new failures as product, verifier, environment or
-unknown; never turn NOT_RUN or interrupted outcomes into PASS.
+Immediate action: run this frozen candidate through the maintained isolated
+`initial-index` native
+profile with its expanded47 named binary controls and affected library controls.
+If successful, build the ordinary worker-bound candidate and execute the existing
+installed Index case including positive authenticated readiness and no-idle-touch.
+Negative/ordinary readiness, independent outages and recovery remain open. Continue
+collecting the current hosted results and publish the known fixture fix with this
+coherent qualified increment. The typed native head is an inert observation, not a prefix or ACK
+proof; missing markers cannot imply empty/complete source. Use the existing
+management no-idle-touch authentication and nonrenewable action window. Reuse
+bounded physical verification without schema-only readiness or per-request
+unbounded engine work; root is reconciling the coalesced probe/custody boundary.
+Integrate the delegates only after review and meaningful isolated qualification.
+Retain all remaining gates and classify new failures as product, verifier,
+environment or unknown; never turn NOT_RUN or interruptions into PASS.

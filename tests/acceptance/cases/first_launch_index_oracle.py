@@ -58,6 +58,44 @@ def accepted_profile(state):
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
+def live_roles(value, state, clock_before, clock_after):
+    """Literal signed fixture frontier plus separately captured SQL identities."""
+    dataset = only(state['datasets'])
+    control = only(state['owner_epochs'], role='control', state='active')
+    generation = only(state['projection_generations'])
+    exact(sorted(value), sorted(('format', 'identity', 'observed_at_us', 'source', 'roles', 'capabilities', 'authority')))
+    assert value['format'] == 'bigbrotr-role-status/1' and value['authority'] == 'observation-only'
+    exact(value['identity'], dict(dataset_id=raw(dataset['dataset_id'],16).hex(),
+        process_incarnation=raw(control['process_incarnation'],16).hex(),
+        config_revision=str(dataset['config_revision']), policy_revision=str(dataset['policy_revision'])))
+    assert re.fullmatch('-?(0|[1-9][0-9]*)', value['observed_at_us'])
+    observed = int(value['observed_at_us'])
+    assert -(1 << 63) <= observed < (1 << 63)
+    assert type(clock_before) is int and type(clock_after) is int
+    assert clock_before <= observed <= clock_after
+    cut = dict(dataset_id=raw(dataset['dataset_id'],16).hex(), topology_generation='0',
+        bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
+    def fresh(observation):
+        assert observation['freshness'] == 'fresh' and observation['reason'] == 'current'
+        stamp = observation['time']
+        assert set(stamp) == {'observed_at_us','age_us'} and stamp['observed_at_us'] == str(observed)
+        assert re.fullmatch('0|[1-9][0-9]*',stamp['age_us']) and int(stamp['age_us']) < 30_000_000
+    assert set(value['source']) == {'cut','freshness','time','reason'}
+    exact(value['source']['cut'],cut)
+    fresh(value['source'])
+    exact(value['roles'], [dict(role=role,state='ready' if role=='control' else 'idle',reason='current')
+        for role in ('control','ingest','sync','archive','index')])
+    caps = value['capabilities']
+    assert len(caps) == 4
+    for cap,kind in zip(caps, ('signed_event_admission','finite_acquisition','archive_publication','index_publication')):
+        assert set(cap) == {'capability','state','reason','freshness','time','published','generation','storage_incarnation'}
+        assert cap['capability'] == kind and cap['state'] == 'ready'
+        fresh(cap)
+        exact(cap['published'],dict(revision='4',cut=cut) if kind.endswith('_publication') else None)
+        assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
+        assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
+
+
 def retained(root):
     directory = root/'.bigbrotr-index-custody'
     paths = [directory/'identity.json', directory/'tables.json']

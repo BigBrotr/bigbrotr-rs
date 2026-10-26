@@ -1,9 +1,10 @@
 """One fresh installed Index lifetime alongside the existing Archive journey.
 
 No engine is started on import. Credentials and raw captures stay in the same
-protected, retained first-launch resource owner; no restart/readiness claim.
+protected, retained first-launch resource owner; no restart or outage claim.
 """
 import hashlib
+import http.client
 import importlib.util
 import json
 import os
@@ -13,6 +14,7 @@ import secrets
 import shutil
 import socket
 import sys
+import time
 
 from cases.first_launch import (Runtime, MissingPrerequisite, LABEL, digest, load,
                                require, save)
@@ -22,7 +24,8 @@ STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
           'signed_acquisition', 'index_publication', 'ordinary_history_export', 'cleanup')
 LIMITS = [
     'Fresh installed signed source publishes all ten Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
-    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query/readiness, outage/capacity and complete M1.',
+    'Authenticated initial role/source/publication observations must match the independent signed cut and current PG identity without touching session idle time.',
+    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query, negative/ordinary readiness, outage/capacity and complete M1.',
     'The signed fixture has empty tags: event_tag_index has an explicit zero outcome; nonempty tag projection retains its separate fixture qualification.',
     'Configured process/disk limits are not empirical capacity qualification; local candidate identity is not release authentication.',
 ]
@@ -277,6 +280,52 @@ class IndexRuntime(Runtime):
         save(output/'clickhouse-schema.json',dict(tables=tables,columns=columns))
         require(self.inspect(entry)['State']['Running'] and self.archive_published(), 'combined owner/Archive stopped during Index publication')
         self.ch(f'ALTER TABLE {DATABASE}.events ADD COLUMN forbidden UInt8', 'writer', error='ACCESS_DENIED')
+        self.live_roles(entry, output)
+
+    def live_roles(self, entry, output):
+        """Use the existing private session; never print its cookie or CSRF."""
+        saved = load(self.home/'session.private')
+        require(saved['format'] == 'bigbrotr-cli-session/1'
+                and saved['origin'] == 'http://127.0.0.1:18081', 'role client session binding')
+        before, _ = self.capture(output, 'roles-before')
+        clock_before = int(self.sql('bigbrotr_control',
+            'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        observations = []
+        last = 0
+        def ready():
+            nonlocal last
+            if time.monotonic() - last < .25:
+                return False
+            last = time.monotonic()
+            connection = http.client.HTTPConnection('127.0.0.1', 18081, timeout=3)
+            try:
+                connection.request('GET', '/management/v1/roles', headers={
+                    'Origin': saved['origin'], 'Cookie': 'BigBrotrLocalSession='+saved['session'],
+                    'X-CSRF-Token': saved['csrf']})
+                response = connection.getresponse()
+                raw = response.read(131073)
+                require(len(raw) <= 131072 and response.status == 200, 'authenticated role observation failed')
+                value = json.loads(raw)
+            finally:
+                connection.close()
+            require(len(observations) < 256, 'role observation capture bound')
+            observations.append(value)
+            save(output/'role-observations.json', observations)
+            require(value['format'] == 'bigbrotr-role-status/1' and value['authority'] == 'observation-only',
+                    'role observation authority/format')
+            return len(value['capabilities']) == 4 and all(c['state'] == 'ready' for c in value['capabilities'])
+        # The existing signed-client65s gate still bounds this whole operation.
+        # Slow or absent physical verification is a failure, not a timeout uplift.
+        self.wait(ready, 'fresh physical Index and Archive role observations', 45, entry, self.client)
+        clock_after = int(self.sql('bigbrotr_control',
+            'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        save(output/'role-clock.json', dict(before_us=str(clock_before),after_us=str(clock_after)))
+        after, _ = self.capture(output, 'roles-after')
+        require(before['browser_sessions'] == after['browser_sessions'], 'status observation refreshed or mutated session')
+        oracle.live_roles(observations[-1], after, clock_before, clock_after)
+        save(output/'role-verdict.json', dict(status='PASS', observations=len(observations),
+            source_through=12, archive_revision=4, index_revision=4,
+            session_idle='unchanged', negative_readiness='NOT_RUN', ordinary_readiness='NOT_RUN'))
 
     def verify_index(self):
         output = self.root/'index'; output.mkdir(mode=0o700)

@@ -16,6 +16,10 @@ GROUPS = {
     'postgres-route': 'storage::postgres::transport::route_tests::',
     'archive-driver-unpolled': 'storage::archive::lifetime::tests::catalog_transport_retains_custody_even_before_its_future_is_polled',
     'archive-driver-drop': 'storage::archive::lifetime::tests::cancelled_transport_is_destroyed_before_its_custody_descriptor',
+    'source-head': 'storage::rocks::store::source_head_tests::',
+    'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
+    'role-observation': 'management::roles::tests::',
+    'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
 }
 # A broad filter must not pass when a new owning module was never wired in.
 REQUIRED_MODULES = (
@@ -30,6 +34,8 @@ REQUIRED_MODULES = (
     'storage::indexer::plan::tests::',
     'storage::indexer::custody::tests::',
     'storage::indexer::state::tests::',
+    'storage::rocks::store::source_head_tests::',
+    'management::roles::tests::',
 )
 
 # Closed initial service scope, derived from the owning source rather than an
@@ -43,8 +49,12 @@ BINARY_GROUPS = {
     'initial-watchdog': INITIAL + 'tests::',
     'initial-cli': 'interfaces::serve::tests::initial_ingest_startup_requires_an_explicit_flag',
     'index-cli': 'interfaces::serve::tests::index_initialization_requires_explicit_fresh_ingest_and_refuses_successors',
+    'initial-readiness': INITIAL + 'readiness::tests::',
+    'role-status-http': 'interfaces::management::role_tests::',
+    'ordinary-observations': 'interfaces::serve::role_status::tests::',
+    'initial-role-route': 'interfaces::management::profile_tests::initial_profile_preserves_sessions_and_refuses_other_unwired_operations',
 }
-BINARY_EXACT = ('initial-cli', 'index-cli')
+BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route')
 BINARY_REQUIRED = {
     'initial-index': tuple(INITIAL + 'index::' + name for name in (
         'tests::accepted_profile_preserves_provenance_and_both_documents_actual_ceilings',
@@ -61,6 +71,11 @@ BINARY_REQUIRED = {
         'prepare::tests::numeric_mapped_loopback_needs_no_resolver_and_unsafe_endpoint_forms_refuse',
         'prepare::tests::root_and_credential_refusals_preserve_input_and_return_the_grant',
         'prepare::tests::engine_envelope_preserves_independent_control_credit_and_never_waits',
+        'readiness::tests::readiness_requires_exact_current_initial_source_cut_not_idle_or_a_partial_vector',
+        'readiness::tests::readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_heads',
+        'readiness::tests::readiness_uses_oldest_read_and_a_strict_whole_sweep_window',
+        'readiness::tests::readiness_abandon_does_not_reset_attempt_cooldown_or_erase_a_failure',
+        'readiness::tests::readiness_empty_failed_cancelled_and_parked_caches_never_invent_a_verified_cut',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
         'renewal_admission_does_not_wait_for_a_timer_tick',
@@ -82,6 +97,22 @@ BINARY_REQUIRED = {
     'initial-watchdog': tuple(BINARY_GROUPS['initial-watchdog'] + name for name in (
         'a_late_native_completion_cannot_reset_the_phase_watchdog',
         'a_phase_refusal_retains_the_prior_static_callsite',
+    )),
+    'initial-readiness': tuple(BINARY_GROUPS['initial-readiness'] + name for name in (
+        'missing_native_observation_never_implies_empty_or_ready_source',
+        'publication_requires_source_fresh_physical_rows_and_matching_cut',
+    )),
+    'role-status-http': tuple(BINARY_GROUPS['role-status-http'] + name for name in (
+        'role_status_requires_session_csrf_and_closed_get_before_queueing',
+        'role_status_delivers_only_redacted_observation_and_releases_body_grant',
+        'role_status_bound_action_expiry_refuses_bytes_after_queue_completion',
+    )),
+    'ordinary-observations': tuple(BINARY_GROUPS['ordinary-observations'] + name for name in (
+        'ordinary_status_does_not_infer_readiness_from_enabled_or_absent_owners',
+        'ordinary_last_success_requires_terminal_cleanup_and_never_claims_full_readiness',
+        'ordinary_observation_freshness_uses_thirty_seconds_without_promoting_scope',
+        'ordinary_cache_checks_aggregate_before_response_clone_and_retains_its_grant',
+        'ordinary_cache_refuses_oversize_foreign_or_malformed_cut_without_erasing_last_success',
     )),
     **{name: (BINARY_GROUPS[name],) for name in BINARY_EXACT},
 }

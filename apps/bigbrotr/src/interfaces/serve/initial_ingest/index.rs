@@ -315,7 +315,7 @@ impl Index {
     pub(super) fn delay(&self) -> Duration {
         self.accepted
             .map_or(Duration::from_secs(1), |p| p.delay)
-            .min(readiness::FRESHNESS)
+            .min(readiness::INTERVAL)
     }
     pub(super) fn phase(&self) -> &'static str {
         if self.parked {

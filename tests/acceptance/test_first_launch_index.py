@@ -99,6 +99,51 @@ def metadata_fixture(root):
 
 
 class InitialIndexControls(unittest.TestCase):
+    def test_live_roles_require_literal_cut_freshness_identity_and_all_capabilities(self):
+        state = dict(
+            datasets=[dict(dataset_id='\\x'+'22'*16,config_revision=1,policy_revision=1)],
+            owner_epochs=[dict(role='control',state='active',process_incarnation='\\x'+'77'*16)],
+            projection_generations=[dict(generation_id='\\x'+'66'*16,storage_incarnation='\\x'+'88'*16)])
+        cut = dict(dataset_id='22'*16,topology_generation='0',
+            bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
+        clock = dict(observed_at_us='123456789',age_us='1000')
+        value = dict(format='bigbrotr-role-status/1',authority='observation-only',observed_at_us='123456789',
+            identity=dict(dataset_id='22'*16,process_incarnation='77'*16,config_revision='1',policy_revision='1'),
+            source=dict(cut=cut,freshness='fresh',time=clock,reason='current'),
+            roles=[dict(role=role,state='ready' if role=='control' else 'idle',reason='current')
+                for role in ('control','ingest','sync','archive','index')],
+            capabilities=[dict(capability=kind,state='ready',reason='current',freshness='fresh',time=clock,
+                published=dict(revision='4',cut=cut) if kind in ('archive_publication','index_publication') else None,
+                generation='66'*16 if kind=='index_publication' else None,
+                storage_incarnation='88'*16 if kind=='index_publication' else None)
+                for kind in ('signed_event_admission','finite_acquisition','archive_publication','index_publication')])
+        check.live_roles(value,state,123456000,123457000)
+        for change in (
+            lambda v:v['identity'].update(process_incarnation='99'*16),
+            lambda v:v['source'].update(cut=None),
+            lambda v:v['source']['cut']['bounds'][0].update(last_complete_sequence='11'),
+            lambda v:v['source']['cut']['bounds'][0].update(last_complete_sequence=12),
+            lambda v:v['source']['time'].update(age_us='30000000'),
+            lambda v:v['capabilities'][-1].update(state='building'),
+            lambda v:v['capabilities'][-1].update(storage_incarnation='99'*16),
+            lambda v:v['capabilities'][-1].update(freshness='stale'),
+            lambda v:v['capabilities'][-1]['published'].update(revision='3'),
+            lambda v:v['capabilities'].pop(),
+            lambda v:v['roles'].pop(),
+            lambda v:v.update(pending_bytes='0'),
+        ):
+            changed=copy.deepcopy(value); change(changed)
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                check.live_roles(changed,state,123456000,123457000)
+        for timestamp in ('0','123455999','123457001'):
+            changed=copy.deepcopy(value)
+            changed['observed_at_us']=timestamp
+            changed['source']['time']['observed_at_us']=timestamp
+            for cap in changed['capabilities']:
+                cap['time']['observed_at_us']=timestamp
+            with self.subTest(timestamp=timestamp),self.assertRaises(AssertionError):
+                check.live_roles(changed,state,123456000,123457000)
+
     def test_all_zero_chunk_digests_match_existing_independent_row_vectors(self):
         fixture()  # Load the maintained independent canonical encoder.
         golden=json.loads((ROOT/'apps/bigbrotr/src/storage/clickhouse/rows/fixtures/golden.json').read_text())
