@@ -353,8 +353,8 @@ Before the first production release, internal iterations do not create supported
 release compatibility. Q40 permits deliberate consolidation of schema/bootstrap,
 superseded code and historical-only migration fixtures after consumer analysis,
 while preserving every property of the current product and its required failure
-tests. A private commit/push does not freeze a migration forever. Supported release
-upgrades below remain deliverables; current restart, replay, recovery and state
+tests. A development commit/push, including to the public repository, does not
+freeze a migration forever. Supported release upgrades below remain deliverables; current restart, replay, recovery and state
 succession are operational invariants, not disposable legacy compatibility.
 
 The main path is a single Linux machine using Compose, local archive storage and

@@ -11,7 +11,8 @@ advertised bounded capabilities and their pinned protocol/parser versions;
 experimental command availability is not complete product qualification.
 
 Install Rust through rustup, a native C/C++20 compiler and libclang, Python 3.9 or later, OpenSSL
-(for ephemeral TLS test certificates) and Git. The repository pins
+(for ephemeral TLS test certificates), the POSIX `mkfifo` utility (for actual FIFO
+refusal tests), and Git. The repository pins
 Rust 1.98.1 with Rustfmt and Clippy; this is also the initially tested minimum.
 The compiler selection incorporates upstream fixes documented in
 [Rust 1.96.1](https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/) and the

@@ -575,7 +575,8 @@ RPC/API majors, accepted optional-field versions, pending/archive formats,
 cursor/key compatibility and exact engine/native matrix. Under Q40, pre-production
 internal iterations are not supported releases: their schemas and initialization
 may be consolidated after verifying current consumers, integrity and recovery.
-Private commits/pushes alone create no compatibility promise. This does not relax
+Development commits/pushes alone, including public ones, create no supported-release
+compatibility promise. This does not relax
 current restart/replay, failure handling or the supported-release rules below.
 The initial release
 supports only its qualified tuple; after a predecessor exists, each release must

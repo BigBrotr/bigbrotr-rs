@@ -159,7 +159,7 @@ fn actual_der_roots_retain_one_grant_through_all_tls_copies() {
 
 #[test]
 fn malformed_der_and_unsafe_file_kinds_release_the_grant() {
-    use std::os::unix::fs::symlink;
+    use std::os::unix::fs::{FileTypeExt, symlink};
     let directory = tempfile::tempdir().unwrap();
     let root = directory.path().canonicalize().unwrap();
     let path = root.join("ca.der");
@@ -194,14 +194,19 @@ fn malformed_der_and_unsafe_file_kinds_release_the_grant() {
     symlink(&root, &parent).unwrap();
     refuse(&parent.join("ca.der"));
     let fifo = root.join("fifo");
-    rustix::fs::mknodat(
-        rustix::fs::CWD,
-        &fifo,
-        rustix::fs::FileType::Fifo,
-        rustix::fs::Mode::RUSR,
-        0,
-    )
-    .unwrap();
+    // rustix's mknodat is unavailable on Apple targets. Keep the real FIFO
+    // refusal on every supported native test host through its POSIX utility.
+    let created = Command::new("mkfifo")
+        .args(["-m", "400"])
+        .arg(&fifo)
+        .output()
+        .expect("mkfifo is required for the native FIFO refusal test");
+    assert!(
+        created.status.success(),
+        "{}",
+        String::from_utf8_lossy(&created.stderr)
+    );
+    assert!(fs::symlink_metadata(&fifo).unwrap().file_type().is_fifo());
     refuse(&fifo);
     refuse(&root);
     refuse(&root.join("missing"));

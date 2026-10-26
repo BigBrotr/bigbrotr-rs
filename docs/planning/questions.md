@@ -411,4 +411,5 @@ official releases, package publication and production deployment are not
 authorized. Earlier private-repository statements describe history. Candidate
 credentials, private datasets and sensitive raw lab evidence remain protected;
 repository visibility does not make them appropriate upload inputs. Q37/Q38/Q40
-and the full replacement goal remain in force.
+and the full replacement goal remain in force. Public development commits do not
+turn pre-production internal formats into supported release versions.

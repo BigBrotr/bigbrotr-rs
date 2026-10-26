@@ -73422,7 +73422,13 @@
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
-    }
+    },
+    "subsequent_exposure_check": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40309278610-exposure/receipt.json",
+      "sha256": "7400e743f493c6ae64697dea71e9a8aea30ae069d3ba00f8dc78f3dbfd296ee7",
+      "scope": "All four artifacts and 38 attempt1 log members from40309278610; zero credential candidates; GitHub zero alerts at observation. Later runs excluded; no claim of completed asynchronous scanning."
+    },
+    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40313846572"
   },
   "implementation_first_launch_maintained_20261026": {
     "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
@@ -73469,6 +73475,17 @@
           "all_pid": 0,
           "cleanup_errors": []
         }
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-4652f577",
+        "source_revision": "4652f577fa82b5f38bf7fd3f22fea54bf9f67b35",
+        "result": "PASS",
+        "reason": "Portable tutorial-bound candidate qualified through all seven maintained stages; same verified c49 product bytes, new assembly/candidate identities.",
+        "candidate_root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-4652f577/candidate",
+        "report": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-4652f577/result.json",
+        "report_sha256": "4f1f446aa1f38ab2bcad360f87e925d50205783109db91fccf482fe7a7c287d8",
+        "resources": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-4652f577/resources.json",
+        "terminal_resources": "18 stopped-retained containers, exit0/PID0; no cleanup errors. Raw state remains protected."
       }
     ],
     "prepared_base_image": {
