@@ -73,17 +73,22 @@ fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
         grant(&b, 0, 128 * MIB),
     )
     .unwrap();
+    let bootstrap = BootstrapLimits {
+        max_mappings: 8,
+        max_batch_bytes: MIB as usize,
+    };
     drop(
         store
             .bootstrap_dictionaries(
                 request(),
                 &intent("public"),
                 ObservedTime::new(10),
-                BootstrapLimits {
-                    max_mappings: 8,
-                    max_batch_bytes: MIB as usize,
-                },
-                grant(&b, 4 * MIB, MIB),
+                bootstrap,
+                grant(
+                    &b,
+                    bootstrap.required_data_bytes().unwrap(),
+                    bootstrap.required_native_bytes().unwrap(),
+                ),
                 || Ok(()),
             )
             .unwrap(),
@@ -112,6 +117,10 @@ fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
         },
     )
     .unwrap();
+    let admission = AdmissionLimits {
+        max_batch_bytes: 256 * 1024,
+        ..AdmissionLimits::default()
+    };
     for sequence in [2, 3] {
         drop(
             store
@@ -122,11 +131,12 @@ fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
                     },
                     &input,
                     ObservedTime::new(20),
-                    AdmissionLimits {
-                        max_batch_bytes: 256 * 1024,
-                        ..AdmissionLimits::default()
-                    },
-                    grant(&b, 4 * MIB, MIB),
+                    admission,
+                    grant(
+                        &b,
+                        admission.required_data_bytes().unwrap(),
+                        admission.required_native_bytes().unwrap(),
+                    ),
                     || Ok(()),
                 )
                 .unwrap(),

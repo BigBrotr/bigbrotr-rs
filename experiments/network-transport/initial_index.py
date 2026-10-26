@@ -50,9 +50,9 @@ BINARY_GROUPS = {
     'initial-cli': 'interfaces::serve::tests::initial_ingest_startup_requires_an_explicit_flag',
     'index-cli': 'interfaces::serve::tests::index_initialization_requires_explicit_fresh_ingest_and_refuses_successors',
     'initial-readiness': INITIAL + 'readiness::tests::',
-    'role-status-http': 'interfaces::management::role_tests::',
+    'role-status-http': 'interfaces::management::tests::roles::',
     'ordinary-observations': 'interfaces::serve::role_status::tests::',
-    'initial-role-route': 'interfaces::management::profile_tests::initial_profile_preserves_sessions_and_refuses_other_unwired_operations',
+    'initial-role-route': 'interfaces::management::tests::profiles::initial_profile_preserves_sessions_and_refuses_other_unwired_operations',
 }
 BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route')
 BINARY_REQUIRED = {
