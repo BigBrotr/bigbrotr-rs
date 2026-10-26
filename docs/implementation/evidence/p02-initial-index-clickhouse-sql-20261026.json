@@ -467,6 +467,59 @@
         "receipt_sha256": "785daf87b7364244af965ef6c1ee8403b05b18ca1a4412ef17bb65c9cf06e80d",
         "checks": "13 actual socket/admission +14 existing target +5 resume controls;3 documentation checks",
         "preserved_failure": "Original Python3.13 accepted-session stop-order deadlock; fix joins sessions before listener wait_closed, without forwarding held queries or widening deadlines"
+      },
+      "short_pin": {
+        "status": "FAIL_BEFORE_EXPIRY_GATE_BOTH_ATTEMPTS",
+        "qualification": "Actual pin expiry NOT_RUN; scoped controls do not qualify installed behavior",
+        "source": "f499cc87",
+        "product": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+        "source_review_sha256": "0a8b15b2b56148d265e3e1f393ce2faebdf9a1cf653ee8b8c78b013117d4dc89",
+        "controls": "17 proxy socket/admission and7 pin controls PASS; correction receipt f42f466c88c0c8b365501f4c9d6cd47fce317a3fd3c82c6994f6284f7d51ff24",
+        "attempts": [
+          {
+            "status": "FAIL_BEFORE_EXPIRY_GATE",
+            "acceptance": "ffe4d64a",
+            "product": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+            "evidence_root": ".research/first-launch-index-short-pin-r1-20261027",
+            "case": "p01-first-launch-index-short-pin",
+            "checks": {
+              "first_launch_prerequisites": "PASS",
+              "first_launch_candidate": "PASS",
+              "first_launch_runtime_image": "PASS",
+              "first_launch_fresh_bootstrap": "PASS",
+              "first_launch_signed_acquisition": "PASS",
+              "first_launch_index_publication": "PASS",
+              "first_launch_ordinary_history_export": "FAIL",
+              "first_launch_cleanup": "FAIL"
+            },
+            "classification": "Fixture proxy admission: aggregate20000-frame bound reached during unarmed catalog preparation; target gate never fired",
+            "observed": "Proxy frames20002/bytes1545189/connections6/frontend_queries607/armedfalse/exit3. Ordinary app exit4: native grant catalog barrier completion unresolved. No successful expiry/cancellation claim.",
+            "next": "Closed ordinary-reader routing profile preserves existing framed target gate and byte/connection/time limits; source review and socket controls before real rerun",
+            "terminal_receipt_sha256": "80c5afe6ab4a152a3dbc9210e1685aefa0b097f811c8291412f113b2e60fc253",
+            "not_run": [
+              "Positive ordinary baseline in this variant",
+              "Actual short-pin expiry and joined release",
+              "Original export completion in this variant"
+            ]
+          },
+          {
+            "status": "FAIL",
+            "evidence_root": ".research/first-launch-index-short-pin-r2-20261027",
+            "checks": {
+              "first_launch_prerequisites": "PASS",
+              "first_launch_candidate": "PASS",
+              "first_launch_runtime_image": "PASS",
+              "first_launch_fresh_bootstrap": "PASS",
+              "first_launch_signed_acquisition": "PASS",
+              "first_launch_index_publication": "PASS",
+              "first_launch_ordinary_history_export": "FAIL",
+              "first_launch_cleanup": "FAIL"
+            },
+            "classification": "Fixture proxy connection admission:17th pre-arm connection exceeds16;frames0/bytes4450882/armedfalse; target never fired",
+            "terminal_receipt_sha256": "8cb7ad9a003cb9c1d30e695e31ad352023d9e12fd7c6b3eaa631a47357da9023"
+          }
+        ],
+        "next": "After explicit resume, derive baseline connection admission/routing from actual source and retained evidence; no arbitrary limit uplift or rebuild. Original failures retained."
       }
     }
   }

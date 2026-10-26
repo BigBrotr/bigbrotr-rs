@@ -1,145 +1,143 @@
 # Current execution checkpoint
 
-2026-10-26, Tux. **Full-product goal ACTIVE:** all selected P00–P10/M1–M5,
-under Q37/Q38/Q40. Q41 requires real hosted CI; Q42 records the public repository.
-Official releases, packages and production remain unauthorized. The latest
-execution-efficiency clarification is recorded in Q38/Q41 and the existing guide.
+2026-10-27, Tux. **Safe pause requested by the owner; full product incomplete.**
+Preserve the current P00–P10/M1–M5 goal and Q37/Q38/Q40/Q41/Q42. Resume only on
+explicit instruction. The goal control is paused after this checkpoint is saved;
+its actual session status is authoritative. No release, package or deployment.
 
-## Current capability and revision
+## Revision and saved work
 
-Published `origin/main`: `94a52232`. Local integrated main through `68236ade`
-adds ordinary Archive readiness; this checkpoint follows that revision. Product
-`8256184cd30f49020c6c0a9884e9eaec958ba461` passes native qualification and the
-installed `p01-first-launch-index` journey with assembly/acceptance `e644e218`.
-These local changes have not yet been pushed. The source/history exposure audit
-through `a8584b24` found no new credential/confidential material; only the final
-documentation/fix tail remains before one coherent publication.
+Published `origin/main` remains `903dddb5f8fd585a86737db053cb1491a53d5584`.
+The ordinary-readiness increment was pushed and its remote identity verified;
+publication receipt: `.research/live-readiness-20261026/ordinary-publication.json`.
+The incremental public source/history audit through903 found no new credential
+or confidential material. Original captures remain protected and ignored.
 
-**Ordinary readiness, retained-input failure and recovery are now qualified.**
-The complete-current PG/input/native proof and a matching completed operation
-make both private capabilities Ready at revision4/cut12/snapshot5. Withholding
-one independently reconstructed 266B current-member input makes both Unavailable.
-One successful original narrow history read cannot revive them. Restoring the
-same inode, mode and bytes allows a new full proof and both capabilities recover.
-Control remains usable and Source remains Unknown without an Ingest owner.
-Status-only barriers leave session idle and publication unchanged. The original
-353B signed export, exact manifest, retained export pin and released reader pins
-also pass. No limits or scientific expectations were weakened.
+Canonical checkout is now on `work/short-pin-checkpoint-20261027`, based on local
+`f499cc87`; this checkpoint is committed on that branch. Local `main` still points
+to f499, three commits ahead of published903. Those commits preserve the short-pin
+fixture (`95b6c615`), Linux-only process-control declaration (`ffe4d64a`) and narrow
+proxy correction (`f499cc87`, original `7b1c2346`). They are **not qualified by the
+installed scenario** and are not being pushed to main. The checkpoint branch
+preserves their source/control evidence and explicit failures without discarding
+or rewriting local history. Its push is checked after saving this document.
 
-The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`live_readiness.ordinary`, owns detailed outcomes and limits. All 147 native controls,
-actual build and strict Clippy PASS; fresh worker-before-parent installed build
-PASS. Installed r7 passes all eight stages. Root replayed the independent signed/
-C API, typed Index, initial readiness/invalidation, ordinary status/input and
-export oracles, verified 92 acceptance/migration inputs and all 19 terminal
-containers. Captures: `.research/first-launch-index-r7-20261026`; installed build:
-`runs/initial-index-installed-8256184` in the existing external lab. The original
-40s ordinary active-work and 12s export gates remain; added phases each have 30s.
-Observed original active work was 3.528s; no capacity claim follows from this run.
+Separate partial work, **not integrated or pushed**:
 
-The authoritative bridge, observation cache, owned input reader/runtime and
-custody controls are integrated. Root's critical pin-lifetime correction keeps
-the original reader-pin window nonrenewable through native work, final currentness
-and driver join. Scoped controls cover old selections and metadata failures;
-their remaining installed risk cases are listed below.
+- `work/initial-index-recovery`, clean worktree
+  `.research/initial-index-recovery-20261027`, WIP
+  `0c34826fdbaf9a31d4b0d777320f44fece025c81`: finite `index catch-up`, initial
+  source proof/read bridge and scoped controls. Final source review and contracts
+  incomplete. Format check initially FAIL; formatting then applied successfully,
+  without a post-format check. Compilation, Clippy, Rust/engine/installed checks
+  NOT_RUN. No claim of a working recovery implementation.
+- `work/index-restart-acceptance`, clean worktree
+  `.research/index-restart-acceptance-20261027`, WIP
+  `bdd582c4fcccd757f5552ae92c550ae653f3f7a6`: only the18-line source-client prefix
+  barrier, runtime hook and closed `(revision,cut)` oracle parameterization are
+  saved. Restart runtime, recovery attribution oracle and tests remain unwritten;
+  all checks NOT_RUN.
 
-Acceptance `3a867858` is integrated as `e644e218`; proxy `cbef8623` as `a8584b24`.
-The proxy adds explicit loopback/catalog selection, one-shot arming and exact
-pin-release Execute/COMMIT targeting. Its 13 socket/admission, 14 legacy target and
-five resume controls PASS. Its original Python3.13 stop-order deadlock is retained;
-the fix joins held sessions before waiting for listener shutdown. These checks
-do not qualify real pin-expiry or uncertain-COMMIT behavior. Original proxy and
-acceptance worktrees/receipts remain preserved; no uncommitted product work is
-left in canonical main.
+All delegates stopped. Their original worktrees/receipts remain preserved; no
+build, test, experiment or further implementation was started for this pause.
 
-Earlier installed Index publication and initial live readiness are qualified at
-their recorded scope, including all ten families/four batches/40 outcomes and
-the deliberately conflicting ClickHouse row. Earlier Ingest restart/resend with
-provenance on/off also remains valid. The owning report preserves r1–r5 failures,
-the corrected r5 uncertainty oracle, earlier native/verifier failures and their
-qualified followups; these histories are not duplicated here.
+## Valid capability and latest failure
+
+Qualified product `8256184cd30f49020c6c0a9884e9eaec958ba461` remains unchanged:
+147 actual native controls, build and strict Clippy PASS; fresh installed build
+PASS. Installed ordinary-readiness r7 with acceptancee644 passed all eight stages:
+complete-current proof plus completed operation makes both capabilities Ready;
+withholding the exact retained input makes them Unavailable; a narrow read cannot
+revive them; exact restoration permits recovery. Original353B signed export and
+manifest, all ten Index families/four batches/40 outcomes, initial physical
+invalidation and prior Ingest restart/resend evidence remain valid at their scopes.
+Detailed evidence stays in the [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.ordinary`, not duplicated here.
+
+The new `p01-first-launch-index-short-pin` fixture has scoped critical source
+review and seven pin controls PASS. The corrected proxy has17 socket/admission
+controls PASS. **Both actual installed attempts FAIL before the positive barrier
+and before arming; actual pin-expiry cancellation is NOT_RUN.**
+
+- r1: `.research/first-launch-index-short-pin-r1-20261027`. Ordinary setup passed;
+  first history.read grant catalog work exhausted the inherited aggregate frame
+  budget at20002 frames/1545189bytes. App reported native grant catalog barrier
+  completion unresolved. Original failure retained.
+- r2: `.research/first-launch-index-short-pin-r2-20261027`. The closed proxy now
+  streams baseline traffic and frames only a new post-arm selected reader, but
+  the17th pre-arm connection exhausted its16-connection lifetime admission:
+  frames0/4450882bytes/armedfalse. No fault gate fired. Preserve this failure;
+  no connection-limit change or third attempt has been started.
+
+These are fixture admission failures, not successful product cancellation tests.
+The source correction preserves original product action/lease/probe deadlines and
+selected-reader/byte limits. Before another run, derive the needed baseline routing
+or connection admission from actual caller lifetimes and retained traffic; do not
+raise a limit merely to obtain PASS. Reuse the825 installed candidate and existing
+proxy/oracle controls; a fixture-only correction needs no product rebuild.
 
 ## M1 remaining gates
 
-- Actual short-pin expiry during an ordinary full probe while the same Control
-  authority renews: `m1_runtime_grants` is implementing the closed maintained
-  `p01-first-launch-index-short-pin` variant in its separate worktree. This is
-  P01-T09 Step1/6; it must establish a positive baseline in the same process,
-  real native blocking, earlier original-pin expiry, known join and release.
-- Real before-forward/after-complete reader-pin release COMMIT uncertainty,
-  old-published-snapshot/current-selection changes and selected-metadata failure
-  coverage. A SIGSTOP is not evidence of unknown native termination; that distinct
-  case remains unqualified. These protect current readiness and cleanup claims.
-- Index restart/rebinding and uncertain-query/lost-COMMIT recovery. Initial
-  publication and live observation do not close those requirements.
-- Independent Archive/CH outages, bounded pending/ACK behavior and live pending
-  byte accounting. Archive failure currently exits the combined owning loop;
-  independent Control must survive the required Archive outage qualification.
-  Existing shared PG topology cannot demonstrate that independence.
+- Actual short-pin expiry under continuing Control renewal; real reader-pin
+  release COMMIT before-forward/after-complete uncertainty; old published snapshot,
+  current-selection and selected-metadata installed negatives. Genuine unknown
+  native termination remains distinct; SIGSTOP does not qualify it.
+- Same-store Index recovery/rebinding/catch-up, including pending/new batches,
+  unknown query and lost-COMMIT handling. Proposed installed sequence: closed
+  client barrier at publishedrev2/cut3, verify positive readiness, pause only owned
+  CH, admit through12, require real preparedplan3 plus unplanned4, orderly stop,
+  unpause, explicit `ingest recover --close-source`, catch-up and exact retry.
+  Preserve old origins and publish pending only after its PG commit. This sequence
+  is a design, not executed evidence. Topology0→1/epoch2 remains a separate concrete
+  contract/runtime blocker; completeP02 is not an indivisible M1 prerequisite.
+- Independent Archive/CH outages, bounded pending/ACK and live pending bytes.
+  Archive failure still exits its combined loop; independent Control survival and
+  the needed isolated dependency topology remain unqualified.
 
-Later obligations retain their existing owners: smaller-envelope concurrent
-resource pressure in P01-T09 Step5; general valid-event family-bound handling in
-P02-T05 Step3/T06; nonempty signed-tag engine coverage, native census, second-event
-export and later durability/GC/capacity gates. The prepared column-TTL negative is
-NOT_RUN. The original `a99` initial Sync timeout remains UNKNOWN with its original
-evidence. There is no all-P02 phase barrier or scope reduction. Terminal lifecycle
-diagnostics still report `ready:false`/Index `not-qualified`; M1 is incomplete.
+Later work retains its existing plan owners: smaller-envelope overlap P01-T09
+Step5; general valid-event family bounds P02-T05 Step3/T06; nonempty signed tags,
+native census, second-event export, durability/GC/capacity and all remaining
+selected milestones. Column-TTL negative is NOT_RUN. Originala99 initial Sync
+timeout remains UNKNOWN. Terminal readiness still says unqualified; M1 and the
+full goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.
 
-## CI and public exposure
+## CI and resources
 
-[Run40376741278](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278)
-on `1cfd6eb5` passed all 30 selected hosted checks on Linux amd64/ARM64 and macOS.
-Dependency-policy and cancellation fixes are qualified at that scope; historical
-billing refusal is not a current blocker.
+[Hosted run40415243196](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196)
+on exact903 remained **in_progress** at2026-10-26T23:20:41Z: all three foundation
+platforms running, scopePASS, optional Rocks/documentation SKIPPED. It was left
+running remotely. Single local watcher24737 was stopped with SIGINT, reaped130
+and its PID positively absent. Terminal source/context verification, keyring/full
+selected outcomes and public-output audit remain INCOMPLETE/NOT_RUN. Protected
+receipt: `.research/ci-publication-20261026/run-40415243196-exposure/pause-receipt.json`.
 
-[Run40393162501](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40393162501)
-on `00714653` is terminal FAIL: 17 PASS, 3 FAIL, 10 NOT_RUN. All platforms failed the
-same stale role diagnostic assertion, corrected at `a8b7a8ec` and included in 94a.
-Builds, Clippy, rustdoc and early dependency policy passed; shorter failed runs
-do not prove a speedup. The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns exact source/tool/artifact contexts and timings.
+Prior hosted run40406281096 retains23PASS/1FAIL/6NOT_RUN: Linux amd64 keyring test
+race, ARM64/macOS PASS. Linux FIFO fixture correction682 has all10 local keyring
+controls/format/Clippy PASS;903 is its pending hosted confirmation. Dependency
+policy and cancellation fixes remain qualified by earlier real runs; historical
+billing refusal is not current. The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns the exact outcomes, timings and previous public audits.
 
-[Run40406281096](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096)
-on published `94a52232` is terminal FAILURE: ARM64 and macOS succeeded, Linux
-amd64 failed: `cursor_keyring::prepare_key_appends_once_preserving_the_exact_existing_ring_and_material`
-received Busy on an immediate retry. A concurrent FIFO-test subprocess can
-temporarily inherit its directory lock: a synchronized Linux control reproduces
-that mechanism, while the exact hosted schedule remains untraced. Fixture-only
-`68236ade` creates the FIFO in-process on Linux; product behavior and all original
-assertions are unchanged. Exact-source isolated Linux all10 keyring controls,
-format and strict Clippy PASS. The next hosted confirmation remains pending.
-Watcher49815 exited1/reaped; the terminal output audit found only27 known
-synthetic/reference matches and no operational credential or provider alert. No rerun or duplicate
-watch was started. Prior output/source audits through 94a found no new or unclassified
-credential candidates or confidential inputs; empty provider alerts do not prove
-asynchronous scan completion. Protected receipts remain under
-`.research/ci-publication-20261026`; `initial_index_rows` owns the next incremental
-source/history audit. Never upload raw lab captures.
+Both short-pin sessions are reaped: r1 session37259 exit1; r2 session54972 exit1.
+All19 containers per run are stopped/PID0/noOOM. r1 ordinary app exited4, others0;
+r2 all exited0. Each proxy exited3 and is positively absent. Their proxy cleanup
+checks remainFAIL despite terminal resources being confirmed stopped. Borrowed
+bridge1699209a remains empty and retained. No owned local development/build/test/
+watcher process remains; delegates launched no additional engines. Remote CI above
+may finish autonomously. Preserve all databases, logs, original failures, .research,
+worktrees and825 artifacts. The released115 compiler cache remains optional.
 
-## Resources and next action
+The [existing inventory](../research/laboratory-inventory.json) owns identities
+and terminal receipts. Earlier bounded retirement removed only2372 obsolete b533/
+a295 compiler intermediates (2388500480 allocated bytes);228 ELF paths,50 outside
+pins and6474 other entries were preserved. No additional cleanup during pause.
 
-Native session 15316, installed builder 19968, assembly 86235 and installed r7
-session 97773 all exited0/reaped. Their owned containers are stopped/PID0/noOOM;
-all 19 r7 containers also exited0. The borrowed bridge remains empty and retained.
-Cursor-keyring qualification session28017 also exited0/reaped and its container
-is stopped/exit0/PID0/noOOM. No local product/engine/build process is active. Native qualification released
-the exclusive 115 compiler cache; current 825 build and worker artifacts are kept
-for fixture-only followups. The short-pin source delegate remains active; hosted evidence review is complete; the cleanup/source-audit delegate is complete through a858; final-tail audit remains.
+## First action on explicit resume
 
-The [laboratory inventory](../research/laboratory-inventory.json), primarily
-`implementation_index_foundation_20261026.live_readiness.ordinary`, owns resource
-and receipt identities. Bounded retirement removed exactly 2,372 obsolete compiler
-intermediates from installed b533/a295 targets: 2,388,500,480 allocated bytes.
-All 228 target ELF paths, 50 outside pins and 6,474 other target entries remain.
-Observed free space rose to 140,148,334,592 bytes; shared-host changes are not
-attributed solely to deletion. Pre/post ownership/reference checks passed within
-documented unprivileged `/proc` visibility limits. Earlier retirements remain
-journaled. No whole-target, dataset or worktree deletion or broad cleanup occurred.
-
-Next: finish the short-pin fixture, critically review
-the actual expiry/join oracle, then run it with the already qualified 825 installed
-candidate. Preserve the original action, operation and resource ceilings; do not
-confuse Control renewal with reader-pin extension. Record real outcomes in the
-existing report. Publish the coherent ordinary-readiness increment after its
-source audit, retaining every other M1/later gate. FAIL/NOT_RUN/interruption never
-become PASS.
+Reconcile actual Git/goal state and the remote903 CI outcome once, retaining any
+FAIL or missing artifact. Resolve the r2 proxy connection-admission mismatch from
+source and preserved evidence, critically check the affected bounds/target routing,
+then run the same maintained short-pin case on825. Do not rebuild for fixture-only
+changes. Afterwards resume the separate Index recovery/acceptance WIP review and
+qualification. Merge/publish only coherent qualified work; do not mistake these
+saved branches or source controls for completed installed recovery.

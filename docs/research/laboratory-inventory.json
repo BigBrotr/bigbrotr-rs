@@ -73698,6 +73698,17 @@
         "session": "28017 exit0/reaped; exact owner container stopped/exit0/PID0/noOOM",
         "scope": "All original cursor_keyring controls in normal parallel release-profile execution; no arbitrary retry/serialization. No installed product source change or new hosted confirmation."
       }
+    },
+    "pause_20261027": {
+      "run": 40415243196,
+      "revision": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+      "observed_at": "2026-10-26T23:20:41Z",
+      "remote": "in_progress;left running",
+      "local": "watcher24737 SIGINT exit130/reaped/PIDabsent;noactive owned downloads/analysis",
+      "receipt": ".research/ci-publication-20261026/run-40415243196-exposure/pause-receipt.json",
+      "receipt_sha256": "9303131a349f536f26798acb2c289a39618970ddda78c1b02c28db067507d8e3",
+      "remaining": "Terminalsource/context/keyring/fullchecks/outputaudit NOT_RUN"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74686,8 +74697,56 @@
           "root_verification": "root-verification.json",
           "root_verification_sha256": "b4c2b8e650d6cfabd71968fecf273d7b0ef17c1c0a6f6ce56c71b9fe234e03c1",
           "retention": "Original signed inputs, databases, injected ClickHouse conflict, exact restored retained input, raw protected status/SQL captures, source and candidate preserved"
+        },
+        "short_pin": {
+          "status": "SAFE_PAUSE_BOTH_INSTALLED_ATTEMPTS_FAIL",
+          "attempts": [
+            {
+              "root": ".research/first-launch-index-short-pin-r1-20261027",
+              "owner": "5efa5c819b70991983b76d8bdcd59bf4",
+              "status": "FAIL_PRESERVED_RESOURCES_STOPPED",
+              "source": "ffe4d64a",
+              "product": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+              "session": "37259 exit1/reaped",
+              "terminal": "19 containers stopped/PID0/noOOM:18exit0,ordinaryexit4;proxyexit3/absent;borrowed network empty/retained",
+              "terminal_receipt_sha256": "80c5afe6ab4a152a3dbc9210e1685aefa0b097f811c8291412f113b2e60fc253",
+              "retention": "OriginalFAIL,protected database/input/ClickHouse conflict/proxy and client logs retained; source correction in separate worktree",
+              "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.ordinary.short_pin"
+            },
+            {
+              "root": ".research/first-launch-index-short-pin-r2-20261027",
+              "owner": "93fbe1ba469836990f7eddbaf3c6c872",
+              "source": "f499cc87",
+              "session": "54972 exit1/reaped",
+              "terminal": "19containers stopped/exit0/PID0/noOOM;proxyexit3/absent;borrowed bridgeempty",
+              "terminal_receipt_sha256": "8cb7ad9a003cb9c1d30e695e31ad352023d9e12fd7c6b3eaa631a47357da9023"
+            }
+          ],
+          "retention": "All protected inputs/databases/logs/failures retained; no third attempt or pause cleanup"
         }
       }
+    },
+    "pause_20261027": {
+      "status": "STOPPED_SAVED_UNVERIFIED",
+      "checkpoint_branch": "work/short-pin-checkpoint-20261027",
+      "published_main": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "local_main": "f499cc87",
+      "wip": [
+        {
+          "branch": "work/initial-index-recovery",
+          "worktree": ".research/initial-index-recovery-20261027",
+          "commit": "0c34826fdbaf9a31d4b0d777320f44fece025c81",
+          "state": "clean;unverified;no active processes",
+          "checks": "format applied after initial formattingFAIL;compile/Clippy/tests/enginesNOT_RUN"
+        },
+        {
+          "branch": "work/index-restart-acceptance",
+          "worktree": ".research/index-restart-acceptance-20261027",
+          "commit": "bdd582c4fcccd757f5552ae92c550ae653f3f7a6",
+          "state": "clean;partial18lines;noactiveprocesses",
+          "checks": "NOT_RUN"
+        }
+      ]
     }
   },
   "implementation_checkpoint_space_20261026": {
