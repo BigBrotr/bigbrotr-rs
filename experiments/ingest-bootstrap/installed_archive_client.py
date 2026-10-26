@@ -97,6 +97,13 @@ def run(directory):
     enrollment = call('relay-enrollments', dict(endpoint_id=endpoint['endpoint_id'], visibility=visibility,
         route={'class': 'private', 'cidr': '127.0.0.1/32'}, enabled=True, expected_generation=None, **revisions), '92'*16)
     assert enrollment['generation'] == '1' and enrollment['enabled'] is True
+    index_restart = directory / 'index-restart-profile.json'
+    if index_restart.exists():
+        assert json.loads(index_restart.read_text()) == dict(format='bigbrotr-installed-index-restart/1')
+        # After enrollment, the literal initial prefix contains two admission
+        # batches (cut3). No scope or signed event is admitted until the owner
+        # observes that prefix and establishes the independent engine outage.
+        barrier('index-prefix')
     scope = call('acquisition-scopes', dict(endpoint_id=endpoint['endpoint_id'], access_scope_id=enrollment['access_scope_id'],
         visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
     listener = relay_listener()

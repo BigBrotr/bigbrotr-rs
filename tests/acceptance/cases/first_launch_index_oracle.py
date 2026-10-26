@@ -59,8 +59,10 @@ def accepted_profile(state):
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
-def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
+def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12):
     """Literal signed fixture frontier plus separately captured SQL identities."""
+    assert type(revision) is type(sequence) is int and (revision, sequence) in ((2, 3), (4, 12))
+    assert not invalidated or (revision, sequence) == (4, 12)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     generation = only(state['projection_generations'])
@@ -75,7 +77,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
     assert type(clock_before) is int and type(clock_after) is int
     assert clock_before <= observed <= clock_after
     cut = dict(dataset_id=raw(dataset['dataset_id'],16).hex(), topology_generation='0',
-        bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
+        bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence=str(sequence))])
     def timed(observation):
         stamp = observation['time']
         assert set(stamp) == {'observed_at_us','age_us'} and stamp['observed_at_us'] == str(observed)
@@ -106,7 +108,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
         else:
             assert cap['state'] == 'ready'
             fresh(cap)
-        exact(cap['published'],dict(revision='4',cut=cut) if kind.endswith('_publication') else None)
+        exact(cap['published'],dict(revision=str(revision),cut=cut) if kind.endswith('_publication') else None)
         assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
         assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
 

@@ -582,6 +582,7 @@ class Runtime:
                 env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
         self.processes.append(self.client)
         save(output / 'client-process.json', dict(pid=self.client.pid, process_group=self.client.pid))
+        self.initial_source_barrier(entry, output)
         self.wait(lambda: (self.home / 'prepared.json').exists(), 'source commands', 15, entry, self.client)
         prepared, _ = self.capture(output, 'prepared')
         self.validate_source(self.current_owner_view(prepared, setup), first, load(self.home / 'prepared.json'))
@@ -617,6 +618,11 @@ class Runtime:
         owner, = [row for row in selected['owner_epochs'] if row['role'] == 'control']
         require(owner['state'] == 'released', 'initial Control ownership retained')
         self.backend_absence(output)
+
+    def initial_source_barrier(self, entry, output):
+        # Closed variants may hold the existing source client before later
+        # admissions. The ordinary signed journey has no additional barrier.
+        pass
 
     def initial_launch(self):
         return self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
