@@ -11,22 +11,30 @@ The verified Index foundation and hosted evidence are published on `main` at
 Its exact final documentation checks pass3/3. Product-source publication review
 through `a8423d76` and the final documentation delta through `1cfd6eb5` found no
 confirmed exposure; protected receipts are under the existing CI audit root.
-The new publication's hosted outcome is not yet observed.
+The new publication's run40376741278 is in progress on all three platforms;
+watcher69669 owns its retained log under the existing CI audit root.
 
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
 on earlier `f1f6d166` completed **PASS** on all three required platforms; its
 bounded public-output audit is complete. Explicit skips remain in its report.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`8f105a59` before this runtime integration commit. The foundation's actual
+`d553b239` before this review-correction checkpoint. The foundation's actual
 library/CLI build, strict Clippy and all65 selected controls passed at `a8423d76`.
 The new initial actor (`6f0f3ff2`, integrated as `8f105a59`) and runtime wiring
 are **NOT_RUN** for compilation and actual engines. They add explicit
 `--initialize-index`, accepted-policy selection, actual PG driver custody,
-serialized renewal/timer dispatch and joined shutdown. Six actor controls and
-one CLI selection control are authored, not yet executed. Restart, positive
-remote uncertainty resolution and readiness remain open. Only formatting and
-whitespace checks qualify these new changes so far.
+serialized renewal/timer dispatch and joined shutdown. Seven actor controls and
+one CLI selection control are authored, not yet executed. The maintained runner
+now requires both actual test executables: existing65 library controls and31 named
+binary service controls. Its nine Python verifier controls PASS. Restart, positive
+remote uncertainty resolution and readiness remain open. Formatting/whitespace checks pass; native execution remains next. Critical
+review found disabled-Indexer bypass, permanent resource wait under a640MiB
+shared payload and a metadata row cap tied to the insert batch ceiling. Source
+corrections require accepted enablement, preflight against already-held grants,
+and separate closed metadata row bounds. Their actual native/engine checks are
+not yet executed. The maintained installed Index case will use100-row batches
+to exercise the160-column inspection through the real Rust adapter.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns resource
 custody and detailed evidence paths under `implementation_index_foundation_20261026`,
@@ -124,9 +132,11 @@ billing/failure observations remain unchanged in their original reports.
 Actions watch54174 finished/exit0 and was reaped. The two actual native check
 sessions also finished and were reaped. No owned engine/build/installed-journey
 process is running. All three CH servers are stopped/exit0/PID0; its original
-failures and partial TTL fixture remain preserved. The initial actor delegate completed its frozen commit; source and hosted-output
-audits are complete. Bounded CI compilation reuse is in progress; root owns
-runtime/CLI integration and its next critical review/native qualification. Q37 configurations remain as verified.
+failures and partial TTL fixture remain preserved. The actor and native-runner delegates completed frozen commits; publication
+audits are complete. Delegates now review runtime custody/resource semantics and
+the CI reuse candidate3e4b1621, and prepare the maintained installed Index case.
+Root owns integration and exclusive native/lab execution. No engine/build is active;
+the only active root process is the hosted-run watcher69669. Q37 configurations remain as verified.
 
 The first native application build `fadc6bbd` is retained as FAIL (E0432 wrong
 ControlSession import), with tests/Clippy NOT_RUN. Corrected `a8423d76` compiled

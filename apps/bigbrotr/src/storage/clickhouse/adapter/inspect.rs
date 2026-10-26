@@ -15,6 +15,11 @@ pub(super) async fn collect<R: RowOwned + RowRead>(
 ) -> Result<Vec<R>, PhysicalError> {
     let id = owner.begin()?;
     let mut cursor = query
+        // Metadata cardinality is independent of the accepted insert batch
+        // ceiling. Every caller supplies its closed 1/10/175-row bound; using
+        // the data ceiling here could create tables and then reject their own
+        // 160-column inventory for a valid smaller source batch.
+        .with_setting("max_result_rows", limit.to_string())
         .with_setting("query_id", &id)
         .fetch::<R>()
         .map_err(|error| owner.failed(&id, error))?;

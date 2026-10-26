@@ -73600,6 +73600,24 @@
       "outcome_sha256": "b437b78b5b7d715718e14305bf5c26c7b881edd9b6259d98e0f47f2a351b3688",
       "evidence_worktree": "/home/tux/bigbrotr-rs/.research/ci-hosted-completion-20261026",
       "evidence_branch": "work/ci-hosted-completion"
+    },
+    "index_foundation_publication": {
+      "revision": "1cfd6eb5e04b01a8c404a6158c6da6c309f81924",
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278",
+      "status": "in_progress; three foundation platforms, scope PASS, separate documentation and optional Rocks ARM SKIP",
+      "watch_session": 69669,
+      "watch_log": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40376741278-watch.log",
+      "final_documentation_review": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-1cfd6eb5-exposure/receipt.json",
+      "review_sha256": "0de5ee76c68f10d742de2d50b97f45d22c51fa3d118015bbdb56f538e26691f1",
+      "documentation_checks": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026/.research/index-foundation-publication-docs-20261026/result.json",
+      "documentation_status": "3 PASS"
+    },
+    "run_local_compilation_reuse": {
+      "candidate": "3e4b16212d940446853d6ddbbb19bd136d1c56b0",
+      "worktree": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026/.research/ci-reuse-controls/result.json",
+      "receipt_sha256": "7586a4a62aa5b3acdbc1683f7f08b90e1b6892cf892a9492055ac5d088525b44",
+      "state": "21 targeted Python controls PASS; critical review pending; native/compiler smoke/full acceptance/Actions NOT_RUN. Full default/debug workspace tests and fresh release build retained, benefits unmeasured."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74148,6 +74166,23 @@
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-a8423d76-exposure/receipt.json",
       "sha256": "3cb5e7c1318ef36041493102e4eec4c3f78b9d4e495970fa22886aaf08dd9d0f",
       "scope": "343 objects/30,096,603 bytes; all27 occurrences/14 fingerprints individually reviewed, including8 new references/expressions/upstream synthetic values. 323 changed path/object pairs checked. No operational credential or confidential raw-input exposure confirmed. Heuristic bounded source/history audit, not exhaustive absence. Final documentation-only delta remains separate."
+    },
+    "initial_runtime_integration": {
+      "actor_commit": "6f0f3ff267dff8333c4dc726aa7dddba1ebb7f87",
+      "integration_commit": "47f8fde5",
+      "accepted_policy_capacity_correction": "2706d73d",
+      "native_verifier_commits": [
+        "2f87f0de",
+        "d553b239"
+      ],
+      "native_verifier_controls": "9 PASS; actual native source execution NOT_RUN; requires31 binary service controls in addition to existing library scope",
+      "critical_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/receipt.json",
+      "critical_review_sha256": "5bd0b093c40934325ee7836f95116fb092250f0f15665618081ce7347e6a0625",
+      "metadata_finding": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/metadata-row-limit-finding.json",
+      "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
+      "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
+      "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
+      "state": "Actor/wiring committed locally; compilation, actual-engine publication, restart and unknown-query resolution NOT_RUN. Final critical review in progress; metadata correction is in this checkpoint commit."
     }
   },
   "implementation_checkpoint_space_20261026": {
