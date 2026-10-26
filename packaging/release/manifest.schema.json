@@ -1,0 +1,444 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BigBrotr private native candidate artifact manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "visibility",
+    "status",
+    "target",
+    "bundle",
+    "inventory",
+    "assembly",
+    "artifact",
+    "advertised_capabilities",
+    "journey_files",
+    "open_gates"
+  ],
+  "properties": {
+    "format": {
+      "const": "bigbrotr-candidate-artifact/1"
+    },
+    "visibility": {
+      "const": "private"
+    },
+    "status": {
+      "const": "candidate-not-release"
+    },
+    "target": {
+      "const": "x86_64-unknown-linux-gnu"
+    },
+    "bundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bytes",
+        "sha256",
+        "name"
+      ],
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "name": {
+          "const": "bigbrotr-x86_64-unknown-linux-gnu.tar.gz"
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bytes",
+        "sha256",
+        "name"
+      ],
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "name": {
+          "const": "members.json"
+        }
+      }
+    },
+    "assembly": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "tree",
+        "files_sha256",
+        "packing"
+      ],
+      "properties": {
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "files_sha256": {
+          "type": "object",
+          "minProperties": 10,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "packing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "python",
+            "zlib",
+            "archive_format",
+            "gzip_level"
+          ],
+          "properties": {
+            "python": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            },
+            "zlib": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "archive_format": {
+              "const": "ustar+gzip"
+            },
+            "gzip_level": {
+              "const": 6
+            }
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binary",
+        "source",
+        "build_info",
+        "build_result_sha256",
+        "source_archive_sha256",
+        "native_toolchain",
+        "registry_sha256",
+        "build_receipt_kind"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "build_info": {
+          "$ref": "#/$defs/buildInfo"
+        },
+        "build_result_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_archive_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "native_toolchain": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "os",
+            "architecture",
+            "tools_sha256"
+          ],
+          "properties": {
+            "os": {
+              "const": "Linux"
+            },
+            "architecture": {
+              "const": "x86_64"
+            },
+            "tools_sha256": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "CC",
+                "CXX",
+                "AR",
+                "LIBCLANG_PATH",
+                "discovery"
+              ],
+              "properties": {
+                "CC": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "CXX": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "AR": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "LIBCLANG_PATH": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "discovery": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        },
+        "registry_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "build_receipt_kind": {
+          "enum": [
+            "standard",
+            "archive-installed-lab"
+          ]
+        },
+        "binary": {
+          "$ref": "#/$defs/blob"
+        }
+      }
+    },
+    "advertised_capabilities": {
+      "const": [
+        "event-verification",
+        "config-static"
+      ]
+    },
+    "journey_files": {
+      "oneOf": [
+        {
+          "const": []
+        },
+        {
+          "const": [
+            "config/recipes/acceptance.toml",
+            "docs/tutorials/first-event.md",
+            "packaging/compose/compose.yaml",
+            "packaging/compose/provision.sql",
+            "packaging/image/Dockerfile"
+          ]
+        }
+      ]
+    },
+    "open_gates": {
+      "const": [
+        "M1-first-launch",
+        "connected-role-readiness",
+        "Compose-installation",
+        "Linux-arm64",
+        "release-authentication",
+        "complete-distribution-notices"
+      ]
+    }
+  },
+  "$defs": {
+    "blob": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bytes",
+        "sha256"
+      ],
+      "properties": {
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1073741824
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "revision",
+        "tree",
+        "dirty",
+        "manifest_sha256"
+      ],
+      "properties": {
+        "state": {
+          "const": "builder-supplied"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "dirty": {
+          "const": false
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "buildInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "archive_worker",
+        "capabilities",
+        "capability_scope",
+        "debug_info",
+        "format",
+        "inputs_sha256",
+        "optimization",
+        "product",
+        "profile_assertion",
+        "protocol_registry_format",
+        "protocols",
+        "rustc",
+        "schemas",
+        "source",
+        "target",
+        "version"
+      ],
+      "properties": {
+        "archive_worker": {
+          "$ref": "#/$defs/blob"
+        },
+        "capabilities": {
+          "const": [
+            "event-verification",
+            "config-static"
+          ]
+        },
+        "capability_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "debug_info": {
+          "const": "false"
+        },
+        "format": {
+          "const": "bigbrotr-build/1"
+        },
+        "inputs_sha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "Cargo.lock",
+            "rust-toolchain.toml",
+            "contracts/release/dependencies.json",
+            "contracts/protocol/versions.json",
+            "contracts/protocol/nip01-event.json"
+          ],
+          "properties": {
+            "Cargo.lock": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "rust-toolchain.toml": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contracts/release/dependencies.json": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contracts/protocol/versions.json": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contracts/protocol/nip01-event.json": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "optimization": {
+          "const": "3"
+        },
+        "product": {
+          "const": "BigBrotr"
+        },
+        "profile_assertion": {
+          "const": "release"
+        },
+        "protocol_registry_format": {
+          "const": "bigbrotr-protocol-versions/1"
+        },
+        "protocols": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minProperties": 1,
+          "maxProperties": 32,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "rustc": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "schemas": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minProperties": 1,
+          "maxProperties": 32,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "target": {
+          "const": "x86_64-unknown-linux-gnu"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    }
+  }
+}
