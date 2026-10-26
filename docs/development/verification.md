@@ -225,6 +225,43 @@ directory wholesale**, including from public Actions. `result.json` is the
 bounded summary, with hashes, checks and scope limits; review any selected upload
 separately. Raw command receipts and original failures remain local.
 
+## Same-store installed Ingest restart
+
+`p01-first-launch-restart` extends the fresh base case above on the same physical
+stores. It completes the first export, closes and retires the original Ingest
+producer, activates epoch 2, and sends a distinct signed event, the original
+event and the distinct event again. After closing and retiring that producer,
+it catches Archive up, checks an exact no-op retry, and reads both full signed
+events through a new ordinary Control lifetime.
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-restart \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-restart
+```
+
+Use a fresh evidence directory and the same pinned candidate/image, resource and
+custody prerequisites as the base case. The C API observer additionally requires
+an absolute evidence path using letters, digits, slash, dot, underscore or hyphen,
+with no `.` or `..` components. It uses the verified bundled library, header and
+extensions directly: no private probe executable, compiler or additional native
+build is required. A candidate can be reused when its bundled journey files still
+match; acceptance-source identities are recorded separately.
+
+Independent literal encoders reconstruct all original and successor scientific
+rows, request bytes, receipts, typed progress and publication digests. Full C API
+censuses must agree; original body, eligibility, visibility, first receive and
+export artifacts remain unchanged. The final resend is proof-only. The selected
+provenance-on fixture has 13 dictionary, 2 body, 2 eligibility, 2 receive and
+3 provenance rows, 7 Archive commits and snapshot 8. Exact retry adds no attempts,
+frontiers or scientific changes. Missing or unreached checks remain NOT_RUN.
+
+This case does not run a native RocksDB census, provenance-off repeat, second-event
+export, Index/readiness, dependency-outage or capacity qualification. Those
+requirements and complete M1 remain open. The case has 12 declared stages;
+qualification requires their actual execution against the recorded candidate.
+All raw credentials, sessions and SQL captures remain protected as above.
+
 The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the

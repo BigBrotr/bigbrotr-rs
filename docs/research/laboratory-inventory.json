@@ -73502,6 +73502,19 @@
       "errors": 1,
       "skipped": 2,
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
+    },
+    "restart_extension": {
+      "status": "NOT_RUN real engines; reviewed integration, affected offline controls and retained initial replay PASS",
+      "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
+      "integrated_as": "88fd929d",
+      "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
+      "controls_root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026",
+      "controls_receipt_sha256": "183ba22a0d466aa8e3aae44e33adbc5b8cc9f3b73f920e1f1f518fb27d740d38",
+      "source_worktree": "/home/tux/bigbrotr-rs/.research/p01-first-launch-restart-20261026",
+      "live_client_worktree": "/home/tux/bigbrotr-m1-live-client-profile",
+      "runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026",
+      "candidate_reuse": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-4652f577/candidate/candidate-manifest.json",
+      "retention": "Protected original controls/diagnostic failure copied from temporary root; original worktrees/commits preserved. No public raw runtime upload."
     }
   }
 }

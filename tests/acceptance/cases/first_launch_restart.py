@@ -190,7 +190,7 @@ def successor_science(before, after, report, first, old_event, new_event, wires,
     from live_replay import OLD_EVENT
     assert old_event == OLD_EVENT
     wire = successor_wire(wires, old_event, new_event)
-    for table in ('producer_requests', 'producer_outcomes', 'producer_checkpoint_dependencies', 'acquisition_progress'):
+    for table in ('producer_requests', 'producer_outcomes', 'producer_checkpoints', 'producer_checkpoint_dependencies', 'acquisition_progress'):
         assert all(row in after[table] for row in before[table]), 'historical producer evidence changed: ' + table
     assert only(after['datasets'])['config_revision'] == only(after['datasets'])['policy_revision'] == 1
     assert only(after['datasets'])['topology_generation'] == 1

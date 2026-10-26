@@ -10,9 +10,8 @@ P01-T08 now has a maintained fresh installed first-launch case and portable
 operator instructions. Integrated and published base on `main` is
 `4652f577fa82b5f38bf7fd3f22fea54bf9f67b35`: candidate intake, actual Compose journey,
 directory/wrapper corrections, reviewed Clippy fixes and documentation. This
-checkpoint commit adds the next FIFO test portability correction and reconciles
-its current evidence. The unchanged test module was moved after its owning
-functions in4652f577; full hosted qualification remains pending.
+checkpoint records the integrated restart extension and FIFO portability correction.
+The unchanged test module was moved after its owning functions in4652f577; full hosted qualification remains pending.
 
 Integrated agent work: candidate616fa952 →48d862ab, case4c15897b →02d1a87a,
 Rocks test scopes ebe267b5 →e604cd5c, portable tutorial c0599347 →3ae664e5.
@@ -71,12 +70,14 @@ amd64 job includes it; the opt-in qualification track was not requested.
 Billing admission is restored; the original refusal and first executed failure
 remain in the [CI observation](evidence/ci-billing-block-20260918.json).
 [Run40313846572](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40313846572)
-on4652f577 is still executing Linux jobs. macOS finished FAIL at compilation of
+on4652f577 is still executing Linux amd64. ARM passed Clippy and the exact-source
+build, then failed a Rust CLI contract assertion requiring the obsolete words
+`no storage`; its current contract reconciliation is assigned to Sol. macOS finished FAIL at compilation of
 `acquisition_transport`: the locked Rustix API excludes `mknodat` on Apple.
 The local correction retains the real FIFO refusal through POSIX `mkfifo` and
 checks the actual FIFO type; formatting and Linux fixture creation PASS. Corrected
-native execution is pending. Linux amd64 dependency setup is still in progress;
-its cause/outcome is unknown while the provider withholds unfinished job logs.
+native execution is pending. Linux amd64 dependency setup completed successfully
+(11:17:03–11:35:46 UTC) and native checks are running. The original delay's cause awaits the completed job log.
 No corrected hosted PASS is claimed yet.
 
 Inventory key `implementation_ci_publication_20261026` owns protected original
@@ -97,15 +98,23 @@ maintained stages. Its terminal report is
 stopped-retained, exit0/PID0 with no cleanup errors. Product bytes remain the
 verified c49 build. The inventory binds new candidate/source/report identities.
 
-Current local edits belong to root: the FIFO portability correction and declared
-prerequisite, public-development compatibility clarification, inventory and this
-checkpoint. Publish them with a coherent next increment after inspecting the
-current CI, avoiding cancellation of its still-useful Linux checks. The only local
-process is the read-only Actions watch (session25818). No product/build process
-is active. Two bounded agents now implement the provenance-on same-store restart
-extension: Astra owns shared Runtime/oracles; Sol owns the live-client profile
-seam and controls in `/home/tux/bigbrotr-m1-live-client-profile`. Their work is
-not yet integrated or engine-qualified. Historical stopped
+Local commits e153bca4 (FIFO portability/public compatibility),4302f71e (live
+client),88fd929d (restart integration) and this documentation/review checkpoint
+are ahead of published
+4652f577. Sol's b1f8c787 is integrated as4302f71e after root source review;10 focused
+and7 existing profile controls PASS, actual successor execution NOT_RUN. Publish
+the next coherent increment after inspecting current CI, avoiding cancellation
+of its still-useful Linux checks. The only local runtime
+process at this pre-run checkpoint is the read-only Actions watch (session25818). No product/build process
+is active. Astra's restart extension063c8aed is integrated as88fd929d after root critical
+review. It adds the shared Runtime scenario and independent scientific/progress
+oracles;25 affected offline controls and retained initial-capture replay PASS.
+All25 controls also pass after root's historical-checkpoint preservation change.
+Root additionally preserves the original producer checkpoint in the historical
+row comparison. Actual connected `p01-first-launch-restart` is next and NOT_RUN.
+Sol's client seam is complete; its clean worktree `/home/tux/bigbrotr-m1-live-client-profile`
+retains the original commit. Its effective Sol/xhigh turn was checked at creation.
+Astra/root settings retain their previously verified Q37 configurations. Historical stopped
 resources require fresh ownership checks before mutation. Preserve unique data,
 open-problem reproducers and worktrees; no general cleanup is underway.
 
@@ -117,8 +126,9 @@ changing accepted policy or worker/container limits. Later milestones and all
 selected features stay in their existing tasks; all P02 is not an indivisible
 prerequisite to M1.
 
-Next integrate/review the maintained restart extension, then run its single
-connected real scenario. Source reconciliation confirmed the missing restart path. Source reconciliation already identified: restore the
+Next run the integrated `p01-first-launch-restart` against the retained4652f577
+candidate (bundled journey bytes unchanged), in a new owned evidence directory.
+Source reconciliation identified: restore the
 initial deployment with reader disabled/no destination; run `ingest recover
 --abandon-acquisition`, then `ingest recover --retire-initial`, then `serve
 --activate-initial-successor --roles control,ingest,sync`. Abandonment includes
