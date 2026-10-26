@@ -135,7 +135,11 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
     expected_job['intent_digest'] = '\\x'+typed.certification_digest(event, ref(4, 3),
         ref(2), ref(2), [ref(1), ref(3), ref(5)], expected_job, wire).hex()
     assert head['xmin'] == expected_job['xmin']
-    assert head['xmin'] not in {row['xmin'] for row in state['producer_outcomes']}
+    # This fresh epoch1 fixture has no XID wrap and serializes all four outcomes
+    # before the final proof. Numeric ordering is not a general PG XID rule.
+    outcome_xids = [int(typed.xid(row['xmin'])) for row in state['producer_outcomes']]
+    assert len(outcome_xids) == 4
+    assert int(typed.xid(head['xmin'])) > max(outcome_xids), 'final proof transaction follows outcomes'
     assert control['acquired_at_us'] <= wire['sent_at_us'] <= head['committed_at_us'] <= completed_us
     assert expected_job['observed_at_us'] <= head['committed_at_us'] < control['lease_expires_at_us']
     values = {(cf, key.hex()): value.hex() for cf, key, value in native}

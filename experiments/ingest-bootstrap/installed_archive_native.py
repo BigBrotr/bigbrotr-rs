@@ -99,6 +99,9 @@ def validate_dump(dump, state, initialized, transcript, completed_us, *, store_r
             input_bytes=len(original), input_profile=1, issuer_role='control', issuer_resource=control['resource_id'],
             issuer_epoch=control['epoch'], issuer_incarnation=control['process_incarnation'], **attribution)
         if typed_progress:
+            for field in ('progress_event_ordinal', 'progress_wire_sequence'):
+                if row[field] is not None:
+                    assert type(row[field]) is int, 'exact progress position integer'
             request.update(request_progress if sequence == 4 else dict.fromkeys(request_progress))
         assert {k:v for k,v in row.items() if k not in ('xmin', 'reserved_at_us')} == request
         wanted_outcome = dict(common, request_sequence=sequence, request_digest=request['request_digest'],
