@@ -73629,6 +73629,13 @@
         ".research/ci-run-local-merged-20261026.log": "cbedd57e3fab241331590f95ccdd98079360a88d601305fa9674430415a98211",
         ".research/ci-run-local-merged-build-controls-20261026.log": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4"
       }
+    },
+    "runtime_helper_source_review": {
+      "through": "03464fcf2d3458a3338ad0c40bf6fe9d300db656",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-03464fcf-exposure/receipt.json",
+      "receipt_sha256": "a0b4de6c2f690717360cc363c272b245105dd10cc3e14f8da1657a4939423b0f",
+      "result": "51 new objects(41blobs/10commits),24changed paths;4pattern matches are two noncredential fixture/path fingerprints; no confirmed exposure. Heuristic/contextual scope, no exhaustive-absence claim.",
+      "docs": "03464fcf documentation checks3PASS in .research/index-runtime-checkpoint-docs-20261026/result.json"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74213,7 +74220,49 @@
         "process": "session5554 terminal exit0/reaped; both owned containers stopped/exit0/PID0/noOOM; unrelated inventory unchanged",
         "free_bytes_after": 154385682432
       },
-      "remaining_gates": "Installed signed-source PG/CH publication with accepted100-row batch; column-TTL negative; CH outage with independent Archive; readiness/restart/unknown query. Smaller-envelope concurrent resource pressure P01-T09Step5; general family-bound admissibility P02-T05Step3/T06."
+      "remaining_gates": "Installed signed-source PG/CH publication with accepted100-row batch; column-TTL negative; CH outage with independent Archive; readiness/restart/unknown query. Smaller-envelope concurrent resource pressure P01-T09Step5; general family-bound admissibility P02-T05Step3/T06.",
+      "installed_candidate_build": {
+        "source": "03464fcf2d3458a3338ad0c40bf6fe9d300db656",
+        "tree": "4ae87aa77c2c224b099de6e1450ed4525dfd7fff",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc",
+        "container_id": "b9903cb804a5114f207ded10ad892ed74ab333a41e4ee1478bf2f26b22b09078",
+        "session": 27067,
+        "state": "PASS_FRESH_WORKER_BOUND_BUILD; session27067 terminal/reaped; container exit0/PID0/noOOM retained. Runtime/engine/CI NOT_RUN.",
+        "resources": "2CPU,6GiB RAM/no additional swap,512PIDs,readonly source/root, bridge for locked dependency downloads; no host ports/socket/credentials;65GiB minimum free/40GiB output stop/7200s deadline",
+        "native_assets": "Verified selected native library/header/extensions from retained installed-publication-61271e2; old worker not copied. Fresh Cargo home and target; no retained compiled outputs.",
+        "recipe": "Existing ordinary isolated builder recipe; exact launch, clone log, resource identity and space samples saved under run root. tools/build.py remains the portable build entrypoint.",
+        "root_verification": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/root-verification.json",
+        "root_verification_sha256": "7224f1d300af08cc518c5aea36f662554ec94223a8d307194b9d5dfa1702678b",
+        "binary_sha256": "a8bbe45af172a4fab7588b67e0b41d2a95713dce40a6ef3b1dcf94bb2afd6298",
+        "worker": {
+          "bytes": 14421704,
+          "sha256": "7213855f02ce2912e0aa97430a155d6b18ff101672e9ba5fc97340ffd65ed647"
+        },
+        "static_recipe_preflight": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/out/config-preflight/result.json",
+          "sha256": "d2cbd6f342748665dab34e075fc53e0761199407f421ddd81932e26149c74f59",
+          "result": "Actual03464fcf candidate config validate PASS for882f84f4 recipe; separate bounded network-none container5911eb70 stopped/exit0/PID0/noOOM. No secrets resolved or engine opened; preliminary import/stopped-container preparation attempts were NOT_RUN."
+        }
+      },
+      "maintained_installed_case": {
+        "author_commit": "882f84f4f76f779ff3c37d292c61c2a1ef893348",
+        "head_atomicity_fix": "f087713a39aba1f27e4f36926bec3c4c645f3449",
+        "integration_commits": [
+          "36df8031",
+          "14929744"
+        ],
+        "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-installed-20261026",
+        "controls": "48 first-launch controls PASS also on merged36df8031; independent review exposed omitted current consumer xmin, fixed with12 targeted Index controls PASS and preservedRED. Actual installed/engine outcome NOT_RUN.",
+        "author_receipt_sha256": "fed8eab5e8ed005f3664ebdacdf7382ddfc8cc7e193c37b40a40fa11ad14c7e0",
+        "head_fix_receipt_sha256": "342e86540d8550db158a30b720ce10c6f61cadf49c5a833c599c4768f1eea5f8",
+        "receipts": ".research/index-case-controls/{result,head-xmin-result}.json under author worktree",
+        "broader_controls": "Ambient full discovery116:113PASS,1missing-llvm-config environment error before compilation,2declaredstraceSKIP. Not fullPASS; no native rebuild requested for verifier changes.",
+        "independent_review": "Complete at declared source scope; current-head xmin gap corrected and narrow delta reviewed. No remaining blocking finding. Reviewer did not execute tests/builds/engines; author12controlPASS attribution retained.",
+        "independent_review_receipts": {
+          ".research/implementation/index-foundation-20261026/installed-acceptance-review-882f84f4/original-review.json": "d5138c95eefbcaf88c9320e4b153015c728fe237d955cf1d4b94172fd89a5bee",
+          ".research/implementation/index-foundation-20261026/installed-acceptance-review-882f84f4/correction-review.json": "f0c7f769cd2e658cae1e6714784e6e65b10dc9b6ab5ef6963effff3a3e2ca1d7"
+        }
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {

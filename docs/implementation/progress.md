@@ -7,7 +7,7 @@ Official releases, packages and production remain unauthorized.
 ## Current increment and revision
 
 P01-T09 initial Index is on `work/initial-index` in the canonical checkout,
-HEAD `2c3e5071` before this recording-only checkpoint. Runtime wiring is complete
+HEAD `14929744` before this recording-only checkpoint. Runtime wiring is complete
 at its initial-only scope: explicit `--initialize-index`, accepted-policy checks,
 actual PG driver custody, bounded physical operations, serialized renewal/timer
 work and joined shutdown. Real installed publication remains **NOT_RUN**.
@@ -38,6 +38,21 @@ ancestor Cargo configuration could change test semantics; that finding is fixed.
 Merged21 CI controls and3 noncompiler builder controls PASS. Native execution,
 platform confirmation and timing benefit for these changed helpers remain open;
 run40376741278 uses the earlier helpers and cannot qualify this change.
+
+The maintained installed case is integrated as `36df8031`/`14929744`. All48
+first-launch controls pass on the merged base. Critical review found an omitted
+current consumer-head transaction check; its narrow correction passes12 affected
+Index controls, retaining the reproduced original gap. The independent review
+confirms the corrected boundary, full81-table snapshot and independent10-family
+expectations. The broader ambient Python run has113 PASS, one missing-llvm-config
+environment error and two declared strace SKIP; it is not a complete PASS.
+
+The required fresh ordinary build at `03464fcf` is **PASS**: current worker built
+before the parent, source/manifest and all2348 exported files verified, copied
+binary/worker hashes bound. The separate actual candidate `config validate` also
+passes the new Index recipe. Both containers are stopped/exit0/PID0/noOOM;
+monitor27067 ended and was reaped. These are build/static checks, not installed
+publication. No product rebuild is needed for the later acceptance-only changes.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns detailed
 resource/evidence locations under `implementation_index_foundation_20261026`,
@@ -91,6 +106,8 @@ Integrated foundation is published on `main` at `1cfd6eb5`, in
 Product-source review through `a8423d76` and final documentation delta through
 `1cfd6eb5` found no confirmed exposure; protected receipts are inventory-linked.
 Runtime and CI-helper commits after that publication remain local/unpublished.
+Their source/history delta through03464fcf has no confirmed exposure in the bounded
+audit; that revision also passes its three documentation checks.
 
 [Run40376741278](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278)
 uses exactly `1cfd6eb5`; all three foundation jobs are in progress at the latest
@@ -118,11 +135,11 @@ or asynchronous provider scan completion.
 
 Native sessions62389 (FAIL) and5554 (PASS) ended and were reaped; both runs'
 containers are stopped-retained, with unrelated inventory unchanged. No owned
-engine or native build is active. Root process69669 watches hosted CI. The
-installed-case delegate is implementing the maintained Index journey without
-starting engines; other critical reviews are complete, with one read-only lookup
-of the existing isolated candidate-build route. Root owns integration and all
-native/lab execution. Q37 settings remain as verified.
+engine or build is active. The fresh build and offline configuration containers
+are stopped-retained in external `runs/initial-index-installed-03464fc`.
+Root process69669 watches hosted CI. Installed-case author and critical reviewer
+have completed their scoped work; their worktrees and receipts are retained.
+Root owns integration and all native/lab execution. Q37 settings remain as verified.
 
 The earlier bounded cache retirement removed4446 obsolete compiler intermediates
 and observed3,823,820,800bytes of additional free space. All11120 nonselected
@@ -133,9 +150,8 @@ never replay that deletion or incrementally resume the partly retired caches.
 Latest post-native free space is154,385,682,432bytes. Check headroom before the
 next significant allocation; no broad cleanup is needed to unlock this increment.
 
-Next: finish/review the maintained installed Index case, then build a current
-worker-bound candidate through the existing isolated exact-source build and
-assembly route. Execute signed-event admission → Archive and Index publication →
+Next: assemble the verified03464fcf worker-bound build with the reviewed current
+journey sources. Execute signed-event admission → Archive and Index publication →
 independent read/export checks with the100-row accepted policy. Preserve failure
 classification and original captures. Exercise the pending real TTL rejection
 and independent outages at their relevant acceptance boundaries; do not claim
