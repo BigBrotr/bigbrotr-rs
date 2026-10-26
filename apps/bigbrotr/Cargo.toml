@@ -20,6 +20,7 @@ path = "../../experiments/export-execution/probe.rs"
 axum.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
+tower-service.workspace = true
 hickory-proto.workspace = true
 base64.workspace = true
 chacha20poly1305.workspace = true
@@ -31,7 +32,9 @@ bigbrotr-model.workspace = true
 bigbrotr-protocol.workspace = true
 clap.workspace = true
 command-fds.workspace = true
+clickhouse.workspace = true
 getrandom.workspace = true
+minicbor.workspace = true
 rocksdb.workspace = true
 rustix = { workspace = true, features = ["time"] }
 rustls.workspace = true

@@ -292,25 +292,6 @@ fn cancelled_transport_is_destroyed_before_its_custody_descriptor() {
 }
 
 #[test]
-fn mount_profile_uses_the_descriptors_actual_mount_not_shared_ext_magic() {
-    let fdinfo = "pos:\t0\nflags:\t02100000\nmnt_id:\t45\nino:\t55\n";
-    for (fstype, accepted) in [
-        ("ext4", true),
-        ("ext3", false),
-        ("ext2", false),
-        ("nfs", false),
-        ("overlay", false),
-    ] {
-        let mounts = format!(
-            "44 1 8:1 / /other rw - ext4 /dev/other rw\n45 1 8:2 / /journal rw - {fstype} /dev/journal rw\n"
-        );
-        assert_eq!(ext4_mount(fdinfo, &mounts), Ok(accepted), "{fstype}");
-    }
-    assert!(ext4_mount("mnt_id:\t45\nmnt_id:\t46\n", "").is_err());
-    assert!(ext4_mount(fdinfo, "44 1 8:1 / / rw - ext4 /dev/a rw\n").is_err());
-}
-
-#[test]
 fn competing_creators_keep_one_immutable_journal_and_one_lock_owner() {
     let (root, request, identity) = fixture();
     let root = root.path().canonicalize().unwrap();

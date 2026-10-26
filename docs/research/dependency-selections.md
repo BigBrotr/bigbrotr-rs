@@ -517,6 +517,35 @@ so actual engine tests must cover schema/type mismatches.
 and [insert timeout source](https://github.com/ClickHouse/clickhouse-rs/blob/fcb8b02537072d75d157361c59269b5d2e4102ce/src/insert.rs)
 establish the relevant behavior; both insert timeout defaults are disabled.
 
+The October26 initial Index integration selects `clickhouse =0.15.2` with only
+explicit ring/WebPKI TLS features and keeps row validation enabled. It replaces
+the earlier exploratory LZ4 feature choice with `Compression::None`: the bounded
+connector caps plaintext HTTP bytes, including error bodies, before the client's
+collecting error path. Compressed transport needs a separately bounded decoder
+before enablement. No LZ4/cityhash dependency is needed for this initial consumer.
+Hyper-util's pinned client/http1 features supply the custom no-idle-pool connector;
+its spawned connection tasks and the client's insert tasks require an owned
+executor whose actual shutdown precedes releasing custody and grants. Component
+diagnostics are not proof of server-side cancellation, TLS, durability or capacity.
+The activated hashbrown path adds `foldhash`0.2.0; its verified upstream Zlib
+notice is retained separately and the license permission is exact-version scoped.
+The security-updated existing package versions remain unchanged.
+
+For the first product Index qualification, select ClickHouse server
+`26.8.35.10` from the maintained LTS line, rather than treating the earlier
+`26.5.1.882` research image as a product pin. The
+[official package channel](https://packages.clickhouse.com/) identifies the
+October25 LTS release. Docker Hub's resolved `clickhouse/clickhouse-server`
+platform manifests are Linux amd64
+`sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc`
+and Linux arm64
+`sha256:8b0888097cf783a97cc0200d585f1e35b43366cc8977cfc08617bdc46a050308`.
+This is a qualification candidate, not a release claim: actual version, typed
+layout, synchronous durability settings, readback, restart and cancellation
+must be demonstrated with the selected client. Earlier engine results retain
+their original scope. A newly identified client type-header allocation/panic
+boundary is under correction; a wire-byte cap alone does not close that gate.
+
 Use `Query::param(name,value)` for server-side typed value parameters and
 `with_setting` for approved engine limits/query identity. SQL structure comes
 from the registered planner, never arbitrary request fragments. The inspected

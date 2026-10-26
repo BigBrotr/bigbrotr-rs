@@ -29,7 +29,7 @@ fn golden() -> Golden {
 fn dataset() -> DatasetId {
     DatasetId::try_from([0x11; 16]).unwrap()
 }
-fn generation() -> ProjectionGenerationId {
+pub(in crate::storage) fn generation() -> ProjectionGenerationId {
     ProjectionGenerationId::try_from([0x33; 16]).unwrap()
 }
 fn reference(kind: DictionaryKind, ordinal: u64) -> QualifiedRef {
@@ -60,7 +60,7 @@ fn fact(sequence: u64, payload: FactPayload) -> Fact {
 fn label(value: &str) -> DescriptorLabel {
     DescriptorLabel::new(value.into()).unwrap()
 }
-fn cut() -> SourceCut {
+pub(in crate::storage) fn cut() -> SourceCut {
     SourceCut::new(
         dataset(),
         TopologyGeneration::new(17),
@@ -86,7 +86,7 @@ fn cut() -> SourceCut {
 
 // These synthetic inputs exercise structural mapping. Cryptographic admission
 // remains the protocol owner's responsibility, including its empty-tag refusal.
-fn facts() -> [Fact; 5] {
+pub(in crate::storage) fn facts() -> [Fact; 5] {
     let event_id = EventId::from_bytes([0xaa; 32]);
     let observer = reference(DictionaryKind::Observer, 5);
     let method = reference(DictionaryKind::Method, 10);

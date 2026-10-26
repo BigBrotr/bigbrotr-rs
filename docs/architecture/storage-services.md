@@ -255,6 +255,11 @@ The first PG publication adapter fixes ten targets: dictionaries, events,
 eligibility, receive, event ID/author/time/tag access paths, and provenance by
 event/relay. Schema 1 uses the explicit physical partition `all`; each complete
 AdmissionBatch has one deterministic chunk per target, including zero rows.
+For this initial profile, the `projection-chunk/1` row digest is also its chunk
+ID: that existing domain binds generation, target, schema, complete cut, ordinal
+and every row. The owned source planner counts and hashes the same retained
+batch in two bounded passes, decoding one fact at a time. It keeps the source
+and mapping reservations through dispatch; it grants no physical readiness.
 The accepted provenance-off profile retains both explicit zero witness targets.
 Preparation verifies the actual retained pending batch and persists the complete
 plan before dispatch. Its only resume unit is that whole batch. A timeout leaves

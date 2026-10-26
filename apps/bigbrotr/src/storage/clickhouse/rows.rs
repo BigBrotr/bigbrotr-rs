@@ -19,7 +19,7 @@ pub use digest::{ChunkHasher, ChunkSummary, ProjectionRow};
 pub use mapping::FactRows;
 
 #[cfg(test)]
-mod tests;
+pub(in crate::storage) mod tests;
 
 /// Dataset, shard, owner epoch, sequence. Every component remains qualified.
 pub type SourceTuple = ([u8; 16], u32, u64, u64);

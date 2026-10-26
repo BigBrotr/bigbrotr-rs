@@ -27,6 +27,7 @@ REGISTRY = 'contracts/release/archive-engine.json'
 ASSEMBLY_FILES = ('packaging/release/assemble.py', 'packaging/release/manifest.schema.json',
                   'packaging/release/README.md', 'tools/archive_bundle.py', 'tools/build.py', REGISTRY)
 PUBLIC_FILES = ('LICENSE', 'packaging/archive-worker/notices/foldhash-0.1.5.txt',
+                'packaging/archive-worker/notices/foldhash-0.2.0.txt',
                 'packaging/archive-worker/notices/webpki-roots-1.0.10.txt',
                 'packaging/archive-worker/notices/zlib-rs-0.6.8.txt',
                 'vendor/libduckdb-sys/LICENSE')

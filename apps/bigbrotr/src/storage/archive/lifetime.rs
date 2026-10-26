@@ -5,35 +5,30 @@ use crate::storage::postgres::{
     catalog_guard::CatalogIdentity,
 };
 use command_fds::CommandFdExt;
-use rustix::fs::{FlockOperation, Mode, OFlags, flock, mkdirat, openat};
+use rustix::fs::{Mode, mkdirat};
 use serde::Serialize;
 use std::{
     cell::Cell,
-    fs::{self, File},
+    fs::File,
     future::Future,
     io::{Read, Write},
     os::{fd::AsRawFd, unix::fs::MetadataExt},
     path::Path,
-    pin::Pin,
     process::Command,
-    task::{Context, Poll},
 };
 
 const MAX_MANIFEST: usize = 32 * 1024;
 const LOCK: &str = "custody.lock";
 const MANIFEST: &str = "intent.json";
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LifetimeError {
-    InvalidRoot,
-    UnsupportedHost,
-    Identity,
-    Exists,
-    Occupied,
-    Incomplete,
-    Filesystem,
-    ResourceLimit,
-}
+pub use crate::storage::custody::CustodyError as LifetimeError;
+
+#[cfg(target_os = "linux")]
+pub(super) use crate::storage::custody::bounded_proc;
+pub(super) use crate::storage::custody::{
+    acquire, create_file, directory, host_boot, open_directory, open_file, private_file,
+    retain_connection, validate_lock,
+};
 
 /// Close-only lock custody. Never unlink/replace the journal or explicitly unlock
 /// this open file description: the worker and catalog driver may still own it.
@@ -212,30 +207,6 @@ impl LocalAttempt {
     }
 }
 
-pub(super) fn retain_connection<F: Future + Unpin>(
-    lock: &File,
-    future: F,
-) -> Result<impl Future<Output = F::Output> + use<F>, LifetimeError> {
-    let custody = lock.try_clone().map_err(|_| LifetimeError::Filesystem)?;
-    Ok(CustodiedConnection {
-        future,
-        _custody: custody,
-    })
-}
-
-// Field order is intentional for cancellation: destroy the actual transport
-// before closing its lock clone, whether or not it was ever polled.
-struct CustodiedConnection<F> {
-    future: F,
-    _custody: File,
-}
-impl<F: Future + Unpin> Future for CustodiedConnection<F> {
-    type Output = F::Output;
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        Pin::new(&mut self.get_mut().future).poll(cx)
-    }
-}
-
 fn attempt_name(request: &ArchiveAttemptRequest) -> String {
     use std::fmt::Write;
     let mut name = String::with_capacity(32);
@@ -267,85 +238,6 @@ fn validate_identity(
         return Err(LifetimeError::Identity);
     }
     Ok(())
-}
-pub(super) fn directory(path: &Path) -> Result<File, LifetimeError> {
-    if !path.is_absolute() || path.canonicalize().ok().as_deref() != Some(path) {
-        return Err(LifetimeError::InvalidRoot);
-    }
-    let file = File::from(
-        rustix::fs::open(
-            path,
-            OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::DIRECTORY,
-            Mode::empty(),
-        )
-        .map_err(|_| LifetimeError::InvalidRoot)?,
-    );
-    validate_directory(&file)?;
-    Ok(file)
-}
-fn validate_directory(file: &File) -> Result<(), LifetimeError> {
-    let m = file.metadata().map_err(|_| LifetimeError::Filesystem)?;
-    if !m.is_dir() || m.mode() & 0o777 != 0o700 || m.uid() != rustix::process::geteuid().as_raw() {
-        Err(LifetimeError::InvalidRoot)
-    } else {
-        Ok(())
-    }
-}
-pub(super) fn open_directory(parent: &File, name: &str) -> Result<File, LifetimeError> {
-    let file = File::from(
-        openat(
-            parent,
-            name,
-            OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::DIRECTORY,
-            Mode::empty(),
-        )
-        .map_err(|_| LifetimeError::Incomplete)?,
-    );
-    validate_directory(&file)?;
-    Ok(file)
-}
-pub(super) fn create_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
-    openat(
-        parent,
-        name,
-        OFlags::WRONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::CREATE | OFlags::EXCL,
-        Mode::RUSR | Mode::WUSR,
-    )
-    .map(File::from)
-    .map_err(|_| LifetimeError::Filesystem)
-}
-pub(super) fn open_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
-    openat(
-        parent,
-        name,
-        OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::NONBLOCK,
-        Mode::empty(),
-    )
-    .map(File::from)
-    .map_err(|_| LifetimeError::Incomplete)
-}
-pub(super) fn private_file(m: &fs::Metadata) -> bool {
-    m.is_file()
-        && m.mode() & 0o777 == 0o600
-        && m.uid() == rustix::process::geteuid().as_raw()
-        && m.nlink() == 1
-}
-pub(super) fn validate_lock(file: &File) -> Result<(), LifetimeError> {
-    let m = file.metadata().map_err(|_| LifetimeError::Filesystem)?;
-    if private_file(&m) && m.len() == 0 {
-        Ok(())
-    } else {
-        Err(LifetimeError::Identity)
-    }
-}
-pub(super) fn acquire(file: &File) -> Result<(), LifetimeError> {
-    flock(file, FlockOperation::NonBlockingLockExclusive).map_err(|e| {
-        if e == rustix::io::Errno::WOULDBLOCK {
-            LifetimeError::Occupied
-        } else {
-            LifetimeError::Filesystem
-        }
-    })
 }
 fn manifest(
     request: &ArchiveAttemptRequest,
@@ -391,85 +283,5 @@ fn manifest(
     }
     Ok(bytes)
 }
-#[cfg(target_os = "linux")]
-pub(super) fn host_boot(root: &Path) -> Result<String, LifetimeError> {
-    // This starting implementation deliberately excludes network/overlay storage.
-    // Identical paths or copied inode metadata on another host are not exclusion.
-    let directory = directory(root)?;
-    if rustix::fs::fstatfs(&directory)
-        .map_err(|_| LifetimeError::Filesystem)?
-        .f_type
-        != 0xef53
-    {
-        return Err(LifetimeError::UnsupportedHost);
-    }
-    // ext2/ext3 share ext4's statfs magic. Inspect this open descriptor's
-    // actual mount ID in this mount namespace before selecting ext4 semantics.
-    let fdinfo = bounded_proc(
-        &format!("/proc/self/fdinfo/{}", directory.as_raw_fd()),
-        4096,
-    )?;
-    let mountinfo = bounded_proc("/proc/self/mountinfo", 128 * 1024)?;
-    if !ext4_mount(&fdinfo, &mountinfo)? {
-        return Err(LifetimeError::UnsupportedHost);
-    }
-    let mut bytes = Vec::with_capacity(38);
-    File::open("/proc/sys/kernel/random/boot_id")
-        .map_err(|_| LifetimeError::UnsupportedHost)?
-        .take(38)
-        .read_to_end(&mut bytes)
-        .map_err(|_| LifetimeError::UnsupportedHost)?;
-    if bytes.len() != 37 || bytes.pop() != Some(b'\n') {
-        return Err(LifetimeError::UnsupportedHost);
-    }
-    String::from_utf8(bytes).map_err(|_| LifetimeError::UnsupportedHost)
-}
-
-#[cfg(any(target_os = "linux", test))]
-fn ext4_mount(fdinfo: &str, mountinfo: &str) -> Result<bool, LifetimeError> {
-    let mut ids = fdinfo
-        .lines()
-        .filter_map(|line| line.strip_prefix("mnt_id:\t"));
-    let id = ids
-        .next()
-        .filter(|id| !id.is_empty() && id.bytes().all(|b| b.is_ascii_digit()))
-        .ok_or(LifetimeError::UnsupportedHost)?;
-    if ids.next().is_some() {
-        return Err(LifetimeError::UnsupportedHost);
-    }
-    let mut mounts = mountinfo
-        .lines()
-        .filter(|line| line.split_ascii_whitespace().next() == Some(id));
-    let mounted = mounts
-        .next()
-        .and_then(|line| line.split_once(" - "))
-        .and_then(|(_, tail)| tail.split_ascii_whitespace().next())
-        .ok_or(LifetimeError::UnsupportedHost)?;
-    if mounts.next().is_some() {
-        return Err(LifetimeError::UnsupportedHost);
-    }
-    Ok(mounted == "ext4")
-}
-#[cfg(target_os = "linux")]
-pub(super) fn bounded_proc(path: &str, maximum: usize) -> Result<String, LifetimeError> {
-    let mut bytes = Vec::new();
-    bytes
-        .try_reserve_exact(maximum + 1)
-        .map_err(|_| LifetimeError::ResourceLimit)?;
-    File::open(path)
-        .map_err(|_| LifetimeError::UnsupportedHost)?
-        .take(maximum as u64 + 1)
-        .read_to_end(&mut bytes)
-        .map_err(|_| LifetimeError::UnsupportedHost)?;
-    if bytes.len() > maximum {
-        return Err(LifetimeError::ResourceLimit);
-    }
-    String::from_utf8(bytes).map_err(|_| LifetimeError::UnsupportedHost)
-}
-#[cfg(not(target_os = "linux"))]
-pub(super) fn host_boot(_root: &Path) -> Result<String, LifetimeError> {
-    Err(LifetimeError::UnsupportedHost)
-}
-
 #[cfg(test)]
 mod tests;

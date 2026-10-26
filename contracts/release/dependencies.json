@@ -237,11 +237,13 @@
     {
       "name": "hyper-util",
       "version": "0.1.20",
-      "purpose": "Tokio IO/timer and Tower-to-Hyper service adapter; no automatic connection spawner",
+      "purpose": "Tokio IO/timer and service adapters; initial Index HTTP connection tasks require a dedicated owned executor, with no idle pool",
       "default_features": false,
       "features": [
         "service",
-        "tokio"
+        "tokio",
+        "client-legacy",
+        "http1"
       ],
       "license": "MIT",
       "source": "https://docs.rs/hyper-util/0.1.20/hyper_util/"
@@ -278,6 +280,27 @@
       "license": "CDLA-Permissive-2.0",
       "license_notice": "packaging/archive-worker/notices/webpki-roots-1.0.10.txt",
       "source": "https://github.com/rustls/webpki-roots/tree/70760478b9d3ea729b22faa0b5324da38a297c1c/webpki-roots"
+    },
+    {
+      "name": "clickhouse",
+      "version": "0.15.2",
+      "purpose": "Typed initial Index rows, schema validation and explicit HTTP insert completion; physical adapter/recovery qualification remains pending",
+      "default_features": false,
+      "features": [
+        "rustls-tls-ring",
+        "rustls-tls-webpki-roots"
+      ],
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/clickhouse/0.15.2/clickhouse/"
+    },
+    {
+      "name": "tower-service",
+      "version": "0.3.3",
+      "purpose": "Service contract for the bounded initial Index HTTP connector",
+      "default_features": false,
+      "features": [],
+      "license": "MIT",
+      "source": "https://docs.rs/tower-service/0.3.3/tower_service/"
     }
   ],
   "lock": "Cargo.lock",
@@ -414,6 +437,11 @@
           "crate": "libduckdb-sys-1.10505.0 with manifest patch",
           "license": "MIT",
           "notice": "vendor/libduckdb-sys/LICENSE"
+        },
+        {
+          "crate": "foldhash-0.2.0",
+          "license": "Zlib",
+          "notice": "packaging/archive-worker/notices/foldhash-0.2.0.txt"
         }
       ],
       "source_patch": {
