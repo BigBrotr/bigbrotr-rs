@@ -1,85 +1,88 @@
 # Current execution checkpoint
 
-2026-10-26, Tux. Actual goal **ACTIVE**, full M1–M5 scope under Q37/Q38.
-The latest owner explicitly authorized continuation. Root owns runtime and Git.
+2026-10-26, Tux. Actual goal **ACTIVE**, full M1–M5 under Q37/Q38.
+Root owns runtime and Git. Latest owner instruction explicitly authorizes continuation.
 
-## Current useful increment
+## Current result and revision
 
-[P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition): a clean
-installation delivering signed admission → Archive → private read → export →
-restart. Main observed at `86df4698f40ea0eb31da3122726e38b36a5e4420`, ahead of
-published `352ec889a6d6802245168d26d20bcd0f4549fe37`. This checkpoint's commit
-corrects the acceptance recipe/history grant and records the connected attempt.
-Product c49 CLI/worker/image remain unchanged; no product rebuild is needed.
+[P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition): clean
+signed admission → Archive → private read → export, followed by the missing
+Ingest restart and readiness boundaries. Main observed at `f9165bb739743b31589c8f0bb16849c975fa2644`;
+this checkpoint's commit records the qualified connected increment. Product c49
+CLI/worker and the pinned runtime image remain unchanged. No product rebuild ran.
 
-**PASS:** retained assembler/source reviews, 11 controls, core relocation and
-CLI/worker verification, plus the complete 19-member journey bundle identity.
-The fresh dedicated Compose installation passed all 15 finite initialization,
-migration40, explicit ACL, config activation and real owner enrollment commands.
-The reviewed real-identity clients are integrated through c5b90047/423be36b.
+**PASS:** fresh dedicated installation from the19-member extracted private bundle
+(assembly373e480f), all15 actual provisioning/migration40/config activation/owner
+enrollment/Archive initialization commands, then the actual controlled signed /
+forged-signature / duplicate peer. Full independent native49-row census and four
+original producer inputs/receipts match; target40 progress has checkpoint9, complete4,
+six classified events (four successes/two rejections), and12 exact dependencies.
+Archive input headers, Control/catalog receipts and full real C API readback match:
+eight dictionaries plus one event, eligibility, receive and provenance; four commits,
+complete frontier12/snapshot5. Initial owner stops with native closed/release committed.
 
-**CAPTURED, qualification in progress:** actual signed/forged/duplicate relay
-traffic produced four admissions/outcomes and complete Archive frontier12 /
-snapshot5. Initial Control/Ingest/Sync/Archive joined with native closed and owner
-release committed. The independent native census contains49 rows; the real C API
-reader sees8 dictionaries and one event/eligibility/receive/provenance plus4 commits.
-Typed-progress replay passes against retained captures, but critical review found
-exact request-scalar type and final transaction-order assertions to strengthen.
-Full combined native/Control/Archive qualification awaits that bounded correction.
+**PASS:** actual ordinary Control lifetime after that stop, real enrolled owner,
+three explicit private-scope grants, exact signed history, export353-byte JSONL and
+complete manifest/inventory, independent77-table Control comparison. Catalog and
+Archive files remain unchanged; ordinary Control exits0. This is a genuine Control
+restart, **not** successor Ingest/replay or complete M1 qualification.
 
-**FAIL, classified recipe mismatch:** authorized history returned429 before export
-submission because the new recipe mistakenly assigned history the256MiB export
-cap. The current history guard requires740425728bytes with worker512MiB. Restore
-the independently established profile: history1GiB, export256MiB, worker512MiB,
-whole application/native6GiB. No guard, deadline or expected result is weakened.
-Original accepted v2 policy/data remain unchanged; use a distinct fresh instance
-for corrected initialization. Archive files and catalog were unchanged by the
-failed read. Read/export/restart on the corrected instance are **NOT_RUN**.
+Source-critical oracle review closed both findings in d2ef7de0 (strict request
+position integers and finite nonwrapping final transaction order). Original23
+negative controls/legacy replay plus7 targeted correction controls pass. No
+verification result is extended to an unexecuted workload or product revision.
 
-## Evidence, resources and work in progress
+## Custody, failures and active resources
 
-Custody and exact references: [laboratory inventory](../research/laboratory-inventory.json),
-`implementation_m1_first_launch_20261026`. External root:
-`/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280`.
-Core/bootstrap/image and journey-bundle receipts remain valid. `initial-v1/`
-contains original captures; `export-v1/triage.json` explains the history failure.
-`oracle-progress-review.json` records retained replay and23 negative controls,
-with the two follow-up review findings above still open. Secret owner-token
-responses, password/session files remain protected locally, never committed.
+[Laboratory inventory](../research/laboratory-inventory.json), key
+`implementation_m1_first_launch_20261026`, owns detailed identities and custody.
+Root `/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280`;
+`read-profile-v3/journey-verified.json` owns the complete result, original root
+`journey-verified.json` the earlier initial Archive result. Original command logs,
+inputs, native dumps, HTTP observations, datasets, protected secrets/session files,
+.research and worktrees remain preserved. Do not commit secret owner-token output.
 
-Database e6780dc1 of project `bigbrotr-m1-0f80280` is still running, owner label
-`c555fff773e9f50f27c7db5c9840b962`. Initial0d36ff4e, ordinary3bc42a7c and
-census318db706 are exited0/PID0. No application, relay or build is active.
-Before stopping that owned database to reuse the dedicated port15432, verify
-ownership and active clients; preserve its full state and all original failures.
-Unrelated services and older retained environments remain untouched.
+Original instance-v2 history256MiB returned429; export never submitted. This was a
+recipe/profile mismatch: current history requires740425728bytes with worker512MiB.
+The new instance restores the already qualified history1GiB/export256MiB split,
+worker512MiB and application/native6GiB unchanged. Accepted v2 policy/data were
+not rewritten. Its PG e6780dc1 is stopped/PID0/exit0 and preserved.
 
-`m1_client_parameters` finished at423be36b, integrated; no runtime.
-`m1_runtime_grants` (Astra/xhigh) works in `.research/m1-oracles-20261026`,
-branch `work/m1-oracles`, at3492dc89 plus pending bounded review fixes.
-`compacted_reader_review` (Astra/xhigh) owns critical review. Neither runs engines.
-All other worktrees, .research and external artifacts remain preserved.
-The parked compacted proof worktree remains at190dd5c5; do not resume it automatically.
-Initial a99 Sync timeout remains unexplained; its original failure is retained.
+The corrected child uses project `bigbrotr-m1-read-v3`, same explicit lab owner
+`c555fff773e9f50f27c7db5c9840b962`. Only its dedicated PostgreSQL remains running;
+current ID/mounts are in child `resources.json`. Initial/ordinary/census operations
+joined; no app, relay, native probe or build remains active. Docker address pools
+were exhausted, so this increment reused its own empty bridge1699209a without
+touching another network. Separate database paths/credentials/IDs remain intact.
 
-## M1 blockers and exact next step
+Original environmental/verifier failures remain recorded: pre-extraction directory
+entry assumption, Docker network allocation, prematurely created census scratch
+(before engine open), and offline path adapter. Their corrected outcomes do not
+erase original failures. Initial a99 Sync timeout remains unresolved/preserved.
+Earlier ordinary410d804, provenance-off and c49 recovery proofs remain valid only
+at their recorded identities/envelopes. The compacted proof WT at190dd5c5 stays
+parked; do not restart it automatically.
 
-1. Finish the corrected clean signed-event/read/export journey with the existing
-   binary/image and clients. Complete independent native/SQL/C API expectations
-   and actual restart evidence; initialization alone is not role readiness.
-2. Minimal Index/readiness and dependency-outage boundaries remain open in
-   P01-T09 Steps1/2/5; do not advertise unwired roles.
-3. Reconcile Step4 Ingest restart/resend/provenance-off with retained410d804 and
-   recovery proofs, exercising missing connected coverage only. Ordinary Control
-   restart does not restart ingestion.
+## Active agents and next useful increment
 
-Next: integrate the reviewed typed-progress fixes; preserve and stop only the
-owned v2 database, then initialize a fresh instance with history1GiB/export256MiB
-and reuse the existing acquisition/read/export orchestration. Do not rewrite
-accepted policy or seed Control rows directly. Complete the tutorial from actual
-connected behavior and group records/commit/push around the coherent result.
+`compacted_reader_review` (Astra/xhigh): read-only reconciliation of P01-T09 Step4
+with existing c49 entrypoints and retained restart/resend/provenance-off evidence;
+identify the smallest genuinely missing connected scenario. No engines.
+`m1_client_parameters` (Sol/xhigh): separate `.research/m1-client-20261026` worktree,
+update the existing first-event tutorial from the real result, exposing any fixture
+not actually delivered in the bundle. No runtime. Oracle author finished d2ef7de0;
+its `.research/m1-oracles-20261026` worktree is retained and integrated.
 
-Deeper prerequisites need a concrete data-loss/duplication, authority, publication
-or restart risk on this path. Later compaction/GC/restore/capacity, fleet,
-analytics, browser/site and release/arm64/CI/signing remain in the existing plan,
-incomplete. All P02 is not an indivisible M1 gate; no public release is enabled.
+Next: use the critical reconciliation to run the missing bounded Ingest successor /
+resend journey on the preserved corrected instance, with existing recovery commands
+and independent expectations. Integrate the truthful tutorial update. Avoid repeating
+already valid initial, export or fault campaigns without a changed assumption.
+
+M1 still needs: (1) actual Ingest restart/resend/provenance-off gaps reconciled and
+closed; (2) minimal Index/readiness and dependency-outage boundaries in Steps1/2/5;
+(3) complete delivered first-event instructions/fixture usability. Do not equate an
+initialized/running role with readiness. Deeper prerequisites need a concrete
+data-loss/duplication, authority, publication or restart risk on this path.
+Compaction/GC/restore/capacity, fleet, analytics, browser/site, release/arm64/CI/signing
+remain in the existing full plan, incomplete. AllP02 is not an indivisible M1 gate;
+no public release or cleanup of retained evidence is authorized by this result.

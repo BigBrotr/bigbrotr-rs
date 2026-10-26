@@ -73202,7 +73202,7 @@
     }
   },
   "implementation_m1_first_launch_20261026": {
-    "status": "initial-signed-archive-captured-history-recipe-failed-correction-pending",
+    "status": "original-initial-archive-qualified-history256-failure-preserved-corrected-child-qualified",
     "owner": "c555fff773e9f50f27c7db5c9840b962",
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280",
     "source_base": "c3f7c31c6d1d4bbef35980d708ca927879a2abb1",
@@ -73210,22 +73210,22 @@
     "product_source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
     "bundle_worktree": "/home/tux/bigbrotr-rs/.research/m1-bundle-20261026",
     "branch": "work/m1-bundle",
-    "observed_at": "2026-10-26T09:23:43.129143+00:00",
+    "observed_at": "2026-10-26T09:37:12.327207+00:00",
     "free_before_bytes": 170161451008,
     "processes": [],
     "containers": [
       {
         "id": "e6780dc10335d870b37372234f42504a0c541eb9c7422b9af77076918e063f46",
         "name": "/bigbrotr-m1-0f80280-database-1",
-        "status": "running",
-        "pid": 1906327
+        "status": "exited",
+        "pid": 0
       }
     ],
     "retention": "Preserve source drafts, databases, input, original failures, captures, assembled artifacts and external roots; no cleanup authorized by this allocation.",
     "resources": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/resources.json",
-      "sha256": "31c507f2bfbc80daa899b6cc079517b189942113cc0807ba984f17a574ff3632",
-      "bytes": 7168
+      "sha256": "20cd2da90f66a6a777daef3088aa437e38fafc630ba5162ed79c3381d4f2ae13",
+      "bytes": 7455
     },
     "core_evidence": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/core-verified.json",
@@ -73267,8 +73267,8 @@
     "oracle_worktree": {
       "path": "/home/tux/bigbrotr-rs/.research/m1-oracles-20261026",
       "branch": "work/m1-oracles",
-      "commit": "3492dc89067b0fbd37d6a8aa7c35c7492a039577",
-      "state": "offline native/progress replay PASS; critical review pending; no engines"
+      "commit": "d2ef7de0c9379e9a1bbacb19a105f4106af8f63f",
+      "state": "reviewed, merged; initial retained full native/Archive replay PASS; no engine"
     },
     "history_recipe_failure": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/export-v1/triage.json",
@@ -73317,6 +73317,83 @@
           "FinishedAt": "2026-10-26T09:06:58.829961441Z"
         }
       }
-    ]
+    ],
+    "initial_archive_evidence": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/journey-verified.json",
+      "sha256": "8f57eda429bc1fdc1cd4c443ac68b96541b4bc7a4ebb826dbeb1d8e450b86abb",
+      "bytes": 9714
+    },
+    "typed_progress_corrections": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/oracle-progress-review-corrections.json",
+      "sha256": "ff560c6840ad331e9e6a21444df65d1eba8a848450b99e03bfe6a5c6b592c73e",
+      "bytes": 10137
+    },
+    "corrected_profile": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3",
+      "project": "bigbrotr-m1-read-v3",
+      "owner": "c555fff773e9f50f27c7db5c9840b962",
+      "resources": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/resources.json",
+        "sha256": "2bc51d1495d28931cddc6975b2d1b837dd132a8401af043d28837717ef1b17e3",
+        "bytes": 6906
+      },
+      "evidence": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/journey-verified.json",
+        "sha256": "070c097913c0888d7893fcaaeb95b54bfb62ee18bdcd684de5464071819933f9",
+        "bytes": 12093
+      },
+      "bundle": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/bundle-verified.json",
+        "sha256": "fc768cafbf8d91b0c9084de17e602954e09c4e22bef3eb2a0c47b2360f557308",
+        "bytes": 488
+      },
+      "bootstrap": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/bootstrap-result.json",
+        "sha256": "09a3dee95e82d4252d23e15f7b9a3d680e5059766c45a62e5b32ada12cc296bb",
+        "bytes": 1162
+      },
+      "network": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/network-reuse.json",
+        "sha256": "9b123a2d361e77f2d232f8692e36a25b0c59f6baed8a67cf4e15d598b9d3a93e",
+        "bytes": 1410
+      },
+      "status": "qualified-initial-signed-archive-ordinary-control-read-export",
+      "active": [
+        {
+          "id": "f2996d132af6680670b588f893d243372dfa2459ffc50206c67b1f3fc74868dd",
+          "status": "running",
+          "pid": 2009372
+        }
+      ],
+      "preserved_failures": [
+        "extraction-checker-failure.json (before extraction; safe directory entries)",
+        "bootstrap-network-failure/ (Docker predefined pools exhausted before PG creation)",
+        "initial-v1/census.stderr (scratch pre-created; native engine not opened)",
+        "validation-path-failure.json (offline path adapter only)"
+      ],
+      "all_application_census_processes": "joined; initial and ordinary exit0; failed census exit1; corrected census exit0"
+    },
+    "orchestration": {
+      "bootstrap": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/bootstrap-replay.py",
+        "sha256": "c098a3b99a0dea0c9cb1caaff759de2635deedbbf1c4cd16f8d7f11d0c7b3351",
+        "bytes": 3668
+      },
+      "initial": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/initial-journey.py",
+        "sha256": "3d47d487a1e7d8146d5317c952a9fb5b5c7aa80e20492c7e94d3e2bcd27ae462",
+        "bytes": 10871
+      },
+      "export": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/export-journey.py",
+        "sha256": "dad9c97f25854245dba0f92c787f60e75ae944d3dfe8adb92f088e2b68d29113",
+        "bytes": 7623
+      },
+      "independent_validation": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/verify-journey.py",
+        "sha256": "471ee21ee5997744abf86d591de29b0c0ba403804114ef7e90cfe9ef7bd06eb2",
+        "bytes": 5630
+      }
+    }
   }
 }

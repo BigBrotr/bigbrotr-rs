@@ -476,6 +476,15 @@ and queryable with truthful role readiness, without implicit public publishing.
   extends the same product through ordinary Control restart, explicit scope grants,
   private history and a 353-byte signed JSONL export with independently verified
   manifest/inventory. That run uses documented 1 GiB read/export operation caps.
+  The October26 clean first-launch composition now independently verifies the
+  same signed admission/Archive/private history/export path using real migration40,
+  policy activation and owner enrollment, explicit application grants, and the
+  relocated c49 binary/image. Its fresh profile separates history1GiB from
+  export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
+  exact353-byte signed export and unchanged catalog/files pass. This includes an
+  ordinary Control restart; successor Ingest/resend and minimal Index/readiness
+  remain open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
+  corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB
   export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
   (peak 103,530,496 B, PostgreSQL outside, warm-cache scope). Configured whole-service
