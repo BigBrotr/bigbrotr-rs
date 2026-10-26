@@ -446,6 +446,9 @@ def history_unchanged(before, after):
     assert owner['role'] == 'control' and owner['state'] == 'released' and owner['released_at_us'] is not None
     assert all(row['revoked_at_us'] is not None for row in after['browser_sessions'])
     pins = [row for row in after['archive_snapshot_pins'] if row not in before['archive_snapshot_pins']]
-    assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == 6 and row['snapshot_id'] == 8 for row in pins)
+    assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == 6 for row in pins)
     for pin in pins:
+        frontier = only(after['archive_frontier_snapshots'], consumer_id=pin['consumer_id'],
+            frontier_revision=pin['frontier_revision'])
+        assert frontier['dataset_id'] == pin['dataset_id'] and frontier['snapshot_id'] == 8
         assert only(after['snapshot_leases'], lease_id=pin['lease_id'])['state'] == 'released'

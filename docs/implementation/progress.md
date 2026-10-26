@@ -75,7 +75,14 @@ Pinned entrypoint source and actual logs establish this readiness race. Both
 Runtime and shipped Compose now require final-server TCP readiness. No scientific
 admission ran in that attempt; cleanup passed. The bundled Compose change requires
 candidate reassembly using the same verified c49 product, not a native rebuild.
-Corrected connected rerun remains NOT_RUN.
+The r5 run at `ddc2f195` executed all12 stages:11 PASS, final history oracle FAIL.
+Ingest retirement/succession/resend, independent scientific/typed-progress checks,
+catch-up and exact retry passed. The actual ordinary history client read both
+complete signed events successfully; a verifier then wrongly looked for
+`snapshot_id` directly on a pin. The schema binds pins through consumer/frontier
+to `archive_frontier_snapshots`. That exact join now passes the retained captures;
+five wrong pin/snapshot/release interpretations are rejected. Original FAIL remains;
+full corrected runtime is still NOT_RUN. All owned containers stopped cleanly.
 
 Affected controls: **30 first-launch and 12 live-client PASS**. The earlier
 profile controls remain valid. Original deep c49 evidence remains valid at its recorded identities:
@@ -131,9 +138,9 @@ Previously verified Q37 settings remain. Unique state, original failures,
 stopped resources and source worktrees remain protected.
 
 Next run `p01-first-launch-restart` from a new immutable source worktree
-under `.research/first-launch-restart-r5-20261026`. Assemble the fresh candidate at
-external `runs/m1-first-launch-pg-ready-20261026/candidate` using the retained c49
-product; only bundled Compose readiness changed. Finish epoch2 resend, activated
+under `.research/first-launch-restart-r6-20261026`. Reuse the fresh candidate at external
+`runs/m1-first-launch-pg-ready-20261026/candidate` (manifest47d53ce8, same c49 product).
+No product or bundle rebuild is required for the final pin-join correction. Finish epoch2 resend, activated
 recovery/retirement, Archive catch-up, exact retry and ordinary history. No extra
 empty epoch3 is needed. Provenance-off source analysis is preserved by Astra;
 complete this blocking on-profile proof first.

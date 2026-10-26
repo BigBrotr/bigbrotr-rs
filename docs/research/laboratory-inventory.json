@@ -73519,7 +73519,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "r4 exposed temporary-PostgreSQL readiness race, corrected to final-server TCP readiness in Runtime and shipped Compose. Changed bundled Compose requires candidate reassembly, not product rebuild; next real run pending.",
+      "status": "r5 actual connected path through both-event history executed; final pin-table verifier field corrected to exact FK join after schema inspection and retained-capture replay. OriginalFAIL preserved; full corrected runtime pending.",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73608,6 +73608,27 @@
             "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/postgres-startup-diagnostic.stdout",
             "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/postgres-startup-diagnostic.stderr"
           ]
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r5-20261026",
+          "source_revision": "ddc2f195",
+          "result": "FAIL",
+          "reason": "All12stages executed,11PASS. Actual bootstrap/admission/export, initial retirement, epoch2 resend/retirement, catch-up+exactretryPASS. Both-event ordinary historyclientPASS; final history oracle raised KeyError snapshot_id because pins bind snapshots through archive_frontier_snapshots. Original report unchanged.",
+          "report_sha256": "16ff2ca735ed559a979af5a742bb42f5d55847dfbb563550beb18253be841e72",
+          "resources": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r5-20261026/resources.json",
+          "terminal": {
+            "containers": 26,
+            "states": [
+              "stopped-retained"
+            ],
+            "cleanup_errors": []
+          },
+          "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
+          "corrected_capture_replay": {
+            "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026/final-history-replay.json",
+            "sha256": "4d7a4deaab93e06233841c88671a32f8cc53ca002c40e155973ee2d2ae9c0a28",
+            "result": "PASS preserved real history/export captures plus5negative controls; not full corrected runtime execution."
+          }
         }
       ],
       "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
@@ -73616,7 +73637,7 @@
         "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
         "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
       },
-      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r5-20261026",
+      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r6-20261026",
       "unused_diagnostic_worktree": {
         "path": "/home/tux/bigbrotr-live-access-private-failure",
         "status": "Removed after clean tracked/untracked/ignored check; empty worktree/ancestor branch only, no unique work or artifacts."
