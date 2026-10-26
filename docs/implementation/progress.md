@@ -6,163 +6,128 @@ Official releases, packages and production remain unauthorized.
 
 ## Current capability and revision
 
-Canonical checkout: `work/live-readiness`. This checkpoint freezes the current
-readiness source candidate, based on published `00714653`; the next qualification
-will record its exact commit/tree. Integrated parents through `6779a5e9` include
-the CI diagnostic correction and report-time contract. Native candidate `1d263af6` compiled the product and test executables, then
-failed strict Clippy (oversized completion enum). Tests/installed checks are
-NOT_RUN; the bounded representation correction is awaiting rerun. Nothing from
-this increment has been merged or pushed.
-`main` and `origin/main` remain at qualified `00714653` in
-`.research/assembly-fixture-canonical-20261026`. The push completed; the new
-readiness increment is being developed in isolated owning worktrees.
+Canonical checkout: `work/live-readiness`; source/acceptance candidate through
+`1ae90220`. This checkpoint commit records native qualification, terminal hosted
+results, bounded cache retirement and the acceptance instructions. `main`/`origin/main` remain at qualified
+`00714653` in `.research/assembly-fixture-canonical-20261026`. The new readiness
+increment is committed locally but has not been merged or pushed.
 
-**P01-T09 Step2 is qualified at its initial scope.** Installed product
-`b5333d53`, assembly/acceptance `2d0bdc81`, passes all eight maintained
+**P01-T09 Step2 is qualified at its initial scope.** Installed product `b5333d53`,
+assembly/acceptance `2d0bdc81`, passes all eight maintained
 `p01-first-launch-index` stages: fresh migration/bootstrap, signed admission,
-Archive and Index publication, ordinary private history, exact 353-byte signed
-export and controlled cleanup. Index publishes four complete source batches and
-40 outcomes across ten families through revision4/cut12. The accepted per-target
-row ceiling remains four; metadata inspection independently covers 160 columns.
-The oracle verifies all typed fields, source/chunk/plan/engine digests and the
-atomic current-head transaction against independent signed-input/C API evidence.
+Archive and Index publication, ordinary private history, exact signed export and
+controlled cleanup. All ten target families, four source batches and 40 outcomes
+reach revision4/cut12 under the unchanged four-row per-target ceiling. Independent
+signed/C API expectations check typed fields, digests and atomic publication.
+Protected captures: `.research/first-launch-index-r4-20261026`; all 19 containers
+were stopped/exit0/PID0/noOOM. This is initial publication, not complete M1.
+The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+owns the detailed installed result and preserved r1/r2/r3 failures.
 
-The [existing Index evidence report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-owns the `installed_application` extension, identities, checks, original failures
-and exclusions. Protected captures are `.research/first-launch-index-r4-20261026`.
-Root verified source/input hashes, all 19 terminal containers and replayed pure
-oracle assertions on retained captures; no engine rerun was needed for that review.
-This is initial publication, not live readiness, Index restart or complete M1.
+**Live readiness source candidate now passes native qualification.** Product
+`a295da606aa95093530532d8e576bae1c01992b9`, tree
+`437ad02c3f3d8cbfebf81ab543f473416a4b028c`, passes actual product/test builds,
+strict Clippy and all 122 selected controls (75 library, 47 binary; none ignored).
+Root checked 30 evidence digests, three retained executable hashes and both
+terminal containers. Results live under `runs/initial-index-a295da6` in the
+existing external lab and the report's `live_readiness` extension.
 
-Exact `b5333d53` also passes actual library/CLI/test executable builds, strict
-Clippy and all 96 selected native controls. Its ordinary fresh build binds the
-current Archive worker before compiling the parent. Root checked the source
-manifest, all 2351 exported files and copied executable/worker identities.
-The native diagnostic cache was reused exclusively; the installed build was fresh.
-Detailed receipts are inventory-linked, not duplicated here.
+This increment supplies authenticated observation-only role status through the
+existing action/DeliveryGate, a bounded native source head, and coalesced complete
+physical checks for the initial Archive/Index owners. Probes run on a 15s cadence
+with a strict 30s oldest-read freshness limit; request handling consumes cached
+observations. Archive verification in flight suppresses prior Ready through driver
+join. Ordinary exact-ID read/export successes remain conservative observations;
+they never certify complete current Archive readiness. Nested report timestamps
+match authenticated PG time; freshness uses suspend-aware elapsed time.
 
-Original installed failures remain retained: r1 Compose extension reference;
-r2 qualified-table escaping at actual DESCRIBE; r3 whole source count incorrectly
-tied to the per-target row ceiling. Corrections preserve validation, reservations,
-custody and unchanged scientific expectations/timeouts. The original r3 diagnostic
-omitted its PendingError variant; source reasoning identified the five-fact/four-row
-counterexample and the corrected same-policy run now passes. Earlier compiler,
-SQL and verifier failures likewise retain their original outcomes.
+The maintained installed case now includes positive role observations and one
+independent conflicting event row. It must detect Index unavailability while
+Control and the original Archive journey remain usable. Acceptance source
+`1ae90220` integrates author `04ce548c`; 14 targeted oracle/refusal controls and
+critical review PASS. Actual positive/negative installed transition is NOT_RUN.
+31 client controls, TypeScript and contract drift also pass at the recorded source.
+Protected source reviews are linked from the inventory; both implementation and
+negative-acceptance delegates have finished, with their changes integrated.
 
-## M1 remaining gates and next useful increment
+Original native failures remain intact: oversized completion enum (Clippy), wrong
+Rust module prefixes in the verifier, and dictionary fixture reservations below
+the operation's declared requirements. Corrections preserve production ceilings,
+all 47 required binary controls and independent source expectations. Retained
+executables were used to finish unaffected controls before the corrected full
+native qualification. Inventory links retain each original FAIL and NOT_RUN.
 
-The preceding installed Ingest restart/resend and ordinary read/export journey
+## M1 remaining gates
+
+The earlier installed Ingest restart/resend and ordinary read/export journey
 passes all 12 stages with provenance on and off on product `c49cfe5c`/candidate
-`47d53ce8`. Existing first-launch/restart inventory records retain those receipts;
-Index was not part of that qualification.
+`47d53ce8`; Index was not included. Remaining M1 gates are:
 
-Remaining M1 gates:
-
-- Live truthful capability/role readiness and clean-install negative readiness.
-  Current lifecycle output explicitly says `ready:false`/Index `not-qualified`.
-  Next bounded product increment: authenticated live observations for the existing
-  initial-writer and ordinary private-history profiles through the existing
-  management queue/DeliveryGate. Derive lag from a bounded native source-head
-  observation, not absent pending headers or producer request counters. Bind
-  readiness to fresh owning/dependency evidence; idle or schema existence alone
-  cannot certify complete published data. Do not invent a CH query interface.
+- Execute the current installed positive/negative live-observation case, then
+  complete ordinary full current Archive readiness and clean-install negatives.
+  Terminal lifecycle output remains `ready:false`/Index `not-qualified`.
 - Index restart/rebinding and uncertain-query/lost-COMMIT recovery. Initial
-  successful publication does not close these requirements.
+  publication and live observation do not close these requirements.
 - Independent Archive/CH outages, bounded pending/ACK behavior and live pending
   byte accounting. Archive failure currently exits the combined owning loop;
-  preserve independent Control during the required Archive outage qualification.
+  independent Control must survive the required Archive outage qualification.
   Existing shared PG topology cannot demonstrate that independence.
 
-Later work retains its existing owners: smaller-envelope concurrent resource
-pressure in P01-T09 Step5; general valid-event family-bound handling in
+Later obligations retain their existing owners: smaller-envelope concurrent
+resource pressure in P01-T09 Step5; general valid-event family-bound handling in
 P02-T05 Step3/T06; nonempty signed-tag engine coverage, native census, second-event
 export and later durability/GC/capacity gates. The prepared column-TTL negative is
-still NOT_RUN. The original `a99` initial Sync timeout remains UNKNOWN with its
-original evidence. No all-P02 phase barrier or scope reduction is implied.
+NOT_RUN. The original `a99` initial Sync timeout remains UNKNOWN with its original
+evidence. There is no all-P02 phase barrier or scope reduction.
 
 ## CI and public exposure
 
 [Run40376741278](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278)
-on published `1cfd6eb5` completed all 30 selected checks PASS across Linux
-amd64/ARM64 and macOS. The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns platform results, timings and exposure audit. Dependency-policy/cancellation
-corrections are qualified at that scope; historical billing and macOS fixture
-failures are not current blockers. Its helpers precede the new CI reuse changes.
+on `1cfd6eb5` passed all 30 selected hosted checks on Linux amd64/ARM64 and macOS.
+Dependency-policy and cancellation corrections are qualified at that scope;
+historical billing refusal is not a current blocker.
 
-Local `74337306`/`2c3e5071` move cheap dependency checks early, keep the fresh
-worker-before-parent build, and share its frozen source/Cargo home/target with
-complete default/debug Clippy, rustdoc and workspace tests. Critical review fixed
-undeclared ancestor Cargo configuration; 21 CI and three builder controls PASS.
 [Run40393162501](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40393162501)
-on `00714653` remains in progress on both Linux platforms. macOS FAILED at
-Rust integration: `control_runtime_entrypoint` still expected the pre-Index role
-diagnostic. Build, Clippy and rustdoc passed; later acceptance controls NOT_RUN.
-This is a stale test expectation, not billing or a proven product failure. The
-one-line correction is local `a8b7a8ec`; the original log/artifact is retained in
-`.research/ci-publication-20261026/run-40393162501-exposure`. Delegate
-`ci_native_cancel_review` owns watcher91567 and terminal/output review. Full
-changed-helper qualification and timing benefit are not yet claimed. Retain all selected platforms, artifact/install checks and
-declared costly-test placement.
+on `00714653` is terminal FAIL: 17 PASS, 3 FAIL, 10 NOT_RUN. All three platforms
+fail the same stale `control_runtime_entrypoint` expected role diagnostic after
+Index support. The one-line correction is integrated at `a8b7a8ec`; all other
+refusal assertions remain. Fresh builds, Clippy, rustdoc and early dependency
+policy pass; subsequent workspace/acceptance/CLI gates remain unqualified.
+The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+records the separate results and timings. Shared frozen source/Cargo/tool/artifact
+contexts are verified, but shorter failed runs are not evidence of a speedup.
+A new coherent publication must complete the changed CI path on GitHub.
 
-Bounded public-source review through `2d0bdc81` found no operational credential
-exposure: five matches repeat one already-reviewed inventory reference. Earlier
-source/hosted audits remain valid at their recorded revisions. The final four-document delta through `00714653` also has no confirmed exposure;
-its protected receipt is `.research/ci-publication-20261026/source-00714653-exposure/receipt.json`.
-All three documentation checks pass on that published revision. Keep raw
-credentials/captures protected and out of uploads.
+Watcher91567 ended/reaped. Scoped audit verified all four artifact digests,
+30 artifact members and 38 log members, with zero credential-pattern candidates
+or provider alerts; asynchronous provider scan completion is not claimed.
+Source publication audit through `00714653` remains valid; the new increment must
+be checked before push. Keep raw captures protected and out of public uploads.
 
-## Resources and immediate action
+## Resources and next action
 
-Native candidate `1d263af616a996c29843ddad9a113c761bd8be98` failed strict
-Clippy after successful product/test compilation. Original result/logs are retained
-under `runs/initial-index-1d263af`; tests were NOT_RUN. Session42415 ended exit1;
-fetch/native containers are stopped, PID0/noOOM (exit0/1 respectively).
-The correction boxes only the fixed-size joined recovery result within existing
-metadata allowance, preserving ownership/drop order and all checks. The next exact
-candidate will reuse the exclusively locked native115 cache.
-No installed engine case is active. Native session75010, fresh builder76528 and
-installed case80184 ended and were reaped. All r4 containers are stopped/exit0/
-PID0/noOOM; the borrowed bridge is unchanged and empty. The readiness candidate integrates source-head observation (`23d9a839`,
-`5ad2bd95`), authenticated role status (`104e6e88`), the complete Index read-only
-probe (`59186d6f`) and conservative ordinary observations (`85233c12`,
-`531e6373`). Native product/test compilation passed at the failed candidate; execution of
-tests, engines and installed qualification remains NOT_RUN.
-Root owns the initial runtime/cache and existing acceptance/native-profile changes.
-Index and Archive probes now use15s scheduling with strict30s oldest-read freshness;
-Archive verification in flight suppresses prior Ready through actual driver join.
-Ordinary exact-ID evidence never certifies complete current Archive readiness.
-
-Critical source reviews found and resolved the snapshot ReadOptions signature,
-Archive cadence, old Ready during joined cleanup, invalid test ID constructors,
-export auth/CAS misclassification and an unconstrained acceptance timestamp.
-Protected reviews live under `.research/live-readiness-20261026` and
-`.research/live-role-status-20261026/.research/role-status-controls`. Both implementation delegates have finished; report-time DTO/contract alignment
-is integrated at `6779a5e9`, with31 client controls, TypeScript and contract drift
-PASS. Every present nested timestamp now equals the authenticated PG report time;
-only suspend-aware age determines freshness. Existing new native tests are NOT_RUN; seven harness fault controls
-and the new acceptance mutation control PASS. All Q37 settings remain verified.
+Fresh worker-before-parent build is RUNNING, session80251, root
+`runs/initial-index-installed-a295da6`, container
+`2636be56c57987784fcff5fb7f13cd9f3e36856fdd453c003c15c969357658bd`.
+It uses a separate fresh Cargo home/target with the existing pinned native assets,
+2 CPUs/6 GiB/512 PIDs, 65 GiB minimum free space and 40 GiB output ceiling.
+Native session10299 ended exit0/reaped; its owned containers are stopped/PID0/
+noOOM. No installed engine case is active. No delegate owns an active build,
+engine or GitHub watcher.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
-`implementation_index_foundation_20261026`, owns exact sources, resource identities
-and receipt paths. Preserve original failures, unique data and pending worktrees.
-The earlier cache retirement and the new obsolete034 target retirement are
-journaled: the latter reclaimed 1,389,359,104 allocated bytes while preserving
-all copied artifacts/source/log pins. No broad cleanup is underway. A separate
-read-only proposal identifies 1.94 GiB of obsolete receipt-compiler intermediates;
-freeze/hash and fresh ownership/use checks remain necessary before any deletion.
-The active native115 cache and current candidate are excluded.
+`implementation_index_foundation_20261026.live_readiness`, owns exact resource and
+receipt identities. Bounded retirement also removed 1,748 obsolete receipt-cache
+intermediates (2,082,344,960 allocated bytes), preserving all 61 ELFs, nine outside
+pins and other target entries. Earlier cache and obsolete034 target retirements
+remain journaled. Current native/build caches, unique data, original failures and
+pending worktrees are retained. No broad cleanup is underway.
 
-Immediate action: freeze the bounded enum correction and rerun the maintained
-isolated `initial-index` native profile with its expanded47 named binary controls and affected library controls.
-If successful, build the ordinary worker-bound candidate and execute the existing
-installed Index case including positive authenticated readiness and no-idle-touch.
-Negative/ordinary readiness, independent outages and recovery remain open. Continue
-collecting the current hosted results and publish the known fixture fix with this
-coherent qualified increment. The typed native head is an inert observation, not a prefix or ACK
-proof; missing markers cannot imply empty/complete source. Use the existing
-management no-idle-touch authentication and nonrenewable action window. Reuse
-bounded physical verification without schema-only readiness or per-request
-unbounded engine work; root is reconciling the coalesced probe/custody boundary.
-Integrate the delegates only after review and meaningful isolated qualification.
-Retain all remaining gates and classify new failures as product, verifier,
-environment or unknown; never turn NOT_RUN or interruptions into PASS.
+Next: collect and verify the fresh `a295da60` worker-bound build; assemble from a
+clean checkout containing `1ae90220` and execute `p01-first-launch-index`, including
+the positive/physical-invalidation status checks. Reuse the native qualification;
+an acceptance/documentation edit alone does not require another product build.
+Record the real outcome, classify any failure, and publish the coherent verified
+increment to main with the known CI fixture correction. Then collect the actual
+new hosted run while continuing the remaining M1 gates above. Never turn FAIL,
+NOT_RUN, interruption or missing prerequisites into PASS.

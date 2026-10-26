@@ -332,5 +332,36 @@
         "reason": "Generic native-input refusal and owner exit4. Source-derived counterexample: atomic5-fact batch versus incorrectly reused4-row ceiling. Original discriminant unobserved; corrected unchanged4-row installed run nowPASS."
       }
     ]
+  },
+  "live_readiness": {
+    "status": "PARTIAL_NATIVE_QUALIFIED_INSTALLED_NOT_RUN",
+    "product_revision": "a295da606aa95093530532d8e576bae1c01992b9",
+    "acceptance_revision": "1ae90220",
+    "scope": "Authenticated live role/status DTO; bounded native source head; coalesced full initial Archive and Index physical observation; conservative ordinary read/export observations never imply complete readiness.",
+    "native": {
+      "result": "PASS",
+      "library_controls": 75,
+      "binary_controls": 47,
+      "ignored": 0,
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a295da6",
+      "qualification_sha256": "9e60aec762e12e0a46167b0a8a8259862ee94a935c268fc896d213d7c2604d53",
+      "review": "root-verification.json",
+      "review_sha256": "4ff3a61e353d38f26dd02204cc954d2c2bac5ac8fefcfb027398d42bb73d7b24"
+    },
+    "acceptance": {
+      "result": "NOT_RUN",
+      "controls": "14 offline oracle/refusal controlsPASS",
+      "behavior": "Preserve independent positive10-family baseline; insert exact content conflict; require IndexUnavailable and ControlReady,unchangedpublication/session; original65sclientgate unchanged",
+      "review": ".research/live-readiness-20261026/negative-acceptance-root-review.json",
+      "review_sha256": "52383712cb538455ac4edf2996c2260565aecd1e4d4c7998bbb08f50a5a7d851"
+    },
+    "preserved_failures": "See implementation_index_foundation_20261026.live_readiness.original_native_failures in laboratory inventory; no original outcome overwritten",
+    "not_run": [
+      "Installed positive/physical-invalidation readiness",
+      "Ordinary full current Archive physical readiness",
+      "Index restart/rebinding/uncertainquery/lostCOMMIT",
+      "Independent Archive/ClickHouse outages and capacity",
+      "CompleteM1/release"
+    ]
   }
 }

@@ -2280,6 +2280,12 @@
       "unrelated_running_unchanged": 8,
       "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
       "shared_source_consumers": 0
+    },
+    "compiler_cache": {
+      "state": "retired-intermediates-only",
+      "terminal_receipt": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-terminal-20261026.json",
+      "future_build": "Use pinned original source/tree/image and recorded command in a fresh output directory; never resume this retired partial target incrementally.",
+      "original_results_unchanged": true
     }
   },
   "implementation_ingest_bootstrap_20260918": {
@@ -73640,6 +73646,19 @@
       "receipt_sha256": "a0b4de6c2f690717360cc363c272b245105dd10cc3e14f8da1657a4939423b0f",
       "result": "51 new objects(41blobs/10commits),24changed paths;4pattern matches are two noncredential fixture/path fingerprints; no confirmed exposure. Heuristic/contextual scope, no exhaustive-absence claim.",
       "docs": "03464fcf documentation checks3PASS in .research/index-runtime-checkpoint-docs-20261026/result.json"
+    },
+    "run_40393162501": {
+      "source": "00714653ae1897aa89f8cd78ffd99d072e8dab77",
+      "outcome": "FAIL_FIXTURE all3;17PASS/3FAIL/10NOT_RUN",
+      "evidence": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40393162501-exposure",
+      "receipt_sha256": "1fb8afd223830ed9da3f0bf75cf28ee66c4b68b62d9a8b8fefebc70f5b1ccbfd",
+      "outcome_sha256": "1456a7b9fb154f7e2f5c7ac851353ab7501ae5c7fdd677744720809380af0fc9",
+      "report_proposal_sha256": "87c888f6135f052305a23e34061773ef201242661be8a00fd67b4279464caf0c",
+      "watch_session": 91567,
+      "watch_terminal": "exit1/reaped",
+      "local_fix": "9e70d8ecda62ed730017838463042d512eabc951",
+      "public_exposure": "4artifacts/30members+38logs;0candidates/0alerts;digests/allowlist verified",
+      "resources": "Read-only GitHub retrieval; no new engine/build/dispatch/push/cleanup"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74373,7 +74392,7 @@
       }
     },
     "live_readiness": {
-      "state": "native-clippy-failed-correction-pending",
+      "state": "native122-qualified-fresh-worker-bound-build-running",
       "branch": "work/live-readiness",
       "observed_revision": "1d263af616a996c29843ddad9a113c761bd8be98",
       "worktrees": [
@@ -74396,7 +74415,7 @@
           "sha256": "963337d12e46713c7240e6ebfd6df46073ef7a1fe626817e17b0f3de7a4fbb02"
         }
       ],
-      "active_local_engines_or_builds": false,
+      "active_local_engines_or_builds": true,
       "ci": {
         "run": 40393162501,
         "watcher": 91567,
@@ -74417,25 +74436,65 @@
       ],
       "resource_scope": "One exclusive native compiler-cache run; no installed engine case. Former protected captures, artifacts and failures retained.",
       "native_run": {
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-1d263af",
-        "session": "42415 ended exit1",
-        "source": "1d263af616a996c29843ddad9a113c761bd8be98",
-        "tree": "a08705f4cba6dff0753be2016df3d64464ca0dcd",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a295da6",
+        "session": "10299 ended exit0/reaped",
+        "source": "a295da606aa95093530532d8e576bae1c01992b9",
+        "tree": "437ad02c3f3d8cbfebf81ab543f473416a4b028c",
+        "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
         "resources": "resources.json",
         "result": "out/qualification.json",
-        "status": "FAIL",
-        "classification": "strict Clippy large_enum_variant; product/test compilation PASS; test execution NOT_RUN",
-        "containers": "fetch exit0; native exit1; both stopped/PID0/noOOM freshly inspected",
-        "result_sha256": "54a62d0fb1ac7860226d64d739b51f3ed1373aa1af9cdce4c443ec2b2bd71c41"
+        "qualification_sha256": "9e60aec762e12e0a46167b0a8a8259862ee94a935c268fc896d213d7c2604d53",
+        "root_verification": "root-verification.json",
+        "root_verification_sha256": "4ff3a61e353d38f26dd02204cc954d2c2bac5ac8fefcfb027398d42bb73d7b24",
+        "scope": "75library+47binary controlsPASS,zeroignored/failed; product/testbuilds andstrictClippyPASS;30evidencedigests/3executablehashesverified",
+        "containers": "Both ownedcontainers stopped/exit0/PID0/noOOM; unrelatedinventoryunchanged"
+      },
+      "original_native_failures": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-1d263af",
+          "status": "FAIL",
+          "reason": "Strict Clippy completion enum size; product/test compile PASS; test execution NOT_RUN"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-30e2066",
+          "status": "FAIL",
+          "reason": "Verifier binary module prefixes; build/ClippyPASS; originaltestexecutionNOT_RUN"
+        },
+        {
+          "root": ".research/live-readiness-20261026/native-followup-30e20662",
+          "status": "FAIL_FIXTURE",
+          "reason": "SourceHead dictionary setup lacks declared reservation; unexecutedremainingcontrols separately pass against retainedELFs under remaining/"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-4ac0d77",
+          "status": "FAIL_FIXTURE",
+          "reason": "Dictionary append needs its specific data floor, not ordinary event floor; originallogs retained; corrected by a295da60"
+        }
+      ],
+      "installed_candidate_build": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-a295da6",
+        "session": 80251,
+        "source": "a295da606aa95093530532d8e576bae1c01992b9",
+        "container": "2636be56c57987784fcff5fb7f13cd9f3e36856fdd453c003c15c969357658bd",
+        "state": "RUNNING; no installed engines active",
+        "recipe": "Same retained fresh worker-before-parent recipe, separate Cargo home/target;2CPU6GiB512PIDs/65GiBfree/40GiBoutput/7200s",
+        "concurrency": "Started after native preflight. Product builds/Clippy pass at4ac; onlydictionary test grant differs. Current native fixture validation remains pending; no combined PASS claim."
+      },
+      "negative_acceptance": {
+        "author_commit": "04ce548c1a5a9ecfcdeefd5c33469cfcd4dd271f",
+        "integrated_commit": "1ae90220",
+        "root_review": ".research/live-readiness-20261026/negative-acceptance-root-review.json",
+        "root_review_sha256": "52383712cb538455ac4edf2996c2260565aecd1e4d4c7998bbb08f50a5a7d851",
+        "controls": "14 targeted Python controls PASS; actual physical transition NOT_RUN"
       }
     }
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",
-    "observed": "92% used,145GiB available after security integration",
+    "observed": "Nativea295 runner terminal free144020221952 bytes; freshbuilder continues its own65GiBminimum monitoring",
     "status": "Bounded retirement complete; no general cleanup underway",
     "owner": "root",
-    "scope": "Only obsolete034 compiler target retired; native115 cache, activeb533build, all evidence/datasets/worktrees retained",
+    "scope": "Obsolete034target and approvedreceipt41fff54 intermediates only; native115cache/currenta295build excluded; original evidence, data and worktrees retained",
     "latest_retirement": {
       "journal": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/target-retirement.json",
       "sha256": "7c82d861069648de7ec7fee5d7ffd7971164ace2b06fef2e34b77784fdf3c9b9",
@@ -74443,13 +74502,20 @@
       "observed_free_delta": 1389355008,
       "preservation": "11 copied artifact/source/log pins rehashed after deletion; exact4422-entry inventory retained. Lsof Docker visibility limitation documented; actual builder state and active container mounts checked. Rebuild via retained exact-source launch command."
     },
-    "pending_proposal": {
+    "receipt_intermediates_retirement": {
       "assessment": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-assessment-20261026.json",
       "assessment_sha256": "baeae183d6737623b3145c9fa37588766b6dc6a51d4730f5f0aa64dc964ef524",
       "proposal": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-proposal-20261026.json",
       "proposal_sha256": "9f7be68ca3dc2c40a1af30f9668ba4d75a5576b229bd76ba73a682bc86350569",
       "candidate": "runs/receipts-41fff54/out/target:1748 compiler intermediates/2082344960 allocated bytes; preserve61 ELF and9 outside pins",
-      "status": "READ_ONLY_PROPOSAL; no deletion. Root freeze/hash/fresh use checks required. Two other assessed targets already retired and excluded."
+      "status": "COMPLETE_INTERMEDIATES_RETIRED",
+      "terminal_receipt": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-terminal-20261026.json",
+      "terminal_receipt_sha256": "d5591961e684e77435d0e6ec3eab651050b05e290f6ac651bfb82b75025ce12e",
+      "execution_receipt_sha256": "8fb5521058f196f0545c7bd7f32298800679d333cdad776febe1d3f036eeba85",
+      "frozen_manifest_sha256": "92ff50bb081ceb492d64f1b485a4453ac3c8642881701ada90fdfaf42b36d8b0",
+      "allocated_bytes": 2082344960,
+      "observed_free_delta": 1975877632,
+      "preservation": "1601 retained target entries including61ELFs and9outsidepins verified;6containers remain stopped/PID0; two known inaccessible user-session services disclosed. Observedfreechange includes concurrentbuild writes."
     }
   },
   "implementation_ci_assembly_fixture_20261026": {

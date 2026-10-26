@@ -294,10 +294,22 @@ nonempty signed-tag engine acceptance remains separate. Unfiltered captures are
 retained; Index owner/session/plan/head validation precedes the existing source
 oracle's scoped owner view.
 
-This case does not qualify a direct RocksDB/native census, Index restart, remote uncertainty resolution,
-column-TTL refusal, Index read/query readiness, outages, capacity or complete M1.
-Its terminal readiness remains explicitly unqualified. The pending SQL TTL
-fixture and earlier failures retain their original outcomes.
+Before stopping the initial owner, the case reads authenticated
+`GET /management/v1/roles`. It requires the literal signed source cut, current
+Control identity, Archive/Index revision and fresh complete physical observations;
+the status request must not refresh session idle time. After preserving this
+positive baseline, the independent observer appends one event row with conflicting
+content. The next physical sweep must report Index unavailable while Control
+continues serving authenticated status and the other capabilities remain ready.
+The fault and all original captures are retained. The original signed client
+deadline and subsequent Archive history/export assertions remain unchanged.
+
+These observations qualify only the initial profile and the exercised physical
+fault. The case does not qualify a direct RocksDB/native census, Index restart,
+remote uncertainty resolution, column-TTL refusal, an Index query interface,
+ordinary full Archive readiness, independent service outages, capacity or complete
+M1. Its terminal overall readiness remains explicitly unqualified. The pending
+SQL TTL fixture and earlier failures retain their original outcomes.
 
 ## Same-store installed Ingest restart
 
