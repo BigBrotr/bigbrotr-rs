@@ -1292,7 +1292,7 @@
     "followups": {
       "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
       "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
-      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562–0.0930477711s; not mixed workload or cgroup peak",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
       "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
     },
     "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
@@ -43256,7 +43256,7 @@
           "exit_code": 0,
           "build_source": "787e1fed0b537c8e3c3dd39b7e9b079f73b230b7",
           "result_sha256": "47e964ceabe021a2c6e88692123ecabc69571be3921531ceb055f7bc8c716258",
-          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal→Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
+          "audit": "Independent AI read-only artifact/reducer audit PASS:1775 exact Git blobs/clean source, four reused ELF hashes and full build receipt; only3 docs differ787e1fe. Replayed complete native encoder, HTTP/source/job reducers, exact two-source union, logout/release and clock/quiet-wire checks across16 SQL snapshots. Two17-round cases/49native/4inputs, window4 full rows/xmins, renewal beyond initial deadline; deferred source0connections. Signed terminal\u2192Sync preflight exact bridge; all1240 latest nonborrowed projections unchanged, one new owned Sync client. Both clients143/PG0/PID0/noOOM. No SQL/restart/build/engine; captured-run SQL preservation only. Reviewer authored shared installed worker, independently replayed existing fixture expectations."
         }
       ],
       "next": "Completed evidence committed1efc7db and private root/fixture pushes verified. Activated recovery contract1a7fd52 and distinct native/PG/qualification worktrees selected.",
@@ -44416,14 +44416,14 @@
           "complete_observations": 16,
           "controls": 124
         },
-        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33→34→34 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
+        "interpretation": "Eight real config-only invocations, off/on positive+retry+missingPGcopy and zero positive+retry.33\u219234\u219234 keeps all earlier rows/xmins/physical identities; exact function/grant catalogs checked. Off/on currentpolicy3 over historical2 and expired old Ingest scheduling. Each firstcall only one native closing write; repeated/repaired no native writes. Source2 remainsopen, no writer/retirement/ACKGC. Root raw16-state124-control replay PASS; independent artifact/custody audit PASS.",
         "not_run": [
           "issued-positive source-zero",
           "corrupt/missing input and dependency/identity/handoff/foreignstream refusals",
           "held native refusal",
           "closing/outcome COMMITloss and fresh recovery",
           "source2closure/retirement/repeatedlifetimes",
-          "Archive/Syncrestart and fullM1–M5"
+          "Archive/Syncrestart and fullM1\u2013M5"
         ],
         "artifact_custody_audit": {
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-recovery-engine-2a018ea/recovery-review-artifact-custody-20261013.json",
@@ -46229,7 +46229,7 @@
         "seed_snapshots": 11,
         "installed_observations": 4,
         "controls": 44,
-        "correction": "First root audit assumed unchanged table set across29→32; corrected to70 retained physical identities+two additive tables. Original failed script/log preserved; no run/product change."
+        "correction": "First root audit assumed unchanged table set across29\u219232; corrected to70 retained physical identities+two additive tables. Original failed script/log preserved; no run/product change."
       },
       "custody_audit": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-durable-engine-0e4917f/cleanup-review-artifact-custody-20261013.json",
@@ -46241,7 +46241,7 @@
         "raw_bound_artifacts": 68,
         "scope": "Fixture/oracle author raw-binding, physical-preservation, source/binary and custody audit. Root owns independent actual semantic replay. Wire observations are joined probe-peer records, not independent packet capture. Original SQL preservation is retained run evidence; no fresh original schema29 catalog sampled. No audit SQL/native open/build/restart."
       },
-      "scope": "Actual finite authenticated network AlreadyDurable request1 with old dependencies3..12/source2cut0, then installed source close/retry;53native rows,seq64→65→65,five exact inputs. Job queued2/sessionunrevoked; no installed scheduler or workflow completion."
+      "scope": "Actual finite authenticated network AlreadyDurable request1 with old dependencies3..12/source2cut0, then installed source close/retry;53native rows,seq64\u219265\u219265,five exact inputs. Job queued2/sessionunrevoked; no installed scheduler or workflow completion."
     },
     "lock_fixture": {
       "source": "17de5cd02996ae35df4353c2c0a57f1b9f0605db",
@@ -46334,13 +46334,13 @@
         "frozen_observation": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-source-locks-engine-14b7bd4/recovery-review-custody-projections-20261013.json",
         "observation_sha256": "5921419118609bd91fb20dc0e2528814797a10be9ae1402a135807d558a2337e"
       },
-      "scope": "Privileged guarded relational job source1cut12/source2cut6 versus actual CLI source2cut5. Job-first commit survives; CLI refuses guard_source_closure_bounds, sourceopen. Source-first deferred CLI COMMITbarrier→jobwait→sourceclosed; job COMMIT refuses require_complete_job_input and rolls back. Both SQLSTATE23514; exact PID/start locks, full72SQL/native70seq85/6inputs. No authenticated export acceptance/workflow retirement."
+      "scope": "Privileged guarded relational job source1cut12/source2cut6 versus actual CLI source2cut5. Job-first commit survives; CLI refuses guard_source_closure_bounds, sourceopen. Source-first deferred CLI COMMITbarrier\u2192jobwait\u2192sourceclosed; job COMMIT refuses require_complete_job_input and rolls back. Both SQLSTATE23514; exact PID/start locks, full72SQL/native70seq85/6inputs. No authenticated export acceptance/workflow retirement."
     },
     "prefix_probe": {
       "source": "e1f74d7bd370c07d28c3d309ff35819ccbdfd271",
       "integrated": "3748eceaf93784cb67fb5b1fae7d0f259903d42c",
       "status": "BUILD_PASS_CONNECTED_ENGINE_NOT_RUN",
-      "scope": "Four existing example files only. Actual firstdictionary reservation COMMIT14 aftercomplete loss leaves native52/62 unchanged, retainedinput5, issued0/reserved1. Fixed isolated native receipt2 deletion and issued2→1 synced batch leaves69/86/sourcecut5/facts retained. Third terminalSQLcopyconflict needs no new native seam.",
+      "scope": "Four existing example files only. Actual firstdictionary reservation COMMIT14 aftercomplete loss leaves native52/62 unchanged, retainedinput5, issued0/reserved1. Fixed isolated native receipt2 deletion and issued2\u21921 synced batch leaves69/86/sourcecut5/facts retained. Third terminalSQLcopyconflict needs no new native seam.",
       "review": "Root complete changed helper/mode/call path and corruption owner; earlier unchanged lifecycle owners reused. Formatting/diffPASS. Independent Python fixture inprogress; no new productAPI.",
       "build_profile": "ingest-activated-refusals compile+Clippy only; unchanged product91tests at9dbc reused after exactdiff audit",
       "build": {
@@ -46650,7 +46650,7 @@
       "result_sha256": "03545615b8c2e84fc1a545ccf47b33aeed8fb02e4e76e44d3f1ffd246315054c",
       "cli_invocations": 4,
       "finite_seed_invocations": 0,
-      "semantics": "Two closed seeds: off NewFacts sourcecut5/native70/85/input6 and genuineAlreadyDurable sourcecut0/native53/65/input5. Each first command creates one activator8 gap and cancels job2→4 atomically; fresh retry preserves originalissuer/time/xmin. Full72SQL/copies/source/session/input/native unchanged except currentControl and exactgap/job delta.",
+      "semantics": "Two closed seeds: off NewFacts sourcecut5/native70/85/input6 and genuineAlreadyDurable sourcecut0/native53/65/input5. Each first command creates one activator8 gap and cancels job2\u21924 atomically; fresh retry preserves originalissuer/time/xmin. Full72SQL/copies/source/session/input/native unchanged except currentControl and exactgap/job delta.",
       "root_replay": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-engine-1d64cd7/root-independent-replay.json",
         "sha256": "94cb13f81c41e55fedac0b628d50adf7ed3d34b1801dda4dd65433c931c23865",
@@ -46750,7 +46750,7 @@
       "result_sha256": "47ba9f897e7bc7a8c6fcc965bfd4ca56901811f059e406580ef7a2c895a46df6",
       "cli_invocations": 2,
       "finite_seed_invocations": 1,
-      "semantics": "ActualControl8 typedaccept/claim a6request1AlreadyDurable, a7zero-requestqueued2 and a8accepted1unclaimed. Firstsourcecloses64→65 and bothclaims gap+cancelled4 samefreshtransaction; retrykeeps attribution, acceptedunclaimed/session/copies/input unchanged. Full72SQL/native53/input5.",
+      "semantics": "ActualControl8 typedaccept/claim a6request1AlreadyDurable, a7zero-requestqueued2 and a8accepted1unclaimed. Firstsourcecloses64\u219265 and bothclaims gap+cancelled4 samefreshtransaction; retrykeeps attribution, acceptedunclaimed/session/copies/input unchanged. Full72SQL/native53/input5.",
       "root_replay": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-activated-acquisition-claims-engine-da839b7/root-independent-replay.json",
         "sha256": "19a6d36a0c0e14e345389aa85adaddba90460df2604e9f280e5350b8e1095ce2",
@@ -47353,7 +47353,7 @@
     },
     "remaining_gates": [
       "Repeated lifetimes, replacement of retired empty attempts and prepared-but-unactivated recovery require a new versioned protocol; no epoch3 writer yet",
-      "Import logical closure, ACK/GC, lifetime-aware Archive restart and full M1–M5 remain incomplete",
+      "Import logical closure, ACK/GC, lifetime-aware Archive restart and full M1\u2013M5 remain incomplete",
       "Finite expiry10s operation is not installed1s supervision, native syscall/power-loss/capacity/arm64/release qualification"
     ],
     "engines": [
@@ -52692,7 +52692,7 @@
       "finished_at": "2026-10-15T11:57:54.049216+00:00",
       "result_sha256": "0242f7e66b677e5ab71bd4018c4d2abf60f57b7c05887d1db8598287e5538a99",
       "diagnostic_sha256": "3f785ca5c0ac6468c929e5bd9126b83dd007d11b91a27a434dbf42fad2fe40c6",
-      "actual": "PG_EXCEPTION_CONTEXT identifies require_complete_ingest_lineage → require_ingest_successor → lock_ingest_lineage → require_control_owner under SET CONSTRAINTS ALL IMMEDIATE.",
+      "actual": "PG_EXCEPTION_CONTEXT identifies require_complete_ingest_lineage \u2192 require_ingest_successor \u2192 lock_ingest_lineage \u2192 require_control_owner under SET CONSTRAINTS ALL IMMEDIATE.",
       "correction": "Run complete checker and terminal recorder as INVOKER. First classifier uses only existing owner_epochs; new family needs explicit terminal INSERT guarded by server-derived actualControl/xid/retired producer. No PUBLIC or broad stats grant.",
       "audit": {
         "session": 89182,
@@ -55697,7 +55697,7 @@
           "physical_unchanged": true
         }
       },
-      "scope": "Three continuous local writers: activated terminal2→live3, unactivated terminal2→live3, and activated terminal2→prepare3→fresh empty3→new candidate live4. Actual confirmed activation, Control refresh, Ingest renewal, dictionary/oldEvent AlreadyDurable/newEvent NewFacts with exact retries and read/certification. Independent literal receipts bind older-than-parent epoch1 dependencies; all full SQL/xmin/native/input states checked.",
+      "scope": "Three continuous local writers: activated terminal2\u2192live3, unactivated terminal2\u2192live3, and activated terminal2\u2192prepare3\u2192fresh empty3\u2192new candidate live4. Actual confirmed activation, Control refresh, Ingest renewal, dictionary/oldEvent AlreadyDurable/newEvent NewFacts with exact retries and read/certification. Independent literal receipts bind older-than-parent epoch1 dependencies; all full SQL/xmin/native/input states checked.",
       "terminal": "Client143/PostgreSQL0 stopped/PID0/noOOM; every native closed and Control/observer joined before copied-store reopen; cleanup/unrelated/missing/unexpected empty.",
       "remaining": "Fresh activated nonterminal>=3 recovery is refused by current history classifier; legacy recovery hardcodes2. Implement bounded activated-family recovery without adoption, then source/workflow/retirement and installed/fault qualification."
     },
@@ -59591,7 +59591,7 @@
       "scope": "First continuous installed LiveSuccessorWriter from actual terminal2/n, current policy and complete retained lineage; no adoption, Archive or implicit retirement.",
       "harness": "recovery_review implements three real origin clones: terminal2 activated off, terminal2 empty on, final fault58b79a4 terminal3 on. Genuine HTTP jobs/network, renewal and joined SIGTERM. Source only in its separate WT.",
       "limitations": [
-        "No complete installed close/abandon/retire cycle; M1–M5 incomplete.",
+        "No complete installed close/abandon/retire cycle; M1\u2013M5 incomplete.",
         "No input capacity reclamation: full historical spool can still activate but subsequent missing-effect staging refuses.",
         "Lifecycle static reader first no-index exit-code assumption failure preserved separately; no product failure."
       ],
@@ -59898,7 +59898,7 @@
         "Current source remains open and acquired job queued revision2; no workflow completion, source closure, retirement, writer adoption or Archive claim.",
         "Original current files reread by custody; SQL/catalog preservation is captured-run evidence."
       ],
-      "next_action": "Expose and qualify explicit repeatable recovery/source/abandon/retirement CLI consumers using existing successor adapters, then fresh successor activation on copied installed endpoints. Keep M1–M5 incomplete."
+      "next_action": "Expose and qualify explicit repeatable recovery/source/abandon/retirement CLI consumers using existing successor adapters, then fresh successor activation on copied installed endpoints. Keep M1\u2013M5 incomplete."
     },
     "qualified_installed_family_ref_retirement": {
       "status": "PASS_QUALIFIED_REFS_RETIRED_FILES_PRESERVED",
@@ -65003,7 +65003,7 @@
           "branch": "DETACHED",
           "base": "f0efa93a5dc3d3dbb0fa8edc3531cdb0b7744798",
           "owners": "compacted_reader_fixture author; compacted_reader_review independent critical; root sole runtime/integration",
-          "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240→242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
+          "scope": "Two fresh genuine initializations from qualified4d9; exact waiting PREREQUISITES loader SIGTERM and Control backend loss. Expected240\u2192242 only failed activeControl/role, immutable native93/139/input1 and catalog/journals; exact exit4 and full custody.",
           "prerequisites": {
             "audit": {
               "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/compacted-later-archive-refusal-prerequisite-audit-20261025.json",
@@ -73433,7 +73433,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Corrected coherent CI/security increment published on main at ea7ac434. Run40349312031 IN_PROGRESS on three required native foundations; no hosted PASS claimed. Prior40332283813 FAIL classification and original evidence retained.",
+    "status": "Run40332283813 completedFAIL: ARMfoundationPASS; macOS bin cancellation defect (library466PASS1ignored); amd64 all executed checks through Rust/acceptance/docsPASS then dependency-policyFAIL12advisories7packages, later CLIchecksNOT_RUN. No billing refusal/cancellation.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73443,8 +73443,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031",
-    "latest_hosted_source": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813",
+    "latest_hosted_source": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73463,11 +73463,7 @@
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-exposure/receipt.json",
       "sha256": "5ae347279be21a29a2a7f3c89e5dac28b8f6fd0d19c42047b6bc56e5b0dace07"
     },
-    "verification_in_progress": {
-      "watch_session": 46733,
-      "watch_log": ".research/ci-publication-20261026/run-40349312031-watch.log",
-      "owner": "ci_native_cancel_review observes/downloads final results without duplicate watch or rerun"
-    },
+    "verification_in_progress": null,
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
       "replacement": "c05993470d038224641b77c57ce0ebfa6004a36f",
@@ -73522,7 +73518,7 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/ci-native-cancellation-20261026",
       "branch": "work/ci-native-cancellation",
       "agent": "ci_native_cancel_review Astra/xhigh verified",
-      "status": "Correction published b4395590 within ea7ac434; focused2tests PASS on updated Tokio; full corrected hosted result pending40349312031.",
+      "status": "Published b4395590; corrected Rust cancellation controls PASS on all three hosted platforms in run40349312031. Dedicated SQL/native interleavings retain their own gates.",
       "agent_commit": "5def0abd2c860afc0e455c03463ce359b261fad6",
       "integrated_as": "b4395590",
       "root_review": "Full native_grants.rs and changed tests/evidence plus actual refresh_authority/collect_refresh boundary; unchanged native/PGinternals not reread. Pollobserver precedes every Controlpoll, samefuture/result/deadlines; samewrapper covers policySQL."
@@ -73537,7 +73533,7 @@
       "branch": "work/ci-dependency-security",
       "base": "b4395590",
       "owner": "ci_native_cancel_review Astra/xhigh",
-      "status": "Correction published bc71f20e within ea7ac434; recorded local controls PASS; full corrected hosted result pending40349312031.",
+      "status": "Published bc71f20e; locked policy and complete required Linux foundations PASS in run40349312031. macOS Rust checks PASS; later fixture portability failure is separate. Earlier installed tuple is unchanged evidence.",
       "candidate_commit": "3ae383434e425b15656c1e3d6383fc03d49abc69",
       "integrated_commit": "bc71f20e0b8585a96b4d93a62200d6c108f1e5bb",
       "evidence": "docs/implementation/evidence/p01-ci-dependency-security-20261026.json",
@@ -73553,11 +73549,22 @@
       "branch": "work/ci-policy-order",
       "base": "b4395590",
       "owner": "m1_runtime_grants Astra/xhigh",
-      "status": "Correction published98d362e9 within ea7ac434; local controls PASS, actual policy placement/timing and hosted result pending40349312031.",
+      "status": "Published98d362e9; actual run40349312031 dependency-policy PASS at ordinal4 after119.312 preceding check seconds versus3945.362 at ordinal12 previously. Excludes setup overhead, not a whole-run speedup.",
       "candidate_commit": "e051271743e1ab75a311db80ec52a2511e6c7fa9",
       "integrated_commit": "98d362e95c09b9863fbd1d2598fbf69ecd68ad1c",
       "receipt": ".research/ci-policy-order-20261026/.research/ci-policy-order-evidence-v2/review.json",
       "receipt_sha256": "943b0c31c7356537b4c7264aa2656de8628c59cc3f07a639cd58241099782545"
+    },
+    "corrected_hosted_run": {
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031",
+      "revision": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+      "status": "FAIL fixture portability; Linux amd64/ARM64 foundation PASS, Rust/cancellation all three PASS, locked dependency policy PASS; macOS later CLI NOT_RUN",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40349312031-exposure/receipt.json",
+      "receipt_sha256": "828691811add3d09246246fd95670788a049df2b750f930db072a8f485a671c3",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40349312031-exposure/outcome.json",
+      "outcome_sha256": "86bf5c467db87d27fa9e6a338a49c779926a076f747ead292ad70be111f63bef",
+      "process": "Actions watch46733 reaped exit1; no remaining watch",
+      "correction": "27daae02 fixture root canonicalization; corrected hosted run pending"
     },
     "published_source_review": {
       "path": ".research/ci-publication-20261026/source-ea7ac434-exposure/receipt.json",
@@ -73782,7 +73789,7 @@
           },
           "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
           "limits": [
-            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.",
+            "Fresh base export, same-store epoch1\u21922 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.",
             "NOT_RUN: native RocksDB census, provenance-off repeat, second-event export, Index readiness, dependency-outage qualification and complete M1.",
             "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
           ]
@@ -73819,7 +73826,7 @@
           },
           "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
           "limits": [
-            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events. Fresh accepted sync.provenance=off; no scientific witness rows.",
+            "Fresh base export, same-store epoch1\u21922 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events. Fresh accepted sync.provenance=off; no scientific witness rows.",
             "NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.",
             "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
           ]
@@ -73868,14 +73875,14 @@
   "implementation_index_foundation_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
     "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
-    "status": "Partial integration isolated on work/initial-index at8ffd6cbc; main/origin/main ea7ac434 remain published coherent state. Full application/CH/PG qualification NOT_RUN.",
+    "status": "Partial Index integration on work/initial-index at8b74cd4a; main remains coherent CI correction. Full application/CH qualification NOT_RUN; SQL-only engine results linked separately.",
     "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
     "dependency_source": {
       "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
       "sha256": "0fa5dfb6d648da14c6a3875b32b5df7db75a136d296fdfb909d967268dc54a06",
       "provenance": "Official selected clickhouse0.15.2 crate; original recorded source directory unavailable locally, archive hash matches existing qualification inventory"
     },
-    "owners": "Root integrates shared custody/transport/dependencies and owns Index service/config/runtime. m1_runtime_grants owns actual CH schema/adapter/proofs in separate worktree. initial_index_rows adds current-schema41 legacy owner regression controls. Existing Astra/xhigh configuration retained.",
+    "owners": "Root owns integration, Index state/service/config/runtime. m1_runtime_grants owns physical CH adapter/proofs. ci_native_cancel_review completed parser candidate264856ac; root review/integration pending. initial_index_rows completed SQL/fixture work and is idle. Q37 configurations retained.",
     "retention": "Pinned reproducible source accelerator; no unique data/credentials. Earlier proof databases/logs retained under their existing entries.",
     "worktrees": [
       {
@@ -73883,7 +73890,7 @@
         "branch": "work/initial-index-pg",
         "base": "9f629dd2",
         "owner": "m1_runtime_grants",
-        "status": "Candidate11d16c87 integrated27ed1642 on partial branch; guard correction94d44e43 integratedfd3d2c33. Rust/fullPG NOT_RUN.",
+        "status": "PG source/guard/runtime qualification integrated on local Index branch through1eac3a04/8b74cd4a. SQL-only PASS; actual Rust/CLI integration NOT_RUN.",
         "commit": "11d16c8725a8f31fe556150d75d201bdcd9940c3"
       },
       {
@@ -73891,7 +73898,7 @@
         "branch": "work/initial-index-rows",
         "base": "9f629dd2",
         "owner": "initial_index_rows",
-        "status": "Rows4fd04308 integrated70087290; current-schema41 legacy owner fixture extension in progress. Component diagnostic25PASS at final dependency tuple; realCH/PG NOT_RUN.",
+        "status": "Rows integrated70087290; current-schema41 fixture integratedd56e3b95. Component25PASS; real CH/full product NOT_RUN.",
         "commit": "4fd04308d37fc56171df7a2005e9a7405cf26acf"
       },
       {
@@ -73905,15 +73912,15 @@
     "dependency_resolution": {
       "metadata": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/workspace-metadata.json",
       "diagnostics": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/resolution.log",
-      "scope": "clickhouse0.15.2 added to existing lock; existing versions retained. Direct minicbor/tower-service references added subsequently; final lock reconciliation pending.",
-      "current": "Final locked metadata and cargo-deny PASS after scoped foldhash0.2.0 Zlib notice/policy addition; original missing-notice FAIL preserved. Packaging controls22PASS. New dependency/notice changes remain uncommitted on partial branch.",
+      "scope": "Index dependency additions reconciled and committed68f91e87; existing security versions/checksums retained.",
+      "current": "Locked metadata and cargo-deny PASS with foldhash0.2.0 Zlib notice/policy; original missing-notice FAIL preserved. Packaging22PASS. CH parser candidate264856ac is pending root review/integration.",
       "current_logs": [
         ".research/implementation/index-foundation-20261026/dependencies/updated-dependency-policy.log",
         ".research/implementation/index-foundation-20261026/dependencies/updated-dependency-policy-with-notices.log",
         ".research/implementation/index-foundation-20261026/dependencies/notice-controls/result.json"
       ]
     },
-    "open_boundaries": "Real CH schema/readback/proofs retaining actual custody, complete source/recovery streaming, actual PG runtime-role/race/unknown-COMMIT checks and service integration remain open. Legacy protocol-NULL owner regression corrected; current-schema41 fixture extension integratedd56e3b95, actualPG execution pending. One retained topology only; handoff/retention remain explicit. Concrete clickhouse-types header allocation/panic boundary under correction; raw wire cap does not close it.",
+    "open_boundaries": "Actual CH schema/readback/proofs, complete source/recovery streaming, lost-COMMIT and service integration remain open. Schema41 owner guard, runtime grants and real SQL races qualified at SQL-only scope; actual product CLI/Rust NOT_RUN. One retained topology only; handoff/retention remain explicit. CH metadata correction264856ac has component PASS, pending integration/engine qualification.",
     "component_review": {
       "path": "/home/tux/bigbrotr-rs/.research/initial-index-rows-20261026/.research/peer-review-20261026/inventory.json",
       "sha256": "4034f3a36e130b25509169f170467acb5b39dee6b98d887404b7e53e13b12a66",
@@ -73926,15 +73933,18 @@
     },
     "integration": {
       "branch": "work/initial-index",
-      "head": "d56e3b95",
+      "head": "8b74cd4a",
       "commits": {
         "rows": "70087290",
         "postgres": "27ed1642",
         "legacy_owner_correction": "fd3d2c33",
         "owned_lane": "8ffd6cbc",
-        "schema41_legacy_fixture": "d56e3b95"
+        "schema41_legacy_fixture": "d56e3b95",
+        "foundation": "68f91e87",
+        "runtime_sql": "1eac3a04",
+        "sql_evidence": "8b74cd4a"
       },
-      "dirty": "Cargo files; shared Archive custody extraction/storage module; new Index custody and capped CH transport; dependency policy/notice/packaging/documentation; checkpoint/inventory. CH proof/module/runtime wiring still incomplete. New bounded whole-batch source planner and four maintained controls."
+      "dirty": "Index custody recovery, indexer/mod.rs and new indexer/state.rs. Physical CH adapter/proofs and parser correction are in separate worktrees. Full application remains uncompiled."
     },
     "owned_lane_review": {
       "path": ".research/initial-index-lane-20261026/.research/lane-components-20261026/inventory.json",
@@ -73956,7 +73966,7 @@
       "arm64_digest": "sha256:8b0888097cf783a97cc0200d585f1e35b43366cc8977cfc08617bdc46a050308",
       "status": "Selected first product qualification candidate; actual version/schema/readback/recovery NOT_RUN. Older26.5.1.882 image remains historical evidence, not product version."
     },
-    "checkpoint_documentation": "Initial tools/ci.py documentation-only invocation refused dirty/uncommitted source; no documentation checks ran in that invocation. Recheck after this coherent source commit."
+    "checkpoint_documentation": "Documentation-only checks PASS on clean68f91e87; initial dirty invocation remained NOT_RUN. Receipt .research/implementation/index-foundation-20261026/checkpoint-docs-68f91e87/result.json."
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",
@@ -73964,6 +73974,19 @@
     "status": "Bounded cache retirement assessment active; no new deletion yet",
     "owner": "ci_native_cancel_review",
     "scope": "Up to3 obsolete/reconstructible substantial compiler caches; ownership, actual process/mount use and retained artifact/input obligations required before root deletion. Current Index/security caches and unique evidence preserved."
+  },
+  "implementation_ci_assembly_fixture_20261026": {
+    "observed_at": "2026-10-26T16:37:00.084952+00:00",
+    "status": "targeted Linux RED/GREEN verified; corrected hosted macOS NOT_RUN",
+    "worktree": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026",
+    "branch": "work/assembly-fixture-canonical",
+    "base_revision": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+    "root": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026/.research/assembly-canonical-probe",
+    "receipt_sha256": "fc4535ad4247a8c834300776506f2d502abed079d865e31d45a38fdb1b73a9f8",
+    "evidence": "docs/implementation/evidence/p01-ci-assembly-fixture-20261026.json",
+    "resources": "Owned empty real-tmp directory and linked-tmp symlink plus reproduction logs. No native build, engine, container or network. Existing unittest fixture temporary directories cleaned.",
+    "retention": "Retain original RED and both GREEN logs through integrated hosted qualification; no prior resources changed.",
+    "integration": "27daae02 fast-forwarded into main; root now owns this worktree on main; delegate idle. One coherent fixture/checkpoint publication pending."
   },
   "implementation_initial_index_sql_20261026": {
     "observed_at": "2026-10-26T16:26:53.973579+00:00",
@@ -74019,6 +74042,7 @@
       "product schema41 migration CLI qualification",
       "installed schema41 recipe and first-event continuation",
       "capacity, power-loss and remote-host qualification"
-    ]
+    ],
+    "integration_note": "Evidence document and source are currently on local work/initial-index at8b74cd4a; not yet in main."
   }
 }
