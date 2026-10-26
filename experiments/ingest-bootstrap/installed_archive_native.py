@@ -20,13 +20,16 @@ def native(client, output, name, state, initialized, transcript, completed_us):
 
 
 def validate_dump(dump, state, initialized, transcript, completed_us, *, store_root,
-                  event_path, acknowledge=False):
+                  event_path, acknowledge=False, typed_progress=False):
     """Check a supplied census against original inputs and independent encodings.
 
     The caller owns probe execution and historical-owner selection. ACK mode is
     an explicit expected runtime protocol, never inferred from captured bytes.
+    typed_progress additionally selects the target40 SQL records for the
+    unchanged two-round signed/forged-signature/duplicate peer recipe.
     """
     assert type(acknowledge) is bool
+    assert type(typed_progress) is bool and (not typed_progress or acknowledge)
     actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in dump['rows']]
     originals = sorted((Path(store_root)/'producer-inputs-v1').glob('*.cbor'))
     assert len(originals) == 4
@@ -57,7 +60,11 @@ def validate_dump(dump, state, initialized, transcript, completed_us, *, store_r
     assert received <= recorded_at <= completed_us
     artifact = Path(event_path).read_bytes()
     assert hashlib.sha256(artifact).hexdigest() == SIGNED_SHA256
-    wanted, inputs, receipts = expected(state, initialized, json.loads(artifact), dictionary_time,
+    event = json.loads(artifact)
+    if typed_progress:
+        from installed_progress_context_oracle import archive_request_progress, verify_archive_progress
+        request_progress = archive_request_progress(event, transcript)
+    wanted, inputs, receipts = expected(state, initialized, event, dictionary_time,
         received, recorded_at, transcript[0]['clock_resolution_us'], acknowledge=acknowledge)
     assert actual == wanted, 'complete independently encoded native rows'
     assert actual_inputs == inputs, 'complete original producer inputs'
@@ -91,6 +98,8 @@ def validate_dump(dump, state, initialized, transcript, completed_us, *, store_r
         request = dict(common, request_sequence=sequence, request_digest='\\x'+hashlib.sha256(original).hexdigest(),
             input_bytes=len(original), input_profile=1, issuer_role='control', issuer_resource=control['resource_id'],
             issuer_epoch=control['epoch'], issuer_incarnation=control['process_incarnation'], **attribution)
+        if typed_progress:
+            request.update(request_progress if sequence == 4 else dict.fromkeys(request_progress))
         assert {k:v for k,v in row.items() if k not in ('xmin', 'reserved_at_us')} == request
         wanted_outcome = dict(common, request_sequence=sequence, request_digest=request['request_digest'],
             outcome_kind=1, outcome_bytes='\\x'+receipt.hex(), outcome_sha256='\\x'+hashlib.sha256(receipt).hexdigest(),
@@ -100,6 +109,9 @@ def validate_dump(dump, state, initialized, transcript, completed_us, *, store_r
         assert control['acquired_at_us'] <= row['reserved_at_us'] <= outcome['recorded_at_us'] < control['lease_expires_at_us']
     evidence = dict(native_rows=len(wanted), original_requests=len(inputs), dictionary_recorded_us=dictionary_time,
         event_received_us=received, event_recorded_us=recorded_at)
-    return evidence, archive_expected(state, initialized, json.loads(artifact), dictionary_time,
+    if typed_progress:
+        evidence['producer_progress'] = verify_archive_progress(state, transcript, completed_us,
+            event, wanted, inputs, receipts, control)
+    return evidence, archive_expected(state, initialized, event, dictionary_time,
         received, recorded_at, transcript[0]['clock_resolution_us'],
         native_options={'acknowledge': acknowledge})

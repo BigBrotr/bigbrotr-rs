@@ -56,6 +56,115 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def archive_request_progress(event, transcript):
+    """The unchanged Archive peer sends two signed/forged/duplicate quanta.
+
+    The forged signatures remain structurally valid captured inputs and reach
+    native certification rejection. All three EVENTs classify in each REQ;
+    quiet later REQs produce neither reservations nor classified progress.
+    """
+    assert 2 <= len(transcript) <= 128
+    nonces = set()
+    previous_closed = None
+    for number, wire in enumerate(transcript, 1):
+        assert wire['number'] == number
+        command = wire['request']
+        assert len(command) == 3 and command[0] == 'REQ'
+        assert command[2] == {'kinds': [1], 'limit': 3}
+        request = command[1]
+        assert re.fullmatch('[0-9a-f]{48}', request) and int(request[:32], 16)
+        assert request[:32] not in nonces
+        nonces.add(request[:32])
+        for key in ('connected_at_us', 'request_at_us', 'closed_at_us'):
+            typed.integer(wire[key])
+        assert wire['connected_at_us'] <= wire['request_at_us'] <= wire['closed_at_us']
+        assert previous_closed is None or previous_closed <= wire['connected_at_us']
+        previous_closed = wire['closed_at_us']
+        typed.uint(wire['clock_resolution_us'], minimum=1)
+        if number <= 2:
+            assert wire['frames'] == ['signed', 'forged-signature', 'duplicate', 'EOSE']
+            assert wire['completion'] == 'request-and-websocket-close'
+            typed.integer(wire['sent_at_us'])
+            assert wire['request_at_us'] <= wire['sent_at_us'] <= wire['closed_at_us']
+        else:
+            assert wire['frames'] == [] and wire['completion'] == 'quiet-eof'
+    # send_frame serializes the signed event object this way; this is the
+    # original EVENT slice, not the producer-request CBOR or a captured SQL hash.
+    raw = json.dumps(event, ensure_ascii=False, separators=(',', ':')).encode()
+    return dict(progress_request_id='\\x'+transcript[0]['request'][1].encode().hex(),
+        progress_event_ordinal=1, progress_wire_sequence=1,
+        progress_input_sha256='\\x'+sha(raw))
+
+
+def verify_archive_progress(state, transcript, completed_us, event, native, inputs, receipts, control):
+    """Exact target40 head for the original one-event Archive recipe/window32.
+
+    Three dictionary operations precede six classified EVENTs: new facts,
+    rejected certification, existing proof, then existing/rejected/existing.
+    CapturedEventInput preserves invalid signatures; CertificationRejected is a
+    durable progress class, unlike a malformed JSON preparation refusal.
+    """
+    binding = archive_request_progress(event, transcript)
+    assert {39, 40} <= {row['migration'] for row in state['schema_versions']}
+    assert len(inputs) == len(receipts) == 4
+    producer, = state['producer_epochs']
+    assert producer['producer_epoch'] == 1 and producer['reserved_through_request'] == 4
+    assert producer['outstanding_request_limit'] == 32
+    common = dict(dataset_id=producer['dataset_id'], producer_slot_id=producer['producer_slot_id'],
+        producer_epoch=1)
+    acquisition, = state['acquisition_jobs']
+    job = only(state['jobs'], job_id=acquisition['job_id'])
+    assert job['request_key'] == '\\x'+'b1'*16
+    assert job['state'] == 'queued' and job['checkpoint_revision'] == 0
+    observed, = state['acquisition_progress']
+    head, = state['producer_checkpoints']
+    wire = transcript[1]
+    resolution = wire['clock_resolution_us']
+    classifications = (2, 6, 5, 5, 6, 5)
+    expected_job = dict(common, job_id=job['job_id'], scope_id=acquisition['scope_id'],
+        progress_revision=len(classifications), request_id='\\x'+wire['request'][1].encode().hex(),
+        event_ordinal=3, wire_sequence=3, input_sha256=binding['progress_input_sha256'],
+        classification=classifications[-1], mutation_request=None, classified_events=len(classifications),
+        successful_events=4, rejected_events=2, observed_at_us=observed['observed_at_us'],
+        clock_resolution_us=resolution, clock_anomaly_flags=4 if resolution > 1 else 0,
+        xmin=observed['xmin'])
+    dataset = bytes.fromhex(common['dataset_id'][2:])
+    domains = {row['dictionary_kind']: bytes.fromhex(row['allocation_domain'][2:])
+        for row in state['allocation_domains']}
+    ref = lambda kind, ordinal=1: [dataset, kind, domains[kind], ordinal]
+    expected_job['intent_digest'] = '\\x'+typed.certification_digest(event, ref(4, 3),
+        ref(2), ref(2), [ref(1), ref(3), ref(5)], expected_job, wire).hex()
+    assert head['xmin'] == expected_job['xmin']
+    assert head['xmin'] not in {row['xmin'] for row in state['producer_outcomes']}
+    assert control['acquired_at_us'] <= wire['sent_at_us'] <= head['committed_at_us'] <= completed_us
+    assert expected_job['observed_at_us'] <= head['committed_at_us'] < control['lease_expires_at_us']
+    values = {(cf, key.hex()): value.hex() for cf, key, value in native}
+    dependencies = []
+    # Literal cumulative union from the four independently encoded receipts:
+    # setup1:1..3, observation1:3..7, event1:3..12. No SQL row chooses membership.
+    for sequence in range(1, 13):
+        source = dataset + bytes(4) + (1).to_bytes(8, 'big') + sequence.to_bytes(8, 'big')
+        value = bytes.fromhex(values['facts', (b'\x01\x20'+source).hex()])
+        reference = [[dataset, 0, 1, sequence], value[2:34]]
+        first = next(n for n, receipt in enumerate(receipts, 1)
+            if reference in decode(receipt.split(b'\0', 1)[1])[5])
+        outcome = only(state['producer_outcomes'], producer_epoch=1, request_sequence=first)
+        dependencies.append(dict(common, source_shard=0, source_epoch=1,
+            source_sequence=sequence, payload_digest='\\x'+value[2:34].hex(), xmin=outcome['xmin']))
+    expected_head = dict(common, progress_format=1,
+        manifest_sha256='\\x'+sha(bytes.fromhex(values['default', '0101'])),
+        checkpoint_revision=3+len(classifications), complete_through_request=4, progress_jobs=1, dependency_count=12,
+        issuer_resource=control['resource_id'], issuer_epoch=control['epoch'],
+        issuer_incarnation=control['process_incarnation'], committed_at_us=head['committed_at_us'],
+        xmin=head['xmin'], checkpoint_digest='\\x'+'00'*32)
+    expected_head['checkpoint_digest'] = '\\x'+typed.head_digest(expected_head, [expected_job],
+        dependencies, lambda row: typed.native_reference(row, values)).hex()
+    actual_dependencies = sorted(state['producer_checkpoint_dependencies'],
+        key=lambda row: (row['source_shard'], row['source_epoch'], row['source_sequence']))
+    return typed.exact_snapshot(head, state['acquisition_progress'], actual_dependencies,
+        expected_head, [expected_job], dependencies, values)
+
+
 def check_upgrade(context, *, ack=False):
     profile=typed.require_frozen_profile(ack=ack)
     assert set(context) in ({'before','after','physical_before','physical_after','status','responses',
