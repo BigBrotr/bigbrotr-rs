@@ -85,8 +85,14 @@ def commands(output, system, architecture, jobs):
     python = sys.executable
     build = output / 'build'
     checks = [('toolchain', ['rustup', 'show']),
-              ('format', ['cargo', 'fmt', '--all', '--check']),
-              ('clippy', ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings']),
+              ('format', ['cargo', 'fmt', '--all', '--check'])]
+    if system == 'Linux' and architecture == 'x86_64':
+        # Dependency policy reads source/metadata and advisories, not compiled
+        # product artifacts. Keep the lock immutable before the first --locked
+        # workspace command, and refuse before native compilation.
+        checks += [('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
+                   ('dependency-policy', ['cargo', 'deny', '--locked', 'check', 'licenses', 'sources', 'advisories'])]
+    checks += [('clippy', ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings']),
               ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
               ('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
                                       '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')]),
@@ -94,8 +100,6 @@ def commands(output, system, architecture, jobs):
               ('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
         checks += documentation_commands(output)
-        checks += [('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
-                   ('dependency-policy', ['cargo', 'deny', 'check', 'licenses', 'sources', 'advisories'])]
     if system == 'Linux':
         for scenario in ['p01-event-cli', 'p01-config-static']:
             checks += [(scenario, [python, 'tests/acceptance/run.py', scenario,

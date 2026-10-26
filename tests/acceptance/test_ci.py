@@ -81,6 +81,59 @@ class CiControls(unittest.TestCase):
 
 
 class CiSelectionControls(unittest.TestCase):
+    def test_dependency_policy_precedes_workspace_compilation(self):
+        ci = CiControls().load()
+        output = Path('/test-output')
+        checks = ci.commands(output, 'Linux', 'x86_64', 2)
+        names = [name for name, _ in checks]
+        self.assertEqual(names[:5], ['toolchain', 'format', 'install-deny', 'dependency-policy', 'clippy'])
+        commands = dict(checks)
+        self.assertEqual(commands['install-deny'],
+                         ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked',
+                          '--root', str(output/'tools')])
+        self.assertEqual(commands['dependency-policy'],
+                         ['cargo', 'deny', '--locked', 'check', 'licenses', 'sources', 'advisories'])
+        for name in ['clippy', 'rust-doc', 'exact-source-build', 'rust-tests']:
+            self.assertLess(names.index('dependency-policy'), names.index(name))
+
+    def test_policy_scope_and_packaged_worker_test_order_are_preserved(self):
+        ci = CiControls().load()
+        common = ['toolchain', 'format', 'clippy', 'rust-doc', 'exact-source-build',
+                  'rust-tests', 'acceptance-controls']
+        for system, architecture in [('Linux', 'x86_64'), ('Linux', 'aarch64'),
+                                     ('Darwin', 'arm64'), ('Darwin', 'x86_64')]:
+            with self.subTest(system=system, architecture=architecture):
+                names = [name for name, _ in ci.commands(Path('/test-output'), system, architecture, 2)]
+                expected = common.copy()
+                if (system, architecture) == ('Linux', 'x86_64'):
+                    expected[2:2] = ['install-deny', 'dependency-policy']
+                    expected += ['planning-artifacts', 'prepare-links', 'documentation-links']
+                if system == 'Linux':
+                    expected += ['p01-event-cli', 'p01-config-static']
+                self.assertEqual(names, expected)
+                self.assertLess(names.index('exact-source-build'), names.index('rust-tests'))
+
+    def test_policy_failure_leaves_workspace_checks_unexecuted(self):
+        ci = CiControls().load()
+        for failed in ['install-deny', 'dependency-policy']:
+            with self.subTest(failed=failed), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)/'receipt'
+                selected = ci.commands(output, 'Linux', 'x86_64', 2)
+                # Keep the selected schedule; finite child commands supply an
+                # independent failing installer/policy without invoking Cargo.
+                checks = [(name, [sys.executable, '-c',
+                                 'raise SystemExit(' + ('7' if name == failed else '0') + ')'])
+                          for name, _ in selected]
+                report = ci.execute(checks, output, ROOT, os.environ.copy(), {}, 20)
+                position = [name for name, _ in selected].index(failed)
+                self.assertEqual(report['status'], 'FAIL')
+                self.assertEqual([check['status'] for check in report['checks']],
+                                 ['PASS'] * position + ['FAIL'] + ['NOT_RUN'] * (len(selected)-position-1))
+                self.assertEqual(report['counts'], {'collected': len(selected), 'executed': position+1,
+                                                   'failed': 1, 'not_run': len(selected)-position-1})
+                for name in ['clippy', 'rust-doc', 'exact-source-build', 'rust-tests', 'acceptance-controls']:
+                    self.assertFalse((output/(name+'.log')).exists())
+
     def test_only_explicit_documentation_inputs_avoid_native_checks(self):
         from tools.ci_changes import documentation_only
         self.assertTrue(documentation_only(['README.md', 'docs/implementation/progress.md',
