@@ -134,7 +134,7 @@ fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
                     admission,
                     grant(
                         &b,
-                        admission.required_data_bytes().unwrap(),
+                        admission.required_dictionary_data_bytes().unwrap(),
                         admission.required_native_bytes().unwrap(),
                     ),
                     || Ok(()),
