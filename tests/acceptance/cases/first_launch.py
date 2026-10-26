@@ -84,11 +84,15 @@ def check_container(info, entry, owner, project, state):
                     '/run/secrets': state / 'secrets/runtime'}
     if entry['service'] == 'initialize':
         expected['/run/operator'] = state / 'secrets/operator'
+    if entry['service'] == 'index-initialize':
+        expected['/run/index-initialize'] = state / 'secrets/index-initialize'
     mounts = {item['Destination']: item for item in info['Mounts']}
     require({item['Destination'] for item in info['Mounts'] if item['Type'] == 'bind'} == set(expected),
             'unexpected container bind mount')
     require(all(mounts.get(target, {}).get('Source') == str(source)
                 for target, source in expected.items()), 'container mount mismatch')
+    if entry['service'] == 'index-initialize':
+        require(not mounts['/run/index-initialize']['RW'], 'initializer secret mount must be read-only')
     if entry['service'] == 'app':
         require('/run/operator' not in mounts, 'ordinary app received operator credentials')
     return info
@@ -565,8 +569,7 @@ class Runtime:
             self.restart_checks.accepted_profile(before, self.provenance)
         self.inputs['sync_provenance'] = 'local_first_witness' if self.provenance else 'off'
         setup = dict(control=before, resource=dict(catalog_id=self.ids['catalog']))
-        entry = self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
-            '--roles', 'control,ingest,sync,archive', '--initialize-ingest')
+        entry = self.initial_launch()
         first = self.wait(lambda: self.logs(entry, output), 'initial lifetime', 20, entry=entry)[0]
         require(first['state'] == 'initialized' and first['ready'] is False
                 and first['acquisition'] == 'finite-initial', 'untruthful initial readiness')
@@ -586,12 +589,13 @@ class Runtime:
         self.wait(lambda: (self.home / 'submitted.json').exists(), 'submitted acquisition', 15, entry, self.client)
         def published():
             require(not (self.home / 'relay-error.json').exists(), 'controlled relay failed')
-            return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.consumer_frontiers WHERE last_complete_sequence=' + str(self.initial_cut)) == '1'
+            return self.archive_published()
         self.wait(published, 'signed Archive frontier', 60, entry, self.client)
         control, catalog = self.capture(output, 'published')
         require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == 5,
                 'unexpected Archive snapshot')
         require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
+        self.initial_publication(entry, output)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
         def quiet():
@@ -613,6 +617,18 @@ class Runtime:
         owner, = [row for row in selected['owner_epochs'] if row['role'] == 'control']
         require(owner['state'] == 'released', 'initial Control ownership retained')
         self.backend_absence(output)
+
+    def initial_launch(self):
+        return self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
+            '--roles', 'control,ingest,sync,archive', '--initialize-ingest')
+
+    def archive_published(self):
+        return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.consumer_frontiers WHERE last_complete_sequence=' + str(self.initial_cut)) == '1'
+
+    def initial_publication(self, entry, output):
+        # The optional Index case observes its own live publication here, before
+        # releasing the existing signed client's completion gate.
+        pass
 
     def backend_absence(self, output):
         observed = {database: self.sql(database,
@@ -936,9 +952,14 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
+    index_case = getattr(args, 'case', None) == 'p01-first-launch-index'
+    if index_case:
+        from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
+    if index_case:
+        args.case_limits = INDEX_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (RESTART_STAGES if restart else STAGES)}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -947,10 +968,13 @@ def first_launch(args, checks, inputs):
     interrupt_scope.__enter__()
     try:
         args.evidence.chmod(0o700)
-        runtime = Runtime(args, inputs)
+        runtime = IndexRuntime(args, inputs) if index_case else Runtime(args, inputs)
         operations = [('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
-                ('signed_acquisition', runtime.initial), ('ordinary_history_export', runtime.ordinary)]
+                ('signed_acquisition', runtime.initial)]
+        if index_case:
+            operations += [('index_publication', runtime.verify_index)]
+        operations += [('ordinary_history_export', runtime.ordinary)]
         if restart:
             operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
                 ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry),

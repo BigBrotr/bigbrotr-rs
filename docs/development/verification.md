@@ -239,6 +239,62 @@ directory wholesale**, including from public Actions. `result.json` is the
 bounded summary, with hashes, checks and scope limits; review any selected upload
 separately. Raw command receipts and original failures remain local.
 
+## Installed initial Index publication
+
+`p01-first-launch-index` adds one fresh Index publisher to the same signed-event
+and Archive journey. It runs the actual installed
+`serve --initialize-ingest --initialize-index --roles control,ingest,sync,archive,index`,
+then uses the ordinary Control lifetime for the unchanged history/export check.
+The eight stages require actual execution; authoring the case or passing its
+Python refusal controls does not qualify the product or engines.
+
+Use the build and assembly commands above with `--include-journey`, then select:
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-index \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-index
+```
+
+The ordinary builder compiles the exact worker before binding its identity into
+the parent. A native `initial-index` diagnostic parent without that binding is
+not an installed candidate. The assembler records product and acceptance source
+identities separately, so acceptance-only changes do not require another product
+build when the verified product inputs remain unchanged.
+
+In addition to the base prerequisites, prepare the pinned Linux amd64
+ClickHouse 26.8.35.10 image declared by
+[initial_schema.py](../../experiments/clickhouse-frontier/initial_schema.py)
+locally. Keep loopback ports 18123 and 19000 free and more than 67 GiB completion
+space. The evidence path must meet the C API observer's SQL-safe path requirements
+below. The owned CH container has 4 GiB memory, 2 CPUs and 256 PIDs; the runner checks
+its data/log allocation remains below 2 GiB and free completion space above 65 GiB
+between observations. These are configured/checkpoint bounds, not filesystem
+quotas or capacity measurements. No engine image is pulled during the case.
+
+The case provisions a new empty Atomic database with separate reader, writer and
+initializer accounts. Only the explicit initialization lifetime mounts the
+initializer secret. It can create tables and inspect their emptiness; the writer
+has SELECT/INSERT and must refuse CREATE/ALTER and concurrency-limit overrides.
+All credentials, complete SQL captures and raw outputs remain protected under
+the original first-launch resource owner and retention rules.
+
+Both accepted policy documents must enable Index with `batch_max_rows=100`.
+While the combined owner remains alive, the observer captures all 81 Control tables
+in one repeatable-read transaction and all ten CH families. Independent signed
+source and C API expectations verify all typed fields, four source batches,
+40 committed target outcomes, metadata/row/engine digests and the exact
+shard 0/epoch 1/cut 12 frontier. The independent schema census checks all 160 columns.
+The fixture's empty tags require an explicit zero `event_tag_index` outcome;
+nonempty signed-tag engine acceptance remains separate. Unfiltered captures are
+retained; Index owner/session/plan/head validation precedes the existing source
+oracle's scoped owner view.
+
+This case does not qualify Index restart, remote uncertainty resolution,
+column-TTL refusal, Index read/query readiness, outages, capacity or complete M1.
+Its terminal readiness remains explicitly unqualified. The pending SQL TTL
+fixture and earlier failures retain their original outcomes.
+
 ## Same-store installed Ingest restart
 
 `p01-first-launch-restart` extends the fresh base case above on the same physical
