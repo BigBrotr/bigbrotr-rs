@@ -279,7 +279,11 @@ has SELECT/INSERT and must refuse CREATE/ALTER and concurrency-limit overrides.
 All credentials, complete SQL captures and raw outputs remain protected under
 the original first-launch resource owner and retention rules.
 
-Both accepted policy documents must enable Index with `batch_max_rows=100`.
+Both accepted policy documents must enable Index with `batch_max_rows=4`, the
+largest per-target family in one literal source batch. Readback is scoped to that
+batch's source range; the cumulative dictionary census still contains eight rows.
+The 160-column inventory and largest 35-column insertion description require
+their independent metadata limits above this smaller data-row ceiling.
 While the combined owner remains alive, the observer captures all 81 Control tables
 in one repeatable-read transaction and all ten CH families. Independent signed
 source and C API expectations verify all typed fields, four source batches,

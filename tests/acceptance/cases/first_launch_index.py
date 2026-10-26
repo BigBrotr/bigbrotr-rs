@@ -35,7 +35,7 @@ SYSTEM_TABLES = ('databases', 'disks', 'storage_policies', 'settings', 'tables',
 def recipe(text, set_value):
     for section, key, value in [
         ('topology', 'local_roles', ['control', 'ingest', 'sync', 'archive', 'index']),
-        ('indexer', 'enabled', True), ('indexer', 'batch_max_rows', 100),
+        ('indexer', 'enabled', True), ('indexer', 'batch_max_rows', oracle.BATCH_MAX_ROWS),
         ('indexer', 'insert_workers', 1), ('indexer', 'query_memory', '256MiB'),
         ('clickhouse', 'placement', 'local'), ('clickhouse', 'endpoint', f'http://127.0.0.1:{HTTP_PORT}'),
         ('clickhouse', 'database', DATABASE), ('clickhouse', 'write_user', 'writer'),

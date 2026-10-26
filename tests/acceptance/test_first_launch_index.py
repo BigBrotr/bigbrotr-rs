@@ -121,6 +121,9 @@ class InitialIndexControls(unittest.TestCase):
         science=fixture()[3].first
         rows=check.expected_rows(science,bytes([0x66])*16,schema)
         self.assertEqual([len(rows[n]) for n in check.TARGETS],[8,1,1,1,1,1,1,0,1,1])
+        self.assertEqual(max(sum(batch['first'] <= row[1][3] <= batch['last'] for row in rows[target])
+            for batch in science['batches'] for target in check.TARGETS),4)
+        self.assertEqual(check.BATCH_MAX_ROWS,4)
         self.assertEqual(rows['events'][0][7].hex(),'8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849')
         self.assertEqual(rows['events'][0][9:13],[1,1,[],'import then network'])
         self.assertEqual(rows['events'][0][-1].hex(),'1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb')
@@ -164,7 +167,7 @@ class InitialIndexControls(unittest.TestCase):
         parsed=tomllib.loads(case.recipe(original,set_value))
         self.assertFalse(tomllib.loads(original)['indexer']['enabled'])
         self.assertEqual(parsed['topology']['local_roles'],['control','ingest','sync','archive','index'])
-        self.assertEqual(parsed['indexer']['batch_max_rows'],100)
+        self.assertEqual(parsed['indexer']['batch_max_rows'],4)
         self.assertEqual(parsed['clickhouse']['initialize_password_ref'],'file:/run/index-initialize/password')
         self.assertEqual(parsed['clickhouse']['write_password_ref'],'file:/run/secrets/index-writer')
         self.assertTrue(parsed['runtime']['processes']['clickhouse']['enabled'])
@@ -172,12 +175,12 @@ class InitialIndexControls(unittest.TestCase):
 
     def test_both_stored_profiles_must_accept_the_small_batch(self):
         document=dict(format='bigbrotr-product-policy/2',settings={'indexer.enabled':True,
-            'indexer.batch_max_rows':100,'sync.provenance':'local_first_witness'})
+            'indexer.batch_max_rows':4,'sync.provenance':'local_first_witness'})
         state=dict(datasets=[dict(config_revision=1,policy_revision=1)],
             config_revisions=[dict(revision=1,document=document,document_digest='recorded')],
             policy_revisions=[dict(revision=1,config_revision=1,document=copy.deepcopy(document),document_digest='recorded')])
         check.accepted_profile(state)
-        for key,value in [('indexer.enabled',False),('indexer.batch_max_rows',100.0),('indexer.batch_max_rows',1000)]:
+        for key,value in [('indexer.enabled',False),('indexer.batch_max_rows',4.0),('indexer.batch_max_rows',100)]:
             changed=copy.deepcopy(state)
             for table in ('config_revisions','policy_revisions'): changed[table][0]['document']['settings'][key]=value
             with self.subTest(key=key,value=value),self.assertRaises(AssertionError): check.accepted_profile(changed)

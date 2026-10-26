@@ -14,6 +14,8 @@ TARGETS = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_f
            'event_id_index', 'event_author_index', 'event_time_index', 'event_tag_index',
            'provenance_by_event', 'provenance_by_relay')
 COUNTS = (8, 1, 1, 1, 1, 1, 1, 0, 1, 1)
+# Largest single target in one literal source batch, not the cumulative census.
+BATCH_MAX_ROWS = 4
 RANGES = ((1, 2), (3, 3), (4, 7), (8, 12))
 PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -53,7 +55,7 @@ def accepted_profile(state):
     assert policy['document']['format'] == 'bigbrotr-product-policy/2'
     settings = policy['document']['settings']
     assert settings['indexer.enabled'] is True and settings['sync.provenance'] == 'local_first_witness'
-    assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == 100
+    assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
 def retained(root):
@@ -315,7 +317,7 @@ def publication(live, after, actual, science, schema, root):
     return dict(format='bigbrotr-installed-initial-index/1', source_cut=12, frontier_revision=4,
         admission_batches=4, committed_chunks=40, family_counts=dict(zip(TARGETS,COUNTS)),
         live_observation=True, independent_source_and_c_api=True, all_typed_fields_equal=True,
-        zero_tag_outcome=True, batch_max_rows=100, metadata_rows=160,
+        zero_tag_outcome=True, batch_max_rows=BATCH_MAX_ROWS, metadata_rows=160,
         generation_id=generation['generation_id'][2:],table_identity_sha256=identity['table_identity_digest'],
         readiness='NOT_RUN', restart='NOT_RUN',column_ttl_negative='NOT_RUN')
 
