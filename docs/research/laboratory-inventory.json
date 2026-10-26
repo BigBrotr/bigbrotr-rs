@@ -73407,7 +73407,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Run40323472991 completedFAIL: all native Clippy/buildPASS, both Linux RusttestsPASS then rustdocFAIL, macOS lifetime fixtureFAIL. Test/doc corrections and unchanged-coverage earlier rustdoc order reviewed; next hosted execution pending.",
+    "status": "Run40332283813 completedFAIL: ARMfoundationPASS; macOS bin cancellation defect (library466PASS1ignored); amd64 all executed checks through Rust/acceptance/docsPASS then dependency-policyFAIL12advisories7packages, later CLIchecksNOT_RUN. No billing refusal/cancellation.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73417,8 +73417,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991",
-    "latest_hosted_source": "59729703e39569696b605ad4eeec2fe137732ae5",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813",
+    "latest_hosted_source": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73429,13 +73429,13 @@
       "scope": "All four artifacts and 38 attempt1 log members from40309278610; zero credential candidates; GitHub zero alerts at observation. Later runs excluded; no claim of completed asynchronous scanning."
     },
     "native_diagnostics": {
-      "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-macos/result.json",
-      "arm": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-arm/result.json",
-      "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-amd64/result.json"
+      "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-macos/result.json",
+      "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-amd64/result.json",
+      "arm": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-arm/result.json"
     },
     "latest_exposure_check": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/receipt.json",
-      "sha256": "3290711f714c9578d835cb216618d0a5ebc42c3b0b10527aae98f3cdd6d04ba2"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-exposure/receipt.json",
+      "sha256": "5ae347279be21a29a2a7f3c89e5dac28b8f6fd0d19c42047b6bc56e5b0dace07"
     },
     "verification_in_progress": null,
     "superseded_branch_retirement": {
@@ -73452,7 +73452,7 @@
         "sha256": "8c33a567632c16c1956e2a952255bf44aa29a3292dc34f35f95d8aa19510c47c"
       },
       "root_review": "CLEAR: complete lifetime.rs/tests.rs and CatalogIdentity declaration/implementation; acquire precedes manifest read, exact refusals unchanged, existing2s Occupied-only retry and deterministic duplicate-lock control. Remaining catalog SQL/placement consumers unchanged and not reread by root.",
-      "validation": "Formatting/diff/Linux fork mechanismPASS; new Rust test and correctedmacOS executionNOT_RUN"
+      "validation": "Original formatting/diff/Linux fork diagnosticPASS; run40332283813 macOS full library466PASS1ignored includes corrected identity/descriptor controls. Separate bin cancellation failure remains open."
     },
     "pending_source_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/source-review.json",
@@ -73484,6 +73484,50 @@
         "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-amd64/result.json",
         "sha256": "46139a4bd7a756dea6258929705687972d77bbf2da2fd104152854b0c4b52792"
       }
+    },
+    "macos_cancellation_failure": {
+      "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-macos",
+      "result_sha256": "d686ba41eadbf6aed0d8babea07a8146c414a218eb6c0aef29c706f107bf4074",
+      "rust_tests_sha256": "4e8b8b5af7baa09a30e73a1ac1f8414bf123df62dcbff3cdce3db3d991b44caf",
+      "worktree": "/home/tux/bigbrotr-rs/.research/ci-native-cancellation-20261026",
+      "branch": "work/ci-native-cancellation",
+      "agent": "ci_native_cancel_review Astra/xhigh verified",
+      "status": "Localmain correction; exacthelper2PASS/ClippyPASS, original100ms unchanged; fullcorrectedapp/hostedNOT_RUN",
+      "agent_commit": "5def0abd2c860afc0e455c03463ce359b261fad6",
+      "integrated_as": "b4395590",
+      "root_review": "Full native_grants.rs and changed tests/evidence plus actual refresh_authority/collect_refresh boundary; unchanged native/PGinternals not reread. Pollobserver precedes every Controlpoll, samefuture/result/deadlines; samewrapper covers policySQL."
+    },
+    "partial_exposure_check": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-macos-exposure.json",
+      "scope": "Only downloaded macOS artifact from run40332283813; running Linux jobs and full run logs not yet audited",
+      "candidates": 0
+    },
+    "dependency_security_work": {
+      "worktree": "/home/tux/bigbrotr-rs/.research/ci-dependency-security-20261026",
+      "branch": "work/ci-dependency-security",
+      "base": "b4395590",
+      "owner": "ci_native_cancel_review Astra/xhigh",
+      "status": "Integrated locallybc71f20e; locked policy/metadata,22 packaging controls, exact helper2tests,11 crypto vectors/4915 refusals, binding API and document checks PASS. Updated full native/hosted qualification NOT_RUN.",
+      "candidate_commit": "3ae383434e425b15656c1e3d6383fc03d49abc69",
+      "integrated_commit": "bc71f20e0b8585a96b4d93a62200d6c108f1e5bb",
+      "evidence": "docs/implementation/evidence/p01-ci-dependency-security-20261026.json",
+      "evidence_sha256": "764b33e35fca4687d2a0dcfb39102057dfba9426af2ae2549589bd176a12f5b9",
+      "root_review": {
+        "path": ".research/ci-publication-20261026/security-vendor-root-review.json",
+        "sha256": "add9e700cfdd8fe5c3582b2fb1ff382c9e8770c75b531ad9557411f4cee4d41f"
+      },
+      "processes": "All dependency correction checks reaped. No engine/container started by this task."
+    },
+    "policy_order_work": {
+      "worktree": "/home/tux/bigbrotr-rs/.research/ci-policy-order-20261026",
+      "branch": "work/ci-policy-order",
+      "base": "b4395590",
+      "owner": "m1_runtime_grants Astra/xhigh",
+      "status": "PASS focused controls/documentation and independent root review; integrated locally98d362e9; hosted execution pending",
+      "candidate_commit": "e051271743e1ab75a311db80ec52a2511e6c7fa9",
+      "integrated_commit": "98d362e95c09b9863fbd1d2598fbf69ecd68ad1c",
+      "receipt": ".research/ci-policy-order-20261026/.research/ci-policy-order-evidence-v2/review.json",
+      "receipt_sha256": "943b0c31c7356537b4c7264aa2656de8628c59cc3f07a639cd58241099782545"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -73703,7 +73747,7 @@
           },
           "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
           "limits": [
-            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.",
+            "Fresh base export, same-store epoch1\u21922 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.",
             "NOT_RUN: native RocksDB census, provenance-off repeat, second-event export, Index readiness, dependency-outage qualification and complete M1.",
             "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
           ]
@@ -73740,7 +73784,7 @@
           },
           "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
           "limits": [
-            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events. Fresh accepted sync.provenance=off; no scientific witness rows.",
+            "Fresh base export, same-store epoch1\u21922 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events. Fresh accepted sync.provenance=off; no scientific witness rows.",
             "NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.",
             "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
           ]
@@ -73785,5 +73829,59 @@
       },
       "qualified_on_source_worktree": "/home/tux/bigbrotr-rs/.research/first-launch-restart-source-r6-20261026"
     }
+  },
+  "implementation_index_foundation_20261026": {
+    "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
+    "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
+    "status": "Partial source increment retained while concrete CI dependency/security failure is corrected; no integrated runtime/engine qualification",
+    "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
+    "dependency_source": {
+      "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
+      "sha256": "0fa5dfb6d648da14c6a3875b32b5df7db75a136d296fdfb909d967268dc54a06",
+      "provenance": "Official selected clickhouse0.15.2 crate; original recorded source directory unavailable locally, archive hash matches existing qualification inventory"
+    },
+    "owners": "Root owns actual CH adapter/integration and preserved partials; initial_index_rows independently reviews PG candidate; m1_runtime_grants implements isolated owned executor lane. Q37 Astra/xhigh settings retained.",
+    "retention": "Pinned reproducible source accelerator; no unique data/credentials. Earlier proof databases/logs retained under their existing entries.",
+    "worktrees": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026",
+        "branch": "work/initial-index-pg",
+        "base": "9f629dd2",
+        "owner": "m1_runtime_grants",
+        "status": "Clean unintegrated candidate; formatting/Python/manifest checksPASS, Rust/PGengineNOT_RUN",
+        "commit": "11d16c8725a8f31fe556150d75d201bdcd9940c3"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-rows-20261026",
+        "branch": "work/initial-index-rows",
+        "base": "9f629dd2",
+        "owner": "initial_index_rows",
+        "status": "Clean unintegrated row candidate; exact component16testsPASS, realCH/PG/ownerlaneNOT_RUN",
+        "commit": "4fd04308d37fc56171df7a2005e9a7405cf26acf"
+      }
+    ],
+    "dependency_resolution": {
+      "metadata": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/workspace-metadata.json",
+      "diagnostics": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/resolution.log",
+      "scope": "clickhouse0.15.2 added to existing lock; existing versions retained. Direct minicbor/tower-service references added subsequently; final lock reconciliation pending."
+    },
+    "open_boundaries": "Real CH schema/readback, opaque physical proofs retaining actual custody, owned executor/grants, complete source/recovery streaming, real PG privilege/race/unknown-COMMIT tests and runtime integration remain open. Independent PG review found protocol-NULL owner/generation association regression in candidate0041; not integrated. Retain existing negative fixture; correction pending.",
+    "component_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-index-rows-20261026/.research/peer-review-20261026/inventory.json",
+      "sha256": "4034f3a36e130b25509169f170467acb5b39dee6b98d887404b7e53e13b12a66",
+      "scope": "Exactrows,shared/Indexcustody,HTTPcap and tests16PASS; actualselectedclickhousefeatures; metadata pureprefixonly. Parentvisibility/reexportonlydelta recorded; no engine/TLS/runtimecessation/fullappclaim."
+    },
+    "pending_dependency_changes": {
+      "receipt": ".research/implementation/index-foundation-20261026/pending-cargo-before-security-98d362e9/receipt.json",
+      "sha256": "cbffee82d7a5a49cfb2bc70882a565af8f2074aa3cc6d3112c9e930f7531dd5e",
+      "status": "Preserved exact partial Cargo files and patch; root Cargo files temporarily restored to integrated98d362e9 for independent security integration. Reapply Index manifest additions and reconcile lock after that coherent push. No Index changes discarded."
+    }
+  },
+  "implementation_checkpoint_space_20261026": {
+    "filesystem": "/dev/nvme0n1p2 mounted /",
+    "observed": "92% used,145GiB available after security integration",
+    "status": "Bounded cache retirement assessment active; no new deletion yet",
+    "owner": "ci_native_cancel_review",
+    "scope": "Up to3 obsolete/reconstructible substantial compiler caches; ownership, actual process/mount use and retained artifact/input obligations required before root deletion. Current Index/security caches and unique evidence preserved."
   }
 }

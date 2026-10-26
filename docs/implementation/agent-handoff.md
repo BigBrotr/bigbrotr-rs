@@ -70,7 +70,10 @@ Q41 requires functioning hosted GitHub Actions, demonstrated by real runs, with
 the same maintained commands/criteria used locally where appropriate. Q33 only
 authorized a temporary fallback during billing failure. Keep check selection
 conservative, dependency caches verified and optional, costly qualification
-explicit, and pushes grouped around coherent results. Record provider admission
+explicit, and pushes grouped around coherent results. Anticipate inexpensive
+checks and evaluate safe compilation reuse without losing platform/artifact or
+clean-install coverage; compare timings from already-required runs. Close known
+failures before treating their gates as qualified. Record provider admission
 failure, workflow failure, cancellation and product failure separately; none is
 success. Q42 makes accessible source history, logs and artifacts public. Review
 upload allowlists; never upload raw credentials, sessions or database captures.
@@ -101,7 +104,10 @@ dependencies, configuration, inputs and artifacts remain unchanged. Repeat affec
 checks for changed assumptions, new anomalies or lost certainty. Verify actual
 resource ownership and isolation before mutation/destruction; check space before
 significant allocation, low headroom or changed conditions. Unrelated edits do not
-require another complete laboratory inventory.
+require another complete laboratory inventory. At coherent checkpoints with low
+headroom, retire verified obsolete owned caches/copies incrementally, preserving
+unique data, pending work and essential evidence. Keep displaced unfinished work
+assigned to its existing task and acceptance gate while Index/M1 advances.
 
 Keep real-engine evidence, independent expectations and critical review. Mechanical
 and documentation fixes need targeted checks; verifier changes affecting PASS/FAIL

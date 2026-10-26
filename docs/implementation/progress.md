@@ -6,101 +6,143 @@ repository transition. Official releases, packages and production remain unautho
 
 ## Current increment and revision
 
-P01-T08/T09: the maintained installed first-event journey now survives Ingest
-succession/resend and Archive catch-up with provenance enabled and disabled.
-Published `main` is `59729703`; local integrated HEAD is `d9660a38`, six coherent
-commits ahead, before this checkpoint update. Changes include bounded login-window
-scheduling/private failure capture, the exact successor route in fresh deployment,
-final-server PostgreSQL TCP readiness, correct pin/frontier binding, the off
-variant, a macOS lifetime-test correction and a Rust documentation markup fix. No product algorithm/native build
-changed; the shipped Compose readiness fix required candidate reassembly.
+P01-T09 initial Index work is preserved while a concrete hosted dependency-security
+failure is corrected under the existing acceptance/delivery tasks. Local `main`
+is `bc71f20e`; published `origin/main` remains `9f629dd2`. The unpublished commits
+integrate the earlier-policy ordering and Astra's `5def0abd` cancellation correction and its
+[focused evidence](evidence/p01-ci-native-cancellation-20261026.json).
 
-Astra's off variant `df78e231` is integrated as `7da70e11`; its test-only macOS
-correction `36804210` is integrated as `d9660a38`. Clean source/agent worktrees,
-protected reports and custody are linked by the [laboratory inventory](../research/laboratory-inventory.json),
-keys `implementation_first_launch_maintained_20261026` and
-`implementation_ci_publication_20261026`. Earlier Sol/restart work is integrated.
-The superseded tutorial branch was retired locally/remotely with an expected-head
-lease; its original commit remains in a detached worktree. No required lab data
-or pending implementation was removed.
+Root has preserved partial Index Cargo changes in an inventory-linked ignored
+snapshot; its three Cargo files temporarily match integrated HEAD for the security
+correction. Uncommitted work is shared filesystem-custody extraction,
+new `storage/clickhouse/transport.rs` and `storage/indexer/custody.rs`, plus this
+checkpoint/inventory. New Index modules are not wired into the product yet.
+Two clean, unintegrated worktrees start at9f629dd2:
+
+- `work/initial-index-pg`, commit `11d16c87`: migration41, complete-plan metadata,
+  current-owner publication/recovery APIs, fixtures and contract clarification.
+  Rust compilation and real PG controls remain NOT_RUN.
+- `work/initial-index-rows`, commit `4fd04308`: ten-family typed mappings,
+  canonical chunk fingerprints and independent golden fixtures. Root read all
+  seven changed files; actual CH schema/readback remains NOT_RUN.
+
+The [laboratory inventory](../research/laboratory-inventory.json) owns exact
+worktree/evidence paths, hashes and resource custody under
+`implementation_index_foundation_20261026`,
+`implementation_first_launch_maintained_20261026` and
+`implementation_ci_publication_20261026`. Preserve all original failures and
+retained inputs; do not conflate component diagnostics with integrated qualification.
 
 ## Verified capability
 
-**PASS, 12/12 stages each:**
+Installed first-event acquisition, Archive, private history/exact353-byte export,
+Ingest restart/succession/resend, Archive catch-up/exact retry and successor
+history passed all12 stages in both profiles:
 
-- `p01-first-launch-restart`, source `5767c7fc`, report
+- Provenance on: source5767c7fc,
   `.research/first-launch-restart-r6-20261026/result.json`.
-- `p01-first-launch-restart-provenance-off`, source `7da70e11`, report
+- Provenance off: source7da70e11,
   `.research/first-launch-restart-off-20261026/result.json`.
 
-Both use retained verified product `c49cfe5c` and candidate manifest `47d53ce8`
-under external `runs/m1-first-launch-pg-ready-20261026/candidate`, rooted at
-`/home/tux/bigbrotr-implementation-20260917`. Real fresh migration40, accepted
-policy, owner enrollment, signed acquisition, private history and exact353-byte
-export precede same-store recovery/retirement, epoch2 activation/resend, catch-up,
-exact retry and ordinary history of both full signed events. Independent source
-inputs, scientific rows, typed progress and original export remain exact. On:
-22 facts/7 commits/snapshot8. Off:13 facts/6 commits/snapshot7 with no witness rows;
-policy is genuinely accepted off before admission. Both end at frontier6.
+Both use verified productc49cfe5c and reassembled candidate47d53ce8 under the
+external implementation lab. Independent complete signed bytes and science/control
+expectations remain exact. On ends22facts/7commits/snapshot8; off13facts/6commits/
+snapshot7 with no witness rows. Both endfrontier6. Each retained26 owned containers,
+all stopped/exit0/PID0 without cleanup errors. P01-T09Step4 is qualified at that
+scope; no native census, second-event export, outage or capacity claim follows.
+Original r1–r5 failures and narrower earlier evidence remain linked by inventory.
 
-Each run retained26 owned containers, all stopped/exit0/PID0, cleanup without
-errors. Original r1–r5 failures and diagnoses remain in the inventory; do not
-rewrite them as PASS. They identified observer mount mapping, password-window
-eligibility, undeclared successor route, temporary PostgreSQL readiness and a
-wrong pin-column assumption. The fresh full runs qualify the corrections.
-Integrated restart controls PASS27; agent affected controls/capture replays and
-prior live-client controls remain valid at their recorded source identities.
-No native census, second-event export, outage or capacity qualification is implied.
+Index component diagnostic:16 tests PASS against exact row/custody/HTTP snapshots
+with the selected clickhouse0.15.2 features. Independent Astra review found no
+blocking component defect; all12 extracted filesystem helper bodies match the
+prior Archive implementation after error-type rename. Later custody visibility/
+re-export edits are separately recorded, with unchanged method bodies. Actual
+runtime shutdown, TLS behavior, real CH and PG publication remain unqualified.
 
-## GitHub and public exposure
+## Hosted CI and public exposure
 
-[Run40323472991](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991)
-on `59729703` completed FAIL. Both Linux amd64 and ARM passed formatting,
-Clippy, exact-source build and all Rust tests, then rustdoc failed on plain `[0]`
-interpreted as an intra-doc link. Only comment markup was corrected; subsequent
-acceptance steps remain NOT_RUN. macOS passed formatting,
-Clippy and exact-source build, then failed one persistent-identity unit test.
-Its negative assertion bypassed the existing bounded lock-acquisition helper:
-a parallel fork can briefly retain a descriptor after owner drop. The test-only
-correction retries only `Occupied`, preserves exact refusal expectations and adds
-a deterministic retained-descriptor control. The original error value was not
-captured: the race is concrete, but its causal attribution to that run remains
-unconfirmed. Formatting/diff/Linux fork diagnostic PASS; corrected Rust/macOS
-execution NOT_RUN. Root reviewed the relevant owners; no product order changed.
-The same rustdoc check now precedes the costly isolated build; Astra reviewed its
-input independence, unchanged coverage and deadlines. CI controls PASS9.
+[Run40332283813](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813),
+source9f629dd2, completed **FAIL** without billing refusal or cancellation:
 
-Earlier hosted failures and billing refusals remain in the
-[CI observation](evidence/ci-billing-block-20260918.json) and inventory. This is real
-execution, not an ongoing billing block. No full hosted PASS is claimed. All
-useful checks were allowed to finish before the next coherent push; no cancellation.
+- Linux ARM64: all required foundation checks PASS.
+- macOS: format/Clippy/rustdoc/build and library466PASS1ignored; binary120PASS1FAIL
+  in native cancellation observation, later acceptance controls NOT_RUN.
+- Linux amd64: format/Clippy/rustdoc/build/Rust tests/acceptance/documentation
+  checks PASS; dependency-policy FAIL with12 advisories across7 packages, plus a
+  yanked-version warning. Subsequent CLI acceptance checks NOT_RUN.
 
-No operational credential was confirmed in the recorded public-history audit or
-completed run40313846572 logs/artifacts. The incremental source review now covers
-published59729703 and pendingd9660a38, reusing prior synthetic-literal triage.
-Completed run40323472991 was also audited: four artifacts/27 members and31 log
-members, exact synthetic upload membership, no candidates and no provider alerts.
-The inventory owns exact scope, hashes and exclusions. Secret scanning/push
-protection were enabled with zero observed alerts; this is not exhaustive proof.
-Sensitive runtime credentials, sessions and SQL captures remain protected/ignored.
+The cancellation defect is corrected locally inb4395590: observe cancellation
+before every poll of the same Control future, including policy refresh waits.
+A deterministic regression fails unchanged code and passes the correction; the
+original100ms assertion is unchanged. Exact-helper2tests/Clippy/format PASS.
+Root reviewed complete native_grants.rs and the actual refresh/collection boundary;
+full corrected application/hosted execution and real SQL/native interleavings
+remain NOT_RUN. Earlier failures and billing refusals stay historical in the
+[CI observation](evidence/ci-billing-block-20260918.json) and inventory.
 
-## Open gates, processes and next action
+Dependency corrections are integrated locally in bc71f20e from Astra3ae38343:
+[security evidence](evidence/p01-ci-dependency-security-20261026.json). Exact locked
+policy/metadata,22 packaging controls, cancellation2/2 on Tokio1.53.3,11 crypto
+vectors/4915 tamper refusals, scoped ZIP/binding compilation and document checks
+PASS. DuckDB1.5.5/RocksDB11.8.1/Zstandard1.5.7 remain fixed. Complete verified
+libduckdb-sys1.10505.0 is retained with only ZIP9.0.5 manifest selection changed;
+root independently compared all20 upstream package members. No suppression.
+Updated full application, real TLS/SQL/native integration and hosted checks are
+NOT_RUN. Earlier installed evidence remains tied to its original dependency tuple.
 
-No local product/build/test process remains active after the two connected runs.
-The completed Actions watch was reaped. Astra is performing a
-bounded read-only map of the missing Index/readiness and outage increment; no
-parallel implementation is pending. Previously verified Q37 settings remain.
+The reviewed CI-order candidate e0512717 is integrated locally in98d362e9:
+Linux amd64 policy runs before native compilation with `--locked`, preserving
+coverage. Twelve focused CI controls and both document checks PASS. Compare actual
+step timings in the next necessary hosted run; no benefit measurement claimed yet.
+The owner's latest Q38/Q41 clarification is recorded in questions and the guide:
+close known failures, evaluate safe reuse, recover space incrementally, and keep
+all postponed work assigned to its existing task/gate.
 
-Next: push the reviewed connected qualification, macOS fixture and rustdoc
-corrections as one coherent increment. Observe a significant revision completing the required
-hosted checks. In parallel, select the smallest actual Index/readiness increment
-from P01-T09/P02-T07/P05-T01/T02; Index is currently unwired, not merely untested.
+Public audit of the completed run covers all4 artifacts/271 members and32 log
+members. All27 pattern matches (5 unique fingerprints) are exact declared example
+secret-file references or the maintained synthetic redaction canary. No operational
+credential confirmed; zero provider alerts observed. Artifact digests match GitHub
+and membership matches the workflow's synthetic upload allowlist. Detailed scope,
+triage, hashes and limitations are in the protected inventory-linked receipt;
+this is not exhaustive proof or a claim of completed asynchronous provider scans.
+The preceding recorded history/source audits remain valid at their own revisions.
 
-M1 remaining blockers: timer-driven Index publication and truthful readiness;
-separate Archive/Index dependency outages with bounded pending work and preserved
-acknowledgements; final connected clean-install negative readiness acceptance.
-Signed admission → Archive → private read/export → Ingest restart/resend is now
-qualified in both provenance profiles. Later native/capacity/fault obligations
-remain in their existing tasks. The initial a99 Sync timeout remains **unknown**;
-original history256MiB429/export NOT_RUN also remains preserved. Reuse earlier
-410d804/61a3de1/9359721 and deeper c49 proofs only at their recorded identities.
+## Processes and next action
+
+No local product/engine/build process remains active from the installed journeys.
+The Actions watch and completed diagnostic/download/audit commands were reaped.
+The dependency/CI-order checks are complete. Active delegates: independent PG
+candidate review, isolated owned Index executor component, and a bounded cache
+retirement assessment. No new CH/PG engine has started. Q37 settings remain as
+verified. The filesystem is92% used/145GiB available; no cleanup deletion has
+occurred at this checkpoint. Preserve current caches, unique data and open work.
+
+Next: finish publication-input review and push this coherent CI/security revision,
+then observe its actual required GitHub checks. Root's partial Index Cargo changes
+remain in the inventoried snapshot for reconciliation after this push. Separately
+validate and retire only the selected obsolete unused caches. Do not infer hosted
+PASS from local components, or treat the current CI correction as all P08 release
+qualification.
+
+Then resume the bounded initial Index capability: real ten-family readback,
+opaque installation/plan/recovery proofs, owned executor/grants and timer-driven
+publication/readiness, followed by isolated CH outage/recovery while Archive
+continues. Persist one whole-admission-batch plan before dispatch, including zero
+outcomes. Verification must hash actual rows, not trust stored digest columns.
+Timeout/dropped futures do not establish remote cessation or release of resources.
+PG review has found an unintegrated protocol-NULL generation-owner regression in
+migration41; correct it while retaining the existing negative fixture. Runtime-role
+grants, both prepare/source-close orderings and lost-COMMIT recovery still need real
+PG checks. Physical proof constructors must retain actual custody through SQL and
+verify the full retained lineage, not accept arbitrary historical pages.
+The PG candidate currently accepts one retained topology; precise topology handoff
+and pending-source retention/replay remain explicit integration boundaries.
+
+M1 blockers: Index publication and truthful readiness; separate Archive/Index
+outages with bounded pending work/preserved acknowledgements; final connected
+clean-install negative-readiness acceptance. The configured pending-byte limit
+still lacks live admission accounting. Stopping the currently shared PG container
+would conflate Archive and Control outages. Nonempty signed-tag engine acceptance
+is required before general tag projection claims. Later native/capacity/fault and
+all remaining milestone obligations stay in the existing plan. The initial a99
+Sync timeout remains **unknown**, with its original evidence preserved.

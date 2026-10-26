@@ -402,6 +402,16 @@ defects; preserve incomplete execution honestly. Integrate this in P01-T08 and
 P08-T11/T12, not a separate plan. No billing, spending-limit or visibility changes
 were authorized by this instruction. Full scope and guarantees remain unchanged.
 
+October26 execution clarification (Q38/Q41): keep the full goal active. Close the
+identified dependency and cancellation failures, anticipate inexpensive checks,
+and evaluate safe reuse of compiled/dependency inputs without losing platform,
+artifact or clean-install coverage. Measure benefit through already-required
+runs. At coherent checkpoints, recover space incrementally from verified owned,
+unused, reconstructible caches/copies while preserving unique data, open work and
+essential evidence; maintain reusable procedures in the repository. Continue
+Index/ClickHouse and M1 by their dependencies, keeping earlier incomplete work
+assigned to its existing tasks. No separate reorganization or weaker gates.
+
 Q42 (2026-10-26): The owner has made `BigBrotr/bigbrotr-rs` public. Update current
 instructions accordingly and regard accessible code, history, Actions logs and
 artifacts as public. Inspect exposed surfaces for credentials/confidential data
