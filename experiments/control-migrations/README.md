@@ -187,3 +187,47 @@ The [8fae53a report](../../docs/implementation/evidence/p08-job-admission-native
 records95PASS checks across11databases; the [e82attempt](../../docs/implementation/evidence/p08-job-admission-native-incomplete-20260927.json)
 remains INCOMPLETE after a missing fixture private-listener DELETE grant. Source
 review/AST checks and synthetic metadata do not qualify real export acceptance.
+
+## Complete Index publication and recovery
+
+`index_publication_cases.sql` exercises migration 0041 on a fresh, isolated PG 16.15
+database migrated by the actual CLI through target 41. It refuses a nonempty
+dataset and checks the exact supplied migration checksum. Its synthetic source
+and physical digests exercise relational invariants only: complete ten-target
+plans (including empty and provenance-off targets), contiguous source cuts,
+immutable installation/origin binding, atomic all-target/frontier publication,
+and transfer of prepared work to the exact next positively attributed owner.
+Every refused transaction must preserve all independently listed fixture rows.
+The fixture never disables triggers and does not construct an application CH
+proof. Physical insertion, custody and lost-COMMIT qualification remain separate.
+
+After creating and migrating a fresh owned database with the existing lab tools,
+run the SQL using its fixture-owner connection and retain both output streams:
+
+```sh
+index_migration_sha=$(sha256sum migrations/postgres/0041_index_publication.sql | cut -d ' ' -f 1)
+psql -X --no-password -v ON_ERROR_STOP=1 \
+  --set=expected_migration_41_sha256="$index_migration_sha" \
+  --file=experiments/control-migrations/index_publication_cases.sql
+```
+
+The caller supplies the owned database through normal libpq connection settings;
+credentials must remain outside command arguments and retained public output.
+Do not run the fixture on application data. On the unchanged retained fixture,
+the following uses the existing lab's `Session`, ownership checks, lock observer
+and exact-backend cleanup to prove both deadlines can expire during a real row
+lock wait. It verifies the query started before expiry, observes the blocker,
+waits against the PG clock, releases the lock and requires SQLSTATE `23514` with every plan,
+chunk, bound, publication and consumer row unchanged:
+
+```sh
+python3 experiments/control-migrations/index_publication_races.py \
+  --root /owned/lab/runtime --database bb_index_publication --name index_waits
+```
+
+This runner creates no build, engine, database or network. It transfers only the
+synthetic fixture's metadata and records its exact migration/source hashes,
+backend incarnations, barriers, refusals and cleanup in an exclusive receipt.
+An engine/connection failure is not an absence result. Until these real PG cases
+and the actual CH/custody adapter checks execute, source/format checks alone do
+not qualify Index publication, restart or readiness.

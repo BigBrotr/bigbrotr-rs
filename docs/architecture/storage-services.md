@@ -251,6 +251,62 @@ Read views handle physical retry duplicates independently of CH's finite token
 retention. Poisoned data has an inspectable location and error; a repaired parser
 can replay it without advancing unrelated sources incorrectly.
 
+The first PG publication adapter fixes ten targets: dictionaries, events,
+eligibility, receive, event ID/author/time/tag access paths, and provenance by
+event/relay. Schema 1 uses the explicit physical partition `all`; each complete
+AdmissionBatch has one deterministic chunk per target, including zero rows.
+The accepted provenance-off profile retains both explicit zero witness targets.
+Preparation verifies the actual retained pending batch and persists the complete
+plan before dispatch. Its only resume unit is that whole batch. A timeout leaves
+the plan prepared; it does not certify absence or allow a different plan at that
+head. Publication requires the private CH verifier's complete physical proof and
+atomically commits all ten chunks, their typed frontier binding and the next
+contiguous consumer head. This adapter currently requires the same retained
+topology on both cuts; it refuses an unwired topology handoff.
+
+Generation and chunk origins remain immutable across Index restart. A new
+session can publish an old prepared plan only after stable local custody excludes
+the old owner, the CH verifier revalidates the published prefix and retained plan,
+and the actual current Control backend atomically transfers PG authority. The
+recovery proof binds the exact published revision/plan and optional single pending
+plan. All historical plans are available in bounded pages. Lease age alone never
+authorizes transfer. Both actual owner deadlines are checked after blocking locks
+and again before COMMIT; scheduling renewal cannot revive either expired owner.
+Historical PG reads and lost-COMMIT receipt resolution grant no physical readiness.
+The selected source owner must retain required pending batches; preparation alone
+does not implement native reclamation or substitute for a retention claim.
+
+The operational `index-plan-metadata/1` fingerprint is SHA-256 over the literal
+ASCII domain `bigbrotr/index-plan-metadata/1\0` (one terminal zero byte), followed
+by the fields below in order. This is a PG coordination commitment, separate
+from scientific fact/admission fingerprints and the CH chunk/row digests. Every
+integer here is fixed-width unsigned big-endian; this recipe is not CBOR. Raw
+IDs/digests use their bytes, never hex or text. No field is nullable or omitted:
+
+1. Dataset, stable Index resource, projection generation and storage incarnation,
+   each 16 bytes; table-identity and custody-binding digests, each 32 bytes.
+2. Provenance byte (`1` for `local_first_witness`, `0` for `off`), then expected
+   published revision as u64 (`0` means no published prefix).
+3. Before cut, then after cut: topology as u64, stream count as u32 (1..1024),
+   followed by each strictly `(shard,epoch)`-ordered stream's shard u32, owner epoch
+   u64 and complete-through u64. Both cuts belong to the dataset above and share
+   the same topology/stream inventory; zero prefixes are explicit.
+4. Complete admission-batch semantic digest32, source shard u32, source owner
+   epoch u64, first sequence u64 and last sequence u64. The source is nonempty,
+   advances exactly one stream from its prior prefix+1 through the entire batch,
+   and leaves other streams unchanged.
+5. Exactly ten chunks, no count prefix, in target order 0..9: dictionaries, events,
+   eligibility facts, receive facts, event ID, author, time, tag, provenance by
+   event, provenance by relay. Each chunk encodes target byte, schema u16 (`1`),
+   partition byte length u32 (`3`) and UTF-8 bytes (`all`), chunk digest32, row count
+   u64 and logical rows digest32. Empty chunks retain all fields and a zero count.
+
+Creating/publishing owner epochs, attempts and wall-clock times are excluded;
+recovery cannot change plan identity. The independent literal tests in
+`storage/postgres/index_publication/tests.rs` fix both on/off vectors and their
+admission-batch input. Another encoding/profile requires a new domain/version and
+explicit retained-plan compatibility handling.
+
 Selected consistency baseline: immutable source-record identity in serving rows;
 append-only MergeTree, or replacing only byte-identical copies of the same full
 immutable record identity. Do not replace logical provenance edges in the raw

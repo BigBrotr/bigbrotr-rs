@@ -77,6 +77,8 @@ mod snapshot_leases;
 pub use snapshot_leases::{
     ArchivePinError, ArchivePinReceipt, ArchivePinRequest, ArchiveReadSelection,
 };
+#[path = "index_publication.rs"]
+pub mod index_publication;
 #[path = "ingest_lease.rs"]
 mod ingest_lease;
 #[path = "initial_ingest_basis.rs"]

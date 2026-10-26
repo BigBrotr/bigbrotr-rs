@@ -225,6 +225,10 @@
     {
       "version": 40,
       "name": "0040_producer_ack.sql"
+    },
+    {
+      "version": 41,
+      "name": "0041_index_publication.sql"
     }
   ],
   "reserved": [

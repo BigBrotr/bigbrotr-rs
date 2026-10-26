@@ -5,6 +5,12 @@ pub mod catalog_guard;
 pub mod configuration;
 pub mod connection_settings;
 pub mod control_owner;
+pub use control_owner::index_publication::{
+    INDEX_PARTITION, INDEX_SCHEMA_VERSION, INDEX_TARGET_COUNT, IndexBinding, IndexChunk,
+    IndexError, IndexOwnerIdentity, IndexPlan, IndexProvenance, IndexPublicationReceipt,
+    IndexRecoveryState, IndexSession, IndexSourceBatch, IndexTarget, MAX_INDEX_STREAMS,
+    PreparedIndexPlan, RetainedIndexPlan,
+};
 pub mod cursor_lifecycle;
 pub mod cursor_registration;
 pub mod enrollment;
