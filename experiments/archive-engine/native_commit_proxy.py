@@ -18,11 +18,13 @@ import sys
 MAX_FRAME = 8 * 1024 * 1024
 MAX_WIRE = 64 * 1024 * 1024
 SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\.)*"?DUCKLAKE_TABLE"?\s+(?:VALUES|\()')
+PIN_RELEASE_QUERY = b"UPDATE control.snapshot_leases SET state='released',lease_revision=lease_revision+1,updated_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='reader_joined' WHERE lease_id=$1::bytea AND lease_revision=$2::text::numeric AND state='active'"
 
 CONTROL_TARGETS = {
     'control-coordinator': b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS(',
     'control-frontier': b'INSERT INTO CONTROL.ARCHIVE_FRONTIER_SNAPSHOTS(',
     'control-pin': b'INSERT INTO CONTROL.ARCHIVE_SNAPSHOT_PINS(',
+    'control-pin-release': PIN_RELEASE_QUERY,
     'control-pin-recovery': b'INSERT INTO CONTROL.ARCHIVE_PIN_RECOVERIES(',
     'control-session-issue': b'INSERT INTO CONTROL.BROWSER_SESSIONS(',
     'control-session-revoke': b'UPDATE CONTROL.BROWSER_SESSIONS SET REVOKED_AT_US=',
@@ -36,6 +38,8 @@ CONTROL_TARGETS = {
 
 
 def control_target_query(target, query):
+    if target == 'control-pin-release':
+        return query == PIN_RELEASE_QUERY
     return query.upper().startswith(CONTROL_TARGETS[target])
 
 
@@ -54,7 +58,7 @@ class SessionCommandObserver:
         self.pending = deque()
         self.discard_until_sync = False
 
-    def frontend(self, tag, body):
+    def frontend(self, tag, body, *, eligible=True):
         if tag == b'P':
             statement, query, _ = body.split(b'\0', 2)
             assert len(statement) <= 64
@@ -71,7 +75,7 @@ class SessionCommandObserver:
         elif tag == b'E':
             assert body == b'\0' * 5
             if not self.discard_until_sync:
-                self.pending.append(self.bound)
+                self.pending.append(self.bound and eligible)
         elif tag in (b'Q', b'S'):
             assert not self.discard_until_sync or tag == b'S'
             self.pending.append(tag)
@@ -130,9 +134,32 @@ class ResumeAuthorityObserver:
 
 
 class Proxy:
-    def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default'):
+    def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default', *,
+                 upstream_port=5432, catalog_manager=None, catalog_reader=None,
+                 catalog_database=None, defer_arm=False):
         self.mode = mode
         self.target = target
+        if type(upstream_port) is not int or not 1 <= upstream_port <= 65535:
+            raise ValueError('upstream-port')
+        supplied = (catalog_manager, catalog_reader, catalog_database)
+        self.explicit_catalog = any(value is not None for value in supplied)
+        if self.explicit_catalog and (
+                any(type(value) is not str or not re.fullmatch(r'[A-Za-z_][A-Za-z_0-9]{0,62}', value)
+                    for value in supplied) or catalog_manager == catalog_reader):
+            raise ValueError('catalog-profile')
+        self.upstream_port = upstream_port
+        self.catalog_manager, self.catalog_reader, self.catalog_database = (
+            supplied if self.explicit_catalog else ('CatalogManager', 'bigbrotr_receipt_reader', 'bbpub_normal'))
+        if type(defer_arm) is not bool:
+            raise ValueError('defer-arm')
+        if target == 'control-pin-release' and mode not in ('before-forward', 'after-complete'):
+            raise ValueError('pin-release-mode')
+        if defer_arm and not (mode in ('hold-reader-query', 'hold-capture-verify', 'hold-capture-rollback')
+                              or target == 'control-pin-release'):
+            raise ValueError('defer-arm-mode')
+        self.defer_arm = defer_arm
+        self.armed = not defer_arm
+        self.target_selected = False
         if target == 'control-producer-progress' and mode not in ('pass', 'before-forward', 'after-complete'):
             raise ValueError('producer-progress-mode')
         # Retained reconciliation opens several real readers before the selected
@@ -169,10 +196,32 @@ class Proxy:
         if self.profile != 'default':
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit)
+        if self.explicit_catalog or self.upstream_port != 5432 or self.defer_arm:
+            extra.update(upstream_host='127.0.0.1', upstream_port=self.upstream_port,
+                         catalog_manager=self.catalog_manager, catalog_reader=self.catalog_reader,
+                         catalog_database=self.catalog_database, armed=self.armed)
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
 
+    def command(self, action):
+        if action == b'stop\n':
+            return False
+        if action == b'arm\n':
+            if not self.defer_arm or self.armed or self.held:
+                raise ValueError('arm-state')
+            self.armed = True
+            # Baseline reader traffic cannot identify a later capture rollback.
+            self.reader_database = None
+            self.emit('armed')
+            return True
+        if action not in (b'release\n', b'close\n') or not self.held or self.action is not None:
+            raise ValueError('control-state')
+        self.action = action.decode().strip()
+        self.release.set()
+        self.emit('released', action=self.action)
+        return True
+
     async def hold(self, stage, backend_pid):
-        if self.mode != 'hold-' + stage or self.held:
+        if not self.armed or self.mode != 'hold-' + stage or self.held:
             return True
         assert backend_pid is not None
         self.held = True
@@ -216,20 +265,24 @@ class Proxy:
             raise ValueError('startup-fields')
         fields = fields[:-2]
         parameters = dict(zip(fields[::2], fields[1::2]))
-        receipt_reader = parameters.get(b'user') == b'bigbrotr_receipt_reader'
-        capture_manager = parameters.get(b'user') == b'CatalogManager'
         database = parameters.get(b'database')
-        upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', 5432)
+        selected_database = database == self.catalog_database.encode('ascii')
+        receipt_reader = (parameters.get(b'user') == self.catalog_reader.encode('ascii')
+                          and (not self.explicit_catalog or selected_database))
+        capture_manager = (parameters.get(b'user') == self.catalog_manager.encode('ascii')
+                           and (not self.explicit_catalog or selected_database))
+        upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', self.upstream_port)
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
         progress_target = self.target == 'control-producer-progress'
+        release_target = self.target == 'control-pin-release'
         progress_session = object() if progress_target else None
         progress_transaction = False
         session_commands = SessionCommandObserver(self.target) if self.target in (
-            'control-session-issue', 'control-session-revoke', 'control-producer-progress') else None
+            'control-session-issue', 'control-session-revoke', 'control-producer-progress', 'control-pin-release') else None
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
 
@@ -257,9 +310,18 @@ class Proxy:
                         return
                 if session_commands is not None:
                     if frontend:
-                        session_commands.frontend(tag, body)
+                        session_commands.frontend(tag, body, eligible=(not release_target or
+                            (self.armed and not self.target_selected)))
                     elif session_commands.backend(tag, body):
-                        if progress_target:
+                        if release_target:
+                            if not self.target_selected:
+                                if not progress_transaction or state['backend_pid'] is None:
+                                    raise ValueError('pin-release-transaction')
+                                self.target_selected = True
+                                state['data'] = True
+                                self.report['data_queries'] += 1
+                                self.emit('pin-release-update-complete', backend_pid=state['backend_pid'])
+                        elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
                             # UPDATE1; the gated repeat completes UPDATE2 on this
                             # same actual Control backend. Preparation cannot arm
@@ -295,8 +357,8 @@ class Proxy:
                     # The actual native reader exists only after full manager
                     # inspection. Hold its first authenticated query so the lab
                     # can acquire a real relation lock without racing inspection.
-                    if self.mode in ('hold-capture-rollback', 'hold-capture-verify') and receipt_reader:
-                        assert state['backend_pid'] is not None and database == b'bbpub_normal'
+                    if self.mode in ('hold-capture-rollback', 'hold-capture-verify') and receipt_reader and self.armed:
+                        assert state['backend_pid'] is not None and selected_database
                         self.reader_database = database
                         self.report['reader_queries'] += 1
                     if self.mode == 'hold-reader-query' and receipt_reader:
@@ -315,12 +377,12 @@ class Proxy:
                         assert len(state['capture_statements']) <= 8
                     elif tag == b'C' and body[:1] == b'S':
                         state['capture_statements'].discard(body[1:-1])
-                    elif (tag == b'B' and database == self.reader_database == b'bbpub_normal'
+                    elif (tag == b'B' and database == self.reader_database == self.catalog_database.encode('ascii')
                           and body.split(b'\0', 2)[1] in state['capture_statements']):
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not progress_target:
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -376,7 +438,7 @@ class Proxy:
                 if frontend and tag == b'Q':
                     query = body.upper()
                     if (self.mode == 'hold-capture-rollback' and capture_manager
-                            and database == self.reader_database == b'bbpub_normal'
+                            and database == self.reader_database == self.catalog_database.encode('ascii')
                             and query.rstrip(b'\0; \r\n') == b'ROLLBACK'):
                         # Manager inspection rolled back before native activity.
                         # This exact later rollback belongs to the retained capture.
@@ -414,7 +476,7 @@ class Proxy:
                     assert len(body) == 8
                     # Retain the public backend PID only, never the cancel key.
                     state['backend_pid'] = struct.unpack('!I', body[:4])[0]
-                if not frontend and progress_target:
+                if not frontend and (progress_target or release_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                     elif tag == b'Z':
@@ -513,19 +575,14 @@ class Proxy:
             lambda: asyncio.StreamReaderProtocol(control), sys.stdin.buffer)
         try:
             async with asyncio.timeout(self.lifetime_seconds):
-                for _ in range(3):
+                for _ in range(4 if self.defer_arm else 3):
                     action = await control.readline()
-                    if action == b'stop\n':
+                    if not self.command(action):
                         break
-                    assert action in (b'release\n', b'close\n') and self.held and self.action is None
-                    self.action = action.decode().strip()
-                    self.release.set()
-                    self.emit('released', action=self.action)
                 else:
                     raise ValueError('control-budget')
         finally:
             server.close()
-            await server.wait_closed()
             transport.close()
             for task in self.tasks:
                 if not task.done():
@@ -534,6 +591,9 @@ class Proxy:
             for writer in self.writers:
                 writer.close()
             await asyncio.gather(*(w.wait_closed() for w in self.writers), return_exceptions=True)
+            # Python3.13 waits for accepted connections too. Cancel/join their
+            # pumps before waiting on the listener; never release a held query.
+            await server.wait_closed()
         # Normal peer close/reset following deliberate truncation is expected.
         unexpected = sum(isinstance(r, BaseException) and not isinstance(r,
             (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError)) for r in outcomes)
@@ -549,9 +609,19 @@ if __name__ == '__main__':
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     parser.add_argument('--profile', choices=['default', 'retained-catch-up'], default='default',
                         help='Closed retained catch-up fixture:131072 frames/64 connections; unchanged64MiB wire and lifetime')
+    parser.add_argument('--upstream-port', default='5432', help='Canonical numeric port on 127.0.0.1 only')
+    parser.add_argument('--catalog-manager', help='Supply all three catalog identifiers together')
+    parser.add_argument('--catalog-reader')
+    parser.add_argument('--catalog-database')
+    parser.add_argument('--defer-arm', action='store_true', help='Forward baseline traffic until one explicit arm line')
     try:
         args = parser.parse_args()
-        sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile).run()))
+        if not re.fullmatch(r'[1-9][0-9]{0,4}', args.upstream_port):
+            raise ValueError('upstream-port')
+        sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile,
+            upstream_port=int(args.upstream_port), catalog_manager=args.catalog_manager,
+            catalog_reader=args.catalog_reader, catalog_database=args.catalog_database,
+            defer_arm=args.defer_arm).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)

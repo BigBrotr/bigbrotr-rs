@@ -291,6 +291,37 @@ This is a private risk fixture, not installed recovery, product Read/export,
 protection or resource/load qualification. Candidate execution outcomes are
 recorded separately; the existence of the harness is not a passing result.
 
+The same `native_commit_proxy.py` can serve an explicitly owned installed
+ordinary-readiness fixture. `--upstream-port 15432` selects a canonical numeric
+port on fixed `127.0.0.1`; no hostname, remote address or credential option is
+accepted. Supply `--catalog-manager bigbrotr_catalog --catalog-reader
+bigbrotr_archive_read --catalog-database bigbrotr_catalog` together to bind
+reader/capture gates to those exact startup identities. Without these options,
+the original port 5432 and legacy catalog identities/marker shape remain intact.
+Traffic, frame, connection and lifetime ceilings remain unchanged.
+
+`--defer-arm` forwards baseline traffic until one stdin `arm` line, then emits
+`armed`. The fixture must first establish positive Ready and quiescence in the
+same actual process, and stop issuing history/export work; the proxy cannot
+establish either fact. Deferred arming is limited to `hold-reader-query`,
+`hold-capture-verify`, `hold-capture-rollback`, and the new
+`--target control-pin-release` with `before-forward` or `after-complete`.
+An opted-in `ready` marker includes the route/catalog profile and `armed:false`.
+Held gates retain the existing `held`, `release`/`close`, and `released` protocol.
+`stop` cancels and joins the sessions without forwarding a held query, then emits
+`terminal`; it never authorizes cleanup of a product pin or native process.
+
+The release target recognizes only the exact current reader-release UPDATE,
+including cached prepared statements. Eligibility is captured at Execute after
+arming; only its actual `UPDATE 1` response selects the transaction and emits
+`pin-release-update-complete`. The existing fault counters distinguish COMMIT
+not forwarded from server completion not delivered. No SQL rewrite or observed
+pin value supplies the expectation. Run `python3 -B
+experiments/archive-engine/native_commit_proxy_tests.py` for bounded admission
+and real loopback/socket-subprocess controls with synthetic PostgreSQL frames.
+Those controls do not qualify PostgreSQL, native termination, pin expiry or
+ordinary readiness; the installed caller must independently observe those facts.
+
 The same signed harness adds three actual native fencing schedules: successor
 activation obtains the owner lock before old metadata DML, or old metadata DML
 holds it through COMMIT/ROLLBACK. A temporary scientific_schema table lock gates

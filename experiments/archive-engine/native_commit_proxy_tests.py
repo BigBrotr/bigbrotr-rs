@@ -1,12 +1,18 @@
-"""Traffic admission checks without sockets, SQL or the product runtime."""
+"""Bounded proxy controls, including real sockets with synthetic PG framing.
+
+No PostgreSQL engine, product runtime, authentication or cleanup qualification.
+"""
 import asyncio
 from contextlib import redirect_stdout
 import io
 import json
+from pathlib import Path
 import struct
+import subprocess
+import sys
 import unittest
 
-from native_commit_proxy import MAX_WIRE, Proxy
+from native_commit_proxy import MAX_WIRE, PIN_RELEASE_QUERY, Proxy, control_target_query
 
 
 class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
@@ -74,12 +80,306 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
             event = json.loads(stream.getvalue())
             if proxy.profile == 'default':
                 self.assertFalse({'profile', 'frame_limit', 'connection_limit'} & event.keys())
+                self.assertFalse({'upstream_host', 'upstream_port', 'catalog_reader', 'armed'} & event.keys())
             else:
                 self.assertEqual({k: event[k] for k in ('profile', 'frame_limit', 'connection_limit')},
                                  dict(profile='retained-catch-up', frame_limit=131072, connection_limit=64))
             self.assertEqual(proxy.lifetime_seconds, 120)
         with self.assertRaisesRegex(ValueError, '^profile$'):
             Proxy('pass', profile='unbounded')
+
+
+class ClosedProfile(unittest.TestCase):
+    def test_cli_rejects_noncanonical_port_without_connecting_or_echoing_values(self):
+        for port in ('0', '65536', '05432', '+5432', '1e3', '127.0.0.1:5432'):
+            result = subprocess.run([sys.executable, '-B', str(Path(__file__).with_name('native_commit_proxy.py')),
+                '--mode', 'hold-reader-query', '--upstream-port', port],
+                capture_output=True, timeout=3, check=False)
+            self.assertEqual(result.returncode, 3)
+            self.assertEqual(result.stdout, b'')
+            self.assertEqual(result.stderr, b'native commit proxy failed\n')
+
+    def test_route_identifiers_and_deferred_modes_refuse_before_network(self):
+        for value in (0, 65536, True, 1.0, '5432'):
+            with self.subTest(port=value), self.assertRaisesRegex(ValueError, '^upstream-port$'):
+                Proxy('pass', upstream_port=value)
+        for changes in ({'catalog_reader': 'reader'},
+                        {'catalog_database': 'db;other'}, {'catalog_manager': 'm' * 64},
+                        {'catalog_reader': 'manager'}, {'catalog_database': 'déb'},
+                        {'catalog_reader': 'reader\x00'}):
+            profile = dict(catalog_manager='manager', catalog_reader='reader', catalog_database='catalog')
+            if changes == {'catalog_reader': 'reader'}:
+                profile = {}
+            with self.subTest(changes=changes), self.assertRaisesRegex(ValueError, '^catalog-profile$'):
+                Proxy('pass', **(profile | changes))
+        for mode in ('pass', 'hold-data', 'omit-auth-final'):
+            with self.assertRaisesRegex(ValueError, '^defer-arm-mode$'):
+                Proxy(mode, defer_arm=True)
+        for mode in ('pass', 'hold-commit', 'omit-pin-claim'):
+            with self.assertRaisesRegex(ValueError, '^pin-release-mode$'):
+                Proxy(mode, 'control-pin-release')
+
+    def test_arming_is_explicit_once_and_never_releases_a_gate(self):
+        output = io.StringIO()
+        with redirect_stdout(output):
+            proxy = Proxy('hold-reader-query', defer_arm=True)
+            self.assertFalse(proxy.armed)
+            self.assertTrue(proxy.command(b'arm\n'))
+            self.assertTrue(proxy.armed)
+            self.assertFalse(proxy.release.is_set())
+            for command in (b'arm\n', b'release\n', b'close\n', b'unknown\n'):
+                with self.assertRaises(ValueError):
+                    proxy.command(command)
+            self.assertFalse(proxy.command(b'stop\n'))
+            self.assertFalse(proxy.release.is_set())
+            with self.assertRaisesRegex(ValueError, '^arm-state$'):
+                Proxy('hold-reader-query').command(b'arm\n')
+        self.assertEqual([json.loads(line)['event'] for line in output.getvalue().splitlines()], ['armed'])
+
+    def test_release_target_is_the_exact_current_owner_statement(self):
+        source = Path(__file__).resolve().parents[2] / 'apps/bigbrotr/src/storage/postgres/snapshot_leases.rs'
+        self.assertEqual(source.read_text().count(PIN_RELEASE_QUERY.decode()), 1)
+        self.assertTrue(control_target_query('control-pin-release', PIN_RELEASE_QUERY))
+        for query in (PIN_RELEASE_QUERY + b'; SELECT 1', PIN_RELEASE_QUERY.replace(b'active', b'other'),
+                      PIN_RELEASE_QUERY.replace(b'lease_revision+1', b'lease_revision+2'),
+                      b'UPDATE control.snapshot_leases SET state=\'released\'',
+                      b'UPDATE control.retention_claims SET state=\'released\''):
+            self.assertFalse(control_target_query('control-pin-release', query))
+
+
+def message(tag, body):
+    return tag + struct.pack('!I', len(body) + 4) + body
+
+
+async def read_message(reader):
+    tag = await reader.readexactly(1)
+    length, = struct.unpack('!I', await reader.readexactly(4))
+    if not 4 <= length <= 65536:
+        raise ValueError('synthetic-frame')
+    return tag, await reader.readexactly(length - 4)
+
+
+class SocketProxy:
+    """Actual proxy subprocess and loopback streams; the upstream is framing only."""
+    def __init__(self, case, mode, *, target='publication', deferred=True):
+        self.case, self.mode, self.target, self.deferred = case, mode, target, deferred
+        self.connections = []
+        self.events = []
+        self.process = None
+        self.server = None
+
+    async def __aenter__(self):
+        self.accepted = asyncio.Queue()
+        self.server = await asyncio.start_server(
+            lambda reader, writer: self.accepted.put_nowait((reader, writer)), '127.0.0.1', 0)
+        port = self.server.sockets[0].getsockname()[1]
+        command = [sys.executable, '-B', str(Path(__file__).with_name('native_commit_proxy.py')),
+                   '--mode', self.mode, '--target', self.target, '--upstream-port', str(port),
+                   '--catalog-manager', 'manager', '--catalog-reader', 'reader',
+                   '--catalog-database', 'catalog']
+        if self.deferred:
+            command.append('--defer-arm')
+        self.process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        try:
+            ready = await self.event('ready')
+        except BaseException:
+            if self.process.returncode is None:
+                self.process.kill()
+            await self.process.communicate()
+            self.server.close()
+            await self.server.wait_closed()
+            raise
+        self.case.assertEqual((ready['upstream_host'], ready['upstream_port'], ready['armed']),
+                              ('127.0.0.1', port, not self.deferred))
+        self.port = ready['port']
+        return self
+
+    async def event(self, expected):
+        raw = await asyncio.wait_for(self.process.stdout.readline(), 3)
+        self.case.assertTrue(raw, 'proxy ended before its expected marker')
+        value = json.loads(raw)
+        self.events.append(value)
+        self.case.assertEqual(value['event'], expected)
+        return value
+
+    async def command(self, action, marker):
+        self.process.stdin.write(action.encode() + b'\n')
+        await self.process.stdin.drain()
+        return await self.event(marker)
+
+    async def connect(self, user='reader', database='catalog'):
+        client, sender = await asyncio.open_connection('127.0.0.1', self.port)
+        self.connections.append(sender)
+        startup = b'\x00\x03\x00\x00user\x00' + user.encode() + b'\x00database\x00' + database.encode() + b'\x00\x00'
+        sender.write(struct.pack('!I', len(startup) + 4) + startup)
+        await sender.drain()
+        upstream, responder = await asyncio.wait_for(self.accepted.get(), 3)
+        self.connections.append(responder)
+        size, = struct.unpack('!I', await asyncio.wait_for(upstream.readexactly(4), 3))
+        self.case.assertEqual(await asyncio.wait_for(upstream.readexactly(size - 4), 3), startup)
+        # Synthetic frames only. The cancel key must never appear in a marker.
+        for tag, body in ((b'R', struct.pack('!I', 0)),
+                          (b'K', struct.pack('!II', 7331, 0x1234abcd)), (b'Z', b'I')):
+            responder.write(message(tag, body))
+            await responder.drain()
+            self.case.assertEqual(await asyncio.wait_for(read_message(client), 3), (tag, body))
+        return client, sender, upstream, responder
+
+    async def stop(self):
+        if self.process.returncode is None:
+            self.process.stdin.write(b'stop\n')
+            await self.process.stdin.drain()
+        await asyncio.wait_for(self.process.wait(), 5)
+        rest = await self.process.stdout.read()
+        self.events.extend(json.loads(line) for line in rest.splitlines())
+        self.case.assertEqual(await self.process.stderr.read(), b'')
+        self.case.assertEqual(self.process.returncode, 0)
+        self.case.assertEqual(self.events[-1]['event'], 'terminal')
+        self.case.assertEqual(self.events[-1]['unexpected'], 0)
+        encoded = json.dumps(self.events)
+        self.case.assertNotIn(str(0x1234abcd), encoded)
+        self.case.assertNotIn(PIN_RELEASE_QUERY.decode(), encoded)
+
+    async def __aexit__(self, *_):
+        try:
+            if self.process is not None:
+                await self.stop()
+        finally:
+            if self.process is not None and self.process.returncode is None:
+                self.process.kill()
+                await self.process.wait()
+            for writer in self.connections:
+                writer.close()
+            await asyncio.gather(*(writer.wait_closed() for writer in self.connections), return_exceptions=True)
+            if self.server is not None:
+                self.server.close()
+                await self.server.wait_closed()
+
+
+class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def exchange(self, connection, tag, body, replies=()):
+        client, sender, upstream, responder = connection
+        sender.write(message(tag, body))
+        await sender.drain()
+        self.assertEqual(await asyncio.wait_for(read_message(upstream), 3), (tag, body))
+        for reply_tag, reply_body in replies:
+            responder.write(message(reply_tag, reply_body))
+            await responder.drain()
+            self.assertEqual(await asyncio.wait_for(read_message(client), 3), (reply_tag, reply_body))
+
+    async def test_deferred_reader_forwards_baseline_and_foreign_database_then_holds_once(self):
+        async with SocketProxy(self, 'hold-reader-query') as proxy:
+            selected = await proxy.connect()
+            await self.exchange(selected, b'Q', b'SELECT baseline\0', [(b'C', b'SELECT 1\0'), (b'Z', b'I')])
+            await proxy.command('arm', 'armed')
+            foreign = await proxy.connect(database='other')
+            await self.exchange(foreign, b'Q', b'SELECT foreign\0')
+            manager = await proxy.connect(user='manager')
+            await self.exchange(manager, b'Q', b'SELECT manager\0')
+            selected[1].write(message(b'Q', b'SELECT withheld\0'))
+            await selected[1].drain()
+            held = await proxy.event('held')
+            self.assertEqual((held['stage'], held['backend_pid']), ('reader-query', 7331))
+            pending = asyncio.create_task(read_message(selected[2]))
+            try:
+                self.assertFalse((await asyncio.wait([pending], timeout=.05))[0])
+                await proxy.command('release', 'released')
+                self.assertEqual(await asyncio.wait_for(pending, 3), (b'Q', b'SELECT withheld\0'))
+            finally:
+                if not pending.done():
+                    pending.cancel()
+                    await asyncio.gather(pending, return_exceptions=True)
+            await self.exchange(selected, b'Q', b'SELECT after\0')
+
+    async def test_stop_joins_a_held_gate_without_forwarding_its_query(self):
+        for deferred in (False, True):
+            async with SocketProxy(self, 'hold-reader-query', deferred=deferred) as proxy:
+                connection = await proxy.connect()
+                if deferred:
+                    await proxy.command('arm', 'armed')
+                connection[1].write(message(b'Q', b'SELECT never_forward\0'))
+                await connection[1].drain()
+                await proxy.event('held')
+                await proxy.stop()
+                self.assertEqual(await asyncio.wait_for(connection[0].read(), 3), b'')
+                self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
+
+    async def test_capture_gates_use_only_selected_reader_traffic_after_arming(self):
+        for mode in ('hold-capture-rollback', 'hold-capture-verify'):
+            async with SocketProxy(self, mode) as proxy:
+                manager = await proxy.connect('manager')
+                reader = await proxy.connect()
+                await self.exchange(reader, b'Q', b'SELECT baseline\0')
+                verify = b'v\0SELECT NOT enabled AND (SELECT max(snapshot_id) FROM public.ducklake_snapshot)=$1\0\0\0'
+                if mode == 'hold-capture-verify':
+                    await self.exchange(manager, b'P', verify)
+                    request = (b'B', b'\0v\0\0\0\0\0\0\0')
+                else:
+                    request = (b'Q', b'ROLLBACK\0')
+                await proxy.command('arm', 'armed')
+                # Arming must not relabel the baseline reader as this capture.
+                await self.exchange(manager, *request)
+                await self.exchange(reader, b'Q', b'SELECT current\0')
+                manager[1].write(message(*request))
+                await manager[1].drain()
+                held = await proxy.event('held')
+                self.assertEqual(held['stage'], mode.removeprefix('hold-'))
+                self.assertEqual(held['reader_queries'], 1)
+                await proxy.command('close', 'released')
+                self.assertEqual(await asyncio.wait_for(manager[0].read(), 3), b'')
+                self.assertEqual(await asyncio.wait_for(manager[2].read(), 3), b'')
+
+    async def release_update(self, connection, *, parse=False, affected=1):
+        if parse:
+            await self.exchange(connection, b'P', b'release\0' + PIN_RELEASE_QUERY + b'\0\0\0', [(b'1', b'')])
+        await self.exchange(connection, b'B', b'\0release\0\0\0\0\0\0\0', [(b'2', b'')])
+        await self.exchange(connection, b'E', b'\0' * 5, [(b'C', f'UPDATE {affected}\0'.encode())])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+
+    async def test_release_fault_is_execute_bound_and_distinguishes_both_commit_sides(self):
+        for mode in ('before-forward', 'after-complete'):
+            with self.subTest(mode=mode):
+                async with SocketProxy(self, mode, target='control-pin-release') as proxy:
+                    connection = await proxy.connect('bigbrotr_control', 'control')
+                    begin = [(b'C', b'BEGIN\0'), (b'Z', b'T')]
+                    commit = [(b'C', b'COMMIT\0'), (b'Z', b'I')]
+                    await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+                    await self.release_update(connection, parse=True)
+                    await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+                    # Arming between Execute and its reply cannot retroactively
+                    # select an already issued baseline UPDATE.
+                    await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+                    await self.exchange(connection, b'B', b'\0release\0\0\0\0\0\0\0', [(b'2', b'')])
+                    await self.exchange(connection, b'E', b'\0' * 5)
+                    await proxy.command('arm', 'armed')
+                    connection[3].write(message(b'C', b'UPDATE 1\0'))
+                    await connection[3].drain()
+                    self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'C', b'UPDATE 1\0'))
+                    await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+                    await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+                    # Cached Parse exists but unrelated COMMIT and UPDATE0 cannot select it.
+                    await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+                    await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+                    await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+                    await self.release_update(connection, affected=0)
+                    await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+                    await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+                    await self.release_update(connection)
+                    selected = await proxy.event('pin-release-update-complete')
+                    self.assertEqual((selected['data_queries'], selected['data_commits']), (1, 0))
+                    connection[1].write(message(b'Q', b'COMMIT\0'))
+                    await connection[1].drain()
+                    if mode == 'after-complete':
+                        self.assertEqual(await asyncio.wait_for(read_message(connection[2]), 3), (b'Q', b'COMMIT\0'))
+                        connection[3].write(message(b'C', b'COMMIT\0') + message(b'Z', b'I'))
+                        await connection[3].drain()
+                    fault = await proxy.event('fault')
+                    self.assertEqual((fault['faults'], fault['data_queries'], fault['data_commits'],
+                                      fault['server_complete'], fault['client_complete']),
+                                     (1, 1, 1, int(mode == 'after-complete'), 0))
+                    self.assertEqual(await asyncio.wait_for(connection[0].read(), 3), b'')
+                    self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
 
 
 if __name__ == '__main__':
