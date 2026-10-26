@@ -312,6 +312,63 @@ recovery cannot change plan identity. The independent literal tests in
 admission-batch input. Another encoding/profile requires a new domain/version and
 explicit retained-plan compatibility handling.
 
+The initial physical adapter selects ClickHouse `26.8.35.10`, an existing empty
+Atomic database and ten separately identified MergeTree tables. Their constant
+partition is `'all'`; authored timestamps remain UInt64. Every table explicitly
+sets `fsync_after_insert=1`, `fsync_part_directory=1` and
+`non_replicated_deduplication_window=0`. No native projection, TTL, replacement or
+deduplication behavior supplies correctness. Fresh installation refuses any
+existing table, then checks actual engine version, local storage policy, table
+UUIDs, full engine expressions, ordered columns and absence of projections.
+Declared settings and component tests are not engine qualification.
+
+The closed retained `bigbrotr-index-tables/1` JSON manifest contains exactly
+`format`, `server_version`, `database` and ten canonical lowercase dashed UUID
+strings in `table_uuids`, in target order. It is bounded to 4096 bytes and contains
+no connection or credential. Custody retains it before remote installation;
+recovery requires its computed identity to match the unchanged custody binding.
+The following operational SHA-256 recipes use fixed-width big-endian integers,
+raw IDs/digests and one terminal zero byte in each ASCII domain. They are separate
+from scientific facts and `projection-chunk/1` row commitments:
+
+- `bigbrotr/index-table-manifest/1\0`: server version, database and `Atomic`, each
+  UTF-8 with u32 byte length; then each target in order: length-prefixed target
+  name, UUID16, length-prefixed complete engine expression, u16 column count,
+  then each ordered column's length-prefixed name and type. Exact initial
+  expressions and types are owned by `storage/clickhouse/schema.rs`.
+- `bigbrotr/index-engine-receipt/1\0`: table-identity digest32, complete plan
+  digest32, then exactly ten target byte / observed distinct row-count u64 /
+  observed rows-digest32 tuples. Zero outcomes are present. Inspection hashes
+  complete typed values, rejects divergent copies of an immutable identity and
+  checks UUID/schema before and after readback; a stored digest is insufficient.
+- `bigbrotr/index-recovery-observation/1\0`: dataset16, Index resource16,
+  generation16, storage incarnation16, table-identity32, custody-binding32,
+  provenance byte as above, previous owner epoch u64 and incarnation16, captured
+  published revision u64; then published-plan and pending-plan digests, each
+  represented by presence byte 0/1 followed by digest32 only when present. For
+  each verified published plan in contiguous revision order, then the optional
+  pending plan: kind byte 0/1, expected revision u64, plan digest32 and actual
+  engine-receipt digest32. Owner resource is the bound Index resource. No time,
+  nullable string or omitted empty target enters these fingerprints.
+
+Recovery captures metadata directly from the current ControlSession, checks one
+historical plan at a time, links consecutive cuts and verifies the entire captured
+head plus its exact optional pending plan. Exact retained input may replay an
+incomplete pending insert; missing input or mismatched rows refuse. A final
+all-table guard rejects rows outside the verified generation/cut, and the final
+PG transfer compares the captured owner/head/pending tuple under locks. Opaque
+physical proofs retain the actual custody descriptor through SQL consumption.
+
+Each operation retains its source, metadata and local grant through complete
+owned-executor destruction and OS join. A separate service-owned engine slot
+retains the engine grant for an unresolved named query; dropping a future/result,
+waiting or observing an empty process list cannot release it. The initial writer
+requires the persistent account concurrency value and both constraints to be 1.
+Unknown work parks Index; positive remote resolution and restart/outage acceptance
+remain explicit qualification gates. The initial HTTP transport accepts only a
+numeric address vetted by the shared PG plaintext boundary validator. Credentials
+cannot trigger DNS resolution; verified TLS is not implemented by this adapter.
+
 Selected consistency baseline: immutable source-record identity in serving rows;
 append-only MergeTree, or replacing only byte-identical copies of the same full
 immutable record identity. Do not replace logical provenance edges in the raw

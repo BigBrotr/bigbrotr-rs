@@ -36,7 +36,7 @@ const THREAD_STACK_BYTES: usize = 2 * 1024 * 1024;
 pub(crate) const INDEX_LANE_STACK_RESERVATION: u64 = 2 * THREAD_STACK_BYTES as u64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum LaneError {
+pub enum LaneError {
     InvalidGrant,
     Custody,
     ThreadUnavailable,
@@ -47,7 +47,7 @@ pub(crate) enum LaneError {
 /// Completed(T) preserves the operation's own typed error/result interpretation;
 /// none of the other variants establish absence of a remote durable effect.
 #[derive(Debug)]
-pub(crate) enum LaneOutcome<T> {
+pub enum LaneOutcome<T> {
     Completed(T),
     Cancelled,
     Deadline,
@@ -70,12 +70,12 @@ pub(crate) struct OwnedIndexLane<T: Send + 'static> {
 
 /// Output allocations keep their actual permit after the executor is gone.
 /// Field order deliberately drops the outcome before releasing its reservation.
-pub(crate) struct JoinedIndexLane<T> {
+pub struct JoinedIndexLane<T> {
     outcome: LaneOutcome<T>,
     retained: Arc<Retained>,
 }
 impl<T> JoinedIndexLane<T> {
-    pub(crate) fn outcome(&self) -> &LaneOutcome<T> {
+    pub fn outcome(&self) -> &LaneOutcome<T> {
         &self.outcome
     }
 
@@ -83,7 +83,7 @@ impl<T> JoinedIndexLane<T> {
     /// it until all result buffers are freed or covered by another admitted
     /// reservation. Physical proof types retain their own actual custody clone
     /// while they cross later SQL boundaries; a binding digest is not custody.
-    pub(crate) fn into_parts(self) -> (LaneOutcome<T>, OwnedPermit) {
+    pub fn into_parts(self) -> (LaneOutcome<T>, OwnedPermit) {
         let Self { outcome, retained } = self;
         let Retained { custody, permit } = Arc::try_unwrap(retained)
             .unwrap_or_else(|_| panic!("joined Index lane still has an internal retention owner"));
