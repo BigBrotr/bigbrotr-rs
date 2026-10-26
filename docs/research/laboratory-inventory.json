@@ -73610,7 +73610,8 @@
       "final_documentation_review": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-1cfd6eb5-exposure/receipt.json",
       "review_sha256": "0de5ee76c68f10d742de2d50b97f45d22c51fa3d118015bbdb56f538e26691f1",
       "documentation_checks": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026/.research/index-foundation-publication-docs-20261026/result.json",
-      "documentation_status": "3 PASS"
+      "documentation_status": "3 PASS",
+      "latest_hosted_observation": "Run40376741278 terminalSUCCESS,30/30 selectedchecksPASS. Rootwatch69669 exit0/reaped. All65 initialIndex library controls actuallyPASS on3platforms; lateractor/runtime/CIreuse excluded. Protected auditreceipt64de2df068115332cc8e1dd83e9d2c79c44ac31d6a5d328e99900480a8dcb29e; report update pending integration."
     },
     "run_local_compilation_reuse": {
       "candidate": "3e4b16212d940446853d6ddbbb19bd136d1c56b0",
@@ -74200,7 +74201,7 @@
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Actual lib/CLI build, both test executable builds, strict Clippy and96 selected controls PASS at4404f94. Engine/installed/restart/unknown-query/readiness NOT_RUN. Critical source review complete at declared initial-only scope; original failures preserved.",
+      "state": "Initial runtime component qualification4404 remains scoped; fresh worker-bound034 buildPASS. Actual installed034 fails real CH identifier API boundary; correction pending real validation. Restart/unknown-query/readiness remain open.",
       "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
       "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
       "first_actual_run": {
@@ -74261,7 +74262,40 @@
         "independent_review_receipts": {
           ".research/implementation/index-foundation-20261026/installed-acceptance-review-882f84f4/original-review.json": "d5138c95eefbcaf88c9320e4b153015c728fe237d955cf1d4b94172fd89a5bee",
           ".research/implementation/index-foundation-20261026/installed-acceptance-review-882f84f4/correction-review.json": "f0c7f769cd2e658cae1e6714784e6e65b10dc9b6ab5ef6963effff3a3e2ca1d7"
-        }
+        },
+        "compose_fix": "2e454aeb9b0e9cb629bf38d485b0180c07c9d3ed (integrated cb900b4a)",
+        "compose_fix_receipt_sha256": "c6ccae843c96ee72f217fc3f7386a5d8f50f3551ac7fae4980ce5dffbdd537f2",
+        "tightened_data_ceiling": "c8b55074b896bec1a72a53074e09d0016f67c39e (integrated a1fbc586):4 rows, independently derived largest per-family/source-batch count. All science/cuts/proofs/timeouts unchanged;12 affected controls PASS.",
+        "tightened_ceiling_receipt_sha256": "4a555e7553777a8a2be391a762cd5d8dc6af6c648ad53ae9c4de3fdda2200ed0",
+        "executions": [
+          {
+            "root": ".research/first-launch-index-r1-20261026",
+            "artifact": "03464fcf",
+            "assembly": "803ad4a2",
+            "acceptance": "803ad4a2",
+            "status": "FAIL_FIXTURE",
+            "result_sha256": "6076a5035a50fe41eb0555c888ac7f85bea5635c193fb816dfd57ff65209d1c4",
+            "resources_sha256": "afd4d70599369a2401ea7cd61fdb8d543b84d19a89438d92b11cbe3a808335e6",
+            "finding": "Generated Compose overlay could not find app service in its own file. Explicit relocated extends.file fixed and actual Compose config verified, preserving inherited isolation/mounts. No engine/container started. Cleanup PASS; image retained, borrowed bridge unchanged; session36770 exit1/reaped."
+          },
+          {
+            "root": ".research/first-launch-index-r2-20261026",
+            "artifact": "03464fcf",
+            "assembly": "803ad4a2",
+            "acceptance": "cb900b4a",
+            "status": "FAIL_PRODUCT_ADAPTER",
+            "result_sha256": "86794ad33131051850e7eb56a3c3602154e2243a03bb476e55f37474c9f9a424",
+            "resources_sha256": "129b5050b6120f989a62787e650bc4c515e35416623850bacaf03bfb49babaf5",
+            "finding": "Product migrations41/bootstrap/CH fresh initialization PASS. Archive revision4/cut12 observed. Index first plan prepared then parked: client.insert escapes already-qualified SQL name as one identifier; actual DESCRIBE Code60 UNKNOWN_TABLE. Signed client finite gate expired while Index stayed unadvanced. No Index/publication/read/export PASS.",
+            "process": "session62526 exit1/reaped; all16 owned containers freshly verified stopped/exit0/PID0/noOOM; cleanupPASS; borrowed bridge endpoints0. Complete data/logs/inputs and original result retained."
+          }
+        ]
+      },
+      "write_api_correction": {
+        "state": "Source corrected, format/whitespace PASS; actual new compile/engine NOT_RUN",
+        "behavior": "Use validated closed qualified identifier with insert_unescaped (retains driver validation); DESCRIBE uses exact declared per-target column bound, then restore accepted data max_result_rows before insertion. Remove unused macro cardinality argument.",
+        "critical_review": "initial_index_rows independently checked exact vendored0.15.2 API, closed IndexTables inputs, client settings clone/insert dispatch ordering and unchanged custody/query IDs. No blocking finding; no engine/build by reviewer.",
+        "next": "Compile current worker-bound candidate and rerun same maintained installed case with4-row accepted data ceiling; do not raise timeout or alter scientific expectations."
       }
     }
   },

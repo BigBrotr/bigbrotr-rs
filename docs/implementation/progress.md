@@ -7,24 +7,24 @@ Official releases, packages and production remain unauthorized.
 ## Current increment and revision
 
 P01-T09 initial Index is on `work/initial-index` in the canonical checkout,
-HEAD `14929744` before this recording-only checkpoint. Runtime wiring is complete
+HEAD `a1fbc586` before this write-adapter correction checkpoint. Runtime wiring is complete
 at its initial-only scope: explicit `--initialize-index`, accepted-policy checks,
 actual PG driver custody, bounded physical operations, serialized renewal/timer
-work and joined shutdown. Real installed publication remains **NOT_RUN**.
+work and joined shutdown. The first real installed attempt exposed a write-adapter defect described below.
 
 Exact source `4404f94c` passed actual library/CLI build, both test executable
 builds, strict Clippy and all96 selected controls:65 library and31 binary service
 controls. Root verified all22 evidence digests and the three executable hashes.
 The qualification is retained under external
 `runs/initial-index-4404f94/out/qualification.json`; the inventory owns full paths,
-source/tree, digest and resource status. Subsequent changes only affect CI helpers
-and documentation, so this product evidence remains valid. This diagnostic binary
+source/tree, digest and resource status. These results precede the current write-adapter correction; unaffected evidence is
+reused, while the changed physical write path needs a new build and engine run. This diagnostic binary
 has no bound Archive worker and cannot qualify an installed journey.
 
 Critical runtime review found and corrected disabled-Indexer bypass, permanent
 resource wait under a640MiB shared payload, and a metadata row cap incorrectly
 tied to insert batch size. Native behavior now passes; the maintained installed
-case will use100-row batches to exercise the160-column metadata inspection
+case now uses4-row batches to exercise the160-column metadata inspection
 through the actual Rust adapter. Original failed builds remain preserved:
 `fadc6bbd` import failure, and `479d649c` synthetic fixture compilation failure
 (E0277), with their tests/Clippy NOT_RUN. Neither failure is rewritten as PASS.
@@ -53,6 +53,27 @@ binary/worker hashes bound. The separate actual candidate `config validate` also
 passes the new Index recipe. Both containers are stopped/exit0/PID0/noOOM;
 monitor27067 ended and was reaped. These are build/static checks, not installed
 publication. No product rebuild is needed for the later acceptance-only changes.
+
+Actual installed run `.research/first-launch-index-r1-20261026` failed before
+engine startup because the generated Compose extension omitted its source file.
+The corrected relocated file reference passed actual Compose validation, with
+unchanged inherited resource limits and credential mounts. Run `r2` on product
+03464fcf/acceptancecb900b4a passed migrations41/bootstrap and fresh CH installation.
+Archive reached revision4/cut12, but Index prepared its first plan and parked:
+`Client::insert` escaped the already-qualified table name as one identifier;
+ClickHouse returned Code60 UNKNOWN_TABLE during DESCRIBE. The signed client
+expired its existing gate; this is a product adapter defect, not grounds to extend
+timeouts. Index publication and later read/export stages are not qualified.
+
+The correction uses the driver's validated unescaped API with the existing closed,
+quoted database/table identifiers. DESCRIBE receives its exact column-count limit,
+then the insert restores the accepted data ceiling. Independent critical source
+review found no new injection, limit, query-ID or custody issue. New native/engine
+execution is pending. The same maintained case now tightens data to4 rows, the
+independently derived maximum family count in a source batch, while keeping all
+scientific expectations and timeouts unchanged. Its12 affected controls PASS.
+Original failures, both databases and inputs are retained; all16 r2 containers
+are stopped/exit0/PID0/noOOM, cleanupPASS, and the borrowed bridge is unchanged.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns detailed
 resource/evidence locations under `implementation_index_foundation_20261026`,
@@ -110,9 +131,13 @@ Their source/history delta through03464fcf has no confirmed exposure in the boun
 audit; that revision also passes its three documentation checks.
 
 [Run40376741278](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278)
-uses exactly `1cfd6eb5`; all three foundation jobs are in progress at the latest
-observation. Scope PASS; separate documentation and optional native ARM experiment
-SKIP under existing rules. Watcher69669 owns its retained log in the CI audit root.
+uses exactly `1cfd6eb5` and is terminal **SUCCESS**: all30 selected checks PASS
+across the three platforms, including all65 initial Index library controls.
+Separate documentation and optional native ARM experiment SKIP under existing
+rules. Watcher69669 ended/exit0 and was reaped. The bounded4-artifact/513-member,
+34-log audit found only the same five synthetic/example fingerprints and zero
+observed provider alerts; the detailed existing-report update is being integrated.
+This run does not qualify later runtime wiring or changed CI reuse helpers.
 
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
 on `f1f6d166` completed all30 selected checks PASS across Linux amd64/ARM64 and
@@ -137,8 +162,9 @@ Native sessions62389 (FAIL) and5554 (PASS) ended and were reaped; both runs'
 containers are stopped-retained, with unrelated inventory unchanged. No owned
 engine or build is active. The fresh build and offline configuration containers
 are stopped-retained in external `runs/initial-index-installed-03464fc`.
-Root process69669 watches hosted CI. Installed-case author and critical reviewer
-have completed their scoped work; their worktrees and receipts are retained.
+No root process is active. Installed-case author and critical reviewer have
+completed scoped corrections; the CI delegate is recording terminal hosted
+evidence. Worktrees and receipts are retained.
 Root owns integration and all native/lab execution. Q37 settings remain as verified.
 
 The earlier bounded cache retirement removed4446 obsolete compiler intermediates
@@ -150,9 +176,9 @@ never replay that deletion or incrementally resume the partly retired caches.
 Latest post-native free space is154,385,682,432bytes. Check headroom before the
 next significant allocation; no broad cleanup is needed to unlock this increment.
 
-Next: assemble the verified03464fcf worker-bound build with the reviewed current
-journey sources. Execute signed-event admission → Archive and Index publication →
-independent read/export checks with the100-row accepted policy. Preserve failure
+Next: build the corrected current-source worker-bound candidate, assemble it with
+the same maintained journey, then execute signed-event admission → Archive and Index publication →
+independent read/export checks with the4-row accepted policy. Preserve failure
 classification and original captures. Exercise the pending real TTL rejection
 and independent outages at their relevant acceptance boundaries; do not claim
 restart/readiness from initial installation. Observe hosted CI to its terminal

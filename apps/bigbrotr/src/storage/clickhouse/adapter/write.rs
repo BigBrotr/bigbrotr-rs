@@ -3,7 +3,10 @@
 //! independent readback. No mutable row or caller-made plan can enter this path.
 use super::{PhysicalError, PhysicalLimits, operation::QueryOwner};
 use crate::storage::{
-    clickhouse::{rows::*, schema::IndexTables},
+    clickhouse::{
+        rows::*,
+        schema::{self, IndexTables},
+    },
     indexer::plan::PlannedBatch,
     postgres::{IndexProvenance, IndexTarget},
 };
@@ -39,17 +42,30 @@ pub(super) async fn batch(
         // Insert's internal DESCRIBE and the actual INSERT have different query
         // IDs. A completed metadata query cannot resolve an unknown data insert.
         macro_rules! insert {
-            ($row:ty, $method:ident, $many:literal) => {{
+            ($row:ty, $method:ident) => {{
                 let metadata = owner.begin()?;
-                let client = owner.client.clone().with_setting("query_id", &metadata);
+                let client = owner
+                    .client
+                    .clone()
+                    .with_setting("query_id", &metadata)
+                    // DESCRIBE counts columns, independently of the accepted
+                    // batch row ceiling. Keep its closed schema bound local.
+                    .with_setting(
+                        "max_result_rows",
+                        schema::columns(target).count().to_string(),
+                    );
                 let insert = client
-                    .insert::<$row>(&tables.qualified(target))
+                    // IndexTables validates the database and closes the target
+                    // set; this is already two quoted SQL identifiers. The
+                    // ordinary insert API would escape them as one table name.
+                    .insert_unescaped::<$row>(&tables.qualified(target))
                     .await
                     .map_err(|error| owner.failed(&metadata, error))?;
                 owner.completed(&metadata)?;
                 let query = owner.begin()?;
                 let mut insert = insert
                     .with_setting("query_id", &query)
+                    .with_setting("max_result_rows", limits.max_rows.to_string())
                     .with_timeouts(Some(limits.query_timeout), Some(limits.query_timeout));
                 let mut written = 0u64;
                 for (bytes, reference) in planned
@@ -100,18 +116,18 @@ pub(super) async fn batch(
             }};
         }
         match target {
-            IndexTarget::Dictionaries => insert!(DictionaryRow<'static>, dictionary, false),
-            IndexTarget::Events => insert!(EventRow<'static>, events, false),
+            IndexTarget::Dictionaries => insert!(DictionaryRow<'static>, dictionary),
+            IndexTarget::Events => insert!(EventRow<'static>, events),
             IndexTarget::EventEligibilityFacts => {
-                insert!(EligibilityRow<'static>, event_eligibility_facts, false)
+                insert!(EligibilityRow<'static>, event_eligibility_facts)
             }
-            IndexTarget::EventReceiveFacts => insert!(ReceiveRow, event_receive_facts, false),
+            IndexTarget::EventReceiveFacts => insert!(ReceiveRow, event_receive_facts),
             IndexTarget::EventIdIndex
             | IndexTarget::EventAuthorIndex
-            | IndexTarget::EventTimeIndex => insert!(EventIndexRow, event_index, false),
-            IndexTarget::EventTagIndex => insert!(TagRow<'static>, event_tag_index, true),
+            | IndexTarget::EventTimeIndex => insert!(EventIndexRow, event_index),
+            IndexTarget::EventTagIndex => insert!(TagRow<'static>, event_tag_index),
             IndexTarget::ProvenanceByEvent | IndexTarget::ProvenanceByRelay => {
-                insert!(ProvenanceRow, provenance, false)
+                insert!(ProvenanceRow, provenance)
             }
         }
     }
