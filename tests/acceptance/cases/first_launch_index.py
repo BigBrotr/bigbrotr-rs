@@ -22,7 +22,7 @@ STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
           'signed_acquisition', 'index_publication', 'ordinary_history_export', 'cleanup')
 LIMITS = [
     'Fresh installed signed source publishes all ten Index targets and PG proof while Archive advances; ordinary Archive history/export remains exact.',
-    'NOT_RUN: Index restart, remote uncertainty resolution, column-TTL negative, Index query/readiness, outage/capacity and complete M1.',
+    'NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query/readiness, outage/capacity and complete M1.',
     'The signed fixture has empty tags: event_tag_index has an explicit zero outcome; nonempty tag projection retains its separate fixture qualification.',
     'Configured process/disk limits are not empirical capacity qualification; local candidate identity is not release authentication.',
 ]

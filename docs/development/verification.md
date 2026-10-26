@@ -290,7 +290,7 @@ nonempty signed-tag engine acceptance remains separate. Unfiltered captures are
 retained; Index owner/session/plan/head validation precedes the existing source
 oracle's scoped owner view.
 
-This case does not qualify Index restart, remote uncertainty resolution,
+This case does not qualify a direct RocksDB/native census, Index restart, remote uncertainty resolution,
 column-TTL refusal, Index read/query readiness, outages, capacity or complete M1.
 Its terminal readiness remains explicitly unqualified. The pending SQL TTL
 fixture and earlier failures retain their original outcomes.

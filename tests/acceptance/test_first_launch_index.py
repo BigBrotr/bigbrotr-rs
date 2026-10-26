@@ -57,7 +57,8 @@ def metadata_fixture(root):
     state.update(datasets=[dict(dataset_id=prefix+ds)],owner_epochs=[control,own],
         role_instances=[dict(role_instance_id=own['role_instance_id'],role='index',dataset_id=prefix+ds,retired_at_us=None)],
         projection_generations=[gen],index_owner_sessions=[session],
-        consumers=[dict(consumer_id=prefix+resource,consumer_role='index',dataset_id=prefix+ds,current_revision=4,current_topology_generation=0)])
+        consumers=[dict(consumer_id=prefix+resource,consumer_role='index',dataset_id=prefix+ds,
+            current_revision=4,current_topology_generation=0,xmin='104')])
     binding = tuple(bytes.fromhex(n) for n in (ds,resource,generation,storage,table))+(custody,1)
     values = check.expected_rows(science,bytes.fromhex(generation),schema)
     actual = {name:[{key:check.json_value(ty,value) for (key,ty),value in zip(schema.COMMON+cols,row)}
@@ -146,6 +147,17 @@ class InitialIndexControls(unittest.TestCase):
             with self.assertRaises(AssertionError): check.publication(state,state,changed,science,schema,root)
             changed=copy.deepcopy(state); changed['owner_epochs'].append(dict(role='search'))
             with self.assertRaises(AssertionError): check.without_index_owner(changed,root)
+
+    def test_current_consumer_head_shares_only_its_publication_transaction(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); state,_,_=metadata_fixture(root)
+            self.assertEqual([r['xmin'] for r in state['index_frontier_plans']],['101','102','103','104'])
+            self.assertEqual(state['consumers'][0]['xmin'],'104')
+            check.validate_metadata(state,root,complete=True)
+            for wrong in ('103','999'):
+                changed=copy.deepcopy(state); changed['consumers'][0]['xmin']=wrong
+                with self.subTest(xmin=wrong),self.assertRaises(AssertionError):
+                    check.validate_metadata(changed,root,complete=True)
 
     def test_recipe_preserves_original_and_separates_initializer(self):
         original=(ROOT/'config/recipes/acceptance.toml').read_text()

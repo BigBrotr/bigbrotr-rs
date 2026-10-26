@@ -192,6 +192,10 @@ def validate_metadata(state, root, *, complete=False):
             assert {r['engine_receipt_digest'] for r in selected} == {expected_engine}
             assert {r['committed_at_us'] for r in selected} == {published['committed_at_us']} == {rev['created_at_us']}
             assert {r['xmin'] for r in [published, rev, bound, *selected]} == {published['xmin']}
+            if number == head:
+                # Publication advances this row in the same transaction; lease
+                # renewal touches owner_epochs, not the consumer head.
+                assert consumer['xmin'] == published['xmin']
         else:
             assert all(r['engine_receipt_digest'] is None and r['committed_at_us'] is None for r in selected)
     return generation
