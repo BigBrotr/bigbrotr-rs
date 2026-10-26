@@ -1,0 +1,99 @@
+{
+  "format": "bigbrotr-initial-index-sql-diagnostic/1",
+  "date": "2026-10-26",
+  "status": "PASS within SQL-only scope",
+  "tasks": [
+    "P02-T07",
+    "P05-T01",
+    "P05-T02"
+  ],
+  "scope": "Real PostgreSQL16.15 schema41 SQL, runtime-role grants, source-close serialization and post-wait authority; not product CLI, Rust Index API or physical ClickHouse qualification.",
+  "source_revision": "d269d66a8d29c60e47888e4b57f71c2d347099e2",
+  "inputs_sha256": {
+    "migrations/manifest.json": "799f16f614b411444dfa5237afc47ef1a60404f2ece9baf870807b5a2a26b428",
+    "migrations/postgres/0041_index_publication.sql": "35a1865f724664874cbfbbd2aa81fd058d3c2c0907150db56695f75ca1ec8d82",
+    "packaging/compose/provision.sql": "691cdddfd4fdab7584ad581a724f5816229c1c41f51ae68859f6ad7ebb0231b7",
+    "experiments/control-migrations/index_publication_cases.sql": "823781bd6816d4d7aee9757a026fe1521bdb92f134653b626b8d45306f434448",
+    "experiments/control-migrations/index_publication_races.py": "6c08e5b28a46fcb45765f6bcfe9df248bc55106f27e9281c18f05486ee1b9eb2",
+    "experiments/control-migrations/concurrency_cases.py": "008467c54581667defd889fab560c2748bd86d5f3d49ef15e573d834d1b81e45"
+  },
+  "runner_sha256": "0de2a82f499af482c4d4c2150c366298f6e5ff940cab4cbebec97ca0f15e6811",
+  "command": "python3 -B experiments/control-migrations/index_publication_runtime.py --root <fresh-owned-lab> --name index41 --sql-only-diagnostic",
+  "setup": "Existing lab.setup from the same clean checkout, verified retained c49cfe5 artifact mounted read-only, fresh private10.251.41.0/28; no prior database reuse. The artifact is not invoked by SQL-only mode.",
+  "checks": [
+    {
+      "name": "exact_schema41",
+      "status": "PASS",
+      "detail": "All57 exact ordered migration SQL sources applied transactionally; all57 ledger names/checksums verified in each of four fresh databases. This manually populated ledger is diagnostic input, not a product migration receipt."
+    },
+    {
+      "name": "maintained_fixture",
+      "status": "PASS",
+      "detail": "31 independent cases as migrator and as actual bigbrotr_control login; repeated on fresh databases for each lock order. Includes NULL-protocol wrong-owner23503 and same-owner success, old-plan successor publication, original identities retained, ten families including explicit off witnesses, incomplete/immutable/stale/source refusal cases."
+    },
+    {
+      "name": "minimal_runtime_grants",
+      "status": "PASS",
+      "detail": "Current provision.sql control-stage grants. Eight invoker fixture helpers and two fixture result tables in a separate owner-created namespace carry explicit fixture-only rights. No runtime TEMP, schema CREATE, generation UPDATE or broad function EXECUTE. Six prohibited metadata edits return42501 before row guards; six additional forbidden operations return42501."
+    },
+    {
+      "name": "prepare_then_source_close",
+      "status": "PASS",
+      "detail": "Observed transactionid lock wait. Prepared plan commits; competing close below prepared bound fails23514. Exactly3 plans/30 chunks, frontier2, source open; refused transaction leaves16-relation snapshot unchanged."
+    },
+    {
+      "name": "source_close_then_prepare",
+      "status": "PASS",
+      "detail": "Observed transactionid lock wait. Close at5 commits; competing prepare through6 fails23514. Exactly2 plans/20 chunks, frontier2, source closed at5; refused transaction leaves16-relation snapshot unchanged."
+    },
+    {
+      "name": "post_wait_authority",
+      "status": "PASS",
+      "detail": "Index and issuer Control deadlines each expire during an observed role-row lock wait after query start. Releasing the lock causes23514; all retained plan/chunk/bound/publication/consumer rows unchanged."
+    },
+    {
+      "name": "source_controls",
+      "status": "PASS",
+      "detail": "Changed Python AST and closed fixture transformation;10 maintained first-launch controls, including schema41 table inventory81; git diff --check."
+    }
+  ],
+  "grant_to_adapter_review": {
+    "status": "source review complete",
+    "detail": "ControlSession Index adapter requires dataset/consumer/owner/role/source locks, covered by existing UPDATE privileges; immutable generation reads need SELECT only. New plan/chunk/history INSERT, sealed UPDATE and chunk completion columns match the added grants. Private proof entrypoints and actual Rust API execution remain NOT_RUN.",
+    "source": "apps/bigbrotr/src/storage/postgres/index_publication/adapter.rs",
+    "sha256": "98b808afad1b8ed69e907e74badb89e4abf72161e485dfadb281529b874fa633"
+  },
+  "resources": {
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres_version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "postgres_cpu_limit": 2,
+    "postgres_memory_limit_bytes": 1610612736,
+    "client_cpu_limit": 2,
+    "client_memory_limit_bytes": 4294967296,
+    "pids_per_container": 256,
+    "ports": [],
+    "disk_threshold_bytes": 2147483648,
+    "disk_before_stop_bytes": 138076111,
+    "disk_after_stop_bytes": 138500484,
+    "disk_policy": "Threshold monitored between phases; not a filesystem quota or capacity measurement.",
+    "terminal": "Both owned containers stopped/PID0/no OOM. PostgreSQL exit0; idle client exit143 after deliberate stop. Data and private network retained."
+  },
+  "receipts": {
+    "index41-index-runtime.json": "b403fb04cad0f32f5f30484f2b16bb6cc2d1765babadbfda91467936bef54611",
+    "index41_expiry-index-races.json": "5273fc84b78731ab140a0e4ed953f85029e9a707e1207c4373dfbaf28b830406",
+    "resources.json": "24fdde65e2da55e6325deaed646a52c7cce86d67c185700ca3d301faf7e1ee5a",
+    "terminal-audit.json": "2d2003b86bdc14f662c26a2dc78d169e18d2f2cc3f62eeb9a083d9ee9fc43a6f"
+  },
+  "inventory_key": "implementation_initial_index_sql_20261026",
+  "not_run": [
+    "Rust Index API and private physical proofs",
+    "ClickHouse verification",
+    "lost PG COMMIT",
+    "product schema41 migration CLI qualification",
+    "installed schema41 recipe and first-event continuation",
+    "capacity, power-loss and remote-host qualification"
+  ],
+  "original_evidence": "Original11d16 review,94d44 correction,d8d fixture review receipts retained unchanged in the owned ignored peer-review directory. Old0002 oracle preserved. No failed engine attempt occurred in this fresh diagnostic."
+}

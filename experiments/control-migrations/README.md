@@ -258,3 +258,9 @@ It preserves exact command inputs, output, failed results and cleanup in the
 protected lab. Physical CH proof, lost-COMMIT and resource-capacity qualification
 remain separate. `index_publication_races.py --role bigbrotr_control` can also run
 its two deadline cases on the unconsumed application fixture.
+
+The [2026-10-26 SQL diagnostic](../../docs/implementation/evidence/p02-initial-index-sql-20261026.json)
+passed the 31-case fixture under both roles, minimal runtime privileges, both
+observed source-close lock orders and both post-wait expiries on PostgreSQL16.15.
+The owned containers were stopped and all inputs/results retained. This evidence
+does not qualify schema41 through the product migration CLI or Rust/CH proofs.

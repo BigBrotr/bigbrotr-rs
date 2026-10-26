@@ -73964,5 +73964,61 @@
     "status": "Bounded cache retirement assessment active; no new deletion yet",
     "owner": "ci_native_cancel_review",
     "scope": "Up to3 obsolete/reconstructible substantial compiler caches; ownership, actual process/mount use and retained artifact/input obligations required before root deletion. Current Index/security caches and unique evidence preserved."
+  },
+  "implementation_initial_index_sql_20261026": {
+    "observed_at": "2026-10-26T16:26:53.973579+00:00",
+    "status": "PASS_SQL_ONLY; stopped-retained",
+    "source_revision": "d269d66a8d29c60e47888e4b57f71c2d347099e2",
+    "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026",
+    "root": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026/.research/index-pg-sql-20261026a",
+    "preflight": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026/.research/index-pg-sql-20261026a-preflight.json",
+      "sha256": "f04fa174482a115a4b4928f74ed2362d199ab638df66c7023fd946c281febf38"
+    },
+    "evidence": "docs/implementation/evidence/p02-initial-index-sql-20261026.json",
+    "private_receipts": {
+      "index41-index-runtime.json": "b403fb04cad0f32f5f30484f2b16bb6cc2d1765babadbfda91467936bef54611",
+      "index41_expiry-index-races.json": "5273fc84b78731ab140a0e4ed953f85029e9a707e1207c4373dfbaf28b830406",
+      "resources.json": "24fdde65e2da55e6325deaed646a52c7cce86d67c185700ca3d301faf7e1ee5a",
+      "terminal-audit.json": "2d2003b86bdc14f662c26a2dc78d169e18d2f2cc3f62eeb9a083d9ee9fc43a6f"
+    },
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a",
+        "id": "d9285424680042eee653ddd17b1a1ec678e05cf82e5831f907f89f0b335a1775",
+        "running": false,
+        "pid": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a-client",
+        "id": "e0e5db834ba064db6ab7c289633e285cd2407ac40aa09c62f8680ce336d347fc",
+        "running": false,
+        "pid": 0,
+        "exit_code": 143
+      }
+    ],
+    "network": {
+      "id": "de5ceba69720fe3fceed5381ea30506e1eb36dc4eb7a990a8401d220e99b0f43",
+      "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a",
+      "internal": true,
+      "subnets": [
+        {
+          "Subnet": "10.251.41.0/28",
+          "Gateway": "10.251.41.1"
+        }
+      ],
+      "status": "retained"
+    },
+    "retained_bytes": 138500484,
+    "retention": "Keep exact fixture/SQL-command inputs, original receipts and data until integrated CLI/API/physical proof qualification and deliberate owner-reviewed retirement. No prior environment was changed.",
+    "not_run": [
+      "Rust Index API and private physical proofs",
+      "ClickHouse verification",
+      "lost PG COMMIT",
+      "product schema41 migration CLI qualification",
+      "installed schema41 recipe and first-event continuation",
+      "capacity, power-loss and remote-host qualification"
+    ]
   }
 }
