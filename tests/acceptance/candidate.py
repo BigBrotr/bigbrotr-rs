@@ -268,6 +268,7 @@ def extract_candidate(manifest_path, destination, *, source_root):
             destination.mkdir(mode=0o700)
             for name in sorted(directories, key=lambda value: (value.count('/'), value)):
                 (destination / name).mkdir(mode=0o755)
+                (destination / name).chmod(0o755)
             for name in sorted(files):
                 with archive.extractfile(entries[name]) as stream:
                     format.copy_verified(stream, destination / name, expected[name])

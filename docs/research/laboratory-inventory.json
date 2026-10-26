@@ -73417,5 +73417,44 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup."
+  },
+  "implementation_first_launch_maintained_20261026": {
+    "status": "r1 missing base NOT_RUN; r2 extracted-directory mode defect FAIL, owned containers stopped; correction verified offline",
+    "intent": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/first-launch-intent.json",
+    "source": {
+      "path": "/home/tux/bigbrotr-rs/.research/first-launch-source-02d1a87",
+      "revision": "02d1a87a4c238ca75fc403f6ec3bfc9ff92b4b31"
+    },
+    "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87",
+    "retention": "Keep fresh state/data/credentials/rawcaptures protected locally; no public upload. Existing resources are not reused except explicit borrowed bridge.",
+    "attempts": [
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87",
+        "result": "NOT_RUN",
+        "reason": "Pinned Distroless image absent from Docker engine image store; no containers created."
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87-r2",
+        "result": "FAIL",
+        "reason": "Candidate directory creation inherited umask077; installed worker refused 0700 directories. Fixed exact0755 application, evidence root remains0700; new controlPASS.",
+        "resources": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87-r2/resources.json",
+        "triage": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87-r2/triage-directory-modes.json"
+      }
+    ],
+    "prepared_base_image": {
+      "id": "sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6",
+      "architecture": "amd64",
+      "digests": [
+        "gcr.io/distroless/cc-debian13@sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6"
+      ]
+    },
+    "host_controls": {
+      "status": "INCOMPLETE",
+      "collected": 62,
+      "passed": 59,
+      "errors": 1,
+      "skipped": 2,
+      "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
+    }
   }
 }

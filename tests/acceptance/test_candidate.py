@@ -3,6 +3,7 @@ import copy
 import gzip
 import io
 import json
+import os
 import stat
 import tarfile
 import unittest
@@ -106,6 +107,19 @@ class CandidateIntake(unittest.TestCase):
         (self.source / '.gitignore').write_text('')
         with self.assertRaisesRegex(ValueError, 'ignored by Git'):
             self.extract(self.source / '.research/unignored')
+
+    def test_protected_caller_umask_preserves_installed_directory_modes(self):
+        previous = os.umask(0o077)
+        try:
+            result = self.extract()
+        finally:
+            os.umask(previous)
+        root = self.home / 'bundle'
+        self.assertEqual(result['bundle_root'], str(root))
+        self.assertEqual(stat.S_IMODE(root.stat().st_mode), 0o700)
+        for path in root.rglob('*'):
+            if path.is_dir():
+                self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o755, str(path))
 
     def test_linked_manifest_archive_and_source_are_refused(self):
         alias = self.home / 'manifest-link'; alias.symlink_to(self.manifest)
