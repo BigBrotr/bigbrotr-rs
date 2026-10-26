@@ -504,8 +504,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   observations and an independent physical-conflict negative: Index becomes
   unavailable with retained remote query uncertainty while Control and Archive
   history/export remain usable. The existing Index report owns that evidence.
-  Ordinary complete-current-selection readiness, clean-install negatives and
-  recovery remain open. Complete adjacent Discovery/Monitor is not a prerequisite.
+  Product `8256184c` with acceptance `e644e218` now qualifies ordinary complete-current
+  readiness, exact retained-input failure, narrow-read non-revival and restoration,
+  preserving the original signed export. The same report's `live_readiness.ordinary`
+  records 147 native controls and all eight installed stages. Real short-pin expiry and
+  uncertain release, remaining clean-install negatives and recovery stay open.
+  Complete adjacent Discovery/Monitor is not a prerequisite.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
   The maintained `p01-first-launch-index` passes all eight stages on installed

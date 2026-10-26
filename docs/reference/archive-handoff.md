@@ -532,9 +532,12 @@ requires a successfully completed relevant operation on the identical selection,
 including the actual export destination checks. Both observations must be under
 30 seconds old, measured from their oldest dependency check. An in-flight full
 probe, failed verification, changed selection or expired observation cannot be
-repaired by a narrower successful read. This ordinary runtime increment remains
-under qualification; larger-history capacity and independent outages retain
-their existing acceptance gates.
+repaired by a narrower successful read. The maintained first-launch Index case
+qualifies ordinary positive readiness, retained-input failure, narrow-read
+non-revival and exact-input restoration on the installed product. Real short-pin
+expiry, uncertain pin release and remaining selection/metadata negatives are
+separate qualification gates; larger-history capacity and independent outages
+retain their existing acceptance requirements.
 
 One native transaction scans all receipt fields through bounded EOF once, checks
 each original batch's complete source/digest/file membership, then resolves

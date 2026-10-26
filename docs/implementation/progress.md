@@ -2,96 +2,76 @@
 
 2026-10-26, Tux. **Full-product goal ACTIVE:** all selected P00–P10/M1–M5,
 under Q37/Q38/Q40. Q41 requires real hosted CI; Q42 records the public repository.
-Official releases, packages and production remain unauthorized.
+Official releases, packages and production remain unauthorized. The latest
+execution-efficiency clarification is recorded in Q38/Q41 and the existing guide.
 
 ## Current capability and revision
 
-Published `origin/main`: `94a52232`; qualified product `a295da60`, assembly
-`55df797a`, acceptance `eff2faaf`. The initial readiness increment is
-integrated and pushed; its redundant `work/live-readiness` branch was retired.
-The next ordinary Archive readiness increment is in progress: root owns runtime
-integration, `m1_runtime_grants` the bounded authoritative expectation bridge,
-and `initial_index_rows` the observation cache, in separate writable worktrees.
-Local main is `8256184c`: bridge `223a2e08`, cache `63285940`, runtime/input-reader
-integration `814479ef`, and actual-file custody controls `450db223`. These changes
-are not yet fully qualified or pushed. Native qualification PASS at8256184:
-actual build/strict Clippy and147 selected controls (96 library/51 binary), with
-33 evidence hashes and all3 retained executables checked; session15316 exited0
-and both containers are stopped/PID0/noOOM. Fresh worker-before-parent installed
-build is RUNNING as session19968 in `runs/initial-index-installed-8256184`.
-Real PG statements and the installed ordinary readiness extension remain NOT_RUN.
-Formatting/source review found and
-fixed a pin-lifetime gap: Control renewal must not extend the probe's original
-pin window. Remaining targeted work includes owned-input custody, actual short-pin
-expiry, missing/corrupt input and stale-selection controls, followed by the same
-maintained native/installed qualification paths. No new plan or harness is added.
+Published `origin/main`: `94a52232`. Local integrated main through `a8584b24`
+adds ordinary Archive readiness; this checkpoint follows that revision. Product
+`8256184cd30f49020c6c0a9884e9eaec958ba461` passes native qualification and the
+installed `p01-first-launch-index` journey with assembly/acceptance `e644e218`.
+These local changes have not yet been pushed. The source/history exposure audit
+through `a8584b24` found no new credential/confidential material; only the final
+documentation/fix tail remains before one coherent publication.
 
-**P01-T09 Step2 is qualified at its initial scope.** Installed product `b5333d53`,
-assembly/acceptance `2d0bdc81`, passes all eight maintained
-`p01-first-launch-index` stages: fresh migration/bootstrap, signed admission,
-Archive and Index publication, ordinary private history, exact signed export and
-controlled cleanup. All ten target families, four source batches and 40 outcomes
-reach revision4/cut12 under the unchanged four-row per-target ceiling. Independent
-signed/C API expectations check typed fields, digests and atomic publication.
-Protected captures: `.research/first-launch-index-r4-20261026`; all 19 containers
-were stopped/exit0/PID0/noOOM. This is initial publication, not complete M1.
-The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-owns the detailed installed result and preserved r1/r2/r3 failures.
+**Ordinary readiness, retained-input failure and recovery are now qualified.**
+The complete-current PG/input/native proof and a matching completed operation
+make both private capabilities Ready at revision4/cut12/snapshot5. Withholding
+one independently reconstructed 266B current-member input makes both Unavailable.
+One successful original narrow history read cannot revive them. Restoring the
+same inode, mode and bytes allows a new full proof and both capabilities recover.
+Control remains usable and Source remains Unknown without an Ingest owner.
+Status-only barriers leave session idle and publication unchanged. The original
+353B signed export, exact manifest, retained export pin and released reader pins
+also pass. No limits or scientific expectations were weakened.
 
-**Live readiness source candidate now passes native qualification.** Product
-`a295da606aa95093530532d8e576bae1c01992b9`, tree
-`437ad02c3f3d8cbfebf81ab543f473416a4b028c`, passes actual product/test builds,
-strict Clippy and all 122 selected controls (75 library, 47 binary; none ignored).
-Root checked 30 evidence digests, three retained executable hashes and both
-terminal containers. Results live under `runs/initial-index-a295da6` in the
-existing external lab and the report's `live_readiness` extension.
+The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.ordinary`, owns detailed outcomes and limits. All 147 native controls,
+actual build and strict Clippy PASS; fresh worker-before-parent installed build
+PASS. Installed r7 passes all eight stages. Root replayed the independent signed/
+C API, typed Index, initial readiness/invalidation, ordinary status/input and
+export oracles, verified 92 acceptance/migration inputs and all 19 terminal
+containers. Captures: `.research/first-launch-index-r7-20261026`; installed build:
+`runs/initial-index-installed-8256184` in the existing external lab. The original
+40s ordinary active-work and 12s export gates remain; added phases each have 30s.
+Observed original active work was 3.528s; no capacity claim follows from this run.
 
-This increment supplies authenticated observation-only role status through the
-existing action/DeliveryGate, a bounded native source head, and coalesced complete
-physical checks for the initial Archive/Index owners. Probes run on a 15s cadence
-with a strict 30s oldest-read freshness limit; request handling consumes cached
-observations. Archive verification in flight suppresses prior Ready through driver
-join. Ordinary exact-ID read/export successes remain conservative observations;
-they never certify complete current Archive readiness. Nested report timestamps
-match authenticated PG time; freshness uses suspend-aware elapsed time.
+The authoritative bridge, observation cache, owned input reader/runtime and
+custody controls are integrated. Root's critical pin-lifetime correction keeps
+the original reader-pin window nonrenewable through native work, final currentness
+and driver join. Scoped controls cover old selections and metadata failures;
+their remaining installed risk cases are listed below.
 
-**The installed readiness extension now passes all eight stages.** Product
-`a295da60`, assembly `55df797a`, acceptance `eff2faaf` demonstrate authenticated
-positive source/cut/capability observations, then independently introduce one
-conflicting event row. Index becomes unavailable with correctly retained remote
-query uncertainty; Control and other capabilities remain ready, publication and
-session idle fields stay unchanged, and the original Archive history/exact signed
-export journey still passes. Protected captures: `.research/first-launch-index-r6-20261026`.
-Root replayed the complete typed/source oracle and both status oracles, checked
-34 acceptance inputs/migrations/artifacts, and verified all19 terminal containers.
+Acceptance `3a867858` is integrated as `e644e218`; proxy `cbef8623` as `a8584b24`.
+The proxy adds explicit loopback/catalog selection, one-shot arming and exact
+pin-release Execute/COMMIT targeting. Its 13 socket/admission, 14 legacy target and
+five resume controls PASS. Its original Python3.13 stop-order deadlock is retained;
+the fix joins held sessions before waiting for listener shutdown. These checks
+do not qualify real pin-expiry or uncertain-COMMIT behavior. Original proxy and
+acceptance worktrees/receipts remain preserved; no uncommitted product work is
+left in canonical main.
 
-Original r5 remains FAIL: its oracle incorrectly required a known dependency
-failure after the extra row rejects before cursor EOF. Critical source review
-confirmed that local join cannot imply remote query cessation. The corrected
-oracle requires exactly `remote_outcome_unknown`; no product, science, time limit
-or uncertainty guarantee was changed. Its14 targeted controls and retained r5
-capture replay PASS, followed by the complete real r6. Native122 and31 client
-controls/TypeScript/contract drift remain valid. All delegates' changes are
-integrated; detailed reviews and original failures are inventory-linked.
-
-Original native failures remain intact: oversized completion enum (Clippy), wrong
-Rust module prefixes in the verifier, and dictionary fixture reservations below
-the operation's declared requirements. Corrections preserve production ceilings,
-all 47 required binary controls and independent source expectations. Retained
-executables were used to finish unaffected controls before the corrected full
-native qualification. Inventory links retain each original FAIL and NOT_RUN.
+Earlier installed Index publication and initial live readiness are qualified at
+their recorded scope, including all ten families/four batches/40 outcomes and
+the deliberately conflicting ClickHouse row. Earlier Ingest restart/resend with
+provenance on/off also remains valid. The owning report preserves r1–r5 failures,
+the corrected r5 uncertainty oracle, earlier native/verifier failures and their
+qualified followups; these histories are not duplicated here.
 
 ## M1 remaining gates
 
-The earlier installed Ingest restart/resend and ordinary read/export journey
-passes all 12 stages with provenance on and off on product `c49cfe5c`/candidate
-`47d53ce8`; Index was not included. Remaining M1 gates are:
-
-- Complete ordinary full current Archive readiness and remaining clean-install
-  negatives; the initial positive/physical-invalidation case is now qualified.
-  Terminal lifecycle output remains `ready:false`/Index `not-qualified`.
+- Actual short-pin expiry during an ordinary full probe while the same Control
+  authority renews: `m1_runtime_grants` is implementing the closed maintained
+  `p01-first-launch-index-short-pin` variant in its separate worktree. This is
+  P01-T09 Step1/6; it must establish a positive baseline in the same process,
+  real native blocking, earlier original-pin expiry, known join and release.
+- Real before-forward/after-complete reader-pin release COMMIT uncertainty,
+  old-published-snapshot/current-selection changes and selected-metadata failure
+  coverage. A SIGSTOP is not evidence of unknown native termination; that distinct
+  case remains unqualified. These protect current readiness and cleanup claims.
 - Index restart/rebinding and uncertain-query/lost-COMMIT recovery. Initial
-  publication and live observation do not close these requirements.
+  publication and live observation do not close those requirements.
 - Independent Archive/CH outages, bounded pending/ACK behavior and live pending
   byte accounting. Archive failure currently exits the combined owning loop;
   independent Control must survive the required Archive outage qualification.
@@ -102,61 +82,61 @@ resource pressure in P01-T09 Step5; general valid-event family-bound handling in
 P02-T05 Step3/T06; nonempty signed-tag engine coverage, native census, second-event
 export and later durability/GC/capacity gates. The prepared column-TTL negative is
 NOT_RUN. The original `a99` initial Sync timeout remains UNKNOWN with its original
-evidence. There is no all-P02 phase barrier or scope reduction.
+evidence. There is no all-P02 phase barrier or scope reduction. Terminal lifecycle
+diagnostics still report `ready:false`/Index `not-qualified`; M1 is incomplete.
 
 ## CI and public exposure
 
 [Run40376741278](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278)
 on `1cfd6eb5` passed all 30 selected hosted checks on Linux amd64/ARM64 and macOS.
-Dependency-policy and cancellation corrections are qualified at that scope;
-historical billing refusal is not a current blocker.
+Dependency-policy and cancellation fixes are qualified at that scope; historical
+billing refusal is not a current blocker.
 
 [Run40393162501](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40393162501)
-on `00714653` is terminal FAIL: 17 PASS, 3 FAIL, 10 NOT_RUN. All three platforms
-fail the same stale `control_runtime_entrypoint` expected role diagnostic after
-Index support. The one-line correction is integrated at `a8b7a8ec`; all other
-refusal assertions remain. Fresh builds, Clippy, rustdoc and early dependency
-policy pass; subsequent workspace/acceptance/CLI gates remain unqualified.
-The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
-records the separate results and timings. Shared frozen source/Cargo/tool/artifact
-contexts are verified, but shorter failed runs are not evidence of a speedup.
-[Run40406281096](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096)
-is running on the pushed `94a52232`; `ci_native_cancel_review` owns its sole
-watcher (session49815). Its terminal result and public-output audit remain pending.
+on `00714653` is terminal FAIL: 17 PASS, 3 FAIL, 10 NOT_RUN. All platforms failed the
+same stale role diagnostic assertion, corrected at `a8b7a8ec` and included in 94a.
+Builds, Clippy, rustdoc and early dependency policy passed; shorter failed runs
+do not prove a speedup. The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns exact source/tool/artifact contexts and timings.
 
-Watcher91567 ended/reaped. Scoped audit verified all four artifact digests,
-30 artifact members and 38 log members, with zero credential-pattern candidates
-or provider alerts; asynchronous provider scan completion is not claimed.
-Incremental source/history audits through `94a52232` found no new or unclassified
-credential candidates or confidential archive/store inputs. Receipts remain under
-`.research/ci-publication-20261026`; raw captures stay protected and excluded from
-public uploads. Provider scan completion is not inferred from an empty alert list.
+[Run40406281096](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096)
+on published `94a52232` is terminal FAILURE: ARM64 and macOS succeeded, Linux
+amd64 failed: `cursor_keyring::prepare_key_appends_once_preserving_the_exact_existing_ring_and_material`
+received Busy on an immediate retry. A concurrent FIFO-test subprocess may
+temporarily inherit its directory lock; this mechanism remains a hypothesis
+pending a controlled reproduction. `ci_native_cancel_review` owns the bounded
+fixture diagnosis and terminal public-output audit; watcher49815 exited1/reaped. No rerun or duplicate
+watch was started. Prior output/source audits through 94a found no new or unclassified
+credential candidates or confidential inputs; empty provider alerts do not prove
+asynchronous scan completion. Protected receipts remain under
+`.research/ci-publication-20261026`; `initial_index_rows` owns the next incremental
+source/history audit. Never upload raw lab captures.
 
 ## Resources and next action
 
-Fresh worker-before-parent build `a295da60` is PASS: source/CLI/worker hashes and
-all2365 source files verified. Sessions80251/10299 ended exit0/reaped. Installed
-r5 session51261 ended exit1/reaped; r6 session74584 ended exit0/reaped. All owned
-containers are stopped/PID0/noOOM (r5/r6 all exit0), with original databases and
-captures preserved. Native qualification has released the exclusive115 compiler
-cache; only the fresh installed build uses its separate recorded container and
-output. `initial_index_rows` is preparing the
-ordinary installed acceptance extension; the other source delegate is complete.
-The hosted CI watcher remains active. Documentation checks passed all three
-selected gates at94a; the new increment is unverified.
+Native session 15316, installed builder 19968, assembly 86235 and installed r7
+session 97773 all exited0/reaped. Their owned containers are stopped/PID0/noOOM;
+all 19 r7 containers also exited0. The borrowed bridge remains empty and retained.
+No local product/engine/build process is active. Native qualification released
+the exclusive 115 compiler cache; current 825 build and worker artifacts are kept
+for fixture-only followups. The short-pin source delegate and hosted CI evidence reviewer
+remain active; the cleanup/source-audit delegate is complete through a858; final-tail audit remains.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
-`implementation_index_foundation_20261026.live_readiness`, owns exact resource and
-receipt identities. Bounded retirement also removed 1,748 obsolete receipt-cache
-intermediates (2,082,344,960 allocated bytes), preserving all 61 ELFs, nine outside
-pins and other target entries. Earlier cache and obsolete034 target retirements
-remain journaled. Current native/build caches, unique data, original failures and
-pending worktrees are retained. No broad cleanup is underway.
+`implementation_index_foundation_20261026.live_readiness.ordinary`, owns resource
+and receipt identities. Bounded retirement removed exactly 2,372 obsolete compiler
+intermediates from installed b533/a295 targets: 2,388,500,480 allocated bytes.
+All 228 target ELF paths, 50 outside pins and 6,474 other target entries remain.
+Observed free space rose to 140,148,334,592 bytes; shared-host changes are not
+attributed solely to deletion. Pre/post ownership/reference checks passed within
+documented unprivileged `/proc` visibility limits. Earlier retirements remain
+journaled. No whole-target, dataset or worktree deletion or broad cleanup occurred.
 
-Next: continue P01-T09 Step1/6 with ordinary readiness: create a bounded authoritative
-bridge from current Archive selection/sealed batches to complete input
-expectations for the existing native verifier. Keep actual grants, reader/catalog
-custody and driver join through final currentness checks; narrow successful
-history/export alone cannot certify a complete cut. Source remains Unknown without
-an Ingest owner. No unbounded census or full-P02 prerequisite is implied. Retain
-all other M1 and later gates above; FAIL/NOT_RUN/interruption never become PASS.
+Next: close the identified hosted FIFO/keyring test race if confirmed, preserving
+the original failure and exact assertions. Finish the short-pin fixture, critically review
+the actual expiry/join oracle, then run it with the already qualified 825 installed
+candidate. Preserve the original action, operation and resource ceilings; do not
+confuse Control renewal with reader-pin extension. Record real outcomes in the
+existing report. Publish the coherent ordinary-readiness increment after its
+source audit, retaining every other M1/later gate. FAIL/NOT_RUN/interruption never
+become PASS.

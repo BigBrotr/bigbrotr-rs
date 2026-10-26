@@ -74532,7 +74532,7 @@
       },
       "next": "P01-T09 Step1/6 ordinary complete-current-selection readiness using bounded sealed frontier/input expectations and existing native verifier; keep source Unknown without Ingest. Index restart/uncertainty and Step5 independent outages/pending/capacity remain assigned.",
       "ordinary": {
-        "status": "IN_PROGRESS_NOT_QUALIFIED",
+        "status": "PASS_INSTALLED_ORDINARY_INPUT_FAILURE_RECOVERY_SCOPE",
         "source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
         "tree": "fe2d598d51d5a2b76f4151cdfb02e77d3ee40c59",
         "purpose": "P01-T09 Step1/6: complete-current ordinary Archive observation plus matching completed history/export; Source remains Unknown",
@@ -74580,7 +74580,26 @@
           },
           "acceptance": {
             "owner": "initial_index_rows",
-            "status": "IN_PROGRESS_NOT_RUN"
+            "status": "INTEGRATED_INSTALLED_PASS",
+            "original": "3a867858b29957f11e3bf9c68d458a59e2ab3079",
+            "integrated": "e644e218",
+            "root_review": {
+              "path": ".research/live-readiness-20261026/ordinary-root-review.json",
+              "sha256": "b493b8b4d0bc1e75f8dc6745a525e13cfa64b9c47e517709378e3c42c42885a8",
+              "controls": "39 scoped acceptance controls; integrated inputs/receipts verified; root retained-oracle replay PASS"
+            }
+          },
+          "proxy": {
+            "owner": "m1_runtime_grants",
+            "original": "cbef86239c61f4ccb6ada540ae6c5e8f9a75daaf",
+            "integrated": "a8584b24",
+            "status": "INTEGRATED_SCOPED_CONTROLS_PASS",
+            "receipt": ".research/ordinary-probe-proxy-20261027/.research/proxy-controls/result.json"
+          },
+          "short_pin": {
+            "owner": "m1_runtime_grants",
+            "status": "IMPLEMENTING_CLOSED_ACCEPTANCE_VARIANT_NOT_RUN",
+            "boundary": "Existing first-launch Index journey; same-process positive baseline, earlier actual reader-pin expiry under continuing Control renewal, actual native blocking/join and unchanged science/export"
           }
         },
         "verifier_controls": {
@@ -74588,31 +74607,56 @@
           "status": "PASS",
           "scope": "7 verifier fault controls only; no product qualification"
         },
-        "retention": "Preserve all original failures, exact source, executables and current/earlier installed inputs; no cleanup of active115 cache or pending worktrees",
+        "retention": "Keep native115 exclusive reusable cache and current825 build, all original failures, exact source, executables, data and pending worktrees; retired older compiler intermediates are inventoried separately",
         "not_run": [
-          "installed ordinary positive/withheld-input/narrow-read/recovery extension",
-          "actual short-pin expiry and old-snapshot/selected-metadata failure qualification"
+          "Actual short-pin expiry while same Control authority renews; next closed installed variant",
+          "Actual before-forward/after-complete pin-release COMMIT uncertainty; genuine unknown native termination remains separate",
+          "Old-published-snapshot/current-selection change and selected-metadata failure installed coverage; native controls remain valid",
+          "Other M1 and later gates retain their existing plan owners"
         ],
         "installed_build": {
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184",
           "session": 19968,
-          "status": "RUNNING",
+          "status": "PASS",
           "owner": "abb7a0d0cca1a1ef199e33879caa23eb",
           "container": "7b9cae6bc029cb609f85dc6c50ec3a76f469c704498012359a9c9bf064e7cb7e",
           "script": ".research/live-readiness-20261026/installed-build.py",
           "script_sha256": "12d6d326a8ea478d866d84610c7c924e56b2ba5ab44c9d19d7c337a7fcaa4498",
           "original_script_preserved": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-a295da6/builder-source.py",
-          "scope": "Same reviewed fresh worker-before-parent build; parameterized exact revision/tree and full-native-PASS admission; unchanged resource/monitor/build recipe"
+          "scope": "Same reviewed fresh worker-before-parent build; parameterized exact revision/tree and full-native-PASS admission; unchanged resource/monitor/build recipe",
+          "session_state": "exit0_reaped",
+          "container_state": "stopped_exit0_PID0_noOOM",
+          "root_verification": "root-verification.json",
+          "root_verification_sha256": "17fc362bb8b430c0f76b2bb19a0e582be302307696e75a19c98ca34d5aeb2757",
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184/candidate",
+          "candidate_assembly": {
+            "revision": "e644e2184bd080a718fe6fa109e4df22baecda09",
+            "tree": "3237118f96c2e2a4729573186aee194d0671b1bc"
+          }
+        },
+        "installed": {
+          "root": ".research/first-launch-index-r7-20261026",
+          "session": 97773,
+          "session_state": "exit0_reaped",
+          "owner": "38467805b44007d2730e78a05f72013e",
+          "status": "PASS_ALL8_STAGES",
+          "resources": "resources.json",
+          "resources_sha256": "711548fd2398c09c432cb118f8e7d600cbff0b137d63a7610df67485a541e871",
+          "containers": "All19 stopped/exit0/PID0/noOOM; actual ownership/mounts checked",
+          "network": "Borrowed bigbrotr-m1-0f80280_default unchanged/empty/retained",
+          "root_verification": "root-verification.json",
+          "root_verification_sha256": "b4c2b8e650d6cfabd71968fecf273d7b0ef17c1c0a6f6ce56c71b9fe234e03c1",
+          "retention": "Original signed inputs, databases, injected ClickHouse conflict, exact restored retained input, raw protected status/SQL captures, source and candidate preserved"
         }
       }
     }
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",
-    "observed": "Nativea295 runner terminal free144020221952 bytes; freshbuilder continues its own65GiBminimum monitoring",
+    "observed": "Latest bounded retirement observed137761464320\u2192140148334592 free bytes; shared-host delta is not attributed solely to deletion",
     "status": "Bounded retirement complete; no general cleanup underway",
     "owner": "root",
-    "scope": "Obsolete034target and approvedreceipt41fff54 intermediates only; native115cache/currenta295build excluded; original evidence, data and worktrees retained",
+    "scope": "Only reviewed obsolete cache/intermediate sets; all current825/native115 resources, unique data, failures and worktrees retained",
     "latest_retirement": {
       "journal": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-03464fc/target-retirement.json",
       "sha256": "7c82d861069648de7ec7fee5d7ffd7971164ace2b06fef2e34b77784fdf3c9b9",
@@ -74634,6 +74678,24 @@
       "allocated_bytes": 2082344960,
       "observed_free_delta": 1975877632,
       "preservation": "1601 retained target entries including61ELFs and9outsidepins verified;6containers remain stopped/PID0; two known inaccessible user-session services disclosed. Observedfreechange includes concurrentbuild writes."
+    },
+    "installed_index_intermediates": {
+      "status": "RETIRED_VERIFIED",
+      "targets": [
+        "runs/initial-index-installed-b5333d5/out/build/target",
+        "runs/initial-index-installed-a295da6/out/build/target"
+      ],
+      "removed_files": 2372,
+      "allocated_bytes": 2388500480,
+      "observed_free_delta": 2386870272,
+      "terminal_receipt": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-index-terminal-20261026.json",
+      "terminal_receipt_sha256": "dfe00aae3d2c0032ec5ede7c30561f9ff45349fb43310b0f778272abbbe2d850",
+      "execution_receipt": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-index-retirement-receipt-20261026.json",
+      "execution_receipt_sha256": "0123a260827dee4cbf3b8879a36b616e40e93cb7520e7bb1c21134f96d8fe608",
+      "frozen_manifest_sha256": "787e498b38026b3c22fabc490c6f8017f1bf50d6320b5ddf8f5ab850c792a10d",
+      "preservation": "All6474 nonselected target entries,228 ELF paths,50 outside pins and4 invoker pins preserved;2372 intent/unlinked pairs reconcile to frozen reviewed set",
+      "live_use": "Pre/post ownership/mount/accessible process checks passed; overlapping containers stopped. Unprivileged /proc views remain incomplete, including existing owned systemd/sd-pam; no exhaustive privileged absence claim",
+      "regeneration": "Fresh target with retained exact source, tools/build.py, immutable compiler image and declared assets; partially retired targets must not be resumed"
     }
   },
   "implementation_ci_assembly_fixture_20261026": {

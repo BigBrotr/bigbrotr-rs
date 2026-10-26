@@ -384,7 +384,7 @@
     ],
     "resources": "All19 containers stopped/exit0/PID0/noOOM; session74584 reaped; original corrupt physical rows and all raw captures retained",
     "ordinary": {
-      "status": "PARTIAL_NATIVE_PASS_INSTALLED_NOT_RUN",
+      "status": "PASS_ORDINARY_CURRENT_READINESS_INPUT_FAILURE_AND_RECOVERY_SCOPE",
       "source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
       "tree": "fe2d598d51d5a2b76f4151cdfb02e77d3ee40c59",
       "implementation": "Complete-current bounded PG/input/native observation plus matching completed history/export; source remains Unknown; original nonrenewable reader pin, barrier and joined transport retained",
@@ -400,10 +400,74 @@
         "scope": "Actual bigbrotr library and CLI build, focused library Index/PG route and binary initial-service unit tests and strict Clippy; no stubs, engine transactions, installed service, release or capacity qualification"
       },
       "pending": [
-        "installed ordinary positive, withheld-input failure, narrow-read non-revival and full-probe recovery",
-        "actual short-pin expiry/old-selection/selected-metadata and broader M1 qualification"
+        "Actual short-pin expiry while same Control authority renews; next closed installed variant",
+        "Actual before-forward/after-complete pin-release COMMIT uncertainty; genuine unknown native termination remains separate",
+        "Old-published-snapshot/current-selection change and selected-metadata failure installed coverage; native controls remain valid",
+        "Other M1 and later gates retain their existing plan owners"
       ],
-      "resource_inventory": "implementation_index_foundation_20261026.live_readiness.ordinary"
+      "resource_inventory": "implementation_index_foundation_20261026.live_readiness.ordinary",
+      "installed_build": {
+        "status": "PASS",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184",
+        "source_files_verified": 2369,
+        "build_result_sha256": "d767a8ccb8a77527e70e249db39bf569eb441a9805771566aada1d9acbfb6e56",
+        "binary_sha256": "601805e56085ccf8a30a71752d92a7de62f7696b800e99b3e431f4518bf41c30",
+        "worker_sha256": "7213855f02ce2912e0aa97430a155d6b18ff101672e9ba5fc97340ffd65ed647",
+        "root_verification_sha256": "17fc362bb8b430c0f76b2bb19a0e582be302307696e75a19c98ca34d5aeb2757",
+        "scope": "Fresh worker-before-parent build with exact source and actual build-info; reused for fixture-only followups"
+      },
+      "installed": {
+        "status": "PASS",
+        "case": "p01-first-launch-index",
+        "source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+        "assembly": {
+          "revision": "e644e2184bd080a718fe6fa109e4df22baecda09",
+          "tree": "3237118f96c2e2a4729573186aee194d0671b1bc"
+        },
+        "acceptance": "e644e218",
+        "evidence_root": ".research/first-launch-index-r7-20261026",
+        "root_verification_sha256": "b4c2b8e650d6cfabd71968fecf273d7b0ef17c1c0a6f6ce56c71b9fe234e03c1",
+        "checks": 8,
+        "phases": [
+          "setup",
+          "positive",
+          "missing",
+          "narrow",
+          "restored"
+        ],
+        "observations": 36,
+        "source_inputs_verified": 92,
+        "result": "Control-only; Source Unknown. Both private capabilities Ready for rev4/cut12/snapshot5; exact266B current-member input withheld, both Unavailable; one original narrow read succeeds without reviving readiness; same inode/mode/hash restored and both Ready again. Status-only phases leave session idle/publication unchanged.",
+        "original_export": "Original independent353B signed export and exact manifest PASS; one job, export pin retained, every reader pin released",
+        "timing": {
+          "original_active_seconds": 3.528155061,
+          "original_limit_seconds": 40,
+          "export_limit_seconds": 12,
+          "added_phase_limits_seconds": 30,
+          "phase_elapsed_seconds": {
+            "setup": 0.851476,
+            "positive": 0.851713,
+            "missing": 11.117995,
+            "narrow": 1.335763,
+            "restored": 14.17221
+          }
+        },
+        "terminal": "Session97773 exit0/reaped; all19 containers stopped/exit0/PID0/noOOM; same borrowed bridge retained/empty"
+      },
+      "review": {
+        "path": ".research/live-readiness-20261026/ordinary-root-review.json",
+        "sha256": "b493b8b4d0bc1e75f8dc6745a525e13cfa64b9c47e517709378e3c42c42885a8",
+        "controls": "39 scoped acceptance controls; integrated inputs/receipts verified; root retained-oracle replay PASS"
+      },
+      "fault_proxy": {
+        "original": "cbef86239c61f4ccb6ada540ae6c5e8f9a75daaf",
+        "integrated": "a8584b24",
+        "status": "PASS_SCOPED_SOCKET_CONTROLS_REAL_PIN_FAULTS_NOT_RUN",
+        "receipt": ".research/ordinary-probe-proxy-20261027/.research/proxy-controls/result.json",
+        "receipt_sha256": "785daf87b7364244af965ef6c1ee8403b05b18ca1a4412ef17bb65c9cf06e80d",
+        "checks": "13 actual socket/admission +14 existing target +5 resume controls;3 documentation checks",
+        "preserved_failure": "Original Python3.13 accepted-session stop-order deadlock; fix joins sessions before listener wait_closed, without forwarding held queries or widening deadlines"
+      }
     }
   }
 }
