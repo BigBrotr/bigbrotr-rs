@@ -2,7 +2,8 @@
 
 `IngestStore` owns the first private native RocksDB handle for P02-T02. It exposes
 explicit `initialize` and `reopen` operations, the bound manifest, read-only native
-counters, a [bounded complete pending-batch feed](ingest-pending-format.md), and
+counters, a [current source-head observation](#current-source-head-observation),
+a [bounded complete pending-batch feed](ingest-pending-format.md), and
 [retained request-detail inspection](ingest-receipt-format.md#native-detail-inspection),
 and [bounded producer-input recovery](producer-request-inputs.md).
 There is no generic put/delete, exported DB/CF handle, admission,
@@ -71,6 +72,39 @@ policy coordinate, and any changed current namespace are refused. No mismatch
 rewrites the manifest. Native read-write open may perform recovery and update
 RocksDB metadata/LOG/OPTIONS before manifest validation; refusal is not a promise
 that all filesystem bytes remain unchanged. The application record is preserved.
+
+## Current source-head observation
+
+`observe_source_head(expected_manifest, cancelled)` borrows the live store and
+returns a fixed-size `SourceHead`: the complete current manifest, its identity
+and one `StreamBound`. The cached and persisted manifests must both match the
+expected tuple and namespaces. The selected schema/epoch profiles are initial
+schema1/epoch1, initial successor schema2/epoch2 and repeatable schema3/epoch3 or
+later. This comparison identifies the observed stream; it supplies no current
+Control authority.
+
+All reads use one native snapshot with checksums and no cache filling. An absent
+counter means zero only when bounded first-key checks establish the exact fresh
+layout: the manifest is the only `default` record, with empty `facts` and
+`receipts`. Any other missing counter is unavailable, including historical
+zero-output recovery, which has its own positive replay proof. Successor profiles
+retain an explicit zero counter; any current-stream fact or pending marker
+contradicts that zero. A nonzero counter can outlive reclaimed facts and pending
+markers, so observation does not require a retained tail or certify the complete
+source prefix. The full unsigned counter, including `u64::MAX`, is preserved
+without adding a next sequence or narrowing it. Missing/malformed metadata,
+foreign identity, a locally uncertain write, native errors and cancellation are
+explicit refusals, never an inferred empty or fully consumed stream.
+
+The pinned values and at most one iterator stay within the borrowed store's live
+native reservation. No native handle, variable application buffer or permit
+escapes in the result. Calls remain synchronous under the supervised joined
+native owner; cancellation checks around FFI cannot interrupt blocked engine
+work. This API performs no application write, ACK, reclamation, ownership or
+publication operation. It reports neither pending bytes nor topology-wide
+completion. A readiness consumer must separately match the observed stream with
+its current published cut and freshness evidence; failed observations cannot be
+substituted with zero lag.
 
 ## Lifetime, exclusion and path boundary
 

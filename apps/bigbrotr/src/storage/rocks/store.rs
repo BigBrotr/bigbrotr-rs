@@ -23,6 +23,14 @@ use std::{
 mod pending;
 pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLimits};
 
+#[path = "source_head.rs"]
+mod source_head;
+pub use source_head::{SourceHead, SourceHeadError};
+
+#[cfg(test)]
+#[path = "source_head_tests.rs"]
+mod source_head_tests;
+
 #[path = "receipts.rs"]
 mod receipts;
 pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes};

@@ -156,6 +156,12 @@ fn setup_entries(
 fn actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt() {
     let (root, mut store, budget, manifest, native) = setup(false);
     let path = root.path().join("db");
+    let cancelled = std::sync::atomic::AtomicBool::new(false);
+    let sequence = store.db.latest_sequence_number();
+    let initial = store.observe_source_head(&manifest, &cancelled).unwrap();
+    assert_eq!(initial.manifest(), &manifest);
+    assert_eq!(initial.through().get(), 4); // Four independent bootstrap descriptors.
+    assert_eq!(store.db.latest_sequence_number(), sequence);
     let input = PreparedEvent::new(
         request(5, 1),
         intent("E_private", 2, 10_000_000),
@@ -180,11 +186,27 @@ fn actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_rec
     assert_eq!(batch.records().len(), 4);
     assert_eq!(batch.first().sequence.get(), 5);
     assert_eq!(batch.last().sequence.get(), 8);
+    assert_eq!(
+        store
+            .observe_source_head(&manifest, &cancelled)
+            .unwrap()
+            .through()
+            .get(),
+        8
+    );
     let original = receipt.encode_persistent(8192).unwrap();
     drop(outcome);
     drop(store);
     let mut store =
         IngestStore::reopen(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
+    assert_eq!(
+        store
+            .observe_source_head(&manifest, &cancelled)
+            .unwrap()
+            .through()
+            .get(),
+        8
+    );
     let input = PreparedEvent::new(
         request(5, 1),
         intent("E_private", 2, 10_000_000),
@@ -206,6 +228,16 @@ fn actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_rec
         panic!("retry must return original receipt")
     };
     assert_eq!(receipt.encode_persistent(8192).unwrap(), original);
+    let sequence = store.db.latest_sequence_number();
+    assert_eq!(
+        store
+            .observe_source_head(&manifest, &cancelled)
+            .unwrap()
+            .through()
+            .get(),
+        8
+    );
+    assert_eq!(store.db.latest_sequence_number(), sequence);
 }
 
 fn label(v: &str) -> DescriptorLabel {
