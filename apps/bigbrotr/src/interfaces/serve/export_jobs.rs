@@ -120,9 +120,6 @@ pub(super) async fn execute(
     retained: &Custody,
     authority: &mut Supervisor<'_>,
 ) -> Result<()> {
-    if let Some(observations) = authority.observations.as_mut() {
-        observations.begin(super::role_status::ReadCapability::Export, None);
-    }
     let outcome = execute_inner(
         id,
         config,
@@ -207,6 +204,10 @@ async fn execute_inner(
         || job.selection().catalog() != coordinator.identity().catalog()
     {
         return Ok(());
+    }
+    // Auth/CAS refusals above observed no failure of the physical read path.
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.begin(super::role_status::ReadCapability::Export);
     }
     let prepare_config = config.clone();
     let prepare_budget = budget.clone();
@@ -416,7 +417,15 @@ async fn execute_inner(
                     }
                     Ok(None)
                 },
-                Err(error) if known_refusal(error) => Ok(Some(pause_reason(error))),
+                Err(error) if known_refusal(error) => {
+                    // A job authority/CAS refusal cannot invalidate prior
+                    // physical evidence; it also cannot certify this attempt.
+                    if matches!(error, SessionError::Forbidden | SessionError::Conflict)
+                        && let Some(observations) = authority.observations.as_mut() {
+                        observations.discard_attempt(super::role_status::ReadCapability::Export);
+                    }
+                    Ok(Some(pause_reason(error)))
+                },
                 Err(error) => Err(sql_error(error)),
             }
         }.await;

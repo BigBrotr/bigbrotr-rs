@@ -18,7 +18,7 @@ use bigbrotr::{
 };
 use bigbrotr_model::{CompleteThrough, DatasetId, OwnerEpoch, SourceCut, StreamBound, StreamId};
 use bigbrotr_protocol::archive_event::EventQuery;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::Duration;
 
 const FRESH_FOR: Duration = Duration::from_secs(30);
 // Two retained cuts plus two in-flight replacements, each at most1024 bounds.
@@ -32,11 +32,9 @@ pub(super) enum ReadCapability {
 struct Evidence {
     published: PublishedCut,
     started: AuthorityTick,
-    observed_at_us: i64,
 }
 struct Attempt {
     started: AuthorityTick,
-    observed_at_us: i64,
     candidate: Option<PublishedCut>,
 }
 struct Slot {
@@ -58,6 +56,7 @@ impl Slot {
         &self,
         capability: CapabilityKind,
         age: Option<Duration>,
+        observed_at_us: i64,
     ) -> Result<CapabilityObservation, SessionError> {
         let (state, reason) = if !self.selected {
             (CapabilityState::Disabled, StatusReason::NotSelected)
@@ -80,11 +79,13 @@ impl Slot {
             Some(_) => Freshness::Stale,
             None => Freshness::Unknown,
         };
+        // This UTC coordinate is the authenticated PG report timestamp. Only
+        // the monotonic age measures how old the retained evidence is.
         let time = self
             .last
             .as_ref()
             .zip(age)
-            .map(|(e, age)| ObservationTime::new(e.observed_at_us, age))
+            .map(|(_, age)| ObservationTime::new(observed_at_us, age))
             .transpose()?;
         Ok(CapabilityObservation {
             capability,
@@ -131,28 +132,29 @@ impl Observations {
             ReadCapability::Export => &mut self.export,
         }
     }
-    pub(super) fn begin(&mut self, kind: ReadCapability, observed_at_us: Option<i64>) {
+    pub(super) fn begin(&mut self, kind: ReadCapability) {
         let slot = self.slot(kind);
         if !slot.selected {
             return;
         }
         // Beginning a retry never clears a previous failed observation.
         slot.attempt = None;
-        match SuspendAwareClock
-            .read()
-            .ok()
-            .zip(observed_at_us.or_else(wall_time))
-        {
-            Some((started, observed_at_us)) => {
+        match SuspendAwareClock.read() {
+            Ok(started) => {
                 slot.attempt = Some(Attempt {
                     started,
-                    observed_at_us,
                     candidate: None,
-                })
+                });
             }
-            None => slot.failure = Some(StatusReason::AuthorityUnavailable),
+            Err(_) => slot.failure = Some(StatusReason::AuthorityUnavailable),
         }
     }
+    /// A known job authority/CAS denial is neither a successful physical probe
+    /// nor a physical dependency failure. Keep all prior observations unchanged.
+    pub(super) fn discard_attempt(&mut self, kind: ReadCapability) {
+        self.slot(kind).attempt = None;
+    }
+
     /// Stage only the query actually returned by the native reader and checked
     /// against its selected snapshot; final cleanup/join must still succeed.
     pub(super) fn observed(&mut self, kind: ReadCapability, query: &EventQuery, revision: u64) {
@@ -210,7 +212,6 @@ impl Observations {
                 slot.last = Some(Evidence {
                     published,
                     started: attempt.started,
-                    observed_at_us: attempt.observed_at_us,
                 });
                 slot.failure = None;
             }
@@ -258,16 +259,18 @@ impl Observations {
         let export_age = age(&self.export)?;
         let mut capabilities = Vec::with_capacity(2);
         if self.history.selected {
-            capabilities.push(
-                self.history
-                    .observation(CapabilityKind::PrivateHistory, history_age)?,
-            );
+            capabilities.push(self.history.observation(
+                CapabilityKind::PrivateHistory,
+                history_age,
+                observed_at_us,
+            )?);
         }
         if self.export.selected {
-            capabilities.push(
-                self.export
-                    .observation(CapabilityKind::SignedEventExport, export_age)?,
-            );
+            capabilities.push(self.export.observation(
+                CapabilityKind::SignedEventExport,
+                export_age,
+                observed_at_us,
+            )?);
         }
         RoleSnapshot::new(
             identity,
@@ -322,14 +325,6 @@ pub(super) fn complete(
     match snapshot {
         Ok(snapshot) => work.complete(snapshot),
         Err(error) => work.refuse(error),
-    }
-}
-fn wall_time() -> Option<i64> {
-    match SystemTime::now().duration_since(UNIX_EPOCH) {
-        Ok(value) => i64::try_from(value.as_micros()).ok(),
-        Err(error) => i64::try_from(error.duration().as_micros())
-            .ok()?
-            .checked_neg(),
     }
 }
 

@@ -240,10 +240,7 @@ async fn execute_inner(
         return Ok(());
     };
     if let Some(observations) = authority.observations.as_mut() {
-        observations.begin(
-            super::role_status::ReadCapability::History,
-            Some(authorization.observed_at_us()),
-        );
+        observations.begin(super::role_status::ReadCapability::History);
     }
     // The initial native profile includes its entire isolated worker allowance,
     // parent decode overlap and bounded HTTP output. The128MiB preparation

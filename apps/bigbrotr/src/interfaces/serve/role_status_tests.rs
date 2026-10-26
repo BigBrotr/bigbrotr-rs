@@ -53,7 +53,7 @@ fn value(cache: &Observations) -> serde_json::Value {
     .unwrap()
 }
 fn success(cache: &mut Observations, kind: ReadCapability, count: usize, through: u64) {
-    cache.begin(kind, Some(17));
+    cache.begin(kind);
     cache.observed(kind, &query(count, through), 3);
     cache.finish(kind, true);
 }
@@ -89,12 +89,12 @@ fn ordinary_last_success_requires_terminal_cleanup_and_never_claims_full_readine
     let actual = value(&cache);
     assert_eq!(actual["capabilities"][0]["state"], "stale");
     assert_eq!(actual["capabilities"][0]["freshness"], "fresh");
-    assert_eq!(actual["capabilities"][0]["time"]["observed_at_us"], "17");
+    assert_eq!(actual["capabilities"][0]["time"]["observed_at_us"], "77");
     assert_eq!(
         actual["capabilities"][0]["published"]["cut"]["bounds"][0]["last_complete_sequence"],
         "11"
     );
-    cache.begin(ReadCapability::History, Some(27));
+    cache.begin(ReadCapability::History);
     assert_eq!(value(&cache)["capabilities"][0]["state"], "building");
     cache.observed(ReadCapability::History, &query(1, 22), 4);
     // The native observation alone is insufficient before actual cleanup/join.
@@ -105,7 +105,7 @@ fn ordinary_last_success_requires_terminal_cleanup_and_never_claims_full_readine
         failed["capabilities"][0]["published"]["cut"]["bounds"][0]["last_complete_sequence"],
         "11"
     );
-    cache.begin(ReadCapability::History, Some(37));
+    cache.begin(ReadCapability::History);
     assert_eq!(value(&cache)["capabilities"][0]["state"], "unavailable");
     cache.observed(ReadCapability::History, &query(1, 33), 5);
     cache.finish(ReadCapability::History, true);
@@ -116,6 +116,32 @@ fn ordinary_last_success_requires_terminal_cleanup_and_never_claims_full_readine
         "33"
     );
     assert_eq!(retried["capabilities"][1]["state"], "building");
+    // A reservation auth/CAS denial begins no physical attempt. Finishing the
+    // outer execute wrapper must leave the selected export unobserved.
+    cache.finish(ReadCapability::Export, true);
+    assert_eq!(value(&cache)["capabilities"][1]["state"], "building");
+    success(&mut cache, ReadCapability::Export, 1, 44);
+    let original_start = cache.export.last.as_ref().unwrap().started;
+    // Later completion auth/CAS denial discards its new candidate, preserving
+    // both the earlier successful cut and its original monotonic evidence age.
+    cache.begin(ReadCapability::Export);
+    cache.observed(ReadCapability::Export, &query(1, 55), 6);
+    cache.discard_attempt(ReadCapability::Export);
+    cache.finish(ReadCapability::Export, true);
+    assert_eq!(cache.export.last.as_ref().unwrap().started, original_start);
+    let discarded = value(&cache);
+    assert_eq!(discarded["capabilities"][1]["state"], "stale");
+    assert_eq!(
+        discarded["capabilities"][1]["published"]["cut"]["bounds"][0]["last_complete_sequence"],
+        "44"
+    );
+    // Discarding another authority refusal cannot erase a previous real failure.
+    cache.begin(ReadCapability::Export);
+    cache.finish(ReadCapability::Export, false);
+    cache.begin(ReadCapability::Export);
+    cache.discard_attempt(ReadCapability::Export);
+    cache.finish(ReadCapability::Export, true);
+    assert_eq!(value(&cache)["capabilities"][1]["state"], "unavailable");
 }
 #[test]
 fn ordinary_observation_freshness_uses_thirty_seconds_without_promoting_scope() {
@@ -132,7 +158,7 @@ fn ordinary_observation_freshness_uses_thirty_seconds_without_promoting_scope() 
     ] {
         let observation = cache
             .export
-            .observation(CapabilityKind::SignedEventExport, Some(age))
+            .observation(CapabilityKind::SignedEventExport, Some(age), 77)
             .unwrap();
         assert_eq!(observation.freshness, expected);
         assert_eq!(observation.state, CapabilityState::Stale);
@@ -179,7 +205,7 @@ fn ordinary_cache_refuses_oversize_foreign_or_malformed_cut_without_erasing_last
         foreign,
         malformed,
     ] {
-        cache.begin(ReadCapability::History, Some(27));
+        cache.begin(ReadCapability::History);
         cache.observed(ReadCapability::History, &bad, 4);
         cache.finish(ReadCapability::History, true);
         let actual = value(&cache);
