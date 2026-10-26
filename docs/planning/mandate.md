@@ -20,15 +20,18 @@ is required before useful product progress.
 
 Q37/Q38 remain effective. Use the existing plan, guide, checkpoint and inventory;
 P01-T08, P08-T11/T12 and P10-T08/T10 own reproducibility, qualification and final
-documentation. Preserve resource, credential and private-publication limits;
-open-source readiness is not publication permission. Full completion requires
+documentation. Preserve resource, credential and release-publication limits;
+the public source repository is not an official release. Full completion requires
 implemented, integrated and demonstrated scope.
 
-The owner now requests a safe goal transition: save the coherent result, preserve
-pending work, stop autonomous owned activity, then set the incomplete goal PAUSED.
-The owner clears/starts the replacement through supported controls if this session
-cannot. The actual control and [checkpoint](../implementation/progress.md) own
-lifecycle state; a historical activation instruction is not a current resume.
+The owner completed the safe goal transition and activated the replacement on
+2026-10-26. Continue the full scope from the [checkpoint](../implementation/progress.md);
+the actual goal control owns lifecycle state. Q41 requires real, functioning
+GitHub Actions with shared local tooling and proportionate check selection.
+Under Q42 the owner has made the source repository public: treat accessible
+history, logs and artifacts accordingly, inspect for secrets/confidential material
+without echoing it, and keep raw sensitive lab evidence protected and untracked.
+Official releases, package publication and production deployment remain unauthorized.
 
 Tux remains this session's sole development/Git host under Q34/Q35, with
 `/home/tux/bigbrotr-rs` as integrating checkout and separate writable worktrees
@@ -49,7 +52,7 @@ below and persists through resumption.
 
 Use Tux as the editing/Git authority and inventoried exact-revision Tux labs
 for native Linux qualification (host policy updated by Q34). Coherent commits and
-verified pushes to this private repository are authorized. Keep all initial Cargo packages unpublished;
+verified pushes to this repository are authorized. Keep all initial Cargo packages unpublished;
 no public release, repository rename or change to the neighboring Go checkout is
 authorized. Preserve unrelated workloads and retained current experiments.
 Use the [execution guide](../implementation/agent-handoff.md),
@@ -58,11 +61,11 @@ Use the [execution guide](../implementation/agent-handoff.md),
 Routine decisions are autonomous; material evidence-driven design changes update
 their contracts, tasks, compatibility consequences and tests together.
 
-On 2026-09-18 the owner explicitly directs continued implementation and CI checks
-on isolated Tux resources while GitHub-hosted runners are blocked by billing.
-[Q33](questions.md) preserves exact-source, runner-trust and native-target
-boundaries. Share the checked-in CI commands; a Tux report is separate evidence,
-not a fabricated successful GitHub job.
+On 2026-09-18 the owner authorized isolated Tux checks during a hosted billing
+restriction. [Q33/Q41](questions.md) preserve that temporary fallback, exact-source,
+runner-trust and native-target boundaries, not a local-only CI policy. Assess
+availability from current job/step evidence. Share the checked-in commands; a
+Tux report cannot replace the real GitHub execution required for delivery.
 
 ## Historical planning mandate
 

@@ -80,5 +80,61 @@ class CiControls(unittest.TestCase):
                 ci.workspace_test_environment(build)
 
 
+class CiSelectionControls(unittest.TestCase):
+    def test_only_explicit_documentation_inputs_avoid_native_checks(self):
+        from tools.ci_changes import documentation_only
+        self.assertTrue(documentation_only(['README.md', 'docs/implementation/progress.md',
+                                           'docs/research/laboratory-inventory.json']))
+        for path in ['docs/reference/configuration.md', 'docs/tutorials/first-event.md',
+                     'docs/research/probe.py', 'tools/ci.py', '.github/workflows/ci.yml',
+                     'Cargo.lock', 'contracts/config/schema.json', 'new-owner.txt']:
+            with self.subTest(path=path):
+                self.assertFalse(documentation_only(['README.md', path]))
+        self.assertFalse(documentation_only([]))
+
+    def test_missing_or_unknown_comparison_runs_full_checks(self):
+        from tools.ci_changes import select
+        for base in ['', '0'*40, '--output=unsafe', 'a'*40]:
+            with self.subTest(base=base):
+                self.assertTrue(select(base, 'b'*40)['foundation'])
+
+    def test_complete_git_diff_keeps_deleted_and_renamed_code(self):
+        from tools.ci_changes import select
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', str(root), *args],
+                                               stderr=subprocess.DEVNULL, text=True).strip()
+            def commit(message):
+                git('add', '.')
+                git('-c', 'user.name=CI fixture', '-c', 'user.email=ci@example.invalid',
+                    'commit', '-qm', message)
+                return git('rev-parse', 'HEAD')
+            git('init', '-q')
+            (root/'README.md').write_text('before\n')
+            (root/'product.rs').write_text('fn main() {}\n')
+            base = commit('fixture')
+            (root/'README.md').write_text('after\n')
+            docs = commit('docs')
+            self.assertFalse(select(base, docs, root)['foundation'])
+            (root/'product.rs').rename(root/'notes.md')
+            renamed = commit('rename')
+            result = select(docs, renamed, root)
+            self.assertTrue(result['foundation'])
+            self.assertIn('product.rs', result['paths'])
+            self.assertIn('notes.md', result['paths'])
+            self.assertTrue(select(base, renamed, root)['foundation'])
+            self.assertTrue(select(renamed, renamed, root)['foundation'])
+
+    def test_documentation_track_shares_the_full_track_commands(self):
+        ci = CiControls().load()
+        output = Path('/test-output')
+        full = dict(ci.commands(output, 'Linux', 'x86_64', 2))
+        docs = ci.documentation_commands(output)
+        self.assertEqual(len(docs), 3)
+        for name, command in docs:
+            self.assertEqual(command, full[name])
+
+
 if __name__ == '__main__':
     unittest.main()

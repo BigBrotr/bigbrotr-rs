@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-26T08:39:43.121221+00:00",
+  "updated_at": "2026-10-26T10:38:15.397482+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73404,5 +73404,18 @@
       "local_tools": "bootstrap-replay.py, initial-journey.py, export-journey.py and verify-journey.py remain external; bring useful maintained responsibilities into existing P01-T08 harness, with explicit inputs",
       "restart_commands": "NOT_RUN; no recovery/retirement/successor has changed v3 state"
     }
+  },
+  "implementation_ci_publication_20261026": {
+    "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
+    "status": "hosted admission restored; first actual current-source matrix fails Clippy, correction pending verification",
+    "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
+    "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
+    "audit": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/public-exposure-audit-v1/summary.json",
+      "bytes": 7607,
+      "sha256": "0ff533d6866a0eecb7dea02d990ac44115a5f00f1be82d9b2e924aba71075e82"
+    },
+    "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
+    "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup."
   }
 }

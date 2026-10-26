@@ -86,10 +86,10 @@ The historical separate-dashboard-repository decision is intentionally replaced:
 it provided organizational isolation but would add cross-repository coordination
 before there are independent teams. A later split can preserve the HTTP contract.
 
-The repository is temporarily `bigbrotr-rs` and private. The brand, executable and
-product remain **BigBrotr**. The final repository name becomes `bigbrotr` after the
-transition. Do not publish links to a private planning repository as working
-installation instructions. At cutover, update source, issue, edit, package and
+The development repository is public as `bigbrotr-rs` (Q42). The brand, executable
+and product remain **BigBrotr**; a future `bigbrotr` rename is a separate decision.
+Public source availability does not make unbuilt proposed commands or unfinished
+release artifacts working installation instructions. At cutover, update source, issue, edit, package and
 release URLs through a single site configuration and check old links explicitly.
 
 Choose SvelteKit/TypeScript for the dashboard: typed routes, shared layouts and a
@@ -621,7 +621,8 @@ a separate future publication/operation decision. The
 [planning register](../planning/questions.md) and current contracts own these
 choices, rather than the earlier research question candidates. Full history with
 deletion-aware ordinary reads, equal product quality, full signed archival events,
-private administration and private planning remain established requirements.
+private administration remain established requirements; planning/source documents
+are now public under Q42.
 
 ## Content search and reconciliation detail
 

@@ -19,8 +19,61 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  foundation:
+  scope:
     if: github.event_name != 'workflow_dispatch' || !inputs.native_rocks_binding
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      foundation: ${{ steps.select.outputs.foundation }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check selection and result controls
+        run: python3 -m unittest discover -s tests/acceptance -p test_ci.py
+      - name: Select relevant checks from the complete Git diff
+        id: select
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+        run: python3 tools/ci_changes.py --base "$BASE" --head "$HEAD" --output .research/selection.json --github-output "$GITHUB_OUTPUT"
+      - name: Retain check selection
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: ci-selection
+          path: .research/selection.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  documentation:
+    needs: scope
+    if: needs.scope.outputs.foundation == 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Shared documentation checks
+        run: python3 tools/ci.py --documentation-only --output .research/ci
+      - name: Retain public documentation evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: documentation
+          path: |
+            .research/ci/result.json
+            .research/ci/*.log
+            .research/ci/handoff.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  foundation:
+    needs: scope
+    if: needs.scope.outputs.foundation == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -38,9 +91,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y clang llvm libclang-dev g++ strace nodejs
+      # Cache only downloaded bytes, never compiled workspace artifacts or
+      # credentials. The shared preparer rechecks every pinned size and hash.
+      - name: Reuse checksum-verified native downloads
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .research/ci-download-cache
+          key: native-inputs-${{ matrix.runner }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'trusted-main' }}-${{ hashFiles('contracts/release/archive-engine.json') }}
       - name: Shared native foundation checks
-        run: python3 tools/ci.py --output .research/ci
-      - name: Retain private diagnostic evidence
+        run: python3 tools/ci.py --output .research/ci --download-cache .research/ci-download-cache
+      - name: Retain public synthetic diagnostic evidence
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
@@ -107,7 +167,7 @@ jobs:
           if docker container inspect "$LAB_CONTAINER" > .research/native-binding/container.json 2>/dev/null; then
             docker rm -f "$LAB_CONTAINER"
           fi
-      - name: Retain private binding evidence
+      - name: Retain public synthetic binding evidence
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:

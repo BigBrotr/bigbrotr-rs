@@ -1,7 +1,7 @@
 # Implementing BigBrotr from this specification
 
-This is the execution guide for a new implementation agent. This is a private
-implementation/design repository. Its research programs are experiments,
+This is the execution guide for a new implementation agent. This is a public
+implementation/design repository in development (Q42). Its research programs are experiments,
 not production adapters. The owner explicitly started product implementation on
 2026-09-17; see the [current mandate](../planning/mandate.md). The neighboring Go
 checkout remains read-only.
@@ -65,6 +65,18 @@ together. Q40 replaces blanket additive-migration and indefinite-retention rules
 Keep essential current evidence, open-problem reproducers, unique data and pending
 work; verify ownership, actual use and regeneration before incremental cleanup.
 No broad historical audit, cleanup project or reduced product scope is implied.
+
+Q41 requires functioning hosted GitHub Actions, demonstrated by real runs, with
+the same maintained commands/criteria used locally where appropriate. Q33 only
+authorized a temporary fallback during billing failure. Keep check selection
+conservative, dependency caches verified and optional, costly qualification
+explicit, and pushes grouped around coherent results. Record provider admission
+failure, workflow failure, cancellation and product failure separately; none is
+success. Q42 makes accessible source history, logs and artifacts public. Review
+upload allowlists; never upload raw credentials, sessions or database captures.
+Official releases, package publication and production deployment still require
+separate authorization. Do not rewrite historical evidence to imply a past run
+was public or succeeded.
 
 Do not scaffold every proposed folder or crate before its first consumer exists.
 Do not copy the research Python or a state model into a product implementation
@@ -335,7 +347,7 @@ codex -C /home/tux/bigbrotr-rs -m gpt-6-astra -c 'model_reasoning_effort="xhigh"
 ```
 
 Then submit the following as a goal. This is an invocation of the existing
-contracts, not a separate task plan or authorization for public publication.
+contracts, not a separate task plan or authorization for an official release.
 
 ```text
 /goal Complete BigBrotr Rust across the entire selected P00–P10 plan and M1–M5
@@ -346,8 +358,8 @@ Deliver a professional repository ready for open-source maintenance: complete,
 correct, secure, robust, modular, readable and efficient implementation; necessary
 dependencies/tools/configuration; current documentation and licensed notices;
 reproducible build, installation and verification from a clean checkout with
-declared prerequisites and obtainable inputs. This does not authorize public
-publication, repository rename or production deployment.
+declared prerequisites and obtainable inputs. The source repository is public;
+this does not authorize official releases, packages, rename or production deployment.
 
 Before first production release, remove superseded internal compatibility, code,
 migrations/fixtures, duplication and implicit personal-lab dependencies when their
@@ -372,7 +384,7 @@ rewrites. Update code, tests, contracts and portable user guidance together. Reu
 valid reads/builds/reviews/proofs and repeat affected checks when assumptions
 change or uncertainty arises. Keep the existing essential checkpoint and plan,
 Q37 model controls and Q38 efficiency; use bounded agents where useful with one
-integrating owner. Preserve resource, credential and private-publication limits.
+integrating owner. Preserve resource, credential and release-publication limits.
 
 Finish only when every selected requirement is implemented, integrated and
 verified, with reproducible delivery independent of undeclared private resources.

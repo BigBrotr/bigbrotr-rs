@@ -75,6 +75,12 @@ def execute(checks, output, root, env, identity, seconds):
     return report
 
 
+def documentation_commands(output):
+    return [('planning-artifacts', [sys.executable, 'experiments/verify_artifacts.py']),
+            ('prepare-links', [sys.executable, 'experiments/verify_handoff.py', '--prepare']),
+            ('documentation-links', [sys.executable, 'experiments/verify_handoff.py', '--output', str(output/'handoff.json')])]
+
+
 def commands(output, system, architecture, jobs):
     python = sys.executable
     build = output / 'build'
@@ -87,10 +93,8 @@ def commands(output, system, architecture, jobs):
               ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
               ('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
-        checks += [('planning-artifacts', [python, 'experiments/verify_artifacts.py']),
-                   ('prepare-links', [python, 'experiments/verify_handoff.py', '--prepare']),
-                   ('documentation-links', [python, 'experiments/verify_handoff.py', '--output', str(output/'handoff.json')]),
-                   ('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
+        checks += documentation_commands(output)
+        checks += [('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
                    ('dependency-policy', ['cargo', 'deny', 'check', 'licenses', 'sources', 'advisories'])]
     if system == 'Linux':
         for scenario in ['p01-event-cli', 'p01-config-static']:
@@ -125,11 +129,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, help='new ignored evidence directory')
     parser.add_argument('--jobs', type=positive_jobs, default=2)
+    parser.add_argument('--documentation-only', action='store_true',
+                        help='run the documentation checks only; does not qualify product behavior')
+    parser.add_argument('--download-cache', type=Path,
+                        help='optional native asset download cache; every asset is size/hash checked')
     parser.add_argument('--rust-tests-from-build', type=Path,
                         help='run workspace tests with the verified worker from an existing trusted build')
     args = parser.parse_args()
     if args.rust_tests_from_build:
-        if args.output:
+        if args.output or args.documentation_only or args.download_cache:
             parser.error('--rust-tests-from-build and --output are separate operations')
         env = os.environ.copy()
         env.update(workspace_test_environment(args.rust_tests_from_build))
@@ -141,6 +149,19 @@ def main():
     output = args.output.resolve()
     if output.exists():
         raise ValueError('CI requires a new output directory')
+    if args.documentation_only:
+        if args.download_cache:
+            parser.error('--download-cache is only used by native foundation checks')
+        identity = {'source': {'revision': git(ROOT, 'rev-parse', 'HEAD'),
+                               'tree': git(ROOT, 'rev-parse', 'HEAD^{tree}'), 'dirty': False},
+                    'helper_sha256': file_hash(Path(__file__)),
+                    'scope': 'Documentation only; no native build or product qualification'}
+        report = execute(documentation_commands(output), output, ROOT, clean_environment(), identity, 600)
+        if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
+            report.update(status='FAIL', failure='source-changed-during-CI')
+            write_report(output, report)
+        print(json.dumps({'status': report['status'], 'counts': report['counts'], 'output': str(output)}))
+        return 0 if report['status'] == 'PASS' else 1
     system, architecture = platform.system(), platform.machine()
     if (system, architecture) not in [('Linux', 'x86_64'), ('Linux', 'aarch64'), ('Darwin', 'arm64'), ('Darwin', 'x86_64')]:
         raise ValueError('unsupported native CI host')
@@ -151,7 +172,8 @@ def main():
     # second clean build. No library from an ambient workstation is substituted.
     native_inputs = output.with_name(output.name+'-native-inputs')
     native_inputs.mkdir(parents=True, exist_ok=False)
-    archive = prepare_bundle(native_inputs/'archive-bundle', native_target(), native_inputs/'downloads', download=True)
+    cache = args.download_cache.resolve() if args.download_cache else native_inputs/'downloads'
+    archive = prepare_bundle(native_inputs/'archive-bundle', native_target(), cache, download=True)
     env.update(build_environment(native_inputs/'archive-bundle'))
     env.update(CARGO_HOME=str(output/'cargo-home'), CARGO_TARGET_DIR=str(output/'target'),
                RUSTDOCFLAGS='-D warnings', PYTHONDONTWRITEBYTECODE='1',

@@ -8,6 +8,38 @@ Each new run needs a fresh output directory. The JSON receipt distinguishes
 failed and unexecuted checks, and logs retain the underlying test counts.
 Native practical cases below still require Linux and strace.
 
+The GitHub workflow selects the complete native matrix for product, workflow,
+build, fixture, verifier and unknown changes. A narrow allowlist of planning,
+implementation, research, review and engineering Markdown/JSON plus root README,
+AGENTS and PLAN can instead select the shared documentation checks:
+
+```sh
+python3 tools/ci.py --documentation-only --output .research/ci-docs
+```
+
+Selection uses the complete Git diff (including deletions and both rename paths),
+not a truncated provider file list. Missing comparisons, empty diffs and manual
+foundation dispatch select full checks. The selection receipt states the actual
+scope; documentation success does not qualify the product. Pushes run on main,
+PRs on their merge inputs; work-branch pushes do not duplicate PR runs. Concurrent
+obsolete runs on the same ref/track are cancelled and remain incomplete evidence.
+
+Native downloaded assets can be reused with `--download-cache PATH`; missing
+entries are downloaded and every use verifies the pinned size and SHA-256. Actions
+keys them by runner, registry digest and trust namespace. The cache contains no
+credentials, extracted source, compiled workspace output or test results, and
+never bypasses checks. Its absence cannot prevent a fresh run. Real-engine,
+installation, load/recovery and release qualifications retain their explicit
+P01-T08/P08-T11/T12 gates; the foundation workflow does not claim those cases.
+
+This repository and accessible Actions artifacts are public. The workflow uploads
+only selected synthetic foundation reports/logs, never whole lab roots. In
+particular, runtime owner tokens, passwords, sessions and full database captures
+must stay protected locally. Review any new upload path before enabling it.
+Billing admission failures are NOT_RUN checks; setup/workflow errors, product
+assertion failures and cancellation/timeouts have distinct causes. A hosted PASS
+requires completed required steps and inspected reports, not a local substitute.
+
 The native archive worker additionally needs the exact
 [engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root

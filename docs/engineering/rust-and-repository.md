@@ -169,9 +169,11 @@ SBOM, migration notes, compatibility matrix and rollback limitations. Separate
 trusted release workflows from untrusted pull-request execution. Keep security
 reporting private and document supported versions.
 
-The repository stays private and named `bigbrotr-rs` now. Before the final rename
+The owner made `bigbrotr-rs` public under Q42; it remains in development and no
+official release, package publication or production deployment is authorized.
+Treat accessible source history, logs and artifacts as public. Before a future rename
 to `bigbrotr`, inventory legacy remotes, package/image names, GitHub Pages paths,
 OAuth callbacks, webhooks, CI badges, links and redirects; back up and tag the old
 project; rehearse migration and publish a version map. Do not rename or repurpose
-the current repository while the other agent works there. Branding throughout is
+the current repository without a separate decision. Branding throughout is
 BigBrotr; the suffix is temporary infrastructure naming.

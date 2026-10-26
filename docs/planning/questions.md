@@ -5,14 +5,14 @@ adopt particular technologies. The designer compares alternatives, selects a
 coherent design and explains departures. Unanswered questions do not block the
 planning work; the selected defaults below remain revisable with new evidence.
 
-Operational instructions remain explicit: private temporary repository, legacy
+Operational instructions remain explicit: public development repository (Q42), legacy
 repository read-only, English repository content and coherent commits/pushes.
 Q30 records the explicit transition to implementation; earlier stage statements
 below are historical.
 
 | ID | Topic | Input or answer | Selected treatment |
 |---|---|---|---|
-| Q01 | Repository identity | Private `bigbrotr-rs` locally/GitHub now; eventually `bigbrotr` | Preserve BigBrotr brand; plan final transition without renaming current legacy repository |
+| Q01 | Repository identity | Originally private `bigbrotr-rs`; public under Q42; eventual `bigbrotr` name remains separate | Preserve BigBrotr brand; do not rename the current repository without authorization |
 | Q02 | Deletion and history | Retain original events and deletion requests; consider serving policy separately | Full historical archive; ordinary relay/current reads honor logical deletion; explicit authorized history resources |
 | Q03 | First-launch priority | Every service/product area matters equally | Full scope and equal quality; order by dependencies; coherent local experience with explicit external exposure/signing |
 | Q04 | Lossy lightweight profiles | Signature retention matters; old content-loss combinations may be removed; slim exports may suffice | Retain all signed fields/signature, remove heavy_fields storage axis and old Lil/Index runtime semantics; analytical projections labeled non-verifiable |
@@ -217,9 +217,10 @@ This does not change profile-1 bytes or reopen storage selection. The
 [selection record](../research/dependency-selections.md#implemented-fingerprint-codec-slice)
 records the BlueOak license notice and implemented versus future boundaries.
 
-Q33 (2026-09-18): Hosted GitHub Actions jobs cannot start because of the account's
-billing/spending restriction. The owner explicitly directs continued work and CI
-checks on Tux without depending on GitHub's runner engine. Use the same checked-in
+Q33 (2026-09-18): At that time hosted GitHub Actions jobs could not start because
+of the account's billing/spending restriction. The owner authorized continued work
+and CI checks on Tux during that temporary problem, not a local-only CI policy
+(clarified by Q41). Use the same checked-in
 commands for Actions and deliberately invoked isolated Tux runs of trusted exact
 Git revisions. Record native Linux amd64 results independently; do not relabel
 them as GitHub job success or native arm64/macOS evidence. This does not authorize
@@ -389,3 +390,25 @@ complete merely to replace it, and never manipulate internal Codex data. If an
 incomplete goal cannot be cleared here, the owner clears/starts the replacement
 through supported controls. Full consolidation continues under the new goal; it
 is not a prerequisite for this safe pause.
+
+Q41 (2026-10-26): GitHub Actions must be functioning and reproducible, demonstrated
+by actual executions of significant revisions. Q33 authorized a temporary local
+fallback for billing, not local-only CI. Share maintained local/hosted commands
+and criteria; select checks from relevant changes, reuse verified optional
+dependencies, avoid duplicate executions and explicitly place costly qualification.
+Group commits/pushes around coherent results without large unreviewable batches.
+Distinguish billing admission failures, workflow faults, cancellations and product
+defects; preserve incomplete execution honestly. Integrate this in P01-T08 and
+P08-T11/T12, not a separate plan. No billing, spending-limit or visibility changes
+were authorized by this instruction. Full scope and guarantees remain unchanged.
+
+Q42 (2026-10-26): The owner has made `BigBrotr/bigbrotr-rs` public. Update current
+instructions accordingly and regard accessible code, history, Actions logs and
+artifacts as public. Inspect exposed surfaces for credentials/confidential data
+without echoing values; report concrete findings promptly. Preserve coherent
+commits/pushes and efficient complete CI. The repository remains in development;
+official releases, package publication and production deployment are not
+authorized. Earlier private-repository statements describe history. Candidate
+credentials, private datasets and sensitive raw lab evidence remain protected;
+repository visibility does not make them appropriate upload inputs. Q37/Q38/Q40
+and the full replacement goal remain in force.

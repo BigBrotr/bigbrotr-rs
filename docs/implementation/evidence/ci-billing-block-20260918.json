@@ -112,5 +112,81 @@
         "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
       }
     ]
+  },
+  "resolution_observation_20261026": {
+    "observed_at": "2026-10-26T10:38:15.397482+00:00",
+    "run_id": 40303460687,
+    "attempt": 3,
+    "source": "2d207233a3cd54f0f80a0999acae337cfec69b97",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
+    "status": "FAIL",
+    "provider_conclusion": "failure",
+    "billing_admission": "resolved after owner changed repository visibility; all three native jobs executed steps",
+    "failure_class": "test-code lint rejected by the existing Clippy gate; later required checks NOT_RUN",
+    "jobs": [
+      {
+        "id": 121517035759,
+        "name": "foundation (ubuntu-24.04-arm)",
+        "conclusion": "failure",
+        "counts": {
+          "collected": 9,
+          "executed": 3,
+          "failed": 1,
+          "not_run": 6
+        },
+        "passed": [
+          "toolchain",
+          "format"
+        ],
+        "failed": [
+          "clippy"
+        ],
+        "artifact_sha256": "8d656f1930c84b6e88d6bac0212e73f860147010a6582aadbaf3a23a9413f383"
+      },
+      {
+        "id": 121517036107,
+        "name": "foundation (ubuntu-24.04)",
+        "conclusion": "failure",
+        "counts": {
+          "collected": 14,
+          "executed": 3,
+          "failed": 1,
+          "not_run": 11
+        },
+        "passed": [
+          "toolchain",
+          "format"
+        ],
+        "failed": [
+          "clippy"
+        ],
+        "artifact_sha256": "d23cfcd7fa6d0995d3c62b8817cdc79340638925568a31a8eaa239834ff514fd"
+      },
+      {
+        "id": 121517036265,
+        "name": "foundation (macos-15)",
+        "conclusion": "failure",
+        "counts": {
+          "collected": 7,
+          "executed": 3,
+          "failed": 1,
+          "not_run": 4
+        },
+        "passed": [
+          "toolchain",
+          "format"
+        ],
+        "failed": [
+          "clippy"
+        ],
+        "artifact_sha256": "cd4f64164c8c9f90ffdfb0f20680e763ce5b85e8240c3d2e3728cea932474179"
+      },
+      {
+        "id": 121517038321,
+        "name": "native-rocks-linux-arm64",
+        "conclusion": "skipped"
+      }
+    ],
+    "correction": "Replace two constant chunks_exact(2) fixture decoders with as_chunks::<2>().0.iter(); no lint suppression or oracle changes. Corrected hosted execution remains required."
   }
 }

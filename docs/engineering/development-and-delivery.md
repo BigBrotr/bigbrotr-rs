@@ -32,7 +32,7 @@ The prior Mac workspace and SSH transport are no longer prerequisites.
 ```text
 Tux: edit, inspect, fast checks, coherent candidate commit
   ├── exact Git revision → isolated Tux checkout → Linux practical evidence
-  └── verified commit → private GitHub repository → GitHub Actions
+  └── verified commit → public development repository → GitHub Actions
                                                  ├── isolated CI checks
                                                  └── trusted release candidate
                                                       → Docker Hub by digest
@@ -180,6 +180,12 @@ as printed where they are commands, not verified only by a parallel helper.
 ## CI boundaries
 
 Use GitHub Actions for automation and **Docker Hub for application images**.
+Q41 requires actual hosted results, not merely a configured workflow or a local
+PASS. Q42 makes this source repository public; treat accessible Actions logs and
+artifacts as public too. Review upload allowlists and use only synthetic nonsecret
+inputs there. Do not upload whole laboratory/evidence roots containing owner
+tokens, passwords, sessions, private inputs or database captures. Keep those in
+protected ignored storage; publish only reviewed nonsensitive summaries.
 GitHub Actions is a job runner; it does not require GitHub Container Registry.
 GHCR is not the selected release destination. The normal installed runtime is
 Docker Engine with Compose; native Linux remains a supported advanced path.
@@ -211,8 +217,12 @@ isolation. CI availability does not authorize deleting other host resources.
 
 ### Trusted Tux execution when hosted runners are unavailable
 
-The owner's [Q33](../planning/questions.md) explicitly authorizes continued native
-Tux checks during the hosted-runner billing block. Both Actions and the trusted
+The owner's [Q33/Q41](../planning/questions.md) authorize native Tux checks as a
+temporary fallback when hosted runners cannot start, not a local-only CI policy.
+Inspect current run attempts, jobs, steps and annotations: provider billing refusal
+means the checks were NOT_RUN; a workflow setup error, timeout/cancellation and a
+product assertion failure are distinct outcomes. Hosted completion remains a
+delivery requirement. Both Actions and the trusted
 lab invoke `python3 tools/ci.py --output .research/ci` from a clean Git checkout.
 The shared entrypoint selects the installed native compiler, runs the existing
 foundation checks and records exact source, tool hashes, commands, per-step logs,
@@ -230,8 +240,9 @@ locked dependencies and the existing checksum-pinned link checker. Inventory
 before launch; retain and inspect the receipt, actual artifacts and resource
 termination. Do not register a persistent Actions runner to bypass this boundary.
 
-These are native Linux amd64 command results, not GitHub job status. Hosted
-Actions remain blocked until the account issue is resolved. Linux arm64 and
+These are native Linux amd64 command results, not GitHub job status. Current
+hosted results are linked in the checkpoint; do not infer a continuing billing
+block from the historical September report. Linux arm64 and
 macOS retain their own native evidence requirements; no emulation or AMD64
 result satisfies them. Candidate/release authentication, build-once promotion
 and Docker Hub publication rules below remain unchanged.
@@ -400,7 +411,8 @@ MIT is selected for newly authored project code when P01 creates the license.
 It does not relicense imported code, schemas, assets or dependencies. Check their
 actual permissions and preserve required notices before copying/distribution;
 follow the import contract's restriction on noncommercial upstream material.
-Current private visibility does not itself provide a public-use license.
+The public repository's MIT license covers project code only; dependency and
+imported-material notices retain their own terms. Visibility does not relicense them.
 
 P01-T01/T08 own reproducible development, early CI and practical evidence;
 P08-T09/T11/T12 own packaging, promotion and real release acceptance; P10-T03/T07

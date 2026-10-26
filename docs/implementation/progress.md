@@ -1,18 +1,48 @@
 # Current execution checkpoint
 
-2026-10-26, Tux. **Safe stop for the owner's Q40 goal replacement.**
-All owned runtime and agents are stopped; no further development is authorized
-until the owner activates/resumes the replacement. This commit precedes the actual
-pause-control request, issued after saving/pushing it. Inspect the goal control
-on resumption; do not infer its state from a historical active-goal instruction.
+2026-10-26, Tux. **Replacement full-product goal ACTIVE.** Q37/Q38/Q40
+remain; Q41 requires verified hosted Actions and Q42 records the owner's public
+repository transition. Continue the existing P01-T08 first-launch delivery increment.
+No official release, package publication or production deployment is authorized.
+
+## Current increment and GitHub boundary
+
+Integrated/published base is `2d207233a3cd54f0f80a0999acae337cfec69b97` on `main`.
+This checkpoint's commit reconciles public instructions, adds conservative CI
+selection and verified native-download reuse, and corrects two mechanical Clippy
+fixture decoders. Local CI controls (9), formatting, actionlint1.7.12, planning artifacts and
+535 document fragments PASS; critical CI source review found no blocker. Hosted
+qualification of these changes is still required.
+
+[Actions run40303460687 attempt3](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3)
+executed on Linux amd64/arm64 and macOS after the visibility change. All three
+passed toolchain/format then FAILED Clippy's constant-chunk lint; later checks
+are NOT_RUN. Attempt2 still had a billing admission refusal with zero steps.
+See the [existing CI observation](evidence/ci-billing-block-20260918.json), which
+preserves the original failures rather than rewriting them as success.
+
+The protected public-exposure audit is inventoried under
+`implementation_ci_publication_20261026`: 1,606 commits,10,050 blobs and501
+available Actions log snapshots, plus the first two new diagnostic artifacts;
+no operational credential confirmed. Synthetic candidates and scope limits are
+recorded in its redacted summary. GitHub secret scanning and push protection are
+now enabled; zero current alerts do not prove the asynchronous scan complete.
+Later logs/artifacts require their own inspection. Source/history and lab metadata
+are public; sensitive raw laboratory evidence stays protected and untracked.
+
+Pending separate work: candidate intake `616fa952e55524ff293c70c0c7aa6108814cf289`
+in `.research/m1-candidate-intake-20261026` (10 offline controls PASS, no runtime),
+and first-launch case `4c15897b1fc726601eacff308afb236376621316` in
+`.research/p01-first-launch-20261026`, branch `work/p01-first-launch` (10 new/2
+affected controls PASS, agent source review complete; real engines NOT_RUN).
+Root's original candidate draft is still untracked until reconciled with that commit.
+The tutorial draft below remains separate. Do not claim these branches integrated.
 
 ## Integrated result and valid evidence
 
-Main's last published result is `b5b54a1156745c9961dde213fc6f0d1b6fa780c6`.
-This checkpoint's commit records Q40, replaces superseded operational rules and
-marks only P01-T09 Step3 complete. Product source remains c49cfe5c; binary/image
-unchanged. Q37/Q38 and full P00–P10/M1–M5 scope remain. See questions.md, mandate.md,
-AGENTS.md, agent-handoff.md and the reconciled delivery/upgrade guidance.
+The previous fresh-launch result is integrated through `2d207233`; only P01-T09
+Step3 is marked complete. Qualified product source remains c49cfe5c; binary/image
+are unchanged. The current Rust edits affect test fixture decoding only.
 
 **PASS:** fresh extracted19-member bundle,15 actual initialization/enrollment
 commands, signed admission and Archive publication. Complete independent49 native
@@ -54,23 +84,28 @@ valid; d2ef7de0 is integrated. No new build or runtime campaign ran for this pau
   script or product implementation was started. Minimal Index/readiness and
   dependency-outage boundaries remain open; later milestones remain required.
 
-## Stopped resources and next action
+## Resources and next action
 
-All three current agents finished and were instructed to remain stopped. Oracle
-WT `.research/m1-oracles-20261026` is clean atd2ef7de0, integrated. The parked
-compacted proof WT remains at190dd5c5. Preserve their contents for reconciliation.
-Owned original PG e6780dc1 and corrected PG f2996d13 are stopped/PID0/exit0.
-All application, client, census and probe operations joined; no build or autonomous
-writer remains. `read-profile-v3/goal-transition-stop.json` records checked ownership,
-zero client backends before stop and exact terminal state. Unrelated services were
-untouched. Data, credentials, logs, original failures, .research and worktrees
-remain; Q40 proportional cleanup is future work, not performed in this pause.
+Current agents: the candidate-intake agent completed its local commit; runtime
+harness agent completed4c15897b; the security/CI reviewer completed with
+no source mutations. No local product build or engine campaign has started for
+this increment. The hosted attempt3 jobs have terminated in failure.
 
-First under the new goal: incorporate the proven first-launch orchestration and
-required inputs into the existing P01-T08 acceptance path with declared portable
-prerequisites, reconciling the saved tutorial. Extend that same path to the missing
-Ingest restart/resend rather than creating another private-lab runner. Do not
-block M1 on a general historical cleanup or on allP02.
+The prior owned PGs e6780dc1/f2996d13 and application/client/probe processes were
+stopped at the last verified safe boundary; `read-profile-v3/goal-transition-stop.json`
+records exact identities. These historical stopped observations are not authority
+to mutate resources without a fresh ownership check. Preserve database/input/logs,
+original failures, external roots and worktrees; no cleanup was performed here.
+
+Next: publish the coherent CI/public-boundary correction and inspect its actual
+hosted reports while integrating the reviewed intake and first-launch case. Run
+that maintained case against a fresh owned instance and the retained exact bundle,
+with declared pinned images and verified network custody; never upload its raw
+credential/session/Control captures. Reconcile the saved tutorial with the actual
+portable command. Then extend this same path to missing Ingest restart/resend.
+M1 still needs connected Ingest succession/catch-up and minimal Index/readiness/
+dependency-outage evidence; later obligations remain in their existing tasks.
+Do not block M1 on a general historical cleanup or all P02.
 
 The source-reviewed minimal restart uses the same v3 store: restore the retained
 `export-v1/initial-config.toml` deployment (reader disabled, no destination), then

@@ -1,6 +1,11 @@
 # Repository context
 
 This repository contains BigBrotr's fresh Rust implementation and its design.
+The owner made `BigBrotr/bigbrotr-rs` public on 2026-10-26 (Q42). Treat pushed
+code/history and accessible Actions logs/artifacts as public. Inspect publication
+inputs for credentials and confidential data; retain sensitive lab captures only
+in protected ignored storage. This does not authorize official releases, package
+publication, repository renaming or production deployment.
 The owner explicitly started product implementation on 2026-09-17. Implement the
 complete selected product through the existing task plan; earlier planning-only
 statements describe the previous stage, not a current implementation restriction.
@@ -80,8 +85,12 @@ ignored/external evidence; dispose of obsolete worktrees/labs separately under
 Q40's ownership and retention checks. Branches and parallel agents serve concrete needs. Keep
 one integrating owner and separate writable worktrees when implementation is
 parallel. Never run untrusted PR code on the shared Tux host or with release keys.
-The same contract documents the existing planning checks and their prerequisites;
-future product workflows are not yet implemented or passing.
+Q41 requires functioning GitHub Actions demonstrated by real runs; Q33 was a
+temporary local fallback, not a local-only CI decision. Share maintained checks,
+select work by changed inputs, reuse verified dependencies and avoid duplicate
+runs. Billing refusals, workflow errors, cancellations and product failures have
+different meanings; missing hosted execution remains an open delivery gate.
+The same contract documents current checks and the unimplemented release tracks.
 
 On a new session or after compaction, read the single durable
 [progress checkpoint](docs/implementation/progress.md) and follow the guide's

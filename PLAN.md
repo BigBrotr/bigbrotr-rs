@@ -4,8 +4,9 @@ This repository designs a clean Rust implementation of **BigBrotr**. It contains
 research, decisions, service contracts, experiments and the implementation order.
 Implementation is now authorized and the first foundation slice is in progress;
 the [checkpoint](docs/implementation/progress.md) records actual completion.
-The repository is private and temporarily
-named `bigbrotr-rs`; transition to `bigbrotr` is a separate release operation.
+The repository is public and named `bigbrotr-rs`; a future rename to `bigbrotr`
+is a separate decision. Public source does not authorize official releases,
+package publication or production deployment.
 
 The design is one product: full signed-event archive, optional provenance,
 configurable acquisition, useful analysis and independently selectable interfaces.

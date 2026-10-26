@@ -22,10 +22,9 @@ publication; ordinary Control supports private history and signed-event export.
 Restart, readiness, complete installation and the remaining product capabilities
 still have open qualification and delivery requirements. This is not a production
 release or a complete self-contained first-event distribution.
-The repository remains private and
-temporarily named `bigbrotr-rs`; the product name is **BigBrotr**. The eventual
-GitHub name `bigbrotr` is a separate transition. The neighboring Go checkout
-remains read-only.
+The repository is public and named `bigbrotr-rs`; the product name is **BigBrotr**.
+Public source availability does not imply production readiness, an official
+release or published packages. A future repository rename is a separate decision.
 
 ## Start here
 
@@ -57,7 +56,7 @@ roles use ordinary explicit endpoints when needed. No custom cluster manager is
 required. All initial Cargo packages stay unpublished; branches and parallel work
 are optional tools, while coherent commits and substantive review are required.
 
-The unpublished Cargo application, CI entrypoint and private candidate bundle/
+The unpublished Cargo application, CI entrypoint and development candidate bundle/
 Compose recipes are present; full release and clean-install qualification remain
 incomplete. Internal pre-production iterations are not supported public versions;
 necessary current integrity, restart, replay and recovery guarantees still apply.
