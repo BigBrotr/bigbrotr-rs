@@ -1,93 +1,99 @@
 # Current execution checkpoint
 
-2026-10-25, Tux. Explicit owner pause requested; development is stopped.
-After this checkpoint's commit/push, root must set the actual goal **PAUSED** and
-confirm the control result in the session. Resume only on explicit owner request.
-M1–M5 remain incomplete. Q37 and the October25 Q38 clarification apply.
+2026-10-26, Tux. The owner explicitly revoked the latest pause request; the actual
+goal control is **ACTIVE**. Continue the same full M1–M5 goal under Q37 and Q38.
+The October25 Q38 clarification is already in questions.md and agent-handoff.md;
+no parallel plan or historical audit is needed.
 
-## Saved revision and evidence
+## Current increment and verified result
 
-Last pushed main: `27ebe62bf4ca119f0b7160f14124fe4054761e91`, including merge
-`190dd5c57b252edbb7590bcaf3917a341eaae5ce` and its evidence (pushes joined0).
-This closure commit changes only the existing decisions, guide, checkpoint and
-records. There is no product patch or merge pending.
+Existing [P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition):
+deliver a clean first-event composition using the already qualified c49 CLI/worker,
+real initialization/enrollment, signed admission, Archive, read, export and restart.
+Main includes assembler commit `0f80280f5180a4aa32ef57479be23e89eca5e063` after
+`c3f7c31c6d1d4bbef35980d708ca927879a2abb1`. This checkpoint's commit adds the five
+reviewed recipe/Compose/SQL/image/tutorial inputs and records. Product Rust and its
+binary remain unchanged. Reconcile actual HEAD/status before resumption; do not
+mistake the assembler commit's historical WIP subject for the current evidence.
 
-**PASS:** loader fixture `d6a6b6f112742b9360fac17e1480a3019b6ca42e` is integrated.
-Actual cancellation and Control-backend loss on two genuinely initialized roots:
-8 commands, 86 negative controls, 4,401 raw bindings; runtime18069/raw45851 joined0.
-Only the expected fresh failed Control/role rows changed (240 to242); native
-93 rows/sequence139, required input, catalog and journals remained unchanged.
-Both children and lock holders exited; exact/all backend absence preceded native
-reopening. Receipt852a502c owns measured timing, identities and limits.
+**PASS:** 11 focused assembler controls and independent/root source review. Actual
+core bundle: 14 regular members, 76,409,187 bytes; extracted outside the checkout,
+all hashes/modes checked, relocated CLI build-info and worker-byte verification
+passed. The pinned runtime image consumes these existing artifacts without a
+product build; its CLI/worker byte checks pass. This does not exercise a native
+engine operation or qualify complete distribution notices/release authenticity.
 
-Reuse unchanged c49 builds (45 component/56 installed tests and required checks),
-e040 first-publication/retry qualification and existing ordinary journey evidence.
-Original280/995/598 failures and loader diagnosticv1 NameError remain preserved;
-none was relabeled PASS. Initial a99 Sync timeout cause remains unknown.
+**PASS:** 15 finite commands on a new dedicated Compose PostgreSQL instance:
+configuration validation, empty-instance provisioning, migration plan/apply to40,
+explicit application ACLs, config initialize/activate-initial, owner token/enrollment/
+status, Archive catalog/state/coordinator initialization, separate reader grants.
+No direct policy/principal seeding or replication bypass was used. The runtime
+grant set's full initial/successor/read/export consumers are still **NOT_RUN** here.
 
-The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns
-`initial_successor_preparation_20261012.repeatable_succession_20261015.
-producer_checkpoint_ack_preparation_20261020.closed_producer_reclamation_preparation_20261023.
-compacted_successor_preparation.later_empty_consumer_work.next_source_work_20261025.
-next_abandonment_work_20261025.next_retirement_work.next_archive_work`:
-`next_loader_work` is qualified; `next_proof_work` is paused read-only preparation.
-The [inventory](../research/laboratory-inventory.json) owns retained resources.
+Detailed identities/results and custody are linked from
+[laboratory inventory](../research/laboratory-inventory.json), key
+`implementation_m1_first_launch_20261026`. Its external root is
+`/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280`:
+`core-verified.json`, `image-byte-verified.json`, `bootstrap-verified.json` and
+`resources.json`. `bootstrap-v2/owner-token.stdout` contains a secret and stays
+protected locally; never copy it into Git or ordinary reports.
 
-## Partial work and custody
+## Active work, resources and retained uncertainty
 
-Both subagents stopped. The proof worktree
-`.research/compacted-later-archive-proof-fixture-20261025` is clean on
-`work/compacted-later-archive-proof-fixture` at190dd5c5. No source edits or WIP
-commit exist. Partial author/reviewer reads are preserved in the existing review
-root (receipts7e107eab/9dc6c60a); no new draft was approved. New implementation,
-static checks, diagnostics, build, actual held-reader baseline and raw replay are
-**NOT_RUN**. Do not automatically continue that branch on resume.
+Root owns runtime/integration. `m1_client_parameters` works in
+`.research/m1-client-20261026`, branch `work/m1-client`, base0f80280f: parameterize
+the existing Archive HTTP/export clients for real enrolled identity/password and
+the relocated executable. Legacy expectations must remain intact; critical
+review and actual connected execution are pending. Its creation explicitly used
+`gpt-6.1-sol`/`xhigh`. Critical review uses the existing Astra/xhigh agent.
+Assembler and initial provisioning reviewers finished; no other agent runs engines.
 
-No development/build/test/proxy process remains active. Actual loader client
-e9bff81d exited143/PID0/noOOM; borrowed PostgreSQL71775507 exited0/PID0/noOOM.
-Root handles joined, and the pause process/container inspection found no running
-BigBrotr job. Unrelated services were left untouched. The merged loader branch
-was retired only after archive-ref/bundle preservation; its clean detached
-worktree remains. All `.research`, external labs, databases, inputs, logs,
-artifacts and original failures are retained. Loader run root:
-`/home/tux/bigbrotr-implementation-20260917/runs/installed-compacted-later-archive-loader-d6a6b6f`.
-No cleanup deletion or new test campaign was performed for this pause.
+Only the new project `bigbrotr-m1-0f80280` database remains running for this
+increment, owner label `c555fff773e9f50f27c7db5c9840b962`; IDs/mounts are in the
+inventory/resources record. All finite command handles joined. No application
+Serve, relay, product build or test campaign is active at this checkpoint.
+Older loader client e9bff81d and borrowed PostgreSQL71775507 remain stopped/PID0;
+unrelated services are untouched. All worktrees, .research, external databases,
+inputs, logs and original failures remain retained.
 
-## M1 blockers and milestone boundary
+**Preserved failures:** original core extraction checker assumed Python's data
+filter preserved archive modes; it adds owner-write. Corrected extraction retains
+the safe path filter and the independently validated original modes/bytes. First
+Compose config inspection omitted the operator profile; the corrected inspection
+explicitly selects it. These were verifier/tool-assumption failures, not product
+failures. The original draft instance-v1 remains untouched: source review found
+premature creation of the Ingest target; corrected instance-v2 leaves that target
+absent for the product. No expectation or deadline was weakened. Initial a99 Sync
+timeout cause remains unknown; older original failures/evidence remain unchanged.
 
-Use [P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition), not all
-of P02 as a blanket gate. Existing scoped first-event and ordinary410d804 evidence
-already covers signed admission, Archive, real read/export and Control restart;
-it is reusable at its recorded identities and limits, not missing work.
+The compacted Archive loader d6a6b6f qualification, c49 builds and ordinary
+410d804/provenance-off evidence remain valid at their recorded identities/limits.
+The [recovery report](evidence/p02-producer-recovery-native-20260920.json) owns them.
+`.research/compacted-later-archive-proof-fixture-20261025` remains clean at190dd5c5,
+with partial-read receipts7e107eab/9dc6c60a and no draft/runtime qualification.
+Do not resume that proof branch automatically.
 
-- **Clean delivered composition:** P01-T09 Steps6/7 lack the planned external-
-  checkout first-launch acceptance, recipe, assembler/manifest and first-event
-  tutorial. Their five named paths were absent at pause. Demonstrate empty-volume
-  installation and the complete journey with truthful readiness and no publishing.
-- **Connected service behavior:** the minimal advertised indexing/readiness path
-  and archive/index dependency-outage acceptance in Steps1/2/5 remain open. Close
-  the actual adapters needed by the chosen recipe, without requiring all adjacent
-  services or hiding an unwired role behind ready status.
-- **Restart identity:** reconcile Step4's Ingest restart/resend and provenance-off
-  canonical-body/unchanged-first-admission assertions with retained410d804 evidence;
-  implement/exercise only missing connected coverage. Existing ordinary read/export/
-  restart success does not by itself close every Step4 assertion.
+## M1 blockers and next action
 
-Deep fault checks precede M1 where the selected path could lose or duplicate an
-acknowledged event, bypass authority, publish incomplete data or fail restart;
-name that exact boundary and reuse its valid evidence. The compacted reader-hold,
-H/D, floor-writer/unlink and broader GC/restore/capacity work remain required in
-the existing plan but are not automatically prerequisites for a noncompacting
-first-event recipe. No deletion is enabled. Full fleet, analytics, browser/site,
-release/arm64/CI/signing gates remain later milestone obligations, not complete.
+- Finish the clean delivered composition: qualify the complete fixed-file bundle
+  outside the checkout and connect its freshly initialized instance to the real
+  signed relay, private read/export and restart. Initialization success is not
+  event delivery or role readiness.
+- Close the actual minimal Index/readiness and dependency-outage boundaries in
+  P01-T09 Steps1/2/5. Do not advertise an unwired role as ready.
+- Reconcile Step4's Ingest restart/resend/provenance-off assertions with retained
+  ordinary410d804 and recovery evidence; exercise only missing connected coverage.
+  Ordinary Control restart alone does not restart ingestion.
 
-## First action after explicit resume
+First action: review/integrate the bounded client parameterization, then start
+the initial Control/Ingest/Sync/Archive lifetime on preserved instance-v2 and use
+those existing clients with the genuine enrollment receipt and independent signed
+fixture. Preserve literal scientific expectations, capture terminal outcomes and
+actual pending/readiness state; finish tutorial from observed connected behavior.
 
-Start the existing P01-T09 clean first-event composition increment: map the
-retained first-event/ordinary410d804 runner and current installed entrypoints to
-the missing bundle/recipe/tutorial acceptance. State the demonstrable outcome,
-concrete missing adapters and necessary checks before editing. Reuse valid builds,
-fixtures and reviews; resolve only real source/evidence discrepancies. Target one
-signed event through admission, Archive, read, standalone export and restart with
-independent exact bytes/signature/first-admission assertions. Select any deeper
-prerequisite by its concrete M1 risk; do not resume the P02 proof chain by default.
+Deeper checks precede M1 only for a concrete acknowledged-data-loss/duplication,
+authority, incomplete-publication or restart risk on this path. Compacted reader
+holds, H/D, floor writer/unlink, broader GC/restore/capacity and later fleet,
+analytics, browser/site, release/arm64/CI/signing obligations remain in the existing
+plan, incomplete. All of P02 is not an indivisible prerequisite; no deletion or
+public release is enabled by this increment.

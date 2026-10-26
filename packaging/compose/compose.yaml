@@ -1,0 +1,93 @@
+# Explicit private Linux amd64 first-event candidate. No automatic application
+# startup, migration, enrollment, collection, restart or readiness claim.
+name: ${BIGBROTR_PROJECT:?Set a unique project name}
+
+x-application: &application
+  image: ${BIGBROTR_IMAGE:?Set the locally assembled candidate image}
+  platform: linux/amd64
+  network_mode: host
+  user: "${BIGBROTR_UID:?Set the state owner UID}:${BIGBROTR_GID:?Set the state owner GID}"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  mem_limit: 6g
+  memswap_limit: 6g
+  cpus: 4
+  pids_limit: 256
+  stop_grace_period: 30s
+  restart: "no"
+  tmpfs: ["/tmp:rw,nosuid,nodev,noexec,size=64m,mode=1777"]
+  profiles: [operator]
+  labels:
+    org.bigbrotr.m1-first-launch: ${BIGBROTR_OWNER:?Set the retained resource owner token}
+  command: [build-info]
+
+services:
+  database:
+    image: postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94
+    platform: linux/amd64
+    labels:
+      org.bigbrotr.m1-first-launch: ${BIGBROTR_OWNER:?Set the retained resource owner token}
+    ports: ["127.0.0.1:15432:5432"]
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/operator/bootstrap
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    volumes:
+      - type: bind
+        source: ${BIGBROTR_STATE:?Set the new protected state directory}/postgres
+        target: /var/lib/postgresql/data
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${BIGBROTR_STATE}/secrets/operator
+        target: /run/operator
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${BIGBROTR_STATE}/secrets/runtime
+        target: /run/secrets
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ./provision.sql
+        target: /opt/bigbrotr/provision.sql
+        read_only: true
+        bind: {create_host_path: false}
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    cpus: 2
+    pids_limit: 128
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+    stop_grace_period: 30s
+    healthcheck:
+      test: [CMD, pg_isready, -U, postgres, -d, postgres]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  app:
+    <<: *application
+    volumes:
+      - type: bind
+        source: ${BIGBROTR_STATE}/data
+        target: /var/lib/bigbrotr
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${BIGBROTR_STATE}/config
+        target: /etc/bigbrotr
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${BIGBROTR_STATE}/secrets/runtime
+        target: /run/secrets
+        read_only: true
+        bind: {create_host_path: false}
+
+  initialize:
+    extends: {service: app}
+    volumes:
+      - type: bind
+        source: ${BIGBROTR_STATE}/secrets/operator
+        target: /run/operator
+        read_only: true
+        bind: {create_host_path: false}

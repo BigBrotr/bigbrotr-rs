@@ -1,0 +1,137 @@
+# Private M1 first-event candidate. This file does not initialize or start services.
+# Before config initialize, generate fresh instance/dataset/catalog IDs and replace
+# the three example IDs below. Keep the accepted file and protected secrets.
+# The controlled relay is a test input, not automatic public enrollment.
+[config]
+schema_version = 1
+authority_mode = "managed"
+recipe = "archive-only"
+
+[topology]
+instance_id = "11111111111111111111111111111111"
+dataset_id = "22222222222222222222222222222222"
+local_roles = ["control", "ingest", "sync", "archive"]
+
+[archive]
+catalog_id = "33333333333333333333333333333333"
+worker_memory_bytes = "512MiB"
+
+[archive.publisher]
+enabled = true
+
+[archive.reader]
+enabled = false
+
+[administration]
+enabled = true
+
+[administration.listen]
+host = "127.0.0.1"
+port = 18081
+
+[api]
+enabled = false
+
+[dashboard]
+enabled = false
+
+[sync]
+enabled = true
+
+[ingest]
+producer_outstanding_requests = 32
+
+[indexer]
+enabled = false
+
+[discoverer.events]
+enabled = false
+
+[validator]
+enabled = false
+
+[monitor]
+enabled = false
+
+[deriver]
+enabled = false
+
+[ranker]
+enabled = false
+
+[search]
+enabled = false
+
+[bootstrap]
+seed = false
+
+[relay_policy]
+auto_enroll_validated_public = false
+candidate_validation = "disabled"
+
+[network.private]
+rules = [{endpoint = "ws://127.0.0.1:7447/installed-fixture", cidr = "127.0.0.1/32", port = 7447}]
+
+[network.dns]
+resolver = "127.0.0.1:9"
+
+[postgres.control]
+endpoint = "127.0.0.1:15432"
+database = "bigbrotr_control"
+user = "bigbrotr_control"
+password_ref = "file:/run/secrets/control"
+
+[postgres.control.tls]
+mode = "local-plaintext"
+local_boundary = "loopback"
+
+[postgres.catalog]
+endpoint = "127.0.0.1:15432"
+database = "bigbrotr_catalog"
+user = "bigbrotr_catalog"
+password_ref = "file:/run/secrets/catalog"
+read_user = "bigbrotr_archive_read"
+read_password_ref = "file:/run/secrets/archive-read"
+
+[postgres.catalog.tls]
+mode = "local-plaintext"
+local_boundary = "loopback"
+
+[storage]
+ingest_root = "/var/lib/bigbrotr/ingest"
+archive_root = "/var/lib/bigbrotr/archive"
+archive_state_root = "/var/lib/bigbrotr/archive-state"
+index_root = "/var/lib/bigbrotr/index"
+scratch_root = "/var/lib/bigbrotr/scratch"
+
+[runtime.processes.application]
+baseline_bytes = "512MiB"
+completion_reserve_bytes = "512MiB"
+payload_bytes = "2GiB"
+native_bytes = "512MiB"
+memory_max_bytes = "4GiB"
+
+[runtime.processes.native]
+enabled = true
+baseline_bytes = "128MiB"
+completion_reserve_bytes = "512MiB"
+payload_bytes = "256MiB"
+native_bytes = "1GiB"
+memory_max_bytes = "2GiB"
+
+[runtime.processes.postgres]
+enabled = true
+baseline_bytes = "512MiB"
+completion_reserve_bytes = "256MiB"
+payload_bytes = "256MiB"
+native_bytes = "512MiB"
+memory_max_bytes = "1536MiB"
+
+[runtime.processes.clickhouse]
+enabled = false
+
+[export.memory]
+max_bytes = "256MiB"
+
+[read.execution]
+max_memory_bytes = "256MiB"

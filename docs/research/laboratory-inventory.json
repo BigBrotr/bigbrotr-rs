@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-18T17:13:20.504106+00:00",
+  "updated_at": "2026-10-26T08:39:43.121221+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73200,5 +73200,64 @@
       "resource_status": "8 owned containers exit0/PID0/noOOM; cgroups absent, no active root mount holder. Six unrelated running container IDs unchanged.",
       "retirement_receipt": "/home/tux/bigbrotr-rs/.research/export-manager-credential-review-20261020/branch-retirement-v1.json"
     }
+  },
+  "implementation_m1_first_launch_20261026": {
+    "status": "core-bundle-and-clean-initializers-qualified-connected-journey-pending",
+    "owner": "c555fff773e9f50f27c7db5c9840b962",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280",
+    "source_base": "c3f7c31c6d1d4bbef35980d708ca927879a2abb1",
+    "assembly_source": "0f80280f5180a4aa32ef57479be23e89eca5e063",
+    "product_source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
+    "bundle_worktree": "/home/tux/bigbrotr-rs/.research/m1-bundle-20261026",
+    "branch": "work/m1-bundle",
+    "observed_at": "2026-10-26T08:17:01.114101+00:00",
+    "free_before_bytes": 170161451008,
+    "processes": [],
+    "containers": [
+      {
+        "id": "e6780dc10335d870b37372234f42504a0c541eb9c7422b9af77076918e063f46",
+        "name": "/bigbrotr-m1-0f80280-database-1",
+        "status": "running",
+        "pid": 1906327
+      }
+    ],
+    "retention": "Preserve source drafts, databases, input, original failures, captures, assembled artifacts and external roots; no cleanup authorized by this allocation.",
+    "resources": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/resources.json",
+      "sha256": "2e69b42ade352229df94da80890e37f6da9c686b57d5999d71325194b9106827",
+      "bytes": 5457
+    },
+    "core_evidence": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/core-verified.json",
+      "sha256": "6ca39e2e786ae41d849eb4052dbe0200126708a3288c194d5018642da75d1a9e",
+      "bytes": 5167
+    },
+    "bootstrap_evidence": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/bootstrap-verified.json",
+      "sha256": "bc2576d7dbe3e804ca9d8f542d10158e60787d33c4c954b24b6c7b6395a57e39",
+      "bytes": 1953
+    },
+    "image_evidence": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/image-byte-verified.json",
+      "sha256": "64dc8692be0febd74f923c96c22485f891443f0ab2ae008d40e7d022ef3c3d6b",
+      "bytes": 3145
+    },
+    "source_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/producer-checkpoint-ack-review-20261020/m1-bundle-source-v1.json",
+      "sha256": "472f6b352b34eebe6fb451a3923090b2206eb1ed70d6c4808505118f36998838",
+      "bytes": 8281
+    },
+    "client_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/m1-client-20261026",
+      "branch": "work/m1-client",
+      "base": "0f80280f5180a4aa32ef57479be23e89eca5e063",
+      "owner": "m1_client_parameters",
+      "state": "active bounded existing-client parameterization"
+    },
+    "preserved_failures": [
+      "core-extraction-v1-failure.json",
+      "compose-config-v1-failure.json",
+      "instance-v1 retained before runtime; premature ingest directory source finding corrected in v2"
+    ]
   }
 }
