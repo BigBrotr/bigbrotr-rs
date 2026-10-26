@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import platform
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -27,6 +28,43 @@ def file_hash(path):
         for block in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def regular_file_hash(path):
+    if not stat.S_ISREG(path.lstat().st_mode):
+        raise ValueError('expected a regular file without a symbolic link: ' + str(path))
+    return file_hash(path)
+
+
+def source_inventory(source):
+    """Inventory the exported tree without following substituted source links."""
+    if source.is_symlink() or not source.is_dir():
+        raise ValueError('invalid exported source directory')
+    members = {}
+    for path in sorted(source.rglob('*')):
+        mode = path.lstat().st_mode
+        if stat.S_ISDIR(mode):
+            continue
+        members[str(path.relative_to(source))] = regular_file_hash(path)
+    return members
+
+
+def verify_native_toolchain(native):
+    for tool in native['tools'].values():
+        path = Path(tool['path'])
+        resolved = path.resolve(strict=True)
+        if str(resolved) != tool['realpath'] or regular_file_hash(resolved) != tool['sha256']:
+            raise ValueError('native tool changed: ' + str(path))
+    sdk = native['sdk']
+    if sdk and regular_file_hash((Path(sdk['path']) / 'SDKSettings.json').resolve(strict=True)) != sdk['settings_sha256']:
+        raise ValueError('SDK metadata changed')
+
+
+def cargo_environment(output, manifest, manifest_hash, profile):
+    """Declared run-local Cargo paths and source assertions, shared by checks."""
+    return {'CARGO_TARGET_DIR': str(output / 'target'), 'CARGO_HOME': str(output / 'cargo-home'),
+            'BIGBROTR_SOURCE_REVISION': manifest['revision'], 'BIGBROTR_SOURCE_TREE': manifest['tree'],
+            'BIGBROTR_SOURCE_MANIFEST_SHA256': manifest_hash, 'BIGBROTR_BUILD_PROFILE': profile}
 
 
 def clean_environment():
@@ -157,8 +195,7 @@ def build(args):
     for helper in ['tools/archive_bundle.py', 'contracts/release/archive-engine.json']:
         if file_hash(root/helper) != file_hash(source/helper):
             raise ValueError('selected revision has different archive build inputs; execute that revision in its own checkout')
-    members = {str(path.relative_to(source)): file_hash(path)
-               for path in sorted(source.rglob("*")) if path.is_file()}
+    members = source_inventory(source)
     manifest = {"format": "bigbrotr-source/1", "revision": revision, "tree": tree,
                 "archive_sha256": file_hash(archive), "files_sha256": members}
     (output / "source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
@@ -180,18 +217,11 @@ def build(args):
     archive_assets = verify_bundle(archive_root, target)
     archive_environment = build_environment(archive_root)
     env.update(archive_environment)
-    env.update({"CARGO_TARGET_DIR": str(output / "target"), "CARGO_HOME": str(output / "cargo-home"),
-                "BIGBROTR_SOURCE_REVISION": revision, "BIGBROTR_SOURCE_TREE": tree,
-                "BIGBROTR_SOURCE_MANIFEST_SHA256": manifest_hash, "BIGBROTR_BUILD_PROFILE": "release"})
+    env.update(cargo_environment(output, manifest, manifest_hash, 'release'))
     worker_identity = build_binaries(source, env)
     verify_bundle(archive_root, target)
-    for tool in native["tools"].values():
-        if file_hash(Path(tool["path"])) != tool["sha256"]:
-            raise ValueError("native tool changed during build: " + tool["path"])
-    if native["sdk"] and file_hash(Path(native["sdk"]["path"]) / "SDKSettings.json") != native["sdk"]["settings_sha256"]:
-        raise ValueError("SDK metadata changed during build")
-    after = {str(path.relative_to(source)): file_hash(path)
-             for path in sorted(source.rglob("*")) if path.is_file()}
+    verify_native_toolchain(native)
+    after = source_inventory(source)
     if members != after:
         raise ValueError("build changed its declared source inputs")
     binary = output / "bigbrotr"

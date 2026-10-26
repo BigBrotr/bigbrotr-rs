@@ -13,8 +13,17 @@ import time
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.build import clean_environment, file_hash, git, native_toolchain, positive_jobs
+from tools.build import (cargo_environment, clean_environment, command_output, file_hash, git,
+                         native_toolchain, positive_jobs, regular_file_hash, source_inventory,
+                         verify_native_toolchain)
 from tools.archive_bundle import build_environment, native_target, prepare_bundle, verify_bundle
+
+
+WORKSPACE_COMMANDS = {
+    'clippy': ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings'],
+    'rust-doc': ['cargo', 'doc', '--locked', '--workspace', '--no-deps'],
+    'rust-tests': ['cargo', 'test', '--locked', '--workspace'],
+}
 
 
 def write_report(output, report):
@@ -92,12 +101,11 @@ def commands(output, system, architecture, jobs):
         # workspace command, and refuse before native compilation.
         checks += [('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
                    ('dependency-policy', ['cargo', 'deny', '--locked', 'check', 'licenses', 'sources', 'advisories'])]
-    checks += [('clippy', ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings']),
-              ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
-              ('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
-                                      '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')]),
-              ('rust-tests', [python, 'tools/ci.py', '--rust-tests-from-build', str(build)]),
-              ('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
+    checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
+                                      '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
+    checks += [(name, [python, 'tools/ci.py', '--workspace-check', name, '--from-build', str(build)])
+               for name in WORKSPACE_COMMANDS]
+    checks += [('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
         checks += documentation_commands(output)
     if system == 'Linux':
@@ -110,23 +118,92 @@ def commands(output, system, architecture, jobs):
     return checks
 
 
-def workspace_test_environment(build):
-    """Bind process tests to the packaged worker from the preceding trusted build."""
+def verify_workspace_inputs(build, manifest, receipt, anchors):
+    """Recheck frozen inputs and copied artifacts, never Cargo's mutable outputs."""
+    for name in ['source', 'target', 'cargo-home', 'archive-worker',
+                 'archive-worker/lib', 'archive-worker/extensions']:
+        path = build / name
+        if path.is_symlink() or not path.is_dir():
+            raise ValueError('invalid run-local directory: ' + name)
+    for name in ['config', 'config.toml', 'credentials', 'credentials.toml']:
+        path = build / 'cargo-home' / name
+        if path.exists() or path.is_symlink():
+            raise ValueError('unexpected Cargo home configuration or credentials')
+    for name, expected in anchors.items():
+        if regular_file_hash(build / name) != expected:
+            raise ValueError('build input or copied artifact changed: ' + name)
+    if source_inventory(build / 'source') != manifest['files_sha256']:
+        raise ValueError('exported source changed')
+    assets = verify_bundle(build / 'archive-worker', native_target())
+    if assets != receipt['archive_worker']['assets']:
+        raise ValueError('native archive assets differ from the build receipt')
+    verify_native_toolchain(receipt['native_toolchain'])
+
+
+def workspace_context(build):
+    """Reuse only a preceding clean build of this exact checkout and helper."""
     build = build.resolve(strict=True)
+    anchors = {name: regular_file_hash(build / name)
+               for name in ['build-result.json', 'source-manifest.json']}
     receipt = json.loads((build/'build-result.json').read_text())
+    manifest = json.loads((build/'source-manifest.json').read_text())
+    if receipt['format'] != 'bigbrotr-build-result/1' or manifest['format'] != 'bigbrotr-source/1':
+        raise ValueError('invalid build/source receipt')
+    if (receipt['source_manifest_sha256'] != anchors['source-manifest.json']
+            or manifest['revision'] != git(ROOT, 'rev-parse', 'HEAD')
+            or manifest['tree'] != git(ROOT, 'rev-parse', 'HEAD^{tree}')):
+        raise ValueError('build source does not match this checkout')
+    for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py',
+                 'contracts/release/archive-engine.json']:
+        if regular_file_hash(ROOT / name) != manifest['files_sha256'][name]:
+            raise ValueError('executing helper or native registry differs from selected source')
+    info = receipt['build_info']
+    expected_source = dict(state='builder-supplied', revision=manifest['revision'],
+                           tree=manifest['tree'], dirty=False,
+                           manifest_sha256=anchors['source-manifest.json'])
+    if (info['source'] != expected_source or info['profile_assertion'] != 'release'
+            or receipt['helper_sha256'] != manifest['files_sha256']['tools/build.py']
+            or info['target'] != native_target()):
+        raise ValueError('build identity does not match the native source/profile')
+    for name, expected in info['inputs_sha256'].items():
+        if manifest['files_sha256'][name] != expected:
+            raise ValueError('embedded build input differs from selected source')
     worker = build/'archive-worker'/'bigbrotr-archive-worker'
-    if receipt['format'] != 'bigbrotr-build-result/1' or worker.is_symlink() or not worker.is_file():
-        raise ValueError('invalid packaged worker receipt/file')
-    if file_hash(worker) != receipt['archive_worker']['sha256']:
-        raise ValueError('packaged worker hash does not match build receipt')
-    if receipt['build_info']['target'] != native_target():
-        raise ValueError('packaged worker build target does not match the native test host')
-    verify_bundle(worker.parent, native_target())
-    env = build_environment(worker.parent)
-    env.update(BIGBROTR_ARCHIVE_TEST_INSTALLATION=str(worker.parent),
-               BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=receipt['archive_worker']['sha256'],
-               BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(worker.stat().st_size))
-    return env
+    identity = {name: receipt['archive_worker'][name] for name in ['bytes', 'sha256']}
+    if (info['archive_worker'] != identity or worker.lstat().st_size != identity['bytes']
+            or receipt['archive_worker']['registry_sha256'] != manifest['files_sha256']['contracts/release/archive-engine.json']):
+        raise ValueError('packaged worker binding differs from build receipt')
+    anchors.update({'source.tar': manifest['archive_sha256'], 'bigbrotr': receipt['binary_sha256'],
+                    'archive-worker/bigbrotr-archive-worker': identity['sha256']})
+    verify_workspace_inputs(build, manifest, receipt, anchors)
+    env = clean_environment()
+    selected, native = native_toolchain(env, int(receipt['native_toolchain']['environment']['CARGO_BUILD_JOBS']))
+    if native != receipt['native_toolchain']:
+        raise ValueError('selected native toolchain differs from the build')
+    env.update(selected)
+    declared = dict(selected, **cargo_environment(build, manifest, anchors['source-manifest.json'], 'dev'),
+                    **build_environment(worker.parent), RUSTDOCFLAGS='-D warnings', PYTHONDONTWRITEBYTECODE='1',
+                    BIGBROTR_ARCHIVE_WORKER_BYTES=str(identity['bytes']), BIGBROTR_ARCHIVE_WORKER_SHA256=identity['sha256'],
+                    BIGBROTR_ARCHIVE_TEST_INSTALLATION=str(worker.parent),
+                    BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(identity['bytes']), BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=identity['sha256'])
+    env.update(declared)
+    if command_output(['rustc', '-vV'], env) != info['rustc']:
+        raise ValueError('selected Rust compiler differs from the build')
+    return build, manifest, receipt, anchors, env, declared
+
+
+def workspace_check(build, name):
+    command = WORKSPACE_COMMANDS[name]
+    build, manifest, receipt, anchors, env, declared = workspace_context(build)
+    print(json.dumps({'command': command, 'cwd': str(build/'source'), 'environment': declared,
+                      'build_inputs_sha256': anchors, 'profile': 'default dev/test; packaged artifact remains release'}), flush=True)
+    try:
+        return subprocess.run(command, cwd=build/'source', env=env).returncode
+    finally:
+        verify_workspace_inputs(build, manifest, receipt, anchors)
+        if command_output(['rustc', '-vV'], env) != receipt['build_info']['rustc']:
+            raise ValueError('selected Rust compiler changed during the check')
+        print('Post-build source, native inputs and copied artifacts unchanged', flush=True)
 
 
 def main():
@@ -137,15 +214,16 @@ def main():
                         help='run the documentation checks only; does not qualify product behavior')
     parser.add_argument('--download-cache', type=Path,
                         help='optional native asset download cache; every asset is size/hash checked')
-    parser.add_argument('--rust-tests-from-build', type=Path,
-                        help='run workspace tests with the verified worker from an existing trusted build')
+    parser.add_argument('--workspace-check', choices=WORKSPACE_COMMANDS,
+                        help='run a default-profile workspace check from this revision\'s clean build')
+    parser.add_argument('--from-build', type=Path, help='preceding trusted exact-source build directory')
     args = parser.parse_args()
-    if args.rust_tests_from_build:
+    if args.workspace_check or args.from_build:
         if args.output or args.documentation_only or args.download_cache:
-            parser.error('--rust-tests-from-build and --output are separate operations')
-        env = os.environ.copy()
-        env.update(workspace_test_environment(args.rust_tests_from_build))
-        return subprocess.run(['cargo', 'test', '--locked', '--workspace'], cwd=ROOT, env=env).returncode
+            parser.error('--workspace-check/--from-build and --output are separate operations')
+        if not args.workspace_check or not args.from_build:
+            parser.error('--workspace-check and --from-build are required together')
+        return workspace_check(args.from_build, args.workspace_check)
     if not args.output:
         parser.error('--output is required for a complete CI run')
     if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
@@ -172,8 +250,8 @@ def main():
     env = clean_environment()
     selected, native = native_toolchain(env, args.jobs)
     env.update(selected)
-    # Prepare once for this CI run and share the exact hashed input with the
-    # second clean build. No library from an ambient workstation is substituted.
+    # Prepare once for the fresh clean build. Its installed bundle then remains
+    # the native input for every post-build workspace check.
     native_inputs = output.with_name(output.name+'-native-inputs')
     native_inputs.mkdir(parents=True, exist_ok=False)
     cache = args.download_cache.resolve() if args.download_cache else native_inputs/'downloads'

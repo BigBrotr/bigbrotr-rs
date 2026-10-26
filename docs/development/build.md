@@ -68,6 +68,14 @@ otherwise use a checkout of that revision. Build tools may need
 network access to download locked dependencies/toolchains; the runtime diagnostics
 do not. Artifacts are native to the executing build host.
 
+The shared CI runner follows this fresh release build with default-profile
+Clippy, rustdoc and complete workspace tests in the same exported source and
+run-local Cargo home/target. Its [post-build dispatch](verification.md) rechecks
+the recorded inputs and copied release artifacts before and after each command.
+The initial build still starts with empty owned Cargo directories; there is no
+cross-run compiled cache. Release and debug/test units can compile separately,
+and Cargo retains its ordinary feature/build-script fingerprint decisions.
+
 Native asset downloads use a checksum-addressed cache. Each attempt writes inside
 its own private temporary directory, checks pinned length and SHA-256, then
 atomically links the verified file into the cache without replacing another

@@ -79,8 +79,8 @@ jobs:
       matrix:
         runner: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
     runs-on: ${{ matrix.runner }}
-    # Run 35289122591 spent 42m in Rust checks and exhausted 60m during
-    # the second isolated native build. Bound both full compilations explicitly.
+    # Bound the fresh release build and complete default-profile checks.
+    # They share one run-local source/target; different Cargo units may rebuild.
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

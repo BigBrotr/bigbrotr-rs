@@ -44,15 +44,28 @@ requires completed required steps and inspected reports, not a local substitute.
 The native archive worker additionally needs the exact
 [engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
-with the run. Both Cargo checks and the second clean build use these pinned
-inputs. Manual Cargo development commands must supply the documented explicit
-library/test-bundle environment. The shared run builds the exact-source package
-before workspace tests, then invokes
-`python3 tools/ci.py --rust-tests-from-build <build-directory>`. This verifies the
-packaged worker against the trusted build receipt and native bundle, supplies its
-path/size/hash to the connected signed-pending test, and runs `cargo test --locked
---workspace`. The receipt is a trusted local build input here, not independent
-release authentication. Manual scoped process tests need the same
+with the run. After toolchain, formatting and selected dependency-policy gates,
+the shared run makes the fresh exact-source release build. Clippy, rustdoc and
+the full default-profile workspace tests then use that build's exported `source`,
+`cargo-home`, `target` and installed native bundle. They retain their existing
+workspace/all-targets scopes and debug assertions; tests do not use `--release`.
+Cargo may rebuild units for different profiles, features or check/test modes.
+This reuse stays within one run; compiled outputs are not uploaded to a cache.
+
+The dispatch commands are `python3 tools/ci.py --workspace-check clippy
+--from-build <build-directory>`, with `rust-doc` or `rust-tests` for the other
+checks. They require the same committed checkout and helper identities, reselect
+the recorded native tools, sanitize and record the declared child environment,
+and check source, receipts, tools, native assets and copied executable hashes
+before and after each command. Cargo's mutable target remains separate from the
+copied release parent/worker used by artifact CLI acceptance. The default-profile
+build metadata states `dev`; the copied artifacts retain their release identity.
+
+The dispatch binds the copied worker at compile time and supplies its path,
+size and hash to the connected signed-pending test. The receipt is a trusted
+local build input here, not independent release authentication. Manual Cargo
+development commands must supply the documented explicit library environment;
+manual scoped process tests need the same
 `BIGBROTR_ARCHIVE_TEST_INSTALLATION`, `BIGBROTR_ARCHIVE_TEST_WORKER_BYTES` and
 `BIGBROTR_ARCHIVE_TEST_WORKER_SHA256` identity. An unavailable asset is a missing prerequisite,
 not a skipped passing engine test.

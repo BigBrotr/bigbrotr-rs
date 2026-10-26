@@ -231,13 +231,21 @@ or failed prerequisite cannot produce PASS; the command group is killed/joined.
 The 120-minute command deadline fits the existing bounded CI track.
 
 On Linux amd64, the pinned cargo-deny installation and dependency policy checks
-run after toolchain/format checks and before Clippy starts workspace/native
-compilation. Policy runs with `--locked` so it cannot repair a stale lockfile
-before the first compiler check. It reads manifests, the lockfile, crate/license
+run after toolchain/format checks and before the fresh exact-source release
+build starts workspace/native compilation. Policy runs with `--locked` so it
+cannot repair a stale lockfile before the first compiler check. It reads manifests, the lockfile, crate/license
 sources and advisory data; they do not depend on a compiled product or worker receipt. Failure leaves
 later checks NOT_RUN. Native tool discovery and hashed archive-input preparation
 remain prerequisites. Other platform coverage and the requirement to build the
 exact packaged worker before process tests are unchanged.
+
+After that clean build, Clippy, rustdoc and the full default/debug workspace tests
+reuse its frozen exported source, recorded native inputs and run-local Cargo
+home/target. The runner sanitizes the environment and rechecks source, tool and
+copied-artifact identities around each command. It preserves all debug test
+coverage and artifact CLI gates; it does not convert tests to release mode or
+reuse compiled output across runs. Different Cargo profiles/features can still
+rebuild dependencies. Any timing benefit must be measured on a required run.
 
 On Tux, use a fresh clone of the reviewed exact Git revision inside an inventoried
 run directory, not a second edited source tree. Run as an unprivileged user in a
