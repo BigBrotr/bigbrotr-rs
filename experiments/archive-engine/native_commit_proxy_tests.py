@@ -12,10 +12,49 @@ import subprocess
 import sys
 import unittest
 
-from native_commit_proxy import MAX_WIRE, PIN_RELEASE_QUERY, Proxy, control_target_query
+from native_commit_proxy import MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, Proxy, control_target_query
+
+
+def ordinary_proxy(**changes):
+    options = dict(profile='ordinary-reader', defer_arm=True, catalog_manager='manager',
+                   catalog_reader='reader', catalog_database='catalog')
+    options.update(changes)
+    return Proxy(options.pop('mode', 'hold-reader-query'), options.pop('target', 'publication'), **options)
 
 
 class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
+    async def test_ordinary_streaming_keeps_aggregate_byte_and_target_frame_limits(self):
+        proxy = ordinary_proxy()
+        self.assertEqual((proxy.frame_limit, proxy.connection_limit, OPAQUE_CHUNK), (20000, 16, 65536))
+        proxy.charge_unframed(MAX_WIRE-6)
+        stream = asyncio.StreamReader()
+        stream.feed_data((b'Z' + struct.pack('!I', 5) + b'I') * 2)
+        await proxy.frame(stream)
+        self.assertEqual(proxy.report['bytes'], MAX_WIRE)
+        with self.assertRaisesRegex(ValueError, '^budget$'):
+            await proxy.frame(stream)
+        class Writer:
+            closed = False
+            def close(self):
+                self.closed = True
+        proxy = ordinary_proxy()
+        proxy.report['connections'] = 16
+        writer = Writer()
+        with self.assertRaisesRegex(ValueError, '^connections$'):
+            await proxy.session(None, writer)
+        self.assertTrue(writer.closed)
+        proxy = ordinary_proxy()
+        proxy.report['bytes'] = MAX_WIRE-1
+        proxy.charge_unframed(1)
+        with self.assertRaisesRegex(ValueError, '^budget$'):
+            proxy.charge_unframed(1)
+        proxy = ordinary_proxy()
+        proxy.report['frames'] = 20000
+        stream = asyncio.StreamReader()
+        stream.feed_data(b'Z' + struct.pack('!I', 5) + b'I')
+        with self.assertRaisesRegex(ValueError, '^budget$'):
+            await proxy.frame(stream)
+
     async def test_frame_boundary_and_original_default(self):
         for profile, limit in [('default', 20000), ('retained-catch-up', 131072)]:
             with self.subTest(profile=profile):
@@ -90,6 +129,12 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_ordinary_profile_requires_explicit_fresh_reader_gate(self):
+        for change in ({'mode':'pass'}, {'mode':'hold-capture-verify'}, {'target':'native-schema'},
+                       {'defer_arm':False}, {'catalog_manager':None,'catalog_reader':None,'catalog_database':None}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                ordinary_proxy(**change)
+
     def test_cli_rejects_noncanonical_port_without_connecting_or_echoing_values(self):
         for port in ('0', '65536', '05432', '+5432', '1e3', '127.0.0.1:5432'):
             result = subprocess.run([sys.executable, '-B', str(Path(__file__).with_name('native_commit_proxy.py')),
@@ -161,8 +206,9 @@ async def read_message(reader):
 
 class SocketProxy:
     """Actual proxy subprocess and loopback streams; the upstream is framing only."""
-    def __init__(self, case, mode, *, target='publication', deferred=True):
+    def __init__(self, case, mode, *, target='publication', deferred=True, profile='default', unexpected=0):
         self.case, self.mode, self.target, self.deferred = case, mode, target, deferred
+        self.profile, self.unexpected = profile, unexpected
         self.connections = []
         self.events = []
         self.process = None
@@ -177,6 +223,8 @@ class SocketProxy:
                    '--mode', self.mode, '--target', self.target, '--upstream-port', str(port),
                    '--catalog-manager', 'manager', '--catalog-reader', 'reader',
                    '--catalog-database', 'catalog']
+        if self.profile != 'default':
+            command += ['--profile', self.profile]
         if self.deferred:
             command.append('--defer-arm')
         self.process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.PIPE,
@@ -234,9 +282,9 @@ class SocketProxy:
         rest = await self.process.stdout.read()
         self.events.extend(json.loads(line) for line in rest.splitlines())
         self.case.assertEqual(await self.process.stderr.read(), b'')
-        self.case.assertEqual(self.process.returncode, 0)
+        self.case.assertEqual(self.process.returncode, 3 if self.unexpected else 0)
         self.case.assertEqual(self.events[-1]['event'], 'terminal')
-        self.case.assertEqual(self.events[-1]['unexpected'], 0)
+        self.case.assertEqual(self.events[-1]['unexpected'], self.unexpected)
         encoded = json.dumps(self.events)
         self.case.assertNotIn(str(0x1234abcd), encoded)
         self.case.assertNotIn(PIN_RELEASE_QUERY.decode(), encoded)
@@ -268,6 +316,67 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
             await responder.drain()
             self.assertEqual(await asyncio.wait_for(read_message(client), 3), (reply_tag, reply_body))
 
+    async def test_ordinary_baseline_is_bounded_byte_stream_and_only_fresh_reader_is_framed(self):
+        async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader') as proxy:
+            old_reader = await proxy.connect()
+            manager = await proxy.connect('manager')
+            # More than the original aggregate20k frames, but only140KiB. The
+            # manager's complete metadata response is forwarded byte-for-byte.
+            data = message(b'D', b'\0\0') * 20001
+            manager[3].write(data)
+            await manager[3].drain()
+            self.assertEqual(await asyncio.wait_for(manager[0].readexactly(len(data)), 3), data)
+            armed = await proxy.command('arm', 'armed')
+            self.assertEqual(armed['frames'], 0)
+            self.assertGreaterEqual(armed['unframed_bytes'], len(data))
+            await self.exchange(old_reader, b'Q', b'SELECT existing_reader\0')
+            other_database = await proxy.connect(database='other')
+            await self.exchange(other_database, b'Q', b'SELECT other_database\0')
+            new_manager = await proxy.connect('manager')
+            await self.exchange(new_manager, b'Q', b'SELECT new_manager\0')
+            selected = await proxy.connect()
+            admitted = await proxy.event('reader-selected')
+            self.assertTrue(admitted['admitted_after_arm'])
+            self.assertEqual((admitted['framed_connections'], admitted['backend_pid']), (1, 7331))
+            selected[1].write(message(b'Q', b'SELECT withheld\0'))
+            await selected[1].drain()
+            held = await proxy.event('held')
+            self.assertEqual((held['stage'], held['backend_pid'], held['target_connection']),
+                ('reader-query', 7331, admitted['connection_number']))
+            pending = asyncio.create_task(read_message(selected[2]))
+            try:
+                self.assertFalse((await asyncio.wait([pending], timeout=.05))[0])
+                await proxy.command('release', 'released')
+                self.assertEqual(await asyncio.wait_for(pending, 3), (b'Q', b'SELECT withheld\0'))
+            finally:
+                if not pending.done():
+                    pending.cancel()
+                    await asyncio.gather(pending, return_exceptions=True)
+            later_reader = await proxy.connect()
+            await self.exchange(later_reader, b'Q', b'SELECT later_reader\0')
+            await proxy.stop()
+            self.assertEqual(proxy.events[-1]['framed_connections'], 1)
+            self.assertLess(proxy.events[-1]['frames'], 20000)
+            self.assertLess(proxy.events[-1]['bytes'], MAX_WIRE)
+
+    async def test_ordinary_malformed_startup_is_refused_before_upstream(self):
+        malformed = (
+            b'\0\3\0\0user\0reader\0user\0manager\0database\0catalog\0\0',
+            b'\0\3\0\0user\0reader\0\0',
+            b'\0\3\0\0user\0reader\0database\0bad database\0\0',
+            b'\0\2\0\0user\0reader\0database\0catalog\0\0',
+        )
+        packets = [struct.pack('!I',len(startup)+4)+startup for startup in malformed]
+        packets += [struct.pack('!I',7), struct.pack('!I',65537)]
+        for packet in packets:
+            async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader', unexpected=1) as proxy:
+                client, sender = await asyncio.open_connection('127.0.0.1', proxy.port)
+                proxy.connections.append(sender)
+                sender.write(packet)
+                await sender.drain()
+                self.assertEqual(await asyncio.wait_for(client.read(), 3), b'')
+                self.assertTrue(proxy.accepted.empty())
+
     async def test_deferred_reader_forwards_baseline_and_foreign_database_then_holds_once(self):
         async with SocketProxy(self, 'hold-reader-query') as proxy:
             selected = await proxy.connect()
@@ -293,10 +402,14 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
             await self.exchange(selected, b'Q', b'SELECT after\0')
 
     async def test_stop_joins_a_held_gate_without_forwarding_its_query(self):
-        for deferred in (False, True):
-            async with SocketProxy(self, 'hold-reader-query', deferred=deferred) as proxy:
+        for profile,deferred in (('default',False), ('default',True), ('ordinary-reader',True)):
+            async with SocketProxy(self, 'hold-reader-query', deferred=deferred, profile=profile) as proxy:
+                if profile == 'ordinary-reader':
+                    await proxy.command('arm', 'armed')
                 connection = await proxy.connect()
-                if deferred:
+                if profile == 'ordinary-reader':
+                    await proxy.event('reader-selected')
+                elif deferred:
                     await proxy.command('arm', 'armed')
                 connection[1].write(message(b'Q', b'SELECT never_forward\0'))
                 await connection[1].drain()

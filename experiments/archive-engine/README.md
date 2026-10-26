@@ -311,6 +311,25 @@ Held gates retain the existing `held`, `release`/`close`, and `released` protoco
 `stop` cancels and joins the sessions without forwarding a held query, then emits
 `terminal`; it never authorizes cleanup of a product pin or native process.
 
+The closed `--profile ordinary-reader` is only valid with an explicit catalog,
+`--mode hold-reader-query` and `--defer-arm`. Complete catalog inspection during
+the ordinary baseline produces many small metadata frames unrelated to the
+selected fault. After validating bounded startup/user/database identities, this
+profile forwards baseline connections and manager/other-database connections as
+opaque byte streams in at most64KiB chunks with backpressure. The existing total
+64MiB byte,16-connection and120/180s lifetime bounds remain; startup bytes also
+count against the byte bound. No payload is logged or rewritten.
+
+Only the first matching reader connection accepted after `arm` uses the original
+8MiB frame/20,000-frame gate. A pre-arm connection cannot be selected by delaying
+its startup bytes. `reader-selected` binds the connection ordinal and actual
+backend PID before `held`; the installed caller checks both. The `frames` and
+query counters intentionally cover only this framed connection, while `bytes`
+includes all traffic and `unframed_bytes`/connection counters disclose the routing.
+This does not omit target evidence: the caller independently validates the
+positive product/PG baseline and proves no active reader/pin before arming.
+Legacy profiles keep their complete-stream framing and original arming behavior.
+
 The release target recognizes only the exact current reader-release UPDATE,
 including cached prepared statements. Eligibility is captured at Execute after
 arming; only its actual `UPDATE 1` response selects the transaction and emits

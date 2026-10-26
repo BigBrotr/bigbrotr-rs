@@ -327,6 +327,12 @@ status reads while a one-shot numeric-loopback proxy gates the next complete
 native reader and an owned PostgreSQL transaction locks `ducklake_data_file`.
 Actual `pg_blocking_pids`, backend start times, the installed worker ELF and
 PID/start identity bind the obstruction; no worker signal is injected.
+The proxy's closed `ordinary-reader` profile streams baseline/manager traffic
+under its unchanged byte/connection/time bounds, then frames only the first new
+explicit reader accepted after arming. Complete baseline catalog preparation
+therefore cannot exhaust the fault reader's separate20,000-frame admission.
+The selected connection ordinal and actual backend PID must match the held gate;
+pre-arm readers are never retroactively selected.
 
 The deployment uses a 3s owner lease, 500ms heartbeat/renewal timeout/safety margin,
 and unchanged 5s authorization and 30s probe limits. No accepted policy changes.

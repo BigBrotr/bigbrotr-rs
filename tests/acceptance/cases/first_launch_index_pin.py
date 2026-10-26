@@ -213,6 +213,7 @@ class ShortPinRuntime(IndexRuntime):
         original = self.config.read_text()
         proxy_path = self.source/'experiments/archive-engine/native_commit_proxy.py'
         proxy_args = [sys.executable,'-B',str(proxy_path),'--mode','hold-reader-query',
+            '--profile','ordinary-reader',
             '--upstream-port','15432','--catalog-manager','bigbrotr_catalog',
             '--catalog-reader','bigbrotr_archive_read','--catalog-database','bigbrotr_catalog',
             '--defer-arm','--lifetime-seconds','180']
@@ -226,7 +227,9 @@ class ShortPinRuntime(IndexRuntime):
             ready = self.proxy_event(proxy,'ready',10)
             require(proxy_identity is not None and process_identity(proxy.process.pid) == proxy_identity, 'same proxy PID/start')
             require(ready['upstream_host'] == '127.0.0.1' and ready['upstream_port'] == 15432
-                    and ready['armed'] is False and ready['source_sha256'] == digest(proxy_path), 'owned deferred proxy')
+                    and ready['armed'] is False and ready['source_sha256'] == digest(proxy_path)
+                    and ready['profile'] == 'ordinary-reader' and ready['frame_limit'] == 20000
+                    and ready['connection_limit'] == 16, 'owned deferred proxy')
             save(output/'proxy-ready.json',ready)
             self.config.write_text(profile(original,self.set_value,ready['port']))
             super().ordinary()
@@ -363,8 +366,15 @@ class ShortPinRuntime(IndexRuntime):
             save(target/'timeline.json',timeline)
             self.proxy_send(self.pin_proxy,'arm\n')
             save(target/'proxy-armed.json',self.proxy_event(self.pin_proxy,'armed',min(2,deadline-time.monotonic())))
-            held = self.proxy_event(self.pin_proxy,'held',min(17,deadline-time.monotonic()))
-            require(held['stage'] == 'reader-query' and type(held['backend_pid']) is int, 'actual native reader gate')
+            selected_reader = self.proxy_event(self.pin_proxy,'reader-selected',min(17,deadline-time.monotonic()))
+            save(target/'proxy-reader-selected.json',selected_reader)
+            held = self.proxy_event(self.pin_proxy,'held',min(2,deadline-time.monotonic()))
+            require(held['stage'] == 'reader-query' and type(held['backend_pid']) is int
+                    and selected_reader['admitted_after_arm'] is True
+                    and selected_reader['backend_pid'] == held['backend_pid']
+                    and selected_reader['connection_number'] == held['target_connection']
+                    and selected_reader['framed_connections'] == held['framed_connections'] == 1,
+                    'actual newly admitted native reader gate')
             save(target/'proxy-held.json',held)
             worker = self.worker(parent)
             pins = self.bounded_sql('bigbrotr_control',"SELECT coalesce(json_agg(l),'[]') FROM control.snapshot_leases l WHERE state='active' AND holder_kind='role_instance' AND archive_pin_protocol=1",deadline)

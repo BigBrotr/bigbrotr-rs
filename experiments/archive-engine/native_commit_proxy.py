@@ -17,6 +17,7 @@ import sys
 
 MAX_FRAME = 8 * 1024 * 1024
 MAX_WIRE = 64 * 1024 * 1024
+OPAQUE_CHUNK = 64 * 1024
 SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\.)*"?DUCKLAKE_TABLE"?\s+(?:VALUES|\()')
 PIN_RELEASE_QUERY = b"UPDATE control.snapshot_leases SET state='released',lease_revision=lease_revision+1,updated_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='reader_joined' WHERE lease_id=$1::bytea AND lease_revision=$2::text::numeric AND state='active'"
 
@@ -165,10 +166,14 @@ class Proxy:
         # Retained reconciliation opens several real readers before the selected
         # publication. Its explicit fixture profile keeps byte/time/frame bounds;
         # old callers retain their original traffic admission and event shape.
-        if profile not in ('default', 'retained-catch-up'):
+        if profile not in ('default', 'retained-catch-up', 'ordinary-reader'):
             raise ValueError('profile')
+        if profile == 'ordinary-reader' and not (
+                mode == 'hold-reader-query' and target == 'publication'
+                and defer_arm and self.explicit_catalog):
+            raise ValueError('ordinary-reader-profile')
         self.profile = profile
-        self.frame_limit, self.connection_limit = (20000, 16) if profile == 'default' else (131072, 64)
+        self.frame_limit, self.connection_limit = (131072, 64) if profile == 'retained-catch-up' else (20000, 16)
         assert lifetime_seconds in (120, 180)
         self.lifetime_seconds = lifetime_seconds
         self.writers = []
@@ -185,6 +190,9 @@ class Proxy:
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
+        if profile == 'ordinary-reader':
+            self.report.update(unframed_bytes=0, unframed_connections=0,
+                               framed_connections=0, target_connection=None)
         if self.target == 'control-producer-progress':
             self.progress_backend_pid = None
             self.progress_backend_session = None
@@ -247,30 +255,64 @@ class Proxy:
             raise ValueError('budget')
         return tag, header, await reader.readexactly(length - 4)
 
-    async def session(self, reader, writer):
+    def charge_unframed(self, size):
+        self.report['bytes'] += size
+        self.report['unframed_bytes'] += size
+        if self.report['bytes'] > MAX_WIRE:
+            raise ValueError('budget')
+
+    async def session(self, reader, writer, *, connected_armed=None):
+        # Freeze this at accept, before any awaited startup bytes. A connection
+        # opened before arm cannot become the ordinary profile's target later.
+        if connected_armed is None:
+            connected_armed = self.armed
         self.report['connections'] += 1
+        connection_number = self.report['connections']
         if self.report['connections'] > self.connection_limit:
             writer.close()
             raise ValueError('connections')
         self.writers.append(writer)
-        header = await reader.readexactly(4)
-        length = struct.unpack('!I', header)[0]
-        if not 8 <= length <= 65536:
-            raise ValueError('startup')
-        startup = await reader.readexactly(length - 4)
-        if startup[:4] != b'\0\3\0\0':
-            raise ValueError('plaintext-required')
-        fields = startup[4:].split(b'\0')
-        if fields[-2:] != [b'', b''] or len(fields) % 2:
-            raise ValueError('startup-fields')
-        fields = fields[:-2]
-        parameters = dict(zip(fields[::2], fields[1::2]))
+        try:
+            header = await reader.readexactly(4)
+            length = struct.unpack('!I', header)[0]
+            if not 8 <= length <= 65536:
+                raise ValueError('startup')
+            startup = await reader.readexactly(length - 4)
+            if startup[:4] != b'\0\3\0\0':
+                raise ValueError('plaintext-required')
+            fields = startup[4:].split(b'\0')
+            if fields[-2:] != [b'', b''] or len(fields) % 2:
+                raise ValueError('startup-fields')
+            fields = fields[:-2]
+            parameters = dict(zip(fields[::2], fields[1::2]))
+            if self.profile == 'ordinary-reader':
+                if (len(parameters) != len(fields) // 2 or any(
+                        not re.fullmatch(rb'[A-Za-z_][A-Za-z_0-9]{0,62}', parameters.get(key, b''))
+                        for key in (b'user', b'database'))):
+                    raise ValueError('startup-identity')
+                self.charge_unframed(length)
+        except BaseException:
+            if self.profile == 'ordinary-reader':
+                writer.close()
+                await writer.wait_closed()
+            raise
         database = parameters.get(b'database')
         selected_database = database == self.catalog_database.encode('ascii')
         receipt_reader = (parameters.get(b'user') == self.catalog_reader.encode('ascii')
                           and (not self.explicit_catalog or selected_database))
         capture_manager = (parameters.get(b'user') == self.catalog_manager.encode('ascii')
                            and (not self.explicit_catalog or selected_database))
+        ordinary_target = False
+        opaque = False
+        if self.profile == 'ordinary-reader':
+            ordinary_target = connected_armed and receipt_reader and not self.target_selected
+            opaque = not ordinary_target
+            if ordinary_target:
+                self.target_selected = True
+                self.report['framed_connections'] += 1
+                self.report['target_connection'] = connection_number
+            else:
+                self.report['unframed_connections'] += 1
         upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', self.upstream_port)
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
@@ -285,6 +327,17 @@ class Proxy:
             'control-session-issue', 'control-session-revoke', 'control-producer-progress', 'control-pin-release') else None
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
+
+        async def opaque_pump(source, destination, _frontend):
+            # Full manager inspection has many small catalog frames. Those and
+            # pre-arm readers are independently checked by the product/fixture;
+            # this route neither parses nor relabels them as target evidence.
+            # Aggregate bytes, connection count, wall time and backpressure stay
+            # bounded. Only the selected new reader enters the framed gate.
+            while data := await source.read(OPAQUE_CHUNK):
+                self.charge_unframed(len(data))
+                destination.write(data)
+                await destination.drain()
 
         async def pump(source, destination, frontend):
             nonlocal progress_transaction
@@ -474,8 +527,13 @@ class Proxy:
                             return
                 if not frontend and tag == b'K':
                     assert len(body) == 8
+                    if ordinary_target and state['backend_pid'] is not None:
+                        raise ValueError('selected-backend-key')
                     # Retain the public backend PID only, never the cancel key.
                     state['backend_pid'] = struct.unpack('!I', body[:4])[0]
+                    if ordinary_target:
+                        self.emit('reader-selected', backend_pid=state['backend_pid'],
+                                  connection_number=connection_number, admitted_after_arm=True)
                 if not frontend and (progress_target or release_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
@@ -550,8 +608,9 @@ class Proxy:
                     # both ends; production never receives this proxy behavior.
                     await manager_committed.wait()
 
-        pumps = [asyncio.create_task(pump(reader, upstream_writer, True)),
-                 asyncio.create_task(pump(upstream, writer, False))]
+        forward = opaque_pump if opaque else pump
+        pumps = [asyncio.create_task(forward(reader, upstream_writer, True)),
+                 asyncio.create_task(forward(upstream, writer, False))]
         try:
             done, _ = await asyncio.wait(pumps, return_when=asyncio.FIRST_COMPLETED)
             for task in done:
@@ -566,7 +625,7 @@ class Proxy:
 
     async def run(self):
         def accept(reader, writer):
-            self.tasks.append(asyncio.create_task(self.session(reader, writer)))
+            self.tasks.append(asyncio.create_task(self.session(reader, writer, connected_armed=self.armed)))
         server = await asyncio.start_server(accept, '127.0.0.1', 0, backlog=8)
         self.emit('ready', port=server.sockets[0].getsockname()[1],
                   source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
@@ -607,8 +666,8 @@ if __name__ == '__main__':
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
-    parser.add_argument('--profile', choices=['default', 'retained-catch-up'], default='default',
-                        help='Closed retained catch-up fixture:131072 frames/64 connections; unchanged64MiB wire and lifetime')
+    parser.add_argument('--profile', choices=['default', 'retained-catch-up', 'ordinary-reader'], default='default',
+                        help='Closed traffic profiles; ordinary-reader frames only one new post-arm reader, retaining64MiB/16 connections')
     parser.add_argument('--upstream-port', default='5432', help='Canonical numeric port on 127.0.0.1 only')
     parser.add_argument('--catalog-manager', help='Supply all three catalog identifiers together')
     parser.add_argument('--catalog-reader')
