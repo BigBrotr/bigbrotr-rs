@@ -38,7 +38,10 @@ async fn peer(body: Vec<u8>) -> (clickhouse::Client, tokio::task::JoinHandle<()>
     let server = tokio::spawn(async move {
         let (mut socket, _) = listener.accept().await.unwrap();
         super::tests::request(&mut socket).await;
-        let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", body.len());
+        let response = format!(
+            "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+            body.len()
+        );
         socket.write_all(response.as_bytes()).await.unwrap();
         socket.write_all(&body).await.unwrap();
     });
@@ -48,8 +51,15 @@ async fn peer(body: Vec<u8>) -> (clickhouse::Client, tokio::task::JoinHandle<()>
 }
 
 fn run(future: impl Future<Output = ()>) {
-    tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap()
-        .block_on(async { tokio::time::timeout(Duration::from_secs(5), future).await.unwrap() });
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            tokio::time::timeout(Duration::from_secs(5), future)
+                .await
+                .unwrap()
+        });
 }
 
 #[test]
@@ -59,10 +69,19 @@ fn actual_cursor_refuses_declared_count_and_malformed_metadata() {
         count.push(1); // u64::MAX: no attacker-sized allocation is attempted.
         let long_name = "x".repeat(clickhouse::_priv::RBWNAT_MAX_NAME_BYTES + 1);
         let nested = format!("{}UInt64{}", "Array(".repeat(9), ")".repeat(9));
-        for bytes in [count, vec![2], header(&["id"], &["SimpleAggregateFunction("]),
-            header(&["id"], &[&nested]), header(&[&long_name], &["UInt64"])] {
+        for bytes in [
+            count,
+            vec![2],
+            header(&["id"], &["SimpleAggregateFunction("]),
+            header(&["id"], &[&nested]),
+            header(&[&long_name], &["UInt64"]),
+        ] {
             let (client, server) = peer(bytes).await;
-            let error = client.query("SELECT id").fetch_one::<One>().await.unwrap_err();
+            let error = client
+                .query("SELECT id")
+                .fetch_one::<One>()
+                .await
+                .unwrap_err();
             assert!(matches!(error, Error::InvalidColumnsHeader(_)), "{error}");
             server.await.unwrap();
         }
@@ -75,7 +94,10 @@ fn valid_header_keeps_row_validation_and_decoding() {
         let mut bytes = header(&["id"], &["UInt64"]);
         bytes.extend_from_slice(&42u64.to_le_bytes());
         let (client, server) = peer(bytes).await;
-        assert_eq!(client.query("SELECT id").fetch_one::<One>().await.unwrap(), One { id: 42 });
+        assert_eq!(
+            client.query("SELECT id").fetch_one::<One>().await.unwrap(),
+            One { id: 42 }
+        );
         server.await.unwrap();
         let mut bytes = header(&["id"], &["Int64"]);
         bytes.extend_from_slice(&42i64.to_le_bytes());
@@ -98,12 +120,22 @@ fn malformed_inner_type_cannot_match_smaller_rust_tuple() {
             let (client, server) = peer(bytes).await;
             let result = client.query("SELECT id").fetch_one::<OneTuple>().await;
             server.await.unwrap();
-            assert!(matches!(result, Err(Error::InvalidColumnsHeader(_))), "{ty}: {result:?}");
+            assert!(
+                matches!(result, Err(Error::InvalidColumnsHeader(_))),
+                "{ty}: {result:?}"
+            );
         }
         let mut bytes = header(&["id"], &["Tuple(UInt64)"]);
         bytes.extend_from_slice(&42u64.to_le_bytes());
         let (client, server) = peer(bytes).await;
-        assert_eq!(client.query("SELECT id").fetch_one::<OneTuple>().await.unwrap(), OneTuple { id: (42,) });
+        assert_eq!(
+            client
+                .query("SELECT id")
+                .fetch_one::<OneTuple>()
+                .await
+                .unwrap(),
+            OneTuple { id: (42,) }
+        );
         server.await.unwrap();
     });
 }
@@ -114,7 +146,10 @@ fn expected_count_preserves_primitive_vector_and_tuple_rows() {
         let mut bytes = header(&["id"], &["UInt64"]);
         bytes.extend_from_slice(&42u64.to_le_bytes());
         let (client, server) = peer(bytes).await;
-        assert_eq!(client.query("SELECT id").fetch_one::<u64>().await.unwrap(), 42);
+        assert_eq!(
+            client.query("SELECT id").fetch_one::<u64>().await.unwrap(),
+            42
+        );
         server.await.unwrap();
 
         let mut bytes = header(&["ids"], &["Array(UInt64)"]);
@@ -122,21 +157,42 @@ fn expected_count_preserves_primitive_vector_and_tuple_rows() {
         bytes.extend_from_slice(&42u64.to_le_bytes());
         bytes.extend_from_slice(&43u64.to_le_bytes());
         let (client, server) = peer(bytes).await;
-        assert_eq!(client.query("SELECT ids").fetch_one::<Vec<u64>>().await.unwrap(), vec![42, 43]);
+        assert_eq!(
+            client
+                .query("SELECT ids")
+                .fetch_one::<Vec<u64>>()
+                .await
+                .unwrap(),
+            vec![42, 43]
+        );
         server.await.unwrap();
 
         let mut bytes = header(&["id", "kind"], &["UInt64", "UInt16"]);
         bytes.extend_from_slice(&42u64.to_le_bytes());
         bytes.extend_from_slice(&7u16.to_le_bytes());
         let (client, server) = peer(bytes).await;
-        assert_eq!(client.query("SELECT id, kind").fetch_one::<(u64, u16)>().await.unwrap(), (42, 7));
+        assert_eq!(
+            client
+                .query("SELECT id, kind")
+                .fetch_one::<(u64, u16)>()
+                .await
+                .unwrap(),
+            (42, 7)
+        );
         server.await.unwrap();
     });
 }
 
 fn describe(count: usize, ty: &str) -> Vec<u8> {
-    let names = ["name", "type", "default_type", "default_expression", "comment",
-        "codec_expression", "ttl_expression"];
+    let names = [
+        "name",
+        "type",
+        "default_type",
+        "default_expression",
+        "comment",
+        "codec_expression",
+        "ttl_expression",
+    ];
     let mut bytes = header(&names, &["String"; 7]);
     for _ in 0..count {
         for value in ["id", ty, "", "", "", "", ""] {
@@ -158,9 +214,15 @@ fn insert_describe_reuses_bounded_parser_and_bounds_metadata_rows() {
         let error = client.insert::<One>("table").await.err().unwrap();
         assert!(matches!(error, Error::InvalidColumnsHeader(_)), "{error}");
         server.await.unwrap();
-        let (client, server) = peer(describe(clickhouse::_priv::RBWNAT_MAX_COLUMNS + 1, "UInt64")).await;
+        let (client, server) = peer(describe(
+            clickhouse::_priv::RBWNAT_MAX_COLUMNS + 1,
+            "UInt64",
+        ))
+        .await;
         let error = client.insert::<One>("table").await.err().unwrap();
-        assert!(matches!(error, Error::BadResponse(ref message) if message == "insert metadata exceeds bounded column profile"));
+        assert!(
+            matches!(error, Error::BadResponse(ref message) if message == "insert metadata exceeds bounded column profile")
+        );
         server.await.unwrap();
     });
 }

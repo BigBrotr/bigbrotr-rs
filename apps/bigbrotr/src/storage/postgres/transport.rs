@@ -151,6 +151,18 @@ async fn pin_route(
     Ok(route)
 }
 
+/// Apply the same bounded local-route policy to a separately owned engine
+/// connection. Every answer must fit the selected boundary; mixed/public,
+/// empty or more than16 answers refuse. The consumer must pin the returned
+/// numeric address and must not resolve the original name again for transport.
+/// This validates addresses only, not credentials, custody or server identity.
+pub fn select_plaintext_address(
+    addresses: impl IntoIterator<Item = SocketAddr>,
+    boundary: PlaintextBoundary,
+) -> Result<IpAddr, ConnectError> {
+    select_address(addresses, Some(boundary))
+}
+
 fn select_address(
     addresses: impl IntoIterator<Item = SocketAddr>,
     boundary: Option<PlaintextBoundary>,
@@ -185,13 +197,6 @@ fn select_address(
 #[cfg(test)]
 mod route_tests {
     use super::*;
-
-    fn vetted_address(
-        addresses: impl IntoIterator<Item = SocketAddr>,
-        boundary: PlaintextBoundary,
-    ) -> Result<IpAddr, ConnectError> {
-        select_address(addresses, Some(boundary))
-    }
 
     #[tokio::test(flavor = "current_thread")]
     async fn reuse_binds_endpoint_and_rechecks_the_plaintext_boundary_without_dns() {
@@ -246,18 +251,21 @@ mod route_tests {
         ] {
             let local = SocketAddr::new(allowed.parse().unwrap(), 5432);
             let external = SocketAddr::new(forbidden.parse().unwrap(), 5432);
-            assert_eq!(vetted_address([local], boundary).unwrap(), local.ip());
-            assert!(vetted_address([local, external], boundary).is_err());
-            assert!(vetted_address([external, local], boundary).is_err());
-            assert!(vetted_address([], boundary).is_err());
-            assert!(vetted_address([local; 16], boundary).is_ok());
-            assert!(vetted_address([local; 17], boundary).is_err());
+            assert_eq!(
+                select_plaintext_address([local], boundary).unwrap(),
+                local.ip()
+            );
+            assert!(select_plaintext_address([local, external], boundary).is_err());
+            assert!(select_plaintext_address([external, local], boundary).is_err());
+            assert!(select_plaintext_address([], boundary).is_err());
+            assert!(select_plaintext_address([local; 16], boundary).is_ok());
+            assert!(select_plaintext_address([local; 17], boundary).is_err());
         }
         let mapped = SocketAddr::new("::ffff:127.0.0.1".parse().unwrap(), 5432);
         assert_eq!(
-            vetted_address([mapped], PlaintextBoundary::Loopback).unwrap(),
+            select_plaintext_address([mapped], PlaintextBoundary::Loopback).unwrap(),
             IpAddr::V4(Ipv4Addr::LOCALHOST)
         );
-        assert!(vetted_address([mapped], PlaintextBoundary::PrivateBridge).is_err());
+        assert!(select_plaintext_address([mapped], PlaintextBoundary::PrivateBridge).is_err());
     }
 }
