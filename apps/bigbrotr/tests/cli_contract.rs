@@ -76,11 +76,13 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
         info["protocol_registry_format"],
         "bigbrotr-protocol-versions/1"
     );
-    assert!(
-        info["capability_scope"]
-            .as_str()
-            .unwrap()
-            .contains("no storage")
+    // The protocol registry owns the scope of the advertised capabilities.
+    let versions: serde_json::Value =
+        serde_json::from_slice(&fs::read(root.join("contracts/protocol/versions.json")).unwrap())
+            .unwrap();
+    assert_eq!(
+        info["capability_scope"].as_str().unwrap(),
+        versions["scope"].as_str().unwrap()
     );
     assert_eq!(
         info["protocols"]["event_verifier"],
