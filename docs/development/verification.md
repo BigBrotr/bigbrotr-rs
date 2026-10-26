@@ -228,7 +228,10 @@ separately. Raw command receipts and original failures remain local.
 ## Same-store installed Ingest restart
 
 `p01-first-launch-restart` extends the fresh base case above on the same physical
-stores. It completes the first export, closes and retires the original Ingest
+stores. Before initialization, its fresh deployment declares both exact loopback
+fixture endpoints (`/installed-fixture` and `/installed-live-fixture`) with
+`127.0.0.1/32`, port7447; accepted policy/grants are not rewritten.
+It completes the first export, closes and retires the original Ingest
 producer, activates epoch 2, and sends a distinct signed event, the original
 event and the distinct event again. After closing and retiring that producer,
 it catches Archive up, checks an exact no-op retry, and reads both full signed

@@ -10,8 +10,9 @@ P01-T08: maintain the installed first-event journey, then prove Ingest successio
 resend and Archive catch-up on the same stores. Published `main` is
 `59729703e39569696b605ad4eeec2fe137732ae5`: coherent FIFO/CLI contract corrections,
 parameterized client, restart scenario and independent observer mount mapping.
-Pending changes coordinate the fixture with the actual password-attempt window,
-preserve private CLI failures/timeouts and record the second connected outcome.
+Local `0657854b` adds observed password-window scheduling and private failure
+retention. The current correction declares the second exact fixture destination
+in the fresh restart recipe before initialization; base case and grants unchanged.
 
 Agent work is integrated. Sol's live-client `b1f8c787` and CLI-test `258ca3f2`,
 and Astra's restart `063c8aed` remain in their clean separate worktrees. Locations
@@ -58,9 +59,17 @@ invented. Cleanup and the bounded counter diagnostic ended with all owned
 containers stopped. Catch-up, exact retry and successor history remain NOT_RUN.
 The local correction waits for observed eligibility before finite owner startup;
 it does not reset counters, change limits or retry login. Future CLI failures
-retain their original bytes privately. Full corrected run remains NOT_RUN.
+retain their original bytes privately. The subsequent run at `0657854b`, under
+`.research/first-launch-restart-r3-20261026`, passed that observed gate, login and
+endpoint registration. Enrollment then correctly returned403: the initial recipe
+only declared `/installed-fixture`, while this successor uses `/installed-live-fixture`.
+The fresh restart recipe now declares both exact loopback endpoint/cidr/port tuples
+before initialization. Full TOML comparison and installed CLI static validation
+PASS; Astra's critical review is clear. This does not modify accepted policy,
+existing grants or a running deployment. Original403 and both earlier failures
+remain preserved. Corrected connected rerun remains NOT_RUN.
 
-Affected controls: **29 first-launch and 12 live-client PASS**. The earlier
+Affected controls: **30 first-launch and 12 live-client PASS**. The earlier
 profile controls remain valid. Original deep c49 evidence remains valid at its recorded identities:
 independent native rows/inputs, typed C4/A4 progress, C API readback and ordinary
 history/export. Its report is external
@@ -107,13 +116,13 @@ must never be uploaded; public CI retains a bounded synthetic diagnostic allowli
 
 No local product/build/test process is active at this checkpoint. The read-only
 Actions watch is active (session47734); Astra cleared the narrow admission
-gate and failure-retention changes; the inventory links source hashes and scope. Sol hit provider capacity after creating a
+gate and failure-retention changes; the inventory links source hashes and scope. Astra also cleared the exact route correction. Sol hit provider capacity after creating a
 clean empty diagnostic worktree; root Astra handled that bounded implementation.
 Previously verified Q37 settings remain. Unique state, original failures,
 stopped resources and source worktrees remain protected.
 
 Next run `p01-first-launch-restart` from a new immutable source worktree
-under `.research/first-launch-restart-r3-20261026`. Reuse the4652 candidate: bundled
+under `.research/first-launch-restart-r4-20261026`. Reuse the4652 candidate: bundled
 journey and product bytes are unchanged. Finish epoch2 resend, activated
 recovery/retirement, Archive catch-up, exact retry and ordinary history. No extra
 empty epoch3 is needed. Provenance-off source analysis is preserved by Astra;

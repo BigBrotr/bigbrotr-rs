@@ -19,6 +19,14 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def deployment_recipe(text):
+    """Declare both exact fixture routes before any deployment is initialized."""
+    original = 'rules = [{endpoint = "ws://127.0.0.1:7447/installed-fixture", cidr = "127.0.0.1/32", port = 7447}]'
+    assert text.count(original) == 1, 'initial fixture destination rule changed'
+    successor = '{endpoint = "' + ENDPOINT + '", cidr = "127.0.0.1/32", port = 7447}'
+    return text.replace(original, original[:-1] + ', ' + successor + ']')
+
+
 def login_buckets():
     # Independent fixture identities from the local session contract. The base
     # export includes three reauthentications, charged like password logins.

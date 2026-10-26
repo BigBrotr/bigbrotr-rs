@@ -395,6 +395,8 @@ class Runtime:
         for key, digit in (('instance', '1'), ('dataset', '2'), ('catalog', '3')):
             require(text.count(digit * 32) == 1, 'unexpected recipe identity placeholder')
             text = text.replace(digit * 32, self.ids[key])
+        if self.restart_case:
+            text = self.restart_checks.deployment_recipe(text)
         self.config = self.state / 'config/instance.toml'
         self.config.write_text(text)
         self.inputs['initial_recipe_sha256'] = digest(self.config)

@@ -73514,7 +73514,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "Connected r2 reached independent baseline and epoch2 activation; FAIL at fixture sixth password attempt within unchanged60s gate. Admission scheduling and protected failure retention corrected locally; new full run pending.",
+      "status": "r3 confirms corrected login scheduling; original403 private-ceiling refusal preserved. Fresh restart-case deployment now declares exactly both controlled loopback paths before initialization;30controls and installed CLI static configurationPASS. Corrected real rerun pending.",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73565,6 +73565,21 @@
             "sha256": "af716633cb90ff58bd6186015c01eba3759135b26b5d2a6f75940b024c17c1e9",
             "scope": "Read-only original counters, exact owned PG stopped exit0/PID0 afterwards; no authentication retry."
           }
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r3-20261026",
+          "source_revision": "0657854b",
+          "result": "FAIL",
+          "reason": "Password-window gate waited for actual expiry; successor login and endpoint registration PASS. Enrollment returned403 because fresh deployment declared only the original endpoint path. Initial baseline/retirement and epoch2 activation passed; catch-up/retry/history NOT_RUN.",
+          "report_sha256": "7cc58537bd68030c6cf61ae67ece4d3c3f159b279d9fc0084f387088b7568d7f",
+          "resources": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r3-20261026/resources.json",
+          "terminal": {
+            "containers": 21,
+            "states": [
+              "stopped-retained"
+            ],
+            "cleanup_errors": []
+          }
         }
       ],
       "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
@@ -73573,12 +73588,22 @@
         "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
         "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
       },
-      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r3-20261026",
+      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026",
       "unused_diagnostic_worktree": "/home/tux/bigbrotr-live-access-private-failure",
       "model_availability": "Sol/xhigh failed at provider capacity after clean WT creation; root Astra/xhigh completed bounded diagnostic retention. No silent model substitution.",
       "login_gate_review": {
         "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026/login-gate-review.json",
         "sha256": "5b79c9d9f87919eed38a395cfd3a6b3b625f3312a31da10165e4a5d2af930510"
+      },
+      "declared_route_review": {
+        "reviewer": "Astra/xhigh m1_runtime_grants",
+        "result": "CLEAR",
+        "scope": "Exact endpoint/cidr/port ceiling, fresh setup before recipe hash; base case unchanged; complete TOML comparison and double-application refusal. No grant/policy rewrite.",
+        "source_sha256": {
+          "tests/acceptance/cases/first_launch.py": "004117bd161637303a23d4d829b0cd3bdb4d42d23b27fd6de04f766c90e36c73",
+          "tests/acceptance/cases/first_launch_restart.py": "e8b75665eed86bdb908a6be2b248c1d9d70ad9e5d50d35836ecf3e6832ee0632",
+          "tests/acceptance/test_first_launch_restart.py": "14ac2d1f6c6461626fe622908776d82149a74dff1584df1eec31c5026ec1cf6b"
+        }
       }
     }
   }

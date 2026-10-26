@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -280,6 +281,18 @@ class RestartControls(unittest.TestCase):
 
 
 class LoginWindowControls(unittest.TestCase):
+    def test_fresh_deployment_adds_only_the_second_exact_fixture_destination(self):
+        text = (ROOT / 'config/recipes/acceptance.toml').read_text()
+        original = tomllib.loads(text)
+        prepared = check.deployment_recipe(text)
+        actual = tomllib.loads(prepared)
+        expected = copy.deepcopy(original)
+        expected['network']['private']['rules'].append(dict(
+            endpoint='ws://127.0.0.1:7447/installed-live-fixture', cidr='127.0.0.1/32', port=7447))
+        self.assertEqual(actual, expected)
+        with self.assertRaisesRegex(AssertionError, 'destination rule changed'):
+            check.deployment_recipe(prepared)
+
     def observation(self, elapsed, account=5, peer=6):
         return dict(now_us=1_000_000 + elapsed, buckets=[
             dict(dataset_id='22' * 16, kind=kind, bucket=bucket, attempts=attempts,
