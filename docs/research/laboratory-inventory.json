@@ -73407,7 +73407,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Hosted admission restored; 4e7ce48c matrix completed with Clippy test-code failures; reviewed corrections integrated, new hosted qualification pending",
+    "status": "Hosted billing admission restored;4652f577 completed FAIL: macOS FIFO test compilation, Linux stale CLI scope expectation after Clippy/exact-source build PASS. Corrections e153bca4/f674c72e integrated; corrected real hosted qualification pending.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73417,8 +73417,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40309278610",
-    "latest_hosted_source": "4e7ce48c2781aaf2921334f3bae1b6d776802411",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40313846572",
+    "latest_hosted_source": "4652f577fa82b5f38bf7fd3f22fea54bf9f67b35",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73428,7 +73428,16 @@
       "sha256": "7400e743f493c6ae64697dea71e9a8aea30ae069d3ba00f8dc78f3dbfd296ee7",
       "scope": "All four artifacts and 38 attempt1 log members from40309278610; zero credential candidates; GitHub zero alerts at observation. Later runs excluded; no claim of completed asynchronous scanning."
     },
-    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40313846572"
+    "native_diagnostics": {
+      "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-macos/result.json",
+      "arm": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-arm/result.json",
+      "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-amd64/result.json"
+    },
+    "latest_exposure_check": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-exposure/receipt.json",
+      "sha256": "3c97e8e4980b50a6aec6a0a7bbe6ff87f9f6e395e43b67b6589baa88062e9512",
+      "scope": "Published delta8commits/54blobs; pending throughf674c72e5commits/23blobs; run40313846572 four artifacts/21members and24log members. No operational credentials confirmed,0 log/artifact candidates and0 provider alerts. Current observer/doc delta excluded from automated receipt; root publication review applies."
+    }
   },
   "implementation_first_launch_maintained_20261026": {
     "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
@@ -73504,7 +73513,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "NOT_RUN real engines; reviewed integration, affected offline controls and retained initial replay PASS",
+      "status": "First connected run FAIL in independent observer mount mapping after base journey PASS; bounded corrected C API diagnostic PASS; corrected full connected rerun pending",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73514,7 +73523,36 @@
       "live_client_worktree": "/home/tux/bigbrotr-m1-live-client-profile",
       "runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026",
       "candidate_reuse": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-4652f577/candidate/candidate-manifest.json",
-      "retention": "Protected original controls/diagnostic failure copied from temporary root; original worktrees/commits preserved. No public raw runtime upload."
+      "retention": "Protected original controls/diagnostic failure copied from temporary root; original worktrees/commits preserved. No public raw runtime upload.",
+      "attempts": [
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026",
+          "source_revision": "97888493",
+          "result": "FAIL",
+          "reason": "Independent C API DATA_PATH used host path while catalog stored container mount; no product runtime failure. First six stages PASS, restart baseline FAIL, four later checks NOT_RUN, cleanup PASS.",
+          "report_sha256": "1eac1d94cdc3d07d189426f85871e25b49a3ec0254088d00a8a9dc8497ec1798",
+          "resources": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026/resources.json",
+          "terminal": "All 18 owned containers stopped; bounded diagnostic reopened only exact database then stopped exit0/PID0. Original failure/report preserved.",
+          "diagnostics": [
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026/restart/attach-diagnostic/receipt.json",
+              "status": "Original attach failure reproduced; protected error records mount mismatch."
+            },
+            {
+              "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-20261026/restart/attach-override-diagnostic/receipt.json",
+              "sha256": "375cd937f677b5f2b5b9063b3251b203d69a8ea55215f91c2421bd5236e6e1ad",
+              "status": "PASS exact bundled C API; full catalog including xmin and Archive files unchanged. Not full restart qualification."
+            }
+          ]
+        }
+      ],
+      "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
+      "observer_correction_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-exposure/observer-review.json",
+        "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
+        "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
+      },
+      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r2-20261026"
     }
   }
 }

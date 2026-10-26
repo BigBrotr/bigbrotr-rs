@@ -248,6 +248,12 @@ extensions directly: no private probe executable, compiler or additional native
 build is required. A candidate can be reused when its bundled journey files still
 match; acceptance-source identities are recorded separately.
 
+The host observer explicitly maps the container's Archive mount to the same
+host files using DuckLake's connection-only `OVERRIDE_DATA_PATH` with `READ_ONLY`.
+It compares the complete catalog, including row transaction identities, before
+and after each census. This does not relocate data or alter the stored root;
+see [DuckLake connection options](https://ducklake.select/docs/stable/duckdb/usage/connecting).
+
 Independent literal encoders reconstruct all original and successor scientific
 rows, request bytes, receipts, typed progress and publication digests. Full C API
 censuses must agree; original body, eligibility, visibility, first receive and

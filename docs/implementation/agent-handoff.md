@@ -56,7 +56,7 @@ Use P01-T08, P08-T11/T12 and P10-T08/T10 for acceptance and delivery; do not cre
 a second plan. User documentation describes portable current procedures, not
 Tux, an agent session or experimental history.
 
-Before first production release, private internal iterations are not compatibility
+Before first production release, development iterations are not compatibility
 commitments. Remove superseded paths/migrations/fixtures after consumer analysis;
 consolidate bootstrap/schema while preserving current system properties. Retain
 necessary restart/replay/recovery and corrupt/incompatible-input tests. Reuse
@@ -225,7 +225,7 @@ oracles; do not derive expected output by calling the implementation under test.
    phase complete from one happy path. A pending commit is not a pushed result.
 
 The practical runner implements `p01-t01`, `p01-event-cli`, `p01-config-static`
-and the fresh installed `p01-first-launch` Compose journey; use the actual
+and the fresh installed `p01-first-launch` / `p01-first-launch-restart` Compose journeys; use the actual
 source/artifact arguments and declared scope in
 [verification](../development/verification.md). Remaining P01-T08 scenarios are
 open; a planned scenario is not executed evidence. Current planning checks are

@@ -652,6 +652,10 @@ class Runtime:
 
     def census(self, output, name):
         """A joined, read-only C API child using only the verified candidate worker."""
+        self.inspect(self.pg)
+        pg = {'postgres': self.pg['id']}
+        catalog_before = self.catalog_rows(pg, 'bigbrotr_catalog')
+        save(output / (name + '-census-before-catalog.json'), catalog_before)
         config = self.set_value(self.config.read_text(), 'storage', 'archive_root', str(self.state / 'data/archive'))
         config = self.set_value(config, 'postgres.catalog', 'read_password_ref',
             'file:' + str(self.state / 'secrets/runtime/archive-read'))
@@ -659,11 +663,15 @@ class Runtime:
         path.write_text(config)
         result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
             str(path), str(output / (name + '-temporary')), '--worker-root', str(self.bundle / 'archive-worker'),
-            '--catalog-port', '15432', '--full-stream-order'], timeout=30, label='census-' + name)
+            '--catalog-port', '15432', '--full-stream-order', '--override-data-path'], timeout=30, label='census-' + name)
         require(not result.stderr, 'independent C API diagnostic output')
         value = json.loads(result.stdout)
         save(output / (name + '-science.json'), value)
         self.backend_absence(output)
+        self.inspect(self.pg)
+        catalog_after = self.catalog_rows(pg, 'bigbrotr_catalog')
+        save(output / (name + '-census-after-catalog.json'), catalog_after)
+        require(catalog_after == catalog_before, 'independent C API census changed the catalog')
         return value
 
     def restart_baseline(self):

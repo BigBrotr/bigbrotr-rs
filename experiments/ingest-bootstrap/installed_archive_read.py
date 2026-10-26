@@ -44,8 +44,10 @@ def sql_path(value):
 
 
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
-         bundle_root=Path('/build/archive-worker'), catalog_port=5432):
+         bundle_root=Path('/build/archive-worker'), catalog_port=5432,
+         override_data_path=False):
     assert row_bytes in (65536, 262144, 1048576)
+    assert type(override_data_path) is bool
     pg = catalog_settings(config, catalog_port)
     bundle = Path(bundle_root)
     assert bundle.is_absolute()
@@ -118,8 +120,12 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
             + " sslmode=disable connect_timeout=5')", 'credential')
         del secret
         root = sql_path(config['storage']['archive_root'])
+        # A host observer may see the same bind-mounted files under a different
+        # root. DuckLake's explicit override applies to this read-only connection;
+        # it does not relocate files or update the catalog's stored DATA_PATH.
         execute("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH '" + root
-            + "/', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'reader', READ_ONLY)", 'attach')
+            + "/', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'reader', READ_ONLY"
+            + (', OVERRIDE_DATA_PATH true' if override_data_path else '') + ')', 'attach')
         execute('BEGIN TRANSACTION', 'begin')
         execute("CREATE MACRO ref_value(r) AS CASE WHEN r IS NULL THEN NULL ELSE struct_pack(dataset_id:=hex(r.dataset_id),dictionary_kind:=r.dictionary_kind,allocation_domain:=hex(r.allocation_domain),ordinal:=r.ordinal) END; CREATE MACRO source_value(r) AS CASE WHEN r IS NULL THEN NULL ELSE struct_pack(dataset_id:=hex(r.dataset_id),shard_id:=r.shard_id,owner_epoch:=r.owner_epoch,sequence:=r.sequence) END; CREATE MACRO clock_value(r) AS struct_pack(clock_id:=ref_value(r.clock_id),resolution_us:=r.resolution_us,uncertainty_us:=r.uncertainty_us,anomaly_flags:=r.anomaly_flags)", 'macros')
         common = 'source_value(source_record_id) AS source_record_id,record_schema_version,record_kind,ref_value(visibility_scope_id) AS visibility_scope_id,hex(payload_digest) AS payload_digest,recorded_at'
@@ -162,10 +168,12 @@ if __name__ == '__main__':
     parser.add_argument('--worker-root', type=Path, default=Path('/build/archive-worker'))
     parser.add_argument('--catalog-port', type=int, default=5432,
         help='explicit 127.0.0.1 catalog port; must match the configured endpoint')
+    parser.add_argument('--override-data-path', action='store_true',
+        help='read the same files through a different local mount root; connection-only DuckLake override')
     args = parser.parse_args()
     config, temporary = args.config, args.temporary
     assert config.is_absolute() and temporary.is_absolute()
     temporary.mkdir(mode=0o700)
     print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=args.full_stream_order,
         row_bytes=args.row_bytes or (262144 if args.large_signed_row else 65536), bundle_root=args.worker_root,
-        catalog_port=args.catalog_port)))
+        catalog_port=args.catalog_port, override_data_path=args.override_data_path)))
