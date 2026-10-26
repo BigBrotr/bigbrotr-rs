@@ -178,7 +178,8 @@ class IndexRuntime(Runtime):
             completion_free_bytes=65*1024**3, private=str(self.state/'clickhouse/private'))
         self.record_resources()
         override = self.root/'compose-index.json'
-        save(override, {'services': {'index-initialize': {'extends': {'service':'app'}, 'volumes': [
+        save(override, {'services': {'index-initialize': {'extends': {
+            'file':str(self.bundle/'packaging/compose/compose.yaml'), 'service':'app'}, 'volumes': [
             {'type':'bind', 'source':str(self.state/'secrets/index-initialize'), 'target':'/run/index-initialize',
              'read_only':True, 'bind':{'create_host_path':False}}]}}})
         self.compose += ['-f', str(override)]
