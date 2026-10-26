@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.build import (cargo_environment, clean_environment, command_output, file_hash, git,
                          native_toolchain, positive_jobs, regular_file_hash, source_inventory,
-                         verify_native_toolchain)
+                         verify_cargo_configuration, verify_native_toolchain)
 from tools.archive_bundle import build_environment, native_target, prepare_bundle, verify_bundle
 
 
@@ -134,6 +134,7 @@ def verify_workspace_inputs(build, manifest, receipt, anchors):
             raise ValueError('build input or copied artifact changed: ' + name)
     if source_inventory(build / 'source') != manifest['files_sha256']:
         raise ValueError('exported source changed')
+    verify_cargo_configuration(build / 'source', ROOT, manifest['files_sha256'], build / 'cargo-home')
     assets = verify_bundle(build / 'archive-worker', native_target())
     if assets != receipt['archive_worker']['assets']:
         raise ValueError('native archive assets differ from the build receipt')

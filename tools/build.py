@@ -49,6 +49,41 @@ def source_inventory(source):
     return members
 
 
+def verify_cargo_configuration(source, checkout, members, cargo_home):
+    """Bind every config Cargo discovers from this cwd, not just CARGO_HOME.
+
+    Cargo merges .cargo/config{,.toml} from the cwd and every ancestor. When
+    output lives inside the checkout, its committed config is inherited too;
+    require that actual checkout copy to match the selected export. Its current
+    sole build.target-dir setting is overridden by explicit CARGO_TARGET_DIR;
+    future config expansion needs renewed relative-path/merge review. Equal
+    bytes alone do not imply equivalent arbitrary path, patch or env settings.
+    Any other ancestor config
+    is undeclared, including a repository-parent/HOME config on that path.
+    Explicit CARGO_HOME replaces the separate global-home lookup, not this
+    ancestry search. Check both spellings (legacy config takes precedence).
+    No keys are filtered or overridden: only declared source bytes may supply
+    wrappers, rustflags or profile settings. Do not read credentials here.
+    """
+    source, checkout = source.resolve(strict=True), checkout.resolve(strict=True)
+    for directory in (source, *source.parents):
+        for name in ('config', 'config.toml'):
+            path = directory / '.cargo' / name
+            expected = members.get('.cargo/' + name)
+            if not path.exists() and not path.is_symlink():
+                if directory in (source, checkout) and expected is not None:
+                    raise ValueError('selected Cargo configuration is missing: ' + str(path))
+                continue
+            if directory not in (source, checkout) or expected is None:
+                raise ValueError('undeclared ancestor Cargo configuration: ' + str(path))
+            if path.parent.is_symlink() or regular_file_hash(path) != expected:
+                raise ValueError('Cargo configuration differs from selected source: ' + str(path))
+    for name in ('config', 'config.toml'):
+        path = cargo_home / name
+        if path.exists() or path.is_symlink():
+            raise ValueError('unexpected Cargo home configuration: ' + str(path))
+
+
 def verify_native_toolchain(native):
     for tool in native['tools'].values():
         path = Path(tool['path'])
@@ -200,6 +235,7 @@ def build(args):
                 "archive_sha256": file_hash(archive), "files_sha256": members}
     (output / "source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     manifest_hash = file_hash(output / "source-manifest.json")
+    verify_cargo_configuration(source, root, members, output / 'cargo-home')
     # Keep only the platform/tool discovery environment. Ambient RUSTFLAGS,
     # compiler wrappers, Cargo feature settings and source-identity overrides
     # cannot become unrecorded build inputs. Cargo caches remain dependencies,
@@ -219,6 +255,7 @@ def build(args):
     env.update(archive_environment)
     env.update(cargo_environment(output, manifest, manifest_hash, 'release'))
     worker_identity = build_binaries(source, env)
+    verify_cargo_configuration(source, root, members, output / 'cargo-home')
     verify_bundle(archive_root, target)
     verify_native_toolchain(native)
     after = source_inventory(source)

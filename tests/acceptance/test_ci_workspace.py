@@ -33,7 +33,7 @@ def fixture():
         target = ci.native_target()
         assets = {'library': {'name': 'library', 'bytes': 3, 'sha256': sha(b'lib')},
                   'header': {'name': 'header', 'bytes': 3, 'sha256': sha(b'hdr')}, 'extensions': []}
-        for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py']:
+        for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py', '.cargo/config.toml']:
             path = checkout/name; path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT/name, path)
         for name in ['Cargo.lock', 'rust-toolchain.toml', 'contracts/release/dependencies.json',
@@ -107,6 +107,59 @@ raise SystemExit(action.get('exit', 0))
 
 
 class WorkspaceReuseControls(unittest.TestCase):
+    def test_undeclared_ancestor_configuration_refuses_before_cargo(self):
+        settings = [b'[profile.test]\ndebug-assertions = false\n',
+                    b'[build]\nrustflags = ["--cfg", "secp256k1_fuzz"]\n',
+                    b'[build]\nrustc-wrapper = "/untrusted/wrapper"\n']
+        for location in ['build', 'home-ancestor']:
+            for name in ['config', 'config.toml']:
+                for contents in settings:
+                    with self.subTest(location=location, name=name, contents=contents), fixture() as (root, build, _, _, _):
+                        directory = build if location == 'build' else root
+                        (directory/'.cargo').mkdir()
+                        (directory/'.cargo'/name).write_bytes(contents)
+                        # This file appears after the clean build receipt. An
+                        # explicit CARGO_HOME does not bypass an ancestral HOME.
+                        with patch.dict(os.environ, {'HOME': str(root)}):
+                            with self.assertRaisesRegex(ValueError, 'ancestor Cargo configuration'):
+                                ci.workspace_check(build, 'rust-tests')
+                        self.assertFalse((root/'called.json').exists())
+
+    def test_inherited_checkout_configuration_must_match_the_committed_export(self):
+        with fixture() as (root, build, _, _, _):
+            checkout = root/'checkout'
+            nested = checkout/'.research'/'build'
+            nested.parent.mkdir()
+            build.rename(nested)
+            with patch.object(archive_bundle, 'REGISTRY', nested/'source/contracts/release/archive-engine.json'):
+                self.assertEqual(ci.workspace_check(nested, 'clippy'), 0)
+                (root/'called.json').unlink()
+                config = checkout/'.cargo/config.toml'
+                original = config.read_bytes()
+                config.unlink()
+                with self.assertRaisesRegex(ValueError, 'configuration is missing'):
+                    ci.workspace_check(nested, 'clippy')
+                self.assertFalse((root/'called.json').exists())
+                config.write_bytes(original + b'\n[profile.dev]\ndebug-assertions = false\n')
+                with self.assertRaisesRegex(ValueError, 'configuration differs from selected source'):
+                    ci.workspace_check(nested, 'clippy')
+                self.assertFalse((root/'called.json').exists())
+                config.write_bytes(original)
+                # Cargo prefers this legacy spelling over the bound TOML file.
+                (checkout/'.cargo/config').write_bytes(b'[build]\nrustc-wrapper = "/untrusted"\n')
+                with self.assertRaisesRegex(ValueError, 'ancestor Cargo configuration'):
+                    ci.workspace_check(nested, 'clippy')
+                self.assertFalse((root/'called.json').exists())
+
+    def test_a_child_cannot_add_an_undeclared_ancestor_config_and_report_success(self):
+        for name in ['config', 'config.toml']:
+            with self.subTest(name=name), fixture() as (root, build, _, _, _):
+                (build/'.cargo').mkdir()
+                (root/'action.json').write_text(json.dumps({'change': str(build/'.cargo'/name)}))
+                with self.assertRaisesRegex(ValueError, 'ancestor Cargo configuration'):
+                    ci.workspace_check(build, 'rust-doc')
+                self.assertTrue((root/'called.json').exists())
+
     def test_dispatch_cli_requires_complete_exclusive_options(self):
         for args in [['--workspace-check', 'clippy'], ['--from-build', '/absent'],
                      ['--workspace-check', 'clippy', '--from-build', '/absent', '--output', '/unused'],
