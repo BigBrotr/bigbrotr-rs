@@ -9,9 +9,12 @@ import sys
 import threading
 import time
 from installed_sync_client import publish, relay, relay_listener
+from installed_archive_profile import load as load_profile
 
 
 def run(directory):
+    profile = load_profile(directory)
+    binary = profile['product_binary'] if profile else '/build/bigbrotr'
     origin = 'http://127.0.0.1:18081'
     def request(method, path, body=None, headers=None):
         connection = http.client.HTTPConnection('127.0.0.1', 18081, timeout=3)
@@ -25,24 +28,29 @@ def run(directory):
         finally:
             connection.close()
     def cli(*args):
-        result = subprocess.run(['/build/bigbrotr', 'access', *args], env={}, capture_output=True, timeout=5)
+        result = subprocess.run([binary, 'access', *args], env={}, capture_output=True, timeout=5)
         assert result.returncode == 0 and not result.stderr, 'private CLI command refused'
         return json.loads(result.stdout)
     password = directory / 'password.private'
-    with os.fdopen(os.open(password, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
-        stream.write('Independent owner password 2026')
+    if profile is None:
+        with os.fdopen(os.open(password, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
+            stream.write('Independent owner password 2026')
+    password_ref = profile['password_ref'] if profile else 'file:' + str(password)
     session = directory / 'session.private'
     logged_in = cli('login', '--origin', origin, '--username', 'alice',
-        '--password-ref', 'file:' + str(password), '--session-output', str(session))
+        '--password-ref', password_ref, '--session-output', str(session))
     saved = json.loads(session.read_text())
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == origin
     assert session.stat().st_mode & 0o777 == 0o600
     auth = {'Cookie': 'BigBrotrLocalSession=' + saved['session'], 'X-CSRF-Token': saved['csrf']}
     status, me = request('GET', '/management/v1/me', headers=auth)
-    assert status == 200 and me['principal_id'] == '10'*16
+    principal = profile['expected_principal_id'] if profile else '10'*16
+    assert status == 200 and me['principal_id'] == principal
     actions = ['policy.change', 'roles.control', 'status.read']
     if directory.name == 'archive-export':
         actions = ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
+    if profile is not None:
+        actions = profile['expected_actions']
     assert me['stored_actions'] == actions
     observations, statuses, errors = [], [], []
     diagnostics = (directory / 'diagnostics.json').exists()

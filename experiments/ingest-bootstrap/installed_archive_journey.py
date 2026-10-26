@@ -133,7 +133,7 @@ def run(pg, client, output, database, name, rows, *, continuation=None, preserve
     invoke(client, output, name + '-journey-validate', 'config', 'validate', '--file', setup['config'])
     before_roles = global_roles(pg)
     lab.write_json(output / (name + '-before.json'), before)
-    for filename in ('installed_client.py', 'installed_sync_client.py', 'installed_archive_client.py', 'installed_archive_read.py'):
+    for filename in ('installed_client.py', 'installed_sync_client.py', 'installed_archive_client.py', 'installed_archive_profile.py', 'installed_archive_read.py'):
         shutil.copy2(Path(__file__).with_name(filename), output / filename)
     shutil.copy2(SOURCE / 'tests/fixtures/ingest/import-event.jsonl', directory / 'event.jsonl')
     assert digest(directory / 'event.jsonl') == SIGNED_SHA256

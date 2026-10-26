@@ -1,0 +1,186 @@
+"""Offline controls for explicit profiles; these do not qualify a real install."""
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+import installed_archive_client as archive
+import installed_archive_export_client as export
+from installed_archive_profile import absolute_path, load, password_file
+
+
+# Frozen independently from postgres/enrollment.rs ADMIN_ACTIONS; never from /me.
+OWNER_ACTIONS = ['audit.read', 'budgets.change', 'data.read', 'policy.change',
+    'principals.manage', 'roles.control', 'status.read']
+
+
+class ProfileTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.home = Path(self.temporary.name)
+        self.secret = self.home / 'owner.private'
+        self.secret.write_text('Independent supplied password 2026 ')
+        self.secret.chmod(0o600)
+        self.profile = dict(format='bigbrotr-installed-archive-fixture/1',
+            product_binary=sys.executable, password_ref='file:' + str(self.secret),
+            expected_principal_id='ab' * 16, expected_actions=OWNER_ACTIONS)
+
+    def save(self, value=None):
+        (self.home / 'fixture-profile.json').write_text(json.dumps(self.profile if value is None else value))
+
+    def test_absent_and_explicit_independent_expectations(self):
+        self.assertIsNone(load(self.home))
+        self.save()
+        self.assertEqual(load(self.home), self.profile)
+        self.assertEqual(password_file(self.profile['password_ref']), 'Independent supplied password 2026 ')
+        self.secret.chmod(0o400)
+        self.assertEqual(load(self.home), self.profile)
+
+    def test_reject_profile_shape_and_identity(self):
+        for patch_value in ({'format': 'other'}, {'expected_principal_id': '00' * 16},
+                {'expected_principal_id': 'AB' * 16}, {'expected_principal_id': 12},
+                {'expected_actions': []}, {'expected_actions': ['status.read', 'data.read']},
+                {'expected_actions': ['status.read', 'status.read']}, {'expected_actions': [12]},
+                {'extra': True}, {'product_binary': 'relative'}, {'product_binary': str(self.home)},
+                {'product_binary': str(self.secret)}, {'product_binary': str(self.home / 'absent')},
+                {'password_ref': str(self.secret)}, {'password_ref': 'file:relative'}):
+            with self.subTest(patch=patch_value):
+                self.save(dict(self.profile, **patch_value))
+                with self.assertRaises(AssertionError):
+                    load(self.home)
+        del self.profile['expected_actions']
+        self.save()
+        with self.assertRaises(AssertionError):
+            load(self.home)
+
+    def test_reject_paths_and_profile_bound(self):
+        for value in ('relative', '/', '/trailing/', '/a/../b', '/a/./b', '/a\nb', '/a\x7fb'):
+            with self.subTest(path=value), self.assertRaises(AssertionError):
+                absolute_path(value)
+        (self.home / 'fixture-profile.json').write_bytes(b' ' * 16385)
+        with self.assertRaises(AssertionError):
+            load(self.home)
+        (self.home / 'fixture-profile.json').unlink()
+        (self.home / 'fixture-profile.json').symlink_to(self.home / 'absent')
+        with self.assertRaises(AssertionError):
+            load(self.home)
+
+    def test_reject_unprotected_or_invalid_password(self):
+        reference = self.profile['password_ref']
+        for mode in (0o644, 0o640, 0o4600):
+            self.secret.chmod(mode)
+            with self.subTest(mode=mode), self.assertRaises(AssertionError):
+                password_file(reference)
+        self.secret.chmod(0o600)
+        for raw in (b'short', b'Password with newline\n', b'x' * 1025, b'Invalid UTF8 password\xff'):
+            self.secret.write_bytes(raw)
+            with self.subTest(kind=len(raw)), self.assertRaises((AssertionError, UnicodeError)):
+                password_file(reference)
+        with patch('installed_archive_profile.os.geteuid', return_value=self.secret.stat().st_uid + 1):
+            with self.assertRaises(AssertionError):
+                password_file(reference)
+
+    def test_reject_symlink_password_components(self):
+        link = self.home / 'link'
+        link.symlink_to(self.secret)
+        with self.assertRaises(OSError):
+            password_file('file:' + str(link))
+        link.unlink()
+        link.symlink_to(self.home, target_is_directory=True)
+        with self.assertRaises(OSError):
+            password_file('file:' + str(link / self.secret.name))
+
+    def wire(self, module, me, *, stop_at_grant=False):
+        requests, commands = [], []
+        class ReachedGrant(Exception):
+            pass
+        class Connection:
+            def __init__(self, *args, **kwargs):
+                pass
+            def request(self, method, path, body, headers):
+                requests.append((method, path, None if body is None else json.loads(body)))
+                self.path = path
+                if stop_at_grant and method == 'PUT':
+                    raise ReachedGrant()
+            def getresponse(self):
+                if self.path == '/management/v1/me':
+                    value, status = me, 200
+                elif self.path.endswith('/reauthenticate'):
+                    value, status = {'proof_id': 'cd' * 16}, 201
+                else:
+                    value, status = {}, 403
+                class Response:
+                    def read(self, limit):
+                        return json.dumps(value).encode()
+                response = Response()
+                response.status = status
+                return response
+            def close(self):
+                pass
+        def cli(args, **kwargs):
+            commands.append(args)
+            target = Path(args[args.index('--session-output') + 1])
+            target.write_text(json.dumps(dict(format='bigbrotr-cli-session/1',
+                origin='http://127.0.0.1:18081', session='opaque-session', csrf='opaque-csrf')))
+            target.chmod(0o600)
+            return subprocess.CompletedProcess(args, 0, b'{}', b'')
+        with patch.object(module.http.client, 'HTTPConnection', Connection), patch.object(module.subprocess, 'run', cli):
+            with self.assertRaises(ReachedGrant if stop_at_grant else FileNotFoundError):
+                module.run(self.home)
+        return requests, commands
+
+    def test_archive_cli_wiring_preserves_legacy_and_checks_explicit_actions(self):
+        original = self.home
+        for name, actions in [('legacy', ['policy.change', 'roles.control', 'status.read']),
+                ('archive-export', ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read'])]:
+            self.home = original / name
+            self.home.mkdir()
+            _, commands = self.wire(archive, dict(principal_id='10' * 16, stored_actions=actions))
+            self.assertEqual(commands[0][0], '/build/bigbrotr')
+            self.assertEqual((self.home / 'password.private').read_text(), 'Independent owner password 2026')
+            self.assertEqual((self.home / 'password.private').stat().st_mode & 0o777, 0o600)
+            with self.assertRaises(FileExistsError):
+                archive.run(self.home)
+        self.home = original
+        self.save()
+        _, commands = self.wire(archive, dict(principal_id='ab' * 16, stored_actions=OWNER_ACTIONS))
+        self.assertEqual(commands[0][0], sys.executable)
+        self.assertEqual(commands[0][commands[0].index('--password-ref') + 1], self.profile['password_ref'])
+        self.assertFalse((self.home / 'password.private').exists())
+        for me in (dict(principal_id='10' * 16, stored_actions=OWNER_ACTIONS),
+                dict(principal_id='ab' * 16, stored_actions=['status.read'])):
+            with self.assertRaises(AssertionError):
+                self.wire(archive, me)
+
+    def test_export_uses_supplied_principal_and_exact_reauthentication_password(self):
+        self.save()
+        (self.home / 'export-input.json').write_text(json.dumps(dict(scope={}, catalog_id='12' * 16, destination_id='34' * 16)))
+        (self.home / 'event.jsonl').write_text(json.dumps({'id': '56' * 32}))
+        (self.home / 'destination').mkdir()
+        (self.home / 'destination/destination.json').write_text('{}')
+        requests, commands = self.wire(export, dict(principal_id='ab' * 16, stored_actions=OWNER_ACTIONS), stop_at_grant=True)
+        self.assertEqual(commands[0][0], sys.executable)
+        self.assertEqual(commands[0][commands[0].index('--password-ref') + 1], self.profile['password_ref'])
+        self.assertEqual(requests[-2][2]['password'], 'Independent supplied password 2026 ')
+        self.assertEqual(requests[-2][2]['command']['principal_id'], 'ab' * 16)
+        self.assertEqual(requests[-1][1], '/management/v1/principals/' + 'ab' * 16 + '/grants')
+        self.assertNotIn('Independent supplied password', (self.home / 'export-observations.json').read_text())
+        for me in (dict(principal_id='10' * 16, stored_actions=OWNER_ACTIONS),
+                dict(principal_id='ab' * 16, stored_actions=['status.read'])):
+            with self.assertRaises(AssertionError):
+                self.wire(export, me)
+        (self.home / 'fixture-profile.json').unlink()
+        requests, commands = self.wire(export, dict(principal_id='10' * 16,
+            stored_actions=['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']), stop_at_grant=True)
+        self.assertEqual(commands[0][0], '/build/bigbrotr')
+        self.assertEqual(commands[0][commands[0].index('--password-ref') + 1], 'file:' + str(self.home / 'password.private'))
+        self.assertEqual(requests[-2][2]['password'], 'Independent owner password 2026')
+        self.assertEqual(requests[-1][1], '/management/v1/principals/' + '10' * 16 + '/grants')
+
+
+if __name__ == '__main__':
+    unittest.main()
