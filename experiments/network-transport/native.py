@@ -37,7 +37,12 @@ identity['rustc'] = subprocess.check_output(['rustc', '--version', '--verbose'],
 assert 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 assert identity['rustc'].startswith('rustc 1.98.1 ')
 mode = sys.argv[1] if len(sys.argv) == 2 else 'direct'
-assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport')
+assert len(sys.argv) in (1, 2) and mode in ('direct', 'websocket', 'relay-wire', 'selector', 'request-session', 'acquisition-transport', 'initial-index')
+if mode == 'initial-index':
+    from initial_index import run
+    run(SOURCE, build, env, identity, sources)
+    sys.exit(0)
+
 tests = {
     'acquisition-transport': {'acquisition_transport': 7, 'network_direct': 14, 'postgres_connection_settings': 7},
     'direct': {'network_direct': 12},

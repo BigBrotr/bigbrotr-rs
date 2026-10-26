@@ -7,12 +7,14 @@ expected sets. It does not qualify installed acquisition, recursive
 resolver interoperability, WebSocket, current Control grants, overlays or
 capacity. Those remain the owning task's practical acceptance.
 
-The Mac is the editing authority. After local review and checks, make one private
-candidate commit and transfer it with a Git bundle using the
+Tux is the editing and execution host under the current
 [delivery workflow](../../docs/engineering/development-and-delivery.md).
-Create a new `runs/network-<first-seven-commit-digits>/source` checkout under the
-inventoried Tux implementation root; fetch the bundle and detach at that exact
-commit. Never edit the remote source. Invoke from that checkout:
+The repository and published Actions outputs are public. Review publication inputs
+for credentials; retain private captures only in protected ignored storage. Use a
+trusted, reviewed candidate commit, never untrusted pull-request code, with a new
+`runs/network-<first-seven-commit-digits>/source` checkout under the inventoried
+Tux implementation root. Detach at that exact commit and leave the run checkout
+unchanged. Invoke from that checkout:
 
 ```sh
 python3 -B experiments/network-transport/lab.py \
@@ -42,6 +44,33 @@ old missing-poll-check interpretation. Counts bind this fixed fixture
 set; they are not coverage targets. Raw command outcomes, terminal container
 metadata and preflight stay under the run; original failures are preserved.
 `out/qualification.json` is the component result, not a product release manifest.
+
+The `initial-index` profile uses the same owned cache, pinned image, source export,
+offline container, resource limits and terminal inventory checks. Its run directory
+is `runs/initial-index-<first-seven-commit-digits>`; pass `initial-index` as the final
+`lab.py` argument. It builds the actual `bigbrotr` library and CLI with the selected
+locked dependencies, compiles the actual library test executable and runs strict
+Clippy for both library and CLI. No source substitution or signature stub is used.
+The separate Archive worker is neither built nor bound by this diagnostic.
+
+The retained library executable lists its compiled tests before selecting
+`storage::clickhouse::`, `storage::indexer::`,
+`storage::postgres::control_owner::index_publication::` and
+`storage::postgres::transport::route_tests::`. Every expected owning module must
+be present. Executed names and counts must match that inventory with zero failed
+or ignored tests; an empty filter cannot pass. The copied CLI's `build-info` must
+match the source/tree/manifest and input hashes. Exact binary/test bytes, selected
+test names, command logs and result hashes remain outside the mutable compiler
+cache. `PASS_INITIAL_INDEX_APPLICATION_COMPONENTS` certifies only these checks:
+actual ClickHouse/PG operations, installed recovery/outage behavior, the complete
+test suite, release packaging and capacity remain separate gates. A running owned
+engine lab must finish before this runner's existing exclusivity checks can pass.
+
+The verifier controls can run without Cargo or Docker:
+
+```sh
+python3 -B -m unittest discover -s experiments/network-transport -p 'test_*.py'
+```
 
 The `websocket` profile runs the supplied-stream WebSocket integration suite and
 the two private input-buffer tests. `relay-wire` runs only the preserving decoder's
