@@ -67303,7 +67303,33 @@
         "status": "RETIRED_VERIFIED",
         "time": 1792341223.804435
       },
-      "deletion_journal_sha256": "9fc40b9889c3bf1799644ab6ea80bb948452ffef16caa3126a75928381a8a099"
+      "deletion_journal_sha256": "9fc40b9889c3bf1799644ab6ea80bb948452ffef16caa3126a75928381a8a099",
+      "checkpoint_20261026": {
+        "status": "RETIRED_VERIFIED",
+        "scope": "Three previously excluded completed September18 Archive compiler caches; 4446 nonexecutable single-link format-checked intermediates only. No source, executable, database, container or worktree removal.",
+        "invoker": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-retire-20261026.py",
+          "sha256": "16267ce1db35a90437902ac6ae141ddbf806adef0db0cbf361703b2c5c03044c"
+        },
+        "manifest": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-frozen-20261026.json",
+          "sha256": "ef75edf8b76327d8395c7de69c9eaf77f163b2149d641d03641fbb6f154abc81"
+        },
+        "receipt": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-retirement-receipt-20261026.json",
+          "sha256": "9d3f55e6023c2aad69576d055172ba1754c114c7ed6c197e0e46942d3fd8dd59"
+        },
+        "journal": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-deleted-paths-20261026.jsonl",
+          "sha256": "6f5fa51b6f2c35cb6f567f7dd8f7944fb20320a4b525ffa358f6005bf1727342"
+        },
+        "allocated_candidate_bytes": 3880566784,
+        "observed_free_delta_bytes": 3823820800,
+        "free_bytes_after": 158798929920,
+        "preservation": "11120 nonselected target entries (8995 regular files, including328 ELF executables/shared objects) and35 outside source/resource/result/artifact pins reverified. Ten overlapping Docker consumers remained stopped/PID0; inspected host references had no candidate hits. Unreadable unrelated proc fields are disclosed in receipt; no privileged inspection claimed.",
+        "root_review": "Complete bounded invoker and reused507-line helper inspected; frozen exact candidate/hash/ownership/path scope checked before execute; no expansion or automatic replay. Execute session20136 completed exit0.",
+        "resume": "Completed: never replay. Partial retired caches must not be resumed incrementally; rebuild into fresh owned output from retained exact source, inputs, compiler image and original commands linked by proposal."
+      }
     },
     "renewal_dispatch": {
       "status": "SOURCE_REVIEWED_NOT_RUN",
@@ -73492,7 +73518,7 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/ci-native-cancellation-20261026",
       "branch": "work/ci-native-cancellation",
       "agent": "ci_native_cancel_review Astra/xhigh verified",
-      "status": "Localmain correction; exacthelper2PASS/ClippyPASS, original100ms unchanged; fullcorrectedapp/hostedNOT_RUN",
+      "status": "Published b4395590; corrected Rust cancellation controls PASS on all three hosted platforms in run40349312031. Dedicated SQL/native interleavings retain their own gates.",
       "agent_commit": "5def0abd2c860afc0e455c03463ce359b261fad6",
       "integrated_as": "b4395590",
       "root_review": "Full native_grants.rs and changed tests/evidence plus actual refresh_authority/collect_refresh boundary; unchanged native/PGinternals not reread. Pollobserver precedes every Controlpoll, samefuture/result/deadlines; samewrapper covers policySQL."
@@ -73507,7 +73533,7 @@
       "branch": "work/ci-dependency-security",
       "base": "b4395590",
       "owner": "ci_native_cancel_review Astra/xhigh",
-      "status": "Integrated locallybc71f20e; locked policy/metadata,22 packaging controls, exact helper2tests,11 crypto vectors/4915 refusals, binding API and document checks PASS. Updated full native/hosted qualification NOT_RUN.",
+      "status": "Published bc71f20e; locked policy and complete required Linux foundations PASS in run40349312031. macOS Rust checks PASS; later fixture portability failure is separate. Earlier installed tuple is unchanged evidence.",
       "candidate_commit": "3ae383434e425b15656c1e3d6383fc03d49abc69",
       "integrated_commit": "bc71f20e0b8585a96b4d93a62200d6c108f1e5bb",
       "evidence": "docs/implementation/evidence/p01-ci-dependency-security-20261026.json",
@@ -73523,11 +73549,22 @@
       "branch": "work/ci-policy-order",
       "base": "b4395590",
       "owner": "m1_runtime_grants Astra/xhigh",
-      "status": "PASS focused controls/documentation and independent root review; integrated locally98d362e9; hosted execution pending",
+      "status": "Published98d362e9; actual run40349312031 dependency-policy PASS at ordinal4 after119.312 preceding check seconds versus3945.362 at ordinal12 previously. Excludes setup overhead, not a whole-run speedup.",
       "candidate_commit": "e051271743e1ab75a311db80ec52a2511e6c7fa9",
       "integrated_commit": "98d362e95c09b9863fbd1d2598fbf69ecd68ad1c",
       "receipt": ".research/ci-policy-order-20261026/.research/ci-policy-order-evidence-v2/review.json",
       "receipt_sha256": "943b0c31c7356537b4c7264aa2656de8628c59cc3f07a639cd58241099782545"
+    },
+    "corrected_hosted_run": {
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031",
+      "revision": "ea7ac43430c8916654b9596c29ad9328933ad5c1",
+      "status": "FAIL fixture portability; Linux amd64/ARM64 foundation PASS, Rust/cancellation all three PASS, locked dependency policy PASS; macOS later CLI NOT_RUN",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40349312031-exposure/receipt.json",
+      "receipt_sha256": "828691811add3d09246246fd95670788a049df2b750f930db072a8f485a671c3",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40349312031-exposure/outcome.json",
+      "outcome_sha256": "86bf5c467db87d27fa9e6a338a49c779926a076f747ead292ad70be111f63bef",
+      "process": "Actions watch46733 reaped exit1; no remaining watch",
+      "correction": "27daae02 fixture root canonicalization; corrected hosted run pending"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -73833,14 +73870,14 @@
   "implementation_index_foundation_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
     "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
-    "status": "Partial source increment retained while concrete CI dependency/security failure is corrected; no integrated runtime/engine qualification",
+    "status": "Partial Index integration on work/initial-index at8b74cd4a; main remains coherent CI correction. Full application/CH qualification NOT_RUN; SQL-only engine results linked separately.",
     "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
     "dependency_source": {
       "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
       "sha256": "0fa5dfb6d648da14c6a3875b32b5df7db75a136d296fdfb909d967268dc54a06",
       "provenance": "Official selected clickhouse0.15.2 crate; original recorded source directory unavailable locally, archive hash matches existing qualification inventory"
     },
-    "owners": "Root owns actual CH adapter/integration and preserved partials; initial_index_rows independently reviews PG candidate; m1_runtime_grants implements isolated owned executor lane. Q37 Astra/xhigh settings retained.",
+    "owners": "Root owns integration, Index state/service/config/runtime. m1_runtime_grants owns physical CH adapter/proofs. ci_native_cancel_review completed parser candidate264856ac; root review/integration pending. initial_index_rows completed SQL/fixture work and is idle. Q37 configurations retained.",
     "retention": "Pinned reproducible source accelerator; no unique data/credentials. Earlier proof databases/logs retained under their existing entries.",
     "worktrees": [
       {
@@ -73848,7 +73885,7 @@
         "branch": "work/initial-index-pg",
         "base": "9f629dd2",
         "owner": "m1_runtime_grants",
-        "status": "Clean unintegrated candidate; formatting/Python/manifest checksPASS, Rust/PGengineNOT_RUN",
+        "status": "PG source/guard/runtime qualification integrated on local Index branch through1eac3a04/8b74cd4a. SQL-only PASS; actual Rust/CLI integration NOT_RUN.",
         "commit": "11d16c8725a8f31fe556150d75d201bdcd9940c3"
       },
       {
@@ -73856,16 +73893,29 @@
         "branch": "work/initial-index-rows",
         "base": "9f629dd2",
         "owner": "initial_index_rows",
-        "status": "Clean unintegrated row candidate; exact component16testsPASS, realCH/PG/ownerlaneNOT_RUN",
+        "status": "Rows integrated70087290; current-schema41 fixture integratedd56e3b95. Component25PASS; real CH/full product NOT_RUN.",
         "commit": "4fd04308d37fc56171df7a2005e9a7405cf26acf"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-lane-20261026",
+        "branch": "work/initial-index-lane",
+        "commit": "1b22842a18d50021e952310eb0c6451e8e503d68",
+        "integrated_as": "8ffd6cbc",
+        "status": "Clean lane candidate; nine lifecycle tests included in25PASS diagnostic; full runtime/remote cancellation NOT_RUN."
       }
     ],
     "dependency_resolution": {
       "metadata": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/workspace-metadata.json",
       "diagnostics": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/resolution.log",
-      "scope": "clickhouse0.15.2 added to existing lock; existing versions retained. Direct minicbor/tower-service references added subsequently; final lock reconciliation pending."
+      "scope": "Index dependency additions reconciled and committed68f91e87; existing security versions/checksums retained.",
+      "current": "Locked metadata and cargo-deny PASS with foldhash0.2.0 Zlib notice/policy; original missing-notice FAIL preserved. Packaging22PASS. CH parser candidate264856ac is pending root review/integration.",
+      "current_logs": [
+        ".research/implementation/index-foundation-20261026/dependencies/updated-dependency-policy.log",
+        ".research/implementation/index-foundation-20261026/dependencies/updated-dependency-policy-with-notices.log",
+        ".research/implementation/index-foundation-20261026/dependencies/notice-controls/result.json"
+      ]
     },
-    "open_boundaries": "Real CH schema/readback, opaque physical proofs retaining actual custody, owned executor/grants, complete source/recovery streaming, real PG privilege/race/unknown-COMMIT tests and runtime integration remain open. Independent PG review found protocol-NULL owner/generation association regression in candidate0041; not integrated. Retain existing negative fixture; correction pending.",
+    "open_boundaries": "Actual CH schema/readback/proofs, complete source/recovery streaming, lost-COMMIT and service integration remain open. Schema41 owner guard, runtime grants and real SQL races qualified at SQL-only scope; actual product CLI/Rust NOT_RUN. One retained topology only; handoff/retention remain explicit. CH metadata correction264856ac has component PASS, pending integration/engine qualification.",
     "component_review": {
       "path": "/home/tux/bigbrotr-rs/.research/initial-index-rows-20261026/.research/peer-review-20261026/inventory.json",
       "sha256": "4034f3a36e130b25509169f170467acb5b39dee6b98d887404b7e53e13b12a66",
@@ -73874,8 +73924,44 @@
     "pending_dependency_changes": {
       "receipt": ".research/implementation/index-foundation-20261026/pending-cargo-before-security-98d362e9/receipt.json",
       "sha256": "cbffee82d7a5a49cfb2bc70882a565af8f2074aa3cc6d3112c9e930f7531dd5e",
-      "status": "Preserved exact partial Cargo files and patch; root Cargo files temporarily restored to integrated98d362e9 for independent security integration. Reapply Index manifest additions and reconcile lock after that coherent push. No Index changes discarded."
-    }
+      "status": "Original snapshot preserved; Index additions restored and lock reconciled after security push. Existing security versions/checksums unchanged. Current exact lock66b0e4de15409cf11dc4fe09934c85cc414b2305d022fe1c3e8ffc18518ecfd5 selects clickhouse0.15.2 with rustls ring/webpki roots, no unused LZ4. Native transport uses CompressionNone."
+    },
+    "integration": {
+      "branch": "work/initial-index",
+      "head": "8b74cd4a",
+      "commits": {
+        "rows": "70087290",
+        "postgres": "27ed1642",
+        "legacy_owner_correction": "fd3d2c33",
+        "owned_lane": "8ffd6cbc",
+        "schema41_legacy_fixture": "d56e3b95",
+        "foundation": "68f91e87",
+        "runtime_sql": "1eac3a04",
+        "sql_evidence": "8b74cd4a"
+      },
+      "dirty": "Index custody recovery, indexer/mod.rs and new indexer/state.rs. Physical CH adapter/proofs and parser correction are in separate worktrees. Full application remains uncompiled."
+    },
+    "owned_lane_review": {
+      "path": ".research/initial-index-lane-20261026/.research/lane-components-20261026/inventory.json",
+      "sha256": "8d03044f02d52cd835a19e279158cb27a230209c5993b09796571be04e10c339",
+      "result": "25 component tests and Clippy PASS with exact final Cargo.lock66b0e4de. Root read complete lane/tests; actual OS thread join and runtime teardown retain custody/permits; blocking teardown requires independent supervisor. No remote cessation or full-product guarantee."
+    },
+    "source_planner": {
+      "receipt": ".research/implementation/index-foundation-20261026/plan-components/result.json",
+      "sha256": "02a42470cd1629a2e36bad469c633a9f4f508ea2b15be60141408b990098b249",
+      "result": "4 targeted controls and Clippy PASS; exact independent existing ten-family vectors. Same129 registry package tuples as root lock. Prior25 component tests reused; actual native source/engine and full application NOT_RUN. First isolated-harness module-visibility compile failure retained; no weakened oracle.",
+      "review": "Independent Astra physical adapter owner read complete planner: no blocking finding; actual consumer must require prepared.plan()==planned.plan() and retain Arc<PlannedBatch> outside joined lane through hidden task teardown. Integrated use still NOT_RUN."
+    },
+    "engine_selection": {
+      "version": "26.8.35.10",
+      "channel": "LTS",
+      "source": "https://packages.clickhouse.com/",
+      "manifest": ".research/implementation/index-foundation-20261026/dependencies/clickhouse-server-26.8.35.10-manifest.json",
+      "amd64_digest": "sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+      "arm64_digest": "sha256:8b0888097cf783a97cc0200d585f1e35b43366cc8977cfc08617bdc46a050308",
+      "status": "Selected first product qualification candidate; actual version/schema/readback/recovery NOT_RUN. Older26.5.1.882 image remains historical evidence, not product version."
+    },
+    "checkpoint_documentation": "Documentation-only checks PASS on clean68f91e87; initial dirty invocation remained NOT_RUN. Receipt .research/implementation/index-foundation-20261026/checkpoint-docs-68f91e87/result.json."
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",
@@ -73894,6 +73980,64 @@
     "receipt_sha256": "fc4535ad4247a8c834300776506f2d502abed079d865e31d45a38fdb1b73a9f8",
     "evidence": "docs/implementation/evidence/p01-ci-assembly-fixture-20261026.json",
     "resources": "Owned empty real-tmp directory and linked-tmp symlink plus reproduction logs. No native build, engine, container or network. Existing unittest fixture temporary directories cleaned.",
-    "retention": "Retain original RED and both GREEN logs through integrated hosted qualification; no prior resources changed."
+    "retention": "Retain original RED and both GREEN logs through integrated hosted qualification; no prior resources changed.",
+    "integration": "27daae02 fast-forwarded into main; root now owns this worktree on main; delegate idle. One coherent fixture/checkpoint publication pending."
+  },
+  "implementation_initial_index_sql_20261026": {
+    "observed_at": "2026-10-26T16:26:53.973579+00:00",
+    "status": "PASS_SQL_ONLY; stopped-retained",
+    "source_revision": "d269d66a8d29c60e47888e4b57f71c2d347099e2",
+    "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026",
+    "root": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026/.research/index-pg-sql-20261026a",
+    "preflight": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-index-pg-20261026/.research/index-pg-sql-20261026a-preflight.json",
+      "sha256": "f04fa174482a115a4b4928f74ed2362d199ab638df66c7023fd946c281febf38"
+    },
+    "evidence": "docs/implementation/evidence/p02-initial-index-sql-20261026.json",
+    "private_receipts": {
+      "index41-index-runtime.json": "b403fb04cad0f32f5f30484f2b16bb6cc2d1765babadbfda91467936bef54611",
+      "index41_expiry-index-races.json": "5273fc84b78731ab140a0e4ed953f85029e9a707e1207c4373dfbaf28b830406",
+      "resources.json": "24fdde65e2da55e6325deaed646a52c7cce86d67c185700ca3d301faf7e1ee5a",
+      "terminal-audit.json": "2d2003b86bdc14f662c26a2dc78d169e18d2f2cc3f62eeb9a083d9ee9fc43a6f"
+    },
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a",
+        "id": "d9285424680042eee653ddd17b1a1ec678e05cf82e5831f907f89f0b335a1775",
+        "running": false,
+        "pid": 0,
+        "exit_code": 0
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a-client",
+        "id": "e0e5db834ba064db6ab7c289633e285cd2407ac40aa09c62f8680ce336d347fc",
+        "running": false,
+        "pid": 0,
+        "exit_code": 143
+      }
+    ],
+    "network": {
+      "id": "de5ceba69720fe3fceed5381ea30506e1eb36dc4eb7a990a8401d220e99b0f43",
+      "name": "bigbrotr-implementation-pg-20260917-index_pg_sql_a",
+      "internal": true,
+      "subnets": [
+        {
+          "Subnet": "10.251.41.0/28",
+          "Gateway": "10.251.41.1"
+        }
+      ],
+      "status": "retained"
+    },
+    "retained_bytes": 138500484,
+    "retention": "Keep exact fixture/SQL-command inputs, original receipts and data until integrated CLI/API/physical proof qualification and deliberate owner-reviewed retirement. No prior environment was changed.",
+    "not_run": [
+      "Rust Index API and private physical proofs",
+      "ClickHouse verification",
+      "lost PG COMMIT",
+      "product schema41 migration CLI qualification",
+      "installed schema41 recipe and first-event continuation",
+      "capacity, power-loss and remote-host qualification"
+    ],
+    "integration_note": "Evidence document and source are currently on local work/initial-index at8b74cd4a; not yet in main."
   }
 }
