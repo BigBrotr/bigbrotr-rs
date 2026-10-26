@@ -340,3 +340,52 @@ the compacted prefix. This is an autonomous implementation choice under Q35,
 not an owner-directed scope change or a claim of qualified GC, unlimited traffic
 or backup support. The existing recovery report retains the critical countercheck
 and remaining practical gates.
+
+Q40 (2026-10-26): The owner clarifies delivery and requests a safe pause of the
+incomplete goal before replacement. Scope remains every selected P00–P10
+requirement and M1–M5 milestone, including optional capabilities. Technical
+suggestions express intent; choose justified solutions. No deadline, feature
+reduction or weaker correctness, security, data or verification guarantee is implied.
+
+Deliver a professional maintainable repository: complete code, necessary tools,
+tests, configuration, dependencies, licenses and build/install/verification/user
+procedures reproducible from a clean checkout with declared obtainable inputs.
+Neither the session, .research, personal paths, old containers nor unrecreatable
+private artifacts may be prerequisites. Promote useful stable exploratory
+reproducers into maintained infrastructure. Declare commands and CI/dedicated/
+release prerequisites; real installed-interface observations complement independent
+automated checks. Retain required errors, interruptions, restart, recovery,
+security and capacity checks; FAIL/NOT_RUN/unknown never become PASS.
+
+Before the first production release, internal iterations are not supported
+versions. Supersede indiscriminate additive-migration and internal-preservation
+rules: remove genuinely superseded compatibility, code, adapters, migrations,
+fixtures and dependencies after understanding current consumers and guarantees.
+Consolidate schema/bootstrap deliberately; a private commit/push is not a support
+promise. Preserve current operational transitions, corruption/incompatibility
+checks, integrity and recovery. Reuse valid code; do not rewrite Git history or
+working components for cosmetic novelty. Keep responsibilities, errors and resource
+ownership clear; abstractions need real use. Measure relevant CPU/RAM/disk,
+concurrency, backpressure, cancellation, maintenance and recovery under the plan's
+workloads; partial benchmarks/source reading do not prove system performance.
+
+Retention is proportional: essential current evidence, open-defect reproducers,
+unique data, unintegrated work and safe continuation. Verify ownership, actual use,
+dependencies and regeneration before removing obsolete owned resources; a missing
+text-search hit is insufficient. Preserve other workloads. Neither indefinite
+retention of every attempt nor a general cleanup campaign is required. Use existing
+P01-T08, P08-T11/T12 and P10-T08/T10 for acceptance, delivery and final documentation.
+User guidance describes current portable procedures, not the host/session/history.
+Replace superseded operational rules in place; retain attributable historical
+decisions and evidence without treating them as current mandates.
+
+Continue coherent increments by dependency, risk and useful capability: finish M1
+then every remaining milestone. Q37/Q38 remain; reuse still-valid reads, builds,
+reviews and proofs, repeating affected checks on change, anomaly or uncertainty.
+Preserve resource, credential and publication limits. For this transition, save
+and privately push coherent work, preserve pending work, stop owned autonomous
+activity and update the existing checkpoint. Set the actual goal PAUSED, never
+complete merely to replace it, and never manipulate internal Codex data. If an
+incomplete goal cannot be cleared here, the owner clears/starts the replacement
+through supported controls. Full consolidation continues under the new goal; it
+is not a prerequisite for this safe pause.

@@ -344,9 +344,13 @@ marking Step 1 complete and prevent advertising durable job,
 read/export, acquisition or reclamation behavior from this foundation.
 
 There is no shipped predecessor release or qualified binary rollback in this
-slice. Never edit an applied SQL file to make a checksum match. Future forward
-repairs add catalog entries; restoring a backup requires new fenced roots and
-explicit reconciliation of post-backup data and external effects. Before any
+slice. Under Q40, internal schema/bootstrap iterations may be consolidated as a
+deliberate implementation change, preserving current integrity and recovery and
+qualifying the replacement. The current catalog-prefix rules do not promise
+permanent support for every internal migration. Never edit an applied file or
+ledger merely to disguise a checksum mismatch. Repairs of supported installed
+release histories use explicit qualified transitions; restoring a backup requires
+new fenced roots and reconciliation of post-backup data and external effects. Before any
 writer-floor increase or irreversible change, implement and exercise the owning
 upgrade plan, backup closure and old/new compatibility journey. A failed or
 unexecuted scenario remains a release gate.

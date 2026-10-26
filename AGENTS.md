@@ -26,6 +26,21 @@ BigBrotr; `bigbrotr-rs` is the repository identifier. Record user decisions and
 unresolved assumptions in `docs/planning/questions.md`, and keep the current
 mandate in `docs/planning/mandate.md`.
 
+Owner decision Q40 defines delivery as the complete P00–P10/M1–M5 product,
+including selected optional features, reproducible from a clean checkout with
+declared dependencies and inputs. Required build, test and operating tools belong
+in the maintained repository; private lab paths, caches or this session cannot be
+prerequisites. Technical suggestions are intent, not mandated implementations.
+
+This is before the first production release. Internal commits/formats are not
+public compatibility obligations: consolidate obsolete migrations, adapters and
+fixtures when their actual consumers and guarantees are understood. Preserve
+current restart/replay/recovery, corruption refusals and data integrity; do not
+rewrite Git history or replace working components without need. Q40 supersedes
+blanket additive-migration and indefinite-retention rules. Retain essential
+evidence, open-problem reproducers, unique data and unintegrated work; retire
+verified owned, unused, unnecessary resources incrementally. Q37/Q38 remain.
+
 Base claims on source inspection, documented guarantees, or recorded experiments.
 Separate measured results from extrapolations and proposals. A passing test is
 evidence for the behavior it exercises, not proof of overall production fitness.
@@ -60,8 +75,9 @@ rule is historical. Keep ordinary installation
 on Docker Compose with explicit initialization/migrations. All initial Cargo
 packages remain unpublished. Under Q36, `main` is the current integrated project
 state; update it with verified coherent work and retire redundant branch refs
-after reconciling their original commits. Preserve worktrees and ignored/external
-evidence when retiring refs. Branches and parallel agents serve concrete needs. Keep
+after reconciling their original commits. Preserve pending work and required
+ignored/external evidence; dispose of obsolete worktrees/labs separately under
+Q40's ownership and retention checks. Branches and parallel agents serve concrete needs. Keep
 one integrating owner and separate writable worktrees when implementation is
 parallel. Never run untrusted PR code on the shared Tux host or with release keys.
 The same contract documents the existing planning checks and their prerequisites;

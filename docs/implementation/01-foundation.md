@@ -503,8 +503,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
-- [ ] **Step 3:** Query the full event through the actual local read entrypoint available in
+- [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
+  Qualified by the October26 corrected-profile journey: real private history,
+  exact signed fields, independent native/Archive first-receive and provenance
+  comparison, and standalone export. This scoped read completion does not close
+  Step4's Ingest restart or Step5's dependency-outage requirements.
 - [ ] **Step 4:** Restart with the same data, resend the event and inspect one canonical body
   with unchanged first admission. Repeat with provenance off.
 - [ ] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded

@@ -16,10 +16,12 @@ accepted-configuration inspection.
 The development CLI also provides explicit [archive and coordinator
 initialization](docs/user/archive-initialization.md) and finite
 [retained-receipt inspection](docs/user/archive-receipts.md). These commands have
-separate prerequisites and qualification scopes; the running service currently
-supervises Control only.
-Durable event admission, archive and product services remain implementation work.
-This is not an installable release.
+separate prerequisites and qualification scopes. The explicit initial
+Control/Ingest/Sync/Archive composition supports controlled signed acquisition and
+publication; ordinary Control supports private history and signed-event export.
+Restart, readiness, complete installation and the remaining product capabilities
+still have open qualification and delivery requirements. This is not a production
+release or a complete self-contained first-event distribution.
 The repository remains private and
 temporarily named `bigbrotr-rs`; the product name is **BigBrotr**. The eventual
 GitHub name `bigbrotr` is a separate transition. The neighboring Go checkout
@@ -32,7 +34,7 @@ remains read-only.
 | Understand the product and data flow | [Plain-language guide](docs/start-here.md), then [system design](docs/architecture/system-design.md) |
 | Understand what is stored and exposed | [Storage catalog](docs/specification/storage-catalog.md), [interfaces](docs/specification/interface-catalog.md) and [data fields](docs/specification/data-contracts.md) |
 | Implement the project | [AGENTS.md](AGENTS.md) → [current checkpoint](docs/implementation/progress.md) → [agent execution guide](docs/implementation/agent-handoff.md) → [PLAN.md](PLAN.md) and [phase/task/step index](docs/implementation/README.md) |
-| Develop, test and release | [Development and delivery](docs/engineering/development-and-delivery.md): Mac/Tux, CI, Docker Hub, coherent commits and existing planning checks |
+| Develop, test and release | [Build instructions](docs/development/build.md), [verification](docs/development/verification.md) and [development and delivery](docs/engineering/development-and-delivery.md) |
 | Understand installation and placement | [Deployment contract](docs/specification/deployment-contract.md) and [local/S3 archive contract](docs/specification/archive-storage-contract.md) |
 | Distinguish decisions from unexecuted qualification | [Readiness register](docs/planning/specification-readiness.md), [decision confidence](docs/planning/decision-confidence.md) and [experiment summary](docs/research/experiment-summary.md) |
 
@@ -43,17 +45,23 @@ tasks; no future product step is complete merely because its specification exist
 
 ## Working and delivery model
 
-Use the Mac as the primary editing/Git workspace and isolated exact-revision
-checkouts on `ssh tux` for native Linux builds, practical faults and larger runs.
-The workflow is portable to another developer machine or Linux lab. GitHub Actions
-runs isolated CI; Docker Hub distributes application images. Standard single-host
+Build and verification procedures must work from a clean checkout with declared
+dependencies and obtainable inputs, independently of a particular developer host,
+agent session or private laboratory. Required reusable tools belong in the
+maintained repository; caches are optional accelerators. The repository is still
+closing that delivery requirement for the complete selected P00–P10/M1–M5 scope,
+including optional capabilities. GitHub Actions provides the selected CI workflow
+and Docker Hub is the selected application-image destination. Standard single-host
 Docker Compose with local archive is the main installation path. S3 and split
 roles use ordinary explicit endpoints when needed. No custom cluster manager is
 required. All initial Cargo packages stay unpublished; branches and parallel work
 are optional tools, while coherent commits and substantive review are required.
 
-The initial unpublished Cargo application and isolated CI definition are present;
-Docker images and installation bundles remain future work. Follow
+The unpublished Cargo application, CI entrypoint and private candidate bundle/
+Compose recipes are present; full release and clean-install qualification remain
+incomplete. Internal pre-production iterations are not supported public versions;
+necessary current integrity, restart, replay and recovery guarantees still apply.
+Follow
 [build instructions](docs/development/build.md) and
 [practical verification](docs/development/verification.md). The
 [checkpoint](docs/implementation/progress.md) distinguishes executed outcomes

@@ -47,6 +47,25 @@ The key contracts have distinct ownership:
 | Development hosts, CI/release, commits and collaboration | [Development and delivery](../engineering/development-and-delivery.md) |
 | Browser journeys, private operation and published documentation | [Product surfaces](../product/dashboard-and-website.md), [private administration](../product/private-administration.md), [P09](09-product-interfaces.md) and [P10](10-website.md) |
 
+Q40 defines completion as all selected P00–P10/M1–M5 responsibilities, including
+optional features, delivered through a maintainable clean-checkout repository.
+Keep required reusable build/test/operation tools and suitable inputs in stable
+repository locations, or document verified acquisition/generation. Lab caches and
+private artifacts may accelerate work but cannot be essential undeclared inputs.
+Use P01-T08, P08-T11/T12 and P10-T08/T10 for acceptance and delivery; do not create
+a second plan. User documentation describes portable current procedures, not
+Tux, an agent session or experimental history.
+
+Before first production release, private internal iterations are not compatibility
+commitments. Remove superseded paths/migrations/fixtures after consumer analysis;
+consolidate bootstrap/schema while preserving current system properties. Retain
+necessary restart/replay/recovery and corrupt/incompatible-input tests. Reuse
+working components, preserve Git history and update owning contracts/tests/docs
+together. Q40 replaces blanket additive-migration and indefinite-retention rules.
+Keep essential current evidence, open-problem reproducers, unique data and pending
+work; verify ownership, actual use and regeneration before incremental cleanup.
+No broad historical audit, cleanup project or reduced product scope is implied.
+
 Do not scaffold every proposed folder or crate before its first consumer exists.
 Do not copy the research Python or a state model into a product implementation
 merely because it passes its own fixture. Generated APIs, DDL and serializers
@@ -319,48 +338,48 @@ Then submit the following as a goal. This is an invocation of the existing
 contracts, not a separate task plan or authorization for public publication.
 
 ```text
-/goal Complete the selected BigBrotr product in this private repository, following
-AGENTS.md, docs/planning/mandate.md, docs/implementation/agent-handoff.md and the
-existing phase/task/step plan through M1–M5. Work entirely on Tux from the canonical
-checkout /home/tux/bigbrotr-rs. First verify docs/implementation/progress.md against
-GitHub, local Git, retained artifacts and current resources; preserve recovered
-unpublished work and original failures. Reconcile the documented cleanup and
-headroom prerequisites before substantial allocations. Resume the exact next
-bounded action in that checkpoint, then select useful dependency-ready slices
-until the complete selected product is demonstrated.
+/goal Complete BigBrotr Rust across the entire selected P00–P10 plan and M1–M5
+milestones, including selected optional capabilities. Resume from the current
+checkpoint and follow AGENTS.md, the reconciled mandate and execution guide.
 
-Completion requires real delivered journeys for acquisition, durable signed-event
-archive and optional provenance, restart/replay, analytics/ranking, selected read
-and publication interfaces, public dashboard, private administration, website/docs/
-blog, installation, upgrade, backup/restore and private release rehearsal. Bind
-evidence to actual source/artifact/dependency identities and state the supported
-workload and failure envelope. Implement and qualify selected optional features;
-disabling one or completing a single milestone does not complete this goal.
+Deliver a professional repository ready for open-source maintenance: complete,
+correct, secure, robust, modular, readable and efficient implementation; necessary
+dependencies/tools/configuration; current documentation and licensed notices;
+reproducible build, installation and verification from a clean checkout with
+declared prerequisites and obtainable inputs. This does not authorize public
+publication, repository rename or production deployment.
 
-Use the smallest maintainable responsibility, idiomatic Rust, explicit ownership
-and errors, finite CPU/RAM/disk/network work and cancellation. Measure performance
-with equal semantics and preservation guarantees; include mixed load, failures,
-refusals and maintenance costs where relevant. Read complete affected owners and
-callers, use independent expected results and actual engines/clients at meaningful
-boundaries, review the integrated diff, and update contracts/tests/docs together.
-Do not invent a new architecture or expand scope to every historical suggestion.
+Before first production release, remove superseded internal compatibility, code,
+migrations/fixtures, duplication and implicit personal-lab dependencies when their
+current consumers are understood. Consolidate deliberately, reuse valid components,
+preserve Git history and all current integrity, restart, replay, recovery and
+failure-handling guarantees. Retain essential evidence, open-defect reproducers,
+unique data and pending work; retire only verified owned, unused, unnecessary
+resources incrementally. Caches must be optional accelerators.
 
-Use bounded subagents when useful, one integrating owner, separate writable
-worktrees for parallel implementation, and independent review at consequential
-boundaries. Apply the execution guide's Q37 model/effort allocation through actual
-controls and verify effective settings. Preserve unrelated workloads,
-historical/negative fixtures and the read-only legacy repositories.
-Keep migrations additive, credentials private and
-packages unpublished. Commit coherent outcomes and push verified private work
-after reconciling the remote; do not publish, rename or deploy publicly.
+Demonstrate requirements with maintained independent tests where needed, real
+engines/integrations, distributed-artifact end-to-end runs and direct installed
+interface observations. Qualify required errors, interruption, security, durability,
+cancellation, recovery and capacity; measure relevant CPU/RAM/disk/concurrency and
+maintenance under the plan's workloads. Declare command prerequisites and CI,
+dedicated or release placement. Never weaken an oracle or hide a failure by
+changing limits, bypassing the real path or calling missing execution PASS.
 
-Maintain only the existing progress checkpoint, task evidence and lab inventory.
-Continue autonomously across ordinary task boundaries without requesting routine
-confirmation. Reuse unchanged valid evidence and retire only verified regenerable
-resources within the established cleanup scope. If a real external prerequisite
-prevents a required outcome, complete independent available work, record the
-precise blocker and what would resolve it, and report incomplete status honestly.
-Never turn FAIL, SKIP, NOT_RUN, missing evidence or an interrupted result into PASS.
+Advance autonomously by coherent dependency/risk-driven increments: finish M1
+with necessary foundations, then all remaining milestones. Technical suggestions
+are intent; choose justified implementations without needless frameworks or
+rewrites. Update code, tests, contracts and portable user guidance together. Reuse
+valid reads/builds/reviews/proofs and repeat affected checks when assumptions
+change or uncertainty arises. Keep the existing essential checkpoint and plan,
+Q37 model controls and Q38 efficiency; use bounded agents where useful with one
+integrating owner. Preserve resource, credential and private-publication limits.
+
+Finish only when every selected requirement is implemented, integrated and
+verified, with reproducible delivery independent of undeclared private resources.
+Do not reduce scope to claim success. Record remaining requirements and exact
+external blockers honestly while completing independent available work. FAIL,
+NOT_RUN, SKIP, missing prerequisites and interrupted outcomes never become PASS.
+
 ```
 
 Goals provide persistent continuation, not a guarantee against host failure,

@@ -11,6 +11,15 @@ implementation deliverables, not claims of passing acceptance.
 
 ## One source revision, different execution environments
 
+Q40 requires another developer to build, verify and use the complete selected
+product from a clean checkout with declared dependencies and obtainable inputs.
+The host conventions below govern this development session, not product
+prerequisites. Maintain reusable tools and stable regression scenarios in the
+repository, or a verified procedure for obtaining/generating their inputs;
+caches may accelerate execution but their absence must not prevent it. Keep
+commands, prerequisites and fast/real-engine/dedicated/release tracks explicit
+through P01-T08, P08-T11/T12 and P10-T08/T10, without a parallel plan.
+
 Under the owner's 2026-10-12 instruction (Q34), Tux is the sole editing, review,
 Git, development and test host. The canonical integrating checkout is
 `/home/tux/bigbrotr-rs`; use separate writable worktrees for actual parallel
@@ -89,13 +98,16 @@ existing runner supports it, protected by its exclusive lock. Source inputs and
 qualified executables/manifests remain outside that cache. A cache hit never
 replaces an input hash check. Separate trusted and untrusted build contexts.
 
-After a useful slice, inspect owned processes and retain concise evidence and
-needed executable/input closure. Retire only enumerated regenerable intermediates
-after proving that required artifacts do not exist solely there. Record before/
-after allocated bytes and preservation checks. A stopped container can still own
-required data; whole-run removal and global Docker/system pruning are not cleanup
-policies. Original failures, deliberate negative fixtures and retained datasets
-need explicit disposition or a verified external copy before removal.
+After a useful slice, retain evidence essential to current conclusions, open
+problem reproducers, unique data, unintegrated work and safe resumption. Under Q40,
+not every attempt, dataset copy or internal compatibility fixture needs permanent
+retention. Document purpose, dependencies and regeneration for what remains;
+promote useful reusable tools/inputs into maintained repository locations.
+Retire enumerated obsolete resources only after verifying ownership, actual use
+and whether any required information exists solely there. Text-search absence or
+a stopped container does not prove disuse. Record material space reclamation and
+preservation checks. Preserve unrelated workloads; avoid global pruning and a
+general cleanup campaign that delays the product.
 
 Check free disk before allocation against the selected scenario's actual reserve
 and setup peak. The existing export executor's 64 GiB reserve must not be lowered
@@ -121,13 +133,16 @@ agents race on a shared Git index, lockfile, migration allocator or checkpoint.
 Re-read and test the integrated result. Independent review can be useful without
 parallel implementation. No fixed agent/reviewer count is required.
 
-Retire inactive local and remote branch refs after proving their changes are
-integrated or explicitly retained as historical qualification input. Preserve
-original commit objects with a verified bundle and protected archive refs; a
-cherry-picked patch alone does not preserve its original commit identity. Detach
+Retire inactive local and remote branch refs after reconciling their changes and
+current consumers. Keep original commits needed by pending work or retained
+evidence reachable; use a verified bundle/protected ref when needed. A cherry-picked
+patch alone does not preserve original identity, but obsolete internal iterations
+do not all need permanent archival. Detach
 inactive clean worktrees at the same commit when removing their branch refs,
-preserving all tracked/ignored contents and external laboratories. Keep active
-implementation branches until their work is reconciled.
+preserving unintegrated work and required evidence. Dispose of obsolete worktree
+contents and labs separately under the retention checks above; removing a branch
+ref is not permission to remove its data. Keep active implementation branches
+until their work is reconciled.
 
 Before pushing, fetch and inspect remote changes. Use ordinary fast-forward
 updates; reconcile unexpected work without resetting another contributor or
@@ -322,6 +337,14 @@ download versions. CI/CD produces releasable artifacts; installation into an
 operator's data host remains an explicit operation.
 
 ## Ordinary installation and upgrade
+
+Before the first production release, internal iterations do not create supported
+release compatibility. Q40 permits deliberate consolidation of schema/bootstrap,
+superseded code and historical-only migration fixtures after consumer analysis,
+while preserving every property of the current product and its required failure
+tests. A private commit/push does not freeze a migration forever. Supported release
+upgrades below remain deliverables; current restart, replay, recovery and state
+succession are operational invariants, not disposable legacy compatibility.
 
 The main path is a single Linux machine using Compose, local archive storage and
 declared database volumes. S3 and standard remote endpoints remain supported

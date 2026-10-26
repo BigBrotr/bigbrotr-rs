@@ -73202,7 +73202,7 @@
     }
   },
   "implementation_m1_first_launch_20261026": {
-    "status": "original-initial-archive-qualified-history256-failure-preserved-corrected-child-qualified",
+    "status": "safe-pause-for-Q40-goal-transition",
     "owner": "c555fff773e9f50f27c7db5c9840b962",
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280",
     "source_base": "c3f7c31c6d1d4bbef35980d708ca927879a2abb1",
@@ -73210,7 +73210,7 @@
     "product_source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
     "bundle_worktree": "/home/tux/bigbrotr-rs/.research/m1-bundle-20261026",
     "branch": "work/m1-bundle",
-    "observed_at": "2026-10-26T09:37:12.327207+00:00",
+    "observed_at": "2026-10-26T09:55:25.280618+00:00",
     "free_before_bytes": 170161451008,
     "processes": [],
     "containers": [
@@ -73224,8 +73224,8 @@
     "retention": "Preserve source drafts, databases, input, original failures, captures, assembled artifacts and external roots; no cleanup authorized by this allocation.",
     "resources": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/resources.json",
-      "sha256": "20cd2da90f66a6a777daef3088aa437e38fafc630ba5162ed79c3381d4f2ae13",
-      "bytes": 7455
+      "sha256": "6d47d24af67e1b333a5d0be0acc12d2f36f6895f35d526f534a46b8d45f0739c",
+      "bytes": 7400
     },
     "core_evidence": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/core-verified.json",
@@ -73252,8 +73252,9 @@
       "branch": "work/m1-client",
       "base": "0f80280f5180a4aa32ef57479be23e89eca5e063",
       "owner": "m1_client_parameters",
-      "state": "reviewed and merged in c5b90047; no process",
-      "commit": "423be36b4c85958676913cadb5508ef6a7de4aee"
+      "state": "stopped; initial client423be36b integrated; tutorial17de200d pushed separately, integration/portable-user-flow review pending",
+      "commit": "17de200de05a9ae093ecd51b002ee06a3055c59d",
+      "remote": "origin/work/m1-client"
     },
     "preserved_failures": [
       "core-extraction-v1-failure.json",
@@ -73268,7 +73269,7 @@
       "path": "/home/tux/bigbrotr-rs/.research/m1-oracles-20261026",
       "branch": "work/m1-oracles",
       "commit": "d2ef7de0c9379e9a1bbacb19a105f4106af8f63f",
-      "state": "reviewed, merged; initial retained full native/Archive replay PASS; no engine"
+      "state": "stopped, clean at d2ef7de0; changes reviewed/integrated/pushed on main"
     },
     "history_recipe_failure": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/export-v1/triage.json",
@@ -73334,8 +73335,8 @@
       "owner": "c555fff773e9f50f27c7db5c9840b962",
       "resources": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/resources.json",
-        "sha256": "2bc51d1495d28931cddc6975b2d1b837dd132a8401af043d28837717ef1b17e3",
-        "bytes": 6906
+        "sha256": "14f075a854a8d731ef885905f7e3147a8e43a3a2082cf85d95a5284bd034a70c",
+        "bytes": 6893
       },
       "evidence": {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/journey-verified.json",
@@ -73357,21 +73358,20 @@
         "sha256": "9b123a2d361e77f2d232f8692e36a25b0c59f6baed8a67cf4e15d598b9d3a93e",
         "bytes": 1410
       },
-      "status": "qualified-initial-signed-archive-ordinary-control-read-export",
-      "active": [
-        {
-          "id": "f2996d132af6680670b588f893d243372dfa2459ffc50206c67b1f3fc74868dd",
-          "status": "running",
-          "pid": 2009372
-        }
-      ],
+      "status": "stopped-preserved-for-Q40-goal-transition",
+      "active": [],
       "preserved_failures": [
         "extraction-checker-failure.json (before extraction; safe directory entries)",
         "bootstrap-network-failure/ (Docker predefined pools exhausted before PG creation)",
         "initial-v1/census.stderr (scratch pre-created; native engine not opened)",
         "validation-path-failure.json (offline path adapter only)"
       ],
-      "all_application_census_processes": "joined; initial and ordinary exit0; failed census exit1; corrected census exit0"
+      "all_application_census_processes": "joined; initial and ordinary exit0; failed census exit1; corrected census exit0",
+      "pause_stop": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/read-profile-v3/goal-transition-stop.json",
+        "sha256": "edb05ca4f315dd5bb235710ef5833715cc3b086e08b60d6e919f8eddf466a6db",
+        "bytes": 2634
+      }
     },
     "orchestration": {
       "bootstrap": {
@@ -73394,6 +73394,15 @@
         "sha256": "471ee21ee5997744abf86d591de29b0c0ba403804114ef7e90cfe9ef7bd06eb2",
         "bytes": 5630
       }
+    },
+    "goal_transition": {
+      "decision": "Q40",
+      "state": "saved before actual pause-control request",
+      "all_agents_stopped": true,
+      "owned_runtime_running": [],
+      "cleanup": "No resources deleted; broader retention/consolidation under replacement goal",
+      "local_tools": "bootstrap-replay.py, initial-journey.py, export-journey.py and verify-journey.py remain external; bring useful maintained responsibilities into existing P01-T08 harness, with explicit inputs",
+      "restart_commands": "NOT_RUN; no recovery/retirement/successor has changed v3 state"
     }
   }
 }

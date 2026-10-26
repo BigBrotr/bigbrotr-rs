@@ -1,28 +1,40 @@
 # Current mandate
 
-## Tux-only resumption — 2026-10-12
+## Current delivery mandate — 2026-10-26
 
-Q35 activates the continuing full-product goal and appoints this session the sole
-integrating owner. Continue implementation, verification, private Git delivery
-and evidence-preserving maintenance autonomously through the existing selected
-scope. The goal is active, not merely prepared for another session.
+[Q40](questions.md) requires the complete selected P00–P10/M1–M5 product,
+including optional capabilities, as a professional maintainable repository
+reproducible from a clean checkout with declared dependencies and obtainable
+inputs. Required tools and procedures belong in the maintained repository;
+neither this session nor private lab artifacts are product prerequisites.
+Technical suggestions state intent, not mandatory implementation.
 
-The owner requests recovery of interrupted development, preserving current work,
-reconciling GitHub with Tux, a concrete resource-retirement plan and preparation
-of the continuing full-product Codex goal. Tux is now the sole authoring/Git,
-development and test host; the Mac is no longer required. This overrides the
-older host split below, without changing the selected product or its quality,
-private distribution and evidence obligations.
+Before the first production release, internal iterations are not supported
+versions. Superseded compatibility paths, migrations, fixtures and dependencies
+may be consolidated after verifying current consumers and system guarantees.
+This supersedes blanket additive-migration and indefinite-retention instructions,
+not current restart/replay/recovery, corruption refusal or integrity. Reuse valid
+code/evidence, preserve Git history and essential/unique/pending work, and retire
+verified obsolete owned resources incrementally. No general cleanup or rewrite
+is required before useful product progress.
 
-The canonical working checkout is `/home/tux/bigbrotr-rs`. GitHub remains the
-published baseline; recovered unpublished commits retain their own branch until
-qualified and reconciled. Old lab snapshots are evidence, not writable development
-copies. See [Q34](questions.md), the [delivery contract](../engineering/development-and-delivery.md)
-and [resumption audit](../research/tux-resumption-20261012.md). Preserve retained
-datasets, fault states and unrelated workloads while identifying regenerable
-caches. The 2026-09-17 retirement authorization is not permission to erase labs
-created afterwards. The existing checkpoint and task plan remain the only
-execution authorities; this recovery session does not declare the product done.
+Q37/Q38 remain effective. Use the existing plan, guide, checkpoint and inventory;
+P01-T08, P08-T11/T12 and P10-T08/T10 own reproducibility, qualification and final
+documentation. Preserve resource, credential and private-publication limits;
+open-source readiness is not publication permission. Full completion requires
+implemented, integrated and demonstrated scope.
+
+The owner now requests a safe goal transition: save the coherent result, preserve
+pending work, stop autonomous owned activity, then set the incomplete goal PAUSED.
+The owner clears/starts the replacement through supported controls if this session
+cannot. The actual control and [checkpoint](../implementation/progress.md) own
+lifecycle state; a historical activation instruction is not a current resume.
+
+Tux remains this session's sole development/Git host under Q34/Q35, with
+`/home/tux/bigbrotr-rs` as integrating checkout and separate writable worktrees
+when useful. This local convention is not a user/developer installation dependency.
+Preserve unrelated workloads and read-only reference repositories. See the
+[delivery contract](../engineering/development-and-delivery.md).
 
 ## Owner-started implementation — 2026-09-17
 
