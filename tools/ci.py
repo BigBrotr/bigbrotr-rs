@@ -87,10 +87,10 @@ def commands(output, system, architecture, jobs):
     checks = [('toolchain', ['rustup', 'show']),
               ('format', ['cargo', 'fmt', '--all', '--check']),
               ('clippy', ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings']),
+              ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
               ('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
                                       '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')]),
               ('rust-tests', [python, 'tools/ci.py', '--rust-tests-from-build', str(build)]),
-              ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
               ('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
         checks += documentation_commands(output)

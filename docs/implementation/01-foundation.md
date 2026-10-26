@@ -482,8 +482,8 @@ and queryable with truthful role readiness, without implicit public publishing.
   relocated c49 binary/image. Its fresh profile separates history1GiB from
   export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
   exact353-byte signed export and unchanged catalog/files pass. This includes an
-  ordinary Control restart; successor Ingest/resend and minimal Index/readiness
-  remain open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
+  ordinary Control restart; successor Ingest/resend is now qualified by Step4,
+  while minimal Index/readiness remains open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB
   export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
@@ -499,7 +499,7 @@ and queryable with truthful role readiness, without implicit public publishing.
   `ResourceLimit` refusal one byte beyond, under 64+96 MiB/five-second query
   limits with preserved science and terminal custody. It is not an installed
   job or empirical process-memory result; internal-owner high-water remains open.
-  Indexing and Ingest restart/resend remain open;
+  Indexing remains open;
   complete adjacent Discovery/Monitor is not a prerequisite for this journey.
 - [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
@@ -508,9 +508,18 @@ and queryable with truthful role readiness, without implicit public publishing.
   Qualified by the October26 corrected-profile journey: real private history,
   exact signed fields, independent native/Archive first-receive and provenance
   comparison, and standalone export. This scoped read completion does not close
-  Step4's Ingest restart or Step5's dependency-outage requirements.
-- [ ] **Step 4:** Restart with the same data, resend the event and inspect one canonical body
+  Step5's dependency-outage requirements or the complete milestone.
+- [x] **Step 4:** Restart with the same data, resend the event and inspect one canonical body
   with unchanged first admission. Repeat with provenance off.
+  The maintained connected `p01-first-launch-restart` and
+  `p01-first-launch-restart-provenance-off` each pass all 12 stages on the same
+  verified c49 product, using fresh accepted on/off policies respectively.
+  Independent original-input, typed-progress and full Archive-row checks preserve
+  the first signed body, eligibility, receive record and export through epoch2
+  resend, catch-up, exact retry and ordinary two-event history. Acceptance sources
+  `5767c7fc`/`7da70e11`; reports and original failures are linked by inventory key
+  `implementation_first_launch_maintained_20261026.restart_extension`.
+  This does not claim a new native RocksDB census, Index, outage or capacity proof.
 - [ ] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded
   pending behavior while preserving already acknowledged data.
 - [ ] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from

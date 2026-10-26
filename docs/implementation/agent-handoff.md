@@ -225,7 +225,8 @@ oracles; do not derive expected output by calling the implementation under test.
    phase complete from one happy path. A pending commit is not a pushed result.
 
 The practical runner implements `p01-t01`, `p01-event-cli`, `p01-config-static`
-and the fresh installed `p01-first-launch` / `p01-first-launch-restart` Compose journeys; use the actual
+and the fresh installed `p01-first-launch` / `p01-first-launch-restart` /
+`p01-first-launch-restart-provenance-off` Compose journeys; use the actual
 source/artifact arguments and declared scope in
 [verification](../development/verification.md). Remaining P01-T08 scenarios are
 open; a planned scenario is not executed evidence. Current planning checks are

@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-26T10:38:15.397482+00:00",
+  "updated_at": "2026-10-26T13:31:14.975573+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73407,7 +73407,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Hosted billing admission restored;4652f577 completed FAIL: macOS FIFO test compilation, Linux stale CLI scope expectation after Clippy/exact-source build PASS. Corrections e153bca4/f674c72e integrated; corrected real hosted qualification pending.",
+    "status": "Run40323472991 completedFAIL: all native Clippy/buildPASS, both Linux RusttestsPASS then rustdocFAIL, macOS lifetime fixtureFAIL. Test/doc corrections and unchanged-coverage earlier rustdoc order reviewed; next hosted execution pending.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73417,8 +73417,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40313846572",
-    "latest_hosted_source": "4652f577fa82b5f38bf7fd3f22fea54bf9f67b35",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991",
+    "latest_hosted_source": "59729703e39569696b605ad4eeec2fe137732ae5",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73434,15 +73434,56 @@
       "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-amd64/result.json"
     },
     "latest_exposure_check": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40313846572-exposure/receipt.json",
-      "sha256": "3c97e8e4980b50a6aec6a0a7bbe6ff87f9f6e395e43b67b6589baa88062e9512",
-      "scope": "Published delta8commits/54blobs; pending throughf674c72e5commits/23blobs; run40313846572 four artifacts/21members and24log members. No operational credentials confirmed,0 log/artifact candidates and0 provider alerts. Current observer/doc delta excluded from automated receipt; root publication review applies."
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/receipt.json",
+      "sha256": "3290711f714c9578d835cb216618d0a5ebc42c3b0b10527aae98f3cdd6d04ba2"
     },
-    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991",
+    "verification_in_progress": null,
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
       "replacement": "c05993470d038224641b77c57ce0ebfa6004a36f",
       "result": "Remote and local work/m1-client refs deleted with expected-head lease after confirming the sole unintegrated commit was superseded tutorial. Original clean worktree retained detached at17de200d; remote now onlymain. No Git history rewrite or data deletion."
+    },
+    "macos_identity_fixture": {
+      "agent_commit": "36804210ff6df67a22157e1a63312cdce3edcfa8",
+      "integrated_as": "d9660a38",
+      "worktree": "/home/tux/bigbrotr-rs/.research/archive-lifetime-macos-20261026",
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/archive-lifetime-macos-20261026/.research/lifetime-fixture-controls/receipt.json",
+        "sha256": "8c33a567632c16c1956e2a952255bf44aa29a3292dc34f35f95d8aa19510c47c"
+      },
+      "root_review": "CLEAR: complete lifetime.rs/tests.rs and CatalogIdentity declaration/implementation; acquire precedes manifest read, exact refusals unchanged, existing2s Occupied-only retry and deterministic duplicate-lock control. Remaining catalog SQL/placement consumers unchanged and not reread by root.",
+      "validation": "Formatting/diff/Linux fork mechanismPASS; new Rust test and correctedmacOS executionNOT_RUN"
+    },
+    "pending_source_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/source-review.json",
+      "sha256": "d7924d4c56e5ec02664d7abd95b01f9daf0ec10f01cb933867eb915dd85d5790"
+    },
+    "arm_rustdoc": {
+      "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-arm",
+      "result": "FAIL rustdoc unresolved link [0] in route.rs; prior exact-source build and Rust testsPASS; later acceptanceNOT_RUN",
+      "evidence": {
+        "result.json": "04182e753f389890a0a677ca30775cfa03b68533d53cb52c27999e48bd15094b",
+        "rust-doc.log": "959cc459295eda345de0559fb27c3a4b27069813f39a9b1385b1dcebd0f573e7"
+      },
+      "correction": "Only inline-code markup around serialized arrays; full route.rs inspected, rustfmt/diffPASS; corrected actual rustdocNOT_RUN"
+    },
+    "ci_order_review": {
+      "reviewer": "Astra independent AI review; root full ci.py/workflow/test_ci.py review",
+      "result": "CLEAR",
+      "change": "Move identical rust-doc before exact-source-build; same prepared native input/env/checks/platforms/deadlines. Packaged worker build still precedes bound Rust tests.",
+      "controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/ci-order-controls.log",
+        "sha256": "35272fc270c2431621ca9ecd37f1e1b8ca4dc2e0e8b018b2807a4d8aa9b242e3"
+      },
+      "controls_result": "PASS9"
+    },
+    "amd64_rustdoc": {
+      "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-amd64",
+      "status": "Same unresolved documentation link as ARM; full Rust testsPASS, subsequent controls/docs/dependency/CLIchecksNOT_RUN",
+      "report": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-amd64/result.json",
+        "sha256": "46139a4bd7a756dea6258929705687972d77bbf2da2fd104152854b0c4b52792"
+      }
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -73519,7 +73560,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "r5 actual connected path through both-event history executed; final pin-table verifier field corrected to exact FK join after schema inspection and retained-capture replay. OriginalFAIL preserved; full corrected runtime pending.",
+      "status": "PASS both connected profiles: all12/12stages each, initial science/export preserved across Ingest succession/resend, Archive catch-up/exactretry and ordinary two-event history. M1 Index/readiness/outage gates remain.",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73629,6 +73670,80 @@
             "sha256": "4d7a4deaab93e06233841c88671a32f8cc53ca002c40e155973ee2d2ae9c0a28",
             "result": "PASS preserved real history/export captures plus5negative controls; not full corrected runtime execution."
           }
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r6-20261026",
+          "source_revision": "5767c7fc",
+          "profile": "on",
+          "result": "PASS",
+          "counts": {
+            "collected": 12,
+            "executed": 12,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_sha256": "1636c45e9347591c51be2abcd0d8b76d7c768105768af0cb135ec34c6eb9b07d",
+          "resources": {
+            "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r6-20261026/resources.json",
+            "sha256": "a6bc486045fe5f519f58c6bbed2bc5ba968815909a3bbaff861b4bd966fcba9d"
+          },
+          "terminal": {
+            "containers": 26,
+            "states": [
+              "stopped-retained"
+            ],
+            "exit_codes": [
+              0
+            ],
+            "pids": [
+              0
+            ],
+            "cleanup_errors": []
+          },
+          "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
+          "limits": [
+            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.",
+            "NOT_RUN: native RocksDB census, provenance-off repeat, second-event export, Index readiness, dependency-outage qualification and complete M1.",
+            "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
+          ]
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-off-20261026",
+          "source_revision": "7da70e11",
+          "profile": "off",
+          "result": "PASS",
+          "counts": {
+            "collected": 12,
+            "executed": 12,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_sha256": "72d25fd6f16fc7d2d7ae414ea366bb51e474c438cff4f754dea23a2dc7331d02",
+          "resources": {
+            "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-off-20261026/resources.json",
+            "sha256": "1c6b1bc28b62c0a0f0628dcf4fa6833c79d79c6abe097a3f5007cbcb8af4e5aa"
+          },
+          "terminal": {
+            "containers": 26,
+            "states": [
+              "stopped-retained"
+            ],
+            "exit_codes": [
+              0
+            ],
+            "pids": [
+              0
+            ],
+            "cleanup_errors": []
+          },
+          "candidate_manifest_sha256": "47d53ce8329c016b8c733bab2f194a72abf26fab28640431344d11e710074145",
+          "limits": [
+            "Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events. Fresh accepted sync.provenance=off; no scientific witness rows.",
+            "NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.",
+            "Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication."
+          ]
         }
       ],
       "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
@@ -73637,7 +73752,7 @@
         "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
         "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
       },
-      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r6-20261026",
+      "next_runtime_evidence_intent": "No rerun of unchanged connected profiles; select minimal Index/readiness increment under P01-T09/P02-T07/P05-T01/T02 and preserve separate dependency-outage gate.",
       "unused_diagnostic_worktree": {
         "path": "/home/tux/bigbrotr-live-access-private-failure",
         "status": "Removed after clean tracked/untracked/ignored check; empty worktree/ancestor branch only, no unique work or artifacts."
@@ -73657,7 +73772,18 @@
           "tests/acceptance/test_first_launch_restart.py": "14ac2d1f6c6461626fe622908776d82149a74dff1584df1eec31c5026ec1cf6b"
         }
       },
-      "next_candidate_intent": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-pg-ready-20261026/candidate"
+      "next_candidate_intent": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-pg-ready-20261026/candidate",
+      "provenance_off": {
+        "agent_commit": "df78e23139b0f5015609ea9ae722658027e43ded",
+        "integrated_as": "7da70e11",
+        "worktree": "/home/tux/bigbrotr-rs/.research/p01-provenance-off-20261026",
+        "review": {
+          "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026/provenance-off-review.json",
+          "sha256": "b5b4e9633443160a5b4dea708a1b6925b0d4dedeb47a145f4addeb5abfb2498d"
+        },
+        "runtime_source_worktree": "/home/tux/bigbrotr-rs/.research/first-launch-restart-off-source-20261026"
+      },
+      "qualified_on_source_worktree": "/home/tux/bigbrotr-rs/.research/first-launch-restart-source-r6-20261026"
     }
   }
 }

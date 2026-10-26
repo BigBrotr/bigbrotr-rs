@@ -76,7 +76,7 @@ impl RouteSelection {
     }
 
     /// Stable exact bytes used by the operational command identity. Public is
-    /// [0]; private is [1, address family 4/6, prefix bits, network octets].
+    /// `[0]`; private is `[1, address family 4/6, prefix bits, network octets]`.
     pub fn canonical_bytes(self) -> Vec<u8> {
         match self {
             Self::Public {} => vec![0],
