@@ -1,0 +1,514 @@
+{
+  "format": "bigbrotr-hosted-foundation-evidence/1",
+  "date": "2026-10-26",
+  "status": "PASS selected hosted foundation on all three native platforms",
+  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
+  "run_attempt": 1,
+  "revision": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
+  "workflow_sha256": "a6fc3ef61a83acf609306c203c433521178d6e3df99065b8c4a469fbffc2c115",
+  "ci_helper_sha256": "1bf6f5f626786e203af8938167a7b07b0a520cc717928722f8c9d60b51361e3f",
+  "lockfile_sha256": "d4ac509018d1788d4bde82f3291941f93c8ad3cc09ddbb249d99f3ce0b4a44f4",
+  "selected_scope": {
+    "scope_job": "PASS",
+    "foundation_jobs": 3,
+    "other_jobs": [
+      {
+        "name": "native-rocks-linux-arm64",
+        "status": "SKIP",
+        "reason": "Existing workflow selection; not a substitute PASS"
+      },
+      {
+        "name": "documentation",
+        "status": "SKIP",
+        "reason": "Existing workflow selection; not a substitute PASS"
+      }
+    ],
+    "required_failed": 0,
+    "required_not_run": 0
+  },
+  "platforms": {
+    "amd64": {
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510/job/121714700859",
+      "target": "x86_64-unknown-linux-gnu",
+      "status": "PASS",
+      "started_at": "2026-10-26T16:53:37Z",
+      "completed_at": "2026-10-26T17:59:48Z",
+      "job_wall_seconds": 3971.0,
+      "check_counts": {
+        "collected": 14,
+        "executed": 14,
+        "failed": 0,
+        "not_run": 0
+      },
+      "checks": [
+        {
+          "name": "toolchain",
+          "status": "PASS",
+          "seconds": 8.186084
+        },
+        {
+          "name": "format",
+          "status": "PASS",
+          "seconds": 2.469688
+        },
+        {
+          "name": "install-deny",
+          "status": "PASS",
+          "seconds": 125.845953
+        },
+        {
+          "name": "dependency-policy",
+          "status": "PASS",
+          "seconds": 3.825366
+        },
+        {
+          "name": "clippy",
+          "status": "PASS",
+          "seconds": 820.489747
+        },
+        {
+          "name": "rust-doc",
+          "status": "PASS",
+          "seconds": 6.23083
+        },
+        {
+          "name": "exact-source-build",
+          "status": "PASS",
+          "seconds": 1157.19681
+        },
+        {
+          "name": "rust-tests",
+          "status": "PASS",
+          "seconds": 1791.242422
+        },
+        {
+          "name": "acceptance-controls",
+          "status": "PASS",
+          "seconds": 21.911839
+        },
+        {
+          "name": "planning-artifacts",
+          "status": "PASS",
+          "seconds": 2.319159
+        },
+        {
+          "name": "prepare-links",
+          "status": "PASS",
+          "seconds": 0.665761
+        },
+        {
+          "name": "documentation-links",
+          "status": "PASS",
+          "seconds": 0.415297
+        },
+        {
+          "name": "p01-event-cli",
+          "status": "PASS",
+          "seconds": 1.166866
+        },
+        {
+          "name": "p01-config-static",
+          "status": "PASS",
+          "seconds": 0.966525
+        }
+      ],
+      "rust_tests": {
+        "passed": 1174,
+        "failed": 0,
+        "ignored": 3,
+        "measured": 0,
+        "filtered_out": 0,
+        "suite_results": 92,
+        "ignored_test_names": [
+          "storage::archive::lifetime::tests::native_worker_retains_custody_and_separate_process_budgets_until_reaped",
+          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
+          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
+        ]
+      },
+      "python_acceptance_controls": {
+        "collected": 105,
+        "passed": 105,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 21.537
+      },
+      "artifact_cli": {
+        "p01-event-cli": {
+          "status": "PASS",
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_member": "p01-event-cli/result.json",
+          "sha256": "01bc90a677f5a5958a6462fb4c0cf98e79eb8b32acf115b0b4286275476315e4"
+        },
+        "p01-config-static": {
+          "status": "PASS",
+          "counts": {
+            "collected": 64,
+            "executed": 64,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_member": "p01-config-static/result.json",
+          "sha256": "a42f87d6db8e9d3eea443b8ada7f7ec113c22d5bc21ae84da016cfd690b44979"
+        }
+      },
+      "identity": {
+        "result_sha256": "dfa03ac81dca694b06cebadf38ff559e7a140a17136816301348524345813f3e",
+        "build_result_sha256": "b4f3b043b8f5fc2866113d084748189928de9c1348771f24e7f82290dfc79ca2",
+        "source_manifest_sha256": "12e79ef2495f7aa2ce5c606b4b5af56f1a1d54d6e062bf7dc64a9ec0d7a540ce",
+        "binary_sha256": "a54f4d5a77b82a87cf9c12898ecc1c60383f9c21359c9dc127e049717012d084",
+        "worker": {
+          "bytes": 14424040,
+          "sha256": "b035fe4068cecd6556373fb234ee2cd88686c5c2b589a3a18edc275557f06943"
+        }
+      }
+    },
+    "arm": {
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510/job/121714701131",
+      "target": "aarch64-unknown-linux-gnu",
+      "status": "PASS",
+      "started_at": "2026-10-26T16:53:40Z",
+      "completed_at": "2026-10-26T17:48:32Z",
+      "job_wall_seconds": 3292.0,
+      "check_counts": {
+        "collected": 9,
+        "executed": 9,
+        "failed": 0,
+        "not_run": 0
+      },
+      "checks": [
+        {
+          "name": "toolchain",
+          "status": "PASS",
+          "seconds": 5.628864
+        },
+        {
+          "name": "format",
+          "status": "PASS",
+          "seconds": 2.069225
+        },
+        {
+          "name": "clippy",
+          "status": "PASS",
+          "seconds": 777.531565
+        },
+        {
+          "name": "rust-doc",
+          "status": "PASS",
+          "seconds": 5.978426
+        },
+        {
+          "name": "exact-source-build",
+          "status": "PASS",
+          "seconds": 1125.564304
+        },
+        {
+          "name": "rust-tests",
+          "status": "PASS",
+          "seconds": 1324.861801
+        },
+        {
+          "name": "acceptance-controls",
+          "status": "PASS",
+          "seconds": 19.912428
+        },
+        {
+          "name": "p01-event-cli",
+          "status": "PASS",
+          "seconds": 1.266812
+        },
+        {
+          "name": "p01-config-static",
+          "status": "PASS",
+          "seconds": 0.765889
+        }
+      ],
+      "rust_tests": {
+        "passed": 1174,
+        "failed": 0,
+        "ignored": 2,
+        "measured": 0,
+        "filtered_out": 0,
+        "suite_results": 92,
+        "ignored_test_names": [
+          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
+          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
+        ]
+      },
+      "python_acceptance_controls": {
+        "collected": 105,
+        "passed": 105,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 19.615
+      },
+      "artifact_cli": {
+        "p01-event-cli": {
+          "status": "PASS",
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_member": "p01-event-cli/result.json",
+          "sha256": "f341c55fe572fc3b66084d8514fa06bf15d5b3e9c3d831bc3c56b5464e3a7694"
+        },
+        "p01-config-static": {
+          "status": "PASS",
+          "counts": {
+            "collected": 64,
+            "executed": 64,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "report_member": "p01-config-static/result.json",
+          "sha256": "334ba69fcbf9fa7a60d10896855b1b5362bb804b2b54f4424a63dba5e06564b0"
+        }
+      },
+      "identity": {
+        "result_sha256": "64880b3e0dcd6987eb75c9ff9a01ebbb219134ffaf2aa0e3161ff6d6a5c892eb",
+        "build_result_sha256": "63152e5f36ac69d40b5b7da463993fa11f47ad7437c7c2fc8f86688b839da1ff",
+        "source_manifest_sha256": "12e79ef2495f7aa2ce5c606b4b5af56f1a1d54d6e062bf7dc64a9ec0d7a540ce",
+        "binary_sha256": "2b4500609a1a553506d9d33fe053a9def54d7bb60974fd5918ee8dd5aa861e53",
+        "worker": {
+          "bytes": 13713904,
+          "sha256": "f5868a1e0cea1e7d66db50f2e1c012887cfe70826839aa221a692a4ac9961ab9"
+        }
+      }
+    },
+    "macos": {
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510/job/121714700988",
+      "target": "aarch64-apple-darwin",
+      "status": "PASS",
+      "started_at": "2026-10-26T17:03:39Z",
+      "completed_at": "2026-10-26T17:49:15Z",
+      "job_wall_seconds": 2736.0,
+      "check_counts": {
+        "collected": 7,
+        "executed": 7,
+        "failed": 0,
+        "not_run": 0
+      },
+      "checks": [
+        {
+          "name": "toolchain",
+          "status": "PASS",
+          "seconds": 7.263798
+        },
+        {
+          "name": "format",
+          "status": "PASS",
+          "seconds": 2.855903
+        },
+        {
+          "name": "clippy",
+          "status": "PASS",
+          "seconds": 649.431923
+        },
+        {
+          "name": "rust-doc",
+          "status": "PASS",
+          "seconds": 8.443875
+        },
+        {
+          "name": "exact-source-build",
+          "status": "PASS",
+          "seconds": 962.169361
+        },
+        {
+          "name": "rust-tests",
+          "status": "PASS",
+          "seconds": 1014.480964
+        },
+        {
+          "name": "acceptance-controls",
+          "status": "PASS",
+          "seconds": 67.098847
+        }
+      ],
+      "rust_tests": {
+        "passed": 1172,
+        "failed": 0,
+        "ignored": 2,
+        "measured": 0,
+        "filtered_out": 0,
+        "suite_results": 92,
+        "ignored_test_names": [
+          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
+          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
+        ]
+      },
+      "python_acceptance_controls": {
+        "collected": 105,
+        "passed": 102,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 3,
+        "seconds": 66.292
+      },
+      "artifact_cli": {
+        "p01-event-cli": {
+          "status": "NOT_SELECTED_ON_PLATFORM"
+        },
+        "p01-config-static": {
+          "status": "NOT_SELECTED_ON_PLATFORM"
+        }
+      },
+      "identity": {
+        "result_sha256": "504327cedd7fafb9c9839552a6799b941ee9a6c8af785db2f0f41f3b3b901f11",
+        "build_result_sha256": "503a2d9492b1187e3263c34d603e4e4b100feb76aac5091a0b2c6d37c322a59f",
+        "source_manifest_sha256": "12e79ef2495f7aa2ce5c606b4b5af56f1a1d54d6e062bf7dc64a9ec0d7a540ce",
+        "binary_sha256": "7f1d0d976f8dbba7b68e3e3432a7ce55e3d0d02d78a565e159619787141665cc",
+        "worker": {
+          "bytes": 12206576,
+          "sha256": "b7eb64bc7f921a0977f53bca3fe31f2686a935c0db500a7610b51664ec5ac9dd"
+        }
+      }
+    }
+  },
+  "fixture_followup": {
+    "original_report": "docs/implementation/evidence/p01-ci-assembly-fixture-20261026.json",
+    "original_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031",
+    "original_status": "FAIL macOS synthetic assembly/intake path setup; preserved unchanged",
+    "correction": "Only the newly owned fixture temporary root was canonicalized. Production refusal behavior and test methods remained unchanged.",
+    "hosted_confirmation": "macOS now completes all105 Python acceptance controls:102PASS,3 declared platform SKIP,zeroFAIL/error. Both Linux platforms pass105/105. All selected format/Clippy/rustdoc/build/workspace-test gates pass on all three."
+  },
+  "not_run_or_skipped": {
+    "rust_ignored": "3 on amd64 and2 on arm/macOS: explicitly separate native worker/ACK syscall/fsync fault-injection cases, named in platform counts. Not converted into PASS.",
+    "macos_python_skips": "Three declared Linux-only syscall/process-group controls.",
+    "macos_artifact_cli": "Linux strace acceptance cases are not selected on macOS; portable Rust CLI tests pass.",
+    "separate_gates": [
+      "Later local initial Index source and native run",
+      "Complete actual-engine/capacity/fault matrix",
+      "Full product and clean-install/release qualification"
+    ]
+  },
+  "early_dependency_policy": {
+    "observations": [
+      {
+        "run": 40332283813,
+        "ordinal": 12,
+        "preceding_check_seconds": 3945.3618313790007,
+        "policy_seconds": 2.020368087999941,
+        "status": "FAIL",
+        "command": [
+          "cargo",
+          "deny",
+          "check",
+          "licenses",
+          "sources",
+          "advisories"
+        ]
+      },
+      {
+        "run": 40349312031,
+        "ordinal": 4,
+        "preceding_check_seconds": 119.31238769200002,
+        "policy_seconds": 2.4709266030000094,
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "deny",
+          "--locked",
+          "check",
+          "licenses",
+          "sources",
+          "advisories"
+        ]
+      },
+      {
+        "run": 40363410510,
+        "ordinal": 4,
+        "preceding_check_seconds": 136.50172544100002,
+        "policy_seconds": 3.825366156000001,
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "deny",
+          "--locked",
+          "check",
+          "licenses",
+          "sources",
+          "advisories"
+        ]
+      }
+    ],
+    "meaning": "Sum of preceding recorded check durations excludes setup and queue overhead. Different required runs/hosts/source are not an isolated speedup measurement; no compilation-reuse change has run."
+  },
+  "public_output_audit": {
+    "status": "Completed bounded incremental audit; no operational credential confirmed",
+    "artifacts": 4,
+    "artifact_members": 507,
+    "workflow_log_members": 34,
+    "compressed_bytes": 1372885,
+    "pattern_candidates": 54,
+    "fingerprints": 5,
+    "classification": "Four declared example secret-file references and one fixed synthetic redaction-test canary; all54 records matched prior fingerprints with unchanged f1f6d166 supporting source.",
+    "github_artifact_digests_verified": true,
+    "upload_allowlist_verified": true,
+    "provider_alerts": 0,
+    "provider_checked_at_utc": "2026-10-26T18:02:34.791920+00:00",
+    "provider_scan_completion": "Not claimed",
+    "receipt_sha256": "7ceb8c89160dbf06733fee908b31311560221c39535d165083c8eb2d4e3ed915",
+    "scope_limits": [
+      "Only run40363410510 attempt1 and its four listed artifacts; no full-history rescan or later-run scope.",
+      "Pattern matching cannot establish exhaustive secret absence or inspect already-masked values. No matched value printed or copied into public summary.",
+      "No artifact execution, settings/visibility changes, billing operations, workflow dispatch, release or cleanup.",
+      "Narrow top-level diagnostics, build/source identities and actual acceptance result.json copied to protected platform directories."
+    ]
+  },
+  "artifacts": [
+    {
+      "name": "foundation-ubuntu-24.04",
+      "id": 12674555482,
+      "sha256": "1b44d1e667428501f56ac20e662142ff3f682d2b55e181bec7c66159b6e94026",
+      "bytes": 572148,
+      "members": 251
+    },
+    {
+      "name": "foundation-ubuntu-24.04-arm",
+      "id": 12673800261,
+      "sha256": "c2cedfc2f07fbcd2be5cc1e15f4a93a6cdb38efe9bc41d6dfd4fc6bcba404229",
+      "bytes": 593700,
+      "members": 245
+    },
+    {
+      "name": "foundation-macos-15",
+      "id": 12672373031,
+      "sha256": "58f17b575b6f1cbeea019ec1d64e2b5a72dc48a7a8ab1878d474c16b9c064ac9",
+      "bytes": 147398,
+      "members": 10
+    },
+    {
+      "name": "ci-selection",
+      "id": 12669551482,
+      "sha256": "582efbf4f262d4b076277acfe79af7c73d68a5fe99467b53746fd85e63711cec",
+      "bytes": 424,
+      "members": 1
+    }
+  ],
+  "retained_evidence": {
+    "inventory_key": "implementation_ci_publication_20261026",
+    "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-exposure/receipt.json",
+    "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-exposure/outcome.json",
+    "outcome_sha256": "b437b78b5b7d715718e14305bf5c26c7b881edd9b6259d98e0f47f2a351b3688",
+    "source_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-f1f6d166-exposure/receipt.json",
+    "source_audit_sha256": "251eac41e764217bc8e8e34d75c466eff2b55504cbe7698154788b2753949b51"
+  },
+  "limits": [
+    "Actual hosted outcomes, not local substitutes. Foundation PASS does not finish the product or qualify later Index changes.",
+    "Durations describe necessary runs and include host/source effects; no isolated CI speedup or compilation-reuse benefit is claimed.",
+    "Raw captures stay protected and ignored; public report contains counts, hashes and declared synthetic classifications only."
+  ]
+}

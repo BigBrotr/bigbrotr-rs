@@ -73433,7 +73433,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Run40363410510 sourcef1f6d166 completedSUCCESS on all3requiredfoundationplatforms; scopePASS, separate docs/optionalRocksARM SKIP byselection. Previousdependency/cancellation/macfixturefailures resolved at hosted scope. Terminalartifact/logexposure audit inprogress.",
+    "status": "Run40363410510 on f1f6d166 completed SUCCESS: all three required native foundation jobs PASS. Original failures retained; this does not qualify later local Index source or complete release/engine/installation gates.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73443,8 +73443,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813",
-    "latest_hosted_source": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
+    "latest_hosted_source": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73455,13 +73455,14 @@
       "scope": "All four artifacts and 38 attempt1 log members from40309278610; zero credential candidates; GitHub zero alerts at observation. Later runs excluded; no claim of completed asynchronous scanning."
     },
     "native_diagnostics": {
-      "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-macos/result.json",
-      "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-amd64/result.json",
-      "arm": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-arm/result.json"
+      "amd64": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-amd64/result.json",
+      "arm": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-arm/result.json",
+      "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-macos/result.json"
     },
     "latest_exposure_check": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40332283813-exposure/receipt.json",
-      "sha256": "5ae347279be21a29a2a7f3c89e5dac28b8f6fd0d19c42047b6bc56e5b0dace07"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-exposure/receipt.json",
+      "sha256": "7ceb8c89160dbf06733fee908b31311560221c39535d165083c8eb2d4e3ed915",
+      "scope": "Four artifacts/507 members and34 workflow log members;54 known synthetic/example candidates across5 unchanged fingerprints;zero operational credential confirmed andzero observed provider alerts. Asynchronous scan completion/exhaustive absence not claimed."
     },
     "verification_in_progress": null,
     "superseded_branch_retirement": {
@@ -73564,7 +73565,7 @@
       "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40349312031-exposure/outcome.json",
       "outcome_sha256": "86bf5c467db87d27fa9e6a338a49c779926a076f747ead292ad70be111f63bef",
       "process": "Actions watch46733 reaped exit1; no remaining watch",
-      "correction": "27daae02 fixture root canonicalization; corrected hosted run pending"
+      "correction": "27daae02 fixture root canonicalization; subsequent40363410510 on f1f6d166 confirms the correction on macOS. Original40349312031 failure remains unchanged."
     },
     "published_source_review": {
       "path": ".research/ci-publication-20261026/source-ea7ac434-exposure/receipt.json",
@@ -73574,9 +73575,9 @@
     "fixture_publication": {
       "revision": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
       "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
-      "status": "Started, final result pending",
+      "status": "SUCCESS all three required native foundation jobs; macOS fixture correction confirmed. Scope PASS; separate documentation/optional Rocks ARM jobs SKIP by selection.",
       "watch_session": 54174,
-      "source_audit": ".research/ci-publication-20261026/source-f1f6d166-exposure/receipt.json",
+      "source_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-f1f6d166-exposure/receipt.json",
       "source_audit_sha256": "251eac41e764217bc8e8e34d75c466eff2b55504cbe7698154788b2753949b51",
       "documentation": "Clean f1f6d166 documentation-only checks PASS; receipt in assembly-fixture worktree .research/checkpoint-docs-20261026/result.json",
       "terminal_observation": {
@@ -73591,7 +73592,14 @@
         },
         "watch": "session54174 finished exit0 and reaped",
         "public_output_audit": "ci_native_cancel_review in progress; no conclusion before actual audit"
-      }
+      },
+      "watch_status": "Root reported terminal watcher; this agent did not start a watch.",
+      "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+      "report_sha256": "cb5f0715ccd42524ee5e7473b86cc8514ef84edc6cd7fecb9abecb01015cd6c4",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-exposure/outcome.json",
+      "outcome_sha256": "b437b78b5b7d715718e14305bf5c26c7b881edd9b6259d98e0f47f2a351b3688",
+      "evidence_worktree": "/home/tux/bigbrotr-rs/.research/ci-hosted-completion-20261026",
+      "evidence_branch": "work/ci-hosted-completion"
     }
   },
   "implementation_first_launch_maintained_20261026": {
