@@ -49,7 +49,7 @@ fn accepted_profile_preserves_provenance_and_both_documents_actual_ceilings() {
     input
         .values
         .insert("sync.provenance".into(), json!("unknown"));
-    assert!(validate(&input).is_err());
+    assert!(profile(&input).is_err());
     for (key, value) in [
         ("indexer.batch_max_rows", 40_000),
         ("indexer.batch_max_bytes", 32 * 1024 * 1024),
@@ -73,11 +73,11 @@ fn accepted_profile_preserves_provenance_and_both_documents_actual_ceilings() {
     ] {
         let mut input = root();
         input.values.insert(key.into(), json!(value));
-        assert!(validate(&input).is_err(), "{key}");
+        assert!(profile(&input).is_err(), "{key}");
     }
     let mut input = root();
     input.local_roles.clear();
-    assert!(validate(&input).is_err());
+    assert!(profile(&input).is_err());
 }
 
 fn registration() -> InitialRegistration {

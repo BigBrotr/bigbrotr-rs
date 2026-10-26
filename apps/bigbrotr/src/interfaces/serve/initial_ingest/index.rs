@@ -110,11 +110,6 @@ impl Profile {
     }
 }
 
-/// Validate each effective accepted document. Calling this on a deployment
-/// seed is insufficient; the caller must use the actual Control policy callback.
-pub(super) fn validate(root: &Resolved) -> std::result::Result<(), OwnerError> {
-    profile(root).map(drop)
-}
 fn profile(root: &Resolved) -> std::result::Result<Profile, OwnerError> {
     let delay = Duration::from_micros(root.number("indexer.flush_interval"));
     let rows = root.number("indexer.batch_max_rows").min(MAX_ROWS);

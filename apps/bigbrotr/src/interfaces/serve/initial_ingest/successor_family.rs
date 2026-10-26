@@ -288,6 +288,7 @@ async fn own(
         report["compacted_requests"] = json!(count.to_string());
     }
     let mut custody = Custody {
+        index: None,
         store: Some(NativeOwner::Successor(Box::new(writer))),
         sync,
         archive: None,

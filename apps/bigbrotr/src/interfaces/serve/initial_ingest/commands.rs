@@ -19,6 +19,7 @@ pub(super) struct CommandOwner<'a> {
     administration: Option<bool>,
     public_routes: bool,
     sync: Option<&'a mut sync::Sync>,
+    index: Option<&'a mut index::Index>,
     archive_selected: bool,
     // One already-selected request retains its existing grant while awaiting
     // renewal or the end of independent Archive work. Never a second queue.
@@ -206,6 +207,9 @@ impl<'a> CommandOwner<'a> {
                     if self.archive_selected {
                         archive::validate(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
                     }
+                    if let Some(index) = self.index.as_deref_mut() {
+                        index.accept(&restored)?;
+                    }
                     administration &= restored.flag("administration.enabled");
                     public_routes &= restored.flag("network.public.enabled");
                     Ok(())
@@ -252,6 +256,9 @@ impl<'a> CommandOwner<'a> {
                 }
             }
             .map_err(owner_error)?;
+            if let Some(index) = self.index.as_deref_mut() {
+                index.renew(self.owner, &Cell::new(false)).await?;
+            }
             Ok(snapshot)
         })
         .await?;
@@ -508,6 +515,7 @@ async fn maintain_context(
     mut report: Value,
 ) -> Result<()> {
     let Custody {
+        index,
         store,
         sync,
         archive,
@@ -520,6 +528,9 @@ async fn maintain_context(
     let dataset = store.dataset()?;
     if profile == Profile::Successor && archive.is_some() {
         return Err((3, "successor Archive is not available".into()));
+    }
+    if profile != Profile::Initial && index.is_some() {
+        return Err((3, "Index requires its initial native lifetime".into()));
     }
     let lease = PolicyLeaseTracker::new(
         dataset,
@@ -541,6 +552,7 @@ async fn maintain_context(
         administration: None,
         public_routes: false,
         sync: sync.as_mut(),
+        index: index.as_mut(),
         archive_selected: archive.is_some(),
         pending: None,
         pending_renewed: false,
@@ -653,6 +665,7 @@ async fn maintain_context(
             json!([])
         };
         let mut dispatch_due = Instant::now() + sync::INTERVAL;
+        let mut index_due = Instant::now();
         let mut publish_due = Instant::now() + archive.as_ref().map_or(Duration::ZERO, archive::Archive::delay);
         state.idle_phase(due)?;
         progress.send_modify(|value| value.initialized = Some(report));
@@ -736,6 +749,26 @@ async fn maintain_context(
                     dispatch_due = Instant::now() + sync::INTERVAL;
                     state.idle_phase(due)?;
                 },
+                _ = tokio::time::sleep_until(index_due), if state.index.is_some() => {
+                    if admission(Instant::now(), due, None) == Admission::Renew {
+                        continue;
+                    }
+                    let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
+                    phase(progress, maximum)?;
+                    let deadline = Instant::now() + maximum;
+                    let index = state.index.as_deref_mut().expect("selected Index");
+                    // Polling does not wait for ClickHouse. Serial PG work keeps
+                    // the same deadline and is drained on a requested stop, as
+                    // for Sync, before the parent joins the actual executor.
+                    let tick = tokio::time::timeout_at(deadline, index.tick(
+                        state.owner, store.initial()?, deadline.into_std(), &cancellation.requested,
+                    )).await.map_err(|_| (4, "initial Index deadline; preserve original outcome".into()))??;
+                    index_due = Instant::now() + match tick {
+                        index::Tick::Busy | index::Tick::Installed | index::Tick::Published => sync::INTERVAL,
+                        _ => index.delay(),
+                    };
+                    state.idle_phase(due)?;
+                },
                 work = next_command(&mut state.pending, &mut management) => {
                     state.command(work, &mut management, due, None).await?;
                 },
@@ -743,6 +776,9 @@ async fn maintain_context(
         }
     }
     .await;
+    if let Some(index) = state.index.as_deref() {
+        index.request_cancel();
+    }
     let grace = duration(root, "graceful_shutdown_timeout");
     // A late phase must not revive the watchdog, but still owes actual cleanup.
     let phase_result = phase(progress, grace);

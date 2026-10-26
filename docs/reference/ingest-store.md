@@ -171,6 +171,28 @@ not start it. Configured archive reader, export destination, cursor keyring or
 private asset prerequisites are refused by this narrow path.
 Both complete accepted documents must also permit the selected profile.
 
+Adding the `index` role additionally requires `--initialize-index`, together with
+`--initialize-ingest`. This initial Index consumer is under qualification. It
+requires migration0041, an existing empty private `storage.index_root`, an empty
+Atomic ClickHouse database and separate `clickhouse.initialize` credentials;
+ordinary runtime writer credentials do not acquire DDL privileges. The preparer
+resolves and validates all addresses once, pins a numeric local plaintext endpoint
+and opens protected credential files before acquiring Control. TLS endpoints are
+not supported by this initial adapter.
+
+Both actual accepted documents must agree on the selected Index ceilings and
+provenance. The consumer retains complete native batches (at most64 facts/1MiB),
+uses one bounded physical executor and persists the complete ten-target plan
+before insertion. PG publication consumes the physical readback proof; source
+acknowledgement and garbage collection remain separate. Control/Ingest renewal
+also renews Index, including during independent Archive work. An unresolved
+physical operation parks Index while retaining its plan and query reservation;
+partial fresh installation is never silently adopted. Shutdown cancels and joins
+the physical executor before native close, and retains Index custody through the
+actual PG driver join. Initial/stopped diagnostics distinguish the Index phase
+and published revision; `ready=false` remains. Installed real-engine acceptance,
+Index restart and positive unknown-query resolution are still open gates.
+
 Accepted administration enables login, self inspection, logout,
 [URL registration](relay-endpoint-registry.md#authenticated-registration-consumer),
 the initial [relay enrollment command](relay-enrollment.md#initial-owner-http-consumer),

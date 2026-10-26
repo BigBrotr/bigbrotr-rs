@@ -135,6 +135,9 @@ pub(crate) fn command() -> Command {
         .arg(Arg::new("initialize-ingest").long("initialize-ingest").action(clap::ArgAction::SetTrue)
             .conflicts_with_all(["activate-initial-successor", "activate-successor"])
             .help("Explicit fresh-only native initialization under retained Control; select control,ingest with optional sync and archive roles. Keeps ownership until stopped; accepted administration exposes sessions, source registration, enrollment, acquisition scopes and finite job acceptance/status. Explicit Sync selects the bounded initial acquisition executor, without coverage or job-completion claims. Explicit Archive publishes complete pending batches and captures their frontier; requires initialized fresh catalog/coordinator, reader credentials and installed worker. This publication profile is under qualification"))
+        .arg(Arg::new("initialize-index").long("initialize-index").action(clap::ArgAction::SetTrue)
+            .requires("initialize-ingest")
+            .help("Explicitly select fresh-only Index initialization alongside --initialize-ingest and the index role. Requires an existing empty private index root, an empty Atomic ClickHouse database, separate initializer/writer credentials and migration0041. Publishes complete native batches through verified physical rows and Control plans; no restart adoption or overall readiness is implied. Partial installation and unresolved remote queries preserve state and park Index. This profile is under qualification"))
         .arg(Arg::new("activate-initial-successor").long("activate-initial-successor").action(clap::ArgAction::SetTrue)
             .help("Explicitly prepare and activate epoch2 from a fully retired initial Ingest lifetime; select control,ingest with optional sync. Requires retained original inputs or a verified closed-producer floor, and complete positive predecessor outcomes. Uses current accepted policy and keeps native custody until stopped. Existing epoch2, missing retirement proof and selected Archive refuse. Starts no Archive publication; general successor recovery is not implemented. This profile is under qualification"))
         .arg(Arg::new("activate-successor").long("activate-successor").action(clap::ArgAction::SetTrue)
@@ -248,18 +251,23 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
         if args.get_flag("initialize-ingest") {
             let sync = distinct.contains("sync");
             let archive = distinct.contains("archive");
-            if distinct != BTreeSet::from(["control", "ingest"])
-                && distinct != BTreeSet::from(["control", "ingest", "sync"])
-                && distinct != BTreeSet::from(["control", "ingest", "archive"])
-                && distinct != BTreeSet::from(["control", "ingest", "sync", "archive"])
+            let index = distinct.contains("index");
+            if !distinct.contains("control")
+                || !distinct.contains("ingest")
+                || distinct.iter().any(|role| {
+                    !matches!(*role, "control" | "ingest" | "sync" | "archive" | "index")
+                })
             {
                 return Err((
                     3,
-                    "initial Ingest requires control,ingest with optional sync and archive roles"
+                    "initial Ingest requires control,ingest with optional sync, archive and index roles"
                         .into(),
                 ));
             }
-            return initial_ingest::run(root, sync, archive, &mut output);
+            if index != args.get_flag("initialize-index") {
+                return Err((3, "fresh Index requires both the index role and --initialize-index; retained Index recovery is not implemented by this lifetime".into()));
+            }
+            return initial_ingest::run(root, sync, archive, index, &mut output);
         }
         if distinct.iter().any(|role| *role != "control") {
             return Err((
@@ -1103,6 +1111,7 @@ mod tests {
             .try_get_matches_from(["serve", "--file", "/unused"])
             .unwrap();
         assert!(!ordinary.get_flag("initialize-ingest"));
+        assert!(!ordinary.get_flag("initialize-index"));
         assert!(!ordinary.get_flag("activate-initial-successor"));
         assert!(!ordinary.get_flag("activate-successor"));
         let explicit = command()
@@ -1143,6 +1152,41 @@ mod tests {
         assert!(repeatable.get_flag("activate-successor"));
         assert!(!repeatable.get_flag("activate-initial-successor"));
         assert!(!repeatable.get_flag("initialize-ingest"));
+    }
+
+    #[test]
+    fn index_initialization_requires_explicit_fresh_ingest_and_refuses_successors() {
+        assert!(
+            command()
+                .try_get_matches_from(["serve", "--file", "/unused", "--initialize-index",])
+                .is_err()
+        );
+        let args = command()
+            .try_get_matches_from([
+                "serve",
+                "--file",
+                "/unused",
+                "--roles",
+                "control,ingest,index",
+                "--initialize-ingest",
+                "--initialize-index",
+            ])
+            .unwrap();
+        assert!(args.get_flag("initialize-index"));
+        for successor in ["--activate-initial-successor", "--activate-successor"] {
+            assert!(
+                command()
+                    .try_get_matches_from([
+                        "serve",
+                        "--file",
+                        "/unused",
+                        "--initialize-ingest",
+                        "--initialize-index",
+                        successor,
+                    ])
+                    .is_err()
+            );
+        }
     }
 
     #[test]

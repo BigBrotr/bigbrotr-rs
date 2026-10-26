@@ -3,6 +3,7 @@ mod archive;
 pub(super) mod archive_catch_up;
 mod commands;
 mod dictionaries;
+mod index;
 mod owner;
 pub(super) mod successor;
 pub(super) mod successor_family;
@@ -21,6 +22,7 @@ use bigbrotr::{
         OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
     },
     storage::{
+        indexer::custody::IndexDriverCustody,
         postgres::{
             connection_settings::PreparedConnection,
             control_owner::{ClaimRequest, ControlSession, OwnerError},
@@ -55,6 +57,7 @@ use tokio::{
 const MIB: u64 = 1024 * 1024;
 
 struct InitialGrants {
+    index: Option<index::Index>,
     sync: Option<sync::Sync>,
     archive: Option<archive::Archive>,
     native: OwnedPermit,
@@ -70,6 +73,8 @@ struct PreparedInitial {
 /// Field order also protects unwind: native close completes before Client Drop.
 /// Construct and destroy this value only on the blocking owner thread.
 struct Custody {
+    // The physical Index executor cancels and joins before native/SQL owners.
+    index: Option<index::Index>,
     store: Option<NativeOwner>,
     sync: Option<sync::Sync>,
     archive: Option<archive::Archive>,
@@ -208,11 +213,13 @@ pub(super) fn run(
     root: Resolved,
     sync: bool,
     archive: bool,
+    index: bool,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
     selected_roots(&root)?;
-    let budget = budget(&root, sync, archive)?;
+    let budget = owner_budget(&root, sync, archive, if index { index::ITEMS } else { 0 })?;
     let initial = InitialGrants {
+        index: None,
         sync: None,
         archive: None,
         native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
@@ -240,7 +247,7 @@ pub(super) fn run(
         let prepare_cancel = cancellation.clone();
         let prepare_deadline = progress.borrow().deadline;
         let mut preparation = tokio::task::spawn_blocking(move || {
-            prepare(&prepare_root, &prepare_budget, initial, sync, archive,
+            prepare(&prepare_root, &prepare_budget, initial, sync, archive, index,
                 prepare_deadline, &prepare_cancel.requested)
         });
         let prepared = match supervision::collect(&mut preparation, &mut observed,
@@ -274,6 +281,12 @@ pub(super) fn run(
                 .map_err(|e| (4, format!("initial Archive Control custody refused: {e:?}")))?),
             None => connection,
         };
+        // The Index lock is created after accepted policy and native startup.
+        // Attach its shared holder to the actual driver before it is polled.
+        let index_driver = IndexDriverCustody::new();
+        let connection: transport::Driver = if index {
+            Box::pin(index_driver.retain_connection(connection))
+        } else { connection };
         let driver = tokio::spawn(connection);
         let worker_cancel = cancellation.clone();
         let handle = tokio::runtime::Handle::current();
@@ -281,7 +294,7 @@ pub(super) fn run(
             // The parent keeps driving current-thread I/O/timers while this
             // owner parks on async SQL or blocks in native open/write/close.
             let _inputs = inputs;
-            handle.block_on(own(root, client, initial, budget, progress, worker_cancel))
+            handle.block_on(own(root, client, initial, budget, progress, worker_cancel, index_driver))
         });
         let (terminal, interrupted) = match supervision::collect(&mut worker, &mut observed,
             &cancellation, stop.requested(), grace, |report| output.emit(report, false)).await {
@@ -316,6 +329,7 @@ fn prepare(
     mut initial: InitialGrants,
     sync: bool,
     archive: bool,
+    index: bool,
     deadline: Instant,
     cancelled: &AtomicBool,
 ) -> Result<PreparedInitial> {
@@ -330,6 +344,9 @@ fn prepare(
         .transpose()?;
     initial.archive = archive
         .then(|| archive::Archive::prepare(root, budget, deadline, cancelled))
+        .transpose()?;
+    initial.index = index
+        .then(|| index::Index::prepare(root, budget, true))
         .transpose()?;
     let path = Path::new(required(root, "storage.ingest_root")?);
     if !path.is_absolute()
@@ -444,7 +461,9 @@ async fn own(
     budget: ResourceBudget,
     progress: watch::Sender<Progress>,
     cancellation: Arc<Cancellation>,
+    index_driver: IndexDriverCustody,
 ) -> Result<Value> {
+    let mut index = initial.index;
     let mut sync = initial.sync;
     let mut archive = initial.archive;
     let path = Path::new(required(&root, "storage.ingest_root")?);
@@ -480,6 +499,9 @@ async fn own(
                 if let Some(archive) = &mut archive {
                     archive.accept(&restored)?;
                 }
+                if let Some(index) = &mut index {
+                    index.accept(&restored)?;
+                }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
                 Ok(())
@@ -491,6 +513,7 @@ async fn own(
     })
     .await?;
     let mut custody = Custody {
+        index,
         store: None,
         sync,
         archive,
@@ -595,12 +618,26 @@ async fn own(
         initial.dictionaries,
     )
     .await?;
+    if let Some(index) = &mut custody.index {
+        phase(&progress, timeout)?;
+        index.initialize(
+            &root,
+            custody
+                .store
+                .as_ref()
+                .expect("initialized native owner")
+                .initial()?,
+            &spec,
+            &index_driver,
+        )?;
+    }
     let report = json!({"format":"bigbrotr-initial-ingest/1","state":"initialized",
         "dataset_id":dataset,"owner_resource_id":spec.ingest_resource_id,"producer_slot_id":spec.producer_slot_id,
         "recovery_generation":manifest.identity().recovery_generation,
         "topology_generation":spec.target_topology().unwrap().get().to_string(), "public_scope":public, "private_scope":private,
         "native_profile":1,"native_allowance_bytes":128*MIB,"dictionary_count":3,
-        "acquisition":if custody.sync.is_some() { "finite-initial" } else { "not-started" },"ready":false});
+        "acquisition":if custody.sync.is_some() { "finite-initial" } else { "not-started" },
+        "index": index_observation(custody.index.as_ref()),"ready":false});
     commands::maintain(
         &mut custody,
         &spec,
@@ -612,6 +649,8 @@ async fn own(
     )
     .await?;
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;
+    let index = index_observation(custody.index.as_ref());
+    drop(custody.index.take());
     drop(custody.store.take());
     tokio::time::timeout(
         duration(&root, "graceful_shutdown_timeout"),
@@ -622,8 +661,19 @@ async fn own(
     .map_err(owner_error)?;
     Ok(
         json!({"format":"bigbrotr-initial-ingest/1","state":"stopped","native":"closed",
-        "owner_release":"committed","source_closure":"not-performed","ready":false}),
+        "owner_release":"committed","source_closure":"not-performed","index":index,"ready":false}),
     )
+}
+
+fn index_observation(index: Option<&index::Index>) -> Value {
+    index.map_or_else(|| json!({"state":"not-selected"}), |index| {
+        json!({"state":index.phase(),"published_revision":index.published_revision().to_string(),
+            "complete_through":index.frontier().map(|cut| cut.bounds().iter().map(|bound| {
+                json!({"shard_id":bound.stream.shard_id,
+                    "owner_epoch":bound.stream.owner_epoch.get().to_string(),
+                    "sequence":bound.last_complete_sequence.get().to_string()})
+            }).collect::<Vec<_>>()),"readiness":"not-qualified"})
+    })
 }
 
 #[cfg(test)]

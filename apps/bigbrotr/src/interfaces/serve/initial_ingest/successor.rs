@@ -178,6 +178,7 @@ async fn own(
     })
     .await?;
     let mut custody = Custody {
+        index: None,
         store: unclaimed.native.take(),
         sync,
         archive: None,

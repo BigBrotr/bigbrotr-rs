@@ -6,23 +6,27 @@ Official releases, packages and production remain unauthorized.
 
 ## Current increment and revision
 
-The fixture/checkpoint increment is published on `main` at `f1f6d166`.
+The verified Index foundation and hosted evidence are published on `main` at
+`1cfd6eb5`. Main remains in `.research/assembly-fixture-canonical-20261026`.
+Its exact final documentation checks pass3/3. Product-source publication review
+through `a8423d76` and the final documentation delta through `1cfd6eb5` found no
+confirmed exposure; protected receipts are under the existing CI audit root.
+The new publication's hosted outcome is not yet observed.
+
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
-completed **PASS** on all three required foundation platforms. The terminal
-public-output audit is complete; optional Rocks ARM remains SKIP. Incremental source audit found only the
-same known relative inventory path fingerprint; documentation checks PASS.
-Main remains in `.research/assembly-fixture-canonical-20261026`.
+on earlier `f1f6d166` completed **PASS** on all three required platforms; its
+bounded public-output audit is complete. Explicit skips remain in its report.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`bcb222a5` before this checkpoint. Published main is merged. Rows, PG publication,
-retained custody/state, bounded physical adapter/proofs and actual storage module
-wiring are committed locally. The selected ClickHouse client/type parser fixes
-and separate optional initializer credentials are integrated on this branch.
-The first full compilation found an incorrect ControlSession import. The corrected
-actual library/CLI build, strict Clippy and all65 selected controls now PASS at
-`a8423d76`; source, retained artifacts and evidence hashes match. Runtime
-integration is still NOT_RUN; no partial
-Index implementation is represented as integrated main behavior.
+`8f105a59` before this runtime integration commit. The foundation's actual
+library/CLI build, strict Clippy and all65 selected controls passed at `a8423d76`.
+The new initial actor (`6f0f3ff2`, integrated as `8f105a59`) and runtime wiring
+are **NOT_RUN** for compilation and actual engines. They add explicit
+`--initialize-index`, accepted-policy selection, actual PG driver custody,
+serialized renewal/timer dispatch and joined shutdown. Six actor controls and
+one CLI selection control are authored, not yet executed. Restart, positive
+remote uncertainty resolution and readiness remain open. Only formatting and
+whitespace checks qualify these new changes so far.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns resource
 custody and detailed evidence paths under `implementation_index_foundation_20261026`,
@@ -120,9 +124,9 @@ billing/failure observations remain unchanged in their original reports.
 Actions watch54174 finished/exit0 and was reaped. The two actual native check
 sessions also finished and were reaped. No owned engine/build/installed-journey
 process is running. All three CH servers are stopped/exit0/PID0; its original
-failures and partial TTL fixture remain preserved. Delegates now own the initial
-Index actor, bounded CI compilation reuse and incremental source publication audit.
-Root owns runtime/CLI integration. Q37 configurations remain as verified.
+failures and partial TTL fixture remain preserved. The initial actor delegate completed its frozen commit; source and hosted-output
+audits are complete. Bounded CI compilation reuse is in progress; root owns
+runtime/CLI integration and its next critical review/native qualification. Q37 configurations remain as verified.
 
 The first native application build `fadc6bbd` is retained as FAIL (E0432 wrong
 ControlSession import), with tests/Clippy NOT_RUN. Corrected `a8423d76` compiled
@@ -137,9 +141,9 @@ compile87.13s/test-compilation45.45s/Clippy16.50s, not a comparative speedup cla
 Three documentation checks at fadc6bbd PASS; no need to repeat product builds for
 subsequent documentation-only recording.
 
-Deployment preparation is integrated as an unwired partial consumer (`9396ca19`):
-seven scoped controls PASS, actual binary consumer/Clippy NOT_RUN. It is outside
-the compiled module graph; do not extend the native build's claim to that consumer.
+Deployment preparation (`9396ca19`) has seven scoped diagnostic controls PASS.
+The new runtime brings it into the actual binary module graph, but that source
+has not yet compiled: do not extend the earlier native build's claim to it.
 The maintained SQL runner's child-reaping and recorded-container-ID changes pass
 four local controls; no repeated SQL run was required.
 
@@ -152,11 +156,12 @@ source, worktree or container was removed. Inventory
 journal and reconstruction procedure. Never replay that deletion or incrementally
 resume the partially retired caches.
 
-Next: finish the narrow documentation publication check, integrate the verified foundation coherently,
-and connect the initial Index actor to actual accepted policy, PG driver custody
-and the service timer. Then exercise actual Rust/HTTP insert/readback/proofs and
-the pending column-TTL negative; demonstrate CH outage/recovery while Archive
-continues. Physical source/proof implementations alone do not close these gates.
+Next: critically review the frozen initial actor/runtime integration, then use the
+maintained native runner to compile the actual lib/CLI and execute both library
+and newly wired binary controls. Reuse the exclusive checked build cache; keep
+original failures. Then exercise actual Rust/HTTP insert/readback/proofs and the
+pending column-TTL negative, followed by CH outage while Archive continues.
+Physical source/proof implementations alone do not close these gates.
 Persist whole-admission-batch plans including zero outcomes; hash actual rows.
 Timeout/drop is not remote cessation. Recovery must retain actual custody through
 SQL and verify the full retained lineage, not accept arbitrary historical pages.
