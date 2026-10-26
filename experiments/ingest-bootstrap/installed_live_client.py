@@ -2,7 +2,13 @@
 
 The relay sends a distinct signed event, the retained predecessor event, then
 the distinct event again. It never reads SQL or supplies product receipts.
+
+Both commands accept --profile DIRECTORY containing the existing strict
+fixture-profile.json. An explicit profile must exist; omitting the option keeps
+the legacy binary and owner fixture. Journey revisions default to 2 and can be
+supplied independently as canonical positive u64 decimal strings.
 """
+import argparse
 import base64
 import hashlib
 import http.client
@@ -13,7 +19,6 @@ from pathlib import Path
 import re
 import socket
 import subprocess
-import sys
 import threading
 import time
 
@@ -24,9 +29,28 @@ ORIGIN = 'http://127.0.0.1:18081'
 FIXTURE_SHA = '64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
 
 
-def serve(config, prefix):
+def explicit_profile(directory):
+    if directory is None:
+        return None
+    # Legacy labs copy only this file and installed_sync_client.py.
+    from installed_archive_profile import load
+    profile = load(directory)
+    assert profile is not None, 'explicit fixture profile required'
+    return profile
+
+
+def revision(value):
+    if (not isinstance(value, str) or re.fullmatch('[1-9][0-9]{0,19}', value) is None
+            or int(value) > 2**64 - 1):
+        raise argparse.ArgumentTypeError('canonical positive u64 revision required')
+    return value
+
+
+def serve(config, prefix, profile_directory=None):
+    profile = explicit_profile(profile_directory)
+    binary = profile['product_binary'] if profile else '/build/bigbrotr'
     assert config.is_absolute() and prefix.is_absolute()
-    command = ['/build/bigbrotr', 'serve', '--file', str(config),
+    command = [binary, 'serve', '--file', str(config),
         '--activate-initial-successor', '--roles', 'control,ingest,sync']
     started = time.monotonic()
     with Path(str(prefix) + '.stdout').open('xb') as out, Path(str(prefix) + '.stderr').open('xb') as err:
@@ -61,10 +85,10 @@ def request(method, path, body=None, headers=None):
         connection.close()
 
 
-def access(*arguments):
-    result = subprocess.run(['/build/bigbrotr', 'access', *arguments], env={},
+def access(*arguments, binary='/build/bigbrotr'):
+    result = subprocess.run([binary, 'access', *arguments], env={},
         capture_output=True, timeout=5)
-    assert result.returncode == 0 and not result.stderr, (result.returncode, result.stderr)
+    assert result.returncode == 0 and not result.stderr, 'private CLI command refused'
     return json.loads(result.stdout)
 
 
@@ -172,24 +196,37 @@ def relay(directory, listener, finished, errors):
         listener.close()
 
 
-def journey(directory):
-    password = 'Independent owner password 2026'
-    secret = directory / 'password.private'
-    with os.fdopen(os.open(secret, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
-        stream.write(password)
+def journey(directory, profile_directory=None, expected_config_revision='2', expected_policy_revision='2'):
+    expected_config_revision = revision(expected_config_revision)
+    expected_policy_revision = revision(expected_policy_revision)
+    profile = explicit_profile(profile_directory)
+    binary = profile['product_binary'] if profile else '/build/bigbrotr'
+    if profile is None:
+        password = 'Independent owner password 2026'
+        secret = directory / 'password.private'
+        with os.fdopen(os.open(secret, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
+            stream.write(password)
+        password_ref = 'file:' + str(secret)
+    else:
+        from installed_archive_profile import password_file
+        password_ref = profile['password_ref']
+        # Retain sensitive bytes only to check final result redaction.
+        password = password_file(password_ref)
     session = directory / 'session.private'
     logged_in = access('login', '--origin', ORIGIN, '--username', 'alice',
-        '--password-ref', 'file:' + str(secret), '--session-output', str(session))
+        '--password-ref', password_ref, '--session-output', str(session), binary=binary)
     saved = json.loads(session.read_text())
     assert saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == ORIGIN
     assert session.stat().st_mode & 0o777 == 0o600
     auth = {'Cookie': 'BigBrotrLocalSession=' + saved['session'], 'X-CSRF-Token': saved['csrf']}
     status, body = request('GET', '/management/v1/me', headers=auth)
     me = json.loads(body)
-    assert status == 200 and me['principal_id'] == '10' * 16 and me['authority'] == 'observation-only'
-    assert me['config_revision'] == me['policy_revision'] == '2'
-    assert me['stored_actions'] == ['data.read', 'policy.change', 'principals.manage',
-        'roles.control', 'status.read']
+    principal = profile['expected_principal_id'] if profile else '10' * 16
+    actions = profile['expected_actions'] if profile else ['data.read', 'policy.change',
+        'principals.manage', 'roles.control', 'status.read']
+    assert status == 200 and me['principal_id'] == principal and me['authority'] == 'observation-only'
+    assert me['config_revision'] == expected_config_revision and me['policy_revision'] == expected_policy_revision
+    assert me['stored_actions'] == actions
     assert request('GET', '/management/v1/me')[0] == 401
     observations = []
 
@@ -199,12 +236,12 @@ def journey(directory):
         answer = json.loads(body)
         observations.append(dict(path=path, input=value, key=key, status=status, body=answer))
         publish(directory, f'command-{len(observations)}.json', observations[-1])
-        assert status == 202 and answer['created'] and answer['command_key'] == key, answer
+        assert status == 202 and answer['created'] and answer['command_key'] == key, 'management command refused'
         return answer
 
     finished, errors = threading.Event(), []
     visibility = json.loads((directory / 'visibility.json').read_text())
-    revisions = dict(expected_config_revision='2', expected_policy_revision='2')
+    revisions = dict(expected_config_revision=expected_config_revision, expected_policy_revision=expected_policy_revision)
     endpoint = call('relay-endpoints', dict(url=ENDPOINT, **revisions), 'f1' * 16)
     enrollment = call('relay-enrollments', dict(endpoint_id=endpoint['endpoint_id'], visibility=visibility,
         route={'class': 'private', 'cidr': '127.0.0.1/32'}, enabled=True,
@@ -238,7 +275,7 @@ def journey(directory):
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,
             observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
-        logged_out = access('logout', '--session-ref', 'file:' + str(session))
+        logged_out = access('logout', '--session-ref', 'file:' + str(session), binary=binary)
         assert json.loads(session.read_text()) == saved
         assert request('GET', '/management/v1/me', headers=auth)[0] == 401
         barrier('commands-finished')
@@ -252,16 +289,31 @@ def journey(directory):
             ('csrf', b'bigbrotr/browser-csrf/1\0')]}
     result = dict(status='PASS', login=logged_in, logout=logged_out, me=me, digests=digests,
         observations=observations, job_status=observed, relay_joined=True, unauthenticated=401)
-    assert all(secret not in json.dumps(result) for secret in (saved['session'], saved['csrf'], password))
+    serialized = json.dumps(result)
+    assert all(json.dumps(secret)[1:-1] not in serialized
+        for secret in (saved['session'], saved['csrf'], password)), 'private result contains sensitive bytes'
     publish(directory, 'client-result.json', result)
     return result
 
 
-if __name__ == '__main__':
-    assert len(sys.argv) in (3, 4)
-    if sys.argv[1] == 'serve':
-        assert len(sys.argv) == 4
-        serve(Path(sys.argv[2]), Path(sys.argv[3]))
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='command', required=True)
+    serving = commands.add_parser('serve')
+    serving.add_argument('config', type=Path)
+    serving.add_argument('prefix', type=Path)
+    traveling = commands.add_parser('journey')
+    traveling.add_argument('directory', type=Path)
+    for command in (serving, traveling):
+        command.add_argument('--profile', type=Path, help='directory containing required fixture-profile.json')
+    traveling.add_argument('--expected-config-revision', type=revision, default='2')
+    traveling.add_argument('--expected-policy-revision', type=revision, default='2')
+    args = parser.parse_args(argv)
+    if args.command == 'serve':
+        serve(args.config, args.prefix, args.profile)
     else:
-        assert sys.argv[1] == 'journey' and len(sys.argv) == 3
-        journey(Path(sys.argv[2]))
+        journey(args.directory, args.profile, args.expected_config_revision, args.expected_policy_revision)
+
+
+if __name__ == '__main__':
+    main()
