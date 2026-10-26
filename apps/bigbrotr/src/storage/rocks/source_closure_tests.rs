@@ -2,6 +2,158 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use std::sync::atomic::AtomicBool;
+
+#[test]
+fn initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_bytes() {
+    let (root, mut store, budget, manifest, native) =
+        setup_entries_at(entries(false), TopologyGeneration::new(0));
+    let prepared = PreparedEvent::new(
+        request(7, 2),
+        intent("E_private", 2, 10_000_000),
+        256 * 1024,
+        grant(&budget, MIB, 0),
+    )
+    .unwrap();
+    drop(
+        store
+            .admit_event(
+                prepared,
+                ObservedTime::new(10_000_000),
+                false,
+                AdmissionLimits::default(),
+                grant(&budget, 40 * MIB, 10 * MIB),
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    drop(store);
+    let mut recovery = IngestRecovery::open(
+        &root.path().join("db"),
+        manifest,
+        native,
+        grant(&budget, 0, 128 * MIB),
+    )
+    .unwrap();
+    let closing = recovery
+        .close_producer(
+            request(7, 1).producer_slot_id,
+            ProducerEpoch::new(1).unwrap(),
+            grant(&budget, 4096, 4096),
+            || Ok(()),
+        )
+        .unwrap();
+    let mut resolution = closing.source_resolution(&recovery, 2).unwrap();
+    for sequence in 1..=2 {
+        let resolved = recovery
+            .resolve_original_request(
+                request(7, sequence),
+                original_digest(sequence),
+                recovery_limits(),
+                grant(&budget, 3 * MIB, 0),
+                grant(&budget, 40 * MIB, 0),
+                || Ok(()),
+            )
+            .unwrap();
+        resolution.record(&resolved).unwrap();
+    }
+    let proof = resolution.finish().unwrap();
+    let before = kv(&recovery.store);
+    let stamp = recovery.store.db.latest_sequence_number();
+    let limits = PendingReadLimits {
+        max_records: 64,
+        max_encoded_bytes: MIB as usize,
+        fact: bigbrotr_model::codec::FactDecodeLimits::default(),
+    };
+    let first = SourceRecordId {
+        dataset_id: manifest.identity().dataset_id,
+        shard_id: manifest.identity().shard_id,
+        owner_epoch: OwnerEpoch::new(1).unwrap(),
+        sequence: Sequence::new(1).unwrap(),
+    };
+    let cancel = AtomicBool::new(false);
+    let read = |source, limits: PendingReadLimits| {
+        proof.read_complete_pending_batch(
+            source,
+            limits,
+            grant(&budget, limits.required_data_bytes().unwrap(), 0),
+            &cancel,
+        )
+    };
+    let dictionaries = read(first, limits).unwrap();
+    let next = SourceRecordId {
+        sequence: Sequence::new(dictionaries.batch().last().sequence.get() + 1).unwrap(),
+        ..first
+    };
+    drop(dictionaries);
+    let signed = read(next, limits).unwrap();
+    assert_eq!(
+        signed.batch().last().sequence.get(),
+        proof.last_complete_sequence()
+    );
+    assert!(
+        signed.batch().records().len() > 1,
+        "the signed source is a whole multi-fact admission"
+    );
+    drop(signed);
+    for outside in [
+        SourceRecordId {
+            owner_epoch: OwnerEpoch::new(2).unwrap(),
+            ..first
+        },
+        SourceRecordId {
+            sequence: Sequence::new(proof.last_complete_sequence() + 1).unwrap(),
+            ..first
+        },
+    ] {
+        assert!(matches!(
+            read(outside, limits),
+            Err(LineagePendingError::OutsideVerifiedCut)
+        ));
+    }
+    assert!(matches!(
+        read(
+            SourceRecordId {
+                sequence: Sequence::new(2).unwrap(),
+                ..first
+            },
+            limits
+        ),
+        Err(LineagePendingError::RequiredBatchMissing)
+    ));
+    assert!(matches!(
+        read(
+            next,
+            PendingReadLimits {
+                max_records: 1,
+                ..limits
+            }
+        ),
+        Err(LineagePendingError::Read(PendingError::Limit))
+    ));
+    assert!(matches!(
+        proof.read_complete_pending_batch(first, limits, grant(&budget, 1, 0), &cancel),
+        Err(LineagePendingError::Read(
+            PendingError::InsufficientReservation
+        ))
+    ));
+    assert_eq!(kv(&recovery.store), before);
+    assert_eq!(recovery.store.db.latest_sequence_number(), stamp);
+    cancel.store(true, std::sync::atomic::Ordering::Release);
+    assert!(read(first, limits).is_err());
+    cancel.store(false, std::sync::atomic::Ordering::Release);
+    // A changed native sequence invalidates the complete proof even when the
+    // retained fact bytes and the requested batch themselves are unchanged.
+    recovery
+        .store
+        .db
+        .put(b"test-unrelated-sequence", b"changed")
+        .unwrap();
+    assert!(matches!(
+        read(first, limits),
+        Err(LineagePendingError::Proof(BootstrapError::StateMismatch))
+    ));
+}
 
 fn original_digest(sequence: u64) -> Digest256 {
     if sequence == 1 {

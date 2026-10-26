@@ -3,7 +3,7 @@ mod archive;
 pub(super) mod archive_catch_up;
 mod commands;
 mod dictionaries;
-mod index;
+pub(super) mod index;
 mod owner;
 mod readiness;
 pub(super) mod successor;

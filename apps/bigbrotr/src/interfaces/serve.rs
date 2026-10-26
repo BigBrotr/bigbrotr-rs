@@ -49,6 +49,25 @@ enum Operation {
     InspectReceipt,
     RecoverIngest,
     ArchiveCatchUp,
+    IndexCatchUp,
+}
+
+pub(crate) fn index_command() -> Command {
+    Command::new("index")
+        .about("Explicit recovery of the retained initial Index store")
+        .subcommand_required(true)
+        .disable_help_subcommand(true)
+        .subcommand(Command::new("catch-up")
+            .about("Verify, rebind and finish a closed topology0/epoch1 source")
+            .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
+            .after_help("Stop the original owners and run ingest recover --close-source first. Requires local Control/Ingest/Index, migration0041, the original native and Index roots, retained original requests/outcomes and the stable ClickHouse writer account. Verifies the complete published prefix and any immutable pending plan, rebinds the same generation/storage/table identities to a fresh Index epoch, then publishes whole retained source batches. Reads no initializer credential; never reopens the old writer, closes a source, acknowledges, retires Ingest, reclaims data or transitions topology. At most64 original requests,64 facts and1MiB per complete batch; accepted per-target limits still apply. Missing/corrupt evidence, live custody and unresolved query/COMMIT outcomes refuse while preserving state. A retry repeats verification under fresh Control; historical SQL alone is not readiness. Same-boot Linux ext4 only. This finite profile is under qualification. Exit: 0 complete after actual driver join, 1 output I/O, 2 usage, 3 configuration/policy/resources, 4 refused/cancelled/unknown outcome."))
+}
+
+pub(crate) fn catch_up_index(args: &ArgMatches) -> ! {
+    execute_operation(
+        args.subcommand_matches("catch-up").unwrap(),
+        Operation::IndexCatchUp,
+    )
 }
 
 pub(crate) fn ingest_command() -> Command {
@@ -158,6 +177,9 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
+        if matches!(operation, Operation::IndexCatchUp) {
+            return initial_ingest::index::catch_up::run(root, &mut output);
+        }
         if matches!(operation, Operation::ArchiveCatchUp) {
             return initial_ingest::archive_catch_up::run(root, &mut output);
         }
