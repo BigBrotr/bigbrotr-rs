@@ -74530,7 +74530,81 @@
         "sha256": "7500152a8e49741cbee6d83c7caa4ba60b02691f9fba498b4134b22f9b8f9765",
         "result": "99 objects;14 occurrences/7 known fingerprints, all matched lines unchanged from audited007; no new confirmed exposure. Later delta pending."
       },
-      "next": "P01-T09 Step1/6 ordinary complete-current-selection readiness using bounded sealed frontier/input expectations and existing native verifier; keep source Unknown without Ingest. Index restart/uncertainty and Step5 independent outages/pending/capacity remain assigned."
+      "next": "P01-T09 Step1/6 ordinary complete-current-selection readiness using bounded sealed frontier/input expectations and existing native verifier; keep source Unknown without Ingest. Index restart/uncertainty and Step5 independent outages/pending/capacity remain assigned.",
+      "ordinary": {
+        "status": "IN_PROGRESS_NOT_QUALIFIED",
+        "source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+        "tree": "fe2d598d51d5a2b76f4151cdfb02e77d3ee40c59",
+        "purpose": "P01-T09 Step1/6: complete-current ordinary Archive observation plus matching completed history/export; Source remains Unknown",
+        "native": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-8256184",
+          "session": 15316,
+          "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
+          "owner": "cac2c8f53f929430b025d2656a6f2b3d",
+          "containers": [
+            {
+              "name": "fetch",
+              "id": "0d1d8735bbf407223ff726c0bf34ec58c6c5f44615b56cecd3a439b019111d24"
+            },
+            {
+              "name": "native",
+              "id": "870c09f1f83aa24f01c466b3fd5a7656b26ce479bc21843316d5f2fe99034cf2"
+            }
+          ],
+          "cache_origin": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "cache_mode": "exclusive mutable reuse; original evidence retained outside caches",
+          "session_state": "exit0_reaped",
+          "qualification": "out/qualification.json",
+          "root_verification": "root-verification.json",
+          "qualification_sha256": "2c1523fe8b49dc4d602840190c2b8b2b8570dcde1f3337d1b39b89f23809c4eb",
+          "root_verification_sha256": "6e9ee401124a7546adc2362a89ae1e353bf162694bbf147034f5293f2c8a1558",
+          "containers_state": "stopped_exit0_PID0_noOOM"
+        },
+        "source_review": {
+          "pin_lifetime": "Fixed: request-start nonrenewable pin window gates native work, final selection and post-driver-join promotion",
+          "reviewer": "m1_runtime_grants",
+          "limits": "Source review only; actual short-pin/PG/native outcomes are separate"
+        },
+        "delegates": {
+          "expectations": {
+            "original": "a7c3c18ed4ee8f31f34d207661a65f088a999e53",
+            "integrated": "223a2e08"
+          },
+          "cache": {
+            "original": "2ff8f6d423b5e75b40cb875b8a78504c415ca235",
+            "integrated": "63285940"
+          },
+          "input_custody_tests": {
+            "original": "efd35218b4ae0116228c4497f9a4b01137e4197f",
+            "integrated": "450db223"
+          },
+          "acceptance": {
+            "owner": "initial_index_rows",
+            "status": "IN_PROGRESS_NOT_RUN"
+          }
+        },
+        "verifier_controls": {
+          "path": ".research/live-readiness-20261026/ordinary-helper-controls.json",
+          "status": "PASS",
+          "scope": "7 verifier fault controls only; no product qualification"
+        },
+        "retention": "Preserve all original failures, exact source, executables and current/earlier installed inputs; no cleanup of active115 cache or pending worktrees",
+        "not_run": [
+          "installed ordinary positive/withheld-input/narrow-read/recovery extension",
+          "actual short-pin expiry and old-snapshot/selected-metadata failure qualification"
+        ],
+        "installed_build": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184",
+          "session": 19968,
+          "status": "RUNNING",
+          "owner": "abb7a0d0cca1a1ef199e33879caa23eb",
+          "container": "7b9cae6bc029cb609f85dc6c50ec3a76f469c704498012359a9c9bf064e7cb7e",
+          "script": ".research/live-readiness-20261026/installed-build.py",
+          "script_sha256": "12d6d326a8ea478d866d84610c7c924e56b2ba5ab44c9d19d7c337a7fcaa4498",
+          "original_script_preserved": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-a295da6/builder-source.py",
+          "scope": "Same reviewed fresh worker-before-parent build; parameterized exact revision/tree and full-native-PASS admission; unchanged resource/monitor/build recipe"
+        }
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {

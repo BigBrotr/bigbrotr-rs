@@ -12,10 +12,15 @@ integrated and pushed; its redundant `work/live-readiness` branch was retired.
 The next ordinary Archive readiness increment is in progress: root owns runtime
 integration, `m1_runtime_grants` the bounded authoritative expectation bridge,
 and `initial_index_rows` the observation cache, in separate writable worktrees.
-Local main has integrated the bridge at `223a2e08` and cache at `63285940`;
-the runtime/input-reader integration accompanies this checkpoint. These changes
-are not yet qualified or pushed. Native tests, real PG statements and the installed
-ordinary readiness extension are NOT_RUN. Formatting/source review found and
+Local main is `8256184c`: bridge `223a2e08`, cache `63285940`, runtime/input-reader
+integration `814479ef`, and actual-file custody controls `450db223`. These changes
+are not yet fully qualified or pushed. Native qualification PASS at8256184:
+actual build/strict Clippy and147 selected controls (96 library/51 binary), with
+33 evidence hashes and all3 retained executables checked; session15316 exited0
+and both containers are stopped/PID0/noOOM. Fresh worker-before-parent installed
+build is RUNNING as session19968 in `runs/initial-index-installed-8256184`.
+Real PG statements and the installed ordinary readiness extension remain NOT_RUN.
+Formatting/source review found and
 fixed a pin-lifetime gap: Control renewal must not extend the probe's original
 pin window. Remaining targeted work includes owned-input custody, actual short-pin
 expiry, missing/corrupt input and stale-selection controls, followed by the same
@@ -133,9 +138,12 @@ Fresh worker-before-parent build `a295da60` is PASS: source/CLI/worker hashes an
 all2365 source files verified. Sessions80251/10299 ended exit0/reaped. Installed
 r5 session51261 ended exit1/reaped; r6 session74584 ended exit0/reaped. All owned
 containers are stopped/PID0/noOOM (r5/r6 all exit0), with original databases and
-captures preserved. No local engine/build is active. The two bounded source
-delegates and the hosted CI watcher described above are active. Documentation
-checks passed all three selected gates at94a; the new increment is unverified.
+captures preserved. Native qualification has released the exclusive115 compiler
+cache; only the fresh installed build uses its separate recorded container and
+output. `initial_index_rows` is preparing the
+ordinary installed acceptance extension; the other source delegate is complete.
+The hosted CI watcher remains active. Documentation checks passed all three
+selected gates at94a; the new increment is unverified.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026.live_readiness`, owns exact resource and

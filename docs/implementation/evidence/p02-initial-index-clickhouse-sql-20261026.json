@@ -382,6 +382,28 @@
       "Independent Archive/ClickHouse outages and capacity",
       "CompleteM1/release"
     ],
-    "resources": "All19 containers stopped/exit0/PID0/noOOM; session74584 reaped; original corrupt physical rows and all raw captures retained"
+    "resources": "All19 containers stopped/exit0/PID0/noOOM; session74584 reaped; original corrupt physical rows and all raw captures retained",
+    "ordinary": {
+      "status": "PARTIAL_NATIVE_PASS_INSTALLED_NOT_RUN",
+      "source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+      "tree": "fe2d598d51d5a2b76f4151cdfb02e77d3ee40c59",
+      "implementation": "Complete-current bounded PG/input/native observation plus matching completed history/export; source remains Unknown; original nonrenewable reader pin, barrier and joined transport retained",
+      "native": {
+        "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-8256184",
+        "qualification_sha256": "2c1523fe8b49dc4d602840190c2b8b2b8570dcde1f3337d1b39b89f23809c4eb",
+        "root_verification_sha256": "6e9ee401124a7546adc2362a89ae1e353bf162694bbf147034f5293f2c8a1558",
+        "tests": 147,
+        "library_tests": 96,
+        "binary_tests": 51,
+        "compile_clippy": "PASS",
+        "scope": "Actual bigbrotr library and CLI build, focused library Index/PG route and binary initial-service unit tests and strict Clippy; no stubs, engine transactions, installed service, release or capacity qualification"
+      },
+      "pending": [
+        "installed ordinary positive, withheld-input failure, narrow-read non-revival and full-probe recovery",
+        "actual short-pin expiry/old-selection/selected-metadata and broader M1 qualification"
+      ],
+      "resource_inventory": "implementation_index_foundation_20261026.live_readiness.ordinary"
+    }
   }
 }
