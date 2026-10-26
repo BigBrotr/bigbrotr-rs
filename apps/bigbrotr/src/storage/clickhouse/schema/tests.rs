@@ -84,7 +84,7 @@ fn every_family_is_append_only_with_explicit_persistence_and_no_calendar_cast() 
         )));
         assert!(ddl.contains("ENGINE = MergeTree ORDER BY"));
         assert!(!ddl.contains("PARTITION BY"));
-        assert!(ddl.ends_with("SETTINGS fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0"));
+        assert!(ddl.ends_with("SETTINGS fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0, index_granularity = 8192"));
         for forbidden in [
             "IF NOT EXISTS",
             "Replacing",
@@ -128,11 +128,12 @@ fn every_family_is_append_only_with_explicit_persistence_and_no_calendar_cast() 
 fn manifest_identity_distinguishes_database_and_every_table_uuid() {
     let original = tables();
     // Python/hashlib over the literal schema-1 field/key inventory, the database
-    // serving_fixture, UUID bytes 01..0a repeated16 and no PARTITION BY. No Rust
+    // serving_fixture, UUID bytes 01..0a repeated16, no PARTITION BY and explicit
+    // index_granularity8192. No Rust
     // encoder or observed engine metadata computed this independent vector.
     assert_eq!(
         original.identity_digest().to_string(),
-        "a696c1e480ddeafdcab16d13eb8aac8b1eaddf5282b8596eb4d480b4bb43c8c9"
+        "ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106"
     );
     let ids = std::array::from_fn(|i| [i as u8 + 1; 16]);
     assert_ne!(

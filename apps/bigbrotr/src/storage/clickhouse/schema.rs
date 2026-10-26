@@ -11,8 +11,7 @@ const SOURCE: &str = "Tuple(FixedString(16), UInt32, UInt64, UInt64)";
 const REFERENCE: &str = "Tuple(FixedString(16), UInt16, FixedString(16), UInt64)";
 const OPTIONAL_SOURCE: &str = "Array(Tuple(FixedString(16), UInt32, UInt64, UInt64))";
 const OPTIONAL_REFERENCE: &str = "Array(Tuple(FixedString(16), UInt16, FixedString(16), UInt64))";
-const SETTINGS: &str =
-    "fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0";
+const SETTINGS: &str = "fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0, index_granularity = 8192";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SchemaError {

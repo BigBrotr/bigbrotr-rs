@@ -318,7 +318,8 @@ Atomic database and ten separately identified MergeTree tables. They omit
 retains `all`, while the catalog partition expression is empty. Authored timestamps
 remain UInt64. A constant `PARTITION BY 'all'` is invalid in the selected engine.
 Every table explicitly sets `fsync_after_insert=1`, `fsync_part_directory=1` and
-`non_replicated_deduplication_window=0`. No native projection, TTL, replacement or
+`non_replicated_deduplication_window=0`, with immutable
+`index_granularity=8192` explicitly pinned in the complete definition. No native projection, TTL, replacement or
 deduplication behavior supplies correctness. Fresh installation refuses any
 existing table, then checks actual engine version, local storage policy, table
 UUIDs, full engine expressions, ordered columns and absence of projections.
