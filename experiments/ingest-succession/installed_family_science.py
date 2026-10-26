@@ -49,8 +49,10 @@ def decode(data):
 
 
 class NetworkScience(FactEncoding):
-    def __init__(self, model, plan, *, acknowledge=False, new_event=None, endpoint=ENDPOINT):
+    def __init__(self, model, plan, *, acknowledge=False, new_event=None, endpoint=ENDPOINT,
+                 initial_provenance=True):
         assert type(acknowledge) is bool
+        assert type(initial_provenance) is bool
         self.acknowledge = acknowledge
         # Explicit independent fixture literals; the caller pins their source.
         # Existing family callers retain the original event and endpoint.
@@ -65,7 +67,8 @@ class NetworkScience(FactEncoding):
         self.scope = [self.ds, 4, old[160:176], 3]
         self.refs, self.inputs, self.receipts = {}, {}, {}
         self.writes = 0
-        for n in (3, 4, 8, 9, 10, 11):
+        self.previous_coordinates = (3, 4, 8, 9, 10, 11) if initial_provenance else (3, 4, 5, 6, 7, 8)
+        for n in self.previous_coordinates:
             raw = bytes.fromhex(self.values['facts', (b'\x01\x20' + self.source(1, n)).hex()])
             assert raw[:2] == b'\x01\x20' and sha(raw[34:]) == raw[2:34].hex()
             self.refs[1, n] = [[self.ds, 0, 1, n], raw[2:34]]
@@ -152,7 +155,7 @@ class NetworkScience(FactEncoding):
                 [1, self.scope, [*body(OLD_EVENT), bytes.fromhex(OLD_EVENT['sig'])], 'network', None, observation]])
             # Original receive11 retains its original observer4. The new witness
             # does not replace that receive or the payload/eligibility/indexes.
-            deps = [(1, k) for k in (3, 4, 8, 9, 10, 11)] + [(self.epoch, k) for k in (1, 2, 3, 4, last + 1)]
+            deps = [(1, k) for k in self.previous_coordinates] + [(self.epoch, k) for k in (1, 2, 3, 4, last + 1)]
             self.commit(3, original, [last + 1], deps)
         else:
             assert historical is None

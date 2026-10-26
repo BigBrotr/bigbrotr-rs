@@ -62,8 +62,10 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
 
 def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
              *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb',
-             additional_events=(), acknowledge=False, preparation_hole=False):
+             additional_events=(), acknowledge=False, preparation_hole=False, provenance=True):
     assert type(acknowledge) is bool
+    assert type(provenance) is bool
+    assert provenance or (not additional_events and not preparation_hole), 'off profile is the original one-event recipe'
     assert type(preparation_hole) is bool and (not preparation_hole or acknowledge)
     # Two additional distinct events, or three for the explicit preparation
     # hole, each with independent clocks/digests. No ACK is inferred.
@@ -147,10 +149,13 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
             failure_taxonomy='bigbrotr-nip01-verifier/1', algorithm_version=1,
             protocol_revision='a2494f4f81d46684e5814a9bf35e2b1df978f955'))]
     definitions[2][2]['class'] = definitions[2][2].pop('class_')
+    if not provenance:
+        definitions = definitions[:1]
     entries = [dictionary(n, kind, schema, value, dictionary_time)
                for n, (kind, schema, value) in enumerate(definitions, 4)]
     original = b'bigbrotr/producer-request/1\0'+cbor([[slot, 1, 3], 'admit-evidence', 1, [1, scope, entries]])
-    commit(3, 4, 7, original, range(3, 8))
+    first = 4 + len(definitions)
+    commit(3, 4, first - 1, original, range(3, first))
     if received is not None:
         assert recorded is not None
         body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']), event['created_at'],
@@ -158,19 +163,23 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         signature = bytes.fromhex(event['sig'])
         body_digest = sha(b'bigbrotr/body/1\0'+cbor(body))
         assert body_digest.hex() == expected_body_digest
-        dictionary(8, 8, 'event', dict(event_id=body[0]), recorded)
-        fact(9, 'event-payload', [*body, ref(8)], recorded)
-        index(6, dataset+body[0], 9)
-        fact(10, 'event-eligibility', [body[0], body_digest, signature, recorded, 'network', None], recorded)
-        index(7, dataset+body[0]+ref_key(4, 3), 10)
+        dictionary(first, 8, 'event', dict(event_id=body[0]), recorded)
+        fact(first + 1, 'event-payload', [*body, ref(8)], recorded)
+        index(6, dataset+body[0], first + 1)
+        fact(first + 2, 'event-eligibility', [body[0], body_digest, signature, recorded, 'network', None], recorded)
+        index(7, dataset+body[0]+ref_key(4, 3), first + 2)
         clock = [ref(2), resolution, None, 4 if resolution > 1 else 0]
-        fact(11, 'event-receive', [body[0], received, ref(2), clock, None], recorded)
-        index(8, dataset+body[0]+ref_key(4, 3), 11)
-        fact(12, 'provenance', [body[0], ref(1), ref(2), ref(3), received, clock, ref(5), None], recorded)
-        index(9, dataset+body[0]+ref_key(1)+ref_key(2)+ref_key(3)+ref_key(4, 3), 12)
+        fact(first + 3, 'event-receive', [body[0], received, ref(2), clock, None], recorded)
+        index(8, dataset+body[0]+ref_key(4, 3), first + 3)
+        last = first + 3
+        if provenance:
+            last += 1
+            fact(last, 'provenance', [body[0], ref(1), ref(2), ref(3), received, clock, ref(5), None], recorded)
+            index(9, dataset+body[0]+ref_key(1)+ref_key(2)+ref_key(3)+ref_key(4, 3), last)
+        witness = [ref(1), ref(3), ref(5)] if provenance else None
         original = b'bigbrotr/producer-request/1\0'+cbor([[slot, 1, 4], 'admit', 1,
-            [1, scope, [*body, signature], 'network', None, [received, ref(2), clock, [ref(1), ref(3), ref(5)]]]])
-        commit(4, 8, 12, original, range(3, 13))
+            [1, scope, [*body, signature], 'network', None, [received, ref(2), clock, witness]]])
+        commit(4, first, last, original, range(3, last + 1))
     for ordinal,(extra,at,committed,quality,digest) in enumerate(additional_events,2):
         assert extra['kind']==1
         canonical=json.dumps([0,extra['pubkey'],extra['created_at'],extra['kind'],extra['tags'],extra['content']],
@@ -195,5 +204,6 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         original=b'bigbrotr/producer-request/1\0'+cbor([[slot,1,ordinal+3],'admit',1,
             [1,scope,[*body,signature],'network',None,[at,ref(2),clock,[ref(1),ref(3),ref(5)]]]])
         commit(ordinal+3,first,first+4,original,[*range(3,8),*range(first,first+5)])
-    assert len(rows) == (49+13*len(additional_events) if received is not None else 35)
+    assert len(rows) == ((49 if provenance else 35)+13*len(additional_events)
+        if received is not None else (35 if provenance else 23))
     return sorted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts

@@ -282,6 +282,36 @@ requirements and complete M1 remain open. The case has 12 declared stages;
 qualification requires their actual execution against the recorded candidate.
 All raw credentials, sessions and SQL captures remain protected as above.
 
+`p01-first-launch-restart-provenance-off` runs those same 12 stages against a
+separate fresh instance. It sets `sync.provenance = "off"` before the real
+configuration initialization and initial policy activation, then checks that
+both accepted revision-1 documents contain that setting. It never changes an
+already accepted dataset's policy to select the variant. Use the same candidate
+arguments with this case name and a new evidence directory:
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-restart-provenance-off \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-restart-off
+```
+
+Its independent expectations are 8 initial scientific facts and source cut8,
+then 5 successor facts and source cut5: 7 dictionaries, 2 bodies, 2 eligibility
+and 2 receive rows, with no provenance rows or endpoint/access/verification
+dictionaries. Operational relay enrollment still authorizes the controlled
+socket. The original signed body, scope, first eligibility/receive and export
+remain exact. There are four initial and two successor mutation requests;
+both successor resends are proof-only. The final typed checkpoint has 11
+cumulative dependencies, including five historical references first retained
+by the predecessor proof transaction. That transaction must follow the two
+mutation outcomes and precede the final proof head in this fresh, nonwrapping
+fixture. The final Archive has 6 commits, snapshot7 and frontier6. Retry and
+ordinary history preserve the same science and original export.
+
+The off case has the same native-census, second-event-export, Index, outage,
+capacity and complete-M1 exclusions. Implemented expectations and offline
+negative controls do not claim a connected PASS; inspect its actual result.
+
 The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the

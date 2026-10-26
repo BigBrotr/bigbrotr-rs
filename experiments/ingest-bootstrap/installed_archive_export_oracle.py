@@ -6,13 +6,14 @@ import re
 
 
 def validate(before, after, home, initialized, catalog_id, *, expected_principal='10'*16,
-             expected_table_count=69, expected_tables=None, destination_root=None):
+             expected_table_count=69, expected_tables=None, destination_root=None, initial_cut=12):
     """Placement/identity expectations come from the caller's independent setup.
 
     A newer schema supplies its expected inventory explicitly; observed table
     names must not be used to manufacture that expectation.
     """
     assert re.fullmatch('[0-9a-f]{32}', expected_principal)
+    assert type(initial_cut) is int and initial_cut in (8, 12), 'closed initial recipe cut required'
     principal = '\\x' + expected_principal
     assert type(expected_table_count) is int and expected_table_count > 0
     assert expected_table_count == 69 or expected_tables is not None
@@ -73,7 +74,7 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     assert detail['frontier_revision'] == 4 and detail['catalog_id'] == '\\x' + catalog_id
     assert unit['max_output_bytes'] == 256*1024**2 and unit['max_temporary_bytes'] == 512*1024**2
     bounds, = after['job_input_bounds']
-    assert bounds['job_id'] == job['job_id'] and bounds['last_complete_sequence'] == 12
+    assert bounds['job_id'] == job['job_id'] and bounds['last_complete_sequence'] == initial_cut
     assert bounds['shard_id'] == 0 and bounds['owner_epoch'] == 1
     original = json.loads((home / 'event.jsonl').read_text())
     # Protocol field order is frozen here; no product serializer participates.
@@ -90,7 +91,7 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
         job_id=result['job_id'], visibility='private', fidelity='full-signed-events',
         origin='retained-scoped-archive', source=dict(cut=dict(dataset_id=scope['dataset_id'],
             topology_generation=initialized['topology_generation'],
-            bounds=[dict(stream=dict(shard_id=0, owner_epoch='1'), last_complete_sequence='12')]),
+            bounds=[dict(stream=dict(shard_id=0, owner_epoch='1'), last_complete_sequence=str(initial_cut))]),
             catalog_id=catalog_id, frontier_revision='4', snapshot_id='5'),
         selection=dict(event_id=original['id'], scope=scope),
         accepted_revisions=dict(configuration='1', policy='1'), included_families=['signed-events'],

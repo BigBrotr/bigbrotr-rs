@@ -19,12 +19,39 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
-def deployment_recipe(text):
+def profile(provenance=True):
+    """Closed peer recipe expectations, selected before observing the product."""
+    assert type(provenance) is bool
+    return dict(initial_cut=12 if provenance else 8, successor_cut=10 if provenance else 5,
+        successor_requests=3 if provenance else 2, snapshot=8 if provenance else 7,
+        initial_counts=[8, 1, 1, 1, 1] if provenance else [5, 1, 1, 1, 0],
+        counts=[13, 2, 2, 2, 3] if provenance else [7, 2, 2, 2, 0],
+        old_coordinates=(3, 4, 8, 9, 10, 11) if provenance else (3, 4, 5, 6, 7, 8))
+
+
+def accepted_profile(state, provenance=True):
+    assert type(provenance) is bool
+    dataset, config, policy = (only(state[table]) for table in ('datasets', 'config_revisions', 'policy_revisions'))
+    for revision in (dataset['config_revision'], dataset['policy_revision'], config['revision'], policy['revision'], policy['config_revision']):
+        clock(revision, 1, 1)
+    assert config['document'] == policy['document']
+    assert config['document_digest'] == policy['document_digest']
+    assert policy['document']['format'] == 'bigbrotr-product-policy/2'
+    assert policy['document']['settings']['sync.provenance'] == ('local_first_witness' if provenance else 'off'), 'accepted provenance differs'
+
+
+def deployment_recipe(text, *, provenance=True):
     """Declare both exact fixture routes before any deployment is initialized."""
     original = 'rules = [{endpoint = "ws://127.0.0.1:7447/installed-fixture", cidr = "127.0.0.1/32", port = 7447}]'
     assert text.count(original) == 1, 'initial fixture destination rule changed'
     successor = '{endpoint = "' + ENDPOINT + '", cidr = "127.0.0.1/32", port = 7447}'
-    return text.replace(original, original[:-1] + ', ' + successor + ']')
+    text = text.replace(original, original[:-1] + ', ' + successor + ']')
+    assert type(provenance) is bool
+    if not provenance:
+        # The managed seed is consumed only by the subsequent real initializer.
+        from installed import set_value
+        text = set_value(text, 'sync', 'provenance', 'off')
+    return text
 
 
 def login_buckets():
@@ -164,7 +191,7 @@ def prepared(state, commands, visibility):
     assert selector['document'] == '\\x' + document.hex() and selector['candidate_digest'] == '\\x' + sha(document)
 
 
-def first_science(state, report, event, wires, census, store, completed):
+def first_science(state, report, event, wires, census, store, completed, *, provenance=True):
     from installed_archive_oracle import expected
     from installed_progress_context_oracle import archive_request_progress, verify_archive_progress
     from installed_sync_oracle import decode
@@ -173,9 +200,10 @@ def first_science(state, report, event, wires, census, store, completed):
     dictionary = clock(row_at(census, 'dictionaries', 1, 4)['recorded_at'], job['created_at_us'], wires[0]['connected_at_us'])
     received = decode(data[3].split(b'\0', 1)[1])[3][5][0]
     clock(received, wires[0]['sent_at_us'], wires[0]['closed_at_us'])
-    recorded = clock(row_at(census, 'events', 1, 9)['recorded_at'], received, completed)
+    assert type(provenance) is bool
+    recorded = clock(row_at(census, 'events', 1, 9 if provenance else 6)['recorded_at'], received, completed)
     science = expected(state, report, event, dictionary, received, recorded, wires[0]['clock_resolution_us'],
-        native_options=dict(acknowledge=True))
+        native_options=dict(acknowledge=True, provenance=provenance))
     assert data == science['inputs'], 'initial original input bytes'
     for table, rows in science['tables'].items():
         exact(census['tables'][table], rows, 'initial independent scientific rows: ' + table)
@@ -183,7 +211,8 @@ def first_science(state, report, event, wires, census, store, completed):
     owner = only(state['owner_epochs'], role='control')
     requests(state, 1, manifest, science['inputs'], science['receipts'], owner,
         {4: archive_request_progress(event, wires)}, source)
-    verify_archive_progress(state, wires, completed, event, science['native'], science['inputs'], science['receipts'], owner)
+    verify_archive_progress(state, wires, completed, event, science['native'], science['inputs'], science['receipts'], owner,
+        provenance=provenance)
     science['manifest'] = manifest
     for batch in science['batches']:
         batch.update(epoch=1, topology=0)
@@ -217,13 +246,15 @@ def successor_wire(wires, old, new):
     return wires[0]
 
 
-def successor_science(before, after, report, first, old_event, new_event, wires, census, store, completed):
+def successor_science(before, after, report, first, old_event, new_event, wires, census, store, completed, *, provenance=True):
     from initial_succession_oracle import successor_manifest
     from installed_family_science import NetworkScience, decode
     from installed_archive_catch_up_model import archive_science
     from transition_replay import native_rows
     from live_replay import OLD_EVENT
     assert old_event == OLD_EVENT
+    selected = profile(provenance)
+    accepted_profile(after, provenance)
     wire = successor_wire(wires, old_event, new_event)
     for table in ('producer_requests', 'producer_outcomes', 'producer_checkpoints', 'producer_checkpoint_dependencies', 'acquisition_progress'):
         assert all(row in after[table] for row in before[table]), 'historical producer evidence changed: ' + table
@@ -236,7 +267,7 @@ def successor_science(before, after, report, first, old_event, new_event, wires,
     assert raw(intent['previous_manifest']) == first['manifest'] and raw(intent['target_manifest']) == manifest
     assert intent['target_manifest_sha256'] == '\\x' + sha(manifest)
     source = only(before['source_streams'], owner_epoch=1)
-    handoff = (b'\x01\x0a' + raw(intent['producer_slot_id']) + be(1) + be(4) + be(12)
+    handoff = (b'\x01\x0a' + raw(intent['producer_slot_id']) + be(1) + be(4) + be(selected['initial_cut'])
         + raw(source['closure_digest']) + be(len(first['manifest']), 2) + first['manifest'] + be(len(manifest), 2) + manifest)
     assert raw(intent['handoff']) == handoff and intent['handoff_sha256'] == '\\x' + sha(handoff)
     ingest = only(after['owner_epochs'], role='ingest', epoch=2)
@@ -247,27 +278,33 @@ def successor_science(before, after, report, first, old_event, new_event, wires,
     model = SimpleNamespace(ds=only(after['datasets']), slot=intent['producer_slot_id'], legacy=intent,
         inputs={}, native=dict(event='dump-state', sequence=0, rows=[dict(cf=cf, key=key.hex(), value=value.hex()) for cf, key, value in first['native']]))
     plan = dict(epoch=2, topology=1, manifest=manifest, domains=domains)
-    science = NetworkScience(model, plan, acknowledge=True, new_event=new_event, endpoint=ENDPOINT)
-    data = originals(store, report['producer_slot_id'], 2, 3)
+    science = NetworkScience(model, plan, acknowledge=True, new_event=new_event, endpoint=ENDPOINT,
+        initial_provenance=provenance)
+    data = originals(store, report['producer_slot_id'], 2, selected['successor_requests'])
     job, detail, source = attribution(after, 'f4')
     dictionary = clock(row_at(census, 'dictionaries', 2, 1)['recorded_at'], job['created_at_us'], wire['connected_at_us'])
     received = decode(data[1].split(b'\0', 1)[1])[3][5][0]
-    old_received = decode(data[2].split(b'\0', 1)[1])[3][5][0]
     resolution = wire['clock_resolution_us']
     clock(received, wire['sent_at_us'] - resolution, wire['closed_at_us'] + resolution)
-    clock(old_received, received, wire['closed_at_us'] + resolution)
-    recorded = clock(row_at(census, 'events', 2, 6)['recorded_at'], received, completed)
-    old_recorded = clock(row_at(census, 'provenance_facts', 2, 10)['recorded_at'], old_received, completed)
-    science.network(True, dictionary, received, recorded, resolution, (old_received, old_recorded))
+    recorded = clock(row_at(census, 'events', 2, 6 if provenance else 3)['recorded_at'], received, completed)
+    historical = None
+    if provenance:
+        old_received = decode(data[2].split(b'\0', 1)[1])[3][5][0]
+        clock(old_received, received, wire['closed_at_us'] + resolution)
+        old_recorded = clock(row_at(census, 'provenance_facts', 2, 10)['recorded_at'], old_received, completed)
+        historical = (old_received, old_recorded)
+    science.network(provenance, dictionary, received, recorded, resolution, historical)
     assert data == list(science.inputs.values()), 'successor original input bytes'
-    wanted = archive_science(dict(rows=native_rows(science.values)), live_epoch=2)
+    wanted = archive_science(dict(rows=native_rows(science.values)), live_epoch=2, provenance=provenance)
     for table, rows in wanted['tables'].items():
         exact(census['tables'][table], rows, 'complete independent scientific rows: ' + table)
         assert [r for r in rows if r['source_record_id']['owner_epoch'] == 1] == first['tables'][table]
     owner = only(after['owner_epochs'], role='control', epoch=job['owner_epoch'])
-    requests(after, 2, manifest, data, list(science.receipts.values()), owner,
-        {2: request_binding(new_event, wire, 1), 3: request_binding(old_event, wire, 2)}, source)
-    successor_progress(after, manifest, science, job, detail, owner, wire, new_event, completed)
+    bindings = {2: request_binding(new_event, wire, 1)}
+    if provenance:
+        bindings[3] = request_binding(old_event, wire, 2)
+    requests(after, 2, manifest, data, list(science.receipts.values()), owner, bindings, source)
+    successor_progress(after, manifest, science, job, detail, owner, wire, new_event, completed, provenance=provenance)
     wanted.update(inputs=data, receipts=list(science.receipts.values()), manifest=manifest)
     return wanted
 
@@ -282,9 +319,10 @@ def fresh_successor(before, intent, domains):
         assert value[2:] not in previous, 'successor reused an old identity'
 
 
-def successor_progress(state, manifest, science, job, detail, owner, wire, event, completed):
+def successor_progress(state, manifest, science, job, detail, owner, wire, event, completed, *, provenance=True):
     import installed_progress_replay as typed
     from installed_family_science import decode
+    selected = profile(provenance)
     actual = only(state['acquisition_progress'], producer_epoch=2)
     head = only(state['producer_checkpoints'], producer_epoch=2)
     common = dict(dataset_id=job['dataset_id'], producer_slot_id=science.m.slot, producer_epoch=2)
@@ -295,23 +333,37 @@ def successor_progress(state, manifest, science, job, detail, owner, wire, event
         clock_resolution_us=wire['clock_resolution_us'], clock_anomaly_flags=4 if wire['clock_resolution_us'] > 1 else 0,
         xmin=actual['xmin'])
     expected['intent_digest'] = '\\x' + typed.certification_digest(event, science.scope, science.ref(2), science.ref(2),
-        [science.ref(1), science.ref(3), science.ref(5)], expected, wire).hex()
+        [science.ref(1), science.ref(3), science.ref(5)] if provenance else None, expected, wire).hex()
     assert head['xmin'] == actual['xmin']
-    # This fresh, bounded, nonwrapping fixture serializes the final proof after all three outcomes.
-    assert int(typed.xid(head['xmin'])) > max(int(typed.xid(r['xmin'])) for r in state['producer_outcomes'] if r['producer_epoch'] == 2)
+    # This fresh, bounded, nonwrapping fixture serializes proofs after outcomes.
+    latest_outcome = max(int(typed.xid(r['xmin'])) for r in state['producer_outcomes'] if r['producer_epoch'] == 2)
+    assert int(typed.xid(head['xmin'])) > latest_outcome
     clock(head['committed_at_us'], max(actual['observed_at_us'], wire['sent_at_us']), completed)
     assert head['committed_at_us'] < owner['lease_expires_at_us']
-    dependencies = []
-    for epoch, sequence in [(1, n) for n in (3, 4, 8, 9, 10, 11)] + [(2, n) for n in range(1, 11)]:
+    dependencies, old_proof_xmin = [], None
+    for epoch, sequence in [(1, n) for n in selected['old_coordinates']] + [(2, n) for n in range(1, selected['successor_cut'] + 1)]:
         key = ('facts', (b'\x01\x20' + raw(common['dataset_id']) + bytes(4) + be(epoch) + be(sequence)).hex())
         fact = bytes.fromhex(science.values[key])
         reference = [[raw(common['dataset_id']), 0, epoch, sequence], fact[2:34]]
-        first = next(n for n, receipt in science.receipts.items() if reference in decode(receipt.split(b'\0', 1)[1])[5])
+        first = next((n for n, receipt in science.receipts.items() if reference in decode(receipt.split(b'\0', 1)[1])[5]), None)
+        if first is None:
+            # Off-mode predecessor ExistingProof first adds these five old
+            # references in one SQL transaction without a mutation outcome.
+            # This is the existing installed_progress_replay interpretation;
+            # only transaction metadata is observed, never membership/digests.
+            assert not provenance and epoch == 1 and sequence in (4, 5, 6, 7, 8)
+            observed = only(state['producer_checkpoint_dependencies'], producer_epoch=2,
+                source_shard=0, source_epoch=epoch, source_sequence=sequence)
+            if old_proof_xmin is None:
+                old_proof_xmin = observed['xmin']
+            assert latest_outcome < int(typed.xid(old_proof_xmin)) < int(typed.xid(head['xmin']))
+            transaction = old_proof_xmin
+        else:
+            transaction = only(state['producer_outcomes'], producer_epoch=2, request_sequence=first)['xmin']
         dependencies.append(dict(common, source_shard=0, source_epoch=epoch, source_sequence=sequence,
-            payload_digest='\\x' + fact[2:34].hex(), xmin=only(state['producer_outcomes'],
-                producer_epoch=2, request_sequence=first)['xmin']))
+            payload_digest='\\x' + fact[2:34].hex(), xmin=transaction))
     expected_head = dict(common, progress_format=1, manifest_sha256='\\x' + sha(manifest), checkpoint_revision=4,
-        complete_through_request=3, progress_jobs=1, dependency_count=16, issuer_resource=owner['resource_id'],
+        complete_through_request=selected['successor_requests'], progress_jobs=1, dependency_count=len(dependencies), issuer_resource=owner['resource_id'],
         issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'], committed_at_us=head['committed_at_us'],
         xmin=head['xmin'], checkpoint_digest='\\x' + '00' * 32)
     expected_head['checkpoint_digest'] = '\\x' + typed.head_digest(expected_head, [expected], dependencies,
@@ -389,27 +441,31 @@ def retired(state, report, epoch, science, *, cut):
     assert job['reason_code'] == gap['reason'] and job['completed_at_us'] == gap['abandoned_at_us']
 
 
-def bridge(state, initial_receipts):
+def bridge(state, initial_receipts, *, provenance=True):
     from installed_archive_catch_up_oracle import cut_digest
+    selected = profile(provenance)
+    cuts = [(1, selected['initial_cut']), (2, 0)]
     dataset = only(state['datasets'])['dataset_id']
     assert sorted(r['frontier_revision'] for r in state['consumer_frontier_revisions']) == list(range(1, 7))
     row = only(state['archive_frontier_snapshots'], frontier_revision=5)
-    assert row['topology_generation'] == 1 and row['snapshot_id'] == 8
-    assert [row[key] for key in COUNTS] == [8, 1, 1, 1, 1]
-    assert row['request_digest'] == '\\x' + cut_digest(dataset, 1, initial_receipts, [(1, 12), (2, 0)], 8)
+    assert row['topology_generation'] == 1 and row['snapshot_id'] == selected['snapshot']
+    assert [row[key] for key in COUNTS] == selected['initial_counts']
+    assert row['request_digest'] == '\\x' + cut_digest(dataset, 1, initial_receipts, cuts, selected['snapshot'])
     bounds = sorted([r for r in state['consumer_frontiers'] if r['frontier_revision'] == 5], key=lambda r: r['owner_epoch'])
-    assert [(r['owner_epoch'], r['last_complete_sequence']) for r in bounds] == [(1, 12), (2, 0)]
+    assert [(r['owner_epoch'], r['last_complete_sequence']) for r in bounds] == cuts
     assert bounds[1]['attestation_kind'] is None and bounds[1]['attestation_digest'] is None
     assert {r['attempt_id'][2:].upper() for r in state['archive_frontier_batches'] if r['frontier_revision'] == 5} == {r['attempt_id'] for r in initial_receipts}
 
 
-def catch_up_report(report, state, *, retry):
+def catch_up_report(report, state, *, retry, provenance=True):
+    selected = profile(provenance)
     frontier = only(state['archive_frontier_snapshots'], frontier_revision=6)
     expected = dict(format='bigbrotr-archive-catch-up/1', dataset_id=only(state['datasets'])['dataset_id'][2:],
         catalog_id=only(state['consumers'])['consumer_id'][2:], terminal_epoch=2,
-        issued_attempts_before=7 if retry else 4, new_attempts=0 if retry else 3,
-        frontier_revision=6, snapshot_id=8, operation_id=list(raw(frontier['operation_id'])),
-        request_digest=frontier['request_digest'][2:], family_counts=[13, 2, 2, 2, 3],
+        issued_attempts_before=4 + selected['successor_requests'] if retry else 4,
+        new_attempts=0 if retry else selected['successor_requests'],
+        frontier_revision=6, snapshot_id=selected['snapshot'], operation_id=list(raw(frontier['operation_id'])),
+        request_digest=frontier['request_digest'][2:], family_counts=selected['counts'],
         new_frontier_revisions=0 if retry else 2)
     exact(report, expected, 'exact current catch-up report')
 
@@ -433,7 +489,8 @@ def retry_unchanged(before, after):
         assert before[table] == after[table], 'exact catch-up retry mutated ' + table
 
 
-def history_unchanged(before, after):
+def history_unchanged(before, after, *, provenance=True):
+    selected = profile(provenance)
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets', 'local_accounts',
         'management_audit', 'snapshot_leases', 'archive_snapshot_pins', 'retention_claims'}
     assert set(before) == set(after)
@@ -450,5 +507,5 @@ def history_unchanged(before, after):
     for pin in pins:
         frontier = only(after['archive_frontier_snapshots'], consumer_id=pin['consumer_id'],
             frontier_revision=pin['frontier_revision'])
-        assert frontier['dataset_id'] == pin['dataset_id'] and frontier['snapshot_id'] == 8
+        assert frontier['dataset_id'] == pin['dataset_id'] and frontier['snapshot_id'] == selected['snapshot']
         assert only(after['snapshot_leases'], lease_id=pin['lease_id'])['state'] == 'released'

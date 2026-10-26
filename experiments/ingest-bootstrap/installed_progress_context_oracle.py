@@ -96,7 +96,7 @@ def archive_request_progress(event, transcript):
         progress_input_sha256='\\x'+sha(raw))
 
 
-def verify_archive_progress(state, transcript, completed_us, event, native, inputs, receipts, control):
+def verify_archive_progress(state, transcript, completed_us, event, native, inputs, receipts, control, *, provenance=True):
     """Exact target40 head for the original one-event Archive recipe/window32.
 
     Three dictionary operations precede six classified EVENTs: new facts,
@@ -104,6 +104,7 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
     CapturedEventInput preserves invalid signatures; CertificationRejected is a
     durable progress class, unlike a malformed JSON preparation refusal.
     """
+    assert type(provenance) is bool
     binding = archive_request_progress(event, transcript)
     assert {39, 40} <= {row['migration'] for row in state['schema_versions']}
     assert len(inputs) == len(receipts) == 4
@@ -133,7 +134,7 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
         for row in state['allocation_domains']}
     ref = lambda kind, ordinal=1: [dataset, kind, domains[kind], ordinal]
     expected_job['intent_digest'] = '\\x'+typed.certification_digest(event, ref(4, 3),
-        ref(2), ref(2), [ref(1), ref(3), ref(5)], expected_job, wire).hex()
+        ref(2), ref(2), [ref(1), ref(3), ref(5)] if provenance else None, expected_job, wire).hex()
     assert head['xmin'] == expected_job['xmin']
     # This fresh epoch1 fixture has no XID wrap and serializes all four outcomes
     # before the final proof. Numeric ordering is not a general PG XID rule.
@@ -145,8 +146,11 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
     values = {(cf, key.hex()): value.hex() for cf, key, value in native}
     dependencies = []
     # Literal cumulative union from the four independently encoded receipts:
-    # setup1:1..3, observation1:3..7, event1:3..12. No SQL row chooses membership.
-    for sequence in range(1, 13):
+    # On: setup1:1..3, observation1:3..7, event1:3..12.
+    # Off: setup1:1..3, observation1:3..4, event1:3..8.
+    # No SQL row chooses membership.
+    dependency_count = 12 if provenance else 8
+    for sequence in range(1, dependency_count + 1):
         source = dataset + bytes(4) + (1).to_bytes(8, 'big') + sequence.to_bytes(8, 'big')
         value = bytes.fromhex(values['facts', (b'\x01\x20'+source).hex()])
         reference = [[dataset, 0, 1, sequence], value[2:34]]
@@ -157,7 +161,7 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
             source_sequence=sequence, payload_digest='\\x'+value[2:34].hex(), xmin=outcome['xmin']))
     expected_head = dict(common, progress_format=1,
         manifest_sha256='\\x'+sha(bytes.fromhex(values['default', '0101'])),
-        checkpoint_revision=3+len(classifications), complete_through_request=4, progress_jobs=1, dependency_count=12,
+        checkpoint_revision=3+len(classifications), complete_through_request=4, progress_jobs=1, dependency_count=dependency_count,
         issuer_resource=control['resource_id'], issuer_epoch=control['epoch'],
         issuer_incarnation=control['process_incarnation'], committed_at_us=head['committed_at_us'],
         xmin=head['xmin'], checkpoint_digest='\\x'+'00'*32)

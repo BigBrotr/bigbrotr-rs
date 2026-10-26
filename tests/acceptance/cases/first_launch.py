@@ -38,6 +38,13 @@ RESTART_LIMITS = [
     'NOT_RUN: native RocksDB census, provenance-off repeat, second-event export, Index readiness, dependency-outage qualification and complete M1.',
     LIMITS[2],
 ]
+OFF_CASE = 'p01-first-launch-restart-provenance-off'
+RESTART_CASES = ('p01-first-launch-restart', OFF_CASE)
+OFF_LIMITS = [
+    RESTART_LIMITS[0] + ' Fresh accepted sync.provenance=off; no scientific witness rows.',
+    'NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.',
+    LIMITS[2],
+]
 
 
 class MissingPrerequisite(Exception):
@@ -152,7 +159,9 @@ def interrupted():
 class Runtime:
     def __init__(self, args, inputs):
         self.args, self.inputs = args, inputs
-        self.restart_case = getattr(args, 'case', None) == 'p01-first-launch-restart'
+        self.restart_case = getattr(args, 'case', None) in RESTART_CASES
+        self.provenance = getattr(args, 'case', None) != OFF_CASE
+        self.initial_cut = 12 if self.provenance else 8
         self.root, self.source = args.evidence, args.source_root.resolve()
         self.owner = secrets.token_hex(16)
         self.project = 'bigbrotr-acceptance-' + self.owner
@@ -322,6 +331,7 @@ class Runtime:
             import installed_archive_catch_up_oracle
             import installed_progress_context_oracle
             self.restart_checks = first_launch_restart
+            self.restart_profile = first_launch_restart.profile(self.provenance)
         # Route the reused SQL observers through the same bounded process/log
         # owner. Their SQL and independent row/oracle semantics are unchanged.
         self.lab, self.original_lab_command = lab, lab.command
@@ -396,7 +406,7 @@ class Runtime:
             require(text.count(digit * 32) == 1, 'unexpected recipe identity placeholder')
             text = text.replace(digit * 32, self.ids[key])
         if self.restart_case:
-            text = self.restart_checks.deployment_recipe(text)
+            text = self.restart_checks.deployment_recipe(text, provenance=self.provenance)
         self.config = self.state / 'config/instance.toml'
         self.config.write_text(text)
         self.inputs['initial_recipe_sha256'] = digest(self.config)
@@ -551,6 +561,9 @@ class Runtime:
         before, _ = self.capture(output, 'before')
         require(not before['producer_requests'] and not before['jobs'], 'initial state is not fresh')
         require(before['local_accounts'][0]['principal_id'] == '\\x' + self.enrolled['principal_id'], 'enrolled owner differs')
+        if self.restart_case:
+            self.restart_checks.accepted_profile(before, self.provenance)
+        self.inputs['sync_provenance'] = 'local_first_witness' if self.provenance else 'off'
         setup = dict(control=before, resource=dict(catalog_id=self.ids['catalog']))
         entry = self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
             '--roles', 'control,ingest,sync,archive', '--initialize-ingest')
@@ -573,7 +586,7 @@ class Runtime:
         self.wait(lambda: (self.home / 'submitted.json').exists(), 'submitted acquisition', 15, entry, self.client)
         def published():
             require(not (self.home / 'relay-error.json').exists(), 'controlled relay failed')
-            return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.consumer_frontiers WHERE last_complete_sequence=12') == '1'
+            return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.consumer_frontiers WHERE last_complete_sequence=' + str(self.initial_cut)) == '1'
         self.wait(published, 'signed Archive frontier', 60, entry, self.client)
         control, catalog = self.capture(output, 'published')
         require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == 5,
@@ -647,7 +660,7 @@ class Runtime:
         require(catalog_after == catalog_before and files_after == files_before, 'ordinary read/export mutated Archive')
         self.export_result = self.export_validate(before, after, self.home, self.initialized, self.ids['catalog'],
             expected_principal=self.enrolled['principal_id'], expected_table_count=77, expected_tables=self.tables,
-            destination_root=self.state / 'data/export')
+            destination_root=self.state / 'data/export', initial_cut=self.initial_cut)
         save(output / 'export-verdict.json', self.export_result)
         self.backend_absence(output)
         self.source_unchanged()
@@ -695,9 +708,9 @@ class Runtime:
         owner, = [r for r in view['owner_epochs'] if r['role'] == 'control']
         self.old_event = load(self.home / 'event.jsonl')
         self.first_science = self.restart_checks.first_science(view, self.initialized, self.old_event, wires,
-            self.baseline_census, self.state / 'data/ingest', owner['released_at_us'])
+            self.baseline_census, self.state / 'data/ingest', owner['released_at_us'], provenance=self.provenance)
         self.restart_checks.publication(initial_after, self.baseline_census, self.first_science,
-            revision=4, snapshot=5, topology=0, cuts=[(1, 12)])
+            revision=4, snapshot=5, topology=0, cuts=[(1, self.initial_cut)])
         self.original_inputs = self.files(self.state / 'data/ingest/producer-inputs-v1')
         save(output / 'original-input-files.json', self.original_inputs)
 
@@ -738,7 +751,7 @@ class Runtime:
             'initial acquisition abandonment differs')
         retired = self.finite('retire-initial', *args, '--retire-initial')
         self.retired_initial, _ = self.capture(output, 'retired-initial')
-        self.restart_checks.retired(self.retired_initial, retired, 1, self.first_science, cut=12)
+        self.restart_checks.retired(self.retired_initial, retired, 1, self.first_science, cut=self.initial_cut)
         self.backend_absence(output)
         self.wait_login_capacity(output)
         home = self.root / 'successor-client'
@@ -813,27 +826,31 @@ class Runtime:
         self.final_census = self.census(output, 'caught-up')
         self.final_science = self.restart_checks.successor_science(self.retired_initial, self.successor_after,
             self.successor_started, self.first_science, self.old_event, self.new_event, self.successor_wires,
-            self.final_census, self.state / 'data/ingest', self.successor_completed)
-        self.restart_checks.retired(self.retired_successor, self.successor_retirement, 2, self.final_science, cut=10)
+            self.final_census, self.state / 'data/ingest', self.successor_completed, provenance=self.provenance)
+        self.restart_checks.retired(self.retired_successor, self.successor_retirement, 2, self.final_science,
+            cut=self.restart_profile['successor_cut'])
         self.restart_checks.publication(self.caught_up, self.final_census, self.final_science,
-            revision=6, snapshot=8, topology=1, cuts=[(1, 12), (2, 10)])
-        self.restart_checks.catch_up_report(report, self.caught_up, retry=False)
-        self.restart_checks.bridge(self.caught_up, self.baseline_census['tables']['archive_commits'])
+            revision=6, snapshot=self.restart_profile['snapshot'], topology=1,
+            cuts=[(1, self.initial_cut), (2, self.restart_profile['successor_cut'])])
+        self.restart_checks.catch_up_report(report, self.caught_up, retry=False, provenance=self.provenance)
+        self.restart_checks.bridge(self.caught_up, self.baseline_census['tables']['archive_commits'], provenance=self.provenance)
         self.restart_checks.preserve_export(self.restart_before, self.caught_up)
         require(self.files(self.state / 'data/export') == self.original_export_files, 'original export files changed')
         originals = self.files(self.state / 'data/ingest/producer-inputs-v1')
-        require(len(originals) == 7 and all(originals.get(name) == value for name, value in self.original_inputs.items()),
+        require(len(originals) == 4 + self.restart_profile['successor_requests']
+            and all(originals.get(name) == value for name, value in self.original_inputs.items()),
             'original input custody changed')
         self.all_input_files = originals
-        save(output / 'independent-verdict.json', dict(scientific_rows=22, family_counts=[13, 2, 2, 2, 3],
-            producer_requests=[4, 3], archive_commits=7, snapshot_id=8, frontier_revision=6,
+        save(output / 'independent-verdict.json', dict(scientific_rows=sum(self.restart_profile['counts']),
+            family_counts=self.restart_profile['counts'], producer_requests=[4, self.restart_profile['successor_requests']],
+            archive_commits=4 + self.restart_profile['successor_requests'], snapshot_id=self.restart_profile['snapshot'], frontier_revision=6,
             original_science_unchanged=True, original_export_unchanged=True, native_census='NOT_RUN'))
 
     def restart_retry(self):
         output = self.restart_output
         report = self.finite('archive-catch-up-retry', 'archive', 'catch-up', '--file', '/etc/bigbrotr/instance.toml')
         after, catalog = self.capture(output, 'retry')
-        self.restart_checks.catch_up_report(report, after, retry=True)
+        self.restart_checks.catch_up_report(report, after, retry=True, provenance=self.provenance)
         self.restart_checks.retry_unchanged(self.caught_up, after)
         require(catalog == self.caught_up_catalog and self.files(self.state / 'data/archive') == self.caught_up_files,
             'exact catch-up retry changed Archive')
@@ -848,7 +865,7 @@ class Runtime:
         shutil.copyfile(self.home / 'fixture-profile.json', output / 'fixture-profile.json')
         save(output / 'events.json', [self.old_event, self.new_event])
         save(output / 'read-input.json', dict(scope=self.initialized['private_scope'], catalog_id=self.ids['catalog'],
-            frontier_revision=6, snapshot_id=8, config_revision='1', policy_revision='1'))
+            frontier_revision=6, snapshot_id=self.restart_profile['snapshot'], config_revision='1', policy_revision='1'))
         before, catalog = self.capture(output, 'before')
         self.wait_login_capacity(output)
         entry = self.launch('successor-history', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml', '--roles', 'control')
@@ -860,7 +877,7 @@ class Runtime:
         terminal = self.stop_container(entry, output)
         require(terminal['State']['ExitCode'] == 0, 'successor ordinary Control did not stop')
         after, final_catalog = self.capture(output, 'after')
-        self.restart_checks.history_unchanged(before, after)
+        self.restart_checks.history_unchanged(before, after, provenance=self.provenance)
         self.restart_checks.preserve_export(self.restart_before, after)
         require(final_catalog == catalog == self.caught_up_catalog and self.files(self.state / 'data/archive') == self.caught_up_files,
             'ordinary history changed Archive')
@@ -918,8 +935,8 @@ class Runtime:
 
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
-    restart = getattr(args, 'case', None) == 'p01-first-launch-restart'
-    args.case_limits = RESTART_LIMITS if restart else LIMITS
+    restart = getattr(args, 'case', None) in RESTART_CASES
+    args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
     stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
