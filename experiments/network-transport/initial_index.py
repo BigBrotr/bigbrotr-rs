@@ -53,6 +53,7 @@ BINARY_REQUIRED = {
         'tests::all_ten_family_outcomes_obey_counts_zero_and_checked_wire_ceiling_before_prepare',
         'tests::reservations_distinguish_unavailable_from_impossible_and_do_not_wait',
         'tests::cancellation_and_expiry_refuse_before_dispatch',
+        'tests::startup_capacity_includes_retained_control_inputs_and_index_preparation',
         'prepare::tests::ordinary_preparation_never_opens_initializer_or_creates_state_and_retains_credit',
         'prepare::tests::explicit_initialization_requires_the_separate_protected_pair',
         'prepare::tests::reservation_and_tls_profile_refusals_precede_dns_and_secret_reads',
