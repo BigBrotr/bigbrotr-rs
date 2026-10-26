@@ -74204,7 +74204,7 @@
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Source/metadata/write corrections have exactb533native96PASS; real worker-bound build active. r1/r2/r3 originals preserved; installed rerun required. Restart/unknown-query/readiness open.",
+      "state": "Installed initial Index/Archive/signed read/export r4 PASS on b5333d53; native96/Clippy/build PASS. Publication to main and changed hosted CI pending. Readiness/restart/uncertainty/outages remain open.",
       "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
       "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
       "first_actual_run": {
@@ -74257,7 +74257,7 @@
           "14929744"
         ],
         "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-installed-20261026",
-        "controls": "48 first-launch controls PASS also on merged36df8031; independent review exposed omitted current consumer xmin, fixed with12 targeted Index controls PASS and preservedRED. Actual installed/engine outcome NOT_RUN.",
+        "controls": "48 first-launch controls PASS also on merged36df8031; independent review exposed omitted current consumer xmin, fixed with12 targeted Index controls PASS and preservedRED. Actual installed b5333d53 r4 nowPASS at declared scope.",
         "author_receipt_sha256": "fed8eab5e8ed005f3664ebdacdf7382ddfc8cc7e193c37b40a40fa11ad14c7e0",
         "head_fix_receipt_sha256": "342e86540d8550db158a30b720ce10c6f61cadf49c5a833c599c4768f1eea5f8",
         "receipts": ".research/index-case-controls/{result,head-xmin-result}.json under author worktree",
@@ -74304,11 +74304,24 @@
             "finding": "Terminal retained-native-input refusal; accepted per-target4 rows incorrectly also limits whole source batch to4 facts. Known signed source batch8..12 contains5 facts; independent per-target maximum remains4. No later Index gate PASS; original stores/logs retained.",
             "limitation": "Generic original error did not retain PendingError discriminant; diagnosis follows source limit and independently specified input. Corrected real run required.",
             "process": "session23616 exit1/reaped; all16 containers stopped/PID0/noOOM, initial owner exit4/others0; cleanupPASS; borrowed bridge unchanged/empty"
+          },
+          {
+            "root": ".research/first-launch-index-r4-20261026",
+            "artifact": "b5333d531655cc6e79039c9fb755ece0643a3978",
+            "assembly": "2d0bdc81693083819edd9d633195ecd787b7e955",
+            "acceptance": "2d0bdc81693083819edd9d633195ecd787b7e955",
+            "status": "PASS_INSTALLED_INITIAL_INDEX",
+            "root_verification_sha256": "3d508334e6fb171b8027185f4b6fcbd7ef797221055aed190565efd3995e083b",
+            "result_sha256": "cd9e0555aa6670a88ba73c13e66656cd50b19dd05bfd9ad8e43707ae9a492dff",
+            "resources_sha256": "b2caae83281d74bf9f46bcfadc2005d8638de1254de6c84df031a552aca171c9",
+            "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#installed_application",
+            "process": "session80184 exit0/reaped; all19 owned containers freshly verified stopped/exit0/PID0/noOOM; borrowed bridge unchanged/empty; no engine active",
+            "scope": "All8 stagesPASS; originalr1/r2/r3 failures retained separately; live readiness/restart/uncertainty/outage/capacity not claimed"
           }
         ]
       },
       "write_api_correction": {
-        "state": "Fresh exactf7d6befe compile PASS; installed r3 reaches fresh initialization but aborts on source-input bound; physical write qualification remains pending.",
+        "state": "Qualified by exactb5333d53 native96/Clippy/build and actual r4 installed RowBinary/metadata/write/publication/read/export",
         "behavior": "Use validated closed qualified identifier with insert_unescaped (retains driver validation); DESCRIBE uses exact declared per-target column bound, then restore accepted data max_result_rows before insertion. Remove unused macro cardinality argument.",
         "critical_review": "initial_index_rows independently checked exact vendored0.15.2 API, closed IndexTables inputs, client settings clone/insert dispatch ordering and unchanged custody/query IDs. No blocking finding; no engine/build by reviewer.",
         "next": "Compile current worker-bound candidate and rerun same maintained installed case with4-row accepted data ceiling; do not raise timeout or alter scientific expectations."
@@ -74327,7 +74340,7 @@
       },
       "source_limit_correction": {
         "behavior": "Keep bounded64-fact source batch allowance independent from accepted4-row per-target insert ceiling; unchanged output checks and reservation accounting. Retain safe PendingError discriminant in diagnostic.",
-        "state": "Critical review and exact-source native96 controls/strict Clippy PASS; corrected worker-bound build running; installed engine rerun pending",
+        "state": "Critical source review, exact native96/Clippy, fresh worker-bound build and installed r4 all8 stagesPASS",
         "review": "initial_index_rows checked immutable pending marker count, all-family bounds before PG preparation, both planner passes, charged source/planner allowances and safe enum-only diagnostics. Original generic error leaves direct variant unobserved; no new engine/build by reviewer.",
         "commit": "b5333d531655cc6e79039c9fb755ece0643a3978",
         "review_receipt": ".research/implementation/index-foundation-20261026/runtime-review-47f8fde5/source-limit-write-api-followup-review.json",
@@ -74347,8 +74360,16 @@
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-b5333d5",
         "container_id": "a65017f63801aa71e4cdf8dbdb947acf93ad5a8b75ee50a4c64bfed7f35d3c84",
         "session": 76528,
-        "state": "RUNNING",
-        "limits": "Same reviewed f7ordinary recipe, new source/root/owner only;2CPU6GiB512PIDs/65GiBfree/40GiBoutput/7200sdeadline. Fresh worker-before-parent with pinned native assets. launch.json/resources.json retain actual command and identity."
+        "state": "PASS_FRESH_WORKER_BOUND_BUILD; session76528 exit0/reaped; container stopped/exit0/PID0/noOOM",
+        "limits": "Same reviewed f7ordinary recipe, new source/root/owner only;2CPU6GiB512PIDs/65GiBfree/40GiBoutput/7200sdeadline. Fresh worker-before-parent with pinned native assets. launch.json/resources.json retain actual command and identity.",
+        "root_verification": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-b5333d5/root-verification.json",
+        "binary_sha256": "8ab2e21a59ff9e4252917751d5f5285022eadcef84876c11f7c02c74881dc8cc"
+      },
+      "source_publication_review_followup": {
+        "through": "2d0bdc81",
+        "receipt": ".research/ci-publication-20261026/source-2d0bdc81-exposure/receipt.json",
+        "sha256": "5e8f435b9bc7d95b75c7c0b5f0993e1358245f36250d1be2c675b1461db5e11a",
+        "result": "38 new objects/12 paths; five matches repeat one historical inventory reference fingerprint, no operational credential confirmed. Final documentation-only delta still to review."
       }
     }
   },
@@ -74364,6 +74385,14 @@
       "allocated_bytes": 1389359104,
       "observed_free_delta": 1389355008,
       "preservation": "11 copied artifact/source/log pins rehashed after deletion; exact4422-entry inventory retained. Lsof Docker visibility limitation documented; actual builder state and active container mounts checked. Rebuild via retained exact-source launch command."
+    },
+    "pending_proposal": {
+      "assessment": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-assessment-20261026.json",
+      "assessment_sha256": "baeae183d6737623b3145c9fa37588766b6dc6a51d4730f5f0aa64dc964ef524",
+      "proposal": ".research/tux-maintenance-archive-read-20261018/checkpoint-ci-caches-proposal-20261026.json",
+      "proposal_sha256": "9f7be68ca3dc2c40a1af30f9668ba4d75a5576b229bd76ba73a682bc86350569",
+      "candidate": "runs/receipts-41fff54/out/target:1748 compiler intermediates/2082344960 allocated bytes; preserve61 ELF and9 outside pins",
+      "status": "READ_ONLY_PROPOSAL; no deletion. Root freeze/hash/fresh use checks required. Two other assessed targets already retired and excluded."
     }
   },
   "implementation_ci_assembly_fixture_20261026": {

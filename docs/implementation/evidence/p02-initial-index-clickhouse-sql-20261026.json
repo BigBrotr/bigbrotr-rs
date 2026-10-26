@@ -1,10 +1,10 @@
 {
   "format": "bigbrotr-implementation-evidence/1",
-  "task": "P01-T09 initial Index physical schema assumptions",
+  "task": "P01-T09 initial Index physical schema and installed publication",
   "date": "2026-10-26",
   "status": "PARTIAL",
-  "summary": "SQL-only schema, catalog, typed-value and narrow-writer checks PASS at the recorded scope; intended column-TTL negative remains NOT_RUN.",
-  "scope": "Fresh isolated official ClickHouse26.8.35.10 amd64 servers, native SQL client via docker exec. No HTTP or Rust/product qualification.",
+  "summary": "Original SQL-only schema/catalog/grant checks PASS at their scope. Installed b5333d53 now passes all8 maintained initial Index/Archive/history/export stages. M1 remains incomplete; TTL negative, readiness, restart, outages and broader capacity remain open.",
+  "scope": "Original SQL diagnostic uses native SQL client on isolated ClickHouse26.8.35.10. The separately identified installed_application extension exercises the actual packaged Rust HTTP/RowBinary adapter, Control transactions and signed-event journey; historical SQL results are unchanged.",
   "source": {
     "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
     "schema_sha256": "b83807768847a743f0e585831c81cba699e9ba789595d3899e155c062b96469c",
@@ -164,10 +164,10 @@
   ],
   "not_run": [
     "Column-dependent TTL negative",
-    "HTTP/RowBinary selected Rust client and actual adapter",
-    "PostgreSQL physical proofs/publication/lost-COMMIT",
-    "Packaged product and meaningful signed-event Fact mapping",
-    "Unclean restart/power-loss/fsync durability and cancellation",
+    "Index restart/rebinding and uncertain-query/lost-COMMIT resolution",
+    "Nonempty signed-tag installed projection, general family-bound admissibility and direct native Rocks census",
+    "Live truthful role/read readiness and independent dependency outages",
+    "Unclean restart/power-loss/fsync durability and cancellation qualification",
     "Capacity, TLS and remote-host qualification"
   ],
   "lifecycle_followup": {
@@ -183,5 +183,154 @@
     "log": ".research/initial-index-ch-sql-20261026/.research/ch-lab-a/lifecycle-controls/tests.log",
     "log_sha256": "860f84fbe4fbb29d3326f328c50653d59e1505cf1a2fe52e976afd0114f56beb",
     "scope": "Two actual local child lifecycle controls, plus recorded-ID positive and wrong-ID/label/image/mount negative command controls. Docker commands are doubles; no Docker/SQL/engine operation occurred. Earlier SQL outcomes unchanged."
+  },
+  "installed_application": {
+    "status": "PASS_AT_DECLARED_INITIAL_SCOPE",
+    "case": "p01-first-launch-index",
+    "command": "python3 -B tests/acceptance/run.py p01-first-launch-index --candidate-manifest <assembled-candidate>/candidate-manifest.json --source-root <clean-checkout> --evidence <new-protected-directory>",
+    "prerequisites": "docs/development/verification.md#installed-initial-index-publication; exact worker-bound build and declared pinned engine images/inputs",
+    "product_source": {
+      "dirty": false,
+      "manifest_sha256": "57d5c8933be900d6e158184132969d8a5a7f28fec5577d1f5a19cd01f7042293",
+      "revision": "b5333d531655cc6e79039c9fb755ece0643a3978",
+      "state": "builder-supplied",
+      "tree": "45496b115750dc59b51e11f130aa982378520a22"
+    },
+    "assembly_source": {
+      "revision": "2d0bdc81693083819edd9d633195ecd787b7e955",
+      "tree": "900294adea9a24d3bfeae540290384aae83c4cd6"
+    },
+    "artifact_identity": {
+      "candidate_manifest_sha256": "b7d498540ce3a73fe0ebd5f91c12a261451fb47bc1c326efd2b69c8700ff7c22",
+      "candidate_bundle_sha256": "9ff5d05dfa77f105ef095b131a1e44cfe46d027918d545297c8cab0d10cc0ecf",
+      "signed_fixture_sha256": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
+    },
+    "runtime_images": {
+      "base": {
+        "reference": "gcr.io/distroless/cc-debian13@sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6",
+        "id": "sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6"
+      },
+      "postgres": {
+        "reference": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+      },
+      "clickhouse": {
+        "reference": "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+        "id": "sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc"
+      }
+    },
+    "checks": [
+      {
+        "name": "first_launch_prerequisites",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_candidate",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_runtime_image",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_fresh_bootstrap",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_signed_acquisition",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_index_publication",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_ordinary_history_export",
+        "result": "PASS"
+      },
+      {
+        "name": "first_launch_cleanup",
+        "result": "PASS"
+      }
+    ],
+    "index": {
+      "format": "bigbrotr-installed-initial-index/1",
+      "source_cut": 12,
+      "frontier_revision": 4,
+      "admission_batches": 4,
+      "committed_chunks": 40,
+      "family_counts": {
+        "dictionaries": 8,
+        "events": 1,
+        "event_eligibility_facts": 1,
+        "event_receive_facts": 1,
+        "event_id_index": 1,
+        "event_author_index": 1,
+        "event_time_index": 1,
+        "event_tag_index": 0,
+        "provenance_by_event": 1,
+        "provenance_by_relay": 1
+      },
+      "live_observation": true,
+      "independent_source_and_c_api": true,
+      "all_typed_fields_equal": true,
+      "zero_tag_outcome": true,
+      "batch_max_rows": 4,
+      "metadata_rows": 160,
+      "generation_id": "ddb690db8754b580769d7b921d8c92c2",
+      "table_identity_sha256": "7a1350dd562f3c9b7d4b54f13ac7f77c332d8909bf5c561353f3f6b8fe1c922f",
+      "readiness": "NOT_RUN",
+      "restart": "NOT_RUN",
+      "column_ttl_negative": "NOT_RUN"
+    },
+    "export": {
+      "jsonl_bytes": 353,
+      "jsonl_sha256": "71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9",
+      "manifest_sha256": "dafa133dd9c56c1bf6b1f53821900e5c0daa46a07b6b4268e2f2deb0d91514b7",
+      "export_pin_retained": true,
+      "all_fresh_readers_released": true
+    },
+    "independence": "Literal signed input and independent C API scientific census; all81 Control tables in one repeatable-read snapshot; all10 typed CH families,160 columns, source-batch/chunk/plan/engine digests and atomic current-head transaction checked. Root replayed pure assertions on retained captures; no engine restarted for that replay.",
+    "corrections": [
+      "Explicit Compose extends.file preserves relocated recipe/isolation.",
+      "Validated insert_unescaped uses closed qualified table identity; DESCRIBE has exact metadata bound and insert restores accepted row ceiling.",
+      "Whole atomic source batch limit64 is independent of per-target4-row insert ceiling, with source/planner reservations charged. Safe pending-read error category retained."
+    ],
+    "controls": "Exactb5333d53 library/CLI/test builds and strict ClippyPASS;65 library+31binary selected controlsPASS. Maintained case48 base controls and12 affected Index controlsPASS; critical oracle/source reviews retained. Full changed hosted CI remains pending.",
+    "evidence_root": ".research/first-launch-index-r4-20261026",
+    "receipt_sha256": "3d508334e6fb171b8027185f4b6fcbd7ef797221055aed190565efd3995e083b",
+    "files": {
+      "result.json": "cd9e0555aa6670a88ba73c13e66656cd50b19dd05bfd9ad8e43707ae9a492dff",
+      "resources.json": "b2caae83281d74bf9f46bcfadc2005d8638de1254de6c84df031a552aca171c9",
+      "index/verdict.json": "deef60f7cae0c61d00363377818282a4896935c793ec6feec21c008d84bc21fb",
+      "initial/index-live-control.json": "056e60e6109200788e47e9f8748ee3ad7706d6b6f07d08fc3fb40186212a4961",
+      "initial/clickhouse-live.json": "c1bcebaf135deefd84f8ae5bcd836698ce9e7fc69300df736ef39ef99c8323cf",
+      "initial/clickhouse-schema.json": "56d5cd2a7f84c0b9eb528d2ae7feb07f4bbd0751732a2afc3d7a8d92726b1a05",
+      "index/published-science.json": "ed1b0fb5237519f0042708665720e8bd4929bb55ad35c7f6d91163137a6ffcc7",
+      "ordinary/export-verdict.json": "1520d242eb9cd931f4ad4f155466b485c9034d07ecbf7dccbffddb90324125da"
+    },
+    "resources": "All19 owned containers stopped/exit0/PID0/noOOM; session80184 exit0/reaped; borrowed bridge unchanged/empty. Data, signed input, original captures and failures retained. Configured limits are not capacity measurements.",
+    "not_run": [
+      "NOT_RUN: direct RocksDB/native census, Index restart, remote uncertainty resolution, column-TTL negative, Index query/readiness, outage/capacity and complete M1.",
+      "The signed fixture has empty tags: event_tag_index has an explicit zero outcome; nonempty tag projection retains its separate fixture qualification.",
+      "Configured process/disk limits are not empirical capacity qualification; local candidate identity is not release authentication."
+    ],
+    "original_failures": [
+      {
+        "run": ".research/first-launch-index-r1-20261026",
+        "status": "FAIL_FIXTURE",
+        "reason": "Missing explicit Compose extends.file before engine startup; corrected recipe validated without product rebuild."
+      },
+      {
+        "run": ".research/first-launch-index-r2-20261026",
+        "status": "FAIL_PRODUCT_ADAPTER",
+        "reason": "Qualified table escaped as one identifier; actual DESCRIBE UNKNOWN_TABLE. Original100-row policy and data preserved; no timeout changed."
+      },
+      {
+        "run": ".research/first-launch-index-r3-20261026",
+        "status": "FAIL_PRODUCT_SOURCE_LIMIT_COUPLING",
+        "reason": "Generic native-input refusal and owner exit4. Source-derived counterexample: atomic5-fact batch versus incorrectly reused4-row ceiling. Original discriminant unobserved; corrected unchanged4-row installed run nowPASS."
+      }
+    ]
   }
 }

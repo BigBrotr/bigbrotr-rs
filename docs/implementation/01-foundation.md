@@ -499,10 +499,17 @@ and queryable with truthful role readiness, without implicit public publishing.
   `ResourceLimit` refusal one byte beyond, under 64+96 MiB/five-second query
   limits with preserved science and terminal custody. It is not an installed
   job or empirical process-memory result; internal-owner high-water remains open.
-  Indexing remains open;
-  complete adjacent Discovery/Monitor is not a prerequisite for this journey.
-- [ ] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
+  Initial Index publication is now qualified by Step2; live readiness and
+  recovery remain open. Complete adjacent Discovery/Monitor is not a prerequisite.
+- [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
+  The maintained `p01-first-launch-index` passes all eight stages on installed
+  `b5333d53`: signed admission, four whole source batches, ten target families and
+  forty committed outcomes through cut12, then exact history/353-byte export.
+  The accepted per-target limit remains four rows; all typed values, digests and
+  current-head transaction are independently checked. See the
+  [installed extension](evidence/p02-initial-index-clickhouse-sql-20261026.json).
+  Readiness, Index restart/uncertainty and Step5 outages remain open.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,
