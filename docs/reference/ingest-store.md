@@ -180,8 +180,12 @@ resolves and validates all addresses once, pins a numeric local plaintext endpoi
 and opens protected credential files before acquiring Control. TLS endpoints are
 not supported by this initial adapter.
 
-Both actual accepted documents must agree on the selected Index ceilings and
-provenance. The consumer retains complete native batches (at most64 facts/1MiB),
+Both actual accepted documents must enable Indexer and agree on the selected
+Index ceilings and provenance. Startup reserves one complete additional Index
+operation against the actual shared budget before any Index state or DDL, while
+Control and the other startup reservations remain held. An impossible combination
+refuses instead of entering permanent resource wait. The consumer retains
+complete native batches (at most64 facts/1MiB),
 uses one bounded physical executor and persists the complete ten-target plan
 before insertion. PG publication consumes the physical readback proof; source
 acknowledgement and garbage collection remain separate. Control/Ingest renewal

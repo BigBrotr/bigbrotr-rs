@@ -108,6 +108,25 @@ impl Profile {
             0,
         ))
     }
+
+    /// Called once, before accepting this actor's first policy. Preparation and
+    /// metadata are already charged, alongside Control and the other startup
+    /// owners. Prove that one entire operation can coexist with those owners;
+    /// comparing this actor alone with the envelope would miss permanent pressure.
+    fn require_startup_capacity(self, application: &ResourceBudget) -> Result<()> {
+        let needed = self.required_application()?;
+        let request = ResourceRequest::data(
+            needed.data_bytes() - prepare::PREPARATION_BYTES - METADATA_BYTES,
+            needed.items() - prepare::ITEMS - 1,
+            needed.native_bytes(),
+        )
+        .map_err(|_| failed("combined startup reservation invalid"))?;
+        let complete = application
+            .try_acquire(request)
+            .map_err(|_| failed("Index cannot coexist with the retained startup owners"))?;
+        drop(complete);
+        Ok(())
+    }
 }
 
 fn profile(root: &Resolved) -> std::result::Result<Profile, OwnerError> {
@@ -121,6 +140,7 @@ fn profile(root: &Resolved) -> std::result::Result<Profile, OwnerError> {
         _ => return Err(OwnerError::InvalidPolicy),
     };
     if !root.local("index")
+        || !root.flag("indexer.enabled")
         || delay.is_zero()
         || rows == 0
         || bytes <= WIRE_OVERHEAD
@@ -254,17 +274,16 @@ impl Index {
     }
     pub(super) fn accept(&mut self, effective: &Resolved) -> std::result::Result<(), OwnerError> {
         let next = profile(effective)?;
-        let needed = next
-            .required_application()
-            .map_err(|_| OwnerError::InvalidPolicy)?;
-        let available = self.application.snapshot().limits();
         if self.accepted.is_some_and(|old| old != next)
             || next.query_memory > self.prepared.engine().snapshot().limits().data_bytes()
-            || needed.data_bytes() > available.data_bytes()
-            || needed.items() > available.items()
-            || needed.native_bytes() > available.native_bytes()
         {
             return Err(OwnerError::InvalidPolicy);
+        }
+        // Refresh may overlap an actual Index operation. Its existing grants
+        // must not be charged twice; unchanged accepted policy is frozen above.
+        if self.accepted.is_none() {
+            next.require_startup_capacity(&self.application)
+                .map_err(|_| OwnerError::InvalidPolicy)?;
         }
         self.accepted = Some(next);
         Ok(())

@@ -12,6 +12,7 @@ fn root() -> Resolved {
     Resolved {
         keys: vec![],
         values: json!({
+            "indexer.enabled":true,
             "indexer.flush_interval":1_000_000,
             "indexer.batch_max_rows":20_000,
             "indexer.batch_max_bytes":16*1024*1024,
@@ -75,6 +76,12 @@ fn accepted_profile_preserves_provenance_and_both_documents_actual_ceilings() {
         input.values.insert(key.into(), json!(value));
         assert!(profile(&input).is_err(), "{key}");
     }
+    let mut input = root();
+    input.values.insert("indexer.enabled".into(), json!(false));
+    assert!(
+        profile(&input).is_err(),
+        "an explicit role cannot override disabled accepted policy"
+    );
     let mut input = root();
     input.local_roles.clear();
     assert!(profile(&input).is_err());
@@ -293,4 +300,34 @@ fn cancellation_and_expiry_refuse_before_dispatch() {
     assert!(live_window(Instant::now(), &cancel).is_err());
     cancel.store(true, Ordering::Release);
     assert!(live_window(later, &cancel).is_err());
+}
+
+#[test]
+fn startup_capacity_includes_retained_control_inputs_and_index_preparation() {
+    let profile = profile(&root()).unwrap();
+    for (payload, fits) in [(640 * MIB, false), (2 * 1024 * MIB, true)] {
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                payload + 256 * MIB,
+                0,
+                ResourceLimits::new(payload, 16, 256 * MIB, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        // Independently specified retained plaintext Control, startup inputs,
+        // preparation and actor metadata. Their real permits stay live.
+        let control = admitted(&budget, 528 * MIB + MIB / 2 + 8, 0)
+            .unwrap()
+            .unwrap();
+        let inputs = admitted(&budget, 24 * MIB, 0).unwrap().unwrap();
+        let preparation = admitted(&budget, 16 * MIB, 0).unwrap().unwrap();
+        let metadata = admitted(&budget, MIB, 0).unwrap().unwrap();
+        let before = budget.snapshot().used();
+        assert_eq!(profile.require_startup_capacity(&budget).is_ok(), fits);
+        assert_eq!(budget.snapshot().used(), before);
+        assert_eq!(budget.snapshot().active_permits(), 4);
+        drop((control, inputs, preparation, metadata));
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
 }
