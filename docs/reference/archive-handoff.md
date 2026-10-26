@@ -518,6 +518,10 @@ with the stored frontier. It then rechecks the current selection, releases only
 its known-joined pin, rolls back the barrier and joins the catalog driver before
 promoting the observation. A published snapshot may legitimately precede the
 physical head; it is never relabeled as that head.
+The ordinary reader startup check includes SELECT on `archive_attempts`,
+`archive_frontier_batches`, `archive_owner_sessions`, `archive_coordinators`,
+`owner_epochs` and `role_instances`, alongside its existing snapshot/pin grants;
+missing expectation metadata privileges refuse before exposing the listener.
 
 The pin retains its original, suspend-aware lifetime despite Control renewal.
 Unknown child or SQL outcomes retain the obligation and stop the owner. The

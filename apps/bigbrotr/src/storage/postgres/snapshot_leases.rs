@@ -88,7 +88,8 @@ fn number(row: &Row, i: usize) -> Result<u64, Error> {
 
 impl ControlSession {
     /// Selected readers require their observation, retention and invoker-helper
-    /// privileges before exposing the private listener. This acquires no pin.
+    /// privileges before exposing the private listener, including complete-current
+    /// readiness metadata. This acquires no pin.
     pub async fn require_archive_reader(&mut self) -> Result<(), Error> {
         self.begin_operation().map_err(|_| Error::Unavailable)?;
         let tx = application_transaction(&mut self.client, 18)
@@ -98,7 +99,7 @@ impl ControlSession {
             .await
             .map_err(|_| Error::Unavailable)?;
         let valid: bool = tx.query_one(
-            "SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.consumer_frontier_revisions','UPDATE') AND has_function_privilege(CURRENT_USER,'control.lock_archive_pins(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_archive_pin_holder(control.snapshot_leases,boolean)','EXECUTE') FROM (VALUES ('control.archive_frontier_snapshots',ARRAY['SELECT']),('control.consumer_frontier_revisions',ARRAY['SELECT']),('control.consumer_frontiers',ARRAY['SELECT']),('control.archive_persistence',ARRAY['SELECT']),('control.archive_pin_recoveries',ARRAY['SELECT']),('control.topology_generations',ARRAY['SELECT']),('control.consumers',ARRAY['SELECT','UPDATE']),('control.snapshot_leases',ARRAY['SELECT','INSERT','UPDATE']),('control.archive_snapshot_pins',ARRAY['SELECT','INSERT']),('control.retention_claims',ARRAY['SELECT','INSERT','UPDATE']),('control.source_streams',ARRAY['SELECT']),('control.topology_streams',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]
+            "SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) AND has_any_column_privilege(CURRENT_USER,'control.consumer_frontier_revisions','UPDATE') AND has_function_privilege(CURRENT_USER,'control.lock_archive_pins(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_archive_pin_holder(control.snapshot_leases,boolean)','EXECUTE') FROM (VALUES ('control.archive_attempts',ARRAY['SELECT']),('control.archive_frontier_batches',ARRAY['SELECT']),('control.archive_owner_sessions',ARRAY['SELECT']),('control.archive_coordinators',ARRAY['SELECT']),('control.owner_epochs',ARRAY['SELECT']),('control.role_instances',ARRAY['SELECT']),('control.archive_frontier_snapshots',ARRAY['SELECT']),('control.consumer_frontier_revisions',ARRAY['SELECT']),('control.consumer_frontiers',ARRAY['SELECT']),('control.archive_persistence',ARRAY['SELECT']),('control.archive_pin_recoveries',ARRAY['SELECT']),('control.topology_generations',ARRAY['SELECT']),('control.consumers',ARRAY['SELECT','UPDATE']),('control.snapshot_leases',ARRAY['SELECT','INSERT','UPDATE']),('control.archive_snapshot_pins',ARRAY['SELECT','INSERT']),('control.retention_claims',ARRAY['SELECT','INSERT','UPDATE']),('control.source_streams',ARRAY['SELECT']),('control.topology_streams',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]
         ).await.map_err(backend)?.try_get(0).map_err(backend)?;
         if !valid {
             return Err(Error::Prerequisite);

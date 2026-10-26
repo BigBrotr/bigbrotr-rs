@@ -16,6 +16,9 @@ GROUPS = {
     'postgres-route': 'storage::postgres::transport::route_tests::',
     'archive-driver-unpolled': 'storage::archive::lifetime::tests::catalog_transport_retains_custody_even_before_its_future_is_polled',
     'archive-driver-drop': 'storage::archive::lifetime::tests::cancelled_transport_is_destroyed_before_its_custody_descriptor',
+    'archive-inputs': 'storage::archive::inputs::tests::',
+    'archive-input-custody': 'storage::archive::initialization::tests::inputs::',
+    'archive-expectations': 'storage::postgres::control_owner::archive_retained_frontier::',
     'source-head': 'storage::rocks::store::source_head_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
     'role-observation': 'management::roles::tests::',
@@ -36,6 +39,9 @@ REQUIRED_MODULES = (
     'storage::indexer::state::tests::',
     'storage::rocks::store::source_head_tests::',
     'management::roles::tests::',
+    'storage::archive::inputs::tests::',
+    'storage::archive::initialization::tests::inputs::owned_reader::',
+    'storage::postgres::control_owner::archive_retained_frontier::read_expectations::tests::',
 )
 
 # Closed initial service scope, derived from the owning source rather than an
@@ -110,9 +116,13 @@ BINARY_REQUIRED = {
     'ordinary-observations': tuple(BINARY_GROUPS['ordinary-observations'] + name for name in (
         'ordinary_status_does_not_infer_readiness_from_enabled_or_absent_owners',
         'ordinary_last_success_requires_terminal_cleanup_and_never_claims_full_readiness',
-        'ordinary_observation_freshness_uses_thirty_seconds_without_promoting_scope',
+        'ordinary_observation_freshness_uses_oldest_required_evidence_at_thirty_seconds',
         'ordinary_cache_checks_aggregate_before_response_clone_and_retains_its_grant',
         'ordinary_cache_refuses_oversize_foreign_or_malformed_cut_without_erasing_last_success',
+        'ordinary_ready_requires_both_joined_full_proof_and_relevant_completed_operation',
+        'ordinary_full_proof_matches_every_selection_coordinate_not_an_old_pinned_export',
+        'ordinary_changed_current_selection_cannot_revive_an_older_full_proof',
+        'ordinary_invalid_current_metadata_refuses_without_reviving_an_inflight_old_candidate',
     )),
     **{name: (BINARY_GROUPS[name],) for name in BINARY_EXACT},
 }
