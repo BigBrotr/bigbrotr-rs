@@ -73617,7 +73617,18 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026",
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026/.research/ci-reuse-controls/result.json",
       "receipt_sha256": "7586a4a62aa5b3acdbc1683f7f08b90e1b6892cf892a9492055ac5d088525b44",
-      "state": "21 targeted Python controls PASS; critical review pending; native/compiler smoke/full acceptance/Actions NOT_RUN. Full default/debug workspace tests and fresh release build retained, benefits unmeasured."
+      "state": "Critical review complete at trusted run-local scope; undeclared ancestor Cargo configuration finding corrected. Actual merged source2c3e5071:21 CI controls+3 noncompiler builder controls PASS. Native/compiler smoke/full acceptance/Actions for changed helper NOT_RUN. Fresh release and full default/debug workspace scope unchanged; timing benefit unmeasured.",
+      "config_boundary_correction": "778d4e2de65bfd4b739926f58e657edd825ba76d",
+      "integration_commits": [
+        "74337306",
+        "2c3e5071"
+      ],
+      "critical_review": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026/.research/independent-source-review-20261026.json",
+      "critical_review_sha256": "f657813bde52b4c9fa3265ef017727e700b4ab97141a7153b8c26ed524166b39",
+      "merged_control_logs": {
+        ".research/ci-run-local-merged-20261026.log": "cbedd57e3fab241331590f95ccdd98079360a88d601305fa9674430415a98211",
+        ".research/ci-run-local-merged-build-controls-20261026.log": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4"
+      }
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74175,14 +74186,14 @@
         "2f87f0de",
         "d553b239"
       ],
-      "native_verifier_controls": "9 PASS; actual native source execution NOT_RUN; requires31 binary service controls in addition to existing library scope",
+      "native_verifier_controls": "9 Python verifier controls PASS; actual exact4404f94 native execution requires and passes65 library plus31 binary controls",
       "critical_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/receipt.json",
       "critical_review_sha256": "5bd0b093c40934325ee7836f95116fb092250f0f15665618081ce7347e6a0625",
       "metadata_finding": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/metadata-row-limit-finding.json",
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Actual lib/CLI compile PASS; test fixture compilation FAIL preserved/corrected. Full behavioral native controls pending rerun, engine/installed/restart/unknown-query/readiness NOT_RUN. Continued critical source review complete at declared scope.",
+      "state": "Actual lib/CLI build, both test executable builds, strict Clippy and96 selected controls PASS at4404f94. Engine/installed/restart/unknown-query/readiness NOT_RUN. Critical source review complete at declared initial-only scope; original failures preserved.",
       "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
       "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
       "first_actual_run": {
@@ -74192,7 +74203,17 @@
         "result": "FAIL: actual lib/CLI compile PASS91.583s; test executable compile FAIL51.910s E0277 synthetic fixture u16 allocation-domain bytes. Clippy/tests NOT_RUN. Fixed explicit byte conversion for next exact-source run; original failure preserved.",
         "process": "session62389 terminal exit1/reaped; stopped-retained containers, unrelated inventory unchanged",
         "free_bytes_after": 154687848448
-      }
+      },
+      "qualified_components": {
+        "source": "4404f94c5f692c01e340ca8a2cc432d52c485a8a",
+        "tree": "0b0508cae364f2e886c4a84048d36eb7df718d6d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-4404f94",
+        "qualification_sha256": "54d0567ab22829382d6cb24bfc1e5860c6be97bb629fb637ae9fdf5991f9f0ca",
+        "result": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS: actual lib/CLI build91.13434s, lib+binary test compilation69.89331s, strict Clippy9.22972s;65 library+31 binary controls PASS, zero ignored/failed in selected scope. Root checked all22 evidence digests, exact source/lock and all3 executable hashes. No worker-bound installation or real engine claim.",
+        "process": "session5554 terminal exit0/reaped; both owned containers stopped/exit0/PID0/noOOM; unrelated inventory unchanged",
+        "free_bytes_after": 154385682432
+      },
+      "remaining_gates": "Installed signed-source PG/CH publication with accepted100-row batch; column-TTL negative; CH outage with independent Archive; readiness/restart/unknown query. Smaller-envelope concurrent resource pressure P01-T09Step5; general family-bound admissibility P02-T05Step3/T06."
     }
   },
   "implementation_checkpoint_space_20261026": {
