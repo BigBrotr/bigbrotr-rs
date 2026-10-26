@@ -203,24 +203,38 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static"])
-    parser.add_argument("--binary", required=True, type=Path)
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch"])
+    parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--build-result", type=Path)
+    parser.add_argument("--candidate-manifest", type=Path,
+                        help="p01-first-launch: detached candidate manifest beside its bundle")
+    parser.add_argument("--compose-network",
+                        help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
     args = parser.parse_args()
+    if args.case != "p01-first-launch" and args.binary is None:
+        parser.error("--binary is required for offline cases")
+    if args.case != "p01-first-launch" and (args.candidate_manifest or args.compose_network):
+        parser.error("candidate and Compose arguments are only for p01-first-launch")
+    if args.case == "p01-first-launch" and any((args.binary, args.source_manifest, args.build_result)):
+        parser.error("p01-first-launch selects its artifact through --candidate-manifest")
     args.evidence = args.evidence.resolve()
-    args.evidence.mkdir(parents=True, exist_ok=False)
+    args.evidence.mkdir(mode=0o700, parents=True, exist_ok=False)
     checks, inputs = [], {}
     try:
-        foundation(args, checks, inputs)
+        if args.case == "p01-first-launch":
+            from cases.first_launch import first_launch
+            first_launch(args, checks, inputs)
+        else:
+            foundation(args, checks, inputs)
         if args.case == "p01-event-cli" and "binary_sha256" in inputs:
             signed_events(args, checks, inputs)
         if args.case == "p01-config-static" and "binary_sha256" in inputs:
             from config_static import configuration
             configuration(args, checks, inputs, sys.modules[__name__])
-    except (OSError, subprocess.SubprocessError, KeyboardInterrupt, ValueError, KeyError, TypeError, AttributeError) as error:
+    except (OSError, subprocess.SubprocessError, KeyboardInterrupt, ValueError, KeyError, TypeError, AttributeError, AssertionError, RuntimeError) as error:
         checks.append({"name": "execution", "result": "FAIL", "detail": type(error).__name__})
     result = "FAIL" if any(check["result"] == "FAIL" for check in checks) else (
         "NOT_RUN" if not checks or any(check["result"] == "NOT_RUN" for check in checks) else "PASS")
@@ -230,8 +244,8 @@ def main():
               "counts": {"collected": len(checks), "executed": sum(c["result"] in ("PASS", "FAIL") for c in checks),
                          "failed": sum(c["result"] == "FAIL" for c in checks), "skipped": 0,
                          "not_run": sum(c["result"] == "NOT_RUN" for c in checks)},
-              "cleanup": "Owned process groups terminated/joined; only runner-owned temporary directories removed; evidence retained.",
-              "limits": ["No storage, WebSocket/protocol-suite, runtime grant, release bundle or complete product qualification."]}
+              "cleanup": getattr(args, "case_cleanup", "Owned process groups terminated/joined; only runner-owned temporary directories removed; evidence retained."),
+              "limits": getattr(args, "case_limits", ["No storage, WebSocket/protocol-suite, runtime grant, release bundle or complete product qualification."])}
     (args.evidence / "result.json").write_text(json.dumps(report, indent=2) + "\n")
     print(result + ": " + str(args.evidence / "result.json"))
     return {"PASS": 0, "FAIL": 1, "NOT_RUN": 2}[result]

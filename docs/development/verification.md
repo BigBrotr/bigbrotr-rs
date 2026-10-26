@@ -6,7 +6,8 @@ entrypoint. A deliberately provisioned trusted Tux container can execute it
 without hosted runners; see [the runner boundary](../engineering/development-and-delivery.md#trusted-tux-execution-when-hosted-runners-are-unavailable).
 Each new run needs a fresh output directory. The JSON receipt distinguishes
 failed and unexecuted checks, and logs retain the underlying test counts.
-Native practical cases below still require Linux and strace.
+The offline executable cases below require Linux and strace. The first-launch
+case has its separate declared engine prerequisites below.
 
 The GitHub workflow selects the complete native matrix for product, workflow,
 build, fixture, verifier and unknown changes. A narrow allowlist of planning,
@@ -59,7 +60,9 @@ not a skipped passing engine test.
 The shared runner implements P01-T01's executable boundary and the bounded
 `p01-event-cli` signed-event diagnostic slice of P01-T02/T03, plus
 `p01-config-static` for P01-T04's implemented offline configuration commands.
-Additional P01-T08 cases and engine/fixture orchestration are still required.
+The `p01-first-launch` case additionally orchestrates the bounded fresh installed
+signed-event, ordinary history and export journey described below. Additional
+P01-T08 scenarios remain required.
 No planned task ID silently maps to a successful empty scenario.
 
 After an exact-source build, run on Linux as an unprivileged user with `strace`:
@@ -137,6 +140,87 @@ wrong output/manifest and timeout
 must FAIL, and the descendant must no longer be running.
 These controls are separate from the product and never alter the product to make
 an oracle pass. The Rust process tests compare SHA-256 against the actual inputs.
+
+## Fresh installed first-launch case
+
+`p01-first-launch` uses the same runner and result/exit-code contract. It extracts
+the supplied candidate, initializes a new PostgreSQL instance through the actual
+provisioning/migration/activation/enrollment commands, then runs the existing
+independent signed relay and authenticated clients. It checks the initial
+Archive frontier and snapshot, orderly owner shutdown, ordinary Control restart,
+explicit scope authorization, exact signed history and JSONL export. The existing
+export oracle compares the full manifest, file bytes and all 77 Control tables;
+catalog/Archive files must remain unchanged during ordinary read/export, and
+application database backends must be absent after each lifetime.
+
+This base case does **not** run the independent RocksDB census, typed producer
+progress oracle or C API Archive census. These are recorded as NOT_RUN scope
+limits, not implied by its PASS. Ingest successor/resend, Index readiness,
+dependency outages, capacity and complete M1 also remain outside this case.
+The earlier deeper retained result remains evidence for its recorded inputs.
+
+Run on native Linux amd64 with Python 3.11+, a non-root account, local Docker
+daemon access and Compose v2. The candidate executable must run on the host for
+the existing CLI client. Have more than 65 GiB free completion space and keep
+loopback ports 15432, 18081 and 7447 free. The fixed recipe bounds application
+plus native work to 6 GiB and PostgreSQL to 1.5 GiB; these are configured limits,
+not measured capacity. `strace`, a compiler and a native probe are not required
+for this case.
+
+Prepare the pinned PostgreSQL image named by
+[compose.yaml](../../packaging/compose/compose.yaml) and the pinned Distroless
+base in the [Dockerfile](../../packaging/image/Dockerfile) locally first. The
+runner never pulls them. It builds only the small runtime wrapper from the
+verified extracted Dockerfile and existing candidate bytes, with
+`docker build --network=none --pull=false`, a unique owner label/tag and a recorded
+immutable image ID. Compose receives that ID, never an unrelated supplied image.
+No Rust or product build runs during acceptance.
+
+From a clean checkout, an initial candidate can be prepared with the existing
+[build prerequisites](build.md) and maintained commands:
+
+```sh
+python3 tools/build.py --output /absolute/new-build
+python3 packaging/release/assemble.py \
+  --artifacts /absolute/new-build \
+  --source-manifest /absolute/new-build/source-manifest.json \
+  --output /absolute/new-candidate --include-journey
+python3 tests/acceptance/run.py p01-first-launch \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch
+```
+
+The assembler output must be outside its source and artifact inputs. The case
+requires a fresh evidence directory and uses only its own state. The candidate's
+journey files must match the selected acceptance source. Product build provenance
+and current assembly/acceptance sources are recorded separately, so verified
+unchanged binaries can be reused after Python/documentation changes; do not
+rebuild them merely to run this case. The manifest's historical `private` field
+describes that candidate format, not current repository visibility or release
+authentication.
+
+By default the case creates a fresh labeled bridge. If local Docker address pools
+are exhausted, append `--compose-network EXISTING_BRIDGE` to borrow an explicitly
+selected local bridge. Its ID and existing endpoints are recorded; the case
+neither removes that bridge nor stops unrelated containers. Application containers
+use the recipe's host networking; the bridge is for the dedicated database.
+
+Every created container has a retained creation intent and is checked against its
+exact ID, owner/project/service labels and bind mounts before cleanup. Finite
+commands and clients have bounded waits and owned process groups. Timeout,
+interruption, wrong output or uncertain cleanup records FAIL; unavailable required
+inputs/tools record NOT_RUN. Unreached stages remain NOT_RUN. Cleanup stops owned
+containers and joins process groups. It retains stopped containers, image,
+network, data and logs for inspection; it never prunes resources, deletes volumes
+or reuses an earlier instance. Review `resources.json` before any later manual
+retirement.
+
+The evidence root is mode 0700. Its generated secrets, owner-token response,
+session/CSRF files and full SQL captures are protected local material. Client
+credentials stay outside application data mounts. **Never upload the evidence
+directory wholesale**, including from public Actions. `result.json` is the
+bounded summary, with hashes, checks and scope limits; review any selected upload
+separately. Raw command receipts and original failures remain local.
 
 The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
