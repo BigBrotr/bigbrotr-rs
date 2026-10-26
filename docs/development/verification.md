@@ -304,12 +304,18 @@ continues serving authenticated status and the other capabilities remain ready.
 The fault and all original captures are retained. The original signed client
 deadline and subsequent Archive history/export assertions remain unchanged.
 
-These observations qualify only the initial profile and the exercised physical
-fault. The case does not qualify a direct RocksDB/native census, Index restart,
-remote uncertainty resolution, column-TTL refusal, an Index query interface,
-ordinary full Archive readiness, independent service outages, capacity or complete
-M1. Its terminal overall readiness remains explicitly unqualified. The pending
-SQL TTL fixture and earlier failures retain their original outcomes.
+The ordinary Control lifetime also checks complete current Archive readiness:
+both capabilities must become Ready, withholding one exact retained input must
+make them unavailable, and a successful narrow history read cannot revive the
+failed full proof. Exact input restoration permits full-probe recovery. The
+installed r7 run passed this positive/missing/narrow/restored scope with unchanged
+scientific data and export artifacts.
+
+These observations qualify only the exercised initial and ordinary profiles.
+They do not qualify a direct RocksDB/native census, Index restart, remote or pin
+cleanup uncertainty, column-TTL refusal, an Index query interface, independent
+service outages, capacity or complete M1. Terminal overall readiness remains
+explicitly unqualified; earlier failures retain their original outcomes.
 
 ### Ordinary full-probe short-pin expiry
 

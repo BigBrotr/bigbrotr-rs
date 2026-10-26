@@ -60,6 +60,7 @@ def timeline():
 
 
 class ShortPinControls(unittest.TestCase):
+    @unittest.skipUnless(sys.platform == 'linux', 'actual process custody observation requires Linux /proc')
     def test_owned_process_identity_survives_poll_and_disappears_only_after_join(self):
         process=subprocess.Popen([sys.executable,'-c','import time; time.sleep(5)'],
             stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
