@@ -1,0 +1,98 @@
+{
+  "format": "bigbrotr-vendored-source/1",
+  "package": "libduckdb-sys",
+  "version": "1.10505.0",
+  "upstream_url": "https://crates.io/api/v1/crates/libduckdb-sys/1.10505.0/download",
+  "upstream_crate_sha256": "6cb514dab5e271e849235c1cb98bd65a2ae107fbd619a6740219319c54a71d95",
+  "upstream_commit": "88f673c5cdf09e287c010a910db53b97e523a9fa",
+  "license": "MIT",
+  "license_path": "libduckdb-sys/LICENSE",
+  "original_members": {
+    ".cargo_vcs_info.json": {
+      "bytes": 114,
+      "sha256": "c0d76f042797e4d15a869036f8c3e670212173a9fad25d9c2c118277b6225b66"
+    },
+    "Cargo.lock": {
+      "bytes": 36269,
+      "sha256": "1709029e7df27b91e794a776d8b59a391e9cce7ca690a5f1a96fc1cef1f86095"
+    },
+    "Cargo.toml": {
+      "bytes": 2788,
+      "sha256": "1c7eb55c0d443668047c916fd06cc738afff0df19074d0db5df5fe596d0d133f"
+    },
+    "Cargo.toml.orig": {
+      "bytes": 2178,
+      "sha256": "5b67aed9083bcc573b363d5192acc7904843e555561f4e9f4252a87a8fb588ac"
+    },
+    "LICENSE": {
+      "bytes": 1072,
+      "sha256": "e00a318e49c9ff90254194864b2b695efc04c0384a8682c93ef51518e77ff5ea"
+    },
+    "README.md": {
+      "bytes": 18574,
+      "sha256": "e7977a2f7ba5d13dd3f047f37142602ad1120ba822b0893acb9d509029f79000"
+    },
+    "build.rs": {
+      "bytes": 24786,
+      "sha256": "e2261700f60afdfaf7be7dc45121777563c9e2c29378daa09b6cac5f5471c76c"
+    },
+    "build_bundled_cc.rs": {
+      "bytes": 5141,
+      "sha256": "8e72e723f754dd0b06f6cabb0052f9a1ac045edf0e5f2f13a0037e0483ac7fce"
+    },
+    "build_bundled_cmake.rs": {
+      "bytes": 19408,
+      "sha256": "1291d3446f99e7d57af7e83150c26c4f786bd00c3d4d7841584181a74d18d810"
+    },
+    "duckdb.tar.gz": {
+      "bytes": 6117462,
+      "sha256": "e11f1209cdbb2a99b2ea2d348de21bdfb01dc494b55d1271df94b09c52bf229c"
+    },
+    "src/arrow_c_data.rs": {
+      "bytes": 3653,
+      "sha256": "2999895413e7d978d3b264d45ac07532382c6f243fcd57eac9e54b3ce9354d91"
+    },
+    "src/bindgen_bundled_version.rs": {
+      "bytes": 251751,
+      "sha256": "c3f537cd549ad0e58dc13aac22e6c50982c2438f7c5f82b89de1fc0f1ceb5df3"
+    },
+    "src/bindgen_bundled_version_loadable.rs": {
+      "bytes": 597791,
+      "sha256": "c2aeb350c4d639132f5a43abcda9b5d52def724eec044c5f7f12ff014e70d5fb"
+    },
+    "src/error.rs": {
+      "bytes": 2370,
+      "sha256": "3a14a0aa103450068f4b230b0ff7b5c6a5d809335a32ab889c87e5f1aaeedc77"
+    },
+    "src/lib.rs": {
+      "bytes": 15361,
+      "sha256": "8b1100df4888267e9f611ef02e6661c794dad002c34ac6d36cd124e036e1f00e"
+    },
+    "src/string.rs": {
+      "bytes": 3171,
+      "sha256": "dc38e02b8c7bc2c34a384ff944c3e491de486952f5d2e0a224429bb19ba6527d"
+    },
+    "update_sources.py": {
+      "bytes": 6108,
+      "sha256": "17e7873db697d1150ecb985011442dfb522a64fcaf7859669b4308aeaee3ca7d"
+    },
+    "upgrade.sh": {
+      "bytes": 3084,
+      "sha256": "c8b9299165bf133ffa3f182be137731561a88bf9c9316a843ba36a27dfae7acf"
+    },
+    "wrapper.h": {
+      "bytes": 26,
+      "sha256": "c9722869a8a5660ad284e05972b61e94e8e53236c1ce1010f519fcd3cb7abae0"
+    },
+    "wrapper_ext.h": {
+      "bytes": 305,
+      "sha256": "4f3d94aba09168b7e8fe13a1face4e0f28d646792ba601015e0508c0a9f8cb72"
+    }
+  },
+  "patch": {
+    "path": "Cargo.toml",
+    "change": "[build-dependencies.zip] version6 becomes=9.0.5; features/default-features unchanged",
+    "patched_sha256": "c792f23c3b52a2fbf2782161b8b9ea225bcd40299279e1486ed7f51b9a56d955"
+  },
+  "scope": "Complete upstream package retained; root Cargo.lock controls the selected linked build. See README.md for rationale and removal condition."
+}

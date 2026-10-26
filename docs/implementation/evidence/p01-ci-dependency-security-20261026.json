@@ -1,0 +1,193 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P01-T08 / P08-T11 dependency-policy correction",
+  "date": "2026-10-26",
+  "status": "PASS_SCOPED",
+  "scope": "Dependency/source policy, focused source review and bounded component checks only; no full application, real engine or hosted qualification of the updated tuple.",
+  "source": {
+    "base_revision": "b4395590",
+    "cargo_lock_sha256": "d4ac509018d1788d4bde82f3291941f93c8ad3cc09ddbb249d99f3ce0b4a44f4",
+    "native_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "vendored_source_provenance": "vendor/libduckdb-sys.provenance.json"
+  },
+  "original_failure": {
+    "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40332283813",
+    "target": "Linux amd64",
+    "check": "dependency-policy",
+    "status": "FAIL",
+    "advisories": 12,
+    "affected_packages": 7,
+    "additional_warning": "yoke-derive 0.8.3 yanked",
+    "licenses": "PASS",
+    "sources": "PASS",
+    "retained_log": ".research/ci-publication-20261026/run-40332283813-amd64/dependency-policy.log",
+    "local_baseline_reproduction": "Same 12 advisories and yanked warning; cargo-deny 0.20.2 exit 1."
+  },
+  "classification": "Dependencies violated current security policy; not a provider admission error or verifier false positive. Reachability restrictions are documented separately from the required corrections.",
+  "updates": [
+    {
+      "package": "ctutils",
+      "from": "0.4.2",
+      "to": "0.4.4",
+      "advisories": [
+        "RUSTSEC-2026-0385"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0385"
+      ],
+      "reachability_and_limits": "The cursor universal-hash MAC comparison uses ctutils; PostgreSQL and digest paths also depend on it. The affected mask/32-bit operation was not shown exploitable in this task. Fixed upstream implementation selected; functional AEAD vectors are not constant-time proof."
+    },
+    {
+      "package": "rustls",
+      "from": "0.23.45",
+      "to": "0.23.46",
+      "advisories": [
+        "RUSTSEC-2026-0346",
+        "RUSTSEC-2026-0347",
+        "RUSTSEC-2026-0348",
+        "RUSTSEC-2026-0349"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0346",
+        "https://rustsec.org/advisories/RUSTSEC-2026-0347",
+        "https://rustsec.org/advisories/RUSTSEC-2026-0348",
+        "https://rustsec.org/advisories/RUSTSEC-2026-0349"
+      ],
+      "reachability_and_limits": "Inspected application TLS uses the ring provider, no ECH or custom session store, and acquisition resumption is disabled. Selected feature graph has no Brotli or post-quantum provider. These limits reduce reachability of the reported cases but do not waive policy."
+    },
+    {
+      "package": "rustls-webpki",
+      "from": "0.103.15",
+      "to": "0.103.16",
+      "advisories": [
+        "RUSTSEC-2026-0382"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0382"
+      ],
+      "reachability_and_limits": "Actual acquisition and configured PostgreSQL certificate validation uses this verifier. Updated chain validation rejects the distrusted intermediate public keys, including paths allowed by configured roots."
+    },
+    {
+      "package": "tokio",
+      "from": "1.53.1",
+      "to": "1.53.3",
+      "advisories": [
+        "RUSTSEC-2026-0386"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0386"
+      ],
+      "reachability_and_limits": "Product source has no direct AsyncFd constructor usage. The patched release introduces unsafe registration and deprecates the unsound safe constructors; this task adds no unsafe application code. The cancellation component was exercised on the new runtime."
+    },
+    {
+      "package": "webpki-roots",
+      "from": "1.0.9",
+      "to": "1.0.10",
+      "advisories": [
+        "RUSTSEC-2026-0381"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0381"
+      ],
+      "reachability_and_limits": "The product acquisition TLS policy uses this public root store. Removal of the affected emSign root changes real trust acceptance; PostgreSQL continues to use separately configured roots."
+    },
+    {
+      "package": "zip",
+      "from": "6.0.0",
+      "to": "9.0.5",
+      "advisories": [
+        "RUSTSEC-2026-0367",
+        "RUSTSEC-2026-0368",
+        "RUSTSEC-2026-0369"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0367",
+        "https://rustsec.org/advisories/RUSTSEC-2026-0368",
+        "https://rustsec.org/advisories/RUSTSEC-2026-0369"
+      ],
+      "reachability_and_limits": "Unconditional libduckdb-sys build dependency. Maintained builds set explicit verified DUCKDB_LIB_DIR and bypass the upstream downloader/extractor. The dependency remains fixed in the audited graph. ZIP 9.0.5 preserves the used new/extract API and includes post-9.0.0 symlink corrections; its extractor does not claim protection against concurrent destination mutation."
+    },
+    {
+      "package": "zstd-sys",
+      "from": "2.1.0+zstd.1.5.7",
+      "to": "2.1.2+zstd.1.5.7",
+      "advisories": [
+        "RUSTSEC-2026-0410"
+      ],
+      "primary_sources": [
+        "https://rustsec.org/advisories/RUSTSEC-2026-0410"
+      ],
+      "reachability_and_limits": "Reported allocator failure is confined to wasm32, not the selected native targets. Source comparison confirms all 104 bundled Zstandard files unchanged. Patched wrapper retains Zstandard 1.5.7; no new engine qualification is inferred."
+    }
+  ],
+  "yanked_update": {
+    "package": "yoke-derive",
+    "from": "0.8.3",
+    "to": "0.8.4",
+    "source_change": "The derive lifetime-name construction uses string repeat instead of a byte-vector UTF-8 conversion; rust-version metadata is explicit 1.82. No yoke/ICU family update."
+  },
+  "native_tuple": {
+    "duckdb": "1.5.5",
+    "duckdb_rust_binding": "1.10505.0",
+    "arrow": "58.4.0",
+    "rocksdb": "11.8.1",
+    "zstandard": "1.5.7",
+    "assets": "Existing native registry is byte-identical to baseline.",
+    "patch": "Complete verified MIT package retained; only normalized ZIP version requirement changes. No same-engine upstream patch was published. Removal condition is recorded in vendor/README.md."
+  },
+  "lock_review": {
+    "scope": "Eight selected package versions change. ZIP adds typed-path 0.12.4 and an edge to existing nix; arbitrary/derive_arbitrary are removed. The only changed entry retaining its version is libduckdb-sys, whose source changes from registry to the verified path patch.",
+    "unchanged_edges": "Original package entries are preserved for all unchanged packages. Incidental Cargo reselection of tempfile getrandom/Windows edges and errno/rustix/winapi-util Windows edges was restored before final locked metadata/policy; both passed without changing Cargo.lock.",
+    "workspace_members": "Only the original four product packages; vendored package excluded."
+  },
+  "source_review": {
+    "inspected": [
+      "Complete deny.toml and workspace/package manifests; complete lock parsed and entry differences reviewed",
+      "Complete libduckdb-sys manifests/build.rs and package member hashes",
+      "Locked ZIP 9.0.5 extraction API/default containment and no-follow permissions paths",
+      "Patched ctutils mask construction, WebPKI distrust path, Tokio AsyncFd API and zstd wasm shim",
+      "Actual acquisition TLS policy, PostgreSQL TLS construction and cursor universal-hash verification",
+      "Current dependency/release declarations, notice bytes and candidate assembly notice consumers"
+    ],
+    "limits": "Not a full dependency code audit, timing/exploitation test, or proof of native behavior on every target."
+  },
+  "checks": {
+    "initial_candidate_policy": "PASS exact pre-reorder hosted command; no suppressions",
+    "cancellation": "PASS 2/2 exact extracted owner helper/tests on Tokio 1.53.3; original 100 ms test unchanged",
+    "cursor_aead": "PASS unchanged maintained probe: 11 frozen vectors, 4915 tamper refusals with unchanged buffers on ctutils 0.4.4",
+    "diagnostic_dependencies": "All component crate dependency versions/checksums match the candidate root lock",
+    "binding_api": "PASS scoped cargo check of actual patched libduckdb-sys with ZIP 9.0.5 and verified retained DuckDB 1.5.5 header/library. No engine build/run or executable link.",
+    "binding_check_setup": "Host lacks llvm-config, so full native preflight is unavailable. Scoped check records GCC 14.2/ar for ring build dependency and needs no bundled engine or bindgen.",
+    "final_dependency_policy": {
+      "status": "PASS",
+      "command": "cargo deny --locked check licenses sources advisories",
+      "tool": "cargo-deny 0.20.2",
+      "advisory_database_revision": "a78282a1414d6c28cc228c4eae3570451affb0dc",
+      "result": "advisories ok, licenses ok, sources ok; no warnings or suppressions"
+    },
+    "final_locked_metadata": "PASS; only the four existing product workspace members; Cargo.lock unchanged by final checks",
+    "packaging_controls": "PASS: test_assemble.py 11 tests and test_candidate.py 11 tests, including current PUBLIC_FILES inputs",
+    "planning_artifacts": "PASS: 195 Markdown files, 426 JSON files and 5 JSON examples; structure/syntax/selected evidence hashes only",
+    "documentation_links": "PASS: 195 Markdown files and 535 local fragments; existing three task cycle candidates reported, no errors",
+    "format_and_diff": "PASS: cargo fmt --all --check and authored-file staged diff check. Whole staged diff reports one inherited upstream blank line at EOF in vendor/libduckdb-sys/src/bindgen_bundled_version_loadable.rs:14121; exact upstream bytes retained."
+  },
+  "retained": {
+    "worktree": ".research/ci-dependency-security-20261026",
+    "directory": ".research/ci-dependency-security-20261026/.research/security",
+    "compiler_cache": ".research/ci-dependency-security-20261026/.research/targets/product",
+    "contents": [
+      "Original lock, baseline/candidate policy output, update commands and final metadata/features",
+      "Verified upstream crate and per-file provenance, native source comparison",
+      "Exact cancellation source/test extraction and unchanged AEAD probe/vectors with their checked locks",
+      "Scoped binding compilation receipt and explicit verified native inputs",
+      "Final packaging/document/format checks"
+    ],
+    "processes": "All bounded checks completed. No engine or container started; no task-owned build/test process remains active."
+  },
+  "not_run": [
+    "Full updated workspace build/Clippy/Rust tests",
+    "Real TLS/SQL/native-worker integration and restart/recovery on updated dependencies",
+    "Updated Linux/macOS hosted CI and release qualification",
+    "Constant-time machine-code or exploit validation"
+  ]
+}

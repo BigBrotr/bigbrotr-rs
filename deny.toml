@@ -18,7 +18,7 @@ allow = ["Zlib"]
 
 [[licenses.exceptions]]
 name = "webpki-roots"
-version = "=1.0.9"
+version = "=1.0.10"
 allow = ["CDLA-Permissive-2.0"]
 
 [sources]

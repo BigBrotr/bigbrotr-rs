@@ -228,7 +228,7 @@ applies separately from project MIT code; the complete release must retain
 dependency notices. This is not yet a complete persistent CBOR reader/writer.
 
 The initial PostgreSQL consumer uses tokio-postgres 0.7.18,
-tokio-postgres-rustls 0.14.0 and rustls 0.23.45 with the explicit ring provider,
+tokio-postgres-rustls 0.14.0 and rustls 0.23.46 with the explicit ring provider,
 configured CA roots and expected server identity. No implicit system/web CA store
 or connection pool is enabled. The selected RocksDB adapter uses `rocksdb` 0.25.0
 with default features disabled and only `zstd`/`bindgen-runtime`, backed by

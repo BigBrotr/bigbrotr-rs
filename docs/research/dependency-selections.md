@@ -12,6 +12,44 @@ This replaces the unnamed SQL/HTTP/RocksDB/ClickHouse adapter choices in the
 Record/storage semantics remain owned by the component, identity, operations and
 storage contracts; library defaults cannot override them.
 
+## 2026-10-26 security update
+
+The current lock supersedes the earlier dependency versions in the dated source
+inspection and execution records below. Hosted CI found twelve RustSec advisories
+and a yanked derive package; the original failed run remains recorded in
+[the security evidence](../implementation/evidence/p01-ci-dependency-security-20261026.json).
+The update selects `ctutils` 0.4.4, rustls 0.23.46, `rustls-webpki` 0.103.16,
+Tokio 1.53.3, `webpki-roots` 1.0.10, ZIP 9.0.5, `zstd-sys` 2.1.2+zstd.1.5.7 and
+the non-yanked `yoke-derive` 0.8.4. Direct feature selections remain unchanged.
+
+The certificate changes matter to the actual acquisition public-root verifier:
+[the root update](https://rustsec.org/advisories/RUSTSEC-2026-0381) removes the
+affected emSign root, and [WebPKI](https://rustsec.org/advisories/RUSTSEC-2026-0382)
+rejects the distrusted intermediate keys, including under configured trust roots.
+The existing cursor MAC verifier uses `ctutils`; its mask-generation correction
+is selected without claiming that a timing exploit was demonstrated here.
+The other rustls advisories concern custom session Debug output, enabled ECH,
+Brotli certificate decompression and hybrid key-share prediction. The inspected
+product paths use ring, no ECH or Brotli, no custom session store, and disable
+acquisition resumption; those boundaries do not waive dependency policy.
+Tokio's AsyncFd API correction and Zstandard's wasm32 allocator correction are
+included without introducing new unsafe application code or a WebAssembly target.
+
+No same-engine binding patch was published for `libduckdb-sys` 1.10505.0.
+The [temporary vendored manifest patch](../../vendor/README.md) selects fixed ZIP
+9.0.5 while preserving every original upstream source file and feature. It avoids
+changing the DuckDB 1.5.5/Arrow 58 tuple for a build dependency. Its selected
+linked-library build bypasses upstream downloading, but still compiles those
+dependencies. ZIP 9.0.5 also contains the extraction corrections after 9.0.0;
+the original requirement `6` cannot select any RustSec-fixed release.
+RocksDB 11.8.1, Zstandard 1.5.7 and the exact DuckDB extension assets stay fixed.
+
+The release inventory, version-scoped root-store license exception and packaged
+notices follow the new lock. Advisory and source policy remain enforced without
+suppression. Focused diagnostics and policy checks in the evidence establish only
+their executed scope; earlier native/installed qualifications do not automatically
+qualify this updated tuple.
+
 ## Selected set and alternatives
 
 | Responsibility | Selected candidate | Reason and alternative disposition |
