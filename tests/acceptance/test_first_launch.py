@@ -148,7 +148,7 @@ class FirstLaunchControls(unittest.TestCase):
 
     def test_current_table_inventory_is_derived_from_migrations(self):
         expected = case.expected_tables(ROOT)
-        self.assertEqual(len(expected), 77)
+        self.assertEqual(len(expected), 81)
         self.assertIn('producer_requests', expected)
         self.assertIn('schema_versions', expected)
 

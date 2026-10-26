@@ -231,3 +231,30 @@ backend incarnations, barriers, refusals and cleanup in an exclusive receipt.
 An engine/connection failure is not an absence result. Until these real PG cases
 and the actual CH/custody adapter checks execute, source/format checks alone do
 not qualify Index publication, restart or readiness.
+
+`index_publication_runtime.py` extends this same finite fixture with the current
+`packaging/compose/provision.sql` grants. It requires a fresh owned lab containing
+no application databases, creates four isolated databases, and stops the lab's
+owned containers when finished. The application login executes the fixture with
+no database TEMP or schema CREATE permission. Only the fixture owner creates a
+separate namespace containing the eight unchanged invoker helper bodies and two
+fixture result tables; their explicit helper/result grants are recorded separately
+from product privileges. Six prohibited metadata mutations must fail with
+SQLSTATE `42501` before their row guards. The run also checks both observed
+prepare/source-close lock orders and both post-wait owner expiries under the
+application login, using the existing exact-backend cleanup owner.
+
+```sh
+python3 -B experiments/control-migrations/index_publication_runtime.py \
+  --root /owned/fresh/lab/runtime --name index41
+```
+
+This uses the actual artifact's migration CLI with target41. When no integrated
+schema41 artifact exists, `--sql-only-diagnostic` applies the exact ordered SQL
+sources and checksum ledger in a transaction instead. That deliberately narrower
+mode records migration-CLI qualification as `NOT_RUN`; it is useful for finding
+SQL/privilege/race defects but cannot replace actual CLI or Rust Index API checks.
+It preserves exact command inputs, output, failed results and cleanup in the
+protected lab. Physical CH proof, lost-COMMIT and resource-capacity qualification
+remain separate. `index_publication_races.py --role bigbrotr_control` can also run
+its two deadline cases on the unconsumed application fixture.

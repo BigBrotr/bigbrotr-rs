@@ -189,9 +189,9 @@ dc up -d --wait database
 dc exec -T --user 0 database psql -X -U postgres -d postgres \
   -v ON_ERROR_STOP=1 -v stage=bootstrap -f /opt/bigbrotr/provision.sql
 dc run --rm --no-deps initialize migrate plan --file /etc/bigbrotr/instance.toml \
-  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 40
+  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 41
 dc run --rm --no-deps initialize migrate apply --file /etc/bigbrotr/instance.toml \
-  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 40
+  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 41
 dc exec -T --user 0 database psql -X -U postgres -d postgres \
   -v ON_ERROR_STOP=1 -v stage=control -f /opt/bigbrotr/provision.sql
 dc run --rm --no-deps app config initialize --file /etc/bigbrotr/instance.toml

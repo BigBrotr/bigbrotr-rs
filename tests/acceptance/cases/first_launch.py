@@ -117,12 +117,12 @@ def local_docker_endpoint(environment, context):
 
 def expected_tables(source, inputs=None):
     manifest = load(source / 'migrations/manifest.json')
-    require(manifest['application_order'][-1]['version'] == 40, 'first-launch schema profile changed')
+    require(manifest['application_order'][-1]['version'] == 41, 'first-launch schema profile changed')
     tables = {'schema_versions'}
     for entry in manifest['application_order']:
         tables.update(re.findall(r'CREATE TABLE control\.(\w+)',
                                  (source / 'migrations/postgres' / entry['name']).read_text()))
-    require(len(tables) == 77, 'first-launch Control table profile changed')
+    require(len(tables) == 81, 'first-launch Control table profile changed')
     if inputs is not None:
         names = ['migrations/manifest.json'] + ['migrations/postgres/' + entry['name']
                                                 for entry in manifest['application_order']]
@@ -516,7 +516,7 @@ class Runtime:
         provision('bootstrap')
         for action in ('plan', 'apply'):
             self.finite('migration-' + action, 'migrate', action, *config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/operator/migrator', '--target', '40', service='initialize')
+                        '--password-ref', 'file:/run/operator/migrator', '--target', '41', service='initialize')
         provision('control')
         self.finite('config-initialize', 'config', 'initialize', *config)
         self.finite('config-activate', 'config', 'activate-initial', *config,
@@ -659,7 +659,7 @@ class Runtime:
         save(output / 'after-archive-files.json', files_after)
         require(catalog_after == catalog_before and files_after == files_before, 'ordinary read/export mutated Archive')
         self.export_result = self.export_validate(before, after, self.home, self.initialized, self.ids['catalog'],
-            expected_principal=self.enrolled['principal_id'], expected_table_count=77, expected_tables=self.tables,
+            expected_principal=self.enrolled['principal_id'], expected_table_count=81, expected_tables=self.tables,
             destination_root=self.state / 'data/export', initial_cut=self.initial_cut)
         save(output / 'export-verdict.json', self.export_result)
         self.backend_absence(output)

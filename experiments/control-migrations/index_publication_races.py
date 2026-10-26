@@ -64,7 +64,7 @@ def retained(state, database):
         f"FROM(SELECT to_jsonb(t) v FROM control.{name} t)s;")) for name in names}
 
 
-def run(root, database, name):
+def run(root, database, name, role="bigbrotr_migrator"):
     state = lab.load(root)
     output = root / (name + "-index-races.json")
     with output.open("x", encoding="utf-8"):
@@ -74,7 +74,7 @@ def run(root, database, name):
     sessions = []
     container_id = json.loads(lab.docker("inspect", state["postgres"]).stdout)[0]["Id"]
     report = {"format": "bigbrotr-index-publication-races/1", "status": "RUNNING",
-              "database": database, "source_sha256": sha(Path(__file__)), "cases": [],
+              "database": database, "role": role, "source_sha256": sha(Path(__file__)), "cases": [],
               "not_run": ["physical CH verification", "native custody", "lost PG COMMIT"]}
 
     def owned():
@@ -97,8 +97,8 @@ def run(root, database, name):
                     f"AND (SELECT current_revision FROM control.consumers WHERE consumer_id={identity(50)})=1;") == "t",
                 "exact-unconsumed-synthetic-fixture-required")
         before = retained(state, database)
-        owner = Session(state, database, name + "_owner", sessions)
-        blocker = Session(state, database, name + "_blocker", sessions)
+        owner = Session(state, database, name + "_owner", sessions, role=role)
+        blocker = Session(state, database, name + "_blocker", sessions, role=role)
         report["backends"] = [owner.backend, blocker.backend]
         claim_control(owner)
         for target, epoch in (("index", 3), ("control", 4)):
@@ -152,7 +152,8 @@ if __name__ == "__main__":
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--database", required=True)
     parser.add_argument("--name", required=True)
+    parser.add_argument("--role", choices=("bigbrotr_migrator", "bigbrotr_control"), default="bigbrotr_migrator")
     args = parser.parse_args()
     if not re.fullmatch(r"bb_[a-z0-9_]{1,40}", args.database) or not re.fullmatch(r"[a-z][a-z0-9_]{0,23}", args.name):
         parser.error("bounded owned database/case identifiers required")
-    run(args.root.resolve(), args.database, args.name)
+    run(args.root.resolve(), args.database, args.name, args.role)

@@ -36,20 +36,20 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 \if :control
 \connect bigbrotr_control
--- Static proposal for fresh PostgreSQL Control target40, applied by the
+-- Static proposal for fresh PostgreSQL Control target41, applied by the
 -- trusted provisioning owner after real migrate apply. Not engine-qualified.
 -- The application role must already be LOGIN NOSUPERUSER NOCREATEDB
 -- NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS, with no memberships,
 -- schema/table/function ownership, schema CREATE, or database CREATE/TEMP.
 -- This file grants no schema_versions write, DELETE beyond session/proof cleanup,
 -- TRUNCATE, REFERENCES, TRIGGER, DDL, parameter SET, or grant option.
--- Initial Control/Ingest/Sync/Archive + ordinary read/export + ingest recovery
+-- Initial Control/Ingest/Sync/Archive/Index + ordinary read/export + ingest recovery
 -- and successor flows. Cursor initialization is included; optional key lifecycle,
 -- job-page cursor retention, export resume, pin recovery and import writes are not.
 
 GRANT CONNECT ON DATABASE bigbrotr_control TO bigbrotr_control;
 GRANT USAGE ON SCHEMA control TO bigbrotr_control;
--- Current target40 catalog only; no ALTER DEFAULT PRIVILEGES.
+-- Current target41 catalog only; no ALTER DEFAULT PRIVILEGES.
 GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control;
 
 GRANT INSERT ON
@@ -100,6 +100,13 @@ GRANT INSERT ON
     control.consumers,
     control.consumer_frontier_revisions,
     control.consumer_frontiers,
+    control.projection_generations,
+    control.projection_chunks,
+    control.projection_chunk_bounds,
+    control.index_owner_sessions,
+    control.projection_plans,
+    control.projection_plan_chunks,
+    control.index_frontier_plans,
     control.archive_frontier_snapshots,
     control.archive_frontier_batches,
     control.snapshot_leases,
@@ -157,6 +164,9 @@ GRANT UPDATE(producer_slot_id) ON control.producer_slots TO bigbrotr_control;
 GRANT UPDATE(proof_id) ON control.reauthentication_proofs TO bigbrotr_control;
 GRANT UPDATE(principal_id) ON control.principal_grants TO bigbrotr_control;
 GRANT UPDATE(artifact_id) ON control.artifacts TO bigbrotr_control;
+GRANT UPDATE(sealed) ON control.projection_plans TO bigbrotr_control;
+GRANT UPDATE(state,committed_at_us,engine_receipt_digest)
+    ON control.projection_chunks TO bigbrotr_control;
 GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs
     TO bigbrotr_control;
 
@@ -200,9 +210,12 @@ GRANT EXECUTE ON FUNCTION
     control.require_archive_pin_holder(control.snapshot_leases,boolean),
     control.require_archive_pin_recovery(control.snapshot_leases),
     control.require_control_owner(bytea,bytea,numeric,bytea),
+    control.require_current_index_owner(bytea),
+    control.require_complete_index_plan(bytea,bytea),
     control.require_empty_ingest_claims(bytea,numeric),
     control.require_empty_initial_retirement(bytea,bytea),
     control.require_export_execution_authority(bytea),
+    control.require_index_owner(bytea,bytea,numeric,bytea),
     control.require_ingest_admission(bytea,numeric,bytea,bytea,bytea,numeric,bytea),
     control.require_ingest_lineage_workflows(bytea,numeric,numeric),
     control.require_ingest_retirement_transition(bytea,numeric,bytea,bigint),

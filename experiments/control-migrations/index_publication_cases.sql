@@ -1,5 +1,7 @@
 -- Independent synthetic SQL invariant cases, in a fresh owned PG16.15 database
--- migrated through0041 by the actual CLI. No physical CH proof is claimed here.
+-- with exact schema0041. Acceptance requires the actual migration CLI; the
+-- explicitly labelled direct-SQL diagnostic cannot qualify that CLI boundary.
+-- No physical CH proof is claimed here.
 -- Run as the migration/fixture owner, never against application state. This
 -- script uses no disabled trigger, session_replication_role, DDL bypass or fake
 -- Rust proof constructor. Keep stdout/stderr and original failed transactions.

@@ -176,7 +176,7 @@ def wait_blocked(state, database, waiter, holder):
             'waiter',a.pid,'backend_start',a.backend_start::text,'state',a.state,
             'wait_type',a.wait_event_type,'wait_event',a.wait_event,
             'blockers',pg_blocking_pids(a.pid),
-            'holder_start',(SELECT backend_start::text FROM pg_stat_activity WHERE pid={holder.backend['pid']} AND datname='{database}' AND usename='{ROLE}' AND application_name='{holder.name}'),
+            'holder_start',(SELECT backend_start::text FROM pg_stat_activity WHERE pid={holder.backend['pid']} AND datname='{database}' AND usename='{holder.role}' AND application_name='{holder.name}'),
             'waiting_locks',(SELECT coalesce(json_agg(json_build_object('type',locktype,'mode',mode,'transaction',transactionid::text,'relation',relation::regclass::text)),'[]') FROM pg_locks WHERE pid=a.pid AND NOT granted))
             FROM pg_stat_activity a WHERE a.pid={waiter.backend['pid']};"""))
         if observation and observation["wait_type"] == "Lock" and holder.backend["pid"] in observation["blockers"] and observation["waiting_locks"]:
