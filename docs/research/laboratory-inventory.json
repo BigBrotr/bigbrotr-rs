@@ -74392,7 +74392,7 @@
       }
     },
     "live_readiness": {
-      "state": "native-qualified-installed-r5-fixture-failed-correction-ready",
+      "state": "PASS_INITIAL_INSTALLED_READINESS_AND_PHYSICAL_INVALIDATION; ordinary readiness/recovery/outage remain open",
       "branch": "work/live-readiness",
       "observed_revision": "1d263af616a996c29843ddad9a113c761bd8be98",
       "worktrees": [
@@ -74488,7 +74488,10 @@
         "integrated_commit": "1ae90220",
         "root_review": ".research/live-readiness-20261026/negative-acceptance-root-review.json",
         "root_review_sha256": "52383712cb538455ac4edf2996c2260565aecd1e4d4c7998bbb08f50a5a7d851",
-        "controls": "14 targeted controls PASS after exact uncertainty-reason correction; corrected retained r5 capture replay PASS; fresh complete case pending"
+        "controls": "14 targeted controls and retained capture replay PASS; all8 real installed stages now PASS",
+        "result": "PASS installed r6; original r5 FAIL preserved",
+        "reason_review": ".research/live-role-status-20261026/.research/role-status-controls/r5-negative-source-review.json",
+        "reason_review_sha256": "31977feeaaafb5b042b85d8ffcb58c9802fdaf69cd25dd9cdc12073469ebc81b"
       },
       "installed_executions": [
         {
@@ -74508,6 +74511,17 @@
             "final publication oracle",
             "ordinary history/export"
           ]
+        },
+        {
+          "root": ".research/first-launch-index-r6-20261026",
+          "product": "a295da606aa95093530532d8e576bae1c01992b9",
+          "assembly": "55df797ac75d8873f5bad369302babfa29cf4c2e",
+          "acceptance": "eff2faafd7ce716aa1678cfb62ebe40a1888cf64",
+          "result": "PASS_ALL_EIGHT_STAGES",
+          "result_sha256": "f48962939e1ba0e846cdd5e9a7767ad65fdb11b0a91985dbeae63910b4928bdc",
+          "root_verification_sha256": "b4ef732ad8c94d56acee8ca2b476bd1758ce4ad8d839b3667c715e45713f9b79",
+          "process": "session74584 exit0/reaped; all19 owned containers stopped/exit0/PID0/noOOM; borrowed bridge unchanged and empty",
+          "scope": "Positive authenticated initial role/source/cut observations; exact physical conflict produces unavailable/remote_outcome_unknown while Control remains available; original signed publication, private history and exact export pass; session idle unchanged"
         }
       ],
       "source_audit": {
@@ -74515,7 +74529,8 @@
         "receipt": ".research/ci-publication-20261026/source-55df797a-exposure/receipt.json",
         "sha256": "7500152a8e49741cbee6d83c7caa4ba60b02691f9fba498b4134b22f9b8f9765",
         "result": "99 objects;14 occurrences/7 known fingerprints, all matched lines unchanged from audited007; no new confirmed exposure. Later delta pending."
-      }
+      },
+      "next": "P01-T09 Step1/6 ordinary complete-current-selection readiness using bounded sealed frontier/input expectations and existing native verifier; keep source Unknown without Ingest. Index restart/uncertainty and Step5 independent outages/pending/capacity remain assigned."
     }
   },
   "implementation_checkpoint_space_20261026": {

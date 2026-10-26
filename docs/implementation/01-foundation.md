@@ -499,7 +499,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   `ResourceLimit` refusal one byte beyond, under 64+96 MiB/five-second query
   limits with preserved science and terminal custody. It is not an installed
   job or empirical process-memory result; internal-owner high-water remains open.
-  Initial Index publication is now qualified by Step2; live readiness and
+  Initial Index publication is qualified by Step2. Installed product `a295da60`
+  with acceptance `eff2faaf` also qualifies authenticated initial role/source/cut
+  observations and an independent physical-conflict negative: Index becomes
+  unavailable with retained remote query uncertainty while Control and Archive
+  history/export remain usable. The existing Index report owns that evidence.
+  Ordinary complete-current-selection readiness, clean-install negatives and
   recovery remain open. Complete adjacent Discovery/Monitor is not a prerequisite.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.

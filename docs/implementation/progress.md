@@ -6,11 +6,12 @@ Official releases, packages and production remain unauthorized.
 
 ## Current capability and revision
 
-Canonical checkout: `work/live-readiness`; source/acceptance candidate through
-`1ae90220`. This checkpoint commit records native qualification, terminal hosted
-results, bounded cache retirement and the acceptance instructions. `main`/`origin/main` remain at qualified
-`00714653` in `.research/assembly-fixture-canonical-20261026`. The new readiness
-increment is committed locally but has not been merged or pushed.
+Canonical checkout: `work/live-readiness`; qualified product `a295da60`, assembly
+`55df797a`, acceptance `eff2faaf`. This checkpoint records the completed initial
+readiness increment and its remaining gates. The complete reviewed increment is
+ready for fast-forward integration into `main` and one coherent push; verify the
+actual local/remote refs on resumption rather than infer their state from this text.
+No unrelated or unintegrated source changes are pending in this checkout.
 
 **P01-T09 Step2 is qualified at its initial scope.** Installed product `b5333d53`,
 assembly/acceptance `2d0bdc81`, passes all eight maintained
@@ -41,20 +42,24 @@ join. Ordinary exact-ID read/export successes remain conservative observations;
 they never certify complete current Archive readiness. Nested report timestamps
 match authenticated PG time; freshness uses suspend-aware elapsed time.
 
-The maintained installed case now includes positive role observations and one
-independent conflicting event row. It must detect Index unavailability while
-Control and the original Archive journey remain usable. Acceptance source
-`1ae90220` integrates author `04ce548c`; 14 targeted oracle/refusal controls and
-critical review PASS. Installed r5 confirms positive readiness and detects the independently added
-conflicting row with Index unavailable while Control/other capabilities stay ready.
-Its original result is FAIL: the fixture expected `dependency_unavailable`, but
-the second row rejects before cursor EOF, correctly retaining remote query
-uncertainty. The corrected oracle requires exactly `remote_outcome_unknown` and
-rejects a falsely known outcome. Fourteen controls and replay on retained captures
-PASS; final publication/history/export were NOT_RUN in r5 and need a fresh case.
-31 client controls, TypeScript and contract drift also pass at the recorded source.
-Protected source reviews are linked from the inventory; both implementation and
-negative-acceptance delegates have finished, with their changes integrated.
+**The installed readiness extension now passes all eight stages.** Product
+`a295da60`, assembly `55df797a`, acceptance `eff2faaf` demonstrate authenticated
+positive source/cut/capability observations, then independently introduce one
+conflicting event row. Index becomes unavailable with correctly retained remote
+query uncertainty; Control and other capabilities remain ready, publication and
+session idle fields stay unchanged, and the original Archive history/exact signed
+export journey still passes. Protected captures: `.research/first-launch-index-r6-20261026`.
+Root replayed the complete typed/source oracle and both status oracles, checked
+34 acceptance inputs/migrations/artifacts, and verified all19 terminal containers.
+
+Original r5 remains FAIL: its oracle incorrectly required a known dependency
+failure after the extra row rejects before cursor EOF. Critical source review
+confirmed that local join cannot imply remote query cessation. The corrected
+oracle requires exactly `remote_outcome_unknown`; no product, science, time limit
+or uncertainty guarantee was changed. Its14 targeted controls and retained r5
+capture replay PASS, followed by the complete real r6. Native122 and31 client
+controls/TypeScript/contract drift remain valid. All delegates' changes are
+integrated; detailed reviews and original failures are inventory-linked.
 
 Original native failures remain intact: oversized completion enum (Clippy), wrong
 Rust module prefixes in the verifier, and dictionary fixture reservations below
@@ -69,8 +74,8 @@ The earlier installed Ingest restart/resend and ordinary read/export journey
 passes all 12 stages with provenance on and off on product `c49cfe5c`/candidate
 `47d53ce8`; Index was not included. Remaining M1 gates are:
 
-- Execute the current installed positive/negative live-observation case, then
-  complete ordinary full current Archive readiness and clean-install negatives.
+- Complete ordinary full current Archive readiness and remaining clean-install
+  negatives; the initial positive/physical-invalidation case is now qualified.
   Terminal lifecycle output remains `ready:false`/Index `not-qualified`.
 - Index restart/rebinding and uncertain-query/lost-COMMIT recovery. Initial
   publication and live observation do not close these requirements.
@@ -113,12 +118,13 @@ be checked before push. Keep raw captures protected and out of public uploads.
 ## Resources and next action
 
 Fresh worker-before-parent build `a295da60` is PASS: source/CLI/worker hashes and
-all 2365 source files verified. Session80251 ended exit0/reaped; its container is
-stopped/PID0/noOOM. Native session10299 likewise ended cleanly. Installed r5
-session51261 ended exit1/reaped; all16 owned containers are stopped/exit0/PID0/
-noOOM with original databases and captures preserved. No engine or build is active.
-Current source audit through `55df797a` found no new exposure; a final delta check
-is required before push. The existing documentation checks passed at that revision.
+all2365 source files verified. Sessions80251/10299 ended exit0/reaped. Installed
+r5 session51261 ended exit1/reaped; r6 session74584 ended exit0/reaped. All owned
+containers are stopped/PID0/noOOM (r5/r6 all exit0), with original databases and
+captures preserved. No local engine/build/delegate job is active.
+Source audit through `55df797a` found no new exposure; the final delta needs its
+bounded check before push. Documentation checks passed at55df; affected final
+records need the same targeted checks. A new hosted run is required after push.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026.live_readiness`, owns exact resource and
@@ -128,13 +134,12 @@ pins and other target entries. Earlier cache and obsolete034 target retirements
 remain journaled. Current native/build caches, unique data, original failures and
 pending worktrees are retained. No broad cleanup is underway.
 
-Next: commit the corrected uncertainty oracle and rerun `p01-first-launch-index`
-with the existing `a295da60` product and `55df797a` assembly; journey files are
-unchanged. No product rebuild is required. Record the actual full outcome, then
-publish the coherent verified increment to main with the known CI fixture fix.
-Collect the new hosted run while continuing M1. The next ordinary readiness slice
-needs a bounded authoritative bridge from current Archive selection/sealed batches
-to complete input expectations for the existing native verifier; narrow successful
+Next: finish the final documentation checks/public-source delta review, integrate
+this qualified increment into main and push once, then observe its real hosted CI.
+Continue P01-T09 Step1/6 with ordinary readiness: create a bounded authoritative
+bridge from current Archive selection/sealed batches to complete input
+expectations for the existing native verifier. Keep actual grants, reader/catalog
+custody and driver join through final currentness checks; narrow successful
 history/export alone cannot certify a complete cut. Source remains Unknown without
-an Ingest owner. Retain all other M1 and later gates above. Never turn FAIL,
-NOT_RUN, interruption or missing prerequisites into PASS.
+an Ingest owner. No unbounded census or full-P02 prerequisite is implied. Retain
+all other M1 and later gates above; FAIL/NOT_RUN/interruption never become PASS.
