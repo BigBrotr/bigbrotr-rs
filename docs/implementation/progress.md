@@ -7,7 +7,7 @@ Official releases, packages and production remain unauthorized.
 ## Current increment and revision
 
 P01-T09 initial Index is on `work/initial-index` in the canonical checkout,
-HEAD `a1fbc586` before this write-adapter correction checkpoint. Runtime wiring is complete
+HEAD `f7d6befe` before this hosted-evidence checkpoint. Runtime wiring is complete
 at its initial-only scope: explicit `--initialize-index`, accepted-policy checks,
 actual PG driver custody, bounded physical operations, serialized renewal/timer
 work and joined shutdown. The first real installed attempt exposed a write-adapter defect described below.
@@ -68,7 +68,7 @@ timeouts. Index publication and later read/export stages are not qualified.
 The correction uses the driver's validated unescaped API with the existing closed,
 quoted database/table identifiers. DESCRIBE receives its exact column-count limit,
 then the insert restores the accepted data ceiling. Independent critical source
-review found no new injection, limit, query-ID or custody issue. New native/engine
+review found no new injection, limit, query-ID or custody issue. The corrected fresh worker-bound build is active at exactf7d6befe; engine
 execution is pending. The same maintained case now tightens data to4 rows, the
 independently derived maximum family count in a source batch, while keeping all
 scientific expectations and timeouts unchanged. Its12 affected controls PASS.
@@ -136,7 +136,7 @@ across the three platforms, including all65 initial Index library controls.
 Separate documentation and optional native ARM experiment SKIP under existing
 rules. Watcher69669 ended/exit0 and was reaped. The bounded4-artifact/513-member,
 34-log audit found only the same five synthetic/example fingerprints and zero
-observed provider alerts; the detailed existing-report update is being integrated.
+observed provider alerts; the detailed existing hosted report is updated.
 This run does not qualify later runtime wiring or changed CI reuse helpers.
 
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
@@ -162,9 +162,10 @@ Native sessions62389 (FAIL) and5554 (PASS) ended and were reaped; both runs'
 containers are stopped-retained, with unrelated inventory unchanged. No owned
 engine or build is active. The fresh build and offline configuration containers
 are stopped-retained in external `runs/initial-index-installed-03464fc`.
-No root process is active. Installed-case author and critical reviewer have
-completed scoped corrections; the CI delegate is recording terminal hosted
-evidence. Worktrees and receipts are retained.
+Root session77182 monitors the corrected candidate build in external
+`runs/initial-index-installed-f7d6bef`; its single owned container is active under
+the recorded CPU/RAM/PID/disk/deadline limits. No engine is active. All delegates
+completed their scoped work; worktrees and receipts are retained.
 Root owns integration and all native/lab execution. Q37 settings remain as verified.
 
 The earlier bounded cache retirement removed4446 obsolete compiler intermediates
@@ -176,7 +177,7 @@ never replay that deletion or incrementally resume the partly retired caches.
 Latest post-native free space is154,385,682,432bytes. Check headroom before the
 next significant allocation; no broad cleanup is needed to unlock this increment.
 
-Next: build the corrected current-source worker-bound candidate, assemble it with
+Next: verify the active corrected current-source worker-bound build, assemble it with
 the same maintained journey, then execute signed-event admission → Archive and Index publication →
 independent read/export checks with the4-row accepted policy. Preserve failure
 classification and original captures. Exercise the pending real TTL rejection

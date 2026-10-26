@@ -73604,14 +73604,17 @@
     "index_foundation_publication": {
       "revision": "1cfd6eb5e04b01a8c404a6158c6da6c309f81924",
       "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40376741278",
-      "status": "in_progress; three foundation platforms, scope PASS, separate documentation and optional Rocks ARM SKIP",
-      "watch_session": 69669,
+      "status": "Published1cfd6eb5; run40376741278 terminalSUCCESS30/30selectedchecks, bounded public-output audit complete; later local runtime/CI changes not qualified by this run.",
+      "watch_session": "69669 terminal exit0/reaped",
       "watch_log": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40376741278-watch.log",
       "final_documentation_review": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-1cfd6eb5-exposure/receipt.json",
       "review_sha256": "0de5ee76c68f10d742de2d50b97f45d22c51fa3d118015bbdb56f538e26691f1",
       "documentation_checks": "/home/tux/bigbrotr-rs/.research/assembly-fixture-canonical-20261026/.research/index-foundation-publication-docs-20261026/result.json",
       "documentation_status": "3 PASS",
-      "latest_hosted_observation": "Run40376741278 terminalSUCCESS,30/30 selectedchecksPASS. Rootwatch69669 exit0/reaped. All65 initialIndex library controls actuallyPASS on3platforms; lateractor/runtime/CIreuse excluded. Protected auditreceipt64de2df068115332cc8e1dd83e9d2c79c44ac31d6a5d328e99900480a8dcb29e; report update pending integration."
+      "latest_hosted_observation": "TerminalSUCCESS30/30selectedchecks; watch69669exit0/reaped; existinghostedreport updated. All65 initialIndexlibrary controls on3platforms PASS; later actor/runtime/CIreuse excluded.",
+      "terminal_hosted_report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+      "terminal_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40376741278-exposure/receipt.json",
+      "terminal_receipt_sha256": "64de2df068115332cc8e1dd83e9d2c79c44ac31d6a5d328e99900480a8dcb29e"
     },
     "run_local_compilation_reuse": {
       "candidate": "3e4b16212d940446853d6ddbbb19bd136d1c56b0",
@@ -74296,6 +74299,15 @@
         "behavior": "Use validated closed qualified identifier with insert_unescaped (retains driver validation); DESCRIBE uses exact declared per-target column bound, then restore accepted data max_result_rows before insertion. Remove unused macro cardinality argument.",
         "critical_review": "initial_index_rows independently checked exact vendored0.15.2 API, closed IndexTables inputs, client settings clone/insert dispatch ordering and unchanged custody/query IDs. No blocking finding; no engine/build by reviewer.",
         "next": "Compile current worker-bound candidate and rerun same maintained installed case with4-row accepted data ceiling; do not raise timeout or alter scientific expectations."
+      },
+      "corrected_candidate_build": {
+        "source": "f7d6befed1545b9b1d29dbfe3bb31c84dc5cac2c",
+        "tree": "f10737d8cd04ea3ae2ab55ada530ff0c3422717d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-f7d6bef",
+        "container_id": "8d3349270f2ce183679219b1018415683ca19dd10a26fee6939a8d0baa682adb",
+        "session": 77182,
+        "state": "RUNNING; required corrected current-source ordinary fresh worker-before-parent build",
+        "limits": "Same reviewed prior candidate recipe with new root/source/name/owner only:2CPU6GiB512PIDs;65GiBminimumfree/40GiBoutputstop/7200sdeadline. Shared verified native assets read-only; fresh Cargo home/target; no engine active."
       }
     }
   },
