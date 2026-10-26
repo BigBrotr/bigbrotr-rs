@@ -1,6 +1,7 @@
 //! Initial-only Index consumer. Physical work is pollable and independently
 //! owned; no overall readiness, producer ACK or restart authority is implied.
 mod prepare;
+pub(super) mod readiness;
 use super::{Result, required};
 use crate::config::Resolved;
 use bigbrotr::{
@@ -11,6 +12,7 @@ use bigbrotr::{
             adapter::{
                 IndexAdapter, IndexEngineSlot, IndexOperation, IndexOperationId,
                 IndexOperationOutcome, JoinedIndexOperation, PhysicalError, PhysicalLimits,
+                RecoveryResult, required_recovery_metadata_bytes,
             },
             schema::IndexTables,
             verified::{VerifiedIndexPlan, VerifiedInstallation},
@@ -95,11 +97,18 @@ impl Profile {
     fn required_application(self) -> Result<ResourceLimits> {
         let physical = self.physical()?;
         let source = self.source();
+        // A read-only sweep replaces the source/planner pair; it never overlaps
+        // new publication. Reserve whichever complete operation needs more.
+        let work = source
+            .required_data_bytes()
+            .ok()
+            .and_then(|n| n.checked_add(plan::required_data_bytes(source).ok()?))
+            .ok_or_else(|| failed("combined Index reservation overflow"))?
+            .max(required_recovery_metadata_bytes());
         let bytes = prepare::PREPARATION_BYTES
             .checked_add(METADATA_BYTES)
             .and_then(|n| n.checked_add(physical.required_local_data_bytes().ok()?))
-            .and_then(|n| n.checked_add(source.required_data_bytes().ok()?))
-            .and_then(|n| n.checked_add(plan::required_data_bytes(source).ok()?))
+            .and_then(|n| n.checked_add(work))
             .ok_or_else(|| failed("combined Index reservation overflow"))?;
         Ok(ResourceLimits::new(
             bytes,
@@ -171,16 +180,24 @@ fn profile(root: &Resolved) -> std::result::Result<Profile, OwnerError> {
 enum Active {
     Install(IndexOperation<VerifiedInstallation>),
     Write(IndexOperation<VerifiedIndexPlan>),
+    ProbePlan(IndexOperation<VerifiedIndexPlan>),
+    ProbeFinish(IndexOperation<RecoveryResult>),
 }
 enum Completed {
     Install(JoinedIndexOperation<std::result::Result<VerifiedInstallation, PhysicalError>>),
     Write(JoinedIndexOperation<std::result::Result<VerifiedIndexPlan, PhysicalError>>),
+    ProbePlan(JoinedIndexOperation<std::result::Result<VerifiedIndexPlan, PhysicalError>>),
+    ProbeFinish(JoinedIndexOperation<std::result::Result<RecoveryResult, PhysicalError>>),
 }
 impl Active {
     fn poll(&mut self) -> Result<Option<Completed>> {
         match self {
             Self::Install(operation) => operation.try_join().map(|v| v.map(Completed::Install)),
             Self::Write(operation) => operation.try_join().map(|v| v.map(Completed::Write)),
+            Self::ProbePlan(operation) => operation.try_join().map(|v| v.map(Completed::ProbePlan)),
+            Self::ProbeFinish(operation) => {
+                operation.try_join().map(|v| v.map(Completed::ProbeFinish))
+            }
         }
         .map_err(|_| failed("physical executor join failed"))
     }
@@ -188,6 +205,8 @@ impl Active {
         match self {
             Self::Install(v) => v.request_cancel(),
             Self::Write(v) => v.request_cancel(),
+            Self::ProbePlan(v) => v.request_cancel(),
+            Self::ProbeFinish(v) => v.request_cancel(),
         }
     }
 }
@@ -208,6 +227,7 @@ pub(super) struct Index {
     // precedes every state, adapter, credential and resource owner below.
     active: Option<Active>,
     completed: Option<Completed>,
+    readiness: readiness::Readiness,
     pending: Option<PreparedIndexPlan>,
     session: Option<IndexSession>,
     state: Option<IndexState>,
@@ -256,6 +276,7 @@ impl Index {
         Ok(Self {
             active: None,
             completed: None,
+            readiness: readiness::Readiness::default(),
             pending: None,
             session: None,
             state: None,
@@ -292,7 +313,9 @@ impl Index {
         Ok(())
     }
     pub(super) fn delay(&self) -> Duration {
-        self.accepted.map_or(Duration::from_secs(1), |p| p.delay)
+        self.accepted
+            .map_or(Duration::from_secs(1), |p| p.delay)
+            .min(readiness::FRESHNESS)
     }
     pub(super) fn phase(&self) -> &'static str {
         if self.parked {
@@ -316,9 +339,17 @@ impl Index {
         (self.revision != 0).then_some(self.cut.as_ref()).flatten()
     }
     pub(super) fn request_cancel(&self) {
+        self.readiness.cancel();
         if let Some(active) = &self.active {
             active.cancel();
         }
+    }
+    pub(super) fn readiness_observation(&self) -> readiness::Observation {
+        self.readiness.observation(
+            self.active.is_some(),
+            self.parked,
+            self.slot.unresolved_query().is_some(),
+        )
     }
 
     /// Paths are deployment inputs only. All scientific policy comes from the
@@ -442,6 +473,9 @@ impl Index {
         deadline: Instant,
         cancelled: &AtomicBool,
     ) -> Result<Tick> {
+        if cancelled.load(Ordering::Acquire) {
+            self.readiness.cancel();
+        }
         live_window(deadline, cancelled)?;
         if self.parked {
             return Ok(Tick::Parked);
@@ -451,6 +485,17 @@ impl Index {
         {
             return Err(failed("initial source/state identity missing or changed"));
         }
+        let now = self.readiness.sample()?;
+        if self.readiness.expired(now) {
+            self.readiness.fail(readiness::Failure::Expired);
+            if let Some(active) = &self.active {
+                // Request cancellation, then retain every owner until actual
+                // join. A surviving remote query parks the existing slot.
+                active.cancel();
+            } else {
+                self.readiness.abandon();
+            }
+        }
         if let Some(active) = &mut self.active {
             let Some(completed) = active.poll()? else {
                 return Ok(Tick::Busy);
@@ -459,11 +504,16 @@ impl Index {
             self.completed = Some(completed);
         }
         if let Some(completed) = self.completed.take() {
-            return self.complete(owner, completed, deadline, cancelled).await;
+            return self
+                .complete(owner, store, completed, deadline, cancelled)
+                .await;
         }
         // An existing session is positively renewed before every new dispatch.
         // Root also invokes renew after its periodic Control/Ingest refresh.
         self.renew(owner, &Cell::new(false)).await?;
+        live_window(deadline, cancelled)?;
+        let now = self.readiness.sample()?;
+        let probe_source = self.probe_source(store, now, cancelled);
         live_window(deadline, cancelled)?;
         let profile = self.accepted.expect("initialized profile");
         let limits = profile.physical()?;
@@ -475,6 +525,9 @@ impl Index {
             limits.required_local_native_bytes(),
         )?
         else {
+            if probe_source.is_some() {
+                self.readiness.fail(readiness::Failure::Capacity);
+            }
             return Ok(Tick::WaitingForResources);
         };
         let Some(engine) = admitted(
@@ -483,8 +536,16 @@ impl Index {
             0,
         )?
         else {
+            if probe_source.is_some() {
+                self.readiness.fail(readiness::Failure::Capacity);
+            }
             return Ok(Tick::WaitingForResources);
         };
+        if let Some(source) = probe_source {
+            return self
+                .probe(owner, source, local, engine, deadline, cancelled)
+                .await;
+        }
         if self.session.is_none() {
             if self.installation_started {
                 self.parked = true;
@@ -624,6 +685,7 @@ impl Index {
     async fn complete(
         &mut self,
         owner: &mut ControlSession,
+        store: &IngestStore,
         completed: Completed,
         deadline: Instant,
         cancelled: &AtomicBool,
@@ -634,10 +696,17 @@ impl Index {
         }
         if self.slot.unresolved_query().is_some() {
             self.parked = true;
+            self.readiness.fail(readiness::Failure::Dependency);
+            self.readiness.abandon();
             return Ok(Tick::Parked);
         }
         let state = self.state.as_ref().expect("active state");
         match completed {
+            Completed::ProbePlan(joined) => self.complete_probe_plan(joined),
+            Completed::ProbeFinish(joined) => {
+                self.complete_probe_finish(owner, store, joined, deadline, cancelled)
+                    .await
+            }
             Completed::Install(joined) => {
                 // Borrow from the joined owner through the entire SQL future.
                 // Its own field order retains custody/credit through result

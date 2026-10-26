@@ -61,13 +61,13 @@ pub struct VerifiedIndexRecovery {
     _custody: File,
 }
 impl VerifiedIndexRecovery {
-    pub(crate) fn binding(&self) -> &IndexBinding {
+    pub fn binding(&self) -> &IndexBinding {
         &self.binding
     }
-    pub(crate) fn previous_owner(&self) -> IndexOwnerIdentity {
+    pub fn previous_owner(&self) -> IndexOwnerIdentity {
         self.previous_owner
     }
-    pub(crate) fn state(&self) -> IndexRecoveryState {
+    pub fn state(&self) -> IndexRecoveryState {
         self.state
     }
     pub(crate) fn recovery_digest(&self) -> Digest256 {

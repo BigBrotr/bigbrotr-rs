@@ -231,6 +231,27 @@ actual PG driver join. Initial/stopped diagnostics distinguish the Index phase
 and published revision; `ready=false` remains. Installed real-engine acceptance,
 Index restart and positive unknown-query resolution are still open gates.
 
+The live-readiness consumer under qualification additionally caches a read-only
+physical Index observation. When source and publication are caught up and no plan
+is pending, it reuses the complete recovery verifier with replay disabled: one
+joined plan per owner turn, then exact schema/UUID and whole-cut checks. It never
+adopts an owner, publishes a cut or refreshes readiness from schema existence
+alone. The final joined result remains reserved through fenced PG owner/head
+rechecks and a new native source observation. Status requests read this fixed-size
+cache; they do not launch engine work. Authority and current source/cut agreement
+remain separate requirements of the status consumer.
+
+Sweeps coalesce on a 30-second interval independent of publication count. The
+same 30 seconds bound the whole sweep and its freshness from the oldest read,
+using the suspend-aware authority clock. New source work takes priority between
+joined steps. Failed, expired or cancelled work cannot refresh the last good
+observation; unresolved remote work retains its query reservation and parks Index.
+The sweep shares the existing physical slot and its complete resource allowance;
+bounded recovery metadata replaces the source/planner reservation. Complete
+history verification and the final whole-cut engine scan still grow with retained
+history. This initial M1 profile does not qualify large-history readiness capacity,
+Index restart or automatic unknown-query resolution.
+
 Accepted administration enables login, self inspection, logout,
 [URL registration](relay-endpoint-registry.md#authenticated-registration-consumer),
 the initial [relay enrollment command](relay-enrollment.md#initial-owner-http-consumer),

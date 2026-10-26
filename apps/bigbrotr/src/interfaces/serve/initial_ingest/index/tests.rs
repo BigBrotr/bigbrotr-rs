@@ -289,6 +289,17 @@ fn reservations_distinguish_unavailable_from_impossible_and_do_not_wait() {
     let needed = profile.required_application().unwrap();
     assert_eq!(needed.items(), 5);
     assert!(needed.data_bytes() > prepare::PREPARATION_BYTES + METADATA_BYTES);
+    assert!(
+        needed.data_bytes()
+            >= prepare::PREPARATION_BYTES
+                + METADATA_BYTES
+                + profile
+                    .physical()
+                    .unwrap()
+                    .required_local_data_bytes()
+                    .unwrap()
+                + required_recovery_metadata_bytes()
+    );
     assert!(needed.native_bytes() > 0);
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(

@@ -55,6 +55,29 @@ impl PolicyLeaseTtl {
 /// Opaque local clock coordinate: never UTC, serialized input or a stored lease.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct AuthorityTick(Duration);
+impl AuthorityTick {
+    /// Compare two samples of the qualified local clock, never wall time or a
+    /// caller-created deadline. Regression is an error, not zero elapsed time.
+    pub fn elapsed_since(self, earlier: Self) -> Result<Duration, LeaseError> {
+        self.0
+            .checked_sub(earlier.0)
+            .ok_or(LeaseError::ClockRegression)
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn authority_tick_elapsed_preserves_precision_and_refuses_regression() {
+    let early = AuthorityTick(Duration::new(71, 999_999_999));
+    let late = AuthorityTick(Duration::new(73, 1));
+    assert_eq!(late.elapsed_since(early), Ok(Duration::new(1, 2)));
+    assert_eq!(early.elapsed_since(early), Ok(Duration::ZERO));
+    assert_eq!(early.elapsed_since(late), Err(LeaseError::ClockRegression));
+    assert_eq!(
+        AuthorityTick(Duration::MAX).elapsed_since(AuthorityTick(Duration::ZERO)),
+        Ok(Duration::MAX)
+    );
+}
 mod sealed {
     pub trait Sealed {}
 }

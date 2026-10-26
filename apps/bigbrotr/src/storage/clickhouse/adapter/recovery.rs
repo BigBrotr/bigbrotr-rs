@@ -109,6 +109,15 @@ impl IndexRecoveryVerifier {
     pub fn captured_state(&self) -> IndexRecoveryState {
         self.state
     }
+    /// Captured metadata, not a current owner or physical capability.
+    pub fn captured_owner(&self) -> IndexOwnerIdentity {
+        self.previous
+    }
+    /// Last accepted readback cut. Only the complete finish operation can
+    /// establish a full-lineage physical observation.
+    pub fn verified_cut(&self) -> Option<&SourceCut> {
+        self.cut.as_ref()
+    }
     /// Inspectable metadata only, for reading the exact retained native input on
     /// a repair/replay attempt. This reference is not a physical capability.
     pub fn active_plan(&self) -> Option<&crate::storage::postgres::IndexPlan> {
