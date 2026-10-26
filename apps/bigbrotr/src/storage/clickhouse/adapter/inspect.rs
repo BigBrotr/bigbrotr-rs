@@ -86,6 +86,10 @@ struct LimitRow {
 struct CountRow {
     n: u64,
 }
+#[derive(Row, Deserialize)]
+struct DefinitionRow {
+    matches: u8,
+}
 
 pub(super) async fn engine(
     owner: &mut QueryOwner,
@@ -171,7 +175,7 @@ pub(super) async fn installed(
         if row.uuid != schema::uuid_text(tables.uuid(target))
             || row.engine != "MergeTree"
             || row.engine_full != schema::engine_expression(target)
-            || row.partition_key != "'all'"
+            || !row.partition_key.is_empty()
             || row.sorting_key != key
             || row.primary_key != key
             || !row.sampling_key.is_empty()
@@ -179,6 +183,19 @@ pub(super) async fn installed(
             || row.dependent_databases != 0
             || row.dependent_tables != 0
         {
+            return Err(PhysicalError::Schema);
+        }
+        // engine_full covers only the storage AST. Per-column TTL, codecs,
+        // constraints and skip indexes live elsewhere in CREATE. Canonicalize
+        // both complete definitions with the same selected server parser; the
+        // expected input is our closed declaration, never observed metadata.
+        let query = owner.client.query("SELECT toUInt8(formatQuerySingleLine(create_table_query)=formatQuerySingleLine({expected:String})) AS matches FROM system.tables WHERE database={database:String} AND name={table:String}")
+            .param("expected", tables.create_table(target))
+            .param("database", tables.database())
+            .param("table", target.as_str())
+            .with_setting("show_table_uuid_in_table_create_query_if_not_nil", "1");
+        let definitions = collect::<DefinitionRow>(owner, query, 1).await?;
+        if definitions.len() != 1 || definitions[0].matches != 1 {
             return Err(PhysicalError::Schema);
         }
     }

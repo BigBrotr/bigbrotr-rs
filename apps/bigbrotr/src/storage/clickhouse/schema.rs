@@ -279,7 +279,7 @@ pub(crate) fn sort_key(target: IndexTarget) -> &'static str {
 }
 pub(crate) fn engine_expression(target: IndexTarget) -> String {
     format!(
-        "MergeTree PARTITION BY 'all' ORDER BY ({}) SETTINGS {SETTINGS}",
+        "MergeTree ORDER BY ({}) SETTINGS {SETTINGS}",
         sort_key(target)
     )
 }

@@ -82,7 +82,8 @@ fn every_family_is_append_only_with_explicit_persistence_and_no_calendar_cast() 
             "CREATE TABLE `serving_fixture`.`{}` UUID '",
             target.as_str()
         )));
-        assert!(ddl.contains("ENGINE = MergeTree PARTITION BY 'all'"));
+        assert!(ddl.contains("ENGINE = MergeTree ORDER BY"));
+        assert!(!ddl.contains("PARTITION BY"));
         assert!(ddl.ends_with("SETTINGS fsync_after_insert = 1, fsync_part_directory = 1, non_replicated_deduplication_window = 0"));
         for forbidden in [
             "IF NOT EXISTS",
@@ -127,11 +128,11 @@ fn every_family_is_append_only_with_explicit_persistence_and_no_calendar_cast() 
 fn manifest_identity_distinguishes_database_and_every_table_uuid() {
     let original = tables();
     // Python/hashlib over the literal schema-1 field/key inventory, the database
-    // serving_fixture and UUID bytes 01..0a repeated16. No Rust encoder or
-    // observed engine metadata was used to compute this independent vector.
+    // serving_fixture, UUID bytes 01..0a repeated16 and no PARTITION BY. No Rust
+    // encoder or observed engine metadata computed this independent vector.
     assert_eq!(
         original.identity_digest().to_string(),
-        "a9d98cdb3e10edb431eb47b29cab9104535824be8df9f3dc5e574a301480f4cf"
+        "a696c1e480ddeafdcab16d13eb8aac8b1eaddf5282b8596eb4d480b4bb43c8c9"
     );
     let ids = std::array::from_fn(|i| [i as u8 + 1; 16]);
     assert_ne!(
