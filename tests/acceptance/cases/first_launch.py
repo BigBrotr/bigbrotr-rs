@@ -313,7 +313,10 @@ class Runtime:
         require(self.docker('image', 'inspect', tag, check=False).returncode != 0, 'image tag already exists')
         self.resources['image'] = dict(tag=tag, id=None, status='creating')
         self.record_resources()
-        self.docker('build', '--network=none', '--pull=false', '--label', LABEL + '=' + self.owner,
+        # A retained BuildKit COPY layer kept old directory modes after a source
+        # mode correction. Recreate only this small wrapper; product binaries and
+        # pinned base layers are reused, and verify-worker checks the installation.
+        self.docker('build', '--no-cache', '--network=none', '--pull=false', '--label', LABEL + '=' + self.owner,
             '--label', IMAGE_LABEL + '=' + self.inputs['candidate_bundle_sha256'], '--iidfile', str(self.root / 'image.id'),
             '--tag', tag, '--file', str(self.bundle / 'packaging/image/Dockerfile'), str(self.bundle),
             timeout=180, label='runtime-image')

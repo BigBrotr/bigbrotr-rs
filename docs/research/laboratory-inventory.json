@@ -73419,7 +73419,7 @@
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup."
   },
   "implementation_first_launch_maintained_20261026": {
-    "status": "r1 missing base NOT_RUN; r2 extracted-directory mode defect FAIL, owned containers stopped; correction verified offline",
+    "status": "r3 exposed cached COPY directory metadata; uncached exact wrapper verification PASS, all owned containers stopped; full bootstrap still NOT_RUN",
     "intent": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/first-launch-intent.json",
     "source": {
       "path": "/home/tux/bigbrotr-rs/.research/first-launch-source-02d1a87",
@@ -73439,6 +73439,13 @@
         "reason": "Candidate directory creation inherited umask077; installed worker refused 0700 directories. Fixed exact0755 application, evidence root remains0700; new controlPASS.",
         "resources": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87-r2/resources.json",
         "triage": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87-r2/triage-directory-modes.json"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-directory-fix",
+        "source_revision": "9c83f4d9d80f15782ac7a6c3fd95b44127d56d71",
+        "result": "FAIL",
+        "reason": "BuildKit reused COPY layers with0700 child directories despite corrected0755 source. Host worker verification PASS; stopped container tar inventory proves old modes. Uncached wrapper of identical files verifies successfully; original refusal retained.",
+        "diagnostic": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-directory-fix/uncached-wrapper-diagnostic.json"
       }
     ],
     "prepared_base_image": {

@@ -172,9 +172,12 @@ Prepare the pinned PostgreSQL image named by
 base in the [Dockerfile](../../packaging/image/Dockerfile) locally first. The
 runner never pulls them. It builds only the small runtime wrapper from the
 verified extracted Dockerfile and existing candidate bytes, with
-`docker build --network=none --pull=false`, a unique owner label/tag and a recorded
+`docker build --no-cache --network=none --pull=false`, a unique owner label/tag and a recorded
 immutable image ID. Compose receives that ID, never an unrelated supplied image.
-No Rust or product build runs during acceptance.
+No Rust or product build runs during acceptance. Wrapper COPY layers are recreated:
+a retained BuildKit layer was observed to keep inaccessible directory modes after
+source permissions changed. Pinned base layers and verified product bytes remain
+reusable; installed worker verification still runs before any engine initialization.
 
 From a clean checkout, an initial candidate can be prepared with the existing
 [build prerequisites](build.md) and maintained commands:
