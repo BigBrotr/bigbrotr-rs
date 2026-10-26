@@ -8,17 +8,19 @@ Official releases, packages and production remain unauthorized.
 
 The fixture/checkpoint increment is published on `main` at `f1f6d166`.
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
-has started; final hosted result pending. Incremental source audit found only the
+completed **PASS** on all three required foundation platforms. The terminal
+public-output audit is in progress; optional Rocks ARM remains SKIP. Incremental source audit found only the
 same known relative inventory path fingerprint; documentation checks PASS.
 Main remains in `.research/assembly-fixture-canonical-20261026`.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`99d669ae` before this import-correction checkpoint. Published main is merged. Rows, PG publication,
+`a8423d76` before this checkpoint. Published main is merged. Rows, PG publication,
 retained custody/state, bounded physical adapter/proofs and actual storage module
 wiring are committed locally. The selected ClickHouse client/type parser fixes
 and separate optional initializer credentials are integrated on this branch.
-The first full application compilation found an incorrect ControlSession import;
-the import is corrected and the next exact-revision check is pending. Runtime
+The first full compilation found an incorrect ControlSession import. The corrected
+actual library/CLI build, strict Clippy and all65 selected controls now PASS at
+`a8423d76`; source, retained artifacts and evidence hashes match. Runtime
 integration is still NOT_RUN; no partial
 Index implementation is represented as integrated main behavior.
 
@@ -93,7 +95,8 @@ source `ea7ac434`, completed **FAIL** overall:
 same21 failures reproduced with a linked Linux temporary root, then22 controls
 PASS with both linked and direct roots after canonicalizing only the newly owned
 fixture directory. Production path checks and all test methods are unchanged.
-Native macOS confirmation of this correction is still pending.
+Native macOS confirmation now PASS in run40363410510, alongside both Linux
+platforms. Its detailed counts/exposure audit is being collected.
 
 The early locked policy change now has measured hosted evidence: preceding
 recorded check durations total119.312seconds at ordinal4, versus3945.362seconds
@@ -112,23 +115,31 @@ billing/failure observations remain unchanged in their original reports.
 
 ## Resources and next action
 
-Actions watch54174 still observes run40363410510; all three foundation jobs were
-last observed running, with no terminal result yet. No installed-journey or PG SQL
-product process remains active. The CH SQL owner retains three stopped runs and is tightening only the maintained
-runner's child/resource shutdown. Deployment preparation is integrated as an
-unwired partial consumer (`9396ca19`); seven scoped controls PASS, actual binary
-consumer/Clippy NOT_RUN. Its accepted-policy/state/driver integration remains
-root work, with the initial actor delegated. The native profile's five Python
-verifier controls PASS.
-Root owns integration and service wiring. Q37 configurations remain as verified.
+Actions watch54174 finished/exit0 and was reaped. The two actual native check
+sessions also finished and were reaped. No owned engine/build/installed-journey
+process is running. All three CH servers are stopped/exit0/PID0; its original
+failures and partial TTL fixture remain preserved. Delegates now own the initial
+Index actor, terminal hosted-output audit and incremental source publication audit.
+Root owns runtime/CLI integration. Q37 configurations remain as verified.
 
-The first actual application build, source `fadc6bbd`, is FAIL at compilation
-(E0432 wrong ControlSession import); tests and Clippy were NOT_RUN. Its fetch and
-native containers are stopped/PID0, with no unrelated inventory change. Original
-source/logs/resources remain in external `runs/initial-index-fadc6bb`. The corrected
-import uses the actual control_owner module; repeat the same maintained profile
-from a new exact revision, reusing the exclusively locked mutable cache. No SQL
-rerun is needed. Three documentation checks at fadc6bbd PASS.
+The first native application build `fadc6bbd` is retained as FAIL (E0432 wrong
+ControlSession import), with tests/Clippy NOT_RUN. Corrected `a8423d76` compiled
+actual library/CLI and its real test executable, then passed strict Clippy and
+65 selected controls:45 CH,12 Index planning/custody,4 PG Index,2 PG route and2
+existing Archive transport-custody controls. This includes the new late attachment
+of actual Index lock custody to the already-running PG driver. Independent source
+review found no blocking custody/drop defect; actual service wiring remains open.
+Both runs are stopped-retained under external `runs/initial-index-*`; no unrelated
+inventory changed. The successful run reused the exclusive cache, with recorded
+compile87.13s/test-compilation45.45s/Clippy16.50s, not a comparative speedup claim.
+Three documentation checks at fadc6bbd PASS; no need to repeat product builds for
+subsequent documentation-only recording.
+
+Deployment preparation is integrated as an unwired partial consumer (`9396ca19`):
+seven scoped controls PASS, actual binary consumer/Clippy NOT_RUN. It is outside
+the compiled module graph; do not extend the native build's claim to that consumer.
+The maintained SQL runner's child-reaping and recorded-container-ID changes pass
+four local controls; no repeated SQL run was required.
 
 The bounded cache retirement removed4446 obsolete compiler intermediates from
 three completed September18 Archive targets. All11120 nonselected entries and35
@@ -139,9 +150,11 @@ source, worktree or container was removed. Inventory
 journal and reconstruction procedure. Never replay that deletion or incrementally
 resume the partially retired caches.
 
-Next: observe hosted macOS confirmation and finish the bounded Index capability: ten-family
-readback, opaque installation/plan/recovery proofs, owned resources and timer-driven
-publication/readiness, then isolated CH outage/recovery while Archive continues.
+Next: finish the publication audits, integrate the verified foundation coherently,
+and connect the initial Index actor to actual accepted policy, PG driver custody
+and the service timer. Then exercise actual Rust/HTTP insert/readback/proofs and
+the pending column-TTL negative; demonstrate CH outage/recovery while Archive
+continues. Physical source/proof implementations alone do not close these gates.
 Persist whole-admission-batch plans including zero outcomes; hash actual rows.
 Timeout/drop is not remote cessation. Recovery must retain actual custody through
 SQL and verify the full retained lineage, not accept arbitrary historical pages.

@@ -73433,7 +73433,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Latest completed40349312031 FAIL only macOS temporary-root fixture; Linux amd64/ARM64 foundation PASS and dependency/cancellation corrections passed at recorded hosted scope. Published fixture/checkpoint f1f6d166 is now under run40363410510, last observed IN_PROGRESS.",
+    "status": "Run40363410510 sourcef1f6d166 completedSUCCESS on all3requiredfoundationplatforms; scopePASS, separate docs/optionalRocksARM SKIP byselection. Previousdependency/cancellation/macfixturefailures resolved at hosted scope. Terminalartifact/logexposure audit inprogress.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73578,7 +73578,20 @@
       "watch_session": 54174,
       "source_audit": ".research/ci-publication-20261026/source-f1f6d166-exposure/receipt.json",
       "source_audit_sha256": "251eac41e764217bc8e8e34d75c466eff2b55504cbe7698154788b2753949b51",
-      "documentation": "Clean f1f6d166 documentation-only checks PASS; receipt in assembly-fixture worktree .research/checkpoint-docs-20261026/result.json"
+      "documentation": "Clean f1f6d166 documentation-only checks PASS; receipt in assembly-fixture worktree .research/checkpoint-docs-20261026/result.json",
+      "terminal_observation": {
+        "run": 40363410510,
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
+        "source": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
+        "status": "success",
+        "foundation": {
+          "ubuntu-24.04": "success",
+          "macos-15": "success",
+          "ubuntu-24.04-arm": "success"
+        },
+        "watch": "session54174 finished exit0 and reaped",
+        "public_output_audit": "ci_native_cancel_review in progress; no conclusion before actual audit"
+      }
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -73884,7 +73897,7 @@
   "implementation_index_foundation_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
     "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
-    "status": "Source integrated through99d669ae. First actual application build fadc6bb FAIL E0432 ControlSession import; import correction ready, next native check pending. Scoped SQL report integrated, column-TTL negative remains NOT_RUN. Runtime consumer incomplete.",
+    "status": "Actual library/CLI build, strict Clippy and65 selected actual application controls PASS ata8423d76. Scoped CH SQL qualification integrated; runtime/HTTP/proof/recovery acceptance remains open. Partial deployment preparation is outside the compiled module graph.",
     "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
     "dependency_source": {
       "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
@@ -74041,7 +74054,7 @@
       "owner": "root; ci_native_cancel_review prepares maintained profile",
       "source": "6b15dab3 before checkpoint",
       "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build",
-      "status": "First build stopped-retained; next exact-source check pending after import correction. Same exclusive cache can be reused; no deletion or SQL rerun.",
+      "status": "Corrected actual application build PASS65, stopped-retained; first compile FAIL preserved. Both driver sessions reaped; source/artifact/evidence identities checked. No SQL rerun or unrelated mutation.",
       "free_bytes_before_preparation": 154848296960,
       "profile_commit": "9523f5ae",
       "runner_receipt": {
@@ -74070,6 +74083,33 @@
           "path": "/home/tux/bigbrotr-rs/.research/index-foundation-docs-20261026/result.json",
           "sha256": "200aa3f97624ccd6fbc23fae0c19701185dd578bb0885067369bf55ef2cb2f47"
         }
+      },
+      "successful_build": {
+        "source": "a8423d7614af80d080ae43ef45381b456907a619",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a8423d7",
+        "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
+        "resources": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a8423d7/resources.json",
+          "sha256": "f79817cf835a980eb4fb985d775f30eeed2e2c400531ff37d29f9cf9d0441559"
+        },
+        "qualification": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a8423d7/out/qualification.json",
+          "sha256": "89c3f8d5f2e96aac7a05e782d6fcef4fe22247c50a888421881238439914ac34"
+        },
+        "checks": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a8423d7/out/build-checks/result.json",
+          "sha256": "47a0816c9df76a6583ca7346b9848782ac93cbc4738bc6ad87d574eddc733f1b"
+        },
+        "tests": {
+          "clickhouse": 45,
+          "indexer": 12,
+          "index-publication": 4,
+          "postgres-route": 2,
+          "archive-driver-unpolled": 1,
+          "archive-driver-drop": 1
+        },
+        "state": "fetch/native stopped exit0/PID0/noOOM; no unrelated inventory change",
+        "limits": "Actual product module graph and focused controls; no actual CH/PG operations, installed runtime, Archive worker or full workspace claim."
       }
     },
     "deployment_preparation": {
@@ -74085,6 +74125,14 @@
     "ci_reuse_assessment": {
       "path": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/ci-compilation-reuse-assessment-20261026.json",
       "sha256": "53a3ab646ff23be64e03d20358277a4074605cac8831512f7db51516436facf7"
+    },
+    "late_driver_custody": {
+      "commit": "fb24cc91",
+      "review": {
+        "path": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/late-index-driver-custody-review-20261026.json",
+        "sha256": "6516f87fd6efbfb85dcc7b0ab10ce9211a21804a53835a92948f254d427803b0"
+      },
+      "verification": "Two new Index controls and two existing Archive transport controls PASS in actual native application gate; runtime consumer still must wrap actual driver before spawn and attach matching state before first Index effect."
     }
   },
   "implementation_checkpoint_space_20261026": {
