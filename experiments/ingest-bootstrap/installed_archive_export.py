@@ -41,8 +41,8 @@ def run(pg, client, output, database, name, rows, setup, initialized, before):
     assert capacity['free'] >= reserve + growth
     lab.write_json(home / 'export-input.json', dict(scope=initialized['private_scope'],
         catalog_id=setup['resource']['catalog_id'], destination_id=destination_id))
-    shutil.copy2(Path(__file__).with_name('installed_archive_export_client.py'),
-        output / 'installed_archive_export_client.py')
+    for filename in ('installed_archive_export_client.py', 'installed_archive_profile.py'):
+        shutil.copy2(Path(__file__).with_name(filename), output / filename)
     prefix = output / (name + '-ordinary')
     lab.docker('exec', '-d', client, 'python3', '/lab/installed_client.py', setup['config'],
         '/lab/' + prefix.name, 'control')

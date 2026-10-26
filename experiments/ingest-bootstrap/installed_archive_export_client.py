@@ -6,9 +6,15 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+from installed_archive_profile import load as load_profile, password_file
 
 
 def run(home):
+    profile = load_profile(home)
+    binary = profile['product_binary'] if profile else '/build/bigbrotr'
+    principal = profile['expected_principal_id'] if profile else '10'*16
+    actions = profile['expected_actions'] if profile else ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
+    password_ref = profile['password_ref'] if profile else 'file:' + str(home / 'password.private')
     expected = json.loads((home / 'export-input.json').read_text())
     event = json.loads((home / 'event.jsonl').read_text())
     origin = 'http://127.0.0.1:18081'
@@ -31,18 +37,18 @@ def run(home):
             connection.close()
 
     def cli(*args):
-        result = subprocess.run(['/build/bigbrotr', 'access', *args], env={}, capture_output=True, timeout=5)
+        result = subprocess.run([binary, 'access', *args], env={}, capture_output=True, timeout=5)
         assert result.returncode == 0 and not result.stderr, 'private CLI command refused'
         return json.loads(result.stdout)
 
     session = home / 'export-session.private'
     cli('login', '--origin', origin, '--username', 'alice',
-        '--password-ref', 'file:' + str(home / 'password.private'), '--session-output', str(session))
+        '--password-ref', password_ref, '--session-output', str(session))
     saved = json.loads(session.read_text())
     auth = {'Cookie': 'BigBrotrLocalSession=' + saved['session'], 'X-CSRF-Token': saved['csrf']}
     status, me = request('GET', '/management/v1/me', headers=auth)
-    assert status == 200 and me['principal_id'] == '10'*16
-    assert me['stored_actions'] == ['data.read', 'policy.change', 'principals.manage', 'roles.control', 'status.read']
+    assert status == 200 and me['principal_id'] == principal
+    assert me['stored_actions'] == actions
     query = dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
         filters=[dict(ids=[event['id']])])
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
@@ -55,16 +61,17 @@ def run(home):
     assert request('POST', '/v1/resources/event_history', query, auth)[0] == 403
     record('no-implicit-scope-authority')
     for revision, action in enumerate(('history.read', 'export', 'private-export'), 1):
-        command = dict(principal_id='10'*16, action=action, enabled=True, scope=expected['scope'],
+        command = dict(principal_id=principal, action=action, enabled=True, scope=expected['scope'],
             expected_config_revision='1', expected_policy_revision='1',
             expected_grant_revision=str(revision), allocation=allocation)
         key = format(0xc0 + revision, '02x')*16
         headers = {**auth, 'Idempotency-Key': key}
+        password = password_file(password_ref) if profile else 'Independent owner password 2026'
         status, proof = request('POST', '/management/v1/sessions/current/reauthenticate',
-            dict(password='Independent owner password 2026', command=command), headers)
+            dict(password=password, command=command), headers)
         record('reauthenticate-' + action, status=status)
         assert status == 201, (status, proof)
-        status, receipt = request('PUT', '/management/v1/principals/' + '10'*16 + '/grants',
+        status, receipt = request('PUT', '/management/v1/principals/' + principal + '/grants',
             dict(command=command, proof_id=proof['proof_id']), headers)
         record('enable-' + action, command=command, key=key, status=status, receipt=receipt)
         assert status == 200 and receipt['created'], (status, receipt)
