@@ -18,9 +18,11 @@ Agent work is integrated. Sol's live-client `b1f8c787` and CLI-test `258ca3f2`,
 and Astra's restart `063c8aed` remain in their clean separate worktrees. Locations
 and evidence are owned by the [laboratory inventory](../research/laboratory-inventory.json),
 keys `implementation_first_launch_maintained_20261026` and
-`implementation_ci_publication_20261026`. The older pushed tutorial `17de200d`
-on `work/m1-client` is superseded by integrated portable tutorial `c0599347`;
-it is preserved history, not another pending product feature.
+`implementation_ci_publication_20261026`. The superseded tutorial branch `work/m1-client` was retired locally/remotely
+with an expected-head lease. Original `17de200d` remains in its clean detached
+worktree; portable replacement `c0599347` is integrated. The empty Sol diagnostic
+worktree/ancestor branch was also removed after checking all ignored/untracked
+state; no work or lab evidence was deleted.
 
 ## Verified capability and current failure
 
@@ -67,7 +69,13 @@ The fresh restart recipe now declares both exact loopback endpoint/cidr/port tup
 before initialization. Full TOML comparison and installed CLI static validation
 PASS; Astra's critical review is clear. This does not modify accepted policy,
 existing grants or a running deployment. Original403 and both earlier failures
-remain preserved. Corrected connected rerun remains NOT_RUN.
+remain preserved. The next run at `e3326e59` failed earlier in fresh PostgreSQL provisioning:
+Unix-socket readiness saw the temporary init server, then SQL hit its restart gap.
+Pinned entrypoint source and actual logs establish this readiness race. Both
+Runtime and shipped Compose now require final-server TCP readiness. No scientific
+admission ran in that attempt; cleanup passed. The bundled Compose change requires
+candidate reassembly using the same verified c49 product, not a native rebuild.
+Corrected connected rerun remains NOT_RUN.
 
 Affected controls: **30 first-launch and 12 live-client PASS**. The earlier
 profile controls remain valid. Original deep c49 evidence remains valid at its recorded identities:
@@ -116,14 +124,16 @@ must never be uploaded; public CI retains a bounded synthetic diagnostic allowli
 
 No local product/build/test process is active at this checkpoint. The read-only
 Actions watch is active (session47734); Astra cleared the narrow admission
-gate and failure-retention changes; the inventory links source hashes and scope. Astra also cleared the exact route correction. Sol hit provider capacity after creating a
-clean empty diagnostic worktree; root Astra handled that bounded implementation.
+gate and failure-retention changes; the inventory links source hashes and scope. Astra also cleared the exact route correction and is implementing the bounded
+provenance-off variant in a separate worktree. Sol hit provider capacity after
+creating a clean empty diagnostic worktree (now retired); root Astra handled that bounded implementation.
 Previously verified Q37 settings remain. Unique state, original failures,
 stopped resources and source worktrees remain protected.
 
 Next run `p01-first-launch-restart` from a new immutable source worktree
-under `.research/first-launch-restart-r4-20261026`. Reuse the4652 candidate: bundled
-journey and product bytes are unchanged. Finish epoch2 resend, activated
+under `.research/first-launch-restart-r5-20261026`. Assemble the fresh candidate at
+external `runs/m1-first-launch-pg-ready-20261026/candidate` using the retained c49
+product; only bundled Compose readiness changed. Finish epoch2 resend, activated
 recovery/retirement, Archive catch-up, exact retry and ordinary history. No extra
 empty epoch3 is needed. Provenance-off source analysis is preserved by Astra;
 complete this blocking on-profile proof first.

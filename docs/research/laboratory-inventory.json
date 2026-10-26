@@ -73438,7 +73438,12 @@
       "sha256": "3c97e8e4980b50a6aec6a0a7bbe6ff87f9f6e395e43b67b6589baa88062e9512",
       "scope": "Published delta8commits/54blobs; pending throughf674c72e5commits/23blobs; run40313846572 four artifacts/21members and24log members. No operational credentials confirmed,0 log/artifact candidates and0 provider alerts. Current observer/doc delta excluded from automated receipt; root publication review applies."
     },
-    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991"
+    "verification_in_progress": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40323472991",
+    "superseded_branch_retirement": {
+      "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
+      "replacement": "c05993470d038224641b77c57ce0ebfa6004a36f",
+      "result": "Remote and local work/m1-client refs deleted with expected-head lease after confirming the sole unintegrated commit was superseded tutorial. Original clean worktree retained detached at17de200d; remote now onlymain. No Git history rewrite or data deletion."
+    }
   },
   "implementation_first_launch_maintained_20261026": {
     "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
@@ -73514,7 +73519,7 @@
       "reason": "Host lacks llvm-config and strace; required native controls remain for the declared toolchain environment/Actions, not relabeled PASS."
     },
     "restart_extension": {
-      "status": "r3 confirms corrected login scheduling; original403 private-ceiling refusal preserved. Fresh restart-case deployment now declares exactly both controlled loopback paths before initialization;30controls and installed CLI static configurationPASS. Corrected real rerun pending.",
+      "status": "r4 exposed temporary-PostgreSQL readiness race, corrected to final-server TCP readiness in Runtime and shipped Compose. Changed bundled Compose requires candidate reassembly, not product rebuild; next real run pending.",
       "agent_commit": "063c8aed049f49fea8f71113d58a0aa3d410ec78",
       "integrated_as": "88fd929d",
       "root_review": "Complete changed Runtime/oracle/client boundaries; supplied-password refusal corrected and original checkpoint preservation added. No renewed transitive implementation audit.",
@@ -73580,6 +73585,29 @@
             ],
             "cleanup_errors": []
           }
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026",
+          "source_revision": "e3326e59",
+          "result": "FAIL",
+          "reason": "Fresh PostgreSQL Unix-socket readiness observed the temporary init server; immediate SQL ran during its shutdown before final TCP server. No scientific admission ran. Real pinned entrypoint and terminal logs establish fixture/Compose readiness race.",
+          "report_sha256": "9b869ed9959993fffe5b71a9b39031ece9e2d81213254d86b6f4dcefd3fcec8d",
+          "resources": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/resources.json",
+          "terminal": {
+            "containers": 4,
+            "states": [
+              "stopped-retained"
+            ],
+            "cleanup_errors": []
+          },
+          "pinned_entrypoint": {
+            "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/postgres-docker-entrypoint.sh",
+            "sha256": "9c440299ae04a0a79d55b8bf03307036d890a40979d2fb698073c9050d4b20a5"
+          },
+          "diagnostic_logs": [
+            "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/postgres-startup-diagnostic.stdout",
+            "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026/postgres-startup-diagnostic.stderr"
+          ]
         }
       ],
       "cli_contract_worktree": "/home/tux/bigbrotr-ci-cli-capability-contract",
@@ -73588,8 +73616,11 @@
         "sha256": "e57a1dbc2e29c88dd729d8f58922ec683d0abaf46ed4d8d7ee31aaf72ebe4a8e",
         "status": "CLEAR;32catalog tables/987rows incl xmin unchanged in diagnostic; no full connected qualification."
       },
-      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r4-20261026",
-      "unused_diagnostic_worktree": "/home/tux/bigbrotr-live-access-private-failure",
+      "next_runtime_evidence_intent": "/home/tux/bigbrotr-rs/.research/first-launch-restart-r5-20261026",
+      "unused_diagnostic_worktree": {
+        "path": "/home/tux/bigbrotr-live-access-private-failure",
+        "status": "Removed after clean tracked/untracked/ignored check; empty worktree/ancestor branch only, no unique work or artifacts."
+      },
       "model_availability": "Sol/xhigh failed at provider capacity after clean WT creation; root Astra/xhigh completed bounded diagnostic retention. No silent model substitution.",
       "login_gate_review": {
         "path": "/home/tux/bigbrotr-rs/.research/first-launch-restart-controls-20261026/login-gate-review.json",
@@ -73604,7 +73635,8 @@
           "tests/acceptance/cases/first_launch_restart.py": "e8b75665eed86bdb908a6be2b248c1d9d70ad9e5d50d35836ecf3e6832ee0632",
           "tests/acceptance/test_first_launch_restart.py": "14ac2d1f6c6461626fe622908776d82149a74dff1584df1eec31c5026ec1cf6b"
         }
-      }
+      },
+      "next_candidate_intent": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-pg-ready-20261026/candidate"
     }
   }
 }

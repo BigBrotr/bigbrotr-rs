@@ -60,7 +60,8 @@ services:
     restart: "no"
     stop_grace_period: 30s
     healthcheck:
-      test: [CMD, pg_isready, -U, postgres, -d, postgres]
+      # The image's temporary initialization server has Unix sockets but no TCP.
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, postgres, -d, postgres]
       interval: 2s
       timeout: 2s
       retries: 30

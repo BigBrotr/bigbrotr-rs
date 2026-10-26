@@ -174,7 +174,8 @@ runner never pulls them. It builds only the small runtime wrapper from the
 verified extracted Dockerfile and existing candidate bytes, with
 `docker build --no-cache --network=none --pull=false`, a unique owner label/tag and a recorded
 immutable image ID. Compose receives that ID, never an unrelated supplied image.
-No Rust or product build runs during acceptance. Wrapper COPY layers are recreated:
+No Rust or product build runs during acceptance. PostgreSQL readiness uses
+loopback TCP so its temporary socket-only initialization server cannot qualify. Wrapper COPY layers are recreated:
 a retained BuildKit layer was observed to keep inaccessible directory modes after
 source permissions changed. Pinned base layers and verified product bytes remain
 reusable; installed worker verification still runs before any engine initialization.

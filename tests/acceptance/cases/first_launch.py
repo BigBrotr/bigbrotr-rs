@@ -492,7 +492,9 @@ class Runtime:
         config = ['--file', '/etc/bigbrotr/instance.toml']
         self.finite('config-validate', 'config', 'validate', *config)
         self.pg = self.launch('database', 'database')
-        self.wait(lambda: self.docker('exec', self.pg['id'], 'pg_isready', '-U', 'postgres',
+        # The image's temporary initialization server accepts Unix sockets only.
+        # TCP readiness identifies the final server after initialization/restart.
+        self.wait(lambda: self.docker('exec', self.pg['id'], 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres',
                                      '-d', 'postgres', check=False).returncode == 0, 'PostgreSQL startup', 60)
         self.inputs['postgres_server_version'] = self.sql('postgres', 'SHOW server_version_num')
         require(self.inputs['postgres_server_version'] == '160015', 'unexpected PostgreSQL version')
