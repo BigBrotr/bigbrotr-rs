@@ -187,7 +187,9 @@ enum Completed {
     Install(JoinedIndexOperation<std::result::Result<VerifiedInstallation, PhysicalError>>),
     Write(JoinedIndexOperation<std::result::Result<VerifiedIndexPlan, PhysicalError>>),
     ProbePlan(JoinedIndexOperation<std::result::Result<VerifiedIndexPlan, PhysicalError>>),
-    ProbeFinish(JoinedIndexOperation<std::result::Result<RecoveryResult, PhysicalError>>),
+    // One fixed-size recovery proof under the retained metadata allowance;
+    // keep the less frequent result from enlarging every actor completion.
+    ProbeFinish(Box<JoinedIndexOperation<std::result::Result<RecoveryResult, PhysicalError>>>),
 }
 impl Active {
     fn poll(&mut self) -> Result<Option<Completed>> {
@@ -195,9 +197,9 @@ impl Active {
             Self::Install(operation) => operation.try_join().map(|v| v.map(Completed::Install)),
             Self::Write(operation) => operation.try_join().map(|v| v.map(Completed::Write)),
             Self::ProbePlan(operation) => operation.try_join().map(|v| v.map(Completed::ProbePlan)),
-            Self::ProbeFinish(operation) => {
-                operation.try_join().map(|v| v.map(Completed::ProbeFinish))
-            }
+            Self::ProbeFinish(operation) => operation
+                .try_join()
+                .map(|v| v.map(|joined| Completed::ProbeFinish(Box::new(joined)))),
         }
         .map_err(|_| failed("physical executor join failed"))
     }
@@ -704,7 +706,7 @@ impl Index {
         match completed {
             Completed::ProbePlan(joined) => self.complete_probe_plan(joined),
             Completed::ProbeFinish(joined) => {
-                self.complete_probe_finish(owner, store, joined, deadline, cancelled)
+                self.complete_probe_finish(owner, store, *joined, deadline, cancelled)
                     .await
             }
             Completed::Install(joined) => {

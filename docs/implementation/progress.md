@@ -9,9 +9,11 @@ Official releases, packages and production remain unauthorized.
 Canonical checkout: `work/live-readiness`. This checkpoint freezes the current
 readiness source candidate, based on published `00714653`; the next qualification
 will record its exact commit/tree. Integrated parents through `6779a5e9` include
-the CI diagnostic correction and report-time contract. Native/installed checks
-remain NOT_RUN; this candidate has not been merged or pushed.
-`main` and `origin/main` now contain that coherent qualification commit in
+the CI diagnostic correction and report-time contract. Native candidate `1d263af6` compiled the product and test executables, then
+failed strict Clippy (oversized completion enum). Tests/installed checks are
+NOT_RUN; the bounded representation correction is awaiting rerun. Nothing from
+this increment has been merged or pushed.
+`main` and `origin/main` remain at qualified `00714653` in
 `.research/assembly-fixture-canonical-20261026`. The push completed; the new
 readiness increment is being developed in isolated owning worktrees.
 
@@ -111,12 +113,20 @@ credentials/captures protected and out of uploads.
 
 ## Resources and immediate action
 
-No owned build or engine is active. Native session75010, fresh builder76528 and
+Native candidate `1d263af616a996c29843ddad9a113c761bd8be98` failed strict
+Clippy after successful product/test compilation. Original result/logs are retained
+under `runs/initial-index-1d263af`; tests were NOT_RUN. Session42415 ended exit1;
+fetch/native containers are stopped, PID0/noOOM (exit0/1 respectively).
+The correction boxes only the fixed-size joined recovery result within existing
+metadata allowance, preserving ownership/drop order and all checks. The next exact
+candidate will reuse the exclusively locked native115 cache.
+No installed engine case is active. Native session75010, fresh builder76528 and
 installed case80184 ended and were reaped. All r4 containers are stopped/exit0/
 PID0/noOOM; the borrowed bridge is unchanged and empty. The readiness candidate integrates source-head observation (`23d9a839`,
 `5ad2bd95`), authenticated role status (`104e6e88`), the complete Index read-only
 probe (`59186d6f`) and conservative ordinary observations (`85233c12`,
-`531e6373`). Native compilation/tests/engines/installed qualification are NOT_RUN.
+`531e6373`). Native product/test compilation passed at the failed candidate; execution of
+tests, engines and installed qualification remains NOT_RUN.
 Root owns the initial runtime/cache and existing acceptance/native-profile changes.
 Index and Archive probes now use15s scheduling with strict30s oldest-read freshness;
 Archive verification in flight suppresses prior Ready through actual driver join.
@@ -142,9 +152,8 @@ read-only proposal identifies 1.94 GiB of obsolete receipt-compiler intermediate
 freeze/hash and fresh ownership/use checks remain necessary before any deletion.
 The active native115 cache and current candidate are excluded.
 
-Immediate action: run this frozen candidate through the maintained isolated
-`initial-index` native
-profile with its expanded47 named binary controls and affected library controls.
+Immediate action: freeze the bounded enum correction and rerun the maintained
+isolated `initial-index` native profile with its expanded47 named binary controls and affected library controls.
 If successful, build the ordinary worker-bound candidate and execute the existing
 installed Index case including positive authenticated readiness and no-idle-touch.
 Negative/ordinary readiness, independent outages and recovery remain open. Continue

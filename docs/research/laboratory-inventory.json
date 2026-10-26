@@ -74373,9 +74373,9 @@
       }
     },
     "live_readiness": {
-      "state": "partial-native-installed-not-run",
+      "state": "native-clippy-failed-correction-pending",
       "branch": "work/live-readiness",
-      "observed_revision": "a8b7a8ecbca5e5547c279e72a760f3ba1ff7a843",
+      "observed_revision": "1d263af616a996c29843ddad9a113c761bd8be98",
       "worktrees": [
         ".research/readiness-source-head-20261026",
         ".research/readiness-index-probe-20261026",
@@ -74415,7 +74415,19 @@
         "installed negative readiness",
         "ordinary complete-current-readiness"
       ],
-      "resource_scope": "No new engine data or compiler allocation yet; all former protected captures and failures retained. Existing network-1154757 remains the exclusive compiler-cache candidate."
+      "resource_scope": "One exclusive native compiler-cache run; no installed engine case. Former protected captures, artifacts and failures retained.",
+      "native_run": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-1d263af",
+        "session": "42415 ended exit1",
+        "source": "1d263af616a996c29843ddad9a113c761bd8be98",
+        "tree": "a08705f4cba6dff0753be2016df3d64464ca0dcd",
+        "resources": "resources.json",
+        "result": "out/qualification.json",
+        "status": "FAIL",
+        "classification": "strict Clippy large_enum_variant; product/test compilation PASS; test execution NOT_RUN",
+        "containers": "fetch exit0; native exit1; both stopped/PID0/noOOM freshly inspected",
+        "result_sha256": "54a62d0fb1ac7860226d64d739b51f3ed1373aa1af9cdce4c443ec2b2bd71c41"
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {
