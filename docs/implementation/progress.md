@@ -13,13 +13,12 @@ same known relative inventory path fingerprint; documentation checks PASS.
 Main remains in `.research/assembly-fixture-canonical-20261026`.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`9c4793e0` before this retained-state commit. Published main is merged without
-losing partial work. Rows, PG plans/guards/runtime SQL qualification, executor,
-transport and source planning are committed. This increment adds stored custody
-recovery and typed IndexState. Physical CH schema/adapter/proofs, bounded metadata
-parser correction and separate initializer credential configuration remain in
-owned worktrees; full application/module/runtime integration is still NOT_RUN.
-No partial Index implementation is represented as integrated main behavior.
+`6b15dab3` before this checkpoint. Published main is merged. Rows, PG publication,
+retained custody/state, bounded physical adapter/proofs and actual storage module
+wiring are committed locally. The selected ClickHouse client/type parser fixes
+and separate optional initializer credentials are integrated on this branch.
+Full application compilation and runtime integration are still NOT_RUN; no partial
+Index implementation is represented as integrated main behavior.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns resource
 custody and detailed evidence paths under `implementation_index_foundation_20261026`,
@@ -57,6 +56,18 @@ migration application. Updated product migration CLI, actual Rust Index/proof
 API, lost-COMMIT recovery and CH execution remain NOT_RUN. Both owned SQL lab
 containers are stopped/PID0; database, network and original receipts are retained.
 
+The physical adapter's13 targeted controls passed with the diagnostic's explicitly
+unavailable PG signatures; the actual PG/proof seam also received independent
+source review. Its column-TTL metadata gap is corrected by checking the complete
+CREATE declaration. The real selected ClickHouse26.8.35.10 SQL gate then exposed
+two concrete DDL assumptions: a constant partition expression is invalid, and
+the server persists an omitted default index granularity. Unpartitioned tables
+with explicit granularity now create successfully and match all ten complete
+definitions. Run3 also exercised writer constraints/refusals and duplicate rows;
+its overall FAIL is a JSON numeric-representation verifier defect. The original
+three runs are retained; remaining partition/concurrency/TTL controls are pending.
+These failures are not Rust-driver, complete publication or recovery evidence.
+
 ## Hosted CI and public exposure
 
 [Run40349312031](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40349312031),
@@ -90,16 +101,24 @@ synthetic/example fingerprints; no operational credential confirmed, zero
 provider alerts observed. Artifact digests, upload membership and source/tool/
 lock identities match. Protected receipt and limitations are inventory-linked;
 provider asynchronous scan completion and exhaustive secret absence are not
-claimed. Source publication review through `ea7ac434` remains valid; the new
-coherent publication receives an incremental review before push. Historical
+claimed. Source publication review through `f1f6d166` is recorded; new hosted outputs
+will receive their incremental exposure check after completion. Historical
 billing/failure observations remain unchanged in their original reports.
 
 ## Resources and next action
 
-The prior completed Actions watch was reaped; watch54174 observes run40363410510. No installed-journey or SQL-lab product
-process remains active. Active delegates own the physical CH adapter/proofs, independent parser review/
-correction and initializer credential configuration; the latter's component results do
-not imply full engine qualification. Q37 configurations remain as verified.
+Actions watch54174 still observes run40363410510; all three foundation jobs were
+last observed running, with no terminal result yet. No installed-journey or PG SQL
+product process remains active. The CH SQL owner retains the three failed runs
+and is completing its remaining finite checks. Delegates own deployment
+preparation and SQL qualification; the maintained native Index check profile is
+integrated and its five Python verifier controls PASS.
+Root owns integration and service wiring. Q37 configurations remain as verified.
+
+The next native check will reuse the existing exclusively locked compiler cache,
+with actual application/PG/CH modules and no diagnostic substitutes. Its original
+cache containers are stopped/PID0 and no live consumer overlaps the cache;
+154,848,296,960bytes were free before preparation. Build launch remains NOT_RUN.
 
 The bounded cache retirement removed4446 obsolete compiler intermediates from
 three completed September18 Archive targets. All11120 nonselected entries and35

@@ -73433,7 +73433,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Run40332283813 completedFAIL: ARMfoundationPASS; macOS bin cancellation defect (library466PASS1ignored); amd64 all executed checks through Rust/acceptance/docsPASS then dependency-policyFAIL12advisories7packages, later CLIchecksNOT_RUN. No billing refusal/cancellation.",
+    "status": "Latest completed40349312031 FAIL only macOS temporary-root fixture; Linux amd64/ARM64 foundation PASS and dependency/cancellation corrections passed at recorded hosted scope. Published fixture/checkpoint f1f6d166 is now under run40363410510, last observed IN_PROGRESS.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73884,7 +73884,7 @@
   "implementation_index_foundation_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026",
     "source_base": "9f629dd2ae1f53e6aa51ac98aae7491a6e4d8e8e",
-    "status": "Partial Index integration on work/initial-index at8b74cd4a; main remains coherent CI correction. Full application/CH qualification NOT_RUN; SQL-only engine results linked separately.",
+    "status": "Partial Index source integrated locally through6b15dab3; actual storage module wiring and maintained native profile ready. Full application compile/runtime NOT_RUN. Product schema assumptions corrected; run3 JSON verifier FAIL preserved, remaining engine controls pending.",
     "intent": "P01-T09 and narrow P02-T05/T06 initial immutable Index projection, truthful readiness and isolated dependency-outage proof",
     "dependency_source": {
       "receipt": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/dependencies/source-receipt.json",
@@ -73986,6 +73986,69 @@
       },
       "schema_source": ".research/initial-index-physical-20261026/apps/bigbrotr/src/storage/clickhouse/schema.rs",
       "original_failure": "cfg(test) helper visibility compile refusal retained; expectations unchanged."
+    },
+    "physical_adapter": {
+      "source": "7a904e695104350d4f3e97bd0684a43b1c1b7589",
+      "integrated_as": "1496c634",
+      "module_wiring": "857b026f",
+      "unpartitioned_correction": "ba4ebf87",
+      "component_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-physical-20261026/.research/physical-components-20261026/result.json",
+        "sha256": "a7f9bffcf51a87afa2d29c851362abd4919534b93246c7a0114b3457d8e975f7"
+      },
+      "independent_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/physical-independent-review-20261026.json",
+        "sha256": "caf66f252784179b36f1e7697b5b1d525fb83c59c1ff8c8e9275471c2f06c4b5"
+      },
+      "correction_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-physical-20261026/.research/physical-components-20261026/unpartitioned-result.json",
+        "sha256": "ed386b017788b664ebeff29ec9112ba75c854f213d6dee72a70da978729ffc91"
+      },
+      "status": "13 scoped adapter controls PASS; six corrected schema controls PASS. Source follow-up closes per-column TTL omission; actual CH canonical/negative checks pending. Full application/PG/CH product execution NOT_RUN.",
+      "granularity_correction": "417ee543",
+      "followup_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/physical-independent-review-followup-20261026.json",
+        "sha256": "1e2352691f7429bc2ca7cbd52cd79d0dd05657d3ca2f587aa4d7ac2d39ea1f06"
+      },
+      "granularity_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-physical-20261026/.research/physical-components-20261026/granularity-result.json",
+        "sha256": "5de40a5216eb51f9fd5e7b2497be4e058dc714c95099582603473164108c6871"
+      }
+    },
+    "metadata_bounds": {
+      "integrated_commits": [
+        "b3d0ab21",
+        "cc3c536f"
+      ],
+      "report": "docs/implementation/evidence/p01-clickhouse-metadata-bounds-20261026.json",
+      "status": "Selected exact dependency tuple retained; complete upstream sources/provenance plus bounded metadata correction. 52 type tests, one doctest and seven actual client controls PASS. Full product compile NOT_RUN."
+    },
+    "initializer_configuration": {
+      "integrated_as": "22d75a57",
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/clickhouse-init-config-20261026/.research/config-components/inventory.json",
+        "sha256": "121e528e4e366e80f8d8682b1e0552e3e7b452eb3322fad07fcf0833927dc824"
+      },
+      "status": "Optional separate credentials and generated schema/reference integrated; scoped controls PASS. Actual CLI/secret consumer/live privileges NOT_RUN."
+    },
+    "physical_engine_lab": {
+      "worktree": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026",
+      "root": "/home/tux/bigbrotr-rs/.research/initial-index-ch-sql-20261026/.research/ch-lab-a",
+      "owner": "initial_index_rows",
+      "status": "Run1 FAIL invalid constant PARTITION BY; run2 FAIL omitted persisted index_granularity. Run3 ten complete definitions and writer constraints/refusals observed correct, then FAIL in diagnostic JSON integer-vs-string representation. Original runs retained; pending partition/concurrency/TTL and verifier capture correction owned by initial_index_rows. No actual Rust driver or PG integration claim."
+    },
+    "native_preparation": {
+      "owner": "root; ci_native_cancel_review prepares maintained profile",
+      "source": "6b15dab3 before checkpoint",
+      "cache": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/build",
+      "status": "NOT_RUN; original cache containers verified stopped PID0, ownership labels match, no running cache consumers, no Cargo credential/config files; runner must reacquire exclusive lock and recheck preflight at launch.",
+      "free_bytes_before_preparation": 154848296960,
+      "profile_commit": "9523f5ae",
+      "runner_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-index-diagnostic-20261026/.research/runner-review/inventory.json",
+        "sha256": "08e4ba3b89b75593993c770c5797ab000c50468f1d78fe63f7ccfa9026be5136"
+      },
+      "verification": "Five Python verifier controls PASS; root read complete new verifier/tests and owning existing runner/native/inventory files. Full native launch NOT_RUN."
     }
   },
   "implementation_checkpoint_space_20261026": {
