@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Run40363410510 on f1f6d166 completed SUCCESS: all three required native foundation jobs PASS. Original failures retained; this does not qualify later local Index source or complete release/engine/installation gates.",
+    "status": "FAIL AMD64 keyring retry Busy; ARM64 and macOS selected foundation PASS",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
-    "latest_hosted_source": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096",
+    "latest_hosted_source": "94a522327eed103fd13f0b7fb60c313485b8451d",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73466,9 +73466,9 @@
       "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-macos/result.json"
     },
     "latest_exposure_check": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-exposure/receipt.json",
-      "sha256": "7ceb8c89160dbf06733fee908b31311560221c39535d165083c8eb2d4e3ed915",
-      "scope": "Four artifacts/507 members and34 workflow log members;54 known synthetic/example candidates across5 unchanged fingerprints;zero operational credential confirmed andzero observed provider alerts. Asynchronous scan completion/exhaustive absence not claimed."
+      "path": ".research/ci-publication-20261026/run-40406281096-exposure/receipt.json",
+      "sha256": "3de32e9a6ce0e059f1d906bce13ee1d82de08b1092f195ea49a7cb293d53952e",
+      "scope": "Four artifacts/270 members and40 workflow log members;27 known synthetic/example matches across5 unchanged fingerprints;zero operational credential confirmed andzero observed provider alerts. Asynchronous provider completion/exhaustive absence not claimed."
     },
     "verification_in_progress": null,
     "superseded_branch_retirement": {
@@ -73488,8 +73488,10 @@
       "validation": "Original formatting/diff/Linux fork diagnosticPASS; run40332283813 macOS full library466PASS1ignored includes corrected identity/descriptor controls. Separate bin cancellation failure remains open."
     },
     "pending_source_review": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-exposure/source-review.json",
-      "sha256": "d7924d4c56e5ec02664d7abd95b01f9daf0ec10f01cb933867eb915dd85d5790"
+      "through": "a8584b24",
+      "receipt": ".research/ci-publication-20261026/source-a8584b24-exposure/receipt.json",
+      "receipt_sha256": "abde94e8cccece4bc62ad326c25d2b4c90fb74bceaebe61bbbd17e4aa557ab43",
+      "status": "PASS bounded source/history delta; final documentation and FIFO fixture tail pending"
     },
     "arm_rustdoc": {
       "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40323472991-arm",
@@ -73627,7 +73629,7 @@
       "worktree": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026",
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-run-local-reuse-20261026/.research/ci-reuse-controls/result.json",
       "receipt_sha256": "7586a4a62aa5b3acdbc1683f7f08b90e1b6892cf892a9492055ac5d088525b44",
-      "state": "Critical review complete at trusted run-local scope; undeclared ancestor Cargo configuration finding corrected. Actual merged source2c3e5071:21 CI controls+3 noncompiler builder controls PASS. Native/compiler smoke/full acceptance/Actions for changed helper NOT_RUN. Fresh release and full default/debug workspace scope unchanged; timing benefit unmeasured.",
+      "state": "Actual exact-source fresh release/default-profile shared contexts verified on all three platforms at94a52232. ARM64/macOS complete workspace/acceptance; AMD64 later keyring fixtureFAIL preserves overallFAIL. Different source/hosts prevent a causal timing claim; no cross-PR compiled cache.",
       "config_boundary_correction": "778d4e2de65bfd4b739926f58e657edd825ba76d",
       "integration_commits": [
         "74337306",
@@ -73638,7 +73640,8 @@
       "merged_control_logs": {
         ".research/ci-run-local-merged-20261026.log": "cbedd57e3fab241331590f95ccdd98079360a88d601305fa9674430415a98211",
         ".research/ci-run-local-merged-build-controls-20261026.log": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4"
-      }
+      },
+      "hosted_report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json"
     },
     "runtime_helper_source_review": {
       "through": "03464fcf2d3458a3338ad0c40bf6fe9d300db656",
@@ -73659,6 +73662,42 @@
       "local_fix": "9e70d8ecda62ed730017838463042d512eabc951",
       "public_exposure": "4artifacts/30members+38logs;0candidates/0alerts;digests/allowlist verified",
       "resources": "Read-only GitHub retrieval; no new engine/build/dispatch/push/cleanup"
+    },
+    "run_40406281096": {
+      "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096",
+      "revision": "94a522327eed103fd13f0b7fb60c313485b8451d",
+      "status": "FAIL AMD64 keyring retry Busy; ARM64 and macOS selected foundation PASS",
+      "watch": {
+        "session": 49815,
+        "interval_seconds": 45,
+        "reaped": true,
+        "exit_code": 1
+      },
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40406281096-exposure/receipt.json",
+      "receipt_sha256": "3de32e9a6ce0e059f1d906bce13ee1d82de08b1092f195ea49a7cb293d53952e",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40406281096-exposure/outcome.json",
+      "outcome_sha256": "4a536cbd8363ce34eaa931953dddd479b4fb9dcb927cee8584729b4fe8f47e9b",
+      "contexts": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40406281096-exposure/post-build-contexts.json",
+      "contexts_sha256": "a46f92fbe84c308bca7b0b7ae34698d1a44234f49092caa2c7ee663dcdec4598",
+      "failure_diagnosis": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40406281096-exposure/amd64-failure-diagnosis.json",
+      "failure_diagnosis_sha256": "a20126f93258a7622d5e44a58a0ba57c7cae6f753523f07dcfb42461dcd613ec",
+      "fixture_commit": "09a6f364",
+      "fixture_root_integration": "68236ade",
+      "source_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-94a52232-exposure/receipt.json",
+      "source_audit_sha256": "e7feb6e8af7b3436c9606864c76912cb08ff80daa9b009479f16cc89ea66594d",
+      "limits": "Only this attempt and artifacts; original failures preserved; installed/ordinary readiness and local correction execution are separate.",
+      "local_fixture_qualification": {
+        "status": "PASS_SCOPED",
+        "source": "68236ade35d78516cfa24eda631d6277b14c0803",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-ci-68236ad",
+        "root_verification_sha256": "cb7215d8bb9a6d98dd922a95c774fc7a9da29e98e4d01cd2a004ad4cd9f2aaff",
+        "tests": 10,
+        "format": "PASS",
+        "strict_clippy": "PASS",
+        "retained_test_binary_sha256": "f45c266368a31450e9a1cadcf94b9cb522f1ab6a5da00253e547365ba6652a20",
+        "session": "28017 exit0/reaped; exact owner container stopped/exit0/PID0/noOOM",
+        "scope": "All original cursor_keyring controls in normal parallel release-profile execution; no arbitrary retry/serialization. No installed product source change or new hosted confirmation."
+      }
     }
   },
   "implementation_first_launch_maintained_20261026": {

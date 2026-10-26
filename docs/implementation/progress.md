@@ -7,7 +7,7 @@ execution-efficiency clarification is recorded in Q38/Q41 and the existing guide
 
 ## Current capability and revision
 
-Published `origin/main`: `94a52232`. Local integrated main through `a8584b24`
+Published `origin/main`: `94a52232`. Local integrated main through `68236ade`
 adds ordinary Archive readiness; this checkpoint follows that revision. Product
 `8256184cd30f49020c6c0a9884e9eaec958ba461` passes native qualification and the
 installed `p01-first-launch-index` journey with assembly/acceptance `e644e218`.
@@ -102,10 +102,14 @@ owns exact source/tool/artifact contexts and timings.
 [Run40406281096](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096)
 on published `94a52232` is terminal FAILURE: ARM64 and macOS succeeded, Linux
 amd64 failed: `cursor_keyring::prepare_key_appends_once_preserving_the_exact_existing_ring_and_material`
-received Busy on an immediate retry. A concurrent FIFO-test subprocess may
-temporarily inherit its directory lock; this mechanism remains a hypothesis
-pending a controlled reproduction. `ci_native_cancel_review` owns the bounded
-fixture diagnosis and terminal public-output audit; watcher49815 exited1/reaped. No rerun or duplicate
+received Busy on an immediate retry. A concurrent FIFO-test subprocess can
+temporarily inherit its directory lock: a synchronized Linux control reproduces
+that mechanism, while the exact hosted schedule remains untraced. Fixture-only
+`68236ade` creates the FIFO in-process on Linux; product behavior and all original
+assertions are unchanged. Exact-source isolated Linux all10 keyring controls,
+format and strict Clippy PASS. The next hosted confirmation remains pending.
+Watcher49815 exited1/reaped; the terminal output audit found only27 known
+synthetic/reference matches and no operational credential or provider alert. No rerun or duplicate
 watch was started. Prior output/source audits through 94a found no new or unclassified
 credential candidates or confidential inputs; empty provider alerts do not prove
 asynchronous scan completion. Protected receipts remain under
@@ -117,10 +121,10 @@ source/history audit. Never upload raw lab captures.
 Native session 15316, installed builder 19968, assembly 86235 and installed r7
 session 97773 all exited0/reaped. Their owned containers are stopped/PID0/noOOM;
 all 19 r7 containers also exited0. The borrowed bridge remains empty and retained.
-No local product/engine/build process is active. Native qualification released
+Cursor-keyring qualification session28017 also exited0/reaped and its container
+is stopped/exit0/PID0/noOOM. No local product/engine/build process is active. Native qualification released
 the exclusive 115 compiler cache; current 825 build and worker artifacts are kept
-for fixture-only followups. The short-pin source delegate and hosted CI evidence reviewer
-remain active; the cleanup/source-audit delegate is complete through a858; final-tail audit remains.
+for fixture-only followups. The short-pin source delegate remains active; hosted evidence review is complete; the cleanup/source-audit delegate is complete through a858; final-tail audit remains.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026.live_readiness.ordinary`, owns resource
@@ -132,8 +136,7 @@ attributed solely to deletion. Pre/post ownership/reference checks passed within
 documented unprivileged `/proc` visibility limits. Earlier retirements remain
 journaled. No whole-target, dataset or worktree deletion or broad cleanup occurred.
 
-Next: close the identified hosted FIFO/keyring test race if confirmed, preserving
-the original failure and exact assertions. Finish the short-pin fixture, critically review
+Next: finish the short-pin fixture, critically review
 the actual expiry/join oracle, then run it with the already qualified 825 installed
 candidate. Preserve the original action, operation and resource ceilings; do not
 confuse Control renewal with reader-pin extension. Record real outcomes in the
