@@ -1,15 +1,38 @@
 """Literal signed bytes, complete manifest and independent Control relationships."""
 import hashlib
 import json
+from pathlib import Path
+import re
 
 
-def validate(before, after, home, initialized, catalog_id):
+def validate(before, after, home, initialized, catalog_id, *, expected_principal='10'*16,
+             expected_table_count=69, expected_tables=None, destination_root=None):
+    """Placement/identity expectations come from the caller's independent setup.
+
+    A newer schema supplies its expected inventory explicitly; observed table
+    names must not be used to manufacture that expectation.
+    """
+    assert re.fullmatch('[0-9a-f]{32}', expected_principal)
+    principal = '\\x' + expected_principal
+    assert type(expected_table_count) is int and expected_table_count > 0
+    assert expected_table_count == 69 or expected_tables is not None
+    if expected_tables is not None:
+        assert not isinstance(expected_tables, str)
+        expected_tables = tuple(expected_tables)
+        assert len(expected_tables) == len(set(expected_tables)) == expected_table_count
+        assert all(re.fullmatch('[a-z][a-z0-9_]*', name) for name in expected_tables)
+        assert set(before) == set(expected_tables)
+    if destination_root is None:
+        destination_root = home / 'destination'
+    else:
+        destination_root = Path(destination_root)
+        assert destination_root.is_absolute()
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets',
         'local_accounts', 'management_audit', 'management_commands', 'scope_grants',
         'scope_grant_changes', 'snapshot_leases', 'archive_snapshot_pins', 'retention_claims',
         'jobs', 'job_input_bounds', 'job_admissions', 'export_jobs',
         'export_execution_units', 'artifacts', 'artifact_files'}
-    assert set(before) == set(after) and len(after) == 69
+    assert set(before) == set(after) and len(after) == expected_table_count
     assert all(before[t] == after[t] for t in before.keys() - mutable)
     for table in ('owner_epochs', 'role_instances', 'jobs', 'job_admissions',
         'management_audit', 'management_commands'):
@@ -20,7 +43,7 @@ def validate(before, after, home, initialized, catalog_id):
     session, = after['browser_sessions']
     assert old_session['revoked_at_us'] is not None and session['revoked_at_us'] is not None
     assert old_session['session_id'] != session['session_id']
-    assert old_session['principal_id'] == session['principal_id'] == '\\x' + '10'*16
+    assert old_session['principal_id'] == session['principal_id'] == principal
     assert session['issued_at_us'] >= old_session['revoked_at_us']
     owners = [r for r in after['owner_epochs'] if r not in before['owner_epochs']]
     owner, = owners
@@ -32,7 +55,7 @@ def validate(before, after, home, initialized, catalog_id):
     for grant in after['scope_grants']:
         assert grant['enabled'] and grant['generation'] == 1
         assert grant['dataset_id'] == '\\x' + scope['dataset_id']
-        assert grant['principal_id'] == '\\x' + '10'*16
+        assert grant['principal_id'] == principal
         assert grant['allocation_domain'] == '\\x' + scope['allocation_domain'] and grant['ordinal'] == 3
     assert {g['action'] for g in after['scope_grants']} == {'history.read', 'export', 'private-export'}
     assert after['local_accounts'][0]['grant_revision'] == 4
@@ -57,7 +80,7 @@ def validate(before, after, home, initialized, catalog_id):
     encoded = (json.dumps({key: original[key] for key in (
         'id', 'pubkey', 'created_at', 'kind', 'tags', 'content', 'sig')},
         ensure_ascii=False, separators=(',', ':')) + '\n').encode()
-    destination = home / 'destination' / artifact['artifact_id'][2:]
+    destination = destination_root / artifact['artifact_id'][2:]
     actual = (destination / 'events.jsonl').read_bytes()
     assert actual == encoded and len(actual.splitlines()) == 1
     file_hash = hashlib.sha256(encoded).hexdigest()

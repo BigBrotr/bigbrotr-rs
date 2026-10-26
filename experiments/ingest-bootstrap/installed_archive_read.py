@@ -27,9 +27,19 @@ def decode_row(raw, row_bytes):
     return json.loads(raw)
 
 
+def catalog_settings(config, catalog_port):
+    """An explicit loopback port changes placement, never the allowed host."""
+    assert type(catalog_port) is int and 1 <= catalog_port <= 65535
+    pg = config['postgres']['catalog']
+    assert pg['endpoint'] == f'127.0.0.1:{catalog_port}'
+    assert all(re.fullmatch('[a-z0-9_]+', pg[k]) for k in ('database', 'read_user'))
+    return pg
+
+
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
-         bundle_root=Path('/build/archive-worker')):
+         bundle_root=Path('/build/archive-worker'), catalog_port=5432):
     assert row_bytes in (65536, 262144, 1048576)
+    pg = catalog_settings(config, catalog_port)
     bundle = Path(bundle_root)
     assert bundle.is_absolute()
     header = (bundle / 'lib/duckdb.h').read_text()
@@ -92,12 +102,10 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
         for name in ('httpfs', 'postgres_scanner', 'ducklake'):
             execute(f"LOAD '{bundle}/extensions/{name}.duckdb_extension'", 'extension-' + name)
         execute("SET pg_pool_enable_reaper_thread=false; SET pg_use_ctid_scan=false; SET pg_pool_max_connections=2; SET pg_pool_acquire_mode='try'", 'pg-settings')
-        pg = config['postgres']['catalog']
-        assert pg['endpoint'] == '127.0.0.1:5432'
-        assert all(re.fullmatch('[a-z0-9_]+', pg[k]) for k in ('database', 'read_user'))
         secret = Path(pg['read_password_ref'].removeprefix('file:')).read_text()
         assert re.fullmatch('[0-9a-f]{64}', secret)
-        execute("CREATE TEMPORARY SECRET reader (TYPE postgres, URI 'hostaddr=127.0.0.1 port=5432 dbname="
+        execute("CREATE TEMPORARY SECRET reader (TYPE postgres, URI 'hostaddr=127.0.0.1 port="
+            + str(catalog_port) + ' dbname='
             + pg['database'] + ' user=' + pg['read_user'] + ' password=' + secret
             + " sslmode=disable connect_timeout=5')", 'credential')
         del secret
@@ -145,9 +153,12 @@ if __name__ == '__main__':
     row_limit.add_argument('--row-bytes', type=int, choices=(65536, 262144, 1048576),
         help='explicit independent census envelope; no production row-limit change')
     parser.add_argument('--worker-root', type=Path, default=Path('/build/archive-worker'))
+    parser.add_argument('--catalog-port', type=int, default=5432,
+        help='explicit 127.0.0.1 catalog port; must match the configured endpoint')
     args = parser.parse_args()
     config, temporary = args.config, args.temporary
     assert config.is_absolute() and temporary.is_absolute()
     temporary.mkdir(mode=0o700)
     print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=args.full_stream_order,
-        row_bytes=args.row_bytes or (262144 if args.large_signed_row else 65536), bundle_root=args.worker_root)))
+        row_bytes=args.row_bytes or (262144 if args.large_signed_row else 65536), bundle_root=args.worker_root,
+        catalog_port=args.catalog_port)))

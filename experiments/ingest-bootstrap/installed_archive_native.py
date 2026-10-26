@@ -5,6 +5,7 @@ case dispatch. The caller first checks the complete historical owner union.
 """
 import hashlib
 import json
+from pathlib import Path
 import lab
 from installed_sync_oracle import SIGNED_SHA256, decode, expected
 from installed_archive_oracle import expected as archive_expected
@@ -14,8 +15,20 @@ def native(client, output, name, state, initialized, transcript, completed_us):
     directory = output/name
     dumped = lab.docker('exec', client, '/build/ingest_bootstrap_probe', 'dump', '/lab/'+name+'/store')
     (output/(name+'-native.json')).write_text(dumped.stdout)
-    actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
-    originals = sorted((directory/'store/producer-inputs-v1').glob('*.cbor'))
+    return validate_dump(json.loads(dumped.stdout), state, initialized, transcript, completed_us,
+        store_root=directory/'store', event_path=directory/'event.jsonl')
+
+
+def validate_dump(dump, state, initialized, transcript, completed_us, *, store_root,
+                  event_path, acknowledge=False):
+    """Check a supplied census against original inputs and independent encodings.
+
+    The caller owns probe execution and historical-owner selection. ACK mode is
+    an explicit expected runtime protocol, never inferred from captured bytes.
+    """
+    assert type(acknowledge) is bool
+    actual = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in dump['rows']]
+    originals = sorted((Path(store_root)/'producer-inputs-v1').glob('*.cbor'))
     assert len(originals) == 4
     actual_inputs = [p.read_bytes() for p in originals]
     facts = {int.from_bytes(k[-8:], 'big'): v for cf, k, v in actual if cf == 'facts' and k[:2] == b'\x01\x20'}
@@ -42,10 +55,10 @@ def native(client, output, name, state, initialized, transcript, completed_us):
     assert type(received) is int
     assert transcript[0]['sent_at_us'] <= received <= transcript[0]['closed_at_us']
     assert received <= recorded_at <= completed_us
-    artifact = (directory/'event.jsonl').read_bytes()
+    artifact = Path(event_path).read_bytes()
     assert hashlib.sha256(artifact).hexdigest() == SIGNED_SHA256
     wanted, inputs, receipts = expected(state, initialized, json.loads(artifact), dictionary_time,
-        received, recorded_at, transcript[0]['clock_resolution_us'])
+        received, recorded_at, transcript[0]['clock_resolution_us'], acknowledge=acknowledge)
     assert actual == wanted, 'complete independently encoded native rows'
     assert actual_inputs == inputs, 'complete original producer inputs'
     requests = sorted(state['producer_requests'], key=lambda r: r['request_sequence'])
@@ -88,4 +101,5 @@ def native(client, output, name, state, initialized, transcript, completed_us):
     evidence = dict(native_rows=len(wanted), original_requests=len(inputs), dictionary_recorded_us=dictionary_time,
         event_received_us=received, event_recorded_us=recorded_at)
     return evidence, archive_expected(state, initialized, json.loads(artifact), dictionary_time,
-        received, recorded_at, transcript[0]['clock_resolution_us'])
+        received, recorded_at, transcript[0]['clock_resolution_us'],
+        native_options={'acknowledge': acknowledge})
