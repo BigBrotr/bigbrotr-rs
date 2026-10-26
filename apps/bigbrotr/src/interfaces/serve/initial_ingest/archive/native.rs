@@ -389,6 +389,34 @@ pub(in crate::interfaces::serve::initial_ingest) async fn drive<T>(
     result
 }
 
+pub(in crate::interfaces::serve::initial_ingest) async fn connect_manager(
+    prepared: PreparedConnection,
+    reader: &Reader,
+) -> Result<(tokio_postgres::Client, transport::Driver)> {
+    let (client, driver, _) = transport::connect_pinned(prepared, Some(&reader.pinned))
+        .await
+        .map_err(error)?;
+    Ok((client, driver))
+}
+
+pub(in crate::interfaces::serve::initial_ingest) async fn finite<T>(
+    deadline: Instant,
+    cancel: &AtomicBool,
+    work: impl Future<Output = Result<T>>,
+) -> Result<T> {
+    tokio::pin!(work);
+    loop {
+        if cancel.load(Ordering::Acquire) || Instant::now() >= deadline {
+            return Err(error("catalog operation cancelled or expired"));
+        }
+        tokio::select! {
+            biased;
+            result = &mut work => return result,
+            _ = tokio::time::sleep(Duration::from_millis(25)) => {},
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -429,32 +457,5 @@ mod tests {
         assert!(result.is_err());
         assert!(child.is_finished());
         assert!(finished.load(Ordering::Acquire));
-    }
-}
-pub(in crate::interfaces::serve::initial_ingest) async fn connect_manager(
-    prepared: PreparedConnection,
-    reader: &Reader,
-) -> Result<(tokio_postgres::Client, transport::Driver)> {
-    let (client, driver, _) = transport::connect_pinned(prepared, Some(&reader.pinned))
-        .await
-        .map_err(error)?;
-    Ok((client, driver))
-}
-
-pub(in crate::interfaces::serve::initial_ingest) async fn finite<T>(
-    deadline: Instant,
-    cancel: &AtomicBool,
-    work: impl Future<Output = Result<T>>,
-) -> Result<T> {
-    tokio::pin!(work);
-    loop {
-        if cancel.load(Ordering::Acquire) || Instant::now() >= deadline {
-            return Err(error("catalog operation cancelled or expired"));
-        }
-        tokio::select! {
-            biased;
-            result = &mut work => return result,
-            _ = tokio::time::sleep(Duration::from_millis(25)) => {},
-        }
     }
 }

@@ -73407,7 +73407,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "hosted admission restored; first actual current-source matrix fails Clippy, correction pending verification",
+    "status": "Hosted admission restored; 4e7ce48c matrix completed with Clippy test-code failures; reviewed corrections integrated, new hosted qualification pending",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73416,17 +73416,23 @@
       "sha256": "0ff533d6866a0eecb7dea02d990ac44115a5f00f1be82d9b2e924aba71075e82"
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
-    "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup."
+    "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40309278610",
+    "latest_hosted_source": "4e7ce48c2781aaf2921334f3bae1b6d776802411",
+    "correction_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
+      "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
+    }
   },
   "implementation_first_launch_maintained_20261026": {
-    "status": "r3 exposed cached COPY directory metadata; uncached exact wrapper verification PASS, all owned containers stopped; full bootstrap still NOT_RUN",
+    "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
     "intent": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/first-launch-intent.json",
     "source": {
       "path": "/home/tux/bigbrotr-rs/.research/first-launch-source-02d1a87",
       "revision": "02d1a87a4c238ca75fc403f6ec3bfc9ff92b4b31"
     },
     "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87",
-    "retention": "Keep fresh state/data/credentials/rawcaptures protected locally; no public upload. Existing resources are not reused except explicit borrowed bridge.",
+    "retention": "Keep protected unique state, evidence and original failure reproducers; review redundant stopped wrappers/containers for later owned-resource retirement. Raw credentials, sessions and SQL captures must never be publicly uploaded.",
     "attempts": [
       {
         "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-02d1a87",
@@ -73446,6 +73452,23 @@
         "result": "FAIL",
         "reason": "BuildKit reused COPY layers with0700 child directories despite corrected0755 source. Host worker verification PASS; stopped container tar inventory proves old modes. Uncached wrapper of identical files verifies successfully; original refusal retained.",
         "diagnostic": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-directory-fix/uncached-wrapper-diagnostic.json"
+      },
+      {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-wrapper-fix",
+        "source_revision": "51bc688bfe315cbd265ea31b8b3ca8222d6f4753",
+        "result": "PASS",
+        "reason": "All seven maintained checks passed after exact directory-mode and wrapper-cache corrections; original failures retained.",
+        "report": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-wrapper-fix/result.json",
+        "report_sha256": "7f0701874ad0bf3ceaf9cb6904830c50e2af064b1b63bf85f5d2ea9730d7d698",
+        "resources": "/home/tux/bigbrotr-rs/.research/first-launch-maintained-wrapper-fix/resources.json",
+        "observed_resources": {
+          "observed_at": "2026-10-26T11:14:22.495271+00:00",
+          "containers": 18,
+          "running": 0,
+          "all_exit_code": 0,
+          "all_pid": 0,
+          "cleanup_errors": []
+        }
       }
     ],
     "prepared_base_image": {

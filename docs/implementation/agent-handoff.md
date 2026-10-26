@@ -224,11 +224,11 @@ oracles; do not derive expected output by calling the implementation under test.
    completed steps and refresh the progress checkpoint. Never mark the whole
    phase complete from one happy path. A pending commit is not a pushed result.
 
-The practical runner currently implements `p01-t01`, `p01-event-cli` and `p01-config-static`; use the
-actual source/artifact arguments in [verification](../development/verification.md).
-Engine/Compose orchestration and the remaining P01-T08 scenarios are future work;
-the current runner has no `--compose` option. A planned scenario is not executed
-evidence. Current planning checks are
+The practical runner implements `p01-t01`, `p01-event-cli`, `p01-config-static`
+and the fresh installed `p01-first-launch` Compose journey; use the actual
+source/artifact arguments and declared scope in
+[verification](../development/verification.md). Remaining P01-T08 scenarios are
+open; a planned scenario is not executed evidence. Current planning checks are
 `python3 experiments/verify_artifacts.py` and
 `python3 experiments/verify_handoff.py --output .research/handoff-check.json`.
 The latter needs Node and the checksum-pinned first-use `--prepare` step described

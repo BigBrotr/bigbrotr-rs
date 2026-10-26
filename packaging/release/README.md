@@ -78,8 +78,8 @@ exclusive, free of symlink components and separate from source/input files. This
 intake rule does not permit assembler output inside its checkout/artifact inputs.
 The candidate's bundled journey files must match the selected acceptance source.
 
-The case is implemented; real-engine qualification of this maintained integration
-is currently **NOT_RUN**. It selects fresh signed acquisition, Archive publication,
+Qualify the exact candidate you intend to use; results are bound to its recorded
+input identities. The case exercises fresh signed acquisition, Archive publication,
 ordinary Control restart, exact private history and standalone JSONL export.
 Its PASS does not cover the independent native/C API census, typed progress,
 Ingest successor/resend, Index readiness or complete M1. See

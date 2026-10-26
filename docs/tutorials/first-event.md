@@ -8,9 +8,9 @@ candidate bundle supplies the application, native worker and installation files.
 Keep the checkout as well as the bundle; the bundle alone is not this acceptance
 runner.
 
-This is a development candidate procedure under qualification. Real-engine
-qualification of the maintained integration is currently **NOT_RUN**. A completed
-case result covers only its declared checks: it does not establish Ingest
+This is a development candidate procedure. Run the case against the exact
+candidate you intend to use; its result applies to those recorded input identities
+and declared checks: it does not establish Ingest
 successor/resend, Index/readiness, dependency-outage, capacity or complete M1
 acceptance. The base case also excludes the independent native/C API census and
 typed producer-progress qualification. See
@@ -92,7 +92,7 @@ extraction destinations. This extraction allowance does not relax the assembler'
 output restriction.
 
 The case builds only the small runtime wrapper from verified candidate bytes,
-using the pinned local base with `--network=none --pull=false`; it performs no
+using the pinned local base with `--no-cache --network=none --pull=false`; it performs no
 Rust/product build. It generates isolated identities and protected credentials,
 applies explicit provisioning/migrations/activation/enrollment, and supplies the
 controlled signed/forged/duplicate relay traffic. After complete publication and
@@ -163,7 +163,7 @@ for name, digit in (('instance', '1'), ('dataset', '2'), ('catalog', '3')):
 (state / 'config/instance.toml').write_text(text)
 (state / 'operation-ids.json').write_text(json.dumps(ids, indent=2) + '\n')
 PY
-docker build --network=none --pull=false -f "$BIGBROTR_BUNDLE/packaging/image/Dockerfile" \
+docker build --no-cache --network=none --pull=false -f "$BIGBROTR_BUNDLE/packaging/image/Dockerfile" \
   -t "$BIGBROTR_IMAGE" "$BIGBROTR_BUNDLE"
 dc() { docker compose --env-file /dev/null -f "$BIGBROTR_BUNDLE/packaging/compose/compose.yaml" "$@"; }
 dc --profile operator config --quiet
