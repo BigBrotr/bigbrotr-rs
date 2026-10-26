@@ -74204,7 +74204,7 @@
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Initial runtime component qualification4404 remains scoped; fresh worker-bound034 buildPASS. Actual installed034 fails real CH identifier API boundary; correction pending real validation. Restart/unknown-query/readiness remain open.",
+      "state": "Initial runtime4404 component evidence retained; fresh worker-boundf7buildPASS. r3 exposes source-fact vs target-row coupling; corrected source pending qualification. Restart/unknown-query/readiness remain open.",
       "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
       "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
       "first_actual_run": {
@@ -74291,11 +74291,23 @@
             "resources_sha256": "129b5050b6120f989a62787e650bc4c515e35416623850bacaf03bfb49babaf5",
             "finding": "Product migrations41/bootstrap/CH fresh initialization PASS. Archive revision4/cut12 observed. Index first plan prepared then parked: client.insert escapes already-qualified SQL name as one identifier; actual DESCRIBE Code60 UNKNOWN_TABLE. Signed client finite gate expired while Index stayed unadvanced. No Index/publication/read/export PASS.",
             "process": "session62526 exit1/reaped; all16 owned containers freshly verified stopped/exit0/PID0/noOOM; cleanupPASS; borrowed bridge endpoints0. Complete data/logs/inputs and original result retained."
+          },
+          {
+            "root": ".research/first-launch-index-r3-20261026",
+            "artifact": "f7d6befed1545b9b1d29dbfe3bb31c84dc5cac2c",
+            "assembly": "9a105e2900b20a1209ab3fcbb179845158906acb",
+            "acceptance": "9a105e2900b20a1209ab3fcbb179845158906acb",
+            "status": "FAIL_PRODUCT_SOURCE_LIMIT_COUPLING",
+            "result_sha256": "3d05aa7655e60b02cea5cfba62c09e866f5b124f09e7e34d891a1d4fc07e4fc4",
+            "resources_sha256": "751b0db0285c5430c92ea6c22b0568ebbc6fb06fe344fcec4b01b3706543bf9d",
+            "finding": "Terminal retained-native-input refusal; accepted per-target4 rows incorrectly also limits whole source batch to4 facts. Known signed source batch8..12 contains5 facts; independent per-target maximum remains4. No later Index gate PASS; original stores/logs retained.",
+            "limitation": "Generic original error did not retain PendingError discriminant; diagnosis follows source limit and independently specified input. Corrected real run required.",
+            "process": "session23616 exit1/reaped; all16 containers stopped/PID0/noOOM, initial owner exit4/others0; cleanupPASS; borrowed bridge unchanged/empty"
           }
         ]
       },
       "write_api_correction": {
-        "state": "Source corrected, format/whitespace PASS; actual new compile/engine NOT_RUN",
+        "state": "Fresh exactf7d6befe compile PASS; installed r3 reaches fresh initialization but aborts on source-input bound; physical write qualification remains pending.",
         "behavior": "Use validated closed qualified identifier with insert_unescaped (retains driver validation); DESCRIBE uses exact declared per-target column bound, then restore accepted data max_result_rows before insertion. Remove unused macro cardinality argument.",
         "critical_review": "initial_index_rows independently checked exact vendored0.15.2 API, closed IndexTables inputs, client settings clone/insert dispatch ordering and unchanged custody/query IDs. No blocking finding; no engine/build by reviewer.",
         "next": "Compile current worker-bound candidate and rerun same maintained installed case with4-row accepted data ceiling; do not raise timeout or alter scientific expectations."
@@ -74306,8 +74318,16 @@
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-f7d6bef",
         "container_id": "8d3349270f2ce183679219b1018415683ca19dd10a26fee6939a8d0baa682adb",
         "session": 77182,
-        "state": "RUNNING; required corrected current-source ordinary fresh worker-before-parent build",
-        "limits": "Same reviewed prior candidate recipe with new root/source/name/owner only:2CPU6GiB512PIDs;65GiBminimumfree/40GiBoutputstop/7200sdeadline. Shared verified native assets read-only; fresh Cargo home/target; no engine active."
+        "state": "PASS_FRESH_WORKER_BOUND_BUILD; container stopped/exit0/PID0/noOOM; monitor77182 terminal/reaped",
+        "limits": "Same reviewed prior candidate recipe with new root/source/name/owner only:2CPU6GiB512PIDs;65GiBminimumfree/40GiBoutputstop/7200sdeadline. Shared verified native assets read-only; fresh Cargo home/target; no engine active.",
+        "verification": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-f7d6bef/root-verification.json",
+        "verification_sha256": "b966ea2f399a7c4de40be5497fd9a38e5655dfa262fdff9e0739e7a8361ba18a",
+        "source_files": 2351
+      },
+      "source_limit_correction": {
+        "behavior": "Keep bounded64-fact source batch allowance independent from accepted4-row per-target insert ceiling; unchanged output checks and reservation accounting. Retain safe PendingError discriminant in diagnostic.",
+        "state": "Independent critical source review PASS; format/whitespacePASS; actual changed native controls/installed rerun pending",
+        "review": "initial_index_rows checked immutable pending marker count, all-family bounds before PG preparation, both planner passes, charged source/planner allowances and safe enum-only diagnostics. Original generic error leaves direct variant unobserved; no new engine/build by reviewer."
       }
     }
   },

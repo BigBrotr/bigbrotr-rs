@@ -151,7 +151,10 @@ fn profile(root: &Resolved) -> std::result::Result<Profile, OwnerError> {
     }
     Ok(Profile {
         delay,
-        source_records: rows.min(MAX_SOURCE_RECORDS) as usize,
+        // One atomic source batch can feed several target families. The
+        // accepted row ceiling bounds each physical insert, not the total
+        // number of facts needed to plan that batch without splitting it.
+        source_records: MAX_SOURCE_RECORDS as usize,
         source_bytes: bytes.min(MAX_SOURCE_BYTES) as usize,
         rows,
         wire_bytes: bytes,
@@ -535,7 +538,12 @@ impl Index {
             let first = next_source(identity, before)?;
             let Some(pending) = store
                 .read_pending_batch(first, source_limits, source_grant, cancelled)
-                .map_err(|_| failed("retained native input refused"))?
+                .map_err(|error| {
+                    (
+                        4,
+                        format!("initial Index refused; preserve retained state: {error}"),
+                    )
+                })?
             else {
                 if self.pending.is_some() {
                     return Err(failed("prepared plan lost its retained input"));

@@ -7,7 +7,7 @@ Official releases, packages and production remain unauthorized.
 ## Current increment and revision
 
 P01-T09 initial Index is on `work/initial-index` in the canonical checkout,
-HEAD `f7d6befe` before this hosted-evidence checkpoint. Runtime wiring is complete
+HEAD `9a105e29` before this source-bound correction checkpoint. Runtime wiring is complete
 at its initial-only scope: explicit `--initialize-index`, accepted-policy checks,
 actual PG driver custody, bounded physical operations, serialized renewal/timer
 work and joined shutdown. The first real installed attempt exposed a write-adapter defect described below.
@@ -68,12 +68,24 @@ timeouts. Index publication and later read/export stages are not qualified.
 The correction uses the driver's validated unescaped API with the existing closed,
 quoted database/table identifiers. DESCRIBE receives its exact column-count limit,
 then the insert restores the accepted data ceiling. Independent critical source
-review found no new injection, limit, query-ID or custody issue. The corrected fresh worker-bound build is active at exactf7d6befe; engine
-execution is pending. The same maintained case now tightens data to4 rows, the
+review found no new injection, limit, query-ID or custody issue. The corrected fresh worker-bound build at exactf7d6befe PASSes; root verified
+all2351 source files, source/manifest and copied executable/worker identities. The same maintained case now tightens data to4 rows, the
 independently derived maximum family count in a source batch, while keeping all
 scientific expectations and timeouts unchanged. Its12 affected controls PASS.
 Original failures, both databases and inputs are retained; all16 r2 containers
 are stopped/exit0/PID0/noOOM, cleanupPASS, and the borrowed bridge is unchanged.
+
+Installed `r3` on productf7d6befe passed bootstrap and fresh CH initialization,
+then the owner exited4 with a retained-native-input refusal. The actor incorrectly
+used the per-target4-row ceiling as the whole source read limit. The known final
+source batch8–12 contains five facts while every target fits its accepted ceiling.
+The correction separates the existing bounded64-fact source allowance from insert
+rows, preserves per-target refusal and recalculates reservations; errors now name
+the safe PendingError discriminant. Critical source review and format/whitespace PASS; changed native controls
+and actual installed execution are pending. The original generic error did not
+retain its discriminant, so the diagnosed cause still needs the corrected run.
+All16 r3 containers are stopped/PID0/noOOM (owner exit4, others0); cleanupPASS,
+borrowed bridge empty/unchanged. Original data/logs and r1/r2 outcomes are preserved.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns detailed
 resource/evidence locations under `implementation_index_foundation_20261026`,
@@ -160,12 +172,10 @@ or asynchronous provider scan completion.
 
 Native sessions62389 (FAIL) and5554 (PASS) ended and were reaped; both runs'
 containers are stopped-retained, with unrelated inventory unchanged. No owned
-engine or build is active. The fresh build and offline configuration containers
-are stopped-retained in external `runs/initial-index-installed-03464fc`.
-Root session77182 monitors the corrected candidate build in external
-`runs/initial-index-installed-f7d6bef`; its single owned container is active under
-the recorded CPU/RAM/PID/disk/deadline limits. No engine is active. All delegates
-completed their scoped work; worktrees and receipts are retained.
+engine or build is active. The034 andf7 candidate build containers are stopped-retained;
+monitor77182 ended/exit0 and was reaped. Installed r3 session23616 ended/exit1 and
+was reaped. The source-limit correction passed independent critical review;
+other delegates completed their scoped work. Worktrees and receipts are retained.
 Root owns integration and all native/lab execution. Q37 settings remain as verified.
 
 The earlier bounded cache retirement removed4446 obsolete compiler intermediates
@@ -177,10 +187,10 @@ never replay that deletion or incrementally resume the partly retired caches.
 Latest post-native free space is154,385,682,432bytes. Check headroom before the
 next significant allocation; no broad cleanup is needed to unlock this increment.
 
-Next: verify the active corrected current-source worker-bound build, assemble it with
-the same maintained journey, then execute signed-event admission → Archive and Index publication →
+Next: qualify the changed source-bound control, build the corrected worker-bound
+candidate and execute the same signed-event admission → Archive and Index publication →
 independent read/export checks with the4-row accepted policy. Preserve failure
 classification and original captures. Exercise the pending real TTL rejection
 and independent outages at their relevant acceptance boundaries; do not claim
-restart/readiness from initial installation. Observe hosted CI to its terminal
-outcome and group the next publication around this coherent capability.
+restart/readiness from initial installation. The prior hosted run is terminalPASS; group the next publication around this
+coherent capability, then qualify the changed CI reuse through its required run.

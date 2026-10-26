@@ -43,6 +43,21 @@ fn accepted_profile_preserves_provenance_and_both_documents_actual_ceilings() {
         (on.rows, on.wire_bytes, on.delay),
         (20_000, 16 * 1024 * 1024, Duration::from_secs(1))
     );
+    let mut small = root();
+    small
+        .values
+        .insert("indexer.batch_max_rows".into(), json!(4));
+    let small = profile(&small).unwrap();
+    // The installed signed-event admission has five source facts, projecting
+    // into separate families. It must fit the source reader while each target
+    // still refuses a fifth row under the accepted four-row insert ceiling.
+    assert!(small.source().max_records >= 5);
+    assert_eq!(small.rows, 4);
+    let mut counts = [4, 1, 1, 1, 1, 1, 1, 0, 1, 1];
+    let wire = counts.map(|count| count * 128);
+    check_family_bounds(&counts, &wire, small).unwrap();
+    counts[0] = 5;
+    assert!(check_family_bounds(&counts, &wire, small).is_err());
     input.values.insert("sync.provenance".into(), json!("off"));
     let off = profile(&input).unwrap();
     assert_eq!(off.provenance, IndexProvenance::Off);
