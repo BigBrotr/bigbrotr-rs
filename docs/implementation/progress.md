@@ -9,12 +9,12 @@ Official releases, packages and production remain unauthorized.
 The fixture/checkpoint increment is published on `main` at `f1f6d166`.
 [Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
 completed **PASS** on all three required foundation platforms. The terminal
-public-output audit is in progress; optional Rocks ARM remains SKIP. Incremental source audit found only the
+public-output audit is complete; optional Rocks ARM remains SKIP. Incremental source audit found only the
 same known relative inventory path fingerprint; documentation checks PASS.
 Main remains in `.research/assembly-fixture-canonical-20261026`.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`a8423d76` before this checkpoint. Published main is merged. Rows, PG publication,
+`bcb222a5` before this checkpoint. Published main is merged. Rows, PG publication,
 retained custody/state, bounded physical adapter/proofs and actual storage module
 wiring are committed locally. The selected ClickHouse client/type parser fixes
 and separate optional initializer credentials are integrated on this branch.
@@ -96,21 +96,23 @@ same21 failures reproduced with a linked Linux temporary root, then22 controls
 PASS with both linked and direct roots after canonicalizing only the newly owned
 fixture directory. Production path checks and all test methods are unchanged.
 Native macOS confirmation now PASS in run40363410510, alongside both Linux
-platforms. Its detailed counts/exposure audit is being collected.
+platforms. The [hosted foundation report](evidence/p01-ci-hosted-foundation-20261026.json)
+records all30 selected checks PASS, with explicit ignored tests/platform skips.
 
 The early locked policy change now has measured hosted evidence: preceding
 recorded check durations total119.312seconds at ordinal4, versus3945.362seconds
 at ordinal12 in the earlier run. These sums exclude setup overhead and do not
 measure an isolated or whole-run speedup. Native platform/artifact checks remain.
 
-The latest completed run's public audit covers all4 artifacts/507 members and39
+The latest completed run's public audit covers all4 artifacts/507 members and34
 log members. All54 pattern candidates are the same five previously classified
 synthetic/example fingerprints; no operational credential confirmed, zero
 provider alerts observed. Artifact digests, upload membership and source/tool/
 lock identities match. Protected receipt and limitations are inventory-linked;
 provider asynchronous scan completion and exhaustive secret absence are not
-claimed. Source publication review through `f1f6d166` is recorded; new hosted outputs
-will receive their incremental exposure check after completion. Historical
+claimed. Source publication review through `f1f6d166` is recorded; the local Index
+source/history delta through `a8423d76` has no confirmed exposure after review of
+all14 fingerprints. A narrow final documentation delta remains before publication. Historical
 billing/failure observations remain unchanged in their original reports.
 
 ## Resources and next action
@@ -119,7 +121,7 @@ Actions watch54174 finished/exit0 and was reaped. The two actual native check
 sessions also finished and were reaped. No owned engine/build/installed-journey
 process is running. All three CH servers are stopped/exit0/PID0; its original
 failures and partial TTL fixture remain preserved. Delegates now own the initial
-Index actor, terminal hosted-output audit and incremental source publication audit.
+Index actor, bounded CI compilation reuse and incremental source publication audit.
 Root owns runtime/CLI integration. Q37 configurations remain as verified.
 
 The first native application build `fadc6bbd` is retained as FAIL (E0432 wrong
@@ -150,7 +152,7 @@ source, worktree or container was removed. Inventory
 journal and reconstruction procedure. Never replay that deletion or incrementally
 resume the partially retired caches.
 
-Next: finish the publication audits, integrate the verified foundation coherently,
+Next: finish the narrow documentation publication check, integrate the verified foundation coherently,
 and connect the initial Index actor to actual accepted policy, PG driver custody
 and the service timer. Then exercise actual Rust/HTTP insert/readback/proofs and
 the pending column-TTL negative; demonstrate CH outage/recovery while Archive

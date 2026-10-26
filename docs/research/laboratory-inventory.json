@@ -74141,6 +74141,13 @@
         "sha256": "6516f87fd6efbfb85dcc7b0ab10ce9211a21804a53835a92948f254d427803b0"
       },
       "verification": "Two new Index controls and two existing Archive transport controls PASS in actual native application gate; runtime consumer still must wrap actual driver before spawn and attach matching state before first Index effect."
+    },
+    "source_publication_review": {
+      "base": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
+      "source": "a8423d7614af80d080ae43ef45381b456907a619",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-a8423d76-exposure/receipt.json",
+      "sha256": "3cb5e7c1318ef36041493102e4eec4c3f78b9d4e495970fa22886aaf08dd9d0f",
+      "scope": "343 objects/30,096,603 bytes; all27 occurrences/14 fingerprints individually reviewed, including8 new references/expressions/upstream synthetic values. 323 changed path/object pairs checked. No operational credential or confidential raw-input exposure confirmed. Heuristic bounded source/history audit, not exhaustive absence. Final documentation-only delta remains separate."
     }
   },
   "implementation_checkpoint_space_20261026": {
