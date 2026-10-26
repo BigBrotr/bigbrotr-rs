@@ -94,7 +94,7 @@ impl IngestStore {
         let snapshot = self.db.snapshot();
         {
             let value = snapshot
-                .get_pinned_opt(KeyDomain::Manifest.prefix(), &read_options())
+                .get_pinned_opt(KeyDomain::Manifest.prefix(), read_options())
                 .map_err(|_| SourceHeadError::EngineRead)?
                 .ok_or(SourceHeadError::MissingManifest)?;
             check_cancel(cancelled)?;
@@ -113,7 +113,7 @@ impl IngestStore {
         .map_err(|_| SourceHeadError::UnsupportedIdentity)?;
         let through = {
             let value = snapshot
-                .get_pinned_opt(key.as_bytes(), &read_options())
+                .get_pinned_opt(key.as_bytes(), read_options())
                 .map_err(|_| SourceHeadError::EngineRead)?;
             check_cancel(cancelled)?;
             match value.as_deref() {
