@@ -178,6 +178,9 @@ Only responsibilities selected by the actual supervisor appear. Source bounds
 and all publication cuts share a maximum1024 entries; the128KiB output cap is
 separately reserved and oversize observations are refused, never truncated. Cuts,
 revisions and observation ages are metadata, not read pins or publication proof.
+Every nested observation timestamp is the current authenticated PostgreSQL report
+time; independently measured suspend-aware age names the oldest required evidence.
+Missing evidence remains unknown/null, never an invented zero-age observation.
 No role-control POST, pending-byte estimate or ClickHouse query API is introduced.
 Live readiness still depends on owning runtime evidence; idle alone is insufficient.
 

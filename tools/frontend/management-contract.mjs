@@ -24,12 +24,20 @@ await output('validators.js', '// Generated from contracts/management/v1/openapi
   validateSession: 'bigbrotr-private-session#/$defs/SessionObservation',
   validateError: 'bigbrotr-private-session#/$defs/ApiError',
   validateJob: 'bigbrotr-private-session#/$defs/JobObservation',
-  validateRoles: 'bigbrotr-private-session#/$defs/RoleStatusObservation',
+  validateRolesShape: 'bigbrotr-private-session#/$defs/RoleStatusObservation',
   validateJobListQuery: 'bigbrotr-private-session#/$defs/JobListQuery',
   validateJobPage: 'bigbrotr-private-session#/$defs/JobPage',
   validateResumeCommand: 'bigbrotr-private-session#/$defs/ResumeExportCommand',
   validateResumeReceipt: 'bigbrotr-private-session#/$defs/ResumeExportAcceptance'
-}) + '\n');
+}) + `
+// JSON Schema validates shape; this closed report also requires equality between
+// instance fields. Keep this semantic check in the generated public validator.
+export function validateRoles(value) {
+  return validateRolesShape(value)
+    && (value.source.time === null || value.source.time.observed_at_us === value.observed_at_us)
+    && value.capabilities.every(item => item.time === null || item.time.observed_at_us === value.observed_at_us);
+}
+`);
 await output('validators.d.ts', `// Generated from contracts/management/v1/openapi.yaml. Do not edit.
 import type { components } from './management';
 export declare function validateSession(value: unknown): value is components['schemas']['SessionObservation'];

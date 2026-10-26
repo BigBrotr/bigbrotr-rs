@@ -95,8 +95,9 @@ pub struct ObservationTime {
     age_us: u64,
 }
 impl ObservationTime {
-    /// Age is supplied by the owning monotonic/suspend-aware observation clock;
-    /// wall clock subtraction must not invent freshness.
+    /// `observed_at_us` is the current authenticated PostgreSQL report timestamp.
+    /// Age comes from the oldest required physical/native observation using the
+    /// owning suspend-aware clock; never subtract UTC timestamps for freshness.
     pub fn new(observed_at_us: i64, age: Duration) -> Result<Self, SessionError> {
         Ok(Self {
             observed_at_us,
@@ -162,11 +163,12 @@ impl RoleSnapshot {
         roles: Vec<RoleObservation>,
         capabilities: Vec<CapabilityObservation>,
     ) -> Result<Self, SessionError> {
-        let valid_time = |freshness, time: Option<ObservationTime>| {
-            matches!(
-                (freshness, time),
-                (Freshness::Unknown, None) | (Freshness::Fresh | Freshness::Stale, Some(_))
-            )
+        let valid_time = |freshness, time: Option<ObservationTime>| match (freshness, time) {
+            (Freshness::Unknown, None) => true,
+            (Freshness::Fresh | Freshness::Stale, Some(time)) => {
+                time.observed_at_us == observed_at_us
+            }
+            _ => false,
         };
         if roles.first().map(|v| v.role) != Some(RoleKind::Control)
             || roles.len() > 5

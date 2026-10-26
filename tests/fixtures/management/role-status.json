@@ -27,7 +27,7 @@
       "reason": "verification_stale",
       "freshness": "stale",
       "time": {
-        "observed_at_us": "-9223372036854775808",
+        "observed_at_us": "9223372036854775807",
         "age_us": "18446744073709551615"
       },
       "published": {

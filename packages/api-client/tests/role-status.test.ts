@@ -11,6 +11,8 @@ test('role observation preserves unknown source and the older exact verified cut
   assert.equal(fixture.capabilities[0].published.cut.bounds[0].last_complete_sequence, '18446744073709551615');
   assert.equal(fixture.source.cut, null);
   assert.equal(fixture.capabilities[0].state, 'stale');
+  assert.equal(fixture.capabilities[0].time.observed_at_us, fixture.observed_at_us);
+  assert.equal(fixture.capabilities[0].time.age_us, '18446744073709551615');
 });
 
 test('role observation is a closed metadata profile without invented readiness or metrics', () => {
@@ -25,12 +27,26 @@ test('role observation is a closed metadata profile without invented readiness o
     (v: typeof fixture) => { v.source.freshness = 'fresh'; },
     (v: typeof fixture) => { v.capabilities[0].state = 'ready'; },
     (v: typeof fixture) => { v.capabilities[0].time.age_us = -1; },
+    (v: typeof fixture) => { v.capabilities[0].time.observed_at_us = '9223372036854775806'; },
     (v: typeof fixture) => { v.capabilities[0].capability = 'private_history'; },
     (v: typeof fixture) => { v.capabilities[0].published.cut.bounds[0].owner_epoch = '01'; },
     (v: typeof fixture) => { v.capabilities[0].published.cut.bounds = Array(1025).fill(v.capabilities[0].published.cut.bounds[0]); }
   ]) {
     const value = structuredClone(fixture); change(value);
     assert.equal(validateRoles(value), false, JSON.stringify(value));
+  }
+});
+
+test('role timestamps share the PG report coordinate independently of evidence age', () => {
+  for (const timestamp of ['-9223372036854775808', '79', '9223372036854775807']) {
+    const value = structuredClone(fixture);
+    value.observed_at_us = timestamp;
+    value.capabilities[0].time.observed_at_us = timestamp;
+    value.source = { cut: value.capabilities[0].published.cut, freshness: 'stale',
+      time: { observed_at_us: timestamp, age_us: '60000000' }, reason: 'verification_stale' };
+    assert.equal(validateRoles(value), true);
+    value.source.time.observed_at_us = timestamp === '79' ? '80' : '79';
+    assert.equal(validateRoles(value), false);
   }
 });
 

@@ -333,6 +333,10 @@ closed response contains no credentials, scope payloads, filesystem paths or
 invented pending-byte counts. It grants no action, adoption, read or publication
 authority. Health and freshness observations never substitute for writer exclusion.
 Source and publication cuts are bounded together, and oversize output is refused.
+Every present nested `time.observed_at_us` equals the report's authenticated
+current PostgreSQL `observed_at_us`. Its `age_us` measures elapsed time since the
+oldest required physical/native observation on the owning suspend-aware clock;
+UTC timestamp subtraction never determines freshness.
 Actual dependency qualification remains the runtime owner's responsibility;
 transport/DTO controls alone do not establish live readiness.
 

@@ -3458,15 +3458,15 @@
           "observed_at_us": {
             "type": "string",
             "pattern": "^(0|-?[1-9][0-9]{0,18})$",
-            "description": "Canonical signed int64 Unix microseconds. Never round through JavaScript Number."
+            "description": "Current authenticated PostgreSQL report timestamp as canonical signed int64 Unix microseconds; must equal the enclosing role report observed_at_us."
           },
           "age_us": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]{0,19})$",
-            "description": "Canonical uint64 decimal string, maximum18446744073709551615."
+            "description": "Canonical uint64 microseconds elapsed on the owning suspend-aware clock since the oldest required physical/native observation; never a UTC timestamp difference."
           }
         },
-        "description": "Observation wall-clock timestamp and nonnegative age measured by the owning monotonic clock, never reconstructed by subtracting wall clocks."
+        "description": "Every present observed_at_us equals the enclosing RoleStatusObservation.observed_at_us: the current authenticated PostgreSQL report timestamp, not the original evidence timestamp. age_us measures elapsed time since the oldest required physical/native observation using the owning suspend-aware clock. Never compute freshness by subtracting UTC timestamps."
       },
       "RoleStatusReason": {
         "type": "string",
@@ -3881,7 +3881,7 @@
             "const": "observation-only"
           }
         },
-        "description": "Selected supervised roles and capabilities, not blanket readiness. Control is required; arrays are unique in the declared role/capability enum order. All cuts name identity.dataset_id and share an aggregate maximum1024 stream bounds. Output is at most128KiB; oversize is refused, not truncated. Runtime identity is compared with the authenticated dataset/process/accepted config and policy. Missing observations are explicit unknown/null, never zero metrics."
+        "description": "Selected supervised roles and capabilities, not blanket readiness. Control is required; arrays are unique in the declared role/capability enum order. All cuts name identity.dataset_id and share an aggregate maximum1024 stream bounds. Output is at most128KiB; oversize is refused, not truncated. Runtime identity is compared with the authenticated dataset/process/accepted config and policy. Missing observations are explicit unknown/null, never zero metrics. Every present source.time.observed_at_us and capabilities[].time.observed_at_us must equal this report observed_at_us; age_us remains independently measured evidence age."
       }
     },
     "securitySchemes": {

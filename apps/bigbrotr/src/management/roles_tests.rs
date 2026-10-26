@@ -27,13 +27,13 @@ fn roles() -> Vec<RoleObservation> {
         reason: StatusReason::Current,
     }]
 }
-fn capability() -> CapabilityObservation {
+fn capability(observed_at_us: i64) -> CapabilityObservation {
     CapabilityObservation {
         capability: CapabilityKind::IndexPublication,
         state: CapabilityState::Stale,
         reason: StatusReason::VerificationStale,
         freshness: Freshness::Stale,
-        time: Some(ObservationTime::new(i64::MIN, Duration::from_micros(u64::MAX)).unwrap()),
+        time: Some(ObservationTime::new(observed_at_us, Duration::from_micros(u64::MAX)).unwrap()),
         published: Some(PublishedCut {
             revision: "9".to_owned().try_into().unwrap(),
             cut: make_cut(1),
@@ -76,7 +76,7 @@ fn role_observation_keeps_unknown_source_and_stale_verified_cut_without_authorit
         i64::MAX,
         unknown_source(),
         roles(),
-        vec![capability()],
+        vec![capability(i64::MAX)],
     )
     .unwrap();
     let actual = serde_json::to_value(snapshot).unwrap();
@@ -88,7 +88,7 @@ fn role_observation_keeps_unknown_source_and_stale_verified_cut_without_authorit
 }
 #[test]
 fn role_observation_refuses_foreign_cuts_duplicates_and_inconsistent_freshness() {
-    let mut foreign = capability();
+    let mut foreign = capability(0);
     foreign.published.as_mut().unwrap().cut = SourceCut::new(
         [5; 16].try_into().unwrap(),
         TopologyGeneration::new(1),
@@ -102,7 +102,7 @@ fn role_observation_refuses_foreign_cuts_duplicates_and_inconsistent_freshness()
             0,
             unknown_source(),
             roles(),
-            vec![capability(), capability()]
+            vec![capability(0), capability(0)]
         )
         .is_err()
     );
@@ -110,7 +110,7 @@ fn role_observation_refuses_foreign_cuts_duplicates_and_inconsistent_freshness()
     duplicate.extend(roles());
     assert!(RoleSnapshot::new(identity(), 0, unknown_source(), duplicate, vec![]).is_err());
     assert!(RoleSnapshot::new(identity(), 0, unknown_source(), vec![], vec![]).is_err());
-    let mut unknown_ready = capability();
+    let mut unknown_ready = capability(0);
     unknown_ready.state = CapabilityState::Ready;
     assert!(
         RoleSnapshot::new(
@@ -125,10 +125,35 @@ fn role_observation_refuses_foreign_cuts_duplicates_and_inconsistent_freshness()
     let mut unknown = unknown_source();
     unknown.freshness = Freshness::Fresh;
     assert!(RoleSnapshot::new(identity(), 0, unknown, roles(), vec![]).is_err());
-    let mut wrong_kind = capability();
+    let mut wrong_kind = capability(0);
     wrong_kind.capability = CapabilityKind::SignedEventExport;
     assert!(RoleSnapshot::new(identity(), 0, unknown_source(), roles(), vec![wrong_kind]).is_err());
     assert!(ObservationTime::new(0, Duration::MAX).is_err());
+    // Both a known source and every retained capability use the current PG
+    // report coordinate, even when the physical observation itself is old.
+    for nested in [78, 79, 80] {
+        let source = SourceObservation {
+            cut: Some(make_cut(1)),
+            freshness: Freshness::Stale,
+            time: Some(ObservationTime::new(nested, Duration::from_secs(60)).unwrap()),
+            reason: StatusReason::VerificationStale,
+        };
+        assert_eq!(
+            RoleSnapshot::new(identity(), 79, source, roles(), vec![]).is_ok(),
+            nested == 79
+        );
+        assert_eq!(
+            RoleSnapshot::new(
+                identity(),
+                79,
+                unknown_source(),
+                roles(),
+                vec![capability(nested)]
+            )
+            .is_ok(),
+            nested == 79
+        );
+    }
 }
 #[test]
 fn role_observation_full_stream_bound_encodes_without_truncation_and_holds_grant() {
@@ -156,7 +181,7 @@ fn role_observation_full_stream_bound_encodes_without_truncation_and_holds_grant
     source.freshness = Freshness::Fresh;
     source.time = Some(ObservationTime::new(0, Duration::ZERO).unwrap());
     assert!(matches!(
-        RoleSnapshot::new(identity(), 0, source, roles(), vec![capability()]),
+        RoleSnapshot::new(identity(), 0, source, roles(), vec![capability(0)]),
         Err(SessionError::Capacity)
     ));
     let permit = budget
