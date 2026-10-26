@@ -31,6 +31,7 @@ async fn initial_profile_preserves_sessions_and_refuses_other_unwired_operations
     let (mut server, address, budget, _) = sessions().await;
     for (method, path, status) in [
         ("GET", "/v1/resources/event_history", 404),
+        ("GET", "/management/v1/roles", 401),
         ("POST", "/v1/resources/event_history", 405),
         ("GET", "/management/v1/jobs", 405),
         ("POST", "/management/v1/jobs", 401),

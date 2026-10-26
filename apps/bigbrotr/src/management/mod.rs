@@ -8,4 +8,5 @@ pub mod jobs;
 pub mod reauthentication;
 pub mod relay_enrollment;
 pub mod relay_registration;
+pub mod roles;
 pub mod sessions;

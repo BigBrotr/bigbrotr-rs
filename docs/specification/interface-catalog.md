@@ -127,7 +127,8 @@ complete the workflows promised by P08/P09:
 | `GET` / `POST /management/v1/tokens`; `DELETE /management/v1/tokens/{token_id}` | List safe metadata, issue once, revoke; no plaintext/hash disclosure in listing |
 | `GET /management/v1/secret-references`; `PUT /management/v1/secret-references/{reference_id}` | Discover/register allowed protected provider handles; no raw secret upload or arbitrary filesystem browser |
 | `GET /management/v1/configuration` and `/configuration/revisions`; `POST /configuration/previews` and `/configuration/revisions` under the same prefix | Redacted effective state, validated change preview and atomic revision; CLI config show/validate/preview/apply |
-| `GET /management/v1/roles`; `POST /management/v1/roles/{role_instance_id}/commands` | Typed start/pause/drain/resume/stop for already configured supervised roles |
+| `GET /management/v1/roles` | Authenticated bounded observations of selected supervised roles and capabilities; no activity refresh or execution authority |
+| `POST /management/v1/roles/{role_instance_id}/commands` | Planned typed start/pause/drain/resume/stop for already configured supervised roles |
 | `POST /management/v1/relay-endpoints` | Authenticated normalized URL registration; initial Ingest owner, dataset policy.change, exact expected heads and identity-only receipt |
 | `POST /management/v1/relay-enrollments` | Guarded source intent; initial Ingest owner consumes an existing EndpointId, with dataset policy.change, exact generation and acceptance-only receipt |
 | `GET /management/v1/relays`; `POST /management/v1/jobs` | Operational registry view and typed finite work; enrollment/repair operations use their existing guarded domain commands |
@@ -165,6 +166,20 @@ routes remain separate required implementation. Generated types cover this actua
 subset; the current frontend runtime validators cover session observations and
 errors. Grant/reauthentication browser consumers remain required; these artifacts
 do not advertise the whole table above.
+
+The role observation route is common to the initial writer and ordinary private
+profiles. It requires the current session, explicit CSRF and dataset `status.read`,
+with no query parameters or body. `bigbrotr-role-status/1` separates role health
+from capability state, carries the accepted dataset/process/config/policy identity,
+and preserves unknown source heads and stale verified cuts. The selected roles
+are Control, Ingest, Sync, Archive and Index; capabilities are signed admission,
+finite acquisition, Archive/Index publication, private history and signed export.
+Only responsibilities selected by the actual supervisor appear. Source bounds
+and all publication cuts share a maximum1024 entries; the128KiB output cap is
+separately reserved and oversize observations are refused, never truncated. Cuts,
+revisions and observation ages are metadata, not read pins or publication proof.
+No role-control POST, pending-byte estimate or ClickHouse query API is introduced.
+Live readiness still depends on owning runtime evidence; idle alone is insufficient.
 
 The explicit initial Ingest owner additionally exposes
 `POST /management/v1/relay-endpoints` and `/management/v1/relay-enrollments`, using

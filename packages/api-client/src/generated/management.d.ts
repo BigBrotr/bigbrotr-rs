@@ -224,6 +224,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/management/v1/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Observe selected supervised roles and capabilities
+         * @description Current browser session, explicit CSRF and dataset status.read required. Observation-only, without idle activity refresh or cookies. GET only, no query parameters or body. A fixed action window starts before SQL and gates socket writes. Live capability evidence is supplied by the owning supervisor; an idle role alone is not a readiness certificate.
+         */
+        get: operations["observeRoles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -688,6 +708,84 @@ export interface components {
             expected_config_revision: string;
             /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
             expected_policy_revision: string;
+        };
+        RoleSnapshotIdentity: {
+            dataset_id: string;
+            process_incarnation: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            config_revision: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            policy_revision: string;
+        };
+        /** @description Observation wall-clock timestamp and nonnegative age measured by the owning monotonic clock, never reconstructed by subtracting wall clocks. */
+        RoleObservationTime: {
+            /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
+            observed_at_us: string;
+            /** @description Canonical uint64 decimal string, maximum18446744073709551615. */
+            age_us: string;
+        };
+        /** @enum {string} */
+        RoleStatusReason: "current" | "not_selected" | "not_observed" | "starting" | "authority_unavailable" | "source_unavailable" | "dependency_unavailable" | "publication_in_flight" | "behind_source" | "verification_in_flight" | "verification_stale" | "remote_outcome_unknown" | "resource_unavailable" | "read_path_unavailable" | "stopping" | "stopped";
+        RoleSourceBound: {
+            /** @description Canonical uint32 decimal; maximum4294967295. */
+            shard_id: string;
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            owner_epoch: string;
+            /** @description Canonical uint64 decimal string, maximum18446744073709551615. */
+            last_complete_sequence: string;
+        };
+        /** @description Structurally ordered complete-through cut; not an authority or storage certificate. Bounds are strictly ordered by shard_id then owner_epoch, and are never truncated. */
+        RoleSourceCut: {
+            dataset_id: string;
+            /** @description Canonical uint64 decimal string, maximum18446744073709551615. */
+            topology_generation: string;
+            bounds: components["schemas"]["RoleSourceBound"][];
+        };
+        RoleSourceObservation: {
+            cut: components["schemas"]["RoleSourceCut"] | null;
+            /** @enum {string} */
+            freshness: "fresh" | "stale" | "unknown";
+            time: components["schemas"]["RoleObservationTime"] | null;
+            reason: components["schemas"]["RoleStatusReason"];
+        } & unknown;
+        RoleObservation: {
+            /** @enum {string} */
+            role: "control" | "ingest" | "sync" | "archive" | "index";
+            /** @enum {string} */
+            state: "starting" | "ready" | "idle" | "degraded" | "draining" | "stopped";
+            reason: components["schemas"]["RoleStatusReason"];
+        };
+        RolePublishedCut: {
+            /** @description Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number. */
+            revision: string;
+            cut: components["schemas"]["RoleSourceCut"];
+        };
+        /** @description Independent capability state. An older verified cut can remain visible while stale or unavailable. Generation and storage incarnation belong only to Index publication. No scope, payload, pending byte estimate, action or read authority. */
+        RoleCapabilityObservation: {
+            /** @enum {string} */
+            capability: "signed_event_admission" | "finite_acquisition" | "archive_publication" | "index_publication" | "private_history" | "signed_event_export";
+            /** @enum {string} */
+            state: "disabled" | "building" | "ready" | "stale" | "unavailable" | "retiring";
+            reason: components["schemas"]["RoleStatusReason"];
+            /** @enum {string} */
+            freshness: "fresh" | "stale" | "unknown";
+            time: components["schemas"]["RoleObservationTime"] | null;
+            published: components["schemas"]["RolePublishedCut"] | null;
+            generation: string | null;
+            storage_incarnation: string | null;
+        } & (unknown & unknown & unknown);
+        /** @description Selected supervised roles and capabilities, not blanket readiness. Control is required; arrays are unique in the declared role/capability enum order. All cuts name identity.dataset_id and share an aggregate maximum1024 stream bounds. Output is at most128KiB; oversize is refused, not truncated. Runtime identity is compared with the authenticated dataset/process/accepted config and policy. Missing observations are explicit unknown/null, never zero metrics. */
+        RoleStatusObservation: {
+            /** @constant */
+            format: "bigbrotr-role-status/1";
+            identity: components["schemas"]["RoleSnapshotIdentity"];
+            /** @description Canonical signed int64 Unix microseconds. Never round through JavaScript Number. */
+            observed_at_us: string;
+            source: components["schemas"]["RoleSourceObservation"];
+            roles: components["schemas"]["RoleObservation"][];
+            capabilities: components["schemas"]["RoleCapabilityObservation"][];
+            /** @constant */
+            authority: "observation-only";
         };
         /**
          * Initial exact-ID history QueryRequest
@@ -1894,6 +1992,82 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ApiError"];
                 };
+            };
+            /** @description Capacity or rate limit; Retry-After60 seconds */
+            429: {
+                headers: {
+                    /** @description Initial fixed retry delay, in seconds; clients must not retry mutations automatically. */
+                    "Retry-After"?: "60";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authority or dependency unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    observeRoles: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-CSRF-Token": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Bounded observation of this process and its selected capabilities; no cookies or activity refresh. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleStatusObservation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication denied */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Browser boundary denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Only GET is supported; Allow: GET. */
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Capacity or rate limit; Retry-After60 seconds */
             429: {

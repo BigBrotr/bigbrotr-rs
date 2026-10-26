@@ -1659,6 +1659,98 @@
           }
         }
       }
+    },
+    "/management/v1/roles": {
+      "get": {
+        "operationId": "observeRoles",
+        "summary": "Observe selected supervised roles and capabilities",
+        "description": "Current browser session, explicit CSRF and dataset status.read required. Observation-only, without idle activity refresh or cookies. GET only, no query parameters or body. A fixed action window starts before SQL and gates socket writes. Live capability evidence is supplied by the owning supervisor; an idle role alone is not a readiness certificate.",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Browser boundary denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Capacity or rate limit; Retry-After60 seconds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                },
+                "description": "Initial fixed retry delay, in seconds; clients must not retry mutations automatically."
+              }
+            }
+          },
+          "503": {
+            "description": "Authority or dependency unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Bounded observation of this process and its selected capabilities; no cookies or activity refresh.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleStatusObservation"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only GET is supported; Allow: GET."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3318,6 +3410,478 @@
           }
         },
         "description": "Initial-owner finite configured Sync intent over one registered scope. Requires current session/CSRF, roles.control and original expected heads. Acceptance grants no socket, data access or coverage; installed execution remains in progress."
+      },
+      "RoleSnapshotIdentity": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset_id",
+          "process_incarnation",
+          "config_revision",
+          "policy_revision"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "process_incarnation": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "config_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "policy_revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          }
+        }
+      },
+      "RoleObservationTime": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "observed_at_us",
+          "age_us"
+        ],
+        "properties": {
+          "observed_at_us": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+            "description": "Canonical signed int64 Unix microseconds. Never round through JavaScript Number."
+          },
+          "age_us": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})$",
+            "description": "Canonical uint64 decimal string, maximum18446744073709551615."
+          }
+        },
+        "description": "Observation wall-clock timestamp and nonnegative age measured by the owning monotonic clock, never reconstructed by subtracting wall clocks."
+      },
+      "RoleStatusReason": {
+        "type": "string",
+        "enum": [
+          "current",
+          "not_selected",
+          "not_observed",
+          "starting",
+          "authority_unavailable",
+          "source_unavailable",
+          "dependency_unavailable",
+          "publication_in_flight",
+          "behind_source",
+          "verification_in_flight",
+          "verification_stale",
+          "remote_outcome_unknown",
+          "resource_unavailable",
+          "read_path_unavailable",
+          "stopping",
+          "stopped"
+        ]
+      },
+      "RoleSourceBound": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "shard_id",
+          "owner_epoch",
+          "last_complete_sequence"
+        ],
+        "properties": {
+          "shard_id": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,9})$",
+            "description": "Canonical uint32 decimal; maximum4294967295."
+          },
+          "owner_epoch": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "last_complete_sequence": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})$",
+            "description": "Canonical uint64 decimal string, maximum18446744073709551615."
+          }
+        }
+      },
+      "RoleSourceCut": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dataset_id",
+          "topology_generation",
+          "bounds"
+        ],
+        "properties": {
+          "dataset_id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "not": {
+              "const": "00000000000000000000000000000000"
+            }
+          },
+          "topology_generation": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,19})$",
+            "description": "Canonical uint64 decimal string, maximum18446744073709551615."
+          },
+          "bounds": {
+            "type": "array",
+            "maxItems": 1024,
+            "items": {
+              "$ref": "#/components/schemas/RoleSourceBound"
+            }
+          }
+        },
+        "description": "Structurally ordered complete-through cut; not an authority or storage certificate. Bounds are strictly ordered by shard_id then owner_epoch, and are never truncated."
+      },
+      "RoleSourceObservation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cut",
+          "freshness",
+          "time",
+          "reason"
+        ],
+        "properties": {
+          "cut": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoleSourceCut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "freshness": {
+            "type": "string",
+            "enum": [
+              "fresh",
+              "stale",
+              "unknown"
+            ]
+          },
+          "time": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoleObservationTime"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "$ref": "#/components/schemas/RoleStatusReason"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "freshness": {
+                  "const": "unknown"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "cut": {
+                  "type": "null"
+                },
+                "time": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "cut": {
+                  "$ref": "#/components/schemas/RoleSourceCut"
+                },
+                "time": {
+                  "$ref": "#/components/schemas/RoleObservationTime"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RoleObservation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "state",
+          "reason"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "control",
+              "ingest",
+              "sync",
+              "archive",
+              "index"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "starting",
+              "ready",
+              "idle",
+              "degraded",
+              "draining",
+              "stopped"
+            ]
+          },
+          "reason": {
+            "$ref": "#/components/schemas/RoleStatusReason"
+          }
+        }
+      },
+      "RolePublishedCut": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "revision",
+          "cut"
+        ],
+        "properties": {
+          "revision": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]{0,19}$",
+            "description": "Canonical positive uint64 decimal string; maximum18446744073709551615. Never convert to JavaScript Number."
+          },
+          "cut": {
+            "$ref": "#/components/schemas/RoleSourceCut"
+          }
+        }
+      },
+      "RoleCapabilityObservation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "capability",
+          "state",
+          "reason",
+          "freshness",
+          "time",
+          "published",
+          "generation",
+          "storage_incarnation"
+        ],
+        "properties": {
+          "capability": {
+            "type": "string",
+            "enum": [
+              "signed_event_admission",
+              "finite_acquisition",
+              "archive_publication",
+              "index_publication",
+              "private_history",
+              "signed_event_export"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "building",
+              "ready",
+              "stale",
+              "unavailable",
+              "retiring"
+            ]
+          },
+          "reason": {
+            "$ref": "#/components/schemas/RoleStatusReason"
+          },
+          "freshness": {
+            "type": "string",
+            "enum": [
+              "fresh",
+              "stale",
+              "unknown"
+            ]
+          },
+          "time": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoleObservationTime"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "published": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RolePublishedCut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "generation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "storage_incarnation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$",
+                "not": {
+                  "const": "00000000000000000000000000000000"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "description": "Independent capability state. An older verified cut can remain visible while stale or unavailable. Generation and storage incarnation belong only to Index publication. No scope, payload, pending byte estimate, action or read authority.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "freshness": {
+                  "const": "unknown"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "time": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "time": {
+                  "$ref": "#/components/schemas/RoleObservationTime"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "const": "ready"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "freshness": {
+                  "const": "fresh"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "capability": {
+                  "not": {
+                    "const": "index_publication"
+                  }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "generation": {
+                  "type": "null"
+                },
+                "storage_incarnation": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RoleStatusObservation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format",
+          "identity",
+          "observed_at_us",
+          "source",
+          "roles",
+          "capabilities",
+          "authority"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "const": "bigbrotr-role-status/1"
+          },
+          "identity": {
+            "$ref": "#/components/schemas/RoleSnapshotIdentity"
+          },
+          "observed_at_us": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]{0,18})$",
+            "description": "Canonical signed int64 Unix microseconds. Never round through JavaScript Number."
+          },
+          "source": {
+            "$ref": "#/components/schemas/RoleSourceObservation"
+          },
+          "roles": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/RoleObservation"
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+              "$ref": "#/components/schemas/RoleCapabilityObservation"
+            }
+          },
+          "authority": {
+            "type": "string",
+            "const": "observation-only"
+          }
+        },
+        "description": "Selected supervised roles and capabilities, not blanket readiness. Control is required; arrays are unique in the declared role/capability enum order. All cuts name identity.dataset_id and share an aggregate maximum1024 stream bounds. Output is at most128KiB; oversize is refused, not truncated. Runtime identity is compared with the authenticated dataset/process/accepted config and policy. Missing observations are explicit unknown/null, never zero metrics."
       }
     },
     "securitySchemes": {

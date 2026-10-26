@@ -1,0 +1,52 @@
+{
+  "format": "bigbrotr-role-status/1",
+  "identity": {
+    "dataset_id": "01010101010101010101010101010101",
+    "process_incarnation": "02020202020202020202020202020202",
+    "config_revision": "18446744073709551615",
+    "policy_revision": "9007199254740993"
+  },
+  "observed_at_us": "9223372036854775807",
+  "source": {
+    "cut": null,
+    "freshness": "unknown",
+    "time": null,
+    "reason": "not_observed"
+  },
+  "roles": [
+    {
+      "role": "control",
+      "state": "ready",
+      "reason": "current"
+    }
+  ],
+  "capabilities": [
+    {
+      "capability": "index_publication",
+      "state": "stale",
+      "reason": "verification_stale",
+      "freshness": "stale",
+      "time": {
+        "observed_at_us": "-9223372036854775808",
+        "age_us": "18446744073709551615"
+      },
+      "published": {
+        "revision": "9",
+        "cut": {
+          "dataset_id": "01010101010101010101010101010101",
+          "topology_generation": "18446744073709551615",
+          "bounds": [
+            {
+              "shard_id": "4294967294",
+              "owner_epoch": "18446744073709551615",
+              "last_complete_sequence": "18446744073709551615"
+            }
+          ]
+        }
+      },
+      "generation": "03030303030303030303030303030303",
+      "storage_incarnation": "04040404040404040404040404040404"
+    }
+  ],
+  "authority": "observation-only"
+}

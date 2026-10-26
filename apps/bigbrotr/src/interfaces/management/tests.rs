@@ -6,6 +6,8 @@ mod grants;
 mod jobs;
 #[path = "profile_tests.rs"]
 mod profiles;
+#[path = "role_tests.rs"]
+mod roles;
 #[path = "scope_tests.rs"]
 mod scopes;
 

@@ -322,6 +322,20 @@ expiry/accessibility qualification remains open. Bounded listing, broader job ki
 artifact discovery, explicit resume/cancel and their full UI/CLI journeys remain
 selected P08/P09 work. No historical schema checksum changes.
 
+`GET /management/v1/roles` uses the same current session, explicit CSRF, dataset
+`status.read`, locked accepted heads and nonrenewable delivery window. It does not
+refresh idle expiry or set cookies. PostgreSQL authorizes the observation; the
+supervisor supplies actual selected role health and distinct capability states.
+Completion refuses a different dataset, process, config or policy revision.
+Unknown source heads stay null; an older independently verified publication cut
+may remain visible with stale/unavailable state and its observation age. The
+closed response contains no credentials, scope payloads, filesystem paths or
+invented pending-byte counts. It grants no action, adoption, read or publication
+authority. Health and freshness observations never substitute for writer exclusion.
+Source and publication cuts are bounded together, and oversize output is refused.
+Actual dependency qualification remains the runtime owner's responsibility;
+transport/DTO controls alone do not establish live readiness.
+
 The first job-list profile is actor-owned protocol1 exports at
 `GET /management/v1/jobs`. It uses the same redacted row fields and current
 session, CSRF and `status.read` checks as detail. Allowlisted query parameters

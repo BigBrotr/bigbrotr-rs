@@ -3,7 +3,9 @@ mod assets;
 mod boundary;
 mod delivery;
 mod history;
+mod roles;
 pub(super) use history::{HistoryBody, HistoryWork};
+pub(super) use roles::RoleStatusWork;
 mod transport;
 pub(super) use assets::Assets;
 use bigbrotr::runtime::policy_authority::{DeliveryWindow, PolicyLeaseTracker};
@@ -201,6 +203,7 @@ pub(super) enum Execution {
     Archive(AllocationWork),
     History(HistoryWork),
     Resume(ResumeWork),
+    RoleStatus(RoleStatusWork),
 }
 
 /// Initial-owner policy heads are fixed for its lifetime. Public enrollment
@@ -599,6 +602,38 @@ impl Management {
                                     Err(_) => Err(SessionError::Unavailable),
                                 },
                                 Err(_) => Err(SessionError::Unavailable),
+                            },
+                            Err(error) => Err(error),
+                        };
+                        return Ok(Execution::Complete(Some(Response(completion, result))));
+                    }
+                    Operation::RoleStatus {
+                        session,
+                        csrf,
+                        delivery,
+                    } => {
+                        let action = lease
+                            .begin_action(lease.known_epoch())
+                            .map_err(|e| (4, e.to_string()))?;
+                        let authorized = sql(
+                            maximum,
+                            owner.authorize_browser_role_status(&session, &csrf),
+                        )
+                        .await?;
+                        let result = match authorized {
+                            Ok(authorization) => match action.complete(authorization.remaining()) {
+                                Ok(window) => {
+                                    if delivery.action.bind(window).is_ok() {
+                                        return Ok(Execution::RoleStatus(RoleStatusWork {
+                                            completion,
+                                            authorization,
+                                            delivery,
+                                            budget: self.budget.clone(),
+                                        }));
+                                    }
+                                    Err(SessionError::Unavailable)
+                                }
+                                _ => Err(SessionError::Unavailable),
                             },
                             Err(error) => Err(error),
                         };

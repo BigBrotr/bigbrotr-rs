@@ -40,6 +40,9 @@ pub use job_list::AuthorizedJobPage;
 #[path = "job_status.rs"]
 mod job_status;
 pub use job_status::AuthorizedJobStatus;
+#[path = "role_status.rs"]
+mod role_status;
+pub use role_status::AuthorizedRoleStatus;
 #[path = "history.rs"]
 mod history;
 pub use history::HistoryAuthorization;

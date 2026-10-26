@@ -92,6 +92,11 @@ pub(super) enum Operation {
         job: bigbrotr_model::JobId,
         command: ResumeExportCommand,
     },
+    RoleStatus {
+        session: BrowserSecret,
+        csrf: BrowserSecret,
+        delivery: ConnectionDelivery,
+    },
     JobStatus {
         session: BrowserSecret,
         csrf: BrowserSecret,
@@ -143,6 +148,7 @@ pub(super) enum Reply {
     RelayEnrollment(EnrollmentReceipt),
     JobList(PageBody),
     ResumeExport(ResumeExportReceipt),
+    RoleStatus(bigbrotr::management::roles::RoleBody),
     JobStatus(Option<JobObservation>),
     Job(JobReceipt),
     History(Box<super::history::HistoryBody>),
@@ -302,7 +308,8 @@ impl Server {
         let mut router = Router::new()
             .route("/management/v1/sessions", post(login))
             .route("/management/v1/sessions/current", delete(logout))
-            .route("/management/v1/me", get(me));
+            .route("/management/v1/me", get(me))
+            .route("/management/v1/roles", get(role_status));
         if matches!(profile, Profile::Initial { .. }) {
             router = router
                 .route("/management/v1/jobs", post(create_job))
@@ -598,6 +605,45 @@ async fn list_jobs(
             session,
             csrf,
             request: parsed,
+            delivery,
+        },
+    )
+    .await
+}
+
+async fn role_status(
+    State(shared): State<Shared>,
+    Extension(connection): Extension<Connection>,
+    request: Request,
+) -> Response {
+    let grant = match begin(&shared, &request) {
+        Ok(grant) => grant,
+        Err(status) => return error(status),
+    };
+    // Axum GET also handles HEAD; this observation profile accepts only GET.
+    if request.method() != Method::GET {
+        return protect((StatusCode::METHOD_NOT_ALLOWED, [(header::ALLOW, "GET")]).into_response());
+    }
+    let session = match session(request.headers()) {
+        Ok(value) => value,
+        Err(status) => return error(status),
+    };
+    let Some(csrf) =
+        single(request.headers(), "x-csrf-token").and_then(|v| BrowserSecret::parse_hex(v).ok())
+    else {
+        return error(StatusCode::FORBIDDEN);
+    };
+    if !matches!(bounded_body(request.into_body(), 0).await, Ok(bytes) if bytes.is_empty()) {
+        return error(StatusCode::BAD_REQUEST);
+    }
+    let delivery = connection.delivery.clone();
+    dispatch(
+        &shared,
+        connection,
+        grant,
+        Operation::RoleStatus {
+            session,
+            csrf,
             delivery,
         },
     )
@@ -1307,6 +1353,11 @@ async fn dispatch(
                 "accepted_at_us":receipt.accepted_at_us.to_string(), "created":receipt.created,
                 "execution":"unobserved", "authority":"acceptance-only"}))
         ).into_response()),
+        Ok(Ok(Reply::RoleStatus(body))) => {
+            let mut response = Response::new(Body::from(axum::body::Bytes::from_owner(body)));
+            response.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
+            protect(response)
+        },
         Ok(Ok(Reply::JobStatus(Some(value)))) => protect(Json(value).into_response()),
         Ok(Ok(Reply::JobStatus(None))) => failure(StatusCode::NOT_FOUND, "job_unavailable", "Job unavailable to this account.", "check_state"),
         Ok(Ok(Reply::Job(receipt))) => protect((
