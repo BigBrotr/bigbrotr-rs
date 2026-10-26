@@ -40,22 +40,31 @@ fn fixture() -> (tempfile::TempDir, ArchiveAttemptRequest, CatalogIdentity) {
 }
 
 // Another test's concurrent fork can briefly retain CLOEXEC descriptors before
-// exec. Retry actual nonblocking acquisition; elapsed time never grants custody.
+// exec. Retry actual nonblocking acquisition, including before negative manifest
+// assertions; elapsed time never grants custody or substitutes for the result.
+fn recover_released_for_boot(
+    root: &Path,
+    request: &ArchiveAttemptRequest,
+    identity: &CatalogIdentity,
+    boot: &str,
+) -> Result<LocalAttempt, LifetimeError> {
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(2);
+    loop {
+        match LocalAttempt::recover_for_boot(root, request, identity, boot) {
+            Err(LifetimeError::Occupied) if std::time::Instant::now() < until => {
+                std::thread::sleep(std::time::Duration::from_millis(2))
+            }
+            result => return result,
+        }
+    }
+}
 fn recover_released(
     root: &Path,
     request: &ArchiveAttemptRequest,
     identity: &CatalogIdentity,
 ) -> LocalAttempt {
-    let until = std::time::Instant::now() + std::time::Duration::from_secs(2);
-    loop {
-        match LocalAttempt::recover_for_boot(root, request, identity, BOOT) {
-            Ok(value) => return value,
-            Err(LifetimeError::Occupied) if std::time::Instant::now() < until => {
-                std::thread::sleep(std::time::Duration::from_millis(2))
-            }
-            Err(error) => panic!("released fixture remains unavailable: {error:?}"),
-        }
-    }
+    recover_released_for_boot(root, request, identity, BOOT)
+        .unwrap_or_else(|error| panic!("released fixture remains unavailable: {error:?}"))
 }
 
 #[test]
@@ -82,19 +91,44 @@ fn retained_identity_is_locked_before_recovery_and_never_recreated() {
     drop(recovered);
     let changed =
         CatalogIdentity::local(request.dataset(), request.catalog(), "/different/").unwrap();
-    assert!(matches!(
-        LocalAttempt::recover_for_boot(&root, &request, &changed, BOOT),
-        Err(LifetimeError::Identity)
-    ));
-    assert!(matches!(
-        LocalAttempt::recover_for_boot(
+    assert_eq!(
+        recover_released_for_boot(&root, &request, &changed, BOOT).err(),
+        Some(LifetimeError::Identity)
+    );
+    assert_eq!(
+        recover_released_for_boot(
             &root,
             &request,
             &identity,
             "fedcba98-7654-3210-fedc-ba9876543210"
-        ),
-        Err(LifetimeError::Identity)
-    ));
+        )
+        .err(),
+        Some(LifetimeError::Identity)
+    );
+}
+
+#[test]
+fn retained_descriptor_defers_manifest_refusal_until_reacquisition() {
+    let (root, request, identity) = fixture();
+    let root = root.path().canonicalize().unwrap();
+    let owner = LocalAttempt::create_for_boot(&root, &request, &identity, BOOT).unwrap();
+    // dup retains the same open file description as a concurrent fork. This
+    // makes the post-drop interval deterministic without a child timing race.
+    let retained = owner.lock.try_clone().unwrap();
+    drop(owner);
+    let changed =
+        CatalogIdentity::local(request.dataset(), request.catalog(), "/different/").unwrap();
+    assert_eq!(
+        LocalAttempt::recover_for_boot(&root, &request, &changed, BOOT).err(),
+        Some(LifetimeError::Occupied),
+        "identity inspection must remain behind actual lock acquisition"
+    );
+    drop(retained);
+    assert_eq!(
+        recover_released_for_boot(&root, &request, &changed, BOOT).err(),
+        Some(LifetimeError::Identity)
+    );
+    drop(recover_released(&root, &request, &identity));
 }
 
 #[test]
@@ -336,17 +370,17 @@ fn altered_partial_oversized_and_linked_journals_never_become_recovery_custody()
     ] {
         fs::write(&manifest, bytes).unwrap();
         assert_eq!(
-            LocalAttempt::recover_for_boot(&root, &request, &identity, BOOT).err(),
+            recover_released_for_boot(&root, &request, &identity, BOOT).err(),
             Some(error)
         );
     }
     fs::write(&manifest, &original).unwrap();
     let link = manifest.with_extension("second-link");
     fs::hard_link(&manifest, &link).unwrap();
-    assert!(matches!(
-        LocalAttempt::recover_for_boot(&root, &request, &identity, BOOT),
-        Err(LifetimeError::Incomplete)
-    ));
+    assert_eq!(
+        recover_released_for_boot(&root, &request, &identity, BOOT).err(),
+        Some(LifetimeError::Incomplete)
+    );
     fs::remove_file(link).unwrap();
     drop(recover_released(&root, &request, &identity));
 }
