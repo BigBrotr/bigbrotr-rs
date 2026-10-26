@@ -134,4 +134,4 @@ enabled = false
 max_bytes = "256MiB"
 
 [read.execution]
-max_memory_bytes = "256MiB"
+max_memory_bytes = "1GiB"

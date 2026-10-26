@@ -73202,7 +73202,7 @@
     }
   },
   "implementation_m1_first_launch_20261026": {
-    "status": "core-bundle-and-clean-initializers-qualified-connected-journey-pending",
+    "status": "initial-signed-archive-captured-history-recipe-failed-correction-pending",
     "owner": "c555fff773e9f50f27c7db5c9840b962",
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280",
     "source_base": "c3f7c31c6d1d4bbef35980d708ca927879a2abb1",
@@ -73210,7 +73210,7 @@
     "product_source": "c49cfe5c69ac2a6f17b2bb381bef04a052ffd553",
     "bundle_worktree": "/home/tux/bigbrotr-rs/.research/m1-bundle-20261026",
     "branch": "work/m1-bundle",
-    "observed_at": "2026-10-26T08:17:01.114101+00:00",
+    "observed_at": "2026-10-26T09:23:43.129143+00:00",
     "free_before_bytes": 170161451008,
     "processes": [],
     "containers": [
@@ -73224,8 +73224,8 @@
     "retention": "Preserve source drafts, databases, input, original failures, captures, assembled artifacts and external roots; no cleanup authorized by this allocation.",
     "resources": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/resources.json",
-      "sha256": "2e69b42ade352229df94da80890e37f6da9c686b57d5999d71325194b9106827",
-      "bytes": 5457
+      "sha256": "31c507f2bfbc80daa899b6cc079517b189942113cc0807ba984f17a574ff3632",
+      "bytes": 7168
     },
     "core_evidence": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/core-verified.json",
@@ -73252,12 +73252,71 @@
       "branch": "work/m1-client",
       "base": "0f80280f5180a4aa32ef57479be23e89eca5e063",
       "owner": "m1_client_parameters",
-      "state": "active bounded existing-client parameterization"
+      "state": "reviewed and merged in c5b90047; no process",
+      "commit": "423be36b4c85958676913cadb5508ef6a7de4aee"
     },
     "preserved_failures": [
       "core-extraction-v1-failure.json",
       "compose-config-v1-failure.json",
-      "instance-v1 retained before runtime; premature ingest directory source finding corrected in v2"
+      "instance-v1 retained before runtime; premature ingest directory source finding corrected in v2",
+      "initial-import-failure.json",
+      "initial-v1/native-oracle-failure.json",
+      "oracle-progress-first-failure.json",
+      "export-v1/failure.json; original authorized history256MiB429; exportNOT_RUN"
+    ],
+    "oracle_worktree": {
+      "path": "/home/tux/bigbrotr-rs/.research/m1-oracles-20261026",
+      "branch": "work/m1-oracles",
+      "commit": "3492dc89067b0fbd37d6a8aa7c35c7492a039577",
+      "state": "offline native/progress replay PASS; critical review pending; no engines"
+    },
+    "history_recipe_failure": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/export-v1/triage.json",
+      "sha256": "f7c7940c1f88e857d9c2b9a03f2fbaebf4001514ea8bc44d29b949e7d594ac15",
+      "bytes": 1561
+    },
+    "journey_bundle_evidence": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/journey-bundle-verified.json",
+      "sha256": "c357e8931b32ae1532d92880bd4997846c58483a931494d3a3d67e735a3bfc4b",
+      "bytes": 445
+    },
+    "typed_progress_replay": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m1-first-launch-0f80280/oracle-progress-review.json",
+      "sha256": "68eae4c96191c8857238f4f9b0f46545604b488c2fd888fb550221b156d99c2c",
+      "bytes": 10614
+    },
+    "retained_runtime_containers": [
+      {
+        "id": "0d36ff4ea3f3cb5c90fac2d47bb59c290e6e287425ae9519429c91e32eafeb30",
+        "name": "bigbrotr-m1-0f80280-initial-v1",
+        "status": "exited",
+        "pid": 0,
+        "exit": 0
+      },
+      {
+        "id": "3bc42a7cd94ee0e20d960e868d2e557da26b0a49c277a1e49301633ef95e9c47",
+        "name": "bigbrotr-m1-0f80280-ordinary-v1",
+        "status": "exited",
+        "pid": 0,
+        "exit": 0
+      },
+      {
+        "id": "318db7068d8a3b59a13edb3dea39e3a7a5c18fff609fb92c3d250d427329b32b",
+        "name": "bigbrotr-m1-0f80280-census-v1",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-26T09:06:58.246306523Z",
+          "FinishedAt": "2026-10-26T09:06:58.829961441Z"
+        }
+      }
     ]
   }
 }

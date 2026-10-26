@@ -28,6 +28,9 @@ initialization. You need Docker Compose, Python 3 and at least the configured
 64 GiB free completion reserve plus expected growth. The example bounds application
 and native work together to 6 GiB with no swap, and PostgreSQL to 1.5 GiB; these
 are configured grants, not measured workload capacity.
+History uses a 1 GiB execution grant with the 512 MiB Archive worker; export has
+its separate 256 MiB grant. The history grant must also cover the bounded response
+and coordination reserves; the export limit is not a history limit.
 
 ```sh
 export BIGBROTR_BUNDLE=/absolute/first-event/bundle
@@ -66,7 +69,7 @@ for name, digit in (('instance', '1'), ('dataset', '2'), ('catalog', '3')):
 PY
 docker build --network=none -f "$BIGBROTR_BUNDLE/packaging/image/Dockerfile" \
   -t "$BIGBROTR_IMAGE" "$BIGBROTR_BUNDLE"
-dc() { docker compose -f "$BIGBROTR_BUNDLE/packaging/compose/compose.yaml" "$@"; }
+dc() { docker compose --env-file /dev/null -f "$BIGBROTR_BUNDLE/packaging/compose/compose.yaml" "$@"; }
 dc --profile operator config --quiet
 dc run --rm --no-deps app build-info
 dc run --rm --no-deps app archive verify-worker --root /opt/bigbrotr/archive-worker
