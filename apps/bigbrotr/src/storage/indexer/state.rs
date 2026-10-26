@@ -33,6 +33,15 @@ pub struct IndexState {
     custody: HeldIndexCustody,
 }
 impl IndexState {
+    /// Read-only deployment preflight using the same private directory checks
+    /// as custody acquisition. This creates no journal, retains no authority and
+    /// does not replace the later live identity/host and cross-root checks.
+    pub fn validate_root(root: &Path) -> Result<(), StateError> {
+        crate::storage::custody::directory(root)
+            .map(drop)
+            .map_err(StateError::Custody)
+    }
+
     /// Persist the complete fresh identities before any remote installation.
     /// A failure leaves its partial journal intact for explicit inspection.
     pub fn create(
