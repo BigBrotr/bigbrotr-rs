@@ -73570,6 +73570,15 @@
       "path": ".research/ci-publication-20261026/source-ea7ac434-exposure/receipt.json",
       "sha256": "8b6fab4ce11a4ff63004798ad6ae7afc4f434c0ed28ff9448a5ae5bc87241911",
       "scope": "Incremental source to ea7ac434:50 objects/15017694bytes;2 occurrences of the same already-triaged relative inventory path, no operational credential confirmed. Upstream DuckDB compressed member byte-identical to declared public package. No universal absence or completed provider-scan claim."
+    },
+    "fixture_publication": {
+      "revision": "f1f6d16668175eb2b33818cf3f0fa832030af6d6",
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510",
+      "status": "Started, final result pending",
+      "watch_session": 54174,
+      "source_audit": ".research/ci-publication-20261026/source-f1f6d166-exposure/receipt.json",
+      "source_audit_sha256": "251eac41e764217bc8e8e34d75c466eff2b55504cbe7698154788b2753949b51",
+      "documentation": "Clean f1f6d166 documentation-only checks PASS; receipt in assembly-fixture worktree .research/checkpoint-docs-20261026/result.json"
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -73933,7 +73942,7 @@
     },
     "integration": {
       "branch": "work/initial-index",
-      "head": "8b74cd4a",
+      "head": "9c4793e0 before retained-state source commit",
       "commits": {
         "rows": "70087290",
         "postgres": "27ed1642",
@@ -73944,7 +73953,7 @@
         "runtime_sql": "1eac3a04",
         "sql_evidence": "8b74cd4a"
       },
-      "dirty": "Index custody recovery, indexer/mod.rs and new indexer/state.rs. Physical CH adapter/proofs and parser correction are in separate worktrees. Full application remains uncompiled."
+      "dirty": "Retained IndexState and custody recovery source/checkpoint; physical CH schema/adapter and parser/config candidates remain separate. Full product uncompiled."
     },
     "owned_lane_review": {
       "path": ".research/initial-index-lane-20261026/.research/lane-components-20261026/inventory.json",
@@ -73966,7 +73975,18 @@
       "arm64_digest": "sha256:8b0888097cf783a97cc0200d585f1e35b43366cc8977cfc08617bdc46a050308",
       "status": "Selected first product qualification candidate; actual version/schema/readback/recovery NOT_RUN. Older26.5.1.882 image remains historical evidence, not product version."
     },
-    "checkpoint_documentation": "Documentation-only checks PASS on clean68f91e87; initial dirty invocation remained NOT_RUN. Receipt .research/implementation/index-foundation-20261026/checkpoint-docs-68f91e87/result.json."
+    "checkpoint_documentation": "Documentation-only checks PASS on clean68f91e87; initial dirty invocation remained NOT_RUN. Receipt .research/implementation/index-foundation-20261026/checkpoint-docs-68f91e87/result.json.",
+    "retained_state": {
+      "receipt": ".research/implementation/index-foundation-20261026/plan-components/state-result.json",
+      "receipt_sha256": "244375a2567c9afbf31c794ab271d618a55cfc146ebfedbc4271dccc35cde90a",
+      "status": "PASS scoped filesystem5 and typed manifest1, Clippy; no full product/engine qualification",
+      "source": {
+        "apps/bigbrotr/src/storage/indexer/state.rs": "3273b30ba4d211d1f0693c2d4c318f3677f7a85e5c2c124815f87e91de8a9fe3",
+        "apps/bigbrotr/src/storage/indexer/custody.rs": "5da2937162d9c336937ba1243b95e34d6427b5064262d68e48ab2efe8c9cacb3"
+      },
+      "schema_source": ".research/initial-index-physical-20261026/apps/bigbrotr/src/storage/clickhouse/schema.rs",
+      "original_failure": "cfg(test) helper visibility compile refusal retained; expectations unchanged."
+    }
   },
   "implementation_checkpoint_space_20261026": {
     "filesystem": "/dev/nvme0n1p2 mounted /",

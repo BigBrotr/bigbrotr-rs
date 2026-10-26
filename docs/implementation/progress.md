@@ -6,20 +6,20 @@ Official releases, packages and production remain unauthorized.
 
 ## Current increment and revision
 
-The coherent CI/security correction is published at `ea7ac434`. Local `main`
-is `27daae02` before this checkpoint commit, adding only the canonical owned
-assembly fixture root and its scoped evidence. Root integrates/publishes this
-increment from `.research/assembly-fixture-canonical-20261026`; that worktree now
-holds `main`. The fixture delegate is idle. Updated hosted execution is pending.
+The fixture/checkpoint increment is published on `main` at `f1f6d166`.
+[Run40363410510](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40363410510)
+has started; final hosted result pending. Incremental source audit found only the
+same known relative inventory path fingerprint; documentation checks PASS.
+Main remains in `.research/assembly-fixture-canonical-20261026`.
 
-P01-T09 initial Index work continues separately in the canonical checkout on
-`work/initial-index`, HEAD `8b74cd4a`. Rows, complete PG plans/owner guards,
-owned executor, bounded transport/source planning and current-schema41 SQL
-qualification are committed locally. The branch is incomplete, uncompiled as a
-complete application and unpublished. Its dirty files are Index custody recovery,
-`indexer/mod.rs` and new `indexer/state.rs`; physical CH adapter/proofs and a
-bounded dependency parser correction remain in separate inventoried worktrees.
-No partial Index implementation is represented as integrated `main` behavior.
+P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
+`9c4793e0` before this retained-state commit. Published main is merged without
+losing partial work. Rows, PG plans/guards/runtime SQL qualification, executor,
+transport and source planning are committed. This increment adds stored custody
+recovery and typed IndexState. Physical CH schema/adapter/proofs, bounded metadata
+parser correction and separate initializer credential configuration remain in
+owned worktrees; full application/module/runtime integration is still NOT_RUN.
+No partial Index implementation is represented as integrated main behavior.
 
 The [laboratory inventory](../research/laboratory-inventory.json) owns resource
 custody and detailed evidence paths under `implementation_index_foundation_20261026`,
@@ -42,8 +42,9 @@ at that scope; native census, second-event export, outage and capacity are not.
 Index component diagnostics:25 controls including nine actual executor lifecycle
 controls and Clippy PASS; four source-plan controls/Clippy PASS. Five affected
 filesystem custody recovery controls/Clippy also PASS after the exact opened
-table-manifest file and journal are synced on recovery. Typed persisted
-IndexState and full runtime wiring remain NOT_RUN. These diagnostics reuse
+table-manifest file and journal are synced on recovery. Typed IndexState adds one PASS control using the actual schema: retained matching
+tables recover, while mismatched, malformed and absent manifests refuse without
+repair. Full runtime wiring remains NOT_RUN. These diagnostics reuse
 selected dependencies and independent row vectors; none establishes remote
 query cessation, real CH publication or complete application behavior.
 
@@ -95,9 +96,9 @@ billing/failure observations remain unchanged in their original reports.
 
 ## Resources and next action
 
-The completed Actions watch was reaped. No installed-journey or SQL-lab product
-process remains active. Active delegates own the physical CH adapter/proofs and
-its dependency metadata-parser correction; the latter's component results do
+The prior completed Actions watch was reaped; watch54174 observes run40363410510. No installed-journey or SQL-lab product
+process remains active. Active delegates own the physical CH adapter/proofs, independent parser review/
+correction and initializer credential configuration; the latter's component results do
 not imply full engine qualification. Q37 configurations remain as verified.
 
 The bounded cache retirement removed4446 obsolete compiler intermediates from
@@ -109,8 +110,7 @@ source, worktree or container was removed. Inventory
 journal and reconstruction procedure. Never replay that deletion or incrementally
 resume the partially retired caches.
 
-Next: publish the reviewed fixture/checkpoint increment and observe actual hosted
-macOS confirmation while completing the bounded Index capability: ten-family
+Next: observe hosted macOS confirmation and finish the bounded Index capability: ten-family
 readback, opaque installation/plan/recovery proofs, owned resources and timer-driven
 publication/readiness, then isolated CH outage/recovery while Archive continues.
 Persist whole-admission-batch plans including zero outcomes; hash actual rows.
