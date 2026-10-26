@@ -57,7 +57,9 @@ The retained library executable lists its compiled tests before selecting
 `storage::clickhouse::`, `storage::indexer::`,
 `storage::postgres::control_owner::index_publication::` and
 `storage::postgres::transport::route_tests::`. Every expected owning module must
-be present. Executed names and counts must match that inventory with zero failed
+be present. Two existing Archive transport-custody controls also cover the shared
+future-before-guard destruction boundary changed by late Index attachment.
+Executed names and counts must match that inventory with zero failed
 or ignored tests; an empty filter cannot pass. The copied CLI's `build-info` must
 match the source/tree/manifest and input hashes. Exact binary/test bytes, selected
 test names, command logs and result hashes remain outside the mutable compiler

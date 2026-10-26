@@ -14,6 +14,8 @@ GROUPS = {
     'indexer': 'storage::indexer::',
     'index-publication': 'storage::postgres::control_owner::index_publication::',
     'postgres-route': 'storage::postgres::transport::route_tests::',
+    'archive-driver-unpolled': 'storage::archive::lifetime::tests::catalog_transport_retains_custody_even_before_its_future_is_polled',
+    'archive-driver-drop': 'storage::archive::lifetime::tests::cancelled_transport_is_destroyed_before_its_custody_descriptor',
 }
 # A broad filter must not pass when a new owning module was never wired in.
 REQUIRED_MODULES = (
