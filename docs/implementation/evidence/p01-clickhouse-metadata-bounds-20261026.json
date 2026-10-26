@@ -1,0 +1,181 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P01-T09 initial Index metadata resource boundary",
+  "date": "2026-10-26",
+  "status": "PASS_SCOPED",
+  "scope": "Exact selected-source metadata parser, actual loopback HTTP client and closed schema component checks; no engine or full application qualification.",
+  "source": {
+    "base_revision": "68f91e873095f1b8615b7f928cceb403ddc938ac",
+    "file_sha256": {
+      "Cargo.toml": "3631be9c6689996856fec0cad024bd7ad8c1bc4de9d306f6cf7a177f39473da7",
+      "Cargo.lock": "486ea7995e79a84dd2d1293a01c3ee8b6fdd3d3efbe32391d9c8edf188c4816e",
+      "vendor/clickhouse.provenance.json": "261c67b3b637c6b9111f5e5b680d68bdbe44f518d549d46ecf993f10f8db37c5",
+      "vendor/clickhouse-types.provenance.json": "091105d4159d4c16fa8ef563f23c91294b85354fc05db4d230c0b8c9abbe82ad",
+      "vendor/clickhouse/src/lib.rs": "7005fe3252c584a87b8bf491b5df2bbf9250956200f6d41beb62b92f242e237c",
+      "vendor/clickhouse/src/cursors/row.rs": "15a162c7b97a73676df7101d2ca1543750d8d38d3ea3a7b19becb97158de7173",
+      "vendor/clickhouse-types/src/lib.rs": "03d22b9b26f1b9121fcbbe874d7937d3c7047c6218408c5a447bf7ce40b71084",
+      "vendor/clickhouse-types/src/data_types.rs": "7ca61e7509d2fda4cc8b28a3382bf3e7a588a5e6b34bcdc4eb706306cbea08eb",
+      "vendor/clickhouse-types/src/decoders.rs": "916de3d8027a35791446a3b8d0f78ccc44a5fccbc1901a0200dfd81ca377e8f6",
+      "vendor/clickhouse-types/src/bounded_tests.rs": "e92a66b079f69f667e58d6f5ecfc72ef58751423d9370b2b96d04577f73b9157",
+      "apps/bigbrotr/src/storage/clickhouse/transport.rs": "e996f55d75f0368714eec24bdf71740f5d684783311e152ea707d4ce0f878dd0",
+      "apps/bigbrotr/src/storage/clickhouse/transport/metadata_tests.rs": "62d4fc9e3e93ab31fe201a2f84fbe785532f93c0163963f77d004ce21ec65881",
+      "contracts/release/dependencies.json": "de50ad54129c6826b942e6b7b979030ee07b0d92ffd6cade8ae182ba14cb31b1",
+      "packaging/release/assemble.py": "bf74d0e5f2262e01d9ff11b390a7fb0559bffcb61216aa980e51a6e384342b97"
+    }
+  },
+  "original_failure": {
+    "classification": "Selected dependency parser resource/framing defect",
+    "count": "Ten-byte u64::MAX column-count header panics at Vec capacity before any attacker-sized allocation.",
+    "type": "SimpleAggregateFunction( panics at unchecked byte slicing.",
+    "reproducer": ".research/clickhouse-header-review-20261026/.research/header-review/baseline",
+    "result": "Both upstream panics observed with catch_unwind; no OOM or stack exhaustion attempted."
+  },
+  "correction": {
+    "versions": "clickhouse0.15.2 and clickhouse-types0.1.4 retained as complete verified source packages with licenses/provenance.",
+    "row_count": "Compare announced count with actual RowKind/COLUMN_COUNT or struct COLUMN_NAMES count before allocating; maximum64.",
+    "strings": "Nonempty UTF-8 names<=128 bytes; nonempty UTF-8 types<=256 bytes; at most8 unquoted parenthesis levels and checked wrapper/Unicode framing.",
+    "insert": "DESCRIBE retains at most64 columns, validates names and invokes same bounded type parser. Its raw String decoder checks available bytes before copying; response wire cap remains required.",
+    "validation": "Enabled throughout; valid struct, primitive, Vec and tuple rows decode, incompatible signedness refuses. No feature or engine tuple change.",
+    "lock": "Only clickhouse and clickhouse-types source/checksum become local paths; all dependency versions and edges unchanged.",
+    "upstream_replacement": "Latest observed client0.15.3 still calls unbounded metadata parser; latest types0.1.4. Remove patch after supported equivalent bounds plus retained regressions and actual qualification."
+  },
+  "checks": [
+    {
+      "name": "types upstream plus regressions",
+      "status": "PASS",
+      "tests": 51,
+      "doctests": 1,
+      "details": "46 upstream unit tests unchanged;5 added bounded metadata controls; exact selected bytes1.12.1/thiserror2.0.20 and other registry versions/checksums verified."
+    },
+    {
+      "name": "actual selected HTTP client and capped transport",
+      "status": "PASS",
+      "tests": 6,
+      "details": "4 new actual-client metadata controls plus2 existing transport controls; no test-util mock/validation bypass."
+    },
+    {
+      "name": "types and client component Clippy",
+      "status": "PASS",
+      "command": "cargo clippy --offline --locked --manifest-path <component>/Cargo.toml --tests -- -D warnings"
+    },
+    {
+      "name": "all ten closed schema bounds",
+      "status": "PASS",
+      "tests": 6,
+      "maximum_columns": 35,
+      "maximum_name_bytes": 23,
+      "maximum_type_bytes": 62,
+      "maximum_parenthesis_depth": 3,
+      "schema_sha256": "01a68065d586e5c86fb23f36aa6cc652d661fb8af22f166a1c904d736e1e5183",
+      "receipt": ".research/initial-index-physical-20261026/.research/schema-components-20261026/inventory.json",
+      "receipt_sha256": "58a707baf0e05bff90be7ad96a7471a7229e4bc2237302206b11481a3a62908d",
+      "scope": "Companion schema candidate; integration is owned separately."
+    },
+    {
+      "name": "dependency policy",
+      "status": "PASS",
+      "command": "cargo deny --locked check licenses sources advisories"
+    },
+    {
+      "name": "packaging controls",
+      "status": "PASS",
+      "tests": 22,
+      "details": "Both maintained11-test assembler/intake suites; PUBLIC_FILES includes selected MIT notices."
+    },
+    {
+      "name": "workspace format and document controls",
+      "status": "PASS",
+      "commands": [
+        "cargo fmt --all --check",
+        "python3 experiments/verify_artifacts.py",
+        "python3 experiments/verify_handoff.py --prepare",
+        "python3 experiments/verify_handoff.py --output <evidence>/handoff.json"
+      ]
+    },
+    {
+      "name": "staged whitespace check",
+      "status": "FAIL_UPSTREAM_RETAINED",
+      "upstream_trailing_whitespace_lines": 38,
+      "details": "Every reported line belongs to a byte-identical unmodified published client member; preserved full package provenance instead of unrelated reformatting. Changed application/patch files pass scoped whitespace check."
+    }
+  ],
+  "component_lock_identity": {
+    "baseline": {
+      "registry_versions_and_checksums_match_root": true,
+      "packages": 7,
+      "lock_sha256": "3b385d36e88b4c9164629060f4689d77c91ce61cdf5a33078910c207a84931ea",
+      "manifest_sha256": "7de9d642fc181a40f90fb27174fdb59b6b73e333b4f1f673c0451d55c8c3669e"
+    },
+    "types-tests": {
+      "registry_versions_and_checksums_match_root": true,
+      "packages": 7,
+      "lock_sha256": "d114ad9dc3cfac1ac47d87aee0a6ac33c4b4e8f8b10096d3485fc630f15a85ea",
+      "manifest_sha256": "9b5659488a57e8059455ab9f23e7a2b281369351b35d8d7258b76cda1605cdb9"
+    },
+    "client-tests": {
+      "registry_versions_and_checksums_match_root": true,
+      "packages": 127,
+      "lock_sha256": "42113fb9b71f1e4d8900d1077a92215b2419f3cdbe685a04505dbe0e1221defd",
+      "manifest_sha256": "bac5b35485ff753fe4aa4c017e8d083a6a3132bb9df0a07e13ccad256039e550"
+    }
+  },
+  "review_scope": {
+    "read": "Complete types parser/AST, decoder/LEB/error/header owners and original tests; complete client lib/RowCursor, row metadata/count contract, selected DESCRIBE string-copy boundary, transport, modified tests and manifests.",
+    "retained_by_hash": "All178 published package members compared; client2 source files/types3 source files patched, plus types licenses and5-regression source module added. Upstream test expectations remain byte-identical.",
+    "unqualified": "Unselected Native reader and other optional client features are retained, not fully audited or qualified by these checks. The original new() API remains available; selected HTTP paths use new_bounded()."
+  },
+  "preserved_initial_outcomes": [
+    "Initial candidate failed2 upstream Time timezone tests; restored checked Time()/Time(quoted zone) support without changing upstream tests.",
+    "Initial client harness failed only because #[path] required explicit child module location; test source path corrected.",
+    "Initial standalone types harness used bytes1.11.1; manifest/lock/log preserved, corrected to selected1.12.1 and repeated affected controls. Baseline and actual-client harness already matched root.",
+    "Strict standalone types Clippy found one pre-existing redundant format borrow; corrected that cosmetic expression without suppression.",
+    "Mistyped documentation check command failed before execution; corrected to maintained verify_artifacts/verify_handoff commands."
+  ],
+  "logs": {
+    "baseline.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/baseline.log",
+      "sha256": "abbe5d4612278d513ab8a9ea116a45fd7761ca55397ec45df6aee3c92320b9b9"
+    },
+    "types-tests-selected-tuple.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/types-tests-selected-tuple.log",
+      "sha256": "70767f566bd5eba115b4e43ebc30ef2c644d33f3a79554b15e7ee25a6ab5a00d"
+    },
+    "types-clippy-selected-tuple.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/types-clippy-selected-tuple.log",
+      "sha256": "d6cb4e59f8898c4a41be91d6bf4aa651505c490d0ed6b99cb2e917f5d5d29c44"
+    },
+    "client-tests-final.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/client-tests-final.log",
+      "sha256": "2d1eb638b147ea28d8d55212fb8cdcbadd989ea80b6b7dde7c0891705dba743a"
+    },
+    "client-clippy-final.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/client-clippy-final.log",
+      "sha256": "25d0b8259b3a09c0ea11d0ba7646b2f2e04af55dc6d59ee091ec198aae176aec"
+    },
+    "dependency-policy.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/dependency-policy.log",
+      "sha256": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46"
+    },
+    "assemble-tests.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/assemble-tests.log",
+      "sha256": "41e220aad2cda786d4dacba13f25ab96c9d47a68fcafdae458054589dda43f77"
+    },
+    "candidate-tests.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/candidate-tests.log",
+      "sha256": "9751416472c3dcc97750b72a6d1b8127b2efca60877b3718806530da9c9480ac"
+    },
+    "planning-check-final.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/planning-check-final.log",
+      "sha256": "fa67846b146e32cf8d2d19d827476c0c3acaa7079b9d6a48cbd7179f2a76d1e1"
+    },
+    "documentation-links.log": {
+      "path": ".research/clickhouse-header-review-20261026/.research/header-review/documentation-links.log",
+      "sha256": "986bc5f0df914193952ef5995708dfc0badb8c5fc78be7f41501b8d31bb31746"
+    }
+  },
+  "not_run": [
+    "Full product/workspace native build and tests of this Index increment",
+    "Actual ClickHouse server readback/insert/restart/cancellation",
+    "TLS/server durability/capacity and complete distribution qualification"
+  ]
+}

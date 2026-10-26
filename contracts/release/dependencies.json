@@ -291,7 +291,21 @@
         "rustls-tls-webpki-roots"
       ],
       "license": "MIT OR Apache-2.0",
-      "source": "https://docs.rs/clickhouse/0.15.2/clickhouse/"
+      "source": "https://docs.rs/clickhouse/0.15.2/clickhouse/",
+      "license_notice": "vendor/clickhouse/LICENSE-MIT",
+      "source_patch": {
+        "path": "vendor/clickhouse",
+        "provenance": "vendor/clickhouse.provenance.json",
+        "scope": "Expected row count before metadata allocation, bounded names/types and insert DESCRIBE metadata; validation and selected features unchanged.",
+        "types": {
+          "name": "clickhouse-types",
+          "version": "0.1.4",
+          "path": "vendor/clickhouse-types",
+          "provenance": "vendor/clickhouse-types.provenance.json",
+          "license": "MIT OR Apache-2.0",
+          "license_notice": "vendor/clickhouse-types/LICENSE-MIT"
+        }
+      }
     },
     {
       "name": "tower-service",

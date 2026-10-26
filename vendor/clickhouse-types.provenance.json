@@ -1,0 +1,87 @@
+{
+  "format": "bigbrotr-vendored-source/1",
+  "package": "clickhouse-types",
+  "version": "0.1.4",
+  "upstream_url": "https://crates.io/api/v1/crates/clickhouse-types/0.1.4/download",
+  "upstream_crate_sha256": "d7ddab58fabf3bdde7b6fa401f72b9abc7566ff015264c89aaaa71cf1d173d06",
+  "upstream_commit": "dad4c6dd8a40aaeaa7534abf38155219f6fd73b5",
+  "license": "MIT OR Apache-2.0",
+  "license_selection": "MIT for BigBrotr distribution; both upstream alternatives retained",
+  "license_paths": [
+    "clickhouse-types/LICENSE-MIT",
+    "clickhouse-types/LICENSE-APACHE"
+  ],
+  "original_members": {
+    ".cargo_vcs_info.json": {
+      "bytes": 99,
+      "sha256": "80fb9730f224ad965b174192ba44c92a1a05ea341a4429d5f99b3f19ccb91e08"
+    },
+    "Cargo.lock": {
+      "bytes": 1784,
+      "sha256": "13f013ec053a63251a04c3ab5ea2cedfb916ce46c0c8032eb39e75d60eb98bdb"
+    },
+    "Cargo.toml": {
+      "bytes": 1171,
+      "sha256": "bfb53fa7aaed0ff2835cb1869eade52c6cda9c257a227a38a9ce53bb5d788938"
+    },
+    "Cargo.toml.orig": {
+      "bytes": 407,
+      "sha256": "aabb09cc3d0040a952439aad969b8505b3d20c862aafd2d5e3295a344da065b6"
+    },
+    "release.toml": {
+      "bytes": 248,
+      "sha256": "e6a4882b9e2e2fa23d9f8889fd71e7f457bd9f8f6f17c779365983d637a41468"
+    },
+    "src/data_types.rs": {
+      "bytes": 87876,
+      "sha256": "a64bda55e087c195ff6b6f5d90eb22f8c9ba91033245843396bc1670f6730e92"
+    },
+    "src/decoders.rs": {
+      "bytes": 771,
+      "sha256": "027a262d629fd04317780193593afeb852e5ec2c115bf8dd80b13084f9323b69"
+    },
+    "src/error.rs": {
+      "bytes": 293,
+      "sha256": "7f9122066211d603299a1da58b3186a2718d3f77f3c748a8063cfb2ca2db812b"
+    },
+    "src/leb128.rs": {
+      "bytes": 4482,
+      "sha256": "532fdf8df27c7a7930700fe1c92173e2b49b1f9e32b38382c597346c096d60a0"
+    },
+    "src/lib.rs": {
+      "bytes": 3527,
+      "sha256": "ced59cfde27525a86496863e568d9e350377400cb26c85776e329de9a5074708"
+    }
+  },
+  "patched_members": {
+    "src/data_types.rs": {
+      "bytes": 90285,
+      "sha256": "7ca61e7509d2fda4cc8b28a3382bf3e7a588a5e6b34bcdc4eb706306cbea08eb"
+    },
+    "src/decoders.rs": {
+      "bytes": 1592,
+      "sha256": "916de3d8027a35791446a3b8d0f78ccc44a5fccbc1901a0200dfd81ca377e8f6"
+    },
+    "src/lib.rs": {
+      "bytes": 5663,
+      "sha256": "03d22b9b26f1b9121fcbbe874d7937d3c7047c6218408c5a447bf7ce40b71084"
+    }
+  },
+  "added_members": {
+    "LICENSE-APACHE": {
+      "bytes": 9723,
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+      "source": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/dad4c6dd8a40aaeaa7534abf38155219f6fd73b5/LICENSE-APACHE"
+    },
+    "LICENSE-MIT": {
+      "bytes": 1023,
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+      "source": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/dad4c6dd8a40aaeaa7534abf38155219f6fd73b5/LICENSE-MIT"
+    },
+    "src/bounded_tests.rs": {
+      "bytes": 4138,
+      "sha256": "e92a66b079f69f667e58d6f5ecfc72ef58751423d9370b2b96d04577f73b9157"
+    }
+  },
+  "scope": "Complete verified upstream package retained. Narrow bounded metadata correction; root Cargo.lock controls builds. See README.md for limits, review scope and upstream replacement condition."
+}

@@ -140,6 +140,10 @@ impl<T: Write + Unpin> Write for CappedIo<T> {
 }
 
 #[cfg(test)]
+#[path = "transport/metadata_tests.rs"]
+mod metadata_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use hyper_util::client::legacy::connect::HttpConnector;
@@ -149,7 +153,7 @@ mod tests {
         net::TcpListener,
     };
 
-    async fn request(socket: &mut tokio::net::TcpStream) {
+    pub(super) async fn request(socket: &mut tokio::net::TcpStream) {
         let mut header = Vec::new();
         while !header.ends_with(b"\r\n\r\n") {
             assert!(header.len() < 8192);

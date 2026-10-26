@@ -543,8 +543,15 @@ and Linux arm64
 This is a qualification candidate, not a release claim: actual version, typed
 layout, synchronous durability settings, readback, restart and cancellation
 must be demonstrated with the selected client. Earlier engine results retain
-their original scope. A newly identified client type-header allocation/panic
-boundary is under correction; a wire-byte cap alone does not close that gate.
+their original scope. The [temporary client/types source patch](../../vendor/README.md)
+closes the identified metadata allocation/framing boundary without changing
+versions or disabling validation: expected Rust column count is checked before
+allocation, names/types are bounded and type framing/depth checked, and internal
+DESCRIBE accumulation is limited to 64 columns. All ten initial schemas must fit
+the exported 128-byte name/256-byte type/depth 8 profile. Exact-source component
+controls exercise malformed and valid metadata through the actual client;
+full product/engine qualification remains a separate gate. The wire-byte cap is
+still required for row/error bodies and DESCRIBE strings before parsing.
 
 Use `Query::param(name,value)` for server-side typed value parameters and
 `with_setting` for approved engine limits/query identity. SQL structure comes

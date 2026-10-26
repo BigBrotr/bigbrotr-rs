@@ -1,4 +1,42 @@
-# Temporary dependency patch
+# Temporary dependency patches
+
+## ClickHouse metadata bounds
+
+`clickhouse/` and `clickhouse-types/` retain the complete published 0.15.2 and
+0.1.4 packages under their MIT OR Apache-2.0 licenses. BigBrotr selects the MIT
+option for distribution; both upstream licenses remain alongside each source.
+The types package omits license files, so its copies come from its exact upstream
+commit. The [client provenance](clickhouse.provenance.json) and
+[types provenance](clickhouse-types.provenance.json) record original archive/member
+hashes, changed files and added license sources. Upstream manifests, package locks,
+features, tests and examples remain available; the root lock controls builds.
+
+The upstream validated-row header parser allocates from an untrusted declared
+column count before consuming names/types. Its recursive type parser also uses
+unchecked byte slices on malformed strings. A transport byte cap cannot prevent
+those allocations or panics. The local client checks the count against the
+actual Rust row kind/count before allocation, then accepts at most 64 columns,
+128-byte nonempty UTF-8 names and 256-byte nonempty type declarations with at
+most 8 unquoted parenthesis levels. Checked wrapper framing preserves ordinary
+type validation. INSERT's DESCRIBE metadata uses the same bounded type parser,
+checks names and refuses a 65th row. DESCRIBE row strings are copied only after
+the bytes exist; the selected transport also bounds total response bytes.
+
+These are BigBrotr's closed initial Index metadata limits. All ten selected
+schemas have explicit controls against the exported bounds, including the 35-column
+largest row, signature FixedString(64), nullable scalars and nested arrays/tuples.
+Compression remains disabled and validation remains enabled. The unselected Native reader is retained without the added metadata limits
+and is not qualified by these checks. Legacy standalone parser APIs are retained; BigBrotr's selected client
+paths use the bounded entry points.
+
+As of 2026-10-26 the latest client 0.15.3 still calls the same unbounded header
+parser and the latest types package remains 0.1.4. Remove both patches when a
+supported upstream version provides equivalent preallocation, framing and
+metadata bounds, after running these retained regressions and actual engine
+qualification. Component tests do not establish TLS, server cancellation,
+durability, full application or release fitness.
+
+## DuckDB ZIP build dependency
 
 `libduckdb-sys/` retains the complete published MIT-licensed 1.10505.0 package
 from [crates.io](https://crates.io/crates/libduckdb-sys/1.10505.0), with one change:
