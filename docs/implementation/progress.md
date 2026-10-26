@@ -6,12 +6,20 @@ Official releases, packages and production remain unauthorized.
 
 ## Current capability and revision
 
-Canonical checkout: `work/live-readiness`; qualified product `a295da60`, assembly
-`55df797a`, acceptance `eff2faaf`. This checkpoint records the completed initial
-readiness increment and its remaining gates. The complete reviewed increment is
-ready for fast-forward integration into `main` and one coherent push; verify the
-actual local/remote refs on resumption rather than infer their state from this text.
-No unrelated or unintegrated source changes are pending in this checkout.
+Published `origin/main`: `94a52232`; qualified product `a295da60`, assembly
+`55df797a`, acceptance `eff2faaf`. The initial readiness increment is
+integrated and pushed; its redundant `work/live-readiness` branch was retired.
+The next ordinary Archive readiness increment is in progress: root owns runtime
+integration, `m1_runtime_grants` the bounded authoritative expectation bridge,
+and `initial_index_rows` the observation cache, in separate writable worktrees.
+Local main has integrated the bridge at `223a2e08` and cache at `63285940`;
+the runtime/input-reader integration accompanies this checkpoint. These changes
+are not yet qualified or pushed. Native tests, real PG statements and the installed
+ordinary readiness extension are NOT_RUN. Formatting/source review found and
+fixed a pin-lifetime gap: Control renewal must not extend the probe's original
+pin window. Remaining targeted work includes owned-input custody, actual short-pin
+expiry, missing/corrupt input and stale-selection controls, followed by the same
+maintained native/installed qualification paths. No new plan or harness is added.
 
 **P01-T09 Step2 is qualified at its initial scope.** Installed product `b5333d53`,
 assembly/acceptance `2d0bdc81`, passes all eight maintained
@@ -107,13 +115,17 @@ policy pass; subsequent workspace/acceptance/CLI gates remain unqualified.
 The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
 records the separate results and timings. Shared frozen source/Cargo/tool/artifact
 contexts are verified, but shorter failed runs are not evidence of a speedup.
-A new coherent publication must complete the changed CI path on GitHub.
+[Run40406281096](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096)
+is running on the pushed `94a52232`; `ci_native_cancel_review` owns its sole
+watcher (session49815). Its terminal result and public-output audit remain pending.
 
 Watcher91567 ended/reaped. Scoped audit verified all four artifact digests,
 30 artifact members and 38 log members, with zero credential-pattern candidates
 or provider alerts; asynchronous provider scan completion is not claimed.
-Source publication audit through `00714653` remains valid; the new increment must
-be checked before push. Keep raw captures protected and out of public uploads.
+Incremental source/history audits through `94a52232` found no new or unclassified
+credential candidates or confidential archive/store inputs. Receipts remain under
+`.research/ci-publication-20261026`; raw captures stay protected and excluded from
+public uploads. Provider scan completion is not inferred from an empty alert list.
 
 ## Resources and next action
 
@@ -121,10 +133,9 @@ Fresh worker-before-parent build `a295da60` is PASS: source/CLI/worker hashes an
 all2365 source files verified. Sessions80251/10299 ended exit0/reaped. Installed
 r5 session51261 ended exit1/reaped; r6 session74584 ended exit0/reaped. All owned
 containers are stopped/PID0/noOOM (r5/r6 all exit0), with original databases and
-captures preserved. No local engine/build/delegate job is active.
-Source audit through `55df797a` found no new exposure; the final delta needs its
-bounded check before push. Documentation checks passed at55df; affected final
-records need the same targeted checks. A new hosted run is required after push.
+captures preserved. No local engine/build is active. The two bounded source
+delegates and the hosted CI watcher described above are active. Documentation
+checks passed all three selected gates at94a; the new increment is unverified.
 
 The [laboratory inventory](../research/laboratory-inventory.json), primarily
 `implementation_index_foundation_20261026.live_readiness`, owns exact resource and
@@ -134,9 +145,7 @@ pins and other target entries. Earlier cache and obsolete034 target retirements
 remain journaled. Current native/build caches, unique data, original failures and
 pending worktrees are retained. No broad cleanup is underway.
 
-Next: finish the final documentation checks/public-source delta review, integrate
-this qualified increment into main and push once, then observe its real hosted CI.
-Continue P01-T09 Step1/6 with ordinary readiness: create a bounded authoritative
+Next: continue P01-T09 Step1/6 with ordinary readiness: create a bounded authoritative
 bridge from current Archive selection/sealed batches to complete input
 expectations for the existing native verifier. Keep actual grants, reader/catalog
 custody and driver join through final currentness checks; narrow successful

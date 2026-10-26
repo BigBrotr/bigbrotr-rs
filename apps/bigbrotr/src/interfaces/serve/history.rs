@@ -274,6 +274,9 @@ async fn execute_inner(
         work.refuse(SessionError::ArchiveUnavailable).deliver();
         return Ok(());
     };
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.note_current(&selected);
+    }
     let prepared_config = config.clone();
     let prepared_budget = budget.clone();
     let prepared = match authority
@@ -337,7 +340,7 @@ async fn execute_inner(
                 } else {
                 if let Some(observations) = authority.observations.as_mut() {
                     observations.observed(super::role_status::ReadCapability::History,
-                        body._event.query(), selected.frontier_revision);
+                        body._event.query(), coordinator.identity().catalog(), selected.frontier_revision);
                 }
                 let mut delivery = work.deliver(body);
                 let cleanup = deadline + duration(authority.root,"graceful_shutdown_timeout");

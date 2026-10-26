@@ -3,7 +3,10 @@
 use super::{LifetimeError, LocalCoordinator, lifetime};
 use crate::{
     runtime::OwnedPermit,
-    storage::{postgres::archive_attempt::ArchiveAttemptRequest, rocks::store::PendingBatchHeader},
+    storage::{
+        postgres::{archive_attempt::ArchiveAttemptRequest, catalog_guard::CatalogIdentity},
+        rocks::store::PendingBatchHeader,
+    },
 };
 use bigbrotr_model::{ArchiveBatch, Digest256, OwnerEpoch, Sequence, SourceRecordId};
 use bigbrotr_protocol::archive_receipt::{ReceiptExpectation, ReceiptRange};
@@ -44,6 +47,50 @@ pub struct RetainedInputs {
     coordinator_binding: Digest256,
     _custody: File,
     _permit: OwnedPermit,
+}
+
+/// Close-only ownership for reading existing input locators on a joined blocking
+/// worker. The directory and exclusion are retained from the actual coordinator;
+/// this handle cannot initialize, repair, publish or obtain a native writer.
+pub struct RetainedInputReader {
+    directory: File,
+    custody: File,
+    identity: CatalogIdentity,
+    initialization_sha256: [u8; 32],
+    binding: Digest256,
+}
+impl RetainedInputReader {
+    /// Missing inputs remain unknown. Sync and decoding are synchronous bounded
+    /// filesystem work and must not run on the Control/HTTP executor.
+    pub fn read_inputs(
+        &self,
+        request: &ArchiveAttemptRequest,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Option<RetainedInputs>, InputError> {
+        check_inputs(&self.identity, request, &permit, cancelled)?;
+        let Some((file, bytes)) = read(&self.directory, &name(request))? else {
+            return Ok(None);
+        };
+        let headers = decode(request, self.initialization_sha256, &bytes)?;
+        let expectation = expectation(request, &headers)?;
+        file.sync_all().map_err(|_| LifetimeError::Filesystem)?;
+        self.directory
+            .sync_all()
+            .map_err(|_| LifetimeError::Filesystem)?;
+        check_cancel(cancelled)?;
+        Ok(Some(RetainedInputs {
+            request: request.clone(),
+            headers,
+            expectation,
+            coordinator_binding: self.binding,
+            _custody: self
+                .custody
+                .try_clone()
+                .map_err(|_| LifetimeError::Filesystem)?,
+            _permit: permit,
+        }))
+    }
 }
 impl RetainedInputs {
     /// Covers bounded encoded/retry buffers, headers, ranges and their temporary
@@ -94,7 +141,7 @@ impl LocalCoordinator {
         permit: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<RetainedInputs, InputError> {
-        self.check_inputs(request, &permit, cancelled)?;
+        check_inputs(self.identity(), request, &permit, cancelled)?;
         if batch.batches().len() > MAX_BATCHES {
             return Err(InputError::ResourceLimit);
         }
@@ -142,45 +189,40 @@ impl LocalCoordinator {
         permit: OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<Option<RetainedInputs>, InputError> {
-        self.check_inputs(request, &permit, cancelled)?;
-        let Some((file, bytes)) = read(&self.directory, &name(request))? else {
-            return Ok(None);
-        };
-        let headers = decode(request, self.initialization_sha256, &bytes)?;
-        let expectation = expectation(request, &headers)?;
-        file.sync_all().map_err(|_| LifetimeError::Filesystem)?;
-        self.directory
-            .sync_all()
-            .map_err(|_| LifetimeError::Filesystem)?;
-        check_cancel(cancelled)?;
-        Ok(Some(RetainedInputs {
-            request: request.clone(),
-            headers,
-            expectation,
-            coordinator_binding: self.binding_digest(),
-            _custody: self.custody.retain_custody()?,
-            _permit: permit,
-        }))
+        self.inputs_reader()?
+            .read_inputs(request, permit, cancelled)
     }
 
-    fn check_inputs(
-        &self,
-        request: &ArchiveAttemptRequest,
-        permit: &OwnedPermit,
-        cancelled: &AtomicBool,
-    ) -> Result<(), InputError> {
-        if permit.request().units().data_bytes() < RetainedInputs::required_data_bytes()
-            || permit.request().units().items() == 0
-        {
-            return Err(InputError::ResourceLimit);
-        }
-        check_cancel(cancelled)?;
-        let identity = self.custody.identity();
-        if request.dataset() != identity.dataset() || request.catalog() != identity.catalog() {
-            return Err(InputError::Identity);
-        }
-        Ok(())
+    pub fn inputs_reader(&self) -> Result<RetainedInputReader, InputError> {
+        Ok(RetainedInputReader {
+            directory: self
+                .directory
+                .try_clone()
+                .map_err(|_| LifetimeError::Filesystem)?,
+            custody: self.custody.retain_custody()?,
+            identity: self.identity().clone(),
+            initialization_sha256: self.initialization_sha256,
+            binding: self.binding_digest(),
+        })
     }
+}
+
+fn check_inputs(
+    identity: &CatalogIdentity,
+    request: &ArchiveAttemptRequest,
+    permit: &OwnedPermit,
+    cancelled: &AtomicBool,
+) -> Result<(), InputError> {
+    if permit.request().units().data_bytes() < RetainedInputs::required_data_bytes()
+        || permit.request().units().items() == 0
+    {
+        return Err(InputError::ResourceLimit);
+    }
+    check_cancel(cancelled)?;
+    if request.dataset() != identity.dataset() || request.catalog() != identity.catalog() {
+        return Err(InputError::Identity);
+    }
+    Ok(())
 }
 
 fn matches_batch(

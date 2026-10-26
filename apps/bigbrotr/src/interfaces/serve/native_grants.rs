@@ -247,7 +247,8 @@ impl Supervisor<'_> {
         if matches!(terminal, Err(WorkerError::OutputFailure)) {
             return Err((
                 4,
-                "export filesystem work failed; retain unit and halt for recovery".into(),
+                "native filesystem work failed; preserve scratch and any output unit for recovery"
+                    .into(),
             ));
         }
         let admitted = prior?;

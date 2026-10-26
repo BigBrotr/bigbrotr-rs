@@ -1,4 +1,5 @@
 //! First persistent role consumer. Every exit owns transport termination.
+mod archive_readiness;
 mod cursor_keys;
 mod export_jobs;
 mod history;
@@ -813,6 +814,9 @@ async fn supervise(
     };
     let mut export_after = None;
     let mut export_due = Instant::now();
+    let observe_archive = supervisor.observations.is_some()
+        && accepted.flag("archive.reader.enabled") && archive.coordinator.is_some();
+    let mut archive_probe_due = Instant::now();
     loop {
         supervisor.lease.check_delivery(supervisor.lease.known_epoch()).map_err(|e| (1,e.to_string()))?;
         // A slow successful response already consumed part of the request-start
@@ -855,6 +859,12 @@ async fn supervise(
                 // would repeatedly postpone renewal under continuous traffic.
                 *supervisor.refresh_due = Instant::now() + (supervisor.lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
                     .min(heartbeat.saturating_sub(supervisor.renewed.elapsed()));
+            },
+            _ = tokio::time::sleep_until(archive_probe_due), if observe_archive => {
+                archive_readiness::execute(accepted.clone(), shared_budget.clone(),
+                    archive.coordinator.as_ref().expect("selected Archive observer"), &mut supervisor).await?;
+                if supervisor.stopping { return Ok(()); }
+                archive_probe_due = Instant::now() + archive_readiness::INTERVAL;
             },
             _ = tokio::time::sleep_until(export_due), if execute_exports => {
                 let maximum = duration(root,"renewal_timeout").min(supervisor.lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);

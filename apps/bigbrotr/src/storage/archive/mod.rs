@@ -17,7 +17,7 @@ pub use client_identity::{NativeClientIdentity, NativeIdentityError};
 pub use coordinator::{LocalCoordinator, ReaderCustody};
 pub use frontier_intents::{FrontierIntentError, FrontierIntentScan, RetainedFrontierIntent};
 pub use initialization::LocalInitialization;
-pub use inputs::{InputError, RetainedInputs};
+pub use inputs::{InputError, RetainedInputReader, RetainedInputs};
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};
 pub use lifetime::{LifetimeError, LocalAttempt};
 pub use pin_recovery::LocalPinRecovery;

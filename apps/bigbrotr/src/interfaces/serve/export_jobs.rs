@@ -14,7 +14,10 @@ use bigbrotr::{
         files::ExportFileError,
     },
     management::sessions::SessionError,
-    runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
+    runtime::{
+        OwnedPermit, ResourceBudget, ResourceRequest,
+        policy_authority::{AuthorityClock, SuspendAwareClock},
+    },
     storage::{
         archive::{
             ArchiveEventError, CatalogReaderCredentials, LocalCoordinator, Preparation,
@@ -159,6 +162,14 @@ async fn execute_inner(
     let deadline = Instant::now() + Duration::from_secs(5);
     let checked_destination = destination.clone();
     let checked_config = config.clone();
+    // Retain the oldest physical dependency observation, but install it only
+    // after successful reservation; authority/CAS denial is not a path failure.
+    let observation_started = authority
+        .observations
+        .as_ref()
+        .map(|_| SuspendAwareClock.read())
+        .transpose()
+        .map_err(|_| (4, "export observation clock unavailable".into()))?;
     let checked = match authority
         .blocking(deadline, move |_| {
             let growth = limits
@@ -206,8 +217,10 @@ async fn execute_inner(
         return Ok(());
     }
     // Auth/CAS refusals above observed no failure of the physical read path.
-    if let Some(observations) = authority.observations.as_mut() {
-        observations.begin(super::role_status::ReadCapability::Export);
+    if let (Some(observations), Some(started)) =
+        (authority.observations.as_mut(), observation_started)
+    {
+        observations.begin_at(super::role_status::ReadCapability::Export, started);
     }
     let prepare_config = config.clone();
     let prepare_budget = budget.clone();
@@ -413,7 +426,7 @@ async fn execute_inner(
                     if let Some(observations) = authority.observations.as_mut() {
                         let selected = written.job().selection();
                         observations.observed(super::role_status::ReadCapability::Export,
-                            selected.query(), selected.frontier_revision());
+                            selected.query(), selected.catalog(), selected.frontier_revision());
                     }
                     Ok(None)
                 },

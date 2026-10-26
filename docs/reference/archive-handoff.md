@@ -507,6 +507,31 @@ the existing poisoned-session behavior. Source remains Unknown without an Ingest
 observation. The bridge's source and focused controls do not themselves qualify
 the ordinary runtime/native journey.
 
+With private administration and the ordinary Archive reader selected, Control
+coalesces one full-selection observation every 15 seconds. Status requests retain
+normal Control authorization and use the bounded cache without starting a
+physical dependency probe. The
+observer loads original input locators on joined blocking work, acquires a
+catalog barrier and fresh reader pin, verifies the exact published snapshot with
+the existing native complete-cut reader, and compares all five family counts
+with the stored frontier. It then rechecks the current selection, releases only
+its known-joined pin, rolls back the barrier and joins the catalog driver before
+promoting the observation. A published snapshot may legitimately precede the
+physical head; it is never relabeled as that head.
+
+The pin retains its original, suspend-aware lifetime despite Control renewal.
+Unknown child or SQL outcomes retain the obligation and stop the owner. The
+finite profile admits at most 128 native receipts and the configured worker
+memory; exceeded limits do not claim a corrupt or empty archive. Source remains
+Unknown without an Ingest owner. Current history/export readiness additionally
+requires a successfully completed relevant operation on the identical selection,
+including the actual export destination checks. Both observations must be under
+30 seconds old, measured from their oldest dependency check. An in-flight full
+probe, failed verification, changed selection or expired observation cannot be
+repaired by a narrower successful read. This ordinary runtime increment remains
+under qualification; larger-history capacity and independent outages retain
+their existing acceptance gates.
+
 One native transaction scans all receipt fields through bounded EOF once, checks
 each original batch's complete source/digest/file membership, then resolves
 references through views restricted to this SAME source cut. The initial five
