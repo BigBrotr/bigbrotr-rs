@@ -110,7 +110,7 @@ fn registration() -> InitialRegistration {
             .map(|k| {
                 (
                     DictionaryKind::try_from(k).unwrap(),
-                    [k; 16].try_into().unwrap(),
+                    [u8::try_from(k).unwrap(); 16].try_into().unwrap(),
                 )
             })
             .collect(),

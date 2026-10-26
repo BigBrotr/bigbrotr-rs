@@ -74182,7 +74182,17 @@
       "metadata_finding_sha256": "a21641b90a0a4c7be5d1b5f2c8e4b9a4841b7e59a38ca54dcedbccdb3022308c",
       "actor_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-actor-20261026",
       "verifier_worktree": "/home/tux/bigbrotr-rs/.research/initial-index-binary-tests-20261026",
-      "state": "Actor/wiring committed locally; compilation, actual-engine publication, restart and unknown-query resolution NOT_RUN. Final critical review in progress; metadata correction is in this checkpoint commit."
+      "state": "Actual lib/CLI compile PASS; test fixture compilation FAIL preserved/corrected. Full behavioral native controls pending rerun, engine/installed/restart/unknown-query/readiness NOT_RUN. Continued critical source review complete at declared scope.",
+      "continued_review": "/home/tux/bigbrotr-rs/.research/implementation/index-foundation-20261026/runtime-review-47f8fde5/continued-review.json",
+      "continued_review_sha256": "f4adbc702f47a7c27f2a3cb199a8626d0cc98c4bd121205dc85a19e5a041fcc5",
+      "first_actual_run": {
+        "source": "479d649c6ed124a0108f9f3b65855b4e439d2ebb",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-479d649",
+        "qualification_sha256": "346872a976005586e19ff41f34ee482c60564b1ac74f35148118674c1fd18fc2",
+        "result": "FAIL: actual lib/CLI compile PASS91.583s; test executable compile FAIL51.910s E0277 synthetic fixture u16 allocation-domain bytes. Clippy/tests NOT_RUN. Fixed explicit byte conversion for next exact-source run; original failure preserved.",
+        "process": "session62389 terminal exit1/reaped; stopped-retained containers, unrelated inventory unchanged",
+        "free_bytes_after": 154687848448
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {

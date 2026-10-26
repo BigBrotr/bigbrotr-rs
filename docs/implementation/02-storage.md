@@ -1076,6 +1076,11 @@ identified serving incarnation. Logical correction history survives merges.
 - [ ] **Step 3:** Build deterministic per-table/per-physical-partition chunks containing
   schema, ordered membership and content digest; finite insert dedupe is optional
   acceleration, not correctness.
+  The initial whole-AdmissionBatch profile is not general input admissibility:
+  an accepted signed event can expand beyond a family's row/wire ceiling. Complete
+  deterministic bounded splitting or explicit isolated poison handling under
+  P02-T06 before claiming the full accepted event envelope. The small M1 fixture
+  does not discharge this requirement.
 - [ ] **Step 4:** Configure synchronous durable inserts with the selected fsync settings;
   record exact engine/version/table settings in the serving manifest. Native
   projections are optional rebuildable acceleration. Verify base and projection

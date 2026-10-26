@@ -19,20 +19,24 @@ on earlier `f1f6d166` completed **PASS** on all three required platforms; its
 bounded public-output audit is complete. Explicit skips remain in its report.
 
 P01-T09 Index continues in the canonical checkout on `work/initial-index`, HEAD
-`d553b239` before this review-correction checkpoint. The foundation's actual
+`479d649c` before this fixture-correction checkpoint. The foundation's actual
 library/CLI build, strict Clippy and all65 selected controls passed at `a8423d76`.
 The new initial actor (`6f0f3ff2`, integrated as `8f105a59`) and runtime wiring
-are **NOT_RUN** for compilation and actual engines. They add explicit
+compiled as the actual library/CLI at `479d649c`; actual engines remain **NOT_RUN**. They add explicit
 `--initialize-index`, accepted-policy selection, actual PG driver custody,
 serialized renewal/timer dispatch and joined shutdown. Seven actor controls and
 one CLI selection control are authored, not yet executed. The maintained runner
 now requires both actual test executables: existing65 library controls and31 named
 binary service controls. Its nine Python verifier controls PASS. Restart, positive
-remote uncertainty resolution and readiness remain open. Formatting/whitespace checks pass; native execution remains next. Critical
+remote uncertainty resolution and readiness remain open. The actual lib/CLI compile PASS at479d649c; test-ELF compilation FAIL(E0277),
+from a synthetic allocation-domain fixture inferring u16 bytes. The byte
+conversion is corrected in this commit; tests and Clippy were NOT_RUN in that
+failed execution. Root session62389 ended/exit1 and was reaped; both owned
+containers are stopped, original evidence retained, unrelated inventory unchanged. Critical
 review found disabled-Indexer bypass, permanent resource wait under a640MiB
 shared payload and a metadata row cap tied to the insert batch ceiling. Source
 corrections require accepted enablement, preflight against already-held grants,
-and separate closed metadata row bounds. Their actual native/engine checks are
+and separate closed metadata row bounds. Their behavioral native/engine checks are
 not yet executed. The maintained installed Index case will use100-row batches
 to exercise the160-column inspection through the real Rust adapter.
 
@@ -135,7 +139,7 @@ process is running. All three CH servers are stopped/exit0/PID0; its original
 failures and partial TTL fixture remain preserved. The actor and native-runner delegates completed frozen commits; publication
 audits are complete. Delegates now review runtime custody/resource semantics and
 the CI reuse candidate3e4b1621, and prepare the maintained installed Index case.
-Root owns integration and exclusive native/lab execution. No engine/build is active;
+Root owns integration and exclusive native/lab execution. No engine/build is active at this checkpoint;
 the only active root process is the hosted-run watcher69669. Q37 configurations remain as verified.
 
 The first native application build `fadc6bbd` is retained as FAIL (E0432 wrong
@@ -166,9 +170,12 @@ source, worktree or container was removed. Inventory
 journal and reconstruction procedure. Never replay that deletion or incrementally
 resume the partially retired caches.
 
-Next: critically review the frozen initial actor/runtime integration, then use the
-maintained native runner to compile the actual lib/CLI and execute both library
-and newly wired binary controls. Reuse the exclusive checked build cache; keep
+Next: rerun the maintained native profile with the corrected test fixture,
+executing the actual library and binary controls and strict Clippy. The completed
+critical source review found no further custody/cancellation/frontier blocker at
+its declared initial-only scope. Smaller-envelope concurrent resource pressure and
+general family-bound admissibility remain assigned to P01-T09Step5 and P02-T05Step3/
+T06, alongside restart/unknown-query/readiness gates. Reuse the exclusive checked build cache; keep
 original failures. Then exercise actual Rust/HTTP insert/readback/proofs and the
 pending column-TTL negative, followed by CH outage while Archive continues.
 Physical source/proof implementations alone do not close these gates.

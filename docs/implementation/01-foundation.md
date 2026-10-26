@@ -522,6 +522,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   This does not claim a new native RocksDB census, Index, outage or capacity proof.
 - [ ] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded
   pending behavior while preserving already acknowledged data.
+  Include shared application-budget overlap: an active Index operation must not
+  turn transient Sync/Archive pressure into lost acknowledgements or starvation.
+  The initial Index startup preflight covers permanent holders; smaller-envelope
+  concurrent operation qualification remains open. Preserve the independent
+  Control dependency when stopping Archive, rather than stopping their shared PG.
 - [ ] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
   empty volumes, follow the tutorial, inspect real listeners and assert zero
   signing/publication calls. Negative control: an unwired role reporting ready
