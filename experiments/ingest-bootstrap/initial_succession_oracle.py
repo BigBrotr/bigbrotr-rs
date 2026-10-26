@@ -55,6 +55,18 @@ def native_rows(rows):
     return result
 
 
+def successor_manifest(previous, incarnation, domains):
+    """Independent schema1→2 encoding with explicitly supplied fresh identities."""
+    assert len(previous)==266 and previous[:10]==bytes.fromhex('01010001000100010001')
+    assert len(incarnation)==16 and any(incarnation)
+    assert len(domains)==len(set(domains))==9 and all(len(d)==16 and any(d) for d in domains)
+    target=bytearray(previous)
+    target[2:4]=be(2,2);target[26:34]=be(1);target[54:62]=be(2);target[62:78]=incarnation
+    for kind,domain in enumerate(domains,1):
+        target[106+(kind-1)*18:122+(kind-1)*18]=domain
+    return bytes(target)
+
+
 def expected(original, native, inputs, timestamp):
     """Derive literal target bytes and fields from the frozen, already signed seed."""
     assert native['event'] == 'dump' and len(native['rows']) == 49
@@ -97,11 +109,6 @@ def expected(original, native, inputs, timestamp):
     closure = closure.digest()
     assert bytea(closure) == producer['closure_digest'] == source['closure_digest'] == owner['exclusion_digest']
     assert isinstance(timestamp, int) and timestamp >= producer['retired_at_us']
-    next_manifest = bytearray(old)
-    next_manifest[2:4] = be(2, 2)
-    next_manifest[26:34] = be(1)
-    next_manifest[54:62] = be(2)
-    next_manifest[62:78] = bytes([202]) * 16
     domains = []
     for kind in range(1, 10):
         offset = 104 + (kind - 1) * 18
@@ -109,9 +116,8 @@ def expected(original, native, inputs, timestamp):
         assert old[offset:offset + 18] == be(kind, 2) + binary(previous['allocation_domain'])
         assert previous['state'] == 'closed' and previous['closure_digest'] == bytea(closure)
         domain = bytes([160 + kind]) * 16
-        next_manifest[offset + 2:offset + 18] = domain
         domains.append([kind, domain.hex()])
-    target = bytes(next_manifest)
+    target = successor_manifest(old, bytes([202])*16, [bytes.fromhex(domain) for _,domain in domains])
     handoff = (b'\x01\x0a' + slot + be(1) + be(4) + be(12) + closure
         + be(len(old), 2) + old + be(len(target), 2) + target)
     assert len(handoff) == 610

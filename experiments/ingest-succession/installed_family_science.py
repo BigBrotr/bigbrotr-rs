@@ -49,9 +49,13 @@ def decode(data):
 
 
 class NetworkScience(FactEncoding):
-    def __init__(self, model, plan, *, acknowledge=False):
+    def __init__(self, model, plan, *, acknowledge=False, new_event=None, endpoint=ENDPOINT):
         assert type(acknowledge) is bool
         self.acknowledge = acknowledge
+        # Explicit independent fixture literals; the caller pins their source.
+        # Existing family callers retain the original event and endpoint.
+        self.new_event = NEW_EVENT if new_event is None else new_event
+        self.endpoint = endpoint
         self.m, self.plan = model, plan
         self.values = native_map(model.native)
         self.ds, self.slot = binary(model.ds['dataset_id']), binary(model.slot)
@@ -65,7 +69,7 @@ class NetworkScience(FactEncoding):
             raw = bytes.fromhex(self.values['facts', (b'\x01\x20' + self.source(1, n)).hex()])
             assert raw[:2] == b'\x01\x20' and sha(raw[34:]) == raw[2:34].hex()
             self.refs[1, n] = [[self.ds, 0, 1, n], raw[2:34]]
-        assert ('default', (b'\x01\x06' + self.ds + bytes.fromhex(NEW_EVENT['id'])).hex()) not in self.values
+        assert ('default', (b'\x01\x06' + self.ds + bytes.fromhex(self.new_event['id'])).hex()) not in self.values
 
     def commit(self, n, original, members, dependencies):
         batch = [self.refs[self.epoch, k] for k in members]
@@ -100,11 +104,11 @@ class NetworkScience(FactEncoding):
         if additional_events:
             assert isinstance(additional_events, (tuple,list)) and len(additional_events)==2
             assert historical is None
-            assert len({NEW_EVENT['id'],*(event['id'] for event,_,_,_ in additional_events)})==3
+            assert len({self.new_event['id'],*(event['id'] for event,_,_,_ in additional_events)})==3
         definitions = [(2, 'observer', dict(clock='system-utc', vantage=None, software=None,
             method_id=None, public_key=None, route_class=None, software_version=None))]
         if provenance:
-            definitions += [(1, 'endpoint', dict(url=ENDPOINT)),
+            definitions += [(1, 'endpoint', dict(url=self.endpoint)),
                 (3, 'access-scope', {'class': 'public', 'label': None, 'visibility_scope_id': self.scope}),
                 (5, 'event-verification', dict(input='nip01-event/1', algorithm='sha256-bip340',
                     capability='event-id-and-signature', output_unit='verification-result',
@@ -116,7 +120,7 @@ class NetworkScience(FactEncoding):
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 1], 'admit-evidence', 1,
             [1, self.scope, entries]])
         self.commit(1, original, list(range(1, n + 1)), [(1, 3)] + [(self.epoch, k) for k in range(1, n + 1)])
-        event, eid = NEW_EVENT, bytes.fromhex(NEW_EVENT['id'])
+        event, eid = self.new_event, bytes.fromhex(self.new_event['id'])
         self.dictionary(n + 1, 8, 'event', dict(event_id=eid), recorded)
         self.fact(n + 2, 'event-payload', [*body(event), self.ref(8)], recorded)
         self.index(6, self.ds + eid, n + 2)

@@ -36,12 +36,20 @@ def catalog_settings(config, catalog_port):
     return pg
 
 
+def sql_path(value):
+    """Explicit local placement; dots in components are not traversal or SQL."""
+    assert isinstance(value, str) and re.fullmatch('/[a-zA-Z0-9/_.-]+', value)
+    assert all(part not in ('.', '..') for part in value.split('/'))
+    return value
+
+
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
          bundle_root=Path('/build/archive-worker'), catalog_port=5432):
     assert row_bytes in (65536, 262144, 1048576)
     pg = catalog_settings(config, catalog_port)
     bundle = Path(bundle_root)
     assert bundle.is_absolute()
+    sql_path(str(bundle))
     header = (bundle / 'lib/duckdb.h').read_text()
     declaration = re.search(r'typedef struct \{([^{}]+)\}\s*duckdb_result;', header)
     assert declaration is not None
@@ -109,8 +117,7 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
             + pg['database'] + ' user=' + pg['read_user'] + ' password=' + secret
             + " sslmode=disable connect_timeout=5')", 'credential')
         del secret
-        root = config['storage']['archive_root']
-        assert re.fullmatch('/[a-zA-Z0-9/_-]+', root)
+        root = sql_path(config['storage']['archive_root'])
         execute("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH '" + root
             + "/', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'reader', READ_ONLY)", 'attach')
         execute('BEGIN TRANSACTION', 'begin')

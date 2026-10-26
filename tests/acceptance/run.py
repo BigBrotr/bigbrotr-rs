@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-restart"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -214,17 +214,18 @@ def main():
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
     args = parser.parse_args()
-    if args.case != "p01-first-launch" and args.binary is None:
+    installed = args.case in ("p01-first-launch", "p01-first-launch-restart")
+    if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
-    if args.case != "p01-first-launch" and (args.candidate_manifest or args.compose_network):
+    if not installed and (args.candidate_manifest or args.compose_network):
         parser.error("candidate and Compose arguments are only for p01-first-launch")
-    if args.case == "p01-first-launch" and any((args.binary, args.source_manifest, args.build_result)):
+    if installed and any((args.binary, args.source_manifest, args.build_result)):
         parser.error("p01-first-launch selects its artifact through --candidate-manifest")
     args.evidence = args.evidence.resolve()
     args.evidence.mkdir(mode=0o700, parents=True, exist_ok=False)
     checks, inputs = [], {}
     try:
-        if args.case == "p01-first-launch":
+        if installed:
             from cases.first_launch import first_launch
             first_launch(args, checks, inputs)
         else:

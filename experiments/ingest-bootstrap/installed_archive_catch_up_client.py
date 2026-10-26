@@ -18,6 +18,11 @@ FLAGS = {'abandon1': '--abandon-acquisition', 'retire1': '--retire-initial',
     'retire3': '--retire-successor'}
 
 
+def redacted(value, private_values):
+    serialized = json.dumps(value)
+    assert all(json.dumps(secret)[1:-1] not in serialized for secret in private_values), 'private observations contain sensitive bytes'
+
+
 def argv(operation, config):
     assert config.is_absolute() and config.parent == Path('/lab') and config.suffix == '.toml'
     base = ['/build/bigbrotr']
@@ -61,7 +66,14 @@ def process(operation, config, prefix):
                 elapsed_seconds=time.monotonic() - started))
 
 
-def http(home, restart):
+def http(home, restart, *, history_only=False):
+    assert type(history_only) is bool and not (history_only and restart)
+    profile = None
+    if history_only:
+        from installed_archive_profile import load, password_file
+        profile = load(home)
+        assert profile is not None, 'history requires an explicit fixture profile'
+        password = password_file(profile['password_ref'])
     expected = json.loads((home / 'read-input.json').read_text())
     events = json.loads((home / 'events.json').read_text())
     assert len(events) == 2
@@ -80,31 +92,36 @@ def http(home, restart):
         finally:
             connection.close()
     def access(*args):
-        answer = subprocess.run(['/build/bigbrotr', 'access', *args], env={}, capture_output=True, timeout=6)
+        answer = subprocess.run([profile['product_binary'] if profile else '/build/bigbrotr',
+            'access', *args], env={}, capture_output=True, timeout=6)
         assert answer.returncode == 0 and not answer.stderr, 'private access command refused'
         return json.loads(answer.stdout)
     secret = home / 'read-password.private'
-    if not restart:
+    if not restart and not history_only:
         with os.fdopen(os.open(secret, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0o600), 'w') as stream:
             stream.write('Independent owner password 2026')
     session = home / ('restart-session.private' if restart else 'read-session.private')
     login = access('login', '--origin', origin, '--username', 'alice', '--password-ref',
-        'file:'+str(secret), '--session-output', str(session))
+        profile['password_ref'] if profile else 'file:'+str(secret), '--session-output', str(session))
     saved = json.loads(session.read_text())
     auth = {'Cookie':'BigBrotrLocalSession='+saved['session'], 'X-CSRF-Token':saved['csrf']}
     status, me = request('GET', '/management/v1/me', headers=auth)
-    assert status == 200 and me['principal_id'] == '10'*16
+    assert status == 200 and me['principal_id'] == (profile['expected_principal_id'] if profile else '10'*16)
+    if profile:
+        assert me['stored_actions'] == profile['expected_actions']
+        assert me['config_revision'] == expected['config_revision'] == '1'
+        assert me['policy_revision'] == expected['policy_revision'] == '1'
     record('login', response=login, me=me, digests={k:hashlib.sha256(domain+bytes.fromhex(saved[k])).hexdigest()
         for k,domain in [('session',b'bigbrotr/browser-session/1\0'),('csrf',b'bigbrotr/browser-csrf/1\0')]})
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision=str(expected['frontier_revision']))
     def query(event):
         return dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
             filters=[dict(ids=[event['id']])])
-    body = dict(kind='export', format='signed-events-jsonl', query=query(events[1]), allocation=allocation,
+    body = None if history_only else dict(kind='export', format='signed-events-jsonl', query=query(events[1]), allocation=allocation,
         destination=dict(id=expected['destination_id'], binding_sha256=expected['binding_sha256']),
         expected_config_revision=expected['config_revision'], expected_policy_revision=expected['policy_revision'])
     keyed = {**auth,'Idempotency-Key':'d1'*16}
-    if not restart:
+    if not restart and not history_only:
         export_denied=request('POST','/management/v1/jobs',body,keyed)
         history_denied=request('POST','/v1/resources/event_history',query(events[0]),auth)
         record('no-implicit-scope-authority',export=list(export_denied),history=list(history_denied))
@@ -126,8 +143,17 @@ def http(home, restart):
         status,value=request('POST','/v1/resources/event_history',query(event),auth)
         record('history-'+event['id'],query=query(event),status=status,response=value)
         assert status==200 and value['items']==[event] and value['next_cursor'] is None
-        assert value['view_stamp']['input_generations']==[dict(kind='archive',**allocation,snapshot_id='8')]
+        assert value['view_stamp']['input_generations']==[dict(kind='archive',**allocation,
+            snapshot_id=str(expected['snapshot_id']) if history_only else '8')]
         histories.append(value)
+    if history_only:
+        logout=access('logout','--session-ref','file:'+str(session))
+        record('logout',response=logout)
+        assert request('GET','/management/v1/me',headers=auth)[0]==401
+        result=dict(status='PASS',histories=histories)
+        redacted(observations, (saved['session'], saved['csrf'], password))
+        publish(home/'history-client-result.json',result)
+        return
     status,receipt=request('POST','/management/v1/jobs',body,keyed)
     record('accept-export',command=body,key='d1'*16,status=status,receipt=receipt)
     assert status==(200 if restart else 202) and receipt['created'] is not restart
@@ -155,7 +181,7 @@ def http(home, restart):
 
 
 if __name__=='__main__':
-    if sys.argv[1] in ('read','read-restart'):
-        assert len(sys.argv)==3; http(Path(sys.argv[2]),sys.argv[1]=='read-restart')
+    if sys.argv[1] in ('read','read-restart','history'):
+        assert len(sys.argv)==3; http(Path(sys.argv[2]),sys.argv[1]=='read-restart',history_only=sys.argv[1]=='history')
     else:
         assert len(sys.argv)==4; process(sys.argv[1],Path(sys.argv[2]),Path(sys.argv[3]))

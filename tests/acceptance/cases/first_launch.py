@@ -31,6 +31,13 @@ LIMITS = [
     'NOT_RUN: independent native/C API census, typed progress qualification, Ingest successor/resend, Index readiness and complete M1.',
     'Configured container limits are not empirical capacity qualification; local candidate identity is not release authentication.',
 ]
+RESTART_STAGES = STAGES[:-1] + ('restart_baseline', 'ingest_restart_resend',
+    'archive_catch_up', 'catch_up_exact_retry', 'successor_history', 'cleanup')
+RESTART_LIMITS = [
+    'Fresh base export, same-store epoch1→2 Ingest recovery/resend, independent scientific C API census, Archive catch-up/retry and ordinary history of both events.',
+    'NOT_RUN: native RocksDB census, provenance-off repeat, second-event export, Index readiness, dependency-outage qualification and complete M1.',
+    LIMITS[2],
+]
 
 
 class MissingPrerequisite(Exception):
@@ -145,6 +152,7 @@ def interrupted():
 class Runtime:
     def __init__(self, args, inputs):
         self.args, self.inputs = args, inputs
+        self.restart_case = getattr(args, 'case', None) == 'p01-first-launch-restart'
         self.root, self.source = args.evidence, args.source_root.resolve()
         self.owner = secrets.token_hex(16)
         self.project = 'bigbrotr-acceptance-' + self.owner
@@ -215,6 +223,9 @@ class Runtime:
             raise MissingPrerequisite('requires a non-root user with Docker access')
         if self.args.candidate_manifest is None or not self.args.candidate_manifest.is_file():
             raise MissingPrerequisite('missing candidate manifest')
+        if self.restart_case and (not re.fullmatch('/[a-zA-Z0-9/_.-]+', str(self.root))
+                or any(part in ('.', '..') for part in str(self.root).split('/'))):
+            raise MissingPrerequisite('C API census requires an absolute SQL-safe evidence path (letters, digits, slash, dot, underscore, hyphen; no traversal)')
         if shutil.disk_usage(self.root).free <= 65 * 1024**3:
             raise MissingPrerequisite('requires more than 65 GiB free completion space')
         for port in PORTS:
@@ -260,6 +271,13 @@ class Runtime:
         for name in ('installed_archive_client.py', 'installed_archive_export_client.py', 'installed_archive_profile.py'):
             relative = 'experiments/ingest-bootstrap/' + name
             self.inputs['acceptance_files_sha256'][relative] = digest(self.source / relative)
+        if self.restart_case:
+            for name in ('installed_live_client.py', 'installed_archive_catch_up_client.py', 'installed_archive_read.py'):
+                relative = 'experiments/ingest-bootstrap/' + name
+                self.inputs['acceptance_files_sha256'][relative] = digest(self.source / relative)
+            selector = self.source / 'tests/fixtures/acquisition/selector-events.json'
+            require(digest(selector) == self.restart_checks.SELECTOR_SHA256, 'successor signed fixture changed')
+            self.inputs['selector_fixture_sha256'] = digest(selector)
         event = self.source / 'tests/fixtures/ingest/import-event.jsonl'
         require(digest(event) == self.signed_sha256, 'signed fixture changed')
         self.inputs['signed_fixture_sha256'] = digest(event)
@@ -268,6 +286,12 @@ class Runtime:
         for name, expected in self.inputs['acceptance_files_sha256'].items():
             require(digest(self.source / name) == expected, 'acceptance source changed during execution')
         require(digest(self.home / 'event.jsonl') == self.inputs['signed_fixture_sha256'], 'signed fixture changed during execution')
+        if self.restart_case:
+            require(digest(self.source / 'tests/fixtures/acquisition/selector-events.json') == self.inputs['selector_fixture_sha256'],
+                'successor fixture changed during execution')
+            if hasattr(self, 'successor_home'):
+                require(digest(self.successor_home / 'selector-events.json') == self.inputs['selector_fixture_sha256']
+                    and digest(self.successor_home / 'event.jsonl') == self.inputs['signed_fixture_sha256'], 'successor copied fixture changed')
 
     def load_helpers(self):
         # Existing independent owners, including their legacy import alias.
@@ -291,6 +315,13 @@ class Runtime:
         self.set_value, self.current_owner_view = set_value, current_owner_view
         self.export_validate, self.validate_source = validate, validate_source
         self.signed_sha256 = SIGNED_SHA256
+        if self.restart_case:
+            from cases import first_launch_restart
+            # Load every independent owner before recording source identity.
+            import installed_archive_read
+            import installed_archive_catch_up_oracle
+            import installed_progress_context_oracle
+            self.restart_checks = first_launch_restart
         # Route the reused SQL observers through the same bounded process/log
         # owner. Their SQL and independent row/oracle semantics are unchanged.
         self.lab, self.original_lab_command = lab, lab.command
@@ -619,6 +650,183 @@ class Runtime:
         self.inputs['export'] = {key: self.export_result[key] for key in
             ('jsonl_bytes', 'jsonl_sha256', 'manifest_sha256', 'export_pin_retained', 'all_fresh_readers_released')}
 
+    def census(self, output, name):
+        """A joined, read-only C API child using only the verified candidate worker."""
+        config = self.set_value(self.config.read_text(), 'storage', 'archive_root', str(self.state / 'data/archive'))
+        config = self.set_value(config, 'postgres.catalog', 'read_password_ref',
+            'file:' + str(self.state / 'secrets/runtime/archive-read'))
+        path = output / (name + '-reader.toml')
+        path.write_text(config)
+        result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
+            str(path), str(output / (name + '-temporary')), '--worker-root', str(self.bundle / 'archive-worker'),
+            '--catalog-port', '15432', '--full-stream-order'], timeout=30, label='census-' + name)
+        require(not result.stderr, 'independent C API diagnostic output')
+        value = json.loads(result.stdout)
+        save(output / (name + '-science.json'), value)
+        self.backend_absence(output)
+        return value
+
+    def restart_baseline(self):
+        self.source_unchanged()
+        output = self.root / 'restart'
+        output.mkdir(mode=0o700)
+        self.restart_output = output
+        self.original_read_config = self.config.read_text()
+        self.restart_before, _ = self.capture(output, 'before')
+        self.original_export_files = self.files(self.state / 'data/export')
+        save(output / 'before-export-files.json', self.original_export_files)
+        self.baseline_census = self.census(output, 'initial')
+        initial_before = load(self.root / 'initial/before-control.json')
+        initial_after = load(self.root / 'initial/after-control.json')
+        view = self.current_owner_view(initial_after, dict(control=initial_before, resource=dict(catalog_id=self.ids['catalog'])))
+        wires = [load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
+        owner, = [r for r in view['owner_epochs'] if r['role'] == 'control']
+        self.old_event = load(self.home / 'event.jsonl')
+        self.first_science = self.restart_checks.first_science(view, self.initialized, self.old_event, wires,
+            self.baseline_census, self.state / 'data/ingest', owner['released_at_us'])
+        self.restart_checks.publication(initial_after, self.baseline_census, self.first_science,
+            revision=4, snapshot=5, topology=0, cuts=[(1, 12)])
+        self.original_inputs = self.files(self.state / 'data/ingest/producer-inputs-v1')
+        save(output / 'original-input-files.json', self.original_inputs)
+
+    def restart_ingest(self):
+        output = self.restart_output
+        self.config.write_text((self.root / 'ordinary/initial-config.toml').read_text())
+        args = ['ingest', 'recover', '--file', '/etc/bigbrotr/instance.toml']
+        abandoned = self.finite('abandon-initial', *args, '--abandon-acquisition')
+        require(abandoned['acquisition_abandonment'] == dict(jobs='1', reason='initial_producer_abandoned', coverage='unknown'),
+            'initial acquisition abandonment differs')
+        retired = self.finite('retire-initial', *args, '--retire-initial')
+        self.retired_initial, _ = self.capture(output, 'retired-initial')
+        self.restart_checks.retired(self.retired_initial, retired, 1, self.first_science, cut=12)
+        self.backend_absence(output)
+        home = self.root / 'successor-client'
+        home.mkdir(mode=0o700)
+        self.successor_home = home
+        for name in ('event.jsonl', 'fixture-profile.json', 'visibility.json'):
+            shutil.copyfile(self.home / name, home / name)
+        shutil.copyfile(self.source / 'tests/fixtures/acquisition/selector-events.json', home / 'selector-events.json')
+        self.new_event, = [row['event'] for row in load(home / 'selector-events.json')['events'] if row['name'] == 'included']
+        entry = self.launch('successor', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
+            '--activate-initial-successor', '--roles', 'control,ingest,sync')
+        started = self.wait(lambda: self.logs(entry, output), 'successor activation', 20, entry=entry)[0]
+        require(started['state'] == 'activated' and started['producer_epoch'] == '2'
+            and started['topology_generation'] == '1' and started['config_revision'] == started['policy_revision'] == '1'
+            and started['outstanding_request_limit'] == '32' and started['ready'] is False
+            and started['acquisition'] == 'finite-initial-successor', 'unexpected successor profile')
+        self.successor_started = started
+        save(output / 'successor-started.json', started)
+        self.capture(output, 'successor-started')
+        with (home / 'client.stdout').open('x') as out, (home / 'client.stderr').open('x') as err:
+            client = subprocess.Popen([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_live_client.py'),
+                'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1'],
+                env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
+        self.processes.append(client)
+        save(output / 'client-process.json', dict(pid=client.pid, process_group=client.pid))
+        self.wait(lambda: (home / 'prepared.json').exists(), 'successor source registration', 15, entry, client)
+        prepared, _ = self.capture(output, 'successor-prepared')
+        self.restart_checks.prepared(prepared, load(home / 'prepared.json'), self.initialized['private_scope'])
+        (home / 'prepared.continue').write_text('source relationships independently checked\n')
+        self.wait(lambda: (home / 'submitted.json').exists(), 'successor acquisition', 15, entry, client)
+        def classified():
+            require(not (home / 'relay-error.json').exists(), 'successor relay failed')
+            return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3') == '1'
+        self.wait(classified, 'three classified successor events', 30, entry, client)
+        (home / 'submitted.continue').write_text('finite three-event head observed\n')
+        self.wait(lambda: (home / 'commands-finished.json').exists(), 'successor logout', 15, entry, client)
+        def quiet():
+            return any(load(path)['number'] >= 2 and not path.with_name(path.name.replace('open', 'closed')).exists()
+                for path in sorted(home.glob('relay-open-*.json'), reverse=True))
+        self.wait(quiet, 'successor quiet receive', 5, entry, client)
+        terminal = self.stop_container(entry, output)
+        final = self.logs(entry, output)[-1]
+        require(terminal['State']['ExitCode'] == 0 and final == dict(format='bigbrotr-initial-successor/1', state='stopped',
+            native='closed', owner_release='committed', source_closure='not-performed', producer_epoch='2', ready=False),
+            'successor did not close and release')
+        (home / 'commands-finished.continue').write_text('successor owner joined\n')
+        require(client.wait(timeout=6) == 0 and not (home / 'client.stderr').read_bytes(), 'successor client failed')
+        stop_process(client)
+        self.processes.remove(client)
+        require(load(home / 'client-result.json')['status'] == 'PASS', 'missing successor client verdict')
+        self.successor_after, _ = self.capture(output, 'successor-after')
+        self.successor_completed = time.time_ns() // 1000
+        self.successor_wires = [load(path) for path in sorted(home.glob('relay-closed-*.json'))]
+        self.restart_checks.successor_wire(self.successor_wires, self.old_event, self.new_event)
+        self.backend_absence(output)
+        abandoned = self.finite('abandon-successor', *args, '--abandon-activated-acquisition')
+        require(abandoned['acquisition_abandonment'] == dict(jobs='1', reason='activated_initial_producer_abandoned', coverage='unknown'),
+            'successor acquisition abandonment differs')
+        self.successor_retirement = self.finite('retire-successor', *args, '--retire-activated-initial')
+        self.retired_successor, _ = self.capture(output, 'retired-successor')
+        self.backend_absence(output)
+
+    def restart_archive(self):
+        output = self.restart_output
+        report = self.finite('archive-catch-up', 'archive', 'catch-up', '--file', '/etc/bigbrotr/instance.toml')
+        self.caught_up, self.caught_up_catalog = self.capture(output, 'caught-up')
+        for table in ('producer_requests', 'producer_outcomes', 'producer_checkpoints',
+                      'producer_checkpoint_dependencies', 'acquisition_progress'):
+            require(self.caught_up[table] == self.successor_after[table], 'terminal replay changed producer evidence: ' + table)
+        self.caught_up_files = self.files(self.state / 'data/archive')
+        save(output / 'caught-up-archive-files.json', self.caught_up_files)
+        self.final_census = self.census(output, 'caught-up')
+        self.final_science = self.restart_checks.successor_science(self.retired_initial, self.successor_after,
+            self.successor_started, self.first_science, self.old_event, self.new_event, self.successor_wires,
+            self.final_census, self.state / 'data/ingest', self.successor_completed)
+        self.restart_checks.retired(self.retired_successor, self.successor_retirement, 2, self.final_science, cut=10)
+        self.restart_checks.publication(self.caught_up, self.final_census, self.final_science,
+            revision=6, snapshot=8, topology=1, cuts=[(1, 12), (2, 10)])
+        self.restart_checks.catch_up_report(report, self.caught_up, retry=False)
+        self.restart_checks.bridge(self.caught_up, self.baseline_census['tables']['archive_commits'])
+        self.restart_checks.preserve_export(self.restart_before, self.caught_up)
+        require(self.files(self.state / 'data/export') == self.original_export_files, 'original export files changed')
+        originals = self.files(self.state / 'data/ingest/producer-inputs-v1')
+        require(len(originals) == 7 and all(originals.get(name) == value for name, value in self.original_inputs.items()),
+            'original input custody changed')
+        self.all_input_files = originals
+        save(output / 'independent-verdict.json', dict(scientific_rows=22, family_counts=[13, 2, 2, 2, 3],
+            producer_requests=[4, 3], archive_commits=7, snapshot_id=8, frontier_revision=6,
+            original_science_unchanged=True, original_export_unchanged=True, native_census='NOT_RUN'))
+
+    def restart_retry(self):
+        output = self.restart_output
+        report = self.finite('archive-catch-up-retry', 'archive', 'catch-up', '--file', '/etc/bigbrotr/instance.toml')
+        after, catalog = self.capture(output, 'retry')
+        self.restart_checks.catch_up_report(report, after, retry=True)
+        self.restart_checks.retry_unchanged(self.caught_up, after)
+        require(catalog == self.caught_up_catalog and self.files(self.state / 'data/archive') == self.caught_up_files,
+            'exact catch-up retry changed Archive')
+        require(self.census(output, 'retry') == self.final_census, 'exact catch-up retry changed scientific rows')
+        require(self.files(self.state / 'data/ingest/producer-inputs-v1') == self.all_input_files, 'catch-up retry changed original inputs')
+
+    def restart_history(self):
+        self.source_unchanged()
+        output = self.root / 'successor-history'
+        output.mkdir(mode=0o700)
+        self.config.write_text(self.original_read_config)
+        shutil.copyfile(self.home / 'fixture-profile.json', output / 'fixture-profile.json')
+        save(output / 'events.json', [self.old_event, self.new_event])
+        save(output / 'read-input.json', dict(scope=self.initialized['private_scope'], catalog_id=self.ids['catalog'],
+            frontier_revision=6, snapshot_id=8, config_revision='1', policy_revision='1'))
+        before, catalog = self.capture(output, 'before')
+        entry = self.launch('successor-history', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml', '--roles', 'control')
+        first = self.wait(lambda: self.logs(entry, output), 'successor ordinary Control', 20, entry=entry)[0]
+        require(first['state'] == 'idle', 'ordinary successor reader did not start')
+        result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_catch_up_client.py'),
+            'history', str(output)], timeout=30, label='successor-history-client')
+        require(not result.stderr and load(output / 'history-client-result.json')['status'] == 'PASS', 'successor ordinary history failed')
+        terminal = self.stop_container(entry, output)
+        require(terminal['State']['ExitCode'] == 0, 'successor ordinary Control did not stop')
+        after, final_catalog = self.capture(output, 'after')
+        self.restart_checks.history_unchanged(before, after)
+        self.restart_checks.preserve_export(self.restart_before, after)
+        require(final_catalog == catalog == self.caught_up_catalog and self.files(self.state / 'data/archive') == self.caught_up_files,
+            'ordinary history changed Archive')
+        require(self.files(self.state / 'data/export') == self.original_export_files, 'ordinary history changed original export')
+        require(self.files(self.state / 'data/ingest/producer-inputs-v1') == self.all_input_files, 'ordinary history changed original inputs')
+        self.backend_absence(output)
+        self.source_unchanged()
+
     def cleanup(self):
         errors = self.resources['cleanup_errors']
         for process in list(self.processes):
@@ -668,9 +876,10 @@ class Runtime:
 
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
-    args.case_limits = LIMITS
+    restart = getattr(args, 'case', None) == 'p01-first-launch-restart'
+    args.case_limits = RESTART_LIMITS if restart else LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in STAGES}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -680,9 +889,14 @@ def first_launch(args, checks, inputs):
     try:
         args.evidence.chmod(0o700)
         runtime = Runtime(args, inputs)
-        for current, operation in (('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
+        operations = [('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
-                ('signed_acquisition', runtime.initial), ('ordinary_history_export', runtime.ordinary)):
+                ('signed_acquisition', runtime.initial), ('ordinary_history_export', runtime.ordinary)]
+        if restart:
+            operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
+                ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry),
+                ('successor_history', runtime.restart_history)]
+        for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'
     except MissingPrerequisite as error:
