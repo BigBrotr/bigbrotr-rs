@@ -453,8 +453,21 @@ class IndexRuntime(Runtime):
         save(output/'verdict.json', result)
         self.inputs['index'] = result
 
-    def ordinary_client(self, output, entry):
+    def ordinary_profile(self):
         from installed_archive_export_client import (READINESS_MODE, READINESS_PHASES, PHASE_SECONDS, CLIENT_SECONDS)
+        return READINESS_MODE, READINESS_PHASES, PHASE_SECONDS, CLIENT_SECONDS
+
+    def ordinary_special_phase(self, phase, signal, deadline, output, entry, client):
+        return False
+
+    def ordinary_verdict(self, completed, timing, journal):
+        oracle.ordinary_complete(completed, timing, journal)
+        return dict(status='PASS',phases=completed, source='unknown',control='ready',
+            archive_revision=4,cut=12,snapshot=5,restoration='exact',
+            original_export_gate='pending existing independent signed export oracle')
+
+    def ordinary_client(self, output, entry):
+        READINESS_MODE, READINESS_PHASES, PHASE_SECONDS, CLIENT_SECONDS = self.ordinary_profile()
         selected = load(self.home/'export-input.json')
         save(self.home/'export-input.json', dict(selected, readiness_mode=READINESS_MODE))
         command = [sys.executable, '-B', str(self.source/'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)]
@@ -476,6 +489,11 @@ class IndexRuntime(Runtime):
                             'ordinary phase deadline declaration')
                     deadline = min(overall, signal['deadline_ns']/1_000_000_000)
                     require(signal['started_ns']/1_000_000_000 <= time.monotonic() < deadline, 'ordinary phase deadline')
+                    if self.ordinary_special_phase(phase, signal, deadline, output, entry, client):
+                        require(time.monotonic() < deadline, 'ordinary special phase exceeded deadline')
+                        completed.append(phase)
+                        (self.home/('ordinary-'+phase+'.continue')).write_text('independent observation checked\n')
+                        continue
                     if phase == 'restored':
                         self.inspect(entry)
                         move_input(journal, restore=True)
@@ -557,10 +575,8 @@ class IndexRuntime(Runtime):
                 client.wait(timeout=max(.001,overall-time.monotonic()))
                 require(client.returncode == 0 and time.monotonic() < overall, 'ordinary client failed or timed out')
                 require(not (output/'ordinary-client.stderr').read_bytes(), 'ordinary client diagnostic output')
-                oracle.ordinary_complete(completed,load(self.home/'ordinary-timing.json'),journal)
-                save(output/'ordinary-readiness-verdict.json', dict(status='PASS',phases=completed,
-                    source='unknown',control='ready',archive_revision=4,cut=12,snapshot=5,restoration='exact',
-                    original_export_gate='pending existing independent signed export oracle'))
+                save(output/'ordinary-readiness-verdict.json',
+                    self.ordinary_verdict(completed,load(self.home/'ordinary-timing.json'),journal))
             except BaseException as error:
                 save(output/'ordinary-readiness-failure.json', dict(error_type=type(error).__name__,reason=str(error),completed=completed))
                 raise

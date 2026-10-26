@@ -10,6 +10,8 @@ from installed_archive_profile import load as load_profile, password_file
 
 READINESS_MODE = 'ordinary-readiness/1'
 READINESS_PHASES = ('setup', 'positive', 'missing', 'narrow', 'restored')
+SHORT_PIN_MODE = 'ordinary-short-pin/1'
+SHORT_PIN_PHASES = ('setup', 'positive', 'pin-expiry')
 PHASE_SECONDS = 30
 JOURNEY_SECONDS = 40
 CLIENT_SECONDS = JOURNEY_SECONDS + len(READINESS_PHASES) * PHASE_SECONDS
@@ -17,7 +19,7 @@ CLIENT_SECONDS = JOURNEY_SECONDS + len(READINESS_PHASES) * PHASE_SECONDS
 
 def phase(home, name, action=None):
     """One closed added phase, including its action, with an absolute deadline."""
-    assert name in READINESS_PHASES
+    assert name in (*READINESS_PHASES, 'pin-expiry')
     started = time.monotonic_ns()
     deadline = started + PHASE_SECONDS * 1_000_000_000
     payload = action() if action else None
@@ -45,7 +47,8 @@ def run(home):
     password_ref = profile['password_ref'] if profile else 'file:' + str(home / 'password.private')
     expected = json.loads((home / 'export-input.json').read_text())
     mode = expected.get('readiness_mode')
-    assert mode in (None, READINESS_MODE), 'unknown ordinary fixture mode'
+    assert mode in (None, READINESS_MODE, SHORT_PIN_MODE), 'unknown ordinary fixture mode'
+    selected_phases = SHORT_PIN_PHASES if mode == SHORT_PIN_MODE else READINESS_PHASES
     phases = []
     event = json.loads((home / 'event.jsonl').read_text())
     origin = 'http://127.0.0.1:18081'
@@ -141,6 +144,9 @@ def run(home):
     assert request('POST', '/management/v1/jobs', body, keyed) == (200, dict(receipt, created=False))
     if mode:
         barrier('positive')
+    if mode == SHORT_PIN_MODE:
+        barrier('pin-expiry')
+    elif mode:
         barrier('missing')
         def narrow():
             status, repeated = request('POST', '/v1/resources/event_history', query, auth)
@@ -165,7 +171,8 @@ def run(home):
         assert active <= JOURNEY_SECONDS * 1_000_000_000, 'original ordinary journey exceeded40s'
         (home / 'ordinary-timing.json').write_text(json.dumps(dict(mode=mode,
             original_limit_seconds=JOURNEY_SECONDS, export_limit_seconds=12,
-            overall_limit_seconds=CLIENT_SECONDS, original_active_ns=active, phases=phases), indent=2) + '\n')
+            overall_limit_seconds=JOURNEY_SECONDS + len(selected_phases)*PHASE_SECONDS,
+            original_active_ns=active, phases=phases), indent=2) + '\n')
     return dict(status='PASS', job_id=receipt['job_id'], history=history, completed=observed)
 
 

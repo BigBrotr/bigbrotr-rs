@@ -311,6 +311,45 @@ ordinary full Archive readiness, independent service outages, capacity or comple
 M1. Its terminal overall readiness remains explicitly unqualified. The pending
 SQL TTL fixture and earlier failures retain their original outcomes.
 
+### Ordinary full-probe short-pin expiry
+
+Select `p01-first-launch-index-short-pin` with the same candidate/source/evidence
+arguments for the closed pin-expiry variant. It retains the eight Index stages
+and original signed history/export checks. In the same ordinary Control process,
+both capabilities must first be Ready. The client then performs only authenticated
+status reads while a one-shot numeric-loopback proxy gates the next complete
+native reader and an owned PostgreSQL transaction locks `ducklake_data_file`.
+Actual `pg_blocking_pids`, backend start times, the installed worker ELF and
+PID/start identity bind the obstruction; no worker signal is injected.
+
+The deployment uses a 3s owner lease, 500ms heartbeat/renewal timeout/safety margin,
+and unchanged 5s authorization and 30s probe limits. No accepted policy changes.
+The original stored reader pin must remain fixed while the same Control
+backend/epoch renews beyond its expiry. The policy ticket starts before the
+successful, at-most-500ms owner refresh that writes a 3s lease, independently
+placing its original 5s deadline no earlier than pin expiry plus 1.5s. The native
+cancellation monitor polls every 25ms, worker transport every 2ms, and kill/join has
+a 300ms bound. This fixture requires observed joined release before expiry plus
+1s, with clock-bracket checks; that is a discriminating fixture gate, not a
+general filesystem/shutdown latency guarantee. Slower or ambiguous observations
+fail the fixture rather than widen its limits.
+
+Pin admission itself has the same 500ms cap. Including the separately checked
+100ms clock tolerance, the original local window cannot expire before stored
+expiry minus 600ms. The worker must remain actually blocked close to that lower
+bound, and an earlier disappearance or release is refused. Final Control lease
+expiry must exceed the original pin expiry plus 3s, proving a refresh sampled
+after the original pin deadline, rather than merely a lease spanning it.
+
+The phase requires no earlier active reader, a live pin during actual blocking,
+positive native reap, exact reader/claim release, no post-expiry Ready response,
+and unchanged scientific data, retained inputs, export files and prior pins.
+Setup, positive and expiry each have 30s; the original 40s active journey and 12s
+export bounds remain (130s total). Protected evidence retains all failures.
+Pin-release COMMIT uncertainty, genuine `TerminationUnknown`, withheld-input
+restoration and general outages are **NOT_RUN** in this variant. Python refusal
+controls do not substitute for the required real installed execution.
+
 ## Same-store installed Ingest restart
 
 `p01-first-launch-restart` extends the fresh base case above on the same physical
