@@ -31,19 +31,26 @@ pub(crate) fn retain_connection<F: Future + Unpin>(
     future: F,
 ) -> Result<impl Future<Output = F::Output> + use<F>, CustodyError> {
     let custody = lock.try_clone().map_err(|_| CustodyError::Filesystem)?;
-    Ok(CustodiedConnection {
+    Ok(retain_connection_guard(future, custody))
+}
+
+pub(crate) fn retain_connection_guard<F: Future + Unpin, Guard: Unpin>(
+    future: F,
+    guard: Guard,
+) -> impl Future<Output = F::Output> + use<F, Guard> {
+    CustodiedConnection {
         future,
-        _custody: custody,
-    })
+        _custody: guard,
+    }
 }
 
 // Field order is intentional for cancellation: destroy the actual transport
 // before closing its lock clone, whether or not it was ever polled.
-struct CustodiedConnection<F> {
+struct CustodiedConnection<F, Guard> {
     future: F,
-    _custody: File,
+    _custody: Guard,
 }
-impl<F: Future + Unpin> Future for CustodiedConnection<F> {
+impl<F: Future + Unpin, Guard: Unpin> Future for CustodiedConnection<F, Guard> {
     type Output = F::Output;
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         Pin::new(&mut self.get_mut().future).poll(cx)

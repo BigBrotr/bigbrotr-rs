@@ -15,9 +15,11 @@ use sha2::{Digest, Sha256};
 use std::{
     borrow::Cow,
     fs::File,
+    future::Future,
     io::{Read, Write},
     os::unix::fs::MetadataExt,
     path::{Path, PathBuf},
+    sync::{Arc, Mutex},
 };
 
 const DIRECTORY: &str = ".bigbrotr-index-custody";
@@ -37,6 +39,40 @@ pub struct HeldIndexCustody {
     lock: File,
     binding: IndexBinding,
     manifest: Vec<u8>,
+}
+
+/// Attach the actual local lock to a PG driver that starts before accepted
+/// policy permits Index state creation. This is only transport lifetime custody;
+/// it neither authorizes SQL nor proves remote rollback or query cessation.
+#[derive(Clone, Default)]
+pub struct IndexDriverCustody {
+    state: Arc<Mutex<Option<File>>>,
+}
+impl IndexDriverCustody {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Attach once, before the first Index effect. There is deliberately no
+    /// detach/reset operation. The original same-open-description lock remains
+    /// held until both all handles and the actual wrapped driver are destroyed.
+    pub fn attach(&self, held: &HeldIndexCustody) -> Result<(), CustodyError> {
+        let mut state = self.state.lock().map_err(|_| CustodyError::Filesystem)?;
+        if state.is_some() {
+            return Err(CustodyError::Occupied);
+        }
+        *state = Some(held.retain_lane()?);
+        Ok(())
+    }
+
+    /// Wrap the real transport future before spawning it, never its JoinHandle.
+    /// The transport drops before its guard, including cancellation/unpolled Drop.
+    pub fn retain_connection<F: Future + Unpin>(
+        &self,
+        future: F,
+    ) -> impl Future<Output = F::Output> + use<F> {
+        custody::retain_connection_guard(future, Arc::clone(&self.state))
+    }
 }
 
 impl HeldIndexCustody {
@@ -427,6 +463,72 @@ pub(super) mod tests {
             recover_released(&path, &binding, "fedcba98-7654-3210-fedc-ba9876543210").err(),
             Some(CustodyError::Identity)
         );
+    }
+
+    #[test]
+    fn late_driver_attachment_retains_lock_through_actual_unpolled_transport_drop() {
+        use std::{
+            pin::Pin,
+            sync::atomic::{AtomicBool, Ordering},
+            task::{Context, Poll},
+        };
+        struct Transport {
+            root: PathBuf,
+            binding: IndexBinding,
+            dropped: Arc<AtomicBool>,
+        }
+        impl Future for Transport {
+            type Output = ();
+            fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<()> {
+                Poll::Pending
+            }
+        }
+        impl Drop for Transport {
+            fn drop(&mut self) {
+                assert_eq!(
+                    HeldIndexCustody::recover_for_boot(&self.root, &self.binding, BOOT).err(),
+                    Some(CustodyError::Occupied)
+                );
+                self.dropped.store(true, Ordering::Release);
+            }
+        }
+        let (_root, path) = root();
+        let held = create(&path).unwrap();
+        let binding = *held.binding();
+        let attached = IndexDriverCustody::new();
+        let dropped = Arc::new(AtomicBool::new(false));
+        let driver = attached.retain_connection(Transport {
+            root: path.clone(),
+            binding,
+            dropped: Arc::clone(&dropped),
+        });
+        attached.attach(&held).unwrap();
+        assert_eq!(attached.attach(&held), Err(CustodyError::Occupied));
+        drop((held, attached));
+        assert_eq!(
+            HeldIndexCustody::recover_for_boot(&path, &binding, BOOT).err(),
+            Some(CustodyError::Occupied)
+        );
+        drop(driver);
+        assert!(dropped.load(Ordering::Acquire));
+        recover_released(&path, &binding, BOOT).unwrap();
+    }
+
+    #[test]
+    fn driver_attachment_refuses_changed_custody_without_retaining_its_lock() {
+        let (_root, path) = root();
+        let held = create(&path).unwrap();
+        let binding = *held.binding();
+        let manifest = path.join(DIRECTORY).join(MANIFEST);
+        let original = fs::read(&manifest).unwrap();
+        let attached = IndexDriverCustody::new();
+        let driver = attached.retain_connection(std::future::pending::<()>());
+        fs::write(&manifest, b"{}").unwrap();
+        assert_eq!(attached.attach(&held), Err(CustodyError::Identity));
+        fs::write(&manifest, original).unwrap();
+        drop(held);
+        let recovered = recover_released(&path, &binding, BOOT).unwrap();
+        drop((driver, attached, recovered));
     }
 
     #[test]
