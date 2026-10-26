@@ -182,6 +182,20 @@ pub(super) async fn execute(
     coordinator: Option<&LocalCoordinator>,
     authority: &mut Supervisor<'_>,
 ) -> Result<()> {
+    let outcome = execute_inner(work, config, budget, coordinator, authority).await;
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.finish(super::role_status::ReadCapability::History, outcome.is_ok());
+    }
+    outcome
+}
+
+async fn execute_inner(
+    work: management::HistoryWork,
+    config: Arc<Resolved>,
+    budget: ResourceBudget,
+    coordinator: Option<&LocalCoordinator>,
+    authority: &mut Supervisor<'_>,
+) -> Result<()> {
     if work.abandoned() {
         return Ok(());
     }
@@ -225,6 +239,12 @@ pub(super) async fn execute(
         work.refuse(SessionError::ArchiveUnavailable).deliver();
         return Ok(());
     };
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.begin(
+            super::role_status::ReadCapability::History,
+            Some(authorization.observed_at_us()),
+        );
+    }
     // The initial native profile includes its entire isolated worker allowance,
     // parent decode overlap and bounded HTTP output. The128MiB preparation
     // allowance covers the manager's80MiB+8x bounded credential input, the16MiB
@@ -318,6 +338,10 @@ pub(super) async fn execute(
                     drop(body);
                     work.refuse(SessionError::ArchiveUnavailable).deliver();
                 } else {
+                if let Some(observations) = authority.observations.as_mut() {
+                    observations.observed(super::role_status::ReadCapability::History,
+                        body._event.query(), selected.frontier_revision);
+                }
                 let mut delivery = work.deliver(body);
                 let cleanup = deadline + duration(authority.root,"graceful_shutdown_timeout");
                 if authority.external(cleanup,delivery.ended(),OnShutdown::Finish).await?.is_none() { return Err((4,"history delivery not joined; retain pin".into())); }

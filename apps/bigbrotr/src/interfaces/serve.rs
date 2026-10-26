@@ -5,6 +5,7 @@ mod history;
 mod initial_ingest;
 mod native_grants;
 mod resume_export;
+mod role_status;
 use super::{
     archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, management,
     postgres_command,
@@ -709,6 +710,24 @@ async fn supervise(
                 result.map_err(|_| (4,"export prerequisites deadline".into()))?.map_err(|e| (3,format!("export prerequisites refused: {e:?}")))?,
         }
     }
+    // Observation metadata stays charged independently of queued HTTP requests.
+    let observations = accepted
+        .flag("administration.enabled")
+        .then(|| {
+            role_status::Observations::new(
+                &shared_budget,
+                dataset,
+                accepted.flag("archive.reader.enabled"),
+                execute_exports,
+            )
+            .map_err(|_| {
+                (
+                    3,
+                    "ordinary role observation cache exceeds the shared budget".into(),
+                )
+            })
+        })
+        .transpose()?;
     let mut management = if accepted.flag("administration.enabled") {
         let mut export_jobs = false;
         let mut export_resume = false;
@@ -789,6 +808,7 @@ async fn supervise(
         root,
         stop,
         management: &mut management,
+        observations,
         stopping: false,
     };
     let mut export_after = None;
@@ -863,6 +883,9 @@ async fn supervise(
                 };
                 let response = match response {
                     management::Execution::Complete(response) => response,
+                    management::Execution::RoleStatus(work) => Some(role_status::complete(
+                        work, supervisor.owner.identity(), supervisor.dataset, supervisor.snapshot,
+                        supervisor.observations.as_ref())),
                     management::Execution::Resume(work) => {
                         let response = resume_export::execute(work, &shared_budget, &mut supervisor).await?;
                         if supervisor.stopping { return Ok(()); }

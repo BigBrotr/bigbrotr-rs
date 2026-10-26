@@ -49,6 +49,7 @@ pub(super) struct Supervisor<'a> {
     pub root: &'a Resolved,
     pub stop: &'a mut Stop,
     pub management: &'a mut Option<management::Management>,
+    pub observations: Option<super::role_status::Observations>,
     pub stopping: bool,
 }
 pub(super) enum OnShutdown {
@@ -143,6 +144,9 @@ impl Supervisor<'_> {
                     };
                     let response = match execution {
                         management::Execution::Complete(response) => response,
+                        management::Execution::RoleStatus(work) => Some(super::role_status::complete(
+                            work, self.owner.identity(), self.dataset, self.snapshot,
+                            self.observations.as_ref())),
                         // One native consumer owns the capture barrier/budget.
                         // Historical retries and revocation can use Control,
                         // but new archive work must retry after this consumer.

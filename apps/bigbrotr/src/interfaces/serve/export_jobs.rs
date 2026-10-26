@@ -120,6 +120,35 @@ pub(super) async fn execute(
     retained: &Custody,
     authority: &mut Supervisor<'_>,
 ) -> Result<()> {
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.begin(super::role_status::ReadCapability::Export, None);
+    }
+    let outcome = execute_inner(
+        id,
+        config,
+        budget,
+        destination,
+        coordinator,
+        retained,
+        authority,
+    )
+    .await;
+    if let Some(observations) = authority.observations.as_mut() {
+        observations.finish(super::role_status::ReadCapability::Export, outcome.is_ok());
+    }
+    outcome
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn execute_inner(
+    id: JobId,
+    config: Arc<Resolved>,
+    budget: ResourceBudget,
+    destination: Arc<LocalDestination>,
+    coordinator: &LocalCoordinator,
+    retained: &Custody,
+    authority: &mut Supervisor<'_>,
+) -> Result<()> {
     let (limits, reader_limits) = match limits(&config) {
         Ok(value) => value,
         Err(_) => return Ok(()),
@@ -379,7 +408,14 @@ pub(super) async fn execute(
                 },
             };
             match completed {
-                Ok(_) => Ok(None),
+                Ok(_) => {
+                    if let Some(observations) = authority.observations.as_mut() {
+                        let selected = written.job().selection();
+                        observations.observed(super::role_status::ReadCapability::Export,
+                            selected.query(), selected.frontier_revision());
+                    }
+                    Ok(None)
+                },
                 Err(error) if known_refusal(error) => Ok(Some(pause_reason(error))),
                 Err(error) => Err(sql_error(error)),
             }
