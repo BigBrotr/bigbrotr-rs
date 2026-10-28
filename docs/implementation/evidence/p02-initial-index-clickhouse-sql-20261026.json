@@ -3,7 +3,7 @@
   "task": "P01-T09 initial Index physical schema and installed publication",
   "date": "2026-10-26",
   "status": "PARTIAL",
-  "summary": "Original SQL-only schema/catalog/grant checks PASS at their scope. Installed b5333d53 now passes all8 maintained initial Index/Archive/history/export stages. M1 remains incomplete; TTL negative, readiness, restart, outages and broader capacity remain open.",
+  "summary": "Exact e821143e native build/test/strict Clippy and207 selected controls/32 groups PASS. Installed864MiB shared-budget admission and finite64 retained-history under Archive-only catalog refusal PASS, including exact Index64/cut312 and stopped native census. Separate Index-dependency stoppage, continuous enabled-Index successor/current-selection readiness and remaining first-launch journeys keep P01-T09/M1 open. Original SQL and earlier installed failures remain at their exact scopes.",
   "scope": "Original SQL diagnostic uses native SQL client on isolated ClickHouse26.8.35.10. The separately identified installed_application extension exercises the actual packaged Rust HTTP/RowBinary adapter, Control transactions and signed-event journey; historical SQL results are unchanged.",
   "source": {
     "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
@@ -1238,7 +1238,7 @@
         "General RSS/disk/capacity, remote uncertainty or sole-owner/atomic-deficit proof, automatic recovery and complete M1",
         "Integrated GitHub Actions run for this increment; existing prior hosted evidence remains separately recorded"
       ],
-      "next": "P01-T09 Step5 finite64-request retained-history boundary under Archive-only outage; retain general pending-byte/GC/capacity owners at P02/P08.",
+      "next": "Finite64 Archive-outage retention now passes in retained_history_boundary. Next P01-T09 Step5 acceptance is separate actual Index-dependency stoppage with truthful lag/pending and preserved acknowledged data; dynamic byte hysteresis/GC and broader capacity remain with P02/P08.",
       "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.initial_shared_budget",
       "assembly_revision": "c0224962bf922e0bcfd6480d4138fc967b36921e",
       "test_only_followup": "dfb3420b721b6b15d0c7cab162c8ebbc3755fa24: identical cfg(test) Capture initializer moved; no assertion/selector/product change. Root mechanical review; c022 semantics reused. Hosted all-target verification remains required.",
@@ -1266,7 +1266,151 @@
         "actual_review": ".research/initial-shared-budget-acceptance-20261028/.research/shared-budget-acceptance-20261028/actual-r2-review.json",
         "actual_review_sha256": "33c2ea8e7c811d7b038109207abd0b9f52f32e5c225d813396e32faf13782651",
         "cleanup": "43395reaped0;all19 owned containers stopped0/PID0/noOOM/unpaused; parent and both clients absent; borrowed network empty. Original data/logs retained."
+      },
+      "historical_scope": "Existing c0224962/848MiB fields and installed_r2 remain valid at that original source/profile; http_eof_requalification owns the current e821143e/864MiB observation.",
+      "http_eof_requalification": {
+        "status": "PASS",
+        "product_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+        "stages": 8,
+        "evidence": ".research/first-launch-shared-budget-http-eof-r1-20261029",
+        "root_receipt": {
+          "path": ".research/first-launch-shared-budget-http-eof-r1-20261029/root-terminal.json",
+          "sha256": "720019a44f623adf67970aa7dd583b1691b6ba4fc204cd0ca78b11b0a9e80a8f"
+        },
+        "application_payload_bytes": 905969664,
+        "observed": "Actual Archive wait2 retains Index publication7. The same wait is admitted after753,473us with positively consumed local join7 and unchanged Control identity. All82 Control tables, four original inputs, final Archive4/Index4/cut12, forty committed chunks and the original signed history/export match independent expectations.",
+        "resources": "Session82408 reaped0; all19 owned containers stopped0/PID0/noOOM/unpaused; launcher/both clients absent and borrowed bridge empty. Original data/logs retained.",
+        "limits": "One actual Archive admission wait in the source-derived864MiB profile, separate from historical848MiB Sync proof. No generic capacity/RSS, atomic failing-budget snapshot, sole-owner or remote-exclusion claim. Qualification/build/accounting identities are in live_readiness.http_response_completion."
       }
+    },
+    "http_response_completion": {
+      "status": "PASS_BOUNDED_NATIVE_AND_INSTALLED_COMPLETION",
+      "product_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "assembly_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "acceptance_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "implementation": "Connection:close and fallibly funded response-wire staging wait for actual peer EOF before exposing bytes to unchanged Hyper framing and typed decoding. Exact-cap guard refuses excess without waiting for EOF. Existing query identities/quota1, unknown/error parking, cancellation and actual local join remain; no Code202 retry or classifier change.",
+      "native": {
+        "status": "PASS",
+        "controls": 207,
+        "library": 121,
+        "binary": 86,
+        "groups": 32,
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/r11-e821143e/receipt.json",
+          "sha256": "1d76965eab032ba5702945af45b1b159c19d5534d789249ec123418758e2dbef"
+        },
+        "checks": "Strict Clippy including tests, product/test compilation and every selected actual name PASS; five new transport/allocation/cancellation controls included."
+      },
+      "accounting": {
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/r11-e821143e/compiled-requirements.json",
+          "sha256": "6c1f263c70e472180292ce9d5411c1b69b3347f9d836f58cfb13f67607729ed8"
+        },
+        "physical_data_bytes": 197656576,
+        "full_index_data_bytes": 235471022,
+        "extra_staged_wire_bytes": 16777216,
+        "fixture_payload_bytes": 905969664,
+        "isolated_sum_bytes": 892600502,
+        "contended_sum_bytes": 934974128,
+        "admission_margin_bytes": 13369162,
+        "contention_gap_bytes": 29004464,
+        "meaning": "Actual compiled requirements confirm the independently derived4R-to5R local reservation. Only the contention test shifts848-to864MiB by the same16MiB before measurement; product/default envelopes and response/query/deadline ceilings do not grow. No memory-efficiency, RSS or general-capacity claim."
+      },
+      "installed_build": {
+        "status": "PASS",
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/installed-e821143e/build-receipt.json",
+          "sha256": "5af83d1a3185cef9f2c391101180bc56accd83096d36ae256051e25a215ee31f"
+        },
+        "assembly": "PASS exact-source maintained worker-bound candidate used by both installed runs"
+      },
+      "native_observer": {
+        "status": "PASS",
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/observer-e821143e/receipt.json",
+          "sha256": "9227e6f03da9d96aea71083099d6b351ada421dffcef4c98877fc00e497ec3db"
+        },
+        "scope": "Separate exact-product-source read-only observer; actual stopped-store observation belongs to retained_history_boundary.installed_r4."
+      },
+      "critical_source_review": {
+        "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-http-completion-120856bd.json",
+        "sha256": "ee1cde512109fe41cca5b21906d0c87663a65317be439573faa6a781d3fe8105"
+      },
+      "limits": [
+        "Successful peer-EOF completion is stronger transport evidence, not general remote ProcessList exclusion or unknown-query recovery.",
+        "R4 has no Code202 in the preserved engine error log; its512-row/256-query prefix lifecycle capture does not prove all-query coverage or remote exclusion. Earlier R1/R3 failures remain FAIL with unresolved occupying-query/counter-removal cause.",
+        "Current64-plan readiness, broader capacity/disk/RSS, automatic recovery and complete M1 remain unqualified."
+      ]
+    },
+    "retained_history_boundary": {
+      "status": "PASS_BOUNDED_FINITE64_ARCHIVE_OUTAGE",
+      "scope": "P01-T09 Step5 finite retained-request composition under known Archive-only catalog connection refusal; separate actual Index-dependency stoppage and complete Step5/M1 remain open.",
+      "product_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "assembly_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "acceptance_revision": "e821143e4a10b4a97fb4e43f63324c2405387cf8",
+      "qualification": "Native/build/assembly/observer and compiled accounting are bound once in live_readiness.http_response_completion.",
+      "installed_r4": {
+        "status": "PASS",
+        "stages": 7,
+        "evidence": ".research/first-launch-retained-boundary-r4-20261029",
+        "root_receipt": {
+          "path": ".research/first-launch-retained-boundary-r4-20261029/root-terminal.json",
+          "sha256": "da210d284c18522a286aa86f5ca16f70837fd80f7e25d13a271ca38089350635"
+        },
+        "observed": [
+          "Independently ready source3/Archive2/Index2 prefix precedes catalog-only refusal. Same Control/Sync/Index ownership remains; Control is responsive and renews.",
+          "Sixty-one event mutations fill64 actual producer requests/outcomes and312 source facts. A separately gated proof advances classification61-to62/checkpoint64-to65 without another mutation. All64 original inputs remain exact.",
+          "Actual Index64/cut312,640 committed chunks,556 physical rows across ten typed families and2560 metadata rows match independent source expectations. The zero tag family is explicit.",
+          "After actual writer/native/backend join, the exact-source read-only observer independently matches all829 native rows and sequence1081, issued=ACK64/retired0,64 receipts/inputs and no65th reservation/input/native effect or ACK. No internal refusal token is inferred.",
+          "Archive stays revision2/cut3 with issued attempt3, exact original input/intent/custody, unchanged catalog/files and independently checked C API prefix. All82 Control tables retain their permitted transitions.",
+          "Role observations truthfully retain historical non-Ready Index status; published64 is not current64-plan readiness."
+        ],
+        "resources": "Session48479 reaped0; all16 owned containers stopped0/PID0/noOOM/unpaused; launcher/client/proxy/observer absent, catalog endpoint refused and borrowed bridge empty. Original signed inputs/databases/native files/logs retained."
+      },
+      "preserved_failures": [
+        {
+          "run": "r1",
+          "status": "FAIL",
+          "evidence": ".research/first-launch-retained-boundary-r1-20261028",
+          "root_receipt": {
+            "path": ".research/first-launch-retained-boundary-r1-20261028/root-terminal.json",
+            "sha256": "247cb4a4d1a727686ae63c130ebed7c34a239d5fd604a0c902040e14c615e748"
+          },
+          "meaning": "Actual Code202 prevents the independently ready prefix. The64-request/outage/native-observer stages are NOT_RUN; later success does not identify the occupying query or close that original cause."
+        },
+        {
+          "run": "r2",
+          "status": "FAIL_FIXTURE",
+          "evidence": ".research/first-launch-retained-boundary-r2-20261028",
+          "root_receipt": {
+            "path": ".research/first-launch-retained-boundary-r2-20261028/root-terminal.json",
+            "sha256": "cca9d381b6bd3690138a10e9d946ed024da6bec1888ba8dfe1e455f18c283276"
+          },
+          "meaning": "Subsequent read-only diagnosis proves128 served rounds (20 admission,1 saturation,1 proof,100 emptyEOSE,6 quiet) then an accept129 assertion around46s, before the65s client deadline. Terminal Index50/cut242; native observer NOT_RUN. Finite peer completion and the separate shutdown-source check were corrected without increasing limits."
+        },
+        {
+          "run": "r3",
+          "status": "FAIL_RUNTIME_CODE202",
+          "evidence": ".research/first-launch-retained-boundary-r3-20261028",
+          "root_receipt": {
+            "path": ".research/first-launch-retained-boundary-r3-20261028/root-terminal.json",
+            "sha256": "ee8a62230692e81cbbcb9d27b4fbfdd1367034e72da9b4cfcdd5e84d73db94a6"
+          },
+          "meaning": "With finite peer completion corrected, actual writer Code202 parks Index20/cut92 before64. A later diagnostic captures921 lifecycle rows/461 queries: predecessor QueryFinish precedes successor ExceptionBeforeStart202 by218us. Occupying query and ProcessList removal are NOT_PROVEN; native observer NOT_RUN."
+        }
+      ],
+      "r3_attribution": {
+        "path": ".research/first-launch-retained-boundary-r3-20261028/querylog-attribution-preserved-links/interpretation.json",
+        "sha256": "5498fb3df76ffde7678471ddb336162c68e7b4861f3dcc1fd495065df722f9f5"
+      },
+      "diagnostic_limits": "R4 prefix trace CAPTURED512 rows/256 queries with no exceptions; all-query coverage and termination/exclusion remain NOT_PROVEN. The engine error log has only declared bootstrap497/452 negatives. This successful finite schedule does not retroactively close R1/R3 Code202 or prove general remote exclusion.",
+      "unchanged_bounds": "Original15s prefix/65s client/5s product query/30s sweep, writer quota1,128 served relay connections,3s socket and500ms receive; finite peer close is a separate source boundary, not quiet-cancellation evidence.",
+      "remaining": [
+        "P01-T09 Step5 separate actual Index-dependency stoppage composition with truthful lag/pending and preserved acknowledged data.",
+        "Continuous enabled-Index successor ownership/current-selection readiness and outside-checkout/tutorial/listener/no-signing-publication observations (P01-T09 Steps1/6/7); full M1 remains open.",
+        "Dynamic pending-byte hysteresis/GC, general capacity/disk/RSS, unknown-query/native-termination resolution and automatic recovery retain their existing P02/P08 owners; not all are prerequisites to the current M1 increment."
+      ]
     }
-  }
+  },
+  "last_updated": "2026-10-29"
 }

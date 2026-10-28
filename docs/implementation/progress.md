@@ -11,9 +11,10 @@ qualified product/build/assembly/acceptance revision. Original source commits ar
 preserved by merges: HTTP completion120856bd, CI report0a53b9af/fixture341ed600,
 and retained-boundary70147201. Last published main before this checkpoint is
 af411564; the coherent evidence/checkpoint commit and push are being prepared.
-Root owns local edits to this checkpoint, the laboratory inventory and02-storage;
-Sol owns the existing Index evidence report and01-foundation follow-through.
-No source correction is pending. The qualification worktree is clean at e821143e.
+The checkpoint/inventory/storage follow-through is committed as58e64644, and
+Sol's evidence/task report6bf22da0 is integrated by the current merge. Both author
+worktrees and the exact e821143e qualification worktree are clean. No source
+correction from this increment is pending.
 
 **Installed finite64 retained-history boundary: all seven stages PASS.** With
 only the Archive catalog unavailable, the live same owner admits64 original
@@ -117,15 +118,21 @@ Q37 defaults to Sol/xhigh, including coordinator; Astra/xhigh handles bounded
 ambiguity/critical reviews. Latest verified root runtime is Astra/xhigh and no
 own-model setter is available. Current ordinary authors are verified Sol/xhigh;
 critical reviewer Astra/xhigh. No ritual model recheck is needed for compaction.
-Sol is finishing the existing evidence/task report; the CI Sol agent is mapping
-the next Index-outage case read-only. No engine/build/remote CI job remains active.
+Sol completed the evidence/task report and the next Index-outage case mapping.
+Astra is resolving one bounded readiness question before that next implementation:
+a known unavailable Index write currently retains its plan without publishing the
+dependency failure, while pending work suppresses the readiness probe. Preserve
+the distinction between dependency availability and historical publication; do
+not weaken the outage oracle to conceal it. No engine/build/remote CI job remains
+active. The review has no authority to start an engine or modify this increment.
 
 Preserve original inputs, databases, raw logs, .research and worktrees. The inventory
 owns exact resources and custody; verify actual ownership/use before mutation.
 The obsolete825 target's1.11GiB retirement remains only a proposal; no deletion.
 
-Next: finish the coherent report/checkpoint and authorized public push, then track
-its single hosted run. Reuse the qualified e821143e candidate for the bounded
-Index-dependency outage case where product inputs stay unchanged; introduce a new
-build only if its product boundary changes. Continue the remaining M1 work and
+Next: publish this coherent report/checkpoint after the documentation and source
+exposure checks, then track its single hosted run. Resolve the bounded readiness
+contract and implement the separate Index outage. Reuse e821143e for that case
+where product inputs stay unchanged; the readiness correction, if necessary,
+requires a newly qualified candidate. Continue the remaining M1 work and
 then all later selected phases; the goal remains incomplete and active.

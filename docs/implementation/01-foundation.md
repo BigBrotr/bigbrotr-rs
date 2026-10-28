@@ -548,8 +548,8 @@ and queryable with truthful role readiness, without implicit public publishing.
   affected epoch1 restart and both publication-COMMIT directions. The report's
   `topology_continuation` owns exact evidence, original grant/HTTP429 failures
   and critical reviews. General query uncertainty, broader topology recovery,
-  continuous successor ownership/current-selection readiness and Step5 outages
-  remain open; this does not complete M1.
+  continuous successor ownership/current-selection readiness and Step5's separate
+  actual Index-dependency stoppage remain open; this does not complete M1.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,
@@ -577,26 +577,40 @@ and queryable with truthful role readiness, without implicit public publishing.
   [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) records
   the narrow scope and original fixture failures. Automatic recovery and general
   outage/capacity behavior remain open.
-  The maintained `p01-first-launch-shared-budget` now qualifies one actual Sync
+  The historical `p01-first-launch-shared-budget` qualifies one actual Sync
   wait behind retained Index publication at848MiB on productc0224962/fixture231df211:
   same-owner admission resumes after positive local join, all82 Control tables and
   four original inputs are preserved, source12/Archive4/Index4 and the exact signed
   history/export pass. Empty polls no longer discard initial Index readiness.
-  The same report's `shared_budget_admission` retains the original product FAIL;
-  this is not general resource capacity or an installed Archive-denial matrix.
-  Next qualify the existing finite64-request retained-history boundary during
-  Archive-only outage: no65th reservation/input/native mutation or false ACK,
-  responsive Control, exact admitted Index cut and preserved acknowledged data.
-  Existing real ACK/recovery evidence remains valid; dynamic pending-byte
-  hysteresis/GC and broad capacity remain at P02-T02/T09 and P08, not wholly
-  prerequisite to M1. Preserve the independent Control dependency when stopping
-  Archive, rather than stopping their shared PG.
+  Exact product/assembly/acceptance `e821143e` now also passes all eight stages
+  with one actual Archive wait2 behind Index publication7, admitted after753,473us
+  and positive local join7. All82 tables, four inputs, Archive4/Index4/cut12 and
+  signed history/export remain exact. Its source-derived864MiB test payload adds
+  the explicitly funded16MiB HTTP-response staging cost; the earlier848MiB proof
+  remains scoped to c022. Process/default ceilings and query/deadline bounds do
+  not grow. The same report's `shared_budget_admission` keeps both scopes and the
+  original product FAIL; neither schedule establishes general resource capacity.
+  The maintained `p01-first-launch-retained-boundary` now passes all seven stages
+  on the same e821 candidate: responsive same-owner Control,64 original requests/
+  inputs, Index64/cut312,640 committed chunks,556 physical rows and2560 metadata
+  rows. The stopped read-only native observer independently matches829 rows and
+  sequence1081, issued=ACK64/retired0, with no65th reservation/input/native effect
+  or ACK. Archive retains revision2/cut3, issued attempt3 and its original input/
+  custody; all82 Control tables and acknowledged data remain exact. The report's
+  `retained_history_boundary` preserves R1/R3 Code202 and R2's connection-cap
+  fixture failure. R4's prefix trace is diagnostic only, not remote exclusion.
+  This closes the finite64 Archive-outage gate. Step5 remains open for a separate
+  actual Index-dependency stoppage with truthful lag/pending and preserved
+  acknowledged data; existing ClickHouse pause/capacity and physical-conflict
+  negatives have narrower scopes. Keep Control independent when stopping an
+  Archive/Index dependency. Dynamic pending-byte hysteresis/GC and broad capacity
+  retain P02-T02/T09 and P08 ownership, not a blanket prerequisite to current M1.
   Evaluated readiness limitation: the initial Index owner schedules separate
   dispatch and result-consumption turns at250ms for each historical plan. At64
   plans, even zero engine latency requires at least31.75s before the final
   verification, exceeding its unchanged30s whole-sweep freshness bound. The
-  retained-request boundary must report the actual non-Ready observation while
-  independently verifying published64/cut312; that cannot qualify current
+  retained-request R4 truthfully reports the historical non-Ready observation
+  while independently verifying published64/cut312; that does not qualify current
   readiness. This finite writer boundary does not require Ready64 and is not an
   additional M1 blocker. Any broader current-readiness/scaling requirement belongs
   to existing P02-T06/T09 follow-through; continuous enabled-Index successor and
