@@ -75532,18 +75532,18 @@
       },
       "archive_catalog_outage": {
         "worktree": ".research/archive-catalog-outage-20261028",
-        "branch": "work/archive-catalog-outage",
+        "branch": null,
         "base": "61d41e5f688cad544a172b88c6a88222272d3c2e",
         "owner": "index_recovery_resume",
         "reviewer": "index_restart_resume",
-        "status": "PASS_BOUNDED_INSTALLED_REVIEWED_MAIN_INTEGRATION",
+        "status": "PASS_BOUNDED_INSTALLED_INTEGRATED_PUBLIC",
         "scope": "P01-T09 Step5: known catalog connection refusal before activation; retain issued attempt/input, park Archive for current lifetime, preserve Control/Sync/Index progress. No generic unknown-outcome retry or full pressure qualification.",
-        "resources": "All local native/build/assembly and four installed runs reaped. r4 session87357 exited0;16 containers stopped/PID0/noOOM/exit0; launcher/client/proxy absent, borrowednetworkempty. r2 cancellation exit4 preserved. CI watcher separate.",
+        "resources": "All owned native/build/assembly and four installed runs reaped; all containers stopped/PID0/noOOM. Retired only fully merged branch refs; clean detached source1ce/acceptance547 worktrees and ignored/external data preserved. New budget WT and CI separately recorded.",
         "next": "Integrate reviewed547ddb source and actual evidence on main; qualify coherent public push. Next Step5 increment is pre-effect admission/fair shared-budget deferral.",
         "source": "1ce8c1e2b6a98b80558a95d5f12506be789353da",
         "acceptance": {
           "worktree": ".research/archive-catalog-acceptance-20261028",
-          "branch": "work/archive-catalog-acceptance",
+          "branch": null,
           "base": "61d41e5f688cad544a172b88c6a88222272d3c2e",
           "owner": "root",
           "status": "SOURCE_AND_ACTUAL_REVIEW_PASS",
@@ -75555,7 +75555,9 @@
           "review_receipt_sha256": "75316520cc33bc2925da4d54d341d8eeb66f2ca026832b19172d40f261a90f47",
           "actual_tested_revision": "8dcce13fa74c1f859533920bb349b8274100d725",
           "actual_review_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-actual-r4.json",
-          "actual_review_sha256": "dd8471e9f09d04c38223940d4e792d21e8cb33aea1d2397a2e780b61538d4b76"
+          "actual_review_sha256": "dd8471e9f09d04c38223940d4e792d21e8cb33aea1d2397a2e780b61538d4b76",
+          "former_branch": "work/archive-catalog-acceptance",
+          "detached_revision": "547ddb3792527dd3e13f65448d456cb15100e0e4"
         },
         "native": {
           "evidence": ".research/initial-index-recovery-qualification-20261028/r6-1ce8c1e2",
@@ -75642,12 +75644,14 @@
           "receipt_sha256": "44d2c13eb7271eb9e38b01b5c3fbdd5af4e4fb8509f15349ab4c0dc937e9262a"
         },
         "publication_evidence": ".research/ci-publication-20261026/source-archive-outage-20261028",
-        "publication_status": "PENDING_SOURCE_AUDIT_AND_PUSH"
+        "publication_status": "PASS_REMOTE_16527ba8_VERIFIED",
+        "public_revision": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
+        "former_branch": "work/archive-catalog-outage"
       },
       "hosted_40736641965": {
         "source": "61d41e5f688cad544a172b88c6a88222272d3c2e",
         "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965",
-        "status": "IN_PROGRESS",
+        "status": "PASS_ACTUAL_LOGS_AND_ROOT_TERMINAL_REVIEW",
         "owner": "ci_resume_verification",
         "evidence": ".research/ci-publication-20261026/run-40736641965-exposure",
         "watch_session": 10632,
@@ -75661,7 +75665,56 @@
             "start_ticks": "659108468"
           }
         ],
-        "limits": "One original watcher, no duplicate dispatch. Prepared source/native expectations do not qualify hosted outcomes."
+        "limits": "Exact61d selected30 checks only; skipped/ignored and prior original failures remain distinct. Source/output scope unchanged.",
+        "watch_status": "REAPED",
+        "watch_exit_code": 0,
+        "receipt_sha256": "bb2c9376efc9161fc2adbb3efab9d6e3ce51917b7d327655ffefcfccb084a1ee",
+        "root_terminal_review_sha256": "364e9ec673b9d46f9a6e9a99451dfe4201bca44b7f837251fad79bd336650581"
+      },
+      "hosted_40748115729": {
+        "source": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729",
+        "status": "WATCHING_ACTUAL_QUALIFICATION_PENDING",
+        "owner": "ci_resume_verification",
+        "evidence": ".research/ci-publication-20261026/run-40748115729-exposure",
+        "watch_session": 64002,
+        "watch_processes": [
+          {
+            "pid": 803502,
+            "start_ticks": "659573132"
+          },
+          {
+            "pid": 803503,
+            "start_ticks": "659573133"
+          }
+        ],
+        "preparation_review_sha256": "246b393a7e99435cd66e636861face35f0f3bf6984d6ba040f417474fdb7a47c",
+        "limits": "One automatic run/watch;209 Python/182 native expectations do not qualify actual outcomes."
+      },
+      "initial_shared_budget": {
+        "worktree": ".research/initial-shared-budget-20261028",
+        "branch": "work/initial-shared-budget",
+        "base": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
+        "owner": "index_recovery_resume",
+        "reviewer": "index_restart_resume",
+        "status": "PARTIAL_UNCOMMITTED_UNQUALIFIED",
+        "current_git_changes": [
+          " M apps/bigbrotr/src/config/resolve.rs",
+          " M apps/bigbrotr/src/interfaces/postgres_command.rs",
+          " M apps/bigbrotr/src/interfaces/serve/initial_ingest.rs",
+          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/archive.rs",
+          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs",
+          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/index.rs",
+          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/sync.rs",
+          " M apps/bigbrotr/src/network/dns.rs",
+          " M apps/bigbrotr/src/network/egress.rs",
+          " M apps/bigbrotr/src/runtime/budget.rs",
+          " M apps/bigbrotr/src/runtime/mod.rs",
+          "?? apps/bigbrotr/src/interfaces/serve/initial_ingest/admission.rs"
+        ],
+        "scope": "P01-T09Step5 funded whole-operation pre-effect admission and fair resource deferral. Preserve completion/ACK custody and all post-effect/unknown failure semantics.",
+        "builds_engines": "NOT_RUN",
+        "next": "Finish role wiring/complete resource arithmetic and review focused controls before exact-revision qualification. Root still needs an installed actualIndex-held-grant overlap fixture."
       }
     }
   },

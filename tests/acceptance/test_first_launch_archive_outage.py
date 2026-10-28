@@ -193,7 +193,7 @@ class ArchiveOutageControls(unittest.TestCase):
 
     def test_actual_custody_lock_is_held_until_join_and_cannot_be_replaced(self):
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary)/'custody.lock'; path.touch(mode=0o600)
+            path = Path(temporary).resolve()/'custody.lock'; path.touch(mode=0o600)
             with path.open('rb') as owner:
                 fcntl.flock(owner, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 identity = case.custody_lock(path, held=True)

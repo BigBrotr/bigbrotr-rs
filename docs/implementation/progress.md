@@ -6,13 +6,14 @@ package publication or production deployment is authorized.
 
 ## Revision and demonstrated capability
 
-Current source increment: `547ddb3792527dd3e13f65448d456cb15100e0e4`, on
-`work/archive-catalog-acceptance` in `.research/archive-catalog-acceptance-20261028`.
-It combines reviewed product `1ce8c1e2` and the maintained acceptance case.
-This main integration includes the checkpoint, existing evidence report and
-inventory. Public baseline before this increment
-was `61d41e5f`; inspect Git and the source-publication receipt for the enclosing
-integration/documentation revision and actual push outcome. No history rewrite.
+Public source/main is `16527ba81e51b57789bc62c2d902ec18cc7b6a2a`, containing
+reviewed product1ce8c1e2, tested acceptance8dcce13f and reporting-only547ddb37.
+Its source audit/push receipt is preserved under
+`.research/ci-publication-20261026/source-archive-outage-20261028`; exact remote
+16527ba8 was verified. This following local increment reconciles hosted CI,
+checkpoint/inventory and a test-only temporary-path portability correction.
+Keep it for the next coherent publication rather than cancelling the active165
+hosted qualification with a separate checkpoint push.
 
 **Installed Archive-only catalog refusal r4: all7 stages PASS.** The same
 Control/Sync/Index lifetime reaches source12 and physically verified Index4/cut12
@@ -61,11 +62,27 @@ inputs, databases, files, logs and worktrees remain preserved. No cleanup or
 unrelated-resource change was performed in this increment. Check space before
 the next significant allocation; current receipt records each prelaunch margin.
 
-Root owns integration and laboratory execution. Product author is idle after
-read-only next-step analysis; actual r4 review is closed. CI watcher
-session10632 remains the only remote-run observer. Former integrated epoch2
-worktrees remain clean/detachedcb3d2fec with ignored evidence; only their fully
-merged branch references were retired. Current Archive source branches remain until root verifies this merge/publication.
+Root owns integration and laboratory execution. Product author and critical
+reviewer are working on the next shared-budget increment in
+`.research/initial-shared-budget-20261028`, branch `work/initial-shared-budget`,
+base16527ba8. Its funded-budget/network-view draft and role wiring are partial,
+uncommitted and unqualified; no build/engine run has started. The reviewer found
+and the author fixed zero-valued backing permits preventing parent drain; focused
+controls and complete wiring still need qualification.
+
+CI watcher64002 is the single observer of40748115729. Previous watcher10632 is
+reaped0, both process identities absent. No local compiler/engine is active.
+Former Archive branches were retired only after verified public integration;
+source/acceptance worktrees remain clean and detached at1ce8c1e2/547ddb37 with
+ignored evidence intact. Earlier epoch2 detachedcb3d2fec worktrees also remain.
+The source-publication directory owns the branch-transition receipt.
+
+One additional portable control correction follows165: canonicalize only the
+generated temporary directory in the custody test. An owned symlink-temp
+reproducer fails before the correction and passes after it; product path checks
+and lock assertions are unchanged. Retained outputs are `temp-alias-r1/r2` in
+the existing Archive acceptance evidence directory. This is not a claim about
+the still-running hosted165 result, nor a reason to rebuild the product.
 
 ## Next increment and remaining M1 gates
 
@@ -79,7 +96,7 @@ polling live, and give deferred work a turn when capacity actually returns.
 Preserve the existing pre-reserved progress/ACK completion capacity. A positive
 installed overlap requires actual identified Index custody and release under a
 declared smaller envelope; a low budget or synthetic held permit alone is not
-that proof. No implementation/build for this next increment has started yet.
+that proof. The author is implementing the funded reservation and scheduling boundaries; no build or installed overlap result is claimed yet.
 
 M1 remains open for:
 
@@ -108,18 +125,27 @@ obsolete internal compatibility consolidate with those owners; no parallel plan.
 ## Hosted CI
 
 [Run40736641965](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965)
-qualifies public61d. Latest original-watcher observation: macOS SUCCESS49m19s,
-ARM64 SUCCESS57m39s, AMD64 still active. Actual logs/source/audit reconciliation
-is pending; provider job success alone is not the full acceptance result.
-Expected scope is200 Python controls (five declared Linux-only guards) and179
-previous native controls. One watcher, no duplicate dispatch. Protected evidence:
-`.research/ci-publication-20261026/run-40736641965-exposure`.
+on exact public61d is **SUCCESS: all30 selected checks PASS**,14/9/7 on Linux
+AMD64/ARM64/macOS. Linux1308 Rust/200 Python each; macOS1306 Rust/195 Python plus
+five declared SKIP. All179 exact native names/26 groups pass on each platform;
+dedicated ignored probes remain NOT_RUN. Root independently verified31 evidence
+hashes, four provider ZIPs, actual commands/test outputs, exact source manifests
+and watcher absence. No billing, workflow, timeout, cancellation or product
+failure was observed. Scoped public-output audit found only the same five known
+nonsecret fingerprints, no new/operational candidates or provider alerts; this
+is not exhaustive absence. Exact outcomes and original older runs remain in the
+[hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
 
-The previous [run40716894776](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40716894776)
-on17cc completed all30 selected checks; exact platform counts, original failures,
-cancellations and publication audits remain in the
-[hosted report](evidence/p01-ci-hosted-foundation-20261026.json). Billing is not a
-current block. Neither old run qualifies the new Archive increment remotely.
+[Run40748115729](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729)
+is the single automatic run for public16527ba8. Watcher64002 observes it; actual
+qualification is pending. Prepared expectations are209 Python controls (five
+unchanged Linux-only guards) and182 previously qualified native controls, not
+new hosted PASS claims. Root preparation review verifies2400 exact source files,
+unchanged helpers, nine new Python controls and three native additions; frozen
+product/native bytes match1ce. Evidence:
+`.research/ci-publication-20261026/run-40748115729-exposure`.
+
 All six observed Clippy/test pairs already share Cargo directories/declared
-inputs; no unmeasured cache speedup is claimed. Publish coherent changes and
-qualify the new selected hosted checks without duplicate executions.
+inputs. No unmeasured cache speedup is claimed; preserve clean/platform/artifact
+coverage and avoid duplicate runs. The next public push must account for the
+workflow's cancellation of an earlier main run.
