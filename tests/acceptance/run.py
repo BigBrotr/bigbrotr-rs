@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -214,7 +214,7 @@ def main():
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
     args = parser.parse_args()
-    installed = args.case in ("p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart")
+    installed = args.case in ("p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
     if not installed and (args.candidate_manifest or args.compose_network):

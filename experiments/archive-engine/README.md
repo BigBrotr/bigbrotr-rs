@@ -353,6 +353,18 @@ and real loopback/socket-subprocess controls with synthetic PostgreSQL frames.
 Those controls do not qualify PostgreSQL, native termination, pin expiry or
 ordinary readiness; the installed caller must independently observe those facts.
 
+The release target also accepts `--hold-pin-release` only with `--defer-arm` and
+one of those two COMMIT modes. It uses the same control pipe to withhold the
+eligible `UPDATE 1` completion and emits `held` with stage `pin-release-update`.
+No COMMIT has been forwarded at that gate. The installed observer binds the
+selected reader-purpose lease to the actual original Control backend and checks
+positive native join plus retained initialization custody before `release`.
+That line permits the original completion and its real following COMMIT fault;
+it does not invent a COMMIT result. `stop` while held closes the streams without
+forwarding the held completion and cannot count as either COMMIT fault. The
+original operation, frame, wire, connection and lifetime limits still apply.
+An observer that loses the actual operation race retains a failed/unknown run.
+
 The same signed harness adds three actual native fencing schedules: successor
 activation obtains the owner lock before old metadata DML, or old metadata DML
 holds it through COMMIT/ROLLBACK. A temporary scientific_schema table lock gates
