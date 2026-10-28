@@ -172,6 +172,111 @@ fn cancellation_keeps_custody_and_grant_while_hidden_async_task_is_destroyed() {
 }
 
 #[test]
+fn cancelling_staged_response_joins_the_hidden_http_connection_before_release() {
+    use hyper_util::client::legacy::connect::HttpConnector;
+    use std::{
+        io::{Read, Write},
+        net::TcpListener,
+        num::NonZeroUsize,
+    };
+
+    let (_directory, held, peer) = lock();
+    let local = crate::storage::clickhouse::adapter::PhysicalLimits::new(
+        NonZeroUsize::new(64).unwrap(),
+        8192,
+        1,
+        1024 * 1024,
+        Duration::from_secs(1),
+    )
+    .unwrap()
+    .required_local_data_bytes()
+    .unwrap();
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            local + INDEX_LANE_STACK_RESERVATION + 64,
+            0,
+            ResourceLimits::new(local, 1, INDEX_LANE_STACK_RESERVATION, 64),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let permit = budget
+        .try_acquire(ResourceRequest::data(local, 1, INDEX_LANE_STACK_RESERVATION).unwrap())
+        .unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    listener.set_nonblocking(true).unwrap();
+    let address = listener.local_addr().unwrap();
+    let (sent, observe_sent) = mpsc::sync_channel(1);
+    let (closed, observe_closed) = mpsc::sync_channel(1);
+    let server = thread::spawn(move || {
+        let deadline = Instant::now() + WAIT;
+        let (mut socket, _) = loop {
+            match listener.accept() {
+                Err(error)
+                    if error.kind() == io::ErrorKind::WouldBlock && Instant::now() < deadline =>
+                {
+                    thread::sleep(Duration::from_millis(2));
+                }
+                result => break result.unwrap(),
+            }
+        };
+        socket.set_nonblocking(false).unwrap();
+        socket.set_read_timeout(Some(WAIT)).unwrap();
+        socket.set_write_timeout(Some(WAIT)).unwrap();
+        let mut header = Vec::new();
+        while !header.ends_with(b"\r\n\r\n") {
+            assert!(header.len() < 8192);
+            let mut byte = [0];
+            socket.read_exact(&mut byte).unwrap();
+            header.extend_from_slice(&byte);
+        }
+        let length: usize = std::str::from_utf8(&header)
+            .unwrap()
+            .lines()
+            .filter_map(|line| line.split_once(':'))
+            .find(|(name, _)| name.eq_ignore_ascii_case("content-length"))
+            .unwrap()
+            .1
+            .trim()
+            .parse()
+            .unwrap();
+        assert!(length <= 8192);
+        socket.read_exact(&mut vec![0; length]).unwrap();
+        socket
+            .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n1\n")
+            .unwrap();
+        sent.send(()).unwrap();
+        // Keep the peer's write side open. Only complete local cancellation
+        // teardown can make this read observe the client's actual socket close.
+        let mut byte = [0];
+        match socket.read(&mut byte) {
+            Ok(0) => {}
+            Err(error) if error.kind() == io::ErrorKind::ConnectionReset => {}
+            result => panic!("cancelled client socket did not close: {result:?}"),
+        }
+        closed.send(()).unwrap();
+    });
+    let lane = start(held, permit, move || async move {
+        let client = crate::storage::clickhouse::transport::bounded_client(
+            HttpConnector::new(),
+            NonZeroUsize::new(64).unwrap(),
+        )
+        .with_url(format!("http://{address}"));
+        client.query("SELECT 1").execute().await
+    });
+    observe_sent.recv_timeout(WAIT).unwrap();
+    retained(&budget, &peer);
+    lane.request_cancel();
+    let joined = lane.join().unwrap();
+    assert!(matches!(joined.outcome(), LaneOutcome::Cancelled));
+    observe_closed.recv_timeout(WAIT).unwrap();
+    server.join().unwrap();
+    retained(&budget, &peer);
+    drop(joined);
+    released(&budget, &peer);
+}
+
+#[test]
 fn cancelled_blocking_task_is_joined_instead_of_leaked_by_runtime_timeout() {
     let (_directory, held, peer) = lock();
     let (budget, permit) = reservation();

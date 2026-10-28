@@ -436,19 +436,23 @@ python3 tests/acceptance/run.py p01-first-launch-shared-budget \
   --source-root "$PWD" --evidence .research/first-launch-shared-budget
 ```
 
-Its fixed application payload is848MiB (889,192,448 bytes), selected from the
-compiled finite-profile requirements emitted by the maintained native verifier.
-Sync requires132,813,480 data bytes; Archive96,999,880; full Index218,693,806,
-including180,879,360 physical bytes and17MiB retained preparation/metadata.
+Its fixed application payload is864MiB (905,969,664 bytes), selected from the
+finite-profile allocation requirements. The staged HTTP response adds16MiB to
+the earlier848MiB test envelope, preserving the original admission margin and
+contention gap before measurement; product/default process envelopes do not grow.
+The maintained native verifier emits the compiled requirements for confirmation.
+Sync requires132,813,480 data bytes; Archive96,999,880; full Index235,471,022,
+including197,656,576 physical bytes and17MiB retained preparation/metadata.
 The Control connection allowance is554,172,424 bytes (528MiB plus eight copies
 of the65,537-byte credential bound); other retained owners hold24MiB input,
 4MiB TLS roots,1MiB Archive reader and17MiB Index preparation/metadata. Together
 they retain602,406,920 bytes before the1MiB per retained Archive input.
 
 Complete Index work with four Archive inputs and one complete login allowance
-(65MiB plus128KiB connection and64KiB request) totals875,823,286 bytes, below
+(65MiB plus128KiB connection and64KiB request) totals892,600,502 bytes, below
 the fixed envelope. A retained physical Index operation, two prefix inputs and
-one full Sync round require at least918,196,912 bytes, above it. After Index
+one full Sync round require at least934,974,128 bytes, above it. The respective
+margin13,369,162 bytes and gap29,004,464 bytes are unchanged. After Index
 joins and yields inactive metadata, Sync with four retained inputs needs
 739,414,704 bytes. The fixture's four-row/one-worker Index limits preserve the
 same fixed local allocation formula as the emitted profile; source64/1MiB,

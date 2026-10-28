@@ -15,12 +15,14 @@ from cases import first_launch_index_oracle as index
 from cases import first_launch_shared_budget_oracle as oracle
 from cases import first_launch_archive_outage_oracle as terminal
 
-# The compiled finite profile and owning retained grants give:
-# full Index + four Archive inputs + one login =875,823,286 B;
-# retained physical Index + two inputs + Sync =918,196,912 B.
+# The finite profile adds one 16 MiB staged wire response to the earlier compiled
+# requirements: full Index + four Archive inputs + one login =892,600,502 B;
+# retained physical Index + two inputs + Sync =934,974,128 B.
+# Shift only this test envelope by the same 16 MiB (848→864), preserving the
+# 13,369,162 B admission margin and 29,004,464 B contention gap before measurement.
 # This fixed envelope admits complete isolated work but requires actual overlap
 # evidence below. It is not an RSS estimate or a scheduling guarantee.
-APPLICATION_PAYLOAD_BYTES = 848 * 1024**2
+APPLICATION_PAYLOAD_BYTES = 864 * 1024**2
 
 
 def application_payload():

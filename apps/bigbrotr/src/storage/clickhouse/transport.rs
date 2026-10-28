@@ -1,5 +1,6 @@
-//! Bound HTTP response bytes before the ClickHouse client's error/header/row
-//! buffers. The pinned client otherwise collects an error body without a limit.
+//! Stage bounded HTTP response bytes until actual peer EOF, before exposing any
+//! header/body to Hyper and the ClickHouse client's existing framing/row checks.
+//! Framed body completion alone must not dispatch the next writer query.
 //! Connections are not pooled: this allowance belongs to one response, including
 //! its HTTP framing. Compression must remain disabled on the resulting client.
 use hyper::{
@@ -40,6 +41,7 @@ where
             response_bytes,
         });
     clickhouse::Client::with_http_client(http)
+        .with_header("Connection", "close")
         .with_compression(clickhouse::Compression::None)
         .with_validation(true)
 }
@@ -64,12 +66,24 @@ where
         self.inner.poll_ready(cx).map_err(Into::into)
     }
     fn call(&mut self, uri: Uri) -> Self::Future {
+        // The adapter admits a separate complete wire allowance before creating
+        // this client. Refuse allocation before even invoking the connector:
+        // its error remains a definite preconnection, zero-request failure.
+        let mut staged = Vec::new();
+        if staged.try_reserve_exact(self.response_bytes.get()).is_err() {
+            return Box::pin(async {
+                Err(io::Error::other("ClickHouse response staging allocation unavailable").into())
+            });
+        }
         let connected = self.inner.call(uri);
         let remaining = self.response_bytes.get();
         Box::pin(async move {
             Ok(CappedIo {
                 inner: connected.await.map_err(Into::into)?,
                 remaining,
+                staged,
+                consumed: 0,
+                peer_eof: false,
             })
         })
     }
@@ -78,6 +92,9 @@ where
 struct CappedIo<T> {
     inner: T,
     remaining: usize,
+    staged: Vec<u8>,
+    consumed: usize,
+    peer_eof: bool,
 }
 impl<T: Connection> Connection for CappedIo<T> {
     fn connected(&self) -> Connected {
@@ -94,22 +111,46 @@ impl<T: Read + Unpin> Read for CappedIo<T> {
         if destination.remaining() == 0 {
             return Poll::Ready(Ok(()));
         }
-        if this.remaining == 0 {
-            return Poll::Ready(Err(io::Error::other(
-                "ClickHouse response byte limit exceeded",
-            )));
+        if !this.peer_eof {
+            // This fixed initialized slice fits the already funded lane stack.
+            // At the exact cap, probe one guard byte: it is never staged or
+            // forwarded. Zero is actual peer EOF; any byte refuses immediately.
+            let mut scratch = [0; 8192];
+            let available = if this.remaining == 0 {
+                1
+            } else {
+                scratch.len().min(this.remaining)
+            };
+            let mut buffer = ReadBuf::new(&mut scratch[..available]);
+            ready!(Pin::new(&mut this.inner).poll_read(cx, buffer.unfilled()))?;
+            let bytes = buffer.filled();
+            if bytes.is_empty() {
+                this.peer_eof = true;
+            } else {
+                if this.remaining == 0 {
+                    return Poll::Ready(Err(io::Error::other(
+                        "ClickHouse response byte limit exceeded",
+                    )));
+                }
+                this.remaining -= bytes.len();
+                this.staged.extend_from_slice(bytes);
+                // Yield between bounded reads so writes and cancellation can
+                // progress. Returning an empty successful read would invent EOF.
+                cx.waker().wake_by_ref();
+                return Poll::Pending;
+            }
         }
-        // A small initialized staging slice avoids unsafe cursor manipulation.
-        // Never read an over-limit suffix and then mistake it for valid input.
-        let mut scratch = [0; 8192];
-        let available = scratch
-            .len()
-            .min(destination.remaining())
-            .min(this.remaining);
-        let mut buffer = ReadBuf::new(&mut scratch[..available]);
-        ready!(Pin::new(&mut this.inner).poll_read(cx, buffer.unfilled()))?;
-        this.remaining -= buffer.filled().len();
-        destination.put_slice(buffer.filled());
+        let available = destination
+            .remaining()
+            .min(this.staged.len() - this.consumed);
+        destination.put_slice(&this.staged[this.consumed..this.consumed + available]);
+        this.consumed += available;
+        if this.consumed == this.staged.len() {
+            // Residual legacy driver tasks must not retain an allowance while
+            // the same operation starts its next fresh unpooled connection.
+            this.staged = Vec::new();
+            this.consumed = 0;
+        }
         Poll::Ready(Ok(()))
     }
 }
@@ -159,8 +200,14 @@ mod tests {
             assert!(header.len() < 8192);
             header.push(socket.read_u8().await.unwrap());
         }
-        let length: usize = std::str::from_utf8(&header)
-            .unwrap()
+        let text = std::str::from_utf8(&header).unwrap();
+        assert!(text.lines().any(|line| {
+            line.split_once(':').is_some_and(|(name, value)| {
+                name.eq_ignore_ascii_case("connection")
+                    && value.trim().eq_ignore_ascii_case("close")
+            })
+        }));
+        let length: usize = text
             .lines()
             .filter_map(|line| line.split_once(':'))
             .find(|(name, _)| name.eq_ignore_ascii_case("content-length"))
@@ -230,6 +277,7 @@ mod tests {
                         .write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n1\n")
                         .await
                         .unwrap();
+                    socket.shutdown().await.unwrap();
                     let mut byte = [0];
                     assert_eq!(
                         tokio::time::timeout(Duration::from_secs(5), socket.read(&mut byte))
@@ -251,5 +299,123 @@ mod tests {
             }
             server.await.unwrap();
         });
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn complete_frame_at_wire_cap_waits_for_actual_peer_eof() {
+        for response in [
+            &b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n1\n"[..],
+            &b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n2\r\n1\n\r\n0\r\n\r\n"[..],
+        ] {
+            let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let address = listener.local_addr().unwrap();
+            let (sent, observe_sent) = tokio::sync::oneshot::channel();
+            let (finish, observe_finish) = tokio::sync::oneshot::channel();
+            let server = tokio::spawn(async move {
+                let (mut socket, _) = listener.accept().await.unwrap();
+                request(&mut socket).await;
+                socket.write_all(response).await.unwrap();
+                sent.send(()).unwrap();
+                observe_finish.await.unwrap();
+                socket.shutdown().await.unwrap();
+            });
+            let client = bounded_client(
+                HttpConnector::new(),
+                NonZeroUsize::new(response.len()).unwrap(),
+            )
+            .with_url(format!("http://{address}"));
+            let mut query = tokio::spawn(async move { client.query("SELECT 1").execute().await });
+            tokio::time::timeout(Duration::from_secs(5), observe_sent)
+                .await
+                .unwrap()
+                .unwrap();
+            assert!(
+                tokio::time::timeout(Duration::from_millis(50), &mut query)
+                    .await
+                    .is_err(),
+                "complete framing without peer EOF must not complete the query"
+            );
+            finish.send(()).unwrap();
+            tokio::time::timeout(Duration::from_secs(5), query)
+                .await
+                .unwrap()
+                .unwrap()
+                .unwrap();
+            server.await.unwrap();
+        }
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn truncated_frames_and_server_errors_stay_errors_after_peer_eof() {
+        for response in [
+            &b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\n1"[..],
+            &b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n"[..],
+            &b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n2\r\n1\n\r\n"[..],
+            &b"HTTP/1.1 500 Internal Server Error\r\nContent-Length: 4\r\n\r\nfail"[..],
+        ] {
+            let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = tokio::spawn(async move {
+                let (mut socket, _) = listener.accept().await.unwrap();
+                request(&mut socket).await;
+                socket.write_all(response).await.unwrap();
+                socket.shutdown().await.unwrap();
+            });
+            let client = bounded_client(HttpConnector::new(), NonZeroUsize::new(512).unwrap())
+                .with_url(format!("http://{address}"));
+            let result =
+                tokio::time::timeout(Duration::from_secs(5), client.query("SELECT 1").execute())
+                    .await
+                    .unwrap();
+            assert!(result.is_err(), "truncated/error frame cannot succeed");
+            server.await.unwrap();
+        }
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn staging_allocation_refusal_never_invokes_inner_connector() {
+        use std::sync::{
+            Arc,
+            atomic::{AtomicUsize, Ordering},
+        };
+
+        #[derive(Clone)]
+        struct ObservedConnector {
+            inner: HttpConnector,
+            calls: Arc<AtomicUsize>,
+        }
+        impl Service<Uri> for ObservedConnector {
+            type Response = <HttpConnector as Service<Uri>>::Response;
+            type Error = <HttpConnector as Service<Uri>>::Error;
+            type Future = <HttpConnector as Service<Uri>>::Future;
+
+            fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+                self.inner.poll_ready(cx)
+            }
+            fn call(&mut self, uri: Uri) -> Self::Future {
+                self.calls.fetch_add(1, Ordering::SeqCst);
+                self.inner.call(uri)
+            }
+        }
+        let calls = Arc::new(AtomicUsize::new(0));
+        let connector = ObservedConnector {
+            inner: HttpConnector::new(),
+            calls: Arc::clone(&calls),
+        };
+        // Vec's deterministic capacity overflow cannot allocate or invoke the
+        // connector. Production PhysicalLimits rejects this impossible bound.
+        let client = bounded_client(connector, NonZeroUsize::new(usize::MAX).unwrap())
+            .with_url("http://127.0.0.1:0");
+        let result =
+            tokio::time::timeout(Duration::from_secs(5), client.query("SELECT 1").execute())
+                .await
+                .unwrap();
+        assert!(matches!(
+            result,
+            Err(clickhouse::error::Error::Network(ref error))
+                if error.downcast_ref::<hyper_util::client::legacy::Error>()
+                    .is_some_and(|error| error.is_connect())
+        ));
+        assert_eq!(calls.load(Ordering::SeqCst), 0);
     }
 }

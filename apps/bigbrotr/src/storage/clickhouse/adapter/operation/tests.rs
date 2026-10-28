@@ -191,6 +191,44 @@ fn local_and_remote_bounds_are_separate_and_overflow_never_wraps() {
 }
 
 #[test]
+fn staged_wire_allowance_is_required_by_the_predispatch_local_gate() {
+    let limits = limits();
+    let required = limits.required_local_data_bytes().unwrap();
+    // This fixture's pre-staging local grant, pinned independently of the new
+    // requirement:64KiB wire, original four wire copies and its existing fixed
+    // tag/core/query/driver allocations. It must no longer admit dispatch.
+    let original_data = 114_032_640;
+    assert_eq!(required, original_data + 65_536);
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            required + limits.required_local_native_bytes() + 64,
+            0,
+            ResourceLimits::new(required, 1, limits.required_local_native_bytes(), 64),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let original = budget
+        .try_acquire(
+            ResourceRequest::data(original_data, 1, limits.required_local_native_bytes()).unwrap(),
+        )
+        .unwrap();
+    assert_eq!(
+        limits.check_local(&original),
+        Err(PhysicalError::InsufficientReservation)
+    );
+    drop(original);
+    let admitted = budget
+        .try_acquire(
+            ResourceRequest::data(required, 1, limits.required_local_native_bytes()).unwrap(),
+        )
+        .unwrap();
+    assert_eq!(limits.check_local(&admitted), Ok(()));
+    drop(admitted);
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[test]
 fn credentials_only_target_a_pinned_numeric_address_inside_the_declared_boundary() {
     use crate::secrets::SecretFile;
     use std::{io::Write, os::unix::fs::PermissionsExt};

@@ -459,6 +459,19 @@ Unknown work parks Index; positive remote resolution and restart/outage acceptan
 remain explicit qualification gates. The initial HTTP transport accepts only a
 numeric address vetted by the shared PG plaintext boundary validator. Credentials
 cannot trigger DNS resolution; verified TLS is not implemented by this adapter.
+Each request explicitly asks for `Connection: close`. The unpooled HTTP/1
+connector stages at most the declared response-wire allowance and exposes no
+response bytes to Hyper until its inner transport observes actual peer EOF.
+Hyper and the typed ClickHouse decoder still validate HTTP framing and complete
+rows. A fixed one-byte guard distinguishes exact-at-cap EOF from excess input;
+excess refuses immediately without waiting for EOF. Staging reserves one extra
+wire allowance before connecting, on top of the original four response-buffer
+allowances, and releases that allocation as soon as Hyper drains it. The
+selected16MiB wire bound therefore adds16MiB to the admitted local physical
+operation; process envelopes, response/query ceilings and deadlines do not grow.
+This strengthens successful transport completion. It does not prove remote
+ProcessList exclusion; timeout, reset, truncation, cancellation and server errors
+retain the existing unknown-query parking and joined-executor requirements.
 
 Selected consistency baseline: immutable source-record identity in serving rows;
 append-only MergeTree, or replacing only byte-identical copies of the same full

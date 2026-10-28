@@ -93,7 +93,7 @@ def pending_fixture(*, accepted=False, role='sync'):
 
 class SharedBudgetControls(unittest.TestCase):
     def test_fixed_recipe_changes_only_payload_and_refuses_a_replaced_declaration(self):
-        self.assertEqual(case.APPLICATION_PAYLOAD_BYTES,889192448)
+        self.assertEqual(case.APPLICATION_PAYLOAD_BYTES,905969664)
         with tempfile.TemporaryDirectory() as directory:
             runtime=object.__new__(case.SharedBudgetRuntime)
             runtime.config=Path(directory)/'instance.toml';runtime.inputs={};runtime.set_value=set_value
@@ -102,7 +102,7 @@ class SharedBudgetControls(unittest.TestCase):
             with patch.object(case.RestartIndexRuntime,'prepare_state'):
                 runtime.prepare_state()
             value=tomllib.loads(runtime.config.read_text());before=tomllib.loads(original)
-            self.assertEqual(value['runtime']['processes']['application'].pop('payload_bytes'),'889192448B')
+            self.assertEqual(value['runtime']['processes']['application'].pop('payload_bytes'),'905969664B')
             before['runtime']['processes']['application'].pop('payload_bytes')
             self.assertEqual(value,before)
             self.assertEqual(runtime.inputs['initial_recipe_sha256'],case.digest(runtime.config))

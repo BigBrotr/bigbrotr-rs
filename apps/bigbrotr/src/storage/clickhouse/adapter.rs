@@ -101,11 +101,12 @@ impl PhysicalLimits {
         Ok(value)
     }
     pub fn required_local_data_bytes(self) -> Result<u64, PhysicalError> {
-        // Raw/assembled response and one owned scalar-row copy; separately
+        // Staged complete wire response plus the original raw/assembled
+        // response and owned scalar-row overlap; separately
         // bounded decoded nested tags; worst core-row serialization growth;
         // bounded schema/query/plan metadata and credential/driver staging.
         (self.response_bytes.get() as u64)
-            .checked_mul(4)
+            .checked_mul(5)
             .and_then(|n| n.checked_add(MAX_TAG_READBACK_ALLOCATION_BYTES as u64))
             .and_then(|n| n.checked_add(4 * MAX_CORE_FACT_BYTES as u64))
             .and_then(|n| n.checked_add(2 * MAX_QUERY_BYTES as u64 + 2 * 1024 * 1024))
