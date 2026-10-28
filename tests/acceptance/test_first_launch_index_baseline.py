@@ -105,6 +105,7 @@ class BaselineControls(unittest.TestCase):
         self.assertEqual(client.error_summary({'error':{'status':True,'code':'private token','retry_class':'x'*65}}),{})
         self.assertIsNone(client.error_summary({'unrecognized':'private'}))
 
+    @unittest.skipUnless(sys.platform == 'linux', 'actual process custody observation requires Linux /proc')
     def test_unknown_child_is_not_mistaken_for_an_empty_native_inventory(self):
         parent=process_identity(os.getpid())
         child=subprocess.Popen([sys.executable,'-c','import time; time.sleep(5)'],
