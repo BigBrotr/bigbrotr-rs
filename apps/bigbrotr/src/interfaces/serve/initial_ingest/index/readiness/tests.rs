@@ -256,34 +256,34 @@ fn deferred_work_retries_released_credit_before_idle_yield_and_keeps_observation
             storage_incarnation: binding.storage_incarnation(),
             started: now,
         }),
+        capture: Some(Capture {
+            source,
+            binding,
+            owner: IndexOwnerIdentity {
+                resource: binding.resource(),
+                epoch: OwnerEpoch::new(1).unwrap(),
+                incarnation: [11; 16].try_into().unwrap(),
+            },
+            state: IndexRecoveryState {
+                published_revision: 0,
+                published_plan: None,
+                published_handoff: None,
+                pending_plan: None,
+            },
+            profile: Profile {
+                delay: INTERVAL,
+                source_records: 64,
+                source_bytes: MIB as usize,
+                rows: 20_000,
+                wire_bytes: 16 * MIB,
+                query_memory: 256 * MIB,
+                provenance: IndexProvenance::Off,
+                configured: [64, MIB, 1],
+            },
+            started: now,
+        }),
         ..Readiness::default()
     };
-    state.capture = Some(Capture {
-        source,
-        binding,
-        owner: IndexOwnerIdentity {
-            resource: binding.resource(),
-            epoch: OwnerEpoch::new(1).unwrap(),
-            incarnation: [11; 16].try_into().unwrap(),
-        },
-        state: IndexRecoveryState {
-            published_revision: 0,
-            published_plan: None,
-            published_handoff: None,
-            pending_plan: None,
-        },
-        profile: Profile {
-            delay: INTERVAL,
-            source_records: 64,
-            source_bytes: MIB as usize,
-            rows: 20_000,
-            wire_bytes: 16 * MIB,
-            query_memory: 256 * MIB,
-            provenance: IndexProvenance::Off,
-            configured: [64, MIB, 1],
-        },
-        started: now,
-    });
     let parent = ResourceBudget::new(
         ProcessEnvelope::new(
             100,
