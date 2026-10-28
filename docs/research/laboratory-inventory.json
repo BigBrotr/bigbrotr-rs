@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Latest hosted run40662294894 terminal SUCCESS on d018; exact source/context/results and scoped public-output audit complete. Dedicated ignored/unsupported controls remain excluded.",
+    "status": "Latest hosted8cf run terminalFAIL:28PASS/1macOSkeyringFAIL/1NOT_RUN. PortableFIFO9ab locally qualified/integrated; next coherent hosted qualification pending.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40662294894",
-    "latest_hosted_source": "d01830036f1567e62cc9bf9d32031a5c35d8466f",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40684555941",
+    "latest_hosted_source": "8cf3f5b7bda2d7bafcef0921c12cbc7684c7014f",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73466,9 +73466,9 @@
       "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-macos/result.json"
     },
     "latest_exposure_check": {
-      "path": ".research/ci-publication-20261026/run-40406281096-exposure/receipt.json",
-      "sha256": "3de32e9a6ce0e059f1d906bce13ee1d82de08b1092f195ea49a7cb293d53952e",
-      "scope": "Four artifacts/270 members and40 workflow log members;27 known synthetic/example matches across5 unchanged fingerprints;zero operational credential confirmed andzero observed provider alerts. Asynchronous provider completion/exhaustive absence not claimed."
+      "path": ".research/ci-publication-20261026/run-40684555941-exposure/receipt.json",
+      "sha256": "b0948e864b7d4604ef1da3a08ca4eee6f0bab83ae98f2574e6d4fbe016ab6b88",
+      "scope": "Four artifacts/512members,33logmembers;54known nonsecret occurrences/5fingerprints,0new/unclassified/provideralerts. Asynchronous/exhaustive absence not claimed."
     },
     "verification_in_progress": null,
     "superseded_branch_retirement": {
@@ -73944,6 +73944,16 @@
       "resource_status": "No compiler, installed engine, container or dataset created by this hosted reconciliation. Local watcher and acquisition sessions reaped; no remote run dispatched, retried or cancelled.",
       "custody": "Protected ignored root mode0700; raw downloaded archives, audit captures and these proposal sidecars mode0600. Some derived metadata/helpers inherit mode0644 inside that private root. No matched values in public summaries; no repeat history scan.",
       "retention": "Keep terminal source/context/fixture evidence, raw artifacts/logs, audit triage and original prior failures. No cleanup performed."
+    },
+    "run_40684555941": {
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40684555941",
+      "revision": "8cf3f5b7bda2d7bafcef0921c12cbc7684c7014f",
+      "status": "TERMINAL_FAILURE_RETAINED; PORTABLE_FIFO_LOCAL_QUALIFICATION_PASS",
+      "protected_root": ".research/ci-publication-20261026/run-40684555941-exposure",
+      "evidence": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+      "resources": "Watcher55285 reaped1; native67012 reaped0; both drivers/watch process absent, native container9fd115cceb6a stopped/exit0/PID0/noOOM; optional115compiler cache released. All original artifacts/logs/failures retained.",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-ci-9ab330b",
+      "next": "One next coherent main push must qualify actual macOS/default-profile and early acceptance order; no duplicate dispatch."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -75030,8 +75040,8 @@
     },
     "resume_20261028": {
       "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_AND_BOTH_RELEASE_COMMIT_CASES_PASS",
-      "canonical_branch": "work/short-pin-admission-wip-20261028",
-      "canonical_revision": "eaac23f8a98c91ca71c60a57a996f6afead97a30",
+      "canonical_branch": "main",
+      "canonical_revision": "4303e541db87cc490abd61d6f50f73d36897cca2",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75125,7 +75135,7 @@
           "status": "Implemented as076750d5, merged and qualified; current identities/resources in sync_safe_points."
         }
       },
-      "processes": "No owned compiler, installed engine or proxy remains active. Restart r4 and both pin-release cases reaped0, all containers stopped, proxies/launchers absent and borrowed bridge empty. Environment-gap session72962 reaped0; isolated container stopped/exit0/PID0/noOOM. Agents have saved their work and are idle; root owns main integration and the next hosted run.",
+      "processes": "Before-r2 and compiler67012 terminal/reaped, original CI watcher55285 reaped1; root verified all owned terminal resources. Fresh CH lifecycle diagnostic in preparation/critical review, not launched. No installed engine/proxy/compiler active.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75314,7 +75324,30 @@
         "status": "THREE_PASS_CONTAINER_STOPPED_RETAINED",
         "receipt": "receipt.json",
         "source": "eaac23f8"
-      }
+      },
+      "publication_receipt": ".research/ci-publication-20261026/source-main-8cf3f5b7-exposure/push.json",
+      "retired_branch_receipt": ".research/ci-publication-20261026/source-main-8cf3f5b7-exposure/retired-branch.json",
+      "cache_observation": {
+        "receipt": ".research/initial-index-recovery-qualification-20261028/cache-size-observation.json",
+        "scope": "Owned implementation run compiler targets; sizes alone do not establish dispensability",
+        "status": "READ_ONLY_NO_DELETION",
+        "available_bytes": 144391139328,
+        "next": "Retire obsolete installed-Index compiler targets only after their candidate/evidence consumers and actual use are reconciled; retain the current shared optional compiler cache."
+      },
+      "publication_commit_qualification": {
+        "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+        "acceptance": "fb5fd2565b441907f3c6cfc84ced9efd207d1640",
+        "root": ".research/first-launch-index-commit-before-r2-20261028",
+        "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-index-commit-before-r2-session.json",
+        "status": "BEFORE_R2_PREFIX_FAIL_DIAGNOSIS_OPEN; COMMIT_NOT_RUN",
+        "critical_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-critical-review-fb5fd256-20261028/receipt.json",
+        "terminal_receipt": "root-terminal.json",
+        "source": "ace1512e0f8bf713c0d9e797aef989919083017c",
+        "previous_roots": [
+          ".research/first-launch-index-commit-before-r1-20261028"
+        ]
+      },
+      "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit"
     }
   },
   "implementation_checkpoint_space_20261026": {

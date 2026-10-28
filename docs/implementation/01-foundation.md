@@ -489,7 +489,7 @@ and queryable with truthful role readiness, without implicit public publishing.
   export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
   exact353-byte signed export and unchanged catalog/files pass. This includes an
   ordinary Control restart; successor Ingest/resend is now qualified by Step4,
-  while minimal Index/readiness remains open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
+  while the coherent enabled-Index successor composition remains open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB
   export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
@@ -531,7 +531,9 @@ and queryable with truthful role readiness, without implicit public publishing.
   The accepted per-target limit remains four rows; all typed values, digests and
   current-head transaction are independently checked. See the
   [installed extension](evidence/p02-initial-index-clickhouse-sql-20261026.json).
-  Readiness, Index restart/uncertainty and Step5 outages remain open.
+  Later initial readiness and same-store closed-source Index recovery pass in
+  the same report. General query uncertainty, the enabled-Index topology/epoch
+  handoff and Step5 outages remain open.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,

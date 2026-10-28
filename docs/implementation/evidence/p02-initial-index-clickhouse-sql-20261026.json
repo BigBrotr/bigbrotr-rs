@@ -871,6 +871,39 @@
         "Automatic pin recovery",
         "Complete M1 and later milestones"
       ]
+    },
+    "publication_commit_recovery": {
+      "status": "CONFIG_FIX_REVIEWED; INITIAL_PREFIX_FAIL_WITH_CLICKHOUSE202_UNDER_DIAGNOSIS",
+      "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+      "acceptance": "ace1512e0f8bf713c0d9e797aef989919083017c",
+      "integration": "b15dded467a96d605130a08ebcb3ab5ce2c57c94",
+      "scope": "Same-store PG publication COMMIT before-forward/after-complete, exact pending/publication receipt recovery and retry; not general unknown ClickHouse query resolution.",
+      "source_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt.json",
+      "critical_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-critical-review-fb5fd256-20261028/receipt.json",
+      "root_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+      "controls": "25 proxy and55 affected acceptance controls PASS; final7 targeted PASS after cleanup correction. No product source changed.",
+      "before_r1": {
+        "root": ".research/first-launch-index-commit-before-r1-20261028",
+        "result": "First6 stages PASS; focused publication stage FAIL; next4 NOT_RUN; cleanup PASS",
+        "root_receipt_sha256": "c1f357ca0ee0b93a8d4fd553f3cce729d0daf5172b307be2c7181225ae7ed7bd",
+        "classification": "Fixture configuration lookup error: runtime.renewal_timeout belongs to deployment-locked restart configuration, not managed policy. Existing root has no override; declared schema default is5s. Exact UPDATE1 reached; COMMIT and fault counts both0.",
+        "resources": "18 containers stopped/PID0/noOOM; focused command exit4, others0. Proxy exit0/absent, parent absent and borrowed bridge empty. Original raw state/logs retained.",
+        "not_run": "Actual selected COMMIT outcome, backend/time hold observation, subsequent recovery/retry and final export"
+      },
+      "next": "Diagnose actual ClickHouse202 without enlarging limits or retrying unknown work; qualify the pertinent correction and continue both installed publication recovery cases.",
+      "config_fix": {
+        "revision": "ace1512e0f8bf713c0d9e797aef989919083017c",
+        "checks": "20 targeted controls and retained metadata replay PASS; critical delta review PASS; actual root declares unchanged default5s before initialization. No product change.",
+        "critical_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-critical-review-fb5fd256-20261028/deployment-cap-fix/receipt.json"
+      },
+      "before_r2": {
+        "root": ".research/first-launch-index-commit-before-r2-20261028",
+        "result": "4 PASS; signed-acquisition FAIL;6 subsequent NOT_RUN; cleanup PASS",
+        "root_receipt_sha256": "6ae88bca690f93bd500f44f9d277ad91dff4de91a179ce020b2a96ff9b56742c",
+        "classification": "Original15s prefix expired; final observer psql had5.2ms remaining. Retained CH writer Code202 reports current1/max1. Cause/server completion boundary under diagnosis; not classified as observer slowness or product corruption.",
+        "resources": "16 containers stopped/exit0/PID0/noOOM; launcher absent, bridge empty; all original state/logs retained.",
+        "not_run": "Publication COMMIT fault and subsequent recovery/retry/export"
+      }
     }
   }
 }
