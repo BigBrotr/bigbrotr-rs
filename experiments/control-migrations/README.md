@@ -301,6 +301,10 @@ batches. Fake batch overlap and missing attestation are labelled as earlier
 batch/bound guards, separately from direct handoff guard refusals. Every negative
 case checks all82 rows and xmins unchanged, with its specific SQLSTATE and guard
 message or constraint. The positive bridge commits before read-head/retry checks.
+The seed assertion also checks the runtime role's effective EXECUTE privilege on
+the invoker handoff validator, without ownership, grant option, PUBLIC access or
+trigger-function EXECUTE. This is ACL coverage; the migrator-run fixture does not
+prove invocation by the application role. The installed catch-up remains that gate.
 
 Each seed database is capped at64MiB; the two copies add at most128MiB within the
 existing PG resource envelope. The SQL script is capped at64KiB, row captures at
