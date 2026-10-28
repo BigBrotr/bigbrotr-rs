@@ -40,7 +40,8 @@ ROLES = ('provisioner', 'initializer', 'writer', 'reader')
 SYSTEM_TABLES = ('databases', 'disks', 'storage_policies', 'settings', 'tables', 'columns', 'projections')
 
 
-def input_identity(path, *, directory=False):
+def input_identity(path, *, directory=False, empty=False):
+    require(type(empty) is bool and not (directory and empty), 'input identity profile')
     require(path.is_absolute() and path.resolve(strict=True) == path, 'input custody path alias')
     flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
     descriptor = os.open(path, flags | (os.O_DIRECTORY if directory else 0))
@@ -52,7 +53,8 @@ def input_identity(path, *, directory=False):
         value = dict(device=metadata.st_dev, inode=metadata.st_ino, uid=metadata.st_uid,
                      gid=metadata.st_gid, mode=stat.S_IMODE(metadata.st_mode))
         if not directory:
-            require(metadata.st_nlink == 1 and 0 < metadata.st_size <= 65536, 'retained input size/link bound')
+            require(metadata.st_nlink == 1 and (metadata.st_size == 0 if empty else 0 < metadata.st_size <= 65536),
+                    'retained input size/link bound')
             with os.fdopen(os.dup(descriptor), 'rb') as opened:
                 encoded = opened.read(65537)
             require(len(encoded) == metadata.st_size, 'retained input changed while reading')

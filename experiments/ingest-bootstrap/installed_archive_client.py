@@ -78,8 +78,15 @@ def run(directory):
         assert status == 202 and answer['created'] and answer['command_key'] == key
         return answer
     def barrier(name, seconds=15, poll=None):
+        started = None
+        if name == 'index-prefix':
+            started = time.monotonic_ns()
+            publish(directory, name + '-deadline.json', dict(
+                format='bigbrotr-installed-index-prefix-gate/1', started_ns=started,
+                deadline_ns=started + seconds * 1_000_000_000))
         publish(directory, name + '.json', observations)
-        deadline, next_poll = time.monotonic() + seconds, 0
+        deadline = started / 1_000_000_000 + seconds if started is not None else time.monotonic() + seconds
+        next_poll = 0
         while not (directory / (name + '.continue')).exists():
             assert not errors and time.monotonic() < deadline, name
             if poll is not None and time.monotonic() >= next_poll:

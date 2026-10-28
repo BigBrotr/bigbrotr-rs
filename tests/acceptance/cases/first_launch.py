@@ -961,11 +961,15 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
-    index_case = getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin')
+    index_restart = getattr(args, 'case', None) == 'p01-first-launch-index-restart'
+    index_case = getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
             from cases.first_launch_index_pin import ShortPinRuntime as IndexRuntime, LIMITS as INDEX_LIMITS
+        if index_restart:
+            from cases.first_launch_index_restart import (RestartIndexRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
         args.case_limits = INDEX_LIMITS
@@ -983,6 +987,9 @@ def first_launch(args, checks, inputs):
         operations = [('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
                 ('signed_acquisition', runtime.initial)]
+        if index_restart:
+            operations += [('index_restart_baseline', runtime.index_restart_baseline),
+                ('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
         operations += [('ordinary_history_export', runtime.ordinary)]

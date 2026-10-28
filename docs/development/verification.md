@@ -317,6 +317,62 @@ cleanup uncertainty, column-TTL refusal, an Index query interface, independent
 service outages, capacity or complete M1. Terminal overall readiness remains
 explicitly unqualified; earlier failures retain their original outcomes.
 
+### Same-store installed Index restart with backlog
+
+`p01-first-launch-index-restart` selects a separate fresh variant with the same
+candidate, ClickHouse, source and protected-evidence prerequisites:
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-index-restart \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-index-restart
+```
+
+Its eleven stages require actual execution. The scenario is authored with scoped
+Python refusal controls; its installed qualification is **NOT_RUN**. The original
+Index corruption and ordinary readiness case above keeps its own behavior.
+
+The existing signed client waits immediately after enrollment, before scope/job
+creation. Its two admission batches end at source3. Within that client's original
+absolute15s deadline, the observer requires Archive revision2, Index revision2,
+and authenticated complete physical readiness at cut3, without touching session
+idle time. It verifies the exact owned ClickHouse ID, labels, image, mounts and
+isolation before pausing only that container and releasing the source gate.
+Neither delayed observation nor a new parent wait extends the client deadline.
+
+Source and Archive must then reach12 while Index stays at revision2/cut3 with
+the real retained plan3 for [4..7] prepared and no plan4 for [8..12]. All ten
+prepared outcomes, the accepted prefix, complete SQL captures and the original
+client shutdown are retained. The application and client stop orderly; cleanup
+always attempts to unpause the verified ClickHouse before stopping containers,
+including after an ambiguous pause or failed assertion. A local executor join
+does not resolve an unknown remote query.
+
+After unpause, explicit `ingest recover --close-source` verifies the original
+requests and closes source12. That existing Ingest command performs its own
+retained acknowledgement; it does not retire the producer or reclaim the source.
+The installed `index catch-up --file /etc/bigbrotr/instance.toml` must recover
+owner1→2, retain published revision2 until actual publication, publish pending
+plan3, and prepare/publish exactly one new batch4. An exact retry rebinds2→3,
+keeps revision4 and reports no pending or new batch. Both Index reports keep
+`ready=false` and explicitly perform no acknowledgement, Ingest retirement or
+topology transition.
+
+The oracle independently reconstructs recovery/session commitments and verifies
+creator epochs `(1,1,1,2)` and publisher epochs `(1,1,2,2)` without removing the
+new owner history. All81 Control tables are compared for preservation or their
+specific permitted changes. Generation, storage incarnation, custody directory,
+lock/file identities and all ten table UUIDs remain unchanged. The existing
+signed-source/C API and typed-family oracle checks40 outcomes and family counts
+`(8,1,1,1,1,1,1,0,1,1)`. Archive/input bytes remain unchanged, and the ordinary
+history/export journey still produces the exact353-byte signed JSONL under its
+original40s/12s bounds.
+
+This paused-engine scenario does not qualify unknown native termination, remote
+uncertainty resolution, lost COMMIT, topology handoff, independent process outages,
+capacity or complete M1. A complete-prefix-only recovery cannot satisfy its
+required prepared and unplanned backlog.
+
 ### Ordinary full-probe short-pin expiry
 
 Select `p01-first-launch-index-short-pin` with the same candidate/source/evidence
