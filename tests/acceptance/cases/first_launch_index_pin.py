@@ -28,6 +28,9 @@ AUTHORITY = ('dataset_id','resource_id','epoch','role_instance_id','process_inca
 PIN_FIXED = ('lease_id','dataset_id','consumer_id','frontier_revision','topology_generation',
              'holder_kind','holder_job_id','holder_role_instance_id','holder_role','holder_incarnation',
              'acquired_at_us','expires_at_us','archive_pin_protocol')
+READER_LEASES = ("FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) "
+                "WHERE l.state='active' AND l.holder_kind='role_instance' "
+                "AND l.archive_pin_protocol=1 AND p.purpose='reader'")
 
 
 def profile(text, set_value, port):
@@ -360,8 +363,13 @@ class ShortPinRuntime(IndexRuntime):
         save(target/'timeline.json',timeline)
         try:
             require(self.worker(parent,allow_absent=True) is None, 'no native reader before arming')
+            # The original completed export deliberately retains a role-owned
+            # archive pin. Only reader-purpose pins indicate an earlier probe;
+            # all export rows/claims must still remain unchanged afterward.
             arm = self.bounded_sql('bigbrotr_control',
-                "SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'active_readers',(SELECT count(*) FROM control.snapshot_leases WHERE state='active' AND holder_kind='role_instance' AND archive_pin_protocol=1))",deadline)
+                "SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,"
+                "'active_readers',(SELECT count(*) " + READER_LEASES + "))",deadline)
+            save(target/'before-arm.json',arm)
             require(arm['active_readers'] == 0, 'no earlier active reader pin')
             timeline['arm_clock_us'] = arm['now_us']
             save(target/'timeline.json',timeline)
@@ -378,7 +386,7 @@ class ShortPinRuntime(IndexRuntime):
                     'actual newly admitted native reader gate')
             save(target/'proxy-held.json',held)
             worker = self.worker(parent)
-            pins = self.bounded_sql('bigbrotr_control',"SELECT coalesce(json_agg(l),'[]') FROM control.snapshot_leases l WHERE state='active' AND holder_kind='role_instance' AND archive_pin_protocol=1",deadline)
+            pins = self.bounded_sql('bigbrotr_control',"SELECT coalesce(json_agg(l),'[]') " + READER_LEASES,deadline)
             old = {row['lease_id'] for row in before['snapshot_leases']}
             selected = [row for row in pins if row['lease_id'] not in old]
             require(len(selected) == 1, 'one new full-probe pin')
