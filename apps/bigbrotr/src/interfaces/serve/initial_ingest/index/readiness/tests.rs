@@ -329,6 +329,21 @@ fn deferred_work_retries_released_credit_before_idle_yield_and_keeps_observation
     assert_eq!(state.last_tick, Some(now));
     assert_eq!(state.verified.unwrap().source, source);
     assert_eq!(state.verified.unwrap().started, now);
+    // A known connection refusal on a retained publication retry invalidates
+    // availability, including while the next retry is active. It cannot turn
+    // the historical cut into a new observation or reset the scan cooldown.
+    state.fail(Failure::Dependency);
+    for active in [false, true] {
+        let observed = state.observation(active, false, false);
+        assert_eq!(observed.failure, Some(Failure::Dependency));
+        assert_eq!(observed.active, active);
+        assert!(!observed.parked && !observed.unresolved);
+        assert_eq!(observed.verified.unwrap().source, source);
+        assert_eq!(observed.verified.unwrap().started, now);
+        assert_eq!(state.last_attempt, Some(now));
+        assert_eq!(state.last_tick, Some(now));
+        assert!(!state.due(now));
+    }
     drop((metadata, held));
 }
 

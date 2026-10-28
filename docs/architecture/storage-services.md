@@ -269,6 +269,19 @@ atomically commits all ten chunks, their typed frontier binding and the next
 contiguous consumer head. This adapter currently requires the same retained
 topology on both cuts; it refuses an unwired topology handoff.
 
+In the initial owner, a known connection failure with no surviving named query
+keeps the immutable prepared plan retryable and marks Index readiness
+`unavailable/dependency_unavailable`. This applies both before dispatch and to
+a joined write result. The last verified cut, its original observation time and
+the sweep cooldown remain historical. No request bytes were sent by the failed
+query; earlier queries or inserts in the same whole-plan write may have succeeded.
+Whole-plan replay remains intentional. Unknown query outcomes still park.
+Connection, schema, individual-plan and publication success cannot clear that
+failed observation. Only a complete joined physical-lineage sweep, rechecked
+against the actual current fenced owner/binding/profile/PG tuple and exact
+current native source with no pending plan, may replace it within the original
+uncancelled30s window measured from the oldest read.
+
 Generation and chunk origins remain immutable across Index restart. A new
 session can publish an old prepared plan only after stable local custody excludes
 the old owner, the CH verifier revalidates the published prefix and retained plan,

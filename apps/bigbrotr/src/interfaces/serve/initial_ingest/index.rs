@@ -717,6 +717,7 @@ impl Index {
                     Ok(Tick::Busy)
                 }
                 Err(PhysicalError::Unavailable) if self.slot.unresolved_query().is_none() => {
+                    self.readiness.fail(readiness::Failure::Dependency);
                     Ok(Tick::RetryRetainedPlan)
                 }
                 Err(_) => {
@@ -834,6 +835,7 @@ impl Index {
                     IndexOperationOutcome::Completed(Err(PhysicalError::Unavailable))
                         if self.slot.unresolved_query().is_none() =>
                     {
+                        self.readiness.fail(readiness::Failure::Dependency);
                         Tick::RetryRetainedPlan
                     }
                     _ => {
