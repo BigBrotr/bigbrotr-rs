@@ -23,6 +23,16 @@ def ordinary_proxy(**changes):
 
 
 class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
+    def test_release_hold_is_explicit_and_only_valid_for_armed_release_target(self):
+        for options in (dict(),dict(target='control-pin-release'),dict(defer_arm=True),
+                        dict(target='control-pin-release',defer_arm=True,hold_pin_release=1)):
+            with self.subTest(options=options), self.assertRaises(ValueError):
+                Proxy('before-forward',**dict(dict(hold_pin_release=True),**options))
+        for mode in ('before-forward','after-complete'):
+            value = Proxy(mode,target='control-pin-release',defer_arm=True,hold_pin_release=True)
+            self.assertEqual((value.frame_limit,value.connection_limit,value.lifetime_seconds),(20000,16,120))
+            self.assertFalse(value.armed)
+
     async def test_ordinary_streaming_keeps_aggregate_byte_and_target_frame_limits(self):
         proxy = ordinary_proxy()
         self.assertEqual((proxy.frame_limit, proxy.connection_limit, OPAQUE_CHUNK), (20000, 16, 65536))
@@ -299,9 +309,11 @@ async def read_message(reader):
 
 class SocketProxy:
     """Actual proxy subprocess and loopback streams; the upstream is framing only."""
-    def __init__(self, case, mode, *, target='publication', deferred=True, profile='default', unexpected=0):
+    def __init__(self, case, mode, *, target='publication', deferred=True, profile='default', unexpected=0,
+                 hold_pin_release=False):
         self.case, self.mode, self.target, self.deferred = case, mode, target, deferred
         self.profile, self.unexpected = profile, unexpected
+        self.hold_pin_release = hold_pin_release
         self.connections = []
         self.events = []
         self.process = None
@@ -320,6 +332,8 @@ class SocketProxy:
             command += ['--profile', self.profile]
         if self.deferred:
             command.append('--defer-arm')
+        if self.hold_pin_release:
+            command.append('--hold-pin-release')
         self.process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         try:
@@ -399,6 +413,43 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def test_release_update_hold_precedes_commit_and_stop_does_not_invent_fault(self):
+        for action in ('release', 'stop'):
+            for mode in ('before-forward', 'after-complete'):
+                with self.subTest(action=action, mode=mode):
+                    async with SocketProxy(self, mode, target='control-pin-release', hold_pin_release=True) as proxy:
+                        connection = await proxy.connect('bigbrotr_control', 'control')
+                        await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                        await proxy.command('arm', 'armed')
+                        await self.exchange(connection, b'P', b'release\0' + PIN_RELEASE_QUERY + b'\0\0\0', [(b'1', b'')])
+                        await self.exchange(connection, b'B', b'\0release\0\0\0\0\0\0\0', [(b'2', b'')])
+                        await self.exchange(connection, b'E', b'\0' * 5)
+                        connection[3].write(message(b'C', b'UPDATE 1\0'))
+                        await connection[3].drain()
+                        selected = await proxy.event('pin-release-update-complete')
+                        held = await proxy.event('held')
+                        self.assertEqual((held['stage'], held['backend_pid'], held['data_commits']),
+                                         ('pin-release-update', selected['backend_pid'], 0))
+                        with self.assertRaises(asyncio.TimeoutError):
+                            await asyncio.wait_for(read_message(connection[0]), .05)
+                        if action == 'stop':
+                            await proxy.stop()
+                            self.assertEqual(proxy.events[-1]['faults'], 0)
+                            self.assertEqual(proxy.events[-1]['data_commits'], 0)
+                            continue
+                        await proxy.command('release', 'released')
+                        self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'C', b'UPDATE 1\0'))
+                        await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+                        connection[1].write(message(b'Q', b'COMMIT\0'))
+                        await connection[1].drain()
+                        if mode == 'after-complete':
+                            self.assertEqual(await asyncio.wait_for(read_message(connection[2]), 3), (b'Q', b'COMMIT\0'))
+                            connection[3].write(message(b'C', b'COMMIT\0') + message(b'Z', b'I'))
+                            await connection[3].drain()
+                        fault = await proxy.event('fault')
+                        self.assertEqual([fault[k] for k in ('faults','data_queries','data_commits','server_complete','client_complete')],
+                                         [1,1,1,int(mode == 'after-complete'),0])
+
     async def exchange(self, connection, tag, body, replies=()):
         client, sender, upstream, responder = connection
         sender.write(message(tag, body))

@@ -962,13 +962,17 @@ def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
     index_restart = getattr(args, 'case', None) == 'p01-first-launch-index-restart'
-    index_case = getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
+    pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
+    index_case = pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
             from cases.first_launch_index_pin import ShortPinRuntime as IndexRuntime, LIMITS as INDEX_LIMITS
         if index_restart:
             from cases.first_launch_index_restart import (RestartIndexRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if pin_release:
+            from cases.first_launch_index_pin_release import (PinReleaseRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
@@ -993,6 +997,8 @@ def first_launch(args, checks, inputs):
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
         operations += [('ordinary_history_export', runtime.ordinary)]
+        if pin_release:
+            operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
         if restart:
             operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
                 ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry),

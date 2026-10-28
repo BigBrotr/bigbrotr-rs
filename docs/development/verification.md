@@ -381,6 +381,64 @@ uncertainty resolution, lost COMMIT, topology handoff, independent process outag
 capacity or complete M1. A complete-prefix-only recovery cannot satisfy its
 required prepared and unplanned backlog.
 
+### Reader-pin release COMMIT uncertainty
+
+Select `p01-first-launch-index-pin-release-before` or
+`p01-first-launch-index-pin-release-after` with the existing candidate, source
+and protected evidence arguments. Each fresh case first completes the unchanged
+signed Index journey and ordinary history/export, including its original
+40s/12s deadlines, exact signed output and committed owner release. The added
+ninth stage starts a distinct ordinary Control lifetime and authenticates a real
+new status session. Login may prune exactly the prior revoked browser session;
+its protected bytes and raw SQL history remain retained. The setup oracle checks
+the actual new owner/role, issuance audit, two login bucket charges and completed
+readiness pins. Every earlier owner, role, pin, claim and scientific/export row
+remains unchanged. Existing login capacity is observed for at most65s before
+starting that lifetime; no bucket, policy or data row is rewritten by the fixture.
+
+Both capabilities must first be Ready, with no active reader-purpose pin or
+native child. The retained export-purpose pin is preserved. The next full probe
+is gated at its new authenticated catalog precheck; its exact lease/claims,
+owner backend PID/start, reader identity and installed worker ELF/PID/PPID/start
+are captured. Only then is the Control proxy armed for the exact reader-release
+UPDATE's successful Execute completion. At that hold, the selected native worker
+must be positively absent with an empty child inventory, the same parent must
+remain alive, and the unchanged initialization lock inode must still be busy.
+The observer performs only local checks before allowing that completion, within
+the product's existing500ms release operation. The actual following COMMIT is
+either withheld before forwarding or completed by PostgreSQL with its reply
+withheld. No ordinal, synthesized result or signal substitutes for this boundary.
+
+Independent SQL requires the before-forward lease and claim to remain active at
+revision1 with unchanged raw `xmin`. After-complete requires a released revision2,
+`reader_joined`, immutable pin/holder/acquisition/expiry identity, and matching
+changed lease/claim `xmin` from the atomic release transaction. **Both** product
+outcomes must remain `CommitUnknown`, unavailable and exit4, without a claimed
+committed owner release. Actual process and database backend absence, refusal of
+the management connection and independently available local custody are separate
+terminal gates. The observer's SQL knowledge never becomes a product recovery
+receipt. The before-forward obligation remains retained, even after expiry.
+
+Setup and the focused phase each have30s. The original3s owner lease,500ms
+heartbeat/renewal timeout/safety margin,5s authorization and30s full probe remain.
+Both proxies retain64MiB/120s ceilings; the catalog route uses the existing
+16-active-connection/20,000-selected-frame profile, and the Control route keeps
+its legacy16-lifetime-connection/20,000-frame bound. Output capture and observation
+counts are bounded. Slower or ambiguous execution fails; a timeout alone cannot
+qualify either COMMIT boundary. Raw81-table captures, earlier owner history,
+scientific catalog, retained inputs, scratch cleanup and original export files
+are checked independently. Proxy cleanup preserves the original failure and
+never claims remote exclusion from a local process signal.
+
+Maintained controls: `cd tests/acceptance && python3 -B -m unittest
+test_first_launch_index_pin_release`; proxy controls: `python3 -B
+experiments/archive-engine/native_commit_proxy_tests.py`. These are bounded
+oracle, actual flock and loopback framing controls. Installed PostgreSQL/native
+execution of both new variants remains **NOT_RUN** until separately recorded.
+Genuine native `TerminationUnknown`, automatic pin recovery and general service
+outages remain separate unqualified gates. Short-pin r1–r5 remain failures; the
+qualified r6 expiry case is unchanged.
+
 ### Ordinary full-probe short-pin expiry
 
 Select `p01-first-launch-index-short-pin` with the same candidate/source/evidence

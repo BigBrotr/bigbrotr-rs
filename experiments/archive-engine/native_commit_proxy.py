@@ -142,7 +142,7 @@ class ResumeAuthorityObserver:
 class Proxy:
     def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default', *,
                  upstream_port=5432, catalog_manager=None, catalog_reader=None,
-                 catalog_database=None, defer_arm=False):
+                 catalog_database=None, defer_arm=False, hold_pin_release=False):
         self.mode = mode
         self.target = target
         if type(upstream_port) is not int or not 1 <= upstream_port <= 65535:
@@ -164,6 +164,10 @@ class Proxy:
                               or target == 'control-pin-release'):
             raise ValueError('defer-arm-mode')
         self.defer_arm = defer_arm
+        if type(hold_pin_release) is not bool or (hold_pin_release and not (
+                target == 'control-pin-release' and defer_arm)):
+            raise ValueError('hold-pin-release-profile')
+        self.hold_pin_release = hold_pin_release
         self.armed = not defer_arm
         self.target_selected = False
         if target == 'control-producer-progress' and mode not in ('pass', 'before-forward', 'after-complete'):
@@ -207,6 +211,8 @@ class Proxy:
             self.report.update(progress_updates_complete=0, target_occurrence=2)
 
     def emit(self, event, **extra):
+        if self.hold_pin_release:
+            extra['hold_pin_release'] = True
         if self.target == 'control-producer-progress':
             extra.setdefault('backend_pid', self.progress_backend_pid)
         if self.profile != 'default':
@@ -237,7 +243,8 @@ class Proxy:
         return True
 
     async def hold(self, stage, backend_pid):
-        if not self.armed or self.mode != 'hold-' + stage or self.held:
+        selected_release = self.hold_pin_release and stage == 'pin-release-update'
+        if not self.armed or (self.mode != 'hold-' + stage and not selected_release) or self.held:
             return True
         assert backend_pid is not None
         self.held = True
@@ -424,6 +431,11 @@ class Proxy:
                                 state['data'] = True
                                 self.report['data_queries'] += 1
                                 self.emit('pin-release-update-complete', backend_pid=state['backend_pid'])
+                                # Withhold this exact UPDATE1 completion. The
+                                # owner may independently check joined native
+                                # custody before permitting the real COMMIT.
+                                if not await self.hold('pin-release-update', state['backend_pid']):
+                                    return
                         elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
                             # UPDATE1; the gated repeat completes UPDATE2 on this
@@ -734,6 +746,8 @@ if __name__ == '__main__':
     parser.add_argument('--catalog-reader')
     parser.add_argument('--catalog-database')
     parser.add_argument('--defer-arm', action='store_true', help='Forward baseline traffic until one explicit arm line')
+    parser.add_argument('--hold-pin-release', action='store_true',
+                        help='Opt-in deferred release target: hold its eligible UPDATE1 completion before COMMIT')
     try:
         args = parser.parse_args()
         if not re.fullmatch(r'[1-9][0-9]{0,4}', args.upstream_port):
@@ -741,7 +755,7 @@ if __name__ == '__main__':
         sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile,
             upstream_port=int(args.upstream_port), catalog_manager=args.catalog_manager,
             catalog_reader=args.catalog_reader, catalog_database=args.catalog_database,
-            defer_arm=args.defer_arm).run()))
+            defer_arm=args.defer_arm, hold_pin_release=args.hold_pin_release).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)
