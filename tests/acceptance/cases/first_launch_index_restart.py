@@ -144,12 +144,16 @@ class RestartIndexRuntime(IndexRuntime):
                 clock_before_us=clock_before,clock_after_us=clock_after,session_idle='unchanged',gate=signal))
             self.custody_before = self.custody()
             save(output/'index-custody-before.json',self.custody_before)
-            self.pause_clickhouse()
-            require(time.monotonic()<deadline,'prefix pause exceeded client deadline')
-            (self.home/'index-prefix.continue').write_text('positive complete prefix checked; owned ClickHouse paused\n')
+            reason = self.establish_prefix_fault(entry, output)
+            require(time.monotonic()<deadline,'prefix fault exceeded client deadline')
+            (self.home/'index-prefix.continue').write_text(reason + '\n')
             require(time.monotonic()<deadline,'prefix release exceeded client deadline')
         finally:
             self.prefix_deadline = None
+
+    def establish_prefix_fault(self, entry, output):
+        self.pause_clickhouse()
+        return 'positive complete prefix checked; owned ClickHouse paused'
 
     def custody(self):
         root = self.state/'data/index'

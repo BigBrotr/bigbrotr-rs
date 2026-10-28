@@ -590,14 +590,7 @@ class Runtime:
         self.validate_source(self.current_owner_view(prepared, setup), first, load(self.home / 'prepared.json'))
         (self.home / 'prepared.continue').write_text('independent source relationships checked\n')
         self.wait(lambda: (self.home / 'submitted.json').exists(), 'submitted acquisition', 15, entry, self.client)
-        def published():
-            require(not (self.home / 'relay-error.json').exists(), 'controlled relay failed')
-            return self.archive_published()
-        self.wait(published, 'signed Archive frontier', 60, entry, self.client)
-        control, catalog = self.capture(output, 'published')
-        require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == 5,
-                'unexpected Archive snapshot')
-        require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
+        self.initial_archive_observation(entry, output)
         self.initial_publication(entry, output)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
@@ -620,6 +613,16 @@ class Runtime:
         owner, = [row for row in selected['owner_epochs'] if row['role'] == 'control']
         require(owner['state'] == 'released', 'initial Control ownership retained')
         self.backend_absence(output)
+
+    def initial_archive_observation(self, entry, output):
+        def published():
+            require(not (self.home / 'relay-error.json').exists(), 'controlled relay failed')
+            return self.archive_published()
+        self.wait(published, 'signed Archive frontier', 60, entry, self.client)
+        control, catalog = self.capture(output, 'published')
+        require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == 5,
+                'unexpected Archive snapshot')
+        require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
 
     def initial_source_barrier(self, entry, output):
         # Closed variants may hold the existing source client before later
@@ -966,11 +969,12 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
+    archive_outage = getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
     index_topology = getattr(args, 'case', None) == 'p01-first-launch-index-topology'
     index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
     index_restart = index_commit or getattr(args, 'case', None) == 'p01-first-launch-index-restart'
     pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
-    index_case = index_topology or index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
+    index_case = archive_outage or index_topology or index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
@@ -986,6 +990,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if index_topology:
             from cases.first_launch_index_topology import (TopologyIndexRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if archive_outage:
+            from cases.first_launch_archive_outage import (ArchiveOutageRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
@@ -1011,7 +1018,8 @@ def first_launch(args, checks, inputs):
             operations += [('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
-        operations += [('ordinary_history_export', runtime.ordinary)]
+        if not archive_outage:
+            operations += [('ordinary_history_export', runtime.ordinary)]
         if pin_release:
             operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
         if restart:

@@ -236,7 +236,7 @@ class InitialIndexControls(unittest.TestCase):
             state,positive=ordinary_fixture();science=fixture()[3].first;runtime.index_science=science
             row=state['archive_attempts'][0]
             row.update(coordinator_incarnation='\\x'+'88'*16,worker_incarnation='\\x'+'99'*16,
-                       batch_digest='\\x'+science['batches'][0]['archive_digest'])
+                       topology_generation=0, batch_digest='\\x'+science['batches'][0]['archive_digest'])
             identity=case.input_identity(directory,directory=True)
             initial=bytes.fromhex(base.digest(initialization))
             binding=directory/'coordinator.json'
