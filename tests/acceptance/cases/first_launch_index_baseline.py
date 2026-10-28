@@ -51,12 +51,23 @@ def startup_quiescence(self, output, entry, historical, deadline):
         require(len(observations) < 100 and time.monotonic() < deadline, 'startup observation bound')
         value = ShortPinRuntime.roles(self,deadline); observations.append(value)
         save(output/'roles.json',observations)
-        # The public cache distinguishes a probe still in flight from an
-        # empty operation cache after its full probe has finished.
+        # NotObserved also exists before the first probe. A status response can
+        # precede pin admission; an independent capture must establish completion.
         if len(value['capabilities']) == 2 and all(cap['state'] == 'building'
                 and cap['reason'] == 'not_observed' for cap in value['capabilities']):
             state,catalog = self.capture(output,'complete')
             clock_after = ShortPinRuntime.bounded_sql(self,'bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
+            oracle.ordinary_roles(value,state,clock_before,clock_after,'setup')
+            if oracle.startup_reader_pending(historical,state):
+                require(process_identity(parent['pid']) == parent and time.monotonic() < deadline,
+                        'startup reader pending outside original authority/deadline')
+                save(output/('pending-'+str(len(observations))+'.json'),dict(status='PENDING',
+                    reason='startup_reader_not_completed',clock_after_us=clock_after,
+                    reader_rows={name:state[name] for name in
+                        ('snapshot_leases','archive_snapshot_pins','retention_claims')}))
+                require(self.inspect(entry)['State']['Running'], 'owner ended while startup reader pending')
+                time.sleep(.05)
+                continue
             worker = ShortPinRuntime.worker(self,parent,allow_absent=True)
             owner = oracle.ordinary_startup(historical,state,value,clock_before,clock_after,worker)
             require(process_identity(parent['pid']) == parent and time.monotonic() < deadline, 'same startup parent within original deadline')

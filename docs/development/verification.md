@@ -392,6 +392,10 @@ journey shares the restart case's startup observation helper. Before the
 initial403 checks, a client marker lets the parent independently observe a
 completed full startup probe, released reader/claims and an empty child inventory.
 This wait consumes the original40s journey; it adds no excluded phase time.
+`not_observed` alone is insufficient: before pin admission, or while an actual
+new reader remains active, the bounded observer retains pending rows and polls
+again. Inconsistent rows refuse; completed rows enter the unchanged strict
+oracle. Neither a timer's first poll nor startup branch ordering supplies proof.
 The common client retains actual HTTP status and allowlisted public error
 classification before its initial403 assertions, without headers or arbitrary
 response text. All original401/403/200 expectations remain exact. The added

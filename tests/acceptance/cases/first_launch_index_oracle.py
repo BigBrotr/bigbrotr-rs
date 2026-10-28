@@ -203,6 +203,32 @@ def ordinary_roles(value, state, clock_before, clock_after, phase=None):
             assert phase is None
 
 
+def startup_reader_pending(before, after):
+    """Only absent or active new reader observations may wait for completion."""
+    new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
+    assert len(new) <= 2, 'startup reader observation bound'
+    for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+        exact([r for r in after[table] if r['lease_id'] not in new],before[table])
+        assert len([r for r in after[table] if r['lease_id'] in new]) == len(new), 'incomplete startup reader observation'
+    if not new:
+        return True
+    owner = only(after['owner_epochs'],role='control',state='active')
+    pending = False
+    for key in new:
+        lease = only(after['snapshot_leases'],lease_id=key)
+        pin = only(after['archive_snapshot_pins'],lease_id=key)
+        claim = only(after['retention_claims'],lease_id=key)
+        assert lease['state'] in ('active','released') and claim['state'] == lease['state'], 'inconsistent startup reader state'
+        if lease['state'] == 'active':
+            exact([lease[k] for k in ('lease_revision','archive_pin_protocol','holder_kind','holder_role_instance_id','holder_role','holder_incarnation','released_at_us','release_reason')],
+                  [1,1,'role_instance',owner['role_instance_id'],'control',owner['process_incarnation'],None,None])
+            exact([pin[k] for k in ('purpose','issuer_resource','issuer_epoch','issuer_incarnation')],
+                  ['reader',owner['resource_id'],owner['epoch'],owner['process_incarnation']])
+            exact([claim[k] for k in ('purpose','released_at_us','release_reason')],['reader',None,None])
+            pending = True
+    return pending
+
+
 def ordinary_startup(before, after, roles, clock_before, clock_after, worker):
     """Fresh operation caches remain empty after an actually completed full probe."""
     def require(condition, message):

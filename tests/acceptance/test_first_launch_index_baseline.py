@@ -33,6 +33,33 @@ def startup_observation():
 
 
 class BaselineControls(unittest.TestCase):
+    def test_not_observed_needs_independent_completed_reader_and_pending_is_closed(self):
+        before,after,*_=startup_observation()
+        self.assertFalse(oracle.startup_reader_pending(before,after))
+        absent=copy.deepcopy(after)
+        for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+            absent[table]=copy.deepcopy(before[table])
+        self.assertTrue(oracle.startup_reader_pending(before,absent))
+        active=copy.deepcopy(after)
+        active['snapshot_leases'][-1].update(state='active',lease_revision=1,released_at_us=None,release_reason=None)
+        active['retention_claims'][-1].update(state='active',released_at_us=None,release_reason=None)
+        self.assertTrue(oracle.startup_reader_pending(before,active))
+        for change in (
+            lambda a:a['retention_claims'].pop(),
+            lambda a:a['retention_claims'][-1].update(state='released'),
+            lambda a:a['archive_snapshot_pins'][-1].update(purpose='export'),
+            lambda a:a['snapshot_leases'][-1].update(holder_role_instance_id='foreign'),
+            lambda a:a['snapshot_leases'][-1].update(lease_revision=2),
+        ):
+            invalid=copy.deepcopy(active);change(invalid)
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                oracle.startup_reader_pending(before,invalid)
+        # Completed inconsistent rows are never converted into a retry: the
+        # unchanged strict completion oracle still rejects them immediately.
+        values=list(startup_observation());values[1]['retention_claims'][-1]['last_sequence']=11
+        self.assertFalse(oracle.startup_reader_pending(values[0],values[1]))
+        with self.assertRaises(AssertionError):oracle.ordinary_startup(*values)
+
     def test_fresh_cache_needs_completed_probe_and_never_claims_ready(self):
         self.assertEqual(oracle.ordinary_startup(*startup_observation())['epoch'],2)
         changes=(
