@@ -438,15 +438,17 @@ pub(super) async fn run(
         authority.local(|cancel| source.validate(cancel))?;
         let (local, engine, id, deadline) =
             dispatch(budget, prepared, physical, owner, &mut operation_number)?;
-        let operation = adapter.write_and_verify(
-            state.custody(),
-            &prepared_plan,
-            planned,
-            local,
-            engine,
-            id,
-            deadline,
-        )?;
+        let operation = adapter
+            .write_and_verify(
+                state.custody(),
+                &prepared_plan,
+                planned,
+                local,
+                engine,
+                id,
+                deadline,
+            )
+            .map_err(error)?;
         let joined = authority
             .join(owner, Some(&session), state, &adapter, operation, deadline)
             .await?;
