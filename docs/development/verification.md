@@ -328,9 +328,17 @@ python3 tests/acceptance/run.py p01-first-launch-index-restart \
   --source-root "$PWD" --evidence .research/first-launch-index-restart
 ```
 
-Its eleven stages require actual execution. The scenario is authored with scoped
-Python refusal controls; its installed qualification is **NOT_RUN**. The original
-Index corruption and ordinary readiness case above keeps its own behavior.
+Its eleven stages require actual execution. The first installed attempt failed
+at the prefix gate: the default Archive dispatch timer consumed almost the whole
+15s window before starting its first batch. That failure is retained; installed
+qualification of the corrected fixture is **NOT_RUN**. The original Index
+corruption and ordinary readiness case above keeps its own behavior.
+
+This fresh variant declares `archive.max_publish_delay = "1s"` before configuration
+initialization and policy activation. Before starting the application, it checks
+that deployment value and the exact `1000000` microseconds in both accepted
+revision1 documents. This selects the batch dispatch cadence; it does not change
+product operation timeouts, existing policy or the client's gate.
 
 The existing signed client waits immediately after enrollment, before scope/job
 creation. Its two admission batches end at source3. Within that client's original

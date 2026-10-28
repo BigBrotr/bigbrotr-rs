@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -15,7 +16,7 @@ from cases import first_launch_index_oracle as index
 from cases import first_launch_index_restart as case
 from cases import first_launch_index_restart_oracle as check
 from test_first_launch import arguments
-from test_first_launch_index import metadata_fixture, schema, ROOT
+from test_first_launch_index import metadata_fixture, schema, ROOT, set_value
 
 
 def restart_fixture(root):
@@ -94,6 +95,52 @@ def restart_fixture(root):
 
 
 class RestartIndexControls(unittest.TestCase):
+    def test_prefix_dispatch_policy_is_declared_and_accepted_before_owner_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime=case.RestartIndexRuntime(arguments(Path(temporary)),{})
+            runtime.config=Path(temporary)/'instance.toml'
+            runtime.home=Path(temporary)/'client';runtime.home.mkdir()
+            runtime.set_value=set_value
+            original=initial.recipe((ROOT/'config/recipes/acceptance.toml').read_text(),set_value)
+            runtime.config.write_text(original)
+            with patch.object(initial.IndexRuntime,'prepare_state'):
+                runtime.prepare_state()
+            configured=tomllib.loads(runtime.config.read_text())
+            expected=tomllib.loads(original);expected.setdefault('archive',{})['max_publish_delay']='1s'
+            self.assertEqual(configured,expected)
+            self.assertEqual(runtime.inputs['initial_recipe_sha256'],base.digest(runtime.config))
+            document=dict(format='bigbrotr-product-policy/2',settings={
+                'indexer.enabled':True,'sync.provenance':'local_first_witness',
+                'indexer.batch_max_rows':4,'archive.max_publish_delay':1_000_000})
+            state=dict(datasets=[dict(config_revision=1,policy_revision=1)],
+                config_revisions=[dict(revision=1,document=copy.deepcopy(document),document_digest='synthetic')],
+                policy_revisions=[dict(revision=1,config_revision=1,document=copy.deepcopy(document),document_digest='synthetic')])
+            output=runtime.root/'initial';output.mkdir()
+            base.save(output/'before-control.json',state)
+            with patch.object(initial.IndexRuntime,'initial_launch',return_value='observed') as launch:
+                self.assertEqual(runtime.initial_launch(),'observed')
+                launch.assert_called_once_with()
+            for value in (30_000_000,True,'1000000',None):
+                changed=copy.deepcopy(state)
+                for table in ('config_revisions','policy_revisions'):
+                    changed[table][0]['document']['settings']['archive.max_publish_delay']=value
+                base.save(output/'before-control.json',changed)
+                with self.subTest(value=value),patch.object(initial.IndexRuntime,'initial_launch') as launch:
+                    with self.assertRaises(AssertionError):runtime.initial_launch()
+                    launch.assert_not_called()
+            changed=copy.deepcopy(state)
+            changed['policy_revisions'][0]['document']['settings']['archive.max_publish_delay']=30_000_000
+            base.save(output/'before-control.json',changed)
+            with patch.object(initial.IndexRuntime,'initial_launch') as launch:
+                with self.assertRaises(AssertionError):runtime.initial_launch()
+                launch.assert_not_called()
+            base.save(output/'before-control.json',state)
+            for text in (original,set_value(original,'archive','max_publish_delay','30s')):
+                runtime.config.write_text(text)
+                with patch.object(initial.IndexRuntime,'initial_launch') as launch:
+                    with self.assertRaises((AssertionError,KeyError)):runtime.initial_launch()
+                    launch.assert_not_called()
+
     def test_source_closure_changes_only_the_original_source_and_finite_control(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);before,_,_,_,science=restart_fixture(root)
