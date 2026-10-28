@@ -29,6 +29,8 @@ bigbrotr-model = { path = "crates/bigbrotr-model" }
 bigbrotr-protocol = { path = "crates/bigbrotr-protocol" }
 clap = { version = "=4.6.7", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions"] }
 command-fds = { version = "=0.3.3", default-features = false }
+# Already selected by command-fds; tests use its portable, non-spawning FIFO API.
+nix = { version = "=0.31.3", default-features = false, features = ["fs"] }
 clickhouse = { version = "=0.15.2", default-features = false, features = ["rustls-tls-ring", "rustls-tls-webpki-roots"] }
 minicbor = { version = "=2.3.0", default-features = false }
 serde = { version = "=1.0.229", features = ["derive"] }

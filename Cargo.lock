@@ -354,6 +354,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "minicbor",
+ "nix",
  "ring",
  "rocksdb",
  "rustix 1.1.5",
