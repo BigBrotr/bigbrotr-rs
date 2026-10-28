@@ -14,19 +14,25 @@ remains in development ancestry; no public history was rewritten. Only the new,
 clean, redundant CI integration worktree/ref was retired after publication.
 
 Canonical development: `work/short-pin-admission-wip-20261028`, source
-`4bfe98c1` before this checkpoint. Product `7e04f12f`, verifier `bbf2f78e`
+`b8236c3b` before this checkpoint. Product `7e04f12f`, verifier `bbf2f78e`
 (integrated as `f3dddeb4`), restart acceptance `cb3d8490` and waiter correction
 `45695bd2` (integrated as `6c2aea09`) and the declared restart dispatch profile
 `40796c20` (integrated as `40f7e36f`) are combined locally. Recovery remains
 **unqualified on installed engines and unpublished to main**. The subsequent
 Sync repair `076750d5` is integrated as `4bfe98c1`; its changed product bytes
 require fresh qualification. Pin-release fault fixtures `a241fc67` are integrated
-as `7a6075a5`, with an actual baseline failure still under correction.
+as `7a6075a5`, with the baseline corrections `54662128`/`52c9d97f` now merged
+as `b8236c3b` and installed qualification pending.
 Original separate branches/worktrees and all failures remain retained. Checkpoint
 `7eab4e7e` was pushed to the same development branch and its exact remote identity
 verified; `main` stayed `d0183003`. The incremental public-input scan found no new
 credential candidates or sensitive/raw-store artifacts. Receipt:
 `.research/ci-publication-20261026/source-resume-7eab4e7e-exposure/push.json`.
+The coherent CI/Sync qualification and October28 method checkpoint, including
+original qualified source ancestry, is also pushed through `8ecd62e8` and the
+remote identity verified. Its incremental public-input audit found no new
+credential candidates; `main` remains unchanged. Receipt:
+`.research/ci-publication-20261026/source-sync-8ecd62e8-exposure/push.json`.
 
 - Product `7e04`: application build, test compilation, strict Clippy and **156
   native controls PASS** (100 library + 56 binary; all 147 prior names retained).
@@ -78,8 +84,8 @@ An operation already started keeps its fixed deadline and fail-stop/unknown
 behavior. Fresh build, candidate assembly/intake and independent root source/hash
 verification also **PASS**. Candidate:
 `/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5/candidate/candidate-manifest.json`.
-Next: integrate the bounded shared ordinary-startup fixture correction below,
-then run restart r3 on this candidate without a competing compiler.
+Next: run restart r3 on this candidate with the integrated startup correction,
+without a competing compiler.
 
 The second implementation agent owns `work/pin-release-uncertainty` in
 `.research/pin-release-uncertainty-20261028`, also based on `40f7e36f`. It extends
@@ -91,8 +97,12 @@ the original client expects unauthorized History HTTP403, but did not retain the
 actual response. Concurrent startup probing is a hypothesis, not an observed
 wire cause. A separate fixture defect is confirmed: a fresh second lifetime's
 empty operation cache cannot become Ready through status polling alone. The
-agent is correcting both setup assumptions while preserving the independent
-history/export, join/custody and raw SQL/MVCC fault predicates. Both COMMIT cases
+correction now preserves the independent history/export, join/custody and raw
+SQL/MVCC fault predicates. Shared startup observation consumes the original40s;
+it waits for independently completed reader/claim rows and an empty child
+inventory, never inferring completion from NotObserved alone. Author65 then26
+affected controls and root26 integrated controls pass, with scoped critical
+review. Both COMMIT cases
 remain **NOT_RUN**. Original evidence:
 `.research/first-launch-index-pin-release-before-r1-20261028`.
 
@@ -124,8 +134,10 @@ No fault proxy had been launched before that failure.
 
 The waiter implementation is integrated locally; its source worktree is clean
 and retained. The Sync author's clean worktree is retained; the pin-release
-author owns its bounded fixture correction, shared with restart's ordinary baseline.
-The CI agent has completed native/build qualification. CI watcher80951 is reaped0, driver4144536 and watcher4144553
+author's clean worktree and original commits are retained; its bounded correction
+is integrated and shared with restart's ordinary baseline. All subagents are
+idle after saving their work. The CI agent has completed native/build
+qualification. CI watcher80951 is reaped0, driver4144536 and watcher4144553
 are absent; no remote CI remains active. Preserve
 `.research`, worktrees, databases, original failures and both installed candidates.
 Current identities are in the [inventory](../research/laboratory-inventory.json).

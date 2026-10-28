@@ -77,4 +77,3 @@ def startup_quiescence(self, output, entry, historical, deadline):
             return state,catalog,value,clock_after,parent,owner
         require(self.inspect(entry)['State']['Running'], 'owner ended during startup observation')
         time.sleep(.05)
-

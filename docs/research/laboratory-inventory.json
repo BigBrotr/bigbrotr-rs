@@ -75125,7 +75125,7 @@
           "status": "Source diagnosis complete; implementation authorized, no qualified change yet"
         }
       },
-      "processes": "No compiler, installed engine, fault proxy or remote CI active. Native33095 and installed-build5361 reaped0; both launchers absent/containers stopped exit0/PID0/noOOM; exclusive115cache released. Assembly37478 reaped0. Pin-release-before58467 reaped1 before fault stage;19 owned containers stopped/exit0/PID0/noOOM, bridge empty. Only pin-release agent edits its isolated fixture source; root owns integration/documentation.",
+      "processes": "No compiler, installed engine, proxy, remote CI or active subagent. Author worktrees clean/retained; root integrated baseline corrections and26 controls PASS. Next root launches installed restart r3.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75243,12 +75243,16 @@
         "worktree": ".research/pin-release-uncertainty-20261028",
         "base": "40f7e36f",
         "scope": "Maintained before-forward/after-complete reader release COMMIT fault cases with actual UPDATE1 hold and independently observed native join/custody; original export completes in separate lifetime",
-        "status": "BASELINE_FAIL_FAULT_STAGE_NOT_RUN",
+        "status": "FIXTURE_CORRECTIONS_INTEGRATED_REAL_CASES_PENDING",
         "source": "a241fc67",
-        "integration": "7a6075a5",
+        "integration": "b8236c3b",
         "root_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
         "evidence": ".research/first-launch-index-pin-release-before-r1-20261028",
-        "next": "Author corrects two setup assumptions; original data/logs retained; both COMMIT variants remain NOT_RUN."
+        "next": "Root actual restart r3 then both release variants; original before-r1 retained unchanged",
+        "correction_sources": [
+          "54662128",
+          "52c9d97f"
+        ]
       },
       "sync_safe_points": {
         "worktree": ".research/index-restart-acceptance-20261027",

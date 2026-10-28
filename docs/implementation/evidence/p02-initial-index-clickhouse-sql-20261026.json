@@ -737,7 +737,7 @@
       }
     },
     "pin_release_uncertainty": {
-      "status": "FIXTURE_BASELINE_FAIL_FAULT_CASES_NOT_RUN",
+      "status": "FIXTURE_BASELINE_CORRECTED_ACTUAL_FAULT_CASES_NOT_RUN",
       "source": "a241fc67d65f1bd659cdfce72aff94fd60c93944",
       "integration": "7a6075a5",
       "scope": "Before-forward versus after-complete actual reader-release COMMIT loss, independent native-join/custody/rawSQL verification",
@@ -750,7 +750,17 @@
         "root_receipt_sha256": "afb88ca145c4eb372dea5c83de5b2f50859f27ada3305d031afbd6cdbb5f026c",
         "resources": "19 containers stopped/exit0/PID0/noOOM; owned processes joined by maintained cleanup; borrowed bridge empty; no fault proxy launched"
       },
-      "next": "Repair independent ordinary probe quiescence and second-lifetime empty-cache expectation without changing original authorization/fault oracles, then run both cases after compiler releases resources."
+      "next": "Run corrected restart r3 on qualified076 candidate, then both release COMMIT variants on unchanged qualified825 product; original failure remains UNKNOWN wire result.",
+      "baseline_correction": {
+        "sources": [
+          "54662128",
+          "52c9d97f"
+        ],
+        "integration": "b8236c3b",
+        "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "checks": "Author65 then26 affected controls; root26 integrated PASS",
+        "scope": "Shared restart/pin-release original40s startup completion proof; fresh lifetime remains building/not_observed with independent joined reader proof; sanitized actual denial classification; absent/active newreader may wait but inconsistent captures refuse."
+      }
     }
   }
 }
