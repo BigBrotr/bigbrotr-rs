@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys
 import time
+import tomllib
 
 from cases.first_launch import digest, require, save
 from cases.first_launch_index import DATABASE
@@ -18,13 +19,28 @@ LIMITS = RESTART_LIMITS[:3]+[
     'Both actual fault commands remain CommitUnknown/exit4 without a success record or claimed owner release. Independent raw PG state distinguishes unchanged revision2 from committed revision3, with no plan4.',
     'Fresh catch-up2→3 resolves the actual published/pending tuple; exact retry3→4 adds no work. Original plan3 origin1 remains; its publisher is3 before-forward or2 after-complete. New plan4 origin/publisher is3.',
     'Raw immutable replay is explicit: before-forward has two identical copies of the four plan3 dictionary rows, after-complete one. Exact retry must add no further copy; logical science and all40 receipts remain exact.',
-    'Original source/client/40s history/12s signed export bounds and proxy64MiB/20,000 frames/16 lifetime connections/120s remain. The observation hold must fit the existing SQL operation, or fail.',
+    'The fresh root explicitly declares the unchanged runtime.renewal_timeout=5s deployment default. Original source/client/40s history/12s signed export bounds and proxy64MiB/20,000 frames/16 lifetime connections/120s remain. The observation hold must fit the existing SQL operation, or fail.',
     'NOT_RUN: unknown ClickHouse query/remote exclusion, genuine unknown native termination, topology handoff and complete M1. These PG cases do not resolve or qualify those separate outcomes.',
 ]
 
 
+def publication_operation_limit(config):
+    """Closed deployment profile; restart settings do not belong to policy."""
+    require(config.get('runtime',{}).get('renewal_timeout')=='5s',
+            'Index publication requires the declared original 5s SQL operation cap')
+    return 5_000_000
+
+
 class IndexCommitRuntime(RestartIndexRuntime):
     bounded_sql = ShortPinRuntime.bounded_sql
+
+    def prepare_state(self):
+        super().prepare_state()
+        # Declare the existing schema default before initialization, so the
+        # observer can bind its cap to the actual deployed root without reading
+        # a restart-only setting from the managed policy document.
+        self.config.write_text(self.set_value(self.config.read_text(),'runtime','renewal_timeout','5s'))
+        self.inputs['initial_recipe_sha256']=digest(self.config)
 
     def candidate(self):
         for path in (Path(__file__),Path(oracle.__file__)):
@@ -42,14 +58,16 @@ class IndexCommitRuntime(RestartIndexRuntime):
 
     def index_commit_fault(self):
         self.source_unchanged()
+        original=self.config.read_text()
+        operation_limit=publication_operation_limit(tomllib.loads(original))
         self.commit_mode=CASES[self.args.case]
         output=self.root/'index-commit';output.mkdir(mode=0o700);self.commit_output=output
         consumer=index.only(self.closed['consumers'],consumer_role='index')['consumer_id'][2:]
         path=self.source/'experiments/archive-engine/native_commit_proxy.py'
         args=[sys.executable,'-B',str(path),'--upstream-port','15432','--mode',self.commit_mode,
             '--target','control-index-publication','--defer-arm','--index-consumer',consumer,'--hold-index-publication']
-        original=self.config.read_text();proxy=None;failure=None
-        evidence=dict(mode=self.commit_mode)
+        proxy=None;failure=None
+        evidence=dict(mode=self.commit_mode,operation_limit_us=operation_limit)
         try:
             proxy=self.proxy_process(args,input_pipe=True)
             save(output/'proxy-process.json',dict(argv=args,identity=process_identity(proxy.process.pid),source_sha256=digest(path)))
@@ -67,9 +85,6 @@ class IndexCommitRuntime(RestartIndexRuntime):
             evidence['held_started_ns']=time.monotonic_ns()
             self.held_state,catalog=self.capture(output,'held')
             index.exact(catalog,self.restart_catalog)
-            operation_limit=index.only(self.held_state['policy_revisions'])['document']['settings']['runtime.renewal_timeout']
-            require(type(operation_limit) is int and 0 < operation_limit <= 5_000_000,'original SQL operation cap')
-            evidence['operation_limit_us']=operation_limit
             hold_deadline=min(deadline,evidence['held_started_ns']/1e9+operation_limit/1e6)
             selected_pid=evidence['selected']['backend_pid']
             require(type(selected_pid) is int and selected_pid>0,'selected actual backend PID')
