@@ -57,7 +57,59 @@ fn initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_
             .unwrap();
         resolution.record(&resolved).unwrap();
     }
+    let source = resolution.finish().unwrap();
+    let closure_digest = source.digest();
+    let acknowledgement = source.into_recovery_acknowledgement().unwrap();
+    let before_ack = kv(&recovery.store);
+    // Native mechanics only: PG confirmation is explicitly synthetic here.
+    // The real close-source command may ACK its recovered checkpoint. This
+    // only advances the producer watermark; pending facts/originals remain.
+    recovery
+        .store
+        .test_acknowledge_target(
+            acknowledgement.target(2).unwrap(),
+            &grant(&budget, 4096, 4096),
+            || Ok(()),
+        )
+        .unwrap();
+    let producer_key = IngestKey::ProducerState {
+        producer_slot_id: request(7, 1).producer_slot_id,
+        producer_epoch: ProducerEpoch::new(1).unwrap(),
+    }
+    .encode()
+    .unwrap();
+    let after_ack = kv(&recovery.store);
+    for row in before_ack
+        .iter()
+        .filter(|row| row.1 != producer_key.as_bytes())
+    {
+        assert!(after_ack.contains(row));
+    }
+    let closing = recovery
+        .observe_closed_producer(
+            request(7, 1).producer_slot_id,
+            ProducerEpoch::new(1).unwrap(),
+            grant(&budget, 4096, 4096),
+        )
+        .unwrap();
+    assert_eq!(closing.acknowledged_through(), 2);
+    let mut resolution = closing.source_resolution(&recovery, 2).unwrap();
+    for sequence in 1..=2 {
+        let resolved = recovery
+            .resolve_original_request(
+                request(7, sequence),
+                original_digest(sequence),
+                recovery_limits(),
+                grant(&budget, 3 * MIB, 0),
+                grant(&budget, 40 * MIB, 0),
+                || Ok(()),
+            )
+            .unwrap();
+        resolution.record(&resolved).unwrap();
+    }
     let proof = resolution.finish().unwrap();
+    assert_eq!(proof.digest(), closure_digest);
+    assert_eq!(proof.acknowledged_through(), 2);
     let before = kv(&recovery.store);
     let stamp = recovery.store.db.latest_sequence_number();
     let limits = PendingReadLimits {
@@ -95,8 +147,38 @@ fn initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_
         signed.batch().records().len() > 1,
         "the signed source is a whole multi-fact admission"
     );
+    let expected = fixture_event("E_private");
+    let mut payloads = 0;
+    let mut signatures = 0;
+    for (reference, bytes) in signed.batch().records().iter().zip(signed.records()) {
+        let fact = Fact::decode_preimage(bytes, reference.payload_digest, limits.fact).unwrap();
+        assert_eq!(fact.source_record_id(), reference.source_record_id);
+        assert_eq!(fact.source_record_id().owner_epoch.get(), 1);
+        assert_eq!(fact.recorded_at().get(), 10_000_000);
+        match fact.payload() {
+            FactPayload::EventPayload(value) => {
+                assert_eq!(value.body, EventBody::from(expected.clone()));
+                payloads += 1;
+            }
+            FactPayload::EventEligibility(value) => {
+                assert_eq!(value.event_id, expected.id);
+                assert_eq!(value.sig, expected.sig);
+                signatures += 1;
+            }
+            _ => {}
+        }
+    }
+    assert_eq!((payloads, signatures), (1, 1));
     drop(signed);
     for outside in [
+        SourceRecordId {
+            dataset_id: [99; 16].try_into().unwrap(),
+            ..first
+        },
+        SourceRecordId {
+            shard_id: 1,
+            ..first
+        },
         SourceRecordId {
             owner_epoch: OwnerEpoch::new(2).unwrap(),
             ..first
@@ -235,6 +317,10 @@ fn source_closure_requires_every_original_request_and_preserves_all_native_bytes
         );
     }
     let verified = prefix.finish().unwrap();
+    assert!(matches!(
+        verified.validate_initial(&AtomicBool::new(false)),
+        Err(BootstrapError::StateMismatch)
+    ));
     assert_eq!(verified.last_complete_sequence(), 8);
     assert_eq!(verified.resolved_requests(), 3);
     assert_eq!(verified.event_request_mask(), 0b110);

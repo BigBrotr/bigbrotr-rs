@@ -1113,6 +1113,14 @@ identified serving incarnation. Logical correction history survives merges.
 **Contract:** complete pending/archive source units → all required projections,
 dependency notices and contiguous serving frontier with real restart position.
 
+The bounded [initial Index catch-up consumer](../user/control-runtime.md#finite-initial-index-recovery)
+implements the selected same-store topology0/epoch1 path after explicit source
+closure. Its [owning storage contract](../architecture/storage-services.md)
+separates the published prefix, retained pending plan and new backlog, with fresh
+authority and unchanged historical origins. Compilation, native controls and
+installed restart/fault qualification for this increment are pending; no step is
+closed by the saved implementation or metadata-only cursor controls.
+
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.
 - [ ] **Step 2:** Bound by rows and bytes (20,000 rows/16 MiB starting batch, one-second flush);

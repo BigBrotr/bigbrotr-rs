@@ -177,6 +177,67 @@ fn recovery_published_cursor_refuses_missing_changed_and_foreign_heads() {
 }
 
 #[test]
+fn recovery_cursor_advances_only_for_the_exact_new_publication_receipt() {
+    // This is only the local metadata cursor. These fixtures cannot construct
+    // a session or authorize the PG publication that must precede acceptance.
+    let head = published();
+    let pending = plan(3, 1);
+    let publisher = IndexOwnerIdentity {
+        epoch: OwnerEpoch::new(2).unwrap(),
+        incarnation: [13; 16].try_into().unwrap(),
+        ..head.publication.as_ref().unwrap().publisher
+    };
+    let receipt = IndexPublicationReceipt {
+        binding: binding(),
+        plan_digest: pending.digest(),
+        revision: 2,
+        cut: cut(4),
+        family_counts: std::array::from_fn(|i| pending.chunks()[i].row_count()),
+        publisher,
+        engine_receipt_digest: Digest256::from_bytes([14; 32]),
+        committed_at_us: 19,
+        created: true,
+    };
+    let initial = || publication::Published {
+        revision: 1,
+        cut: cut(2),
+    };
+    for change in 0..7 {
+        let mut refused = receipt.clone();
+        match change {
+            0 => refused.created = false,
+            1 => refused.revision = 3,
+            2 => refused.cut = cut(6),
+            3 => refused.plan_digest = head.plan.digest(),
+            4 => refused.publisher.epoch = OwnerEpoch::new(1).unwrap(),
+            5 => refused.publisher.incarnation = [15; 16].try_into().unwrap(),
+            6 => refused.family_counts[0] += 1,
+            _ => unreachable!(),
+        }
+        let mut cursor = initial();
+        assert!(
+            cursor
+                .accept(&binding(), publisher, &pending, refused)
+                .is_err()
+        );
+        assert_eq!((cursor.revision, cursor.cut), (1, cut(2)));
+    }
+    let mut cursor = initial();
+    assert!(
+        cursor
+            .accept(&binding(), publisher, &head.plan, receipt.clone())
+            .is_err()
+    );
+    assert_eq!((cursor.revision, cursor.cut.clone()), (1, cut(2)));
+    cursor
+        .accept(&binding(), publisher, &pending, receipt)
+        .unwrap();
+    assert_eq!((cursor.revision, cursor.cut.clone()), (2, cut(4)));
+    // The genuinely new backlog remains outside this receipt.
+    assert_ne!(cursor.cut, cut(6));
+}
+
+#[test]
 fn finite_recovery_requires_initial_topology_and_never_selects_a_successor_writer() {
     let original = manifest();
     require_initial_manifest(&original).unwrap();

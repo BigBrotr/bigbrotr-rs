@@ -1,5 +1,5 @@
 use super::*;
-use bigbrotr::storage::postgres::{IndexBinding, RetainedIndexPlan};
+use bigbrotr::storage::postgres::{IndexBinding, IndexOwnerIdentity, RetainedIndexPlan};
 
 /// SQL publication state only. The verifier's pending-inclusive cut never
 /// enters this cursor; advance requires an actual publication receipt.
@@ -52,21 +52,22 @@ impl Published {
         }
         Ok(())
     }
-    fn accept(
+    pub(super) fn accept(
         &mut self,
-        session: &IndexSession,
+        binding: &IndexBinding,
+        publisher: IndexOwnerIdentity,
         plan: &IndexPlan,
         receipt: IndexPublicationReceipt,
     ) -> Result<()> {
-        if plan.binding() != session.binding()
+        if plan.binding() != binding
             || plan.expected_revision() != self.revision
             || plan.before() != &self.cut
-            || receipt.binding != *session.binding()
+            || receipt.binding != *binding
             || receipt.plan_digest != plan.digest()
             || self.revision.checked_add(1) != Some(receipt.revision)
             || receipt.cut != *plan.after()
             || receipt.family_counts != std::array::from_fn(|i| plan.chunks()[i].row_count())
-            || receipt.publisher != session.owner()
+            || receipt.publisher != publisher
             || !receipt.created
         {
             return Err(error("new publication receipt differs"));
@@ -270,7 +271,7 @@ pub(super) async fn run(
                 &Cell::new(false),
             ))
             .await?;
-        published.accept(&session, pending, receipt)?;
+        published.accept(session.binding(), session.owner(), pending, receipt)?;
     } else if recovered.pending().is_some() {
         return Err(error("unexpected pending physical proof"));
     }
@@ -332,7 +333,12 @@ pub(super) async fn run(
                 &Cell::new(false),
             ))
             .await?;
-        published.accept(&session, prepared_plan.plan(), receipt)?;
+        published.accept(
+            session.binding(),
+            session.owner(),
+            prepared_plan.plan(),
+            receipt,
+        )?;
         new_batches += 1;
     }
     authority.refresh(owner, Some(&session), state).await?;

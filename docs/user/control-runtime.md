@@ -217,3 +217,60 @@ adapter. Actual bind aliases, live contention, SIGKILL/restart, partial bindings
 blocked inventory cancellation are exercised. The local fixture creates an
 initialization reservation only; it does not install a native scientific catalog.
 No pre-protocol history adoption, Archive dispatch or protection is qualified.
+
+## Finite initial Index recovery
+
+The `index catch-up` candidate finishes a retained initial Index on the same
+Linux/ext4 host boot. Stop the original Control/Ingest/Index process, retain its
+native and Index directories and ClickHouse database, then explicitly close the
+original source before starting catch-up:
+
+```sh
+bigbrotr ingest recover --file /etc/bigbrotr/root.toml --close-source
+bigbrotr index catch-up --file /etc/bigbrotr/root.toml
+```
+
+The preceding Ingest recovery command can complete its retained native
+acknowledgement watermark after checking the PostgreSQL checkpoint. That ACK
+does not reclaim pending facts or original inputs. Index catch-up observes the
+resulting retained state and performs no additional acknowledgement.
+
+The root must assign Control, Ingest and Index locally, use migration0041 or
+later, retain the original schema1/topology0/Ingest epoch1 source and accept the
+same Index provenance profile. Use the original ClickHouse writer account with
+its fixed one-query concurrency constraint. The command reads its protected
+writer credential and the Control credential; the initializer credential is not
+needed. Retain every original request/outcome and required pending source batch.
+The finite bound is 64 original requests, 64 facts and 1 MiB per whole batch;
+accepted target row/wire and process-resource limits also apply.
+
+Catch-up verifies all published plans against the actual tables, replays any
+exact prepared plan, and transfers the same generation to a new Index owner
+epoch. It publishes the prepared plan only after that transfer, then plans and
+publishes remaining complete source batches. Original plan/chunk origins and
+digests survive. Missing or corrupt published rows, missing original input,
+changed table/native identities, held custody, cancellation or unresolved
+query/COMMIT outcomes stop the command while preserving retained state. It does
+not automatically repair a published generation. Retry the same command after
+resolving the reported prerequisite; a retry revalidates actual state and obtains
+another Index epoch, even if no new batch remains.
+
+After successful Control release and actual driver join, exit 0 accompanies one
+JSON record with `format="bigbrotr-initial-index-catch-up/1"`, `state="complete"`,
+`dataset_id`, `generation_id`, `storage_incarnation`, `table_identity_digest`,
+`previous_owner_epoch`, `owner_epoch`, `published_revision_before`,
+`published_revision_after`, `source_through`, `published_through`,
+`recovered_pending` and `new_batches`. The owner epochs are Index epochs; the
+source stays Ingest epoch 1. For a captured revision 2 with pending plan 3 and one
+unplanned batch 4, success reports revisions 2→4, `recovered_pending=true` and
+`new_batches=1`; an exact complete retry reports revisions 4→4, false and 0.
+
+The record always includes `ready=false`, `acknowledgement="not-performed"`,
+`ingest_retirement="not-performed"` and `topology_transition="not-performed"`.
+It grants no continuing read readiness and starts no listener or acquisition.
+The command performs no ACK, retirement or reclamation and cannot process an
+Ingest epoch2/topology1 handoff. The ordinary Control read/export procedure and
+its own current grants remain separate. Exit codes are 1 output I/O, 2 usage,
+3 configuration/policy/resources and 4 refused/cancelled/unknown outcome. This
+profile remains under qualification; command availability is not evidence that
+restart and fault acceptance have passed.
