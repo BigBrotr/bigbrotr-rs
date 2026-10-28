@@ -431,6 +431,17 @@ complete cuts and persistent handoff revision from whether this invocation
 created the handoff. It remains `ready=false`, without Index acknowledgement or
 Ingest retirement. The final ordinary reader verifies both signed events.
 
+At the closed/unretired and terminal successor boundaries, the journey also
+runs the maintained SQL handoff constraints in two fresh database copies inside
+its owned PostgreSQL container. The original database's identity and all82
+tables must remain exact. The three nonterminal and23 terminal cases cover
+premature/stale handoffs, missing or inconsistent cuts and receipts, atomic
+publication, immutable history and typed retry. These are SQL-only controls;
+their synthetic Index owner transfer is not native/ClickHouse recovery evidence.
+The installed Index commands supply that separate evidence. Copies and complete
+or partial failure diagnostics are retained with the protected run. See the
+[SQL fixture contract](../../experiments/control-migrations/README.md).
+
 Maintained oracle/dispatch controls run with
 `cd tests/acceptance && python3 -B -m unittest test_first_launch_index_topology`
 and are also discovered by the shared CI controls. This installed variant is

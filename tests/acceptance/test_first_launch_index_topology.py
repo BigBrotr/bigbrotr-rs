@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from cases import first_launch as base
 from cases import first_launch_index_oracle as index
@@ -47,6 +47,23 @@ def recovery_fixture():
 
 
 class IndexTopologyControls(unittest.TestCase):
+    def test_sql_refusal_precedes_product_handoff_and_keeps_phase_distinct(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=case.TopologyIndexRuntime(arguments(root),{})
+            runtime.restart_output=root/'restart'
+            runtime.handoff_sql=Mock()
+            runtime.successor_abandoned()
+            runtime.handoff_sql.run_handoff_clone.assert_called_once_with(
+                runtime,root/'restart/index-handoff-nonterminal',phase='nonterminal')
+            runtime.handoff_sql.run_handoff_clone.reset_mock()
+            runtime.handoff_sql.run_handoff_clone.side_effect=ValueError('SQL constraint refusal')
+            with patch.object(runtime,'source_unchanged') as source,patch.object(runtime,'finite') as finite, \
+                    patch.object(runtime,'capture') as capture:
+                with self.assertRaisesRegex(ValueError,'SQL constraint refusal'):runtime.index_epoch2_catch_up()
+                source.assert_called_once();finite.assert_not_called();capture.assert_not_called()
+            runtime.handoff_sql.run_handoff_clone.assert_called_once_with(
+                runtime,root/'index-topology/sql-constraints',phase='terminal')
+
     def test_each_owner_keeps_a_distinct_backend_observation(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);runtime=case.TopologyIndexRuntime(arguments(root),{})

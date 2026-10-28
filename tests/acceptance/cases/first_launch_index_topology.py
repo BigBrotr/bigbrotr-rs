@@ -24,6 +24,11 @@ class TopologyIndexRuntime(IndexRuntime):
     ordinary_client = IndexRuntime.baseline_client
     custody = RestartIndexRuntime.custody
 
+    def load_helpers(self):
+        super().load_helpers()
+        import index_publication_runtime
+        self.handoff_sql=index_publication_runtime
+
     def backend_absence(self, output):
         # Keep each finite owner's diagnostic separate without binding super()
         # to the unrelated paused-prefix runtime class.
@@ -36,6 +41,8 @@ class TopologyIndexRuntime(IndexRuntime):
             require(digest(path)==digest(self.source/'tests/acceptance/cases'/path.name),
                     'Index topology acceptance source mismatch')
         super().candidate()
+        sql='experiments/control-migrations/index_handoff_cases.sql'
+        self.inputs['acceptance_files_sha256'][sql]=digest(self.source/sql)
 
     def verify_index(self):
         super().verify_index()
@@ -47,6 +54,9 @@ class TopologyIndexRuntime(IndexRuntime):
         super().restart_ingest()
         oracle.unchanged_index(self.initial_index_state,self.retired_successor)
         index.exact(self.custody(),self.initial_index_custody)
+
+    def successor_abandoned(self):
+        self.handoff_sql.run_handoff_clone(self,self.restart_output/'index-handoff-nonterminal',phase='nonterminal')
 
     def restart_archive(self):
         super().restart_archive()
@@ -70,6 +80,7 @@ class TopologyIndexRuntime(IndexRuntime):
     def index_epoch2_catch_up(self):
         self.source_unchanged()
         self.topology_output=self.root/'index-topology';self.topology_output.mkdir(mode=0o700)
+        self.handoff_sql.run_handoff_clone(self,self.topology_output/'sql-constraints',phase='terminal')
         before,_=self.capture(self.topology_output,'before')
         oracle.unchanged_index(self.initial_index_state,before)
         report=self.finite('index-epoch2-catch-up','index','catch-up','--file','/etc/bigbrotr/instance.toml')

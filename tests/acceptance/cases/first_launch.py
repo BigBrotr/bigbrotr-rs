@@ -835,9 +835,13 @@ class Runtime:
         abandoned = self.finite('abandon-successor', *args, '--abandon-activated-acquisition')
         require(abandoned['acquisition_abandonment'] == dict(jobs='1', reason='activated_initial_producer_abandoned', coverage='unknown'),
             'successor acquisition abandonment differs')
+        self.successor_abandoned()
         self.successor_retirement = self.finite('retire-successor', *args, '--retire-activated-initial')
         self.retired_successor, _ = self.capture(output, 'retired-successor')
         self.backend_absence(output)
+
+    def successor_abandoned(self):
+        """Optional case observation at the actual closed, unretired boundary."""
 
     def restart_archive(self):
         output = self.restart_output
