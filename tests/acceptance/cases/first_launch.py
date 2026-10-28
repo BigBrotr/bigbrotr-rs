@@ -704,6 +704,9 @@ class Runtime:
         catalog_before = self.catalog_rows(pg, 'bigbrotr_catalog')
         save(output / (name + '-census-before-catalog.json'), catalog_before)
         config = self.set_value(self.config.read_text(), 'storage', 'archive_root', str(self.state / 'data/archive'))
+        # This stopped-product diagnostic uses the owned catalog directly;
+        # --catalog-port validates the declaration, it does not override it.
+        config = self.set_value(config, 'postgres.catalog', 'endpoint', '127.0.0.1:15432')
         config = self.set_value(config, 'postgres.catalog', 'read_password_ref',
             'file:' + str(self.state / 'secrets/runtime/archive-read'))
         path = output / (name + '-reader.toml')

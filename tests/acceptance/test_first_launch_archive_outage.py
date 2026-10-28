@@ -2,10 +2,12 @@
 import copy
 import fcntl
 import hashlib
+import json
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch, Mock
 
@@ -90,6 +92,38 @@ def preservation_fixture():
 
 
 class ArchiveOutageControls(unittest.TestCase):
+    def test_census_declares_direct_reader_route_without_changing_product_config(self):
+        sys.path.insert(0, str(ROOT/'experiments/ingest-bootstrap'))
+        from installed import set_value
+        from installed_archive_read import catalog_settings
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime = object.__new__(case.ArchiveOutageRuntime)
+            runtime.state, runtime.source, runtime.bundle = root/'state', ROOT, root/'bundle'
+            runtime.config = root/'instance.toml'
+            original = ('[storage]\narchive_root = "/var/lib/bigbrotr/archive"\n'
+                '[postgres.catalog]\nendpoint = "127.0.0.1:33333"\n'
+                'database = "bigbrotr_catalog"\nread_user = "bigbrotr_archive_read"\n'
+                'read_password_ref = "file:/run/reader"\n')
+            runtime.config.write_text(original)
+            runtime.set_value = set_value
+            runtime.pg = {'id': 'owned-postgres'}
+            runtime.inspect, runtime.backend_absence = Mock(), Mock()
+            runtime.catalog_rows = Mock(return_value={'unchanged': []})
+            def command(argv, **options):
+                declared = tomllib.loads(Path(argv[3]).read_text())
+                port = int(argv[argv.index('--catalog-port')+1])
+                self.assertEqual(port, 15432)
+                self.assertEqual(catalog_settings(declared, port)['endpoint'], '127.0.0.1:15432')
+                with self.assertRaises(AssertionError):
+                    catalog_settings(tomllib.loads(original), port)
+                self.assertEqual(runtime.config.read_text(), original)
+                return subprocess.CompletedProcess(argv, 0, json.dumps({'tables': {}}), '')
+            runtime.command = Mock(side_effect=command)
+            self.assertEqual(runtime.census(root, 'prefix'), {'tables': {}})
+            runtime.command.assert_called_once()
+            self.assertEqual(runtime.catalog_rows.call_count, 2)
+
     def test_prefix_preserves_old_rows_and_rejects_unrelated_or_missing_additions(self):
         before, live, _ = preservation_fixture()
         check.prefix_preservation(before, live)
