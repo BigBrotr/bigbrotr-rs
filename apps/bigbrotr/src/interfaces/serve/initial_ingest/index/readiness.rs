@@ -182,7 +182,7 @@ fn capture_matches(
     owner == expected_owner
         && state.published_revision == revision
         && state.pending_plan.is_none()
-        && (revision == 0) == state.published_plan.is_none()
+        && state.valid_head()
 }
 
 impl Index {
@@ -284,6 +284,25 @@ impl Index {
         let operation_deadline = Instant::now()
             .checked_add(self.readiness.remaining(now)?)
             .ok_or_else(|| failed("readiness deadline overflow"))?;
+        if self
+            .readiness
+            .verifier
+            .as_mut()
+            .expect("captured verifier")
+            .advance_handoff(
+                control,
+                self.state.as_ref().expect("installed state").custody(),
+            )
+            .await
+            .map_err(|_| {
+                self.readiness.fail(Failure::Dependency);
+                failed("readiness typed revision unavailable")
+            })?
+            .is_some()
+        {
+            live_window(deadline, cancelled)?;
+            return Ok(Tick::Idle);
+        }
         let operation = self.operation()?;
         let state = self.state.as_ref().expect("installed state");
         let verifier = self.readiness.verifier.as_ref().expect("captured verifier");

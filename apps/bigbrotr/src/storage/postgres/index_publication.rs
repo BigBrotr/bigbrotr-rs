@@ -10,8 +10,11 @@ use bigbrotr_model::{
 
 #[path = "index_publication/adapter.rs"]
 mod adapter;
+#[path = "index_publication/handoff.rs"]
+mod handoff;
 #[path = "index_publication/proofs.rs"]
 mod proofs;
+pub use handoff::{IndexHandoff, IndexHandoffReceipt, RetainedIndexRevision};
 #[cfg(test)]
 #[path = "index_publication/tests.rs"]
 mod tests;
@@ -410,7 +413,20 @@ pub struct IndexOwnerIdentity {
 pub struct IndexRecoveryState {
     pub published_revision: u64,
     pub published_plan: Option<Digest256>,
+    pub published_handoff: Option<Digest256>,
     pub pending_plan: Option<Digest256>,
+}
+impl IndexRecoveryState {
+    pub fn valid_head(self) -> bool {
+        matches!(
+            (
+                self.published_revision,
+                self.published_plan,
+                self.published_handoff,
+            ),
+            (0, None, None) | (1.., Some(_), None) | (1.., None, Some(_))
+        )
+    }
 }
 
 /// Coordination identity, not a native capability. Constructors stay private.

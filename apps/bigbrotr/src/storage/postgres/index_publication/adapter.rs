@@ -3,6 +3,9 @@ use super::{proofs::*, *};
 use crate::storage::rocks::store::PendingBatch;
 use bigbrotr_model::{CompleteThrough, Sequence, StreamBound, StreamId, TopologyGeneration};
 
+#[path = "handoff_adapter.rs"]
+mod handoff_adapter;
+
 const SCHEMA: u32 = 41;
 const NOW: &str = "SELECT (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint";
 fn pg(_: tokio_postgres::Error) -> IndexError {
@@ -110,15 +113,17 @@ async fn inventory(
 ) -> Result<IndexRecoveryState, IndexError> {
     let row = tx.query_one("SELECT coalesce(c.current_revision,0)::text,
         (SELECT plan_digest FROM control.index_frontier_plans f WHERE f.consumer_id=c.consumer_id AND f.frontier_revision=c.current_revision),
-        (SELECT plan_digest FROM control.projection_plans p WHERE p.generation_id=$2::bytea AND p.frontier_revision=coalesce(c.current_revision,0)+1)
+        (SELECT plan_digest FROM control.projection_plans p WHERE p.generation_id=$2::bytea AND p.frontier_revision=coalesce(c.current_revision,0)+1),
+        (SELECT handoff_digest FROM control.index_frontier_handoffs h WHERE h.consumer_id=c.consumer_id AND h.frontier_revision=c.current_revision)
         FROM control.consumers c WHERE c.consumer_id=$1::bytea AND c.consumer_role='index' FOR UPDATE OF c",
         &[&&b.resource.as_bytes()[..],&&b.generation.as_bytes()[..]]).await.map_err(pg)?;
     let state = IndexRecoveryState {
         published_revision: number(&row, 0)?,
         published_plan: optional_digest(&row, 1)?,
+        published_handoff: optional_digest(&row, 3)?,
         pending_plan: optional_digest(&row, 2)?,
     };
-    if (state.published_revision == 0) != state.published_plan.is_none() {
+    if !state.valid_head() {
         return Err(IndexError::Conflict);
     }
     Ok(state)
@@ -187,6 +192,7 @@ impl ControlSession {
             IndexRecoveryState {
                 published_revision: 0,
                 published_plan: None,
+                published_handoff: None,
                 pending_plan: None,
             },
         )
@@ -505,50 +511,6 @@ impl ControlSession {
         Ok(result)
     }
 
-    /// Caller reserves the bounded page and streams the immutable prefix. Empty
-    /// page means no further retained plan, not that CH content is absent.
-    pub async fn read_index_plans(
-        &mut self,
-        binding: &IndexBinding,
-        after_revision: u64,
-        limit: u8,
-    ) -> Result<Vec<RetainedIndexPlan>, IndexError> {
-        if binding.dataset != self.request.dataset || !(1..=64).contains(&limit) {
-            return Err(IndexError::InvalidInput);
-        }
-        self.begin_operation().map_err(owner)?;
-        let tx = application_transaction(&mut self.client, SCHEMA)
-            .await
-            .map_err(deployment)?;
-        require(&tx, self.request.dataset, self.identity)
-            .await
-            .map_err(owner)?;
-        binding_matches(&tx, binding).await?;
-        let rows = tx
-            .query(
-                "SELECT plan_digest FROM control.projection_plans WHERE generation_id=$1::bytea
-            AND frontier_revision>$2::text::numeric ORDER BY frontier_revision LIMIT $3",
-                &[
-                    &&binding.generation.as_bytes()[..],
-                    &after_revision.to_string(),
-                    &i64::from(limit),
-                ],
-            )
-            .await
-            .map_err(pg)?;
-        let mut result = Vec::with_capacity(rows.len());
-        for row in rows {
-            result.push(
-                read_plan(&tx, binding, Digest256::from_bytes(bytes(&row, 0)?))
-                    .await?
-                    .ok_or(IndexError::Conflict)?,
-            );
-        }
-        tx.rollback().await.map_err(pg)?;
-        self.available = true;
-        Ok(result)
-    }
-
     pub async fn read_index_recovery_state(
         &mut self,
         binding: &IndexBinding,
@@ -615,17 +577,18 @@ async fn insert_session(
     let previous = recovery.map(|v| v.0.to_string());
     let digest = recovery.map(|v| v.1.as_bytes().to_vec());
     let published = state.published_plan.map(|v| v.as_bytes().to_vec());
+    let handoff = state.published_handoff.map(|v| v.as_bytes().to_vec());
     let pending = state.pending_plan.map(|v| v.as_bytes().to_vec());
     tx.execute("INSERT INTO control.index_owner_sessions(dataset_id,resource_id,owner_epoch,owner_incarnation,
         generation_id,issuer_resource,issuer_epoch,issuer_incarnation,previous_epoch,recovery_digest,
-        recovered_revision,recovered_plan,recovered_pending_plan)
+        recovered_revision,recovered_plan,recovered_pending_plan,recovered_handoff)
         VALUES($1::bytea,$2::bytea,$3::text::numeric,$4::bytea,$5::bytea,$6::bytea,$7::text::numeric,$8::bytea,
-            $9::text::numeric,$10::bytea,$11::text::numeric,$12::bytea,$13::bytea)",
+            $9::text::numeric,$10::bytea,$11::text::numeric,$12::bytea,$13::bytea,$14::bytea)",
         &[&&session.binding.dataset.as_bytes()[..],&&session.owner.resource.as_bytes()[..],
             &session.owner.epoch.get().to_string(),&&session.owner.incarnation.as_bytes()[..],
             &&session.binding.generation.as_bytes()[..],&&session.issuer.resource_id.as_bytes()[..],
             &session.issuer.epoch.get().to_string(),&&session.issuer.process_incarnation.as_bytes()[..],
-            &previous,&digest,&state.published_revision.to_string(),&published,&pending]).await.map_err(pg)?;
+            &previous,&digest,&state.published_revision.to_string(),&published,&pending,&handoff]).await.map_err(pg)?;
     Ok(())
 }
 

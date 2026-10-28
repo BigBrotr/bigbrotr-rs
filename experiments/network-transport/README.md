@@ -68,17 +68,21 @@ Archive reconstruction controls.
 The closed native source-closure group requires complete original-request proof,
 preservation of native bytes, signed historical batch reads after acknowledgement,
 and refusal of incomplete, changed or foreign source state.
+The five existing lineage-pending controls cover the successor source accessor:
+complete head without a prepared gap, exact original batches, stale native/input
+custody, out-of-cut identities and unchanged grant/cancellation bounds. The
+Index publication selection also requires the typed handoff control module.
 The separate binary executable must contain the closed service scope declared
 in `initial_index.py`: Index actors/preparation, physical-probe scheduling,
 explicit initial CLI selection, command admission and supervision, watchdogs,
 authenticated role HTTP and ordinary observation-cache controls. It also includes
-finite catch-up cursor, exact publication receipt, initial topology and bounded
-recovery-capacity controls. The closed Sync command/diagnostic scope requires
+finite catch-up cursor, exact publication receipt, explicit topology handoff,
+global request/bridge bounds and recovery-capacity controls. The closed Sync command/diagnostic scope requires
 retention of the same prepared signed input and grant across safe-point renewal,
 pre-REQ reauthorization, cancellation/revalidation refusal, refusal before an
 expired operation's first poll, and preservation of a started admission's deadline
 and unknown outcome. Diagnostic progress cannot certify a commit. The binary
-scope contains 67 required names; the unchanged library selection is combined
+scope contains 70 required names; the library selection is combined
 with its actual compiled inventory, never inferred from this source count.
 Ordinary cache
 tests distinguish a complete current proof from a narrow operation, retain the

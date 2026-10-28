@@ -46,7 +46,7 @@ pub(super) fn recovery(
     if proof.binding() != binding
         || proof.previous_owner().resource != binding.resource()
         || proof.recovery_digest().as_bytes() == &[0; 32]
-        || (proof.state().published_revision == 0) != proof.state().published_plan.is_none()
+        || !proof.state().valid_head()
     {
         return Err(IndexError::Conflict);
     }

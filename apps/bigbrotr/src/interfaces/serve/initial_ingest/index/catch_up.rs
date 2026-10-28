@@ -10,10 +10,16 @@ use bigbrotr::storage::{
     clickhouse::adapter::IndexRecoveryVerifier,
     postgres::{
         IndexPlan, IndexPublicationReceipt, IndexRecoveryState,
-        control_owner::{ClaimRequest, PolicySnapshot, ProducerCloseRequest},
+        control_owner::{
+            ClaimRequest, InitialHistoryRequest, PolicySnapshot, ProducerCloseRequest,
+            SuccessorHistory, SuccessorHistoryState,
+        },
         ingest_registry, transport,
     },
-    rocks::store::{IngestRecovery, ResolvedSource},
+    rocks::{
+        store::{IngestRecovery, ResolvedSource},
+        succession::MAX_LINEAGE_METADATA_BYTES,
+    },
 };
 use bigbrotr_model::{DatasetId, PolicyEpoch};
 use serde_json::{Value, json};
@@ -21,6 +27,7 @@ use tokio::sync::watch;
 
 mod authority;
 mod publication;
+mod source;
 use authority::Authority;
 
 fn error(reason: impl std::fmt::Debug) -> (u8, String) {
@@ -63,6 +70,7 @@ pub(in crate::interfaces::serve) fn run(
 struct Custody {
     native: Option<IngestRecovery>,
     state: Option<IndexState>,
+    history: Option<SuccessorHistory>,
     owner: Option<ControlSession>,
     client: Option<tokio_postgres::Client>,
 }
@@ -125,6 +133,11 @@ async fn own(
     let index_driver = IndexDriverCustody::new();
     index_driver.attach(state.custody()).map_err(error)?;
     let _metadata = grant(&budget, METADATA_BYTES, 0)?;
+    let mut lineage_metadata = if manifest.key_schema() == 2 {
+        Some(grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?)
+    } else {
+        None
+    };
     let prepared_index = prepare::prepare(&root, &budget, false)?;
     phase(&progress, timeout)?;
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
@@ -155,17 +168,25 @@ async fn own(
         return Err(error("Control supervisor unavailable"));
     }
     phase(&progress, timeout)?;
-    let spec = bounded(timeout, &cancellation, async {
-        ingest_registry::load_historical(
-            custody.client.as_mut().unwrap(),
-            *instance.as_bytes(),
-            custody.native.as_ref().unwrap(),
+    let spec = if manifest.key_schema() == 1 {
+        Some(
+            bounded(timeout, &cancellation, async {
+                ingest_registry::load_historical(
+                    custody.client.as_mut().unwrap(),
+                    *instance.as_bytes(),
+                    custody.native.as_ref().unwrap(),
+                )
+                .await
+                .map_err(error)
+            })
+            .await?,
         )
-        .await
-        .map_err(error)
-    })
-    .await?;
-    validate_source(&manifest, &spec)?;
+    } else {
+        None
+    };
+    if let Some(spec) = &spec {
+        validate_source(&manifest, spec)?;
+    }
     let fresh = || super::super::super::fresh_process_incarnation().map_err(error);
     let claim = ClaimRequest {
         dataset,
@@ -213,50 +234,92 @@ async fn own(
     let owner = custody.owner.as_mut().unwrap();
     let mut authority = Authority::new(&root, &progress, &cancellation, owner, accepted, profile)?;
     authority.refresh(owner, None, state).await?;
-    let closed = authority
-        .operation(owner.observe_initial_retirement(
+    let source = if let Some(spec) = &spec {
+        let closed = authority
+            .operation(owner.observe_initial_retirement(
+                custody.native.as_ref().unwrap(),
+                request(&root, &cancellation, spec)?,
+                grant(&budget, 4096, 4096)?,
+                |d, h| validate(&root, profile, d, h),
+            ))
+            .await?;
+        let reserved = closed.reserved_through();
+        let mut resolution = closed
+            .source_resolution(custody.native.as_ref().unwrap())
+            .map_err(error)?;
+        recovery::replay::originals(
+            &root,
+            &budget,
+            &progress,
+            &cancellation,
+            owner,
             custody.native.as_ref().unwrap(),
-            request(&root, &cancellation, &spec)?,
-            grant(&budget, 4096, 4096)?,
+            spec,
+            reserved,
+            Some(recovery::replay::Prefix::Source(&mut resolution)),
+            recovery::replay::Mode::InspectRetirement,
             |d, h| validate(&root, profile, d, h),
-        ))
+        )
         .await?;
-    let reserved = closed.reserved_through();
-    let mut resolution = closed
-        .source_resolution(custody.native.as_ref().unwrap())
-        .map_err(error)?;
-    recovery::replay::originals(
-        &root,
-        &budget,
-        &progress,
-        &cancellation,
-        owner,
-        custody.native.as_ref().unwrap(),
-        &spec,
-        reserved,
-        Some(recovery::replay::Prefix::Source(&mut resolution)),
-        recovery::replay::Mode::InspectRetirement,
-        |d, h| validate(&root, profile, d, h),
-    )
-    .await?;
-    authority.refresh(owner, None, state).await?;
-    let source = authority.local(|_| resolution.finish().map_err(error))?;
-    authority
-        .operation(owner.inspect_closed_initial_source(
-            &source,
-            request(&root, &cancellation, &spec)?,
-            grant(&budget, 64 * 1024, 0)?,
-            |d, h| validate(&root, profile, d, h),
-        ))
+        authority.refresh(owner, None, state).await?;
+        let source = authority.local(|_| resolution.finish().map_err(error))?;
+        authority
+            .operation(owner.inspect_closed_initial_source(
+                &source,
+                request(&root, &cancellation, spec)?,
+                grant(&budget, 64 * 1024, 0)?,
+                |d, h| validate(&root, profile, d, h),
+            ))
+            .await?;
+        source::Source::initial(manifest, source)?
+    } else {
+        custody.history = Some(
+            authority
+                .operation(owner.inspect_successor_history(
+                    custody.native.as_ref().unwrap(),
+                    InitialHistoryRequest {
+                        ingest_root: Path::new(required(&root, "storage.ingest_root")?),
+                        policy_ttl: duration(&root, "authorization_ttl"),
+                        cancelled: &cancellation.requested,
+                    },
+                    lineage_metadata.take().unwrap(),
+                    |d, h| validate(&root, profile, d, h),
+                ))
+                .await?,
+        );
+        let history = custody.history.as_ref().unwrap();
+        if history.state() != SuccessorHistoryState::Terminal
+            || history.registered_epoch() != 2
+            || history.native_epoch() != 2
+        {
+            return Err(error(
+                "Index epoch2 requires terminal matching native/SQL history",
+            ));
+        }
+        let proof = source::replay(
+            &root,
+            &budget,
+            &cancellation,
+            &mut authority,
+            owner,
+            state,
+            custody.native.as_ref().unwrap(),
+            history,
+            profile,
+        )
         .await?;
+        source::Source::successor(manifest, proof)?
+    };
     let report = publication::run(
+        &root,
+        &cancellation,
+        custody.native.as_ref().unwrap(),
         &budget,
         &prepared_index,
         &mut authority,
         owner,
         state,
         &source,
-        manifest,
         profile,
     )
     .await?;
@@ -280,12 +343,16 @@ async fn own(
 }
 
 fn require_initial_manifest(manifest: &IngestManifest) -> Result<()> {
-    if manifest.key_schema() != 1
-        || manifest.identity().owner_epoch.get() != 1
-        || manifest.identity().topology_generation.get() != 0
-    {
+    if !matches!(
+        (
+            manifest.key_schema(),
+            manifest.identity().owner_epoch.get(),
+            manifest.identity().topology_generation.get()
+        ),
+        (1, 1, 0) | (2, 2, 1)
+    ) {
         return Err(error(
-            "requires the original topology0/schema1/epoch1 source",
+            "requires original topology0/schema1/epoch1 or retained topology1/schema2/epoch2 source",
         ));
     }
     Ok(())
