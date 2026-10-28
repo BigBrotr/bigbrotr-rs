@@ -669,7 +669,27 @@
           "not_run": "Source closure, Index catch-up/exact retry and post-recovery export",
           "cleanup": "Owned CH confirmed unpaused;16containers stopped/PID0/noOOM; client absent; borrowed bridge empty"
         }
-      ]
+      ],
+      "sync_safe_points": {
+        "source": "076750d50cb461c1d80f561ebd8f1912b504b380",
+        "integration": "4bfe98c1",
+        "status": "NATIVE_AND_FRESH_INSTALLED_BUILD_PASS_ENGINE_RECOVERY_PENDING",
+        "scope": "Renew/revalidate at completed-operation boundaries, retaining bounded signed inputs/grants; never extend started operation or retry unknown admission. Fresh authority before guarded REQ.",
+        "controls": "Build, test compilation, strict Clippy and actual167 native controls PASS (100 library+67 binary,25 groups; all156 prior controls retained); no selected ignored/failure. Root rehashed48 evidence files and verified all closed selections and actual summaries.",
+        "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "author_receipt": ".research/index-restart-acceptance-20261027/.research/sync-safe-points-r2-20261028/receipt.json",
+        "native_receipt": ".research/initial-index-recovery-qualification-20261028/r3-076750d5/receipt.json",
+        "native_receipt_sha256": "f8e5c7050f792f4837649da4d182153ad968ebd5f948cb0291c35866f05cb1cc",
+        "root_verification": ".research/initial-index-recovery-qualification-20261028/r3-076750d5/root-verification.json",
+        "installed_build": {
+          "receipt": ".research/initial-index-recovery-qualification-20261028/installed-076750d5/receipt.json",
+          "sha256": "94bc2a49af084a6e729ce02259c3267fb2d5ddc9fda4ac56f604d62eccdef422",
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5/candidate/candidate-manifest.json",
+          "candidate_sha256": "edf46bc0c3c13f70354416c65f82ee58769df9f4336913c26f71a6e6c8476c85",
+          "root_verification": ".research/initial-index-recovery-qualification-20261028/installed-076750d5/root-verification.json",
+          "scope": "Build, assembly and closed intake PASS; root exact2381-file Git/source comparison,9 evidence hashes, candidate/bundle hashes and terminal container verified. Installed engine/recovery NOT_RUN."
+        }
+      }
     },
     "ordinary_short_pin": {
       "status": "PASS actual installed expiry with continuing same-owner renewal; uncertainty variants remain NOT_RUN",
@@ -715,6 +735,22 @@
         "controls": "40 affected controls PASS on author source;9 pin controls PASS after integration; inherited21 proxy controls/review remain valid",
         "boundary": "First proxy gate is disposable PostgreSQL precheck; independently discover exact DuckLake waiter, then freeze PID/start and retain worker custody through original expiry."
       }
+    },
+    "pin_release_uncertainty": {
+      "status": "FIXTURE_BASELINE_FAIL_FAULT_CASES_NOT_RUN",
+      "source": "a241fc67d65f1bd659cdfce72aff94fd60c93944",
+      "integration": "7a6075a5",
+      "scope": "Before-forward versus after-complete actual reader-release COMMIT loss, independent native-join/custody/rawSQL verification",
+      "controls": "Author48 acceptance+23 proxy; root8 integrated release controls PASS; scoped source review completed, installed defect remains",
+      "before_r1": {
+        "evidence_root": ".research/first-launch-index-pin-release-before-r1-20261028",
+        "product_source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+        "acceptance_source": "7a6075a5",
+        "result": "FAIL original ordinary history/export unauthorized-history assertion; actual HTTP status/body not retained, exact wire cause UNKNOWN; fault stage NOT_RUN",
+        "root_receipt_sha256": "afb88ca145c4eb372dea5c83de5b2f50859f27ada3305d031afbd6cdbb5f026c",
+        "resources": "19 containers stopped/exit0/PID0/noOOM; owned processes joined by maintained cleanup; borrowed bridge empty; no fault proxy launched"
+      },
+      "next": "Repair independent ordinary probe quiescence and second-lifetime empty-cache expectation without changing original authorization/fault oracles, then run both cases after compiler releases resources."
     }
   }
 }

@@ -14,13 +14,19 @@ remains in development ancestry; no public history was rewritten. Only the new,
 clean, redundant CI integration worktree/ref was retired after publication.
 
 Canonical development: `work/short-pin-admission-wip-20261028`, source
-`40f7e36f` before this checkpoint. Product `7e04f12f`, verifier `bbf2f78e`
+`4bfe98c1` before this checkpoint. Product `7e04f12f`, verifier `bbf2f78e`
 (integrated as `f3dddeb4`), restart acceptance `cb3d8490` and waiter correction
 `45695bd2` (integrated as `6c2aea09`) and the declared restart dispatch profile
 `40796c20` (integrated as `40f7e36f`) are combined locally. Recovery remains
-**unqualified on installed engines and unpublished to main**. Relevant
-Cargo/app-source/worker/crates/tools bytes match native-qualified `7e04`.
-Original separate branches/worktrees and all failures remain retained.
+**unqualified on installed engines and unpublished to main**. The subsequent
+Sync repair `076750d5` is integrated as `4bfe98c1`; its changed product bytes
+require fresh qualification. Pin-release fault fixtures `a241fc67` are integrated
+as `7a6075a5`, with an actual baseline failure still under correction.
+Original separate branches/worktrees and all failures remain retained. Checkpoint
+`7eab4e7e` was pushed to the same development branch and its exact remote identity
+verified; `main` stayed `d0183003`. The incremental public-input scan found no new
+credential candidates or sensitive/raw-store artifacts. Receipt:
+`.research/ci-publication-20261026/source-resume-7eab4e7e-exposure/push.json`.
 
 - Product `7e04`: application build, test compilation, strict Clippy and **156
   native controls PASS** (100 library + 56 binary; all 147 prior names retained).
@@ -63,23 +69,32 @@ remains separately UNKNOWN. Evidence and original data:
 records actual terminal state. Source closure, Index catch-up/retry and
 post-recovery export remain **NOT_RUN**.
 
-The restart agent owns a bounded product scheduling correction in its existing
-isolated worktree, based on `40f7e36f`: safe points between completed operations
-must retain the same bounded input/grants and revalidate authority through the
-existing renewal path before new effects. An operation already started keeps its
-original deadline and fail-stop/unknown behavior. No timer increase, lucky fixture
-sleep or fresh-identity retry is authorized by this repair. Next: review the
-concrete change and refusal controls, then qualify changed native inputs and the
-installed restart path; reuse unchanged engine/build evidence where applicable.
+Sync repair `076750d5` now passes scoped independent source review, format,
+eight verifier controls, compilation, strict Clippy and **167 actual native
+controls** (100 library +67 binary,25 groups; all156 prior controls retained).
+Root verified retained evidence and every closed group summary. It renews/revalidates at completed-operation boundaries,
+retains the same bounded input/grants and obtains fresh authority before REQ.
+An operation already started keeps its fixed deadline and fail-stop/unknown
+behavior. Fresh build, candidate assembly/intake and independent root source/hash
+verification also **PASS**. Candidate:
+`/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5/candidate/candidate-manifest.json`.
+Next: integrate the bounded shared ordinary-startup fixture correction below,
+then run restart r3 on this candidate without a competing compiler.
 
 The second implementation agent owns `work/pin-release-uncertainty` in
 `.research/pin-release-uncertainty-20261028`, also based on `40f7e36f`. It extends
 the maintained exact UPDATE1/COMMIT proxy boundary with an opt-in observation hold
 and two focused installed variants, after the original signed export completes.
-Native absence/custody and selected pin/owner identity must be independently
-observed before faulting. Before-forward versus after-complete raw SQL states
-must differ while both product outcomes remain unknown/unavailable. Product
-unchanged; controls/review and actual installed execution still pending.
+Author controls (48 acceptance, 23 proxy), eight integrated release controls and
+scoped source review pass. Actual before-forward r1 **FAILS before the fault**:
+the original client expects unauthorized History HTTP403, but did not retain the
+actual response. Concurrent startup probing is a hypothesis, not an observed
+wire cause. A separate fixture defect is confirmed: a fresh second lifetime's
+empty operation cache cannot become Ready through status polling alone. The
+agent is correcting both setup assumptions while preserving the independent
+history/export, join/custody and raw SQL/MVCC fault predicates. Both COMMIT cases
+remain **NOT_RUN**. Original evidence:
+`.research/first-launch-index-pin-release-before-r1-20261028`.
 
 Short-pin r1/r2 admission failures, r3 wrong pin-purpose selection, r4 OID JSON
 representation and r5 wrong precheck/waiter attribution remain **FAIL**. r6 fixes
@@ -88,21 +103,30 @@ qualify COMMIT uncertainty or genuinely unknown native termination.
 
 ## Resources and agents
 
-No compiler, installed engine or proxy is running. Build session 62990 and
+Native qualification33095 is reaped0, launcher absent and container stopped/exit0/PID0/noOOM.
+Receipt: `.research/initial-index-recovery-qualification-20261028/r3-076750d5/receipt.json`.
+Fresh installed build **5361 is reaped0**, launcher PID46119 absent,
+container `f16af366d05644610917389fa1a1a7008f874fd0bd84943b426dafbaadf43313`.
+The container is stopped/exit0/PID0/noOOM; the optional compiler cache is released.
+Assembly37478 is reaped0 and complete intake passes. Run root:
+`/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5`, receipt root
+`.research/initial-index-recovery-qualification-20261028/installed-076750d5`.
+No compiler, installed engine or proxy is running. Prior build session 62990 and
 installed sessions 63726 (short-pin PASS), 19020 and 38818 (restart FAIL) are reaped.
 The installed build container is stopped/exit0/PID0/noOOM and optional compiler
-cache released. r6's 19 containers are stopped/exit0/PID0/noOOM; proxy, blocker,
+cache was released before the new qualification. r6's 19 containers are stopped/exit0/PID0/noOOM; proxy, blocker,
 app and worker are absent. Each restart attempt's 16 containers are stopped/PID0/noOOM;
 source exit4 reflects enclosing cancellation, other exits0; client absent. r1 never
 paused ClickHouse; r2 positively unpaused its owned engine during cleanup. The
-borrowed bridge was verified empty afterward.
+borrowed bridge was verified empty afterward. Pin-release r1 session58467 is
+reaped1; its19 containers are stopped/exit0/PID0/noOOM and the bridge is empty.
+No fault proxy had been launched before that failure.
 
 The waiter implementation is integrated locally; its source worktree is clean
-and retained. Two implementation agents own the bounded Sync and pin-release corrections
-described above. The CI
-agent owns read-only watcher session 80951 (driver PID4144536/start656306687,
-GitHub watcher PID4144553/start656306688), interval60s with a finite outer bound.
-It observes the existing remote run and does not dispatch another one. Preserve
+and retained. The Sync author's clean worktree is retained; the pin-release
+author owns its bounded fixture correction, shared with restart's ordinary baseline.
+The CI agent has completed native/build qualification. CI watcher80951 is reaped0, driver4144536 and watcher4144553
+are absent; no remote CI remains active. Preserve
 `.research`, worktrees, databases, original failures and both installed candidates.
 Current identities are in the [inventory](../research/laboratory-inventory.json).
 
@@ -127,18 +151,31 @@ selected milestones. Column-TTL negative is NOT_RUN. Originala99 initial Sync
 timeout remains UNKNOWN. Terminal readiness still says unqualified; M1 and the
 full goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.
 
+October28 owner observations are reconciled in Q40 and the existing task steps:
+admission cost P02-T02 Step8/P02-T09 Step5; repeated decoding/ClickHouse transport
+P02-T06 Step2/P02-T09 Step6; coordinator responsibilities P01-T05 Step5 and affected
+P02 persistence closures. Their criteria require relevant measurements and explicit
+ownership/maintenance review, without declaring incomplete work defective or
+adding a blanket M1 prerequisite. The operating guide retains proportionate Q40
+consolidation of obsolete compatibility and stable experimental tools.
+
 ## CI
 
 [Hosted run 40662294894](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40662294894)
-on exact `d0183003` remains **IN_PROGRESS** at the latest observation: scope PASS,
-ARM64 and macOS success at the latest 10:15Z metadata update, AMD64 still
-running; optional jobs SKIP. Terminal outcomes,
-source/context checks and public-output audit are pending with the CI agent.
+on exact `d0183003` is **SUCCESS: all30 selected checks PASS**, including Linux
+AMD64/ARM64 and macOS. Root independently verified exact source/context identities
+and all four artifact ZIP hashes; the public-output audit found no new credential
+candidates. Dedicated ignored native/fsync probes and platform-specific skips
+remain separately classified, not promoted to PASS. No new run was dispatched.
 Previous run 40415243196 retains 23 PASS / 1 FAIL / 6 NOT_RUN (export setup Busy).
 The integrated fixture correction preserves all 13 export test bodies and passes
-exact-source Linux tests, format and strict Clippy. Hosted confirmation is a
-separate open gate. [Hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
+exact-source Linux tests, format, strict Clippy and the real hosted platform runs.
+Early dependency policy now completes before expensive builds. A bounded reuse
+assessment identifies a conditional default-profile Clippy-to-test native reuse
+opportunity; actual duplicate native work/input equality and benefit remain
+unmeasured, so no reuse change is claimed. All platform/profile/clean-build
+coverage remains. [Hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
 
-Continue the bounded scheduling/pin-release increments and current hosted qualification. Merge
+Continue the bounded scheduling/pin-release increments. Merge
 and publish coherent qualified work; M1 and all later selected milestones remain
 open. No FAIL, NOT_RUN, SKIP or interrupted outcome becomes PASS.

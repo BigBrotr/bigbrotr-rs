@@ -535,6 +535,13 @@ One owner serializes exact identity decisions for each writable directory.
   bare existence used as a complete retained-effects proof.
 - [ ] **Step 8:** Report process crash separately from power loss/host failure; expose
   pending bytes, native write stalls, receipt latency and exact inventory growth.
+  With P02-T09 Step5, close the per-event admission-cost evaluation by measuring
+  PostgreSQL transactions/round trips, retained-input bytes/lifetime and actual
+  file/WAL/directory synchronizations for new, duplicate and provenance arrivals
+  under representative mixed load. Explain which costs preserve required recovery
+  and ACK guarantees; retain a measured adequate design or verify a justified
+  improvement with those same guarantees. A small successful admission is not a
+  throughput result.
 
 ## P02-T03 — Portable dictionaries and deduplicated source documents
 
@@ -1120,7 +1127,9 @@ separates the published prefix, retained pending plan and new backlog, with fres
 authority and unchanged historical origins. Build, strict Clippy and 156 scoped native controls pass on `7e04f12f`; its
 fresh installed candidate also passes assembly/intake verification. Installed
 restart reaches a complete live prefix but subsequent Sync admission scheduling
-fails before recovery. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+fails before recovery. The bounded Sync safe-point correction `076750d5` subsequently
+passes167 actual native controls, strict Clippy and a fresh installed build/intake;
+its installed recovery remains pending. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
 retains exact scope and original failures. Installed restart/fault qualification
 remains pending; no whole step closes from native or metadata-only controls.
 
@@ -1128,6 +1137,11 @@ remains pending; no whole step closes from native or metadata-only controls.
   source identities; replay cannot create new first-admission timestamps.
 - [ ] **Step 2:** Bound by rows and bytes (20,000 rows/16 MiB starting batch, one-second flush);
   separately reserve lookahead, probe arrays and driver staging before allocation.
+  Evaluate repeated decoding and the actual ClickHouse transport here and in
+  P02-T09 Step6: account for decode passes, copies/allocations, CPU/peak memory,
+  wire bytes and batch latency. Close with a justified current choice or measured
+  simplification, preserving typed fidelity, bounds, cancellation and ambiguous
+  insert/replay semantics. Reuse existing exact-row and recovery evidence where valid.
 - [ ] **Step 3:** Track zero/nonzero chunks for each required family. Disabled projections
   have explicit scope; absent required sinks cannot report success.
 - [ ] **Step 4:** Persist deterministic recovery units/receipts and document exactly which

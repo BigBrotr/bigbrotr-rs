@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-28",
+  "updated_at": "2026-10-28T11:02:18.734375+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Latest hosted run40415243196 terminalFAIL: AMD64 export fixture Busy; ARM64/macOS PASS. Keyring correction confirmed on all three. No queued/in-progress remote runs at pause.",
+    "status": "Latest hosted run40662294894 terminal SUCCESS on d018; exact source/context/results and scoped public-output audit complete. Dedicated ignored/unsupported controls remain excluded.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
-    "latest_hosted_source": "903dddb5f8fd585a86737db053cb1491a53d5584",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40662294894",
+    "latest_hosted_source": "d01830036f1567e62cc9bf9d32031a5c35d8466f",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73834,9 +73834,116 @@
     "run_40662294894": {
       "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40662294894",
       "revision": "d01830036f1567e62cc9bf9d32031a5c35d8466f",
-      "status": "IN_PROGRESS; all three foundation platforms active; scopePASS; optional jobsSKIP",
-      "local_watcher": "none; bounded queries only",
-      "not_proven": "Terminal selected results, exact-output contexts and public-output audit pending"
+      "status": "TERMINAL_SUCCESS_SELECTED_FOUNDATION",
+      "terminal_at": "2026-10-28T10:21:06Z",
+      "protected_root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure",
+      "retained_evidence": {
+        "receipt.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/receipt.json",
+          "sha256": "05950d242703a3640c1c53206926f1bcedb6ce785ad9146dfc1cd4d1579457b2"
+        },
+        "outcome.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/outcome.json",
+          "sha256": "d9fffca16dfa1420b585e2dd4e9a21a439c6279a764248244b4d78dc284cc9a9"
+        },
+        "post-build-contexts.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/post-build-contexts.json",
+          "sha256": "851637b8ef535ca17d008567c2f8e73442b7944284f5b7d501e37f057cc3546a"
+        },
+        "fixture-confirmation.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/fixture-confirmation.json",
+          "sha256": "d942990f8ea140adb87775edc4b224e21bada1b97e1870000eaa2d19b0444b59"
+        },
+        "ignored-classification.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/ignored-classification.json",
+          "sha256": "da5522ec7936cb0c2b5eadec0e2b575488b2c5bca918d84287ee7593ad621007"
+        },
+        "expected-source-manifest.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/expected-source-manifest.json",
+          "sha256": "5b5d7afaecbfeb1e5bc318803a239c24d80410708e22e21f28d9679aa20da73b"
+        },
+        "scan-result.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/scan-result.json",
+          "sha256": "51ee99d0661fd4c08e194cd32e66503c672e7ab447999923c2ab661e87a8d7f7"
+        },
+        "watch-terminal.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/watch-terminal.json",
+          "sha256": "76bcca256ed5fe818cf2d18eb72168b5b001a3e490e7a96613f385cda2b7242a"
+        },
+        "watch-session.json": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/watch-session.json",
+          "sha256": "1b2edd6d7aa9384041f67fbc3bf7738080d3a912346adb3c242c17bde0ec22ee"
+        }
+      },
+      "artifact_archives": [
+        {
+          "id": 12807986799,
+          "name": "foundation-ubuntu-24.04-arm",
+          "bytes": 616383,
+          "sha256": "612a718015fbd713949995cf0aea23f27e3e0e4697a2c31200dbb3cf129d4ce3",
+          "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/artifact-12807986799.zip"
+        },
+        {
+          "id": 12807574406,
+          "name": "foundation-ubuntu-24.04",
+          "bytes": 595017,
+          "sha256": "a7f7572426604153b51b478a0d6b43269419458308fc440a8a87b36d6f042132",
+          "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/artifact-12807574406.zip"
+        },
+        {
+          "id": 12806604364,
+          "name": "foundation-macos-15",
+          "bytes": 164355,
+          "sha256": "411257bf10a02649b190823ef077238bfb68e33a606c6f7009328eb63cf4b4ec",
+          "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/artifact-12806604364.zip"
+        },
+        {
+          "id": 12803683146,
+          "name": "ci-selection",
+          "bytes": 459,
+          "sha256": "464ea554b57ff8ddd6dffa48c1530b2ea22b3765e41c9be0a57d8c00cf68d135",
+          "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/artifact-12803683146.zip"
+        }
+      ],
+      "workflow_logs": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40662294894-exposure/attempt-1-logs.zip",
+        "sha256": "2fcc92d282b8bf84cfd14be438e8a2223b343d7ee9d8baac19bf9ceb0236a940"
+      },
+      "local_watcher": {
+        "run": 40662294894,
+        "revision": "d01830036f1567e62cc9bf9d32031a5c35d8466f",
+        "command": [
+          "gh",
+          "run",
+          "watch",
+          "40662294894",
+          "--repo",
+          "BigBrotr/bigbrotr-rs",
+          "--interval",
+          "60",
+          "--exit-status"
+        ],
+        "interval_seconds": 60,
+        "bound_seconds": 7200,
+        "watcher_pid": 4144553,
+        "watcher_start_ticks": "656306688",
+        "driver_pid": 4144536,
+        "driver_start_ticks": "656306687",
+        "observed_at": "2026-10-28T09:46:52.754323+00:00",
+        "status": "LOCAL_WATCH_REAPED",
+        "exit_code": 0,
+        "elapsed_seconds": 2097.682979580015
+      },
+      "local_session": {
+        "session_id": 80951,
+        "status": "REAPED",
+        "exit_code": 0,
+        "driver_absent": true,
+        "watcher_absent": true
+      },
+      "resource_status": "No compiler, installed engine, container or dataset created by this hosted reconciliation. Local watcher and acquisition sessions reaped; no remote run dispatched, retried or cancelled.",
+      "custody": "Protected ignored root mode0700; raw downloaded archives, audit captures and these proposal sidecars mode0600. Some derived metadata/helpers inherit mode0644 inside that private root. No matched values in public summaries; no repeat history scan.",
+      "retention": "Keep terminal source/context/fixture evidence, raw artifacts/logs, audit triage and original prior failures. No cleanup performed."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -75018,7 +75125,7 @@
           "status": "Source diagnosis complete; implementation authorized, no qualified change yet"
         }
       },
-      "processes": "No compiler or installed engine/proxy running; sessions62990/63726/19020/38818 reaped, optional cache released. Two isolated implementation agents own Sync scheduling and pin-release fixtures. CI watcher80951 observes40662294894; latest10:03Z metadata macOSsuccess, bothLinuxjobsinprogress; no hosted qualification until artifacts/source/output verified.",
+      "processes": "No compiler, installed engine, fault proxy or remote CI active. Native33095 and installed-build5361 reaped0; both launchers absent/containers stopped exit0/PID0/noOOM; exclusive115cache released. Assembly37478 reaped0. Pin-release-before58467 reaped1 before fault stage;19 owned containers stopped/exit0/PID0/noOOM, bridge empty. Only pin-release agent edits its isolated fixture source; root owns integration/documentation.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75136,7 +75243,47 @@
         "worktree": ".research/pin-release-uncertainty-20261028",
         "base": "40f7e36f",
         "scope": "Maintained before-forward/after-complete reader release COMMIT fault cases with actual UPDATE1 hold and independently observed native join/custody; original export completes in separate lifetime",
-        "status": "Implementation in progress; no engines/builds or product changes"
+        "status": "BASELINE_FAIL_FAULT_STAGE_NOT_RUN",
+        "source": "a241fc67",
+        "integration": "7a6075a5",
+        "root_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "evidence": ".research/first-launch-index-pin-release-before-r1-20261028",
+        "next": "Author corrects two setup assumptions; original data/logs retained; both COMMIT variants remain NOT_RUN."
+      },
+      "sync_safe_points": {
+        "worktree": ".research/index-restart-acceptance-20261027",
+        "branch": "work/index-restart-acceptance",
+        "source": "076750d50cb461c1d80f561ebd8f1912b504b380",
+        "integration": "4bfe98c1",
+        "status": "NATIVE167_AND_INSTALLED_CANDIDATE_PASS",
+        "receipt": ".research/index-restart-acceptance-20261027/.research/sync-safe-points-r2-20261028/receipt.json",
+        "session_id": 33095,
+        "launcher": {
+          "pid": 41535,
+          "start_ticks": "656695687"
+        },
+        "container": "405a2c13783ae49ff9995e18a1ac635a44552e7e2e74eb8350be9731279cef0c",
+        "owner": "73335f06b4644e91a7accba4b98be240",
+        "run_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-076750d5",
+        "qualification_root": ".research/initial-index-recovery-qualification-20261028/r3-076750d5",
+        "cache": "Released after both terminal qualifications",
+        "resources": "offline,2CPU,6GiB,512PIDs; ~166.8GB free before; exact2381-file source export",
+        "session_status": "33095 reaped0; native launcher absent, container stopped/exit0/PID0/noOOM and cache released before installed build",
+        "installed_build": {
+          "session_id": 5361,
+          "launcher_pid": 46119,
+          "launcher_start_ticks": "656718393",
+          "container": "f16af366d05644610917389fa1a1a7008f874fd0bd84943b426dafbaadf43313",
+          "owner": "5a4c991ed3c99eb5e72cf5800a2c7e9f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5",
+          "evidence": ".research/initial-index-recovery-qualification-20261028/installed-076750d5",
+          "status": "REAPED0_STOPPED_RETAINED_CACHE_RELEASED",
+          "cache": "exclusive115cache",
+          "engines": "none",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/installed-076750d5/receipt.json",
+          "receipt_sha256": "94bc2a49af084a6e729ce02259c3267fb2d5ddc9fda4ac56f604d62eccdef422",
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5/candidate/candidate-manifest.json"
+        }
       }
     }
   },

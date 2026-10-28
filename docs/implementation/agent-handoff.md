@@ -224,7 +224,10 @@ oracles; do not derive expected output by calling the implementation under test.
 6. Review the complete diff for correctness, complexity, ownership, allocations,
    I/O, observability, exposure and maintenance. Re-read the written contract
    against the implementation and actual output. Fix findings and rerun affected
-   checks; a passing test suite does not replace this review.
+   checks; a passing test suite does not replace this review. At task closure,
+   also reconcile obsolete compatibility and stable experimental tools under Q40;
+   keep responsibilities and maintenance obligations explicit, without expanding
+   the increment into a general rewrite.
 7. Commit a coherent outcome with evidence and documentation. Record what passed,
    what was not exercised and any remaining release gate. Mark only genuinely
    completed steps and refresh the progress checkpoint. Never mark the whole

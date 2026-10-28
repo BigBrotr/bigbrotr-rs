@@ -370,6 +370,16 @@ ownership clear; abstractions need real use. Measure relevant CPU/RAM/disk,
 concurrency, backpressure, cancellation, maintenance and recovery under the plan's
 workloads; partial benchmarks/source reading do not prove system performance.
 
+October28 clarification: per-event admission cost, repeated decoding/ClickHouse
+transport tradeoffs and concentrated coordinator responsibilities are evaluation
+items, not demonstrated defects or new prerequisites for all of M1. Their closure
+belongs to P02-T02 Step8/P02-T09 Step5, P02-T06 Step2/P02-T09 Step6 and P01-T05
+Step5 with the affected persistence tasks, respectively. Reuse valid evidence;
+record why an unchanged choice is adequate. Complete the relevant functionality
+and its ownership/maintenance review together. Apply this same Q40 consolidation
+to obsolete internal compatibility and stable tools under `experiments` when
+working on their owners; no general rewrite or parallel plan is requested.
+
 Retention is proportional: essential current evidence, open-defect reproducers,
 unique data, unintegrated work and safe continuation. Verify ownership, actual use,
 dependencies and regeneration before removing obsolete owned resources; a missing

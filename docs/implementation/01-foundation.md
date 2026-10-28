@@ -293,6 +293,12 @@ queues; process health differs from finite-job and protocol states.
   native work at a process boundary, not abandoned blocking tasks.
 - [ ] **Step 5:** Implement role startup/readiness/idle/degraded/drain semantics and finite
   job outcomes with typed reasons, monotonic durations and bounded counters.
+  When closing the affected P02-T02/T04/T06 coordinators, also review concentrated
+  ingestion/persistence responsibilities and duplicated state transitions. Closure
+  requires clear authority, resource and transaction owners, removal of obsolete
+  paths/needless duplication or a concrete reason to retain them, and unchanged
+  cancellation/restart/recovery proofs. File size alone is not a defect or a
+  reason to introduce another abstraction.
 - [ ] **Step 6:** Coalesce stuck dependency probes while retaining their permits. Stop
   intake and join owners before closing embedded/native handles.
 - [ ] **Step 7:** **Practical P01-T05:** saturate data work while querying health and issuing
@@ -507,8 +513,11 @@ and queryable with truthful role readiness, without implicit public publishing.
   Product `8256184c` with acceptance `e644e218` now qualifies ordinary complete-current
   readiness, exact retained-input failure, narrow-read non-revival and restoration,
   preserving the original signed export. The same report's `live_readiness.ordinary`
-  records 147 native controls and all eight installed stages. Real short-pin expiry and
-  uncertain release, remaining clean-install negatives and recovery stay open.
+  records 147 native controls and all eight installed stages. The same unchanged
+  product with acceptance `6c2aea09` now also qualifies actual short-pin expiry
+  under continuing owner renewal (r6, eight stages PASS), including joined native
+  release and unchanged science/export. Uncertain release, remaining clean-install
+  negatives and recovery stay open; their failed attempts remain in that report.
   Complete adjacent Discovery/Monitor is not a prerequisite.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
