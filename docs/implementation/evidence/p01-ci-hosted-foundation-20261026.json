@@ -818,5 +818,40 @@
       "sha256": "ccce5192a37d8114b57d6f49454dba1f34f4e6ca8c40bcc78f2d382c58faa09f"
     },
     "qualification_limit": "Local Linux release-profile target only; actual macOS/default-profile confirmation remains required in the next coherent hosted run. No product bundle/engine run. Original8cf failure preserved."
+  },
+  "subsequent_hosted_attempt": {
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40697249452",
+    "revision": "0e8ba18145daeee2b34799ccde020d062170005e",
+    "status": "CANCELLED after superseding push; original macOS fixture ERROR preserved",
+    "selected_checks": {
+      "PASS": 14,
+      "INTERRUPTED_BY_PROVIDER_CANCELLATION": 2,
+      "NOT_RUN": 13,
+      "FAIL": 1
+    },
+    "platforms": {
+      "amd64": "6PASS, Clippy interrupted by provider cancellation,7NOT_RUN;179 Python controls PASS; no Rust cases executed.",
+      "arm": "6PASS including Clippy/rustdoc, Rust test compilation interrupted by provider cancellation,2NOT_RUN;179 Python controls PASS; no Rust cases executed.",
+      "macos": "2PASS/1FAIL/4NOT_RUN;179 Python controls collected,173PASS/1ERROR/5SKIP; no product build or Rust cases executed."
+    },
+    "failure": "test_actual_flock_is_busy_until_its_owned_holder_releases_it passed an aliased temporary path to strict input_identity; fixture setup error, not product failure.",
+    "early_controls": "Actual macOS acceptance failure in94.885 recorded command seconds, after11.791 seconds of toolchain/format and before all4 expensive checks. Earlier failure visibility observed; no faster-green claim.",
+    "source_context": "All2389 exact Git files and provider ZIP identities verified. Both Linux build/source receipts bind exact0e8; macOS build/source manifest absent. Interrupted commands have verified initial contexts but no post-command re-verification.",
+    "public_output_audit": "4 artifact ZIPs/25 members plus38 workflow-log members;0 candidates and0 provider alerts. Pattern/provider limits remain; no scan-completion claim.",
+    "receipt": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40697249452-exposure/receipt.json",
+      "sha256": "2f8627eb7887443e400f56b787e9780c21dcc1c9089663c43c8d80f25818d722"
+    },
+    "outcome": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40697249452-exposure/terminal-actual-accounting.json",
+      "sha256": "449c2f3fc9883c4f40010b3dc9ed2df5d59b22a34b1436978e7a9abe56b33ca4"
+    },
+    "fixture_correction": {
+      "revision": "e6feb00ef0c4f0f5741734de91b18b6debe937f0",
+      "scope": "Resolve only temporary fixture parent; strict alias rejection and all flock/inode assertions unchanged. Explicit symlink-temp reproduction retains original1ERROR; same-input9 controls PASS after correction.",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40697249452-exposure/custody-alias-fix-receipt.json",
+      "sha256": "ed995df9cb02d6a43254a31837b6edb623bfa56f5369166d6389495bd2fe1d71"
+    },
+    "remaining": "All167 native reference controls, keyring10 and export13 cases NOT_RUN in this attempt; ignored/dedicated tracks not observed. Successor40702272536 on5b671699 is separately IN_PROGRESS, with no terminal qualification claimed."
   }
 }
