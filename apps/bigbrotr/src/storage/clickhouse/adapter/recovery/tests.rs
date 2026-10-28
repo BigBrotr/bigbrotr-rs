@@ -92,6 +92,7 @@ fn state(last: &RetainedIndexPlan, pending: Option<&RetainedIndexPlan>) -> Index
     IndexRecoveryState {
         published_revision: last.publication.as_ref().unwrap().revision,
         published_plan: Some(last.plan.digest()),
+        published_handoff: None,
         pending_plan: pending.map(|v| v.plan.digest()),
     }
 }
@@ -220,6 +221,7 @@ fn empty_generation_has_only_the_exact_optional_first_pending_plan() {
     let captured = IndexRecoveryState {
         published_revision: 0,
         published_plan: None,
+        published_handoff: None,
         pending_plan: Some(pending.plan.digest()),
     };
     assert_eq!(
@@ -241,6 +243,7 @@ fn recovery_observation_has_literal_nullable_field_encoding() {
     let mut state = IndexRecoveryState {
         published_revision: 7,
         published_plan: Some(Digest256::from_bytes([70; 32])),
+        published_handoff: None,
         pending_plan: Some(Digest256::from_bytes([71; 32])),
     };
     assert_eq!(
@@ -254,4 +257,149 @@ fn recovery_observation_has_literal_nullable_field_encoding() {
             .to_string(),
         "e03e6cc7ac907db7c11542087d1720e0490a9aa413c8bea9d05f4d7e59bdee46"
     );
+    state.published_revision = 5;
+    state.published_plan = None;
+    state.published_handoff = Some(Digest256::from_bytes([70; 32]));
+    state.pending_plan = Some(Digest256::from_bytes([71; 32]));
+    assert_eq!(
+        Digest256::from_bytes(history_start(binding(), owner(), state).finalize().into())
+            .to_string(),
+        "6003f68cbf5c37a60dc9fa3b7f5dfbe5613f6f7caed682f3f01b18e5d19f8fb2"
+    );
+}
+
+#[test]
+fn explicit_bridge_replay_requires_prior_physical_cut_and_exact_historical_publisher() {
+    use crate::storage::postgres::IndexHandoff;
+    let before = SourceCut::new(
+        binding().dataset(),
+        TopologyGeneration::new(0),
+        cut(4).bounds().to_vec(),
+    )
+    .unwrap();
+    let handoff = IndexHandoff::new(
+        binding(),
+        4,
+        [90; 16].try_into().unwrap(),
+        Digest256::from_bytes([91; 32]),
+        before.clone(),
+    )
+    .unwrap();
+    let receipt = IndexHandoffReceipt {
+        handoff,
+        publisher: owner(),
+        committed_at_us: 123,
+        created: false,
+    };
+    let state = IndexRecoveryState {
+        published_revision: 5,
+        published_plan: None,
+        published_handoff: Some(receipt.handoff.digest()),
+        pending_plan: None,
+    };
+    assert!(validate_handoff(&binding(), owner(), state, 4, Some(&before), &receipt).is_ok());
+    let later = IndexRecoveryState {
+        published_revision: 8,
+        published_plan: Some(Digest256::from_bytes([92; 32])),
+        published_handoff: None,
+        pending_plan: Some(Digest256::from_bytes([93; 32])),
+    };
+    assert!(validate_handoff(&binding(), owner(), later, 4, Some(&before), &receipt).is_ok());
+    let mut bounds = receipt.handoff.after().bounds().to_vec();
+    bounds[1].last_complete_sequence = CompleteThrough::new(1);
+    let after = SourceCut::new(binding().dataset(), TopologyGeneration::new(1), bounds).unwrap();
+    let batch = AdmissionBatch::new(vec![FactRef {
+        source_record_id: SourceRecordId {
+            dataset_id: binding().dataset(),
+            shard_id: 0,
+            owner_epoch: OwnerEpoch::new(2).unwrap(),
+            sequence: Sequence::new(1).unwrap(),
+        },
+        payload_digest: Digest256::from_bytes([97; 32]),
+    }])
+    .unwrap();
+    let pending = RetainedIndexPlan {
+        plan: IndexPlan::new(
+            binding(),
+            5,
+            receipt.handoff.after().clone(),
+            after,
+            batch,
+            retained(0, 1, true).plan.chunks().clone(),
+        )
+        .unwrap(),
+        publication: None,
+    };
+    let pending_state = IndexRecoveryState {
+        pending_plan: Some(pending.plan.digest()),
+        ..state
+    };
+    assert!(
+        validate_step(
+            &binding(),
+            owner(),
+            pending_state,
+            5,
+            false,
+            Some(receipt.handoff.after()),
+            &pending
+        )
+        .is_ok()
+    );
+    assert!(
+        validate_step(
+            &binding(),
+            owner(),
+            pending_state,
+            5,
+            false,
+            Some(&before),
+            &pending
+        )
+        .is_err()
+    );
+    for changed in [
+        IndexRecoveryState {
+            published_handoff: Some(Digest256::from_bytes([94; 32])),
+            ..state
+        },
+        IndexRecoveryState {
+            published_revision: 4,
+            ..state
+        },
+    ] {
+        assert!(
+            validate_handoff(&binding(), owner(), changed, 4, Some(&before), &receipt).is_err()
+        );
+    }
+    assert!(validate_handoff(&binding(), owner(), state, 4, None, &receipt).is_err());
+    assert!(
+        validate_handoff(
+            &binding(),
+            owner(),
+            state,
+            4,
+            Some(receipt.handoff.after()),
+            &receipt
+        )
+        .is_err()
+    );
+    for publisher in [
+        IndexOwnerIdentity {
+            epoch: OwnerEpoch::new(3).unwrap(),
+            ..owner()
+        },
+        IndexOwnerIdentity {
+            incarnation: [95; 16].try_into().unwrap(),
+            ..owner()
+        },
+        IndexOwnerIdentity {
+            resource: [96; 16].try_into().unwrap(),
+            ..owner()
+        },
+    ] {
+        let mut changed = receipt.clone();
+        changed.publisher = publisher;
+        assert!(validate_handoff(&binding(), owner(), state, 4, Some(&before), &changed).is_err());
+    }
 }

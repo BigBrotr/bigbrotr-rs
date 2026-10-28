@@ -259,6 +259,69 @@ protected lab. Physical CH proof, lost-COMMIT and resource-capacity qualificatio
 remain separate. `index_publication_races.py --role bigbrotr_control` can also run
 its two deadline cases on the unconsumed application fixture.
 
+The finite epoch2 Index journey can opt into `run_handoff_clone(runtime, output,
+phase=...)` from this same module. The hook creates the new protected output
+directory and one disposable database in the already owned PostgreSQL container;
+it creates no engine, network, native store or ClickHouse connection. The default
+runtime and standalone migration command keep their existing behavior. The
+installed owner loads the module before recording source hashes and additionally
+binds `experiments/control-migrations/index_handoff_cases.sql` in its source
+inventory. It calls the helper twice:
+
+```python
+run_handoff_clone(runtime, output / 'index-handoff-nonterminal', phase='nonterminal')
+# After the existing successor retirement and Archive catch-up, before Index:
+run_handoff_clone(runtime, output / 'index-handoff-terminal', phase='terminal')
+```
+
+The first hook follows actual `abandon-successor` and precedes
+`retire-successor`; the second uses the genuine terminal pre-bridge state. Both
+require the current consolidated0041 checksum, all82 Control tables, the
+provenance-on signed journey's source cuts12/10, four fully published epoch1
+Index batches and no Index handoff. A completed lifecycle is never rewound to
+manufacture the negative seed. Historical076 databases are incompatible inputs
+and remain untouched. The original database must have positively absent backends
+before `CREATE DATABASE ... TEMPLATE bigbrotr_control`; fixed clone names
+`bb_index_handoff_nonterminal` and `bb_index_handoff_terminal` must be absent.
+The helper records the exact owned PG identity, database OID/owner, all seed
+rows/xmins before and after, clone rows and actual Session PID/backend-start.
+Copies must initially equal their seed exactly. They remain inventoried in the
+installed owner's resource record and are retained with its normal PG cleanup.
+
+The SQL fixture uses the original terminal/source/Index metadata and a real fresh
+backend-bound Control claim. Its new Index transfer records are explicitly SQL
+fixtures, not native exclusion or CH capabilities. Three nonterminal assertions
+include direct rejection by the new handoff guard. The23 terminal assertions
+cover exact bridge publication and preserved old attestation, missing/changed
+cut and receipt, stale owner/head, atomic head publication, both insertion
+orders of a competing plan intent, immutable handoff receipts and exact typed
+head capture/replay after another SQL session transfer. Competing intents are
+deliberately unsealed and rolled back; they are not claimed as valid native
+batches. Fake batch overlap and missing attestation are labelled as earlier
+batch/bound guards, separately from direct handoff guard refusals. Every negative
+case checks all82 rows and xmins unchanged, with its specific SQLSTATE and guard
+message or constraint. The positive bridge commits before read-head/retry checks.
+The seed assertion also checks the runtime role's effective EXECUTE privilege on
+the invoker handoff validator, without ownership, grant option, PUBLIC access or
+trigger-function EXECUTE. This is ACL coverage; the migrator-run fixture does not
+prove invocation by the application role. The installed catch-up remains that gate.
+
+Each seed database is capped at64MiB; the two copies add at most128MiB within the
+existing PG resource envelope. The SQL script is capped at64KiB, row captures at
+4MiB, and the existing Session protocol output at64KiB. One30s whole-script
+deadline,10s statement timeout and2s lock timeout apply. Exact backend cleanup
+and seed preservation run on failure too; a secondary cleanup failure does not
+erase the original case failure. A create whose result is unknown is inventoried
+and retained, never silently recreated. `PASS_SQL_ONLY` qualifies these SQL
+invariants only. Native proof, actual product publication and COMMIT uncertainty
+remain separate installed gates. Until executed, this extension is NOT_RUN.
+
+The focused verifier controls can run without engines:
+
+```sh
+python3 -B -m unittest discover -s experiments/control-migrations -p test_index_handoff.py -v
+```
+
 The [2026-10-26 SQL diagnostic](../../docs/implementation/evidence/p02-initial-index-sql-20261026.json)
 passed the 31-case fixture under both roles, minimal runtime privileges, both
 observed source-close lock orders and both post-wait expiries on PostgreSQL16.15.

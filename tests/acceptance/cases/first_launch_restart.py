@@ -382,7 +382,7 @@ def publication(state, census, science, *, revision, snapshot, topology, cuts):
     assert len(attempts) == len(science['batches'])
     assert len({row['attempt_id'] for row in attempts}) == len(attempts)
     dataset = only(state['datasets'])['dataset_id']
-    consumer = only(state['consumers'])
+    consumer = only(state['consumers'], consumer_role='archive')
     assert consumer['current_revision'] == revision and consumer['current_topology_generation'] == topology
     receipts = []
     for n, (attempt, batch) in enumerate(zip(attempts, science['batches']), 1):
@@ -399,7 +399,8 @@ def publication(state, census, science, *, revision, snapshot, topology, cuts):
     assert frontier['snapshot_id'] == snapshot and frontier['topology_generation'] == topology
     assert [frontier[k] for k in COUNTS] == [len(rows) for rows in science['tables'].values()]
     assert frontier['request_digest'] == '\\x' + cut_digest(dataset, topology, receipts, cuts, snapshot)
-    bounds = sorted([r for r in state['consumer_frontiers'] if r['frontier_revision'] == revision], key=lambda r: r['owner_epoch'])
+    bounds = sorted([r for r in state['consumer_frontiers'] if r['consumer_id']==consumer['consumer_id']
+                     and r['frontier_revision']==revision], key=lambda r: r['owner_epoch'])
     assert [(r['owner_epoch'], r['last_complete_sequence']) for r in bounds] == cuts
     assert all(r['shard_id'] == 0 and r['topology_generation'] == topology for r in bounds)
     assert {r['attempt_id'] for r in state['archive_frontier_batches'] if r['frontier_revision'] == revision} == {r['attempt_id'] for r in attempts}
@@ -446,12 +447,15 @@ def bridge(state, initial_receipts, *, provenance=True):
     selected = profile(provenance)
     cuts = [(1, selected['initial_cut']), (2, 0)]
     dataset = only(state['datasets'])['dataset_id']
-    assert sorted(r['frontier_revision'] for r in state['consumer_frontier_revisions']) == list(range(1, 7))
+    consumer = only(state['consumers'], consumer_role='archive')['consumer_id']
+    assert sorted(r['frontier_revision'] for r in state['consumer_frontier_revisions']
+                  if r['consumer_id']==consumer) == list(range(1, 7))
     row = only(state['archive_frontier_snapshots'], frontier_revision=5)
     assert row['topology_generation'] == 1 and row['snapshot_id'] == selected['snapshot']
     assert [row[key] for key in COUNTS] == selected['initial_counts']
     assert row['request_digest'] == '\\x' + cut_digest(dataset, 1, initial_receipts, cuts, selected['snapshot'])
-    bounds = sorted([r for r in state['consumer_frontiers'] if r['frontier_revision'] == 5], key=lambda r: r['owner_epoch'])
+    bounds = sorted([r for r in state['consumer_frontiers'] if r['consumer_id']==consumer
+                     and r['frontier_revision']==5], key=lambda r: r['owner_epoch'])
     assert [(r['owner_epoch'], r['last_complete_sequence']) for r in bounds] == cuts
     assert bounds[1]['attestation_kind'] is None and bounds[1]['attestation_digest'] is None
     assert {r['attempt_id'][2:].upper() for r in state['archive_frontier_batches'] if r['frontier_revision'] == 5} == {r['attempt_id'] for r in initial_receipts}
@@ -461,7 +465,7 @@ def catch_up_report(report, state, *, retry, provenance=True):
     selected = profile(provenance)
     frontier = only(state['archive_frontier_snapshots'], frontier_revision=6)
     expected = dict(format='bigbrotr-archive-catch-up/1', dataset_id=only(state['datasets'])['dataset_id'][2:],
-        catalog_id=only(state['consumers'])['consumer_id'][2:], terminal_epoch=2,
+        catalog_id=only(state['consumers'],consumer_role='archive')['consumer_id'][2:], terminal_epoch=2,
         issued_attempts_before=4 + selected['successor_requests'] if retry else 4,
         new_attempts=0 if retry else selected['successor_requests'],
         frontier_revision=6, snapshot_id=selected['snapshot'], operation_id=list(raw(frontier['operation_id'])),
@@ -489,7 +493,7 @@ def retry_unchanged(before, after):
         assert before[table] == after[table], 'exact catch-up retry mutated ' + table
 
 
-def history_unchanged(before, after, *, provenance=True):
+def history_unchanged(before, after, *, provenance=True, startup=None):
     selected = profile(provenance)
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets', 'local_accounts',
         'management_audit', 'snapshot_leases', 'archive_snapshot_pins', 'retention_claims'}
@@ -502,7 +506,24 @@ def history_unchanged(before, after, *, provenance=True):
     owner, = new_owners
     assert owner['role'] == 'control' and owner['state'] == 'released' and owner['released_at_us'] is not None
     assert all(row['revoked_at_us'] is not None for row in after['browser_sessions'])
+    startup_ids = set()
+    if startup is not None:
+        # The caller has positively verified these startup probes before letting
+        # the client issue either history request. Preserve their exact MVCC rows;
+        # they cannot absorb an unexpected extra history reader after the gate.
+        active = only(startup['owner_epochs'],role='control',state='active')
+        assert all(owner[k]==active[k] for k in ('resource_id','epoch','dataset_id','role_instance_id','process_incarnation','acquired_at_us'))
+        startup_ids = {r['lease_id'] for r in startup['archive_snapshot_pins'] if r not in before['archive_snapshot_pins']}
+        assert 1 <= len(startup_ids) <= 2
+        for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+            assert all(r in after[table] for r in startup[table]), 'startup reader changed after quiescence: '+table
+        for key in startup_ids:
+            lease = only(startup['snapshot_leases'],lease_id=key)
+            pin = only(startup['archive_snapshot_pins'],lease_id=key)
+            assert lease['state']=='released' and lease['lease_revision']==2 and lease['release_reason']=='reader_joined'
+            assert pin['purpose']=='reader' and pin['frontier_revision']==6 and pin['issuer_epoch']==owner['epoch']
     pins = [row for row in after['archive_snapshot_pins'] if row not in before['archive_snapshot_pins']]
+    pins = [row for row in pins if row['lease_id'] not in startup_ids]
     assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == 6 for row in pins)
     for pin in pins:
         frontier = only(after['archive_frontier_snapshots'], consumer_id=pin['consumer_id'],

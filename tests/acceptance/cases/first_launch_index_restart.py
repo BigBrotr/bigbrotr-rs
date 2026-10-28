@@ -237,7 +237,7 @@ class RestartIndexRuntime(IndexRuntime):
         require(self.files(self.state/'data/archive')==self.archive_files,'Index recovery changed Archive files')
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.input_files,'Index recovery changed original inputs')
         index.exact(self.custody(),self.custody_before)
-        save(output/(name+'-preservation.json'),dict(control_tables=81,archive_catalog='unchanged',archive_files='unchanged',
+        save(output/(name+'-preservation.json'),dict(control_tables=82,archive_catalog='unchanged',archive_files='unchanged',
             input_bytes='unchanged',index_custody='unchanged'))
 
     def index_catch_up(self):
@@ -269,7 +269,7 @@ class RestartIndexRuntime(IndexRuntime):
         index.exact(self.census(self.restart_output,'retry'),self.baseline_census)
         result.update(format='bigbrotr-installed-index-restart/1',live_observation=False,
             readiness='positive_prefix_before_pause',restart='same_store_backlog_and_exact_retry',
-            origin_epochs=[1,1,1,2],publisher_epochs=[1,1,2,2],owner_epochs=[1,2,3],control_tables=81,
+            origin_epochs=[1,1,1,2],publisher_epochs=[1,1,2,2],owner_epochs=[1,2,3],control_tables=82,
             remote_uncertainty_resolution='NOT_RUN',lost_commit='NOT_RUN',native_termination='NOT_RUN')
         save(self.restart_output/'verdict.json',result); self.inputs['index']=result
         self.source_unchanged()

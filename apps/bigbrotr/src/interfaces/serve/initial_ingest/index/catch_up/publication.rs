@@ -1,5 +1,8 @@
+use super::source::Source;
 use super::*;
-use bigbrotr::storage::postgres::{IndexBinding, IndexOwnerIdentity, RetainedIndexPlan};
+use bigbrotr::storage::postgres::{
+    IndexBinding, IndexHandoff, IndexHandoffReceipt, IndexOwnerIdentity, RetainedIndexRevision,
+};
 
 /// SQL publication state only. The verifier's pending-inclusive cut never
 /// enters this cursor; advance requires an actual publication receipt.
@@ -10,17 +13,38 @@ pub(super) struct Published {
 impl Published {
     pub(super) fn captured(
         binding: &IndexBinding,
-        identity: ManifestIdentity,
         state: IndexRecoveryState,
-        head: Option<&RetainedIndexPlan>,
-        through: u64,
+        head: Option<&RetainedIndexRevision>,
+        complete: &SourceCut,
     ) -> Result<Self> {
-        let value = match (state.published_revision, state.published_plan, head) {
-            (0, None, None) => Self {
+        if !state.valid_head() {
+            return Err(error("invalid typed head"));
+        }
+        let first = complete
+            .bounds()
+            .first()
+            .ok_or_else(|| error("complete source inventory missing"))?;
+        let value = match (
+            state.published_revision,
+            state.published_plan,
+            state.published_handoff,
+            head,
+        ) {
+            (0, None, None, None) => Self {
                 revision: 0,
-                cut: zero_cut(identity)?,
+                cut: SourceCut::new(
+                    binding.dataset(),
+                    bigbrotr_model::TopologyGeneration::new(0),
+                    vec![StreamBound {
+                        stream: first.stream,
+                        last_complete_sequence: CompleteThrough::new(0),
+                    }],
+                )
+                .map_err(error)?,
             },
-            (revision, Some(digest), Some(head)) if revision > 0 => {
+            (revision, Some(digest), None, Some(RetainedIndexRevision::Batch(head)))
+                if revision > 0 =>
+            {
                 let receipt = head
                     .publication
                     .as_ref()
@@ -40,17 +64,27 @@ impl Published {
                     cut: receipt.cut.clone(),
                 }
             }
+            (revision, None, Some(digest), Some(RetainedIndexRevision::Handoff(receipt)))
+                if revision > 0 =>
+            {
+                let h = &receipt.handoff;
+                if h.binding() != binding
+                    || h.digest() != digest
+                    || h.expected_revision().checked_add(1) != Some(revision)
+                {
+                    return Err(error("published handoff head identity differs"));
+                }
+                Self {
+                    revision,
+                    cut: h.after().clone(),
+                }
+            }
             _ => return Err(error("published head missing or inconsistent")),
         };
-        value.require_within(identity, through)?;
-        Ok(value)
-    }
-    fn require_within(&self, identity: ManifestIdentity, through: u64) -> Result<()> {
-        let next = next_source(identity, &self.cut)?;
-        if next.sequence.get() - 1 > through {
+        if !source::within(&value.cut, complete) {
             return Err(error("publication exceeds closed source"));
         }
-        Ok(())
+        Ok(value)
     }
     pub(super) fn accept(
         &mut self,
@@ -76,20 +110,44 @@ impl Published {
         self.cut = receipt.cut;
         Ok(())
     }
+    pub(super) fn accept_handoff(
+        &mut self,
+        binding: &IndexBinding,
+        publisher: IndexOwnerIdentity,
+        expected: &IndexHandoff,
+        receipt: IndexHandoffReceipt,
+    ) -> Result<()> {
+        if receipt.handoff != *expected
+            || expected.binding() != binding
+            || expected.expected_revision() != self.revision
+            || expected.before() != &self.cut
+            || receipt.publisher != publisher
+            || !receipt.created
+        {
+            return Err(error("new handoff receipt differs"));
+        }
+        self.revision = self
+            .revision
+            .checked_add(1)
+            .ok_or_else(|| error("revision exhausted"))?;
+        self.cut = expected.after().clone();
+        Ok(())
+    }
 }
 
 #[allow(clippy::too_many_arguments)]
 pub(super) async fn run(
+    root: &Resolved,
+    cancel: &Cancellation,
+    native: &IngestRecovery,
     budget: &ResourceBudget,
     prepared: &PreparedIndex,
     authority: &mut Authority<'_>,
     owner: &mut ControlSession,
     state: &IndexState,
-    source: &ResolvedSource<'_>,
-    manifest: IngestManifest,
+    source: &Source<'_>,
     profile: Profile,
 ) -> Result<Value> {
-    let identity = *manifest.identity();
     let physical = profile.physical()?;
     let adapter = IndexAdapter::new(
         Arc::new(state.tables().clone()),
@@ -107,36 +165,67 @@ pub(super) async fn run(
         ))
         .await?;
     let captured = verifier.captured_state();
-    if captured.published_revision > source.resolved_requests()
-        || (captured.pending_plan.is_some()
-            && captured.published_revision >= source.resolved_requests())
-    {
+    if !history_bound(
+        source.requests(),
+        captured.published_revision,
+        captured.pending_plan.is_some(),
+        source.epoch() == 2,
+    ) {
         return Err(error(
             "plan history exceeds the finite original request prefix",
         ));
     }
     let previous = verifier.captured_owner();
-    let head = match captured.published_plan {
-        Some(digest) => {
+    let head = match captured.published_revision {
+        revision if revision > 0 => {
             authority
-                .operation(owner.read_index_plan(state.binding(), digest))
+                .operation(owner.read_index_revision(state.binding(), revision))
                 .await?
         }
-        None => None,
+        _ => None,
     };
-    let mut published = Published::captured(
-        state.binding(),
-        identity,
-        captured,
-        head.as_ref(),
-        source.last_complete_sequence(),
-    )?;
+    let mut published =
+        Published::captured(state.binding(), captured, head.as_ref(), source.complete())?;
     drop(head);
+    let bridge = if source.epoch() == 2 && published.cut.topology_generation().get() == 0 {
+        if captured.pending_plan.is_some() {
+            return Err(error(
+                "old pending plan must be published before initial handoff",
+            ));
+        }
+        Some(source.handoff(*state.binding(), published.revision, &published.cut)?)
+    } else {
+        None
+    };
+    let mut batch_count = 0_u64;
+    let mut handoff_revision = None;
     // Published history is verify-only. Missing/corrupt accepted rows refuse;
     // this finite path does not silently repair a damaged published generation.
     for _ in 0..captured.published_revision {
         authority.refresh(owner, None, state).await?;
-        authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+        authority.local(|cancel| source.validate(cancel))?;
+        if let Some(receipt) = authority
+            .operation(verifier.advance_handoff(owner, state.custody()))
+            .await?
+        {
+            if handoff_revision.is_some()
+                || source.handoff(
+                    *state.binding(),
+                    receipt.handoff.expected_revision(),
+                    receipt.handoff.before(),
+                )? != receipt.handoff
+            {
+                return Err(error(
+                    "retained topology bridge differs from native source history",
+                ));
+            }
+            handoff_revision = Some(receipt.handoff.expected_revision() + 1);
+            continue;
+        }
+        batch_count += 1;
+        if batch_count > source.requests() {
+            return Err(error("batch history exceeds request census"));
+        }
         let (local, engine, id, deadline) =
             dispatch(budget, prepared, physical, owner, &mut operation_number)?;
         let operation = authority
@@ -153,9 +242,20 @@ pub(super) async fn run(
         }
         drop(reservation);
     }
+    if source.epoch() == 2
+        && published.cut.topology_generation().get() == 1
+        && handoff_revision.is_none()
+    {
+        return Err(error(
+            "topology1 publication history has no explicit bridge",
+        ));
+    }
     // Retain just one immutable pending metadata value, charged by the fixed
     // owner allowance. Native bytes/planner grants are reacquired as necessary.
     let pending = if let Some(digest) = captured.pending_plan {
+        if batch_count >= source.requests() {
+            return Err(error("pending batch exceeds request census"));
+        }
         authority.refresh(owner, None, state).await?;
         let retained = authority
             .operation(owner.read_index_plan(state.binding(), digest))
@@ -173,7 +273,6 @@ pub(super) async fn run(
             authority,
             state,
             source,
-            identity,
             profile,
             published.revision,
             &published.cut,
@@ -209,7 +308,7 @@ pub(super) async fn run(
         None
     };
     authority.refresh(owner, None, state).await?;
-    authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+    authority.local(|cancel| source.validate(cancel))?;
     let (local, engine, id, deadline) =
         dispatch(budget, prepared, physical, owner, &mut operation_number)?;
     let operation = authority
@@ -223,7 +322,7 @@ pub(super) async fn run(
         _ => return Err(error("complete recovery proof unavailable")),
     };
     authority.refresh(owner, None, state).await?;
-    authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+    authority.local(|cancel| source.validate(cancel))?;
     let session = authority
         .operation(owner.recover_index(
             state.binding(),
@@ -232,6 +331,34 @@ pub(super) async fn run(
             &Cell::new(false),
         ))
         .await?;
+    let published_handoff = bridge.is_some();
+    if let Some(bridge) = bridge {
+        authority.refresh(owner, Some(&session), state).await?;
+        authority.local(|cancel| source.validate(cancel))?;
+        let receipt = authority
+            .operation(
+                owner.publish_index_handoff(
+                    &session,
+                    state.custody(),
+                    &bridge,
+                    recovered.proof(),
+                    source
+                        .successor_proof()
+                        .ok_or_else(|| error("source history missing"))?,
+                    native,
+                    InitialHistoryRequest {
+                        ingest_root: Path::new(required(root, "storage.ingest_root")?),
+                        policy_ttl: duration(root, "authorization_ttl"),
+                        cancelled: &cancel.requested,
+                    },
+                    &Cell::new(false),
+                    |d, h| validate(root, profile, d, h),
+                ),
+            )
+            .await?;
+        published.accept_handoff(session.binding(), session.owner(), &bridge, receipt)?;
+        handoff_revision = Some(published.revision);
+    }
     // Rebinding itself preserves the published cursor. A verified pending cut
     // remains pending until its own positive PostgreSQL publication COMMIT.
     if let Some(pending) = &pending {
@@ -241,7 +368,6 @@ pub(super) async fn run(
             authority,
             state,
             source,
-            identity,
             profile,
             published.revision,
             &published.cut,
@@ -261,7 +387,7 @@ pub(super) async fn run(
         let proof = recovered
             .pending()
             .ok_or_else(|| error("pending physical proof missing"))?;
-        authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+        authority.local(|cancel| source.validate(cancel))?;
         let receipt = authority
             .operation(owner.publish_index_plan(
                 &session,
@@ -272,13 +398,22 @@ pub(super) async fn run(
             ))
             .await?;
         published.accept(session.binding(), session.owner(), pending, receipt)?;
+        batch_count += 1;
     } else if recovered.pending().is_some() {
         return Err(error("unexpected pending physical proof"));
     }
     drop(joined);
     let mut new_batches = 0_u64;
-    while published.cut.bounds()[0].last_complete_sequence.get() < source.last_complete_sequence() {
-        if published.revision >= source.resolved_requests() {
+    while published
+        .cut
+        .bounds()
+        .last()
+        .unwrap()
+        .last_complete_sequence
+        .get()
+        < source.through()
+    {
+        if batch_count >= source.requests() {
             return Err(error("source batch census exceeded"));
         }
         authority.refresh(owner, Some(&session), state).await?;
@@ -287,7 +422,6 @@ pub(super) async fn run(
             authority,
             state,
             source,
-            identity,
             profile,
             published.revision,
             &published.cut,
@@ -301,7 +435,7 @@ pub(super) async fn run(
                 &Cell::new(false),
             ))
             .await?;
-        authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+        authority.local(|cancel| source.validate(cancel))?;
         let (local, engine, id, deadline) =
             dispatch(budget, prepared, physical, owner, &mut operation_number)?;
         let operation = adapter
@@ -323,7 +457,7 @@ pub(super) async fn run(
             _ => return Err(error("new batch proof missing")),
         };
         authority.refresh(owner, Some(&session), state).await?;
-        authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+        authority.local(|cancel| source.validate(cancel))?;
         let receipt = authority
             .operation(owner.publish_index_plan(
                 &session,
@@ -340,9 +474,10 @@ pub(super) async fn run(
             receipt,
         )?;
         new_batches += 1;
+        batch_count += 1;
     }
     authority.refresh(owner, Some(&session), state).await?;
-    authority.local(|cancel| source.validate_initial(cancel).map_err(error))?;
+    authority.local(|cancel| source.validate(cancel))?;
     let (current_owner, current) = authority
         .operation(owner.read_index_recovery_state(state.binding()))
         .await?;
@@ -352,29 +487,21 @@ pub(super) async fn run(
     {
         return Err(error("final PostgreSQL head changed"));
     }
-    let head = match current.published_plan {
-        Some(digest) => {
+    let head = match current.published_revision {
+        revision if revision > 0 => {
             authority
-                .operation(owner.read_index_plan(state.binding(), digest))
+                .operation(owner.read_index_revision(state.binding(), revision))
                 .await?
         }
-        None => None,
+        _ => None,
     };
-    let final_prefix = Published::captured(
-        state.binding(),
-        identity,
-        current,
-        head.as_ref(),
-        source.last_complete_sequence(),
-    )?;
-    if final_prefix.cut != published.cut
-        || final_prefix.cut.bounds()[0].last_complete_sequence.get()
-            != source.last_complete_sequence()
-    {
+    let final_prefix =
+        Published::captured(state.binding(), current, head.as_ref(), source.complete())?;
+    if final_prefix.cut != published.cut || &final_prefix.cut != source.complete() {
         return Err(error("final publication does not cover the closed source"));
     }
     Ok(json!({
-        "format":"bigbrotr-initial-index-catch-up/1", "state":"complete",
+        "format":"bigbrotr-initial-index-catch-up/2", "state":"complete",
         "dataset_id":state.binding().dataset().to_string(),
         "generation_id":state.binding().generation().to_string(),
         "storage_incarnation":state.binding().storage_incarnation().to_string(),
@@ -382,12 +509,21 @@ pub(super) async fn run(
         "previous_owner_epoch":previous.epoch.get(), "owner_epoch":session.owner().epoch.get(),
         "published_revision_before":captured.published_revision,
         "published_revision_after":published.revision,
-        "source_through":source.last_complete_sequence(),
-        "published_through":published.cut.bounds()[0].last_complete_sequence.get(),
+        "source_epoch":source.epoch(), "source_through":source.through(),
+        "published_through":published.cut.bounds().last().unwrap().last_complete_sequence.get(),
+        "source_cut":cut_json(source.complete()), "published_cut":cut_json(&published.cut),
+        "index_handoff_revision":handoff_revision, "published_handoff":published_handoff,
         "recovered_pending":pending.is_some(), "new_batches":new_batches,
         "ready":false, "acknowledgement":"not-performed", "ingest_retirement":"not-performed",
-        "topology_transition":"not-performed"
+        "topology_transition":if source.epoch() == 1 { "not-performed" } else { "existing-ingest-handoff-verified" }
     }))
+}
+
+pub(super) fn history_bound(requests: u64, published: u64, pending: bool, successor: bool) -> bool {
+    requests <= 64
+        && published
+            .checked_add(u64::from(pending))
+            .is_some_and(|revisions| revisions <= requests + u64::from(successor))
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -395,25 +531,22 @@ fn planned(
     budget: &ResourceBudget,
     authority: &mut Authority<'_>,
     state: &IndexState,
-    source: &ResolvedSource<'_>,
-    identity: ManifestIdentity,
+    source: &Source<'_>,
     profile: Profile,
     revision: u64,
     before: &SourceCut,
 ) -> Result<PlannedBatch> {
     authority.local(|cancel| {
-        let pending = source
-            .read_complete_pending_batch(
-                next_source(identity, before)?,
-                profile.source(),
-                grant(
-                    budget,
-                    profile.source().required_data_bytes().map_err(error)?,
-                    0,
-                )?,
-                cancel,
-            )
-            .map_err(error)?;
+        let pending = source.read(
+            before,
+            profile.source(),
+            grant(
+                budget,
+                profile.source().required_data_bytes().map_err(error)?,
+                0,
+            )?,
+            cancel,
+        )?;
         let planned = plan::plan_batch(
             *state.binding(),
             revision,
@@ -431,6 +564,12 @@ fn planned(
         check_plan_bounds(&planned, profile)?;
         Ok(planned)
     })
+}
+
+fn cut_json(cut: &SourceCut) -> Value {
+    json!({"topology_generation":cut.topology_generation().get(), "bounds":cut.bounds().iter().map(|bound|
+        json!({"shard_id":bound.stream.shard_id,"owner_epoch":bound.stream.owner_epoch.get(),
+            "last_complete_sequence":bound.last_complete_sequence.get()})).collect::<Vec<_>>()})
 }
 
 fn dispatch(

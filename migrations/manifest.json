@@ -241,5 +241,5 @@
       "name": "0804_artifact_publication.sql"
     }
   ],
-  "rule": "Append in implementation order; never reorder or change published SQL. Numeric reservations do not impose phase barriers."
+  "rule": "Apply in implementation order. Before the first production release, Q40 permits reviewed consolidation of the current schema with fresh initialization and explicit incompatible-deployment refusal; retained historical datasets and evidence are not rewritten. Released schema changes require an explicit migration. Numeric reservations do not impose phase barriers."
 }

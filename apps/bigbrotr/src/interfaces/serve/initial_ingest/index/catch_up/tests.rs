@@ -2,6 +2,7 @@ use super::*;
 use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits};
 use bigbrotr::storage::postgres::{
     IndexBinding, IndexChunk, IndexOwnerIdentity, IndexTarget, RetainedIndexPlan,
+    RetainedIndexRevision,
 };
 use bigbrotr_model::{
     AdmissionBatch, Digest256, FactRef, PolicyEpoch, RecoveryGenerationId, TopologyGeneration,
@@ -120,11 +121,16 @@ fn recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog() {
     let state = IndexRecoveryState {
         published_revision: 1,
         published_plan: Some(head.plan.digest()),
+        published_handoff: None,
         pending_plan: Some(pending.digest()),
     };
-    let cursor =
-        publication::Published::captured(&binding(), *manifest().identity(), state, Some(&head), 6)
-            .unwrap();
+    let cursor = publication::Published::captured(
+        &binding(),
+        state,
+        Some(&RetainedIndexRevision::Batch(head.clone())),
+        &cut(6),
+    )
+    .unwrap();
     assert_eq!(cursor.revision, 1);
     assert_eq!(cursor.cut, cut(2));
     assert_ne!(cursor.cut, *pending.after());
@@ -132,11 +138,10 @@ fn recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog() {
     let empty = IndexRecoveryState {
         published_revision: 0,
         published_plan: None,
+        published_handoff: None,
         pending_plan: Some(head.plan.digest()),
     };
-    let cursor =
-        publication::Published::captured(&binding(), *manifest().identity(), empty, None, 6)
-            .unwrap();
+    let cursor = publication::Published::captured(&binding(), empty, None, &cut(6)).unwrap();
     assert_eq!(
         (
             cursor.revision,
@@ -152,10 +157,16 @@ fn recovery_published_cursor_refuses_missing_changed_and_foreign_heads() {
     let state = IndexRecoveryState {
         published_revision: 1,
         published_plan: Some(head.plan.digest()),
+        published_handoff: None,
         pending_plan: None,
     };
     let inspect = |head: Option<&RetainedIndexPlan>, through| {
-        publication::Published::captured(&binding(), *manifest().identity(), state, head, through)
+        publication::Published::captured(
+            &binding(),
+            state,
+            head.cloned().map(RetainedIndexRevision::Batch).as_ref(),
+            &cut(through),
+        )
     };
     assert!(inspect(None, 2).is_err());
     assert!(inspect(Some(&head), 1).is_err());
@@ -171,9 +182,132 @@ fn recovery_published_cursor_refuses_missing_changed_and_foreign_heads() {
     changed = head.clone();
     changed.plan = plan(3, 1);
     assert!(inspect(Some(&changed), 4).is_err());
-    let mut identity = *manifest().identity();
-    identity.shard_id = 1;
-    assert!(publication::Published::captured(&binding(), identity, state, Some(&head), 2).is_err());
+    let foreign = SourceCut::new(
+        binding().dataset(),
+        TopologyGeneration::new(0),
+        vec![StreamBound {
+            stream: StreamId {
+                shard_id: 1,
+                owner_epoch: OwnerEpoch::new(1).unwrap(),
+            },
+            last_complete_sequence: CompleteThrough::new(2),
+        }],
+    )
+    .unwrap();
+    assert!(
+        publication::Published::captured(
+            &binding(),
+            state,
+            Some(&RetainedIndexRevision::Batch(head)),
+            &foreign
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn explicit_handoff_head_retains_old_cut_and_zero_successor_without_a_batch() {
+    use bigbrotr::storage::postgres::{IndexHandoff, IndexHandoffReceipt};
+    let handoff = IndexHandoff::new(
+        binding(),
+        1,
+        [2; 16].try_into().unwrap(),
+        Digest256::from_bytes([21; 32]),
+        cut(2),
+    )
+    .unwrap();
+    let publisher = published().publication.unwrap().publisher;
+    let receipt = IndexHandoffReceipt {
+        handoff: handoff.clone(),
+        publisher,
+        committed_at_us: 19,
+        created: false,
+    };
+    let state = IndexRecoveryState {
+        published_revision: 2,
+        published_plan: None,
+        published_handoff: Some(handoff.digest()),
+        pending_plan: None,
+    };
+    let head = RetainedIndexRevision::Handoff(receipt.clone());
+    let captured =
+        publication::Published::captured(&binding(), state, Some(&head), handoff.after()).unwrap();
+    assert_eq!(captured.revision, 2);
+    assert_eq!(&captured.cut, handoff.after());
+    assert_eq!(captured.cut.bounds()[0], cut(2).bounds()[0]);
+    assert_eq!(captured.cut.bounds()[1].last_complete_sequence.get(), 0);
+    assert!(publication::Published::captured(&binding(), state, None, handoff.after()).is_err());
+    let wrong = IndexRecoveryState {
+        published_handoff: Some(Digest256::from_bytes([22; 32])),
+        ..state
+    };
+    assert!(
+        publication::Published::captured(&binding(), wrong, Some(&head), handoff.after()).is_err()
+    );
+    let mut cursor = publication::Published {
+        revision: 1,
+        cut: cut(2),
+    };
+    assert!(
+        cursor
+            .accept_handoff(&binding(), publisher, &handoff, receipt.clone())
+            .is_err()
+    );
+    assert_eq!(cursor.revision, 1); // Historical metadata is not a new COMMIT.
+    let mut committed = receipt;
+    committed.created = true;
+    cursor
+        .accept_handoff(&binding(), publisher, &handoff, committed)
+        .unwrap();
+    assert_eq!(cursor.revision, 2);
+}
+
+#[test]
+fn finite_history_counts_global_requests_and_one_separate_bridge() {
+    assert!(publication::history_bound(64, 64, false, false));
+    assert!(!publication::history_bound(64, 65, false, false));
+    assert!(publication::history_bound(64, 65, false, true));
+    assert!(publication::history_bound(64, 64, true, true));
+    assert!(!publication::history_bound(64, 65, true, true));
+    assert!(!publication::history_bound(65, 65, false, true));
+    assert!(!publication::history_bound(64, u64::MAX, true, true));
+}
+
+#[test]
+fn complete_successor_vector_cannot_erase_or_advance_closed_predecessor() {
+    let complete = SourceCut::new(
+        binding().dataset(),
+        TopologyGeneration::new(1),
+        vec![
+            cut(2).bounds()[0],
+            StreamBound {
+                stream: StreamId {
+                    shard_id: 0,
+                    owner_epoch: OwnerEpoch::new(2).unwrap(),
+                },
+                last_complete_sequence: CompleteThrough::new(3),
+            },
+        ],
+    )
+    .unwrap();
+    assert!(source::within(&cut(2), &complete));
+    assert!(source::within(&complete, &complete));
+    for old in [1, 3] {
+        let changed = SourceCut::new(
+            binding().dataset(),
+            TopologyGeneration::new(1),
+            vec![cut(old).bounds()[0], complete.bounds()[1]],
+        )
+        .unwrap();
+        assert!(!source::within(&changed, &complete));
+    }
+    let missing = SourceCut::new(
+        binding().dataset(),
+        TopologyGeneration::new(1),
+        vec![complete.bounds()[1]],
+    )
+    .unwrap();
+    assert!(!source::within(&missing, &complete));
 }
 
 #[test]
@@ -238,13 +372,28 @@ fn recovery_cursor_advances_only_for_the_exact_new_publication_receipt() {
 }
 
 #[test]
-fn finite_recovery_requires_initial_topology_and_never_selects_a_successor_writer() {
+fn finite_recovery_accepts_only_original_or_exact_initial_successor_metadata() {
     let original = manifest();
     require_initial_manifest(&original).unwrap();
     let mut identity = *original.identity();
     identity.topology_generation = TopologyGeneration::new(1);
     assert!(
         require_initial_manifest(&IngestManifest::new(
+            identity,
+            *original.allocation_namespaces()
+        ))
+        .is_err()
+    );
+    identity.topology_generation = TopologyGeneration::new(1);
+    identity.owner_epoch = OwnerEpoch::new(2).unwrap();
+    require_initial_manifest(&IngestManifest::for_successor(
+        identity,
+        *original.allocation_namespaces(),
+    ))
+    .unwrap();
+    identity.owner_epoch = OwnerEpoch::new(3).unwrap();
+    assert!(
+        require_initial_manifest(&IngestManifest::for_successor(
             identity,
             *original.allocation_namespaces()
         ))

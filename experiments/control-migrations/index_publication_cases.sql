@@ -34,7 +34,7 @@ BEGIN
     FOREACH relation IN ARRAY ARRAY['datasets','role_instances','owner_epochs','topology_generations',
         'topology_streams','source_streams','consumers','consumer_frontier_revisions','consumer_frontiers',
         'projection_generations','projection_chunks','projection_chunk_bounds','index_owner_sessions',
-        'projection_plans','projection_plan_chunks','index_frontier_plans'] LOOP
+        'projection_plans','projection_plan_chunks','index_frontier_plans','index_frontier_handoffs'] LOOP
         EXECUTE format('SELECT coalesce(jsonb_agg(v ORDER BY v::text COLLATE "C"),''[]''::jsonb)
             FROM(SELECT to_jsonb(t) v FROM control.%I t)s',relation) INTO rows;
         result:=result||jsonb_build_object(relation,rows);

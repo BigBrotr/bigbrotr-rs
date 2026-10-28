@@ -53,7 +53,7 @@ def metadata_fixture(root):
     session = dict(dataset_id=prefix+ds,resource_id=prefix+resource,generation_id=prefix+generation,owner_epoch=1,
         owner_role='index',owner_incarnation=prefix+incarnation,issuer_role='control',issuer_resource=control['resource_id'],
         issuer_epoch=9,issuer_incarnation=prefix+incarnation,previous_epoch=None,recovery_digest=None,
-        recovered_plan=None,recovered_pending_plan=None,recovered_revision=0)
+        recovered_plan=None,recovered_handoff=None,recovered_pending_plan=None,recovered_revision=0)
     state = {name:[] for name in (*check.INDEX_TABLES,'consumers','consumer_frontiers','consumer_frontier_revisions')}
     state.update(datasets=[dict(dataset_id=prefix+ds)],owner_epochs=[control,own],
         role_instances=[dict(role_instance_id=own['role_instance_id'],role='index',dataset_id=prefix+ds,retired_at_us=None)],

@@ -9,8 +9,9 @@ use crate::{
         clickhouse::verified::{VerifiedIndexPlan, VerifiedIndexRecovery},
         indexer::{custody::HeldIndexCustody, plan::PlannedBatch},
         postgres::{
-            IndexBinding, IndexOwnerIdentity, IndexRecoveryState, MAX_INDEX_STREAMS,
-            RetainedIndexPlan, control_owner::ControlSession,
+            IndexBinding, IndexHandoffReceipt, IndexOwnerIdentity, IndexRecoveryState,
+            MAX_INDEX_STREAMS, RetainedIndexPlan, RetainedIndexRevision,
+            control_owner::ControlSession,
         },
     },
 };
@@ -18,11 +19,11 @@ use bigbrotr_model::{Digest256, SourceCut, StreamBound};
 use sha2::{Digest, Sha256};
 use std::{fs::File, mem::size_of, sync::Arc, time::Instant};
 
-/// One retained PG plan, one in-flight plan copy, prior cut, receipt/hash state
+/// One retained PG revision, one in-flight copy, prior cut, receipt/hash state
 /// and bounded PG decoding scratch. It does not reserve the complete history.
 pub fn required_recovery_metadata_bytes() -> u64 {
     (6 * MAX_INDEX_STREAMS * size_of::<StreamBound>()
-        + 2 * size_of::<RetainedIndexPlan>()
+        + 2 * size_of::<RetainedIndexRevision>()
         + size_of::<IndexRecoveryVerifier>()
         + 64 * 1024) as u64
 }
@@ -80,9 +81,7 @@ impl IndexRecoveryVerifier {
             .read_index_recovery_state(&binding)
             .await
             .map_err(|_| PhysicalError::Control)?;
-        if previous.resource != binding.resource()
-            || (state.published_revision == 0) != state.published_plan.is_none()
-        {
+        if previous.resource != binding.resource() || !state.valid_head() {
             return Err(PhysicalError::Sequence);
         }
         let history = history_start(binding, previous, state);
@@ -124,6 +123,61 @@ impl IndexRecoveryVerifier {
         self.active.as_ref().map(|row| &row.plan)
     }
 
+    /// Consume one explicit PG topology bridge only after the complete prior
+    /// physical cut has been verified. There is no new CH batch or engine proof.
+    /// The reader rechecks exact immutable terminal source/topology metadata;
+    /// finite source replay and current publication authority remain separate.
+    pub async fn advance_handoff(
+        &mut self,
+        control: &mut ControlSession,
+        custody: &HeldIndexCustody,
+    ) -> Result<Option<IndexHandoffReceipt>, PhysicalError> {
+        if custody.binding() != &self.binding {
+            return Err(PhysicalError::Custody);
+        }
+        custody.check_live().map_err(|_| PhysicalError::Custody)?;
+        if self.active.is_some() || self.completed_published == self.state.published_revision {
+            return Ok(None);
+        }
+        let revision = self
+            .completed_published
+            .checked_add(1)
+            .ok_or(PhysicalError::Limit)?;
+        match control
+            .read_index_revision(&self.binding, revision)
+            .await
+            .map_err(|_| PhysicalError::Control)?
+            .ok_or(PhysicalError::Sequence)?
+        {
+            RetainedIndexRevision::Batch(plan) => {
+                self.active = Some(plan);
+                Ok(None)
+            }
+            RetainedIndexRevision::Handoff(receipt) => {
+                validate_handoff(
+                    &self.binding,
+                    self.previous,
+                    self.state,
+                    self.completed_published,
+                    self.cut.as_ref(),
+                    &receipt,
+                )?;
+                self.history.update([2]);
+                self.history
+                    .update(receipt.handoff.expected_revision().to_be_bytes());
+                self.history.update(receipt.handoff.digest().as_bytes());
+                self.history
+                    .update(receipt.publisher.epoch.get().to_be_bytes());
+                self.history
+                    .update(receipt.publisher.incarnation.as_bytes());
+                self.history.update(receipt.committed_at_us.to_be_bytes());
+                self.cut = Some(receipt.handoff.after().clone());
+                self.completed_published = revision;
+                Ok(Some(receipt))
+            }
+        }
+    }
+
     /// A failed known-local attempt may call next again for the same active plan.
     /// The engine slot refuses another attempt while remote uncertainty persists.
     /// Optional retained input replays exact immutable values before readback;
@@ -145,14 +199,13 @@ impl IndexRecoveryVerifier {
         custody.check_live().map_err(|_| PhysicalError::Custody)?;
         if self.active.is_none() {
             if self.completed_published < self.state.published_revision {
-                let mut page = control
-                    .read_index_plans(&self.binding, self.completed_published, 1)
+                let retained = control
+                    .read_index_revision(&self.binding, self.completed_published + 1)
                     .await
                     .map_err(|_| PhysicalError::Control)?;
-                if page.len() != 1 {
+                let Some(RetainedIndexRevision::Batch(retained)) = retained else {
                     return Err(PhysicalError::Sequence);
-                }
-                let retained = page.pop().ok_or(PhysicalError::Sequence)?;
+                };
                 self.active = Some(retained);
             } else if !self.pending_complete {
                 let digest = self.state.pending_plan.ok_or(PhysicalError::Sequence)?;
@@ -343,7 +396,38 @@ fn history_start(
             history.update(digest.as_bytes());
         }
     }
+    // Existing batch-only recovery bytes remain exact. A bridge head is an
+    // independently typed identity; an earlier bridge is bound by its step2.
+    if let Some(digest) = state.published_handoff {
+        history.update([2]);
+        history.update(digest.as_bytes());
+    }
     history
+}
+
+fn validate_handoff(
+    binding: &IndexBinding,
+    previous: IndexOwnerIdentity,
+    state: IndexRecoveryState,
+    completed: u64,
+    cut: Option<&SourceCut>,
+    receipt: &IndexHandoffReceipt,
+) -> Result<(), PhysicalError> {
+    let h = &receipt.handoff;
+    let revision = completed.checked_add(1).ok_or(PhysicalError::Limit)?;
+    if h.binding() != binding
+        || completed >= state.published_revision
+        || h.expected_revision() != completed
+        || cut != Some(h.before())
+        || receipt.publisher.resource != previous.resource
+        || receipt.publisher.epoch > previous.epoch
+        || (receipt.publisher.epoch == previous.epoch && receipt.publisher != previous)
+        || (revision == state.published_revision
+            && (state.published_handoff != Some(h.digest()) || state.published_plan.is_some()))
+    {
+        return Err(PhysicalError::Sequence);
+    }
+    Ok(())
 }
 
 // Structural admission for the next actual PG row. The capture owner above is

@@ -157,6 +157,8 @@ def check_clickhouse(info, entry, runtime):
 
 
 class IndexRuntime(Runtime):
+    inject_content_conflict = True
+
     def preflight(self):
         super().preflight()
         if not re.fullmatch('/[a-zA-Z0-9/_.-]+', str(self.root)):
@@ -401,6 +403,8 @@ class IndexRuntime(Runtime):
         save(output/'role-verdict.json', dict(status='PASS', observations=len(observations),
             source_through=12, archive_revision=4, index_revision=4,
             session_idle='unchanged', negative_readiness='NOT_RUN', ordinary_readiness='NOT_RUN'))
+        if not self.inject_content_conflict:
+            return
 
         # Retain the successful baseline before the fault, even if any following
         # step fails. Exact duplicates are harmless to DISTINCT readback, so add
@@ -451,8 +455,9 @@ class IndexRuntime(Runtime):
         result = oracle.publication(self.index_live, after, self.index_rows, science, self.schema, self.state/'data/index')
         # publication() still checks the original typed bytes against the signed
         # source. Its positive census precedes the separately retained fault.
-        result.update(physical_rows_scope='before_intentional_content_conflict',
-            readiness='positive_then_physical_invalidation', physical_fault='retained')
+        result.update(physical_rows_scope='before_intentional_content_conflict' if self.inject_content_conflict else 'complete_initial_publication',
+            readiness='positive_then_physical_invalidation' if self.inject_content_conflict else 'positive_initial_publication',
+            physical_fault='retained' if self.inject_content_conflict else 'NOT_RUN')
         final = [json.loads(line) for line in (self.root/'initial/serve.stdout').read_text().splitlines()][-1]
         require(final['index']['published_revision'] == '4'
                 and final['index']['complete_through'] == [dict(shard_id=0, owner_epoch='1', sequence='12')]

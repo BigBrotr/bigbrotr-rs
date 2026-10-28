@@ -23,7 +23,7 @@ PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (4, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 1, 1, 1, 1, 1, 1, 0, 1, 1))
 INDEX_TABLES = ('projection_generations', 'index_owner_sessions', 'projection_plans',
-                'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans')
+                'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans', 'index_frontier_handoffs')
 
 
 def exact(actual, expected):
@@ -156,8 +156,38 @@ def ordinary_selection(state):
     return attempts
 
 
-def ordinary_roles(value, state, clock_before, clock_after, phase=None):
-    ordinary_selection(state)
+def startup_selection(state, successor=None):
+    """Only the existing initial and finite epoch2 Archive fixture selections."""
+    if successor is None:
+        ordinary_selection(state)
+        return 4, [(1,12)]
+    assert type(successor) is bool
+    from cases.first_launch_restart import profile
+    selected = profile(successor)
+    dataset = only(state['datasets'])['dataset_id']
+    consumer = only(state['consumers'],consumer_role='archive')
+    catalog = consumer['consumer_id']
+    exact([consumer['dataset_id'],consumer['current_revision'],consumer['current_topology_generation']], [dataset,6,1])
+    snapshot = only(state['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=6)
+    exact([snapshot[k] for k in ('dataset_id','catalog_id','topology_generation','snapshot_id',
+          'dictionary_count','payload_count','eligibility_count','receive_count','provenance_count')],
+          [dataset,catalog,1,selected['snapshot'],*selected['counts']])
+    cuts = [(1,selected['initial_cut']),(2,selected['successor_cut'])]
+    bounds = sorted((r for r in state['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==6),key=lambda r:r['owner_epoch'])
+    exact([[r[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','last_complete_sequence')] for r in bounds],
+          [[dataset,1,0,epoch,cut] for epoch,cut in cuts])
+    members = [r for r in state['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==6]
+    count = 4+selected['successor_requests']
+    assert len(members)==len({r['attempt_id'] for r in members})==count
+    attempts = sorted((only(state['archive_attempts'],attempt_id=r['attempt_id']) for r in members),key=lambda r:r['ordinal'])
+    exact([r['ordinal'] for r in attempts],list(range(1,count+1)))
+    assert all(r['dataset_id']==dataset and r['catalog_id']==catalog for r in attempts)
+    return 6,cuts
+
+
+def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None):
+    assert successor is None or phase == 'setup'
+    startup_selection(state,successor)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     assert control['dataset_id'] == dataset['dataset_id']
@@ -203,13 +233,15 @@ def ordinary_roles(value, state, clock_before, clock_after, phase=None):
             assert phase is None
 
 
-def startup_reader_pending(before, after):
+def startup_reader_pending(before, after, *, successor=None):
     """Only absent or active new reader observations may wait for completion."""
     new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
     assert len(new) <= 2, 'startup reader observation bound'
+    assert successor is None or type(successor) is bool
+    claim_count = 1 if successor is None else 2
     for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
         exact([r for r in after[table] if r['lease_id'] not in new],before[table])
-        assert len([r for r in after[table] if r['lease_id'] in new]) == len(new), 'incomplete startup reader observation'
+        assert len([r for r in after[table] if r['lease_id'] in new]) == len(new)*(claim_count if table=='retention_claims' else 1), 'incomplete startup reader observation'
     if not new:
         return True
     owner = only(after['owner_epochs'],role='control',state='active')
@@ -217,23 +249,27 @@ def startup_reader_pending(before, after):
     for key in new:
         lease = only(after['snapshot_leases'],lease_id=key)
         pin = only(after['archive_snapshot_pins'],lease_id=key)
-        claim = only(after['retention_claims'],lease_id=key)
-        assert lease['state'] in ('active','released') and claim['state'] == lease['state'], 'inconsistent startup reader state'
+        claims = [r for r in after['retention_claims'] if r['lease_id']==key]
+        assert len(claims)==claim_count
+        assert lease['state'] in ('active','released') and all(claim['state']==lease['state'] for claim in claims), 'inconsistent startup reader state'
         if lease['state'] == 'active':
             exact([lease[k] for k in ('lease_revision','archive_pin_protocol','holder_kind','holder_role_instance_id','holder_role','holder_incarnation','released_at_us','release_reason')],
                   [1,1,'role_instance',owner['role_instance_id'],'control',owner['process_incarnation'],None,None])
             exact([pin[k] for k in ('purpose','issuer_resource','issuer_epoch','issuer_incarnation')],
                   ['reader',owner['resource_id'],owner['epoch'],owner['process_incarnation']])
-            exact([claim[k] for k in ('purpose','released_at_us','release_reason')],['reader',None,None])
+            for claim in claims:
+                exact([claim[k] for k in ('purpose','released_at_us','release_reason')],['reader',None,None])
             pending = True
     return pending
 
 
-def ordinary_startup(before, after, roles, clock_before, clock_after, worker):
+def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None):
     """Fresh operation caches remain empty after an actually completed full probe."""
     def require(condition, message):
         assert condition, message
-    ordinary_roles(roles,after,clock_before,clock_after,'setup')
+    revision,cuts = startup_selection(after,successor)
+    topology = 0 if successor is None else 1
+    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor)
     catalog = only(after['consumers'],consumer_role='archive')['consumer_id']
     require(worker is None, 'startup native child remains')
     reader_ids = {row['lease_id'] for row in after['archive_snapshot_pins'] if row['purpose'] == 'reader'}
@@ -248,28 +284,29 @@ def ordinary_startup(before, after, roles, clock_before, clock_after, worker):
     new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
     require(1 <= len(new) <= 2, 'bounded completed startup probes')
     for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
-        require(len([r for r in after[table] if r['lease_id'] in new]) == len(new), 'one startup pin and complete claim')
+        require(len([r for r in after[table] if r['lease_id'] in new]) == len(new)*(len(cuts) if table=='retention_claims' else 1), 'one startup pin and complete claims')
         exact([r for r in after[table] if r['lease_id'] not in new],before[table])
     for key in new:
         lease, = [r for r in after['snapshot_leases'] if r['lease_id'] == key]
         pin, = [r for r in after['archive_snapshot_pins'] if r['lease_id'] == key]
-        claim, = [r for r in after['retention_claims'] if r['lease_id'] == key]
-        require(lease['state'] == claim['state'] == 'released' and lease['lease_revision'] == 2
-                and lease['release_reason'] == claim['release_reason'] == 'reader_joined'
-                and pin['purpose'] == claim['purpose'] == 'reader'
+        claims = sorted((r for r in after['retention_claims'] if r['lease_id']==key),key=lambda r:r['owner_epoch'])
+        require(lease['state'] == 'released' and lease['lease_revision'] == 2
+                and lease['release_reason'] == 'reader_joined' and pin['purpose'] == 'reader'
                 and lease['holder_role_instance_id'] == owner['role_instance_id']
                 and pin['issuer_epoch'] == owner['epoch'], 'startup probe actually released')
         exact([pin[k] for k in ('dataset_id','issuer_resource','issuer_incarnation','issuer_role','frontier_revision')],
-                    [owner['dataset_id'],owner['resource_id'],owner['process_incarnation'],'control',4])
-        exact([claim[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','first_sequence','last_sequence')],
-                    [owner['dataset_id'],0,0,1,1,12])
+                    [owner['dataset_id'],owner['resource_id'],owner['process_incarnation'],'control',revision])
+        exact([[claim[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','first_sequence','last_sequence')] for claim in claims],
+                    [[owner['dataset_id'],topology,0,epoch,1,cut] for epoch,cut in cuts])
+        require(all(claim['state']=='released' and claim['release_reason']=='reader_joined' and claim['purpose']=='reader'
+                and lease['acquired_at_us']<=claim['released_at_us']<=lease['released_at_us']
+                and lease['xmin']==claim['xmin'] for claim in claims), 'startup claims actually joined and released atomically')
         require(lease['dataset_id'] == owner['dataset_id'] and lease['consumer_id'] == pin['consumer_id'] == catalog
                 and lease['holder_kind'] == 'role_instance' and lease['holder_job_id'] is None
                 and lease['holder_role'] == 'control' and lease['holder_incarnation'] == owner['process_incarnation']
-                and lease['frontier_revision'] == 4 and lease['archive_pin_protocol'] == 1
-                and owner['acquired_at_us'] <= lease['acquired_at_us'] <= claim['released_at_us'] <= lease['released_at_us'] <= clock_after
-                and lease['updated_at_us'] == lease['released_at_us']
-                and lease['xmin'] == claim['xmin'], 'startup pin identity and atomic joined release history')
+                and lease['frontier_revision'] == revision and lease['archive_pin_protocol'] == 1
+                and owner['acquired_at_us'] <= lease['acquired_at_us'] <= lease['released_at_us'] <= clock_after
+                and lease['updated_at_us'] == lease['released_at_us'], 'startup pin identity and atomic joined release history')
     return owner
 
 
@@ -290,7 +327,7 @@ def ordinary_unchanged(before, after):
     # Status may renew Control and the coalesced probe may add/release pins.
     # Every source/publication/job/auth row is otherwise unchanged in this barrier.
     exact(sorted(before), sorted(after))
-    assert len(before) == 81
+    assert len(before) == 82
     for table in before.keys() - {'owner_epochs','snapshot_leases','archive_snapshot_pins','retention_claims'}:
         exact(before[table], after[table])
 
@@ -363,6 +400,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     assert {r['consumer_role'] for r in state['consumers']} <= {'archive', 'index'}
     assert len([r for r in state['consumers'] if r['consumer_role'] == 'archive']) <= 1
     assert publication_fault in (None,'before-forward','after-complete')
+    assert not state['index_frontier_handoffs'], 'epoch1 cannot contain a topology handoff'
     assert type(owner_count) is int and owner_count in ((1,2,3) if publication_fault is None else (2,3,4))
     owners = sorted((r for r in state['owner_epochs'] if r['role'] == 'index'), key=lambda r:r['epoch'])
     if not owners:
@@ -391,7 +429,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     assert session['owner_role'] == generation['owner_role'] == 'index' and session['issuer_role'] == 'control'
     control = only(state['owner_epochs'], role='control', resource_id=session['issuer_resource'], epoch=session['issuer_epoch'])
     assert session['issuer_incarnation'] == control['process_incarnation'] == owner['process_incarnation']
-    assert session['previous_epoch'] is session['recovery_digest'] is session['recovered_plan'] is session['recovered_pending_plan'] is None
+    assert session['previous_epoch'] is session['recovery_digest'] is session['recovered_plan'] is session['recovered_handoff'] is session['recovered_pending_plan'] is None
     assert session['recovered_revision'] == 0
     for current in owners:
         role = only(state['role_instances'], role_instance_id=current['role_instance_id'])
@@ -501,6 +539,7 @@ def recovery_sessions(state, binding, owners, sessions, plans, *, publication_fa
         published, pending = (2,3) if epoch == 2 else (4,None)
         if publication_fault is not None and epoch == 3:
             published,pending = (2,3) if publication_fault=='before-forward' else (3,None)
+        assert session['recovered_handoff'] is None
         expected = recovery_digest(binding, previous, attributed, published, pending)
         exact([session['previous_epoch'],session['recovered_revision']],[epoch-1,published])
         assert session['recovered_plan'] == plans[published-1]['plan_digest']
@@ -541,7 +580,7 @@ def digest(domain, value):
     return hashlib.sha256(b'bigbrotr/'+domain.encode()+b'/1\0'+cbor(value)).digest()
 
 
-def expected_rows(science, generation, schema):
+def expected_rows(science, generation, schema, *, counts=COUNTS):
     from installed_sync_oracle import decode
     result = {name:[] for name in TARGETS}
     for batch in science['batches']:
@@ -556,11 +595,17 @@ def expected_rows(science, generation, schema):
                 values = [fields.get('visibility_scope_id' if n == 'access_visibility_scope' else n) for n,_ in schema.DICTIONARY[5:]]
                 add('dictionaries', [reference,normalization,name,version,digest('dictionary',payload),*values])
             elif family == 'event-payload':
-                assert payload[4] == [], 'this frozen signed fixture has no tag postings'
                 body = digest('body',payload[:6])
                 add('events',payload+[body])
                 for name in ('event_id_index','event_author_index','event_time_index'):
                     add(name,payload[:4]+[body])
+                # The first value of each supported single ASCII-letter tag is
+                # indexed once. Signed body order, duplicates and extra values
+                # stay in payload; only the posting set is ordered/deduplicated.
+                postings = {(tag[0],tag[1]) for tag in payload[4] if len(tag)>=2
+                    and len(tag[0])==1 and tag[0].isascii() and tag[0].isalpha()}
+                for ordinal,(key,value) in enumerate(sorted(postings,key=lambda pair:tuple(v.encode() for v in pair))):
+                    result['event_tag_index'].append(common[:6]+[ordinal,payload[0],key,value])
             elif family == 'event-eligibility': add('event_eligibility_facts',payload)
             elif family == 'event-receive':
                 event,at,observer,quality,corrects = payload
@@ -570,7 +615,7 @@ def expected_rows(science, generation, schema):
                 event,endpoint,observer,access,at,quality,verification,corrects = payload
                 for name in ('provenance_by_event','provenance_by_relay'):
                     add(name,[event,endpoint,observer,access,at,*quality,verification,corrects])
-    assert tuple(map(len,result.values())) == COUNTS
+    assert tuple(map(len,result.values())) == counts
     return result
 
 

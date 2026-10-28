@@ -21,6 +21,7 @@ GROUPS = {
     'archive-expectations': 'storage::postgres::control_owner::archive_retained_frontier::',
     'source-head': 'storage::rocks::store::source_head_tests::',
     'source-closure': 'storage::rocks::store::admission_tests::source_closure_tests::',
+    'lineage-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
     'role-observation': 'management::roles::tests::',
     'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
@@ -31,6 +32,13 @@ SOURCE_REQUIRED = {
         'source_closure_requires_every_original_request_and_preserves_all_native_bytes',
         'source_closure_preserves_zero_and_refuses_unissued_reservations',
         'source_closure_refuses_native_counter_disagreement_and_another_producer',
+    )),
+    'lineage-pending': tuple(GROUPS['lineage-pending'] + name for name in (
+        'lineage_pending_reads_original_historical_and_current_batches_without_writes',
+        'lineage_pending_requires_full_head_without_pending_preparation',
+        'lineage_pending_refuses_foreign_zero_out_of_cut_and_interior_identities',
+        'lineage_pending_preserves_limit_cancel_and_grant_errors_without_delivery',
+        'lineage_pending_refuses_stale_native_and_physical_input_custody',
     )),
 }
 # A broad filter must not pass when a new owning module was never wired in.
@@ -46,6 +54,7 @@ REQUIRED_MODULES = (
     'storage::indexer::plan::tests::',
     'storage::indexer::custody::tests::',
     'storage::indexer::state::tests::',
+    'storage::postgres::control_owner::index_publication::handoff::tests::',
     'storage::rocks::store::source_head_tests::',
     'management::roles::tests::',
     'storage::archive::inputs::tests::',
@@ -95,7 +104,10 @@ BINARY_REQUIRED = {
         'catch_up::tests::recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog',
         'catch_up::tests::recovery_published_cursor_refuses_missing_changed_and_foreign_heads',
         'catch_up::tests::recovery_cursor_advances_only_for_the_exact_new_publication_receipt',
-        'catch_up::tests::finite_recovery_requires_initial_topology_and_never_selects_a_successor_writer',
+        'catch_up::tests::finite_recovery_accepts_only_original_or_exact_initial_successor_metadata',
+        'catch_up::tests::explicit_handoff_head_retains_old_cut_and_zero_successor_without_a_batch',
+        'catch_up::tests::finite_history_counts_global_requests_and_one_separate_bridge',
+        'catch_up::tests::complete_successor_vector_cannot_erase_or_advance_closed_predecessor',
         'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (

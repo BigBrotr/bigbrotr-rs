@@ -256,12 +256,14 @@ does not reclaim pending facts or original inputs. Index catch-up observes the
 resulting retained state and performs no additional acknowledgement.
 
 The root must assign Control, Ingest and Index locally, use migration0041 or
-later, retain the original schema1/topology0/Ingest epoch1 source and accept the
+later, retain either the original schema1/topology0/Ingest epoch1 source or the
+complete uncompacted schema2/topology1 initial successor lineage, and accept the
 same Index provenance profile. Use the original ClickHouse writer account with
 its fixed one-query concurrency constraint. The command reads its protected
 writer credential and the Control credential; the initializer credential is not
 needed. Retain every original request/outcome and required pending source batch.
-The finite bound is 64 original requests, 64 facts and 1 MiB per whole batch;
+The finite bound is 64 original requests across the whole lineage, 64 facts and
+1 MiB per whole batch;
 accepted target row/wire and process-resource limits also apply.
 
 Catch-up verifies all published plans against the actual tables, replays any
@@ -275,21 +277,39 @@ not automatically repair a published generation. Retry the same command after
 resolving the reported prerequisite; a retry revalidates actual state and obtains
 another Index epoch, even if no new batch remains.
 
+For initial epoch2 continuation, first finish publishing the original epoch1
+Index prefix. Use the existing explicit Ingest retirement, initial-successor
+activation and terminal successor recovery/retirement procedures. After the
+successor is fully closed and retired, run the same `index catch-up` command.
+It verifies the complete native/SQL lineage, retains the closed epoch1 cut and
+publishes one explicit Index handoff revision adding epoch2 at zero, then catches
+up its complete batches. The bridge has no synthetic batch or CH receipt. An
+incomplete epoch1 prefix, old pending plan, missing/stale handoff or nonterminal
+successor refuses. Exact retry replays the bridge without adding another one.
+This does not start an Index writer inside the successor acquisition process.
+
 After successful Control release and actual driver join, exit 0 accompanies one
-JSON record with `format="bigbrotr-initial-index-catch-up/1"`, `state="complete"`,
+JSON record with `format="bigbrotr-initial-index-catch-up/2"`, `state="complete"`,
 `dataset_id`, `generation_id`, `storage_incarnation`, `table_identity_digest`,
 `previous_owner_epoch`, `owner_epoch`, `published_revision_before`,
-`published_revision_after`, `source_through`, `published_through`,
-`recovered_pending` and `new_batches`. The owner epochs are Index epochs; the
-source stays Ingest epoch 1. For a captured revision 2 with pending plan 3 and one
+`published_revision_after`, `source_epoch`, `source_through`, `published_through`,
+`recovered_pending` and `new_batches`. The owner epochs are Index epochs;
+`source_epoch` identifies Ingest 1 or 2. `source_cut` and `published_cut` retain the
+complete topology generation and ordered `{shard_id, owner_epoch,
+last_complete_sequence}` bounds. `index_handoff_revision` is null for epoch1
+and the persistent bridge revision for epoch2; `published_handoff` is true only
+when this invocation commits that bridge. The pending/new counters count batches,
+not the bridge. For a captured revision 2 with pending plan 3 and one
 unplanned batch 4, success reports revisions 2→4, `recovered_pending=true` and
 `new_batches=1`; an exact complete retry reports revisions 4→4, false and 0.
 
-The record always includes `ready=false`, `acknowledgement="not-performed"`,
-`ingest_retirement="not-performed"` and `topology_transition="not-performed"`.
+The record always includes `ready=false`, `acknowledgement="not-performed"` and
+`ingest_retirement="not-performed"`. `topology_transition` is `not-performed`
+for epoch1 and `existing-ingest-handoff-verified` for epoch2.
 It grants no continuing read readiness and starts no listener or acquisition.
-The command performs no ACK, retirement or reclamation and cannot process an
-Ingest epoch2/topology1 handoff. The ordinary Control read/export procedure and
+The command performs no ACK, retirement, reclamation or new Ingest handoff.
+Later successor epochs, compacted lineage and missing-pending Archive fallback
+remain unsupported. The ordinary Control read/export procedure and
 its own current grants remain separate. Exit codes are 1 output I/O, 2 usage,
 3 configuration/policy/resources and 4 refused/cancelled/unknown outcome. This
 profile remains under qualification; command availability is not evidence that

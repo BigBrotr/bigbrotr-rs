@@ -377,8 +377,8 @@ class ShortPinRuntime(IndexRuntime):
         value.update(started_ns=started,finished_ns=time.monotonic_ns())
         return value
 
-    def roles(self, deadline):
-        saved = load(self.home/'export-session.private')
+    def roles(self, deadline, *, session_path=None):
+        saved = load(self.home/'export-session.private' if session_path is None else session_path)
         require(saved['format'] == 'bigbrotr-cli-session/1' and saved['origin'] == 'http://127.0.0.1:18081', 'session binding')
         connection = http.client.HTTPConnection('127.0.0.1',18081,timeout=min(2,max(.001,deadline-time.monotonic())))
         try:

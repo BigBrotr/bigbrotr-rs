@@ -68,6 +68,7 @@ def process(operation, config, prefix):
 
 def http(home, restart, *, history_only=False):
     assert type(history_only) is bool and not (history_only and restart)
+    started_ns = time.monotonic_ns()
     profile = None
     if history_only:
         from installed_archive_profile import load, password_file
@@ -113,6 +114,11 @@ def http(home, restart, *, history_only=False):
         assert me['policy_revision'] == expected['policy_revision'] == '1'
     record('login', response=login, me=me, digests={k:hashlib.sha256(domain+bytes.fromhex(saved[k])).hexdigest()
         for k,domain in [('session',b'bigbrotr/browser-session/1\0'),('csrf',b'bigbrotr/browser-csrf/1\0')]})
+    if expected.get('startup_quiescence'):
+        assert history_only and expected['startup_quiescence'] is True
+        from installed_archive_export_client import phase
+        record('startup-quiescence',observation=phase(home,'setup',
+            enclosing_deadline_ns=started_ns+30_000_000_000))
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision=str(expected['frontier_revision']))
     def query(event):
         return dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
