@@ -1,5 +1,6 @@
 //! Initial-only Index consumer. Physical work is pollable and independently
 //! owned; no overall readiness, producer ACK or restart authority is implied.
+pub(in crate::interfaces::serve) mod catch_up;
 mod prepare;
 pub(super) mod readiness;
 use super::{Result, required};

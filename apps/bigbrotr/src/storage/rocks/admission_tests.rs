@@ -76,6 +76,19 @@ fn setup_entries(
     IngestManifest,
     RocksNativeLimits,
 ) {
+    setup_entries_at(entries, TopologyGeneration::new(1))
+}
+
+fn setup_entries_at(
+    entries: Vec<DictionaryEntry>,
+    topology_generation: TopologyGeneration,
+) -> (
+    tempfile::TempDir,
+    IngestStore,
+    ResourceBudget,
+    IngestManifest,
+    RocksNativeLimits,
+) {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let budget = ResourceBudget::new(
@@ -90,7 +103,7 @@ fn setup_entries(
     let manifest = IngestManifest::new(
         ManifestIdentity {
             dataset_id: [1; 16].try_into().unwrap(),
-            topology_generation: TopologyGeneration::new(1),
+            topology_generation,
             owner_resource_id: [3; 16].try_into().unwrap(),
             shard_id: 0,
             owner_epoch: OwnerEpoch::new(1).unwrap(),

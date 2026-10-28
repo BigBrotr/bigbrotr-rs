@@ -18,6 +18,9 @@ fn main() -> ExitCode {
         Some("ingest") => {
             interfaces::serve::recover_ingest(matches.subcommand_matches("ingest").unwrap())
         }
+        Some("index") => {
+            interfaces::serve::catch_up_index(matches.subcommand_matches("index").unwrap())
+        }
         Some("archive") => {
             interfaces::archive::execute(matches.subcommand_matches("archive").unwrap())
         }

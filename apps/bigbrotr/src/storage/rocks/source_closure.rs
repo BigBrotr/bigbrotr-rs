@@ -32,6 +32,78 @@ pub struct ResolvedSource<'a> {
     native_sequence: u64,
 }
 impl ResolvedSource<'_> {
+    /// Revalidate the original closed schema1/epoch1 source under the same
+    /// exclusive native descriptor. No writer or acknowledgement is returned.
+    pub fn validate_initial(&self, cancelled: &AtomicBool) -> Result<(), BootstrapError> {
+        let store = &self.recovery.store;
+        let manifest = self.recovery.manifest();
+        if cancelled.load(Ordering::Acquire) {
+            return Err(BootstrapError::AuthorityUnavailable);
+        }
+        if store.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        if self.historical.is_some()
+            || manifest.key_schema() != 1
+            || manifest.identity().owner_epoch.get() != 1
+            || manifest.identity().topology_generation.get() != 0
+            || store.handoff_root_identity()? != self.native_root
+            || store.db.latest_sequence_number() != self.native_sequence
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+
+    /// Bounded historical input, not an admission/publication capability. The
+    /// caller retains this complete source proof through downstream effects.
+    pub fn read_complete_pending_batch(
+        &self,
+        first: SourceRecordId,
+        limits: super::PendingReadLimits,
+        permit: crate::runtime::OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<super::PendingBatch, super::LineagePendingError> {
+        use super::{LineagePendingError as Error, PendingError};
+        let required = limits.required_data_bytes().map_err(Error::Read)?;
+        if permit.request().units().data_bytes() < required || permit.request().units().items() == 0
+        {
+            return Err(Error::Read(PendingError::InsufficientReservation));
+        }
+        self.validate_initial(cancelled).map_err(Error::Proof)?;
+        let identity = self.recovery.manifest().identity();
+        if first.dataset_id != identity.dataset_id
+            || first.shard_id != identity.shard_id
+            || first.owner_epoch != identity.owner_epoch
+            || first.sequence.get() > self.source_through
+        {
+            return Err(Error::OutsideVerifiedCut);
+        }
+        let result = self
+            .recovery
+            .store
+            .read_pending_batch(first, limits, permit, cancelled)
+            .map_err(Error::Read)
+            .and_then(|batch| batch.ok_or(Error::RequiredBatchMissing))
+            .and_then(|batch| {
+                let last = batch.batch().last();
+                if batch.batch().first() != first
+                    || last.dataset_id != first.dataset_id
+                    || last.shard_id != first.shard_id
+                    || last.owner_epoch != first.owner_epoch
+                    || last.sequence.get() > self.source_through
+                {
+                    Err(Error::OutsideVerifiedCut)
+                } else {
+                    Ok(batch)
+                }
+            });
+        let validated = self.validate_initial(cancelled).map_err(Error::Proof);
+        let batch = result?;
+        validated?;
+        Ok(batch)
+    }
+
     pub fn into_recovery_acknowledgement(
         self,
     ) -> Result<super::RecoveryAcknowledgement, BootstrapError> {

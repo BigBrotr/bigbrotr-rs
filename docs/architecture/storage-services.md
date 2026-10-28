@@ -365,6 +365,48 @@ all-table guard rejects rows outside the verified generation/cut, and the final
 PG transfer compares the captured owner/head/pending tuple under locks. Opaque
 physical proofs retain the actual custody descriptor through SQL consumption.
 
+The finite initial `index catch-up --file ROOT` consumer requires the original
+schema1/topology0/Ingest epoch1 source, its separately committed source closure
+(`ingest recover --close-source`), and the same retained local Index journal,
+generation, storage incarnation and table UUIDs. It obtains both actual local
+custodies before opening credentials, attaches Index custody to the real Control
+driver, and uses current accepted policy and fresh Control authority. It never
+opens the old Ingest writer or the ClickHouse initializer credential. Complete
+original-request replay and exact existing SQL outcome copies establish a native
+source witness; the downstream reader returns only whole retained batches within
+that witness and rechecks the native root and sequence before and after reads.
+The source proof remains held through the final publication observation.
+The earlier source-closure command may complete a retained producer ACK; that
+watermark update preserves original requests/outcomes and pending facts. Catch-up
+reconstructs its witness after that update and makes no new ACK itself.
+
+This consumer keeps three distinct positions: the captured published SQL prefix,
+an optional immutable prepared plan immediately after it, and unplanned source
+backlog. It verifies published rows without repairing them, replays/verifies the
+exact pending plan when present, then transfers Index authority using the full
+physical proof and the captured SQL tuple. The verifier's pending-inclusive cut
+does not advance the published cursor. Only the pending plan's own positive SQL
+publication COMMIT advances that cursor; subsequent new whole batches receive
+new plans under the recovered Index epoch. Original plan/chunk origins, digests
+and published receipt attribution remain unchanged. An unknown SQL result stops
+the command; a fresh invocation reopens and verifies the actual committed state
+before further publication. Even an already complete retry verifies all retained
+plans and obtains a fresh Index epoch, with zero new batches.
+
+The initial profile bounds the source to at most 64 original requests and each
+complete batch to 64 facts/1 MiB, subject to accepted per-family row/wire bounds.
+It retains at most one historical plan per verification step and reserves source,
+planner, physical executor and recovery metadata together before accepting the
+policy. Independent Control renewal continues during owned ClickHouse work;
+cancellation joins that work and the actual Control driver before terminal
+output, or terminates the process when the bounded native join cannot complete.
+Unknown remote queries retain their occupied slot for the process lifetime; no
+slot reset, account replacement or empty process-list observation is a proof.
+The unchanged constrained writer account bounds work across process restarts.
+This command performs no ACK, reclamation, Ingest retirement or topology handoff,
+and its terminal `ready=false` reports no continuing read authority. Installed
+restart, unknown-query and lost-COMMIT qualification remain separate gates.
+
 Each operation retains its source, metadata and local grant through complete
 owned-executor destruction and OS join. A separate service-owned engine slot
 retains the engine grant for an unresolved named query; dropping a future/result,

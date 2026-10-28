@@ -7,6 +7,88 @@ use std::sync::atomic::Ordering;
 pub type SourceCloseError = ProducerOperationError<BootstrapError>;
 
 impl ControlSession {
+    /// Read-only prerequisite for finite same-topology Index recovery. Requires
+    /// the separately published closure and every existing outcome copy; it
+    /// never closes, repairs, acknowledges or retires the historical producer.
+    pub async fn inspect_closed_initial_source(
+        &mut self,
+        source: &ResolvedSource<'_>,
+        input: ProducerCloseRequest<'_>,
+        permit: OwnedPermit,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(), SourceCloseError> {
+        if permit.request().units().data_bytes() < 64 * 1024
+            || permit.request().units().items() == 0
+        {
+            return Err(SourceCloseError::Native(
+                BootstrapError::InsufficientReservation,
+            ));
+        }
+        let _reservation = permit;
+        source
+            .validate_initial(input.cancelled)
+            .map_err(SourceCloseError::Native)?;
+        let spec = input.registration;
+        if source.producer().producer_slot_id() != spec.producer_slot_id
+            || source.resolved_requests() > 64
+            || spec
+                .target_topology()
+                .map_err(SourceCloseError::Registry)?
+                .get()
+                != 0
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        let (tx, mut lease, epoch) = self
+            .begin_producer_recovery(
+                source.recovery(),
+                input.ingest_root,
+                spec,
+                input.policy_ttl,
+                ingest_registry::RegistryLocks::Retirement,
+                validate,
+            )
+            .await?;
+        require_recorded_outcomes(&tx, source, spec).await?;
+        let row = tx
+            .query_one(
+                "SELECT s.state = 'closed' AND d.topology_generation = 0,
+                    s.last_complete_sequence::text, s.closure_digest
+             FROM control.source_streams s JOIN control.datasets d USING(dataset_id)
+             WHERE s.dataset_id=$1::bytea AND s.shard_id=$2::bigint AND s.owner_epoch=1",
+                &[&&spec.dataset_id.as_bytes()[..], &i64::from(spec.shard_id)],
+            )
+            .await
+            .map_err(backend)?;
+        if !row.try_get::<_, bool>(0).map_err(backend)?
+            || row
+                .try_get::<_, Option<&str>>(1)
+                .map_err(backend)?
+                .map(ingest_registry::decimal)
+                .transpose()
+                .map_err(SourceCloseError::Registry)?
+                != Some(source.last_complete_sequence())
+            || row.try_get::<_, Option<&[u8]>>(2).map_err(backend)? != Some(&source.digest()[..])
+        {
+            return Err(OwnerError::InvalidMetadata.into());
+        }
+        source
+            .validate_initial(input.cancelled)
+            .map_err(SourceCloseError::Native)?;
+        if lease.check_delivery(epoch).is_err() {
+            return Err(SourceCloseError::DeliveryUnknown);
+        }
+        tx.rollback().await.map_err(backend)?;
+        source
+            .validate_initial(input.cancelled)
+            .map_err(SourceCloseError::Native)?;
+        if self.client.is_closed() || lease.check_delivery(epoch).is_err() {
+            return Err(SourceCloseError::DeliveryUnknown);
+        }
+        self.available = true;
+        Ok(())
+    }
+
     pub async fn close_initial_source(
         &mut self,
         source: &ResolvedSource<'_>,
