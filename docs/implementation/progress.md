@@ -1,81 +1,76 @@
 # Current execution checkpoint
 
-2026-10-28, Tux. **Safe pause requested by the owner; full product incomplete.**
-Preserve the current P00–P10/M1–M5 goal and Q37/Q38/Q40/Q41/Q42. Resume only on
-explicit instruction. The goal control is paused after this checkpoint is saved;
-its actual session status is authoritative. No release, package or deployment.
+2026-10-28, Tux. **Goal ACTIVE after explicit owner resume; full product incomplete.**
+The complete selected P00–P10/M1–M5 scope and Q37/Q38/Q40/Q41/Q42 remain unchanged.
+No release, package publication or production deployment is authorized.
 
-## Revision and saved work
+## Revision and current increment
 
-Published `origin/main` remains `903dddb5f8fd585a86737db053cb1491a53d5584`.
-The ordinary-readiness increment was pushed and its remote identity verified;
-publication receipt: `.research/live-readiness-20261026/ordinary-publication.json`.
-The incremental public source/history audit through903 found no new credential
-or confidential material. Original captures remain protected and ignored.
+The verified export fixture correction33388863 is integrated as `6f0b5453` on
+`work/ci-export-integration-20261028`, based on published903dddb5. This accompanying
+checkpoint/evidence commit is the coherent main publication candidate. Its exact
+resulting revision and hosted run belong to the publication receipt/remote refs;
+no future hash or hosted PASS is assumed. Native inputs under Cargo, apps, crates,
+.cargo and tools match qualified333 exactly. Public history is preserved.
 
-Canonical checkout remains on `work/short-pin-checkpoint-20261027`, parent
-`1d66779c4cc17e04a28a67829dca9ab6f66dc3f9`; this documentation checkpoint is
-committed and pushed on that branch. Its resulting hash is the branch HEAD, not
-a guessed self-reference. Local `main` remains `f499cc87`, three commits ahead of
-published903: short-pin fixture95b6c615, Linux-only control declarationffe4d64a,
-and opaque-baseline proxyf499cc87. Their installed qualification is incomplete;
-no new product or fixture implementation is integrated into main during this pause.
+Canonical development remains on `work/short-pin-admission-wip-20261028` at
+`dd63e587`. It preserves local f499cc87 and both previous checkpoint commits;
+unfinished fixture work is excluded from the CI integration. Local main may be
+realigned to the published integrated revision only after verifying those retained
+refs and the remote fast-forward. The old pause observations remain historical.
 
-Separate partial work, **saved locally, not integrated or pushed**:
+Current capability remains qualified product8256184:147 native controls, build,
+strict Clippy and fresh installed build PASS. The installed ordinary-readiness r7
+passed all eight stages, including the original signed export and full physical
+proof/withheld-input/restoration behavior. Details remain in the
+[existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.ordinary`. No saved recovery source is represented as installed.
 
-| Branch / retained worktree | Saved revision | Valid evidence and remaining qualification |
-|---|---|---|
-| `work/short-pin-admission-wip-20261028` (Git branch; canonical checkout returned to checkpoint branch) | `bc2b1fbe7c5b9a227083712e71718bef7a6c5440` | Five-file active-connection admission correction;19 socket and7 pin controls PASS. Critical review found a cancellation cleanup race. Correction and installed retry NOT_RUN. |
-| `work/initial-index-recovery` / `.research/initial-index-recovery-20261027` | `2d073ae0d785464f1ad98c1549c5b837121821b2` | Finite `index catch-up`, source proof/read bridge, native/cursor controls and contracts saved atop0c34826f. Format/diff PASS; compilation, Clippy, native/engine/installed tests NOT_RUN. Root final source review incomplete. |
-| `work/index-restart-acceptance` / `.research/index-restart-acceptance-20261027` | `cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712` | Restart runtime/oracle and controls saved atopbdd582c4.76 Python controls PASS before the final two deadline/scalar edits; post-edit checks NOT_RUN and final review incomplete. Builds/engine/installed qualification NOT_RUN. |
-| `work/ci-export-fixture` / `.research/ci-export-fixture-20261028` | `33388863a1f4116f77d3f0c644eb36457a337f40` | Process-spawning and direct-custody fixtures separated into integration binaries; all13 original test bodies unchanged. Format/diff/automatic target discovery PASS; compilation, targeted Clippy, native tests and hosted confirmation NOT_RUN. |
+## Proxy and pending installed qualification
 
-All three retained delegate worktrees are clean and delegates stopped. No build,
-engine campaign or implementation was started to obtain a perfect pause. The
-inventory's `implementation_index_foundation_20261026.pause_20261028` owns resource
-identities; protected receipts stay beside their original captures.
+Correction8ae9a4ae makes ordinary proxy admission count actual active sessions,
+with the existing16-slot,64MiB and120/180s bounds; the selected reader retains its
+frame limit. Cancellation joins owned pumps/transports before slot reuse and cannot
+hide an earlier protocol failure or an already-failed pump.21 maintained controls
+PASS; the original cleanup negative rejects prior source; independent critical
+review complete. Evidence: `.research/short-pin-connection-admission-20261028`.
 
-## Valid capability and latest failure
+Installed short-pin r3 on exact825/acceptance8ae9a4ae passed six initial stages,
+ordinary setup/positive and cleanup. It remains **FAIL** before fault injection:
+the pre-arm query counted the intentional retained export pin as an active reader.
+The capture contains seven released reader pins and one active export pin.
+The proxy handled21 total connections, peak2, and closed with active0/unexpected0.
+All19 containers stopped, proxy absent and borrowed network empty. Original r1/r2
+admission failures and r3 remain preserved; no expiry/cancellation PASS is claimed.
 
-Qualified product `8256184cd30f49020c6c0a9884e9eaec958ba461` remains unchanged:
-147 actual native controls, build and strict Clippy PASS; fresh installed build
-PASS. Installed ordinary-readiness r7 with acceptancee644 passed all eight stages:
-complete-current proof plus completed operation makes both capabilities Ready;
-withholding the exact retained input makes them Unavailable; a narrow read cannot
-revive them; exact restoration permits recovery. Original353B signed export and
-manifest, all ten Index families/four batches/40 outcomes, initial physical
-invalidation and prior Ingest restart/resend evidence remain valid at their scopes.
-Detailed evidence stays in the [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`live_readiness.ordinary`, not duplicated here.
+Correctiondd63e587 joins the declared pin purpose for reader-only selection and
+saves the pre-arm query before assertion. Seven pin controls and scoped independent
+review PASS. Existing exact preservation checks still include the export lease,
+claims and all unrelated tables/files. Fresh installed qualification is pending.
+R3 artifacts/terminal receipt: `.research/first-launch-index-short-pin-r3-20261028`.
 
-The new `p01-first-launch-index-short-pin` fixture has scoped critical source
-review and seven pin controls PASS. **Both installed attempts still FAIL before
-the positive barrier and before arming; actual pin-expiry cancellation is NOT_RUN.**
+## Separate recovery work and processes
 
-- r1: `.research/first-launch-index-short-pin-r1-20261027`. Ordinary setup passed;
-  grant catalog work exhausted the inherited aggregate frame budget at20002
-  frames/1545189bytes. Original app error and cleanupFAIL preserved.
-- r2: `.research/first-launch-index-short-pin-r2-20261027`. Opaque baseline routing
-  avoided frame exhaustion, but the17th pre-arm connection exhausted the16 lifetime
-  admissions: frames0/4450882bytes/armedfalse. Original failure preserved.
+- `work/initial-index-recovery`, `.research/initial-index-recovery-20261027`,
+  `2d073ae0d785464f1ad98c1549c5b837121821b2`: finite catch-up and retained-source
+  bridge. Format/diff and independent source cross-review PASS. Exact-source
+  native build/tests/Clippy preparing; engine/installed NOT_RUN.
+- `work/index-restart-acceptance`, `.research/index-restart-acceptance-20261027`,
+  `cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712`: complete saved restart runtime/oracle;
+  all39 affected controls PASS on final source; independent cross-review PASS.
+  Builds/engines/installed qualification NOT_RUN. Review and control receipts are
+  under this worktree's ignored `.research/`; earlier76PASS predates two final edits.
+- `work/ci-export-fixture`, `.research/ci-export-fixture-20261028`,33388863 remains
+  clean with its original qualification. The new integration worktree above is
+  owned, temporary and retained until its publication is reconciled.
 
-The saved bc2b1fbe correction instead bounds actual active connections at16 for
-this closed fixture profile, retaining aggregate64MiB/180s and selected-reader
-limits. It retires closed sockets/tasks;19 socket controls and7 pin controls PASS.
-However, independent review reproduced cancellation during `wait_closed` skipping
-the active-count decrement; source review also found possible masking of an
-already-raised error. **This fixture defect is unresolved. No third installed
-attempt ran.** Transports remain retained for outer cleanup; this is not evidence
-of successful product cancellation or a product custody leak.
-
-Keep `.research/short-pin-connection-admission-20261028`: the two control logs,
-`cancellation-cleanup-reproducer.py`, `cancellation-cleanup-prior-observed.txt` and
-`pause-state.json`. The observation was copied from the original completed tool
-response, not a new execution or a raw shell transcript. The masking case is a
-source finding, not an exercised result. Before retry, make transport closure and
-accounting cancellation-resistant while preserving any earlier failure; critically
-review and test that boundary. Reuse the qualified825 installed candidate: a
-fixture-only change does not require a product rebuild.
+The CI native session26801 is reaped0, container53331feb stopped/PID0/noOOM and
+compiler cache115 released. Original setup failure is preserved separately:
+identity probe ordering failed before Cargo checks, not a product/test failure.
+No installed engine/proxy remains active after r3. The current native qualifier
+owns any subsequent compiler use; inspect its actual recorded handle before reuse.
+Do not overlap the installed short-pin timing gate with compilation. Preserve
+.research, worktrees, databases, original failures and the qualified825 candidate.
 
 ## M1 remaining gates
 
@@ -102,52 +97,30 @@ selected milestones. Column-TTL negative is NOT_RUN. Originala99 initial Sync
 timeout remains UNKNOWN. Terminal readiness still says unqualified; M1 and the
 full goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.
 
-## CI and resources
+## CI and evidence
 
 [Hosted run40415243196](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196)
-on exact903 is **completed / FAIL**, terminal2026-10-26T23:44:01Z and freshly checked
-at this pause: **23PASS/1FAIL/6NOT_RUN**. ARM64/macOS selected suites PASS; AMD64
-fails during export destination setup with `Busy`. Source suggests subprocess
-inheritance of a sibling fixture's directory lock; the hosted interleaving is
-untraced and no product defect is established. All ten keyring controls pass on
-all three platforms. No billing refusal, workflow admission error or cancellation
-caused this run's failure. Dependency policy and earlier cancellation fixes retain
-their scoped evidence; all-required hosted success after current changes is open.
+on903 is terminal **23PASS/1FAIL/6NOT_RUN**. All ten keyring controls PASS on all
+three platforms; AMD64 export setup failed with Busy, ARM64/macOS selected suites
+passed. Subprocess lock inheritance is supported by source/mechanism evidence;
+the hosted interleaving was not traced. No billing/admission/cancellation failure
+caused this result. Scoped public output audit found no new credential candidates.
 
-The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) now records the
-terminal outcomes, exact source/context verification, artifacts and scoped public
-output audit (no new/unclassified or operational credential candidates). Protected
-root: `.research/ci-publication-20261026/run-40415243196-exposure`; its
-`fixture-review.json` records33388863 and the four integration targets still to
-qualify. Original failures, reports and audit limits remain preserved. No queued
-or in-progress Actions runs were present; no new workflow was dispatched.
+All13 original export test bodies are retained in the corrected four integration
+targets. Exact333 Linux release-profile tests13PASS, format and targeted strict
+ClippyPASS; root reviewed all changed owners and verified receipt/artifact hashes.
+Hosted default-profile/platform confirmation remains open until the next actual
+main run finishes. Do not redispatch an unchanged revision or label local results
+as hosted PASS. The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns details; protected root:
+`.research/ci-publication-20261026/run-40415243196-exposure`.
 
-Both short-pin sessions are reaped: r1 session37259 exit1; r2 session54972 exit1.
-All19 containers per run are stopped/PID0/noOOM. r1 ordinary app exited4, others0;
-r2 all exited0. Each proxy exited3 and is positively absent. Their proxy cleanup
-checks remainFAIL despite terminal resources being confirmed stopped. Borrowed
-bridge1699209a remains empty and retained. No owned local development/build/test/
-watcher process remains; delegates launched no additional engines. Remote CI above
-is terminal. Current local controls/reviews have also completed. Preserve all
-databases, logs, original failures, .research, worktrees and825 artifacts. The released115 compiler cache remains optional.
+## Next bounded action
 
-The [existing inventory](../research/laboratory-inventory.json) owns identities
-and terminal receipts. Earlier bounded retirement removed only2372 obsolete b533/
-a295 compiler intermediates (2388500480 allocated bytes);228 ELF paths,50 outside
-pins and6474 other entries were preserved. No additional cleanup during pause.
-
-## First action on explicit resume
-
-Reconcile this checkpoint and actual Git/goal state, then restore
-`work/short-pin-admission-wip-20261028`. Fix the retained cancellation-during-close
-reproducer without losing prior exceptions; review the affected cleanup/target
-bounds and run only the impacted controls before the maintained short-pin case on
-825. Candidate manifest:
+Complete the maintained short-pin case using reader-purpose correctiondd63e587
+and the retained825 installed candidate, without a product rebuild. Candidate:
 `/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184/candidate/candidate-manifest.json`.
-Do not rebuild the product for this fixture-only change.
-
-Then qualify the four saved export integration targets and obtain hosted
-confirmation on a coherent qualified integration. Resume final Index recovery and
-restart-oracle review, post-edit Python controls, exact-source native and actual
-engine/installed qualification. None of these saved branches establishes completed
-recovery, M1 or the full goal. Resume only after the owner's explicit instruction.
+Preserve any new failure and classify it before changing expectations. In parallel,
+finish exact-source recovery native qualification, then the reviewed same-store
+restart/pending/new-batch installed path. Observe the coherent CI integration's
+actual hosted run to closure. M1 and every later selected milestone remain open.

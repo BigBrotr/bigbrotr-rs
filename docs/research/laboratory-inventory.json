@@ -73738,7 +73738,89 @@
         "state": "LOCAL_ONLY; clean; not integrated; no active process",
         "checks": "format/diff/automatic target discovery PASS; all13 original test bodies unchanged; compile/Clippy/native/hosted NOT_RUN",
         "evidence": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+      },
+      "local_fixture_qualification": {
+        "source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2",
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/fixture-native-verification.json",
+        "receipt_sha256": "8c8894301d97f0b3510f66b35c47593e2e78326c3eec043c220a3da448129378",
+        "retained_setup_failure": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886",
+          "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/fixture-native-setup-failure.json",
+          "sha256": "c21ca5b7a7bf75df1f67545130942adf346b22bfcf8eee378b06300f28cf9a20",
+          "meaning": "Compiler identity probe ordering failed before tests; corrected in fresh run. No failed product/test assertion retried."
+        },
+        "retained_artifacts": {
+          "export_destination": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_destination",
+            "bytes": 1308864,
+            "sha256": "e5d51ba97bde3a7a40f56a01e61f22940b5fd1bf0c84fcd99a0b80ad2790cf1e"
+          },
+          "export_destination_custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_destination_custody",
+            "bytes": 1187592,
+            "sha256": "d5cd216a622bbeef8890b622442798bffbc3014e29e8f2f260fe9ffbb2197f3a"
+          },
+          "export_files": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_files",
+            "bytes": 2908664,
+            "sha256": "38364a69a8fc4a1747bdc311555486d9a10d41e39cbec8c5e18d1a405482a92b"
+          },
+          "export_files_umask": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_files_umask",
+            "bytes": 2841216,
+            "sha256": "167a3d4d1993bf9956155da193582b768242dc3cf588cb8de05f69cce97dd63a"
+          },
+          "bigbrotr": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/bigbrotr",
+            "bytes": 41640248,
+            "sha256": "059921ff7f36068c6966bfa4eddfeb4ec918ca0d7b5e2522e7c529442f24df56"
+          }
+        },
+        "status": "PASS_SCOPED_LINUX_RELEASE_FIXTURE",
+        "resources": {
+          "container": "53331febfe1f1da95258507dff70bef2d9f8c040af393c10d89fcff583ea5700",
+          "owner": "e50de76fb5b34dada5352dabb893837b",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-28T08:55:33.437077309Z",
+            "FinishedAt": "2026-10-28T08:57:36.950690186Z"
+          },
+          "session": {
+            "session": 26801,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2",
+            "container": "53331febfe1f1da95258507dff70bef2d9f8c040af393c10d89fcff583ea5700",
+            "owner": "e50de76fb5b34dada5352dabb893837b",
+            "source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+            "launcher": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/launch.py",
+            "pid": 4006409,
+            "start_ticks": "655998728",
+            "reaped": true,
+            "exit_code": 0,
+            "process_absent": true
+          },
+          "compiler_cache": "released",
+          "constraints": "2CPU/6GiB/512PIDs; networknone; unprivileged; read-only root; capdropALL; no-new-privileges; exact source readonly; no credentials"
+        }
       }
+    },
+    "export_fixture_integration": {
+      "branch": "work/ci-export-integration-20261028",
+      "worktree": ".research/ci-export-integration-20261028",
+      "base": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "correction": "6f0b5453",
+      "qualified_source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+      "status": "Native Linux13PASS/format/ClippyPASS; root source review PASS; hosted confirmation pending after coherent push",
+      "publication": "No release/package/deployment; next main commit contains fixture correction and evidence only."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74822,6 +74904,23 @@
       "proxy_prior_observation": ".research/short-pin-connection-admission-20261028/cancellation-cleanup-prior-observed.txt",
       "limits": "Prior observed synthetic diagnostic output copied from completed tool response; no raw original shell transcript. Earlier-error masking is a source finding, not exercised.",
       "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
+    },
+    "resume_20261028": {
+      "status": "ACTIVE; full goal incomplete",
+      "canonical_branch": "work/short-pin-admission-wip-20261028",
+      "canonical_revision": "dd63e587",
+      "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
+      "proxy_controls": "21PASS; critical cleanup review complete",
+      "installed_r3": {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r3-20261028",
+        "result": "FAIL_FIXTURE_PREARM_PIN_PURPOSE; setup/positivePASS; actual pin-expiryNOT_RUN; cleanupPASS",
+        "terminal_receipt_sha256": "dd6e2705d516eeefb02ede0ffec32f7051b2ff4c901359ab7a20400c4f391c8a",
+        "terminal": "19stopped/PID0/noOOM; proxyexit0/PIDabsent; borrowed networkempty",
+        "scope": "Active export pin incorrectly counted as reader; original failure preserved. dd63e587 purpose correction source-reviewed;7pincontrolsPASS; fresh installed run pending."
+      },
+      "index_work": "Recovery2d073ae and acceptancecb3d8490 remain separate clean worktrees; both cross-reviews complete;39 final-source acceptance controlsPASS. Product native qualification preparing; enginesNOT_RUN.",
+      "processes": "No active installed engine/proxy; native qualifier owns compiler launch and records actual handles in its protected receipt. Check those before cache reuse.",
+      "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup."
     }
   },
   "implementation_checkpoint_space_20261026": {

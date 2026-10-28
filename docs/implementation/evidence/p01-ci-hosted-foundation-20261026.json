@@ -755,9 +755,23 @@
         "Cargo integration targets have separate address spaces and are run serially by cargo test; no sibling process inherits descriptors from another integration target. Automatic target discovery is enabled.",
         "Verify format, targeted strict Clippy, all affected integration targets under normal parallel libtest execution, exact original assertions/case counts and the next coherent hosted foundation run. No production lock retry, arbitrary sleep, global test serialization or FIFO change."
       ],
-      "implementation": "Saved, not integrated: 33388863a1f4116f77d3f0c644eb36457a337f40 on work/ci-export-fixture; all13 original test bodies preserved. Format, diff and automatic-target discovery PASS. Compilation, targeted strict Clippy, affected native tests and hosted confirmation NOT_RUN at owner-requested pause.",
+      "implementation": "33388863a1f4116f77d3f0c644eb36457a337f40 splits process-spawning umask/CLI fixtures from in-process export lock owners across four automatic integration targets; all13 original test bodies preserved.",
       "diagnosis_sha256": "3ad91f0c3679e2387d53e8ee2ba0757f4b028b3cca40d381d695b36bcfeb41a8",
-      "review_receipt": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+      "review_receipt": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json",
+      "verification": "Exact-source isolated Linux release-profile tests13/13PASS with normal parallel test harness; format and strict targetedClippyPASS. Native/compiler/source identities verified before and after; hosted default-profile/native-platform confirmation remains open.",
+      "local_qualification": {
+        "source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+        "status": "PASS_SCOPED_LINUX_RELEASE_FIXTURE",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2",
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/fixture-native-verification.json",
+        "receipt_sha256": "8c8894301d97f0b3510f66b35c47593e2e78326c3eec043c220a3da448129378",
+        "tests": 13,
+        "strict_clippy": "PASS",
+        "format": "PASS",
+        "terminal": "Container stopped exit0/PID0/noOOM; launcher session26801 reaped0/PIDabsent; compiler-cache lock released.",
+        "setup_failure": "Original first attempt compiler identity probe ordering failed before Cargo checks; retained separately with terminalexit1 and all checksNOT_RUN."
+      },
+      "integrated_correction": "6f0b5453 on the integration branch based on published903; Cargo/app/crate/tool inputs equal qualified333. Hosted confirmation remains pending."
     }
   },
   "not_run_or_skipped": {
