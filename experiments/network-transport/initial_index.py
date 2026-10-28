@@ -20,9 +20,18 @@ GROUPS = {
     'archive-input-custody': 'storage::archive::initialization::tests::inputs::',
     'archive-expectations': 'storage::postgres::control_owner::archive_retained_frontier::',
     'source-head': 'storage::rocks::store::source_head_tests::',
+    'source-closure': 'storage::rocks::store::admission_tests::source_closure_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
     'role-observation': 'management::roles::tests::',
     'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
+}
+SOURCE_REQUIRED = {
+    'source-closure': tuple(GROUPS['source-closure'] + name for name in (
+        'initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_bytes',
+        'source_closure_requires_every_original_request_and_preserves_all_native_bytes',
+        'source_closure_preserves_zero_and_refuses_unissued_reservations',
+        'source_closure_refuses_native_counter_disagreement_and_another_producer',
+    )),
 }
 # A broad filter must not pass when a new owning module was never wired in.
 REQUIRED_MODULES = (
@@ -82,6 +91,11 @@ BINARY_REQUIRED = {
         'readiness::tests::readiness_uses_oldest_read_and_a_strict_whole_sweep_window',
         'readiness::tests::readiness_abandon_does_not_reset_attempt_cooldown_or_erase_a_failure',
         'readiness::tests::readiness_empty_failed_cancelled_and_parked_caches_never_invent_a_verified_cut',
+        'catch_up::tests::recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog',
+        'catch_up::tests::recovery_published_cursor_refuses_missing_changed_and_foreign_heads',
+        'catch_up::tests::recovery_cursor_advances_only_for_the_exact_new_publication_receipt',
+        'catch_up::tests::finite_recovery_requires_initial_topology_and_never_selects_a_successor_writer',
+        'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
         'renewal_admission_does_not_wait_for_a_timer_tick',
@@ -260,7 +274,11 @@ def run(source, build, env, identity, sources):
                     'Cargo.lock', 'rust-toolchain.toml', 'contracts/release/dependencies.json',
                     'contracts/protocol/versions.json', 'contracts/protocol/nip01-event.json')}):
             raise ValueError('application build identity mismatch')
-        tests = selected_tests(listed_tests((inventory / 'list.log').read_text()))
+        library_names = listed_tests((inventory / 'list.log').read_text())
+        tests = selected_tests(library_names)
+        selected_tests(library_names,
+                       groups={name: GROUPS[name] for name in SOURCE_REQUIRED},
+                       required_modules=(), required_tests=SOURCE_REQUIRED)
         binary_tests = selected_tests(
             listed_tests((inventory / 'list-bin.log').read_text()), groups=BINARY_GROUPS,
             required_modules=(), required_tests=BINARY_REQUIRED)

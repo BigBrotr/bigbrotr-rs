@@ -65,10 +65,15 @@ admission/reopen boundary, bounded role DTOs and suspend-aware elapsed time. It
 includes the original input codec, actual input-file custody (including an owned
 thread handoff and independent lock competitor), and retained/current-selection
 Archive reconstruction controls.
+The closed native source-closure group requires complete original-request proof,
+preservation of native bytes, signed historical batch reads after acknowledgement,
+and refusal of incomplete, changed or foreign source state.
 The separate binary executable must contain the closed service scope declared
 in `initial_index.py`: Index actors/preparation, physical-probe scheduling,
 explicit initial CLI selection, command admission and supervision, watchdogs,
-authenticated role HTTP and ordinary observation-cache controls. Ordinary cache
+authenticated role HTTP and ordinary observation-cache controls. It also includes
+finite catch-up cursor, exact publication receipt, initial topology and bounded
+recovery-capacity controls. Ordinary cache
 tests distinguish a complete current proof from a narrow operation, retain the
 oldest dependency age, refuse historical selection promotion and preserve failures
 through retry or incomplete cleanup. These observations do not qualify live dependency
