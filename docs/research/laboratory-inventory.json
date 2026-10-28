@@ -74924,7 +74924,7 @@
     "resume_20261028": {
       "status": "ACTIVE; full goal incomplete",
       "canonical_branch": "work/short-pin-admission-wip-20261028",
-      "canonical_revision": "6c2aea093d93f2de6c77d837c9ec34f73a52b140",
+      "canonical_revision": "40f7e36f",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75009,9 +75009,16 @@
             "fault_controls": "10 PASS before source review and native use",
             "review_receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/verifier-review.json"
           }
+        },
+        "pending_sync_correction": {
+          "branch": "work/index-restart-acceptance",
+          "worktree": ".research/index-restart-acceptance-20261027",
+          "base": "40f7e36f",
+          "scope": "Safe-point admission scheduling/revalidation before new persistence; retain original bounded input/grants; in-flight uncertainty unchanged",
+          "status": "Source diagnosis complete; implementation authorized, no qualified change yet"
         }
       },
-      "processes": "No compiler or installed engine/proxy running. Build62990 and installed63726/19020 reaped; optional cache released. Restart fixture agent diagnosing prefix policy cadence in isolated retained worktree. CI read-only watcher session80951 (driver4144536/start656306687, gh4144553/start656306688) observes remote40662294894; no duplicate dispatch.",
+      "processes": "No compiler or installed engine/proxy running; sessions62990/63726/19020/38818 reaped, optional cache released. Two isolated implementation agents own Sync scheduling and pin-release fixtures. CI watcher80951 observes40662294894; latest10:03Z metadata macOSsuccess, bothLinuxjobsinprogress; no hosted qualification until artifacts/source/output verified.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75115,8 +75122,22 @@
           "receipt_sha256": "f157b445613acb87a59169f0826cb47ff034428ad3870cfb64e97d65da358273",
           "containers": "16 stopped/PID0/noOOM; source cancelled with exit4 during enclosing cleanup; all other exit0; client absent; no CH pause; borrowed network empty",
           "retention": "Preserve original database, inputs, logs, timed-out prefix evidence and all candidate artifacts"
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-restart-r2-20261028",
+          "status": "FAIL_SYNC_ADMISSION_DEADLINE_AFTER_PREFIX_PASS",
+          "receipt_sha256": "b4b021f6f45cbce0274d0f81a814ae68fca5b412d2fba7f591d734b3803e4388",
+          "containers": "16stopped/PID0/noOOM; owned CH pause/unpause positively observed; client absent; borrowed bridge empty",
+          "retention": "Original request4 staged input, all database/native files, diagnostics and uncertain outcome retained"
         }
-      ]
+      ],
+      "pin_release_uncertainty": {
+        "branch": "work/pin-release-uncertainty",
+        "worktree": ".research/pin-release-uncertainty-20261028",
+        "base": "40f7e36f",
+        "scope": "Maintained before-forward/after-complete reader release COMMIT fault cases with actual UPDATE1 hold and independently observed native join/custody; original export completes in separate lifetime",
+        "status": "Implementation in progress; no engines/builds or product changes"
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {

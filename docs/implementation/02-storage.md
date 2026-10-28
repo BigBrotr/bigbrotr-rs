@@ -1117,9 +1117,12 @@ The bounded [initial Index catch-up consumer](../user/control-runtime.md#finite-
 implements the selected same-store topology0/epoch1 path after explicit source
 closure. Its [owning storage contract](../architecture/storage-services.md)
 separates the published prefix, retained pending plan and new backlog, with fresh
-authority and unchanged historical origins. Compilation, native controls and
-installed restart/fault qualification for this increment are pending; no step is
-closed by the saved implementation or metadata-only cursor controls.
+authority and unchanged historical origins. Build, strict Clippy and 156 scoped native controls pass on `7e04f12f`; its
+fresh installed candidate also passes assembly/intake verification. Installed
+restart reaches a complete live prefix but subsequent Sync admission scheduling
+fails before recovery. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+retains exact scope and original failures. Installed restart/fault qualification
+remains pending; no whole step closes from native or metadata-only controls.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.

@@ -523,7 +523,7 @@
       }
     },
     "finite_recovery": {
-      "status": "PASS scoped native controls and installed build; installed r1 prefix FAIL, recovery NOT_RUN",
+      "status": "PASS scoped native controls, installed build and complete live prefix; FAIL subsequent Sync admission scheduling; installed recovery NOT_RUN",
       "native": {
         "status": "PASS_SCOPED_NATIVE_INITIAL_INDEX_RECOVERY",
         "product_revision": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
@@ -651,7 +651,23 @@
           "status": "FAIL_INITIAL_PREFIX_DEADLINE_RECOVERY_NOT_RUN",
           "terminal_receipt_sha256": "f157b445613acb87a59169f0826cb47ff034428ad3870cfb64e97d65da358273",
           "result_sha256": "74c2dcdac39aae56480bca8d4014d5c3ec95e5b382b2772bc4f0689d24c1c4cd",
-          "meaning": "Only one Archive/Index frontier met revision2/through3 before the original15s prefix deadline. No complete prefix readiness, ClickHouse pause, catch-up or retry executed. Source/policy cadence diagnosis in progress; all16 containers stopped, no OOM."
+          "meaning": "Only one Archive/Index frontier met revision2/through3 before the original15s prefix deadline. No complete prefix readiness, ClickHouse pause, catch-up or retry executed. Source/policy cadence diagnosis in progress; all16 containers stopped, no OOM.",
+          "diagnosis": {
+            "classification": "FIXTURE_DISPATCH_CADENCE",
+            "correction": "40796c20 integrated40f7e36f; declare and validate fresh1s Archive policy before initialization, unchanged15s gate",
+            "receipt": ".research/index-restart-acceptance-20261027/.research/prefix-dispatch-controls-20261028/diagnosis.json",
+            "receipt_sha256": "2f85011fda9b1d98523f540088a8db1127bee4d82b4ed42b6606c858a731e136",
+            "controls": "12 affected and12 integrated controls PASS; root scoped independent source review PASS"
+          }
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-restart-r2-20261028",
+          "status": "FAIL_SYNC_ADMISSION_DEADLINE_AFTER_PREFIX_PASS",
+          "terminal_receipt_sha256": "b4b021f6f45cbce0274d0f81a814ae68fca5b412d2fba7f591d734b3803e4388",
+          "result_sha256": "38a37c6b102729a2cefef865ae5cc07b9d0824b03a08020e4fb595d58be521e9",
+          "meaning": "Complete prefix physical readiness and owned CH pause PASS. Subsequent Sync request4/frame0 entered fresh persistence with about38ms remaining before scheduled-refresh cap, despite2675158us actual authority remaining. Product safe-point scheduling repair pending; staged original input exists but reservation/native/outcome are not resolved by that alone. Relay EOF is not standalone shutdown evidence. Originala99 remains UNKNOWN.",
+          "not_run": "Source closure, Index catch-up/exact retry and post-recovery export",
+          "cleanup": "Owned CH confirmed unpaused;16containers stopped/PID0/noOOM; client absent; borrowed bridge empty"
         }
       ]
     },
