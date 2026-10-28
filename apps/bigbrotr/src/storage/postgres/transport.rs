@@ -248,9 +248,6 @@ mod route_tests {
     #[tokio::test]
     async fn actual_refused_socket_and_server_auth_refusal_remain_distinct() {
         use tokio::io::{AsyncReadExt, AsyncWriteExt};
-        // Reserve the port without a listener, avoiding a drop/rebind race.
-        let refused = tokio::net::TcpSocket::new_v4().unwrap();
-        refused.bind("127.0.0.1:0".parse().unwrap()).unwrap();
         let config = |port| {
             let mut value = tokio_postgres::Config::new();
             value
@@ -260,14 +257,19 @@ mod route_tests {
                 .ssl_mode(tokio_postgres::config::SslMode::Disable);
             value
         };
+        // A held non-listening socket can leave connect pending on macOS.
+        // Release this loopback listener before requesting an actual refusal.
+        let refused = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let refused_config = config(refused.local_addr().unwrap().port());
+        drop(refused);
         let result = tokio::time::timeout(
             Duration::from_secs(5),
-            config(refused.local_addr().unwrap().port()).connect(tokio_postgres::NoTls),
+            refused_config.connect(tokio_postgres::NoTls),
         )
         .await
         .unwrap();
         let Err(failure) = result else {
-            panic!("bound non-listening socket connected")
+            panic!("released loopback port connected")
         };
         assert_eq!(connection_error(failure), ConnectError::ConnectionRefused);
 
