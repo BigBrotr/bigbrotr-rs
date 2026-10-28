@@ -60,12 +60,14 @@ def accepted_profile(state):
 
 
 def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12,
-               archive_unavailable=False):
+               archive_unavailable=False, retained_boundary=False):
     """Literal signed fixture frontier plus separately captured SQL identities."""
-    assert type(revision) is type(sequence) is int and (revision, sequence) in ((2, 3), (4, 12))
+    assert type(retained_boundary) is bool
+    assert not retained_boundary or (archive_unavailable and not invalidated)
+    assert type(revision) is type(sequence) is int and (revision, sequence) in (((64,312),) if retained_boundary else ((2, 3), (4, 12)))
     assert not invalidated or (revision, sequence) == (4, 12)
     assert type(archive_unavailable) is bool
-    assert not archive_unavailable or (not invalidated and (revision, sequence) == (4, 12))
+    assert not archive_unavailable or (not invalidated and (revision, sequence) == ((64,312) if retained_boundary else (4, 12)))
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     generation = only(state['projection_generations'])
@@ -93,11 +95,18 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
     assert set(value['source']) == {'cut','freshness','time','reason'}
     exact(value['source']['cut'],cut)
     fresh(value['source'])
+    index_cap = only(value['capabilities'], capability='index_publication') if retained_boundary else None
+    if retained_boundary:
+        assert (index_cap['state'], index_cap['reason']) in (
+            ('building','verification_in_flight'), ('building','behind_source'),
+            ('stale','verification_stale'), ('unavailable','dependency_unavailable'))
     exact(value['roles'], [dict(role=role,
+        **(dict(state='starting' if index_cap['state']=='building' else 'degraded', reason=index_cap['reason'])
+           if retained_boundary and role=='index' else dict(
         state='degraded' if (invalidated and role=='index') or (archive_unavailable and role=='archive')
             else 'ready' if role=='control' else 'idle',
         reason='remote_outcome_unknown' if invalidated and role=='index'
-            else 'dependency_unavailable' if archive_unavailable and role=='archive' else 'current')
+            else 'dependency_unavailable' if archive_unavailable and role=='archive' else 'current')))
         for role in ('control','ingest','sync','archive','index')])
     caps = value['capabilities']
     assert len(caps) == 4
@@ -107,6 +116,12 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
         if archive_unavailable and kind == 'archive_publication':
             assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
             timed(cap)
+        elif retained_boundary and kind == 'index_publication':
+            timed(cap)
+            if cap['reason']=='verification_stale':
+                assert cap['freshness']=='stale'
+            if cap['reason']=='behind_source':
+                assert cap['freshness']=='fresh'
         elif invalidated and kind == 'index_publication':
             # The second distinct row exceeds the declared one-row chunk.
             # Rejection precedes cursor EOF, so local join cannot establish
@@ -120,6 +135,14 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
         if archive_unavailable and kind == 'archive_publication':
             published = dict(revision='2', cut=dict(dataset_id=cut['dataset_id'], topology_generation='0',
                 bounds=[dict(shard_id='0', owner_epoch='1', last_complete_sequence='3')]))
+        if retained_boundary and kind == 'index_publication':
+            historical = int(cap['published']['revision'])
+            assert 2 <= historical < 64, '64-plan history has no qualified current readiness'
+            frontier = only(state['consumer_frontiers'],
+                consumer_id=only(state['consumers'],consumer_role='index')['consumer_id'],
+                frontier_revision=historical)
+            published = dict(revision=str(historical),cut=dict(dataset_id=cut['dataset_id'],topology_generation='0',
+                bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence=str(frontier['last_complete_sequence']))]))
         exact(cap['published'], published)
         assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
         assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
@@ -411,13 +434,17 @@ def engine_digest(table, plan, chunks):
     return hashlib.sha256(data).digest()
 
 
-def validate_metadata(state, root, *, complete=False, owner_count=1, publication_fault=None):
+def validate_metadata(state, root, *, complete=False, owner_count=1, publication_fault=None, retained_boundary=False):
     """Check the entire observed Index owner/plan/head before any scoped view.
 
     Intermediate captures may contain one complete prepared plan. The final
     scientific comparison separately verifies every row commitment against the
     literal source; this structural check never certifies CH contents.
     """
+    assert type(retained_boundary) is bool
+    assert not retained_boundary or (owner_count == 1 and publication_fault is None)
+    ranges = RANGES if not retained_boundary else RANGES[:3] + tuple((8+5*n,12+5*n) for n in range(61))
+    plan_counts = PLAN_COUNTS if not retained_boundary else PLAN_COUNTS[:3] + (PLAN_COUNTS[3],)*61
     assert {r['role'] for r in state['owner_epochs']} <= {'control', 'ingest', 'archive', 'index'}
     assert {r['consumer_role'] for r in state['consumers']} <= {'archive', 'index'}
     assert len([r for r in state['consumers'] if r['consumer_role'] == 'archive']) <= 1
@@ -461,10 +488,10 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     assert consumer['consumer_id'] == owner['resource_id'] and consumer['dataset_id'] == dataset
     plans = sorted(state['projection_plans'], key=lambda p:p['frontier_revision'])
     head = consumer['current_revision'] or 0
-    assert type(head) is int and 0 <= head <= len(plans) <= min(4, head+1)
+    assert type(head) is int and 0 <= head <= len(plans) <= min(len(ranges), head+1)
     assert consumer['current_topology_generation'] == (0 if head else None)
     if complete:
-        assert head == len(plans) == 4
+        assert head == len(plans) == len(ranges)
     if publication_fault is not None:
         assert (head,len(plans),complete) == ((2+int(publication_fault=='after-complete'),3,False)
                                              if owner_count==2 else (4,4,True))
@@ -478,7 +505,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     bounds = [r for r in state['consumer_frontiers'] if r['consumer_id'] == consumer['consumer_id']]
     assert len(revisions) == len(bounds) == head
     for number, plan in enumerate(plans, 1):
-        first, last = RANGES[number-1]
+        first, last = ranges[number-1]
         origins = (1,1,1,3) if publication_fault else (1,1,1,2)
         publishers = ((1,1,3,3) if publication_fault=='before-forward' else (1,1,2,3)) if publication_fault else (1,1,2,2)
         origin = owners[origins[number-1]-1] if owner_count > 1 else owner
@@ -492,7 +519,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
         assert len(members) == 10 and {r['target'] for r in members} == set(TARGETS)
         chunks = []
         selected = []
-        for target, count in zip(TARGETS, PLAN_COUNTS[number-1]):
+        for target, count in zip(TARGETS, plan_counts[number-1]):
             member = only(members, target=target)
             row = only(state['projection_chunks'], chunk_id=member['chunk_id'])
             assert member['generation_id'] == row['generation_id'] == generation['generation_id']
@@ -588,8 +615,8 @@ def recovery_sessions(state, binding, owners, sessions, plans, *, publication_fa
     assert len({r['role_instance_id'] for r in owners}) == len(owners)
 
 
-def without_index_owner(state, root):
-    validate_metadata(state, root)
+def without_index_owner(state, root, *, retained_boundary=False):
+    validate_metadata(state, root, retained_boundary=retained_boundary)
     result = dict(state)
     removed = {r['role_instance_id'] for r in state['owner_epochs'] if r['role'] == 'index'}
     result['owner_epochs'] = [r for r in state['owner_epochs'] if r['role'] != 'index']
@@ -677,11 +704,12 @@ def json_value(ty, value):
     return value
 
 
-def physical_rows(actual, science, generation, schema, *, through=12, replayed_pending=False):
+def physical_rows(actual, science, generation, schema, *, through=12, replayed_pending=False, retained_boundary=False):
     """Raw physical multiplicity, including the declared immutable plan3 replay."""
-    assert through in (7,12) and type(replayed_pending) is bool
+    assert type(retained_boundary) is bool
+    assert through in ((312,) if retained_boundary else (7,12)) and type(replayed_pending) is bool
     assert through == 12 or not replayed_pending
-    rows = expected_rows(science,raw(generation,16),schema)
+    rows = expected_rows(science,raw(generation,16),schema, counts=(68,61,61,61,61,61,61,0,61,61) if retained_boundary else COUNTS)
     assert set(actual) == set(TARGETS)
     for name,columns,_ in schema.FAMILIES:
         physical = [row for row in rows[name] if row[1][3] <= through for _ in range(
@@ -691,9 +719,9 @@ def physical_rows(actual, science, generation, schema, *, through=12, replayed_p
     return rows
 
 
-def publication(live, after, actual, science, schema, root, *, owner_count=1, publication_fault=None):
-    generation = validate_metadata(live, root, complete=True, owner_count=owner_count,publication_fault=publication_fault)
-    validate_metadata(after, root, complete=True, owner_count=owner_count,publication_fault=publication_fault)
+def publication(live, after, actual, science, schema, root, *, owner_count=1, publication_fault=None, retained_boundary=False):
+    generation = validate_metadata(live, root, complete=True, owner_count=owner_count,publication_fault=publication_fault,retained_boundary=retained_boundary)
+    validate_metadata(after, root, complete=True, owner_count=owner_count,publication_fault=publication_fault,retained_boundary=retained_boundary)
     for table in INDEX_TABLES:
         exact(live[table],after[table])
     identity,tables,_ = retained(root)
@@ -705,7 +733,8 @@ def publication(live, after, actual, science, schema, root, *, owner_count=1, pu
         for name,ty in t['columns']: text(name); text(ty)
     assert h.hexdigest() == identity['table_identity_digest']
     rows = physical_rows(actual,science,generation['generation_id'],schema,
-                         replayed_pending=publication_fault=='before-forward')
+                         replayed_pending=publication_fault=='before-forward', through=312 if retained_boundary else 12,
+                         retained_boundary=retained_boundary)
     plans = sorted(live['projection_plans'], key=lambda r:r['frontier_revision'])
     for plan,batch in zip(plans,science['batches']):
         assert plan['source_batch_digest'] == '\\x'+batch['admission_digest']
@@ -716,10 +745,11 @@ def publication(live, after, actual, science, schema, root, *, owner_count=1, pu
             expected = digest('projection-chunk',[raw(generation['generation_id'],16),name,1,cut,0,values])
             member = only(live['projection_plan_chunks'],plan_digest=plan['plan_digest'],target=name)
             assert member['chunk_id'] == member['rows_digest'] == '\\x'+expected.hex()
-    return dict(format='bigbrotr-installed-initial-index/1', source_cut=12, frontier_revision=4,
-        admission_batches=4, committed_chunks=40, family_counts=dict(zip(TARGETS,COUNTS)),
+    return dict(format='bigbrotr-installed-initial-index/1', source_cut=312 if retained_boundary else 12, frontier_revision=64 if retained_boundary else 4,
+        admission_batches=64 if retained_boundary else 4, committed_chunks=640 if retained_boundary else 40,
+        family_counts={name:len(values) for name,values in rows.items()},
         live_observation=True, independent_source_and_c_api=True, all_typed_fields_equal=True,
-        zero_tag_outcome=True, batch_max_rows=BATCH_MAX_ROWS, metadata_rows=160,
+        zero_tag_outcome=True, batch_max_rows=BATCH_MAX_ROWS, metadata_rows=2560 if retained_boundary else 160,
         generation_id=generation['generation_id'][2:],table_identity_sha256=identity['table_identity_digest'],
         readiness='NOT_RUN', restart='NOT_RUN',column_ttl_negative='NOT_RUN')
 

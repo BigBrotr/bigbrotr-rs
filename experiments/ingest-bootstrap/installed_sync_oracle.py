@@ -62,17 +62,21 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
 
 def expected(state, report, event, dictionary_time, received=None, recorded=None, resolution=1,
              *, expected_body_digest='1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb',
-             additional_events=(), acknowledge=False, preparation_hole=False, provenance=True):
+             additional_events=(), acknowledge=False, preparation_hole=False, provenance=True,
+             retained_boundary=False):
     assert type(acknowledge) is bool
     assert type(provenance) is bool
     assert provenance or (not additional_events and not preparation_hole), 'off profile is the original one-event recipe'
     assert type(preparation_hole) is bool and (not preparation_hole or acknowledge)
+    assert type(retained_boundary) is bool
+    assert not retained_boundary or (acknowledge and provenance and not preparation_hole)
     # Two additional distinct events, or three for the explicit preparation
     # hole, each with independent clocks/digests. No ACK is inferred.
     if additional_events:
-        assert isinstance(additional_events,(tuple,list)) and len(additional_events)==(3 if preparation_hole else 2)
+        assert isinstance(additional_events,(tuple,list)) and len(additional_events)==(60 if retained_boundary else 3 if preparation_hole else 2)
         assert received is not None
-        assert len({event['id'],*(item[0]['id'] for item in additional_events)})==(4 if preparation_hole else 3)
+        assert len({event['id'],*(item[0]['id'] for item in additional_events)})==(61 if retained_boundary else 4 if preparation_hole else 3)
+    assert not retained_boundary or len(additional_events) == 60
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'ingest']
     domains = {r['dictionary_kind']: bytes.fromhex(r['allocation_domain'][2:])
@@ -119,7 +123,7 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         rows['default', prefix+key] = prefix+src_key(n)+refs[n][1]
 
     def dictionary(n, kind, schema, value, at, *, ordinal=1):
-        assert type(ordinal) is int and 1<=ordinal<=(4 if preparation_hole else 3)
+        assert type(ordinal) is int and 1<=ordinal<=(61 if retained_boundary else 4 if preparation_hole else 3)
         descriptor = [1, schema, 1, value]
         mapping = [ref(kind,ordinal), *descriptor]
         fact(n, 'dictionary', mapping, at)

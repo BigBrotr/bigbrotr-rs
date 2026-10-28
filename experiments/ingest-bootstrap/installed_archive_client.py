@@ -84,6 +84,14 @@ def run(directory):
             publish(directory, name + '-deadline.json', dict(
                 format='bigbrotr-installed-index-prefix-gate/1', started_ns=started,
                 deadline_ns=started + seconds * 1_000_000_000))
+        if name == 'submitted' and (directory/'retained-request-profile.json').exists():
+            from installed_retained_transport import PROFILE
+            assert json.loads((directory/'retained-request-profile.json').read_text()) == PROFILE
+            assert seconds == 65
+            started = time.monotonic_ns()
+            publish(directory, 'retained-request-deadline.json', dict(
+                format='bigbrotr-retained-request-gate/1', started_ns=started,
+                deadline_ns=started + 65_000_000_000))
         publish(directory, name + '.json', observations)
         deadline = started / 1_000_000_000 + seconds if started is not None else time.monotonic() + seconds
         next_poll = 0

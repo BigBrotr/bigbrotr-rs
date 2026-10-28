@@ -35,9 +35,11 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
              *, native_options=None, fact_bytes=65536, decoder_options=None):
     assert received is not None and recorded is not None
     provenance = (native_options or {}).get('provenance', True)
+    boundary = (native_options or {}).get('retained_boundary', False)
     native, inputs, receipts = native_expected(state, report, event, dictionary_time, received, recorded,
         resolution, **(native_options or {}))
-    assert len(native) == (49 if provenance else 35) and len(inputs) == len(receipts) == 4
+    assert len(native) == (829 if boundary else 49 if provenance else 35)
+    assert len(inputs) == len(receipts) == (64 if boundary else 4)
     facts = []
     tables = {name: [] for name in TABLES}
     for cf, key, value in native:
@@ -91,13 +93,15 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
                 clock_quality=clock(quality), verification_method_id=reference(verification), corrects=None)
             table = 'provenance_facts'
         tables[table].append(row)
-    assert [f['sequence'] for f in facts] == list(range(1, 13 if provenance else 9))
+    assert [f['sequence'] for f in facts] == list(range(1, 313 if boundary else 13 if provenance else 9))
     assert {t: len(v) for t, v in tables.items()} == dict(zip(TABLES,
-        (8, 1, 1, 1, 1) if provenance else (5, 1, 1, 1, 0)))
+        (68, 61, 61, 61, 61) if boundary else (8, 1, 1, 1, 1) if provenance else (5, 1, 1, 1, 0)))
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     topology = int(report['topology_generation'])
     batches = []
     ranges = ((1, 2), (3, 3), (4, 7), (8, 12)) if provenance else ((1, 2), (3, 3), (4, 4), (5, 8))
+    if boundary:
+        ranges = ranges[:3] + tuple((8+n*5, 12+n*5) for n in range(61))
     for first, last in ranges:
         selected = facts[first-1:last]
         refs = [[[dataset, 0, 1, r['sequence']], bytes.fromhex(r['digest'])] for r in selected]

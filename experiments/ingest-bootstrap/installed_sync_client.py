@@ -74,16 +74,31 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
           event_sender=None):
     assert event_sender is None or (signed and not refusals and not window)
     split = None
+    retained = (directory / 'retained-request-profile.json').exists()
+    if retained:
+        assert signed and not refusals and not window and event_sender is None
+        assert not (directory / 'progress-context.json').exists()
+        from installed_retained_transport import RetainedEvents
+        split = RetainedEvents(directory)
     if (directory / 'progress-context.json').exists():
         assert signed and not refusals and not window and event_sender is None
         from installed_progress_transport import SplitEvents, ack_events
         split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial',
             event_sequence=ack_events(directory))
     request_ids = set()
+    completed = None
     try:
         number = 0
         window_rounds = 0
         while not finished.is_set():
+            if retained and number == 128:
+                assert split.proof_sent, 'retained connection budget ended before proof'
+                completed = dict(format='bigbrotr-retained-relay-completion/1',
+                    reason='connection_limit', connections=number, proof_sent=True,
+                    last_closed_monotonic_ns=trace['closed_monotonic_ns'],
+                    last_closed_sha256=hashlib.sha256(
+                        (directory/f'relay-closed-{number:03}.json').read_bytes()).hexdigest())
+                break
             try:
                 connection, remote = listener.accept()
             except socket.timeout:
@@ -124,9 +139,13 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
-                publish(directory, f'relay-open-{number:03}.json', trace)
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
-                selected = split.select(ident, number) if split is not None else None
+                if retained:
+                    selected = split.select(ident, number)
+                    trace['retained_quiet'] = selected is None
+                publish(directory, f'relay-open-{number:03}.json', trace)
+                if not retained:
+                    selected = split.select(ident, number) if split is not None else None
                 if (selected is not None if split is not None else signed and (number <= 2 or window_ready)):
                     event = json.loads((directory/'event.jsonl').read_bytes())
                     if split is not None:
@@ -185,6 +204,9 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
         publish(directory, 'relay-error.json', dict(error=errors[-1]))
     finally:
         listener.close()
+        if completed is not None:
+            publish(directory, 'relay-finite-complete.json', dict(completed,
+                listener_closed=True, completed_monotonic_ns=time.monotonic_ns()))
 
 
 def no_connections(directory, listener, finished, errors):

@@ -25,14 +25,14 @@ spec = importlib.util.spec_from_file_location('index_schema_control', ROOT/'expe
 schema = importlib.util.module_from_spec(spec); spec.loader.exec_module(schema)
 
 
-def metadata_fixture(root):
+def metadata_fixture(root, *, science=None, retained_boundary=False):
     """Synthetic complete SQL shape for refusal controls, not a product PASS.
 
     The scientific source is the existing literal fixture. Two separate fixed
     metadata vectors below check the encoder, rather than deriving their hashes
     from this fixture's encoder calls.
     """
-    science = fixture()[3].first
+    science = fixture()[3].first if science is None else science
     prefix = '\\x'
     ds, resource, generation, incarnation, storage = ('22'*16,'55'*16,'66'*16,'77'*16,'88'*16)
     table = 'ad1b0478a2f12cac320ffc2b92723cd4cd1f019d2661fddfa2deb1a7af813106'
@@ -59,9 +59,10 @@ def metadata_fixture(root):
         role_instances=[dict(role_instance_id=own['role_instance_id'],role='index',dataset_id=prefix+ds,retired_at_us=None)],
         projection_generations=[gen],index_owner_sessions=[session],
         consumers=[dict(consumer_id=prefix+resource,consumer_role='index',dataset_id=prefix+ds,
-            current_revision=4,current_topology_generation=0,xmin='104')])
+            current_revision=64 if retained_boundary else 4,current_topology_generation=0,xmin='164' if retained_boundary else '104')])
     binding = tuple(bytes.fromhex(n) for n in (ds,resource,generation,storage,table))+(custody,1)
-    values = check.expected_rows(science,bytes.fromhex(generation),schema)
+    values = check.expected_rows(science,bytes.fromhex(generation),schema,
+        counts=(68,61,61,61,61,61,61,0,61,61) if retained_boundary else check.COUNTS)
     actual = {name:[{key:check.json_value(ty,value) for (key,ty),value in zip(schema.COMMON+cols,row)}
                    for row in values[name]] for name,cols,_ in schema.FAMILIES}
     for n,batch in enumerate(science['batches'],1):

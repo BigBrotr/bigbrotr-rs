@@ -104,7 +104,8 @@ def retained_age(prefix, parked, first, last):
     assert lower <= new - old <= upper, 'Archive observation was refreshed or changed'
 
 
-def prefix_preservation(before, after):
+def prefix_preservation(before, after, *, retained_boundary=False):
+    assert type(retained_boundary) is bool
     assert set(before) == set(after) and len(before) == 82
     additions = dict(acquisition_selectors=1, acquisition_scopes=1, acquisition_scope_commands=1,
         jobs=1, acquisition_jobs=1, job_admissions=1, management_commands=2, management_audit=2,
@@ -112,6 +113,12 @@ def prefix_preservation(before, after):
         acquisition_progress=1, archive_attempts=1, projection_plans=2, projection_plan_chunks=20,
         projection_chunks=20, projection_chunk_bounds=20, index_frontier_plans=2,
         consumer_frontier_revisions=2, consumer_frontiers=2)
+    if retained_boundary:
+        additions.update(producer_requests=62, producer_outcomes=62,
+            producer_checkpoint_dependencies=309, projection_plans=62,
+            projection_plan_chunks=620, projection_chunks=620,
+            projection_chunk_bounds=620, index_frontier_plans=62,
+            consumer_frontier_revisions=62, consumer_frontiers=62)
     appended = set(additions)
     mutable = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers'}
     assert appended | mutable <= set(before)
@@ -128,7 +135,7 @@ def prefix_preservation(before, after):
                     {k:v for k,v in new.items() if k not in allowed})
         assert new['lease_expires_at_us'] >= old['lease_expires_at_us']
     old, = before['producer_epochs']; new, = after['producer_epochs']
-    assert old['reserved_through_request'] == 2 and new['reserved_through_request'] == 4
+    assert old['reserved_through_request'] == 2 and new['reserved_through_request'] == (64 if retained_boundary else 4)
     ignored = {'reserved_through_request', 'xmin'}
     index.exact({k:v for k,v in old.items() if k not in ignored},
                 {k:v for k,v in new.items() if k not in ignored})
@@ -138,13 +145,14 @@ def prefix_preservation(before, after):
         if old['consumer_role'] == 'archive':
             index.exact(old, new)
         else:
-            assert old['consumer_role'] == 'index' and old['current_revision'] == 2 and new['current_revision'] == 4
+            assert old['consumer_role'] == 'index' and old['current_revision'] == 2 and new['current_revision'] == (64 if retained_boundary else 4)
             ignored = {'current_revision', 'xmin'}
             index.exact({k:v for k,v in old.items() if k not in ignored},
                         {k:v for k,v in new.items() if k not in ignored})
     old, = before['producer_checkpoints']; new, = after['producer_checkpoints']
     assert old['complete_through_request'] == 2 and old['checkpoint_revision'] == 2
-    assert new['complete_through_request'] == 4 and new['checkpoint_revision'] == 9
+    assert new['complete_through_request'] == (64 if retained_boundary else 4)
+    assert new['checkpoint_revision'] == (65 if retained_boundary else 9)
     for field in ('dataset_id', 'producer_slot_id', 'producer_epoch', 'progress_format',
                   'manifest_sha256', 'issuer_resource', 'issuer_epoch', 'issuer_incarnation'):
         index.exact(old[field], new[field])
