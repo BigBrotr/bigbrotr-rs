@@ -14,13 +14,13 @@ use bigbrotr_model::{
     ObserverDescriptor, WitnessContext,
 };
 
-impl Dispatch<'_> {
+impl Sync {
     pub(super) async fn observation(
         &mut self,
+        work: &mut Dispatch<'_, '_>,
         scope: &StoredAcquisitionScope,
         source: &StoredRelaySource,
         provenance: bool,
-        next_request: &mut u64,
     ) -> Result<Option<StoredObservation>> {
         // Attribution descriptors are small even at the maximum endpoint size.
         // Use a separate bound from event admission, so repeated observations
@@ -28,25 +28,25 @@ impl Dispatch<'_> {
         let limits = AdmissionLimits {
             max_batch_bytes: 64 * 1024,
             max_dependencies: 8,
-            max_outstanding_requests: u64::from(self.writer.limit(self.context)?),
+            max_outstanding_requests: u64::from(work.writer.limit(work.context)?),
         };
         let visible = scope.scope().visibility();
-        let prepared = self.trace.run(
+        let prepared = work.trace.run(
             Stage::ObservationPreparation,
             None,
             None,
             || -> Result<_> {
-                let mut prepared = match self.writer.prepare_dictionaries(
+                let mut prepared = match work.writer.prepare_dictionaries(
                     visible,
                     limits,
                     grant(
-                        self.budget,
+                        work.budget,
                         limits
                             .required_dictionary_preparation_data_bytes()
                             .map_err(error)?,
                         0,
                     )?,
-                    &self.cancel.requested,
+                    &work.cancel.requested,
                 ) {
                     Ok(prepared) => prepared,
                     // Some valid descriptors have a different fact envelope (the
@@ -113,103 +113,116 @@ impl Dispatch<'_> {
             max_dependencies: 8,
         };
         let path = Path::new(
-            self.root
+            work.root
                 .text("storage.ingest_root")
                 .expect("validated path"),
         );
-        let lifecycle = self.writer.profile()?;
-        let ttl = self.remaining()?;
-        let existing = self
-            .trace
-            .wait(
-                Stage::ObservationLookup,
-                None,
-                None,
-                self.writer.observation(
-                    self.owner,
-                    self.context,
-                    LiveSuccessorObservationRequest {
-                        ingest_root: path,
-                        bindings,
-                        limits: reads,
-                        policy_ttl: ttl,
-                        cancelled: &self.cancel.requested,
-                    },
-                    grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                    |d, h| validate_sync(self.root, lifecycle, d, h),
-                ),
-            )
-            .await
-            .map_err(error)?;
+        let lifecycle = work.writer.profile()?;
+        if !work.safe_point(self, false).await? {
+            return Ok(None);
+        }
+        let ttl = work.remaining()?;
+        let existing = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::ObservationLookup,
+            None,
+            None,
+            work.writer.observation(
+                work.commands.owner,
+                work.context,
+                LiveSuccessorObservationRequest {
+                    ingest_root: path,
+                    bindings,
+                    limits: reads,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?,
+                |d, h| validate_sync(work.root, lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?;
         if let Some(existing) = existing {
             return Ok(Some(existing));
         }
-        if !self.writer.can_reserve(self.context, *next_request)? {
+        if !work.writer.can_reserve(work.context, self.next_request)? {
             // This new descriptor set needs a mutation slot. A full initial
             // window defers it without ending HTTP, renewal or existing reads.
             return Ok(None);
         }
         let checkpoint = ProgressGrant::new(grant(
-            self.budget,
+            work.budget,
             ProgressGrant::REQUIRED_DATA_BYTES,
             ProgressGrant::REQUIRED_NATIVE_BYTES,
         )?)
         .map_err(error)?;
-        let ttl = self.remaining()?;
-        let appended = self
-            .trace
-            .wait(
-                Stage::ObservationAppend,
-                None,
-                Some(*next_request),
-                self.writer.append(
-                    self.owner,
-                    self.context,
-                    LiveSuccessorDictionaryAppendRequest {
-                        ingest_root: path,
-                        request_sequence: RequestSequence::new(*next_request).map_err(error)?,
-                        intent: prepared.intent(),
-                        recorded_at: recorded()?,
-                        limits,
-                        policy_ttl: ttl,
-                        cancelled: &self.cancel.requested,
-                    },
-                    grant(
-                        self.budget,
-                        limits.required_dictionary_data_bytes().map_err(error)?,
-                        limits.required_native_bytes().map_err(error)?,
-                    )?,
-                    &checkpoint,
-                    |d, h| validate_sync(self.root, lifecycle, d, h),
-                ),
-            )
-            .await
-            .map_err(error)?;
+        if !work.safe_point(self, false).await? {
+            return Ok(None);
+        }
+        let ttl = work.remaining()?;
+        let appended = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::ObservationAppend,
+            None,
+            Some(self.next_request),
+            work.writer.append(
+                work.commands.owner,
+                work.context,
+                LiveSuccessorDictionaryAppendRequest {
+                    ingest_root: path,
+                    request_sequence: RequestSequence::new(self.next_request).map_err(error)?,
+                    intent: prepared.intent(),
+                    recorded_at: recorded()?,
+                    limits,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                grant(
+                    work.budget,
+                    limits.required_dictionary_data_bytes().map_err(error)?,
+                    limits.required_native_bytes().map_err(error)?,
+                )?,
+                &checkpoint,
+                |d, h| validate_sync(work.root, lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?;
         drop(appended);
-        *next_request += 1;
-        let ttl = self.remaining()?;
-        self.trace
-            .wait(
-                Stage::ObservationRelookup,
-                None,
-                None,
-                self.writer.observation(
-                    self.owner,
-                    self.context,
-                    LiveSuccessorObservationRequest {
-                        ingest_root: path,
-                        bindings,
-                        limits: reads,
-                        policy_ttl: ttl,
-                        cancelled: &self.cancel.requested,
-                    },
-                    grant(self.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                    |d, h| validate_sync(self.root, lifecycle, d, h),
-                ),
-            )
-            .await
-            .map_err(error)?
-            .ok_or_else(|| error("committed observation missing after append"))
-            .map(Some)
+        self.next_request += 1;
+        if !work.safe_point(self, false).await? {
+            return Ok(None);
+        }
+        let ttl = work.remaining()?;
+        commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::ObservationRelookup,
+            None,
+            None,
+            work.writer.observation(
+                work.commands.owner,
+                work.context,
+                LiveSuccessorObservationRequest {
+                    ingest_root: path,
+                    bindings,
+                    limits: reads,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?,
+                |d, h| validate_sync(work.root, lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?
+        .ok_or_else(|| error("committed observation missing after append"))
+        .map(Some)
     }
 }

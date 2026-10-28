@@ -75,6 +75,75 @@ fn renewed_due(
     Ok(now + period)
 }
 
+/// Called only between completed operations. The finite Sync round keeps its
+/// original input and grants while this future obtains fresh authority. A
+/// started SQL/native operation never calls this helper to extend its deadline.
+async fn before_sync_operation(
+    due: Instant,
+    wire_phase: bool,
+    cancellation: &Cancellation,
+    renew: impl Future<Output = Result<Instant>>,
+) -> Result<Option<Instant>> {
+    if cancellation.requested.load(Ordering::Acquire) {
+        return Ok(None);
+    }
+    let due = if wire_phase || admission(Instant::now(), due, None) == Admission::Renew {
+        renew.await?
+    } else {
+        due
+    };
+    if cancellation.requested.load(Ordering::Acquire) {
+        return Ok(None);
+    }
+    if admission(Instant::now(), due, None) != Admission::Ready {
+        return Err((
+            4,
+            "initial Sync renewal left no dispatch margin; preserve retained input".into(),
+        ));
+    }
+    Ok(Some(due))
+}
+
+pub(super) async fn sync_operation<T>(
+    trace: sync_diagnostic::Trace<'_>,
+    deadline: Instant,
+    cancelled: &AtomicBool,
+    stage: sync_diagnostic::Stage,
+    frame: Option<u8>,
+    request: Option<u64>,
+    future: impl Future<Output = T>,
+) -> Result<T> {
+    trace.enter(stage, frame, request);
+    if cancelled.load(Ordering::Acquire) {
+        return Err((
+            4,
+            "initial Sync cancelled before dispatch; preserve retained input".into(),
+        ));
+    }
+    // A fresh timer may not yet have observed expiry. Never first-poll an
+    // effect under an already expired phase, and never renew after polling.
+    if Instant::now() >= deadline {
+        return Err((4, "initial Sync deadline; preserve original outcome".into()));
+    }
+    tokio::time::timeout_at(deadline, trace.wait(stage, frame, request, future))
+        .await
+        .map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))
+}
+
+fn retained_command(
+    pending: &mut Option<management::Work>,
+    due: Instant,
+    cancellation: &Cancellation,
+) -> Option<management::Work> {
+    if !cancellation.requested.load(Ordering::Acquire)
+        && admission(Instant::now(), due, None) == Admission::Ready
+    {
+        pending.take()
+    } else {
+        None
+    }
+}
+
 // Taking a retained item happens only when this future is actually polled in
 // the management slot. No await separates take from Ready; losing biased arms
 // leave it in its owner. Management::next is itself cancellation-safe.
@@ -144,6 +213,61 @@ impl<'a> CommandOwner<'a> {
             .min(self.lease.remaining_validity().map_err(authority)? / 2))
     }
 
+    pub(super) async fn sync_window(
+        &mut self,
+        native: &NativeOwner,
+        selected_sync: &mut sync::Sync,
+        management: &mut Option<management::Management>,
+        due: &mut Instant,
+        wire_phase: bool,
+    ) -> Result<Option<sync_diagnostic::Window>> {
+        let cancellation = self.cancellation;
+        let next = before_sync_operation(*due, wire_phase, cancellation, async {
+            let started = self
+                .renew_capped(Some(native), None, Some(selected_sync))
+                .await?;
+            self.next_renewal(started)
+        })
+        .await?;
+        let Some(next) = next else { return Ok(None) };
+        *due = next;
+        if let Some(management) = management.as_ref() {
+            management.renew_delivery(
+                self.lease
+                    .delivery_window(self.lease.known_epoch())
+                    .map_err(authority)?,
+            )?;
+        }
+        let selected = Instant::now();
+        let renewal_timeout = duration(self.root, "renewal_timeout");
+        let authority_remaining = self.lease.remaining_validity().map_err(authority)?;
+        let authority_checked = Instant::now();
+        let due_remaining = due.saturating_duration_since(authority_checked);
+        let maximum = renewal_timeout
+            .min(authority_remaining / 2)
+            .min(due_remaining);
+        if maximum < DISPATCH_MARGIN {
+            return Err((
+                4,
+                "initial Sync authority left no dispatch margin; preserve retained input".into(),
+            ));
+        }
+        let deadline = authority_checked + maximum;
+        phase_capped(self.progress, maximum, Some(deadline))?;
+        Ok(Some(sync_diagnostic::Window {
+            selected,
+            authority_checked,
+            renewal_timeout,
+            authority_remaining,
+            due_remaining,
+            maximum,
+            renewal_due: *due,
+            parent_deadline: self.progress.borrow().deadline,
+            dispatch_deadline: deadline,
+            outer_deadline: deadline,
+        }))
+    }
+
     fn next_renewal(&mut self, started: Instant) -> Result<Instant> {
         // Slow valid responses already consumed authority and heartbeat time.
         renewed_due(
@@ -160,17 +284,18 @@ impl<'a> CommandOwner<'a> {
         if self.profile != Profile::Initial {
             return Err((4, "initial Archive cannot renew a successor".into()));
         }
-        self.renew_capped(None, Some(deadline)).await
+        self.renew_capped(None, Some(deadline), None).await
     }
 
     async fn renew_for(&mut self, native: Option<&NativeOwner>) -> Result<Instant> {
-        self.renew_capped(native, None).await
+        self.renew_capped(native, None, None).await
     }
 
     async fn renew_capped(
         &mut self,
         native: Option<&NativeOwner>,
         deadline: Option<Instant>,
+        mut selected_sync: Option<&mut sync::Sync>,
     ) -> Result<Instant> {
         // Covers both biased timer paths, even if no management slot is reached
         // between renewals. A selected item may wait through one real renewal;
@@ -204,7 +329,7 @@ impl<'a> CommandOwner<'a> {
                 .refresh(|doc, digest| {
                     let restored = super::super::accepted_policy(self.root, doc, digest)?;
                     accepted_owner_profile(&restored, self.profile)?;
-                    if let Some(sync) = self.sync.as_deref_mut() {
+                    if let Some(sync) = selected_sync.as_deref_mut().or(self.sync.as_deref_mut()) {
                         sync.accept(&restored)?;
                     }
                     if self.archive_selected {
@@ -709,6 +834,13 @@ async fn maintain_context(
                 .lease
                 .check_delivery(state.lease.known_epoch())
                 .map_err(authority)?;
+            // A command already selected near a previous deadline owns its
+            // queue slot. Consume it after renewal before beginning a Sync
+            // round that may itself cross more than one safe-point renewal.
+            if let Some(work) = retained_command(&mut state.pending, due, cancellation) {
+                state.command(work, &mut management, due, None).await?;
+                continue;
+            }
             tokio::select! {
                 biased;
                 _ = cancellation.wait() => return Ok(()),
@@ -751,39 +883,17 @@ async fn maintain_context(
                     if admission(Instant::now(), due, None) == Admission::Renew {
                         continue;
                     }
-                    // Capture the inputs to the same lease check/minimum that
-                    // maximum() uses. Diagnostic reads never refresh authority.
-                    let selected = Instant::now();
-                    let renewal_timeout = duration(root, "renewal_timeout");
-                    let authority_remaining = state.lease.remaining_validity().map_err(authority)?;
-                    let authority_checked = Instant::now();
-                    let due_remaining = due.saturating_duration_since(Instant::now());
-                    let maximum = renewal_timeout.min(authority_remaining / 2).min(due_remaining);
-                    phase(progress, maximum)?;
-                    let parent_deadline = progress.borrow().deadline;
-                    // A signal asks this serial consumer to finish its current
-                    // SQL rollback/commit. Cancelling the whole future here
-                    // would poison an otherwise healthy quiet source owner.
-                    // The hard deadline and independent parent watchdog remain.
+                    // The round retains its bounded frames on this stack. Taking
+                    // only this dispatcher reference lets safe points reuse the
+                    // same renewal owner, including Sync's policy validator.
+                    let selected_sync = state.sync.take().expect("selected Sync");
                     let trace = sync_diagnostic::Trace::new(progress);
-                    let dispatch_deadline = Instant::now() + maximum;
-                    let dispatch =
-                        state.sync.as_deref_mut().expect("selected Sync").dispatch(sync::Dispatch {
-                            owner: state.owner, writer: store, context, root, budget, cancel: cancellation,
-                            deadline: dispatch_deadline, trace,
-                        });
-                    // timeout(duration, future) samples this same deadline
-                    // after constructing future. Its deadline is private in
-                    // Tokio; spell it explicitly to record the actual timer.
-                    let outer_deadline = Instant::now() + maximum;
-                    trace.begin(sync_diagnostic::Window {
-                        selected, authority_checked, renewal_timeout, authority_remaining,
-                        due_remaining, maximum, renewal_due: due, parent_deadline,
-                        dispatch_deadline, outer_deadline,
-                    });
-                    let result = tokio::time::timeout_at(outer_deadline, dispatch).await
-                        .map_err(|_| (4, "initial Sync deadline; preserve original outcome".into()))
-                        .and_then(|result| result);
+                    let result = selected_sync.dispatch(sync::Dispatch {
+                        commands: &mut state, writer: store, context, root, budget,
+                        cancel: cancellation, management: &mut management, due: &mut due,
+                        deadline: Instant::now(), trace,
+                    }).await;
+                    state.sync = Some(selected_sync);
                     trace.finish(result)?;
                     state.source_observation.refresh(store, &cancellation.requested);
                     // A timed gap lets HTTP run even under continuous work;
@@ -841,6 +951,146 @@ async fn maintain_context(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn sync_safe_point_retains_prepared_input_and_grant_until_reauthorization() {
+        use bigbrotr::storage::rocks::store::PreparedEvent;
+        use bigbrotr_model::{
+            ClockQuality, DurationUs, EventIntent, LocalObservation, ObservedTime, Ordinal,
+            ProducerEpoch, ProducerRequestId, QualifiedRef, RequestSequence,
+        };
+        let root = crate::config::load(
+            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config/recipes/archive-only.toml"),
+        )
+        .unwrap();
+        let budget = super::super::budget(&root, true, false).unwrap();
+        let corpus: Value = serde_json::from_str(include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../experiments/identity-contract/signed-fixture.json"
+        )))
+        .unwrap();
+        let signed: bigbrotr_model::SignedEvent =
+            serde_json::from_value(corpus["events"]["E_public"].clone()).unwrap();
+        let reference = |kind| QualifiedRef {
+            dataset_id: [1; 16].try_into().unwrap(),
+            dictionary_kind: kind,
+            allocation_domain: [2; 16].try_into().unwrap(),
+            ordinal: Ordinal::new(1).unwrap(),
+        };
+        let observer = reference(DictionaryKind::Observer);
+        let observation = LocalObservation {
+            received_at: ObservedTime::new(17),
+            observer_id: observer,
+            clock_quality: ClockQuality::new(observer, DurationUs::new(1), None, 0).unwrap(),
+            witness: None,
+        };
+        let request = ProducerRequestId {
+            producer_slot_id: [3; 16].try_into().unwrap(),
+            producer_epoch: ProducerEpoch::new(1).unwrap(),
+            request_sequence: RequestSequence::new(4).unwrap(),
+        };
+        let prepared = Box::pin(
+            PreparedEvent::new(
+                request,
+                EventIntent::network(
+                    1,
+                    reference(DictionaryKind::VisibilityScope),
+                    signed.clone(),
+                    observation,
+                )
+                .unwrap(),
+                256 * 1024,
+                grant(&budget, 10 * MIB, 0).unwrap(),
+            )
+            .unwrap(),
+        );
+        let original = std::ptr::from_ref(&*prepared);
+        let cancellation = Cancellation::new();
+        let effects = Cell::new(0);
+        let (release, wait) = tokio::sync::oneshot::channel();
+        let mut resumed = std::pin::pin!(async {
+            let next = before_sync_operation(
+                Instant::now() + Duration::from_millis(38),
+                false,
+                &cancellation,
+                async {
+                    wait.await.unwrap();
+                    Ok(Instant::now() + Duration::from_secs(5))
+                },
+            )
+            .await?;
+            assert!(next.is_some());
+            effects.set(effects.get() + 1);
+            Ok::<_, (u8, String)>(prepared)
+        });
+        assert!(
+            resumed
+                .as_mut()
+                .poll(&mut std::task::Context::from_waker(std::task::Waker::noop()))
+                .is_pending()
+        );
+        assert_eq!(effects.get(), 0);
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        release.send(()).unwrap();
+        let prepared = resumed.await.unwrap();
+        assert_eq!(effects.get(), 1);
+        assert_eq!(std::ptr::from_ref(&*prepared), original);
+        assert_eq!(prepared.request_id(), request);
+        assert_eq!(prepared.observation(), Some(&observation));
+        assert_eq!(prepared.verified_event().unwrap().event(), &signed);
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        drop(prepared);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+
+    #[tokio::test]
+    async fn sync_wire_phase_requires_renewal_even_with_remaining_time() {
+        let cancellation = Cancellation::new();
+        let due = Instant::now() + Duration::from_secs(5);
+        let renewals = Cell::new(0);
+        let unchanged = before_sync_operation(due, false, &cancellation, async {
+            renewals.set(renewals.get() + 1);
+            Ok(due)
+        })
+        .await
+        .unwrap();
+        assert_eq!(unchanged, Some(due));
+        assert_eq!(renewals.get(), 0);
+        let next = before_sync_operation(due, true, &cancellation, async {
+            renewals.set(renewals.get() + 1);
+            Ok(due)
+        })
+        .await
+        .unwrap();
+        assert_eq!(next, Some(due));
+        assert_eq!(renewals.get(), 1);
+    }
+
+    #[tokio::test]
+    async fn sync_safe_point_refuses_failed_revalidation_and_cancellation() {
+        let cancellation = Cancellation::new();
+        for reason in ["policy changed", "owner changed", "renewal commit unknown"] {
+            let error = before_sync_operation(Instant::now(), false, &cancellation, async {
+                Err((4, reason.into()))
+            })
+            .await
+            .unwrap_err();
+            assert_eq!(error, (4, reason.into()));
+        }
+        let next = before_sync_operation(Instant::now(), false, &cancellation, async {
+            cancellation.request();
+            Ok(Instant::now() + Duration::from_secs(5))
+        })
+        .await
+        .unwrap();
+        assert_eq!(next, None);
+        let next = before_sync_operation(Instant::now(), true, &cancellation, async {
+            panic!("cancelled work renewed")
+        })
+        .await
+        .unwrap();
+        assert_eq!(next, None);
+    }
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
     #[tokio::test]
@@ -1061,6 +1311,7 @@ mod tests {
         assert_eq!(budget.snapshot().active_permits(), retained);
         let cancellation = Cancellation::new();
         let renewed = Cell::new(false);
+        assert!(retained_command(&mut pending, due, &cancellation).is_none());
         for cancelled in [false, true] {
             if cancelled {
                 cancellation.request();
@@ -1081,6 +1332,14 @@ mod tests {
             assert!(pending.is_some());
             assert_eq!(budget.snapshot().active_permits(), retained);
         }
+        assert!(
+            retained_command(
+                &mut pending,
+                Instant::now() + Duration::from_secs(5),
+                &cancellation,
+            )
+            .is_none()
+        );
         tokio::select! {
             biased;
             _ = std::future::ready(()) => {},
@@ -1094,7 +1353,12 @@ mod tests {
             _ = next_command(&mut pending, &mut management), if false => panic!("disabled management slot ran"),
         }
         assert!(pending.is_some());
-        let work = next_command(&mut pending, &mut management).await;
+        // After one successful renewal the selected item precedes another
+        // Sync round. It keeps the same grant and cannot be dequeued twice.
+        let due = Instant::now() + Duration::from_secs(5);
+        let cancellation = Cancellation::new();
+        let work = retained_command(&mut pending, due, &cancellation).unwrap();
+        assert!(retained_command(&mut pending, due, &cancellation).is_none());
         assert!(pending.is_none());
         assert_eq!(budget.snapshot().active_permits(), retained);
         pending = Some(work);

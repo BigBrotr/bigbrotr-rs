@@ -167,6 +167,26 @@ the request-start expiry. Only the
 separate `runtime.heartbeat_interval` renews the scheduling row. A paused process
 checks expiry before attempting another operation.
 
+Initial Sync retains one finite round of at most three captured frames. Completed
+nomination, claim, scope/source reads, native visibility/attribution operations,
+relay collection, certification and admission are separate scheduling boundaries.
+Before the guarded REQ, after prior SQL and attribution finish and before a socket
+exists, the same Control/Ingest owner renews and revalidates its accepted policy.
+Other boundaries renew when the existing 100ms dispatch margin is unavailable.
+Captured receive times, request identity, prepared input and their resource grants
+stay with that round; renewal does not replace them or renew a job's own authority.
+The existing source/job and native checks still apply to every operation.
+
+Each operation receives its own fixed deadline bounded by the actual remaining
+authority, scheduled refresh and renewal timeout. Collection keeps its original
+500ms soft cap, including handshake and close. Once an operation is first polled,
+its deadline cannot be reset by renewal. A failed renewal, changed policy/owner,
+cancelled dispatch or ambiguous admission fails closed; an already started
+admission is never retried with a new identity. Original input staging alone is
+not a receipt, checkpoint or ACK. Resolve retained native and PostgreSQL outcomes
+before continuing an interrupted producer. An already selected management command
+keeps its grant and runs after renewal before another Sync round.
+
 SIGINT or SIGTERM while idle performs a bounded fenced release, closes and joins
 the driver, then emits `stopped` and exits 0. Cancellation during an operation
 closes the connection and exits incomplete; a lost release/acquisition COMMIT

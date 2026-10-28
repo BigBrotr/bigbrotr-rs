@@ -73,7 +73,14 @@ in `initial_index.py`: Index actors/preparation, physical-probe scheduling,
 explicit initial CLI selection, command admission and supervision, watchdogs,
 authenticated role HTTP and ordinary observation-cache controls. It also includes
 finite catch-up cursor, exact publication receipt, initial topology and bounded
-recovery-capacity controls. Ordinary cache
+recovery-capacity controls. The closed Sync command/diagnostic scope requires
+retention of the same prepared signed input and grant across safe-point renewal,
+pre-REQ reauthorization, cancellation/revalidation refusal, refusal before an
+expired operation's first poll, and preservation of a started admission's deadline
+and unknown outcome. Diagnostic progress cannot certify a commit. The binary
+scope contains 67 required names; the unchanged library selection is combined
+with its actual compiled inventory, never inferred from this source count.
+Ordinary cache
 tests distinguish a complete current proof from a narrow operation, retain the
 oldest dependency age, refuse historical selection promotion and preserve failures
 through retry or incomplete cleanup. These observations do not qualify live dependency

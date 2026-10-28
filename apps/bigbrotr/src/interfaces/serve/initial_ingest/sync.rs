@@ -40,6 +40,9 @@ use std::time::Duration;
 // three retained frames, two session items, WebSocket, Direct, DNS and one
 // effect input and progress transaction/ACK. These grants do not all overlap.
 // Control, retained producer inputs and native memory have separate base slots.
+// Safe-point renewal overlaps the retained arrivals/prepared input/progress,
+// using that same permanently held Control/policy grant, with no new socket,
+// input copy or native worker. Preflight already overlaps the complete Sync set.
 pub(super) const ITEMS: u64 = 17;
 pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 
@@ -201,20 +204,24 @@ impl Sync {
         Ok(())
     }
 
-    pub(super) async fn dispatch(&mut self, mut work: Dispatch<'_>) -> Result<()> {
-        let candidate = work
-            .trace
-            .wait(
-                Stage::Nominate,
-                None,
-                None,
-                work.owner.nominate_acquisition(
-                    self.scan,
-                    grant(work.budget, AcquisitionScan::REQUIRED_BYTES, 0)?,
-                ),
-            )
-            .await
-            .map_err(error)?;
+    pub(super) async fn dispatch(&mut self, mut work: Dispatch<'_, '_>) -> Result<()> {
+        if !work.safe_point(self, false).await? {
+            return Ok(());
+        }
+        let candidate = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::Nominate,
+            None,
+            None,
+            work.commands.owner.nominate_acquisition(
+                self.scan,
+                grant(work.budget, AcquisitionScan::REQUIRED_BYTES, 0)?,
+            ),
+        )
+        .await?
+        .map_err(error)?;
         self.scan = (!candidate.scan.complete()).then_some(candidate.scan);
         if work.stopped() {
             return Ok(());
@@ -222,15 +229,21 @@ impl Sync {
         let Some(job) = candidate.job else {
             return Ok(());
         };
-        let job = match work
-            .trace
-            .wait(
-                Stage::Claim,
-                None,
-                None,
-                work.owner.claim_acquisition(job, &Cell::new(false)),
-            )
-            .await
+        if !work.safe_point(self, false).await? {
+            return Ok(());
+        }
+        let job = match commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::Claim,
+            None,
+            None,
+            work.commands
+                .owner
+                .claim_acquisition(job, &Cell::new(false)),
+        )
+        .await?
         {
             Ok(job) => job,
             // These completed rollbacks/explicit COMMIT rejections leave the
@@ -238,45 +251,47 @@ impl Sync {
             Err(SessionError::Forbidden | SessionError::Conflict) => return Ok(()),
             Err(e) => return Err(error(e)),
         };
-        if work.stopped() {
+        if !work.safe_point(self, false).await? {
             return Ok(());
         }
-        let Some(scope) = work
-            .trace
-            .wait(
-                Stage::Scope,
-                None,
-                None,
-                work.owner.read_acquisition_scope(
-                    job.scope,
-                    grant(work.budget, EventLimits::default().parse_bytes as u64, 0)?,
-                ),
-            )
-            .await
-            .map_err(error)?
+        let Some(scope) = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::Scope,
+            None,
+            None,
+            work.commands.owner.read_acquisition_scope(
+                job.scope,
+                grant(work.budget, EventLimits::default().parse_bytes as u64, 0)?,
+            ),
+        )
+        .await?
+        .map_err(error)?
         else {
             return Err(error("claimed acquisition scope missing"));
         };
-        if work.stopped() {
+        if !work.safe_point(self, false).await? {
             return Ok(());
         }
-        let Some(source) = work
-            .trace
-            .wait(
-                Stage::Source,
-                None,
-                None,
-                work.owner.read_acquisition_source(
-                    &scope,
-                    grant(work.budget, StoredRelaySource::REQUIRED_BYTES, 0)?,
-                ),
-            )
-            .await
-            .map_err(error)?
+        let Some(source) = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::Source,
+            None,
+            None,
+            work.commands.owner.read_acquisition_source(
+                &scope,
+                grant(work.budget, StoredRelaySource::REQUIRED_BYTES, 0)?,
+            ),
+        )
+        .await?
+        .map_err(error)?
         else {
             return Ok(());
         };
-        if work.stopped() {
+        if !work.safe_point(self, false).await? {
             return Ok(());
         }
         let limits = work.certification_limits();
@@ -286,28 +301,29 @@ impl Sync {
                 .expect("validated path"),
         );
         let ttl = work.remaining()?;
-        let Some(visible) = work
-            .trace
-            .wait(
-                Stage::Visibility,
-                None,
-                None,
-                work.writer.visibility(
-                    work.owner,
-                    work.context,
-                    LiveSuccessorVisibilityRequest {
-                        ingest_root: path,
-                        reference: scope.scope().visibility(),
-                        limits,
-                        policy_ttl: ttl,
-                        cancelled: &work.cancel.requested,
-                    },
-                    grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                    |d, h| validate_sync(work.root, self.lifecycle, d, h),
-                ),
-            )
-            .await
-            .map_err(error)?
+        let Some(visible) = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::Visibility,
+            None,
+            None,
+            work.writer.visibility(
+                work.commands.owner,
+                work.context,
+                LiveSuccessorVisibilityRequest {
+                    ingest_root: path,
+                    reference: scope.scope().visibility(),
+                    limits,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
+                |d, h| validate_sync(work.root, self.lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?
         else {
             // Command acceptance checks identity, not native allocation. The
             // completed read rollback leaves this owner usable for other jobs.
@@ -322,13 +338,17 @@ impl Sync {
             return Ok(());
         }
         let (max_event_bytes, provenance) = self.profile.expect("accepted Sync profile");
-        let Some(attribution) = work
-            .observation(&scope, &source, provenance, &mut self.next_request)
+        let Some(attribution) = self
+            .observation(&mut work, &scope, &source, provenance)
             .await?
         else {
             return Ok(());
         };
-        if work.stopped() {
+        // No socket exists here and attribution has completed its handoff.
+        // Start the wire phase with an actual renewal, not a residual slice
+        // left by nomination/claim/dictionary operations. The receive cap and
+        // every deadline once dispatched remain unchanged.
+        if !work.safe_point(self, true).await? {
             return Ok(());
         }
         let hard = work.deadline;
@@ -337,53 +357,47 @@ impl Sync {
         // callback, leaving the source adapter time to destroy socket/rollback.
         let soft = Instant::now() + (work.remaining()? / 2).min(Duration::from_millis(500));
         let ttl = work.remaining()?;
-        let arrivals = work
-            .trace
-            .wait(
-                Stage::RelayCollection,
-                None,
-                None,
-                work.owner.run_relay_source(
-                    RelaySourceRequest {
-                        source: source.binding(),
-                        acquisition: Some(AcquisitionJobBinding {
-                            job: job.id,
-                            scope: scope.identity(),
-                        }),
-                        visibility: &visible,
-                        policy_ttl: ttl,
-                        deadline: hard,
-                    },
-                    &self.connector,
-                    |d, h, endpoint, route| {
-                        if endpoint != source.endpoint() || route != source.route() {
-                            return Err(OwnerError::InvalidMetadata);
-                        }
-                        authorize_sync_collection(
-                            work.root,
-                            d,
-                            h,
-                            endpoint,
-                            route,
-                            scope.selector(),
-                        )
-                    },
-                    async |stream| {
-                        receive::collect(
-                            stream,
-                            work.budget,
-                            &scope,
-                            &attribution,
-                            source.route(),
-                            max_event_bytes,
-                            soft,
-                            work.cancel,
-                        )
-                        .await
-                    },
-                ),
-            )
-            .await;
+        let arrivals = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::RelayCollection,
+            None,
+            None,
+            work.commands.owner.run_relay_source(
+                RelaySourceRequest {
+                    source: source.binding(),
+                    acquisition: Some(AcquisitionJobBinding {
+                        job: job.id,
+                        scope: scope.identity(),
+                    }),
+                    visibility: &visible,
+                    policy_ttl: ttl,
+                    deadline: hard,
+                },
+                &self.connector,
+                |d, h, endpoint, route| {
+                    if endpoint != source.endpoint() || route != source.route() {
+                        return Err(OwnerError::InvalidMetadata);
+                    }
+                    authorize_sync_collection(work.root, d, h, endpoint, route, scope.selector())
+                },
+                async |stream| {
+                    receive::collect(
+                        stream,
+                        work.budget,
+                        &scope,
+                        &attribution,
+                        source.route(),
+                        max_event_bytes,
+                        soft,
+                        work.cancel,
+                    )
+                    .await
+                },
+            ),
+        )
+        .await?;
         let arrivals = match arrivals {
             Ok(arrivals) => arrivals,
             // run_relay_source has completed its rollback before these known
@@ -434,8 +448,9 @@ impl Sync {
             // encoding overlap; the existing prepared-input constructor checks
             // actual retained capacities against this same owned reservation.
             let prepared_bytes = captured.limits().parse_bytes as u64 + 4 * max_event_bytes as u64;
+            let budget = work.budget;
             let prepare = || -> Result<_> {
-                let permit = grant(work.budget, prepared_bytes, 0)?;
+                let permit = grant(budget, prepared_bytes, 0)?;
                 Ok(CapturedEventInput::prepare(
                     captured,
                     job.id,
@@ -474,33 +489,37 @@ impl Sync {
             } else {
                 checkpoint.mutation_only()
             };
+            if !work.safe_point(self, false).await? {
+                return Ok(());
+            }
             let ttl = work.remaining()?;
-            let certified = work
-                .trace
-                .wait(
-                    Stage::Certification,
-                    frame,
-                    None,
-                    work.writer.certify(
-                        work.owner,
-                        work.context,
-                        LiveSuccessorCertificationRequest {
-                            ingest_root: path,
-                            event: prepared,
-                            relay_source: Some(source.binding()),
-                            acquisition: Some(context),
-                            provenance_enabled: provenance,
-                            limits,
-                            policy_ttl: ttl,
-                            cancelled: &work.cancel.requested,
-                        },
-                        grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
-                        Some(&checkpoint),
-                        |d, h, e| policy.certification(d, h, e),
-                    ),
-                )
-                .await
-                .map_err(error)?;
+            let certified = commands::sync_operation(
+                work.trace,
+                work.deadline,
+                &work.cancel.requested,
+                Stage::Certification,
+                frame,
+                None,
+                work.writer.certify(
+                    work.commands.owner,
+                    work.context,
+                    LiveSuccessorCertificationRequest {
+                        ingest_root: path,
+                        event: prepared,
+                        relay_source: Some(source.binding()),
+                        acquisition: Some(context),
+                        provenance_enabled: provenance,
+                        limits,
+                        policy_ttl: ttl,
+                        cancelled: &work.cancel.requested,
+                    },
+                    grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
+                    Some(&checkpoint),
+                    |d, h, e| policy.certification(d, h, e),
+                ),
+            )
+            .await?
+            .map_err(error)?;
             let needs_admission =
                 matches!(certified.outcome(), CertificationOutcome::NeedsAdmission);
             drop(certified);
@@ -535,38 +554,42 @@ impl Sync {
                 },
             )?;
             let admission = work.admission_limits()?;
+            if !work.safe_point(self, false).await? {
+                return Ok(());
+            }
             let ttl = work.remaining()?;
-            let outcome = work
-                .trace
-                .wait(
-                    Stage::Admission,
-                    frame,
-                    Some(self.next_request),
-                    work.writer.admit(
-                        work.owner,
-                        work.context,
-                        LiveSuccessorEventRequest {
-                            ingest_root: path,
-                            event,
-                            relay_source: Some(source.binding()),
-                            acquisition: Some(context),
-                            provenance_enabled: provenance,
-                            recorded_at: recorded()?,
-                            limits: admission,
-                            policy_ttl: ttl,
-                            cancelled: &work.cancel.requested,
-                        },
-                        grant(
-                            work.budget,
-                            admission.required_data_bytes().map_err(error)?,
-                            admission.required_native_bytes().map_err(error)?,
-                        )?,
-                        Some(&checkpoint),
-                        |d, h, e| policy.admission(d, h, e),
-                    ),
-                )
-                .await
-                .map_err(error)?;
+            let outcome = commands::sync_operation(
+                work.trace,
+                work.deadline,
+                &work.cancel.requested,
+                Stage::Admission,
+                frame,
+                Some(self.next_request),
+                work.writer.admit(
+                    work.commands.owner,
+                    work.context,
+                    LiveSuccessorEventRequest {
+                        ingest_root: path,
+                        event,
+                        relay_source: Some(source.binding()),
+                        acquisition: Some(context),
+                        provenance_enabled: provenance,
+                        recorded_at: recorded()?,
+                        limits: admission,
+                        policy_ttl: ttl,
+                        cancelled: &work.cancel.requested,
+                    },
+                    grant(
+                        work.budget,
+                        admission.required_data_bytes().map_err(error)?,
+                        admission.required_native_bytes().map_err(error)?,
+                    )?,
+                    Some(&checkpoint),
+                    |d, h, e| policy.admission(d, h, e),
+                ),
+            )
+            .await?
+            .map_err(error)?;
             if !matches!(outcome.outcome(), AdmissionOutcome::Durable(_)) {
                 return Err(error("certified event changed before admission"));
             }
@@ -577,17 +600,38 @@ impl Sync {
     }
 }
 
-pub(super) struct Dispatch<'a> {
-    pub owner: &'a mut ControlSession,
+pub(super) struct Dispatch<'a, 'owner> {
+    pub commands: &'a mut commands::CommandOwner<'owner>,
     pub writer: &'a mut NativeOwner,
     pub context: RuntimeContext<'a>,
     pub root: &'a Resolved,
     pub budget: &'a ResourceBudget,
     pub cancel: &'a Cancellation,
+    pub management: &'a mut Option<management::Management>,
+    pub due: &'a mut Instant,
     pub deadline: Instant,
     pub trace: Trace<'a>,
 }
-impl Dispatch<'_> {
+impl Dispatch<'_, '_> {
+    async fn safe_point(&mut self, selected_sync: &mut Sync, wire_phase: bool) -> Result<bool> {
+        self.trace.pause();
+        let Some(window) = self
+            .commands
+            .sync_window(
+                self.writer,
+                selected_sync,
+                self.management,
+                self.due,
+                wire_phase,
+            )
+            .await?
+        else {
+            return Ok(false);
+        };
+        self.deadline = window.dispatch_deadline;
+        self.trace.begin(window);
+        Ok(true)
+    }
     fn stopped(&self) -> bool {
         self.cancel.requested.load(Ordering::Acquire)
     }
