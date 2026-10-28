@@ -385,6 +385,55 @@ uncertainty resolution, lost COMMIT, topology handoff, independent process outag
 capacity or complete M1. A complete-prefix-only recovery cannot satisfy its
 required prepared and unplanned backlog.
 
+### Index publication COMMIT uncertainty
+
+The fresh `p01-first-launch-index-commit-before` and
+`p01-first-launch-index-commit-after` cases reuse that same prefix, paused backlog,
+explicit source closure and independent signed science. Their first finite
+catch-up positively rebinds Index1→2, then loses plan3's actual publication COMMIT.
+The existing PostgreSQL proxy matches the exact final consumer-head UPDATE and
+the four Bind values: retained Index consumer, revision3, topology0 and previous2.
+Only its successful UPDATE1 selects the following COMMIT. Preparation, renewal,
+rebind transactions, another consumer and a cached Parse alone cannot select it.
+
+An opt-in completion hold preserves the real transaction while the observer
+captures all81 tables and binds the current Control backend PID/start, live
+Control/Index epochs, actual process and held local custody. This capture sees
+the committed rebind but the old revision2/prepared-plan3 state. The observer
+must release the gate inside the existing SQL operation; slower observation
+fails. The proxy retains64MiB,20,000 total frames,16 lifetime connections and120s.
+It neither replaces a COMMIT result nor counts a local stop as a fault.
+
+| Actual boundary | Independent postfault PG state | Fresh catch-up2→3 |
+| --- | --- | --- |
+| COMMIT not forwarded | revision2/cut3; all ten plan3 chunks prepared | recovers pending3, publishes it under epoch3, creates/publishes plan4 |
+| Server COMMIT complete, reply withheld | revision3/cut7; all ten chunks/frontier committed atomically under publisher2 | verifies published3 without replay, creates/publishes plan4 |
+
+Neither fault may create plan4. Both failed commands must remain
+`CommitUnknown`/exit4 without a terminal success or claimed owner release.
+The actual process and PostgreSQL backend must join, and custody must become
+independently available. A fresh Control lifetime then supplies actual lock-based
+exclusion of its failed predecessor; the oracle reconstructs the successor-bound
+exclusion digest and permits only the corresponding owner/role changes.
+Index session2 retains its original recovered tuple `(published2,pending3)` in
+both branches, even when the independently observed current head is3.
+
+Final origins are `(1,1,1,3)`. Publishers are `(1,1,3,3)` before-forward and
+`(1,1,2,3)` after-complete. Every earlier committed receipt and MVCC version stays
+unchanged. Raw ClickHouse captures retain retry multiplicity: synchronous
+immutable insertion with deduplication disabled writes plan3's four dictionary
+rows twice after before-forward loss, giving12 raw dictionaries; after-complete
+has8. The oracle derives each copy from original signed source bytes and checks
+the unchanged logical row commitments. It does not normalize observer captures
+with DISTINCT or accept a divergent copy. Exact retry3→4 creates no batch and
+adds no third copy. All40 zero/nonzero outcomes, table UUIDs, original inputs,
+Archive files and the353-byte signed history/export remain independently checked.
+
+These cases add no product interface and qualify only PG publication-COMMIT
+resolution. Unknown ClickHouse query termination/exclusion and genuinely unknown
+native termination remain separate NOT_RUN gates. Maintained controls:
+`cd tests/acceptance && python3 -B -m unittest test_first_launch_index_commit`.
+
 ### Reader-pin release COMMIT uncertainty
 
 Select `p01-first-launch-index-pin-release-before` or

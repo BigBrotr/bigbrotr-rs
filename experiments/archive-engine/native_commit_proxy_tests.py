@@ -12,7 +12,12 @@ import subprocess
 import sys
 import unittest
 
-from native_commit_proxy import MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, Proxy, control_target_query
+from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
+                                IndexPublicationObserver, Proxy, control_target_query)
+
+
+def index_bind(values=(bytes.fromhex('aa'*16),b'3',b'0',b'2')):
+    return b'\0publish\0'+struct.pack('!HHH',1,1,4)+b''.join(struct.pack('!i',len(v))+v for v in values)+struct.pack('!HH',1,1)
 
 
 def ordinary_proxy(**changes):
@@ -23,6 +28,30 @@ def ordinary_proxy(**changes):
 
 
 class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
+    def test_index_target_requires_exact_current_statement_and_bound_plan3(self):
+        source = Path(__file__).resolve().parents[2]/'apps/bigbrotr/src/storage/postgres/index_publication/adapter.rs'
+        self.assertEqual(source.read_text().count(INDEX_PUBLICATION_QUERY.decode()),1)
+        self.assertTrue(control_target_query('control-index-publication',INDEX_PUBLICATION_QUERY))
+        self.assertFalse(control_target_query('control-index-publication',INDEX_PUBLICATION_QUERY+b'; SELECT 1'))
+        for values,expected in ((None,True),((b'b'*16,b'3',b'0',b'2'),False),
+                ((bytes.fromhex('aa'*16),b'4',b'0',b'2'),False),
+                ((bytes.fromhex('aa'*16),b'3',b'1',b'2'),False),
+                ((bytes.fromhex('aa'*16),b'3',b'0',b'1'),False)):
+            observer=IndexPublicationObserver('aa'*16)
+            observer.frontend(b'P',b'publish\0'+INDEX_PUBLICATION_QUERY+b'\0\0\0')
+            observer.frontend(b'B',index_bind() if values is None else index_bind(values))
+            observer.frontend(b'E',b'\0'*5)
+            self.assertEqual(observer.backend(b'C',b'UPDATE 1\0'),expected)
+        for malformed in (index_bind()[:-1],index_bind()+b'x',b'\0publish\0'+b'\0'*6):
+            observer=IndexPublicationObserver('aa'*16)
+            observer.frontend(b'P',b'publish\0'+INDEX_PUBLICATION_QUERY+b'\0\0\0')
+            with self.assertRaises((ValueError,AssertionError)):
+                observer.frontend(b'B',malformed)
+        with self.assertRaises(ValueError):Proxy('before-forward',target='control-index-publication')
+        proxy=Proxy('before-forward',target='control-index-publication',defer_arm=True,
+                    index_consumer='aa'*16,hold_index_publication=True)
+        self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds),(20000,16,120))
+
     def test_release_hold_is_explicit_and_only_valid_for_armed_release_target(self):
         for options in (dict(),dict(target='control-pin-release'),dict(defer_arm=True),
                         dict(target='control-pin-release',defer_arm=True,hold_pin_release=1)):
@@ -310,10 +339,11 @@ async def read_message(reader):
 class SocketProxy:
     """Actual proxy subprocess and loopback streams; the upstream is framing only."""
     def __init__(self, case, mode, *, target='publication', deferred=True, profile='default', unexpected=0,
-                 hold_pin_release=False):
+                 hold_pin_release=False,index_consumer=None):
         self.case, self.mode, self.target, self.deferred = case, mode, target, deferred
         self.profile, self.unexpected = profile, unexpected
         self.hold_pin_release = hold_pin_release
+        self.index_consumer = index_consumer
         self.connections = []
         self.events = []
         self.process = None
@@ -334,6 +364,8 @@ class SocketProxy:
             command.append('--defer-arm')
         if self.hold_pin_release:
             command.append('--hold-pin-release')
+        if self.index_consumer is not None:
+            command += ['--index-consumer',self.index_consumer,'--hold-index-publication']
         self.process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         try:
@@ -395,6 +427,7 @@ class SocketProxy:
         encoded = json.dumps(self.events)
         self.case.assertNotIn(str(0x1234abcd), encoded)
         self.case.assertNotIn(PIN_RELEASE_QUERY.decode(), encoded)
+        self.case.assertNotIn(INDEX_PUBLICATION_QUERY.decode(), encoded)
 
     async def __aexit__(self, *_):
         try:
@@ -413,6 +446,43 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def test_index_publication_hold_is_bound_and_both_commit_results_stay_distinct(self):
+        for mode in ('before-forward','after-complete'):
+            async with SocketProxy(self,mode,target='control-index-publication',index_consumer='aa'*16) as proxy:
+                connection=await proxy.connect('bigbrotr_control','bigbrotr_control')
+                begin=[(b'C',b'BEGIN\0'),(b'Z',b'T')]
+                commit=[(b'C',b'COMMIT\0'),(b'Z',b'I')]
+                await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+                await self.exchange(connection,b'P',b'publish\0'+INDEX_PUBLICATION_QUERY+b'\0\0\0',[(b'1',b'')])
+                await self.exchange(connection,b'Q',b'COMMIT\0',commit)
+                await proxy.command('arm','armed')
+                # A cached prepared statement and wrong consumer cannot select
+                # an unrelated renewal/preparation transaction's COMMIT.
+                await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+                await self.exchange(connection,b'B',index_bind((b'b'*16,b'3',b'0',b'2')),[(b'2',b'')])
+                await self.exchange(connection,b'E',b'\0'*5,[(b'C',b'UPDATE 1\0')])
+                await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+                await self.exchange(connection,b'Q',b'COMMIT\0',commit)
+                await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+                await self.exchange(connection,b'B',index_bind(),[(b'2',b'')])
+                await self.exchange(connection,b'E',b'\0'*5)
+                connection[3].write(message(b'C',b'UPDATE 1\0'));await connection[3].drain()
+                selected=await proxy.event('index-publication-update-complete')
+                held=await proxy.event('held')
+                self.assertEqual((selected['data_queries'],selected['data_commits'],held['stage']),(1,0,'index-publication-update'))
+                await proxy.command('release','released')
+                self.assertEqual(await read_message(connection[0]),(b'C',b'UPDATE 1\0'))
+                await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+                connection[1].write(message(b'Q',b'COMMIT\0'));await connection[1].drain()
+                if mode=='after-complete':
+                    self.assertEqual(await read_message(connection[2]),(b'Q',b'COMMIT\0'))
+                    connection[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await connection[3].drain()
+                fault=await proxy.event('fault')
+                self.assertEqual([fault[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')],
+                                 [1,1,int(mode=='after-complete'),0,1])
+                self.assertEqual(await asyncio.wait_for(connection[0].read(),3),b'')
+                self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
+
     async def test_release_update_hold_precedes_commit_and_stop_does_not_invent_fault(self):
         for action in ('release', 'stop'):
             for mode in ('before-forward', 'after-complete'):

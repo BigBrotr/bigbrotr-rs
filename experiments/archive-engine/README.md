@@ -301,11 +301,14 @@ the original port 5432 and legacy catalog identities/marker shape remain intact.
 Traffic, frame, connection and lifetime ceilings remain unchanged.
 
 `--defer-arm` forwards baseline traffic until one stdin `arm` line, then emits
-`armed`. The fixture must first establish positive Ready and quiescence in the
-same actual process, and stop issuing history/export work; the proxy cannot
-establish either fact. Deferred arming is limited to `hold-reader-query`,
+`armed`. The installed caller owns the scenario's independent admission proof:
+the ordinary short-pin case requires positive Ready/quiescence, while the
+reader-release case binds its first active probe and the Index publication case
+binds its retained pending plan. The proxy cannot establish those facts.
+Deferred arming is limited to `hold-reader-query`,
 `hold-capture-verify`, `hold-capture-rollback`, and the new
-`--target control-pin-release` with `before-forward` or `after-complete`.
+`--target control-pin-release` or `control-index-publication` with
+`before-forward` or `after-complete`.
 An opted-in `ready` marker includes the route/catalog profile and `armed:false`.
 Held gates retain the existing `held`, `release`/`close`, and `released` protocol.
 `stop` cancels and joins the sessions without forwarding a held query, then emits
@@ -364,6 +367,19 @@ it does not invent a COMMIT result. `stop` while held closes the streams without
 forwarding the held completion and cannot count as either COMMIT fault. The
 original operation, frame, wire, connection and lifetime limits still apply.
 An observer that loses the actual operation race retains a failed/unknown run.
+
+The closed `control-index-publication` target requires `--index-consumer HEX`,
+`--defer-arm` and `--hold-index-publication` with the original default profile.
+It matches the exact final Index consumer-head UPDATE, unnamed portal and
+bounded binary Bind values `(consumer,revision3,topology0,previous2)`, including
+cached statements. Successful UPDATE1 emits `index-publication-update-complete`
+and holds that completion before the following COMMIT. Only the owned
+`bigbrotr_control` login/database is eligible. The installed caller independently
+binds the actual Control backend PID/start, committed Index rebind, unchanged
+precommit frontier and retained custody before releasing the hold. Counters retain
+both actual COMMIT outcomes and zero delivered completion. No parameter payload,
+SQL or authentication bytes are logged. Malformed frames refuse; wrong parameter
+identities cannot arm a later unrelated COMMIT. Resource ceilings are unchanged.
 
 The same signed harness adds three actual native fencing schedules: successor
 activation obtains the owner lock before old metadata DML, or old metadata DML
