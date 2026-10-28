@@ -273,6 +273,7 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         save(output/'clickhouse-schema.json', dict(tables=tables, columns=columns))
         index.exact(self.custody(), self.custody_before)
         result.update(format='bigbrotr-installed-archive-outage/1',
+            readiness='archive_unavailable_index_current',
             independent_source_and_c_api=False, independent_source_and_clickhouse=True,
             archive_prefix_c_api=True, archive_cut=3, retained_attempt=3,
             source_inputs='four_exact_originals', typed_progress='six_classifications',
