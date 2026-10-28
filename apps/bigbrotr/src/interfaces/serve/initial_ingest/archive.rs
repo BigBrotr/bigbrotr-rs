@@ -289,8 +289,7 @@ impl Archive {
                 let now = SuspendAwareClock.read().map_err(error)?;
                 if now.elapsed_since(previous.started).map_err(error)? >= readiness::FRESHNESS / 2 {
                     self.capture(
-                        budget,
-                        native,
+                        &reservation,
                         state,
                         due,
                         management,
@@ -412,7 +411,7 @@ impl Archive {
             }
         }
         self.inputs.push(retained);
-        self.capture(budget, native, state, due, management, end, true)
+        self.capture(&reservation, state, due, management, end, true)
             .await?;
         self.next = last;
         Ok(true)
@@ -420,14 +419,15 @@ impl Archive {
 
     async fn capture(
         &mut self,
-        budget: &ResourceBudget,
-        native: &ResourceBudget,
+        reservation: &Reservation,
         state: &mut CommandOwner<'_>,
         due: &mut Instant,
         management: &mut Option<management::Management>,
         end: u64,
         publish: bool,
     ) -> Result<()> {
+        let budget = reservation.application.budget();
+        let native = reservation.native.budget();
         // Freshness includes preparation, every physical read and cleanup.
         let started = SuspendAwareClock.read().map_err(error)?;
         let deadline = Instant::now() + OPERATION;

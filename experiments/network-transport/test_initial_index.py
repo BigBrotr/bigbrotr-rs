@@ -79,6 +79,7 @@ class IndexResultControls(unittest.TestCase):
 
     def test_actual_binary_target_is_compiled_and_each_group_runs_its_retained_elf(self):
         commands = dict(build_commands())
+        self.assertEqual(list(commands), ['clippy', 'compile', 'compile-tests'])
         for command in commands.values():
             for flag in ('--locked', '--offline', '--release', '--lib', '--bin'):
                 self.assertIn(flag, command)

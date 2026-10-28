@@ -77,7 +77,7 @@ impl Mailbox {
         let (records, incomplete) = {
             let mut pending = self.pending.lock().expect("capacity mailbox");
             (
-                std::mem::replace(&mut pending.records, [None, None]),
+                std::mem::take(&mut pending.records),
                 std::mem::take(&mut pending.incomplete),
             )
         };
