@@ -74924,7 +74924,7 @@
     "resume_20261028": {
       "status": "ACTIVE; full goal incomplete",
       "canonical_branch": "work/short-pin-admission-wip-20261028",
-      "canonical_revision": "c3859428c2ffcfd11c6324433984b84617159e04",
+      "canonical_revision": "6c2aea093d93f2de6c77d837c9ec34f73a52b140",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75011,7 +75011,7 @@
           }
         }
       },
-      "processes": "Installed build62990 live; hold timing-sensitive pin run until compilerterminal. No active installed test engine/proxy. Latest actual handles above override earlier stopped cache observations.",
+      "processes": "No compiler or installed engine/proxy running. Build62990 and installed63726/19020 reaped; optional cache released. Restart fixture agent diagnosing prefix policy cadence in isolated retained worktree. CI read-only watcher session80951 (driver4144536/start656306687, gh4144553/start656306688) observes remote40662294894; no duplicate dispatch.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75031,27 +75031,92 @@
           "status": "FAIL_FIXTURE_GATE_WAITER_ATTRIBUTION",
           "terminal_receipt_sha256": "2d4eb9fb5faad9d1772eeec19b99400b69324bf0359f1e0f0b9c14b30ef0caf2",
           "resources": "19containers stopped/PID0/noOOM; proxy absent/exit0; borrowed networkempty; original failures preserved"
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r6-20261028",
+          "status": "PASS_ALL_8_INSTALLED_STAGES_AND_ROOT_TERMINAL_CUSTODY",
+          "receipt_sha256": "9ef03bcad454d5b0bb2c34833d6766c010032ee469525a87cbe1ead53faf5b0d",
+          "containers": "19 stopped/exit0/PID0/noOOM; proxy, blocker, app and native child absent; borrowed network empty"
         }
       ],
       "installed_recovery_build": {
+        "status": "PASS_EXACT_SOURCE_INSTALLED_BUILD_AND_CANDIDATE_PREPARATION",
         "source": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
+        "tree": "4de83b2713626d405a3e4115b5f99b26ac7a5b80",
+        "candidate_manifest": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-7e04f12/candidate/candidate-manifest.json",
+        "candidate_manifest_sha256": "e18f1a5c07e12bb722e35e2b367f5261aab2ed3c4ffd8061425507043161e5b7",
+        "bundle": {
+          "bytes": 77840254,
+          "name": "bigbrotr-x86_64-unknown-linux-gnu.tar.gz",
+          "sha256": "2d0bc99393cdce382683345afb5722505cd504357ce7f1b96f940c973b07b991"
+        },
+        "binary": {
+          "bytes": 42280240,
+          "sha256": "1cc518032a11f3e5b4a2136926d92b909dfce9d7e16294780322c149a3281186"
+        },
+        "worker": {
+          "bytes": 14421704,
+          "sha256": "7213855f02ce2912e0aa97430a155d6b18ff101672e9ba5fc97340ffd65ed647"
+        },
+        "source_files": 2375,
+        "build_result_sha256": "ba3413b633fa33434edf8b50cecef3ee2ff7bf7c82e541b8a7234a9b9fa61319",
+        "native_controls": 156,
+        "receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7e04f12/receipt.json",
+        "receipt_sha256": "5a7c404cdaaf8dae8c6fe770fb8b7257cd6aed651d2736d0c7d9f357e650eca4",
+        "not_run": [
+          "Engine/installed same-store Index recovery, restart or catch-up acceptance",
+          "Full release, deployment, hosted/platform and remaining M1 gates"
+        ],
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-7e04f12",
-        "status": "RUNNING; not a completed build or installed test",
-        "session": 62990,
-        "launcher_pid": 4118883,
-        "launcher_start_ticks": 656240634,
         "container": "f8b2085eb4b64436d990de6d821d3d513f110effa77426351182a9285e528521",
         "owner": "b31e3f129b9c705e17a6372d41b32b77",
-        "handle_receipt": ".research/initial-index-recovery-qualification-20261028/installed-7e04f12/session.json",
-        "cache": "exclusive115cache held; optional cache adapter with Docker networknone; maintained tools/build.py unchanged",
-        "constraints": "2CPU/6GiB/512PIDs; no engines"
+        "owner_label": "org.bigbrotr.candidate",
+        "state": "stopped-retained",
+        "session": {
+          "session_id": 62990,
+          "launcher_pid": 4118883,
+          "launcher_start_ticks": "656240634",
+          "container": "f8b2085eb4b64436d990de6d821d3d513f110effa77426351182a9285e528521",
+          "owner": "b31e3f129b9c705e17a6372d41b32b77",
+          "source": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
+          "status": "REAPED",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-7e04f12",
+          "exit_code": 0
+        },
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-10-28T09:35:53.459898969Z",
+          "FinishedAt": "2026-10-28T09:38:01.746969442Z"
+        },
+        "retained_intake_copy": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-7e04f12/candidate-intake-verified",
+        "cache": "network-1154757; released; optional mutable acceleration with prior evidence outside cache",
+        "retention": "Preserve exact checkout/export/source archive, standard receipts, CLI/worker/native bundle, candidate and verified intake copy, logs and original825 candidate/failures"
       },
       "pending_waiter_fixture": {
         "branch": "work/short-pin-reader-attribution",
         "worktree": ".research/short-pin-reader-attribution-20261028",
         "base": "985ea0a32028b4949b05c3f052ccf06e46d98357",
-        "state": "Implementation/review in progress; root must reconcile actual dirty/head before integration; no engines"
-      }
+        "state": "Integrated locally; author controls/root review/integrated controls and actual installed r6 PASS; original source worktree retained",
+        "source": "45695bd200a186d577cc83a243ac910e84c22472",
+        "integration": "6c2aea09"
+      },
+      "installed_recovery_attempts": [
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-restart-r1-20261028",
+          "status": "FAIL_INITIAL_PREFIX_DEADLINE_RECOVERY_NOT_RUN",
+          "receipt_sha256": "f157b445613acb87a59169f0826cb47ff034428ad3870cfb64e97d65da358273",
+          "containers": "16 stopped/PID0/noOOM; source cancelled with exit4 during enclosing cleanup; all other exit0; client absent; no CH pause; borrowed network empty",
+          "retention": "Preserve original database, inputs, logs, timed-out prefix evidence and all candidate artifacts"
+        }
+      ]
     }
   },
   "implementation_checkpoint_space_20261026": {
