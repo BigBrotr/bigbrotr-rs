@@ -74,6 +74,7 @@ class Session:
         self.buffer = b""
         self.sequence = 0
         self.total_bytes = 0
+        self.last_response_lines = []
         self.process = subprocess.Popen(
             ["docker", "exec", "-i", "--env", "PGAPPNAME=" + name, "--env", "PGCONNECT_TIMEOUT=5",
              "--env", "PGOPTIONS=-c statement_timeout=30000 -c lock_timeout=20000 -c idle_in_transaction_session_timeout=60000 -c synchronous_commit=on",
@@ -94,6 +95,7 @@ class Session:
             raise Incomplete("session-already-busy")
         self.sequence += 1
         self.pending = "bb_result_" + str(self.sequence)
+        self.last_response_lines = []
         # One command response marker is printed by psql after execution, including
         # exact SQLSTATE/ROW_COUNT. SQL fixtures never contain credentials.
         data = (sql + "\n\\echo " + self.pending + " :SQLSTATE :ROW_COUNT\n").encode()
@@ -103,7 +105,9 @@ class Session:
 
     def finish(self, timeout=12):
         deadline = time.monotonic() + timeout
-        lines = []
+        # Keep the same bounded response buffer inspectable after EOF/timeout;
+        # callers can retain the original failed SQL diagnostic before cleanup.
+        lines = self.last_response_lines
         while True:
             while b"\n" in self.buffer:
                 line, self.buffer = self.buffer.split(b"\n", 1)

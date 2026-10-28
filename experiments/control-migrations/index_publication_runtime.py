@@ -29,6 +29,208 @@ PRIVILEGE_REFUSALS = (
     "rewrite_sealed_source", "rewrite_membership", "rewrite_incarnation",
     "timeout_cannot_invalidate", "publication_receipt_is_immutable", "prepared_plan_cannot_be_deleted",
 )
+HANDOFF_SQL = 'experiments/control-migrations/index_handoff_cases.sql'
+HANDOFF_COMMON = {'exact_current_seed', 'actual_terminal_classification'}
+HANDOFF_TERMINAL = HANDOFF_COMMON | {
+    'stale_owner', 'stale_head', 'competing_plan_before_handoff', 'competing_plan_after_handoff',
+    'fake_batch_handoff_overlap', 'missing_typed_receipt', 'wrong_succession_digest',
+    'changed_predecessor_cut', 'changed_predecessor_attestation', 'missing_predecessor_attestation',
+    'missing_predecessor_bound', 'missing_successor_bound', 'missing_atomic_head',
+    'positive_bridge_committed', 'all_prior_rows_and_attestation_preserved',
+    'immutable_handoff_update', 'immutable_handoff_delete', 'immutable_handoff_truncate',
+    'wrong_handoff_recovery_capture', 'retry_captures_typed_handoff_head',
+    'historical_handoff_replays_after_publisher_release',
+}
+HANDOFF_NONTERMINAL = HANDOFF_COMMON | {'nonterminal_successor_refuses_bridge'}
+HANDOFF_POSITIVE = HANDOFF_COMMON | {'positive_bridge_committed', 'all_prior_rows_and_attestation_preserved',
+    'retry_captures_typed_handoff_head', 'historical_handoff_replays_after_publisher_release'}
+
+
+def validate_handoff_seed(rows, phase, tables, migration_sha):
+    """Closed installed provenance-on seed; no inferred alternate lifecycle."""
+    require(phase in ('terminal', 'nonterminal'), 'unknown-handoff-seed-phase')
+    require(len(tables) == 82 and set(rows) == set(tables), 'exact82-seed-tables-required')
+
+    def only(name, **fields):
+        selected = [row for row in rows[name] if all(row.get(k) == v for k, v in fields.items())]
+        require(len(selected) == 1, 'ambiguous-handoff-seed-' + name)
+        return selected[0]
+
+    dataset = only('datasets')
+    generation = only('projection_generations')
+    consumer = only('consumers', consumer_role='index')
+    succession = only('initial_ingest_successions')
+    session = only('index_owner_sessions')
+    require(dataset['topology_generation'] == 1 and generation['dataset_id'] == dataset['dataset_id']
+            and generation['owner_resource_id'] == consumer['consumer_id'] == session['resource_id']
+            and generation['generation_id'] == session['generation_id']
+            and generation['owner_epoch'] == session['owner_epoch'] == 1
+            and generation['provenance'] == 'local_first_witness'
+            and consumer['current_revision'] == 4 and consumer['current_topology_generation'] == 0
+            and not rows['index_frontier_handoffs'], 'exact-unbridged-index-seed-required')
+    require(len(rows['projection_plans']) == len(rows['index_frontier_plans']) == 4
+            and {row['frontier_revision'] for row in rows['projection_plans']} == {1, 2, 3, 4}
+            and all(row['sealed'] for row in rows['projection_plans'])
+            and len(rows['projection_chunks']) == 40
+            and all(row['state'] == 'committed' for row in rows['projection_chunks']), 'complete-old-index-prefix-required')
+    old = only('source_streams', owner_epoch=1)
+    new = only('source_streams', owner_epoch=2)
+    producer = only('producer_epochs', producer_epoch=2)
+    ingest = only('owner_epochs', role='ingest', epoch=2)
+    require(len(rows['source_streams']) == 2 and old['state'] == new['state'] == 'closed'
+            and old['last_complete_sequence'] == 12 and new['last_complete_sequence'] == 10
+            and old['shard_id'] == new['shard_id'] == succession['shard_id'] == 0
+            and old['owner_resource_id'] == new['owner_resource_id'] == succession['owner_resource_id']
+            and producer['state'] == ('retired' if phase == 'terminal' else 'closing')
+            and (ingest['state'] == 'released' if phase == 'terminal' else ingest['state'] in ('active', 'draining')),
+            'genuine-closed-successor-phase-required')
+    require(all(row['state'] == 'released' for row in rows['owner_epochs'] if row['role'] == 'control'),
+            'released-control-seed-required')
+    require(only('schema_versions', migration=41)['checksum'] == '\\x' + migration_sha,
+            'current-consolidated-schema-required')
+    require(len(json.dumps(rows).encode()) <= 4 * 1024**2, 'seed-capture4MiB-ceiling')
+
+
+def handoff_summary(answer, phase):
+    summaries = [json.loads(line) for line in answer['lines']
+                 if line.startswith('{') and 'bigbrotr-index-handoff-sql-cases/1' in line]
+    require(len(summaries) == 1, 'one-complete-handoff-summary-required')
+    summary = summaries[0]
+    expected = HANDOFF_TERMINAL if phase == 'terminal' else HANDOFF_NONTERMINAL
+    require(summary['format'] == 'bigbrotr-index-handoff-sql-cases/1'
+            and summary['kind'] == 'SQL_ONLY_NO_NATIVE_PROOF'
+            and summary['terminal'] is (phase == 'terminal')
+            and summary['case_count'] == len(summary['cases']) == len(expected)
+            and {row['name'] for row in summary['cases']} == expected,
+            'handoff-sql-cases-incomplete')
+    for row in summary['cases']:
+        state = None if row['name'] in HANDOFF_POSITIVE else ('P0002' if row['name'] == 'missing_typed_receipt' else '23514')
+        require(row['state'] == state and isinstance(row['classification'], str) and row['classification']
+                and (row['message'] is None if state is None else isinstance(row['message'], str) and bool(row['message'])),
+                'handoff-case-outcome-incomplete')
+    return summary
+
+
+def run_handoff_clone(runtime, output, *, phase):
+    """Opt-in installed Index hook; normal migration and other journeys unchanged.
+
+    Runtime owns the existing PG container and bounded command capture. We own
+    only one fixed, absent database name and one Session in that container. The
+    original database remains read-only throughout. Clones are retained with PG.
+    """
+    require(phase in ('nonterminal', 'terminal'), 'unknown-handoff-seed-phase')
+    output.mkdir(mode=0o700)
+    runtime.source_unchanged()
+    runtime.inspect(runtime.pg)
+    pg = {'postgres': runtime.pg['id']}
+    seed, database = 'bigbrotr_control', 'bb_index_handoff_' + phase
+    migration_sha = sha(runtime.source / 'migrations/postgres/0041_index_publication.sql')
+    program = (runtime.source / HANDOFF_SQL).read_text()
+    require(len(program.encode()) <= 64 * 1024, 'handoff-script64KiB-ceiling')
+    (output / 'cases.sql').write_text(program)
+    report = dict(format='bigbrotr-index-handoff-sql-copy/1', status='RUNNING', phase=phase,
+                  seed=seed, database=database, postgres_id=pg['postgres'], source_sha256=sha(runtime.source / HANDOFF_SQL),
+                  migration_sha256=migration_sha, not_run=['native/ClickHouse proof', 'product handoff COMMIT faults'])
+    sessions, original, clone_identity = [], None, None
+    resource = dict(database=database, seed=seed, phase=phase, status='reserved-absent', postgres_id=pg['postgres'])
+
+    def save():
+        lab.write_json(output / 'result.json', report)
+        runtime.record_resources()
+
+    def owned():
+        runtime.inspect(runtime.pg)
+        require(runtime.pg['id'] == pg['postgres'], 'handoff-owned-pg-changed')
+        if clone_identity is not None:
+            require(identity_of(database) == clone_identity, 'handoff-clone-identity-changed')
+
+    def identity_of(name):
+        return json.loads(runtime.sql('postgres', "SELECT coalesce(jsonb_agg(jsonb_build_object('oid',oid,'name',datname,"
+            "'owner',pg_get_userbyid(datdba))),'[]') FROM pg_database WHERE datname='" + name + "'"))
+
+    def absent(name):
+        require(runtime.sql('postgres', "SELECT count(*) FROM pg_stat_activity WHERE datname='" + name + "'") == '0',
+                'handoff-database-backend-remains-' + name)
+
+    try:
+        absent(seed)
+        original = runtime.rows(pg, seed)
+        validate_handoff_seed(original, phase, runtime.tables, migration_sha)
+        lab.write_json(output / 'seed-before.json', original)
+        report['seed_identity'] = identity_of(seed)
+        require(len(report['seed_identity']) == 1, 'unique-seed-database-required')
+        require(int(runtime.sql('postgres', "SELECT pg_database_size('" + seed + "')")) <= 64 * 1024**2,
+                'handoff-seed64MiB-ceiling')
+        require(identity_of(database) == [], 'handoff-clone-name-exists')
+        runtime.resources.setdefault('index_handoff_sql_clones', []).append(resource)
+        save()
+        owned()
+        absent(seed)
+        runtime.sql('postgres', 'CREATE DATABASE ' + database + ' OWNER bigbrotr_migrator TEMPLATE ' + seed)
+        clone_identity = identity_of(database)
+        require(len(clone_identity) == 1 and clone_identity[0]['owner'] == 'bigbrotr_migrator', 'clone-owner-mismatch')
+        resource.update(status='created', identity=clone_identity)
+        save()
+        require(runtime.rows(pg, database) == original, 'clone-does-not-preserve-complete-seed')
+        script = '/tmp/bigbrotr-index-handoff-' + phase + '.sql'
+        runtime.docker('exec', '-i', pg['postgres'], 'sh', '-c', 'umask 077; set -C; cat > "$1"', 'sh', script,
+                       data=program, timeout=10, label='handoff-sql-script')
+        require(runtime.docker('exec', pg['postgres'], 'sha256sum', script).stdout.split()[0] == report['source_sha256'],
+                'container-sql-script-differs')
+        session = Session(pg, database, 'index_handoff_' + phase, sessions, role='bigbrotr_migrator')
+        report['backend'] = session.backend
+        resource['psql_pid'] = session.process.pid
+        save()
+        session.start('\\set expected_terminal ' + ('true' if phase == 'terminal' else 'false')
+                      + '\n\\set expected_migration_41_sha256 ' + migration_sha + '\n\\i ' + script)
+        answer = session.finish(timeout=30)
+        lab.write_json(output / 'session-output.json', answer)
+        session.expect(answer)
+        report['summary'] = handoff_summary(answer, phase)
+        report['status'] = 'PASS_SQL_ONLY'
+    except BaseException as error:
+        report.update(status='FAIL', failure_class=type(error).__name__, failure=str(error))
+        raise
+    finally:
+        errors = []
+        for session in sessions:
+            try:
+                session.close(owned)
+            except BaseException as error:
+                errors.append(dict(stage='session-close', error=type(error).__name__))
+        report['psql_processes'] = [dict(pid=session.process.pid, exit_code=session.process.poll(),
+            reaped=session.process.poll() is not None) for session in sessions]
+        report['session_capture'] = [dict(backend=session.backend, lines=session.last_response_lines,
+            remaining_bytes_hex=session.buffer.hex(), pending=session.pending, total_bytes=session.total_bytes)
+            for session in sessions]
+        try:
+            owned()
+            absent(database)
+            absent(seed)
+            if 'seed_identity' in report:
+                require(identity_of(seed) == report['seed_identity'], 'seed-database-identity-changed')
+            if original is not None:
+                after = runtime.rows(pg, seed)
+                lab.write_json(output / 'seed-after.json', after)
+                require(after == original, 'handoff-fixture-mutated-seed')
+            observed_clone = identity_of(database)
+            if clone_identity is None and resource in runtime.resources.get('index_handoff_sql_clones', []) and observed_clone:
+                require(len(observed_clone) == 1 and observed_clone[0]['owner'] == 'bigbrotr_migrator', 'unknown-create-owner-mismatch')
+                resource['identity_after_unknown_create'] = observed_clone
+            if clone_identity is not None or 'identity_after_unknown_create' in resource:
+                final = runtime.rows(pg, database)
+                require(len(json.dumps(final).encode()) <= 4 * 1024**2, 'clone-capture4MiB-ceiling')
+                lab.write_json(output / 'clone-final.json', final)
+        except BaseException as error:
+            errors.append(dict(stage='final-observation', error=type(error).__name__))
+        resource.update(status='retained', backend_absence=not errors)
+        report['cleanup'] = dict(status='FAIL' if errors else 'PASS', errors=errors)
+        save()
+        if errors and report['status'] == 'PASS_SQL_ONLY':
+            report['status'] = 'FAIL'
+            save()
+            raise RuntimeError('handoff-sql-cleanup-incomplete')
+    return report
 
 
 def psql(state, database, sql, *, role="bigbrotr_migrator", migration_sha=None):
