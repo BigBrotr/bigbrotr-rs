@@ -8,6 +8,7 @@ import tempfile
 import tomllib
 import unittest
 from unittest.mock import patch
+import xml.etree.ElementTree as ET
 
 from cases import first_launch as base
 from cases import first_launch_index as initial
@@ -17,6 +18,10 @@ from cases import first_launch_index_commit_oracle as oracle
 from test_first_launch import arguments
 from test_first_launch_index import ROOT, schema, set_value
 from test_first_launch_index_restart import restart_fixture
+
+TRACE_SERVER='<clickhouse><max_server_memory_usage>3221225472</max_server_memory_usage></clickhouse>'
+TRACE_USERS='<clickhouse><profiles><default><log_queries>0</log_queries></default></profiles></clickhouse>'
+TRACE_PROVISION="CREATE USER initializer IDENTIFIED WITH sha256_password BY 'fake';\nCREATE USER writer IDENTIFIED WITH sha256_password BY 'fake' HOST LOCAL SETTINGS max_concurrent_queries_for_user=1 MIN 1 MAX 1;\nCREATE USER reader IDENTIFIED WITH sha256_password BY 'fake';\n"
 
 
 def commit_fixture(root, mode):
@@ -97,6 +102,69 @@ def commit_fixture(root, mode):
 
 
 class IndexCommitControls(unittest.TestCase):
+    def test_query_trace_changes_only_closed_writer_logging_and_queue(self):
+        server,provision=case.query_trace_profile(TRACE_SERVER,TRACE_USERS,TRACE_PROVISION)
+        original=TRACE_PROVISION.splitlines();actual=provision.splitlines()
+        self.assertEqual((actual[0],actual[2]),(original[0],original[2]))
+        self.assertIn('max_concurrent_queries_for_user=1 MIN 1 MAX 1,',actual[1])
+        self.assertIn('log_queries_cut_to_length=1',actual[1]);self.assertIn('log_query_settings=0',actual[1])
+        root=ET.fromstring(server);self.assertEqual(root.findtext('max_server_memory_usage'),'3221225472')
+        self.assertEqual({c.tag:c.text for c in root.find('query_log')},dict(database='system',table='query_log',
+            flush_interval_milliseconds='7500',max_size_rows='1024',reserved_size_rows='64',
+            buffer_size_rows_flush_threshold='512',flush_on_crash='false'))
+        with self.assertRaises(ValueError):case.query_trace_profile(TRACE_SERVER,TRACE_USERS.replace('>0<','>1<'),TRACE_PROVISION)
+        with self.assertRaises(ValueError):case.query_trace_profile(TRACE_SERVER,TRACE_USERS,TRACE_PROVISION.replace('MAX 1','MAX 2'))
+
+    def test_query_lifecycle_is_bounded_named_evidence_without_exclusion(self):
+        positive='bigbrotr-index-trace-'+'a'*32
+        row=dict(query_id=positive,initial_query_id=positive,user='writer',initial_user='writer',event_us=10,start_us=10,
+                 duration_ms=0,exception_code=0,is_initial_query=1)
+        rows=[dict(row,event='QueryStart'),dict(row,event='QueryFinish',event_us=20)]
+        summary=case.lifecycle_summary(2,rows,positive)
+        self.assertEqual((summary['status'],summary['termination_or_exclusion']),('CAPTURED','NOT_PROVEN'))
+        self.assertEqual(summary['all_query_coverage'],'NOT_PROVEN')
+        self.assertFalse(summary['query_finish_is_process_list_removal'])
+        query='bigbrotr-index-'+'b'*32+'-2-36'
+        refusal=dict(row,query_id=query,initial_query_id=query,event='ExceptionBeforeStart',exception_code=202)
+        self.assertEqual(case.lifecycle_summary(3,rows+[refusal],positive)['exceptions'][0]['exception_code'],202)
+        unmatched=dict(refusal,event='QueryStart',exception_code=0)
+        self.assertEqual(case.lifecycle_summary(3,rows+[unmatched],positive)['status'],'INCOMPLETE')
+        self.assertEqual(case.lifecycle_summary(4,rows+[refusal,refusal],positive)['status'],'INCOMPLETE')
+        for changed,count in ((rows,3),(rows,case.TRACE_ROWS+1),(rows[:1],1),
+                ([dict(rows[0],user='initializer'),rows[1]],2),([dict(rows[0],query='not permitted'),rows[1]],2)):
+            with self.subTest(count=count),self.assertRaises(ValueError):case.lifecycle_summary(count,changed,positive)
+
+    def test_diagnostic_failure_or_interruption_still_stops_owned_clickhouse(self):
+        for error in (RuntimeError('capture'),KeyboardInterrupt()):
+            with tempfile.TemporaryDirectory() as directory:
+                runtime=case.IndexCommitRuntime(arguments(Path(directory)),{})
+                runtime.trace_output=Path(directory)/'trace';runtime.trace_output.mkdir()
+                original=dict(stage='signed_acquisition',error_type='TimeoutExpired')
+                base.save(runtime.root/'failure.json',original)
+                with patch.object(runtime,'collect_query_lifecycle',side_effect=error),\
+                        patch.object(case.RestartIndexRuntime,'stop_container',return_value='joined') as stop:
+                    self.assertEqual(runtime.stop_container(dict(service='clickhouse')),'joined')
+                    stop.assert_called_once()
+                self.assertEqual(base.load(runtime.root/'failure.json'),original)
+                self.assertEqual(base.load(runtime.trace_output/'terminal-summary.json')['status'],'INCOMPLETE')
+                self.assertEqual(len(runtime.resources['cleanup_errors']),1)
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=case.IndexCommitRuntime(arguments(Path(directory)),{})
+            runtime.trace_output=Path(directory)/'trace';runtime.trace_output.mkdir()
+            runtime.resources['containers']=[dict(service='app',status='running',pid=1)]
+            with patch.object(runtime,'collect_query_lifecycle') as capture,\
+                    patch.object(case.RestartIndexRuntime,'stop_container',return_value='joined') as stop:
+                self.assertEqual(runtime.stop_container(dict(service='clickhouse')),'joined')
+                capture.assert_not_called();stop.assert_called_once()
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=case.IndexCommitRuntime(arguments(Path(directory)),{})
+            runtime.trace_output=Path(directory)/'trace';runtime.trace_output.mkdir()
+            with patch.object(runtime,'collect_query_lifecycle',side_effect=RuntimeError('capture')),\
+                    patch.object(case,'save',side_effect=OSError('diagnostic storage')),\
+                    patch.object(case.RestartIndexRuntime,'stop_container',return_value='joined') as stop:
+                with self.assertRaises(OSError):runtime.stop_container(dict(service='clickhouse'))
+                stop.assert_called_once()
+
     def test_operation_cap_is_the_unchanged_deployed_default_not_managed_policy(self):
         field=base.load(ROOT/'contracts/config/schema.json')['properties']['runtime']['properties']['renewal_timeout']
         self.assertEqual((field['default'],field['x-bigbrotr-deployment-locked'],field['x-bigbrotr-reload']),('5s',True,'restart'))
@@ -105,6 +173,9 @@ class IndexCommitControls(unittest.TestCase):
             runtime.config=Path(directory)/'instance.toml'
             runtime.home=Path(directory)/'client';runtime.home.mkdir()
             runtime.set_value=set_value
+            private=runtime.state/'clickhouse/private';private.mkdir(parents=True)
+            for name,text in (('server.xml',TRACE_SERVER),('users.xml',TRACE_USERS),('provision.sql',TRACE_PROVISION)):
+                (private/name).write_text(text)
             original=initial.recipe((ROOT/'config/recipes/acceptance.toml').read_text(),set_value)
             runtime.config.write_text(original)
             with patch.object(initial.IndexRuntime,'prepare_state'):
