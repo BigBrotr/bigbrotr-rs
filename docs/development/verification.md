@@ -335,8 +335,11 @@ python3 tests/acceptance/run.py p01-first-launch-index-restart \
 
 Its eleven stages require actual execution. The first installed attempt failed
 at the prefix gate: the default Archive dispatch timer consumed almost the whole
-15s window before starting its first batch. That failure is retained; installed
-qualification of the corrected fixture is **NOT_RUN**. The original Index
+15s window before starting its first batch. That failure is retained; the corrected topology0 case completed all eleven
+stages on product `076750d5` with acceptance `42a611ac`. The existing
+[Index evidence](../implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json)
+records exact identities and limits; changed product revisions require affected
+qualification. The original Index
 corruption and ordinary readiness case above keeps its own behavior.
 
 This fresh variant declares `archive.max_publish_delay = "1s"` before configuration
@@ -383,7 +386,7 @@ topology transition.
 
 The oracle independently reconstructs recovery/session commitments and verifies
 creator epochs `(1,1,1,2)` and publisher epochs `(1,1,2,2)` without removing the
-new owner history. All81 Control tables are compared for preservation or their
+new owner history. All82 current Control tables are compared for preservation or their
 specific permitted changes. Generation, storage incarnation, custody directory,
 lock/file identities and all ten table UUIDs remain unchanged. The existing
 signed-source/C API and typed-family oracle checks40 outcomes and family counts
@@ -395,6 +398,46 @@ This paused-engine scenario does not qualify unknown native termination, remote
 uncertainty resolution, lost COMMIT, topology handoff, independent process outages,
 capacity or complete M1. A complete-prefix-only recovery cannot satisfy its
 required prepared and unplanned backlog.
+
+### Installed Index continuation across the initial topology handoff
+
+`p01-first-launch-index-topology` uses the same candidate and protected-evidence
+arguments. Its fifteen stages combine the existing signed initial journey,
+ordinary history/export, successor/resend, Archive catch-up and exact retry with
+finite Index catch-up and retry. The independent expected inputs retain the
+original event and add the existing signed successor with `t=allowed`.
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-index-topology \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-index-topology
+```
+
+The initial Index must publish all four batches and pass positive physical
+readiness. This variant leaves the intentional physical-content conflict to its
+existing separate case. Source succession and Archive recovery must preserve
+the old Index generation, custody, table UUIDs and all historical receipts.
+Finite Index recovery must carry the closed epoch1 cut12 into explicit handoff
+revision5, with a zero epoch2 bound and no fabricated batch or engine receipt.
+Exactly three successor batches then publish revisions6–8, giving70 chunks and
+100 chunk bounds. The oracle independently reconstructs every typed row and
+commitment; expected family counts are `(13,2,2,2,2,2,2,1,3,3)`.
+
+Index owner1→2 and retry2→3 must bind the retained typed history, preserve prior
+receipt/MVCC identities and leave Archive, inputs, original export and other
+consumer histories unchanged. Exact retry adds no batch or physical row. The
+current `bigbrotr-initial-index-catch-up/2` report distinguishes the source epoch,
+complete cuts and persistent handoff revision from whether this invocation
+created the handoff. It remains `ready=false`, without Index acknowledgement or
+Ingest retirement. The final ordinary reader verifies both signed events.
+
+Maintained oracle/dispatch controls run with
+`cd tests/acceptance && python3 -B -m unittest test_first_launch_index_topology`
+and are also discovered by the shared CI controls. This installed variant is
+**NOT_RUN** until a complete actual candidate execution is recorded. It does
+not qualify continuous combined successor ownership, general topology recovery,
+unknown query/native termination, independent service outages, capacity,
+second-event export or complete M1.
 
 ### Index publication COMMIT uncertainty
 
@@ -408,7 +451,7 @@ Only its successful UPDATE1 selects the following COMMIT. Preparation, renewal,
 rebind transactions, another consumer and a cached Parse alone cannot select it.
 
 An opt-in completion hold preserves the real transaction while the observer
-captures all81 tables and binds the current Control backend PID/start, live
+captures all82 current tables and binds the current Control backend PID/start, live
 Control/Index epochs, actual process and held local custody. This capture sees
 the committed rebind but the old revision2/prepared-plan3 state. The observer
 must release the gate inside the existing SQL operation; slower observation

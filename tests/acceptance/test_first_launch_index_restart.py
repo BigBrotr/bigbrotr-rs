@@ -290,10 +290,13 @@ class RestartIndexControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);_,state,_,_,_=restart_fixture(root)
             gen=state['projection_generations'][0]
-            report=dict(format='bigbrotr-initial-index-catch-up/1',state='complete',dataset_id=gen['dataset_id'][2:],
+            report=dict(format='bigbrotr-initial-index-catch-up/2',state='complete',dataset_id=gen['dataset_id'][2:],
                 generation_id=gen['generation_id'][2:],storage_incarnation=gen['storage_incarnation'][2:],
                 table_identity_digest=gen['table_identity_digest'][2:],previous_owner_epoch=1,owner_epoch=2,
                 published_revision_before=2,published_revision_after=4,source_through=12,published_through=12,
+                source_epoch=1,source_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+                published_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+                index_handoff_revision=None,published_handoff=False,
                 recovered_pending=True,new_batches=1,ready=False,acknowledgement='not-performed',
                 ingest_retirement='not-performed',topology_transition='not-performed')
             check.catch_up_report(report,state)

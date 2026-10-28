@@ -78,9 +78,9 @@ def publication_fixture(science, provenance=True):
     snapshot = dict(frontier_revision=6, topology_generation=1, snapshot_id=snapshot_id,
         request_digest='\\x' + cut_digest(dataset, 1, receipts, cuts, snapshot_id),
         **dict(zip(check.COUNTS, [13, 2, 2, 2, 3] if provenance else [7, 2, 2, 2, 0])))
-    state = dict(datasets=[dict(dataset_id=dataset)], consumers=[dict(consumer_id=catalog, current_revision=6, current_topology_generation=1)],
+    state = dict(datasets=[dict(dataset_id=dataset)], consumers=[dict(consumer_id=catalog, consumer_role='archive', current_revision=6, current_topology_generation=1)],
         archive_attempts=attempts, archive_frontier_snapshots=[snapshot],
-        consumer_frontiers=[dict(frontier_revision=6, topology_generation=1, shard_id=0, owner_epoch=epoch, last_complete_sequence=cut)
+        consumer_frontiers=[dict(consumer_id=catalog, frontier_revision=6, topology_generation=1, shard_id=0, owner_epoch=epoch, last_complete_sequence=cut)
             for epoch, cut in cuts],
         archive_frontier_batches=[dict(frontier_revision=6, attempt_id=row['attempt_id']) for row in attempts])
     census = dict(format='bigbrotr-independent-installed-archive-read/1', tables={**copy.deepcopy(science['tables']), 'archive_commits': receipts})

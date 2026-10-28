@@ -23,7 +23,7 @@ PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (4, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 1, 1, 1, 1, 1, 1, 0, 1, 1))
 INDEX_TABLES = ('projection_generations', 'index_owner_sessions', 'projection_plans',
-                'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans')
+                'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans', 'index_frontier_handoffs')
 
 
 def exact(actual, expected):
@@ -290,7 +290,7 @@ def ordinary_unchanged(before, after):
     # Status may renew Control and the coalesced probe may add/release pins.
     # Every source/publication/job/auth row is otherwise unchanged in this barrier.
     exact(sorted(before), sorted(after))
-    assert len(before) == 81
+    assert len(before) == 82
     for table in before.keys() - {'owner_epochs','snapshot_leases','archive_snapshot_pins','retention_claims'}:
         exact(before[table], after[table])
 
@@ -363,6 +363,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     assert {r['consumer_role'] for r in state['consumers']} <= {'archive', 'index'}
     assert len([r for r in state['consumers'] if r['consumer_role'] == 'archive']) <= 1
     assert publication_fault in (None,'before-forward','after-complete')
+    assert not state['index_frontier_handoffs'], 'epoch1 cannot contain a topology handoff'
     assert type(owner_count) is int and owner_count in ((1,2,3) if publication_fault is None else (2,3,4))
     owners = sorted((r for r in state['owner_epochs'] if r['role'] == 'index'), key=lambda r:r['epoch'])
     if not owners:
@@ -391,7 +392,7 @@ def validate_metadata(state, root, *, complete=False, owner_count=1, publication
     assert session['owner_role'] == generation['owner_role'] == 'index' and session['issuer_role'] == 'control'
     control = only(state['owner_epochs'], role='control', resource_id=session['issuer_resource'], epoch=session['issuer_epoch'])
     assert session['issuer_incarnation'] == control['process_incarnation'] == owner['process_incarnation']
-    assert session['previous_epoch'] is session['recovery_digest'] is session['recovered_plan'] is session['recovered_pending_plan'] is None
+    assert session['previous_epoch'] is session['recovery_digest'] is session['recovered_plan'] is session['recovered_handoff'] is session['recovered_pending_plan'] is None
     assert session['recovered_revision'] == 0
     for current in owners:
         role = only(state['role_instances'], role_instance_id=current['role_instance_id'])
@@ -501,6 +502,7 @@ def recovery_sessions(state, binding, owners, sessions, plans, *, publication_fa
         published, pending = (2,3) if epoch == 2 else (4,None)
         if publication_fault is not None and epoch == 3:
             published,pending = (2,3) if publication_fault=='before-forward' else (3,None)
+        assert session['recovered_handoff'] is None
         expected = recovery_digest(binding, previous, attributed, published, pending)
         exact([session['previous_epoch'],session['recovered_revision']],[epoch-1,published])
         assert session['recovered_plan'] == plans[published-1]['plan_digest']
@@ -541,7 +543,7 @@ def digest(domain, value):
     return hashlib.sha256(b'bigbrotr/'+domain.encode()+b'/1\0'+cbor(value)).digest()
 
 
-def expected_rows(science, generation, schema):
+def expected_rows(science, generation, schema, *, counts=COUNTS):
     from installed_sync_oracle import decode
     result = {name:[] for name in TARGETS}
     for batch in science['batches']:
@@ -556,11 +558,17 @@ def expected_rows(science, generation, schema):
                 values = [fields.get('visibility_scope_id' if n == 'access_visibility_scope' else n) for n,_ in schema.DICTIONARY[5:]]
                 add('dictionaries', [reference,normalization,name,version,digest('dictionary',payload),*values])
             elif family == 'event-payload':
-                assert payload[4] == [], 'this frozen signed fixture has no tag postings'
                 body = digest('body',payload[:6])
                 add('events',payload+[body])
                 for name in ('event_id_index','event_author_index','event_time_index'):
                     add(name,payload[:4]+[body])
+                # The first value of each supported single ASCII-letter tag is
+                # indexed once. Signed body order, duplicates and extra values
+                # stay in payload; only the posting set is ordered/deduplicated.
+                postings = {(tag[0],tag[1]) for tag in payload[4] if len(tag)>=2
+                    and len(tag[0])==1 and tag[0].isascii() and tag[0].isalpha()}
+                for ordinal,(key,value) in enumerate(sorted(postings,key=lambda pair:tuple(v.encode() for v in pair))):
+                    result['event_tag_index'].append(common[:6]+[ordinal,payload[0],key,value])
             elif family == 'event-eligibility': add('event_eligibility_facts',payload)
             elif family == 'event-receive':
                 event,at,observer,quality,corrects = payload
@@ -570,7 +578,7 @@ def expected_rows(science, generation, schema):
                 event,endpoint,observer,access,at,quality,verification,corrects = payload
                 for name in ('provenance_by_event','provenance_by_relay'):
                     add(name,[event,endpoint,observer,access,at,*quality,verification,corrects])
-    assert tuple(map(len,result.values())) == COUNTS
+    assert tuple(map(len,result.values())) == counts
     return result
 
 

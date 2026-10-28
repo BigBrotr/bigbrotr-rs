@@ -202,7 +202,7 @@ def archive_science(native,*,compacted=False,live_epoch=3,provenance=True):
     assert type(provenance) is bool and (provenance or (not compacted and live_epoch == 2))
     assert type(live_epoch) is int and live_epoch in (2,3)
     assert not compacted or live_epoch==3
-    tables={t:[] for t in TABLES}; facts={}
+    tables={t:[] for t in TABLES}; facts={}; preimages={}
     for row in native['rows']:
         key,value=bytes.fromhex(row['key']),bytes.fromhex(row['value'])
         if row['cf']!='facts' or not key.startswith(b'\x01\x20'): continue
@@ -211,6 +211,7 @@ def archive_science(native,*,compacted=False,live_epoch=3,provenance=True):
         identity,family,version,visibility,at,payload=decode(preimage.split(b'\0',1)[1])
         epoch,sequence=identity[2:]; assert key==b'\x01\x20'+identity[0]+be(identity[1],4)+be(epoch)+be(sequence)
         facts[epoch,sequence]=digest
+        preimages[epoch,sequence]=preimage.hex()
         item=dict(source_record_id=source(identity),record_schema_version=version,record_kind=family,
             visibility_scope_id=reference(visibility),payload_digest=digest.hex().upper(),recorded_at=at)
         if family=='dictionary':
@@ -252,6 +253,7 @@ def archive_science(native,*,compacted=False,live_epoch=3,provenance=True):
         for first,last in ranges:
             refs=[[[ds,0,epoch,n],facts[epoch,n]] for n in range(first,last+1)]
             batches.append(dict(epoch=epoch,topology=topology,first=first,last=last,
+                facts=[dict(preimage_hex=preimages[epoch,n]) for n in range(first,last+1)],
                 archive_digest=sha(b'bigbrotr/archive-batch/1\0'+cbor([ds,1,topology,[[0,epoch,first,last]],refs])),
                 admission_digest=sha(b'bigbrotr/admission-batch/1\0'+cbor([ds,0,epoch,first,last,refs]))))
     return dict(tables=tables,batches=batches)

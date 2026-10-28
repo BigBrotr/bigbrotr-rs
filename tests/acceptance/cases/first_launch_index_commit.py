@@ -316,7 +316,7 @@ class IndexCommitRuntime(RestartIndexRuntime):
         result.update(format='bigbrotr-installed-index-publication-commit/1',mode=self.commit_mode,
             live_observation=False,readiness='positive_prefix_before_pause',product_fault='CommitUnknown',
             origin_epochs=[1,1,1,3],publisher_epochs=[1,1,3 if self.commit_mode=='before-forward' else 2,3],
-            owner_epochs=[1,2,3,4],control_tables=81,raw_family_counts={name:len(rows) for name,rows in self.index_rows.items()},
+            owner_epochs=[1,2,3,4],control_tables=82,raw_family_counts={name:len(rows) for name,rows in self.index_rows.items()},
             remote_uncertainty_resolution='NOT_RUN',native_termination='NOT_RUN')
         save(self.commit_output/'verdict.json',result);self.inputs['index']=result
         self.source_unchanged()

@@ -152,11 +152,14 @@ def recovered(before, after, root, mode, *, retry=False):
 
 def report(value, state, mode, *, retry=False):
     generation = index.only(state['projection_generations'])
-    index.exact(value,dict(format='bigbrotr-initial-index-catch-up/1',state='complete',
+    index.exact(value,dict(format='bigbrotr-initial-index-catch-up/2',state='complete',
         dataset_id=generation['dataset_id'][2:],generation_id=generation['generation_id'][2:],
         storage_incarnation=generation['storage_incarnation'][2:],table_identity_digest=generation['table_identity_digest'][2:],
         previous_owner_epoch=3 if retry else 2,owner_epoch=4 if retry else 3,
         published_revision_before=4 if retry else 2+int(mode=='after-complete'),published_revision_after=4,
         source_through=12,published_through=12,recovered_pending=not retry and mode=='before-forward',
+        source_epoch=1,source_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+        published_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+        index_handoff_revision=None,published_handoff=False,
         new_batches=0 if retry else 1,ready=False,acknowledgement='not-performed',
         ingest_retirement='not-performed',topology_transition='not-performed'))

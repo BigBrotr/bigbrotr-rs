@@ -39,7 +39,7 @@ RESTART_LIMITS = [
     LIMITS[2],
 ]
 OFF_CASE = 'p01-first-launch-restart-provenance-off'
-RESTART_CASES = ('p01-first-launch-restart', OFF_CASE)
+RESTART_CASES = ('p01-first-launch-restart', OFF_CASE, 'p01-first-launch-index-topology')
 OFF_LIMITS = [
     RESTART_LIMITS[0] + ' Fresh accepted sync.provenance=off; no scientific witness rows.',
     'NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.',
@@ -126,7 +126,7 @@ def expected_tables(source, inputs=None):
     for entry in manifest['application_order']:
         tables.update(re.findall(r'CREATE TABLE control\.(\w+)',
                                  (source / 'migrations/postgres' / entry['name']).read_text()))
-    require(len(tables) == 81, 'first-launch Control table profile changed')
+    require(len(tables) == 82, 'first-launch Control table profile changed')
     if inputs is not None:
         names = ['migrations/manifest.json'] + ['migrations/postgres/' + entry['name']
                                                 for entry in manifest['application_order']]
@@ -684,7 +684,7 @@ class Runtime:
         save(output / 'after-archive-files.json', files_after)
         require(catalog_after == catalog_before and files_after == files_before, 'ordinary read/export mutated Archive')
         self.export_result = self.export_validate(before, after, self.home, self.initialized, self.ids['catalog'],
-            expected_principal=self.enrolled['principal_id'], expected_table_count=81, expected_tables=self.tables,
+            expected_principal=self.enrolled['principal_id'], expected_table_count=82, expected_tables=self.tables,
             destination_root=self.state / 'data/export', initial_cut=self.initial_cut)
         save(output / 'export-verdict.json', self.export_result)
         self.backend_absence(output)
@@ -961,10 +961,11 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
+    index_topology = getattr(args, 'case', None) == 'p01-first-launch-index-topology'
     index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
     index_restart = index_commit or getattr(args, 'case', None) == 'p01-first-launch-index-restart'
     pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
-    index_case = index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
+    index_case = index_topology or index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
@@ -977,6 +978,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if index_commit:
             from cases.first_launch_index_commit import (IndexCommitRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if index_topology:
+            from cases.first_launch_index_topology import (TopologyIndexRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
@@ -1007,8 +1011,11 @@ def first_launch(args, checks, inputs):
             operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
         if restart:
             operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
-                ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry),
-                ('successor_history', runtime.restart_history)]
+                ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry)]
+            if index_topology:
+                operations += [('index_epoch2_catch_up', runtime.index_epoch2_catch_up),
+                               ('index_epoch2_exact_retry', runtime.index_epoch2_retry)]
+            operations += [('successor_history', runtime.restart_history)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

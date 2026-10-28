@@ -1,7 +1,7 @@
 """Closed installed backlog/rebind controls over the maintained Index oracle.
 
 The original initial science and ten-family encoders remain the owners of bytes.
-Every phase compares all81 Control tables, with explicit permitted transitions.
+Every phase compares all82 Control tables, with explicit permitted transitions.
 """
 from cases import first_launch_index_oracle as index
 from cases.first_launch_restart import closure
@@ -38,7 +38,7 @@ def backlog(state, root, *, prefix=False):
 
 def unchanged_except(before, after, mutable):
     index.exact(sorted(before),sorted(after))
-    assert len(before) == 81
+    assert len(before) == 82
     for table in before.keys() - mutable:
         index.exact(before[table],after[table])
 
@@ -105,11 +105,14 @@ def source_closed(before, after, report, science):
 
 def catch_up_report(report, state, *, retry=False):
     generation = index.only(state['projection_generations'])
-    index.exact(report,dict(format='bigbrotr-initial-index-catch-up/1',state='complete',
+    index.exact(report,dict(format='bigbrotr-initial-index-catch-up/2',state='complete',
         dataset_id=generation['dataset_id'][2:],generation_id=generation['generation_id'][2:],
         storage_incarnation=generation['storage_incarnation'][2:],table_identity_digest=generation['table_identity_digest'][2:],
         previous_owner_epoch=2 if retry else 1,owner_epoch=3 if retry else 2,
         published_revision_before=4 if retry else 2,published_revision_after=4,source_through=12,published_through=12,
+        source_epoch=1,source_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+        published_cut=dict(topology_generation=0,bounds=[dict(shard_id=0,owner_epoch=1,last_complete_sequence=12)]),
+        index_handoff_revision=None,published_handoff=False,
         recovered_pending=not retry,new_batches=0 if retry else 1,ready=False,
         acknowledgement='not-performed',ingest_retirement='not-performed',topology_transition='not-performed'))
 
