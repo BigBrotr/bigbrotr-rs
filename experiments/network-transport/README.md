@@ -58,7 +58,10 @@ The retained library executable lists its compiled tests before selecting
 `storage::clickhouse::`, `storage::indexer::`,
 `storage::postgres::control_owner::index_publication::` and
 `storage::postgres::transport::route_tests::`. Every expected owning module must
-be present. Two existing Archive transport-custody controls also cover the shared
+be present. That route group requires four exact controls, including a real
+refused loopback connection versus a server authentication error, and refusal to
+classify timeout/reset/other errors as the narrow connection-refused outcome.
+Two existing Archive transport-custody controls also cover the shared
 future-before-guard destruction boundary changed by late Index attachment.
 The library selection also covers native source-head observation and its signed
 admission/reopen boundary, bounded role DTOs and suspend-aware elapsed time. It
@@ -82,7 +85,8 @@ retention of the same prepared signed input and grant across safe-point renewal,
 pre-REQ reauthorization, cancellation/revalidation refusal, refusal before an
 expired operation's first poll, and preservation of a started admission's deadline
 and unknown outcome. Diagnostic progress cannot certify a commit. The binary
-scope contains 70 required names; the library selection is combined
+scope contains 71 required names, including parked Archive status retaining its
+last published cut or explicit absence. The library selection is combined
 with its actual compiled inventory, never inferred from this source count.
 Ordinary cache
 tests distinguish a complete current proof from a narrow operation, retain the

@@ -91,6 +91,21 @@ complete source prefix before committing a frontier. Control/Ingest renewal and
 private commands continue during joined worker waits. Application and child
 native grants remain separate. The full cut's wire/allocation bounds can refuse
 further publication; this is a bounded initial profile, not a capacity guarantee.
+If the first catalog connection for a newly issued attempt returns an explicit
+connection-refused I/O error, Archive parks for the rest of that initial lifetime.
+This boundary precedes catalog SQL, writer provisioning and native launch. The
+joined task returns its original attempt custody; its immutable inputs and
+Control intent remain retained. Authenticated role status reports Archive
+`unavailable/dependency_unavailable`, retaining the previous published cut and
+its original observation age. Control, Sync and Index may continue under their
+own authority and limits. Restoring the endpoint does not retry that attempt or
+resume Archive automatically. Stop the lifetime before explicit recovery.
+This direct refusal result does not identify a particular TCP/startup/TLS phase.
+Startup failures and other connection errors, including database authentication
+errors, timeouts and route failures, remain fatal, as do cancellation, lost
+Control authority and every failure after connection. No uncertain catalog/native
+outcome is cleared. Shared-budget pressure and general outage recovery remain
+separate qualification requirements.
 No producer ACK, pending reclaim, source closure, index readiness or native restart
 adoption is added. Stop this initial lifetime before using the ordinary Control
 read/export consumer with its explicit deployment roots and permissions. The tiny
