@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-28T11:02:18.734375+00:00",
+  "updated_at": "2026-10-28T11:34:04.220396+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -75029,7 +75029,7 @@
       "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
     },
     "resume_20261028": {
-      "status": "ACTIVE; full goal incomplete",
+      "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_PASS_RELEASE_FAULT_FIXTURE_PENDING",
       "canonical_branch": "work/short-pin-admission-wip-20261028",
       "canonical_revision": "40f7e36f",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
@@ -75125,7 +75125,7 @@
           "status": "Source diagnosis complete; implementation authorized, no qualified change yet"
         }
       },
-      "processes": "No compiler, installed engine, proxy, remote CI or active subagent. Author worktrees clean/retained; root integrated baseline corrections and26 controls PASS. Next root launches installed restart r3.",
+      "processes": "No compiler, installed engine, proxy or remoteCI active. Restart78143FAIL and48961PASS reaped; r3/r4 respectively17/22containers allstopped exit0/PID0/noOOM, bridgeempty and ownedCHunpaused. Pinbefore78664FAIL reaped;20containersstopped, oneControl exit1 afterunarmedproxyguardexit3; proxyPIDs105701/105704absent, bridgeempty. Pinreleaseauthor alone edits isolatedfixture; root owns integration.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75243,23 +75243,24 @@
         "worktree": ".research/pin-release-uncertainty-20261028",
         "base": "40f7e36f",
         "scope": "Maintained before-forward/after-complete reader release COMMIT fault cases with actual UPDATE1 hold and independently observed native join/custody; original export completes in separate lifetime",
-        "status": "FIXTURE_CORRECTIONS_INTEGRATED_REAL_CASES_PENDING",
+        "status": "FIRST_JOURNEY_PASS_SECOND_PROBE_WAIT_PROXY_GUARD_FAIL",
         "source": "a241fc67",
         "integration": "b8236c3b",
         "root_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
         "evidence": ".research/first-launch-index-pin-release-before-r1-20261028",
-        "next": "Root actual restart r3 then both release variants; original before-r1 retained unchanged",
+        "next": "First-probe boundedfixture correction in existingWT; original limits unchanged; both COMMIT faults NOT_RUN",
         "correction_sources": [
           "54662128",
           "52c9d97f"
-        ]
+        ],
+        "latest_attempt": ".research/first-launch-index-pin-release-before-r2-20261028"
       },
       "sync_safe_points": {
         "worktree": ".research/index-restart-acceptance-20261027",
         "branch": "work/index-restart-acceptance",
         "source": "076750d50cb461c1d80f561ebd8f1912b504b380",
         "integration": "4bfe98c1",
-        "status": "NATIVE167_AND_INSTALLED_CANDIDATE_PASS",
+        "status": "NATIVE167_BUILD_AND_INSTALLED_RESTART_R4_PASS",
         "receipt": ".research/index-restart-acceptance-20261027/.research/sync-safe-points-r2-20261028/receipt.json",
         "session_id": 33095,
         "launcher": {
@@ -75287,6 +75288,12 @@
           "receipt": ".research/initial-index-recovery-qualification-20261028/installed-076750d5/receipt.json",
           "receipt_sha256": "94bc2a49af084a6e729ce02259c3267fb2d5ddc9fda4ac56f604d62eccdef422",
           "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-076750d5/candidate/candidate-manifest.json"
+        },
+        "installed_acceptance": {
+          "source": "42a611ac",
+          "root": ".research/first-launch-index-restart-r4-20261028",
+          "session_id": 48961,
+          "status": "REAPED0_ALL11PASS_22CONTAINERS_STOPPED"
         }
       }
     }

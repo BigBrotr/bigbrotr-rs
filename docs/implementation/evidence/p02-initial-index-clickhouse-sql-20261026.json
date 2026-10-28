@@ -523,7 +523,7 @@
       }
     },
     "finite_recovery": {
-      "status": "PASS scoped native controls, installed build and complete live prefix; FAIL subsequent Sync admission scheduling; installed recovery NOT_RUN",
+      "status": "PASS_BOUNDED_INSTALLED_SAME_STORE_RECOVERY_AND_EXACT_RETRY; GENERAL_FAULTS_TOPOLOGY_AND_M1_OPEN",
       "native": {
         "status": "PASS_SCOPED_NATIVE_INITIAL_INDEX_RECOVERY",
         "product_revision": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
@@ -668,12 +668,32 @@
           "meaning": "Complete prefix physical readiness and owned CH pause PASS. Subsequent Sync request4/frame0 entered fresh persistence with about38ms remaining before scheduled-refresh cap, despite2675158us actual authority remaining. Product safe-point scheduling repair pending; staged original input exists but reservation/native/outcome are not resolved by that alone. Relay EOF is not standalone shutdown evidence. Originala99 remains UNKNOWN.",
           "not_run": "Source closure, Index catch-up/exact retry and post-recovery export",
           "cleanup": "Owned CH confirmed unpaused;16containers stopped/PID0/noOOM; client absent; borrowed bridge empty"
+        },
+        {
+          "root": ".research/first-launch-index-restart-r3-20261028",
+          "status": "FAIL_SOURCE_CLOSURE_ORACLE",
+          "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+          "acceptance": "952382b0",
+          "terminal_receipt_sha256": "02c37f5289146746ef5402d4e67e757d2331df3b96c8fb28f0b680c6fa2055df",
+          "result_sha256": "091458b520859d2ca26a1eedad04e54a3b2cabf0d2fbfa1ca95bad3acb3d7428",
+          "meaning": "Signed acquisition/prefix/backlog PASS. Oracle omitted required producer open-to-closing barrier. Corrected42a611ac replay separatelyPASS; original attempt remainsFAIL and catch-up/retryNOT_RUN.",
+          "cleanup": "All owned containers stopped/exit0/PID0/noOOM, case joined and borrowed bridge empty; owned ClickHouse positively unpaused"
+        },
+        {
+          "root": ".research/first-launch-index-restart-r4-20261028",
+          "status": "PASS_ALL_ELEVEN_INSTALLED_STAGES",
+          "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+          "acceptance": "42a611ac4b96b02a5821d028a9d97bb43142221e",
+          "terminal_receipt_sha256": "4ddf28b52da051e3c48d9d45b26a6bf3d0a9d3e4c107b3b5f309eb3ab87d35ea",
+          "result_sha256": "a497ada76eb8fc834949acad76dd9e056f0122a911837f4592022654156d8764",
+          "meaning": "Actual076 product: prefix/source12/Archive4 across owned ClickHouse pause, explicit source closure, same-store Index1-to2 retainedplan3+newplan4 publication, exactretry2-to3, all40 chunks/tenfamily typed rows and independent source/CAPI,81table/custody/file preservation and original353Bhistory/export PASS.",
+          "cleanup": "All owned containers stopped/exit0/PID0/noOOM, case joined and borrowed bridge empty; owned ClickHouse positively unpaused"
         }
       ],
       "sync_safe_points": {
         "source": "076750d50cb461c1d80f561ebd8f1912b504b380",
         "integration": "4bfe98c1",
-        "status": "NATIVE_AND_FRESH_INSTALLED_BUILD_PASS_ENGINE_RECOVERY_PENDING",
+        "status": "PASS_NATIVE167_BUILD_AND_INSTALLED_RESTART_R4",
         "scope": "Renew/revalidate at completed-operation boundaries, retaining bounded signed inputs/grants; never extend started operation or retry unknown admission. Fresh authority before guarded REQ.",
         "controls": "Build, test compilation, strict Clippy and actual167 native controls PASS (100 library+67 binary,25 groups; all156 prior controls retained); no selected ignored/failure. Root rehashed48 evidence files and verified all closed selections and actual summaries.",
         "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
@@ -689,7 +709,14 @@
           "root_verification": ".research/initial-index-recovery-qualification-20261028/installed-076750d5/root-verification.json",
           "scope": "Build, assembly and closed intake PASS; root exact2381-file Git/source comparison,9 evidence hashes, candidate/bundle hashes and terminal container verified. Installed engine/recovery NOT_RUN."
         }
-      }
+      },
+      "source_closure_oracle": {
+        "source": "42a611ac",
+        "checks": "12 author+12 integrated controls PASS; root source reviewPASS; retained strict closure replayPASS; actualr4PASS",
+        "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "author_receipt": ".research/index-restart-acceptance-20261027/.research/source-closing-r3-20261028/receipt.json"
+      },
+      "remaining": "Actual unknown-query/lost-COMMIT resolution, topology0-to1/epoch2, native termination unknown, general event-envelope/nonemptytags, ColumnTTL, independent service outage/capacity and completeM1 remain open; originala99UNKNOWN."
     },
     "ordinary_short_pin": {
       "status": "PASS actual installed expiry with continuing same-owner renewal; uncertainty variants remain NOT_RUN",
@@ -737,7 +764,7 @@
       }
     },
     "pin_release_uncertainty": {
-      "status": "FIXTURE_BASELINE_CORRECTED_ACTUAL_FAULT_CASES_NOT_RUN",
+      "status": "ORIGINAL_EXPORT_AND_STARTUP_PASS; PROXY_FRAME_LIMIT_FAIL_BEFORE_COMMIT_FAULT",
       "source": "a241fc67d65f1bd659cdfce72aff94fd60c93944",
       "integration": "7a6075a5",
       "scope": "Before-forward versus after-complete actual reader-release COMMIT loss, independent native-join/custody/rawSQL verification",
@@ -750,7 +777,7 @@
         "root_receipt_sha256": "afb88ca145c4eb372dea5c83de5b2f50859f27ada3305d031afbd6cdbb5f026c",
         "resources": "19 containers stopped/exit0/PID0/noOOM; owned processes joined by maintained cleanup; borrowed bridge empty; no fault proxy launched"
       },
-      "next": "Run corrected restart r3 on qualified076 candidate, then both release COMMIT variants on unchanged qualified825 product; original failure remains UNKNOWN wire result.",
+      "next": "Select the fresh lifetime first probe after independently completed original history/export; keep all proxy/resource/deadline ceilings and exact nativejoin/custody/rawSQL fault predicates. Bounded fixture correction in isolated author branch, then before/after real cases.",
       "baseline_correction": {
         "sources": [
           "54662128",
@@ -760,6 +787,14 @@
         "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
         "checks": "Author65 then26 affected controls; root26 integrated PASS",
         "scope": "Shared restart/pin-release original40s startup completion proof; fresh lifetime remains building/not_observed with independent joined reader proof; sanitized actual denial classification; absent/active newreader may wait but inconsistent captures refuse."
+      },
+      "before_r2": {
+        "root": ".research/first-launch-index-pin-release-before-r2-20261028",
+        "product": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+        "acceptance": "952382b0",
+        "root_receipt_sha256": "7b8d2365cd2676a49f68204fe89bb8fc86e237cec77720c7d433315500f4b75b",
+        "result": "FAIL faultstage and cleanup protocol; original ordinaryhistory/exportPASS; actualCOMMITfaultNOT_RUN",
+        "diagnosis": "Unarmed Control proxy reaches20001 totalframes,1045queries/1426898B on one connection while waiting for next15s fullprobe. All20containersstopped,proxyPIDsabsent,bridgeempty; originalcleanupFAIL is not relabelled."
       }
     }
   }

@@ -1129,9 +1129,13 @@ fresh installed candidate also passes assembly/intake verification. Installed
 restart reaches a complete live prefix but subsequent Sync admission scheduling
 fails before recovery. The bounded Sync safe-point correction `076750d5` subsequently
 passes167 actual native controls, strict Clippy and a fresh installed build/intake;
-its installed recovery remains pending. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-retains exact scope and original failures. Installed restart/fault qualification
-remains pending; no whole step closes from native or metadata-only controls.
+installed restart r4 with acceptance `42a611ac` passes all eleven stages, including
+same-store pending/new backlog publication, exact retry and independent signed
+history/export. The source-close oracle now requires the existing producer closing
+barrier without claiming retirement. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+retains exact scope and original failures. General remote uncertainty/lost-COMMIT,
+topology transitions and capacity remain open; this bounded path does not close
+the whole step.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.
