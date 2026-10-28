@@ -9,7 +9,7 @@ import tempfile
 import tomllib
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from cases import first_launch as case
 from cases import first_launch_restart as check
@@ -26,6 +26,9 @@ if 'bootstrap_oracle' not in sys.modules:
 from installed_archive_oracle import expected
 from installed_archive_read import sql_path
 from installed_archive_catch_up_client import redacted, http
+import installed_archive_catch_up_client as history_client
+import installed_archive_profile as history_profile
+import installed_archive_export_client as export_client
 from installed_archive_catch_up_model import archive_science
 from initial_succession_oracle import successor_manifest
 from installed_family_science import NetworkScience, decode
@@ -138,6 +141,37 @@ class RestartControls(unittest.TestCase):
     def test_history_mode_never_falls_back_to_legacy_identity(self):
         with tempfile.TemporaryDirectory() as temporary, self.assertRaisesRegex(AssertionError, 'explicit fixture profile'):
             http(Path(temporary), False, history_only=True)
+
+    def test_history_setup_precedes_single_attempt_and_does_not_retry_429(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            home=Path(temporary)
+            expected=dict(scope={},catalog_id='catalog',frontier_revision=6,snapshot_id=8,
+                config_revision='1',policy_revision='1',startup_quiescence=True)
+            (home/'read-input.json').write_text(json.dumps(expected))
+            (home/'events.json').write_text(json.dumps([{'id':'one'},{'id':'two'}]))
+            (home/'read-session.private').write_text(json.dumps(dict(session='ab'*32,csrf='cd'*32)))
+            profile=dict(product_binary='/unused',password_ref='file:/unused',expected_principal_id='principal',expected_actions=['data.read'])
+            me=dict(principal_id='principal',stored_actions=['data.read'],config_revision='1',policy_revision='1')
+            answers=[]
+            for status,value in ((200,me),(429,{'error':{'code':'capacity_or_rate_limited'}})):
+                answer=Mock(status=status);answer.read.return_value=json.dumps(value).encode();answers.append(answer)
+            connection=Mock();connection.getresponse.side_effect=answers
+            def phase(path,name,*,enclosing_deadline_ns):
+                self.assertEqual((path,name,enclosing_deadline_ns),(home,'setup',30_000_000_010))
+                self.assertEqual(connection.request.call_count,1)
+                self.assertEqual(connection.request.call_args.args[:2],('GET','/management/v1/me'))
+                return {'phase':'setup','finished_ns':20}
+            with patch.object(history_profile,'load',return_value=profile),patch.object(history_profile,'password_file',return_value='private'),\
+                 patch.object(history_client.time,'monotonic_ns',return_value=10),patch.object(history_client.http_client,'HTTPConnection',return_value=connection),\
+                 patch.object(history_client.subprocess,'run',return_value=SimpleNamespace(returncode=0,stderr=b'',stdout=b'{}')),\
+                 patch.object(export_client,'phase',side_effect=phase) as barrier:
+                with self.assertRaises(AssertionError): http(home,False,history_only=True)
+            barrier.assert_called_once()
+            self.assertEqual(connection.request.call_count,2)
+            self.assertEqual(connection.request.call_args.args[:2],('POST','/v1/resources/event_history'))
+            observations=json.loads((home/'read-observations.json').read_text())
+            self.assertEqual(observations[-1]['status'],429)
+            self.assertFalse((home/'history-client-result.json').exists())
 
     def test_successor_incarnation_and_domains_must_be_fresh(self):
         prior = dict(owner_epochs=[dict(process_incarnation='\\x' + 'aa' * 16)])

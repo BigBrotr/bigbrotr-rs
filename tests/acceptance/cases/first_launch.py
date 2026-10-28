@@ -330,11 +330,13 @@ class Runtime:
         self.signed_sha256 = SIGNED_SHA256
         if self.restart_case:
             from cases import first_launch_restart
+            from cases import first_launch_index_baseline
             # Load every independent owner before recording source identity.
             import installed_archive_read
             import installed_archive_catch_up_oracle
             import installed_progress_context_oracle
             self.restart_checks = first_launch_restart
+            self.history_baseline = first_launch_index_baseline
             self.restart_profile = first_launch_restart.profile(self.provenance)
         # Route the reused SQL observers through the same bounded process/log
         # owner. Their SQL and independent row/oracle semantics are unchanged.
@@ -900,13 +902,12 @@ class Runtime:
         entry = self.launch('successor-history', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml', '--roles', 'control')
         first = self.wait(lambda: self.logs(entry, output), 'successor ordinary Control', 20, entry=entry)[0]
         require(first['state'] == 'idle', 'ordinary successor reader did not start')
-        result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_catch_up_client.py'),
-            'history', str(output)], timeout=30, label='successor-history-client')
-        require(not result.stderr and load(output / 'history-client-result.json')['status'] == 'PASS', 'successor ordinary history failed')
+        startup = self.history_baseline.successor_client(self,output,entry)
+        require(load(output / 'history-client-result.json')['status'] == 'PASS', 'successor ordinary history failed')
         terminal = self.stop_container(entry, output)
         require(terminal['State']['ExitCode'] == 0, 'successor ordinary Control did not stop')
         after, final_catalog = self.capture(output, 'after')
-        self.restart_checks.history_unchanged(before, after, provenance=self.provenance)
+        self.restart_checks.history_unchanged(before, after, provenance=self.provenance,startup=startup)
         self.restart_checks.preserve_export(self.restart_before, after)
         require(final_catalog == catalog == self.caught_up_catalog and self.files(self.state / 'data/archive') == self.caught_up_files,
             'ordinary history changed Archive')

@@ -493,7 +493,7 @@ def retry_unchanged(before, after):
         assert before[table] == after[table], 'exact catch-up retry mutated ' + table
 
 
-def history_unchanged(before, after, *, provenance=True):
+def history_unchanged(before, after, *, provenance=True, startup=None):
     selected = profile(provenance)
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets', 'local_accounts',
         'management_audit', 'snapshot_leases', 'archive_snapshot_pins', 'retention_claims'}
@@ -506,7 +506,24 @@ def history_unchanged(before, after, *, provenance=True):
     owner, = new_owners
     assert owner['role'] == 'control' and owner['state'] == 'released' and owner['released_at_us'] is not None
     assert all(row['revoked_at_us'] is not None for row in after['browser_sessions'])
+    startup_ids = set()
+    if startup is not None:
+        # The caller has positively verified these startup probes before letting
+        # the client issue either history request. Preserve their exact MVCC rows;
+        # they cannot absorb an unexpected extra history reader after the gate.
+        active = only(startup['owner_epochs'],role='control',state='active')
+        assert all(owner[k]==active[k] for k in ('resource_id','epoch','dataset_id','role_instance_id','process_incarnation','acquired_at_us'))
+        startup_ids = {r['lease_id'] for r in startup['archive_snapshot_pins'] if r not in before['archive_snapshot_pins']}
+        assert 1 <= len(startup_ids) <= 2
+        for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+            assert all(r in after[table] for r in startup[table]), 'startup reader changed after quiescence: '+table
+        for key in startup_ids:
+            lease = only(startup['snapshot_leases'],lease_id=key)
+            pin = only(startup['archive_snapshot_pins'],lease_id=key)
+            assert lease['state']=='released' and lease['lease_revision']==2 and lease['release_reason']=='reader_joined'
+            assert pin['purpose']=='reader' and pin['frontier_revision']==6 and pin['issuer_epoch']==owner['epoch']
     pins = [row for row in after['archive_snapshot_pins'] if row not in before['archive_snapshot_pins']]
+    pins = [row for row in pins if row['lease_id'] not in startup_ids]
     assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == 6 for row in pins)
     for pin in pins:
         frontier = only(after['archive_frontier_snapshots'], consumer_id=pin['consumer_id'],

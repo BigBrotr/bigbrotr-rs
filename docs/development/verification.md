@@ -430,6 +430,15 @@ current `bigbrotr-initial-index-catch-up/2` report distinguishes the source epoc
 complete cuts and persistent handoff revision from whether this invocation
 created the handoff. It remains `ready=false`, without Index acknowledgement or
 Ingest retirement. The final ordinary reader verifies both signed events.
+Before either history request, the shared successor client observes the current
+Control owner's completed startup probe: exact Archive revision6 and both source
+bounds, released reader pin and claims, positively absent native child and empty
+operation caches (`building/not_observed`). This setup consumes the original30s
+client deadline and uses the newly authenticated session. The verified startup
+rows must remain exact; the two subsequent history requests each run once and
+must return200 with the original signed events. A429 is retained as failure,
+never retried by this fixture. This gate addresses a missing positive setup
+precondition; it does not prove the cause of a prior generic capacity response.
 
 At the closed/unretired and terminal successor boundaries, the journey also
 runs the maintained SQL handoff constraints in two fresh database copies inside

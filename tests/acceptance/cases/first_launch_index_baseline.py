@@ -1,4 +1,4 @@
-"""Closed shared Index ordinary baseline; all startup observation consumes40s."""
+"""Closed startup observation inside the original40s/30s client windows."""
 import subprocess
 import sys
 import time
@@ -13,15 +13,29 @@ def ordinary_client(self, output, entry):
     selected = load(self.home/'export-input.json')
     require('readiness_mode' not in selected, 'original ordinary journey profile')
     save(self.home/'export-input.json',dict(selected,startup_quiescence=True))
-    deadline = time.monotonic()+40
-    command = [sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_export_client.py'),str(self.home)]
-    with (output/'ordinary-client.stdout').open('w') as out,(output/'ordinary-client.stderr').open('w') as err:
+    return startup_client(self,output,entry)
+
+
+def successor_client(self, output, entry):
+    selected = load(output/'read-input.json')
+    save(output/'read-input.json',dict(selected,startup_quiescence=True))
+    return startup_client(self,output,entry,successor=self.provenance)
+
+
+def startup_client(self, output, entry, *, successor=None):
+    require(successor is None or type(successor) is bool, 'closed startup client profile')
+    home,seconds,label = (self.home,40,'ordinary-client') if successor is None else (output,30,'successor-history-client')
+    script = 'installed_archive_export_client.py' if successor is None else 'installed_archive_catch_up_client.py'
+    deadline = time.monotonic()+seconds
+    command = [sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap'/script)]
+    command += [str(home)] if successor is None else ['history',str(home)]
+    with (output/(label+'.stdout')).open('w') as out,(output/(label+'.stderr')).open('w') as err:
         client = subprocess.Popen(command,env=self.environment,cwd=self.root,stdin=subprocess.DEVNULL,
             stdout=out,stderr=err,start_new_session=True)
         self.processes.append(client)
-        save(output/'ordinary-client-process.json',dict(pid=client.pid,argv=command,limit_seconds=40,status='running'))
+        save(output/(label+'-process.json'),dict(pid=client.pid,argv=command,limit_seconds=seconds,status='running'))
         try:
-            marker = self.home/'ordinary-setup.json'
+            marker = home/'ordinary-setup.json'
             self.wait(lambda:marker.exists(),'ordinary startup observation',max(.001,deadline-time.monotonic()),entry,client)
             signal = load(marker)
             require(signal['phase'] == 'setup' and type(signal['started_ns']) is int
@@ -29,19 +43,21 @@ def ordinary_client(self, output, entry):
                     'bounded startup observation declaration')
             phase_deadline = min(deadline,signal['deadline_ns']/1_000_000_000)
             before = load(output/'before-control.json')
-            startup_quiescence(self,output/'startup',entry,before,phase_deadline)
+            startup = startup_quiescence(self,output/'startup',entry,before,phase_deadline,
+                successor=successor,session_path=None if successor is None else home/'read-session.private')
             require(time.monotonic() < phase_deadline, 'startup observation consumed original client window')
-            (self.home/'ordinary-setup.continue').write_text('completed full startup probe independently checked\n')
+            (home/'ordinary-setup.continue').write_text('completed full startup probe independently checked\n')
             client.wait(timeout=max(.001,deadline-time.monotonic()))
             require(client.returncode == 0 and time.monotonic() < deadline
-                    and not (output/'ordinary-client.stderr').read_bytes(), 'original ordinary client failed or exceeded40s')
+                    and not (output/(label+'.stderr')).read_bytes(), 'original client failed or exceeded its deadline')
+            return startup[0]
         finally:
             stop_process(client)
             self.processes.remove(client)
-            save(output/'ordinary-client-process.json',dict(pid=client.pid,argv=command,limit_seconds=40,status='joined',exit_code=client.returncode))
+            save(output/(label+'-process.json'),dict(pid=client.pid,argv=command,limit_seconds=seconds,status='joined',exit_code=client.returncode))
 
 
-def startup_quiescence(self, output, entry, historical, deadline):
+def startup_quiescence(self, output, entry, historical, deadline, *, successor=None, session_path=None):
     output.mkdir(mode=0o700)
     parent = process_identity(self.inspect(entry)['State']['Pid'])
     require(parent is not None, 'actual startup Control process')
@@ -49,7 +65,7 @@ def startup_quiescence(self, output, entry, historical, deadline):
     observations = []
     while True:
         require(len(observations) < 100 and time.monotonic() < deadline, 'startup observation bound')
-        value = ShortPinRuntime.roles(self,deadline); observations.append(value)
+        value = ShortPinRuntime.roles(self,deadline,session_path=session_path); observations.append(value)
         save(output/'roles.json',observations)
         # NotObserved also exists before the first probe. A status response can
         # precede pin admission; an independent capture must establish completion.
@@ -57,8 +73,8 @@ def startup_quiescence(self, output, entry, historical, deadline):
                 and cap['reason'] == 'not_observed' for cap in value['capabilities']):
             state,catalog = self.capture(output,'complete')
             clock_after = ShortPinRuntime.bounded_sql(self,'bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
-            oracle.ordinary_roles(value,state,clock_before,clock_after,'setup')
-            if oracle.startup_reader_pending(historical,state):
+            oracle.ordinary_roles(value,state,clock_before,clock_after,'setup',successor=successor)
+            if oracle.startup_reader_pending(historical,state,successor=successor):
                 require(process_identity(parent['pid']) == parent and time.monotonic() < deadline,
                         'startup reader pending outside original authority/deadline')
                 save(output/('pending-'+str(len(observations))+'.json'),dict(status='PENDING',
@@ -69,7 +85,7 @@ def startup_quiescence(self, output, entry, historical, deadline):
                 time.sleep(.05)
                 continue
             worker = ShortPinRuntime.worker(self,parent,allow_absent=True)
-            owner = oracle.ordinary_startup(historical,state,value,clock_before,clock_after,worker)
+            owner = oracle.ordinary_startup(historical,state,value,clock_before,clock_after,worker,successor=successor)
             require(process_identity(parent['pid']) == parent and time.monotonic() < deadline, 'same startup parent within original deadline')
             save(output/'verdict.json',dict(status='PASS',probe='complete',operation_cache='empty',
                 capabilities='building/not_observed',parent=parent,worker=worker,
