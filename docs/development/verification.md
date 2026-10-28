@@ -424,6 +424,39 @@ unit controls are not acceptance evidence. It does not establish automatic
 Archive recovery, generic connection/authentication/TLS failure handling,
 unknown remote outcomes, shared-budget/disk-pressure capacity or complete M1.
 
+### Installed separate Index backend stop
+
+`p01-first-launch-index-outage` uses the ordinary candidate/source/evidence
+arguments plus `--native-observer-build /absolute/observer-build`. The declared
+observer must match the product source, as in the finite64 case below. The eight
+ordinary stages use the existing restart prefix gate: source3/Archive2/Index2
+must be independently ready, its physical rows/schema captured, and only the
+owned ClickHouse positively stopped within the original15s. Both loopback
+endpoints must refuse before post-prefix work is released. Control and the
+Archive catalog remain direct and available; no proxy or recovery stage is added.
+
+The unchanged four-request signed client must reach source12/Archive4 while
+Index reports `unavailable/dependency_unavailable`, preserving its original
+verified cut3/age and one immutable plan3[4..7] with ten prepared chunks. Lag is
+nine source records; plan4[8..12] must remain absent. All82 Control tables,
+unchanged custody and the same renewed Control owner are checked. The two
+pre-outage acknowledged inputs describe three dictionaries; the signed event is
+admitted during the outage. This does not claim a pre-outage signed event.
+
+After the writer and its database backends positively join, the existing
+read-only observer checks all49 native rows against literal encodings, including
+four original inputs/receipts and ACK4/retired0. Full Archive science and the
+original40s history/export client with its12s export gate must still pass while
+ClickHouse stays stopped. The original65s submitted-client bound and Index45s/
+256-sample observation bound remain. A failure before source release or any
+incomplete stop, foreign identity, changed input, false Ready or extra plan fails
+the case; later stages remain NOT_RUN and owned cleanup still runs.
+
+The definition and unit controls are not installed acceptance evidence. Backend
+restoration, automatic recovery, general remote-query uncertainty resolution,
+byte hysteresis, empirical capacity, continuous enabled-Index successor and
+complete M1 remain separately scoped.
+
 ### Installed finite retained-request boundary
 
 `p01-first-launch-retained-boundary` reuses the catalog-only outage and the

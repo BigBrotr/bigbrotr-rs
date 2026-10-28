@@ -60,8 +60,10 @@ def accepted_profile(state):
 
 
 def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12,
-               archive_unavailable=False, retained_boundary=False):
+               archive_unavailable=False, retained_boundary=False, index_unavailable=False):
     """Literal signed fixture frontier plus separately captured SQL identities."""
+    assert type(index_unavailable) is bool
+    assert not index_unavailable or (not archive_unavailable and not invalidated and not retained_boundary and (revision,sequence)==(4,12))
     assert type(retained_boundary) is bool
     assert not retained_boundary or (archive_unavailable and not invalidated)
     assert type(revision) is type(sequence) is int and (revision, sequence) in (((64,312),) if retained_boundary else ((2, 3), (4, 12)))
@@ -103,17 +105,17 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
     exact(value['roles'], [dict(role=role,
         **(dict(state='starting' if index_cap['state']=='building' else 'degraded', reason=index_cap['reason'])
            if retained_boundary and role=='index' else dict(
-        state='degraded' if (invalidated and role=='index') or (archive_unavailable and role=='archive')
+        state='degraded' if ((invalidated or index_unavailable) and role=='index') or (archive_unavailable and role=='archive')
             else 'ready' if role=='control' else 'idle',
         reason='remote_outcome_unknown' if invalidated and role=='index'
-            else 'dependency_unavailable' if archive_unavailable and role=='archive' else 'current')))
+            else 'dependency_unavailable' if (archive_unavailable and role=='archive') or (index_unavailable and role=='index') else 'current')))
         for role in ('control','ingest','sync','archive','index')])
     caps = value['capabilities']
     assert len(caps) == 4
     for cap,kind in zip(caps, ('signed_event_admission','finite_acquisition','archive_publication','index_publication')):
         assert set(cap) == {'capability','state','reason','freshness','time','published','generation','storage_incarnation'}
         assert cap['capability'] == kind
-        if archive_unavailable and kind == 'archive_publication':
+        if (archive_unavailable and kind == 'archive_publication') or (index_unavailable and kind == 'index_publication'):
             assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
             timed(cap)
         elif retained_boundary and kind == 'index_publication':
@@ -132,7 +134,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
             assert cap['state'] == 'ready'
             fresh(cap)
         published = dict(revision=str(revision), cut=cut) if kind.endswith('_publication') else None
-        if archive_unavailable and kind == 'archive_publication':
+        if (archive_unavailable and kind == 'archive_publication') or (index_unavailable and kind == 'index_publication'):
             published = dict(revision='2', cut=dict(dataset_id=cut['dataset_id'], topology_generation='0',
                 bounds=[dict(shard_id='0', owner_epoch='1', last_complete_sequence='3')]))
         if retained_boundary and kind == 'index_publication':
@@ -707,7 +709,7 @@ def json_value(ty, value):
 def physical_rows(actual, science, generation, schema, *, through=12, replayed_pending=False, retained_boundary=False):
     """Raw physical multiplicity, including the declared immutable plan3 replay."""
     assert type(retained_boundary) is bool
-    assert through in ((312,) if retained_boundary else (7,12)) and type(replayed_pending) is bool
+    assert through in ((312,) if retained_boundary else (3,7,12)) and type(replayed_pending) is bool
     assert through == 12 or not replayed_pending
     rows = expected_rows(science,raw(generation,16),schema, counts=(68,61,61,61,61,61,61,0,61,61) if retained_boundary else COUNTS)
     assert set(actual) == set(TARGETS)
@@ -724,27 +726,11 @@ def publication(live, after, actual, science, schema, root, *, owner_count=1, pu
     validate_metadata(after, root, complete=True, owner_count=owner_count,publication_fault=publication_fault,retained_boundary=retained_boundary)
     for table in INDEX_TABLES:
         exact(live[table],after[table])
-    identity,tables,_ = retained(root)
-    h = hashlib.sha256(b'bigbrotr/index-table-manifest/1\0')
-    def text(value): data=value.encode(); h.update(be(len(data),4)+data)
-    for value in (schema.VERSION,tables['database'],'Atomic'): text(value)
-    for t,identifier in zip(schema.inventory(),tables['table_uuids']):
-        text(t['name']); h.update(uuid.UUID(identifier).bytes); text(t['engine_full']); h.update(be(len(t['columns']),2))
-        for name,ty in t['columns']: text(name); text(ty)
-    assert h.hexdigest() == identity['table_identity_digest']
+    identity = table_identity(schema,root)
     rows = physical_rows(actual,science,generation['generation_id'],schema,
                          replayed_pending=publication_fault=='before-forward', through=312 if retained_boundary else 12,
                          retained_boundary=retained_boundary)
-    plans = sorted(live['projection_plans'], key=lambda r:r['frontier_revision'])
-    for plan,batch in zip(plans,science['batches']):
-        assert plan['source_batch_digest'] == '\\x'+batch['admission_digest']
-        cut = [raw(generation['dataset_id'],16),0,[[0,1,batch['last']]]]
-        for name in TARGETS:
-            selected = [r for r in rows[name] if batch['first'] <= r[1][3] <= batch['last']]
-            values = [[row[1],[name,row[6]],row] for row in selected]
-            expected = digest('projection-chunk',[raw(generation['generation_id'],16),name,1,cut,0,values])
-            member = only(live['projection_plan_chunks'],plan_digest=plan['plan_digest'],target=name)
-            assert member['chunk_id'] == member['rows_digest'] == '\\x'+expected.hex()
+    plan_science(live,science,rows,generation)
     return dict(format='bigbrotr-installed-initial-index/1', source_cut=312 if retained_boundary else 12, frontier_revision=64 if retained_boundary else 4,
         admission_batches=64 if retained_boundary else 4, committed_chunks=640 if retained_boundary else 40,
         family_counts={name:len(values) for name,values in rows.items()},
@@ -761,3 +747,30 @@ def schema_metadata(schema,root,tables,columns):
     exact(tables,[dict(name=r['name'],uuid=r['uuid'],engine_full=r['engine_full']) for r in sorted(expected,key=lambda r:r['name'])])
     exact(columns,[dict(table=r['name'],name=name,type=ty,position=i+1,default_kind='',default_expression='')
         for r in sorted(expected,key=lambda r:r['name']) for i,(name,ty) in enumerate(r['columns'])])
+
+
+def plan_science(state, science, rows, generation):
+    """Bind complete and prepared plan commitments to independent source bytes."""
+    plans = sorted(state['projection_plans'], key=lambda r:r['frontier_revision'])
+    for plan,batch in zip(plans,science['batches']):
+        assert plan['source_batch_digest'] == '\\x'+batch['admission_digest']
+        cut = [raw(generation['dataset_id'],16),0,[[0,1,batch['last']]]]
+        for name in TARGETS:
+            selected = [r for r in rows[name] if batch['first'] <= r[1][3] <= batch['last']]
+            values = [[row[1],[name,row[6]],row] for row in selected]
+            expected = digest('projection-chunk',[raw(generation['generation_id'],16),name,1,cut,0,values])
+            member = only(state['projection_plan_chunks'],plan_digest=plan['plan_digest'],target=name)
+            assert member['chunk_id'] == member['rows_digest'] == '\\x'+expected.hex()
+
+
+def table_identity(schema, root):
+    """Independent schema/table manifest commitment, shared by prefix and full proof."""
+    identity,tables,_ = retained(root)
+    h = hashlib.sha256(b'bigbrotr/index-table-manifest/1\0')
+    def text(value): data=value.encode(); h.update(be(len(data),4)+data)
+    for value in (schema.VERSION,tables['database'],'Atomic'): text(value)
+    for t,identifier in zip(schema.inventory(),tables['table_uuids']):
+        text(t['name']); h.update(uuid.UUID(identifier).bytes); text(t['engine_full']); h.update(be(len(t['columns']),2))
+        for name,ty in t['columns']: text(name); text(ty)
+    assert h.hexdigest() == identity['table_identity_digest']
+    return identity

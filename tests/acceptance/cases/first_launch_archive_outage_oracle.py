@@ -88,24 +88,26 @@ def parked_roles(value, state, before_us, after_us):
     index.live_roles(value, state, before_us, after_us, archive_unavailable=True)
 
 
-def retained_age(prefix, parked, first, last):
+def retained_age(prefix, parked, first, last, *, capability='archive_publication'):
     """The same BOOTTIME observation ages through two HTTP sampling brackets."""
+    assert capability in ('archive_publication','index_publication')
     for bracket in (first, last):
         assert set(bracket) == {'before_ns', 'after_ns'}
         assert all(type(n) is int and n >= 0 for n in bracket.values())
         assert bracket['before_ns'] <= bracket['after_ns']
     assert first['after_ns'] <= last['before_ns']
-    old = int(index.only(prefix['capabilities'], capability='archive_publication')['time']['age_us'])
-    new = int(index.only(parked['capabilities'], capability='archive_publication')['time']['age_us'])
+    old = int(index.only(prefix['capabilities'], capability=capability)['time']['age_us'])
+    new = int(index.only(parked['capabilities'], capability=capability)['time']['age_us'])
     # Both durations truncate to integer microseconds. One microsecond covers
     # that rounding; the request brackets provide the actual scheduling bounds.
     lower = (last['before_ns'] - first['after_ns']) // 1000 - 1
     upper = (last['after_ns'] - first['before_ns'] + 999) // 1000 + 1
-    assert lower <= new - old <= upper, 'Archive observation was refreshed or changed'
+    assert lower <= new - old <= upper, 'Retained observation was refreshed or changed'
 
 
-def prefix_preservation(before, after, *, retained_boundary=False):
-    assert type(retained_boundary) is bool
+def prefix_preservation(before, after, *, retained_boundary=False, index_unavailable=False):
+    assert type(retained_boundary) is type(index_unavailable) is bool
+    assert not (retained_boundary and index_unavailable)
     assert set(before) == set(after) and len(before) == 82
     additions = dict(acquisition_selectors=1, acquisition_scopes=1, acquisition_scope_commands=1,
         jobs=1, acquisition_jobs=1, job_admissions=1, management_commands=2, management_audit=2,
@@ -119,6 +121,10 @@ def prefix_preservation(before, after, *, retained_boundary=False):
             projection_plan_chunks=620, projection_chunks=620,
             projection_chunk_bounds=620, index_frontier_plans=62,
             consumer_frontier_revisions=62, consumer_frontiers=62)
+    if index_unavailable:
+        additions.update(archive_attempts=2,archive_frontier_snapshots=2,archive_frontier_batches=7,
+            projection_plans=1,projection_plan_chunks=10,projection_chunks=10,
+            projection_chunk_bounds=10,index_frontier_plans=0)
     appended = set(additions)
     mutable = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers'}
     assert appended | mutable <= set(before)
@@ -130,7 +136,7 @@ def prefix_preservation(before, after, *, retained_boundary=False):
     assert len(before['owner_epochs']) == len(after['owner_epochs'])
     for old in before['owner_epochs']:
         new = index.only(after['owner_epochs'], resource_id=old['resource_id'], epoch=old['epoch'])
-        allowed = {'lease_expires_at_us', 'xmin'} if old['state'] == 'active' and old['role'] in ('control', 'ingest', 'index') else set()
+        allowed = {'lease_expires_at_us', 'xmin'} if old['state'] == 'active' and old['role'] in (('control','ingest','archive','index') if index_unavailable else ('control','ingest','index')) else set()
         index.exact({k:v for k,v in old.items() if k not in allowed},
                     {k:v for k,v in new.items() if k not in allowed})
         assert new['lease_expires_at_us'] >= old['lease_expires_at_us']
@@ -142,10 +148,10 @@ def prefix_preservation(before, after, *, retained_boundary=False):
     assert len(before['consumers']) == len(after['consumers']) == 2
     for old in before['consumers']:
         new = index.only(after['consumers'], consumer_id=old['consumer_id'])
-        if old['consumer_role'] == 'archive':
+        if old['consumer_role'] == ('index' if index_unavailable else 'archive'):
             index.exact(old, new)
         else:
-            assert old['consumer_role'] == 'index' and old['current_revision'] == 2 and new['current_revision'] == (64 if retained_boundary else 4)
+            assert old['consumer_role'] == ('archive' if index_unavailable else 'index') and old['current_revision'] == 2 and new['current_revision'] == (64 if retained_boundary else 4)
             ignored = {'current_revision', 'xmin'}
             index.exact({k:v for k,v in old.items() if k not in ignored},
                         {k:v for k,v in new.items() if k not in ignored})
