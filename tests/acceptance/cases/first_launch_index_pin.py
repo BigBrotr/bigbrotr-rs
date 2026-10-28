@@ -402,7 +402,7 @@ class ShortPinRuntime(IndexRuntime):
                 blocker = subprocess.Popen(args,env=self.environment,cwd=self.root,stdin=subprocess.PIPE,
                     stdout=stdout,stderr=stderr,text=True,start_new_session=True)
                 self.processes.append(blocker)
-                blocker.stdin.write("BEGIN; SET LOCAL lock_timeout='500ms'; SET LOCAL statement_timeout='1s'; SET LOCAL idle_in_transaction_session_timeout='6s'; LOCK TABLE public.ducklake_data_file IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('pid',pg_backend_pid(),'backend_start',backend_start,'relation','public.ducklake_data_file'::regclass::oid) FROM pg_stat_activity WHERE pid=pg_backend_pid();\n")
+                blocker.stdin.write("BEGIN; SET LOCAL lock_timeout='500ms'; SET LOCAL statement_timeout='1s'; SET LOCAL idle_in_transaction_session_timeout='6s'; LOCK TABLE public.ducklake_data_file IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('pid',pg_backend_pid(),'backend_start',backend_start,'relation','public.ducklake_data_file'::regclass::oid::bigint) FROM pg_stat_activity WHERE pid=pg_backend_pid();\n")
                 blocker.stdin.flush()
                 until = min(deadline,time.monotonic()+1.5)
                 while not (target/'blocker.stdout').stat().st_size:
@@ -410,6 +410,7 @@ class ShortPinRuntime(IndexRuntime):
                     time.sleep(.01)
                 require((target/'blocker.stdout').stat().st_size <= 4096, 'blocker output bound')
                 timeline['blocker'] = json.loads((target/'blocker.stdout').read_text())
+                save(target/'timeline.json',timeline)
                 self.proxy_send(self.pin_proxy,'release\n')
                 self.proxy_event(self.pin_proxy,'released',min(1,deadline-time.monotonic()))
                 expiry = first['lease']['expires_at_us']
