@@ -873,10 +873,10 @@
       ]
     },
     "publication_commit_recovery": {
-      "status": "ORIGINAL_PREFIX_CLICKHOUSE202_FAIL_UNRESOLVED; BOUNDED_DIAGNOSTIC_NO_REPRODUCTION",
+      "status": "BOTH_INSTALLED_PUBLICATION_COMMIT_CASES_PASS; ORIGINAL_PREFIX_CODE202_CAUSE_OPEN",
       "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
-      "acceptance": "ace1512e0f8bf713c0d9e797aef989919083017c",
-      "integration": "b15dded467a96d605130a08ebcb3ab5ce2c57c94",
+      "acceptance": "94f9fa7494915e3517b4d07e747d63e1552daf44",
+      "integration": "59164990",
       "scope": "Same-store PG publication COMMIT before-forward/after-complete, exact pending/publication receipt recovery and retry; not general unknown ClickHouse query resolution.",
       "source_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt.json",
       "critical_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-critical-review-fb5fd256-20261028/receipt.json",
@@ -890,7 +890,7 @@
         "resources": "18 containers stopped/PID0/noOOM; focused command exit4, others0. Proxy exit0/absent, parent absent and borrowed bridge empty. Original raw state/logs retained.",
         "not_run": "Actual selected COMMIT outcome, backend/time hold observation, subsequent recovery/retry and final export"
       },
-      "next": "Minimal bounded installed query-lifecycle/role-frontier observability, then one actual before-forward continuation with unchanged limits. Original202 remains unexplained unless positive evidence establishes its cause; no generic retry or transport change justified by diagnostic non-reproduction.",
+      "next": "Finite Index topology0\u21921/Ingest1\u21922 continuation with explicit typed handoff history and exact retained lineage; general unknown-query recovery remains separate. Original202 is not closed by successful continuations.",
       "config_fix": {
         "revision": "ace1512e0f8bf713c0d9e797aef989919083017c",
         "checks": "20 targeted controls and retained metadata replay PASS; critical delta review PASS; actual root declares unchanged default5s before initialization. No product change.",
@@ -913,6 +913,84 @@
         "root_review_sha256": "329112be83228e2003b42e2f5a76d85914a56cdfc544830bce2acbf4cbf3e125",
         "original_setup_failure": "actual-r1 prelaunch INCOMPLETE: inherited global Docker inventory exceeded1MiB. Both container names absent/no query. Exact-owned-name filter preservescap/collision refusal.",
         "resources": "Bothactual-r2 containers exit0/PID0/noOOM; observerjoined; no active diagnostic. All original inputs/logs/results preserved."
+      },
+      "observability": {
+        "revision": "94f9fa7494915e3517b4d07e747d63e1552daf44",
+        "controls": "24 focused controls PASS; author/root/independent critical source review complete; no product change or rebuild.",
+        "author_receipt": ".research/pin-release-uncertainty-20261028/.research/pin-release-author-review-20261028/index-publication-commit/prefix-observability/author-review.json",
+        "author_receipt_sha256": "f3a887287db3bd84f17257869b7bfb56b9145e206e01866daa78a24106238ad8",
+        "limits": "Original exact prefix count,15s deadline,writer quota1 and engine limits unchanged. Writer-only bounded query log has actual positive prerequisite and post-join export; logging perturbs timing. CAPTURED does not prove all-query coverage or remote teardown."
+      },
+      "before_r3": {
+        "root": ".research/first-launch-index-commit-before-r3-20261028",
+        "result": "All12 installed stages PASS",
+        "root_receipt_sha256": "8962d59c526cc2da47447d81a4eed7e197de5ccd1d23439a5e86c7f5eaabefb6",
+        "product_outcome": "CommitUnknown/exit4; no claimed committed release",
+        "publication": "Pending plan3 recovered under owner3",
+        "origin_epochs": [
+          1,
+          1,
+          1,
+          3
+        ],
+        "publisher_epochs": [
+          1,
+          1,
+          3,
+          3
+        ],
+        "raw_dictionary_rows": 12,
+        "scope": "40 chunks/160 metadata rows, ten typed families,81 control tables, original353-byte signed export; owner4 exact retry adds no work. Before-forward replay is exactly four identical dictionary rows, not DISTINCT normalization.",
+        "query_lifecycle": {
+          "status": "CAPTURED",
+          "rows": 1804,
+          "queries": 902,
+          "exception_codes": [
+            210
+          ],
+          "all_query_coverage": "NOT_PROVEN",
+          "termination_or_exclusion": "NOT_PROVEN"
+        },
+        "resources": "23 containers stopped/PID0/noOOM; focused command4,others0; proxyexit0/absent,launcherabsent,bridgeempty. Root verified46 source hashes. Original data/logs retained."
+      },
+      "after_r1": {
+        "root": ".research/first-launch-index-commit-after-r1-20261028",
+        "result": "All12 installed stages PASS",
+        "root_receipt_sha256": "c8a01d24eae7d77a1eb22876af172e5bf259e42d21df20b046e3bbd078fd37bd",
+        "product_outcome": "CommitUnknown/exit4; no claimed committed release",
+        "publication": "Already committed plan3/publisher2 preserved; owner3 continues",
+        "origin_epochs": [
+          1,
+          1,
+          1,
+          3
+        ],
+        "publisher_epochs": [
+          1,
+          1,
+          2,
+          3
+        ],
+        "raw_dictionary_rows": 8,
+        "scope": "40 chunks/160 metadata rows, ten typed families,81 control tables, original353-byte signed export; owner4 exact retry adds no work. Before-forward replay is exactly four identical dictionary rows, not DISTINCT normalization.",
+        "query_lifecycle": {
+          "status": "CAPTURED",
+          "rows": 1774,
+          "queries": 887,
+          "exception_codes": [
+            210
+          ],
+          "all_query_coverage": "NOT_PROVEN",
+          "termination_or_exclusion": "NOT_PROVEN"
+        },
+        "resources": "23 containers stopped/PID0/noOOM; focused command4,others0; proxyexit0/absent,launcherabsent,bridgeempty. Root verified46 source hashes. Original data/logs retained."
+      },
+      "actual_critical_review": {
+        "receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt.json",
+        "sha256": "92eb49cc28e354b8a75df1daa454d848bd7997952cb1d1748edbdc78238b4008",
+        "scope": "Both actual raw publication/catch-up/retry captures, previous receipt/MVCC preservation, recomputed Control exclusion and Index recovery digests, independent science and canonical export; no source review repetition or engine rerun.",
+        "result": "No capture/scope blocker. Before-forward changes no table at fault; after-complete changes exactly five publication tables. Exact retries preserve physical arrays and78 non-owner tables.",
+        "diagnostic_exception": "One Code210 Broken pipe per case belongs to original Index incarnation during server unpause after original app finished. No202 in captured rows; all-query coverage and remote teardown remain NOT_PROVEN."
       }
     }
   }

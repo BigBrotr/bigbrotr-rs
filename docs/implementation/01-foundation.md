@@ -532,7 +532,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   current-head transaction are independently checked. See the
   [installed extension](evidence/p02-initial-index-clickhouse-sql-20261026.json).
   Later initial readiness and same-store closed-source Index recovery pass in
-  the same report. General query uncertainty, the enabled-Index topology/epoch
+  the same report. Both installed publication COMMIT-loss directions also pass
+  twelve stages each on unchanged `076750d5`: fresh-owner recovery preserves the
+  actual pending/committed distinction, and exact retry adds no work. The report's
+  `publication_commit_recovery` retains the original unexplained writer202 failure;
+  successful continuations do not resolve remote-query uncertainty.
+  General query uncertainty, the enabled-Index topology/epoch
   handoff and Step5 outages remain open.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.

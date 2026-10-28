@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Current0e8 run IN_PROGRESS atcheckpoint: mac earlyacceptance fixtureERROR, bothLinuxactive. e6canonicalfixture correctionlocallyverified/integrated; nextmainpush supersedesfailedrevision.",
+    "status": "407022 on5b IN_PROGRESS. Previous406972 CANCELLED: macfixtureERROR and bothLinuxsuperseded; exactterminal accounting retained, no native completion inferred.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40697249452",
-    "latest_hosted_source": "0e8ba18145daeee2b34799ccde020d062170005e",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40702272536",
+    "latest_hosted_source": "5b6716991d65f45388b0586abec01d558c488155",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73471,12 +73471,12 @@
       "scope": "Four artifacts/512members,33logmembers;54known nonsecret occurrences/5fingerprints,0new/unclassified/provideralerts. Asynchronous/exhaustive absence not claimed."
     },
     "verification_in_progress": {
-      "root": ".research/ci-publication-20261026/run-40697249452-exposure",
-      "watch_session": 94369,
-      "source": "0e8ba18145daeee2b34799ccde020d062170005e",
-      "early_failure": "Actual mac173PASS/1ERROR/5SKIP;4expensivechecksNOT_RUN. No native/macFIFOqualification.",
-      "fix": "e6feb00e;9targetedPASS withstrictaliasrefusal retained",
-      "scope": "Preserve actualjob/artifact status if auto-cancelled by next coherentpush; no duplicate dispatch. No complete hostedPASS."
+      "root": ".research/ci-publication-20261026/run-40702272536-exposure",
+      "watch_session": 46265,
+      "driver_pid": 363534,
+      "watcher_pid": 363535,
+      "source": "5b6716991d65f45388b0586abec01d558c488155",
+      "scope": "Single original boundedwatch; no duplicate dispatch. Actualterminal platform/default-profile/FIFOqualification pending."
     },
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
@@ -73961,6 +73961,13 @@
       "resources": "Watcher55285 reaped1; native67012 reaped0; both drivers/watch process absent, native container9fd115cceb6a stopped/exit0/PID0/noOOM; optional115compiler cache released. All original artifacts/logs/failures retained.",
       "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/cursor-keyring-ci-9ab330b",
       "next": "One next coherent main push must qualify actual macOS/default-profile and early acceptance order; no duplicate dispatch."
+    },
+    "run_40697249452": {
+      "root": ".research/ci-publication-20261026/run-40697249452-exposure",
+      "status": "CANCELLED_WITH_ORIGINAL_MAC_FIXTURE_ERROR",
+      "receipt_sha256": "2f8627eb7887443e400f56b787e9780c21dcc1c9089663c43c8d80f25818d722",
+      "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json#subsequent_hosted_attempt",
+      "resources": "Originalwatch94369reaped1 andbothprocessidentitiesabsent. All4providerZIPs/logs retained; interruptedcommands lackpostcheckproof."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -75343,24 +75350,41 @@
       },
       "publication_commit_qualification": {
         "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
-        "acceptance": "fb5fd2565b441907f3c6cfc84ced9efd207d1640",
-        "root": ".research/first-launch-index-commit-before-r2-20261028",
-        "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-index-commit-before-r2-session.json",
-        "status": "BEFORE_R2_PREFIX_FAIL_DIAGNOSIS_OPEN; COMMIT_NOT_RUN",
+        "acceptance": "94f9fa7494915e3517b4d07e747d63e1552daf44",
+        "root": ".research/first-launch-index-commit-before-r3-20261028",
+        "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-index-commit-before-r3-session.json",
+        "status": "BOTH_INSTALLED_12STAGE_PASS_STOPPED_RETAINED; ORIGINAL202_OPEN",
         "critical_review": ".research/index-restart-acceptance-20261027/.research/publication-commit-critical-review-fb5fd256-20261028/receipt.json",
         "terminal_receipt": "root-terminal.json",
-        "source": "ace1512e0f8bf713c0d9e797aef989919083017c",
+        "source": "94f9fa7494915e3517b4d07e747d63e1552daf44",
         "previous_roots": [
-          ".research/first-launch-index-commit-before-r1-20261028"
+          ".research/first-launch-index-commit-before-r1-20261028",
+          ".research/first-launch-index-commit-before-r2-20261028"
         ],
         "diagnostic": {
           "root": ".research/pin-release-uncertainty-20261028/.research/pin-release-author-review-20261028/index-publication-commit/http-lifecycle-diagnostic",
           "status": "NO_REFUSAL_REPRODUCED; original202FAIL remainsopen",
           "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.publication_commit_recovery",
           "retention": "Originalprelaunchfailure,128/128observations,owneddata/logs/script snapshots andterminalreceipts retained."
-        }
+        },
+        "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.publication_commit_recovery",
+        "after_complete": {
+          "root": ".research/first-launch-index-commit-after-r1-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-index-commit-after-r1-session.json",
+          "terminal_receipt": "root-terminal.json"
+        },
+        "retention": "Preserve both qualified cases and original failures, source receipts, candidate and diagnostic captures. Both root sessions reaped0; all owned processes stopped."
       },
-      "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit"
+      "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit",
+      "epoch2_continuation": {
+        "worktree": ".research/index-epoch2-continuation-20261028",
+        "branch": "work/index-epoch2-continuation",
+        "base": "59164990",
+        "owner": "index_recovery_resume",
+        "status": "PARTIAL_NOT_INTEGRATED_NOT_QUALIFIED",
+        "scope": "Finite topology0\u21921/initialIngest1\u21922 Index catch-up; explicit typed revision handoff, retained source lineage and historical receipts. Existing P01-T09 owns acceptance; no parallel plan.",
+        "resources": "Source work only; no engine/build authorized to agent yet."
+      }
     }
   },
   "implementation_checkpoint_space_20261026": {
