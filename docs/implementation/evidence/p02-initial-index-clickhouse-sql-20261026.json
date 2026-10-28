@@ -986,7 +986,7 @@
         "resources": "23 containers stopped/PID0/noOOM; focused command4,others0; proxyexit0/absent,launcherabsent,bridgeempty. Root verified46 source hashes. Original data/logs retained."
       },
       "actual_critical_review": {
-        "receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt.json",
+        "receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-after-installed-both.json",
         "sha256": "92eb49cc28e354b8a75df1daa454d848bd7997952cb1d1748edbdc78238b4008",
         "scope": "Both actual raw publication/catch-up/retry captures, previous receipt/MVCC preservation, recomputed Control exclusion and Index recovery digests, independent science and canonical export; no source review repetition or engine rerun.",
         "result": "No capture/scope blocker. Before-forward changes no table at fault; after-complete changes exactly five publication tables. Exact retries preserve physical arrays and78 non-owner tables.",

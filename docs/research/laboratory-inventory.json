@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "407022 on5b IN_PROGRESS. Previous406972 CANCELLED: macfixtureERROR and bothLinuxsuperseded; exactterminal accounting retained, no native completion inferred.",
+    "status": "407022 on exact5b SUCCESS; all30 selected checks PASS. Earlier8cf failure and0e cancellation remain preserved.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73469,14 +73469,6 @@
       "path": ".research/ci-publication-20261026/run-40684555941-exposure/receipt.json",
       "sha256": "b0948e864b7d4604ef1da3a08ca4eee6f0bab83ae98f2574e6d4fbe016ab6b88",
       "scope": "Four artifacts/512members,33logmembers;54known nonsecret occurrences/5fingerprints,0new/unclassified/provideralerts. Asynchronous/exhaustive absence not claimed."
-    },
-    "verification_in_progress": {
-      "root": ".research/ci-publication-20261026/run-40702272536-exposure",
-      "watch_session": 46265,
-      "driver_pid": 363534,
-      "watcher_pid": 363535,
-      "source": "5b6716991d65f45388b0586abec01d558c488155",
-      "scope": "Single original boundedwatch; no duplicate dispatch. Actualterminal platform/default-profile/FIFOqualification pending."
     },
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
@@ -73966,8 +73958,17 @@
       "root": ".research/ci-publication-20261026/run-40697249452-exposure",
       "status": "CANCELLED_WITH_ORIGINAL_MAC_FIXTURE_ERROR",
       "receipt_sha256": "2f8627eb7887443e400f56b787e9780c21dcc1c9089663c43c8d80f25818d722",
-      "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json#subsequent_hosted_attempt",
+      "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json#previous_cancelled_attempt",
       "resources": "Originalwatch94369reaped1 andbothprocessidentitiesabsent. All4providerZIPs/logs retained; interruptedcommands lackpostcheckproof."
+    },
+    "latest_verified_run": {
+      "root": ".research/ci-publication-20261026/run-40702272536-exposure",
+      "source": "5b6716991d65f45388b0586abec01d558c488155",
+      "receipt_sha256": "0de68100b0d877b019649fc3f62d3b1b4bc319099579d436b9271d239bbfb62d",
+      "root_review_sha256": "14479b63f19bd6a4663bd75a9f6c59bdc00d32dab7b89f1ef673d89c7bfdcbba",
+      "status": "PASS_SELECTED_SCOPE",
+      "resources": "Watcher46265 reaped0; driver363534 and watcher363535 absent. Four original provider ZIPs and logs retained. No development engine created.",
+      "limits": "Dedicated ignored probes and five macOS platform skips remain NOT_RUN/SKIP, not PASS; full details in existing hosted report."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -75383,7 +75384,19 @@
         "owner": "index_recovery_resume",
         "status": "PARTIAL_NOT_INTEGRATED_NOT_QUALIFIED",
         "scope": "Finite topology0\u21921/initialIngest1\u21922 Index catch-up; explicit typed revision handoff, retained source lineage and historical receipts. Existing P01-T09 owns acceptance; no parallel plan.",
-        "resources": "Source work only; no engine/build authorized to agent yet."
+        "resources": "Source work only; no engine/build authorized to agent yet.",
+        "acceptance": {
+          "worktree": ".research/index-epoch2-acceptance-20261028",
+          "branch": "work/index-epoch2-acceptance",
+          "base": "e5cfec3ce88c11b3cff88b56f954e3a21623e683",
+          "owner": "root",
+          "status": "PARTIAL_NOT_INTEGRATED_NOT_QUALIFIED",
+          "valid_evidence": "Initial independent science/tag/Archive-selector delta has51+1 focused controls PASS and critical review at retained source identities. Original two KeyError failures and prelaunch NOT_RUN retained. Subsequent driver/typed-history/current-schema/report changes remain NOT_RUN.",
+          "evidence": ".research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028",
+          "review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-oracle-initial.json",
+          "review_sha256": "f160933930a7bd3c043b0813f187e7a08476a2374b14f5e6ed9d330e1a08e9a2",
+          "next": "Merge reviewed coherent product source into this isolated acceptance worktree; complete literal handoff/recovery refusal controls and installed driver review before new candidate execution."
+        }
       }
     }
   },

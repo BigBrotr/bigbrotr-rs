@@ -8,7 +8,9 @@ package publication or production deployment is authorized.
 
 Verified publication base: `5b6716991d65f45388b0586abec01d558c488155`.
 Implementation head before this checkpoint commit is
-`59164990` (reviewed observability integration), including
+`6d9434c1` (actual hosted qualification), including
+`e5cfec3c` (both installed publication COMMIT cases) and `59164990`
+(reviewed observability integration), plus
 reviewed `1080b307` (early CI controls), `fb5fd256` (publication COMMIT fixtures),
 `ace1512e` (binding the unchanged operation cap to deployment configuration),
 `9ab330b0` (portable FIFO fixture), `144ab9ea` (actual hosted outcome),
@@ -146,8 +148,8 @@ with its container stopped/exit0/PID0/noOOM; final receipts and all17 evidence
 hashes, four changed source identities and10 actual tests are root-verified.
 The original CI watcher55285 is reaped1 and both processes are absent. New
 run40697249452 is CANCELLED; watcher94369 is reaped and its process identities
-are absent. Successor40702272536 on published `5b671699` has one live watcher
-46265 (driver363534, gh363535), owned by the CI agent. Evidence is under
+are absent. Successor40702272536 on published `5b671699` completed SUCCESS; watcher
+46265 is reaped0 and original driver363534/gh363535 are absent. Evidence is under
 `.research/ci-publication-20261026/run-40702272536-exposure`. The CH diagnostic sessions65261 (prelaunch incomplete) and26675 (non-reproduction)
 are reaped; r2 server369abae762fc and client4ec5a2910c59 are stopped/exit0/PID0/
 noOOM, independently verified. Publication before-r3 session59608 and after-r1
@@ -156,7 +158,13 @@ exit4 and all others0. Root verified each proxy exit0/absent, launcher absent,
 empty bridge and46 exact acceptance source hashes. No local engine/compiler is
 active. The author owns partial epoch2 continuation in
 `.research/index-epoch2-continuation-20261028`, branch `work/index-epoch2-continuation`,
-base `59164990`; implementation is not integrated or qualified. Independent critical review of both actual COMMIT captures is complete with no
+base `59164990`; implementation is not integrated or qualified. Root owns the
+matching partial acceptance in `.research/index-epoch2-acceptance-20261028`, branch
+`work/index-epoch2-acceptance`, base `e5cfec3c`. Its initial science/tag/Archive-selector
+subset has51+1 focused controls PASS and critical review; later typed-history,
+schema/report and driver changes still need controls/review and installed execution.
+Original verifier KeyError failures and prelaunch NOT_RUN remain retained there.
+Independent critical review of both actual COMMIT captures is complete with no
 scope blocker. The reviewer now checks the epoch2 representation; the original
 fixture worktree and all protected evidence remain retained.
 Root owns integration/resources. The
@@ -204,41 +212,38 @@ owners. These evaluations do not add a blanket M1 prerequisite.
 
 ## CI
 
-[Hosted run40662294894](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40662294894)
-on exact `d0183003`: **SUCCESS, all30 selected checks PASS** on Linux AMD64/ARM64
-and macOS. Exact source/context and all four artifact ZIP identities are verified;
-public-output audit found no new credential candidates. Dedicated ignored probes
-and platform skips remain explicitly classified. Previous40415243196 remains
-23PASS/1FAIL/6NOT_RUN; immutable historical report and original evidence are linked.
-[Hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
+[Run40702272536](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40702272536)
+on exact public `5b6716991d65f45388b0586abec01d558c488155` is **SUCCESS: all30
+selected checks PASS** (Linux AMD64/ARM64 and macOS,14/9/7 checks). Both Linux
+jobs have1301 Rust and179 Python controls PASS; macOS has1299 Rust and174 Python
+PASS plus five explicit platform SKIP. The actual default-profile keyring10,
+export13 and all167 retained native reference cases pass on each platform.
+The FIFO and canonical temporary-parent fixture corrections are now qualified
+on actual macOS. Dedicated ignored probes remain NOT_RUN in this hosted run.
 
-[Current run40684555941](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40684555941)
-on `8cf3f5b7` is **FAILURE:28 PASS/1 FAIL/1 NOT_RUN**. Linux AMD64/ARM64
-completed successfully, including1301 Rust and171 acceptance controls each;
-macOS failed `cursor_keyring` (9 PASS/1 Busy FAIL), leaving later workspace
-targets and acceptance controls NOT_RUN. A remaining external `mkfifo` in that
-parallel target can temporarily inherit another test's lock; the exact hosted
-schedule was not traced. Narrow correction `9ab330b0` creates the same FIFO
-in-process on every platform using an already locked dependency; all assertions
-and parallelism remain. Local10 targeted tests, strict Clippy and dependency policy PASS; new macOS qualification
-is pending. No duplicate run was dispatched or product defect inferred solely
-from the Busy result. Prior d018 success does not qualify this revision.
+Exact2389-file source manifests, artifacts, native/build/post-command contexts
+and upload scope are verified. Root independently checked31 evidence hashes,
+four provider ZIP identities and the logs ZIP. The scoped public-output scan
+has54 occurrences of five already-triaged nonsecret fingerprints, no new or
+operational credential candidates and no provider alerts. This does not claim
+exhaustive secret absence. Frozen receipt:
+`.research/ci-publication-20261026/run-40702272536-exposure/receipt.json`.
+The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns detailed counts, source identities, exclusions and original failures.
 
-Early dependency policy runs before expensive builds. Conditional same-run
-Clippy-to-test native reuse still requires actual equal-input/duplicate-work
-measurement; no performance benefit or implementation is claimed. Preserve all
-platform/profile/clean-build checks. [Run40697249452](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40697249452)
-on exact `0e8ba181` ended CANCELLED: macOS retains its early fixture ERROR;
-both Linux jobs were cancelled by the superseding push. The existing hosted
-report records14PASS/1FAIL/2interrupted commands/13NOT_RUN, with no Rust cases
-executed and no post-command verification for interrupted workspace commands. The179 Python controls have
-173PASS/1ERROR/5SKIP on macOS; all four expensive checks are NOT_RUN. The fixture
-passed an uncanonicalized temporary path to the strict custody check. Correction
-`e6feb00e` resolves only the owned temporary parent: explicit symlink-root
-reproduction retains original1ERROR, corrected9PASS and unchanged alias refusal.
-No product build is needed. The coherent push of `5b6716991d65f45388b0586abec01d558c488155` superseded that
-failed revision. [Run40702272536](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40702272536)
-is IN_PROGRESS; keep its actual qualification distinct from local fixtures.
-Publication receipt: `.research/ci-publication-20261026/source-custody-checkpoint-20261028/push.json`.
-Do not dispatch duplicate runs. M1 and the full
-goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.
+Earlier8cf run40684555941 remains28PASS/1FAIL/1NOT_RUN (macOS FIFO/Busy fixture
+failure). Run40697249452 on0e remains CANCELLED with the original macOS custody
+fixture ERROR and two interrupted Linux commands; no Rust execution is inferred
+there. Their frozen captures and classification remain retained. The billing
+block is not current; cancellation and fixture failures are separate from
+product failures.
+
+Early dependency policy and acceptance controls precede expensive compilation.
+Actual0e macOS fixture refusal occurred after94.885s of acceptance execution,
+leaving four expensive commands NOT_RUN. Current5b completes that early suite.
+Safe Clippy-to-test compilation reuse still needs equal-input and duplicate-work
+measurement; no such optimization or speedup is claimed. Keep platform,
+artifact and clean-install coverage. Publish the completed COMMIT increment and
+this actual hosted qualification together, without duplicate workflow dispatch.
+Partial epoch2 source stays separate. M1 and the full goal remain incomplete;
+FAIL/NOT_RUN/SKIP/interruption never becomes PASS.
