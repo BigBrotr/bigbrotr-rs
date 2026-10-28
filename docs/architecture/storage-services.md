@@ -273,8 +273,8 @@ Generation and chunk origins remain immutable across Index restart. A new
 session can publish an old prepared plan only after stable local custody excludes
 the old owner, the CH verifier revalidates the published prefix and retained plan,
 and the actual current Control backend atomically transfers PG authority. The
-recovery proof binds the exact published revision/plan and optional single pending
-plan. All historical plans are available in bounded pages. Lease age alone never
+recovery proof binds the exact published revision, its typed batch/handoff identity
+and optional single pending batch plan. Historical revisions are read one at a time. Lease age alone never
 authorizes transfer. Both actual owner deadlines are checked after blocking locks
 and again before COMMIT; scheduling renewal cannot revive either expired owner.
 Historical PG reads and lost-COMMIT receipt resolution grant no physical readiness.
@@ -311,6 +311,23 @@ recovery cannot change plan identity. The independent literal tests in
 `storage/postgres/index_publication/tests.rs` fix both on/off vectors and their
 admission-batch input. Another encoding/profile requires a new domain/version and
 explicit retained-plan compatibility handling.
+
+The finite initial topology0→1 bridge is a separate immutable
+`index_frontier_handoffs` revision. It consumes no admission request, batch or CH
+chunk and invents no engine receipt. Its `bigbrotr/index-initial-topology-handoff/1\0`
+SHA-256 input is dataset16, Index resource16, generation16, storage incarnation16,
+Ingest resource16, table-identity32, custody-binding32, provenance byte, expected
+revision u64, then the retained initial-succession handoff SHA-256 digest32 and
+the before/after cuts encoded exactly as above. Before is topology0 with the
+single closed epoch1 bound; after is topology1 retaining that bound and adding
+the same shard's epoch2 at zero. There is at most one such bridge per generation.
+The PG transaction independently checks actual predecessor closure, terminal
+activated epoch2 history, both complete sealed topology inventories and the
+exact previous publication. A digest alone is insufficient. No old pending plan
+may cross the bridge. The old frontier bound and its original chunk attestation
+are copied unchanged; the new zero bound has no attestation. The receipt, sealed
+frontier and compare-and-set head commit atomically under current Control/Index
+authority. Exactly one batch or handoff receipt must represent each revision.
 
 The initial physical adapter selects ClickHouse `26.8.35.10`, an existing empty
 Atomic database and ten separately identified MergeTree tables. They omit
@@ -351,23 +368,36 @@ from scientific facts and `projection-chunk/1` row commitments:
   generation16, storage incarnation16, table-identity32, custody-binding32,
   provenance byte as above, previous owner epoch u64 and incarnation16, captured
   published revision u64; then published-plan and pending-plan digests, each
-  represented by presence byte 0/1 followed by digest32 only when present. For
-  each verified published plan in contiguous revision order, then the optional
-  pending plan: kind byte 0/1, expected revision u64, plan digest32 and actual
-  engine-receipt digest32. Owner resource is the bound Index resource. No time,
-  nullable string or omitted empty target enters these fingerprints.
+  represented by presence byte 0/1 followed by digest32 only when present. If
+  the captured head is a handoff, published-plan is absent and tag byte 2 plus
+  handoff digest32 follows those two optional fields. Each verified published
+  batch, then optional pending batch, retains kind byte 0/1, expected revision
+  u64, plan digest32 and actual engine-receipt digest32. A bridge in revision
+  order instead contributes kind byte 2, expected revision u64, handoff digest32,
+  original publisher epoch u64 and incarnation16, and original committed-at
+  microseconds as signed i64 big-endian. Batch-only encodings are unchanged;
+  a later batch head still commits its earlier bridge through that typed entry.
+  Owner resource is the bound Index resource. No nullable string or omitted
+  empty target enters these fingerprints.
 
 Recovery captures metadata directly from the current ControlSession, checks one
-historical plan at a time, links consecutive cuts and verifies the entire captured
+typed historical revision at a time, links consecutive cuts and verifies the entire captured
 head plus its exact optional pending plan. Exact retained input may replay an
 incomplete pending insert; missing input or mismatched rows refuse. A final
 all-table guard rejects rows outside the verified generation/cut, and the final
 PG transfer compares the captured owner/head/pending tuple under locks. Opaque
 physical proofs retain the actual custody descriptor through SQL consumption.
+Bridge replay checks its exact predecessor, publisher and head identity after
+the prior physical cut has been verified; it does not substitute SQL metadata
+for physical verification. A handoff can be the current head, including an empty
+epoch2 source, or precede a retained epoch2 pending batch. Session capture records
+`recovered_handoff` only for a handoff head, with `recovered_plan` then absent.
 
-The finite initial `index catch-up --file ROOT` consumer requires the original
-schema1/topology0/Ingest epoch1 source, its separately committed source closure
-(`ingest recover --close-source`), and the same retained local Index journal,
+The finite `index catch-up --file ROOT` consumer accepts either the original
+schema1/topology0/Ingest epoch1 source after separate source closure
+(`ingest recover --close-source`), or the complete uncompacted schema2/topology1
+initial epoch1→2 lineage after explicit successor closure and retirement. Both
+paths retain the same local Index journal,
 generation, storage incarnation and table UUIDs. It obtains both actual local
 custodies before opening credentials, attaches Index custody to the real Control
 driver, and uses current accepted policy and fresh Control authority. It never
@@ -379,6 +409,14 @@ The source proof remains held through the final publication observation.
 The earlier source-closure command may complete a retained producer ACK; that
 watermark update preserves original requests/outcomes and pending facts. Catch-up
 reconstructs its witness after that update and makes no new ACK itself.
+The successor path reuses the ordered `VerifiedSuccessorHistory` replay and
+`ResolvedLineage` pending reader, requiring terminal native/SQL/verified head2
+with no prepared successor gap. A historical witness is not a renewable grant:
+current accepted policy, Control/Index locks and actual native custody are
+rechecked through SQL effects. The original Index prefix must already reach the
+closed epoch1 bound with no pending plan. Only then may its verified bridge be
+published and ordinary whole-batch planning advance epoch2. Schema3, further
+successors and compacted/archive fallback remain outside this finite path.
 
 This consumer keeps three distinct positions: the captured published SQL prefix,
 an optional immutable prepared plan immediately after it, and unplanned source
@@ -393,8 +431,12 @@ the command; a fresh invocation reopens and verifies the actual committed state
 before further publication. Even an already complete retry verifies all retained
 plans and obtains a fresh Index epoch, with zero new batches.
 
-The initial profile bounds the source to at most 64 original requests and each
+The profile bounds the entire source lineage to at most 64 original requests,
+not 64 per epoch, and each
 complete batch to 64 facts/1 MiB, subject to accepted per-family row/wire bounds.
+Consumer history permits at most that many batch revisions plus exactly one
+separate bridge when epoch2 is selected. Missing/duplicate bridges, extra batches
+and a pending batch beyond the request census refuse.
 It retains at most one historical plan per verification step and reserves source,
 planner, physical executor and recovery metadata together before accepting the
 policy. Independent Control renewal continues during owned ClickHouse work;
@@ -403,7 +445,8 @@ output, or terminates the process when the bounded native join cannot complete.
 Unknown remote queries retain their occupied slot for the process lifetime; no
 slot reset, account replacement or empty process-list observation is a proof.
 The unchanged constrained writer account bounds work across process restarts.
-This command performs no ACK, reclamation, Ingest retirement or topology handoff,
+This command performs no ACK, reclamation, Ingest retirement or new Ingest handoff;
+it can publish the explicit Index frontier bridge for an already verified handoff,
 and its terminal `ready=false` reports no continuing read authority. Installed
 restart, unknown-query and lost-COMMIT qualification remain separate gates.
 

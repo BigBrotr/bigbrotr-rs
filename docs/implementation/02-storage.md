@@ -1135,7 +1135,12 @@ history/export. The source-close oracle now requires the existing producer closi
 barrier without claiming retirement. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
 retains exact scope and original failures. General remote uncertainty/lost-COMMIT,
 topology transitions and capacity remain open; this bounded path does not close
-the whole step.
+the whole step. The current finite epoch2 extension adds an explicit verified
+Index handoff revision before successor batches, preserving the complete old
+cut and historical plans. It reuses the retained native/SQL lineage proof and
+one current report version 2 for epoch1/epoch2. Its source/native controls and installed
+qualification remain pending until separately recorded; the earlier epoch1
+evidence does not qualify that extension.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.

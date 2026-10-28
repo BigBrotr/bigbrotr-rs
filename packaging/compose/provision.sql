@@ -107,6 +107,7 @@ GRANT INSERT ON
     control.projection_plans,
     control.projection_plan_chunks,
     control.index_frontier_plans,
+    control.index_frontier_handoffs,
     control.archive_frontier_snapshots,
     control.archive_frontier_batches,
     control.snapshot_leases,

@@ -57,7 +57,7 @@ def retained(state, database):
     # Independent exact scientific metadata, excluding only intentionally
     # transferred/expired owner/session and role rows.
     names = ("projection_generations", "projection_plans", "projection_plan_chunks",
-             "projection_chunks", "projection_chunk_bounds", "index_frontier_plans",
+             "projection_chunks", "projection_chunk_bounds", "index_frontier_plans", "index_frontier_handoffs",
              "consumers", "consumer_frontier_revisions", "consumer_frontiers")
     return {name: json.loads(lab.sql(state, database,
         f"SELECT coalesce(jsonb_agg(v ORDER BY v::text COLLATE \"C\"),'[]'::jsonb) "

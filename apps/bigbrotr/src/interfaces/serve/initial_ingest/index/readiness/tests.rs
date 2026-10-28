@@ -106,6 +106,7 @@ fn readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_he
     let state = IndexRecoveryState {
         published_revision: 4,
         published_plan: Some(Digest256::from_bytes([8; 32])),
+        published_handoff: None,
         pending_plan: None,
     };
     assert!(capture_matches(owner, state, owner, 4));
@@ -130,6 +131,7 @@ fn readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_he
         owner,
         IndexRecoveryState {
             published_plan: None,
+            published_handoff: None,
             ..state
         },
         owner,
@@ -147,6 +149,7 @@ fn readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_he
     let zero = IndexRecoveryState {
         published_revision: 0,
         published_plan: None,
+        published_handoff: None,
         pending_plan: None,
     };
     assert!(capture_matches(owner, zero, owner, 0));
