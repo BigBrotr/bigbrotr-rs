@@ -84,16 +84,18 @@ async fn own(
     if cancellation.requested.load(Ordering::Acquire) {
         return Err(error("cancelled before native custody"));
     }
-    let mut custody = Custody::default();
-    custody.native = Some(
-        IngestRecovery::inspect(
-            Path::new(required(&root, "storage.ingest_root")?),
-            dataset,
-            native_limits(),
-            grant(&budget, 0, native_limits().native_allowance_bytes())?,
-        )
-        .map_err(error)?,
-    );
+    let mut custody = Custody {
+        native: Some(
+            IngestRecovery::inspect(
+                Path::new(required(&root, "storage.ingest_root")?),
+                dataset,
+                native_limits(),
+                grant(&budget, 0, native_limits().native_allowance_bytes())?,
+            )
+            .map_err(error)?,
+        ),
+        ..Custody::default()
+    };
     let manifest = *custody.native.as_ref().unwrap().manifest();
     require_initial_manifest(&manifest)?;
     // Both actual stores are held before reading any credential. No fresh
