@@ -521,6 +521,132 @@
         ],
         "next": "After explicit resume, derive baseline connection admission/routing from actual source and retained evidence; no arbitrary limit uplift or rebuild. Original failures retained."
       }
+    },
+    "finite_recovery": {
+      "status": "PASS_SCOPED_NATIVE; installed same-store recovery NOT_RUN",
+      "native": {
+        "status": "PASS_SCOPED_NATIVE_INITIAL_INDEX_RECOVERY",
+        "product_revision": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
+        "product_tree": "4de83b2713626d405a3e4115b5f99b26ac7a5b80",
+        "verifier_revision": "bbf2f78e87b8508daf3fbe4bfd0c67cfd07b5cb6",
+        "native_receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/r2-7e04f12/receipt.json",
+        "native_receipt_sha256": "b1f463297ae10df17d569a32477f6897f63ce0aca218107898b0d0039843b937",
+        "source_files": 2375,
+        "source_manifest_sha256": "545336764027410b37f5b332632275d7159496935c89b8ed3688f4af910213b9",
+        "checks": {
+          "application_build": "PASS",
+          "lib_and_binary_test_compilation": "PASS",
+          "targeted_strict_clippy": "PASS",
+          "actual_selected_tests": 156,
+          "library_tests": 100,
+          "binary_tests": 56,
+          "groups": 24
+        },
+        "scope": "Actual application and focused native RocksDB/source/Index/PG-route/CH-adapter/service unit controls; preserved all147 baseline names and required4 source-closure plus5 catch-up cases",
+        "groups": {
+          "clickhouse": 45,
+          "indexer": 12,
+          "index-publication": 4,
+          "postgres-route": 2,
+          "archive-driver-unpolled": 1,
+          "archive-driver-drop": 1,
+          "archive-inputs": 1,
+          "archive-input-custody": 7,
+          "archive-expectations": 13,
+          "source-head": 5,
+          "source-closure": 4,
+          "signed-source-head": 1,
+          "role-observation": 3,
+          "observation-clock": 1,
+          "initial-index": 24,
+          "initial-commands": 7,
+          "initial-supervision": 6,
+          "initial-watchdog": 2,
+          "initial-cli": 1,
+          "index-cli": 1,
+          "initial-readiness": 2,
+          "role-status-http": 3,
+          "ordinary-observations": 9,
+          "initial-role-route": 1
+        },
+        "added_controls": [
+          "interfaces::serve::initial_ingest::index::catch_up::tests::finite_recovery_requires_initial_topology_and_never_selects_a_successor_writer",
+          "interfaces::serve::initial_ingest::index::catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof",
+          "interfaces::serve::initial_ingest::index::catch_up::tests::recovery_cursor_advances_only_for_the_exact_new_publication_receipt",
+          "interfaces::serve::initial_ingest::index::catch_up::tests::recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog",
+          "interfaces::serve::initial_ingest::index::catch_up::tests::recovery_published_cursor_refuses_missing_changed_and_foreign_heads",
+          "storage::rocks::store::admission_tests::source_closure_tests::initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_bytes",
+          "storage::rocks::store::admission_tests::source_closure_tests::source_closure_preserves_zero_and_refuses_unissued_reservations",
+          "storage::rocks::store::admission_tests::source_closure_tests::source_closure_refuses_native_counter_disagreement_and_another_producer",
+          "storage::rocks::store::admission_tests::source_closure_tests::source_closure_requires_every_original_request_and_preserves_all_native_bytes"
+        ],
+        "executables_sha256": {
+          "bigbrotr": "6530a56f784cb44c056e28db27682829951acac1c51ebb5642e3ca30a53baf5d",
+          "bigbrotr-lib-tests": "57f7732d7338b0b944069e0fd9c912c27e177f987131a6d8852f8da3e558a1c6",
+          "bigbrotr-bin-tests": "0eb27e3d17cf1a39366baa45aed76f986c9e1f6f28399364a080e46c1ee98913"
+        },
+        "preserved_failure": {
+          "product_revision": "2d073ae0d785464f1ad98c1549c5b837121821b2",
+          "classification": "PRODUCT_STRICT_CLIPPY_FAILURE",
+          "diagnostic": {
+            "lint": "clippy::field_reassign_with_default",
+            "path": "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/catch_up.rs",
+            "line": 88,
+            "reason": "Custody::default() followed by assignment to custody.native"
+          },
+          "application_build": "PASS",
+          "test_compilation": "PASS",
+          "strict_clippy": "FAIL",
+          "selected_tests": "NOT_RUN",
+          "native_receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/receipt.json",
+          "native_receipt_sha256": "d5a59dacdcf9334907d4c17e6102500f4c85bf69ec9cd2e5285fc7b411128649",
+          "correction": "7e04f12f initializes Custody.native directly; no allow, retry or assertion change"
+        },
+        "not_run": [
+          "ClickHouse engine/schema/settings/insert/readback and PostgreSQL transactions",
+          "Archive worker build or binding",
+          "Installed service/recovery/outage and release",
+          "Full workspace/integration tests and capacity"
+        ]
+      },
+      "acceptance": {
+        "revision": "cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712",
+        "source_review": "Independent critical cross-review PASS; original gates preserved",
+        "final_source_controls": "39PASS; combined c3859428 first-launch controls76PASS",
+        "integration": "Product7e04, verifierbbf and acceptancecb combined locally atc3859428; main remainsd018 until actual engine/installed qualification.",
+        "not_run": "Real paused-engine backlog, source closure, pending/new catch-up and exact retry"
+      }
+    },
+    "ordinary_short_pin": {
+      "status": "FAIL; no installed pin-expiry qualification yet",
+      "product_revision": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+      "proxy_correction": "8ae9a4ae;21controlsPASS plus independent critical review; actual baseline traffic and cleanupPASS inr3-r5",
+      "attempts": [
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r3-20261028",
+          "status": "FAIL_FIXTURE_PREARM_PIN_PURPOSE",
+          "terminal_receipt_sha256": "dd6e2705d516eeefb02ede0ffec32f7051b2ff4c901359ab7a20400c4f391c8a",
+          "result_sha256": "e9d40400c00be4e11605fcb833dce82010299349d4498924be5797e5560de9c3",
+          "meaning": "The pre-arm query counted the intentional retained export pin as a reader. Seven reader pins were already released; no reader pin was active in the retained baseline capture."
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r4-20261028",
+          "status": "FAIL_FIXTURE_OID_JSON_TYPE",
+          "terminal_receipt_sha256": "0331814ae49b91fab3afe8953bf80d6a6de9bfe20f8b3a75b2f201e0cb09c4b1",
+          "result_sha256": "93ae8c529546b170de7e9edf7ae23d40487d991d93879815a97b8011e80d8860",
+          "meaning": "Actual PostgreSQL json_build_object emits regclass::oid as a string; strict integer guard refused before the first locked sample. Initial pin/reader binding and owned relation-lock acquisition occurred; expiry schedule NOT_RUN."
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r5-20261028",
+          "status": "FAIL_FIXTURE_GATE_WAITER_ATTRIBUTION",
+          "terminal_receipt_sha256": "2d4eb9fb5faad9d1772eeec19b99400b69324bf0359f1e0f0b9c14b30ef0caf2",
+          "result_sha256": "5711035c1717e760cd1e36eec8283d7269fd3fe0fa13933cdfebee7afad092de",
+          "meaning": "Actual native worker ATTACHes direct PostgreSQL for immutable precheck, DETACHes it, then ATTACHes DuckLake with a new connection. The gate selects the disposable precheck PID; the later true waiter was not captured. Source and observed23->24 connection lifecycle support fixture attribution defect."
+        }
+      ],
+      "original_attempts": "r1/r2 admission failures remain unchanged under .research/first-launch-index-short-pin-r{1,2}-20261027",
+      "pending": "Separate disposable PostgreSQL precheck gate from actual DuckLake Lock waiter, preserving original near-expiry, pin/authority/worker and immutable-data checks. r5 later waiter was not captured and cannot be inferred as PASS.",
+      "preserved_constraints": "16active slots,64MiBwire,180sproxy,3sownerlease,5sauthorization,30sprobe/phase; no original gate weakened."
     }
   }
 }
