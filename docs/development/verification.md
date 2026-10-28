@@ -352,6 +352,12 @@ and authenticated complete physical readiness at cut3, without touching session
 idle time. It verifies the exact owned ClickHouse ID, labels, image, mounts and
 isolation before pausing only that container and releasing the source gate.
 Neither delayed observation nor a new parent wait extends the client deadline.
+The existing prefix query also retains each raw Archive/Index frontier row,
+consumer identity and observation time. Its success predicate remains exactly
+two joined rows at current revision2/frontier2/cut3, including duplicates; a
+missing frontier remains visible without matching. At most256 observations of
+16KiB each are retained. JSON processing and capture writes consume that same
+15s budget; they add no separate observer query or deadline extension.
 
 Source and Archive must then reach12 while Index stays at revision2/cut3 with
 the real retained plan3 for [4..7] prepared and no plan4 for [8..12]. All ten
@@ -442,7 +448,32 @@ Archive files and the353-byte signed history/export remain independently checked
 
 These cases add no product interface and qualify only PG publication-COMMIT
 resolution. Unknown ClickHouse query termination/exclusion and genuinely unknown
-native termination remain separate NOT_RUN gates. Maintained controls:
+native termination remain separate NOT_RUN gates.
+
+Only these two COMMIT variants enable the stable Index writer's server query log.
+The writer's concurrency constraint remains `MIN 1 MAX 1`; initializer and
+provisioner query logging stays disabled. Query text is limited to one byte;
+settings, profile events and per-thread query logging are disabled. The queue
+holds1024 rows, reserves64 and flushes at512 or7500ms. These are queue bounds,
+not a disk quota: the existing4GiB container and observed2GiB data/log bound
+remain. Logging, background flushes and the prefix captures are explicit timing
+perturbations. An actual named writer query must have matching QueryStart and
+QueryFinish records before application launch; this checks logging, not remote
+query exclusion.
+
+After all application containers and local clients have positively joined,
+cleanup flushes and captures writer lifecycle records before stopping the owned
+ClickHouse. A separate count must match at most8192 exported rows within4MiB;
+the export command has a30s cap. Exported fields contain only query/initial IDs, users, event types, times,
+duration and numeric exception codes, without SQL or exception text. Missing or
+duplicate lifecycle records make the diagnostic INCOMPLETE; count overflow,
+flush or export failures also record cleanup failure. Capture failures never
+skip the owned stop or replace the original case failure. `CAPTURED` describes
+only the returned lifecycle shapes: queue loss, unlogged attempts and remote
+termination remain unproven. QueryFinish is not a ProcessList removal receipt,
+and a passing retry does not explain an earlier Code202 admission refusal.
+
+Maintained controls:
 `cd tests/acceptance && python3 -B -m unittest test_first_launch_index_commit`.
 
 ### Reader-pin release COMMIT uncertainty

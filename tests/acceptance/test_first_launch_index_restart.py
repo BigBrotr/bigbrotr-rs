@@ -95,6 +95,23 @@ def restart_fixture(root):
 
 
 class RestartIndexControls(unittest.TestCase):
+    def test_prefix_frontier_labels_preserve_the_exact_raw_count(self):
+        rows=[dict(consumer_role=role,consumer_id='id-'+role,current_revision=2,frontier_revision=2,last_complete_sequence=3)
+              for role in ('archive','index')]
+        observation=dict(observed_at_us=10,matching_count=2,frontiers=rows)
+        self.assertTrue(case.prefix_published(observation))
+        value=copy.deepcopy(observation);value['frontiers'].append(copy.deepcopy(rows[0]));value['matching_count']=3
+        self.assertFalse(case.prefix_published(value))  # No role grouping or DISTINCT.
+        value['matching_count']=2
+        with self.assertRaises(ValueError):case.prefix_published(value)
+        value=copy.deepcopy(observation);value['frontiers'][1].update(current_revision=0,frontier_revision=None,last_complete_sequence=None)
+        value['matching_count']=1
+        self.assertFalse(case.prefix_published(value))
+        self.assertEqual(value['frontiers'][1]['consumer_role'],'index')
+        for field in ('current_revision','frontier_revision','last_complete_sequence'):
+            value=copy.deepcopy(observation);value['frontiers'][1][field]=99;value['matching_count']=1
+            with self.subTest(field=field):self.assertFalse(case.prefix_published(value))
+
     def test_prefix_dispatch_policy_is_declared_and_accepted_before_owner_launch(self):
         with tempfile.TemporaryDirectory() as temporary:
             runtime=case.RestartIndexRuntime(arguments(Path(temporary)),{})

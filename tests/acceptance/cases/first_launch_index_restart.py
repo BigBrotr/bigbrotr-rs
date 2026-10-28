@@ -27,6 +27,28 @@ LIMITS = [
     'The original physical-corruption case remains a separate fresh case. This fixture has empty signed tags and an explicit zero tag outcome.',
 ]
 
+PREFIX_FRONTIERS = """WITH observed AS (
+    SELECT c.consumer_role,c.consumer_id,c.current_revision,
+           f.frontier_revision,f.last_complete_sequence
+    FROM control.consumers c LEFT JOIN control.consumer_frontiers f USING(consumer_id)
+    WHERE c.consumer_role IN ('archive','index'))
+SELECT json_build_object('observed_at_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+    'matching_count',count(*) FILTER (WHERE current_revision=2 AND frontier_revision=2 AND last_complete_sequence=3),
+    'frontiers',COALESCE(json_agg(row_to_json(observed) ORDER BY consumer_role,consumer_id,frontier_revision),'[]'::json))
+FROM observed"""
+
+
+def prefix_published(value):
+    require(set(value)=={'observed_at_us','matching_count','frontiers'}
+        and type(value['observed_at_us']) is int and type(value['matching_count']) is int
+        and isinstance(value['frontiers'],list) and len(value['frontiers'])<=32,'bounded prefix frontier observation')
+    # Preserve every joined row, including duplicates. This is the original
+    # count predicate; role labels do not turn it into a grouped membership test.
+    matches=sum(r['current_revision']==2 and r['frontier_revision']==2 and r['last_complete_sequence']==3
+                for r in value['frontiers'])
+    require(value['matching_count']==matches,'prefix count differs from raw joined rows')
+    return matches==2
+
 
 def gate_deadline(value, now):
     require(set(value)=={'format','started_ns','deadline_ns'}
@@ -82,11 +104,13 @@ class RestartIndexRuntime(IndexRuntime):
         signal = load(self.home/'index-prefix-deadline.json')
         self.prefix_deadline = deadline = gate_deadline(signal,time.monotonic())
         try:
+            frontiers=[]
             def published():
-                return self.sql('bigbrotr_control',
-                    "SELECT count(*) FROM control.consumers c JOIN control.consumer_frontiers f USING(consumer_id) "
-                    "WHERE c.consumer_role IN ('archive','index') AND c.current_revision=2 "
-                    "AND f.frontier_revision=2 AND f.last_complete_sequence=3") == '2'
+                raw=self.sql('bigbrotr_control',PREFIX_FRONTIERS)
+                require(len(raw)<=16384 and len(frontiers)<256,'prefix frontier capture bound')
+                observed=json.loads(raw);frontiers.append(observed)
+                save(output/'index-prefix-frontier-observations.json',frontiers)
+                return prefix_published(observed)
             self.wait(published,'literal Archive/Index prefix',deadline-time.monotonic(),entry,self.client)
             before,_ = self.capture(output,'index-prefix-before')
             oracle.backlog(before,self.state/'data/index',prefix=True)
