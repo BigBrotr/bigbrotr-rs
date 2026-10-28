@@ -1143,8 +1143,17 @@ one current report version 2 for epoch1/epoch2. Product `ace1b52f`, assembly
 `3d01cc10` and acceptance `cb3d2fec` pass the fifteen-stage installed topology0→1
 journey, with independent rows, receipts, retry and signed history/export. The
 report's `topology_continuation` owns that evidence. Continuous enabled-Index
-successor ownership/current-selection readiness remains open at P01-T09; finite
-continuation does not qualify it.
+successor ownership/current-selection readiness remains required here at Steps4/7,
+with P01-T09 Steps1/2 as composition consumers; finite continuation does not
+qualify it. Close it with actual live successor custody/activation, an explicit
+bridge preserving historical generation/table identities, and readiness against
+the complete closed-epoch1/current-epoch2 vector. Current live publication and
+durable historical verification need distinct SQL authority checks; preserve the
+existing terminal-recovery and closed-but-unretired refusal controls. The initial
+CLI/owner loop, terminal-only source reader and migration0041 handoff guard are
+concrete blockers, not guards to delete blindly. This remains unfinished before
+dependent continuous/current-read claims, without making it a new prerequisite
+for M1's already-qualified finite restart path or implying live Archive machinery.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.

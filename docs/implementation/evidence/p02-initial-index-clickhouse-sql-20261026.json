@@ -3,7 +3,7 @@
   "task": "P01-T09 initial Index physical schema and installed publication",
   "date": "2026-10-26",
   "status": "PARTIAL",
-  "summary": "Exact e821143e native build/test/strict Clippy and207 selected controls/32 groups PASS. Installed864MiB shared-budget admission and finite64 retained-history under Archive-only catalog refusal PASS, including exact Index64/cut312 and stopped native census. Separate Index-dependency stoppage, continuous enabled-Index successor/current-selection readiness and remaining first-launch journeys keep P01-T09/M1 open. Original SQL and earlier installed failures remain at their exact scopes.",
+  "summary": "P01-T09 Step5 separate Archive/Index dependency outages now PASS at their recorded scopes. Product99b7d24b/acceptanceabf2d050 passes eight installed Index-stop stages with same-owner source12/Archive4, unavailable Index2/cut3 and retained plan3, exact49 native rows and signed history/export. Native207 controls/32groups, strict Clippy and exact build/observer PASS. Outside-checkout tutorial/listener/capability negatives and current documentation keep M1 open; continuous enabled-Index successor/current-selection remains required at P02-T06 Steps4/7 and P01-T09 composition; historical evidence and original failures remain unchanged.",
   "scope": "Original SQL diagnostic uses native SQL client on isolated ClickHouse26.8.35.10. The separately identified installed_application extension exercises the actual packaged Rust HTTP/RowBinary adapter, Control transactions and signed-event journey; historical SQL results are unchanged.",
   "source": {
     "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
@@ -1238,7 +1238,7 @@
         "General RSS/disk/capacity, remote uncertainty or sole-owner/atomic-deficit proof, automatic recovery and complete M1",
         "Integrated GitHub Actions run for this increment; existing prior hosted evidence remains separately recorded"
       ],
-      "next": "Finite64 Archive-outage retention now passes in retained_history_boundary. Next P01-T09 Step5 acceptance is separate actual Index-dependency stoppage with truthful lag/pending and preserved acknowledged data; dynamic byte hysteresis/GC and broader capacity remain with P02/P08.",
+      "next": "Separate dependency outages now qualified in retained_history_boundary and separate_index_backend_stop. Continue remaining P01-T09 readiness/first-launch requirements; dynamic byte hysteresis/GC and broader capacity remain with P02/P08.",
       "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.initial_shared_budget",
       "assembly_revision": "c0224962bf922e0bcfd6480d4138fc967b36921e",
       "test_only_followup": "dfb3420b721b6b15d0c7cab162c8ebbc3755fa24: identical cfg(test) Capture initializer moved; no assertion/selector/product change. Root mechanical review; c022 semantics reused. Hosted all-target verification remains required.",
@@ -1406,10 +1406,60 @@
       "diagnostic_limits": "R4 prefix trace CAPTURED512 rows/256 queries with no exceptions; all-query coverage and termination/exclusion remain NOT_PROVEN. The engine error log has only declared bootstrap497/452 negatives. This successful finite schedule does not retroactively close R1/R3 Code202 or prove general remote exclusion.",
       "unchanged_bounds": "Original15s prefix/65s client/5s product query/30s sweep, writer quota1,128 served relay connections,3s socket and500ms receive; finite peer close is a separate source boundary, not quiet-cancellation evidence.",
       "remaining": [
-        "P01-T09 Step5 separate actual Index-dependency stoppage composition with truthful lag/pending and preserved acknowledged data.",
+        "P01-T09 Step5 separate Index-dependency stoppage is now qualified in separate_index_backend_stop; backend restoration and automatic recovery remain outside these finite outage proofs.",
         "Continuous enabled-Index successor ownership/current-selection readiness and outside-checkout/tutorial/listener/no-signing-publication observations (P01-T09 Steps1/6/7); full M1 remains open.",
         "Dynamic pending-byte hysteresis/GC, general capacity/disk/RSS, unknown-query/native-termination resolution and automatic recovery retain their existing P02/P08 owners; not all are prerequisites to the current M1 increment."
       ]
+    },
+    "separate_index_backend_stop": {
+      "status": "PASS_P01_T09_STEP5_SEPARATE_DEPENDENCIES",
+      "product_revision": "99b7d24b3a717388c8209afd9becd2befd8894ca",
+      "assembly_revision": "99b7d24b3a717388c8209afd9becd2befd8894ca",
+      "acceptance_revision": "abf2d0502231eeee88d61229478860f420076835",
+      "stages": 8,
+      "root_receipt": {
+        "path": ".research/first-launch-index-outage-r1-20261029/root-terminal.json",
+        "sha256": "7459162f9f396ca7dc57b884010399db884395f56806007f5f0167f652a694ce"
+      },
+      "source_fix": "Both known-unavailable publication retry paths mark Dependency without changing pending plan, old cut/age, sweep cooldown, slot classification, replay or authority. Only the existing fully revalidated complete physical sweep clears the failure. No bytes sent concerns the failed query, not every query in a whole-plan write.",
+      "observed": [
+        "Ready source3/Archive2/Index2 prefix, three independently captured dictionary rows and checked schema, then positive owned ClickHouse stop and HTTP/TCP refusal before further admission, inside the original15s gate.",
+        "Same Control process/backend and renewed lease; source12/Archive4 with Index2/cut3, lag9, unchanged historical observation age, immutable plan3[4..7]/ten prepared chunks and no plan4. All82 Control tables and original prefix inputs preserved.",
+        "After actual writer/backend join,49 exact native rows/four original inputs and receipts/ACK4/retired0 match independent expectations. The signed event is admitted during the outage, not before it.",
+        "Original353-byte signed history/export and released fresh read pins PASS while ClickHouse stays stopped. All20 owned containers and four host processes are stopped/joined; native closed, owner release committed and borrowed bridge empty."
+      ],
+      "qualification": {
+        "native": {
+          "path": ".research/initial-index-recovery-qualification-20261028/r12-99b7d24b/receipt.json",
+          "sha256": "6651d0ba4d5950a70a3b266af0711cb09baedcef56fed1db0f7e20814e3278d8"
+        },
+        "native_scope": "207 actual controls/32groups and strict Clippy/product/test compile PASS; existing cache-preservation test strengthened without a new selector or helper layer.",
+        "installed_build": {
+          "path": ".research/initial-index-recovery-qualification-20261028/installed-99b7d24b/build-receipt.json",
+          "sha256": "04aba25beaa7901e7b4ad58ecad49fbb7ee040885f7244764af472891a6d8a99"
+        },
+        "observer": {
+          "path": ".research/initial-index-recovery-qualification-20261028/observer-99b7d24b/receipt.json",
+          "sha256": "c72ec2553c874e248fb2b622a2376fd936d17f10cf6f9b476f2cd6c58e0e7850"
+        },
+        "candidate_manifest_sha256": "4c47c624b96859a65d0ea0d5460894a9620fcb6fcd6ad642257c940903cc0a28",
+        "source_review": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-index-outage-status-99b7d24b.json",
+          "sha256": "9b89f483213c0409527ffcf75b47122104d33b7a517c358ed26b3dbae08e718d"
+        },
+        "fixture_review": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-index-outage-fixture-abf2d050.json",
+          "sha256": "2c284482f9f0aab901dd52fb12ac09b21184f1f58c8ca7daec206435ab01979b"
+        },
+        "fixture_controls": "51 final distinct controls PASS with original default-mode evidence reused where unaffected; inherited native-strace skip remains SKIP, not PASS. No new framework or wider timeout."
+      },
+      "not_run": [
+        "Backend restoration/automatic recovery/general remote exclusion",
+        "Dynamic pending-byte hysteresis, empirical capacity and full M1",
+        "Hosted CI for this new increment; preceding56768c3b run remains independently pending"
+      ],
+      "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.index_backend_outage",
+      "next": "P01-T09 Steps6/7: outside-checkout initial tutorial, actual listeners, scoped no Nostr signing/publication and unavailable-capability negatives, current docs. Continuous enabled-Index/current-vector composition remains required under P02-T06 Steps4/7 and P01-T09 consumers, not a new prerequisite to the qualified finite M1 restart."
     }
   },
   "last_updated": "2026-10-29"
