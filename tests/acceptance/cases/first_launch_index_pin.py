@@ -328,7 +328,7 @@ class ShortPinRuntime(IndexRuntime):
                 identity['sha256'] = digest(exe)
                 require(identity['sha256'] == digest(self.bundle/'archive-worker/bigbrotr-archive-worker'), 'actual verified worker ELF')
                 found.append(identity)
-        if allow_absent and not found:
+        if allow_absent and not children:
             return None
         require(len(found) == len(children) == 1, 'one actual native reader child')
         return found[0]

@@ -203,6 +203,50 @@ def ordinary_roles(value, state, clock_before, clock_after, phase=None):
             assert phase is None
 
 
+def ordinary_startup(before, after, roles, clock_before, clock_after, worker):
+    """Fresh operation caches remain empty after an actually completed full probe."""
+    def require(condition, message):
+        assert condition, message
+    ordinary_roles(roles,after,clock_before,clock_after,'setup')
+    catalog = only(after['consumers'],consumer_role='archive')['consumer_id']
+    require(worker is None, 'startup native child remains')
+    reader_ids = {row['lease_id'] for row in after['archive_snapshot_pins'] if row['purpose'] == 'reader'}
+    require(not any(row['state'] == 'active' and row['lease_id'] in reader_ids
+                    for row in after['snapshot_leases']), 'active reader remains at startup barrier')
+    owner, = [row for row in after['owner_epochs'] if row['role'] == 'control' and row['state'] == 'active']
+    previous = max((r for r in before['owner_epochs'] if r['role'] == 'control'),key=lambda r:r['epoch'])
+    require(previous['state'] == 'released' and owner['epoch'] == previous['epoch']+1
+            and owner['resource_id'] == previous['resource_id']
+            and owner['released_at_us'] is None and owner['lease_expires_at_us'] > clock_after,
+            'same current new Control authority at startup')
+    new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
+    require(1 <= len(new) <= 2, 'bounded completed startup probes')
+    for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+        require(len([r for r in after[table] if r['lease_id'] in new]) == len(new), 'one startup pin and complete claim')
+        exact([r for r in after[table] if r['lease_id'] not in new],before[table])
+    for key in new:
+        lease, = [r for r in after['snapshot_leases'] if r['lease_id'] == key]
+        pin, = [r for r in after['archive_snapshot_pins'] if r['lease_id'] == key]
+        claim, = [r for r in after['retention_claims'] if r['lease_id'] == key]
+        require(lease['state'] == claim['state'] == 'released' and lease['lease_revision'] == 2
+                and lease['release_reason'] == claim['release_reason'] == 'reader_joined'
+                and pin['purpose'] == claim['purpose'] == 'reader'
+                and lease['holder_role_instance_id'] == owner['role_instance_id']
+                and pin['issuer_epoch'] == owner['epoch'], 'startup probe actually released')
+        exact([pin[k] for k in ('dataset_id','issuer_resource','issuer_incarnation','issuer_role','frontier_revision')],
+                    [owner['dataset_id'],owner['resource_id'],owner['process_incarnation'],'control',4])
+        exact([claim[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','first_sequence','last_sequence')],
+                    [owner['dataset_id'],0,0,1,1,12])
+        require(lease['dataset_id'] == owner['dataset_id'] and lease['consumer_id'] == pin['consumer_id'] == catalog
+                and lease['holder_kind'] == 'role_instance' and lease['holder_job_id'] is None
+                and lease['holder_role'] == 'control' and lease['holder_incarnation'] == owner['process_incarnation']
+                and lease['frontier_revision'] == 4 and lease['archive_pin_protocol'] == 1
+                and owner['acquired_at_us'] <= lease['acquired_at_us'] <= claim['released_at_us'] <= lease['released_at_us'] <= clock_after
+                and lease['updated_at_us'] == lease['released_at_us']
+                and lease['xmin'] == claim['xmin'], 'startup pin identity and atomic joined release history')
+    return owner
+
+
 def ordinary_input(state, science, initialization):
     """Select by current membership, then reconstruct original input bytes."""
     row = ordinary_selection(state)[0]

@@ -387,7 +387,14 @@ Select `p01-first-launch-index-pin-release-before` or
 `p01-first-launch-index-pin-release-after` with the existing candidate, source
 and protected evidence arguments. Each fresh case first completes the unchanged
 signed Index journey and ordinary history/export, including its original
-40s/12s deadlines, exact signed output and committed owner release. The added
+40s/12s deadlines, exact signed output and committed owner release. This original
+journey shares the restart case's startup observation helper. Before the
+initial403 checks, a client marker lets the parent independently observe a
+completed full startup probe, released reader/claims and an empty child inventory.
+This wait consumes the original40s journey; it adds no excluded phase time.
+The common client retains actual HTTP status and allowlisted public error
+classification before its initial403 assertions, without headers or arbitrary
+response text. All original401/403/200 expectations remain exact. The added
 ninth stage starts a distinct ordinary Control lifetime and authenticates a real
 new status session. Login may prune exactly the prior revoked browser session;
 its protected bytes and raw SQL history remain retained. The setup oracle checks
@@ -396,9 +403,14 @@ readiness pins. Every earlier owner, role, pin, claim and scientific/export row
 remains unchanged. Existing login capacity is observed for at most65s before
 starting that lifetime; no bucket, policy or data row is rewritten by the fixture.
 
-Both capabilities must first be Ready, with no active reader-purpose pin or
-native child. The retained export-purpose pin is preserved. The next full probe
-is gated at its new authenticated catalog precheck; its exact lease/claims,
+The second lifetime must independently complete its startup full probe, with no
+active reader-purpose pin or native child. Authenticated capabilities must be
+exactly `building/not_observed`; `verification_in_flight` and unavailable results
+refuse. Its history/export operation cache is empty, so claiming Ready there
+would be incorrect. The completed startup pin/claim and unchanged current
+publication supply separate durable observations. The first lifetime retains
+the actual history/export proof. The retained export-purpose pin is preserved.
+The next full probe is gated at its new authenticated catalog precheck; its exact lease/claims,
 owner backend PID/start, reader identity and installed worker ELF/PID/PPID/start
 are captured. Only then is the Control proxy armed for the exact reader-release
 UPDATE's successful Execute completion. At that hold, the selected native worker
@@ -434,7 +446,10 @@ Maintained controls: `cd tests/acceptance && python3 -B -m unittest
 test_first_launch_index_pin_release`; proxy controls: `python3 -B
 experiments/archive-engine/native_commit_proxy_tests.py`. These are bounded
 oracle, actual flock and loopback framing controls. Installed PostgreSQL/native
-execution of both new variants remains **NOT_RUN** until separately recorded.
+qualification of both new fault boundaries remains **NOT_RUN** until separately
+recorded. Before-variant r1 failed its original baseline403 assertion before the
+fault stage. Its actual HTTP response was not captured and remains unknown;
+the source-supported startup overlap is an inference, not a measured429.
 Genuine native `TerminationUnknown`, automatic pin recovery and general service
 outages remain separate unqualified gates. Short-pin r1–r5 remain failures; the
 qualified r6 expiry case is unchanged.

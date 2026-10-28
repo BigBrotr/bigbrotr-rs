@@ -178,6 +178,11 @@ class IndexRuntime(Runtime):
     def load_helpers(self):
         super().load_helpers()
         from cases import first_launch_restart
+        from cases import first_launch_index_baseline
+        self.baseline = first_launch_index_baseline
+        for module in (first_launch_index_baseline,sys.modules[first_launch_index_baseline.ShortPinRuntime.__module__]):
+            path = Path(module.__file__)
+            require(digest(path) == digest(self.source/'tests/acceptance/cases'/path.name), 'ordinary baseline helper source mismatch')
         from schema import ROWS_SQL
         import installed_archive_read
         import installed_progress_context_oracle
@@ -454,6 +459,12 @@ class IndexRuntime(Runtime):
                 and final['index']['readiness'] == 'not-qualified', 'Index terminal diagnostic differs')
         save(output/'verdict.json', result)
         self.inputs['index'] = result
+
+    def baseline_client(self, output, entry):
+        self.baseline.ordinary_client(self,output,entry)
+
+    def startup_quiescence(self, output, entry, historical, deadline):
+        return self.baseline.startup_quiescence(self,output,entry,historical,deadline)
 
     def ordinary_profile(self):
         from installed_archive_export_client import (READINESS_MODE, READINESS_PHASES, PHASE_SECONDS, CLIENT_SECONDS)
