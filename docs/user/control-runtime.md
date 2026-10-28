@@ -311,6 +311,9 @@ The command performs no ACK, retirement, reclamation or new Ingest handoff.
 Later successor epochs, compacted lineage and missing-pending Archive fallback
 remain unsupported. The ordinary Control read/export procedure and
 its own current grants remain separate. Exit codes are 1 output I/O, 2 usage,
-3 configuration/policy/resources and 4 refused/cancelled/unknown outcome. This
-profile remains under qualification; command availability is not evidence that
-restart and fault acceptance have passed.
+3 configuration/policy/resources and 4 refused/cancelled/unknown outcome.
+This bounded profile has installed restart, initial-topology continuation and
+publication-COMMIT recovery evidence in the
+[verification guide](../development/verification.md#installed-index-continuation-across-the-initial-topology-handoff).
+General topology recovery, continuous successor ownership and capacity remain
+under qualification; these results do not establish complete product readiness.

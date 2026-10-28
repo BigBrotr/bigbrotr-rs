@@ -994,7 +994,7 @@
       }
     },
     "topology_continuation": {
-      "status": "PASS_FINITE_TOPOLOGY_AND_AFFECTED_EPOCH1_CASES_READY_FOR_INTEGRATION",
+      "status": "PASS_FINITE_TOPOLOGY_AND_AFFECTED_EPOCH1_CASES_INTEGRATED",
       "scope": "Finite Index continuation across the existing topology0-to1/Ingest1-to2 handoff; same generation, storage, custody and retained typed history. Not general topology support or complete M1.",
       "product_revision": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
       "acceptance_revision": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
@@ -1056,7 +1056,7 @@
           "limits": "Original r2 HTTP429 causal branch UNKNOWN; successful r3 does not identify it. General handoff/recovery, current-selection readiness, continuous successor composition and complete M1 are not claimed."
         }
       ],
-      "next": "Integrate qualified finite topology increment and update current docs/task evidence; audit/push coherent publication. P01-T09 Step5 independent outages remain the next candidate product increment.",
+      "next": "Audit/push integrated source and observe real GitHub CI; next product requirement is P01-T09 Step5 independent outages, after its focused source/contract assessment.",
       "remaining": [
         "Continuous enabled-Index successor composition and current-selection readiness",
         "Handoff-COMMIT uncertainty",
@@ -1102,6 +1102,11 @@
           "status": "PASS_SCOPED",
           "scope": "Read-only replay binds68 captures and three root receipts; verifies literal source/science,82-table changes, typed absence of handoff, exact reports/2, distinct fault outcomes, raw multiplicity and exact retry. No engine/build/test suite rerun."
         }
+      },
+      "integration": {
+        "revision": "b077e8b29b9b73251918fe15bac054c6b6f04cff",
+        "source_identity": "All product, acceptance, migration, provisioning and build inputs match verified cb3d2fec after merge; no changed test assumption or redundant product build.",
+        "limits": "Finite increment only; original failures and open M1/general recovery/capacity gates retained."
       }
     }
   }

@@ -454,8 +454,12 @@ or partial failure diagnostics are retained with the protected run. See the
 Maintained oracle/dispatch controls run with
 `cd tests/acceptance && python3 -B -m unittest test_first_launch_index_topology`
 and are also discovered by the shared CI controls. This installed variant is
-**NOT_RUN** until a complete actual candidate execution is recorded. It does
-not qualify continuous combined successor ownership, general topology recovery,
+qualified by an actual fifteen-stage PASS on product `ace1b52f`, assembly
+`3d01cc10` and acceptance `cb3d2fec`. The same candidate passes the affected
+eleven-stage epoch1 restart and both twelve-stage publication-COMMIT cases.
+The [Index evidence](../implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json)
+records exact inputs, independent expectations, original failures and review.
+This does not qualify continuous combined successor ownership, general topology recovery,
 unknown query/native termination, independent service outages, capacity,
 second-event export or complete M1.
 

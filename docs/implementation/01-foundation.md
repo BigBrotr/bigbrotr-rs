@@ -489,7 +489,8 @@ and queryable with truthful role readiness, without implicit public publishing.
   export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
   exact353-byte signed export and unchanged catalog/files pass. This includes an
   ordinary Control restart; successor Ingest/resend is now qualified by Step4,
-  while the coherent enabled-Index successor composition remains open. See the laboratory inventory's `implementation_m1_first_launch_20261026`
+  while continuous enabled-Index successor ownership remains open. The finite
+  same-installation continuation is qualified below. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB
   export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
@@ -537,8 +538,18 @@ and queryable with truthful role readiness, without implicit public publishing.
   actual pending/committed distinction, and exact retry adds no work. The report's
   `publication_commit_recovery` retains the original unexplained writer202 failure;
   successful continuations do not resolve remote-query uncertainty.
-  General query uncertainty, the enabled-Index topology/epoch
-  handoff and Step5 outages remain open.
+  Product `ace1b52f`, assembly `3d01cc10` and acceptance `cb3d2fec` now pass the
+  fifteen-stage finite topology0→1/epoch2 journey in one fresh installation:
+  original signed history/export, successor/resend, Archive catch-up/retry,
+  explicit Index bridge5, three new batches through head8, exact retry and
+  ordinary history of both events. All70 chunks/100 bounds, typed rows and
+  historical receipts are independently verified; genuine nonterminal/terminal
+  SQL-copy controls and runtime ACL pass. The same candidate also passes the
+  affected epoch1 restart and both publication-COMMIT directions. The report's
+  `topology_continuation` owns exact evidence, original grant/HTTP429 failures
+  and critical reviews. General query uncertainty, broader topology recovery,
+  continuous successor ownership/current-selection readiness and Step5 outages
+  remain open; this does not complete M1.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,

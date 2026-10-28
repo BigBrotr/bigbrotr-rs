@@ -6,13 +6,13 @@ package publication or production deployment is authorized.
 
 ## Revision and current capability
 
-Public main is `17cc122842adeac646c2fa5e12fb17fedd8b40ff`; local main is
-`539ba9dc`, including the verified hosted report `cb7b5fbe` and retained topology
-outcomes. Root has subsequent checkpoint/evidence updates pending a coherent
-commit/push. New product and acceptance sources remain outside main, in clean
-branches `work/index-epoch2-continuation` and `work/index-epoch2-acceptance`, both
-at `cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a` under their corresponding ignored
-worktrees `.research/index-epoch2-{continuation,acceptance}-20261028`.
+Public main is `17cc122842adeac646c2fa5e12fb17fedd8b40ff`; local main
+`b077e8b29b9b73251918fe15bac054c6b6f04cff` integrates the qualified finite Index
+increment and its evidence. Current procedure/task/checkpoint updates are being
+committed before one audited publication. Product, acceptance, provisioning and
+build inputs match the verified `cb3d2fec` source after the merge; unchanged
+checks remain valid. Both isolated worktrees retain clean `cb3d2fec` and their
+ignored evidence until their branch references are reconciled.
 
 **Installed topology continuation r3: all15 stages PASS.** Signed acquisition,
 initial Index publication, ordinary history/export, topology0→1/Ingest1→2
@@ -88,14 +88,14 @@ and borrowed network empty. Critical actual-epoch1 review is closed in
 `fc8b0c5ad52541819ba71fea99223f27099cad4d47a4b4800b141a49af7641d0`).
 No product rebuild was needed after fixture/provisioning corrections.
 
-Next: integrate the qualified finite topology increment into main, update its
-current procedure/task evidence, then audit/push one coherent publication. The
+Next: finish current documentation checks, audit the unpublished Git objects
+and push this coherent integrated result; observe its actual GitHub run. The
 next product increment will address P01-T09 Step5's independent dependency
 outages, starting with a focused source/contract assessment already assigned to
 the author. It is read-only, with no new implementation or engine underway.
 
-Root owns integration and laboratory execution. Both worktrees are clean at
-`cb3d2fec`; reviewer and CI agent are idle. No local engine/compiler, proxy,
+Root owns integration and laboratory execution. Both source worktrees are
+clean at `cb3d2fec`; reviewer and CI agent are idle. No local engine/compiler, proxy,
 remote watcher or cleanup remains active. All six installed sessions are reaped;
 original containers, databases, SQL copies, inputs, logs and failures remain
 retained. Their exact terminal receipts and the inventory own resource custody.

@@ -75392,7 +75392,7 @@
         "branch": "work/index-epoch2-continuation",
         "base": "59164990",
         "owner": "index_recovery_resume",
-        "status": "QUALIFIED_READY_FOR_INTEGRATION",
+        "status": "QUALIFIED_INTEGRATED",
         "scope": "Finite topology0\u21921/initialIngest1\u21922 Index catch-up; explicit typed revision handoff, retained source lineage and historical receipts. Existing P01-T09 owns acceptance; no parallel plan.",
         "resources": "No local engine/compiler/proxy remains active. All topology r1/r2/r3, epoch1 restart r5 and publication COMMIT before-r4/after-r2 resources stopped and retained; exact receipts own custody.",
         "acceptance": {
@@ -75400,12 +75400,12 @@
           "branch": "work/index-epoch2-acceptance",
           "base": "e5cfec3ce88c11b3cff88b56f954e3a21623e683",
           "owner": "root",
-          "status": "QUALIFIED_READY_FOR_INTEGRATION",
+          "status": "QUALIFIED_INTEGRATED",
           "valid_evidence": "104 combined hook controls PASS; seven author helper controls PASS; critical product/SQL/hook review closed. Actual installed outcome pending.",
           "evidence": ".research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028",
           "review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-oracle-initial.json",
           "review_sha256": "f160933930a7bd3c043b0813f187e7a08476a2374b14f5e6ed9d330e1a08e9a2",
-          "next": "Integrate source, update current docs/task evidence and audit/push coherent result.",
+          "next": "Current docs checks, source publication audit and one coherent push; actual hosted CI then required for new main.",
           "revision": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
           "uncommitted": "None"
         },
@@ -75441,7 +75441,7 @@
           "candidate_manifest_sha256": "39f7362a3d22bd2ddb8fd60cbfbe2cb1233688b4464b5334d1db897d04f2baae",
           "bundle_sha256": "45ce967db497f2498d1400efa785977acfed6136e6e2e915916e7d2d7229bb9f"
         },
-        "uncommitted": "Source worktrees clean at cb3d2fec; root main checkpoint/evidence updates pending coherent commit.",
+        "uncommitted": "Source worktrees clean at cb3d2fec; root main current documentation/checkpoint pending final publication commit.",
         "installed_journey": {
           "status": "FAIL_PRODUCT_RUNTIME_GRANT",
           "session": 42416,
@@ -75518,7 +75518,8 @@
             "sha256": "11aa2b89ba10055771d1109a54226c0660a314b25c7dc9672320a2fecd7e6e32",
             "resources": "23 containers stopped/PID0/noOOM; network empty; proxy/launcher absent."
           }
-        }
+        },
+        "integration": "b077e8b29b9b73251918fe15bac054c6b6f04cff"
       }
     }
   },
