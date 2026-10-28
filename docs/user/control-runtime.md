@@ -111,14 +111,20 @@ the complete application allowance; Archive also reserves its native worker and
 completion allowance through cut verification. Temporary resource pressure defers
 the unissued work at250ms intervals, preserving published cuts and observation
 ages. Its first refusal starts a separate30s capacity-wait bound, which polling
-and renewal cannot reset. This wait begins before nomination/claim or attempt
+and renewal cannot reset. This wait begins after read-only nomination and before claim or attempt
 creation; it does not extend any admitted action, job, authority or operation
 deadline. Permanent insufficiency refuses explicitly.
 
 Deferred roles receive precedence over new Index dispatch. Actual Index work
-continues to join, and Control renewal/private status remain available. An inactive
-unfinished readiness sweep can yield its metadata after the preceding operation
-joins; its historical observation and cooldown remain unchanged. Once admitted,
+continues to join, and Control renewal/private status remain available. Empty Sync
+scans and Archive polls with no pending batch or due observation create no work
+debt. The selected Sync job remains unchanged through a capacity wait; actual
+claim rechecks current authority and the original job expiry. Temporary pressure
+on the64KiB nomination read leaves its scan unchanged, without claiming no work.
+After an Index operation joins, deferred work retries using the returned physical
+credit while retaining the partial readiness verifier. Only a still-failed
+application reservation may yield idle metadata; its historical observation,
+oldest-read deadline and cooldown are never refreshed. Once admitted,
 the complete grant funds the original progress/ACK and publication paths. Issued
 effects, uncertain outcomes and cancellation retain their existing conservative
 failure behavior. These logical bounds require separate installed overlap

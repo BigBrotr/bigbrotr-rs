@@ -872,6 +872,10 @@ async fn maintain_context(
                     }
                     let archive = archive.as_mut().expect("selected Archive");
                     deferred.check(Instant::now())?;
+                    if !archive.needs_work(store.initial()?, &cancellation.requested)? {
+                        publish_due = Instant::now() + archive.delay();
+                        continue;
+                    }
                     let reservation = match archive.reserve(root, budget)? {
                         super::admission::Admission::Granted(reservation) => reservation,
                         super::admission::Admission::Deferred(refusal) => {
@@ -879,6 +883,9 @@ async fn maintain_context(
                             if deferred.waiting(super::admission::Role::Archive, now) {
                                 capacity.denied(super::admission::Role::Archive, refusal,
                                     state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), now)?;
+                            }
+                            if let Some(index) = state.index.as_deref_mut() {
+                                index.yield_idle_readiness_for_capacity(refusal);
                             }
                             // A failed due timer must not remain immediately
                             // selectable ahead of the Index join which frees it.
@@ -915,13 +922,39 @@ async fn maintain_context(
                         continue;
                     }
                     deferred.check(Instant::now())?;
-                    let reservation = match super::admission::reserve(budget, sync::requirements()?, "application")? {
+                    // Nomination is bounded read-only scheduling, not a claim.
+                    // An empty or temporarily unfunded scan creates no work
+                    // debt and cannot cancel a physical readiness sweep.
+                    let selected_sync = state.sync.take().expect("selected Sync");
+                    let trace = sync_diagnostic::Trace::new(progress);
+                    let selected = selected_sync.nominate(sync::Dispatch {
+                        commands: &mut state, writer: store, context, root, budget,
+                        cancel: cancellation, management: &mut management, due: &mut due,
+                        deadline: Instant::now(), trace,
+                    }).await;
+                    state.sync = Some(selected_sync);
+                    trace.finish(selected)?;
+                    state.idle_phase(due)?;
+                    if cancellation.requested.load(Ordering::Acquire) {
+                        return Ok(());
+                    }
+                    if admission(Instant::now(), due, None) == Admission::Renew {
+                        continue;
+                    }
+                    let Some(reserved) = state.sync.as_ref().expect("selected Sync").reserve(budget)? else {
+                        dispatch_due = Instant::now() + sync::INTERVAL;
+                        continue;
+                    };
+                    let reservation = match reserved {
                         super::admission::Admission::Granted(reservation) => reservation,
                         super::admission::Admission::Deferred(refusal) => {
                             let now = Instant::now();
                             if deferred.waiting(super::admission::Role::Sync, now) {
                                 capacity.denied(super::admission::Role::Sync, refusal,
                                     state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), now)?;
+                            }
+                            if let Some(index) = state.index.as_deref_mut() {
+                                index.yield_idle_readiness_for_capacity(refusal);
                             }
                             dispatch_due = now + sync::INTERVAL;
                             continue;

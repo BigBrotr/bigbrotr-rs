@@ -82,12 +82,22 @@ credit stays funded for its later phases, including progress COMMIT and native A
 Closing the parent prevents new parent admissions; an already funded operation
 may finish until its reservation owner closes child admission.
 
-The initial combined owner uses these reservations before Sync nomination or an
-Archive publication. Archive reserves publication and complete-cut capture
+The initial combined owner uses these reservations after bounded read-only Sync
+nomination and before its actual claim, or before an Archive publication. A Sync
+scan has its own64KiB grant; temporary scan pressure leaves its position unchanged
+and creates no full-work debt. An actual nominee retains its exact job identity
+across deferral, and claim rechecks its original authority and expiry. Empty Sync
+scans and fresh empty Archive polls cannot interrupt an Index readiness sweep.
+Archive reserves publication and complete-cut capture
 together, including the separate native worker and application completion lane.
 Sync's direct transport uses the funded scope while sharing its original DNS gate
 and TLS owner. Ordinary Control renewal and status retain their existing independent
 ownership. No issued operation's error is converted into a resource retry.
+After a joined Index operation releases its physical credit, deferred work retries
+before an inactive readiness sweep can yield metadata. Successful admission keeps
+the remaining verifier and oldest-read clock; only another failed application
+reservation may discard idle metadata, without touching active/unknown work or
+refreshing a verified observation.
 
 ## Current boundary
 

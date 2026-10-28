@@ -93,6 +93,28 @@ fn requirements(root: &Resolved) -> Result<(ResourceLimits, ResourceLimits)> {
     ))
 }
 impl Archive {
+    /// Metadata-only scheduling under the existing native owner. Publication
+    /// still validates the exact pending batch and capture under full funding.
+    pub(super) fn needs_work(&self, store: &IngestStore, cancelled: &AtomicBool) -> Result<bool> {
+        let head = store
+            .observe_source_head(store.manifest(), cancelled)
+            .map_err(error)?;
+        if head.through().get() < self.next - 1 {
+            return Err(error(
+                "source head regressed behind retained Archive progress",
+            ));
+        }
+        let age = self
+            .observation
+            .map(|previous| {
+                SuspendAwareClock
+                    .read()
+                    .and_then(|now| now.elapsed_since(previous.started))
+                    .map_err(error)
+            })
+            .transpose()?;
+        Ok(work_due(self.next, head.through().get(), age))
+    }
     pub(super) fn native_snapshot(&self) -> bigbrotr::runtime::BudgetSnapshot {
         self.native.snapshot()
     }
@@ -607,9 +629,23 @@ pub(super) fn validate(root: &Resolved) -> std::result::Result<(Duration, u64), 
     Ok((delay, bytes))
 }
 
+fn work_due(next: u64, through: u64, observed_age: Option<Duration>) -> bool {
+    next <= through || observed_age.is_some_and(|age| age >= readiness::FRESHNESS / 2)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn fresh_idle_archive_poll_requires_no_full_publication_and_due_work_is_preserved() {
+        assert!(!work_due(1, 0, None));
+        assert!(!work_due(4, 3, Some(Duration::from_nanos(14_999_999_999))));
+        assert!(work_due(4, 3, Some(Duration::from_secs(15))));
+        assert!(work_due(4, 3, Some(Duration::from_secs(30))));
+        assert!(work_due(4, 4, None));
+        assert!(work_due(4, 12, Some(Duration::ZERO)));
+        assert!(work_due(u64::MAX, u64::MAX, Some(Duration::ZERO)));
+    }
     #[test]
     fn funded_publication_includes_catalog_cut_completion_and_retained_input() {
         let root = crate::config::load(Path::new(concat!(

@@ -112,11 +112,13 @@ BINARY_REQUIRED = {
         'actual_held_capacity_defers_without_issuing_and_returns_only_after_drop',
     )),
     'initial-sync': tuple(BINARY_GROUPS['initial-sync'] + name for name in (
+        'idle_nomination_creates_no_full_work_debt_and_selected_job_survives_waits',
         'funded_round_keeps_progress_ack_credit_when_parent_is_saturated',
         'a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress',
         'resource_and_context_failures_cannot_be_hidden_as_peer_refusals',
     )),
     'initial-archive': tuple(BINARY_GROUPS['initial-archive'] + name for name in (
+        'fresh_idle_archive_poll_requires_no_full_publication_and_due_work_is_preserved',
         'funded_publication_includes_catalog_cut_completion_and_retained_input',
         'active_request_window_does_not_define_archive_retention',
     )),
@@ -139,6 +141,7 @@ BINARY_REQUIRED = {
         'readiness::tests::readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_heads',
         'readiness::tests::readiness_uses_oldest_read_and_a_strict_whole_sweep_window',
         'readiness::tests::readiness_abandon_does_not_reset_attempt_cooldown_or_erase_a_failure',
+        'readiness::tests::deferred_work_retries_released_credit_before_idle_yield_and_keeps_observation_clocks',
         'readiness::tests::readiness_empty_failed_cancelled_and_parked_caches_never_invent_a_verified_cut',
         'catch_up::tests::recovery_published_cursor_excludes_retained_pending_and_unplanned_backlog',
         'catch_up::tests::recovery_published_cursor_refuses_missing_changed_and_foreign_heads',

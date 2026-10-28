@@ -377,6 +377,16 @@ impl Index {
             remote_unknown: self.slot.unresolved_query().is_some(),
         }
     }
+    /// Called only after an actual whole-work reservation failed. The oldest
+    /// deferred role therefore retries released physical credit before any
+    /// between-plan metadata is discarded. Never alter a live or unknown owner.
+    pub(super) fn yield_idle_readiness_for_capacity(&mut self, refusal: super::admission::Refusal) {
+        self.readiness.yield_for_capacity(
+            refusal.domain == "application",
+            self.active.is_some() || self.completed.is_some(),
+            self.parked || self.slot.unresolved_query().is_some(),
+        );
+    }
     pub(super) fn readiness_observation(&self) -> readiness::Observation {
         self.readiness.observation(
             self.active.is_some(),
@@ -542,12 +552,6 @@ impl Index {
             let tick = self
                 .complete(owner, store, completed, deadline, cancelled)
                 .await?;
-            if !allow_dispatch {
-                // The exact operation has joined and its result was consumed.
-                // Do not retain a between-plan observation allowance while a
-                // deferred role needs it. Historical age/cooldown survive.
-                self.readiness.abandon();
-            }
             // complete() has consumed the joined result and its local permit.
             // This marker says nothing about a surviving named remote query.
             if self.control.map(|owner| owner.process_incarnation) != Some(operation.incarnation())
@@ -560,7 +564,8 @@ impl Index {
             return Ok(tick);
         }
         if !allow_dispatch {
-            self.readiness.abandon();
+            // Keep the verifier until the deferred role actually retries its
+            // complete reservation. Returning local work credit may suffice.
             return Ok(Tick::WaitingForResources);
         }
         // An existing session is positively renewed before every new dispatch.

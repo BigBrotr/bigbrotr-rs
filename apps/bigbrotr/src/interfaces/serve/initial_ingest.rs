@@ -356,7 +356,7 @@ fn prepare(
     if sync {
         // Permanent startup holders cannot be treated as temporary pressure.
         // This check issues no operation; each real round acquires and keeps
-        // its own complete reservation before nomination.
+        // its own complete reservation after read-only nomination, before claim.
         sync::preflight(budget)?;
     }
     let path = Path::new(required(root, "storage.ingest_root")?);
