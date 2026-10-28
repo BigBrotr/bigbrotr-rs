@@ -8,12 +8,13 @@ package publication or production deployment is authorized.
 
 Verified publication base: `8cf3f5b7bda2d7bafcef0921c12cbc7684c7014f`.
 Implementation head before this checkpoint commit is
-`4303e541db87cc490abd61d6f50f73d36897cca2`, integrating
+`e6feb00ef0c4f0f5741734de91b18b6debe937f0`, including
 reviewed `1080b307` (early CI controls), `fb5fd256` (publication COMMIT fixtures),
 `ace1512e` (binding the unchanged operation cap to deployment configuration),
-`9ab330b0` (portable FIFO fixture) and `144ab9ea` (actual hosted outcome).
-The checkpoint is prepared for one coherent main push and subsequent hosted
-qualification; its actual publication result belongs to
+`9ab330b0` (portable FIFO fixture), `144ab9ea` (actual hosted outcome),
+`0e8ba181` (checkpoint) and `e6feb00e` (canonical temporary custody fixture).
+Checkpoint `0e8ba18145daeee2b34799ccde020d062170005e` is pushed and exact
+remote main verified. The publication result belongs to
 `.research/ci-publication-20261026/source-checkpoint-ci-index-20261028/push.json`.
 Original author ancestry is integrated. The prior public-input audit passed
 with no new credential candidates; prior publication/branch-retirement receipts
@@ -114,11 +115,20 @@ Matching error202 text cannot authorize retry: the pinned client's BadResponse
 also represents incomplete error bodies. Exact server source at the retained
 build revision is unavailable from upstream; its teardown ordering is unverified.
 
-Next: one bounded same-image diagnostic compares full-body completion with
-positively observed peer EOF, using fresh owned data and unchanged account limit1.
-Correct only the established cause; do not enlarge deadlines or retry unknown
-work. Reuse qualified fixture/candidate portions, then complete actual before/after
-publication recovery. General unresolved remote-query recovery remains separate.
+The bounded same-image diagnostic did **not reproduce** the refusal:128 empty
+readbacks per profile, positive writer visibility and actual peer EOF recorded
+separately from full-body completion. Both containers stopped cleanly. This is
+not product qualification or proof of server teardown order. Its original r1
+never created a container: an inherited global inventory exceeded the1MiB cap;
+the exact-owned-name filter fixed setup without increasing the cap. Evidence:
+`.research/pin-release-uncertainty-20261028/.research/pin-release-author-review-20261028/index-publication-commit/http-lifecycle-diagnostic/actual-r2/root-review.json`.
+
+The operation retains its engine permit across both readbacks and parks the
+failed query; the observed202 demonstrates admission/liveness failure, not a
+proved credit-contract violation. Next: add minimal bounded query-lifecycle and
+role-specific frontier observations to the existing installed case, preserving
+predicate, quota1 and deadlines, then execute one before-forward continuation.
+A passing retry must not silently close the original unexplained refusal.
 
 ## Resources and agents
 
@@ -146,8 +156,12 @@ ClickHouse rejection; the reviewer maps the next topology handoff and reviews
 critical deltas. The CI agent's targeted keyring qualification67012 is reaped0,
 with its container stopped/exit0/PID0/noOOM; final receipts and all17 evidence
 hashes, four changed source identities and10 actual tests are root-verified.
-The original CI watcher55285 is reaped1 and both processes are absent. A fresh
-bounded CH diagnostic is in preparation/review; it has not launched.
+The original CI watcher55285 is reaped1 and both processes are absent. New
+run40697249452 has one bounded watcher94369 (driver333196, gh333197), owned by
+the CI agent; its receipt is under `.research/ci-publication-20261026/run-40697249452-exposure`. The CH diagnostic sessions65261 (prelaunch incomplete) and26675 (non-reproduction)
+are reaped; r2 server369abae762fc and client4ec5a2910c59 are stopped/exit0/PID0/
+noOOM, independently verified. Author/reviewer now prepare the narrow installed
+observation delta; no local engine/compiler is active.
 Root owns integration/resources. The
 [inventory](../research/laboratory-inventory.json) links retained data, logs,
 inputs, candidates and original failures. No additional cleanup was performed.
@@ -217,5 +231,15 @@ Early dependency policy runs before expensive builds. Conditional same-run
 Clippy-to-test native reuse still requires actual equal-input/duplicate-work
 measurement; no performance benefit or implementation is claimed. Preserve all
 platform/profile/clean-build checks. This coherent main integration is awaiting its
-own real hosted qualification; do not dispatch duplicate runs. M1 and the full
+own real hosted qualification in [run40697249452](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40697249452)
+on exact `0e8ba181`: macOS completed with an early fixture ERROR; both Linux
+jobs were still running at this checkpoint. The179 Python controls have
+173PASS/1ERROR/5SKIP on macOS; all four expensive checks are NOT_RUN. The fixture
+passed an uncanonicalized temporary path to the strict custody check. Correction
+`e6feb00e` resolves only the owned temporary parent: explicit symlink-root
+reproduction retains original1ERROR, corrected9PASS and unchanged alias refusal.
+No product build is needed. The next coherent main push supersedes this failed
+revision; preserve actual remote cancellations and partial evidence separately
+from failures. Publication receipt: `.research/ci-publication-20261026/source-custody-checkpoint-20261028/push.json`.
+Do not dispatch duplicate runs. M1 and the full
 goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.

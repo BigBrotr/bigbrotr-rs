@@ -873,7 +873,7 @@
       ]
     },
     "publication_commit_recovery": {
-      "status": "CONFIG_FIX_REVIEWED; INITIAL_PREFIX_FAIL_WITH_CLICKHOUSE202_UNDER_DIAGNOSIS",
+      "status": "ORIGINAL_PREFIX_CLICKHOUSE202_FAIL_UNRESOLVED; BOUNDED_DIAGNOSTIC_NO_REPRODUCTION",
       "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
       "acceptance": "ace1512e0f8bf713c0d9e797aef989919083017c",
       "integration": "b15dded467a96d605130a08ebcb3ab5ce2c57c94",
@@ -890,7 +890,7 @@
         "resources": "18 containers stopped/PID0/noOOM; focused command exit4, others0. Proxy exit0/absent, parent absent and borrowed bridge empty. Original raw state/logs retained.",
         "not_run": "Actual selected COMMIT outcome, backend/time hold observation, subsequent recovery/retry and final export"
       },
-      "next": "Diagnose actual ClickHouse202 without enlarging limits or retrying unknown work; qualify the pertinent correction and continue both installed publication recovery cases.",
+      "next": "Minimal bounded installed query-lifecycle/role-frontier observability, then one actual before-forward continuation with unchanged limits. Original202 remains unexplained unless positive evidence establishes its cause; no generic retry or transport change justified by diagnostic non-reproduction.",
       "config_fix": {
         "revision": "ace1512e0f8bf713c0d9e797aef989919083017c",
         "checks": "20 targeted controls and retained metadata replay PASS; critical delta review PASS; actual root declares unchanged default5s before initialization. No product change.",
@@ -903,6 +903,16 @@
         "classification": "Original15s prefix expired; final observer psql had5.2ms remaining. Retained CH writer Code202 reports current1/max1. Cause/server completion boundary under diagnosis; not classified as observer slowness or product corruption.",
         "resources": "16 containers stopped/exit0/PID0/noOOM; launcher absent, bridge empty; all original state/logs retained.",
         "not_run": "Publication COMMIT fault and subsequent recovery/retry/export"
+      },
+      "http_lifecycle_diagnostic": {
+        "root": ".research/pin-release-uncertainty-20261028/.research/pin-release-author-review-20261028/index-publication-commit/http-lifecycle-diagnostic",
+        "status": "NO_REFUSAL_REPRODUCED; PRODUCT_NOT_RUN",
+        "profiles": "128 exact empty typed readbacks per profile, complete-body/local-close and complete-body/positive peerEOF;257 writer requests including positive execution;52 observer samples, positiveID seen10times;747810wirebytes.",
+        "scope": "One fresh isolated engine, no original data mounted. No deadline, writer quota1 or product changes. Actual absence samples do not prove exclusion or server teardown order.",
+        "receipt_sha256": "2d2fa1ea3a61270aebba4c42daa3baff2b8e73aafdd855702515177b2feea269",
+        "root_review_sha256": "329112be83228e2003b42e2f5a76d85914a56cdfc544830bce2acbf4cbf3e125",
+        "original_setup_failure": "actual-r1 prelaunch INCOMPLETE: inherited global Docker inventory exceeded1MiB. Both container names absent/no query. Exact-owned-name filter preservescap/collision refusal.",
+        "resources": "Bothactual-r2 containers exit0/PID0/noOOM; observerjoined; no active diagnostic. All original inputs/logs/results preserved."
       }
     }
   }

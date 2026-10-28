@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "Latest hosted8cf run terminalFAIL:28PASS/1macOSkeyringFAIL/1NOT_RUN. PortableFIFO9ab locally qualified/integrated; next coherent hosted qualification pending.",
+    "status": "Current0e8 run IN_PROGRESS atcheckpoint: mac earlyacceptance fixtureERROR, bothLinuxactive. e6canonicalfixture correctionlocallyverified/integrated; nextmainpush supersedesfailedrevision.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40684555941",
-    "latest_hosted_source": "8cf3f5b7bda2d7bafcef0921c12cbc7684c7014f",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40697249452",
+    "latest_hosted_source": "0e8ba18145daeee2b34799ccde020d062170005e",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73470,7 +73470,14 @@
       "sha256": "b0948e864b7d4604ef1da3a08ca4eee6f0bab83ae98f2574e6d4fbe016ab6b88",
       "scope": "Four artifacts/512members,33logmembers;54known nonsecret occurrences/5fingerprints,0new/unclassified/provideralerts. Asynchronous/exhaustive absence not claimed."
     },
-    "verification_in_progress": null,
+    "verification_in_progress": {
+      "root": ".research/ci-publication-20261026/run-40697249452-exposure",
+      "watch_session": 94369,
+      "source": "0e8ba18145daeee2b34799ccde020d062170005e",
+      "early_failure": "Actual mac173PASS/1ERROR/5SKIP;4expensivechecksNOT_RUN. No native/macFIFOqualification.",
+      "fix": "e6feb00e;9targetedPASS withstrictaliasrefusal retained",
+      "scope": "Preserve actualjob/artifact status if auto-cancelled by next coherentpush; no duplicate dispatch. No complete hostedPASS."
+    },
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
       "replacement": "c05993470d038224641b77c57ce0ebfa6004a36f",
@@ -75041,7 +75048,7 @@
     "resume_20261028": {
       "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_AND_BOTH_RELEASE_COMMIT_CASES_PASS",
       "canonical_branch": "main",
-      "canonical_revision": "4303e541db87cc490abd61d6f50f73d36897cca2",
+      "canonical_revision": "e6feb00ef0c4f0f5741734de91b18b6debe937f0",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75135,7 +75142,7 @@
           "status": "Implemented as076750d5, merged and qualified; current identities/resources in sync_safe_points."
         }
       },
-      "processes": "Before-r2 and compiler67012 terminal/reaped, original CI watcher55285 reaped1; root verified all owned terminal resources. Fresh CH lifecycle diagnostic in preparation/critical review, not launched. No installed engine/proxy/compiler active.",
+      "processes": "No local engine/compiler/proxy active. CH diagnostic26675 terminal0, server369abae762fc/client4ec5a2910c59 stopped0/PID0/noOOM; prelaunch65261 incomplete/no containers. CIwatch94369 remains owned by CI agent for0e8run; mac earlyfixtureFAIL, Linuxstillrunning atcheckpoint. Author/reviewer prepare bounded installedobservability.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75345,7 +75352,13 @@
         "source": "ace1512e0f8bf713c0d9e797aef989919083017c",
         "previous_roots": [
           ".research/first-launch-index-commit-before-r1-20261028"
-        ]
+        ],
+        "diagnostic": {
+          "root": ".research/pin-release-uncertainty-20261028/.research/pin-release-author-review-20261028/index-publication-commit/http-lifecycle-diagnostic",
+          "status": "NO_REFUSAL_REPRODUCED; original202FAIL remainsopen",
+          "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.publication_commit_recovery",
+          "retention": "Originalprelaunchfailure,128/128observations,owneddata/logs/script snapshots andterminalreceipts retained."
+        }
       },
       "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit"
     }
