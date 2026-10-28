@@ -704,6 +704,27 @@
     "current_timing": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40716894776-exposure/timing-observation.json",
       "sha256": "4ede784884493f23a81a8db48913fdc1702b4d7da1d2c66ee9518e8241aae4ab"
+    },
+    "same_run_native_followup": {
+      "status": "UNPROVEN_RECOMPILATION_NO_CHANGE_JUSTIFIED",
+      "runs": [
+        40716894776,
+        40702272536
+      ],
+      "observed": "All six Clippy/test pairs share cwd, declared environment, input hashes, CARGO_TARGET_DIR and CARGO_HOME. Existing workspace_context/cargo_environment already permit same-run Cargo reuse. Both report librocksdb-sys/zstd-sys compiling; Checking rocksdb versus Compiling rocksdb is compatible with distinct Rust check/codegen work.",
+      "limits": "Retained logs have no actual build-script/C++ invocations, per-unit timing or native intermediate archive identity; aggregate times cannot establish redundant native work or savings. Even Cargo build-script-executed JSON may describe cached output.",
+      "next": "During an already-needed future run, establish actual native invocations and equivalent target/CPU/features/compiler/archiver/SDK/stdlib/flags/optimization/debug/source/header inputs plus archive identity before changing reuse. No separate benchmark campaign or native-cache implementation is justified by current evidence.",
+      "conditional_candidate": "Only if redundant equal-input native work is demonstrated, the pinned librocksdb-sys build script supports same-platform/same-run ROCKSDB_LIB_DIR with ROCKSDB_STATIC while retaining bindgen. Cargo may already reuse that archive; no new path was added.",
+      "excluded": [
+        "release-to-dev/test reuse",
+        "compiled Rust reuse across revisions/platforms",
+        "reduced platform/profile/clean-install coverage"
+      ],
+      "references": [
+        "https://doc.rust-lang.org/cargo/commands/cargo-check.html",
+        "https://doc.rust-lang.org/cargo/reference/profiles.html#test",
+        "https://doc.rust-lang.org/cargo/reference/external-tools.html#build-script-output"
+      ]
     }
   },
   "limits": [

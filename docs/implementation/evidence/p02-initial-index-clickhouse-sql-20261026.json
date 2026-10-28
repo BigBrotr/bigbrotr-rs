@@ -994,10 +994,10 @@
       }
     },
     "topology_continuation": {
-      "status": "PARTIAL_NOT_INTEGRATED_INDEX_PASS_FINAL_HISTORY_FAIL",
+      "status": "PASS_FINITE_TOPOLOGY_AND_AFFECTED_EPOCH1_CASES_READY_FOR_INTEGRATION",
       "scope": "Finite Index continuation across the existing topology0-to1/Ingest1-to2 handoff; same generation, storage, custody and retained typed history. Not general topology support or complete M1.",
       "product_revision": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
-      "acceptance_revision": "3d01cc104acb9ef4fe7d442750f66e3632a6dd6e",
+      "acceptance_revision": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
       "worktrees": {
         "product": ".research/index-epoch2-continuation-20261028",
         "acceptance": ".research/index-epoch2-acceptance-20261028"
@@ -1041,16 +1041,68 @@
           "demonstrated": "SQL nonterminal3/terminal23 including ACL checks PASS; actual Index bridge5,three epoch2 batches through revision8,70chunks/100bounds,all10families/commitments exact. Owner1-to2 and retry2-to3 preserve original receipts and add no work on retry; Archive/inputs/export/custody/other-consumer history exact.",
           "failure": "Final ordinary successor history first request returns429 capacity_or_rate_limited. Cause pending diagnosis; no limit change or generic retry authorized by this outcome.",
           "resources": "Session35074 reaped1;29 exact containers stopped/PID0/noOOM,launcher absent,borrowed network empty;all data/clones/logs retained."
+        },
+        {
+          "name": "r3",
+          "status": "PASS_ALL_15_STAGES",
+          "evidence": ".research/first-launch-index-topology-r3-20261028",
+          "root_terminal_sha256": "d92f4fab2eaee8ba63296a588b70960a2e313b87af8bf25fba8a366220c9cd76",
+          "product": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
+          "assembly": "3d01cc104acb9ef4fe7d442750f66e3632a6dd6e",
+          "acceptance": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
+          "correction": "Positive current-owner/native-join startup observation inside original30s; fresh session; exact released two-stream claims; one history request per event.11 affected controls PASS, source review closed; no product/bundle change.",
+          "demonstrated": "All15 stages PASS in one fresh composition: signed acquisition, initial Index, history/export, successor/resend, Archive catch-up/retry, Index bridge5/head8/catch-up/retry and final two-event history.70 chunks/100 bounds, ten-family raw multiplicity/typed commitments exact; original receipts/Archive/inputs/export/custody/other consumers preserved.3+23 SQL cases PASS including runtime ACL and original82-table/xmin equality.",
+          "resources": "Session25497 reaped0;29 exact containers stopped/PID0/noOOM/exit0; launcher/client absent; network empty;53 source hashes verified. Original data/clones/logs retained.",
+          "limits": "Original r2 HTTP429 causal branch UNKNOWN; successful r3 does not identify it. General handoff/recovery, current-selection readiness, continuous successor composition and complete M1 are not claimed."
         }
       ],
-      "next": "Diagnose retained final-history429 and correct pertinent owner without weakening oracle; complete actual journey, then affected epoch1 restart/COMMIT-before/after.",
+      "next": "Integrate qualified finite topology increment and update current docs/task evidence; audit/push coherent publication. P01-T09 Step5 independent outages remain the next candidate product increment.",
       "remaining": [
-        "Successful installed bridge and epoch2 Index catch-up/retry",
-        "Current-revision epoch1 pending recovery and both publication COMMIT-loss directions",
+        "Continuous enabled-Index successor composition and current-selection readiness",
         "Handoff-COMMIT uncertainty",
         "Continuous combined successor Index ownership and current-selection readiness",
         "Broader topology/unknown-query/native-termination/outage/capacity guarantees remain with their existing tasks"
-      ]
+      ],
+      "actual_review": {
+        "path": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-actual-r3.json",
+        "sha256": "1ced76bd64b4ffa4db691e96e7580f472288e68977bc96c7a67e5009eb68ce9b",
+        "status": "PASS_SCOPED",
+        "scope": "Read-only replay reconstructs original input bytes and independent science/C API, typed rows/commitments, SQL cases/seed preservation, startup state and both signed histories.35 captures bound; no engine/build rerun."
+      },
+      "epoch1_requalification": {
+        "restart": {
+          "status": "PASS_ALL_11_STAGES",
+          "evidence": ".research/first-launch-index-restart-r5-20261028",
+          "root_terminal_sha256": "feb4fc6cfed9731f8601d648d18b8344f25b280215e401b8cdbf66685d3d3ddb",
+          "product": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
+          "assembly": "3d01cc104acb9ef4fe7d442750f66e3632a6dd6e",
+          "acceptance": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
+          "observed": "Pending3/new4 and exact retry;40 chunks/160 metadata rows and82 tables match exact allowed transitions; signed export preserved. Origins[1,1,1,2], publishers[1,1,2,2], owners1/2/3.",
+          "resources": "Session22173 reaped0;22 containers stopped/PID0/noOOM/exit0; ClickHouse unpaused; launcher absent; borrowed network empty.38 acceptance source hashes verified."
+        },
+        "commit_before": {
+          "status": "PASS_ALL_12_STAGES",
+          "evidence": ".research/first-launch-index-commit-before-r4-20261028",
+          "root_terminal_sha256": "962bda8e37413d32f3fc8a29cf6b2d758e0d2adc373a12e3a93e74547451bff5",
+          "observed": "Actual CommitUnknown/exit4 leaves pending3. Fresh owner3 publishes3/4; retry4 adds nothing. Origins[1,1,1,3], publishers[1,1,3,3], raw dictionaries12/logical8. All40 chunks/160 metadata rows/82 table comparisons and signed export PASS.",
+          "resources": "Session11228 reaped0;23 containers stopped/PID0/noOOM; proxy/launcher absent; network empty;46 source hashes verified.",
+          "query_lifecycle": "1804 rows/902 queries with no missing pairs; one original-unpause Code210. All-query coverage/remote exclusion NOT_PROVEN; prior Code202 remains UNKNOWN."
+        },
+        "commit_after": {
+          "status": "PASS_ALL_12_STAGES",
+          "evidence": ".research/first-launch-index-commit-after-r2-20261028",
+          "root_terminal_sha256": "11aa2b89ba10055771d1109a54226c0660a314b25c7dc9672320a2fecd7e6e32",
+          "observed": "Actual CommitUnknown/exit4 retains published3 under owner2. Owner3 verifies it and publishes4; retry4 adds nothing. Origins[1,1,1,3], publishers[1,1,2,3], raw dictionaries8.40 chunks/160 metadata rows/82-table comparisons and signed export PASS.",
+          "resources": "Session13149 reaped0;23 containers stopped/PID0/noOOM; proxy/launcher absent; network empty;46 source hashes verified.",
+          "query_lifecycle": "1774 rows/887 queries with no missing pairs; one original-unpause Code210. All-query coverage/remote exclusion NOT_PROVEN; prior Code202 remains UNKNOWN."
+        },
+        "critical_review": {
+          "path": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-epoch1-current-actual-three.json",
+          "sha256": "fc8b0c5ad52541819ba71fea99223f27099cad4d47a4b4800b141a49af7641d0",
+          "status": "PASS_SCOPED",
+          "scope": "Read-only replay binds68 captures and three root receipts; verifies literal source/science,82-table changes, typed absence of handoff, exact reports/2, distinct fault outcomes, raw multiplicity and exact retry. No engine/build/test suite rerun."
+        }
+      }
     }
   }
 }
