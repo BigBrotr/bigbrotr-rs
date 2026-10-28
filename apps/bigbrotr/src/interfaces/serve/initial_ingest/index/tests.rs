@@ -287,6 +287,17 @@ fn all_ten_family_outcomes_obey_counts_zero_and_checked_wire_ceiling_before_prep
 fn reservations_distinguish_unavailable_from_impossible_and_do_not_wait() {
     let profile = profile(&root()).unwrap();
     let needed = profile.required_application().unwrap();
+    eprintln!(
+        "{}",
+        json!({"format":"bigbrotr-initial-budget-requirements/1","role":"index",
+        "scope":"compiled-finite-profile-not-a-capacity-claim",
+        "application":{"data_bytes":needed.data_bytes(),"items":needed.items(),"native_bytes":needed.native_bytes(),"control_bytes":needed.control_bytes()},
+        "retained_data_bytes":prepare::PREPARATION_BYTES+METADATA_BYTES,
+        "physical_data_bytes":profile.physical().unwrap().required_local_data_bytes().unwrap(),
+        "source_data_bytes":profile.source().required_data_bytes().unwrap(),
+        "planner_data_bytes":plan::required_data_bytes(profile.source()).unwrap(),
+        "recovery_metadata_bytes":required_recovery_metadata_bytes()})
+    );
     assert_eq!(needed.items(), 5);
     assert!(needed.data_bytes() > prepare::PREPARATION_BYTES + METADATA_BYTES);
     assert!(

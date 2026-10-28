@@ -49,7 +49,7 @@ pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 /// Preclaim capacity check for the complete fixed finite profile. TLS roots are
 /// already retained by Sync::prepare. Conservatively overlap formation, wire
 /// and admission scratch although those phases normally release some grants.
-pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
+pub(super) fn requirements() -> Result<ResourceLimits> {
     use bigbrotr::acquisition::session::{ActiveRequest, RelaySession, RetainedRelayEvent};
     use bigbrotr_model::LocalObservation;
     let wire = EventLimits::default();
@@ -84,20 +84,19 @@ pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
         // Current DirectConnector and DNS each charge 4MiB. RelayWebSocket
         // charges eight maximum frames plus 1MiB handshake/buffer overhead.
         + 8 * MIB + 8 * wire.wire_bytes as u64 + MIB;
-    drop(
-        budget
-            .try_acquire(
-                ResourceRequest::data(
-                    data,
-                    ITEMS,
-                    event.required_native_bytes().map_err(error)?
-                        + dictionaries.required_native_bytes().map_err(error)?
-                        + ProgressGrant::REQUIRED_NATIVE_BYTES,
-                )
-                .map_err(error)?,
-            )
-            .map_err(error)?,
-    );
+    Ok(ResourceLimits::new(
+        data,
+        ITEMS,
+        event.required_native_bytes().map_err(error)?
+            + dictionaries.required_native_bytes().map_err(error)?
+            + ProgressGrant::REQUIRED_NATIVE_BYTES,
+        0,
+    ))
+}
+
+pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
+    let needed = requirements()?;
+    drop(budget.try_reserve(needed).map_err(error)?);
     Ok(())
 }
 
@@ -204,7 +203,12 @@ impl Sync {
         Ok(())
     }
 
-    pub(super) async fn dispatch(&mut self, mut work: Dispatch<'_, '_>) -> Result<()> {
+    pub(super) async fn dispatch(
+        &mut self,
+        mut work: Dispatch<'_, '_>,
+        reservation: &ReservedBudget,
+    ) -> Result<()> {
+        let connector = self.connector.within(reservation);
         if !work.safe_point(self, false).await? {
             return Ok(());
         }
@@ -375,7 +379,7 @@ impl Sync {
                     policy_ttl: ttl,
                     deadline: hard,
                 },
-                &self.connector,
+                &connector,
                 |d, h, endpoint, route| {
                     if endpoint != source.endpoint() || route != source.route() {
                         return Err(OwnerError::InvalidMetadata);
@@ -672,6 +676,43 @@ fn validate_sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn funded_round_keeps_progress_ack_credit_when_parent_is_saturated() {
+        let needed = requirements().unwrap();
+        eprintln!(
+            "{}",
+            json!({"format":"bigbrotr-initial-budget-requirements/1","role":"sync",
+            "scope":"compiled-finite-profile-not-a-capacity-claim",
+            "application":{"data_bytes":needed.data_bytes(),"items":needed.items(),"native_bytes":needed.native_bytes(),"control_bytes":needed.control_bytes()},
+            "retained_tls_data_bytes":TlsPolicy::FILE_ROOTS_BYTES})
+        );
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                needed.data_bytes() + needed.native_bytes(),
+                0,
+                needed,
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let scope = parent.try_reserve(needed).unwrap();
+        let progress = ProgressGrant::new(grant(scope.budget(), 2 * MIB, 4096).unwrap()).unwrap();
+        assert!(
+            parent
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .is_err()
+        );
+        let scratch = grant(scope.budget(), EventLimits::default().parse_bytes as u64, 0).unwrap();
+        drop(scratch);
+        drop(scope);
+        assert_eq!(
+            parent.snapshot().used(),
+            ResourceLimits::new(2 * MIB, 1, 4096, 0)
+        );
+        drop(progress);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
 
     #[test]
     fn a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress() {

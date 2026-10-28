@@ -4,7 +4,9 @@ use super::{
     lifetime::Gate,
     stream::{Guarded, Wire},
 };
-use crate::runtime::{ResourceBudget, ResourceRequest, policy_authority::ActionWindow};
+use crate::runtime::{
+    ReservedBudget, ResourceBudget, ResourceRequest, policy_authority::ActionWindow,
+};
 use std::{fmt, io, net::SocketAddr};
 use tokio::{net::TcpStream, time::Instant};
 
@@ -97,6 +99,17 @@ impl DirectConnector {
         Self {
             dns,
             tls,
+            resources,
+        }
+    }
+
+    /// Use already-funded operation capacity, retaining the same DNS admission
+    /// gate and TLS ownership. This creates no connection, resolver or retry.
+    pub fn within(&self, reservation: &ReservedBudget) -> Self {
+        let resources = reservation.budget().clone();
+        Self {
+            dns: self.dns.within(resources.clone()),
+            tls: self.tls.clone(),
             resources,
         }
     }

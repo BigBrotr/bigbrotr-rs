@@ -12,6 +12,7 @@ use hickory_proto::{
 use std::{
     fmt,
     net::{IpAddr, SocketAddr},
+    sync::Arc,
     time::Duration,
 };
 use tokio::{
@@ -34,6 +35,58 @@ pub enum DnsError {
     InvalidResponse,
     Unavailable,
     NoRecords,
+}
+
+#[cfg(test)]
+mod reservation_tests {
+    use super::*;
+    use crate::runtime::{ProcessEnvelope, ResourceLimits, WaiterLimits};
+    use bigbrotr_protocol::endpoint::Endpoint;
+
+    #[tokio::test]
+    async fn funded_view_shares_the_original_dns_gate_and_closes_with_its_scope() {
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                16 * 1024 * 1024,
+                0,
+                ResourceLimits::new(16 * 1024 * 1024, 4, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let dns = DnsResolver::new("127.0.0.1:53".parse().unwrap(), parent.clone()).unwrap();
+        let scope = parent
+            .try_reserve(ResourceLimits::new(LOOKUP_MEMORY_BYTES, 1, 0, 0))
+            .unwrap();
+        let view = dns.within(scope.budget().clone());
+        let target = Target::new(Endpoint::parse("ws://127.0.0.1:80/").unwrap()).unwrap();
+        let held = dns.connection.try_acquire().unwrap();
+        assert!(matches!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await,
+            Err(DnsError::Budget)
+        ));
+        drop(held);
+        assert_eq!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await
+                .unwrap()
+                .addresses(),
+            &["127.0.0.1".parse::<IpAddr>().unwrap()]
+        );
+        drop(scope);
+        assert!(matches!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await,
+            Err(DnsError::Budget)
+        ));
+        assert!(
+            dns.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await
+                .is_ok()
+        );
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
 }
 
 impl fmt::Display for DnsError {
@@ -78,7 +131,7 @@ impl DnsResolution {
 pub struct DnsResolver {
     server: SocketAddr,
     resources: ResourceBudget,
-    connection: Semaphore,
+    connection: Arc<Semaphore>,
 }
 
 impl DnsResolver {
@@ -99,8 +152,16 @@ impl DnsResolver {
         Ok(Self {
             server,
             resources,
-            connection: Semaphore::new(1),
+            connection: Arc::new(Semaphore::new(1)),
         })
+    }
+
+    pub(super) fn within(&self, resources: ResourceBudget) -> Self {
+        Self {
+            server: self.server,
+            resources,
+            connection: self.connection.clone(),
+        }
     }
 
     /// Resolves once under one shrinking deadline. Cancellation drops the active

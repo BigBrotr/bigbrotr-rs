@@ -10,6 +10,8 @@ from tools.ci import execute
 
 STATUS = 'PASS_INITIAL_INDEX_APPLICATION_COMPONENTS'
 GROUPS = {
+    'funded-reservation': 'runtime::budget::reservation_tests::',
+    'funded-dns': 'network::dns::reservation_tests::',
     'clickhouse': 'storage::clickhouse::',
     'indexer': 'storage::indexer::',
     'index-publication': 'storage::postgres::control_owner::index_publication::',
@@ -27,6 +29,13 @@ GROUPS = {
     'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
 }
 SOURCE_REQUIRED = {
+    'funded-reservation': tuple(GROUPS['funded-reservation'] + name for name in (
+        'whole_operation_admission_is_atomic_and_preserves_error_classes',
+        'closed_scope_retains_only_actual_escaped_grants_and_does_not_pin_drain',
+        'funded_limits_cannot_expand_transfer_or_nest_and_returned_credit_stays_reserved',
+        'whole_operation_never_overtakes_an_existing_control_waiter',
+    )),
+    'funded-dns': (GROUPS['funded-dns'] + 'funded_view_shares_the_original_dns_gate_and_closes_with_its_scope',),
     'postgres-route': tuple(GROUPS['postgres-route'] + name for name in (
         'reuse_binds_endpoint_and_rechecks_the_plaintext_boundary_without_dns',
         'plaintext_requires_all_bounded_answers_inside_the_selected_boundary',
@@ -73,6 +82,10 @@ REQUIRED_MODULES = (
 # binary-only modules. Names/counts change only with a reviewed scope change.
 INITIAL = 'interfaces::serve::initial_ingest::'
 BINARY_GROUPS = {
+    'initial-admission': INITIAL + 'admission::tests::',
+    'initial-capacity': INITIAL + 'capacity::tests::',
+    'initial-sync': INITIAL + 'sync::tests::',
+    'initial-archive': INITIAL + 'archive::tests::',
     'initial-index': INITIAL + 'index::',
     'initial-commands': INITIAL + 'commands::tests::',
     'initial-sync-diagnostic': INITIAL + 'sync_diagnostic::tests::',
@@ -87,6 +100,26 @@ BINARY_GROUPS = {
 }
 BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route')
 BINARY_REQUIRED = {
+    'initial-capacity': tuple(BINARY_GROUPS['initial-capacity'] + name for name in (
+        'denial_and_admission_survive_coalesced_watch_with_exact_wait_and_join_identity',
+        'overflow_preserves_original_pair_and_marks_incomplete_without_reconstruction',
+        'record_cap_and_native_domain_remain_explicit_without_remote_exclusion',
+        'terminal_and_stop_grace_join_drain_capacity_without_extending_deadline',
+    )),
+    'initial-admission': tuple(BINARY_GROUPS['initial-admission'] + name for name in (
+        'pre_effect_wait_does_not_reset_at_polling_or_renewal_and_expires_before_grant',
+        'oldest_deferred_role_precedes_new_work_and_keeps_the_other_debt',
+        'actual_held_capacity_defers_without_issuing_and_returns_only_after_drop',
+    )),
+    'initial-sync': tuple(BINARY_GROUPS['initial-sync'] + name for name in (
+        'funded_round_keeps_progress_ack_credit_when_parent_is_saturated',
+        'a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress',
+        'resource_and_context_failures_cannot_be_hidden_as_peer_refusals',
+    )),
+    'initial-archive': tuple(BINARY_GROUPS['initial-archive'] + name for name in (
+        'funded_publication_includes_catalog_cut_completion_and_retained_input',
+        'active_request_window_does_not_define_archive_retention',
+    )),
     'initial-index': tuple(INITIAL + 'index::' + name for name in (
         'tests::accepted_profile_preserves_provenance_and_both_documents_actual_ceilings',
         'tests::source_validation_refuses_foreign_successor_policy_and_allocation_identity',
@@ -249,7 +282,9 @@ def test_commands(artifacts):
         for name, prefix in GROUPS.items()
     ] + [
         (name, [str(artifacts / 'bigbrotr-bin-tests'), prefix,
-                *(['--exact'] if name in BINARY_EXACT else []), '--test-threads=1'])
+                *(['--exact'] if name in BINARY_EXACT else []),
+                *(['--show-output'] if name in ('initial-sync', 'initial-archive', 'initial-index') else []),
+                '--test-threads=1'])
         for name, prefix in BINARY_GROUPS.items()
     ]
 

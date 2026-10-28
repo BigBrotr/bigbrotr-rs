@@ -1039,6 +1039,7 @@ impl Resolved {
                 ),
                 WaiterLimits::new(0, 0),
             ).map_err(|error| match error {
+                EnvelopeError::ReservedLimitsFixed => "funded operation limits are fixed".to_owned(),
                 EnvelopeError::MemoryArithmeticOverflow => "resource sum overflows u64".to_owned(),
                 EnvelopeError::MemoryLimitExceeded { .. } => format!(
                     "{prefix}: baseline + payload + native + completion reserve exceeds memory maximum"

@@ -33,6 +33,13 @@ impl IndexOperationId {
             sequence,
         }
     }
+    /// Diagnostic identity only; it carries no dispatch or remote authority.
+    pub fn incarnation(self) -> ProcessIncarnation {
+        self.incarnation
+    }
+    pub fn sequence(self) -> NonZeroU64 {
+        self.sequence
+    }
     fn query(self, ordinal: u16) -> String {
         let incarnation: String = self
             .incarnation
@@ -308,6 +315,10 @@ pub struct IndexOperation<T: Send + 'static> {
     operation: IndexOperationId,
 }
 impl<T: Send + 'static> IndexOperation<T> {
+    /// Identity of this actual retained operation, independent of actor cursors.
+    pub fn identity(&self) -> IndexOperationId {
+        self.operation
+    }
     pub(super) fn new(
         lane: OwnedIndexLane<Result<T, PhysicalError>>,
         source: Option<Arc<PlannedBatch>>,

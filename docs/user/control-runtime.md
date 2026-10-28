@@ -104,8 +104,37 @@ This direct refusal result does not identify a particular TCP/startup/TLS phase.
 Startup failures and other connection errors, including database authentication
 errors, timeouts and route failures, remain fatal, as do cancellation, lost
 Control authority and every failure after connection. No uncertain catalog/native
-outcome is cleared. Shared-budget pressure and general outage recovery remain
-separate qualification requirements.
+outcome is cleared. General outage recovery remains a separate requirement.
+
+Before a finite Sync round or Archive publication, the combined owner reserves
+the complete application allowance; Archive also reserves its native worker and
+completion allowance through cut verification. Temporary resource pressure defers
+the unissued work at250ms intervals, preserving published cuts and observation
+ages. Its first refusal starts a separate30s capacity-wait bound, which polling
+and renewal cannot reset. This wait begins before nomination/claim or attempt
+creation; it does not extend any admitted action, job, authority or operation
+deadline. Permanent insufficiency refuses explicitly.
+
+Deferred roles receive precedence over new Index dispatch. Actual Index work
+continues to join, and Control renewal/private status remain available. An inactive
+unfinished readiness sweep can yield its metadata after the preceding operation
+joins; its historical observation and cooldown remain unchanged. Once admitted,
+the complete grant funds the original progress/ACK and publication paths. Issued
+effects, uncertain outcomes and cancellation retain their existing conservative
+failure behavior. These logical bounds require separate installed overlap
+qualification; they are not an RSS, disk-pressure or general capacity guarantee.
+
+Supervised lifecycle output reports capacity transitions as
+`bigbrotr-initial-capacity/1`, bound to the actual Control identity and a monotonic
+wait identity. A denial records the whole request and a labeled post-refusal
+budget observation, not the atomic failing snapshot. Admission retains the same
+wait and records whether the actual retained Index operation was locally joined
+and consumed. Neither record proves remote query termination or readiness.
+The mailbox retains two original transitions through coalesced watch updates and
+stops after128 records, with an explicit incomplete marker on overflow. The
+existing4096-byte line/two-line output queue can still lose output; missing or
+incomplete observations cannot establish an overlap or successful admission.
+
 No producer ACK, pending reclaim, source closure, index readiness or native restart
 adoption is added. Stop this initial lifetime before using the ordinary Control
 read/export consumer with its explicit deployment roots and permissions. The tiny

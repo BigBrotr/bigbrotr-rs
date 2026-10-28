@@ -1,6 +1,7 @@
 //! Initial local publisher: complete pending batches, then a captured frontier.
 //! No pending ACK, source closure, replay adoption or index readiness is implied.
 pub(super) mod native;
+use super::admission::Admission;
 use super::commands::CommandOwner;
 use super::*;
 use crate::interfaces::archive_preflight as preflight;
@@ -50,13 +51,70 @@ struct ParkedAttempt {
     _custody: Box<LocalAttempt>,
     _inputs: RetainedInputs,
 }
+pub(super) struct Reservation {
+    application: ReservedBudget,
+    native: ReservedBudget,
+}
 fn error(error: impl std::fmt::Debug) -> (u8, String) {
     (
         4,
         format!("initial Archive refused; preserve original state: {error:?}"),
     )
 }
+fn source_limits() -> PendingReadLimits {
+    PendingReadLimits {
+        max_records: RECORDS,
+        max_encoded_bytes: ENCODED,
+        fact: FactDecodeLimits::default(),
+    }
+}
+fn requirements(root: &Resolved) -> Result<(ResourceLimits, ResourceLimits)> {
+    let limits = preflight::limits(root)?;
+    let native = limits
+        .memory_bytes
+        .checked_add(limits.native_reserve_bytes)
+        .ok_or_else(|| error("native reservation overflow"))?;
+    // Conservatively overlap the pending source, catalog transport, retained
+    // immutable input, prospective cut and observed cut. Publish and capture
+    // use the same allowance; no new parent admission follows an attempt.
+    let data = source_limits()
+        .required_data_bytes()
+        .map_err(error)?
+        .checked_add(postgres_command::catalog_reservation(
+            root,
+            postgres_command::CATALOG_EXTRA_BYTES,
+        )?)
+        .and_then(|n| n.checked_add(RetainedInputs::required_data_bytes()))
+        .and_then(|n| n.checked_add(2 * MIB))
+        .ok_or_else(|| error("application reservation overflow"))?;
+    Ok((
+        ResourceLimits::new(data, ITEMS, 0, 128 * 1024),
+        ResourceLimits::new(0, 1, native, 0),
+    ))
+}
 impl Archive {
+    pub(super) fn native_snapshot(&self) -> bigbrotr::runtime::BudgetSnapshot {
+        self.native.snapshot()
+    }
+    pub(super) fn reserve(
+        &self,
+        root: &Resolved,
+        budget: &ResourceBudget,
+    ) -> Result<Admission<Reservation>> {
+        let (application, native) = requirements(&self.runtime_root(root))?;
+        let application = match admission::reserve(budget, application, "application")? {
+            Admission::Granted(value) => value,
+            Admission::Deferred(refusal) => return Ok(Admission::Deferred(refusal)),
+        };
+        let native = match admission::reserve(&self.native, native, "native")? {
+            Admission::Granted(value) => value,
+            Admission::Deferred(refusal) => return Ok(Admission::Deferred(refusal)),
+        };
+        Ok(Admission::Granted(Reservation {
+            application,
+            native,
+        }))
+    }
     pub(super) fn prepare(
         root: &Resolved,
         budget: &ResourceBudget,
@@ -195,7 +253,7 @@ impl Archive {
     pub(super) async fn publish(
         &mut self,
         store: &IngestStore,
-        budget: &ResourceBudget,
+        reservation: Reservation,
         state: &mut CommandOwner<'_>,
         due: &mut Instant,
         management: &mut Option<management::Management>,
@@ -206,11 +264,9 @@ impl Archive {
             // attempt by invoking this method again in the same lifetime.
             return Ok(false);
         }
-        let limits = PendingReadLimits {
-            max_records: RECORDS,
-            max_encoded_bytes: ENCODED,
-            fact: FactDecodeLimits::default(),
-        };
+        let budget = reservation.application.budget();
+        let native = reservation.native.budget();
+        let limits = source_limits();
         let first = SourceRecordId {
             dataset_id: state.initial_registration()?.dataset_id,
             shard_id: state.initial_registration()?.shard_id,
@@ -232,8 +288,16 @@ impl Archive {
             if let Some(previous) = self.observation {
                 let now = SuspendAwareClock.read().map_err(error)?;
                 if now.elapsed_since(previous.started).map_err(error)? >= readiness::FRESHNESS / 2 {
-                    self.capture(budget, state, due, management, previous.through, false)
-                        .await?;
+                    self.capture(
+                        budget,
+                        native,
+                        state,
+                        due,
+                        management,
+                        previous.through,
+                        false,
+                    )
+                    .await?;
                 }
             }
             return Ok(false);
@@ -314,13 +378,21 @@ impl Archive {
         )
         .map_err(error)?;
         let app = budget.clone();
-        let native = self.native.clone();
+        let worker_budget = native.clone();
         let reader = self.reader.clone();
         let identity = self.coordinator.identity().clone();
         let published = state
             .blocking(due, management, deadline, move |cancel| {
                 native::publish(
-                    app, native, identity, receipt, custody, pending, prepared, reader, deadline,
+                    app,
+                    worker_budget,
+                    identity,
+                    receipt,
+                    custody,
+                    pending,
+                    prepared,
+                    reader,
+                    deadline,
                     cancel,
                 )
             })
@@ -340,7 +412,7 @@ impl Archive {
             }
         }
         self.inputs.push(retained);
-        self.capture(budget, state, due, management, end, true)
+        self.capture(budget, native, state, due, management, end, true)
             .await?;
         self.next = last;
         Ok(true)
@@ -349,6 +421,7 @@ impl Archive {
     async fn capture(
         &mut self,
         budget: &ResourceBudget,
+        native: &ResourceBudget,
         state: &mut CommandOwner<'_>,
         due: &mut Instant,
         management: &mut Option<management::Management>,
@@ -411,7 +484,7 @@ impl Archive {
                 let custody = self.coordinator.reader_custody().map_err(error)?;
                 let root = self.runtime_root(state.root);
                 let app = budget.clone();
-                let native = self.native.clone();
+                let native = native.clone();
                 let observed = state
                     .blocking(due, management, deadline, move |cancel| {
                         native::cut(root, app, native, reader, custody, read, deadline, cancel)
@@ -537,6 +610,63 @@ pub(super) fn validate(root: &Resolved) -> std::result::Result<(Duration, u64), 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn funded_publication_includes_catalog_cut_completion_and_retained_input() {
+        let root = crate::config::load(Path::new(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../config/recipes/archive-only.toml"
+        )))
+        .unwrap();
+        let (app, native) = requirements(&root).unwrap();
+        eprintln!(
+            "{}",
+            json!({"format":"bigbrotr-initial-budget-requirements/1","role":"archive",
+            "scope":"compiled-finite-profile-not-a-capacity-claim",
+            "application":{"data_bytes":app.data_bytes(),"items":app.items(),"native_bytes":app.native_bytes(),"control_bytes":app.control_bytes()},
+            "native":{"data_bytes":native.data_bytes(),"items":native.items(),"native_bytes":native.native_bytes(),"control_bytes":native.control_bytes()},
+            "retained_reader_data_bytes":MIB,"retained_input_data_bytes":RetainedInputs::required_data_bytes()})
+        );
+        // Literal complete catalog allowance: password source and copies,
+        // transport16MiB, operation64MiB. This must not regress to preparation
+        // alone. Public recipe uses the declared plaintext catalog route.
+        let catalog = 8 * (64 * 1024 + 1) + 80 * MIB;
+        assert_eq!(
+            app.data_bytes(),
+            source_limits().required_data_bytes().unwrap() + catalog + 3 * MIB
+        );
+        assert_eq!((app.items(), app.control_bytes()), (5, 128 * 1024));
+        assert_eq!(
+            native,
+            ResourceLimits::new(0, 1, root.number("archive.worker_memory_bytes"), 0)
+        );
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                app.data_bytes() + app.control_bytes(),
+                0,
+                app,
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let scope = parent.try_reserve(app).unwrap();
+        let input = grant(scope.budget(), MIB, 0).unwrap();
+        let transport = grant(scope.budget(), catalog, 0).unwrap();
+        let cut = grant(scope.budget(), MIB, 0).unwrap();
+        let worker = scope
+            .budget()
+            .try_acquire(ResourceRequest::control(128 * 1024).unwrap())
+            .unwrap();
+        assert!(
+            parent
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .is_err()
+        );
+        drop((transport, cut, worker));
+        drop(scope);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(MIB, 1, 0, 0));
+        drop(input);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
     #[test]
     fn active_request_window_does_not_define_archive_retention() {
         let mut root = crate::config::load(Path::new(concat!(

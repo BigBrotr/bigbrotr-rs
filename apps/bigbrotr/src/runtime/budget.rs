@@ -149,6 +149,8 @@ impl ProcessEnvelope {
 /// Failure while validating a process-memory envelope.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EnvelopeError {
+    /// An operation reservation has fixed, already-funded limits.
+    ReservedLimitsFixed,
     /// The memory components overflowed `u64` while being summed.
     MemoryArithmeticOverflow,
     /// The checked components exceeded the configured process maximum.
@@ -222,6 +224,8 @@ pub enum RequestError {
 /// Admission failure for a resource request.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum AcquireError {
+    /// A reservation must contain data work and cannot reserve another scope.
+    InvalidReservation,
     /// The budget is permanently closed.
     Closed,
     /// This request cannot fit the current limit even with no live work.
@@ -257,6 +261,62 @@ pub struct OwnedPermit {
     request: ResourceRequest,
 }
 
+/// One fully funded, nonblocking operation. All clones of its budget become
+/// closed when this owner drops. Surviving permits retain only their actual
+/// parent charge, so an immutable result need not retain unused work capacity.
+pub struct ReservedBudget {
+    budget: ResourceBudget,
+}
+
+impl ReservedBudget {
+    /// Borrow the fixed operation budget; clones carry no admission beyond this
+    /// reservation owner's lifetime.
+    pub fn budget(&self) -> &ResourceBudget {
+        &self.budget
+    }
+}
+impl std::fmt::Debug for ReservedBudget {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter
+            .debug_struct("ReservedBudget")
+            .field("snapshot", &self.budget.snapshot())
+            .finish()
+    }
+}
+
+impl Drop for ReservedBudget {
+    fn drop(&mut self) {
+        self.budget.close();
+    }
+}
+
+struct Funding {
+    data: Option<OwnedPermit>,
+    control: Option<OwnedPermit>,
+}
+
+impl Funding {
+    fn shrink(&mut self, used: ResourceLimits) {
+        let data = ResourceLimits::new(used.data_bytes, used.items, used.native_bytes, 0);
+        if data == ResourceLimits::default() {
+            self.data.take();
+        } else {
+            self.data
+                .as_mut()
+                .expect("live data remains funded")
+                .shrink(data);
+        }
+        if used.control_bytes == 0 {
+            self.control.take();
+        }
+        if let Some(control) = &mut self.control {
+            control.shrink(ResourceLimits::new(0, 0, 0, used.control_bytes));
+        } else {
+            assert_eq!(used.control_bytes, 0);
+        }
+    }
+}
+
 impl std::fmt::Debug for OwnedPermit {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
@@ -271,6 +331,21 @@ impl OwnedPermit {
     pub const fn request(&self) -> ResourceRequest {
         self.request
     }
+
+    fn shrink(&mut self, retained: ResourceLimits) {
+        let released = self
+            .request
+            .units
+            .checked_sub(retained)
+            .expect("funded reservation cannot grow while closing");
+        let mut state = self.inner.lock();
+        state.used = state
+            .used
+            .checked_sub(released)
+            .expect("parent retains every funded unit");
+        self.request.units = retained;
+        self.inner.changed.notify_all();
+    }
 }
 
 impl Drop for OwnedPermit {
@@ -284,6 +359,7 @@ impl Drop for OwnedPermit {
             .active_permits
             .checked_sub(1)
             .expect("owned permit count must be positive");
+        state.release_unused_funding();
         self.inner.changed.notify_all();
     }
 }
@@ -353,10 +429,77 @@ impl ResourceBudget {
                     closed: false,
                     data_waiters: VecDeque::new(),
                     control_waiters: VecDeque::new(),
+                    funding: None,
+                    reserved: false,
                 }),
                 changed: Condvar::new(),
             }),
         }
+    }
+
+    /// Atomically admit one complete finite operation, including its protected
+    /// completion allowance. No queue, borrowed reserve, nested reservation or
+    /// independent envelope is created. Failure leaves the parent unchanged.
+    pub fn try_reserve(&self, limits: ResourceLimits) -> Result<ReservedBudget, AcquireError> {
+        let data = ResourceRequest::data(limits.data_bytes, limits.items, limits.native_bytes)
+            .map_err(|_| AcquireError::InvalidReservation)?;
+        let control = (limits.control_bytes != 0)
+            .then(|| ResourceRequest::control(limits.control_bytes).expect("nonzero control"));
+        let mut state = self.inner.lock();
+        if state.reserved {
+            return Err(AcquireError::InvalidReservation);
+        }
+        Self::check_open_and_possible(&state, data)?;
+        if let Some(control) = control {
+            Self::check_open_and_possible(&state, control)?;
+        }
+        if !state.data_waiters.is_empty()
+            || (control.is_some() && !state.control_waiters.is_empty())
+            || !state.can_admit(data)?
+        {
+            return Err(AcquireError::Unavailable);
+        }
+        if let Some(request) = control {
+            if !state.can_admit(request)? {
+                return Err(AcquireError::Unavailable);
+            }
+        }
+        let used = state
+            .used
+            .checked_add(limits)
+            .ok_or(AcquireError::ArithmeticOverflow)?;
+        let active = state
+            .active_permits
+            .checked_add(1 + u64::from(control.is_some()))
+            .ok_or(AcquireError::ArithmeticOverflow)?;
+        let memory = limits
+            .data_bytes
+            .checked_add(limits.native_bytes)
+            .and_then(|n| n.checked_add(limits.control_bytes))
+            .ok_or(AcquireError::ArithmeticOverflow)?;
+        state.used = used;
+        state.active_permits = active;
+        let funding = Funding {
+            data: Some(OwnedPermit {
+                inner: self.inner.clone(),
+                request: data,
+            }),
+            control: control.map(|request| OwnedPermit {
+                inner: self.inner.clone(),
+                request,
+            }),
+        };
+        drop(state);
+        let child = Self::new(
+            ProcessEnvelope::new(memory, 0, limits, WaiterLimits::new(0, 0))
+                .expect("checked funded envelope"),
+        );
+        {
+            let mut state = child.inner.lock();
+            state.funding = Some(funding);
+            state.reserved = true;
+        }
+        Ok(ReservedBudget { budget: child })
     }
 
     /// Attempts immediate admission without joining a wait lane.
@@ -451,6 +594,9 @@ impl ResourceBudget {
     /// admission observes the new limits.
     pub fn set_limits(&self, limits: ResourceLimits) -> Result<(), EnvelopeError> {
         let mut state = self.inner.lock();
+        if state.reserved && limits != state.limits {
+            return Err(EnvelopeError::ReservedLimitsFixed);
+        }
         // A reduced limit cannot release bytes still owned by existing permits.
         // Charge both retained use and newly available capacity before allowing
         // a transfer between lanes or between data and native allocations.
@@ -475,6 +621,7 @@ impl ResourceBudget {
     pub fn close(&self) {
         let mut state = self.inner.lock();
         state.closed = true;
+        state.release_unused_funding();
         self.inner.changed.notify_all();
     }
 
@@ -555,9 +702,20 @@ struct State {
     closed: bool,
     data_waiters: VecDeque<Arc<()>>,
     control_waiters: VecDeque<Arc<()>>,
+    // Locks only point from child to parent. Parent operations never enter a
+    // child, and reservations cannot themselves create another reservation.
+    funding: Option<Funding>,
+    reserved: bool,
 }
 
 impl State {
+    fn release_unused_funding(&mut self) {
+        if self.closed {
+            if let Some(funding) = &mut self.funding {
+                funding.shrink(self.used);
+            }
+        }
+    }
     fn queue(&self, lane: Lane) -> &VecDeque<Arc<()>> {
         match lane {
             Lane::Data => &self.data_waiters,
@@ -623,4 +781,183 @@ impl State {
 enum Lane {
     Data,
     Control,
+}
+
+#[cfg(test)]
+mod reservation_tests {
+    use super::*;
+    use std::{thread, time::Duration};
+
+    fn parent() -> ResourceBudget {
+        ResourceBudget::new(
+            ProcessEnvelope::new(
+                160,
+                0,
+                ResourceLimits::new(100, 8, 40, 20),
+                WaiterLimits::new(1, 1),
+            )
+            .unwrap(),
+        )
+    }
+
+    #[test]
+    fn whole_operation_admission_is_atomic_and_preserves_error_classes() {
+        let parent = parent();
+        let control = parent
+            .try_acquire(ResourceRequest::control(20).unwrap())
+            .unwrap();
+        let before = parent.snapshot();
+        assert_eq!(
+            parent
+                .try_reserve(ResourceLimits::new(60, 3, 30, 1))
+                .unwrap_err(),
+            AcquireError::Unavailable
+        );
+        assert_eq!(parent.snapshot().used(), before.used());
+        assert_eq!(parent.snapshot().active_permits(), before.active_permits());
+        assert_eq!(
+            parent
+                .try_reserve(ResourceLimits::new(101, 1, 0, 0))
+                .unwrap_err(),
+            AcquireError::RequestExceedsLimit
+        );
+        assert_eq!(
+            parent.try_reserve(ResourceLimits::default()).unwrap_err(),
+            AcquireError::InvalidReservation
+        );
+        drop(control);
+        let scope = parent
+            .try_reserve(ResourceLimits::new(60, 3, 30, 10))
+            .unwrap();
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(60, 3, 30, 10));
+        parent.close();
+        assert_eq!(
+            parent
+                .try_reserve(ResourceLimits::new(1, 1, 0, 0))
+                .unwrap_err(),
+            AcquireError::Closed
+        );
+        drop(scope);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+        let huge = ResourceBudget::new(
+            ProcessEnvelope::new(
+                u64::MAX,
+                0,
+                ResourceLimits::new(u64::MAX, 2, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let _held = huge
+            .try_acquire(ResourceRequest::data(u64::MAX - 1, 1, 0).unwrap())
+            .unwrap();
+        assert_eq!(
+            huge.try_reserve(ResourceLimits::new(2, 1, 0, 0))
+                .unwrap_err(),
+            AcquireError::ArithmeticOverflow
+        );
+    }
+
+    #[test]
+    fn closed_scope_retains_only_actual_escaped_grants_and_does_not_pin_drain() {
+        let parent = parent();
+        let scope = parent
+            .try_reserve(ResourceLimits::new(80, 4, 30, 10))
+            .unwrap();
+        let escaped = scope.budget().clone();
+        let input = escaped
+            .try_acquire(ResourceRequest::data(7, 1, 0).unwrap())
+            .unwrap();
+        let completion = escaped
+            .try_acquire(ResourceRequest::control(3).unwrap())
+            .unwrap();
+        drop(scope);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(7, 1, 0, 3));
+        assert_eq!(
+            escaped
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .unwrap_err(),
+            AcquireError::Closed
+        );
+        parent.close();
+        assert_eq!(
+            parent.drain_until(Instant::now()),
+            Err(DrainError::DeadlineExceeded)
+        );
+        drop(completion);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(7, 1, 0, 0));
+        assert_eq!(parent.snapshot().active_permits(), 1);
+        drop(input);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::default());
+        assert_eq!(parent.snapshot().active_permits(), 0);
+        parent
+            .drain_until(Instant::now() + Duration::from_secs(1))
+            .unwrap();
+        assert!(escaped.snapshot().closed());
+    }
+
+    #[test]
+    fn funded_limits_cannot_expand_transfer_or_nest_and_returned_credit_stays_reserved() {
+        let parent = parent();
+        let limits = ResourceLimits::new(60, 3, 20, 10);
+        let scope = parent.try_reserve(limits).unwrap();
+        for changed in [
+            ResourceLimits::new(61, 3, 20, 9),
+            ResourceLimits::new(60, 4, 20, 10),
+            ResourceLimits::new(59, 3, 21, 10),
+        ] {
+            assert_eq!(
+                scope.budget().set_limits(changed),
+                Err(EnvelopeError::ReservedLimitsFixed)
+            );
+        }
+        assert_eq!(
+            scope.budget().try_reserve(limits).unwrap_err(),
+            AcquireError::InvalidReservation
+        );
+        let work = scope
+            .budget()
+            .try_acquire(ResourceRequest::data(60, 3, 20).unwrap())
+            .unwrap();
+        drop(work);
+        assert_eq!(parent.snapshot().used(), limits);
+        let again = scope
+            .budget()
+            .try_acquire(ResourceRequest::data(60, 3, 20).unwrap())
+            .unwrap();
+        drop(scope);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(60, 3, 20, 0));
+        drop(again);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
+
+    #[test]
+    fn whole_operation_never_overtakes_an_existing_control_waiter() {
+        let parent = parent();
+        let held = parent
+            .try_acquire(ResourceRequest::control(10).unwrap())
+            .unwrap();
+        let waiting = parent.clone();
+        let worker = thread::spawn(move || {
+            waiting.acquire_until(
+                ResourceRequest::control(20).unwrap(),
+                Instant::now() + Duration::from_secs(2),
+            )
+        });
+        let deadline = Instant::now() + Duration::from_secs(1);
+        while parent.snapshot().waiting_control() == 0 {
+            assert!(Instant::now() < deadline);
+            thread::yield_now();
+        }
+        assert_eq!(
+            parent
+                .try_reserve(ResourceLimits::new(1, 1, 0, 1))
+                .unwrap_err(),
+            AcquireError::Unavailable
+        );
+        assert_eq!(parent.snapshot().used(), ResourceLimits::new(0, 0, 0, 10));
+        drop(held);
+        drop(worker.join().unwrap().unwrap());
+        assert!(parent.try_reserve(ResourceLimits::new(1, 1, 0, 1)).is_ok());
+    }
 }

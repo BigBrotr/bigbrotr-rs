@@ -358,6 +358,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         Trace::new(&sender).begin(window);
         (sender, receiver, window)

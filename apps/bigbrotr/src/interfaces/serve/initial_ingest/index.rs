@@ -193,6 +193,14 @@ enum Completed {
     ProbeFinish(Box<JoinedIndexOperation<std::result::Result<RecoveryResult, PhysicalError>>>),
 }
 impl Active {
+    fn identity(&self) -> IndexOperationId {
+        match self {
+            Self::Install(v) => v.identity(),
+            Self::Write(v) => v.identity(),
+            Self::ProbePlan(v) => v.identity(),
+            Self::ProbeFinish(v) => v.identity(),
+        }
+    }
     fn poll(&mut self) -> Result<Option<Completed>> {
         match self {
             Self::Install(operation) => operation.try_join().map(|v| v.map(Completed::Install)),
@@ -229,7 +237,7 @@ pub(super) struct Index {
     // Declaration order is a shutdown guarantee: actual executor Drop/join
     // precedes every state, adapter, credential and resource owner below.
     active: Option<Active>,
-    completed: Option<Completed>,
+    completed: Option<(IndexOperationId, Completed)>,
     readiness: readiness::Readiness,
     pending: Option<PreparedIndexPlan>,
     session: Option<IndexSession>,
@@ -245,6 +253,7 @@ pub(super) struct Index {
     cut: Option<SourceCut>,
     revision: u64,
     next_operation: u64,
+    local_joined_consumed_through: u64,
     installation_started: bool,
     parked: bool,
     // Last: even the retained cut/plan metadata must drop before its allowance.
@@ -295,6 +304,7 @@ impl Index {
             cut: None,
             revision: 0,
             next_operation: 1,
+            local_joined_consumed_through: 0,
             installation_started: false,
             parked: false,
         })
@@ -345,6 +355,26 @@ impl Index {
         self.readiness.cancel();
         if let Some(active) = &self.active {
             active.cancel();
+        }
+    }
+    pub(super) fn capacity_observation(&self) -> super::capacity::IndexObservation {
+        let retained = self
+            .active
+            .as_ref()
+            .map(|active| super::capacity::RetainedIndex {
+                incarnation: active.identity().incarnation(),
+                sequence: active.identity().sequence().get(),
+                kind: match active {
+                    Active::Install(_) => "installation",
+                    Active::Write(_) => "publication",
+                    Active::ProbePlan(_) => "readiness-plan",
+                    Active::ProbeFinish(_) => "readiness-finish",
+                },
+            });
+        super::capacity::IndexObservation {
+            retained,
+            local_joined_consumed_through: self.local_joined_consumed_through,
+            remote_unknown: self.slot.unresolved_query().is_some(),
         }
     }
     pub(super) fn readiness_observation(&self) -> readiness::Observation {
@@ -475,6 +505,7 @@ impl Index {
         store: &IngestStore,
         deadline: Instant,
         cancelled: &AtomicBool,
+        allow_dispatch: bool,
     ) -> Result<Tick> {
         if cancelled.load(Ordering::Acquire) {
             self.readiness.cancel();
@@ -500,16 +531,37 @@ impl Index {
             }
         }
         if let Some(active) = &mut self.active {
+            let identity = active.identity();
             let Some(completed) = active.poll()? else {
                 return Ok(Tick::Busy);
             };
             self.active = None;
-            self.completed = Some(completed);
+            self.completed = Some((identity, completed));
         }
-        if let Some(completed) = self.completed.take() {
-            return self
+        if let Some((operation, completed)) = self.completed.take() {
+            let tick = self
                 .complete(owner, store, completed, deadline, cancelled)
-                .await;
+                .await?;
+            if !allow_dispatch {
+                // The exact operation has joined and its result was consumed.
+                // Do not retain a between-plan observation allowance while a
+                // deferred role needs it. Historical age/cooldown survive.
+                self.readiness.abandon();
+            }
+            // complete() has consumed the joined result and its local permit.
+            // This marker says nothing about a surviving named remote query.
+            if self.control.map(|owner| owner.process_incarnation) != Some(operation.incarnation())
+            {
+                return Err(failed(
+                    "completed operation belongs to another Control incarnation",
+                ));
+            }
+            self.local_joined_consumed_through = operation.sequence().get();
+            return Ok(tick);
+        }
+        if !allow_dispatch {
+            self.readiness.abandon();
+            return Ok(Tick::WaitingForResources);
         }
         // An existing session is positively renewed before every new dispatch.
         // Root also invokes renew after its periodic Control/Ingest refresh.
