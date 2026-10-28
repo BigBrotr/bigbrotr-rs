@@ -178,6 +178,7 @@ class Proxy:
         self.lifetime_seconds = lifetime_seconds
         self.writers = []
         self.tasks = []
+        self.completed_unexpected = 0
         self.held = False
         self.reader_database = None
         self.action = None
@@ -192,7 +193,9 @@ class Proxy:
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
         if profile == 'ordinary-reader':
             self.report.update(unframed_bytes=0, unframed_connections=0,
-                               framed_connections=0, target_connection=None)
+                               framed_connections=0, target_connection=None,
+                               active_connections=0, peak_connections=0,
+                               connection_limit_scope='active')
         if self.target == 'control-producer-progress':
             self.progress_backend_pid = None
             self.progress_backend_session = None
@@ -268,10 +271,33 @@ class Proxy:
             connected_armed = self.armed
         self.report['connections'] += 1
         connection_number = self.report['connections']
-        if self.report['connections'] > self.connection_limit:
+        ordinary = self.profile == 'ordinary-reader'
+        occupied = self.report['active_connections'] if ordinary else connection_number - 1
+        if occupied >= self.connection_limit:
             writer.close()
             raise ValueError('connections')
+        owned = [writer]
         self.writers.append(writer)
+        if ordinary:
+            self.report['active_connections'] += 1
+            self.report['peak_connections'] = max(self.report['peak_connections'],
+                                                   self.report['active_connections'])
+        try:
+            await self.connected_session(reader, writer, connected_armed, connection_number, owned)
+        finally:
+            if ordinary:
+                # Reuse a slot only after both directions and their actual
+                # transports have closed. Historical traffic still consumes
+                # the aggregate wire/time budgets; it is not live custody.
+                for connection in owned:
+                    connection.close()
+                await asyncio.gather(*(connection.wait_closed() for connection in owned),
+                                     return_exceptions=True)
+                for connection in owned:
+                    self.writers.remove(connection)
+                self.report['active_connections'] -= 1
+
+    async def connected_session(self, reader, writer, connected_armed, connection_number, owned):
         try:
             header = await reader.readexactly(4)
             length = struct.unpack('!I', header)[0]
@@ -314,6 +340,7 @@ class Proxy:
             else:
                 self.report['unframed_connections'] += 1
         upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', self.upstream_port)
+        owned.append(upstream_writer)
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
@@ -624,8 +651,22 @@ class Proxy:
             await asyncio.gather(writer.wait_closed(), upstream_writer.wait_closed(), return_exceptions=True)
 
     async def run(self):
+        def completed(task):
+            # Only the ordinary profile reuses connection slots. Do not retain
+            # every completed Task/writer until the end of its serial journey.
+            self.tasks.remove(task)
+            if not task.cancelled() and unexpected(task.exception()):
+                self.completed_unexpected += 1
+
+        def unexpected(error):
+            return isinstance(error, BaseException) and not isinstance(error,
+                (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError))
+
         def accept(reader, writer):
-            self.tasks.append(asyncio.create_task(self.session(reader, writer, connected_armed=self.armed)))
+            task = asyncio.create_task(self.session(reader, writer, connected_armed=self.armed))
+            self.tasks.append(task)
+            if self.profile == 'ordinary-reader':
+                task.add_done_callback(completed)
         server = await asyncio.start_server(accept, '127.0.0.1', 0, backlog=8)
         self.emit('ready', port=server.sockets[0].getsockname()[1],
                   source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
@@ -654,10 +695,10 @@ class Proxy:
             # pumps before waiting on the listener; never release a held query.
             await server.wait_closed()
         # Normal peer close/reset following deliberate truncation is expected.
-        unexpected = sum(isinstance(r, BaseException) and not isinstance(r,
-            (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError)) for r in outcomes)
-        self.emit('terminal', unexpected=unexpected)
-        return 0 if not unexpected else 3
+        failures = (self.completed_unexpected if self.profile == 'ordinary-reader'
+                    else sum(unexpected(r) for r in outcomes))
+        self.emit('terminal', unexpected=failures)
+        return 0 if not failures else 3
 
 
 if __name__ == '__main__':
@@ -667,7 +708,7 @@ if __name__ == '__main__':
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     parser.add_argument('--profile', choices=['default', 'retained-catch-up', 'ordinary-reader'], default='default',
-                        help='Closed traffic profiles; ordinary-reader frames only one new post-arm reader, retaining64MiB/16 connections')
+                        help='Closed traffic profiles; ordinary-reader frames one new post-arm reader, with64MiB wire/16 active connections')
     parser.add_argument('--upstream-port', default='5432', help='Canonical numeric port on 127.0.0.1 only')
     parser.add_argument('--catalog-manager', help='Supply all three catalog identifiers together')
     parser.add_argument('--catalog-reader')

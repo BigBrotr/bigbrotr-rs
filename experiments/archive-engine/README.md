@@ -316,9 +316,17 @@ The closed `--profile ordinary-reader` is only valid with an explicit catalog,
 the ordinary baseline produces many small metadata frames unrelated to the
 selected fault. After validating bounded startup/user/database identities, this
 profile forwards baseline connections and manager/other-database connections as
-opaque byte streams in at most64KiB chunks with backpressure. The existing total
-64MiB byte,16-connection and120/180s lifetime bounds remain; startup bytes also
-count against the byte bound. No payload is logged or rewritten.
+opaque byte streams in at most64KiB chunks with backpressure. Total traffic still
+has a64MiB wire and120/180s lifetime bound; startup bytes also count. This profile
+limits **active** connections to16, unlike the legacy profiles' lifetime admission
+count. Serial history/export operations and periodic probes open distinct manager
+and native sessions: a closed earlier operation is not concurrent connection
+custody. Both transports and pumps must close before a slot is reused; completed
+tasks/writers are retired while their error counts and cumulative traffic remain.
+`connection_limit_scope`, `active_connections` and `peak_connections` expose this
+distinction. A17th simultaneous connection still refuses before startup. No payload
+is logged or rewritten; this is fixture resource admission, not a product capacity
+or cancellation-deadline change.
 
 Only the first matching reader connection accepted after `arm` uses the original
 8MiB frame/20,000-frame gate. A pre-arm connection cannot be selected by delaying

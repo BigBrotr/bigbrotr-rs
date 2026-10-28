@@ -229,7 +229,8 @@ class ShortPinRuntime(IndexRuntime):
             require(ready['upstream_host'] == '127.0.0.1' and ready['upstream_port'] == 15432
                     and ready['armed'] is False and ready['source_sha256'] == digest(proxy_path)
                     and ready['profile'] == 'ordinary-reader' and ready['frame_limit'] == 20000
-                    and ready['connection_limit'] == 16, 'owned deferred proxy')
+                    and ready['connection_limit'] == 16 and ready['connection_limit_scope'] == 'active'
+                    and ready['active_connections'] == ready['peak_connections'] == 0, 'owned deferred proxy')
             save(output/'proxy-ready.json',ready)
             self.config.write_text(profile(original,self.set_value,ready['port']))
             super().ordinary()

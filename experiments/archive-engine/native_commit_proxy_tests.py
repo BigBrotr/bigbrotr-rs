@@ -38,7 +38,7 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
             def close(self):
                 self.closed = True
         proxy = ordinary_proxy()
-        proxy.report['connections'] = 16
+        proxy.report['active_connections'] = 16
         writer = Writer()
         with self.assertRaisesRegex(ValueError, '^connections$'):
             await proxy.session(None, writer)
@@ -315,6 +315,38 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
             responder.write(message(reply_tag, reply_body))
             await responder.drain()
             self.assertEqual(await asyncio.wait_for(read_message(client), 3), (reply_tag, reply_body))
+
+    async def test_ordinary_serial_connections_release_slots_before_reuse(self):
+        async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader') as proxy:
+            for _ in range(20):
+                connection = await proxy.connect('manager')
+                await self.exchange(connection, b'Q', b'SELECT serial_baseline\0')
+                connection[1].close()
+                await connection[1].wait_closed()
+                self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
+            armed = await proxy.command('arm', 'armed')
+            self.assertEqual(armed['connections'], 20)
+            self.assertEqual(armed['connection_limit_scope'], 'active')
+            self.assertLessEqual(armed['active_connections'], 1)
+            self.assertLessEqual(armed['peak_connections'], 16)
+            self.assertEqual(armed['frames'], 0)
+            await proxy.stop()
+            self.assertEqual(proxy.events[-1]['active_connections'], 0)
+
+    async def test_ordinary_seventeenth_live_connection_is_refused_before_startup(self):
+        async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader', unexpected=1) as proxy:
+            for _ in range(16):
+                await proxy.connect('manager')
+            armed = await proxy.command('arm', 'armed')
+            self.assertEqual((armed['active_connections'], armed['peak_connections']), (16, 16))
+            client, sender = await asyncio.open_connection('127.0.0.1', proxy.port)
+            proxy.connections.append(sender)
+            self.assertEqual(await asyncio.wait_for(client.read(), 3), b'')
+            self.assertTrue(proxy.accepted.empty())
+            await proxy.stop()
+            terminal = proxy.events[-1]
+            self.assertEqual((terminal['connections'], terminal['active_connections'], terminal['peak_connections']),
+                             (17, 0, 16))
 
     async def test_ordinary_baseline_is_bounded_byte_stream_and_only_fresh_reader_is_framed(self):
         async with SocketProxy(self, 'hold-reader-query', profile='ordinary-reader') as proxy:
