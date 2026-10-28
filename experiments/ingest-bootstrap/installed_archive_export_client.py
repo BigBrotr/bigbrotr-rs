@@ -3,6 +3,7 @@ import hashlib
 import http.client
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -17,11 +18,13 @@ JOURNEY_SECONDS = 40
 CLIENT_SECONDS = JOURNEY_SECONDS + len(READINESS_PHASES) * PHASE_SECONDS
 
 
-def phase(home, name, action=None):
+def phase(home, name, action=None, *, enclosing_deadline_ns=None):
     """One closed added phase, including its action, with an absolute deadline."""
     assert name in (*READINESS_PHASES, 'pin-expiry')
     started = time.monotonic_ns()
     deadline = started + PHASE_SECONDS * 1_000_000_000
+    if enclosing_deadline_ns is not None:
+        deadline = min(deadline, enclosing_deadline_ns)
     payload = action() if action else None
     marker = home / ('ordinary-' + name + '.json')
     assert not marker.exists()
@@ -38,6 +41,20 @@ def phase(home, name, action=None):
     return dict(phase=name, started_ns=started, finished_ns=finished, limit_seconds=PHASE_SECONDS)
 
 
+def error_summary(value):
+    """Retain bounded public error classification, never headers or arbitrary body text."""
+    error = value.get('error') if isinstance(value, dict) else None
+    if not isinstance(error, dict):
+        return None
+    result = {}
+    if type(error.get('status')) is int and 100 <= error['status'] <= 599:
+        result['status'] = error['status']
+    for key in ('code','retry_class'):
+        if isinstance(error.get(key), str) and re.fullmatch('[a-z_]{1,64}',error[key]):
+            result[key] = error[key]
+    return result
+
+
 def run(home):
     started = time.monotonic_ns()
     profile = load_profile(home)
@@ -48,6 +65,8 @@ def run(home):
     expected = json.loads((home / 'export-input.json').read_text())
     mode = expected.get('readiness_mode')
     assert mode in (None, READINESS_MODE, SHORT_PIN_MODE), 'unknown ordinary fixture mode'
+    startup_quiescence = expected.get('startup_quiescence',False)
+    assert type(startup_quiescence) is bool and not (startup_quiescence and mode), 'closed startup quiescence profile'
     selected_phases = SHORT_PIN_PHASES if mode == SHORT_PIN_MODE else READINESS_PHASES
     phases = []
     event = json.loads((home / 'event.jsonl').read_text())
@@ -93,6 +112,11 @@ def run(home):
     assert me['stored_actions'] == actions
     if mode:
         barrier('setup')
+    if startup_quiescence:
+        # This observation consumes the original40s journey; unlike the existing
+        # optional readiness phases it adds no excluded time or new timeout.
+        setup = phase(home,'setup',enclosing_deadline_ns=started+JOURNEY_SECONDS*1_000_000_000)
+        (home/'ordinary-startup-timing.json').write_text(json.dumps(setup)+'\n')
     query = dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
         filters=[dict(ids=[event['id']])])
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
@@ -101,8 +125,12 @@ def run(home):
         destination=dict(id=expected['destination_id'], binding_sha256=hashlib.sha256(marker).hexdigest()),
         expected_config_revision='1', expected_policy_revision='1')
     keyed = {**auth, 'Idempotency-Key': 'd1'*16}
-    assert request('POST', '/management/v1/jobs', body, keyed)[0] == 403
-    assert request('POST', '/v1/resources/event_history', query, auth)[0] == 403
+    status, denied = request('POST', '/management/v1/jobs', body, keyed)
+    record('no-implicit-export-authority',status=status,error=error_summary(denied))
+    assert status == 403
+    status, denied = request('POST', '/v1/resources/event_history', query, auth)
+    record('no-implicit-history-authority',status=status,error=error_summary(denied))
+    assert status == 403
     record('no-implicit-scope-authority')
     for revision, action in enumerate(('history.read', 'export', 'private-export'), 1):
         command = dict(principal_id=principal, action=action, enabled=True, scope=expected['scope'],
@@ -166,6 +194,8 @@ def run(home):
         barrier('restored')
     record('logout', response=cli('logout', '--session-ref', 'file:' + str(session)))
     assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+    if startup_quiescence:
+        assert time.monotonic_ns()-started <= JOURNEY_SECONDS*1_000_000_000, 'original ordinary journey exceeded40s'
     if mode:
         active = active_ns()
         assert active <= JOURNEY_SECONDS * 1_000_000_000, 'original ordinary journey exceeded40s'

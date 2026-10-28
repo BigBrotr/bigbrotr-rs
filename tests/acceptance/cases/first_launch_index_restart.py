@@ -251,7 +251,7 @@ class RestartIndexRuntime(IndexRuntime):
         self.source_unchanged()
 
     # Preserve the original signed history/export journey and its40s/12s bounds.
-    ordinary_client = Runtime.ordinary_client
+    ordinary_client = IndexRuntime.baseline_client
 
     def cleanup(self):
         try:

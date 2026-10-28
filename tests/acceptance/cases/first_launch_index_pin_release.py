@@ -7,7 +7,7 @@ import sys
 import time
 
 from cases.first_launch import Runtime, digest, require, save
-from cases.first_launch_index import STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS, input_identity
+from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS, input_identity
 from cases.first_launch_index_pin import ShortPinRuntime, READER_LEASES, process_identity, profile
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_pin_release_oracle as oracle
@@ -17,9 +17,10 @@ CASES = {'p01-first-launch-index-pin-release-before':'before-forward',
          'p01-first-launch-index-pin-release-after':'after-complete'}
 STAGES = INDEX_STAGES[:-1] + ('pin_release_uncertainty','cleanup')
 LIMITS = [item for item in INDEX_LIMITS if not item.startswith(('Ordinary Control must','Original ordinary journey'))] + [
-    'The original signed history/export journey completes with its40s/12s bounds and committed owner release before a distinct ordinary Control lifetime tests release COMMIT loss.',
+    'The original signed history/export journey includes observed startup quiescence inside its40s/12s bounds, then committed owner release before a distinct ordinary Control lifetime tests release COMMIT loss.',
     'Fresh login waits only for actual existing bucket capacity (65s); setup has30s and the focused fault phase30s. Original3s lease,500ms renewal,5s authorization and30s full-probe bounds remain.',
     'One newly admitted reader pin and actual native worker identify the release; an exact eligible UPDATE1 hold requires positive native join and retained custody before permitting the actual COMMIT fault.',
+    'The second lifetime must complete its startup full probe with no child or active reader and exact building/not_observed capabilities: its user-operation cache is empty, so it cannot claim Ready.',
     'Before-forward requires unchanged active lease/claims; after-complete requires atomic released revision2 and matching changed xmin. Both product results remain CommitUnknown/exit4/unavailable with no claimed owner release or recovery.',
     'NOT_RUN: genuine native TerminationUnknown, automatic pin recovery, withheld inputs, dependency outages, and complete M1.',
 ]
@@ -49,7 +50,8 @@ def custody(path, expected=None):
 class PinReleaseRuntime(ShortPinRuntime):
     # The original independent export oracle keeps its actual released owner.
     ordinary = Runtime.ordinary
-    ordinary_client = Runtime.ordinary_client
+
+    ordinary_client = IndexRuntime.baseline_client
 
     def candidate(self):
         for path in (Path(__file__),Path(oracle.__file__)):
@@ -129,21 +131,11 @@ class PinReleaseRuntime(ShortPinRuntime):
             self.access('login','--origin','http://127.0.0.1:18081','--username','alice',
                 '--password-ref',login['password_ref'],'--session-output',str(saved_session),
                 binary=login['product_binary'],failure_directory=output)
-            observations = []
-            while True:
-                require(len(observations) < 100 and time.monotonic() < deadline, 'positive readiness setup bound')
-                value = self.roles(deadline); observations.append(value)
-                save(output/'positive-observations.json',observations)
-                if len(value['capabilities']) == 2 and all(cap['state'] == 'ready' for cap in value['capabilities']):
-                    break
-                require(self.inspect(entry)['State']['Running'], 'owner ended during baseline readiness')
-                time.sleep(.05)
-            before,before_catalog = self.capture(output,'before')
-            clock_after = self.bounded_sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
+            before,before_catalog,value,clock_after,parent,_ = self.startup_quiescence(output/'startup',entry,historical,deadline)
+            save(output/'before-control.json',before); save(output/'before-catalog.json',before_catalog)
             require(time.monotonic() < deadline and catalog == before_catalog, 'bounded unchanged setup catalog')
             baseline_owner = oracle.setup(historical,before,'\\x'+self.enrolled['principal_id'],clock_before,clock_after)
-            index.ordinary_roles(value,before,clock_before,clock_after,'positive')
-            parent = process_identity(self.inspect(entry)['State']['Pid'])
+            index.ordinary_roles(value,before,clock_before,clock_after,'setup')
             require(parent is not None and self.worker(parent,allow_absent=True) is None, 'quiescent actual parent before arming')
             self.exercise_release(output,mode,entry,parent,baseline_owner,before,reader,control)
             after,after_catalog = self.capture(output,'after')
