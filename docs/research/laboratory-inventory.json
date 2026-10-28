@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-26T15:51:03.770312+00:00",
+  "updated_at": "2026-10-28",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "FAIL AMD64 keyring retry Busy; ARM64 and macOS selected foundation PASS",
+    "status": "Latest hosted run40415243196 terminalFAIL: AMD64 export fixture Busy; ARM64/macOS PASS. Keyring correction confirmed on all three. No queued/in-progress remote runs at pause.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096",
-    "latest_hosted_source": "94a522327eed103fd13f0b7fb60c313485b8451d",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+    "latest_hosted_source": "903dddb5f8fd585a86737db053cb1491a53d5584",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73698,6 +73698,129 @@
         "session": "28017 exit0/reaped; exact owner container stopped/exit0/PID0/noOOM",
         "scope": "All original cursor_keyring controls in normal parallel release-profile execution; no arbitrary retry/serialization. No installed product source change or new hosted confirmation."
       }
+    },
+    "pause_20261027": {
+      "run": 40415243196,
+      "revision": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+      "observed_at": "2026-10-26T23:20:41Z",
+      "remote": "in_progress;left running",
+      "local": "watcher24737 SIGINT exit130/reaped/PIDabsent;noactive owned downloads/analysis",
+      "receipt": ".research/ci-publication-20261026/run-40415243196-exposure/pause-receipt.json",
+      "receipt_sha256": "9303131a349f536f26798acb2c289a39618970ddda78c1b02c28db067507d8e3",
+      "remaining": "Terminalsource/context/keyring/fullchecks/outputaudit NOT_RUN"
+    },
+    "run_40415243196": {
+      "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+      "revision": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "status": "FAIL AMD64 export_files destination reopen Busy; ARM64 and macOS selected foundation PASS",
+      "observed_at_utc": "2026-10-28T07:47:02.282473+00:00",
+      "remote_terminal_at": "2026-10-26T23:44:01Z",
+      "watch": "None started on resume; one terminal query reused for metadata. Original watcher24737 was already stopped/reaped130 at pause.",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/receipt.json",
+      "receipt_sha256": "f30eeb9bf2979a784dc759b27569b8354155de3272c1357295cbc5f08632fc0a",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/outcome.json",
+      "outcome_sha256": "9be6d37268bb22e99e3a2f6427c83bd2c025b214a78aeb3b059c75b77a6647f5",
+      "contexts": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/post-build-contexts.json",
+      "contexts_sha256": "0057cb6848bcbe5ba6664c2c5c3fef0dd47798ad1de24f13922dfc218f3fd4ea",
+      "failure_diagnosis": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/amd64-failure-diagnosis.json",
+      "failure_diagnosis_sha256": "3ad91f0c3679e2387d53e8ee2ba0757f4b028b3cca40d381d695b36bcfeb41a8",
+      "source_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-903dddb5-exposure/receipt.json",
+      "source_audit_sha256": "469dc3d5488b144aa0f85c4405193c3eedb431830a88bbc9c5e939e7a3fbc392",
+      "source_files": 2369,
+      "cursor_keyring": "All10PASS on all three platforms",
+      "resources": "Four original artifact zips and one attempt-log zip retained in protected ignored root; no artifact execution, product test, new engine, cancellation/rerun/dispatch or workflow mutation.",
+      "limits": "23PASS/1FAIL/6NOT_RUN selected checks. Exact hosted lock interleaving untraced. Installed/M1/full-goal qualification remains separate.",
+      "fixture_correction": {
+        "branch": "work/ci-export-fixture",
+        "commit": "33388863a1f4116f77d3f0c644eb36457a337f40",
+        "worktree": ".research/ci-export-fixture-20261028",
+        "state": "LOCAL_ONLY; clean; not integrated; no active process",
+        "checks": "format/diff/automatic target discovery PASS; all13 original test bodies unchanged; compile/Clippy/native/hosted NOT_RUN",
+        "evidence": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+      },
+      "local_fixture_qualification": {
+        "source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2",
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/fixture-native-verification.json",
+        "receipt_sha256": "8c8894301d97f0b3510f66b35c47593e2e78326c3eec043c220a3da448129378",
+        "retained_setup_failure": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886",
+          "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/fixture-native-setup-failure.json",
+          "sha256": "c21ca5b7a7bf75df1f67545130942adf346b22bfcf8eee378b06300f28cf9a20",
+          "meaning": "Compiler identity probe ordering failed before tests; corrected in fresh run. No failed product/test assertion retried."
+        },
+        "retained_artifacts": {
+          "export_destination": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_destination",
+            "bytes": 1308864,
+            "sha256": "e5d51ba97bde3a7a40f56a01e61f22940b5fd1bf0c84fcd99a0b80ad2790cf1e"
+          },
+          "export_destination_custody": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_destination_custody",
+            "bytes": 1187592,
+            "sha256": "d5cd216a622bbeef8890b622442798bffbc3014e29e8f2f260fe9ffbb2197f3a"
+          },
+          "export_files": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_files",
+            "bytes": 2908664,
+            "sha256": "38364a69a8fc4a1747bdc311555486d9a10d41e39cbec8c5e18d1a405482a92b"
+          },
+          "export_files_umask": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/export_files_umask",
+            "bytes": 2841216,
+            "sha256": "167a3d4d1993bf9956155da193582b768242dc3cf588cb8de05f69cce97dd63a"
+          },
+          "bigbrotr": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/out/artifacts/bigbrotr",
+            "bytes": 41640248,
+            "sha256": "059921ff7f36068c6966bfa4eddfeb4ec918ca0d7b5e2522e7c529442f24df56"
+          }
+        },
+        "status": "PASS_SCOPED_LINUX_RELEASE_FIXTURE",
+        "resources": {
+          "container": "53331febfe1f1da95258507dff70bef2d9f8c040af393c10d89fcff583ea5700",
+          "owner": "e50de76fb5b34dada5352dabb893837b",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-28T08:55:33.437077309Z",
+            "FinishedAt": "2026-10-28T08:57:36.950690186Z"
+          },
+          "session": {
+            "session": 26801,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2",
+            "container": "53331febfe1f1da95258507dff70bef2d9f8c040af393c10d89fcff583ea5700",
+            "owner": "e50de76fb5b34dada5352dabb893837b",
+            "source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+            "launcher": "/home/tux/bigbrotr-implementation-20260917/runs/export-fixture-ci-3338886-r2/launch.py",
+            "pid": 4006409,
+            "start_ticks": "655998728",
+            "reaped": true,
+            "exit_code": 0,
+            "process_absent": true
+          },
+          "compiler_cache": "released",
+          "constraints": "2CPU/6GiB/512PIDs; networknone; unprivileged; read-only root; capdropALL; no-new-privileges; exact source readonly; no credentials"
+        }
+      }
+    },
+    "export_fixture_integration": {
+      "branch": "work/ci-export-integration-20261028",
+      "worktree": ".research/ci-export-integration-20261028",
+      "base": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "correction": "6f0b5453",
+      "qualified_source": "33388863a1f4116f77d3f0c644eb36457a337f40",
+      "status": "Native Linux13PASS/format/ClippyPASS; root source review PASS; hosted confirmation pending after coherent push",
+      "publication": "No release/package/deployment; next main commit contains fixture correction and evidence only."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74686,8 +74809,118 @@
           "root_verification": "root-verification.json",
           "root_verification_sha256": "b4c2b8e650d6cfabd71968fecf273d7b0ef17c1c0a6f6ce56c71b9fe234e03c1",
           "retention": "Original signed inputs, databases, injected ClickHouse conflict, exact restored retained input, raw protected status/SQL captures, source and candidate preserved"
+        },
+        "short_pin": {
+          "status": "SAFE_PAUSE_BOTH_INSTALLED_ATTEMPTS_FAIL",
+          "attempts": [
+            {
+              "root": ".research/first-launch-index-short-pin-r1-20261027",
+              "owner": "5efa5c819b70991983b76d8bdcd59bf4",
+              "status": "FAIL_PRESERVED_RESOURCES_STOPPED",
+              "source": "ffe4d64a",
+              "product": "8256184cd30f49020c6c0a9884e9eaec958ba461",
+              "session": "37259 exit1/reaped",
+              "terminal": "19 containers stopped/PID0/noOOM:18exit0,ordinaryexit4;proxyexit3/absent;borrowed network empty/retained",
+              "terminal_receipt_sha256": "80c5afe6ab4a152a3dbc9210e1685aefa0b097f811c8291412f113b2e60fc253",
+              "retention": "OriginalFAIL,protected database/input/ClickHouse conflict/proxy and client logs retained; source correction in separate worktree",
+              "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.ordinary.short_pin"
+            },
+            {
+              "root": ".research/first-launch-index-short-pin-r2-20261027",
+              "owner": "93fbe1ba469836990f7eddbaf3c6c872",
+              "source": "f499cc87",
+              "session": "54972 exit1/reaped",
+              "terminal": "19containers stopped/exit0/PID0/noOOM;proxyexit3/absent;borrowed bridgeempty",
+              "terminal_receipt_sha256": "8cb7ad9a003cb9c1d30e695e31ad352023d9e12fd7c6b3eaa631a47357da9023"
+            }
+          ],
+          "retention": "All protected inputs/databases/logs/failures retained; no third attempt or pause cleanup"
         }
       }
+    },
+    "pause_20261027": {
+      "status": "STOPPED_SAVED_UNVERIFIED",
+      "checkpoint_branch": "work/short-pin-checkpoint-20261027",
+      "published_main": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "local_main": "f499cc87",
+      "wip": [
+        {
+          "branch": "work/initial-index-recovery",
+          "worktree": ".research/initial-index-recovery-20261027",
+          "commit": "0c34826fdbaf9a31d4b0d777320f44fece025c81",
+          "state": "clean;unverified;no active processes",
+          "checks": "format applied after initial formattingFAIL;compile/Clippy/tests/enginesNOT_RUN"
+        },
+        {
+          "branch": "work/index-restart-acceptance",
+          "worktree": ".research/index-restart-acceptance-20261027",
+          "commit": "bdd582c4fcccd757f5552ae92c550ae653f3f7a6",
+          "state": "clean;partial18lines;noactiveprocesses",
+          "checks": "NOT_RUN"
+        }
+      ]
+    },
+    "pause_20261028": {
+      "status": "STOPPED_SAVED_UNVERIFIED",
+      "observed_at_utc": "2026-10-28T08:08:13.282743+00:00",
+      "checkpoint_branch": "work/short-pin-checkpoint-20261027",
+      "checkpoint_parent": "1d66779c4cc17e04a28a67829dca9ab6f66dc3f9",
+      "published_main": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "local_main": "f499cc875bfd4e9bb4d6078d898155469a0f271c",
+      "wip": [
+        {
+          "branch": "work/short-pin-admission-wip-20261028",
+          "commit": "bc2b1fbe7c5b9a227083712e71718bef7a6c5440",
+          "worktree": "Saved in Git; canonical checkout returned to checkpoint branch",
+          "state": "LOCAL_ONLY; incomplete; no active process",
+          "checks": "19 socket and7 pin controls PASS before review; synthetic cancellation cleanup finding FAIL; installed retry NOT_RUN",
+          "evidence": ".research/short-pin-connection-admission-20261028"
+        },
+        {
+          "branch": "work/initial-index-recovery",
+          "commit": "2d073ae0d785464f1ad98c1549c5b837121821b2",
+          "worktree": ".research/initial-index-recovery-20261027",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "format/diff PASS; compile/Clippy/native/engine/installed NOT_RUN; root final source review incomplete"
+        },
+        {
+          "branch": "work/index-restart-acceptance",
+          "commit": "cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712",
+          "worktree": ".research/index-restart-acceptance-20261027",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "76 Python controls PASS before final two deadline/scalar edits; final source review incomplete; post-edit controls/build/engine/installed NOT_RUN"
+        },
+        {
+          "branch": "work/ci-export-fixture",
+          "commit": "33388863a1f4116f77d3f0c644eb36457a337f40",
+          "worktree": ".research/ci-export-fixture-20261028",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "format/diff/automatic target discovery PASS; all13 original test bodies unchanged; compile/Clippy/native/hosted NOT_RUN",
+          "evidence": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+        }
+      ],
+      "resources": "No running BigBrotr containers; retained bridge1699209a has zero endpoints. Unrelated running containers untouched. No new builds/engines/cleanup; .research, worktrees, databases, original failures and qualified825 artifacts retained. All delegates stopped.",
+      "proxy_reproducer": ".research/short-pin-connection-admission-20261028/cancellation-cleanup-reproducer.py",
+      "proxy_prior_observation": ".research/short-pin-connection-admission-20261028/cancellation-cleanup-prior-observed.txt",
+      "limits": "Prior observed synthetic diagnostic output copied from completed tool response; no raw original shell transcript. Earlier-error masking is a source finding, not exercised.",
+      "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
+    },
+    "resume_20261028": {
+      "status": "ACTIVE; full goal incomplete",
+      "canonical_branch": "work/short-pin-admission-wip-20261028",
+      "canonical_revision": "dd63e587",
+      "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
+      "proxy_controls": "21PASS; critical cleanup review complete",
+      "installed_r3": {
+        "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r3-20261028",
+        "result": "FAIL_FIXTURE_PREARM_PIN_PURPOSE; setup/positivePASS; actual pin-expiryNOT_RUN; cleanupPASS",
+        "terminal_receipt_sha256": "dd6e2705d516eeefb02ede0ffec32f7051b2ff4c901359ab7a20400c4f391c8a",
+        "terminal": "19stopped/PID0/noOOM; proxyexit0/PIDabsent; borrowed networkempty",
+        "scope": "Active export pin incorrectly counted as reader; original failure preserved. dd63e587 purpose correction source-reviewed;7pincontrolsPASS; fresh installed run pending."
+      },
+      "index_work": "Recovery2d073ae and acceptancecb3d8490 remain separate clean worktrees; both cross-reviews complete;39 final-source acceptance controlsPASS. Product native qualification preparing; enginesNOT_RUN.",
+      "processes": "No active installed engine/proxy; native qualifier owns compiler launch and records actual handles in its protected receipt. Check those before cache reuse.",
+      "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup."
     }
   },
   "implementation_checkpoint_space_20261026": {
