@@ -141,6 +141,79 @@ class HandoffSQLControls(unittest.TestCase):
             receipt = json.loads((Path(home) / 'case/result.json').read_text())
             self.assertEqual(receipt['status'], 'FAIL')
 
+    def test_final_persistence_failure_keeps_first_error_and_never_returns_success(self):
+        original, tables = seed()
+        original['schema_versions'][0]['checksum'] = '\\x' + runtime.sha(ROOT / 'migrations/postgres/0041_index_publication.sql')
+        write_json = runtime.lab.write_json
+        for prior_failure in ('sql', 'cleanup', None):
+            for persistence in ('report', 'resources'):
+                with self.subTest(prior_failure=prior_failure, persistence=persistence), tempfile.TemporaryDirectory() as home:
+                    owner = Mock(source=ROOT, pg={'id': 'owned-pg'}, resources={}, tables=tables)
+                    owner.rows.return_value = original
+                    owner.docker.return_value.stdout = runtime.sha(ROOT / runtime.HANDOFF_SQL)
+                    created, final_save = False, False
+                    original_error = ValueError('original SQL failure')
+                    save_error = OSError('diagnostic persistence unavailable')
+                    response = dict(sqlstate='00000', rows=1, lines=[json.dumps(summary('terminal'))])
+                    session = Mock(backend={'pid': 41}, buffer=b'', pending=None, total_bytes=0,
+                                   last_response_lines=response['lines'])
+                    session.process.pid = 42
+                    session.process.poll.return_value = 0
+                    session.finish.side_effect = original_error if prior_failure == 'sql' else None
+                    session.finish.return_value = response
+                    session.expect.side_effect = Session.expect
+                    if prior_failure == 'cleanup':
+                        session.close.side_effect = RuntimeError('backend cleanup refused')
+
+                    def sql(database, command):
+                        nonlocal created
+                        if command.startswith('CREATE DATABASE '):
+                            created = True
+                            return ''
+                        if 'pg_stat_activity' in command:
+                            return '0'
+                        if 'pg_database_size' in command:
+                            return '1024'
+                        if 'pg_database WHERE' in command:
+                            clone = 'bb_index_handoff_terminal' in command
+                            return json.dumps([] if clone and not created else [dict(oid=2 if clone else 1,
+                                name='bb_index_handoff_terminal' if clone else 'bigbrotr_control', owner='bigbrotr_migrator')])
+                        self.fail('unexpected fixture SQL')
+
+                    def persist(path, value):
+                        nonlocal final_save
+                        if path.name == 'result.json' and 'cleanup' in value:
+                            final_save = True
+                            if persistence == 'report':
+                                raise save_error
+                        write_json(path, value)
+
+                    def resources():
+                        if final_save and persistence == 'resources':
+                            raise save_error
+
+                    def new_session(state, database, name, sessions, *, role):
+                        sessions.append(session)
+                        return session
+
+                    owner.sql.side_effect = sql
+                    owner.record_resources.side_effect = resources
+                    expected_type = ValueError if prior_failure == 'sql' else RuntimeError if prior_failure == 'cleanup' else OSError
+                    with patch.object(runtime, 'Session', side_effect=new_session), patch.object(runtime.lab, 'write_json', side_effect=persist):
+                        with self.assertRaises(expected_type) as caught:
+                            runtime.run_handoff_clone(owner, Path(home) / 'case', phase='terminal')
+                    self.assertTrue(final_save)
+                    session.close.assert_called_once()
+                    self.assertEqual(owner.resources['index_handoff_sql_clones'][0]['status'], 'retained')
+                    if prior_failure == 'sql':
+                        self.assertIs(caught.exception, original_error)
+                    elif prior_failure == 'cleanup':
+                        self.assertEqual(str(caught.exception), 'handoff-sql-cleanup-incomplete')
+                    else:
+                        self.assertIs(caught.exception, save_error)
+                    if prior_failure is not None:
+                        self.assertEqual(caught.exception.__notes__, ['Handoff SQL diagnostic persistence failed: OSError'])
+
     def test_existing_clone_refuses_without_mutating_seed(self):
         original, tables = seed()
         original['schema_versions'][0]['checksum'] = '\\x' + runtime.sha(ROOT / 'migrations/postgres/0041_index_publication.sql')

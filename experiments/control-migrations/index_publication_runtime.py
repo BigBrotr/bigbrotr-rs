@@ -131,7 +131,7 @@ def run_handoff_clone(runtime, output, *, phase):
     report = dict(format='bigbrotr-index-handoff-sql-copy/1', status='RUNNING', phase=phase,
                   seed=seed, database=database, postgres_id=pg['postgres'], source_sha256=sha(runtime.source / HANDOFF_SQL),
                   migration_sha256=migration_sha, not_run=['native/ClickHouse proof', 'product handoff COMMIT faults'])
-    sessions, original, clone_identity = [], None, None
+    sessions, original, clone_identity, primary_error = [], None, None, None
     resource = dict(database=database, seed=seed, phase=phase, status='reserved-absent', postgres_id=pg['postgres'])
 
     def save():
@@ -189,6 +189,7 @@ def run_handoff_clone(runtime, output, *, phase):
         report['summary'] = handoff_summary(answer, phase)
         report['status'] = 'PASS_SQL_ONLY'
     except BaseException as error:
+        primary_error = error
         report.update(status='FAIL', failure_class=type(error).__name__, failure=str(error))
         raise
     finally:
@@ -225,11 +226,19 @@ def run_handoff_clone(runtime, output, *, phase):
             errors.append(dict(stage='final-observation', error=type(error).__name__))
         resource.update(status='retained', backend_absence=not errors)
         report['cleanup'] = dict(status='FAIL' if errors else 'PASS', errors=errors)
-        save()
-        if errors and report['status'] == 'PASS_SQL_ONLY':
+        cleanup_error = RuntimeError('handoff-sql-cleanup-incomplete') if errors and primary_error is None else None
+        if cleanup_error is not None:
             report['status'] = 'FAIL'
+        try:
             save()
-            raise RuntimeError('handoff-sql-cleanup-incomplete')
+        except BaseException as error:
+            report['status'] = 'FAIL'
+            first_error = primary_error if primary_error is not None else cleanup_error
+            if first_error is None:
+                raise
+            first_error.add_note('Handoff SQL diagnostic persistence failed: ' + type(error).__name__)
+        if cleanup_error is not None:
+            raise cleanup_error
     return report
 
 
