@@ -459,10 +459,10 @@ impl ResourceBudget {
         {
             return Err(AcquireError::Unavailable);
         }
-        if let Some(request) = control {
-            if !state.can_admit(request)? {
-                return Err(AcquireError::Unavailable);
-            }
+        if let Some(request) = control
+            && !state.can_admit(request)?
+        {
+            return Err(AcquireError::Unavailable);
         }
         let used = state
             .used
@@ -710,10 +710,10 @@ struct State {
 
 impl State {
     fn release_unused_funding(&mut self) {
-        if self.closed {
-            if let Some(funding) = &mut self.funding {
-                funding.shrink(self.used);
-            }
+        if self.closed
+            && let Some(funding) = &mut self.funding
+        {
+            funding.shrink(self.used);
         }
     }
     fn queue(&self, lane: Lane) -> &VecDeque<Arc<()>> {
