@@ -6,7 +6,9 @@ package publication or production deployment is authorized.
 
 ## Revision and demonstrated capability
 
-Current integrated/public main: `17cc122842adeac646c2fa5e12fb17fedd8b40ff`.
+Public main: `17cc122842adeac646c2fa5e12fb17fedd8b40ff`. Local main
+`cb7b5fbe` additionally contains the verified407168 hosted report and local
+checkpoint updates; the next push remains grouped with a coherent result.
 This coherent publication contains both installed COMMIT qualifications and the
 actual successful hosted foundation report. Push exit0 and exact remote main
 are verified in
@@ -104,8 +106,9 @@ Current increment: finite Index continuation across the existing verified
 topology0→1/Ingest1→2 handoff. Product `a4496a44` introduces typed frontier
 history and the explicit bridge; `ace1b52f` fixes its first compiler error.
 Both are retained in `work/index-epoch2-continuation`. Root's isolated
-`work/index-epoch2-acceptance` at `19911314` integrates those partial sources
-and maintained acceptance `a0c44bc9`; nothing from this increment is on main.
+`work/index-epoch2-acceptance` at `3d01cc10` integrates those partial sources,
+maintained acceptance and reviewed SQL fixtures/hooks. Both worktrees are clean;
+nothing from this increment is on main.
 
 **Native component qualification on exact `ace1b52f`: PASS** build, test
 compilation, strict Clippy and179 actual controls (109 library/70 binary,
@@ -118,31 +121,61 @@ The first `a4496a44` attempt remains **FAIL_PRODUCT_COMPILATION** (missing expli
 PhysicalError conversion); tests/Clippy were NOT_RUN, zero artifacts. Its
 original log and receipt remain in sibling `r4-a4496a44` and the external run.
 
-Acceptance controls:103 relevant controls PASS on the combined current schema,
-including literal tagged successor rows, typed recovery commitments, exact
-other-consumer preservation, FAIL/NOT_RUN dispatch and cleanup. Source-bound
-receipt: `.research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028/combined-controls-first.json`.
-Initial verifier KeyError failures and prelaunch NOT_RUN remain preserved there.
-Subsequent SQL-clone hooks are uncommitted in the root acceptance worktree;
-one targeted refusal/order control PASS, while helper integration and actual SQL
-remain pending. The author has uncommitted SQL/helper/control changes separately.
-Critical source/acceptance reviews identify no outstanding blocker in their
-recorded scope; frozen receipts are in the existing reviewer directory under
-`receipt-index-epoch2-product-a4496a.json` and
-`receipt-index-topology-driver-reviewed.json`.
+Acceptance controls:104 relevant controls PASS after integration of the SQL
+hooks; seven SQL-helper controls PASS, including first-error retention when
+report/resource persistence fails. Original verifier failures remain preserved.
+Evidence: `.research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028/integrated-sql-hook-controls.json`;
+author receipts are in the continuation worktree's
+`.research/index-epoch2-author-review-20261028/sql-handoff-controls`.
+Critical product, SQL and hook reviews are closed in the existing reviewer
+receipt directory. SQL fixture `839cf687`, narrow first-error fix `73378ab7`
+and root hooks `52f0c573` are committed, outside main.
 
-Next action: finish and critically review the narrow SQL handoff controls and
-acceptance hooks. Use disposable copies of actual current-schema closed/unretired
-and terminal epoch2 seeds; preserve their original data and compare all82 tables.
-The verified candidate below is ready; run the installed two-event continuation,
-bridge, catch-up and exact retry. These actual SQL/installed checks are NOT_RUN.
-Do not infer complete successor role support, handoff-COMMIT uncertainty or
-broader topology recovery from component controls.
+**Actual installed topology r1:12 PASS/1 FAIL/2 NOT_RUN**, session42416
+reaped1. Product `ace1b52f`, acceptance `e15e94f3`. Both actual SQL-copy
+sets pass (3 nonterminal/23 terminal), preserving all82 original tables and
+MVCC identities. Signed initial publication/history/export, successor/resend
+and Archive catch-up/retry pass. Index catch-up exits4; retry and final
+successor history are NOT_RUN. PostgreSQL records `permission denied for
+function require_index_handoff_metadata`: the new security-invoker helper is
+missing its exact runtime EXECUTE grant in Compose provisioning. This is a
+product deployment defect; migrator SQL controls do not qualify runtime grants.
+Original evidence: `.research/first-launch-index-topology-r1-20261028`.
+Root verified27 stopped/PID0/noOOM containers, empty borrowed network, absent
+launcher and source hashes; `root-terminal.json` retains the original failed
+outcome (SHA256 `65cd1301cda0b928a56a6f33d7ba21606df5efa23cbc3dee241b9380dd2c4755`).
+
+Exact runtime grant and ACL regression `7fb98367` are reviewed and integrated
+in the isolated acceptance branch. No Rust/migration byte changed. Candidate
+reassembly PASS at `3d01cc10`, using the qualified ace1 binary/worker, is in
+`candidate-runtime-grant-r2` beside the original candidate; manifest SHA256
+`3426cf2fe535c6028ccdc436d3864a9280b22aff299cc39e4eff6d812bc715ca`.
+**Topology r2:14 PASS/1 FAIL**, session35074 reaped1. Corrected ACL checks,
+actual Index bridge revision5, all three epoch2 batches through revision8 and
+exact retry PASS. All70 chunks/100 bounds, ten-family raw rows/multiplicity,
+original receipts, Archive/input/export/custody and other-consumer histories
+match independent expectations. Final ordinary history returns HTTP429 on its
+first event request; its cause remains under investigation. Original r2 evidence:
+`.research/first-launch-index-topology-r2-20261028`, terminal receipt SHA256
+`f1d0ee2f13acfa2cc614f4b649ba392f6d36b804d8a5a1547ffa27707213207d`.
+Root verified29 stopped/PID0/noOOM containers, absent launcher and empty network.
+Next action: finish the bounded fixture startup precondition. Current code
+allows login/me during initial native probing but refuses overlapping history
+work; the client began immediately after `idle` without a completed-probe
+barrier. This is a concrete setup hazard, while the original generic429 cannot
+prove which capacity branch fired. Extend the existing positive startup oracle
+to the explicit epoch2 selection and claims; preserve the30s client window,
+200 expectation and one request per event. No heuristic sleep, limit increase
+or history retry. Then complete the same installed journey. The new
+typed recovery/schema also requires the existing epoch1 restart and publication
+COMMIT-before/after journeys on the current candidate before claiming those
+capabilities remain qualified. Their old PASS remains valid for076/42a/94f.
+Handoff-COMMIT uncertainty and broader recovery remain separate open gates.
 
 ## Resources and agents
 
-Root owns integration and laboratory execution. The product author works in
-`.research/index-epoch2-continuation-20261028` on the SQL fixture extension;
+Root owns integration and laboratory execution. The product author has saved the reviewed
+SQL fixture in `.research/index-epoch2-continuation-20261028`;
 root owns `.research/index-epoch2-acceptance-20261028`; the existing
 `.research/index-restart-acceptance-20261027` reviewer checks critical deltas.
 All worktrees and original evidence are retained. Review receipts live under
@@ -160,20 +193,24 @@ Candidate assembly and closed-archive intake PASS. Candidate:
 `/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-ace1b52f/candidate/candidate-manifest.json`
 (SHA256 `39f7362a3d22bd2ddb8fd60cbfbe2cb1233688b4464b5334d1db897d04f2baae`).
 The sibling `receipt.json` binds the bundle and assembly/intake evidence.
-No local engine/compiler remains active; installed acceptance is still NOT_RUN.
+No compiler remains active. Session42416 is reaped1; its27
+containers are stopped and retained, the borrowed network is empty and
+launcher488843/start658723395 is absent. Both SQL copies, original data and
+logs remain in the protected run. Author and reviewer are idle; root
+acceptance `3d01cc10` is clean. R2 session35074 is reaped1 and all29 owned
+containers are stopped/retained; launcher527916/start658778873 is absent.
+No local engine/compiler remains active; author is diagnosing the retained429.
 Earlier installed runs,
 proxies, source/Archive/ClickHouse data, signed inputs, original failures and
 candidates remain preserved; exact stopped-resource receipts are linked from the
 [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) and
 [inventory](../research/laboratory-inventory.json). No new cleanup was performed.
 
-The CI agent owns one bounded watcher for automatic run40716894776 on exact
-public `17cc1228`: session52214, driver457240/start658385792 and gh457241/
-start658385793. Evidence:
-`.research/ci-publication-20261026/run-40716894776-exposure`.
-Expected selected controls183 (macOS178 plus five platform SKIP); actual terminal
-qualification remains pending. No duplicate workflow was dispatched. Prior
-407022 watcher46265 is reaped0 and its process identities are absent.
+CI run40716894776 on public `17cc1228` is terminal and qualified:30 selected
+checks PASS on Linux AMD64/ARM64 and macOS. Watcher52214 reaped0; its original
+driver/watcher identities are absent. The compact hosted report is integrated as `cb7b5fbe`; the CI agent is idle
+and owns no engine or pending workflow. Evidence and independent root
+receipt are in `.research/ci-publication-20261026/run-40716894776-exposure`.
 
 ## M1 remaining gates and assigned follow-through
 
@@ -216,38 +253,31 @@ owners. These evaluations do not add a blanket M1 prerequisite.
 
 ## CI
 
-[Run40702272536](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40702272536)
-on exact public `5b6716991d65f45388b0586abec01d558c488155` is **SUCCESS: all30
+[Run40716894776](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40716894776)
+on exact public `17cc122842adeac646c2fa5e12fb17fedd8b40ff` is **SUCCESS: all30
 selected checks PASS** (Linux AMD64/ARM64 and macOS,14/9/7 checks). Both Linux
-jobs have1301 Rust and179 Python controls PASS; macOS has1299 Rust and174 Python
-PASS plus five explicit platform SKIP. The actual default-profile keyring10,
+jobs have1301 Rust and183 Python controls PASS; macOS has1299 Rust and178 Python
+PASS plus five explicit platform SKIP. Actual default-profile keyring10,
 export13 and all167 retained native reference cases pass on each platform.
-The FIFO and canonical temporary-parent fixture corrections are now qualified
-on actual macOS. Dedicated ignored probes remain NOT_RUN in this hosted run.
+Dedicated ignored probes remain NOT_RUN in this hosted run.
 
 Exact2389-file source manifests, artifacts, native/build/post-command contexts
-and upload scope are verified. Root independently checked31 evidence hashes,
-four provider ZIP identities and the logs ZIP. The scoped public-output scan
-has54 occurrences of five already-triaged nonsecret fingerprints, no new or
-operational credential candidates and no provider alerts. This does not claim
-exhaustive secret absence. Frozen receipt:
-`.research/ci-publication-20261026/run-40702272536-exposure/receipt.json`.
-The [existing hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns detailed counts, source identities, exclusions and original failures.
+and upload scope are verified. Root rehashed31 evidence files, checked four
+provider ZIP identities and logs, and verified all30 actual command outcomes.
+Scoped public-output audit:54 occurrences of five known nonsecret fingerprints,
+zero new/operational candidates or provider alerts; not an exhaustive absence
+claim. Frozen receipt SHA256:
+`c7cfe0ee2fa864610d79e2d11187568cfbdfee1060d23b5d9af1cd597e893c67`;
+independent `root-terminal-review.json` SHA256:
+`8d410a71381ce30760d7b19b2bc397bd6bd346a792f3dc1a1a235d660b76fcd9`.
+The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact
+counts, context, exclusions and preserved original failures. Prior407022 also
+passed; earlier macOS fixture failures/cancellation remain unchanged. Billing
+is not a current block.
 
-Earlier8cf run40684555941 remains28PASS/1FAIL/1NOT_RUN (macOS FIFO/Busy fixture
-failure). Run40697249452 on0e remains CANCELLED with the original macOS custody
-fixture ERROR and two interrupted Linux commands; no Rust execution is inferred
-there. Their frozen captures and classification remain retained. The billing
-block is not current; cancellation and fixture failures are separate from
-product failures.
-
-Early dependency policy and acceptance controls precede expensive compilation.
-Actual0e macOS fixture refusal occurred after94.885s of acceptance execution,
-leaving four expensive commands NOT_RUN. Current5b completes that early suite.
-Safe Clippy-to-test compilation reuse still needs equal-input and duplicate-work
-measurement; no such optimization or speedup is claimed. Keep platform,
-artifact and clean-install coverage. The completed COMMIT increment and hosted
-qualification were published together as `17cc1228`; its one automatic run is
-tracked above. Partial epoch2 source stays separate. M1 and the full goal remain incomplete;
-FAIL/NOT_RUN/SKIP/interruption never becomes PASS.
+Early dependency/acceptance controls precede expensive compilation. Observed
+job durations3134/3542/3680s are not a controlled speedup measurement. Safe
+Clippy-to-test reuse still needs equal-input/duplicate-work evidence. Preserve
+platform, artifact and clean-install coverage. Group the next publication around
+a coherent qualified result; partial epoch2 work remains outside main. M1 and
+the complete goal remain incomplete; FAIL/NOT_RUN/SKIP never becomes PASS.

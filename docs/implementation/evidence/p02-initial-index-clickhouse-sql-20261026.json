@@ -992,6 +992,65 @@
         "result": "No capture/scope blocker. Before-forward changes no table at fault; after-complete changes exactly five publication tables. Exact retries preserve physical arrays and78 non-owner tables.",
         "diagnostic_exception": "One Code210 Broken pipe per case belongs to original Index incarnation during server unpause after original app finished. No202 in captured rows; all-query coverage and remote teardown remain NOT_PROVEN."
       }
+    },
+    "topology_continuation": {
+      "status": "PARTIAL_NOT_INTEGRATED_INDEX_PASS_FINAL_HISTORY_FAIL",
+      "scope": "Finite Index continuation across the existing topology0-to1/Ingest1-to2 handoff; same generation, storage, custody and retained typed history. Not general topology support or complete M1.",
+      "product_revision": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
+      "acceptance_revision": "3d01cc104acb9ef4fe7d442750f66e3632a6dd6e",
+      "worktrees": {
+        "product": ".research/index-epoch2-continuation-20261028",
+        "acceptance": ".research/index-epoch2-acceptance-20261028"
+      },
+      "valid_component_evidence": {
+        "native": "Build, test compilation, strict Clippy and179 actual controls PASS; original a449 compiler FAIL retained. Existing progress/inventory link exact receipts.",
+        "candidate": "Unchanged ace1 installed binary/worker, assembly and intake PASS.",
+        "acceptance": "104 combined controls PASS; seven SQL-helper controls PASS; critical source/SQL/hook review closed."
+      },
+      "installed_attempts": [
+        {
+          "name": "r1",
+          "status": "FAIL_PRODUCT_RUNTIME_GRANT",
+          "evidence": ".research/first-launch-index-topology-r1-20261028",
+          "root_terminal_sha256": "65cd1301cda0b928a56a6f33d7ba21606df5efa23cbc3dee241b9380dd2c4755",
+          "stages": {
+            "PASS": 12,
+            "FAIL": 1,
+            "NOT_RUN": 2
+          },
+          "demonstrated": "Initial signed acquisition, complete Index prefix, ordinary history/export, successor/resend and Archive catch-up/retry pass. Actual separate nonterminal3/terminal23 SQL cases pass with original82-table row/xmin equality.",
+          "failure": "Installed Index catch-up exits4 Backend; original PostgreSQL log reports permission denied for function require_index_handoff_metadata. New invoker helper lacks exact runtime EXECUTE in provisioning. SQL clones run as migrator and do not demonstrate runtime ACL.",
+          "not_run": [
+            "Index epoch2 exact retry",
+            "final two-event ordinary history"
+          ],
+          "resources": "Session42416 reaped1;27 exact owned containers stopped/PID0/noOOM;launcher absent;borrowed network empty;all original data, two SQL clones and logs retained."
+        },
+        {
+          "name": "r2",
+          "status": "FAIL_FINAL_HISTORY_429_CAUSE_PENDING",
+          "evidence": ".research/first-launch-index-topology-r2-20261028",
+          "root_terminal_sha256": "f1d0ee2f13acfa2cc614f4b649ba392f6d36b804d8a5a1547ffa27707213207d",
+          "stages": {
+            "PASS": 14,
+            "FAIL": 1,
+            "NOT_RUN": 0
+          },
+          "assembly_acceptance": "3d01cc104acb9ef4fe7d442750f66e3632a6dd6e",
+          "correction": "Exact runtime EXECUTE grant and independent effective ACL observation,7fb98367; no Rust/migration change. Corrected candidate reassembled from unchanged qualified binary.",
+          "demonstrated": "SQL nonterminal3/terminal23 including ACL checks PASS; actual Index bridge5,three epoch2 batches through revision8,70chunks/100bounds,all10families/commitments exact. Owner1-to2 and retry2-to3 preserve original receipts and add no work on retry; Archive/inputs/export/custody/other-consumer history exact.",
+          "failure": "Final ordinary successor history first request returns429 capacity_or_rate_limited. Cause pending diagnosis; no limit change or generic retry authorized by this outcome.",
+          "resources": "Session35074 reaped1;29 exact containers stopped/PID0/noOOM,launcher absent,borrowed network empty;all data/clones/logs retained."
+        }
+      ],
+      "next": "Diagnose retained final-history429 and correct pertinent owner without weakening oracle; complete actual journey, then affected epoch1 restart/COMMIT-before/after.",
+      "remaining": [
+        "Successful installed bridge and epoch2 Index catch-up/retry",
+        "Current-revision epoch1 pending recovery and both publication COMMIT-loss directions",
+        "Handoff-COMMIT uncertainty",
+        "Continuous combined successor Index ownership and current-selection readiness",
+        "Broader topology/unknown-query/native-termination/outage/capacity guarantees remain with their existing tasks"
+      ]
     }
   }
 }
