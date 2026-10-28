@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-2026-10-27, Tux. **Safe pause requested by the owner; full product incomplete.**
+2026-10-28, Tux. **Safe pause requested by the owner; full product incomplete.**
 Preserve the current P00–P10/M1–M5 goal and Q37/Q38/Q40/Q41/Q42. Resume only on
 explicit instruction. The goal control is paused after this checkpoint is saved;
 its actual session status is authoritative. No release, package or deployment.
@@ -13,33 +13,27 @@ publication receipt: `.research/live-readiness-20261026/ordinary-publication.jso
 The incremental public source/history audit through903 found no new credential
 or confidential material. Original captures remain protected and ignored.
 
-Canonical checkout is now on `work/short-pin-checkpoint-20261027`, based on local
-`f499cc87`; this checkpoint is committed on that branch. Local `main` still points
-to f499, three commits ahead of published903. Those commits preserve the short-pin
-fixture (`95b6c615`), Linux-only process-control declaration (`ffe4d64a`) and narrow
-proxy correction (`f499cc87`, original `7b1c2346`). They are **not qualified by the
-installed scenario** and are not being pushed to main. The checkpoint branch
-preserves their source/control evidence and explicit failures without discarding
-or rewriting local history. Its push is checked after saving this document.
+Canonical checkout remains on `work/short-pin-checkpoint-20261027`, parent
+`1d66779c4cc17e04a28a67829dca9ab6f66dc3f9`; this documentation checkpoint is
+committed and pushed on that branch. Its resulting hash is the branch HEAD, not
+a guessed self-reference. Local `main` remains `f499cc87`, three commits ahead of
+published903: short-pin fixture95b6c615, Linux-only control declarationffe4d64a,
+and opaque-baseline proxyf499cc87. Their installed qualification is incomplete;
+no new product or fixture implementation is integrated into main during this pause.
 
-Separate partial work, **not integrated or pushed**:
+Separate partial work, **saved locally, not integrated or pushed**:
 
-- `work/initial-index-recovery`, clean worktree
-  `.research/initial-index-recovery-20261027`, WIP
-  `0c34826fdbaf9a31d4b0d777320f44fece025c81`: finite `index catch-up`, initial
-  source proof/read bridge and scoped controls. Final source review and contracts
-  incomplete. Format check initially FAIL; formatting then applied successfully,
-  without a post-format check. Compilation, Clippy, Rust/engine/installed checks
-  NOT_RUN. No claim of a working recovery implementation.
-- `work/index-restart-acceptance`, clean worktree
-  `.research/index-restart-acceptance-20261027`, WIP
-  `bdd582c4fcccd757f5552ae92c550ae653f3f7a6`: only the18-line source-client prefix
-  barrier, runtime hook and closed `(revision,cut)` oracle parameterization are
-  saved. Restart runtime, recovery attribution oracle and tests remain unwritten;
-  all checks NOT_RUN.
+| Branch / retained worktree | Saved revision | Valid evidence and remaining qualification |
+|---|---|---|
+| `work/short-pin-admission-wip-20261028` (Git branch; canonical checkout returned to checkpoint branch) | `bc2b1fbe7c5b9a227083712e71718bef7a6c5440` | Five-file active-connection admission correction;19 socket and7 pin controls PASS. Critical review found a cancellation cleanup race. Correction and installed retry NOT_RUN. |
+| `work/initial-index-recovery` / `.research/initial-index-recovery-20261027` | `2d073ae0d785464f1ad98c1549c5b837121821b2` | Finite `index catch-up`, source proof/read bridge, native/cursor controls and contracts saved atop0c34826f. Format/diff PASS; compilation, Clippy, native/engine/installed tests NOT_RUN. Root final source review incomplete. |
+| `work/index-restart-acceptance` / `.research/index-restart-acceptance-20261027` | `cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712` | Restart runtime/oracle and controls saved atopbdd582c4.76 Python controls PASS before the final two deadline/scalar edits; post-edit checks NOT_RUN and final review incomplete. Builds/engine/installed qualification NOT_RUN. |
+| `work/ci-export-fixture` / `.research/ci-export-fixture-20261028` | `33388863a1f4116f77d3f0c644eb36457a337f40` | Process-spawning and direct-custody fixtures separated into integration binaries; all13 original test bodies unchanged. Format/diff/automatic target discovery PASS; compilation, targeted Clippy, native tests and hosted confirmation NOT_RUN. |
 
-All delegates stopped. Their original worktrees/receipts remain preserved; no
-build, test, experiment or further implementation was started for this pause.
+All three retained delegate worktrees are clean and delegates stopped. No build,
+engine campaign or implementation was started to obtain a perfect pause. The
+inventory's `implementation_index_foundation_20261026.pause_20261028` owns resource
+identities; protected receipts stay beside their original captures.
 
 ## Valid capability and latest failure
 
@@ -55,26 +49,33 @@ Detailed evidence stays in the [existing Index report](evidence/p02-initial-inde
 `live_readiness.ordinary`, not duplicated here.
 
 The new `p01-first-launch-index-short-pin` fixture has scoped critical source
-review and seven pin controls PASS. The corrected proxy has17 socket/admission
-controls PASS. **Both actual installed attempts FAIL before the positive barrier
-and before arming; actual pin-expiry cancellation is NOT_RUN.**
+review and seven pin controls PASS. **Both installed attempts still FAIL before
+the positive barrier and before arming; actual pin-expiry cancellation is NOT_RUN.**
 
 - r1: `.research/first-launch-index-short-pin-r1-20261027`. Ordinary setup passed;
-  first history.read grant catalog work exhausted the inherited aggregate frame
-  budget at20002 frames/1545189bytes. App reported native grant catalog barrier
-  completion unresolved. Original failure retained.
-- r2: `.research/first-launch-index-short-pin-r2-20261027`. The closed proxy now
-  streams baseline traffic and frames only a new post-arm selected reader, but
-  the17th pre-arm connection exhausted its16-connection lifetime admission:
-  frames0/4450882bytes/armedfalse. No fault gate fired. Preserve this failure;
-  no connection-limit change or third attempt has been started.
+  grant catalog work exhausted the inherited aggregate frame budget at20002
+  frames/1545189bytes. Original app error and cleanupFAIL preserved.
+- r2: `.research/first-launch-index-short-pin-r2-20261027`. Opaque baseline routing
+  avoided frame exhaustion, but the17th pre-arm connection exhausted the16 lifetime
+  admissions: frames0/4450882bytes/armedfalse. Original failure preserved.
 
-These are fixture admission failures, not successful product cancellation tests.
-The source correction preserves original product action/lease/probe deadlines and
-selected-reader/byte limits. Before another run, derive the needed baseline routing
-or connection admission from actual caller lifetimes and retained traffic; do not
-raise a limit merely to obtain PASS. Reuse the825 installed candidate and existing
-proxy/oracle controls; a fixture-only correction needs no product rebuild.
+The saved bc2b1fbe correction instead bounds actual active connections at16 for
+this closed fixture profile, retaining aggregate64MiB/180s and selected-reader
+limits. It retires closed sockets/tasks;19 socket controls and7 pin controls PASS.
+However, independent review reproduced cancellation during `wait_closed` skipping
+the active-count decrement; source review also found possible masking of an
+already-raised error. **This fixture defect is unresolved. No third installed
+attempt ran.** Transports remain retained for outer cleanup; this is not evidence
+of successful product cancellation or a product custody leak.
+
+Keep `.research/short-pin-connection-admission-20261028`: the two control logs,
+`cancellation-cleanup-reproducer.py`, `cancellation-cleanup-prior-observed.txt` and
+`pause-state.json`. The observation was copied from the original completed tool
+response, not a new execution or a raw shell transcript. The masking case is a
+source finding, not an exercised result. Before retry, make transport closure and
+accounting cancellation-resistant while preserving any earlier failure; critically
+review and test that boundary. Reuse the qualified825 installed candidate: a
+fixture-only change does not require a product rebuild.
 
 ## M1 remaining gates
 
@@ -104,19 +105,22 @@ full goal remain incomplete. No FAIL/NOT_RUN/SKIP/interruption becomes PASS.
 ## CI and resources
 
 [Hosted run40415243196](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196)
-on exact903 remained **in_progress** at2026-10-26T23:20:41Z: all three foundation
-platforms running, scopePASS, optional Rocks/documentation SKIPPED. It was left
-running remotely. Single local watcher24737 was stopped with SIGINT, reaped130
-and its PID positively absent. Terminal source/context verification, keyring/full
-selected outcomes and public-output audit remain INCOMPLETE/NOT_RUN. Protected
-receipt: `.research/ci-publication-20261026/run-40415243196-exposure/pause-receipt.json`.
+on exact903 is **completed / FAIL**, terminal2026-10-26T23:44:01Z and freshly checked
+at this pause: **23PASS/1FAIL/6NOT_RUN**. ARM64/macOS selected suites PASS; AMD64
+fails during export destination setup with `Busy`. Source suggests subprocess
+inheritance of a sibling fixture's directory lock; the hosted interleaving is
+untraced and no product defect is established. All ten keyring controls pass on
+all three platforms. No billing refusal, workflow admission error or cancellation
+caused this run's failure. Dependency policy and earlier cancellation fixes retain
+their scoped evidence; all-required hosted success after current changes is open.
 
-Prior hosted run40406281096 retains23PASS/1FAIL/6NOT_RUN: Linux amd64 keyring test
-race, ARM64/macOS PASS. Linux FIFO fixture correction682 has all10 local keyring
-controls/format/Clippy PASS;903 is its pending hosted confirmation. Dependency
-policy and cancellation fixes remain qualified by earlier real runs; historical
-billing refusal is not current. The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns the exact outcomes, timings and previous public audits.
+The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) now records the
+terminal outcomes, exact source/context verification, artifacts and scoped public
+output audit (no new/unclassified or operational credential candidates). Protected
+root: `.research/ci-publication-20261026/run-40415243196-exposure`; its
+`fixture-review.json` records33388863 and the four integration targets still to
+qualify. Original failures, reports and audit limits remain preserved. No queued
+or in-progress Actions runs were present; no new workflow was dispatched.
 
 Both short-pin sessions are reaped: r1 session37259 exit1; r2 session54972 exit1.
 All19 containers per run are stopped/PID0/noOOM. r1 ordinary app exited4, others0;
@@ -124,8 +128,8 @@ r2 all exited0. Each proxy exited3 and is positively absent. Their proxy cleanup
 checks remainFAIL despite terminal resources being confirmed stopped. Borrowed
 bridge1699209a remains empty and retained. No owned local development/build/test/
 watcher process remains; delegates launched no additional engines. Remote CI above
-may finish autonomously. Preserve all databases, logs, original failures, .research,
-worktrees and825 artifacts. The released115 compiler cache remains optional.
+is terminal. Current local controls/reviews have also completed. Preserve all
+databases, logs, original failures, .research, worktrees and825 artifacts. The released115 compiler cache remains optional.
 
 The [existing inventory](../research/laboratory-inventory.json) owns identities
 and terminal receipts. Earlier bounded retirement removed only2372 obsolete b533/
@@ -134,10 +138,16 @@ pins and6474 other entries were preserved. No additional cleanup during pause.
 
 ## First action on explicit resume
 
-Reconcile actual Git/goal state and the remote903 CI outcome once, retaining any
-FAIL or missing artifact. Resolve the r2 proxy connection-admission mismatch from
-source and preserved evidence, critically check the affected bounds/target routing,
-then run the same maintained short-pin case on825. Do not rebuild for fixture-only
-changes. Afterwards resume the separate Index recovery/acceptance WIP review and
-qualification. Merge/publish only coherent qualified work; do not mistake these
-saved branches or source controls for completed installed recovery.
+Reconcile this checkpoint and actual Git/goal state, then restore
+`work/short-pin-admission-wip-20261028`. Fix the retained cancellation-during-close
+reproducer without losing prior exceptions; review the affected cleanup/target
+bounds and run only the impacted controls before the maintained short-pin case on
+825. Candidate manifest:
+`/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-8256184/candidate/candidate-manifest.json`.
+Do not rebuild the product for this fixture-only change.
+
+Then qualify the four saved export integration targets and obtain hosted
+confirmation on a coherent qualified integration. Resume final Index recovery and
+restart-oracle review, post-edit Python controls, exact-source native and actual
+engine/installed qualification. None of these saved branches establishes completed
+recovery, M1 or the full goal. Resume only after the owner's explicit instruction.
