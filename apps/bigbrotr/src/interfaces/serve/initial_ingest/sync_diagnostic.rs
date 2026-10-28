@@ -47,6 +47,8 @@ impl Stage {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Window {
+    /// Start of this operation's safe-point window. A later operation may use
+    /// renewed authority; an already polled operation never replaces its window.
     pub selected: Instant,
     /// Taken immediately after the existing suspend-aware lease check returns;
     /// this is not a conversion of that authority clock into Tokio's clock.
@@ -173,6 +175,11 @@ impl<'a> Trace<'a> {
     pub(super) fn delivered_admission(self, request: u64) {
         self.update(|r| r.last_delivered_admission = Some(request));
     }
+    /// Renewal has its own parent phase. Do not attribute its failure to the
+    /// previously completed Sync operation; preserve the delivered watermark.
+    pub(super) fn pause(self) {
+        self.update(|r| r.active = false);
+    }
     pub(super) fn run<T>(
         self,
         stage: Stage,
@@ -229,8 +236,107 @@ mod tests {
     use super::*;
     use std::{
         pin::pin,
+        sync::atomic::AtomicBool,
         task::{Context, Poll, Waker},
     };
+
+    #[tokio::test]
+    async fn an_expired_operation_never_polls_a_new_effect() {
+        let (progress, _, _) = fixture();
+        let polled = std::cell::Cell::new(false);
+        let trace = Trace::new(&progress);
+        let result = super::super::commands::sync_operation(
+            trace,
+            Instant::now(),
+            &AtomicBool::new(false),
+            Stage::Admission,
+            Some(0),
+            Some(4),
+            async {
+                polled.set(true);
+            },
+        )
+        .await;
+        assert!(result.is_err());
+        assert!(!polled.get());
+        let record = capture(&progress.borrow()).unwrap().record;
+        assert_eq!(record.stage, Stage::Admission);
+        assert_eq!(record.request, Some(4));
+        assert_eq!(record.returned, None);
+        assert_eq!(record.last_delivered_admission, None);
+        let result = super::super::commands::sync_operation(
+            trace,
+            Instant::now() + Duration::from_secs(5),
+            &AtomicBool::new(true),
+            Stage::Admission,
+            Some(0),
+            Some(4),
+            async {
+                polled.set(true);
+            },
+        )
+        .await;
+        assert!(
+            result
+                .unwrap_err()
+                .1
+                .starts_with("initial Sync cancelled before dispatch")
+        );
+        assert!(!polled.get());
+    }
+
+    #[tokio::test]
+    async fn an_in_flight_admission_keeps_its_deadline_and_unknown_outcome() {
+        let (progress, _, _) = fixture();
+        let trace = Trace::new(&progress);
+        let polls = std::cell::Cell::new(0);
+        let deadline = Instant::now() + Duration::from_millis(25);
+        let result = super::super::commands::sync_operation(
+            trace,
+            deadline,
+            &AtomicBool::new(false),
+            Stage::Admission,
+            Some(0),
+            Some(4),
+            async {
+                polls.set(polls.get() + 1);
+                std::future::pending::<()>().await;
+            },
+        )
+        .await;
+        assert!(result.is_err());
+        assert_eq!(polls.get(), 1);
+        let error = trace.finish(result).unwrap_err();
+        assert!(
+            error
+                .1
+                .starts_with("initial Sync deadline; preserve original outcome")
+        );
+        let report: Value =
+            serde_json::from_str(error.1.split_once("sync_dispatch=").unwrap().1).unwrap();
+        assert_eq!(report["request_sequence"], 4);
+        assert_eq!(report["returned_us"], Value::Null);
+        assert_eq!(report["last_delivered_admission_sequence"], Value::Null);
+    }
+
+    #[test]
+    fn renewal_does_not_relabel_prior_progress_as_a_new_operation() {
+        let (progress, _, mut window) = fixture();
+        let trace = Trace::new(&progress);
+        trace.enter(Stage::Admission, Some(0), Some(4));
+        trace.returned();
+        trace.delivered_admission(4);
+        trace.pause();
+        assert!(capture(&progress.borrow()).is_none());
+        window.selected = Instant::now();
+        trace.begin(window);
+        trace.enter(Stage::Certification, Some(2), None);
+        let record = capture(&progress.borrow()).unwrap().record;
+        assert_eq!(record.stage, Stage::Certification);
+        assert_eq!(record.request, None);
+        assert_eq!(record.returned, None);
+        assert_eq!(record.last_delivered_admission, Some(4));
+    }
 
     pub(super) fn fixture() -> (watch::Sender<Progress>, watch::Receiver<Progress>, Window) {
         let start = Instant::now();

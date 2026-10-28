@@ -60,6 +60,7 @@ INITIAL = 'interfaces::serve::initial_ingest::'
 BINARY_GROUPS = {
     'initial-index': INITIAL + 'index::',
     'initial-commands': INITIAL + 'commands::tests::',
+    'initial-sync-diagnostic': INITIAL + 'sync_diagnostic::tests::',
     'initial-supervision': INITIAL + 'supervision::tests::',
     'initial-watchdog': INITIAL + 'tests::',
     'initial-cli': 'interfaces::serve::tests::initial_ingest_startup_requires_an_explicit_flag',
@@ -98,6 +99,9 @@ BINARY_REQUIRED = {
         'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
+        'sync_safe_point_retains_prepared_input_and_grant_until_reauthorization',
+        'sync_wire_phase_requires_renewal_even_with_remaining_time',
+        'sync_safe_point_refuses_failed_revalidation_and_cancellation',
         'renewal_admission_does_not_wait_for_a_timer_tick',
         'admission_is_rechecked_after_a_select_wait',
         'a_short_archive_horizon_defers_instead_of_borrowing_new_budget',
@@ -105,6 +109,16 @@ BINARY_REQUIRED = {
         'external_deadline_and_cancellation_precede_first_nested_poll',
         'nested_phase_publication_keeps_the_absolute_archive_ceiling',
         'a_selected_http_request_retains_its_permit_until_consumed_or_dropped',
+    )),
+    'initial-sync-diagnostic': tuple(BINARY_GROUPS['initial-sync-diagnostic'] + name for name in (
+        'an_expired_operation_never_polls_a_new_effect',
+        'an_in_flight_admission_keeps_its_deadline_and_unknown_outcome',
+        'renewal_does_not_relabel_prior_progress_as_a_new_operation',
+        'pending_admission_and_following_certification_are_distinct',
+        'dropping_a_pending_stage_never_marks_it_returned',
+        'silent_updates_preserve_deadlines_and_do_not_notify',
+        'returned_error_is_distinct_from_pending',
+        'completed_dispatch_does_not_leak_into_later_watchdogs',
     )),
     'initial-supervision': tuple(BINARY_GROUPS['initial-supervision'] + name for name in (
         'parent_watchdog_freezes_sync_stage_before_grace',
