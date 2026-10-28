@@ -486,6 +486,20 @@ installed fixture run without a signing dependency. Source/control PASS alone
 does not establish an installed result.
 Signed history/export remains covered by the separate installed journeys.
 
+The retained case also enables the same bounded writer lifecycle logger as the
+Index COMMIT cases. After independently verified prefix readiness and before the
+catalog fault or source release, one provisioner query records the ClickHouse
+server's microsecond clock under the original15s prefix deadline. Collection
+waits for actual application/client joins, then applies that query-start cutoff
+to both the independent count and row export within the existing8192-row/4MiB/
+30s limits. Later64-workload queries are outside this diagnostic. A failure
+before the cutoff retains the original early terminal capture. Lifecycle pairs
+may remain explicitly `INCOMPLETE`; this diagnostic status is separate from the
+functional retained-history verdict. Query coverage and remote termination or
+exclusion remain `NOT_PROVEN`, and a later case PASS does not resolve the earlier
+Code202 failure. The queue1024/flush512/7500ms profile, writer quota1 and engine
+budgets are unchanged.
+
 ### Installed shared-budget admission behind Index
 
 `p01-first-launch-shared-budget` uses the same candidate, owned engines and

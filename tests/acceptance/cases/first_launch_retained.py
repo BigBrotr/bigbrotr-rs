@@ -6,12 +6,14 @@ import time
 
 from cases.first_launch import MissingPrerequisite, digest, load, require, save
 from cases.first_launch_archive_outage import ArchiveOutageRuntime, STAGES
+from cases.first_launch_index_query_trace import QueryTraceRuntime, query_trace_selection
 from cases import first_launch_index_oracle as index
 from cases import first_launch_retained_oracle as oracle
 from cases import first_launch_retained_native as native
 
 LIMITS = [
     'Fresh actual source3/Archive2/Index2 prefix under the original15s gate; only the catalog route is then closed and joined. Control, Sync and Index retain their actual owners.',
+    'Writer-only lifecycle logging retains the existing1024-row queue/512-row flush threshold/7500ms interval and writer quota1. After independently verified prefix readiness, one ClickHouse clock query records a start-time cutoff before catalog fault/source release under the same15s deadline. After actual joins, the8192-row/4MiB/30s collector applies that cutoff to both count and rows. Later64-workload queries are excluded; incomplete pairs stay diagnostic INCOMPLETE. All-query coverage and remote termination/exclusion remain NOT_PROVEN; this does not close the earlier Code202 cause.',
     'Two bootstrap requests plus one source-dictionary request leave61 event mutation slots. The frozen62 signed events use public fixture keys1/3. Twenty quanta send3 new events; quantum21 sends event61, eligible event62 and proofevent1. The actual prefix must stop at frame1 before any later proof is released.',
     'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Up to100 legitimate emptyEOSE quanta follow or wait at the gate; later quanta are quiet. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
     'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan scheduling needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
@@ -30,7 +32,7 @@ def gate(value, now):
     return value['deadline_ns']/1e9
 
 
-class RetainedRuntime(ArchiveOutageRuntime):
+class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
     retained_boundary = True
     source_cut, publication_revision, request_count = 312, 64, 64
 
@@ -82,6 +84,31 @@ class RetainedRuntime(ArchiveOutageRuntime):
             super().initial()
         finally:
             self.boundary_deadline=None
+
+    def establish_prefix_fault(self, entry, output):
+        verdict=output/'index-prefix-verdict.json'
+        proof=load(verdict)
+        require(proof.get('status')=='PASS' and proof.get('source_through')==3
+            and proof.get('archive_revision')==proof.get('index_revision')==2,
+            'query trace requires independently verified ready prefix')
+        require(not (self.home/'index-prefix.continue').exists(),
+            'query trace prefix source was already released')
+        require(getattr(self,'prefix_deadline',None) is not None and time.monotonic()<self.prefix_deadline,
+            'query trace prefix client deadline expired')
+        observed=self.ch('SELECT toUnixTimestamp64Micro(now64(6)) AS cutoff_us','provisioner',rows=True)
+        require(len(observed)==1 and set(observed[0])=={'cutoff_us'},'query trace prefix clock shape')
+        cutoff=observed[0]['cutoff_us']
+        require(cutoff is not None,'query trace prefix clock missing')
+        selected=query_trace_selection(cutoff)
+        save(self.trace_output/'prefix-scope.json',dict(format='bigbrotr-index-query-trace-prefix/1',
+            scope='prefix_started_queries',query_start_through_us=cutoff,selection=selected,
+            clock='ClickHouse toUnixTimestamp64Micro(now64(6))',clock_role='provisioner',
+            clickhouse_container=self.ch_entry['id'],prefix_verdict_sha256=digest(verdict),
+            source_released=False,catalog_fault=False,collection='after_actual_application_client_joins',
+            all_query_coverage='NOT_PROVEN',termination_or_exclusion='NOT_PROVEN',
+            earlier_code202_cause='UNKNOWN'))
+        self.trace_start_through_us=cutoff
+        return super().establish_prefix_fault(entry,output)
 
     def initial_archive_observation(self, entry, output):
         declared=load(self.home/'retained-request-deadline.json')

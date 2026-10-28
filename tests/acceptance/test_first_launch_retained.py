@@ -14,6 +14,9 @@ from test_first_launch_index import ROOT, schema, metadata_fixture
 from cases import first_launch_retained as case
 from cases import first_launch_retained_oracle as check
 from cases import first_launch_retained_native as native
+from cases.first_launch_archive_outage import ArchiveOutageRuntime
+from cases import first_launch as base
+from test_first_launch import arguments
 from cases import first_launch_index_oracle as index
 from cases import first_launch_restart as source
 from installed_retained_transport import corpus, RetainedEvents, PROFILE
@@ -106,6 +109,80 @@ def saturation_fixture(root):
 
 
 class RetainedBoundaryControls(unittest.TestCase):
+    def prefix_runtime(self,root,clock=100):
+        runtime=case.RetainedRuntime(arguments(root),{})
+        runtime.home=root/'client';runtime.home.mkdir()
+        runtime.trace_output=root/'trace';runtime.trace_output.mkdir()
+        runtime.ch_entry=dict(id='owned-clickhouse')
+        runtime.prefix_deadline=15
+        runtime.ch=Mock(return_value=[dict(cutoff_us=clock)])
+        runtime.collect_query_lifecycle=Mock()
+        output=root/'prefix';output.mkdir()
+        base.save(output/'index-prefix-verdict.json',dict(status='PASS',source_through=3,
+            archive_revision=2,index_revision=2))
+        return runtime,output
+
+    def test_prefix_clock_precedes_fault_and_release_without_live_log_capture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runtime,output=self.prefix_runtime(Path(directory))
+            def fault(*args):
+                scope=base.load(runtime.trace_output/'prefix-scope.json')
+                self.assertEqual((scope['scope'],scope['query_start_through_us']),('prefix_started_queries',100))
+                self.assertEqual(scope['prefix_verdict_sha256'],base.digest(output/'index-prefix-verdict.json'))
+                self.assertEqual(scope['clickhouse_container'],'owned-clickhouse')
+                self.assertEqual(scope['all_query_coverage'],scope['termination_or_exclusion'])
+                self.assertEqual(scope['termination_or_exclusion'],'NOT_PROVEN')
+                self.assertEqual(scope['earlier_code202_cause'],'UNKNOWN')
+                self.assertFalse(scope['source_released']);self.assertFalse(scope['catalog_fault'])
+                self.assertEqual(runtime.trace_start_through_us,100)
+                self.assertFalse(getattr(runtime,'trace_collected',False))
+                self.assertFalse((runtime.home/'index-prefix.continue').exists())
+                return 'existing fault'
+            with patch.object(case.time,'monotonic',return_value=10), \
+                    patch.object(ArchiveOutageRuntime,'establish_prefix_fault',side_effect=fault) as owner:
+                self.assertEqual(runtime.establish_prefix_fault({},output),'existing fault')
+                owner.assert_called_once_with({},output)
+            runtime.ch.assert_called_once_with('SELECT toUnixTimestamp64Micro(now64(6)) AS cutoff_us',
+                'provisioner',rows=True)
+            runtime.collect_query_lifecycle.assert_not_called()
+
+    def test_unverified_released_expired_or_malformed_prefix_cannot_reach_fault(self):
+        for kind in ('failed','wrong-cut','released','expired','clock-shape','missing-clock',
+                     'bool-clock','zero-clock','negative-clock','large-clock','string-clock'):
+            with self.subTest(kind=kind),tempfile.TemporaryDirectory() as directory:
+                runtime,output=self.prefix_runtime(Path(directory))
+                proof=base.load(output/'index-prefix-verdict.json')
+                if kind=='failed':proof['status']='FAIL'
+                if kind=='wrong-cut':proof['source_through']=4
+                base.save(output/'index-prefix-verdict.json',proof)
+                if kind=='released':(runtime.home/'index-prefix.continue').touch()
+                if kind=='expired':runtime.prefix_deadline=10
+                if kind=='clock-shape':runtime.ch.return_value=[dict(cutoff_us=100),dict(cutoff_us=101)]
+                clock={'missing-clock':None,'bool-clock':True,'zero-clock':0,'negative-clock':-1,
+                    'large-clock':2**63,'string-clock':'100'}
+                if kind in clock:runtime.ch.return_value=[dict(cutoff_us=clock[kind])]
+                with patch.object(case.time,'monotonic',return_value=10), \
+                        patch.object(ArchiveOutageRuntime,'establish_prefix_fault') as fault:
+                    with self.assertRaises(ValueError):runtime.establish_prefix_fault({},output)
+                    fault.assert_not_called()
+                self.assertFalse(hasattr(runtime,'trace_start_through_us'))
+                self.assertFalse((runtime.trace_output/'prefix-scope.json').exists())
+                runtime.collect_query_lifecycle.assert_not_called()
+
+    def test_prefix_scope_persistence_failure_keeps_original_unfiltered_cleanup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runtime,output=self.prefix_runtime(Path(directory))
+            with patch.object(case.time,'monotonic',return_value=10), \
+                    patch.object(case,'save',side_effect=OSError('scope storage')), \
+                    patch.object(ArchiveOutageRuntime,'establish_prefix_fault') as fault:
+                with self.assertRaisesRegex(OSError,'scope storage'):runtime.establish_prefix_fault({},output)
+                fault.assert_not_called()
+            self.assertFalse(hasattr(runtime,'trace_start_through_us'))
+            with patch.object(base.Runtime,'stop_container',return_value='joined') as stop:
+                self.assertEqual(runtime.stop_container(dict(service='clickhouse')),'joined')
+                stop.assert_called_once()
+            runtime.collect_query_lifecycle.assert_called_once_with('terminal')
+
     def test_driver_captures_boundary_before_atomic_proof_release(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);state,before,report,events,wires,dump,wanted=saturation_fixture(root)
