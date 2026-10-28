@@ -591,6 +591,16 @@ and queryable with truthful role readiness, without implicit public publishing.
   hysteresis/GC and broad capacity remain at P02-T02/T09 and P08, not wholly
   prerequisite to M1. Preserve the independent Control dependency when stopping
   Archive, rather than stopping their shared PG.
+  Evaluated readiness limitation: the initial Index owner schedules separate
+  dispatch and result-consumption turns at250ms for each historical plan. At64
+  plans, even zero engine latency requires at least31.75s before the final
+  verification, exceeding its unchanged30s whole-sweep freshness bound. The
+  retained-request boundary must report the actual non-Ready observation while
+  independently verifying published64/cut312; that cannot qualify current
+  readiness. This finite writer boundary does not require Ready64 and is not an
+  additional M1 blocker. Any broader current-readiness/scaling requirement belongs
+  to existing P02-T06/T09 follow-through; continuous enabled-Index successor and
+  current-selection readiness remain separately scoped requirements.
 - [ ] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
   empty volumes, follow the tutorial, inspect real listeners and assert zero
   signing/publication calls. Negative control: an unwired role reporting ready

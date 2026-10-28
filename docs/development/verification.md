@@ -423,6 +423,67 @@ This case requires an actual installed execution; the case definition and its
 unit controls are not acceptance evidence. It does not establish automatic
 Archive recovery, generic connection/authentication/TLS failure handling,
 unknown remote outcomes, shared-budget/disk-pressure capacity or complete M1.
+
+### Installed finite retained-request boundary
+
+`p01-first-launch-retained-boundary` reuses the catalog-only outage and the
+unchanged installed application. Supply the ordinary candidate/source/evidence
+arguments and `--native-observer-build /absolute/observer-build`. That separate
+directory must contain `source-manifest.json`, `build-result.json`,
+`ingest-bootstrap-probe-build.json` and `ingest_bootstrap_probe`, produced by the
+maintained `experiments/ingest-registry/build_probe.py --build BUILD --example
+ingest_bootstrap_probe`. The observer receipt, binary, parent build and exact
+source-manifest identity must match the candidate's product source. It is an
+acceptance prerequisite, never part of the production installation. Build and
+run it through the existing isolated build/resource owners; do not borrow a
+different revision's observer.
+
+Two bootstrap producer requests write source1..3 and the source-dictionary
+request writes4..7. The frozen62-event corpus preserves the original first
+signed event (public test key3); the others use public test key1. The first61
+distinct events each write five facts, filling requests4..64 and source8..312.
+Twenty bounded REQs offer three new events each. REQ21 offers event61, eligible
+event62, then an existing proof. Before any later proof is released, a complete
+Control snapshot must retain64 reservations/outcomes, checkpoint64/complete64,
+and61 successful classifications ending at REQ21 frame1. This intermediate
+capture prevents a later current-row update from hiding incorrect advancement
+past the unadmitted event.
+
+An atomic release then permits exactly one proof-only REQ for event1. It advances
+classification61→62 and checkpoint64→65, preserving all64 requests/inputs and
+source312. The peer may send at most100 empty EOSE rounds while gated or after
+the proof, then quiet rounds; it switches to quiet receive after logout for the
+existing orderly-stop check. The original128 connections,3s socket, three-event
+quantum,15s prefix and65s submitted gates remain. No product deadline, credit or
+memory ceiling changes. Missing the declared bounds is a real case failure.
+
+The case requires published Index64/cut312, all640 chunk outcomes and556 literal
+physical rows, while Archive retains revision2/cut3, attempt3, input and custody.
+It records honest non-Ready Index status: current separate250ms dispatch/join
+turns require at least31.75s for64 plans, beyond the unchanged30s whole-sweep
+freshness window. This case does not qualify current readiness over64 plans.
+This evaluated initial-profile limitation belongs to existing P02-T06/T09
+readiness/scaling follow-through; it is not an additional M1 prerequisite for
+the bounded retained-request proof.
+
+After actual application exit0, native close and backend absence, the observer
+opens the original native store through a read-only bind in a separately owned
+networkless512MiB/1CPU container, capped at30s and2MiB output. The independent
+oracle compares all829 native rows,64 original receipts and inputs, producer
+issued=ACK64/retired0, and native sequence1081. The separately gated proof adds
+no native write. Offered overflow leaves no65th reservation, input, fact or ACK;
+the case does not invent an internal refusal token from absent rows. Original
+Archive data/attempts and all82 Control tables retain their exact permitted
+transitions. Dynamic pending bytes, hysteresis, GC, general capacity and recovery
+remain separate requirements; existing ACK/commit-loss evidence is reused.
+
+Portable fixture/refusal controls are in `test_first_launch_retained.py` and run
+with the ordinary acceptance unittest discovery. Corpus authoring/checking uses
+`tests/fixtures/acquisition/retained_requests.py` with isolated
+`secp256k1==0.14.0`: maintained signing plus independent BIP340 verification and
+changed-body/signature refusals. The frozen corpus and its pinned hash let the
+installed fixture run without a signing dependency. Source/control PASS alone
+does not establish an installed result.
 Signed history/export remains covered by the separate installed journeys.
 
 ### Installed shared-budget admission behind Index

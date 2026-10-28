@@ -51,6 +51,8 @@ def custody_lock(path, *, held, expected=None):
 
 class ArchiveOutageRuntime(RestartIndexRuntime):
     inject_content_conflict = False
+    retained_boundary = False
+    source_cut, publication_revision, request_count = 12, 4, 4
 
     def candidate(self):
         for path in (Path(__file__), Path(oracle.__file__)):
@@ -155,6 +157,22 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
             'SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=1 AND classified_events=6') == '1',
             'six durably classified source events', 15, entry, self.client)
 
+    def observed_publication(self, caps):
+        return caps.get("index_publication", {}).get("state") == "ready"
+
+    def validate_roles(self, value, before_us, after_us):
+        oracle.parked_roles(value, self.index_live, before_us, after_us)
+
+    def source_science(self, view, wires, owner, output):
+        return oracle.science(view, self.initialized, load(self.home/"event.jsonl"), wires,
+            self.index_rows, self.state/"data/ingest", owner["released_at_us"])
+
+    def result_fields(self):
+        return dict(format="bigbrotr-installed-archive-outage/1",
+            readiness="archive_unavailable_index_current",
+            source_inputs="four_exact_originals", typed_progress="six_classifications",
+            native_census="NOT_RUN", capacity="NOT_RUN")
+
     def initial_publication(self, entry, output):
         # Use the existing IndexRuntime.live_roles physical-readiness envelope.
         # Publication does not reset its intentional 15s sweep cooldown. The
@@ -176,15 +194,15 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
             self.parked_timing = timing
             caps = {row['capability']: row for row in value['capabilities']}
             return (caps.get('archive_publication', {}).get('reason') == 'dependency_unavailable'
-                    and caps.get('index_publication', {}).get('state') == 'ready')
+                    and self.observed_publication(caps))
         self.wait(parked, 'truthful Archive unavailability and current Index',
                   deadline-time.monotonic(), entry, self.client)
         self.index_live, catalog = self.capture(output, 'catalog-outage')
         after_us = int(self.sql('bigbrotr_control', 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
-        oracle.parked_roles(observations[-1], self.index_live, before_us, after_us)
+        self.validate_roles(observations[-1], before_us, after_us)
         oracle.retained_age(self.prefix_roles, observations[-1], self.prefix_timing, self.parked_timing)
         save(output/'catalog-outage-age.json', dict(prefix=self.prefix_timing, parked=self.parked_timing))
-        oracle.prefix_preservation(self.prefix, self.index_live)
+        oracle.prefix_preservation(self.prefix, self.index_live, retained_boundary=self.retained_boundary)
         third = oracle.archived_prefix(self.prefix, self.index_live)
         index.exact(catalog, self.prefix_catalog)
         index.exact(self.files(self.state/'data/archive'), self.prefix_files)
@@ -227,8 +245,8 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         self.index_rows = {name:self.ch(index.select_rows(self.schema, DATABASE, name), rows=True)
                            for name in index.TARGETS}
         save(output/'clickhouse-outage.json', self.index_rows)
-        save(output/'catalog-outage-live-verdict.json', dict(status='PASS', source_cut=12,
-            archive_revision=2, archive_cut=3, index_revision=4, issued_attempt=3,
+        save(output/'catalog-outage-live-verdict.json', dict(status='PASS', source_cut=self.source_cut,
+            archive_revision=2, archive_cut=3, index_revision=self.publication_revision, issued_attempt=3,
             parent=self.parent, control='same_owner_renewed', native_worker='absent',
             automatic_retry='not_observed', capacity='NOT_RUN'))
 
@@ -253,9 +271,9 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         validate_queued(view, client['observations'], expected_principal=self.enrolled['principal_id'])
         owner = index.only(view['owner_epochs'], role='control')
         wires = [load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
-        wanted = oracle.science(view, self.initialized, load(self.home/'event.jsonl'), wires,
-            self.index_rows, self.state/'data/ingest', owner['released_at_us'])
-        result = index.publication(self.index_live, after, self.index_rows, wanted, self.schema, self.state/'data/index')
+        wanted = self.source_science(view, wires, owner, output)
+        result = index.publication(self.index_live, after, self.index_rows, wanted, self.schema, self.state/'data/index',
+            retained_boundary=self.retained_boundary)
         initialization = bytes.fromhex(digest(self.state/'data/archive/.bigbrotr-initialization/intent.json'))
         body = oracle.retained_input(third, wanted['batches'][2], initialization)
         path = self.state/'data/archive-state'/(index.raw(third['attempt_id'],16).hex()+'.inputs')
@@ -263,7 +281,7 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         require(path.read_bytes() == body and identity['sha256'] == hashlib.sha256(body).hexdigest(),
                 'issued attempt original input differs')
         current_inputs = self.files(self.state/'data/ingest/producer-inputs-v1')
-        require(len(current_inputs) == 4 and all(current_inputs.get(k) == v for k,v in self.prefix_inputs.items()),
+        require(len(current_inputs) == self.request_count and all(current_inputs.get(k) == v for k,v in self.prefix_inputs.items()),
                 'already acknowledged prefix inputs changed')
         census = self.census(output, 'retained-prefix')
         oracle.archive_science(self.prefix, census, wanted)
@@ -272,12 +290,10 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         index.schema_metadata(self.schema, self.state/'data/index', tables, columns)
         save(output/'clickhouse-schema.json', dict(tables=tables, columns=columns))
         index.exact(self.custody(), self.custody_before)
-        result.update(format='bigbrotr-installed-archive-outage/1',
-            readiness='archive_unavailable_index_current',
+        result.update(**self.result_fields(),
             independent_source_and_c_api=False, independent_source_and_clickhouse=True,
             archive_prefix_c_api=True, archive_cut=3, retained_attempt=3,
-            source_inputs='four_exact_originals', typed_progress='six_classifications',
-            native_census='NOT_RUN', archive_recovery='NOT_RUN', capacity='NOT_RUN')
+            archive_recovery='NOT_RUN')
         save(output/'verdict.json', result); self.inputs['archive_outage'] = result
         self.source_unchanged()
 

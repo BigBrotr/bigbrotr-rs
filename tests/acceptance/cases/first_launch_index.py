@@ -204,7 +204,8 @@ class IndexRuntime(Runtime):
         self.schema.inventory()  # Existing independent pinned schema vector.
         original = self.current_owner_view
         def source_view(state, setup):
-            return original(oracle.without_index_owner(state, self.state/'data/index'), setup)
+            return original(oracle.without_index_owner(state, self.state/'data/index',
+                retained_boundary=getattr(self, 'retained_boundary', False)), setup)
         self.current_owner_view = source_view
 
     def prepare_state(self):

@@ -595,7 +595,9 @@ class Runtime:
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
         def quiet():
-            return any(load(path)['number'] >= 3 and not path.with_name(path.name.replace('open', 'closed')).exists()
+            return any(load(path)['number'] >= 3
+                       and (not getattr(self, 'retained_boundary', False) or load(path).get('retained_quiet') is True)
+                       and not path.with_name(path.name.replace('open', 'closed')).exists()
                        for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
         self.wait(quiet, 'quiet controlled receive', 5, entry, self.client)
         (self.home / 'stop-requested').write_text('owned orderly stop\n')
@@ -972,7 +974,8 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
-    archive_outage = getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
+    retained_boundary = getattr(args, 'case', None) == 'p01-first-launch-retained-boundary'
+    archive_outage = retained_boundary or getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
     shared_budget = getattr(args, 'case', None) == 'p01-first-launch-shared-budget'
     index_topology = getattr(args, 'case', None) == 'p01-first-launch-index-topology'
     index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
@@ -997,6 +1000,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if archive_outage:
             from cases.first_launch_archive_outage import (ArchiveOutageRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if retained_boundary:
+            from cases.first_launch_retained import (RetainedRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if shared_budget:
             from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,

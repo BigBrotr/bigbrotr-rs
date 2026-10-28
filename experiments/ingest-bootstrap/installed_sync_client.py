@@ -74,6 +74,11 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
           event_sender=None):
     assert event_sender is None or (signed and not refusals and not window)
     split = None
+    if (directory / 'retained-request-profile.json').exists():
+        assert signed and not refusals and not window and event_sender is None
+        assert not (directory / 'progress-context.json').exists()
+        from installed_retained_transport import RetainedEvents
+        split = RetainedEvents(directory)
     if (directory / 'progress-context.json').exists():
         assert signed and not refusals and not window and event_sender is None
         from installed_progress_transport import SplitEvents, ack_events
@@ -124,9 +129,14 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
-                publish(directory, f'relay-open-{number:03}.json', trace)
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
-                selected = split.select(ident, number) if split is not None else None
+                retained = (directory / 'retained-request-profile.json').exists()
+                if retained:
+                    selected = split.select(ident, number)
+                    trace['retained_quiet'] = selected is None
+                publish(directory, f'relay-open-{number:03}.json', trace)
+                if not retained:
+                    selected = split.select(ident, number) if split is not None else None
                 if (selected is not None if split is not None else signed and (number <= 2 or window_ready)):
                     event = json.loads((directory/'event.jsonl').read_bytes())
                     if split is not None:
