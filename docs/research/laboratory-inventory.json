@@ -73969,6 +73969,14 @@
       "status": "PASS_SELECTED_SCOPE",
       "resources": "Watcher46265 reaped0; driver363534 and watcher363535 absent. Four original provider ZIPs and logs retained. No development engine created.",
       "limits": "Dedicated ignored probes and five macOS platform skips remain NOT_RUN/SKIP, not PASS; full details in existing hosted report."
+    },
+    "verification_in_progress": {
+      "root": ".research/ci-publication-20261026/run-40716894776-exposure",
+      "source": "17cc122842adeac646c2fa5e12fb17fedd8b40ff",
+      "watch_session": 52214,
+      "driver_pid": 457240,
+      "watcher_pid": 457241,
+      "scope": "Single automatic push run; actual terminal qualification pending; no duplicate dispatch."
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -75384,19 +75392,54 @@
         "owner": "index_recovery_resume",
         "status": "PARTIAL_NOT_INTEGRATED_NOT_QUALIFIED",
         "scope": "Finite topology0\u21921/initialIngest1\u21922 Index catch-up; explicit typed revision handoff, retained source lineage and historical receipts. Existing P01-T09 owns acceptance; no parallel plan.",
-        "resources": "Source work only; no engine/build authorized to agent yet.",
+        "resources": "Source author extending SQL-only fixture; no author engines. Root native sessions50789FAIL and39367PASS reaped, both containers stopped/PID0/noOOM, launchers absent, compiler cache released.",
         "acceptance": {
           "worktree": ".research/index-epoch2-acceptance-20261028",
           "branch": "work/index-epoch2-acceptance",
           "base": "e5cfec3ce88c11b3cff88b56f954e3a21623e683",
           "owner": "root",
           "status": "PARTIAL_NOT_INTEGRATED_NOT_QUALIFIED",
-          "valid_evidence": "Initial independent science/tag/Archive-selector delta has51+1 focused controls PASS and critical review at retained source identities. Original two KeyError failures and prelaunch NOT_RUN retained. Subsequent driver/typed-history/current-schema/report changes remain NOT_RUN.",
+          "valid_evidence": "103 relevant combined controls PASS at combined-controls-first.json source hashes; mechanical docs checks PASS. Earlier KeyError/prelaunch results retained. Real SQL/installed NOT_RUN.",
           "evidence": ".research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028",
           "review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-oracle-initial.json",
           "review_sha256": "f160933930a7bd3c043b0813f187e7a08476a2374b14f5e6ed9d330e1a08e9a2",
-          "next": "Merge reviewed coherent product source into this isolated acceptance worktree; complete literal handoff/recovery refusal controls and installed driver review before new candidate execution."
-        }
+          "next": "Finish SQL clone hooks and critical review, then final candidate/real installed qualification.",
+          "revision": "1991131455de80049d5bbc7f81c21c8e1f117596",
+          "uncommitted": "Subsequent SQL clone hooks and1targeted refusal control PASS; full helper integration and actual SQL NOT_RUN."
+        },
+        "source": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
+        "native_qualification": {
+          "root": ".research/initial-index-recovery-qualification-20261028/r5-ace1b52f",
+          "receipt_sha256": "f7ec8ad29339c6d1db0228f8a3feb84b7db844771fcb7b59573a7d0eb8f5d9ad",
+          "status": "PASS_SCOPED_NATIVE_COMPONENTS",
+          "actual_controls": 179,
+          "prior_failure": ".research/initial-index-recovery-qualification-20261028/r4-a4496a44/receipt.json",
+          "external_runs": [
+            "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-a4496a44",
+            "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-ace1b52f"
+          ],
+          "not_run": [
+            "actual SQL handoff guards",
+            "installed epoch2 journey"
+          ]
+        },
+        "installed_build": {
+          "source": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
+          "evidence": ".research/initial-index-recovery-qualification-20261028/installed-ace1b52f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-ace1b52f",
+          "status": "PASS_BUILD_ASSEMBLY_INTAKE",
+          "session": 24463,
+          "container": "bb39bebde5ffd22b0d92559754f3858b31c249922b7a7997796e327e79bbe0f7",
+          "owner": "fb106ccad2c7fbcd70c99ede382de48a",
+          "limits": "Offline2CPU/6GiB/512PIDs;exclusive115cache;space observation remains bounded;no installed engine journey.",
+          "build_receipt_sha256": "3473ddc1ceee1654248078283f6a192ffbbf235eb54ed20b1abb1f5b3f69475a",
+          "resources": "Session24463 reaped0;container stopped/PID0/noOOM;launcher absent;cache released. Actual installed journey NOT_RUN.",
+          "receipt_sha256": "0fc34ba6790e23ce93890f9a4fcc7b047249e84e55725aad69abfc27cf9c14ca",
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-ace1b52f/candidate/candidate-manifest.json",
+          "candidate_manifest_sha256": "39f7362a3d22bd2ddb8fd60cbfbe2cb1233688b4464b5334d1db897d04f2baae",
+          "bundle_sha256": "45ce967db497f2498d1400efa785977acfed6136e6e2e915916e7d2d7229bb9f"
+        },
+        "uncommitted": "SQL clone fixture/helper/controls under author review; no engines."
       }
     }
   },
