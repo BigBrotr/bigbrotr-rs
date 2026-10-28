@@ -37,58 +37,6 @@ pub enum DnsError {
     NoRecords,
 }
 
-#[cfg(test)]
-mod reservation_tests {
-    use super::*;
-    use crate::runtime::{ProcessEnvelope, ResourceLimits, WaiterLimits};
-    use bigbrotr_protocol::endpoint::Endpoint;
-
-    #[tokio::test]
-    async fn funded_view_shares_the_original_dns_gate_and_closes_with_its_scope() {
-        let parent = ResourceBudget::new(
-            ProcessEnvelope::new(
-                16 * 1024 * 1024,
-                0,
-                ResourceLimits::new(16 * 1024 * 1024, 4, 0, 0),
-                WaiterLimits::new(0, 0),
-            )
-            .unwrap(),
-        );
-        let dns = DnsResolver::new("127.0.0.1:53".parse().unwrap(), parent.clone()).unwrap();
-        let scope = parent
-            .try_reserve(ResourceLimits::new(LOOKUP_MEMORY_BYTES, 1, 0, 0))
-            .unwrap();
-        let view = dns.within(scope.budget().clone());
-        let target = Target::new(Endpoint::parse("ws://127.0.0.1:80/").unwrap()).unwrap();
-        let held = dns.connection.try_acquire().unwrap();
-        assert!(matches!(
-            view.resolve(&target, Instant::now() + Duration::from_secs(1))
-                .await,
-            Err(DnsError::Budget)
-        ));
-        drop(held);
-        assert_eq!(
-            view.resolve(&target, Instant::now() + Duration::from_secs(1))
-                .await
-                .unwrap()
-                .addresses(),
-            &["127.0.0.1".parse::<IpAddr>().unwrap()]
-        );
-        drop(scope);
-        assert!(matches!(
-            view.resolve(&target, Instant::now() + Duration::from_secs(1))
-                .await,
-            Err(DnsError::Budget)
-        ));
-        assert!(
-            dns.resolve(&target, Instant::now() + Duration::from_secs(1))
-                .await
-                .is_ok()
-        );
-        assert_eq!(parent.snapshot().active_permits(), 0);
-    }
-}
-
 impl fmt::Display for DnsError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
@@ -281,5 +229,57 @@ impl DnsResolver {
         // Returning, error, timeout or cancellation drops this socket before any
         // resolution resource guard. There is no pool, driver or spawned task.
         response::decode(&frame, request)
+    }
+}
+
+#[cfg(test)]
+mod reservation_tests {
+    use super::*;
+    use crate::runtime::{ProcessEnvelope, ResourceLimits, WaiterLimits};
+    use bigbrotr_protocol::endpoint::Endpoint;
+
+    #[tokio::test]
+    async fn funded_view_shares_the_original_dns_gate_and_closes_with_its_scope() {
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                16 * 1024 * 1024,
+                0,
+                ResourceLimits::new(16 * 1024 * 1024, 4, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let dns = DnsResolver::new("127.0.0.1:53".parse().unwrap(), parent.clone()).unwrap();
+        let scope = parent
+            .try_reserve(ResourceLimits::new(LOOKUP_MEMORY_BYTES, 1, 0, 0))
+            .unwrap();
+        let view = dns.within(scope.budget().clone());
+        let target = Target::new(Endpoint::parse("ws://127.0.0.1:80/").unwrap()).unwrap();
+        let held = dns.connection.try_acquire().unwrap();
+        assert!(matches!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await,
+            Err(DnsError::Budget)
+        ));
+        drop(held);
+        assert_eq!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await
+                .unwrap()
+                .addresses(),
+            &["127.0.0.1".parse::<IpAddr>().unwrap()]
+        );
+        drop(scope);
+        assert!(matches!(
+            view.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await,
+            Err(DnsError::Budget)
+        ));
+        assert!(
+            dns.resolve(&target, Instant::now() + Duration::from_secs(1))
+                .await
+                .is_ok()
+        );
+        assert_eq!(parent.snapshot().active_permits(), 0);
     }
 }
