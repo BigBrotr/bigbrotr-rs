@@ -8,7 +8,7 @@ use super::*;
 use crate::config::acquisition::{SyncArrivalPolicy, authorize_sync_collection};
 use bigbrotr::{
     acquisition::{
-        job::{AcquisitionJobBinding, AcquisitionScan},
+        job::{AcquisitionCandidate, AcquisitionJobBinding, AcquisitionScan},
         observation::StoredObservation,
         preparation::{CapturedEventInput, CapturedInputError},
         receive_clock::ReceiveClock,
@@ -32,7 +32,7 @@ use bigbrotr::{
         },
     },
 };
-use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
+use bigbrotr_model::{JobId, ProducerEpoch, ProducerRequestId, RequestSequence};
 use bigbrotr_protocol::{EventError, EventLimits};
 use std::time::Duration;
 
@@ -49,7 +49,7 @@ pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 /// Preclaim capacity check for the complete fixed finite profile. TLS roots are
 /// already retained by Sync::prepare. Conservatively overlap formation, wire
 /// and admission scratch although those phases normally release some grants.
-pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
+pub(super) fn requirements() -> Result<ResourceLimits> {
     use bigbrotr::acquisition::session::{ActiveRequest, RelaySession, RetainedRelayEvent};
     use bigbrotr_model::LocalObservation;
     let wire = EventLimits::default();
@@ -84,29 +84,73 @@ pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
         // Current DirectConnector and DNS each charge 4MiB. RelayWebSocket
         // charges eight maximum frames plus 1MiB handshake/buffer overhead.
         + 8 * MIB + 8 * wire.wire_bytes as u64 + MIB;
-    drop(
-        budget
-            .try_acquire(
-                ResourceRequest::data(
-                    data,
-                    ITEMS,
-                    event.required_native_bytes().map_err(error)?
-                        + dictionaries.required_native_bytes().map_err(error)?
-                        + ProgressGrant::REQUIRED_NATIVE_BYTES,
-                )
-                .map_err(error)?,
-            )
-            .map_err(error)?,
-    );
+    Ok(ResourceLimits::new(
+        data,
+        ITEMS,
+        event.required_native_bytes().map_err(error)?
+            + dictionaries.required_native_bytes().map_err(error)?
+            + ProgressGrant::REQUIRED_NATIVE_BYTES,
+        0,
+    ))
+}
+
+pub(super) fn preflight(budget: &ResourceBudget) -> Result<()> {
+    let needed = requirements()?;
+    drop(budget.try_reserve(needed).map_err(error)?);
     Ok(())
 }
 
 pub(super) struct Sync {
     connector: DirectConnector,
-    scan: Option<AcquisitionScan>,
+    nomination: Nomination,
     next_request: u64,
     lifecycle: Profile,
     profile: Option<(usize, bool)>,
+}
+
+/// Inert scheduling metadata, not a claim or authority. Keep the exact selected
+/// job across capacity deferral; advancing a scan cannot silently skip it.
+#[derive(Default)]
+struct Nomination {
+    scan: Option<AcquisitionScan>,
+    job: Option<JobId>,
+}
+impl Nomination {
+    fn retain(&mut self, candidate: AcquisitionCandidate) {
+        assert!(
+            self.job.is_none(),
+            "selected job must be consumed before another scan"
+        );
+        self.scan = (!candidate.scan.complete()).then_some(candidate.scan);
+        self.job = candidate.job;
+    }
+    fn reserve(
+        &self,
+        budget: &ResourceBudget,
+    ) -> Result<Option<admission::Admission<ReservedBudget>>> {
+        self.job
+            .map(|_| admission::reserve(budget, requirements()?, "application"))
+            .transpose()
+    }
+    fn take_for_claim(&mut self, cancelled: &AtomicBool) -> Result<Option<JobId>> {
+        if cancelled.load(Ordering::Acquire) {
+            return Ok(None);
+        }
+        self.job
+            .take()
+            .map(Some)
+            .ok_or_else(|| error("dispatch without nomination"))
+    }
+}
+
+fn scan_grant(budget: &ResourceBudget) -> Result<Option<OwnedPermit>> {
+    match budget
+        .try_acquire(ResourceRequest::data(AcquisitionScan::REQUIRED_BYTES, 1, 0).map_err(error)?)
+    {
+        Ok(permit) => Ok(Some(permit)),
+        Err(bigbrotr::runtime::AcquireError::Unavailable) => Ok(None),
+        Err(failure) => Err(error(failure)),
+    }
 }
 
 fn error(error: impl std::fmt::Debug) -> (u8, String) {
@@ -172,7 +216,7 @@ impl Sync {
                 tls,
                 budget.clone(),
             ),
-            scan: None,
+            nomination: Nomination::default(),
             next_request: if lifecycle == Profile::Initial { 3 } else { 1 },
             lifecycle,
             profile: None,
@@ -204,7 +248,16 @@ impl Sync {
         Ok(())
     }
 
-    pub(super) async fn dispatch(&mut self, mut work: Dispatch<'_, '_>) -> Result<()> {
+    /// One bounded read-only scan before reserving a complete round. No job is
+    /// claimed and no source action is issued. Temporary scan-grant pressure
+    /// simply leaves the scan unchanged; it cannot establish full-work debt.
+    pub(super) async fn nominate(&mut self, mut work: Dispatch<'_, '_>) -> Result<()> {
+        if self.nomination.job.is_some() {
+            return Ok(());
+        }
+        let Some(permit) = scan_grant(work.budget)? else {
+            return Ok(());
+        };
         if !work.safe_point(self, false).await? {
             return Ok(());
         }
@@ -215,23 +268,35 @@ impl Sync {
             Stage::Nominate,
             None,
             None,
-            work.commands.owner.nominate_acquisition(
-                self.scan,
-                grant(work.budget, AcquisitionScan::REQUIRED_BYTES, 0)?,
-            ),
+            work.commands
+                .owner
+                .nominate_acquisition(self.nomination.scan, permit),
         )
         .await?
         .map_err(error)?;
-        self.scan = (!candidate.scan.complete()).then_some(candidate.scan);
-        if work.stopped() {
-            return Ok(());
-        }
-        let Some(job) = candidate.job else {
-            return Ok(());
-        };
+        self.nomination.retain(candidate);
+        Ok(())
+    }
+
+    pub(super) fn reserve(
+        &self,
+        budget: &ResourceBudget,
+    ) -> Result<Option<admission::Admission<ReservedBudget>>> {
+        self.nomination.reserve(budget)
+    }
+
+    pub(super) async fn dispatch(
+        &mut self,
+        mut work: Dispatch<'_, '_>,
+        reservation: &ReservedBudget,
+    ) -> Result<()> {
+        let connector = self.connector.within(reservation);
         if !work.safe_point(self, false).await? {
             return Ok(());
         }
+        let Some(job) = self.nomination.take_for_claim(&work.cancel.requested)? else {
+            return Ok(());
+        };
         let job = match commands::sync_operation(
             work.trace,
             work.deadline,
@@ -375,7 +440,7 @@ impl Sync {
                     policy_ttl: ttl,
                     deadline: hard,
                 },
-                &self.connector,
+                &connector,
                 |d, h, endpoint, route| {
                     if endpoint != source.endpoint() || route != source.route() {
                         return Err(OwnerError::InvalidMetadata);
@@ -672,6 +737,116 @@ fn validate_sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn idle_nomination_creates_no_full_work_debt_and_selected_job_survives_waits() {
+        let needed = requirements().unwrap();
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                needed.data_bytes() + needed.native_bytes(),
+                0,
+                needed,
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let held = parent
+            .try_acquire(ResourceRequest::data(needed.data_bytes(), 1, 0).unwrap())
+            .unwrap();
+        let mut selected = Nomination {
+            scan: Some(AcquisitionScan {
+                admission_cut: 40,
+                after_ordinal: 32,
+            }),
+            ..Nomination::default()
+        };
+        // An unavailable read is not proof of an empty scan. It cannot advance
+        // the position, establish work debt or request the full round.
+        let scan = selected.scan;
+        assert!(scan_grant(&parent).unwrap().is_none());
+        assert_eq!(selected.scan, scan);
+        assert!(selected.reserve(&parent).unwrap().is_none());
+        assert_eq!(parent.snapshot().active_permits(), 1);
+        let job: JobId = [17; 16].try_into().unwrap();
+        selected.retain(AcquisitionCandidate {
+            scan: AcquisitionScan {
+                admission_cut: 40,
+                after_ordinal: 40,
+            },
+            job: Some(job),
+        });
+        assert!(selected.scan.is_none()); // Final scan position cannot drop this candidate.
+        let start = Instant::now();
+        let mut waiting = admission::Deferred::default();
+        for seconds in [0, 15, 29] {
+            assert!(matches!(
+                selected.reserve(&parent).unwrap(),
+                Some(admission::Admission::Deferred(_))
+            ));
+            waiting.waiting(admission::Role::Sync, start + Duration::from_secs(seconds));
+            waiting.check(start + Duration::from_secs(seconds)).unwrap();
+            assert_eq!(selected.job, Some(job));
+        }
+        assert!(waiting.check(start + Duration::from_secs(30)).is_err());
+        assert_eq!(selected.job, Some(job));
+        drop(held);
+        let Some(admission::Admission::Granted(round)) = selected.reserve(&parent).unwrap() else {
+            panic!("released physical credit must admit the selected round")
+        };
+        assert!(
+            selected
+                .take_for_claim(&AtomicBool::new(true))
+                .unwrap()
+                .is_none()
+        );
+        assert_eq!(selected.job, Some(job));
+        assert_eq!(
+            selected.take_for_claim(&AtomicBool::new(false)).unwrap(),
+            Some(job)
+        );
+        assert!(selected.take_for_claim(&AtomicBool::new(false)).is_err());
+        assert!(selected.reserve(&parent).unwrap().is_none());
+        drop(round);
+        parent.close();
+        assert!(scan_grant(&parent).is_err()); // Only temporary Unavailable was suppressed.
+    }
+
+    #[test]
+    fn funded_round_keeps_progress_ack_credit_when_parent_is_saturated() {
+        let needed = requirements().unwrap();
+        eprintln!(
+            "{}",
+            json!({"format":"bigbrotr-initial-budget-requirements/1","role":"sync",
+            "scope":"compiled-finite-profile-not-a-capacity-claim",
+            "application":{"data_bytes":needed.data_bytes(),"items":needed.items(),"native_bytes":needed.native_bytes(),"control_bytes":needed.control_bytes()},
+            "retained_tls_data_bytes":TlsPolicy::FILE_ROOTS_BYTES})
+        );
+        let parent = ResourceBudget::new(
+            ProcessEnvelope::new(
+                needed.data_bytes() + needed.native_bytes(),
+                0,
+                needed,
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let scope = parent.try_reserve(needed).unwrap();
+        let progress = ProgressGrant::new(grant(scope.budget(), 2 * MIB, 4096).unwrap()).unwrap();
+        assert!(
+            parent
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .is_err()
+        );
+        let scratch = grant(scope.budget(), EventLimits::default().parse_bytes as u64, 0).unwrap();
+        drop(scratch);
+        drop(scope);
+        assert_eq!(
+            parent.snapshot().used(),
+            ResourceLimits::new(2 * MIB, 1, 4096, 0)
+        );
+        drop(progress);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
 
     #[test]
     fn a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress() {

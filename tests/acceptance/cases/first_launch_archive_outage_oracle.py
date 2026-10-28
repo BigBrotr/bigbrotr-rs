@@ -152,7 +152,9 @@ def prefix_preservation(before, after):
     # checked by the existing independent six-classification progress oracle.
 
 
-def terminal_preservation(live, after, observed_at_us):
+def terminal_preservation(live, after, observed_at_us, *, archive_renewal=False):
+    assert type(archive_renewal) is bool
+    renewing = ('ingest', 'index', 'archive') if archive_renewal else ('ingest', 'index')
     assert set(live) == set(after) and len(live) == 82
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'management_audit'}
     for table in set(live) - mutable:
@@ -166,9 +168,11 @@ def terminal_preservation(live, after, observed_at_us):
                 if table == 'owner_epochs' else row['retired_at_us'] is None)
             changed = ({'xmin', 'retired_at_us'} if active_control else set()) if table == 'role_instances' else (
                 {'xmin', 'state', 'released_at_us', 'lease_expires_at_us', 'exclusion_method', 'exclusion_digest'}
-                if active_control else {'xmin', 'lease_expires_at_us'} if row['state'] == 'active' and row['role'] in ('ingest', 'index') else set())
+                if active_control else {'xmin', 'lease_expires_at_us'} if row['state'] == 'active' and row['role'] in renewing else set())
             index.exact({k:v for k,v in row.items() if k not in changed},
                         {k:v for k,v in other.items() if k not in changed})
+            if table == 'owner_epochs' and not active_control and 'lease_expires_at_us' in changed:
+                assert other['lease_expires_at_us'] >= row['lease_expires_at_us']
             if active_control and table == 'owner_epochs':
                 assert other['state'] == 'released' and other['exclusion_method'] == 'storage_fenced'
                 exclusion = hashlib.sha256(b'bigbrotr/control-exclusion/1\0' + index.raw(row['dataset_id'],16)

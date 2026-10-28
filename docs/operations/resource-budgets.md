@@ -64,12 +64,46 @@ Control reserve is for bounded completion and recovery actions whose progress
 must remain possible under data saturation. Consumers must not classify normal
 data work as control work or borrow the reserve for throughput.
 
+## Finite operation reservations
+
+`try_reserve` atomically charges one complete operation's data, native, item and
+completion allowances to its existing parent budget. An existing waiter in either
+requested lane retains precedence. Only temporary `Unavailable` permits deferral;
+closed, impossible or overflowing requests remain errors. The funded budget has
+fixed limits and no waiter lane. It cannot reserve another operation or move
+capacity between dimensions.
+
+The reservation owner closes child admission when dropped. Unused parent capacity
+then returns immediately, while each surviving child permit retains its exact
+parent charge until destruction. A retained Archive input therefore keeps its own
+allowance without pinning the completed worker's entire allowance. A closed budget
+clone alone owns no parent credit. While the operation remains open, freed child
+credit stays funded for its later phases, including progress COMMIT and native ACK.
+Closing the parent prevents new parent admissions; an already funded operation
+may finish until its reservation owner closes child admission.
+
+The initial combined owner uses these reservations after bounded read-only Sync
+nomination and before its actual claim, or before an Archive publication. A Sync
+scan has its own64KiB grant; temporary scan pressure leaves its position unchanged
+and creates no full-work debt. An actual nominee retains its exact job identity
+across deferral, and claim rechecks its original authority and expiry. Empty Sync
+scans and fresh empty Archive polls cannot interrupt an Index readiness sweep.
+Archive reserves publication and complete-cut capture
+together, including the separate native worker and application completion lane.
+Sync's direct transport uses the funded scope while sharing its original DNS gate
+and TLS owner. Ordinary Control renewal and status retain their existing independent
+ownership. No issued operation's error is converted into a resource retry.
+After a joined Index operation releases its physical credit, deferred work retries
+before an inactive readiness sweep can yield metadata. Successful admission keeps
+the remaining verifier and oldest-read clock; only another failed application
+reservation may discard idle metadata, without touching active/unknown work or
+refreshing a verified observation.
+
 ## Current boundary
 
-The executable's offline configuration resolver uses the same checked process
-envelope. This slice also supplies the ownership primitive and pressure tests;
-PostgreSQL, RocksDB and supervisor consumers remain unimplemented. It does not
-enforce host-wide memory, RSS, CPU, disk, or
-I/O limits; choose shares across unrelated work classes; or define an async
-scheduling policy. Those claims require the concrete owners and process
-boundaries that consume this primitive.
+The executable's configuration resolver and concrete initial PostgreSQL, native,
+network and Index owners use this checked process envelope. Primitive controls
+do not qualify installed shared-budget overlap. This accounting does not enforce
+host-wide memory, RSS, CPU, disk or I/O limits or choose shares across unrelated
+work classes. Those claims require the concrete process boundaries and recorded
+operating evidence.

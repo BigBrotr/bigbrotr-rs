@@ -75674,22 +75674,31 @@
       "hosted_40748115729": {
         "source": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
         "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729",
-        "status": "WATCHING_ACTUAL_QUALIFICATION_PENDING",
+        "status": "TERMINAL providerFAILURE:23 Linux checks PASS; macOS7 required checks NOT_RUN after provider admission cancellation",
         "owner": "ci_resume_verification",
         "evidence": ".research/ci-publication-20261026/run-40748115729-exposure",
         "watch_session": 64002,
-        "watch_processes": [
-          {
-            "pid": 803502,
-            "start_ticks": "659573132"
-          },
-          {
-            "pid": 803503,
-            "start_ticks": "659573133"
-          }
-        ],
+        "watch_processes": "64002 reaped1; driver803502 and watcher803503 absent",
         "preparation_review_sha256": "246b393a7e99435cd66e636861face35f0f3bf6984d6ba040f417474fdb7a47c",
-        "limits": "One automatic run/watch;209 Python/182 native expectations do not qualify actual outcomes."
+        "limits": "One automatic run/watch;209 Python/182 native expectations do not qualify actual outcomes.",
+        "macos": {
+          "job": 123027374081,
+          "conclusion": "cancelled",
+          "runner_id": 0,
+          "steps": [],
+          "artifact": "ABSENT",
+          "required_checks": "7 NOT_RUN",
+          "classification": "Provider runner acquisition failed with three arm64 capacity notices; no executed product/workflow helper verdict or billing attribution",
+          "captures": [
+            "early-macos-job.json",
+            "early-macos-check-run.json",
+            "early-macos-annotations.json"
+          ],
+          "review": "root-provider-admission-review.json",
+          "review_sha256": "8caede5e5fecddec6cdef85b70c7b7ab442098d303bf53399cc11a389873ca5e"
+        },
+        "receipt_sha256": "f5f423ecc7185ca01830114831c334139ced1c6b012f013b89575291c12a9c57",
+        "root_terminal_review_sha256": "9fbc77f06d58365db785cb1c7383343ad78b65f468bf5a93e7a0faf991f01b8d"
       },
       "initial_shared_budget": {
         "worktree": ".research/initial-shared-budget-20261028",
@@ -75697,24 +75706,141 @@
         "base": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
         "owner": "index_recovery_resume",
         "reviewer": "index_restart_resume",
-        "status": "PARTIAL_UNCOMMITTED_UNQUALIFIED",
-        "current_git_changes": [
-          " M apps/bigbrotr/src/config/resolve.rs",
-          " M apps/bigbrotr/src/interfaces/postgres_command.rs",
-          " M apps/bigbrotr/src/interfaces/serve/initial_ingest.rs",
-          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/archive.rs",
-          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs",
-          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/index.rs",
-          " M apps/bigbrotr/src/interfaces/serve/initial_ingest/sync.rs",
-          " M apps/bigbrotr/src/network/dns.rs",
-          " M apps/bigbrotr/src/network/egress.rs",
-          " M apps/bigbrotr/src/runtime/budget.rs",
-          " M apps/bigbrotr/src/runtime/mod.rs",
-          "?? apps/bigbrotr/src/interfaces/serve/initial_ingest/admission.rs"
-        ],
+        "status": "PASS_BOUNDED_INSTALLED; reviewed productc022/testinitializerdfb and acceptance231 ready for coherent main integration/publication",
+        "current_git_changes": "SourceWTclean dfb; acceptanceWTclean231. Mainc7 has root-owned report/checkpoint/inventory/task updates pending coherent integration.",
         "scope": "P01-T09Step5 funded whole-operation pre-effect admission and fair resource deferral. Preserve completion/ACK custody and all post-effect/unknown failure semantics.",
-        "builds_engines": "NOT_RUN",
-        "next": "Finish role wiring/complete resource arithmetic and review focused controls before exact-revision qualification. Root still needs an installed actualIndex-held-grant overlap fixture."
+        "builds_engines": "Correctedc022 native202/build/assembly and installedR2PASS; all processes reaped; no activeengine/compiler",
+        "next": "Integrate/publish qualified increment once, observe actualCI; next Step5 finite64-request history saturation underArchiveoutage.",
+        "acceptance": {
+          "worktree": ".research/initial-shared-budget-acceptance-20261028",
+          "branch": "work/initial-shared-budget-acceptance",
+          "base": "a4c4ab776de15806e52d67f35f488f79cf00dd76",
+          "owner": "index_restart_resume",
+          "reviewer": "root",
+          "status": "Committed clean; independent source review PASS;12 affected controls and retained-capture replay PASS",
+          "scope": "Reuse signed prefix/client, actual owned ClickHouse pause, positive Index-held denial before unpause, matching local join/admission and complete independent science; no new proxy or extended timer.",
+          "revision": "231df211126ac07017cc0b4871039870ddf4421d",
+          "author_review_sha256": "09039db10cff63194119fc3a65521bcd3f99e8f687989c8cf88da670a0e2964c",
+          "root_source_review_sha256": "64492aef8f3c64d3ef96a2dbda82bbfdfa61d6e5228ecdba05456b20f692100f",
+          "recipe_sha256": "9dea6af1eb109fbd36f63d1a257edb06496bb8dc56d1e51f5b9fafca9ac96866"
+        },
+        "revision": "23f9d7e1aa121abee05165429104172285ed2377",
+        "author_receipt_sha256": "f358ab0c5e8da839eb45c1a903ba8325b10f43fd5876c708b9428eccfaeab7bf",
+        "critical_review_sha256": "053c5c632b09e3faa3bc66f16e2457694340f6780858fb7b934040598374b1f3",
+        "native": {
+          "evidence": ".research/initial-index-recovery-qualification-20261028/r9-23f9d7e1",
+          "run_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-23f9d7e1",
+          "session": 24425,
+          "container": "27ad40c1ca4a734bf2cb78a9c6eb5e72b599ef3810d53d531a25bf8671e4b6ab",
+          "owner": "cffb52c06cf547cb9c0a6152a8ddcded",
+          "scope_forecast": "199=116lib+83bin, not an executed result",
+          "review_reuse": "Prior full review, mechanical guard/test placement and same Reservation borrow; renewedPython8PASS for check order only",
+          "status": "PASS;24425 reaped0, owned container exited0/PID0/noOOM; cache released and independently reacquired",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/r9-23f9d7e1/receipt.json",
+          "receipt_sha256": "c1a5ed3480446556b0459187ce6a46226f9a85c3db42b0ffe8bea05743dc7d36",
+          "actual_controls": 199,
+          "library_controls": 116,
+          "binary_controls": 83,
+          "groups": 32
+        },
+        "native_failures": [
+          {
+            "evidence": ".research/initial-index-recovery-qualification-20261028/r7-e9da758a",
+            "run_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-e9da758a",
+            "session": 67763,
+            "container": "21d796bfceed16d70017d71d565ef6d4462e21e208c9316f92aa0febacee1c72",
+            "owner": "d25c6bbc13ea4702b1b6042f4415333b",
+            "prelaunch_failure": "prelaunch-r1-failure.json; incorrect evidence path, no compiler started, owned created container removed after verification; all artifacts retained",
+            "status": "FAIL_STATIC_CHECKS",
+            "receipt_sha256": "4667103ee7ccce15711bacf08c8d8c1a1b8b69f51bd312935c3cb9991dae1876",
+            "classification": "compile and compile-tests PASS; strictClippy two collapsible_if FAIL;199 controls NOT_RUN; stopped, reaped, cache released"
+          },
+          {
+            "evidence": ".research/initial-index-recovery-qualification-20261028/r8-eeb2ba3e",
+            "run_root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-eeb2ba3e",
+            "session": 30497,
+            "container": "037ce2ed6d369a042a99c0bb8011cf18dc9c921c374a1d38f15adc36e5ad42ad",
+            "owner": "536a613266e646998d664d891fe8e184",
+            "prior_review_reused": "Only two mechanical let-chain fixes aftere9; unchanged scopedPython8PASS and prior criticalreview reused",
+            "status": "FAIL_STATIC_CHECKS",
+            "receipt_sha256": "1433ae3e4bacc492cc1136319f2838161bfbfb550fac9705208a92ba8dbd074e",
+            "classification": "compile/testcompilePASS; binaryClippyFAIL2; all selected controlsNOT_RUN; stopped/reaped/cache released"
+          }
+        ],
+        "critical_review_followups": {
+          "path": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-shared-budget-source-followups-23f9.json",
+          "sha256": "4903209899bf31a21a6315b35d7811b590363152c2f7723cf5e8762652ec6db2"
+        },
+        "installed_build": {
+          "source": "23f9d7e1aa121abee05165429104172285ed2377",
+          "session": 33081,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-23f9d7e1",
+          "evidence": ".research/initial-index-recovery-qualification-20261028/installed-23f9d7e1",
+          "status": "PASS;33081 reaped0, container exited0/PID0/noOOM, cache released; assembly35517 reaped0",
+          "container": "bb4148cf6f0319c27fe734b9dc82bf227ead20b27487fca31abd7ebe39079bb6",
+          "launcher_pid": 841407,
+          "receipt_sha256": "7d3395fbf3235f7882218952d00d0d204a732268df34be6c081504af1a6bd32d",
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-23f9d7e1/candidate/candidate-manifest.json",
+          "candidate_sha256": "a385adac0c4944e76d7f0b16b81d2e3b7a03ace2e74aaeaad075412957216370"
+        },
+        "installed_r1": {
+          "status": "FAIL_PRODUCT_REGRESSION",
+          "session": 99993,
+          "evidence": ".research/first-launch-shared-budget-r1-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-shared-budget-r1-session.json",
+          "product": "23f9d7e1aa121abee05165429104172285ed2377",
+          "acceptance": "231df211126ac07017cc0b4871039870ddf4421d",
+          "application_payload_bytes": 889192448,
+          "exit_code": 1,
+          "receipt": ".research/first-launch-shared-budget-r1-20261028/root-terminal.json",
+          "receipt_sha256": "61f0c0bd167bd7322e9c776c213cf60d0dbe8247a0db8971ef14aa51591c3871",
+          "processes": "99993 reaped1;16 owned containers stopped0/PID0/noOOM/unpaused; parent/client absent, borrowedbridgeempty",
+          "failure": "Original prefix readiness TimeoutExpired before controlled pause; actual terminal log wait4 proves empty Sync reservation interrupts unfinished readiness-plan4 and preserves15s cooldown. Installed overlap/publication/export NOT_RUN."
+        },
+        "idle_readiness_repair": {
+          "revision": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+          "status": "Correctedc022 native202/32groups, strictClippy/build/testcompilePASS; fresh installedbuild19627RUNNING",
+          "author_receipt_sha256": "960cf1f510cbb9329e00b8cdaa1d1b6b581262b992ca8ff4d5885632f649b825",
+          "review_receipt_sha256": "c35d20b96c9d82f441c27d74fe8e2fcd41aba62492da4fca97f3a6733c54d8f3",
+          "native": {
+            "session": 21583,
+            "evidence": ".research/initial-index-recovery-qualification-20261028/r10-c0224962",
+            "container": "fb6781779cdbc0f5b58ecfd478c8cf3963620aeb2ba28cac808c29342fa4c1a7",
+            "owner": "13fbe7b06ee94ba791f5e35d66afa3ea",
+            "launcher_pid": 868220,
+            "status": "PASS;21583reaped0;stopped0/PID0/noOOM;cache released/reacquired",
+            "actual_controls": 202,
+            "library_controls": 116,
+            "binary_controls": 86,
+            "receipt_sha256": "be970c019e492ec4f9710e4780c82e341df128867fd5715c7825acdfc82bdd61"
+          },
+          "test_only_followup": {
+            "revision": "dfb3420b721b6b15d0c7cab162c8ebbc3755fa24",
+            "status": "cfg(test)initializer only;rootmechanicalreviewPASS; product/native semanticsc022reused",
+            "review": ".research/initial-shared-budget-20261028/.research/initial-shared-budget-author-20261028/idle-readiness-repair/root-test-initializer-review.json"
+          },
+          "installed_build": {
+            "session": 19627,
+            "status": "PASS;19627reaped0;cache released;assembly86420reaped0",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-c0224962",
+            "evidence": ".research/initial-index-recovery-qualification-20261028/installed-c0224962",
+            "receipt_sha256": "b25752e541ec247f62616ceb08096f2b2f36788de7cbda7462bb4ab3a3644319"
+          }
+        },
+        "installed_r2": {
+          "status": "PASS",
+          "session": 43395,
+          "evidence": ".research/first-launch-shared-budget-r2-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-shared-budget-r2-session.json",
+          "product": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+          "acceptance": "231df211126ac07017cc0b4871039870ddf4421d",
+          "limits": "Identical848MiB/prefix15s/client65s/query5s/operation30s;all3compiledrequirements unchanged",
+          "exit_code": 0,
+          "receipt": ".research/first-launch-shared-budget-r2-20261028/root-terminal.json",
+          "receipt_sha256": "56ef42a668154c6a7923c631b756269a2aafd1d1bbdc0f8866635fb91ad1ff73",
+          "actual_review_sha256": "33c2ea8e7c811d7b038109207abd0b9f52f32e5c225d813396e32faf13782651",
+          "resources": "All19 ownedcontainers stopped0/PID0/noOOM; parent/bothclients absent; borrowedbridge empty. Source/data/logs retained."
+        }
       }
     }
   },

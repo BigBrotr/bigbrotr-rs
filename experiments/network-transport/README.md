@@ -85,9 +85,24 @@ retention of the same prepared signed input and grant across safe-point renewal,
 pre-REQ reauthorization, cancellation/revalidation refusal, refusal before an
 expired operation's first poll, and preservation of a started admission's deadline
 and unknown outcome. Diagnostic progress cannot certify a commit. The binary
-scope contains 71 required names, including parked Archive status retaining its
+scope contains 86 required names, including pre-effect finite-work admission,
+fair deferral, funded ACK completion and Archive publication/capture, plus parked Archive status retaining its
 last published cut or explicit absence. The library selection is combined
-with its actual compiled inventory, never inferred from this source count.
+with its actual compiled inventory, never inferred from this source count. The
+closed library reservation/DNS scope checks atomic parent funding, fixed limits,
+exact retained-result credit, FIFO admission, positive drain and the unchanged
+shared DNS connection gate. These controls do not qualify installed concurrent
+Sync/Archive/Index pressure.
+The capacity controls retain denial/admission identity through watch coalescing,
+explicit overflow and record limits, and actual terminal/cancellation-grace join.
+They do not turn local result consumption into remote query exclusion.
+Idle nomination, retained selected work, fresh Archive polls and post-join
+readiness-credit retry are separately covered; the readiness cache control reads
+an actual empty Rocks source but supplies no ClickHouse verification authority.
+Only the Sync, Archive and Index groups use `--show-output`: each emits one bounded
+`bigbrotr-initial-budget-requirements/1` JSON record with compiled finite-profile
+requirements. These source-bound test logs inform the separately declared
+installed profile; they do not establish a minimum process envelope or capacity.
 Ordinary cache
 tests distinguish a complete current proof from a narrow operation, retain the
 oldest dependency age, refuse historical selection promotion and preserve failures

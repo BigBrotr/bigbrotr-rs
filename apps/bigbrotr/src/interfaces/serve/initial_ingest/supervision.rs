@@ -64,6 +64,10 @@ pub(super) async fn collect<T>(
                 }
             },
             result = &mut *worker => break (result, false),
+            _ = std::future::ready(()), if current.capacity.as_ref().is_some_and(|mailbox| mailbox.has_pending()) => {
+                current.capacity.as_ref().unwrap().drain(&mut emit);
+                None
+            },
             result = observed.changed() => {
                 // A closed progress sender can precede JoinHandle readiness.
                 // Await that same worker; never spin or treat it as joined.
@@ -90,6 +94,12 @@ pub(super) async fn collect<T>(
     };
     if let Some(shutdown) = &observed.borrow().shutdown {
         shutdown.stop_admission();
+    }
+    // Also cover a terminal worker winning over watch delivery, including the
+    // actual cancellation-grace join. Safety and join precede formatting.
+    let capacity = observed.borrow().capacity.clone();
+    if let Some(mailbox) = capacity {
+        mailbox.drain(&mut emit);
     }
 
     Collected::Joined {
@@ -138,7 +148,7 @@ where
         let mut stop = Stop::new()?;
         let cancellation = Arc::new(Cancellation::new());
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None, capacity: None,
         });
         let (send_driver, receive_driver) = tokio::sync::oneshot::channel();
         let worker_cancel = cancellation.clone();
@@ -191,6 +201,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let trace = Trace::new(&progress);
         trace.begin(Window {
@@ -276,6 +287,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let result = collect(
             &mut worker,
@@ -309,6 +321,7 @@ mod tests {
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let mut worker = tokio::spawn(async { Ok(json!({"state":"closed"})) });
         tokio::task::yield_now().await;
@@ -353,6 +366,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let result = collect(
             &mut worker,
@@ -387,6 +401,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let result = collect(
             &mut worker,
@@ -487,6 +502,7 @@ mod tests {
             initialized: Some(json!({"state":"initialized"})),
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let result = collect(
             &mut worker,

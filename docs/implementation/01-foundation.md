@@ -577,11 +577,20 @@ and queryable with truthful role readiness, without implicit public publishing.
   [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) records
   the narrow scope and original fixture failures. Automatic recovery and general
   outage/capacity behavior remain open.
-  Include shared application-budget overlap: an active Index operation must not
-  turn transient Sync/Archive pressure into lost acknowledgements or starvation.
-  The initial Index startup preflight covers permanent holders; smaller-envelope
-  concurrent operation qualification remains open. Preserve the independent
-  Control dependency when stopping Archive, rather than stopping their shared PG.
+  The maintained `p01-first-launch-shared-budget` now qualifies one actual Sync
+  wait behind retained Index publication at848MiB on productc0224962/fixture231df211:
+  same-owner admission resumes after positive local join, all82 Control tables and
+  four original inputs are preserved, source12/Archive4/Index4 and the exact signed
+  history/export pass. Empty polls no longer discard initial Index readiness.
+  The same report's `shared_budget_admission` retains the original product FAIL;
+  this is not general resource capacity or an installed Archive-denial matrix.
+  Next qualify the existing finite64-request retained-history boundary during
+  Archive-only outage: no65th reservation/input/native mutation or false ACK,
+  responsive Control, exact admitted Index cut and preserved acknowledged data.
+  Existing real ACK/recovery evidence remains valid; dynamic pending-byte
+  hysteresis/GC and broad capacity remain at P02-T02/T09 and P08, not wholly
+  prerequisite to M1. Preserve the independent Control dependency when stopping
+  Archive, rather than stopping their shared PG.
 - [ ] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
   empty volumes, follow the tutorial, inspect real listeners and assert zero
   signing/publication calls. Negative control: an unwired role reporting ready

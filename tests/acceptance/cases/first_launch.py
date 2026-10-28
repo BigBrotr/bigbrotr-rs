@@ -973,11 +973,12 @@ def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
     archive_outage = getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
+    shared_budget = getattr(args, 'case', None) == 'p01-first-launch-shared-budget'
     index_topology = getattr(args, 'case', None) == 'p01-first-launch-index-topology'
     index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
     index_restart = index_commit or getattr(args, 'case', None) == 'p01-first-launch-index-restart'
     pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
-    index_case = archive_outage or index_topology or index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
+    index_case = shared_budget or archive_outage or index_topology or index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
@@ -996,6 +997,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if archive_outage:
             from cases.first_launch_archive_outage import (ArchiveOutageRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if shared_budget:
+            from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:

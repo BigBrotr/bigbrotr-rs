@@ -1190,6 +1190,83 @@
         "source_hashes": 10,
         "scope": "Independent replay of unchanged maintained oracle chain; no fresh engine/build. Original reviewer import error preserved before correct-alias replay PASS."
       }
+    },
+    "shared_budget_admission": {
+      "status": "PASS_BOUNDED_INSTALLED_SHARED_BUDGET",
+      "scope": "P01-T09 Step5 finite pre-effect Sync/Archive admission and actual Index-held resource overlap; no general capacity claim",
+      "product_revision": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+      "acceptance_revision": "231df211126ac07017cc0b4871039870ddf4421d",
+      "implementation": "Fund complete finite Sync/Archive work before claim/effects; bounded read-only eligibility creates no empty-work debt and retains a selected job across waiting. After actual Index join, retry released credit before any idle readiness-metadata yield; oldest-read/cooldown and current authority remain unchanged.",
+      "native": {
+        "status": "PASS",
+        "source": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+        "controls": 202,
+        "library": 116,
+        "binary": 86,
+        "groups": 32,
+        "receipt": ".research/initial-index-recovery-qualification-20261028/r10-c0224962/receipt.json",
+        "sha256": "be970c019e492ec4f9710e4780c82e341df128867fd5715c7825acdfc82bdd61",
+        "checks": "Strict Clippy, product/test compilation and every selected actual name; prior199 names preserved."
+      },
+      "installed_build": {
+        "status": "PASS",
+        "source": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+        "receipt": ".research/initial-index-recovery-qualification-20261028/installed-c0224962/build-receipt.json",
+        "sha256": "b25752e541ec247f62616ceb08096f2b2f36788de7cbda7462bb4ab3a3644319",
+        "assembly": "PASS maintained exact-source worker-bound bundle; compiler cache optional and exclusive"
+      },
+      "controls": {
+        "status": "PASS",
+        "targeted": 12,
+        "reused_affected": 27,
+        "retained_replay": "PASS structural replay only; synthetic trace cannot prove overlap",
+        "source_review": ".research/initial-shared-budget-acceptance-20261028/.research/shared-budget-acceptance-20261028/root-source-review.json",
+        "sha256": "64492aef8f3c64d3ef96a2dbda82bbfdfa61d6e5228ecdba05456b20f692100f"
+      },
+      "installed_r1": {
+        "status": "FAIL",
+        "evidence": ".research/first-launch-shared-budget-r1-20261028",
+        "receipt_sha256": "61f0c0bd167bd7322e9c776c213cf60d0dbe8247a0db8971ef14aa51591c3871",
+        "failure": "Original15s initial physical-readiness prefix expired before controlled ClickHouse pause. Source3/Archive2/Index2 were present but no verified Index observation.",
+        "diagnosis": ".research/initial-shared-budget-acceptance-20261028/.research/shared-budget-acceptance-20261028/r1-diagnosis.json",
+        "diagnosis_sha256": "1374c274fe9ba7af948114ef67d3b5c099eb0ac03b858ae039e26ccaf5068885",
+        "cause": "Empty Sync polling reserves a full round before read-only nomination. Actual wait4 retains readiness-plan4; after localjoin the scheduler discards its unfinished sweep and preserves15s cooldown. Raw state has zero jobs/scopes. Repeated starvation is a source-level risk, not an observed indefinite run.",
+        "cleanup": "All16 owned containers stopped0/PID0/noOOM/unpaused; parent/client absent; borrowed bridge empty. Data/logs retained."
+      },
+      "not_run": [
+        "A separately captured installed Archive-denial schedule; first baseline Archive wait is not substituted for the selected positive Sync proof",
+        "General RSS/disk/capacity, remote uncertainty or sole-owner/atomic-deficit proof, automatic recovery and complete M1",
+        "Integrated GitHub Actions run for this increment; existing prior hosted evidence remains separately recorded"
+      ],
+      "next": "P01-T09 Step5 finite64-request retained-history boundary under Archive-only outage; retain general pending-byte/GC/capacity owners at P02/P08.",
+      "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.initial_shared_budget",
+      "assembly_revision": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+      "test_only_followup": "dfb3420b721b6b15d0c7cab162c8ebbc3755fa24: identical cfg(test) Capture initializer moved; no assertion/selector/product change. Root mechanical review; c022 semantics reused. Hosted all-target verification remains required.",
+      "prior_native": {
+        "status": "PASS",
+        "controls": 199,
+        "groups": 32,
+        "receipt": ".research/initial-index-recovery-qualification-20261028/r9-23f9d7e1/receipt.json",
+        "sha256": "c1a5ed3480446556b0459187ce6a46226f9a85c3db42b0ffe8bea05743dc7d36",
+        "preserved_failures": "R7/R8 strict Clippy failures before selected test execution; original NOT_RUN remains, including retained prelaunch path error."
+      },
+      "prior_installed_build": {
+        "status": "PASS",
+        "receipt": ".research/initial-index-recovery-qualification-20261028/installed-23f9d7e1/build-receipt.json",
+        "sha256": "7d3395fbf3235f7882218952d00d0d204a732268df34be6c081504af1a6bd32d"
+      },
+      "installed_r2": {
+        "status": "PASS",
+        "stages": 8,
+        "evidence": ".research/first-launch-shared-budget-r2-20261028",
+        "root_receipt": "root-terminal.json",
+        "root_receipt_sha256": "56ef42a668154c6a7923c631b756269a2aafd1d1bbdc0f8866635fb91ad1ff73",
+        "application_payload_bytes": 889192448,
+        "observed": "Actual wait2 Sync full-operation reservation behind retained Index publication7; same Control/job, queued revision2. One paused82-table capture has source12/fourrequests, Archive2/Index2, plan3 with10prepared/20committed chunks. Admission after1,004,080us follows positively consumed localjoin7. Final Archive4/Index4/cut12, forty committed outcomes, all ten typed families and160 metadata rows, four immutable inputs and original353B signed export match independent expectations.",
+        "actual_review": ".research/initial-shared-budget-acceptance-20261028/.research/shared-budget-acceptance-20261028/actual-r2-review.json",
+        "actual_review_sha256": "33c2ea8e7c811d7b038109207abd0b9f52f32e5c225d813396e32faf13782651",
+        "cleanup": "43395reaped0;all19 owned containers stopped0/PID0/noOOM/unpaused; parent and both clients absent; borrowed network empty. Original data/logs retained."
+      }
     }
   }
 }

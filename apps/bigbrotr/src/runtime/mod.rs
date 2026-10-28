@@ -5,5 +5,5 @@ pub mod policy_document;
 
 pub use budget::{
     AcquireError, BudgetSnapshot, DrainError, EnvelopeError, OwnedPermit, ProcessEnvelope,
-    RequestError, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+    RequestError, ReservedBudget, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
 };

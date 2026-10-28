@@ -833,6 +833,8 @@ async fn maintain_context(
         let mut dispatch_due = Instant::now() + sync::INTERVAL;
         let mut index_due = Instant::now();
         let mut publish_due = Instant::now() + archive.as_ref().map_or(Duration::ZERO, archive::Archive::delay);
+        let mut deferred = super::admission::Deferred::default();
+        let mut capacity = super::capacity::Trace::new(dataset, state.owner.identity(), progress);
         state.idle_phase(due)?;
         progress.send_modify(|value| value.initialized = Some(report));
         loop {
@@ -861,20 +863,46 @@ async fn maintain_context(
                         management.renew_delivery(window)?;
                     }
                 },
-                _ = tokio::time::sleep_until(publish_due), if archive.as_ref().is_some_and(|archive| !archive.parked()) => {
+                _ = tokio::time::sleep_until(publish_due), if archive.as_ref().is_some_and(|archive| !archive.parked())
+                    && deferred.allows(super::admission::Role::Archive) => {
                     // The timer may become ready only after select slept near
                     // renewal. No native/Sync effect precedes this recheck.
                     if admission(Instant::now(), due, None) == Admission::Renew {
                         continue;
                     }
+                    let archive = archive.as_mut().expect("selected Archive");
+                    deferred.check(Instant::now())?;
+                    if !archive.needs_work(store.initial()?, &cancellation.requested)? {
+                        publish_due = Instant::now() + archive.delay();
+                        continue;
+                    }
+                    let reservation = match archive.reserve(root, budget)? {
+                        super::admission::Admission::Granted(reservation) => reservation,
+                        super::admission::Admission::Deferred(refusal) => {
+                            let now = Instant::now();
+                            if deferred.waiting(super::admission::Role::Archive, now) {
+                                capacity.denied(super::admission::Role::Archive, refusal,
+                                    state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), now)?;
+                            }
+                            if let Some(index) = state.index.as_deref_mut() {
+                                index.yield_idle_readiness_for_capacity(refusal);
+                            }
+                            // A failed due timer must not remain immediately
+                            // selectable ahead of the Index join which frees it.
+                            publish_due = now + sync::INTERVAL;
+                            continue;
+                        }
+                    };
+                    capacity.admitted(super::admission::Role::Archive, budget.snapshot(), Some(archive.native_snapshot()),
+                        state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), Instant::now());
+                    deferred.admitted(super::admission::Role::Archive);
                     let maximum = state.maximum()?.min(due.saturating_duration_since(Instant::now()));
                     phase(progress, maximum)?;
-                    let archive = archive.as_mut().expect("selected Archive");
                     // A catalog failure can become known to its driver while
                     // joined native cleanup still services private commands.
                     // Old evidence must not remain Ready during that operation.
                     state.archive_observation.verifying = true;
-                    let published = archive.publish(store.initial()?, budget, &mut state, &mut due,
+                    let published = archive.publish(store.initial()?, reservation, &mut state, &mut due,
                         &mut management, &cancellation.requested).await?;
                     state.archive_observation = readiness::ArchiveStatus {
                         publication: archive.observation(),
@@ -886,22 +914,65 @@ async fn maintain_context(
                     publish_due = Instant::now() + if published { sync::INTERVAL } else { archive.delay() };
                     state.idle_phase(due)?;
                 },
-                _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some() => {
+                _ = tokio::time::sleep_until(dispatch_due), if state.sync.is_some()
+                    && deferred.allows(super::admission::Role::Sync) => {
                     // The timer may become ready only after select slept near
                     // renewal. No native/Sync effect precedes this recheck.
                     if admission(Instant::now(), due, None) == Admission::Renew {
                         continue;
                     }
+                    deferred.check(Instant::now())?;
+                    // Nomination is bounded read-only scheduling, not a claim.
+                    // An empty or temporarily unfunded scan creates no work
+                    // debt and cannot cancel a physical readiness sweep.
+                    let selected_sync = state.sync.take().expect("selected Sync");
+                    let trace = sync_diagnostic::Trace::new(progress);
+                    let selected = selected_sync.nominate(sync::Dispatch {
+                        commands: &mut state, writer: store, context, root, budget,
+                        cancel: cancellation, management: &mut management, due: &mut due,
+                        deadline: Instant::now(), trace,
+                    }).await;
+                    state.sync = Some(selected_sync);
+                    trace.finish(selected)?;
+                    state.idle_phase(due)?;
+                    if cancellation.requested.load(Ordering::Acquire) {
+                        return Ok(());
+                    }
+                    if admission(Instant::now(), due, None) == Admission::Renew {
+                        continue;
+                    }
+                    let Some(reserved) = state.sync.as_ref().expect("selected Sync").reserve(budget)? else {
+                        dispatch_due = Instant::now() + sync::INTERVAL;
+                        continue;
+                    };
+                    let reservation = match reserved {
+                        super::admission::Admission::Granted(reservation) => reservation,
+                        super::admission::Admission::Deferred(refusal) => {
+                            let now = Instant::now();
+                            if deferred.waiting(super::admission::Role::Sync, now) {
+                                capacity.denied(super::admission::Role::Sync, refusal,
+                                    state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), now)?;
+                            }
+                            if let Some(index) = state.index.as_deref_mut() {
+                                index.yield_idle_readiness_for_capacity(refusal);
+                            }
+                            dispatch_due = now + sync::INTERVAL;
+                            continue;
+                        }
+                    };
+                    capacity.admitted(super::admission::Role::Sync, budget.snapshot(), None,
+                        state.index.as_deref().map(index::Index::capacity_observation).unwrap_or_default(), Instant::now());
+                    deferred.admitted(super::admission::Role::Sync);
                     // The round retains its bounded frames on this stack. Taking
                     // only this dispatcher reference lets safe points reuse the
                     // same renewal owner, including Sync's policy validator.
                     let selected_sync = state.sync.take().expect("selected Sync");
                     let trace = sync_diagnostic::Trace::new(progress);
                     let result = selected_sync.dispatch(sync::Dispatch {
-                        commands: &mut state, writer: store, context, root, budget,
+                        commands: &mut state, writer: store, context, root, budget: reservation.budget(),
                         cancel: cancellation, management: &mut management, due: &mut due,
                         deadline: Instant::now(), trace,
-                    }).await;
+                    }, &reservation).await;
                     state.sync = Some(selected_sync);
                     trace.finish(result)?;
                     state.source_observation.refresh(store, &cancellation.requested);
@@ -923,6 +994,7 @@ async fn maintain_context(
                     // for Sync, before the parent joins the actual executor.
                     let tick = tokio::time::timeout_at(deadline, index.tick(
                         state.owner, store.initial()?, deadline.into_std(), &cancellation.requested,
+                        !deferred.any(),
                     )).await.map_err(|_| (4, "initial Index deadline; preserve original outcome".into()))??;
                     index_due = Instant::now() + match tick {
                         index::Tick::Busy | index::Tick::Installed | index::Tick::Published => sync::INTERVAL,
@@ -1236,6 +1308,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let end = Instant::now() + Duration::from_secs(1);
         phase_capped(&progress, Duration::from_secs(5), Some(end)).unwrap();

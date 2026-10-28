@@ -13,6 +13,7 @@ use std::{path::Path, time::Duration};
 use tokio_postgres::Client;
 pub(super) use transport::ConnectError;
 pub(super) const DRIVER_DRAIN: Duration = Duration::from_secs(2);
+pub(super) const CATALOG_EXTRA_BYTES: u64 = 64 * 1024 * 1024;
 type CliResult<T> = Result<T, (u8, String)>;
 pub(super) type DriverHandle = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
 pub(super) fn prepare(
@@ -75,7 +76,13 @@ pub(super) fn prepare_catalog_as(
     password_reference: &str,
     budget: &ResourceBudget,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
-    prepare_catalog_as_with_extra(config, user, password_reference, budget, 64 * 1024 * 1024)
+    prepare_catalog_as_with_extra(
+        config,
+        user,
+        password_reference,
+        budget,
+        CATALOG_EXTRA_BYTES,
+    )
 }
 
 pub(super) fn prepare_catalog_as_with_extra(

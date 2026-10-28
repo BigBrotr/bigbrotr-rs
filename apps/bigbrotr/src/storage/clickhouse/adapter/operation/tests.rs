@@ -54,6 +54,12 @@ fn unknown_join_and_caller_drop_keep_the_actual_remote_reservation() {
         slot: Arc::clone(&slot),
         operation: id,
     };
+    assert_eq!(caller.identity(), id);
+    assert_eq!(
+        caller.identity().incarnation(),
+        ProcessIncarnation::try_from([0x19; 16]).unwrap()
+    );
+    assert_eq!(caller.identity().sequence().get(), 1);
     drop(caller);
     assert_eq!(slot.unresolved_query(), Some(query));
     assert_eq!(budget.snapshot().active_permits(), 1);

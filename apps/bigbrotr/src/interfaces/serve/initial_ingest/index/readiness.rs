@@ -123,6 +123,16 @@ impl Readiness {
         // Do not reset last_attempt: new publication/input cannot force repeated
         // 1..N scans. Only the independent cooldown permits another sweep.
     }
+    pub(super) fn yield_for_capacity(
+        &mut self,
+        application_refused: bool,
+        active: bool,
+        unknown: bool,
+    ) {
+        if application_refused && !active && !unknown {
+            self.abandon();
+        }
+    }
     pub(super) fn expired(&self, now: AuthorityTick) -> bool {
         self.capture.as_ref().is_some_and(|capture| {
             now.elapsed_since(capture.started)

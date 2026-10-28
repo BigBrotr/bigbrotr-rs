@@ -1,6 +1,8 @@
 //! Explicit initial lifetimes. The worker never returns a live native handle.
+mod admission;
 mod archive;
 pub(super) mod archive_catch_up;
+mod capacity;
 mod commands;
 mod dictionaries;
 pub(super) mod index;
@@ -20,7 +22,8 @@ use crate::{
 };
 use bigbrotr::{
     runtime::{
-        OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+        OwnedPermit, ProcessEnvelope, ReservedBudget, ResourceBudget, ResourceLimits,
+        ResourceRequest, WaiterLimits,
     },
     storage::{
         indexer::custody::IndexDriverCustody,
@@ -90,6 +93,7 @@ struct Progress {
     initialized: Option<Value>,
     shutdown: Option<management::Shutdown>,
     sync: Option<sync_diagnostic::Record>,
+    capacity: Option<Arc<capacity::Mailbox>>,
 }
 struct Cancellation {
     requested: AtomicBool,
@@ -241,7 +245,7 @@ pub(super) fn run(
         // Keep the sender across both phases. Closing it after preparation can
         // otherwise look like terminal owner loss before its JoinHandle is ready.
         let (progress, mut observed) = watch::channel(Progress {
-            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None,
+            deadline: Instant::now() + timeout, phase: None, initialized: None, shutdown: None, sync: None, capacity: None,
         });
         let prepare_root = root.clone();
         let prepare_budget = budget.clone();
@@ -349,6 +353,12 @@ fn prepare(
     initial.index = index
         .then(|| index::Index::prepare(root, budget, true))
         .transpose()?;
+    if sync {
+        // Permanent startup holders cannot be treated as temporary pressure.
+        // This check issues no operation; each real round acquires and keeps
+        // its own complete reservation after read-only nomination, before claim.
+        sync::preflight(budget)?;
+    }
     let path = Path::new(required(root, "storage.ingest_root")?);
     if !path.is_absolute()
         || !path
@@ -538,6 +548,13 @@ async fn own(
     if let Some(archive) = &custody.archive {
         phase(&progress, timeout)?;
         bounded(timeout, &cancellation, archive.require(&mut custody.owner)).await?;
+        let admission::Admission::Granted(startup) = archive.reserve(&root, &budget)? else {
+            return Err((
+                3,
+                "initial Archive cannot coexist with retained startup owners".into(),
+            ));
+        };
+        drop(startup);
     }
     let mut domains = Vec::with_capacity(9);
     for kind in 1..=9 {
@@ -689,6 +706,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         let error = phase(&progress, std::time::Duration::from_secs(5)).unwrap_err();
         assert_eq!(error.0, 4);
@@ -714,6 +732,7 @@ mod tests {
             initialized: None,
             shutdown: None,
             sync: None,
+            capacity: None,
         });
         phase(&progress, std::time::Duration::from_secs(5)).unwrap();
         let prior = progress.borrow().phase.unwrap();

@@ -1,5 +1,6 @@
 //! Independent metadata/scheduling refusals. These tests create no physical
-//! proof, native source, PG owner or recovered writer and do not qualify CH.
+//! proof, PG owner or recovered writer and do not qualify CH. The capacity
+//! control uses an actual empty native source only to populate inert cache data.
 use super::*;
 use bigbrotr_model::{DatasetId, Digest256, PolicyEpoch, RecoveryGenerationId, TopologyGeneration};
 
@@ -195,6 +196,140 @@ fn readiness_abandon_does_not_reset_attempt_cooldown_or_erase_a_failure() {
         Some(Failure::Dependency)
     );
     assert!(state.observation(false, false, false).verified.is_none());
+}
+
+#[test]
+fn deferred_work_retries_released_credit_before_idle_yield_and_keeps_observation_clocks() {
+    use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits};
+    use bigbrotr::storage::rocks::{RocksNativeLimits, RocksNativeSettings};
+    let root = tempfile::tempdir().unwrap();
+    let native = ResourceBudget::new(
+        ProcessEnvelope::new(
+            128 * MIB,
+            0,
+            ResourceLimits::new(0, 1, 128 * MIB, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let limits = RocksNativeLimits::new(RocksNativeSettings {
+        block_cache_bytes: 32 * MIB,
+        write_buffer_manager_bytes: 16 * MIB,
+        per_cf_write_buffer_bytes: 2 * MIB,
+        max_total_wal_bytes: 16 * MIB,
+        max_open_files: 32,
+        max_background_jobs: 2,
+        native_allowance_bytes: 128 * MIB,
+    })
+    .unwrap();
+    let store = IngestStore::initialize(
+        &root.path().join("db"),
+        manifest(),
+        limits,
+        native
+            .try_acquire(ResourceRequest::data(0, 1, 128 * MIB).unwrap())
+            .unwrap(),
+    )
+    .unwrap();
+    let source = store
+        .observe_source_head(store.manifest(), &AtomicBool::new(false))
+        .unwrap();
+    let now = SuspendAwareClock.read().unwrap();
+    let binding = IndexBinding::new(
+        source.identity().dataset_id,
+        [6; 16].try_into().unwrap(),
+        [7; 16].try_into().unwrap(),
+        [8; 16].try_into().unwrap(),
+        Digest256::from_bytes([9; 32]),
+        Digest256::from_bytes([10; 32]),
+        IndexProvenance::Off,
+    )
+    .unwrap();
+    // Inert cache fixture, not an engine verification or publication capability.
+    let mut state = Readiness {
+        last_attempt: Some(now),
+        last_tick: Some(now),
+        verified: Some(VerifiedObservation {
+            source,
+            revision: 0,
+            generation: binding.generation(),
+            storage_incarnation: binding.storage_incarnation(),
+            started: now,
+        }),
+        capture: Some(Capture {
+            source,
+            binding,
+            owner: IndexOwnerIdentity {
+                resource: binding.resource(),
+                epoch: OwnerEpoch::new(1).unwrap(),
+                incarnation: [11; 16].try_into().unwrap(),
+            },
+            state: IndexRecoveryState {
+                published_revision: 0,
+                published_plan: None,
+                published_handoff: None,
+                pending_plan: None,
+            },
+            profile: Profile {
+                delay: INTERVAL,
+                source_records: 64,
+                source_bytes: MIB as usize,
+                rows: 20_000,
+                wire_bytes: 16 * MIB,
+                query_memory: 256 * MIB,
+                provenance: IndexProvenance::Off,
+                configured: [64, MIB, 1],
+            },
+            started: now,
+        }),
+        ..Readiness::default()
+    };
+    let parent = ResourceBudget::new(
+        ProcessEnvelope::new(
+            100,
+            0,
+            ResourceLimits::new(100, 4, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let metadata = parent
+        .try_acquire(ResourceRequest::data(10, 1, 0).unwrap())
+        .unwrap();
+    let physical = parent
+        .try_acquire(ResourceRequest::data(60, 1, 0).unwrap())
+        .unwrap();
+    let request = ResourceLimits::new(60, 1, 0, 0);
+    assert_eq!(
+        parent.try_reserve(request).unwrap_err(),
+        AcquireError::Unavailable
+    );
+    state.yield_for_capacity(true, true, false); // Active owner cannot lose its capture.
+    drop(physical); // Model returned result credit; this creates no Index worker.
+    let round = parent.try_reserve(request).unwrap(); // Retry fits with metadata retained.
+    state.yield_for_capacity(false, false, false); // No failed retry, no idle yield.
+    state.yield_for_capacity(true, false, true); // Unknown/parked owner remains untouched.
+    assert_eq!(state.capture.as_ref().unwrap().started, now);
+    assert_eq!(state.capture.as_ref().unwrap().source, source);
+    assert_eq!(state.last_attempt, Some(now));
+    assert_eq!(state.verified.unwrap().started, now);
+    assert!(!state.due(now));
+    drop(round);
+    // Only a genuinely failed application retry at the idle boundary may yield.
+    let held = parent
+        .try_acquire(ResourceRequest::data(80, 1, 0).unwrap())
+        .unwrap();
+    assert_eq!(
+        parent.try_reserve(request).unwrap_err(),
+        AcquireError::Unavailable
+    );
+    state.yield_for_capacity(true, false, false);
+    assert!(state.capture.is_none());
+    assert_eq!(state.last_attempt, Some(now));
+    assert_eq!(state.last_tick, Some(now));
+    assert_eq!(state.verified.unwrap().source, source);
+    assert_eq!(state.verified.unwrap().started, now);
+    drop((metadata, held));
 }
 
 #[test]
