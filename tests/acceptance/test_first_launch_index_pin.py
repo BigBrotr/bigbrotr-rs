@@ -32,8 +32,9 @@ def timeline():
     claim=dict(claim_id='\\x'+'aa'*16,lease_id=lease,dataset_id=dataset,topology_generation=0,shard_id=0,
         owner_epoch=1,first_sequence=1,last_sequence=12,purpose='reader',state='active',
         released_at_us=None,release_reason=None)
-    reader=dict(pid=302,backend_start='2026-10-27T00:00:01+00:00',usename='bigbrotr_archive_read',
-        datname='bigbrotr_catalog',application_name='bigbrotr-archive-cut',wait_event_type=None,blocking_pids=[])
+    reader=dict(pid=302,backend_start='2026-10-27T00:00:01+00:00',backend_start_us=100_300_000,
+        usename='bigbrotr_archive_read',datname='bigbrotr_catalog',application_name='bigbrotr-archive-cut',
+        wait_event_type='Lock',blocking_pids=[303],waiting_on_relation=True)
     blocker=dict(pid=303,backend_start='2026-10-27T00:00:02+00:00',relation=900)
     samples=[]
     for now in (100_500_000,102_100_000,103_100_000):
@@ -42,8 +43,7 @@ def timeline():
             control_backend=dict(pid=301,backend_start=owner['control_backend_start']),
             parent=parent.copy(),worker=worker.copy(),lease=copy.deepcopy(original),pin=pin.copy(),
             claims=[claim.copy()],reader=reader.copy()))
-    samples[1]['blocker']=blocker.copy()
-    samples[2]['blocker']=blocker.copy()
+    for sample in samples: sample['blocker']=blocker.copy()
     samples[1]['reader'].update(wait_event_type='Lock',blocking_pids=[303])
     samples[1]['owner']['lease_expires_at_us']=104_000_000
     samples[2]['worker']=None
@@ -55,8 +55,13 @@ def timeline():
     samples[2]['reader'].update(wait_event_type='Lock',blocking_pids=[303])
     roles=[dict(observed_at_us=str(now),capabilities=[dict(state='unavailable',reason='dependency_unavailable')]*2)
            for now in (103_150_000,103_200_000)]
-    return dict(samples=samples,arm_clock_us=100_000_000,baseline_owner=owner,parent=parent,worker=worker,reader=reader,blocker=blocker,
-        post_expiry_roles=roles,post_clock_us=103_300_000,reader_terminal=[],blocker_terminal=[],phase_started_ns=1_000_000_000)
+    gate_reader=dict(reader,pid=305,backend_start='2026-10-27T00:00:00.9+00:00',backend_start_us=100_150_000,
+        wait_event_type='Client',blocking_pids=[],waiting_on_relation=False)
+    gate=copy.deepcopy(samples[0]);gate.update(now_us=100_250_000,started_ns=10_200_000_000,
+        finished_ns=10_300_000_000,reader=gate_reader.copy(),blocker=None)
+    return dict(samples=samples,gate_sample=gate,gate_reader=gate_reader,discovery_observations=1,
+        arm_clock_us=100_000_000,baseline_owner=owner,parent=parent,worker=worker,reader=reader,blocker=blocker,
+        post_expiry_roles=roles,post_clock_us=103_300_000,gate_terminal=[],reader_terminal=[],blocker_terminal=[],phase_started_ns=1_000_000_000)
 
 
 class ShortPinControls(unittest.TestCase):
@@ -78,8 +83,50 @@ class ShortPinControls(unittest.TestCase):
         result=case.verify_schedule(timeline())
         self.assertEqual(result['status'],'PASS')
         self.assertEqual(result['original_pin_lifetime_us'],2_900_000)
-        self.assertEqual(result['blocked_observations'],1)
+        self.assertEqual(result['blocked_observations'],2)
         self.assertEqual(result['unknown_cleanup'],'NOT_RUN')
+
+    def test_precheck_gate_and_actual_waiter_are_distinct_and_require_relation_proof(self):
+        observed=timeline()
+        self.assertNotEqual(observed['gate_reader']['pid'],observed['reader']['pid'])
+        self.assertEqual(case.verify_schedule(observed)['status'],'PASS')
+        self.assertIsNone(case.select_waiter([],observed['blocker'],100_100_000))
+        self.assertEqual(case.select_waiter([observed['reader']],observed['blocker'],100_100_000),observed['reader'])
+        mutations=(dict(pid=True),dict(usename='other'),dict(datname='other'),dict(application_name='other'),
+            dict(backend_start_us=100_099_999),dict(wait_event_type='Client'),dict(blocking_pids=[]),
+            dict(waiting_on_relation=False),dict(waiting_on_relation=1))
+        for change in mutations:
+            with self.subTest(change=change),self.assertRaises(ValueError):
+                case.select_waiter([dict(observed['reader'],**change)],observed['blocker'],100_100_000)
+        with self.assertRaises(ValueError):
+            case.select_waiter([observed['reader'],dict(observed['reader'],pid=306)],observed['blocker'],100_100_000)
+        for change in (
+            lambda e:e['samples'][0].update(reader=e['gate_reader']),
+            lambda e:e['samples'][1]['reader'].update(pid=306),
+            lambda e:e['samples'][1]['reader'].update(backend_start='reused'),
+            lambda e:e['samples'][1]['reader'].update(backend_start_us=100_400_000),
+            lambda e:e['samples'][1]['reader'].update(waiting_on_relation=False),
+            lambda e:e['samples'][0]['reader'].update(backend_start_us=101_000_000),
+            lambda e:e['gate_sample'].update(worker=None),
+            lambda e:e['samples'][0].update(worker=None),
+            lambda e:e['worker'].update(ppid=999),
+            lambda e:e['gate_sample']['reader'].update(pid=306),
+            lambda e:e.update(gate_terminal=[e['gate_reader']]),
+            lambda e:e.update(discovery_observations=94),
+        ):
+            changed=copy.deepcopy(observed);change(changed)
+            with self.subTest(change=change),self.assertRaises((AssertionError,ValueError)):
+                case.verify_schedule(changed)
+
+    def test_discovery_refuses_reused_blocker_before_binding_reader(self):
+        evidence=timeline()
+        runtime=case.ShortPinRuntime.__new__(case.ShortPinRuntime)
+        value=dict(blocker=dict(evidence['blocker'],backend_start='reused'),readers=[evidence['reader']])
+        with patch.object(runtime,'bounded_sql',return_value=value),patch.object(runtime,'worker') as worker:
+            with self.assertRaises(AssertionError):
+                runtime.sample(evidence['gate_sample']['lease']['lease_id'],None,evidence['parent'],evidence['worker'],
+                    999999999,evidence['blocker'],acquired=100_100_000)
+            worker.assert_not_called()
 
     def test_deadline_and_lifecycle_counterexamples_refuse(self):
         changes = (

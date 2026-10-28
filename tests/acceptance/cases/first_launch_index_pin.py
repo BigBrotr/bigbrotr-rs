@@ -50,18 +50,47 @@ def number(value):
     return value
 
 
+def reader_identity(reader, acquired):
+    require(number(reader['pid']) > 0 and isinstance(reader['backend_start'],str)
+            and reader['backend_start'] and number(reader['backend_start_us']) >= number(acquired)
+            and reader['usename'] == 'bigbrotr_archive_read'
+            and reader['datname'] == 'bigbrotr_catalog'
+            and reader['application_name'] == 'bigbrotr-archive-cut', 'actual newly admitted native reader')
+
+
+def select_waiter(readers, blocker, acquired):
+    """One actual relation waiter, independently discovered after the setup gate."""
+    require(len(readers) <= 1, 'ambiguous native reader waiter')
+    if not readers:
+        return None
+    reader, = readers
+    reader_identity(reader, acquired)
+    require(reader['wait_event_type'] == 'Lock' and reader['waiting_on_relation'] is True
+            and number(blocker['pid']) in reader['blocking_pids'], 'actual reader blocked by owned relation lock')
+    return reader
+
+
 def verify_schedule(evidence):
     """Independent finite timeline checks; no expected value copied from native rows."""
     samples = evidence['samples']
-    require(3 <= len(samples) <= 96, 'pin observation count')
+    require(2 <= len(samples) <= 95 and number(evidence['discovery_observations']) >= 1
+            and evidence['discovery_observations']+len(samples) <= 96, 'pin observation count')
     first, final = samples[0], samples[-1]
+    gate = evidence['gate_sample']
     for identity in (evidence['parent'],evidence['worker']):
         for key in ('pid','ppid','start_ticks'):
             require(number(identity[key]) > 0, 'positive process identity')
-    for identity in (evidence['reader'],evidence['blocker']):
+    require(evidence['worker']['ppid'] == evidence['parent']['pid']
+            and evidence['worker']['pid'] != evidence['parent']['pid'], 'actual native child of the retained parent')
+    for identity in (evidence['gate_reader'],evidence['reader'],evidence['blocker']):
         require(number(identity['pid']) > 0 and isinstance(identity['backend_start'],str), 'backend identity')
-    original = first['lease']
+    original = gate['lease']
     expiry, acquired = (number(original[k]) for k in ('expires_at_us','acquired_at_us'))
+    reader_identity(evidence['gate_reader'], acquired)
+    oracle.exact(gate['reader'], evidence['gate_reader'])
+    oracle.exact(gate['worker'], evidence['worker'])
+    require(gate['blocker'] is None and gate['now_us'] < expiry, 'live precheck gate before blocker')
+    oracle.exact(select_waiter([first['reader']],evidence['blocker'],acquired), evidence['reader'])
     require(number(evidence['arm_clock_us']) <= acquired, 'no earlier hidden probe')
     require(0 < expiry-acquired <= 3_000_000 and first['pin']['requested_ttl_us'] > 5_000_000,
             'original pin must be the shorter owner-capped deadline')
@@ -83,11 +112,12 @@ def verify_schedule(evidence):
     # independently checked100ms PG/local clock tolerance. Request-start
     # cancellation may precede stored PG expiry, but not this lower bound.
     earliest_expiry = expiry-600_000
-    expected_authority = [first['owner'][k] for k in AUTHORITY]
+    expected_authority = [gate['owner'][k] for k in AUTHORITY]
     oracle.exact(expected_authority,[evidence['baseline_owner'][k] for k in AUTHORITY])
     blocked = []
     offsets = []
-    for sample in samples:
+    observations = [gate, *samples]
+    for sample in observations:
         now = number(sample['now_us'])
         for row,keys in ((sample['owner'],('epoch','control_backend_pid','acquired_at_us','lease_expires_at_us')),
                 (sample['lease'],('frontier_revision','topology_generation','lease_revision','acquired_at_us','updated_at_us','expires_at_us','archive_pin_protocol')),
@@ -108,16 +138,17 @@ def verify_schedule(evidence):
         require([sample['lease'][k] for k in PIN_FIXED] == [original[k] for k in PIN_FIXED]
                 and sample['pin'] == first['pin'], 'original pin must not renew or change')
         oracle.exact(sample['parent'],evidence['parent'])
-        if sample is not first:
+        if sample is not gate:
             oracle.exact(sample['blocker'], evidence['blocker'])
         reader = sample['reader']
         if reader is not None:
-            require(number(reader['pid']) == evidence['reader']['pid']
-                    and reader['backend_start'] == evidence['reader']['backend_start']
-                    and reader['usename'] == 'bigbrotr_archive_read'
-                    and reader['datname'] == 'bigbrotr_catalog'
-                    and reader['application_name'] == 'bigbrotr-archive-cut', 'actual selected native reader')
-            if (reader['wait_event_type'] == 'Lock' and evidence['blocker']['pid'] in reader['blocking_pids']
+            identity = evidence['gate_reader'] if sample is gate else evidence['reader']
+            reader_identity(reader, acquired)
+            require(reader['backend_start_us'] <= now, 'reader backend started after observation')
+            require(all(reader[k] == identity[k] for k in ('pid','backend_start','backend_start_us')),
+                    'actual selected native reader identity changed')
+            if (sample is not gate and reader['wait_event_type'] == 'Lock'
+                    and reader['waiting_on_relation'] is True and evidence['blocker']['pid'] in reader['blocking_pids']
                     and sample['worker'] is not None and now < expiry):
                 blocked.append(sample)
         if sample['worker'] is None:
@@ -146,7 +177,7 @@ def verify_schedule(evidence):
             require(claims[0]['release_reason'] == 'reader_joined'
                     and type(claims[0]['released_at_us']) is int, 'joined claim release')
     require(all(a['now_us'] < b['now_us'] and a['finished_ns'] < b['started_ns']
-                for a,b in zip(samples,samples[1:])), 'monotonic sample order')
+                for a,b in zip(observations,observations[1:])), 'monotonic sample order')
     # PG wall time and local monotonic brackets must admit one offset within
     #100ms. A wall-clock step cannot masquerade as either deadline expiring.
     require(max(a for a,_ in offsets)-min(b for _,b in offsets) <= 100_000, 'clock mapping changed')
@@ -161,7 +192,7 @@ def verify_schedule(evidence):
     # whose policy ticket begins before it. Its5s action deadline is therefore
     # no earlier than original expiry+1.5s; later policy polls only advance it.
     # The100ms clock tolerance above still leaves a discriminating margin.
-    require(final['owner']['lease_expires_at_us'] > first['owner']['lease_expires_at_us']
+    require(final['owner']['lease_expires_at_us'] > gate['owner']['lease_expires_at_us']
             and final['owner']['lease_expires_at_us'] > expiry+3_000_000,
             'same authority renewed past the unchanged original pin')
     require(final['finished_ns']-evidence['phase_started_ns'] < 30_000_000_000,
@@ -172,7 +203,8 @@ def verify_schedule(evidence):
     require(len(post) >= 2 and all(expiry <= int(value['observed_at_us']) <= number(evidence['post_clock_us'])
             and len(value['capabilities']) == 2 and all(cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
                     for cap in value['capabilities']) for value in post), 'no Ready after expired full probe')
-    require(evidence['reader_terminal'] == [] and evidence['blocker_terminal'] == [], 'catalog backends must actually end')
+    require(evidence['gate_terminal'] == [] and evidence['reader_terminal'] == []
+            and evidence['blocker_terminal'] == [], 'catalog backends must actually end')
     return dict(status='PASS',original_pin_lifetime_us=expiry-acquired, blocked_observations=len(blocked),
         admission_skew_ceiling_us=500_000,clock_tolerance_us=100_000,
         same_control_authority_renewed=True,native_joined=True,reader_pin='released',
@@ -301,15 +333,24 @@ class ShortPinRuntime(IndexRuntime):
         require(len(found) == len(children) == 1, 'one actual native reader child')
         return found[0]
 
-    def sample(self, lease_id, reader_pid, parent, worker, deadline, blocker=None):
+    def sample(self, lease_id, reader_pid, parent, worker, deadline, blocker=None, acquired=None):
         require(lease_id.startswith('\\x') and len(lease_id) == 34
                 and all(c in '0123456789abcdef' for c in lease_id[2:]), 'observed lease identity')
-        require(type(reader_pid) is int and reader_pid > 0, 'reader backend PID')
         started = time.monotonic_ns()
         blocker_sql = 'NULL'
+        waiting_relation = 'false'
         if blocker is not None:
             pid, relation = number(blocker['pid']),number(blocker['relation'])
             blocker_sql = f"(SELECT json_build_object('pid',a.pid,'backend_start',a.backend_start,'relation',{relation}) FROM pg_stat_activity a WHERE a.pid={pid} AND EXISTS (SELECT 1 FROM pg_locks l WHERE l.pid=a.pid AND l.locktype='relation' AND l.relation={relation} AND l.database=(SELECT oid FROM pg_database WHERE datname='bigbrotr_catalog') AND l.mode='AccessExclusiveLock' AND l.granted))"
+            waiting_relation = f"EXISTS (SELECT 1 FROM pg_locks l WHERE l.pid=a.pid AND l.locktype='relation' AND l.relation={relation} AND l.database=(SELECT oid FROM pg_database WHERE datname='bigbrotr_catalog') AND NOT l.granted)"
+        if reader_pid is None:
+            require(blocker is not None and type(acquired) is int, 'waiter discovery needs original admission and blocker')
+            predicate = ("a.datname='bigbrotr_catalog' AND a.usename='bigbrotr_archive_read' "
+                         "AND a.application_name='bigbrotr-archive-cut' AND a.wait_event_type='Lock' "
+                         f"AND {pid}=ANY(pg_blocking_pids(a.pid))")
+        else:
+            require(type(reader_pid) is int and reader_pid > 0, 'reader backend PID')
+            predicate = f'a.pid={reader_pid}'
         query = f"""SELECT json_build_object(
           'blocker',{blocker_sql},
           'now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
@@ -320,10 +361,18 @@ class ShortPinRuntime(IndexRuntime):
           'lease',(SELECT row_to_json(l) FROM control.snapshot_leases l WHERE lease_id=decode('{lease_id[2:]}','hex')),
           'pin',(SELECT row_to_json(p) FROM control.archive_snapshot_pins p WHERE lease_id=decode('{lease_id[2:]}','hex')),
           'claims',(SELECT coalesce(json_agg(c ORDER BY claim_id),'[]') FROM control.retention_claims c WHERE lease_id=decode('{lease_id[2:]}','hex')),
-          'reader',(SELECT json_build_object('pid',pid,'backend_start',backend_start,'usename',usename,
-              'datname',datname,'application_name',application_name,'wait_event_type',wait_event_type,
-              'blocking_pids',pg_blocking_pids(pid)) FROM pg_stat_activity WHERE pid={reader_pid}));"""
+          'readers',(SELECT coalesce(json_agg(r ORDER BY pid),'[]') FROM (
+              SELECT a.pid,a.backend_start,(EXTRACT(EPOCH FROM a.backend_start)*1000000)::bigint AS backend_start_us,
+              a.usename,a.datname,a.application_name,a.wait_event_type,pg_blocking_pids(a.pid) AS blocking_pids,
+              {waiting_relation} AS waiting_on_relation FROM pg_stat_activity a WHERE {predicate} ORDER BY a.pid LIMIT 2) r));"""
         value = self.bounded_sql('bigbrotr_control',query,deadline)
+        readers = value.pop('readers')
+        if reader_pid is None:
+            oracle.exact(value['blocker'],blocker)
+            value['reader'] = select_waiter(readers,blocker,acquired)
+        else:
+            require(len(readers) <= 1, 'one recorded reader backend')
+            value['reader'] = readers[0] if readers else None
         value.update(parent=process_identity(parent['pid']),worker=self.worker(parent,worker))
         value.update(started_ns=started,finished_ns=time.monotonic_ns())
         return value
@@ -391,8 +440,11 @@ class ShortPinRuntime(IndexRuntime):
             selected = [row for row in pins if row['lease_id'] not in old]
             require(len(selected) == 1, 'one new full-probe pin')
             lease_id = selected[0]['lease_id']
-            first = self.sample(lease_id,held['backend_pid'],parent,worker,deadline)
-            timeline.update(worker=worker,reader=first['reader']); timeline['samples'].append(first)
+            gate = self.sample(lease_id,held['backend_pid'],parent,worker,deadline)
+            require(gate['reader'] is not None, 'actual precheck gate backend')
+            reader_identity(gate['reader'],gate['lease']['acquired_at_us'])
+            save(target/'gate-sample.json',gate)
+            timeline.update(worker=worker,gate_reader=gate['reader'],gate_sample=gate)
             save(target/'timeline.json',timeline)
             # Start an independently owned session. A server idle timeout bounds
             # its lock even if the local docker-exec wrapper becomes unknown.
@@ -413,10 +465,29 @@ class ShortPinRuntime(IndexRuntime):
                 save(target/'timeline.json',timeline)
                 self.proxy_send(self.pin_proxy,'release\n')
                 self.proxy_event(self.pin_proxy,'released',min(1,deadline-time.monotonic()))
-                expiry = first['lease']['expires_at_us']
+                expiry = gate['lease']['expires_at_us']
+                # Native attachment closes the gated PostgreSQL precheck before
+                # opening DuckLake metadata connections. Discover the real SQL
+                # waiter independently, retaining the same actual child custody.
+                discovery = []
                 while True:
-                    require(len(timeline['samples']) < 96 and time.monotonic() < deadline, 'pin observation deadline')
-                    sample = self.sample(lease_id,held['backend_pid'],parent,worker,deadline,timeline['blocker'])
+                    require(len(discovery) < 95 and time.monotonic() < deadline, 'waiter discovery deadline')
+                    sample = self.sample(lease_id,None,parent,worker,deadline,timeline['blocker'],
+                        acquired=gate['lease']['acquired_at_us'])
+                    discovery.append(sample); save(target/'waiter-discovery.json',discovery)
+                    oracle.exact(sample['worker'],worker)
+                    require(sample['now_us'] < expiry and sample['lease']['state'] == 'active',
+                            'actual waiter must be observed under the original live pin')
+                    if sample['reader'] is not None:
+                        timeline['discovery_observations'] = len(discovery)
+                        timeline['reader'] = sample['reader']
+                        timeline['samples'].append(sample)
+                        save(target/'timeline.json',timeline)
+                        break
+                    time.sleep(.01)
+                while True:
+                    require(len(discovery)+len(timeline['samples']) < 96 and time.monotonic() < deadline, 'pin observation deadline')
+                    sample = self.sample(lease_id,timeline['reader']['pid'],parent,worker,deadline,timeline['blocker'])
                     timeline['samples'].append(sample); save(target/'timeline.json',timeline)
                     if (sample['now_us'] >= expiry and sample['worker'] is None and sample['lease']['state'] == 'released'
                             and sample['owner']['lease_expires_at_us'] > expiry+3_000_000):
@@ -442,7 +513,8 @@ class ShortPinRuntime(IndexRuntime):
                 require(blocker.returncode == 0 and not (target/'blocker.stderr').read_bytes(), 'owned blocker rollback')
             # The backend may have remained lock-waiting after local child reap;
             # require its actual disappearance only after releasing our lock.
-            for key,identity in (('reader_terminal',timeline['reader']),('blocker_terminal',timeline['blocker'])):
+            for key,identity in (('gate_terminal',timeline['gate_reader']),('reader_terminal',timeline['reader']),
+                                 ('blocker_terminal',timeline['blocker'])):
                 while True:
                     rows = self.bounded_sql('bigbrotr_catalog',f"SELECT coalesce(json_agg(json_build_object('pid',pid,'backend_start',backend_start)),'[]') FROM pg_stat_activity WHERE pid={number(identity['pid'])}",deadline)
                     timeline[key] = rows; save(target/'timeline.json',timeline)

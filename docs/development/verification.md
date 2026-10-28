@@ -388,7 +388,18 @@ under its aggregate64MiB/180s and16-active-connection bounds, then frames only t
 explicit reader accepted after arming. Complete baseline catalog preparation
 therefore cannot exhaust the fault reader's separate20,000-frame admission.
 The selected connection ordinal and actual backend PID must match the held gate;
-pre-arm readers are never retroactively selected. Serial completed baseline sessions
+pre-arm readers are never retroactively selected. That first connection is a setup
+barrier: the native worker checks immutable catalog bindings through PostgreSQL,
+detaches that connection, then attaches DuckLake. The gate's backend identity and
+live pin sample are retained separately. After releasing it, the observer must
+discover exactly one actual relation-lock waiter with the expected reader role,
+database, application, original pin admission lower bound and owned blocker.
+The same worker ELF/PID/PPID/start and singleton child inventory remain held;
+the discovered waiter PID/backend-start is then fixed for every expiry sample.
+The owned relation lock must actually block that waiter near the original pin
+deadline. A gate marker, absent precheck backend or merely live child cannot
+substitute for this proof. Discovery consumes the same 96-observation and phase
+budgets; it cannot restart or extend the pin window. Serial completed baseline sessions
 release connection slots only after transport closure; cumulative traffic remains
 bounded. The active connection ceiling and peak are reported explicitly.
 
