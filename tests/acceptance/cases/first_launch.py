@@ -961,9 +961,10 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
-    index_restart = getattr(args, 'case', None) == 'p01-first-launch-index-restart'
+    index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
+    index_restart = index_commit or getattr(args, 'case', None) == 'p01-first-launch-index-restart'
     pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
-    index_case = pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
+    index_case = index_commit or pin_release or getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
@@ -973,6 +974,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if pin_release:
             from cases.first_launch_index_pin_release import (PinReleaseRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if index_commit:
+            from cases.first_launch_index_commit import (IndexCommitRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
@@ -992,8 +996,10 @@ def first_launch(args, checks, inputs):
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
                 ('signed_acquisition', runtime.initial)]
         if index_restart:
-            operations += [('index_restart_baseline', runtime.index_restart_baseline),
-                ('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
+            operations += [('index_restart_baseline', runtime.index_restart_baseline)]
+            if index_commit:
+                operations += [('index_publication_commit_loss', runtime.index_commit_fault)]
+            operations += [('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
         operations += [('ordinary_history_export', runtime.ordinary)]

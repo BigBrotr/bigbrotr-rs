@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Owned plaintext loopback lab only: interrupt one selected archive COMMIT.
+"""Owned plaintext loopback lab only: interrupt one selected native/Control COMMIT.
 
 DuckLake uses several native connections and commits during attach. Target only
 the publication INSERT by default, or explicitly the scientific schema or guard
@@ -20,12 +20,14 @@ MAX_WIRE = 64 * 1024 * 1024
 OPAQUE_CHUNK = 64 * 1024
 SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\.)*"?DUCKLAKE_TABLE"?\s+(?:VALUES|\()')
 PIN_RELEASE_QUERY = b"UPDATE control.snapshot_leases SET state='released',lease_revision=lease_revision+1,updated_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='reader_joined' WHERE lease_id=$1::bytea AND lease_revision=$2::text::numeric AND state='active'"
+INDEX_PUBLICATION_QUERY = b"UPDATE control.consumers SET current_revision=$2::text::numeric,current_topology_generation=$3::text::numeric\n        WHERE consumer_id=$1::bytea AND current_revision IS NOT DISTINCT FROM $4::text::numeric"
 
 CONTROL_TARGETS = {
     'control-coordinator': b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS(',
     'control-frontier': b'INSERT INTO CONTROL.ARCHIVE_FRONTIER_SNAPSHOTS(',
     'control-pin': b'INSERT INTO CONTROL.ARCHIVE_SNAPSHOT_PINS(',
     'control-pin-release': PIN_RELEASE_QUERY,
+    'control-index-publication': INDEX_PUBLICATION_QUERY,
     'control-pin-recovery': b'INSERT INTO CONTROL.ARCHIVE_PIN_RECOVERIES(',
     'control-session-issue': b'INSERT INTO CONTROL.BROWSER_SESSIONS(',
     'control-session-revoke': b'UPDATE CONTROL.BROWSER_SESSIONS SET REVOKED_AT_US=',
@@ -39,8 +41,8 @@ CONTROL_TARGETS = {
 
 
 def control_target_query(target, query):
-    if target == 'control-pin-release':
-        return query == PIN_RELEASE_QUERY
+    if target in ('control-pin-release','control-index-publication'):
+        return query == CONTROL_TARGETS[target]
     return query.upper().startswith(CONTROL_TARGETS[target])
 
 
@@ -109,6 +111,41 @@ class SessionCommandObserver:
         return False
 
 
+class IndexPublicationObserver(SessionCommandObserver):
+    """Closed plan3 Bind identity; never log credentials or arbitrary parameters."""
+    def __init__(self, consumer):
+        super().__init__('control-index-publication')
+        self.expected = (bytes.fromhex(consumer),b'3',b'0',b'2')
+
+    def frontend(self, tag, body, *, eligible=True):
+        super().frontend(tag,body,eligible=eligible)
+        if tag == b'B' and self.bound:
+            portal,statement,tail = body.split(b'\0',2)
+            if portal or len(statement) > 64:
+                raise ValueError('index-bind-name')
+            offset = 0
+            def take(size):
+                nonlocal offset
+                if size < 0 or offset+size > len(tail):
+                    raise ValueError('index-bind-length')
+                value = tail[offset:offset+size]; offset += size
+                return value
+            def count(): return struct.unpack('!H',take(2))[0]
+            formats = count()
+            if formats not in (1,4) or any(count() != 1 for _ in range(formats)) or count() != 4:
+                raise ValueError('index-bind-formats')
+            values = []
+            for _ in range(4):
+                size, = struct.unpack('!i',take(4))
+                if not 0 <= size <= 64:
+                    raise ValueError('index-bind-value')
+                values.append(take(size))
+            results = count()
+            if results not in (0,1) or any(count() != 1 for _ in range(results)) or offset != len(tail):
+                raise ValueError('index-bind-results')
+            self.bound = tuple(values) == self.expected
+
+
 class ResumeAuthorityObserver:
     """Identify actual extended Execute, not preparation or unrelated binds."""
     QUERY = b'SELECT control.require_export_execution_authority($1::bytea)'
@@ -142,7 +179,8 @@ class ResumeAuthorityObserver:
 class Proxy:
     def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default', *,
                  upstream_port=5432, catalog_manager=None, catalog_reader=None,
-                 catalog_database=None, defer_arm=False, hold_pin_release=False):
+                 catalog_database=None, defer_arm=False, hold_pin_release=False,
+                 index_consumer=None, hold_index_publication=False):
         self.mode = mode
         self.target = target
         if type(upstream_port) is not int or not 1 <= upstream_port <= 65535:
@@ -161,13 +199,22 @@ class Proxy:
         if target == 'control-pin-release' and mode not in ('before-forward', 'after-complete'):
             raise ValueError('pin-release-mode')
         if defer_arm and not (mode in ('hold-reader-query', 'hold-capture-verify', 'hold-capture-rollback')
-                              or target == 'control-pin-release'):
+                              or target in ('control-pin-release','control-index-publication')):
             raise ValueError('defer-arm-mode')
         self.defer_arm = defer_arm
         if type(hold_pin_release) is not bool or (hold_pin_release and not (
                 target == 'control-pin-release' and defer_arm)):
             raise ValueError('hold-pin-release-profile')
         self.hold_pin_release = hold_pin_release
+        if target == 'control-index-publication':
+            if (mode not in ('before-forward','after-complete') or not defer_arm or profile != 'default'
+                    or not isinstance(index_consumer,str) or not re.fullmatch('[0-9a-f]{32}',index_consumer)
+                    or index_consumer == '0'*32 or hold_index_publication is not True):
+                raise ValueError('index-publication-profile')
+        elif index_consumer is not None or hold_index_publication:
+            raise ValueError('index-publication-target')
+        self.index_consumer = index_consumer
+        self.hold_index_publication = hold_index_publication
         self.armed = not defer_arm
         self.target_selected = False
         if target == 'control-producer-progress' and mode not in ('pass', 'before-forward', 'after-complete'):
@@ -213,6 +260,9 @@ class Proxy:
     def emit(self, event, **extra):
         if self.hold_pin_release:
             extra['hold_pin_release'] = True
+        if self.hold_index_publication:
+            extra.update(hold_index_publication=True,index_consumer=self.index_consumer,
+                         index_revision=3,index_previous_revision=2,index_topology=0)
         if self.target == 'control-producer-progress':
             extra.setdefault('backend_pid', self.progress_backend_pid)
         if self.profile != 'default':
@@ -243,7 +293,8 @@ class Proxy:
         return True
 
     async def hold(self, stage, backend_pid):
-        selected_release = self.hold_pin_release and stage == 'pin-release-update'
+        selected_release = ((self.hold_pin_release and stage == 'pin-release-update')
+                            or (self.hold_index_publication and stage == 'index-publication-update'))
         if not self.armed or (self.mode != 'hold-' + stage and not selected_release) or self.held:
             return True
         assert backend_pid is not None
@@ -378,10 +429,15 @@ class Proxy:
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
         progress_target = self.target == 'control-producer-progress'
         release_target = self.target == 'control-pin-release'
+        index_target = self.target == 'control-index-publication'
         progress_session = object() if progress_target else None
         progress_transaction = False
         session_commands = SessionCommandObserver(self.target) if self.target in (
             'control-session-issue', 'control-session-revoke', 'control-producer-progress', 'control-pin-release') else None
+        if index_target:
+            if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
+                raise ValueError('index-publication-backend')
+            session_commands = IndexPublicationObserver(self.index_consumer)
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
 
@@ -420,21 +476,22 @@ class Proxy:
                         return
                 if session_commands is not None:
                     if frontend:
-                        session_commands.frontend(tag, body, eligible=(not release_target or
+                        session_commands.frontend(tag, body, eligible=(not (release_target or index_target) or
                             (self.armed and not self.target_selected)))
                     elif session_commands.backend(tag, body):
-                        if release_target:
+                        if release_target or index_target:
                             if not self.target_selected:
                                 if not progress_transaction or state['backend_pid'] is None:
                                     raise ValueError('pin-release-transaction')
                                 self.target_selected = True
                                 state['data'] = True
                                 self.report['data_queries'] += 1
-                                self.emit('pin-release-update-complete', backend_pid=state['backend_pid'])
+                                stage = 'index-publication-update' if index_target else 'pin-release-update'
+                                self.emit(stage+'-complete', backend_pid=state['backend_pid'])
                                 # Withhold this exact UPDATE1 completion. The
                                 # owner may independently check joined native
                                 # custody before permitting the real COMMIT.
-                                if not await self.hold('pin-release-update', state['backend_pid']):
+                                if not await self.hold(stage, state['backend_pid']):
                                     return
                         elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
@@ -497,7 +554,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -596,7 +653,7 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target):
+                if not frontend and (progress_target or release_target or index_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                     elif tag == b'Z':
@@ -748,6 +805,9 @@ if __name__ == '__main__':
     parser.add_argument('--defer-arm', action='store_true', help='Forward baseline traffic until one explicit arm line')
     parser.add_argument('--hold-pin-release', action='store_true',
                         help='Opt-in deferred release target: hold its eligible UPDATE1 completion before COMMIT')
+    parser.add_argument('--index-consumer', help='Exact retained Index consumer hex for the closed revision2 to3 publication')
+    parser.add_argument('--hold-index-publication', action='store_true',
+                        help='Hold the exact bound Index head UPDATE1 before its COMMIT fault')
     try:
         args = parser.parse_args()
         if not re.fullmatch(r'[1-9][0-9]{0,4}', args.upstream_port):
@@ -755,7 +815,8 @@ if __name__ == '__main__':
         sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile,
             upstream_port=int(args.upstream_port), catalog_manager=args.catalog_manager,
             catalog_reader=args.catalog_reader, catalog_database=args.catalog_database,
-            defer_arm=args.defer_arm, hold_pin_release=args.hold_pin_release).run()))
+            defer_arm=args.defer_arm, hold_pin_release=args.hold_pin_release,
+            index_consumer=args.index_consumer,hold_index_publication=args.hold_index_publication).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)

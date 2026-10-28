@@ -352,7 +352,7 @@ def engine_digest(table, plan, chunks):
     return hashlib.sha256(data).digest()
 
 
-def validate_metadata(state, root, *, complete=False, owner_count=1):
+def validate_metadata(state, root, *, complete=False, owner_count=1, publication_fault=None):
     """Check the entire observed Index owner/plan/head before any scoped view.
 
     Intermediate captures may contain one complete prepared plan. The final
@@ -362,7 +362,8 @@ def validate_metadata(state, root, *, complete=False, owner_count=1):
     assert {r['role'] for r in state['owner_epochs']} <= {'control', 'ingest', 'archive', 'index'}
     assert {r['consumer_role'] for r in state['consumers']} <= {'archive', 'index'}
     assert len([r for r in state['consumers'] if r['consumer_role'] == 'archive']) <= 1
-    assert type(owner_count) is int and owner_count in (1, 2, 3)
+    assert publication_fault in (None,'before-forward','after-complete')
+    assert type(owner_count) is int and owner_count in ((1,2,3) if publication_fault is None else (2,3,4))
     owners = sorted((r for r in state['owner_epochs'] if r['role'] == 'index'), key=lambda r:r['epoch'])
     if not owners:
         assert not complete and owner_count == 1 and all(not state[t] for t in INDEX_TABLES)
@@ -404,10 +405,13 @@ def validate_metadata(state, root, *, complete=False, owner_count=1):
     assert consumer['current_topology_generation'] == (0 if head else None)
     if complete:
         assert head == len(plans) == 4
+    if publication_fault is not None:
+        assert (head,len(plans),complete) == ((2+int(publication_fault=='after-complete'),3,False)
+                                             if owner_count==2 else (4,4,True))
     binding = tuple(bytes.fromhex(identity[n]) for n in ('dataset', 'resource', 'generation', 'storage_incarnation', 'table_identity_digest')) + (custody, 1)
     if owner_count > 1:
-        assert complete
-        recovery_sessions(state, binding, owners, sessions, plans)
+        assert complete or publication_fault is not None
+        recovery_sessions(state, binding, owners, sessions, plans,publication_fault=publication_fault)
     assert len(state['projection_chunks']) == len(state['projection_plan_chunks']) == len(state['projection_chunk_bounds']) == 10*len(plans)
     assert len(state['index_frontier_plans']) == head
     revisions = [r for r in state['consumer_frontier_revisions'] if r['consumer_role'] == 'index']
@@ -415,8 +419,10 @@ def validate_metadata(state, root, *, complete=False, owner_count=1):
     assert len(revisions) == len(bounds) == head
     for number, plan in enumerate(plans, 1):
         first, last = RANGES[number-1]
-        origin = owners[(1,1,1,2)[number-1]-1] if owner_count > 1 else owner
-        publisher = owners[(1,1,2,2)[number-1]-1] if owner_count > 1 else owner
+        origins = (1,1,1,3) if publication_fault else (1,1,1,2)
+        publishers = ((1,1,3,3) if publication_fault=='before-forward' else (1,1,2,3)) if publication_fault else (1,1,2,2)
+        origin = owners[origins[number-1]-1] if owner_count > 1 else owner
+        publisher = owners[publishers[number-1]-1] if owner_count > 1 and number <= head else owner
         for field, expected in dict(dataset_id=dataset, consumer_id=consumer['consumer_id'], generation_id=generation['generation_id'],
                 frontier_revision=number, expected_revision=number-1, topology_generation=0, source_shard=0,
                 source_owner_epoch=1, source_first=first, source_last=last, origin_epoch=origin['epoch'],
@@ -487,12 +493,14 @@ def recovery_digest(binding, previous, plans, published, pending):
     return hashlib.sha256(data).digest()
 
 
-def recovery_sessions(state, binding, owners, sessions, plans):
-    """Closed restart history: recover (published2,pending3), then exact retry4."""
+def recovery_sessions(state, binding, owners, sessions, plans, *, publication_fault=None):
+    """Closed retained tuples, including the two actual publication fault branches."""
     attributed = [dict(p, members=[r for r in state['projection_plan_chunks'] if r['plan_digest']==p['plan_digest']]) for p in plans]
     for epoch, session in enumerate(sessions[1:], 2):
         previous, current = owners[epoch-2:epoch]
         published, pending = (2,3) if epoch == 2 else (4,None)
+        if publication_fault is not None and epoch == 3:
+            published,pending = (2,3) if publication_fault=='before-forward' else (3,None)
         expected = recovery_digest(binding, previous, attributed, published, pending)
         exact([session['previous_epoch'],session['recovered_revision']],[epoch-1,published])
         assert session['recovered_plan'] == plans[published-1]['plan_digest']
@@ -602,9 +610,23 @@ def json_value(ty, value):
     return value
 
 
-def publication(live, after, actual, science, schema, root, *, owner_count=1):
-    generation = validate_metadata(live, root, complete=True, owner_count=owner_count)
-    validate_metadata(after, root, complete=True, owner_count=owner_count)
+def physical_rows(actual, science, generation, schema, *, through=12, replayed_pending=False):
+    """Raw physical multiplicity, including the declared immutable plan3 replay."""
+    assert through in (7,12) and type(replayed_pending) is bool
+    assert through == 12 or not replayed_pending
+    rows = expected_rows(science,raw(generation,16),schema)
+    assert set(actual) == set(TARGETS)
+    for name,columns,_ in schema.FAMILIES:
+        physical = [row for row in rows[name] if row[1][3] <= through for _ in range(
+            2 if replayed_pending and 4 <= row[1][3] <= 7 else 1)]
+        expected = [{key:json_value(ty,value) for (key,ty),value in zip(schema.COMMON+columns,row)} for row in physical]
+        exact(actual[name],expected)
+    return rows
+
+
+def publication(live, after, actual, science, schema, root, *, owner_count=1, publication_fault=None):
+    generation = validate_metadata(live, root, complete=True, owner_count=owner_count,publication_fault=publication_fault)
+    validate_metadata(after, root, complete=True, owner_count=owner_count,publication_fault=publication_fault)
     for table in INDEX_TABLES:
         exact(live[table],after[table])
     identity,tables,_ = retained(root)
@@ -615,11 +637,8 @@ def publication(live, after, actual, science, schema, root, *, owner_count=1):
         text(t['name']); h.update(uuid.UUID(identifier).bytes); text(t['engine_full']); h.update(be(len(t['columns']),2))
         for name,ty in t['columns']: text(name); text(ty)
     assert h.hexdigest() == identity['table_identity_digest']
-    rows = expected_rows(science,raw(generation['generation_id'],16),schema)
-    assert set(actual) == set(TARGETS)
-    for name,columns,_ in schema.FAMILIES:
-        expected = [{key:json_value(ty,value) for (key,ty),value in zip(schema.COMMON+columns,row)} for row in rows[name]]
-        exact(actual[name],expected)
+    rows = physical_rows(actual,science,generation['generation_id'],schema,
+                         replayed_pending=publication_fault=='before-forward')
     plans = sorted(live['projection_plans'], key=lambda r:r['frontier_revision'])
     for plan,batch in zip(plans,science['batches']):
         assert plan['source_batch_digest'] == '\\x'+batch['admission_digest']
