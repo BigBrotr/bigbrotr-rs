@@ -8,7 +8,7 @@ import time
 
 from cases.first_launch import Runtime, digest, require, save
 from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS, input_identity
-from cases.first_launch_index_pin import ShortPinRuntime, READER_LEASES, process_identity, profile
+from cases.first_launch_index_pin import ShortPinRuntime, READER_LEASES, process_identity, profile, reader_identity
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_pin_release_oracle as oracle
 from cases import first_launch_restart
@@ -20,7 +20,7 @@ LIMITS = [item for item in INDEX_LIMITS if not item.startswith(('Ordinary Contro
     'The original signed history/export journey includes observed startup quiescence inside its40s/12s bounds, then committed owner release before a distinct ordinary Control lifetime tests release COMMIT loss.',
     'Fresh login waits only for actual existing bucket capacity (65s); setup has30s and the focused fault phase30s. Original3s lease,500ms renewal,5s authorization and30s full-probe bounds remain.',
     'One newly admitted reader pin and actual native worker identify the release; an exact eligible UPDATE1 hold requires positive native join and retained custody before permitting the actual COMMIT fault.',
-    'The second lifetime must complete its startup full probe with no child or active reader and exact building/not_observed capabilities: its user-operation cache is empty, so it cannot claim Ready.',
+    'The second lifetime gates its first full probe: exactly one active reader and authenticated building/verification_in_flight capabilities with an empty operation cache. Login and observation must fit the original live pin; no Ready is claimed.',
     'Before-forward requires unchanged active lease/claims; after-complete requires atomic released revision2 and matching changed xmin. Both product results remain CommitUnknown/exit4/unavailable with no claimed owner release or recovery.',
     'NOT_RUN: genuine native TerminationUnknown, automatic pin recovery, withheld inputs, dependency outages, and complete M1.',
 ]
@@ -118,11 +118,21 @@ class PinReleaseRuntime(ShortPinRuntime):
                     and control_ready['mode'] == mode, 'exact held release proxy')
             changed = profile(self.config.read_text(),self.set_value,ready['port'])
             self.config.write_text(self.set_value(changed,'postgres.control','endpoint',f"127.0.0.1:{control_ready['port']}"))
-            deadline = time.monotonic()+30
+            setup_started = time.monotonic_ns(); deadline = time.monotonic()+30
             clock_before = self.bounded_sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
+            arm = self.bounded_sql('bigbrotr_control',
+                "SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,"
+                "'active_readers',(SELECT count(*) "+READER_LEASES+"))",deadline)
+            save(output/'before-arm.json',arm)
+            require(arm['active_readers'] == 0, 'no earlier active reader pin')
+            # Select the first native probe of this new lifetime. Parsing every
+            # Control frame remains bounded by the unchanged20,000-frame limit.
+            self.proxy_send(reader,'arm\n'); self.proxy_event(reader,'armed',1)
             entry = self.launch('pin-release','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
             first = self.wait(lambda:self.logs(entry,output),'focused ordinary Control',min(20,deadline-time.monotonic()),entry=entry)[0]
             require(first['state'] == 'idle', 'focused ordinary startup')
+            parent = process_identity(self.inspect(entry)['State']['Pid'])
+            require(parent is not None, 'actual focused Control parent')
             # The original session is revoked by its successful journey. Preserve
             # those protected bytes; the real login may prune only that row.
             saved_session = self.home/'export-session.private'
@@ -131,13 +141,8 @@ class PinReleaseRuntime(ShortPinRuntime):
             self.access('login','--origin','http://127.0.0.1:18081','--username','alice',
                 '--password-ref',login['password_ref'],'--session-output',str(saved_session),
                 binary=login['product_binary'],failure_directory=output)
-            before,before_catalog,value,clock_after,parent,_ = self.startup_quiescence(output/'startup',entry,historical,deadline)
-            save(output/'before-control.json',before); save(output/'before-catalog.json',before_catalog)
-            require(time.monotonic() < deadline and catalog == before_catalog, 'bounded unchanged setup catalog')
-            baseline_owner = oracle.setup(historical,before,'\\x'+self.enrolled['principal_id'],clock_before,clock_after)
-            index.ordinary_roles(value,before,clock_before,clock_after,'setup')
-            require(parent is not None and self.worker(parent,allow_absent=True) is None, 'quiescent actual parent before arming')
-            self.exercise_release(output,mode,entry,parent,baseline_owner,before,reader,control)
+            before = self.exercise_release(output,mode,entry,parent,historical,catalog,reader,control,
+                arm['now_us'],clock_before,setup_started,deadline)
             after,after_catalog = self.capture(output,'after')
             require(after_catalog == catalog, 'release fault changed scientific catalog')
             require(preserved == {name:self.files(self.state/'data'/name) for name in preserved}, 'release fault changed retained scientific/input/export files')
@@ -175,19 +180,16 @@ class PinReleaseRuntime(ShortPinRuntime):
             if errors and failure is None:
                 raise ValueError('release proxy cleanup incomplete')
 
-    def exercise_release(self, output, mode, entry, parent, baseline_owner, before, reader, control):
-        started = time.monotonic_ns(); deadline = time.monotonic()+30
-        evidence = dict(mode=mode,started_ns=started,parent=parent,baseline_owner=baseline_owner)
+    def exercise_release(self, output, mode, entry, parent, historical, catalog, reader, control,
+                         arm_clock, clock_before, setup_started, setup_deadline):
+        started = time.monotonic_ns(); fault_deadline = time.monotonic()+30
+        deadline = min(setup_deadline,fault_deadline)
+        evidence = dict(mode=mode,started_ns=started,parent=parent,arm_clock_us=arm_clock,
+                        setup_started_ns=setup_started)
         self.release_evidence = evidence
         def retain():
             save(output/'release-evidence.json',evidence)
-        arm = self.bounded_sql('bigbrotr_control',
-            "SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,"
-            "'active_readers',(SELECT count(*) "+READER_LEASES+"))",deadline)
-        save(output/'before-arm.json',arm)
-        require(arm['active_readers'] == 0, 'no earlier active reader pin')
-        evidence['arm_clock_us'] = arm['now_us']; retain()
-        self.proxy_send(reader,'arm\n'); self.proxy_event(reader,'armed',1)
+        retain()
         selected = self.proxy_event(reader,'reader-selected',min(17,deadline-time.monotonic()))
         gate_event = self.proxy_event(reader,'held',1)
         save(output/'reader-gate.json',dict(selected=selected,held=gate_event))
@@ -196,13 +198,25 @@ class PinReleaseRuntime(ShortPinRuntime):
                 and selected['connection_number'] == gate_event['target_connection']
                 and selected['framed_connections'] == gate_event['framed_connections'] == 1, 'actual post-arm reader gate')
         worker = self.worker(parent); evidence['worker'] = worker
+        before,before_catalog = self.capture(output,'before')
+        value = self.roles(deadline); save(output/'setup-roles.json',value)
+        clock_after = self.bounded_sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
+        require(time.monotonic() < deadline and catalog == before_catalog, 'bounded unchanged setup catalog')
+        baseline_owner = oracle.setup(historical,before,'\\x'+self.enrolled['principal_id'],clock_before,clock_after)
+        oracle.setup_roles(value,before,clock_before,clock_after)
+        evidence['baseline_owner'] = baseline_owner
         pins = self.bounded_sql('bigbrotr_control',"SELECT coalesce(json_agg(l),'[]') "+READER_LEASES,deadline)
-        require(len(pins) == 1 and pins[0]['lease_id'] not in {row['lease_id'] for row in before['snapshot_leases']}, 'unique new reader pin')
+        require(len(pins) == 1 and pins[0]['lease_id'] not in {row['lease_id'] for row in historical['snapshot_leases']}, 'unique new reader pin')
         lease_id = pins[0]['lease_id']
         gate = self.sample(lease_id,gate_event['backend_pid'],parent,worker,deadline)
         evidence['gate'] = gate
         evidence['versions'] = dict(before=self.pin_versions(lease_id,deadline)); retain()
         oracle.selected_pin(gate,baseline_owner)
+        oracle.admission_versions(gate,evidence['versions']['before'],before)
+        reader_identity(gate['reader'],gate['lease']['acquired_at_us'])
+        require(arm_clock <= gate['lease']['acquired_at_us']
+                and gate['reader']['backend_start_us'] <= gate['now_us'], 'actual first reader admission identity')
+        index.exact(gate['parent'],parent); index.exact(gate['worker'],worker)
         index.exact(gate['control_backend'],dict(pid=baseline_owner['control_backend_pid'],backend_start=baseline_owner['control_backend_start']))
         backend = self.bounded_sql('bigbrotr_control',f"SELECT json_build_object('pid',pid,'backend_start',backend_start,'usename',usename,'datname',datname) FROM pg_stat_activity WHERE pid={baseline_owner['control_backend_pid']}",deadline)
         evidence['owner_backend'] = backend
@@ -214,7 +228,16 @@ class PinReleaseRuntime(ShortPinRuntime):
         # Arm only after one selected pin, one actual worker and the actual
         # original Control backend are independently bound. No user work follows.
         self.proxy_send(control,'arm\n'); self.proxy_event(control,'armed',1)
+        evidence['release_gate_clock_us'] = self.bounded_sql('bigbrotr_control',
+            'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
+        require(gate['now_us'] <= evidence['release_gate_clock_us'] < gate['lease']['expires_at_us']
+                and time.monotonic() < deadline, 'setup consumed original live pin or phase window')
+        evidence['setup_finished_ns'] = time.monotonic_ns(); retain()
+        save(output/'setup-verdict.json',dict(status='PASS',probe='first_in_flight',operation_cache='empty',
+            capabilities='building/verification_in_flight',lease_id=lease_id,parent=parent,worker=worker,
+            clock_before_us=clock_before,clock_after_us=clock_after))
         self.proxy_send(reader,'release\n'); self.proxy_event(reader,'released',1)
+        deadline = fault_deadline
         evidence['update'] = self.proxy_event(control,'pin-release-update-complete',min(5,deadline-time.monotonic()))
         held_event = self.proxy_event(control,'held',min(1,deadline-time.monotonic()))
         evidence['hold_event'] = held_event
@@ -266,3 +289,4 @@ class PinReleaseRuntime(ShortPinRuntime):
         evidence['versions']['after'] = self.pin_versions(lease_id,deadline)
         evidence['terminal_finished_ns'] = time.monotonic_ns(); retain()
         require(time.monotonic() < deadline, 'original focused phase bound')
+        return before

@@ -47,7 +47,7 @@ def selected_pin(sample, owner):
 
 
 def setup(before, after, principal, clock_before, clock_after):
-    """One new ordinary owner, one real login and only completed readiness pins."""
+    """One new ordinary owner/login and exactly its first active readiness pin."""
     require(set(before) == set(after) and len(before) == 81, 'complete setup inventory')
     changed = {'owner_epochs','role_instances','browser_sessions','login_buckets','management_audit',*PIN_TABLES}
     for table in before.keys()-changed:
@@ -85,30 +85,42 @@ def setup(before, after, principal, clock_before, clock_after):
                     and row['window_started_at_us']-previous['window_started_at_us'] >= 60_000_000
                     and row['attempts'] == 1, 'real login window reset')
     new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
-    require(1 <= len(new) <= 2, 'bounded completed baseline probes')
+    require(len(new) == 1, 'exactly one first-probe reader')
     for table in PIN_TABLES:
-        require(len([r for r in after[table] if r['lease_id'] in new]) == len(new), 'one claim and pin per baseline probe')
+        require(len([r for r in after[table] if r['lease_id'] in new]) == 1, 'one first-probe claim and pin')
         index.exact([r for r in after[table] if r['lease_id'] not in new],before[table])
     for key in new:
         lease, = [r for r in after['snapshot_leases'] if r['lease_id'] == key]
         pin, = [r for r in after['archive_snapshot_pins'] if r['lease_id'] == key]
         claim, = [r for r in after['retention_claims'] if r['lease_id'] == key]
-        require(lease['state'] == claim['state'] == 'released' and lease['lease_revision'] == 2
-                and lease['release_reason'] == claim['release_reason'] == 'reader_joined'
-                and pin['purpose'] == claim['purpose'] == 'reader'
-                and lease['holder_role_instance_id'] == owner['role_instance_id']
-                and pin['issuer_epoch'] == owner['epoch'], 'baseline probes actually released')
-        index.exact([pin[k] for k in ('dataset_id','issuer_resource','issuer_incarnation','issuer_role','frontier_revision')],
-                    [owner['dataset_id'],owner['resource_id'],owner['process_incarnation'],'control',4])
-        index.exact([claim[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','first_sequence','last_sequence')],
-                    [owner['dataset_id'],0,0,1,1,12])
-        require(lease['dataset_id'] == owner['dataset_id'] and lease['consumer_id'] == pin['consumer_id']
-                and lease['holder_kind'] == 'role_instance' and lease['holder_job_id'] is None
-                and lease['holder_role'] == 'control' and lease['holder_incarnation'] == owner['process_incarnation']
-                and lease['frontier_revision'] == 4 and lease['archive_pin_protocol'] == 1
-                and clock_before <= lease['acquired_at_us'] <= claim['released_at_us'] <= lease['released_at_us'] <= clock_after
-                and lease['updated_at_us'] == lease['released_at_us'], 'baseline pin identity and joined release history')
+        selected_pin(dict(lease=lease,pin=pin,claims=[claim],now_us=clock_after),owner)
+        consumer, = [r for r in after['consumers'] if r['consumer_role'] == 'archive']
+        index.exact([lease[k] for k in ('consumer_id','frontier_revision','topology_generation')],
+                    [consumer[k] for k in ('consumer_id','current_revision','current_topology_generation')])
+        require(clock_before <= lease['acquired_at_us'] == lease['updated_at_us']
+                and lease['xmin'] == pin['xmin'] == claim['xmin'], 'original atomic first-probe admission')
     return owner
+
+
+def setup_roles(value, state, clock_before, clock_after):
+    index.ordinary_roles(value,state,clock_before,clock_after)
+    for cap in value['capabilities']:
+        require(cap['state'] == 'building' and cap['reason'] == 'verification_in_flight'
+                and cap['time'] is cap['published'] is None, 'fresh first probe in flight with empty operation cache')
+
+
+def admission_versions(gate, observed, before):
+    """Bind the selected raw setup rows to the live gate before fault arming."""
+    lease_id = gate['lease']['lease_id']
+    lease, = [r for r in before['snapshot_leases'] if r['lease_id'] == lease_id]
+    pin, = [r for r in before['archive_snapshot_pins'] if r['lease_id'] == lease_id]
+    claim, = [r for r in before['retention_claims'] if r['lease_id'] == lease_id]
+    for captured,live,raw in ((lease,gate['lease'],observed['lease']),
+                              (pin,gate['pin'],observed['pin'])):
+        index.exact(row_value(captured),live); index.exact(raw,live)
+    index.exact([row_value(claim)],gate['claims']); index.exact(observed['claims'],gate['claims'])
+    index.exact([observed['lease_xmin'],observed['pin_xmin'],*observed['claim_xmins']],
+                [lease['xmin'],pin['xmin'],claim['xmin']])
 
 
 def verify(evidence, before, after):
@@ -123,7 +135,9 @@ def verify(evidence, before, after):
             and gate['now_us'] < number(owner['lease_expires_at_us']) <= gate['now_us']+3_100_000,
             'same actual live Control authority at admission')
     reader_identity(gate['reader'],gate['lease']['acquired_at_us'])
-    require(evidence['arm_clock_us'] <= gate['lease']['acquired_at_us'] and gate['reader']['backend_start_us'] <= gate['now_us'], 'new actual gated reader')
+    require(evidence['arm_clock_us'] <= gate['lease']['acquired_at_us']
+            and gate['reader']['backend_start_us'] <= gate['now_us']
+            and gate['now_us'] <= evidence['release_gate_clock_us'] < gate['lease']['expires_at_us'], 'new actual gated reader released while live')
     index.exact(gate['parent'],evidence['parent']); index.exact(gate['worker'],evidence['worker'])
     require(evidence['worker']['ppid'] == evidence['parent']['pid'] and re.fullmatch('[0-9a-f]{64}',evidence['worker']['sha256']), 'verified actual native child')
     require(held['worker'] is None and held['custody']['busy'] is True
@@ -132,8 +146,10 @@ def verify(evidence, before, after):
     index.exact(held['custody']['identity'],evidence['custody']['identity'])
     require(evidence['custody']['busy'] is True and evidence['terminal_custody']['busy'] is False, 'custody held then positively available after join')
     index.exact(evidence['terminal_custody']['identity'],evidence['custody']['identity'])
-    require(gate['finished_ns'] <= held['started_ns'] <= held['finished_ns'] < evidence['allow_ns']
+    require(evidence['setup_started_ns'] <= evidence['started_ns'] <= gate['started_ns'] < gate['finished_ns']
+            <= evidence['setup_finished_ns'] <= held['started_ns'] <= held['finished_ns'] < evidence['allow_ns']
             and evidence['allow_ns']-held['started_ns'] < 500_000_000
+            and 0 < evidence['setup_finished_ns']-evidence['setup_started_ns'] < 30_000_000_000
             and evidence['finished_ns']-evidence['started_ns'] < 30_000_000_000, 'unchanged bounded operation and focused phase')
     for event in (evidence['update'],evidence['fault']):
         require(event['backend_pid'] == owner['control_backend_pid'] and event['hold_pin_release'] is True
@@ -153,8 +169,11 @@ def verify(evidence, before, after):
     index.ordinary_unchanged(before,after)
     lease_id = gate['lease']['lease_id']
     for table in PIN_TABLES:
-        index.exact([r for r in after[table] if r['lease_id'] != lease_id],before[table])
-        require(len([r for r in after[table] if r['lease_id'] == lease_id]) == 1, 'one selected release obligation')
+        index.exact([r for r in after[table] if r['lease_id'] != lease_id],
+                    [r for r in before[table] if r['lease_id'] != lease_id])
+        require(len([r for r in after[table] if r['lease_id'] == lease_id])
+                == len([r for r in before[table] if r['lease_id'] == lease_id]) == 1, 'one selected release obligation in both raw captures')
+    admission_versions(gate,versions['before'],before)
     baseline_owner = evidence['baseline_owner']
     key = lambda r:(r['resource_id'],r['epoch'])
     index.exact([r for r in after['owner_epochs'] if key(r) != key(owner)],
