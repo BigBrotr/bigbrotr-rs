@@ -402,19 +402,23 @@ response text. All original401/403/200 expectations remain exact. The added
 ninth stage starts a distinct ordinary Control lifetime and authenticates a real
 new status session. Login may prune exactly the prior revoked browser session;
 its protected bytes and raw SQL history remain retained. The setup oracle checks
-the actual new owner/role, issuance audit, two login bucket charges and completed
-readiness pins. Every earlier owner, role, pin, claim and scientific/export row
-remains unchanged. Existing login capacity is observed for at most65s before
+the actual new owner/role, issuance audit, two login bucket charges and exactly
+one new active reader pin and claim. Every earlier owner, role, pin, claim and
+scientific/export row remains unchanged. Existing login capacity is observed for at most65s before
 starting that lifetime; no bucket, policy or data row is rewritten by the fixture.
 
-The second lifetime must independently complete its startup full probe, with no
-active reader-purpose pin or native child. Authenticated capabilities must be
-exactly `building/not_observed`; `verification_in_flight` and unavailable results
-refuse. Its history/export operation cache is empty, so claiming Ready there
-would be incorrect. The completed startup pin/claim and unchanged current
-publication supply separate durable observations. The first lifetime retains
-the actual history/export proof. The retained export-purpose pin is preserved.
-The next full probe is gated at its new authenticated catalog precheck; its exact lease/claims,
+The catalog gate is armed before the second lifetime launches, selecting its
+first full probe at the new authenticated catalog precheck. This avoids a completed
+probe followed by the15s coalescing interval under the Control proxy's unchanged
+total frame budget. Authenticated capabilities must be exactly
+`building/verification_in_flight`, with no prior operation observation;
+`not_observed`, Ready and unavailable results refuse. The first lifetime retains
+the completed history/export proof and its separate startup-quiescence requirement.
+The retained export-purpose pin is preserved. The selected active pin remains in
+the raw81-table baseline; its rows and MVCC versions must match the independent
+live gate observation, while untouched rows are compared by explicit selected ID.
+Login, captures and attribution must finish while the original pin is still live;
+slow tooling fails without extending its lifetime. The exact lease/claims,
 owner backend PID/start, reader identity and installed worker ELF/PID/PPID/start
 are captured. Only then is the Control proxy armed for the exact reader-release
 UPDATE's successful Execute completion. At that hold, the selected native worker
