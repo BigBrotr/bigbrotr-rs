@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-26T15:51:03.770312+00:00",
+  "updated_at": "2026-10-28",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "FAIL AMD64 keyring retry Busy; ARM64 and macOS selected foundation PASS",
+    "status": "Latest hosted run40415243196 terminalFAIL: AMD64 export fixture Busy; ARM64/macOS PASS. Keyring correction confirmed on all three. No queued/in-progress remote runs at pause.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40406281096",
-    "latest_hosted_source": "94a522327eed103fd13f0b7fb60c313485b8451d",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+    "latest_hosted_source": "903dddb5f8fd585a86737db053cb1491a53d5584",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73709,6 +73709,36 @@
       "receipt": ".research/ci-publication-20261026/run-40415243196-exposure/pause-receipt.json",
       "receipt_sha256": "9303131a349f536f26798acb2c289a39618970ddda78c1b02c28db067507d8e3",
       "remaining": "Terminalsource/context/keyring/fullchecks/outputaudit NOT_RUN"
+    },
+    "run_40415243196": {
+      "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40415243196",
+      "revision": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "status": "FAIL AMD64 export_files destination reopen Busy; ARM64 and macOS selected foundation PASS",
+      "observed_at_utc": "2026-10-28T07:47:02.282473+00:00",
+      "remote_terminal_at": "2026-10-26T23:44:01Z",
+      "watch": "None started on resume; one terminal query reused for metadata. Original watcher24737 was already stopped/reaped130 at pause.",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/receipt.json",
+      "receipt_sha256": "f30eeb9bf2979a784dc759b27569b8354155de3272c1357295cbc5f08632fc0a",
+      "outcome": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/outcome.json",
+      "outcome_sha256": "9be6d37268bb22e99e3a2f6427c83bd2c025b214a78aeb3b059c75b77a6647f5",
+      "contexts": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/post-build-contexts.json",
+      "contexts_sha256": "0057cb6848bcbe5ba6664c2c5c3fef0dd47798ad1de24f13922dfc218f3fd4ea",
+      "failure_diagnosis": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40415243196-exposure/amd64-failure-diagnosis.json",
+      "failure_diagnosis_sha256": "3ad91f0c3679e2387d53e8ee2ba0757f4b028b3cca40d381d695b36bcfeb41a8",
+      "source_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/source-903dddb5-exposure/receipt.json",
+      "source_audit_sha256": "469dc3d5488b144aa0f85c4405193c3eedb431830a88bbc9c5e939e7a3fbc392",
+      "source_files": 2369,
+      "cursor_keyring": "All10PASS on all three platforms",
+      "resources": "Four original artifact zips and one attempt-log zip retained in protected ignored root; no artifact execution, product test, new engine, cancellation/rerun/dispatch or workflow mutation.",
+      "limits": "23PASS/1FAIL/6NOT_RUN selected checks. Exact hosted lock interleaving untraced. Installed/M1/full-goal qualification remains separate.",
+      "fixture_correction": {
+        "branch": "work/ci-export-fixture",
+        "commit": "33388863a1f4116f77d3f0c644eb36457a337f40",
+        "worktree": ".research/ci-export-fixture-20261028",
+        "state": "LOCAL_ONLY; clean; not integrated; no active process",
+        "checks": "format/diff/automatic target discovery PASS; all13 original test bodies unchanged; compile/Clippy/native/hosted NOT_RUN",
+        "evidence": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+      }
     }
   },
   "implementation_first_launch_maintained_20261026": {
@@ -74747,6 +74777,51 @@
           "checks": "NOT_RUN"
         }
       ]
+    },
+    "pause_20261028": {
+      "status": "STOPPED_SAVED_UNVERIFIED",
+      "observed_at_utc": "2026-10-28T08:08:13.282743+00:00",
+      "checkpoint_branch": "work/short-pin-checkpoint-20261027",
+      "checkpoint_parent": "1d66779c4cc17e04a28a67829dca9ab6f66dc3f9",
+      "published_main": "903dddb5f8fd585a86737db053cb1491a53d5584",
+      "local_main": "f499cc875bfd4e9bb4d6078d898155469a0f271c",
+      "wip": [
+        {
+          "branch": "work/short-pin-admission-wip-20261028",
+          "commit": "bc2b1fbe7c5b9a227083712e71718bef7a6c5440",
+          "worktree": "Saved in Git; canonical checkout returned to checkpoint branch",
+          "state": "LOCAL_ONLY; incomplete; no active process",
+          "checks": "19 socket and7 pin controls PASS before review; synthetic cancellation cleanup finding FAIL; installed retry NOT_RUN",
+          "evidence": ".research/short-pin-connection-admission-20261028"
+        },
+        {
+          "branch": "work/initial-index-recovery",
+          "commit": "2d073ae0d785464f1ad98c1549c5b837121821b2",
+          "worktree": ".research/initial-index-recovery-20261027",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "format/diff PASS; compile/Clippy/native/engine/installed NOT_RUN; root final source review incomplete"
+        },
+        {
+          "branch": "work/index-restart-acceptance",
+          "commit": "cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712",
+          "worktree": ".research/index-restart-acceptance-20261027",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "76 Python controls PASS before final two deadline/scalar edits; final source review incomplete; post-edit controls/build/engine/installed NOT_RUN"
+        },
+        {
+          "branch": "work/ci-export-fixture",
+          "commit": "33388863a1f4116f77d3f0c644eb36457a337f40",
+          "worktree": ".research/ci-export-fixture-20261028",
+          "state": "LOCAL_ONLY; clean; not integrated; no active process",
+          "checks": "format/diff/automatic target discovery PASS; all13 original test bodies unchanged; compile/Clippy/native/hosted NOT_RUN",
+          "evidence": ".research/ci-publication-20261026/run-40415243196-exposure/fixture-review.json"
+        }
+      ],
+      "resources": "No running BigBrotr containers; retained bridge1699209a has zero endpoints. Unrelated running containers untouched. No new builds/engines/cleanup; .research, worktrees, databases, original failures and qualified825 artifacts retained. All delegates stopped.",
+      "proxy_reproducer": ".research/short-pin-connection-admission-20261028/cancellation-cleanup-reproducer.py",
+      "proxy_prior_observation": ".research/short-pin-connection-admission-20261028/cancellation-cleanup-prior-observed.txt",
+      "limits": "Prior observed synthetic diagnostic output copied from completed tool response; no raw original shell transcript. Earlier-error masking is a source finding, not exercised.",
+      "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
     }
   },
   "implementation_checkpoint_space_20261026": {
