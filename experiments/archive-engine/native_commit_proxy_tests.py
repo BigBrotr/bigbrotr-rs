@@ -128,6 +128,99 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
             Proxy('pass', profile='unbounded')
 
 
+class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
+    async def test_stop_or_peer_close_cannot_hide_an_already_failed_pump(self):
+        for stop in (False, True):
+            with self.subTest(stop=stop):
+                proxy = ordinary_proxy()
+                failed = asyncio.Event()
+
+                class Writer:
+                    def close(self):
+                        pass
+
+                    async def wait_closed(self):
+                        pass
+
+                async def fail(error):
+                    raise error
+
+                async def failed_pumps(_reader, _writer, _armed, _number, _owned, pumps):
+                    # The expected reset precedes an unexpected frame failure.
+                    # Both results exist before the enclosing session stops.
+                    pumps.extend(asyncio.create_task(fail(error)) for error in
+                                 (ConnectionResetError('peer'), ValueError('frame')))
+                    await asyncio.gather(*pumps, return_exceptions=True)
+                    failed.set()
+                    if stop:
+                        await asyncio.Future()
+                    raise ConnectionResetError('peer')
+
+                proxy.connected_session = failed_pumps
+                async with asyncio.timeout(3):
+                    task = asyncio.create_task(proxy.session(None, Writer()))
+                    await failed.wait()
+                    if stop:
+                        task.cancel()
+                    result, = await asyncio.gather(task, return_exceptions=True)
+                self.assertIsInstance(result, ValueError)
+                self.assertEqual(str(result), 'frame')
+                self.assertFalse(task.cancelled())
+                self.assertEqual(proxy.report['active_connections'], 0)
+                self.assertEqual(proxy.writers, [])
+
+    async def test_stop_during_close_joins_transport_and_preserves_prior_failure(self):
+        for malformed in (False, True):
+            with self.subTest(malformed=malformed):
+                proxy = ordinary_proxy()
+                closing, release = asyncio.Event(), asyncio.Event()
+                cancelled_closure = []
+
+                class Writer:
+                    def close(self):
+                        pass
+
+                    async def wait_closed(self):
+                        closing.set()
+                        try:
+                            await release.wait()
+                        except asyncio.CancelledError:
+                            cancelled_closure.append(True)
+                            raise
+
+                reader = asyncio.StreamReader()
+                reader.feed_data(struct.pack('!I', 7))
+                if not malformed:
+                    async def completed_peer(*_args):
+                        pass
+                    proxy.connected_session = completed_peer
+                writer = Writer()
+                task = asyncio.create_task(proxy.session(reader, writer))
+                try:
+                    async with asyncio.timeout(3):
+                        await closing.wait()
+                        for _ in range(2):
+                            task.cancel()
+                            await asyncio.sleep(0)
+                            self.assertFalse(task.done())
+                            self.assertEqual(proxy.report['active_connections'], 1)
+                            self.assertEqual(proxy.writers, [writer])
+                        release.set()
+                        result, = await asyncio.gather(task, return_exceptions=True)
+                    if malformed:
+                        self.assertIsInstance(result, ValueError)
+                        self.assertEqual(str(result), 'startup')
+                        self.assertFalse(task.cancelled())
+                    else:
+                        self.assertIsInstance(result, asyncio.CancelledError)
+                    self.assertEqual(cancelled_closure, [])
+                    self.assertEqual(proxy.report['active_connections'], 0)
+                    self.assertEqual(proxy.writers, [])
+                finally:
+                    release.set()
+                    await asyncio.gather(task, return_exceptions=True)
+
+
 class ClosedProfile(unittest.TestCase):
     def test_ordinary_profile_requires_explicit_fresh_reader_gate(self):
         for change in ({'mode':'pass'}, {'mode':'hold-capture-verify'}, {'target':'native-schema'},

@@ -44,6 +44,11 @@ def control_target_query(target, query):
     return query.upper().startswith(CONTROL_TARGETS[target])
 
 
+def unexpected_failure(error):
+    return isinstance(error, BaseException) and not isinstance(error,
+        (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError))
+
+
 class SessionCommandObserver:
     """Correlate extended Execute completions, including a following audit INSERT.
 
@@ -277,51 +282,69 @@ class Proxy:
             writer.close()
             raise ValueError('connections')
         owned = [writer]
+        pumps = []
         self.writers.append(writer)
         if ordinary:
             self.report['active_connections'] += 1
             self.report['peak_connections'] = max(self.report['peak_connections'],
                                                    self.report['active_connections'])
         try:
-            await self.connected_session(reader, writer, connected_armed, connection_number, owned)
+            await self.connected_session(reader, writer, connected_armed, connection_number, owned, pumps)
         finally:
             if ordinary:
-                # Reuse a slot only after both directions and their actual
-                # transports have closed. Historical traffic still consumes
-                # the aggregate wire/time budgets; it is not live custody.
-                for connection in owned:
-                    connection.close()
-                await asyncio.gather(*(connection.wait_closed() for connection in owned),
-                                     return_exceptions=True)
-                for connection in owned:
-                    self.writers.remove(connection)
-                self.report['active_connections'] -= 1
+                # Stop may arrive after peer EOF or a protocol failure, while
+                # cleanup is already awaiting a pump/transport. Retain and join
+                # that cleanup despite cancellation, without hiding its cause.
+                original_error = sys.exception()
+                cleanup = asyncio.create_task(self.close_ordinary_session(owned, pumps))
+                interrupted = None
+                while not cleanup.done():
+                    try:
+                        await asyncio.shield(cleanup)
+                    except asyncio.CancelledError as error:
+                        interrupted = error
+                pump_error = cleanup.result()
+                if pump_error is not None and not unexpected_failure(original_error):
+                    raise pump_error
+                if interrupted is not None and original_error is None:
+                    raise interrupted
 
-    async def connected_session(self, reader, writer, connected_armed, connection_number, owned):
-        try:
-            header = await reader.readexactly(4)
-            length = struct.unpack('!I', header)[0]
-            if not 8 <= length <= 65536:
-                raise ValueError('startup')
-            startup = await reader.readexactly(length - 4)
-            if startup[:4] != b'\0\3\0\0':
-                raise ValueError('plaintext-required')
-            fields = startup[4:].split(b'\0')
-            if fields[-2:] != [b'', b''] or len(fields) % 2:
-                raise ValueError('startup-fields')
-            fields = fields[:-2]
-            parameters = dict(zip(fields[::2], fields[1::2]))
-            if self.profile == 'ordinary-reader':
-                if (len(parameters) != len(fields) // 2 or any(
-                        not re.fullmatch(rb'[A-Za-z_][A-Za-z_0-9]{0,62}', parameters.get(key, b''))
-                        for key in (b'user', b'database'))):
-                    raise ValueError('startup-identity')
-                self.charge_unframed(length)
-        except BaseException:
-            if self.profile == 'ordinary-reader':
-                writer.close()
-                await writer.wait_closed()
-            raise
+    async def close_ordinary_session(self, owned, pumps):
+        for task in pumps:
+            task.cancel()
+        outcomes = await asyncio.gather(*pumps, return_exceptions=True)
+        for connection in owned:
+            connection.close()
+        await asyncio.gather(*(connection.wait_closed() for connection in owned),
+                             return_exceptions=True)
+        for connection in owned:
+            self.writers.remove(connection)
+        # Historical traffic consumes the aggregate wire/time budgets, but a
+        # slot becomes reusable only after both pumps and transports join.
+        self.report['active_connections'] -= 1
+        # Stop/peer EOF may beat the session's observation of a failed pump.
+        # Joining a task must not discard its already completed failure.
+        return next((error for error in outcomes if unexpected_failure(error)), None)
+
+    async def connected_session(self, reader, writer, connected_armed, connection_number, owned, pumps):
+        header = await reader.readexactly(4)
+        length = struct.unpack('!I', header)[0]
+        if not 8 <= length <= 65536:
+            raise ValueError('startup')
+        startup = await reader.readexactly(length - 4)
+        if startup[:4] != b'\0\3\0\0':
+            raise ValueError('plaintext-required')
+        fields = startup[4:].split(b'\0')
+        if fields[-2:] != [b'', b''] or len(fields) % 2:
+            raise ValueError('startup-fields')
+        fields = fields[:-2]
+        parameters = dict(zip(fields[::2], fields[1::2]))
+        if self.profile == 'ordinary-reader':
+            if (len(parameters) != len(fields) // 2 or any(
+                    not re.fullmatch(rb'[A-Za-z_][A-Za-z_0-9]{0,62}', parameters.get(key, b''))
+                    for key in (b'user', b'database'))):
+                raise ValueError('startup-identity')
+            self.charge_unframed(length)
         database = parameters.get(b'database')
         selected_database = database == self.catalog_database.encode('ascii')
         receipt_reader = (parameters.get(b'user') == self.catalog_reader.encode('ascii')
@@ -636,31 +659,28 @@ class Proxy:
                     await manager_committed.wait()
 
         forward = opaque_pump if opaque else pump
-        pumps = [asyncio.create_task(forward(reader, upstream_writer, True)),
-                 asyncio.create_task(forward(upstream, writer, False))]
+        pumps.extend((asyncio.create_task(forward(reader, upstream_writer, True)),
+                      asyncio.create_task(forward(upstream, writer, False))))
         try:
             done, _ = await asyncio.wait(pumps, return_when=asyncio.FIRST_COMPLETED)
             for task in done:
                 task.result()
         finally:
-            for task in pumps:
-                task.cancel()
-            await asyncio.gather(*pumps, return_exceptions=True)
-            writer.close()
-            upstream_writer.close()
-            await asyncio.gather(writer.wait_closed(), upstream_writer.wait_closed(), return_exceptions=True)
+            if self.profile != 'ordinary-reader':
+                for task in pumps:
+                    task.cancel()
+                await asyncio.gather(*pumps, return_exceptions=True)
+                writer.close()
+                upstream_writer.close()
+                await asyncio.gather(writer.wait_closed(), upstream_writer.wait_closed(), return_exceptions=True)
 
     async def run(self):
         def completed(task):
             # Only the ordinary profile reuses connection slots. Do not retain
             # every completed Task/writer until the end of its serial journey.
             self.tasks.remove(task)
-            if not task.cancelled() and unexpected(task.exception()):
+            if not task.cancelled() and unexpected_failure(task.exception()):
                 self.completed_unexpected += 1
-
-        def unexpected(error):
-            return isinstance(error, BaseException) and not isinstance(error,
-                (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError))
 
         def accept(reader, writer):
             task = asyncio.create_task(self.session(reader, writer, connected_armed=self.armed))
@@ -696,7 +716,7 @@ class Proxy:
             await server.wait_closed()
         # Normal peer close/reset following deliberate truncation is expected.
         failures = (self.completed_unexpected if self.profile == 'ordinary-reader'
-                    else sum(unexpected(r) for r in outcomes))
+                    else sum(unexpected_failure(r) for r in outcomes))
         self.emit('terminal', unexpected=failures)
         return 0 if not failures else 3
 

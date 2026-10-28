@@ -323,6 +323,10 @@ count. Serial history/export operations and periodic probes open distinct manage
 and native sessions: a closed earlier operation is not concurrent connection
 custody. Both transports and pumps must close before a slot is reused; completed
 tasks/writers are retired while their error counts and cumulative traffic remain.
+Cancellation during this closure is deferred until its retained cleanup task
+joins; an earlier protocol failure remains a failure instead of becoming a
+successful stop. The controls include repeated stop cancellation during delayed
+transport closure, with and without an earlier malformed-startup error.
 `connection_limit_scope`, `active_connections` and `peak_connections` expose this
 distinction. A17th simultaneous connection still refuses before startup. No payload
 is logged or rewritten; this is fixture resource admission, not a product capacity
