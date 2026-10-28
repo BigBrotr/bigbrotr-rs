@@ -354,7 +354,7 @@ mod tests {
         );
         for record in records {
             let line = serde_json::to_string(&record).unwrap();
-            assert!(line.len() + 1 <= 4096);
+            assert!(line.len() < 4096);
             assert!(
                 !line.contains("query_id")
                     && !line.contains("password")

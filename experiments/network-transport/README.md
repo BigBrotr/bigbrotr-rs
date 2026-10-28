@@ -50,7 +50,9 @@ offline container, resource limits and terminal inventory checks. Its run direct
 is `runs/initial-index-<first-seven-commit-digits>`; pass `initial-index` as the final
 `lab.py` argument. It builds the actual `bigbrotr` library and CLI with the selected
 locked dependencies, compiles separate actual library and binary unit-test
-executables and runs strict Clippy for both library and CLI. No source
+executables and runs strict Clippy for the library, CLI and test targets. This
+includes test-code lints that the earlier lib/bin-only invocation missed; the
+hosted workflow still checks every workspace target. No source
 substitution or signature stub is used.
 The separate Archive worker is neither built nor bound by this diagnostic.
 

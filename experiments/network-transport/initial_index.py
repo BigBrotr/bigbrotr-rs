@@ -273,7 +273,7 @@ def retain_executable(log, kind, test, destination, target):
 def build_commands():
     common = ['--locked', '--offline', '--release', '-p', 'bigbrotr']
     return [
-        ('clippy', ['cargo', 'clippy', *common, '--lib', '--bin', 'bigbrotr', '--', '-D', 'warnings']),
+        ('clippy', ['cargo', 'clippy', *common, '--lib', '--bin', 'bigbrotr', '--tests', '--', '-D', 'warnings']),
         ('compile', ['cargo', 'build', *common, '--lib', '--bin', 'bigbrotr', '--message-format=json']),
         ('compile-tests', ['cargo', 'test', *common, '--lib', '--bin', 'bigbrotr', '--no-run', '--message-format=json']),
     ]

@@ -129,6 +129,32 @@ PASS or weaken durability, authority, cancellation or recovery. Repeat critical
 review only for relevant changes, new evidence or unresolved questions. Reduce
 duplication in touched owners without a general rewrite or new framework.
 
+Q38's October28 clarification applies these criteria to preexisting work too,
+including previously completed tasks. Prior approval does not excuse actual defects
+or changed requirements; file size, age or an audit observation alone is not a
+defect. In touched responsibilities reconcile relevant code, tests, tools, CI,
+configuration and documentation, retaining adequate components. Assign verified
+findings and closure criteria to existing tasks; fix current blockers now and
+retain the rest at the appropriate dependency. At task/milestone closure review
+the involved preexisting parts and actual product paths together. Keep Q40's
+admission-cost, ClickHouse and coordinator follow-through and safe consolidation.
+
+Use the observed timing-window, path, diagnostic-endpoint, SQL-role and service-
+contention failures to improve shared setup. For changed assumptions, first use
+cheap contract/capture checks and the actual product identity, configuration,
+privileges and processes. Reuse qualified fixtures while keeping oracles independent.
+Every maintained test should express a behavior, invariant, boundary, regression
+or concrete risk; consolidate relevant duplicates/obsolete expectations without
+losing discriminating cases. Prefer observable behavior, with internal checks
+where needed for authority, persistence, absence of effects or data preservation.
+Proportional false-PASS controls do not replace installed real-engine/client proof.
+Keep quick checks, affected integrations and dedicated load/recovery/browser/
+distribution qualification at their appropriate existing tasks, not all before M1.
+Required maintenance tools/tests belong in the repository with declared dependencies;
+private captures/cache/session knowledge cannot become delivery prerequisites.
+Use ordinary increment results to assess setup errors and Sol rework and adjust
+Astra involvement by risk, without another checklist, metrics system or rewrite.
+
 Select the next increment by dependency, risk and capability unlocked. Keep a short
 M1 blocker list in the checkpoint, separating its signed-event admission/archive/
 read/export/restart requirements from later work. Name the concrete risk requiring
@@ -318,17 +344,19 @@ boundary, offered workload and failure class.
 
 ## Starting the continuing goal on Tux
 
-Under owner decision Q37 (2026-10-20), only these configurations are authorized:
+Under Q37, revised by the owner on 2026-10-28, only these configurations are authorized:
 
 | Responsibility | Exact model | Reasoning |
 |---|---|---|
-| Main coordinator; always | `gpt-6-astra` | `xhigh` |
-| Subagents for architecture, concurrency, persistence, fault recovery, security, complex diagnosis or critical review | `gpt-6-astra` | `xhigh` |
-| Subagents for bounded implementations, local fixes and work with clear contracts and verification; preferred | `gpt-6.1-sol` | `xhigh` |
+| Operational default, including coordinator; implementation, tests, tools, documentation, CI, ordinary review and diagnosis with verifiable contracts | `gpt-6.1-sol` | `xhigh` |
+| Bounded substantial ambiguity, new concurrency/persistence/security guarantees, unexplained diagnosis, independent review of changes critical to data/authority/recovery | `gpt-6-astra` | `xhigh` |
 
-Judge the actual difficulty, including tests, verification tools and documentation.
-Substantial ambiguity, high risk or inconclusive Sol attempts require escalation
-to Astra, still at `xhigh`. No other model or reasoning level is authorized,
+Sol may implement important code under a sufficiently defined contract, retaining
+the pertinent critical review. Judge actual uncertainty and risk, including tests,
+verification tools and documentation; module complexity alone does not require
+Astra. Give Astra a bounded question or concrete risk; escalate when substantial
+uncertainty stops diagnosis improving. Do not automatically duplicate work between
+models or impose usage quotas. No other model or reasoning level is authorized,
 including the older `gpt-6-sol`. If a configuration is unavailable, use the other
 only where this allocation permits; otherwise report the limit without silently
 substituting. Apply this to upcoming assignments without unnecessarily disrupting
@@ -337,12 +365,14 @@ work already in progress.
 Use actual session/subagent controls for both model and reasoning. With the
 current collaboration tool, set `model` and `reasoning_effort` explicitly and use
 `fork_turns="none"` for overrides, supplying the bounded task and relevant context.
-Reuse an agent only when its effective configuration fits the assignment. Verify
+Reuse an agent only when its effective configuration fits the assignment; an
+available older Astra agent is not alone a reason to assign ordinary work. Verify
 the effective settings at creation, after a change or when continuity is uncertain,
 through session status or recorded runtime metadata;
 a prompt, available-model catalog or global default alone is not that evidence.
 Compaction alone does not require repeating model/documentation/configuration research.
-Report any configuration that cannot be set or verified. This allocation preserves
+Report any configuration that cannot be set or verified; the owner can change
+the coordinator through session controls. This allocation preserves
 all existing plan, review and verification requirements and the priority of a
 complete, correct, clean, minimal, maintainable and efficient product.
 
@@ -353,7 +383,7 @@ Writing a model name inside the goal does not change the running model.
 For a new coordinator session from a Tux terminal:
 
 ```sh
-codex -C /home/tux/bigbrotr-rs -m gpt-6-astra -c 'model_reasoning_effort="xhigh"'
+codex -C /home/tux/bigbrotr-rs -m gpt-6.1-sol -c 'model_reasoning_effort="xhigh"'
 ```
 
 Then submit the following as a goal. This is an invocation of the existing

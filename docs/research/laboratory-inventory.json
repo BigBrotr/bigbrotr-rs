@@ -75066,7 +75066,7 @@
     "resume_20261028": {
       "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_AND_BOTH_RELEASE_COMMIT_CASES_PASS",
       "canonical_branch": "main",
-      "canonical_revision": "e6feb00ef0c4f0f5741734de91b18b6debe937f0",
+      "canonical_revision": "e07b4621f2926794a2424aeec8754b5aefb74391",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75160,7 +75160,7 @@
           "status": "Implemented as076750d5, merged and qualified; current identities/resources in sync_safe_points."
         }
       },
-      "processes": "No local engine/compiler/proxy active. CH diagnostic26675 terminal0, server369abae762fc/client4ec5a2910c59 stopped0/PID0/noOOM; prelaunch65261 incomplete/no containers. CIwatch94369 remains owned by CI agent for0e8run; mac earlyfixtureFAIL, Linuxstillrunning atcheckpoint. Author/reviewer prepare bounded installedobservability.",
+      "processes": "All local engine/compiler/watcher sessions reaped; R1 session22609 exit1, all16 owned containers stopped0/PID0/noOOM, original launcher/client/proxy absent, borrowed bridge empty. CIwatch7963 exit1 and acquisition10431 exit0. No duplicate hosted dispatch. Prefix-only attribution prepared NOT_RUN; root owns execution.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75350,8 +75350,8 @@
         "receipt": "receipt.json",
         "source": "eaac23f8"
       },
-      "publication_receipt": ".research/ci-publication-20261026/source-main-8cf3f5b7-exposure/push.json",
-      "retired_branch_receipt": ".research/ci-publication-20261026/source-main-8cf3f5b7-exposure/retired-branch.json",
+      "publication_receipt": ".research/ci-publication-20261026/source-shared-budget-20261028/push.json",
+      "retired_branch_receipt": ".research/ci-publication-20261026/source-shared-budget-20261028/owned-branch-transition.json",
       "cache_observation": {
         "receipt": ".research/initial-index-recovery-qualification-20261028/cache-size-observation.json",
         "scope": "Owned implementation run compiler targets; sizes alone do not establish dispensability",
@@ -75386,7 +75386,7 @@
         },
         "retention": "Preserve both qualified cases and original failures, source receipts, candidate and diagnostic captures. Both root sessions reaped0; all owned processes stopped."
       },
-      "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit",
+      "canonical_revision_scope": "Local main includes the terminal hosted-failure report on public45ce; the enclosing coherent checkpoint adds the equivalent test assertion, early test-target Clippy coverage and current Q37/Q38. No new product qualification is claimed.",
       "epoch2_continuation": {
         "worktree": ".research/index-epoch2-continuation-20261028",
         "branch": null,
@@ -75702,22 +75702,22 @@
       },
       "initial_shared_budget": {
         "worktree": ".research/initial-shared-budget-20261028",
-        "branch": "work/initial-shared-budget",
+        "branch": null,
         "base": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
         "owner": "index_recovery_resume",
         "reviewer": "index_restart_resume",
-        "status": "PASS_BOUNDED_INSTALLED; reviewed productc022/testinitializerdfb and acceptance231 ready for coherent main integration/publication",
+        "status": "PASS_BOUNDED_INSTALLED; integrated and pushed as45ce0e7b; source worktree clean detacheddfb3420b, acceptance clean detached231df211, ignored evidence retained",
         "current_git_changes": "SourceWTclean dfb; acceptanceWTclean231. Mainc7 has root-owned report/checkpoint/inventory/task updates pending coherent integration.",
         "scope": "P01-T09Step5 funded whole-operation pre-effect admission and fair resource deferral. Preserve completion/ACK custody and all post-effect/unknown failure semantics.",
         "builds_engines": "Correctedc022 native202/build/assembly and installedR2PASS; all processes reaped; no activeengine/compiler",
-        "next": "Integrate/publish qualified increment once, observe actualCI; next Step5 finite64-request history saturation underArchiveoutage.",
+        "next": "Observe actual45ce CI; qualify Step5 finite64-request history saturation under Archive-only outage in the separate retained-boundary worktree.",
         "acceptance": {
           "worktree": ".research/initial-shared-budget-acceptance-20261028",
-          "branch": "work/initial-shared-budget-acceptance",
+          "branch": null,
           "base": "a4c4ab776de15806e52d67f35f488f79cf00dd76",
           "owner": "index_restart_resume",
           "reviewer": "root",
-          "status": "Committed clean; independent source review PASS;12 affected controls and retained-capture replay PASS",
+          "status": "Integrated45ce; retained clean detached231df211, ignored evidence preserved; independent source/actual review PASS",
           "scope": "Reuse signed prefix/client, actual owned ClickHouse pause, positive Index-held denial before unpause, matching local join/admission and complete independent science; no new proxy or extended timer.",
           "revision": "231df211126ac07017cc0b4871039870ddf4421d",
           "author_review_sha256": "09039db10cff63194119fc3a65521bcd3f99e8f687989c8cf88da670a0e2964c",
@@ -75841,6 +75841,77 @@
           "actual_review_sha256": "33c2ea8e7c811d7b038109207abd0b9f52f32e5c225d813396e32faf13782651",
           "resources": "All19 ownedcontainers stopped0/PID0/noOOM; parent/bothclients absent; borrowedbridge empty. Source/data/logs retained."
         }
+      },
+      "retained_boundary": {
+        "worktree": ".research/initial-retained-boundary-20261028",
+        "branch": "work/retained-boundary",
+        "base": "45ce0e7bd92cae428aa3bcd1d1281b5901335a88",
+        "owner": "index_recovery_resume",
+        "status": "Frozen68b9ed4b clean/unintegrated;155 controls PASS and critical review closed. InstalledR1 FAIL before boundary due Code202; occupying query/cause UNKNOWN;64/outage/native observation NOT_RUN.",
+        "next": "Execute one prepared prefix-only lifecycle attribution with unchanged c022 candidate, writer concurrency1 and existing deadlines; distinguish Code202 observation, NO_REPRO and INCOMPLETE. Do not blind-rerun64 or claim remote exclusion.",
+        "observer": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-native-observer-c0224962",
+          "evidence": ".research/initial-index-recovery-qualification-20261028/observer-c0224962",
+          "source": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+          "session": 56767,
+          "status": "PASS_DECLARED_NATIVE_OBSERVER_BUILD;56767 reaped0",
+          "container": "fdb2b3bbb0084f88a6835f327c9d63f3976da5a21c47e2c74d20cf8deae597f2",
+          "owner": "b19cc737987ef4658e8199e22ad70401",
+          "scope": "Unchanged maintained observer-only builder using qualified c022 source and optional exclusive115 cache; product not rebuilt.",
+          "receipt_sha256": "84d277e7b8cb74e704b9c68e4d3272fcefa944e6ec4981aa14039dd29e3b5f01",
+          "binary_sha256": "cdf6610ba7721f1093be86a94c090a902c1e2c86d2e98ed276f1b606332a928f",
+          "terminal": "stopped0/PID0/noOOM/unpaused; launcher absent; optional115 cache released"
+        },
+        "revision": "68b9ed4b722141aac787e7e3cc914c885a6f159a",
+        "author_receipt_sha256": "ebf6c6e89bf42903986088efd1ed5dfe0309fb4adc67976e95017e73062596b4",
+        "critical_review_sha256": "a44737a2c6ccd86fe36c6fa568199cb7cfeb4d3c8592d425101d480994d415c2",
+        "installed_r1": {
+          "evidence": "/home/tux/bigbrotr-rs/.research/first-launch-retained-boundary-r1-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-retained-boundary-r1-session.json",
+          "session": 22609,
+          "process": {
+            "pid": 922807,
+            "start_ticks": "660436083"
+          },
+          "status": "FAIL_PREFIX_CODE202_CAUSE_UNKNOWN; session22609 REAPED1",
+          "product": "c0224962bf922e0bcfd6480d4138fc967b36921e",
+          "acceptance": "68b9ed4b722141aac787e7e3cc914c885a6f159a",
+          "terminal": "All16 owned containers stopped0/PID0/noOOM/unpaused; launcher922807, client930100 and proxy923357 absent; bridge empty; cleanup_errors empty.",
+          "terminal_receipt_sha256": "247cb4a4d1a727686ae63c130ebed7c34a239d5fd604a0c902040e14c615e748",
+          "not_run": [
+            "catalog outage",
+            "retained64 boundary",
+            "native observer"
+          ],
+          "causal_diagnosis": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/r1-causal-diagnosis.json",
+          "causal_diagnosis_sha256": "b7dfae1e4ba5847a82f1fe2e37d6fe00f76b033760a5743aa247f1f2bf15ac2c"
+        },
+        "prefix_attribution": {
+          "status": "PREPARED_NOT_RUN",
+          "root": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author",
+          "recipe_sha256": "d1f9524951aa550763dc2959a0b935b1eeab027dbace609f47e4972ae600472c",
+          "script_sha256": "af1cbc71cf7255cdd89e116671394a249e5cdd3698fac7a3efa6da6d8e4bc887",
+          "controls": "5PASS; original2PASS3ERROR expectation-class failure retained",
+          "scope": "One ignored prefix-only diagnostic using existing writer-only bounded trace; never acceptance PASS; QueryFinish does not prove ProcessList removal or remote exclusion."
+        }
+      },
+      "hosted_40764438110": {
+        "revision": "45ce0e7bd92cae428aa3bcd1d1281b5901335a88",
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40764438110",
+        "status": "TerminalFAILURE:14PASS/3FAIL/13NOT_RUN. Same cfg(test) int_plus_one lint on all3 platforms; release builds and Python controls PASS. All202 native names per platform NOT_RUN. No billing/admission/cancellation or runtime-product verdict.",
+        "evidence": ".research/ci-publication-20261026/run-40764438110-exposure",
+        "session": 7963,
+        "worktree": ".research/ci-export-fixture-20261028",
+        "branch": "work/ci-shared-budget",
+        "owner": "ci_resume_verification",
+        "receipt_sha256": "16cdeac1fd086aab5561f2dec2c8409ea43cffcab97cec0ea66ea5648dbf6863",
+        "root_terminal_review_sha256": "07c84d8353e6f7a724d3c513b53ab36b42035e9e2fb82dd61c2fe7cb0dcbf7c2",
+        "report_commit": "e07b4621f2926794a2424aeec8754b5aefb74391",
+        "exposure": "4 ZIPs/27 members and38 workflow logs inspected; zero candidates/provider alerts; absent contexts NOT_RUN.",
+        "terminal": "watch7963 reaped1, driver/gh absent; acquisition10431 reaped0",
+        "local_correction": "Equivalent cfg(test) len()<4096 plus early --tests Clippy scope; eight existing verifier controls PASS. Sol/xhigh ordinary source review PASS, no rebuild or new actual Clippy claim.",
+        "local_review_sha256": "b1fe35fca125cb19a2f3dad34fd45faa3858b7102103b7d188fcb120968cfe45",
+        "next": "One automatic run of the coherent corrected revision; ci_followthrough_sol (verified Sol/xhigh), no duplicate dispatch."
       }
     }
   },

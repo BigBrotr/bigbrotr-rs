@@ -262,17 +262,23 @@ commits, active worktrees and integration; preserve worktree contents, ignored
 remain available until their useful work is reconciled. This does not authorize
 removing evidence, rewriting published history or expanding public release scope.
 
-Q37 (2026-10-20): The owner authorizes only `gpt-6-astra` and `gpt-6.1-sol`,
-both exclusively with `xhigh` reasoning. The coordinator always uses Astra;
-architecture, concurrency, persistence, fault recovery, security, complex
-diagnosis and critical review subagents also require Astra. Prefer Sol for bounded
-implementation, local fixes and work with clear contracts and verification.
-Assess actual difficulty even for tests, tools and documentation; escalate
-substantial ambiguity, high risk or inconclusive attempts to Astra. No other
-models/efforts, including `gpt-6-sol`, or silent unavailable-model substitutions.
-Select through actual controls and verify effective configuration; report limits
-honestly. Apply to upcoming assignments without unnecessary interruption of work
-already underway. The [existing execution guide](../implementation/agent-handoff.md#starting-the-continuing-goal-on-tux)
+Q37 (2026-10-20; allocation replaced by the owner on 2026-10-28): Only
+`gpt-6.1-sol` and `gpt-6-astra`, both with `reasoning_effort=xhigh`, are authorized.
+Sol is the operational default, including the coordinator, implementation, tests,
+tools, documentation, CI, ordinary review and diagnosis with verifiable contracts.
+Use bounded Astra assignments for substantial ambiguity, new concurrency,
+persistence or security guarantees, diagnosis without a verifiable explanation,
+and independent review of changes critical to data, authority or recovery.
+Sol may implement important code under a sufficiently defined contract, retaining
+the pertinent critical review. Module complexity or an available older Astra
+agent does not alone justify Astra; do not duplicate work automatically or impose
+model quotas. Escalate when substantial uncertainty stops diagnosis improving.
+No other models/efforts, including `gpt-6-sol`, or silent substitutions. Select
+through actual controls and verify effective configuration at creation/change or
+uncertain continuity; a prompt is not evidence. Report unavailable controls honestly;
+the owner can change the coordinator in session controls. Finish current assignments
+without unnecessary interruption and apply this allocation to subsequent work.
+The [existing execution guide](../implementation/agent-handoff.md#starting-the-continuing-goal-on-tux)
 owns the operational allocation; the same plan, checkpoint, quality requirements
 and autonomous full-product goal remain in force. Earlier decisions remain
 historical records.
@@ -281,7 +287,7 @@ Q38 (2026-10-20): The owner refines execution efficiency without reducing select
 scope, correctness, robustness or code quality. Reuse verified reads, reviews,
 tools and results while relevant code, dependencies, configuration, inputs and
 artifacts remain unchanged; repeat affected checks on change, anomaly or lost
-certainty. Q37 remains unchanged; verify effective model/effort at creation,
+certainty. Follow Q37's current allocation; verify effective model/effort at creation,
 after a change or uncertain continuity, not merely because of compaction.
 Keep the current checkpoint concise and link detailed evidence; reconcile its
 objective, revision/local changes, open problems, active processes and next step
@@ -325,8 +331,38 @@ restart blockers from later-milestone work. A deep prerequisite needs its concre
 requirement or risk; all of P02 is not an indivisible gate. Later work stays in the
 existing plan, incomplete. Report what works, supporting evidence, remaining
 blocker and next demonstrable result. No parallel plan, metrics system or repeated
-historical audit is requested. After preserving work and pushing ready commits,
-set the actual goal PAUSED and wait for the owner's explicit resume.
+historical audit is requested. The suspension requested with this October25
+clarification is historical; the owner subsequently resumed the same full goal.
+
+Q38 clarification (2026-10-28): These criteria apply also to preexisting code,
+tests, tools, configuration, CI, documentation and operations, including previously
+completed work. Prior approval does not excuse a verified defect or updated
+requirement; file length, age or an audit observation alone is not a defect.
+When touching a responsibility, reconcile relevant duplication, coupling, obsolete
+paths, documentation and avoidable costs while retaining adequate components.
+Assign verified findings to existing tasks with closure criteria: current blockers
+now, others at the appropriate dependency, none indefinitely lost. Preserve Q40's
+measured admission/ClickHouse/coordinator follow-through and safe preproduction
+consolidation, without rewriting history or losing pending work or unique data.
+
+Improve shared setup from actual fixture timing, path representation, disabled
+diagnostic endpoint, SQL-role and contended-service failures. Check changed
+assumptions cheaply against contracts/captures and actual product identities,
+configuration, privileges and processes; reuse qualified preparation without
+deriving expected outcomes from the implementation. No universal checklist or
+separate test rewrite. Each maintained test needs a recognizable behavior,
+invariant, boundary, regression or risk; consolidate obsolete/duplicate cases in
+touched modules without losing discriminating coverage. Prefer observable behavior;
+internal checks must serve authority, persistence, absence of effects or data
+preservation. Keep proportional false-PASS controls and real installed engine/client
+proofs; broad load, recovery, browser and distribution qualification remains at its
+existing tasks, not automatically before M1. Required maintenance tools/tests must
+be portable repository content with declared dependencies. Reuse valid evidence,
+classify and preserve failures, and never adjust limits/oracles merely for PASS.
+At task/milestone closure assess the involved preexisting code, tests, documentation
+and real paths together. Use normal increment results to assess setup errors and
+Sol rework and adjust Astra involvement by observed risk. Continue the ACTIVE goal
+and normal checkpoints; no new plan, metrics system or extraordinary checkpoint.
 
 Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
 with a completely retired nonempty initial producer. Reuse immutable PostgreSQL

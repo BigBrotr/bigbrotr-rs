@@ -87,6 +87,7 @@ class IndexResultControls(unittest.TestCase):
         self.assertEqual(commands['compile-tests'][:2], ['cargo', 'test'])
         self.assertIn('--no-run', commands['compile-tests'])
         self.assertEqual(commands['clippy'][-3:], ['--', '-D', 'warnings'])
+        self.assertIn('--tests', commands['clippy'])
         artifact_root = Path('/synthetic/retained-artifacts')
         selected = dict(test_commands(artifact_root))
         self.assertEqual(set(selected), set(GROUPS) | set(BINARY_GROUPS))
