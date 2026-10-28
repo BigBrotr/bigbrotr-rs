@@ -594,12 +594,7 @@ class Runtime:
         self.initial_publication(entry, output)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
-        def quiet():
-            return any(load(path)['number'] >= 3
-                       and (not getattr(self, 'retained_boundary', False) or load(path).get('retained_quiet') is True)
-                       and not path.with_name(path.name.replace('open', 'closed')).exists()
-                       for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
-        self.wait(quiet, 'quiet controlled receive', 5, entry, self.client)
+        self.wait(self.initial_source_quiet, 'quiet controlled receive', 5, entry, self.client)
         (self.home / 'stop-requested').write_text('owned orderly stop\n')
         terminal = self.stop_container(entry, output)
         final = self.logs(entry, output)[-1]
@@ -615,6 +610,12 @@ class Runtime:
         owner, = [row for row in selected['owner_epochs'] if row['role'] == 'control']
         require(owner['state'] == 'released', 'initial Control ownership retained')
         self.backend_absence(output)
+
+    def initial_source_quiet(self):
+        return any(load(path)['number'] >= 3
+                   and (not getattr(self, 'retained_boundary', False) or load(path).get('retained_quiet') is True)
+                   and not path.with_name(path.name.replace('open', 'closed')).exists()
+                   for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
 
     def initial_archive_observation(self, entry, output):
         def published():

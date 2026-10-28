@@ -1,7 +1,9 @@
 """Installed finite64 saturation with the independently parked Archive owner."""
+import errno
 import json
 from pathlib import Path
 import shutil
+import socket
 import time
 
 from cases.first_launch import MissingPrerequisite, digest, load, require, save
@@ -16,6 +18,7 @@ LIMITS = [
     'Writer-only lifecycle logging retains the existing1024-row queue/512-row flush threshold/7500ms interval and writer quota1. After independently verified prefix readiness, one ClickHouse clock query records a start-time cutoff before catalog fault/source release under the same15s deadline. After actual joins, the8192-row/4MiB/30s collector applies that cutoff to both count and rows. Later64-workload queries are excluded; incomplete pairs stay diagnostic INCOMPLETE. All-query coverage and remote termination/exclusion remain NOT_PROVEN; this does not close the earlier Code202 cause.',
     'Two bootstrap requests plus one source-dictionary request leave61 event mutation slots. The frozen62 signed events use public fixture keys1/3. Twenty quanta send3 new events; quantum21 sends event61, eligible event62 and proofevent1. The actual prefix must stop at frame1 before any later proof is released.',
     'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Up to100 legitimate emptyEOSE quanta follow or wait at the gate; later quanta are quiet. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
+    'After128 completed rounds and the delivered proof, the finite peer closes its listener before recording completion and accepts no129th connection. Shutdown checks either an actual quiet receive or this independent finite-source end, including closed rounds/proof and a refused loopback connection. Finite completion adds no cancellation evidence or new product capability; Index64/cut312 must still arrive inside the original65s client gate.',
     'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan scheduling needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
     'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All829 native rows and sequence1081, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
     'Archive stays cut3/revision2 with issued attempt3, original input and custody; all82 Control tables and original Archive files remain checked. NOT_RUN: dynamic pending-byte hysteresis, GC, disk pressure, automatic recovery,64-plan current readiness, full M1 or general capacity. Earlier ACK/commit-loss qualification is reused, not inferred anew.',
@@ -139,6 +142,24 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
 
     def observed_publication(self, caps):
         return caps.get('index_publication',{}).get('state') in ('building','stale','unavailable')
+
+    def initial_source_quiet(self):
+        path=self.home/'relay-finite-complete.json'
+        if not path.exists():
+            return super().initial_source_quiet()
+        require(not (self.home/'relay-error.json').exists(),'finite retained peer had an earlier relay failure')
+        wires=[load(p) for p in sorted(self.home.glob('relay-closed-*.json'))]
+        require({p.name for p in self.home.glob('relay-open-*.json')}==
+            {f'relay-open-{n:03}.json' for n in range(1,129)},'finite retained peer accepted extra/missing connection')
+        oracle.finite_peer(load(path),wires,self.events,digest(self.home/'relay-closed-128.json'))
+        with socket.socket() as connection:
+            connection.settimeout(1)
+            refused=connection.connect_ex(('127.0.0.1',7447))
+        require(refused==errno.ECONNREFUSED,'finite retained peer listener remains reachable')
+        save(self.root/'initial/retained-peer-completion.json',dict(
+            status='OBSERVED_FINITE_SOURCE_END',receipt_sha256=digest(path),connections=128,
+            refusal_errno=refused,quiet_cancellation='NOT_RUN'))
+        return True
 
     def validate_roles(self, value, before_us, after_us):
         index.live_roles(value,self.index_live,before_us,after_us,revision=64,sequence=312,

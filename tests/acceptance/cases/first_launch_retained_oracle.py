@@ -67,6 +67,21 @@ def wires_checked(wires, events):
     return wires[20],proof[0]
 
 
+def finite_peer(value, wires, events, last_closed_sha256):
+    """Finite peer end is a source boundary, never quiet cancellation proof."""
+    assert set(value)=={'format','reason','connections','proof_sent','last_closed_monotonic_ns',
+        'last_closed_sha256','listener_closed','completed_monotonic_ns'}
+    assert value['format']=='bigbrotr-retained-relay-completion/1' and value['reason']=='connection_limit'
+    assert type(value['connections']) is int and value['connections']==len(wires)==128
+    assert value['proof_sent'] is True and value['listener_closed'] is True
+    _,proof=wires_checked(wires,events)
+    assert proof['completion']=='request-and-websocket-close'
+    assert re.fullmatch('[0-9a-f]{64}',last_closed_sha256)
+    assert value['last_closed_sha256']==last_closed_sha256
+    assert type(value['last_closed_monotonic_ns']) is type(value['completed_monotonic_ns']) is int
+    assert 0<value['last_closed_monotonic_ns']==wires[-1]['closed_monotonic_ns']<=value['completed_monotonic_ns']
+
+
 def progress(state, wanted, events, wire, control, completed, *, proof):
     from installed_progress_context_oracle import typed
     from installed_sync_oracle import decode

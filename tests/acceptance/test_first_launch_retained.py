@@ -1,11 +1,14 @@
 """Closed saturation/oracle/custody refusal controls; no engines or product runs."""
 import copy
+import base64
+import errno
 import hashlib
 import json
 import os
 from pathlib import Path
 from types import SimpleNamespace
 import tempfile
+import threading
 import unittest
 from unittest.mock import Mock, patch
 
@@ -21,6 +24,7 @@ from cases import first_launch_index_oracle as index
 from cases import first_launch_restart as source
 from installed_retained_transport import corpus, RetainedEvents, PROFILE
 from installed_sync_client import publish
+import installed_sync_client as wire
 from installed_archive_oracle import expected
 from installed_sync_oracle import decode
 from installed_progress_replay import head_digest, native_reference, certification_digest
@@ -109,6 +113,114 @@ def saturation_fixture(root):
 
 
 class RetainedBoundaryControls(unittest.TestCase):
+    def finite_relay(self,root,*,bad_round=None,release=True,failure='protocol',retained=True):
+        for source_name,target_name in (('tests/fixtures/acquisition/retained-requests.json','retained-requests.json'),
+                ('tests/fixtures/ingest/import-event.jsonl','event.jsonl')):
+            (root/target_name).write_bytes((ROOT/source_name).read_bytes())
+        if retained:base.save(root/'retained-request-profile.json',PROFILE)
+        test=self;finished=threading.Event()
+        class Connection:
+            def __init__(self,number):
+                self.number=number;self.ident=f'{number:032x}'+'0000000000000001';self.frame_number=0
+                key=base64.b64encode(bytes(16)).decode()
+                self.header=bytearray(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
+                    'Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\n'
+                    'Sec-WebSocket-Key: '+key+'\r\n\r\n').encode())
+            def __enter__(self):return self
+            def __exit__(self,*args):pass
+            def settimeout(self,value):test.assertEqual(value,3)
+            def sendall(self,value):pass
+            def shutdown(self,value):pass
+            def recv(self,count):
+                if self.number==bad_round and failure=='socket':raise EOFError('peer closed')
+                if not self.header and not retained and self.number==3:finished.set()
+                result=bytes(self.header[:count]);del self.header[:count];return result
+            def frame(self):
+                self.frame_number+=1
+                if self.frame_number==1:
+                    selector={'kinds':[1],'limit':2 if self.number==bad_round and failure=='protocol' else 3}
+                    return 1,json.dumps(['REQ',self.ident,selector]).encode()
+                return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 else (8,b'')
+        listener=Mock();accepted=[];closed=[]
+        def accept():
+            number=len(accepted)+1
+            if number==22 and release:
+                base.save(root/'retained-proof.continue',dict(format='bigbrotr-retained-request-proof-release/1',
+                    boundary_request=f'{21:032x}'+'0000000000000001',classified_events=61,
+                    complete_through_request=64,checkpoint_revision=64))
+            accepted.append(number)
+            test.assertLessEqual(number,129)  # A regression may attempt129; never hang this control.
+            return Connection(number),('127.0.0.1',12345)
+        def close():
+            test.assertFalse((root/'relay-finite-complete.json').exists())
+            closed.append(True)
+        listener.accept.side_effect=accept;listener.close.side_effect=close;errors=[]
+        with patch.object(wire,'read_frame',side_effect=lambda connection:connection.frame()), \
+                patch.object(wire,'send_frame'):
+            wire.relay(root,listener,finished,errors,True)
+        return listener,accepted,closed,errors
+
+    def test_finite_peer_closes_after128_without_accept129_and_preserves_proof(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root)
+            self.assertEqual((accepted,closed,errors),(list(range(1,129)),[True],[]))
+            self.assertEqual(listener.accept.call_count,128)
+            self.assertFalse((root/'relay-open-129.json').exists())
+            receipt=base.load(root/'relay-finite-complete.json')
+            wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
+            events=corpus(root/'retained-requests.json')
+            check.finite_peer(receipt,wires,events,base.digest(root/'relay-closed-128.json'))
+            self.assertEqual(sum(w.get('retained_phase')=='proof-only' for w in wires),1)
+            for change in (lambda v:v.update(connections=129),lambda v:v.update(listener_closed=False),
+                    lambda v:v.update(proof_sent=False),lambda v:v.update(last_closed_sha256='0'*64),
+                    lambda v:v.update(completed_monotonic_ns=0)):
+                invalid=copy.deepcopy(receipt);change(invalid)
+                with self.assertRaises(AssertionError):
+                    check.finite_peer(invalid,wires,events,base.digest(root/'relay-closed-128.json'))
+            runtime=case.RetainedRuntime(arguments(root),{});runtime.home=root;runtime.events=events
+            (root/'initial').mkdir()
+            connection=Mock();connection.connect_ex.return_value=errno.ECONNREFUSED
+            with patch.object(case.socket,'socket') as socket:
+                socket.return_value.__enter__.return_value=connection
+                self.assertTrue(runtime.initial_source_quiet())
+            self.assertEqual(base.load(root/'initial/retained-peer-completion.json')['quiet_cancellation'],'NOT_RUN')
+            connection.connect_ex.return_value=0
+            with patch.object(case.socket,'socket') as socket:
+                socket.return_value.__enter__.return_value=connection
+                with self.assertRaisesRegex(ValueError,'listener remains reachable'):runtime.initial_source_quiet()
+            base.save(root/'relay-open-129.json',dict(number=129,retained_quiet=True))
+            with self.assertRaisesRegex(ValueError,'extra/missing connection'):runtime.initial_source_quiet()
+
+    def test_prelimit_protocol_failure_or_missing_proof_is_not_finite_completion(self):
+        for bad_round,release,failure in ((17,True,'protocol'),(17,True,'socket'),(None,False,'protocol')):
+            with self.subTest(bad_round=bad_round,failure=failure),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root,
+                    bad_round=bad_round,release=release,failure=failure)
+                self.assertEqual(closed,[True]);self.assertEqual(len(errors),1)
+                self.assertTrue(errors[0].startswith('EOFError:' if failure=='socket' else 'AssertionError:'))
+                self.assertTrue((root/'relay-error.json').exists())
+                self.assertFalse((root/'relay-finite-complete.json').exists())
+                self.assertEqual(listener.accept.call_count,17 if bad_round else 128)
+
+    def test_unrelated_relay_keeps_its_original_quiet_receive_and_no_finite_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root,retained=False)
+            self.assertEqual((accepted,closed,errors),([1,2,3],[True],[]))
+            self.assertEqual(base.load(root/'relay-closed-003.json')['completion'],'quiet-eof')
+            self.assertFalse((root/'relay-finite-complete.json').exists())
+
+    def test_default_quiet_source_and_retained_quiet_receive_keep_old_meaning(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);ordinary=object.__new__(base.Runtime);ordinary.home=root
+            retained=object.__new__(case.RetainedRuntime);retained.home=root
+            self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
+            base.save(root/'relay-open-003.json',dict(number=3))
+            self.assertTrue(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
+            base.save(root/'relay-open-003.json',dict(number=3,retained_quiet=True))
+            self.assertTrue(retained.initial_source_quiet())
+            base.save(root/'relay-closed-003.json',dict(number=3))
+            self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
+
     def prefix_runtime(self,root,clock=100):
         runtime=case.RetainedRuntime(arguments(root),{})
         runtime.home=root/'client';runtime.home.mkdir()

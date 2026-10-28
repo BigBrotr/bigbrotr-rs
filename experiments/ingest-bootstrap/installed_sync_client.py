@@ -74,7 +74,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
           event_sender=None):
     assert event_sender is None or (signed and not refusals and not window)
     split = None
-    if (directory / 'retained-request-profile.json').exists():
+    retained = (directory / 'retained-request-profile.json').exists()
+    if retained:
         assert signed and not refusals and not window and event_sender is None
         assert not (directory / 'progress-context.json').exists()
         from installed_retained_transport import RetainedEvents
@@ -85,10 +86,19 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
         split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial',
             event_sequence=ack_events(directory))
     request_ids = set()
+    completed = None
     try:
         number = 0
         window_rounds = 0
         while not finished.is_set():
+            if retained and number == 128:
+                assert split.proof_sent, 'retained connection budget ended before proof'
+                completed = dict(format='bigbrotr-retained-relay-completion/1',
+                    reason='connection_limit', connections=number, proof_sent=True,
+                    last_closed_monotonic_ns=trace['closed_monotonic_ns'],
+                    last_closed_sha256=hashlib.sha256(
+                        (directory/f'relay-closed-{number:03}.json').read_bytes()).hexdigest())
+                break
             try:
                 connection, remote = listener.accept()
             except socket.timeout:
@@ -130,7 +140,6 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
-                retained = (directory / 'retained-request-profile.json').exists()
                 if retained:
                     selected = split.select(ident, number)
                     trace['retained_quiet'] = selected is None
@@ -195,6 +204,9 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
         publish(directory, 'relay-error.json', dict(error=errors[-1]))
     finally:
         listener.close()
+        if completed is not None:
+            publish(directory, 'relay-finite-complete.json', dict(completed,
+                listener_closed=True, completed_monotonic_ns=time.monotonic_ns()))
 
 
 def no_connections(directory, listener, finished, errors):

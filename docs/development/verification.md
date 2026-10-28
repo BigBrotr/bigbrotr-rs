@@ -453,7 +453,12 @@ An atomic release then permits exactly one proof-only REQ for event1. It advance
 classification61→62 and checkpoint64→65, preserving all64 requests/inputs and
 source312. The peer may send at most100 empty EOSE rounds while gated or after
 the proof, then quiet rounds; it switches to quiet receive after logout for the
-existing orderly-stop check. The original128 connections,3s socket, three-event
+existing orderly-stop check. If all128 rounds finish first, the retained peer
+closes its listener and records finite completion without accepting a129th
+connection. The shutdown observer independently checks all128 closed rounds,
+the delivered proof and a refused loopback connection. This finite source end
+does not qualify quiet cancellation; other cases retain their quiet-receive
+check. The original128 connections,3s socket, three-event
 quantum,15s prefix and65s submitted gates remain. No product deadline, credit or
 memory ceiling changes. Missing the declared bounds is a real case failure.
 
