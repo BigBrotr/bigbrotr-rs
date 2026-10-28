@@ -5,15 +5,17 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch
 
 from cases import first_launch as base
+from cases import first_launch_index as initial
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_commit as case
 from cases import first_launch_index_commit_oracle as oracle
 from test_first_launch import arguments
-from test_first_launch_index import ROOT, schema
+from test_first_launch_index import ROOT, schema, set_value
 from test_first_launch_index_restart import restart_fixture
 
 
@@ -95,6 +97,37 @@ def commit_fixture(root, mode):
 
 
 class IndexCommitControls(unittest.TestCase):
+    def test_operation_cap_is_the_unchanged_deployed_default_not_managed_policy(self):
+        field=base.load(ROOT/'contracts/config/schema.json')['properties']['runtime']['properties']['renewal_timeout']
+        self.assertEqual((field['default'],field['x-bigbrotr-deployment-locked'],field['x-bigbrotr-reload']),('5s',True,'restart'))
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=case.IndexCommitRuntime(arguments(Path(directory)),{})
+            runtime.config=Path(directory)/'instance.toml'
+            runtime.home=Path(directory)/'client';runtime.home.mkdir()
+            runtime.set_value=set_value
+            original=initial.recipe((ROOT/'config/recipes/acceptance.toml').read_text(),set_value)
+            runtime.config.write_text(original)
+            with patch.object(initial.IndexRuntime,'prepare_state'):
+                runtime.prepare_state()
+            expected=tomllib.loads(original)
+            expected.setdefault('archive',{})['max_publish_delay']='1s'
+            expected.setdefault('runtime',{})['renewal_timeout']='5s'
+            self.assertEqual(tomllib.loads(runtime.config.read_text()),expected)
+            self.assertEqual(runtime.inputs['initial_recipe_sha256'],base.digest(runtime.config))
+            self.assertEqual(case.publication_operation_limit(expected),5_000_000)
+            # Missing, larger, smaller and differently typed deployed values
+            # cannot borrow a managed-policy field or reach a fault launch.
+            for value in (None,'10s','500ms',5_000_000):
+                changed=copy.deepcopy(expected)
+                if value is None:del changed['runtime']['renewal_timeout']
+                else:changed['runtime']['renewal_timeout']=value
+                with self.subTest(value=value),self.assertRaises(ValueError):
+                    case.publication_operation_limit(changed)
+                runtime.config.write_text(original if value is None else set_value(original,'runtime','renewal_timeout',value))
+                with self.subTest(value=value),patch.object(runtime,'source_unchanged'),patch.object(runtime,'launch') as launch:
+                    with self.assertRaises(ValueError):runtime.index_commit_fault()
+                    launch.assert_not_called()
+
     def test_both_histories_have_independent_publication_and_recovery_tuples(self):
         for mode in oracle.MODES:
             with tempfile.TemporaryDirectory() as directory:

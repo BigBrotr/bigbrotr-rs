@@ -406,7 +406,13 @@ captures all81 tables and binds the current Control backend PID/start, live
 Control/Index epochs, actual process and held local custody. This capture sees
 the committed rebind but the old revision2/prepared-plan3 state. The observer
 must release the gate inside the existing SQL operation; slower observation
-fails. The proxy retains64MiB,20,000 total frames,16 lifetime connections and120s.
+fails. The fresh root explicitly declares the unchanged
+`runtime.renewal_timeout=5s` schema default before initialization. The observer
+checks that deployed setting before the focused launch; this restart-only
+setting is intentionally absent from the managed policy document. The product
+may further shorten an operation to its remaining authority, and only an actual
+COMMIT fault can qualify the case. The proxy retains64MiB,20,000 total frames,
+16 lifetime connections and120s.
 It neither replaces a COMMIT result nor counts a local stop as a fault.
 
 | Actual boundary | Independent postfault PG state | Fresh catch-up2→3 |
