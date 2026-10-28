@@ -19,7 +19,7 @@ STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
           'signed_acquisition', 'index_publication', 'cleanup')
 LIMITS = [
     'Known catalog-only connection refusal after the independently ready source3/Archive2/Index2 prefix. The unchanged signed peer then reaches source12/Index4 while Archive retains revision2/cut3 and issued attempt3.',
-    'The existing15s prefix gate and65s signed-client gate remain. The catalog-only proxy uses the existing retained-catch-up120s/64MiB/131072-frame/64-connection profile and is positively joined before the next admission.',
+    'The existing15s prefix gate and65s signed-client gate remain. Physical Index readiness uses its existing45s/256-sample envelope at most once per250ms, including the intentional15s sweep cooldown. The catalog-only proxy uses the existing retained-catch-up120s/64MiB/131072-frame/64-connection profile and is positively joined before the next admission.',
     'Same Control process/lease, six classified EVENTs, exact original inputs/typed progress, ten-family Index rows and retained three-dictionary Archive prefix are checked independently.',
     'NOT_RUN: automatic Archive recovery, generic connection/auth/TLS failures, uncertain remote outcomes, native RocksDB census, shared-budget/disk-pressure capacity and complete M1.',
     'Diagnostic C API census uses the separately declared direct catalog reader after product shutdown; the running product never bypasses its unavailable catalog route. Signed history/export remains covered by separate existing journeys.',
@@ -156,20 +156,29 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
             'six durably classified source events', 15, entry, self.client)
 
     def initial_publication(self, entry, output):
-        deadline = time.monotonic() + 15
+        # Use the existing IndexRuntime.live_roles physical-readiness envelope.
+        # Publication does not reset its intentional 15s sweep cooldown. The
+        # signed client's original 65s barrier still bounds the whole operation.
+        deadline = time.monotonic() + 45
         before_us = int(self.sql('bigbrotr_control', 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
         observations = []
+        last = 0
         def parked():
+            nonlocal last
+            if time.monotonic() - last < .25:
+                return False
+            last = time.monotonic()
             timing = dict(before_ns=time.clock_gettime_ns(time.CLOCK_BOOTTIME))
             value = ShortPinRuntime.roles(self, deadline, session_path=self.home/'session.private')
             timing['after_ns'] = time.clock_gettime_ns(time.CLOCK_BOOTTIME)
-            require(len(observations) < 128, 'Archive outage role observation bound')
+            require(len(observations) < 256, 'Archive outage role observation bound')
             observations.append(value); save(output/'catalog-outage-roles.json', observations)
             self.parked_timing = timing
             caps = {row['capability']: row for row in value['capabilities']}
             return (caps.get('archive_publication', {}).get('reason') == 'dependency_unavailable'
                     and caps.get('index_publication', {}).get('state') == 'ready')
-        self.wait(parked, 'truthful Archive unavailability and current Index', 15, entry, self.client)
+        self.wait(parked, 'truthful Archive unavailability and current Index',
+                  deadline-time.monotonic(), entry, self.client)
         self.index_live, catalog = self.capture(output, 'catalog-outage')
         after_us = int(self.sql('bigbrotr_control', 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
         oracle.parked_roles(observations[-1], self.index_live, before_us, after_us)

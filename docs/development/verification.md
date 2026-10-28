@@ -403,7 +403,10 @@ required prepared and unplanned backlog.
 
 `p01-first-launch-archive-outage` uses the same fresh candidate, real engines,
 signed client and protected-evidence arguments as the Index restart case. Its
-seven stages retain the original 15s prefix and 65s client bounds. It routes only
+seven stages retain the original 15s prefix and 65s client bounds, including the
+existing Index physical-readiness allowance of45s/256 samples at most once per
+250ms. Publication does not reset the product's15s physical-verification cooldown;
+SQL head advancement alone is not a ready observation. It routes only
 the Archive catalog through the existing bounded pass-through proxy, positively
 joins that proxy after ready source3/Archive2/Index2, and observes connection
 refusal before releasing the source gate. Control's database route stays direct.
