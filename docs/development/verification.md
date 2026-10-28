@@ -359,6 +359,10 @@ does not resolve an unknown remote query.
 After unpause, explicit `ingest recover --close-source` verifies the original
 requests and closes source12. That existing Ingest command performs its own
 retained acknowledgement; it does not retire the producer or reclaim the source.
+The fresh closure first changes the original producer epoch from `open` to
+`closing`, before the source-closure transaction. The oracle requires that exact
+barrier and preserves every other producer field, including its reservation
+bound, identity and unretired state, along with the remaining Control tables.
 The installed `index catch-up --file /etc/bigbrotr/instance.toml` must recover
 owner1→2, retain published revision2 until actual publication, publish pending
 plan3, and prepare/publish exactly one new batch4. An exact retry rebinds2→3,

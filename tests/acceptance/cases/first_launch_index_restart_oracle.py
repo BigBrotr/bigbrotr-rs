@@ -77,12 +77,20 @@ def owner_changes(before, after, *, index_epoch=None):
 
 
 def source_closed(before, after, report, science):
-    unchanged_except(before,after,{'owner_epochs','role_instances','source_streams'})
+    unchanged_except(before,after,{'owner_epochs','role_instances','producer_epochs','source_streams'})
     owner_changes(before,after)
     prior = index.only(before['source_streams'])
     current = index.only(after['source_streams'])
     assert prior['state'] == 'open' and current['state'] == 'closed'
+    original_producer = index.only(before['producer_epochs'])
     producer = index.only(after['producer_epochs'])
+    # Fresh source closure first commits the producer's scheduling veto. This
+    # is the native/PG closing barrier, not producer retirement or a new epoch.
+    assert original_producer['state'] == 'open' and producer['state'] == 'closing'
+    fields = {'state','xmin'}
+    index.exact({k:v for k,v in original_producer.items() if k not in fields},
+                {k:v for k,v in producer.items() if k not in fields})
+    assert int(original_producer['xmin']) < int(producer['xmin']) < int(current['xmin'])
     expected = closure(science['manifest'],producer['producer_slot_id'],1,science['inputs'],science['receipts'],12)
     fields = {'state','last_complete_sequence','closure_digest','closed_at_us','xmin'}
     index.exact({k:v for k,v in prior.items() if k not in fields},{k:v for k,v in current.items() if k not in fields})

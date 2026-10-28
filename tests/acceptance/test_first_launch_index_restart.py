@@ -145,7 +145,8 @@ class RestartIndexControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);before,_,_,_,science=restart_fixture(root)
             science['manifest']=next(value for cf,key,value in science['native'] if cf=='default' and key==b'\x01\x01')
-            before['producer_epochs']=[dict(producer_slot_id='\\x'+'33'*16)]
+            before['producer_epochs']=[dict(producer_slot_id='\\x'+'33'*16,producer_epoch=1,
+                state='open',reserved_through_request=4,retired_at_us=None,closure_digest=None,xmin='100')]
             before['source_streams']=[dict(dataset_id='\\x'+'22'*16,owner_resource_id='\\x'+'aa'*16,
                 owner_epoch=1,shard_id=0,state='open',last_complete_sequence=None,closure_digest=None,closed_at_us=None,xmin='100')]
             after=copy.deepcopy(before)
@@ -155,6 +156,7 @@ class RestartIndexControls(unittest.TestCase):
             after['owner_epochs'].append(control)
             after['role_instances'].append(dict(role_instance_id=control['role_instance_id'],role='control',dataset_id=old['dataset_id']))
             digest=check.closure(science['manifest'],'\\x'+'33'*16,1,science['inputs'],science['receipts'],12)
+            after['producer_epochs'][0].update(state='closing',xmin='199')
             after['source_streams'][0].update(state='closed',last_complete_sequence=12,closure_digest='\\x'+digest,closed_at_us=19000,xmin='200')
             report=dict(format='bigbrotr-ingest-recovery/1',state='source-closed',dataset_id='22'*16,
                 owner_resource_id='aa'*16,producer_slot_id='33'*16,producer_epoch='1',issued_through='4',reserved_through='4',
@@ -163,10 +165,20 @@ class RestartIndexControls(unittest.TestCase):
             check.source_closed(before,after,report,science)
             for table,field,value in [('source_streams','closure_digest','\\x'+'00'*32),
                     ('source_streams','last_complete_sequence',13),('source_streams','owner_epoch',2),
-                    ('producer_epochs','state','retired'),('producer_outcomes','request_sequence',99)]:
+                    ('producer_epochs','state','open'),('producer_epochs','state','retired'),
+                    ('producer_epochs','producer_slot_id','\\x'+'44'*16),('producer_epochs','producer_epoch',2),
+                    ('producer_epochs','reserved_through_request',5),('producer_epochs','retired_at_us',19000),
+                    ('producer_epochs','closure_digest','\\x'+'00'*32),('producer_epochs','xmin','100'),
+                    ('producer_epochs','xmin','200'),('producer_outcomes','request_sequence',99)]:
                 changed=copy.deepcopy(after);changed[table][0][field]=value
                 with self.subTest(table=table,field=field),self.assertRaises(AssertionError):
                     check.source_closed(before,changed,report,science)
+            for state in ('closing','retired'):
+                changed=copy.deepcopy(before);changed['producer_epochs'][0]['state']=state
+                with self.subTest(prior_state=state),self.assertRaises(AssertionError):
+                    check.source_closed(changed,after,report,science)
+            changed=copy.deepcopy(after);changed['producer_epochs'].append(copy.deepcopy(changed['producer_epochs'][0]))
+            with self.assertRaises((AssertionError,ValueError)):check.source_closed(before,changed,report,science)
             with self.assertRaises(AssertionError):check.source_closed(before,after,dict(report,ready=True),science)
 
     def test_custody_retains_the_actual_lock_and_refuses_replacement(self):
