@@ -207,16 +207,21 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
                 'issued attempt coordinator binding differs from both retained ends')
         intent = self.attempt_lock.with_name('intent.json')
         input_identity(intent)
+        # The catalog binding has a terminal slash; configuration keeps the
+        # user's path unchanged (configuration reference / catalog identity).
+        catalog_root = tomllib.loads(self.config.read_text())['storage']['archive_root']
+        if not catalog_root.endswith('/'):
+            catalog_root += '/'
         expected = dict(format='bigbrotr-local-archive-custody/1',
             boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
             lock_device=self.lock_identity['device'], lock_inode=self.lock_identity['inode'],
-            catalog_root=tomllib.loads(self.config.read_text())['storage']['archive_root'],
+            catalog_root=catalog_root,
             attempt_id=list(index.raw(third['attempt_id'],16)), publication_ordinal=3,
             topology_generation='0')
         expected.update({key:index.raw(third[key],size).hex() for key,size in
             [('dataset_id',16), ('catalog_id',16), ('coordinator_incarnation',16),
              ('worker_incarnation',16), ('batch_digest',32)]})
-        index.exact(load(intent), expected)
+        require(load(intent) == expected, 'retained Archive attempt intent differs')
         self.parked_files = self.files(directory)
         save(output/'catalog-outage-state-files.json', self.parked_files)
         self.index_rows = {name:self.ch(index.select_rows(self.schema, DATABASE, name), rows=True)
