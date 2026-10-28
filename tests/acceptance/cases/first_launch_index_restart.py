@@ -7,6 +7,7 @@ import http.client
 import json
 from pathlib import Path
 import time
+import tomllib
 
 from cases.first_launch import Runtime, digest, load, require, save
 from cases.first_launch_index import IndexRuntime, DATABASE, input_identity
@@ -17,6 +18,7 @@ STAGES = ('prerequisites','candidate','runtime_image','fresh_bootstrap','signed_
           'index_restart_baseline','index_catch_up','index_exact_retry','index_publication',
           'ordinary_history_export','cleanup')
 LIMITS = [
+    'The fresh restart fixture declares archive.max_publish_delay=1s before initialization and checks both accepted revision1 documents; this dispatch cadence does not extend the prefix deadline.',
     'The signed client stops after enrollment at source3/Archive2/Index2; complete current physical readiness and owned ClickHouse pause must fit its original absolute15s barrier.',
     'While only that ClickHouse is paused, source/Archive reach12; real plan3 [4..7] remains prepared, plan4 is absent, and Index stays at revision2/cut3.',
     'After orderly application/client join and mandatory ClickHouse unpause, explicit source closure precedes same-store catch-up1→2 and exact retry2→3. All40 outcomes, original creator/publisher history and independent source/C API bytes are checked.',
@@ -52,7 +54,17 @@ class RestartIndexRuntime(IndexRuntime):
 
     def prepare_state(self):
         super().prepare_state()
+        # The default first Archive dispatch is due after15s, leaving no useful
+        # publication window inside this client's independent15s prefix gate.
+        self.config.write_text(self.set_value(self.config.read_text(),'archive','max_publish_delay','1s'))
+        self.inputs['initial_recipe_sha256'] = digest(self.config)
         save(self.home/'index-restart-profile.json',dict(format='bigbrotr-installed-index-restart/1'))
+
+    def initial_launch(self):
+        # Runtime.initial captured these accepted documents immediately before
+        # this hook, with no application owner running. Never rewrite policy.
+        oracle.prefix_profile(load(self.root/'initial/before-control.json'),tomllib.loads(self.config.read_text()))
+        return super().initial_launch()
 
     def command(self, command, **options):
         deadline = getattr(self,'prefix_deadline',None)

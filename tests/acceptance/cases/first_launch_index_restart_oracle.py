@@ -7,6 +7,14 @@ from cases import first_launch_index_oracle as index
 from cases.first_launch_restart import closure
 
 
+def prefix_profile(state, config):
+    index.accepted_profile(state)
+    assert config['archive']['max_publish_delay'] == '1s'
+    for table in ('config_revisions','policy_revisions'):
+        document = index.only(state[table])['document']
+        index.exact(document['settings']['archive.max_publish_delay'],1_000_000)
+
+
 def backlog(state, root, *, prefix=False):
     index.validate_metadata(state, root)
     consumer = index.only(state['consumers'], consumer_role='index')
