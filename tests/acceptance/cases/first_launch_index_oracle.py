@@ -59,8 +59,10 @@ def accepted_profile(state):
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
-def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
+def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12):
     """Literal signed fixture frontier plus separately captured SQL identities."""
+    assert type(revision) is type(sequence) is int and (revision, sequence) in ((2, 3), (4, 12))
+    assert not invalidated or (revision, sequence) == (4, 12)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     generation = only(state['projection_generations'])
@@ -75,7 +77,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
     assert type(clock_before) is int and type(clock_after) is int
     assert clock_before <= observed <= clock_after
     cut = dict(dataset_id=raw(dataset['dataset_id'],16).hex(), topology_generation='0',
-        bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')])
+        bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence=str(sequence))])
     def timed(observation):
         stamp = observation['time']
         assert set(stamp) == {'observed_at_us','age_us'} and stamp['observed_at_us'] == str(observed)
@@ -106,7 +108,7 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False):
         else:
             assert cap['state'] == 'ready'
             fresh(cap)
-        exact(cap['published'],dict(revision='4',cut=cut) if kind.endswith('_publication') else None)
+        exact(cap['published'],dict(revision=str(revision),cut=cut) if kind.endswith('_publication') else None)
         assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
         assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
 
@@ -280,7 +282,7 @@ def engine_digest(table, plan, chunks):
     return hashlib.sha256(data).digest()
 
 
-def validate_metadata(state, root, *, complete=False):
+def validate_metadata(state, root, *, complete=False, owner_count=1):
     """Check the entire observed Index owner/plan/head before any scoped view.
 
     Intermediate captures may contain one complete prepared plan. The final
@@ -290,13 +292,18 @@ def validate_metadata(state, root, *, complete=False):
     assert {r['role'] for r in state['owner_epochs']} <= {'control', 'ingest', 'archive', 'index'}
     assert {r['consumer_role'] for r in state['consumers']} <= {'archive', 'index'}
     assert len([r for r in state['consumers'] if r['consumer_role'] == 'archive']) <= 1
-    owners = [r for r in state['owner_epochs'] if r['role'] == 'index']
+    assert type(owner_count) is int and owner_count in (1, 2, 3)
+    owners = sorted((r for r in state['owner_epochs'] if r['role'] == 'index'), key=lambda r:r['epoch'])
     if not owners:
-        assert not complete and all(not state[t] for t in INDEX_TABLES)
+        assert not complete and owner_count == 1 and all(not state[t] for t in INDEX_TABLES)
         assert not [r for r in state['consumers'] if r['consumer_role'] == 'index']
         return None
-    owner, = owners
-    generation, session = only(state['projection_generations']), only(state['index_owner_sessions'])
+    exact([r['epoch'] for r in owners], list(range(1, owner_count+1)))
+    owner = owners[0]  # Generation attribution remains the original creator.
+    generation = only(state['projection_generations'])
+    sessions = sorted(state['index_owner_sessions'], key=lambda r:r['owner_epoch'])
+    exact([r['owner_epoch'] for r in sessions], list(range(1, owner_count+1)))
+    session = sessions[0]
     identity, tables, custody = retained(root)
     dataset = only(state['datasets'])['dataset_id']
     for key, field in [('dataset', 'dataset_id'), ('resource', 'owner_resource_id'),
@@ -315,8 +322,10 @@ def validate_metadata(state, root, *, complete=False):
     assert session['issuer_incarnation'] == control['process_incarnation'] == owner['process_incarnation']
     assert session['previous_epoch'] is session['recovery_digest'] is session['recovered_plan'] is session['recovered_pending_plan'] is None
     assert session['recovered_revision'] == 0
-    role = only(state['role_instances'], role_instance_id=owner['role_instance_id'])
-    assert role['role'] == 'index' and role['dataset_id'] == dataset and role['retired_at_us'] is None
+    for current in owners:
+        role = only(state['role_instances'], role_instance_id=current['role_instance_id'])
+        assert role['role'] == 'index' and role['dataset_id'] == dataset
+        assert (role['retired_at_us'] is None) == (current['epoch'] == owner_count)
     consumer = only(state['consumers'], consumer_role='index')
     assert consumer['consumer_id'] == owner['resource_id'] and consumer['dataset_id'] == dataset
     plans = sorted(state['projection_plans'], key=lambda p:p['frontier_revision'])
@@ -326,6 +335,9 @@ def validate_metadata(state, root, *, complete=False):
     if complete:
         assert head == len(plans) == 4
     binding = tuple(bytes.fromhex(identity[n]) for n in ('dataset', 'resource', 'generation', 'storage_incarnation', 'table_identity_digest')) + (custody, 1)
+    if owner_count > 1:
+        assert complete
+        recovery_sessions(state, binding, owners, sessions, plans)
     assert len(state['projection_chunks']) == len(state['projection_plan_chunks']) == len(state['projection_chunk_bounds']) == 10*len(plans)
     assert len(state['index_frontier_plans']) == head
     revisions = [r for r in state['consumer_frontier_revisions'] if r['consumer_role'] == 'index']
@@ -333,10 +345,12 @@ def validate_metadata(state, root, *, complete=False):
     assert len(revisions) == len(bounds) == head
     for number, plan in enumerate(plans, 1):
         first, last = RANGES[number-1]
+        origin = owners[(1,1,1,2)[number-1]-1] if owner_count > 1 else owner
+        publisher = owners[(1,1,2,2)[number-1]-1] if owner_count > 1 else owner
         for field, expected in dict(dataset_id=dataset, consumer_id=consumer['consumer_id'], generation_id=generation['generation_id'],
                 frontier_revision=number, expected_revision=number-1, topology_generation=0, source_shard=0,
-                source_owner_epoch=1, source_first=first, source_last=last, origin_epoch=1,
-                origin_incarnation=owner['process_incarnation'], sealed=True).items():
+                source_owner_epoch=1, source_first=first, source_last=last, origin_epoch=origin['epoch'],
+                origin_incarnation=origin['process_incarnation'], sealed=True).items():
             assert type(plan[field]) is type(expected) and plan[field] == expected, field
         members = [r for r in state['projection_plan_chunks'] if r['plan_digest'] == plan['plan_digest']]
         assert len(members) == 10 and {r['target'] for r in members} == set(TARGETS)
@@ -350,7 +364,7 @@ def validate_metadata(state, root, *, complete=False):
             for field, expected in dict(dataset_id=dataset, storage_incarnation=generation['storage_incarnation'],
                 table_identity_digest=generation['table_identity_digest'], target=target, target_schema_version=1,
                 topology_generation=0, chunk_ordinal=number, row_count=count, owner_resource_id=owner['resource_id'],
-                owner_epoch=1, owner_role='index', owner_incarnation=owner['process_incarnation'], invalid_reason=None).items():
+                owner_epoch=origin['epoch'], owner_role='index', owner_incarnation=origin['process_incarnation'], invalid_reason=None).items():
                 assert type(row[field]) is type(expected) and row[field] == expected, field
             bound = only(state['projection_chunk_bounds'], chunk_id=member['chunk_id'])
             assert {k:v for k,v in bound.items() if k != 'xmin'} == dict(generation_id=generation['generation_id'],
@@ -367,14 +381,14 @@ def validate_metadata(state, root, *, complete=False):
             assert published['plan_digest'] == plan['plan_digest'] and published['engine_receipt_digest'] == expected_engine
             assert published['consumer_id'] == consumer['consumer_id'] and published['generation_id'] == generation['generation_id']
             assert published['dataset_id'] == dataset and published['topology_generation'] == 0
-            assert published['owner_epoch'] == 1 and published['owner_incarnation'] == owner['process_incarnation']
+            assert published['owner_epoch'] == publisher['epoch'] and published['owner_incarnation'] == publisher['process_incarnation']
             rev = only(revisions, frontier_revision=number)
             bound = only(bounds, frontier_revision=number)
             assert rev['sealed'] is True and rev['previous_revision'] == (number-1 if number > 1 else None)
             assert rev['consumer_id'] == rev['owner_resource_id'] == consumer['consumer_id']
             assert rev['dataset_id'] == bound['dataset_id'] == dataset and rev['topology_generation'] == bound['topology_generation'] == 0
-            assert rev['owner_epoch'] == bound['owner_epoch'] == 1 and bound['shard_id'] == 0
-            assert rev['owner_incarnation'] == owner['process_incarnation'] and bound['last_complete_sequence'] == last
+            assert rev['owner_epoch'] == publisher['epoch'] and bound['owner_epoch'] == 1 and bound['shard_id'] == 0
+            assert rev['owner_incarnation'] == publisher['process_incarnation'] and bound['last_complete_sequence'] == last
             assert bound['attestation_kind'] == 'projection-chunk' and bound['attestation_digest'] == plan['plan_digest']
             assert {r['engine_receipt_digest'] for r in selected} == {expected_engine}
             assert {r['committed_at_us'] for r in selected} == {published['committed_at_us']} == {rev['created_at_us']}
@@ -386,6 +400,53 @@ def validate_metadata(state, root, *, complete=False):
         else:
             assert all(r['engine_receipt_digest'] is None and r['committed_at_us'] is None for r in selected)
     return generation
+
+
+def recovery_digest(binding, previous, plans, published, pending):
+    """Independent fixed-width storage-services.md recovery commitment."""
+    data = (b'bigbrotr/index-recovery-observation/1\0' + b''.join(binding[:6]) + bytes([binding[6]])
+            + be(previous['epoch']) + raw(previous['process_incarnation'],16) + be(published))
+    for number in (published, pending):
+        data += b'\x01' + raw(plans[number-1]['plan_digest'],32) if number else b'\x00'
+    for number in range(1, published+1+(pending is not None)):
+        plan = plans[number-1]
+        chunks = [(count, b'', raw(member['rows_digest'],32)) for count,member in zip(PLAN_COUNTS[number-1],
+            [only(plan['members'], target=target) for target in TARGETS])]
+        plan_digest = raw(plan['plan_digest'],32)
+        data += bytes([int(number > published)]) + be(number-1) + plan_digest + engine_digest(binding[4],plan_digest,chunks)
+    return hashlib.sha256(data).digest()
+
+
+def recovery_sessions(state, binding, owners, sessions, plans):
+    """Closed restart history: recover (published2,pending3), then exact retry4."""
+    attributed = [dict(p, members=[r for r in state['projection_plan_chunks'] if r['plan_digest']==p['plan_digest']]) for p in plans]
+    for epoch, session in enumerate(sessions[1:], 2):
+        previous, current = owners[epoch-2:epoch]
+        published, pending = (2,3) if epoch == 2 else (4,None)
+        expected = recovery_digest(binding, previous, attributed, published, pending)
+        exact([session['previous_epoch'],session['recovered_revision']],[epoch-1,published])
+        assert session['recovered_plan'] == plans[published-1]['plan_digest']
+        assert session['recovered_pending_plan'] == (plans[2]['plan_digest'] if pending else None)
+        assert session['recovery_digest'] == '\\x'+expected.hex()
+        for key,value in dict(dataset_id=state['datasets'][0]['dataset_id'],resource_id=owners[0]['resource_id'],
+                generation_id=state['projection_generations'][0]['generation_id'],owner_role='index',
+                owner_incarnation=current['process_incarnation'],issuer_role='control').items():
+            assert session[key] == value
+        control = only(state['owner_epochs'],role='control',resource_id=session['issuer_resource'],epoch=session['issuer_epoch'])
+        assert control['process_incarnation'] == session['issuer_incarnation'] == current['process_incarnation']
+        assert current['resource_id'] == previous['resource_id'] and current['dataset_id'] == previous['dataset_id']
+        assert current['index_publication_protocol'] == 1
+        assert current['process_incarnation'] not in [r['process_incarnation'] for r in owners[:epoch-1]]
+        assert previous['state'] == 'released' and previous['exclusion_method'] == 'storage_fenced'
+        assert previous['exclusion_digest'] == session['recovery_digest'] and previous['released_at_us'] is not None
+        role = only(state['role_instances'],role_instance_id=previous['role_instance_id'])
+        assert role['retired_at_us'] is not None
+        # The next rebind can update this owner/role, but the session and the
+        # previous owner's terminal fence retain the original transfer xid.
+        assert previous['xmin'] == role['xmin'] == session['xmin']
+        if epoch == len(owners):
+            assert current['state'] == 'active'
+    assert len({r['role_instance_id'] for r in owners}) == len(owners)
 
 
 def without_index_owner(state, root):
@@ -471,9 +532,9 @@ def json_value(ty, value):
     return value
 
 
-def publication(live, after, actual, science, schema, root):
-    generation = validate_metadata(live, root, complete=True)
-    validate_metadata(after, root, complete=True)
+def publication(live, after, actual, science, schema, root, *, owner_count=1):
+    generation = validate_metadata(live, root, complete=True, owner_count=owner_count)
+    validate_metadata(after, root, complete=True, owner_count=owner_count)
     for table in INDEX_TABLES:
         exact(live[table],after[table])
     identity,tables,_ = retained(root)

@@ -316,6 +316,18 @@ class InitialIndexControls(unittest.TestCase):
                 storage_incarnation='88'*16 if kind=='index_publication' else None)
                 for kind in ('signed_event_admission','finite_acquisition','archive_publication','index_publication')])
         check.live_roles(value,state,123456000,123457000)
+        prefix=copy.deepcopy(value)
+        prefix['source']['cut']['bounds'][0]['last_complete_sequence']='3'
+        for cap in prefix['capabilities']:
+            if cap['published'] is not None:
+                cap['published']['revision']='2'
+                cap['published']['cut']['bounds'][0]['last_complete_sequence']='3'
+        check.live_roles(prefix,state,123456000,123457000,revision=2,sequence=3)
+        for revision,sequence in ((3,7),(2,12),(4,3),(True,3)):
+            with self.subTest(revision=revision,sequence=sequence),self.assertRaises(AssertionError):
+                check.live_roles(prefix,state,123456000,123457000,revision=revision,sequence=sequence)
+        with self.assertRaises(AssertionError):
+            check.live_roles(prefix,state,123456000,123457000,revision=2,sequence=3,invalidated=True)
         for change in (
             lambda v:v['identity'].update(process_incarnation='99'*16),
             lambda v:v['source'].update(cut=None),

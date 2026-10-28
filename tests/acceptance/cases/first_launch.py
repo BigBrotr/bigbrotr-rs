@@ -582,6 +582,7 @@ class Runtime:
                 env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
         self.processes.append(self.client)
         save(output / 'client-process.json', dict(pid=self.client.pid, process_group=self.client.pid))
+        self.initial_source_barrier(entry, output)
         self.wait(lambda: (self.home / 'prepared.json').exists(), 'source commands', 15, entry, self.client)
         prepared, _ = self.capture(output, 'prepared')
         self.validate_source(self.current_owner_view(prepared, setup), first, load(self.home / 'prepared.json'))
@@ -617,6 +618,11 @@ class Runtime:
         owner, = [row for row in selected['owner_epochs'] if row['role'] == 'control']
         require(owner['state'] == 'released', 'initial Control ownership retained')
         self.backend_absence(output)
+
+    def initial_source_barrier(self, entry, output):
+        # Closed variants may hold the existing source client before later
+        # admissions. The ordinary signed journey has no additional barrier.
+        pass
 
     def initial_launch(self):
         return self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
@@ -955,11 +961,15 @@ class Runtime:
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
     restart = getattr(args, 'case', None) in RESTART_CASES
-    index_case = getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin')
+    index_restart = getattr(args, 'case', None) == 'p01-first-launch-index-restart'
+    index_case = getattr(args, 'case', None) in ('p01-first-launch-index', 'p01-first-launch-index-short-pin', 'p01-first-launch-index-restart')
     if index_case:
         from cases.first_launch_index import IndexRuntime, STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS
         if args.case == 'p01-first-launch-index-short-pin':
             from cases.first_launch_index_pin import ShortPinRuntime as IndexRuntime, LIMITS as INDEX_LIMITS
+        if index_restart:
+            from cases.first_launch_index_restart import (RestartIndexRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
         args.case_limits = INDEX_LIMITS
@@ -977,6 +987,9 @@ def first_launch(args, checks, inputs):
         operations = [('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
                 ('signed_acquisition', runtime.initial)]
+        if index_restart:
+            operations += [('index_restart_baseline', runtime.index_restart_baseline),
+                ('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
         operations += [('ordinary_history_export', runtime.ordinary)]
