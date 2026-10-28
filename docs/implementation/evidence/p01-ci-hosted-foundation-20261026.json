@@ -1,81 +1,49 @@
 {
   "date": "2026-10-28",
-  "status": "PASS selected hosted foundation on Linux AMD64/ARM64 and macOS; all30 checks complete",
-  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965",
+  "status": "PARTIAL hosted qualification: Linux23 checks PASS; provider macOS admission cancellation leaves7 required checks NOT_RUN; workflow FAILURE",
+  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729",
   "run_attempt": 1,
-  "revision": "61d41e5f688cad544a172b88c6a88222272d3c2e",
-  "terminal_at": "2026-10-28T18:44:02Z",
+  "revision": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
+  "terminal_at": "2026-10-28T19:51:34Z",
   "selected_scope": {
     "format": "bigbrotr-ci-selection/1",
-    "base": "17cc122842adeac646c2fa5e12fb17fedd8b40ff",
-    "head": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+    "base": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+    "head": "16527ba81e51b57789bc62c2d902ec18cc7b6a2a",
     "foundation": true,
     "reason": "product, tooling or unknown change",
     "paths": [
-      "apps/bigbrotr/src/interfaces/serve.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/catch_up.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/catch_up/publication.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/catch_up/source.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/catch_up/tests.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/readiness.rs",
-      "apps/bigbrotr/src/interfaces/serve/initial_ingest/index/readiness/tests.rs",
-      "apps/bigbrotr/src/storage/clickhouse/adapter/recovery.rs",
-      "apps/bigbrotr/src/storage/clickhouse/adapter/recovery/tests.rs",
-      "apps/bigbrotr/src/storage/postgres/index_publication.rs",
-      "apps/bigbrotr/src/storage/postgres/index_publication/adapter.rs",
-      "apps/bigbrotr/src/storage/postgres/index_publication/handoff.rs",
-      "apps/bigbrotr/src/storage/postgres/index_publication/handoff_adapter.rs",
-      "apps/bigbrotr/src/storage/postgres/index_publication/proofs.rs",
-      "apps/bigbrotr/src/storage/postgres/mod.rs",
-      "docs/architecture/storage-services.md",
+      "apps/bigbrotr/src/interfaces/migrations.rs",
+      "apps/bigbrotr/src/interfaces/serve/initial_ingest/archive.rs",
+      "apps/bigbrotr/src/interfaces/serve/initial_ingest/archive/native.rs",
+      "apps/bigbrotr/src/interfaces/serve/initial_ingest/archive_catch_up/publication.rs",
+      "apps/bigbrotr/src/interfaces/serve/initial_ingest/commands.rs",
+      "apps/bigbrotr/src/interfaces/serve/initial_ingest/readiness.rs",
+      "apps/bigbrotr/src/storage/postgres/transport.rs",
       "docs/development/verification.md",
       "docs/implementation/01-foundation.md",
-      "docs/implementation/02-storage.md",
-      "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
       "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json",
       "docs/implementation/progress.md",
       "docs/research/laboratory-inventory.json",
+      "docs/specification/archive-storage-contract.md",
       "docs/user/control-runtime.md",
-      "experiments/control-migrations/README.md",
-      "experiments/control-migrations/concurrency_cases.py",
-      "experiments/control-migrations/index_handoff_cases.sql",
-      "experiments/control-migrations/index_publication_cases.sql",
-      "experiments/control-migrations/index_publication_races.py",
-      "experiments/control-migrations/index_publication_runtime.py",
-      "experiments/control-migrations/test_index_handoff.py",
-      "experiments/ingest-bootstrap/installed_archive_catch_up_client.py",
-      "experiments/ingest-bootstrap/installed_archive_catch_up_model.py",
+      "experiments/ingest-bootstrap/initial_jobs.py",
+      "experiments/ingest-bootstrap/installed_sync.py",
       "experiments/network-transport/README.md",
       "experiments/network-transport/initial_index.py",
       "experiments/network-transport/test_initial_index.py",
-      "migrations/manifest.json",
-      "migrations/postgres/0041_index_publication.sql",
-      "packaging/compose/provision.sql",
       "tests/acceptance/cases/first_launch.py",
-      "tests/acceptance/cases/first_launch_index.py",
-      "tests/acceptance/cases/first_launch_index_baseline.py",
-      "tests/acceptance/cases/first_launch_index_commit.py",
-      "tests/acceptance/cases/first_launch_index_commit_oracle.py",
+      "tests/acceptance/cases/first_launch_archive_outage.py",
+      "tests/acceptance/cases/first_launch_archive_outage_oracle.py",
       "tests/acceptance/cases/first_launch_index_oracle.py",
-      "tests/acceptance/cases/first_launch_index_pin.py",
-      "tests/acceptance/cases/first_launch_index_pin_release_oracle.py",
       "tests/acceptance/cases/first_launch_index_restart.py",
-      "tests/acceptance/cases/first_launch_index_restart_oracle.py",
-      "tests/acceptance/cases/first_launch_index_topology.py",
-      "tests/acceptance/cases/first_launch_index_topology_oracle.py",
-      "tests/acceptance/cases/first_launch_restart.py",
       "tests/acceptance/run.py",
-      "tests/acceptance/test_first_launch.py",
-      "tests/acceptance/test_first_launch_index.py",
-      "tests/acceptance/test_first_launch_index_baseline.py",
-      "tests/acceptance/test_first_launch_index_commit.py",
-      "tests/acceptance/test_first_launch_index_restart.py",
-      "tests/acceptance/test_first_launch_index_topology.py",
-      "tests/acceptance/test_first_launch_restart.py"
+      "tests/acceptance/test_first_launch_archive_outage.py",
+      "tests/acceptance/test_first_launch_index.py"
     ]
   },
   "selected_check_totals": {
-    "PASS": 30
+    "PASS": 23,
+    "NOT_RUN": 7
   },
   "platforms": {
     "amd64": {
@@ -88,7 +56,7 @@
         "not_run": 0
       },
       "rust": {
-        "passed": 1308,
+        "passed": 1311,
         "failed": 0,
         "ignored": 3,
         "measured": 0,
@@ -103,12 +71,12 @@
         "scope": "Complete selected default-profile workspace execution"
       },
       "python": {
-        "collected": 200,
-        "passed": 200,
+        "collected": 209,
+        "passed": 209,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 30.842
+        "seconds": 29.631
       },
       "practical": {
         "p01-event-cli": {
@@ -170,27 +138,27 @@
         "required_tests": 10
       },
       "critical_index_reference": {
-        "passed": 179,
+        "passed": 182,
         "failed": 0,
         "groups": 26,
         "scope": "Actual exact-name controls in this platform log; no installed qualification"
       },
       "job": {
-        "id": 122987024435,
+        "id": 123027374135,
         "name": "foundation (ubuntu-24.04)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965/job/122987024435",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729/job/123027374135",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-28T17:32:33Z",
-        "completed_at": "2026-10-28T18:44:02Z",
-        "wall_seconds": 4289.0,
+        "started_at": "2026-10-28T18:46:05Z",
+        "completed_at": "2026-10-28T19:51:34Z",
+        "wall_seconds": 3929.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
       },
-      "result_sha256": "3c406900ec1f6d07131721ef646faeac75064f083069ecd1c98629fa1f52b643",
-      "build_result_sha256": "768dd8cd186cb8795f2aa706d62c56698f16c3c40732e05098cc525d6cd101b8",
-      "source_manifest_sha256": "9d9e668e820af76a5118ccced786afcae12115c44ae41c4ff34de2038f3bb644"
+      "result_sha256": "85783a5950bcd8bc741a65ea22bafb396b51ae40136d5091d6d6ce231b370bcf",
+      "build_result_sha256": "64d347a82465aca374916e32ba69d28e349bb9de27499dfb1dfdedc203579249",
+      "source_manifest_sha256": "dceb553522a3699b6db270422955dd3c219066d73c61c32fe97b485e46cd4172"
     },
     "arm": {
       "status": "PASS",
@@ -202,7 +170,7 @@
         "not_run": 0
       },
       "rust": {
-        "passed": 1308,
+        "passed": 1311,
         "failed": 0,
         "ignored": 2,
         "measured": 0,
@@ -216,12 +184,12 @@
         "scope": "Complete selected default-profile workspace execution"
       },
       "python": {
-        "collected": 200,
-        "passed": 200,
+        "collected": 209,
+        "passed": 209,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 29.03
+        "seconds": 26.288
       },
       "practical": {
         "p01-event-cli": {
@@ -283,58 +251,56 @@
         "required_tests": 10
       },
       "critical_index_reference": {
-        "passed": 179,
+        "passed": 182,
         "failed": 0,
         "groups": 26,
         "scope": "Actual exact-name controls in this platform log; no installed qualification"
       },
       "job": {
-        "id": 122987024149,
+        "id": 123027374064,
         "name": "foundation (ubuntu-24.04-arm)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965/job/122987024149",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729/job/123027374064",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-28T17:32:36Z",
-        "completed_at": "2026-10-28T18:30:15Z",
-        "wall_seconds": 3459.0,
+        "started_at": "2026-10-28T18:46:06Z",
+        "completed_at": "2026-10-28T19:44:58Z",
+        "wall_seconds": 3532.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
       },
-      "result_sha256": "7f5bed741ea3a49b60d1943dcdce6c639d6bb48ea7bf3b1f02d53f713da790a6",
-      "build_result_sha256": "1215240ca90eaee8bfef14d07099ce0b8dca6c540144d2305ac2bf132f701ac5",
-      "source_manifest_sha256": "9d9e668e820af76a5118ccced786afcae12115c44ae41c4ff34de2038f3bb644"
+      "result_sha256": "7dd1da7407e9b2bae705ca62e0c9aece0346013b2e9198df6af390c2d9bb45d9",
+      "build_result_sha256": "ad05130f618e098af3a6ccb6f236ee42a3b606213d643f3ebb5bb9aa1889236b",
+      "source_manifest_sha256": "dceb553522a3699b6db270422955dd3c219066d73c61c32fe97b485e46cd4172"
     },
     "macos": {
-      "status": "PASS",
-      "target": "aarch64-apple-darwin",
+      "status": "NOT_RUN",
+      "target": null,
       "checks": {
-        "collected": 7,
-        "executed": 7,
+        "collected": 0,
+        "executed": 0,
         "failed": 0,
-        "not_run": 0
+        "not_run": 7
       },
       "rust": {
-        "passed": 1306,
+        "status": "NOT_RUN",
+        "passed": 0,
         "failed": 0,
-        "ignored": 2,
+        "ignored": 0,
         "measured": 0,
         "filtered_out": 0,
-        "suite_results": 94,
-        "ignored_test_names": [
-          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
-          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
-        ],
+        "suite_results": 0,
+        "ignored_test_names": [],
         "failed_test_names": [],
-        "scope": "Complete selected default-profile workspace execution"
+        "scope": "Provider macOS runner admission cancelled for capacity; no runner, steps, helper execution or artifact"
       },
       "python": {
-        "collected": 200,
-        "passed": 195,
+        "status": "NOT_RUN",
+        "collected": 0,
+        "passed": 0,
         "failed": 0,
         "errors": 0,
-        "skipped": 5,
-        "seconds": 88.111
+        "skipped": 0
       },
       "practical": {
         "p01-event-cli": "NOT_SELECTED on macOS",
@@ -342,65 +308,74 @@
       },
       "export_fixtures": {
         "export_files": {
-          "status": "PASS",
-          "passed": 6,
+          "status": "NOT_RUN",
+          "passed": 0,
           "failed": 0,
           "ignored": 0,
           "required_tests": 6
         },
         "export_files_umask": {
-          "status": "PASS",
-          "passed": 1,
+          "status": "NOT_RUN",
+          "passed": 0,
           "failed": 0,
           "ignored": 0,
           "required_tests": 1
         },
         "export_destination": {
-          "status": "PASS",
-          "passed": 4,
+          "status": "NOT_RUN",
+          "passed": 0,
           "failed": 0,
           "ignored": 0,
           "required_tests": 4
         },
         "export_destination_custody": {
-          "status": "PASS",
-          "passed": 2,
+          "status": "NOT_RUN",
+          "passed": 0,
           "failed": 0,
           "ignored": 0,
           "required_tests": 2
         }
       },
       "cursor_keyring": {
-        "status": "PASS",
-        "passed": 10,
+        "status": "NOT_RUN",
+        "passed": 0,
         "failed": 0,
         "ignored": 0,
         "required_tests": 10
       },
       "critical_index_reference": {
-        "passed": 179,
+        "passed": 0,
         "failed": 0,
         "groups": 26,
-        "scope": "Actual exact-name controls in this platform log; no installed qualification"
+        "scope": "Source-declared reference only; provider never acquired a runner or executed tests",
+        "status": "NOT_RUN",
+        "required_tests": 182
       },
       "job": {
-        "id": 122987024281,
+        "id": 123027374081,
         "name": "foundation (macos-15)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965/job/122987024281",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729/job/123027374081",
         "status": "completed",
-        "conclusion": "success",
-        "started_at": "2026-10-28T17:32:35Z",
-        "completed_at": "2026-10-28T18:21:54Z",
-        "wall_seconds": 2959.0,
+        "conclusion": "cancelled",
+        "started_at": "2026-10-28T18:46:01Z",
+        "completed_at": "2026-10-28T19:01:04Z",
+        "wall_seconds": 903.0,
         "failure_steps": [],
         "cancelled_steps": [],
-        "skipped_steps": [
-          "Install Linux native build tools and syscall observer"
-        ]
+        "skipped_steps": []
       },
-      "result_sha256": "ce7da3b0a132779ce4bd1b9b94ae15ada203b472912bcf1e418aec62d71ab044",
-      "build_result_sha256": "21f3ed9fb58788169bbeae753de384e6ad248fc6ab4ca579f4a0b014ba843036",
-      "source_manifest_sha256": "9d9e668e820af76a5118ccced786afcae12115c44ae41c4ff34de2038f3bb644"
+      "result_sha256": null,
+      "build_result_sha256": null,
+      "source_manifest_sha256": null,
+      "expected_target": "aarch64-apple-darwin",
+      "counts_basis": "No hosted helper collection; seven source-declared required checks are unexecuted",
+      "runner_admission": {
+        "status": "CANCELLED",
+        "runner_id": 0,
+        "executed_steps": 0,
+        "basis": "Provider did not acquire a hosted runner and emitted macOS arm64 capacity notices"
+      },
+      "job_elapsed_scope": "Provider admission only; no command execution"
     }
   },
   "source_hashes": {
@@ -410,33 +385,33 @@
     "Cargo.lock": "e3da241338957a9aa647c3717580883fde628359610c296a8c3ebaa4b5aa9412",
     "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
   },
-  "exact_source_files": 2397,
-  "source_context": "All uploaded manifests equal exact Git61d; full changed-path selection, run/job/artifact identities, native compiler/archive/worker bindings, default-profile workspace contexts and post-command source/artifact checks verified. Frozen61d helpers isolate this200-control audit from newer local main.",
-  "fixture_followup": "All three platforms pass cursor_keyring10 and all four export targets13 cases under the default profile. The completed200-control suite includes17 added acceptance controls; all179 exact native reference names pass. Original8cf Busy failure and0e alias error/cancellation remain separate.",
+  "exact_source_files": 2400,
+  "source_context": "Both uploaded Linux manifests equal exact Git165/2400 files. Selection, available artifacts, native compiler/archive/worker bindings, default-profile contexts and post-command checks verified. macOS never acquired a runner: no artifact, hosted manifest/build or native context; no prior-platform evidence substituted.",
+  "fixture_followup": "Both Linux platforms pass cursor_keyring10, export13, all182 exact native reference names and209 Python controls. All macOS controls remain NOT_RUN. The separate local Archive-outage temporary-path finding was not exercised by this provider cancellation.",
   "not_run_or_skipped": {
     "rust_ignored": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/ignored-classification.json",
-      "sha256": "0dfdb339bea8808520f40541ce07281663fb74fd92257e849bf97dee93250e2a"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/ignored-classification.json",
+      "sha256": "33595354e3ac3cfb547d347c7ef2cefb89ebf3f91bee100353cb26b716f1d149"
     },
-    "python_macos": "200 collected:195PASS/5SKIP. Exact five Linux-only guard names are source-derived; nonverbose output confirms aggregate count.",
-    "rust_platform_cfg": "Three Linux-only passing cases and one macOS-only passing case account for1308 versus1306; exact declarations/names are in ignored-classification.json.",
+    "python_macos": "NOT_RUN: zero collected/executed. The209 source controls and five Linux-only guards are expectations, not observed macOS SKIP or PASS.",
+    "rust_platform_cfg": "Platform guards are unchanged, but current macOS execution is absent; no current cross-platform count comparison.",
     "macos_practical": "p01-event-cli and p01-config-static NOT_SELECTED",
-    "jobs": "Dedicated documentation and opt-in native-rocks-linux-arm64 jobs SKIPPED by selection. AMD64 foundation planning/link checks PASS.",
-    "separate_gates": "Existing dedicated Rust probes remain ignored/NOT_RUN: three on AMD64, two on ARM64 and macOS. No installed engine/recovery, full M1, release or power-loss qualification from this run."
+    "jobs": "macOS foundation CANCELLED before runner acquisition. Documentation and opt-in native-rocks-linux-arm64 jobs SKIPPED by selection; scope and Linux foundation jobs SUCCESS.",
+    "separate_gates": "All7 required macOS checks remain NOT_RUN. Existing dedicated Rust probes remain ignored/NOT_RUN on Linux:3AMD64/2ARM64; macOS has no observed test inventory. Installed engine/recovery, full M1, release and power-loss qualification remain separate."
   },
-  "failure_classification": "All selected checks PASS; no billing, workflow, timeout, cancellation or product failure observed.",
+  "failure_classification": "Provider macOS runner admission cancelled before execution with capacity notices; Linux selected checks PASS. No macOS fixture or product verdict; all seven required macOS checks NOT_RUN.",
   "public_output_audit": {
     "status": "PASS_SCOPED_AUDIT_KNOWN_NON_SECRET_CANDIDATES",
-    "artifact_count": 4,
-    "artifact_members": 513,
-    "workflow_log_members": 34,
+    "artifact_count": 3,
+    "artifact_members": 503,
+    "workflow_log_members": 24,
     "candidate_occurrences": 54,
     "unique_fingerprints": 5,
     "new_or_unclassified_candidates": 0,
     "operational_credentials": 0,
     "provider_alerts": 0,
     "scope_limits": [
-      "Only run40736641965 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
+      "Only run40748115729 attempt1 and its three available listed artifacts; macOS never acquired a runner and has no artifact; no repeat history scan, later runs excluded.",
       "Pattern scan cannot exclude unknown formats or already-masked secrets.",
       "No extraction, execution, source/settings changes or workflow dispatch."
     ]
@@ -444,78 +419,79 @@
   "public_output_audit_limit": "Provider scanning is asynchronous; no completion claim. Four known example reference locators and one synthetic redaction canary account for all candidates; no values reproduced.",
   "artifacts": [
     {
-      "id": 12841628030,
+      "id": 12847775375,
       "name": "foundation-ubuntu-24.04",
-      "bytes": 596960,
-      "sha256": "fda0a72a6e778a16240fc2886b9adb48724b83f4a49db365c894af00b30961df",
-      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/artifact-12841628030.zip"
+      "bytes": 597205,
+      "sha256": "c3d3840b56e9defab12254dd14ffe8d6c7eb6203299fe79e360d6db0003fef5d",
+      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/artifact-12847775375.zip"
     },
     {
-      "id": 12839824763,
+      "id": 12845699112,
       "name": "foundation-ubuntu-24.04-arm",
-      "bytes": 617256,
-      "sha256": "279a4b34a750d30187326f88ed6b5cc01930d64dae39a990c240ae22760fda08",
-      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/artifact-12839824763.zip"
+      "bytes": 617314,
+      "sha256": "32dfb3a69917c154691219f308cd7c34418d51f6f9346ea80072f6143f0a02dd",
+      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/artifact-12845699112.zip"
     },
     {
-      "id": 12841600191,
-      "name": "foundation-macos-15",
-      "bytes": 166000,
-      "sha256": "0a384e3c9795beac8839a9544c230fb5c13468c0cc0de52fe87857e99efaf720",
-      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/artifact-12841600191.zip"
-    },
-    {
-      "id": 12837048473,
+      "id": 12842875986,
       "name": "ci-selection",
-      "bytes": 927,
-      "sha256": "42b3a6920cab5aada68834b4d504335cd3cdacc1c60aad312985aaca5f515266",
-      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/artifact-12837048473.zip"
+      "bytes": 700,
+      "sha256": "e26cc023b9dbe79354a4e6f601a4c90f7cc2571e507697cbc63ffd82cd1976a8",
+      "retained": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/artifact-12842875986.zip"
     }
   ],
   "retained_evidence": {
     "receipt.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/receipt.json",
-      "sha256": "bb2c9376efc9161fc2adbb3efab9d6e3ce51917b7d327655ffefcfccb084a1ee"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/receipt.json",
+      "sha256": "f5f423ecc7185ca01830114831c334139ced1c6b012f013b89575291c12a9c57"
     },
     "outcome.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/outcome.json",
-      "sha256": "b2cd411f9ba7dce91a3e396fa9a7514056cbf0d9ff88d84c45f1b48b6dd37f54"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/outcome.json",
+      "sha256": "27cdaff8204e21adeb98269542f9edbe0657736408b3b8e433edaf71507f73fd"
     },
     "post-build-contexts.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/post-build-contexts.json",
-      "sha256": "0763464f6dbdb0d71faa31751eaa3fc5da83d2f3f2d8f971e68b7a174b701c13"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/post-build-contexts.json",
+      "sha256": "722cc2b64794640c4901648a9b630d927406ae081b2b6799c4b8fc40cf307ea3"
     },
     "expected-source-manifest.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/expected-source-manifest.json",
-      "sha256": "ebf14ba164ddab4747c13236b0604ed7f092971ad35c3b4712babb3d7ff7971d"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/expected-source-manifest.json",
+      "sha256": "1c494a2766d9cb742bcbc049423fdf8dd433efbfc5c392dc0b471af8be09a312"
     },
     "scan-result.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/scan-result.json",
-      "sha256": "06bae30d10370744acf9322a86b9cfe2ac00f915255ab586bd4753a44b6bbdf9"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/scan-result.json",
+      "sha256": "9c86590938db11ce3b6a0ddab1a6502900f982014192e73352fce8f8ea953ef4"
     },
     "watch-terminal.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/watch-terminal.json",
-      "sha256": "21d1a72f75d48ea394ca8a7ba57c44cd1dd2214901704a37bec7ac9cbaaadca1"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/watch-terminal.json",
+      "sha256": "e93ba5dd418b48f5effeb3d198a22bf9467bdb12c212e92623db8bd65c8c8fc5"
     },
     "watch-session.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/watch-session.json",
-      "sha256": "dd6ccc7880f64ae72835cdb82eb275e25f1533d249c2cfe06464ef19f966a95b"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/watch-session.json",
+      "sha256": "8fae08a953f6d799041daeeb7bc98afe4389a1d5a8341837ac1ef7de49944d84"
     },
     "selection-identity-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/selection-identity-confirmation.json",
-      "sha256": "bc1033a24a9487f1d9ded74fd2b139df0e0cd20acefb20abea978f2bb6c317a0"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/selection-identity-confirmation.json",
+      "sha256": "74eca6d943ab797a852eff5173d0c16d3b0bd64420e7b6a2d09ff7cee52a5f67"
     },
     "critical-native-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/critical-native-confirmation.json",
-      "sha256": "dc2bd14f2703381d86bcd12b019d91c4c17aeaabbce28de15e7ee897dfc6b676"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/critical-native-confirmation.json",
+      "sha256": "2a36caf6fadeb69bca3e437545e9d6c5a27ffc0fc9463dab13091d75ce19912b"
     },
     "ignored-classification.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/ignored-classification.json",
-      "sha256": "0dfdb339bea8808520f40541ce07281663fb74fd92257e849bf97dee93250e2a"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/ignored-classification.json",
+      "sha256": "33595354e3ac3cfb547d347c7ef2cefb89ebf3f91bee100353cb26b716f1d149"
     },
     "timing-observation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/timing-observation.json",
-      "sha256": "10ef048182768e0dee50716e9a55e2f9503e5850906e9536df8de664d5238beb"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/timing-observation.json",
+      "sha256": "7542220cd501bd5000c7639c6020eef2227ef6e2a87369c190e6196bb3fd0b9d"
+    },
+    "early-macos-annotations.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/early-macos-annotations.json",
+      "sha256": "8cfd2ec4d31fc094ac1256866fa24c429cb526616ab1fffd2e8a8fcef517de61"
+    },
+    "root-provider-admission-review.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/root-provider-admission-review.json",
+      "sha256": "8caede5e5fecddec6cdef85b70c7b7ab442098d303bf53399cc11a389873ca5e"
     }
   },
   "format": "bigbrotr-hosted-foundation-evidence/1",
@@ -726,23 +702,22 @@
   "lockfile_sha256": "e3da241338957a9aa647c3717580883fde628359610c296a8c3ebaa4b5aa9412",
   "terminal_execution": {
     "run_attempt": 1,
-    "conclusion": "success",
+    "conclusion": "failure",
     "failed_required_jobs": 0,
-    "cancelled_jobs": 0,
+    "cancelled_jobs": 1,
     "cancelled_steps": 0,
-    "required_not_run": 0,
-    "retry": "None; one automatic push run on61d",
-    "limits": "All selected checks completed. Existing dedicated ignored probes and platform exclusions remain separate; newer local source is not qualified by this run."
+    "required_not_run": 7,
+    "retry": "None; one automatic push run on165",
+    "limits": "Linux selected checks completed; required macOS runner admission failed before execution. No billing, executed workflow step or product/fixture failure inferred. Newer local source is not qualified by this run."
   },
   "run_local_build_reuse": {
-    "source_manifest_files": 2397,
-    "source_archive_sha256": "6f8d4a11f1d662c625df2e6a065cb183b1a35f33c87a98ad076e2bb8d1afce11",
-    "post_build_contexts_sha256": "0763464f6dbdb0d71faa31751eaa3fc5da83d2f3f2d8f971e68b7a174b701c13",
-    "observed": "All uploaded manifests equal exact Git61d; full changed-path selection, run/job/artifact identities, native compiler/archive/worker bindings, default-profile workspace contexts and post-command source/artifact checks verified. Frozen61d helpers isolate this200-control audit from newer local main.",
+    "source_manifest_files": 2400,
+    "source_archive_sha256": "605f2c1e0d104cfa17d3933b024766678e96e37f811aad34a49f912029794aa5",
+    "post_build_contexts_sha256": "722cc2b64794640c4901648a9b630d927406ae081b2b6799c4b8fc40cf307ea3",
+    "observed": "Both uploaded Linux manifests equal exact Git165/2400 files. Selection, available artifacts, native compiler/archive/worker bindings, default-profile contexts and post-command checks verified. macOS never acquired a runner: no artifact, hosted manifest/build or native context; no prior-platform evidence substituted.",
     "job_seconds": {
-      "foundation (ubuntu-24.04)": 4289.0,
-      "foundation (macos-15)": 2959.0,
-      "foundation (ubuntu-24.04-arm)": 3459.0
+      "foundation (ubuntu-24.04)": 3929.0,
+      "foundation (ubuntu-24.04-arm)": 3532.0
     },
     "limit": "Actual job/check durations only; no controlled saved-time or native-unit equivalence measurement. Preserve all platforms/profiles/clean-build checks; no cross-PR compiled cache.",
     "conditional_followup": {
@@ -752,8 +727,8 @@
       "finding": "Only consider default-profile Clippy-to-test native reuse after actual input equality and duplicate native work are observed. Release-to-debug reuse rejected; whole check durations are not measured savings. Keep all platforms/profiles/clean-build checks."
     },
     "current_timing": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/timing-observation.json",
-      "sha256": "10ef048182768e0dee50716e9a55e2f9503e5850906e9536df8de664d5238beb"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/timing-observation.json",
+      "sha256": "7542220cd501bd5000c7639c6020eef2227ef6e2a87369c190e6196bb3fd0b9d"
     },
     "same_run_native_followup": {
       "status": "UNPROVEN_RECOMPILATION_NO_CHANGE_JUSTIFIED",
@@ -778,31 +753,31 @@
     }
   },
   "limits": [
-    "Exact61d all30 selected checks PASS; Linux1308 Rust/200 Python each, macOS1306 Rust/195 Python plus5 declared skips.",
-    "All179 exact Index/native reference names and keyring10/export13 cases PASS on every platform. Dedicated ignored controls remain NOT_RUN.",
-    "Scoped public-output and source/context audit complete with explicit pattern/provider limits.",
+    "Exact165:23 selected Linux checks PASS;1311 Rust/209 Python and182 exact native reference names on each Linux platform.",
+    "Provider macOS runner admission cancellation leaves all7 required checks,209 Python controls and182 native reference names NOT_RUN. Its903s job elapsed time is not execution. Dedicated ignored controls remain NOT_RUN.",
+    "Scoped audit of available Linux/selection artifacts and workflow logs complete; absent macOS execution/context remains unqualified.",
     "Installed engine/recovery/capacity and full selected P00-P10/M1-M5 delivery remain separate and incomplete."
   ],
   "previous_hosted_success": {
-    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40716894776",
-    "revision": "17cc122842adeac646c2fa5e12fb17fedd8b40ff",
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965",
+    "revision": "61d41e5f688cad544a172b88c6a88222272d3c2e",
     "status": "PASS selected hosted foundation on all three platforms; ignored/dedicated and unsupported scopes remain excluded",
     "selected_checks": {
       "PASS": 30
     },
     "history": {
-      "revision": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+      "revision": "4da6857a79ce1c704f77f6bbe09603e6be89a453",
       "path": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
-      "sha256": "9d1a481078709c727fe364fbe6c78826da35e3254bd4a078475c841493ba9cb5",
-      "url": "https://github.com/BigBrotr/bigbrotr-rs/blob/61d41e5f688cad544a172b88c6a88222272d3c2e/docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
-      "scope": "Complete immutable17cc success, including the preceding5b/d018 successes and all original failure/cancellation references."
+      "sha256": "b5f035b7140d9cab0b07354868e1784126a8e57fab5541f83dc15690dff8099f",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/blob/4da6857a79ce1c704f77f6bbe09603e6be89a453/docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+      "scope": "Complete immutable61d success, retaining the preceding17cc/5b/d018 successes and all original failure/cancellation references."
     }
   },
   "early_acceptance_followup": {
     "revision": "1080b30743254a8d54f55c49d20bc0d343f0a7ae",
-    "status": "PASS actual hosted order on all three platforms; unchanged14/9/7 scopes",
+    "status": "PASS actual hosted order on both Linux platforms; current macOS NOT_RUN; unchanged14/9/7 declared scopes",
     "change": "Move existing acceptance-controls after AMD64 dependency policy and immediately after toolchain/format elsewhere, before exact-source-build; all arguments and14/9/7 selected counts preserved.",
-    "purpose": "Actual200-control suites run before expensive compilation, after AMD64 dependency policy. Prior0e macOS fixture failure exercised earlier refusal; no faster-green claim.",
+    "purpose": "Actual209-control suites execute before expensive compilation on Linux, after AMD64 dependency policy. Current macOS has no execution. Prior0e early fixture refusal remains separate; no faster-green claim.",
     "receipt": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40684555941-exposure/early-controls-receipt.json",
       "sha256": "3aaa80a46a4d81065d4da907d782dddbc1733fab27646b43de8147c69a387d53"
@@ -814,7 +789,7 @@
   },
   "portable_keyring_fixture_followup": {
     "revision": "9ab330b05338378618c82eafa4f34f9ac5723756",
-    "status": "PASS_CURRENT_HOSTED_DEFAULT_PROFILE_ALL_PLATFORMS_AND_PRIOR_LINUX_RELEASE",
+    "status": "PASS_CURRENT_LINUX_DEFAULT_PROFILE; CURRENT_MACOS_NOT_RUN",
     "change": "Use safe in-process nix::unistd::mkfifo and positively assert FIFO type on every Unix target. Existing locked nix0.31.3/fs is exposed only as a direct development dependency; no new package/version or product dependency.",
     "preserved": "All10 tests and custody/concurrency/refusal assertions; normal libtest parallelism, no retry or serialization.",
     "checks": {
@@ -839,7 +814,7 @@
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40684555941-exposure/keyring-dependency-policy.json",
       "sha256": "ccce5192a37d8114b57d6f49454dba1f34f4e6ca8c40bcc78f2d382c58faa09f"
     },
-    "qualification_limit": "Current exact61d verifies all10 cases on Linux AMD64/ARM64 and macOS under default-profile workspace execution. Prior exact9ab Linux release receipt remains separate; no new product bundle/engine run. Original8cf failure preserved."
+    "qualification_limit": "Current exact165 verifies10 cases on Linux AMD64/ARM64. macOS NOT_RUN; prior exact61d all-platform default-profile success and9ab Linux release evidence remain separate. Original8cf failure preserved."
   },
   "previous_macos_failure": {
     "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40684555941",
@@ -894,17 +869,17 @@
   },
   "custody_alias_fixture_followup": {
     "revision": "e6feb00ef0c4f0f5741734de91b18b6debe937f0",
-    "status": "PASS_TARGETED_ALIAS_REPRODUCTION_AND_CURRENT_HOSTED_SUITE",
+    "status": "PASS_PRIOR_TARGETED_ALIAS_REPRODUCTION_AND_CURRENT_LINUX_SUITE; CURRENT_MACOS_NOT_RUN",
     "change": "Resolve only temporary fixture parent before creation; strict alias refusal and flock/replacement-inode assertions unchanged.",
     "targeted_receipt": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40697249452-exposure/custody-alias-fix-receipt.json",
       "sha256": "ed995df9cb02d6a43254a31837b6edb623bfa56f5369166d6389495bd2fe1d71"
     },
-    "current": "200 controls complete on all platforms; macOS195PASS/5 declared Linux-onlySKIP, no ERROR. Original0e alias failure preserved."
+    "current": "209 controls PASS on each Linux platform; current macOS has no execution. Prior61d macOS success and original0e alias failure remain separate."
   },
   "root_verification": {
-    "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40736641965-exposure/root-terminal-review.json",
-    "sha256": "364e9ec673b9d46f9a6e9a99451dfe4201bca44b7f837251fad79bd336650581",
-    "receipt_sha256": "bb2c9376efc9161fc2adbb3efab9d6e3ce51917b7d327655ffefcfccb084a1ee"
+    "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40748115729-exposure/root-terminal-review.json",
+    "sha256": "9fbc77f06d58365db785cb1c7383343ad78b65f468bf5a93e7a0faf991f01b8d",
+    "receipt_sha256": "f5f423ecc7185ca01830114831c334139ced1c6b012f013b89575291c12a9c57"
   }
 }
