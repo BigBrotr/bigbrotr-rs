@@ -425,6 +425,65 @@ Archive recovery, generic connection/authentication/TLS failure handling,
 unknown remote outcomes, shared-budget/disk-pressure capacity or complete M1.
 Signed history/export remains covered by the separate installed journeys.
 
+### Installed shared-budget admission behind Index
+
+`p01-first-launch-shared-budget` uses the same candidate, owned engines and
+protected evidence as the Index restart case:
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-shared-budget \
+  --candidate-manifest /absolute/path/to/candidate.json \
+  --source-root "$PWD" --evidence .research/first-launch-shared-budget
+```
+
+Its fixed application payload is848MiB (889,192,448 bytes), selected from the
+compiled finite-profile requirements emitted by the maintained native verifier.
+Sync requires132,813,480 data bytes; Archive96,999,880; full Index218,693,806,
+including180,879,360 physical bytes and17MiB retained preparation/metadata.
+The Control connection allowance is554,172,424 bytes (528MiB plus eight copies
+of the65,537-byte credential bound); other retained owners hold24MiB input,
+4MiB TLS roots,1MiB Archive reader and17MiB Index preparation/metadata. Together
+they retain602,406,920 bytes before the1MiB per retained Archive input.
+
+Complete Index work with four Archive inputs and one complete login allowance
+(65MiB plus128KiB connection and64KiB request) totals875,823,286 bytes, below
+the fixed envelope. A retained physical Index operation, two prefix inputs and
+one full Sync round require at least918,196,912 bytes, above it. After Index
+joins and yields inactive metadata, Sync with four retained inputs needs
+739,414,704 bytes. The fixture's four-row/one-worker Index limits preserve the
+same fixed local allocation formula as the emitted profile; source64/1MiB,
+wire16MiB and query256MiB bounds remain. This arithmetic selects the fixture;
+only actual denial/admission observations certify the overlap.
+The remaining process allowances, original prefix15s/client65s and Index
+query5s/operation30s bounds stay unchanged.
+
+After positive source3/Archive2/Index2 physical readiness, the fixture pauses only
+its verified ClickHouse container and releases the original signed client gate.
+It requires an original `bigbrotr-initial-capacity/1` denial with the exact live
+Control identity and an actual retained Index operation. One repeatable-read
+capture of all82 Control tables, pending work, original input hashes and the live
+backend/custody observation precedes immediate unpause. Capture overhead can
+exhaust the existing query deadline and fail the case; no extra pause window or
+query retry is introduced.
+
+Either Sync or Archive may be the oldest deferred role. A submitted Sync job may
+still be accepted/revision1/unowned or already queued/revision2 under the same
+Control; only its exact documented claim transition is allowed afterward. An
+Archive denial must have a complete unpublished source batch and no new issued
+attempt. The same wait must later be admitted after positive local join and
+result consumption of its retained Index operation, with the positive admission
+observation itself inside the declared30s capacity wait. Missing, replaced, duplicate
+or incomplete lifecycle evidence refuses the proof. The labeled post-refusal
+budget snapshot is not the atomic failing state, and local join does not establish
+remote exclusion.
+
+The journey then requires source12/Archive4/Index4, all40 Index outcomes and all ten
+typed families, six classified events, exact original inputs, independent full
+Archive C API science and unchanged historical rows. Same-owner orderly shutdown
+precedes the original353-byte signed history/export with40s/12s limits. This is
+one declared logical-credit overlap, not general capacity, RSS/disk pressure,
+remote uncertainty resolution, automatic recovery or complete M1 qualification.
+
 ### Installed Index continuation across the initial topology handoff
 
 `p01-first-launch-index-topology` uses the same candidate and protected-evidence
