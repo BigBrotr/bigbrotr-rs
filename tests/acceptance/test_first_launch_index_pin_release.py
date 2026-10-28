@@ -244,7 +244,7 @@ class PinReleaseControls(unittest.TestCase):
 
     def test_actual_flock_is_busy_until_its_owned_holder_releases_it(self):
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary)/'custody.lock'; path.touch(mode=0o600)
+            path = Path(temporary).resolve()/'custody.lock'; path.touch(mode=0o600)
             fd = os.open(path,os.O_RDONLY)
             try:
                 fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
