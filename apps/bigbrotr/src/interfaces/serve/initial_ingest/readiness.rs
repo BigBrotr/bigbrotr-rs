@@ -40,6 +40,13 @@ pub(super) struct ArchiveObservation {
     pub started: AuthorityTick,
 }
 
+#[derive(Clone, Copy, Default)]
+pub(super) struct ArchiveStatus {
+    pub publication: Option<ArchiveObservation>,
+    pub verifying: bool,
+    pub connection_refused: bool,
+}
+
 fn cut(head: SourceHead) -> Result<SourceCut, SessionError> {
     SourceCut::new(
         head.identity().dataset_id,
@@ -92,7 +99,7 @@ pub(super) fn snapshot(
     observed_at_us: i64,
     source: Source,
     sync: bool,
-    archive: Option<(Option<ArchiveObservation>, bool)>,
+    archive: Option<ArchiveStatus>,
     index: Option<&Index>,
 ) -> Result<RoleSnapshot, SessionError> {
     let source_age = source.observed.and_then(|(_, start)| age(start));
@@ -157,9 +164,9 @@ pub(super) fn snapshot(
         acquisition.time = time(observed_at_us, source_age)?;
         capabilities.push(acquisition);
     }
-    if let Some((archive, verifying)) = archive {
+    if let Some(archive) = archive {
         let mut cap = capability(CapabilityKind::ArchivePublication);
-        if let Some(publication) = archive {
+        if let Some(publication) = archive.publication {
             let elapsed = age(publication.started);
             cap.freshness = freshness(elapsed);
             cap.time = time(observed_at_us, elapsed)?;
@@ -185,7 +192,13 @@ pub(super) fn snapshot(
                 }),
             );
         }
-        mark_verifying(&mut cap, verifying);
+        mark_verifying(&mut cap, archive.verifying);
+        if archive.connection_refused {
+            // Retain the exact last verified cut and its original age. The
+            // failed new attempt is neither a publication nor fresh evidence.
+            cap.state = CapabilityState::Unavailable;
+            cap.reason = StatusReason::DependencyUnavailable;
+        }
         roles.push(role(RoleKind::Archive, health(&cap), cap.reason));
         capabilities.push(cap);
     }
@@ -270,6 +283,66 @@ mod tests {
     use super::*;
 
     #[test]
+    fn parked_archive_keeps_the_old_cut_without_claiming_verification_or_control_failure() {
+        let identity = SnapshotIdentity {
+            dataset_id: [1; 16].try_into().unwrap(),
+            process_incarnation: [2; 16].try_into().unwrap(),
+            config_revision: revision(1).unwrap(),
+            policy_revision: revision(1).unwrap(),
+        };
+        let started = SuspendAwareClock.read().unwrap();
+        for publication in [
+            None,
+            Some(ArchiveObservation {
+                dataset: identity.dataset_id,
+                topology: TopologyGeneration::new(0),
+                shard: 0,
+                revision: 2,
+                through: 3,
+                started,
+            }),
+        ] {
+            let value = serde_json::to_value(
+                snapshot(
+                    identity,
+                    123,
+                    Source::default(),
+                    true,
+                    Some(ArchiveStatus {
+                        publication,
+                        verifying: false,
+                        connection_refused: true,
+                    }),
+                    None,
+                )
+                .unwrap(),
+            )
+            .unwrap();
+            assert_eq!(value["roles"][0]["state"], "ready");
+            assert_eq!(value["roles"][3]["role"], "archive");
+            assert_eq!(value["roles"][3]["state"], "degraded");
+            let archive = &value["capabilities"][2];
+            assert_eq!(archive["state"], "unavailable");
+            assert_eq!(archive["reason"], "dependency_unavailable");
+            if publication.is_some() {
+                assert_eq!(archive["published"]["revision"], "2");
+                assert_eq!(
+                    archive["published"]["cut"],
+                    serde_json::json!({
+                        "dataset_id": "01010101010101010101010101010101",
+                        "topology_generation": "0",
+                        "bounds": [{"shard_id": "0", "owner_epoch": "1", "last_complete_sequence": "3"}]
+                    })
+                );
+                assert!(!archive["time"].is_null());
+            } else {
+                assert!(archive["published"].is_null());
+                assert!(archive["time"].is_null());
+            }
+        }
+    }
+
+    #[test]
     fn missing_native_observation_never_implies_empty_or_ready_source() {
         let identity = SnapshotIdentity {
             dataset_id: [1; 16].try_into().unwrap(),
@@ -282,7 +355,7 @@ mod tests {
             123,
             Source::default(),
             true,
-            Some((None, false)),
+            Some(ArchiveStatus::default()),
             None,
         )
         .unwrap();

@@ -27,6 +27,12 @@ GROUPS = {
     'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
 }
 SOURCE_REQUIRED = {
+    'postgres-route': tuple(GROUPS['postgres-route'] + name for name in (
+        'reuse_binds_endpoint_and_rechecks_the_plaintext_boundary_without_dns',
+        'plaintext_requires_all_bounded_answers_inside_the_selected_boundary',
+        'only_a_direct_refused_io_cause_gets_the_narrow_connection_result',
+        'actual_refused_socket_and_server_auth_refusal_remain_distinct',
+    )),
     'source-closure': tuple(GROUPS['source-closure'] + name for name in (
         'initial_historical_batch_reader_requires_complete_proof_and_preserves_signed_bytes',
         'source_closure_requires_every_original_request_and_preserves_all_native_bytes',
@@ -147,6 +153,7 @@ BINARY_REQUIRED = {
     'initial-readiness': tuple(BINARY_GROUPS['initial-readiness'] + name for name in (
         'missing_native_observation_never_implies_empty_or_ready_source',
         'publication_requires_source_fresh_physical_rows_and_matching_cut',
+        'parked_archive_keeps_the_old_cut_without_claiming_verification_or_control_failure',
     )),
     'role-status-http': tuple(BINARY_GROUPS['role-status-http'] + name for name in (
         'role_status_requires_session_csrf_and_closed_get_before_queueing',

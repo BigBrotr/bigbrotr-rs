@@ -49,6 +49,24 @@ pub(in crate::interfaces::serve::initial_ingest) fn publisher(
     })
 }
 
+/// Only the initial combined owner may park a refused connection. The finite
+/// catch-up caller still requires Complete. The refused branch retains the
+/// original synchronized custody; it authorizes neither retry nor cleanup.
+pub(in crate::interfaces::serve::initial_ingest) enum Publication {
+    Complete,
+    ConnectionRefused(Box<LocalAttempt>),
+}
+impl Publication {
+    pub(in crate::interfaces::serve::initial_ingest) fn require_complete(self) -> Result<()> {
+        match self {
+            Self::Complete => Ok(()),
+            Self::ConnectionRefused(_) => {
+                Err(error("catalog connection refused before publication"))
+            }
+        }
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 pub(in crate::interfaces::serve::initial_ingest) fn publish(
     app: ResourceBudget,
@@ -61,15 +79,28 @@ pub(in crate::interfaces::serve::initial_ingest) fn publish(
     reader: Arc<Reader>,
     deadline: Instant,
     cancel: &AtomicBool,
-) -> Result<()> {
+) -> Result<Publication> {
     let runtime = tokio::runtime::Handle::current();
     runtime.block_on(async {
-        let (mut manager, connection, _pinned) = finite(deadline, cancel, async {
-            transport::connect_pinned(prepared.connection, Some(&reader.pinned))
-                .await
-                .map_err(error)
+        // This is the first catalog connection for this issued attempt. The
+        // route was pinned by startup; no DNS task or application SQL precedes
+        // its result. connect_pinned owns/drops its socket future on failure;
+        // it has not returned a Client/Driver and no native child exists yet.
+        let connected = finite(deadline, cancel, async {
+            match transport::connect_pinned(prepared.connection, Some(&reader.pinned)).await {
+                Ok(connected) => Ok(Some(connected)),
+                Err(transport::ConnectError::ConnectionRefused) => Ok(None),
+                Err(failure) => Err(error(failure)),
+            }
         })
         .await?;
+        let Some((mut manager, connection, _pinned)) = connected else {
+            // A refusal racing cancellation/expiry cannot revive the operation.
+            if cancel.load(Ordering::Acquire) || Instant::now() >= deadline {
+                return Err(error("catalog operation cancelled or expired"));
+            }
+            return Ok(Publication::ConnectionRefused(Box::new(custody)));
+        };
         let connection = Box::pin(
             custody
                 .retain_catalog_connection(connection)
@@ -114,7 +145,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn publish(
                         .map_err(error)
                 })
                 .await?;
-                Ok(())
+                Ok(Publication::Complete)
             }
             .await;
             drop(manager);
