@@ -45,8 +45,13 @@ The native archive worker additionally needs the exact
 [engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
 with the run. After toolchain, formatting and selected dependency-policy gates,
-the shared run makes the fresh exact-source release build. Clippy, rustdoc and
-the full default-profile workspace tests then use that build's exported `source`,
+the Python acceptance controls run before the fresh exact-source release build.
+They use temporary fixtures and the declared native tools, including the native
+C/C++ smoke check and Linux syscall/process observers; they do not require a
+compiled product. A control failure leaves the build and later checks NOT_RUN.
+This exposes verifier failures earlier without reducing the checks in a passing
+run. Clippy, rustdoc and the full default-profile workspace tests then use that
+build's exported `source`,
 `cargo-home`, `target` and installed native bundle. They retain their existing
 workspace/all-targets scopes and debug assertions; tests do not use `--release`.
 Cargo may rebuild units for different profiles, features or check/test modes.

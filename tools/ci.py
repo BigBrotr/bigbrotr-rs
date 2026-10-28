@@ -101,11 +101,13 @@ def commands(output, system, architecture, jobs):
         # workspace command, and refuse before native compilation.
         checks += [('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
                    ('dependency-policy', ['cargo', 'deny', '--locked', 'check', 'licenses', 'sources', 'advisories'])]
+    # These controls use temporary fixtures and the declared native tools, not
+    # the product build. Refuse a broken verifier before workspace compilation.
+    checks += [('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
                                       '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
     checks += [(name, [python, 'tools/ci.py', '--workspace-check', name, '--from-build', str(build)])
                for name in WORKSPACE_COMMANDS]
-    checks += [('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
         checks += documentation_commands(output)
     if system == 'Linux':
