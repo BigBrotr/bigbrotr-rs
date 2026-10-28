@@ -523,7 +523,7 @@
       }
     },
     "finite_recovery": {
-      "status": "PASS_SCOPED_NATIVE; installed same-store recovery NOT_RUN",
+      "status": "PASS scoped native controls and installed build; installed r1 prefix FAIL, recovery NOT_RUN",
       "native": {
         "status": "PASS_SCOPED_NATIVE_INITIAL_INDEX_RECOVERY",
         "product_revision": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
@@ -614,11 +614,49 @@
         "source_review": "Independent critical cross-review PASS; original gates preserved",
         "final_source_controls": "39PASS; combined c3859428 first-launch controls76PASS",
         "integration": "Product7e04, verifierbbf and acceptancecb combined locally atc3859428; main remainsd018 until actual engine/installed qualification.",
-        "not_run": "Real paused-engine backlog, source closure, pending/new catch-up and exact retry"
-      }
+        "not_run": "Actual paused-engine backlog, source closure, pending/new catch-up and exact retry; r1 failed during prefix setup"
+      },
+      "installed_build": {
+        "status": "PASS_EXACT_SOURCE_INSTALLED_BUILD_AND_CANDIDATE_PREPARATION",
+        "source": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
+        "tree": "4de83b2713626d405a3e4115b5f99b26ac7a5b80",
+        "candidate_manifest": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-7e04f12/candidate/candidate-manifest.json",
+        "candidate_manifest_sha256": "e18f1a5c07e12bb722e35e2b367f5261aab2ed3c4ffd8061425507043161e5b7",
+        "bundle": {
+          "bytes": 77840254,
+          "name": "bigbrotr-x86_64-unknown-linux-gnu.tar.gz",
+          "sha256": "2d0bc99393cdce382683345afb5722505cd504357ce7f1b96f940c973b07b991"
+        },
+        "binary": {
+          "bytes": 42280240,
+          "sha256": "1cc518032a11f3e5b4a2136926d92b909dfce9d7e16294780322c149a3281186"
+        },
+        "worker": {
+          "bytes": 14421704,
+          "sha256": "7213855f02ce2912e0aa97430a155d6b18ff101672e9ba5fc97340ffd65ed647"
+        },
+        "source_files": 2375,
+        "build_result_sha256": "ba3413b633fa33434edf8b50cecef3ee2ff7bf7c82e541b8a7234a9b9fa61319",
+        "native_controls": 156,
+        "receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7e04f12/receipt.json",
+        "receipt_sha256": "5a7c404cdaaf8dae8c6fe770fb8b7257cd6aed651d2736d0c7d9f357e650eca4",
+        "not_run": [
+          "Engine/installed same-store Index recovery, restart or catch-up acceptance",
+          "Full release, deployment, hosted/platform and remaining M1 gates"
+        ]
+      },
+      "installed_attempts": [
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-restart-r1-20261028",
+          "status": "FAIL_INITIAL_PREFIX_DEADLINE_RECOVERY_NOT_RUN",
+          "terminal_receipt_sha256": "f157b445613acb87a59169f0826cb47ff034428ad3870cfb64e97d65da358273",
+          "result_sha256": "74c2dcdac39aae56480bca8d4014d5c3ec95e5b382b2772bc4f0689d24c1c4cd",
+          "meaning": "Only one Archive/Index frontier met revision2/through3 before the original15s prefix deadline. No complete prefix readiness, ClickHouse pause, catch-up or retry executed. Source/policy cadence diagnosis in progress; all16 containers stopped, no OOM."
+        }
+      ]
     },
     "ordinary_short_pin": {
-      "status": "FAIL; no installed pin-expiry qualification yet",
+      "status": "PASS actual installed expiry with continuing same-owner renewal; uncertainty variants remain NOT_RUN",
       "product_revision": "8256184cd30f49020c6c0a9884e9eaec958ba461",
       "proxy_correction": "8ae9a4ae;21controlsPASS plus independent critical review; actual baseline traffic and cleanupPASS inr3-r5",
       "attempts": [
@@ -642,11 +680,25 @@
           "terminal_receipt_sha256": "2d4eb9fb5faad9d1772eeec19b99400b69324bf0359f1e0f0b9c14b30ef0caf2",
           "result_sha256": "5711035c1717e760cd1e36eec8283d7269fd3fe0fa13933cdfebee7afad092de",
           "meaning": "Actual native worker ATTACHes direct PostgreSQL for immutable precheck, DETACHes it, then ATTACHes DuckLake with a new connection. The gate selects the disposable precheck PID; the later true waiter was not captured. Source and observed23->24 connection lifecycle support fixture attribution defect."
+        },
+        {
+          "root": "/home/tux/bigbrotr-rs/.research/first-launch-index-short-pin-r6-20261028",
+          "status": "PASS_ALL_8_INSTALLED_STAGES_AND_ROOT_TERMINAL_CUSTODY",
+          "terminal_receipt_sha256": "9ef03bcad454d5b0bb2c34833d6766c010032ee469525a87cbe1ead53faf5b0d",
+          "result_sha256": "e624df41f52e7ff70bf4cc00674bbd02755a2a1dd93c02d78ae065ffd32efa11",
+          "meaning": "All8 stages PASS with distinct precheck PID1941 and actual relation waiterPID1963;17 blocked samples, fixed2.717129s pin, joined release9,444us after expiry, owner lease3,014,207us beyond expiry. Full maintained81-table/file/client/signed-export preservation checks PASS."
         }
       ],
       "original_attempts": "r1/r2 admission failures remain unchanged under .research/first-launch-index-short-pin-r{1,2}-20261027",
-      "pending": "Separate disposable PostgreSQL precheck gate from actual DuckLake Lock waiter, preserving original near-expiry, pin/authority/worker and immutable-data checks. r5 later waiter was not captured and cannot be inferred as PASS.",
-      "preserved_constraints": "16active slots,64MiBwire,180sproxy,3sownerlease,5sauthorization,30sprobe/phase; no original gate weakened."
+      "pending": "Real pin-release COMMIT uncertainty before-forward/after-complete, genuine unknown native termination and other remaining M1 gates; r1-r5 remain preserved FAIL.",
+      "preserved_constraints": "16active slots,64MiBwire,180sproxy,3sownerlease,5sauthorization,30sprobe/phase; no original gate weakened.",
+      "qualified_correction": {
+        "source": "45695bd200a186d577cc83a243ac910e84c22472",
+        "integration": "6c2aea09",
+        "critical_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "controls": "40 affected controls PASS on author source;9 pin controls PASS after integration; inherited21 proxy controls/review remain valid",
+        "boundary": "First proxy gate is disposable PostgreSQL precheck; independently discover exact DuckLake waiter, then freeze PID/start and retain worker custody through original expiry."
+      }
     }
   }
 }
