@@ -1108,6 +1108,88 @@
         "source_identity": "All product, acceptance, migration, provisioning and build inputs match verified cb3d2fec after merge; no changed test assumption or redundant product build.",
         "limits": "Finite increment only; original failures and open M1/general recovery/capacity gates retained."
       }
+    },
+    "archive_catalog_refusal": {
+      "status": "PASS_BOUNDED_INSTALLED_CASE_REVIEWED",
+      "scope": "P01-T09 Step5: known Archive-only catalog connection refusal while the same Control/Sync/Index lifetime continues. No automatic retry, generic failure recovery, capacity or complete M1 claim.",
+      "product_revision": "1ce8c1e2b6a98b80558a95d5f12506be789353da",
+      "assembly_revision": "1ce8c1e2b6a98b80558a95d5f12506be789353da",
+      "tested_acceptance_revision": "8dcce13fa74c1f859533920bb349b8274100d725",
+      "reporting_revision": "547ddb3792527dd3e13f65448d456cb15100e0e4",
+      "reporting_delta": "Only the result readiness label changes from inherited NOT_RUN to archive_unavailable_index_current; original r4 output remains immutable. All actual predicates/inputs and product bytes unchanged.",
+      "implementation": "Only a direct connection-refused I/O cause at the first pinned catalog connect before returned Client/Driver, catalog activation or native child may park the issued attempt. The failed future is destroyed and blocking task joined; cancellation/deadline/current delivery authority are rechecked. Original custody/input remain held and same-lifetime retry is disabled. This is not a claim limited to the TCP syscall: the transport public error may include startup I/O.",
+      "native": {
+        "controls": 182,
+        "library": 111,
+        "binary": 71,
+        "compile": "PASS",
+        "test_compile": "PASS",
+        "strict_clippy": "PASS",
+        "receipt": ".research/initial-index-recovery-qualification-20261028/r6-1ce8c1e2/receipt.json",
+        "receipt_sha256": "cbe6838619a955191185e93dfb0534ac20c5ba03ff8b8a95df49fd94e250eecc"
+      },
+      "installed_build": {
+        "status": "PASS",
+        "receipt_sha256": "597ef32952cd0eee0a9928aed0f87d215cec82dfa99bcb468c38b5a69fddac71",
+        "binary_sha256": "7328c72d30271c1ebc7373bb123f93c65e8fef7136fb5800748720933f5163f5",
+        "assembly": "PASS"
+      },
+      "controls": [
+        "65 affected controls PASS before installed execution; original 61PASS/2ERROR synthetic-topology invocation and exact two-test correction retained.",
+        "8 affected outage controls PASS after restoring the existing readiness envelope.",
+        "19 affected base/outage controls PASS after direct census placement, including the new real settings-guard/config-preservation control. Unchanged controls reused."
+      ],
+      "installed": {
+        "result": "PASS",
+        "stages": 7,
+        "evidence": ".research/first-launch-archive-outage-r4-20261028",
+        "root_terminal_sha256": "44d2c13eb7271eb9e38b01b5c3fbdd5af4e4fb8509f15349ab4c0dc937e9262a",
+        "observed": [
+          "Positive source3/Archive2/Index2 prefix, then catalog-only proxy positively joined; direct Control and ClickHouse remain independent.",
+          "Same application/Control owner renews; four exact original inputs and six classifications reach source12. Index reaches verified revision4/cut12 with40 committed chunks/160 metadata rows and exact ten-family typed content.",
+          "Archive reports dependency_unavailable with original revision2/cut3 and unrefreshed BOOTTIME-bounded observation age. Two published attempts/frontiers/catalog/files remain exact; only issued attempt3 and its original input/intent/binding are retained.",
+          "All82 Control tables obey exact prefix/live/terminal transitions. Actual same-inode flock is held while parked and acquirable only after joined shutdown. No native child remains.",
+          "Separate stopped-product read-only C API census confirms the unchanged three-dictionary Archive prefix and two batches. Product never bypasses its unavailable catalog route."
+        ],
+        "limits": "Existing15s prefix,45s physical Index observation/256 samples at250ms and65s client gate; existing120s/64MiB/131072-frame/64-connection proxy profile. No product timeout/limit changed.",
+        "resources": "Session87357 reaped0; all16 owned containers stopped/PID0/noOOM/exit0; launcher/client/proxy absent; borrowed network empty. Original logs, inputs, databases and files retained in inventory."
+      },
+      "preserved_failures": [
+        {
+          "run": "r1",
+          "result": "FAIL",
+          "receipt_sha256": "4ed7f8e6f1be94edeeb9604720e83ec51e756c093c97aadd586eed4f66bb9fe8",
+          "cause": "New fixture15s subgate undercut existing Index cooldown/readiness envelope;48 behind_source then28 verification_in_flight. Sweep completion was NOT_OBSERVED. Restored established45s observation, original65s client unchanged."
+        },
+        {
+          "run": "r2",
+          "result": "FAIL",
+          "receipt_sha256": "6822fe7b151aba18c96973f3f418898bdd14fe588455df4f7cf0643e9f70b157",
+          "cause": "Fixture omitted documented catalog-only terminal slash in full intent expectation. Retained replay found only catalog_root mismatch. Index ready observed after16.563951s.",
+          "separate_outcome": "Application exit4 follows failure-cleanup docker stop and bounded-cancellation diagnostic; exact interrupted operation UNKNOWN. Other15 exit0, all resources joined; no normal owner-release record."
+        },
+        {
+          "run": "r3",
+          "result": "FAIL",
+          "receipt_sha256": "93f4a593214236f60c88da938e2c0e25eeb48b966c9cc41be36acdb9d6ad632d",
+          "cause": "Diagnostic reader configuration retained closed proxy while its declared port was15432. Existing guard refused before engine load. Only separate diagnostic config copy corrected; product config/guard unchanged."
+        }
+      ],
+      "not_run": [
+        "Automatic Archive recovery/retry and generic catalog/authentication/TLS failures",
+        "Unknown remote outcome resolution and genuine native termination uncertainty",
+        "Shared-budget overlap, bounded backlog capacity and disk-pressure qualification",
+        "Native RocksDB census in this case",
+        "Complete M1 and continuous enabled-Index successor composition"
+      ],
+      "followup": "P01-T09 Step5 retains shared-budget/outage behavior; P02/P08 retain general recovery/capacity. Admission cost, repeated decoding/transport and coordinator ownership remain assigned under Q40 to existing task closures.",
+      "actual_review": {
+        "receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-actual-r4.json",
+        "sha256": "dd8471e9f09d04c38223940d4e792d21e8cb33aea1d2397a2e780b61538d4b76",
+        "evidence_hashes": 60,
+        "source_hashes": 10,
+        "scope": "Independent replay of unchanged maintained oracle chain; no fresh engine/build. Original reviewer import error preserved before correct-alias replay PASS."
+      }
     }
   }
 }

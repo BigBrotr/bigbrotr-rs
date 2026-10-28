@@ -35,7 +35,8 @@ COMMANDS = {'browser_sessions', 'login_buckets', 'management_audit', 'management
     'acquisition_scope_commands', 'jobs', 'acquisition_jobs', 'job_admissions'}
 
 
-def validate_queued(state, observations, *, ordinal=1, key='b1'*16, total_jobs=None):
+def validate_queued(state, observations, *, ordinal=1, key='b1'*16, total_jobs=None,
+                    expected_principal='10'*16):
     assert ordinal in (1, 2)
     assert all(len(state[table]) == (ordinal if total_jobs is None else total_jobs)
         for table in ('jobs', 'acquisition_jobs', 'job_admissions'))
@@ -57,7 +58,7 @@ def validate_queued(state, observations, *, ordinal=1, key='b1'*16, total_jobs=N
     accepted['job_admissions'][0]['admission_ordinal'] = 1
     accepted['jobs'][0].update(state='accepted', job_revision=1, owner_resource_id=None,
         owner_epoch=None, owner_incarnation=None)
-    validate_job(accepted, receipt, key=key)
+    validate_job(accepted, receipt, key=key, expected_principal=expected_principal)
 
 
 def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, nonces=('91', '92', 'a1')):

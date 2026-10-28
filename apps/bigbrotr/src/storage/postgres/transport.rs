@@ -22,6 +22,9 @@ pub type Driver = Pin<Box<dyn Future<Output = Result<(), tokio_postgres::Error>>
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ConnectError {
     Backend,
+    /// A direct refused I/O cause from connection establishment, without a
+    /// TCP/startup/TLS phase claim. Never a database error or remote exclusion.
+    ConnectionRefused,
     PlaintextRoute,
     Route,
 }
@@ -29,12 +32,32 @@ impl std::fmt::Display for ConnectError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
             Self::Backend => "PostgreSQL connection unavailable",
+            Self::ConnectionRefused => "PostgreSQL connection refused",
             Self::PlaintextRoute => "resolved PostgreSQL plaintext route is outside its declared local boundary or exceeds the address limit",
             Self::Route => "PostgreSQL route is empty, oversized or differs from the pinned endpoint",
         })
     }
 }
 impl std::error::Error for ConnectError {}
+
+fn connection_error(error: tokio_postgres::Error) -> ConnectError {
+    connection_cause(std::error::Error::source(&error))
+}
+
+fn connection_cause(cause: Option<&(dyn std::error::Error + 'static)>) -> ConnectError {
+    // Only a direct refused I/O cause from connection establishment qualifies.
+    // This API also encompasses startup/authentication; it does not identify a
+    // syscall or prove remote exclusion. Never parse text or unwrap arbitrary
+    // TLS/database error chains to manufacture this narrower classification.
+    if cause
+        .and_then(|cause| cause.downcast_ref::<std::io::Error>())
+        .is_some_and(|cause| cause.kind() == std::io::ErrorKind::ConnectionRefused)
+    {
+        ConnectError::ConnectionRefused
+    } else {
+        ConnectError::Backend
+    }
+}
 /// One selected infrastructure route, reusable only for the same endpoint.
 /// The fields are private so callers cannot substitute an unvalidated address.
 #[derive(Clone)]
@@ -92,14 +115,11 @@ pub async fn connect_pinned(
                 let (client, driver) = config
                     .connect(tokio_postgres::NoTls)
                     .await
-                    .map_err(|_| ConnectError::Backend)?;
+                    .map_err(connection_error)?;
                 (client, Box::pin(driver))
             }
             PreparedTransport::VerifyFull(connector) => {
-                let (client, driver) = config
-                    .connect(connector)
-                    .await
-                    .map_err(|_| ConnectError::Backend)?;
+                let (client, driver) = config.connect(connector).await.map_err(connection_error)?;
                 (client, Box::pin(driver))
             }
         };
@@ -197,6 +217,91 @@ fn select_address(
 #[cfg(test)]
 mod route_tests {
     use super::*;
+
+    #[test]
+    fn only_a_direct_refused_io_cause_gets_the_narrow_connection_result() {
+        use std::io::{Error, ErrorKind};
+        assert_eq!(
+            connection_cause(Some(&Error::from(ErrorKind::ConnectionRefused))),
+            ConnectError::ConnectionRefused
+        );
+        for kind in [
+            ErrorKind::TimedOut,
+            ErrorKind::ConnectionReset,
+            ErrorKind::UnexpectedEof,
+            ErrorKind::PermissionDenied,
+            ErrorKind::Interrupted,
+            ErrorKind::Other,
+        ] {
+            assert_eq!(
+                connection_cause(Some(&Error::from(kind))),
+                ConnectError::Backend
+            );
+        }
+        assert_eq!(connection_cause(None), ConnectError::Backend);
+        assert_eq!(
+            connection_cause(Some(&ConnectError::ConnectionRefused)),
+            ConnectError::Backend
+        );
+    }
+
+    #[tokio::test]
+    async fn actual_refused_socket_and_server_auth_refusal_remain_distinct() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        // Reserve the port without a listener, avoiding a drop/rebind race.
+        let refused = tokio::net::TcpSocket::new_v4().unwrap();
+        refused.bind("127.0.0.1:0".parse().unwrap()).unwrap();
+        let config = |port| {
+            let mut value = tokio_postgres::Config::new();
+            value
+                .host("127.0.0.1")
+                .port(port)
+                .user("fixture")
+                .ssl_mode(tokio_postgres::config::SslMode::Disable);
+            value
+        };
+        let result = tokio::time::timeout(
+            Duration::from_secs(5),
+            config(refused.local_addr().unwrap().port()).connect(tokio_postgres::NoTls),
+        )
+        .await
+        .unwrap();
+        let Err(failure) = result else {
+            panic!("bound non-listening socket connected")
+        };
+        assert_eq!(connection_error(failure), ConnectError::ConnectionRefused);
+
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let peer = tokio::spawn(async move {
+            let (mut socket, _) = listener.accept().await.unwrap();
+            let length = socket.read_u32().await.unwrap();
+            assert!((8..=8192).contains(&length));
+            let mut startup = vec![0; (length - 4) as usize];
+            socket.read_exact(&mut startup).await.unwrap();
+            assert_eq!(&startup[..4], &196608_u32.to_be_bytes());
+            let fields = b"SFATAL\0VFATAL\0C28P01\0Mfixture authentication refused\0\0";
+            socket.write_u8(b'E').await.unwrap();
+            socket.write_u32(4 + fields.len() as u32).await.unwrap();
+            socket.write_all(fields).await.unwrap();
+            socket.shutdown().await.unwrap();
+        });
+        let result = tokio::time::timeout(
+            Duration::from_secs(5),
+            config(port).connect(tokio_postgres::NoTls),
+        )
+        .await
+        .unwrap();
+        let Err(failure) = result else {
+            panic!("authentication refusal connected")
+        };
+        assert_eq!(failure.code().map(|code| code.code()), Some("28P01"));
+        assert_eq!(connection_error(failure), ConnectError::Backend);
+        tokio::time::timeout(Duration::from_secs(5), peer)
+            .await
+            .unwrap()
+            .unwrap();
+    }
 
     #[tokio::test(flavor = "current_thread")]
     async fn reuse_binds_endpoint_and_rechecks_the_plaintext_boundary_without_dns() {

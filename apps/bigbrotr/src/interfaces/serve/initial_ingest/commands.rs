@@ -22,8 +22,7 @@ pub(super) struct CommandOwner<'a> {
     index: Option<&'a mut index::Index>,
     archive_selected: bool,
     source_observation: readiness::Source,
-    archive_observation: Option<readiness::ArchiveObservation>,
-    archive_verifying: bool,
+    archive_observation: readiness::ArchiveStatus,
     // One already-selected request retains its existing grant while awaiting
     // renewal or the end of independent Archive work. Never a second queue.
     pending: Option<management::Work>,
@@ -475,8 +474,7 @@ impl<'a> CommandOwner<'a> {
                         work.observed_at_us(),
                         self.source_observation,
                         self.sync.is_some(),
-                        self.archive_selected
-                            .then_some((self.archive_observation, self.archive_verifying)),
+                        self.archive_selected.then_some(self.archive_observation),
                         self.index.as_deref(),
                     )
                 })();
@@ -550,6 +548,15 @@ impl<'a> CommandOwner<'a> {
                 },
             }
         }
+    }
+
+    /// A joined independent operation cannot turn late cancellation or expired
+    /// Control authority into permission to continue the combined lifetime.
+    pub(super) fn check_external_completion(&mut self, deadline: Instant) -> Result<()> {
+        check_external_deadline(deadline, self.cancellation)?;
+        self.lease
+            .check_delivery(self.lease.known_epoch())
+            .map_err(authority)
     }
 
     /// Dropping a blocking handle is not termination. Every failed renewal,
@@ -709,8 +716,7 @@ async fn maintain_context(
         index: index.as_mut(),
         archive_selected: archive.is_some(),
         source_observation: readiness::Source::default(),
-        archive_observation: None,
-        archive_verifying: false,
+        archive_observation: readiness::ArchiveStatus::default(),
         pending: None,
         pending_renewed: false,
     };
@@ -855,7 +861,7 @@ async fn maintain_context(
                         management.renew_delivery(window)?;
                     }
                 },
-                _ = tokio::time::sleep_until(publish_due), if archive.is_some() => {
+                _ = tokio::time::sleep_until(publish_due), if archive.as_ref().is_some_and(|archive| !archive.parked()) => {
                     // The timer may become ready only after select slept near
                     // renewal. No native/Sync effect precedes this recheck.
                     if admission(Instant::now(), due, None) == Admission::Renew {
@@ -867,11 +873,14 @@ async fn maintain_context(
                     // A catalog failure can become known to its driver while
                     // joined native cleanup still services private commands.
                     // Old evidence must not remain Ready during that operation.
-                    state.archive_verifying = true;
+                    state.archive_observation.verifying = true;
                     let published = archive.publish(store.initial()?, budget, &mut state, &mut due,
                         &mut management, &cancellation.requested).await?;
-                    state.archive_observation = archive.observation();
-                    state.archive_verifying = false;
+                    state.archive_observation = readiness::ArchiveStatus {
+                        publication: archive.observation(),
+                        verifying: false,
+                        connection_refused: archive.parked(),
+                    };
                     // Drain available complete batches without another formation
                     // delay, but allow management/renewal between each pass.
                     publish_due = Instant::now() + if published { sync::INTERVAL } else { archive.delay() };

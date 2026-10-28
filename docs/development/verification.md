@@ -399,6 +399,32 @@ uncertainty resolution, lost COMMIT, topology handoff, independent process outag
 capacity or complete M1. A complete-prefix-only recovery cannot satisfy its
 required prepared and unplanned backlog.
 
+### Installed Archive-only catalog refusal
+
+`p01-first-launch-archive-outage` uses the same fresh candidate, real engines,
+signed client and protected-evidence arguments as the Index restart case. Its
+seven stages retain the original 15s prefix and 65s client bounds, including the
+existing Index physical-readiness allowance of45s/256 samples at most once per
+250ms. Publication does not reset the product's15s physical-verification cooldown;
+SQL head advancement alone is not a ready observation. It routes only
+the Archive catalog through the existing bounded pass-through proxy, positively
+joins that proxy after ready source3/Archive2/Index2, and observes connection
+refusal before releasing the source gate. Control's database route stays direct.
+
+The same application must then reach source12/Index4 while Archive keeps its
+original revision2/cut3 and reports dependency unavailability with an aging,
+unrefreshed observation. The oracle checks all82 Control tables, original input
+bytes and typed progress, ten-family Index rows, the issued third Archive attempt,
+its exact retained input/intent/binding, and custody held until orderly shutdown.
+A separately declared read-only C API diagnostic verifies the unchanged Archive
+prefix after shutdown; the running product never bypasses its failed route.
+
+This case requires an actual installed execution; the case definition and its
+unit controls are not acceptance evidence. It does not establish automatic
+Archive recovery, generic connection/authentication/TLS failure handling,
+unknown remote outcomes, shared-budget/disk-pressure capacity or complete M1.
+Signed history/export remains covered by the separate installed journeys.
+
 ### Installed Index continuation across the initial topology handoff
 
 `p01-first-launch-index-topology` uses the same candidate and protected-evidence

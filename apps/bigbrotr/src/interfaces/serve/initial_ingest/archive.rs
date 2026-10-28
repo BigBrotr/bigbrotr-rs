@@ -34,6 +34,7 @@ const RETAINED_BATCHES: usize =
 const _: () = assert!(RETAINED_BATCHES <= bigbrotr_protocol::archive_cut::MAX_BATCHES);
 
 pub(super) struct Archive {
+    parked: Option<ParkedAttempt>,
     pub(super) coordinator: LocalCoordinator,
     native: ResourceBudget,
     reader: Arc<native::Reader>,
@@ -42,6 +43,12 @@ pub(super) struct Archive {
     revision: u64,
     profile: Option<(Duration, u64)>,
     observation: Option<readiness::ArchiveObservation>,
+}
+struct ParkedAttempt {
+    // The attempt remains issued in Control. Keep its original descriptor and
+    // charged immutable inputs until this lifetime ends, without another dial.
+    _custody: Box<LocalAttempt>,
+    _inputs: RetainedInputs,
 }
 fn error(error: impl std::fmt::Debug) -> (u8, String) {
     (
@@ -121,6 +128,7 @@ impl Archive {
             ),
         ))?;
         Ok(Self {
+            parked: None,
             coordinator,
             reader,
             native,
@@ -157,6 +165,10 @@ impl Archive {
         self.observation
     }
 
+    pub(super) fn parked(&self) -> bool {
+        self.parked.is_some()
+    }
+
     fn runtime_root(&self, root: &Resolved) -> Resolved {
         let mut root = root.clone();
         root.values.insert(
@@ -189,6 +201,11 @@ impl Archive {
         management: &mut Option<management::Management>,
         cancelled: &AtomicBool,
     ) -> Result<bool> {
+        if self.parked() {
+            // The timer is disabled too, but no caller can retry an issued
+            // attempt by invoking this method again in the same lifetime.
+            return Ok(false);
+        }
         let limits = PendingReadLimits {
             max_records: RECORDS,
             max_encoded_bytes: ENCODED,
@@ -300,7 +317,7 @@ impl Archive {
         let native = self.native.clone();
         let reader = self.reader.clone();
         let identity = self.coordinator.identity().clone();
-        state
+        let published = state
             .blocking(due, management, deadline, move |cancel| {
                 native::publish(
                     app, native, identity, receipt, custody, pending, prepared, reader, deadline,
@@ -308,6 +325,20 @@ impl Archive {
                 )
             })
             .await?;
+        match published {
+            native::Publication::Complete => {}
+            native::Publication::ConnectionRefused(custody) => {
+                // blocking returned only after the actual task joined. Control
+                // remains usable only if its independent authority/cancellation
+                // window still allows delivery; an error never becomes a park.
+                state.check_external_completion(deadline)?;
+                self.parked = Some(ParkedAttempt {
+                    _custody: custody,
+                    _inputs: retained,
+                });
+                return Ok(false);
+            }
+        }
         self.inputs.push(retained);
         self.capture(budget, state, due, management, end, true)
             .await?;

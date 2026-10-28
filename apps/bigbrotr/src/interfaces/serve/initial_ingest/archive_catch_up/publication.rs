@@ -261,6 +261,7 @@ pub(super) async fn run(
                     deadline,
                     cancel,
                 )
+                .and_then(native::Publication::require_complete)
             })
             .await?;
         authority.history(owner, recovery, proof, frontier).await?;

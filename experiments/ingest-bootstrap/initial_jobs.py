@@ -88,12 +88,13 @@ def acceptance(before, after, observations):
     validate_job(after, receipt)
 
 
-def validate_job(state, receipt, key='b1'*16):
+def validate_job(state, receipt, key='b1'*16, *, expected_principal='10'*16):
     job,=state['jobs']; detail,=state['acquisition_jobs']; admission,=state['job_admissions']
     command,=[r for r in state['management_commands'] if r['request_key']=='\\x'+key]
     audit,=[r for r in state['management_audit'] if r['audit_id']==command['audit_id']]
     dataset=state['datasets'][0]['dataset_id']
-    actor,=[r for r in state['local_accounts'] if r['principal_id']=='\\x'+'10'*16]
+    assert len(expected_principal) == 32 and len(bytes.fromhex(expected_principal)) == 16
+    actor,=[r for r in state['local_accounts'] if r['principal_id']=='\\x'+expected_principal]
     scope,=state['acquisition_scopes']
     session,=[r for r in state['browser_sessions'] if r['session_id']==detail['session_id']]
     assert session['principal_id']==actor['principal_id'] and session['dataset_id']==dataset

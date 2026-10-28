@@ -1006,6 +1006,21 @@ another server. A provider outage pauses archive progress; pending capacity and
 completion reserves govern further admission. Never acknowledge a stronger
 durability class solely because a destination is remote.
 
+The finite initial combined runtime implements one narrower failure boundary:
+an explicit connection-refused I/O result from the new attempt's first pinned
+catalog connection, before any catalog SQL or native launch, may park Archive
+without stopping independent Control/Sync/Index work. The actual owning task
+must join and current Control authority/cancellation must still permit delivery.
+Keep the committed Control intent, synchronized local custody and immutable
+inputs through that lifetime; issue no replacement or retry. Preserve the last
+published cut and its original age while reporting dependency unavailable.
+No returned driver or child exists on this path; this is not proof of remote
+rollback or general exclusion. Every later failure and every generic connection,
+timeout, authority or unknown-outcome error retains its existing fatal behavior.
+Finite Archive catch-up continues to refuse this outcome. This bounded isolation
+does not qualify pending-byte watermarks, shared-budget overlap or automatic
+recovery of an issued attempt.
+
 ### Qualified local persistence participation
 
 P02-T04/T07 records local synchronization protocol1 explicitly before its first

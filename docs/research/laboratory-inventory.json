@@ -75389,7 +75389,7 @@
       "canonical_revision_scope": "Implementation merge before the accompanying checkpoint commit",
       "epoch2_continuation": {
         "worktree": ".research/index-epoch2-continuation-20261028",
-        "branch": "work/index-epoch2-continuation",
+        "branch": null,
         "base": "59164990",
         "owner": "index_recovery_resume",
         "status": "QUALIFIED_INTEGRATED",
@@ -75397,17 +75397,18 @@
         "resources": "No local engine/compiler/proxy remains active. All topology r1/r2/r3, epoch1 restart r5 and publication COMMIT before-r4/after-r2 resources stopped and retained; exact receipts own custody.",
         "acceptance": {
           "worktree": ".research/index-epoch2-acceptance-20261028",
-          "branch": "work/index-epoch2-acceptance",
+          "branch": null,
           "base": "e5cfec3ce88c11b3cff88b56f954e3a21623e683",
           "owner": "root",
           "status": "QUALIFIED_INTEGRATED",
-          "valid_evidence": "104 combined hook controls PASS; seven author helper controls PASS; critical product/SQL/hook review closed. Actual installed outcome pending.",
+          "valid_evidence": "Scoped controls and critical review PASS; installed topology r3 all15 PASS and affected epoch1 restart11/COMMIT12+12 PASS. Exact original failures and receipts below remain retained.",
           "evidence": ".research/index-epoch2-acceptance-20261028/.research/index-topology-acceptance-20261028",
           "review": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-oracle-initial.json",
           "review_sha256": "f160933930a7bd3c043b0813f187e7a08476a2374b14f5e6ed9d330e1a08e9a2",
-          "next": "Current docs checks, source publication audit and one coherent push; actual hosted CI then required for new main.",
+          "next": "Qualified increment pushed as61d41e5f; original hosted run40736641965 in progress.",
           "revision": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
-          "uncommitted": "None"
+          "uncommitted": "None",
+          "former_branch": "work/index-epoch2-acceptance"
         },
         "source": "ace1b52f3fb2f57dc43624401b65e272dcb200aa",
         "native_qualification": {
@@ -75441,7 +75442,7 @@
           "candidate_manifest_sha256": "39f7362a3d22bd2ddb8fd60cbfbe2cb1233688b4464b5334d1db897d04f2baae",
           "bundle_sha256": "45ce967db497f2498d1400efa785977acfed6136e6e2e915916e7d2d7229bb9f"
         },
-        "uncommitted": "Source worktrees clean at cb3d2fec; root main current documentation/checkpoint pending final publication commit.",
+        "uncommitted": "Source worktrees detached and tracked-clean; ignored author/acceptance artifacts preserved.",
         "installed_journey": {
           "status": "FAIL_PRODUCT_RUNTIME_GRANT",
           "session": 42416,
@@ -75503,7 +75504,7 @@
             "resources": "22 exact containers stopped/PID0/noOOM/exit0; network empty; launcher absent; ClickHouse unpaused."
           },
           "active": null,
-          "scope": "Same candidate assembly3d01, binaryace1, acceptancecb3d; COMMIT after follows terminal reconciliation.",
+          "scope": "Same candidate assembly3d01, binaryace1, acceptancecb3d; all three terminal actual cases qualified and critically reviewed.",
           "commit_before": {
             "status": "PASS_ALL_12_STAGES",
             "session": 11228,
@@ -75519,7 +75520,148 @@
             "resources": "23 containers stopped/PID0/noOOM; network empty; proxy/launcher absent."
           }
         },
-        "integration": "b077e8b29b9b73251918fe15bac054c6b6f04cff"
+        "integration": "b077e8b29b9b73251918fe15bac054c6b6f04cff",
+        "former_branch": "work/index-epoch2-continuation",
+        "revision": "cb3d2feced6cfa20c0b83ee57d8fbc04d8fb9f2a",
+        "publication": {
+          "revision": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+          "status": "PUSHED_REMOTE_EXACT",
+          "evidence": ".research/ci-publication-20261026/source-index-topology-qualified-20261028",
+          "retirement": "owned-branch-transition.json records verified integrated local branch retirement; both detached worktrees and ignored evidence preserved."
+        }
+      },
+      "archive_catalog_outage": {
+        "worktree": ".research/archive-catalog-outage-20261028",
+        "branch": "work/archive-catalog-outage",
+        "base": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+        "owner": "index_recovery_resume",
+        "reviewer": "index_restart_resume",
+        "status": "PASS_BOUNDED_INSTALLED_REVIEWED_MAIN_INTEGRATION",
+        "scope": "P01-T09 Step5: known catalog connection refusal before activation; retain issued attempt/input, park Archive for current lifetime, preserve Control/Sync/Index progress. No generic unknown-outcome retry or full pressure qualification.",
+        "resources": "All local native/build/assembly and four installed runs reaped. r4 session87357 exited0;16 containers stopped/PID0/noOOM/exit0; launcher/client/proxy absent, borrowednetworkempty. r2 cancellation exit4 preserved. CI watcher separate.",
+        "next": "Integrate reviewed547ddb source and actual evidence on main; qualify coherent public push. Next Step5 increment is pre-effect admission/fair shared-budget deferral.",
+        "source": "1ce8c1e2b6a98b80558a95d5f12506be789353da",
+        "acceptance": {
+          "worktree": ".research/archive-catalog-acceptance-20261028",
+          "branch": "work/archive-catalog-acceptance",
+          "base": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+          "owner": "root",
+          "status": "SOURCE_AND_ACTUAL_REVIEW_PASS",
+          "scope": "Known catalog-only refusal using existing initial-prefix gate, proxy and signed-input/Index oracles; critical review underway.",
+          "evidence": ".research/archive-catalog-acceptance-20261028/.research/archive-outage-acceptance-20261028",
+          "revision": "547ddb3792527dd3e13f65448d456cb15100e0e4",
+          "controls": 65,
+          "review_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-catalog-acceptance-final.json",
+          "review_receipt_sha256": "75316520cc33bc2925da4d54d341d8eeb66f2ca026832b19172d40f261a90f47",
+          "actual_tested_revision": "8dcce13fa74c1f859533920bb349b8274100d725",
+          "actual_review_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-actual-r4.json",
+          "actual_review_sha256": "dd8471e9f09d04c38223940d4e792d21e8cb33aea1d2397a2e780b61538d4b76"
+        },
+        "native": {
+          "evidence": ".research/initial-index-recovery-qualification-20261028/r6-1ce8c1e2",
+          "session": 64462,
+          "container": "397a37f0df72f1d028f2a4fab3689c27c8d1a20ec56e5c898fcaf31e080caba5",
+          "status": "PASS",
+          "limits": "Offline2CPU/6GiB/512PIDs;exclusive115cache;no engine",
+          "exit_code": 0,
+          "controls": {
+            "library": 111,
+            "binary": 71,
+            "total": 182
+          },
+          "receipt": ".research/initial-index-recovery-qualification-20261028/r6-1ce8c1e2/receipt.json",
+          "receipt_sha256": "cbe6838619a955191185e93dfb0534ac20c5ba03ff8b8a95df49fd94e250eecc"
+        },
+        "installed_build": {
+          "status": "PASS",
+          "session": 43373,
+          "exit_code": 0,
+          "container": "4acf5968025a39573732fb7f4df6b827a3385452262a18d497ef29231399bb74",
+          "evidence": ".research/initial-index-recovery-qualification-20261028/installed-1ce8c1e2",
+          "receipt_sha256": "597ef32952cd0eee0a9928aed0f87d215cec82dfa99bcb468c38b5a69fddac71",
+          "binary_sha256": "7328c72d30271c1ebc7373bb123f93c65e8fef7136fb5800748720933f5163f5",
+          "assembly_session": 77669,
+          "assembly_exit_code": 0,
+          "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-1ce8c1e2/candidate/candidate-manifest.json",
+          "candidate_sha256": "553b81f302958146fabf845dfa4e55b5f9e36c7f28d3799c1bd22185763109a9"
+        },
+        "installed_r1": {
+          "status": "FAIL",
+          "session": 38352,
+          "evidence": ".research/first-launch-archive-outage-r1-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-archive-outage-r1-session.json",
+          "exit_code": 1,
+          "checks": {
+            "PASS": 5,
+            "FAIL": 1,
+            "NOT_RUN": 1
+          },
+          "failure": "TimeoutError during new fixture15s authenticated role-observation subgate;76 responses Archive unavailable2/cut3, Index48 behind_source then28 verification_in_flight at old2/cut3 despite SQLIndex4. Existing client65s unchanged.",
+          "classification": "FIXTURE_TIMING_ASSUMPTION: newly introduced15s subgate undercuts existing45s physical readiness envelope/cooldown; actual sweep completion NOT_OBSERVED. OriginalFAIL retained.",
+          "receipt": ".research/first-launch-archive-outage-r1-20261028/root-terminal.json",
+          "receipt_sha256": "4ed7f8e6f1be94edeeb9604720e83ec51e756c093c97aadd586eed4f66bb9fe8",
+          "diagnosis_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-r1-readiness-envelope.json",
+          "diagnosis_sha256": "98c6596ea4896f7674cf924ff99b1c43a2542da743f3db6653a1f61c138c6a8e"
+        },
+        "installed_r2": {
+          "status": "FAIL",
+          "session": 73793,
+          "evidence": ".research/first-launch-archive-outage-r2-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-archive-outage-r2-session.json",
+          "acceptance": "1eed8e9052a159745958d1212159a90857cb3b88",
+          "exit_code": 1,
+          "classification": "FIXTURE_CATALOG_ROOT_EXPECTATION: configured path preserved, catalog identity requires terminal slash. Independent full-intent replay shows only that mismatch.",
+          "receipt": ".research/first-launch-archive-outage-r2-20261028/root-terminal.json",
+          "receipt_sha256": "6822fe7b151aba18c96973f3f418898bdd14fe588455df4f7cf0643e9f70b157",
+          "application_exit": "4 after docker stop sent during failure cleanup; exact original diagnostic initial Ingest cancelled; interrupted operation UNKNOWN, parent joins owner and Control driver. No successful owner-release record.",
+          "role_observation": "Ready Index4/cut12 after16.563951s; Archive unavailable2/cut3",
+          "diagnosis_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-r2-catalog-root.json",
+          "diagnosis_sha256": "a962f485e8b388318794089eba4b18fad921553c27b49ab9e674ca9687ff5447"
+        },
+        "installed_r3": {
+          "status": "FAIL",
+          "session": 80842,
+          "evidence": ".research/first-launch-archive-outage-r3-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-archive-outage-r3-session.json",
+          "acceptance": "c118167f83bc11eedfbc23ef8af0e355128d4982",
+          "exit_code": 1,
+          "classification": "FIXTURE_DIAGNOSTIC_ROUTE: reader copy endpoint still proxy but explicitport15432; guard refused before engine. Signed/acquisition and orderly shutdown PASS; independent census NOT_RUN.",
+          "receipt": ".research/first-launch-archive-outage-r3-20261028/root-terminal.json",
+          "receipt_sha256": "93f4a593214236f60c88da938e2c0e25eeb48b966c9cc41be36acdb9d6ad632d",
+          "diagnosis_receipt": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-archive-outage-r3-census-placement.json",
+          "diagnosis_sha256": "8be62549c5db879bb884f4a996336ee1205d8ef64b283071a73e5dd6cac9136a"
+        },
+        "installed_r4": {
+          "status": "PASS",
+          "session": 87357,
+          "evidence": ".research/first-launch-archive-outage-r4-20261028",
+          "session_receipt": ".research/initial-index-recovery-qualification-20261028/installed-archive-outage-r4-session.json",
+          "acceptance": "8dcce13fa74c1f859533920bb349b8274100d725",
+          "exit_code": 0,
+          "receipt": ".research/first-launch-archive-outage-r4-20261028/root-terminal.json",
+          "receipt_sha256": "44d2c13eb7271eb9e38b01b5c3fbdd5af4e4fb8509f15349ab4c0dc937e9262a"
+        },
+        "publication_evidence": ".research/ci-publication-20261026/source-archive-outage-20261028",
+        "publication_status": "PENDING_SOURCE_AUDIT_AND_PUSH"
+      },
+      "hosted_40736641965": {
+        "source": "61d41e5f688cad544a172b88c6a88222272d3c2e",
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965",
+        "status": "IN_PROGRESS",
+        "owner": "ci_resume_verification",
+        "evidence": ".research/ci-publication-20261026/run-40736641965-exposure",
+        "watch_session": 10632,
+        "watch_processes": [
+          {
+            "pid": 695282,
+            "start_ticks": "659108467"
+          },
+          {
+            "pid": 695283,
+            "start_ticks": "659108468"
+          }
+        ],
+        "limits": "One original watcher, no duplicate dispatch. Prepared source/native expectations do not qualify hosted outcomes."
       }
     }
   },

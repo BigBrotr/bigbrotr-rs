@@ -4,152 +4,122 @@
 Q37/Q38/Q40/Q41/Q42 and all selected requirements remain. No official release,
 package publication or production deployment is authorized.
 
-## Revision and current capability
+## Revision and demonstrated capability
 
-Public main is `17cc122842adeac646c2fa5e12fb17fedd8b40ff`; local main
-`b077e8b29b9b73251918fe15bac054c6b6f04cff` integrates the qualified finite Index
-increment and its evidence. Current procedure/task/checkpoint updates are being
-committed before one audited publication. Product, acceptance, provisioning and
-build inputs match the verified `cb3d2fec` source after the merge; unchanged
-checks remain valid. Both isolated worktrees retain clean `cb3d2fec` and their
-ignored evidence until their branch references are reconciled.
+Current source increment: `547ddb3792527dd3e13f65448d456cb15100e0e4`, on
+`work/archive-catalog-acceptance` in `.research/archive-catalog-acceptance-20261028`.
+It combines reviewed product `1ce8c1e2` and the maintained acceptance case.
+This main integration includes the checkpoint, existing evidence report and
+inventory. Public baseline before this increment
+was `61d41e5f`; inspect Git and the source-publication receipt for the enclosing
+integration/documentation revision and actual push outcome. No history rewrite.
 
-**Installed topology continuation r3: all15 stages PASS.** Signed acquisition,
-initial Index publication, ordinary history/export, topology0→1/Ingest1→2
-succession, Archive catch-up/retry, Index bridge/catch-up/retry and final ordinary
-history of both signed events work in one fresh installation. Explicit bridge5
-and three successor batches reach head8; all70 chunks/100 bounds and ten-family
-raw rows/commitments/multiplicities match independent expectations. Retry adds
-nothing and preserves original receipts, Archive, inputs, export, custody,
-table UUIDs and other consumer histories. This is finite continuation; continuous
-combined successor ownership, current-selection readiness and complete M1 remain
-open.
+**Installed Archive-only catalog refusal r4: all7 stages PASS.** The same
+Control/Sync/Index lifetime reaches source12 and physically verified Index4/cut12
+while Archive reports unavailable with its original revision2/cut3 and original
+observation age. Four original inputs, six classified events, forty Index chunks
+and ten-family typed rows/commitments match independent expectations. All82 Control
+tables obey the exact permitted transitions. Issued Archive attempt3 retains its
+original input, intent, coordinator binding and live custody; custody becomes
+acquirable after orderly shutdown. A separate read-only C API census confirms
+the unchanged two-batch/three-dictionary Archive prefix. The product never
+bypasses the unavailable catalog route.
 
-Tested identities: binary/worker `ace1b52f3fb2f57dc43624401b65e272dcb200aa`,
-assembly `3d01cc104acb9ef4fe7d442750f66e3632a6dd6e`, acceptance `cb3d2fec`.
-Candidate: `/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-ace1b52f/candidate-runtime-grant-r2/candidate-manifest.json`
-(SHA256 `3426cf2fe535c6028ccdc436d3864a9280b22aff299cc39e4eff6d812bc715ca`).
-Evidence: `.research/first-launch-index-topology-r3-20261028/root-terminal.json`
-(SHA256 `d92f4fab2eaee8ba63296a588b70960a2e313b87af8bf25fba8a366220c9cd76`).
-Root checked53 acceptance source hashes, all29 stopped/PID0/noOOM/exit0
-containers, absent launcher/client and empty borrowed network. Both SQL-copy
-sets pass3/23 cases including runtime ACL, with all82 original tables/xmins
-unchanged. Final history positively observes startup native join and exact
-released claims, then issues each request once within the original30s window.
+Tested binary/worker/assembly: `1ce8c1e2b6a98b80558a95d5f12506be789353da`.
+Tested acceptance: `8dcce13fa74c1f859533920bb349b8274100d725`.
+The later547ddb change only labels the already checked readiness result;
+original r4 output remains immutable, and no predicate or product byte changed.
+Native build/test compilation/strict Clippy and182 selected native controls PASS;
+fresh installed build/assembly PASS. Affected acceptance controls and critical
+reviews are linked by the existing
+[Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.archive_catalog_refusal`. Unchanged evidence is reused.
 
-The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) owns
-detailed evidence and original failures. Valid component evidence is unchanged:
-ace1 build/test compilation/strict Clippy and179 native controls PASS; candidate
-build/assembly/intake PASS;104 combined hook controls, seven SQL-helper controls
-and11 affected startup controls PASS. The startup controls are combined retained
-invocations, not one all-PASS invocation; original wrong-selector loader ERROR
-is retained. Critical source/SQL/hook/startup and actual r3 reviews are closed. The actual
-review receipt is `receipt-index-topology-actual-r3.json` in the existing
-reviewer directory (SHA256 `1ced76bd64b4ffa4db691e96e7580f472288e68977bc96c7a67e5009eb68ce9b`). Exact receipts remain under the existing author and
-reviewer worktrees; [inventory](../research/laboratory-inventory.json) owns custody.
+Current actual receipt:
+`.research/first-launch-archive-outage-r4-20261028/root-terminal.json`
+(SHA256 `44d2c13eb7271eb9e38b01b5c3fbdd5af4e4fb8509f15349ab4c0dc937e9262a`).
+The [inventory](../research/laboratory-inventory.json),
+`implementation_index_foundation_20261026.resume_20261028.archive_catalog_outage`,
+owns exact candidate/build locations, sessions, worktrees, reviews and failures.
 
-Preserved originals: a449 compile FAIL; topology r1 missing runtime function
-EXECUTE FAIL (fixed by exact grant `7fb98367`); topology r2 final HTTP429 FAIL,
-whose causal branch remains UNKNOWN. Fixture `cb3d2fec` adds the missing positive
-startup precondition without raising limits or retrying history. Successful r3
-does not identify the original429 branch. Earlier a99 Sync uncertainty and
-publication-before-r2 Code202/occupying-query uncertainty also remain open.
+## Preserved failures and current resources
 
-## Current action and resources
+Original r1–r3 remain FAIL: new fixture timing subgate, missing documented
+catalog-root slash and mismatched diagnostic endpoint, respectively. Each was
+diagnosed from source/retained captures; the established45s physical-readiness
+and65s client bounds, endpoint guard and data oracles remain intact. R2 also
+exited4 after failure-cleanup cancellation; its exact interrupted operation is
+UNKNOWN, and successful owner release was not observed. The later r4 PASS does
+not rewrite those results. Original controls' synthetic-topology ERRORs and
+reviewer invocation errors remain in protected evidence.
 
-**Current-revision epoch1 restart r5: all11 stages PASS.** Pending3/new4
-recovery and retry pass the40-chunk/160-metadata-row and82-table comparisons
-with their exact allowed transitions; the original signed export is preserved. Owner epochs1→2→3, origins[1,1,1,2] and
-publishers[1,1,2,2] match the independent oracle. Session22173 is reaped0;
-all22 containers stopped/PID0/noOOM/exit0, ClickHouse unpaused, launcher absent,
-borrowed network empty. Receipt:
-`.research/first-launch-index-restart-r5-20261028/root-terminal.json`
-(SHA256 `feb4fc6cfed9731f8601d648d18b8344f25b280215e401b8cdbf66685d3d3ddb`).
+All four installed sessions are reaped; r4 session87357 exited0. All owned
+containers are stopped/PID0/noOOM; r4's16 containers exited0. Launcher, signed
+client and catalog proxy are absent; borrowed network is empty. Native64462,
+build43373 and assembly77669 are reaped0, compiler cache released. Original
+inputs, databases, files, logs and worktrees remain preserved. No cleanup or
+unrelated-resource change was performed in this increment. Check space before
+the next significant allocation; current receipt records each prelaunch margin.
 
-**Publication-COMMIT before-forward r4: all12 stages PASS.** The actual fault
-remains CommitUnknown/exit4 with pending plan3; owner3 recovers and owner4's
-retry adds no work. The retained oracle verifies the four identical replayed
-dictionary rows, all82-table transitions and original export. Receipt:
-`.research/first-launch-index-commit-before-r4-20261028/root-terminal.json`
-(SHA256 `962bda8e37413d32f3fc8a29cf6b2d758e0d2adc373a12e3a93e74547451bff5`).
-Session11228 is reaped0;23 containers stopped/PID0/noOOM, proxy/launcher absent
-and borrowed network empty. Original query202 uncertainty remains unchanged.
+Root owns integration and laboratory execution. Product author is idle after
+read-only next-step analysis; actual r4 review is closed. CI watcher
+session10632 remains the only remote-run observer. Former integrated epoch2
+worktrees remain clean/detachedcb3d2fec with ignored evidence; only their fully
+merged branch references were retired. Current Archive source branches remain until root verifies this merge/publication.
 
-**Publication-COMMIT after-complete r2: all12 stages PASS.** The installed
-outcome remains CommitUnknown/exit4, while raw SQL retains published plan3 under
-owner2. Fresh owner3 preserves that receipt and publishes4; retry4 adds no work.
-The oracle confirms eight raw dictionary rows, publishers[1,1,2,3], all40 chunks,
-82-table transitions and the original signed export. Receipt:
-`.research/first-launch-index-commit-after-r2-20261028/root-terminal.json`
-(SHA256 `11aa2b89ba10055771d1109a54226c0660a314b25c7dc9672320a2fecd7e6e32`).
-Session13149 is reaped0;23 containers stopped/PID0/noOOM, proxy/launcher absent
-and borrowed network empty. Critical actual-epoch1 review is closed in
-`receipt-epoch1-current-actual-three.json` (SHA256
-`fc8b0c5ad52541819ba71fea99223f27099cad4d47a4b4800b141a49af7641d0`).
-No product rebuild was needed after fixture/provisioning corrections.
+## Next increment and remaining M1 gates
 
-Next: finish current documentation checks, audit the unpublished Git objects
-and push this coherent integrated result; observe its actual GitHub run. The
-next product increment will address P01-T09 Step5's independent dependency
-outages, starting with a focused source/contract assessment already assigned to
-the author. It is read-only, with no new implementation or engine underway.
+Next concrete implementation: P01-T09 Step5 pre-effect admission and fair
+resource deferral for one finite Sync round/Archive publication while Index
+retains grants. Temporary `Unavailable` currently becomes fatal in the shared
+initial `grant` helper, including paths after effects; do not catch and retry the
+outer operation. Reserve complete work before its first effect or defer without
+changing job/producer/attempt state, keep Control renewal/status and Index join
+polling live, and give deferred work a turn when capacity actually returns.
+Preserve the existing pre-reserved progress/ACK completion capacity. A positive
+installed overlap requires actual identified Index custody and release under a
+declared smaller envelope; a low budget or synthetic held permit alone is not
+that proof. No implementation/build for this next increment has started yet.
 
-Root owns integration and laboratory execution. Both source worktrees are
-clean at `cb3d2fec`; reviewer and CI agent are idle. No local engine/compiler, proxy,
-remote watcher or cleanup remains active. All six installed sessions are reaped;
-original containers, databases, SQL copies, inputs, logs and failures remain
-retained. Their exact terminal receipts and the inventory own resource custody.
-Earlier native/build resources remain stopped and the optional compiler cache
-released. No unrelated resource was used or deleted.
+M1 remains open for:
 
-## M1 gates and assigned follow-through
+- Step5 shared-budget overlap, bounded pending/ACK behavior and required separate
+  dependency-outage composition. The new known catalog refusal is a narrow case,
+  not automatic recovery or generic outage/capacity qualification.
+- Steps1/4/6 continuous enabled-Index successor ownership/current-selection
+  readiness. The already qualified finite topology0→1/epoch2 path remains valid;
+  it is not continuous composition.
+- Steps6/7 the outside-checkout tutorial, listener and zero-signing/publication
+  observations, truthful capability negatives and current documentation.
 
-- P01-T09 Step5: independent Archive/Index outages, truthful lag, bounded pending
-  and ACK behavior, shared-budget overlap and preservation of acknowledged data.
-  Archive failure still exits its combined loop; independent Control survival
-  must be demonstrated without merely stopping their shared PostgreSQL.
-- P01-T09 Steps4/6: finite Index topology continuation is now demonstrated;
-  continuous enabled-Index successor composition and current-selection readiness
-  remain open. Keep generation/storage/UUIDs and historical receipts, and do not
-  combine disconnected role cases into a complete composition claim.
-- P01-T09 Steps6/7: finish the outside-checkout tutorial, listener and zero-signing/
-  publication observations, truthful capability negatives and documentation from
-  the actual supported composition. Reuse already valid journey portions.
+General unknown-query resolution, genuine native TerminationUnknown/automatic
+pin recovery, handoff-COMMIT uncertainty, broader envelopes, native census,
+GC/retention and capacity remain in their existing P02/P08 tasks. Original a99
+Sync, Code202/occupying-query and topology-r2 HTTP429 causal uncertainties remain
+open in the same report; successful continuations do not explain them.
 
-General unknown-query resolution (P02-T06/P08), genuine native
-TerminationUnknown/automatic pin recovery (P02-T07/P08), handoff-COMMIT uncertainty
-and historical-snapshot retention remain required product work. They are not
-blanket M1 prerequisites unless its chosen journey relies on those guarantees;
-encountered uncertainty must fail closed and retain its obligation. Existing
-pin-release COMMIT-loss proofs remain scoped to their qualified revisions.
-
-Later P02-T05/T06/T09 owners retain family splitting/general envelope, native
-census, second-event export, durability/GC, column-TTL negative and capacity gates.
-The finite tagged successor is demonstrated; broader envelope support is not.
-October28 observations remain mapped in Q40: admission cost P02-T02 Step8/
-P02-T09 Step5; decoding/ClickHouse transport P02-T06 Step2/P02-T09 Step6;
-coordinator responsibilities P01-T05 Step5 and affected persistence closures.
-Closure needs pertinent measurements and ownership/maintenance review, not a
-presumed defect or general rewrite. Q40 consolidation stays with those owners.
+October28 observations remain assigned under Q40: admission cost to P02-T02
+Step8/P02-T09 Step5; repeated decoding/ClickHouse transport to P02-T06 Step2/
+P02-T09 Step6; coordinator responsibility/duplication to P01-T05 Step5 and the
+affected persistence closures. Closure requires pertinent measurements and
+ownership/maintenance review, or a justified unchanged choice. Stable tools and
+obsolete internal compatibility consolidate with those owners; no parallel plan.
 
 ## Hosted CI
 
-[Run40716894776](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40716894776)
-on exact public17cc is **SUCCESS: all30 selected checks PASS**,14/9/7 on Linux
-AMD64/ARM64 and macOS. Linux:1301 Rust/183 Python each; macOS:1299 Rust/178 Python
-plus five declared SKIP. Dedicated ignored probes remain NOT_RUN. Root verified
-31 evidence hashes, four provider ZIP identities/logs and all actual commands;
-all2389 source files and build/native/worker/default-profile contexts are bound.
-Scoped public-output audit found only five known nonsecret fingerprints, no new
-or operational candidates/provider alerts; this is not exhaustive absence.
+[Run40736641965](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965)
+qualifies public61d. Latest original-watcher observation: macOS SUCCESS49m19s,
+ARM64 SUCCESS57m39s, AMD64 still active. Actual logs/source/audit reconciliation
+is pending; provider job success alone is not the full acceptance result.
+Expected scope is200 Python controls (five declared Linux-only guards) and179
+previous native controls. One watcher, no duplicate dispatch. Protected evidence:
+`.research/ci-publication-20261026/run-40736641965-exposure`.
 
-The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact
-identities, outcomes, original failures/cancellations and timings. Watcher52214
-is reaped0 with both process identities absent; no duplicate run was dispatched.
-Billing is not a current block. New epoch2 source is not qualified by this run.
-
-All six retained Clippy/test pairs already share declared inputs and Cargo target/
-home directories. Logs cannot prove redundant C++ compilation or an eliminable
-cost; no cache change or speedup is claimed. Record actual native invocations and
-archive/input equivalence during an already-needed future run before changing
-reuse. Keep platform/profile/clean-install coverage and coherent publications.
+The previous [run40716894776](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40716894776)
+on17cc completed all30 selected checks; exact platform counts, original failures,
+cancellations and publication audits remain in the
+[hosted report](evidence/p01-ci-hosted-foundation-20261026.json). Billing is not a
+current block. Neither old run qualifies the new Archive increment remotely.
+All six observed Clippy/test pairs already share Cargo directories/declared
+inputs; no unmeasured cache speedup is claimed. Publish coherent changes and
+qualify the new selected hosted checks without duplicate executions.

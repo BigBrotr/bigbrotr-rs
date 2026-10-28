@@ -59,10 +59,13 @@ def accepted_profile(state):
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS
 
 
-def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12):
+def live_roles(value, state, clock_before, clock_after, *, invalidated=False, revision=4, sequence=12,
+               archive_unavailable=False):
     """Literal signed fixture frontier plus separately captured SQL identities."""
     assert type(revision) is type(sequence) is int and (revision, sequence) in ((2, 3), (4, 12))
     assert not invalidated or (revision, sequence) == (4, 12)
+    assert type(archive_unavailable) is bool
+    assert not archive_unavailable or (not invalidated and (revision, sequence) == (4, 12))
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     generation = only(state['projection_generations'])
@@ -91,15 +94,20 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
     exact(value['source']['cut'],cut)
     fresh(value['source'])
     exact(value['roles'], [dict(role=role,
-        state='degraded' if invalidated and role=='index' else 'ready' if role=='control' else 'idle',
-        reason='remote_outcome_unknown' if invalidated and role=='index' else 'current')
+        state='degraded' if (invalidated and role=='index') or (archive_unavailable and role=='archive')
+            else 'ready' if role=='control' else 'idle',
+        reason='remote_outcome_unknown' if invalidated and role=='index'
+            else 'dependency_unavailable' if archive_unavailable and role=='archive' else 'current')
         for role in ('control','ingest','sync','archive','index')])
     caps = value['capabilities']
     assert len(caps) == 4
     for cap,kind in zip(caps, ('signed_event_admission','finite_acquisition','archive_publication','index_publication')):
         assert set(cap) == {'capability','state','reason','freshness','time','published','generation','storage_incarnation'}
         assert cap['capability'] == kind
-        if invalidated and kind == 'index_publication':
+        if archive_unavailable and kind == 'archive_publication':
+            assert cap['state'] == 'unavailable' and cap['reason'] == 'dependency_unavailable'
+            timed(cap)
+        elif invalidated and kind == 'index_publication':
             # The second distinct row exceeds the declared one-row chunk.
             # Rejection precedes cursor EOF, so local join cannot establish
             # remote query cessation or return its retained engine credit.
@@ -108,7 +116,11 @@ def live_roles(value, state, clock_before, clock_after, *, invalidated=False, re
         else:
             assert cap['state'] == 'ready'
             fresh(cap)
-        exact(cap['published'],dict(revision=str(revision),cut=cut) if kind.endswith('_publication') else None)
+        published = dict(revision=str(revision), cut=cut) if kind.endswith('_publication') else None
+        if archive_unavailable and kind == 'archive_publication':
+            published = dict(revision='2', cut=dict(dataset_id=cut['dataset_id'], topology_generation='0',
+                bounds=[dict(shard_id='0', owner_epoch='1', last_complete_sequence='3')]))
+        exact(cap['published'], published)
         assert cap['generation'] == (raw(generation['generation_id'],16).hex() if kind=='index_publication' else None)
         assert cap['storage_incarnation'] == (raw(generation['storage_incarnation'],16).hex() if kind=='index_publication' else None)
 
@@ -316,11 +328,21 @@ def ordinary_input(state, science, initialization):
     batch = science['batches'][0]
     exact([batch['first'],batch['last']], [1,2])
     assert row['batch_digest'] == '\\x' + batch['archive_digest']
+    return row, retained_input_bytes(row, batch, initialization)
+
+
+def retained_input_bytes(row, batch, initialization):
+    """Literal single-epoch retained input for the four initial source batches."""
+    first, last = batch['first'], batch['last']
+    assert (first, last) in RANGES
+    assert row['ordinal'] == RANGES.index((first, last)) + 1
+    assert row['topology_generation'] == 0
+    assert row['batch_digest'] == '\\x' + batch['archive_digest']
     body = (b'BBINPUT\x01' + initialization + b''.join(raw(row[k],16) for k in
         ('attempt_id','dataset_id','catalog_id','coordinator_incarnation','worker_incarnation'))
-        + be(1) + be(0) + bytes.fromhex(batch['archive_digest']) + be(1,4)
-        + be(0,4) + be(1) + be(1) + b'\x01\x21' + be(2) + bytes.fromhex(batch['admission_digest']))
-    return row, body + hashlib.sha256(body).digest()
+        + be(row['ordinal']) + be(0) + bytes.fromhex(batch['archive_digest']) + be(1,4)
+        + be(0,4) + be(1) + be(first) + b'\x01\x21' + be(last) + bytes.fromhex(batch['admission_digest']))
+    return body + hashlib.sha256(body).digest()
 
 
 def ordinary_unchanged(before, after):

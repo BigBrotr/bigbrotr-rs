@@ -569,6 +569,14 @@ and queryable with truthful role readiness, without implicit public publishing.
   This does not claim a new native RocksDB census, Index, outage or capacity proof.
 - [ ] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded
   pending behavior while preserving already acknowledged data.
+  The maintained `p01-first-launch-archive-outage` now passes all seven installed
+  stages on product1ce8c1e2/acceptance8dcce13f: same-owner source12/Index4 continues
+  after a catalog-only refusal, while Archive retains cut3, issued attempt3,
+  original inputs and custody with truthful unavailable readiness. Independent
+  prefix census and orderly shutdown pass. The existing
+  [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) records
+  the narrow scope and original fixture failures. Automatic recovery and general
+  outage/capacity behavior remain open.
   Include shared application-budget overlap: an active Index operation must not
   turn transient Sync/Archive pressure into lost acknowledgements or starvation.
   The initial Index startup preflight covers permanent holders; smaller-envelope
