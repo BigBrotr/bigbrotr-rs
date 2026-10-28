@@ -1133,14 +1133,18 @@ installed restart r4 with acceptance `42a611ac` passes all eleven stages, includ
 same-store pending/new backlog publication, exact retry and independent signed
 history/export. The source-close oracle now requires the existing producer closing
 barrier without claiming retirement. The [owning Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-retains exact scope and original failures. General remote uncertainty/lost-COMMIT,
-topology transitions and capacity remain open; this bounded path does not close
-the whole step. The current finite epoch2 extension adds an explicit verified
+retains exact scope and original failures. Both actual publication-COMMIT-loss
+directions subsequently pass their twelve-stage installed journeys. General remote
+query uncertainty, broader topology recovery and capacity remain open; these
+bounded paths do not close the whole step. The finite epoch2 extension adds an explicit verified
 Index handoff revision before successor batches, preserving the complete old
 cut and historical plans. It reuses the retained native/SQL lineage proof and
-one current report version 2 for epoch1/epoch2. Its source/native controls and installed
-qualification remain pending until separately recorded; the earlier epoch1
-evidence does not qualify that extension.
+one current report version 2 for epoch1/epoch2. Product `ace1b52f`, assembly
+`3d01cc10` and acceptance `cb3d2fec` pass the fifteen-stage installed topology0→1
+journey, with independent rows, receipts, retry and signed history/export. The
+report's `topology_continuation` owns that evidence. Continuous enabled-Index
+successor ownership/current-selection readiness remains open at P01-T09; finite
+continuation does not qualify it.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.
@@ -1151,6 +1155,13 @@ evidence does not qualify that extension.
   wire bytes and batch latency. Close with a justified current choice or measured
   simplification, preserving typed fidelity, bounds, cancellation and ambiguous
   insert/replay semantics. Reuse existing exact-row and recovery evidence where valid.
+  The intermittent writer Code202 also needs explicit closure here and in Steps4/7:
+  establish the supported backend's HTTP-completion/query-retirement boundary and
+  demonstrate bounded, authority-preserving handling/recovery under contention.
+  Fully read HTTP bodies, QueryFinish records and later NO_REPRO runs do not prove
+  remote exclusion or erase the original failures. Preserve truthful unavailability
+  and exact data/receipt oracles; no unproven safe-retry classification or quota
+  increase. This remains open independently of a successful finite M1 journey.
 - [ ] **Step 3:** Track zero/nonzero chunks for each required family. Disabled projections
   have explicit scope; absent required sinks cannot report success.
 - [ ] **Step 4:** Persist deterministic recovery units/receipts and document exactly which

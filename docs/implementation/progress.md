@@ -1,155 +1,131 @@
 # Current execution checkpoint
 
-2026-10-28, Tux. **Goal ACTIVE; full P00–P10/M1–M5 product incomplete.**
+2026-10-29, Tux. **Goal ACTIVE; full P00–P10/M1–M5 product incomplete.**
 Q37/Q38/Q40/Q41/Q42 and all selected requirements remain. No official release,
 package publication or production deployment is authorized.
 
-## Revision and demonstrated capability
+## Integrated revision and demonstrated capability
 
-Public/main is **45ce0e7b**; local main is **e07b4621**, adding the terminal CI
-failure report. The enclosing coherent commit adds the equivalent test assertion,
-early test-target Clippy coverage, Q37/Q38 reconciliation and this checkpoint.
-The source integration
-preserves the original source commits through test-onlydfb3420b and acceptance
-231df211. Exact qualified product/build/assembly is **c0224962**; dfb only moves an
-identical cfg(test) initializer, with no assertion, selector or product change.
-Root reviewed that mechanical delta and reused the valid c022 semantic evidence.
-Publication exposure and documentation checks passed for45ce; its hosted run
-failed below. The equivalent cfg(test) assertion correction (`len() < 4096`)
-preserves the bound; production behavior is unchanged. Eight existing verifier
-controls PASS and ordinary Sol/xhigh review PASS for the correction and explicit
-`--tests` early lint scope. New actual Clippy/hosted qualification remains pending.
-Q37 now defaults to Sol/xhigh, including the coordinator; Astra/xhigh handles its
-bounded ambiguity/critical-review assignments. Latest root runtime was verified
-Astra/xhigh; no own-model setter is available here. New CI agent is verified
-Sol/xhigh. Q38 applies also to involved preexisting code/tests and setup reliability.
+Local `main` now contains **e821143e4a10b4a97fb4e43f63324c2405387cf8**, the exact
+qualified product/build/assembly/acceptance revision. Original source commits are
+preserved by merges: HTTP completion120856bd, CI report0a53b9af/fixture341ed600,
+and retained-boundary70147201. Last published main before this checkpoint is
+af411564; the coherent evidence/checkpoint commit and push are being prepared.
+Root owns local edits to this checkpoint, the laboratory inventory and02-storage;
+Sol owns the existing Index evidence report and01-foundation follow-through.
+No source correction is pending. The qualification worktree is clean at e821143e.
 
-**Installed shared-budget r2: all eight stages PASS.** At the fixed848MiB
-application payload, an actual Sync full-round refusal retains Index publication7.
-The same wait is admitted after1,004,080us and positive local join/result
-consumption. One paused82-table capture has source12/four requests, queued2 work,
-Archive2/Index2 and the actual prepared plan3. Final Archive4/Index4/cut12,
-forty committed chunks, all ten typed families/160 metadata rows, four original
-inputs and the exact353-byte signed history/export pass independent checks.
-This is one logical-credit overlap, not general capacity/RSS/disk or remote
-exclusion. The earlier baseline Archive wait is not a separate captured proof.
+**Installed finite64 retained-history boundary: all seven stages PASS.** With
+only the Archive catalog unavailable, the live same owner admits64 original
+requests, publishes Index64/cut312,640 chunk outcomes and556 exact physical rows
+across all ten families. The independently gated duplicate proof progresses
+without a65th reservation/input/native effect or ACK. After actual writer join,
+the read-only observer verifies829 exact native rows and sequence1081. Archive
+remains revision2/cut3 with original attempt3/input/custody; Control renews.
+Current readiness is truthfully unqualified: this is a historical Index cut,
+not Ready64, dynamic pending-byte hysteresis/GC or general capacity.
 
-Exact c022 native strict Clippy (production lib/bin only), product/test compilation and202 selected
-controls/32 groups PASS; fresh installed build and assembly PASS. Eight native
-verifier controls, twelve focused acceptance controls and retained structural
-replay PASS; unchanged broader checks/reviews are reused. The existing
-[Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`live_readiness.shared_budget_admission`, owns exact receipts, reviews and limits.
-Root actual receipt: `.research/first-launch-shared-budget-r2-20261028/root-terminal.json`
-(SHA256 `56ef42a668154c6a7923c631b756269a2aafd1d1bbdc0f8866635fb91ad1ff73`).
+Evidence: `.research/first-launch-retained-boundary-r4-20261029/root-terminal.json`
+(SHA256 `da210d284c18522a286aa86f5ca16f70837fd80f7e25d13a271ca38089350635`).
+All16 owned containers stopped0/PID0/noOOM/unpaused; runner, client, observer and
+proxy are absent, proxy socket closed, borrowed bridge empty, native closed and
+owner release committed. Session48479 is reaped0. No runtime Code202 appears in
+its error log; the512-row prefix trace remains diagnostic, not all-query coverage.
 
-R1 remains **FAIL_PRODUCT_SCHEDULING**: full Sync funding before even read-only
-nomination let empty polls abandon unfinished Index readiness and retain its15s
-cooldown. The correction uses bounded effect-free eligibility, retains a genuine
-nominee through waiting, revalidates claim authority, and retries physical credit
-returned by Index before discarding idle metadata. Original848MiB/prefix15s/
-client65s/query5s/operation30s bounds and all data oracles remain unchanged.
-Earlier Clippy/control/prelaunch failures remain in the linked report/inventory;
-none becomes PASS retroactively. Prior Archive-only refusal and Index restart,
-COMMIT-loss and finite topology evidence remain valid at their exact sources.
+**Affected installed shared-budget journey: all eight stages PASS.** The explicit
+extra16MiB HTTP staging reservation changes the derived test profile from848 to
+864MiB, preserving both independently calculated admission/contention margins.
+Product defaults and query/response/deadline bounds stay fixed. Actual Archive
+wait2 retains Index publication7, then resumes after753,473us and positive local
+join/result consumption. Exact four-source/Archive4/Index4/cut12 and ordinary
+signed history/export pass. This is one logical-credit overlap, not RSS/capacity
+or remote exclusion. Previous848MiB/c022 evidence remains valid only at its scope.
 
-## Resources and next action
+Evidence: `.research/first-launch-shared-budget-http-eof-r1-20261029/root-terminal.json`
+(SHA256 `720019a44f623adf67970aa7dd583b1691b6ba4fc204cd0ca78b11b0a9e80a8f`).
+All19 owned containers stopped0, runner/both clients absent, native/owner closed,
+borrowed bridge empty; session82408 is reaped0.
 
-Root owns integration and local execution. Source WT
-`.research/initial-shared-budget-20261028` is clean detached atdfb3420b; acceptance
-WT `.research/initial-shared-budget-acceptance-20261028` is clean detached
-at231df211. Their integrated branch refs and the prior CI branch were retired;
-worktrees and ignored evidence are preserved. The next author works from45ce on
-`work/retained-boundary` in `.research/initial-retained-boundary-20261028`, now
-clean at68b9ed4b:155 controls PASS and final critical review closed;
-the prior CI owner has clean e07b4621 on `work/ci-shared-budget` in
-`.research/ci-export-fixture-20261028`. Its report is integrated locally. The new
-Sol CI owner reviews/observes the next coherent push. The installed boundary remains unqualified.
-R2 session43395 is reaped0; all19 owned containers are stopped0/PID0/noOOM and
-unpaused, launcher/both clients absent, borrowed bridge empty. Native21583,
-build19627 and assembly86420 are reaped0; optional115 compiler cache is released.
-Observer-only build56767 completed PASS/reaped0 at
-`/home/tux/bigbrotr-implementation-20260917/runs/initial-native-observer-c0224962`,
-using the unchanged maintained probe builder and qualified c022 source. The
-optional 115 cache is released; no product rebuild was needed. Receipt identities are
-under `.research/initial-index-recovery-qualification-20261028/observer-c0224962`.
-Installed boundary R1 is **FAIL**, session22609 reaped1, under
-`.research/first-launch-retained-boundary-r1-20261028`. It reached Archive2/Index2/
-cut3, then current-owner ClickHouse Code202 and truthful remote_outcome_unknown
-prevented the initial15s readiness prefix. The final Docker timeout is a depleted-
-deadline symptom; the occupying query/cause remains UNKNOWN. Outage,64 requests
-and native inspection are NOT_RUN. Its `root-terminal.json` records all16 owned
-containers stopped0/PID0/noOOM/unpaused; launcher/client/proxy absent, bridge empty
-and no cleanup errors. Original failure/data remain. The existing author receipt
-`r1-causal-diagnosis.json` and prepared `prefix-attribution-recipe.json` are under
-the retained-boundary worktree's `.research/retained-boundary-author`.
-One prefix-only lifecycle attribution is prepared NOT_RUN, with five local
-controls PASS and unchanged product bounds; it stops before outage/64 work.
-No engine/compiler/local watcher is active. CI observer7963 is reaped1 and
-acquisition10431 reaped0; terminal inspection is complete, no duplicate dispatch.
-Original data, protected logs, inputs, source worktrees and failure evidence remain.
-The [inventory](../research/laboratory-inventory.json),
-`implementation_index_foundation_20261026.resume_20261028.initial_shared_budget`,
-owns resource identities. Check actual ownership/use before mutations and disk
-before significant allocation; avoid another broad inventory without a trigger.
+Exact e821143e strict Clippy including tests, product/test compilation and207
+native controls/32 groups PASS. The five added Rust controls exercise EOF gating,
+framing/error/allocation bounds, staging funding and actual hidden-connection
+cancellation/join. Compiled physical197,656,576/fullIndex235,471,022 byte requirements
+match the independent+16MiB calculation. Nineteen affected Python controls and
+unchanged valid source/oracle reviews are reused; critical source review is closed.
+Native session70479, installed build16395, assembly93774 and observer60598 are
+reaped0. The optional115 compiler cache is released; no compiler remains active.
 
-Next: push the coherent CI correction and observe its one automatic hosted run;
-execute the prepared prefix-only attribution to identify the Code202 boundary
-without raising limits or claiming remote exclusion. A NO_REPRO is not acceptance
-PASS and does not justify repeated blind attempts. Then resume qualification of
-P01-T09 Step5's existing finite64-request retained-history boundary during
-Archive-only outage: no65th reservation/input/native mutation or false ACK,
-responsive Control, exact admitted Index cut and preserved acknowledged data.
-The frozen schedule and stopped native inspection have source/control review;
-actual execution must prove the no65th-native-effect claim.
-The existing read-only native observer is now built and bound to the candidate.
-The initial readiness profile cannot certify64 plans: its mandatory250ms waits
-exceed the30s sweep even without engine latency. The boundary fixture must report
-that limit truthfully. Step5 requires exact lag, bounded retention and preserved
-data, not Ready64; keep broader readiness/cost follow-through at P02-T06/T09 unless
-a concrete earlier requirement makes it a dependency. Never extend a test timeout
-to claim the missing capability.
-Existing real initial/epoch2/epoch3 ACK and mutation-COMMIT-loss evidence is reused.
-Dynamic pending-byte hysteresis/GC and broad capacity stay at P02/P08.
+The existing [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+owns detailed scope, receipts and original failures. Build/observer/native receipts
+are under `.research/initial-index-recovery-qualification-20261028/` in
+`r11-e821143e`, `installed-e821143e` and `observer-e821143e`. Immutable candidate:
+`/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-e821143e/candidate/candidate-manifest.json`
+(SHA256 `e87933c0868f70b2688c2de3c98e80c5c2b2187e6e0cfcb03d644dc3ff489eb2`).
+The observer is in the sibling `initial-native-observer-e821143e/out/build`.
 
-M1 remains open for the Step5 bounded retained-history/outage composition;
-continuous enabled-Index successor ownership/current-selection readiness; and
-the outside-checkout tutorial, listener/zero-signing-publication observations,
-truthful capability negatives and current documentation (Steps1/4/6/7 as owned
-by the task). Finite topology0→1/epoch2 does not prove continuous composition.
-General query/native termination uncertainty, automatic recovery, broader
-capacity and retention remain at their P02/P08 owners. Original a99 Sync startup,
-Code202/occupying-query and topology-r2 HTTP429 causal uncertainties remain open.
+## Preserved uncertainties and remaining M1 work
 
-October28 follow-through remains in Q40 and existing tasks: admission cost at
-P02-T02 Step8/P02-T09 Step5; repeated decoding/ClickHouse transport at P02-T06
-Step2/P02-T09 Step6; coordinator ownership/duplication at P01-T05 Step5 and the
-affected persistence closures. Closure requires relevant measurements and
-maintenance review, or a justified unchanged choice. No parallel plan/rewrite.
+RetainedR1 andR3 remain FAIL with actual writer Code202;R2 remains a fixture
+connection-cap failure. R3's preserved query-log read captured460 successful
+Start/Finish pairs and the next query refused before start,218us after the prior
+QueryFinish. Original data and both small forensic copies remain unchanged/
+retained; the first copy's symlink-dereferencing setup failure is preserved too.
+Their locations/identities are in the [inventory](../research/laboratory-inventory.json),
+`implementation_index_foundation_20261026.resume_20261028.retained_boundary`.
+The successful EOF remedy strengthens transport completion; it does not prove
+ProcessList removal, clear arbitrary uncertainty or erase those failures.
+Original a99 Sync startup and topology-r2 HTTP429 uncertainties also remain open.
 
-## Hosted CI
+M1 still needs:
 
-[Run40764438110](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40764438110)
-is terminal FAILURE on exact45ce: **14 PASS/3 FAIL/13 NOT_RUN**. Release builds
-and Python controls pass (220 on each Linux,215 plus5 declared SKIP on macOS).
-All three strict Clippy jobs fail on the same cfg(test) expression; Rust execution,
-all202 selected native names/32 groups per platform, keyring and export are
-NOT_RUN. This is a test-target lint failure, not billing, cancellation or a runtime
-product failure. The local c022 Clippy command selected lib/bin without test
-linting. The correction and explicit `--tests` scope are ready for the next push.
-Frozen inventories are expectations, not evidence of checks passing. Full terminal
-review verified43 bound files and all outcomes; four ZIPs/27 members and38 logs
-had zero exposure candidates/provider alerts. Missing contexts remain NOT_RUN.
-Protected observations: `.research/ci-publication-20261026/run-40764438110-exposure`.
+- P01-T09 Step5's separate Index-dependency outage composition with actual lag,
+  pending/data preservation and truthful availability. The qualified Archive
+  outage and temporary CH pause do not by themselves close that whole step.
+- Continuous enabled-Index successor ownership/current-selection readiness.
+  Prior finite topology0→1/epoch2, epoch1 restart and both publication-COMMIT-loss
+  journeys remain qualified at their recorded sources, without this broader claim.
+- Steps6/7: outside-checkout tutorial/listener/zero-signing-publication observations,
+  capability negatives and documentation reconciled with observed behavior.
 
-[Run40736641965](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965)
-on61d completed all30 selected checks on Linux AMD64/ARM64/macOS.
-[Run40748115729](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40748115729)
-on165 is terminal **FAILURE**: both Linux platforms completed23 required checks
-PASS (1311 Rust/209 Python and182 native names each), while GitHub cancelled
-macOS before runner acquisition. Its seven required checks are NOT_RUN: runner0,
-no steps/artifact, provider capacity notices; no product or billing verdict.
-The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) preserves both
-runs and the scoped public-output audit: five known nonsecret fingerprints, no
-new candidates/provider alerts, with explicit limits. No earlier run qualifies
-the new integrated source. Do not dispatch a duplicate hosted run.
+Dynamic pending-byte hysteresis/GC, broad capacity/RSS/disk/ENOSPC/backup and
+query/native-termination uncertainty/automatic recovery remain at their P02/P08
+owners. They are not an indivisible prerequisite to M1. The64-plan readiness sweep
+has a31.75s scheduling lower bound against30s freshness; preserve this limitation
+at P02-T06/T09 instead of requiring Ready64 in the finite retained writer case.
+Admission cost belongs to P02-T02 Step8/P02-T09 Step5; repeated decoding/CH transport
+to P02-T06 Step2/P02-T09 Step6; coordinator responsibilities/duplication to
+P01-T05 Step5 and affected persistence closures. Closure needs relevant measures
+and maintenance review or a justified unchanged choice, not a parallel rewrite.
+
+## Hosted CI, custody and next action
+
+[Run40773449081](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40773449081)
+on exact af411564 is terminal **FAILURE:29 selected checks PASS/1 FAIL**. Both
+Linux jobs pass. macOS fails the actual refused-socket fixture before the auth
+peer is created; its native reference coverage is115PASS/1FAIL/86NOT_RUN.
+The test-only correction is integrated and passes the new Linux native run;
+macOS qualification requires the next actual hosted run. The original FAIL stays.
+All three native-input caches hit; this proves checksum-verified downloaded-byte
+reuse, not compiled dependency reuse or a measured causal speedup. Timings and
+remaining release gates are in the existing
+[hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
+Sole watcher99441 is reaped1, its processes absent; artifacts/output passed the
+existing exposure gate with zero new fingerprints. Prior45ce Clippy failures,
+provider cancellations and earlier successes retain their separate meanings.
+
+Q37 defaults to Sol/xhigh, including coordinator; Astra/xhigh handles bounded
+ambiguity/critical reviews. Latest verified root runtime is Astra/xhigh and no
+own-model setter is available. Current ordinary authors are verified Sol/xhigh;
+critical reviewer Astra/xhigh. No ritual model recheck is needed for compaction.
+Sol is finishing the existing evidence/task report; the CI Sol agent is mapping
+the next Index-outage case read-only. No engine/build/remote CI job remains active.
+
+Preserve original inputs, databases, raw logs, .research and worktrees. The inventory
+owns exact resources and custody; verify actual ownership/use before mutation.
+The obsolete825 target's1.11GiB retirement remains only a proposal; no deletion.
+
+Next: finish the coherent report/checkpoint and authorized public push, then track
+its single hosted run. Reuse the qualified e821143e candidate for the bounded
+Index-dependency outage case where product inputs stay unchanged; introduce a new
+build only if its product boundary changes. Continue the remaining M1 work and
+then all later selected phases; the goal remains incomplete and active.
