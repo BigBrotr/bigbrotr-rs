@@ -75029,9 +75029,9 @@
       "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
     },
     "resume_20261028": {
-      "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_PASS_RELEASE_FAULT_FIXTURE_PENDING",
+      "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_AND_BOTH_RELEASE_COMMIT_CASES_PASS",
       "canonical_branch": "work/short-pin-admission-wip-20261028",
-      "canonical_revision": "40f7e36f",
+      "canonical_revision": "eaac23f8a98c91ca71c60a57a996f6afead97a30",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75042,7 +75042,7 @@
         "scope": "Active export pin incorrectly counted as reader; original failure preserved. dd63e587 purpose correction source-reviewed;7pincontrolsPASS; fresh installed run pending."
       },
       "index_work": {
-        "status": "Integrated locally, not published;156nativePASS and76combinedfirst-launchcontrolsPASS; enginesNOT_RUN",
+        "status": "Integrated: native167, installed recovery r4 and exact retry PASS; detailed current evidence owned by sync_safe_points and the Index report. Earlier records below remain historical.",
         "product": "7e04f12fe91d94bfbcae6a56631c2af40f918e44",
         "acceptance": "cb3d8490c5fa63a7f7823b8fe579d1bef1a9e712",
         "verifier": "bbf2f78e87b8508daf3fbe4bfd0c67cfd07b5cb6",
@@ -75122,10 +75122,10 @@
           "worktree": ".research/index-restart-acceptance-20261027",
           "base": "40f7e36f",
           "scope": "Safe-point admission scheduling/revalidation before new persistence; retain original bounded input/grants; in-flight uncertainty unchanged",
-          "status": "Source diagnosis complete; implementation authorized, no qualified change yet"
+          "status": "Implemented as076750d5, merged and qualified; current identities/resources in sync_safe_points."
         }
       },
-      "processes": "No compiler, installed engine, proxy or remoteCI active. Restart78143FAIL and48961PASS reaped; r3/r4 respectively17/22containers allstopped exit0/PID0/noOOM, bridgeempty and ownedCHunpaused. Pinbefore78664FAIL reaped;20containersstopped, oneControl exit1 afterunarmedproxyguardexit3; proxyPIDs105701/105704absent, bridgeempty. Pinreleaseauthor alone edits isolatedfixture; root owns integration.",
+      "processes": "No owned compiler, installed engine or proxy remains active. Restart r4 and both pin-release cases reaped0, all containers stopped, proxies/launchers absent and borrowed bridge empty. Environment-gap session72962 reaped0; isolated container stopped/exit0/PID0/noOOM. Agents have saved their work and are idle; root owns main integration and the next hosted run.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75243,17 +75243,30 @@
         "worktree": ".research/pin-release-uncertainty-20261028",
         "base": "40f7e36f",
         "scope": "Maintained before-forward/after-complete reader release COMMIT fault cases with actual UPDATE1 hold and independently observed native join/custody; original export completes in separate lifetime",
-        "status": "FIRST_JOURNEY_PASS_SECOND_PROBE_WAIT_PROXY_GUARD_FAIL",
-        "source": "a241fc67",
-        "integration": "b8236c3b",
+        "status": "BOTH_INSTALLED_COMMIT_FAULT_CASES_PASS",
+        "source": "43ddb1450fc84ad464c5a946c3ae760ab13f87b9",
+        "integration": "eaac23f8",
         "root_review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
         "evidence": ".research/first-launch-index-pin-release-before-r1-20261028",
-        "next": "First-probe boundedfixture correction in existingWT; original limits unchanged; both COMMIT faults NOT_RUN",
+        "next": "No pending source work in this worktree; preserve original failures and protected review receipts. Genuine unknown native termination and automatic pin recovery remain unqualified.",
         "correction_sources": [
           "54662128",
-          "52c9d97f"
+          "52c9d97f",
+          "1bd68c2e",
+          "43ddb145"
         ],
-        "latest_attempt": ".research/first-launch-index-pin-release-before-r2-20261028"
+        "qualified_attempts": [
+          {
+            "root": ".research/first-launch-index-pin-release-before-r3-20261028",
+            "status": "PASS_ALL_9_INSTALLED_STAGES_STOPPED_RETAINED",
+            "receipt": "root-terminal.json"
+          },
+          {
+            "root": ".research/first-launch-index-pin-release-after-r1-20261028",
+            "status": "PASS_ALL_9_INSTALLED_STAGES_STOPPED_RETAINED",
+            "receipt": "root-terminal.json"
+          }
+        ]
       },
       "sync_safe_points": {
         "worktree": ".research/index-restart-acceptance-20261027",
@@ -75295,6 +75308,12 @@
           "session_id": 48961,
           "status": "REAPED0_ALL11PASS_22CONTAINERS_STOPPED"
         }
+      },
+      "environment_gap_controls": {
+        "root": ".research/initial-index-recovery-qualification-20261028/environment-gaps-eaac23f8",
+        "status": "THREE_PASS_CONTAINER_STOPPED_RETAINED",
+        "receipt": "receipt.json",
+        "source": "eaac23f8"
       }
     }
   },

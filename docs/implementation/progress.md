@@ -6,15 +6,15 @@ package publication or production deployment is authorized.
 
 ## Revision and demonstrated capability
 
-Local/public `main`: `d01830036f1567e62cc9bf9d32031a5c35d8466f`.
-Canonical development: `work/short-pin-admission-wip-20261028`, source
-`42a611ac4b96b02a5821d028a9d97bb43142221e` before this checkpoint. Original author
-ancestry is merged and retained. The development branch is publicly pushed through
-`8ecd62e87cbd630ce7cbd7af731845ff6579ed2c`; its exact remote identity and incremental
-public-input audit pass, with no new credential candidates. Receipt:
-`.research/ci-publication-20261026/source-sync-8ecd62e8-exposure/push.json`.
-Later baseline corrections and current acceptance evidence are local pending the
-next coherent publication. No public history was rewritten.
+Integration source: `eaac23f8a98c91ca71c60a57a996f6afead97a30` on
+`work/short-pin-admission-wip-20261028` before this documentation commit.
+Original author ancestry is merged; no partial source changes remain. The next
+operation fast-forwards `main` from `d01830036f1567e62cc9bf9d32031a5c35d8466f`
+to this coherent increment, audits new public inputs and pushes it for hosted CI.
+Development is already public through `100281fe`; its publication receipt is
+`.research/ci-publication-20261026/source-recovery-100281fe-exposure/push.json`.
+No public history is rewritten. Check actual Git refs/remote receipt on resume;
+this pre-publication checkpoint does not claim a future push or hosted result.
 
 **Installed Index recovery r4: all eleven stages PASS.** Product `076750d5`,
 acceptance `42a611ac`: signed acquisition and Archive continue through owned
@@ -54,51 +54,54 @@ changes;12 author and12 integrated controls plus retained-capture replay pass.
 Fresh r4 supplies the actual complete recovery evidence above. Original a99
 remains separately UNKNOWN.
 
-Release-COMMIT before-r2 passes the original signed acquisition, Index publication,
-ordinary history/export and both startup observations. It then **FAILS before the
-fault**: while waiting for the next15s probe, the unarmed Control proxy reaches its
-20000-frame ceiling (20001 observed; one connection,1045 queries,1426898 bytes).
-No selected release/COMMIT fault occurred. Cleanup protocol also remains **FAIL**
-because the proxy exited3; actual resources are nevertheless all stopped.
-Before-r1's actual failed HTTP response remains UNKNOWN. Evidence:
-`.research/first-launch-index-pin-release-before-r{1,2}-20261028`.
+**Both actual reader-release COMMIT-loss directions now PASS, nine stages each.**
+Before-forward r3 (`e674f9a1`) leaves the raw pin/claim active and unchanged;
+after-complete r1 (`eaac23f8`) commits released revision2 with matching changed
+MVCC versions. Both installed product outcomes correctly remain CommitUnknown,
+unavailable/exit4, without a claimed committed owner release. Native work is
+positively joined and custody independently observed before the COMMIT fault.
+The original signed history/export and raw scientific/file checks pass in both.
+Receipts: `.research/first-launch-index-pin-release-{before-r3,after-r1}-20261028/root-terminal.json`.
 
-The pin-release agent is correcting only the second lifetime in its existing
-`.research/pin-release-uncertainty-20261028` worktree/branch. Keep the completed
-first lifetime, but gate the fresh owner's **first** probe instead of adding an
-unnecessary completed probe and15s wait. Independently bind its active reader,
-claims, current owner/backend, actual native child and authenticated in-flight
-status; only then arm the exact UPDATE1/COMMIT fault. Preserve raw captures and
-all original proxy/3s-pin/500ms-release/30s-phase bounds. No Ready claim or relaxed
-raw SQL/MVCC/positive-join/custody predicate is allowed.
+The reviewed first-probe fixture correction `1bd68c2e` preserves the original
+completed journey and arms the fresh owner's first probe, with the same limits
+and independent owner/native/backend/pin/MVCC predicates. Original before-r1's
+failed HTTP response remains UNKNOWN; before-r2 remains pre-fault proxy-frame
+FAIL and cleanup-protocol FAIL, despite all actual resources having stopped.
+No failure is replaced by a later passing run.
 
-Next: review that bounded correction and its refusal controls, run the actual
-before-forward/after-complete cases, and integrate/publish coherent qualified work
-on main. Keep unfinished fault work separate if it requires another increment;
-Index/Sync recovery itself now has installed qualification. Do not rebuild the
-unchanged product for fixture/documentation corrections.
+Integrated acceptance controls on `eaac23f8`: original host invocation has
+168 PASS, one missing-LLVM ERROR and two missing-strace SKIP. Exactly those three
+controls then PASS separately in the pinned native image, with unchanged strict
+strace criteria. This is combined evidence, not a single 171-case PASS invocation.
+Receipt: `.research/initial-index-recovery-qualification-20261028/environment-gaps-eaac23f8/receipt.json`.
+Root independently verified its twelve evidence hashes, actual test outcomes and
+terminal resource state. No unchanged product rebuild was needed.
+
+Next: publish the coherent integration on main and observe its real GitHub run;
+in parallel select the bounded unknown-Index-query/lost-COMMIT recovery increment
+from P02-T06 and its owning contracts. Preserve full scope and independent proof.
 
 ## Resources and agents
 
-No compiler, installed engine, proxy or remote CI is active. Native33095,
-installed-build5361 and assembly37478 are reaped0; compiler containers stopped,
-launchers absent and optional115 cache released. Restart78143 is reaped1 and
-48961 reaped0; r3/r4 have17/22 stopped containers, all exit0/PID0/noOOM, positively
-unpaused ClickHouse and empty borrowed bridge. Pin-before78664 is reaped1; all20
-containers are stopped/PID0/noOOM (focused Control exit1 after proxy guard),
-proxy PIDs105701/105704 and parent81854 absent; bridge empty. Original cleanupFAIL
-is preserved separately from these terminal observations.
+All current installed runs and compiler operations have ended. Restart r4 has
+22 stopped containers; each release-COMMIT case has 20 (focused Control exit4 is
+expected, others exit0), all PID0/noOOM. Proxies and launchers are absent, and the
+borrowed bridge is empty. Environment-gap session72962 is reaped0 and its owned
+container stopped/exit0/PID0/noOOM. Earlier FAIL/cleanupFAIL remain preserved in
+the report and protected roots. Optional compiler cache is released.
 
-Only the pin-release implementation agent edits source in its isolated worktree.
-The Sync/restart and CI agents are idle after saving their work. Root owns
-integration and evidence. Preserve databases, unique inputs, original logs,
-.research and candidates. The [inventory](../research/laboratory-inventory.json)
-links the owning records; no additional cleanup was performed in this increment.
+CI, restart and pin-release agents saved their work and are idle; their source
+ancestry is integrated. Preserve their worktrees because protected review records
+remain referenced. Root owns main integration and follow-through. The
+[inventory](../research/laboratory-inventory.json) links retained data, logs,
+inputs, candidates and original failures. No additional cleanup was performed.
 
 ## M1 remaining gates and assigned follow-through
 
-- Actual reader-release COMMIT uncertainty, old published-snapshot/current-selection
-  and selected-metadata negatives. Genuine unknown native termination is distinct;
+- Old published-snapshot/current-selection and selected-metadata negatives. Both
+  reader-release COMMIT directions now pass; automatic pin recovery and genuine
+  unknown native termination remain distinct unqualified gates;
   SIGSTOP or an ordinary killed/joined worker does not qualify it.
 - Unknown Index query and lost-COMMIT resolution; topology0→1/epoch2 handoff remains
   a separate contract/runtime blocker. Same-store initial recovery/retry now passes.

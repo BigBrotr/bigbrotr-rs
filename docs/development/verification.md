@@ -458,9 +458,14 @@ Maintained controls: `cd tests/acceptance && python3 -B -m unittest
 test_first_launch_index_pin_release`; proxy controls: `python3 -B
 experiments/archive-engine/native_commit_proxy_tests.py`. These are bounded
 oracle, actual flock and loopback framing controls. Installed PostgreSQL/native
-qualification of both new fault boundaries remains **NOT_RUN** until separately
-recorded. Before-variant r1 failed its original baseline403 assertion before the
-fault stage. Its actual HTTP response was not captured and remains unknown;
+qualification on product `076750d5` now passes all nine stages separately for
+before-forward r3 (acceptance `e674f9a1`) and after-complete r1 (`eaac23f8`). The
+[Index report](../implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json)
+records the distinct active versus released raw SQL outcomes, observed native
+join/custody and expected product fail-stop; neither becomes an automatic recovery
+claim. Before-variant r2 remains a pre-fault proxy-frame/cleanup FAIL. Before-variant
+r1 failed its original baseline403 assertion before the fault stage. Its actual
+HTTP response was not captured and remains unknown;
 the source-supported startup overlap is an inference, not a measured429.
 Genuine native `TerminationUnknown`, automatic pin recovery and general service
 outages remain separate unqualified gates. Short-pin r1–r5 remain failures; the

@@ -764,11 +764,11 @@
       }
     },
     "pin_release_uncertainty": {
-      "status": "ORIGINAL_EXPORT_AND_STARTUP_PASS; PROXY_FRAME_LIMIT_FAIL_BEFORE_COMMIT_FAULT",
-      "source": "a241fc67d65f1bd659cdfce72aff94fd60c93944",
-      "integration": "7a6075a5",
+      "status": "PASS_INSTALLED_BEFORE_FORWARD_AND_AFTER_COMPLETE_COMMIT_LOSS",
+      "source": "1bd68c2eb5769f4fafbb26d7fb84d9bd975c33c2",
+      "integration": "eaac23f8a98c91ca71c60a57a996f6afead97a30",
       "scope": "Before-forward versus after-complete actual reader-release COMMIT loss, independent native-join/custody/rawSQL verification",
-      "controls": "Author48 acceptance+23 proxy; root8 integrated release controls PASS; scoped source review completed, installed defect remains",
+      "controls": "Author/root 27 affected controls PASS; full local acceptance invocation retained as 168 PASS, 1 environment ERROR and 2 environment SKIP; all three missing-environment controls subsequently PASS separately in the pinned native image. No single-invocation 171 PASS claim.",
       "before_r1": {
         "evidence_root": ".research/first-launch-index-pin-release-before-r1-20261028",
         "product_source": "8256184cd30f49020c6c0a9884e9eaec958ba461",
@@ -777,7 +777,7 @@
         "root_receipt_sha256": "afb88ca145c4eb372dea5c83de5b2f50859f27ada3305d031afbd6cdbb5f026c",
         "resources": "19 containers stopped/exit0/PID0/noOOM; owned processes joined by maintained cleanup; borrowed bridge empty; no fault proxy launched"
       },
-      "next": "Select the fresh lifetime first probe after independently completed original history/export; keep all proxy/resource/deadline ceilings and exact nativejoin/custody/rawSQL fault predicates. Bounded fixture correction in isolated author branch, then before/after real cases.",
+      "next": "Keep genuine native TerminationUnknown and automatic pin recovery explicitly unqualified; continue the remaining M1 recovery and reader-negative gates.",
       "baseline_correction": {
         "sources": [
           "54662128",
@@ -795,7 +795,82 @@
         "root_receipt_sha256": "7b8d2365cd2676a49f68204fe89bb8fc86e237cec77720c7d433315500f4b75b",
         "result": "FAIL faultstage and cleanup protocol; original ordinaryhistory/exportPASS; actualCOMMITfaultNOT_RUN",
         "diagnosis": "Unarmed Control proxy reaches20001 totalframes,1045queries/1426898B on one connection while waiting for next15s fullprobe. All20containersstopped,proxyPIDsabsent,bridgeempty; originalcleanupFAIL is not relabelled."
-      }
+      },
+      "first_probe_correction": {
+        "source": "1bd68c2eb5769f4fafbb26d7fb84d9bd975c33c2",
+        "platform_guard": "43ddb1450fc84ad464c5a946c3ae760ab13f87b9",
+        "review": ".research/short-pin-connection-admission-20261028/index-recovery-cross-review-20261028.json",
+        "scope": "Preserve the completed first history/export lifetime, arm the fresh owner first probe, independently bind active pin/claim/native worker/backend and authenticated in-flight status. Original proxy, pin, phase and release limits unchanged. Selected raw MVCC rows remain in the baseline."
+      },
+      "before_r3": {
+        "root": ".research/first-launch-index-pin-release-before-r3-20261028",
+        "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+        "acceptance": "e674f9a16736b1e855155626db2bd4551d74d2d6",
+        "result": "PASS_ALL_9_INSTALLED_STAGES",
+        "root_receipt_sha256": "f2a0f82496aa248ea795920afa2eb7963809c9c6b2cfab405e4480ea91c76e48",
+        "verdict": {
+          "status": "PASS",
+          "mode": "before-forward",
+          "product": "CommitUnknown",
+          "available": false,
+          "exit_code": 4,
+          "independently_observed_pin": "active",
+          "owner_release": "not claimed",
+          "native": "positively joined",
+          "unknown_native_termination": "NOT_RUN",
+          "recovery": "not attempted"
+        },
+        "observed": {
+          "faults": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "actual_hold_observation_ns": 320229,
+          "pin_remaining_at_gate_release_us": 1665216
+        },
+        "preservation": "Independent raw 81-table/MVCC, scientific catalog, original inputs, archive/state, scratch and exact signed history/export checks PASS.",
+        "resources": "20 containers stopped/PID0/noOOM; focused Control exit4 expected, all others exit0. Both proxies exit0/absent; parent absent; borrowed bridge empty."
+      },
+      "after_r1": {
+        "root": ".research/first-launch-index-pin-release-after-r1-20261028",
+        "product": "076750d50cb461c1d80f561ebd8f1912b504b380",
+        "acceptance": "eaac23f8a98c91ca71c60a57a996f6afead97a30",
+        "result": "PASS_ALL_9_INSTALLED_STAGES",
+        "root_receipt_sha256": "e53dbf4a0d678d5bb56dc30595d0fc6cb79b6c992d4c1c424d8c679cf0bdbae0",
+        "verdict": {
+          "status": "PASS",
+          "mode": "after-complete",
+          "product": "CommitUnknown",
+          "available": false,
+          "exit_code": 4,
+          "independently_observed_pin": "released",
+          "owner_release": "not claimed",
+          "native": "positively joined",
+          "unknown_native_termination": "NOT_RUN",
+          "recovery": "not attempted"
+        },
+        "observed": {
+          "faults": 1,
+          "server_complete": 1,
+          "client_complete": 0,
+          "actual_hold_observation_ns": 434162,
+          "pin_remaining_at_gate_release_us": 1678807
+        },
+        "preservation": "Independent raw 81-table/MVCC, scientific catalog, original inputs, archive/state, scratch and exact signed history/export checks PASS.",
+        "resources": "20 containers stopped/PID0/noOOM; focused Control exit4 expected, all others exit0. Both proxies exit0/absent; parent absent; borrowed bridge empty."
+      },
+      "integrated_controls": {
+        "source": "eaac23f8a98c91ca71c60a57a996f6afead97a30",
+        "host_log": ".research/initial-index-recovery-qualification-20261028/integrated-acceptance-controls-final.log",
+        "isolated_receipt": ".research/initial-index-recovery-qualification-20261028/environment-gaps-eaac23f8/receipt.json",
+        "isolated_receipt_sha256": "3123b838878c992f4cebb6f9fa90a96a000712b1145afd07bcd8ee86b67558ef",
+        "result": "168 host PASS plus 3 isolated PASS; original ERROR/SKIP retained",
+        "root_verification": "12 isolated evidence hashes, exact three unittest outcomes and stopped container/absent launcher independently verified."
+      },
+      "not_run": [
+        "Genuine native TerminationUnknown",
+        "Automatic pin recovery",
+        "Complete M1 and later milestones"
+      ]
     }
   }
 }

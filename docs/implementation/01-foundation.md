@@ -516,8 +516,12 @@ and queryable with truthful role readiness, without implicit public publishing.
   records 147 native controls and all eight installed stages. The same unchanged
   product with acceptance `6c2aea09` now also qualifies actual short-pin expiry
   under continuing owner renewal (r6, eight stages PASS), including joined native
-  release and unchanged science/export. Uncertain release, remaining clean-install
-  negatives and recovery stay open; their failed attempts remain in that report.
+  release and unchanged science/export. Product `076750d5` now also passes both
+  actual reader-release COMMIT-loss directions (nine installed stages each): raw
+  SQL distinguishes unchanged active custody from committed release, while both
+  product outcomes remain unavailable/CommitUnknown with positively joined native
+  work. Genuine unknown native termination, automatic pin recovery and remaining
+  clean-install negatives stay open; original failures remain in that report.
   Complete adjacent Discovery/Monitor is not a prerequisite.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
