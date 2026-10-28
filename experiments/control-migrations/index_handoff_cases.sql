@@ -77,6 +77,14 @@ SELECT pg_temp.assert_true('exact_current_seed',
     AND (SELECT count(*)=1 AND bool_and(owner_epoch=1) FROM control.index_owner_sessions)
     AND (SELECT count(*)=2 AND bool_and(state='closed') FROM control.source_streams)
     AND EXISTS(SELECT 1 FROM control.source_streams WHERE owner_epoch=2 AND last_complete_sequence=10)
+    -- ACL coverage only: this migrator fixture does not invoke as the application.
+    AND EXISTS(SELECT 1 FROM pg_proc p WHERE p.oid='control.require_index_handoff_metadata(bytea,numeric)'::regprocedure
+        AND NOT p.prosecdef AND p.proowner<>'bigbrotr_control'::regrole
+        AND has_function_privilege('bigbrotr_control',p.oid,'EXECUTE')
+        AND NOT has_function_privilege('bigbrotr_control',p.oid,'EXECUTE WITH GRANT OPTION')
+        AND NOT EXISTS(SELECT 1 FROM aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0))
+    AND NOT has_function_privilege('bigbrotr_control','control.guard_index_frontier_handoff()','EXECUTE')
+    AND NOT has_function_privilege('bigbrotr_control','control.require_typed_index_frontier()','EXECUTE')
     AND EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=41
         AND checksum=decode(:'expected_migration_41_sha256','hex')));
 INSERT INTO snapshots VALUES('seed',pg_temp.snapshot());
