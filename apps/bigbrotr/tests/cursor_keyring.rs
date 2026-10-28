@@ -261,7 +261,7 @@ fn concurrent_preparers_publish_one_identity_and_keep_no_extra_files() {
 
 #[test]
 fn modes_links_and_nonregular_files_are_refused_without_modification() {
-    use std::os::unix::fs::symlink;
+    use std::os::unix::fs::{FileTypeExt, symlink};
     let vectors = public_vectors();
     let bytes = decode(vectors["cases"][0]["hex"].as_str().unwrap());
     let dataset = vectors["dataset_id"].as_str().unwrap().parse().unwrap();
@@ -288,23 +288,14 @@ fn modes_links_and_nonregular_files_are_refused_without_modification() {
     fs::create_dir(&path).unwrap();
     assert!(Keyring::open(&reference, dataset, permit(KEYRING_RESERVATION)).is_err());
     fs::remove_dir(&path).unwrap();
-    // A Linux child can inherit another test's flock until exec, even when
-    // its descriptor is CLOEXEC. Create this fixture without spawning one.
-    #[cfg(target_os = "linux")]
-    rustix::fs::mkfifoat(
-        rustix::fs::CWD,
+    // A child can inherit another test's flock until exec, even when its
+    // descriptor is CLOEXEC. Create this fixture in-process on every platform.
+    nix::unistd::mkfifo(
         &path,
-        rustix::fs::Mode::RUSR | rustix::fs::Mode::WUSR,
+        nix::sys::stat::Mode::S_IRUSR | nix::sys::stat::Mode::S_IWUSR,
     )
     .unwrap();
-    #[cfg(not(target_os = "linux"))]
-    assert!(
-        std::process::Command::new("mkfifo")
-            .arg(&path)
-            .status()
-            .unwrap()
-            .success()
-    );
+    assert!(fs::symlink_metadata(&path).unwrap().file_type().is_fifo());
     assert!(Keyring::open(&reference, dataset, permit(KEYRING_RESERVATION)).is_err());
     fs::remove_file(&path).unwrap();
     write_private(&path, &bytes);
