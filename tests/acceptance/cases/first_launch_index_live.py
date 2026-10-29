@@ -85,6 +85,8 @@ class LiveTopologyIndexRuntime(TopologyIndexRuntime):
         clock_after=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
         self.live_successor,_=self.capture(self.restart_output,'live-ready')
         oracle.ready_roles(observations[-1],self.live_successor,clock_before,clock_after)
+        oracle.append_only_history(self.initial_index_state,self.live_successor)
+        oracle.append_only_history(self.live_bridge,self.live_successor)
         base.require(before['browser_sessions']==self.live_successor['browser_sessions'],
                      'successor role observation changed the private session')
         base.save(self.restart_output/'live-role-verdict.json',dict(status='PASS',producer='open',

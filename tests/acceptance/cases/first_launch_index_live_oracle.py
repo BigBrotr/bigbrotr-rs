@@ -22,14 +22,25 @@ def startup_index(value, generation):
         published_cut=cut(generation['dataset_id'],0),ready=False))
 
 
+def append_only_history(before, after):
+    """Retain each original publication row and its transaction identity exactly."""
+    consumer=index.only(before['consumers'],consumer_role='index')['consumer_id']
+    assert index.only(after['consumers'],consumer_role='index')['consumer_id']==consumer
+    for table in index.INDEX_TABLES:
+        assert all(row in after[table] for row in before[table]),table
+    for table in ('consumer_frontier_revisions','consumer_frontiers'):
+        historical=[r for r in before[table] if r['consumer_id']==consumer]
+        assert all(row in after[table] for row in historical),table
+
+
 def retained_bridge(before, after, root):
     """A real zero bridge precedes any epoch2 request or physical batch."""
     index.validate_metadata(before,root,complete=True)
     assert set(before)==set(after) and len(after)==82
     generation=index.only(after['projection_generations'])
     index.exact(before['projection_generations'],after['projection_generations'])
+    append_only_history(before,after)
     for table in index.INDEX_TABLES:
-        assert all(row in after[table] for row in before[table]),table
         if table not in ('index_owner_sessions','index_frontier_handoffs'):
             index.exact(before[table],after[table])
     consumer=index.only(after['consumers'],consumer_role='index')

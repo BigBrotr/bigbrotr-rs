@@ -10,6 +10,7 @@ from unittest.mock import patch
 from cases import first_launch as base
 from cases import first_launch_index_live as case
 from cases import first_launch_index_live_oracle as live
+from cases import first_launch_index_oracle as index
 from cases import first_launch_index_topology_oracle as topology
 from test_first_launch import arguments
 from test_first_launch_index import ROOT
@@ -64,6 +65,37 @@ def bridge_fixture():
 
 
 class LiveIndexTopologyControls(unittest.TestCase):
+    def test_original_and_bridge_rows_survive_later_publication_with_exact_mvcc(self):
+        initial={name:[] for name in index.INDEX_TABLES}
+        initial.update(consumers=[dict(consumer_role='index',consumer_id='index',current_revision=4)],
+            index_frontier_plans=[dict(frontier_revision=4,owner_epoch=1,owner_incarnation='old-publisher',xmin='4')],
+            projection_chunks=[dict(chunk_id='old-chunk',owner_epoch=1,owner_incarnation='old-publisher',xmin='4')],
+            consumer_frontier_revisions=[dict(consumer_id='index',frontier_revision=4,owner_epoch=1,xmin='4')],
+            consumer_frontiers=[dict(consumer_id='index',frontier_revision=4,last_complete_sequence=12,
+                attestation_digest='old-attestation',xmin='4')])
+        bridge=copy.deepcopy(initial);bridge['consumers'][0]['current_revision']=5
+        bridge['index_frontier_handoffs']=[dict(frontier_revision=5,owner_epoch=2,xmin='5')]
+        bridge['consumer_frontier_revisions'].append(dict(consumer_id='index',frontier_revision=5,owner_epoch=2,xmin='5'))
+        bridge['consumer_frontiers'].append(dict(consumer_id='index',frontier_revision=5,last_complete_sequence=0,
+            attestation_digest=None,xmin='5'))
+        live.append_only_history(initial,bridge)
+        current=copy.deepcopy(bridge);current['consumers'][0]['current_revision']=8
+        current['index_frontier_plans'].append(dict(frontier_revision=8,owner_epoch=2,xmin='8'))
+        live.append_only_history(initial,current);live.append_only_history(bridge,current)
+        mutations=(('index_frontier_plans','owner_incarnation','later-publisher'),
+            ('index_frontier_plans','xmin','8'),('projection_chunks','owner_epoch',2),
+            ('projection_chunks','xmin','8'),('consumer_frontier_revisions','xmin','8'),
+            ('consumer_frontiers','attestation_digest','changed-attestation'),
+            ('consumer_frontiers','xmin','8'))
+        for table,key,value in mutations:
+            wrong=copy.deepcopy(current);wrong[table][0][key]=value
+            with self.subTest(table=table,key=key),self.assertRaises(AssertionError):
+                live.append_only_history(bridge,wrong)
+        wrong=copy.deepcopy(bridge);wrong['consumer_frontiers'][0]['attestation_digest']='changed-at-bridge'
+        with self.assertRaises(AssertionError):live.append_only_history(initial,wrong)
+        wrong=copy.deepcopy(current);wrong['index_frontier_handoffs'][0]['xmin']='8'
+        with self.assertRaises(AssertionError):live.append_only_history(bridge,wrong)
+
     def test_startup_binds_retained_identity_and_exact_receipt_free_zero_bridge(self):
         generation=dict(dataset_id='\\x'+'11'*16,generation_id='\\x'+'33'*16,
             storage_incarnation='\\x'+'44'*16,table_identity_digest='\\x'+'55'*32)
