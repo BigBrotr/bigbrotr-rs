@@ -63,7 +63,9 @@ def initialized_effects(value):
     require(set(value) == fields and all(isinstance(value[k], list) for k in fields)
             and len(value['ingest_owner']) == len(value['producer_epochs']) == 1,
             'complete initialized Ingest effect observations required')
-    require(sorted(str(row['request_sequence']) for row in value['producer_requests']) == ['1', '2']
+    require(all(isinstance(row, dict) and {'request_sequence', 'acquisition_job_id'} <= row.keys()
+                for row in value['producer_requests'])
+            and sorted(str(row['request_sequence']) for row in value['producer_requests']) == ['1', '2']
             and all(row['acquisition_job_id'] is None for row in value['producer_requests'])
             and not value['jobs'], 'expected only the two initial dictionary requests without acquisition jobs')
 
