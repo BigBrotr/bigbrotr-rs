@@ -193,9 +193,12 @@ def ordinary_selection(state):
     return attempts
 
 
-def startup_selection(state, successor=None, *, retained_compacted_epoch2=False):
+def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
     """Only the existing initial and finite epoch2 Archive fixture selections."""
     assert type(retained_compacted_epoch2) is bool
+    assert retained_archive_schedule in ('unbound-publication-loss','uninterrupted','grouped-publication-loss')
+    assert retained_compacted_epoch2 or retained_archive_schedule=='unbound-publication-loss'
+    grouped=retained_archive_schedule=='grouped-publication-loss'
     if successor is None and not retained_compacted_epoch2:
         ordinary_selection(state)
         return 4, [(1,12)]
@@ -219,17 +222,18 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False)
     members = [r for r in state['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==revision]
     count = (64 if retained_compacted_epoch2 else 4)+selected['successor_requests']
     if retained_compacted_epoch2:
-        exact(sorted(r['ordinal'] for r in state['archive_attempts']),list(range(1,69)))
+        exact(sorted(r['ordinal'] for r in state['archive_attempts']),list(range(1,70 if grouped else 69)))
     assert len(members)==len({r['attempt_id'] for r in members})==count
     attempts = sorted((only(state['archive_attempts'],attempt_id=r['attempt_id']) for r in members),key=lambda r:r['ordinal'])
-    exact([r['ordinal'] for r in attempts],[1,2,*range(4,69)] if retained_compacted_epoch2 else list(range(1,count+1)))
+    exact([r['ordinal'] for r in attempts],([1,2,*range(5,70)] if grouped else [1,2,*range(4,69)])
+        if retained_compacted_epoch2 else list(range(1,count+1)))
     assert all(r['dataset_id']==dataset and r['catalog_id']==catalog for r in attempts)
     return revision,cuts
 
 
-def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None, retained_compacted_epoch2=False):
+def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
     assert successor is None or phase == 'setup'
-    startup_selection(state,successor,retained_compacted_epoch2=retained_compacted_epoch2)
+    startup_selection(state,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     assert control['dataset_id'] == dataset['dataset_id']
@@ -306,13 +310,13 @@ def startup_reader_pending(before, after, *, successor=None, retained_compacted_
     return pending
 
 
-def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None, retained_compacted_epoch2=False):
+def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
     """Fresh operation caches remain empty after an actually completed full probe."""
     def require(condition, message):
         assert condition, message
-    revision,cuts = startup_selection(after,successor,retained_compacted_epoch2=retained_compacted_epoch2)
+    revision,cuts = startup_selection(after,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
     topology = 0 if successor is None and not retained_compacted_epoch2 else 1
-    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2)
+    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
     catalog = only(after['consumers'],consumer_role='archive')['consumer_id']
     require(worker is None, 'startup native child remains')
     reader_ids = {row['lease_id'] for row in after['archive_snapshot_pins'] if row['purpose'] == 'reader'}

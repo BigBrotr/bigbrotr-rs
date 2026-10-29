@@ -2,6 +2,8 @@
 use bigbrotr_model::{ArchiveBatch, DatasetId, Digest256, TopologyGeneration};
 use serde::{Deserialize, Serialize};
 
+pub mod group;
+
 pub const MAX_INPUT_BYTES: usize = 32768;
 /// Bounds owned range allocation separately from the smaller encoded-input cap.
 pub const MAX_RANGES: usize = 1024;

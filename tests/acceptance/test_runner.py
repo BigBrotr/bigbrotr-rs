@@ -1,4 +1,7 @@
 """Negative controls for the real-process foundation runner."""
+import contextlib
+import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -9,12 +12,42 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER = ROOT / "tests/acceptance/run.py"
+SPEC = importlib.util.spec_from_file_location("practical_acceptance_runner", RUNNER)
+runner = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(runner)
 
 
 class RunnerControls(unittest.TestCase):
+    def test_retained_archive_schedule_is_restricted_to_closed_reclamation(self):
+        for selected in (None,'uninterrupted','unbound-publication-loss','grouped-publication-loss'):
+            with self.subTest(selected=selected),tempfile.TemporaryDirectory() as directory:
+                evidence=Path(directory)/'evidence'
+                command=['run.py','p01-first-launch-closed-reclamation','--source-root',str(ROOT),
+                    '--evidence',str(evidence)]
+                if selected is not None:command+=['--retained-archive-schedule',selected]
+                with patch.object(sys,'argv',command),patch('cases.first_launch.first_launch') as dispatch, \
+                        contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(runner.main(),2)
+                self.assertEqual(dispatch.call_args.args[0].retained_archive_schedule,selected)
+                self.assertEqual(json.loads((evidence/'result.json').read_text())['result'],'NOT_RUN')
+        for case,schedule in (('p01-first-launch','grouped-publication-loss'),
+                ('p01-first-launch-retained-boundary','unbound-publication-loss'),
+                ('p01-t01','uninterrupted'),('p01-first-launch-closed-reclamation','unknown')):
+            with self.subTest(case=case,schedule=schedule),tempfile.TemporaryDirectory() as directory:
+                evidence=Path(directory)/'evidence'
+                command=['run.py',case,'--source-root',str(ROOT),'--evidence',str(evidence),
+                    '--retained-archive-schedule',schedule]
+                with patch.object(sys,'argv',command),patch('cases.first_launch.first_launch') as dispatch, \
+                        contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit) as refused:
+                    runner.main()
+                self.assertEqual(refused.exception.code,2)
+                dispatch.assert_not_called()
+                self.assertFalse(evidence.exists())
+
     def invoke(self, binary, evidence, manifest=None, case="p01-t01", source_root=ROOT):
         extra = ["--source-manifest", str(manifest)] if manifest else []
         result = subprocess.run(

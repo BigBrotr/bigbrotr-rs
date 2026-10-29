@@ -10,7 +10,7 @@ use bigbrotr::storage::{
     rocks::store::{PendingBatch, PendingBatchHeader, PendingReadLimits},
 };
 use bigbrotr_model::{AdmissionBatch, ArchiveBatch, SourceRecordId, codec::FactDecodeLimits};
-use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
+use bigbrotr_protocol::archive_receipt::{ReceiptExpectation, group::Member};
 
 pub(super) const RECORDS: usize = 64;
 pub(super) const ENCODED: usize = 1024 * 1024;
@@ -212,6 +212,7 @@ impl Inventory {
                 coordinator.binding_digest(),
             )?;
         }
+        require_inventory_order(self.attempts.iter().map(|a| a.inputs.expectation()))?;
         // Move each nonclone custody/input owner into actual joined work. Keep
         // the vector allocation and every other input grant until it returns.
         let mut remaining = std::mem::take(&mut self.attempts).into_iter();
@@ -222,6 +223,81 @@ impl Inventory {
         while let Some(mut attempt) = remaining.next() {
             authority.refresh(owner).await?;
             authority.history(owner, recovery, proof, frontier).await?;
+            let (related, required_current) = related_group(
+                attempt.inputs.expectation(),
+                attempt.inputs.headers(),
+                current.current_cut().map(|cut| cut.receipts.as_slice()),
+                remaining
+                    .as_slice()
+                    .iter()
+                    .map(|candidate| (candidate.inputs.expectation(), candidate.inputs.headers())),
+            )?;
+            if !related.is_empty() {
+                require_group_metadata(
+                    self.attempts.len() + remaining.len() + 1,
+                    related.len() + 1,
+                    coordinator.identity().root().len(),
+                    self._metadata.request().units().data_bytes(),
+                )?;
+                let mut group = Vec::new();
+                let mut deferred = Vec::new();
+                group.try_reserve_exact(related.len() + 1).map_err(error)?;
+                deferred
+                    .try_reserve_exact(remaining.len() - related.len())
+                    .map_err(error)?;
+                group.push(attempt);
+                for (index, candidate) in remaining.enumerate() {
+                    if related.binary_search(&index).is_ok() {
+                        group.push(candidate);
+                    } else {
+                        deferred.push(candidate);
+                    }
+                }
+                remaining = deferred.into_iter();
+                let (root, app, native, reader, state_root) = (
+                    root.clone(),
+                    budget.clone(),
+                    native_budget.clone(),
+                    reader.clone(),
+                    coordinator.state_root().to_path_buf(),
+                );
+                let custody = coordinator.reader_custody().map_err(error)?;
+                let binding = coordinator.binding_digest();
+                let deadline = Instant::now() + OPERATION;
+                let group = authority
+                    .blocking(owner, deadline, move |cancel| {
+                        let mut references = Vec::new();
+                        references.try_reserve_exact(group.len()).map_err(error)?;
+                        references.extend(group.iter().map(|a| (&a.receipt, &a.inputs)));
+                        let states = native::catch_up::group::reconcile(
+                            &root,
+                            &state_root,
+                            &references,
+                            required_current,
+                            &reader,
+                            &custody,
+                            binding,
+                            WorkerBudgets {
+                                application: &app,
+                                native: &native,
+                            },
+                            deadline,
+                            cancel,
+                        )?;
+                        drop(references);
+                        if states.len() != group.len() {
+                            return Err(error("incomplete retained group result"));
+                        }
+                        for (attempt, present) in group.iter_mut().zip(states) {
+                            attempt.present = present;
+                        }
+                        Ok(group)
+                    })
+                    .await?;
+                authority.history(owner, recovery, proof, frontier).await?;
+                self.attempts.extend(group);
+                continue;
+            }
             // Selection borrows the still-retained inputs. Only one bounded
             // expected receipt is copied into the joined job, never custody.
             let replacement = retained_replacement(
@@ -282,23 +358,145 @@ impl Inventory {
             authority.history(owner, recovery, proof, frontier).await?;
             self.attempts.push(attempt);
         }
+        // Group members can surround unrelated issued items. Every original
+        // owner survives and returns in the original numeric issuance order.
+        self.attempts.sort_unstable_by_key(|a| a.receipt.ordinal);
         if let Some(current) = frontier
             .bound_current_inputs()
             .map_err(error)?
             .current_cut()
         {
-            for expected in &current.receipts {
-                if !self
-                    .attempts
+            require_current_presence(
+                self.attempts
                     .iter()
-                    .any(|a| a.present && a.inputs.expectation() == expected)
-                {
-                    return Err(error("published frontier receipt is absent or incomplete"));
-                }
-            }
+                    .map(|a| (a.inputs.expectation(), a.present)),
+                &current.receipts,
+            )?;
         }
         Ok(())
     }
+}
+
+fn require_current_presence<'a>(
+    states: impl Iterator<Item = (&'a ReceiptExpectation, bool)> + Clone,
+    current: &[ReceiptExpectation],
+) -> Result<()> {
+    for expected in current {
+        if !states
+            .clone()
+            .any(|(actual, present)| present && actual == expected)
+        {
+            return Err(error("published frontier receipt is absent or incomplete"));
+        }
+    }
+    Ok(())
+}
+
+/// Complete issued inventory must be canonical before the first lifetime effect.
+fn require_inventory_order<'a>(
+    receipts: impl Iterator<Item = &'a ReceiptExpectation> + Clone,
+) -> Result<()> {
+    let mut previous = 0;
+    for (index, receipt) in receipts.clone().enumerate() {
+        receipt.validate().map_err(error)?;
+        if index >= MAX_ATTEMPTS
+            || receipt.publication_ordinal <= previous
+            || receipts
+                .clone()
+                .take(index)
+                .any(|prior| prior.attempt_id == receipt.attempt_id)
+        {
+            return Err(error(
+                "conflicting complete retained inventory identity or order",
+            ));
+        }
+        previous = receipt.publication_ordinal;
+    }
+    Ok(())
+}
+
+fn require_group_metadata(
+    total: usize,
+    members: usize,
+    root_bytes: usize,
+    allowance: u64,
+) -> Result<()> {
+    if total > MAX_ATTEMPTS || members > total {
+        return Err(error("group inventory bounds"));
+    }
+    let bytes = total
+        .checked_mul(4 * std::mem::size_of::<Attempt>() + std::mem::size_of::<usize>())
+        .and_then(|n| n.checked_add(4 * std::mem::size_of::<Vec<Attempt>>()))
+        .and_then(|n| {
+            n.checked_add(native::catch_up::group::metadata_bytes(members, root_bytes).ok()?)
+        })
+        .ok_or_else(|| error("retained group metadata overflow"))?;
+    if u64::try_from(bytes).map_err(error)? > allowance {
+        return Err(error("retained group exceeds metadata grant"));
+    }
+    Ok(())
+}
+
+/// Candidate indices refer to the complete remaining fixed-cutoff inventory.
+/// Groups remain complete after any sole member becomes current: an exact retry
+/// cannot route later absent members through the single-replacement ordering rule.
+fn related_group<'a>(
+    original: &'a ReceiptExpectation,
+    headers: &[PendingBatchHeader],
+    current: Option<&[ReceiptExpectation]>,
+    candidates: impl Iterator<Item = (&'a ReceiptExpectation, &'a [PendingBatchHeader])> + Clone,
+) -> Result<(Vec<usize>, Option<Member>)> {
+    // Validate every candidate without interpreting the current member as a
+    // strictly later replacement. Single/unique paths retain their own checks.
+    let _ = retained_replacement(original, headers, None, candidates.clone())?;
+    let mut related = Vec::new();
+    related.try_reserve_exact(MAX_ATTEMPTS).map_err(error)?;
+    for (index, (candidate, candidate_headers)) in candidates.clone().enumerate() {
+        if candidate.batch_digest == original.batch_digest || candidate_headers == headers {
+            if related.len() == MAX_ATTEMPTS - 1 {
+                return Err(error("retained group member bound"));
+            }
+            related.push(index);
+        }
+    }
+    if related.len() < 2 {
+        related.clear();
+        return Ok((related, None));
+    }
+    let complete = std::iter::once(original).chain(candidates.map(|(candidate, _)| candidate));
+    require_inventory_order(complete.clone())?;
+    let mut required = None;
+    if let Some(current) = current {
+        for (index, selected) in current.iter().enumerate() {
+            selected.validate().map_err(error)?;
+            if selected.dataset_id != original.dataset_id
+                || current[..index].iter().any(|prior| {
+                    prior.attempt_id == selected.attempt_id
+                        || prior.publication_ordinal == selected.publication_ordinal
+                })
+            {
+                return Err(error("conflicting current retained group identity"));
+            }
+            // Include unrelated inventory members in identity collision checks.
+            // A crossed/aliased current row cannot hide behind another digest.
+            let mut matches = complete.clone().filter(|actual| {
+                actual.attempt_id == selected.attempt_id
+                    || actual.publication_ordinal == selected.publication_ordinal
+            });
+            let actual = matches.next();
+            if matches.next().is_some() || actual.is_some_and(|actual| actual != selected) {
+                return Err(error("current retained group expectation differs"));
+            }
+            if selected.batch_digest == original.batch_digest {
+                let actual =
+                    actual.ok_or_else(|| error("current retained group original input missing"))?;
+                if required.replace(Member::from_receipt(actual)).is_some() {
+                    return Err(error("ambiguous current retained group member"));
+                }
+            }
+        }
+    }
+    Ok((related, required))
 }
 
 fn retained_replacement<'a>(
@@ -359,8 +557,8 @@ fn retained_replacement<'a>(
         // Explicit current selection of A keeps its ordinary strict path.
         return Ok(None);
     }
-    // Several valid later candidates select none. Ordinary strict A observation
-    // still permits all-absent history and refuses any committed digest collision.
+    // Several valid later candidates select none here. The complete-group caller
+    // observes all of them together; this selector never chooses by ordinal.
     Ok(unbound
         .filter(|_| !multiple)
         .map(|expected| (ReplacementMode::ProvisionalUnbound, expected)))
@@ -733,5 +931,351 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn retained_group_includes_every_related_member_among_interleaved_unrelated_items() {
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let other_headers = [header(4, 6, 8)];
+        let mut unrelated = b.clone();
+        unrelated.attempt_id = [20; 16];
+        unrelated.publication_ordinal = 5;
+        unrelated.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]);
+        unrelated.input_ranges[0].first_sequence = 4;
+        unrelated.input_ranges[0].last_sequence = 6;
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 6;
+        let candidates = [
+            (&b, headers.as_slice()),
+            (&unrelated, other_headers.as_slice()),
+            (&c, headers.as_slice()),
+        ];
+        for current in [None, Some([].as_slice())] {
+            assert_eq!(
+                related_group(&a, &headers, current, candidates.into_iter()).unwrap(),
+                (vec![0, 2], None)
+            );
+        }
+        for selected in [&a, &b, &c] {
+            assert_eq!(
+                related_group(
+                    &a,
+                    &headers,
+                    Some(std::slice::from_ref(selected)),
+                    candidates.into_iter()
+                )
+                .unwrap(),
+                (vec![0, 2], Some(Member::from_receipt(selected)))
+            );
+        }
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                std::iter::once((&b, headers.as_slice()))
+            )
+            .unwrap()
+            .0
+            .is_empty()
+        );
+        assert!(
+            related_group(&a, &headers, None, std::iter::empty())
+                .unwrap()
+                .0
+                .is_empty()
+        );
+    }
+
+    #[test]
+    fn retained_group_refuses_bad_third_semantics_headers_and_duplicate_requests() {
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let changed_headers = [header(1, 3, 8)];
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 5;
+        for field in 0..10 {
+            let mut invalid = c.clone();
+            match field {
+                0 => invalid.dataset_id = [2; 16].try_into().unwrap(),
+                1 => invalid.schema_version = 2,
+                2 => invalid.topology_generation = bigbrotr_model::TopologyGeneration::new(1),
+                3 => invalid.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]),
+                4 => invalid.record_count = 4,
+                5 => {
+                    invalid.input_ranges[0].first_sequence = 2;
+                    invalid.input_ranges[0].last_sequence = 4;
+                }
+                6 => invalid.attempt_id = a.attempt_id,
+                7 => invalid.attempt_id = b.attempt_id,
+                8 => invalid.publication_ordinal = b.publication_ordinal,
+                9 => invalid.publication_ordinal = a.publication_ordinal,
+                _ => unreachable!(),
+            }
+            assert!(
+                related_group(
+                    &a,
+                    &headers,
+                    None,
+                    [(&b, headers.as_slice()), (&invalid, headers.as_slice())].into_iter()
+                )
+                .is_err(),
+                "{field}"
+            );
+        }
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                [(&b, headers.as_slice()), (&c, changed_headers.as_slice())].into_iter()
+            )
+            .is_err()
+        );
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                [(&b, headers.as_slice()); 2].into_iter()
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn retained_group_inventory_order_current_barrier_and_metadata_remain_bounded() {
+        let (a, b) = receipts();
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 5;
+        assert!(require_inventory_order([&a, &b, &c].into_iter()).is_ok());
+        for invalid in [[&a, &c, &b], [&a, &b, &b], [&a, &a, &c]] {
+            assert!(require_inventory_order(invalid.into_iter()).is_err());
+        }
+        assert!(
+            require_current_presence(
+                [(&a, false), (&b, false), (&c, true)].into_iter(),
+                std::slice::from_ref(&c)
+            )
+            .is_ok()
+        );
+        for current in [&a, &b] {
+            assert!(
+                require_current_presence(
+                    [(&a, false), (&b, false), (&c, true)].into_iter(),
+                    std::slice::from_ref(current)
+                )
+                .is_err()
+            );
+        }
+        assert!(
+            require_current_presence([(&a, true)].into_iter(), std::slice::from_ref(&c)).is_err()
+        );
+        assert!(require_group_metadata(128, 3, 8, MIB).is_ok());
+        assert!(require_group_metadata(129, 3, 8, MIB).is_err());
+        assert!(require_group_metadata(128, 129, 8, MIB).is_err());
+        assert!(require_group_metadata(128, 128, usize::MAX, MIB).is_err());
+        assert!(require_group_metadata(128, 3, 8, 1).is_err());
+    }
+
+    #[test]
+    fn retained_group_sole_member_publication_composes_with_exact_current_retry() {
+        use bigbrotr::storage::postgres::catalog_guard::Resolution::Sealed;
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let other_headers = [header(4, 6, 8)];
+        let mut unrelated = b.clone();
+        unrelated.attempt_id = [20; 16];
+        unrelated.publication_ordinal = 5;
+        unrelated.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]);
+        unrelated.input_ranges[0].first_sequence = 4;
+        unrelated.input_ranges[0].last_sequence = 6;
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 6;
+        let candidates = [
+            (&b, headers.as_slice()),
+            (&unrelated, other_headers.as_slice()),
+            (&c, headers.as_slice()),
+        ];
+        let complete = [&a, &b, &c];
+        let members = complete.map(Member::from_receipt);
+        let read = bigbrotr_protocol::archive_receipt::group::GroupRead {
+            common: &a,
+            members: &members,
+        };
+        let deadline = Instant::now() + OPERATION;
+        let cancel = AtomicBool::new(false);
+        let resolutions = [Sealed {
+            disabled_current: false,
+        }; 3];
+        for (winner, expected) in [
+            (0, [true, false, false]),
+            (1, [false, true, false]),
+            (2, [false, false, true]),
+        ] {
+            let (indices, required) =
+                related_group(&a, &headers, None, candidates.into_iter()).unwrap();
+            assert_eq!(indices, [0, 2]);
+            assert_eq!(required, None);
+            let mut published = [false; 3];
+            native::catch_up::group::observe_resolved(
+                &resolutions,
+                &mut published,
+                None,
+                deadline,
+                &cancel,
+                |_, _| Ok(Some(winner)),
+                |_, _, _| Ok(()),
+            )
+            .unwrap();
+            assert_eq!(published, expected);
+            // Construct the next current selection from the actual first result.
+            // The literal sole-member outcomes above remain independent oracles.
+            let selected = complete
+                .iter()
+                .zip(published)
+                .find_map(|(receipt, present)| present.then_some(*receipt))
+                .unwrap();
+            let mut current = [unrelated.clone(), selected.clone()];
+            current.sort_unstable_by_key(|receipt| receipt.publication_ordinal);
+            let (indices, required) =
+                related_group(&a, &headers, Some(&current), candidates.into_iter()).unwrap();
+            assert_eq!(indices, [0, 2]);
+            assert_eq!(required, Some(members[winner]));
+            let required = required.map(|member| read.member_index(member).unwrap());
+            let mut retried = [false; 3];
+            native::catch_up::group::observe_resolved(
+                &resolutions,
+                &mut retried,
+                required,
+                deadline,
+                &cancel,
+                |actual, flag| {
+                    assert_eq!(actual, deadline);
+                    assert!(std::ptr::eq(flag, &cancel));
+                    Ok(Some(winner))
+                },
+                |index, actual, flag| {
+                    assert_eq!(index, winner);
+                    assert_eq!(actual, deadline);
+                    assert!(std::ptr::eq(flag, &cancel));
+                    Ok(())
+                },
+            )
+            .unwrap();
+            assert_eq!(retried, expected);
+            let delivered = [
+                (&a, retried[0]),
+                (&b, retried[1]),
+                (&unrelated, true),
+                (&c, retried[2]),
+            ];
+            assert_eq!(
+                delivered.map(|(receipt, _)| receipt.publication_ordinal),
+                [3, 4, 5, 6]
+            );
+            require_current_presence(delivered.into_iter(), &current).unwrap();
+        }
+    }
+
+    #[test]
+    fn retained_group_current_refuses_missing_crossed_ambiguous_and_changed_expectations() {
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let other_headers = [header(4, 6, 8)];
+        let mut unrelated = b.clone();
+        unrelated.attempt_id = [20; 16];
+        unrelated.publication_ordinal = 5;
+        unrelated.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]);
+        unrelated.input_ranges[0].first_sequence = 4;
+        unrelated.input_ranges[0].last_sequence = 6;
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 6;
+        let candidates = [
+            (&b, headers.as_slice()),
+            (&unrelated, other_headers.as_slice()),
+            (&c, headers.as_slice()),
+        ];
+        for field in 0..10 {
+            let mut invalid = b.clone();
+            match field {
+                0 => invalid.dataset_id = [2; 16].try_into().unwrap(),
+                1 => invalid.schema_version = 2,
+                2 => invalid.topology_generation = bigbrotr_model::TopologyGeneration::new(1),
+                3 => invalid.batch_digest = bigbrotr_model::Digest256::from_bytes([7; 32]),
+                4 => {
+                    invalid.record_count = 4;
+                    invalid.input_ranges[0].last_sequence = 4;
+                }
+                5 => {
+                    invalid.input_ranges[0].first_sequence = 2;
+                    invalid.input_ranges[0].last_sequence = 4;
+                }
+                6 => {
+                    invalid.attempt_id = [30; 16];
+                    invalid.publication_ordinal = 7;
+                }
+                7 => invalid.attempt_id = a.attempt_id,
+                8 => invalid.publication_ordinal = unrelated.publication_ordinal,
+                9 => {
+                    invalid = unrelated.clone();
+                    invalid.batch_digest = bigbrotr_model::Digest256::from_bytes([7; 32]);
+                }
+                _ => unreachable!(),
+            }
+            assert!(
+                related_group(&a, &headers, Some(&[invalid]), candidates.into_iter()).is_err(),
+                "{field}"
+            );
+        }
+        for current in [
+            vec![a.clone(), b.clone()],
+            vec![b.clone(), b.clone()],
+            vec![b.clone(), c.clone()],
+        ] {
+            assert!(related_group(&a, &headers, Some(&current), candidates.into_iter()).is_err());
+        }
+        let changed_headers = [header(1, 3, 8)];
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                Some(std::slice::from_ref(&b)),
+                [(&b, headers.as_slice()), (&c, changed_headers.as_slice())].into_iter()
+            )
+            .is_err()
+        );
+        // A missing complete group member cannot be supplied by current metadata.
+        let mut other = c.clone();
+        other.attempt_id = [11; 16];
+        other.publication_ordinal = 7;
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                Some(std::slice::from_ref(&c)),
+                [(&b, headers.as_slice()), (&other, headers.as_slice())].into_iter()
+            )
+            .is_err()
+        );
+        for current in [None, Some(std::slice::from_ref(&b))] {
+            assert!(
+                related_group(
+                    &a,
+                    &headers,
+                    current,
+                    std::iter::once((&b, headers.as_slice()))
+                )
+                .unwrap()
+                .0
+                .is_empty()
+            );
+        }
     }
 }

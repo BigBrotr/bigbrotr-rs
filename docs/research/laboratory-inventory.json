@@ -76975,7 +76975,7 @@
           "current_state": "Older entries naming these branch refs describe historical author state; receipt exact detached HEAD map is current. Only those merged refs retired; pending branches untouched."
         },
         "grouped_replacement_recovery": {
-          "status": "GROUPED_INSTALLED_CASE_59110_RUNNING_NO_RESULT_YET",
+          "status": "QUALIFIED_GROUPED_INSTALLED_AND_TUTORIAL_PASS_INTEGRATION_PENDING",
           "base": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
           "product_author": {
             "worktree": ".research/grouped-retained-recovery-20261029",
@@ -77067,7 +77067,7 @@
             "revision": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
             "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
             "harness": "35169b8e2a2f6c12ab4e447dc19496924fbd657f",
-            "scope": "Clean merged qualification inputs; literal source-profile rebind,1 focused controlPASS; not an installed result"
+            "scope": "Clean frozen qualification inputs; actual grouped11/11 and tutorial7/7 separately executed. Author worktrees/logs/failures retained."
           },
           "observer": {
             "status": "REAPED_ZERO_AUDITED_PASS",
@@ -77095,7 +77095,7 @@
             "scope": "Unsigned local private-format candidate, no official release/public package/production deployment"
           },
           "installed_case": {
-            "status": "RUNNING",
+            "status": "REAPED_ZERO_TERMINAL_AUDITED",
             "session": 59110,
             "runner_pid": 1355217,
             "runner_start_ticks": 3879027,
@@ -77108,7 +77108,52 @@
             "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
             "borrowed_network": "bigbrotr-m1-0f80280_default",
             "preflight": "Exact bridgeID/empty and >67GiB checks passed; relative preflight-record write refused after predicates, absolute record corrected without case restart. Exact original free value unavailable; case own inputs/resources retain authoritative checks.",
-            "resources": "Case resources.json owns actual live containers/proxies/engines; root only, foreign workloads untouched"
+            "resources": "61 owned containers stopped/noOOM/PID0;29 recorded PIDs and7833 joined commands absent; both grouped proxies separately audited. Borrowed bridge retained empty. Data/logs/results and foreign workloads untouched.",
+            "exit_code": 0,
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/result.json",
+              "sha256": "285d6a5e8bc63e21b29e113a5888935664cd5cedc4a1e37dbdb610c2575f2a91"
+            },
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/root-terminal.json",
+              "sha256": "7af6262f56b6587a889945ae93a9e9b66f102aae779031c435fcad0fa20ebd23"
+            },
+            "grouped_proxy_terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/grouped-proxy-terminal-audit.json",
+              "sha256": "f0f5d3755cbb0786e907b27b57444bb60ae2d26f9c0fcfdc5ac2e57c2b6ee02c"
+            }
+          },
+          "tutorial": {
+            "status": "REAPED_ZERO_TERMINAL_AUDITED_WITH_EXPLICIT_RUNNER_IDENTITY_GAP",
+            "session": 89511,
+            "exit_code": 0,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1",
+            "session_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1-session.json",
+            "runner_pid": null,
+            "runner_start_ticks": null,
+            "runner_group_observation": "NOT_OBSERVED",
+            "termination": "Original tools.write_stdin89511 reaped0; exact observation pinned by independent6ac8 review. No historical PID reconstructed.",
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1/root-terminal.json",
+              "sha256": "64d475c05ac006d750a1e836d21150824664676e7bc85c8561bbefccfcc3dc99"
+            },
+            "resources": "18 containers stopped/noOOM/PID0;2 client and781 joined command PIDs absent, known child groups/path scan and borrowed bridge empty. Actual7/7 PASS.",
+            "identity_review": {
+              "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/tutorial-terminal-identity-review.json",
+              "sha256": "6ac8c65c7c07e57cf744b2b2eb9cdb6895b1c1b68d232181b6c120ce4db80b8d"
+            },
+            "auditor": {
+              "path": ".research/initial-index-recovery-qualification-20261028/verify-acceptance-terminal-tool-reap.py",
+              "sha256": "c3bea39653580f3b8998f4a8d230d55d59726516e40c67c67f560dfc2c2be13a"
+            },
+            "pre_binding_terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1/root-terminal-pre-tool-binding.json",
+              "sha256": "0af45d791f08799edf1ca7f909d985e4517295678aa331d9ff4fad5f089e7d38"
+            },
+            "terminal_code_review": {
+              "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/tutorial-terminal-code-review.json",
+              "sha256": "9c93f12315361dd34f4438a2cfb140f19bb53ae7e413b9ccfe456902860f467c"
+            }
           }
         },
         "retained_index_clone_object_dedup": {

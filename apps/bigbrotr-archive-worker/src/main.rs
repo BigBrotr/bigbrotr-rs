@@ -46,6 +46,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let query_event = arguments.len() == 8 && arguments[1] == "query-event";
     let read_visibility = arguments.len() == 7 && arguments[1] == "read-visibility";
     let inspect_receipt = arguments.len() == 8 && arguments[1] == "inspect-receipt";
+    let inspect_receipt_group = arguments.len() == 8 && arguments[1] == "inspect-receipt-group";
     let inspect_cut = arguments.len() == 9 && arguments[1] == "inspect-cut";
     let inspect_membership = arguments.len() == 9 && arguments[1] == "inspect-membership";
     if !inspect_engine
@@ -55,13 +56,14 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         && !initialize_reserved
         && !publish_batch
         && !inspect_receipt
+        && !inspect_receipt_group
         && !read_event
         && !query_event
         && !read_visibility
         && !inspect_membership
         && !inspect_cut
     {
-        return Err("usage: bigbrotr-archive-worker {read-visibility BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-cut BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | inspect-membership BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | {read-event,query-event} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_ROW_BYTES | initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+        return Err("usage: bigbrotr-archive-worker {read-visibility BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-cut BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | inspect-membership BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS MAX_FACTS | {read-event,query-event} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_ROW_BYTES | initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | {inspect-receipt,inspect-receipt-group} BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -100,6 +102,10 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         let request = bigbrotr_archive_worker::event::EventRequest::read(std::io::stdin().lock())?;
         let observation = engine.read_event(&request, usize::try_from(number(7)?)?)?;
         serde_json::to_value(observation)?
+    } else if inspect_receipt_group {
+        let request =
+            bigbrotr_archive_worker::receipt::group::GroupRequest::read(std::io::stdin().lock())?;
+        serde_json::to_value(engine.inspect_receipt_group(&request, usize::try_from(number(7)?)?)?)?
     } else if inspect_receipt {
         let request =
             bigbrotr_archive_worker::receipt::ReceiptRequest::read(std::io::stdin().lock())?;

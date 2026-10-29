@@ -292,6 +292,84 @@ fn cancelled_transport_is_destroyed_before_its_custody_descriptor() {
 }
 
 #[test]
+fn grouped_erased_transport_retains_every_same_lock_until_transport_destruction() {
+    use crate::storage::postgres::transport::Driver;
+    use std::{
+        pin::Pin,
+        sync::{
+            Arc,
+            atomic::{AtomicBool, Ordering},
+        },
+        task::{Context, Poll, Waker},
+    };
+    struct Transport {
+        members: Vec<(std::path::PathBuf, ArchiveAttemptRequest, CatalogIdentity)>,
+        all_locked_at_drop: Arc<AtomicBool>,
+    }
+    impl Future for Transport {
+        type Output = Result<(), tokio_postgres::Error>;
+        fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<Self::Output> {
+            Poll::Pending
+        }
+    }
+    impl Drop for Transport {
+        fn drop(&mut self) {
+            self.all_locked_at_drop.store(
+                self.members.iter().all(|(root, request, identity)| {
+                    matches!(
+                        LocalAttempt::recover_for_boot(root, request, identity, BOOT),
+                        Err(LifetimeError::Occupied)
+                    )
+                }),
+                Ordering::SeqCst,
+            );
+        }
+    }
+    for polled in [false, true] {
+        let mut roots = Vec::new();
+        let mut members = Vec::new();
+        let mut locals = Vec::new();
+        for _ in 0..3 {
+            let (root, request, identity) = fixture();
+            let path = root.path().canonicalize().unwrap();
+            drop(LocalAttempt::create_for_boot(&path, &request, &identity, BOOT).unwrap());
+            locals.push(recover_released(&path, &request, &identity));
+            members.push((path, request, identity));
+            roots.push(root);
+        }
+        let all_locked_at_drop = Arc::new(AtomicBool::new(false));
+        let mut driver: Driver = Box::pin(Transport {
+            members: members.clone(),
+            all_locked_at_drop: all_locked_at_drop.clone(),
+        });
+        for local in &locals {
+            driver = Box::pin(local.retain_catalog_connection(driver).unwrap());
+        }
+        drop(locals);
+        for (root, request, identity) in &members {
+            assert!(matches!(
+                LocalAttempt::recover_for_boot(root, request, identity, BOOT),
+                Err(LifetimeError::Occupied)
+            ));
+        }
+        if polled {
+            assert!(
+                driver
+                    .as_mut()
+                    .poll(&mut Context::from_waker(Waker::noop()))
+                    .is_pending()
+            );
+        }
+        drop(driver);
+        assert!(all_locked_at_drop.load(Ordering::SeqCst));
+        for (root, request, identity) in &members {
+            drop(recover_released(root, request, identity));
+        }
+        drop(roots);
+    }
+}
+
+#[test]
 fn competing_creators_keep_one_immutable_journal_and_one_lock_owner() {
     let (root, request, identity) = fixture();
     let root = root.path().canonicalize().unwrap();

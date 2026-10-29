@@ -13,6 +13,8 @@ use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::{fmt, io::Read};
 
+pub mod group;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ReceiptError {
     InvalidInput,

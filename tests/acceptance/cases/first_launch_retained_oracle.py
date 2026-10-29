@@ -258,6 +258,10 @@ def control_only(before,after,*,claim='released',backend_pid=None):
     if owners:
         prior=max((r for r in before['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
         owner=owners[0]
+        changed={'epoch','role_instance_id','process_incarnation','acquired_at_us','lease_expires_at_us',
+            'state','released_at_us','exclusion_method','exclusion_digest','control_backend_pid','control_backend_start','xmin'}
+        index.exact({k:v for k,v in owner.items() if k not in changed},
+            {k:v for k,v in prior.items() if k not in changed})
         assert owner['resource_id']==prior['resource_id'] and owner['dataset_id']==prior['dataset_id']
         assert owner['epoch']==prior['epoch']+1
         assert owner['process_incarnation'] not in {r['process_incarnation'] for r in before['owner_epochs']}
@@ -322,6 +326,103 @@ def reclamation_floor(state,science):
     assert producer['closure_digest']=='\\x'+digest
     return (b'\x03\x31'+index.be(64)*3+b'\x01'+hashlib.sha256(science['manifest']).digest()+index.be(312)
         +bytes.fromhex(digest)+index.be(65)+index.raw(head['checkpoint_digest'],32))
+
+
+def compacted_history_control(before,after,startup):
+    """One signed history login/logout, completed startup and two joined readers."""
+    from cases.first_launch_index_restart_oracle import unchanged_except
+    from installed_progress_replay import xid
+    assert startup is not None
+    readers=('snapshot_leases','archive_snapshot_pins','retention_claims')
+    changed={'browser_sessions','login_buckets','management_audit',*readers}
+    for state in (startup,after):
+        unchanged_except(before,state,changed|{'owner_epochs','role_instances'})
+    def authority_view(state):return dict(state,**{table:before[table] for table in changed})
+    active=control_only(before,authority_view(startup),claim='failed')
+    owner=control_only(before,authority_view(after))
+    allowed={'state','released_at_us','exclusion_method','exclusion_digest','lease_expires_at_us','xmin'}
+    index.exact({k:v for k,v in active.items() if k not in allowed},{k:v for k,v in owner.items() if k not in allowed})
+    assert active['lease_expires_at_us']<=owner['lease_expires_at_us']
+    role=index.only(startup['role_instances'],role_instance_id=owner['role_instance_id'])
+    ended_role=index.only(after['role_instances'],role_instance_id=owner['role_instance_id'])
+    index.exact(ended_role,dict(role,retired_at_us=ended_role['retired_at_us'],xmin=ended_role['xmin']))
+    old_session=index.only(before['browser_sessions']);session=index.only(startup['browser_sessions'])
+    final_session=index.only(after['browser_sessions'])
+    account=index.only(before['local_accounts'])
+    assert old_session['revoked_at_us'] is not None and session['revoked_at_us'] is None
+    assert old_session['session_id']!=session['session_id']
+    assert session['principal_id']==old_session['principal_id']==account['principal_id']
+    assert session['dataset_id']==owner['dataset_id']
+    assert owner['acquired_at_us']<=session['issued_at_us']<=session['last_seen_at_us']<=final_session['last_seen_at_us']<=final_session['revoked_at_us']<=owner['released_at_us']
+    source.clock(session['last_seen_at_us'],session['issued_at_us'],active['lease_expires_at_us']-1)
+    assert session['credential_revision']==account['credential_revision'] and session['authentication_revision']==account['authentication_revision']
+    index.exact(final_session,dict(session,last_seen_at_us=final_session['last_seen_at_us'],
+        idle_expires_at_us=min(session['expires_at_us'],final_session['last_seen_at_us']+session['idle_window_us']),
+        revoked_at_us=final_session['revoked_at_us'],xmin=final_session['xmin']))
+    for observed in (session,final_session):
+        source.clock(observed['idle_window_us'],1,2**63-1)
+        assert observed['idle_expires_at_us']==min(observed['expires_at_us'],observed['last_seen_at_us']+observed['idle_window_us'])
+        assert observed['last_seen_at_us']<observed['idle_expires_at_us']<=observed['expires_at_us']
+    # The mandatory pre-setup GET /me is the first touch after login. It cannot
+    # revive either initial expiry, and its committed UPDATE has its own xmin
+    # even when the server's microsecond timestamps happen to coincide.
+    assert session['last_seen_at_us']<min(session['expires_at_us'],session['issued_at_us']+session['idle_window_us'])
+    known_xmins={r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
+    assert xid(session['xmin']) not in known_xmins and xid(final_session['xmin']) not in known_xmins
+    index.exact(after['login_buckets'],startup['login_buckets'])
+    assert len(before['login_buckets'])==len(startup['login_buckets'])==2
+    for kind,(bucket,maximum) in source.login_buckets().items():
+        old=index.only(before['login_buckets'],kind=kind);row=index.only(startup['login_buckets'],kind=kind)
+        assert old['bucket']==bucket and old['dataset_id']==owner['dataset_id']
+        index.exact(row,dict(old,attempts=row['attempts'],window_started_at_us=row['window_started_at_us'],xmin=row['xmin']))
+        if row['window_started_at_us']==old['window_started_at_us']:
+            assert row['attempts']==old['attempts']+1<=maximum
+        else:
+            assert row['attempts']==1 and row['window_started_at_us']-old['window_started_at_us']>=60_000_000
+            source.clock(row['window_started_at_us'],owner['acquired_at_us'],session['issued_at_us'])
+    for previous,current,action in ((before,startup,'browser.session.issue'),(startup,after,'browser.session.revoke')):
+        old=previous['management_audit'];rows=current['management_audit']
+        assert all(r in rows for r in old) and len(rows)==len(old)+1
+        audit,=[r for r in rows if r not in old]
+        assert any(index.raw(audit['audit_id'],16)) and audit['audit_id'] not in {r['audit_id'] for r in old}
+        index.exact(audit,dict(audit_id=audit['audit_id'],dataset_id=owner['dataset_id'],actor_id=account['principal_id'],
+            action=action,outcome='accepted',created_at_us=audit['created_at_us'],config_revision=1,policy_revision=1,
+            subject_id=session['session_id'],reason=None,requester_database_role=None,requester_os_uid=None,xmin=audit['xmin']))
+        if action=='browser.session.issue':
+            source.clock(audit['created_at_us'],session['issued_at_us'],session['last_seen_at_us'])
+            assert xid(audit['xmin']) not in known_xmins
+            # Fresh fixed-profile PostgreSQL has no xid wrap: login completes
+            # before /me begins its separate transaction, then logout follows.
+            assert int(xid(audit['xmin']))<int(xid(session['xmin']))<int(xid(final_session['xmin']))
+        else:
+            source.clock(audit['created_at_us'],final_session['revoked_at_us'],owner['released_at_us'])
+            assert audit['xmin']==final_session['xmin']
+    prior={r['lease_id'] for r in before['snapshot_leases']}
+    initial={r['lease_id'] for r in startup['snapshot_leases']}-prior
+    final={r['lease_id'] for r in after['snapshot_leases']}-prior
+    assert 1<=len(initial)<=2 and len(final-initial)==2
+    catalog=index.only(after['consumers'],consumer_role='archive')['consumer_id']
+    for state,new_ids in ((startup,initial),(after,final)):
+        for table in readers:
+            index.exact([r for r in state[table] if r['lease_id'] not in new_ids],before[table])
+            assert len([r for r in state[table] if r['lease_id'] in new_ids])==len(new_ids)*(2 if table=='retention_claims' else 1)
+        for ident in new_ids:
+            lease=index.only(state['snapshot_leases'],lease_id=ident);pin=index.only(state['archive_snapshot_pins'],lease_id=ident)
+            claims=sorted((r for r in state['retention_claims'] if r['lease_id']==ident),key=lambda r:r['owner_epoch'])
+            index.exact([lease[k] for k in ('dataset_id','consumer_id','frontier_revision','topology_generation',
+                'holder_kind','holder_job_id','holder_role_instance_id','holder_role','holder_incarnation','archive_pin_protocol',
+                'state','lease_revision','release_reason')],
+                [owner['dataset_id'],catalog,4,1,'role_instance',None,owner['role_instance_id'],'control',owner['process_incarnation'],1,'released',2,'reader_joined'])
+            assert owner['acquired_at_us']<=lease['acquired_at_us']<=lease['released_at_us']<=owner['released_at_us']
+            assert lease['updated_at_us']==lease['released_at_us'] and lease['acquired_at_us']<lease['expires_at_us']
+            index.exact([pin[k] for k in ('dataset_id','consumer_id','frontier_revision','purpose','issuer_role',
+                'issuer_resource','issuer_epoch','issuer_incarnation')],
+                [owner['dataset_id'],catalog,4,'reader','control',owner['resource_id'],owner['epoch'],owner['process_incarnation']])
+            index.exact([[r[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','first_sequence','last_sequence',
+                'purpose','state','release_reason')] for r in claims],
+                [[owner['dataset_id'],1,0,epoch,1,cut,'reader','released','reader_joined'] for epoch,cut in ((1,312),(2,10))])
+            assert all(lease['acquired_at_us']<=r['created_at_us']<=r['released_at_us']<=lease['released_at_us']
+                and r['xmin']==lease['xmin'] for r in claims)
 
 
 def reclaimed(before,after,native_before,native_after,science,report,*,retry=False):
@@ -471,15 +572,55 @@ def successor_science(before,after,bridge,first,wires,dump,store,completed):
 
 
 ARCHIVE_PUBLISHED_ORDINALS=(1,2,*range(4,69))
-ARCHIVE_SCHEDULES={'uninterrupted':(3,65),'unbound-publication-loss':(4,64)}
+GROUPED_PUBLISHED_ORDINALS=(1,2,*range(5,70))
+GROUPED_IMPORTED_ORDINALS=(1,2,*range(4,70))
+ARCHIVE_SCHEDULES={'uninterrupted':(3,65),'unbound-publication-loss':(4,64),
+    'grouped-publication-loss':(5,64)}
+# These sets describe three declared cuts, never observed inventory lengths.
+ARCHIVE_FAULT_PHASES={
+    'unique':(4,'after-complete',(1,2,4),(1,2,4)),
+    'grouped-first':(4,'before-forward',(1,2),(1,2,4)),
+    'grouped-second':(5,'after-complete',(1,2,5),(1,2,4,5)),
+}
 
 
-def archive_file_membership(catalog,science,files,original):
+def failed_archive_output(catalog,files,original):
+    """Anchor failed B4 output after exclusion; empty is a valid observation."""
+    failed={name:value for name,value in files.items() if name not in original}
+    for name,item in failed.items():
+        path=PurePosixPath(name)
+        assert not path.is_absolute() and '..' not in path.parts
+        assert re.fullmatch(r'main/[a-z_]+/prepared-[0-9a-f]{32}(?:/data\.parquet)?',name)
+        assert item['mode']==(0o700 if item['sha256'] is None else 0o600)
+        assert type(item['inode']) is int and item['inode']>0
+        assert type(item['device']) is int and item['device']>=0
+        if item['sha256'] is not None:
+            assert item['links']==1 and re.fullmatch('[0-9a-f]{64}',item['sha256'])
+    failed_output_preserved(catalog,files,failed)
+    return failed
+
+
+def failed_output_preserved(catalog,files,failed):
+    tables={r['table_id']:r for r in catalog['public.ducklake_table']}
+    registered=set()
+    for row in catalog['public.ducklake_data_file']:
+        table=tables[row['table_id']]
+        schema=index.only(catalog['public.ducklake_schema'],schema_id=table['schema_id'])
+        path=PurePosixPath(schema['path'])/table['path']/row['path']
+        registered.add(str(path));registered.add(str(path.parent))
+    assert not registered.intersection(failed),'failed output became registered science'
+    for name,item in failed.items():index.exact(files[name],item)
+
+
+def archive_file_membership(catalog,science,files,original,*,failed_output=None):
     """Every native batch has exactly its literal family/receipt files."""
     tables={r['table_name']:r for r in catalog['public.ducklake_table']}
     assert set(tables)==set(science['tables'])|{'archive_commits'}
     records=catalog['public.ducklake_data_file']
     paths=set(original)
+    if failed_output is not None:
+        failed_output_preserved(catalog,files,failed_output)
+        paths.update(failed_output)
     assert len({r['data_file_id'] for r in records})==len(records)
     assert sorted(r['snapshot_id'] for r in catalog['public.ducklake_snapshot'])==list(range(len(science['batches'])+2))
     expected_files=0
@@ -513,12 +654,13 @@ def archive_file_membership(catalog,science,files,original):
         assert current['links']==old['links'] if old['sha256'] is not None else current['links']>=old['links']
 
 
-def replacement_custody(state,science,records,files,initialization):
-    """Complete A3/B4 inputs and journals, with their own historical identity."""
+def replacement_custody(state,science,records,files,initialization,*,ordinals=(3,4)):
+    """Complete original/group inputs and journals, with each historical identity."""
     initial=json.loads(bytes.fromhex(initialization))
     binding=hashlib.sha256(bytes.fromhex(records['coordinator.json'])).digest()
     assert binding.hex()==index.raw(index.only(state['archive_attempts'],ordinal=3)['coordinator_binding_sha256'],32).hex()
-    for ordinal in (3,4):
+    assert ordinals in ((3,4),(3,4,5))
+    for ordinal in ordinals:
         row=index.only(state['archive_attempts'],ordinal=ordinal);batch=science['batches'][2]
         identity=index.raw(row['attempt_id'],16).hex();lock=files[identity+'/custody.lock']
         assert row['coordinator_binding_sha256']=='\\x'+binding.hex()
@@ -548,11 +690,11 @@ def unbound_catalog_config(text):
     return direct
 
 
-def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate):
+def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate,mode='after-complete'):
     """Exact route/pins plus actual child/proxy/reader/backend termination."""
     from installed_archive_catch_up_fault_oracle import wire_checked,ERRORS
     wire=value['wire'];assert wire['status']=='OBSERVED_CLOSED_AND_JOINED'
-    wire_checked(wire,'publication',source,None,local_proxy=local_proxy)
+    wire_checked(wire,'publication',source,None,local_proxy=local_proxy,mode=mode)
     expected=unbound_catalog_config(value['direct_config'])
     routed=tomllib.loads(value['routed_config'])
     expected['postgres']['catalog']['endpoint']='127.0.0.1:'+str(wire['ready']['port'])
@@ -572,18 +714,20 @@ def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate):
     assert value['candidate_before']==value['candidate_after']==candidate
 
 
-def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_after,census,science):
-    """Native B4 exists while A3 stays absent and current frontier stays2."""
+def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_after,census,science,*,phase='unique'):
+    """Literal native/guard inventories at each cut; current frontier stays2."""
     from cases.first_launch_archive_outage_oracle import archived_prefix
+    ordinal,mode,published,imported_ordinals=ARCHIVE_FAULT_PHASES[phase]
     third=archived_prefix(prefix,parked)
-    archived_prefix(prefix,before)
-    assert sorted(r['ordinal'] for r in after['archive_attempts'])==[1,2,3,4]
+    archived_prefix(prefix,dict(before,archive_attempts=[r for r in before['archive_attempts'] if r['ordinal']<=3]))
+    assert sorted(r['ordinal'] for r in before['archive_attempts'])==list(range(1,ordinal))
+    assert sorted(r['ordinal'] for r in after['archive_attempts'])==list(range(1,ordinal+1))
     for row in before['archive_attempts']:
         index.exact(row,index.only(after['archive_attempts'],ordinal=row['ordinal']))
     view=dict(after,archive_attempts=before['archive_attempts'])
     owner=control_only(before,view,claim='failed')
-    replacement=index.only(after['archive_attempts'],ordinal=4)
-    expected=dict(third,ordinal=4,expected_predecessor=3,attempt_id=replacement['attempt_id'],
+    replacement=index.only(after['archive_attempts'],ordinal=ordinal)
+    expected=dict(third,ordinal=ordinal,expected_predecessor=ordinal-1,attempt_id=replacement['attempt_id'],
         worker_incarnation=replacement['worker_incarnation'],coordinator_incarnation=owner['process_incarnation'],
         issuer_resource=owner['resource_id'],issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],
         issued_at_us=replacement['issued_at_us'],xmin=replacement['xmin'])
@@ -595,17 +739,18 @@ def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_afte
     assert replacement['coordinator_incarnation']!=third['coordinator_incarnation']
     source.clock(replacement['issued_at_us'],owner['acquired_at_us'],owner['lease_expires_at_us'])
     assert replacement['xmin'] not in {r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
-    selected=dict(batches=science['batches'][:3],tables={name:[r for r in rows
-        if r['source_record_id']['owner_epoch']==1 and r['source_record_id']['sequence']<=7]
+    count,cut=(2,3) if phase=='grouped-first' else (3,7)
+    selected=dict(batches=science['batches'][:count],tables={name:[r for r in rows
+        if r['source_record_id']['owner_epoch']==1 and r['source_record_id']['sequence']<=cut]
         for name,rows in science['tables'].items()})
-    assert [b['topology'] for b in selected['batches']]==[0,0,0]
-    receipts=source.publication_receipts(after,selected,published_ordinals=(1,2,4))
+    assert [b['topology'] for b in selected['batches']]==[0]*count
+    receipts=source.publication_receipts(after,selected,published_ordinals=published)
     index.exact(census,dict(format='bigbrotr-independent-installed-archive-read/1',
         tables={**selected['tables'],'archive_commits':receipts}))
     imports=catalog_after['bigbrotr_archive.attempts']
-    assert sorted(r['ordinal'] for r in imports)==[1,2,4]
+    assert sorted(r['ordinal'] for r in imports)==list(imported_ordinals)
     assert all(r in imports for r in catalog_before['bigbrotr_archive.attempts'])
-    imported=index.only(imports,ordinal=4)
+    imported=index.only(imports,ordinal=ordinal)
     fields=('ordinal','attempt_id','coordinator_incarnation','worker_incarnation','topology_generation','batch_digest')
     index.exact(imported,dict({k:replacement[k] for k in fields},login_name='bb_archive_'+replacement['attempt_id'][2:],
         login_oid=imported['login_oid'],xmin=imported['xmin']))
@@ -613,9 +758,10 @@ def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_afte
     assert str(imported['xmin']).isdecimal() and int(imported['xmin'])>0
     catalog_owner=index.only(catalog_after['bigbrotr_archive.owner'])
     index.exact(catalog_owner,dict(index.only(catalog_before['bigbrotr_archive.owner']),
-        enabled=True,ordinal=4,xmin=catalog_owner['xmin']))
+        enabled=True,ordinal=ordinal,xmin=catalog_owner['xmin']))
     mutable={'bigbrotr_archive.attempts','bigbrotr_archive.owner',*[f'public.ducklake_{name}' for name in (
         'snapshot','snapshot_changes','data_file','file_column_stats','table_stats','table_column_stats')]}
+    if phase=='grouped-first':mutable={'bigbrotr_archive.attempts','bigbrotr_archive.owner'}
     assert set(catalog_before)==set(catalog_after)
     for table in catalog_before.keys()-mutable:index.exact(catalog_before[table],catalog_after[table])
     for table in ('snapshot','snapshot_changes','data_file','file_column_stats'):
@@ -653,6 +799,10 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     from cases.first_launch_archive_outage_oracle import archived_prefix,ARCHIVE_TABLES
     from installed_archive_catch_up_oracle import cut_digest
     issued_before,new_attempts=ARCHIVE_SCHEDULES[schedule]
+    grouped=schedule=='grouped-publication-loss'
+    published=GROUPED_PUBLISHED_ORDINALS if grouped else ARCHIVE_PUBLISHED_ORDINALS
+    imported_ordinals=GROUPED_IMPORTED_ORDINALS if grouped else ARCHIVE_PUBLISHED_ORDINALS
+    issued_total=69 if grouped else 68
     third=archived_prefix(prefix,parked)
     consumer=index.only(before['consumers'],consumer_role='archive');catalog=consumer['consumer_id']
     index.exact(consumer,index.only(prefix['consumers'],consumer_role='archive'))
@@ -666,20 +816,22 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     for old in before['archive_attempts']:
         index.exact(index.only(after['archive_attempts'],ordinal=old['ordinal']),old)
     index.exact(sorted(r['ordinal'] for r in before['archive_attempts']),list(range(1,issued_before+1)))
-    index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,69)))
+    index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,issued_total+1)))
     topology.preserve_consumer_identity(before,after,catalog)
-    receipts=source.publication_receipts(after,science,published_ordinals=ARCHIVE_PUBLISHED_ORDINALS)
+    receipts=source.publication_receipts(after,science,published_ordinals=published)
+    compacted_archive_control(before,after,receipts)
     imports=catalog_after['bigbrotr_archive.attempts']
-    index.exact(sorted(r['ordinal'] for r in imports),list(ARCHIVE_PUBLISHED_ORDINALS))
+    index.exact(sorted(r['ordinal'] for r in imports),list(imported_ordinals))
     assert all(row in imports for row in catalog_before['bigbrotr_archive.attempts'])
     for row in imports:
         attempt=index.only(after['archive_attempts'],ordinal=row['ordinal'])
         assert row['attempt_id']!=third['attempt_id'] and row['worker_incarnation']!=third['worker_incarnation']
         for field in ('attempt_id','batch_digest','topology_generation','coordinator_incarnation','worker_incarnation'):
             index.exact(row[field],attempt[field])
-    assert not [r for r in after['archive_frontier_batches'] if r['attempt_id']==third['attempt_id']]
+    failed=[index.only(after['archive_attempts'],ordinal=n)['attempt_id'] for n in ((3,4) if grouped else (3,))]
+    assert not [r for r in after['archive_frontier_batches'] if r['attempt_id'] in failed]
     owner=index.only(catalog_after['bigbrotr_archive.owner'])
-    index.exact([owner['enabled'],owner['ordinal']],[False,68])
+    index.exact([owner['enabled'],owner['ordinal']],[False,issued_total])
     assert index.only(after['consumers'],consumer_id=catalog)['current_revision']==4
     assert index.only(after['consumers'],consumer_id=catalog)['current_topology_generation']==1
     index.exact(sorted(r['frontier_revision'] for r in after['consumer_frontier_revisions'] if r['consumer_id']==catalog),[1,2,3,4])
@@ -689,8 +841,12 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
         head=index.only(after['consumer_frontier_revisions'],consumer_id=catalog,frontier_revision=revision)
         assert head['previous_revision']==revision-1 and head['topology_generation']==1
         snapshot=index.only(after['archive_frontier_snapshots'],frontier_revision=revision)
-        index.exact([snapshot[k] for k in ('dataset_id','catalog_id','consumer_id','topology_generation','snapshot_id',*source.COUNTS)],
-            [consumer['dataset_id'],catalog,catalog,1,68,*counts])
+        publisher=index.only(after['owner_epochs'],role='archive',epoch=2)
+        index.exact(snapshot,dict(operation_id=snapshot['operation_id'],consumer_id=catalog,frontier_revision=revision,
+            dataset_id=consumer['dataset_id'],catalog_id=catalog,topology_generation=1,snapshot_id=68,
+            owner_epoch=2,owner_incarnation=publisher['process_incarnation'],request_digest=snapshot['request_digest'],
+            **dict(zip(source.COUNTS,counts)),xmin=head['xmin']))
+        assert any(index.raw(snapshot['operation_id'],16)) and snapshot['operation_id'] not in {r['operation_id'] for r in before['archive_frontier_snapshots']}
         assert snapshot['request_digest']=='\\x'+cut_digest(consumer['dataset_id'],1,members,cuts,68)
         bounds=sorted((r for r in after['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==revision),key=lambda r:r['owner_epoch'])
         index.exact([(r['shard_id'],r['topology_generation'],r['owner_epoch'],r['last_complete_sequence']) for r in bounds],
@@ -701,9 +857,100 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
                 ['archive-batch','\\x'+last['batch_digest'].lower()] if last else [None,None])
         membership=[r['attempt_id'] for r in after['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==revision]
         index.exact(sorted(membership),sorted('\\x'+r['attempt_id'].lower() for r in members))
+        for row in after['archive_frontier_batches']:
+            if row['consumer_id']==catalog and row['frontier_revision']==revision:
+                index.exact(row,dict(consumer_id=catalog,frontier_revision=revision,attempt_id=row['attempt_id'],xmin=head['xmin']))
+    assert len({r['operation_id'] for r in after['archive_frontier_snapshots']})==len(after['archive_frontier_snapshots'])
     frontier=index.only(after['archive_frontier_snapshots'],frontier_revision=4)
     index.exact(report,dict(format='bigbrotr-archive-catch-up/1',dataset_id=consumer['dataset_id'][2:],catalog_id=catalog[2:],
         terminal_epoch=2,issued_attempts_before=issued_before,new_attempts=new_attempts,frontier_revision=4,snapshot_id=68,
         operation_id=list(index.raw(frontier['operation_id'],16)),request_digest=frontier['request_digest'][2:],
         family_counts=[73,62,62,62,63],new_frontier_revisions=2,recovery_basis='closed-producer-floor-v3',compacted_requests='64'))
     return receipts
+
+
+def compacted_archive_control(before,after,receipts):
+    """One fresh Control and exact Archive rebind/publications; all else stays exact."""
+    from cases.first_launch_index_restart_oracle import unchanged_except
+    archive_tables={'archive_attempts','archive_owner_sessions','consumers',
+        'consumer_frontier_revisions','consumer_frontiers','archive_frontier_snapshots','archive_frontier_batches'}
+    unchanged_except(before,after,archive_tables|{'owner_epochs','role_instances'})
+    # Validate the existing Control claim/fence/release helper against a view
+    # whose separately checked Archive transition is restored to its old rows.
+    view=dict(after,**{table:before[table] for table in archive_tables})
+    for table in ('owner_epochs','role_instances'):
+        view[table]=[r for r in after[table] if r['role']!='archive']+[
+            r for r in before[table] if r['role']=='archive']
+    control=control_only(before,view)
+    consumer=index.only(before['consumers'],consumer_role='archive');catalog=consumer['consumer_id']
+    prior=sorted((r for r in before['owner_epochs'] if r['role']=='archive'),key=lambda r:r['epoch'])
+    old=prior[-1];assert len(prior)==1 and old['epoch']==1 and old['state']=='active' and old['resource_id']==catalog
+    owners=sorted((r for r in after['owner_epochs'] if r['role']=='archive'),key=lambda r:r['epoch'])
+    assert len(owners)==len(prior)+1
+    index.exact(owners[:-2],prior[:-1])
+    stopped,new=owners[-2:]
+    role=index.only(after['role_instances'],role_instance_id=new['role_instance_id'])
+    old_role=index.only(before['role_instances'],role_instance_id=old['role_instance_id'])
+    retired=index.only(after['role_instances'],role_instance_id=old['role_instance_id'])
+    bridge=index.only(after['consumer_frontier_revisions'],consumer_id=catalog,frontier_revision=3)
+    final=index.only(after['consumer_frontier_revisions'],consumer_id=catalog,frontier_revision=4)
+    snapshot=index.only(after['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=3)
+    tx=bridge['xmin']
+    digest=(b'bigbrotr/archive-frontier-owner-exclusion/1\0'+index.raw(consumer['dataset_id'],16)
+        +index.raw(catalog,16)+index.be(old['epoch'])+index.raw(old['process_incarnation'],16)
+        +index.raw(control['resource_id'],16)+index.be(control['epoch'])
+        +index.raw(control['process_incarnation'],16)+index.raw(snapshot['request_digest'],32))
+    index.exact(stopped,dict(old,state='released',released_at_us=stopped['released_at_us'],
+        exclusion_method='storage_fenced',exclusion_digest='\\x'+hashlib.sha256(digest).hexdigest(),xmin=tx))
+    index.exact(retired,dict(old_role,retired_at_us=retired['retired_at_us'],xmin=tx))
+    assert control['acquired_at_us']<=stopped['released_at_us']<=retired['retired_at_us']<=role['created_at_us']<=new['acquired_at_us']<=bridge['created_at_us']<=final['created_at_us']<=control['released_at_us']
+    assert new['acquired_at_us']<new['lease_expires_at_us']<=control['lease_expires_at_us']
+    assert new['role_instance_id'] not in {r['role_instance_id'] for r in before['role_instances']}
+    index.exact(new,dict(old,epoch=old['epoch']+1,role_instance_id=role['role_instance_id'],
+        process_incarnation=control['process_incarnation'],acquired_at_us=new['acquired_at_us'],
+        lease_expires_at_us=new['lease_expires_at_us'],state='active',released_at_us=None,
+        exclusion_method=None,exclusion_digest=None,xmin=final['xmin']))
+    index.exact(role,dict(role_instance_id=new['role_instance_id'],dataset_id=consumer['dataset_id'],
+        role='archive',created_at_us=role['created_at_us'],retired_at_us=None,xmin=tx))
+    index.exact(sorted((r for r in after['role_instances'] if r['role']=='archive'),key=lambda r:r['role_instance_id']),
+        sorted([retired,role],key=lambda r:r['role_instance_id']))
+    sessions=before['archive_owner_sessions'];session=index.only(sessions,owner_epoch=old['epoch'])
+    expected_sessions=sessions+[dict(session,owner_epoch=new['epoch'],
+        owner_incarnation=control['process_incarnation'],issuer_resource=control['resource_id'],
+        issuer_epoch=control['epoch'],issuer_incarnation=control['process_incarnation'],xmin=tx)]
+    index.exact(sorted(after['archive_owner_sessions'],key=lambda r:r['owner_epoch']),
+        sorted(expected_sessions,key=lambda r:r['owner_epoch']))
+    known_xmins={r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
+    assert tx!=final['xmin'] and not {tx,final['xmin']}.intersection(known_xmins)
+    for table,added in (('archive_frontier_snapshots',2),('archive_frontier_batches',69),('consumer_frontiers',4)):
+        selected=lambda state:[r for r in state[table] if r['consumer_id']==catalog]
+        assert len(selected(after))==len(selected(before))+added
+    for head in (bridge,final):
+        index.exact(head,dict(consumer_id=catalog,frontier_revision=head['frontier_revision'],
+            dataset_id=consumer['dataset_id'],consumer_role='archive',topology_generation=1,
+            previous_revision=head['frontier_revision']-1,owner_resource_id=catalog,owner_epoch=new['epoch'],
+            owner_incarnation=control['process_incarnation'],created_at_us=head['created_at_us'],sealed=True,xmin=head['xmin']))
+        for table in ('archive_frontier_snapshots','consumer_frontiers','archive_frontier_batches'):
+            rows=[r for r in after[table] if r['consumer_id']==catalog and r['frontier_revision']==head['frontier_revision']]
+            assert rows and all(r['xmin']==head['xmin'] for r in rows)
+        snap=index.only(after['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=head['frontier_revision'])
+        assert snap['owner_epoch']==new['epoch'] and snap['owner_incarnation']==control['process_incarnation']
+    assert index.only(after['consumers'],consumer_id=catalog)['xmin']==final['xmin']
+    original=index.only(before['archive_attempts'],ordinal=3)
+    issued=max(r['ordinal'] for r in before['archive_attempts'])
+    new_xmins=set()
+    for receipt in receipts:
+        n=receipt['publication_ordinal']
+        if n<=issued:continue
+        row=index.only(after['archive_attempts'],ordinal=n)
+        assert row['xmin'] not in known_xmins|new_xmins;new_xmins.add(row['xmin'])
+        assert any(index.raw(row['attempt_id'],16)) and any(index.raw(row['worker_incarnation'],16))
+        assert row['worker_incarnation']!=control['process_incarnation']
+        source.clock(row['issued_at_us'],control['acquired_at_us'],control['released_at_us'])
+        index.exact(row,dict(original,ordinal=n,expected_predecessor=n-1,attempt_id=row['attempt_id'],
+            worker_incarnation=row['worker_incarnation'],coordinator_incarnation=control['process_incarnation'],
+            topology_generation=receipt['topology_generation'],batch_digest='\\x'+receipt['batch_digest'].lower(),
+            issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],issuer_incarnation=control['process_incarnation'],
+            issued_at_us=row['issued_at_us'],xmin=row['xmin']))
+    assert len({r['attempt_id'] for r in after['archive_attempts']})==len(after['archive_attempts'])
+    assert len({r['worker_incarnation'] for r in after['archive_attempts']})==len(after['archive_attempts'])

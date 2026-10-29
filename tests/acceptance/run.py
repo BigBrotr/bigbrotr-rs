@@ -217,7 +217,11 @@ def main():
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--renewal-stop-outcome", choices=("known", "held"),
                         help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
+    parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
+                        help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     args = parser.parse_args()
+    if args.retained_archive_schedule is not None and args.case != "p01-first-launch-closed-reclamation":
+        parser.error("--retained-archive-schedule is only for p01-first-launch-closed-reclamation")
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):
         parser.error("--renewal-stop-outcome is required only for p01-first-launch-initial-renewal-stop")
     if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage"):

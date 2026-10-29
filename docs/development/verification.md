@@ -1145,8 +1145,8 @@ activation. A later reclamation attempt under successor publication authority
 must refuse. The successor's genuine request1 is cumulative request65 and uses
 freed spool capacity. Complete native/typed science, finite Index/Archive catch-up
 and retries, signed history on a fresh process and exact353-byte first-event
-export complete the profile. The independent terminal expectations are67 Archive
-batches with published ordinals1,2,4..68/snapshot68/frontier4,322 scientific rows
+export complete the profile. The default independent terminal expectations are67
+Archive batches with published ordinals1,2,4..68/snapshot68/frontier4,322 scientific rows
 and572 raw Index rows at revision68. The final C API census automatically selects
 the fixed closed-reclamation probe envelope:73/62/62/62/63 rows by family and67
 commits, each queried with one additional overflow sentinel. The probe's default
@@ -1161,13 +1161,52 @@ and physical membership. The profile also loses the first replacement4 native
 COMMIT reply before any frontier binding or later publication: independent C API
 science must contain exactly receipts1,2,4 while issued1..4/currentfrontier2 and
 original3 custody remain. Fresh recovery must reuse4 unchanged, seal its original
-login, publish only the64 missing attempts5..68 and bind bridge3/final4. The
-uninterrupted3-before/65-new schedule remains available to the maintained oracle;
-neither schedule derives its expected counts from observed rows. Unique unbound
-adoption requires full-EOF Present; known provisional absence continues the strict
-original read under the same deadline/custody, while errors refuse. Multiple
-candidate/one-Present repeated-failure recovery retains its P02-T04/P02-T06/P08
-requirement. These new source paths need their own actual installed evidence.
+login, publish only the64 missing attempts5..68 and bind bridge3/final4. This
+`unbound-publication-loss` schedule remains the default. The explicit
+`--retained-archive-schedule uninterrupted` selects3-before/65-new recovery.
+Unique unbound adoption requires full-EOF Present; known provisional absence
+continues the strict original read under the same deadline/custody, while errors
+refuse.
+
+Select `--retained-archive-schedule grouped-publication-loss` to exercise the
+ratified A3 absent/B4 absent/C5 Present recovery gate on the same retained roots.
+The genuine catalog-outage A3 remains absent. The first fresh owner lets B4
+reach native publication COMMIT, then loses it before forwarding: the actual
+proxy must record server_complete0/client_complete0/fault1. After the failed
+application, native child, proxy/readers and database backends join, an independent
+C API census must contain only native receipts1,2 while the positive catalog
+guard inventory contains1,2,4. Original B4 inputs, journals and available locks
+remain bound to their actual identities. The complete failed-output census may
+be empty; every retained B4 path/hash/inode is separately anchored and must remain
+preserved and unregistered. That observed file baseline never supplies expected
+scientific values or receipt membership.
+
+A second fresh owner must canonically seal B4 and genuinely issue C5. Its native
+COMMIT completes with the reply withheld before frontier binding or later issue:
+server_complete1/client_complete0/fault1. Independent checks require issued1..5,
+guard imports1,2,4,5, native receipts1,2,5 with the first7 dictionaries, unchanged
+frontier2/cut3 and complete original A3/B4/C5 custody. C5's original login remains
+active at this cut. Fresh grouped recovery must seal it, reuse C5 unchanged and
+issue only64 missing attempts6..69. Final literal inventories differ:69 issued
+attempts1..69,68 guard imports1,2,4..69 and67 native receipts1,2,5..69. Both original
+replacement logins must be sealed. The same full322-row science, bridge3/final4,
+snapshot68, cuts312/10, zero-work exact retry, signed export/history and fresh
+same-root restart remain required. The selector is accepted only for this existing
+closed-reclamation case; none of its schedules derives expected sets from observed
+inventories. Grouped recovery retains its P02-T04 Step4/P02-T06 Step7/P08 gate
+until actual source/native/worker/installed qualification, independently of Python
+control results.
+
+Final recovery compares the complete82-table Control inventory, preserving all
+producer, checkpoint, job and security rows. Only the validated fresh Control
+lifetime and exact Archive owner/session/publication transitions may change.
+Retry and both joined clients reobserve original group input/journal bytes,
+file identities, available custody locks and sealed replacement logins. Catalog
+captures remain exact, including continued nonregistration of any failed B4
+output. The retained history transition preserves old rows and the completed
+startup probes while requiring exactly two additional joined history readers
+with both source claims; login/logout effects have their own explicit checks.
+
 The existing completed-startup-probe and native-worker-join gate precedes both
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;
@@ -1188,6 +1227,17 @@ python3 -B tests/acceptance/run.py p01-first-launch-closed-reclamation \
   --candidate-manifest /absolute/candidate/candidate-manifest.json \
   --native-observer-build /absolute/exact-product-build \
   --evidence /absolute/fresh-evidence
+```
+
+For the grouped gate, use the same declared prerequisites and a new evidence root:
+
+```sh
+python3 -B tests/acceptance/run.py p01-first-launch-closed-reclamation \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-build \
+  --retained-archive-schedule grouped-publication-loss \
+  --evidence /absolute/fresh-grouped-evidence
 ```
 
 The observer build must be supplied separately using the maintained

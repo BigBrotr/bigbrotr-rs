@@ -23,11 +23,13 @@ ERRORS={'publication-loss':'error: initial Archive refused; preserve original st
     'frontier-loss':'error: Archive catch-up refused; preserve original state: CommitUnknown\n'}
 
 
-def wire_checked(wire,target,source,client,*,local_proxy=None):
+def wire_checked(wire,target,source,client,*,local_proxy=None,mode='after-complete'):
     assert wire['status'] in ('UNKNOWN','OBSERVED_CLOSED_AND_JOINED')
-    assert wire['target']==target and wire['mode']=='after-complete'
+    assert mode in ('before-forward','after-complete')
+    assert wire['target']==target and wire['mode']==mode
     p=wire['process'];assert p['exit']==0 and p['overflow'] is False and p['readers_joined'] is True and not p['stderr']
     if local_proxy is None:
+        assert mode=='after-complete'
         assert p['command']==['docker','exec','-i',client,'python3','-B','/lab/archive-catch-up-commit-proxy.py',
             '--target',target,'--mode','after-complete','--profile','retained-catch-up']
     else:
@@ -38,7 +40,7 @@ def wire_checked(wire,target,source,client,*,local_proxy=None):
         executable,path=local_proxy
         assert Path(executable).is_absolute() and Path(path).is_absolute()
         assert Path(path).parts[-3:]==('experiments','archive-engine','native_commit_proxy.py')
-        assert p['command']==[executable,'-B',path,'--target','publication','--mode','after-complete',
+        assert p['command']==[executable,'-B',path,'--target','publication','--mode',mode,
             '--profile','retained-catch-up','--upstream-port','15432',
             '--catalog-manager','bigbrotr_catalog','--catalog-reader','bigbrotr_archive_read',
             '--catalog-database','bigbrotr_catalog']
@@ -47,7 +49,7 @@ def wire_checked(wire,target,source,client,*,local_proxy=None):
     ready,fault,end=events;assert ready==wire['ready'] and ready['source_sha256']==source
     assert re.fullmatch('[0-9a-f]{64}',source) and type(ready['port']) is int and 1024<=ready['port']<=65535
     for event in events:
-        assert event['target']==target and event['mode']=='after-complete'
+        assert event['target']==target and event['mode']==mode
         for key in ('connections','bytes','frames','data_queries','data_commits','server_complete','client_complete','faults'):
             assert type(event[key]) is int and event[key]>=0
         assert event['profile']=='retained-catch-up' and event['frame_limit']==131072 and event['connection_limit']==64
@@ -63,7 +65,7 @@ def wire_checked(wire,target,source,client,*,local_proxy=None):
                 'bigbrotr_catalog',True]
     assert all(ready[k]==0 for k in ('connections','bytes','frames','data_queries','data_commits','server_complete','client_complete','faults'))
     for event in (fault,end):
-        assert [event[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')]==[1,1,1,0,1]
+        assert [event[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')]==[1,1,int(mode=='after-complete'),0,1]
     assert type(fault['backend_pid']) is int and fault['backend_pid']>0 and end['unexpected']==0
     assert all(fault[k]<=end[k] for k in ('connections','bytes','frames','frontend_queries'))
     return fault['backend_pid']

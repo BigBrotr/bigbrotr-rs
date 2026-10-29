@@ -7,6 +7,8 @@ use bigbrotr_protocol::archive_receipt::{
 use serde::{Deserialize, Serialize};
 use std::io::{self, Write};
 
+mod group;
+
 /// Operator-provisioned SELECT-only catalog login. Never put this in diagnostics.
 pub struct CatalogReaderCredentials<'a> {
     pub login: &'a str,

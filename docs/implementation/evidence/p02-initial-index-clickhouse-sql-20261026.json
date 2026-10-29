@@ -3378,7 +3378,7 @@
         }
       },
       "grouped_replacement_recovery": {
-        "status": "REVIEWED_COMPONENTS_PARENT_OBSERVER_PASS_ACTUAL_GROUPED_INSTALLED_CASE_RUNNING",
+        "status": "PASS_BOUNDED_GROUPED_RECOVERY_AND_INSTALLED_TUTORIAL",
         "owners": [
           "P02-T04 Step4",
           "P02-T06 Step7",
@@ -3386,7 +3386,7 @@
         ],
         "product_revision": "18e208ed484a0977897e7a1cf41961f19463ab37",
         "acceptance_revision": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
-        "scope": "Complete retained A/B/C alternatives, full-EOF unique exact receipt selection, all-member canonical resolution/custody and fresh membership under unchanged caps/deadline. Exact current A/B/C retry binds required member before effects and refuses absent/different results. Installed grouped proof remains NOT_RUN.",
+        "scope": "Complete retained A/B/C alternatives, full-EOF unique exact receipt selection, all-member canonical resolution/custody and fresh membership under unchanged caps/deadline. Exact current A/B/C retry binds required member before effects and refuses absent/different results. Actual installed11/11 and tutorial7/7 PASS on the same X18/Y a8 candidate. No scalable freshness, OPEN>64 or full M1/product completion claim.",
         "source_reviews": {
           "initial": "313fd6063d5cc5315c656c2b474f90805034e0d3acc5c341d26e029ac1ddf931",
           "G1_closed": "9dcf973c9d14d76de2b7b7d990f81a3adeedb1dd5199285d62505730447f294e",
@@ -3414,17 +3414,17 @@
           "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
           "session": 10665,
           "exit_code": 0,
-          "scope": "Actual maintained worker-before-parent, same frozen source and toolchain; retained binary+embedded worker/native assets verified. No installed journey yet."
+          "scope": "Actual maintained worker-before-parent, same frozen source and toolchain; retained binary+embedded worker/native assets verified. Separate actual installed outcomes follow."
         },
-        "qualification_inputs": "Clean work/grouped-retained-qualification merges source18 and reviewed harness351; literal tutorial profile binds apps/crates to18 with nine unchanged Nostr paths, six other code objects unchanged, normalized AST and1 positive/negative control PASS. Actual tutorial still required.",
+        "qualification_inputs": "Clean work/grouped-retained-qualification merges source18 and reviewed harness351; literal tutorial profile binds apps/crates to18 with nine unchanged Nostr paths, six other code objects unchanged, normalized AST and1 positive/negative control PASS. Actual tutorial7/7 independently executed and audited below.",
         "resources": "Existing laboratory inventory closed_reclamation.grouped_replacement_recovery owns exact worktrees/containers/sessions. Original source/contracts/failures and immutable shared-object retention remain.",
-        "next": "Join/audit actual maintained observer, assemble candidate from X18/Y a8dd, then run maintained grouped-publication-loss on fresh owned roots with declared bridge and independent69issued/68guard/67native/64new6..69/322science expectations; exact retry/history/export/restart and tutorial. All remaining product gates retained.",
+        "next": "Integrate unchanged qualified X18/Y a8 sources with main, check affected merged inputs, bounded public-source review and coherent push; observe meaningful hosted CI. Then advance the next M1 dependency under existing owners; all later gates remain.",
         "native_observer": {
           "status": "PASS_MAINTAINED_PARENT_BOUND_NATIVE_OBSERVER_BUILD",
           "session": 57306,
           "path": ".research/initial-index-recovery-qualification-20261028/observer-18e208ed/receipt.json",
           "sha256": "2c6f10bba0a3fa5c6cc367ac00dd42bf3e9e79db5d1dd4bfaf573b559f0790e6",
-          "scope": "Actual helper build and maintained artifact provenance/terminal/custody; no store opened, installed journey NOT_RUN"
+          "scope": "Actual helper build and maintained artifact provenance/terminal/custody; no store opened, separate actual installed outcomes below"
         },
         "candidate": {
           "manifest_sha256": "0ed331f561c232824a576e336babe7e3bce4c38c75ea77a9baf6a4db246e9e8e",
@@ -3434,11 +3434,72 @@
           "exit_code": 0
         },
         "installed_case": {
-          "status": "RUNNING_NO_PASS_CLAIM",
+          "status": "PASS",
           "session": 59110,
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1",
           "schedule": "grouped-publication-loss",
-          "resource_owner": "Existing laboratory inventory grouped_replacement_recovery.installed_case"
+          "resource_owner": "Existing laboratory inventory grouped_replacement_recovery.installed_case",
+          "exit_code": 0,
+          "counts": {
+            "collected": 11,
+            "executed": 11,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/result.json",
+            "sha256": "285d6a5e8bc63e21b29e113a5888935664cd5cedc4a1e37dbdb610c2575f2a91"
+          },
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/root-terminal.json",
+            "sha256": "7af6262f56b6587a889945ae93a9e9b66f102aae779031c435fcad0fa20ebd23"
+          },
+          "grouped_proxy_terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1/grouped-proxy-terminal-audit.json",
+            "sha256": "f0f5d3755cbb0786e907b27b57444bb60ae2d26f9c0fcfdc5ac2e57c2b6ee02c"
+          },
+          "observed": "A3 catalog outage absent; B4 COMMIT before-forward absent; C5 after-complete receipt survives lost delivery. Final recovery reuses C5 and allocates64 fresh6..69; exact69issued/68guard/67native/322science, snapshot68, bridge3/final4, zero-work retry, original A/B/C plus failed-output custody, full Control preservation and same-root history/export/restart all PASS.",
+          "terminal_scope": "61 owned containers exited/noOOM/PID0;29 recorded PIDs absent;7833 joined commands; both grouped proxies independently audited; borrowed bridge empty. Original negative command exits preserved."
+        },
+        "tutorial": {
+          "status": "PASS",
+          "session": 89511,
+          "exit_code": 0,
+          "counts": {
+            "collected": 7,
+            "executed": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1/result.json",
+            "sha256": "aa1be23c5d8d2c5d8fcbd5a0b8ec582f23c0952d7ee24215ea3fc2341b62acff"
+          },
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-tutorial-r1/root-terminal.json",
+            "sha256": "64d475c05ac006d750a1e836d21150824664676e7bc85c8561bbefccfcc3dc99"
+          },
+          "identity_review": {
+            "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/tutorial-terminal-identity-review.json",
+            "sha256": "6ac8c65c7c07e57cf744b2b2eb9cdb6895b1c1b68d232181b6c120ce4db80b8d"
+          },
+          "scope": "Actual outside-checkout tutorial on same candidate: signed acquisition, ordinary history, exact nonempty export, restart, negative no-signer/unwired profiles and cleanup7/7 PASS.18 containers stopped/noOOM/PID0;2 client and781 joined command PIDs absent, known child groups/path scan and bridge empty. Runner termination is authoritative tool reap0; pre-exit PID/start and runner PGID/SID remain NOT_OBSERVED. Auditor c3bea396 pins the exact reviewed tool receipt; preliminary0af45d79 audit retained separately.",
+          "terminal_code_review": {
+            "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/tutorial-terminal-code-review.json",
+            "sha256": "9c93f12315361dd34f4438a2cfb140f19bb53ae7e413b9ccfe456902860f467c"
+          }
+        },
+        "merged_checks": {
+          "status": "PASS_WITH_DECLARED_SKIP",
+          "command": "cd tests/acceptance && python3 -B -m unittest test_first_launch_index_baseline test_first_launch_retained test_first_launch_retained_replacement test_runner",
+          "collected": 89,
+          "passed": 88,
+          "skipped": 1,
+          "skip": "strace unavailable in ordinary host control; real installed/native proof separately executed",
+          "scope": "Affected portable merged controls, not product installed proof; source/acceptance exact hashes match qualified inputs; artifact/link/syntax check PASS."
         }
       }
     }
