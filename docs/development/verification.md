@@ -269,7 +269,7 @@ state. These negatives do not substitute for the real signed acquisition and
 EOF, with no error, incomplete shutdown or unmatched opening; an unexpected
 masked outbound EVENT is a real peer-parser negative control.
 
-Zero Nostr signing is an explicit source-exclusion claim: reviewed `568a7c47` code has
+Zero Nostr signing is an explicit source-exclusion claim: reviewed `c656c518` code has
 no reachable Nostr signer, and only session REQ/CLOSE reach the text sender.
 The case binds the executed product's code/dependency/configuration Git objects
 and relevant source files to that reviewed profile; documentation-only revisions
