@@ -76130,13 +76130,22 @@
       },
       "obsolete_825_target_assessment": {
         "owner": "obsolete_target_sol; verified gpt-6.1-sol/xhigh",
-        "status": "READ_ONLY_PROPOSAL; no deletion/build/engine",
+        "status": "RETIRED_VERIFIED_20261029",
         "proposal": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-825-proposal-20261028.json",
         "proposal_sha256": "948c1a5264a1a586f7cbae8c5eda9a8222c3f329877073aa3da1d87bd402070d",
         "assessment_sha256": "e51af5130e183113ea3f88284d972d32dcec7db2fbb39c1cc64f96d15728a861",
         "scope": "Only1186 compiler intermediates/1,195,470,848 allocatedbytes in obsolete825target; retain114 targetELFs/3237otherentries/31outsidepins and unique825 originaldata/candidate/failures. No currentc022/cache115 change.",
-        "limits": "Fresh ownership/use checks required before any unlink. Complete offline coverage unproven (297/351 declaredregistry archives retained); source/assets/finishedcandidate retained.",
-        "next": "Use existing retirement helpers at a useful allocation/cleanup boundary; do not create a new general cleanup framework or expand inventory for this1.11GiB proposal."
+        "limits": "Original proposal/assessment preserved; complete offline coverage still unproven (297/351 registry archives). The observed free delta includes journal/receipt and unrelated host activity; no claim of byte-identical reconstruction.",
+        "next": "Treat obsolete825 target as a retired partial cache; rebuild into a fresh owned output if needed. No further cleanup selected.",
+        "execution_owner": "root; existing one-target retirement helpers after fresh frozen preflight",
+        "execution_receipt": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-825-retirement-receipt-20261029.json",
+        "execution_receipt_sha256": "01b02408b6182f39374e50081f2d6623b3b377ea9ce17d7a714a748c3accac0a",
+        "manifest_sha256": "2a6eb0ccebfd4c3945b95583dc34c23bab1bcdd3a0daa85712cd54fe2adf6f55",
+        "journal_sha256": "e991173e5f68f890f666da0075ba0ca24bd55d41d93d44934889441e0b0c4e4a",
+        "deleted_files": 1186,
+        "allocated_candidate_bytes": 1195470848,
+        "observed_free_delta_bytes": 1194655744,
+        "preservation": "3237 remaining target entries including114 executable/shared-library ELF paths and31 outside artifact pins verified unchanged. Six overlapping Docker consumers stopped; no accessible process target reference; only the two previously recorded unreadable owned user-session services remain an explicit inspection limit. All unique sources, candidates, databases, logs, failures, worktrees and current115 cache preserved."
       },
       "index_backend_outage": {
         "status": "PASS_ALL8_INSTALLED_LOCAL_INTEGRATED_PUBLICATION_PENDING",

@@ -94,8 +94,14 @@ All local engine/build/acceptance jobs from the completed increment are terminal
 unpaused, runner/clients/observer absent, native closed and owner release committed.
 Optional115 compiler cache released; borrowed bridge empty. Preserve databases,
 original inputs/logs, .research and worktrees. Four published redundant local
-branch refs were retired with unchanged detached worktrees; no data/cache deletion.
-The obsolete825 target1.11GiB retirement is still only a proposal. Exact custody is
+branch refs were retired with unchanged detached worktrees. The separately
+reviewed obsolete825 cache retirement is now complete:1186 compiler intermediates,
+1,195,470,848 allocated bytes, with1,194,655,744 bytes observed free gain. Fresh
+ownership/use checks and postflight preserve3237 other target entries,114 ELFs,
+31 outside artifact pins and all unique data. Session73414 is reaped0; the exact
+intent/unlink journal and terminal receipt are in the inventory. Retire this
+partial cache from future incremental builds; no further cleanup is selected.
+Exact custody is
 in the [inventory](../research/laboratory-inventory.json),
 `implementation_index_foundation_20261026.resume_20261028.index_backend_outage`.
 
