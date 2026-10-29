@@ -4,117 +4,132 @@
 All selected requirements and Q37/Q38/Q40/Q41/Q42 remain. No official release,
 package publication or production deployment is authorized.
 
-## Git state and integrated results
+## Git and completed increments
 
-Public/origin main is **5cc9cbb188378093f97d64f3e51ff11444934b98**. Local main
-**9ebd27b399fa0bb9eeb8949eb8b954693b19ddea** additionally integrates the qualified
-common-wait correction. This checkpoint, P01 finding closure and compact inventory
-entry are the pending coherent documentation commit. Hold the next public push
-while the significant hosted 5cc qualification runs, absent a concrete required fix.
+Public/origin main is **5cc9cbb188378093f97d64f3e51ff11444934b98**. Local source/
+evidence integration **bf70c70fd563233a006f87cebeb0f84b33b7c9a5** also includes qualified common-wait source9ebd,
+checkpoint0fd and hosted report4293. The current checkpoint/inventory and compact
+CI-cost diagnosis are pending documentation changes. No reclamation product/fixture
+is integrated on main yet. Keep the next push around a coherent qualified result.
 
-The retained enabled-Index initial Ingest 1→2 composition is qualified: product
-**6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3**, acceptance **1fab2f4b**. Native
-210 controls/34 groups, strict Clippy/compilation, maintained build, finite topology
-15 stages, outside-checkout tutorial 7 and live topology 16 all PASS at their own
-recorded scopes. Open-producer full-vector Ready, Archive recovery/retry, no-work
-Index rebind/retry, history/export and genuine later-topology historical/current
-SQL authority separation are demonstrated. Native new-bridge creation and both
-later-topology authority branches independently remain NOT_RUN. Second-event
-export is unexecuted in this composition. Wider recovery/capacity remains open.
-The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-and [inventory](../research/laboratory-inventory.json) own exact identities,
-receipts and original native r13/r14/r15 plus installed R1/R2/R3 FAILs. M1's prior
-on/off restart evidence retains its original revision; do not invent a 6cbe rerun.
+The retained enabled-Index initial Ingest1→2 increment (product6cbe/acceptance1fab)
+passes native210/34, build, finite15, outside-checkout tutorial7 and live16 at their
+recorded scopes. Common-wait9ebd also passes208 portable controls, critical review
+of37 callsites and the same-product installed live16 regression. Its concrete late/
+dead-positive defect is closed; wider P01-T08 coordination duties remain open.
+Exact receipts and original M1 on/off sources remain in the [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+P01-T09 and [inventory](../research/laboratory-inventory.json). Do not invent newer
+runs or infer later live epochs, general recovery, Ready65 or second-event export.
 
-**Common wait 9ebd27b3 is now qualified:** deadline before/after predicates and
-after required live-process inspection, including positive results. All 208
-pertinent Python controls PASS; six new methods discriminate the exact old helper
-in five faulty boundary methods and retain one in-bound success. Independent
-critical review reconciled all 37 callsites across ten owners. The same installed
-6cbe product/candidate passes all 16 live stages using the changed helper, with
-actual terminal custody. This closes the concrete P01-T08 Step6 defect; the step's
-wider coordination duties stay open. No product rebuild/assembly was needed.
+## Current reclamation increment
 
-## Evidence and preserved resources
+Product **da5e7dde6247129c5502760ade6d8b587bd209a4**, clean
+`.research/closed-reclamation-qualified-20261029`, branch `work/closed-reclamation-qualification`.
+Acceptance **3641b8b16c421a9e02eef5cdb8d9f6ef2797ad8c**, clean
+`.research/closed-reclamation-acceptance-qualified-20261029`, branch
+`work/closed-reclamation-acceptance-qualification`. Author worktree
+`.research/closed-reclamation-20261029`/`work/closed-reclamation` is clean at3641.
 
-External root:
-`/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2`.
-Candidate `candidate/candidate-manifest.json` SHA256
-`7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb`, assembly 340b4b54.
-Latest helper execution `acceptance-waits-live-r1/root-terminal.json`, SHA256
-`f93f6c58a55bf04e688dba870707ee7090fa817ae3fbf9d5a045669ad32be1c5`.
-Session 82237 reaped with exit 0; all 30 actual containers exited 0/PID 0/no OOM, five recorded
-runner/client PIDs absent, no owned path/label process and borrowed bridge empty.
-External `qualification-resources.json` binds all completed handles and
-`active_case: null`; original builder `resources.json` is intact.
+**221 exact native controls/37groups PASS** (133library/88binary), strict Clippy,
+CLI/library build and test compilation PASS. Actual RocksDB controls cover synced
+floor+receipt deletion, exact retained science, unlink/restart, changed custody,
+stale/corrupt inventory, cancellation/unknown refusal and retired resubmission.
+This is synthetic SQL authority; connected PG/installed capacity remains NOT_RUN.
+Receipt `.research/initial-index-recovery-qualification-20261028/r21-da5e7dde-native/receipt.json`,
+SHA256 `9d3eed0189d2360bc69a86826a68533c52febdf9772892f9917d08f1c9017562`.
+Native root `/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-da5e7dde`.
 
-Helper source/controls remain in `.research/first-launch-waits-20261029`, branch
-`work/first-launch-waits`; `.research/wait-guard-controls/author-receipt.json`
-inside it has SHA256 `12a44fa7ab286dd30410297cbb8ae7a166ee5e7c507166de26f1d4024aeb740b`.
-Critical receipt `.research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-common-wait-9ebd27b3.json`,
-SHA256 `be436d4b277994ec3ec831ba602d7b3cb78ea173692838a7c9b43882af3f1e30`.
+Product/custody/fixture critical findings are closed in existing receipts under
+`.research/initial-retained-boundary-20261028/.research/retained-boundary-author/`.
+Final acceptance binding `.research/closed-reclamation-acceptance-qualified-20261029/.research/acceptance-final-binding.json`,
+SHA256 `c1a4b164714cce0fd91c21eccd91d666fc48d966411e5b44d739eab382fcbf06`:
+reviewed b0ff oracle/proxy bodies unchanged, exact reviewed apps033289db profile,
+226 first-launch controls PASS. No installed11 result is implied.
 
-No local compiler, installed case or laboratory writer is active. Optional 115
-compiler cache is released; borrowed bridge `bigbrotr-m1-0f80280_default` is empty.
-Preserve inputs, databases, native/Archive data, original logs/failures and required
-.research/worktrees. Check actual custody before future allocation or mutation.
-The three integrated Index source worktrees remain clean/detached at 6cbe/4cd3/1fab;
-only their published redundant refs were retired. Publication and retirement
-receipts are in `.research/ci-publication-20261026/source-live-index-20261029/`.
-No disk/data cleanup accompanied that ref retirement.
+Preserve original r17 compile/type/privacy FAIL, r19 obsolete epoch2-test FAIL
+(102PASS/1FAIL/119NOT_RUN), r20 topology1 fixture FAIL (122PASS/2FAIL/97NOT_RUN),
+all original logs/ELFs and the author's portable failures/tool responses. The
+original-only mutation guard requires genuine topology0; the corrected fixture
+keeps sibling synthetic topology1 and its explicit mutation refusal. No guard,
+oracle, timeout, retry or grant was relaxed to obtain current native PASS.
+Root's failed post-run audit generated one bytecode file; it was preserved under
+r17 with the setup-correction record, with all original source bytes intact/restored.
 
-## Current capacity increment and next action
+## Resources and precise next action
 
-Verified Sol/xhigh is implementing in `.research/closed-reclamation-20261029`,
-branch `work/closed-reclamation`, base 13b97512. It is partial, uncompiled and not
-integrated/qualified. Native kernel, confirmed factories, explicit reclaim command,
-compacted Index/Archive consumers and maintained actual 64→reclaim→restart→successor
-fixture are being completed. It may merge the qualified 9ebd helper after committing
-its coherent source; root's evidence checkout remains unchanged.
+Native14547 is reaped0; its exact221 results and all retained source/ELF pins
+are verified. The fresh worker-before-parent build30654 is reaped0 (130.29s),
+container3a20cc1e exited0/PID0/noOOM and launcher1651195 absent. Build receipt
+`.research/initial-index-recovery-qualification-20261028/installed-da5e7dde/build-receipt.json`,
+SHA256 `52d8cf6b1973f69d9110a5607e0c1b22f3d46a33996ba3c087a25586c4e9da55`.
+Fresh exact-product observer6378 is reaped0 (75.16s), containere2db528b exited0/
+PID0/noOOM and launcher1654569 absent. Observer receipt
+`.research/initial-index-recovery-qualification-20261028/observer-da5e7dde/receipt.json`,
+SHA256 `9dde7041e1571a91bd1e024a0d4474f1ecd384205c40f46065aa059e022a7238`.
+Optional115 compiler cache is released/reacquired; original pins and2429 immutable
+source files are unchanged. Candidate assembled once from acceptance3641;
+manifest SHA256 `1103cb3a38b443b216cf27ea1089c89ed0b564e18794538e7eb954b993a6d873`.
+These qualify artifact provenance/build only, not installed reclamation behavior.
 
-Accepted bounded contract: one reusable closed-producer kernel, with the current
-genuine terminal-initial/no-successor authority constructor; confirmed PG proof,
-one synced 139-byte floor+exact receipt deletion, then authenticated idempotent
-input unlink+directory fsync. Bind actual custody, sequence and complete inventory,
-accounting for own mutations. Keep PG outcomes/progress, scientific native facts,
-pending data and Archive objects. Selected consumers must authenticate the compacted
-basis before claiming actual successor reuse of the shared 64-file/32MiB spool.
-ACK is not reclamation; each producer's absolute 64 request limit is unchanged.
+**First actual installed11 result: FAIL**. Session82783 reaped1: seven PASS,
+retirement within `closed_reclamation` FAIL (`Control(InvalidMetadata)`), three
+successor/consumer/history-export stages NOT_RUN; cleanup PASS. Original evidence
+`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-da5e7dde/acceptance-closed-r1`.
+Terminal receipt SHA256 `b37a9d8011e02e2685378fd8465c1ab5925da5dfdefdd27bada6d91460043488`:
+all22 owned containers stopped/PID0/noOOM, six recorded processes absent, original
+negative/unexpected exit4 preserved. Root audit's mistaken route status label was
+corrected against its unchanged maintained `joined` contract and recorded separately;
+it did not change the product FAIL or any original artifact.
 
-Root exclusively owns native/build/installed execution. Next: collect the author's
-frozen source/contracts/control map, resolve concrete ambiguities with bounded
-Astra critical review, then run maintained independent/native and real installed
-qualification. Check space before significant allocations; do not rebuild unchanged
-product or repeat valid evidence merely because of compaction. Record the current
-helper documentation checks before another publication; no new CI dispatch.
+The same-product outside-checkout tutorial **7/7 PASS**, session55953 reaped0;
+evidence sibling `acceptance-tutorial-r1`, terminal receipt SHA256
+`22bf936d4edb98d99245779413278167c1acd97284fa5915ae3b157a8124b431`.
+All18 owned containers exited0/PID0/noOOM, four recorded PIDs and runner command
+absent. Launcher PID was not captured before its exit; the direct session is reaped0.
+Both cleanups have no errors, acceptance hashes unchanged, exact borrowed bridge
+`bigbrotr-m1-0f80280_default` empty. No compiler or installed laboratory test is active.
+All unique data, inputs, databases, raw failures, .research and pending work remain.
+
+**Next:** bounded Astra diagnosis has located numeric SQL-order ambiguity in
+`producer_retirement.rs`: selected `request_sequence::text` makes unqualified
+`ORDER BY request_sequence` lexical1,10 while the consumer requires consecutive
+numeric1,2. Sol author works only in `.research/closed-reclamation-20261029`/
+`work/closed-reclamation`; immutable da5e/3641 qualification worktrees stay fixed.
+Finish source/caller exclusions and scoped fix/independent review, then qualify
+new exact source and rerun maintained closed64 cycle without relaxing criteria.
+Detailed identities and original failures are in the existing [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+and [inventory](../research/laboratory-inventory.json).
+
+Required installed scope remains actual64 originals/source312/native829/H65,
+confirmed floor139/delete64→765rows/seq+65/zero inputs, restart and real successor
+request1=cumulative65 (three requests/source10), authenticated consumers/history/export.
+MixedH64/currentH65children exercise SQL typed-head digest23514 refusal, not direct
+native-floor comparison. No Ready65 claim.
 
 ## Hosted CI and remaining obligations
 
 [Run40814795307](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40814795307)
-on exact 5cc is **ACTIVE**: scope PASS, three foundation jobs running. CI Sol owns
-one watcher/acquisition/scanner. Watch session 15729, driver 1524296/start 662844522,
-gh 1524297/start 662844523; identity receipt
-`.research/ci-publication-20261026/run-40814795307-exposure/watch-identity.json`,
-SHA256 `dc4c7c1320b9b8157ec1a5ae4a1eb64f2230e4261d8dc238e42ceb6729292eaa`.
-Source-derived expectations are 210 native names/34 groups per platform, Linux 282
-Python controls, macOS 276+6 declared SKIP. These are not hosted results yet; a completed
-download-cache step alone proves no cache hit or individual build/check result.
+on exact public5cc completed **SUCCESS: all30 selected checks PASS**, all three
+platforms. Each native210/34; Linux Python282PASS, mac276PASS/6declaredSKIP. Actual
+Rust passes/declared ignores retain their per-platform scopes in the [hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
+FourZIPs/513members and34logmembers:54 occurrences/five known fingerprints, zero
+new/unclassified/provider alerts. Watch/acquisition sessions are reaped0 and original
+PIDs absent; no watcher/dispatch is active. Receipt
+`.research/ci-publication-20261026/run-40814795307-exposure/receipt.json`, SHA256
+`352e039b96fe2906794623f70a9183f8c177849f8097da00ac09a127ccb88dff`.
+This does not qualify newer9ebd or reclamation code on GitHub.
 
-Prior [run40795644538](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40795644538)
-on exact e102 passed all 30 selected checks; detailed timing/cache/exposure and
-original failures remain in the [hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
-Public 5cc passed the shared 3 documentation gates and publication scan with no
-credential/confidential or untriaged finding; two new candidates were synthetic.
-Receipt `source-live-index-20261029/publication.json` in the publication directory,
-SHA256 `d817a595044230f424a18b572f64eb4e6cbc96e22cf4704447065a1997a56638`.
-That scan is not an exhaustive absence proof; do not upload raw private captures.
+CI timings include real test runtime; duplicate equal-input C++ compilation is
+unproven. Existing report records the measured diagnosis and33 overlapping crate
+downloads as a possible checksum-only byte-cache seed, not implemented savings.
+Keep cold shipping/default profiles/all platforms and no parallel optimization plan.
 
-Preserve Code 202/query-retirement, a99 Sync startup and old topology-r2 HTTP429
-uncertainties and their reproducers in the existing Index report. OPEN>64/sliding
-GC, arbitrary terminal epochs, scalable 30s physical readiness, payload GC/Archive
-all-family fallback/replay leases and full capacity/recovery remain P02-T02/T06/T07/T09.
-Admission cost, repeated decoding/transport and coordinator maintenance retain
-P02-T02/T06/T09/P01-T05 owners. Broad backup/restore/resource qualification and all
-later selected phases remain open. No second plan, scope reduction or weaker oracle.
-Coordinator/authors are verified Sol/xhigh; bounded critical reviewer Astra/xhigh.
-Do not recheck models solely for compaction. Do not pause or complete the goal here.
+Preserve Code202/query-retirement, a99 Sync startup and old topology-r2 HTTP429
+uncertainties/reproducers in the existing Index report. OPEN>64/sliding GC, arbitrary
+terminal epochs, scalable30s readiness, payload GC/Archive all-family fallback/
+replay leases and full capacity/recovery remain P02-T02/T06/T07/T09. Admission cost,
+repeated decoding/transport and coordinator maintenance retain P02-T02/T06/T09/
+P01-T05 owners. Broad backup/restore/resource qualification and every later selected
+phase remain open. The complete selected product is the goal; no scope reduction.
+Coordinator/authors remain verified Sol/xhigh, bounded critical reviewer Astra/xhigh.
+Do not recheck models solely for compaction; do not pause or complete the goal here.

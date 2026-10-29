@@ -1662,6 +1662,100 @@
         "Full P00-P10/M1-M5 delivery and hosted qualification of 6cbe after the next coherent push",
         "Second-event export remains unexecuted in this composition; the signed original export and two-event history retain their separate demonstrated scopes (P01-T09/P08 export acceptance)."
       ]
+    },
+    "closed_initial_reclamation": {
+      "status": "NATIVE_AND_ARTIFACT_PASS_INSTALLED_RETIREMENT_FAIL",
+      "owners": [
+        "P02-T02 steps4/7",
+        "P02-T06 steps4/7",
+        "P01-T08"
+      ],
+      "product_revision": "da5e7dde6247129c5502760ade6d8b587bd209a4",
+      "acceptance_revision": "3641b8b16c421a9e02eef5cdb8d9f6ef2797ad8c",
+      "scope": "Genuine retired initial64-request reclamation, exact retained science, compacted restart and bounded enabled-Index successor. No OPEN>64, scalable Ready65, payload GC or general recovery claim.",
+      "native": {
+        "status": "PASS",
+        "controls": 221,
+        "groups": 37,
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/r21-da5e7dde-native/receipt.json",
+          "sha256": "9d3eed0189d2360bc69a86826a68533c52febdf9772892f9917d08f1c9017562"
+        }
+      },
+      "critical_reviews": {
+        "directory": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author",
+        "final_fixture_receipt": "critical-review-closed-reclamation-fixture-b0ff4636.json",
+        "final_source_receipt": "critical-review-reclamation-genesis-fixture-da5e7dde.json",
+        "final_acceptance_binding": {
+          "path": ".research/closed-reclamation-acceptance-qualified-20261029/.research/acceptance-final-binding.json",
+          "sha256": "c1a4b164714cce0fd91c21eccd91d666fc48d966411e5b44d739eab382fcbf06"
+        }
+      },
+      "installed_build": {
+        "status": "PASS",
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/installed-da5e7dde/build-receipt.json",
+          "sha256": "52d8cf6b1973f69d9110a5607e0c1b22f3d46a33996ba3c087a25586c4e9da55"
+        },
+        "elapsed_seconds": 130.29021925665438
+      },
+      "native_observer": {
+        "status": "PASS",
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/observer-da5e7dde/receipt.json",
+          "sha256": "9dde7041e1571a91bd1e024a0d4474f1ecd384205c40f46065aa059e022a7238"
+        },
+        "elapsed_seconds": 75.16399594396353
+      },
+      "candidate": {
+        "status": "PASS_ASSEMBLY_ONLY",
+        "receipt": {
+          "path": ".research/initial-index-recovery-qualification-20261028/installed-da5e7dde/assembly.json",
+          "sha256": "422c1e8f8e37b9bc34b26e536e3f999a7cc2b614bc0ffc74422119cc3dfbceab"
+        }
+      },
+      "installed_case": {
+        "status": "FAIL",
+        "session": 82783,
+        "exit_code": 1,
+        "checks": {
+          "pass_count": 7,
+          "failed": 1,
+          "not_run": 3
+        },
+        "failure_stage": "closed_reclamation",
+        "failure": "reclamation-retire-initial: Control(InvalidMetadata)",
+        "classification": "Product: unqualified ORDER BY resolves to selected request_sequence::text output, lexical1,10 ordering conflicts with required numeric consecutive requests.",
+        "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-da5e7dde/acceptance-closed-r1",
+        "terminal_receipt_sha256": "b37a9d8011e02e2685378fd8465c1ab5925da5dfdefdd27bada6d91460043488",
+        "scope": "Open-producer refusal PASS; retirement fails before reclamation/commit-loss/unlink. Compacted successor, consumers, history/export NOT_RUN. Cleanup PASS; original FAIL preserved."
+      },
+      "tutorial": {
+        "status": "PASS",
+        "session": 55953,
+        "checks": 7,
+        "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-da5e7dde/acceptance-tutorial-r1",
+        "terminal_receipt_sha256": "22bf936d4edb98d99245779413278167c1acd97284fa5915ae3b157a8124b431",
+        "scope": "Outside-checkout signed acquisition/ordinary history/exact export and declared no-signer/negative-profile observations for actual da5e product; not reclamation or complete-product qualification."
+      },
+      "preserved_failures": [
+        {
+          "path": ".research/initial-index-recovery-qualification-20261028/r17-ea55c7bf-compile/receipt.json",
+          "sha256": "7df826e3a66a019b746215b789cad58df5031daeaf7304b522c4eee8519aeef5"
+        },
+        {
+          "path": ".research/initial-index-recovery-qualification-20261028/r19-5da9bc3b-native/receipt.json",
+          "sha256": "191df2608d92d6eabdf3e37544821ecee679f47d5b8ddb14cc146fb05fee7f1f"
+        },
+        {
+          "path": ".research/initial-index-recovery-qualification-20261028/r20-c07b5a44-native/receipt.json",
+          "sha256": "a0658088f25394a4da65e0eb045215086db72ce60fff473fa90a3112ff1a6ea4"
+        }
+      ],
+      "remaining": [
+        "Critical bounded numeric SQL-order diagnosis/review, scoped source fix and new exact-source installed64 reclamation retry. Retain da5e native/build/tutorial evidence at its actual scope.",
+        "All broader capacity, recovery and later selected-plan obligations remain with their existing owners."
+      ]
     }
   },
   "last_updated": "2026-10-29",

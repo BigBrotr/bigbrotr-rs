@@ -830,7 +830,8 @@
       "status": "UNPROVEN_RECOMPILATION_NO_CHANGE_JUSTIFIED",
       "runs": [
         40716894776,
-        40702272536
+        40702272536,
+        40814795307
       ],
       "observed": "All six Clippy/test pairs share cwd, declared environment, input hashes, CARGO_TARGET_DIR and CARGO_HOME. Existing workspace_context/cargo_environment already permit same-run Cargo reuse. Both report librocksdb-sys/zstd-sys compiling; Checking rocksdb versus Compiling rocksdb is compatible with distinct Rust check/codegen work.",
       "limits": "Retained logs have no actual build-script/C++ invocations, per-unit timing or native intermediate archive identity; aggregate times cannot establish redundant native work or savings. Even Cargo build-script-executed JSON may describe cached output.",
@@ -845,7 +846,21 @@
         "https://doc.rust-lang.org/cargo/commands/cargo-check.html",
         "https://doc.rust-lang.org/cargo/reference/profiles.html#test",
         "https://doc.rust-lang.org/cargo/reference/external-tools.html#build-script-output"
-      ]
+      ],
+      "latest_read_only_diagnosis": {
+        "revision": "5cc9cbb188378093f97d64f3e51ff11444934b98",
+        "scope": "Existing exact-source logs only; no new runs/builds/downloads or cache implementation",
+        "test_runtime": "Compilation and real suite execution are both material. Sum of reported Rust suite durations is about796s AMD64/255s ARM64/282s macOS; archive-worker library alone663s/177s/200s. These are suite totals, not product performance or controlled host comparisons.",
+        "native_reuse": "Recorded cwd/source/target/Cargo-home/environment match across default workspace checks. Repeated package compilation lines do not establish equal-input duplicate C++ invocations; check metadata and test executable codegen are distinct required work. Existing no-change conclusion remains.",
+        "verified_crate_download_overlap": {
+          "platform": "Linux AMD64",
+          "packages": 33,
+          "source": "cargo-deny installation home and fresh product build Cargo home",
+          "candidate": "Consider only seeding .crate bytes whose hashes match the product Cargo.lock into the otherwise fresh inner cache. Do not copy unpacked code, config, credentials or compiled outputs; cache absence must retain cold reproducibility.",
+          "status": "ASSESSMENT_ONLY_NOT_IMPLEMENTED_TIME_SAVING_UNMEASURED"
+        },
+        "next": "Within existing P01/P08 tooling, capture actual native invocations/resolved unit inputs/archive identity during an already-required run before proposing native archive reuse; preserve every platform/default profile/clean shipping qualification. No separate optimization project."
+      }
     },
     "download_cache": {
       "status": "EXACT_KEY_HIT_ALL_THREE_PLATFORMS",
