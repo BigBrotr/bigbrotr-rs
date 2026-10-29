@@ -257,9 +257,14 @@ pub(super) fn budget(root: &crate::config::Resolved) -> Result<ResourceBudget> {
     // request ownership. Counts never supply an additional memory allowance.
     let items = 2 + SESSION_ITEMS + u64::from(root.text("read.cursor.keyring_ref").is_some());
     if root.flag("archive.reader.enabled") {
-        // Control, manager, secrets, native output, hash and HTTP all use this
-        // same ledger; a second application payload allowance is never created.
-        return super::archive_preflight::budget(root, items + 6);
+        // One ordinary full probe retains every selected input through native
+        // completion and final currentness/join checks. Fund that existing
+        // protocol bound alongside the original Control/manager/secrets/output/
+        // hash/HTTP lanes on the SAME byte ledger, never a second allowance.
+        let items = items
+            .checked_add(6 + bigbrotr_protocol::archive_cut::MAX_BATCHES as u64)
+            .ok_or_else(|| (3, "private reader item envelope overflow".into()))?;
+        return super::archive_preflight::budget(root, items);
     }
     let envelope = ProcessEnvelope::new(
         n("memory_max_bytes"),
@@ -940,3 +945,6 @@ async fn sql<T>(
 }
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod reader_budget_tests;

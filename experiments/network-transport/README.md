@@ -55,6 +55,10 @@ includes test-code lints that the earlier lib/bin-only invocation missed; the
 hosted workflow still checks every workspace target. No source
 substitution or signature stub is used.
 The separate Archive worker is neither built nor bound by this diagnostic.
+The ordinary reader budget control funds all selected retained inputs up to the
+existing 128-batch protocol bound, alongside the original fixed/shared item lanes.
+It preserves application/native/control byte limits and checks exact refusal and
+permit return through cancellation; it supplies no physical-readiness evidence.
 
 The retained library executable lists its compiled tests before selecting
 `storage::clickhouse::`, `storage::indexer::`,
@@ -93,7 +97,7 @@ selection. An expired original accepted-policy window cannot be replaced by a
 new tracker refresh. These controls require actual Rust execution; the Python
 verifier controls alone do not qualify renewal or shutdown. Diagnostic progress
 cannot certify a commit. The binary
-scope contains 104 required names, including pre-effect finite-work admission,
+scope contains 105 required names, including pre-effect finite-work admission,
 fair deferral, funded ACK completion and Archive publication/capture, plus parked Archive status retaining its
 last published cut or explicit absence. The library selection is combined
 with its actual compiled inventory, never inferred from this source count. The

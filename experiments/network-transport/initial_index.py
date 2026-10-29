@@ -114,8 +114,9 @@ BINARY_GROUPS = {
     'role-status-http': 'interfaces::management::tests::roles::',
     'ordinary-observations': 'interfaces::serve::role_status::tests::',
     'initial-role-route': 'interfaces::management::tests::profiles::initial_profile_preserves_sessions_and_refuses_other_unwired_operations',
+    'ordinary-reader-budget': 'interfaces::management::reader_budget_tests::complete_archive_selection_keeps_shared_byte_caps_and_owned_permits',
 }
-BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route')
+BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route', 'ordinary-reader-budget')
 BINARY_REQUIRED = {
     'initial-capacity': tuple(BINARY_GROUPS['initial-capacity'] + name for name in (
         'denial_and_admission_survive_coalesced_watch_with_exact_wait_and_join_identity',
