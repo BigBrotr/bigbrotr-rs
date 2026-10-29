@@ -97,12 +97,14 @@ impl<'a> Source<'a> {
     pub(super) async fn require_current(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
+        cancelled: &AtomicBool,
     ) -> Result<()> {
         if let Self::Live { writer, .. } = self {
             control
-                .require_live_index_source(session, state.custody(), writer)
+                .require_live_index_source(session, state.custody(), writer, lease, cancelled)
                 .await
                 .map_err(|_| failed("current live source authority unavailable"))?;
         }
@@ -111,8 +113,10 @@ impl<'a> Source<'a> {
     pub(super) async fn prepare(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
+        cancelled: &AtomicBool,
         planned: &PlannedBatch,
     ) -> Result<PreparedIndexPlan> {
         let commit = Cell::new(false);
@@ -137,17 +141,22 @@ impl<'a> Source<'a> {
                         planned.source(),
                         &commit,
                         writer,
+                        lease,
+                        cancelled,
                     )
                     .await
             }
         }
         .map_err(|_| failed("PG plan preparation failed"))
     }
+    #[allow(clippy::too_many_arguments)]
     pub(super) async fn publish(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
+        cancelled: &AtomicBool,
         prepared: &PreparedIndexPlan,
         proof: &VerifiedIndexPlan,
     ) -> Result<bigbrotr::storage::postgres::IndexPublicationReceipt> {
@@ -167,6 +176,8 @@ impl<'a> Source<'a> {
                         proof,
                         &commit,
                         writer,
+                        lease,
+                        cancelled,
                     )
                     .await
             }
@@ -218,7 +229,7 @@ impl<'a> Source<'a> {
                 history_within_limit: view
                     .retained_requests()
                     .map_err(|_| failed("live request census unavailable"))?
-                    <= 64,
+                    <= view.history_request_limit(),
             }),
         }
     }
@@ -230,7 +241,7 @@ impl<'a> Source<'a> {
             Self::Live { view, .. } => Ok(view
                 .retained_requests()
                 .map_err(|_| failed("live request census unavailable"))?
-                <= 64),
+                <= view.history_request_limit()),
         }
     }
     pub(in crate::interfaces::serve::initial_ingest) fn next(

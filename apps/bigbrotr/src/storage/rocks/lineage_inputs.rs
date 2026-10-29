@@ -5,13 +5,14 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 // Names are fixed canonical bytes. Hash every complete file through the existing
 // 8KiB buffer; sorting only these fixed stamps makes the aggregate order stable.
-type Stamp = ([u8; 71], [u8; 32]);
+type Stamp = ([u8; 71], [u8; 32], u64);
 const _: () = assert!(std::mem::size_of::<[Stamp; MAX_FILES]>() + SCRATCH < 16 * 1024);
 
 struct InputScan {
     all: [u8; 32],
     previous: [u8; 32],
     tail: Option<SuccessorStagedInput>,
+    inventory: ClosedInputInventory,
 }
 
 /// Required originals and one optional initial residual range share a physical
@@ -219,7 +220,7 @@ impl IngestStore {
         {
             return Err(BootstrapError::InvalidIntent);
         }
-        let mut stamps: [Stamp; MAX_FILES] = [([0; 71], [0; 32]); MAX_FILES];
+        let mut stamps: [Stamp; MAX_FILES] = [([0; 71], [0; 32], 0); MAX_FILES];
         let mut count = 0;
         let mut required_count = 0;
         let mut total = 0_u64;
@@ -236,6 +237,11 @@ impl IngestStore {
             }
             Err(error) => return Err(BootstrapError::RequestInput(error)),
         };
+        let directory_identity = directory
+            .as_ref()
+            .map(|file| file.metadata().map(|m| (m.dev(), m.ino())))
+            .transpose()
+            .map_err(|_| BootstrapError::RequestInput(RequestInputError::Filesystem))?;
         if let Some(directory) = directory {
             for entry in Dir::read_from(&directory)
                 .map_err(|_| BootstrapError::RequestInput(RequestInputError::Filesystem))?
@@ -321,6 +327,7 @@ impl IngestStore {
                 stamps[count] = (
                     name.try_into().expect("validated fixed name"),
                     stamp.finalize().into(),
+                    before.len(),
                 );
                 count += 1;
             }
@@ -328,7 +335,7 @@ impl IngestStore {
         if required_count != inputs.required_count {
             return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
-        stamps[..count].sort_unstable_by_key(|(name, _)| *name);
+        stamps[..count].sort_unstable_by_key(|(name, _, _)| *name);
         if stamps[..count]
             .windows(2)
             .any(|pair| pair[0].0 == pair[1].0)
@@ -339,7 +346,7 @@ impl IngestStore {
         if let Some(excluded) = &excluded
             && !stamps[..count]
                 .iter()
-                .any(|(name, _)| name.as_slice() == excluded.as_bytes())
+                .any(|(name, _, _)| name.as_slice() == excluded.as_bytes())
         {
             return Err(BootstrapError::RequestInput(RequestInputError::Missing));
         }
@@ -356,7 +363,7 @@ impl IngestStore {
                     })
                 .to_be_bytes(),
             );
-            for (name, stamp) in &stamps[..count] {
+            for (name, stamp, _) in &stamps[..count] {
                 if !(omit
                     && excluded
                         .as_ref()
@@ -379,6 +386,12 @@ impl IngestStore {
             all,
             previous,
             tail: observed_tail,
+            inventory: ClosedInputInventory {
+                stamps,
+                directory: directory_identity,
+                count,
+                total,
+            },
         })
     }
 }
@@ -422,4 +435,157 @@ fn parse_name(name: &[u8]) -> Result<ProducerRequestId, RequestInputError> {
         request_sequence: RequestSequence::new(number(&name[50..66])?)
             .map_err(|_| RequestInputError::Identity)?,
     })
+}
+
+/// Complete fixed-size local inventory retained by a confirmed reclamation.
+/// Canonical outcomes authenticate the bytes before this snapshot is minted.
+/// Each successful removal changes exactly one entry; a missing or replaced
+/// file outside that owned delta is never accepted as a retry of this seal.
+pub(in crate::storage::rocks::store) struct ClosedInputInventory {
+    stamps: [Stamp; MAX_FILES],
+    directory: Option<(u64, u64)>,
+    count: usize,
+    total: u64,
+}
+impl ClosedInputInventory {
+    pub(in crate::storage::rocks::store) fn range_count(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        through: u64,
+    ) -> u64 {
+        self.stamps[..self.count]
+            .iter()
+            .filter(|stamp| {
+                parse_name(&stamp.0).is_ok_and(|id| {
+                    id.producer_slot_id == slot
+                        && id.producer_epoch == epoch
+                        && id.request_sequence.get() <= through
+                })
+            })
+            .count() as u64
+    }
+    fn require(&self, store: &IngestStore, cancelled: &AtomicBool) -> Result<(), BootstrapError> {
+        // The reclamation protocol keeps this directory even for an empty cut.
+        let directory = store
+            .input_directory(false)
+            .map_err(BootstrapError::RequestInput)?;
+        let metadata = directory
+            .metadata()
+            .map_err(|_| BootstrapError::RequestInput(RequestInputError::Filesystem))?;
+        if self.directory != Some((metadata.dev(), metadata.ino())) {
+            return Err(BootstrapError::StateMismatch);
+        }
+        drop(directory);
+        let actual = store
+            .lineage_input_scan(
+                (self.count as u64).into(),
+                |id| {
+                    self.stamps[..self.count]
+                        .iter()
+                        .any(|stamp| stamp.0.as_slice() == name(id).as_bytes())
+                },
+                None,
+                None,
+                None,
+                cancelled,
+            )?
+            .inventory;
+        if actual.directory != self.directory
+            || actual.count != self.count
+            || actual.total != self.total
+            || actual.stamps[..actual.count] != self.stamps[..self.count]
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        Ok(())
+    }
+    /// This kernel is independent of initial-lifetime authority. Its caller
+    /// supplies the exact authenticated producer range and current native seal.
+    pub(in crate::storage::rocks::store) fn remove_range(
+        &mut self,
+        store: &IngestStore,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        through: u64,
+        cancelled: &AtomicBool,
+        mut authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<u64, BootstrapError> {
+        let mut removed = 0;
+        loop {
+            authority()?;
+            self.require(store, cancelled)?;
+            let target = self.stamps[..self.count].iter().position(|stamp| {
+                parse_name(&stamp.0).is_ok_and(|id| {
+                    id.producer_slot_id == slot
+                        && id.producer_epoch == epoch
+                        && id.request_sequence.get() <= through
+                })
+            });
+            let Some(index) = target else { break };
+            let directory = store
+                .input_directory(false)
+                .map_err(BootstrapError::RequestInput)?;
+            let filename = std::str::from_utf8(&self.stamps[index].0)
+                .map_err(|_| BootstrapError::StateMismatch)?;
+            authority()?;
+            if cancelled.load(Ordering::Acquire) {
+                return Err(BootstrapError::AuthorityUnavailable);
+            }
+            rustix::fs::unlinkat(&directory, filename, rustix::fs::AtFlags::empty())
+                .map_err(|_| BootstrapError::CommitUnknown)?;
+            self.total -= self.stamps[index].2;
+            self.stamps.copy_within(index + 1..self.count, index);
+            self.count -= 1;
+            removed += 1;
+            // Only our exact successful unlink authorizes this new census.
+            // Cancellation or external loss returns no completion claim.
+            self.require(store, cancelled)?;
+        }
+        let directory = store
+            .input_directory(false)
+            .map_err(BootstrapError::RequestInput)?;
+        authority()?;
+        directory
+            .sync_all()
+            .map_err(|_| BootstrapError::CommitUnknown)?;
+        self.require(store, cancelled)?;
+        authority()?;
+        Ok(removed)
+    }
+}
+impl IngestStore {
+    pub(in crate::storage::rocks::store) fn closed_input_inventory(
+        &self,
+        slot: ProducerSlotId,
+        through: u64,
+        original: bool,
+        cancelled: &AtomicBool,
+    ) -> Result<ClosedInputInventory, BootstrapError> {
+        let inputs = if original {
+            through.into()
+        } else {
+            LineageInputSet::with_compacted_initial(0, slot, through)?
+        };
+        self.lineage_input_scan(
+            inputs,
+            |id| {
+                id.producer_slot_id == slot
+                    && id.producer_epoch.get() == 1
+                    && id.request_sequence.get() <= through
+            },
+            None,
+            None,
+            None,
+            cancelled,
+        )
+        .map(|scan| scan.inventory)
+    }
+    pub(in crate::storage::rocks::store) fn require_closed_input_inventory(
+        &self,
+        inventory: &ClosedInputInventory,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        inventory.require(self, cancelled)
+    }
 }

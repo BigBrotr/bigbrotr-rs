@@ -8,6 +8,10 @@ use bigbrotr_model::{
     AdmissionBatch, Digest256, ProjectionGenerationId, SourceCut, SourceRecordId,
 };
 
+#[path = "index_publication/compacted_source.rs"]
+mod compacted_source;
+pub use compacted_source::{CompactedIndexRequest, CompactedIndexSource};
+
 #[path = "index_publication/adapter.rs"]
 mod adapter;
 #[path = "index_publication/handoff.rs"]

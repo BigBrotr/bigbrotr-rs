@@ -12,7 +12,7 @@ import threading
 import unittest
 from unittest.mock import Mock, patch
 
-from test_first_launch_restart import fixture
+from test_first_launch_restart import fixture, progress_fixture
 from test_first_launch_index import ROOT, schema, metadata_fixture
 from cases import first_launch_retained as case
 from cases import first_launch_retained_oracle as check
@@ -110,6 +110,147 @@ def saturation_fixture(root):
         head['checkpoint_digest']='\\x'+head_digest(head,[current],dependencies,lambda row:native_reference(row,values)).hex()
         value.update(acquisition_progress=[current],producer_checkpoints=[head])
     return state,before,report,events,wires,dump,wanted
+
+
+def successor_authority_fixture():
+    """Literal owner/recovery split with the existing independent proof fixture."""
+    old,new,manifest,science,_=fixture()
+    proof,job,detail,owner,wire=progress_fixture(new,manifest,science)
+    dataset=science.m.ds['dataset_id'];slot=science.m.slot
+    owner.update(dataset_id=dataset,role='control',state='active',role_instance_id='\\x'+'a5'*16)
+    intent=dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,owner_role='ingest',
+        owner_resource_id='\\x'+'aa'*16,target_epoch=2,target_incarnation='\\x'+'cc'*16,
+        target_role_instance_id='\\x'+'ab'*16,config_revision=1,config_digest='\\x'+'c1'*32,
+        policy_revision=1,policy_digest='\\x'+'c2'*32,previous_manifest=science.m.legacy['previous_manifest'],
+        previous_manifest_sha256='\\x'+source.sha(bytes.fromhex(science.m.legacy['previous_manifest'][2:])),
+        target_manifest_sha256='\\x'+source.sha(manifest),prepared_by_role='control',
+        prepared_by_resource=owner['resource_id'],prepared_by_epoch=owner['epoch'],
+        prepared_by_incarnation=owner['process_incarnation'],xmin='80')
+    handoff=b'independent authority fixture handoff'
+    intent['handoff_sha256']='\\x'+source.sha(handoff)
+    activation={k:v for k,v in intent.items() if k not in ('owner_role','prepared_by_role','previous_manifest','xmin')}
+    activation.update(activated_by_resource=owner['resource_id'],activated_by_epoch=owner['epoch'],
+        activated_by_incarnation=owner['process_incarnation'],activated_at_us=4800,activation_transaction='81',xmin='81')
+    bridge=dict(datasets=[dict(dataset_id=dataset,config_revision=1,policy_revision=1)],
+        owner_epochs=[owner,dict(dataset_id=dataset,role='index',epoch=2,process_incarnation=owner['process_incarnation']),
+            dict(dataset_id=dataset,role='ingest',epoch=2,state='active',resource_id=intent['owner_resource_id'],
+                process_incarnation=intent['target_incarnation'],role_instance_id=intent['target_role_instance_id'])],
+        initial_ingest_successions=[intent],initial_ingest_activations=[activation],
+        index_owner_sessions=[dict(owner_epoch=2,issuer_role='control',issuer_resource=owner['resource_id'],
+            issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'])],
+        producer_requests=[],producer_outcomes=[],producer_checkpoints=[])
+    after=copy.deepcopy(bridge)
+    historical=index.only(after['owner_epochs'],role='control')
+    historical.update(state='released',exclusion_method='storage_fenced',released_at_us=9000,lease_expires_at_us=25000)
+    recovery=dict(owner,epoch=owner['epoch']+1,process_incarnation='\\x'+'e1'*16,
+        role_instance_id='\\x'+'e2'*16,acquired_at_us=10000,lease_expires_at_us=20000,state='released')
+    after['owner_epochs'].append(recovery)
+    reason='activated_initial_producer_abandoned'
+    job.update(owner_role='control',owner_resource_id=recovery['resource_id'],owner_epoch=recovery['epoch'],
+        owner_incarnation=recovery['process_incarnation'],state='cancelled',job_revision=7,
+        completed_at_us=10500,created_at_us=4600,reason_code=reason)
+    gap=dict(job_id=job['job_id'],dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,
+        shard_id=0,source_owner_epoch=2,last_complete_sequence=10,source_closure_digest='\\x'+'c3'*32,
+        previous_owner_resource=owner['resource_id'],previous_owner_epoch=owner['epoch'],
+        previous_owner_incarnation=owner['process_incarnation'],issuer_resource=recovery['resource_id'],
+        issuer_epoch=recovery['epoch'],issuer_incarnation=recovery['process_incarnation'],owner_role='control',
+        reason=reason,previous_job_revision=5,abandoned_at_us=10500)
+    after.update(acquisition_gaps=[gap],source_streams=[dict(dataset_id=dataset,shard_id=0,owner_epoch=2,
+        state='closed',last_complete_sequence=10,closure_digest=gap['source_closure_digest'],closed_at_us=9500)])
+    after.update(proof)
+    common=dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,manifest_sha256='\\x'+source.sha(manifest))
+    observations=dict(relay_endpoint_id='\\x'+'b1'*16,relay_access_scope_id='\\x'+'b2'*16,
+        relay_enrollment_generation=1,relay_route_id='\\x'+'b3'*16,acquisition_scope_id=detail['scope_id'],acquisition_job_id=job['job_id'])
+    bindings={2:source.request_binding(new,wire,1),3:source.request_binding(old,wire,2)}
+    after.update(producer_epochs=[dict(common,outstanding_request_limit=32,reserved_through_request=3)],
+        producer_requests=[],producer_outcomes=[])
+    for n,original in science.inputs.items():
+        receipt=science.receipts[n]
+        after['producer_requests'].append(dict(common,request_sequence=n,request_digest='\\x'+source.sha(original),
+            input_bytes=len(original),input_profile=1,issuer_role='control',issuer_resource=owner['resource_id'],
+            issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],reserved_at_us=5000+n,
+            **(observations if n>1 else dict.fromkeys(observations)),
+            **(bindings[n] if n>1 else dict.fromkeys(source.PROGRESS_FIELDS))))
+        after['producer_outcomes'].append(dict(common,request_sequence=n,request_digest='\\x'+source.sha(original),
+            outcome_kind=1,outcome_bytes='\\x'+receipt.hex(),outcome_sha256='\\x'+source.sha(receipt),policy_epoch=1,
+            recorder_role='control',recorder_resource=owner['resource_id'],recorder_epoch=owner['epoch'],
+            recorder_incarnation=owner['process_incarnation'],recorded_at_us=7000+n,xmin=str(100+n)))
+    return bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations
+
+
+def retained_successor_fixture(root):
+    from initial_succession_oracle import successor_manifest
+    from installed_family_science import NetworkScience
+    from installed_archive_catch_up_model import archive_science
+    from transition_replay import native_rows
+    state,_,_,_,_,dump,first=saturation_fixture(root)
+    previous=next(v for cf,k,v in first['native'] if cf=='default' and k==b'\x01\x01')
+    fresh=[bytes([120+k])*16 for k in range(1,10)]
+    manifest=successor_manifest(previous,bytes.fromhex('cc'*16),fresh)
+    model=SimpleNamespace(ds=state['datasets'][0],slot=state['producer_epochs'][0]['producer_slot_id'],
+        legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=copy.deepcopy(dump))
+    new=next(row['event'] for row in base.load(ROOT/'tests/fixtures/acquisition/selector-events.json')['events'] if row['name']=='included')
+    encoded=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=['\\x'+d.hex() for d in fresh]),
+        acknowledge=True,new_event=new,endpoint=source.ENDPOINT)
+    encoded.network(True,50000,51000,52000,1,(51001,52001))
+    native_rows_value=dict(rows=native_rows(encoded.values))
+    science=archive_science(native_rows_value,live_epoch=2,retained_epoch2=True)
+    return first,encoded,native_rows_value,science
+
+
+
+def compacted_archive_fixture(science):
+    """Independent closed-profile SQL/import history and simulated C API rows."""
+    from installed_archive_catch_up_oracle import cut_digest
+    ds='\\x'+science['tables']['events'][0]['source_record_id']['dataset_id'].lower();catalog='\\x'+'55'*16
+    owner=dict(role='control',state='active',resource_id='\\x'+'a1'*16,epoch=1,
+        process_incarnation='\\x'+'a2'*16,acquired_at_us=100,lease_expires_at_us=10000)
+    attempts=[];receipts=[]
+    for ordinal in range(1,69):
+        batch=science['batches'][ordinal-1 if ordinal<=3 else ordinal-2]
+        attempts.append(dict(ordinal=ordinal,attempt_id='\\x'+f'{ordinal:032x}',worker_incarnation='\\x'+f'{ordinal+100:032x}',
+            coordinator_incarnation=owner['process_incarnation'],coordinator_binding_sha256='\\x'+'dd'*32,
+            dataset_id=ds,catalog_id=catalog,expected_predecessor=ordinal-1,schema_version=1,
+            topology_generation=batch['topology'],batch_digest='\\x'+batch['archive_digest'],persistence_protocol=1,
+            issuer_role='control',issuer_resource=owner['resource_id'],issuer_epoch=1,
+            issuer_incarnation=owner['process_incarnation'],issued_at_us=200+ordinal,xmin=str(ordinal)))
+        if ordinal!=3:
+            receipts.append(dict(dataset_id=ds[2:].upper(),schema_version=1,topology_generation=batch['topology'],
+                batch_digest=batch['archive_digest'].upper(),record_count=batch['last']-batch['first']+1,
+                input_ranges=[dict(shard_id=0,owner_epoch=batch['epoch'],first_sequence=batch['first'],last_sequence=batch['last'])],
+                attempt_id=f'{ordinal:032X}',publication_ordinal=ordinal))
+    prefix=dict(datasets=[dict(dataset_id=ds)],owner_epochs=[owner],archive_attempts=attempts[:2],
+        consumers=[dict(dataset_id=ds,consumer_id=catalog,consumer_role='archive',current_revision=2,current_topology_generation=0,xmin='2')],
+        consumer_frontier_revisions=[],consumer_frontiers=[],archive_frontier_snapshots=[],archive_frontier_batches=[])
+    def append(state,revision,topology,snapshot,cuts,members):
+        common=dict(dataset_id=ds,consumer_id=catalog,frontier_revision=revision,topology_generation=topology,xmin=str(revision))
+        state['consumer_frontier_revisions'].append(dict(common,previous_revision=revision-1 or None))
+        counts=[sum(row['source_record_id']['sequence']<=dict(cuts).get(row['source_record_id']['owner_epoch'],0)
+                    for row in rows) for rows in science['tables'].values()]
+        state['archive_frontier_snapshots'].append(dict(common,catalog_id=catalog,snapshot_id=snapshot,
+            operation_id='\\x'+f'{revision+200:032x}',request_digest='\\x'+cut_digest(ds,topology,members,cuts,snapshot),
+            **dict(zip(source.COUNTS,counts))))
+        state['archive_frontier_batches'] += [dict(common,attempt_id='\\x'+r['attempt_id'].lower()) for r in members]
+        for epoch,cut in cuts:
+            last=next((r for r in reversed(members) if r['input_ranges'][0]['owner_epoch']==epoch),None)
+            state['consumer_frontiers'].append(dict(common,shard_id=0,owner_epoch=epoch,last_complete_sequence=cut,
+                attestation_kind='archive-batch' if last else None,attestation_digest='\\x'+last['batch_digest'].lower() if last else None))
+    append(prefix,1,0,2,[(1,2)],receipts[:1]);append(prefix,2,0,3,[(1,3)],receipts[:2])
+    parked=copy.deepcopy(prefix);parked['archive_attempts'].append(attempts[2])
+    before=copy.deepcopy(parked);after=copy.deepcopy(before);after['archive_attempts']=attempts
+    after['consumers'][0].update(current_revision=4,current_topology_generation=1,xmin='4')
+    append(after,3,1,68,[(1,3),(2,0)],receipts[:2]);append(after,4,1,68,[(1,312),(2,10)],receipts)
+    imported=lambda row:{k:row[k] for k in ('ordinal','attempt_id','batch_digest','topology_generation','worker_incarnation','coordinator_incarnation','xmin')}
+    catalog_before={'bigbrotr_archive.attempts':[imported(r) for r in attempts[:2]]}
+    catalog_after={'bigbrotr_archive.attempts':[imported(r) for r in attempts if r['ordinal']!=3],
+        'bigbrotr_archive.owner':[dict(enabled=False,ordinal=68)]}
+    final=after['archive_frontier_snapshots'][-1]
+    report=dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=2,
+        issued_attempts_before=3,new_attempts=65,frontier_revision=4,snapshot_id=68,operation_id=list(index.raw(final['operation_id'])),
+        request_digest=final['request_digest'][2:],family_counts=[73,62,62,62,63],new_frontier_revisions=2,
+        recovery_basis='closed-producer-floor-v3',compacted_requests='64')
+    census=dict(format='bigbrotr-independent-installed-archive-read/1',tables={**copy.deepcopy(science['tables']),'archive_commits':receipts})
+    return prefix,parked,before,after,report,catalog_before,catalog_after,census
 
 
 class RetainedBoundaryControls(unittest.TestCase):
@@ -497,6 +638,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             process=SimpleNamespace(wait=Mock(side_effect=ValueError('original observer failure')),stop=Mock(),
                 stdout=bytearray(b'partial'),stderr=bytearray(),overflow=False,
                 process=SimpleNamespace(pid=123,returncode=1))
+            (root/'state/data/ingest').mkdir(parents=True)
             runtime=SimpleNamespace(root=root,state=root/'state',project='owned',owner='owner',
                 native_paths={'ingest_bootstrap_probe':root/'probe'},native_hashes={'ingest_bootstrap_probe':'hash'},
                 resources=dict(image=dict(id='image'),cleanup_errors=[]),record_resources=Mock(),
@@ -512,6 +654,619 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(limit=1024*1024))
             self.assertEqual(runtime.resources['cleanup_errors'],[dict(resource='native-observer-output',error='OSError')])
 
+
+
+class ClosedReclamationControls(unittest.TestCase):
+    def test_recovered_archive_reencodes_only_the_unattempted61_batches(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=retained_successor_fixture(Path(temporary))[-1];saved=copy.deepcopy(science)
+            archive=check.compacted_archive_science(science)
+            self.assertEqual(science,saved)
+            self.assertEqual(archive['tables'],science['tables'])
+            self.assertEqual([b['topology'] for b in archive['batches']],[0]*3+[1]*64)
+            changed=[n for n,(a,b) in enumerate(zip(science['batches'],archive['batches'])) if a['archive_digest']!=b['archive_digest']]
+            self.assertEqual(changed,list(range(3,64)))
+            for mutate in (lambda s:s['batches'][3].update(first=9),
+                    lambda s:s['batches'][3]['facts'].pop(),lambda s:s['batches'][3].update(topology=1)):
+                invalid=copy.deepcopy(science);mutate(invalid)
+                with self.assertRaises(AssertionError):check.compacted_archive_science(invalid)
+
+    def test_compacted_archive_requires_exact_sparse_history_and_anchored_unpublished3(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(temporary))[-1])
+            prefix,parked,before,after,report,old_catalog,catalog,census=compacted_archive_fixture(science)
+            check.compacted_archive(prefix,parked,before,after,report,science,old_catalog,catalog)
+            index.startup_selection(after,retained_compacted_epoch2=True)
+            for change in ('head','extra'):
+                wrong=copy.deepcopy(after)
+                if change=='head':wrong['consumers'][0]['current_revision']=5
+                else:wrong['archive_attempts'].append(dict(wrong['archive_attempts'][-1],ordinal=69))
+                with self.subTest(startup=change),self.assertRaises(AssertionError):
+                    index.startup_selection(wrong,retained_compacted_epoch2=True)
+            source.publication(after,census,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],
+                published_ordinals=check.ARCHIVE_PUBLISHED_ORDINALS)
+            changes=[lambda a,r,c:a['archive_attempts'].pop(),
+                lambda a,r,c:a['archive_attempts'].append(dict(a['archive_attempts'][-1],ordinal=69)),
+                lambda a,r,c:a['archive_attempts'][2].update(xmin='rewritten'),
+                lambda a,r,c:c['bigbrotr_archive.attempts'].append(dict(a['archive_attempts'][2])),
+                lambda a,r,c:a['archive_attempts'][3].update(batch_digest='\\x'+'00'*32),
+                lambda a,r,c:a['archive_attempts'][3].update(topology_generation=1),
+                lambda a,r,c:index.only(a['consumer_frontiers'],frontier_revision=3,owner_epoch=1).update(last_complete_sequence=312),
+                lambda a,r,c:index.only(a['consumer_frontiers'],frontier_revision=3,owner_epoch=2).update(attestation_digest='wrong'),
+                lambda a,r,c:a['archive_frontier_batches'].append(dict(a['archive_frontier_batches'][-1],frontier_revision=3)),
+                lambda a,r,c:index.only(a['archive_frontier_snapshots'],frontier_revision=3).update(request_digest='wrong'),
+                lambda a,r,c:index.only(a['archive_frontier_snapshots'],frontier_revision=2).update(xmin='rewritten'),
+                lambda a,r,c:r.update(frontier_revision=5),lambda a,r,c:r.update(new_frontier_revisions=1)]
+            for n,mutate in enumerate(changes):
+                a,r,c=copy.deepcopy((after,report,catalog));mutate(a,r,c)
+                with self.subTest(mutation=n),self.assertRaises((AssertionError,ValueError)):
+                    check.compacted_archive(prefix,parked,before,a,r,science,old_catalog,c)
+
+    def test_compacted_archive_native_census_stays_mandatory_and_uses_sparse_ordinals(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(temporary))[-1])
+            _,_,_,after,_,_,_,census=compacted_archive_fixture(science)
+            for change in ('dense','missing','extra','science'):
+                observed=copy.deepcopy(census)
+                if change=='dense':
+                    for n,row in enumerate(observed['tables']['archive_commits'],1):row['publication_ordinal']=n
+                elif change=='missing':observed['tables']['archive_commits'].pop()
+                elif change=='extra':observed['tables']['archive_commits'].append(dict(observed['tables']['archive_commits'][2],publication_ordinal=3))
+                else:observed['tables']['events'][0]['content']='wrong'
+                with self.subTest(change=change),self.assertRaises(AssertionError):
+                    source.publication(after,observed,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],
+                        published_ordinals=check.ARCHIVE_PUBLISHED_ORDINALS)
+            with self.assertRaises(AssertionError):
+                source.publication(after,census,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)])
+
+    def test_compacted_successor_uses_anchored_historical_issuer_for_requests_and_progress(self):
+        bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations=successor_authority_fixture()
+        owner=check.successor_owner(bridge,after,manifest,handoff,job)
+        self.assertNotEqual(owner['epoch'],job['owner_epoch'])
+        source.requests(after,2,manifest,list(science.inputs.values()),list(science.receipts.values()),owner,bindings,observations)
+        source.successor_progress(after,manifest,science,job,detail,owner,wire,new,9000)
+        recovery=index.only(after['owner_epochs'],role='control',epoch=job['owner_epoch'])
+        for table,prefix in (('producer_requests','issuer'),('producer_outcomes','recorder'),('producer_checkpoints','issuer')):
+            for n in range(len(after[table])):
+                changed=copy.deepcopy(after)
+                changed[table][n].update({prefix+'_resource':recovery['resource_id'],prefix+'_epoch':recovery['epoch'],
+                    prefix+'_incarnation':recovery['process_incarnation']})
+                if table=='producer_checkpoints':
+                    head=changed[table][n]
+                    head['checkpoint_digest']='\\x'+head_digest(head,changed['acquisition_progress'],
+                        changed['producer_checkpoint_dependencies'],lambda row:native_reference(row,science.values)).hex()
+                with self.subTest(table=table,row=n),self.assertRaises(AssertionError):
+                    if table=='producer_checkpoints':
+                        source.successor_progress(changed,manifest,science,job,detail,owner,wire,new,9000)
+                    else:
+                        source.requests(changed,2,manifest,list(science.inputs.values()),list(science.receipts.values()),owner,bindings,observations)
+
+    def test_compacted_successor_anchor_refuses_rewritten_receipts_and_missing_or_duplicate_activation(self):
+        bridge,after,manifest,handoff,job,*_=successor_authority_fixture()
+        for table,fields in (('initial_ingest_activations',('activated_by_resource','activated_by_epoch','activated_by_incarnation',
+                'target_epoch','target_incarnation','target_role_instance_id','target_manifest_sha256','previous_manifest_sha256',
+                'handoff_sha256','config_digest','policy_digest','xmin','activation_transaction')),
+                ('initial_ingest_successions',('target_incarnation','handoff_sha256','xmin'))):
+            for field in fields:
+                changed=copy.deepcopy(after);row=changed[table][0]
+                row[field]=row[field]+1 if type(row[field]) is int else row[field]+'00'
+                with self.subTest(table=table,field=field),self.assertRaises(AssertionError):
+                    check.successor_owner(bridge,changed,manifest,handoff,job)
+        for rows in ([],after['initial_ingest_activations']*2):
+            changed=copy.deepcopy(after);changed['initial_ingest_activations']=rows
+            with self.assertRaises(AssertionError):check.successor_owner(bridge,changed,manifest,handoff,job)
+        changed=copy.deepcopy(after);recovery=index.only(changed['owner_epochs'],role='control',epoch=job['owner_epoch'])
+        activation=changed['initial_ingest_activations'][0]
+        activation.update(activated_by_epoch=recovery['epoch'],activated_by_incarnation=recovery['process_incarnation'])
+        for row in changed['producer_requests']:row.update(issuer_epoch=recovery['epoch'],issuer_incarnation=recovery['process_incarnation'])
+        with self.assertRaises(AssertionError):check.successor_owner(bridge,changed,manifest,handoff,job)
+        for field,value in (('resource','\\x'+'ef'*16),('epoch',job['owner_epoch']),('incarnation','\\x'+'ed'*16)):
+            b,a=copy.deepcopy((bridge,after))
+            for state in (b,a):
+                for table in ('initial_ingest_activations','initial_ingest_successions'):
+                    state[table][0]['prepared_by_'+field]=value
+            with self.subTest(preparer=field),self.assertRaises(AssertionError):
+                check.successor_owner(b,a,manifest,handoff,job)
+
+    def test_compacted_successor_recovery_does_not_replace_or_mutate_the_historical_anchor(self):
+        bridge,after,manifest,handoff,job,*_=successor_authority_fixture()
+        mutations=[lambda b,a,j:b['producer_requests'].append(dict(producer_epoch=2)),
+            lambda b,a,j:b['index_owner_sessions'][0].update(issuer_incarnation='wrong'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(acquired_at_us=4501),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(dataset_id='foreign'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(state='active'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(exclusion_method=None),
+            lambda b,a,j:a['acquisition_gaps'][0].update(previous_owner_epoch=j['owner_epoch']),
+            lambda b,a,j:a['acquisition_gaps'][0].update(issuer_incarnation='wrong'),
+            lambda b,a,j:a['acquisition_gaps'][0].update(source_closure_digest='wrong'),
+            lambda b,a,j:a['acquisition_gaps'][0].update(last_complete_sequence=9),
+            lambda b,a,j:a['acquisition_gaps'][0].update(previous_job_revision=4),
+            lambda b,a,j:j.update(owner_incarnation='wrong'),lambda b,a,j:j.update(completed_at_us=10501),
+            lambda b,a,j:j.update(reason_code='wrong'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=j['owner_epoch']).update(process_incarnation='wrong')]
+        for n,mutate in enumerate(mutations):
+            b,a,j=copy.deepcopy((bridge,after,job));mutate(b,a,j)
+            with self.subTest(mutation=n),self.assertRaises((AssertionError,ValueError)):
+                check.successor_owner(b,a,manifest,handoff,j)
+
+    def test_shared_spool_size_uses_real_shared_metadata_at_exact32MiB(self):
+        from installed_archive import files
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            sizes=[32*1024*1024-2,1,1]
+            for n,size in enumerate(sizes,1):
+                with (directory/f'producer-0000000000000002-{n}.inputs').open('wb') as output:
+                    output.truncate(size)
+            census=files(directory)
+            self.assertTrue(all(set(row)=={'mode','inode','device','links','sha256'} for row in census.values()))
+            observed=case.compacted_spool_sizes(directory,census,files)
+            self.assertEqual(observed['total_bytes'],32*1024*1024)
+            self.assertEqual(sorted(observed['files'].values()),sorted(sizes))
+            self.assertGreater(max(observed['files'].values()),65536)
+            with next(directory.iterdir()).open('ab') as output:output.write(b'x')
+            with self.assertRaisesRegex(ValueError,'exceed shared32MiB'):
+                case.compacted_spool_sizes(directory,files(directory),files)
+
+    def test_shared_spool_size_refuses_changed_identity_and_uncensused_files(self):
+        from installed_archive import files
+        for change in ('identity','uncensused','symlink','epoch','count'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)
+                for n in range(3):(directory/f'producer-0000000000000002-{n}.inputs').write_bytes(b'x')
+                census=files(directory);path=next(directory.iterdir())
+                if change=='identity':
+                    replacement=directory/'replacement';replacement.write_bytes(b'x');replacement.replace(path)
+                elif change=='uncensused':
+                    (directory/'manager.secret').write_bytes(b'x')
+                    self.assertEqual(files(directory),census)
+                elif change=='symlink':
+                    path.unlink();path.symlink_to(next(p for p in directory.iterdir() if p!=path))
+                elif change=='epoch':census={name.replace('-0000000000000002-','-0000000000000001-'):row for name,row in census.items()}
+                else:census.pop(path.name)
+                with self.assertRaises(ValueError):case.compacted_spool_sizes(directory,census,files)
+
+    def test_shared_spool_size_rechecks_hashes_and_sizes_after_observation(self):
+        from installed_archive import files
+        for change in ('hash','size'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)
+                for n in range(3):(directory/f'producer-0000000000000002-{n}.inputs').write_bytes(b'x')
+                census=files(directory);path=next(directory.iterdir())
+                def observe(root):
+                    if change=='hash':
+                        path.write_bytes(b'y')
+                        return files(root)
+                    captured=files(root)
+                    with path.open('ab') as output:output.write(b'y')
+                    return captured
+                with self.assertRaisesRegex(ValueError,'census changed|sizes changed'):
+                    case.compacted_spool_sizes(directory,census,observe)
+
+    def claimed_control(self,before,*,failed=False):
+        after=copy.deepcopy(before)
+        prior=max((r for r in before['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        epoch=prior['epoch']+1;at=max(prior['acquired_at_us'],prior['released_at_us'] or prior['lease_expires_at_us'])+100
+        owner=dict(prior,epoch=epoch,role_instance_id='\\x'+f'{epoch+30:02x}'*16,
+            process_incarnation='\\x'+f'{epoch+60:02x}'*16,acquired_at_us=at,lease_expires_at_us=at+1_000_000,
+            state='active' if failed else 'released',released_at_us=None if failed else at+100,
+            exclusion_method=None if failed else 'storage_fenced',exclusion_digest=None,xmin=str(epoch),control_backend_pid=123+epoch)
+        if not failed:owner['exclusion_digest']=check.control_exclusion(owner,owner)
+        after['owner_epochs'].append(owner)
+        after['role_instances'].append(dict(role_instance_id=owner['role_instance_id'],dataset_id=owner['dataset_id'],
+            role='control',created_at_us=at,retired_at_us=None if failed else at+100,xmin=str(epoch)))
+        return after
+
+    def reclaimed_fixture(self,root):
+        state,_,report,events,wires,dump,science=saturation_fixture(root)
+        science['manifest']=next(v for cf,k,v in science['native'] if cf=='default' and k==b'\x01\x01')
+        state['role_instances']=[]
+        for owner in state['owner_epochs']:
+            owner.setdefault('epoch',1);owner.setdefault('role_instance_id','\\x'+'99'*16)
+        owner=index.only(state['owner_epochs'],role='control')
+        owner.update(dataset_id=state['datasets'][0]['dataset_id'],role_instance_id='\\x'+'01'*16,
+            state='released',index_publication_protocol=None,control_fence_version=1,control_backend_pid=124,
+            control_backend_start='2026-10-29T01:00:00+00:00',exclusion_method='storage_fenced',xmin='1')
+        owner['exclusion_digest']=check.control_exclusion(owner,owner)
+        state['role_instances'].append(dict(role_instance_id=owner['role_instance_id'],role='control',dataset_id=owner['dataset_id'],
+            created_at_us=owner['acquired_at_us'],retired_at_us=owner['released_at_us'],xmin='1'))
+        producer=state['producer_epochs'][0]
+        producer.update(state='retired',owner_resource_id='\\x'+'aa'*16)
+        producer['closure_digest']='\\x'+source.closure(science['manifest'],producer['producer_slot_id'],1,science['inputs'],science['receipts'],312)
+        slot=bytes.fromhex(report['producer_slot_id']);marker=(b'\x01\x31'+slot+index.be(1)).hex()
+        before=copy.deepcopy(dump);before['sequence']=1082
+        next(r for r in before['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
+        head=state['producer_checkpoints'][0]
+        floor=(b'\x03\x31'+index.be(64)*3+b'\x01'+hashlib.sha256(science['manifest']).digest()+index.be(312)
+            +bytes.fromhex(producer['closure_digest'][2:])+index.be(65)+bytes.fromhex(head['checkpoint_digest'][2:]))
+        after=copy.deepcopy(before);after['sequence']=1147
+        after['rows']=[r for r in after['rows'] if not (r['cf']=='receipts' and r['key'].startswith('0130'))]
+        next(r for r in after['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=floor.hex()
+        pg=self.claimed_control(state)
+        result=dict(format='bigbrotr-ingest-recovery/1',state='initial-reclaimed',dataset_id=state['datasets'][0]['dataset_id'][2:],
+            owner_resource_id='aa'*16,producer_slot_id=slot.hex(),producer_epoch='1',retired_requests='64',removed_input_files='64',
+            native_sequence='1147',recovery_basis='closed-producer-floor-v3',native='compacted',owner_release='committed',ready=False)
+        return state,pg,before,after,science,result,floor
+
+    def test_reclamation_exact_floor_batch_science_and_postgres_preservation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            value=self.reclaimed_fixture(Path(directory))
+            self.assertEqual(check.reclaimed(*value[:6]),value[6])
+            self.assertEqual(len(value[6]),139)
+            for label in ('sequence','pending','fact','floor','receipt'):
+                changed=copy.deepcopy(value[3])
+                if label=='sequence':changed['sequence']-=1
+                elif label=='pending':changed['rows']=[r for r in changed['rows'] if not (r['cf']=='facts' and r['key'].startswith('0121'))]
+                elif label in ('fact','floor'):
+                    row=next(r for r in changed['rows'] if r['key'].startswith('0131' if label=='floor' else '0120'))
+                    row['value']=row['value'][:-2]+f'{int(row["value"][-2:],16)^1:02x}'
+                else:changed['rows'].append(copy.deepcopy(next(r for r in value[2]['rows'] if r['key'].startswith('0130'))))
+                with self.subTest(label=label),self.assertRaises(AssertionError):
+                    check.reclaimed(value[0],value[1],value[2],changed,value[4],value[5])
+            corrupt=copy.deepcopy(value[1]);corrupt['producer_outcomes'][0]['outcome_sha256']='\\x'+'00'*32
+            with self.assertRaises(AssertionError):check.reclaimed(value[0],corrupt,*value[2:6])
+
+    def test_reclamation_retry_cannot_rewrite_native_or_claim_another_removal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
+            retry_pg=self.claimed_control(pg)
+            retry=dict(result,removed_input_files='0')
+            check.reclaimed(pg,retry_pg,after,after,science,retry,retry=True)
+            with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,after,science,result,retry=True)
+            changed=copy.deepcopy(after);changed['sequence']+=1
+            with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,changed,science,retry,retry=True)
+
+    def test_retirement_cannot_promote_corrupt_observed_science_into_gc_expectations(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
+            check.retired_initial_native(science,before)
+            for prefix in ('0120','0121'):
+                corrupt_before,corrupt_after=copy.deepcopy(before),copy.deepcopy(after)
+                key=next(r['key'] for r in corrupt_before['rows'] if r['cf']=='facts' and r['key'].startswith(prefix))
+                for dump in (corrupt_before,corrupt_after):
+                    row=next(r for r in dump['rows'] if r['cf']=='facts' and r['key']==key)
+                    row['value']=row['value'][:-2]+f'{int(row["value"][-2:],16)^1:02x}'
+                # Corruption survives byte-exact into the observed post-GC
+                # baseline. Only the earlier independent science rejects it.
+                with self.subTest(prefix=prefix),self.assertRaises(AssertionError):
+                    check.reclaimed(state,pg,corrupt_before,corrupt_after,science,result)
+            changed=copy.deepcopy(before);changed['sequence']+=1
+            with self.assertRaises(AssertionError):check.retired_initial_native(science,changed)
+
+    def test_live_publication_requires_open_producer_and_source_under_active_owners(self):
+        state=dict(owner_epochs=[dict(role='control',state='active',resource_id='control',epoch=9,
+            process_incarnation='control-index'),dict(role='index',epoch=2,state='active',process_incarnation='control-index'),
+            dict(role='ingest',epoch=2,state='active',resource_id='ingest',process_incarnation='native-target',
+                 role_instance_id='native-role')],
+            initial_ingest_successions=[dict(target_epoch=2,owner_resource_id='ingest',
+                target_incarnation='native-target',target_role_instance_id='native-role')],
+            initial_ingest_activations=[dict(target_epoch=2,owner_resource_id='ingest',target_incarnation='native-target',
+                target_role_instance_id='native-role',activated_by_resource='control',activated_by_epoch=9,
+                activated_by_incarnation='control-index')],
+            index_owner_sessions=[dict(owner_epoch=2,issuer_role='control',issuer_resource='control',
+                issuer_epoch=9,issuer_incarnation='control-index')],
+            producer_epochs=[dict(producer_epoch=2,state='open')],
+            source_streams=[dict(owner_epoch=1,state='closed',last_complete_sequence=312),
+                dict(owner_epoch=2,state='open',last_complete_sequence=None)],
+            consumers=[dict(consumer_role='index',consumer_id='index',current_revision=68,current_topology_generation=1)],
+            consumer_frontiers=[dict(consumer_id='index',frontier_revision=68,owner_epoch=epoch,last_complete_sequence=cut)
+                for epoch,cut in ((1,312),(2,10))])
+        check.live_compacted_publication(state)
+        for mutate in (lambda pg:pg['producer_epochs'][0].update(state='active'),
+            lambda pg:pg['source_streams'][1].update(state='closed',last_complete_sequence=10),
+            lambda pg:pg['source_streams'][1].update(last_complete_sequence=10),
+            lambda pg:pg['owner_epochs'][1].update(state='open'),
+            lambda pg:pg['consumer_frontiers'][0].update(last_complete_sequence=12),
+            lambda pg:pg['index_owner_sessions'][0].update(issuer_incarnation='unrelated-control')):
+            changed=copy.deepcopy(state);mutate(changed)
+            with self.assertRaises(AssertionError):check.live_compacted_publication(changed)
+
+    def test_compacted_consumer_uses_the_declared_index_database(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=object.__new__(case.ReclamationRuntime)
+            runtime.reclamation_output=Path(directory);runtime.schema=schema
+            runtime.finite=Mock(return_value=dict(published_revision_after=68,new_batches=0))
+            runtime.capture=Mock(return_value=({},{}))
+            runtime.prefix_catalog={}
+            runtime.ch=Mock(side_effect=ValueError('declared Index reader reached'))
+            with self.assertRaisesRegex(ValueError,'declared Index reader reached'):runtime.compacted_consumers()
+            self.assertIn('FROM serving_fixture.',runtime.ch.call_args.args[0])
+
+    def test_fresh_control_binds_resource_epoch_role_disposition_and_fault_backend(self):
+        with tempfile.TemporaryDirectory() as directory:
+            before=self.reclaimed_fixture(Path(directory))[0]
+            released=self.claimed_control(before);failed=self.claimed_control(before,failed=True)
+            owner=check.control_only(before,failed,claim='failed',backend_pid=125)
+            self.assertEqual(owner['state'],'active')
+            check.control_only(before,before,claim='none')
+            for target,field,value in (('owner','dataset_id','wrong'),('owner','resource_id','wrong'),
+                ('owner','epoch',9),('owner','control_fence_version',None),('owner','control_backend_start',None),
+                ('owner','state','active'),('role','dataset_id','wrong'),('role','retired_at_us',None)):
+                changed=copy.deepcopy(released)
+                row=changed['owner_epochs'][-1] if target=='owner' else changed['role_instances'][-1]
+                row[field]=value
+                with self.subTest(target=target,field=field),self.assertRaises(AssertionError):check.control_only(before,changed)
+            with self.assertRaises(AssertionError):check.control_only(before,failed)
+            with self.assertRaises(AssertionError):check.control_only(before,failed,claim='failed',backend_pid=999)
+            with self.assertRaises(AssertionError):check.control_only(before,released,claim='none')
+
+    def test_refusal_and_unknown_commit_require_the_selected_branch_and_exact_counters(self):
+        for label,(claim,error) in check.REFUSALS.items():
+            self.assertEqual(check.reclamation_refusal(label,'','error: '+error+'\n'),claim)
+            for stdout,stderr in (('success','error: '+error+'\n'),('','error: file unavailable\n')):
+                with self.assertRaises(AssertionError):check.reclamation_refusal(label,stdout,stderr)
+        for mode in ('before-forward','after-complete'):
+            fault=dict(event='fault',mode=mode,target='control-closed-reclamation',profile='retained-catch-up',
+                data_queries=1,data_commits=1,faults=1,server_complete=int(mode=='after-complete'),client_complete=0,backend_pid=125)
+            ended=dict(fault,event='terminal',unexpected=0)
+            terminal=dict(exit=0,stderr='',overflow=False,stdout=json.dumps(fault)+'\n'+json.dumps(ended)+'\n')
+            check.reclamation_fault(fault,terminal,mode)
+            for field,value in (('unexpected',1),('data_queries',2),('data_commits',2),('client_complete',1),('server_complete',2)):
+                wrong=dict(ended,**{field:value});changed=dict(terminal,stdout=json.dumps(fault)+'\n'+json.dumps(wrong)+'\n')
+                with self.assertRaises(AssertionError):check.reclamation_fault(fault,changed,mode)
+
+    def test_proxy_cleanup_always_stops_and_preserves_the_original_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=object.__new__(case.ReclamationRuntime);runtime.config=Mock();runtime.resources=dict(cleanup_errors=[])
+            runtime.config.write_text.side_effect=OSError('restore failure')
+            runtime.proxy_send=Mock(side_effect=OSError('send failure'))
+            proxy=Mock();proxy.wait.side_effect=TimeoutError('join failure');proxy.stop.side_effect=RuntimeError('stop failure')
+            runtime.proxy_observation=Mock(return_value=dict(stdout='',stderr='',overflow=False))
+            with patch.object(case,'save',side_effect=OSError('persistence failure')):
+                with self.assertRaisesRegex(ValueError,'original reclamation failure'):
+                    try:raise ValueError('original reclamation failure')
+                    finally:runtime.finish_reclamation_proxy(proxy,'original',Path(directory))
+            proxy.stop.assert_called_once();proxy.wait.assert_called_once_with(5)
+            self.assertEqual([r['resource'] for r in runtime.resources['cleanup_errors']],
+                ['reclamation-config-restore','reclamation-proxy-stop-command','reclamation-proxy-join',
+                 'reclamation-proxy-output','reclamation-proxy-stop'])
+            runtime.resources['cleanup_errors']=[];runtime.config.write_text.side_effect=None
+            runtime.proxy_send.side_effect=None;proxy.wait.side_effect=None;proxy.wait.return_value=0;proxy.stop.side_effect=None
+            with patch.object(case,'save',side_effect=OSError('persistence failure')):
+                with self.assertRaisesRegex(OSError,'persistence failure'):runtime.finish_reclamation_proxy(proxy,'original',Path(directory))
+            self.assertEqual(proxy.stop.call_count,2)
+
+    def test_reclamation_fault_wait_preserves_unexpected_child_failure(self):
+        expected='error: producer operation unavailable: CommitUnknown\n'
+        state=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False)
+        failures=[(state,'','error: producer operation unavailable: Native(InsufficientReservation)\n'),
+            (dict(state,ExitCode=0),'',expected),(dict(state,Pid=1),'',expected),
+            (dict(state,OOMKilled=True),'',expected),(state,'unexpected success\n',expected)]
+        for changed,stdout,stderr in failures:
+            with self.subTest(state=changed,stdout=stdout,stderr=stderr),tempfile.TemporaryDirectory() as directory:
+                output=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+                runtime.proxy_event=Mock(side_effect=AssertionError('fixture event deadline'))
+                runtime.inspect=Mock(return_value=dict(State=changed))
+                runtime.docker=Mock(return_value=SimpleNamespace(stdout=stdout,stderr=stderr))
+                proxy=object();entry=dict(id='a'*64)
+                with patch.object(case.time,'monotonic',return_value=0):
+                    with self.assertRaisesRegex(ValueError,'unexpected reclamation child result before proxy fault'):
+                        runtime.wait_reclamation_fault(proxy,entry,output)
+                runtime.proxy_event.assert_called_once_with(proxy,'fault',1)
+                runtime.docker.assert_called_once_with('logs',entry['id'],timeout=30)
+                self.assertEqual((output/'serve.stdout').read_text(),stdout)
+                self.assertEqual((output/'serve.stderr').read_text(),stderr)
+                self.assertEqual(base.load(output/'serve-terminal.json'),dict(container_id=entry['id'],state=changed))
+
+    def test_reclamation_fault_wait_allows_delayed_fault_after_expected_child_exit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+            fault=dict(event='fault',faults=1)
+            runtime.proxy_event=Mock(side_effect=[AssertionError('fixture event deadline'),fault])
+            runtime.inspect=Mock(return_value=dict(State=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False)))
+            runtime.docker=Mock(return_value=SimpleNamespace(stdout='',stderr='error: producer operation unavailable: CommitUnknown\n'))
+            proxy=object();entry=dict(id='a'*64)
+            with patch.object(case.time,'monotonic',return_value=0):
+                self.assertIs(runtime.wait_reclamation_fault(proxy,entry,output),fault)
+            self.assertEqual(runtime.proxy_event.call_count,2)
+            runtime.inspect.assert_called_once_with(entry)
+            self.assertEqual(runtime.docker.call_count,1)
+            self.assertEqual((output/'serve.stderr').read_text(),'error: producer operation unavailable: CommitUnknown\n')
+
+    def test_reclamation_fault_wait_keeps_one110s_deadline(self):
+        runtime=object.__new__(case.ReclamationRuntime);now=[0]
+        def event(*args):
+            now[0]+=1
+            raise AssertionError('fixture event deadline')
+        runtime.proxy_event=Mock(side_effect=event)
+        runtime.inspect=Mock(return_value=dict(State=dict(Running=True)))
+        runtime.docker=Mock()
+        with patch.object(case.time,'monotonic',side_effect=lambda:now[0]):
+            with self.assertRaisesRegex(ValueError,'reclamation fault deadline'):
+                runtime.wait_reclamation_fault(object(),dict(id='a'*64),Path('unused'))
+        self.assertEqual(runtime.proxy_event.call_count,110)
+        self.assertEqual(runtime.inspect.call_count,109)
+        self.assertTrue(all(call.args[2]==1 for call in runtime.proxy_event.call_args_list))
+        runtime.docker.assert_not_called()
+
+    def test_reclamation_fault_wait_refuses_deadline_crossing_observations(self):
+        for boundary in ('event','inspect','logs'):
+            with self.subTest(boundary=boundary),tempfile.TemporaryDirectory() as directory:
+                output=Path(directory);runtime=object.__new__(case.ReclamationRuntime);now=[0]
+                def event(*args):
+                    if boundary=='event':
+                        now[0]=110
+                        return dict(event='fault',faults=1)
+                    raise AssertionError('fixture event deadline')
+                def inspect(entry):
+                    if boundary=='inspect':now[0]=110
+                    return dict(State=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False))
+                def logs(*args,**kwargs):
+                    now[0]=110
+                    return SimpleNamespace(stdout='',stderr='error: producer operation unavailable: CommitUnknown\n')
+                runtime.proxy_event=Mock(side_effect=event);runtime.inspect=Mock(side_effect=inspect)
+                runtime.docker=Mock(side_effect=logs)
+                with patch.object(case.time,'monotonic',side_effect=lambda:now[0]):
+                    with self.assertRaisesRegex(ValueError,'reclamation fault deadline'):
+                        runtime.wait_reclamation_fault(object(),dict(id='a'*64),output)
+                if boundary=='event':runtime.inspect.assert_not_called()
+                if boundary!='logs':runtime.docker.assert_not_called()
+                else:self.assertTrue((output/'serve-terminal.json').is_file())
+
+    def test_reclamation_fault_wait_propagates_other_proxy_failures(self):
+        for failure in (AssertionError(),AssertionError('proxy overflow'),json.JSONDecodeError('bad record','{',1)):
+            with self.subTest(failure=type(failure).__name__,args=failure.args):
+                runtime=object.__new__(case.ReclamationRuntime)
+                runtime.proxy_event=Mock(side_effect=failure);runtime.inspect=Mock();runtime.docker=Mock()
+                with patch.object(case.time,'monotonic',return_value=0):
+                    with self.assertRaises(type(failure)) as caught:
+                        runtime.wait_reclamation_fault(object(),dict(id='a'*64),Path('unused'))
+                self.assertIs(caught.exception,failure)
+                runtime.inspect.assert_not_called();runtime.docker.assert_not_called()
+
+    def test_outer_cleanup_retries_every_retained_proxy_even_after_stop_failure(self):
+        runtime=object.__new__(case.ReclamationRuntime);runtime.resources=dict(cleanup_errors=[])
+        first,second=Mock(),Mock();first.stop.side_effect=OSError('first stop')
+        runtime.reclamation_proxy_handles=[first,second]
+        with patch.object(case.RetainedRuntime,'cleanup') as cleanup:runtime.cleanup()
+        first.stop.assert_called_once();second.stop.assert_called_once();cleanup.assert_called_once()
+
+    def test_retained_bridge_and_startup_keep_exact_old_history_and_identity(self):
+        from test_first_launch_index_live import bridge_fixture
+        state,binding,publisher,generation=bridge_fixture()
+        generation.update(storage_incarnation='\\x'+binding[3].hex(),table_identity_digest='\\x'+binding[4].hex())
+        wanted='1dba3e1ed7c5d9673d58296d9d3dca5053fdfd04852c66bcd2818e95466237c8'
+        self.assertEqual(case.topology.handoff_digest(binding,bytes.fromhex('77'*16),bytes.fromhex('88'*32),
+            retained_boundary=True).hex(),wanted)
+        for table in ('index_frontier_handoffs','consumer_frontier_revisions','consumer_frontiers'):
+            for row in state[table]:
+                if 'frontier_revision' in row:row['frontier_revision']+=60
+                if 'expected_revision' in row:row['expected_revision']+=60
+                if 'previous_revision' in row:row['previous_revision']+=60
+                if row.get('last_complete_sequence')==12:row['last_complete_sequence']=312
+        state['index_frontier_handoffs'][0].update(predecessor_through=312,handoff_digest='\\x'+wanted)
+        case.topology.bridge_history(state,binding,publisher,generation,retained_boundary=True)
+        for field,value in (('handoff_digest','\\x'+'00'*32),('expected_revision',4),('predecessor_through',12)):
+            changed=copy.deepcopy(state);changed['index_frontier_handoffs'][0][field]=value
+            with self.assertRaises(AssertionError):case.topology.bridge_history(changed,binding,publisher,generation,retained_boundary=True)
+        startup=dict(format='bigbrotr-live-initial-index/1',state='bridged',generation_id=generation['generation_id'][2:],
+            storage_incarnation=generation['storage_incarnation'][2:],table_identity_digest=generation['table_identity_digest'][2:],
+            previous_owner_epoch=1,owner_epoch=2,published_revision_before=64,published_revision_after=65,
+            published_cut=dict(dataset_id=generation['dataset_id'][2:],topology_generation='1',bounds=[
+                dict(stream=dict(shard_id=0,owner_epoch=str(epoch)),last_complete_sequence=str(cut)) for epoch,cut in ((1,312),(2,0))]),ready=False)
+        case.live_oracle.startup_index(startup,generation,retained_boundary=True)
+        for field,value in (('published_revision_after',5),('storage_incarnation','00'*16),('owner_epoch',3)):
+            with self.assertRaises(AssertionError):case.live_oracle.startup_index(dict(startup,**{field:value}),generation,retained_boundary=True)
+        before={t:[] for t in index.INDEX_TABLES};before.update(consumers=[dict(consumer_role='index',consumer_id='index')],
+            consumer_frontier_revisions=[],consumer_frontiers=[],index_frontier_plans=[dict(frontier_revision=64,engine_receipt_digest='receipt',xmin='64')])
+        changed=copy.deepcopy(before);changed['index_frontier_plans'][0]['engine_receipt_digest']='changed-during-activation'
+        with self.assertRaises(AssertionError):case.live_oracle.append_only_history(before,changed)
+
+    def test_retained_recovery_digest_seals_the_earlier_bridge_before_batch66(self):
+        from test_first_launch_index_topology import recovery_fixture
+        state,binding,owners,_,handoff=recovery_fixture()
+        digests=['e5429bcf4fdc199a2cfaf2844c791d5f9b0ec73fff9d1b1186f33b5bad002b61',
+            '041278638277dc63a34af6c905b3e2a86019ada5ebe65c3b331e20bd2ea460ab']
+        handoff['handoff_digest']='\\x'+'1dba3e1ed7c5d9673d58296d9d3dca5053fdfd04852c66bcd2818e95466237c8'
+        commitments=[(n,bytes([n])*32,bytes([n+16])*32) for n in list(range(1,65))+[66,67,68]]
+        for n,digest in enumerate(digests):
+            owners[n]['exclusion_digest']='\\x'+digest
+            head=64 if n==0 else 68
+            state['index_owner_sessions'][n+1].update(recovered_revision=head,recovered_plan='\\x'+bytes([head]).hex()*32,recovery_digest='\\x'+digest)
+        case.topology.recovery_sessions(state,binding,owners,commitments,handoff,retained_boundary=True)
+        for mutation in ('bridge','owner','receipt'):
+            changed=copy.deepcopy(state);hs=copy.deepcopy(handoff);cs=copy.deepcopy(commitments)
+            if mutation=='bridge':hs['handoff_digest']='\\x'+'00'*32
+            elif mutation=='owner':changed['index_owner_sessions'][-1]['owner_incarnation']='\\x'+'ff'*16
+            else:cs[-1]=(68,cs[-1][1],bytes(32))
+            with self.assertRaises(AssertionError):case.topology.recovery_sessions(changed,binding,owners,cs,hs,retained_boundary=True)
+
+    def test_retained_finite_report_requires_exact_compacted_basis_and_no_new_work(self):
+        generation=dict(dataset_id='\\x'+'11'*16,generation_id='\\x'+'22'*16,
+            storage_incarnation='\\x'+'33'*16,table_identity_digest='\\x'+'44'*32)
+        state=dict(projection_generations=[generation],index_owner_sessions=[])
+        cut=dict(topology_generation=1,bounds=[dict(shard_id=0,owner_epoch=epoch,last_complete_sequence=last)
+            for epoch,last in ((1,312),(2,10))])
+        for epoch in (3,4):
+            report=dict(format='bigbrotr-initial-index-catch-up/2',state='complete',dataset_id='11'*16,generation_id='22'*16,
+                storage_incarnation='33'*16,table_identity_digest='44'*32,previous_owner_epoch=epoch-1,owner_epoch=epoch,
+                published_revision_before=68,published_revision_after=68,source_epoch=2,source_through=10,published_through=10,
+                source_cut=cut,published_cut=cut,index_handoff_revision=65,published_handoff=False,recovered_pending=False,new_batches=0,
+                ready=False,acknowledgement='not-performed',ingest_retirement='not-performed',
+                topology_transition='existing-ingest-handoff-verified',recovery_basis='closed-producer-floor-v3',compacted_requests='64')
+            # This isolates the report parser; other controls separately verify
+            # the typed history and its exact delegated recovery commitments.
+            with patch.object(case.live_oracle.restart,'unchanged_except'),patch.object(case.live_oracle.restart,'owner_changes'), \
+                    patch.object(case.topology,'published_history',return_value={}):
+                case.live_oracle.no_work_rebind(state,state,report,{},schema,{},owner_epoch=epoch,retained_boundary=True)
+                for field,value in (('compacted_requests','65'),('recovery_basis','original-inputs'),('index_handoff_revision',5),
+                    ('published_revision_after',8),('new_batches',1),('ready',True)):
+                    with self.assertRaises(AssertionError):case.live_oracle.no_work_rebind(state,state,dict(report,**{field:value}),
+                        {},schema,{},owner_epoch=epoch,retained_boundary=True)
+
+    def test_retained_epoch_two_profile_counts_all_322_scientific_and_572_index_rows(self):
+        from initial_succession_oracle import successor_manifest
+        from installed_family_science import NetworkScience
+        from installed_archive_catch_up_model import archive_science
+        from transition_replay import native_rows
+        with tempfile.TemporaryDirectory() as directory:
+            first,encoded,native_rows_value,science=retained_successor_fixture(Path(directory))
+            self.assertEqual(sum(map(len,science['tables'].values())),322)
+            self.assertEqual([len(rows) for rows in science['tables'].values()],[73,62,62,62,63])
+            self.assertEqual(len(science['batches']),67)
+            projected=index.expected_rows(science,bytes.fromhex('66'*16),schema,counts=case.topology.RETAINED_COUNTS)
+            self.assertEqual(sum(map(len,projected.values())),572)
+            self.assertEqual((len(first['inputs']),min(encoded.inputs)),(64,1))
+            invalid=copy.deepcopy(native_rows_value)
+            invalid['rows']=[r for r in invalid['rows'] if not (r['cf']=='facts' and r['key'].startswith('0120') and r['key'].endswith('000000000000000a'))]
+            with self.assertRaises(AssertionError):archive_science(invalid,live_epoch=2,retained_epoch2=True)
+
+    def test_spent_control_fencing_is_exact_without_excusing_scientific_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            before=self.reclaimed_fixture(Path(directory))[0]
+            old=index.only(before['owner_epochs'],role='control')
+            role=index.only(before['role_instances'],role_instance_id=old['role_instance_id'])
+            old.update(state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None)
+            role['retired_at_us']=None
+            after=self.claimed_control(before)
+            successor=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+            fenced=index.only(after['owner_epochs'],role_instance_id=old['role_instance_id'])
+            fenced.update(state='released',released_at_us=old['lease_expires_at_us']+10,exclusion_method='storage_fenced',
+                exclusion_digest=check.control_exclusion(old,successor),xmin='2')
+            index.only(after['role_instances'],role_instance_id=role['role_instance_id']).update(
+                retired_at_us=old['lease_expires_at_us']+15,xmin='2')
+            check.control_only(before,after)
+            for missing in ('owner-fence','role-retirement'):
+                changed=copy.deepcopy(after)
+                if missing=='owner-fence':
+                    current=index.only(changed['owner_epochs'],role_instance_id=old['role_instance_id'])
+                    current.clear();current.update(old)
+                current=index.only(changed['role_instances'],role_instance_id=role['role_instance_id'])
+                current.clear();current.update(role)
+                with self.subTest(missing=missing),self.assertRaises(AssertionError):check.control_only(before,changed)
+            for mutate in (lambda pg:pg['producer_requests'][0].update(request_sequence=63),
+                lambda pg:index.only(pg['owner_epochs'],role_instance_id=old['role_instance_id']).update(exclusion_digest='\\x'+'00'*32),
+                lambda pg:index.only(pg['role_instances'],role_instance_id=role['role_instance_id']).update(retired_at_us=old['lease_expires_at_us'])):
+                changed=copy.deepcopy(after);mutate(changed)
+                with self.assertRaises(AssertionError):check.control_only(before,changed)
+
+    def test_new_case_keeps_declared_existing_workload_and_client_bounds(self):
+        self.assertIn('p01-first-launch-closed-reclamation',base.RESTART_CASES)
+        self.assertEqual((case.ReclamationRuntime.source_cut,case.ReclamationRuntime.publication_revision,case.ReclamationRuntime.request_count),(312,64,64))
+        self.assertIn('closed_reclamation',case.RECLAMATION_STAGES)
+        self.assertEqual(case.RECLAMATION_STAGES[-1],'cleanup')
+
+    def test_reclamation_dispatch_requires_every_stage_and_preserves_first_failure(self):
+        for failing in (False,True):
+            with tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);args=arguments(root);args.case='p01-first-launch-closed-reclamation';checks=[]
+                with patch.object(case,'ReclamationRuntime') as runtime:
+                    if failing:runtime.return_value.closed_reclamation.side_effect=AssertionError('unconfirmed closed reclamation')
+                    base.first_launch(args,checks,{})
+                    runtime.return_value.cleanup.assert_called_once()
+                    runtime.return_value.restart_baseline.assert_not_called()
+                    runtime.return_value.ordinary.assert_not_called()
+                    for name in ('compacted_successor','compacted_consumers','compacted_history_export'):
+                        if failing:getattr(runtime.return_value,name).assert_not_called()
+                        else:getattr(runtime.return_value,name).assert_called_once()
+                self.assertEqual(len(checks),11)
+                rows={row['name']:row['result'] for row in checks}
+                self.assertEqual(rows['first_launch_cleanup'],'PASS')
+                if failing:
+                    self.assertEqual(base.load(root/'failure.json')['reason'],'unconfirmed closed reclamation')
+                    self.assertEqual(rows['first_launch_closed_reclamation'],'FAIL')
+                    for name in ('compacted_successor','compacted_consumers','compacted_history_export'):
+                        self.assertEqual(rows['first_launch_'+name],'NOT_RUN')
+                else:self.assertEqual(set(rows.values()),{'PASS'})
 
 if __name__=='__main__':
     unittest.main()

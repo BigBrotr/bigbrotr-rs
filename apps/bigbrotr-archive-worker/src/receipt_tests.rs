@@ -82,6 +82,80 @@ fn complete_receipt_and_absence_survive_a_fresh_readonly_native_connection() {
         );
     }
 }
+
+#[test]
+fn retained_replacement_uses_the_strict_receipt_guard_through_complete_eof() {
+    for case in [
+        "replacement",
+        "absent",
+        "old-and-replacement",
+        "duplicate",
+        "third-digest",
+        "id-collision",
+        "ordinal-collision",
+    ] {
+        let home = tempfile::tempdir().unwrap();
+        let temp = tempfile::tempdir().unwrap();
+        let e = open(home.path(), temp.path(), false);
+        schema::initialize(&e.connection).unwrap();
+        if case != "absent" {
+            insert(&e.connection);
+            e.connection
+                .execute_batch("UPDATE archive.archive_commits SET publication_ordinal=4")
+                .unwrap();
+        }
+        let extra = match case {
+            "old-and-replacement" => Some(("08", "05", 3)),
+            "duplicate" => Some(("09", "05", 4)),
+            "third-digest" => Some(("0a", "05", 5)),
+            "id-collision" => Some(("09", "06", 5)),
+            "ordinal-collision" => Some(("0a", "06", 4)),
+            _ => None,
+        };
+        if let Some((id, digest, ordinal)) = extra {
+            e.connection.execute_batch(&format!(
+                "INSERT INTO archive.archive_commits SELECT dataset_id,schema_version,topology_generation,from_hex('{}'),record_count,input_ranges,from_hex('{}'),{ordinal} FROM archive.archive_commits WHERE publication_ordinal=4 LIMIT 1",
+                digest.repeat(32), id.repeat(16))).unwrap();
+        }
+        drop(e);
+        let temp = tempfile::tempdir().unwrap();
+        let e = open(home.path(), temp.path(), true);
+        let mut replacement = expected();
+        replacement.publication_ordinal = 4;
+        let mut original = replacement.clone();
+        original.attempt_id = [8; 16];
+        original.publication_ordinal = 3;
+        if case == "replacement" {
+            // The old observer is the concrete retry counterexample. Targeting
+            // the one already-current replacement keeps the generic guard.
+            assert_eq!(
+                inspect_attached(&e.connection, &original, 16),
+                Err(ReceiptError::Mismatch)
+            );
+            // A refused scan leaves its read transaction open. Production
+            // observations use fresh processes; match that boundary here.
+            drop(e);
+            let temp = tempfile::tempdir().unwrap();
+            let e = open(home.path(), temp.path(), true);
+            assert_eq!(
+                inspect_attached(&e.connection, &replacement, 16),
+                Ok(ReceiptObservation::Present)
+            );
+        } else if case == "absent" {
+            assert_eq!(
+                inspect_attached(&e.connection, &replacement, 16),
+                Ok(ReceiptObservation::Absent)
+            );
+        } else {
+            // Includes rows after the target: no early Present before EOF.
+            assert_eq!(
+                inspect_attached(&e.connection, &replacement, 16),
+                Err(ReceiptError::Mismatch),
+                "{case}"
+            );
+        }
+    }
+}
 #[test]
 fn every_identity_field_duplicate_and_resource_truncation_refuse() {
     for mutation in [

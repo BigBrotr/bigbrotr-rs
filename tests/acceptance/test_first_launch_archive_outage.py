@@ -91,6 +91,72 @@ def preservation_fixture():
     return before, live, terminal
 
 
+class ArchiveCensusProfileControls(unittest.TestCase):
+    def reader(self, counts, profile='default'):
+        """Exercise the real reader with a fake C API that obeys SQL LIMIT."""
+        import ctypes as C
+        import re
+        import installed_archive_read as reader
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);(root/'lib').mkdir()
+            (root/'lib/duckdb.h').write_text('typedef struct { idx_t deprecated_column_count; '
+                'idx_t deprecated_row_count; idx_t deprecated_rows_changed; duckdb_column *deprecated_columns; '
+                'char *deprecated_error_message; void *internal_data; } duckdb_result;')
+            secret=root/'reader.private';secret.write_text('23'*32)
+            config=dict(storage=dict(archive_root=str(root/'archive')),postgres=dict(catalog=dict(
+                endpoint='127.0.0.1:5432',database='catalog',read_user='reader',read_password_ref='file:'+str(secret))))
+            engine=Mock();engine.duckdb_library_version.return_value=b'v1.5.5'
+            for name in ('duckdb_create_config','duckdb_set_config','duckdb_open_ext','duckdb_connect'):
+                getattr(engine,name).return_value=0
+            buffers=[];queries=[]
+            def query(connection,sql,result):
+                match=re.search(r'FROM archive\.(\w+) ORDER BY .* LIMIT (\d+)\) r$',sql.decode())
+                buffers.clear()
+                if match:
+                    name,limit=match[1],int(match[2]);queries.append((name,limit))
+                    buffers.extend(C.create_string_buffer(json.dumps(dict(row=n)).encode())
+                        for n in range(min(counts.get(name,0),limit)))
+                return 0
+            engine.duckdb_query.side_effect=query
+            engine.duckdb_row_count.side_effect=lambda result:len(buffers)
+            engine.duckdb_column_count.return_value=1
+            engine.duckdb_value_varchar.side_effect=lambda result,column,n:C.addressof(buffers[n])
+            with patch.object(reader.C,'CDLL',return_value=engine):
+                value=reader.read(config,root/'temporary',bundle_root=root,census_profile=profile)
+            self.assertEqual(engine.duckdb_free.call_count,sum(len(rows) for rows in value['tables'].values()))
+            return value,queries
+
+    def test_closed_census_exact_family_and_commit_edges_keep_an_overflow_sentinel(self):
+        names=('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts','archive_commits')
+        caps=dict(zip(names,(73,62,62,62,63,67)))
+        value,queries=self.reader(caps,'closed-reclamation')
+        self.assertEqual({name:len(rows) for name,rows in value['tables'].items()},caps)
+        self.assertEqual(queries,[(name,cap+1) for name,cap in caps.items()])
+        for name,cap in caps.items():
+            with self.subTest(table=name),self.assertRaisesRegex(AssertionError,'native-reader-row-bound'):
+                self.reader({name:cap+1},'closed-reclamation')
+
+    def test_default_census_stays16_per_family_and8_commits(self):
+        caps=dict.fromkeys(('dictionaries','events','event_eligibility_facts','event_receive_facts','provenance_facts'),16)
+        caps['archive_commits']=8
+        value,queries=self.reader(caps)
+        self.assertEqual({name:len(rows) for name,rows in value['tables'].items()},caps)
+        self.assertEqual(queries,[(name,cap+1) for name,cap in caps.items()])
+        for name,cap in caps.items():
+            with self.subTest(table=name),self.assertRaisesRegex(AssertionError,'native-reader-row-bound'):
+                self.reader({name:cap+1})
+
+    def test_unknown_census_profile_refuses_before_native_load_and_cli_execution(self):
+        import installed_archive_read as reader
+        with patch.object(reader.C,'CDLL') as load,self.assertRaisesRegex(AssertionError,'native-reader-profile'):
+            reader.read({},Path('/unused'),census_profile='unknown')
+        load.assert_not_called()
+        result=subprocess.run([sys.executable,'-B',str(ROOT/'experiments/ingest-bootstrap/installed_archive_read.py'),
+            '/unused-config','/unused-temporary','--census-profile','unknown'],capture_output=True,text=True,timeout=5)
+        self.assertEqual(result.returncode,2)
+        self.assertIn('invalid choice',result.stderr)
+
+
 class ArchiveOutageControls(unittest.TestCase):
     def test_census_declares_direct_reader_route_without_changing_product_config(self):
         sys.path.insert(0, str(ROOT/'experiments/ingest-bootstrap'))
@@ -120,9 +186,14 @@ class ArchiveOutageControls(unittest.TestCase):
                 self.assertEqual(runtime.config.read_text(), original)
                 return subprocess.CompletedProcess(argv, 0, json.dumps({'tables': {}}), '')
             runtime.command = Mock(side_effect=command)
-            self.assertEqual(runtime.census(root, 'prefix'), {'tables': {}})
-            runtime.command.assert_called_once()
-            self.assertEqual(runtime.catalog_rows.call_count, 2)
+            for name,profile in (('prefix','default'),('complete','closed-reclamation')):
+                self.assertEqual(runtime.census(root,name,profile=profile),{'tables':{}})
+                argv=runtime.command.call_args.args[0]
+                if profile=='default':self.assertNotIn('--census-profile',argv)
+                else:self.assertEqual(argv[argv.index('--census-profile')+1],profile)
+                self.assertEqual(runtime.command.call_args.kwargs['timeout'],30)
+            self.assertEqual(runtime.command.call_count,2)
+            self.assertEqual(runtime.catalog_rows.call_count,4)
 
     def test_prefix_preserves_old_rows_and_rejects_unrelated_or_missing_additions(self):
         before, live, _ = preservation_fixture()

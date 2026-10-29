@@ -191,6 +191,7 @@ impl IngestStore {
         limits: AdmissionLimits,
     ) -> Result<(Option<Prepared>, Receipt), AdmissionError> {
         self.require_admission_owner(Some(request))?;
+        self.require_unretired_request(request, &self.manifest)?;
         self.validate_dictionary_append(request, intent, limits, &self.manifest)?;
         let state = self
             .producer_state(request.producer_slot_id, request.producer_epoch)?

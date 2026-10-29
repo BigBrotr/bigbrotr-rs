@@ -38,7 +38,7 @@ def identity(info, runtime, entry):
     require(entry['id'] in (None,info['Id']), 'native observer incarnation changed')
     mounts = {m['Destination']:(m['Source'],m['RW'],m['Type']) for m in info['Mounts']}
     require(mounts=={'/observer/probe':(str(runtime.native_paths['ingest_bootstrap_probe']),False,'bind'),
-        '/observer/store':(str(runtime.state/'data/ingest'),False,'bind')}, 'native observer mounts differ')
+        '/observer/store':(entry.get('store',str(runtime.state/'data/ingest')),False,'bind')}, 'native observer mounts differ')
     host = info['HostConfig']
     require(host['NetworkMode']=='none' and host['ReadonlyRootfs'] is True
         and host['Memory']==host['MemorySwap']==512*MIB and host['NanoCpus']==1_000_000_000
@@ -74,7 +74,7 @@ def stop(runtime):
     save(runtime.root/'native-observer-terminal.json',dict(id=info['Id'],state=info['State']))
 
 
-def census(runtime, output):
+def census(runtime, output, *, store=None):
     # Original application/backend absence is independently proved first. The
     # read-only bind is a second boundary, not a reason to inspect a live store.
     runtime.backend_absence(output)
@@ -82,11 +82,17 @@ def census(runtime, output):
     info, = json.loads(runtime.docker('inspect',original['id']).stdout)
     require(not info['State']['Running'] and info['State']['Pid']==0
         and info['State']['ExitCode']==0 and not info['State']['OOMKilled'], 'writer must be positively joined')
+    store=runtime.state/'data/ingest' if store is None else Path(store).resolve(strict=True)
+    require(store.resolve(strict=True).is_relative_to((runtime.state/'data').resolve(strict=True)), 'native observer store outside owned data')
     require({name:digest(path) for name,path in runtime.native_paths.items()}==runtime.native_hashes,
         'native observer artifacts changed')
-    name = runtime.project+'-native-observer'
+    serial=getattr(runtime,'native_observer_serial',0)+1
+    runtime.native_observer_serial=serial
+    if serial>1:
+        runtime.resources.setdefault('native_observer_history',[]).append(dict(runtime.resources['native_observer']))
+    name = runtime.project+'-native-observer'+('' if serial==1 else '-'+str(serial))
     require(runtime.docker('inspect',name,check=False).returncode!=0, 'native observer name collision')
-    entry = dict(name=name,id=None,status='creating')
+    entry = dict(name=name,id=None,status='creating',store=str(store))
     runtime.resources['native_observer']=entry;runtime.record_resources()
     process = None
     try:
@@ -95,7 +101,7 @@ def census(runtime, output):
             '--memory','512m','--memory-swap','512m','--cpus','1','--pids-limit','64',
             '--user',f'{os.geteuid()}:{os.getegid()}',
             '--mount',f'type=bind,src={runtime.native_paths["ingest_bootstrap_probe"]},dst=/observer/probe,readonly',
-            '--mount',f'type=bind,src={runtime.state/"data/ingest"},dst=/observer/store,readonly',
+            '--mount',f'type=bind,src={store},dst=/observer/store,readonly',
             '--entrypoint','/observer/probe',runtime.resources['image']['id'],'dump-state','/observer/store')
         entry['id']=result.stdout.strip();runtime.record_resources()
         info, = json.loads(runtime.docker('inspect',entry['id']).stdout)

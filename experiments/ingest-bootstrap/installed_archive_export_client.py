@@ -119,7 +119,10 @@ def run(home):
         (home/'ordinary-startup-timing.json').write_text(json.dumps(setup)+'\n')
     query = dict(version=1, resource='event_history', mode='snapshot', scope=expected['scope'],
         filters=[dict(ids=[event['id']])])
+    retained_compacted=expected.get("retained_compacted_epoch2",False)
+    assert type(retained_compacted) is bool
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
+    selected_snapshot='68' if retained_compacted else '5'
     marker = (home / 'destination/destination.json').read_bytes()
     body = dict(kind='export', format='signed-events-jsonl', query=query, allocation=allocation,
         destination=dict(id=expected['destination_id'], binding_sha256=hashlib.sha256(marker).hexdigest()),
@@ -153,7 +156,7 @@ def run(home):
     status, history = request('POST', '/v1/resources/event_history', query, auth)
     record('signed-history', status=status, response=history)
     assert status == 200 and history['items'] == [event] and history['next_cursor'] is None
-    assert history['view_stamp']['input_generations'] == [dict(kind='archive', **allocation, snapshot_id='5')]
+    assert history['view_stamp']['input_generations'] == [dict(kind='archive', **allocation, snapshot_id=selected_snapshot)]
     status, receipt = request('POST', '/management/v1/jobs', body, keyed)
     record('accept-export', status=status, command=body, key='d1'*16, receipt=receipt)
     assert status == 202 and receipt['created'] and receipt['execution'] == 'unobserved'

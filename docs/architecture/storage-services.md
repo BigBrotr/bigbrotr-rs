@@ -408,15 +408,15 @@ epoch2 source, or precede a retained epoch2 pending batch. Session capture recor
 
 The finite `index catch-up --file ROOT` consumer accepts either the original
 schema1/topology0/Ingest epoch1 source after separate source closure
-(`ingest recover --close-source`), or the complete uncompacted schema2/topology1
+(`ingest recover --close-source`), or the complete schema2/topology1
 initial epoch1→2 lineage after explicit successor closure and retirement. Both
 paths retain the same local Index journal,
 generation, storage incarnation and table UUIDs. It obtains both actual local
 custodies before opening credentials, attaches Index custody to the real Control
 driver, and uses current accepted policy and fresh Control authority. It never
 opens the old Ingest writer or the ClickHouse initializer credential. Complete
-original-request replay and exact existing SQL outcome copies establish a native
-source witness; the downstream reader returns only whole retained batches within
+original-request replay or an explicitly authenticated closed-producer floor with
+canonical retained outcomes establishes a native source witness; the downstream reader returns only whole retained batches within
 that witness and rechecks the native root and sequence before and after reads.
 The source proof remains held through the final publication observation.
 The earlier source-closure command may complete a retained producer ACK; that
@@ -428,12 +428,14 @@ with no prepared successor gap. A historical witness is not a renewable grant:
 current accepted policy, Control/Index locks and actual native custody are
 rechecked through SQL effects. The original Index prefix must already reach the
 closed epoch1 bound with no pending plan. Only then may its verified bridge be
-published and ordinary whole-batch planning advance epoch2. Schema3, further
-successors and compacted/archive fallback remain outside this finite path.
+published and ordinary whole-batch planning advance epoch2. A compacted initial floor also supports the closed initial source and terminal
+epoch2 lineage. Schema3, further Index successors and missing-pending Archive
+fallback remain outside this finite path.
 
 The separate explicit `serve --activate-initial-successor` lifetime may select
 retained Index alongside Control/Ingest and optional Sync. This first live path
-supports only the uncompacted initial topology0/epoch1→topology1/epoch2 boundary.
+supports the original or authenticated compacted initial
+topology0/epoch1→topology1/epoch2 boundary.
 Both actual native custodies precede credential reads. A current PG preflight
 requires a nonempty published old head and refuses an invalid cut or pending plan before succession preparation
 and activation; this is not physical proof. It then retains the activated
@@ -470,11 +472,22 @@ closure, publisher release and a later genuine succession.
 
 The continuing Index profile also counts actual retained requests across both
 epochs, independent of source-fact counters and the bridge's extra revision.
-Beyond64 it refuses new Index preparation/history allocation and reports
-unavailable while preserving the published cursor, inputs and any already
+Without a floor, beyond64 it refuses new Index preparation/history allocation
+and reports unavailable while preserving the published cursor, inputs and any already
 issued operation's join/unknown obligations. It does not change Ingest's own
-producer admission or acknowledgement window. Live Archive, compacted lineage,
-further live Index epochs and scalable backlog remain separate capabilities.
+producer admission or acknowledgement window. An authenticated initial floor permits N compacted requests plus at most64
+later originals, at most128 logical batch revisions and one bridge. The shared
+physical spool still permits64 files/32MiB including residual originals; no
+producer can issue request65. Live Archive, further live Index epochs and
+scalable backlog remain separate capabilities.
+
+The compacted live initial writer retains the existing effect grant and `Check`.
+Every protected Index SQL operation captures fresh native sequence/input census
+under the actual live owner, validates all native science/pending, and rechecks
+the retained initial typed checkpoint and canonical outcomes within its current
+authority/cancellation boundary. The original handoff's pre-activation sequence
+and inventory are never reused as a current proof. Exact floor/handoff/root and
+current owner/publication checks remain distinct from historical validation.
 
 This consumer keeps three distinct positions: the captured published SQL prefix,
 an optional immutable prepared plan immediately after it, and unplanned source
@@ -489,9 +502,11 @@ the command; a fresh invocation reopens and verifies the actual committed state
 before further publication. Even an already complete retry verifies all retained
 plans and obtains a fresh Index epoch, with zero new batches.
 
-The profile bounds the entire source lineage to at most 64 original requests,
-not 64 per epoch, and each
-complete batch to 64 facts/1 MiB, subject to accepted per-family row/wire bounds.
+The ordinary profile bounds the entire source lineage to64 original requests.
+The explicit compacted profile additionally accounts for N reclaimed initial
+requests (N<=64), allowing at most128 logical batch revisions plus one bridge,
+while actual originals/residuals retain the64-file/32MiB bound. It processes one
+funded historical revision at a time. Each complete batch remains64 facts/1MiB, subject to accepted per-family row/wire bounds.
 Consumer history permits at most that many batch revisions plus exactly one
 separate bridge when epoch2 is selected. Missing/duplicate bridges, extra batches
 and a pending batch beyond the request census refuse.

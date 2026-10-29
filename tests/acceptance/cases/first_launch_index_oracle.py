@@ -193,38 +193,43 @@ def ordinary_selection(state):
     return attempts
 
 
-def startup_selection(state, successor=None):
+def startup_selection(state, successor=None, *, retained_compacted_epoch2=False):
     """Only the existing initial and finite epoch2 Archive fixture selections."""
-    if successor is None:
+    assert type(retained_compacted_epoch2) is bool
+    if successor is None and not retained_compacted_epoch2:
         ordinary_selection(state)
         return 4, [(1,12)]
-    assert type(successor) is bool
+    assert successor is None or type(successor) is bool
     from cases.first_launch_restart import profile
-    selected = profile(successor)
+    selected = (dict(snapshot=68,counts=[73,62,62,62,63],initial_cut=312,successor_cut=10,successor_requests=3)
+        if retained_compacted_epoch2 else profile(successor))
+    revision=4 if retained_compacted_epoch2 else 6
     dataset = only(state['datasets'])['dataset_id']
     consumer = only(state['consumers'],consumer_role='archive')
     catalog = consumer['consumer_id']
-    exact([consumer['dataset_id'],consumer['current_revision'],consumer['current_topology_generation']], [dataset,6,1])
-    snapshot = only(state['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=6)
+    exact([consumer['dataset_id'],consumer['current_revision'],consumer['current_topology_generation']], [dataset,revision,1])
+    snapshot = only(state['archive_frontier_snapshots'],consumer_id=catalog,frontier_revision=revision)
     exact([snapshot[k] for k in ('dataset_id','catalog_id','topology_generation','snapshot_id',
           'dictionary_count','payload_count','eligibility_count','receive_count','provenance_count')],
           [dataset,catalog,1,selected['snapshot'],*selected['counts']])
     cuts = [(1,selected['initial_cut']),(2,selected['successor_cut'])]
-    bounds = sorted((r for r in state['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==6),key=lambda r:r['owner_epoch'])
+    bounds = sorted((r for r in state['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==revision),key=lambda r:r['owner_epoch'])
     exact([[r[k] for k in ('dataset_id','topology_generation','shard_id','owner_epoch','last_complete_sequence')] for r in bounds],
           [[dataset,1,0,epoch,cut] for epoch,cut in cuts])
-    members = [r for r in state['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==6]
-    count = 4+selected['successor_requests']
+    members = [r for r in state['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==revision]
+    count = (64 if retained_compacted_epoch2 else 4)+selected['successor_requests']
+    if retained_compacted_epoch2:
+        exact(sorted(r['ordinal'] for r in state['archive_attempts']),list(range(1,69)))
     assert len(members)==len({r['attempt_id'] for r in members})==count
     attempts = sorted((only(state['archive_attempts'],attempt_id=r['attempt_id']) for r in members),key=lambda r:r['ordinal'])
-    exact([r['ordinal'] for r in attempts],list(range(1,count+1)))
+    exact([r['ordinal'] for r in attempts],[1,2,*range(4,69)] if retained_compacted_epoch2 else list(range(1,count+1)))
     assert all(r['dataset_id']==dataset and r['catalog_id']==catalog for r in attempts)
-    return 6,cuts
+    return revision,cuts
 
 
-def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None):
+def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None, retained_compacted_epoch2=False):
     assert successor is None or phase == 'setup'
-    startup_selection(state,successor)
+    startup_selection(state,successor,retained_compacted_epoch2=retained_compacted_epoch2)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     assert control['dataset_id'] == dataset['dataset_id']
@@ -270,12 +275,13 @@ def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, succe
             assert phase is None
 
 
-def startup_reader_pending(before, after, *, successor=None):
+def startup_reader_pending(before, after, *, successor=None, retained_compacted_epoch2=False):
     """Only absent or active new reader observations may wait for completion."""
     new = {row['lease_id'] for row in after['snapshot_leases'] if row not in before['snapshot_leases']}
     assert len(new) <= 2, 'startup reader observation bound'
     assert successor is None or type(successor) is bool
-    claim_count = 1 if successor is None else 2
+    assert type(retained_compacted_epoch2) is bool
+    claim_count = 1 if successor is None and not retained_compacted_epoch2 else 2
     for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
         exact([r for r in after[table] if r['lease_id'] not in new],before[table])
         assert len([r for r in after[table] if r['lease_id'] in new]) == len(new)*(claim_count if table=='retention_claims' else 1), 'incomplete startup reader observation'
@@ -300,13 +306,13 @@ def startup_reader_pending(before, after, *, successor=None):
     return pending
 
 
-def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None):
+def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None, retained_compacted_epoch2=False):
     """Fresh operation caches remain empty after an actually completed full probe."""
     def require(condition, message):
         assert condition, message
-    revision,cuts = startup_selection(after,successor)
-    topology = 0 if successor is None else 1
-    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor)
+    revision,cuts = startup_selection(after,successor,retained_compacted_epoch2=retained_compacted_epoch2)
+    topology = 0 if successor is None and not retained_compacted_epoch2 else 1
+    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2)
     catalog = only(after['consumers'],consumer_role='archive')['consumer_id']
     require(worker is None, 'startup native child remains')
     reader_ids = {row['lease_id'] for row in after['archive_snapshot_pins'] if row['purpose'] == 'reader'}

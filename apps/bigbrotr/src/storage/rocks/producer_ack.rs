@@ -628,12 +628,56 @@ impl IngestRecovery {
 }
 
 impl IngestStore {
+    /// A valid closed floor answers the retired range before any original
+    /// input, receipt digest comparison or ordinary producer decoder is used.
+    pub(super) fn require_unretired_request(
+        &self,
+        request: bigbrotr_model::ProducerRequestId,
+        manifest: &IngestManifest,
+    ) -> Result<(), AdmissionError> {
+        if self.write_uncertain {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        let key = IngestKey::ProducerState {
+            producer_slot_id: request.producer_slot_id,
+            producer_epoch: request.producer_epoch,
+        }
+        .encode()
+        .map_err(|_| AdmissionError::InvalidInput)?;
+        let cf = self
+            .db
+            .cf_handle("receipts")
+            .ok_or(AdmissionError::EngineRead)?;
+        if let Some(bytes) = self
+            .db
+            .get_pinned_cf_opt(cf, key.as_bytes(), &super::bootstrap::read_options())
+            .map_err(|_| AdmissionError::EngineRead)?
+            && bytes.starts_with(&[3, 0x31])
+        {
+            let floor =
+                ClosedProducerFloor::decode(&bytes).map_err(|_| AdmissionError::StateMismatch)?;
+            if floor.fields().manifest_sha256
+                != <[u8; 32]>::from(Sha256::digest(manifest.encode().as_bytes()))
+            {
+                return Err(AdmissionError::StateMismatch);
+            }
+            return Err(
+                if request.request_sequence.get() <= floor.fields().issued_through {
+                    AdmissionError::RetiredRequest
+                } else {
+                    AdmissionError::ProducerClosing
+                },
+            );
+        }
+        Ok(())
+    }
     pub(super) fn require_request_capacity(
         &self,
         request: bigbrotr_model::ProducerRequestId,
         maximum: u64,
     ) -> Result<(), AdmissionError> {
         self.require_admission_owner(Some(request))?;
+        self.require_unretired_request(request, &self.manifest)?;
         let credit = self.producer_credit(request.producer_slot_id)?;
         let sequence = request.request_sequence.get();
         if sequence > RETAINED_PRODUCER_REQUEST_LIMIT {

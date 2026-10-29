@@ -148,14 +148,16 @@ pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 #[path = "lineage.rs"]
 mod lineage;
 pub use lineage::{
-    COMPACTED_PREFIX_METADATA_BYTES, CompactedInitialAncestor, CompactedOutcomeRow,
-    CompactedPrefixResolution, RetainedCompactedPrefix, RetainedLineage, RetainedLineageEntry,
-    RetainedTerminalKind, VerifiedCompactedPrefix, compacted_outcome_data_bytes,
+    COMPACTED_PREFIX_METADATA_BYTES, ClosedReclamationReceipt, CompactedInitialAncestor,
+    CompactedOutcomeRow, CompactedPrefixResolution, RetainedCompactedPrefix, RetainedLineage,
+    RetainedLineageEntry, RetainedTerminalKind, VerifiedCompactedPrefix,
+    compacted_outcome_data_bytes,
 };
 pub(in crate::storage) use lineage::{
-    CompactedLiveSuccessor, CompactedRecoveryPredecessor, CompactedSuccessorPredecessor,
-    NativeSuccessorRecovery, NativeSuccessorRetirement, ResolvedSuccessorRecovery,
-    ResolvedSuccessorRetirement, SuccessorRecoveryResolution, SuccessorRetirementResolution,
+    ClosedProducerReclamation, CompactedLiveInitial, CompactedLiveSuccessor,
+    CompactedRecoveryPredecessor, CompactedSuccessorPredecessor, NativeSuccessorRecovery,
+    NativeSuccessorRetirement, ResolvedSuccessorRecovery, ResolvedSuccessorRetirement,
+    SuccessorRecoveryResolution, SuccessorRetirementResolution,
 };
 #[cfg(test)]
 use lineage::{PendingSuccessorRequest, PendingSuccessorRetirementRequest};
@@ -320,6 +322,7 @@ impl IngestStore {
         let reservation = StoreReservation {
             _permit: permit,
             path: PathReservation::acquire(path)?,
+            custody: std::sync::Arc::new(()),
         };
         let mut builder = fs::DirBuilder::new();
         #[cfg(unix)]
@@ -396,6 +399,7 @@ impl IngestStore {
         let reservation = StoreReservation {
             _permit: permit,
             path: PathReservation::acquire(path)?,
+            custody: std::sync::Arc::new(()),
         };
         check_current(&reservation.path.0)?;
         Self::open_native(reservation, None, limits)
@@ -550,6 +554,9 @@ fn check_current(path: &Path) -> Result<(), StoreError> {
 struct StoreReservation {
     _permit: OwnedPermit,
     path: PathReservation,
+    // Retained by owned mutation confirmations: an unchanged filesystem after
+    // close/reopen cannot stand in for the continuously excluded native owner.
+    custody: std::sync::Arc<()>,
 }
 static OPEN_PATHS: Mutex<BTreeSet<PathBuf>> = Mutex::new(BTreeSet::new());
 struct PathReservation(PathBuf);

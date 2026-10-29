@@ -21,7 +21,6 @@ fn source_matches(
         && history.native_epoch() == 2
         && proof.verified_through() == 2
         && proof.last_epoch().terminal_kind == RetainedTerminalKind::Activated
-        && !lineage.has_compacted_initial()
         && lineage.pending_target().is_none()
         && lineage.entries().len() == 2
         && native.manifest().key_schema() == 2
@@ -48,6 +47,8 @@ impl ControlSession {
         session: &IndexSession,
         custody: &HeldIndexCustody,
         writer: &LiveInitialWriter,
+        lease: &mut PolicyLeaseTracker,
+        cancelled: &std::sync::atomic::AtomicBool,
     ) -> Result<(), IndexError> {
         valid_session(self, session, custody)?;
         writer
@@ -55,6 +56,9 @@ impl ControlSession {
             .require_store(writer.native.store(), self.identity)
             .map_err(owner)?;
         writer.index_source().map_err(|_| IndexError::Conflict)?;
+        let mut live =
+            LiveIndexRequest::new(lease, writer.manifest().identity().policy_epoch, cancelled);
+        live.check()?;
         self.begin_operation().map_err(owner)?;
         let tx = application_transaction(&mut self.client, SCHEMA)
             .await
@@ -63,10 +67,13 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         writer.binding.require(&tx).await.map_err(owner)?;
+        live.require_basis(writer, &tx).await?;
         require_session(&tx, session).await?;
         binding_matches(&tx, session.binding()).await?;
         proofs::live(session.binding(), custody)?;
+        live.check()?;
         tx.rollback().await.map_err(pg)?;
+        live.check()?;
         self.available = true;
         Ok(())
     }
@@ -115,7 +122,7 @@ impl ControlSession {
             || source
                 .retained_requests()
                 .map_err(|_| IndexError::Conflict)?
-                > 64
+                > source.history_request_limit()
             || writer.previous_registration().instance_id != *self.request.instance.as_bytes()
             || !writer
                 .native
@@ -167,6 +174,8 @@ impl ControlSession {
                 },
             )
             .map_err(|_| IndexError::Unavailable)?;
+        let mut live = LiveIndexRequest::new(&mut lease, id.policy_epoch, input.cancelled);
+        live.check()?;
         require_session(&tx, session).await?;
         binding_matches(&tx, session.binding()).await?;
         require_recovery_inventory(&tx, session, expected, recovery_digest).await?;
@@ -181,25 +190,28 @@ impl ControlSession {
             .await
             .map_err(pg)?;
         writer.binding.require(&tx).await.map_err(owner)?;
+        live.require_basis(writer, &tx).await?;
         require_session(&tx, session).await?;
         proofs::recovery(session.binding(), custody, recovered)?;
         source
             .observe(input.cancelled)
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
-            &mut lease,
+            live.lease,
             bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
         .map_err(|_| IndexError::Unavailable)?;
+        live.check()?;
         commit_started.set(true);
         tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
+        live.check()?;
         proofs::live(session.binding(), custody)?;
         source
             .observe(input.cancelled)
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
-            &mut lease,
+            live.lease,
             bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
@@ -207,6 +219,7 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(IndexError::Unavailable);
         }
+        live.check()?;
         self.available = true;
         Ok(IndexHandoffReceipt {
             handoff: handoff.clone(),
@@ -252,10 +265,16 @@ impl ControlSession {
         history: &VerifiedSuccessorHistory<'_>,
         native: &IngestRecovery,
         input: InitialHistoryRequest<'_>,
+        compacted: Option<&CompactedIndexRequest<'_>>,
         commit_started: &Cell<bool>,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<IndexHandoffReceipt, IndexError> {
         valid_session(self, session, custody)?;
+        if (history.compacted_initial_requests() != 0) != compacted.is_some()
+            || compacted.is_some_and(|source| !source.matches_successor(history, native))
+        {
+            return Err(IndexError::Conflict);
+        }
         let (previous, expected, recovery_digest) =
             proofs::recovery(&session.binding, custody, recovered)?;
         if handoff.binding() != &session.binding
@@ -279,6 +298,9 @@ impl ControlSession {
         require_session(&tx, session).await?;
         binding_matches(&tx, &session.binding).await?;
         require_recovery_inventory(&tx, session, expected, recovery_digest).await?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         let now: i64 = tx
             .query_one(NOW, &[])
             .await
@@ -303,6 +325,9 @@ impl ControlSession {
             input.cancelled,
         )
         .map_err(|_| IndexError::Unavailable)?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         commit_started.set(true);
         tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
         history

@@ -741,5 +741,20 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
 
 
+
+class ClosedReclamationTarget(unittest.TestCase):
+    def test_only_the_exact_final_typed_reclamation_head_selects_its_commit(self):
+        query=(b"SELECT left(checkpoint_revision::text,21),substring(checkpoint_digest FROM 1 FOR 33)\n"
+            b" FROM control.producer_checkpoints WHERE producer_slot_id=$1::bytea AND producer_epoch=1 AND progress_format=1\n"
+            b" AND complete_through_request=$2::text::numeric")
+        self.assertTrue(control_target_query('control-closed-reclamation',query))
+        for changed in (query+b'; SELECT 1',query.replace(b'progress_format=1',b'progress_format=2'),
+            query.replace(b'producer_epoch=1',b'producer_epoch=2'),query.replace(b'complete_through_request=$2::text::numeric',b'TRUE')):
+            self.assertFalse(control_target_query('control-closed-reclamation',changed))
+        for mode in ('pass','before-forward','after-complete'):
+            selected=Proxy(mode,'control-closed-reclamation',profile='retained-catch-up')
+            self.assertEqual(selected.target,'control-closed-reclamation')
+        with self.assertRaises(ValueError):Proxy('hold-data','control-closed-reclamation')
+
 if __name__ == '__main__':
     unittest.main()

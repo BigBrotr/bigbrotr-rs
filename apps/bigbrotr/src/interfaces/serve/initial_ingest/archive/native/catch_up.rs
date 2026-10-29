@@ -2,9 +2,10 @@
 //! observation grants source protection. The parent owns whole-job admission,
 //! exact PG persistence binding and every blocking job through actual join.
 use super::*;
-use bigbrotr::storage::archive::{ReceiptObservation, validate_membership_limits};
+use bigbrotr::storage::archive::{ReceiptError, ReceiptObservation, validate_membership_limits};
 use bigbrotr_model::Digest256;
 use bigbrotr_protocol::archive_membership::{MembershipObservation, MembershipRead};
+use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
 
 /// The native worker scans the entire receipt table to EOF, independently of
 /// the number selected by a particular prefix or individual expected receipt.
@@ -83,6 +84,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     receipt: &ArchiveAttemptReceipt,
     attempt: &LocalAttempt,
     inputs: &RetainedInputs,
+    replacement: Option<&ReceiptExpectation>,
     reader: &Reader,
     reader_custody: &ReaderCustody,
     coordinator_binding: Digest256,
@@ -109,6 +111,12 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     {
         return Err(error("retained attempt/input identity"));
     }
+    let read = if let Some(replacement) = replacement {
+        require_replacement(expected, replacement)?;
+        replacement
+    } else {
+        expected
+    };
     let mut limits = preflight::limits(root)?;
     limits.max_records = SCAN_LIMIT;
     limits.max_encoded_bytes = ENCODED;
@@ -129,7 +137,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     reader
         .route
         .borrowed()
-        .validate_receipt(expected, identity, credential()?)
+        .validate_receipt(read, identity, credential()?)
         .map_err(error)?;
     reader
         .route
@@ -184,21 +192,23 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
                     .map_err(error)
                 })
                 .await?;
-                let observed = Preparation {
-                    installation: &receipt_worker,
-                    temp_root: &receipt_scratch,
-                    limits,
-                    deadline: deadline.into_std(),
-                    cancelled: cancel,
-                }
-                .inspect_receipt_retained(
-                    expected,
-                    reader_custody,
-                    &reader.route.borrowed(),
-                    credential()?,
-                    budgets,
-                )
-                .map_err(error)?;
+                let observed = original_observation(
+                    Preparation {
+                        installation: &receipt_worker,
+                        temp_root: &receipt_scratch,
+                        limits,
+                        deadline: deadline.into_std(),
+                        cancelled: cancel,
+                    }
+                    .inspect_receipt_retained(
+                        read,
+                        reader_custody,
+                        &reader.route.borrowed(),
+                        credential()?,
+                        budgets,
+                    ),
+                    replacement.is_some(),
+                )?;
                 let membership = if require_membership(resolution, observed)? {
                     Some(
                         Preparation {
@@ -233,6 +243,45 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     })
 }
 
+/// Same complete batch under a distinct, strictly later attempt identity.
+/// Current frontier membership and original headers are checked by Inventory.
+pub(in crate::interfaces::serve::initial_ingest) fn require_replacement(
+    original: &ReceiptExpectation,
+    replacement: &ReceiptExpectation,
+) -> Result<()> {
+    original.validate().map_err(error)?;
+    replacement.validate().map_err(error)?;
+    if original.dataset_id != replacement.dataset_id
+        || original.schema_version != replacement.schema_version
+        || original.topology_generation != replacement.topology_generation
+        || original.batch_digest != replacement.batch_digest
+        || original.record_count != replacement.record_count
+        || original.input_ranges != replacement.input_ranges
+        || original.attempt_id == replacement.attempt_id
+        || original.publication_ordinal >= replacement.publication_ordinal
+    {
+        return Err(error("invalid retained replacement expectation"));
+    }
+    Ok(())
+}
+
+fn original_observation(
+    observed: std::result::Result<ReceiptObservation, ReceiptError>,
+    replacement: bool,
+) -> Result<ReceiptObservation> {
+    let observed = observed.map_err(error)?;
+    if replacement {
+        // The unchanged full-EOF strict scan of this exact current replacement
+        // also refuses any original/third same-digest receipt or duplicate.
+        if observed != ReceiptObservation::Present {
+            return Err(error("current retained replacement receipt is absent"));
+        }
+        Ok(ReceiptObservation::Absent)
+    } else {
+        Ok(observed)
+    }
+}
+
 fn require_membership(
     resolution: catalog_guard::Resolution,
     observed: ReceiptObservation,
@@ -263,6 +312,82 @@ fn finish_observation(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn expected() -> ReceiptExpectation {
+        serde_json::from_value(serde_json::json!({
+            "dataset_id":"01".repeat(16),"schema_version":1,"topology_generation":"0",
+            "batch_digest":"05".repeat(32),"record_count":3,
+            "input_ranges":[{"shard_id":0,"owner_epoch":1,"first_sequence":1,"last_sequence":3}],
+            "attempt_id":([8;16]),"publication_ordinal":3
+        }))
+        .unwrap()
+    }
+
+    #[test]
+    fn retained_replacement_preserves_every_semantic_field_and_later_identity() {
+        let original = expected();
+        let mut replacement = original.clone();
+        replacement.attempt_id = [9; 16];
+        replacement.publication_ordinal = 4;
+        require_replacement(&original, &replacement).unwrap();
+        for field in 0..10 {
+            let mut invalid = replacement.clone();
+            match field {
+                0 => invalid.dataset_id = [2; 16].try_into().unwrap(),
+                1 => invalid.schema_version = 2,
+                2 => invalid.topology_generation = bigbrotr_model::TopologyGeneration::new(1),
+                3 => invalid.batch_digest = Digest256::from_bytes([6; 32]),
+                4 => invalid.record_count = 4,
+                5 => {
+                    invalid.input_ranges[0].first_sequence = 2;
+                    invalid.input_ranges[0].last_sequence = 4;
+                }
+                6 => invalid.attempt_id = original.attempt_id,
+                7 => invalid.publication_ordinal = original.publication_ordinal,
+                8 => invalid.publication_ordinal = 2,
+                9 => invalid.attempt_id = [0; 16],
+                _ => unreachable!(),
+            }
+            assert!(require_replacement(&original, &invalid).is_err(), "{field}");
+        }
+    }
+
+    #[test]
+    fn retained_replacement_requires_present_without_hiding_unknown_or_absent() {
+        assert_eq!(
+            original_observation(Ok(ReceiptObservation::Present), true).unwrap(),
+            ReceiptObservation::Absent
+        );
+        assert!(original_observation(Ok(ReceiptObservation::Absent), true).is_err());
+        for observed in [ReceiptObservation::Present, ReceiptObservation::Absent] {
+            assert_eq!(original_observation(Ok(observed), false).unwrap(), observed);
+        }
+        for error in [
+            ReceiptError::ObservationUnknown,
+            ReceiptError::TerminationUnknown,
+            ReceiptError::ResourceLimit,
+            ReceiptError::InvalidInput,
+        ] {
+            for replacement in [true, false] {
+                assert!(original_observation(Err(error), replacement).is_err());
+            }
+        }
+        for resolution in [
+            catalog_guard::Resolution::NotImported,
+            catalog_guard::Resolution::Sealed {
+                disabled_current: false,
+            },
+        ] {
+            let observed = original_observation(Ok(ReceiptObservation::Present), true).unwrap();
+            assert!(matches!(
+                finish_observation(resolution, observed, None),
+                Ok(ReconciledAttempt::Absent { .. })
+            ));
+            // The later replacement still takes its ordinary Present/membership path.
+            let observed = original_observation(Ok(ReceiptObservation::Present), false).unwrap();
+            assert!(finish_observation(resolution, observed, None).is_err());
+        }
+    }
 
     #[test]
     fn receipt_presence_never_substitutes_for_import_or_membership() {

@@ -151,15 +151,8 @@ async fn own(
         .native
         .as_ref()
         .expect("exclusive native")
-        .manifest()
-        .key_schema()
-        == 3
-        && custody
-            .native
-            .as_ref()
-            .expect("exclusive native")
-            .has_compacted_successor_ancestor(&cancellation.requested)
-            .map_err(error)?;
+        .has_compacted_successor_ancestor(&cancellation.requested)
+        .map_err(error)?;
     phase(&progress, timeout)?;
     let identity = root.catalog_identity().map_err(error)?;
     custody.coordinator = Some(

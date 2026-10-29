@@ -198,11 +198,12 @@ impl ControlSession {
         let digest = source.digest();
         // Enforce the native Event classification at the final effect boundary,
         // including a witness built through ordinary positive recovery.
+        // Order the numeric column, not the text projection's output name.
         let requests = tx
             .query(
-                "SELECT request_sequence::text, acquisition_job_id IS NOT NULL
-             FROM control.producer_requests WHERE producer_slot_id=$1::bytea
-                 AND producer_epoch=1 ORDER BY request_sequence LIMIT 65",
+                "SELECT r.request_sequence::text, r.acquisition_job_id IS NOT NULL
+             FROM control.producer_requests r WHERE r.producer_slot_id=$1::bytea
+                 AND r.producer_epoch=1 ORDER BY r.request_sequence LIMIT 65",
                 &[slot],
             )
             .await

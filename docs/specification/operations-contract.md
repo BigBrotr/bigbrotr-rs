@@ -457,6 +457,18 @@ backend failure or ambiguous COMMIT still fails closed, retaining ownership unti
 transport termination; no flag reset makes an abandoned session reusable. Startup,
 native-work and mutating-command cancellation keep their separate fail-stop paths.
 
+The initialized initial-Ingest loop also drains ordinary scheduling renewal at
+its maintenance timer and completed-operation Sync safe points. One original
+absolute deadline and the original accepted-policy window bound the whole
+Control refresh, Ingest renewal and optional Index renewal chain. A stop before
+first poll starts no SQL; an already-polled stage is collected through its known
+completion. Only that known completion can return the typed stopping outcome,
+without starting a later stage, installing a partial refresh for dispatch,
+renewing delivery or computing another dispatch window. Prepared Sync inputs and
+grants remain owned until teardown. Expiry, backend error and unknown COMMIT still
+refuse. Startup, successor renewal, external Archive callback renewal, generic
+management commands and native operations retain their fail-stop boundaries.
+
 ### PostgreSQL Control commit exclusion
 
 The Control adapter exclusively owns one unpooled PostgreSQL connection. It

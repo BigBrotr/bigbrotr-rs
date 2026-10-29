@@ -314,7 +314,9 @@ bigbrotr serve --file /etc/bigbrotr/root.toml \
 Use the same retained Index journal, generation, storage incarnation, table UUIDs
 and constrained ClickHouse writer account. Index must be assigned locally and
 enabled by the accepted policy. This path reads no initializer credential and
-refuses a compacted predecessor; `--initialize-index` remains fresh-only.
+accepts an explicitly authenticated compacted initial predecessor;
+`--initialize-index` remains fresh-only. This compacted extension is under
+qualification.
 It supports only the initial topology0/epoch1→topology1/epoch2 transition. Both
 native custodies stay owned through physical executor and Control driver joins.
 
@@ -362,12 +364,16 @@ resulting retained state and performs no additional acknowledgement.
 
 The root must assign Control, Ingest and Index locally, use migration0041 or
 later, retain either the original schema1/topology0/Ingest epoch1 source or the
-complete uncompacted schema2/topology1 initial successor lineage, and accept the
+complete schema2/topology1 initial successor lineage, and accept the
 same Index provenance profile. Use the original ClickHouse writer account with
 its fixed one-query concurrency constraint. The command reads its protected
 writer credential and the Control credential; the initializer credential is not
 needed. Retain every original request/outcome and required pending source batch.
-The finite bound is 64 original requests across the whole lineage, 64 facts and
+The ordinary finite bound is64 original requests across the whole lineage.
+With an authenticated initial floor it also accounts for N<=64 compacted requests
+(up to128 logical batch revisions plus one bridge), streaming one funded revision
+at a time. The shared input spool remains64 files/32MiB and every producer
+retains its absolute64-request ceiling. Each batch remains64 facts and
 1 MiB per whole batch;
 accepted target row/wire and process-resource limits also apply.
 
@@ -413,7 +419,7 @@ The record always includes `ready=false`, `acknowledgement="not-performed"` and
 for epoch1 and `existing-ingest-handoff-verified` for epoch2.
 It grants no continuing read readiness and starts no listener or acquisition.
 The command performs no ACK, retirement, reclamation or new Ingest handoff.
-Later successor epochs, compacted lineage and missing-pending Archive fallback
+Later Index successor epochs and missing-pending Archive fallback
 remain unsupported. The ordinary Control read/export procedure and
 its own current grants remain separate. Exit codes are 1 output I/O, 2 usage,
 3 configuration/policy/resources and 4 refused/cancelled/unknown outcome.
@@ -422,3 +428,23 @@ publication-COMMIT recovery evidence in the
 [verification guide](../development/verification.md#installed-index-continuation-across-the-initial-topology-handoff).
 General topology recovery, further continuous successor epochs and capacity remain
 under qualification; these results do not establish complete product readiness.
+
+
+To return input spool capacity after the initial lifetime has already been
+completely closed and retired, stop its native owner and run:
+
+```sh
+bigbrotr ingest recover --reclaim-initial --file /path/to/instance.toml
+```
+
+This explicit action accepts a nonempty retired initial producer with complete
+typed progress/ACK and no successor intent. It authenticates retained PostgreSQL
+history and native science, installs the existing closed-producer floor in one
+synced batch and removes only authenticated original input files and receipt
+detail. Scientific facts, pending batches, PostgreSQL evidence and Archive objects
+remain. An exact retry reads the floor and authenticates remaining original files
+before completing their removal and directory fsync. Unknown or interrupted
+completion requires the same root and a fresh proof; it emits no success report.
+The writer and compacted Index/Archive extensions remain under qualification.
+OPEN request65, active-prefix GC, arbitrary terminal epochs and scalable history
+are separate unfinished capabilities. See the [owning floor contract](../reference/producer-request-inputs.md#closed-producer-reclamation-writer-under-qualification).

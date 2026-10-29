@@ -71,6 +71,7 @@ struct Custody {
     native: Option<IngestRecovery>,
     state: Option<IndexState>,
     history: Option<SuccessorHistory>,
+    compacted: Option<bigbrotr::storage::rocks::store::RetainedCompactedPrefix>,
     owner: Option<ControlSession>,
     client: Option<tokio_postgres::Client>,
 }
@@ -187,6 +188,14 @@ async fn own(
     if let Some(spec) = &spec {
         validate_source(&manifest, spec)?;
     }
+    if let Some(spec) = &spec {
+        custody.compacted = recovery::compacted::inspect(
+            &budget,
+            custody.native.as_ref().unwrap(),
+            spec,
+            &cancellation.requested,
+        )?;
+    }
     let fresh = || super::super::super::fresh_process_incarnation().map_err(error);
     let claim = ClaimRequest {
         dataset,
@@ -235,56 +244,89 @@ async fn own(
     let mut authority = Authority::new(&root, &progress, &cancellation, owner, accepted, profile)?;
     authority.refresh(owner, None, state).await?;
     let source = if let Some(spec) = &spec {
-        let closed = authority
-            .operation(owner.observe_initial_retirement(
+        if let Some(prefix) = &custody.compacted {
+            let proof=authority.operation(owner.inspect_initial_compacted_retirement(custody.native.as_ref().unwrap(),prefix,
+                request(&root,&cancellation,spec)?,recovery::limits().event,
+                grant(&budget,bigbrotr::storage::postgres::control_owner::CompactedInitialRetirement::REQUIRED_DATA_BYTES,0)?,
+                grant(&budget,bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(recovery::limits().event).map_err(error)?,0)?,
+                |d,h| validate(&root,profile,d,h))).await?;
+            source::Source::compacted_initial(
+                manifest,
+                proof,
                 custody.native.as_ref().unwrap(),
-                request(&root, &cancellation, spec)?,
-                grant(&budget, 4096, 4096)?,
+                spec,
+                grant(
+                    &budget,
+                    bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(
+                        recovery::limits().event,
+                    )
+                    .map_err(error)?,
+                    0,
+                )?,
+            )?
+        } else {
+            let closed = authority
+                .operation(owner.observe_initial_retirement(
+                    custody.native.as_ref().unwrap(),
+                    request(&root, &cancellation, spec)?,
+                    grant(&budget, 4096, 4096)?,
+                    |d, h| validate(&root, profile, d, h),
+                ))
+                .await?;
+            let reserved = closed.reserved_through();
+            let mut resolution = closed
+                .source_resolution(custody.native.as_ref().unwrap())
+                .map_err(error)?;
+            recovery::replay::originals(
+                &root,
+                &budget,
+                &progress,
+                &cancellation,
+                owner,
+                custody.native.as_ref().unwrap(),
+                spec,
+                reserved,
+                Some(recovery::replay::Prefix::Source(&mut resolution)),
+                recovery::replay::Mode::InspectRetirement,
                 |d, h| validate(&root, profile, d, h),
-            ))
+            )
             .await?;
-        let reserved = closed.reserved_through();
-        let mut resolution = closed
-            .source_resolution(custody.native.as_ref().unwrap())
-            .map_err(error)?;
-        recovery::replay::originals(
-            &root,
-            &budget,
-            &progress,
-            &cancellation,
-            owner,
-            custody.native.as_ref().unwrap(),
-            spec,
-            reserved,
-            Some(recovery::replay::Prefix::Source(&mut resolution)),
-            recovery::replay::Mode::InspectRetirement,
-            |d, h| validate(&root, profile, d, h),
-        )
-        .await?;
-        authority.refresh(owner, None, state).await?;
-        let source = authority.local(|_| resolution.finish().map_err(error))?;
-        authority
-            .operation(owner.inspect_closed_initial_source(
-                &source,
-                request(&root, &cancellation, spec)?,
-                grant(&budget, 64 * 1024, 0)?,
-                |d, h| validate(&root, profile, d, h),
-            ))
-            .await?;
-        source::Source::initial(manifest, source)?
+            authority.refresh(owner, None, state).await?;
+            let source = authority.local(|_| resolution.finish().map_err(error))?;
+            authority
+                .operation(owner.inspect_closed_initial_source(
+                    &source,
+                    request(&root, &cancellation, spec)?,
+                    grant(&budget, 64 * 1024, 0)?,
+                    |d, h| validate(&root, profile, d, h),
+                ))
+                .await?;
+            source::Source::initial(manifest, source)?
+        }
     } else {
         custody.history = Some(
             authority
-                .operation(owner.inspect_successor_history(
-                    custody.native.as_ref().unwrap(),
-                    InitialHistoryRequest {
-                        ingest_root: Path::new(required(&root, "storage.ingest_root")?),
-                        policy_ttl: duration(&root, "authorization_ttl"),
-                        cancelled: &cancellation.requested,
-                    },
-                    lineage_metadata.take().unwrap(),
-                    |d, h| validate(&root, profile, d, h),
-                ))
+                .operation(
+                    owner.inspect_successor_history_with_compacted(
+                        custody.native.as_ref().unwrap(),
+                        InitialHistoryRequest {
+                            ingest_root: Path::new(required(&root, "storage.ingest_root")?),
+                            policy_ttl: duration(&root, "authorization_ttl"),
+                            cancelled: &cancellation.requested,
+                        },
+                        recovery::limits().event,
+                        lineage_metadata.take().unwrap(),
+                        grant(
+                            &budget,
+                            bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(
+                                recovery::limits().event,
+                            )
+                            .map_err(error)?,
+                            0,
+                        )?,
+                        |d, h| validate(&root, profile, d, h),
+                    ),
+                )
                 .await?,
         );
         let history = custody.history.as_ref().unwrap();
@@ -308,7 +350,21 @@ async fn own(
             profile,
         )
         .await?;
-        source::Source::successor(manifest, proof)?
+        {
+            let effects = if proof.compacted_initial_requests() != 0 {
+                Some(grant(
+                    &budget,
+                    bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(
+                        recovery::limits().event,
+                    )
+                    .map_err(error)?,
+                    0,
+                )?)
+            } else {
+                None
+            };
+            source::Source::successor(manifest, proof, custody.native.as_ref().unwrap(), effects)?
+        }
     };
     let report = publication::run(
         &root,

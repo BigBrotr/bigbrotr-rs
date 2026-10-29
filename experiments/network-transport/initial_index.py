@@ -25,6 +25,9 @@ GROUPS = {
     'source-closure': 'storage::rocks::store::admission_tests::source_closure_tests::',
     'lineage-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
+    'closed-reclamation': 'storage::rocks::store::admission_tests::compacted_prefix_tests::closed_reclamation_tests::',
+    'compacted-progress': 'storage::postgres::control_owner::producer_progress::recovery::tests::',
+    'compacted-live': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_candidate_binds_fresh_target_and_explicit_activation_only',
     'live-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::borrowed_live_pending_keeps_owned_bytes_across_head_advance_and_refuses_other_streams',
     'live-census': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::live_request_census_counts_receipt_only_requests_without_changing_producer_admission',
     'role-observation': 'management::roles::tests::',
@@ -32,6 +35,17 @@ GROUPS = {
 }
 SOURCE_REQUIRED = {
     **{name: (GROUPS[name],) for name in ('live-pending', 'live-census')},
+    'closed-reclamation': tuple(GROUPS['closed-reclamation']+name for name in (
+        'closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts',
+        'closed_reclamation_refuses_stale_native_or_inventory_before_unlink',
+        'closed_reclamation_cancellation_after_one_unlink_requires_fresh_proof',
+        'closed_reclamation_unknown_native_and_cancelled_authority_never_unlink',
+        'closed_reclamation_rechecks_corrupt_residuals_against_canonical_outcomes',
+        'reclaimed_resubmissions_return_retired_without_input_or_digest_reconstruction',
+        'closed_reclamation_empty_retry_binds_the_actual_spool_directory',
+    )),
+    'compacted-progress': tuple(GROUPS['compacted-progress']+name for name in ('compacted_floor_requires_exact_retained_checkpoint','compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint')),
+    'compacted-live': (GROUPS['compacted-live'],),
     'funded-reservation': tuple(GROUPS['funded-reservation'] + name for name in (
         'whole_operation_admission_is_atomic_and_preserves_error_classes',
         'closed_scope_retains_only_actual_escaped_grants_and_does_not_pin_drain',
@@ -88,7 +102,7 @@ BINARY_GROUPS = {
     'initial-admission': INITIAL + 'admission::tests::',
     'initial-capacity': INITIAL + 'capacity::tests::',
     'initial-sync': INITIAL + 'sync::tests::',
-    'initial-archive': INITIAL + 'archive::tests::',
+    'initial-archive': INITIAL + 'archive',
     'initial-index': INITIAL + 'index::',
     'initial-commands': INITIAL + 'commands::tests::',
     'initial-sync-diagnostic': INITIAL + 'sync_diagnostic::tests::',
@@ -100,8 +114,9 @@ BINARY_GROUPS = {
     'role-status-http': 'interfaces::management::tests::roles::',
     'ordinary-observations': 'interfaces::serve::role_status::tests::',
     'initial-role-route': 'interfaces::management::tests::profiles::initial_profile_preserves_sessions_and_refuses_other_unwired_operations',
+    'ordinary-reader-budget': 'interfaces::management::reader_budget_tests::complete_archive_selection_keeps_shared_byte_caps_and_owned_permits',
 }
-BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route')
+BINARY_EXACT = ('initial-cli', 'index-cli', 'initial-role-route', 'ordinary-reader-budget')
 BINARY_REQUIRED = {
     'initial-capacity': tuple(BINARY_GROUPS['initial-capacity'] + name for name in (
         'denial_and_admission_survive_coalesced_watch_with_exact_wait_and_join_identity',
@@ -120,10 +135,23 @@ BINARY_REQUIRED = {
         'a_preparation_hole_keeps_later_admission_eligible_without_reopening_progress',
         'resource_and_context_failures_cannot_be_hidden_as_peer_refusals',
     )),
-    'initial-archive': tuple(BINARY_GROUPS['initial-archive'] + name for name in (
-        'fresh_idle_archive_poll_requires_no_full_publication_and_due_work_is_preserved',
-        'funded_publication_includes_catalog_cut_completion_and_retained_input',
-        'active_request_window_does_not_define_archive_retention',
+    'initial-archive': tuple(INITIAL + name for name in (
+        'archive::tests::fresh_idle_archive_poll_requires_no_full_publication_and_due_work_is_preserved',
+        'archive::tests::funded_publication_includes_catalog_cut_completion_and_retained_input',
+        'archive::tests::active_request_window_does_not_define_archive_retention',
+        'archive::native::tests::empty_cut_admits_the_full_catalog_inventory_without_inventing_facts',
+        'archive::native::tests::transport_loss_still_collects_the_owned_work',
+        'archive::native::catch_up::tests::receipt_presence_never_substitutes_for_import_or_membership',
+        'archive::native::catch_up::tests::retained_replacement_preserves_every_semantic_field_and_later_identity',
+        'archive::native::catch_up::tests::retained_replacement_requires_present_without_hiding_unknown_or_absent',
+        'archive_catch_up::inventory::tests::current_replacement_requires_one_exact_later_retained_current_member',
+        'archive_catch_up::inventory::tests::current_replacement_refuses_changed_headers_and_conflicting_input_identity',
+        'archive_catch_up::plan::tests::replacement_preserves_original_topology_and_never_splits_absent_headers',
+        'archive_catch_up::publication::tests::changed_current_family_distribution_refuses_even_with_an_equal_total',
+        'archive_catch_up::retained_driver::tests::retained_driver_destroys_transport_before_queued_or_received_keeper',
+        'archive_catch_up::retained_driver::tests::retained_driver_waits_for_owner_after_early_connection_completion',
+        'archive_catch_up::retained_driver::tests::retained_driver_sender_failure_and_closed_sender_do_not_skip_transport',
+        'archive_catch_up::retained_driver::tests::retained_driver_abort_join_confirms_transport_before_keeper_release',
     )),
     'initial-index': tuple(INITIAL + 'index::' + name for name in (
         'tests::accepted_profile_preserves_provenance_and_both_documents_actual_ceilings',
@@ -153,10 +181,14 @@ BINARY_REQUIRED = {
         'catch_up::tests::finite_recovery_accepts_only_original_or_exact_initial_successor_metadata',
         'catch_up::tests::explicit_handoff_head_retains_old_cut_and_zero_successor_without_a_batch',
         'catch_up::tests::finite_history_counts_global_requests_and_one_separate_bridge',
+        'catch_up::tests::finite_compacted_history_has_separate_logical_and_spool_bounds',
         'catch_up::tests::complete_successor_vector_cannot_erase_or_advance_closed_predecessor',
         'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
+        'maintenance_renewal_collects_the_same_grant_at_each_stop_boundary',
+        'maintenance_renewal_preserves_errors_and_the_original_deadline',
+        'fail_stop_renewal_still_drops_cancelled_startup_and_external_work',
         'sync_safe_point_retains_prepared_input_and_grant_until_reauthorization',
         'sync_wire_phase_requires_renewal_even_with_remaining_time',
         'sync_safe_point_refuses_failed_revalidation_and_cancellation',

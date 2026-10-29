@@ -296,6 +296,57 @@ pub(in crate::storage::postgres::control_owner) async fn require_compacted_live(
     Ok(complete)
 }
 
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_verified_initial(
+    tx: &Transaction<'_>,
+    recovery: &IngestRecovery,
+    proof: &crate::storage::rocks::store::VerifiedCompactedPrefix<'_>,
+    scratch: &OwnedPermit,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    proof
+        .validate_initial_source(cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_inner(
+        tx,
+        recovery,
+        proof.manifest(),
+        proof.producer_slot_id(),
+        scratch,
+        Some(proof.floor()),
+        authority,
+    )
+    .await?;
+    proof
+        .validate(recovery, cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
+pub(in crate::storage::postgres::control_owner) async fn require_compacted_live_initial(
+    tx: &Transaction<'_>,
+    view: &crate::storage::rocks::store::CompactedLiveInitial<'_>,
+    cancelled: &std::sync::atomic::AtomicBool,
+    authority: impl FnMut() -> Result<(), crate::storage::rocks::store::AdmissionError>,
+) -> Result<u64, ProducerProgressError> {
+    view.validate(cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    let complete = require_read(
+        tx,
+        view.progress_read()
+            .map_err(ProducerProgressError::Native)?,
+        view.manifest(),
+        view.producer_slot_id(),
+        view.progress_scratch(),
+        Some(view.floor()),
+        authority,
+    )
+    .await?;
+    view.validate(cancelled)
+        .map_err(ProducerProgressError::Native)?;
+    Ok(complete)
+}
+
 #[allow(
     clippy::too_many_arguments,
     reason = "explicit floor selects a distinct recovery format under the existing locked reader"

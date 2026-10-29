@@ -38,20 +38,22 @@ def cut(dataset, through):
         for epoch,last in ((1,12),(2,through))])
 
 
-def startup_cut(dataset):
+def startup_cut(dataset, *, retained_boundary=False):
     """Canonical SourceCut serde: nested StreamId and numeric u32 shard."""
+    _,initial_cut,_=topology.initial_profile(retained_boundary)
     return dict(dataset_id=index.raw(dataset,16).hex(),topology_generation='1',bounds=[
         dict(stream=dict(shard_id=0,owner_epoch=str(epoch)),last_complete_sequence=str(last))
-        for epoch,last in ((1,12),(2,0))])
+        for epoch,last in ((1,initial_cut),(2,0))])
 
 
-def startup_index(value, generation):
+def startup_index(value, generation, *, retained_boundary=False):
+    initial,_,_=topology.initial_profile(retained_boundary)
     index.exact(value,dict(format='bigbrotr-live-initial-index/1',state='bridged',
         generation_id=index.raw(generation['generation_id'],16).hex(),
         storage_incarnation=index.raw(generation['storage_incarnation'],16).hex(),
         table_identity_digest=index.raw(generation['table_identity_digest'],32).hex(),
-        previous_owner_epoch=1,owner_epoch=2,published_revision_before=4,published_revision_after=5,
-        published_cut=startup_cut(generation['dataset_id']),ready=False))
+        previous_owner_epoch=1,owner_epoch=2,published_revision_before=initial,published_revision_after=initial+1,
+        published_cut=startup_cut(generation['dataset_id'],retained_boundary=retained_boundary),ready=False))
 
 
 def append_only_history(before, after):
@@ -83,9 +85,10 @@ def live_owner_bindings(state):
         assert activation['activated_by_'+field]==session['issuer_'+field]==actual
 
 
-def retained_bridge(before, after, root):
+def retained_bridge(before, after, root, *, retained_boundary=False):
     """A real zero bridge precedes any epoch2 request or physical batch."""
-    index.validate_metadata(before,root,complete=True)
+    initial,cut,_=topology.initial_profile(retained_boundary)
+    index.validate_metadata(before,root,complete=True,retained_boundary=retained_boundary)
     assert set(before)==set(after) and len(after)==82
     generation=index.only(after['projection_generations'])
     index.exact(before['projection_generations'],after['projection_generations'])
@@ -95,15 +98,15 @@ def retained_bridge(before, after, root):
             index.exact(before[table],after[table])
     consumer=index.only(after['consumers'],consumer_role='index')
     topology.preserve_consumer_identity(before,after,consumer['consumer_id'])
-    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[5,1])
+    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[initial+1,1])
     index.exact(sorted(r['frontier_revision'] for r in after['consumer_frontier_revisions']
-                      if r['consumer_id']==consumer['consumer_id']),[1,2,3,4,5])
+                      if r['consumer_id']==consumer['consumer_id']),list(range(1,initial+2)))
     owners=sorted((r for r in after['owner_epochs'] if r['role']=='index'),key=lambda r:r['epoch'])
     index.exact([r['epoch'] for r in owners],[1,2])
     publisher=owners[1]
     assert publisher['state']=='active'
     live_owner_bindings(after)
-    for epoch,producer_state,source_state,last in ((1,'retired','closed',12),(2,'open','open',None)):
+    for epoch,producer_state,source_state,last in ((1,'retired','closed',cut),(2,'open','open',None)):
         assert index.only(after['producer_epochs'],producer_epoch=epoch)['state']==producer_state
         source=index.only(after['source_streams'],owner_epoch=epoch)
         assert source['state']==source_state and source['last_complete_sequence']==last
@@ -111,14 +114,14 @@ def retained_bridge(before, after, root):
         assert not [r for r in after[table] if r['producer_epoch']==2]
     binding=tuple(index.raw(generation[key]) for key in ('dataset_id','owner_resource_id','generation_id',
         'storage_incarnation','table_identity_digest','custody_binding_digest'))+(1,)
-    handoff,_,bounds,_=topology.bridge_history(after,binding,publisher,generation)
-    assert len(bounds)==6 and consumer['xmin']==handoff['xmin']
+    handoff,_,bounds,_=topology.bridge_history(after,binding,publisher,generation,retained_boundary=retained_boundary)
+    assert len(bounds)==initial+2 and consumer['xmin']==handoff['xmin']
     commitments=[]
-    for revision in range(1,5):
+    for revision in range(1,initial+1):
         plan=index.only(before['projection_plans'],frontier_revision=revision)
         receipt=index.only(before['index_frontier_plans'],frontier_revision=revision)
         commitments.append((revision,index.raw(plan['plan_digest'],32),index.raw(receipt['engine_receipt_digest'],32)))
-    topology.recovery_sessions(after,binding,owners,commitments,handoff)
+    topology.recovery_sessions(after,binding,owners,commitments,handoff,retained_boundary=retained_boundary)
     return generation
 
 
@@ -167,24 +170,27 @@ def publication_unchanged(before, after):
                     [r for r in after[table] if r['consumer_id']==consumer])
 
 
-def no_work_rebind(before, after, report, science, schema, rows, *, owner_epoch):
+def no_work_rebind(before, after, report, science, schema, rows, *, owner_epoch, retained_boundary=False):
     """A historical live bridge survives finite recovery without new publication."""
+    initial,cut,_=topology.initial_profile(retained_boundary)
     assert type(owner_epoch) is int and owner_epoch in (3,4)
     restart.unchanged_except(before,after,{'owner_epochs','role_instances','index_owner_sessions'})
     restart.owner_changes(before,after,index_epoch=owner_epoch)
     assert all(row in after['index_owner_sessions'] for row in before['index_owner_sessions'])
-    result=topology.published_history(after,science,schema,rows,owner_epoch=owner_epoch)
+    result=topology.published_history(after,science,schema,rows,owner_epoch=owner_epoch,retained_boundary=retained_boundary)
     generation=index.only(after['projection_generations'])
     # Finite reports use numeric cuts; management observations use decimal strings.
     numeric=dict(topology_generation=1,bounds=[dict(shard_id=0,owner_epoch=epoch,last_complete_sequence=last)
-                                              for epoch,last in ((1,12),(2,10))])
-    index.exact(report,dict(format='bigbrotr-initial-index-catch-up/2',state='complete',
+                                              for epoch,last in ((1,cut),(2,10))])
+    expected_report=dict(format='bigbrotr-initial-index-catch-up/2',state='complete',
         dataset_id=generation['dataset_id'][2:],generation_id=generation['generation_id'][2:],
         storage_incarnation=generation['storage_incarnation'][2:],table_identity_digest=generation['table_identity_digest'][2:],
-        previous_owner_epoch=owner_epoch-1,owner_epoch=owner_epoch,published_revision_before=8,published_revision_after=8,
+        previous_owner_epoch=owner_epoch-1,owner_epoch=owner_epoch,published_revision_before=initial+4,published_revision_after=initial+4,
         source_epoch=2,source_through=10,published_through=10,source_cut=numeric,published_cut=numeric,
-        index_handoff_revision=5,published_handoff=False,recovered_pending=False,new_batches=0,ready=False,
-        acknowledgement='not-performed',ingest_retirement='not-performed',topology_transition='existing-ingest-handoff-verified'))
+        index_handoff_revision=initial+1,published_handoff=False,recovered_pending=False,new_batches=0,ready=False,
+        acknowledgement='not-performed',ingest_retirement='not-performed',topology_transition='existing-ingest-handoff-verified')
+    if retained_boundary:expected_report.update(recovery_basis='closed-producer-floor-v3',compacted_requests='64')
+    index.exact(report,expected_report)
     result.update(exact_retry=True,historical_live_bridge=True)
     return result
 

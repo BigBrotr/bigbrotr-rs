@@ -1,5 +1,6 @@
-//! Read an already reclaimed initial retirement. This cannot install a floor,
-//! remove detail, acknowledge a request or replace original-input recovery.
+//! Inspect authenticated compacted history and complete residual-input cleanup
+//! through an explicitly confirmed reclamation operation. Observation alone
+//! cannot install a floor, acknowledge requests or replace original-input recovery.
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::CompactedInitialRetirement,
@@ -105,4 +106,77 @@ pub(super) async fn retirement(
         },
         "native":"compacted", "owner_release":"committed", "ready":false
     }))
+}
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "existing supervision, native custody, retained prefix and registration"
+)]
+pub(super) async fn reclaim(
+    root: &Resolved,
+    budget: &ResourceBudget,
+    progress: &watch::Sender<Progress>,
+    cancellation: &Cancellation,
+    owner: &mut ControlSession,
+    recovery: &mut IngestRecovery,
+    prefix: &RetainedCompactedPrefix,
+    spec: &ingest_registry::InitialRegistration,
+) -> Result<Value> {
+    use bigbrotr::storage::postgres::control_owner::ConfirmedClosedReclamation;
+    let timeout = duration(root, "renewal_timeout");
+    phase(progress, timeout)?;
+    let retired = bounded(timeout, cancellation, async {
+        owner
+            .inspect_initial_compacted_retirement(
+                recovery,
+                prefix,
+                ProducerCloseRequest {
+                    ingest_root: Path::new(required(root, "storage.ingest_root")?),
+                    registration: spec,
+                    policy_ttl: duration(root, "authorization_ttl"),
+                    cancelled: &cancellation.requested,
+                },
+                limits().event,
+                grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+                grant(
+                    budget,
+                    compacted_outcome_data_bytes(limits().event).map_err(|e| (3, e.to_string()))?,
+                    0,
+                )?,
+                |document, digest| {
+                    super::super::super::accepted_policy(root, document, digest).map(|_| ())
+                },
+            )
+            .await
+            .map_err(|e| (4, e.to_string()))
+    })
+    .await?;
+    let confirmed = retired
+        .confirm_reclamation(
+            recovery,
+            grant(
+                budget,
+                ConfirmedClosedReclamation::REQUIRED_DATA_BYTES,
+                ConfirmedClosedReclamation::REQUIRED_NATIVE_BYTES,
+            )?,
+            &cancellation.requested,
+        )
+        .map_err(|e| (4, e.to_string()))?;
+    phase(progress, timeout)?;
+    let receipt = owner
+        .reclaim_closed_producer(recovery, confirmed, &cancellation.requested)
+        .map_err(|e| (4, e.to_string()))?;
+    Ok(reclamation_report(spec, &receipt))
+}
+pub(super) fn reclamation_report(
+    spec: &ingest_registry::InitialRegistration,
+    receipt: &bigbrotr::storage::rocks::store::ClosedReclamationReceipt,
+) -> Value {
+    json!({"format":"bigbrotr-ingest-recovery/1", "state":"initial-reclaimed",
+        "dataset_id":spec.dataset_id, "owner_resource_id":spec.ingest_resource_id,
+        "producer_slot_id":spec.producer_slot_id, "producer_epoch":"1",
+        "retired_requests":receipt.retired_requests().to_string(),
+        "removed_input_files":receipt.removed_input_files().to_string(),
+        "native_sequence":receipt.native_sequence().to_string(),
+        "recovery_basis":"closed-producer-floor-v3", "native":"compacted", "owner_release":"committed", "ready":false})
 }

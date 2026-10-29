@@ -40,7 +40,7 @@ RESTART_LIMITS = [
 ]
 OFF_CASE = 'p01-first-launch-restart-provenance-off'
 RESTART_CASES = ('p01-first-launch-restart', OFF_CASE, 'p01-first-launch-index-topology',
-                 'p01-first-launch-index-live-topology')
+                 'p01-first-launch-index-live-topology', 'p01-first-launch-closed-reclamation')
 OFF_LIMITS = [
     RESTART_LIMITS[0] + ' Fresh accepted sync.provenance=off; no scientific witness rows.',
     'NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.',
@@ -68,6 +68,23 @@ def save(path, value):
 
 def load(path):
     return json.loads(path.read_text())
+
+
+def failure_trace(error, source):
+    """Record source locations only; omit frames outside the selected tree."""
+    source = source.resolve()
+    frames = []
+    frame = error.__traceback__
+    while frame is not None:
+        try:
+            relative = Path(frame.tb_frame.f_code.co_filename).resolve().relative_to(source)
+        except ValueError:
+            pass
+        else:
+            frames.append(dict(file=relative.as_posix(), line=frame.tb_lineno,
+                               function=frame.tb_frame.f_code.co_name))
+        frame = frame.tb_next
+    return frames
 
 
 def check_container(info, entry, owner, project, state):
@@ -706,7 +723,7 @@ class Runtime:
         self.inputs['export'] = {key: self.export_result[key] for key in
             ('jsonl_bytes', 'jsonl_sha256', 'manifest_sha256', 'export_pin_retained', 'all_fresh_readers_released')}
 
-    def census(self, output, name):
+    def census(self, output, name, *, profile='default'):
         """A joined, read-only C API child using only the verified candidate worker."""
         self.inspect(self.pg)
         pg = {'postgres': self.pg['id']}
@@ -720,9 +737,12 @@ class Runtime:
             'file:' + str(self.state / 'secrets/runtime/archive-read'))
         path = output / (name + '-reader.toml')
         path.write_text(config)
-        result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
+        command = [sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
             str(path), str(output / (name + '-temporary')), '--worker-root', str(self.bundle / 'archive-worker'),
-            '--catalog-port', '15432', '--full-stream-order', '--override-data-path'], timeout=30, label='census-' + name)
+            '--catalog-port', '15432', '--full-stream-order', '--override-data-path']
+        if profile != 'default':
+            command += ['--census-profile', profile]
+        result = self.command(command, timeout=30, label='census-' + name)
         require(not result.stderr, 'independent C API diagnostic output')
         value = json.loads(result.stdout)
         save(output / (name + '-science.json'), value)
@@ -998,8 +1018,9 @@ class Runtime:
 
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
-    restart = getattr(args, 'case', None) in RESTART_CASES
-    retained_boundary = getattr(args, 'case', None) == 'p01-first-launch-retained-boundary'
+    reclamation = getattr(args,'case',None)=='p01-first-launch-closed-reclamation'
+    restart = getattr(args, 'case', None) in RESTART_CASES and not reclamation
+    retained_boundary = reclamation or getattr(args, 'case', None) == 'p01-first-launch-retained-boundary'
     index_outage = getattr(args, 'case', None) == 'p01-first-launch-index-outage'
     archive_outage = retained_boundary or getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
     shared_budget = getattr(args, 'case', None) == 'p01-first-launch-shared-budget'
@@ -1036,10 +1057,14 @@ def first_launch(args, checks, inputs):
         if retained_boundary:
             from cases.first_launch_retained import (RetainedRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if reclamation:
+            from cases.first_launch_retained import (ReclamationRuntime as IndexRuntime,
+                RECLAMATION_STAGES as INDEX_STAGES, RECLAMATION_LIMITS as INDEX_LIMITS)
         if shared_budget:
             from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
+    renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1049,8 +1074,12 @@ def first_launch(args, checks, inputs):
         args.case_limits = INDEX_LIMITS
     if tutorial:
         args.case_limits = TUTORIAL_LIMITS
+    if renewal_stop:
+        from cases.first_launch_renewal_stop import RenewalStopRuntime, STAGES as STOP_STAGES, LIMITS as STOP_LIMITS
+        runtime_type = RenewalStopRuntime
+        args.case_limits = STOP_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -1074,6 +1103,9 @@ def first_launch(args, checks, inputs):
             operations += [('ordinary_history_export', runtime.ordinary)]
         if pin_release:
             operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
+        if reclamation:
+            operations += [('closed_reclamation',runtime.closed_reclamation),('compacted_successor',runtime.compacted_successor),
+                ('compacted_consumers',runtime.compacted_consumers),('compacted_history_export',runtime.compacted_history_export)]
         if restart:
             operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
                 ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry)]
@@ -1083,6 +1115,8 @@ def first_launch(args, checks, inputs):
             operations += [('successor_history', runtime.restart_history)]
             if live_topology:
                 operations += [('historical_index_topology', runtime.historical_index_topology)]
+        if renewal_stop:
+            operations = operations[:4] + [('renewal_stop', runtime.renewal_stop)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'
@@ -1090,7 +1124,8 @@ def first_launch(args, checks, inputs):
         stage_checks[current]['detail'] = str(error)
     except (Exception, KeyboardInterrupt) as error:
         stage_checks[current].update(result='FAIL', detail=type(error).__name__)
-        save(args.evidence / 'failure.json', dict(stage=current, error_type=type(error).__name__, reason=str(error)))
+        save(args.evidence / 'failure.json', dict(stage=current, error_type=type(error).__name__, reason=str(error),
+                                                traceback=failure_trace(error, args.source_root)))
     finally:
         try:
             if runtime is not None:

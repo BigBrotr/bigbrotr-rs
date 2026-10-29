@@ -7,6 +7,12 @@ from cases import first_launch_index_restart_oracle as restart
 # Existing signed initial event, distinct tagged successor event and predecessor
 # resend: the original event has no second payload/receive/eligibility row.
 COUNTS = (13,2,2,2,2,2,2,1,3,3)
+RETAINED_COUNTS = (73,62,62,62,62,62,62,1,63,63)
+
+
+def initial_profile(retained_boundary=False):
+    assert type(retained_boundary) is bool
+    return (64,312,RETAINED_COUNTS) if retained_boundary else (4,12,COUNTS)
 
 
 def unchanged_index(before, after):
@@ -22,9 +28,9 @@ def unchanged_index(before, after):
                 [r for r in after['consumer_frontiers'] if r['consumer_id']==consumer])
 
 
-def physical_rows(actual, science, generation, schema):
+def physical_rows(actual, science, generation, schema, *, retained_boundary=False):
     """Compare raw multiplicity and every typed field; no DISTINCT normalization."""
-    rows = index.expected_rows(science,index.raw(generation,16),schema,counts=COUNTS)
+    rows = index.expected_rows(science,index.raw(generation,16),schema,counts=initial_profile(retained_boundary)[2])
     assert set(actual)==set(index.TARGETS)
     for name,columns,_ in schema.FAMILIES:
         expected = [{key:index.json_value(ty,value)
@@ -43,11 +49,12 @@ def preserve_consumer_identity(before, after, consumer_id):
                 {k:v for k,v in index.only(after['consumers'],consumer_id=consumer_id).items() if k not in allowed})
 
 
-def handoff_digest(binding, ingest, succession):
+def handoff_digest(binding, ingest, succession, *, retained_boundary=False):
     """Literal current contract: one closed predecessor and one zero successor."""
+    initial,cut,_=initial_profile(retained_boundary)
     data=b'bigbrotr/index-initial-topology-handoff/1\0'+b''.join(binding[:4])+ingest
-    data+=b''.join(binding[4:6])+bytes([binding[6]])+index.be(4)+succession
-    for topology,bounds in ((0,[(0,1,12)]),(1,[(0,1,12),(0,2,0)])):
+    data+=b''.join(binding[4:6])+bytes([binding[6]])+index.be(initial)+succession
+    for topology,bounds in ((0,[(0,1,cut)]),(1,[(0,1,cut),(0,2,0)])):
         data+=index.be(topology)+index.be(len(bounds),4)
         for shard,epoch,sequence in bounds:data+=index.be(shard,4)+index.be(epoch)+index.be(sequence)
     return hashlib.sha256(data).digest()
@@ -67,17 +74,18 @@ def catch_up_report(report, generation, *, retry):
         topology_transition='existing-ingest-handoff-verified'))
 
 
-def batch_history(after, science, rows, binding, publisher, generation):
+def batch_history(after, science, rows, binding, publisher, generation, *, retained_boundary=False):
     """Verify batch metadata/engine receipts against independently encoded rows."""
+    initial,cut,_=initial_profile(retained_boundary)
     dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
     plans=sorted(after['projection_plans'],key=lambda r:r['frontier_revision'])
     handoff=index.only(after['index_frontier_handoffs'])
     commitments=[]
     for ordinal,(plan,batch) in enumerate(zip(plans,science['batches'])):
-        revision=ordinal+1 if ordinal<4 else ordinal+2
+        revision=ordinal+1 if ordinal<initial else ordinal+2
         epoch,first,last=batch['epoch'],batch['first'],batch['last'];topology=epoch-1
-        cuts=[(0,1,last)] if epoch==1 else [(0,1,12),(0,2,last)]
-        previous=[(0,1,first-1)] if epoch==1 else [(0,1,12),(0,2,first-1)]
+        cuts=[(0,1,last)] if epoch==1 else [(0,1,cut),(0,2,last)]
+        previous=[(0,1,first-1)] if epoch==1 else [(0,1,cut),(0,2,first-1)]
         chunks=[]
         for name in index.TARGETS:
             selected=[r for r in rows[name] if r[1][2]==epoch and first<=r[1][3]<=last]
@@ -123,22 +131,23 @@ def batch_history(after, science, rows, binding, publisher, generation):
     return commitments
 
 
-def recovery_sessions(after, binding, owners, commitments, handoff):
+def recovery_sessions(after, binding, owners, commitments, handoff, *, retained_boundary=False):
     """Recompute each transferred owner's exact typed-history commitment."""
+    initial,_,_=initial_profile(retained_boundary)
     generation=index.only(after['projection_generations'])
     dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
     owner_epoch=len(owners);bridge=index.raw(handoff['handoff_digest'],32)
     sessions=sorted(after['index_owner_sessions'],key=lambda r:r['owner_epoch'])
     index.exact([s['owner_epoch'] for s in sessions],list(range(1,owner_epoch+1)))
     for epoch,session in enumerate(sessions[1:],2):
-        previous=owners[epoch-2];head=4 if epoch==2 else 8
+        previous=owners[epoch-2];head=initial if epoch==2 else initial+4
         selected=[x for x in commitments if x[0]<=head]
         data=b'bigbrotr/index-recovery-observation/1\0'+b''.join(binding[:6])+bytes([binding[6]])
         data+=index.be(previous['epoch'])+index.raw(previous['process_incarnation'],16)+index.be(head)
         data+=b'\x01'+selected[-1][1]+b'\x00'
         for revision,metadata,engine in selected:
-            if revision==6:
-                data+=b'\x02'+index.be(4)+bridge+index.be(2)+index.raw(handoff['owner_incarnation'],16)
+            if revision==initial+2:
+                data+=b'\x02'+index.be(initial)+bridge+index.be(2)+index.raw(handoff['owner_incarnation'],16)
                 data+=handoff['committed_at_us'].to_bytes(8,'big',signed=True)
             data+=b'\x00'+index.be(revision-1)+metadata+engine
         expected='\\x'+hashlib.sha256(data).hexdigest()
@@ -177,39 +186,41 @@ def catch_up(before, after, report, science, schema, root, actual, *, retry=Fals
     return result
 
 
-def bridge_history(after, binding, publisher, generation):
+def bridge_history(after, binding, publisher, generation, *, retained_boundary=False):
     """Verify the one receipt-free topology bridge and its atomic zero bound."""
+    initial,cut,_=initial_profile(retained_boundary)
     dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
     revisions=[r for r in after['consumer_frontier_revisions'] if r['consumer_id']==consumer_id]
     bounds=[r for r in after['consumer_frontiers'] if r['consumer_id']==consumer_id]
     handoff=index.only(after['index_frontier_handoffs'])
     succession=index.only(after['initial_ingest_successions'])
-    bridge=handoff_digest(binding,index.raw(succession['owner_resource_id'],16),index.raw(succession['handoff_sha256'],32))
-    expected=dict(consumer_id=consumer_id,frontier_revision=5,expected_revision=4,dataset_id=dataset,
+    bridge=handoff_digest(binding,index.raw(succession['owner_resource_id'],16),index.raw(succession['handoff_sha256'],32),retained_boundary=retained_boundary)
+    expected=dict(consumer_id=consumer_id,frontier_revision=initial+1,expected_revision=initial,dataset_id=dataset,
         topology_generation=1,generation_id=generation_id,handoff_digest='\\x'+bridge.hex(),
         ingest_resource=succession['owner_resource_id'],succession_digest=succession['handoff_sha256'],
-        source_shard=0,predecessor_through=12,owner_epoch=2,owner_incarnation=publisher['process_incarnation'])
+        source_shard=0,predecessor_through=cut,owner_epoch=2,owner_incarnation=publisher['process_incarnation'])
     index.exact({k:v for k,v in handoff.items() if k not in ('xmin','committed_at_us')},expected)
     assert publisher['acquired_at_us']<=handoff['committed_at_us']<publisher['lease_expires_at_us']
-    bridge_bounds=sorted((r for r in bounds if r['frontier_revision']==5),key=lambda r:r['owner_epoch'])
-    old_bound=index.only(bounds,frontier_revision=4)
+    bridge_bounds=sorted((r for r in bounds if r['frontier_revision']==initial+1),key=lambda r:r['owner_epoch'])
+    old_bound=index.only(bounds,frontier_revision=initial)
     index.exact({k:v for k,v in bridge_bounds[0].items() if k not in ('xmin','frontier_revision','topology_generation')},
                 {k:v for k,v in old_bound.items() if k not in ('xmin','frontier_revision','topology_generation')})
     index.exact([bridge_bounds[1][k] for k in ('shard_id','owner_epoch','last_complete_sequence','attestation_kind','attestation_digest')],
                 [0,2,0,None,None])
-    revision=index.only(revisions,frontier_revision=5)
+    revision=index.only(revisions,frontier_revision=initial+1)
     index.exact({k:v for k,v in revision.items() if k not in ('xmin','created_at_us')},dict(consumer_id=consumer_id,
-        frontier_revision=5,dataset_id=dataset,consumer_role='index',topology_generation=1,previous_revision=4,
+        frontier_revision=initial+1,dataset_id=dataset,consumer_role='index',topology_generation=1,previous_revision=initial,
         owner_resource_id=consumer_id,owner_epoch=2,owner_incarnation=publisher['process_incarnation'],sealed=True))
     assert revision['xmin']==handoff['xmin'] and revision['created_at_us']==handoff['committed_at_us']
     assert len(bridge_bounds)==2 and all(r['xmin']==handoff['xmin'] for r in bridge_bounds)
-    assert not [r for r in after['index_frontier_plans'] if r['frontier_revision']==5]
-    assert not [r for r in after['projection_plans'] if r['frontier_revision']==5]
+    assert not [r for r in after['index_frontier_plans'] if r['frontier_revision']==initial+1]
+    assert not [r for r in after['projection_plans'] if r['frontier_revision']==initial+1]
     return handoff,revisions,bounds,old_bound
 
 
-def published_history(after, science, schema, actual, *, owner_epoch):
+def published_history(after, science, schema, actual, *, owner_epoch, retained_boundary=False):
     """The same typed seven-batch history, whether published live or finitely."""
+    initial,cut,counts=initial_profile(retained_boundary)
     assert type(owner_epoch) is int and owner_epoch in (2,3,4)
     generation=index.only(after['projection_generations'])
     binding=tuple(index.raw(generation[key]) for key in ('dataset_id','owner_resource_id','generation_id',
@@ -217,41 +228,41 @@ def published_history(after, science, schema, actual, *, owner_epoch):
     dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
     consumer=index.only(after['consumers'],consumer_role='index')
     assert consumer['consumer_id']==consumer_id and consumer['dataset_id']==dataset
-    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[8,1])
+    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[initial+4,1])
     owners=sorted((r for r in after['owner_epochs'] if r['role']=='index'),key=lambda r:r['epoch'])
     index.exact([r['epoch'] for r in owners],list(range(1,owner_epoch+1)))
     publisher=owners[1]
-    rows=physical_rows(actual,science,generation_id,schema)
+    rows=physical_rows(actual,science,generation_id,schema,retained_boundary=retained_boundary)
     plans=sorted(after['projection_plans'],key=lambda r:r['frontier_revision'])
-    index.exact([p['frontier_revision'] for p in plans],[1,2,3,4,6,7,8])
+    index.exact([p['frontier_revision'] for p in plans],list(range(1,initial+1))+list(range(initial+2,initial+5)))
     index.exact([(b['epoch'],b['first'],b['last']) for b in science['batches']],
-                [(1,1,2),(1,3,3),(1,4,7),(1,8,12),(2,1,4),(2,5,9),(2,10,10)])
-    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==70
-    assert len(after['projection_chunk_bounds'])==100 and len(after['index_frontier_plans'])==7
-    handoff,revisions,bounds,old_bound=bridge_history(after,binding,publisher,generation)
-    index.exact(sorted(r['frontier_revision'] for r in revisions),list(range(1,9)))
-    assert len(bounds)==12
-    commitments=batch_history(after,science,rows,binding,publisher,generation)
+                [(1,1,2),(1,3,3),(1,4,7)]+([(1,8+5*n,12+5*n) for n in range(61)] if retained_boundary else [(1,8,12)])+[(2,1,4),(2,5,9),(2,10,10)])
+    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==(initial+3)*10
+    assert len(after['projection_chunk_bounds'])==initial*10+60 and len(after['index_frontier_plans'])==initial+3
+    handoff,revisions,bounds,old_bound=bridge_history(after,binding,publisher,generation,retained_boundary=retained_boundary)
+    index.exact(sorted(r['frontier_revision'] for r in revisions),list(range(1,initial+5)))
+    assert len(bounds)==initial+8
+    commitments=batch_history(after,science,rows,binding,publisher,generation,retained_boundary=retained_boundary)
     # Frontier publication is one transaction, including the bridge's carried
     # attestation and zero successor. No handoff fabricates a physical receipt.
-    for revision in range(5,9):
-        receipt=handoff if revision==5 else index.only(after['index_frontier_plans'],frontier_revision=revision)
+    for revision in range(initial+1,initial+5):
+        receipt=handoff if revision==initial+1 else index.only(after['index_frontier_plans'],frontier_revision=revision)
         rev=index.only(revisions,frontier_revision=revision)
         index.exact({k:v for k,v in rev.items() if k not in ('xmin','created_at_us')},dict(consumer_id=consumer_id,
             frontier_revision=revision,dataset_id=dataset,consumer_role='index',topology_generation=1,previous_revision=revision-1,
             owner_resource_id=consumer_id,owner_epoch=2,owner_incarnation=publisher['process_incarnation'],sealed=True))
         assert rev['xmin']==receipt['xmin'] and rev['created_at_us']==receipt['committed_at_us']
-        last=(0,4,9,10)[revision-5]
+        last=(0,4,9,10)[revision-initial-1]
         current=sorted((r for r in bounds if r['frontier_revision']==revision),key=lambda r:r['owner_epoch'])
-        for row,epoch,through in zip(current,(1,2),(12,last)):
-            attestation=old_bound['attestation_digest'] if revision==5 and epoch==1 else None if not through else receipt['plan_digest']
+        for row,epoch,through in zip(current,(1,2),(cut,last)):
+            attestation=old_bound['attestation_digest'] if revision==initial+1 and epoch==1 else None if not through else receipt['plan_digest']
             index.exact(row,dict(consumer_id=consumer_id,frontier_revision=revision,dataset_id=dataset,topology_generation=1,
                 shard_id=0,owner_epoch=epoch,last_complete_sequence=through,attestation_kind='projection-chunk' if through else None,
                 attestation_digest=attestation,xmin=receipt['xmin']))
         assert len(current)==2
-    assert consumer['xmin']==index.only(after['index_frontier_plans'],frontier_revision=8)['xmin']
-    recovery_sessions(after,binding,owners,commitments,handoff)
-    return dict(format='bigbrotr-installed-index-topology/1',topology_generation=1,source_cuts=[[1,12],[2,10]],
-        frontier_revision=8,handoff_revision=5,source_batches=7,committed_chunks=70,chunk_bounds=100,
-        family_counts=dict(zip(index.TARGETS,COUNTS)),index_owner_epoch=owner_epoch,exact_retry=False,
+    assert consumer['xmin']==index.only(after['index_frontier_plans'],frontier_revision=initial+4)['xmin']
+    recovery_sessions(after,binding,owners,commitments,handoff,retained_boundary=retained_boundary)
+    return dict(format='bigbrotr-installed-index-topology/1',topology_generation=1,source_cuts=[[1,cut],[2,10]],
+        frontier_revision=initial+4,handoff_revision=initial+1,source_batches=initial+3,committed_chunks=(initial+3)*10,chunk_bounds=initial*10+60,
+        family_counts=dict(zip(index.TARGETS,counts)),index_owner_epoch=owner_epoch,exact_retry=False,
         original_receipts='unchanged',all_typed_fields_equal=True,raw_multiplicity='exact',complete_M1='NOT_RUN')

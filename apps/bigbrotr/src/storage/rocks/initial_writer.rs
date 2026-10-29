@@ -324,6 +324,12 @@ impl InitialIndexSource<'_> {
     }
     /// Counts actual requests, independently of fact counts and the bridge's
     /// extra publication revision. The consumer enforces its own finite limit.
+    pub fn history_request_limit(&self) -> u64 {
+        64 + self
+            .handoff()
+            .compacted_floor()
+            .map_or(0, |floor| floor.fields().issued_through)
+    }
     pub fn retained_requests(&self) -> Result<u64, AdmissionError> {
         self.handoff().require_live_source(self.writer.store())?;
         self.handoff()

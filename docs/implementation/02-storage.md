@@ -212,19 +212,20 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
-  The selected closed-initial slice passes actual64-request reclamation, both
-  final-COMMIT loss conservation checks and idempotent restart/retry. Productc656
-  also activates the compacted successor, admits3 genuine requests after64 and
-  publishes the Control Index vector [1:312,2:10]. The independent scientific
-  capture replay passes after correcting the verifier's frame/authority adapter;
-  actualR5 independently verifies all322 Archive scientific rows and67 native
-  commits. Its following exact Archive retry refuses with ObservationUnknown;
-  the receipt lookup confuses retained absent intent3 with its valid replacement4.
-  The original failed runs remain preserved. The
-  [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-  owns exact source/receipts and preserved failures. P02-T06 Steps4/7 still require
-  complete installed consumer recovery/exact retry and history/export under the
-  unchanged spool/authority bounds. This does not close Step4/7 or general GC.
+  The selected closed-initial continuation now passes on product `7d8e5998`,
+  acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
+  conservation checks, idempotent restart/retry and a compacted epoch2 accepting
+  three genuine requests after64. Both consumers, exact retries, all322 Archive
+  scientific rows/67 native commits,572 Index rows, signed history and353-byte
+  standalone export pass in the eleven-stage installed case; the same-product
+  seven-stage tutorial also passes. Native241/38 and the separate strict worker
+  singleton, source reviews and terminal custody support that bounded result.
+  The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
+  owns exact sources/receipts and original failures, including the corrected
+  retained-intent retry and ordinary-reader item-funding defects. Original
+  authority, byte/native/process and spool bounds remain. This closes the selected
+  composition under Steps4/7 and P02-T06 Steps4/7, not those whole steps, general
+  request GC, OPEN>64 operation or broader recovery/capacity.
   The installed restart path uses a bounded historical manifest/registry
   loader before invoking the existing positive-only recovery resolver. The
   [historical inspection contract](../reference/ingest-store.md#historical-manifest-inspection)
@@ -1202,23 +1203,21 @@ source/client, query/freshness/cooldown, retry and resource bounds remain unchan
   have explicit scope; absent required sinks cannot report success.
 - [ ] **Step 4:** Persist deterministic recovery units/receipts and document exactly which
   unit restarts after an interrupted insert; displayed progress is not a seek index.
-  Close the selected compacted-initial continuation with Step7/P02-T02 Steps4/7.
-  Productc656 corrects the invalid local30s TTL by retaining the original accepted
-  policy authority and one nonrenewable owner-intersected action window through
-  live prepare/publication/current-source acknowledgement, including idempotent
-  returns. Native controls and actual compacted startup/request65 pass; cancellation,
-  binding/native/canonical checks and uncertain post-COMMIT delivery remain.
-  The capture oracle now distinguishes immutable pre-client admission authority
-  from later recovery job ownership; its bounded critical review is closed.
-  Closure still requires the full installed successor/science, both consumers,
-  exact retries and history/export with conserved originals and unchanged limits.
-  R5 passes the physical census but exposes the exact-retry receipt identity
-  collision. A scoped retained-inventory fix may inspect one exact replacement
-  already bound to the current frontier while keeping the strict worker reader.
-  Step7/P02-T04 Step4 and P08 must also qualify replacement commit followed by
-  interruption before its frontier binding; that broader transition is not
-  covered by the current shortcut and cannot disappear from delivery. No Ready65
-  or broader epoch/capacity claim.
+  The selected compacted-initial continuation is qualified with Step7/P02-T02
+  Steps4/7 on product `7d8e5998`, acceptance `b74c2508`; the eleven-stage installed
+  case and same-product tutorial pass. Original accepted policy authority and one
+  nonrenewable owner-intersected action window survive preparation, publication,
+  acknowledgement and idempotent return. Reclamation precedes the genuine
+  successor, both consumers and exact retries preserve independent science, and
+  ordinary Control returns exact signed history/export. The scoped Archive retry
+  resolver inspects one complete retained replacement already bound to the current
+  frontier while retaining the strict worker guard/full EOF. The ordinary reader
+  funds its existing128-input count bound within unchanged byte/native/host caps.
+  The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) retains
+  original failures, corrections and exact scope. Step7/P02-T04 Step4 and P08
+  still must qualify replacement commit followed by interruption before frontier
+  binding; proposala90aef4c is saved, not implemented or executed. Whole steps,
+  arbitrary epochs, Ready65/scalable freshness and general recovery remain open.
 - [ ] **Step 5:** Publish affected-key/partition notices before their consumer frontier,
   including legitimate no-output/control-only source ranges.
 - [ ] **Step 6:** Stop at poison/unrecoverable source with typed diagnostics; allow unrelated

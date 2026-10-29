@@ -477,6 +477,7 @@ impl IngestStore {
         {
             return Err(AdmissionError::InvalidInput);
         }
+        self.require_unretired_request(input.request, &self.manifest)?;
         let mut reads = ReadBudget::new(limits);
         let producer_key = IngestKey::ProducerState {
             producer_slot_id: input.request.producer_slot_id,

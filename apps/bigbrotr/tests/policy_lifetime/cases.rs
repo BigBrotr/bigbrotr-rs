@@ -2,7 +2,7 @@ use super::*;
 use std::{cell::Cell, rc::Rc};
 
 #[derive(Clone)]
-struct ManualClock(Rc<Cell<Result<AuthorityTick, LeaseError>>>);
+pub(crate) struct ManualClock(pub(crate) Rc<Cell<Result<AuthorityTick, LeaseError>>>);
 impl sealed::Sealed for ManualClock {}
 impl AuthorityClock for ManualClock {
     fn read(&self) -> Result<AuthorityTick, LeaseError> {
@@ -57,6 +57,12 @@ fn installed(at: AuthorityTick) -> PolicyLeaseTracker<ManualClock> {
     let refresh = tracker.begin_refresh().unwrap();
     tracker.complete_refresh(&refresh, response(1)).unwrap();
     tracker
+}
+
+pub(crate) fn installed_with_clock() -> (PolicyLeaseTracker<ManualClock>, ManualClock) {
+    let owner = installed(AuthorityTick(seconds(100)));
+    let clock = owner.clock.clone();
+    (owner, clock)
 }
 
 #[test]

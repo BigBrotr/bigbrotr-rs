@@ -76722,9 +76722,9 @@
                   "status": "REAPED",
                   "exit_code": 0
                 },
-                "cache": "115 released after parent24282 and observer42138, independently reacquired and original4pinsverified; no compiler borrower active.",
-                "status": "NATIVE_PARENT_OBSERVER_REAPED_PASS_FRESH_FULLCASE95624_RUNNING",
-                "owner": "Root solelauncher/integrator; allagenttasks complete, no autonomous delegatedruntime. Candidate0303 assembled fromYb74 forX7d8; originalf5failure/tutorial retained.",
+                "cache": "115 released; original4pins andqualifiednewartifactbytes preserved. Retiredderivedcopies restorable per journals; databases/logs/originalfailuredata untouched.",
+                "status": "NATIVE_PARENT_OBSERVER_FULLCASE_AND_TUTORIAL_PASS_ALL_LOCAL_JOBS_REAPED",
+                "owner": "Root solelauncher/integrator. Native45878,parent24282,observer42138,fullcase95624,tutorial88451 allreaped/audited; no localengine/build/cleanup/agentjob remainsactive. Borrowedbridgeempty/retained.",
                 "details": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction.history_item_funding",
                 "installed_root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998",
                 "installed_session": {
@@ -76735,12 +76735,13 @@
                   "launcher_pid": 855353,
                   "launcher_start_ticks": "2339005"
                 },
-                "active_case": {
-                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1",
-                  "session": 95624,
-                  "runner": 861884,
-                  "start_ticks": 2445287,
-                  "scope": "Root owns fresh full installedcase. No build or cleanup active."
+                "qualified_cases": [
+                  "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1",
+                  "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-tutorial-r1"
+                ],
+                "terminal_receipts": {
+                  "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1/root-terminal.json": "089fe96096194ada01cd8da91c4ce99684ea931103dafffb33ae4be0bd8acc71",
+                  "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-tutorial-r1/root-terminal.json": "5832b2beab9db0c59bc824ddbf71e26244dc58ec42a06db6a42938ab6eac8207"
                 }
               }
             }

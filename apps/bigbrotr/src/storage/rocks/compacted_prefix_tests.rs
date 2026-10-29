@@ -1,4 +1,5 @@
-//! Test-only floor installation exercises readers, not GC or PG authority.
+//! Synthetic floors exercise readers; the child kernel controls separately
+//! exercise real reclamation mechanics without claiming PostgreSQL authority.
 use super::*;
 use crate::storage::rocks::{
     keys::IngestKey,
@@ -66,7 +67,10 @@ fn input_path(root: &std::path::Path, n: u64) -> std::path::PathBuf {
     ))
 }
 fn fixture() -> Fixture {
-    let (root, mut store, budget, manifest, native) = setup(false);
+    fixture_at(bigbrotr_model::TopologyGeneration::new(1))
+}
+fn fixture_at(topology: bigbrotr_model::TopologyGeneration) -> Fixture {
+    let (root, mut store, budget, manifest, native) = setup_entries_at(entries(false), topology);
     for n in 2..=4 {
         let input = if n == 4 {
             let fixture: serde_json::Value = serde_json::from_str(include_str!(
@@ -161,7 +165,8 @@ fn fixture() -> Fixture {
             .unwrap(),
         None
     );
-    // Privileged fixture construction only. There is no production floor writer.
+    // Privileged reader-fixture construction only; this deliberately bypasses
+    // the separately tested product reclamation authority/kernel.
     let cf = recovery.store.db.cf_handle("receipts").unwrap();
     let mut batch = rocksdb::WriteBatch::default();
     batch.put_cf(
@@ -671,3 +676,6 @@ fn compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_misma
     assert_eq!(kv(&f.recovery.store), before);
     assert_eq!(f.recovery.store.db.latest_sequence_number(), sequence);
 }
+
+#[path = "closed_reclamation_tests.rs"]
+mod closed_reclamation_tests;

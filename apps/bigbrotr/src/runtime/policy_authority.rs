@@ -498,3 +498,5 @@ impl<C: AuthorityClock> PolicyLeaseTracker<C> {
 #[cfg(test)]
 #[path = "../../tests/policy_lifetime/cases.rs"]
 mod tests;
+#[cfg(test)]
+pub(crate) use tests::installed_with_clock;

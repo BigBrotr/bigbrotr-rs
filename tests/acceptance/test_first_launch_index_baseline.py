@@ -59,7 +59,57 @@ def successor_observation(provenance=True):
     return before,after,roles,start,end,worker
 
 
+def retained_observation():
+    before,after,roles,start,end,worker=successor_observation()
+    for state in (before,after):
+        # Baseline2 -> compacted bridge3 -> completed frontier4. Intent3 is
+        # retained but absent; native replacement4 and later intents publish.
+        consumer=state['consumers'][0];catalog=consumer['consumer_id'];consumer['current_revision']=4
+        state['archive_frontier_snapshots'][0].update(frontier_revision=4,snapshot_id=68,
+            **dict(zip(restart.COUNTS,[73,62,62,62,63])))
+        for row in state['consumer_frontiers']:
+            row.update(frontier_revision=4,last_complete_sequence=312 if row['owner_epoch']==1 else 10)
+        example=state['archive_attempts'][0]
+        state['archive_attempts']=[dict(example,attempt_id='retained-'+str(n),ordinal=n) for n in range(1,69)]
+        state['archive_frontier_batches']=[dict(consumer_id=catalog,frontier_revision=4,attempt_id='retained-'+str(n))
+                                          for n in [1,2,*range(4,69)]]
+    after['snapshot_leases'][-1]['frontier_revision']=after['archive_snapshot_pins'][-1]['frontier_revision']=4
+    for claim in after['retention_claims'][-2:]:claim['last_sequence']=312 if claim['owner_epoch']==1 else 10
+    return before,after,roles,start,end,worker
+
+
 class BaselineControls(unittest.TestCase):
+    def test_retained_startup_requires_the_complete67_batch_cut_and_two_joined_claims(self):
+        for successor in (None,True):
+            values=retained_observation()
+            self.assertEqual(oracle.ordinary_startup(*values,successor=successor,retained_compacted_epoch2=True)['epoch'],2)
+            for mutate in (lambda pg:pg['retention_claims'].pop(),
+                lambda pg:pg['retention_claims'][-2].update(last_sequence=12),
+                lambda pg:pg['archive_frontier_batches'].pop(),
+                lambda pg:pg['consumers'][0].update(current_revision=5),
+                lambda pg:pg['archive_attempts'].pop(2),
+                lambda pg:pg['archive_frontier_batches'][2].update(attempt_id='retained-3'),
+                lambda pg:pg['archive_snapshot_pins'][-1].update(frontier_revision=6),
+                lambda pg:pg['retention_claims'][-1].update(state='active')):
+                changed=list(retained_observation());mutate(changed[1])
+                with self.assertRaises(AssertionError):oracle.ordinary_startup(*changed,successor=successor,retained_compacted_epoch2=True)
+            with self.assertRaises(AssertionError):oracle.ordinary_startup(*values[:5],{'pid':123},successor=successor,retained_compacted_epoch2=True)
+
+    def test_retained_clients_use_the_explicit_home_and_original40_or30_seconds(self):
+        for successor,seconds,session in ((None,40,'export-session.private'),(True,30,'read-session.private')):
+            with tempfile.TemporaryDirectory() as temporary:
+                output=Path(temporary);home=output/'client';home.mkdir()
+                (home/'ordinary-setup.json').write_text(json.dumps(dict(phase='setup',started_ns=10_000_000_000,deadline_ns=40_000_000_000)))
+                (output/'before-control.json').write_text('{}')
+                owner=Mock(source=output,root=output,home=output/'wrong-original-home',environment={},processes=[])
+                child=Mock(pid=123,returncode=0)
+                with patch.object(baseline.subprocess,'Popen',return_value=child) as spawn,patch.object(baseline,'stop_process'), \
+                        patch.object(baseline.time,'monotonic',return_value=10),patch.object(baseline,'startup_quiescence',return_value=({'complete':True},)) as observe:
+                    self.assertEqual(baseline.startup_client(owner,output,{},successor=successor,client_home=home,
+                        retained_compacted_epoch2=True),{'complete':True})
+                self.assertEqual(spawn.call_args.args[0][-1],str(home))
+                self.assertEqual(observe.call_args.kwargs,dict(successor=successor,session_path=home/session,retained_compacted_epoch2=True))
+                child.wait.assert_called_once_with(timeout=seconds)
     def test_successor_startup_requires_both_exact_claims_and_same_fresh_owner(self):
         for provenance in (True,False):
             values = successor_observation(provenance)

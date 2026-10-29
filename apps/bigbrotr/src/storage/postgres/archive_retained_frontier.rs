@@ -721,7 +721,7 @@ fn require_terminal_in(
     compacted: bool,
 ) -> Result<(), Error> {
     if (compacted_initial != 0) != compacted
-        || compacted && (!(1..=64).contains(&compacted_initial) || native < 3)
+        || compacted && (!(1..=64).contains(&compacted_initial) || native < 2)
         || state != SuccessorHistoryState::Terminal
         || native != registered
         || native != through

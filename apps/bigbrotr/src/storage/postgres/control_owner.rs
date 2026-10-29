@@ -149,6 +149,11 @@ pub use initial_gap::{InitialGapPlan, PreparedInitialGap};
 pub use initial_history::{InitialHistoryRequest, PreparedInitialHistory};
 #[path = "producer_closing.rs"]
 mod producer_closing;
+#[path = "producer_reclamation.rs"]
+mod producer_reclamation;
+pub(in crate::storage) use producer_reclamation::ConfirmedNativeReclamation;
+pub use producer_reclamation::{ConfirmedClosedReclamation, ProducerReclamationError};
+
 #[path = "producer_compaction.rs"]
 mod producer_compaction;
 #[path = "producer_recovery.rs"]

@@ -6,14 +6,17 @@ import re
 
 
 def validate(before, after, home, initialized, catalog_id, *, expected_principal='10'*16,
-             expected_table_count=69, expected_tables=None, destination_root=None, initial_cut=12):
+             expected_table_count=69, expected_tables=None, destination_root=None, initial_cut=12, retained_compacted_epoch2=False):
     """Placement/identity expectations come from the caller's independent setup.
 
     A newer schema supplies its expected inventory explicitly; observed table
     names must not be used to manufacture that expectation.
     """
     assert re.fullmatch('[0-9a-f]{32}', expected_principal)
-    assert type(initial_cut) is int and initial_cut in (8, 12), 'closed initial recipe cut required'
+    assert type(retained_compacted_epoch2) is bool
+    assert type(initial_cut) is int and initial_cut in ((312,) if retained_compacted_epoch2 else (8,12)), 'closed recipe cut required'
+    frontier,snapshot,topology=(4,68,'1') if retained_compacted_epoch2 else (4,5,initialized['topology_generation'])
+    source_bounds=[(1,312),(2,10)] if retained_compacted_epoch2 else [(1,initial_cut)]
     principal = '\\x' + expected_principal
     assert type(expected_table_count) is int and expected_table_count > 0
     assert expected_table_count == 69 or expected_tables is not None
@@ -66,16 +69,16 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     assert job['checkpoint_revision'] == 1 and job['input_complete']
     assert job['owner_resource_id'] == owner['resource_id'] and job['owner_epoch'] == owner['epoch']
     admission, = [r for r in after['job_admissions'] if r['job_id'] == job['job_id']]
-    assert admission['admission_ordinal'] == 2
+    assert admission['admission_ordinal'] == (3 if retained_compacted_epoch2 else 2)
     detail, = after['export_jobs']; unit, = after['export_execution_units']
     artifact, = after['artifacts']; file, = after['artifact_files']
     assert detail['job_id'] == unit['job_id'] == artifact['job_id'] == job['job_id']
     assert file['artifact_id'] == unit['artifact_id'] == artifact['artifact_id']
-    assert detail['frontier_revision'] == 4 and detail['catalog_id'] == '\\x' + catalog_id
+    assert detail['frontier_revision'] == frontier and detail['catalog_id'] == '\\x' + catalog_id
     assert unit['max_output_bytes'] == 256*1024**2 and unit['max_temporary_bytes'] == 512*1024**2
-    bounds, = after['job_input_bounds']
-    assert bounds['job_id'] == job['job_id'] and bounds['last_complete_sequence'] == initial_cut
-    assert bounds['shard_id'] == 0 and bounds['owner_epoch'] == 1
+    bounds=sorted(after['job_input_bounds'],key=lambda row:row['owner_epoch'])
+    assert [(r['owner_epoch'],r['last_complete_sequence']) for r in bounds]==source_bounds
+    assert all(r['job_id']==job['job_id'] and r['shard_id']==0 for r in bounds)
     original = json.loads((home / 'event.jsonl').read_text())
     # Protocol field order is frozen here; no product serializer participates.
     encoded = (json.dumps({key: original[key] for key in (
@@ -90,9 +93,9 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     manifest = dict(format='bigbrotr-signed-events-export/1', artifact_id=artifact['artifact_id'][2:],
         job_id=result['job_id'], visibility='private', fidelity='full-signed-events',
         origin='retained-scoped-archive', source=dict(cut=dict(dataset_id=scope['dataset_id'],
-            topology_generation=initialized['topology_generation'],
-            bounds=[dict(stream=dict(shard_id=0, owner_epoch='1'), last_complete_sequence=str(initial_cut))]),
-            catalog_id=catalog_id, frontier_revision='4', snapshot_id='5'),
+            topology_generation=topology,
+            bounds=[dict(stream=dict(shard_id=0,owner_epoch=str(epoch)),last_complete_sequence=str(cut)) for epoch,cut in source_bounds]),
+            catalog_id=catalog_id, frontier_revision=str(frontier), snapshot_id=str(snapshot)),
         selection=dict(event_id=original['id'], scope=scope),
         accepted_revisions=dict(configuration='1', policy='1'), included_families=['signed-events'],
         excluded_families=['internal-payload-envelopes', 'eligibility-facts', 'first-local-receive',

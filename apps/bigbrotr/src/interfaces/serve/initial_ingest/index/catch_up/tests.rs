@@ -264,13 +264,13 @@ fn explicit_handoff_head_retains_old_cut_and_zero_successor_without_a_batch() {
 
 #[test]
 fn finite_history_counts_global_requests_and_one_separate_bridge() {
-    assert!(publication::history_bound(64, 64, false, false));
-    assert!(!publication::history_bound(64, 65, false, false));
-    assert!(publication::history_bound(64, 65, false, true));
-    assert!(publication::history_bound(64, 64, true, true));
-    assert!(!publication::history_bound(64, 65, true, true));
-    assert!(!publication::history_bound(65, 65, false, true));
-    assert!(!publication::history_bound(64, u64::MAX, true, true));
+    assert!(publication::history_bound(64, 64, false, false, 0));
+    assert!(!publication::history_bound(64, 65, false, false, 0));
+    assert!(publication::history_bound(64, 65, false, true, 0));
+    assert!(publication::history_bound(64, 64, true, true, 0));
+    assert!(!publication::history_bound(64, 65, true, true, 0));
+    assert!(!publication::history_bound(65, 65, false, true, 0));
+    assert!(!publication::history_bound(64, u64::MAX, true, true, 0));
 }
 
 #[test]
@@ -464,4 +464,14 @@ fn recovery_capacity_includes_real_holders_pending_replay_and_physical_proof() {
         assert_eq!(budget.snapshot().active_permits(), 4);
         drop((control, preparation, metadata, native));
     }
+}
+
+#[test]
+fn finite_compacted_history_has_separate_logical_and_spool_bounds() {
+    assert!(publication::history_bound(65, 66, false, true, 64));
+    assert!(publication::history_bound(128, 129, false, true, 64));
+    assert!(!publication::history_bound(129, 129, false, true, 64));
+    assert!(!publication::history_bound(65, 66, true, true, 64));
+    assert!(!publication::history_bound(65, 65, false, true, 0));
+    assert!(!publication::history_bound(128, 129, false, true, 65));
 }

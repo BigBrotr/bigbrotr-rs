@@ -269,7 +269,7 @@ state. These negatives do not substitute for the real signed acquisition and
 EOF, with no error, incomplete shutdown or unmatched opening; an unexpected
 masked outbound EVENT is a real peer-parser negative control.
 
-Zero Nostr signing is an explicit source-exclusion claim: reviewed `6cbe1cb2` code has
+Zero Nostr signing is an explicit source-exclusion claim: reviewed `f5aad2c1` code has
 no reachable Nostr signer, and only session REQ/CLOSE reach the text sender.
 The case binds the executed product's code/dependency/configuration Git objects
 and relevant source files to that reviewed profile; documentation-only revisions
@@ -281,6 +281,50 @@ TLS and required Archive SQL publication are outside this Nostr claim.
 The existing base case remains available with its original scope. This variant
 adds no Index, native census, general egress, live successor or capacity gate.
 Definition and unit controls alone are not installed acceptance evidence.
+
+## Initialized Ingest renewal during stop
+
+The dedicated `p01-first-launch-initial-renewal-stop` case reuses the installed
+candidate, declared source checkout and pinned Compose dependencies from the
+first-launch case. It starts Control/Ingest without acquisition or Archive/Index
+work. An independent PostgreSQL row lock must block the exact renewal query of
+the configured product login and its original backend incarnation before SIGTERM.
+The private listener must first be reachable; its closure alone never proves
+that the owner or SQL has stopped.
+
+Run both schedules with fresh evidence directories:
+
+```sh
+for outcome in known held; do
+  python3 -B tests/acceptance/run.py p01-first-launch-initial-renewal-stop \
+    --source-root "$PWD" \
+    --candidate-manifest /absolute/path/to/candidate/candidate-manifest.json \
+    --renewal-stop-outcome "$outcome" \
+    --evidence "/tmp/bigbrotr-renewal-$outcome"
+done
+```
+
+`known` verifies that private admission closes while the same parent/backend
+remain alive and blocked, then releases that lock for collection.
+It requires exit0, native close, committed Control release and independent row/
+backend checks. `held` retains the lock through actual refusal and
+requires exit4 without a positive stopped/released claim. Both compare the original
+Ingest scheduling row (including xmin), producer and job/frontier observations
+to reject subsequent renewal-chain work or dispatch. The fixture explicitly uses
+the existing5s authority/renewal defaults; it does not extend product deadlines.
+The held schedule measures terminal refusal, not the exact query-collection
+cutoff: the deterministic Rust controls prove the original absolute deadline and
+absence of budget reset. Container/native teardown retains its separate join bound.
+
+The initialized baseline includes its existing two dictionary requests (public
+bootstrap mappings and the private mapping), with no acquisition job. Both
+schedules preserve those exact input/producer observations across stop; they do
+not assume that initialization leaves an empty producer-request ledger.
+
+These are dedicated real-engine qualifications. The maintained first-launch
+Python suite covers their oracle/CLI negatives in ordinary CI; it does not stand
+in for these executions. Neither schedule qualifies startup, mutating HTTP,
+native/unknown-COMMIT recovery or the complete installed reclamation case.
 
 ## Installed initial Index publication
 
@@ -1086,3 +1130,60 @@ The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the
 foundation runner and does not qualify the remaining data path or release.
+
+
+`p01-first-launch-closed-reclamation` extends the maintained finite64 case using
+the same candidate/source/evidence and exact-source `--native-observer-build`
+arguments. It first executes the existing genuine64-request signed fixture and
+independent829-row native/556-row Index oracle. It then requires explicit initial
+closure/retirement, open-producer/corrupt-inventory refusals, actual final proof
+COMMIT loss before forwarding and after server completion with no native/unlink
+change, positive product reclamation before every successor intent, a fresh
+zero-write retry and compacted restart, an incompatible older typed-checkpoint
+restore refusal on an isolated copy, and actual retained-Index successor
+activation. A later reclamation attempt under successor publication authority
+must refuse. The successor's genuine request1 is cumulative request65 and uses
+freed spool capacity. Complete native/typed science, finite Index/Archive catch-up
+and retries, signed history on a fresh process and exact353-byte first-event
+export complete the profile. The independent terminal expectations are67 Archive
+batches with published ordinals1,2,4..68/snapshot68/frontier4,322 scientific rows
+and572 raw Index rows at revision68. The final C API census automatically selects
+the fixed closed-reclamation probe envelope:73/62/62/62/63 rows by family and67
+commits, each queried with one additional overflow sentinel. The probe's default
+16 rows per family/8 commits remains for the smaller cases; these are diagnostic
+envelopes, not product limits. Row-byte, memory, temporary-space and30s command
+bounds remain unchanged.
+Complete-frontier Archive retry may classify an older positively excluded input
+as absent through one exact later replacement already selected by the retained
+frontier. Its unchanged strict receipt reader must observe the replacement
+through full EOF; that replacement still requires its own ordinary resolution
+and physical membership. Replacement commits interrupted before frontier
+publication retain their separate P02-T06/P08 recovery requirement.
+The existing completed-startup-probe and native-worker-join gate precedes both
+fresh clients inside their original40s export/30s history windows. The isolated
+mixed restore pairs an older checkpoint head with current progress children;
+it requires the independently observed SQL typed-head digest refusal and does
+not claim to reach the later direct floor comparison.
+The live Index gate requires current publication and the complete authenticated
+source vector `[epoch1=312, epoch2=10]`. The original batch/grant/operation/client
+and30s readiness bounds remain; Ready65 is not required or claimed. The native
+kernel controls separately cover stale native custody/sequence/inventory, one
+observed unlink followed by cancellation and fresh proof,
+uncertain native state and corrupt residuals. These declared scenarios are NOT_RUN
+until their actual root-owned native/build/installed receipts exist; portable
+controls alone cannot qualify reclamation, fsync or physical power failure.
+
+```sh
+python3 -B tests/acceptance/run.py p01-first-launch-closed-reclamation \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-build \
+  --evidence /absolute/fresh-evidence
+```
+
+The observer build must be supplied separately using the maintained
+`experiments/ingest-registry/build_probe.py --build BUILD --example ingest_bootstrap_probe`
+recipe over the exact candidate's controlled parent release build. Its source,
+toolchain, parent build receipt and binary hashes must match the candidate; an
+older observer or the product's decoded reclamation report cannot substitute
+for the raw139-byte floor and exact829→765 native-row comparison.

@@ -55,6 +55,13 @@ impl RetainedCompactedPrefix {
 }
 
 impl<'a> CompactedPrefixResolution<'a> {
+    pub(in crate::storage::rocks::store) fn from_reclamation(
+        plan: &'a ClosedProducerReclamation,
+        recovery: &'a IngestRecovery,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new(PrefixOwner::Reclamation(plan), recovery, cancelled)
+    }
     pub(in crate::storage::rocks::store) fn from_recovery(
         view: CompactedRecoveryPredecessor<'a>,
         recovery: &'a IngestRecovery,
@@ -97,6 +104,16 @@ impl<'a> CompactedPrefixResolution<'a> {
         cancelled: &AtomicBool,
     ) -> Result<Self, AdmissionError> {
         Self::new_read(prefix, PrefixRead::Recovery(recovery), cancelled)
+    }
+    pub(in crate::storage::rocks::store) fn from_live_initial(
+        view: CompactedLiveInitial<'a>,
+        cancelled: &AtomicBool,
+    ) -> Result<Self, AdmissionError> {
+        Self::new_read(
+            PrefixOwner::LiveInitial(view),
+            PrefixRead::Live(view.store()),
+            cancelled,
+        )
     }
     pub(in crate::storage::rocks::store) fn from_live(
         view: CompactedLiveSuccessor<'a>,
@@ -308,7 +325,10 @@ impl VerifiedCompactedPrefix<'_> {
         &self,
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
-        if !matches!(self.prefix, PrefixOwner::Live(_)) {
+        if !matches!(
+            self.prefix,
+            PrefixOwner::LiveInitial(_) | PrefixOwner::Live(_)
+        ) {
             return Err(AdmissionError::StateMismatch);
         }
         self.prefix.validate_read(self.read, cancelled)
@@ -342,7 +362,9 @@ impl VerifiedCompactedPrefix<'_> {
                 }
                 lineage.inputs
             }
-            PrefixOwner::Live(_)
+            PrefixOwner::Reclamation(_)
+            | PrefixOwner::LiveInitial(_)
+            | PrefixOwner::Live(_)
             | PrefixOwner::Handoff(_)
             | PrefixOwner::Successor(_)
             | PrefixOwner::Recovery(_)
@@ -365,6 +387,70 @@ impl VerifiedCompactedPrefix<'_> {
         owner: &NativeSuccessorRecovery,
     ) -> bool {
         matches!(self.prefix, PrefixOwner::Recovery(view) if view.matches_owner(owner))
+    }
+    pub(in crate::storage) fn initial_recheck_resolution(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<CompactedPrefixResolution<'_>, AdmissionError> {
+        self.validate_initial_source(cancelled)?;
+        CompactedPrefixResolution::new(self.prefix, self.read.recovery()?, cancelled)
+    }
+    pub(in crate::storage) fn validate_initial_source(
+        &self,
+        cancelled: &AtomicBool,
+    ) -> Result<(), AdmissionError> {
+        if !matches!(self.prefix, PrefixOwner::Initial(_)) {
+            return Err(AdmissionError::StateMismatch);
+        }
+        self.validate(self.read.recovery()?, cancelled)
+    }
+    pub(in crate::storage) fn read_initial_pending_batch(
+        &self,
+        first: bigbrotr_model::SourceRecordId,
+        limits: crate::storage::rocks::store::PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<
+        crate::storage::rocks::store::PendingBatch,
+        crate::storage::rocks::store::LineagePendingError,
+    > {
+        use crate::storage::rocks::store::{LineagePendingError as Error, PendingError};
+        if !matches!(self.prefix, PrefixOwner::Initial(_)) {
+            return Err(Error::OutsideVerifiedCut);
+        }
+        let recovery = self
+            .read
+            .recovery()
+            .map_err(|_| Error::OutsideVerifiedCut)?;
+        if permit.request().units().items() == 0
+            || permit.request().units().data_bytes()
+                < limits.required_data_bytes().map_err(Error::Read)?
+        {
+            return Err(Error::Read(PendingError::InsufficientReservation));
+        }
+        self.validate(recovery, cancelled)
+            .map_err(|e| Error::Proof(BootstrapError::Compacted(e)))?;
+        let id = self.manifest().identity();
+        if first.dataset_id != id.dataset_id
+            || first.shard_id != id.shard_id
+            || first.owner_epoch != id.owner_epoch
+            || first.sequence.get() > self.floor().fields().source_through
+        {
+            return Err(Error::OutsideVerifiedCut);
+        }
+        let batch = recovery
+            .store
+            .read_pending_batch(first, limits, permit, cancelled)
+            .map_err(Error::Read)?
+            .ok_or(Error::RequiredBatchMissing)?;
+        if batch.batch().first() != first
+            || batch.batch().last().sequence.get() > self.floor().fields().source_through
+        {
+            return Err(Error::OutsideVerifiedCut);
+        }
+        self.validate(recovery, cancelled)
+            .map_err(|e| Error::Proof(BootstrapError::Compacted(e)))?;
+        Ok(batch)
     }
     pub fn floor(&self) -> &ClosedProducerFloor {
         self.prefix.floor()

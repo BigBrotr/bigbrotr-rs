@@ -821,3 +821,66 @@ fn select_history(
 #[cfg(test)]
 #[path = "successor_history_tests.rs"]
 mod tests;
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "final Index locks, actual terminal history and separately retained effect/authority grants"
+)]
+pub(super) async fn require_compacted_index_source(
+    tx: &Transaction<'_>,
+    proof: &VerifiedSuccessorHistory<'_>,
+    recovery: &IngestRecovery,
+    control: ingest_registry::ControlOwner,
+    limits: AdmissionLimits,
+    effects: &OwnedPermit,
+    lease: &mut PolicyLeaseTracker,
+    policy: PolicyEpoch,
+    cancelled: &AtomicBool,
+) -> Result<(), ProducerResolveError> {
+    let history = proof.history();
+    if history.control != control
+        || proof.compacted_initial_requests() == 0
+        || history.state() != SuccessorHistoryState::Terminal
+        || history.native_epoch() != 2
+        || history.registered_epoch() != 2
+        || proof.verified_through() != 2
+    {
+        return Err(OwnerError::InvalidInput.into());
+    }
+    proof.validate(cancelled).map_err(native_error)?;
+    history
+        .lineage
+        .validate(recovery, cancelled)
+        .map_err(native_error)?;
+    let head = rows::read_epoch(tx, recovery, rows::registered_epoch(tx, recovery).await?).await?;
+    if head != history.head {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    rows::require_head(tx, recovery, &head).await?;
+    rows::require_native(tx, recovery, history, cancelled).await?;
+    let ancestor = history.compacted_ancestor(recovery, limits, effects, cancelled)?;
+    producer_progress::recovery::require_compacted_ancestor(
+        tx,
+        recovery,
+        &ancestor,
+        history.lineage.progress_scratch(),
+        cancelled,
+        || producer_progress::recovery::authority(lease, policy, cancelled),
+    )
+    .await?;
+    let verified = producer_compaction::resolve_initial_outcomes(
+        tx,
+        ancestor.resolution(cancelled).map_err(effect_error)?,
+        limits,
+        effects,
+        lease,
+        policy,
+        cancelled,
+    )
+    .await
+    .map_err(compacted_error)?;
+    verified
+        .validate(recovery, cancelled)
+        .map_err(effect_error)?;
+    initial_history::check_delivery(lease, policy, cancelled)
+}

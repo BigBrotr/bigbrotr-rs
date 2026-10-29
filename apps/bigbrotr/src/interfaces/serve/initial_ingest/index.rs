@@ -8,7 +8,10 @@ pub(super) mod source;
 use super::{Result, required};
 use crate::config::Resolved;
 use bigbrotr::{
-    runtime::{AcquireError, OwnedPermit, ResourceBudget, ResourceLimits, ResourceRequest},
+    runtime::{
+        AcquireError, OwnedPermit, ResourceBudget, ResourceLimits, ResourceRequest,
+        policy_authority::PolicyLeaseTracker,
+    },
     storage::{
         archive::LocalCoordinator,
         clickhouse::{
@@ -518,6 +521,7 @@ impl Index {
     pub(super) async fn tick(
         &mut self,
         owner: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         store: source::Source<'_>,
         deadline: Instant,
         cancelled: &AtomicBool,
@@ -556,7 +560,7 @@ impl Index {
         }
         if let Some((operation, completed)) = self.completed.take() {
             let tick = self
-                .complete(owner, &store, completed, deadline, cancelled)
+                .complete(owner, lease, &store, completed, deadline, cancelled)
                 .await?;
             // complete() has consumed the joined result and its local permit.
             // This marker says nothing about a surviving named remote query.
@@ -588,7 +592,13 @@ impl Index {
         }
         if let Some(session) = &self.session {
             store
-                .require_current(owner, session, self.state.as_ref().unwrap())
+                .require_current(
+                    owner,
+                    lease,
+                    session,
+                    self.state.as_ref().unwrap(),
+                    cancelled,
+                )
                 .await?;
             live_window(deadline, cancelled)?;
         }
@@ -701,8 +711,10 @@ impl Index {
                 let prepared = store
                     .prepare(
                         owner,
+                        lease,
                         self.session.as_ref().unwrap(),
                         self.state.as_ref().unwrap(),
+                        cancelled,
                         &planned,
                     )
                     .await?;
@@ -754,6 +766,7 @@ impl Index {
     async fn complete(
         &mut self,
         owner: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         store: &source::Source<'_>,
         completed: Completed,
         deadline: Instant,
@@ -776,7 +789,7 @@ impl Index {
         match completed {
             Completed::ProbePlan(joined) => self.complete_probe_plan(joined),
             Completed::ProbeFinish(joined) => {
-                self.complete_probe_finish(owner, store, *joined, deadline, cancelled)
+                self.complete_probe_finish(owner, lease, store, *joined, deadline, cancelled)
                     .await
             }
             Completed::Install(joined) => {
@@ -815,12 +828,15 @@ impl Index {
                         let receipt = store
                             .publish(
                                 owner,
+                                lease,
                                 self.session.as_ref().unwrap(),
                                 state,
+                                cancelled,
                                 prepared,
                                 proof,
                             )
                             .await?;
+                        live_window(deadline, cancelled)?;
                         if receipt.binding != *state.binding()
                             || receipt.plan_digest != prepared.plan().digest()
                             || receipt.revision

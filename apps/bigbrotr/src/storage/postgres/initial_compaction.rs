@@ -86,6 +86,49 @@ impl Check {
     }
 }
 
+impl Check {
+    pub(super) async fn require_live_initial(
+        &self,
+        tx: &Transaction<'_>,
+        writer: &LiveInitialWriter,
+        lease: &mut PolicyLeaseTracker,
+        policy: PolicyEpoch,
+        cancelled: &AtomicBool,
+    ) -> Result<(), InitialSuccessionError> {
+        let view = writer
+            .native
+            .compacted_initial_view(self.limits, &writer._permit, &self.outcomes, cancelled)
+            .map_err(native_error)?
+            .ok_or(OwnerError::InvalidInput)?;
+        let fields = view.floor().fields();
+        require_retired_predecessor(
+            tx,
+            writer.previous_registration(),
+            fields.issued_through,
+            fields.source_through,
+            fields.closure_digest,
+        )
+        .await?;
+        producer_progress::recovery::require_compacted_live_initial(tx, &view, cancelled, || {
+            producer_progress::recovery::authority(lease, policy, cancelled)
+        })
+        .await?;
+        let proof = producer_compaction::resolve_initial_outcomes(
+            tx,
+            view.resolution(cancelled).map_err(native_error)?,
+            self.limits,
+            &self.outcomes,
+            lease,
+            policy,
+            cancelled,
+        )
+        .await
+        .map_err(compaction_error)?;
+        proof.validate_live(cancelled).map_err(native_error)?;
+        initial_history::check_delivery(lease, policy, cancelled)
+    }
+}
+
 pub(super) fn validate(
     check: Option<&Check>,
     recovery: &IngestRecovery,

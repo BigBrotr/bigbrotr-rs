@@ -36,6 +36,7 @@ pub struct CompactedInitialAncestor<'a> {
 // existing lineage entry and grant, never a second frontier allocation.
 #[derive(Clone, Copy)]
 enum PrefixOwner<'a> {
+    Reclamation(&'a ClosedProducerReclamation),
     Initial(&'a RetainedCompactedPrefix),
     Ancestor(&'a RetainedLineage),
     Handoff(CompactedInitialPredecessor<'a>),
@@ -43,6 +44,7 @@ enum PrefixOwner<'a> {
     Acknowledgement(crate::storage::rocks::store::CompactedAcknowledgementPredecessor<'a>),
     Successor(crate::storage::rocks::store::CompactedSuccessorPredecessor<'a>),
     Recovery(CompactedRecoveryPredecessor<'a>),
+    LiveInitial(CompactedLiveInitial<'a>),
     Live(CompactedLiveSuccessor<'a>),
 }
 // The optional floor and all simultaneous borrowed cursor headers use the
@@ -80,6 +82,11 @@ impl PrefixOwner<'_> {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         match (self, read) {
+            (Self::LiveInitial(view), PrefixRead::Live(store))
+                if std::ptr::eq(view.store(), store) =>
+            {
+                view.validate(cancelled)
+            }
             (Self::Live(view), PrefixRead::Live(store)) if std::ptr::eq(view.store(), store) => {
                 view.validate(cancelled)
             }
@@ -94,6 +101,11 @@ impl PrefixOwner<'_> {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         match (self, read) {
+            (Self::LiveInitial(view), PrefixRead::Live(store))
+                if std::ptr::eq(view.store(), store) =>
+            {
+                view.require_input(checked, cancelled)
+            }
             (Self::Live(view), PrefixRead::Live(store)) if std::ptr::eq(view.store(), store) => {
                 view.require_input(checked, cancelled)
             }
@@ -103,6 +115,7 @@ impl PrefixOwner<'_> {
     }
     fn manifest(&self) -> &IngestManifest {
         match self {
+            Self::Reclamation(plan) => plan.manifest(),
             Self::Initial(prefix) => prefix.manifest(),
             Self::Ancestor(lineage) => lineage.entry(1).expect("inspected ancestor").manifest(),
             Self::Handoff(view) => view.manifest(),
@@ -110,11 +123,13 @@ impl PrefixOwner<'_> {
             Self::Acknowledgement(view) => view.manifest(),
             Self::Successor(view) => view.manifest(),
             Self::Recovery(view) => view.manifest(),
+            Self::LiveInitial(view) => view.manifest(),
             Self::Live(view) => view.manifest(),
         }
     }
     fn floor(&self) -> &ClosedProducerFloor {
         match self {
+            Self::Reclamation(plan) => plan.floor(),
             Self::Initial(prefix) => prefix.floor(),
             Self::Ancestor(lineage) => lineage.compacted.as_ref().expect("sealed floor view"),
             Self::Handoff(view) => view.floor(),
@@ -122,11 +137,13 @@ impl PrefixOwner<'_> {
             Self::Acknowledgement(view) => view.floor(),
             Self::Successor(view) => view.floor(),
             Self::Recovery(view) => view.floor(),
+            Self::LiveInitial(view) => view.floor(),
             Self::Live(view) => view.floor(),
         }
     }
     fn slot(&self) -> ProducerSlotId {
         match self {
+            Self::Reclamation(plan) => plan.producer_slot_id(),
             Self::Initial(prefix) => prefix.slot,
             Self::Ancestor(lineage) => lineage.slot,
             Self::Handoff(view) => view.producer_slot_id(),
@@ -134,6 +151,7 @@ impl PrefixOwner<'_> {
             Self::Acknowledgement(view) => view.producer_slot_id(),
             Self::Successor(view) => view.producer_slot_id(),
             Self::Recovery(view) => view.producer_slot_id(),
+            Self::LiveInitial(view) => view.producer_slot_id(),
             Self::Live(view) => view.producer_slot_id(),
         }
     }
@@ -143,6 +161,7 @@ impl PrefixOwner<'_> {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         match self {
+            Self::Reclamation(plan) => plan.validate(recovery, cancelled),
             Self::Initial(prefix) => prefix.validate(recovery, cancelled),
             Self::Ancestor(lineage) => lineage.validate(recovery, cancelled).map_err(Into::into),
             Self::Handoff(view) => view.validate(recovery, cancelled).map_err(Into::into),
@@ -150,7 +169,7 @@ impl PrefixOwner<'_> {
             Self::Acknowledgement(view) => view.validate(recovery, cancelled),
             Self::Successor(view) => view.validate(recovery, cancelled),
             Self::Recovery(view) => view.validate(recovery, cancelled),
-            Self::Live(_) => Err(AdmissionError::StateMismatch),
+            Self::LiveInitial(_) | Self::Live(_) => Err(AdmissionError::StateMismatch),
         }
     }
     fn require_input(
@@ -160,7 +179,8 @@ impl PrefixOwner<'_> {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         let (actual, expected) = match self {
-            Self::Live(_) => return Err(AdmissionError::StateMismatch),
+            Self::Reclamation(plan) => return plan.require_input(recovery, checked, cancelled),
+            Self::LiveInitial(_) | Self::Live(_) => return Err(AdmissionError::StateMismatch),
             Self::Acknowledgement(view) => return view.require_input(recovery, checked, cancelled),
             Self::Successor(view) => return view.require_input(recovery, checked, cancelled),
             Self::Recovery(view) => return view.require_input(recovery, checked, cancelled),
@@ -362,10 +382,10 @@ impl IngestRecovery {
             return Err(BootstrapError::CommitUnknown);
         }
         let id = self.manifest().identity();
-        if self.manifest().key_schema() != 3
-            || !(3..=crate::storage::rocks::succession::MAX_LINEAGE_EPOCHS)
-                .contains(&id.owner_epoch.get())
-        {
+        if !matches!(
+            (id.owner_epoch.get(), self.manifest().key_schema()),
+            (2, 2) | (3..=crate::storage::rocks::succession::MAX_LINEAGE_EPOCHS, 3)
+        ) {
             return Err(BootstrapError::StateMismatch);
         }
         let root = self.store.handoff_root_identity()?;

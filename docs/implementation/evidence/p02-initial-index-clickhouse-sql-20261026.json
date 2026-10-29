@@ -2965,7 +2965,7 @@
               "limits": "Same-product installed tutorial only; does not qualify fullcase history/export, whole M1/M5 or broader readiness/capacity gates."
             },
             "history_item_funding": {
-              "status": "NATIVE_PARENT_OBSERVER_PASS_FRESH_FULLCASE_RUNNING",
+              "status": "QUALIFIED_BOUNDED_CLOSED_PREFIX_AND_READER_COHORT_MAIN_INTEGRATION_PENDING",
               "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
               "product_tree": "dba9e50504b994c72f27577edcb0858f549f19cf",
               "apps_tree": "9725e15e307dba0bf56ad31e77b07a746f262b84",
@@ -2986,9 +2986,9 @@
                 "sha256": "7c157d1b7a7450f5b6d6db6eb589161b60c6b789812191bba08695922cd65aae"
               },
               "change": "Reader-only checked addition of the existing MAX_BATCHES128 to item lane:169/170 with optional cursor; non-reader35/36 unchanged. Shared2GiB data, native/control/process/host caps and all custody/cancellation/currentness/join/probe paths unchanged.",
-              "controls": "Actual ResourceBudget/OwnedPermit regression passes in native45878 for67/128 cohort retention, legacy41/42 count refusal with bytes available, item/byte/native/control excess and close/drop/drain. Actual241/38(136library105binary) retain all240 prior controls. Eight verifier controls and originalcapture refusal replay PASS; startup bound/timeout/oracles unchanged. Installed real history/export stillNOT_RUN on this product.",
+              "controls": "Actual new ledger singleton/native241 and separateworkerPASS, preservingall240priorcontrols; eightverifiercontrols/originalFAILcapturerefusal remainvalid. Freshreal fullcase11 and same-producttutorial7 PASS. Startupbounds/timeouts/oracles unchanged; broadrecovery/capacity remainsopen.",
               "tutorial_binding": {
-                "status": "PROFILE_CONTROL_PASS_RUNTIME_NOT_RUN",
+                "status": "PROFILE_CONTROL_AND_ACTUAL_INSTALLED_TUTORIAL_PASS",
                 "source_receipt": "/home/tux/bigbrotr-rs/.research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/history-items-tutorial-rebind-source.json",
                 "source_receipt_sha256": "c5bb0966e14674b716910f7a16cb4633f42af187681fcaafe91e9bb204041469",
                 "critical_carry_forward": "14f3e723;9Nostrpaths/7othercodeobjects unchanged, normalized helper AST equal except product/apps/label literals; one existing profile positive/negative controlPASS"
@@ -3027,7 +3027,7 @@
                 "worker_receipt_sha256": "87e01ff2ee57525a3fff258c05c02a148257f2c94190477f7ca274e85e1bbadc",
                 "cache_terminal_pins_sha256": "6c78fda8063e2a4deb8e9b32443d94a4983fb9fbcd84b9b1f25b3146d32abdba"
               },
-              "next": "Join fullcase95624 and audit terminal custody using existinggeneric auditor; preserve/classify failures. On PASS run same-product tutorial then integrateboundedcapability/main andrealhostedchecks. Newinstalled history/export notqualified untilactualresult.",
+              "next": "Integrate verifiedcapability onmain with codeinputs equalX7d8 and userpolicyinstructions retained; pushone meaningfulrevision and obtain realrequiredGitHubchecks. Then existing P02/P08 unbound-retainedreplacement recovery, sourcecost andlaterselectedplan obligations continue.",
               "qualification_guard_review": {
                 "status": "CLOSED_CORRECTED_GUARDS_REAL_PINS_BOUND",
                 "original_findings": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7d8e5998/critical-guard-review-original.json",
@@ -3084,7 +3084,7 @@
                 "scope": "New2commits/7blobs/132963bytes,0credential/sensitive/raw/LFS candidates. Main remains5cc; no Actionsrun for this branch revision. Details .research/ci-publication-20261026/source-reclamation-b74c2508-20261029."
               },
               "fullcase_r1": {
-                "status": "RUNNING_NOT_QUALIFIED",
+                "status": "PASS_TERMINAL_CUSTODY_VERIFIED",
                 "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1",
                 "session": 95624,
                 "runner": {
@@ -3099,7 +3099,85 @@
                 "candidate_manifest_sha256": "0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76",
                 "free_bytes_before": 72187854848,
                 "required_floor_bytes": 71940702208,
-                "scope": "Fresh whole installed closed64/recovery/successor/consumer/history/export path after reviewed item-funding fix. Originalf5R2 last-stage FAIL remains; no oracle/bounds changed."
+                "scope": "Actual all11 maintained stagesPASS:closed64/recovery/epoch2successor/bothconsumers/exactretries/independent322Archive67nativecommits572Indexrows/signedhistory/353byteexport; native/canonical/policy/spooloracles unchanged. Originalf5FAIL preserved. No Ready65/scalablefreshness/arbitraryepochs/payloadGC or unboundreplacement recovery claim.",
+                "exit_code": 0,
+                "counts": {
+                  "collected": 11,
+                  "executed": 11,
+                  "failed": 0,
+                  "skipped": 0,
+                  "not_run": 0
+                },
+                "stages": {
+                  "first_launch_prerequisites": "PASS",
+                  "first_launch_candidate": "PASS",
+                  "first_launch_runtime_image": "PASS",
+                  "first_launch_fresh_bootstrap": "PASS",
+                  "first_launch_signed_acquisition": "PASS",
+                  "first_launch_index_publication": "PASS",
+                  "first_launch_closed_reclamation": "PASS",
+                  "first_launch_compacted_successor": "PASS",
+                  "first_launch_compacted_consumers": "PASS",
+                  "first_launch_compacted_history_export": "PASS",
+                  "first_launch_cleanup": "PASS"
+                },
+                "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1/root-terminal.json",
+                "terminal_sha256": "089fe96096194ada01cd8da91c4ce99684ea931103dafffb33ae4be0bd8acc71",
+                "custody": {
+                  "containers": {
+                    "total": 57,
+                    "compose": 37,
+                    "native_observer": 20,
+                    "exit_codes": {
+                      "0": 51,
+                      "4": 6
+                    }
+                  },
+                  "processes_absent": 27,
+                  "command_pids_absent": 6060,
+                  "source_pins": 64,
+                  "bridge_endpoints": 0
+                }
+              },
+              "tutorial_r1": {
+                "status": "PASS_TUTORIAL_TERMINAL_CUSTODY_VERIFIED",
+                "session": 88451,
+                "exit_code": 0,
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-tutorial-r1",
+                "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                "acceptance": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "candidate_manifest_sha256": "0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76",
+                "counts": {
+                  "collected": 7,
+                  "executed": 7,
+                  "failed": 0,
+                  "skipped": 0,
+                  "not_run": 0
+                },
+                "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-tutorial-r1/root-terminal.json",
+                "terminal_sha256": "5832b2beab9db0c59bc824ddbf71e26244dc58ec42a06db6a42938ab6eac8207",
+                "custody": {
+                  "containers": {
+                    "total": 18,
+                    "compose": 18,
+                    "native_observer": 0,
+                    "exit_codes": {
+                      "0": 18
+                    }
+                  },
+                  "processes_absent": 3,
+                  "command_pids_absent": 783,
+                  "source_pins": 28,
+                  "bridge_endpoints": 0
+                },
+                "scope": "Same-product outside-checkout actualtutorial7PASS includingloopback/privatecapabilityrefusals/nonemptyNostrpeer/NoSignerprofile andsigned353byteexport; notgeneralcapacity orwholerelease."
+              },
+              "main_integration": {
+                "premerge_main": "8df6fa834ad7a18bcab9964c2460d15761ad53e0",
+                "merge_input": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "qualified_product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                "code_inputs": "Merged working tree apps/crates/vendor/Cargo/toolchain/contracts/config/build helper identical to qualifiedproductX; remaining8paths are documentation and reviewedNoSigner rebind.",
+                "publication": "Pending exactmaincommit/push andrealhostedchecks at this integration checkpoint."
               }
             }
           },

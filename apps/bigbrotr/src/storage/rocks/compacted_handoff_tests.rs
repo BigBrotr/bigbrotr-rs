@@ -636,6 +636,34 @@ fn compacted_candidate_binds_fresh_target_and_explicit_activation_only() {
     assert_eq!(writer.store().db.latest_sequence_number(), sequence + 4);
     assert_eq!(writer.manifest(), writer.handoff().next_manifest());
     assert!(inputs(&f.path()).is_empty());
+    let effects = grant(&f.budget, 40 * MIB, 0);
+    let view = writer
+        .compacted_initial_view(AdmissionLimits::default(), &permit, &effects, &READY)
+        .unwrap()
+        .unwrap();
+    let proof = resolve(&f, view.resolution(&READY).unwrap()).unwrap();
+    proof.validate_live(&READY).unwrap();
+    assert_eq!(writer.index_source().unwrap().history_request_limit(), 68);
+    // A retained canonical observation never silently advances its sequence.
+    writer
+        .store()
+        .db
+        .put_cf(
+            writer.store().db.cf_handle("default").unwrap(),
+            [1, 1],
+            writer.manifest().encode().as_bytes(),
+        )
+        .unwrap();
+    assert!(view.validate(&READY).is_err());
+    assert!(proof.validate_live(&READY).is_err());
+    let current = writer
+        .compacted_initial_view(AdmissionLimits::default(), &permit, &effects, &READY)
+        .unwrap()
+        .unwrap();
+    resolve(&f, current.resolution(&READY).unwrap())
+        .unwrap()
+        .validate_live(&READY)
+        .unwrap();
 }
 
 #[test]

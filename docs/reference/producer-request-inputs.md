@@ -956,7 +956,9 @@ transition retain their existing predicates. Every post-COMMIT return checks the
 complete native input census and current delivery authority; no terminal proof
 supplies permission to unlink inputs or discard scientific state.
 
-## Closed-producer reclamation (reader under qualification; deletion unavailable)
+<a id="closed-producer-reclamation-reader-under-qualification-deletion-unavailable"></a>
+
+## Closed-producer reclamation (writer under qualification)
 
 The first reclamation profile covers one nonempty, completely retired initial
 producer, before successor preparation. Let N be its reserved request cut:
@@ -1008,8 +1010,31 @@ manufacture that proof. Reclaimed requests return `RetiredRequest` even with a
 changed digest. Missing detail without the matching floor, or post-GC native
 state paired with older/incompatible PG state, refuses recovery.
 
-The non-destructive codec, compacted-prefix witness and shared census are
-implemented. The isolated installed reader passed with preserved originals,
+The codec, compacted-prefix witness and shared census are implemented. The
+explicit `ingest recover --reclaim-initial --file ROOT` writer now uses one
+reusable closed-producer kernel; its only present authority constructor accepts
+this nonempty terminal initial lifetime before any successor intent. It does
+not close, acknowledge or retire an open/incomplete producer. It retains current
+Control identity and the original proof deadline through native dispatch, exact
+unlink and directory fsync. Initial original replay and a fresh canonical SQL
+outcome stream both precede confirmed COMMIT. A retry requires a fresh complete
+compacted census and canonical proof, authenticating every present residual.
+
+The confirmed capability binds the native manifest, excluded root, unique
+per-open native custody, sequence, exact producer key/range, typed checkpoint
+and closure, and whole input inventory. Closing and reopening the same root
+invalidates that confirmation even if its manifest, sequence and inputs remain
+byte-exact; the reopened owner must obtain a fresh full proof.
+The native batch advances its sealed sequence by exactly N+1 operations. Each
+positively observed unlink removes exactly one authenticated inventory entry;
+no pre-mutation stamp is reused. An unexpected missing, replaced, unrelated or
+corrupt file refuses. A failed/uncertain unlink or directory sync reports no
+completion; a fresh proof may resume the authenticated residual set. All PG
+reservations/outcomes/progress, scientific Facts/indices/pending and Archive
+objects remain. This source change still needs actual native and installed
+qualification; writing the kernel or passing portable controls is not that proof.
+
+The earlier non-destructive reader evidence remains scoped as follows. The isolated installed reader passed with preserved originals,
 quarantined originals and incompatible-head/closure/pending refusals using a
 synthetically installed floor; this does not qualify product reclamation.
 The existing `--retire-initial`
@@ -1182,11 +1207,31 @@ owns counts, identities and preserved failures. Real Sync Event/certification
 progress, delivery faults, fresh activated-later recovery, Archive and capacity
 remain separate requirements; this does not implement floor writing or unlink.
 
-Reclamation stays unavailable until initial recovery and the
-existing successor preparation, activation and recovery consumers support that
-witness without weakening their guarantees. Fresh-process replay, exact retry,
-interrupted synchronization/unlink, mixed restores, missing scientific/index/
-pending state and old-reader refusal remain required qualification. The existing
-[recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
-owns the source decisions and measured results; no deletion has been implemented
-or qualified by this selection.
+The reclamation increment also selects authenticated compacted evidence for
+finite Index at the closed initial floor and terminal epoch2, live retained
+initial-successor Index, and finite terminal epoch2 Archive catch-up. The live
+writer retains its existing `Check` and effect allowance; each Index transaction
+constructs a fresh borrowed native observation at the current sequence and input
+inventory, then streams the same retained typed head/canonical outcomes. It never
+renews the pre-activation handoff stamp or turns a recovery proof into publication
+authority. Earlier immutable pending batches remain readable while current-vector
+readiness requires its unchanged30s full physical proof.
+
+The explicit finite Index profile permits at most N compacted initial requests
+plus64 later originals (at most128 logical batch revisions and one bridge). It
+streams one funded revision at a time. Actual shared inputs, including residuals,
+stay within64 files/32MiB; each producer still has its absolute native/SQL64 limit.
+Admission grants, batch/operation limits, cancellation and freshness do not grow.
+No Ready65 or scalable-history claim follows.
+
+Fresh-process replay, exact retry, interrupted synchronization/unlink, mixed
+restores, missing scientific/index/pending state and old-reader refusal remain
+required qualification. The maintained finite64 reclamation case supplies the
+actual64→terminal closure/retirement→reclaim before preparation→restart→real
+successor reuse→both consumers/retry/history/export journey, including final PG
+COMMIT reply loss in both directions. Its native/installed execution is NOT_RUN
+at source freeze. The existing [recovery report](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+owns measured results when executed. OPEN request65, active-prefix/sliding-window
+GC, arbitrary terminal epochs, scalable resumable verification, payload GC and
+Archive all-family fallback/replay leases, and complete M2 recovery/capacity stay
+open under P02-T02/T06/T07/T09.

@@ -170,6 +170,7 @@ pub(super) async fn run(
         captured.published_revision,
         captured.pending_plan.is_some(),
         source.epoch() == 2,
+        source.compacted_requests(),
     ) {
         return Err(error(
             "plan history exceeds the finite original request prefix",
@@ -335,6 +336,7 @@ pub(super) async fn run(
     if let Some(bridge) = bridge {
         authority.refresh(owner, Some(&session), state).await?;
         authority.local(|cancel| source.validate(cancel))?;
+        let compacted = source.compacted_request(root, cancel)?;
         let receipt = authority
             .operation(
                 owner.publish_index_handoff(
@@ -351,6 +353,7 @@ pub(super) async fn run(
                         policy_ttl: duration(root, "authorization_ttl"),
                         cancelled: &cancel.requested,
                     },
+                    compacted.as_ref(),
                     &Cell::new(false),
                     |d, h| validate(root, profile, d, h),
                 ),
@@ -376,7 +379,10 @@ pub(super) async fn run(
             return Err(error("pending replay identity changed"));
         }
         let prepared_plan = authority
-            .operation(owner.prepare_index_plan(
+            .operation(source.prepare_index_plan(
+                root,
+                cancel,
+                owner,
                 &session,
                 state.custody(),
                 pending,
@@ -389,7 +395,10 @@ pub(super) async fn run(
             .ok_or_else(|| error("pending physical proof missing"))?;
         authority.local(|cancel| source.validate(cancel))?;
         let receipt = authority
-            .operation(owner.publish_index_plan(
+            .operation(source.publish_index_plan(
+                root,
+                cancel,
+                owner,
                 &session,
                 state.custody(),
                 &prepared_plan,
@@ -427,7 +436,10 @@ pub(super) async fn run(
             &published.cut,
         )?;
         let prepared_plan = authority
-            .operation(owner.prepare_index_plan(
+            .operation(source.prepare_index_plan(
+                root,
+                cancel,
+                owner,
                 &session,
                 state.custody(),
                 planned.plan(),
@@ -459,7 +471,10 @@ pub(super) async fn run(
         authority.refresh(owner, Some(&session), state).await?;
         authority.local(|cancel| source.validate(cancel))?;
         let receipt = authority
-            .operation(owner.publish_index_plan(
+            .operation(source.publish_index_plan(
+                root,
+                cancel,
+                owner,
                 &session,
                 state.custody(),
                 &prepared_plan,
@@ -500,7 +515,7 @@ pub(super) async fn run(
     if final_prefix.cut != published.cut || &final_prefix.cut != source.complete() {
         return Err(error("final publication does not cover the closed source"));
     }
-    Ok(json!({
+    let mut report = json!({
         "format":"bigbrotr-initial-index-catch-up/2", "state":"complete",
         "dataset_id":state.binding().dataset().to_string(),
         "generation_id":state.binding().generation().to_string(),
@@ -516,11 +531,23 @@ pub(super) async fn run(
         "recovered_pending":pending.is_some(), "new_batches":new_batches,
         "ready":false, "acknowledgement":"not-performed", "ingest_retirement":"not-performed",
         "topology_transition":if source.epoch() == 1 { "not-performed" } else { "existing-ingest-handoff-verified" }
-    }))
+    });
+    if source.compacted_requests() != 0 {
+        report["recovery_basis"] = json!("closed-producer-floor-v3");
+        report["compacted_requests"] = json!(source.compacted_requests().to_string());
+    }
+    Ok(report)
 }
 
-pub(super) fn history_bound(requests: u64, published: u64, pending: bool, successor: bool) -> bool {
-    requests <= 64
+pub(super) fn history_bound(
+    requests: u64,
+    published: u64,
+    pending: bool,
+    successor: bool,
+    compacted_initial: u64,
+) -> bool {
+    compacted_initial <= 64
+        && requests <= 64 + compacted_initial
         && published
             .checked_add(u64::from(pending))
             .is_some_and(|revisions| revisions <= requests + u64::from(successor))

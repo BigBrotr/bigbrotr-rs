@@ -37,10 +37,17 @@ CONTROL_TARGETS = {
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
     'control-cursor-retention': b'UPDATE CONTROL.CURSOR_KEY_LIFECYCLE SET DECRYPT_UNTIL_US=',
     'control-producer-progress': b'UPDATE CONTROL.ACQUISITION_PROGRESS SET SCOPE_ID=$5::BYTEA,',
+    # The exact final typed-head read occurs only in the initial reclamation
+    # factory, after original replay and terminal checks, before its read COMMIT.
+    'control-closed-reclamation': (b'SELECT LEFT(CHECKPOINT_REVISION::TEXT,21),SUBSTRING(CHECKPOINT_DIGEST FROM 1 FOR 33) '
+        b'FROM CONTROL.PRODUCER_CHECKPOINTS WHERE PRODUCER_SLOT_ID=$1::BYTEA AND PRODUCER_EPOCH=1 AND PROGRESS_FORMAT=1 '
+        b'AND COMPLETE_THROUGH_REQUEST=$2::TEXT::NUMERIC'),
 }
 
 
 def control_target_query(target, query):
+    if target == 'control-closed-reclamation':
+        return b' '.join(query.upper().split()) == CONTROL_TARGETS[target]
     if target in ('control-pin-release','control-index-publication'):
         return query == CONTROL_TARGETS[target]
     return query.upper().startswith(CONTROL_TARGETS[target])
@@ -217,6 +224,8 @@ class Proxy:
         self.hold_index_publication = hold_index_publication
         self.armed = not defer_arm
         self.target_selected = False
+        if target == 'control-closed-reclamation' and mode not in ('pass','before-forward','after-complete'):
+            raise ValueError('closed-reclamation-mode')
         if target == 'control-producer-progress' and mode not in ('pass', 'before-forward', 'after-complete'):
             raise ValueError('producer-progress-mode')
         # Retained reconciliation opens several real readers before the selected

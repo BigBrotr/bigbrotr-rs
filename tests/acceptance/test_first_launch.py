@@ -57,6 +57,37 @@ class FirstLaunchControls(unittest.TestCase):
         self.assertEqual(checks['first_launch_cleanup']['result'], 'PASS')
         self.assertEqual(failure['stage'], 'signed_acquisition')
 
+    def test_failure_trace_records_only_relative_source_locations(self):
+        def fail(argument='private-argument-sentinel'):
+            local = 'private-local-sentinel'
+            raise AssertionError('original reason')
+        checks, failure = self.exercise_failure(fail)
+        self.assertEqual(failure['reason'], 'original reason')
+        self.assertEqual(checks['first_launch_signed_acquisition']['result'], 'FAIL')
+        self.assertEqual(checks['first_launch_ordinary_history_export']['result'], 'NOT_RUN')
+        self.assertEqual(checks['first_launch_cleanup']['result'], 'PASS')
+        self.assertTrue(failure['traceback'])
+        for frame in failure['traceback']:
+            self.assertEqual(set(frame), {'file', 'line', 'function'})
+            self.assertFalse(Path(frame['file']).is_absolute())
+            self.assertNotIn('..', Path(frame['file']).parts)
+            self.assertIs(type(frame['line']), int)
+        self.assertEqual(failure['traceback'][-1]['file'], 'tests/acceptance/test_first_launch.py')
+        self.assertEqual(failure['traceback'][-1]['function'], 'fail')
+        self.assertNotIn('sentinel', json.dumps(failure))
+        self.assertNotIn('AssertionError(', json.dumps(failure['traceback']))
+
+    def test_failure_trace_omits_frames_outside_source_tree(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            namespace = {}
+            exec(compile("def external():\n    raise ValueError('original reason')\n",
+                         str(Path(temporary) / 'private-location.py'), 'exec'), namespace)
+            _, failure = self.exercise_failure(namespace['external'])
+            self.assertTrue(failure['traceback'])
+            self.assertNotIn(temporary, json.dumps(failure))
+            self.assertNotIn('private-location', json.dumps(failure))
+            self.assertNotIn('external', [frame['function'] for frame in failure['traceback']])
+
     def test_sigterm_is_failure_and_runs_cleanup(self):
         def interrupt():
             signal.raise_signal(signal.SIGTERM)
