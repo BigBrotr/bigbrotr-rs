@@ -8,7 +8,7 @@ or production deployment is authorized.
 ## Source and integration
 
 Public main remains `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before
-this documentation checkpoint is `400b3354`, including qualified common-wait
+this documentation checkpoint is `fd32b56f`, including qualified common-wait
 `9ebd27b3`, hosted report `4293` and the subsequent evidence checkpoints. The
 containing checkpoint commit changes only the existing plan/evidence/checkpoint
 and inventory; its exact revision is available from Git. No reclamation product code
@@ -19,12 +19,13 @@ Current frozen product: `c656c518231a3d604cb6fa08989455f655fd7cfe`, worktree
 `.research/closed-reclamation-policy-qualified-20261029`, branch
 `work/closed-reclamation-policy-qualification`.
 
-Current frozen acceptance: `028744e01181ed1e39657fdd3469ed71e0925050`, worktree
-`.research/closed-reclamation-authority-acceptance-qualified-20261029`, branch
-`work/closed-reclamation-authority-acceptance`. Author worktree
-`.research/closed-reclamation-20261029` is clean at028 on `work/closed-reclamation`.
-The pending branch is backed up remotely through05a;89a/028 are committed locally,
-not integrated on main. All previous immutable sources and failures remain.
+Current frozen acceptance: `08622bfd89d2a5d740594de9fb82f92f656f9b40`, worktree
+`.research/closed-reclamation-census-acceptance-qualified-20261029`, branch
+`work/closed-reclamation-census-acceptance`. Author worktree
+`.research/closed-reclamation-20261029` is at086 on `work/closed-reclamation`,
+implementing the bounded product retry correction below.
+The pending branch is backed up remotely through086 after source exposure review.
+No reclamation code is integrated on main. All older sources and failures remain.
 
 ## Current result and valid evidence
 
@@ -70,10 +71,36 @@ Archive publication and history/export remain unqualified untilR3. The two follo
 
 ## Resources, custody and agents
 
-No compiler or autonomous agent experiment is active. Full installed R3 is
-running: session50870, runner34973/start244432. Evidence sibling
-`acceptance-closed-r3`; launch `acceptance-closed-r3-session.json`. It uses frozen028
-and unchanged c656 candidate/observer. The runner owns isolated engine cleanup.
+No compiler, installed runtime or autonomous agent experiment is active.
+Latest R5 session40030 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. Actual independent
+CAPI census and full comparison PASS: all5 scientific tables322rows and67native
+archive_commits. The next actual Archive exact-retry command exits4 with
+ObservationUnknown before a positive report; signed history/export is NOT_RUN.
+Evidence sibling `acceptance-closed-r5`; launch `acceptance-closed-r5-session.json`.
+Terminal6f1fa34d verifies52containers stopped/PID0/noOOM,23recordedPIDs/
+5714commandPIDs absent,64pins and exactbridgeempty/errors[]. No after-retry SQL/
+catalog capture exists; effects are not claimed absent or rolled back.
+Latest R4 session78556 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. All707
+Archive report/history/import/schedule/custody checks pass on the real candidate.
+The actual native CAPI census command then fails before a validated comparison;
+partial output is preserved and physical data/commit comparison remains unqualified.
+Archive retry and signed tail are NOT_RUN. Evidence sibling `acceptance-closed-r4`,
+launch `acceptance-closed-r4-session.json` (runner194297/start498276).
+Independent terminal1f67068d verifies51containers stopped/PID0/noOOM,
+23recordedPIDs/5707commandPIDs absent,64pins and exactbridgeempty/errors[].
+Latest fullR3 session50870 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. Closed
+reclamation and complete compacted_successor/reuse/scientific-native stages PASS.
+Both finite Index catch-up and exact retry pass, including raw rows/cuts. The next
+Archive publication-summary comparison fails at compacted_consumers; history/export
+is NOT_RUN. Only report frontier4 vs expected5 differs: the maintained baseline2 plus two
+contract advances requires4. A second membership assumption needs critical review:
+68SQLintents include original outage intent3 absent from67catalog import
+credential identities; those are not native archive_commits. The final5-table/
+67-native-commit C API census remains NOT_RUN. No
+unknown/ambiguous intent may be ignored to obtainPASS. R3 evidence
+is sibling `acceptance-closed-r3`, launch `acceptance-closed-r3-session.json`.
+Independent terminal4df8be64 verifies51ownedcontainers stopped/PID0/noOOM,
+23recordedPIDs/5707commandPIDs absent,64pins unchanged, exactbridgeempty/errors[].
 Independent outside-checkout tutorial70307 reaped0: all7 stages PASS on unchanged
 c656 candidate/frozen05a. Evidence sibling `acceptance-tutorial-r1`; terminal
 d5520f30 verifies18 ownedcontainers stopped/PID0/noOOM, runner/two clients and
@@ -99,21 +126,21 @@ The [existing inventory](../research/laboratory-inventory.json) owns custody.
 
 Sol/xhigh coordinator and operational author are verified; Astra/xhigh bounded
 critical reviews are closed. Sol and Astra have completed the bounded adapter/review; no agent experiment is
-active. Root owns R3 observation and integration. Product artifacts are unchanged.
+active. Root owns integration; Sol/Astra now diagnose the concrete product retry boundary. Product artifacts are unchanged.
 
 ## Precise next action and remaining scope
 
-**Next:** observe actual full R3 result and terminal custody. Frozen028 fixes the
-missing native frame discriminator and anchors historical authority to the
-independently validated pre-client bridge. It separately checks recovery job/gap
-ownership, preparer=activator and final old-Control fencing. Bounded critical
-review98c8c6ba is closed;47owning/profile controls and12trace controls retain their
-scopes, with3 affected authority methods repeated after the final two guards.
-Full saved-capture successor_science replay passes with the disclosed conservative
-completion-time bound; it does not relabel original R2 or its NOT_RUN tail.
-The existing report links exact author/review/replay receipts. No product rebuild
-or tutorial repetition is required for these acceptance-only changes. On failure,
-use protected source-frame diagnostics and classify its actual cause before a fix.
+**Next:** Sol implements the product-only retained inventory/native fix under
+critical contract af8d3ae9. Select exactly one later same-semantic/header
+replacement already bound to current frontier, with distinct ID/greater ordinal
+and old intent not current. After old custody/catalog resolution, unchanged strict
+Present(replacement) establishes old absence; ordinary replacement checks and
+full EOF remain. No worker/wire/guard/cap changes or custody cloning. Freeze
+source/tests, obtain critical review, then root qualifies exact native/build/
+installed product. All275old archive-state files are unchanged; SQL/native effects
+remain unobserved. Source086/probe12controls/review057ecc48 retain their scopes.
+Replacement committed before frontier binding remains explicit required recovery
+work in P02-T04 Step4/P02-T06 Step7/P08, not qualified by this scoped fix.
 
 P02-T02/T06 Steps 4/7 own completion of genuine request 65, exact native science,
 finite/live consumer retry, final Archive and signed history/export, then the

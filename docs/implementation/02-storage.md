@@ -217,7 +217,10 @@ One owner serializes exact identity decisions for each writable directory.
   also activates the compacted successor, admits3 genuine requests after64 and
   publishes the Control Index vector [1:312,2:10]. The independent scientific
   capture replay passes after correcting the verifier's frame/authority adapter;
-  the original installedR2 remains FAIL and the fresh fullR3 is pending. The
+  actualR5 independently verifies all322 Archive scientific rows and67 native
+  commits. Its following exact Archive retry refuses with ObservationUnknown;
+  the receipt lookup confuses retained absent intent3 with its valid replacement4.
+  The original failed runs remain preserved. The
   [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
   owns exact source/receipts and preserved failures. P02-T06 Steps4/7 still require
   complete installed consumer recovery/exact retry and history/export under the
@@ -1209,7 +1212,13 @@ source/client, query/freshness/cooldown, retry and resource bounds remain unchan
   from later recovery job ownership; its bounded critical review is closed.
   Closure still requires the full installed successor/science, both consumers,
   exact retries and history/export with conserved originals and unchanged limits.
-  R3 owns this remaining qualification. No Ready65 or broader epoch/capacity claim.
+  R5 passes the physical census but exposes the exact-retry receipt identity
+  collision. A scoped retained-inventory fix may inspect one exact replacement
+  already bound to the current frontier while keeping the strict worker reader.
+  Step7/P02-T04 Step4 and P08 must also qualify replacement commit followed by
+  interruption before its frontier binding; that broader transition is not
+  covered by the current shortcut and cannot disappear from delivery. No Ready65
+  or broader epoch/capacity claim.
 - [ ] **Step 5:** Publish affected-key/partition notices before their consumer frontier,
   including legitimate no-output/control-only source ranges.
 - [ ] **Step 6:** Stop at poison/unrecoverable source with typed diagnostics; allow unrelated

@@ -1753,7 +1753,7 @@
         }
       ],
       "remaining": [
-        "Current closure is owned by live_policy_authority_followup/verifier_followup: locate the exact R2 successor_science assertion, classify/fix its cause without weakening expected bytes, then complete the installed consumer/history/export and same-product tutorial gates. Earlier numeric ordering/reservation/startup blockers retain their original failure records and scoped corrections.",
+        "Current closure is owned by live_policy_authority_followup/archive_profile_followup: finish the scoped Archive frontier/failed-intent verifier contract, independent census/exact retry and final history/export. R3 actual complete successor science/reuse and both finite Index retries PASS; the complete case remainsFAIL at Archive-summary comparison.",
         "All broader capacity, recovery and later selected-plan obligations remain with their existing owners."
       ],
       "numeric_order_correction": {
@@ -1958,7 +1958,7 @@
         "saved_engine_log_triage": "Terminal PG has deliberate mixed-head error beforeowner and normal shutdownFATAL afterowner. Terminal CH error headers497/452 predatecurrentowner. These logs do not establish current Index Unavailable cause; no equivalence to prior Code202/HTTP429."
       },
       "live_policy_authority_followup": {
-        "status": "CLOSED_RECLAMATION_AND_SPOOL_OBSERVATION_PASS_SUCCESSOR_SCIENCE_FAIL",
+        "status": "ACTUAL_ARCHIVE_CENSUS_PASS_EXACT_RETRY_OBSERVATION_FAIL",
         "owners": [
           "P02-T06 steps4/7",
           "P02-T02 steps4/7"
@@ -2190,13 +2190,29 @@
               "scope": "028 adds only authority guard/tests to89a; tutorial positive inputs remain valid."
             },
             "installed_case": {
-              "status": "RUNNING_NOT_QUALIFIED",
+              "status": "FAIL",
               "session": 50870,
               "runner_pid": 34973,
               "runner_start_ticks": 244432,
               "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r3",
               "launch_record": "acceptance-closed-r3-session.json",
-              "scope": "Fresh complete11 case on exact unchanged c656 parent/candidate/observer; originalassembly2dad separate from executing028 acceptance. No native rebuild."
+              "scope": "Fresh complete11 case on exact unchanged c656 parent/candidate/observer; originalassembly2dad separate from executing028 acceptance. No native rebuild.",
+              "exit_code": 1,
+              "counts": {
+                "collected": 11,
+                "executed": 10,
+                "pass_count": 9,
+                "failed": 1,
+                "not_run": 1
+              },
+              "failure_stage": "compacted_consumers",
+              "reason": "compacted epoch2 Archive publication differs",
+              "classification": "UNKNOWN specific report-field/contract discrepancy; bounded saved-capture/source diagnosis pending. No product or verifier attribution inferred.",
+              "result_sha256": "0eef0bc0b5b6c67edb1561214d386f7765ba1f405cc07bd3386195cf8aeac307",
+              "terminal_receipt_sha256": "4df8be64cb533ba2f59bee995053f7a8f78985ce5777172f9d63d8c7ae4438f9",
+              "custody": "51ownedcontainers(33compose/18observer),45exit0/6intentionalexit4, stopped/PID0/noOOM;23recordedPIDs/5707commandPIDs absent,64sourcepins verified, exactbridgeempty/errors[]/procdenied0. Same auditor51b03259; original results preserved.",
+              "observed": "Closed reclamation and compacted_successor stages PASS, including actual native scientific byte/sequence/progress match and reuse-verdict. Both finite Index catch-up and exact retry pass before Archive report condition, including raw rows/cuts. Archive command completed and captures exist, but publication summary comparison fails; final history/export NOT_RUN.",
+              "reuse_verdict_sha256": "a72d4c7ac11acab686a5c1967e31e49ccdd0bffe29a93411909cc1721a2be991"
             },
             "publication_inputs": [
               {
@@ -2207,10 +2223,18 @@
                 "path": ".research/ci-publication-20261026/source-reclamation-028744e0-20261029/review.json",
                 "sha256": "02e0ac69539a967bcb5662543f0758df7e32bad349eeeba78c347c850065c921"
               }
-            ]
+            ],
+            "work_branch_publication": {
+              "source": "028744e01181ed1e39657fdd3469ed71e0925050",
+              "status": "PUSHED_PENDING_IMPLEMENTATION_SEPARATELY_FROM_MAIN",
+              "path": ".research/ci-publication-20261026/source-reclamation-028744e0-20261029/branch-publication.json",
+              "sha256": "0a97597c82e5bb229950ad491ab66602bbb9791968cf3ed485aff0d946ecfc13",
+              "actions_runs": [],
+              "remote_main": "5cc9cbb188378093f97d64f3e51ff11444934b98"
+            }
           }
         },
-        "next": "Observe full installedR3/terminal custody, preserving any new failure. Tutorial7 alreadyPASS on unchanged positive path. Integrate coherent source only after complete consumer/history/export qualification; then main publication scan/one required hosted run.",
+        "next": "Sol implements/freeze product-only inventory/native composition with focused controls; bounded critical review then root-managed exact-source native/build/installed qualification. Preserve originalR5FAIL and pre-retry physicalPASS separately. Full recovery without frontier binding remains existing required P02/P08 work.",
         "tutorial": {
           "status": "PASS",
           "session": 70307,
@@ -2226,6 +2250,162 @@
           "terminal_receipt_sha256": "d5520f305f20d1fdffa71727e8d2e0ea63e894af8459d5b91b10922ff03f859c",
           "custody": "18ownedcontainers exited0/PID0/noOOM; runner/two clients and778commandPIDs absent,28sourcepins and unchanged candidate verified, exact borrowedbridgeempty/errors[]. Current tutorial runner boot identity is captured; no earlier identity inferred.",
           "reuse_scope": "Current authority correction affects reclaimed-case oracle only; common helper changes only failure metadata. Review those deltas before reusing this exact05a positive journey; no R2 outcome relabeling."
+        },
+        "archive_profile_followup": {
+          "status": "FROZEN_CRITICAL_REVIEW_CLOSED_INSTALLED_R4_RUNNING",
+          "owner": "ci_followthrough_sol",
+          "critical_reviewer": "reclamation_retire_diagnosis",
+          "base_acceptance": "028744e01181ed1e39657fdd3469ed71e0925050",
+          "diagnosis": {
+            "path": ".research/closed-reclamation-20261029/.research/r3-archive-diagnosis-20261029/original-diagnosis.json",
+            "sha256": "1ddd302a31e2284faf35a843fc3fcd9abba1b28433c1cf89ab43e49426cf78c2"
+          },
+          "frontier": "Only differing report field is actual frontier_revision4 vs expected5. Maintained Outage/Retained baseline qualifies revision2/cut3/attempt3; contract advances bridge3/final4, new_frontier_revisions2. Other report fields match; serializer uses final receipt revision, not delta.",
+          "membership": "Saved SQL has68immutable issuance intents[1..68]; saved bigbrotr_archive.attempts has67 imported credential identities[1,2,4..68], NOT the native archive_commits census. Original outage intent3 remains independently anchored/non-imported under the reviewed positive absence/joined-prefix contract. Native scientific/commit census is still NOT_RUN. Expected published ordinals must remain literal[1,2,4..68], with exact issued1..68 and anchored3 conservation/exclusion; no generic missing-intent filter.",
+          "required_tail": "Fresh maintained case must execute independent C API census of all5 scientific tables and exact67 native archive_commits, plus native digest/frontier/census/exactretry/history/export. Metadata replay validates only saved SQL/catalog-credential/frontier data and independent expected schedule; no native Archive data PASS may be inferred.",
+          "schedule": "Current plan::missing_topology preserves topology0 for the already-issued failed input and its replacement4, while previously unissued old-source batches use sealed topology1. Literal expected schedule is imported1,2,4 topology0;5..68 topology1. Independently encode digests for61 previously unissued epoch1 batches; do not copy observed digest/membership. Default finite expectations remain unchanged.",
+          "critical_contract": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/diagnosis-retained-archive-unpublished-intent-c656-r3.json",
+            "sha256": "7d21df3d1b1278ed7255241fc84f1ed2a969ae1da4f1d03d042e9a518379459d",
+            "scope": "Known joined/refused outage + prefix/custody establish absent third intent; sparse map and original-topology replacement/sealed-topology fresh batches are explicit. Native final census/retry/history remain NOT_RUN."
+          },
+          "replay_scope": "Author reports metadata-only replayPASS: exactreport, old Archive1/2 and bridge3/final4,67sparseSQLreceipts/67catalogimportidentities, independently re-encoded61digests at topology1 and13 originalinput/intent/custodyfiles conserved. Startup-selection profile replay passes. Source not yet frozen/reviewed; native CAPI census/retry/signedtail explicitly NOT_RUN.",
+          "revision": "707ee2564079ebd6ea45911142265ed13995e1b7",
+          "worktree": ".research/closed-reclamation-archive-acceptance-qualified-20261029",
+          "author_receipt": {
+            "path": ".research/closed-reclamation-20261029/.research/r3-archive-diagnosis-20261029/receipt.json",
+            "sha256": "2fb75303e094db3224aafb9d4f0b100ada9ca9b2d1a0e1b88c33665b38f2b4b4"
+          },
+          "critical_review": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-retained-archive-sparse-707ee256.json",
+            "sha256": "171e9f27ed35c087b2439a7081a4ac98598757c41b0406322e5d167d48e3361d"
+          },
+          "controls": "116PASS across retained49/restart28/index21/outage9/profile8/tutorialprofile1;3new methods included once. First115PASS/1ERROR missingprefix_catalog in oldmock is preserved and corrected only in the mock. Prior12trace unchanged/reused.",
+          "metadata_replay_sha256": "f16e2c7afdd8dffcf804c2f0309f39c8e5b17d3a2854eef284e48881bba4b378",
+          "installed_case": {
+            "status": "FAIL",
+            "session": 78556,
+            "runner_pid": 194297,
+            "runner_start_ticks": 498276,
+            "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r4",
+            "launch_record": "acceptance-closed-r4-session.json",
+            "scope": "Fresh full11 case on unchanged c656 product/candidate/observer; actual final5-family/67native-commit census, Archive retry and signed tail remain mandatory. OriginalR3FAIL preserved.",
+            "exit_code": 1,
+            "counts": {
+              "collected": 11,
+              "executed": 10,
+              "pass_count": 9,
+              "failed": 1,
+              "not_run": 1
+            },
+            "failure_stage": "compacted_consumers",
+            "error_type": "ValueError",
+            "failure_boundary": "first_launch_retained.py653\u2192first_launch.py740 census\u2192command require at244; protected reason36chars/SHA9884a345691db8c1d3741059cafeddf12449a83309d069d94a15b1526069d48a",
+            "classification": "VERIFIER: missing explicit census envelope for independently declared retained-case cardinality; actual role/assets/ABI/attach/query verified. Old reader row bound stops immediately; product/candidate unchanged.",
+            "native_census": "FAIL_COMMAND; complete independent census comparison NOT_RUN/unqualified, any partial output preserved",
+            "retry_and_signed_tail": "NOT_RUN",
+            "result_sha256": "515e650ca534c9c7821d07bef5dabd48cba658ebf3790a9f05f72a2b680d3920",
+            "terminal_receipt_sha256": "1f67068d171a505a2212712917551102c5869c3ba9bdcb31534906b236aceb49",
+            "custody": "51ownedcontainers(33compose/18observer),45exit0/6intentionalexit4, stopped/PID0/noOOM;23recordedPIDs/5707commandPIDs absent;64sourcepins, exactbridgeempty/errors[]/procdenied0. Identical51b03259 auditor.",
+            "observed": "Closed reclamation/successor reuse/science/finite Index retries PASS. Actual Archive report, exact sparseSQL/import identity/frontier history, independent schedule and original13filecustody wrapper pass before the real CAPI census command fails. No physical Archive/native commit census or later retry/export PASS inferred."
+          },
+          "work_branch_publication": {
+            "source": "707ee2564079ebd6ea45911142265ed13995e1b7",
+            "path": ".research/ci-publication-20261026/source-reclamation-707ee256-20261029/branch-publication.json",
+            "sha256": "0ddfe04a705b9d8c37dce4e1a178bf61877de4bb612bd30b46e88a1123fd0407",
+            "remote_main": "5cc9cbb188378093f97d64f3e51ff11444934b98",
+            "actions_runs": []
+          }
+        },
+        "census_envelope_followup": {
+          "status": "FROZEN_REVIEW_CLOSED_INSTALLED_R5_RUNNING",
+          "owner": "ci_followthrough_sol",
+          "diagnosis": {
+            "path": ".research/closed-reclamation-20261029/.research/r4-census-diagnosis-20261029/original-diagnosis.json",
+            "sha256": "4df0a2c00a927f0f33870059f24bdb61d36132d8e938a06880e9f2419694114f"
+          },
+          "cause": "Independent native reader hardcodes LIMIT17/max16 for each scientific family and LIMIT9/max8 commits. Required recipe cardinalities73/62/62/62/63 and67commits were independently specified beforeR4. Actual5569-census-complete fails row-bound after0.13122s, stdout0; no timeout/product/environment counterexample.",
+          "actual_setup": "Owned Archive root, loopback15432, effective bigbrotr_archive_read role and600secretfile correct; version/ABI/extensions/attach/credential/query guards reached. Actual5CAPIassets rechecked against candidate-bound members.json; asset receipt fead8c5b22d224913418edfd0bc83444a3d1692ec4508ce60c16ea114cf089fd.",
+          "contract": "Add one explicit fixed closed-recipe census profile with per-family73/62/62/62/63 and67commit caps plus1sentinel. Default16/8, rowbytes65536, memory128MiB/temp64MiB/timeout30s/output bound remain. Reject unknown profile and extra rows; no bounds derived from observed report and no product capacity guarantee changed.",
+          "required": "Focused exact/+1/default/unknown profile controls and bounded critical reader review, then actual complete installed case. R4command remainsFAIL; physical oracle comparison/retry/signedtail remainNOT_RUN.",
+          "revision": "08622bfd89d2a5d740594de9fb82f92f656f9b40",
+          "worktree": ".research/closed-reclamation-census-acceptance-qualified-20261029",
+          "author_receipt": {
+            "path": ".research/closed-reclamation-20261029/.research/r4-census-diagnosis-20261029/receipt.json",
+            "sha256": "f04568b23427bcd931692787cf04bf1a129583d43983828dc01b2a8df90fc7d8"
+          },
+          "critical_review": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-census-envelope-08622bfd.json",
+            "sha256": "057ecc48b32941789d00a3bb44df931fe42cd6d50e39c810bf33eb0982ebbb74"
+          },
+          "controls": "Owningmodule12PASS,4focused overlap. SQLLIMIT-honoring fake CAPI tests exact/+1 for all6targets in bothprofiles, unknownCLI/API rejected before native load. execute/ABI/decode/config/resourceoptions/defaultargv unchanged by staticAST; previous116/12trace scopes reused where inputs unchanged.",
+          "installed_case": {
+            "status": "FAIL",
+            "session": 40030,
+            "runner_pid": 349561,
+            "runner_start_ticks": 674470,
+            "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r5",
+            "launch_record": "acceptance-closed-r5-session.json",
+            "scope": "Fresh full11 installed case on unchanged c656 candidate/observer, only final actualCAPI census selects fixedclosedprofile. Scientific comparison/retry/signedtail still required; originalR4FAIL remains.",
+            "exit_code": 1,
+            "counts": {
+              "collected": 11,
+              "executed": 10,
+              "pass_count": 9,
+              "failed": 1,
+              "not_run": 1
+            },
+            "failure_stage": "compacted_consumers",
+            "failure_boundary": "first_launch_retained.py657 actual Archive exactretry finite command exits4; first_launch.py489 refuses success",
+            "failure_label": "initial Archive refused; preserve original state: ObservationUnknown",
+            "classification": "Concrete product receipt-observation blocker identified in source; first runtime inner branch remains unobserved because workerinnerstderr missing. Bounded Astra persistence/idempotence diagnosis active; no zero-effects/rollback inferred.",
+            "result_sha256": "106abb331f2623524a91f0ab8e7e92b4f30fc987b981d569af7323d7f0bfff28",
+            "terminal_receipt_sha256": "6f1fa34d5d6beb0486d37e8ddeb2cc895ac703e0323e0f304fef15b83180b601",
+            "custody": "52ownedcontainers(34compose/18observer),45exit0/7intentional-or-failed4, stopped/PID0/noOOM;23recordedPIDs/5714commandPIDs absent,64pins/exactbridgeempty/errors[]/procdenied0. Same51b03259 auditor.",
+            "before_retry_native_census": {
+              "status": "PASS_ACTUAL_COMPLETE_C_API_AND_INDEPENDENT_COMPARISON",
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r5/reclamation/consumers/complete-science.json",
+              "sha256": "22e481551dd93592f14d359acee3d6845e5cfa0f078b2a41922adcd78b1072e6",
+              "table_counts": {
+                "dictionaries": 73,
+                "events": 62,
+                "event_eligibility_facts": 62,
+                "event_receive_facts": 62,
+                "provenance_facts": 63,
+                "archive_commits": 67
+              },
+              "scope": "All5scientific tables322rows and67nativearchive_commits match independent data/receipt/digest model before exactretry. No after-retry capture exists, so no unchanged-after-retry claim."
+            },
+            "signed_tail": "NOT_RUN"
+          },
+          "work_branch_publication": {
+            "source": "08622bfd89d2a5d740594de9fb82f92f656f9b40",
+            "path": ".research/ci-publication-20261026/source-reclamation-08622bfd-20261029/branch-publication.json",
+            "sha256": "a9b80fb74cd96ae75a53602cc7b1c729aed505b0b611085aa2da0a957769cd82",
+            "source_review_sha256": "805b20bf63bec33fcebd33bd16c4c41e6c0bba415a0ff662975a153b0d3e111d",
+            "actions_runs": [],
+            "remote_main": "5cc9cbb188378093f97d64f3e51ff11444934b98"
+          }
+        },
+        "receipt_retry_followup": {
+          "status": "IMPLEMENTING_REVIEWED_MINIMAL_PRODUCT_CONTRACT",
+          "reviewer": "reclamation_retire_diagnosis",
+          "operational_author": "ci_followthrough_sol",
+          "source": "c656c518231a3d604cb6fa08989455f655fd7cfe",
+          "concrete_blocker": "Worker receipt::scan_attached matches digest OR attempt_id OR publication_ordinal and requires full tuple equality. Legitimate replacement4 has exact semantic batch/digest/topology/ranges of absent retained intent3 but a new identity. Probing old3 after completion therefore collides with4 by digest and producesMismatch, mapped to ObservationUnknown by parent.",
+          "runtime_limit": "Three numeric prepared observation pairs corroborate1/2/3 locus, but inner worker stderr/after-retry SQL/catalog captures are absent; no first-executed-branch or zero-effect/rollback assertion.",
+          "required": "Define smallest scoped identity/observation fix retaining global strict digest/conflict/publication guards; do not simply drop digest predicate or adopt replacement receipt under old identity. No source edits/build/engine until concrete critical contract.",
+          "critical_contract": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/diagnosis-archive-retry-replacement-c656-r5.json",
+            "sha256": "af8d3ae9ad6eb1f830430a6181d8af5e21da6e93168bdd901bee9a39f052f90f"
+          },
+          "author_diagnosis": {
+            "path": ".research/closed-reclamation-20261029/.research/r5-retry-diagnosis-20261029/diagnosis.json",
+            "sha256": "9a59dba417d2a5e1c9d7f3002b809bd959aa5256a07429c519f9d6cd4e39fc80"
+          },
+          "contract": "Retained inventory may choose exactly one later distinct-ID/greater-ordinal replacement bound to current retained frontier, with complete semantic/original-header equality and old intent not current. After old custody/catalog resolution, unchanged strictPresent(replacement) provesoldAbsent; ordinary replacement sealing/reconciliation/membership/fullEOF still required. One small owned expectation, no custodyclone, worker/predicate/wire/caps untouched.",
+          "scope_limit": "Replacement committed before its current-frontier binding is NOT qualified by this shortcut. Keep conservative refusal/UNKNOWN; full recovery of that transition remains required under existing P02-T04Step4/P02-T06Step7/P08 faults before complete product delivery.",
+          "observed_effects": "All275archive-state files match pre-retry identity/hash census;6new0700scratch preparation directories fit3paired probes. No after-retrySQL/catalog/native capture or fullArchive-data baseline; no zero-effect/rollback/idempotence claim."
         }
       }
     }
