@@ -467,3 +467,89 @@ def successor_science(before,after,bridge,first,wires,dump,store,completed):
     wanted=archive_science(dict(rows=native_rows(science.values)),live_epoch=2,retained_epoch2=True)
     wanted.update(manifest=manifest,inputs=originals,receipts=list(science.receipts.values()),event=new_event)
     return wanted
+
+
+ARCHIVE_PUBLISHED_ORDINALS=(1,2,*range(4,69))
+
+
+def compacted_archive_science(science):
+    """Re-encode the closed recovery schedule without changing Index science."""
+    import copy
+    from bootstrap_oracle import cbor
+    from installed_sync_oracle import decode
+    batches=copy.deepcopy(science['batches'])
+    ranges=[(1,1,2),(1,3,3),(1,4,7)]+[(1,8+5*n,12+5*n) for n in range(61)]+[(2,1,4),(2,5,9),(2,10,10)]
+    index.exact([(b['epoch'],b['first'],b['last']) for b in batches],ranges)
+    ds=bytes.fromhex(science['tables']['events'][0]['source_record_id']['dataset_id'])
+    for batch in batches[3:64]:
+        assert batch['topology']==0
+        refs=[]
+        for n,fact in zip(range(batch['first'],batch['last']+1),batch['facts']):
+            preimage=bytes.fromhex(fact['preimage_hex'])
+            identity=decode(preimage.split(b'\0',1)[1])[0]
+            assert identity==[ds,0,1,n]
+            refs.append([identity,hashlib.sha256(preimage).digest()])
+        assert len(refs)==len(batch['facts'])==batch['last']-batch['first']+1
+        batch['topology']=1
+        batch['archive_digest']=source.sha(b'bigbrotr/archive-batch/1\0'+cbor([ds,1,1,
+            [[0,1,batch['first'],batch['last']]],refs]))
+    index.exact([b['topology'] for b in batches],[0]*3+[1]*64)
+    return dict(science,batches=batches)
+
+
+def compacted_archive(prefix,parked,before,after,report,science,catalog_before,catalog_after):
+    """Exact known-unpublished intent3, sparse receipts and two new frontiers."""
+    from cases.first_launch_archive_outage_oracle import archived_prefix,ARCHIVE_TABLES
+    from installed_archive_catch_up_oracle import cut_digest
+    third=archived_prefix(prefix,parked)
+    consumer=index.only(before['consumers'],consumer_role='archive');catalog=consumer['consumer_id']
+    index.exact(consumer,index.only(prefix['consumers'],consumer_role='archive'))
+    for table in ARCHIVE_TABLES+('consumer_frontier_revisions','consumer_frontiers'):
+        selected=lambda state:[r for r in state[table] if r['consumer_id']==catalog]
+        index.exact(selected(before),selected(parked))
+        assert all(row in selected(after) for row in selected(before)),table
+    for old in parked['archive_attempts']:
+        index.exact(index.only(before['archive_attempts'],ordinal=old['ordinal']),old)
+        index.exact(index.only(after['archive_attempts'],ordinal=old['ordinal']),old)
+    index.exact(sorted(r['ordinal'] for r in before['archive_attempts']),[1,2,3])
+    index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,69)))
+    topology.preserve_consumer_identity(before,after,catalog)
+    receipts=source.publication_receipts(after,science,published_ordinals=ARCHIVE_PUBLISHED_ORDINALS)
+    imports=catalog_after['bigbrotr_archive.attempts']
+    index.exact(sorted(r['ordinal'] for r in imports),list(ARCHIVE_PUBLISHED_ORDINALS))
+    assert all(row in imports for row in catalog_before['bigbrotr_archive.attempts'])
+    for row in imports:
+        attempt=index.only(after['archive_attempts'],ordinal=row['ordinal'])
+        assert row['attempt_id']!=third['attempt_id'] and row['worker_incarnation']!=third['worker_incarnation']
+        for field in ('attempt_id','batch_digest','topology_generation','coordinator_incarnation','worker_incarnation'):
+            index.exact(row[field],attempt[field])
+    assert not [r for r in after['archive_frontier_batches'] if r['attempt_id']==third['attempt_id']]
+    owner=index.only(catalog_after['bigbrotr_archive.owner'])
+    index.exact([owner['enabled'],owner['ordinal']],[False,68])
+    assert index.only(after['consumers'],consumer_id=catalog)['current_revision']==4
+    assert index.only(after['consumers'],consumer_id=catalog)['current_topology_generation']==1
+    index.exact(sorted(r['frontier_revision'] for r in after['consumer_frontier_revisions'] if r['consumer_id']==catalog),[1,2,3,4])
+    original=index.only(before['archive_frontier_snapshots'],frontier_revision=2)
+    for revision,cuts,members,counts in ((3,[(1,3),(2,0)],receipts[:2],[original[k] for k in source.COUNTS]),
+            (4,[(1,312),(2,10)],receipts,[73,62,62,62,63])):
+        head=index.only(after['consumer_frontier_revisions'],consumer_id=catalog,frontier_revision=revision)
+        assert head['previous_revision']==revision-1 and head['topology_generation']==1
+        snapshot=index.only(after['archive_frontier_snapshots'],frontier_revision=revision)
+        index.exact([snapshot[k] for k in ('dataset_id','catalog_id','consumer_id','topology_generation','snapshot_id',*source.COUNTS)],
+            [consumer['dataset_id'],catalog,catalog,1,68,*counts])
+        assert snapshot['request_digest']=='\\x'+cut_digest(consumer['dataset_id'],1,members,cuts,68)
+        bounds=sorted((r for r in after['consumer_frontiers'] if r['consumer_id']==catalog and r['frontier_revision']==revision),key=lambda r:r['owner_epoch'])
+        index.exact([(r['shard_id'],r['topology_generation'],r['owner_epoch'],r['last_complete_sequence']) for r in bounds],
+            [(0,1,epoch,cut) for epoch,cut in cuts])
+        for bound in bounds:
+            last=next((r for r in reversed(members) if r['input_ranges'][0]['owner_epoch']==bound['owner_epoch']),None)
+            index.exact([bound['attestation_kind'],bound['attestation_digest']],
+                ['archive-batch','\\x'+last['batch_digest'].lower()] if last else [None,None])
+        membership=[r['attempt_id'] for r in after['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==revision]
+        index.exact(sorted(membership),sorted('\\x'+r['attempt_id'].lower() for r in members))
+    frontier=index.only(after['archive_frontier_snapshots'],frontier_revision=4)
+    index.exact(report,dict(format='bigbrotr-archive-catch-up/1',dataset_id=consumer['dataset_id'][2:],catalog_id=catalog[2:],
+        terminal_epoch=2,issued_attempts_before=3,new_attempts=65,frontier_revision=4,snapshot_id=68,
+        operation_id=list(index.raw(frontier['operation_id'],16)),request_digest=frontier['request_digest'][2:],
+        family_counts=[73,62,62,62,63],new_frontier_revisions=2,recovery_basis='closed-producer-floor-v3',compacted_requests='64'))
+    return receipts

@@ -374,18 +374,21 @@ def successor_progress(state, manifest, science, job, detail, owner, wire, event
         expected_head, [expected], dependencies, science.values)
 
 
-def publication(state, census, science, *, revision, snapshot, topology, cuts):
-    from installed_archive_catch_up_oracle import cut_digest
-    assert set(census) == {'format', 'tables'}
-    assert set(census['tables']) == set(science['tables']) | {'archive_commits'}
-    attempts = sorted(state['archive_attempts'], key=lambda row: row['ordinal'])
+def publication_receipts(state, science, *, published_ordinals=None):
+    """Independent scientific receipts for an explicit expected publication set."""
+    if published_ordinals is None:
+        attempts = sorted(state['archive_attempts'], key=lambda row: row['ordinal'])
+        published_ordinals = list(range(1, len(attempts) + 1))
+    else:
+        assert all(type(n) is int and n > 0 for n in published_ordinals)
+        assert list(published_ordinals) == sorted(set(published_ordinals))
+        attempts = [only(state['archive_attempts'], ordinal=n) for n in published_ordinals]
     assert len(attempts) == len(science['batches'])
     assert len({row['attempt_id'] for row in attempts}) == len(attempts)
     dataset = only(state['datasets'])['dataset_id']
     consumer = only(state['consumers'], consumer_role='archive')
-    assert consumer['current_revision'] == revision and consumer['current_topology_generation'] == topology
     receipts = []
-    for n, (attempt, batch) in enumerate(zip(attempts, science['batches']), 1):
+    for n, attempt, batch in zip(published_ordinals, attempts, science['batches']):
         assert attempt['ordinal'] == n and attempt['expected_predecessor'] == n - 1
         assert attempt['dataset_id'] == dataset and attempt['catalog_id'] == consumer['consumer_id']
         assert attempt['schema_version'] == 1 and attempt['topology_generation'] == batch['topology']
@@ -394,6 +397,17 @@ def publication(state, census, science, *, revision, snapshot, topology, cuts):
             batch_digest=batch['archive_digest'].upper(), record_count=batch['last'] - batch['first'] + 1,
             input_ranges=[dict(shard_id=0, owner_epoch=batch['epoch'], first_sequence=batch['first'], last_sequence=batch['last'])],
             attempt_id=attempt['attempt_id'][2:].upper(), publication_ordinal=n))
+    return receipts
+
+
+def publication(state, census, science, *, revision, snapshot, topology, cuts, published_ordinals=None):
+    from installed_archive_catch_up_oracle import cut_digest
+    assert set(census) == {'format', 'tables'}
+    assert set(census['tables']) == set(science['tables']) | {'archive_commits'}
+    receipts = publication_receipts(state, science, published_ordinals=published_ordinals)
+    dataset = only(state['datasets'])['dataset_id']
+    consumer = only(state['consumers'], consumer_role='archive')
+    assert consumer['current_revision'] == revision and consumer['current_topology_generation'] == topology
     exact(census['tables'], {**science['tables'], 'archive_commits': receipts}, 'complete scientific census and commits')
     frontier = only(state['archive_frontier_snapshots'], frontier_revision=revision)
     assert frontier['snapshot_id'] == snapshot and frontier['topology_generation'] == topology
@@ -403,7 +417,7 @@ def publication(state, census, science, *, revision, snapshot, topology, cuts):
                      and r['frontier_revision']==revision], key=lambda r: r['owner_epoch'])
     assert [(r['owner_epoch'], r['last_complete_sequence']) for r in bounds] == cuts
     assert all(r['shard_id'] == 0 and r['topology_generation'] == topology for r in bounds)
-    assert {r['attempt_id'] for r in state['archive_frontier_batches'] if r['frontier_revision'] == revision} == {r['attempt_id'] for r in attempts}
+    assert {r['attempt_id'] for r in state['archive_frontier_batches'] if r['frontier_revision'] == revision} == {'\\x'+r['attempt_id'].lower() for r in receipts}
     return receipts
 
 

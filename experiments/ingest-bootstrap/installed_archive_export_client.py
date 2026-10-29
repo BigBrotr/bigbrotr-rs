@@ -121,7 +121,7 @@ def run(home):
         filters=[dict(ids=[event['id']])])
     retained_compacted=expected.get("retained_compacted_epoch2",False)
     assert type(retained_compacted) is bool
-    allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='5' if retained_compacted else '4')
+    allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
     selected_snapshot='68' if retained_compacted else '5'
     marker = (home / 'destination/destination.json').read_bytes()
     body = dict(kind='export', format='signed-events-jsonl', query=query, allocation=allocation,

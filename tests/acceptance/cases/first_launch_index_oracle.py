@@ -203,7 +203,7 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False)
     from cases.first_launch_restart import profile
     selected = (dict(snapshot=68,counts=[73,62,62,62,63],initial_cut=312,successor_cut=10,successor_requests=3)
         if retained_compacted_epoch2 else profile(successor))
-    revision=5 if retained_compacted_epoch2 else 6
+    revision=4 if retained_compacted_epoch2 else 6
     dataset = only(state['datasets'])['dataset_id']
     consumer = only(state['consumers'],consumer_role='archive')
     catalog = consumer['consumer_id']
@@ -218,9 +218,11 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False)
           [[dataset,1,0,epoch,cut] for epoch,cut in cuts])
     members = [r for r in state['archive_frontier_batches'] if r['consumer_id']==catalog and r['frontier_revision']==revision]
     count = (64 if retained_compacted_epoch2 else 4)+selected['successor_requests']
+    if retained_compacted_epoch2:
+        exact(sorted(r['ordinal'] for r in state['archive_attempts']),list(range(1,69)))
     assert len(members)==len({r['attempt_id'] for r in members})==count
     attempts = sorted((only(state['archive_attempts'],attempt_id=r['attempt_id']) for r in members),key=lambda r:r['ordinal'])
-    exact([r['ordinal'] for r in attempts],list(range(1,count+1)))
+    exact([r['ordinal'] for r in attempts],[1,2,*range(4,69)] if retained_compacted_epoch2 else list(range(1,count+1)))
     assert all(r['dataset_id']==dataset and r['catalog_id']==catalog for r in attempts)
     return revision,cuts
 

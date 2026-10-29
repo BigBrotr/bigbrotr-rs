@@ -178,6 +178,81 @@ def successor_authority_fixture():
     return bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations
 
 
+def retained_successor_fixture(root):
+    from initial_succession_oracle import successor_manifest
+    from installed_family_science import NetworkScience
+    from installed_archive_catch_up_model import archive_science
+    from transition_replay import native_rows
+    state,_,_,_,_,dump,first=saturation_fixture(root)
+    previous=next(v for cf,k,v in first['native'] if cf=='default' and k==b'\x01\x01')
+    fresh=[bytes([120+k])*16 for k in range(1,10)]
+    manifest=successor_manifest(previous,bytes.fromhex('cc'*16),fresh)
+    model=SimpleNamespace(ds=state['datasets'][0],slot=state['producer_epochs'][0]['producer_slot_id'],
+        legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=copy.deepcopy(dump))
+    new=next(row['event'] for row in base.load(ROOT/'tests/fixtures/acquisition/selector-events.json')['events'] if row['name']=='included')
+    encoded=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=['\\x'+d.hex() for d in fresh]),
+        acknowledge=True,new_event=new,endpoint=source.ENDPOINT)
+    encoded.network(True,50000,51000,52000,1,(51001,52001))
+    native_rows_value=dict(rows=native_rows(encoded.values))
+    science=archive_science(native_rows_value,live_epoch=2,retained_epoch2=True)
+    return first,encoded,native_rows_value,science
+
+
+
+def compacted_archive_fixture(science):
+    """Independent closed-profile SQL/import history and simulated C API rows."""
+    from installed_archive_catch_up_oracle import cut_digest
+    ds='\\x'+science['tables']['events'][0]['source_record_id']['dataset_id'].lower();catalog='\\x'+'55'*16
+    owner=dict(role='control',state='active',resource_id='\\x'+'a1'*16,epoch=1,
+        process_incarnation='\\x'+'a2'*16,acquired_at_us=100,lease_expires_at_us=10000)
+    attempts=[];receipts=[]
+    for ordinal in range(1,69):
+        batch=science['batches'][ordinal-1 if ordinal<=3 else ordinal-2]
+        attempts.append(dict(ordinal=ordinal,attempt_id='\\x'+f'{ordinal:032x}',worker_incarnation='\\x'+f'{ordinal+100:032x}',
+            coordinator_incarnation=owner['process_incarnation'],coordinator_binding_sha256='\\x'+'dd'*32,
+            dataset_id=ds,catalog_id=catalog,expected_predecessor=ordinal-1,schema_version=1,
+            topology_generation=batch['topology'],batch_digest='\\x'+batch['archive_digest'],persistence_protocol=1,
+            issuer_role='control',issuer_resource=owner['resource_id'],issuer_epoch=1,
+            issuer_incarnation=owner['process_incarnation'],issued_at_us=200+ordinal,xmin=str(ordinal)))
+        if ordinal!=3:
+            receipts.append(dict(dataset_id=ds[2:].upper(),schema_version=1,topology_generation=batch['topology'],
+                batch_digest=batch['archive_digest'].upper(),record_count=batch['last']-batch['first']+1,
+                input_ranges=[dict(shard_id=0,owner_epoch=batch['epoch'],first_sequence=batch['first'],last_sequence=batch['last'])],
+                attempt_id=f'{ordinal:032X}',publication_ordinal=ordinal))
+    prefix=dict(datasets=[dict(dataset_id=ds)],owner_epochs=[owner],archive_attempts=attempts[:2],
+        consumers=[dict(dataset_id=ds,consumer_id=catalog,consumer_role='archive',current_revision=2,current_topology_generation=0,xmin='2')],
+        consumer_frontier_revisions=[],consumer_frontiers=[],archive_frontier_snapshots=[],archive_frontier_batches=[])
+    def append(state,revision,topology,snapshot,cuts,members):
+        common=dict(dataset_id=ds,consumer_id=catalog,frontier_revision=revision,topology_generation=topology,xmin=str(revision))
+        state['consumer_frontier_revisions'].append(dict(common,previous_revision=revision-1 or None))
+        counts=[sum(row['source_record_id']['sequence']<=dict(cuts).get(row['source_record_id']['owner_epoch'],0)
+                    for row in rows) for rows in science['tables'].values()]
+        state['archive_frontier_snapshots'].append(dict(common,catalog_id=catalog,snapshot_id=snapshot,
+            operation_id='\\x'+f'{revision+200:032x}',request_digest='\\x'+cut_digest(ds,topology,members,cuts,snapshot),
+            **dict(zip(source.COUNTS,counts))))
+        state['archive_frontier_batches'] += [dict(common,attempt_id='\\x'+r['attempt_id'].lower()) for r in members]
+        for epoch,cut in cuts:
+            last=next((r for r in reversed(members) if r['input_ranges'][0]['owner_epoch']==epoch),None)
+            state['consumer_frontiers'].append(dict(common,shard_id=0,owner_epoch=epoch,last_complete_sequence=cut,
+                attestation_kind='archive-batch' if last else None,attestation_digest='\\x'+last['batch_digest'].lower() if last else None))
+    append(prefix,1,0,2,[(1,2)],receipts[:1]);append(prefix,2,0,3,[(1,3)],receipts[:2])
+    parked=copy.deepcopy(prefix);parked['archive_attempts'].append(attempts[2])
+    before=copy.deepcopy(parked);after=copy.deepcopy(before);after['archive_attempts']=attempts
+    after['consumers'][0].update(current_revision=4,current_topology_generation=1,xmin='4')
+    append(after,3,1,68,[(1,3),(2,0)],receipts[:2]);append(after,4,1,68,[(1,312),(2,10)],receipts)
+    imported=lambda row:{k:row[k] for k in ('ordinal','attempt_id','batch_digest','topology_generation','worker_incarnation','coordinator_incarnation','xmin')}
+    catalog_before={'bigbrotr_archive.attempts':[imported(r) for r in attempts[:2]]}
+    catalog_after={'bigbrotr_archive.attempts':[imported(r) for r in attempts if r['ordinal']!=3],
+        'bigbrotr_archive.owner':[dict(enabled=False,ordinal=68)]}
+    final=after['archive_frontier_snapshots'][-1]
+    report=dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=2,
+        issued_attempts_before=3,new_attempts=65,frontier_revision=4,snapshot_id=68,operation_id=list(index.raw(final['operation_id'])),
+        request_digest=final['request_digest'][2:],family_counts=[73,62,62,62,63],new_frontier_revisions=2,
+        recovery_basis='closed-producer-floor-v3',compacted_requests='64')
+    census=dict(format='bigbrotr-independent-installed-archive-read/1',tables={**copy.deepcopy(science['tables']),'archive_commits':receipts})
+    return prefix,parked,before,after,report,catalog_before,catalog_after,census
+
+
 class RetainedBoundaryControls(unittest.TestCase):
     def finite_relay(self,root,*,bad_round=None,release=True,failure='protocol',retained=True):
         for source_name,target_name in (('tests/fixtures/acquisition/retained-requests.json','retained-requests.json'),
@@ -582,6 +657,68 @@ class RetainedBoundaryControls(unittest.TestCase):
 
 
 class ClosedReclamationControls(unittest.TestCase):
+    def test_recovered_archive_reencodes_only_the_unattempted61_batches(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=retained_successor_fixture(Path(temporary))[-1];saved=copy.deepcopy(science)
+            archive=check.compacted_archive_science(science)
+            self.assertEqual(science,saved)
+            self.assertEqual(archive['tables'],science['tables'])
+            self.assertEqual([b['topology'] for b in archive['batches']],[0]*3+[1]*64)
+            changed=[n for n,(a,b) in enumerate(zip(science['batches'],archive['batches'])) if a['archive_digest']!=b['archive_digest']]
+            self.assertEqual(changed,list(range(3,64)))
+            for mutate in (lambda s:s['batches'][3].update(first=9),
+                    lambda s:s['batches'][3]['facts'].pop(),lambda s:s['batches'][3].update(topology=1)):
+                invalid=copy.deepcopy(science);mutate(invalid)
+                with self.assertRaises(AssertionError):check.compacted_archive_science(invalid)
+
+    def test_compacted_archive_requires_exact_sparse_history_and_anchored_unpublished3(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(temporary))[-1])
+            prefix,parked,before,after,report,old_catalog,catalog,census=compacted_archive_fixture(science)
+            check.compacted_archive(prefix,parked,before,after,report,science,old_catalog,catalog)
+            index.startup_selection(after,retained_compacted_epoch2=True)
+            for change in ('head','extra'):
+                wrong=copy.deepcopy(after)
+                if change=='head':wrong['consumers'][0]['current_revision']=5
+                else:wrong['archive_attempts'].append(dict(wrong['archive_attempts'][-1],ordinal=69))
+                with self.subTest(startup=change),self.assertRaises(AssertionError):
+                    index.startup_selection(wrong,retained_compacted_epoch2=True)
+            source.publication(after,census,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],
+                published_ordinals=check.ARCHIVE_PUBLISHED_ORDINALS)
+            changes=[lambda a,r,c:a['archive_attempts'].pop(),
+                lambda a,r,c:a['archive_attempts'].append(dict(a['archive_attempts'][-1],ordinal=69)),
+                lambda a,r,c:a['archive_attempts'][2].update(xmin='rewritten'),
+                lambda a,r,c:c['bigbrotr_archive.attempts'].append(dict(a['archive_attempts'][2])),
+                lambda a,r,c:a['archive_attempts'][3].update(batch_digest='\\x'+'00'*32),
+                lambda a,r,c:a['archive_attempts'][3].update(topology_generation=1),
+                lambda a,r,c:index.only(a['consumer_frontiers'],frontier_revision=3,owner_epoch=1).update(last_complete_sequence=312),
+                lambda a,r,c:index.only(a['consumer_frontiers'],frontier_revision=3,owner_epoch=2).update(attestation_digest='wrong'),
+                lambda a,r,c:a['archive_frontier_batches'].append(dict(a['archive_frontier_batches'][-1],frontier_revision=3)),
+                lambda a,r,c:index.only(a['archive_frontier_snapshots'],frontier_revision=3).update(request_digest='wrong'),
+                lambda a,r,c:index.only(a['archive_frontier_snapshots'],frontier_revision=2).update(xmin='rewritten'),
+                lambda a,r,c:r.update(frontier_revision=5),lambda a,r,c:r.update(new_frontier_revisions=1)]
+            for n,mutate in enumerate(changes):
+                a,r,c=copy.deepcopy((after,report,catalog));mutate(a,r,c)
+                with self.subTest(mutation=n),self.assertRaises((AssertionError,ValueError)):
+                    check.compacted_archive(prefix,parked,before,a,r,science,old_catalog,c)
+
+    def test_compacted_archive_native_census_stays_mandatory_and_uses_sparse_ordinals(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(temporary))[-1])
+            _,_,_,after,_,_,_,census=compacted_archive_fixture(science)
+            for change in ('dense','missing','extra','science'):
+                observed=copy.deepcopy(census)
+                if change=='dense':
+                    for n,row in enumerate(observed['tables']['archive_commits'],1):row['publication_ordinal']=n
+                elif change=='missing':observed['tables']['archive_commits'].pop()
+                elif change=='extra':observed['tables']['archive_commits'].append(dict(observed['tables']['archive_commits'][2],publication_ordinal=3))
+                else:observed['tables']['events'][0]['content']='wrong'
+                with self.subTest(change=change),self.assertRaises(AssertionError):
+                    source.publication(after,observed,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],
+                        published_ordinals=check.ARCHIVE_PUBLISHED_ORDINALS)
+            with self.assertRaises(AssertionError):
+                source.publication(after,census,science,revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)])
+
     def test_compacted_successor_uses_anchored_historical_issuer_for_requests_and_progress(self):
         bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations=successor_authority_fixture()
         owner=check.successor_owner(bridge,after,manifest,handoff,job)
@@ -829,6 +966,7 @@ class ClosedReclamationControls(unittest.TestCase):
             runtime.reclamation_output=Path(directory);runtime.schema=schema
             runtime.finite=Mock(return_value=dict(published_revision_after=68,new_batches=0))
             runtime.capture=Mock(return_value=({},{}))
+            runtime.prefix_catalog={}
             runtime.ch=Mock(side_effect=ValueError('declared Index reader reached'))
             with self.assertRaisesRegex(ValueError,'declared Index reader reached'):runtime.compacted_consumers()
             self.assertIn('FROM serving_fixture.',runtime.ch.call_args.args[0])
@@ -1061,18 +1199,7 @@ class ClosedReclamationControls(unittest.TestCase):
         from installed_archive_catch_up_model import archive_science
         from transition_replay import native_rows
         with tempfile.TemporaryDirectory() as directory:
-            state,_,_,_,_,dump,first=saturation_fixture(Path(directory))
-            previous=next(v for cf,k,v in first['native'] if cf=='default' and k==b'\x01\x01')
-            fresh=[bytes([120+k])*16 for k in range(1,10)]
-            manifest=successor_manifest(previous,bytes.fromhex('cc'*16),fresh)
-            model=SimpleNamespace(ds=state['datasets'][0],slot=state['producer_epochs'][0]['producer_slot_id'],
-                legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=copy.deepcopy(dump))
-            new=next(row['event'] for row in base.load(ROOT/'tests/fixtures/acquisition/selector-events.json')['events'] if row['name']=='included')
-            encoded=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=['\\x'+d.hex() for d in fresh]),
-                acknowledge=True,new_event=new,endpoint=source.ENDPOINT)
-            encoded.network(True,50000,51000,52000,1,(51001,52001))
-            native_rows_value=dict(rows=native_rows(encoded.values))
-            science=archive_science(native_rows_value,live_epoch=2,retained_epoch2=True)
+            first,encoded,native_rows_value,science=retained_successor_fixture(Path(directory))
             self.assertEqual(sum(map(len,science['tables'].values())),322)
             self.assertEqual([len(rows) for rows in science['tables'].values()],[73,62,62,62,63])
             self.assertEqual(len(science['batches']),67)

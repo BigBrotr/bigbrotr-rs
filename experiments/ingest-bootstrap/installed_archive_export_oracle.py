@@ -15,7 +15,7 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     assert re.fullmatch('[0-9a-f]{32}', expected_principal)
     assert type(retained_compacted_epoch2) is bool
     assert type(initial_cut) is int and initial_cut in ((312,) if retained_compacted_epoch2 else (8,12)), 'closed recipe cut required'
-    frontier,snapshot,topology=(5,68,'1') if retained_compacted_epoch2 else (4,5,initialized['topology_generation'])
+    frontier,snapshot,topology=(4,68,'1') if retained_compacted_epoch2 else (4,5,initialized['topology_generation'])
     source_bounds=[(1,312),(2,10)] if retained_compacted_epoch2 else [(1,initial_cut)]
     principal = '\\x' + expected_principal
     assert type(expected_table_count) is int and expected_table_count > 0

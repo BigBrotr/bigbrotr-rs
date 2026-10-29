@@ -627,7 +627,8 @@ class ReclamationRuntime(RetainedRuntime):
         for owner_epoch,label in enumerate(('index-compacted-catch-up','index-compacted-exact-retry'),3):
             report=self.finite(label,'index','catch-up','--file','/etc/bigbrotr/instance.toml')
             require(report['published_revision_after']==68 and report['new_batches']==0,'finite compacted Index changed complete history')
-            state,_=self.capture(output,label)
+            state,catalog=self.capture(output,label)
+            index.exact(catalog,self.prefix_catalog)
             rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
             live_oracle.no_work_rebind(self.complete_index_state,state,report,self.final_science,self.schema,rows,
                 owner_epoch=owner_epoch,retained_boundary=True)
@@ -636,15 +637,22 @@ class ReclamationRuntime(RetainedRuntime):
             self.complete_index_state=state
             save(output/(label+'-rows.json'),rows)
             require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'Index changed retained inputs')
+        before=self.complete_index_state
+        state_files=self.files(self.state/'data/archive-state')
+        require(all(state_files.get(k)==v for k,v in self.parked_files.items()),'original Archive input/intent custody changed before catch-up')
+        save(output/'archive-state-before.json',state_files)
+        self.archive_science=oracle.compacted_archive_science(self.final_science)
         report=self.finite('archive-compacted-catch-up','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         self.caught_up,self.caught_up_catalog=self.capture(output,'archive')
         live_oracle.publication_unchanged(self.complete_index_state,self.caught_up)
-        require(report['terminal_epoch']==2 and report['frontier_revision']==5 and report['snapshot_id']==68
-            and report['compacted_requests']=='64' and report['family_counts']==[73,62,62,62,63],
-            'compacted epoch2 Archive publication differs')
+        state_files=self.files(self.state/'data/archive-state')
+        require(all(state_files.get(k)==v for k,v in self.parked_files.items()),'original Archive input/intent custody changed during catch-up')
+        save(output/'archive-state-after.json',state_files)
+        oracle.compacted_archive(self.prefix,self.index_live,before,self.caught_up,report,
+            self.archive_science,self.prefix_catalog,self.caught_up_catalog)
         self.final_census=self.census(output,'complete')
-        self.restart_checks.publication(self.caught_up,self.final_census,self.final_science,
-            revision=5,snapshot=68,topology=1,cuts=[(1,312),(2,10)])
+        self.restart_checks.publication(self.caught_up,self.final_census,self.archive_science,
+            revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],published_ordinals=oracle.ARCHIVE_PUBLISHED_ORDINALS)
         self.caught_up_files=self.files(self.state/'data/archive')
         retry=self.finite('archive-compacted-exact-retry','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         after,catalog=self.capture(output,'archive-retry')
@@ -689,7 +697,7 @@ class ReclamationRuntime(RetainedRuntime):
         shutil.copyfile(self.home/'fixture-profile.json',history/'fixture-profile.json')
         save(history/'events.json',[self.events[0],self.new_event])
         save(history/'read-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
-            frontier_revision=5,snapshot_id=68,config_revision='1',policy_revision='1',startup_quiescence=True))
+            frontier_revision=4,snapshot_id=68,config_revision='1',policy_revision='1',startup_quiescence=True))
         self.capture(history,'before')
         entry=self.launch('compacted-history-restart','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'fresh compacted history Control',20,entry=entry)
