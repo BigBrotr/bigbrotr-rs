@@ -13,10 +13,18 @@ TOPOLOGY_REFUSAL = 'Index handoff publication requires current initial successor
 
 
 def cut(dataset, through):
+    """Management's flat observation DTO with decimal-string coordinates."""
     assert type(through) is int and through in (0,10)
     return dict(dataset_id=index.raw(dataset,16).hex(),topology_generation='1',bounds=[
         dict(shard_id='0',owner_epoch=str(epoch),last_complete_sequence=str(last))
         for epoch,last in ((1,12),(2,through))])
+
+
+def startup_cut(dataset):
+    """Canonical SourceCut serde: nested StreamId and numeric u32 shard."""
+    return dict(dataset_id=index.raw(dataset,16).hex(),topology_generation='1',bounds=[
+        dict(stream=dict(shard_id=0,owner_epoch=str(epoch)),last_complete_sequence=str(last))
+        for epoch,last in ((1,12),(2,0))])
 
 
 def startup_index(value, generation):
@@ -25,7 +33,7 @@ def startup_index(value, generation):
         storage_incarnation=index.raw(generation['storage_incarnation'],16).hex(),
         table_identity_digest=index.raw(generation['table_identity_digest'],32).hex(),
         previous_owner_epoch=1,owner_epoch=2,published_revision_before=4,published_revision_after=5,
-        published_cut=cut(generation['dataset_id'],0),ready=False))
+        published_cut=startup_cut(generation['dataset_id']),ready=False))
 
 
 def append_only_history(before, after):

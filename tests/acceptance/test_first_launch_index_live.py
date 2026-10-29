@@ -224,8 +224,8 @@ class LiveIndexTopologyControls(unittest.TestCase):
             storage_incarnation='44'*16,table_identity_digest='55'*32,previous_owner_epoch=1,owner_epoch=2,
             published_revision_before=4,published_revision_after=5,ready=False,
             published_cut=dict(dataset_id='11'*16,topology_generation='1',bounds=[
-                dict(shard_id='0',owner_epoch='1',last_complete_sequence='12'),
-                dict(shard_id='0',owner_epoch='2',last_complete_sequence='0')]))
+                dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='12'),
+                dict(stream=dict(shard_id=0,owner_epoch='2'),last_complete_sequence='0')]))
         live.startup_index(value,generation)
         for field,wrong in [('generation_id','00'*16),('storage_incarnation','00'*16),
                 ('table_identity_digest','00'*32),('owner_epoch',True),('published_revision_after',4),
@@ -233,6 +233,12 @@ class LiveIndexTopologyControls(unittest.TestCase):
             with self.subTest(field=field),self.assertRaises(AssertionError):
                 live.startup_index(dict(value,**{field:wrong}),generation)
         wrong=copy.deepcopy(value);wrong['published_cut']['bounds'].pop()
+        with self.assertRaises(AssertionError):live.startup_index(wrong,generation)
+        wrong=copy.deepcopy(value);wrong['published_cut']['bounds']=[
+            dict(shard_id='0',owner_epoch='1',last_complete_sequence='12'),
+            dict(shard_id='0',owner_epoch='2',last_complete_sequence='0')]
+        with self.assertRaises(AssertionError):live.startup_index(wrong,generation)
+        wrong=copy.deepcopy(value);wrong['published_cut']['bounds'][0]['stream']['shard_id']='0'
         with self.assertRaises(AssertionError):live.startup_index(wrong,generation)
 
     def test_ready_requires_full_ordered_vector_current_identity_and_original_age(self):
