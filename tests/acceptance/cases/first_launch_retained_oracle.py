@@ -287,13 +287,16 @@ def control_only(before,after,*,claim='released',backend_pid=None):
         assert actual['xmin']!=old['xmin']
         fenced[old['role_instance_id']]=actual
     assert len(fenced)<=1
+    if owners:
+        assert set(fenced)==(set() if prior['state']=='released' else {prior['role_instance_id']})
     old_roles={r['role_instance_id']:r for r in before['role_instances']}
     new_roles={r['role_instance_id']:r for r in after['role_instances']}
     assert old_roles.keys()<=new_roles.keys()
+    assert fenced.keys()<=old_roles.keys()
     for ident,old in old_roles.items():
         actual=new_roles[ident]
-        if old==actual:continue
-        assert ident in fenced and old['retired_at_us'] is None
+        if old==actual and ident not in fenced:continue
+        assert old!=actual and ident in fenced and old['retired_at_us'] is None
         assert fenced[ident]['released_at_us']<=actual['retired_at_us']<=owners[0]['acquired_at_us']
         assert actual['xmin']==fenced[ident]['xmin']
         index.exact({k:v for k,v in old.items() if k not in ('retired_at_us','xmin')},

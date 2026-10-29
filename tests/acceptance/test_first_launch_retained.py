@@ -821,6 +821,14 @@ class ClosedReclamationControls(unittest.TestCase):
             index.only(after['role_instances'],role_instance_id=role['role_instance_id']).update(
                 retired_at_us=old['lease_expires_at_us']+15,xmin='2')
             check.control_only(before,after)
+            for missing in ('owner-fence','role-retirement'):
+                changed=copy.deepcopy(after)
+                if missing=='owner-fence':
+                    current=index.only(changed['owner_epochs'],role_instance_id=old['role_instance_id'])
+                    current.clear();current.update(old)
+                current=index.only(changed['role_instances'],role_instance_id=role['role_instance_id'])
+                current.clear();current.update(role)
+                with self.subTest(missing=missing),self.assertRaises(AssertionError):check.control_only(before,changed)
             for mutate in (lambda pg:pg['producer_requests'][0].update(request_sequence=63),
                 lambda pg:index.only(pg['owner_epochs'],role_instance_id=old['role_instance_id']).update(exclusion_digest='\\x'+'00'*32),
                 lambda pg:index.only(pg['role_instances'],role_instance_id=role['role_instance_id']).update(retired_at_us=old['lease_expires_at_us'])):
