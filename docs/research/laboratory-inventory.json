@@ -76682,7 +76682,7 @@
               "custody": "All18containers stopped0/PID0/noOOM; runner/two actual clients/783commandPIDs absent,28pins/exactbridgeempty/errors[]. Auditor operator initially supplied incorrect starttick argument and refused; rerun reads recorded actual capsule exactly, no predicate/source/result changes."
             },
             "initial_stop_correction": {
-              "status": "FULLCASE_R2_RUNNING_NOT_QUALIFIED",
+              "status": "FULLCASE_R2_LAST_STAGE_FAIL_TUTORIAL_R1_PASS_ALL_LOCAL_RUNTIME_REAPED",
               "product_revision": "f5aad2c1114bbd6c4b84d4141153ae27e65c5af7",
               "acceptance_revision": "3eef0bf69f78f8d53ab6fc061eb781fd44e3674b",
               "worktrees": [
@@ -76692,19 +76692,57 @@
               "roots": {
                 "native": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-f5aad2c1",
                 "installed": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1",
-                "observer": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-observer-f5aad2c1",
-                "active_case": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2"
+                "observer": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-observer-f5aad2c1"
               },
-              "ownership": "Root sole launcher/integrator; native/build/observer/focusedPG and both cache retirement jobs reaped. Root session11073 owns fresh fullcaseR2.",
+              "ownership": "Root fullcase11073 reaped1/audited and tutorial31197 reaped0/audited; no local build/test/engine/cleanup runtime active. Sol owns source/capture-only final-stage diagnosis in authorworktree.",
               "preserved_cases": [
                 "acceptance-renewal-known-r1: original fixture FAIL",
                 "acceptance-renewal-known-r2: PASS",
                 "acceptance-renewal-held-r1: PASS",
-                "acceptance-closed-r1: NOT_RUN; no runtime allocated"
+                "acceptance-closed-r1: NOT_RUN; no runtime allocated",
+                "acceptance-closed-r2:10PASS1FAIL at history/export startup observation; terminal custody verified",
+                "acceptance-tutorial-r1:7PASS; same-product installedtutorial and terminal custody verified"
               ],
               "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction",
               "source_and_artifact_binding": "Productf5/acceptance3eef; assemblyf7/candidate24d6887f. Linked Index report owns exact receipts and original failures.",
-              "next": "Join fullcase11073 and audit exact terminal custody; on PASS run same-product outside-checkout tutorial, otherwise preserve/classify original failure."
+              "next": "Follow reviewed history-item funding product7d8, native45878 now running; original f5fullcaseFAIL/tutorialPASS remain preserved.",
+              "history_item_funding": {
+                "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                "acceptance": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "product_worktree": ".research/initial-history-items-product-qualified-20261029",
+                "acceptance_worktree": ".research/initial-history-items-acceptance-qualified-20261029",
+                "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-7d8e5998",
+                "native_session": {
+                  "session_id": 45878,
+                  "source": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                  "owner": "381ed476af154af29a7f4beee6b9fca4",
+                  "container": "7aad7c83df80781b47c23d5a31ddf0567262c70180167a8107afc521984692ec",
+                  "launcher_pid": 840823,
+                  "launcher_start_ticks": "2240614",
+                  "status": "REAPED",
+                  "exit_code": 0
+                },
+                "cache": "115 released after parent24282 and observer42138, independently reacquired and original4pinsverified; no compiler borrower active.",
+                "status": "NATIVE_PARENT_OBSERVER_REAPED_PASS_FRESH_FULLCASE95624_RUNNING",
+                "owner": "Root solelauncher/integrator; allagenttasks complete, no autonomous delegatedruntime. Candidate0303 assembled fromYb74 forX7d8; originalf5failure/tutorial retained.",
+                "details": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction.history_item_funding",
+                "installed_root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998",
+                "installed_session": {
+                  "session_id": 24282,
+                  "source": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                  "owner": "5cc3ca5f17a5fc4505c6517d00fe72ca",
+                  "container": "120c877d7c9739bc540024b3d1fcd0e733edd08f8bf3e5ffe4ef1475f7d8ea68",
+                  "launcher_pid": 855353,
+                  "launcher_start_ticks": "2339005"
+                },
+                "active_case": {
+                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1",
+                  "session": 95624,
+                  "runner": 861884,
+                  "start_ticks": 2445287,
+                  "scope": "Root owns fresh full installedcase. No build or cleanup active."
+                }
+              }
             }
           }
         },
@@ -76773,6 +76811,54 @@
           "receipt": ".research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/seed-build-layer-space-inspection.json",
           "sha256": "ecc921068e5f5a68c1e69ec4a3bb36cbbca1d016a4b7b68f0e30a994ebaee11c",
           "scope": "Five already inventoried seed buildcontainers only, all read-only/stopped/PID0/noOOM;143360B total writable layers. SharedSizeRootFs not reclaimable percontainer. Seed targets mostly retained proofELFs; CargoHomes only0.683GB. No mutation, no widersearch."
+        },
+        "derived_bundle_copy_retirement": {
+          "status": "COMPLETE_REDUNDANT_UNPACKINGS_RETIRED",
+          "session": 66547,
+          "exit_code": 0,
+          "proposal": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/retained-bundle-copy-proposal.json",
+          "proposal_sha256": "e880c2f7ef400c3596f0402454766d19e65795ee027bd3639cb6d16a9255547e",
+          "journal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/retired-bundle-copies-20261029.json",
+          "journal_sha256": "6ad0b800e6d5c1454937e1887f15a387ce16b723e245d4cea7e4e6a4d626e0ad",
+          "operations": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/retired-bundle-copies-20261029.jsonl",
+          "operations_sha256": "95ab393583b8d5f10c5f597febe90c95c2ee1f81b98e77b8fd86353245397735",
+          "case_count": 17,
+          "files": 391,
+          "retired_allocated_bytes": 3884785664,
+          "free_after": 73870065664,
+          "cache_lock": "released",
+          "preserved": "Every candidate archive/manifest, build/probe/native6pins, database, input, originalfailedstore, logs, worktrees, originalterminalreceipts and source. Only verified redundant decompressions selected.",
+          "restoration": "Recreate each bundle and extract its retained candidate archive, using proposal archiveSHA and all23fileSHA/modes to verify before historicalaudit/reuse.",
+          "warning": "The17 old case bundle directories are retired cache copies. Restore the matching retained candidate archive before reusing those exact paths or rerunning a historical custody audit. All original results, terminal receipts, source, logs and database stores remain intact. No unique byte was deleted.",
+          "usage_scope": "Accessible process mappings/descriptors plus all live Docker mounts; denied observations are not claimed absent",
+          "usage_permission_denials": {
+            "exe": 429,
+            "cwd": 429,
+            "maps": 40,
+            "fd": 429
+          }
+        },
+        "derived_native_asset_copy_retirement": {
+          "status": "COMPLETE_DUPLICATE_NATIVE_ASSETS_RETIRED",
+          "session": 35077,
+          "exit_code": 0,
+          "journal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/retired-old-native-asset-copies-20261029.json",
+          "journal_sha256": "d3061774b798d3155cc81e4d62fb542b891448ea4791db4836aa16c58de11309",
+          "files": 30,
+          "old_installed_roots": 6,
+          "retired_allocated_bytes": 1022926848,
+          "free_after": 72307937280,
+          "cache_lock": "released",
+          "preserved": "All worker/product/test/probe executables, shared nativeinput bundle, candidates, databases, logs, source and unique evidence. Only30 old derived asset copies selected; new7d8 artifacts excluded.",
+          "restoration": "Extract each recorded archive member into old parent out/build, then restore recorded original mode0644 (candidate archive mode0444) and verify SHA before historicalaudit/reuse.",
+          "preflight_note": "Original preparation refused before any journal/lock/unlink because buildasset mode0644 differs from readonly packaged mode0444. Content identity proved; both modes now explicitly recorded, not treated as equal.",
+          "usage_scope": "Accessible process mappings/descriptors plus all live Docker mounts; denied observations are not claimed absent",
+          "usage_permission_denials": {
+            "exe": 427,
+            "cwd": 427,
+            "maps": 40,
+            "fd": 427
+          }
         }
       }
     }

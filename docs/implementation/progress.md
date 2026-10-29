@@ -1,149 +1,131 @@
 # Current execution checkpoint
 
-2026-10-29, Tux. **Goal ACTIVE.** Complete P00–P10/M1–M5 and every selected
-optional requirement. The earlier bounded M1 journey is qualified; the complete
+2026-10-29, Tux. **Goal ACTIVE.** Complete P00–P10/M1–M5 and all selected
+optional requirements. The earlier bounded M1 journey is qualified; the complete
 product remains incomplete. Q37/Q38/Q40/Q41/Q42 apply. No official release,
 package publication or production deployment is authorized.
 
-## Current source and integration
+## Source and integration
 
-Public main remains `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before
-this checkpoint is `1b6af3d9`, thirteen commits ahead. Only this checkpoint, the
-existing Index report and inventory are pending changes. No reclamation code or
-fixture is integrated on main. Keep the next main integration/push around the
-complete bounded capability and its required real hosted run.
+Public main is `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before this checkpoint is
+`1947ef2f`, fourteen commits ahead. This update changes the checkpoint, existing
+Index report and inventory. Reclamation code is not integrated on main.
+Public pending-work backup `work/closed-reclamation` reachesYb74 after the
+recorded zero-finding incremental scan of two commits/seven blobs/132963bytes.
+Keep the next main integration/push around the qualified bounded capability.
 
-Frozen product: `f5aad2c1114bbd6c4b84d4141153ae27e65c5af7`, tree
-`469121943ba693402cd5f26492a792af008a96f0`, apps
-`00df067b194e33aa1c8f01bfd86a2808a5caff0e`, worktree
-`.research/initial-renewal-stop-product-qualified-20261029`, branch
-`work/initial-renewal-stop-product-qualification`.
+Frozen product X: `7d8e5998b0d37fdff68e25704e9812481e56f2dd`, tree
+`dba9e50504b994c72f27577edcb0858f549f19cf`, apps
+`9725e15e307dba0bf56ad31e77b07a746f262b84`, worktree
+`.research/initial-history-items-product-qualified-20261029`, branch
+`work/initial-history-items-product-qualification`.
 
-Frozen acceptance: `3eef0bf69f78f8d53ab6fc061eb781fd44e3674b`, worktree
-`.research/initial-renewal-stop-baseline-qualified-20261029`, branch
-`work/initial-renewal-stop-baseline-qualification`. Author
-`.research/closed-reclamation-20261029` / `work/closed-reclamation` is clean at3eef.
-It merges reviewed baseline5fbf into reviewed gate/source binding f7; all eight
-compiled-input objects remain productf5. Candidate assembly remainsf7, distinct
-from executing acceptance3eef. Public pending-work backup now includes3eef after
-an incremental zero-finding exposure scan (three commits/five blobs/191720bytes).
-No product code is integrated on main and no new build is needed for verifier-only
-changes. All earlier frozen sources and original failures remain preserved.
+Frozen acceptance Y: `b74c25080c35fbc092259abd4d644b72c6e9a39e`, worktree
+`.research/initial-history-items-acceptance-qualified-20261029`, branch
+`work/initial-history-items-acceptance-qualification`. Author
+`.research/closed-reclamation-20261029` / `work/closed-reclamation` is clean atY.
+Y changes only the reviewed tutorial product/apps/label and matching document
+literal; normalized helper AST and nine Nostr paths are unchanged, profile control
+passes. All compiled inputs remain X. Product, assembly and acceptance identities
+must remain separate; no new candidate is assembled yet.
 
-## Completed evidence and actual failures
+## Current capability and evidence
 
-The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
 `live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction`,
-owns exact receipts, original failures, source bindings and review boundaries.
+owns original failures, source bindings, reviews and detailed receipts.
 
-- Sourcef5 critical review0f420878 is closed. Explicit initialized maintenance
-  renewal collects the same SQL stage under one original deadline/authority,
-  then returns typed Stopping before the next stage/due/delivery/dispatch.
-  Startup, external Archive/native, successor and generic HTTP/unknown outcomes
-  retain their fail-stop paths. Original efd R1's exact cancelled await is UNKNOWN.
-- Actual native74929 passes Clippy, application/library build, test compilation
-  and **240 controls/37 groups (136 library,104 binary)**, retaining all237 prior
-  controls and adding three. Application receipt247364e7 and separate exact
-  worker singleton receipt4b8c9898 independently bind source/compiler/assets/
-  execution and terminal custody. No ignored worker test is accepted.
-- Fresh parent2817 passes (receipt3676008a); fresh observer46209 passes
-  (receipt5f889615). Both are stopped/reaped0/no OOM, cache released. Candidate
-  manifest SHA256 `24d6887f24cfb90a6728325be124209833f6b5f46a43f97ba271395dfd2dfbbb`
-  is assembled once from f7 with productf5 and verified worker/native binding.
-- PG gate77ab reviewff4cb2fe is closed for query/transaction incarnation, actual
-  driver/source binding and scoped known/held oracles. Its held schedule proves
-  refusal while SQL remains held; exact deadline/no budget reset is proved by
-  the Rust controls, not inferred from container teardown.
-- **Known PG66320 is FAIL:5PASS/1FAIL, cleanupPASS.** It fails before the controlled
-  SIGTERM because the fixture incorrectly assumes zero producer requests after
-  initialization. Unchanged dictionaries.rs independently defines request1's
-  bootstrap mappings and request2's private mapping; the actual saved baseline
-  contains those two requests and zero jobs. Correction5fbf validates that baseline
-  and still requires exact before/after preservation, including the Ingest row's
-  xmin. Original raw failure and the initial malformed-negative unit ERROR are
-  preserved; seven corrected controls and capture replay pass. Delta review09b70093
-  is closed, applied in3eef, and the fresh real schedules below now pass.
+On previous productf5, actual native240/37, separate worker singleton, fresh parent/
+observer, both focused PG renewal schedules and installed tutorial7/7 pass.
+Fullcase11073 passes closed64 reclamation, native/SQL interruption controls,
+compacted epoch2 successor, both consumers and exact Archive/Index retries, but
+ends **10PASS/1FAIL** at history/export startup observation. Its terminal audit
+and tutorial31197 verify all owned processes/containers joined, pins and empty
+borrowed bridge. All original failures, including older efd/c656 outcomes, remain
+unaltered. These results do not qualify the new X product.
 
-- Fresh **known84530 and held45923 each pass all6stages** on the same f5 candidate.
-  Known proves original SQL collection, closed admission, no next-stage effects,
-  native close and committed Control release. Held produces the required refusal
-  with no positive release. Terminal receipts e0ccf093/6599bd89 each verify all15
-  containers stopped/PID0/no OOM, two recorded PIDs and255/251command PIDs absent,
-  thirty pins and exact bridgeempty. Product exit4 is the declared held-case
-  negative expectation, not a reclassification of any earlier failure.
+The last failure exposes a confirmed product accounting defect: ordinary reader
+budget41/42 cannot retain67 selected input grants. The saved100 observations in
+6.220692s are all unavailable/dependency_unavailable; they do not identify the
+precise inner refusal or exclude another cause. X adds the existing MAX_BATCHES128
+to only that item lane, yielding169/170. Byte/native/control/process/host caps,
+readiness, custody, cancellation and joins are unchanged. Critical contractb86ce92b
+and final review14f3e723 are closed without blockers. A new real-ledger Rust
+control covers67/128, count/byte/native/control refusal and close/drop/drain.
+Actual native45878 now passes241/38 (136library,105binary), including that control
+and all240 prior cases; separate worker compiled/executed exact1/0ignored passes.
+Receipts c18c8ee5/87e01ff2 independently bind source/compiler/assets/terminal.
+Eight verifier controls and original-capture refusal remain valid. No observation
+bound or other oracle was relaxed. Installed runtime qualification remains pending.
 
-Prior efd fullcase10694 remains5PASS/1FAIL/5NOT_RUN at the initial orderly stop;
-its same-product tutorial40501 passes7/7. Earlier c656 R5 passes the independent
-322-scientific-row/67-native-commit comparison, then fails Archive exact retry.
-These distinct scopes do not qualify f5's pending PG/fullcase/tutorial journeys.
-The report retains all earlier verifier corrections and failures without copying
-that history into this checkpoint.
+## Active operation and resources
 
-## Processes, custody and next action
+**Root fullcase session95624 is running, NOT QUALIFIED.** Runner861884,
+start2445287; external evidence:
+`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1`.
+Its sibling session capsule pins X7d8/Yb74 and candidate SHA256
+`0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76`.
+The original f5R2 FAIL remains; all inputs/oracles and limits are unchanged.
 
-Root session11073 runs fresh fullcase `acceptance-closed-r2` (runner644303,
-start2054671), not yet qualified. Native74929, parent2817 and
-observer46209 and both focused PG schedules are reaped/audited. Original known
-PG66320 remains FAIL with terminal53057d2c and its protected stores/logs retained.
-The external current parent is
-`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1`;
-`acceptance-renewal-known-r1`, `acceptance-renewal-known-r2` and
-`acceptance-renewal-held-r1` retain distinct evidence. The [inventory](../research/laboratory-inventory.json)
-owns detailed resource custody.
+Native45878 is reaped0/noOOM after632.222s, independently audited, worker ELF
+retained and original four pins unchanged. Parent24282 passes its actual worker/
+binary/source/terminal audit (receipt2eaa8871); observer42138 passes the maintained
+artifact validator against that parent and candidate (receipt4c417827). Both are
+reaped0/noOOM and cache released/reacquired. Assembly29075 passes from Y; product
+stays X. Exact receipts are in the existing qualification prefix, respectively
+`r27-7d8e5998-native`, `installed-7d8e5998` and `observer-7d8e5998`.
 
-FullcaseR1 is **NOT_RUN**: the maintained cheap preflight requires **67GiB**
-(65GiB reserve plus2GiB ClickHouse allowance); root had considered only65GiB.
-No runtime was allocated or threshold changed. Original result/terminalf573cdae
-are retained. The Index report owns exact failure classification and counts.
+Sol/xhigh preparation and Astra/xhigh's resource review are complete. The new
+before-lock guard review found two missing receipt/run/file bindings; corrected
+reviewbf54d274 is closed, original false positives retained and31 discriminating
+controls PASS. Root bound actual audited receipts before serial builds. No agent,
+compiler, observer-build or cleanup job is active; root owns the sole installed
+suite. Cache115 is released.
 
-Two bounded cache115 lots recover2,773,737,472B net. Sessions80833/44815 are
-reaped0/cache released; the inventory links exact manifests and durable journals.
-185 historical ELFs have verified gzip backups, two have external copies;
-1540 compiler intermediates are reconstructible. Shared/native build objects,
-registry, original/current qualified artifacts and all data/logs/worktrees remain.
-Future Rust changes may require recompiling retired intermediates. Five old seed
-layers offered no useful space and were left intact; no cleanup is active.
+The [inventory](../research/laboratory-inventory.json) owns resource custody and
+exact retirement journals. Two cache115 lots recover2,773,737,472B net: historical
+ELF bytes have verified backups, compiler intermediates are reconstructible.
+A further17 redundant unpacked bundles/391files recover3,884,785,664B; all contents
+and modes were checked against retained candidate archives. **Restore a retired
+bundle from its recorded archive before historical path reuse/custody audit.**
+A final30 old native asset copies recover1,022,926,848B; exact bytes remain in
+those candidate archives, with original0644 versus packaged0444 modes recorded
+for restoration. New7d8 assets, shared native inputs, all application/worker/test/
+probe executables, databases, original failure data/logs and source/worktrees are
+preserved. Native Rust intermediates were rebuilt; keep the restored compiler
+cache and prefer verified derived copies for later space recovery. Free72,187,854,848B
+passed the unchanged67GiB floor before fullcase95624. No cleanup is active.
 
-Free72,064,016,384B passed the maintained67GiB floor before fullcaseR2 launch;
-same source3eef/productf5/candidate24d6887f/observer and limits. No other test or
-source build is active.
-
-Compiler cache115 is released; original four ELF pins remain unchanged. Borrowed
-bridge `bigbrotr-m1-0f80280_default` /
+Borrowed bridge `bigbrotr-m1-0f80280_default` /
 `1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f` is retained.
-Preserve databases, `.research`, worktrees, original failures and unique data.
-The targeted old1a2 cache check found it already retired, with zero additional
-reclaimable bytes; no cleanup was expanded or performed.
+The maintained full Index case needs **more than67GiB**, tutorial65GiB. Earlier
+fullcaseR1 is preserved NOT_RUN after root incorrectly considered only the base
+65GiB reserve. Documentation gate64460 passes all3checks on clean1947ef2f; its
+prior clean-source prerequisite refusal remains NOT_RUN.
 
-Sol/xhigh coordinator and operational author are verified; Astra/xhigh performs
-only bounded critical changes when required; all current source/fixture reviews
-are closed. Sol's bounded space inspection is complete. Root alone integrates and
-launches. Q37/Q38 are already reconciled in questions.md/agent-handoff.md.
+## Next action and remaining scope
 
-**Next:** join fullcase11073 and independently audit its terminal custody. Preserve
-and classify any failure; on PASS run the
-same-product outside-checkout tutorial. Reuse240/worker/PG/build/observer proofs.
-Integrate on main only after complete bounded qualification and custody, then
-obtain the required real hosted checks for the meaningful main revision.
+**Next:** join fullcase95624 and audit its terminal custody with the existing
+generic auditor. Preserve/classify any failure. On PASS run the same-product
+outside-checkout tutorial, then integrate the qualified capability on main and
+obtain real hosted checks for that meaningful revision. Reuse unaffected evidence;
+a verifier-only change does not require a product rebuild.
 
-## Remaining scope
+P02-T02/T06 Steps4/7 own the current request65/native science/consumers/retry/
+history/export closure. Replacement committed before current frontier binding
+remains required P02-T04 Step4/P02-T06 Step7/P08 work: proposala90aef4c is saved,
+NOT_IMPLEMENTED/NOT_RUN. Scalable30s freshness/Ready65, OPEN>64/sliding GC,
+arbitrary epochs, payload GC, Archive all-family fallback/replay leases and full
+capacity/recovery remain open. Code202/query retirement, a99 Sync startup and the
+earlier topology HTTP429 uncertainty remain linked in the report.
 
-P02-T02/T06 Steps4/7 own request65, exact native science, finite/live consumers,
-Archive retry and signed history/export. Replacement committed before its current
-frontier binding remains required P02-T04 Step4/P02-T06 Step7/P08 recovery work;
-proposala90aef4c is saved, NOT_IMPLEMENTED/NOT_RUN, not an added current gate.
-Scalable30s freshness/Ready65, OPEN>64/sliding GC, arbitrary epochs, payload GC,
-Archive all-family fallback/replay leases and full capacity/recovery remain open.
-
-Code202/query retirement, a99 Sync startup and the earlier topology HTTP429
-uncertainty remain linked in the report. Admission cost, ClickHouse decoding/
-transport and coordinator maintenance retain their P02-T02/T06/T09 and P01-T05
-owners. Portable maintained harness/clean-checkout delivery remains P01-T08,
-P08-T11/T12 and P10-T08/T10. Every later selected phase remains required.
+Admission cost, ClickHouse decoding/transport and coordinator maintenance retain
+their P02-T02/T06/T09 and P01-T05 owners. Maintained harness/clean-checkout delivery
+remains P01-T08, P08-T11/T12 and P10-T08/T10; all later selected phases are required.
 
 [Hosted run40814795307](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40814795307)
-passes all30 selected checks on three platforms for public5cc, as recorded in the
+passes all30 selected checks on three platforms for public5cc; see the
 [hosted report](evidence/p01-ci-hosted-foundation-20261026.json). It does not qualify
 newer source. No hosted watcher/dispatch is active. Retain cold/default/shipping/
-platform checks; dependency-byte reuse is unimplemented and duplicate equal-input
-C++ compilation is unproven.
+platform checks; dependency-byte reuse remains unimplemented and duplicate
+equal-input C++ compilation is unproven.

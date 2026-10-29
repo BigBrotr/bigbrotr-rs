@@ -2645,7 +2645,7 @@
             "custody": "All18containers stopped0/PID0/noOOM; runner/two actual clients/783commandPIDs absent,28pins/exactbridgeempty/errors[]. Auditor operator initially supplied incorrect starttick argument and refused; rerun reads recorded actual capsule exactly, no predicate/source/result changes."
           },
           "initial_stop_correction": {
-            "status": "NATIVE_AND_FOCUSED_REAL_PG_KNOWN_HELD_PASS_FULLCASE_R2_RUNNING",
+            "status": "FULLCASE_R2_LAST_HISTORY_EXPORT_FAIL_EARLIER_CAPABILITY_GATES_PASS",
             "critical_contract": ".research/closed-reclamation-20261029/.research/efd8-initial-stop-diagnosis-20261029/critical-contract.json",
             "sha256": "45384bf1743057dc4e339592a4623f004f76900797592503da74679bbaac3127",
             "owner": "ci_followthrough_sol, author WT work/closed-reclamation after8e43; root sole launch/integration",
@@ -2836,7 +2836,7 @@
               "terminal_sha256": "f573cdae20237500e705a58d524a2a8f43ed55693879a1e9a674e3bf86441ad8"
             },
             "fullcase_r2": {
-              "status": "RUNNING_NOT_QUALIFIED",
+              "status": "FAIL_PRESERVED_TERMINAL_CUSTODY_VERIFIED",
               "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2",
               "session": 11073,
               "runner": {
@@ -2852,7 +2852,255 @@
               "space_retirement": "docs/research/laboratory-inventory.json#implementation_index_foundation_20261026.resume_20261028.closed_reclamation.cache115_compiler_intermediate_retirement",
               "scope": "Fresh complete closed reclamation after maintained67GiB floor restored. R1 NOT_RUN preserved; identical product/source/candidate/nativeobserver/limits.",
               "launch_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2-session.json",
-              "launch_capsule_sha256": "530d0348c1da7d0dd1f3a1d08a9aef4184b244eadc8035afa53b22eadbb36dff"
+              "launch_capsule_sha256": "530d0348c1da7d0dd1f3a1d08a9aef4184b244eadc8035afa53b22eadbb36dff",
+              "exit_code": 1,
+              "counts": {
+                "collected": 11,
+                "executed": 11,
+                "failed": 1,
+                "skipped": 0,
+                "not_run": 0
+              },
+              "stages": {
+                "first_launch_prerequisites": "PASS",
+                "first_launch_candidate": "PASS",
+                "first_launch_runtime_image": "PASS",
+                "first_launch_fresh_bootstrap": "PASS",
+                "first_launch_signed_acquisition": "PASS",
+                "first_launch_index_publication": "PASS",
+                "first_launch_closed_reclamation": "PASS",
+                "first_launch_compacted_successor": "PASS",
+                "first_launch_compacted_consumers": "PASS",
+                "first_launch_compacted_history_export": "FAIL",
+                "first_launch_cleanup": "PASS"
+              },
+              "failure": {
+                "stage": "compacted_history_export",
+                "error_type": "ValueError",
+                "reason": "startup observation bound",
+                "traceback": [
+                  {
+                    "file": "tests/acceptance/cases/first_launch.py",
+                    "line": 1121,
+                    "function": "first_launch"
+                  },
+                  {
+                    "file": "tests/acceptance/cases/first_launch_retained.py",
+                    "line": 687,
+                    "function": "compacted_history_export"
+                  },
+                  {
+                    "file": "tests/acceptance/cases/first_launch_index_baseline.py",
+                    "line": 51,
+                    "function": "startup_client"
+                  },
+                  {
+                    "file": "tests/acceptance/cases/first_launch_index_baseline.py",
+                    "line": 71,
+                    "function": "startup_quiescence"
+                  },
+                  {
+                    "file": "tests/acceptance/cases/first_launch.py",
+                    "line": 57,
+                    "function": "require"
+                  }
+                ]
+              },
+              "classification": "PRODUCT accounting defect confirmed: reader management budget41/42 cannot retain67 selected receipt input grants. The100 saved observations are all unavailable/dependency_unavailable within6.220692s. Source/capture proof identifies this necessary defect without claiming the precise uninstrumented inner failure or excluding other causes. Original overallFAIL remains.",
+              "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2/root-terminal.json",
+              "terminal_sha256": "4e86f9c343024d0bcf3463c5dc631bd901cbe3920a899fa33a097cb9639c5ac1",
+              "custody": {
+                "containers": {
+                  "total": 55,
+                  "compose": 36,
+                  "native_observer": 19,
+                  "exit_codes": {
+                    "0": 49,
+                    "4": 6
+                  }
+                },
+                "recorded_processes_absent": 25,
+                "command_pids_absent": 5940,
+                "acceptance_files_verified": 64,
+                "bridge_endpoints": 0
+              },
+              "limits": "Ten stagePASS includes closedGC64,compacted epoch2 successor,Archive/Index consumers and exact retries. OverallFAIL remains; history/export not qualified. No Ready65/scalablefreshness or unboundreplacement recovery claim."
+            },
+            "tutorial_r1": {
+              "status": "PASS_TUTORIAL_TERMINAL_CUSTODY_VERIFIED",
+              "session": 31197,
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-tutorial-r1",
+              "runner": {
+                "pid": 815811,
+                "start_ticks": 2117787
+              },
+              "product": "f5aad2c1114bbd6c4b84d4141153ae27e65c5af7",
+              "acceptance": "3eef0bf69f78f8d53ab6fc061eb781fd44e3674b",
+              "candidate_manifest_sha256": "24d6887f24cfb90a6728325be124209833f6b5f46a43f97ba271395dfd2dfbbb",
+              "scope": "Independent same-product installed outside-checkout tutorial; f5/3eef/candidate24d6887f unchanged. FullcaseR2 original last-stage failure is preserved and not qualified by this tutorial.",
+              "exit_code": 0,
+              "counts": {
+                "collected": 7,
+                "executed": 7,
+                "failed": 0,
+                "skipped": 0,
+                "not_run": 0
+              },
+              "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-tutorial-r1/root-terminal.json",
+              "terminal_sha256": "3ceddcbcfe77b0caefb2987560c7d4b08ae5afe2271eebd95e4a88825192bd95",
+              "custody": {
+                "containers": {
+                  "total": 18,
+                  "compose": 18,
+                  "native_observer": 0,
+                  "exit_codes": {
+                    "0": 18
+                  }
+                },
+                "processes_absent": 3,
+                "command_pids_absent": 779,
+                "source_pins": 28,
+                "bridge_endpoints": 0
+              },
+              "limits": "Same-product installed tutorial only; does not qualify fullcase history/export, whole M1/M5 or broader readiness/capacity gates."
+            },
+            "history_item_funding": {
+              "status": "NATIVE_PARENT_OBSERVER_PASS_FRESH_FULLCASE_RUNNING",
+              "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+              "product_tree": "dba9e50504b994c72f27577edcb0858f549f19cf",
+              "apps_tree": "9725e15e307dba0bf56ad31e77b07a746f262b84",
+              "product_worktree": ".research/initial-history-items-product-qualified-20261029",
+              "acceptance": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+              "acceptance_worktree": ".research/initial-history-items-acceptance-qualified-20261029",
+              "contract": {
+                "path": "/home/tux/bigbrotr-rs/.research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/critical-history-item-contract-f5aad2c1.json",
+                "sha256": "b86ce92b716545f7fa3c025b013a74a70762f59e6f55c917962680a6080405f6"
+              },
+              "review": {
+                "path": "/home/tux/bigbrotr-rs/.research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/critical-history-item-review-7d8e5998.json",
+                "sha256": "14f3e7233e16bd6dd3ea55c4418fbfa1ed2b5cc0ab5f794c18f3c82bf8dc4eb3",
+                "status": "CLOSED_NO_BLOCKER"
+              },
+              "author_receipt": {
+                "path": "/home/tux/bigbrotr-rs/.research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/history-item-author-receipt.json",
+                "sha256": "7c157d1b7a7450f5b6d6db6eb589161b60c6b789812191bba08695922cd65aae"
+              },
+              "change": "Reader-only checked addition of the existing MAX_BATCHES128 to item lane:169/170 with optional cursor; non-reader35/36 unchanged. Shared2GiB data, native/control/process/host caps and all custody/cancellation/currentness/join/probe paths unchanged.",
+              "controls": "Actual ResourceBudget/OwnedPermit regression passes in native45878 for67/128 cohort retention, legacy41/42 count refusal with bytes available, item/byte/native/control excess and close/drop/drain. Actual241/38(136library105binary) retain all240 prior controls. Eight verifier controls and originalcapture refusal replay PASS; startup bound/timeout/oracles unchanged. Installed real history/export stillNOT_RUN on this product.",
+              "tutorial_binding": {
+                "status": "PROFILE_CONTROL_PASS_RUNTIME_NOT_RUN",
+                "source_receipt": "/home/tux/bigbrotr-rs/.research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/history-items-tutorial-rebind-source.json",
+                "source_receipt_sha256": "c5bb0966e14674b716910f7a16cb4633f42af187681fcaafe91e9bb204041469",
+                "critical_carry_forward": "14f3e723;9Nostrpaths/7othercodeobjects unchanged, normalized helper AST equal except product/apps/label literals; one existing profile positive/negative controlPASS"
+              },
+              "native": {
+                "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-7d8e5998",
+                "evidence": ".research/initial-index-recovery-qualification-20261028/r27-7d8e5998-native",
+                "session": {
+                  "session_id": 45878,
+                  "source": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                  "owner": "381ed476af154af29a7f4beee6b9fca4",
+                  "container": "7aad7c83df80781b47c23d5a31ddf0567262c70180167a8107afc521984692ec",
+                  "launcher_pid": 840823,
+                  "launcher_start_ticks": "2240614",
+                  "status": "REAPED",
+                  "exit_code": 0
+                },
+                "expected_controls": 241,
+                "expected_groups": 38,
+                "source_files": 2433,
+                "source_manifest_sha256": "0e323fadf1e1beb1ec391fb87642283ffdeaa324aef5ccf01baeb7162eb0f4c7",
+                "source_archive_sha256": "2aeac405ad8a2b5c5ef627eeb93a235f7003307ee2da4119e726e1bc6ec8da9e",
+                "preparation_sha256": "5cb68e48e9ad8e87730f2c202889d81bb728da4208684b80750691c8ee258218",
+                "input_admission_sha256": "1f26ea0dc839d443ed81dbadaa9b759ad7d1db877d0a8b0feb4f49459eb7da45",
+                "cache_lock": "Released after actual native; borrowed next by installed24282",
+                "exit_code": 0,
+                "elapsed_seconds": 632.2220248679987,
+                "actual_controls": 241,
+                "actual_groups": 38,
+                "library": 136,
+                "binary": 105,
+                "receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/r27-7d8e5998-native/receipt.json",
+                "receipt_sha256": "c18c8ee5e2322fcdbfb348a81081292f792135c34515be3a44b2c4311fe25436",
+                "worker_receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/r27-7d8e5998-native/worker-receipt.json",
+                "worker_receipt_sha256": "87e01ff2ee57525a3fff258c05c02a148257f2c94190477f7ca274e85e1bbadc",
+                "cache_terminal_pins_sha256": "6c78fda8063e2a4deb8e9b32443d94a4983fb9fbcd84b9b1f25b3146d32abdba"
+              },
+              "next": "Join fullcase95624 and audit terminal custody using existinggeneric auditor; preserve/classify failures. On PASS run same-product tutorial then integrateboundedcapability/main andrealhostedchecks. Newinstalled history/export notqualified untilactualresult.",
+              "qualification_guard_review": {
+                "status": "CLOSED_CORRECTED_GUARDS_REAL_PINS_BOUND",
+                "original_findings": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7d8e5998/critical-guard-review-original.json",
+                "original_sha256": "9655a76545c648c3ee85768d0531acc617e34cc2deed05ddc32e961557fb37cb",
+                "corrected_review": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7d8e5998/critical-guard-review-corrected.json",
+                "corrected_sha256": "bf54d274998ba49476ab48f06f337bc27193886e95572dc939eaff07efc3418f",
+                "controls": "Original20 synthetic controls preserved as limited evidence;31 updated controls include reproducing2 oldfalsepositives and rejecting them afterfix. Rootboundactualauditednativeapp/worker only after review.",
+                "binding": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7d8e5998/prepared-input-admission.json",
+                "binding_sha256": "6cb35652336792e43fced9d5bd3e8c16cfab8588e3b1bc937b61435771303cf4"
+              },
+              "installed_build": {
+                "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998",
+                "session": {
+                  "session_id": 24282,
+                  "source": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                  "owner": "5cc3ca5f17a5fc4505c6517d00fe72ca",
+                  "container": "120c877d7c9739bc540024b3d1fcd0e733edd08f8bf3e5ffe4ef1475f7d8ea68",
+                  "launcher_pid": 855353,
+                  "launcher_start_ticks": "2339005"
+                },
+                "scope": "Actual fresh worker-before-parent maintained build; source/compiler/assets/worker binding and terminal/cacherelease audited. Installed runtime qualification is separate.",
+                "exit_code": 0,
+                "receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-7d8e5998/build-receipt.json",
+                "receipt_sha256": "2eaa887117a3efbb0cb62fb3b3f0c3a79d47abb0977c398d63a6de3c61022cd5",
+                "elapsed_seconds": 150.31362266900032,
+                "cache": "released; parent worker/binary/source metadata audited"
+              },
+              "observer": {
+                "status": "PASS_DECLARED_NATIVE_OBSERVER_BUILD",
+                "session": 42138,
+                "exit_code": 0,
+                "receipt": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/observer-7d8e5998/receipt.json",
+                "receipt_sha256": "4c4178274fd5fd8fcab363be088238498e43749a0e6d11e1de48b46a0c6410ed",
+                "elapsed_seconds": 75.15752456100017,
+                "source_files": 2433,
+                "elf_sha256": "1d8d6fd7715068b282105b2bb78f1a3faaa497b8eed2bdd5c411ad2741d69364",
+                "scope": "Actual maintained probe compiled and artifactvalidated againstcandidate0303/qualifiedparent; terminal0/PID0/noOOM/launcherabsent, cache released/reacquired, original4pins preserved. No engine opened by audit."
+              },
+              "candidate": {
+                "status": "PASS_CANDIDATE_ASSEMBLY_NOT_RELEASE",
+                "session": 29075,
+                "exit_code": 0,
+                "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                "assembly": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "manifest": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/candidate/candidate-manifest.json",
+                "manifest_sha256": "0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76"
+              },
+              "publication": {
+                "status": "PENDING_WORK_BRANCH_PUSH_VERIFIED",
+                "revision": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "branch": "work/closed-reclamation",
+                "source_scan_review_sha256": "8998cf4519027165280b393b1db159f348322fe39c9c5de82d382bf67eecd563",
+                "scope": "New2commits/7blobs/132963bytes,0credential/sensitive/raw/LFS candidates. Main remains5cc; no Actionsrun for this branch revision. Details .research/ci-publication-20261026/source-reclamation-b74c2508-20261029."
+              },
+              "fullcase_r1": {
+                "status": "RUNNING_NOT_QUALIFIED",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1",
+                "session": 95624,
+                "runner": {
+                  "pid": 861884,
+                  "start_ticks": 2445287
+                },
+                "launch_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998/acceptance-closed-r1-session.json",
+                "launch_capsule_sha256": "999a34fff8af4cc4166752374e3439cfc10f6662b155e6a393cb9ab780a39088",
+                "product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
+                "acceptance": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "assembly": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
+                "candidate_manifest_sha256": "0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76",
+                "free_bytes_before": 72187854848,
+                "required_floor_bytes": 71940702208,
+                "scope": "Fresh whole installed closed64/recovery/successor/consumer/history/export path after reviewed item-funding fix. Originalf5R2 last-stage FAIL remains; no oracle/bounds changed."
+              }
             }
           },
           "unbound_replacement_followup": {
