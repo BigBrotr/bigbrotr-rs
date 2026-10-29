@@ -188,7 +188,7 @@ impl ControlSession {
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
             &mut lease,
-            policy,
+            bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
         .map_err(|_| IndexError::Unavailable)?;
@@ -200,7 +200,7 @@ impl ControlSession {
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
             &mut lease,
-            policy,
+            bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
         .map_err(|_| IndexError::Unavailable)?;
