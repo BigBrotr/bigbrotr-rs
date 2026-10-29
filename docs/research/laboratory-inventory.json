@@ -73439,7 +73439,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "407022 on exact5b SUCCESS; all30 selected checks PASS. Earlier8cf failure and0e cancellation remain preserved.",
+    "status": "40814795307 on exact5cc9cbb1 SUCCESS; all30 selected checks PASS. Original failures, cancellations and excluded scopes remain preserved.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -73449,8 +73449,8 @@
     },
     "custody": "Protected ignored audit/raw diagnostics. Public summaries contain no matched credential values. No runtime containers or datasets created by this CI reconciliation.",
     "retention": "Keep audit scope/scanner identities, original hosted failure reports and corrected-run evidence. No historical lab/data cleanup.",
-    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40702272536",
-    "latest_hosted_source": "5b6716991d65f45388b0586abec01d558c488155",
+    "latest_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40814795307",
+    "latest_hosted_source": "5cc9cbb188378093f97d64f3e51ff11444934b98",
     "correction_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/rocks-clippy-correction/source-receipt.json",
       "sha256": "c593697080001c8d699a1b898f957949922e9310f1e73ff5ee80d5989564a8d8"
@@ -73466,9 +73466,9 @@
       "macos": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/run-40363410510-macos/result.json"
     },
     "latest_exposure_check": {
-      "path": ".research/ci-publication-20261026/run-40684555941-exposure/receipt.json",
-      "sha256": "b0948e864b7d4604ef1da3a08ca4eee6f0bab83ae98f2574e6d4fbe016ab6b88",
-      "scope": "Four artifacts/512members,33logmembers;54known nonsecret occurrences/5fingerprints,0new/unclassified/provideralerts. Asynchronous/exhaustive absence not claimed."
+      "path": ".research/ci-publication-20261026/run-40814795307-exposure/receipt.json",
+      "sha256": "352e039b96fe2906794623f70a9183f8c177849f8097da00ac09a127ccb88dff",
+      "scope": "Four artifacts/513members,34logmembers;54 known non-secret occurrences/five fingerprints,0new/unclassified/operational/provideralerts. Bounded pattern/provider scope; no asynchronous/exhaustive absence claim."
     },
     "superseded_branch_retirement": {
       "original": "17de200de05a9ae093ecd51b002ee06a3055c59d",
@@ -73962,13 +73962,13 @@
       "resources": "Originalwatch94369reaped1 andbothprocessidentitiesabsent. All4providerZIPs/logs retained; interruptedcommands lackpostcheckproof."
     },
     "latest_verified_run": {
-      "root": ".research/ci-publication-20261026/run-40716894776-exposure",
-      "source": "17cc122842adeac646c2fa5e12fb17fedd8b40ff",
-      "receipt_sha256": "c7cfe0ee2fa864610d79e2d11187568cfbdfee1060d23b5d9af1cd597e893c67",
-      "root_review_sha256": "8d410a71381ce30760d7b19b2bc397bd6bd346a792f3dc1a1a235d660b76fcd9",
+      "root": ".research/ci-publication-20261026/run-40814795307-exposure",
+      "source": "5cc9cbb188378093f97d64f3e51ff11444934b98",
+      "receipt_sha256": "352e039b96fe2906794623f70a9183f8c177849f8097da00ac09a127ccb88dff",
+      "ordinary_review_sha256": "a8d933f95e43e11b308df14fe1258c5a3b367d214263219c130814b34c3f6c26",
       "status": "PASS_SELECTED_SCOPE",
-      "resources": "Watcher52214 reaped0;driver457240/watcher457241 absent. Four provider ZIPs/logs retained;no engine created.",
-      "limits": "30 selected checks PASS;dedicated ignored probes and5macOSplatformSKIP remainNOT_RUN/SKIP;existing hosted report owns details."
+      "resources": "Watcher15729 reaped0; driver1524296/start662844522 and gh1524297/start662844523 absent. Early60207/63143 and terminal20136 reaped0; two completed platform ZIPs reused. Four artifacts and attempt1 logs retained; no engine/container created.",
+      "limits": "All30 selected checks, native210/34groups per platform and exact282 Python source controls qualified; mac276PASS+6SKIP and dedicated ignored/cfg exclusions remain explicit. Newer local common-wait source and installed/product/release gates remain separate."
     },
     "verification_in_progress": null,
     "run_40702272536": {
