@@ -22,7 +22,7 @@ def successor_client(self, output, entry):
     return startup_client(self,output,entry,successor=self.provenance)
 
 
-def startup_client(self, output, entry, *, successor=None, client_home=None, retained_compacted_epoch2=False):
+def startup_client(self, output, entry, *, successor=None, client_home=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
     require(successor is None or type(successor) is bool, 'closed startup client profile')
     home,seconds,label = (self.home,40,'ordinary-client') if successor is None else (output,30,'successor-history-client')
     assert type(retained_compacted_epoch2) is bool
@@ -48,6 +48,7 @@ def startup_client(self, output, entry, *, successor=None, client_home=None, ret
             options=dict(successor=successor,session_path=(None if client_home is None and successor is None else
                 home/('export-session.private' if successor is None else 'read-session.private')))
             if retained_compacted_epoch2:options['retained_compacted_epoch2']=True
+            if retained_archive_schedule!='unbound-publication-loss':options['retained_archive_schedule']=retained_archive_schedule
             startup = startup_quiescence(self,output/'startup',entry,before,phase_deadline,**options)
             require(time.monotonic() < phase_deadline, 'startup observation consumed original client window')
             (home/'ordinary-setup.continue').write_text('completed full startup probe independently checked\n')
@@ -61,7 +62,7 @@ def startup_client(self, output, entry, *, successor=None, client_home=None, ret
             save(output/(label+'-process.json'),dict(pid=client.pid,argv=command,limit_seconds=seconds,status='joined',exit_code=client.returncode))
 
 
-def startup_quiescence(self, output, entry, historical, deadline, *, successor=None, session_path=None, retained_compacted_epoch2=False):
+def startup_quiescence(self, output, entry, historical, deadline, *, successor=None, session_path=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
     output.mkdir(mode=0o700)
     parent = process_identity(self.inspect(entry)['State']['Pid'])
     require(parent is not None, 'actual startup Control process')
@@ -77,7 +78,7 @@ def startup_quiescence(self, output, entry, historical, deadline, *, successor=N
                 and cap['reason'] == 'not_observed' for cap in value['capabilities']):
             state,catalog = self.capture(output,'complete')
             clock_after = ShortPinRuntime.bounded_sql(self,'bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint',deadline)
-            oracle.ordinary_roles(value,state,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2)
+            oracle.ordinary_roles(value,state,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
             if oracle.startup_reader_pending(historical,state,successor=successor,retained_compacted_epoch2=retained_compacted_epoch2):
                 require(process_identity(parent['pid']) == parent and time.monotonic() < deadline,
                         'startup reader pending outside original authority/deadline')
@@ -89,7 +90,7 @@ def startup_quiescence(self, output, entry, historical, deadline, *, successor=N
                 time.sleep(.05)
                 continue
             worker = ShortPinRuntime.worker(self,parent,allow_absent=True)
-            owner = oracle.ordinary_startup(historical,state,value,clock_before,clock_after,worker,successor=successor,retained_compacted_epoch2=retained_compacted_epoch2)
+            owner = oracle.ordinary_startup(historical,state,value,clock_before,clock_after,worker,successor=successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
             require(process_identity(parent['pid']) == parent and time.monotonic() < deadline, 'same startup parent within original deadline')
             save(output/'verdict.json',dict(status='PASS',probe='complete',operation_cache='empty',
                 capabilities='building/not_observed',parent=parent,worker=worker,

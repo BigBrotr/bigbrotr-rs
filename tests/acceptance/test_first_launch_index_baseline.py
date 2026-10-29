@@ -1,5 +1,6 @@
 """Closed startup-quiescence and unchanged-deadline controls; no engines."""
 import copy
+from itertools import product
 import json
 import os
 from pathlib import Path
@@ -59,26 +60,71 @@ def successor_observation(provenance=True):
     return before,after,roles,start,end,worker
 
 
-def retained_observation():
+def retained_observation(*, archive_schedule='unbound-publication-loss'):
     before,after,roles,start,end,worker=successor_observation()
+    assert archive_schedule in ('uninterrupted','unbound-publication-loss','grouped-publication-loss')
+    grouped=archive_schedule=='grouped-publication-loss'
     for state in (before,after):
         # Baseline2 -> compacted bridge3 -> completed frontier4. Intent3 is
-        # retained but absent; native replacement4 and later intents publish.
+        # retained but absent; the declared native replacement and later intents publish.
         consumer=state['consumers'][0];catalog=consumer['consumer_id'];consumer['current_revision']=4
         state['archive_frontier_snapshots'][0].update(frontier_revision=4,snapshot_id=68,
             **dict(zip(restart.COUNTS,[73,62,62,62,63])))
         for row in state['consumer_frontiers']:
             row.update(frontier_revision=4,last_complete_sequence=312 if row['owner_epoch']==1 else 10)
         example=state['archive_attempts'][0]
-        state['archive_attempts']=[dict(example,attempt_id='retained-'+str(n),ordinal=n) for n in range(1,69)]
+        state['archive_attempts']=[dict(example,attempt_id='retained-'+str(n),ordinal=n) for n in range(1,70 if grouped else 69)]
         state['archive_frontier_batches']=[dict(consumer_id=catalog,frontier_revision=4,attempt_id='retained-'+str(n))
-                                          for n in [1,2,*range(4,69)]]
+                                          for n in ([1,2,*range(5,70)] if grouped else [1,2,*range(4,69)])]
     after['snapshot_leases'][-1]['frontier_revision']=after['archive_snapshot_pins'][-1]['frontier_revision']=4
     for claim in after['retention_claims'][-2:]:claim['last_sequence']=312 if claim['owner_epoch']==1 else 10
     return before,after,roles,start,end,worker
 
 
 class BaselineControls(unittest.TestCase):
+    def test_grouped_startup_preserves_all69_issued_but_selects_only_native67(self):
+        options=dict(retained_compacted_epoch2=True,retained_archive_schedule='grouped-publication-loss')
+        for successor in (None,True):
+            values=retained_observation(archive_schedule='grouped-publication-loss')
+            self.assertEqual(oracle.ordinary_startup(*values,successor=successor,**options)['epoch'],2)
+            for label,mutate in {
+                    'omitted-failed-B':lambda pg:pg['archive_attempts'].pop(3),
+                    'selected-failed-B':lambda pg:pg['archive_frontier_batches'][2].update(attempt_id='retained-4'),
+                    'wrong-snapshot':lambda pg:pg['archive_frontier_snapshots'][0].update(snapshot_id=69),
+                    'wrong-science':lambda pg:pg['archive_frontier_snapshots'][0].update(dictionary_count=74),
+                    'wrong-cut':lambda pg:pg['consumer_frontiers'][0].update(last_complete_sequence=311),
+                    'missing-claim':lambda pg:pg['retention_claims'].pop(),
+                    'unjoined-claim':lambda pg:pg['retention_claims'][-1].update(state='active'),
+            }.items():
+                changed=copy.deepcopy(values);mutate(changed[1])
+                with self.subTest(successor=successor,label=label),self.assertRaises(AssertionError):
+                    oracle.ordinary_startup(*changed,successor=successor,**options)
+            for schedule in ('unbound-publication-loss','uninterrupted','unknown'):
+                with self.subTest(schedule=schedule),self.assertRaises(AssertionError):
+                    oracle.ordinary_startup(*values,successor=successor,retained_compacted_epoch2=True,
+                        retained_archive_schedule=schedule)
+            with self.assertRaises(AssertionError):
+                oracle.ordinary_startup(*values[:5],{'pid':123},successor=successor,**options)
+        with self.assertRaises(AssertionError):
+            oracle.startup_selection(startup_observation()[1],retained_archive_schedule='grouped-publication-loss')
+
+    def test_grouped_completed_probe_uses_the_shared_roles_and_startup_barrier(self):
+        before,after,roles,start,end,_=retained_observation(archive_schedule='grouped-publication-loss')
+        for successor in (None,True):
+            with self.subTest(successor=successor),tempfile.TemporaryDirectory() as directory:
+                parent=dict(pid=123,start_ticks=456)
+                runtime=Mock();runtime.inspect.return_value=dict(State=dict(Pid=123,Running=True))
+                runtime.capture.return_value=(after,{})
+                with patch.object(baseline,'process_identity',return_value=parent), \
+                        patch.object(baseline.time,'monotonic',return_value=0), \
+                        patch.object(ShortPinRuntime,'bounded_sql',side_effect=[start,end]), \
+                        patch.object(ShortPinRuntime,'roles',return_value=roles), \
+                        patch.object(ShortPinRuntime,'worker',return_value=None):
+                    result=baseline.startup_quiescence(runtime,Path(directory)/'startup',{},before,1,
+                        successor=successor,retained_compacted_epoch2=True,retained_archive_schedule='grouped-publication-loss')
+                self.assertEqual(result[0],after)
+                self.assertEqual(result[-1]['epoch'],2)
+
     def test_retained_startup_requires_the_complete67_batch_cut_and_two_joined_claims(self):
         for successor in (None,True):
             values=retained_observation()
@@ -96,7 +142,9 @@ class BaselineControls(unittest.TestCase):
             with self.assertRaises(AssertionError):oracle.ordinary_startup(*values[:5],{'pid':123},successor=successor,retained_compacted_epoch2=True)
 
     def test_retained_clients_use_the_explicit_home_and_original40_or30_seconds(self):
-        for successor,seconds,session in ((None,40,'export-session.private'),(True,30,'read-session.private')):
+        for (successor,seconds,session),schedule in product(
+                ((None,40,'export-session.private'),(True,30,'read-session.private')),
+                ('unbound-publication-loss','uninterrupted','grouped-publication-loss')):
             with tempfile.TemporaryDirectory() as temporary:
                 output=Path(temporary);home=output/'client';home.mkdir()
                 (home/'ordinary-setup.json').write_text(json.dumps(dict(phase='setup',started_ns=10_000_000_000,deadline_ns=40_000_000_000)))
@@ -106,9 +154,11 @@ class BaselineControls(unittest.TestCase):
                 with patch.object(baseline.subprocess,'Popen',return_value=child) as spawn,patch.object(baseline,'stop_process'), \
                         patch.object(baseline.time,'monotonic',return_value=10),patch.object(baseline,'startup_quiescence',return_value=({'complete':True},)) as observe:
                     self.assertEqual(baseline.startup_client(owner,output,{},successor=successor,client_home=home,
-                        retained_compacted_epoch2=True),{'complete':True})
+                        retained_compacted_epoch2=True,retained_archive_schedule=schedule),{'complete':True})
                 self.assertEqual(spawn.call_args.args[0][-1],str(home))
-                self.assertEqual(observe.call_args.kwargs,dict(successor=successor,session_path=home/session,retained_compacted_epoch2=True))
+                expected=dict(successor=successor,session_path=home/session,retained_compacted_epoch2=True)
+                if schedule!='unbound-publication-loss':expected['retained_archive_schedule']=schedule
+                self.assertEqual(observe.call_args.kwargs,expected)
                 child.wait.assert_called_once_with(timeout=seconds)
     def test_successor_startup_requires_both_exact_claims_and_same_fresh_owner(self):
         for provenance in (True,False):
