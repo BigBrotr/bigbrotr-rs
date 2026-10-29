@@ -436,11 +436,15 @@ cleanup record and PASS/FAIL/NOT_RUN/SKIPPED, with requiredness.
   a missing binary, skipped engine or empty workload cannot pass.
 - [ ] **Step 6:** Add finite diagnostic waits and deterministic coordination signals; avoid
   interpreting a short quiet sleep as proof that all schedules are safe.
-  The first-launch `Runtime.wait` currently accepts a positive predicate before
-  checking its deadline and child liveness. The live-Index phase must enforce its
-  own shared absolute deadline now; reconcile the common helper and its caller
-  contracts before harness closure, with late-positive/dead-child controls and
-  targeted affected journeys. Do not turn late observations into an overall PASS.
+  The common first-launch `Runtime.wait` correction at `9ebd27b3` checks its
+  deadline before/after predicates and after required process inspection, including
+  positive results. Independent boundary controls reject the old late/dead behavior;
+  all 208 affected Python controls and the 16-stage installed live journey pass.
+  Critical review reconciled all 37 callsites across ten owners; supplied processes
+  remain live until later release. The qualification root retains
+  `acceptance-waits-live-r1/root-terminal.json`. This closes that concrete defect;
+  the step's wider deterministic-coordination duties remain open. The live Index
+  proof still uses its own actual child deadline, rather than resetting phase time.
 - [ ] **Step 7:** **Practical P01-T08:** intentionally remove one required executable, break
   a fixture expectation and interrupt the runner. Expect NOT_RUN/failing release
   status, FAIL on wrong output, and cleanup only of recorded owned resources.

@@ -76312,7 +76312,24 @@
           "status": "All remain FAIL; exact counts, immutable receipt hashes, scoped corrections and critical reviews are in the owning report. Installed attempts are audited terminal, with owned containers stopped, runner/client identities absent and borrowed bridge empty."
         },
         "scope": "R4 all 16 installed stages PASS; native 210/34 groups, fresh build, finite 15 and tutorial 7 PASS at their own scopes. No active engine/compiler/watcher. Wider remaining guarantees stay in the owning report.",
-        "retention": "Protected original source inputs/state/databases/captures/logs/worktrees and R1/R2/R3 failures retained. Public records contain compact identity/scope/receipt references, not raw credential-bearing captures."
+        "retention": "Protected original source inputs/state/databases/captures/logs/worktrees and R1/R2/R3 failures retained. Public records contain compact identity/scope/receipt references, not raw credential-bearing captures.",
+        "common_wait_requalification": {
+          "status": "PASS_ALL16_STAGES_WITH_REVIEWED_COMMON_WAIT",
+          "acceptance_revision": "9ebd27b399fa0bb9eeb8949eb8b954693b19ddea",
+          "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+          "candidate_manifest_sha256": "7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb",
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-waits-live-r1/root-terminal.json",
+            "sha256": "f93f6c58a55bf04e688dba870707ee7090fa817ae3fbf9d5a045669ad32be1c5"
+          },
+          "critical_review": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-common-wait-9ebd27b3.json",
+            "sha256": "be436d4b277994ec3ec831ba602d7b3cb78ea173692838a7c9b43882af3f1e30"
+          },
+          "controls": "208 affected Python controls PASS; six new methods discriminate exact old helper in five boundary methods while retaining in-bound success. Full author/log evidence in .research/first-launch-waits-20261029/.research/wait-guard-controls.",
+          "resources": "Session82237 reaped0; all30 exact owned containers exited0/PID0/noOOM, five recorded PIDs absent, exhaustive path/label process check empty, borrowed bridge empty. No rebuild/assembly, data or artifact deletion.",
+          "scope": "Closes P01-T08 Step6 concrete common-wait late/dead-positive defect, not the wider coordination task. Source/product scopes and original failures remain unchanged."
+        }
       }
     }
   },
