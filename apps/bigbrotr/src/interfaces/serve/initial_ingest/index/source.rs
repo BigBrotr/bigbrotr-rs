@@ -97,13 +97,14 @@ impl<'a> Source<'a> {
     pub(super) async fn require_current(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
         cancelled: &AtomicBool,
     ) -> Result<()> {
         if let Self::Live { writer, .. } = self {
             control
-                .require_live_index_source(session, state.custody(), writer, cancelled)
+                .require_live_index_source(session, state.custody(), writer, lease, cancelled)
                 .await
                 .map_err(|_| failed("current live source authority unavailable"))?;
         }
@@ -112,6 +113,7 @@ impl<'a> Source<'a> {
     pub(super) async fn prepare(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
         cancelled: &AtomicBool,
@@ -139,6 +141,7 @@ impl<'a> Source<'a> {
                         planned.source(),
                         &commit,
                         writer,
+                        lease,
                         cancelled,
                     )
                     .await
@@ -146,9 +149,11 @@ impl<'a> Source<'a> {
         }
         .map_err(|_| failed("PG plan preparation failed"))
     }
+    #[allow(clippy::too_many_arguments)]
     pub(super) async fn publish(
         &self,
         control: &mut ControlSession,
+        lease: &mut PolicyLeaseTracker,
         session: &IndexSession,
         state: &IndexState,
         cancelled: &AtomicBool,
@@ -171,6 +176,7 @@ impl<'a> Source<'a> {
                         proof,
                         &commit,
                         writer,
+                        lease,
                         cancelled,
                     )
                     .await

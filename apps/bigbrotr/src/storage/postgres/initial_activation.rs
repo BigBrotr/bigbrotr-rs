@@ -4,7 +4,9 @@ use super::*;
 use crate::{
     runtime::{
         OwnedPermit,
-        policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
+        policy_authority::{
+            ActionWindow, AuthorityClock, LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl,
+        },
     },
     storage::rocks::{
         manifest::IngestManifest,
@@ -596,46 +598,64 @@ fn check(
     }
 }
 
+pub(super) fn check_index_delivery<C: AuthorityClock>(
+    lease: &mut PolicyLeaseTracker<C>,
+    epoch: PolicyEpoch,
+    action: &mut Option<ActionWindow<C>>,
+    cancelled: &AtomicBool,
+) -> Result<(), OwnerError> {
+    if cancelled.load(Ordering::Acquire)
+        || lease.check_delivery(epoch).is_err()
+        || action
+            .as_mut()
+            .is_some_and(|window| window.check().is_err())
+    {
+        return Err(OwnerError::Unavailable);
+    }
+    Ok(())
+}
+
 impl LiveInitialWriter {
     /// Fresh borrowed native/canonical proof for this actual live owner. No
     /// pre-activation sequence stamp is renewed or promoted into live authority.
     pub(super) async fn require_index_basis(
         &self,
         tx: &Transaction<'_>,
+        lease: &mut PolicyLeaseTracker,
+        action: &mut Option<ActionWindow>,
         cancelled: &AtomicBool,
     ) -> Result<(), OwnerError> {
         if self.check.is_some() != self.handoff().compacted_floor().is_some() {
             return Err(OwnerError::InvalidMetadata);
         }
+        let epoch = self.manifest().identity().policy_epoch;
+        check_index_delivery(lease, epoch, action, cancelled)?;
         if let Some(check) = &self.check {
-            let id = self.manifest().identity();
-            let ttl = PolicyLeaseTtl::new(Duration::from_secs(30))
-                .map_err(|_| OwnerError::InvalidInput)?;
-            let mut lease = PolicyLeaseTracker::new(
-                id.dataset_id,
-                id.process_incarnation,
-                id.policy_epoch,
-                ttl,
-            )
-            .map_err(|_| OwnerError::Unavailable)?;
-            let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
-            let remaining = self.binding.require(tx).await?;
-            lease
-                .complete_refresh(
-                    &ticket,
-                    LeaseResponse {
-                        dataset: id.dataset_id,
-                        process_incarnation: id.process_incarnation,
-                        policy_epoch: id.policy_epoch,
-                        ttl: Duration::from_secs(30).min(Duration::from_micros(remaining)),
-                    },
+            // Only the owning SQL operation may retain this nonrenewable cap.
+            // Waiting for the authenticated owner lookup consumes its lifetime.
+            let pending = if action.is_none() {
+                Some(
+                    lease
+                        .begin_action(epoch)
+                        .map_err(|_| OwnerError::Unavailable)?,
                 )
-                .map_err(|_| OwnerError::Unavailable)?;
+            } else {
+                None
+            };
+            let remaining = self.binding.require(tx).await?;
+            if let Some(pending) = pending {
+                *action = Some(
+                    pending
+                        .complete(Duration::from_micros(remaining))
+                        .map_err(|_| OwnerError::Unavailable)?,
+                );
+            }
+            check_index_delivery(lease, epoch, action, cancelled)?;
             check
-                .require_live_initial(tx, self, &mut lease, id.policy_epoch, cancelled)
+                .require_live_initial(tx, self, lease, epoch, cancelled)
                 .await
                 .map_err(|_| OwnerError::Unavailable)?;
         }
-        Ok(())
+        check_index_delivery(lease, epoch, action, cancelled)
     }
 }

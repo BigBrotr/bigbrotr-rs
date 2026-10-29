@@ -1,6 +1,9 @@
 //! PG coordination only. All physical evidence enters through proofs.rs.
 use super::super::LiveInitialWriter;
 use super::{proofs::*, *};
+use crate::runtime::policy_authority::{
+    ActionWindow, AuthorityClock, PolicyLeaseTracker, SuspendAwareClock,
+};
 use crate::storage::rocks::store::PendingBatch;
 use bigbrotr_model::{CompleteThrough, Sequence, StreamBound, StreamId, TopologyGeneration};
 use std::sync::atomic::AtomicBool;
@@ -10,6 +13,61 @@ mod handoff_adapter;
 
 const SCHEMA: u32 = 41;
 const NOW: &str = "SELECT (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint";
+
+// The owning SQL operation retains this borrow and its first owner cap through
+// COMMIT/ROLLBACK acknowledgement. A later canonical check cannot replace it.
+struct LiveIndexRequest<'a, C: AuthorityClock = SuspendAwareClock> {
+    lease: &'a mut PolicyLeaseTracker<C>,
+    // The writer's activation policy stays pinned; this borrowed tracker still
+    // belongs to the actual Control owner, not the retained native incarnation.
+    epoch: bigbrotr_model::PolicyEpoch,
+    cancelled: &'a AtomicBool,
+    action: Option<ActionWindow<C>>,
+}
+impl<'a, C: AuthorityClock> LiveIndexRequest<'a, C> {
+    fn new(
+        lease: &'a mut PolicyLeaseTracker<C>,
+        epoch: bigbrotr_model::PolicyEpoch,
+        cancelled: &'a AtomicBool,
+    ) -> Self {
+        Self {
+            lease,
+            epoch,
+            cancelled,
+            action: None,
+        }
+    }
+    fn check(&mut self) -> Result<(), IndexError> {
+        super::super::initial_activation::check_index_delivery(
+            self.lease,
+            self.epoch,
+            &mut self.action,
+            self.cancelled,
+        )
+        .map_err(owner)
+    }
+}
+impl LiveIndexRequest<'_> {
+    async fn require_basis(
+        &mut self,
+        writer: &LiveInitialWriter,
+        tx: &Transaction<'_>,
+    ) -> Result<(), IndexError> {
+        writer
+            .require_index_basis(tx, self.lease, &mut self.action, self.cancelled)
+            .await
+            .map_err(owner)
+    }
+}
+fn check_live_delivery(
+    live: &mut Option<(&LiveInitialWriter, LiveIndexRequest<'_>)>,
+) -> Result<(), IndexError> {
+    if let Some((_, live)) = live {
+        live.check()?;
+    }
+    Ok(())
+}
+
 fn pg(_: tokio_postgres::Error) -> IndexError {
     IndexError::Backend
 }
@@ -330,6 +388,7 @@ impl ControlSession {
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
         writer: &LiveInitialWriter,
+        lease: &mut PolicyLeaseTracker,
         cancelled: &AtomicBool,
     ) -> Result<PreparedIndexPlan, IndexError> {
         self.prepare_index_plan_in(
@@ -338,7 +397,10 @@ impl ControlSession {
             plan,
             pending,
             commit_started,
-            Some((writer, cancelled)),
+            Some((
+                writer,
+                LiveIndexRequest::new(lease, writer.manifest().identity().policy_epoch, cancelled),
+            )),
             None,
         )
         .await
@@ -374,11 +436,11 @@ impl ControlSession {
         plan: &IndexPlan,
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
-        live: Option<(&LiveInitialWriter, &AtomicBool)>,
+        mut live: Option<(&LiveInitialWriter, LiveIndexRequest<'_>)>,
         compacted: Option<&CompactedIndexRequest<'_>>,
     ) -> Result<PreparedIndexPlan, IndexError> {
         valid_session(self, session, custody)?;
-        if let Some((writer, _)) = live
+        if let Some((writer, _)) = &live
             && writer
                 .index_source()
                 .map_err(|_| IndexError::Conflict)?
@@ -396,6 +458,7 @@ impl ControlSession {
         {
             return Err(IndexError::Conflict);
         }
+        check_live_delivery(&mut live)?;
         self.begin_operation().map_err(owner)?;
         let tx = application_transaction(&mut self.client, SCHEMA)
             .await
@@ -404,7 +467,7 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
-        require_live_plan(&tx, session, live, plan).await?;
+        require_live_plan(&tx, session, live.as_mut(), plan).await?;
         if let Some(source) = compacted {
             source.require(&tx, session).await?;
         }
@@ -416,7 +479,9 @@ impl ControlSession {
             }
             require_session(&tx, session).await?;
             proofs::live(&plan.binding, custody)?;
+            check_live_delivery(&mut live)?;
             tx.rollback().await.map_err(pg)?;
+            check_live_delivery(&mut live)?;
             self.available = true;
             return Ok(PreparedIndexPlan { plan: plan.clone() });
         }
@@ -434,18 +499,21 @@ impl ControlSession {
         tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
             .await
             .map_err(pg)?;
-        require_live_plan(&tx, session, live, plan).await?;
+        require_live_plan(&tx, session, live.as_mut(), plan).await?;
         if let Some(source) = compacted {
             source.require(&tx, session).await?;
         }
         require_session(&tx, session).await?;
         proofs::live(&plan.binding, custody)?;
+        check_live_delivery(&mut live)?;
         commit_started.set(true);
         tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
+        check_live_delivery(&mut live)?;
         proofs::live(&plan.binding, custody)?;
         if self.client.is_closed() {
             return Err(IndexError::Unavailable);
         }
+        check_live_delivery(&mut live)?;
         self.available = true;
         Ok(PreparedIndexPlan { plan: plan.clone() })
     }
@@ -481,6 +549,7 @@ impl ControlSession {
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
         writer: &LiveInitialWriter,
+        lease: &mut PolicyLeaseTracker,
         cancelled: &AtomicBool,
     ) -> Result<IndexPublicationReceipt, IndexError> {
         self.publish_index_plan_in(
@@ -489,7 +558,10 @@ impl ControlSession {
             prepared,
             proof,
             commit_started,
-            Some((writer, cancelled)),
+            Some((
+                writer,
+                LiveIndexRequest::new(lease, writer.manifest().identity().policy_epoch, cancelled),
+            )),
             None,
         )
         .await
@@ -525,7 +597,7 @@ impl ControlSession {
         prepared: &PreparedIndexPlan,
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
-        live: Option<(&LiveInitialWriter, &AtomicBool)>,
+        mut live: Option<(&LiveInitialWriter, LiveIndexRequest<'_>)>,
         compacted: Option<&CompactedIndexRequest<'_>>,
     ) -> Result<IndexPublicationReceipt, IndexError> {
         valid_session(self, session, custody)?;
@@ -534,6 +606,7 @@ impl ControlSession {
             return Err(IndexError::Conflict);
         }
         let engine = proofs::publication(plan, custody, proof)?;
+        check_live_delivery(&mut live)?;
         self.begin_operation().map_err(owner)?;
         let tx = application_transaction(&mut self.client, SCHEMA)
             .await
@@ -542,7 +615,7 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
-        require_live_plan(&tx, session, live, plan).await?;
+        require_live_plan(&tx, session, live.as_mut(), plan).await?;
         if let Some(source) = compacted {
             source.require(&tx, session).await?;
         }
@@ -559,7 +632,9 @@ impl ControlSession {
             // observation time. A historical read grants no physical readiness.
             require_session(&tx, session).await?;
             proofs::live(&plan.binding, custody)?;
+            check_live_delivery(&mut live)?;
             tx.rollback().await.map_err(pg)?;
+            check_live_delivery(&mut live)?;
             self.available = true;
             return Ok(receipt);
         }
@@ -579,18 +654,21 @@ impl ControlSession {
         tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
             .await
             .map_err(pg)?;
-        require_live_plan(&tx, session, live, plan).await?;
+        require_live_plan(&tx, session, live.as_mut(), plan).await?;
         if let Some(source) = compacted {
             source.require(&tx, session).await?;
         }
         require_session(&tx, session).await?;
         proofs::publication(plan, custody, proof)?;
+        check_live_delivery(&mut live)?;
         commit_started.set(true);
         tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
+        check_live_delivery(&mut live)?;
         proofs::live(&plan.binding, custody)?;
         if self.client.is_closed() {
             return Err(IndexError::Unavailable);
         }
+        check_live_delivery(&mut live)?;
         self.available = true;
         Ok(IndexPublicationReceipt {
             binding: plan.binding,
@@ -704,10 +782,10 @@ impl ControlSession {
 async fn require_live_plan(
     tx: &Transaction<'_>,
     session: &IndexSession,
-    live: Option<(&LiveInitialWriter, &AtomicBool)>,
+    live: Option<&mut (&LiveInitialWriter, LiveIndexRequest<'_>)>,
     plan: &IndexPlan,
 ) -> Result<(), IndexError> {
-    if let Some((writer, cancelled)) = live {
+    if let Some((writer, live)) = live {
         writer
             .binding
             .require_store(writer.native.store(), session.issuer)
@@ -722,10 +800,7 @@ async fn require_live_plan(
             return Err(IndexError::Conflict);
         }
         writer.binding.require(tx).await.map_err(owner)?;
-        writer
-            .require_index_basis(tx, cancelled)
-            .await
-            .map_err(owner)?;
+        live.require_basis(writer, tx).await?;
     }
     Ok(())
 }
@@ -1055,3 +1130,7 @@ fn cut(
     }
     SourceCut::new(dataset, topology, bounds).map_err(|_| IndexError::Conflict)
 }
+
+#[cfg(test)]
+#[path = "authority_tests.rs"]
+mod authority_tests;

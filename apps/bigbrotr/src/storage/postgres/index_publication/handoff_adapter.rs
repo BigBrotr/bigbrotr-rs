@@ -47,6 +47,7 @@ impl ControlSession {
         session: &IndexSession,
         custody: &HeldIndexCustody,
         writer: &LiveInitialWriter,
+        lease: &mut PolicyLeaseTracker,
         cancelled: &std::sync::atomic::AtomicBool,
     ) -> Result<(), IndexError> {
         valid_session(self, session, custody)?;
@@ -55,6 +56,9 @@ impl ControlSession {
             .require_store(writer.native.store(), self.identity)
             .map_err(owner)?;
         writer.index_source().map_err(|_| IndexError::Conflict)?;
+        let mut live =
+            LiveIndexRequest::new(lease, writer.manifest().identity().policy_epoch, cancelled);
+        live.check()?;
         self.begin_operation().map_err(owner)?;
         let tx = application_transaction(&mut self.client, SCHEMA)
             .await
@@ -63,14 +67,13 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         writer.binding.require(&tx).await.map_err(owner)?;
-        writer
-            .require_index_basis(&tx, cancelled)
-            .await
-            .map_err(owner)?;
+        live.require_basis(writer, &tx).await?;
         require_session(&tx, session).await?;
         binding_matches(&tx, session.binding()).await?;
         proofs::live(session.binding(), custody)?;
+        live.check()?;
         tx.rollback().await.map_err(pg)?;
+        live.check()?;
         self.available = true;
         Ok(())
     }
@@ -171,6 +174,8 @@ impl ControlSession {
                 },
             )
             .map_err(|_| IndexError::Unavailable)?;
+        let mut live = LiveIndexRequest::new(&mut lease, id.policy_epoch, input.cancelled);
+        live.check()?;
         require_session(&tx, session).await?;
         binding_matches(&tx, session.binding()).await?;
         require_recovery_inventory(&tx, session, expected, recovery_digest).await?;
@@ -185,29 +190,28 @@ impl ControlSession {
             .await
             .map_err(pg)?;
         writer.binding.require(&tx).await.map_err(owner)?;
-        writer
-            .require_index_basis(&tx, input.cancelled)
-            .await
-            .map_err(owner)?;
+        live.require_basis(writer, &tx).await?;
         require_session(&tx, session).await?;
         proofs::recovery(session.binding(), custody, recovered)?;
         source
             .observe(input.cancelled)
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
-            &mut lease,
+            live.lease,
             bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
         .map_err(|_| IndexError::Unavailable)?;
+        live.check()?;
         commit_started.set(true);
         tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
+        live.check()?;
         proofs::live(session.binding(), custody)?;
         source
             .observe(input.cancelled)
             .map_err(|_| IndexError::Unavailable)?;
         super::super::super::initial_history::check_delivery::<()>(
-            &mut lease,
+            live.lease,
             bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
             input.cancelled,
         )
@@ -215,6 +219,7 @@ impl ControlSession {
         if self.client.is_closed() {
             return Err(IndexError::Unavailable);
         }
+        live.check()?;
         self.available = true;
         Ok(IndexHandoffReceipt {
             handoff: handoff.clone(),

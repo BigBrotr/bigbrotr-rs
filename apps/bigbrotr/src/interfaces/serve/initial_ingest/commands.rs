@@ -996,7 +996,7 @@ async fn maintain_context(
                     // the same deadline and is drained on a requested stop, as
                     // for Sync, before the parent joins the actual executor.
                     let tick = tokio::time::timeout_at(deadline, index.tick(
-                        state.owner, index::source::Source::from_owner(store)?, deadline.into_std(), &cancellation.requested,
+                        state.owner, &mut state.lease, index::source::Source::from_owner(store)?, deadline.into_std(), &cancellation.requested,
                         !deferred.any(),
                     )).await.map_err(|_| (4, "initial Index deadline; preserve original outcome".into()))??;
                     index_due = Instant::now() + match tick {
