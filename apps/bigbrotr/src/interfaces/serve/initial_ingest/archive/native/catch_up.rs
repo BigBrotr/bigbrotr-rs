@@ -2,7 +2,7 @@
 //! observation grants source protection. The parent owns whole-job admission,
 //! exact PG persistence binding and every blocking job through actual join.
 use super::*;
-use bigbrotr::storage::archive::{ReceiptError, ReceiptObservation, validate_membership_limits};
+use bigbrotr::storage::archive::{ReceiptObservation, validate_membership_limits};
 use bigbrotr_model::Digest256;
 use bigbrotr_protocol::archive_membership::{MembershipObservation, MembershipRead};
 use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
@@ -74,6 +74,14 @@ pub(in crate::interfaces::serve::initial_ingest) enum ReconciledAttempt {
     },
 }
 
+/// A current member must exist; an unbound candidate is only a provisional read
+/// target until its full strict scan succeeds with Present.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(in crate::interfaces::serve::initial_ingest) enum ReplacementMode {
+    CurrentBound,
+    ProvisionalUnbound,
+}
+
 /// Called only inside a retained, joined blocking job. Its closure owns the
 /// borrowed attempt, inputs and reader custody, even when the parent cancels.
 /// The helper does not detach work, release recovered custody early, reconstruct
@@ -84,7 +92,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     receipt: &ArchiveAttemptReceipt,
     attempt: &LocalAttempt,
     inputs: &RetainedInputs,
-    replacement: Option<&ReceiptExpectation>,
+    replacement: Option<(ReplacementMode, &ReceiptExpectation)>,
     reader: &Reader,
     reader_custody: &ReaderCustody,
     coordinator_binding: Digest256,
@@ -93,25 +101,9 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     cancel: &AtomicBool,
 ) -> Result<ReconciledAttempt> {
     let identity = reader_custody.identity();
-    let request = receipt.request();
     let expected = inputs.expectation();
-    if inputs.request() != request
-        || inputs.coordinator_binding() != coordinator_binding
-        || receipt.ordinal != request.ordinal()
-        || request.dataset() != identity.dataset()
-        || request.catalog() != identity.catalog()
-        || expected.dataset_id != request.dataset()
-        || expected.schema_version != 1
-        || expected.record_count == 0
-        || expected.record_count > RECORDS as u64
-        || expected.topology_generation != request.topology_generation()
-        || expected.batch_digest != request.batch_digest()
-        || expected.attempt_id != *request.attempt_id()
-        || expected.publication_ordinal != receipt.ordinal
-    {
-        return Err(error("retained attempt/input identity"));
-    }
-    let read = if let Some(replacement) = replacement {
+    require_retained_identity(receipt, inputs, identity, coordinator_binding)?;
+    let read = if let Some((_, replacement)) = replacement {
         require_replacement(expected, replacement)?;
         replacement
     } else {
@@ -132,13 +124,21 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
             password: std::str::from_utf8(reader.password.as_bytes()).map_err(error)?,
         })
     };
-    // Validate both complete credential-bearing requests, and prepare both
-    // worker/scratch identities, before the resolver can disable a writer.
+    // Validate the original receipt too: a provisional candidate's complete
+    // absence can require that strict read after the resolver disables a writer.
+    // All requests and worker identities precede that lifetime resolution.
     reader
         .route
         .borrowed()
-        .validate_receipt(read, identity, credential()?)
+        .validate_receipt(expected, identity, credential()?)
         .map_err(error)?;
+    if replacement.is_some() {
+        reader
+            .route
+            .borrowed()
+            .validate_receipt(read, identity, credential()?)
+            .map_err(error)?;
+    }
     reader
         .route
         .borrowed()
@@ -193,21 +193,27 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
                 })
                 .await?;
                 let observed = original_observation(
-                    Preparation {
-                        installation: &receipt_worker,
-                        temp_root: &receipt_scratch,
-                        limits,
-                        deadline: deadline.into_std(),
-                        cancelled: cancel,
-                    }
-                    .inspect_receipt_retained(
-                        read,
-                        reader_custody,
-                        &reader.route.borrowed(),
-                        credential()?,
-                        budgets,
-                    ),
-                    replacement.is_some(),
+                    expected,
+                    replacement,
+                    deadline,
+                    cancel,
+                    |read, deadline, cancel| {
+                        Preparation {
+                            installation: &receipt_worker,
+                            temp_root: &receipt_scratch,
+                            limits,
+                            deadline: deadline.into_std(),
+                            cancelled: cancel,
+                        }
+                        .inspect_receipt_retained(
+                            read,
+                            reader_custody,
+                            &reader.route.borrowed(),
+                            credential()?,
+                            budgets,
+                        )
+                        .map_err(error)
+                    },
                 )?;
                 let membership = if require_membership(resolution, observed)? {
                     Some(
@@ -243,8 +249,38 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile_attempt(
     })
 }
 
+/// Check every actual issued request/input binding before selecting a later
+/// expectation. Historical process incarnations belong to their own immutable
+/// requests; only the persistent coordinator binding is common across attempts.
+pub(in crate::interfaces::serve::initial_ingest) fn require_retained_identity(
+    receipt: &ArchiveAttemptReceipt,
+    inputs: &RetainedInputs,
+    identity: &CatalogIdentity,
+    coordinator_binding: Digest256,
+) -> Result<()> {
+    let request = receipt.request();
+    let expected = inputs.expectation();
+    expected.validate().map_err(error)?;
+    if inputs.request() != request
+        || inputs.coordinator_binding() != coordinator_binding
+        || receipt.ordinal != request.ordinal()
+        || request.dataset() != identity.dataset()
+        || request.catalog() != identity.catalog()
+        || expected.dataset_id != request.dataset()
+        || expected.record_count > RECORDS as u64
+        || inputs.headers().len() > RECORDS
+        || expected.topology_generation != request.topology_generation()
+        || expected.batch_digest != request.batch_digest()
+        || expected.attempt_id != *request.attempt_id()
+        || expected.publication_ordinal != receipt.ordinal
+    {
+        return Err(error("retained attempt/input identity"));
+    }
+    Ok(())
+}
+
 /// Same complete batch under a distinct, strictly later attempt identity.
-/// Current frontier membership and original headers are checked by Inventory.
+/// Selection mode and original headers are checked by Inventory.
 pub(in crate::interfaces::serve::initial_ingest) fn require_replacement(
     original: &ReceiptExpectation,
     replacement: &ReceiptExpectation,
@@ -266,20 +302,40 @@ pub(in crate::interfaces::serve::initial_ingest) fn require_replacement(
 }
 
 fn original_observation(
-    observed: std::result::Result<ReceiptObservation, ReceiptError>,
-    replacement: bool,
+    original: &ReceiptExpectation,
+    replacement: Option<(ReplacementMode, &ReceiptExpectation)>,
+    deadline: Instant,
+    cancel: &AtomicBool,
+    mut inspect: impl FnMut(&ReceiptExpectation, Instant, &AtomicBool) -> Result<ReceiptObservation>,
 ) -> Result<ReceiptObservation> {
-    let observed = observed.map_err(error)?;
-    if replacement {
-        // The unchanged full-EOF strict scan of this exact current replacement
-        // also refuses any original/third same-digest receipt or duplicate.
-        if observed != ReceiptObservation::Present {
-            return Err(error("current retained replacement receipt is absent"));
-        }
-        Ok(ReceiptObservation::Absent)
-    } else {
+    let mut observe = |expected: &ReceiptExpectation| {
+        let check = || {
+            if cancel.load(Ordering::Acquire) || Instant::now() >= deadline {
+                Err(error("retained receipt observation cancelled or expired"))
+            } else {
+                Ok(())
+            }
+        };
+        check()?;
+        let observed = inspect(expected, deadline, cancel)?;
+        check()?;
         Ok(observed)
+    };
+    if let Some((mode, expected)) = replacement {
+        // Each call returns only after the actual worker is joined. A successful
+        // full-EOF scan also excludes original/third same-digest collisions.
+        match observe(expected)? {
+            ReceiptObservation::Present => return Ok(ReceiptObservation::Absent),
+            ReceiptObservation::Absent if mode == ReplacementMode::CurrentBound => {
+                return Err(error("current retained replacement receipt is absent"));
+            }
+            ReceiptObservation::Absent => {}
+        }
     }
+    // Only known complete absence of a provisional unbound candidate reaches
+    // this original strict read, under the same admitted job, custody, grants,
+    // absolute deadline and cancellation. Errors never select this fallback.
+    observe(original)
 }
 
 fn require_membership(
@@ -312,6 +368,7 @@ fn finish_observation(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bigbrotr::storage::archive::ReceiptError;
 
     fn expected() -> ReceiptExpectation {
         serde_json::from_value(serde_json::json!({
@@ -354,22 +411,86 @@ mod tests {
 
     #[test]
     fn retained_replacement_requires_present_without_hiding_unknown_or_absent() {
-        assert_eq!(
-            original_observation(Ok(ReceiptObservation::Present), true).unwrap(),
-            ReceiptObservation::Absent
-        );
-        assert!(original_observation(Ok(ReceiptObservation::Absent), true).is_err());
+        let original = expected();
+        let mut replacement = original.clone();
+        replacement.attempt_id = [9; 16];
+        replacement.publication_ordinal = 4;
+        let deadline = Instant::now() + Duration::from_secs(30);
+        let cancel = AtomicBool::new(false);
         for observed in [ReceiptObservation::Present, ReceiptObservation::Absent] {
-            assert_eq!(original_observation(Ok(observed), false).unwrap(), observed);
+            assert_eq!(
+                original_observation(&original, None, deadline, &cancel, |read, _, _| {
+                    assert_eq!(read, &original);
+                    Ok(observed)
+                })
+                .unwrap(),
+                observed
+            );
         }
+        for mode in [
+            ReplacementMode::CurrentBound,
+            ReplacementMode::ProvisionalUnbound,
+        ] {
+            let mut calls = 0;
+            assert_eq!(
+                original_observation(
+                    &original,
+                    Some((mode, &replacement)),
+                    deadline,
+                    &cancel,
+                    |read, _, _| {
+                        calls += 1;
+                        assert_eq!(read, &replacement);
+                        Ok(ReceiptObservation::Present)
+                    },
+                )
+                .unwrap(),
+                ReceiptObservation::Absent
+            );
+            assert_eq!(calls, 1);
+        }
+        let mut calls = 0;
+        assert!(
+            original_observation(
+                &original,
+                Some((ReplacementMode::CurrentBound, &replacement)),
+                deadline,
+                &cancel,
+                |read, _, _| {
+                    calls += 1;
+                    assert_eq!(read, &replacement);
+                    Ok(ReceiptObservation::Absent)
+                },
+            )
+            .is_err()
+        );
+        assert_eq!(calls, 1);
         for error in [
             ReceiptError::ObservationUnknown,
             ReceiptError::TerminationUnknown,
             ReceiptError::ResourceLimit,
             ReceiptError::InvalidInput,
         ] {
-            for replacement in [true, false] {
-                assert!(original_observation(Err(error), replacement).is_err());
+            for mode in [
+                None,
+                Some(ReplacementMode::CurrentBound),
+                Some(ReplacementMode::ProvisionalUnbound),
+            ] {
+                let mut calls = 0;
+                assert!(
+                    original_observation(
+                        &original,
+                        mode.map(|mode| (mode, &replacement)),
+                        deadline,
+                        &cancel,
+                        |_, _, _| {
+                            calls += 1;
+                            Err(super::error(error))
+                        },
+                    )
+                    .is_err()
+                );
+                assert_eq!(calls, 1);
             }
         }
         for resolution in [
@@ -378,14 +499,120 @@ mod tests {
                 disabled_current: false,
             },
         ] {
-            let observed = original_observation(Ok(ReceiptObservation::Present), true).unwrap();
+            let observed = original_observation(
+                &original,
+                Some((ReplacementMode::ProvisionalUnbound, &replacement)),
+                deadline,
+                &cancel,
+                |_, _, _| Ok(ReceiptObservation::Present),
+            )
+            .unwrap();
             assert!(matches!(
                 finish_observation(resolution, observed, None),
                 Ok(ReconciledAttempt::Absent { .. })
             ));
             // The later replacement still takes its ordinary Present/membership path.
-            let observed = original_observation(Ok(ReceiptObservation::Present), false).unwrap();
+            let observed = original_observation(&original, None, deadline, &cancel, |_, _, _| {
+                Ok(ReceiptObservation::Present)
+            })
+            .unwrap();
             assert!(finish_observation(resolution, observed, None).is_err());
+        }
+    }
+
+    #[test]
+    fn provisional_absence_observes_original_under_the_same_deadline_and_cancel() {
+        let original = expected();
+        let mut replacement = original.clone();
+        replacement.attempt_id = [9; 16];
+        replacement.publication_ordinal = 4;
+        let deadline = Instant::now() + Duration::from_secs(30);
+        for observed in [ReceiptObservation::Absent, ReceiptObservation::Present] {
+            let cancel = AtomicBool::new(false);
+            let mut calls = Vec::new();
+            assert_eq!(
+                original_observation(
+                    &original,
+                    Some((ReplacementMode::ProvisionalUnbound, &replacement)),
+                    deadline,
+                    &cancel,
+                    |read, actual_deadline, actual_cancel| {
+                        assert_eq!(actual_deadline, deadline);
+                        assert!(std::ptr::eq(actual_cancel, &cancel));
+                        calls.push(read.attempt_id);
+                        Ok(if read == &replacement {
+                            ReceiptObservation::Absent
+                        } else {
+                            observed
+                        })
+                    },
+                )
+                .unwrap(),
+                observed
+            );
+            assert_eq!(calls, [replacement.attempt_id, original.attempt_id]);
+        }
+        // The original strict scan's unknown/collision cannot become absence.
+        for failure in [
+            ReceiptError::ObservationUnknown,
+            ReceiptError::TerminationUnknown,
+            ReceiptError::ResourceLimit,
+        ] {
+            let cancel = AtomicBool::new(false);
+            let mut calls = 0;
+            assert!(
+                original_observation(
+                    &original,
+                    Some((ReplacementMode::ProvisionalUnbound, &replacement)),
+                    deadline,
+                    &cancel,
+                    |read, _, _| {
+                        calls += 1;
+                        if read == &replacement {
+                            Ok(ReceiptObservation::Absent)
+                        } else {
+                            Err(error(failure))
+                        }
+                    },
+                )
+                .is_err()
+            );
+            assert_eq!(calls, 2);
+        }
+        let cancel = AtomicBool::new(false);
+        let mut calls = 0;
+        assert!(
+            original_observation(
+                &original,
+                Some((ReplacementMode::ProvisionalUnbound, &replacement)),
+                deadline,
+                &cancel,
+                |_, _, cancel| {
+                    calls += 1;
+                    cancel.store(true, Ordering::Release);
+                    Ok(ReceiptObservation::Absent)
+                },
+            )
+            .is_err()
+        );
+        assert_eq!(calls, 1);
+        for (cancelled, expired) in [(true, false), (false, true)] {
+            let cancel = AtomicBool::new(cancelled);
+            let mut called = false;
+            assert!(
+                original_observation(
+                    &original,
+                    Some((ReplacementMode::ProvisionalUnbound, &replacement)),
+                    if expired { Instant::now() } else { deadline },
+                    &cancel,
+                    |_, _, _| {
+                        called = true;
+                        Ok(ReceiptObservation::Absent)
+                    },
+                )
+                .is_err()
+            );
+            assert!(!called);
         }
     }
 
