@@ -569,6 +569,61 @@ class ClosedReclamationControls(unittest.TestCase):
             changed=copy.deepcopy(after);changed['sequence']+=1
             with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,changed,science,retry,retry=True)
 
+    def test_retirement_cannot_promote_corrupt_observed_science_into_gc_expectations(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
+            check.retired_initial_native(science,before)
+            for prefix in ('0120','0121'):
+                corrupt_before,corrupt_after=copy.deepcopy(before),copy.deepcopy(after)
+                key=next(r['key'] for r in corrupt_before['rows'] if r['cf']=='facts' and r['key'].startswith(prefix))
+                for dump in (corrupt_before,corrupt_after):
+                    row=next(r for r in dump['rows'] if r['cf']=='facts' and r['key']==key)
+                    row['value']=row['value'][:-2]+f'{int(row["value"][-2:],16)^1:02x}'
+                # Corruption survives byte-exact into the observed post-GC
+                # baseline. Only the earlier independent science rejects it.
+                with self.subTest(prefix=prefix),self.assertRaises(AssertionError):
+                    check.reclaimed(state,pg,corrupt_before,corrupt_after,science,result)
+            changed=copy.deepcopy(before);changed['sequence']+=1
+            with self.assertRaises(AssertionError):check.retired_initial_native(science,changed)
+
+    def test_live_publication_requires_open_producer_and_source_under_active_owners(self):
+        state=dict(owner_epochs=[dict(role='control',state='active',resource_id='control',epoch=9,
+            process_incarnation='control-index'),dict(role='index',epoch=2,state='active',process_incarnation='control-index'),
+            dict(role='ingest',epoch=2,state='active',resource_id='ingest',process_incarnation='native-target',
+                 role_instance_id='native-role')],
+            initial_ingest_successions=[dict(target_epoch=2,owner_resource_id='ingest',
+                target_incarnation='native-target',target_role_instance_id='native-role')],
+            initial_ingest_activations=[dict(target_epoch=2,owner_resource_id='ingest',target_incarnation='native-target',
+                target_role_instance_id='native-role',activated_by_resource='control',activated_by_epoch=9,
+                activated_by_incarnation='control-index')],
+            index_owner_sessions=[dict(owner_epoch=2,issuer_role='control',issuer_resource='control',
+                issuer_epoch=9,issuer_incarnation='control-index')],
+            producer_epochs=[dict(producer_epoch=2,state='open')],
+            source_streams=[dict(owner_epoch=1,state='closed',last_complete_sequence=312),
+                dict(owner_epoch=2,state='open',last_complete_sequence=None)],
+            consumers=[dict(consumer_role='index',consumer_id='index',current_revision=68,current_topology_generation=1)],
+            consumer_frontiers=[dict(consumer_id='index',frontier_revision=68,owner_epoch=epoch,last_complete_sequence=cut)
+                for epoch,cut in ((1,312),(2,10))])
+        check.live_compacted_publication(state)
+        for mutate in (lambda pg:pg['producer_epochs'][0].update(state='active'),
+            lambda pg:pg['source_streams'][1].update(state='closed',last_complete_sequence=10),
+            lambda pg:pg['source_streams'][1].update(last_complete_sequence=10),
+            lambda pg:pg['owner_epochs'][1].update(state='open'),
+            lambda pg:pg['consumer_frontiers'][0].update(last_complete_sequence=12),
+            lambda pg:pg['index_owner_sessions'][0].update(issuer_incarnation='unrelated-control')):
+            changed=copy.deepcopy(state);mutate(changed)
+            with self.assertRaises(AssertionError):check.live_compacted_publication(changed)
+
+    def test_compacted_consumer_uses_the_declared_index_database(self):
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=object.__new__(case.ReclamationRuntime)
+            runtime.reclamation_output=Path(directory);runtime.schema=schema
+            runtime.finite=Mock(return_value=dict(published_revision_after=68,new_batches=0))
+            runtime.capture=Mock(return_value=({},{}))
+            runtime.ch=Mock(side_effect=ValueError('declared Index reader reached'))
+            with self.assertRaisesRegex(ValueError,'declared Index reader reached'):runtime.compacted_consumers()
+            self.assertIn('FROM serving_fixture.',runtime.ch.call_args.args[0])
+
     def test_retained_epoch_two_profile_counts_all_322_scientific_and_572_index_rows(self):
         from initial_succession_oracle import successor_manifest
         from installed_family_science import NetworkScience

@@ -8,8 +8,11 @@ import time
 
 from cases.first_launch import MissingPrerequisite, digest, load, require, save
 from cases.first_launch_archive_outage import ArchiveOutageRuntime, STAGES
+from cases.first_launch_index import DATABASE
+from cases.first_launch_index_live import LiveTopologyIndexRuntime
 from cases.first_launch_index_query_trace import QueryTraceRuntime, query_trace_selection
 from cases import first_launch_index_oracle as index
+from cases import first_launch_index_live_oracle as live_oracle
 from cases import first_launch_retained_oracle as oracle
 from cases import first_launch_retained_native as native
 
@@ -215,6 +218,9 @@ RECLAMATION_LIMITS=LIMITS[:7]+[
 
 class ReclamationRuntime(RetainedRuntime):
     """The existing finite64 journey extended through real capacity return."""
+    phase_guard=LiveTopologyIndexRuntime.phase_guard
+    phase_wait=LiveTopologyIndexRuntime.phase_wait
+
     def load_helpers(self):
         super().load_helpers()
         # Load/pin the existing independent encoders before candidate identity.
@@ -222,7 +228,6 @@ class ReclamationRuntime(RetainedRuntime):
         import installed_archive_catch_up_model
         import installed_archive_export_oracle
         import installed_archive_export_client
-        from cases import first_launch_index_live_oracle
         relative="experiments/archive-engine/native_commit_proxy.py"
         self.inputs.setdefault("acceptance_files_sha256",{})[relative]=digest(self.source/relative)
 
@@ -328,6 +333,7 @@ class ReclamationRuntime(RetainedRuntime):
         require(not any(before[t] for t in ('initial_ingest_successions','initial_ingest_activations','ingest_successions','ingest_activations')),
             'reclamation must precede every successor intent')
         native_before=self.native_capture('retired-native')
+        oracle.retired_initial_native(self.retained_science,native_before)
         inputs=self.state/'data/ingest/producer-inputs-v1'
         require(len(self.files(inputs))==64,'reclamation requires64 genuine original inputs')
         # Corruption remains an explicit reversible fixture on this excluded
@@ -438,8 +444,10 @@ class ReclamationRuntime(RetainedRuntime):
             self.wait(lambda:(home/'prepared.json').exists(),'successor source preparation',15,entry,client)
             (home/'prepared.continue').write_text('compacted activated owner independently observed\n')
             self.wait(lambda:(home/'submitted.json').exists(),'successor signed admission',15,entry,client)
-            self.wait(lambda:self.sql('bigbrotr_control','SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3')=='1',
-                'three genuine successor classifications',25,entry,client)
+            submitted=load(home/'submitted-phase.json')
+            submitted_deadline=live_oracle.phase_deadline(submitted,'submitted',time.monotonic_ns())
+            self.phase_wait(lambda:self.sql('bigbrotr_control','SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3')=='1',
+                submitted_deadline,entry,client)
             admitted,_=self.capture(output,'admitted')
             initial=index.only(admitted['producer_epochs'],producer_epoch=1)
             current=index.only(admitted['producer_epochs'],producer_epoch=2)
@@ -447,28 +455,28 @@ class ReclamationRuntime(RetainedRuntime):
             files=self.files(self.state/'data/ingest/producer-inputs-v1')
             require(len(files)==3 and sum(v['bytes'] for v in files.values())<=32*1024*1024
                 and all('-0000000000000002-' in name for name in files),'successor did not reuse the freed shared spool')
+            require(self.inspect(entry)['State']['Running'],'successor owner exited before submitted release')
+            self.phase_guard(submitted_deadline,client)
             (home/'submitted.continue').write_text('three genuine new requests checked; independent Index phase follows\n')
-            self.wait(lambda:(home/'index-proof.json').exists(),'bounded Index phase',5,entry,client)
-            phase=load(home/'index-proof.json')
-            require(phase['deadline_ns']-phase['started_ns']==45_000_000_000,'original Index proof phase changed')
-            deadline=phase['deadline_ns']/1e9
-            self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.consumers WHERE consumer_role='index' AND current_revision=68")=='1',
-                'live compacted Index publishes all three successor batches',deadline-time.monotonic(),entry,client)
-            require(time.monotonic()<deadline,'live Index publication missed the original proof phase')
+            self.phase_guard(submitted_deadline,client)
+            self.phase_wait(lambda:(home/'index-proof.json').exists(),time.monotonic_ns()+5_000_000_000,entry,client)
+            phase=load(home/'index-proof-phase.json')
+            deadline=live_oracle.phase_deadline(phase,'index-proof',time.monotonic_ns())
+            self.phase_wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.consumers WHERE consumer_role='index' AND current_revision=68")=='1',
+                deadline,entry,client)
             live,_=self.capture(output,'live-complete-publication')
-            consumer=index.only(live['consumers'],consumer_role='index')
-            bounds=sorted((r['owner_epoch'],r['last_complete_sequence']) for r in live['consumer_frontiers']
-                if r['consumer_id']==consumer['consumer_id'] and r['frontier_revision']==68)
-            require(consumer['current_topology_generation']==1 and bounds==[(1,312),(2,10)],
-                'live Index publication must cover the complete authenticated source vector')
-            require(index.only(live['source_streams'],owner_epoch=1)['state']=='closed'
-                and index.only(live['source_streams'],owner_epoch=2)['last_complete_sequence']==10
-                and index.only(live['producer_epochs'],producer_epoch=2)['state']=='active',
-                'terminal metadata cannot replace the current live source')
-            from cases.first_launch_index_live_oracle import append_only_history
-            append_only_history(self.compacted_bridge,live)
-            require(time.monotonic()<deadline,'full-vector observation crossed the existing Index phase')
+            oracle.live_compacted_publication(live)
+            live_oracle.append_only_history(self.compacted_bridge,live)
+            require(self.inspect(entry)['State']['Running'],'successor owner exited before Index phase release')
+            self.phase_guard(deadline,client)
             (home/'index-proof.continue').write_text('Index68 checked; Ready65 is not required\n')
+            self.phase_guard(deadline,client)
+            self.phase_wait(lambda:(home/'index-proof-phase-released.json').exists(),deadline,entry,client)
+            release=load(home/'index-proof-phase-released.json')
+            live_oracle.phase_release(phase,release,self.phase_guard(deadline,client))
+            require(self.inspect(entry)['State']['Running'],'successor owner exited before Index phase verdict')
+            save(output/'live-publication-phase.json',dict(phase=phase,release=release,
+                parent_completed_monotonic_ns=self.phase_guard(deadline,client),ready65='NOT_CLAIMED'))
             self.wait(lambda:(home/'commands-finished.json').exists(),'successor client logout',15,entry,client)
             self.wait(lambda:any(load(p)['number']>=2 and not p.with_name(p.name.replace('open','closed')).exists()
                 for p in home.glob('relay-open-*.json')),'successor quiet receive',5,entry,client)

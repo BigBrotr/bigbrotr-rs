@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 
 from cases import first_launch_index_oracle as index
+from cases import first_launch_index_live_oracle as live
 from cases import first_launch_restart as source
 
 
@@ -185,6 +186,32 @@ def science(state, before_proof, report, events, wires, dump, store, completed):
 # supply clocks and fresh identities; expected bytes remain literal encodings.
 RECLAIM_COUNTS=(73,62,62,62,62,62,62,1,63,63)
 
+def retired_initial_native(science,dump):
+    """One close-marker write over already authenticated initial science."""
+    wanted={(cf,key.hex()):value.hex() for cf,key,value in science['native']}
+    assert len(wanted)==829
+    marker, = [key for cf,key in wanted if cf=='receipts' and key.startswith('0131')]
+    wanted['receipts',marker]=(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
+    expected=dict(event='dump-state',sequence=1082,rows=[dict(cf=cf,key=key,value=value)
+        for (cf,key),value in sorted(wanted.items())])
+    index.exact(dump,expected)
+
+
+def live_compacted_publication(state):
+    """Published cut10 is a consumer bound; an open source has no terminal cut."""
+    live.live_owner_bindings(state)
+    assert index.only(state['owner_epochs'],role='index',epoch=2)['state']=='active'
+    consumer=index.only(state['consumers'],consumer_role='index')
+    assert consumer['current_revision']==68 and consumer['current_topology_generation']==1
+    bounds=sorted((r['owner_epoch'],r['last_complete_sequence']) for r in state['consumer_frontiers']
+        if r['consumer_id']==consumer['consumer_id'] and r['frontier_revision']==68)
+    assert bounds==[(1,312),(2,10)]
+    assert index.only(state['source_streams'],owner_epoch=1)['state']=='closed'
+    source=index.only(state['source_streams'],owner_epoch=2)
+    assert source['state']=='open' and source['last_complete_sequence'] is None
+    assert index.only(state['producer_epochs'],producer_epoch=2)['state']=='open'
+
+
 def control_only(before,after,*,allow_no_claim=False):
     """Exact science plus the ordinary Control claim/release/fencing protocol."""
     assert set(before)==set(after)
@@ -247,6 +274,7 @@ def reclaimed(before,after,native_before,native_after,science,report,*,retry=Fal
     marker=b'\x01\x31'+slot+index.be(1)
     wanted={(r['cf'],r['key']):r['value'] for r in native_before['rows']}
     if not retry:
+        retired_initial_native(science,native_before)
         assert wanted['receipts',marker.hex()]==(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
         for n in range(1,65):
             key=(b'\x01\x30'+slot+index.be(1)+index.be(n)).hex()
