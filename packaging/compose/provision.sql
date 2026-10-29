@@ -217,6 +217,7 @@ GRANT EXECUTE ON FUNCTION
     control.require_empty_initial_retirement(bytea,bytea),
     control.require_export_execution_authority(bytea),
     control.require_index_handoff_metadata(bytea,numeric),
+    control.require_index_handoff_authority(control.index_frontier_handoffs),
     control.require_index_owner(bytea,bytea,numeric,bytea),
     control.require_ingest_admission(bytea,numeric,bytea,bytea,bytea,numeric,bytea),
     control.require_ingest_lineage_workflows(bytea,numeric,numeric),

@@ -83,6 +83,11 @@ SELECT pg_temp.assert_true('exact_current_seed',
         AND has_function_privilege('bigbrotr_control',p.oid,'EXECUTE')
         AND NOT has_function_privilege('bigbrotr_control',p.oid,'EXECUTE WITH GRANT OPTION')
         AND NOT EXISTS(SELECT 1 FROM aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0))
+    AND EXISTS(SELECT 1 FROM pg_proc p WHERE p.oid='control.require_index_handoff_authority(control.index_frontier_handoffs)'::regprocedure
+        AND NOT p.prosecdef AND p.proowner<>'bigbrotr_control'::regrole
+        AND has_function_privilege('bigbrotr_control',p.oid,'EXECUTE')
+        AND NOT has_function_privilege('bigbrotr_control',p.oid,'EXECUTE WITH GRANT OPTION')
+        AND NOT EXISTS(SELECT 1 FROM aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE a.grantee=0))
     AND NOT has_function_privilege('bigbrotr_control','control.guard_index_frontier_handoff()','EXECUTE')
     AND NOT has_function_privilege('bigbrotr_control','control.require_typed_index_frontier()','EXECUTE')
     AND EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=41
@@ -226,7 +231,7 @@ SELECT pg_temp.expect_error('fake_batch_handoff_overlap',$$SELECT pg_temp.bridge
 SELECT pg_temp.expect_error('missing_typed_receipt',$$SELECT pg_temp.bridge('missing-receipt')$$,
     'query returned no rows','typed revision requires exactly one receipt',NULL,'P0002');
 SELECT pg_temp.expect_error('wrong_succession_digest',$$SELECT pg_temp.bridge('wrong-succession')$$,
-    'Index handoff requires exact terminal initial succession and topology inventory','direct typed handoff guard');
+    'Index handoff requires exact initial activation, predecessor and topology inventory','direct typed handoff guard');
 SELECT pg_temp.expect_error('changed_predecessor_cut',$$SELECT pg_temp.bridge('changed-old-cut')$$,
     'Index handoff must preserve the exact closed prefix and add only successor zero','direct typed handoff guard');
 SELECT pg_temp.expect_error('changed_predecessor_attestation',$$SELECT pg_temp.bridge('changed-attestation')$$,
@@ -289,7 +294,7 @@ SELECT pg_temp.assert_true('historical_handoff_replays_after_publisher_release',
     AND EXISTS(SELECT 1 FROM control.index_frontier_handoffs WHERE owner_epoch=2));
 \else
 SELECT pg_temp.expect_error('nonterminal_successor_refuses_bridge',$$SELECT pg_temp.bridge()$$,
-    'Index handoff requires exact terminal initial succession and topology inventory','direct typed handoff guard; genuine closed unretired successor');
+    'Index handoff requires live activation or terminal initial succession','direct creation authority guard; genuine closed unretired successor');
 \endif
 
 BEGIN;

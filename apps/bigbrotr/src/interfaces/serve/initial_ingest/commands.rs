@@ -690,8 +690,11 @@ async fn maintain_context(
     if profile == Profile::Successor && archive.is_some() {
         return Err((3, "successor Archive is not available".into()));
     }
-    if profile != Profile::Initial && index.is_some() {
-        return Err((3, "Index requires its initial native lifetime".into()));
+    if index.is_some() && !matches!(store, NativeOwner::Initial(_) | NativeOwner::Live(_)) {
+        return Err((
+            3,
+            "Index requires its initial or initial-successor native lifetime".into(),
+        ));
     }
     let lease = PolicyLeaseTracker::new(
         dataset,
@@ -723,7 +726,7 @@ async fn maintain_context(
     let started = state.renew_for(Some(store)).await?;
     state
         .source_observation
-        .refresh(store, &cancellation.requested);
+        .refresh(store, &cancellation.requested, state.index.is_some());
     // Measure the actual renewal, before independent startup work consumes time.
     // An overdue due time after startup is still handled by the renewal arm.
     let mut due = state.next_renewal(started)?;
@@ -975,7 +978,7 @@ async fn maintain_context(
                     }, &reservation).await;
                     state.sync = Some(selected_sync);
                     trace.finish(result)?;
-                    state.source_observation.refresh(store, &cancellation.requested);
+                    state.source_observation.refresh(store, &cancellation.requested, state.index.is_some());
                     // A timed gap lets HTTP run even under continuous work;
                     // the priority timer prevents continuous HTTP starving Sync.
                     dispatch_due = Instant::now() + sync::INTERVAL;
@@ -993,7 +996,7 @@ async fn maintain_context(
                     // the same deadline and is drained on a requested stop, as
                     // for Sync, before the parent joins the actual executor.
                     let tick = tokio::time::timeout_at(deadline, index.tick(
-                        state.owner, store.initial()?, deadline.into_std(), &cancellation.requested,
+                        state.owner, index::source::Source::from_owner(store)?, deadline.into_std(), &cancellation.requested,
                         !deferred.any(),
                     )).await.map_err(|_| (4, "initial Index deadline; preserve original outcome".into()))??;
                     index_due = Instant::now() + match tick {
@@ -1008,7 +1011,7 @@ async fn maintain_context(
                     // age; it cannot borrow an Ingest handle concurrently.
                     if admission(Instant::now(), due, None) == Admission::Ready {
                         phase(progress, state.maximum()?.min(due.saturating_duration_since(Instant::now())))?;
-                        state.source_observation.refresh(store, &cancellation.requested);
+                        state.source_observation.refresh(store, &cancellation.requested, state.index.is_some());
                     }
                     state.command(work, &mut management, due, None).await?;
                 },

@@ -300,6 +300,49 @@ blocked inventory cancellation are exercised. The local fixture creates an
 initialization reservation only; it does not install a native scientific catalog.
 No pre-protocol history adoption, Archive dispatch or protection is qualified.
 
+## Live initial Index successor
+
+After the original Ingest producer is fully retired and Index has published its
+exact closed epoch1 cut with at least one published batch and no pending plan, an explicit initial successor may
+retain Index in the same process:
+
+```sh
+bigbrotr serve --file /etc/bigbrotr/root.toml \
+  --roles control,ingest,sync,index --activate-initial-successor
+```
+
+Use the same retained Index journal, generation, storage incarnation, table UUIDs
+and constrained ClickHouse writer account. Index must be assigned locally and
+enabled by the accepted policy. This path reads no initializer credential and
+refuses a compacted predecessor; `--initialize-index` remains fresh-only.
+It supports only the initial topology0/epoch1→topology1/epoch2 transition. Both
+native custodies stay owned through physical executor and Control driver joins.
+
+Before Sync starts, startup verifies the published old physical lineage, obtains
+a fresh Index session and commits one explicit bridge preserving epoch1 and
+adding epoch2 at zero while the new Ingest source is open. The existing
+`bigbrotr-initial-successor/1` activation record includes an `index` object with
+`format="bigbrotr-live-initial-index/1"`, `state="bridged"`, the three retained
+identity fields, previous/current Index owner epochs, before/after publication
+revisions and the full `published_cut`. Those epochs/revisions are JSON numbers;
+SourceCut coordinates are decimal strings. `ready=false` grants no read readiness.
+Without Index selection that field is absent, preserving the earlier profile.
+The stopped record is unchanged;
+shutdown closes native ownership and releases Control without closing source2.
+
+Index then publishes whole retained epoch2 batches while acquisition continues.
+Authenticated role status compares both the closed epoch1 bound and actual
+current epoch2 bound. Ready requires the existing complete joined physical
+sweep, current SQL/live authority and unchanged source vector within its original
+freshness window. New source work invalidates an older observation. At most64
+actual retained requests across both epochs fit this Index profile; crossing
+that bound makes Index unavailable before further preparation without changing
+Sync admission or discarding an issued query's obligations. Retain all original
+inputs and pending data. Unknown outcomes still park, and all query/resource and
+deadline bounds remain unchanged. Live Archive and further live Index epochs are
+unsupported. Native/installed qualification for this increment is separate from
+its source implementation.
+
 ## Finite initial Index recovery
 
 The `index catch-up` candidate finishes a retained initial Index on the same
@@ -348,7 +391,7 @@ publishes one explicit Index handoff revision adding epoch2 at zero, then catche
 up its complete batches. The bridge has no synthetic batch or CH receipt. An
 incomplete epoch1 prefix, old pending plan, missing/stale handoff or nonterminal
 successor refuses. Exact retry replays the bridge without adding another one.
-This does not start an Index writer inside the successor acquisition process.
+This finite command starts no Index writer inside acquisition; the separate explicit live selection above retains its own actual writer.
 
 After successful Control release and actual driver join, exit 0 accompanies one
 JSON record with `format="bigbrotr-initial-index-catch-up/2"`, `state="complete"`,
@@ -377,5 +420,5 @@ its own current grants remain separate. Exit codes are 1 output I/O, 2 usage,
 This bounded profile has installed restart, initial-topology continuation and
 publication-COMMIT recovery evidence in the
 [verification guide](../development/verification.md#installed-index-continuation-across-the-initial-topology-handoff).
-General topology recovery, continuous successor ownership and capacity remain
+General topology recovery, further continuous successor epochs and capacity remain
 under qualification; these results do not establish complete product readiness.

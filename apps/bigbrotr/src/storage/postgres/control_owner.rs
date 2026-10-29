@@ -104,7 +104,7 @@ pub use activated_recovery::{
 };
 #[path = "initial_activation.rs"]
 mod initial_activation;
-pub use initial_activation::LiveInitialWriter;
+pub use initial_activation::{LiveInitialSource, LiveInitialWriter};
 #[path = "history_authority.rs"]
 mod history_authority;
 #[path = "initial_batch.rs"]

@@ -4,7 +4,7 @@
 //! never the production codecs, reducers, or a second execution as an oracle.
 use super::*;
 use crate::storage::rocks::store::{ActiveInitialWriter, InitialWriterCandidate};
-use std::{collections::BTreeMap, os::unix::fs::PermissionsExt};
+use std::{collections::BTreeMap, os::unix::fs::PermissionsExt, sync::atomic::AtomicBool};
 
 #[path = "activated_recovery_tests.rs"]
 mod activated_recovery_tests;
@@ -1031,4 +1031,227 @@ fn dictionary_grants_and_authority_refuse_before_write_without_losing_exact_retr
         drop(result);
         originals(&fixture, writer.store());
     }
+}
+
+#[test]
+fn borrowed_live_pending_keeps_owned_bytes_across_head_advance_and_refuses_other_streams() {
+    // Native component only: active() supplies the existing synthetic connected
+    // activation boundary. Public PG selection/authority is qualified separately.
+    let fixture = closed_fixture();
+    let mut writer = active(&fixture);
+    assert_append(&fixture, &mut writer, 1);
+    let limits = PendingReadLimits {
+        max_records: 64,
+        max_encoded_bytes: MIB as usize,
+        fact: bigbrotr_model::codec::FactDecodeLimits::default(),
+    };
+    let permit = || grant(&fixture.budget, limits.required_data_bytes().unwrap(), 0);
+    let cancel = AtomicBool::new(false);
+    let source = writer.index_source().unwrap();
+    let first = fact_id(2, 1);
+    let head = source.observe(&cancel).unwrap();
+    let pending = source
+        .read_pending_batch(first, limits, permit(), &cancel)
+        .unwrap()
+        .unwrap();
+    let expected = expected(scope(&writer).allocation_domain.as_bytes(), 1);
+    let fact = expected
+        .writes
+        .iter()
+        .find(|(cf, key, _)| cf == "facts" && key[1] == 32)
+        .unwrap();
+    assert_eq!(pending.records(), [fact.2[34..].to_vec()]);
+    let used = fixture.budget.snapshot().active_permits();
+    for foreign in [
+        SourceRecordId {
+            dataset_id: [99; 16].try_into().unwrap(),
+            ..first
+        },
+        SourceRecordId {
+            shard_id: 1,
+            ..first
+        },
+        SourceRecordId {
+            owner_epoch: OwnerEpoch::new(1).unwrap(),
+            ..first
+        },
+        SourceRecordId {
+            sequence: Sequence::new(3).unwrap(),
+            ..first
+        },
+    ] {
+        assert!(matches!(
+            source.read_pending_batch(foreign, limits, permit(), &cancel),
+            Err(PendingError::IncompleteBatch)
+        ));
+        assert_eq!(fixture.budget.snapshot().active_permits(), used);
+    }
+    assert!(matches!(
+        source.read_pending_batch(first, limits, grant(&fixture.budget, 1, 0), &cancel),
+        Err(PendingError::InsufficientReservation)
+    ));
+    cancel.store(true, std::sync::atomic::Ordering::Release);
+    assert!(matches!(
+        source.read_pending_batch(first, limits, permit(), &cancel),
+        Err(PendingError::Cancelled)
+    ));
+    cancel.store(false, std::sync::atomic::Ordering::Release);
+    let input = PreparedEvent::new(
+        next_request(2),
+        intent("B_note", 1, 10_000_000),
+        256 * 1024,
+        grant(&fixture.budget, MIB, 0),
+    )
+    .unwrap();
+    drop(
+        writer
+            .store_mut()
+            .admit_event(
+                input,
+                ObservedTime::new(77),
+                false,
+                AdmissionLimits::default(),
+                grant(&fixture.budget, 40 * MIB, 10 * MIB),
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    let source = writer.index_source().unwrap();
+    let after = source.observe(&cancel).unwrap();
+    assert!(after.through() > head.through());
+    assert_eq!(source.handoff().last_complete_sequence(), 9);
+    let replay = source
+        .read_pending_batch(first, limits, permit(), &cancel)
+        .unwrap()
+        .unwrap();
+    assert_eq!(replay.batch(), pending.batch());
+    assert_eq!(replay.records(), pending.records());
+    assert_eq!(source.retained_requests().unwrap(), 6); // Four old, two new; facts differ.
+    drop(replay);
+    drop(pending);
+    assert_eq!(fixture.budget.snapshot().active_permits(), used - 1);
+    originals(&fixture, writer.store());
+}
+
+#[test]
+fn live_request_census_counts_receipt_only_requests_without_changing_producer_admission() {
+    let fixture = closed_fixture();
+    let mut writer = active(&fixture);
+    let intent = dictionary(scope(&writer), "writer-public");
+    let limits = AdmissionLimits::default();
+    // The shared retained spool is literally64 inputs, across epochs. Four
+    // original predecessor inputs leave60 new ones; the producer's independent
+    // per-epoch window is still64. No reclamation or65-file state is fabricated.
+    assert_eq!(fixture.originals.len(), 4);
+    assert_eq!(inputs(&fixture.path()).len(), 4);
+    assert_eq!(limits.max_outstanding_requests, 64);
+    for sequence in 1..=60 {
+        let outcome = writer
+            .store_mut()
+            .append_dictionaries(
+                next_request(sequence),
+                &intent,
+                ObservedTime::new(77),
+                limits,
+                append_permit(&fixture),
+                || Ok(()),
+            )
+            .unwrap();
+        assert_eq!(outcome.receipt().request_id(), next_request(sequence));
+        assert_eq!(outcome.receipt().batch().is_some(), sequence == 1);
+        drop(outcome);
+        let source = writer.index_source().unwrap();
+        assert_eq!(source.retained_requests().unwrap(), 4 + sequence);
+        assert_eq!(
+            source
+                .observe(&AtomicBool::new(false))
+                .unwrap()
+                .through()
+                .get(),
+            1
+        );
+    }
+    assert_eq!(writer.producer_credit().unwrap().issued_through(), 60);
+    assert_eq!(
+        writer.index_source().unwrap().retained_requests().unwrap(),
+        64
+    );
+    let mut expected_inputs: Vec<_> = fixture
+        .originals
+        .iter()
+        .enumerate()
+        .map(|(i, original)| (input_name(1, i as u64 + 1), original.input.clone()))
+        .collect();
+    expected_inputs.extend((1..=60).map(|sequence| {
+        (
+            input_name(2, sequence),
+            expected(scope(&writer).allocation_domain.as_bytes(), sequence).input,
+        )
+    }));
+    expected_inputs.sort();
+    assert_eq!(expected_inputs.len(), 64);
+    assert!(expected_inputs.iter().all(|(_, bytes)| bytes.len() <= 8192));
+    assert!(
+        expected_inputs
+            .iter()
+            .map(|(_, bytes)| bytes.len())
+            .sum::<usize>()
+            < 32 * MIB as usize
+    );
+    assert_eq!(inputs(&fixture.path()), expected_inputs);
+    // Request61 still fits the current producer window. The existing shared
+    // input envelope, before native commit, is the discriminating refusal.
+    writer
+        .store()
+        .require_request_capacity(next_request(61), limits.max_outstanding_requests)
+        .unwrap();
+    let before = capture(&fixture, writer.store());
+    let used = fixture.budget.snapshot().used();
+    let permits = fixture.budget.snapshot().active_permits();
+    assert!(matches!(
+        writer.store_mut().append_dictionaries(
+            next_request(61),
+            &intent,
+            ObservedTime::new(77),
+            limits,
+            append_permit(&fixture),
+            || Ok(())
+        ),
+        Err(AdmissionError::RequestInput(RequestInputError::Limit))
+    ));
+    unchanged(&fixture, writer.store(), &before);
+    assert_eq!(fixture.budget.snapshot().used(), used);
+    assert_eq!(fixture.budget.snapshot().active_permits(), permits);
+    assert_eq!(writer.producer_credit().unwrap().issued_through(), 60);
+    assert_eq!(
+        writer.index_source().unwrap().retained_requests().unwrap(),
+        64
+    );
+    let replay = writer
+        .store_mut()
+        .append_dictionaries(
+            next_request(60),
+            &intent,
+            ObservedTime::new(999),
+            limits,
+            append_permit(&fixture),
+            || Ok(()),
+        )
+        .unwrap();
+    assert_eq!(replay.receipt().request_id(), next_request(60));
+    assert!(replay.receipt().batch().is_none());
+    assert_eq!(
+        replay.receipt().encode_persistent(8192).unwrap(),
+        value(
+            writer.store(),
+            IngestKey::Request {
+                request_id: next_request(60)
+            }
+        )
+    );
+    drop(replay);
+    unchanged(&fixture, writer.store(), &before);
+    assert_eq!(fixture.budget.snapshot().used(), used);
+    assert_eq!(fixture.budget.snapshot().active_permits(), permits);
+    originals(&fixture, writer.store());
 }

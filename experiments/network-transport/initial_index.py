@@ -25,10 +25,13 @@ GROUPS = {
     'source-closure': 'storage::rocks::store::admission_tests::source_closure_tests::',
     'lineage-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
+    'live-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::borrowed_live_pending_keeps_owned_bytes_across_head_advance_and_refuses_other_streams',
+    'live-census': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::live_request_census_counts_receipt_only_requests_without_changing_producer_admission',
     'role-observation': 'management::roles::tests::',
     'observation-clock': 'runtime::policy_authority::authority_tick_elapsed_preserves_precision_and_refuses_regression',
 }
 SOURCE_REQUIRED = {
+    **{name: (GROUPS[name],) for name in ('live-pending', 'live-census')},
     'funded-reservation': tuple(GROUPS['funded-reservation'] + name for name in (
         'whole_operation_admission_is_atomic_and_preserves_error_classes',
         'closed_scope_retains_only_actual_escaped_grants_and_does_not_pin_drain',
@@ -92,7 +95,7 @@ BINARY_GROUPS = {
     'initial-supervision': INITIAL + 'supervision::tests::',
     'initial-watchdog': INITIAL + 'tests::',
     'initial-cli': 'interfaces::serve::tests::initial_ingest_startup_requires_an_explicit_flag',
-    'index-cli': 'interfaces::serve::tests::index_initialization_requires_explicit_fresh_ingest_and_refuses_successors',
+    'index-cli': 'interfaces::serve::tests::index_initialization_is_fresh_only_and_initial_successor_retains_optional_index',
     'initial-readiness': INITIAL + 'readiness::tests::',
     'role-status-http': 'interfaces::management::tests::roles::',
     'ordinary-observations': 'interfaces::serve::role_status::tests::',
@@ -138,6 +141,7 @@ BINARY_REQUIRED = {
         'prepare::tests::root_and_credential_refusals_preserve_input_and_return_the_grant',
         'prepare::tests::engine_envelope_preserves_independent_control_credit_and_never_waits',
         'readiness::tests::readiness_requires_exact_current_initial_source_cut_not_idle_or_a_partial_vector',
+        'readiness::tests::live_readiness_requires_both_bounds_and_source_advance_invalidates_the_captured_vector',
         'readiness::tests::readiness_capture_refuses_owner_changes_pending_and_inconsistent_published_heads',
         'readiness::tests::readiness_uses_oldest_read_and_a_strict_whole_sweep_window',
         'readiness::tests::readiness_abandon_does_not_reset_attempt_cooldown_or_erase_a_failure',

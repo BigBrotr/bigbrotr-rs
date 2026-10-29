@@ -14,12 +14,13 @@ use bigbrotr::storage::{
 pub(in crate::interfaces::serve) fn run(
     root: Resolved,
     sync: bool,
+    index: bool,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
     selected_roots(&root)?;
     // One additional retained activation metadata grant remains with the live
     // capability throughout every Sync/HTTP operation and native destruction.
-    let budget = owner_budget(&root, sync, false, 1)?;
+    let budget = owner_budget(&root, sync, false, 1 + if index { index::ITEMS } else { 0 })?;
     supervision::run_owned(
         root,
         budget,
@@ -28,7 +29,7 @@ pub(in crate::interfaces::serve) fn run(
         true,
         2,
         move |root, budget, progress, cancellation, driver| {
-            own(root, budget, progress, cancellation, driver, sync)
+            own(root, budget, progress, cancellation, driver, sync, index)
         },
     )
 }
@@ -36,6 +37,7 @@ pub(in crate::interfaces::serve) fn run(
 /// Also protects errors/panic before claiming Control. The driver and its grant
 /// are independently owned by the parent once a transport has been created.
 struct Unclaimed {
+    index: Option<index::Index>,
     native: Option<NativeOwner>,
     client: Option<tokio_postgres::Client>,
 }
@@ -47,6 +49,7 @@ async fn own(
     cancellation: Arc<Cancellation>,
     driver_custody: supervision::DriverCustody,
     selected_sync: bool,
+    selected_index: bool,
 ) -> Result<Value> {
     let path = Path::new(required(&root, "storage.ingest_root")?);
     let dataset: DatasetId = required(&root, "topology.dataset_id")?
@@ -76,10 +79,16 @@ async fn own(
         ));
     }
     let candidate = InitialWriterCandidate::new(recovery).map_err(|e| (4, e.to_string()))?;
+    let index_driver = IndexDriverCustody::new();
     let mut unclaimed = Unclaimed {
+        index: None,
         native: Some(NativeOwner::Candidate(Box::new(candidate))),
         client: None,
     };
+    // Retain the existing Index journal before opening either credential.
+    unclaimed.index = selected_index
+        .then(|| index::Index::retain(&root, &budget, &index_driver))
+        .transpose()?;
     phase(&progress, timeout)?;
     let (prepared, control_grant) = postgres_command::prepare_control_shared(
         &root,
@@ -101,7 +110,7 @@ async fn own(
     })
     .await?;
     unclaimed.client = Some(client);
-    let driver = tokio::spawn(connection);
+    let driver = tokio::spawn(index_driver.retain_connection(connection));
     if let Err((driver, grant)) = driver_custody.send((driver, control_grant)) {
         drop(unclaimed);
         postgres_command::join(driver).await;
@@ -132,6 +141,12 @@ async fn own(
         &cancellation.requested,
     )?;
     let compacted = compacted_prefix.is_some();
+    if selected_index && compacted {
+        return Err((
+            4,
+            "live Index successor requires the original uncompacted predecessor".into(),
+        ));
+    }
     {
         let _preparation = grant(&budget, 128 * 1024, 8192)?;
         if compacted {
@@ -167,6 +182,9 @@ async fn own(
                 if let Some(sync) = &mut sync {
                     sync.accept(&restored)?;
                 }
+                if let Some(index) = &mut unclaimed.index {
+                    index.accept(&restored)?;
+                }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
                 Ok(())
@@ -178,7 +196,7 @@ async fn own(
     })
     .await?;
     let mut custody = Custody {
-        index: None,
+        index: unclaimed.index.take(),
         store: unclaimed.native.take(),
         sync,
         archive: None,
@@ -309,6 +327,15 @@ async fn own(
         (handoff, predecessor, basis)
     };
     drop(compacted_prefix);
+    if let Some(index) = custody.index.as_ref() {
+        phase(&progress, timeout)?;
+        bounded(
+            timeout,
+            &cancellation,
+            index.preflight_live_predecessor(&mut custody.owner, &handoff),
+        )
+        .await?;
+    }
     let NativeOwner::Candidate(candidate) = custody.store.as_mut().expect("native owner") else {
         unreachable!("candidate retained before preparation")
     };
@@ -390,9 +417,18 @@ async fn own(
     let NativeOwner::Live(writer) = custody.store.as_ref().expect("activated writer") else {
         unreachable!()
     };
+    let index_report = if let Some(index) = custody.index.as_mut() {
+        Some(
+            index
+                .recover_live_initial(&root, &progress, &cancellation, &mut custody.owner, writer)
+                .await?,
+        )
+    } else {
+        None
+    };
     let id = writer.manifest().identity();
     let policy = writer.policy_snapshot();
-    let report = json!({"format":"bigbrotr-initial-successor/1", "state":"activated",
+    let mut report = json!({"format":"bigbrotr-initial-successor/1", "state":"activated",
         "dataset_id":id.dataset_id, "owner_resource_id":id.owner_resource_id,
         "producer_slot_id":writer.producer_slot_id(), "producer_epoch":"2",
         "process_incarnation":id.process_incarnation, "topology_generation":id.topology_generation.get().to_string(),
@@ -404,6 +440,9 @@ async fn own(
         "activated_at_us":writer.activated_at_us().to_string(), "predecessor":predecessor,
         "native_profile":1, "native_allowance_bytes":128*MIB,
         "acquisition":if selected_sync { "finite-initial-successor" } else { "not-started" }, "ready":false});
+    if let Some(index) = index_report {
+        report["index"] = index;
+    }
     commands::maintain(
         &mut custody,
         &spec,
@@ -415,6 +454,7 @@ async fn own(
     )
     .await?;
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;
+    drop(custody.index.take());
     drop(custody.store.take());
     tokio::time::timeout(
         duration(&root, "graceful_shutdown_timeout"),

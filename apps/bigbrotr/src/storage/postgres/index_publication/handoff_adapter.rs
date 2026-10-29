@@ -1,7 +1,7 @@
-//! Connected finite bridge publication and typed immutable revision reads.
+//! Distinct terminal/live bridge authority and typed immutable revision reads.
 use super::*;
 use crate::storage::postgres::control_owner::{
-    InitialHistoryRequest, SuccessorHistoryState, VerifiedSuccessorHistory,
+    InitialHistoryRequest, LiveInitialWriter, SuccessorHistoryState, VerifiedSuccessorHistory,
 };
 use crate::storage::rocks::store::{IngestRecovery, RetainedTerminalKind};
 
@@ -41,6 +41,180 @@ fn source_matches(
 }
 
 impl ControlSession {
+    /// Current live consumption is checked separately from historical receipts.
+    /// In particular a valid old bridge cannot authorize epoch2 work at topology2.
+    pub async fn require_live_index_source(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        writer: &LiveInitialWriter,
+    ) -> Result<(), IndexError> {
+        valid_session(self, session, custody)?;
+        writer
+            .binding
+            .require_store(writer.native.store(), self.identity)
+            .map_err(owner)?;
+        writer.index_source().map_err(|_| IndexError::Conflict)?;
+        self.begin_operation().map_err(owner)?;
+        let tx = application_transaction(&mut self.client, SCHEMA)
+            .await
+            .map_err(deployment)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(owner)?;
+        writer.binding.require(&tx).await.map_err(owner)?;
+        require_session(&tx, session).await?;
+        binding_matches(&tx, session.binding()).await?;
+        proofs::live(session.binding(), custody)?;
+        tx.rollback().await.map_err(pg)?;
+        self.available = true;
+        Ok(())
+    }
+    /// Live activation has its own authority path. A terminal history witness
+    /// cannot stand in for the retained writer, or vice versa.
+    #[allow(clippy::too_many_arguments)]
+    pub async fn publish_live_index_handoff(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        handoff: &IndexHandoff,
+        recovered: &VerifiedIndexRecovery,
+        writer: &LiveInitialWriter,
+        input: InitialHistoryRequest<'_>,
+        commit_started: &Cell<bool>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<IndexHandoffReceipt, IndexError> {
+        use crate::runtime::policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl};
+        let source = writer.index_source().map_err(|_| IndexError::Conflict)?;
+        let native = source.handoff();
+        let id = *source.manifest().identity();
+        let head = source
+            .observe(input.cancelled)
+            .map_err(|_| IndexError::Unavailable)?;
+        valid_session(self, session, custody)?;
+        writer
+            .binding
+            .require_store(writer.native.store(), self.identity)
+            .map_err(owner)?;
+        let (previous, expected, recovery_digest) =
+            proofs::recovery(&session.binding, custody, recovered)?;
+        let expected_handoff = IndexHandoff::new(
+            *session.binding(),
+            handoff.expected_revision(),
+            id.owner_resource_id,
+            Digest256::from_bytes(Sha256::digest(native.encode().as_bytes()).into()),
+            handoff.before().clone(),
+        )?;
+        if id.dataset_id != session.binding().dataset()
+            || handoff != &expected_handoff
+            || handoff.binding() != session.binding()
+            || handoff.before().bounds()[0].stream.shard_id != id.shard_id
+            || handoff.before().bounds()[0].last_complete_sequence.get()
+                != native.last_complete_sequence()
+            || head.through().get() != 0
+            || source
+                .retained_requests()
+                .map_err(|_| IndexError::Conflict)?
+                > 64
+            || writer.previous_registration().instance_id != *self.request.instance.as_bytes()
+            || !writer
+                .native
+                .store()
+                .matches_configured_root(input.ingest_root)
+            || expected.published_revision != handoff.expected_revision()
+            || expected.pending_plan.is_some()
+            || expected.published_plan.is_none()
+            || expected.published_handoff.is_some()
+            || previous.epoch.get().checked_add(1) != Some(session.owner.epoch.get())
+        {
+            return Err(IndexError::Conflict);
+        }
+        let policy = writer.policy_snapshot();
+        let mut lease = PolicyLeaseTracker::new(
+            id.dataset_id,
+            id.process_incarnation,
+            id.policy_epoch,
+            PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| IndexError::InvalidInput)?,
+        )
+        .map_err(|_| IndexError::Unavailable)?;
+        let ticket = lease.begin_refresh().map_err(|_| IndexError::Unavailable)?;
+        self.begin_operation().map_err(owner)?;
+        let tx = application_transaction(&mut self.client, SCHEMA)
+            .await
+            .map_err(deployment)?;
+        // Same Control parent first, then the existing activation/dataset locks.
+        tx.query_one("SELECT epoch FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric FOR UPDATE",
+            &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string()]).await.map_err(pg)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(owner)?;
+        if snapshot(&tx, &self.request, &mut validate)
+            .await
+            .map_err(owner)?
+            != policy
+        {
+            return Err(IndexError::Conflict);
+        }
+        let remaining = writer.binding.require(&tx).await.map_err(owner)?;
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset: id.dataset_id,
+                    process_incarnation: id.process_incarnation,
+                    policy_epoch: id.policy_epoch,
+                    ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
+                },
+            )
+            .map_err(|_| IndexError::Unavailable)?;
+        require_session(&tx, session).await?;
+        binding_matches(&tx, session.binding()).await?;
+        require_recovery_inventory(&tx, session, expected, recovery_digest).await?;
+        let now = tx
+            .query_one(NOW, &[])
+            .await
+            .map_err(pg)?
+            .try_get(0)
+            .map_err(pg)?;
+        publish_handoff(&tx, session, handoff, now).await?;
+        tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
+            .await
+            .map_err(pg)?;
+        writer.binding.require(&tx).await.map_err(owner)?;
+        require_session(&tx, session).await?;
+        proofs::recovery(session.binding(), custody, recovered)?;
+        source
+            .observe(input.cancelled)
+            .map_err(|_| IndexError::Unavailable)?;
+        super::super::super::initial_history::check_delivery::<()>(
+            &mut lease,
+            bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
+            input.cancelled,
+        )
+        .map_err(|_| IndexError::Unavailable)?;
+        commit_started.set(true);
+        tx.commit().await.map_err(|_| IndexError::CommitUnknown)?;
+        proofs::live(session.binding(), custody)?;
+        source
+            .observe(input.cancelled)
+            .map_err(|_| IndexError::Unavailable)?;
+        super::super::super::initial_history::check_delivery::<()>(
+            &mut lease,
+            bigbrotr_model::PolicyEpoch::new(policy.policy_revision),
+            input.cancelled,
+        )
+        .map_err(|_| IndexError::Unavailable)?;
+        if self.client.is_closed() {
+            return Err(IndexError::Unavailable);
+        }
+        self.available = true;
+        Ok(IndexHandoffReceipt {
+            handoff: handoff.clone(),
+            publisher: session.owner,
+            committed_at_us: now,
+            created: true,
+        })
+    }
     /// Read exactly one published revision. A missing or multiply typed entry
     /// cannot be skipped by paging only through source batch plans.
     pub async fn read_index_revision(
@@ -104,26 +278,7 @@ impl ControlSession {
             .map_err(|_| IndexError::Unavailable)?;
         require_session(&tx, session).await?;
         binding_matches(&tx, &session.binding).await?;
-        if inventory(&tx, &session.binding).await? != expected {
-            return Err(IndexError::Conflict);
-        }
-        let matching: bool = tx
-            .query_one(
-                "SELECT recovery_digest=$3::bytea FROM control.index_owner_sessions
-            WHERE resource_id=$1::bytea AND owner_epoch=$2::text::numeric",
-                &[
-                    &&session.owner.resource.as_bytes()[..],
-                    &session.owner.epoch.get().to_string(),
-                    &&recovery_digest.as_bytes()[..],
-                ],
-            )
-            .await
-            .map_err(pg)?
-            .try_get(0)
-            .map_err(pg)?;
-        if !matching {
-            return Err(IndexError::Conflict);
-        }
+        require_recovery_inventory(&tx, session, expected, recovery_digest).await?;
         let now: i64 = tx
             .query_one(NOW, &[])
             .await
@@ -171,6 +326,35 @@ impl ControlSession {
             created: true,
         })
     }
+}
+
+async fn require_recovery_inventory(
+    tx: &Transaction<'_>,
+    session: &IndexSession,
+    expected: IndexRecoveryState,
+    digest: Digest256,
+) -> Result<(), IndexError> {
+    if inventory(tx, session.binding()).await? != expected {
+        return Err(IndexError::Conflict);
+    }
+    let matching: bool = tx
+        .query_one(
+            "SELECT recovery_digest=$3::bytea FROM control.index_owner_sessions
+        WHERE resource_id=$1::bytea AND owner_epoch=$2::text::numeric",
+            &[
+                &&session.owner.resource.as_bytes()[..],
+                &session.owner.epoch.get().to_string(),
+                &&digest.as_bytes()[..],
+            ],
+        )
+        .await
+        .map_err(pg)?
+        .try_get(0)
+        .map_err(pg)?;
+    if !matching {
+        return Err(IndexError::Conflict);
+    }
+    Ok(())
 }
 
 async fn read_revision(

@@ -39,7 +39,8 @@ RESTART_LIMITS = [
     LIMITS[2],
 ]
 OFF_CASE = 'p01-first-launch-restart-provenance-off'
-RESTART_CASES = ('p01-first-launch-restart', OFF_CASE, 'p01-first-launch-index-topology')
+RESTART_CASES = ('p01-first-launch-restart', OFF_CASE, 'p01-first-launch-index-topology',
+                 'p01-first-launch-index-live-topology')
 OFF_LIMITS = [
     RESTART_LIMITS[0] + ' Fresh accepted sync.provenance=off; no scientific witness rows.',
     'NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.',
@@ -797,8 +798,7 @@ class Runtime:
             shutil.copyfile(self.home / name, home / name)
         shutil.copyfile(self.source / 'tests/fixtures/acquisition/selector-events.json', home / 'selector-events.json')
         self.new_event, = [row['event'] for row in load(home / 'selector-events.json')['events'] if row['name'] == 'included']
-        entry = self.launch('successor', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
-            '--activate-initial-successor', '--roles', 'control,ingest,sync')
+        entry = self.successor_launch()
         started = self.wait(lambda: self.logs(entry, output), 'successor activation', 20, entry=entry)[0]
         require(started['state'] == 'activated' and started['producer_epoch'] == '2'
             and started['topology_generation'] == '1' and started['config_revision'] == started['policy_revision'] == '1'
@@ -806,10 +806,12 @@ class Runtime:
             and started['acquisition'] == 'finite-initial-successor', 'unexpected successor profile')
         self.successor_started = started
         save(output / 'successor-started.json', started)
-        self.capture(output, 'successor-started')
+        activated, _ = self.capture(output, 'successor-started')
+        self.successor_activated(started, activated)
         with (home / 'client.stdout').open('x') as out, (home / 'client.stderr').open('x') as err:
             client = subprocess.Popen([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_live_client.py'),
-                'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1'],
+                'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1',
+                *self.successor_client_options()],
                 env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
         self.processes.append(client)
         save(output / 'client-process.json', dict(pid=client.pid, process_group=client.pid))
@@ -821,8 +823,8 @@ class Runtime:
         def classified():
             require(not (home / 'relay-error.json').exists(), 'successor relay failed')
             return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3') == '1'
-        self.wait(classified, 'three classified successor events', 30, entry, client)
-        (home / 'submitted.continue').write_text('finite three-event head observed\n')
+        self.successor_submission(entry, client, classified)
+        self.successor_published(entry, client)
         self.wait(lambda: (home / 'commands-finished.json').exists(), 'successor logout', 15, entry, client)
         def quiet():
             return any(load(path)['number'] >= 2 and not path.with_name(path.name.replace('open', 'closed')).exists()
@@ -850,6 +852,23 @@ class Runtime:
         self.successor_retirement = self.finite('retire-successor', *args, '--retire-activated-initial')
         self.retired_successor, _ = self.capture(output, 'retired-successor')
         self.backend_absence(output)
+
+    def successor_launch(self):
+        return self.launch('successor', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
+            '--activate-initial-successor', '--roles', 'control,ingest,sync')
+
+    def successor_activated(self, started, state):
+        """Optional bridge observation before the successor client starts."""
+
+    def successor_client_options(self):
+        return []
+
+    def successor_submission(self, entry, client, classified):
+        self.wait(classified, 'three classified successor events', 30, entry, client)
+        (self.successor_home / 'submitted.continue').write_text('finite three-event head observed\n')
+
+    def successor_published(self, entry, client):
+        """Optional opt-in observation after the finite submission is released."""
 
     def successor_abandoned(self):
         """Optional case observation at the actual closed, unretired boundary."""
@@ -979,7 +998,8 @@ def first_launch(args, checks, inputs):
     index_outage = getattr(args, 'case', None) == 'p01-first-launch-index-outage'
     archive_outage = retained_boundary or getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
     shared_budget = getattr(args, 'case', None) == 'p01-first-launch-shared-budget'
-    index_topology = getattr(args, 'case', None) == 'p01-first-launch-index-topology'
+    live_topology = getattr(args, 'case', None) == 'p01-first-launch-index-live-topology'
+    index_topology = live_topology or getattr(args, 'case', None) == 'p01-first-launch-index-topology'
     index_commit = getattr(args, 'case', None) in ('p01-first-launch-index-commit-before','p01-first-launch-index-commit-after')
     index_restart = index_commit or getattr(args, 'case', None) == 'p01-first-launch-index-restart'
     pin_release = getattr(args, 'case', None) in ('p01-first-launch-index-pin-release-before', 'p01-first-launch-index-pin-release-after')
@@ -999,6 +1019,9 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if index_topology:
             from cases.first_launch_index_topology import (TopologyIndexRuntime as IndexRuntime,
+                STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if live_topology:
+            from cases.first_launch_index_live import (LiveTopologyIndexRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
         if archive_outage:
             from cases.first_launch_archive_outage import (ArchiveOutageRuntime as IndexRuntime,
@@ -1053,6 +1076,8 @@ def first_launch(args, checks, inputs):
                 operations += [('index_epoch2_catch_up', runtime.index_epoch2_catch_up),
                                ('index_epoch2_exact_retry', runtime.index_epoch2_retry)]
             operations += [('successor_history', runtime.restart_history)]
+            if live_topology:
+                operations += [('historical_index_topology', runtime.historical_index_topology)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

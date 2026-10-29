@@ -45,7 +45,12 @@ fn readiness_requires_exact_current_initial_source_cut_not_idle_or_a_partial_vec
     let manifest = manifest();
     let id = manifest.identity();
     let exact = cut(id.dataset_id, id.topology_generation, 0, 1, 12);
-    assert!(source_matches(&manifest, CompleteThrough::new(12), &exact));
+    assert!(source_matches(
+        &manifest,
+        CompleteThrough::new(12),
+        None,
+        &exact
+    ));
     for wrong in [
         cut(
             [5; 16].try_into().unwrap(),
@@ -60,7 +65,12 @@ fn readiness_requires_exact_current_initial_source_cut_not_idle_or_a_partial_vec
         cut(id.dataset_id, id.topology_generation, 0, 1, 11),
         cut(id.dataset_id, id.topology_generation, 0, 1, 13),
     ] {
-        assert!(!source_matches(&manifest, CompleteThrough::new(12), &wrong));
+        assert!(!source_matches(
+            &manifest,
+            CompleteThrough::new(12),
+            None,
+            &wrong
+        ));
     }
     let two = SourceCut::new(
         id.dataset_id,
@@ -77,23 +87,107 @@ fn readiness_requires_exact_current_initial_source_cut_not_idle_or_a_partial_vec
         ],
     )
     .unwrap();
-    assert!(!source_matches(&manifest, CompleteThrough::new(12), &two));
+    assert!(!source_matches(
+        &manifest,
+        CompleteThrough::new(12),
+        None,
+        &two
+    ));
     let successor = IngestManifest::for_successor(*id, *manifest.allocation_namespaces());
     assert!(!source_matches(
         &successor,
         CompleteThrough::new(12),
+        None,
         &exact
     ));
     let maximum = cut(id.dataset_id, id.topology_generation, 0, 1, u64::MAX);
     assert!(source_matches(
         &manifest,
         CompleteThrough::new(u64::MAX),
+        None,
         &maximum
     ));
     assert!(!source_matches(
         &manifest,
         CompleteThrough::new(0),
+        None,
         &maximum
+    ));
+}
+
+#[test]
+fn live_readiness_requires_both_bounds_and_source_advance_invalidates_the_captured_vector() {
+    // Structural observations only; no physical proof or live authority is made.
+    let original = manifest();
+    let mut id = *original.identity();
+    id.owner_epoch = OwnerEpoch::new(2).unwrap();
+    id.topology_generation = TopologyGeneration::new(1);
+    let manifest = IngestManifest::for_successor(id, *original.allocation_namespaces());
+    let old = StreamBound {
+        stream: StreamId {
+            shard_id: 0,
+            owner_epoch: OwnerEpoch::new(1).unwrap(),
+        },
+        last_complete_sequence: CompleteThrough::new(12),
+    };
+    let new = StreamBound {
+        stream: StreamId {
+            shard_id: 0,
+            owner_epoch: OwnerEpoch::new(2).unwrap(),
+        },
+        last_complete_sequence: CompleteThrough::new(10),
+    };
+    let full = SourceCut::new(id.dataset_id, id.topology_generation, vec![old, new]).unwrap();
+    assert!(source_matches(
+        &manifest,
+        CompleteThrough::new(10),
+        Some(old),
+        &full
+    ));
+    assert!(!source_matches(
+        &manifest,
+        CompleteThrough::new(11),
+        Some(old),
+        &full
+    ));
+    assert!(!source_matches(
+        &manifest,
+        CompleteThrough::new(10),
+        None,
+        &full
+    ));
+    for bounds in [
+        vec![new],
+        vec![old],
+        vec![
+            StreamBound {
+                last_complete_sequence: CompleteThrough::new(11),
+                ..old
+            },
+            new,
+        ],
+        vec![
+            old,
+            StreamBound {
+                last_complete_sequence: CompleteThrough::new(9),
+                ..new
+            },
+        ],
+    ] {
+        let wrong = SourceCut::new(id.dataset_id, id.topology_generation, bounds).unwrap();
+        assert!(!source_matches(
+            &manifest,
+            CompleteThrough::new(10),
+            Some(old),
+            &wrong
+        ));
+    }
+    let later = SourceCut::new(id.dataset_id, TopologyGeneration::new(2), vec![old, new]).unwrap();
+    assert!(!source_matches(
+        &manifest,
+        CompleteThrough::new(10),
+        Some(old),
+        &later
     ));
 }
 
@@ -234,6 +328,7 @@ fn deferred_work_retries_released_credit_before_idle_yield_and_keeps_observation
     let source = store
         .observe_source_head(store.manifest(), &AtomicBool::new(false))
         .unwrap();
+    let source = Observed::initial(source);
     let now = SuspendAwareClock.read().unwrap();
     let binding = IndexBinding::new(
         source.identity().dataset_id,

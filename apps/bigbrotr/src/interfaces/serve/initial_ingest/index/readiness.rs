@@ -3,6 +3,9 @@
 //! adoption or publication. One joined plan per turn bounds local work; the
 //! whole sweep must finish within FRESHNESS from its oldest read. History size
 //! still affects engine work. Expiry is unavailable, not a scalable-read claim.
+use super::source::Observed;
+#[cfg(test)]
+use super::source::source_matches;
 use super::*;
 use bigbrotr::{
     runtime::policy_authority::{AuthorityClock, AuthorityTick, SuspendAwareClock},
@@ -11,7 +14,6 @@ use bigbrotr::{
             IndexRecoveryVerifier, RecoveryResult, required_recovery_metadata_bytes,
         },
         postgres::{IndexBinding, IndexOwnerIdentity, IndexRecoveryState},
-        rocks::store::SourceHead,
     },
 };
 use bigbrotr_model::{ProcessIncarnation, ProjectionGenerationId};
@@ -20,7 +22,7 @@ pub const FRESHNESS: Duration = Duration::from_secs(30);
 pub(super) const INTERVAL: Duration = Duration::from_secs(15);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Failure {
+pub(in crate::interfaces::serve::initial_ingest) enum Failure {
     Clock,
     Source,
     Changed,
@@ -33,15 +35,15 @@ pub enum Failure {
 /// Inert, fixed-size cache only. Its consumer separately checks authority,
 /// elapsed time, actual current source and published cut before advertising ready.
 #[derive(Debug, Clone, Copy)]
-pub struct VerifiedObservation {
-    pub source: SourceHead,
+pub(in crate::interfaces::serve::initial_ingest) struct VerifiedObservation {
+    pub source: Observed,
     pub revision: u64,
     pub generation: ProjectionGenerationId,
     pub storage_incarnation: ProcessIncarnation,
     pub started: AuthorityTick,
 }
 #[derive(Debug, Clone, Copy)]
-pub struct Observation {
+pub(in crate::interfaces::serve::initial_ingest) struct Observation {
     pub verified: Option<VerifiedObservation>,
     pub failure: Option<Failure>,
     pub building: bool,
@@ -52,7 +54,7 @@ pub struct Observation {
 }
 
 struct Capture {
-    source: SourceHead,
+    source: Observed,
     binding: IndexBinding,
     owner: IndexOwnerIdentity,
     state: IndexRecoveryState,
@@ -166,23 +168,6 @@ fn probe_due(elapsed: Duration) -> bool {
     elapsed >= INTERVAL
 }
 
-fn source_matches(manifest: &IngestManifest, through: CompleteThrough, cut: &SourceCut) -> bool {
-    let identity = manifest.identity();
-    let [bound] = cut.bounds() else {
-        return false;
-    };
-    manifest.key_schema() == 1
-        && identity.owner_epoch.get() == 1
-        && cut.dataset_id() == identity.dataset_id
-        && cut.topology_generation() == identity.topology_generation
-        && bound.stream
-            == (StreamId {
-                shard_id: identity.shard_id,
-                owner_epoch: identity.owner_epoch,
-            })
-        && bound.last_complete_sequence == through
-}
-
 fn capture_matches(
     owner: IndexOwnerIdentity,
     state: IndexRecoveryState,
@@ -200,14 +185,14 @@ impl Index {
     /// None means ordinary source work has priority (or observation failed).
     pub(super) fn probe_source(
         &mut self,
-        store: &IngestStore,
+        store: &source::Source<'_>,
         now: AuthorityTick,
         cancelled: &AtomicBool,
-    ) -> Option<SourceHead> {
+    ) -> Option<Observed> {
         if self.session.is_none() || self.pending.is_some() {
             return None;
         }
-        let head = match store.observe_source_head(store.manifest(), cancelled) {
+        let head = match store.observe(cancelled) {
             Ok(head) => head,
             Err(_) => {
                 self.readiness.fail(Failure::Source);
@@ -215,10 +200,7 @@ impl Index {
                 return None;
             }
         };
-        let caught_up = self
-            .cut
-            .as_ref()
-            .is_some_and(|cut| source_matches(head.manifest(), head.through(), cut));
+        let caught_up = self.cut.as_ref().is_some_and(|cut| head.matches(cut));
         if !caught_up {
             self.readiness.abandon();
             return None;
@@ -236,7 +218,7 @@ impl Index {
     pub(super) async fn probe(
         &mut self,
         control: &mut ControlSession,
-        source: SourceHead,
+        source: Observed,
         local: OwnedPermit,
         engine: OwnedPermit,
         deadline: Instant,
@@ -319,7 +301,7 @@ impl Index {
         live_window(deadline, cancelled)?;
         let active = if verifier.is_complete() {
             let cut_matches = match verifier.verified_cut() {
-                Some(cut) => source_matches(source.manifest(), source.through(), cut),
+                Some(cut) => source.matches(cut),
                 None => self.revision == 0 && source.through().get() == 0,
             };
             if !cut_matches {
@@ -426,7 +408,7 @@ impl Index {
     pub(super) async fn complete_probe_finish(
         &mut self,
         control: &mut ControlSession,
-        store: &IngestStore,
+        store: &source::Source<'_>,
         joined: JoinedIndexOperation<std::result::Result<RecoveryResult, PhysicalError>>,
         deadline: Instant,
         cancelled: &AtomicBool,
@@ -470,7 +452,16 @@ impl Index {
             .await
             .map_err(|_| failed("readiness final PG state unavailable"))?;
         live_window(deadline, cancelled)?;
-        let source = match store.observe_source_head(store.manifest(), cancelled) {
+        store
+            .require_current(control, self.session.as_ref().unwrap(), state)
+            .await?;
+        live_window(deadline, cancelled)?;
+        if !store.within_history_limit()? {
+            self.readiness.fail(Failure::Capacity);
+            self.readiness.abandon();
+            return Ok(Tick::Idle);
+        }
+        let source = match store.observe(cancelled) {
             Ok(source) => source,
             Err(_) => {
                 self.readiness.fail(Failure::Source);
@@ -507,12 +498,7 @@ impl Index {
             self.parked = true;
             return Ok(Tick::Parked);
         }
-        if source != capture.source
-            || !self
-                .cut
-                .as_ref()
-                .is_some_and(|cut| source_matches(source.manifest(), source.through(), cut))
-        {
+        if source != capture.source || !self.cut.as_ref().is_some_and(|cut| source.matches(cut)) {
             // Ordinary admission may advance while the final read is in flight.
             // Its new data gets the next turn; this sweep cannot certify it.
             self.readiness.abandon();

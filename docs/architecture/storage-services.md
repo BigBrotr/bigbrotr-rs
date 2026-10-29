@@ -431,6 +431,51 @@ closed epoch1 bound with no pending plan. Only then may its verified bridge be
 published and ordinary whole-batch planning advance epoch2. Schema3, further
 successors and compacted/archive fallback remain outside this finite path.
 
+The separate explicit `serve --activate-initial-successor` lifetime may select
+retained Index alongside Control/Ingest and optional Sync. This first live path
+supports only the uncompacted initial topology0/epoch1→topology1/epoch2 boundary.
+Both actual native custodies precede credential reads. A current PG preflight
+requires a nonempty published old head and refuses an invalid cut or pending plan before succession preparation
+and activation; this is not physical proof. It then retains the activated
+`LiveInitialWriter`, rechecks that exact published predecessor and uses the existing complete physical recovery to rebind
+the same Index generation, storage, table identities and origins under fresh
+Control/Index authority. Its explicit `[closed epoch1, epoch2=0]` bridge commits
+before any successor acquisition is admitted. No initializer credential is read. A later CH, SQL, cancellation or unknown
+outcome may leave genuine activated partial state; failure preserves it, admits
+no Sync and emits no successful startup report or rollback/adoption claim.
+
+A read-only view borrows that actual writer and its immutable native handoff;
+it exposes only bounded current-epoch complete pending batches with their owned
+byte permits and fixed current-vector observations. It never reopens or exposes
+the mutable store. New complete batches advance only epoch2 and retain the exact
+closed epoch1 bound. An advancing native head leaves an already read immutable
+batch usable but invalidates readiness for the older vector. Readiness still
+requires the joined full physical-lineage sweep and exact current fenced
+owner/binding/profile/PG tuple, no pending work, and the whole two-bound source
+vector within the original30s oldest-read window and15s cooldown. Rebinding,
+bridge COMMIT and individual publication successes do not mint that observation.
+The same local/engine grants, query quota and operation deadlines apply.
+
+Historical bridge validation checks immutable activation/succession identity,
+predecessor retirement/closure, sealed topology0/1 inventories, publisher and
+exact old attestation/zero new bound; it does not depend on the successor still
+being open or already retired, or on the dataset still selecting topology1.
+New bridge INSERT and deferred COMMIT separately require current topology1 and
+either the existing terminal retirement path or the actual open live activation
+with the same Control issuer as the current Index session. A merely closed but
+unretired successor cannot create a new bridge. Live plan effects and final
+readiness separately check the current live writer; epoch2 mutation at a later
+topology is unsupported. A committed bridge remains historical evidence after
+closure, publisher release and a later genuine succession.
+
+The continuing Index profile also counts actual retained requests across both
+epochs, independent of source-fact counters and the bridge's extra revision.
+Beyond64 it refuses new Index preparation/history allocation and reports
+unavailable while preserving the published cursor, inputs and any already
+issued operation's join/unknown obligations. It does not change Ingest's own
+producer admission or acknowledgement window. Live Archive, compacted lineage,
+further live Index epochs and scalable backlog remain separate capabilities.
+
 This consumer keeps three distinct positions: the captured published SQL prefix,
 an optional immutable prepared plan immediately after it, and unplanned source
 backlog. It verifies published rows without repairing them, replays/verifies the

@@ -25,7 +25,7 @@ use bigbrotr_model::{DatasetId, PolicyEpoch};
 use serde_json::{Value, json};
 use tokio::sync::watch;
 
-mod authority;
+pub(super) mod authority;
 mod publication;
 mod source;
 use authority::Authority;
