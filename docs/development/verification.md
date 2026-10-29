@@ -703,6 +703,61 @@ This does not qualify continuous combined successor ownership, general topology 
 unknown query/native termination, independent service outages, capacity,
 second-event export or complete M1.
 
+### Live retained Index continuation
+
+`p01-first-launch-index-live-topology` extends the signed topology journey to
+sixteen stages with the same candidate arguments. Its successor starts with
+`serve --activate-initial-successor --roles control,ingest,sync,index`, using the
+existing retained Index identity and ordinary credentials. It does not initialize
+a new generation. Before starting the successor relay client, the fixture checks
+the actual committed revision5 bridge: closed epoch1/cut12 and an explicit zero
+epoch2 bound, no new request, plan, chunk or ClickHouse receipt. Epoch2 remains
+open and its Index session must share the actual active Control incarnation.
+
+The unchanged signed peer then supplies the new tagged event, predecessor resend
+and exact new-event duplicate. All three successor batches must publish live,
+and authenticated role observations must become Ready against the complete
+ordered vector `[epoch1=12, epoch2=10]` before the successor stops. An old or
+single-epoch Ready is refused. This consumes the existing client's absolute25s
+submission barrier; query, retry, resource and other client bounds are unchanged.
+The same independent source/C API science and typed ten-family oracle verify
+all70 chunks and100 bounds, including original receipt and raw row multiplicity.
+
+After the owner stops, source closure/retirement and Archive catch-up must retain
+that live Index publication. Two finite Index catch-up invocations must recover
+the committed historical bridge without adding a revision, batch or physical row.
+The ordinary reader still verifies both original signed event bodies, with the
+original export preserved. The final stage then uses the original normal runtime
+configuration and `serve --activate-successor --roles control,ingest` for a genuine
+epoch3/topology2 activation. Its predecessor must have exactly three resolved
+requests and cut10; the new producer/source remain open with zero new requests.
+All scientific tables, Index rows/bridge/cuts/sessions, original inputs, Archive
+and export stay exact while only the actual successor lifecycle metadata advances.
+The owner must stop and join normally.
+
+Through an actual TCP `bigbrotr_control` login using the mounted product
+credential, a read-only transaction records current/session users and role flags,
+then requires `require_index_handoff_metadata` to validate the retained bridge.
+The shared `require_index_handoff_authority` guard must return SQLSTATE23514 and
+the exact unsupported-topology diagnostic. This proves that shared guard after a
+genuine transition; it does not attempt native bridge creation or exercise both
+authority branches independently. Critical source review separately binds the
+guard to INSERT and deferred COMMIT. Other product SQL/native controls retain
+their refusal matrix.
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-index-live-topology \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-index-live-topology
+```
+
+Portable controls are discovered by CI and can be run with
+`cd tests/acceptance && python3 -B -m unittest test_first_launch_index_live`.
+The installed live variant remains **NOT_RUN** pending its exact-source product
+and fixture reviews and an actual engine execution. It does not qualify live
+Archive, arbitrary successor recovery,64-history readiness, broad capacity,
+unknown remote/native outcome resolution or second-event export.
+
 ### Index publication COMMIT uncertainty
 
 The fresh `p01-first-launch-index-commit-before` and

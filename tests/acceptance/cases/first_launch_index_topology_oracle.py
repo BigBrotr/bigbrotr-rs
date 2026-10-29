@@ -169,28 +169,19 @@ def catch_up(before, after, report, science, schema, root, actual, *, retry=Fals
                   'consumer_frontier_revisions','consumer_frontiers'):
         assert all(row in after[table] for row in before[table]),table
     index.exact(before['projection_generations'],after['projection_generations'])
-    generation=index.only(after['projection_generations'])
-    binding=tuple(index.raw(generation[key]) for key in ('dataset_id','owner_resource_id','generation_id',
-        'storage_incarnation','table_identity_digest','custody_binding_digest'))+(1,)
-    dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
+    consumer_id=index.only(after['projection_generations'])['owner_resource_id']
     preserve_consumer_identity(before,after,consumer_id)
-    consumer=index.only(after['consumers'],consumer_role='index')
-    assert consumer['consumer_id']==consumer_id and consumer['dataset_id']==dataset
-    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[8,1])
-    owners=sorted((r for r in after['owner_epochs'] if r['role']=='index'),key=lambda r:r['epoch'])
-    index.exact([r['epoch'] for r in owners],list(range(1,owner_epoch+1)))
-    publisher=owners[1]
-    rows=physical_rows(actual,science,generation_id,schema)
-    plans=sorted(after['projection_plans'],key=lambda r:r['frontier_revision'])
-    index.exact([p['frontier_revision'] for p in plans],[1,2,3,4,6,7,8])
-    index.exact([(b['epoch'],b['first'],b['last']) for b in science['batches']],
-                [(1,1,2),(1,3,3),(1,4,7),(1,8,12),(2,1,4),(2,5,9),(2,10,10)])
-    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==70
-    assert len(after['projection_chunk_bounds'])==100 and len(after['index_frontier_plans'])==7
+    result=published_history(after,science,schema,actual,owner_epoch=owner_epoch)
+    catch_up_report(report,index.only(after['projection_generations']),retry=retry)
+    result['exact_retry']=retry
+    return result
+
+
+def bridge_history(after, binding, publisher, generation):
+    """Verify the one receipt-free topology bridge and its atomic zero bound."""
+    dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
     revisions=[r for r in after['consumer_frontier_revisions'] if r['consumer_id']==consumer_id]
     bounds=[r for r in after['consumer_frontiers'] if r['consumer_id']==consumer_id]
-    index.exact(sorted(r['frontier_revision'] for r in revisions),list(range(1,9)))
-    assert len(bounds)==12
     handoff=index.only(after['index_frontier_handoffs'])
     succession=index.only(after['initial_ingest_successions'])
     bridge=handoff_digest(binding,index.raw(succession['owner_resource_id'],16),index.raw(succession['handoff_sha256'],32))
@@ -206,6 +197,40 @@ def catch_up(before, after, report, science, schema, root, actual, *, retry=Fals
                 {k:v for k,v in old_bound.items() if k not in ('xmin','frontier_revision','topology_generation')})
     index.exact([bridge_bounds[1][k] for k in ('shard_id','owner_epoch','last_complete_sequence','attestation_kind','attestation_digest')],
                 [0,2,0,None,None])
+    revision=index.only(revisions,frontier_revision=5)
+    index.exact({k:v for k,v in revision.items() if k not in ('xmin','created_at_us')},dict(consumer_id=consumer_id,
+        frontier_revision=5,dataset_id=dataset,consumer_role='index',topology_generation=1,previous_revision=4,
+        owner_resource_id=consumer_id,owner_epoch=2,owner_incarnation=publisher['process_incarnation'],sealed=True))
+    assert revision['xmin']==handoff['xmin'] and revision['created_at_us']==handoff['committed_at_us']
+    assert len(bridge_bounds)==2 and all(r['xmin']==handoff['xmin'] for r in bridge_bounds)
+    assert not [r for r in after['index_frontier_plans'] if r['frontier_revision']==5]
+    assert not [r for r in after['projection_plans'] if r['frontier_revision']==5]
+    return handoff,revisions,bounds,old_bound
+
+
+def published_history(after, science, schema, actual, *, owner_epoch):
+    """The same typed seven-batch history, whether published live or finitely."""
+    assert type(owner_epoch) is int and owner_epoch in (2,3,4)
+    generation=index.only(after['projection_generations'])
+    binding=tuple(index.raw(generation[key]) for key in ('dataset_id','owner_resource_id','generation_id',
+        'storage_incarnation','table_identity_digest','custody_binding_digest'))+(1,)
+    dataset,consumer_id,generation_id=(generation[key] for key in ('dataset_id','owner_resource_id','generation_id'))
+    consumer=index.only(after['consumers'],consumer_role='index')
+    assert consumer['consumer_id']==consumer_id and consumer['dataset_id']==dataset
+    index.exact([consumer['current_revision'],consumer['current_topology_generation']],[8,1])
+    owners=sorted((r for r in after['owner_epochs'] if r['role']=='index'),key=lambda r:r['epoch'])
+    index.exact([r['epoch'] for r in owners],list(range(1,owner_epoch+1)))
+    publisher=owners[1]
+    rows=physical_rows(actual,science,generation_id,schema)
+    plans=sorted(after['projection_plans'],key=lambda r:r['frontier_revision'])
+    index.exact([p['frontier_revision'] for p in plans],[1,2,3,4,6,7,8])
+    index.exact([(b['epoch'],b['first'],b['last']) for b in science['batches']],
+                [(1,1,2),(1,3,3),(1,4,7),(1,8,12),(2,1,4),(2,5,9),(2,10,10)])
+    assert len(after['projection_plan_chunks'])==len(after['projection_chunks'])==70
+    assert len(after['projection_chunk_bounds'])==100 and len(after['index_frontier_plans'])==7
+    handoff,revisions,bounds,old_bound=bridge_history(after,binding,publisher,generation)
+    index.exact(sorted(r['frontier_revision'] for r in revisions),list(range(1,9)))
+    assert len(bounds)==12
     commitments=batch_history(after,science,rows,binding,publisher,generation)
     # Frontier publication is one transaction, including the bridge's carried
     # attestation and zero successor. No handoff fabricates a physical receipt.
@@ -226,8 +251,7 @@ def catch_up(before, after, report, science, schema, root, actual, *, retry=Fals
         assert len(current)==2
     assert consumer['xmin']==index.only(after['index_frontier_plans'],frontier_revision=8)['xmin']
     recovery_sessions(after,binding,owners,commitments,handoff)
-    catch_up_report(report,generation,retry=retry)
     return dict(format='bigbrotr-installed-index-topology/1',topology_generation=1,source_cuts=[[1,12],[2,10]],
         frontier_revision=8,handoff_revision=5,source_batches=7,committed_chunks=70,chunk_bounds=100,
-        family_counts=dict(zip(index.TARGETS,COUNTS)),index_owner_epoch=owner_epoch,exact_retry=retry,
+        family_counts=dict(zip(index.TARGETS,COUNTS)),index_owner_epoch=owner_epoch,exact_retry=False,
         original_receipts='unchanged',all_typed_fields_equal=True,raw_multiplicity='exact',complete_M1='NOT_RUN')
