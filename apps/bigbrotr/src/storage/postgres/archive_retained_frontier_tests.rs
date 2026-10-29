@@ -435,7 +435,7 @@ fn compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis(
         Err(Error::InvalidInput)
     );
     for count in [1, 7, 64] {
-        for epoch in [3, 255] {
+        for epoch in [2, 3, 255] {
             assert_eq!(
                 require_terminal_in(
                     SuccessorHistoryState::Terminal,
@@ -461,7 +461,10 @@ fn compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis(
         }
     }
     for (state, native, registered, through, count) in [
-        (SuccessorHistoryState::Terminal, 2, 2, 2, 7),
+        (SuccessorHistoryState::Terminal, 1, 1, 1, 7),
+        (SuccessorHistoryState::Terminal, 2, 2, 2, 0),
+        (SuccessorHistoryState::Terminal, 2, 2, 2, 65),
+        (SuccessorHistoryState::Terminal, 2, 3, 2, 64),
         (SuccessorHistoryState::Terminal, 3, 3, 3, 0),
         (SuccessorHistoryState::Terminal, 3, 3, 3, 65),
         (SuccessorHistoryState::Terminal, 3, 4, 3, 7),
@@ -476,45 +479,5 @@ fn compacted_frontier_requires_exact_dataset_catalog_binding_and_terminal_basis(
     assert!(
         f.owner.compacted_check().is_err(),
         "ordinary observation is no compacted authority"
-    );
-}
-
-#[test]
-fn explicit_compacted_archive_basis_accepts_terminal_epoch_two_only_with_exact_floor_count() {
-    for epoch in [2, 3, 255] {
-        for requests in [1, 7, 64] {
-            assert_eq!(
-                require_terminal_in(
-                    SuccessorHistoryState::Terminal,
-                    epoch,
-                    epoch,
-                    epoch,
-                    requests,
-                    true
-                ),
-                Ok(())
-            );
-            assert_eq!(
-                require_terminal_in(
-                    SuccessorHistoryState::Terminal,
-                    epoch,
-                    epoch,
-                    epoch,
-                    requests,
-                    false
-                ),
-                Err(Error::InvalidInput)
-            );
-        }
-    }
-    for requests in [0, 65] {
-        assert_eq!(
-            require_terminal_in(SuccessorHistoryState::Terminal, 2, 2, 2, requests, true),
-            Err(Error::InvalidInput)
-        );
-    }
-    assert_eq!(
-        require_terminal_in(SuccessorHistoryState::Terminal, 2, 3, 2, 64, true),
-        Err(Error::InvalidInput)
     );
 }

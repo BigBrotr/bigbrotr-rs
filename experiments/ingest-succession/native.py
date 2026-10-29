@@ -532,8 +532,7 @@ if producer_floor:
     required_controls['archive_retained_frontier'] = [
         'storage::postgres::control_owner::archive_retained_frontier::tests::' + name for name in [
             'only_complete_terminal_history_is_a_loader_prerequisite',
-            'compacted_history_is_not_an_archive_frontier_prerequisite',
-            'explicit_compacted_archive_basis_accepts_terminal_epoch_two_only_with_exact_floor_count']]
+            'compacted_history_is_not_an_archive_frontier_prerequisite']]
     required_controls['successor_history'] = [
         'storage::postgres::control_owner::successor_history::tests::' + name for name in [
             'terminal_genesis_kind_comes_from_activation_even_at_zero',

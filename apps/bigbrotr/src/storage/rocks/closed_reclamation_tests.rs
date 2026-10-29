@@ -1,7 +1,7 @@
 //! Real native mechanics under synthetic SQL authority. These controls do not
 //! qualify PostgreSQL retirement, COMMIT completion or installed reclamation.
 use super::*;
-use crate::storage::rocks::store::ClosedProducerReclamation;
+use crate::storage::rocks::store::{ClosedProducerReclamation, ResolvedSource};
 
 fn mutation(f: &Fixture) -> OwnedPermit {
     grant(
@@ -38,8 +38,7 @@ fn originals(f: &Fixture) {
         );
     }
 }
-fn original_plan(f: &Fixture) -> ClosedProducerReclamation {
-    originals(f);
+fn original_source(f: &Fixture) -> ResolvedSource<'_> {
     let closing = f
         .recovery
         .observe_closed_producer(
@@ -63,7 +62,11 @@ fn original_plan(f: &Fixture) -> ClosedProducerReclamation {
             .unwrap();
         resolution.record(&resolved).unwrap();
     }
-    let source = resolution.finish().unwrap();
+    resolution.finish().unwrap()
+}
+fn original_plan(f: &Fixture) -> ClosedProducerReclamation {
+    originals(f);
+    let source = original_source(f);
     ClosedProducerReclamation::initial_original(
         &source,
         f.floor,
@@ -82,7 +85,7 @@ fn remaining(f: &Fixture) -> usize {
 
 #[test]
 fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts() {
-    let mut f = fixture();
+    let mut f = fixture_at(bigbrotr_model::TopologyGeneration::new(0));
     let plan = original_plan(&f);
     let before = kv(&f.recovery.store);
     let sequence = f.recovery.store.db.latest_sequence_number();
@@ -124,6 +127,28 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
 }
 #[test]
 fn closed_reclamation_refuses_stale_native_or_inventory_before_unlink() {
+    // Synthetic reader topology1 cannot mint the narrower initial-topology0
+    // mutation capability, even after complete original-request resolution.
+    let f = fixture();
+    originals(&f);
+    let source = original_source(&f);
+    let before = kv(&f.recovery.store);
+    let sequence = f.recovery.store.db.latest_sequence_number();
+    assert!(matches!(
+        ClosedProducerReclamation::initial_original(
+            &source,
+            f.floor,
+            AdmissionLimits::default(),
+            mutation(&f),
+            &grant(&f.budget, 40 * MIB, 0),
+            &AtomicBool::new(false),
+        ),
+        Err(AdmissionError::StateMismatch)
+    ));
+    assert_eq!(kv(&f.recovery.store), before);
+    assert_eq!(f.recovery.store.db.latest_sequence_number(), sequence);
+    assert_eq!(remaining(&f), 4);
+
     for changed_native in [false, true] {
         let mut f = fixture();
         let plan = compacted_plan(&f);
@@ -145,7 +170,11 @@ fn closed_reclamation_refuses_stale_native_or_inventory_before_unlink() {
     // cannot reuse authority authenticated under an earlier native exclusion.
     // Both original and compacted confirmations must obtain a fresh proof.
     for compacted in [false, true] {
-        let mut f = fixture();
+        let mut f = if compacted {
+            fixture()
+        } else {
+            fixture_at(bigbrotr_model::TopologyGeneration::new(0))
+        };
         let plan = if compacted {
             compacted_plan(&f)
         } else {
