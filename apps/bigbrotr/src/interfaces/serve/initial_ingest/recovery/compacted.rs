@@ -1,5 +1,6 @@
-//! Read an already reclaimed initial retirement. This cannot install a floor,
-//! remove detail, acknowledge a request or replace original-input recovery.
+//! Inspect authenticated compacted history and complete residual-input cleanup
+//! through an explicitly confirmed reclamation operation. Observation alone
+//! cannot install a floor, acknowledge requests or replace original-input recovery.
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::CompactedInitialRetirement,
