@@ -350,7 +350,62 @@ def reclaimed(before,after,native_before,native_after,science,report,*,retry=Fal
     return floor
 
 
-def successor_science(before,after,started,first,wires,dump,store,completed):
+def successor_owner(bridge,after,manifest,handoff,job):
+    """Anchor historical admission to the zero-request bridge, not recovery."""
+    live.live_owner_bindings(bridge)
+    for table in ('producer_requests','producer_outcomes','producer_checkpoints'):
+        assert not [r for r in bridge[table] if r['producer_epoch']==2]
+    for table in ('initial_ingest_activations','initial_ingest_successions'):
+        index.exact(bridge[table],after[table])
+    activation=index.only(bridge['initial_ingest_activations'])
+    intent=index.only(bridge['initial_ingest_successions'])
+    dataset=index.only(bridge['datasets'])
+    for key in ('dataset_id','producer_slot_id','producer_epoch','owner_resource_id','target_epoch',
+        'target_incarnation','target_role_instance_id','config_revision','config_digest','policy_revision',
+        'policy_digest','previous_manifest_sha256','target_manifest_sha256','handoff_sha256',
+        'prepared_by_resource','prepared_by_epoch','prepared_by_incarnation'):
+        index.exact(activation[key],intent[key])
+    assert activation['producer_epoch']==activation['target_epoch']==2
+    assert intent['owner_role']=='ingest' and intent['prepared_by_role']=='control'
+    assert activation['dataset_id']==dataset['dataset_id']==job['dataset_id']
+    for kind in ('config','policy'):
+        assert activation[kind+'_revision']==dataset[kind+'_revision']==1
+    assert activation['target_manifest_sha256']=='\\x'+source.sha(manifest)
+    assert activation['previous_manifest_sha256']=='\\x'+source.sha(index.raw(intent['previous_manifest']))
+    assert activation['handoff_sha256']=='\\x'+source.sha(handoff)
+    identity=dict(dataset_id=dataset['dataset_id'],role='control',resource_id=activation['activated_by_resource'],
+        epoch=activation['activated_by_epoch'],process_incarnation=activation['activated_by_incarnation'])
+    original=index.only(bridge['owner_epochs'],**identity)
+    owner=index.only(after['owner_epochs'],**identity)
+    for key in ('role_instance_id','acquired_at_us'):
+        index.exact(original[key],owner[key])
+    assert original['acquired_at_us']<=activation['activated_at_us']<original['lease_expires_at_us']
+    # Abandonment cancels the queued job under a later Control; it does not
+    # transfer the immutable requests, outcomes or checkpoint to that owner.
+    gap=index.only(after['acquisition_gaps'],job_id=job['job_id'])
+    stream=index.only(after['source_streams'],shard_id=0,owner_epoch=2)
+    assert gap['dataset_id']==stream['dataset_id']==dataset['dataset_id']
+    assert gap['producer_slot_id']==activation['producer_slot_id']
+    assert gap['producer_epoch']==gap['source_owner_epoch']==2 and gap['shard_id']==0
+    assert stream['state']=='closed' and gap['last_complete_sequence']==stream['last_complete_sequence']==10
+    assert gap['source_closure_digest']==stream['closure_digest']
+    assert gap['owner_role']==job['owner_role']=='control'
+    assert gap['reason']==job['reason_code']=='activated_initial_producer_abandoned'
+    assert job['state']=='cancelled' and job['job_revision']==gap['previous_job_revision']+2
+    assert job['completed_at_us']==gap['abandoned_at_us']
+    for field in ('resource','epoch','incarnation'):
+        assert gap['previous_owner_'+field]==activation['activated_by_'+field]
+        assert gap['issuer_'+field]==job['owner_resource_id' if field=='resource' else 'owner_'+field]
+    recovery=index.only(after['owner_epochs'],dataset_id=dataset['dataset_id'],role='control',
+        resource_id=gap['issuer_resource'],epoch=gap['issuer_epoch'],process_incarnation=gap['issuer_incarnation'])
+    assert recovery['resource_id']==owner['resource_id'] and recovery['epoch']>owner['epoch']
+    assert recovery['process_incarnation']!=owner['process_incarnation']
+    assert recovery['acquired_at_us']<=gap['abandoned_at_us']<recovery['lease_expires_at_us']
+    assert max(stream['closed_at_us'],job['created_at_us'])<=gap['abandoned_at_us']
+    return owner
+
+
+def successor_science(before,after,bridge,first,wires,dump,store,completed):
     from types import SimpleNamespace
     from initial_succession_oracle import successor_manifest
     from installed_family_science import NetworkScience,decode
@@ -381,7 +436,7 @@ def successor_science(before,after,started,first,wires,dump,store,completed):
     values['default',(b'\x01\x02'+ds+bytes(4)+index.be(2)).hex()]=(b'\x01\x02'+index.be(0)).hex()
     values['receipts',(b'\x01\x31'+slot+index.be(2)).hex()]=(b'\x01\x31'+bytes(24)).hex()
     model=SimpleNamespace(ds=index.only(after['datasets']),slot=intent['producer_slot_id'],legacy=intent,inputs={},
-        native=dict(rows=native_rows(values),sequence=first['compacted_native']['sequence']+4))
+        native=dict(event='dump-state',rows=native_rows(values),sequence=first['compacted_native']['sequence']+4))
     plan=dict(epoch=2,topology=1,manifest=manifest,domains=domains)
     science=NetworkScience(model,plan,acknowledge=True,new_event=new_event,endpoint=source.ENDPOINT)
     originals=source.originals(store,slot.hex(),2,3)
@@ -402,7 +457,7 @@ def successor_science(before,after,started,first,wires,dump,store,completed):
     science.values['receipts',(b'\x01\x31'+slot+index.be(2)).hex()]=(b'\x02\x31'+index.be(3)*2+index.be(0)+b'\x01').hex()
     index.exact(dump['rows'],native_rows(science.values))
     assert dump['sequence']==model.native['sequence']+1
-    owner=index.only(after['owner_epochs'],role='control',epoch=job['owner_epoch'])
+    owner=successor_owner(bridge,after,manifest,handoff,job)
     bindings={2:source.request_binding(new_event,wire,1),3:source.request_binding(first['event'],wire,2)}
     source.requests(after,2,manifest,originals,list(science.receipts.values()),owner,bindings,attribution)
     source.successor_progress(after,manifest,science,job,detail,owner,wire,new_event,completed)

@@ -12,7 +12,7 @@ import threading
 import unittest
 from unittest.mock import Mock, patch
 
-from test_first_launch_restart import fixture
+from test_first_launch_restart import fixture, progress_fixture
 from test_first_launch_index import ROOT, schema, metadata_fixture
 from cases import first_launch_retained as case
 from cases import first_launch_retained_oracle as check
@@ -110,6 +110,72 @@ def saturation_fixture(root):
         head['checkpoint_digest']='\\x'+head_digest(head,[current],dependencies,lambda row:native_reference(row,values)).hex()
         value.update(acquisition_progress=[current],producer_checkpoints=[head])
     return state,before,report,events,wires,dump,wanted
+
+
+def successor_authority_fixture():
+    """Literal owner/recovery split with the existing independent proof fixture."""
+    old,new,manifest,science,_=fixture()
+    proof,job,detail,owner,wire=progress_fixture(new,manifest,science)
+    dataset=science.m.ds['dataset_id'];slot=science.m.slot
+    owner.update(dataset_id=dataset,role='control',state='active',role_instance_id='\\x'+'a5'*16)
+    intent=dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,owner_role='ingest',
+        owner_resource_id='\\x'+'aa'*16,target_epoch=2,target_incarnation='\\x'+'cc'*16,
+        target_role_instance_id='\\x'+'ab'*16,config_revision=1,config_digest='\\x'+'c1'*32,
+        policy_revision=1,policy_digest='\\x'+'c2'*32,previous_manifest=science.m.legacy['previous_manifest'],
+        previous_manifest_sha256='\\x'+source.sha(bytes.fromhex(science.m.legacy['previous_manifest'][2:])),
+        target_manifest_sha256='\\x'+source.sha(manifest),prepared_by_role='control',
+        prepared_by_resource=owner['resource_id'],prepared_by_epoch=owner['epoch'],
+        prepared_by_incarnation=owner['process_incarnation'],xmin='80')
+    handoff=b'independent authority fixture handoff'
+    intent['handoff_sha256']='\\x'+source.sha(handoff)
+    activation={k:v for k,v in intent.items() if k not in ('owner_role','prepared_by_role','previous_manifest','xmin')}
+    activation.update(activated_by_resource=owner['resource_id'],activated_by_epoch=owner['epoch'],
+        activated_by_incarnation=owner['process_incarnation'],activated_at_us=4800,activation_transaction='81',xmin='81')
+    bridge=dict(datasets=[dict(dataset_id=dataset,config_revision=1,policy_revision=1)],
+        owner_epochs=[owner,dict(dataset_id=dataset,role='index',epoch=2,process_incarnation=owner['process_incarnation']),
+            dict(dataset_id=dataset,role='ingest',epoch=2,state='active',resource_id=intent['owner_resource_id'],
+                process_incarnation=intent['target_incarnation'],role_instance_id=intent['target_role_instance_id'])],
+        initial_ingest_successions=[intent],initial_ingest_activations=[activation],
+        index_owner_sessions=[dict(owner_epoch=2,issuer_role='control',issuer_resource=owner['resource_id'],
+            issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'])],
+        producer_requests=[],producer_outcomes=[],producer_checkpoints=[])
+    after=copy.deepcopy(bridge)
+    historical=index.only(after['owner_epochs'],role='control')
+    historical.update(state='released',released_at_us=9000,lease_expires_at_us=25000)
+    recovery=dict(owner,epoch=owner['epoch']+1,process_incarnation='\\x'+'e1'*16,
+        role_instance_id='\\x'+'e2'*16,acquired_at_us=10000,lease_expires_at_us=20000,state='released')
+    after['owner_epochs'].append(recovery)
+    reason='activated_initial_producer_abandoned'
+    job.update(owner_role='control',owner_resource_id=recovery['resource_id'],owner_epoch=recovery['epoch'],
+        owner_incarnation=recovery['process_incarnation'],state='cancelled',job_revision=7,
+        completed_at_us=10500,created_at_us=4600,reason_code=reason)
+    gap=dict(job_id=job['job_id'],dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,
+        shard_id=0,source_owner_epoch=2,last_complete_sequence=10,source_closure_digest='\\x'+'c3'*32,
+        previous_owner_resource=owner['resource_id'],previous_owner_epoch=owner['epoch'],
+        previous_owner_incarnation=owner['process_incarnation'],issuer_resource=recovery['resource_id'],
+        issuer_epoch=recovery['epoch'],issuer_incarnation=recovery['process_incarnation'],owner_role='control',
+        reason=reason,previous_job_revision=5,abandoned_at_us=10500)
+    after.update(acquisition_gaps=[gap],source_streams=[dict(dataset_id=dataset,shard_id=0,owner_epoch=2,
+        state='closed',last_complete_sequence=10,closure_digest=gap['source_closure_digest'],closed_at_us=9500)])
+    after.update(proof)
+    common=dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=2,manifest_sha256='\\x'+source.sha(manifest))
+    observations=dict(relay_endpoint_id='\\x'+'b1'*16,relay_access_scope_id='\\x'+'b2'*16,
+        relay_enrollment_generation=1,relay_route_id='\\x'+'b3'*16,acquisition_scope_id=detail['scope_id'],acquisition_job_id=job['job_id'])
+    bindings={2:source.request_binding(new,wire,1),3:source.request_binding(old,wire,2)}
+    after.update(producer_epochs=[dict(common,outstanding_request_limit=32,reserved_through_request=3)],
+        producer_requests=[],producer_outcomes=[])
+    for n,original in science.inputs.items():
+        receipt=science.receipts[n]
+        after['producer_requests'].append(dict(common,request_sequence=n,request_digest='\\x'+source.sha(original),
+            input_bytes=len(original),input_profile=1,issuer_role='control',issuer_resource=owner['resource_id'],
+            issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],reserved_at_us=5000+n,
+            **(observations if n>1 else dict.fromkeys(observations)),
+            **(bindings[n] if n>1 else dict.fromkeys(source.PROGRESS_FIELDS))))
+        after['producer_outcomes'].append(dict(common,request_sequence=n,request_digest='\\x'+source.sha(original),
+            outcome_kind=1,outcome_bytes='\\x'+receipt.hex(),outcome_sha256='\\x'+source.sha(receipt),policy_epoch=1,
+            recorder_role='control',recorder_resource=owner['resource_id'],recorder_epoch=owner['epoch'],
+            recorder_incarnation=owner['process_incarnation'],recorded_at_us=7000+n,xmin=str(100+n)))
+    return bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations
 
 
 class RetainedBoundaryControls(unittest.TestCase):
@@ -516,6 +582,67 @@ class RetainedBoundaryControls(unittest.TestCase):
 
 
 class ClosedReclamationControls(unittest.TestCase):
+    def test_compacted_successor_uses_anchored_historical_issuer_for_requests_and_progress(self):
+        bridge,after,manifest,handoff,job,science,new,wire,detail,bindings,observations=successor_authority_fixture()
+        owner=check.successor_owner(bridge,after,manifest,handoff,job)
+        self.assertNotEqual(owner['epoch'],job['owner_epoch'])
+        source.requests(after,2,manifest,list(science.inputs.values()),list(science.receipts.values()),owner,bindings,observations)
+        source.successor_progress(after,manifest,science,job,detail,owner,wire,new,9000)
+        recovery=index.only(after['owner_epochs'],role='control',epoch=job['owner_epoch'])
+        for table,prefix in (('producer_requests','issuer'),('producer_outcomes','recorder'),('producer_checkpoints','issuer')):
+            for n in range(len(after[table])):
+                changed=copy.deepcopy(after)
+                changed[table][n].update({prefix+'_resource':recovery['resource_id'],prefix+'_epoch':recovery['epoch'],
+                    prefix+'_incarnation':recovery['process_incarnation']})
+                if table=='producer_checkpoints':
+                    head=changed[table][n]
+                    head['checkpoint_digest']='\\x'+head_digest(head,changed['acquisition_progress'],
+                        changed['producer_checkpoint_dependencies'],lambda row:native_reference(row,science.values)).hex()
+                with self.subTest(table=table,row=n),self.assertRaises(AssertionError):
+                    if table=='producer_checkpoints':
+                        source.successor_progress(changed,manifest,science,job,detail,owner,wire,new,9000)
+                    else:
+                        source.requests(changed,2,manifest,list(science.inputs.values()),list(science.receipts.values()),owner,bindings,observations)
+
+    def test_compacted_successor_anchor_refuses_rewritten_receipts_and_missing_or_duplicate_activation(self):
+        bridge,after,manifest,handoff,job,*_=successor_authority_fixture()
+        for table,fields in (('initial_ingest_activations',('activated_by_resource','activated_by_epoch','activated_by_incarnation',
+                'target_epoch','target_incarnation','target_role_instance_id','target_manifest_sha256','previous_manifest_sha256',
+                'handoff_sha256','config_digest','policy_digest','xmin','activation_transaction')),
+                ('initial_ingest_successions',('target_incarnation','handoff_sha256','xmin'))):
+            for field in fields:
+                changed=copy.deepcopy(after);row=changed[table][0]
+                row[field]=row[field]+1 if type(row[field]) is int else row[field]+'00'
+                with self.subTest(table=table,field=field),self.assertRaises(AssertionError):
+                    check.successor_owner(bridge,changed,manifest,handoff,job)
+        for rows in ([],after['initial_ingest_activations']*2):
+            changed=copy.deepcopy(after);changed['initial_ingest_activations']=rows
+            with self.assertRaises(AssertionError):check.successor_owner(bridge,changed,manifest,handoff,job)
+        changed=copy.deepcopy(after);recovery=index.only(changed['owner_epochs'],role='control',epoch=job['owner_epoch'])
+        activation=changed['initial_ingest_activations'][0]
+        activation.update(activated_by_epoch=recovery['epoch'],activated_by_incarnation=recovery['process_incarnation'])
+        for row in changed['producer_requests']:row.update(issuer_epoch=recovery['epoch'],issuer_incarnation=recovery['process_incarnation'])
+        with self.assertRaises(AssertionError):check.successor_owner(bridge,changed,manifest,handoff,job)
+
+    def test_compacted_successor_recovery_does_not_replace_or_mutate_the_historical_anchor(self):
+        bridge,after,manifest,handoff,job,*_=successor_authority_fixture()
+        mutations=[lambda b,a,j:b['producer_requests'].append(dict(producer_epoch=2)),
+            lambda b,a,j:b['index_owner_sessions'][0].update(issuer_incarnation='wrong'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(acquired_at_us=4501),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(dataset_id='foreign'),
+            lambda b,a,j:a['acquisition_gaps'][0].update(previous_owner_epoch=j['owner_epoch']),
+            lambda b,a,j:a['acquisition_gaps'][0].update(issuer_incarnation='wrong'),
+            lambda b,a,j:a['acquisition_gaps'][0].update(source_closure_digest='wrong'),
+            lambda b,a,j:a['acquisition_gaps'][0].update(last_complete_sequence=9),
+            lambda b,a,j:a['acquisition_gaps'][0].update(previous_job_revision=4),
+            lambda b,a,j:j.update(owner_incarnation='wrong'),lambda b,a,j:j.update(completed_at_us=10501),
+            lambda b,a,j:j.update(reason_code='wrong'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=j['owner_epoch']).update(process_incarnation='wrong')]
+        for n,mutate in enumerate(mutations):
+            b,a,j=copy.deepcopy((bridge,after,job));mutate(b,a,j)
+            with self.subTest(mutation=n),self.assertRaises((AssertionError,ValueError)):
+                check.successor_owner(b,a,manifest,handoff,j)
+
     def test_shared_spool_size_uses_real_shared_metadata_at_exact32MiB(self):
         from installed_archive import files
         with tempfile.TemporaryDirectory() as temporary:

@@ -612,7 +612,7 @@ class ReclamationRuntime(RetainedRuntime):
         self.retired_successor,_=self.capture(output,'retired')
         live_oracle.publication_unchanged(live,self.retired_successor)
         self.final_native=self.native_capture('successor-native')
-        self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,started,self.retained_science,
+        self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,self.compacted_bridge,self.retained_science,
             self.successor_wires,self.final_native,self.state/'data/ingest',time.time_ns()//1000)
         self.all_input_files=self.files(self.state/'data/ingest/producer-inputs-v1')
         self.complete_index_state=self.retired_successor

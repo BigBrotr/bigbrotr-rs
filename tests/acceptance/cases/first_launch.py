@@ -70,6 +70,23 @@ def load(path):
     return json.loads(path.read_text())
 
 
+def failure_trace(error, source):
+    """Record source locations only; omit frames outside the selected tree."""
+    source = source.resolve()
+    frames = []
+    frame = error.__traceback__
+    while frame is not None:
+        try:
+            relative = Path(frame.tb_frame.f_code.co_filename).resolve().relative_to(source)
+        except ValueError:
+            pass
+        else:
+            frames.append(dict(file=relative.as_posix(), line=frame.tb_lineno,
+                               function=frame.tb_frame.f_code.co_name))
+        frame = frame.tb_next
+    return frames
+
+
 def check_container(info, entry, owner, project, state):
     """A name is only a creation intent; labels, ID and mounts establish custody."""
     require(info['Name'] == '/' + entry['name'], 'container name changed')
@@ -1097,7 +1114,8 @@ def first_launch(args, checks, inputs):
         stage_checks[current]['detail'] = str(error)
     except (Exception, KeyboardInterrupt) as error:
         stage_checks[current].update(result='FAIL', detail=type(error).__name__)
-        save(args.evidence / 'failure.json', dict(stage=current, error_type=type(error).__name__, reason=str(error)))
+        save(args.evidence / 'failure.json', dict(stage=current, error_type=type(error).__name__, reason=str(error),
+                                                traceback=failure_trace(error, args.source_root)))
     finally:
         try:
             if runtime is not None:
