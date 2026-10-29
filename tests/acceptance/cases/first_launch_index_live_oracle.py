@@ -39,6 +39,24 @@ def append_only_history(before, after):
         assert all(row in after[table] for row in historical),table
 
 
+def live_owner_bindings(state):
+    control=index.only(state['owner_epochs'],role='control',state='active')
+    publisher=index.only(state['owner_epochs'],role='index',epoch=2)
+    ingest=index.only(state['owner_epochs'],role='ingest',epoch=2)
+    succession=index.only(state['initial_ingest_successions'])
+    activation=index.only(state['initial_ingest_activations'])
+    session=index.only(state['index_owner_sessions'],owner_epoch=2)
+    assert control['process_incarnation']==publisher['process_incarnation']
+    assert ingest['state']=='active' and succession['target_epoch']==activation['target_epoch']==2
+    assert ingest['resource_id']==succession['owner_resource_id']==activation['owner_resource_id']
+    assert ingest['process_incarnation']==succession['target_incarnation']==activation['target_incarnation']
+    assert ingest['role_instance_id']==succession['target_role_instance_id']==activation['target_role_instance_id']
+    assert session['issuer_role']=='control'
+    for field,actual in (('resource',control['resource_id']),('epoch',control['epoch']),
+                         ('incarnation',control['process_incarnation'])):
+        assert activation['activated_by_'+field]==session['issuer_'+field]==actual
+
+
 def retained_bridge(before, after, root):
     """A real zero bridge precedes any epoch2 request or physical batch."""
     index.validate_metadata(before,root,complete=True)
@@ -58,10 +76,7 @@ def retained_bridge(before, after, root):
     index.exact([r['epoch'] for r in owners],[1,2])
     publisher=owners[1]
     assert publisher['state']=='active'
-    control=index.only(after['owner_epochs'],role='control',state='active')
-    ingest=index.only(after['owner_epochs'],role='ingest',epoch=2)
-    assert control['process_incarnation']==publisher['process_incarnation']==ingest['process_incarnation']
-    assert ingest['state']=='active'
+    live_owner_bindings(after)
     for epoch,producer_state,source_state,last in ((1,'retired','closed',12),(2,'open','open',None)):
         assert index.only(after['producer_epochs'],producer_epoch=epoch)['state']==producer_state
         source=index.only(after['source_streams'],owner_epoch=epoch)
@@ -171,7 +186,7 @@ def later_topology(before, after, report, *, stopped=False):
     assert control['epoch']==max(r['epoch'] for r in before['owner_epochs'] if r['role']=='control')+1
     assert control['state']==('released' if stopped else 'active') and ingest['state']=='active'
     assert (control['released_at_us'] is not None)==stopped
-    assert ingest['epoch']==3 and control['process_incarnation']==ingest['process_incarnation']
+    assert ingest['epoch']==3
     assert ingest['resource_id']==index.only(before['owner_epochs'],role='ingest',epoch=2)['resource_id']
     assert control['process_incarnation'] not in {r['process_incarnation'] for r in before['owner_epochs']}
     index.exact(sorted(r['role'] for r in added['role_instances']),['control','ingest'])

@@ -76,9 +76,10 @@ def later_topology_fixture():
         source_streams=[dict(owner_epoch=2,state='closed',last_complete_sequence=10,closure_digest='\\x'+'99'*32)],
         index_frontier_plans=[dict(frontier_revision=8,xmin='8')],archive_attempts=[dict(attempt_id='old')])
     after=copy.deepcopy(before);after['datasets'][0].update(topology_generation=2,xmin='2')
-    incarnation='\\x'+'33'*16;control_role='\\x'+'c0'*16;ingest_role='\\x'+'d0'*16
+    control_incarnation='\\x'+'33'*16;incarnation='\\x'+'44'*16
+    control_role='\\x'+'c0'*16;ingest_role='\\x'+'d0'*16
     after['owner_epochs'] += [dict(dataset_id=ds,role='control',epoch=11,state='active',released_at_us=None,
-        process_incarnation=incarnation,role_instance_id=control_role),dict(dataset_id=ds,role='ingest',epoch=3,
+        process_incarnation=control_incarnation,role_instance_id=control_role),dict(dataset_id=ds,role='ingest',epoch=3,
         state='active',resource_id=resource,process_incarnation=incarnation,role_instance_id=ingest_role)]
     after['role_instances']=[dict(dataset_id=ds,role=role,role_instance_id=key,retired_at_us=None)
                              for role,key in (('control',control_role),('ingest',ingest_role))]
@@ -98,9 +99,9 @@ def later_topology_fixture():
         producer_slot_id=slot,target_manifest_sha256='manifest3',handoff_sha256='handoff3')]
     after['ingest_activations']=[dict(dataset_id=ds,target_epoch=3,target_incarnation=incarnation,
         target_role_instance_id=ingest_role,target_manifest_sha256='manifest3',handoff_sha256='handoff3',
-        activated_by_epoch=11,activated_by_incarnation=incarnation)]
+        activated_by_epoch=11,activated_by_incarnation=control_incarnation)]
     report=dict(format='bigbrotr-ingest-successor/1',state='activated',dataset_id='11'*16,
-        owner_resource_id='55'*16,producer_slot_id='77'*16,producer_epoch='3',process_incarnation='33'*16,
+        owner_resource_id='55'*16,producer_slot_id='77'*16,producer_epoch='3',process_incarnation='44'*16,
         role_instance_id='d0'*16,config_revision='1',policy_revision='1',outstanding_request_limit='32',
         acquisition='not-started',ready=False,predecessor=dict(producer_epoch='2',resolved_requests='3',
             last_complete_sequence='10',sha256='99'*32))
@@ -108,6 +109,28 @@ def later_topology_fixture():
 
 
 class LiveIndexTopologyControls(unittest.TestCase):
+    def test_live_owner_binding_accepts_independent_ingest_target_and_refuses_wrong_issuer(self):
+        state=dict(owner_epochs=[dict(role='control',state='active',resource_id='control',epoch=9,
+            process_incarnation='control-index'),dict(role='index',epoch=2,process_incarnation='control-index'),
+            dict(role='ingest',epoch=2,state='active',resource_id='ingest',process_incarnation='native-target',
+                 role_instance_id='native-role')],
+            initial_ingest_successions=[dict(target_epoch=2,owner_resource_id='ingest',
+                target_incarnation='native-target',target_role_instance_id='native-role')],
+            initial_ingest_activations=[dict(target_epoch=2,owner_resource_id='ingest',target_incarnation='native-target',
+                target_role_instance_id='native-role',activated_by_resource='control',activated_by_epoch=9,
+                activated_by_incarnation='control-index')],
+            index_owner_sessions=[dict(owner_epoch=2,issuer_role='control',issuer_resource='control',
+                issuer_epoch=9,issuer_incarnation='control-index')])
+        live.live_owner_bindings(state)
+        for table,key,value in [('initial_ingest_activations','target_incarnation','control-index'),
+                ('initial_ingest_activations','target_role_instance_id','wrong-native-role'),
+                ('initial_ingest_activations','activated_by_resource','unrelated-control'),
+                ('initial_ingest_activations','activated_by_epoch',8),
+                ('initial_ingest_activations','activated_by_incarnation','native-target'),
+                ('index_owner_sessions','issuer_incarnation','native-target')]:
+            wrong=copy.deepcopy(state);wrong[table][0][key]=value
+            with self.subTest(table=table,key=key),self.assertRaises(AssertionError):live.live_owner_bindings(wrong)
+
     def test_genuine_later_topology_preserves_science_and_stops_only_the_new_control(self):
         before,after,report=later_topology_fixture()
         live.later_topology(before,after,report)
@@ -124,6 +147,9 @@ class LiveIndexTopologyControls(unittest.TestCase):
             lambda s:s['archive_attempts'][0].update(attempt_id='changed'),
             lambda s:s['topology_streams'][1].update(handoff_last_complete_sequence=9),
             lambda s:s['ingest_successions'][0].update(issued_through=2),
+            lambda s:s['ingest_successions'][0].update(target_incarnation='\\x'+'33'*16),
+            lambda s:s['ingest_activations'][0].update(target_incarnation='\\x'+'33'*16),
+            lambda s:s['ingest_activations'][0].update(activated_by_incarnation='\\x'+'44'*16),
             lambda s:s['owner_epochs'][-1].update(process_incarnation='unrelated-process'),
         )
         for number,change in enumerate(mutations):
