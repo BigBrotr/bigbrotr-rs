@@ -1,137 +1,123 @@
 # Current execution checkpoint
 
-2026-10-29, Tux. **Goal ACTIVE.** Complete P00–P10/M1–M5 and all selected
-optional requirements. The earlier bounded M1 journey is qualified; the complete
-product remains incomplete. Q37/Q38/Q40/Q41/Q42 apply. No official release,
-package publication or production deployment is authorized.
+2026-10-29, Tux. **Goal ACTIVE:** complete all selected P00–P10/M1–M5 work.
+The earlier bounded signed-event admission/archive/read/export/restart journey is
+qualified; the whole product remains incomplete. Q37/Q38/Q40/Q41/Q42 apply.
+No official release, package publication or production deployment is authorized.
 
 ## Source and integration
 
-Last verified public main is `5cc9cbb188378093f97d64f3e51ff11444934b98`.
-Pre-integration main is `8df6fa83`; this integration carries verified acceptance
-Y below and the current instructions. The merged workspace's complete apps,
-crates, vendor, Cargo/toolchain, contracts/config and build helper equal qualified
-product X. Remaining differences from X are documentation and the reviewed
-NoSigner identity rebind. No product rebuild is required for those differences.
+Public main is `698c02e7a44884e3ffdde9f333eaef76e46be89c`; the local checkpoint
+increment changes only documentation/evidence/inventory above that base. Its Rust inputs
+are qualified productX `7d8e5998`; assembly/acceptanceY is `b74c2508`. The closed64
+reclamation/compacted consumer/retry/history/export case passes11/11, same-product
+tutorial7/7. Detailed source/native/terminal evidence and original failures live
+in the [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.closed_initial_reclamation`; resource custody lives in the
+[inventory](../research/laboratory-inventory.json). Frozen historical worktrees,
+`.research`, databases and failures remain retained there.
 
-Public pending-work backup `work/closed-reclamation` reachesYb74 after a
-zero-finding incremental scan of two commits/seven blobs/132963bytes. Preserve
-current source/evidence through main publication and actual hosted qualification.
+Next productX is `8653849d178e8adf20589b22ece411959f948673` (production7cb96f15,
+explicit native scope8653849d), apps `7c6f6d8fcf4f2f9a14987f7fa9c6225aac3e8415`.
+Assembly/acceptanceY is `891a91139721af70f556d2fca7756c021f6a92c9`: reviewed
+harness2ea5bf5b, contracts c0360bc4 and literal-only tutorial identity rebind.
 
-Frozen product X: `7d8e5998b0d37fdff68e25704e9812481e56f2dd`, tree
-`dba9e50504b994c72f27577edcb0858f549f19cf`, apps
-`9725e15e307dba0bf56ad31e77b07a746f262b84`, worktree
-`.research/initial-history-items-product-qualified-20261029`, branch
-`work/initial-history-items-product-qualification`.
+All three author/qualification worktrees are preserved:
 
-Frozen acceptance Y: `b74c25080c35fbc092259abd4d644b72c6e9a39e`, worktree
-`.research/initial-history-items-acceptance-qualified-20261029`, branch
-`work/initial-history-items-acceptance-qualification`. Author
-`.research/closed-reclamation-20261029` / `work/closed-reclamation` is clean atY.
-Y changes only the reviewed tutorial product/apps/label and matching document
-literal; normalized helper AST and nine Nostr paths are unchanged, profile control
-passes. All compiled inputs remain X. Product, assembly and acceptance identities
-must remain separate; no new candidate is assembled yet.
+- `.research/unbound-retained-recovery-20261029`, branch
+  `work/unbound-retained-recovery`, clean8653849d.
+- `.research/unbound-retained-acceptance-20261029`, branch
+  `work/unbound-retained-acceptance`, cleanc0360bc4.
+- `.research/unbound-retained-qualification-20261029`, branch
+  `work/unbound-retained-qualification`, clean891a9113.
+
+The main checkpoint increment has documentation/evidence/inventory changes only. New product work
+has not been integrated or pushed. Keep public main stable until hosted run completion;
+no duplicate dispatch/push cancellation. Sol/xhigh authored both bounded changes;
+Astra/xhigh closed source/scope reviewa2380b05 and harness/contracts review866a6010
+without blockers. Those authors are complete; only the read-only CI watcher runs.
 
 ## Current capability and evidence
 
-The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction`,
-owns original failures, source bindings, reviews and detailed receipts.
+The new report entry `unbound_replacement_recovery` owns detailed proofs/limits.
+One exact later unbound retained replacement is provisional; only strict full-EOF
+Present permits adoption. Complete Absent continues the original strict read
+under the same admitted job, absolute deadline, cancellation and custody. Errors
+refuse. Candidate B still requires its own canonical seal/fresh Present/membership
+and all-attempt reconciliation before planning. Multiple valid candidates retain
+the ordinary original path; grouped recovery remains required.
 
-On previous productf5, actual native240/37, separate worker singleton, fresh parent/
-observer, both focused PG renewal schedules and installed tutorial7/7 pass.
-Fullcase11073 passes closed64 reclamation, native/SQL interruption controls,
-compacted epoch2 successor, both consumers and exact Archive/Index retries, but
-ends **10PASS/1FAIL** at history/export startup observation. Its terminal audit
-and tutorial31197 verify all owned processes/containers joined, pins and empty
-borrowed bridge. All original failures, including older efd/c656 outcomes, remain
-unaltered. These results do not qualify the new X product.
+Native21693 is reaped/audited PASS244/38 (136library/108binary): all241 prior
+controls plus3 new. Separate strict worker compiles/executes exact1/0ignored.
+Clippy/compile/test-compile pass in the same230.44665s run. Receipts d2e504f5 and
+6677b86c are under `.research/initial-index-recovery-qualification-20261028/`
+`r28-8653849d-native`. Parent25280 and observer91697 are reaped/audited PASS,
+receipts88b633ae/713d570f under sibling `installed-8653849d`/`observer-8653849d`.
+Actual source/compiler/assets/worker-before-parent identity is checked.
 
-The last failure exposes a confirmed product accounting defect: ordinary reader
-budget41/42 cannot retain67 selected input grants. The saved100 observations in
-6.220692s are all unavailable/dependency_unavailable; they do not identify the
-precise inner refusal or exclude another cause. X adds the existing MAX_BATCHES128
-to only that item lane, yielding169/170. Byte/native/control/process/host caps,
-readiness, custody, cancellation and joins are unchanged. Critical contractb86ce92b
-and final review14f3e723 are closed without blockers. A new real-ledger Rust
-control covers67/128, count/byte/native/control refusal and close/drop/drain.
-Actual native45878 now passes241/38 (136library,105binary), including that control
-and all240 prior cases; separate worker compiled/executed exact1/0ignored passes.
-Receipts c18c8ee5/87e01ff2 independently bind source/compiler/assets/terminal.
-Eight verifier controls and original-capture refusal remain valid. No observation
-bound or other oracle was relaxed. Installed runtime qualification remains pending.
+Candidate manifest SHA256
+`b2683d51e1289d49629fafd002bd147eb529df740feaa584b16e15b3f336b7d1` is in
+`/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/candidate`.
+X and Y remain distinct. Harness54 portable controls pass. Tutorial profile rebind
+preserves9 Nostr paths/7other code objects and its positive/negative control passes;
+new installed tutorial execution remains NOT_RUN.
 
-## Active operation and resources
+## Active operation and preserved failures
 
-**No local build, engine test, cleanup or delegated job is active.** Native45878,
-parent24282, observer42138, fullcase95624 and tutorial88451 are reaped/audited.
-Fullcase passes11/11 (terminal089fe960), including both compacted consumers,
-exact retries and independent signed history/export; same-product tutorial passes
-7/7 (terminal5832b2be). Owned containers/processes are joined, source/artifact pins
-verified and borrowed bridge empty. These qualify only the declared bounded
-capability, without Ready65/scalable freshness or broader recovery claims.
+**Installed R2 is active; result UNKNOWN.** Exec9701, runner1092163/start3082432,
+root `/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2`.
+Its actual command/identity are saved in the sibling `acceptance-unbound-r2-session.json`.
+It exercises first replacement B4 native COMMIT completion/reply loss before
+frontier binding, then fresh reuse and only64 missing publications, exact retry,
+signed history/export and restart. Do not infer a PASS from successful preparation.
 
-The current external parent is
-`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-7d8e5998`,
-with candidate manifest SHA256
-`0303ed71758fda1c231fef8326935a4fc74775ec341dac6d248bd15a0f6b0e76`,
-`acceptance-closed-r1` and `acceptance-tutorial-r1`. Source X, assembly Y and
-acceptance Y remain separate. The existing qualification prefix
-`.research/initial-index-recovery-qualification-20261028` retains native evidence
-`r27-7d8e5998-native`, parent `installed-7d8e5998` and probe `observer-7d8e5998`.
+R1 exec31615 is preserved FAIL2PASS/2FAIL/7NOT_RUN: root omitted the already declared
+borrowed network, Docker address pools were exhausted before bootstrap, and
+cleanup-network inspection also failed. No application/engine container started;
+the attempted new network was subsequently confirmed absent. The image is retained.
+R2 changes only the explicit `--compose-network bigbrotr-m1-0f80280_default` argument.
+No source/build/oracle/timeout changed. Small metadata-layout refusals are retained
+beside the new native/parent audit receipts; corrected metadata needed no rebuild.
+Older f5/efd/c656 product/fixture failures keep their original outcomes in the report.
 
-Sol/xhigh operations and Astra/xhigh's bounded critical reviews are complete.
-Source review14f3e723 is closed; corrected qualification-guard reviewbf54d274 is
-closed with original false positives retained. Root bound actual audited receipts
-before each serial build. Cache115 is released and original four pins unchanged.
+No local builder or cleanup remains active. Cache115 is released and original four
+pins remain verified. Root owns the installed test resources; leave unrelated
+workloads intact. The borrowed bridge ID remains
+`1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f`;
+it was checked empty before R2 and must be retained/checked after actual cleanup.
 
-The [inventory](../research/laboratory-inventory.json) owns resource custody and
-exact retirement journals. Two cache115 lots recover2,773,737,472B net: historical
-ELF bytes have verified backups, compiler intermediates are reconstructible.
-A further17 redundant unpacked bundles/391files recover3,884,785,664B; all contents
-and modes were checked against retained candidate archives. **Restore a retired
-bundle from its recorded archive before historical path reuse/custody audit.**
-A final30 old native asset copies recover1,022,926,848B; exact bytes remain in
-those candidate archives, with original0644 versus packaged0444 modes recorded
-for restoration. New7d8 assets, shared native inputs, all application/worker/test/
-probe executables, databases, original failure data/logs and source/worktrees are
-preserved. Native Rust intermediates were rebuilt; keep the restored compiler
-cache and prefer verified derived copies for later space recovery. Free72,187,854,848B
-passed the unchanged67GiB floor before fullcase95624; tutorial88451 started above
-its65GiB floor at70,921,637,888B. Check actual headroom before another allocation.
-
-Borrowed bridge `bigbrotr-m1-0f80280_default` /
-`1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f` is retained.
-The maintained full Index case needs **more than67GiB**, tutorial65GiB. Earlier
-fullcaseR1 is preserved NOT_RUN after root incorrectly considered only the base
-65GiB reserve. Documentation gate64460 passes all3checks on clean1947ef2f; its
-prior clean-source prerequisite refusal remains NOT_RUN.
+Space retirement is recorded once in the inventory: old redundant bundles/native
+assets remain reconstructible from retained candidates; restore their recorded
+bytes/modes before historical path reuse/audit. Root dedup24835 recovered an
+actual4,083,879,936B while preserving all1305 historical ELF manifest entries and
+32original pins. Those aliases are immutable archival objects: make private copies
+before future writes; never resume them as compiler target trees. Keep the restored
+compiler cache. Full Index acceptance needs **more than67GiB**, tutorial65GiB;
+reuse the declared bridge and check actual headroom before another allocation.
 
 ## Next action and remaining scope
 
-**Next:** commit this verified main integration, run targeted maintained checks
-on the clean merged source, scan newly reachable publication inputs, push the
-exact main revision and let its required hosted checks finish without duplicate
-push/dispatch cancellation. Record the real run URL/results and preserve any
-failure. Then continue the existing unbound-retained-replacement recovery task;
-all later selected phases remain required.
+Observe R2 and audit actual results, all owned containers/processes, the separately
+owned unbound proxy/driver exclusion, source/candidate pins and borrowed bridge.
+Use the existing terminal auditor with the actual saved runner identity. Preserve
+FAIL/NOT_RUN/unknown outcomes. If qualified, run the same-product tutorial, then
+integrate the coherent verified result and continue grouped recovery.
 
-P02-T02/T06 Steps4/7 now record the qualified closed64/request65/native-science/
-consumer/retry/history/export slice; those whole steps remain open. Replacement committed before current frontier binding
-remains required P02-T04 Step4/P02-T06 Step7/P08 work: proposala90aef4c is saved,
-NOT_IMPLEMENTED/NOT_RUN. Scalable30s freshness/Ready65, OPEN>64/sliding GC,
-arbitrary epochs, payload GC, Archive all-family fallback/replay leases and full
-capacity/recovery remain open. Code202/query retirement, a99 Sync startup and the
-earlier topology HTTP429 uncertainty remain linked in the report.
-
+The ratified contract9bf2061e and grouped attachment3341fd58 are under
+`.research/initial-retained-boundary-20261028/.research/retained-boundary-author`.
+Valid A3absent/B4absent/C5Present remains REQUIRED P02-T04 Step4/P02-T06 Step7/P08;
+the unique slice cannot close it. Scalable30s freshness/Ready65, OPEN>64/sliding GC,
+arbitrary epochs/payload GC, replay/protection/fullcapacity, Code202/query retirement,
+a99 Sync startup and topology HTTP429 uncertainty remain in their existing owners.
 Admission cost, ClickHouse decoding/transport and coordinator maintenance retain
-their P02-T02/T06/T09 and P01-T05 owners. Maintained harness/clean-checkout delivery
-remains P01-T08, P08-T11/T12 and P10-T08/T10; all later selected phases are required.
+P02-T02/T06/T09 and P01-T05 owners. Maintained portable harness/clean-checkout delivery
+remains P01-T08/P08-T11/T12/P10-T08/T10. No whole-P02 barrier or reduced scope is implied.
 
-[Hosted run40814795307](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40814795307)
-passes all30 selected checks on three platforms for public5cc; see the
-[hosted report](evidence/p01-ci-hosted-foundation-20261026.json). It does not qualify
-newer source. No hosted watcher/dispatch is active. Retain cold/default/shipping/
-platform checks; dependency-byte reuse remains unimplemented and duplicate
-equal-input C++ compilation is unproven.
+[Hosted run40936964814](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814)
+qualifies exact public698, attempt1. Scope, macOS7 and ARM649 selected checks pass;
+AMD64 remains running. The watcher alone acquires/scans allowlisted evidence. Earlier
+run40814795307 qualifies only5cc. The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns detailed results. Main publication reviewd12d54ca found no new credential
+fingerprint; accessible new logs/artifacts are separately reviewed. Local integration
+checks retain the original329PASS/1missingLLVM ERROR/2missingstrace SKIP, with only
+affected3 rerun PASS in the pinned image and separate documentation3PASS.

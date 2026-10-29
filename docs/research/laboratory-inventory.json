@@ -76860,6 +76860,92 @@
             "maps": 40,
             "fd": 427
           }
+        },
+        "retained_historical_elf_dedup": {
+          "status": "COMPLETE_PATH_PRESERVING_IMMUTABLE_DEDUP",
+          "session": 24835,
+          "exit_code": 0,
+          "proposal": ".research/initial-index-recovery-qualification-20261028/retention-margin-proposal-20261029.json",
+          "proposal_sha256": "7f6d19426317bce20f05ede016c4b2248dd79d10ff1951e7e4d28e23955db9cc",
+          "critical_review": ".research/initial-index-recovery-qualification-20261028/retention-margin-critical-review-20261029.json",
+          "critical_review_sha256": "91abd639349cf90589f31266a0699a0f2db612e8453e5d6c70b856c7602370f2",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/retained-elf-dedup-20261029.json",
+          "receipt_sha256": "a1c2045c34150bb59d63864497fb9b200a83bee8d65f8aa28168231c36ffb098",
+          "operations": ".research/initial-index-recovery-qualification-20261028/retained-elf-dedup-20261029.jsonl",
+          "operations_sha256": "e53a61adb6db775741ac25d4c169e81a641db3eea6308133c46f810db3ac56ce",
+          "lots": 8,
+          "retired_inode_groups": 946,
+          "preserved_readable_alias_paths": 1077,
+          "manifest_entries_verified": 1305,
+          "old_allocated_bytes": 4085710848,
+          "measured_free_delta": 4083879936,
+          "free_after": 74006937600,
+          "preservation": "All 1305 manifest names/bytes/lengths and promised file metadata, 8 original manifests, 32 original run pins, all canonical/unique/distinct-mtime ELF variants. Cache115/current/source/data/logs/worktrees unchanged. Parent directory mode/owner/xattrs/mtime preserved; inode/ctime/atime sharing necessarily changes.",
+          "future_use": "Immutable archival objects only; never resume as compiler target trees. Make verified private copies before any write. Original inode partition restoration is described in proposal.",
+          "usage": "Exact 11 owner containers stopped/PID0/no restart, no live Docker mount overlap, no accessible path/inode references; inaccessible /proc is not global absence.",
+          "original_preflight_refusal": ".research/initial-index-recovery-qualification-20261028/retained-elf-dedup-preflight-original-refusal-20261029.json"
+        },
+        "unbound_replacement_recovery": {
+          "status": "INSTALLED_R2_RUNNING_REAL_OUTCOME_UNKNOWN",
+          "base": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
+          "product_author": {
+            "worktree": ".research/unbound-retained-recovery-20261029",
+            "branch": "work/unbound-retained-recovery",
+            "owner": "/root/retention_margin_sol",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "xhigh",
+            "revision": "8653849d178e8adf20589b22ece411959f948673"
+          },
+          "acceptance_author": {
+            "worktree": ".research/unbound-retained-acceptance-20261029",
+            "branch": "work/unbound-retained-acceptance",
+            "owner": "/root/unbound_replacement_acceptance_sol",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "xhigh",
+            "revision": "c0360bc424fcd8fe8ca0078036736181cd3d1ef6"
+          },
+          "contract": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/contract-unbound-retained-replacement-698c02e7.json",
+          "contract_sha256": "9bf2061e7ec0ef9c65bab9209d89a5dcb98f0b2fe219dc28263c1af260f20c7a",
+          "grouped_scope_sha256": "3341fd584676c9a86800d4f59af95b313b7eebcc5ec58c8000e7dc1c662147fa",
+          "engines_builds_cache_locks": "Installed R2 owns current real-engine test resources; native/parent/probe builders reaped and cache lock released. Source/harness authors complete, read-only remote CI watcher active.",
+          "native_preparation": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-native-8653849d",
+            "evidence": ".research/initial-index-recovery-qualification-20261028/r28-8653849d-native",
+            "status": "REAPED_AUDITED_PASS",
+            "cache_lock_or_launch": "Released; original4pins verified",
+            "source_files": 2433,
+            "session": 21693,
+            "exit_code": 0,
+            "receipt_sha256": "d2e504f5570997c9bf49b8be82f1d5b3e778c93d94070082d7d09c47929f6d82",
+            "worker_receipt_sha256": "6677b86cd9d22db9d472e149a1115d72daa2af7c133d2da18e7534cd08bfa8dc"
+          },
+          "qualification": {
+            "worktree": ".research/unbound-retained-qualification-20261029",
+            "branch": "work/unbound-retained-qualification",
+            "head": "891a91139721af70f556d2fca7756c021f6a92c9",
+            "candidate_manifest_sha256": "b2683d51e1289d49629fafd002bd147eb529df740feaa584b16e15b3f336b7d1"
+          },
+          "installed_parent": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d",
+            "status": "STOPPED_RETAINED_BUILD_PASS",
+            "session": 25280,
+            "receipt": ".research/initial-index-recovery-qualification-20261028/installed-8653849d/build-receipt.json",
+            "receipt_sha256": "88b633aec51beb9233084cad208c7bbcdcf42f20a8c8020e868e62950c920da4"
+          },
+          "observer": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-observer-8653849d",
+            "status": "STOPPED_RETAINED_BUILD_PASS",
+            "session": 91697,
+            "receipt_sha256": "713d570fe619052d60382fc5a993a85ff4fff071cc4661b1c1c7ccb3f564403f"
+          },
+          "acceptance_r2": {
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2",
+            "session": 9701,
+            "runner_pid": 1092163,
+            "runner_start_ticks": 3082432,
+            "status": "RUNNING",
+            "source": "891a91139721af70f556d2fca7756c021f6a92c9"
+          }
         }
       }
     }

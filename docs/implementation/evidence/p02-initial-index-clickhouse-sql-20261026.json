@@ -3177,7 +3177,22 @@
                 "merge_input": "b74c25080c35fbc092259abd4d644b72c6e9a39e",
                 "qualified_product": "7d8e5998b0d37fdff68e25704e9812481e56f2dd",
                 "code_inputs": "Merged working tree apps/crates/vendor/Cargo/toolchain/contracts/config/build helper identical to qualifiedproductX; remaining8paths are documentation and reviewedNoSigner rebind.",
-                "publication": "Pending exactmaincommit/push andrealhostedchecks at this integration checkpoint."
+                "publication": {
+                  "status": "PUSHED_REAL_HOSTED_RUN_IN_PROGRESS",
+                  "remote": "BigBrotr/bigbrotr-rs/main",
+                  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814",
+                  "attempt": 1,
+                  "hosted_report": "p01-ci-hosted-foundation-20261026.json",
+                  "source_scan_review": ".research/ci-publication-20261026/source-main-698c02e7-20261029/review.json",
+                  "source_scan_review_sha256": "d12d54ca976811d4565191a930695fba3072967f903b9e9e816343002b2fa1fb",
+                  "scope": "Incremental new reachable main history: no new credential fingerprint; repeated benign existing inventory status literal explicitly triaged. Hosted logs/artifacts remain separately under review."
+                },
+                "revision": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
+                "local_targeted_checks": {
+                  "reconciliation": ".research/initial-index-recovery-qualification-20261028/integrated-698c02e7-checks/reconciliation.json",
+                  "sha256": "dc2c166825e4bbd7c59c68e2d6ccdb2d65560f1ff18d0ef8d3ddc5ebfb59563a",
+                  "result": "Original host 329PASS/1missingLLVM ERROR/2missingstrace SKIP preserved; only affected3 rerun in pinned native image 3PASS/0SKIP. Separate documentation3PASS. Not claimed one allPASS host invocation."
+                }
               }
             }
           },
@@ -3188,6 +3203,102 @@
             "sha256": "a90aef4cec74b781380a6db39b77c13fa5b4d3166a5dea98d11b560ab0825609",
             "scope": "Unique complete same-semantic/header persisted Control candidate, original resolver then strictPresent/fullEOF, own candidateSealed/membership and full reconciliation before effects. Ambiguous multiple unbound candidates remain outside this minimal proposal; no recovery completion claim."
           }
+        }
+      },
+      "unbound_replacement_recovery": {
+        "status": "SOURCE_CRITICAL_REVIEW_AND_NATIVE_PASS_INSTALLED_NOT_RUN",
+        "owners": [
+          "P02-T04 Step4",
+          "P02-T06 Step7",
+          "P08"
+        ],
+        "base": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
+        "product": "8653849d178e8adf20589b22ece411959f948673",
+        "production_commit": "7cb96f15d452adda3a3b7a87688696760a236fca",
+        "apps": "7c6f6d8fcf4f2f9a14987f7fa9c6225aac3e8415",
+        "critical_review": ".research/unbound-retained-recovery-20261029/.research/unbound-retained-critical-review-8653849d.json",
+        "critical_review_sha256": "a2380b05f1a49b4f6b4c8c879a40ec0a8d0d0236039810c6e48b2c5521bf4f8c",
+        "change": "One exact later unbound candidate is provisional; only strict fullEOF Present adoption, fullEOF Absent continues original strict A within same job/deadline/custody, all errors refuse. All actual requests/headers/bindings checked; candidate own canonical sealing/freshPresent/membership and allattempt reconcile before plan. Multiple valid candidates retain strict original path. No protocol/limit/timeout changed.",
+        "native": {
+          "session": 21693,
+          "exit_code": 0,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-native-8653849d",
+          "source_manifest_sha256": "3f1205817e7974e72b2a80918c99d45403c85b0d3aeca3fb0389823e896c37d9",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/r28-8653849d-native/receipt.json",
+          "receipt_sha256": "d2e504f5570997c9bf49b8be82f1d5b3e778c93d94070082d7d09c47929f6d82",
+          "selected_total": 244,
+          "groups": 38,
+          "library": 136,
+          "binary": 108,
+          "elapsed_seconds": 230.44665041400003,
+          "strict_worker_receipt": ".research/initial-index-recovery-qualification-20261028/r28-8653849d-native/worker-receipt.json",
+          "strict_worker_receipt_sha256": "6677b86cd9d22db9d472e149a1115d72daa2af7c133d2da18e7534cd08bfa8dc",
+          "strict_worker_compiled_executed": 1,
+          "scope": "Real actual application compile/Clippy/unit selection and separate strict worker engine fixture; no installed recovery proof."
+        },
+        "acceptance_author": {
+          "commit": "2ea5bf5bac540389f14ffdc343465784ff318212",
+          "documentation": "c0360bc424fcd8fe8ca0078036736181cd3d1ef6",
+          "portable_controls": "54PASS; original synthetic body-alias failure retained by author",
+          "review": {
+            "status": "CLOSED_NO_BLOCKERS_SOURCE_ONLY",
+            "receipt": ".research/unbound-retained-acceptance-20261029/.research/unbound-retained-author/critical-review-c0360bc4.json",
+            "sha256": "866a6010751b75129d10c42728735010eebcc3b5ee0adc54d98a62ee71ed1a0f"
+          },
+          "installed_fault_recovery": "NOT_RUN"
+        },
+        "next": "Observe actual R2 cut/recovery results and audit all owned processes/containers/proxy/backend/source/candidate pins before integration. Keep original FAIL. Then tutorial and grouped repeated-failure closure under existing P02 owners.",
+        "grouped_remaining": "Valid A3absent/B4absent/C5Present remains REQUIRED, assigned to same P02 owners/P08; unique slice cannot close repeated-failure recovery.",
+        "installed_build": {
+          "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+          "session": 25280,
+          "exit_code": 0,
+          "receipt": ".research/initial-index-recovery-qualification-20261028/installed-8653849d/build-receipt.json",
+          "sha256": "88b633aec51beb9233084cad208c7bbcdcf42f20a8c8020e868e62950c920da4",
+          "elapsed_seconds": 130.27229202099988,
+          "binary_sha256": "bb9c0bb0f3f5a8a86f0251678872b51187fea95b0e93adc2edc548f76bab7821"
+        },
+        "observer": {
+          "status": "PASS_DECLARED_NATIVE_OBSERVER_BUILD",
+          "session": 91697,
+          "exit_code": 0,
+          "receipt": ".research/initial-index-recovery-qualification-20261028/observer-8653849d/receipt.json",
+          "sha256": "713d570fe619052d60382fc5a993a85ff4fff071cc4661b1c1c7ccb3f564403f",
+          "elapsed_seconds": 75.15426016199854
+        },
+        "candidate": {
+          "product": "8653849d178e8adf20589b22ece411959f948673",
+          "assembly": "891a91139721af70f556d2fca7756c021f6a92c9",
+          "worktree": ".research/unbound-retained-qualification-20261029",
+          "branch": "work/unbound-retained-qualification",
+          "manifest": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/candidate/candidate-manifest.json",
+          "sha256": "b2683d51e1289d49629fafd002bd147eb529df740feaa584b16e15b3f336b7d1",
+          "assembly_session": 47186,
+          "assembly_exit_code": 0,
+          "tutorial_binding": "Literal-only source profile rebind to865/apps7c6f6d8f; all9 Nostr paths/7othercodeobjects unchanged; existing positive/negative source-profile control1PASS, runtime tutorial not yet rerun."
+        },
+        "installed_r1": {
+          "status": "FAIL_ENVIRONMENT_NETWORK_SETUP_BEFORE_BOOTSTRAP",
+          "session": 31615,
+          "exit_code": 1,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r1",
+          "counts": {
+            "collected": 11,
+            "executed": 4,
+            "failed": 2,
+            "skipped": 0,
+            "not_run": 7
+          },
+          "classification": "Root omitted already declared --compose-network; Docker address pools exhausted. Runtime image built but no application/engine container created; attempted new network absent after direct inspection. Original cleanup-network FAIL preserved.",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/installed-8653849d/acceptance-unbound-r1-environment-refusal.json"
+        },
+        "installed_r2": {
+          "status": "RUNNING_OUTCOME_UNKNOWN",
+          "session": 9701,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2",
+          "runner_pid": 1092163,
+          "runner_start_ticks": 3082432,
+          "network": "Declared existing bridge bigbrotr-m1-0f80280_default, original ID checked/empty before launch. No source/candidate/build/oracle/deadline change after R1."
         }
       }
     }
