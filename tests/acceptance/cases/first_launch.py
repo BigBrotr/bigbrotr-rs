@@ -475,16 +475,21 @@ class Runtime:
         return json.loads(result.stdout)
 
     def wait(self, test, label, seconds, entry=None, client=None):
+        """Accept an observation within its bound while supplied owners live."""
         deadline = time.monotonic() + seconds
         while True:
+            require(time.monotonic() < deadline, 'timeout: ' + label)
             result = test()
-            if result:
-                return result
             require(time.monotonic() < deadline, 'timeout: ' + label)
             if entry:
                 require(self.inspect(entry)['State']['Running'], 'owner exited before ' + label)
             if client:
                 require(client.poll() is None, 'client exited before ' + label)
+            # Ownership inspection can itself block. Its time belongs to this
+            # observation, including the successful final predicate.
+            require(time.monotonic() < deadline, 'timeout: ' + label)
+            if result:
+                return result
             time.sleep(.05)
 
     def sql(self, database, statement):
