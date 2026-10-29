@@ -1142,18 +1142,32 @@ cut and historical plans. It reuses the retained native/SQL lineage proof and
 one current report version 2 for epoch1/epoch2. Product `ace1b52f`, assembly
 `3d01cc10` and acceptance `cb3d2fec` pass the fifteen-stage installed topology0→1
 journey, with independent rows, receipts, retry and signed history/export. The
-report's `topology_continuation` owns that evidence. Continuous enabled-Index
-successor ownership/current-selection readiness remains required here at Steps4/7,
-with P01-T09 Steps1/2 as composition consumers; finite continuation does not
-qualify it. Close it with actual live successor custody/activation, an explicit
-bridge preserving historical generation/table identities, and readiness against
-the complete closed-epoch1/current-epoch2 vector. Current live publication and
-durable historical verification need distinct SQL authority checks; preserve the
-existing terminal-recovery and closed-but-unretired refusal controls. The initial
-CLI/owner loop, terminal-only source reader and migration0041 handoff guard are
-concrete blockers, not guards to delete blindly. This remains unfinished before
-dependent continuous/current-read claims, without making it a new prerequisite
-for M1's already-qualified finite restart path or implying live Archive machinery.
+report's `topology_continuation` owns that evidence. The bounded live retained-Index
+initial successor now also passes all sixteen
+installed stages on product `6cbe1cb2`, acceptance `1fab2f4b` and the unchanged
+worker-bound candidate. The 210 native controls in 34 groups, strict Clippy/compilation,
+the affected fifteen-stage finite regression and seven-stage outside-checkout tutorial
+also pass at their own recorded scopes. The report's `live_initial_successor`
+owns exact receipts, original R1/R2/R3 FAILs and terminal custody.
+
+Actual live Ingest2 commits bridge5 `[closed1:12, open2:0]` before Sync, publishes
+three successor batches through revision8 and reaches Ready against the complete
+`[closed1:12, current2:10]` vector while producer/source2 remain OPEN. Independent
+science verifies 70 chunks/100 bounds, the original body/resend and new tagged
+event, historical raw rows/xmin, zero-work rebind/retry and signed history/export.
+A genuine epoch3/topology2 activation then preserves the historical bridge:
+actual runtime-role read-only metadata validation succeeds, while the shared
+current-authority guard returns exact 23514 for unsupported topology. Final
+conservation/stop/join checks pass. This exercises the shared guard; native new
+bridge creation and both authority branches independently remain NOT_RUN.
+
+This closes the selected initial live 1→2 composition requirement under Steps4/7
+with P01-T09 Steps1/2 as consumers. Those whole steps remain open for their wider
+recovery/family/capacity duties. It does not qualify arbitrary live Index epochs,
+live Archive, 64-history readiness, handoff-COMMIT uncertainty or general recovery,
+and introduces no prerequisite for M1's already-qualified scoped collection. The
+separate 45s proof phase is an acceptance envelope, not a latency SLA; original
+source/client, query/freshness/cooldown, retry and resource bounds remain unchanged.
 
 - [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
   source identities; replay cannot create new first-admission timestamps.

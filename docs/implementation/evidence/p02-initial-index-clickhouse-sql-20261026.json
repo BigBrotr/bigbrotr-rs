@@ -3,7 +3,7 @@
   "task": "P01-T09 initial Index physical schema and installed publication",
   "date": "2026-10-26",
   "status": "PARTIAL",
-  "summary": "P01-T09 Step5 separate Archive/Index dependency outages now PASS at their recorded scopes. Product99b7d24b/acceptanceabf2d050 passes eight installed Index-stop stages with same-owner source12/Archive4, unavailable Index2/cut3 and retained plan3, exact49 native rows and signed history/export. Native207 controls/32groups, strict Clippy and exact build/observer PASS. Outside-checkout tutorial/listener/capability negatives and current documentation keep M1 open; continuous enabled-Index successor/current-selection remains required at P02-T06 Steps4/7 and P01-T09 composition; historical evidence and original failures remain unchanged.",
+  "summary": "Bounded retained enabled-Index initial succession now PASS on product 6cbe1cb2/acceptance 1fab2f4b: all 16 installed stages, actual zero-point bridge/full-vector live Ready, exact science/rebind/retry/history/export and genuine later-topology historical/current-authority distinction. Native 210/34 groups, maintained build, affected finite 15 and same-product outside-checkout tutorial 7 also PASS. R1/R2/R3 remain FAIL at their exact scopes. P02 general recovery/capacity and the complete selected product remain open; M1 scoped collection is qualified separately.",
   "scope": "Original SQL diagnostic uses native SQL client on isolated ClickHouse26.8.35.10. The separately identified installed_application extension exercises the actual packaged Rust HTTP/RowBinary adapter, Control transactions and signed-event journey; historical SQL results are unchanged.",
   "source": {
     "physical_revision": "1edf3777b9fa4b724b34d3a76703f034a4297ea1",
@@ -1056,12 +1056,10 @@
           "limits": "Original r2 HTTP429 causal branch UNKNOWN; successful r3 does not identify it. General handoff/recovery, current-selection readiness, continuous successor composition and complete M1 are not claimed."
         }
       ],
-      "next": "Audit/push integrated source and observe real GitHub CI; next product requirement is P01-T09 Step5 independent outages, after its focused source/contract assessment.",
+      "next": "Finite proof remains historical and is requalified on6cbe under live_initial_successor. Separate outages/tutorial and bounded live initial successor now have their own qualifications.",
       "remaining": [
-        "Continuous enabled-Index successor composition and current-selection readiness",
-        "Handoff-COMMIT uncertainty",
-        "Continuous combined successor Index ownership and current-selection readiness",
-        "Broader topology/unknown-query/native-termination/outage/capacity guarantees remain with their existing tasks"
+        "The original finite execution alone does not qualify live ownership; see live_initial_successor for the later bounded1\u21922 result.",
+        "Handoff-COMMIT uncertainty, arbitrary live epochs, broader topology/unknown-query/native-termination/outage/capacity guarantees remain with existing tasks."
       ],
       "actual_review": {
         "path": ".research/index-restart-acceptance-20261027/.research/publication-commit-source-review-20261028/receipt-index-topology-actual-r3.json",
@@ -1456,11 +1454,215 @@
       "not_run": [
         "Backend restoration/automatic recovery/general remote exclusion",
         "Dynamic pending-byte hysteresis, empirical capacity and full M1",
-        "Hosted CI for this new increment; preceding56768c3b run remains independently pending"
+        "Hosted qualification of newer 6cbe source remains NOT_RUN; hosted e102 foundation PASS is recorded separately in p01-ci-hosted-foundation-20261026.json."
       ],
       "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.index_backend_outage",
-      "next": "P01-T09 Steps6/7: outside-checkout initial tutorial, actual listeners, scoped no Nostr signing/publication and unavailable-capability negatives, current docs. Continuous enabled-Index/current-vector composition remains required under P02-T06 Steps4/7 and P01-T09 consumers, not a new prerequisite to the qualified finite M1 restart."
+      "next": "P01-T09 Steps6/7 tutorial is qualified separately. Bounded live initial Index succession is recorded in live_initial_successor; general restoration/remote exclusion/capacity remain open."
+    },
+    "live_initial_successor": {
+      "status": "PASS_BOUNDED_LIVE_INITIAL_SUCCESSOR_ALL16_STAGES",
+      "owners": "P02-T06 Steps4/7; P01-T09 Steps1/2 composition consumers",
+      "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+      "acceptance_revision": "1fab2f4bc026785a07992e91779767e28d74f689",
+      "fixture_revision": "4cd3f9ad47dd8b2d0c0c67641a9cb64fd15cb2e2",
+      "scope": "One actual retained enabled-Index Ingest1\u21922 activation, current full-vector readiness, finite historical rebind/retry and genuine later topology historical/current-authority distinction. No live Archive or arbitrary live Index epoch.",
+      "qualification": {
+        "native": {
+          "status": "PASS",
+          "controls": 210,
+          "library": 123,
+          "binary": 87,
+          "groups": 34,
+          "receipt": {
+            "path": ".research/initial-index-recovery-qualification-20261028/r16-6cbe1cb2/receipt.json",
+            "sha256": "ec595ae91bb5248a55f45a3fb0f13102a43307d6cbef656c7d321d861e44cc60"
+          },
+          "scope": "Compilation, strict Clippy including tests and every exact selected native control; not full workspace or engine execution."
+        },
+        "installed_build": {
+          "status": "PASS",
+          "receipt": {
+            "path": ".research/initial-index-recovery-qualification-20261028/installed-6cbe1cb2/build-receipt.json",
+            "sha256": "309564ee7eb3b1c79c93c0433b0fabda4d1c28fc677fba2e63b5cd52c2ca1741"
+          },
+          "scope": "Fresh maintained worker-before-parent build. Reused unchanged for all installed executions; no rebuild for verifier-only fixes."
+        },
+        "candidate": {
+          "manifest": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/candidate/candidate-manifest.json",
+            "sha256": "7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb"
+          },
+          "assembly_revision": "340b4b54f8087966002cfab76ccb50b594810b6b",
+          "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+          "reuse": "Same 6cbe binary/worker and 7c31 candidate throughout; acceptance checkout revisions remain separately recorded."
+        },
+        "finite_regression": {
+          "status": "PASS_ALL15_STAGES",
+          "acceptance_revision": "340b4b54f8087966002cfab76ccb50b594810b6b",
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-finite-r1/root-terminal.json",
+            "sha256": "dadc128035e4a02f0d1a63808086a3442474d40eabd78248666e877b9704172d"
+          },
+          "scope": "Actual terminal handoff/closed-unretired refusal, runtime ACL, 70 chunks/100 bounds, science/history/export and zero-work retry; separate from live proof."
+        },
+        "tutorial_regression": {
+          "status": "PASS_ALL7_STAGES",
+          "acceptance_revision": "441d332e791f25bd0ef36f2c553076433820d1a7",
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-tutorial-r1/root-terminal.json",
+            "sha256": "96dae4c73444242d2661af2bc276da7eb3cf148e34acfafda47c71c6d472ad55"
+          },
+          "scope": "Same 6cbe/candidate: external runtime, exact 353-byte signed export, 25 complete controlled-peer transcripts/no outbound Nostr EVENT, reviewed signer exclusion, owned listeners and exact capability refusals. Not general egress exclusion."
+        }
+      },
+      "critical_source_reviews": {
+        "product": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-live-index-product-6cbe1cb2.json",
+          "sha256": "67358624331c02794c2782fc43550a367a61ffc2466736e60feafd07df3212dc"
+        },
+        "fixture": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-live-index-fixture-726475c7.json",
+          "sha256": "3bc88acd925c73e007648e45e3091cdcdef867dbecea2ed3ac38cdc4b600b621"
+        },
+        "startup": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-live-index-startup-4745771f.json",
+          "sha256": "8b20c623949dc572f496fbba320b3eb9f9544221c8a640e0cd79740968a4d22a"
+        },
+        "phase": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-live-index-phase-82368bab.json",
+          "sha256": "40b8d6cd173d20191478b215bc309902cd4c3ec0a548299f07c978b596154fd0"
+        },
+        "inet_host": {
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-live-index-inet-4cd3f9ad.json",
+          "sha256": "90aa8f6b319b71d69fb7eeb71ccaf9c1a25184e7e020ca6484532bfbe07505e9"
+        }
+      },
+      "installed_r4": {
+        "status": "PASS_ALL16_INSTALLED_STAGES_AND_ACTUAL_CUSTODY",
+        "counts": {
+          "collected": 16,
+          "executed": 16,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "root_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r4/root-terminal.json",
+          "sha256": "d711629c60a37b7b9b2c1d89b6f48c5f02a6f2af8597cff5809fc4572d6308f8"
+        },
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r4/result.json",
+          "sha256": "b4f1770d3f7d304eda98105e0834ddc2b0c307cbabd5aba6a476400318a803bc"
+        },
+        "observed": [
+          "Before Sync/client work, actual revision5 bridge carries closed1/cut12 and stored open2/zero without a new physical batch; original generation/storage/custody/table UUIDs and raw historical rows/xmin are exact.",
+          "Three successor batches publish revisions6\u20138 while producer/source2 remain OPEN. 63 authenticated observations reach current full-vector Ready [1:12,2:10] with the same unrefreshed session; real child release ACK and parent completion are within its published 45s phase.",
+          "Independent source/C API and ten-family scientific oracles verify 70 chunks/100 bounds, original body/resend and new t=allowed posting, raw multiplicity and every typed commitment. Archive recovery, two zero-work Index rebinds and ordinary two-event history preserve original receipts/inputs/export.",
+          "Genuine control+ingest epoch3/topology2 activation has zero new scientific requests. Actual unprivileged bigbrotr_control TCP login records host-only 127.0.0.1 and read-only transaction; historical metadata succeeds and shared current-authority guard returns exact 23514/topology refusal.",
+          "All final post-SQL Control/catalog/CH/data/input/export/custody/schema checks and normal owner stop/join PASS."
+        ],
+        "historical_authority_limit": "Actual shared guard rejection only; native new-bridge creation and both authority branches independently remain NOT_RUN. Critical source review separately binds INSERT and deferred COMMIT.",
+        "resources": "All 30 exact owned containers exited0/PID0/noOOM, five recorded runner/client PIDs absent, no owned path/label processes and borrowed bridge empty; all acceptance hashes match clean 1fab2f4b."
+      },
+      "preserved_installed_failures": [
+        {
+          "name": "r1",
+          "status": "FAIL_STARTUP_CUT_FIXTURE",
+          "acceptance_revision": "340b4b54f8087966002cfab76ccb50b594810b6b",
+          "stages": {
+            "PASS": 9,
+            "FAIL": 1,
+            "NOT_RUN": 6
+          },
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r1/root-terminal.json",
+            "sha256": "b2dff236a6cae1a53cce949611c151d6bb6951cd421b1d158dc579174ba4f66d"
+          },
+          "classification": "Canonical nested SourceCut startup was incorrectly compared with flat management Cut. Bridge replay PASS; no successor client launch. 4745771f fixes only that strict DTO binding.",
+          "resources": "Audited terminal; all owned containers stopped0/PID0/noOOM, runner/clients absent and borrowed bridge empty. Original captures/results remain immutable."
+        },
+        {
+          "name": "r2",
+          "status": "FAIL_SUBMITTED_CLIENT_PHASE",
+          "acceptance_revision": "441d332e791f25bd0ef36f2c553076433820d1a7",
+          "stages": {
+            "PASS": 9,
+            "FAIL": 1,
+            "NOT_RUN": 6
+          },
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r2/root-terminal.json",
+            "sha256": "2c3b3350f8725b766106b0b9e2744fce637bb097e1b2e29668a2d8655ce76aa4"
+          },
+          "classification": "Valid full-vector Ready arrived 25.338465s after submitted with whole-sweep age 12.298146s; the overloaded 25s source gate expired. 82368bab separates proof phase (45s) and enforces actual child deadlines/ACK, with no product timing change.",
+          "resources": "Audited terminal; all owned containers stopped0/PID0/noOOM, runner/clients absent and borrowed bridge empty. Original captures/results remain immutable."
+        },
+        {
+          "name": "r3",
+          "status": "FAIL_INET_DISPLAY_FIXTURE",
+          "acceptance_revision": "13cfb044ea94ee6308edbc3d2613b3b40c33fe17",
+          "stages": {
+            "PASS": 15,
+            "FAIL": 1,
+            "NOT_RUN": 0
+          },
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r3/root-terminal.json",
+            "sha256": "5747b135615d3ef3163366a6af5632b6e96cb1af22842159a86c1dab8def8534"
+          },
+          "classification": "All earlier stages and genuine topology2/runtime-role SQL ran; inet::text retained /32 while the strict host identity expected 127.0.0.1. 4cd3f9ad changes SQL to documented host(inet_client_addr()), with no parser relaxation.",
+          "resources": "Audited terminal; all owned containers stopped0/PID0/noOOM, runner/clients absent and borrowed bridge empty. Original captures/results remain immutable.",
+          "within_failed_stage_not_reached": [
+            "post-SQL Control/catalog equality",
+            "post-SQL ClickHouse row equality",
+            "final Archive/export/input/custody/schema preservation",
+            "final backend-absence check"
+          ]
+        }
+      ],
+      "preserved_native_failures": [
+        {
+          "name": "r13-e5fc0811",
+          "status": "FAIL_PRODUCT_COMPILE_TYPE_MISMATCH",
+          "receipt": {
+            "path": ".research/initial-index-recovery-qualification-20261028/r13-e5fc0811/receipt.json",
+            "sha256": "f0e00bbbf87f10c9bda5d9170aaed79406168fa1a53a764501f918e94449c6d2"
+          }
+        },
+        {
+          "name": "r14-455c9581",
+          "status": "FAIL_PRODUCT_STRICT_CLIPPY",
+          "receipt": {
+            "path": ".research/initial-index-recovery-qualification-20261028/r14-455c9581/receipt.json",
+            "sha256": "0ca02671dc90e2f813df892d864c93f002b50e7f229d216c716937d0efc1b8ee"
+          }
+        },
+        {
+          "name": "r15-f60324c5",
+          "status": "FAIL_NEW_CENSUS_TEST_SETUP_BOUNDARY",
+          "receipt": {
+            "path": ".research/initial-index-recovery-qualification-20261028/r15-f60324c5/receipt.json",
+            "sha256": "ec4db37b6d966ee45c3c1e3e3be8fd055ead689bd3723e6f8c440612c4b670fe"
+          },
+          "scope": "118 PASS/1 FAIL/91 NOT_RUN. Test setup exceeded the shared 64-input-file spool by expecting a 65th input; corrected 4 predecessor + 60 successor boundary preserves product limits."
+        }
+      ],
+      "fixture_controls": {
+        "phase": "19 initial focused PASS plus 2 overlapping final affected ACK controls; no reviewer rerun.",
+        "startup": "2 focused strict canonical/management controls PASS plus retained R1 bridge/startup replay.",
+        "inet_host": "1 focused strict host/role/privilege/readonly/exact 23514 control PASS; offline R3 rendering simulation is not an execution or old-run PASS.",
+        "limits": "Prepared/submitted/commands-finished 25s, job 120s, peer 128/3s, query 5s, operation 30s, sweep freshness 30s and cooldown 15s unchanged. Live proof uses the separately declared 45s/256-sample/250ms acceptance envelope, not a latency SLA."
+      },
+      "resources": "docs/research/laboratory-inventory.json: implementation_index_foundation_20261026.resume_20261028.live_initial_successor",
+      "remaining": [
+        "Native new-bridge creation and both authority branches independently at unsupported topology",
+        "General/arbitrary live Index succession, continuous Archive and handoff-COMMIT uncertainty",
+        "Current 64-history readiness/freshness scaling, shared-spool/sequence reclamation, pending-byte hysteresis and broad capacity",
+        "Original Code 202/query-retirement, a99 Sync startup and old topology-r2 HTTP429 causal scopes remain unchanged",
+        "Full P00-P10/M1-M5 delivery and hosted qualification of 6cbe after the next coherent push"
+      ]
     }
   },
-  "last_updated": "2026-10-29"
+  "last_updated": "2026-10-29",
+  "historical_scope_note": "Original SQL/initial-readiness records and their NOT_RUN lists retain their original execution scopes. Later explicitly identified extensions own subsequent qualifications; no earlier FAIL or missing execution is relabelled."
 }
