@@ -1477,7 +1477,7 @@
             "path": ".research/initial-index-recovery-qualification-20261028/r16-6cbe1cb2/receipt.json",
             "sha256": "ec595ae91bb5248a55f45a3fb0f13102a43307d6cbef656c7d321d861e44cc60"
           },
-          "scope": "Compilation, strict Clippy including tests and every exact selected native control; not full workspace or engine execution."
+          "scope": "Compilation, strict Clippy including tests and every exact selected native control, including actual RocksDB boundaries; not full workspace or installed end-to-end qualification."
         },
         "installed_build": {
           "status": "PASS",
@@ -1659,7 +1659,8 @@
         "General/arbitrary live Index succession, continuous Archive and handoff-COMMIT uncertainty",
         "Current 64-history readiness/freshness scaling, shared-spool/sequence reclamation, pending-byte hysteresis and broad capacity",
         "Original Code 202/query-retirement, a99 Sync startup and old topology-r2 HTTP429 causal scopes remain unchanged",
-        "Full P00-P10/M1-M5 delivery and hosted qualification of 6cbe after the next coherent push"
+        "Full P00-P10/M1-M5 delivery and hosted qualification of 6cbe after the next coherent push",
+        "Second-event export remains unexecuted in this composition; the signed original export and two-event history retain their separate demonstrated scopes (P01-T09/P08 export acceptance)."
       ]
     }
   },
