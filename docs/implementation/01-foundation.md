@@ -494,7 +494,7 @@ and queryable with truthful role readiness, without implicit public publishing.
   source/bridge authority and complete two-stream readiness need their own real
   proof; finite terminal recovery does not supply it. M1 requires the relevant
   first-event/restart slices, not that new live composition or all of P02.
-  Next close Steps6/7 on the declared initial profile. The finite same-installation
+  Steps6/7 now qualify the tutorial on the declared initial profile. The finite same-installation
   continuation is qualified below. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB

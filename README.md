@@ -19,9 +19,14 @@ initialization](docs/user/archive-initialization.md) and finite
 separate prerequisites and qualification scopes. The explicit initial
 Control/Ingest/Sync/Archive composition supports controlled signed acquisition and
 publication; ordinary Control supports private history and signed-event export.
-Restart, readiness, complete installation and the remaining product capabilities
-still have open qualification and delivery requirements. This is not a production
-release or a complete self-contained first-event distribution.
+The [first-event tutorial](docs/tutorials/first-event.md) runs a development
+candidate outside the checkout, using explicitly declared repository clients and
+fixtures. The scoped [M1 milestone](docs/implementation/README.md#coherent-implementation-milestones)
+is qualified: signed admission, Archive, private history/export and same-data
+restart, including separate dependency outages and truthful capability refusals.
+Continuous Index succession, broader recovery/readiness, full installation and
+the remaining product capabilities retain their implementation and qualification
+gates. This is not a production release or a source-free first-event distribution.
 The repository is public and named `bigbrotr-rs`; the product name is **BigBrotr**.
 Public source availability does not imply production readiness, an official
 release or published packages. A future repository rename is a separate decision.

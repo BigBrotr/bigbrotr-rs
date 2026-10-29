@@ -147,6 +147,18 @@ its consumer exists while the concrete producer/adapter remains unwired.
 | M4: operable distribution | Clean installation, configuration, backup/restore/upgrade, alerts and split-role operation | P08 and dependent practical fault/capacity evidence |
 | M5: complete product | Public/private browser journeys, complete website/docs/blog/download and real tutorial execution | P09/P10 plus final supported-feature/workload evidence |
 
+**M1 evidence collection qualified on 2026-10-29.**
+[P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition) records the
+installed signed-event/read/export, same-data provenance-on/off restart, separate
+dependency outages and outside-checkout tutorial results. Each retains its actual
+product/fixture revision; the milestone reuses reviewed unchanged responsibilities,
+not an invented rerun of every historical case on one binary. The existing
+[inventory](../research/laboratory-inventory.json),
+`implementation_first_launch_maintained_20261026.tutorial_extension`, links the
+critical milestone review and exact final receipts. Full P01-T09 Step1 composition,
+continuous enabled-Index succession and every remaining P00–P10/M2–M5 requirement
+stay open under their existing owners; this does not qualify a production release.
+
 Milestones are evidence collections, not a mandatory number of clean reviews.
 Commit coherent reviewed outcomes, including their documentation and validation.
 Do not commit every checkbox mechanically.

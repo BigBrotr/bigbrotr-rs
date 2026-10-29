@@ -979,7 +979,8 @@ frontiers or scientific changes. Missing or unreached checks remain NOT_RUN.
 
 This case does not run a native RocksDB census, provenance-off repeat, second-event
 export, Index/readiness, dependency-outage or capacity qualification. Those
-requirements and complete M1 remain open. The case has 12 declared stages;
+requirements have their own cases and task owners; this result alone does not
+qualify complete M1. The case has 12 declared stages;
 qualification requires their actual execution against the recorded candidate.
 All raw credentials, sessions and SQL captures remain protected as above.
 
