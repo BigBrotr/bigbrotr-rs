@@ -1109,6 +1109,12 @@ commits, each queried with one additional overflow sentinel. The probe's default
 16 rows per family/8 commits remains for the smaller cases; these are diagnostic
 envelopes, not product limits. Row-byte, memory, temporary-space and30s command
 bounds remain unchanged.
+Complete-frontier Archive retry may classify an older positively excluded input
+as absent through one exact later replacement already selected by the retained
+frontier. Its unchanged strict receipt reader must observe the replacement
+through full EOF; that replacement still requires its own ordinary resolution
+and physical membership. Replacement commits interrupted before frontier
+publication retain their separate P02-T06/P08 recovery requirement.
 The existing completed-startup-probe and native-worker-join gate precedes both
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;

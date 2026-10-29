@@ -10,6 +10,7 @@ use bigbrotr::storage::{
     rocks::store::{PendingBatch, PendingBatchHeader, PendingReadLimits},
 };
 use bigbrotr_model::{AdmissionBatch, ArchiveBatch, SourceRecordId, codec::FactDecodeLimits};
+use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
 
 pub(super) const RECORDS: usize = 64;
 pub(super) const ENCODED: usize = 1024 * 1024;
@@ -207,9 +208,22 @@ impl Inventory {
         self.attempts
             .try_reserve_exact(remaining.len())
             .map_err(error)?;
-        for mut attempt in &mut remaining {
+        let current = frontier.bound_current_inputs().map_err(error)?;
+        while let Some(mut attempt) = remaining.next() {
             authority.refresh(owner).await?;
             authority.history(owner, recovery, proof, frontier).await?;
+            // Selection borrows the still-retained inputs. Only one bounded
+            // expected receipt is copied into the joined job, never custody.
+            let replacement = current_replacement(
+                attempt.inputs.expectation(),
+                attempt.inputs.headers(),
+                current.current_cut().map(|cut| cut.receipts.as_slice()),
+                remaining
+                    .as_slice()
+                    .iter()
+                    .map(|candidate| (candidate.inputs.expectation(), candidate.inputs.headers())),
+            )?
+            .cloned();
             let local = authority.local(|cancel| {
                 proof.validate(cancel).map_err(error)?;
                 LocalAttempt::recover(
@@ -230,7 +244,7 @@ impl Inventory {
             let deadline = Instant::now() + OPERATION;
             attempt = authority.blocking(owner, deadline, move |cancel| {
                 let result = native::catch_up::reconcile_attempt(
-                    &root, &attempt.receipt, &local, &attempt.inputs, &reader, &custody, binding,
+                    &root, &attempt.receipt, &local, &attempt.inputs, replacement.as_ref(), &reader, &custody, binding,
                     WorkerBudgets { application: &app, native: &native }, deadline, cancel,
                 )?;
                 attempt.present = match result {
@@ -273,5 +287,196 @@ impl Inventory {
             }
         }
         Ok(())
+    }
+}
+
+fn current_replacement<'a>(
+    original: &ReceiptExpectation,
+    headers: &[PendingBatchHeader],
+    current: Option<&[ReceiptExpectation]>,
+    candidates: impl Iterator<Item = (&'a ReceiptExpectation, &'a [PendingBatchHeader])>,
+) -> Result<Option<&'a ReceiptExpectation>> {
+    let Some(current) = current else {
+        return Ok(None);
+    };
+    if let Some(selected) = current.iter().find(|selected| {
+        selected.attempt_id == original.attempt_id
+            || selected.publication_ordinal == original.publication_ordinal
+    }) {
+        if selected != original {
+            return Err(error("current original receipt identity differs"));
+        }
+        // Current members retain their ordinary strict scan and membership.
+        return Ok(None);
+    }
+    let mut selected = current
+        .iter()
+        .filter(|selected| selected.batch_digest == original.batch_digest);
+    let Some(expected) = selected.next() else {
+        // A native-only replacement before frontier publication remains on the
+        // original strict/unknown path; this is not authority to adopt it.
+        return Ok(None);
+    };
+    if selected.next().is_some() {
+        return Err(error("ambiguous current retained replacement"));
+    }
+    native::catch_up::require_replacement(original, expected)?;
+    let mut found = None;
+    for (candidate, candidate_headers) in candidates {
+        if candidate.attempt_id == expected.attempt_id
+            || candidate.publication_ordinal == expected.publication_ordinal
+        {
+            if found.is_some() || candidate != expected || candidate_headers != headers {
+                return Err(error(
+                    "retained replacement input identity or headers differ",
+                ));
+            }
+            found = Some(candidate);
+        }
+    }
+    found
+        .map(Some)
+        .ok_or_else(|| error("current replacement original input missing"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bigbrotr_model::{OwnerEpoch, Sequence};
+
+    fn receipts() -> (ReceiptExpectation, ReceiptExpectation) {
+        let original: ReceiptExpectation = serde_json::from_value(serde_json::json!({
+            "dataset_id":"01".repeat(16),"schema_version":1,"topology_generation":"0",
+            "batch_digest":"05".repeat(32),"record_count":3,
+            "input_ranges":[{"shard_id":0,"owner_epoch":1,"first_sequence":1,"last_sequence":3}],
+            "attempt_id":([8;16]),"publication_ordinal":3
+        }))
+        .unwrap();
+        let mut replacement = original.clone();
+        replacement.attempt_id = [9; 16];
+        replacement.publication_ordinal = 4;
+        (original, replacement)
+    }
+
+    fn header(first: u64, last: u64, digest: u8) -> PendingBatchHeader {
+        let mut encoded = [digest; 42];
+        encoded[..2].copy_from_slice(&[1, 0x21]);
+        encoded[2..10].copy_from_slice(&last.to_be_bytes());
+        PendingBatchHeader::decode(
+            SourceRecordId {
+                dataset_id: [1; 16].try_into().unwrap(),
+                shard_id: 0,
+                owner_epoch: OwnerEpoch::new(1).unwrap(),
+                sequence: Sequence::new(first).unwrap(),
+            },
+            &encoded,
+        )
+        .unwrap()
+    }
+
+    #[test]
+    fn current_replacement_requires_one_exact_later_retained_current_member() {
+        let (original, replacement) = receipts();
+        let headers = [header(1, 3, 7)];
+        let current = [replacement.clone()];
+        let candidates = [(&replacement, headers.as_slice())];
+        assert_eq!(
+            current_replacement(&original, &headers, Some(&current), candidates.into_iter())
+                .unwrap(),
+            Some(&replacement)
+        );
+        // A current original remains on its normal strict inspection path.
+        assert!(
+            current_replacement(
+                &original,
+                &headers,
+                Some(std::slice::from_ref(&original)),
+                candidates.into_iter()
+            )
+            .unwrap()
+            .is_none()
+        );
+        // Native commit before frontier publication is deliberately not adopted.
+        for current in [None, Some([].as_slice())] {
+            assert!(
+                current_replacement(&original, &headers, current, candidates.into_iter())
+                    .unwrap()
+                    .is_none()
+            );
+        }
+        assert!(
+            current_replacement(&original, &headers, Some(&current), std::iter::empty()).is_err()
+        );
+        assert!(
+            current_replacement(
+                &original,
+                &headers,
+                Some(&current),
+                candidates.into_iter().chain(candidates)
+            )
+            .is_err()
+        );
+        let mut other = replacement.clone();
+        other.attempt_id = [10; 16];
+        other.publication_ordinal = 5;
+        assert!(
+            current_replacement(
+                &original,
+                &headers,
+                Some(&[replacement.clone(), other]),
+                candidates.into_iter()
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn current_replacement_refuses_changed_headers_and_conflicting_input_identity() {
+        let (original, replacement) = receipts();
+        let headers = [header(1, 3, 7)];
+        let current = [replacement.clone()];
+        for changed in [
+            vec![header(1, 3, 8)],
+            vec![header(1, 1, 9), header(2, 3, 10)],
+        ] {
+            assert!(
+                current_replacement(
+                    &original,
+                    &headers,
+                    Some(&current),
+                    std::iter::once((&replacement, changed.as_slice()))
+                )
+                .is_err()
+            );
+        }
+        for field in 0..3 {
+            let mut changed = replacement.clone();
+            match field {
+                0 => changed.record_count = 4,
+                1 => changed.attempt_id = [10; 16],
+                2 => changed.publication_ordinal = 5,
+                _ => unreachable!(),
+            }
+            assert!(
+                current_replacement(
+                    &original,
+                    &headers,
+                    Some(&current),
+                    std::iter::once((&changed, headers.as_slice()))
+                )
+                .is_err()
+            );
+        }
+        let mut conflicting = original.clone();
+        conflicting.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]);
+        assert!(
+            current_replacement(
+                &original,
+                &headers,
+                Some(&[conflicting]),
+                std::iter::once((&replacement, headers.as_slice()))
+            )
+            .is_err()
+        );
     }
 }
