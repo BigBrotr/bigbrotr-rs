@@ -76907,7 +76907,7 @@
           "contract": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/contract-unbound-retained-replacement-698c02e7.json",
           "contract_sha256": "9bf2061e7ec0ef9c65bab9209d89a5dcb98f0b2fe219dc28263c1af260f20c7a",
           "grouped_scope_sha256": "3341fd584676c9a86800d4f59af95b313b7eebcc5ec58c8000e7dc1c662147fa",
-          "engines_builds_cache_locks": "All session-owned native/parent/probe/installed/tutorial jobs reaped and audited, compiler cache released/original4pins verified, borrowed bridge empty. CI698 watcher/acquisition also reaped. Grouped contract source-only, no implementation or resource launch.",
+          "engines_builds_cache_locks": "All session-owned local native/parent/probe/installed/tutorial jobs reaped/audited; no local writer/build/test/cleanup/cache lock active. All source authors/grouped-contract reviewer complete. Only exact3fed hosted watcher49985 is active.",
           "native_preparation": {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-native-8653849d",
             "evidence": ".research/initial-index-recovery-qualification-20261028/r28-8653849d-native",
@@ -76959,7 +76959,198 @@
             "runner_pid": 1290751,
             "runner_start_ticks": 3169723,
             "terminal_sha256": "b9eb3f08d8ae62fad4bbfcff87731520a4289ea91d75d0eb48dcc86802abdf2a"
+          },
+          "main": {
+            "revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+            "state": "integrated_pushed",
+            "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562",
+            "ci": "RUNNING_EXACT_HEAD_SINGLE_WATCHER"
           }
+        },
+        "integrated_branch_retirement": {
+          "status": "COMPLETE_FOUR_LOCAL_REFS_ONE_REDUNDANT_REMOTE_BACKUP_RETIRED",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/integrated-branch-retirement-3fed9c0a.json",
+          "sha256": "56998363cc951928202b4e66bd30a5997d2ac0cc846d5c1a9b979b6138730ead",
+          "scope": "All original commits are reachable from publicmain3fed; all4 clean worktrees switched to SAME-COMMIT detachedHEAD and ALL ignored/evidence/data preserved. No worktree/resource/data deletion or history rewrite.",
+          "current_state": "Older entries naming these branch refs describe historical author state; receipt exact detached HEAD map is current. Only those merged refs retired; pending branches untouched."
+        },
+        "grouped_replacement_recovery": {
+          "status": "GROUPED_INSTALLED_CASE_59110_RUNNING_NO_RESULT_YET",
+          "base": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+          "product_author": {
+            "worktree": ".research/grouped-retained-recovery-20261029",
+            "branch": "work/grouped-retained-recovery",
+            "agent": "/root/grouped_product_sol",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "xhigh",
+            "revision": "18e208ed484a0977897e7a1cf41961f19463ab37",
+            "state": "clean frozen source; original d9a62e41 preserved"
+          },
+          "acceptance_author": {
+            "worktree": ".research/grouped-retained-acceptance-20261029",
+            "branch": "work/grouped-retained-acceptance",
+            "agent": "/root/grouped_acceptance_sol",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "xhigh",
+            "revision": "35169b8e2a2f6c12ab4e447dc19496924fbd657f",
+            "state": "clean frozen; all bounded critical findings H1/H2/H2-F1 closed at source review3babc30a; actual installed NOT_RUN"
+          },
+          "contract_sha256": "10ae02389401425b7f9ed1c79a53255ad2a3ebd96e9ee49ea8e74288130e4f2a",
+          "output_custody_addendum_sha256": "74b37d0593ba906d0d9a999a60bb9bde10d0101e1c46a628d2ba12a472f8b51d",
+          "runtime": {
+            "native_session": 57796,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-native-18e208ed",
+            "evidence": ".research/initial-index-recovery-qualification-20261028/r29-18e208ed-native",
+            "launcher_pid": 1331098,
+            "launcher_start_ticks": 3606643,
+            "container": "c6e35b1c536ed0c6eea3cbd0fd723690c3f853678eab4e6922cd3c273cabcb17",
+            "owner": "f0a1d38ce6754718971ec23ae42c7d92",
+            "compiler_cache": "released; no builder running. Real grouped case59110 owns its declared new containers/proxies/stores.",
+            "scope": "Application257/40 + explicit filtered protocol3/worker6 including old strict1; expected counts only until actual execution/audit",
+            "installed": "NOT_RUN",
+            "native_session_outcome": "57796 REAPED exit1/noOOM: app257 and protocol3 PASS, worker filter inventory refused12vsintended6 before worker execution; original FAIL preserved",
+            "worker_followup": {
+              "session": 41332,
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-worker-18e208ed-r2",
+              "evidence": ".research/initial-index-recovery-qualification-20261028/r29-18e208ed-worker-followup",
+              "state": "REAPED exit0/noOOM16.671923856s; exactgroup5+strict1 compiled/executed, parent/installed NOT_RUN",
+              "container": "0305081c86ac290835c9d705ee1e1d967fa83a565b6f377aefb1d8e492fdf7a3",
+              "owner": "15b4a3fe0b614cb3be663b048fb60265",
+              "launcher_pid": 1338000,
+              "launcher_start_ticks": 3664414,
+              "qualification_sha256": "cab5d43d53f4fa193730bd59ab21c9159a2137d492320eb6464a1eec141bc879"
+            }
+          },
+          "source_review": {
+            "original": ".research/grouped-retained-recovery-20261029/.research/grouped-retained-source-review-d9a62e41.json",
+            "original_sha256": "313fd6063d5cc5315c656c2b474f90805034e0d3acc5c341d26e029ac1ddf931",
+            "followup": ".research/grouped-retained-recovery-20261029/.research/grouped-retained-source-review-18e208ed.json",
+            "followup_sha256": "9dcf973c9d14d76de2b7b7d990f81a3adeedb1dd5199285d62505730447f294e",
+            "status": "G1 closed at source level only; no native/installed PASS claim"
+          },
+          "composed_native": {
+            "status": "PASS_SOURCE_COMPONENTS_COMPOSED_FROM_SEPARATE_RUNS",
+            "receipt": ".research/initial-index-recovery-qualification-20261028/r29-18e208ed-native/composed-qualification.json",
+            "sha256": "c70863f983e1bc3dd05b49130529b45577837e79d7f61c70f27893ea5c6042c9",
+            "app_receipt_sha256": "9bf8231284a847afd3cf9ecdf42bcebe91e2bea7521ec7a53c55de206c20d74c",
+            "critical_reuse_review_sha256": "9fcabbb861871d9c24079d50e43574889364ce985590d7d817f4739f25402afd",
+            "scope": "App257/40, protocol3, separately group5+oldstrict1; original globalFAIL and standalone metadataFAIL preserved. Root terminal/source/ELF/cache audit complete. No installed qualification."
+          },
+          "installed_build": {
+            "status": "REAPED_ZERO_AUDITED_PASS",
+            "session_id": 10665,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed",
+            "evidence": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed",
+            "launcher_pid": 1348302,
+            "launcher_start_ticks": 3758452,
+            "container": "d27350f9d23aa4b183fce5475bc9866d7cecdc46b4f9c5b919c289e0558ff247",
+            "owner": "a350880eb22d380fc73705e17d79eb5e",
+            "compiler_cache": "released after terminal audit",
+            "scope": "Actual maintained same-source worker-before-parent build; source-component proof admission; offline Cargo/cache acceleration; no installed service run yet",
+            "exit_code": 0,
+            "receipt": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/build-receipt.json",
+            "receipt_sha256": "ad5849f67578d5b37371243ce8ed7dbccdf88c04914027af4cbe7763353341d5",
+            "elapsed_seconds": 130.27618384700327
+          },
+          "hosted_3fed": {
+            "status": "TERMINAL_SUCCESS_30_OF_30_VERIFIED",
+            "run": 40950064562,
+            "revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+            "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+            "receipt_sha256": "902ddcd98ac08ce6d423acb91bc5a2928f4bbd1436133c05b9f8d6ee1da2ed2c",
+            "watcher": "Recorded child reaped0 and both exact PID identities absent. Original unified handle49985 unavailable, not falsely claimed joined. No remote execution remains.",
+            "exposure": "Four declared artifacts and exact attempt logs audited,0 new/unclassified/provider alerts; bounded pattern/asynchronous limits retained."
+          },
+          "qualification_worktree": {
+            "path": ".research/grouped-retained-qualification-20261029",
+            "branch": "work/grouped-retained-qualification",
+            "revision": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
+            "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+            "harness": "35169b8e2a2f6c12ab4e447dc19496924fbd657f",
+            "scope": "Clean merged qualification inputs; literal source-profile rebind,1 focused controlPASS; not an installed result"
+          },
+          "observer": {
+            "status": "REAPED_ZERO_AUDITED_PASS",
+            "session": 57306,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-observer-18e208ed",
+            "evidence": ".research/initial-index-recovery-qualification-20261028/observer-18e208ed",
+            "launcher_pid": 1351619,
+            "launcher_start_ticks": 3797894,
+            "container": "adf45a9290c1816765f57a26f1e4218c3671853139f8d230909c297a7c1361d1",
+            "owner": "21ea362f388309eff5f9439e7a6b8cf7",
+            "scope": "Maintained observer builder, qualified source/build identity, no product rebuild or store access",
+            "exit_code": 0,
+            "receipt": ".research/initial-index-recovery-qualification-20261028/observer-18e208ed/receipt.json",
+            "receipt_sha256": "2c6f10bba0a3fa5c6cc367ac00dd42bf3e9e79db5d1dd4bfaf573b559f0790e6",
+            "elapsed_seconds": 75.15721011000278,
+            "probe_sha256": "5bc7a49d9361f2f7767807ae81f98baa2d68be74e6e78407ea502ad35c15102e"
+          },
+          "candidate": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/candidate/candidate-manifest.json",
+            "sha256": "0ed331f561c232824a576e336babe7e3bce4c38c75ea77a9baf6a4db246e9e8e",
+            "assembly_session": 80544,
+            "exit_code": 0,
+            "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+            "acceptance": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
+            "scope": "Unsigned local private-format candidate, no official release/public package/production deployment"
+          },
+          "installed_case": {
+            "status": "RUNNING",
+            "session": 59110,
+            "runner_pid": 1355217,
+            "runner_start_ticks": 3879027,
+            "boot_id": "286ce606-808f-41ee-9bf8-722997410e80",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1",
+            "session_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1-session.json",
+            "case": "p01-first-launch-closed-reclamation",
+            "retained_archive_schedule": "grouped-publication-loss",
+            "source": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
+            "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+            "borrowed_network": "bigbrotr-m1-0f80280_default",
+            "preflight": "Exact bridgeID/empty and >67GiB checks passed; relative preflight-record write refused after predicates, absolute record corrected without case restart. Exact original free value unavailable; case own inputs/resources retain authoritative checks.",
+            "resources": "Case resources.json owns actual live containers/proxies/engines; root only, foreign workloads untouched"
+          }
+        },
+        "retained_index_clone_object_dedup": {
+          "status": "COMPLETE_REAPED_ZERO_ALL_PATHS_AND_GIT_BINDINGS_VERIFIED",
+          "artifacts": {
+            "proposal": {
+              "path": ".research/initial-index-recovery-qualification-20261028/index-clone-object-retention-proposal-20261029.json",
+              "sha256": "39f926b4b5f41dbca7daccf0e7739fa3be41e7888c51dd7d92ad9ae5f9dc8e1a"
+            },
+            "allowlist": {
+              "path": ".research/initial-index-recovery-qualification-20261028/index-clone-object-retention-allowlist-20261029.jsonl",
+              "sha256": "5e1def5e9497399f0f5bb294b56840ed349935f1b33b95014b54ea976b2b44e6"
+            },
+            "review": {
+              "path": ".research/initial-index-recovery-qualification-20261028/index-clone-object-retention-review-20261029.json",
+              "sha256": "b8c006d2c43e85664a57d8836985d65928a3ea21c0c87c4b089cc0975b8b5ce9"
+            },
+            "executor": {
+              "path": ".research/initial-index-recovery-qualification-20261028/dedup-index-clone-objects-20261029.py",
+              "sha256": "0d30a93844bc6fee98fd1e19da8fb4b968f769180d9f57d30a068a931e6263f3"
+            }
+          },
+          "scope": "Exact allowlist of duplicate Git object representations in18 stopped owned historical installed Index/Archive source clones; all names/logical history/unique objects/refs/source/pins retained. Current865/main/author worktrees/cache115/data/logs excluded. No reclaimed-space claim yet.",
+          "future_write_rule": "Shared archival objects must remain immutable in bytes AND inode metadata; create verified private copies before any in-place write, corruption test or metadata-touching Git maintenance. Do not resume general Git maintenance in these frozen stores without reviewing the sharing boundary.",
+          "next": "Keep frozen shared-object/private-copy-before-write rule. Recheck actual post-build headroom before full installed case; no broader retirement authorized by this record.",
+          "session_id": 55803,
+          "pid": 1327393,
+          "start_ticks": 3537905,
+          "boot_id": "286ce606-808f-41ee-9bf8-722997410e80",
+          "journal": ".research/initial-index-recovery-qualification-20261028/index-clone-object-dedup-20261029.jsonl",
+          "session_record": ".research/initial-index-recovery-qualification-20261028/index-clone-object-dedup-20261029-session.json",
+          "receipt": ".research/initial-index-recovery-qualification-20261028/index-clone-object-dedup-20261029.json",
+          "receipt_sha256": "a63e15f7ad9cf68beb042312c6185dc9b833f5924ab897ff016faa9c9b0a1d23",
+          "journal_sha256": "5b399f16a49848062787d125c695a144ff2bb6da913f3054088ee1ba624d6408",
+          "replaced_paths": 91333,
+          "original_object_paths_verified": 102429,
+          "potential_allocated_bytes": 5116071936,
+          "measured_free_delta": 4747132928,
+          "free_before": 69664935936,
+          "free_after": 74412068864,
+          "exit_code": 0,
+          "measurement_limit": "Actual free delta includes concurrent native/source/compiler allocations; potential inode blocks and observed delta are distinct. No unique object/path/ref/source/pin/data/log removed."
         }
       }
     }

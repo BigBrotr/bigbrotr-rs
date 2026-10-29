@@ -1,10 +1,10 @@
 {
   "date": "2026-10-29",
-  "status": "PASS selected hosted foundation: all30 checks pass on Linux AMD64/ARM64 and macOS for exact698; skips/ignored and later product gates remain explicit",
-  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814",
+  "status": "PASS selected hosted foundation: all30 checks pass on Linux AMD64/ARM64 and macOS for exact3fed; skips/ignored and later product gates remain explicit",
+  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562",
   "run_attempt": 1,
-  "revision": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
-  "terminal_at": "2026-10-29T20:16:56Z",
+  "revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+  "terminal_at": "2026-10-29T21:44:27Z",
   "selected_scope": "Selected foundation CI only; no installed engine/recovery, full M1 or release claim.",
   "selected_check_totals": {
     "PASS": 30
@@ -12,10 +12,10 @@
   "platforms": {
     "amd64": {
       "status": "PASS",
-      "result_sha256": "ed67539650aba62479bc5045aabbcf400e1d9a325fab574c4b0e24574e3d7733",
-      "build_result_sha256": "23aa505e3543459b595c49b4f9c8134cb4b284d906d40639a54b311efd605ccc",
-      "source_manifest_sha256": "7a612f4afbd6985a1cc59ceee86a4c21712fb2e3b43bc482d5a76c407771740b",
-      "binary_sha256": "70917bbe9873d6bec7ac72f1d4412ca048bfb9ff88a75343926473cd1aa753c7",
+      "result_sha256": "6ace4d19bc70f95155db80118c7f7f44cd788150887da4bbcfce298ae086f635",
+      "build_result_sha256": "5faec5c667f9e3c675f421ecb85c9aa0dfbfbe4aef331e047f7cce182b07d7c9",
+      "source_manifest_sha256": "b37f157aa4ce7b13f000c8e29f6d842efd03a4cc0567bc7f5c217c5ccca1979e",
+      "binary_sha256": "e27bcc8716b25b702e51a0c2d7de72abaa186930b9317411fcd299bebf7b01df",
       "worker": {
         "bytes": 14424040,
         "sha256": "b035fe4068cecd6556373fb234ee2cd88686c5c2b589a3a18edc275557f06943"
@@ -31,7 +31,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 8.587454068000007
+          "seconds": 8.936843867
         },
         {
           "name": "format",
@@ -44,7 +44,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 2.822890057000002
+          "seconds": 2.8729829289999955
         },
         {
           "name": "install-deny",
@@ -61,7 +61,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 137.852933812
+          "seconds": 141.229596765
         },
         {
           "name": "dependency-policy",
@@ -77,7 +77,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 4.074516017999997
+          "seconds": 3.874463302999999
         },
         {
           "name": "acceptance-controls",
@@ -94,7 +94,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 36.35069759300001
+          "seconds": 36.55456859
         },
         {
           "name": "exact-source-build",
@@ -111,7 +111,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1261.266699189
+          "seconds": 1279.609711739
         },
         {
           "name": "clippy",
@@ -126,7 +126,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 860.919490146
+          "seconds": 869.990170754
         },
         {
           "name": "rust-doc",
@@ -141,7 +141,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 8.788009776999843
+          "seconds": 9.037712116999955
         },
         {
           "name": "rust-tests",
@@ -156,7 +156,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1887.014970026
+          "seconds": 1868.0157196589998
         },
         {
           "name": "planning-artifacts",
@@ -167,7 +167,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 2.536568921000253
+          "seconds": 2.43575229399994
         },
         {
           "name": "prepare-links",
@@ -179,7 +179,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 0.6704386639994482
+          "seconds": 0.670739623999907
         },
         {
           "name": "documentation-links",
@@ -192,7 +192,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 0.4162480989998585
+          "seconds": 0.4159412160006468
         },
         {
           "name": "p01-event-cli",
@@ -214,7 +214,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 0.7178773599998749
+          "seconds": 0.719244640999932
         },
         {
           "name": "p01-config-static",
@@ -236,7 +236,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1.1174939289994654
+          "seconds": 1.0668275930001982
         }
       ],
       "counts": {
@@ -246,7 +246,7 @@
         "not_run": 0
       },
       "rust_tests": {
-        "passed": 1356,
+        "passed": 1359,
         "failed": 0,
         "ignored": 3,
         "measured": 0,
@@ -267,26 +267,26 @@
         "ignored": 0,
         "required_tests": 10,
         "tests": [
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
           "incomplete_staging_is_preserved_and_does_not_regenerate_keys",
+          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
           "insufficient_reservation_fails_before_creating_or_opening_secrets",
           "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
           "directory_locks_exclude_preparation_and_readers_without_waiting",
           "modes_links_and_nonregular_files_are_refused_without_modification",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
           "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts",
+          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
           "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
           "independent_wire_fixtures_and_every_single_byte_change_are_discriminated"
         ],
         "test_statuses": {
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
           "incomplete_staging_is_preserved_and_does_not_regenerate_keys": "ok",
+          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
           "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
           "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
           "directory_locks_exclude_preparation_and_readers_without_waiting": "ok",
           "modes_links_and_nonregular_files_are_refused_without_modification": "ok",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
           "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts": "ok",
+          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
           "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
           "independent_wire_fixtures_and_every_single_byte_change_are_discriminated": "ok"
         }
@@ -301,7 +301,7 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "c0e794972bde2d15db2ccbc04de99ae08a0fa5c42674cefb021d059ce57c078b"
+          "result_sha256": "81be6372708e947fcf845c78ba6ed71e80d8da0f606d515b6f081999680c7bad"
         },
         "p01-config-static": {
           "status": "PASS",
@@ -312,10 +312,10 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "4a8ec10774dbf6f62a2b46343e1ec8311c251447f62f21d888baec3ce4929762"
+          "result_sha256": "b9bf81f2629a07eb1feca275e9bb3d0fbc3fe664a728019f68b4e76555814243"
         }
       },
-      "total_recorded_check_seconds": 4213.136287658999,
+      "total_recorded_check_seconds": 4225.430275091,
       "export_fixtures": {
         "export_files": {
           "status": "PASS",
@@ -379,53 +379,55 @@
           "ignored": 0,
           "required_tests": 2,
           "tests": [
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization"
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization",
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins"
           ],
           "test_statuses": {
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok"
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok",
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok"
           }
         }
       },
       "job": {
-        "id": 123670093372,
+        "id": 123715621767,
         "name": "foundation (ubuntu-24.04)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093372",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715621767",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-29T19:06:18Z",
-        "completed_at": "2026-10-29T20:16:56Z",
-        "wall_seconds": 4238.0,
+        "started_at": "2026-10-29T20:33:37Z",
+        "completed_at": "2026-10-29T21:44:27Z",
+        "wall_seconds": 4250.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
       },
       "acceptance_controls": {
-        "collected": 332,
-        "passed": 332,
+        "collected": 337,
+        "passed": 337,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 35.681
+        "seconds": 35.879
       },
       "native_reference": {
-        "passed": 241,
+        "passed": 244,
         "groups": 38,
+        "library": 136,
+        "binary": 108,
         "missing": 0,
         "ignored": 0
       },
       "worker_eof_test": "PASS exactonce",
       "python": {
-        "collected": 332,
-        "passed": 332,
+        "collected": 337,
+        "passed": 337,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 35.681
+        "seconds": 35.879
       },
       "rust_workspace": {
-        "passed": 1356,
+        "passed": 1359,
         "failed": 0,
         "ignored": 3
       },
@@ -435,39 +437,39 @@
         "compressed_bytes": 75713704,
         "step_seconds": 1.0,
         "workflow_log": "foundation (ubuntu-24.04)/4_Reuse checksum-verified native downloads.txt",
-        "workflow_log_sha256": "bc69951f6b030a91e4c31c57a42bc6c61dd29deb2b9a718bbf3cfd56deac38de",
+        "workflow_log_sha256": "16b319369a70221f3aa5490eaed6616606e173785f1e13fb52d349c459c032a4",
         "step_timestamp_resolution_seconds": 1,
-        "workflow_log_elapsed_seconds": 0.913955,
-        "hit_to_restored_log_seconds": 0.702248
+        "workflow_log_elapsed_seconds": 0.933913,
+        "hit_to_restored_log_seconds": 0.706504
       },
       "timing": {
-        "job_seconds": 4238.0,
+        "job_seconds": 4250.0,
         "checks_seconds": {
-          "toolchain": 8.587454068000007,
-          "format": 2.822890057000002,
-          "install-deny": 137.852933812,
-          "dependency-policy": 4.074516017999997,
-          "acceptance-controls": 36.35069759300001,
-          "exact-source-build": 1261.266699189,
-          "clippy": 860.919490146,
-          "rust-doc": 8.788009776999843,
-          "rust-tests": 1887.014970026,
-          "planning-artifacts": 2.536568921000253,
-          "prepare-links": 0.6704386639994482,
-          "documentation-links": 0.4162480989998585,
-          "p01-event-cli": 0.7178773599998749,
-          "p01-config-static": 1.1174939289994654
+          "toolchain": 8.936843867,
+          "format": 2.8729829289999955,
+          "install-deny": 141.229596765,
+          "dependency-policy": 3.874463302999999,
+          "acceptance-controls": 36.55456859,
+          "exact-source-build": 1279.609711739,
+          "clippy": 869.990170754,
+          "rust-doc": 9.037712116999955,
+          "rust-tests": 1868.0157196589998,
+          "planning-artifacts": 2.43575229399994,
+          "prepare-links": 0.670739623999907,
+          "documentation-links": 0.4159412160006468,
+          "p01-event-cli": 0.719244640999932,
+          "p01-config-static": 1.0668275930001982
         },
-        "setup_before_first_check_seconds": 3.234121
+        "setup_before_first_check_seconds": 3.122731
       },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093372"
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715621767"
     },
     "arm": {
       "status": "PASS",
-      "result_sha256": "fbeba6f79e69f3b1a48d2583edda55b823c5508cef3563d2dec6a2def0c8a8b9",
-      "build_result_sha256": "8373be60b433fade278665da0a04eef71129d5b7febea71ca8cf1866981ce226",
-      "source_manifest_sha256": "7a612f4afbd6985a1cc59ceee86a4c21712fb2e3b43bc482d5a76c407771740b",
-      "binary_sha256": "1422eff7fe1f18ac0fed9ec3a33cdb657ef61e96464e91a67a34265fcda4be15",
+      "result_sha256": "22e88b769a67498902b963ae4f358e720f30b687406afceb2076ae3f3357f75a",
+      "build_result_sha256": "53b06e34c9a43229c54e0816b6009a8bd30a83a29dfef24cff90208ee103cef4",
+      "source_manifest_sha256": "b37f157aa4ce7b13f000c8e29f6d842efd03a4cc0567bc7f5c217c5ccca1979e",
+      "binary_sha256": "ec74781929d6fbcce63d41562013088beab483934342d78c6175c96463f182d5",
       "worker": {
         "bytes": 13713904,
         "sha256": "f5868a1e0cea1e7d66db50f2e1c012887cfe70826839aa221a692a4ac9961ab9"
@@ -483,7 +485,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 6.139172486
+          "seconds": 6.030014530000017
         },
         {
           "name": "format",
@@ -496,7 +498,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 2.3689412419999982
+          "seconds": 2.3261359220000486
         },
         {
           "name": "acceptance-controls",
@@ -513,7 +515,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 33.86368295100001
+          "seconds": 32.54290697600004
         },
         {
           "name": "exact-source-build",
@@ -530,7 +532,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1144.9207395199999
+          "seconds": 1087.424944303
         },
         {
           "name": "clippy",
@@ -545,7 +547,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 746.2394748229999
+          "seconds": 725.3543772799999
         },
         {
           "name": "rust-doc",
@@ -560,7 +562,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 8.034622746999958
+          "seconds": 7.882167492000008
         },
         {
           "name": "rust-tests",
@@ -575,7 +577,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1344.8703018459998
+          "seconds": 1345.276119053
         },
         {
           "name": "p01-event-cli",
@@ -597,7 +599,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 0.56552055200018
+          "seconds": 0.5651976949998243
         },
         {
           "name": "p01-config-static",
@@ -619,7 +621,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 0.8156396259996654
+          "seconds": 0.8163563420002902
         }
       ],
       "counts": {
@@ -629,7 +631,7 @@
         "not_run": 0
       },
       "rust_tests": {
-        "passed": 1356,
+        "passed": 1359,
         "failed": 0,
         "ignored": 2,
         "measured": 0,
@@ -651,25 +653,25 @@
         "tests": [
           "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
           "incomplete_staging_is_preserved_and_does_not_regenerate_keys",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
           "directory_locks_exclude_preparation_and_readers_without_waiting",
+          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
+          "insufficient_reservation_fails_before_creating_or_opening_secrets",
           "modes_links_and_nonregular_files_are_refused_without_modification",
           "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
           "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
+          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
           "independent_wire_fixtures_and_every_single_byte_change_are_discriminated"
         ],
         "test_statuses": {
           "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
           "incomplete_staging_is_preserved_and_does_not_regenerate_keys": "ok",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
           "directory_locks_exclude_preparation_and_readers_without_waiting": "ok",
+          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
+          "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
           "modes_links_and_nonregular_files_are_refused_without_modification": "ok",
           "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts": "ok",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
           "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
+          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
           "independent_wire_fixtures_and_every_single_byte_change_are_discriminated": "ok"
         }
       },
@@ -683,7 +685,7 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "d2d07995aeacac3750e0cc54911bbd220c004ff650be4a03e3866f8e893a3845"
+          "result_sha256": "e6e75756704c950f4629464faefaf95499dcdece45c2cd38d5d20e27c91a070c"
         },
         "p01-config-static": {
           "status": "PASS",
@@ -694,10 +696,10 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "45252f973a92159eac6db82ce68d3e69bb84391f5d6a06489215205ac365c642"
+          "result_sha256": "db35816ce8a29008605c1593bd2c12340d9126e34d280c40f4f318044ab6e2f3"
         }
       },
-      "total_recorded_check_seconds": 3287.8180957929994,
+      "total_recorded_check_seconds": 3208.218219593,
       "export_fixtures": {
         "export_files": {
           "status": "PASS",
@@ -761,53 +763,55 @@
           "ignored": 0,
           "required_tests": 2,
           "tests": [
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization"
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization",
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins"
           ],
           "test_statuses": {
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok"
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok",
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok"
           }
         }
       },
       "job": {
-        "id": 123670093410,
+        "id": 123715621833,
         "name": "foundation (ubuntu-24.04-arm)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093410",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715621833",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-29T19:06:21Z",
-        "completed_at": "2026-10-29T20:01:43Z",
-        "wall_seconds": 3322.0,
+        "started_at": "2026-10-29T20:33:40Z",
+        "completed_at": "2026-10-29T21:27:33Z",
+        "wall_seconds": 3233.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
       },
       "acceptance_controls": {
-        "collected": 332,
-        "passed": 332,
+        "collected": 337,
+        "passed": 337,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 33.3
+        "seconds": 32.049
       },
       "native_reference": {
-        "passed": 241,
+        "passed": 244,
         "groups": 38,
+        "library": 136,
+        "binary": 108,
         "missing": 0,
         "ignored": 0
       },
       "worker_eof_test": "PASS exactonce",
       "python": {
-        "collected": 332,
-        "passed": 332,
+        "collected": 337,
+        "passed": 337,
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 33.3
+        "seconds": 32.049
       },
       "rust_workspace": {
-        "passed": 1356,
+        "passed": 1359,
         "failed": 0,
         "ignored": 2
       },
@@ -817,34 +821,34 @@
         "compressed_bytes": 69398315,
         "step_seconds": 1.0,
         "workflow_log": "foundation (ubuntu-24.04-arm)/4_Reuse checksum-verified native downloads.txt",
-        "workflow_log_sha256": "71091713f30a0a20c5efb7945a22ec7279f4bccdd491fc2cc6b7846143c9e49f",
+        "workflow_log_sha256": "39a86278e59e0a185111b35c09c34e14a6e5f63ec0499e5eb41a3a59085039ff",
         "step_timestamp_resolution_seconds": 1,
-        "workflow_log_elapsed_seconds": 0.719316,
-        "hit_to_restored_log_seconds": 0.543381
+        "workflow_log_elapsed_seconds": 0.69707,
+        "hit_to_restored_log_seconds": 0.5097
       },
       "timing": {
-        "job_seconds": 3322.0,
+        "job_seconds": 3233.0,
         "checks_seconds": {
-          "toolchain": 6.139172486,
-          "format": 2.3689412419999982,
-          "acceptance-controls": 33.86368295100001,
-          "exact-source-build": 1144.9207395199999,
-          "clippy": 746.2394748229999,
-          "rust-doc": 8.034622746999958,
-          "rust-tests": 1344.8703018459998,
-          "p01-event-cli": 0.56552055200018,
-          "p01-config-static": 0.8156396259996654
+          "toolchain": 6.030014530000017,
+          "format": 2.3261359220000486,
+          "acceptance-controls": 32.54290697600004,
+          "exact-source-build": 1087.424944303,
+          "clippy": 725.3543772799999,
+          "rust-doc": 7.882167492000008,
+          "rust-tests": 1345.276119053,
+          "p01-event-cli": 0.5651976949998243,
+          "p01-config-static": 0.8163563420002902
         },
-        "setup_before_first_check_seconds": 4.1702
+        "setup_before_first_check_seconds": 1.808468
       },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093410"
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715621833"
     },
     "macos": {
       "status": "PASS",
-      "result_sha256": "30067f02c19dfd9801364a42b2852a7755c27036221d9542df2931218b4f4c74",
-      "build_result_sha256": "1e8b25a8f8df38d02ca9a4cb464bc80636fdc9632dc42d2aa9990eb2fd3596fb",
-      "source_manifest_sha256": "7a612f4afbd6985a1cc59ceee86a4c21712fb2e3b43bc482d5a76c407771740b",
-      "binary_sha256": "f44c3c8810f263ee50c2dbbf4431b431153f84b6bf63fff5bcc1278fab309e2e",
+      "result_sha256": "a24020b4fae2941bc58a4824662fa87e498c20bae77e09a851cba6c330ff7b53",
+      "build_result_sha256": "84c016687342b4940913639670b27db2cf0182588666c1337cf40308bc8e929a",
+      "source_manifest_sha256": "b37f157aa4ce7b13f000c8e29f6d842efd03a4cc0567bc7f5c217c5ccca1979e",
+      "binary_sha256": "cdfd4215f06a5f5396ab05f0ad43f452b1c5a18ce3553e4236a3b165535384b5",
       "worker": {
         "bytes": 12206576,
         "sha256": "b7eb64bc7f921a0977f53bca3fe31f2686a935c0db500a7610b51664ec5ac9dd"
@@ -860,7 +864,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 8.663052291
+          "seconds": 8.086736416999997
         },
         {
           "name": "format",
@@ -873,7 +877,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 4.156371167000003
+          "seconds": 3.5593729579999973
         },
         {
           "name": "acceptance-controls",
@@ -890,7 +894,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 69.401903333
+          "seconds": 71.01238275000001
         },
         {
           "name": "exact-source-build",
@@ -907,7 +911,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1253.633996625
+          "seconds": 1139.0020803329999
         },
         {
           "name": "clippy",
@@ -922,7 +926,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 504.6074619169999
+          "seconds": 682.985507416
         },
         {
           "name": "rust-doc",
@@ -937,7 +941,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 9.913653290999946
+          "seconds": 11.966987790999838
         },
         {
           "name": "rust-tests",
@@ -952,7 +956,7 @@
           "status": "PASS",
           "executed": true,
           "exit_code": 0,
-          "seconds": 1118.170999708
+          "seconds": 1331.9984834999998
         }
       ],
       "counts": {
@@ -962,7 +966,7 @@
         "not_run": 0
       },
       "rust_tests": {
-        "passed": 1354,
+        "passed": 1357,
         "failed": 0,
         "ignored": 2,
         "measured": 0,
@@ -1010,7 +1014,7 @@
         "p01-event-cli": "NOT_SELECTED on macOS",
         "p01-config-static": "NOT_SELECTED on macOS"
       },
-      "total_recorded_check_seconds": 2968.5474383319997,
+      "total_recorded_check_seconds": 3248.6115511649996,
       "export_fixtures": {
         "export_files": {
           "status": "PASS",
@@ -1074,24 +1078,24 @@
           "ignored": 0,
           "required_tests": 2,
           "tests": [
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization",
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins"
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins",
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization"
           ],
           "test_statuses": {
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok",
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok"
+            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok",
+            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok"
           }
         }
       },
       "job": {
-        "id": 123670093288,
+        "id": 123715622010,
         "name": "foundation (macos-15)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093288",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715622010",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-29T19:06:28Z",
-        "completed_at": "2026-10-29T19:56:28Z",
-        "wall_seconds": 3000.0,
+        "started_at": "2026-10-29T20:33:53Z",
+        "completed_at": "2026-10-29T21:28:30Z",
+        "wall_seconds": 3277.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": [
@@ -1099,30 +1103,32 @@
         ]
       },
       "acceptance_controls": {
-        "collected": 332,
-        "passed": 326,
+        "collected": 337,
+        "passed": 331,
         "failed": 0,
         "errors": 0,
         "skipped": 6,
-        "seconds": 68.082
+        "seconds": 69.912
       },
       "native_reference": {
-        "passed": 241,
+        "passed": 244,
         "groups": 38,
+        "library": 136,
+        "binary": 108,
         "missing": 0,
         "ignored": 0
       },
       "worker_eof_test": "PASS exactonce",
       "python": {
-        "collected": 332,
-        "passed": 326,
+        "collected": 337,
+        "passed": 331,
         "failed": 0,
         "errors": 0,
         "skipped": 6,
-        "seconds": 68.082
+        "seconds": 69.912
       },
       "rust_workspace": {
-        "passed": 1354,
+        "passed": 1357,
         "failed": 0,
         "ignored": 2
       },
@@ -1132,25 +1138,25 @@
         "compressed_bytes": 60250616,
         "step_seconds": 4.0,
         "workflow_log": "foundation (macos-15)/4_Reuse checksum-verified native downloads.txt",
-        "workflow_log_sha256": "6eeb3a0381889feccb9c7da811706ad2b825820bfe28a48c3bf0bc07ff3c5abd",
+        "workflow_log_sha256": "6761765192a19b027fc2a0a91298e04934500a473ee4390e0d94929fe6a8a801",
         "step_timestamp_resolution_seconds": 1,
-        "workflow_log_elapsed_seconds": 3.521218,
-        "hit_to_restored_log_seconds": 2.965496
+        "workflow_log_elapsed_seconds": 3.568478,
+        "hit_to_restored_log_seconds": 3.038678
       },
       "timing": {
-        "job_seconds": 3000.0,
+        "job_seconds": 3277.0,
         "checks_seconds": {
-          "toolchain": 8.663052291,
-          "format": 4.156371167000003,
-          "acceptance-controls": 69.401903333,
-          "exact-source-build": 1253.633996625,
-          "clippy": 504.6074619169999,
-          "rust-doc": 9.913653290999946,
-          "rust-tests": 1118.170999708
+          "toolchain": 8.086736416999997,
+          "format": 3.5593729579999973,
+          "acceptance-controls": 71.01238275000001,
+          "exact-source-build": 1139.0020803329999,
+          "clippy": 682.985507416,
+          "rust-doc": 11.966987790999838,
+          "rust-tests": 1331.9984834999998
         },
-        "setup_before_first_check_seconds": 11.54583
+        "setup_before_first_check_seconds": 9.350577
       },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814/job/123670093288"
+      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562/job/123715622010"
     }
   },
   "source_hashes": {
@@ -1160,9 +1166,9 @@
     "Cargo.lock": "e3da241338957a9aa647c3717580883fde628359610c296a8c3ebaa4b5aa9412",
     "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
   },
-  "exact_source_files": 2433,
-  "source_context": "All three hosted source manifests equal exact Git698c02e7 (2433files); native/release/artifact/worker/source and pre/post workspace contexts verified. This run does not qualify the later865 product/newmain integration.",
-  "fixture_followup": "All 210 exact native reference names/34 groups, keyring10 and export13 pass on every platform. Linux:1,336 Rust PASS each (AMD64 three declared ignores; ARM64 two),282 Python PASS each. macOS:1,334 Rust PASS/two declared ignores,276 Python PASS/six declared SKIP. Corrected PostgreSQL refusal/authentication and all five HTTP completion controls remain PASS; new live-vector/native-census controls are included.",
+  "exact_source_files": 2434,
+  "source_context": "All three hosted source manifests equal exact Git3fed9c0a (2434files); native/release/artifact/worker/source and pre/post workspace contexts verified. Complete selection equals698-to3fed Git diff. Installed and later grouped qualification remain separate.",
+  "fixture_followup": "All244 exact native names/38groups (136library/108binary), strict worker1, keyring10 and export13 pass on every platform. Rust AMD64/ARM64:1359PASS each with3/2 declared ignores; macOS:1357PASS/two ignores. Python aggregate Linux337PASS each; macOS331PASS/six declared Linux-only SKIP. Corrected PostgreSQL refusal/authentication and five HTTP completion controls remain PASS.",
   "not_run_or_skipped": [
     "macOS six declared Linux-only Python controls SKIP; not PASS.",
     "Rust three dedicated fault/lifetime drivers remain unexecuted: actual ignored counts3 AMD/2 ARM/2 mac; one x86-only case is NOT_COMPILED on other platforms. Existing exact cfg/source attribution retained.",
@@ -1184,98 +1190,110 @@
     "operational_credentials": 0,
     "provider_alerts": 0,
     "scope_limits": [
-      "Only run40936964814 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
+      "Only run40950064562 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
       "Pattern scan cannot exclude unknown formats or already-masked secrets.",
       "No extraction, execution, source/settings changes or workflow dispatch."
     ]
   },
   "public_output_audit_limit": [
-    "Only run40936964814 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
+    "Only run40950064562 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
     "Pattern scan cannot exclude unknown formats or already-masked secrets.",
     "No extraction, execution, source/settings changes or workflow dispatch."
   ],
   "artifacts": [
     {
-      "id": 12928898745,
+      "id": 12935411227,
       "name": "foundation-ubuntu-24.04",
-      "bytes": 599761,
-      "sha256": "4e9285ce14fc9dfdd1f3b3b8b2a386bfad9037835ce0e73a4462619a8705f9ae",
-      "retained": ".research/ci-publication-20261026/698c02e7-real-ci/artifact-12928898745.zip"
+      "bytes": 600165,
+      "sha256": "47a3aefeafa5aa758d74abc73445fd10fdd726ef60a8e2f102d0283d21f723a0",
+      "retained": ".research/ci-publication-20261026/3fed9c0a-real-ci/artifact-12935411227.zip"
     },
     {
-      "id": 12928727228,
+      "id": 12934876052,
       "name": "foundation-ubuntu-24.04-arm",
-      "bytes": 620199,
-      "sha256": "90030ddcba26cd61b695b36d2925ed5faf118f97490a9ea4dce99677ec9c5190",
-      "retained": ".research/ci-publication-20261026/698c02e7-real-ci/artifact-12928727228.zip"
+      "bytes": 620516,
+      "sha256": "de52aeb6295d727d72d804dd1b44efcdb58e2419578a70b9538a261aa158e00a",
+      "retained": ".research/ci-publication-20261026/3fed9c0a-real-ci/artifact-12934876052.zip"
     },
     {
-      "id": 12928422784,
+      "id": 12934725806,
       "name": "foundation-macos-15",
-      "bytes": 169098,
-      "sha256": "fa5b5e126cd729362aa04676a32cf091728586874b35a5c8b5a22a05157378d2",
-      "retained": ".research/ci-publication-20261026/698c02e7-real-ci/artifact-12928422784.zip"
+      "bytes": 169228,
+      "sha256": "486485a4d8ec15ce497109be7384d37532a2f208160e2890d71c2658ca30fafc",
+      "retained": ".research/ci-publication-20261026/3fed9c0a-real-ci/artifact-12934725806.zip"
     },
     {
-      "id": 12924278519,
+      "id": 12931091306,
       "name": "ci-selection",
-      "bytes": 1254,
-      "sha256": "ebcc42549f6bc63ff8edfe26b368af25394ba2c58275205d27fb4ad222a2ec3a",
-      "retained": ".research/ci-publication-20261026/698c02e7-real-ci/artifact-12924278519.zip"
+      "bytes": 656,
+      "sha256": "1c8be1e183bc8bbfaf452e08fc3b92e5b6945cfe4782e6cb16c67c0d08409d6e",
+      "retained": ".research/ci-publication-20261026/3fed9c0a-real-ci/artifact-12931091306.zip"
     }
   ],
   "retained_evidence": {
-    ".research/ci-publication-20261026/698c02e7-real-ci/receipt.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/receipt.json",
-      "sha256": "331e81c4860e642fc97e36ea592ab81ec545633a2b45b10ad0053ad5a96a5942"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/receipt.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/receipt.json",
+      "sha256": "902ddcd98ac08ce6d423acb91bc5a2928f4bbd1436133c05b9f8d6ee1da2ed2c"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/outcome.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/outcome.json",
-      "sha256": "fc0a299afdde767b2be5552bad2273998fb31b5d008c85704731a4213f9423e6"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/outcome.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/outcome.json",
+      "sha256": "ed0c1caf2c71beb1dfe69408c8efb1b6a8f6326538fa8fac43576331a9ec9073"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/post-build-contexts.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/post-build-contexts.json",
-      "sha256": "335c138119ca0cf9acb49bc6888226be64d6c5273891dffad58331ec3978aa7d"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/post-build-contexts.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/post-build-contexts.json",
+      "sha256": "c2dc37f2aee942e1a25c132148f0516158ccfa180577ceebb9099f8481bc9523"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/critical-native-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/critical-native-confirmation.json",
-      "sha256": "605bd96cc6d886b18b80a5e02201cbf55f5ecb5f7c57988a413117e918f4c8a6"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/critical-native-confirmation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/critical-native-confirmation.json",
+      "sha256": "1f8141a5331b9190c470fcfa412403c7b7708d7d8b1a1d588f326deaedc868f3"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/strict-worker-eof-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/strict-worker-eof-confirmation.json",
-      "sha256": "9d2a097f7a43926e27e21861f6fc2003a62a59f686aff56d36b24715a083b494"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/strict-worker-eof-confirmation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/strict-worker-eof-confirmation.json",
+      "sha256": "1ed90b020139d8fedb4d7b90d25641d3637ab0c544751105a61c96a9bd46e588"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/python-source-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/python-source-confirmation.json",
-      "sha256": "9c186028622f0f7ee8175287a119f2de4aba4ec6d491be75747368ab0248d231"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/python-source-confirmation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/python-source-confirmation.json",
+      "sha256": "3f1b10bc35352a922f13bf76dffbbdb7e6b6e7dfdc617884ac64c61b38b5e0d7"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/ignored-classification.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/ignored-classification.json",
-      "sha256": "be3b64f71021ee0f8cdefd1645b7b65e5d54b51179bcc1983181fae8e10a8c48"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/ignored-classification.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/ignored-classification.json",
+      "sha256": "424c54ebe37725f6d5fa4fce9cfbf0941959e5bf1b89ed7fb072a74deed2e2da"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/selection-identity-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/selection-identity-confirmation.json",
-      "sha256": "5a42040fb1d4ef945cce3fb003375dbb0cf9f4ba6011e3d80345a21c76dc69ab"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/selection-identity-confirmation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/selection-identity-confirmation.json",
+      "sha256": "6190a7c830b54e5714f2d938f0638735bc37d3a02d25143606a338d08dec833d"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/timing-observation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/timing-observation.json",
-      "sha256": "c74f44770001a210b1d9e4a26e67082bfd781ca2780d8f20ed1a182ac4ad1e9c"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/timing-observation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/timing-observation.json",
+      "sha256": "bb43de088e181c414e73e41d0e667e1324c029ec8e1c3cb7c94d91c2b99bbd6b"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/triage.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/triage.json",
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/triage.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/triage.json",
       "sha256": "81498b5e1b07bd06608526cdc85c230de8b53df88be2b9d2dc9522f6d7a7861e"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/source-status-output-confirmation.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/source-status-output-confirmation.json",
-      "sha256": "2d629be3e5801cf6bb44c8c43ad47f26c7e88c9edeab4582f525a7eb331c9ced"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/source-status-output-confirmation.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/source-status-output-confirmation.json",
+      "sha256": "afc8a25c7ba31774dee4c7db16fbebe8a2ef993f51472ebb2d4f6bf6dbddc0f7"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/watch-session.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/watch-session.json",
-      "sha256": "28e7243d86f1e27944d67e09411871affc0b40ad609f0b6ca8ae1e4e3175a4b5"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/watch-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/watch-terminal.json",
+      "sha256": "c5ef4810a6ac6982041c0b2e318e01d35461b5fdb8ecb6f8de2817939a7dfba6"
     },
-    ".research/ci-publication-20261026/698c02e7-real-ci/acquisition-terminal.json": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/698c02e7-real-ci/acquisition-terminal.json",
-      "sha256": "f1579619e9132884508f1bbbb9dc1e91c405bb4dbc2f1484a34f93a0e66b05d2"
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/watch-session.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/watch-session.json",
+      "sha256": "f4e74844c034ed7fb6e76742f728445ab3ed166d4355de1b3e3094d294b3ec7d"
+    },
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/acquisition-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/acquisition-terminal.json",
+      "sha256": "75fe95a79c3ed68f106d13d9d61ba2400cffad30324d9bb20f700d5407d09e39"
+    },
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/verification-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/verification-terminal.json",
+      "sha256": "c6c032a45a71d4c3fbbba5b6beea235ce21ccd03112661be44b6ec063ecd2ab6"
+    },
+    ".research/ci-publication-20261026/3fed9c0a-real-ci/confirmation-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/3fed9c0a-real-ci/confirmation-terminal.json",
+      "sha256": "357669570344baa3d49751493bef05520f6c0be6244d09508fef44b930fe0f31"
     }
   },
   "format": "bigbrotr-hosted-foundation-evidence/1",
@@ -1455,6 +1473,22 @@
           "sources",
           "advisories"
         ]
+      },
+      {
+        "run": 40950064562,
+        "ordinal": 4,
+        "preceding_check_seconds": 153.03942356099998,
+        "policy_seconds": 3.874463302999999,
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "deny",
+          "--locked",
+          "check",
+          "licenses",
+          "sources",
+          "advisories"
+        ]
       }
     ],
     "meaning": "Locked dependency policy remains ordinal4 before fresh workspace/native compilation. Actual per-run durations are recorded; changing hosts and sources do not establish a causal speedup."
@@ -1523,7 +1557,7 @@
     "cancelled_jobs": [],
     "cancelled_steps": [],
     "required_not_run": [],
-    "retry": "No re-dispatch/retry or intermediate main push; original watcher52355 reaped0",
+    "retry": "No dispatch/retry or intermediate main push; original watcher child reaped0 and exact driver/gh identities absent. Original tool49985 unavailable; durable terminal receipt and process absence verified.",
     "limits": [
       "macOS six declared Linux-only Python controls SKIP; not PASS.",
       "Rust three dedicated fault/lifetime drivers remain unexecuted: actual ignored counts3 AMD/2 ARM/2 mac; one x86-only case is NOT_COMPILED on other platforms. Existing exact cfg/source attribution retained.",
@@ -1535,14 +1569,14 @@
     ]
   },
   "run_local_build_reuse": {
-    "source_manifest_files": 2433,
-    "source_archive_sha256": "bcc220e383c4cde681c84eb4a41a535f34d2555d185c22372c7fcc67a5ec819f",
-    "post_build_contexts_sha256": "335c138119ca0cf9acb49bc6888226be64d6c5273891dffad58331ec3978aa7d",
-    "observed": "All three hosted source manifests equal exact Git698c02e7 (2433files); native/release/artifact/worker/source and pre/post workspace contexts verified. This run does not qualify the later865 product/newmain integration.",
+    "source_manifest_files": 2434,
+    "source_archive_sha256": "5ae8981cd9222b0aeb5734ba0298831d2fbceaac9af104522c638c214409aed4",
+    "post_build_contexts_sha256": "c2dc37f2aee942e1a25c132148f0516158ccfa180577ceebb9099f8481bc9523",
+    "observed": "All three hosted source manifests equal exact Git3fed9c0a (2434files); native/release/artifact/worker/source and pre/post workspace contexts verified. Complete selection equals698-to3fed Git diff. Installed and later grouped qualification remain separate.",
     "job_seconds": {
-      "foundation (macos-15)": 3000.0,
-      "foundation (ubuntu-24.04)": 4238.0,
-      "foundation (ubuntu-24.04-arm)": 3322.0
+      "foundation (ubuntu-24.04)": 4250.0,
+      "foundation (ubuntu-24.04-arm)": 3233.0,
+      "foundation (macos-15)": 3277.0
     },
     "limit": "Actual same-run input contexts, cache hits and elapsed durations only. Different hosts/sources and aggregate times do not establish controlled savings, compiled-unit reuse, duplicate native work or a causal speedup. Every selected platform/profile/clean-build check is retained.",
     "conditional_followup": {
@@ -1553,10 +1587,10 @@
     },
     "current_timing": {
       "status": "OBSERVED_REQUIRED_RUN_ONLY_NO_EXTRA_RUNS",
-      "run": 40936964814,
-      "revision": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
-      "evidence": ".research/ci-publication-20261026/698c02e7-real-ci/timing-observation.json",
-      "sha256": "c74f44770001a210b1d9e4a26e67082bfd781ca2780d8f20ed1a182ac4ad1e9c",
+      "run": 40950064562,
+      "revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+      "evidence": ".research/ci-publication-20261026/3fed9c0a-real-ci/timing-observation.json",
+      "sha256": "bb43de088e181c414e73e41d0e667e1324c029ec8e1c3cb7c94d91c2b99bbd6b",
       "platform_values": "See platforms.{amd64,arm,macos}.timing; original per-check/result evidence retained once.",
       "limits": "Exact-key native download cache hits, per-check seconds, Cargo-reported elapsed times and setup windows are observations. Pure native preparation is not timed separately. Different hosts/sources and aggregate timings do not establish saved time, compiled-unit reuse or duplicate native work. No extra run, new metrics register or workflow edit."
     },
@@ -1603,11 +1637,12 @@
     }
   },
   "limits": [
-    "Exact5cc9cbb1: all thirty selected foundation commands PASS; no failure, cancellation or required selected NOT_RUN.",
-    "All210 exact native reference names/34 groups, keyring10 and export13 PASS on all platforms. Declared ignored probes and cfg exclusions remain explicit.",
-    "Actual native-download cache hits and source/input contexts are verified; per-check/build/setup durations are retained without causal savings or compiled dependency reuse claims.",
-    "Four ZIPs/513 members and34 workflow-log members pass the unchanged known-five output gate; zero new candidates/provider alerts is not exhaustive absence.",
-    "Installed live successor/outage/tutorial evidence retains its own product/assembly/acceptance identity. Newer local9ebd/0fd helper source, capacity, complete selected product and releases are outside this exact hosted run."
+    "Exact3fed9c0a attempt1: all30 selected foundation commands PASS; no failure, cancellation or required selected NOT_RUN.",
+    "All244 exact native reference names/38 groups (136library/108binary), strict worker1, keyring10 and export13 PASS on each platform. Dedicated ignored probes and cfg exclusions remain explicit.",
+    "Python337 declared/collected: AMD64/ARM64 aggregate337PASS each; macOS331PASS/6 declared Linux-only SKIP. Individual Python names and six guards are source-derived; hosted nonverbose output proves aggregate execution.",
+    "Actual native-download cache hits and source/input contexts are verified; per-check/build/setup durations are retained without causal savings or compiled dependency reuse claims. Pure native preparation has no separate timer.",
+    "Four ZIPs/513members and34workflow-log members pass the unchanged known-five output gate;54 benign occurrences and zero new/unclassified/provider alerts do not establish exhaustive absence or asynchronous provider completion.",
+    "Hosted unit/control/CLI execution only. Installed engine/recovery/M1/fullcapacity and release qualification retain their separate owners and product/assembly identities. Later grouped source/harness are excluded."
   ],
   "previous_hosted_success": {
     "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40736641965",
@@ -1790,8 +1825,8 @@
     }
   },
   "ordinary_terminal_review": {
-    "path": ".research/ci-publication-20261026/698c02e7-real-ci/ordinary-terminal-review.json",
-    "sha256": "83fb2c21cb4a0de0d4c1a45d8cf4e0f60ffedc728e40015f6b52e5afcee3774f"
+    "path": ".research/ci-publication-20261026/3fed9c0a-real-ci/ordinary-terminal-review.json",
+    "sha256": "e116acc41acc64934fd7b30c12feb2564909cbdd1a0bdfee313206c84bd21047"
   },
   "previous_macos_refusal_fixture_failure": {
     "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40773449081",
@@ -2047,5 +2082,32 @@
     "archived_report_path": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
     "archived_report_sha256": "e59e8a9c159a772990b28ef21c677ea14b48aa1eec6c5d4638ffd1e63fa4b5db",
     "scope": "All old detailed platform/failure/cache/exposure records remain in this exact immutable Git snapshot; existing earlier history fields retained."
+  },
+  "preceding_698_hosted_success": {
+    "revision": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814",
+    "status": "PASS selected hosted foundation: all30 checks pass on Linux AMD64/ARM64 and macOS for exact698; skips/ignored and later product gates remain explicit",
+    "selected_check_totals": {
+      "PASS": 30
+    },
+    "archived_report_git_revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+    "archived_report_path": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+    "archived_report_sha256": "6c800e47e201eef692c90f6b15c1049d6e6c913be7d862dbd15049a265768697",
+    "receipt": {
+      "path": ".research/ci-publication-20261026/698c02e7-real-ci/receipt.json",
+      "sha256": "331e81c4860e642fc97e36ea592ab81ec545633a2b45b10ad0053ad5a96a5942"
+    },
+    "scope": "Immutable698 report snapshot and its exact original source/outcomes/limits remain; all previous failure/history fields retained unchanged."
+  },
+  "unbound_replacement_hosted_followup": {
+    "status": "PASS_EXACT_3FED_SOURCE_ALL_SELECTED_HOSTED_SCOPES",
+    "product_source": "8653849d178e8adf20589b22ece411959f948673",
+    "native_reference": "244 exact names/38groups,136library/108binary; all prior241 plus3 new names observed once per platform. Strict worker1 remains separately confirmed once per platform.",
+    "python": "337 declared/collected controls; Linux337PASS each, macOS331PASS/6 Linux-only SKIP. Source AST attributes names/guards; nonverbose hosted logs establish aggregate outcomes.",
+    "source_inventory": {
+      "path": ".research/ci-publication-20261026/3fed9c0a-real-ci/acceptance-source-inventory.json",
+      "sha256": "5e024dc6c7d7dd31d8d5dfbc0d065a65323d49750ee59c03086327df8325958e"
+    },
+    "scope": "Hosted foundation unit/control/CLI evidence only. Installed unbound recovery/tutorial evidence retains separate product/assembly/acceptance identities. Grouped recovery drafts254+/harness are excluded."
   }
 }

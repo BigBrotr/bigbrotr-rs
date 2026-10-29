@@ -3369,7 +3369,76 @@
           "merge_input": "891a91139721af70f556d2fca7756c021f6a92c9",
           "qualified_product": "8653849d178e8adf20589b22ece411959f948673",
           "code_inputs": "Merged complete apps/crates/vendor/Cargo/toolchain/contracts/config/build helper equal qualified productX. Reviewed acceptance/docs only beyond X; same actual parent/candidate remains valid.",
-          "publication": "PENDING exact merged commit/checks/source publication scan/push and new actual hosted qualification. Previous698 run40936964814 now30PASS/scoped exposure reviewed; it does not qualify865."
+          "publication": "PUSHED_MAIN_EXACT_SOURCE_NEW_HOSTED_RUN_IN_PROGRESS",
+          "revision": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
+          "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562",
+          "source_review_sha256": "7fc05f524642159e0b4b1ebcfdf263127cf04cf3493026e1fda190486314ed7e",
+          "targeted_merged_controls": "63PASS/0SKIP",
+          "documentation": "3PASS"
+        }
+      },
+      "grouped_replacement_recovery": {
+        "status": "REVIEWED_COMPONENTS_PARENT_OBSERVER_PASS_ACTUAL_GROUPED_INSTALLED_CASE_RUNNING",
+        "owners": [
+          "P02-T04 Step4",
+          "P02-T06 Step7",
+          "P08"
+        ],
+        "product_revision": "18e208ed484a0977897e7a1cf41961f19463ab37",
+        "acceptance_revision": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
+        "scope": "Complete retained A/B/C alternatives, full-EOF unique exact receipt selection, all-member canonical resolution/custody and fresh membership under unchanged caps/deadline. Exact current A/B/C retry binds required member before effects and refuses absent/different results. Installed grouped proof remains NOT_RUN.",
+        "source_reviews": {
+          "initial": "313fd6063d5cc5315c656c2b474f90805034e0d3acc5c341d26e029ac1ddf931",
+          "G1_closed": "9dcf973c9d14d76de2b7b7d990f81a3adeedb1dd5199285d62505730447f294e",
+          "harness_initial": "6fec2e5003c43f2d6d9bad842f4c1c5f67a0651ad01c3e1752822f556412abf7",
+          "H1_H2_custody_closed": "91e0c3733643c2fb394b3d9aa547035f1ef2f8881b336c29646db0955035baed",
+          "H2_F1_closed": "3babc30aedadc2877799e78df3d9bfbfc356acae09fe6718f8d4c2fa9d403564"
+        },
+        "component_proof": {
+          "path": ".research/initial-index-recovery-qualification-20261028/r29-18e208ed-native/composed-qualification.json",
+          "sha256": "c70863f983e1bc3dd05b49130529b45577837e79d7f61c70f27893ea5c6042c9",
+          "application": "Actual257/40=139lib118bin plus build/Clippy; preserves prior244",
+          "protocol": "Actual3 compiled/executed",
+          "worker": "Actualgroup5+oldstrict1 compiled/executed separately; exact nonempty inventories",
+          "reuse_review": "9fcabbb861871d9c24079d50e43574889364ce985590d7d817f4739f25402afd",
+          "limit": "Independent completed scopes composed without converting either enclosing failure to PASS. Root live/source/ELF/cache audit passed; no parent/installed claim from component evidence."
+        },
+        "preserved_failures": {
+          "original_native": "57796 exit1 at private worker filter listed12vsintended6 BEFORE worker tests; app257/protocol3 complete, original worker NOT_RUN. r29-18e208ed-native/original-worker-selection-refusal.json",
+          "worker_preflight": "Standalone metadata environment0.43s exit1, no Cargo/test. r29-18e208ed-worker-followup/original-standalone-environment-refusal.json",
+          "harness": "Original fixture missing compacted_bridge, module import collision, old-audit fixture action shape and all critical review findings remain in author evidence. Source-only closures are not installed PASS."
+        },
+        "installed_build": {
+          "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/build-receipt.json",
+          "sha256": "ad5849f67578d5b37371243ce8ed7dbccdf88c04914027af4cbe7763353341d5",
+          "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+          "session": 10665,
+          "exit_code": 0,
+          "scope": "Actual maintained worker-before-parent, same frozen source and toolchain; retained binary+embedded worker/native assets verified. No installed journey yet."
+        },
+        "qualification_inputs": "Clean work/grouped-retained-qualification merges source18 and reviewed harness351; literal tutorial profile binds apps/crates to18 with nine unchanged Nostr paths, six other code objects unchanged, normalized AST and1 positive/negative control PASS. Actual tutorial still required.",
+        "resources": "Existing laboratory inventory closed_reclamation.grouped_replacement_recovery owns exact worktrees/containers/sessions. Original source/contracts/failures and immutable shared-object retention remain.",
+        "next": "Join/audit actual maintained observer, assemble candidate from X18/Y a8dd, then run maintained grouped-publication-loss on fresh owned roots with declared bridge and independent69issued/68guard/67native/64new6..69/322science expectations; exact retry/history/export/restart and tutorial. All remaining product gates retained.",
+        "native_observer": {
+          "status": "PASS_MAINTAINED_PARENT_BOUND_NATIVE_OBSERVER_BUILD",
+          "session": 57306,
+          "path": ".research/initial-index-recovery-qualification-20261028/observer-18e208ed/receipt.json",
+          "sha256": "2c6f10bba0a3fa5c6cc367ac00dd42bf3e9e79db5d1dd4bfaf573b559f0790e6",
+          "scope": "Actual helper build and maintained artifact provenance/terminal/custody; no store opened, installed journey NOT_RUN"
+        },
+        "candidate": {
+          "manifest_sha256": "0ed331f561c232824a576e336babe7e3bce4c38c75ea77a9baf6a4db246e9e8e",
+          "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+          "acceptance": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
+          "assembly_session": 80544,
+          "exit_code": 0
+        },
+        "installed_case": {
+          "status": "RUNNING_NO_PASS_CLAIM",
+          "session": 59110,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-r1",
+          "schedule": "grouped-publication-loss",
+          "resource_owner": "Existing laboratory inventory grouped_replacement_recovery.installed_case"
         }
       }
     }

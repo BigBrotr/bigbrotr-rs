@@ -1,134 +1,134 @@
 # Current execution checkpoint
 
 2026-10-29, Tux. **Goal ACTIVE:** complete all selected P00–P10/M1–M5 work.
-The earlier bounded signed-event admission/archive/read/export/restart journey is
-qualified; the whole product remains incomplete. Q37/Q38/Q40/Q41/Q42 apply.
-No official release, package publication or production deployment is authorized.
+Q37/Q38/Q40/Q41/Q42 apply. Public development repository; no official release,
+package publication, rename or production deployment is authorized. Coordinator
+and bounded authors were verified Sol/xhigh; critical reviewers Astra/xhigh.
 
-## Source and integration
+## Git and current increment
 
-Last public main is `698c02e7a44884e3ffdde9f333eaef76e46be89c`; its actual
-hosted run40936964814 passes30 selected checks on three platforms. Current main
-integration starts from `6c33e46233f8302dc8920f8bf2b10043bd7b13be` and incoming
-Y891a9113 below, without conflicts. Complete compiled inputs equal qualified X865.
-The exact post-commit merge identity must be read from Git; publication/new hosted
-qualification remain pending at this checkpoint. The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`live_readiness.closed_initial_reclamation.unbound_replacement_recovery`, owns new
-proof and original failures; the [inventory](../research/laboratory-inventory.json)
-owns retained worktrees/resources. Historical7d8/b74 qualification remains there.
+Local/public main is `3fed9c0aacb2cb622270421c1d2d98c7b3e413e1`. Four local
+root-owned documents are dirty: this checkpoint, P01 hosted report, P02 Index
+report and laboratory inventory. No product change is integrated after3fed yet.
+The earlier unique replacement increment and bounded signed-event journey remain
+qualified; the complete product remains unfinished. Detailed results/failures
+belong in the [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.closed_initial_reclamation`; resource identities belong in the
+[laboratory inventory](../research/laboratory-inventory.json),
+`implementation_index_foundation_20261026.resume_20261028.closed_reclamation`.
+Do not duplicate their historical proof tables here.
 
-Qualified productX is `8653849d178e8adf20589b22ece411959f948673` (production7cb96f15,
-explicit native scope8653849d), apps `7c6f6d8fcf4f2f9a14987f7fa9c6225aac3e8415`.
-Assembly/acceptanceY is `891a91139721af70f556d2fca7756c021f6a92c9`: reviewed
-harness2ea5bf5b, contracts c0360bc4 and literal-only tutorial identity rebind.
+The current increment is complete retained Archive replacement groups, owned by
+P02-T04 Step4 / P02-T06 Step7 / P08. Frozen source **X18e208ed484a0977897e7a1cf41961f19463ab37**
+is clean in `.research/grouped-retained-recovery-20261029`, branch
+`work/grouped-retained-recovery`. Initiald9 and critical finding G1 remain preserved;
+source review9dcf973c closes the sole-A/B current retry defect. Complete groups
+now require the exact current member before effects and fresh observation of
+that member, retaining strict full-EOF scans, own sealing, membership, custody,
+original deadlines/caps and the global inventory/current barrier.
 
-All three author/qualification worktrees are preserved:
+Reviewed harness **35169b8e2a2f6c12ab4e447dc19496924fbd657f** is clean in
+`.research/grouped-retained-acceptance-20261029`, branch
+`work/grouped-retained-acceptance`. Originalc965/0114 and H1/H2/H2-F1 findings and
+fixture errors remain. Follow-up3babc30a closes the final history-session touch
+oracle: mandatory pre-setup `/me`, ordered transaction/timing/idle/revoke rules,
+full Control preservation and terminal group/custody/catalog checks remain strict.
+Relevant Python controls pass; installed proof is still **NOT_RUN**.
 
-- `.research/unbound-retained-recovery-20261029`, branch
-  `work/unbound-retained-recovery`, clean8653849d.
-- `.research/unbound-retained-acceptance-20261029`, branch
-  `work/unbound-retained-acceptance`, cleanc0360bc4.
-- `.research/unbound-retained-qualification-20261029`, branch
-  `work/unbound-retained-qualification`, clean891a9113.
+Qualification **Y a8dd7a2409167fa31b4cae046131a1c361ad4ebd** is clean in
+`.research/grouped-retained-qualification-20261029`, branch
+`work/grouped-retained-qualification`. It merges X and reviewed harness, then
+binds the tutorial profile to X: nine Nostr paths and six other code objects
+unchanged, apps/crates changes bounded to reviewed Archive group paths, normalized
+AST and1 targeted positive/negative control pass. Actual tutorial remains required.
+All author/reviewer/CI agent assignments are complete; root is sole launcher/integrator.
 
-The new source/harness/contracts are now assembled into main with this checkpoint;
-commit/check/scan/push remains the next bounded operation. No duplicate dispatch
-or cancellation is needed: the previous hosted run is already terminal. Sol/xhigh authored both bounded changes;
-Astra/xhigh closed source/scope reviewa2380b05 and harness/contracts review866a6010
-without blockers. Those authors and the previous CI watcher/acquisition are complete.
+## Qualified components and preserved outcomes
 
-## Current capability and evidence
+Root native57796 reaped1/noOOM: actual app257/40 (139lib/118bin), build/Clippy and
+protocol3 PASS; the enclosing **FAIL** is preserved. An overly broad private worker
+filter listed12 instead of intended6; the exact guard refused before any worker
+execution. Worker-only R1 failed metadata setup in0.43s before Cargo/test. Corrected
+R2 session41332 reaped0/noOOM16.6719s; exact group5 plus old strict1 compiled and
+executed. Neither application nor protocol was rebuilt/retested.
 
-The new report entry `unbound_replacement_recovery` owns detailed proofs/limits.
-One exact later unbound retained replacement is provisional; only strict full-EOF
-Present permits adoption. Complete Absent continues the original strict read
-under the same admitted job, absolute deadline, cancellation and custody. Errors
-refuse. Candidate B still requires its own canonical seal/fresh Present/membership
-and all-attempt reconciliation before planning. Multiple valid candidates retain
-the ordinary original path; grouped recovery remains required.
+Source-bound composed proof **c70863f9** is
+`.research/initial-index-recovery-qualification-20261028/r29-18e208ed-native/composed-qualification.json`.
+Independent reuse review9fcabbb8 and root live/source/ELF/cache audit preserve both
+FAILs and original worker NOT_RUN; they qualify the three component scopes only.
+Original logs, metadata refusals and all test inventories remain in that directory
+and sibling `r29-18e208ed-worker-followup`.
 
-Native21693 is reaped/audited PASS244/38 (136library/108binary): all241 prior
-controls plus3 new. Separate strict worker compiles/executes exact1/0ignored.
-Clippy/compile/test-compile pass in the same230.44665s run. Receipts d2e504f5 and
-6677b86c are under `.research/initial-index-recovery-qualification-20261028/`
-`r28-8653849d-native`. Parent25280 and observer91697 are reaped/audited PASS,
-receipts88b633ae/713d570f under sibling `installed-8653849d`/`observer-8653849d`.
-Actual source/compiler/assets/worker-before-parent identity is checked.
+Actual maintained worker-before-parent build10665 is reaped0/noOOM and audited,
+receipt **ad5849f6** in sibling `installed-18e208ed/build-receipt.json`.
+Its root is `/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed`.
+Binary43,740,728B SHA256a4441a85; embedded worker/native tuple verified. Maintained
+observer57306 is reaped0/noOOM and audited, receipt **2c6f10bb** in sibling
+`observer-18e208ed/receipt.json`; root `grouped-replacement-observer-18e208ed/out/build`.
+Probe SHA2565bc7a49d. Actual candidate-aware provenance check passed without opening
+a store. Cache115 is released, fresh exclusive availability/no live mounts and
+original four retained pins verified. No builder or cleanup remains. Actual grouped
+installed case59110 is running below; no final result has been observed.
 
-Candidate manifest SHA256
-`b2683d51e1289d49629fafd002bd147eb529df740feaa584b16e15b3f336b7d1` is in
-`/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/candidate`.
-X and Y remain distinct. Harness54 portable controls pass. Tutorial profile rebind
-preserves9 Nostr paths/7other code objects and its positive/negative control passes;
-same-product installed tutorial18824 now passes7/7, terminalb9eb3f08.
+## CI and resources
 
-## Active operation and preserved failures
+Exact [hosted run40950064562](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40950064562),
+attempt1 for3fed, is terminal SUCCESS:30/30 selected checks, all244 native names
+and old strict worker once on each platform. Python Linux337 PASS each; mac331
+PASS/6 declared SKIP. Rust ignores3/2/2 remain explicit. The updated existing
+[hosted report](evidence/p01-ci-hosted-foundation-20261026.json) owns actual maps,
+links, cache/timings, retained698 snapshot pointer and original failures.
+Receipt902ddcd9: four artifacts/513members and34 logs, zero new/unclassified/provider
+credential findings under the bounded scan. All three actual native-download hits
+verified; compiled-cache benefit remains unproven. Original watcher child reaped0
+and both PID identities are absent; original tool49985 remains unavailable, not
+falsely claimed joined. No remote run remains active.
 
-**No local development/test/build/cleanup process remains active.** R2 exec9701
-is reaped0 and passes11/11. Terminala695fc26 audits59containers (38Compose/21native),
-52exit0/7declarednegative4,28persistedPIDs and6905commandPIDs absent,66source pins
-and empty borrowed bridge. Supplementary proxy audit40980480 freshly checks the
-new proxy identity and replays the source-pinned wire/process oracle. Actual B4
-COMMIT completion/lost delivery/current2 is followed by fresh unchanged reuse,
-canonical sealing, only64 missing publications,67receipts/322rows, bridge3/final4,
-zero-work retry and signed history/export/restart. The same candidate tutorial18824
-passes7/7; terminalb9eb3f08 audits18stopped containers/3PIDs/783commands/28pins and
-empty bridge. Both roots and exact runner capsules are under
-`/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d`.
+Reviewed archival cleanup55803 is reaped0/COMPLETE, receipt **a63e15f7**, journal
+**5b399f16**, under the same qualification evidence root. All102429 original object
+paths/bytes/metadata and18 Git/source/provenance bindings verify;91333 duplicate
+representations share storage. Actual free delta4,747,132,928B is distinct from
+5,116,071,936B potential and includes concurrent allocations. No unique object,
+ref/source/data/log/failure was removed. These and older ELF aliases are immutable
+archival storage: make verified private copies before byte OR metadata writes;
+never resume general Git/compiler maintenance through shared aliases.
 
-R1 exec31615 is preserved FAIL2PASS/2FAIL/7NOT_RUN: root omitted the already declared
-borrowed network, Docker address pools were exhausted before bootstrap, and
-cleanup-network inspection also failed. No application/engine container started;
-the attempted new network was subsequently confirmed absent. The image is retained.
-R2 changes only the explicit `--compose-network bigbrotr-m1-0f80280_default` argument.
-No source/build/oracle/timeout changed. Small metadata-layout refusals are retained
-beside the new native/parent audit receipts; corrected metadata needed no rebuild.
-Older f5/efd/c656 product/fixture failures keep their original outcomes in the report.
+Last observer free73,521,942,528B; check actual headroom before candidate/installed
+allocation. The full Index case requires strictly **>67GiB**, parent/observer65GiB.
+Keep cache115 and all required source/failure/data roots. Borrowed network
+`bigbrotr-m1-0f80280_default`, ID1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f,
+was empty after prior qualified cases; verify actual identity/emptiness immediately
+before reuse and supply `--compose-network`. Never remove it or touch foreign workloads.
 
-No local builder or cleanup remains active. Cache115 is released and original four
-pins remain verified. Root owns the installed test resources; leave unrelated
-workloads intact. The borrowed bridge ID remains
-`1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f`;
-it was checked empty before R2 and must be retained/checked after actual cleanup.
+## Next action and remaining gates
 
-Space retirement is recorded once in the inventory: old redundant bundles/native
-assets remain reconstructible from retained candidates; restore their recorded
-bytes/modes before historical path reuse/audit. Root dedup24835 recovered an
-actual4,083,879,936B while preserving all1305 historical ELF manifest entries and
-32original pins. Those aliases are immutable archival objects: make private copies
-before future writes; never resume them as compiler target trees. Keep the restored
-compiler cache. Full Index acceptance needs **more than67GiB**, tutorial65GiB;
-reuse the declared bridge and check actual headroom before another allocation.
-
-## Next action and remaining scope
-
-Commit the coherent verified main integration, run the targeted maintained checks
-on the clean merge, review newly reachable publication inputs, push once and
-observe its actual hosted run. Do not reuse the previous hosted source as proof of
-the new merge. Then implement grouped recovery from the bounded contract10ae0238
-and output-custody addendum74b37d05 under the existing P02 owners; read both fully
-before authoring. They are source-only, with implementation/native/real proof NOT_RUN.
-
-The ratified contract9bf2061e and grouped attachment3341fd58 are under
+Unsigned local candidate assembled0 via maintained tooling, manifest SHA256
+0ed331f561c232824a576e336babe7e3bce4c38c75ea77a9baf6a4db246e9e8e,
+under the installed root's `candidate/`. Actual session59110 runs the maintained
+`p01-first-launch-closed-reclamation --retained-archive-schedule grouped-publication-loss`
+with X18/Y a8dd, declared observer and borrowed network. Runner1355217/start3879027;
+evidence root is `acceptance-grouped-r1`, capsule `acceptance-grouped-r1-session.json`
+beside it (integer start ticks). Join59110; do not restart on observation timeout.
+Preflight bridge identity/empty and >67GiB predicates passed. Its separate metadata
+record initially used a root-main relative path from Y and refused after those
+checks; the absolute record was corrected without restarting the case. Exact
+initial free value was not persisted; do not invent it. Required outcomes remain69 issued/68 guard imports/
+67 native receipts/64 new6..69/322 scientific rows, snapshot68, bridge3/final4,
+zero-work retry and same-root history/export/restart. Preserve actual B4 failed
+outputs independently, including a valid empty baseline. Execute the affected
+real tutorial on the same candidate; do not infer installed success from controls.
+The ratified10ae0238 contract and74b37d05 addendum remain under
 `.research/initial-retained-boundary-20261028/.research/retained-boundary-author`.
-Valid A3absent/B4absent/C5Present remains REQUIRED P02-T04 Step4/P02-T06 Step7/P08;
-the unique slice cannot close it. The grouped contract is
-`contract-grouped-retained-recovery-8653849d.json` in the same directory, with
-`-output-custody.json` addendum. It distinguishes69issued/68guardimports/67native
-and64 new6..69; any B4 residual output census is preserved independently of science. Scalable30s freshness/Ready65, OPEN>64/sliding GC,
-arbitrary epochs/payload GC, replay/protection/fullcapacity, Code202/query retirement,
-a99 Sync startup and topology HTTP429 uncertainty remain in their existing owners.
-Admission cost, ClickHouse decoding/transport and coordinator maintenance retain
-P02-T02/T06/T09 and P01-T05 owners. Maintained portable harness/clean-checkout delivery
-remains P01-T08/P08-T11/T12/P10-T08/T10. No whole-P02 barrier or reduced scope is implied.
 
-[Hosted run40936964814](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40936964814)
-qualifies exact public698, attempt1, terminalSUCCESS:30/30 selected (AMD14/ARM9/mac7),
-all241 required native names and strict worker once on each platform. Python
-AMD/ARM332PASS, mac326PASS/6Linux-onlySKIP; Rust ignores3/2/2 remain explicit.
-The [hosted report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact maps,
-links, cache/timing and residual gates. Scoped exposure receipt331e81c4 covers four
-declared artifacts/513members and34logmembers:0new/unclassified credentials, only
-five known non-secret fingerprints. Pattern/asynchronous limits remain. All three
-download caches hit; compiled-cache reuse/causal speedup remain unproven. No
-billing, visibility, spend, official release or production change was made.
+Record actual PASS/FAIL/NOT_RUN in existing Index report/inventory; integrate
+verified coherent work on main and push under existing public-source review rules.
+Current four documentation edits record qualified CI/components/retention and may
+be committed coherently; no unqualified source is forced into main.
+
+Remaining requirements retain existing owners: Code202/query retirement, a99
+Sync startup and topology HTTP429 uncertainty, scalable freshness/Ready65,
+OPEN>64/sliding GC, arbitrary epochs/payload GC, replay/protection/full capacity;
+admission cost P02-T02/T09, ClickHouse decoding/transport P02-T06/T09, coordinator
+maintenance P01-T05, portable clean-checkout tools/delivery P01-T08/P08-T11/T12/
+P10-T08/T10, and all selected P03–P10 capabilities. This increment and M1 do not
+substitute for the full plan.
