@@ -1,163 +1,121 @@
 # Current execution checkpoint
 
-2026-10-29, Tux. **Goal ACTIVE.** The earlier bounded M1 journey is qualified;
-the complete P00–P10/M1–M5 product and selected optional requirements remain
-incomplete. Q37/Q38/Q40/Q41/Q42 apply. No official release, package publication
-or production deployment is authorized.
+2026-10-29, Tux. **Goal ACTIVE.** Complete P00–P10/M1–M5 and every selected
+optional requirement. The earlier bounded M1 journey is qualified; the complete
+product remains incomplete. Q37/Q38/Q40/Q41/Q42 apply. No official release,
+package publication or production deployment is authorized.
 
-## Source and integration
+## Source and current increment
 
 Public main remains `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before
-this documentation checkpoint is `fd32b56f`, including qualified common-wait
-`9ebd27b3`, hosted report `4293` and the subsequent evidence checkpoints. The
-containing checkpoint commit changes only the existing plan/evidence/checkpoint
-and inventory; its exact revision is available from Git. No reclamation product code
-or fixture is integrated on main. Keep the next main push around a qualified
-capability and its actual hosted run.
+this documentation checkpoint is `7185ed66`, ten commits ahead, with the qualified
+common-wait helper and prior evidence checkpoints. Only the existing Index report,
+inventory and this checkpoint are changed. No reclamation implementation or fixture
+is integrated on main. Integrate and push the next main capability after its
+complete bounded qualification; obtain the required real hosted run afterward.
 
-Current frozen product: `c656c518231a3d604cb6fa08989455f655fd7cfe`, worktree
-`.research/closed-reclamation-policy-qualified-20261029`, branch
-`work/closed-reclamation-policy-qualification`.
+Frozen corrected product: `efd8c32edb6e53f9115401146280a05df04d1d1d`, tree
+`e9fe7769922af39351fee1efc32c28715ef1bd13`, apps
+`8fd1ff57b813c735420db0ad16d51990e2e9e5c1`, in
+`.research/closed-reclamation-retry-final-qualified-20261029` /
+`work/closed-reclamation-retry-final-qualification`.
 
-Current frozen acceptance: `08622bfd89d2a5d740594de9fb82f92f656f9b40`, worktree
-`.research/closed-reclamation-census-acceptance-qualified-20261029`, branch
-`work/closed-reclamation-census-acceptance`. Author worktree
-`.research/closed-reclamation-20261029` is at086 on `work/closed-reclamation`,
-implementing the bounded product retry correction below.
-The pending branch is backed up remotely through086 after source exposure review.
-No reclamation code is integrated on main. All older sources and failures remain.
+Frozen acceptance: `8e43c8114d8daef2a18d71432f1a21e0691501c1`, in
+`.research/closed-reclamation-retry-acceptance-qualified-20261029` /
+`work/closed-reclamation-retry-acceptance`. The author worktree
+`.research/closed-reclamation-20261029` is clean at the same commit on
+`work/closed-reclamation`, pushed as an explicit pending-work backup after an
+incremental exposure scan: three commits, ten blobs, no candidate credentials,
+sensitive/raw-store paths or LFS pointers. All older source and failures remain.
 
-## Current result and valid evidence
+## Qualified result and remaining acceptance
 
 The [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
 `live_readiness.closed_initial_reclamation.live_policy_authority_followup`, owns
-exact receipts, source/artifact identities, review scopes and original failures.
-Reuse those records rather than repeat unchanged checks.
+original failures, precise evidence identities and review scopes. The
+`receipt_retry_followup` entry owns the current correction and qualification.
 
-- Product c656 passed strict Clippy, library/CLI builds, test compilation and
-  all 224 native controls in 37 groups (136 library, 88 binary). The previous
-  221 controls are retained; three actual policy-carrier controls were added.
-  Critical source review is closed. Native/synthetic SQL evidence alone does
-  not establish connected-engine behavior.
-- Fresh installed parent and native observer builds passed. Candidate manifest
-  SHA256 is `3f4320c91fb51f24e615a3cd7158ead5fe12cf7d57e2859f72d80ba4bde974f5` at
-  `/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/candidate/candidate-manifest.json`.
-  Its original assembly source 2dad is distinct from current acceptance 05a.
-- Acceptance-only 05a corrects the real shared-census API mismatch without
-  changing Rust, deadlines, oracles or the three-file/32 MiB limits. All 43
-  owning-module controls plus one tutorial-profile control pass; bounded
-  critical verifier review is closed. Reuse the existing product/candidate/
-  observer for any further verifier-only correction.
+- Critical review `de2049b59` is closed for the scoped retry correction. The
+  parent selects exactly one same-semantic/original-header replacement already
+  bound to the retained current frontier, with distinct ID/later ordinal and old
+  intent not current. After old custody/catalog resolution, strict
+  Present(replacement) establishes old absence. Ordinary replacement reconciliation,
+  membership and complete EOF remain; worker/wire/guard/caps are unchanged.
+- Actual application qualification passes Clippy, library/CLI build, test
+  compilation and **237 controls in 37 groups**: 136 library, 101 binary. All
+  previous 224 remain; nine relevant preexisting and four new controls are added.
+  Independent terminal receipt `1a72b2dd` retains source/compiler/ELF/log checks.
+- Original native session 7215 exits 1: its appended worker command incorrectly
+  selected the binary target and ran zero tests. The exact-execution guard refuses
+  that false PASS. This is an invocation/fixture failure; the overall FAIL and
+  original log remain intact, while the application237 scope is reusable.
+- Worker-only replay 14889 exits 0, **exactly one compiled/executed test, zero
+  ignored**, covering seven real pinned DuckLake receipt scenarios, including
+  duplicate/conflicting identities through EOF. Only the target changes to
+  `--lib`; no feature/source/timeout/cap change. Receipt `9e31b2b2` also verifies
+  stopped/reaped/no OOM, original cache pins and retained worker test ELF.
+- Fresh installed parent build83404 passes (125.27 seconds), receipt `21b4d2a6`;
+  fresh observer32106 passes (75.16 seconds), receipt `4364f072`. Both are stopped/
+  reaped0/no OOM, and the compiler cache is released. Candidate `514fb722` is
+  assembled once from acceptance8e43 with exact product/worker/native binding.
+- Full installed case **10694 is running, unqualified**, at the external path
+  below. Its complete11stage result and new-product tutorial remain pending.
 
-**Latest installed result: FAIL**, full 11-stage R2, session 77972 reaped 1:
-eight PASS, one FAIL, two NOT_RUN, cleanup PASS. Evidence root:
-`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r2`.
+Prior product c656's latest full installed R5 remains **9 PASS / 1 FAIL /
+1 NOT_RUN, cleanup PASS**. Its actual independent CAPI comparison passes all five
+scientific tables (322 rows) and 67 native archive commits. The subsequent exact
+Archive retry exits 4/ObservationUnknown; signed history/export is NOT_RUN. No
+post-retry SQL/catalog capture exists, so no zero-effect/rollback claim is made.
+R1–R4 verifier failures and corrections retain their separate scopes in the report.
+The prior seven-stage c656 tutorial passes but does not qualify the new product.
 
-Actual closed-64 reclamation, both final-COMMIT loss directions, conservation,
-retry/restart and incompatible typed-head refusal pass. The successor activates
-epoch 2 and admits three requests after the earlier 64. The corrected census
-observes three files totaling 1,743 bytes within 32 MiB. The existing Control
-publication oracle and phase release complete at Index revision 68 with vector
-`[1:312, 2:10]`; owner and client join with exit 0 and empty stderr. Successor
-retirement and native capture complete. Then `successor_science` raises an
-AssertionError without a message before the reuse verdict. Offline replay has
-located a missing `event=dump-state` in the independent model. Correcting only
-that literal reaches the full native-byte/sequence checks, then reveals a second
-verifier error: historical admission issuer is selected from the job owner after
-recovery reassignment. Both diagnoses are pinned in the report. The original installed stage remains FAIL; the later full scientific replay has
-its separate scope. Raw ClickHouse row census, finite consumer retry, final
-Archive publication and history/export remain unqualified untilR3. The two following stages are NOT_RUN. Original R1's earlier
-`KeyError: bytes` remains FAIL; it is not relabeled by R2's progress.
+## Resources and agents
 
-## Resources, custody and agents
+Only full installed acceptance10694 is active: runner528254/start1236226.
+Exact boot/PID/arguments are in external
+`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1-session.json`;
+evidence is its sibling `acceptance-closed-r1`. Runtime ownership is recorded by
+the maintained harness there. Parent83404/observer32106 are terminal and audited;
+no builder/cache borrower or tutorial runs concurrently.
 
-No compiler, installed runtime or autonomous agent experiment is active.
-Latest R5 session40030 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. Actual independent
-CAPI census and full comparison PASS: all5 scientific tables322rows and67native
-archive_commits. The next actual Archive exact-retry command exits4 with
-ObservationUnknown before a positive report; signed history/export is NOT_RUN.
-Evidence sibling `acceptance-closed-r5`; launch `acceptance-closed-r5-session.json`.
-Terminal6f1fa34d verifies52containers stopped/PID0/noOOM,23recordedPIDs/
-5714commandPIDs absent,64pins and exactbridgeempty/errors[]. No after-retry SQL/
-catalog capture exists; effects are not claimed absent or rolled back.
-Latest R4 session78556 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. All707
-Archive report/history/import/schedule/custody checks pass on the real candidate.
-The actual native CAPI census command then fails before a validated comparison;
-partial output is preserved and physical data/commit comparison remains unqualified.
-Archive retry and signed tail are NOT_RUN. Evidence sibling `acceptance-closed-r4`,
-launch `acceptance-closed-r4-session.json` (runner194297/start498276).
-Independent terminal1f67068d verifies51containers stopped/PID0/noOOM,
-23recordedPIDs/5707commandPIDs absent,64pins and exactbridgeempty/errors[].
-Latest fullR3 session50870 reaped1:9PASS/1FAIL/1NOT_RUN, cleanupPASS. Closed
-reclamation and complete compacted_successor/reuse/scientific-native stages PASS.
-Both finite Index catch-up and exact retry pass, including raw rows/cuts. The next
-Archive publication-summary comparison fails at compacted_consumers; history/export
-is NOT_RUN. Only report frontier4 vs expected5 differs: the maintained baseline2 plus two
-contract advances requires4. A second membership assumption needs critical review:
-68SQLintents include original outage intent3 absent from67catalog import
-credential identities; those are not native archive_commits. The final5-table/
-67-native-commit C API census remains NOT_RUN. No
-unknown/ambiguous intent may be ignored to obtainPASS. R3 evidence
-is sibling `acceptance-closed-r3`, launch `acceptance-closed-r3-session.json`.
-Independent terminal4df8be64 verifies51ownedcontainers stopped/PID0/noOOM,
-23recordedPIDs/5707commandPIDs absent,64pins unchanged, exactbridgeempty/errors[].
-Independent outside-checkout tutorial70307 reaped0: all7 stages PASS on unchanged
-c656 candidate/frozen05a. Evidence sibling `acceptance-tutorial-r1`; terminal
-d5520f30 verifies18 ownedcontainers stopped/PID0/noOOM, runner/two clients and
-778commandPIDs absent,28sourcepins unchanged and exact bridgeempty. Its exact
-positive scope is independent of the pending GC oracle correction. Review the
-exception-only helper delta before reusing that proof; no new tutorial or product
-build is required just for this acceptance correction. R2's
-independent terminal receipt `3a3d6b65` verifies all 45 owned containers stopped,
-PID 0/no OOM, 21 recorded processes and 5,425 command PIDs absent, unchanged
-acceptance/artifact pins, empty borrowed bridge and cleanup errors `[]`. Original
-positive and intentional negative exits remain recorded. The fixture did not
-persist the successor client's PID; the actual path/group scan is empty and
-that PID-specific identity limitation is explicit. The earlier R1 terminal
-receipt `49d84bfc` retains its separate scope.
+Native 7215 and worker 14889 are stopped/reaped; original cache ELF pins were
+independently verified after each. All earlier installed engines remain stopped
+with their existing terminal audits. Borrowed bridge
+`bigbrotr-m1-0f80280_default` / `1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f`
+is preserved; do not remove it. Preserve current inputs, databases, raw logs,
+original failures, `.research` and worktrees. The [inventory](../research/laboratory-inventory.json)
+owns custody; historical stopped observations are not live process checks.
 
-Borrowed bridge `bigbrotr-m1-0f80280_default`, ID
-`1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f`, is retained.
-The optional native 115 cache is released; original artifact pins are unchanged.
-Preserve databases, current three inputs, raw logs, original failures, .research
-and worktrees. Old 64 inputs were intentionally reclaimed by the product after
-the independently checked prefix; no pre-GC clone of those inputs is available.
-The [existing inventory](../research/laboratory-inventory.json) owns custody.
+Sol/xhigh coordinator and operational author are verified. Astra/xhigh critical
+review is closed. The bounded author/reviewer tasks are complete; no agent
+experiment is active. Root alone owns launches and integration. Q37/Q38's latest
+allocation and method are already reconciled in questions.md/agent-handoff.md.
 
-Sol/xhigh coordinator and operational author are verified; Astra/xhigh bounded
-critical reviews are closed. Sol and Astra have completed the bounded adapter/review; no agent experiment is
-active. Root owns integration; Sol/Astra now diagnose the concrete product retry boundary. Product artifacts are unchanged.
+## Precise next action and outstanding scope
 
-## Precise next action and remaining scope
+Reap fullcase10694 and independently audit its actual result, all owned resources,
+source/artifact pins and borrowed bridge with the existing terminal auditor. If
+PASS, execute and audit the outside-checkout tutorial on this exact candidate.
+Preserve any failure before classifying it; reuse unchanged component/build proofs.
 
-**Next:** Sol implements the product-only retained inventory/native fix under
-critical contract af8d3ae9. Select exactly one later same-semantic/header
-replacement already bound to current frontier, with distinct ID/greater ordinal
-and old intent not current. After old custody/catalog resolution, unchanged strict
-Present(replacement) establishes old absence; ordinary replacement checks and
-full EOF remain. No worker/wire/guard/cap changes or custody cloning. Freeze
-source/tests, obtain critical review, then root qualifies exact native/build/
-installed product. All275old archive-state files are unchanged; SQL/native effects
-remain unobserved. Source086/probe12controls/review057ecc48 retain their scopes.
-Replacement committed before frontier binding remains explicit required recovery
-work in P02-T04 Step4/P02-T06 Step7/P08, not qualified by this scoped fix.
-
-P02-T02/T06 Steps 4/7 own completion of genuine request 65, exact native science,
-finite/live consumer retry, final Archive and signed history/export, then the
-same-product outside-checkout tutorial. Integrate on main only after the complete
-bounded qualification and custody checks. The scalable 30-second freshness/
-Ready65 gate remains a later P02/P08 obligation, not a claim of this case.
+P02-T02/T06 Steps4/7 own the closed64 successor capability: request65, exact native
+science, finite/live consumers, Archive exact retry and signed history/export.
+The wider required recovery transition where a replacement commits before its
+current-frontier binding remains open under P02-T04 Step4/P02-T06 Step7/P08;
+the current scoped fix conservatively refuses that ambiguity. The scalable
+30-second freshness/Ready65 gate is also a later P02/P08 obligation.
 
 [Hosted run 40814795307](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40814795307)
-on public 5cc passed all 30 selected checks on all three platforms. Its measured
-costs and exposure review remain in the [hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
-No hosted watcher/dispatch is active; this run does not qualify newer work.
-Retain cold/default/shipping/platform checks. Potential dependency-byte reuse
-remains unimplemented, and duplicate equal-input C++ compilation is unproven.
+passes all 30 selected checks on three platforms for public5cc. Its timings and
+exposure review are in the [hosted report](evidence/p01-ci-hosted-foundation-20261026.json).
+It does not qualify newer work. No hosted watcher/dispatch is active. Preserve
+cold/default/shipping/platform coverage; dependency-byte reuse is unimplemented,
+and duplicate equal-input C++ compilation is unproven.
 
-Code202/query retirement, a99 Sync startup and the old topology HTTP429 uncertainty
-remain linked in the Index report. OPEN >64/sliding GC, arbitrary epochs, payload
-GC, Archive all-family fallback/replay leases, full capacity/recovery and every
-later selected phase remain open under the existing plan. Admission cost,
-ClickHouse decoding/transport and coordinator maintenance retain their assigned
-P02-T02/T06/T09 and P01-T05 owners. Do not pause or complete the goal here.
+Code202/query retirement, a99 Sync startup and the earlier topology HTTP429
+uncertainty remain linked in the Index report. OPEN >64/sliding GC, arbitrary
+epochs, payload GC, Archive all-family fallback/replay leases and full capacity/
+recovery remain open. Admission cost, ClickHouse decoding/transport and coordinator
+maintenance retain P02-T02/T06/T09 and P01-T05 owners and closure criteria.
+Portable maintained harness/clean-checkout delivery stays under P01-T08,
+P08-T11/T12 and P10-T08/T10. All later selected phases remain required.

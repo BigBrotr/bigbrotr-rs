@@ -2388,7 +2388,7 @@
           }
         },
         "receipt_retry_followup": {
-          "status": "IMPLEMENTING_REVIEWED_MINIMAL_PRODUCT_CONTRACT",
+          "status": "COMPONENTS_AND_FRESH_BUILD_PASS_FULL_INSTALLED_RUNNING",
           "reviewer": "reclamation_retire_diagnosis",
           "operational_author": "ci_followthrough_sol",
           "source": "c656c518231a3d604cb6fa08989455f655fd7cfe",
@@ -2405,7 +2405,146 @@
           },
           "contract": "Retained inventory may choose exactly one later distinct-ID/greater-ordinal replacement bound to current retained frontier, with complete semantic/original-header equality and old intent not current. After old custody/catalog resolution, unchanged strictPresent(replacement) provesoldAbsent; ordinary replacement sealing/reconciliation/membership/fullEOF still required. One small owned expectation, no custodyclone, worker/predicate/wire/caps untouched.",
           "scope_limit": "Replacement committed before its current-frontier binding is NOT qualified by this shortcut. Keep conservative refusal/UNKNOWN; full recovery of that transition remains required under existing P02-T04Step4/P02-T06Step7/P08 faults before complete product delivery.",
-          "observed_effects": "All275archive-state files match pre-retry identity/hash census;6new0700scratch preparation directories fit3paired probes. No after-retrySQL/catalog/native capture or fullArchive-data baseline; no zero-effect/rollback/idempotence claim."
+          "observed_effects": "All275archive-state files match pre-retry identity/hash census;6new0700scratch preparation directories fit3paired probes. No after-retrySQL/catalog/native capture or fullArchive-data baseline; no zero-effect/rollback/idempotence claim.",
+          "product_revision": "efd8c32edb6e53f9115401146280a05df04d1d1d",
+          "product_tree": "e9fe7769922af39351fee1efc32c28715ef1bd13",
+          "apps_tree": "8fd1ff57b813c735420db0ad16d51990e2e9e5c1",
+          "worktree": ".research/closed-reclamation-retry-final-qualified-20261029",
+          "author_receipt": {
+            "path": ".research/closed-reclamation-20261029/.research/archive-retry-replacement-author-20261029/receipt.json",
+            "sha256": "369fb1b44cd5933303bd45b154cf8adabfe4a729a63234e22055cf19fbd9e8cf"
+          },
+          "test_correction": {
+            "source": "efd8c32edb6e53f9115401146280a05df04d1d1d",
+            "path": ".research/closed-reclamation-20261029/.research/archive-retry-replacement-author-20261029/worker-test-correction.json",
+            "sha256": "a866b41d7b2b4fdb9b9edadd68180908d3550ea83cc7f7dda6492bac207285a8",
+            "scope": "Fresh readonly Engine after expectedMismatch; firstb136 test transaction issue preserved, no production/helper/selector change."
+          },
+          "critical_review": {
+            "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-archive-retry-replacement-efd8c32e.json",
+            "sha256": "de2049b599541884b6f16ab2261c90fcfef9f9412ca24fc9afff8587b76e64ac"
+          },
+          "native_scope": {
+            "status": "ACTUAL237_PASS",
+            "expected_controls": 237,
+            "groups": 37,
+            "library": 136,
+            "binary": 101,
+            "old224_retained": true,
+            "additions": "9previously unselected owning-boundary tests plus4new product controls; source exact-name mapping, matching/guards unchanged.",
+            "source_scope_sha256": "5a58b2569b02387b1a75c7d86af11f2024e301d14b32800304bd78318f0a97ee",
+            "python_verifier_controls": "8PASS",
+            "worker": "Separate actual library-target testPASS:1compiled/1executed/0ignored, seven real DuckLake cases. Original binary-target0test/overallFAIL preserved."
+          },
+          "preparation": "Native237 and separateworker actualPASS satisfy explicit two-receipt admission. Root alone launches parent then observer then full installed case/tutorial. Source/criticalreview unchanged.",
+          "acceptance_binding": {
+            "revision": "8e43c8114d8daef2a18d71432f1a21e0691501c1",
+            "worktree": ".research/closed-reclamation-retry-acceptance-qualified-20261029",
+            "receipt": ".research/closed-reclamation-20261029/.research/archive-retry-replacement-author-20261029/tutorial-rebind-receipt.json",
+            "sha256": "dfc45e3dd22e34121ffe95713effde50267ebd27c87d47e3f313983954c86047",
+            "scope": "Literal product/apps/doclabels rebind only; normalizedAST,8objects/9Nostrpaths verified; profilecontrol1PASS; case/oracle/probe unchanged."
+          },
+          "native_run": {
+            "status": "TERMINAL_OVERALL_FAIL_WORKER_NONEXECUTION_APP237_PASS",
+            "session": 7215,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-efd8c32e",
+            "container": "7d2a530e0dbc6642ac9f6044361a90d7c34427117a716ee5cda44b822801a96b",
+            "owner": "b11584b4bc7f4d19a2a9867db4e74979",
+            "launcher_pid": 514943,
+            "launcher_start_ticks": "1113535",
+            "input_admission": ".research/initial-index-recovery-qualification-20261028/r25-efd8c32e-native/input-admission.json",
+            "input_admission_sha256": "192611e22842b7b0dc018e7c7a4b6fc8d797ffb97ce89b5f45bc83e8078147ee",
+            "expected": "237applicationcontrols/37groups and separate1realworkerfixture. Existing app runner unchanged; only worker tools.ci.execute/completed_tests step and readonlypinnedbundle mount added. Cache115 lock held by launcher; no simultaneous builder.",
+            "worker": "INVOCATION_FIXTURE: --bin selects main; actual0tests exit0 refused by exact completed_tests guard; corrected independently below.",
+            "cli_exit_code": 1,
+            "container_exit_code": 1,
+            "oom": false,
+            "application_status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
+            "selected": 237,
+            "groups": 37,
+            "receipt": ".research/initial-index-recovery-qualification-20261028/r25-efd8c32e-native/receipt.json",
+            "receipt_sha256": "1a72b2dd90c8282fc2b16e839bb7d2b6669d3c2e340aa3420a48f28367a5accc",
+            "cache_terminal_sha256": "a51ecf08cd6f9092860febfe8ab4f3e0061055ce62fff23c54b5693fe17ed94a",
+            "cache": "released; independently reacquired, original4pins unchanged, no overlapping mount"
+          },
+          "installed_preparation": {
+            "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+            "path": ".research/initial-index-recovery-qualification-20261028/installed-efd8c32e/input-admission.json",
+            "sha256": "e90be8bfc831398d27b24d87db0ff33a2a1be915c44267a6277419ca40240909",
+            "scope": "Actual fresh worker-bound build83404 reaped0/125.27s; exact source/native bundle/worker binding verified; no installed behavior claim from build alone. Cache released.",
+            "session": 83404,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e",
+            "root_binding_sha256": "2f451ccbbfa3b50f5df130e57d1a707df3511da3e71f62afc5106f2dca43e16e",
+            "receipt": ".research/initial-index-recovery-qualification-20261028/installed-efd8c32e/build-receipt.json",
+            "receipt_sha256": "21b4d2a6d56c8fbe2b6738175448901bf80f7e1def2273e93d057b7defa221f9"
+          },
+          "worker_replay": {
+            "status": "PASS_SEPARATE_STRICT_WORKER_REGRESSION",
+            "session": 14889,
+            "cli_exit_code": 0,
+            "container_exit_code": 0,
+            "source": "efd8c32edb6e53f9115401146280a05df04d1d1d",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-worker-efd8c32e",
+            "receipt": ".research/initial-index-recovery-qualification-20261028/r25-efd8c32e-worker-replay/receipt.json",
+            "sha256": "9e31b2b21ac62efacec935b1ab4a6b46f33e3faca0d7adcdd99f059f23644280",
+            "scope": "Invocation-only --lib correction; exact compiled/executed singleton, seven real DuckLake scenarios. Same source/compiler/bundle/caps; native237 reused. Original overallFAIL not relabeled.",
+            "retained_test_executable": "594087a0424fa105c49e7d43560df7fa797299aae0325aa280361ef06fd4440f",
+            "custody": "Stopped/reaped0/noOOM; original4cachepins verified, lock reacquired/released, no active overlapping mount"
+          },
+          "source_publication": {
+            "revision": "8e43c8114d8daef2a18d71432f1a21e0691501c1",
+            "branch": "work/closed-reclamation",
+            "scope": "Three incremental sourcecommits,10blobs/283166bytes,0findings/sensitive/raw/LFS; exactSHA push successful; main unchanged and installed qualification pending.",
+            "review": ".research/ci-publication-20261026/source-reclamation-8e43c811-20261029/review.json",
+            "review_sha256": "b060879bbb7c6c03cab38596769de58456a51d5c32643ac2d900a7ed836c525c",
+            "publication_receipt_sha256": "73954d2a568c976f5cc715beaaadfb2534af1f86873e10986aa4b3cc0c528655",
+            "remote_actions": "No runs for8e43 observed after one TCPtimeout/retry; not a billing/workflow/product failure."
+          },
+          "observer_build": {
+            "status": "PASS_DECLARED_NATIVE_OBSERVER_BUILD",
+            "session": 32106,
+            "elapsed_seconds": 75.15592691399979,
+            "receipt": ".research/initial-index-recovery-qualification-20261028/observer-efd8c32e/receipt.json",
+            "sha256": "4364f0725cce1c8d8d33fbad3d9d4d109c34bded792fed25bbf9cadfbb0af9b1",
+            "scope": "Actual fresh maintained observer build; binary matches prior digest because unchanged observer dependency code. Qualified source and parent binding checked, no engine observation claim; cache released."
+          },
+          "candidate": {
+            "status": "PASS_CANDIDATE_ASSEMBLY",
+            "assembly_revision": "8e43c8114d8daef2a18d71432f1a21e0691501c1",
+            "manifest": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/candidate/candidate-manifest.json",
+            "sha256": "514fb722a9caa41c50d9e98be8cf65578d1bab45ae1408348940e17e09bf48f0"
+          },
+          "installed_run": {
+            "status": "RUNNING_NOT_QUALIFIED",
+            "session": 10694,
+            "runner": {
+              "pid": 528254,
+              "start_ticks": "1236226",
+              "boot_id": "286ce606-808f-41ee-9bf8-722997410e80",
+              "argv": [
+                "/usr/bin/python3",
+                "-B",
+                "/home/tux/bigbrotr-rs/.research/closed-reclamation-retry-acceptance-qualified-20261029/tests/acceptance/run.py",
+                "p01-first-launch-closed-reclamation",
+                "--source-root",
+                "/home/tux/bigbrotr-rs/.research/closed-reclamation-retry-acceptance-qualified-20261029",
+                "--candidate-manifest",
+                "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/candidate/candidate-manifest.json",
+                "--native-observer-build",
+                "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-observer-efd8c32e/out/build",
+                "--compose-network",
+                "bigbrotr-m1-0f80280_default",
+                "--evidence",
+                "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1"
+              ],
+              "cwd": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e"
+            },
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1",
+            "launch_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1-session.json",
+            "source": "efd8c32edb6e53f9115401146280a05df04d1d1d",
+            "acceptance": "8e43c8114d8daef2a18d71432f1a21e0691501c1",
+            "scope": "Fresh full11stage closed64/successor/Index/Archive exactretry/signedhistory/export with unchanged guards/oracles. New-product outsidecheckouttutorial NOT_RUN."
+          }
         }
       }
     }
