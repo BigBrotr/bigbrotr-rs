@@ -57,12 +57,20 @@ def select_waiter(rows, backend, holder_pid, *, original=None):
     return row
 
 
-def verify_terminal(outcome, code, records, stderr, owners, effects_before, effects_after):
+def initialized_effects(value):
+    """The existing startup writes request1's two public mappings and request2's private mapping."""
     fields = {'ingest_owner', *EFFECT_TABLES}
-    require(set(effects_before) == fields and set(effects_after) == fields
-            and all(isinstance(effects_before[k], list) and isinstance(effects_after[k], list) for k in fields)
-            and len(effects_before['ingest_owner']) == len(effects_before['producer_epochs']) == 1,
+    require(set(value) == fields and all(isinstance(value[k], list) for k in fields)
+            and len(value['ingest_owner']) == len(value['producer_epochs']) == 1,
             'complete initialized Ingest effect observations required')
+    require(sorted(str(row['request_sequence']) for row in value['producer_requests']) == ['1', '2']
+            and all(row['acquisition_job_id'] is None for row in value['producer_requests'])
+            and not value['jobs'], 'expected only the two initial dictionary requests without acquisition jobs')
+
+
+def verify_terminal(outcome, code, records, stderr, owners, effects_before, effects_after):
+    initialized_effects(effects_before)
+    initialized_effects(effects_after)
     require(effects_before == effects_after, 'stop dispatched later Ingest renewal or durable work')
     require(len(owners) == 1, 'original Control owner identity missing')
     if outcome == 'known':
@@ -167,8 +175,8 @@ class RenewalStopRuntime(Runtime):
 
             evidence.update(holder=locked, waiter=self.wait(blocked, 'actual renewal query', 4, entry=entry))
             before = self.effects()
-            require(not before['producer_requests'] and not before['jobs'], 'unexpected dispatched source work')
             save(output / 'effects-before.json', before)
+            initialized_effects(before)
             save(output / 'schedule.json', evidence)
             self.docker('kill', '--signal', 'TERM', entry['id'])
             signalled = time.monotonic()

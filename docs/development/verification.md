@@ -316,6 +316,11 @@ The held schedule measures terminal refusal, not the exact query-collection
 cutoff: the deterministic Rust controls prove the original absolute deadline and
 absence of budget reset. Container/native teardown retains its separate join bound.
 
+The initialized baseline includes its existing two dictionary requests (public
+bootstrap mappings and the private mapping), with no acquisition job. Both
+schedules preserve those exact input/producer observations across stop; they do
+not assume that initialization leaves an empty producer-request ledger.
+
 These are dedicated real-engine qualifications. The maintained first-launch
 Python suite covers their oracle/CLI negatives in ordinary CI; it does not stand
 in for these executions. Neither schedule qualifies startup, mutating HTTP,
