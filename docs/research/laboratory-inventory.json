@@ -73982,7 +73982,7 @@
     }
   },
   "implementation_first_launch_maintained_20261026": {
-    "status": "PASS fresh installed signed acquisition, Archive publication and ordinary Control history/export; complete M1 remains open",
+    "status": "Scoped M1 evidence collection qualified on 2026-10-29; see docs/implementation/01-foundation.md P01-T09. First-event, on/off restart, outage and tutorial results remain bound to their recorded sources; not Step1/full-phase completion or an exact99b7d24b rerun of the earlier on/off scenarios.",
     "intent": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/first-launch-intent.json",
     "source": {
       "path": "/home/tux/bigbrotr-rs/.research/first-launch-source-02d1a87",
@@ -74279,6 +74279,77 @@
         "runtime_source_worktree": "/home/tux/bigbrotr-rs/.research/first-launch-restart-off-source-20261026"
       },
       "qualified_on_source_worktree": "/home/tux/bigbrotr-rs/.research/first-launch-restart-source-r6-20261026"
+    },
+    "tutorial_extension": {
+      "status": "PASS all7 installed tutorial stages; P01-T09 Steps6/7 scoped result, not Step1/whole-phase completion",
+      "source_worktree": "/home/tux/bigbrotr-rs/.research/m1-tutorial-installed-20261029",
+      "acceptance_revision": "eb8529e51c2630645c8012a2dc4ada3908a68bb1",
+      "assembly": {
+        "revision": "eb8529e51c2630645c8012a2dc4ada3908a68bb1",
+        "tree": "f217682c32d4611f7fc50ba4681ef7602073a3ac"
+      },
+      "product": {
+        "dirty": false,
+        "manifest_sha256": "23c46e00b90bd6d3adffebaeeea2f124bf6f020fa7d8f88850a918e0836c8cd4",
+        "revision": "99b7d24b3a717388c8209afd9becd2befd8894ca",
+        "state": "builder-supplied",
+        "tree": "0fe9193deb14b24f9935a868cc5fcef0ad01d98c"
+      },
+      "product_reuse": "Qualified99b7 executable/native worker reused without rebuilding; fresh committed assembly binds updated tutorial bytes.",
+      "candidate_manifest_sha256": "276d021d967769b4f1a342b9d9320124890dba05538fb6d00bd9d5db6f44fdca",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/m1-tutorial-eb8529e5/acceptance-r1",
+      "report": "/home/tux/bigbrotr-implementation-20260917/runs/m1-tutorial-eb8529e5/acceptance-r1/result.json",
+      "report_sha256": "1aa6bd7a50f40f3386904dde90b36ecba059d553c3c2de2447db797df294fc39",
+      "resources": "/home/tux/bigbrotr-implementation-20260917/runs/m1-tutorial-eb8529e5/acceptance-r1/resources.json",
+      "resources_sha256": "3545fc3d1169a6f67c9b6c15078940adc6878cbb7ec24315fbb7706e1552f9f8",
+      "root_terminal": "/home/tux/bigbrotr-implementation-20260917/runs/m1-tutorial-eb8529e5/acceptance-r1/root-terminal.json",
+      "root_terminal_sha256": "09e9bd08936cb09433fd2c401fef5b4fdc16863d7875e6d917df33cfb013ffb2",
+      "source_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-m1-tutorial-eb8529e5.json",
+        "sha256": "1c6bf7024016aacd2d7f320dbfbcb717f6bb4633f0375549ca7b2b14b6f98ca6",
+        "status": "NO_SOURCE_BLOCKER; seven source files and retained62/final11 controls bound; reviewer ran no engines/tests"
+      },
+      "author_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/m1-tutorial-installed-20261029/.research/tutorial-author/receipt.json",
+        "sha256": "a83fa4d79212db20f0ad4369ba622928b5261962ceb02e514a08f871faf094a9",
+        "controls": "62 focused PASS plus final11 standalone PASS; original standalone import failure and correction retained in author receipt"
+      },
+      "observed": {
+        "outside_checkout": "Bundle, runtime cwd and fresh state/evidence external; clean checkout is an explicitly declared portable client/fixture source, not a source-free bundle runner.",
+        "listeners": "Exact owned initial/ordinary application TCP127.0.0.1:18081 and controlled peer127.0.0.1:7447. PostgreSQL actual published127.0.0.1:15432 binding plus reachability; PG process descriptors not inspected.",
+        "nostr_signing": "Zero reachable Nostr signer in reviewed exact product code profile; source-exclusion claim, not runtime call counter. HMAC/TLS and required Archive SQL publication are separate.",
+        "nostr_publication": "25 accepted controlled-peer connections fully validated through protocol close/TCP EOF or quiet EOF, with zero outbound Nostr EVENT frames; no incomplete shutdown or unmatched opening accepted.",
+        "negative_capabilities": "Assigned enabled but unwired Monitor Serve and active-write enablement returned exact exit3 diagnostics without startup/Ready; original configuration/data unchanged.",
+        "data": "Nonempty signed acquisition, Archive publication and exact353-byte signed history/export PASS under original bounds.",
+        "evidence": "Initial/ordinary listener, peer, capability-negative, export and tutorial verdict identities are retained in root-terminal.json files_sha256."
+      },
+      "terminal_resources": {
+        "observed_at": "2026-10-29T00:31:47.234855+00:00",
+        "containers": 18,
+        "all_exit_code": 0,
+        "all_pid": 0,
+        "running": 0,
+        "paused": 0,
+        "oom_killed": 0,
+        "processes_absent": [
+          1203949,
+          1208347,
+          1208792,
+          1220996,
+          1221117
+        ],
+        "borrowed_bridge_endpoints": 0,
+        "native": "closed",
+        "owner_release": "committed",
+        "cleanup_errors": []
+      },
+      "retention": "Protected original state/logs, exact custody in resources/root-terminal and author standalone import failure remain retained; all earlier parent/restart FAILs remain unchanged. No raw credential/session/SQL upload.",
+      "remaining_scope": "Live Index succession/current-vector closure remains P02-T06 Steps4/7 with P01-T09 composition consumer, not a new indivisible M1 prerequisite. General egress/signing-enabled profiles, native census/restart repetition, broad capacity and complete P00-P10 product are not claimed.",
+      "milestone_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/initial-retained-boundary-20261028/.research/retained-boundary-author/m1-scoped-closure-review-20261029.json",
+        "sha256": "5fc860c23de187d83b06d6edcf0c757a9a053069c46bf4d728aab03315b121e8",
+        "scope": "No M1 blocker in the scoped evidence collection; earlier on/off results retain their original sources and scopes. Not Step1/whole-phase completion."
+      }
     }
   },
   "implementation_index_foundation_20261026": {

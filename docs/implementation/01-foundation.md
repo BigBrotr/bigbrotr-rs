@@ -627,12 +627,32 @@ and queryable with truthful role readiness, without implicit public publishing.
   additional M1 blocker. Any broader current-readiness/scaling requirement belongs
   to existing P02-T06/T09 follow-through; continuous enabled-Index successor and
   current-selection readiness remain separately scoped requirements.
-- [ ] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
+- [x] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
   empty volumes, follow the tutorial, inspect real listeners and assert zero
   signing/publication calls. Negative control: an unwired role reporting ready
   without producing the event on its advertised interface.
-- [ ] **Step 7:** Update tutorial/health/default documentation from observed behavior;
+  The maintained `p01-first-launch-tutorial` passes all seven installed stages on
+  product `99b7d24b`, with fresh assembly/acceptance `eb8529e5` and no product
+  rebuild. Bundle, runtime working directory and new state/evidence are outside
+  the checkout; the checkout remains an explicitly declared client/fixture input.
+  Actual owned application/peer TCP listeners are loopback-only; PostgreSQL has
+  its actual loopback binding and reachability, without an uninspected process
+  descriptor claim. All 25 accepted peer connections close completely with zero
+  outbound Nostr EVENTs; the source-bound absence of a reachable Nostr signer is
+  separate from runtime counters, HMAC/TLS and required Archive SQL publication.
+  Assigned unwired Monitor startup and active-write enablement give exact exit3
+  refusals without Ready output. Signed acquisition and the exact 353-byte export
+  pass. Evidence and terminal custody are linked under inventory key
+  `implementation_first_launch_maintained_20261026.tutorial_extension`.
+- [x] **Step 7:** Update tutorial/health/default documentation from observed behavior;
   document the slice's available features without marking the whole phase set done.
+  The qualified tutorial, verification guide and Control-runtime documentation
+  describe the private Control/Ingest/Sync/Archive profile, actual lifecycle and
+  capability meanings, explicit negatives and portable declared prerequisites.
+  Defaults keep Index, public services and active signing disabled. This scoped
+  documentation result does not close Step1 or the whole phase. Live Index
+  succession/current-vector integration remains full-product P02-T06 Steps4/7
+  work with its P01-T09 composition consumer; it is not an added M1 prerequisite.
 
 ## Foundation core versus later engine acceptance
 
