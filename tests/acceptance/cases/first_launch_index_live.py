@@ -1,0 +1,140 @@
+"""Actual live retained-Index successor, sharing the finite topology journey."""
+import http.client
+import json
+from pathlib import Path
+import time
+
+from cases import first_launch as base
+from cases.first_launch_index import DATABASE
+from cases.first_launch_index_topology import TopologyIndexRuntime, STAGES
+from cases import first_launch_index_oracle as index
+from cases import first_launch_index_topology_oracle as topology
+from cases import first_launch_index_live_oracle as oracle
+
+LIMITS = [
+    'One actual retained enabled-Index epoch1→2 activation commits its zero-successor bridge before Sync and publishes all three existing signed successor batches while producer2 remains open.',
+    'The maintained source, C API and ten-family scientific oracles independently compare all70 chunks/100 bounds, the original event/resend and the new t=allowed event; readiness requires the complete closed1/current2 vector.',
+    'Stopping, source closure, Archive catch-up and two finite Index rebinds preserve the live bridge and add no logical publication; original history/export and all original client/query/resource bounds remain in force.',
+    'NOT_RUN: continuous Archive, generic or arbitrary successor recovery,64-history readiness, broad capacity, unknown remote/native outcome resolution, second-event export and complete M1 task composition.',
+]
+
+
+class LiveTopologyIndexRuntime(TopologyIndexRuntime):
+    def candidate(self):
+        for path in (Path(__file__),Path(oracle.__file__)):
+            base.require(base.digest(path)==base.digest(self.source/'tests/acceptance/cases'/path.name),
+                         'live Index topology acceptance source mismatch')
+        super().candidate()
+
+    def successor_launch(self):
+        return self.launch('successor','app','serve','--file','/etc/bigbrotr/instance.toml',
+            '--activate-initial-successor','--roles','control,ingest,sync,index')
+
+    def successor_activated(self, started, state):
+        self.live_bridge=state
+        generation=oracle.retained_bridge(self.initial_index_state,state,self.state/'data/index')
+        self.check_started_index(started,generation)
+        index.exact(self.custody(),self.initial_index_custody)
+        rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+        index.physical_rows(rows,self.first_science,generation['generation_id'],self.schema)
+        base.save(self.restart_output/'live-bridge-verdict.json',dict(status='PASS',source_epoch=2,
+            producer='open',frontier_revision=5,published_cuts=[[1,12],[2,0]],new_physical_batches=0,
+            retained_generation=True,physical_epoch1_rows='exact',before_successor_client=True))
+
+    def check_started_index(self, started, generation):
+        oracle.startup_index(started['index'],generation)
+
+    def successor_published(self, entry, client):
+        home=self.successor_home
+        saved=base.load(home/'session.private')
+        base.require(saved['format']=='bigbrotr-cli-session/1' and saved['origin']=='http://127.0.0.1:18081',
+                     'successor role session binding')
+        before,_=self.capture(self.restart_output,'live-roles-before')
+        clock_before=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        observations=[];last=0
+        expected=oracle.cut(index.only(before['datasets'])['dataset_id'],10)
+        def observed():
+            nonlocal last
+            if time.monotonic()-last<.25:return False
+            last=time.monotonic()
+            connection=http.client.HTTPConnection('127.0.0.1',18081,timeout=3)
+            try:
+                connection.request('GET','/management/v1/roles',headers=dict(Origin=saved['origin'],
+                    Cookie='BigBrotrLocalSession='+saved['session'],**{'X-CSRF-Token':saved['csrf']}))
+                response=connection.getresponse();raw=response.read(131073)
+                base.require(response.status==200 and len(raw)<=131072,'successor role observation failed')
+                value=json.loads(raw)
+            finally:connection.close()
+            base.require(len(observations)<100,'successor role observation bound')
+            observations.append(value);base.save(self.restart_output/'live-role-observations.json',observations)
+            base.require(value['format']=='bigbrotr-role-status/1' and value['authority']=='observation-only',
+                         'successor role observation authority')
+            cap=index.only(value['capabilities'],capability='index_publication')
+            if cap['state']=='ready':
+                # Even an intermediate Ready must describe the complete current
+                # source. An old or single-epoch physical proof cannot pass.
+                index.exact(value['source']['cut'],expected)
+                index.exact(cap['published'],dict(revision='8',cut=expected))
+                return True
+            return False
+        # The client owns its original absolute25s submitted barrier. This
+        # observation consumes its remaining interval; it cannot extend it.
+        remaining=25-(time.monotonic()-self.successor_submitted_at)
+        base.require(remaining>0,'successor submitted observation budget exhausted')
+        self.wait(observed,'live full-vector Index readiness',remaining,entry,client)
+        clock_after=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        self.live_successor,_=self.capture(self.restart_output,'live-ready')
+        oracle.ready_roles(observations[-1],self.live_successor,clock_before,clock_after)
+        base.require(before['browser_sessions']==self.live_successor['browser_sessions'],
+                     'successor role observation changed the private session')
+        base.save(self.restart_output/'live-role-verdict.json',dict(status='PASS',producer='open',
+            source_cuts=[[1,12],[2,10]],published_revision=8,physical_verification='full-vector',
+            before_successor_stop=True,session_idle='unchanged',observations=len(observations),
+            clock_before_us=str(clock_before),clock_after_us=str(clock_after)))
+
+    def restart_ingest(self):
+        base.Runtime.restart_ingest(self)
+        oracle.publication_unchanged(self.live_successor,self.retired_successor)
+        index.exact(self.custody(),self.initial_index_custody)
+        # Full physical verification was observed live. Diagnostic ten-family
+        # reads consume no time from the signed client's original25s barrier.
+        self.live_rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+        base.save(self.restart_output/'clickhouse-after-live-stop.json',self.live_rows)
+
+    def successor_abandoned(self):
+        # Product SQL/native controls own new-bridge refusal at this boundary.
+        # This installed journey owns preservation of the already committed one.
+        state,_=self.capture(self.restart_output,'live-closed-unretired')
+        oracle.publication_unchanged(self.live_successor,state)
+
+    def restart_archive(self):
+        base.Runtime.restart_archive(self)
+        oracle.publication_unchanged(self.live_successor,self.caught_up)
+        self.topology_output=self.root/'index-topology';self.topology_output.mkdir(mode=0o700)
+        result=topology.published_history(self.caught_up,self.final_science,self.schema,self.live_rows,owner_epoch=2)
+        result.update(live_observation=True,producer_open_at_readiness=True,bridge_before_sync=True)
+        base.save(self.topology_output/'live-publication-verdict.json',result)
+        self.inputs['live_index_topology']=result
+        self.index_preserved('live-publication')
+
+    def index_epoch2_catch_up(self):
+        self.source_unchanged()
+        before,_=self.capture(self.topology_output,'before-rebind')
+        oracle.publication_unchanged(self.live_successor,before)
+        report=self.finite('index-live-history-rebind','index','catch-up','--file','/etc/bigbrotr/instance.toml')
+        self.topology_after,_=self.capture(self.topology_output,'caught-up')
+        self.topology_rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+        index.exact(self.topology_rows,self.live_rows)
+        result=oracle.no_work_rebind(before,self.topology_after,report,self.final_science,self.schema,
+                                    self.topology_rows,owner_epoch=3)
+        base.save(self.topology_output/'caught-up-verdict.json',result)
+        self.index_preserved('caught-up')
+
+    def index_epoch2_retry(self):
+        report=self.finite('index-live-history-retry','index','catch-up','--file','/etc/bigbrotr/instance.toml')
+        after,_=self.capture(self.topology_output,'retry')
+        rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+        index.exact(rows,self.live_rows)
+        result=oracle.no_work_rebind(self.topology_after,after,report,self.final_science,self.schema,rows,owner_epoch=4)
+        base.save(self.topology_output/'retry-verdict.json',result)
+        self.index_preserved('retry')

@@ -703,6 +703,47 @@ This does not qualify continuous combined successor ownership, general topology 
 unknown query/native termination, independent service outages, capacity,
 second-event export or complete M1.
 
+### Live retained Index continuation
+
+`p01-first-launch-index-live-topology` reuses the same fifteen-stage signed
+topology journey and candidate arguments. Its successor starts with
+`serve --activate-initial-successor --roles control,ingest,sync,index`, using the
+existing retained Index identity and ordinary credentials. It does not initialize
+a new generation. Before starting the successor relay client, the fixture checks
+the actual committed revision5 bridge: closed epoch1/cut12 and an explicit zero
+epoch2 bound, no new request, plan, chunk or ClickHouse receipt. Epoch2 remains
+open and its Index session must share the actual active Control incarnation.
+
+The unchanged signed peer then supplies the new tagged event, predecessor resend
+and exact new-event duplicate. All three successor batches must publish live,
+and authenticated role observations must become Ready against the complete
+ordered vector `[epoch1=12, epoch2=10]` before the successor stops. An old or
+single-epoch Ready is refused. This consumes the existing client's absolute25s
+submission barrier; query, retry, resource and other client bounds are unchanged.
+The same independent source/C API science and typed ten-family oracle verify
+all70 chunks and100 bounds, including original receipt and raw row multiplicity.
+
+After the owner stops, source closure/retirement and Archive catch-up must retain
+that live Index publication. Two finite Index catch-up invocations must recover
+the committed historical bridge without adding a revision, batch or physical row.
+The final ordinary reader still verifies both original signed event bodies, with
+the original export preserved. Product SQL/native controls separately own current
+authority and unsupported-topology refusals; this journey does not manufacture
+those authorities or repeat their synthetic matrix.
+
+```sh
+python3 tests/acceptance/run.py p01-first-launch-index-live-topology \
+  --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --source-root "$PWD" --evidence .research/first-launch-index-live-topology
+```
+
+Portable controls are discovered by CI and can be run with
+`cd tests/acceptance && python3 -B -m unittest test_first_launch_index_live`.
+The installed live variant remains **NOT_RUN** pending its exact-source product
+and fixture reviews and an actual engine execution. It does not qualify live
+Archive, arbitrary successor recovery,64-history readiness, broad capacity,
+unknown remote/native outcome resolution or second-event export.
+
 ### Index publication COMMIT uncertainty
 
 The fresh `p01-first-launch-index-commit-before` and
