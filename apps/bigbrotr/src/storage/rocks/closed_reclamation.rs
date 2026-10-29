@@ -11,6 +11,7 @@ pub(in crate::storage) struct ClosedProducerReclamation {
     slot: ProducerSlotId,
     epoch: ProducerEpoch,
     floor: ClosedProducerFloor,
+    custody: std::sync::Arc<()>,
     root: (u64, u64),
     sequence: u64,
     compacted: bool,
@@ -127,6 +128,7 @@ impl ClosedProducerReclamation {
             slot,
             epoch: ProducerEpoch::new(1).expect("initial constructor"),
             floor,
+            custody: std::sync::Arc::clone(&recovery.store._reservation.custody),
             root,
             sequence,
             compacted,
@@ -185,6 +187,7 @@ impl ClosedProducerReclamation {
             return Err(AdmissionError::CommitUnknown);
         }
         if store.manifest() != &self.manifest
+            || !std::sync::Arc::ptr_eq(&store._reservation.custody, &self.custody)
             || store.handoff_root_identity()? != self.root
             || store.db.latest_sequence_number() != self.sequence
             || store.live_initial.is_some()

@@ -141,6 +141,36 @@ fn closed_reclamation_refuses_stale_native_or_inventory_before_unlink() {
         assert_eq!(remaining(&f), count);
         assert_eq!(kv(&f.recovery.store), before);
     }
+    // The same root, manifest, sequence and byte-exact inputs after reopening
+    // cannot reuse authority authenticated under an earlier native exclusion.
+    // Both original and compacted confirmations must obtain a fresh proof.
+    for compacted in [false, true] {
+        let mut f = fixture();
+        let plan = if compacted {
+            compacted_plan(&f)
+        } else {
+            original_plan(&f)
+        };
+        let before = kv(&f.recovery.store);
+        let sequence = f.recovery.store.db.latest_sequence_number();
+        let manifest = *f.recovery.manifest();
+        let limits = f.recovery.store.resources.limits();
+        drop(f.recovery);
+        f.recovery = IngestRecovery::open(
+            &f.root.path().join("db"),
+            manifest,
+            limits,
+            grant(&f.budget, 0, 128 * MIB),
+        )
+        .unwrap();
+        assert_eq!(f.recovery.store.db.latest_sequence_number(), sequence);
+        assert!(matches!(
+            plan.test_apply(&mut f.recovery, &AtomicBool::new(false), || Ok(())),
+            Err(AdmissionError::StateMismatch)
+        ));
+        assert_eq!(remaining(&f), 4);
+        assert_eq!(kv(&f.recovery.store), before);
+    }
 }
 #[test]
 fn closed_reclamation_cancellation_after_one_unlink_requires_fresh_proof() {

@@ -1020,8 +1020,11 @@ unlink and directory fsync. Initial original replay and a fresh canonical SQL
 outcome stream both precede confirmed COMMIT. A retry requires a fresh complete
 compacted census and canonical proof, authenticating every present residual.
 
-The confirmed capability binds the native manifest, excluded root, sequence,
-exact producer key/range, typed checkpoint and closure, and whole input inventory.
+The confirmed capability binds the native manifest, excluded root, unique
+per-open native custody, sequence, exact producer key/range, typed checkpoint
+and closure, and whole input inventory. Closing and reopening the same root
+invalidates that confirmation even if its manifest, sequence and inputs remain
+byte-exact; the reopened owner must obtain a fresh full proof.
 The native batch advances its sealed sequence by exactly N+1 operations. Each
 positively observed unlink removes exactly one authenticated inventory entry;
 no pre-mutation stamp is reused. An unexpected missing, replaced, unrelated or
