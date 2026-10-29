@@ -204,7 +204,10 @@ def compacted_archive_fixture(science,*,schedule='uninterrupted'):
     from installed_archive_catch_up_oracle import cut_digest
     ds='\\x'+science['tables']['events'][0]['source_record_id']['dataset_id'].lower();catalog='\\x'+'55'*16
     owner=dict(role='control',state='active',resource_id='\\x'+'a1'*16,epoch=1,
-        process_incarnation='\\x'+'a2'*16,acquired_at_us=100,lease_expires_at_us=10000)
+        process_incarnation='\\x'+'a2'*16,acquired_at_us=100,lease_expires_at_us=10000,
+        dataset_id=ds,role_instance_id='\\x'+'a3'*16,released_at_us=None,exclusion_method=None,exclusion_digest=None,
+        archive_frontier_protocol=None,index_publication_protocol=None,control_fence_version=1,
+        control_backend_pid=124,control_backend_start='2026-10-29T01:00:00+00:00',xmin='80')
     attempts=[];receipts=[]
     grouped=schedule=='grouped-publication-loss'
     issued_before={'uninterrupted':3,'unbound-publication-loss':4,'grouped-publication-loss':5}[schedule]
@@ -221,18 +224,34 @@ def compacted_archive_fixture(science,*,schedule='uninterrupted'):
                 batch_digest=batch['archive_digest'].upper(),record_count=batch['last']-batch['first']+1,
                 input_ranges=[dict(shard_id=0,owner_epoch=batch['epoch'],first_sequence=batch['first'],last_sequence=batch['last'])],
                 attempt_id=f'{ordinal:032X}',publication_ordinal=ordinal))
-    prefix=dict(datasets=[dict(dataset_id=ds)],owner_epochs=[owner],archive_attempts=attempts[:2],
+    archive_owner=dict(owner,role='archive',resource_id=catalog,role_instance_id='\\x'+'a4'*16,
+        acquired_at_us=150,archive_frontier_protocol=1,control_fence_version=None,
+        control_backend_pid=None,control_backend_start=None,xmin='81')
+    prefix={table:[] for table in base.expected_tables(ROOT)}
+    prefix.update(datasets=[dict(dataset_id=ds)],owner_epochs=[owner,archive_owner],archive_attempts=attempts[:2],
         consumers=[dict(dataset_id=ds,consumer_id=catalog,consumer_role='archive',current_revision=2,current_topology_generation=0,xmin='2')],
         consumer_frontier_revisions=[],consumer_frontiers=[],archive_frontier_snapshots=[],archive_frontier_batches=[])
+    prefix['role_instances']=[dict(role_instance_id=r['role_instance_id'],dataset_id=ds,role=r['role'],
+        created_at_us=r['acquired_at_us']-1,retired_at_us=None,xmin=r['xmin']) for r in prefix['owner_epochs']]
+    prefix['archive_owner_sessions']=[dict(dataset_id=ds,catalog_id=catalog,owner_epoch=1,owner_role='archive',
+        owner_incarnation=owner['process_incarnation'],coordinator_binding_sha256='\\x'+'dd'*32,persistence_protocol=1,
+        issuer_resource=owner['resource_id'],issuer_epoch=1,issuer_role='control',issuer_incarnation=owner['process_incarnation'],xmin='81')]
+    for table in ('producer_outcomes','producer_checkpoints','jobs','principal_grants'):
+        prefix[table]=[dict(frozen_evidence=table,xmin='82')]
     def append(state,revision,topology,snapshot,cuts,members):
-        common=dict(dataset_id=ds,consumer_id=catalog,frontier_revision=revision,topology_generation=topology,xmin=str(revision))
-        state['consumer_frontier_revisions'].append(dict(common,previous_revision=revision-1 or None))
+        common=dict(dataset_id=ds,consumer_id=catalog,frontier_revision=revision,topology_generation=topology,xmin=str(1000+revision))
+        publisher=index.only(state['owner_epochs'],role='archive',epoch=1 if revision<=2 else 2)
+        state['consumer_frontier_revisions'].append(dict(common,previous_revision=revision-1 or None,
+            consumer_role='archive',owner_resource_id=catalog,owner_epoch=publisher['epoch'],
+            owner_incarnation=publisher['process_incarnation'],created_at_us=300+revision if revision<=2 else 1178+revision,sealed=True))
         counts=[sum(row['source_record_id']['sequence']<=dict(cuts).get(row['source_record_id']['owner_epoch'],0)
                     for row in rows) for rows in science['tables'].values()]
         state['archive_frontier_snapshots'].append(dict(common,catalog_id=catalog,snapshot_id=snapshot,
+            owner_epoch=publisher['epoch'],owner_incarnation=publisher['process_incarnation'],
             operation_id='\\x'+f'{revision+200:032x}',request_digest='\\x'+cut_digest(ds,topology,members,cuts,snapshot),
             **dict(zip(source.COUNTS,counts))))
-        state['archive_frontier_batches'] += [dict(common,attempt_id='\\x'+r['attempt_id'].lower()) for r in members]
+        state['archive_frontier_batches'] += [dict(consumer_id=catalog,frontier_revision=revision,
+            attempt_id='\\x'+r['attempt_id'].lower(),xmin=common['xmin']) for r in members]
         for epoch,cut in cuts:
             last=next((r for r in reversed(members) if r['input_ranges'][0]['owner_epoch']==epoch),None)
             state['consumer_frontiers'].append(dict(common,shard_id=0,owner_epoch=epoch,last_complete_sequence=cut,
@@ -240,9 +259,30 @@ def compacted_archive_fixture(science,*,schedule='uninterrupted'):
     append(prefix,1,0,2,[(1,2)],receipts[:1]);append(prefix,2,0,3,[(1,3)],receipts[:2])
     parked=copy.deepcopy(prefix);parked['archive_attempts'].append(attempts[2])
     before=copy.deepcopy(parked);before['archive_attempts']=attempts[:issued_before]
-    after=copy.deepcopy(before);after['archive_attempts']=attempts
-    after['consumers'][0].update(current_revision=4,current_topology_generation=1,xmin='4')
+    previous=index.only(before['owner_epochs'],role='control');previous.update(state='released',released_at_us=1000,
+        exclusion_method='storage_fenced',exclusion_digest=check.control_exclusion(previous,previous))
+    index.only(before['role_instances'],role='control')['retired_at_us']=1000
+    after=ClosedReclamationControls().claimed_control(before);after['archive_attempts']=copy.deepcopy(attempts)
+    current=index.only(after['owner_epochs'],role='control',epoch=2)
+    for attempt in after['archive_attempts'][issued_before:]:
+        attempt.update(coordinator_incarnation=current['process_incarnation'],issuer_epoch=2,
+            issuer_incarnation=current['process_incarnation'],issued_at_us=1100+attempt['ordinal'],xmin=str(2000+attempt['ordinal']))
+    new_archive=dict(archive_owner,epoch=2,role_instance_id='\\x'+'a5'*16,process_incarnation=current['process_incarnation'],
+        acquired_at_us=1180,lease_expires_at_us=current['lease_expires_at_us'],xmin='1004')
+    after['owner_epochs'].append(new_archive)
+    after['role_instances'].append(dict(role_instance_id=new_archive['role_instance_id'],dataset_id=ds,role='archive',
+        created_at_us=1179,retired_at_us=None,xmin='1003'))
+    after['archive_owner_sessions'].append(dict(after['archive_owner_sessions'][0],owner_epoch=2,
+        owner_incarnation=current['process_incarnation'],issuer_epoch=2,issuer_incarnation=current['process_incarnation'],xmin='1003'))
+    after['consumers'][0].update(current_revision=4,current_topology_generation=1,xmin='1004')
     append(after,3,1,68,[(1,3),(2,0)],receipts[:2]);append(after,4,1,68,[(1,312),(2,10)],receipts)
+    digest=(b'bigbrotr/archive-frontier-owner-exclusion/1\0'+index.raw(ds,16)+index.raw(catalog,16)+index.be(1)
+        +index.raw(archive_owner['process_incarnation'],16)+index.raw(current['resource_id'],16)+index.be(2)
+        +index.raw(current['process_incarnation'],16)+index.raw(after['archive_frontier_snapshots'][2]['request_digest'],32))
+    index.only(after['owner_epochs'],role='archive',epoch=1).update(state='released',released_at_us=1177,
+        exclusion_method='storage_fenced',exclusion_digest='\\x'+hashlib.sha256(digest).hexdigest(),xmin='1003')
+    index.only(after['role_instances'],role_instance_id=archive_owner['role_instance_id']).update(retired_at_us=1178,xmin='1003')
+    attempts=after['archive_attempts']
     imported=lambda row:{k:row[k] for k in ('ordinal','attempt_id','batch_digest','topology_generation','worker_incarnation','coordinator_incarnation','xmin')}
     catalog_before={'bigbrotr_archive.attempts':[imported(r) for r in attempts[:issued_before] if r['ordinal']!=3]}
     catalog_after={'bigbrotr_archive.attempts':[imported(r) for r in attempts if r['ordinal']!=3],

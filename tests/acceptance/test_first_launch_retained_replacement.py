@@ -149,7 +149,187 @@ def custody_fixture(state,science,ordinals=(3,4)):
     return initialization,records,files
 
 
+def compacted_history_fixture(science):
+    before=compacted_archive_fixture(science,schedule='grouped-publication-loss')[3]
+    dataset=before['datasets'][0]['dataset_id'];principal='\\x'+'ee'*16
+    before['local_accounts']=[dict(principal_id=principal,dataset_id=dataset,username='alice',
+        credential_revision=1,authentication_revision=1,grant_revision=4,xmin='90')]
+    before['browser_sessions']=[dict(session_id='\\x'+'ed'*16,principal_id=principal,revoked_at_us=1000)]
+    before['login_buckets']=[dict(dataset_id=dataset,kind=kind,bucket=value[0],attempts=1,
+        window_started_at_us=1000,xmin='91') for kind,value in source.login_buckets().items()]
+    before['management_audit']=[dict(audit_id='\\x'+'01'*16,immutable='original audit',xmin='92')]
+    for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+        before[table]=[dict(lease_id='old-export',purpose='export',state='active',xmin='93')]
+    claimed=retained.ClosedReclamationControls().claimed_control
+    startup=claimed(before,failed=True);after=claimed(before)
+    owner=index.only(after['owner_epochs'],role='control',epoch=3)
+    session=dict(session_id='\\x'+'ec'*16,dataset_id=dataset,principal_id=principal,
+        credential_revision=1,authentication_revision=1,token_digest='\\x'+'eb'*32,csrf_digest='\\x'+'ea'*32,
+        issued_at_us=1305,expires_at_us=3600,idle_window_us=500,last_seen_at_us=1305,idle_expires_at_us=1805,
+        revoked_at_us=None,xmin='5000')
+    startup['browser_sessions']=[session]
+    after['browser_sessions']=[dict(session,last_seen_at_us=1370,idle_expires_at_us=1870,revoked_at_us=1380,xmin='5001')]
+    for state in (startup,after):state['login_buckets']=[dict(r,attempts=2,xmin='4999') for r in before['login_buckets']]
+    def audit(action,ident,at,tx):return dict(audit_id='\\x'+ident*16,dataset_id=dataset,actor_id=principal,
+        action=action,outcome='accepted',created_at_us=at,config_revision=1,policy_revision=1,subject_id=session['session_id'],
+        reason=None,requester_database_role=None,requester_os_uid=None,xmin=tx)
+    startup['management_audit'].append(audit('browser.session.issue','02',1306,'5000'))
+    after['management_audit']=copy.deepcopy(startup['management_audit'])+[audit('browser.session.revoke','03',1381,'5001')]
+    catalog=index.only(after['consumers'],consumer_role='archive')['consumer_id']
+    for number,at in enumerate((1310,1340,1360),1):
+        ident='\\x'+f'{number+500:032x}';tx=str(5100+number)
+        lease=dict(lease_id=ident,dataset_id=dataset,consumer_id=catalog,frontier_revision=4,topology_generation=1,
+            holder_kind='role_instance',holder_job_id=None,holder_role_instance_id=owner['role_instance_id'],
+            holder_role='control',holder_incarnation=owner['process_incarnation'],archive_pin_protocol=1,
+            state='released',lease_revision=2,acquired_at_us=at,updated_at_us=at+2,expires_at_us=10000,
+            released_at_us=at+2,release_reason='reader_joined',xmin=tx)
+        pin=dict(lease_id=ident,dataset_id=dataset,consumer_id=catalog,frontier_revision=4,purpose='reader',
+            issuer_role='control',issuer_resource=owner['resource_id'],issuer_epoch=3,
+            issuer_incarnation=owner['process_incarnation'],requested_ttl_us=30_000_000,xmin='4900')
+        claims=[dict(claim_id='\\x'+f'{number*10+epoch:032x}',lease_id=ident,dataset_id=dataset,topology_generation=1,
+            shard_id=0,owner_epoch=epoch,first_sequence=1,last_sequence=cut,purpose='reader',state='released',
+            created_at_us=at+1,released_at_us=at+2,release_reason='reader_joined',xmin=tx) for epoch,cut in ((1,312),(2,10))]
+        for state in ((startup,after) if number==1 else (after,)):
+            state['snapshot_leases'].append(copy.deepcopy(lease));state['archive_snapshot_pins'].append(copy.deepcopy(pin))
+            state['retention_claims'].extend(copy.deepcopy(claims))
+    return before,after,startup
+
+
 class UnboundReplacementControls(unittest.TestCase):
+    def test_export_and_history_terminal_captures_follow_actual_join_and_keep_startup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+            runtime.reclamation_output=root;runtime.home=root/'home';runtime.home.mkdir()
+            runtime.state=root/'instance';(runtime.state/'data/export').mkdir(parents=True)
+            for path in (runtime.home/'event.jsonl',runtime.home/'fixture-profile.json',runtime.state/'data/export/destination.json'):
+                path.write_text('{}')
+            runtime.config=Mock();runtime.config.read_text.return_value='config';runtime.set_value=Mock(return_value='config')
+            runtime.source_unchanged=Mock();runtime.wait_login_capacity=Mock();runtime.finite=Mock();runtime.wait=Mock()
+            runtime.initialized=dict(private_scope={});runtime.ids=dict(catalog='catalog');runtime.enrolled=dict(principal_id='principal')
+            runtime.tables=set();runtime.events=[dict(id='first')];runtime.new_event=dict(id='second')
+            runtime.archive_schedule='grouped-publication-loss';runtime.complete_index_state={}
+            before=dict(phase='before');export=dict(phase='export');startup=dict(phase='startup');final=dict(phase='history')
+            runtime.archive_retry_state=before;runtime.final_native={};runtime.all_input_files={}
+            runtime.native_capture=Mock(return_value={});runtime.files=Mock(return_value={})
+            runtime.export_validate=Mock(return_value=dict(jsonl_bytes=353));runtime.restart_checks=Mock()
+            order=[];captures=iter(((before,{'before':True}),(export,{'export':True}),
+                (export,{'history-before':True}),(final,{'history-after':True})))
+            def capture(output,label):order.append('capture:'+label);return next(captures)
+            runtime.capture=Mock(side_effect=capture)
+            runtime.launch=Mock(side_effect=lambda label,*args:dict(label=label))
+            def stop(entry,output):order.append('joined:'+entry['label']);return {'State':{'ExitCode':0}}
+            runtime.stop_container=Mock(side_effect=stop)
+            runtime.backend_absence=Mock(side_effect=lambda output:order.append('backends:'+output.name))
+            runtime.verify_archive_preservation=Mock(side_effect=lambda output,label,*args:order.append('preserve:'+label))
+            def client(owner,output,entry,**options):
+                if options.get('successor'):
+                    case.save(output/'history-client-result.json',dict(status='PASS'))
+                return startup
+            with patch.object(case.baseline,'startup_client',side_effect=client),patch.object(case.live_oracle,'publication_unchanged'):
+                runtime.compacted_history_export()
+            runtime.restart_checks.history_unchanged.assert_called_once_with(export,final,startup=startup,retained_compacted_epoch2=True)
+            for joined,captured,preserved in (('compacted-signed-export','export-after','export'),
+                    ('compacted-history-restart','history-after','history')):
+                self.assertLess(order.index('joined:'+joined),order.index('capture:'+captured))
+                self.assertLess(order.index('capture:'+captured),order.index('preserve:'+preserved))
+            self.assertEqual(runtime.verify_archive_preservation.call_args.args[-1],{'history-after':True})
+
+    def test_recovery_preserves_the_complete_control_inventory_and_historical_rows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(directory))[-1])
+            for schedule in ('uninterrupted','unbound-publication-loss','grouped-publication-loss'):
+                prefix,parked,before,after,report,old_catalog,catalog,_=compacted_archive_fixture(science,schedule=schedule)
+                def verify(state):check.compacted_archive(prefix,parked,before,state,report,science,old_catalog,catalog,schedule=schedule)
+                verify(after)
+                for table in ('producer_outcomes','producer_checkpoints','jobs','principal_grants'):
+                    for corruption in ('change','delete'):
+                        changed=copy.deepcopy(after)
+                        if corruption=='change':changed[table][0]['xmin']='rewritten'
+                        else:changed[table].pop()
+                        with self.subTest(schedule=schedule,table=table,corruption=corruption),self.assertRaises(AssertionError):verify(changed)
+                for label,mutate in {
+                        'missing-table':lambda s:s.pop('producer_requests'),
+                        'old-control':lambda s:s['owner_epochs'][0].update(xmin='rewritten'),
+                        'new-control-contract':lambda s:index.only(s['owner_epochs'],role='control',epoch=2).update(archive_frontier_protocol=1),
+                        'archive-fence':lambda s:index.only(s['owner_epochs'],role='archive',epoch=1).update(exclusion_digest='\\x'+'00'*32),
+                        'archive-session':lambda s:s['archive_owner_sessions'][0].update(xmin='rewritten'),
+                        'extra-archive-role':lambda s:s['role_instances'].append(dict(index.only(s['role_instances'],role='archive',role_instance_id='\\x'+'a5'*16),role_instance_id='extra')),
+                        'old-publication':lambda s:s['archive_frontier_snapshots'][0].update(xmin='rewritten'),
+                        'bridge-authority':lambda s:index.only(s['consumer_frontier_revisions'],consumer_role='archive',frontier_revision=3).update(owner_epoch=1),
+                        'final-clock':lambda s:index.only(s['consumer_frontier_revisions'],consumer_role='archive',frontier_revision=4).update(created_at_us=99999999),
+                        'final-membership-xmin':lambda s:s['archive_frontier_batches'][-1].update(xmin='rewritten'),
+                        'new-attempt-issuer':lambda s:s['archive_attempts'][-1].update(issuer_epoch=1),
+                }.items():
+                    changed=copy.deepcopy(after);mutate(changed)
+                    with self.subTest(schedule=schedule,label=label),self.assertRaises((AssertionError,ValueError)):verify(changed)
+
+    def test_retained_history_preserves_old_control_and_requires_exact_joined_readers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(directory))[-1])
+            before,after,startup=compacted_history_fixture(science)
+            def verify(state,setup=startup):source.history_unchanged(before,state,startup=setup,retained_compacted_epoch2=True)
+            verify(after)
+            for label,mutate in {
+                    'changed-outcome':lambda s:s['producer_outcomes'][0].update(xmin='rewritten'),
+                    'deleted-checkpoint':lambda s:s['producer_checkpoints'].clear(),
+                    'changed-account':lambda s:s['local_accounts'][0].update(grant_revision=99),
+                    'old-audit':lambda s:s['management_audit'][0].update(xmin='rewritten'),
+                    'old-export-claim':lambda s:s['retention_claims'][0].update(xmin='rewritten'),
+                    'lost-startup-reader':lambda s:s['snapshot_leases'].pop(1),
+                    'extra-reader':lambda s:s['archive_snapshot_pins'].append(dict(s['archive_snapshot_pins'][-1],lease_id='extra')),
+                    'missing-claim':lambda s:s['retention_claims'].pop(),
+                    'wrong-cut':lambda s:s['retention_claims'][-1].update(last_sequence=9),
+                    'wrong-holder':lambda s:s['snapshot_leases'][-1].update(holder_incarnation='wrong'),
+                    'unjoined-reader':lambda s:s['snapshot_leases'][-1].update(release_reason='expired'),
+                    'changed-session-identity':lambda s:s['browser_sessions'][0].update(credential_revision=2),
+                    'second-login':lambda s:s['login_buckets'][0].update(attempts=3),
+                    'missing-revoke-audit':lambda s:s['management_audit'].pop(),
+                    'changed-owner-role':lambda s:s['role_instances'][-1].update(created_at_us=1),
+            }.items():
+                changed=copy.deepcopy(after);mutate(changed)
+                with self.subTest(label=label),self.assertRaises((AssertionError,ValueError)):verify(changed)
+            with self.assertRaises(AssertionError):verify(after,None)
+            with self.assertRaises(AssertionError):source.history_unchanged(before,after,startup=startup)
+
+    def test_retry_export_and_history_reobserve_group_custody_logins_and_failed_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+            value,_,files,_=fault_fixture(root,phase='grouped-second')
+            original=copy.deepcopy(files)
+            parent='main/dictionaries/prepared-'+'f'*32;path=parent+'/data.parquet'
+            files[parent]=dict(mode=0o700,inode=9000,device=1,links=2,sha256=None)
+            files[path]=dict(mode=0o600,inode=9001,device=1,links=1,sha256='e'*64)
+            runtime.failed_archive_files=check.failed_archive_output(value['catalog_after'],files,original)
+            runtime.state=root;runtime.caught_up_files=files;runtime.caught_up_catalog=value['catalog_after']
+            _,records,metadata=custody_fixture(value['after'],value['science'],(3,4,5))
+            baseline=dict(custody=dict(records=records,files=metadata,initialization='original'),logins={
+                '4':dict(rolname='B4',oid='104',rolcanlogin=False,credential_present=False),
+                '5':dict(rolname='C5',oid='105',rolcanlogin=False,credential_present=False)})
+            runtime.retained_archive_evidence=baseline
+            for boundary in ('retry','export','history'):
+                runtime.files=Mock(return_value=copy.deepcopy(files));runtime.archive_evidence=Mock(return_value=copy.deepcopy(baseline))
+                runtime.verify_archive_preservation(root,boundary,{},copy.deepcopy(value['catalog_after']))
+                for corruption in ('input-delete','input-rewrite','B-journal','C-journal','lock-delete','lock-inode',
+                        'C-lock-inode','lock-busy','B-login','C-login','failed-file','registration'):
+                    current=copy.deepcopy(baseline);objects=copy.deepcopy(files);catalog=copy.deepcopy(value['catalog_after'])
+                    target=next(n for n in records if n.endswith('.inputs'))
+                    lock=next(n for n in metadata if n.endswith('/custody.lock'))
+                    b=index.only(value['after']['archive_attempts'],ordinal=4)['attempt_id'][2:]
+                    c=index.only(value['after']['archive_attempts'],ordinal=5)['attempt_id'][2:]
+                    if corruption=='input-delete':current['custody']['records'].pop(target)
+                    elif corruption=='input-rewrite':current['custody']['records'][target]='00'
+                    elif corruption in ('B-journal','C-journal'):current['custody']['records'][(b if corruption=='B-journal' else c)+'/intent.json']='00'
+                    elif corruption=='lock-delete':current['custody']['files'].pop(lock)
+                    elif corruption=='lock-inode':current['custody']['files'][lock]['inode']+=1
+                    elif corruption=='C-lock-inode':current['custody']['files'][c+'/custody.lock']['inode']+=1
+                    elif corruption in ('B-login','C-login'):current['logins']['4' if corruption=='B-login' else '5']['rolcanlogin']=True
+                    elif corruption=='failed-file':objects[path]['sha256']='0'*64
+                    elif corruption=='registration':catalog['public.ducklake_data_file'][0]['path']='prepared-'+'f'*32+'/data.parquet'
+                    runtime.files=Mock(return_value=objects);runtime.archive_evidence=Mock(return_value=current)
+                    if corruption=='lock-busy':runtime.archive_evidence.side_effect=ValueError('original custody lock busy')
+                    with self.subTest(boundary=boundary,corruption=corruption),self.assertRaises((AssertionError,ValueError)):
+                        runtime.verify_archive_preservation(root,boundary,{},catalog)
+
     def test_schedule_selection_preserves_unique_default_and_refuses_unknown(self):
         for selected in (None,'uninterrupted','unbound-publication-loss','grouped-publication-loss','unknown',''):
             with self.subTest(selected=selected),tempfile.TemporaryDirectory() as directory:
@@ -180,7 +360,7 @@ class UnboundReplacementControls(unittest.TestCase):
                 runtime.verify_unbound_reuse(Path(directory))
                 for ordinal in (4,5):
                     original=sealed[ordinal];sealed[ordinal]=dict(original,rolcanlogin=True,credential_present=True)
-                    with self.subTest(ordinal=ordinal),self.assertRaises(AssertionError):
+                    with self.subTest(ordinal=ordinal),self.assertRaises((AssertionError,ValueError)):
                         runtime.verify_unbound_reuse(Path(directory))
                     sealed[ordinal]=original
 

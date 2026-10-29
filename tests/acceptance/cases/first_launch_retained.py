@@ -679,14 +679,18 @@ class ReclamationRuntime(RetainedRuntime):
                 oracle.GROUPED_PUBLISHED_ORDINALS if self.archive_schedule=='grouped-publication-loss' else oracle.ARCHIVE_PUBLISHED_ORDINALS))
         self.caught_up_files=self.files(self.state/'data/archive')
         if self.archive_schedule!='uninterrupted':
-            self.verify_unbound_reuse(output)
+            self.retained_archive_evidence=self.verify_unbound_reuse(output)
+        else:
+            self.retained_archive_evidence=self.archive_evidence(self.caught_up)
+        save(output/'archive-recovery-evidence.json',self.retained_archive_evidence)
         retry=self.finite('archive-compacted-exact-retry','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         after,catalog=self.capture(output,'archive-retry')
         live_oracle.publication_unchanged(self.complete_index_state,after)
         require(retry['new_attempts']==0 and retry['new_frontier_revisions']==0,'Archive retry added work')
         self.restart_checks.retry_unchanged(self.caught_up,after)
-        index.exact(catalog,self.caught_up_catalog)
-        require(self.files(self.state/'data/archive')==self.caught_up_files,'Archive retry changed objects')
+        oracle.control_only(self.caught_up,after)
+        self.verify_archive_preservation(output,'retry',after,catalog)
+        self.archive_retry_state=after
         index.exact(self.native_capture('consumers-native'),self.final_native)
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'consumers recreated originals')
 
@@ -822,7 +826,7 @@ class ReclamationRuntime(RetainedRuntime):
 
     def verify_unbound_reuse(self,output):
         grouped=self.archive_schedule=='grouped-publication-loss'
-        custody=self.archive_replacement_custody(self.caught_up,ordinals=(3,4,5) if grouped else (3,4))
+        evidence=self.archive_evidence(self.caught_up);custody=evidence['custody']
         index.exact(custody['records'],self.unbound_custody['records'])
         require(all(custody['files'].get(k)==v for k,v in self.unbound_custody['files'].items()),'recovery changed original group journals')
         for table in ('bigbrotr_archive.attempts','public.ducklake_snapshot','public.ducklake_snapshot_changes',
@@ -830,13 +834,33 @@ class ReclamationRuntime(RetainedRuntime):
             require(all(row in self.caught_up_catalog[table] for row in self.unbound_catalog[table]),'recovery changed retained native identity/files')
         oracle.archive_file_membership(self.caught_up_catalog,self.archive_science,self.caught_up_files,self.unbound_files,
             failed_output=getattr(self,'failed_archive_files',None))
-        login=self.replacement_login(self.caught_up,5 if grouped else 4)
+        login=evidence['logins']['5' if grouped else '4']
         index.exact(login,dict(self.unbound_login,rolcanlogin=False,credential_present=False))
-        if grouped:index.exact(self.replacement_login(self.caught_up,4),self.failed_replacement_login)
+        if grouped:index.exact(evidence['logins']['4'],self.failed_replacement_login)
         save(output/'unbound-recovery-verdict.json',dict(status='PASS',schedule=self.archive_schedule,
             issued_before=5 if grouped else 4,new_attempts=64,reused_replacement=5 if grouped else 4,
             replacement='unchanged_and_sealed',native_receipts=67,guard_imports=68 if grouped else 67,
             scientific_rows=322,frontier=4,snapshot=68))
+        return evidence
+
+    def archive_evidence(self,state):
+        grouped=self.archive_schedule=='grouped-publication-loss'
+        custody=self.archive_replacement_custody(state,ordinals=(3,4,5) if grouped else (3,4))
+        logins={str(n):self.replacement_login(state,n) for n in ((4,5) if grouped else (4,))}
+        require(all(row['rolcanlogin'] is False and row['credential_present'] is False for row in logins.values()),
+            'original Archive replacement login is not sealed')
+        return dict(custody=custody,logins=logins)
+
+    def verify_archive_preservation(self,output,label,state,catalog):
+        """Reobserve original bytes/locks/logins and unchanged catalog after joins."""
+        index.exact(catalog,self.caught_up_catalog)
+        files=self.files(self.state/'data/archive')
+        index.exact(files,self.caught_up_files)
+        oracle.failed_output_preserved(catalog,files,getattr(self,'failed_archive_files',{}))
+        evidence=self.archive_evidence(state)
+        index.exact(evidence,self.retained_archive_evidence)
+        save(output/(label+'-archive-preservation.json'),dict(status='PASS',evidence=evidence,
+            catalog='exact',physical_files='exact',failed_output='preserved_and_unregistered'))
 
     def compacted_history_export(self):
         import secrets
@@ -855,17 +879,21 @@ class ReclamationRuntime(RetainedRuntime):
         shutil.copyfile(self.state/'data/export/destination.json',home/'destination/destination.json')
         save(home/'export-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
             destination_id=destination,retained_compacted_epoch2=True,startup_quiescence=True))
-        before,_=self.capture(output,'before')
+        before,catalog=self.capture(output,'before')
+        index.exact(before,self.archive_retry_state)
+        self.verify_archive_preservation(output,'before-export',before,catalog)
         entry=self.launch('compacted-signed-export','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'compacted ordinary Control',20,entry=entry)
         baseline.startup_client(self,output,entry,client_home=home,retained_compacted_epoch2=True,
             retained_archive_schedule=self.archive_schedule)
         require(self.stop_container(entry,output)['State']['ExitCode']==0,'export owner did not join')
-        after,_=self.capture(output,'export-after')
+        self.backend_absence(output)
+        after,catalog=self.capture(output,'export-after')
         live_oracle.publication_unchanged(self.complete_index_state,after)
         verdict=self.export_validate(before,after,home,self.initialized,self.ids['catalog'],expected_principal=self.enrolled['principal_id'],
             expected_table_count=82,expected_tables=self.tables,destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True)
         require(verdict['jsonl_bytes']==353,'complete original signed export bytes differ')
+        self.verify_archive_preservation(output,'export',after,catalog)
         save(output/'export-verdict.json',verdict)
         # A second fresh process proves ordinary signed history of both epochs.
         history=output/'history';history.mkdir(mode=0o700)
@@ -873,16 +901,20 @@ class ReclamationRuntime(RetainedRuntime):
         save(history/'events.json',[self.events[0],self.new_event])
         save(history/'read-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
             frontier_revision=4,snapshot_id=68,config_revision='1',policy_revision='1',startup_quiescence=True))
-        self.capture(history,'before')
+        history_before,catalog=self.capture(history,'before')
+        index.exact(history_before,after)
+        self.verify_archive_preservation(history,'before-history',history_before,catalog)
         entry=self.launch('compacted-history-restart','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'fresh compacted history Control',20,entry=entry)
-        baseline.startup_client(self,history,entry,successor=True,client_home=history,retained_compacted_epoch2=True,
+        startup=baseline.startup_client(self,history,entry,successor=True,client_home=history,retained_compacted_epoch2=True,
             retained_archive_schedule=self.archive_schedule)
         require(load(history/'history-client-result.json')['status']=='PASS','fresh signed histories differ')
         require(self.stop_container(entry,output)['State']['ExitCode']==0,'history owner did not join')
-        final,_=self.capture(output,'history-after')
+        self.backend_absence(history)
+        final,catalog=self.capture(output,'history-after')
+        self.restart_checks.history_unchanged(history_before,final,startup=startup,retained_compacted_epoch2=True)
         live_oracle.publication_unchanged(self.complete_index_state,final)
-        require(self.files(self.state/'data/archive')==self.caught_up_files,'signed read/export changed Archive objects')
+        self.verify_archive_preservation(history,'history',final,catalog)
         index.exact(self.native_capture('history-native'),self.final_native)
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'history/export recreated originals')
         self.source_unchanged()

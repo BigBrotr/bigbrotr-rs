@@ -1197,6 +1197,16 @@ inventories. Grouped recovery retains its P02-T04 Step4/P02-T06 Step7/P08 gate
 until actual source/native/worker/installed qualification, independently of Python
 control results.
 
+Final recovery compares the complete82-table Control inventory, preserving all
+producer, checkpoint, job and security rows. Only the validated fresh Control
+lifetime and exact Archive owner/session/publication transitions may change.
+Retry and both joined clients reobserve original group input/journal bytes,
+file identities, available custody locks and sealed replacement logins. Catalog
+captures remain exact, including continued nonregistration of any failed B4
+output. The retained history transition preserves old rows and the completed
+startup probes while requiring exactly two additional joined history readers
+with both source claims; login/logout effects have their own explicit checks.
+
 The existing completed-startup-probe and native-worker-join gate precedes both
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;

@@ -507,8 +507,10 @@ def retry_unchanged(before, after):
         assert before[table] == after[table], 'exact catch-up retry mutated ' + table
 
 
-def history_unchanged(before, after, *, provenance=True, startup=None):
-    selected = profile(provenance)
+def history_unchanged(before, after, *, provenance=True, startup=None, retained_compacted_epoch2=False):
+    assert type(retained_compacted_epoch2) is bool
+    selected = dict(snapshot=68) if retained_compacted_epoch2 else profile(provenance)
+    revision = 4 if retained_compacted_epoch2 else 6
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'login_buckets', 'local_accounts',
         'management_audit', 'snapshot_leases', 'archive_snapshot_pins', 'retention_claims'}
     assert set(before) == set(after)
@@ -535,12 +537,15 @@ def history_unchanged(before, after, *, provenance=True, startup=None):
             lease = only(startup['snapshot_leases'],lease_id=key)
             pin = only(startup['archive_snapshot_pins'],lease_id=key)
             assert lease['state']=='released' and lease['lease_revision']==2 and lease['release_reason']=='reader_joined'
-            assert pin['purpose']=='reader' and pin['frontier_revision']==6 and pin['issuer_epoch']==owner['epoch']
+            assert pin['purpose']=='reader' and pin['frontier_revision']==revision and pin['issuer_epoch']==owner['epoch']
     pins = [row for row in after['archive_snapshot_pins'] if row not in before['archive_snapshot_pins']]
     pins = [row for row in pins if row['lease_id'] not in startup_ids]
-    assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == 6 for row in pins)
+    assert len(pins) == 2 and all(row['purpose'] == 'reader' and row['frontier_revision'] == revision for row in pins)
     for pin in pins:
         frontier = only(after['archive_frontier_snapshots'], consumer_id=pin['consumer_id'],
             frontier_revision=pin['frontier_revision'])
         assert frontier['dataset_id'] == pin['dataset_id'] and frontier['snapshot_id'] == selected['snapshot']
         assert only(after['snapshot_leases'], lease_id=pin['lease_id'])['state'] == 'released'
+    if retained_compacted_epoch2:
+        from cases.first_launch_retained_oracle import compacted_history_control
+        compacted_history_control(before,after,startup)
