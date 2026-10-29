@@ -6,11 +6,11 @@ pub mod configuration;
 pub mod connection_settings;
 pub mod control_owner;
 pub use control_owner::index_publication::{
-    CompactedIndexRequest, CompactedIndexSource,
-    INDEX_PARTITION, INDEX_SCHEMA_VERSION, INDEX_TARGET_COUNT, IndexBinding, IndexChunk,
-    IndexError, IndexHandoff, IndexHandoffReceipt, IndexOwnerIdentity, IndexPlan, IndexProvenance,
-    IndexPublicationReceipt, IndexRecoveryState, IndexSession, IndexSourceBatch, IndexTarget,
-    MAX_INDEX_STREAMS, PreparedIndexPlan, RetainedIndexPlan, RetainedIndexRevision,
+    CompactedIndexRequest, CompactedIndexSource, INDEX_PARTITION, INDEX_SCHEMA_VERSION,
+    INDEX_TARGET_COUNT, IndexBinding, IndexChunk, IndexError, IndexHandoff, IndexHandoffReceipt,
+    IndexOwnerIdentity, IndexPlan, IndexProvenance, IndexPublicationReceipt, IndexRecoveryState,
+    IndexSession, IndexSourceBatch, IndexTarget, MAX_INDEX_STREAMS, PreparedIndexPlan,
+    RetainedIndexPlan, RetainedIndexRevision,
 };
 pub mod cursor_lifecycle;
 pub mod cursor_registration;
