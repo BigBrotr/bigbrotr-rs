@@ -331,6 +331,7 @@ def reclamation_floor(state,science):
 def compacted_history_control(before,after,startup):
     """One signed history login/logout, completed startup and two joined readers."""
     from cases.first_launch_index_restart_oracle import unchanged_except
+    from installed_progress_replay import xid
     assert startup is not None
     readers=('snapshot_leases','archive_snapshot_pins','retention_claims')
     changed={'browser_sessions','login_buckets','management_audit',*readers}
@@ -351,13 +352,23 @@ def compacted_history_control(before,after,startup):
     assert old_session['revoked_at_us'] is not None and session['revoked_at_us'] is None
     assert old_session['session_id']!=session['session_id']
     assert session['principal_id']==old_session['principal_id']==account['principal_id']
-    assert session['dataset_id']==owner['dataset_id'] and session['last_seen_at_us']==session['issued_at_us']
-    assert owner['acquired_at_us']<=session['issued_at_us']<=final_session['last_seen_at_us']<=final_session['revoked_at_us']<=owner['released_at_us']
+    assert session['dataset_id']==owner['dataset_id']
+    assert owner['acquired_at_us']<=session['issued_at_us']<=session['last_seen_at_us']<=final_session['last_seen_at_us']<=final_session['revoked_at_us']<=owner['released_at_us']
+    source.clock(session['last_seen_at_us'],session['issued_at_us'],active['lease_expires_at_us']-1)
     assert session['credential_revision']==account['credential_revision'] and session['authentication_revision']==account['authentication_revision']
     index.exact(final_session,dict(session,last_seen_at_us=final_session['last_seen_at_us'],
         idle_expires_at_us=min(session['expires_at_us'],final_session['last_seen_at_us']+session['idle_window_us']),
         revoked_at_us=final_session['revoked_at_us'],xmin=final_session['xmin']))
-    assert session['issued_at_us']<session['idle_expires_at_us']<=session['expires_at_us']
+    for observed in (session,final_session):
+        source.clock(observed['idle_window_us'],1,2**63-1)
+        assert observed['idle_expires_at_us']==min(observed['expires_at_us'],observed['last_seen_at_us']+observed['idle_window_us'])
+        assert observed['last_seen_at_us']<observed['idle_expires_at_us']<=observed['expires_at_us']
+    # The mandatory pre-setup GET /me is the first touch after login. It cannot
+    # revive either initial expiry, and its committed UPDATE has its own xmin
+    # even when the server's microsecond timestamps happen to coincide.
+    assert session['last_seen_at_us']<min(session['expires_at_us'],session['issued_at_us']+session['idle_window_us'])
+    known_xmins={r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
+    assert xid(session['xmin']) not in known_xmins and xid(final_session['xmin']) not in known_xmins
     index.exact(after['login_buckets'],startup['login_buckets'])
     assert len(before['login_buckets'])==len(startup['login_buckets'])==2
     for kind,(bucket,maximum) in source.login_buckets().items():
@@ -377,8 +388,15 @@ def compacted_history_control(before,after,startup):
         index.exact(audit,dict(audit_id=audit['audit_id'],dataset_id=owner['dataset_id'],actor_id=account['principal_id'],
             action=action,outcome='accepted',created_at_us=audit['created_at_us'],config_revision=1,policy_revision=1,
             subject_id=session['session_id'],reason=None,requester_database_role=None,requester_os_uid=None,xmin=audit['xmin']))
-        source.clock(audit['created_at_us'],session['issued_at_us'],owner['released_at_us'])
-        assert audit['xmin']==(session['xmin'] if action=='browser.session.issue' else final_session['xmin'])
+        if action=='browser.session.issue':
+            source.clock(audit['created_at_us'],session['issued_at_us'],session['last_seen_at_us'])
+            assert xid(audit['xmin']) not in known_xmins
+            # Fresh fixed-profile PostgreSQL has no xid wrap: login completes
+            # before /me begins its separate transaction, then logout follows.
+            assert int(xid(audit['xmin']))<int(xid(session['xmin']))<int(xid(final_session['xmin']))
+        else:
+            source.clock(audit['created_at_us'],final_session['revoked_at_us'],owner['released_at_us'])
+            assert audit['xmin']==final_session['xmin']
     prior={r['lease_id'] for r in before['snapshot_leases']}
     initial={r['lease_id'] for r in startup['snapshot_leases']}-prior
     final={r['lease_id'] for r in after['snapshot_leases']}-prior

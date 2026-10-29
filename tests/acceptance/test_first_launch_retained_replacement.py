@@ -157,24 +157,27 @@ def compacted_history_fixture(science):
     before['browser_sessions']=[dict(session_id='\\x'+'ed'*16,principal_id=principal,revoked_at_us=1000)]
     before['login_buckets']=[dict(dataset_id=dataset,kind=kind,bucket=value[0],attempts=1,
         window_started_at_us=1000,xmin='91') for kind,value in source.login_buckets().items()]
-    before['management_audit']=[dict(audit_id='\\x'+'01'*16,immutable='original audit',xmin='92')]
+    before['management_audit']=[dict(audit_id='\\x'+'01'*16,action='dataset.initialize',immutable='original audit',xmin='92')]
     for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
         before[table]=[dict(lease_id='old-export',purpose='export',state='active',xmin='93')]
     claimed=retained.ClosedReclamationControls().claimed_control
     startup=claimed(before,failed=True);after=claimed(before)
     owner=index.only(after['owner_epochs'],role='control',epoch=3)
-    session=dict(session_id='\\x'+'ec'*16,dataset_id=dataset,principal_id=principal,
+    issued_session=dict(session_id='\\x'+'ec'*16,dataset_id=dataset,principal_id=principal,
         credential_revision=1,authentication_revision=1,token_digest='\\x'+'eb'*32,csrf_digest='\\x'+'ea'*32,
         issued_at_us=1305,expires_at_us=3600,idle_window_us=500,last_seen_at_us=1305,idle_expires_at_us=1805,
         revoked_at_us=None,xmin='5000')
+    # The real client logs in, GETs /me, then publishes its setup marker. That
+    # mandatory touch commits separately from the session/issue-audit INSERTs.
+    session=dict(issued_session,last_seen_at_us=1315,idle_expires_at_us=1815,xmin='5001')
     startup['browser_sessions']=[session]
-    after['browser_sessions']=[dict(session,last_seen_at_us=1370,idle_expires_at_us=1870,revoked_at_us=1380,xmin='5001')]
+    after['browser_sessions']=[dict(session,last_seen_at_us=1370,idle_expires_at_us=1870,revoked_at_us=1380,xmin='5002')]
     for state in (startup,after):state['login_buckets']=[dict(r,attempts=2,xmin='4999') for r in before['login_buckets']]
     def audit(action,ident,at,tx):return dict(audit_id='\\x'+ident*16,dataset_id=dataset,actor_id=principal,
         action=action,outcome='accepted',created_at_us=at,config_revision=1,policy_revision=1,subject_id=session['session_id'],
         reason=None,requester_database_role=None,requester_os_uid=None,xmin=tx)
     startup['management_audit'].append(audit('browser.session.issue','02',1306,'5000'))
-    after['management_audit']=copy.deepcopy(startup['management_audit'])+[audit('browser.session.revoke','03',1381,'5001')]
+    after['management_audit']=copy.deepcopy(startup['management_audit'])+[audit('browser.session.revoke','03',1381,'5002')]
     catalog=index.only(after['consumers'],consumer_role='archive')['consumer_id']
     for number,at in enumerate((1310,1340,1360),1):
         ident='\\x'+f'{number+500:032x}';tx=str(5100+number)
@@ -196,6 +199,59 @@ def compacted_history_fixture(science):
 
 
 class UnboundReplacementControls(unittest.TestCase):
+    def test_history_login_me_startup_sequence_has_a_separate_touch_transaction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            science=check.compacted_archive_science(retained_successor_fixture(Path(directory))[-1])
+            before,after,startup=compacted_history_fixture(science)
+            def verify(state,setup):source.history_unchanged(before,state,startup=setup,retained_compacted_epoch2=True)
+            issued=index.only(startup['management_audit'],action='browser.session.issue')
+            session=index.only(startup['browser_sessions']);revoked=index.only(after['browser_sessions'])
+            self.assertLess(session['issued_at_us'],issued['created_at_us'])
+            self.assertLess(issued['created_at_us'],session['last_seen_at_us'])
+            self.assertEqual((issued['xmin'],session['xmin'],revoked['xmin']),('5000','5001','5002'))
+            verify(after,startup)
+            # Separate transactions may share a microsecond timestamp. The real
+            # /me UPDATE is still required and must retain its distinct xmin.
+            same_clock,same_start=copy.deepcopy((after,startup))
+            same_start['browser_sessions'][0].update(last_seen_at_us=1305,idle_expires_at_us=1805)
+            for state in (same_clock,same_start):state['management_audit'][1]['created_at_us']=1305
+            verify(same_clock,same_start)
+            def missing_touch(final,setup):
+                setup['browser_sessions'][0].update(last_seen_at_us=1305,idle_expires_at_us=1805,xmin='5000')
+                for state in (final,setup):state['management_audit'][1]['created_at_us']=1305
+            def expired_initial_idle(final,setup):
+                for state in (final,setup):
+                    row=state['browser_sessions'][0];row['idle_window_us']=5
+                    row['idle_expires_at_us']=row['last_seen_at_us']+5
+            def both_issue(final,setup,field,value):
+                for state in (final,setup):state['management_audit'][1][field]=value
+            for label,mutate in {
+                    'missing-me-touch':missing_touch,
+                    'retrograde-startup':lambda f,s:s['browser_sessions'][0].update(last_seen_at_us=1304,idle_expires_at_us=1804),
+                    'retrograde-final':lambda f,s:f['browser_sessions'][0].update(last_seen_at_us=1314,idle_expires_at_us=1814),
+                    'outside-owner-window':lambda f,s:s['browser_sessions'][0].update(last_seen_at_us=1401,idle_expires_at_us=1901),
+                    'expired-initial-idle':expired_initial_idle,
+                    'wrong-startup-idle':lambda f,s:s['browser_sessions'][0].update(idle_expires_at_us=1816),
+                    'wrong-final-idle':lambda f,s:f['browser_sessions'][0].update(idle_expires_at_us=1871),
+                    'changed-issued-time':lambda f,s:f['browser_sessions'][0].update(issued_at_us=1306),
+                    'changed-token':lambda f,s:f['browser_sessions'][0].update(token_digest='\\x'+'00'*32),
+                    'changed-credential':lambda f,s:s['browser_sessions'][0].update(credential_revision=2),
+                    'changed-original-audit':lambda f,s:f['management_audit'][0].update(xmin='rewritten'),
+                    'changed-issue-audit':lambda f,s:f['management_audit'][1].update(xmin='5003'),
+                    'issue-after-me':lambda f,s:both_issue(f,s,'created_at_us',1316),
+                    'issue-before-login':lambda f,s:both_issue(f,s,'created_at_us',1304),
+                    'issue-wrong-principal':lambda f,s:both_issue(f,s,'actor_id','\\x'+'00'*16),
+                    'issue-reused-old-xmin':lambda f,s:both_issue(f,s,'xmin','92'),
+                    'missing-touch-transaction':lambda f,s:s['browser_sessions'][0].update(xmin='5000'),
+                    'malformed-touch-xmin':lambda f,s:s['browser_sessions'][0].update(xmin='05001'),
+                    'out-of-range-touch-xmin':lambda f,s:s['browser_sessions'][0].update(xmin=str(2**32)),
+                    'wrong-revoke-transaction':lambda f,s:f['management_audit'][-1].update(xmin='5003'),
+                    'wrong-revoke-subject':lambda f,s:f['management_audit'][-1].update(subject_id='wrong'),
+                    'revoke-audit-before-revoke':lambda f,s:f['management_audit'][-1].update(created_at_us=1379),
+            }.items():
+                final,setup=copy.deepcopy((after,startup));mutate(final,setup)
+                with self.subTest(label=label),self.assertRaises((AssertionError,ValueError)):verify(final,setup)
+
     def test_export_and_history_terminal_captures_follow_actual_join_and_keep_startup(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
