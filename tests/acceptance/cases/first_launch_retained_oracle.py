@@ -2,7 +2,8 @@
 import hashlib
 import json
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import tomllib
 
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_live_oracle as live
@@ -470,6 +471,156 @@ def successor_science(before,after,bridge,first,wires,dump,store,completed):
 
 
 ARCHIVE_PUBLISHED_ORDINALS=(1,2,*range(4,69))
+ARCHIVE_SCHEDULES={'uninterrupted':(3,65),'unbound-publication-loss':(4,64)}
+
+
+def archive_file_membership(catalog,science,files,original):
+    """Every native batch has exactly its literal family/receipt files."""
+    tables={r['table_name']:r for r in catalog['public.ducklake_table']}
+    assert set(tables)==set(science['tables'])|{'archive_commits'}
+    records=catalog['public.ducklake_data_file']
+    paths=set(original)
+    assert len({r['data_file_id'] for r in records})==len(records)
+    assert sorted(r['snapshot_id'] for r in catalog['public.ducklake_snapshot'])==list(range(len(science['batches'])+2))
+    expected_files=0
+    for snapshot,batch in enumerate(science['batches'],2):
+        counts={'archive_commits':1}
+        for name,rows in science['tables'].items():
+            selected=[r for r in rows if r['source_record_id']['owner_epoch']==batch['epoch']
+                and batch['first']<=r['source_record_id']['sequence']<=batch['last']]
+            if selected:counts[name]=len(selected)
+        selected=[r for r in records if r['begin_snapshot']==snapshot]
+        assert len(selected)==len(counts)
+        assert {r['table_id'] for r in selected}=={tables[name]['table_id'] for name in counts}
+        tx=index.only(catalog['public.ducklake_snapshot'],snapshot_id=snapshot)['xmin']
+        for name,count in counts.items():
+            table=tables[name];row=index.only(selected,table_id=table['table_id'])
+            assert row['end_snapshot'] is None and row['path_is_relative'] is True and row['file_format']=='parquet'
+            assert row['record_count']==count and row['xmin']==tx
+            assert re.fullmatch(r'prepared-[0-9a-f]{32}/data\.parquet',row['path'])
+            assert 0<row['footer_size']<row['file_size_bytes']<=16*1024**2
+            schema=index.only(catalog['public.ducklake_schema'],schema_id=table['schema_id'])
+            path=PurePosixPath(schema['path'])/table['path']/row['path']
+            assert not path.is_absolute() and '..' not in path.parts
+            paths.add(str(path));paths.update(str(p) for p in path.parents if str(p)!='.')
+            metadata=files[str(path)]
+            assert metadata['mode']==0o600 and metadata['links']==1 and re.fullmatch('[0-9a-f]{64}',metadata['sha256'])
+        expected_files+=len(counts)
+    assert len(records)==expected_files and set(files)==paths
+    for name,old in original.items():
+        current=files[name]
+        index.exact({k:v for k,v in current.items() if k!='links'},{k:v for k,v in old.items() if k!='links'})
+        assert current['links']==old['links'] if old['sha256'] is not None else current['links']>=old['links']
+
+
+def replacement_custody(state,science,records,files,initialization):
+    """Complete A3/B4 inputs and journals, with their own historical identity."""
+    initial=json.loads(bytes.fromhex(initialization))
+    binding=hashlib.sha256(bytes.fromhex(records['coordinator.json'])).digest()
+    assert binding.hex()==index.raw(index.only(state['archive_attempts'],ordinal=3)['coordinator_binding_sha256'],32).hex()
+    for ordinal in (3,4):
+        row=index.only(state['archive_attempts'],ordinal=ordinal);batch=science['batches'][2]
+        identity=index.raw(row['attempt_id'],16).hex();lock=files[identity+'/custody.lock']
+        assert row['coordinator_binding_sha256']=='\\x'+binding.hex()
+        assert records[identity+'/custody.lock']==''
+        manifest=dict(format='bigbrotr-local-archive-custody/1',boot_id=initial['boot_id'],
+            lock_device=lock['device'],lock_inode=lock['inode'],catalog_root=initial['catalog_root'],
+            attempt_id=list(index.raw(row['attempt_id'],16)),publication_ordinal=ordinal,topology_generation='0')
+        manifest.update({k:index.raw(row[k],size).hex() for k,size in (
+            ('dataset_id',16),('catalog_id',16),('coordinator_incarnation',16),('worker_incarnation',16),('batch_digest',32))})
+        index.exact(json.loads(bytes.fromhex(records[identity+'/intent.json'])),manifest)
+        assert (batch['epoch'],batch['topology'],batch['first'],batch['last'])==(1,0,4,7)
+        body=(b'BBINPUT\x01'+hashlib.sha256(bytes.fromhex(initialization)).digest()
+            +b''.join(index.raw(row[k],16) for k in ('attempt_id','dataset_id','catalog_id','coordinator_incarnation','worker_incarnation'))
+            +index.be(ordinal)+index.be(0)+bytes.fromhex(batch['archive_digest'])+index.be(1,4)
+            +index.be(0,4)+index.be(1)+index.be(4)+b'\x01\x21'+index.be(7)+bytes.fromhex(batch['admission_digest']))
+        assert bytes.fromhex(records[identity+'.inputs'])==body+hashlib.sha256(body).digest()
+    for name,raw in records.items():
+        assert files[name]['sha256']==hashlib.sha256(bytes.fromhex(raw)).hexdigest()
+
+
+def unbound_catalog_config(text):
+    """Bind the proxy's explicit identifiers before starting the real owner."""
+    direct=tomllib.loads(text)
+    assert direct['postgres']['catalog']['endpoint']==direct['postgres']['control']['endpoint']=='127.0.0.1:15432'
+    assert [direct['postgres']['catalog'][k] for k in ('database','user','read_user')]==[
+        'bigbrotr_catalog','bigbrotr_catalog','bigbrotr_archive_read']
+    return direct
+
+
+def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate):
+    """Exact route/pins plus actual child/proxy/reader/backend termination."""
+    from installed_archive_catch_up_fault_oracle import wire_checked,ERRORS
+    wire=value['wire'];assert wire['status']=='OBSERVED_CLOSED_AND_JOINED'
+    wire_checked(wire,'publication',source,None,local_proxy=local_proxy)
+    expected=unbound_catalog_config(value['direct_config'])
+    routed=tomllib.loads(value['routed_config'])
+    expected['postgres']['catalog']['endpoint']='127.0.0.1:'+str(wire['ready']['port'])
+    index.exact(routed,expected)
+    assert value['restored_config']==value['direct_config']
+    assert value['stdout']=='' and value['stderr']==ERRORS['publication-loss']
+    assert value['wait_exit']=='4'
+    terminal=value['terminal']
+    assert terminal['Running'] is False and terminal['Pid']==0 and terminal['ExitCode']==4 and terminal['OOMKilled'] is False
+    assert value['parent_absent'] is True and value['proxy_absent'] is True
+    assert all(type(value['parent'][k]) is int and value['parent'][k]>0 for k in ('pid','start_ticks'))
+    assert value['proxy_identity']==value['proxy_terminal_identity']
+    assert all(type(value['proxy_identity'][k]) is int and value['proxy_identity'][k]>0 for k in ('pid','start_ticks'))
+    assert value['backends']=={'bigbrotr_control':'0','bigbrotr_catalog':'0'}
+    assert value['source_pins_before']==value['source_pins_after']==source_pins
+    assert value['source_pins_before'][str(Path(local_proxy[1]).relative_to(value['source_root']))]==source
+    assert value['candidate_before']==value['candidate_after']==candidate
+
+
+def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_after,census,science):
+    """Native B4 exists while A3 stays absent and current frontier stays2."""
+    from cases.first_launch_archive_outage_oracle import archived_prefix
+    third=archived_prefix(prefix,parked)
+    archived_prefix(prefix,before)
+    assert sorted(r['ordinal'] for r in after['archive_attempts'])==[1,2,3,4]
+    for row in before['archive_attempts']:
+        index.exact(row,index.only(after['archive_attempts'],ordinal=row['ordinal']))
+    view=dict(after,archive_attempts=before['archive_attempts'])
+    owner=control_only(before,view,claim='failed')
+    replacement=index.only(after['archive_attempts'],ordinal=4)
+    expected=dict(third,ordinal=4,expected_predecessor=3,attempt_id=replacement['attempt_id'],
+        worker_incarnation=replacement['worker_incarnation'],coordinator_incarnation=owner['process_incarnation'],
+        issuer_resource=owner['resource_id'],issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],
+        issued_at_us=replacement['issued_at_us'],xmin=replacement['xmin'])
+    index.exact(replacement,expected)
+    for key in ('attempt_id','worker_incarnation'):
+        assert any(index.raw(replacement[key],16))
+        assert replacement[key] not in {r[key] for r in before['archive_attempts']}
+    assert replacement['worker_incarnation']!=replacement['coordinator_incarnation']
+    assert replacement['coordinator_incarnation']!=third['coordinator_incarnation']
+    source.clock(replacement['issued_at_us'],owner['acquired_at_us'],owner['lease_expires_at_us'])
+    assert replacement['xmin'] not in {r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
+    selected=dict(batches=science['batches'][:3],tables={name:[r for r in rows
+        if r['source_record_id']['owner_epoch']==1 and r['source_record_id']['sequence']<=7]
+        for name,rows in science['tables'].items()})
+    assert [b['topology'] for b in selected['batches']]==[0,0,0]
+    receipts=source.publication_receipts(after,selected,published_ordinals=(1,2,4))
+    index.exact(census,dict(format='bigbrotr-independent-installed-archive-read/1',
+        tables={**selected['tables'],'archive_commits':receipts}))
+    imports=catalog_after['bigbrotr_archive.attempts']
+    assert sorted(r['ordinal'] for r in imports)==[1,2,4]
+    assert all(r in imports for r in catalog_before['bigbrotr_archive.attempts'])
+    imported=index.only(imports,ordinal=4)
+    fields=('ordinal','attempt_id','coordinator_incarnation','worker_incarnation','topology_generation','batch_digest')
+    index.exact(imported,dict({k:replacement[k] for k in fields},login_name='bb_archive_'+replacement['attempt_id'][2:],
+        login_oid=imported['login_oid'],xmin=imported['xmin']))
+    assert str(imported['login_oid']).isdecimal() and int(imported['login_oid'])>0
+    assert str(imported['xmin']).isdecimal() and int(imported['xmin'])>0
+    catalog_owner=index.only(catalog_after['bigbrotr_archive.owner'])
+    index.exact(catalog_owner,dict(index.only(catalog_before['bigbrotr_archive.owner']),
+        enabled=True,ordinal=4,xmin=catalog_owner['xmin']))
+    mutable={'bigbrotr_archive.attempts','bigbrotr_archive.owner',*[f'public.ducklake_{name}' for name in (
+        'snapshot','snapshot_changes','data_file','file_column_stats','table_stats','table_column_stats')]}
+    assert set(catalog_before)==set(catalog_after)
+    for table in catalog_before.keys()-mutable:index.exact(catalog_before[table],catalog_after[table])
+    for table in ('snapshot','snapshot_changes','data_file','file_column_stats'):
+        assert all(r in catalog_after['public.ducklake_'+table] for r in catalog_before['public.ducklake_'+table])
+    return selected
 
 
 def compacted_archive_science(science):
@@ -497,10 +648,11 @@ def compacted_archive_science(science):
     return dict(science,batches=batches)
 
 
-def compacted_archive(prefix,parked,before,after,report,science,catalog_before,catalog_after):
+def compacted_archive(prefix,parked,before,after,report,science,catalog_before,catalog_after,*,schedule='uninterrupted'):
     """Exact known-unpublished intent3, sparse receipts and two new frontiers."""
     from cases.first_launch_archive_outage_oracle import archived_prefix,ARCHIVE_TABLES
     from installed_archive_catch_up_oracle import cut_digest
+    issued_before,new_attempts=ARCHIVE_SCHEDULES[schedule]
     third=archived_prefix(prefix,parked)
     consumer=index.only(before['consumers'],consumer_role='archive');catalog=consumer['consumer_id']
     index.exact(consumer,index.only(prefix['consumers'],consumer_role='archive'))
@@ -511,7 +663,9 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     for old in parked['archive_attempts']:
         index.exact(index.only(before['archive_attempts'],ordinal=old['ordinal']),old)
         index.exact(index.only(after['archive_attempts'],ordinal=old['ordinal']),old)
-    index.exact(sorted(r['ordinal'] for r in before['archive_attempts']),[1,2,3])
+    for old in before['archive_attempts']:
+        index.exact(index.only(after['archive_attempts'],ordinal=old['ordinal']),old)
+    index.exact(sorted(r['ordinal'] for r in before['archive_attempts']),list(range(1,issued_before+1)))
     index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,69)))
     topology.preserve_consumer_identity(before,after,catalog)
     receipts=source.publication_receipts(after,science,published_ordinals=ARCHIVE_PUBLISHED_ORDINALS)
@@ -549,7 +703,7 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
         index.exact(sorted(membership),sorted('\\x'+r['attempt_id'].lower() for r in members))
     frontier=index.only(after['archive_frontier_snapshots'],frontier_revision=4)
     index.exact(report,dict(format='bigbrotr-archive-catch-up/1',dataset_id=consumer['dataset_id'][2:],catalog_id=catalog[2:],
-        terminal_epoch=2,issued_attempts_before=3,new_attempts=65,frontier_revision=4,snapshot_id=68,
+        terminal_epoch=2,issued_attempts_before=issued_before,new_attempts=new_attempts,frontier_revision=4,snapshot_id=68,
         operation_id=list(index.raw(frontier['operation_id'],16)),request_digest=frontier['request_digest'][2:],
         family_counts=[73,62,62,62,63],new_frontier_revisions=2,recovery_basis='closed-producer-floor-v3',compacted_requests='64'))
     return receipts
