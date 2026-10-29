@@ -313,6 +313,38 @@ class ReclamationRuntime(RetainedRuntime):
             'refused Control scheduling lease expiry',65)
         save(self.reclamation_output/(label+'-verdict.json'),dict(status='PASS',exit_code=4,native='exact',inputs='exact',archive='exact'))
 
+    def wait_reclamation_fault(self,proxy,entry,output):
+        deadline=time.monotonic()+110
+        expected_terminal=False
+        def remaining():
+            value=deadline-time.monotonic()
+            require(value>0,'reclamation fault deadline')
+            return value
+        while True:
+            try:
+                fault=self.proxy_event(proxy,'fault',min(1,remaining()))
+            except AssertionError as error:
+                if error.args!=('fixture event deadline',):raise
+                fault=None
+            remaining()
+            if fault is not None:return fault
+            if expected_terminal:continue
+            info=self.inspect(entry)
+            remaining()
+            if not info['State']['Running']:
+                logs=self.docker('logs',entry['id'],timeout=min(30,remaining()))
+                (output/'serve.stdout').write_text(logs.stdout)
+                (output/'serve.stderr').write_text(logs.stderr)
+                save(output/'serve-terminal.json',dict(container_id=entry['id'],state=info['State']))
+                remaining()
+                require(info['State']['ExitCode']==4 and info['State']['Pid']==0
+                    and not info['State']['OOMKilled'] and logs.stdout==''
+                    and logs.stderr=='error: producer operation unavailable: CommitUnknown\n',
+                    'unexpected reclamation child result before proxy fault')
+                # An expected child exit can precede the proxy reader's delivery
+                # of its already-written fault. Still require that actual record.
+                expected_terminal=True
+
     def reclamation_commit_loss(self,mode):
         import sys
         require(mode in ('before-forward','after-complete'),'closed reclamation COMMIT profile')
@@ -339,7 +371,7 @@ class ReclamationRuntime(RetainedRuntime):
             save(output/'proxy-ready.json',ready)
             self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             entry=self.launch('reclaim-commit-'+mode,'app','ingest','recover','--reclaim-initial','--file','/etc/bigbrotr/instance.toml')
-            fault=self.proxy_event(proxy,'fault',110);save(output/'proxy-fault.json',fault)
+            fault=self.wait_reclamation_fault(proxy,entry,output);save(output/'proxy-fault.json',fault)
             ended=self.docker('wait',entry['id'],timeout=15)
             info=self.inspect(entry);logs=self.docker('logs',entry['id'])
             (output/'serve.stdout').write_text(logs.stdout);(output/'serve.stderr').write_text(logs.stderr)

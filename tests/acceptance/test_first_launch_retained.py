@@ -698,6 +698,94 @@ class ClosedReclamationControls(unittest.TestCase):
                 with self.assertRaisesRegex(OSError,'persistence failure'):runtime.finish_reclamation_proxy(proxy,'original',Path(directory))
             self.assertEqual(proxy.stop.call_count,2)
 
+    def test_reclamation_fault_wait_preserves_unexpected_child_failure(self):
+        expected='error: producer operation unavailable: CommitUnknown\n'
+        state=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False)
+        failures=[(state,'','error: producer operation unavailable: Native(InsufficientReservation)\n'),
+            (dict(state,ExitCode=0),'',expected),(dict(state,Pid=1),'',expected),
+            (dict(state,OOMKilled=True),'',expected),(state,'unexpected success\n',expected)]
+        for changed,stdout,stderr in failures:
+            with self.subTest(state=changed,stdout=stdout,stderr=stderr),tempfile.TemporaryDirectory() as directory:
+                output=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+                runtime.proxy_event=Mock(side_effect=AssertionError('fixture event deadline'))
+                runtime.inspect=Mock(return_value=dict(State=changed))
+                runtime.docker=Mock(return_value=SimpleNamespace(stdout=stdout,stderr=stderr))
+                proxy=object();entry=dict(id='a'*64)
+                with patch.object(case.time,'monotonic',return_value=0):
+                    with self.assertRaisesRegex(ValueError,'unexpected reclamation child result before proxy fault'):
+                        runtime.wait_reclamation_fault(proxy,entry,output)
+                runtime.proxy_event.assert_called_once_with(proxy,'fault',1)
+                runtime.docker.assert_called_once_with('logs',entry['id'],timeout=30)
+                self.assertEqual((output/'serve.stdout').read_text(),stdout)
+                self.assertEqual((output/'serve.stderr').read_text(),stderr)
+                self.assertEqual(base.load(output/'serve-terminal.json'),dict(container_id=entry['id'],state=changed))
+
+    def test_reclamation_fault_wait_allows_delayed_fault_after_expected_child_exit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory);runtime=object.__new__(case.ReclamationRuntime)
+            fault=dict(event='fault',faults=1)
+            runtime.proxy_event=Mock(side_effect=[AssertionError('fixture event deadline'),fault])
+            runtime.inspect=Mock(return_value=dict(State=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False)))
+            runtime.docker=Mock(return_value=SimpleNamespace(stdout='',stderr='error: producer operation unavailable: CommitUnknown\n'))
+            proxy=object();entry=dict(id='a'*64)
+            with patch.object(case.time,'monotonic',return_value=0):
+                self.assertIs(runtime.wait_reclamation_fault(proxy,entry,output),fault)
+            self.assertEqual(runtime.proxy_event.call_count,2)
+            runtime.inspect.assert_called_once_with(entry)
+            self.assertEqual(runtime.docker.call_count,1)
+            self.assertEqual((output/'serve.stderr').read_text(),'error: producer operation unavailable: CommitUnknown\n')
+
+    def test_reclamation_fault_wait_keeps_one110s_deadline(self):
+        runtime=object.__new__(case.ReclamationRuntime);now=[0]
+        def event(*args):
+            now[0]+=1
+            raise AssertionError('fixture event deadline')
+        runtime.proxy_event=Mock(side_effect=event)
+        runtime.inspect=Mock(return_value=dict(State=dict(Running=True)))
+        runtime.docker=Mock()
+        with patch.object(case.time,'monotonic',side_effect=lambda:now[0]):
+            with self.assertRaisesRegex(ValueError,'reclamation fault deadline'):
+                runtime.wait_reclamation_fault(object(),dict(id='a'*64),Path('unused'))
+        self.assertEqual(runtime.proxy_event.call_count,110)
+        self.assertEqual(runtime.inspect.call_count,109)
+        self.assertTrue(all(call.args[2]==1 for call in runtime.proxy_event.call_args_list))
+        runtime.docker.assert_not_called()
+
+    def test_reclamation_fault_wait_refuses_deadline_crossing_observations(self):
+        for boundary in ('event','inspect','logs'):
+            with self.subTest(boundary=boundary),tempfile.TemporaryDirectory() as directory:
+                output=Path(directory);runtime=object.__new__(case.ReclamationRuntime);now=[0]
+                def event(*args):
+                    if boundary=='event':
+                        now[0]=110
+                        return dict(event='fault',faults=1)
+                    raise AssertionError('fixture event deadline')
+                def inspect(entry):
+                    if boundary=='inspect':now[0]=110
+                    return dict(State=dict(Running=False,ExitCode=4,Pid=0,OOMKilled=False))
+                def logs(*args,**kwargs):
+                    now[0]=110
+                    return SimpleNamespace(stdout='',stderr='error: producer operation unavailable: CommitUnknown\n')
+                runtime.proxy_event=Mock(side_effect=event);runtime.inspect=Mock(side_effect=inspect)
+                runtime.docker=Mock(side_effect=logs)
+                with patch.object(case.time,'monotonic',side_effect=lambda:now[0]):
+                    with self.assertRaisesRegex(ValueError,'reclamation fault deadline'):
+                        runtime.wait_reclamation_fault(object(),dict(id='a'*64),output)
+                if boundary=='event':runtime.inspect.assert_not_called()
+                if boundary!='logs':runtime.docker.assert_not_called()
+                else:self.assertTrue((output/'serve-terminal.json').is_file())
+
+    def test_reclamation_fault_wait_propagates_other_proxy_failures(self):
+        for failure in (AssertionError(),AssertionError('proxy overflow'),json.JSONDecodeError('bad record','{',1)):
+            with self.subTest(failure=type(failure).__name__,args=failure.args):
+                runtime=object.__new__(case.ReclamationRuntime)
+                runtime.proxy_event=Mock(side_effect=failure);runtime.inspect=Mock();runtime.docker=Mock()
+                with patch.object(case.time,'monotonic',return_value=0):
+                    with self.assertRaises(type(failure)) as caught:
+                        runtime.wait_reclamation_fault(object(),dict(id='a'*64),Path('unused'))
+                self.assertIs(caught.exception,failure)
+                runtime.inspect.assert_not_called();runtime.docker.assert_not_called()
+
     def test_outer_cleanup_retries_every_retained_proxy_even_after_stop_failure(self):
         runtime=object.__new__(case.ReclamationRuntime);runtime.resources=dict(cleanup_errors=[])
         first,second=Mock(),Mock();first.stop.side_effect=OSError('first stop')
