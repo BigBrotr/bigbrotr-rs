@@ -9,7 +9,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from cases import first_launch as case
 
@@ -152,6 +152,97 @@ class FirstLaunchControls(unittest.TestCase):
         self.assertIn('index_frontier_handoffs', expected)
         self.assertIn('producer_requests', expected)
         self.assertIn('schema_versions', expected)
+
+
+class FirstLaunchWaitControls(unittest.TestCase):
+    def test_positive_observation_retains_value_and_live_process_requirements(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            now = [100.0]
+            value = {'observed': 'current'}
+            observations = iter((False, value))
+            client = SimpleNamespace(poll=lambda: None)
+            def sleep(seconds):
+                now[0] += seconds
+            with patch.object(case.time, 'monotonic', side_effect=lambda: now[0]), \
+                    patch.object(case.time, 'sleep', side_effect=sleep), \
+                    patch.object(runtime, 'inspect', return_value={'State': {'Running': True}}):
+                self.assertIs(runtime.wait(lambda: next(observations), 'current', 1,
+                                           entry={'id': 'owned'}, client=client), value)
+                self.assertIs(runtime.wait(lambda: value, 'no process requirement', 1), value)
+
+    def test_expired_wait_does_not_start_a_predicate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            predicate = Mock(return_value=True)
+            for seconds in (0, -1):
+                with self.subTest(seconds=seconds), \
+                        patch.object(case.time, 'monotonic', return_value=100), \
+                        self.assertRaisesRegex(ValueError, 'timeout: current'):
+                    runtime.wait(predicate, 'current', seconds)
+            predicate.assert_not_called()
+
+    def test_late_positive_and_negative_predicates_cannot_extend_wait(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            for result in (True, False):
+                for finished in (101.0, 101.1):
+                    now = [100.0]
+                    def predicate():
+                        now[0] = finished
+                        return result
+                    with self.subTest(result=result, finished=finished), \
+                            patch.object(case.time, 'monotonic', side_effect=lambda: now[0]), \
+                            self.assertRaisesRegex(ValueError, 'timeout: current'):
+                        runtime.wait(predicate, 'current', 1)
+
+    def test_positive_observation_refuses_owner_or_client_exit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            for stopped in ('owner', 'client_zero', 'client_error'):
+                live = {'owner': True, 'client': None}
+                def predicate():
+                    live['owner'] = stopped != 'owner'
+                    live['client'] = {'owner': None, 'client_zero': 0, 'client_error': 1}[stopped]
+                    return True
+                client = SimpleNamespace(poll=lambda: live['client'])
+                inspect = lambda entry: {'State': {'Running': live['owner']}}
+                with self.subTest(stopped=stopped), \
+                        patch.object(case.time, 'monotonic', return_value=100), \
+                        patch.object(runtime, 'inspect', side_effect=inspect), \
+                        self.assertRaisesRegex(ValueError, '(owner|client) exited before current'):
+                    runtime.wait(predicate, 'current', 1, entry={'id': 'owned'}, client=client)
+
+    def test_final_process_observation_consumes_the_same_deadline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            for slow in ('inspect', 'poll'):
+                now = [100.0]
+                def inspect(entry):
+                    if slow == 'inspect': now[0] = 101.0
+                    return {'State': {'Running': True}}
+                def poll():
+                    if slow == 'poll': now[0] = 101.0
+                    return None
+                with self.subTest(slow=slow), \
+                        patch.object(case.time, 'monotonic', side_effect=lambda: now[0]), \
+                        patch.object(runtime, 'inspect', side_effect=inspect), \
+                        self.assertRaisesRegex(ValueError, 'timeout: current'):
+                    runtime.wait(lambda: True, 'current', 1, entry={'id': 'owned'},
+                                 client=SimpleNamespace(poll=poll))
+
+    def test_expired_sleep_does_not_start_another_predicate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            now = [100.0]
+            predicate = Mock(return_value=False)
+            def sleep(seconds):
+                now[0] = 101.0
+            with patch.object(case.time, 'monotonic', side_effect=lambda: now[0]), \
+                    patch.object(case.time, 'sleep', side_effect=sleep), \
+                    self.assertRaisesRegex(ValueError, 'timeout: current'):
+                runtime.wait(predicate, 'current', 1)
+            predicate.assert_called_once_with()
 
 
 if __name__ == '__main__':

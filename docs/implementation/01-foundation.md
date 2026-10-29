@@ -436,6 +436,11 @@ cleanup record and PASS/FAIL/NOT_RUN/SKIPPED, with requiredness.
   a missing binary, skipped engine or empty workload cannot pass.
 - [ ] **Step 6:** Add finite diagnostic waits and deterministic coordination signals; avoid
   interpreting a short quiet sleep as proof that all schedules are safe.
+  The first-launch `Runtime.wait` currently accepts a positive predicate before
+  checking its deadline and child liveness. The live-Index phase must enforce its
+  own shared absolute deadline now; reconcile the common helper and its caller
+  contracts before harness closure, with late-positive/dead-child controls and
+  targeted affected journeys. Do not turn late observations into an overall PASS.
 - [ ] **Step 7:** **Practical P01-T08:** intentionally remove one required executable, break
   a fixture expectation and interrupt the runner. Expect NOT_RUN/failing release
   status, FAIL on wrong output, and cleanup only of recorded owned resources.

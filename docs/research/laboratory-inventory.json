@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-28T11:34:04.220396+00:00",
+  "updated_at": "2026-10-29",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -74344,11 +74344,23 @@
         "cleanup_errors": []
       },
       "retention": "Protected original state/logs, exact custody in resources/root-terminal and author standalone import failure remain retained; all earlier parent/restart FAILs remain unchanged. No raw credential/session/SQL upload.",
-      "remaining_scope": "Live Index succession/current-vector closure remains P02-T06 Steps4/7 with P01-T09 composition consumer, not a new indivisible M1 prerequisite. General egress/signing-enabled profiles, native census/restart repetition, broad capacity and complete P00-P10 product are not claimed.",
+      "remaining_scope": "Bounded live initial Index succession is now qualified separately in implementation_index_foundation_20261026.resume_20261028.live_initial_successor. General egress/signing-enabled profiles, arbitrary live epochs, capacity and complete P00-P10 product remain unclaimed.",
       "milestone_review": {
         "path": "/home/tux/bigbrotr-rs/.research/initial-retained-boundary-20261028/.research/retained-boundary-author/m1-scoped-closure-review-20261029.json",
         "sha256": "5fc860c23de187d83b06d6edcf0c757a9a053069c46bf4d728aab03315b121e8",
         "scope": "No M1 blocker in the scoped evidence collection; earlier on/off results retain their original sources and scopes. Not Step1/whole-phase completion."
+      },
+      "current_product_requalification": {
+        "status": "PASS_ALL7_STAGES_ON_REVIEWED_6CBE",
+        "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+        "candidate_manifest_sha256": "7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb",
+        "acceptance_revision": "441d332e791f25bd0ef36f2c553076433820d1a7",
+        "root_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-tutorial-r1/root-terminal.json",
+          "sha256": "96dae4c73444242d2661af2bc276da7eb3cf148e34acfafda47c71c6d472ad55"
+        },
+        "scope": "Same 6cbe/candidate: external runtime, exact 353-byte signed export, 25 complete controlled-peer transcripts/no outbound Nostr EVENT, reviewed signer exclusion, owned listeners and exact capability refusals. Not general egress exclusion.",
+        "resources": "All 18 owned containers stopped0/PID0/noOOM; runner/application/clients absent, native closed, owner release committed and bridge empty. Original 99b7 tutorial remains separately identified."
       }
     }
   },
@@ -75135,9 +75147,9 @@
       "next": "On explicit resume, restore proxy WIP branch and fix cancellation-resistant transport closure preserving prior errors; targeted critical review/control before installed825 short-pin retry. No product rebuild for proxy-only changes."
     },
     "resume_20261028": {
-      "status": "ACTIVE_INSTALLED_INDEX_RECOVERY_AND_BOTH_RELEASE_COMMIT_CASES_PASS",
+      "status": "PASS_BOUNDED_LIVE_INITIAL_INDEX_SUCCESSOR_AND_AFFECTED_REGRESSIONS",
       "canonical_branch": "main",
-      "canonical_revision": "abf2d0502231eeee88d61229478860f420076835",
+      "canonical_revision": "13b975126dedd7668c53494ba6bf0654f6526e64",
       "proxy_correction": "8ae9a4aed253fa62568809826c88f8ce670c2e02",
       "proxy_controls": "21PASS; critical cleanup review complete",
       "installed_r3": {
@@ -75231,7 +75243,7 @@
           "status": "Implemented as076750d5, merged and qualified; current identities/resources in sync_safe_points."
         }
       },
-      "processes": "Native70479/build16395/assembly93774/observer60598/shared82408/retained48479 allreaped0; all owned containers stopped; compiler115cache released. No remoteCIjob active; CI Sol mapsnextIndexoutage read-only, sourceSolupdatesreport, Astrareviewcomplete.",
+      "processes": "Native61809/build25485/finite90240/tutorial6201/liveR4-30960 reaped0; liveR1-69386/R2-82943/R3-38986 reaped1 and remain FAIL. All audited qualification containers stopped/PID0/noOOM, runner/client identities absent, borrowed bridge empty; compiler115 cache released. No engine/compiler/CI watcher remains in this lane.",
       "retention": "All .research/data/worktrees/original failures/825installed candidate preserved; no new cleanup.",
       "installed_short_pin_attempts": [
         {
@@ -75457,7 +75469,7 @@
         },
         "retention": "Preserve both qualified cases and original failures, source receipts, candidate and diagnostic captures. Both root sessions reaped0; all owned processes stopped."
       },
-      "canonical_revision_scope": "Locally integrated qualified Index-stop source99b7/acceptanceabf2; report/checkpoint commit follows. Public main56768c3b is undergoing one real hostedCI40787757407; do not cancel that qualification with another push.",
+      "canonical_revision_scope": "Locally integrated qualified product/fixture source at 13b97512; exact built product 6cbe, candidate 7c31 and acceptance 1fab remain separately bound below. Public main remains e10211af; this documentation update and coherent publication follow.",
       "epoch2_continuation": {
         "worktree": ".research/index-epoch2-continuation-20261028",
         "branch": null,
@@ -76238,6 +76250,69 @@
         "processes": "Native54612/build15424/assembly69621/observer27273/installed70699 reaped0. All20 case containers stopped0/PID0/noOOM/unpaused; all four case host processes absent, cache released and borrowed bridge empty. Actual identity/state projections bound in terminal/build receipts.",
         "retention": "Preserve original signed inputs,49-row native dump, all database files, logs, receipts and worktree. Earlier failed attempts remain at their own paths; no lab/cache deletion.",
         "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.separate_index_backend_stop"
+      },
+      "live_initial_successor": {
+        "status": "PASS_BOUNDED_LIVE_INITIAL_SUCCESSOR_ALL16_STAGES",
+        "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
+        "qualification_revision": "1fab2f4bc026785a07992e91779767e28d74f689",
+        "fixture_revision": "4cd3f9ad47dd8b2d0c0c67641a9cb64fd15cb2e2",
+        "worktrees": {
+          "product": ".research/index-live-successor-20261029",
+          "fixture": ".research/index-live-acceptance-20261029",
+          "qualification": ".research/index-live-qualified-20261029"
+        },
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2",
+        "candidate_manifest_sha256": "7c31d836d9cdfb378d38b317261307ec589a1ca1ce664aa10af8744df4fa7ffb",
+        "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.live_initial_successor",
+        "completed": {
+          "native": {
+            "path": ".research/initial-index-recovery-qualification-20261028/r16-6cbe1cb2/receipt.json",
+            "sha256": "ec595ae91bb5248a55f45a3fb0f13102a43307d6cbef656c7d321d861e44cc60"
+          },
+          "installed_build": {
+            "path": ".research/initial-index-recovery-qualification-20261028/installed-6cbe1cb2/build-receipt.json",
+            "sha256": "309564ee7eb3b1c79c93c0433b0fabda4d1c28fc677fba2e63b5cd52c2ca1741"
+          },
+          "finite": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-finite-r1/root-terminal.json",
+            "sha256": "dadc128035e4a02f0d1a63808086a3442474d40eabd78248666e877b9704172d"
+          },
+          "tutorial": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-tutorial-r1/root-terminal.json",
+            "sha256": "96dae4c73444242d2661af2bc276da7eb3cf148e34acfafda47c71c6d472ad55"
+          }
+        },
+        "terminal_resources": {
+          "observed_at": "2026-10-29T03:36:35.928642+00:00",
+          "session": 30960,
+          "exit_code": 0,
+          "containers": 30,
+          "running": 0,
+          "pids": 0,
+          "oom_killed": 0,
+          "recorded_processes_absent": 5,
+          "active_owned_processes": 0,
+          "borrowed_bridge_endpoints": 0,
+          "root_receipt": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-6cbe1cb2/acceptance-live-r4/root-terminal.json",
+            "sha256": "d711629c60a37b7b9b2c1d89b6f48c5f02a6f2af8597cff5809fc4572d6308f8"
+          }
+        },
+        "earlier_terminal_runs": {
+          "installed_failures": [
+            "acceptance-live-r1",
+            "acceptance-live-r2",
+            "acceptance-live-r3"
+          ],
+          "native_failures": [
+            "r13-e5fc0811",
+            "r14-455c9581",
+            "r15-f60324c5"
+          ],
+          "status": "All remain FAIL; exact counts, immutable receipt hashes, scoped corrections and critical reviews are in the owning report. Installed attempts are audited terminal, with owned containers stopped, runner/client identities absent and borrowed bridge empty."
+        },
+        "scope": "R4 all 16 installed stages PASS; native 210/34 groups, fresh build, finite 15 and tutorial 7 PASS at their own scopes. No active engine/compiler/watcher. Wider remaining guarantees stay in the owning report.",
+        "retention": "Protected original source inputs/state/databases/captures/logs/worktrees and R1/R2/R3 failures retained. Public records contain compact identity/scope/receipt references, not raw credential-bearing captures."
       }
     }
   },
