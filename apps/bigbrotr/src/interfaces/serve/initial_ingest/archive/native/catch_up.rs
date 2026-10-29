@@ -7,6 +7,8 @@ use bigbrotr_model::Digest256;
 use bigbrotr_protocol::archive_membership::{MembershipObservation, MembershipRead};
 use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
 
+pub(in crate::interfaces::serve::initial_ingest) mod group;
+
 /// The native worker scans the entire receipt table to EOF, independently of
 /// the number selected by a particular prefix or individual expected receipt.
 pub(in crate::interfaces::serve::initial_ingest) const SCAN_LIMIT: usize = 128;

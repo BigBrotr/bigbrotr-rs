@@ -1198,12 +1198,54 @@ A replacement selected by the current frontier must be Present. One unique
 unbound candidate is provisional: only its successful full-EOF Present scan permits
 adoption. Its complete Absent result continues the original strict scan under the
 same admitted job, absolute deadline, cancellation and custody; errors never take
-that fallback. Multiple valid unbound candidates select none and retain ordinary
-strict observation, including safe all-absent recovery. The replacement still
-requires its own canonical exclusion/sealing, fresh Present and complete membership
-before any missing-work plan or frontier effect. Resolving a valid group with an
-absent intermediate replacement and a later Present one remains a required
-repeated-failure qualification; the unique-candidate slice does not close it.
+that fallback. The replacement still requires its own canonical exclusion/sealing,
+fresh Present and complete membership before any missing-work plan or frontier
+effect. Current-bound and unique-candidate paths retain these rules.
+
+For several unbound alternatives, the implementation forms one complete related
+group from that fixed-cutoff inventory, including the original. Same batch digest
+or the same complete original headers requires exact common semantics and headers;
+an incompatible third member cannot be filtered away to manufacture uniqueness.
+Validate every actual request/input and persistent coordinator binding before
+effects. Historical issuer/coordinator/worker incarnations remain bound to each
+own immutable request. Preserve all original input owners and grants, including
+absent/failed members and interleaved unrelated attempts, in original ordinal order.
+
+One joined group job retains the existing 30-second absolute deadline and one
+cancellation flag. Before any catalog resolution it admits the exact wires,
+metadata, installed workers, manager and one serial reader lane, and recovers
+every member's exact LocalAttempt. The actual unpolled manager Driver is wrapped
+once per attempt with `retain_catalog_connection`, retaining each same locked
+open file description through transport destruction. Every canonical lifetime
+resolution must complete as `NotImported` or `Sealed` before native observation;
+any unknown SQL/COMMIT/driver result refuses the whole group without implying
+rollback. No old writer or credential is relaunched.
+
+The private `inspect-receipt-group` request borrows one common complete receipt
+expectation and carries at most128 unique IDs with strictly increasing ordinals.
+Its closed response binds the exact semantics and ordered members by a private
+domain-separated SHA256, returning NONE or one exact admitted ID/ordinal. Inside
+one readonly transaction it reuses the unchanged unfiltered receipt scanner
+through successful EOF and COMMIT. A row sharing the digest, any admitted ID or
+any admitted ordinal must equal exactly one group member; crossed identities,
+semantic differences, unknown same-digest rows and any second match, including an
+identical duplicate, refuse. Unrelated rows retain the existing global decoding,
+dataset and resource checks. The ordinary strict single-receipt OR guard is unchanged.
+
+After actual process/output join, NONE yields all Absent; a sole member requires
+its own `Sealed` resolution and a fresh existing strict membership inspection in
+another native snapshot. Only joined membership and manager shutdown permit one
+complete result: that member Present and the others Absent. A alone is retained
+when A alone is Present; ordinals never choose a winner. All inventory items and
+the final exact current-frontier presence barrier still precede planning. Partial
+results, wrong response bindings, cancellation, expiry and unknown child termination
+refuse. The limits remain128 issued/scanned attempts,64 records/headers,1MiB per
+original input,1MiB inventory metadata and32KiB wire, with unchanged process/native/
+scratch envelopes. A complete group that cannot fit is refused without truncation
+or limit growth. This source implementation and its new controls remain `NOT_RUN`
+for Rust/native/installed qualification until exact evidence is recorded. The
+required repeated-failure journey with absent A/B and sole C Present remains open;
+earlier unique-candidate evidence does not qualify it.
 
 #### Missing batches, complete frontier and exact retry
 

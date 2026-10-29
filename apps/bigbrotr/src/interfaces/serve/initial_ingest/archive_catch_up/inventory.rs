@@ -212,6 +212,7 @@ impl Inventory {
                 coordinator.binding_digest(),
             )?;
         }
+        require_inventory_order(self.attempts.iter().map(|a| a.inputs.expectation()))?;
         // Move each nonclone custody/input owner into actual joined work. Keep
         // the vector allocation and every other input grant until it returns.
         let mut remaining = std::mem::take(&mut self.attempts).into_iter();
@@ -222,6 +223,80 @@ impl Inventory {
         while let Some(mut attempt) = remaining.next() {
             authority.refresh(owner).await?;
             authority.history(owner, recovery, proof, frontier).await?;
+            let related = related_group(
+                attempt.inputs.expectation(),
+                attempt.inputs.headers(),
+                current.current_cut().map(|cut| cut.receipts.as_slice()),
+                remaining
+                    .as_slice()
+                    .iter()
+                    .map(|candidate| (candidate.inputs.expectation(), candidate.inputs.headers())),
+            )?;
+            if !related.is_empty() {
+                require_group_metadata(
+                    self.attempts.len() + remaining.len() + 1,
+                    related.len() + 1,
+                    coordinator.identity().root().len(),
+                    self._metadata.request().units().data_bytes(),
+                )?;
+                let mut group = Vec::new();
+                let mut deferred = Vec::new();
+                group.try_reserve_exact(related.len() + 1).map_err(error)?;
+                deferred
+                    .try_reserve_exact(remaining.len() - related.len())
+                    .map_err(error)?;
+                group.push(attempt);
+                for (index, candidate) in remaining.enumerate() {
+                    if related.binary_search(&index).is_ok() {
+                        group.push(candidate);
+                    } else {
+                        deferred.push(candidate);
+                    }
+                }
+                remaining = deferred.into_iter();
+                let (root, app, native, reader, state_root) = (
+                    root.clone(),
+                    budget.clone(),
+                    native_budget.clone(),
+                    reader.clone(),
+                    coordinator.state_root().to_path_buf(),
+                );
+                let custody = coordinator.reader_custody().map_err(error)?;
+                let binding = coordinator.binding_digest();
+                let deadline = Instant::now() + OPERATION;
+                let group = authority
+                    .blocking(owner, deadline, move |cancel| {
+                        let mut references = Vec::new();
+                        references.try_reserve_exact(group.len()).map_err(error)?;
+                        references.extend(group.iter().map(|a| (&a.receipt, &a.inputs)));
+                        let states = native::catch_up::group::reconcile(
+                            &root,
+                            &state_root,
+                            &references,
+                            &reader,
+                            &custody,
+                            binding,
+                            WorkerBudgets {
+                                application: &app,
+                                native: &native,
+                            },
+                            deadline,
+                            cancel,
+                        )?;
+                        drop(references);
+                        if states.len() != group.len() {
+                            return Err(error("incomplete retained group result"));
+                        }
+                        for (attempt, present) in group.iter_mut().zip(states) {
+                            attempt.present = present;
+                        }
+                        Ok(group)
+                    })
+                    .await?;
+                authority.history(owner, recovery, proof, frontier).await?;
+                self.attempts.extend(group);
+                continue;
+            }
             // Selection borrows the still-retained inputs. Only one bounded
             // expected receipt is copied into the joined job, never custody.
             let replacement = retained_replacement(
@@ -282,23 +357,113 @@ impl Inventory {
             authority.history(owner, recovery, proof, frontier).await?;
             self.attempts.push(attempt);
         }
+        // Group members can surround unrelated issued items. Every original
+        // owner survives and returns in the original numeric issuance order.
+        self.attempts.sort_unstable_by_key(|a| a.receipt.ordinal);
         if let Some(current) = frontier
             .bound_current_inputs()
             .map_err(error)?
             .current_cut()
         {
-            for expected in &current.receipts {
-                if !self
-                    .attempts
+            require_current_presence(
+                self.attempts
                     .iter()
-                    .any(|a| a.present && a.inputs.expectation() == expected)
-                {
-                    return Err(error("published frontier receipt is absent or incomplete"));
-                }
-            }
+                    .map(|a| (a.inputs.expectation(), a.present)),
+                &current.receipts,
+            )?;
         }
         Ok(())
     }
+}
+
+fn require_current_presence<'a>(
+    states: impl Iterator<Item = (&'a ReceiptExpectation, bool)> + Clone,
+    current: &[ReceiptExpectation],
+) -> Result<()> {
+    for expected in current {
+        if !states
+            .clone()
+            .any(|(actual, present)| present && actual == expected)
+        {
+            return Err(error("published frontier receipt is absent or incomplete"));
+        }
+    }
+    Ok(())
+}
+
+/// Complete issued inventory must be canonical before the first lifetime effect.
+fn require_inventory_order<'a>(
+    receipts: impl Iterator<Item = &'a ReceiptExpectation> + Clone,
+) -> Result<()> {
+    let mut previous = 0;
+    for (index, receipt) in receipts.clone().enumerate() {
+        receipt.validate().map_err(error)?;
+        if index >= MAX_ATTEMPTS
+            || receipt.publication_ordinal <= previous
+            || receipts
+                .clone()
+                .take(index)
+                .any(|prior| prior.attempt_id == receipt.attempt_id)
+        {
+            return Err(error(
+                "conflicting complete retained inventory identity or order",
+            ));
+        }
+        previous = receipt.publication_ordinal;
+    }
+    Ok(())
+}
+
+fn require_group_metadata(
+    total: usize,
+    members: usize,
+    root_bytes: usize,
+    allowance: u64,
+) -> Result<()> {
+    if total > MAX_ATTEMPTS || members > total {
+        return Err(error("group inventory bounds"));
+    }
+    let bytes = total
+        .checked_mul(4 * std::mem::size_of::<Attempt>() + std::mem::size_of::<usize>())
+        .and_then(|n| n.checked_add(4 * std::mem::size_of::<Vec<Attempt>>()))
+        .and_then(|n| {
+            n.checked_add(native::catch_up::group::metadata_bytes(members, root_bytes).ok()?)
+        })
+        .ok_or_else(|| error("retained group metadata overflow"))?;
+    if u64::try_from(bytes).map_err(error)? > allowance {
+        return Err(error("retained group exceeds metadata grant"));
+    }
+    Ok(())
+}
+
+/// Candidate indices refer to the complete remaining fixed-cutoff inventory.
+/// The existing selector validates every relevant semantic/header/identity row;
+/// a group is only needed when it deliberately selects no unbound alternative.
+fn related_group<'a>(
+    original: &ReceiptExpectation,
+    headers: &[PendingBatchHeader],
+    current: Option<&[ReceiptExpectation]>,
+    candidates: impl Iterator<Item = (&'a ReceiptExpectation, &'a [PendingBatchHeader])> + Clone,
+) -> Result<Vec<usize>> {
+    if retained_replacement(original, headers, current, candidates.clone())?.is_some()
+        || current.is_some_and(|cut| cut.iter().any(|r| r.batch_digest == original.batch_digest))
+    {
+        return Ok(Vec::new());
+    }
+    let mut related = Vec::new();
+    related.try_reserve_exact(MAX_ATTEMPTS).map_err(error)?;
+    for (index, (candidate, candidate_headers)) in candidates.enumerate() {
+        if candidate.batch_digest == original.batch_digest || candidate_headers == headers {
+            if related.len() == MAX_ATTEMPTS - 1 {
+                return Err(error("retained group member bound"));
+            }
+            related.push(index);
+        }
+    }
+    if related.len() < 2 {
+        related.clear();
+    }
+    Ok(related)
 }
 
 fn retained_replacement<'a>(
@@ -359,8 +524,8 @@ fn retained_replacement<'a>(
         // Explicit current selection of A keeps its ordinary strict path.
         return Ok(None);
     }
-    // Several valid later candidates select none. Ordinary strict A observation
-    // still permits all-absent history and refuses any committed digest collision.
+    // Several valid later candidates select none here. The complete-group caller
+    // observes all of them together; this selector never chooses by ordinal.
     Ok(unbound
         .filter(|_| !multiple)
         .map(|expected| (ReplacementMode::ProvisionalUnbound, expected)))
@@ -733,5 +898,152 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn retained_group_includes_every_related_member_among_interleaved_unrelated_items() {
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let other_headers = [header(4, 6, 8)];
+        let mut unrelated = b.clone();
+        unrelated.attempt_id = [20; 16];
+        unrelated.publication_ordinal = 5;
+        unrelated.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]);
+        unrelated.input_ranges[0].first_sequence = 4;
+        unrelated.input_ranges[0].last_sequence = 6;
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 6;
+        let candidates = [
+            (&b, headers.as_slice()),
+            (&unrelated, other_headers.as_slice()),
+            (&c, headers.as_slice()),
+        ];
+        for current in [None, Some([].as_slice())] {
+            assert_eq!(
+                related_group(&a, &headers, current, candidates.into_iter()).unwrap(),
+                [0, 2]
+            );
+        }
+        for selected in [&a, &b, &c] {
+            assert!(
+                related_group(
+                    &a,
+                    &headers,
+                    Some(std::slice::from_ref(selected)),
+                    candidates.into_iter()
+                )
+                .unwrap()
+                .is_empty()
+            );
+        }
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                std::iter::once((&b, headers.as_slice()))
+            )
+            .unwrap()
+            .is_empty()
+        );
+        assert!(
+            related_group(&a, &headers, None, std::iter::empty())
+                .unwrap()
+                .is_empty()
+        );
+    }
+
+    #[test]
+    fn retained_group_refuses_bad_third_semantics_headers_and_duplicate_requests() {
+        let (a, b) = receipts();
+        let headers = [header(1, 3, 7)];
+        let changed_headers = [header(1, 3, 8)];
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 5;
+        for field in 0..10 {
+            let mut invalid = c.clone();
+            match field {
+                0 => invalid.dataset_id = [2; 16].try_into().unwrap(),
+                1 => invalid.schema_version = 2,
+                2 => invalid.topology_generation = bigbrotr_model::TopologyGeneration::new(1),
+                3 => invalid.batch_digest = bigbrotr_model::Digest256::from_bytes([6; 32]),
+                4 => invalid.record_count = 4,
+                5 => {
+                    invalid.input_ranges[0].first_sequence = 2;
+                    invalid.input_ranges[0].last_sequence = 4;
+                }
+                6 => invalid.attempt_id = a.attempt_id,
+                7 => invalid.attempt_id = b.attempt_id,
+                8 => invalid.publication_ordinal = b.publication_ordinal,
+                9 => invalid.publication_ordinal = a.publication_ordinal,
+                _ => unreachable!(),
+            }
+            assert!(
+                related_group(
+                    &a,
+                    &headers,
+                    None,
+                    [(&b, headers.as_slice()), (&invalid, headers.as_slice())].into_iter()
+                )
+                .is_err(),
+                "{field}"
+            );
+        }
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                [(&b, headers.as_slice()), (&c, changed_headers.as_slice())].into_iter()
+            )
+            .is_err()
+        );
+        assert!(
+            related_group(
+                &a,
+                &headers,
+                None,
+                [(&b, headers.as_slice()); 2].into_iter()
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn retained_group_inventory_order_current_barrier_and_metadata_remain_bounded() {
+        let (a, b) = receipts();
+        let mut c = b.clone();
+        c.attempt_id = [10; 16];
+        c.publication_ordinal = 5;
+        assert!(require_inventory_order([&a, &b, &c].into_iter()).is_ok());
+        for invalid in [[&a, &c, &b], [&a, &b, &b], [&a, &a, &c]] {
+            assert!(require_inventory_order(invalid.into_iter()).is_err());
+        }
+        assert!(
+            require_current_presence(
+                [(&a, false), (&b, false), (&c, true)].into_iter(),
+                std::slice::from_ref(&c)
+            )
+            .is_ok()
+        );
+        for current in [&a, &b] {
+            assert!(
+                require_current_presence(
+                    [(&a, false), (&b, false), (&c, true)].into_iter(),
+                    std::slice::from_ref(current)
+                )
+                .is_err()
+            );
+        }
+        assert!(
+            require_current_presence([(&a, true)].into_iter(), std::slice::from_ref(&c)).is_err()
+        );
+        assert!(require_group_metadata(128, 3, 8, MIB).is_ok());
+        assert!(require_group_metadata(129, 3, 8, MIB).is_err());
+        assert!(require_group_metadata(128, 129, 8, MIB).is_err());
+        assert!(require_group_metadata(128, 128, usize::MAX, MIB).is_err());
+        assert!(require_group_metadata(128, 3, 8, 1).is_err());
     }
 }
