@@ -236,7 +236,7 @@ impl ControlSession {
         if confirmed.control != self.identity || self.client.is_closed() {
             return Err(ProducerReclamationError::DeliveryUnknown);
         }
-        self.available = false;
+        self.begin_operation()?;
         let ConfirmedClosedReclamation {
             native,
             mut lease,
