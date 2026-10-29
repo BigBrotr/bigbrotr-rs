@@ -1011,9 +1011,16 @@ def first_launch(args, checks, inputs):
         if shared_budget:
             from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+    tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
+    runtime_type = IndexRuntime if index_case else Runtime
+    if tutorial:
+        from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
+        runtime_type = TutorialRuntime
     args.case_limits = OFF_LIMITS if getattr(args, 'case', None) == OFF_CASE else RESTART_LIMITS if restart else LIMITS
     if index_case:
         args.case_limits = INDEX_LIMITS
+    if tutorial:
+        args.case_limits = TUTORIAL_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
     stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
@@ -1024,7 +1031,7 @@ def first_launch(args, checks, inputs):
     interrupt_scope.__enter__()
     try:
         args.evidence.chmod(0o700)
-        runtime = IndexRuntime(args, inputs) if index_case else Runtime(args, inputs)
+        runtime = runtime_type(args, inputs)
         operations = [('prerequisites', runtime.preflight), ('candidate', runtime.candidate),
                 ('runtime_image', runtime.image_and_state), ('fresh_bootstrap', runtime.bootstrap),
                 ('signed_acquisition', runtime.initial)]

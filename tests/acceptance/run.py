@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -218,13 +218,19 @@ def main():
     args = parser.parse_args()
     if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-index-outage"):
         parser.error("--native-observer-build is only for finite64 or Index outage")
-    installed = args.case in ("p01-first-launch", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary")
+    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
     if not installed and (args.candidate_manifest or args.compose_network):
         parser.error("candidate and Compose arguments are only for p01-first-launch")
     if installed and any((args.binary, args.source_manifest, args.build_result)):
         parser.error("p01-first-launch selects its artifact through --candidate-manifest")
+    if args.case == 'p01-first-launch-tutorial':
+        from cases.first_launch_tutorial import canonical_inputs
+        try:
+            args.tutorial_paths = canonical_inputs(args)
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            parser.error(str(error))
     args.evidence = args.evidence.resolve()
     args.evidence.mkdir(mode=0o700, parents=True, exist_ok=False)
     checks, inputs = [], {}

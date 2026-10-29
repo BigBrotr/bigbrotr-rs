@@ -244,6 +244,44 @@ directory wholesale**, including from public Actions. `result.json` is the
 bounded summary, with hashes, checks and scope limits; review any selected upload
 separately. Raw command receipts and original failures remain local.
 
+### Outside-checkout tutorial qualification
+
+`p01-first-launch-tutorial` runs the same seven first-launch stages and data/export
+oracle with the checkout declared as the source of maintained clients/fixtures.
+Invoke the runner by absolute path from a directory outside every working
+checkout, with canonical absolute source/candidate/evidence arguments. Bundle,
+state and evidence remain external. See the [first-event tutorial](../tutorials/first-event.md)
+for the exact command; the bundle is not advertised as a source-free runner.
+
+The variant retains the original client and resource bounds, including ordinary
+history 40s/export 12s, and reuses the startup completion observation inside that
+40s window. It snapshots socket inodes of the actual owned application/client
+PIDs through Linux `/proc`, requiring the declared loopback TCP listeners.
+Missing identity/descriptor visibility fails rather than implying absence.
+PostgreSQL proof is its actual Docker loopback 15432 binding plus TCP reachability;
+its process descriptors are not claimed inspected.
+
+Before engine bootstrap, the installed executable must reject the assigned,
+enabled but unwired Monitor role and a copied recipe with only active-write
+enabled, using their exact exit 3 diagnostics without Ready output or changed
+state. These negatives do not substitute for the real signed acquisition and
+353-byte export. The actual peer must validate every accepted connection through
+EOF, with no error, incomplete shutdown or unmatched opening; an unexpected
+masked outbound EVENT is a real peer-parser negative control.
+
+Zero Nostr signing is an explicit source-exclusion claim: reviewed `99b7d24b` code has
+no reachable Nostr signer, and only session REQ/CLOSE reach the text sender.
+The case binds the executed product's code/dependency/configuration Git objects
+and relevant source files to that reviewed profile; documentation-only revisions
+can reuse it, while changed product inputs require review. Zero outbound Nostr
+publication additionally uses the complete real peer observation. No fabricated
+signer-call counter or candidate `publication:false` field is used. Session HMAC,
+TLS and required Archive SQL publication are outside this Nostr claim.
+
+The existing base case remains available with its original scope. This variant
+adds no Index, native census, general egress, live successor or capacity gate.
+Definition and unit controls alone are not installed acceptance evidence.
+
 ## Installed initial Index publication
 
 `p01-first-launch-index` adds one fresh Index publisher to the same signed-event

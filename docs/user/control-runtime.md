@@ -49,11 +49,23 @@ pass at `5050999`. Older inventory evidence below retains its original revision 
 scope; neither result enables Archive dispatch.
 
 Omitting `--roles` uses the root's explicit assignment. Without
-`--initialize-ingest`, this slice refuses any selected role other than Control
+explicit initialization or successor activation, this slice refuses any selected
+role other than Control
 before opening credentials. Selecting a
 subset never starts the omitted roles. It opens no native store and makes no
 acquisition, publication or data-read readiness claim. The complete
 product and the ordinary Compose installation remain in development.
+
+The [first-event tutorial](../tutorials/first-event.md) selects only the current
+private Control/Ingest/Sync/Archive path, then ordinary Control for private
+history/export. Its default recipe disables Index, adjacent public services and
+active signing. The `initialized` lifecycle record's `ready:false` is distinct
+from authenticated capability observations and actual published event bytes.
+Accepted/queued jobs do not imply completed acquisition. An assigned enabled
+Monitor role remains unwired in Serve and must refuse before startup; enabling
+active writes refuses the absent signer-purpose/endpoint adapter. The tutorial
+checks these exact negatives and owned loopback listeners without claiming a
+public health API or a universal network audit.
 
 The explicit `--initialize-ingest --roles control,ingest` path additionally
 creates and retains a fresh native owner; see the
