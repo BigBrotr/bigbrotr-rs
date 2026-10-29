@@ -76975,25 +76975,29 @@
           "current_state": "Older entries naming these branch refs describe historical author state; receipt exact detached HEAD map is current. Only those merged refs retired; pending branches untouched."
         },
         "grouped_replacement_recovery": {
-          "status": "QUALIFIED_GROUPED_INSTALLED_AND_TUTORIAL_PASS_INTEGRATION_PENDING",
+          "status": "INTEGRATED_MAIN_1CB61C6A_HOSTED_CI_PENDING",
           "base": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
           "product_author": {
             "worktree": ".research/grouped-retained-recovery-20261029",
-            "branch": "work/grouped-retained-recovery",
+            "branch": null,
             "agent": "/root/grouped_product_sol",
             "model": "gpt-6.1-sol",
             "reasoning_effort": "xhigh",
             "revision": "18e208ed484a0977897e7a1cf41961f19463ab37",
-            "state": "clean frozen source; original d9a62e41 preserved"
+            "state": "clean frozen source; original d9a62e41 preserved",
+            "retired_merged_branch": "work/grouped-retained-recovery",
+            "checkout_state": "Clean retained detached HEAD at recorded revision; only merged redundant ref retired"
           },
           "acceptance_author": {
             "worktree": ".research/grouped-retained-acceptance-20261029",
-            "branch": "work/grouped-retained-acceptance",
+            "branch": null,
             "agent": "/root/grouped_acceptance_sol",
             "model": "gpt-6.1-sol",
             "reasoning_effort": "xhigh",
             "revision": "35169b8e2a2f6c12ab4e447dc19496924fbd657f",
-            "state": "clean frozen; all bounded critical findings H1/H2/H2-F1 closed at source review3babc30a; actual installed NOT_RUN"
+            "state": "Clean frozen; critical findings closed and actual installed11/11 plus tutorial7/7 PASS; original findings/failures preserved",
+            "retired_merged_branch": "work/grouped-retained-acceptance",
+            "checkout_state": "Clean retained detached HEAD at recorded revision; only merged redundant ref retired"
           },
           "contract_sha256": "10ae02389401425b7f9ed1c79a53255ad2a3ebd96e9ee49ea8e74288130e4f2a",
           "output_custody_addendum_sha256": "74b37d0593ba906d0d9a999a60bb9bde10d0101e1c46a628d2ba12a472f8b51d",
@@ -77063,11 +77067,13 @@
           },
           "qualification_worktree": {
             "path": ".research/grouped-retained-qualification-20261029",
-            "branch": "work/grouped-retained-qualification",
+            "branch": null,
             "revision": "a8dd7a2409167fa31b4cae046131a1c361ad4ebd",
             "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
             "harness": "35169b8e2a2f6c12ab4e447dc19496924fbd657f",
-            "scope": "Clean frozen qualification inputs; actual grouped11/11 and tutorial7/7 separately executed. Author worktrees/logs/failures retained."
+            "scope": "Clean frozen qualification inputs; actual grouped11/11 and tutorial7/7 separately executed. Author worktrees/logs/failures retained.",
+            "retired_merged_branch": "work/grouped-retained-qualification",
+            "checkout_state": "Clean retained detached HEAD at recorded revision; only merged redundant ref retired"
           },
           "observer": {
             "status": "REAPED_ZERO_AUDITED_PASS",
@@ -77154,6 +77160,11 @@
               "path": ".research/initial-index-recovery-qualification-20261028/installed-18e208ed/tutorial-terminal-code-review.json",
               "sha256": "9c93f12315361dd34f4438a2cfb140f19bb53ae7e413b9ccfe456902860f467c"
             }
+          },
+          "integrated_main": "1cb61c6aa62280117c927dd5bca4552bcd469fff",
+          "merged_branch_retirement": {
+            "path": ".research/initial-index-recovery-qualification-20261028/grouped-merged-refs-20261030.json",
+            "sha256": "ede7c9aa483759132c2790f795ded6bdb29798e2225ff4c37773ec9b1c16d00a"
           }
         },
         "retained_index_clone_object_dedup": {
@@ -77196,6 +77207,49 @@
           "free_after": 74412068864,
           "exit_code": 0,
           "measurement_limit": "Actual free delta includes concurrent native/source/compiler allocations; potential inode blocks and observed delta are distinct. No unique object/path/ref/source/pin/data/log removed."
+        },
+        "f7_compiler_intermediate_retirement": {
+          "status": "RETIRED_VERIFIED_REAPED_ZERO",
+          "session": 2428,
+          "exit_code": 0,
+          "target": "/home/tux/bigbrotr-implementation-20260917/runs/initial-index-installed-f7d6bef/out/build/target",
+          "scope": "Only1186 frozen single-link non-executable format-checked .o/.a/.rlib/.rmeta entries;3237 target entries including114 finished/shared ELF paths and32 original outside pins preserved. No source/data/log/container/worktree/active cache115/shared alias action.825 already retired and untouched.",
+          "proposal": {
+            "path": ".research/initial-index-recovery-qualification-20261028/f7-compiler-intermediate-proposal-20261030.json",
+            "sha256": "b230e60d93373b5225decd1d4b4aff0353c14af22c85e58584e9032d79e4f8ba"
+          },
+          "allowlist": {
+            "path": ".research/initial-index-recovery-qualification-20261028/f7-compiler-intermediate-allowlist-20261030.json",
+            "sha256": "d2712f7eb318525f6b7215e214774f2006f3ae5c7d368f8e2556e4999f8a112b"
+          },
+          "critical_review": {
+            "path": ".research/initial-index-recovery-qualification-20261028/f7-compiler-intermediate-review-20261030.json",
+            "sha256": "b4f8b1062b9d799181d20097e526a134d82b1f41a6bfaa3a623bf7b989e1ec90"
+          },
+          "executor": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-f7-retire-20261030.py",
+            "sha256": "24b9a9b7f77c27152010f25b31e75b692da4a0f961d8034262034e9ca2ac3840"
+          },
+          "frozen_manifest": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-f7-frozen-20261030.json",
+            "sha256": "b134aa249a83394f54771b9b268a2718d6f0d295504f58e7e244a507a2796cf4"
+          },
+          "receipt": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-f7-retirement-receipt-20261030.json",
+            "sha256": "8d78c9ad87592bae2a26ff73fb02af968733410890a16dc0fb5e63d2008b674f"
+          },
+          "journal": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-installed-f7-deleted-paths-20261030.jsonl",
+            "sha256": "e15d541fb9ab9da0b38d61e0e8ea8a610afc9cb829dfa851ad9df962799f41bc"
+          },
+          "deleted_files": 1186,
+          "potential_allocated_bytes": 1193902080,
+          "actual_free_delta_bytes": 1193041920,
+          "free_before": 71195717632,
+          "free_after": 72388759552,
+          "processes": "Executor2428 reaped0; no active cleanup. Exact related stopped/no-restart consumers, accessible path/inode observers and mount aliases rechecked; unreadable systemd1250/sd-pam1257 are explicit limits, not a global nonuse claim.",
+          "future_use": "This target is retired partial compiler cache: rebuild only in fresh output with retained source/toolchain/native assets and checksum-locked registry dependencies;54 registry archives require reacquisition. Original finished/packaged artifacts and historical failure evidence remain usable.",
+          "floor": "Observed free72,388,759,552B exceeded strict71,940,702,208B installed-case floor; recheck before actual allocation. Delta includes concurrent host IO."
         }
       }
     }
