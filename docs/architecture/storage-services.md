@@ -67,7 +67,7 @@ whose acknowledged progress outlives a missing dependency.
 | `ingest.pending_max_bytes` | Explicit share of available disk | Hot lowering throttles; never erases pending work |
 | `ingest.identity_cache_bytes` | 256 MiB generic recipe | Restart/adapter-specific live update; counted in host RAM |
 | `ingest.verify_workers` | Resource-derived, explicit override | Drain before reducing |
-| `ingest.request_receipt_retention` | Detail retention after producer acknowledgement/retirement | Cannot expire unresolved effects; see the producer-retirement contract below |
+| `ingest.request_receipt_retention` | Selected OPEN-prefix policy: 64 retained request details; integer range1..64 | Planned live setting: lowering schedules earlier eligible reclamation; never expires unresolved effects or expands the physical caps |
 
 Failure isolates the affected owner partition; producers pause/retry with bounded
 queues. Unknown outcome is not a negative receipt. Maintenance must never run
@@ -214,6 +214,30 @@ prefixes ACK only their contiguous resolved mutation requests. Missing/revoked
 proof authority prevents new progress, while restore must validate the retained
 basis of already committed checkpoints. Lost proof responses are read again;
 an ambiguous Admit remains subject to original-request resolution.
+
+### Selected first OPEN-prefix reclamation profile
+
+P02-T02 Step4 next removes the lifetime64-request limit for one initial,
+co-located producer while retaining the existing outstanding window and physical
+64-input/32MiB limits. At a serialized safe point, pause dispatch and classified
+progress, require all issued requests durably checkpointed and natively ACKed,
+then replace the complete prefix with an authenticated compact base. The producer
+stays OPEN; this is not epoch retirement. The base binds every complete pending
+batch through its source cut, the retired request/outcome chain and current typed
+job heads. The [selected protocol](../reference/producer-request-inputs.md#open-prefix-reclamation-selected-next-profile)
+defines its bytes, two-slot PG publication, native floor, input unlink, recovery
+and independent installed discriminator. It is a selected contract, not executed
+qualification.
+
+Receipt, producer-ledger and original-input retirement form one responsibility:
+dropping receipt keys alone does not release input capacity. Every staged file,
+including an interrupted or unrelated retained input, counts in the same full
+inventory. New dispatch resumes only after authenticated unlink, directory sync
+and confirmed PG finalization. Scientific identity, pending payload and complete
+batch markers remain unchanged. Pending-payload GC still requires the separate
+archive protection, replay and backup rules above. The first profile retains at
+most64 job heads; it removes request-history growth for those jobs, not the job
+registry's lifecycle limit or the cost of permanent scientific history.
 
 ## Online indexer
 

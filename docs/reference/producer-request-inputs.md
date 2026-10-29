@@ -1235,3 +1235,345 @@ owns measured results when executed. OPEN request65, active-prefix/sliding-windo
 GC, arbitrary terminal epochs, scalable resumable verification, payload GC and
 Archive all-family fallback/replay leases, and complete M2 recovery/capacity stay
 open under P02-T02/T06/T07/T09.
+
+## OPEN-prefix reclamation (selected next profile)
+
+This section selects the next P02-T02 Step4/P03-T01 Step3 capability; implementation
+and execution remain required. It refines the finite format1 progress/ACK and
+closed-floor profiles above, without changing their recorded evidence. The first
+consumer is the existing co-located initial writer: one dataset, source shard,
+owner/producer epoch1, stable producer slot, key schema1 and LocalSynced protection.
+At most64 existing job heads remain; repeated bounded REQs may update the same
+job. There is no lifetime request-count limit other than checked u64 exhaustion.
+The registered outstanding window, 64 retained input files, 32MiB aggregate input
+bytes, 16MiB single-input limit and existing32MiB input/outcome/progress logical
+charge remain separate mandatory bounds. No new producer slot buys more capacity.
+
+The writer pauses new admission, certification progress and reservation at its
+existing serialized owner safe point; it does not install a closing barrier.
+Let I, A, C, R and Q denote native issued, native acknowledged, PG complete,
+native retired and PG reserved request watermarks. Entry requires
+`R < I = A = C = Q`, `I-R <= 64`, current authority, no ambiguous native/PG write,
+and no staged unreserved input. A missing checkpoint, outstanding reservation or
+preparation hole in mutation resolution blocks GC; a classified-frame hole keeps
+its separate existing meaning and is not repaired by GC. All retained tail inputs,
+receipts, outcomes, attribution and progress must authenticate before preparation.
+This first profile retires the whole resolved prefix through I. It does not
+attempt concurrent admission or partial-prefix selection during reclamation.
+The already-planned `ingest.request_receipt_retention` setting selects a retained
+request-count threshold1..64, default64, for this profile; it is not a TTL or the
+outstanding window. This setting still requires implementation in the typed
+registry/generated configuration reference. After a confirmed ACK reaches the
+retained count `I-R` threshold, schedule reclamation at the next safe point; byte pressure may require
+it earlier. A live lowering can schedule eligible work but cannot close a hole.
+No new input is staged while the physical/charged capacity is exhausted. The
+installed cases use actual accepted settings64 and62, not a private GC bypass.
+
+### Compact base and complete source manifest
+
+Keep one active base and at most one prepared replacement in bounded typed slots
+owned by `producer_checkpoints`, not one row per retired prefix or delivery. A
+base is immutable canonical bytes plus its SHA256; typed SQL fields must decode
+to the same bytes. Context K is dataset16, slot16, producer epoch BE64 and SHA256
+of the complete original native manifest. That manifest already binds owner,
+incarnation, topology/recovery generation, namespaces and protection. All integers
+below are unsigned big-endian; literal domains include their terminating NUL.
+
+The base preimage, in order, is:
+
+1. `bigbrotr/producer-prefix/1\0`, K, generation BE64, previous base SHA256
+   (32 zero bytes for generation1), retired-through R BE64 and source-through S BE64.
+   Then the preparing Control resource16, epoch BE64, incarnation16 and accepted
+   policy epoch BE64; authenticate their retained historical issuer/fence records.
+2. Complete pending batch count BE64 and source-manifest digest32; retired request
+   chain digest32; the captured PG progress format BE16, revision BE64 and digest32.
+3. Job count BE64 followed by the existing exact216-byte job records sorted by
+   job ID. These preserve scope, actual frame position/time, classified/success/
+   rejection counts and mutation attribution; they assert no EOSE or traversal
+   completion. Every referenced job/gap/workflow row remains under its existing
+   owner and retention. This profile does not delete job heads or gap history.
+
+The candidate R is the captured I, not the old native retired watermark.
+Generation advances by one and R strictly advances. Reject duplicate jobs,
+foreign context, unsupported formats, overflow, trailing bytes, more than64 jobs
+or a base larger than16KiB. Charge both base slots at16KiB each within the existing
+32MiB retained allowance, including transition overlap. The existing funded
+progress operation must cover both decoded bases, current heads, tail references,
+SQL/driver staging and hashing scratch before effects; insufficient allowance
+refuses rather than allocating outside its grant. No base contains event bodies.
+Reserve this transition headroom before admitting new work, including before the
+first base exists; do not fill the allowance and then depend on unreserved scratch
+to reclaim it. For the initial no-base state, generation0 means absence and the
+native R=0 state retains its original format; it is never a fabricated format4 base.
+
+The source manifest covers **every** complete pending batch from source sequence1
+through S, not just the union of proof references. Define
+`D0 = SHA256("bigbrotr/producer-prefix-source/1\0" || K)` and, for each batch in
+strict source order,
+`Dj = SHA256("bigbrotr/producer-prefix-batch/1\0" || D(j-1) || first_BE64 || last_BE64 || batch_digest32)`.
+The batch reader must reconstruct all canonical facts and verify the existing
+AdmissionBatch semantic digest, contiguous first/last boundaries, exact stream
+watermark and complete dictionary/reference/correction closure. The final batch
+ends exactly at S; zero batches requires S=0 and D0. Full namespace census also
+checks the identity/reverse/allocation/index structures required by the existing
+compacted reader. A maximum sequence or a hash without this census is not proof.
+
+For request responsibility define
+`E0 = SHA256("bigbrotr/producer-prefix-requests/1\0" || K)` and
+`Eq = SHA256("bigbrotr/producer-prefix-request/1\0" || E(q-1) || q_BE64 || input_digest32 || outcome_sha256_32)`.
+The outcome hash is over the unchanged complete canonical native outcome bytes,
+including original decision/policy; the input digest is the existing canonical
+request digest. Before extending E, the native witness and locked PG validators
+must establish each original reservation/outcome, input and job/source binding,
+including rejected and other no-effect requests. The base certifies that checked
+responsibility transfer; E alone cannot recover deleted outcomes or authorize it.
+This replaces the historical fixed64 Event mask for the compacted portion; the
+remaining at-most64 original tail retains exact per-request validation.
+
+Every current dependency must be checked against its exact retained FactRef and
+lie in this one complete source prefix. Foreign-stream dependencies refuse this
+first profile. After publication, a covered reference need not retain a separate
+PG dependency row: a fresh native proof still verifies its exact bytes and current
+authority, and the retained complete manifest owns its recovery basis. References
+after S remain explicit in the bounded tail union. Proof-only progress allocates
+no request, sends no ACK and cannot retire an unresolved mutation; normal current
+job heads may advance without allocating per-delivery history rows.
+
+Progress format2 uses the existing format1 field order and fixed job/dependency
+encodings, domain `bigbrotr/producer-progress/2\0`, and inserts active base
+generation BE64 and base SHA256 immediately after the native manifest SHA256.
+Its dependency list contains only references beyond the base cut; its complete
+request watermark remains absolute. The first base captures the old format1 head;
+later bases capture format2. Finalization preserves the captured progress revision
+and job heads, replaces the base reference and removes covered dependency detail,
+then computes the format2 digest. Subsequent actual progress increments revision
+as before. Format, revision, digest and base reference all participate in CAS.
+Current heads must retain the base's job identities/scopes and nondecreasing
+classified/outcome counters, with all later changes checked by the existing typed
+progress rules and tail basis. A recomputed SQL checksum cannot replace those
+checks. Replacing the current base does not require retaining its predecessors:
+the native-bound new base carries their authenticated source/request chain states.
+
+Under continuous exclusive custody, an authenticated old source digest may be
+extended with newly verified batches rather than rereading old payload at each
+safe point. Reopen or lost proof custody requires a fresh complete semantic census
+and recomputation from sequence1. Read one bounded batch at a time under transferred
+grants, with cancellation and the original deadline; do not collect historical
+facts or request rows. Verification cost grows with scientific history even
+though retained request metadata is bounded. Resource/deadline refusal is honest
+incompletion, not evidence of corruption or permission to skip an old prefix.
+
+### Publication, retirement and original-input custody
+
+Only the connected fenced owner can construct the prepared base. Hold the existing
+Control/Ingest/producer locks in their established order; CAS the exact native
+context and prior base plus captured PG format/revision/digest, Q and lifecycle.
+Keep dispatch paused through all the following stages:
+
+1. **Prepare PG.** Commit the immutable replacement base under current authority,
+   keeping the active base, original head, all request/outcome rows and explicit
+   dependencies. The base must match the complete native/input census. Unknown
+   COMMIT cannot authorize native retirement; a fresh exact lookup must resolve it.
+2. **Retire natively.** After positive PG confirmation, recheck authority and the
+   same root device/inode, unique open custody, native sequence, complete input
+   inventory and watermarks. One synced WriteBatch installs the replacement floor
+   and deletes exactly `(old_R,I]` receipt keys, at most64. No other fact, marker,
+   source watermark, scientific index or allocation changes. Uncertain native
+   completion poisons dispatch and permits no unlink until positive recovery.
+3. **Unlink originals.** The matching floor plus still-retained PG original rows
+   authenticate the exact `(old_R,I]` input names, lengths and complete digests.
+   Unlink only those files and synchronize their directory. Fresh recovery may
+   accept their authenticated residual subset after an interruption; it must still
+   inspect the complete directory, reject unexpected/corrupt entries and preserve
+   every input outside that range. An unexpected change during a retained attempt
+   refuses; a stale pre-unlink inventory cannot authorize another deletion.
+4. **Finalize PG.** Only after positive directory synchronization, revalidate the
+   same native floor and zero residuals, then atomically promote the prepared base,
+   write the format2 head, delete covered request/outcome/dependency detail and
+   release the old base slot. Exact row counts, captured identities and prior
+   head are checked under the same authority ordering. Unknown COMMIT reports no
+   completion and keeps dispatch unavailable until a fresh exact lookup resolves
+   active/prepared state. Only confirmed finalization returns usable capacity.
+
+The finalization witness is private, bound to the post-unlink native/input stamp
+and current authority; a caller-supplied removed-count is not permission. SQL
+deletion uses the typed fenced exact-range operation and its expected row counts,
+not a general application DELETE/TRUNCATE escape from immutable ledger guards.
+Schema/consumer consolidation must preserve every reference now represented by
+the base before permitting deletion; an ordinary old-format mutation cannot
+select these privileges or manufacture a compacted history.
+
+The native ProducerState format4 is exactly67 bytes: `04 31`, I/A/R as three
+BE64 values, closing byte00/01, base generation BE64 and base SHA256. Require
+`0 < R <= A <= I`, positive generation and the matching authenticated PG base.
+At installation R=A=I; later admissions/ACKs preserve R/base, and closing only
+sets its existing barrier. The base binds the original manifest/context. This
+format cannot be interpreted as the closed version3 floor or silently downgraded.
+An exact installed-floor retry writes no native state. Normal live progress and
+reservation cannot start while a prepared replacement or residual cleanup exists.
+
+The persisted combinations have one interpretation: old native floor plus prepared
+PG means retirement has not been observed and all originals remain required;
+matching new native floor plus prepared PG permits authenticated residual cleanup
+and finalization; matching new floor plus active PG is complete. New native floor
+with absent/different PG base, finalized PG with an old native floor, or multiple
+prepared bases refuses. Hash equality is identity evidence, not proof of write
+authority. SQL alone cannot mint the native capability. Cancellation, expiry,
+backend/driver failure and ambiguous cleanup never manufacture a successful state.
+Keep the worker, driver, all permits and native custody through termination/join.
+The new floor requires every receipt key in its retired range absent; a mixed
+floor/receipt atomic-write image is corruption, not an optional residual set.
+
+At or below R return `RetiredRequest` before examining/recreating any original
+input, even for changed bytes. Above R retain exact replay/conflict semantics and
+original tail resolution. File existence does not prove admission; an unreserved
+or reserved-unissued tail remains unresolved and prevents inappropriate GC/close.
+The full per-store inventory, including retained files from another supported
+history, stays at64 files/32MiB. Neither a filtered scan nor a new logical epoch
+may hide bytes. Pending facts, payloads, batch markers and scientific identity
+are never deleted by this protocol.
+
+### Recovery, consumers and backup retention
+
+A fresh process does not resume admission as the old incarnation. It positively
+excludes/fences the former owner, installs/observes the existing closing barrier,
+authenticates the active/prepared base against native state and the full source
+census, and resolves every retained original above R under current authority.
+For an old floor plus prepared base, fresh recovery may finish retirement only
+after replaying every still-required original and re-establishing the exact
+captured head/cut. Its newly constructed capability permits the observed closing
+barrier, preserves closing=1 in format4 and binds the new custody/sequence; it
+cannot reuse the interrupted OPEN proof. All other changes to the captured
+identity, progress or scientific cut refuse that prepared operation.
+Finishing an interrupted reclamation does not reopen the producer. Lost delivery
+cannot be repaired by treating `RetiredRequest` as an outcome. A tail without a
+durable progress checkpoint is not ACKed merely because its outcome was copied;
+existing explicit abandonment/gap rules still govern workflow retirement.
+
+The selected first profile includes initial source closure, acquisition abandonment
+and terminal retirement. Within the independent Archive attempt envelope it also
+includes same-root finite catch-up, authorized history and complete standalone
+export/restart. Closure combines the authenticated base with the ordered exact
+original tail; pending consumption enumerates **all**
+complete batches through the complete source cut, including those below R.
+For this format4 profile, the terminal source closure is
+`SHA256("bigbrotr/producer-prefix-close/1\0" || K || I_BE64 || E_I || S_BE64 || batch_count_BE64 || D_final)`.
+Extend E/D from the authenticated base through the exact tail, then require the
+complete closing native/PG source and workflow checks. The result is independent
+of reclamation partitioning. Report compacted R separately from original replay
+count I-R and total I; do not encode an unbounded request set into a64-bit mask.
+It cannot use retained receipt count or the old64 mask as scientific completeness.
+Index need not be enabled; live Archive scheduling and scalable Index Ready65 are
+not prerequisites. Existing Archive batch limits, strict unfiltered receipt scan,
+complete-group selection, exact current-member requirement, output custody and
+worker/driver termination retain their meanings. Stream funded batches instead
+of raising wire, record, worker or deadline limits with historical request count.
+The retained Archive profile still permits at most128 total attempts. Its planning
+bound must count authenticated complete scientific batches separately from
+producer requests, because rejected/no-effect requests allocate no batch. Larger
+scientific histories or exhausted Archive attempt capacity remain explicit
+refusals; this producer increment does not silently expand that consumer profile.
+The new format4 consumer must preflight the complete planned batch count against
+the captured attempt inventory before issuing a new publication. This is a
+required implementation/acceptance predicate, not a claim that the existing
+format3 consumer already accepts or diagnoses a format4 root.
+
+Existing version3 closed64 and original-history consumers retain their qualified
+behavior. Their complete-original assumptions, PG canonical outcome stream and
+fixed masks are replaced only by explicitly selected format4 base-plus-tail
+constructors for the initial profile. Unknown formats fail closed. Preparing or
+activating successors from a format4 predecessor remains unsupported until its
+own constructors/consumers are adapted; existing format3 successor support stays.
+This is preproduction consolidation, not permission to discard required recovery
+evidence, fabricate old metadata or rewrite Git history.
+
+For this profile, backup uses a quiesced coordinated capture, with no prepared
+base/cleanup in progress and no admitted or unjoined native work. Include the
+exact active base, current format2 head and remaining dependency/job/gap/authority
+rows, unresolved request/outcome rows and originals, and the matching native
+I/A/R, complete source facts/batches and scientific inventory. Preserve the
+original protection class. Restore validates the same base-plus-tail closure;
+post-GC native bytes paired with pre-checkpoint PG or missing source data refuse.
+The backup owns self-contained copies of its base and dependency sources until
+its own retention obligations end. A later live-base replacement cannot delete
+those copies. Existing Archive snapshot/export pins remain independently required;
+neither their release nor PG head age authorizes pending-payload GC. Online/mixed-cut
+backup and archive fallback for missing pending data are outside this profile.
+
+### Required independent installed discriminators
+
+Freeze signed input bytes and literal expected event IDs, per-family facts,
+timestamps, source IDs/cuts and JSONL export bytes before running the product.
+Use an independent signer/reader and expected-state reducer; never ask production
+code to generate its own expected result. Both cases have one initial slot,
+epoch1, one retained acquisition job, provenance enabled and outstanding window2.
+Use separate fresh roots and report their different scopes explicitly.
+
+* Requests1/2 are the existing initial dictionary setup, request3 its first actual
+  observation dictionaries. Forty-three actual bounded REQs each supply three
+  event frames E001..E129, with identical scope/observer/witness context and
+  independently fixed valid signed bodies/distinct IDs. Frame Ei is mutation
+  request `i+3`. All132 requests are NewFacts, each with one complete pending batch.
+* Retire at `I=A=C=Q=64` after E061 (REQ21 ordinal1) and at128 after E125
+  (REQ42 ordinal2), without closing the producer or waiting for either EOSE.
+  Observe native R64/R128 and zero originals/receipt detail for each retired
+  prefix only after the corresponding complete protocol. Finish at I=A=C=Q132,
+  R128, with exactly four required originals129..132. Every inventory sample
+  stays within64 files and32MiB; retained logical charges also stay within32MiB.
+  Complete batch counts at requests64/128/132 are exactly64/128/132. Classified
+  and successful event counts are61/125/129, with no rejected events.
+* A gated proof-only REQ resends E001/E064/E129. It advances only valid classified
+  progress, allocates no request/input/native receipt and sends no ACK. Check
+  classified132/success132/rejected0 and the exact current head/dependency
+  representation independently, with I/A/C/Q still132 and R128.
+* Stop/reap the actual writer, restart recovery against the same roots, validate
+  the compact prefix plus four original tail requests, close/abandon/retire by
+  existing rules and independently verify the complete132-batch pending history.
+  An otherwise valid fresh Archive catch-up must refuse its132 planned attempts
+  before issuing any publication; the existing total128-attempt limit is not
+  raised. This case proves installed producer reuse beyond128 and complete source
+  recovery, not full Archive/read/export of that larger history.
+
+The companion complete-consumer case sets retention62 and uses E001..E125:
+forty-one three-event REQs and a final two-event REQ, all real signed NewFacts.
+With the same three setup requests it retires62 after E059 (REQ20 ordinal2) and124
+after E121 (REQ41 ordinal1), ending at I=A=C=Q128, R124 with exactly four required
+originals125..128 and128 complete scientific batches. Gate completion after the
+second reclamation and final four mutations. Restart, validate compact source
+plus exact tail, close/abandon/retire and publish all128 batches to the same Archive
+roots. Independently check every125
+signed body and complete expected family/original-time set. Ordinary history and
+complete nonempty JSONL export use actual scope grants and pins; retain the exact
+bytes/manifests, restart those readers and repeat. Exact recovery/publication retry
+changes no scientific state and creates no replacement receipt/publication.
+
+Ordinary Sync certifies before admission: malformed/invalid-signature frames and
+proof-only duplicates cannot be counted as mutation requests merely to fit the
+Archive cap. Genuine strict-Admit Rejected/AlreadyDurable cases belong to separate
+connected native/PG controls using actual original request IDs and native outcomes;
+label them as component evidence. Add an installed forged-frame control that
+checks certification rejection without allocating an input/request or native
+receipt, and without silently promoting its coverage.
+
+Separate bounded fault copies exercise: missing ACK/checkpoint and reordered-hole
+refusal; prepared PG COMMIT reply loss before/after commit; native floor sync
+uncertainty; death after native retirement and during input unlink; final PG COMMIT
+reply loss; current authority expiry/cancellation after a real wait; missing or
+changed base/fact/batch marker; unexpected/partial input and an unresolved tail;
+changed retired retry versus changed retained-tail conflict; mixed post-GC native/
+old PG restore. Include a preparation-hole/proof-only control so compaction cannot
+invent classified coverage. Each refusal checks absence of unauthorized deletion,
+new request identity or advanced coverage, with original failures preserved.
+
+The literal132/two-cycle case establishes installed request reuse and complete
+source recovery; the128 case establishes complete Archive/read/export composition
+within its existing envelope. Supporting complete publication of larger ordinary
+Sync histories is a real further Archive consumer dependency, not satisfied by
+these cases or by deleting pending data. P02-T04 Step6/P02-T06 Steps4/7 own its
+complete-history, bounded-resource publication/recovery acceptance; their larger
+history case must include full read/export/restart, with the strict receipt and
+custody contracts preserved. Neither case establishes indefinite throughput,
+bounded total disk/RSS,
+power-loss durability, arbitrary producer/job epochs, full live subscriptions or
+all P02/M2 acceptance. Measure write/scan cost and physical maintenance separately;
+permanent scientific history and its recovery census continue to grow.
