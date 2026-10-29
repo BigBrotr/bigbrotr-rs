@@ -60,7 +60,7 @@ assets over HTTPS, or accepts an explicitly prepared verified bundle through
 `--archive-bundle`; see the
 [native bundle instructions](https://github.com/BigBrotr/bigbrotr-rs/blob/main/packaging/archive-worker/README.md).
 Locked Rust dependencies and toolchains may also need build-time network access.
-The tutorial's Nostr-signing exclusion is bound to the reviewed `6cbe1cb2` product code,
+The tutorial's Nostr-signing exclusion is bound to the reviewed `5da9bc3b` product code,
 dependencies and configuration. Documentation/acceptance-only revisions may reuse
 that code profile; changed product inputs require a fresh reachable-path review.
 The case refuses an unreviewed profile instead of assuming it cannot sign.
