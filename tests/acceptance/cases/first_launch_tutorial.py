@@ -19,11 +19,11 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '99b7d24b3a717388c8209afd9becd2befd8894ca'
+REVIEWED_PRODUCT = '6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
 REVIEWED_CODE = {
-    'apps':'c80835316e6f5eba99e562a6b4f0de00f1a537e9',
+    'apps':'5a37fcc1a00b35e427e4ac7f0fc0d2be2e33ca53',
     'crates':'ee6395cd4bb9cff8d5c818768077f8fc2fe91515',
     'vendor':'cba63f2b14b7c9c7460ff260c56e85ba97f1b611',
     'Cargo.toml':'d3c301c263f5664b2eff1ae563b3a8079169c5b4',
@@ -43,7 +43,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product99b7; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product6cbe; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
