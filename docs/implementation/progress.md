@@ -58,8 +58,16 @@ original failures, precise evidence identities and review scopes. The
   fresh observer32106 passes (75.16 seconds), receipt `4364f072`. Both are stopped/
   reaped0/no OOM, and the compiler cache is released. Candidate `514fb722` is
   assembled once from acceptance8e43 with exact product/worker/native binding.
-- Full installed case **10694 is running, unqualified**, at the external path
-  below. Its complete11stage result and new-product tutorial remain pending.
+- Full installed case10694 exits1: **5PASS/1FAIL/5NOT_RUN, cleanupPASS**. Initial
+  signed acquisition fails when the owner exits4 during orderly SIGTERM with a
+  cancellation diagnostic, without stopped/nativeclosed/release report. No
+  timeout/OOM; exact cause is under source/capture diagnosis. Reclamation,
+  successor, consumers and signed history/export remain NOT_RUN for this product.
+- Required same-product outside-checkout tutorial40501 passes all7stages on
+  fresh stores, including signed acquisition, ordinary history/exact export and
+  its declared listener/Nostr negative profile. It does not qualify the failed
+  fullcase recovery. Terminal3ccab140 independently checks all18containers stopped
+  exit0/PID0/no OOM, runner/two clients/783commandPIDs absent,28pins/bridgeempty.
 
 Prior product c656's latest full installed R5 remains **9 PASS / 1 FAIL /
 1 NOT_RUN, cleanup PASS**. Its actual independent CAPI comparison passes all five
@@ -71,12 +79,13 @@ The prior seven-stage c656 tutorial passes but does not qualify the new product.
 
 ## Resources and agents
 
-Only full installed acceptance10694 is active: runner528254/start1236226.
-Exact boot/PID/arguments are in external
-`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1-session.json`;
-evidence is its sibling `acceptance-closed-r1`. Runtime ownership is recorded by
-the maintained harness there. Parent83404/observer32106 are terminal and audited;
-no builder/cache borrower or tutorial runs concurrently.
+No local development/test process remains active. Tutorial40501 and fullcase10694
+are reaped and independently audited. Exact launches/results are under
+`/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e`
+(`acceptance-tutorial-r1` and `acceptance-closed-r1`). Terminal receipts3ccab140/
+04536e18 retain their distinct scopes. No reclamation/native-observer resources
+were created in the failed case. Parent/observer builders remain terminal;
+the compiler cache is released.
 
 Native 7215 and worker 14889 are stopped/reaped; original cache ELF pins were
 independently verified after each. All earlier installed engines remain stopped
@@ -87,16 +96,22 @@ original failures, `.research` and worktrees. The [inventory](../research/labora
 owns custody; historical stopped observations are not live process checks.
 
 Sol/xhigh coordinator and operational author are verified. Astra/xhigh critical
-review is closed. The bounded author/reviewer tasks are complete; no agent
-experiment is active. Root alone owns launches and integration. Q37/Q38's latest
+review is closed. Sol diagnosis9178e561 is complete: SIGTERM cancellation is confirmed, exact
+operation remains unknown; all64acceptancepins and4lifecycle owners match the
+prior passing c656 initial stage. Astra finishes the already-open unbound-
+replacement recovery contract, then reviews this concrete shutdown-contract
+question. Neither launches processes or changes source. Root alone owns launches and integration. Q37/Q38's latest
 allocation and method are already reconciled in questions.md/agent-handoff.md.
 
 ## Precise next action and outstanding scope
 
-Reap fullcase10694 and independently audit its actual result, all owned resources,
-source/artifact pins and borrowed bridge with the existing terminal auditor. If
-PASS, execute and audit the outside-checkout tutorial on this exact candidate.
-Preserve any failure before classifying it; reuse unchanged component/build proofs.
+Use diagnosis9178e561 for a bounded critical review: determine whether the
+initial stop violates graceful background drain or the fixture assumes more than
+the startup/native/mutating fail-stop contract guarantees. Define the smallest
+correct source/fixture recovery change and deterministic proof without resetting
+authority, widening deadlines or swallowing unknown effects. Do this before a
+new fullcase or source build; the same-candidate tutorial40501 is alreadyPASS. Reuse the
+unchanged237/worker/build proofs for their exact source scopes.
 
 P02-T02/T06 Steps4/7 own the closed64 successor capability: request65, exact native
 science, finite/live consumers, Archive exact retry and signed history/export.

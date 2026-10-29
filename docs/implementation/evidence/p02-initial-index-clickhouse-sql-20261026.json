@@ -2388,7 +2388,7 @@
           }
         },
         "receipt_retry_followup": {
-          "status": "COMPONENTS_AND_FRESH_BUILD_PASS_FULL_INSTALLED_RUNNING",
+          "status": "COMPONENT_BUILD_PASS_INSTALLED_INITIAL_STOP_FAIL_DIAGNOSING",
           "reviewer": "reclamation_retire_diagnosis",
           "operational_author": "ci_followthrough_sol",
           "source": "c656c518231a3d604cb6fa08989455f655fd7cfe",
@@ -2515,7 +2515,7 @@
             "sha256": "514fb722a9caa41c50d9e98be8cf65578d1bab45ae1408348940e17e09bf48f0"
           },
           "installed_run": {
-            "status": "RUNNING_NOT_QUALIFIED",
+            "status": "FAIL_EARLY_SIGNED_ACQUISITION",
             "session": 10694,
             "runner": {
               "pid": 528254,
@@ -2543,7 +2543,91 @@
             "launch_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1-session.json",
             "source": "efd8c32edb6e53f9115401146280a05df04d1d1d",
             "acceptance": "8e43c8114d8daef2a18d71432f1a21e0691501c1",
-            "scope": "Fresh full11stage closed64/successor/Index/Archive exactretry/signedhistory/export with unchanged guards/oracles. New-product outsidecheckouttutorial NOT_RUN."
+            "scope": "Fresh full11stage closed64/successor/Index/Archive exactretry/signedhistory/export with unchanged guards/oracles. New-product outsidecheckouttutorial NOT_RUN.",
+            "exit_code": 1,
+            "counts": {
+              "collected": 11,
+              "executed": 6,
+              "failed": 1,
+              "skipped": 0,
+              "not_run": 5
+            },
+            "failure": {
+              "stage": "signed_acquisition",
+              "error_type": "ValueError",
+              "reason": "initial owner did not close and release",
+              "traceback": [
+                {
+                  "file": "tests/acceptance/cases/first_launch.py",
+                  "line": 1114,
+                  "function": "first_launch"
+                },
+                {
+                  "file": "tests/acceptance/cases/first_launch_retained.py",
+                  "line": 124,
+                  "function": "initial"
+                },
+                {
+                  "file": "tests/acceptance/cases/first_launch.py",
+                  "line": 624,
+                  "function": "initial"
+                },
+                {
+                  "file": "tests/acceptance/cases/first_launch.py",
+                  "line": 57,
+                  "function": "require"
+                }
+              ]
+            },
+            "terminal_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-closed-r1/root-terminal.json",
+            "terminal_sha256": "04536e18d6a5ff006e01a401969ea4448f519d90f4f1271846bfa45883f9aa5d",
+            "custody": "16containers stopped/PID0/noOOM(15exit0/1exit4),3persistedPIDs and1644commandPIDs absent,64pins/exactbridgeempty/errors[]; no reclamation/native-observer resources created.",
+            "diagnosis": {
+              "path": ".research/closed-reclamation-20261029/.research/efd8-initial-stop-diagnosis-20261029/diagnosis.json",
+              "sha256": "9178e561320721ed2fabf9d4e75fb678bb1e1495e6183d6cfb3d31c135936057",
+              "classification": "UNKNOWN_EXACT_OPERATION_WITH_CONFIRMED_PRODUCT_CANCELLATION_REFUSAL",
+              "finding": "Exit4 ~24.4ms after SIGTERM; exact cancellation await unobserved, no stopped/release report or afterstopSQL. All64acceptancepins and4lifecycle product owners match prior c656R5; no demonstrated X4 regression/setup/environment cause.",
+              "owner": "Existing P01-T05 initial stop/drain and P02-T02/T06Steps4/7 qualification",
+              "next": "Bounded critical determination of startup/native/mutating fail-stop contract versus graceful background drain; preserve original authority/deadline and unknown-outcome refusal. No relaxed fixture, added timeout or blind rerun."
+            },
+            "operator_capsule_note": "Root start-ticks decimal string normalized to exact same integer1236226 for existing auditor contract; original capsule preserved separately, product/results/predicates unchanged."
+          },
+          "tutorial_run": {
+            "status": "PASS_TUTORIAL_TERMINAL_CUSTODY_VERIFIED",
+            "session": 40501,
+            "runner": {
+              "pid": 567043,
+              "start_ticks": 1267645,
+              "boot_id": "286ce606-808f-41ee-9bf8-722997410e80",
+              "argv": [
+                "/usr/bin/python3",
+                "-B",
+                "/home/tux/bigbrotr-rs/.research/closed-reclamation-retry-acceptance-qualified-20261029/tests/acceptance/run.py",
+                "p01-first-launch-tutorial",
+                "--source-root",
+                "/home/tux/bigbrotr-rs/.research/closed-reclamation-retry-acceptance-qualified-20261029",
+                "--candidate-manifest",
+                "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/candidate/candidate-manifest.json",
+                "--compose-network",
+                "bigbrotr-m1-0f80280_default",
+                "--evidence",
+                "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-tutorial-r1"
+              ],
+              "cwd": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e"
+            },
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-tutorial-r1",
+            "scope": "All7actual maintained outsidecheckout stagesPASS: same installed candidate signed acquisition/ordinary history/exactexport and declared listener/Nostr negative profile. No fullcase recovery/capacity qualification.",
+            "exit_code": 0,
+            "counts": {
+              "collected": 7,
+              "executed": 7,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "terminal_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-efd8c32e/acceptance-tutorial-r1/root-terminal.json",
+            "terminal_sha256": "3ccab14005d0185fe8f4a68cad4c72be792c7fced8733fdece9a1ae55e5993ae",
+            "custody": "All18containers stopped0/PID0/noOOM; runner/two actual clients/783commandPIDs absent,28pins/exactbridgeempty/errors[]. Auditor operator initially supplied incorrect starttick argument and refused; rerun reads recorded actual capsule exactly, no predicate/source/result changes."
           }
         }
       }
