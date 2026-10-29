@@ -1191,6 +1191,20 @@ journal; the old intent, input identity and journal remain retained. A committed
 receipt with lost delivery is verified and reused, never inserted again. Existing
 reader leases and retention claims are not reclaimed as part of catch-up.
 
+An exact later issued replacement can account for an older absent attempt only
+with the same complete receipt semantics, original headers and persistent
+coordinator binding; historical process identities retain their own attribution.
+A replacement selected by the current frontier must be Present. One unique
+unbound candidate is provisional: only its successful full-EOF Present scan permits
+adoption. Its complete Absent result continues the original strict scan under the
+same admitted job, absolute deadline, cancellation and custody; errors never take
+that fallback. Multiple valid unbound candidates select none and retain ordinary
+strict observation, including safe all-absent recovery. The replacement still
+requires its own canonical exclusion/sealing, fresh Present and complete membership
+before any missing-work plan or frontier effect. Resolving a valid group with an
+absent intermediate replacement and a later Present one remains a required
+repeated-failure qualification; the unique-candidate slice does not close it.
+
 #### Missing batches, complete frontier and exact retry
 
 After complete reconciliation and whole-job resource admission, publish only

@@ -23,12 +23,25 @@ ERRORS={'publication-loss':'error: initial Archive refused; preserve original st
     'frontier-loss':'error: Archive catch-up refused; preserve original state: CommitUnknown\n'}
 
 
-def wire_checked(wire,target,source,client):
+def wire_checked(wire,target,source,client,*,local_proxy=None):
     assert wire['status'] in ('UNKNOWN','OBSERVED_CLOSED_AND_JOINED')
     assert wire['target']==target and wire['mode']=='after-complete'
     p=wire['process'];assert p['exit']==0 and p['overflow'] is False and p['readers_joined'] is True and not p['stderr']
-    assert p['command']==['docker','exec','-i',client,'python3','-B','/lab/archive-catch-up-commit-proxy.py',
-        '--target',target,'--mode','after-complete','--profile','retained-catch-up']
+    if local_proxy is None:
+        assert p['command']==['docker','exec','-i',client,'python3','-B','/lab/archive-catch-up-commit-proxy.py',
+            '--target',target,'--mode','after-complete','--profile','retained-catch-up']
+    else:
+        # A second maintained owner runs this same proxy on the host. Its
+        # source root/interpreter are independently pinned by that owner; the
+        # route, actual roles and argv remain a closed profile here.
+        assert client is None and target=='publication'
+        executable,path=local_proxy
+        assert Path(executable).is_absolute() and Path(path).is_absolute()
+        assert Path(path).parts[-3:]==('experiments','archive-engine','native_commit_proxy.py')
+        assert p['command']==[executable,'-B',path,'--target','publication','--mode','after-complete',
+            '--profile','retained-catch-up','--upstream-port','15432',
+            '--catalog-manager','bigbrotr_catalog','--catalog-reader','bigbrotr_archive_read',
+            '--catalog-database','bigbrotr_catalog']
     events=[json.loads(s) for s in p['stdout'].splitlines()]
     assert [e['event'] for e in events]==['ready','fault','terminal']
     ready,fault,end=events;assert ready==wire['ready'] and ready['source_sha256']==source
@@ -44,6 +57,10 @@ def wire_checked(wire,target,source,client):
             'reader_queries','capture_verify_requests','resume_authority_requests','resume_expiry_rejections','resume_expiry_idle'):
             assert event[key]==0
         assert event['rejection_sequence']==event['pin_rejections']==[]
+        if local_proxy is not None:
+            assert [event[k] for k in ('upstream_host','upstream_port','catalog_manager','catalog_reader',
+                'catalog_database','armed')]==['127.0.0.1',15432,'bigbrotr_catalog','bigbrotr_archive_read',
+                'bigbrotr_catalog',True]
     assert all(ready[k]==0 for k in ('connections','bytes','frames','data_queries','data_commits','server_complete','client_complete','faults'))
     for event in (fault,end):
         assert [event[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')]==[1,1,1,0,1]

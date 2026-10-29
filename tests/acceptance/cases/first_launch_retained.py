@@ -247,6 +247,7 @@ RECLAMATION_LIMITS=LIMITS[:7]+[
     'After the same genuine64-request capture, explicit closure/abandonment/retirement must precede product reclamation and every successor intent. Exact139-byte floor,65 native sequence operations, all retained science/pending/PG/Archive evidence and zero remaining originals are checked independently.',
     'Fresh reclaim retry and fresh compacted retirement read precede actual enabled-Index epoch2 activation. Its ordinary signed client creates request1 only after the old spool is empty, proving cumulative request65; three genuine successor requests retain the unchanged per-producer64 and shared64-file/32MiB bounds.',
     'Both compacted epoch2 consumers and exact retries, complete322-row Archive science,572 raw Index rows, signed histories and exact353-byte first-event export are required. No Ready65 or scalable history claim follows. Native/SQL unknown and interrupted-unlink mechanics retain separate native/wire fault controls; physical power/fsync failure remains NOT_RUN.',
+    'Before compacted Archive recovery, the first actual replacement4 native COMMIT completes with its reply omitted under the unchanged retained-catch-up proxy bounds. Independent stopped-owner C API science must contain exactly receipts1,2,4 while Control retains issued1..4/currentfrontier2 and original3 custody. A fresh owner reuses4 unchanged, seals its login, issues exactly64 missing attempts5..68 and binds bridge3/final4; exact retry adds0/0. This unique-candidate cut does not qualify grouped repeated-failure recovery.',
 ]
 
 
@@ -254,12 +255,18 @@ class ReclamationRuntime(RetainedRuntime):
     """The existing finite64 journey extended through real capacity return."""
     phase_guard=LiveTopologyIndexRuntime.phase_guard
     phase_wait=LiveTopologyIndexRuntime.phase_wait
+    archive_schedule='unbound-publication-loss'
 
     def verify_index(self):
         super().verify_index()
         self.initial_index_state=load(self.root/'index/after-control.json')
 
     def cleanup(self):
+        proxy=getattr(self,'unbound_proxy_handle',None)
+        if proxy is not None:
+            try:proxy.stop()
+            except Exception as error:
+                self.resources['cleanup_errors'].append(dict(resource='unbound-archive-proxy',error=type(error).__name__))
         for proxy in getattr(self,'reclamation_proxy_handles',[]):
             try:proxy.stop()
             except Exception as error:
@@ -295,6 +302,7 @@ class ReclamationRuntime(RetainedRuntime):
         # Load/pin the existing independent encoders before candidate identity.
         import installed_family_science
         import installed_archive_catch_up_model
+        import installed_archive_catch_up_fault_oracle
         import installed_archive_export_oracle
         import installed_archive_export_client
         relative="experiments/archive-engine/native_commit_proxy.py"
@@ -642,6 +650,9 @@ class ReclamationRuntime(RetainedRuntime):
         require(all(state_files.get(k)==v for k,v in self.parked_files.items()),'original Archive input/intent custody changed before catch-up')
         save(output/'archive-state-before.json',state_files)
         self.archive_science=oracle.compacted_archive_science(self.final_science)
+        require(self.archive_schedule in oracle.ARCHIVE_SCHEDULES,'declared compacted Archive schedule')
+        if self.archive_schedule=='unbound-publication-loss':
+            before=self.unbound_archive_publication_loss(output,before)
         report=self.finite('archive-compacted-catch-up','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         self.caught_up,self.caught_up_catalog=self.capture(output,'archive')
         live_oracle.publication_unchanged(self.complete_index_state,self.caught_up)
@@ -649,11 +660,14 @@ class ReclamationRuntime(RetainedRuntime):
         require(all(state_files.get(k)==v for k,v in self.parked_files.items()),'original Archive input/intent custody changed during catch-up')
         save(output/'archive-state-after.json',state_files)
         oracle.compacted_archive(self.prefix,self.index_live,before,self.caught_up,report,
-            self.archive_science,self.prefix_catalog,self.caught_up_catalog)
+            self.archive_science,self.unbound_catalog if self.archive_schedule=='unbound-publication-loss' else self.prefix_catalog,
+            self.caught_up_catalog,schedule=self.archive_schedule)
         self.final_census=self.census(output,'complete',profile='closed-reclamation')
         self.restart_checks.publication(self.caught_up,self.final_census,self.archive_science,
             revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],published_ordinals=oracle.ARCHIVE_PUBLISHED_ORDINALS)
         self.caught_up_files=self.files(self.state/'data/archive')
+        if self.archive_schedule=='unbound-publication-loss':
+            self.verify_unbound_reuse(output)
         retry=self.finite('archive-compacted-exact-retry','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         after,catalog=self.capture(output,'archive-retry')
         live_oracle.publication_unchanged(self.complete_index_state,after)
@@ -663,6 +677,136 @@ class ReclamationRuntime(RetainedRuntime):
         require(self.files(self.state/'data/archive')==self.caught_up_files,'Archive retry changed objects')
         index.exact(self.native_capture('consumers-native'),self.final_native)
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'consumers recreated originals')
+
+    def archive_replacement_custody(self,state):
+        """Read only the bounded original/replacement journals; retain full hashes."""
+        directory=self.state/'data/archive-state'
+        from cases.first_launch_archive_outage import custody_lock
+        names=['coordinator.json']
+        for ordinal in (3,4):
+            identity=index.raw(index.only(state['archive_attempts'],ordinal=ordinal)['attempt_id'],16).hex()
+            custody_lock(directory/identity/'custody.lock',held=False)
+            names.extend((identity+'.inputs',identity+'/intent.json',identity+'/custody.lock'))
+        records={name:(directory/name).read_bytes().hex() for name in names}
+        require(sum(len(raw)//2 for raw in records.values())<=1024*1024,'bounded replacement custody')
+        files=self.files(directory)
+        initialization=(self.state/'data/archive/.bigbrotr-initialization/intent.json').read_bytes().hex()
+        oracle.replacement_custody(state,self.archive_science,records,files,initialization)
+        return dict(records=records,files=files,initialization=initialization)
+
+    def replacement_login(self,state):
+        attempt=index.only(state['archive_attempts'],ordinal=4)
+        name='bb_archive_'+index.raw(attempt['attempt_id'],16).hex()
+        return json.loads(self.sql('bigbrotr_catalog',
+            "SELECT row_to_json(r) FROM (SELECT rolname,oid::text AS oid,rolcanlogin,rolpassword IS NOT NULL AS credential_present "
+            "FROM pg_authid WHERE rolname='"+name+"') r"))
+
+    def unbound_archive_publication_loss(self,output,before):
+        """Actual first native publication COMMIT, before any frontier binding."""
+        import sys
+        from cases.first_launch_index_pin import process_identity
+        from installed_archive_catch_up_fault_oracle import ERRORS
+        self.source_unchanged()
+        fault_output=output/'unbound-publication-loss';fault_output.mkdir(mode=0o700)
+        original=self.config.read_text()
+        oracle.unbound_catalog_config(original)
+        pins={name:digest(self.source/name) for name in self.inputs['acceptance_files_sha256']}
+        candidate=dict(manifest=self.inputs['candidate_manifest_sha256'],binary=self.manifest['artifact']['binary']['sha256'])
+        require(candidate==dict(manifest=digest(self.args.candidate_manifest),binary=digest(self.bundle/'bigbrotr')),
+            'unbound candidate manifest/binary changed')
+        index.exact(pins,self.inputs['acceptance_files_sha256'])
+        state,catalog=self.capture(fault_output,'before')
+        index.exact(state,before);index.exact(catalog,self.prefix_catalog)
+        original_state_files=self.files(self.state/'data/archive-state')
+        original_files=self.files(self.state/'data/archive')
+        require(all(original_state_files.get(k)==v for k,v in self.parked_files.items()),'original failed intent custody changed')
+        path=self.source/'experiments/archive-engine/native_commit_proxy.py'
+        argv=[sys.executable,'-B',str(path),'--target','publication','--mode','after-complete',
+            '--profile','retained-catch-up','--upstream-port','15432','--catalog-manager','bigbrotr_catalog',
+            '--catalog-reader','bigbrotr_archive_read','--catalog-database','bigbrotr_catalog']
+        require(not hasattr(self,'unbound_proxy_handle'),'one separately owned unbound publication proxy')
+        proxy=self.proxy_process(argv,input_pipe=True,limit=256*1024);self.unbound_proxy_handle=proxy
+        identity=process_identity(proxy.process.pid)
+        require(identity is not None,'unbound proxy process identity')
+        recorded=dict(pid=proxy.process.pid,identity=identity,argv=argv,status='running',source_sha256=digest(path))
+        self.resources['unbound_archive_proxy']=recorded;self.record_resources()
+        entry=None
+        try:
+            ready=self.proxy_event(proxy,'ready',10);save(fault_output/'proxy-ready.json',ready)
+            require(ready['source_sha256']==pins[str(path.relative_to(self.source))],'unbound proxy source differs')
+            routed=self.set_value(original,'postgres.catalog','endpoint',f"127.0.0.1:{ready['port']}")
+            self.config.write_text(routed)
+            entry=self.launch('archive-unbound-publication-loss','app','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
+            parent=process_identity(self.inspect(entry)['State']['Pid'])
+            require(parent is not None,'unbound Archive parent identity')
+            ended=self.docker('wait',entry['id'],timeout=110)
+            info=self.inspect(entry);logs=self.docker('logs',entry['id'])
+            (fault_output/'serve.stdout').write_text(logs.stdout);(fault_output/'serve.stderr').write_text(logs.stderr)
+            save(fault_output/'terminal-container.json',dict(id=info['Id'],parent=parent,state=info['State']))
+            require(ended.stdout.strip()=='4' and info['State']['Pid']==0 and not info['State']['Running']
+                and info['State']['ExitCode']==4 and not info['State']['OOMKilled'] and logs.stdout==''
+                and logs.stderr==ERRORS['publication-loss'],'unbound native COMMIT loss must report OutcomeUnknown')
+            fault=self.proxy_event(proxy,'fault',5);save(fault_output/'proxy-fault.json',fault)
+            stop_identity=process_identity(proxy.process.pid)
+            require(stop_identity==identity,'unbound proxy PID/start changed')
+        finally:
+            primary=sys.exception()
+            try:
+                if entry is not None:
+                    try:self.stop_container(entry,fault_output)
+                    except Exception as error:
+                        self.resources['cleanup_errors'].append(dict(resource='unbound-archive-child',error=type(error).__name__))
+                        if primary is None:raise
+            finally:terminal=self.finish_reclamation_proxy(proxy,original,fault_output,recorded)
+        self.backend_absence(fault_output)
+        wire=dict(status='OBSERVED_CLOSED_AND_JOINED',target='publication',mode='after-complete',ready=ready,
+            process=dict(terminal,command=argv,readers_joined=not any(t.is_alive() for t in proxy.threads)))
+        evidence=dict(wire=wire,direct_config=original,routed_config=routed,restored_config=self.config.read_text(),
+            stdout=logs.stdout,stderr=logs.stderr,wait_exit=ended.stdout.strip(),terminal=info['State'],
+            parent=parent,parent_absent=process_identity(parent['pid'])!=parent,proxy_identity=identity,
+            proxy_terminal_identity=stop_identity,proxy_absent=process_identity(identity['pid'])!=identity,
+            backends={db:self.sql(db,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
+                for db in ('bigbrotr_control','bigbrotr_catalog')},source_pins_before=pins,
+            source_pins_after={name:digest(self.source/name) for name in pins},source_root=str(self.source),
+            candidate_before=candidate,candidate_after=dict(manifest=digest(self.args.candidate_manifest),binary=digest(self.bundle/'bigbrotr')))
+        save(fault_output/'process-custody.json',evidence)
+        oracle.unbound_fault_process(evidence,pins[str(path.relative_to(self.source))],(sys.executable,str(path)),
+            source_pins=self.inputs['acceptance_files_sha256'],candidate=candidate)
+        self.unbound_state,self.unbound_catalog=self.capture(fault_output,'after')
+        self.unbound_census=self.census(fault_output,'first-replacement',profile='closed-reclamation')
+        selected=oracle.unbound_archive_fault(self.prefix,self.index_live,before,self.unbound_state,catalog,self.unbound_catalog,
+            self.unbound_census,self.archive_science)
+        self.unbound_files=self.files(self.state/'data/archive')
+        oracle.archive_file_membership(self.unbound_catalog,selected,self.unbound_files,original_files)
+        self.unbound_custody=self.archive_replacement_custody(self.unbound_state)
+        require(all(self.unbound_custody['files'].get(k)==v for k,v in original_state_files.items()),'fault changed original journals')
+        self.unbound_login=self.replacement_login(self.unbound_state)
+        require(self.unbound_login['rolcanlogin'] is True and self.unbound_login['credential_present'] is True,
+            'fault did not retain B4 active lifetime for canonical recovery')
+        save(fault_output/'replacement-custody.json',self.unbound_custody)
+        save(fault_output/'replacement-login.json',self.unbound_login)
+        index.exact(self.native_capture('unbound-fault-native'),self.final_native)
+        require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'fault changed source inputs')
+        index.exact(self.custody(),self.custody_before)
+        self.source_unchanged()
+        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
+            'unbound publication Control scheduling lease expiry',65)
+        save(fault_output/'verdict.json',dict(status='PASS',issued=[1,2,3,4],native=[1,2,4],current_frontier=2,
+            original3='absent_retained',replacement4='native_commit_complete_reply_omitted',recovery='NOT_RUN'))
+        return self.unbound_state
+
+    def verify_unbound_reuse(self,output):
+        custody=self.archive_replacement_custody(self.caught_up)
+        index.exact(custody['records'],self.unbound_custody['records'])
+        require(all(custody['files'].get(k)==v for k,v in self.unbound_custody['files'].items()),'recovery changed original/B4 journals')
+        for table in ('bigbrotr_archive.attempts','public.ducklake_snapshot','public.ducklake_snapshot_changes',
+                'public.ducklake_data_file','public.ducklake_file_column_stats'):
+            require(all(row in self.caught_up_catalog[table] for row in self.unbound_catalog[table]),'recovery changed B4 native identity/files')
+        oracle.archive_file_membership(self.caught_up_catalog,self.archive_science,self.caught_up_files,self.unbound_files)
+        login=self.replacement_login(self.caught_up)
+        index.exact(login,dict(self.unbound_login,rolcanlogin=False,credential_present=False))
+        save(output/'unbound-recovery-verdict.json',dict(status='PASS',issued_before=4,new_attempts=64,
+            replacement4='unchanged_and_sealed',native_receipts=67,scientific_rows=322,frontier=4,snapshot=68))
 
     def compacted_history_export(self):
         import secrets
