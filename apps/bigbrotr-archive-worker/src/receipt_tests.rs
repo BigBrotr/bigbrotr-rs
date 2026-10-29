@@ -132,6 +132,11 @@ fn retained_replacement_uses_the_strict_receipt_guard_through_complete_eof() {
                 inspect_attached(&e.connection, &original, 16),
                 Err(ReceiptError::Mismatch)
             );
+            // A refused scan leaves its read transaction open. Production
+            // observations use fresh processes; match that boundary here.
+            drop(e);
+            let temp = tempfile::tempdir().unwrap();
+            let e = open(home.path(), temp.path(), true);
             assert_eq!(
                 inspect_attached(&e.connection, &replacement, 16),
                 Ok(ReceiptObservation::Present)
