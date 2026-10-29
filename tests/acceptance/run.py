@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -216,9 +216,9 @@ def main():
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
     args = parser.parse_args()
-    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-index-outage"):
+    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage"):
         parser.error("--native-observer-build is only for finite64 or Index outage")
-    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary")
+    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
     if not installed and (args.candidate_manifest or args.compose_network):

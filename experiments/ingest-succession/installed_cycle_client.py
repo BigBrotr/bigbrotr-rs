@@ -5,7 +5,7 @@ import subprocess
 import sys
 import time
 
-FLAGS = {'retire-empty-successor': '--retire-empty-successor', 'retire-empty': '--retire-empty-attempt', 'recover-activated': '--activated-successor', 'complete-initial': '--complete-initial-preparation', 'recover': '--successor', 'source': '--close-successor-source',
+FLAGS = {'reclaim-initial':'--reclaim-initial', 'retire-empty-successor': '--retire-empty-successor', 'retire-empty': '--retire-empty-attempt', 'recover-activated': '--activated-successor', 'complete-initial': '--complete-initial-preparation', 'recover': '--successor', 'source': '--close-successor-source',
          'abandon': '--abandon-successor-acquisition', 'retire': '--retire-successor',
          'abandon-initial': '--abandon-acquisition', 'retire-initial': '--retire-initial',
          'abandon-activated': '--abandon-activated-acquisition', 'source-activated': '--close-activated-source', 'retire-activated': '--retire-activated-initial'}

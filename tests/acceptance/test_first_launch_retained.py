@@ -497,6 +497,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             process=SimpleNamespace(wait=Mock(side_effect=ValueError('original observer failure')),stop=Mock(),
                 stdout=bytearray(b'partial'),stderr=bytearray(),overflow=False,
                 process=SimpleNamespace(pid=123,returncode=1))
+            (root/'state/data/ingest').mkdir(parents=True)
             runtime=SimpleNamespace(root=root,state=root/'state',project='owned',owner='owner',
                 native_paths={'ingest_bootstrap_probe':root/'probe'},native_hashes={'ingest_bootstrap_probe':'hash'},
                 resources=dict(image=dict(id='image'),cleanup_errors=[]),record_resources=Mock(),
@@ -512,6 +513,137 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(limit=1024*1024))
             self.assertEqual(runtime.resources['cleanup_errors'],[dict(resource='native-observer-output',error='OSError')])
 
+
+
+class ClosedReclamationControls(unittest.TestCase):
+    def reclaimed_fixture(self,root):
+        state,_,report,events,wires,dump,science=saturation_fixture(root)
+        science['manifest']=next(v for cf,k,v in science['native'] if cf=='default' and k==b'\x01\x01')
+        state['role_instances']=[]
+        for owner in state['owner_epochs']:owner.setdefault('epoch',1)
+        producer=state['producer_epochs'][0]
+        producer.update(state='retired',owner_resource_id='\\x'+'aa'*16)
+        producer['closure_digest']='\\x'+source.closure(science['manifest'],producer['producer_slot_id'],1,science['inputs'],science['receipts'],312)
+        slot=bytes.fromhex(report['producer_slot_id']);marker=(b'\x01\x31'+slot+index.be(1)).hex()
+        before=copy.deepcopy(dump);before['sequence']=1082
+        next(r for r in before['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
+        head=state['producer_checkpoints'][0]
+        floor=(b'\x03\x31'+index.be(64)*3+b'\x01'+hashlib.sha256(science['manifest']).digest()+index.be(312)
+            +bytes.fromhex(producer['closure_digest'][2:])+index.be(65)+bytes.fromhex(head['checkpoint_digest'][2:]))
+        after=copy.deepcopy(before);after['sequence']=1147
+        after['rows']=[r for r in after['rows'] if not (r['cf']=='receipts' and r['key'].startswith('0130'))]
+        next(r for r in after['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=floor.hex()
+        pg=copy.deepcopy(state);pg['owner_epochs'].append(dict(role='control',resource_id='\\x'+'ca'*16,epoch=2,role_instance_id='\\x'+'02'*16))
+        pg['role_instances'].append(dict(role_instance_id='\\x'+'02'*16,role='control'))
+        result=dict(format='bigbrotr-ingest-recovery/1',state='initial-reclaimed',dataset_id=state['datasets'][0]['dataset_id'][2:],
+            owner_resource_id='aa'*16,producer_slot_id=slot.hex(),producer_epoch='1',retired_requests='64',removed_input_files='64',
+            native_sequence='1147',recovery_basis='closed-producer-floor-v3',native='compacted',owner_release='committed',ready=False)
+        return state,pg,before,after,science,result,floor
+
+    def test_reclamation_exact_floor_batch_science_and_postgres_preservation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            value=self.reclaimed_fixture(Path(directory))
+            self.assertEqual(check.reclaimed(*value[:6]),value[6])
+            self.assertEqual(len(value[6]),139)
+            for label in ('sequence','pending','fact','floor','receipt'):
+                changed=copy.deepcopy(value[3])
+                if label=='sequence':changed['sequence']-=1
+                elif label=='pending':changed['rows']=[r for r in changed['rows'] if not (r['cf']=='facts' and r['key'].startswith('0121'))]
+                elif label in ('fact','floor'):
+                    row=next(r for r in changed['rows'] if r['key'].startswith('0131' if label=='floor' else '0120'))
+                    row['value']=row['value'][:-2]+f'{int(row["value"][-2:],16)^1:02x}'
+                else:changed['rows'].append(copy.deepcopy(next(r for r in value[2]['rows'] if r['key'].startswith('0130'))))
+                with self.subTest(label=label),self.assertRaises(AssertionError):
+                    check.reclaimed(value[0],value[1],value[2],changed,value[4],value[5])
+            corrupt=copy.deepcopy(value[1]);corrupt['producer_outcomes'][0]['outcome_sha256']='\\x'+'00'*32
+            with self.assertRaises(AssertionError):check.reclaimed(value[0],corrupt,*value[2:6])
+
+    def test_reclamation_retry_cannot_rewrite_native_or_claim_another_removal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
+            retry_pg=copy.deepcopy(pg);retry_pg['owner_epochs'].append(dict(role='control',resource_id='\\x'+'ca'*16,epoch=3,role_instance_id='\\x'+'03'*16))
+            retry_pg['role_instances'].append(dict(role_instance_id='\\x'+'03'*16,role='control'))
+            retry=dict(result,removed_input_files='0')
+            check.reclaimed(pg,retry_pg,after,after,science,retry,retry=True)
+            with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,after,science,result,retry=True)
+            changed=copy.deepcopy(after);changed['sequence']+=1
+            with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,changed,science,retry,retry=True)
+
+    def test_retained_epoch_two_profile_counts_all_322_scientific_and_572_index_rows(self):
+        from initial_succession_oracle import successor_manifest
+        from installed_family_science import NetworkScience
+        from installed_archive_catch_up_model import archive_science
+        from transition_replay import native_rows
+        with tempfile.TemporaryDirectory() as directory:
+            state,_,_,_,_,dump,first=saturation_fixture(Path(directory))
+            previous=next(v for cf,k,v in first['native'] if cf=='default' and k==b'\x01\x01')
+            fresh=[bytes([120+k])*16 for k in range(1,10)]
+            manifest=successor_manifest(previous,bytes.fromhex('cc'*16),fresh)
+            model=SimpleNamespace(ds=state['datasets'][0],slot=state['producer_epochs'][0]['producer_slot_id'],
+                legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=copy.deepcopy(dump))
+            new=next(row['event'] for row in base.load(ROOT/'tests/fixtures/acquisition/selector-events.json')['events'] if row['name']=='included')
+            encoded=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=['\\x'+d.hex() for d in fresh]),
+                acknowledge=True,new_event=new,endpoint=source.ENDPOINT)
+            encoded.network(True,50000,51000,52000,1,(51001,52001))
+            native_rows_value=dict(rows=native_rows(encoded.values))
+            science=archive_science(native_rows_value,live_epoch=2,retained_epoch2=True)
+            self.assertEqual(sum(map(len,science['tables'].values())),322)
+            self.assertEqual([len(rows) for rows in science['tables'].values()],[73,62,62,62,63])
+            self.assertEqual(len(science['batches']),67)
+            projected=index.expected_rows(science,bytes.fromhex('66'*16),schema,counts=check.RECLAIM_COUNTS)
+            self.assertEqual(sum(map(len,projected.values())),572)
+            self.assertEqual((len(first['inputs']),min(encoded.inputs)),(64,1))
+            invalid=copy.deepcopy(native_rows_value)
+            invalid['rows']=[r for r in invalid['rows'] if not (r['cf']=='facts' and r['key'].startswith('0120') and r['key'].endswith('000000000000000a'))]
+            with self.assertRaises(AssertionError):archive_science(invalid,live_epoch=2,retained_epoch2=True)
+
+    def test_spent_control_fencing_is_exact_without_excusing_scientific_changes(self):
+        old=dict(dataset_id='\\x'+'11'*16,role='control',resource_id='\\x'+'22'*16,epoch=1,
+            process_incarnation='\\x'+'33'*16,role_instance_id='\\x'+'44'*16,state='active',
+            acquired_at_us=100,lease_expires_at_us=200,released_at_us=None,exclusion_method=None,exclusion_digest=None,xmin='1')
+        role=dict(role_instance_id=old['role_instance_id'],role='control',retired_at_us=None,xmin='1')
+        before=dict(owner_epochs=[old],role_instances=[role],producer_requests=[dict(request_sequence=64)])
+        successor=dict(old,epoch=2,process_incarnation='\\x'+'55'*16,role_instance_id='\\x'+'66'*16,acquired_at_us=220,state='released')
+        after=copy.deepcopy(before)
+        after['owner_epochs'][0].update(state='released',released_at_us=210,exclusion_method='storage_fenced',xmin='2',
+            exclusion_digest='\\x'+source.sha(b'bigbrotr/control-exclusion/1\0'+bytes.fromhex('11'*16)+bytes.fromhex('22'*16)+index.be(1)+bytes.fromhex('33'*16)+bytes.fromhex('55'*16)))
+        after['role_instances'][0].update(retired_at_us=215,xmin='2')
+        after['owner_epochs'].append(successor);after['role_instances'].append(dict(role,role_instance_id=successor['role_instance_id']))
+        check.control_only(before,after)
+        for mutate in (lambda pg:pg['producer_requests'][0].update(request_sequence=63),
+            lambda pg:pg['owner_epochs'][0].update(exclusion_digest='\\x'+'00'*32),
+            lambda pg:pg['role_instances'][0].update(retired_at_us=205)):
+            changed=copy.deepcopy(after);mutate(changed)
+            with self.assertRaises(AssertionError):check.control_only(before,changed)
+
+    def test_new_case_keeps_declared_existing_workload_and_client_bounds(self):
+        self.assertIn('p01-first-launch-closed-reclamation',base.RESTART_CASES)
+        self.assertEqual((case.ReclamationRuntime.source_cut,case.ReclamationRuntime.publication_revision,case.ReclamationRuntime.request_count),(312,64,64))
+        self.assertIn('closed_reclamation',case.RECLAMATION_STAGES)
+        self.assertEqual(case.RECLAMATION_STAGES[-1],'cleanup')
+
+    def test_reclamation_dispatch_requires_every_stage_and_preserves_first_failure(self):
+        for failing in (False,True):
+            with tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);args=arguments(root);args.case='p01-first-launch-closed-reclamation';checks=[]
+                with patch.object(case,'ReclamationRuntime') as runtime:
+                    if failing:runtime.return_value.closed_reclamation.side_effect=AssertionError('unconfirmed closed reclamation')
+                    base.first_launch(args,checks,{})
+                    runtime.return_value.cleanup.assert_called_once()
+                    runtime.return_value.restart_baseline.assert_not_called()
+                    runtime.return_value.ordinary.assert_not_called()
+                    for name in ('compacted_successor','compacted_consumers','compacted_history_export'):
+                        if failing:getattr(runtime.return_value,name).assert_not_called()
+                        else:getattr(runtime.return_value,name).assert_called_once()
+                self.assertEqual(len(checks),11)
+                rows={row['name']:row['result'] for row in checks}
+                self.assertEqual(rows['first_launch_cleanup'],'PASS')
+                if failing:
+                    self.assertEqual(base.load(root/'failure.json')['reason'],'unconfirmed closed reclamation')
+                    self.assertEqual(rows['first_launch_closed_reclamation'],'FAIL')
+                    for name in ('compacted_successor','compacted_consumers','compacted_history_export'):
+                        self.assertEqual(rows['first_launch_'+name],'NOT_RUN')
+                else:self.assertEqual(set(rows.values()),{'PASS'})
 
 if __name__=='__main__':
     unittest.main()

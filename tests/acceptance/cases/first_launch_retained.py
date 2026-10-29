@@ -203,3 +203,366 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
             self.resources['cleanup_errors'].append(dict(resource='native-observer',error=type(error).__name__))
         finally:
             super().cleanup()
+
+RECLAMATION_STAGES=STAGES[:-1]+('closed_reclamation','compacted_successor',
+    'compacted_consumers','compacted_history_export','cleanup')
+RECLAMATION_LIMITS=LIMITS[:7]+[
+    'After the same genuine64-request capture, explicit closure/abandonment/retirement must precede product reclamation and every successor intent. Exact139-byte floor,65 native sequence operations, all retained science/pending/PG/Archive evidence and zero remaining originals are checked independently.',
+    'Fresh reclaim retry and fresh compacted retirement read precede actual enabled-Index epoch2 activation. Its ordinary signed client creates request1 only after the old spool is empty, proving cumulative request65; three genuine successor requests retain the unchanged per-producer64 and shared64-file/32MiB bounds.',
+    'Both compacted epoch2 consumers and exact retries, complete322-row Archive science,572 raw Index rows, signed histories and exact353-byte first-event export are required. No Ready65 or scalable history claim follows. Native/SQL unknown and interrupted-unlink mechanics retain separate native/wire fault controls; physical power/fsync failure remains NOT_RUN.',
+]
+
+
+class ReclamationRuntime(RetainedRuntime):
+    """The existing finite64 journey extended through real capacity return."""
+    def load_helpers(self):
+        super().load_helpers()
+        # Load/pin the existing independent encoders before candidate identity.
+        import installed_family_science
+        import installed_archive_catch_up_model
+        import installed_archive_export_oracle
+        import installed_archive_export_client
+        from cases import first_launch_index_live_oracle
+        relative="experiments/archive-engine/native_commit_proxy.py"
+        self.inputs.setdefault("acceptance_files_sha256",{})[relative]=digest(self.source/relative)
+
+    def candidate(self):
+        super().candidate()
+        relative='experiments/archive-engine/native_commit_proxy.py'
+        self.inputs['acceptance_files_sha256'][relative]=digest(self.source/relative)
+
+    def source_science(self,*args):
+        self.retained_science=super().source_science(*args)
+        self.retained_science['manifest']=next(v for cf,k,v in self.retained_science['native'] if cf=='default' and k==b'\x01\x01')
+        self.retained_science['event']=self.events[0]
+        return self.retained_science
+
+    def native_capture(self,label,*,store=None):
+        output=self.reclamation_output/label;output.mkdir(mode=0o700)
+        value=native.census(self,output,store=store);save(output/'native.json',value)
+        return value
+
+    def preserve_reclaimed_files(self):
+        require(self.files(self.state/'data/archive')==self.reclaimed_archive_files,'reclamation changed Archive objects')
+        index.exact(self.custody(),self.custody_before)
+
+    def refused_reclamation(self,label):
+        before,catalog=self.capture(self.reclamation_output,label+'-before')
+        inputs=self.files(self.state/'data/ingest/producer-inputs-v1')
+        native_before=self.native_capture(label+'-native-before')
+        entry=self.launch(label,'app','ingest','recover','--reclaim-initial','--file','/etc/bigbrotr/instance.toml')
+        ended=self.docker('wait',entry['id'],timeout=120)
+        info=self.inspect(entry);logs=self.docker('logs',entry['id'])
+        (self.reclamation_output/(label+'.stdout')).write_text(logs.stdout)
+        (self.reclamation_output/(label+'.stderr')).write_text(logs.stderr)
+        require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
+            and not info['State']['OOMKilled'] and not logs.stdout.strip() and logs.stderr,
+            'unauthorized reclamation must refuse without success')
+        self.backend_absence(self.reclamation_output)
+        after,after_catalog=self.capture(self.reclamation_output,label+'-after')
+        oracle.control_only(before,after,allow_no_claim=True)
+        index.exact(catalog,after_catalog)
+        index.exact(inputs,self.files(self.state/'data/ingest/producer-inputs-v1'))
+        index.exact(native_before,self.native_capture(label+'-native-after'))
+        # A refused claimant may leave its scheduling lease. Observe database
+        # UTC expiry; no guessed rollback, epoch rewrite or manual release.
+        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
+            'refused Control scheduling lease expiry',65)
+        save(self.reclamation_output/(label+'-verdict.json'),dict(status='PASS',exit_code=4,native='exact',inputs='exact',archive='exact'))
+
+    def reclamation_commit_loss(self,mode):
+        import sys
+        require(mode in ('before-forward','after-complete'),'closed reclamation COMMIT profile')
+        output=self.reclamation_output/('commit-'+mode);output.mkdir(mode=0o700)
+        before,catalog=self.capture(output,'before')
+        native_before=self.native_capture('commit-'+mode+'-native-before')
+        inputs=self.files(self.state/'data/ingest/producer-inputs-v1')
+        path=self.source/'experiments/archive-engine/native_commit_proxy.py'
+        original=self.config.read_text()
+        argv=[sys.executable,'-B',str(path),'--mode',mode,'--target','control-closed-reclamation',
+            '--profile','retained-catch-up','--upstream-port','15432']
+        proxy=self.proxy_process(argv,input_pipe=True)
+        save(output/'proxy-process.json',dict(argv=argv,pid=proxy.process.pid,source_sha256=digest(path)))
+        try:
+            ready=self.proxy_event(proxy,'ready',10)
+            require(ready['source_sha256']==digest(path) and ready['target']=='control-closed-reclamation'
+                and ready['upstream_port']==15432,'declared reclamation proxy identity')
+            save(output/'proxy-ready.json',ready)
+            self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+            entry=self.launch('reclaim-commit-'+mode,'app','ingest','recover','--reclaim-initial','--file','/etc/bigbrotr/instance.toml')
+            fault=self.proxy_event(proxy,'fault',110);save(output/'proxy-fault.json',fault)
+            ended=self.docker('wait',entry['id'],timeout=15)
+            info=self.inspect(entry);logs=self.docker('logs',entry['id'])
+            (output/'serve.stdout').write_text(logs.stdout);(output/'serve.stderr').write_text(logs.stderr)
+            require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
+                and not info['State']['OOMKilled'] and not logs.stdout.strip() and 'CommitUnknown' in logs.stderr,
+                'lost reclamation confirmation must report CommitUnknown without unlink')
+            require(fault['faults']==1 and fault['client_complete']==0
+                and fault['server_complete']==int(mode=='after-complete'),'actual reclamation COMMIT direction differs')
+        finally:
+            self.config.write_text(original)
+            self.proxy_send(proxy,'stop\n');require(proxy.wait(5)==0,'reclamation proxy did not join')
+            terminal=self.proxy_observation(proxy)
+            require(not terminal['stderr'] and not terminal['overflow'],'reclamation proxy output incomplete')
+            save(output/'proxy-terminal.json',terminal)
+            proxy.stop()
+        self.backend_absence(output)
+        after,after_catalog=self.capture(output,'after')
+        oracle.control_only(before,after);index.exact(catalog,after_catalog)
+        index.exact(native_before,self.native_capture('commit-'+mode+'-native-after'))
+        require(self.files(self.state/'data/ingest/producer-inputs-v1')==inputs,'unknown COMMIT unlinked originals')
+        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
+            'unknown reclamation Control lease expiry',65)
+        save(output/'verdict.json',dict(status='PASS',mode=mode,reported='CommitUnknown',native='exact',inputs='exact',success_record=False))
+
+    def closed_reclamation(self):
+        self.source_unchanged()
+        self.reclamation_output=self.root/'reclamation';self.reclamation_output.mkdir(mode=0o700)
+        self.reclaimed_archive_files=self.files(self.state/'data/archive')
+        self.refused_reclamation('refuse-open-producer')
+        args=['ingest','recover','--file','/etc/bigbrotr/instance.toml']
+        self.finite('reclamation-abandon-initial',*args,'--abandon-acquisition')
+        retired=self.finite('reclamation-retire-initial',*args,'--retire-initial')
+        before,catalog=self.capture(self.reclamation_output,'retired')
+        self.restart_checks.retired(before,retired,1,self.retained_science,cut=312)
+        require(not any(before[t] for t in ('initial_ingest_successions','initial_ingest_activations','ingest_successions','ingest_activations')),
+            'reclamation must precede every successor intent')
+        native_before=self.native_capture('retired-native')
+        inputs=self.state/'data/ingest/producer-inputs-v1'
+        require(len(self.files(inputs))==64,'reclamation requires64 genuine original inputs')
+        # Corruption remains an explicit reversible fixture on this excluded
+        # retired owner. It is never passed as an authenticated deletion candidate.
+        path=sorted(inputs.iterdir())[0];original=path.read_bytes()
+        path.write_bytes(bytes([original[0]^1])+original[1:])
+        try:self.refused_reclamation('refuse-corrupt-original')
+        finally:path.write_bytes(original)
+        for mode in ('before-forward','after-complete'):
+            self.reclamation_commit_loss(mode)
+        before,catalog=self.capture(self.reclamation_output,'before-reclaim')
+        report=self.finite('reclaim-initial',*args,'--reclaim-initial')
+        self.reclaimed,after_catalog=self.capture(self.reclamation_output,'after-reclaim')
+        self.reclaimed_native=self.native_capture('reclaimed-native')
+        oracle.reclaimed(before,self.reclaimed,native_before,self.reclaimed_native,self.retained_science,report)
+        require(self.files(inputs)=={},'authenticated originals were not reclaimed')
+        index.exact(catalog,after_catalog);self.preserve_reclaimed_files()
+        self.retained_science['compacted_native']=self.reclaimed_native
+        retry=self.finite('reclaim-initial-restart-retry',*args,'--reclaim-initial')
+        after,_=self.capture(self.reclamation_output,'reclaim-retry')
+        retry_native=self.native_capture('retry-native')
+        oracle.reclaimed(self.reclaimed,after,self.reclaimed_native,retry_native,self.retained_science,retry,retry=True)
+        restart=self.finite('reclaimed-retirement-restart',*args,'--retire-initial')
+        require(restart['resolved_requests']=='0' and restart['compacted_requests']=='64'
+            and restart['recovery_basis']=='closed-producer-floor-v3','restart must select genuine compacted evidence')
+        require(self.files(inputs)=={},'restart recreated original inputs')
+        self.preserve_reclaimed_files()
+        self.mixed_checkpoint_restore_refusal()
+        save(self.reclamation_output/'reclamation-verdict.json',dict(status='PASS',requests=64,original_files=0,
+            successor_intent=False,science='exact',pending='exact',postgres='preserved',archive='preserved',retry='unchanged'))
+
+    def mixed_checkpoint_restore_refusal(self):
+        output=self.reclamation_output/'mixed-checkpoint-restore';output.mkdir(mode=0o700)
+        database='reclaim_restore_'+self.owner
+        clone=self.state/'data/reclamation-restore/ingest'
+        clone.parent.mkdir(mode=0o700)
+        self.backend_absence(output)
+        shutil.copytree(self.state/'data/ingest',clone)
+        self.sql('postgres','CREATE DATABASE '+database+' TEMPLATE bigbrotr_control')
+        old=self.before_proof['producer_checkpoints'][0]
+        require(old['checkpoint_revision']==64 and old['complete_through_request']==64,
+            'actual earlier checkpoint capture missing')
+        digest_value=index.raw(old['checkpoint_digest'],32).hex()
+        statement=("BEGIN; SET LOCAL session_replication_role=replica; UPDATE control.producer_checkpoints "
+            "SET checkpoint_revision=64,checkpoint_digest=decode('"+digest_value+"','hex') WHERE producer_epoch=1; COMMIT;")
+        # One explicitly incompatible partial restore on an owned copy. It does
+        # not rewrite the successful original's PG history or any native bytes.
+        self.sql(database,statement)
+        self.resources['reclamation_restore_fixture']=dict(database=database,native_root=str(clone),
+            kind='post-reclamation-native-with-actual-older-typed-head',source_checkpoint_revision=64,status='retained')
+        self.record_resources()
+        before=self.rows({'postgres':self.pg['id']},database);save(output/'before-control.json',before)
+        native_before=self.native_capture('mixed-native-before',store=clone)
+        index.exact(native_before,self.reclaimed_native)
+        original=self.config.read_text()
+        try:
+            changed=self.set_value(original,'postgres.control','database',database)
+            changed=self.set_value(changed,'storage','ingest_root','/var/lib/bigbrotr/reclamation-restore/ingest')
+            self.config.write_text(changed)
+            entry=self.launch('mixed-checkpoint-refusal','app','ingest','recover','--reclaim-initial','--file','/etc/bigbrotr/instance.toml')
+            ended=self.docker('wait',entry['id'],timeout=120)
+            info=self.inspect(entry);logs=self.docker('logs',entry['id'])
+            (output/'serve.stdout').write_text(logs.stdout);(output/'serve.stderr').write_text(logs.stderr)
+            require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
+                and not info['State']['OOMKilled'] and not logs.stdout.strip() and logs.stderr,
+                'mixed restored checkpoint must refuse without success')
+        finally:self.config.write_text(original)
+        require(self.sql(database,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')=='0',
+            'mixed fixture backend remains')
+        after=self.rows({'postgres':self.pg['id']},database);save(output/'after-control.json',after)
+        oracle.control_only(before,after)
+        index.exact(native_before,self.native_capture('mixed-native-after',store=clone))
+        require(self.files(clone/'producer-inputs-v1')=={},'mixed restore fabricated old input files')
+        index.exact(self.native_capture('mixed-original-preserved'),self.reclaimed_native)
+        save(output/'verdict.json',dict(status='PASS',fixture='incompatible_partial_restore',native='exact',original='preserved',success_record=False))
+
+    def compacted_successor(self):
+        import subprocess
+        import sys
+        from cases.first_launch import stop_process
+        self.source_unchanged();self.wait_login_capacity(self.reclamation_output)
+        # Restore only the declared catalog route after its earlier joined
+        # known refusal; the initial accepted scientific policy stays unchanged.
+        self.config.write_text(self.set_value(self.config.read_text(),'postgres.catalog','endpoint','127.0.0.1:15432'))
+        output=self.reclamation_output/'successor';output.mkdir(mode=0o700)
+        home=self.root/'successor-client';home.mkdir(mode=0o700);self.successor_home=home
+        for name in ('event.jsonl','fixture-profile.json','visibility.json'):
+            shutil.copyfile(self.home/name,home/name)
+        shutil.copyfile(self.source/'tests/fixtures/acquisition/selector-events.json',home/'selector-events.json')
+        self.new_event=next(row['event'] for row in load(home/'selector-events.json')['events'] if row['name']=='included')
+        require(self.files(self.state/'data/ingest/producer-inputs-v1')=={},'spool must be empty before activation')
+        entry=self.launch('reclaimed-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
+            '--activate-initial-successor','--roles','control,ingest,sync,index')
+        started=self.wait(lambda:self.logs(entry,output),'compacted successor activation and retained Index bridge',60,entry=entry)[0]
+        require(started['state']=='activated' and started['producer_epoch']=='2'
+            and started['predecessor']['resolved_requests']=='0' and started['predecessor']['compacted_requests']=='64',
+            'successor did not authenticate the compacted predecessor')
+        self.compacted_started=started
+        bridge,_=self.capture(output,'bridge')
+        require(index.only(bridge['consumers'],consumer_role='index')['current_revision']==65,'retained Index bridge65 missing')
+        self.compacted_bridge=bridge
+        with (home/'client.stdout').open('x') as out,(home/'client.stderr').open('x') as err:
+            client=subprocess.Popen([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_live_client.py'),
+                'journey',str(home),'--profile',str(home),'--expected-config-revision','1','--expected-policy-revision','1','--live-index-proof'],
+                env=self.environment,cwd=self.root,stdout=out,stderr=err,start_new_session=True)
+        self.processes.append(client)
+        try:
+            self.wait(lambda:(home/'prepared.json').exists(),'successor source preparation',15,entry,client)
+            (home/'prepared.continue').write_text('compacted activated owner independently observed\n')
+            self.wait(lambda:(home/'submitted.json').exists(),'successor signed admission',15,entry,client)
+            self.wait(lambda:self.sql('bigbrotr_control','SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3')=='1',
+                'three genuine successor classifications',25,entry,client)
+            admitted,_=self.capture(output,'admitted')
+            initial=index.only(admitted['producer_epochs'],producer_epoch=1)
+            current=index.only(admitted['producer_epochs'],producer_epoch=2)
+            require(initial['reserved_through_request']==64 and current['reserved_through_request']==3,'cumulative request65 must exist')
+            files=self.files(self.state/'data/ingest/producer-inputs-v1')
+            require(len(files)==3 and sum(v['bytes'] for v in files.values())<=32*1024*1024
+                and all('-0000000000000002-' in name for name in files),'successor did not reuse the freed shared spool')
+            (home/'submitted.continue').write_text('three genuine new requests checked; independent Index phase follows\n')
+            self.wait(lambda:(home/'index-proof.json').exists(),'bounded Index phase',5,entry,client)
+            phase=load(home/'index-proof.json')
+            require(phase['deadline_ns']-phase['started_ns']==45_000_000_000,'original Index proof phase changed')
+            deadline=phase['deadline_ns']/1e9
+            self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.consumers WHERE consumer_role='index' AND current_revision=68")=='1',
+                'live compacted Index publishes all three successor batches',deadline-time.monotonic(),entry,client)
+            require(time.monotonic()<deadline,'live Index publication missed the original proof phase')
+            live,_=self.capture(output,'live-complete-publication')
+            consumer=index.only(live['consumers'],consumer_role='index')
+            bounds=sorted((r['owner_epoch'],r['last_complete_sequence']) for r in live['consumer_frontiers']
+                if r['consumer_id']==consumer['consumer_id'] and r['frontier_revision']==68)
+            require(consumer['current_topology_generation']==1 and bounds==[(1,312),(2,10)],
+                'live Index publication must cover the complete authenticated source vector')
+            require(index.only(live['source_streams'],owner_epoch=1)['state']=='closed'
+                and index.only(live['source_streams'],owner_epoch=2)['last_complete_sequence']==10
+                and index.only(live['producer_epochs'],producer_epoch=2)['state']=='active',
+                'terminal metadata cannot replace the current live source')
+            from cases.first_launch_index_live_oracle import append_only_history
+            append_only_history(self.compacted_bridge,live)
+            require(time.monotonic()<deadline,'full-vector observation crossed the existing Index phase')
+            (home/'index-proof.continue').write_text('Index68 checked; Ready65 is not required\n')
+            self.wait(lambda:(home/'commands-finished.json').exists(),'successor client logout',15,entry,client)
+            self.wait(lambda:any(load(p)['number']>=2 and not p.with_name(p.name.replace('open','closed')).exists()
+                for p in home.glob('relay-open-*.json')),'successor quiet receive',5,entry,client)
+            terminal=self.stop_container(entry,output)
+            require(terminal['State']['ExitCode']==0,'compacted successor failed to join')
+            (home/'commands-finished.continue').write_text('actual compacted successor joined\n')
+            require(client.wait(timeout=6)==0 and not (home/'client.stderr').read_bytes(),'successor signed client failed')
+        finally:
+            stop_process(client);self.processes.remove(client)
+        self.backend_absence(output)
+        self.successor_wires=[load(p) for p in sorted(home.glob('relay-closed-*.json'))]
+        args=['ingest','recover','--file','/etc/bigbrotr/instance.toml']
+        self.finite('compacted-abandon-successor',*args,'--abandon-activated-acquisition')
+        self.finite('compacted-retire-successor',*args,'--retire-activated-initial')
+        self.retired_successor,_=self.capture(output,'retired')
+        self.final_native=self.native_capture('successor-native')
+        self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,started,self.retained_science,
+            self.successor_wires,self.final_native,self.state/'data/ingest',time.time_ns()//1000)
+        self.all_input_files=self.files(self.state/'data/ingest/producer-inputs-v1')
+        self.refused_reclamation('refuse-reclamation-after-successor')
+        save(output/'reuse-verdict.json',dict(status='PASS',producer_requests=[64,3],cumulative65='genuine_epoch2_request1',
+            shared_files=3,shared_file_limit=64,shared_byte_limit=32*1024*1024,index_revision=68,ready65='NOT_CLAIMED'))
+
+    def compacted_consumers(self):
+        output=self.reclamation_output/'consumers';output.mkdir(mode=0o700)
+        # Finite Index verifies the already-published live compacted history;
+        # neither exact retry may add physical rows or a publication revision.
+        for label in ('index-compacted-catch-up','index-compacted-exact-retry'):
+            report=self.finite(label,'index','catch-up','--file','/etc/bigbrotr/instance.toml')
+            require(report['published_revision_after']==68 and report['new_batches']==0,'finite compacted Index changed complete history')
+            state,_=self.capture(output,label)
+            rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+            generation=index.only(state['projection_generations'])['generation_id']
+            oracle.physical_reclamation_rows(rows,self.final_science,generation,self.schema)
+            save(output/(label+'-rows.json'),rows)
+            require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'Index changed retained inputs')
+        report=self.finite('archive-compacted-catch-up','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
+        self.caught_up,self.caught_up_catalog=self.capture(output,'archive')
+        require(report['terminal_epoch']==2 and report['frontier_revision']==5 and report['snapshot_id']==68
+            and report['compacted_requests']=='64' and report['family_counts']==[73,62,62,62,63],
+            'compacted epoch2 Archive publication differs')
+        self.final_census=self.census(output,'complete')
+        self.restart_checks.publication(self.caught_up,self.final_census,self.final_science,
+            revision=5,snapshot=68,topology=1,cuts=[(1,312),(2,10)])
+        self.caught_up_files=self.files(self.state/'data/archive')
+        retry=self.finite('archive-compacted-exact-retry','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
+        after,catalog=self.capture(output,'archive-retry')
+        require(retry['new_attempts']==0 and retry['new_frontier_revisions']==0,'Archive retry added work')
+        self.restart_checks.retry_unchanged(self.caught_up,after)
+        index.exact(catalog,self.caught_up_catalog)
+        require(self.files(self.state/'data/archive')==self.caught_up_files,'Archive retry changed objects')
+        index.exact(self.native_capture('consumers-native'),self.final_native)
+        require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'consumers recreated originals')
+
+    def compacted_history_export(self):
+        import secrets
+        import sys
+        output=self.reclamation_output/'history-export';output.mkdir(mode=0o700)
+        self.wait_login_capacity(output)
+        destination=secrets.token_hex(16)
+        changed=self.set_value(self.config.read_text(),'archive.reader','enabled',True)
+        changed=self.set_value(changed,'export.destination','id',destination)
+        changed=self.set_value(changed,'export.destination','root','/var/lib/bigbrotr/export')
+        self.config.write_text(changed)
+        self.finite('reclaimed-destination-initialize','export','destination-initialize','--file','/etc/bigbrotr/instance.toml')
+        home=output/'export';home.mkdir(mode=0o700)
+        for name in ('event.jsonl','fixture-profile.json'):
+            shutil.copyfile(self.home/name,home/name)
+        (home/'destination').mkdir(mode=0o700)
+        shutil.copyfile(self.state/'data/export/destination.json',home/'destination/destination.json')
+        save(home/'export-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
+            destination_id=destination,retained_compacted_epoch2=True))
+        before,_=self.capture(output,'export-before')
+        entry=self.launch('compacted-signed-export','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
+        self.wait(lambda:self.logs(entry,output),'compacted ordinary Control',20,entry=entry)
+        self.command([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_export_client.py'),str(home)],timeout=40,label='compacted-signed-export-client')
+        require(self.stop_container(entry,output)['State']['ExitCode']==0,'export owner did not join')
+        after,_=self.capture(output,'export-after')
+        verdict=self.export_validate(before,after,home,self.initialized,self.ids['catalog'],expected_principal=self.enrolled['principal_id'],
+            expected_table_count=82,expected_tables=self.tables,destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True)
+        require(verdict['jsonl_bytes']==353,'complete original signed export bytes differ')
+        save(output/'export-verdict.json',verdict)
+        # A second fresh process proves ordinary signed history of both epochs.
+        history=output/'history';history.mkdir(mode=0o700)
+        shutil.copyfile(self.home/'fixture-profile.json',history/'fixture-profile.json')
+        save(history/'events.json',[self.events[0],self.new_event])
+        save(history/'read-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
+            frontier_revision=5,snapshot_id=68,config_revision='1',policy_revision='1'))
+        entry=self.launch('compacted-history-restart','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
+        self.wait(lambda:self.logs(entry,output),'fresh compacted history Control',20,entry=entry)
+        self.command([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_catch_up_client.py'),'history',str(history)],timeout=30,label='compacted-history-client')
+        require(load(history/'history-client-result.json')['status']=='PASS','fresh signed histories differ')
+        require(self.stop_container(entry,output)['State']['ExitCode']==0,'history owner did not join')
+        require(self.files(self.state/'data/archive')==self.caught_up_files,'signed read/export changed Archive objects')
+        index.exact(self.native_capture('history-native'),self.final_native)
+        require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'history/export recreated originals')
+        self.source_unchanged()

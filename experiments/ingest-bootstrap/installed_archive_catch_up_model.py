@@ -196,9 +196,10 @@ class Model(Cycle):
         assert report['producer_slot_id']==self.slot[2:] and report['dataset_id']==self.ds['dataset_id'][2:]
 
 
-def archive_science(native,*,compacted=False,live_epoch=3,provenance=True):
+def archive_science(native,*,compacted=False,live_epoch=3,provenance=True,retained_epoch2=False):
     """Translate independently checked native facts, not Archive output, to rows."""
-    assert type(compacted) is bool
+    assert type(compacted) is type(retained_epoch2) is bool
+    assert not retained_epoch2 or (not compacted and live_epoch==2 and provenance)
     assert type(provenance) is bool and (provenance or (not compacted and live_epoch == 2))
     assert type(live_epoch) is int and live_epoch in (2,3)
     assert not compacted or live_epoch==3
@@ -241,14 +242,17 @@ def archive_science(native,*,compacted=False,live_epoch=3,provenance=True):
         tables[table].sort(key=lambda r:tuple(r['source_record_id'][k] for k in ('dataset_id','shard_id','owner_epoch','sequence')))
     expected_facts=({(1,n) for n in range(1,28)}|{(2,1)} if compacted else
         {(1,n) for n in range(1,13 if provenance else 9)}|{(live_epoch,n) for n in range(1,11 if provenance else 6)})
+    if retained_epoch2: expected_facts={(1,n) for n in range(1,313)}|{(2,n) for n in range(1,11)}
     assert set(facts)==expected_facts
-    assert [len(tables[t]) for t in TABLES]==([12,4,4,4,4] if compacted else
+    assert [len(tables[t]) for t in TABLES]==([73,62,62,62,63] if retained_epoch2 else [12,4,4,4,4] if compacted else
         [13,2,2,2,3] if provenance else [7,2,2,2,0])
     ds=bytes.fromhex(tables['events'][0]['source_record_id']['dataset_id']);batches=[]
     ranges_by_epoch=([(1,2,[(1,2),(3,3),(4,7),(8,12),(13,17),(18,22),(23,27)]),(2,2,[(1,1)])]
         if compacted else [(1,0,[(1,2),(3,3),(4,7),(8,12)]),(live_epoch,live_epoch-1,[(1,4),(5,9),(10,10)])])
     if not provenance:
         ranges_by_epoch=[(1,0,[(1,2),(3,3),(4,4),(5,8)]),(2,1,[(1,1),(2,5)])]
+    if retained_epoch2:
+        ranges_by_epoch=[(1,0,[(1,2),(3,3),(4,7)]+[(8+5*n,12+5*n) for n in range(61)]),(2,1,[(1,4),(5,9),(10,10)])]
     for epoch,topology,ranges in ranges_by_epoch:
         for first,last in ranges:
             refs=[[[ds,0,epoch,n],facts[epoch,n]] for n in range(first,last+1)]

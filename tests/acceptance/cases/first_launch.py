@@ -40,7 +40,7 @@ RESTART_LIMITS = [
 ]
 OFF_CASE = 'p01-first-launch-restart-provenance-off'
 RESTART_CASES = ('p01-first-launch-restart', OFF_CASE, 'p01-first-launch-index-topology',
-                 'p01-first-launch-index-live-topology')
+                 'p01-first-launch-index-live-topology', 'p01-first-launch-closed-reclamation')
 OFF_LIMITS = [
     RESTART_LIMITS[0] + ' Fresh accepted sync.provenance=off; no scientific witness rows.',
     'NOT_RUN: native RocksDB census, second-event export, Index readiness, dependency-outage qualification and complete M1.',
@@ -993,8 +993,9 @@ class Runtime:
 
 def first_launch(args, checks, inputs):
     """Append to the established acceptance report; never emit a second verdict."""
-    restart = getattr(args, 'case', None) in RESTART_CASES
-    retained_boundary = getattr(args, 'case', None) == 'p01-first-launch-retained-boundary'
+    reclamation = getattr(args,'case',None)=='p01-first-launch-closed-reclamation'
+    restart = getattr(args, 'case', None) in RESTART_CASES and not reclamation
+    retained_boundary = reclamation or getattr(args, 'case', None) == 'p01-first-launch-retained-boundary'
     index_outage = getattr(args, 'case', None) == 'p01-first-launch-index-outage'
     archive_outage = retained_boundary or getattr(args, 'case', None) == 'p01-first-launch-archive-outage'
     shared_budget = getattr(args, 'case', None) == 'p01-first-launch-shared-budget'
@@ -1031,6 +1032,9 @@ def first_launch(args, checks, inputs):
         if retained_boundary:
             from cases.first_launch_retained import (RetainedRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
+        if reclamation:
+            from cases.first_launch_retained import (ReclamationRuntime as IndexRuntime,
+                RECLAMATION_STAGES as INDEX_STAGES, RECLAMATION_LIMITS as INDEX_LIMITS)
         if shared_budget:
             from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
@@ -1069,6 +1073,9 @@ def first_launch(args, checks, inputs):
             operations += [('ordinary_history_export', runtime.ordinary)]
         if pin_release:
             operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
+        if reclamation:
+            operations += [('closed_reclamation',runtime.closed_reclamation),('compacted_successor',runtime.compacted_successor),
+                ('compacted_consumers',runtime.compacted_consumers),('compacted_history_export',runtime.compacted_history_export)]
         if restart:
             operations += [('restart_baseline', runtime.restart_baseline), ('ingest_restart_resend', runtime.restart_ingest),
                 ('archive_catch_up', runtime.restart_archive), ('catch_up_exact_retry', runtime.restart_retry)]

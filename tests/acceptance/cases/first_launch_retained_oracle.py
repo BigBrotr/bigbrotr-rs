@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+from pathlib import Path
 
 from cases import first_launch_index_oracle as index
 from cases import first_launch_restart as source
@@ -179,3 +180,156 @@ def science(state, before_proof, report, events, wires, dump, store, completed):
     for batch in wanted['batches']:
         batch.update(epoch=1,topology=0)
     return wanted
+
+# Reclamation extension of this same frozen64 workload. Product observations
+# supply clocks and fresh identities; expected bytes remain literal encodings.
+RECLAIM_COUNTS=(73,62,62,62,62,62,62,1,63,63)
+
+def control_only(before,after,*,allow_no_claim=False):
+    """Exact science plus the ordinary Control claim/release/fencing protocol."""
+    assert set(before)==set(after)
+    for table in before.keys()-{'owner_epochs','role_instances'}:
+        index.exact(before[table],after[table])
+    key=lambda row:(row['resource_id'],row['epoch'])
+    previous={key(row):row for row in before['owner_epochs']}
+    current={key(row):row for row in after['owner_epochs']}
+    assert len(previous)==len(before['owner_epochs']) and len(current)==len(after['owner_epochs'])
+    assert previous.keys()<=current.keys()
+    owners=[row for ident,row in current.items() if ident not in previous]
+    assert len(owners)==(0 if allow_no_claim and not owners else 1)
+    assert all(row['role']=='control' for row in owners)
+    fenced={}
+    for ident,old in previous.items():
+        actual=current[ident]
+        if actual==old:continue
+        assert old['role']=='control' and old['state']!='released' and len(owners)==1
+        successor=owners[0]
+        assert successor['resource_id']==old['resource_id'] and successor['epoch']==old['epoch']+1
+        assert actual['state']=='released' and actual['exclusion_method']=='storage_fenced'
+        assert old['lease_expires_at_us']<=actual['released_at_us']<=successor['acquired_at_us']
+        digest=(b'bigbrotr/control-exclusion/1\0'+index.raw(old['dataset_id'],16)+index.raw(old['resource_id'],16)
+            +index.be(old['epoch'])+index.raw(old['process_incarnation'],16)+index.raw(successor['process_incarnation'],16))
+        assert actual['exclusion_digest']=='\\x'+hashlib.sha256(digest).hexdigest()
+        changed={'state','released_at_us','exclusion_method','exclusion_digest','xmin'}
+        index.exact({k:v for k,v in old.items() if k not in changed},{k:v for k,v in actual.items() if k not in changed})
+        assert actual['xmin']!=old['xmin']
+        fenced[old['role_instance_id']]=actual
+    assert len(fenced)<=1
+    old_roles={r['role_instance_id']:r for r in before['role_instances']}
+    new_roles={r['role_instance_id']:r for r in after['role_instances']}
+    assert old_roles.keys()<=new_roles.keys()
+    for ident,old in old_roles.items():
+        actual=new_roles[ident]
+        if old==actual:continue
+        assert ident in fenced and old['retired_at_us'] is None
+        assert fenced[ident]['released_at_us']<=actual['retired_at_us']<=owners[0]['acquired_at_us']
+        assert actual['xmin']==fenced[ident]['xmin']
+        index.exact({k:v for k,v in old.items() if k not in ('retired_at_us','xmin')},
+            {k:v for k,v in actual.items() if k not in ('retired_at_us','xmin')})
+    assert new_roles.keys()-old_roles.keys()=={r['role_instance_id'] for r in owners}
+
+
+def reclamation_floor(state,science):
+    producer=index.only(state['producer_epochs'],producer_epoch=1)
+    head=index.only(state['producer_checkpoints'],producer_epoch=1)
+    assert producer['state']=='retired' and producer['reserved_through_request']==64
+    assert head['progress_format']==1 and head['checkpoint_revision']==65 and head['complete_through_request']==64
+    digest=source.closure(science['manifest'],producer['producer_slot_id'],1,science['inputs'],science['receipts'],312)
+    assert producer['closure_digest']=='\\x'+digest
+    return (b'\x03\x31'+index.be(64)*3+b'\x01'+hashlib.sha256(science['manifest']).digest()+index.be(312)
+        +bytes.fromhex(digest)+index.be(65)+index.raw(head['checkpoint_digest'],32))
+
+
+def reclaimed(before,after,native_before,native_after,science,report,*,retry=False):
+    control_only(before,after)
+    floor=reclamation_floor(before,science)
+    slot=index.raw(index.only(before['producer_epochs'],producer_epoch=1)['producer_slot_id'],16)
+    marker=b'\x01\x31'+slot+index.be(1)
+    wanted={(r['cf'],r['key']):r['value'] for r in native_before['rows']}
+    if not retry:
+        assert wanted['receipts',marker.hex()]==(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
+        for n in range(1,65):
+            key=(b'\x01\x30'+slot+index.be(1)+index.be(n)).hex()
+            assert wanted.pop(('receipts',key))==science['receipts'][n-1].hex()
+        wanted['receipts',marker.hex()]=floor.hex()
+    expected=[dict(cf=cf,key=key,value=value) for (cf,key),value in sorted(wanted.items())]
+    index.exact(native_after['rows'],expected)
+    assert native_after['sequence']==native_before['sequence']+(0 if retry else 65)
+    assert len(native_after['rows'])==765
+    expected_report=dict(format='bigbrotr-ingest-recovery/1',state='initial-reclaimed',
+        dataset_id=index.only(before['datasets'])['dataset_id'][2:],
+        owner_resource_id=index.only(before['producer_epochs'],producer_epoch=1)['owner_resource_id'][2:],
+        producer_slot_id=slot.hex(),producer_epoch='1',retired_requests='64',removed_input_files='0' if retry else '64',
+        native_sequence=str(native_after['sequence']),recovery_basis='closed-producer-floor-v3',native='compacted',
+        owner_release='committed',ready=False)
+    index.exact(report,expected_report)
+    return floor
+
+
+def successor_science(before,after,started,first,wires,dump,store,completed):
+    from types import SimpleNamespace
+    from initial_succession_oracle import successor_manifest
+    from installed_family_science import NetworkScience,decode
+    from installed_archive_catch_up_model import archive_science
+    from transition_replay import native_rows
+    from live_replay import OLD_EVENT
+    new_event=next(e['event'] for e in json.loads((Path(__file__).resolve().parents[3]/'tests/fixtures/acquisition/selector-events.json').read_text())['events'] if e['name']=='included')
+    for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies',
+        'acquisition_progress','producer_epochs','source_streams','allocation_domains','acquisition_gaps','jobs','acquisition_jobs'):
+        assert all(row in after[table] for row in before[table]), 'initial retained PostgreSQL evidence changed: '+table
+    assert all(row in after['owner_epochs'] for row in before['owner_epochs'] if row['role']=='ingest' and row['epoch']==1)
+    assert first['event']==OLD_EVENT
+    wire=source.successor_wire(wires,first['event'],new_event)
+    intent=index.only(after['initial_ingest_successions'])
+    domains=[index.only(after['allocation_domains'],owner_epoch=2,dictionary_kind=k)['allocation_domain'] for k in range(1,10)]
+    source.fresh_successor(before,intent,domains)
+    manifest=successor_manifest(first['manifest'],index.raw(intent['target_incarnation'],16),[index.raw(d,16) for d in domains])
+    digest=source.closure(first['manifest'],intent['producer_slot_id'],1,first['inputs'],first['receipts'],312)
+    handoff=(b'\x01\x0a'+index.raw(intent['producer_slot_id'],16)+index.be(1)+index.be(64)+index.be(312)
+        +bytes.fromhex(digest)+index.be(len(first['manifest']),2)+first['manifest']+index.be(len(manifest),2)+manifest)
+    assert index.raw(intent['previous_manifest'])==first['manifest'] and index.raw(intent['target_manifest'])==manifest
+    assert index.raw(intent['handoff'])==handoff
+    values={(r['cf'],r['key']):r['value'] for r in first['compacted_native']['rows']}
+    ds=index.raw(index.only(after['datasets'])['dataset_id'],16)
+    resource=index.raw(intent['owner_resource_id'],16);slot=index.raw(intent['producer_slot_id'],16)
+    values['default','0101']=manifest.hex()
+    values['default',(b'\x01\x0a'+ds+resource+index.be(1)).hex()]=handoff.hex()
+    values['default',(b'\x01\x02'+ds+bytes(4)+index.be(2)).hex()]=(b'\x01\x02'+index.be(0)).hex()
+    values['receipts',(b'\x01\x31'+slot+index.be(2)).hex()]=(b'\x01\x31'+bytes(24)).hex()
+    model=SimpleNamespace(ds=index.only(after['datasets']),slot=intent['producer_slot_id'],legacy=intent,inputs={},
+        native=dict(rows=native_rows(values),sequence=first['compacted_native']['sequence']+4))
+    plan=dict(epoch=2,topology=1,manifest=manifest,domains=domains)
+    science=NetworkScience(model,plan,acknowledge=True,new_event=new_event,endpoint=source.ENDPOINT)
+    originals=source.originals(store,slot.hex(),2,3)
+    observed={(r['cf'],r['key']):bytes.fromhex(r['value']) for r in dump['rows']}
+    def fact(n): return decode(observed['facts',(b'\x01\x20'+ds+bytes(4)+index.be(2)+index.be(n)).hex()][34:].split(b'\0',1)[1])
+    job,detail,attribution=source.attribution(after,'f4')
+    dictionary=source.clock(fact(1)[4],job['created_at_us'],wire['connected_at_us'])
+    received=decode(originals[1].split(b'\0',1)[1])[3][5][0]
+    resolution=wire['clock_resolution_us'];source.clock(received,wire['sent_at_us']-resolution,wire['closed_at_us']+resolution)
+    recorded=source.clock(fact(6)[4],received,completed)
+    old_received=decode(originals[2].split(b'\0',1)[1])[3][5][0]
+    source.clock(old_received,received,wire['closed_at_us']+resolution)
+    old_recorded=source.clock(fact(10)[4],old_received,completed)
+    science.network(True,dictionary,received,recorded,resolution,(old_received,old_recorded))
+    assert originals==list(science.inputs.values())
+    # The final native closing marker is the existing one-write retirement
+    # predecessor; all expected scientific/index/receipt bytes are independent.
+    science.values['receipts',(b'\x01\x31'+slot+index.be(2)).hex()]=(b'\x02\x31'+index.be(3)*2+index.be(0)+b'\x01').hex()
+    index.exact(dump['rows'],native_rows(science.values))
+    assert dump['sequence']==model.native['sequence']+1
+    owner=index.only(after['owner_epochs'],role='control',epoch=job['owner_epoch'])
+    bindings={2:source.request_binding(new_event,wire,1),3:source.request_binding(first['event'],wire,2)}
+    source.requests(after,2,manifest,originals,list(science.receipts.values()),owner,bindings,attribution)
+    source.successor_progress(after,manifest,science,job,detail,owner,wire,new_event,completed)
+    wanted=archive_science(dict(rows=native_rows(science.values)),live_epoch=2,retained_epoch2=True)
+    wanted.update(manifest=manifest,inputs=originals,receipts=list(science.receipts.values()),event=new_event)
+    return wanted
+
+
+def physical_reclamation_rows(actual,science,generation,schema):
+    rows=index.expected_rows(science,index.raw(generation,16),schema,counts=RECLAIM_COUNTS)
+    for name,columns,_ in schema.FAMILIES:
+        expected=[{key:index.json_value(ty,value) for (key,ty),value in zip(schema.COMMON+columns,row)} for row in rows[name]]
+        index.exact(actual[name],expected)
+    return rows

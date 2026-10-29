@@ -1086,3 +1086,43 @@ The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the
 foundation runner and does not qualify the remaining data path or release.
+
+
+`p01-first-launch-closed-reclamation` extends the maintained finite64 case using
+the same candidate/source/evidence and exact-source `--native-observer-build`
+arguments. It first executes the existing genuine64-request signed fixture and
+independent829-row native/556-row Index oracle. It then requires explicit initial
+closure/retirement, open-producer/corrupt-inventory refusals, actual final proof
+COMMIT loss before forwarding and after server completion with no native/unlink
+change, positive product reclamation before every successor intent, a fresh
+zero-write retry and compacted restart, an incompatible older typed-checkpoint
+restore refusal on an isolated copy, and actual retained-Index successor
+activation. A later reclamation attempt under successor publication authority
+must refuse. The successor's genuine request1 is cumulative request65 and uses
+freed spool capacity. Complete native/typed science, finite Index/Archive catch-up
+and retries, signed history on a fresh process and exact353-byte first-event
+export complete the profile. The independent terminal expectations are67 Archive
+batches/snapshot68/frontier5,322 scientific rows and572 raw Index rows at revision68.
+The live Index gate requires current publication and the complete authenticated
+source vector `[epoch1=312, epoch2=10]`. The original batch/grant/operation/client
+and30s readiness bounds remain; Ready65 is not required or claimed. The native
+kernel controls separately cover stale native custody/sequence/inventory, one
+observed unlink followed by cancellation and fresh proof,
+uncertain native state and corrupt residuals. These declared scenarios are NOT_RUN
+until their actual root-owned native/build/installed receipts exist; portable
+controls alone cannot qualify reclamation, fsync or physical power failure.
+
+```sh
+python3 -B tests/acceptance/run.py p01-first-launch-closed-reclamation \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-build \
+  --evidence /absolute/fresh-evidence
+```
+
+The observer build must be supplied separately using the maintained
+`experiments/ingest-registry/build_probe.py --build BUILD --example ingest_bootstrap_probe`
+recipe over the exact candidate's controlled parent release build. Its source,
+toolchain, parent build receipt and binary hashes must match the candidate; an
+older observer or the product's decoded reclamation report cannot substitute
+for the raw139-byte floor and exact829→765 native-row comparison.
