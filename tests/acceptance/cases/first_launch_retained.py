@@ -1,9 +1,11 @@
 """Installed finite64 saturation with the independently parked Archive owner."""
 import errno
 import json
+import os
 from pathlib import Path
 import shutil
 import socket
+import stat
 import time
 
 from cases.first_launch import MissingPrerequisite, digest, load, require, save
@@ -38,6 +40,36 @@ def gate(value, now):
         'closed retained-request client gate')
     require(value['started_ns']/1e9<=now<value['deadline_ns']/1e9,'retained-request client deadline expired')
     return value['deadline_ns']/1e9
+
+
+def compacted_spool_sizes(directory, census, observe):
+    """Bind actual file lengths to the unchanged shared metadata/hash census."""
+    require(len(census)==3 and all(Path(name).name==name
+        and '-0000000000000002-' in name for name in census),
+        'successor did not reuse the freed shared spool')
+    def sizes():
+        root=directory.lstat()
+        require(stat.S_ISDIR(root.st_mode) and root.st_uid==os.geteuid(),
+            'shared spool directory ownership differs')
+        require({p.name for p in directory.iterdir()}==set(census),
+            'shared spool contents differ from census')
+        result={}
+        for name,expected in census.items():
+            metadata=(directory/name).lstat()
+            require(stat.S_ISREG(metadata.st_mode) and metadata.st_uid==os.geteuid(),
+                'shared spool input is not an owned regular file')
+            identity=dict(mode=stat.S_IMODE(metadata.st_mode),inode=metadata.st_ino,
+                device=metadata.st_dev,links=metadata.st_nlink)
+            require(identity=={key:expected[key] for key in identity},
+                'shared spool file identity differs from census')
+            result[name]=metadata.st_size
+        return result
+    before=sizes()
+    total=sum(before.values())
+    require(total<=32*1024*1024,'successor retained inputs exceed shared32MiB spool')
+    require(observe(directory)==census,'shared spool census changed during size observation')
+    require(sizes()==before,'shared spool file sizes changed during census recheck')
+    return dict(total_bytes=total,files=before,shared_limit_bytes=32*1024*1024)
 
 
 class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
@@ -538,9 +570,9 @@ class ReclamationRuntime(RetainedRuntime):
             initial=index.only(admitted['producer_epochs'],producer_epoch=1)
             current=index.only(admitted['producer_epochs'],producer_epoch=2)
             require(initial['reserved_through_request']==64 and current['reserved_through_request']==3,'cumulative request65 must exist')
-            files=self.files(self.state/'data/ingest/producer-inputs-v1')
-            require(len(files)==3 and sum(v['bytes'] for v in files.values())<=32*1024*1024
-                and all('-0000000000000002-' in name for name in files),'successor did not reuse the freed shared spool')
+            directory=self.state/'data/ingest/producer-inputs-v1'
+            files=self.files(directory)
+            save(output/'admitted-input-bytes.json',compacted_spool_sizes(directory,files,self.files))
             require(self.inspect(entry)['State']['Running'],'successor owner exited before submitted release')
             self.phase_guard(submitted_deadline,client)
             (home/'submitted.continue').write_text('three genuine new requests checked; independent Index phase follows\n')

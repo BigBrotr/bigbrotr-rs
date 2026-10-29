@@ -516,6 +516,59 @@ class RetainedBoundaryControls(unittest.TestCase):
 
 
 class ClosedReclamationControls(unittest.TestCase):
+    def test_shared_spool_size_uses_real_shared_metadata_at_exact32MiB(self):
+        from installed_archive import files
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)
+            sizes=[32*1024*1024-2,1,1]
+            for n,size in enumerate(sizes,1):
+                with (directory/f'producer-0000000000000002-{n}.inputs').open('wb') as output:
+                    output.truncate(size)
+            census=files(directory)
+            self.assertTrue(all(set(row)=={'mode','inode','device','links','sha256'} for row in census.values()))
+            observed=case.compacted_spool_sizes(directory,census,files)
+            self.assertEqual(observed['total_bytes'],32*1024*1024)
+            self.assertEqual(sorted(observed['files'].values()),sorted(sizes))
+            self.assertGreater(max(observed['files'].values()),65536)
+            with next(directory.iterdir()).open('ab') as output:output.write(b'x')
+            with self.assertRaisesRegex(ValueError,'exceed shared32MiB'):
+                case.compacted_spool_sizes(directory,files(directory),files)
+
+    def test_shared_spool_size_refuses_changed_identity_and_uncensused_files(self):
+        from installed_archive import files
+        for change in ('identity','uncensused','symlink','epoch','count'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)
+                for n in range(3):(directory/f'producer-0000000000000002-{n}.inputs').write_bytes(b'x')
+                census=files(directory);path=next(directory.iterdir())
+                if change=='identity':
+                    replacement=directory/'replacement';replacement.write_bytes(b'x');replacement.replace(path)
+                elif change=='uncensused':
+                    (directory/'manager.secret').write_bytes(b'x')
+                    self.assertEqual(files(directory),census)
+                elif change=='symlink':
+                    path.unlink();path.symlink_to(next(p for p in directory.iterdir() if p!=path))
+                elif change=='epoch':census={name.replace('-0000000000000002-','-0000000000000001-'):row for name,row in census.items()}
+                else:census.pop(path.name)
+                with self.assertRaises(ValueError):case.compacted_spool_sizes(directory,census,files)
+
+    def test_shared_spool_size_rechecks_hashes_and_sizes_after_observation(self):
+        from installed_archive import files
+        for change in ('hash','size'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)
+                for n in range(3):(directory/f'producer-0000000000000002-{n}.inputs').write_bytes(b'x')
+                census=files(directory);path=next(directory.iterdir())
+                def observe(root):
+                    if change=='hash':
+                        path.write_bytes(b'y')
+                        return files(root)
+                    captured=files(root)
+                    with path.open('ab') as output:output.write(b'y')
+                    return captured
+                with self.assertRaisesRegex(ValueError,'census changed|sizes changed'):
+                    case.compacted_spool_sizes(directory,census,observe)
+
     def claimed_control(self,before,*,failed=False):
         after=copy.deepcopy(before)
         prior=max((r for r in before['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
