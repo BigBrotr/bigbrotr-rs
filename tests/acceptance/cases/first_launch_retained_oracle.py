@@ -471,15 +471,55 @@ def successor_science(before,after,bridge,first,wires,dump,store,completed):
 
 
 ARCHIVE_PUBLISHED_ORDINALS=(1,2,*range(4,69))
-ARCHIVE_SCHEDULES={'uninterrupted':(3,65),'unbound-publication-loss':(4,64)}
+GROUPED_PUBLISHED_ORDINALS=(1,2,*range(5,70))
+GROUPED_IMPORTED_ORDINALS=(1,2,*range(4,70))
+ARCHIVE_SCHEDULES={'uninterrupted':(3,65),'unbound-publication-loss':(4,64),
+    'grouped-publication-loss':(5,64)}
+# These sets describe three declared cuts, never observed inventory lengths.
+ARCHIVE_FAULT_PHASES={
+    'unique':(4,'after-complete',(1,2,4),(1,2,4)),
+    'grouped-first':(4,'before-forward',(1,2),(1,2,4)),
+    'grouped-second':(5,'after-complete',(1,2,5),(1,2,4,5)),
+}
 
 
-def archive_file_membership(catalog,science,files,original):
+def failed_archive_output(catalog,files,original):
+    """Anchor failed B4 output after exclusion; empty is a valid observation."""
+    failed={name:value for name,value in files.items() if name not in original}
+    for name,item in failed.items():
+        path=PurePosixPath(name)
+        assert not path.is_absolute() and '..' not in path.parts
+        assert re.fullmatch(r'main/[a-z_]+/prepared-[0-9a-f]{32}(?:/data\.parquet)?',name)
+        assert item['mode']==(0o700 if item['sha256'] is None else 0o600)
+        assert type(item['inode']) is int and item['inode']>0
+        assert type(item['device']) is int and item['device']>=0
+        if item['sha256'] is not None:
+            assert item['links']==1 and re.fullmatch('[0-9a-f]{64}',item['sha256'])
+    failed_output_preserved(catalog,files,failed)
+    return failed
+
+
+def failed_output_preserved(catalog,files,failed):
+    tables={r['table_id']:r for r in catalog['public.ducklake_table']}
+    registered=set()
+    for row in catalog['public.ducklake_data_file']:
+        table=tables[row['table_id']]
+        schema=index.only(catalog['public.ducklake_schema'],schema_id=table['schema_id'])
+        path=PurePosixPath(schema['path'])/table['path']/row['path']
+        registered.add(str(path));registered.add(str(path.parent))
+    assert not registered.intersection(failed),'failed output became registered science'
+    for name,item in failed.items():index.exact(files[name],item)
+
+
+def archive_file_membership(catalog,science,files,original,*,failed_output=None):
     """Every native batch has exactly its literal family/receipt files."""
     tables={r['table_name']:r for r in catalog['public.ducklake_table']}
     assert set(tables)==set(science['tables'])|{'archive_commits'}
     records=catalog['public.ducklake_data_file']
     paths=set(original)
+    if failed_output is not None:
+        failed_output_preserved(catalog,files,failed_output)
+        paths.update(failed_output)
     assert len({r['data_file_id'] for r in records})==len(records)
     assert sorted(r['snapshot_id'] for r in catalog['public.ducklake_snapshot'])==list(range(len(science['batches'])+2))
     expected_files=0
@@ -513,12 +553,13 @@ def archive_file_membership(catalog,science,files,original):
         assert current['links']==old['links'] if old['sha256'] is not None else current['links']>=old['links']
 
 
-def replacement_custody(state,science,records,files,initialization):
-    """Complete A3/B4 inputs and journals, with their own historical identity."""
+def replacement_custody(state,science,records,files,initialization,*,ordinals=(3,4)):
+    """Complete original/group inputs and journals, with each historical identity."""
     initial=json.loads(bytes.fromhex(initialization))
     binding=hashlib.sha256(bytes.fromhex(records['coordinator.json'])).digest()
     assert binding.hex()==index.raw(index.only(state['archive_attempts'],ordinal=3)['coordinator_binding_sha256'],32).hex()
-    for ordinal in (3,4):
+    assert ordinals in ((3,4),(3,4,5))
+    for ordinal in ordinals:
         row=index.only(state['archive_attempts'],ordinal=ordinal);batch=science['batches'][2]
         identity=index.raw(row['attempt_id'],16).hex();lock=files[identity+'/custody.lock']
         assert row['coordinator_binding_sha256']=='\\x'+binding.hex()
@@ -548,11 +589,11 @@ def unbound_catalog_config(text):
     return direct
 
 
-def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate):
+def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate,mode='after-complete'):
     """Exact route/pins plus actual child/proxy/reader/backend termination."""
     from installed_archive_catch_up_fault_oracle import wire_checked,ERRORS
     wire=value['wire'];assert wire['status']=='OBSERVED_CLOSED_AND_JOINED'
-    wire_checked(wire,'publication',source,None,local_proxy=local_proxy)
+    wire_checked(wire,'publication',source,None,local_proxy=local_proxy,mode=mode)
     expected=unbound_catalog_config(value['direct_config'])
     routed=tomllib.loads(value['routed_config'])
     expected['postgres']['catalog']['endpoint']='127.0.0.1:'+str(wire['ready']['port'])
@@ -572,18 +613,20 @@ def unbound_fault_process(value,source,local_proxy,*,source_pins,candidate):
     assert value['candidate_before']==value['candidate_after']==candidate
 
 
-def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_after,census,science):
-    """Native B4 exists while A3 stays absent and current frontier stays2."""
+def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_after,census,science,*,phase='unique'):
+    """Literal native/guard inventories at each cut; current frontier stays2."""
     from cases.first_launch_archive_outage_oracle import archived_prefix
+    ordinal,mode,published,imported_ordinals=ARCHIVE_FAULT_PHASES[phase]
     third=archived_prefix(prefix,parked)
-    archived_prefix(prefix,before)
-    assert sorted(r['ordinal'] for r in after['archive_attempts'])==[1,2,3,4]
+    archived_prefix(prefix,dict(before,archive_attempts=[r for r in before['archive_attempts'] if r['ordinal']<=3]))
+    assert sorted(r['ordinal'] for r in before['archive_attempts'])==list(range(1,ordinal))
+    assert sorted(r['ordinal'] for r in after['archive_attempts'])==list(range(1,ordinal+1))
     for row in before['archive_attempts']:
         index.exact(row,index.only(after['archive_attempts'],ordinal=row['ordinal']))
     view=dict(after,archive_attempts=before['archive_attempts'])
     owner=control_only(before,view,claim='failed')
-    replacement=index.only(after['archive_attempts'],ordinal=4)
-    expected=dict(third,ordinal=4,expected_predecessor=3,attempt_id=replacement['attempt_id'],
+    replacement=index.only(after['archive_attempts'],ordinal=ordinal)
+    expected=dict(third,ordinal=ordinal,expected_predecessor=ordinal-1,attempt_id=replacement['attempt_id'],
         worker_incarnation=replacement['worker_incarnation'],coordinator_incarnation=owner['process_incarnation'],
         issuer_resource=owner['resource_id'],issuer_epoch=owner['epoch'],issuer_incarnation=owner['process_incarnation'],
         issued_at_us=replacement['issued_at_us'],xmin=replacement['xmin'])
@@ -595,17 +638,18 @@ def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_afte
     assert replacement['coordinator_incarnation']!=third['coordinator_incarnation']
     source.clock(replacement['issued_at_us'],owner['acquired_at_us'],owner['lease_expires_at_us'])
     assert replacement['xmin'] not in {r['xmin'] for rows in before.values() for r in rows if 'xmin' in r}
-    selected=dict(batches=science['batches'][:3],tables={name:[r for r in rows
-        if r['source_record_id']['owner_epoch']==1 and r['source_record_id']['sequence']<=7]
+    count,cut=(2,3) if phase=='grouped-first' else (3,7)
+    selected=dict(batches=science['batches'][:count],tables={name:[r for r in rows
+        if r['source_record_id']['owner_epoch']==1 and r['source_record_id']['sequence']<=cut]
         for name,rows in science['tables'].items()})
-    assert [b['topology'] for b in selected['batches']]==[0,0,0]
-    receipts=source.publication_receipts(after,selected,published_ordinals=(1,2,4))
+    assert [b['topology'] for b in selected['batches']]==[0]*count
+    receipts=source.publication_receipts(after,selected,published_ordinals=published)
     index.exact(census,dict(format='bigbrotr-independent-installed-archive-read/1',
         tables={**selected['tables'],'archive_commits':receipts}))
     imports=catalog_after['bigbrotr_archive.attempts']
-    assert sorted(r['ordinal'] for r in imports)==[1,2,4]
+    assert sorted(r['ordinal'] for r in imports)==list(imported_ordinals)
     assert all(r in imports for r in catalog_before['bigbrotr_archive.attempts'])
-    imported=index.only(imports,ordinal=4)
+    imported=index.only(imports,ordinal=ordinal)
     fields=('ordinal','attempt_id','coordinator_incarnation','worker_incarnation','topology_generation','batch_digest')
     index.exact(imported,dict({k:replacement[k] for k in fields},login_name='bb_archive_'+replacement['attempt_id'][2:],
         login_oid=imported['login_oid'],xmin=imported['xmin']))
@@ -613,9 +657,10 @@ def unbound_archive_fault(prefix,parked,before,after,catalog_before,catalog_afte
     assert str(imported['xmin']).isdecimal() and int(imported['xmin'])>0
     catalog_owner=index.only(catalog_after['bigbrotr_archive.owner'])
     index.exact(catalog_owner,dict(index.only(catalog_before['bigbrotr_archive.owner']),
-        enabled=True,ordinal=4,xmin=catalog_owner['xmin']))
+        enabled=True,ordinal=ordinal,xmin=catalog_owner['xmin']))
     mutable={'bigbrotr_archive.attempts','bigbrotr_archive.owner',*[f'public.ducklake_{name}' for name in (
         'snapshot','snapshot_changes','data_file','file_column_stats','table_stats','table_column_stats')]}
+    if phase=='grouped-first':mutable={'bigbrotr_archive.attempts','bigbrotr_archive.owner'}
     assert set(catalog_before)==set(catalog_after)
     for table in catalog_before.keys()-mutable:index.exact(catalog_before[table],catalog_after[table])
     for table in ('snapshot','snapshot_changes','data_file','file_column_stats'):
@@ -653,6 +698,10 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     from cases.first_launch_archive_outage_oracle import archived_prefix,ARCHIVE_TABLES
     from installed_archive_catch_up_oracle import cut_digest
     issued_before,new_attempts=ARCHIVE_SCHEDULES[schedule]
+    grouped=schedule=='grouped-publication-loss'
+    published=GROUPED_PUBLISHED_ORDINALS if grouped else ARCHIVE_PUBLISHED_ORDINALS
+    imported_ordinals=GROUPED_IMPORTED_ORDINALS if grouped else ARCHIVE_PUBLISHED_ORDINALS
+    issued_total=69 if grouped else 68
     third=archived_prefix(prefix,parked)
     consumer=index.only(before['consumers'],consumer_role='archive');catalog=consumer['consumer_id']
     index.exact(consumer,index.only(prefix['consumers'],consumer_role='archive'))
@@ -666,20 +715,21 @@ def compacted_archive(prefix,parked,before,after,report,science,catalog_before,c
     for old in before['archive_attempts']:
         index.exact(index.only(after['archive_attempts'],ordinal=old['ordinal']),old)
     index.exact(sorted(r['ordinal'] for r in before['archive_attempts']),list(range(1,issued_before+1)))
-    index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,69)))
+    index.exact(sorted(r['ordinal'] for r in after['archive_attempts']),list(range(1,issued_total+1)))
     topology.preserve_consumer_identity(before,after,catalog)
-    receipts=source.publication_receipts(after,science,published_ordinals=ARCHIVE_PUBLISHED_ORDINALS)
+    receipts=source.publication_receipts(after,science,published_ordinals=published)
     imports=catalog_after['bigbrotr_archive.attempts']
-    index.exact(sorted(r['ordinal'] for r in imports),list(ARCHIVE_PUBLISHED_ORDINALS))
+    index.exact(sorted(r['ordinal'] for r in imports),list(imported_ordinals))
     assert all(row in imports for row in catalog_before['bigbrotr_archive.attempts'])
     for row in imports:
         attempt=index.only(after['archive_attempts'],ordinal=row['ordinal'])
         assert row['attempt_id']!=third['attempt_id'] and row['worker_incarnation']!=third['worker_incarnation']
         for field in ('attempt_id','batch_digest','topology_generation','coordinator_incarnation','worker_incarnation'):
             index.exact(row[field],attempt[field])
-    assert not [r for r in after['archive_frontier_batches'] if r['attempt_id']==third['attempt_id']]
+    failed=[index.only(after['archive_attempts'],ordinal=n)['attempt_id'] for n in ((3,4) if grouped else (3,))]
+    assert not [r for r in after['archive_frontier_batches'] if r['attempt_id'] in failed]
     owner=index.only(catalog_after['bigbrotr_archive.owner'])
-    index.exact([owner['enabled'],owner['ordinal']],[False,68])
+    index.exact([owner['enabled'],owner['ordinal']],[False,issued_total])
     assert index.only(after['consumers'],consumer_id=catalog)['current_revision']==4
     assert index.only(after['consumers'],consumer_id=catalog)['current_topology_generation']==1
     index.exact(sorted(r['frontier_revision'] for r in after['consumer_frontier_revisions'] if r['consumer_id']==catalog),[1,2,3,4])

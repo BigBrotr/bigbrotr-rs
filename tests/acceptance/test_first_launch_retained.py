@@ -199,22 +199,24 @@ def retained_successor_fixture(root):
 
 
 
-def compacted_archive_fixture(science):
+def compacted_archive_fixture(science,*,schedule='uninterrupted'):
     """Independent closed-profile SQL/import history and simulated C API rows."""
     from installed_archive_catch_up_oracle import cut_digest
     ds='\\x'+science['tables']['events'][0]['source_record_id']['dataset_id'].lower();catalog='\\x'+'55'*16
     owner=dict(role='control',state='active',resource_id='\\x'+'a1'*16,epoch=1,
         process_incarnation='\\x'+'a2'*16,acquired_at_us=100,lease_expires_at_us=10000)
     attempts=[];receipts=[]
-    for ordinal in range(1,69):
-        batch=science['batches'][ordinal-1 if ordinal<=3 else ordinal-2]
+    grouped=schedule=='grouped-publication-loss'
+    issued_before={'uninterrupted':3,'unbound-publication-loss':4,'grouped-publication-loss':5}[schedule]
+    for ordinal in range(1,70 if grouped else 69):
+        batch=science['batches'][ordinal-1 if ordinal<=3 else 2 if grouped and ordinal==4 else ordinal-(3 if grouped else 2)]
         attempts.append(dict(ordinal=ordinal,attempt_id='\\x'+f'{ordinal:032x}',worker_incarnation='\\x'+f'{ordinal+100:032x}',
             coordinator_incarnation=owner['process_incarnation'],coordinator_binding_sha256='\\x'+'dd'*32,
             dataset_id=ds,catalog_id=catalog,expected_predecessor=ordinal-1,schema_version=1,
             topology_generation=batch['topology'],batch_digest='\\x'+batch['archive_digest'],persistence_protocol=1,
             issuer_role='control',issuer_resource=owner['resource_id'],issuer_epoch=1,
             issuer_incarnation=owner['process_incarnation'],issued_at_us=200+ordinal,xmin=str(ordinal)))
-        if ordinal!=3:
+        if ordinal not in ((3,4) if grouped else (3,)):
             receipts.append(dict(dataset_id=ds[2:].upper(),schema_version=1,topology_generation=batch['topology'],
                 batch_digest=batch['archive_digest'].upper(),record_count=batch['last']-batch['first']+1,
                 input_ranges=[dict(shard_id=0,owner_epoch=batch['epoch'],first_sequence=batch['first'],last_sequence=batch['last'])],
@@ -237,16 +239,17 @@ def compacted_archive_fixture(science):
                 attestation_kind='archive-batch' if last else None,attestation_digest='\\x'+last['batch_digest'].lower() if last else None))
     append(prefix,1,0,2,[(1,2)],receipts[:1]);append(prefix,2,0,3,[(1,3)],receipts[:2])
     parked=copy.deepcopy(prefix);parked['archive_attempts'].append(attempts[2])
-    before=copy.deepcopy(parked);after=copy.deepcopy(before);after['archive_attempts']=attempts
+    before=copy.deepcopy(parked);before['archive_attempts']=attempts[:issued_before]
+    after=copy.deepcopy(before);after['archive_attempts']=attempts
     after['consumers'][0].update(current_revision=4,current_topology_generation=1,xmin='4')
     append(after,3,1,68,[(1,3),(2,0)],receipts[:2]);append(after,4,1,68,[(1,312),(2,10)],receipts)
     imported=lambda row:{k:row[k] for k in ('ordinal','attempt_id','batch_digest','topology_generation','worker_incarnation','coordinator_incarnation','xmin')}
-    catalog_before={'bigbrotr_archive.attempts':[imported(r) for r in attempts[:2]]}
+    catalog_before={'bigbrotr_archive.attempts':[imported(r) for r in attempts[:issued_before] if r['ordinal']!=3]}
     catalog_after={'bigbrotr_archive.attempts':[imported(r) for r in attempts if r['ordinal']!=3],
-        'bigbrotr_archive.owner':[dict(enabled=False,ordinal=68)]}
+        'bigbrotr_archive.owner':[dict(enabled=False,ordinal=69 if grouped else 68)]}
     final=after['archive_frontier_snapshots'][-1]
     report=dict(format='bigbrotr-archive-catch-up/1',dataset_id=ds[2:],catalog_id=catalog[2:],terminal_epoch=2,
-        issued_attempts_before=3,new_attempts=65,frontier_revision=4,snapshot_id=68,operation_id=list(index.raw(final['operation_id'])),
+        issued_attempts_before=issued_before,new_attempts=65 if schedule=='uninterrupted' else 64,frontier_revision=4,snapshot_id=68,operation_id=list(index.raw(final['operation_id'])),
         request_digest=final['request_digest'][2:],family_counts=[73,62,62,62,63],new_frontier_revisions=2,
         recovery_basis='closed-producer-floor-v3',compacted_requests='64')
     census=dict(format='bigbrotr-independent-installed-archive-read/1',tables={**copy.deepcopy(science['tables']),'archive_commits':receipts})
