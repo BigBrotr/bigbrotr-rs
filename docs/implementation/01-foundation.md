@@ -489,8 +489,13 @@ and queryable with truthful role readiness, without implicit public publishing.
   export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
   exact353-byte signed export and unchanged catalog/files pass. This includes an
   ordinary Control restart; successor Ingest/resend is now qualified by Step4,
-  while continuous enabled-Index successor ownership remains open. The finite
-  same-installation continuation is qualified below. See the laboratory inventory's `implementation_m1_first_launch_20261026`
+  while continuous enabled-Index successor ownership remains open under
+  P02-T06 Steps4/7 and this step's full role-composition consumer. Its active
+  source/bridge authority and complete two-stream readiness need their own real
+  proof; finite terminal recovery does not supply it. M1 requires the relevant
+  first-event/restart slices, not that new live composition or all of P02.
+  Next close Steps6/7 on the declared initial profile. The finite same-installation
+  continuation is qualified below. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
   The later fixture `1841d79` completes five installed exports with accepted 256 MiB
   export policy and a fresh 256 MiB/no-swap observer+Serve+CLI/native cgroup
@@ -548,8 +553,8 @@ and queryable with truthful role readiness, without implicit public publishing.
   affected epoch1 restart and both publication-COMMIT directions. The report's
   `topology_continuation` owns exact evidence, original grant/HTTP429 failures
   and critical reviews. General query uncertainty, broader topology recovery,
-  continuous successor ownership/current-selection readiness and Step5's separate
-  actual Index-dependency stoppage remain open; this does not complete M1.
+  continuous successor ownership/current-selection readiness remain open; the
+  separately qualified Step5 outages below do not complete M1.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,
@@ -567,7 +572,7 @@ and queryable with truthful role readiness, without implicit public publishing.
   `5767c7fc`/`7da70e11`; reports and original failures are linked by inventory key
   `implementation_first_launch_maintained_20261026.restart_extension`.
   This does not claim a new native RocksDB census, Index, outage or capacity proof.
-- [ ] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded
+- [x] **Step 5:** Stop archive/index dependencies separately: report actual lag and bounded
   pending behavior while preserving already acknowledged data.
   The maintained `p01-first-launch-archive-outage` now passes all seven installed
   stages on product1ce8c1e2/acceptance8dcce13f: same-owner source12/Index4 continues
@@ -599,11 +604,18 @@ and queryable with truthful role readiness, without implicit public publishing.
   custody; all82 Control tables and acknowledged data remain exact. The report's
   `retained_history_boundary` preserves R1/R3 Code202 and R2's connection-cap
   fixture failure. R4's prefix trace is diagnostic only, not remote exclusion.
-  This closes the finite64 Archive-outage gate. Step5 remains open for a separate
-  actual Index-dependency stoppage with truthful lag/pending and preserved
-  acknowledged data; existing ClickHouse pause/capacity and physical-conflict
-  negatives have narrower scopes. Keep Control independent when stopping an
-  Archive/Index dependency. Dynamic pending-byte hysteresis/GC and broad capacity
+  This closes the finite64 Archive-outage gate. The separate maintained
+  `p01-first-launch-index-outage` now passes all eight stages on product/assembly
+  `99b7d24b` and acceptance `abf2d050`: actual owned ClickHouse stop and both
+  endpoint refusals precede further admission. Same-owner Control/Sync/Archive
+  reach source12/Archive4 while Index truthfully remains unavailable at2/cut3,
+  lag9, with immutable plan3[4..7]/ten prepared chunks and no plan4. All82 Control
+  tables, original inputs and49 exact native rows preserve ACK4/retired0; the
+  original353-byte signed history/export passes while ClickHouse stays stopped.
+  The acknowledged pre-outage prefix is three dictionaries; the signed event
+  arrives during the outage. This completes the separate-dependency composition,
+  not backend restoration or automatic recovery. Keep Control independent when
+  stopping an Archive/Index dependency. Dynamic pending-byte hysteresis/GC and broad capacity
   retain P02-T02/T09 and P08 ownership, not a blanket prerequisite to current M1.
   Evaluated readiness limitation: the initial Index owner schedules separate
   dispatch and result-consumption turns at250ms for each historical plan. At64
