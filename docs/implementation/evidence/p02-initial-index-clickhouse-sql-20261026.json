@@ -2645,7 +2645,7 @@
             "custody": "All18containers stopped0/PID0/noOOM; runner/two actual clients/783commandPIDs absent,28pins/exactbridgeempty/errors[]. Auditor operator initially supplied incorrect starttick argument and refused; rerun reads recorded actual capsule exactly, no predicate/source/result changes."
           },
           "initial_stop_correction": {
-            "status": "NATIVE_BUILD_AND_FOCUSED_REAL_PG_KNOWN_HELD_PASS_FULLCASE_SPACE_PREFLIGHT",
+            "status": "NATIVE_AND_FOCUSED_REAL_PG_KNOWN_HELD_PASS_FULLCASE_R2_RUNNING",
             "critical_contract": ".research/closed-reclamation-20261029/.research/efd8-initial-stop-diagnosis-20261029/critical-contract.json",
             "sha256": "45384bf1743057dc4e339592a4623f004f76900797592503da74679bbaac3127",
             "owner": "ci_followthrough_sol, author WT work/closed-reclamation after8e43; root sole launch/integration",
@@ -2705,7 +2705,7 @@
               "source": "Merged reviewed baseline correction5fbf into authorf7 without product changes; all8compiledobjects remainf5. Assembly remainsf7/candidate24d6887f, intentionally distinct from executing acceptance3eef.",
               "gate_review_sha256": "ff4cb2fef5b5f64d11deaf3f2eefc93f429d47370b265092673680267e24eee4",
               "python": "250PASS before criticalcorrections;6focusedPASS+245unchanged after source/query binding changes; initial249PASS1FAIL stalefixture log preserved",
-              "publication": "Exact-SHA pending-work push f7 succeeded after source exposure scan5commits/19blobs/706598bytes/0findings; no main integration or runtime qualification claim.",
+              "publication": "Exact-SHA pending-work backup3eef succeeded (session46327/exit0), observed2026-10-29T17:04:03UTC. Incremental newly reachable3commits/5blobs/191720bytes produced0findings/sensitive/raw/LFS candidates; reviewd00c4835, .research/ci-publication-20261026/source-reclamation-3eef0bf6-20261029. Main remains5cc; no Actions runs for3eef, no main integration or fullcase qualification implied.",
               "baseline_review_sha256": "09b70093b142e02d3da4697d8fea946dd9839efac60096af2b1f06c38ddf5526"
             },
             "focused_pg": {
@@ -2813,9 +2813,46 @@
             "fullcase_preflight": {
               "status": "NOT_RUN_SPACE_GUARD_REFUSED_BEFORE_ALLOCATION",
               "free_bytes_observed": 69297733632,
-              "required_floor_bytes": 69793218560,
+              "required_floor_bytes": 71940702208,
               "resources_created": false,
-              "scope": "No fullcase session/container/database/evidence directory exists forf5 yet. Margin unchanged. Root/Sol inspect only115cache for a safe reconstructible bounded retirement lot, preserving data/source/log/proof and original4ELFs."
+              "scope": "Initial root guard refused before launch; its65GiB assumption omitted Index-specific2GiB ClickHouse allowance. Maintained runner enforces67GiB; neither threshold nor product limits changed."
+            },
+            "fullcase_preflight_after_cache_lot": {
+              "status": "NOT_RUN_ENVIRONMENT_SPACE_PREFLIGHT",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r1",
+              "exit_code": 2,
+              "free_bytes_observed": 69956186112,
+              "required_floor_bytes": 71940702208,
+              "counts": {
+                "collected": 11,
+                "executed": 1,
+                "failed": 0,
+                "skipped": 0,
+                "not_run": 10
+              },
+              "runtime_allocated": false,
+              "classification": "Environment capacity. Maintained cheap prerequisite refused before any image/container/database. Root used base65GiB instead of Index67GiB. Preserve NOT_RUN; recover additional owned unused reconstructible cache.",
+              "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r1/root-preflight-terminal.json",
+              "terminal_sha256": "f573cdae20237500e705a58d524a2a8f43ed55693879a1e9a674e3bf86441ad8"
+            },
+            "fullcase_r2": {
+              "status": "RUNNING_NOT_QUALIFIED",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2",
+              "session": 11073,
+              "runner": {
+                "pid": 644303,
+                "start_ticks": 2054671
+              },
+              "candidate_manifest_sha256": "24d6887f24cfb90a6728325be124209833f6b5f46a43f97ba271395dfd2dfbbb",
+              "acceptance": "3eef0bf69f78f8d53ab6fc061eb781fd44e3674b",
+              "product": "f5aad2c1114bbd6c4b84d4141153ae27e65c5af7",
+              "assembly": "f7b1116de95b6d7bef5f4db778d85eb1c6b218b2",
+              "free_bytes_before": 72064016384,
+              "required_floor_bytes": 71940702208,
+              "space_retirement": "docs/research/laboratory-inventory.json#implementation_index_foundation_20261026.resume_20261028.closed_reclamation.cache115_compiler_intermediate_retirement",
+              "scope": "Fresh complete closed reclamation after maintained67GiB floor restored. R1 NOT_RUN preserved; identical product/source/candidate/nativeobserver/limits.",
+              "launch_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2-session.json",
+              "launch_capsule_sha256": "530d0348c1da7d0dd1f3a1d08a9aef4184b244eadc8035afa53b22eadbb36dff"
             }
           },
           "unbound_replacement_followup": {

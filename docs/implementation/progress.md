@@ -8,7 +8,7 @@ package publication or production deployment is authorized.
 ## Current source and integration
 
 Public main remains `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before
-this checkpoint is `2728e504`, twelve commits ahead. Only this checkpoint, the
+this checkpoint is `1b6af3d9`, thirteen commits ahead. Only this checkpoint, the
 existing Index report and inventory are pending changes. No reclamation code or
 fixture is integrated on main. Keep the next main integration/push around the
 complete bounded capability and its required real hosted run.
@@ -25,8 +25,8 @@ Frozen acceptance: `3eef0bf69f78f8d53ab6fc061eb781fd44e3674b`, worktree
 `.research/closed-reclamation-20261029` / `work/closed-reclamation` is clean at3eef.
 It merges reviewed baseline5fbf into reviewed gate/source binding f7; all eight
 compiled-input objects remain productf5. Candidate assembly remainsf7, distinct
-from executing acceptance3eef. Public pending-work backup is throughf7 after an
-incremental zero-finding exposure scan; the baseline correction3eef is local.
+from executing acceptance3eef. Public pending-work backup now includes3eef after
+an incremental zero-finding exposure scan (three commits/five blobs/191720bytes).
 No product code is integrated on main and no new build is needed for verifier-only
 changes. All earlier frozen sources and original failures remain preserved.
 
@@ -81,7 +81,8 @@ that history into this checkpoint.
 
 ## Processes, custody and next action
 
-No local development/test runtime is active. Native74929, parent2817 and
+Root session11073 runs fresh fullcase `acceptance-closed-r2` (runner644303,
+start2054671), not yet qualified. Native74929, parent2817 and
 observer46209 and both focused PG schedules are reaped/audited. Original known
 PG66320 remains FAIL with terminal53057d2c and its protected stores/logs retained.
 The external current parent is
@@ -90,10 +91,22 @@ The external current parent is
 `acceptance-renewal-held-r1` retain distinct evidence. The [inventory](../research/laboratory-inventory.json)
 owns detailed resource custody.
 
-Fullcase launch was refused **before allocation**: free69,297,733,632B is below
-the unchanged65GiB floor (69,793,218,560B). No f5 fullcase session/database/container
-or evidence directory exists. Sol inspects only the owned115compiler cache for
-one safe reconstructible retirement lot; no deletion/build/engine is active.
+FullcaseR1 is **NOT_RUN**: the maintained cheap preflight requires **67GiB**
+(65GiB reserve plus2GiB ClickHouse allowance); root had considered only65GiB.
+No runtime was allocated or threshold changed. Original result/terminalf573cdae
+are retained. The Index report owns exact failure classification and counts.
+
+Two bounded cache115 lots recover2,773,737,472B net. Sessions80833/44815 are
+reaped0/cache released; the inventory links exact manifests and durable journals.
+185 historical ELFs have verified gzip backups, two have external copies;
+1540 compiler intermediates are reconstructible. Shared/native build objects,
+registry, original/current qualified artifacts and all data/logs/worktrees remain.
+Future Rust changes may require recompiling retired intermediates. Five old seed
+layers offered no useful space and were left intact; no cleanup is active.
+
+Free72,064,016,384B passed the maintained67GiB floor before fullcaseR2 launch;
+same source3eef/productf5/candidate24d6887f/observer and limits. No other test or
+source build is active.
 
 Compiler cache115 is released; original four ELF pins remain unchanged. Borrowed
 bridge `bigbrotr-m1-0f80280_default` /
@@ -104,14 +117,11 @@ reclaimable bytes; no cleanup was expanded or performed.
 
 Sol/xhigh coordinator and operational author are verified; Astra/xhigh performs
 only bounded critical changes when required; all current source/fixture reviews
-are closed. Sol now proposes the targeted cache retirement. Root alone integrates and
+are closed. Sol's bounded space inspection is complete. Root alone integrates and
 launches. Q37/Q38 are already reconciled in questions.md/agent-handoff.md.
 
-**Next:** recover the operating margin from one verified owned, unused,
-reconstructible115cache lot under the exclusive lock; preserve original four ELF
-pins, current qualified artifacts, source, data and all open evidence. Record exact
-retired paths/bytes in the existing inventory. Then launch unchanged full
-reclamation acceptance on source3eef/productf5/candidate24d6887f, followed by the
+**Next:** join fullcase11073 and independently audit its terminal custody. Preserve
+and classify any failure; on PASS run the
 same-product outside-checkout tutorial. Reuse240/worker/PG/build/observer proofs.
 Integrate on main only after complete bounded qualification and custody, then
 obtain the required real hosted checks for the meaningful main revision.

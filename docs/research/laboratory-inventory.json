@@ -76682,178 +76682,29 @@
               "custody": "All18containers stopped0/PID0/noOOM; runner/two actual clients/783commandPIDs absent,28pins/exactbridgeempty/errors[]. Auditor operator initially supplied incorrect starttick argument and refused; rerun reads recorded actual capsule exactly, no predicate/source/result changes."
             },
             "initial_stop_correction": {
-              "status": "NATIVE_BUILD_AND_FOCUSED_REAL_PG_KNOWN_HELD_PASS_FULLCASE_SPACE_PREFLIGHT",
-              "critical_contract": ".research/closed-reclamation-20261029/.research/efd8-initial-stop-diagnosis-20261029/critical-contract.json",
-              "sha256": "45384bf1743057dc4e339592a4623f004f76900797592503da74679bbaac3127",
-              "owner": "ci_followthrough_sol, author WT work/closed-reclamation after8e43; root sole launch/integration",
-              "contract": "Explicit ordinary initialized renewal and completed-operation Sync safe points only. Collect exact started SQL stage within one original absolute deadline; typed Stopping before next stage/due/delivery/dispatch. No false flag/lease reset, timeout increase or blanket cancellation handling. Startup/Archive/native/HTTP mutation/unknown remain fail-stop.",
-              "required": "Deterministic controlled-future/grant/prepoll/eachstage/originaldeadline/error controls, separate critical diff review, small maintained actualPG blocked-renewal short/unknown gate, then unchanged full installed qualification. R1 exact await remains UNKNOWN; not a new scope or parallel plan.",
+              "status": "FULLCASE_R2_RUNNING_NOT_QUALIFIED",
               "product_revision": "f5aad2c1114bbd6c4b84d4141153ae27e65c5af7",
-              "product_tree": "469121943ba693402cd5f26492a792af008a96f0",
-              "apps_tree": "00df067b194e33aa1c8f01bfd86a2808a5caff0e",
-              "product_worktree": ".research/initial-renewal-stop-product-qualified-20261029",
-              "product_branch": "work/initial-renewal-stop-product-qualification",
-              "source_critical_review": {
-                "path": ".research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/critical-review-f5aad2c1.json",
-                "sha256": "0f420878c1d328ad3026c4631160d0ad9f1f648b290abe2fbabf0988f5d9ca57"
+              "acceptance_revision": "3eef0bf69f78f8d53ab6fc061eb781fd44e3674b",
+              "worktrees": [
+                ".research/initial-renewal-stop-product-qualified-20261029",
+                ".research/initial-renewal-stop-baseline-qualified-20261029"
+              ],
+              "roots": {
+                "native": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-native-f5aad2c1",
+                "installed": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1",
+                "observer": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-observer-f5aad2c1",
+                "active_case": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-closed-r2"
               },
-              "native": {
-                "status": "PASS_INITIAL_INDEX_APPLICATION_COMPONENTS",
-                "session": 74929,
-                "exit_code": 0,
-                "elapsed_seconds": 228.46345606999967,
-                "selected": 240,
-                "groups": 37,
-                "library": 136,
-                "binary": 104,
-                "old237_retained": true,
-                "receipt": ".research/initial-index-recovery-qualification-20261028/r26-f5aad2c1-native/receipt.json",
-                "sha256": "247364e70de720c25680ab96697325392dd96c2587160d1ccb80c0d7476092f5",
-                "worker_receipt": ".research/initial-index-recovery-qualification-20261028/r26-f5aad2c1-native/worker-receipt.json",
-                "worker_sha256": "4b8c9898421c1d201835aeb5eb51fdfee274b78ab4e65c8fbc28dc994a417007",
-                "worker": "Actual library compiled/executed exact1/0ignored; source/compiler/assets/caps/terminal checked, original4cachepins unchanged"
-              },
-              "installed_build": {
-                "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
-                "session": 2817,
-                "exit_code": 0,
-                "receipt": ".research/initial-index-recovery-qualification-20261028/installed-f5aad2c1/build-receipt.json",
-                "sha256": "3676008ada8e4f30b6d735e8cb9bdc315d13078fb08d93ffe33a9de4642a85f9"
-              },
-              "observer": {
-                "status": "PASS_DECLARED_NATIVE_OBSERVER_BUILD",
-                "session": 46209,
-                "exit_code": 0,
-                "receipt": ".research/initial-index-recovery-qualification-20261028/observer-f5aad2c1/receipt.json",
-                "sha256": "5f889615885c6fbe17c93f4763d78d4c54815d222f4c2c0fb670264351da4db9"
-              },
-              "candidate": {
-                "status": "PASS_CANDIDATE_ASSEMBLY",
-                "session_id": 38843,
-                "exit_code": 0,
-                "source": "f5aad2c1114bbd6c4b84d4141153ae27e65c5af7",
-                "assembly_source": "f7b1116de95b6d7bef5f4db778d85eb1c6b218b2",
-                "candidate_manifest_sha256": "24d6887f24cfb90a6728325be124209833f6b5f46a43f97ba271395dfd2dfbbb",
-                "scope": "Maintained source-bound assembly only; runtime qualification pending"
-              },
-              "acceptance": {
-                "revision": "3eef0bf69f78f8d53ab6fc061eb781fd44e3674b",
-                "worktree": ".research/initial-renewal-stop-baseline-qualified-20261029",
-                "source": "Merged reviewed baseline correction5fbf into authorf7 without product changes; all8compiledobjects remainf5. Assembly remainsf7/candidate24d6887f, intentionally distinct from executing acceptance3eef.",
-                "gate_review_sha256": "ff4cb2fef5b5f64d11deaf3f2eefc93f429d47370b265092673680267e24eee4",
-                "python": "250PASS before criticalcorrections;6focusedPASS+245unchanged after source/query binding changes; initial249PASS1FAIL stalefixture log preserved",
-                "publication": "Exact-SHA pending-work push f7 succeeded after source exposure scan5commits/19blobs/706598bytes/0findings; no main integration or runtime qualification claim.",
-                "baseline_review_sha256": "09b70093b142e02d3da4697d8fea946dd9839efac60096af2b1f06c38ddf5526"
-              },
-              "focused_pg": {
-                "status": "FAIL_FIXTURE_BEFORE_CONTROLLED_SIGTERM",
-                "session": 66320,
-                "exit_code": 1,
-                "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-renewal-known-r1",
-                "counts": {
-                  "collected": 6,
-                  "executed": 6,
-                  "failed": 1,
-                  "skipped": 0,
-                  "not_run": 0
-                },
-                "failure": {
-                  "stage": "renewal_stop",
-                  "error_type": "ValueError",
-                  "reason": "unexpected dispatched source work",
-                  "traceback": [
-                    {
-                      "file": "tests/acceptance/cases/first_launch.py",
-                      "line": 1121,
-                      "function": "first_launch"
-                    },
-                    {
-                      "file": "tests/acceptance/cases/first_launch_renewal_stop.py",
-                      "line": 170,
-                      "function": "renewal_stop"
-                    },
-                    {
-                      "file": "tests/acceptance/cases/first_launch.py",
-                      "line": 57,
-                      "function": "require"
-                    }
-                  ]
-                },
-                "classification": "Fixture incorrectly expected zero producer requests after initialized output. Independent dictionaries.rs establishes request1 public bootstrap mappings and request2 private mapping. No acquisition occurred; captured original baseline has2requests/0jobs. Product unchanged.",
-                "terminal_sha256": "53057d2cd64a8e2f213ef7720a7a5ef5bd3eb899a982351439ff41d6f33bd87a",
-                "custody": "15containers stopped0/PID0/noOOM,2recordedPIDs+240commandPIDs absent,30pins/exactbridgeempty/errors[]; protected stores and raw failure preserved.",
-                "baseline_correction": {
-                  "source": "5fbf13a1",
-                  "worktree": ".research/initial-renewal-stop-acceptance-20261029",
-                  "receipt": ".research/initial-renewal-stop-acceptance-20261029/.research/renewal-stop-author-20261029/startup-baseline-correction.json",
-                  "sha256": "447a5475b8452ea34e1a153180291fadafaeedf2f10037c1571d72e91658495d",
-                  "checks": "7owning controlsPASS + saved realcapture replayPASS. Original7controlERROR preserved; malformed negative record now explicitly refused. Source-critical delta review pending; no product/caps/deadline/oracle weakening.",
-                  "critical_review_sha256": "09b70093b142e02d3da4697d8fea946dd9839efac60096af2b1f06c38ddf5526",
-                  "status": "CLOSED_APPLIED_AND_NEW_REAL_KNOWN_HELD_PASS"
-                },
-                "known_r2": {
-                  "status": "PASS_RENEWAL_STOP_TERMINAL_CUSTODY_VERIFIED",
-                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-renewal-known-r2",
-                  "session": 84530,
-                  "exit_code": 0,
-                  "counts": {
-                    "collected": 6,
-                    "executed": 6,
-                    "failed": 0,
-                    "skipped": 0,
-                    "not_run": 0
-                  },
-                  "terminal_sha256": "e0ccf0932c71aa8b4731128964253f79f46bf010dbcd009b076713e992dd69ec",
-                  "schedule_sha256": "36cef7dbeee74a3c74ab627ce7bb3e048482987bd28b5c1830759b44a1181d2e",
-                  "signal_to_terminal_seconds": 0.16102858199883485,
-                  "container_counts": {
-                    "total": 15,
-                    "compose": 15,
-                    "native_observer": 0,
-                    "exit_codes": {
-                      "0": 15
-                    }
-                  },
-                  "command_pids_absent": 255,
-                  "source_pins": 30,
-                  "scope": "Known SQL collected with admission closed, original backend/query/transaction unchanged until unlock, no next-stage effects, nativeclosed/Controlreleased"
-                },
-                "held_r1": {
-                  "status": "PASS_RENEWAL_STOP_TERMINAL_CUSTODY_VERIFIED",
-                  "root": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-f5aad2c1/acceptance-renewal-held-r1",
-                  "session": 45923,
-                  "exit_code": 0,
-                  "counts": {
-                    "collected": 6,
-                    "executed": 6,
-                    "failed": 0,
-                    "skipped": 0,
-                    "not_run": 0
-                  },
-                  "terminal_sha256": "6599bd89ea6d9d9b64040dce323ebbd58435ce54d2791a2a596a382fa119c0f2",
-                  "schedule_sha256": "0f0b2ca9ca7ce4c75d01baad242f753bb2ee6fd77f99864bde706c4b85f65e3a",
-                  "signal_to_terminal_seconds": 4.322557223000331,
-                  "container_counts": {
-                    "total": 15,
-                    "compose": 15,
-                    "native_observer": 0,
-                    "exit_codes": {
-                      "0": 14,
-                      "4": 1
-                    }
-                  },
-                  "command_pids_absent": 251,
-                  "source_pins": 30,
-                  "scope": "Held identified SQL produces expected exit4/no positive release and owneractive; actual backend/process joins. Exact SQL cutoff timing is not inferred from teardown; Rust controls prove original deadline/no reset."
-                }
-              },
-              "fullcase_preflight": {
-                "status": "NOT_RUN_SPACE_GUARD_REFUSED_BEFORE_ALLOCATION",
-                "free_bytes_observed": 69297733632,
-                "required_floor_bytes": 69793218560,
-                "resources_created": false,
-                "scope": "No fullcase session/container/database/evidence directory exists forf5 yet. Margin unchanged. Root/Sol inspect only115cache for a safe reconstructible bounded retirement lot, preserving data/source/log/proof and original4ELFs."
-              }
+              "ownership": "Root sole launcher/integrator; native/build/observer/focusedPG and both cache retirement jobs reaped. Root session11073 owns fresh fullcaseR2.",
+              "preserved_cases": [
+                "acceptance-renewal-known-r1: original fixture FAIL",
+                "acceptance-renewal-known-r2: PASS",
+                "acceptance-renewal-held-r1: PASS",
+                "acceptance-closed-r1: NOT_RUN; no runtime allocated"
+              ],
+              "evidence": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#live_readiness.closed_initial_reclamation.live_policy_authority_followup.receipt_retry_followup.initial_stop_correction",
+              "source_and_artifact_binding": "Productf5/acceptance3eef; assemblyf7/candidate24d6887f. Linked Index report owns exact receipts and original failures.",
+              "next": "Join fullcase11073 and audit exact terminal custody; on PASS run same-product outside-checkout tutorial, otherwise preserve/classify original failure."
             }
           }
         },
@@ -76862,6 +76713,66 @@
           "sha256": "c8583a0b161de15823db481168e2b1fe8314d800620c4b6b12f58b1c6be95ec5",
           "status": "ALREADY_RETIRED_NO_DELETION",
           "additional_reclaimable_bytes": 0
+        },
+        "backed_cache115_executable_retirement": {
+          "status": "COMPLETE_BACKED_CACHE_EXECUTABLES_RETIRED",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "owner": "8b21a13162699a6038154874c2ac89da",
+          "source": "115475799ce11a841e9aacc814d3576ee00cc6ca",
+          "session": 80833,
+          "exit_code": 0,
+          "cache_lock": "released",
+          "journal": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/cache-executable-retirement-331c181f.json",
+          "journal_sha256": "dccafae1be6b01d7b5ad43896c97734be1bd3ae1928758aa0cab18c770a4f93a",
+          "proposal_sha256": "331c181f31a874974aefe93851055650cd30fc689bba2422b25ccbab39ae342d",
+          "exact_files_retired": 187,
+          "gross_allocated_bytes": 1075585024,
+          "gzip_allocated_bytes": 412696576,
+          "net_allocated_bytes": 662888448,
+          "backups": "185 exact-byte gzip copies decompressed+hashed before unlink;2 external qualified exact copies. All187 mappings retained in journal.",
+          "preserved": "Original4ELFs, all qualified f5 copies, current worker test, dependencies/native objects, source, data, logs and worktrees",
+          "usage_scope": "Accessible process mappings/descriptors plus all live Docker mounts; denied observations are not claimed absent",
+          "usage_permission_denials": {
+            "exe": 429,
+            "cwd": 429,
+            "maps": 40,
+            "fd": 429
+          },
+          "limit": "Restored base65GiB only, not fullcase required67GiB. Maintained runner refused NOT_RUN before allocation; no floor lowered; no other cleanup performed."
+        },
+        "cache115_compiler_intermediate_retirement": {
+          "status": "COMPLETE_RECONSTRUCTIBLE_COMPILER_INTERMEDIATES_RETIRED",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757",
+          "owner": "8b21a13162699a6038154874c2ac89da",
+          "source": "115475799ce11a841e9aacc814d3576ee00cc6ca",
+          "session": 44815,
+          "exit_code": 0,
+          "journal": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/cache-intermediate-retirement-20261029.json",
+          "journal_sha256": "2a0f45de5a53ffbaaac53160172efa08414536aa13d321cbebcb906054279c6f",
+          "operations": "/home/tux/bigbrotr-implementation-20260917/runs/network-1154757/out/cache-intermediate-retirement-20261029.jsonl",
+          "operations_sha256": "02cc281c3237e53c20d524c161e96b573360bfc5140dff9a215d6e7f039a5c12",
+          "manifest": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/cache115-compiler-intermediates-proposal.json",
+          "manifest_sha256": "b037e8897a70c78eb6da4b52165b2b4c467dba68ae92bd1dfa203910b9d5bdd7",
+          "retired_singlelink_files": 1540,
+          "retired_allocated_bytes": 2110849024,
+          "cache_lock": "released",
+          "free_after": 72064069632,
+          "preserved": "All extensionlessELFs, .so/.d, hardlinks, release/build objects, fingerprints, registry, all187retirementbackups, original4pins/current6pins/worker, data/logs/worktrees/source",
+          "reconstructibility": "Only singlelink regular .rlib/.rmeta under release/deps. Reconstructible compiler intermediates, not unique execution evidence. Frozen source revisions, Cargo.lock, declared toolchain and local dependency sources/registry/nativebuild outputs remain. Cache absence may require Rust recompilation; installed native/probe/product and exactELF proof bytes remain external and independent. No exactbyte reproduction claim for cache outputs.",
+          "usage_scope": "Accessible process mappings/descriptors plus all live Docker mounts; denied observations are not claimed absent",
+          "usage_permission_denials": {
+            "exe": 428,
+            "cwd": 428,
+            "maps": 40,
+            "fd": 428
+          },
+          "limit": "Only release/deps singlelink .rmeta and .rlib. One hardlinked .rlib preserved. Rebuilding affected Rust metadata/libraries may be necessary on future source changes; current installed proof uses separately retained qualified bytes. No exactbyte reconstruction claim for compiler intermediates."
+        },
+        "targeted_seed_cache_and_layer_confirmation": {
+          "status": "INSPECTED_NOT_RETIRED_NO_USEFUL_LAYER_SPACE",
+          "receipt": ".research/closed-reclamation-20261029/.research/ordinary-renewal-stop-author-20261029/seed-build-layer-space-inspection.json",
+          "sha256": "ecc921068e5f5a68c1e69ec4a3bb36cbbca1d016a4b7b68f0e30a994ebaee11c",
+          "scope": "Five already inventoried seed buildcontainers only, all read-only/stopped/PID0/noOOM;143360B total writable layers. SharedSizeRootFs not reclaimable percontainer. Seed targets mostly retained proofELFs; CargoHomes only0.683GB. No mutation, no widersearch."
         }
       }
     }
