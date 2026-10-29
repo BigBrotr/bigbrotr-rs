@@ -2121,7 +2121,7 @@
             },
             "failure_stage": "compacted_successor",
             "reason": "AssertionError without message",
-            "classification": "UNKNOWN exact scientific native assertion; saved retired successor/native capture localizes failure to successor_science. Read-only maintained-oracle replay diagnosis pending, no expected-value edits or product retry.",
+            "classification": "VERIFIER model construction defect located, followed by independently located historical issuer/current recovery owner confusion during offline corrected replay; originalR2 remainsFAIL.",
             "result_sha256": "f8b7f397593cd682ebc3b25acd9b9232eaa97bf0a4d320d9b5fdca9d8c344964",
             "terminal_receipt_sha256": "3a3d6b65d3f22db89cdbd1f22157c07e873803247272af6708e71f0bf2e6b48e",
             "cleanup": "PASS independently verified:45containers(29compose/16observer),40exit0/5intentionalexit4, stopped/PID0/noOOM;21recordedPIDs/5425commandPIDs absent, bridgeempty/errors[],64acceptancepins unchanged. Successorclient PID-not-persisted limit retained.",
@@ -2141,9 +2141,92 @@
             "sha256": "dcf1a9b05ead445c468776b1d60dd12f525f23cbea8dd7ba6df1386193fcdd49",
             "remote_main": "5cc9cbb188378093f97d64f3e51ff11444934b98",
             "actions_runs": []
+          },
+          "scientific_replay": {
+            "status": "TWO_VERIFIER_CONSTRUCTION_AUTHORITY_SELECTION_DEFECTS_LOCATED",
+            "original_diagnosis": {
+              "path": ".research/closed-reclamation-20261029/.research/successor-science-diagnosis-20261029/diagnosis.json",
+              "sha256": "8ccfc47159ac67118f95a85b3ce5558a0951bf8e48221e478f06b2b816c32b33"
+            },
+            "second_diagnosis": {
+              "path": ".research/closed-reclamation-20261029/.research/successor-science-diagnosis-20261029/second-diagnosis.json",
+              "sha256": "cf3f911b95f644d9df884556562eba9fa9cd9afb9a5611fbd52fa98a56fe6a27"
+            },
+            "prefix": "Independent initial encoders reconstruct829 native rows/312facts; all64saved inputSHA and64SQLrequests checked. Qualified floor/base765 rows/sequence1147 rebuilt and matched.",
+            "first_defect": "Local independent model omits event=dump-state required by exact native_map frame contract. Literal-only correction reaches complete successor native byte/sequence and clock checks without changing encoders.",
+            "second_defect": "Historical request issuer was wrongly selected from current cancelled-job owner after abandonment; corrected by independently anchored pre-client activation authority and separately validated recovery ownership. Critical review closed at028.",
+            "partial_work": "Corrections frozen/reviewed at028; exact author/review/control/replay identities are in scientific_correction. No product changes.",
+            "limitations": "Original completed=now_us was not persisted; diagnostic replay uses conservative earlier native-capture mtime. Initialframe failure occurs before those checks. OriginalR2FAIL, later request/progress/consumer/history/export qualification unchanged; no engine/build/newproduct defect claim.",
+            "critical_contract": {
+              "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/diagnosis-successor-historical-issuer-c656-r2.json",
+              "sha256": "2e2704b9d1629d61a87acf8682731c1d4c0ac5a5a3b8c0ada7c47acf6d92ef2a",
+              "scope": "Anchor original issuer to pre-client validated compacted_bridge activation/succession; preserve full receipts and resolve exact dataset/resource/epoch/incarnation Control. Requests/progress use original issuer; later recovery job/gap ownership is verified separately. No issuer inferred from target rows."
+            }
+          },
+          "scientific_correction": {
+            "status": "FROZEN_REVIEW_CLOSED_INSTALLED_R3_RUNNING",
+            "revision": "028744e01181ed1e39657fdd3469ed71e0925050",
+            "base": "05a45e0056ae976edc1af2c12b8d9c6281620e1a",
+            "worktree": ".research/closed-reclamation-authority-acceptance-qualified-20261029",
+            "author_receipts": [
+              {
+                "path": ".research/closed-reclamation-20261029/.research/successor-science-diagnosis-20261029/receipt.json",
+                "sha256": "11b264bdc0bede9d31d559b0ad498430825a3578858b68a7c6ed687eda2b6795"
+              },
+              {
+                "path": ".research/closed-reclamation-20261029/.research/successor-science-diagnosis-20261029/authority-review-correction/receipt.json",
+                "sha256": "e275f1cb34787cb5ef796dc73597bb1ca165d283d9e623888324c470ef837803"
+              }
+            ],
+            "critical_review": {
+              "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/critical-review-successor-historical-issuer-028744e0.json",
+              "sha256": "98c8c6ba77d1d375432201ffa3803cc202e1cdc6914924a0943b51624d0c1d2c"
+            },
+            "controls": "47owning/profile PASS at89a;3affected authority methods PASS again after2guards at028, other44 reused.12trace controls reused unchanged. Full successor_science captured-data replay PASS_REPLAY_ONLY; no actualR2 verdict changed.",
+            "replay_sha256": "3ecae6e8dfe28122d36a5ca8958207b1575862bfcfd7aad2258d13d0083c51f6",
+            "tutorial_reuse": {
+              "path": ".research/initial-index-recovery-qualification-20261028/installed-c656c518/tutorial-05a-reuse-89a.json",
+              "sha256": "ca6b4d167b5560923555e5e0fed0a508bc5f67600e3e7098a3ca9be9f4dac769",
+              "scope": "028 adds only authority guard/tests to89a; tutorial positive inputs remain valid."
+            },
+            "installed_case": {
+              "status": "RUNNING_NOT_QUALIFIED",
+              "session": 50870,
+              "runner_pid": 34973,
+              "runner_start_ticks": 244432,
+              "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-closed-r3",
+              "launch_record": "acceptance-closed-r3-session.json",
+              "scope": "Fresh complete11 case on exact unchanged c656 parent/candidate/observer; originalassembly2dad separate from executing028 acceptance. No native rebuild."
+            },
+            "publication_inputs": [
+              {
+                "path": ".research/ci-publication-20261026/source-reclamation-89a1284c-20261029/review.json",
+                "sha256": "284c6a9e120a938e1d80cdc0bc2a280af82df68c60aecf7cd380077c7e7753e6"
+              },
+              {
+                "path": ".research/ci-publication-20261026/source-reclamation-028744e0-20261029/review.json",
+                "sha256": "02e0ac69539a967bcb5662543f0758df7e32bad349eeeba78c347c850065c921"
+              }
+            ]
           }
         },
-        "next": "Read-only replay of saved R2 captures through maintained successor_science/independent encoders to locate exact assertion and classify product/verifier/setup/UNKNOWN. Retain raw clocks/limits and original outcomes, no blind rerun. Consumer/history/export/tutorial remain required; main integration/hosted qualification waits complete scope."
+        "next": "Observe full installedR3/terminal custody, preserving any new failure. Tutorial7 alreadyPASS on unchanged positive path. Integrate coherent source only after complete consumer/history/export qualification; then main publication scan/one required hosted run.",
+        "tutorial": {
+          "status": "PASS",
+          "session": 70307,
+          "runner_pid": 11960,
+          "runner_start_ticks": 158896,
+          "product_revision": "c656c518231a3d604cb6fa08989455f655fd7cfe",
+          "acceptance_revision": "05a45e0056ae976edc1af2c12b8d9c6281620e1a",
+          "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/closed-reclamation-installed-c656c518/acceptance-tutorial-r1",
+          "scope": "Independent same-product outside-checkout tutorial; no reclaimed-case state is reused or reopened, no source build.",
+          "exit_code": 0,
+          "checks": 7,
+          "result_sha256": "bdd2b7dccc8a5e5458a3a29117749255cd95fc4c531530235af0e3aed62f6c80",
+          "terminal_receipt_sha256": "d5520f305f20d1fdffa71727e8d2e0ea63e894af8459d5b91b10922ff03f859c",
+          "custody": "18ownedcontainers exited0/PID0/noOOM; runner/two clients and778commandPIDs absent,28sourcepins and unchanged candidate verified, exact borrowedbridgeempty/errors[]. Current tutorial runner boot identity is captured; no earlier identity inferred.",
+          "reuse_scope": "Current authority correction affects reclaimed-case oracle only; common helper changes only failure metadata. Review those deltas before reusing this exact05a positive journey; no R2 outcome relabeling."
+        }
       }
     }
   },

@@ -8,10 +8,10 @@ or production deployment is authorized.
 ## Source and integration
 
 Public main remains `5cc9cbb188378093f97d64f3e51ff11444934b98`. Local main before
-this documentation checkpoint is `01edb081`, including qualified common-wait
+this documentation checkpoint is `400b3354`, including qualified common-wait
 `9ebd27b3`, hosted report `4293` and the subsequent evidence checkpoints. The
-containing checkpoint commit changes only the existing report, checkpoint and
-inventory; its exact revision is available from Git. No reclamation product code
+containing checkpoint commit changes only the existing plan/evidence/checkpoint
+and inventory; its exact revision is available from Git. No reclamation product code
 or fixture is integrated on main. Keep the next main push around a qualified
 capability and its actual hosted run.
 
@@ -19,13 +19,12 @@ Current frozen product: `c656c518231a3d604cb6fa08989455f655fd7cfe`, worktree
 `.research/closed-reclamation-policy-qualified-20261029`, branch
 `work/closed-reclamation-policy-qualification`.
 
-Current frozen acceptance: `05a45e0056ae976edc1af2c12b8d9c6281620e1a`, worktree
-`.research/closed-reclamation-spool-acceptance-qualified-20261029`, branch
-`work/closed-reclamation-spool-acceptance`. Writable author worktree
-`.research/closed-reclamation-20261029` is clean on `work/closed-reclamation` at
-05a. That pending branch is pushed at 05a after source/history exposure review;
-main remains unchanged remotely. There are no workbranch Actions runs. All older
-immutable worktrees, failures and evidence remain available through the report.
+Current frozen acceptance: `028744e01181ed1e39657fdd3469ed71e0925050`, worktree
+`.research/closed-reclamation-authority-acceptance-qualified-20261029`, branch
+`work/closed-reclamation-authority-acceptance`. Author worktree
+`.research/closed-reclamation-20261029` is clean at028 on `work/closed-reclamation`.
+The pending branch is backed up remotely through05a;89a/028 are committed locally,
+not integrated on main. All previous immutable sources and failures remain.
 
 ## Current result and valid evidence
 
@@ -60,15 +59,28 @@ observes three files totaling 1,743 bytes within 32 MiB. The existing Control
 publication oracle and phase release complete at Index revision 68 with vector
 `[1:312, 2:10]`; owner and client join with exit 0 and empty stderr. Successor
 retirement and native capture complete. Then `successor_science` raises an
-AssertionError without a message before the reuse verdict. Its exact cause is
-not yet classified. No complete scientific-native match, raw ClickHouse row
-census, finite consumer retry, final Archive publication or history/export PASS
-is inferred. The two following stages are NOT_RUN. Original R1's earlier
+AssertionError without a message before the reuse verdict. Offline replay has
+located a missing `event=dump-state` in the independent model. Correcting only
+that literal reaches the full native-byte/sequence checks, then reveals a second
+verifier error: historical admission issuer is selected from the job owner after
+recovery reassignment. Both diagnoses are pinned in the report. The original installed stage remains FAIL; the later full scientific replay has
+its separate scope. Raw ClickHouse row census, finite consumer retry, final
+Archive publication and history/export remain unqualified untilR3. The two following stages are NOT_RUN. Original R1's earlier
 `KeyError: bytes` remains FAIL; it is not relabeled by R2's progress.
 
 ## Resources, custody and agents
 
-No compiler, installed runtime or autonomous agent experiment is active. R2's
+No compiler or autonomous agent experiment is active. Full installed R3 is
+running: session50870, runner34973/start244432. Evidence sibling
+`acceptance-closed-r3`; launch `acceptance-closed-r3-session.json`. It uses frozen028
+and unchanged c656 candidate/observer. The runner owns isolated engine cleanup.
+Independent outside-checkout tutorial70307 reaped0: all7 stages PASS on unchanged
+c656 candidate/frozen05a. Evidence sibling `acceptance-tutorial-r1`; terminal
+d5520f30 verifies18 ownedcontainers stopped/PID0/noOOM, runner/two clients and
+778commandPIDs absent,28sourcepins unchanged and exact bridgeempty. Its exact
+positive scope is independent of the pending GC oracle correction. Review the
+exception-only helper delta before reusing that proof; no new tutorial or product
+build is required just for this acceptance correction. R2's
 independent terminal receipt `3a3d6b65` verifies all 45 owned containers stopped,
 PID 0/no OOM, 21 recorded processes and 5,425 command PIDs absent, unchanged
 acceptance/artifact pins, empty borrowed bridge and cleanup errors `[]`. Original
@@ -86,18 +98,22 @@ the independently checked prefix; no pre-GC clone of those inputs is available.
 The [existing inventory](../research/laboratory-inventory.json) owns custody.
 
 Sol/xhigh coordinator and operational author are verified; Astra/xhigh bounded
-critical reviews are closed. Sol now diagnoses only saved captures and maintained
-independent encoders; it may not alter expected values or start engines/builds.
+critical reviews are closed. Sol and Astra have completed the bounded adapter/review; no agent experiment is
+active. Root owns R3 observation and integration. Product artifacts are unchanged.
 
 ## Precise next action and remaining scope
 
-Locate the exact assertion by replaying `successor_science` on saved R2 evidence.
-The initial retained PostgreSQL rows and old ingest owner remain exact; the
-canonical first event matches. Reconstruct any earlier independent model from
-qualified encoders and recorded clocks/identities, not expected bytes copied from
-observed product bytes. Escalate a genuinely unresolved contract/diagnosis to
-Astra. Preserve the failure, classify product/verifier/setup/unknown, and fix the
-actual cause before another affected proof. No blind retry or weakened gate.
+**Next:** observe actual full R3 result and terminal custody. Frozen028 fixes the
+missing native frame discriminator and anchors historical authority to the
+independently validated pre-client bridge. It separately checks recovery job/gap
+ownership, preparer=activator and final old-Control fencing. Bounded critical
+review98c8c6ba is closed;47owning/profile controls and12trace controls retain their
+scopes, with3 affected authority methods repeated after the final two guards.
+Full saved-capture successor_science replay passes with the disclosed conservative
+completion-time bound; it does not relabel original R2 or its NOT_RUN tail.
+The existing report links exact author/review/replay receipts. No product rebuild
+or tutorial repetition is required for these acceptance-only changes. On failure,
+use protected source-frame diagnostics and classify its actual cause before a fix.
 
 P02-T02/T06 Steps 4/7 own completion of genuine request 65, exact native science,
 finite/live consumer retry, final Archive and signed history/export, then the

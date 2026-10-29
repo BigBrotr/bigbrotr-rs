@@ -212,16 +212,16 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
-  The current selected closed-initial slice now passes actual64-request reclamation
-  on product568a/acceptance18b: both final-COMMIT loss directions conserve native
-  state/inputs, confirmed floor installation removes only the64 receipts/originals,
-  science/pending/PG/Archive remain exact, and restart/retry is idempotent. The
+  The selected closed-initial slice passes actual64-request reclamation, both
+  final-COMMIT loss conservation checks and idempotent restart/retry. Productc656
+  also activates the compacted successor, admits3 genuine requests after64 and
+  publishes the Control Index vector [1:312,2:10]. The independent scientific
+  capture replay passes after correcting the verifier's frame/authority adapter;
+  the original installedR2 remains FAIL and the fresh fullR3 is pending. The
   [existing Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-  owns exact evidence and preserved failures. Continued admission after that floor
-  remains unqualified: compacted live Index startup is blocked by an invalid local
-  policy TTL. P02-T06 Steps4/7 own that continuation; actual successor request65,
-  consumer recovery/retry and history/export must pass without weakening authority
-  or spool bounds. This partial GC result does not close Step4/7 or general GC.
+  owns exact source/receipts and preserved failures. P02-T06 Steps4/7 still require
+  complete installed consumer recovery/exact retry and history/export under the
+  unchanged spool/authority bounds. This does not close Step4/7 or general GC.
   The installed restart path uses a bounded historical manifest/registry
   loader before invoking the existing positive-only recovery resolver. The
   [historical inspection contract](../reference/ingest-store.md#historical-manifest-inspection)
@@ -1200,15 +1200,16 @@ source/client, query/freshness/cooldown, retry and resource bounds remain unchan
 - [ ] **Step 4:** Persist deterministic recovery units/receipts and document exactly which
   unit restarts after an interrupted insert; displayed progress is not a seek index.
   Close the selected compacted-initial continuation with Step7/P02-T02 Steps4/7.
-  Actual reclamation64 passes, but compacted live Index validation constructs
-  a30s local policy TTL against the5s ceiling. Thread the original accepted
-  policy authority and retain its nonrenewable owner-intersected action window
-  through live prepare/publication/current-source transaction acknowledgement,
-  including retained/idempotent returns. Preserve cancellation, binding/native/
-  canonical checks and uncertain post-COMMIT delivery; no fresh deadline or relaxed
-  ceiling. Closure requires the actual installed successor request65, both consumers
-  and exact retries/history/export with conserved originals and unchanged limits.
-  This does not claim Ready65 or broader arbitrary-epoch/capacity qualification.
+  Productc656 corrects the invalid local30s TTL by retaining the original accepted
+  policy authority and one nonrenewable owner-intersected action window through
+  live prepare/publication/current-source acknowledgement, including idempotent
+  returns. Native controls and actual compacted startup/request65 pass; cancellation,
+  binding/native/canonical checks and uncertain post-COMMIT delivery remain.
+  The capture oracle now distinguishes immutable pre-client admission authority
+  from later recovery job ownership; its bounded critical review is closed.
+  Closure still requires the full installed successor/science, both consumers,
+  exact retries and history/export with conserved originals and unchanged limits.
+  R3 owns this remaining qualification. No Ready65 or broader epoch/capacity claim.
 - [ ] **Step 5:** Publish affected-key/partition notices before their consumer frontier,
   including legitimate no-output/control-only source ranges.
 - [ ] **Step 6:** Stop at poison/unrecoverable source with typed diagnostics; allow unrelated
