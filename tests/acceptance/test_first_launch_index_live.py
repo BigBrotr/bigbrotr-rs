@@ -79,7 +79,7 @@ def later_topology_fixture():
     control_incarnation='\\x'+'33'*16;incarnation='\\x'+'44'*16
     control_role='\\x'+'c0'*16;ingest_role='\\x'+'d0'*16
     after['owner_epochs'] += [dict(dataset_id=ds,role='control',epoch=11,state='active',released_at_us=None,
-        process_incarnation=control_incarnation,role_instance_id=control_role),dict(dataset_id=ds,role='ingest',epoch=3,
+        resource_id='control-resource',process_incarnation=control_incarnation,role_instance_id=control_role),dict(dataset_id=ds,role='ingest',epoch=3,
         state='active',resource_id=resource,process_incarnation=incarnation,role_instance_id=ingest_role)]
     after['role_instances']=[dict(dataset_id=ds,role=role,role_instance_id=key,retired_at_us=None)
                              for role,key in (('control',control_role),('ingest',ingest_role))]
@@ -96,10 +96,11 @@ def later_topology_fixture():
     after['ingest_successions']=[dict(dataset_id=ds,target_epoch=3,previous_epoch=2,previous_topology=1,
         target_topology=2,terminal_kind=1,issued_through=3,last_complete_sequence=10,closure_digest='\\x'+'99'*32,
         target_incarnation=incarnation,target_role_instance_id=ingest_role,owner_resource_id=resource,
-        producer_slot_id=slot,target_manifest_sha256='manifest3',handoff_sha256='handoff3')]
+        producer_slot_id=slot,target_manifest_sha256='manifest3',handoff_sha256='handoff3',
+        prepared_by_resource='control-resource',prepared_by_epoch=11,prepared_by_incarnation=control_incarnation)]
     after['ingest_activations']=[dict(dataset_id=ds,target_epoch=3,target_incarnation=incarnation,
         target_role_instance_id=ingest_role,target_manifest_sha256='manifest3',handoff_sha256='handoff3',
-        activated_by_epoch=11,activated_by_incarnation=control_incarnation)]
+        activated_by_resource='control-resource',activated_by_epoch=11,activated_by_incarnation=control_incarnation)]
     report=dict(format='bigbrotr-ingest-successor/1',state='activated',dataset_id='11'*16,
         owner_resource_id='55'*16,producer_slot_id='77'*16,producer_epoch='3',process_incarnation='44'*16,
         role_instance_id='d0'*16,config_revision='1',policy_revision='1',outstanding_request_limit='32',
@@ -150,6 +151,8 @@ class LiveIndexTopologyControls(unittest.TestCase):
             lambda s:s['ingest_successions'][0].update(target_incarnation='\\x'+'33'*16),
             lambda s:s['ingest_activations'][0].update(target_incarnation='\\x'+'33'*16),
             lambda s:s['ingest_activations'][0].update(activated_by_incarnation='\\x'+'44'*16),
+            lambda s:s['ingest_activations'][0].update(activated_by_resource='unrelated-resource'),
+            lambda s:s['ingest_successions'][0].update(prepared_by_epoch=10),
             lambda s:s['owner_epochs'][-1].update(process_incarnation='unrelated-process'),
         )
         for number,change in enumerate(mutations):

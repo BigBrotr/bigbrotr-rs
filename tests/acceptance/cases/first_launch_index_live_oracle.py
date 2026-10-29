@@ -227,7 +227,9 @@ def later_topology(before, after, report, *, stopped=False):
     assert activation['target_role_instance_id']==ingest['role_instance_id']
     assert activation['target_manifest_sha256']==succession['target_manifest_sha256']
     assert activation['handoff_sha256']==succession['handoff_sha256']
-    assert activation['activated_by_epoch']==control['epoch'] and activation['activated_by_incarnation']==control['process_incarnation']
+    for field,actual in (('resource',control['resource_id']),('epoch',control['epoch']),
+                         ('incarnation',control['process_incarnation'])):
+        assert succession['prepared_by_'+field]==activation['activated_by_'+field]==actual
     for key,expected in dict(format='bigbrotr-ingest-successor/1',state='activated',
         dataset_id=dataset['dataset_id'][2:],owner_resource_id=ingest['resource_id'][2:],
         producer_slot_id=predecessor['producer_slot_id'][2:],producer_epoch='3',
