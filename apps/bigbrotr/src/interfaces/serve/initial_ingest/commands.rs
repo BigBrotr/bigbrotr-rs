@@ -2,7 +2,9 @@
 //! HTTP and password tasks run on the parent runtime; neither borrows native state.
 use super::owner::RuntimeContext;
 use super::*;
-use bigbrotr::runtime::policy_authority::{LeaseError, PolicyLeaseTracker, PolicyLeaseTtl};
+use bigbrotr::runtime::policy_authority::{
+    DeliveryWindow, LeaseError, PolicyLeaseTracker, PolicyLeaseTtl,
+};
 use bigbrotr::storage::postgres::control_owner::PolicySnapshot;
 use std::time::Duration;
 
@@ -34,6 +36,71 @@ fn authority(error: LeaseError) -> (u8, String) {
 }
 
 const DISPATCH_MARGIN: Duration = Duration::from_millis(100);
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum RenewalMode {
+    FailStop,
+    Maintenance,
+}
+impl RenewalMode {
+    fn drains(self, profile: Profile, initialized: bool, external: Option<Instant>) -> bool {
+        self == Self::Maintenance
+            && profile == Profile::Initial
+            && initialized
+            && external.is_none()
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum Renewal<T> {
+    Renewed(T),
+    Stopping,
+}
+
+/// One initialized renewal chain owns its original deadline and policy window.
+/// A stop never drops an already-polled scheduling transaction or admits the
+/// next one. Startup, successor and independent Archive work remain fail-stop.
+struct RenewalRequest<'a> {
+    deadline: Instant,
+    cancellation: &'a Cancellation,
+    authority: Option<DeliveryWindow>,
+}
+impl RenewalRequest<'_> {
+    fn stopping(&mut self) -> Result<bool> {
+        if Instant::now() >= self.deadline {
+            return Err((
+                4,
+                "initial Ingest deadline; original attempt may need recovery".into(),
+            ));
+        }
+        if let Some(window) = &mut self.authority {
+            window.check().map_err(authority)?;
+        }
+        Ok(self.cancellation.requested.load(Ordering::Acquire))
+    }
+
+    async fn collect<T>(&mut self, work: impl Future<Output = Result<T>>) -> Result<Renewal<T>> {
+        // No SQL is first-polled after stop. Once polled, retain this exact
+        // future/grants until its known result or the ORIGINAL deadline.
+        if self.stopping()? {
+            return Ok(Renewal::Stopping);
+        }
+        let result = tokio::time::timeout_at(self.deadline, work)
+            .await
+            .map_err(|_| {
+                (
+                    4,
+                    "initial Ingest deadline; original attempt may need recovery".into(),
+                )
+            })??;
+        // Errors/CommitUnknown precede stopping, and a late positive cannot pass
+        // merely because the future completed before the timer was polled.
+        if self.stopping()? {
+            return Ok(Renewal::Stopping);
+        }
+        Ok(Renewal::Renewed(result))
+    }
+}
 
 #[derive(Debug, PartialEq, Eq)]
 enum Admission {
@@ -81,13 +148,16 @@ async fn before_sync_operation(
     due: Instant,
     wire_phase: bool,
     cancellation: &Cancellation,
-    renew: impl Future<Output = Result<Instant>>,
+    renew: impl Future<Output = Result<Renewal<Instant>>>,
 ) -> Result<Option<Instant>> {
     if cancellation.requested.load(Ordering::Acquire) {
         return Ok(None);
     }
     let due = if wire_phase || admission(Instant::now(), due, None) == Admission::Renew {
-        renew.await?
+        match renew.await? {
+            Renewal::Renewed(due) => due,
+            Renewal::Stopping => return Ok(None),
+        }
     } else {
         due
     };
@@ -223,12 +293,26 @@ impl<'a> CommandOwner<'a> {
         let cancellation = self.cancellation;
         let next = before_sync_operation(*due, wire_phase, cancellation, async {
             let started = self
-                .renew_capped(Some(native), None, Some(selected_sync))
+                .renew_capped(
+                    Some(native),
+                    None,
+                    Some(selected_sync),
+                    RenewalMode::Maintenance,
+                )
                 .await?;
-            self.next_renewal(started)
+            match started {
+                Renewal::Stopping => Ok(Renewal::Stopping),
+                Renewal::Renewed(_) if cancellation.requested.load(Ordering::Acquire) => {
+                    Ok(Renewal::Stopping)
+                }
+                Renewal::Renewed(started) => self.next_renewal(started).map(Renewal::Renewed),
+            }
         })
         .await?;
         let Some(next) = next else { return Ok(None) };
+        if cancellation.requested.load(Ordering::Acquire) {
+            return Ok(None);
+        }
         *due = next;
         if let Some(management) = management.as_ref() {
             management.renew_delivery(
@@ -252,7 +336,13 @@ impl<'a> CommandOwner<'a> {
             ));
         }
         let deadline = authority_checked + maximum;
+        if cancellation.requested.load(Ordering::Acquire) {
+            return Ok(None);
+        }
         phase_capped(self.progress, maximum, Some(deadline))?;
+        if cancellation.requested.load(Ordering::Acquire) {
+            return Ok(None);
+        }
         Ok(Some(sync_diagnostic::Window {
             selected,
             authority_checked,
@@ -277,17 +367,22 @@ impl<'a> CommandOwner<'a> {
         )
     }
 
-    async fn renew(&mut self, deadline: Instant) -> Result<Instant> {
+    async fn renew(&mut self, deadline: Instant) -> Result<Renewal<Instant>> {
         // Archive callbacks remain strictly initial-only. They never borrow a
         // live writer or turn historical registration into current authority.
         if self.profile != Profile::Initial {
             return Err((4, "initial Archive cannot renew a successor".into()));
         }
-        self.renew_capped(None, Some(deadline), None).await
+        self.renew_capped(None, Some(deadline), None, RenewalMode::FailStop)
+            .await
     }
 
-    async fn renew_for(&mut self, native: Option<&NativeOwner>) -> Result<Instant> {
-        self.renew_capped(native, None, None).await
+    async fn renew_for(
+        &mut self,
+        native: Option<&NativeOwner>,
+        mode: RenewalMode,
+    ) -> Result<Renewal<Instant>> {
+        self.renew_capped(native, None, None, mode).await
     }
 
     async fn renew_capped(
@@ -295,7 +390,8 @@ impl<'a> CommandOwner<'a> {
         native: Option<&NativeOwner>,
         deadline: Option<Instant>,
         mut selected_sync: Option<&mut sync::Sync>,
-    ) -> Result<Instant> {
+        mode: RenewalMode,
+    ) -> Result<Renewal<Instant>> {
         // Covers both biased timer paths, even if no management slot is reached
         // between renewals. A selected item may wait through one real renewal;
         // a second one fails closed instead of indefinitely deferring that item.
@@ -317,83 +413,142 @@ impl<'a> CommandOwner<'a> {
         } else {
             duration(self.root, "renewal_timeout").min(ttl)
         };
-        phase_capped(self.progress, maximum, deadline)?;
-        let ticket = self.lease.begin_refresh().map_err(authority)?;
+        let draining = mode.drains(self.profile, self.administration.is_some(), deadline);
         let started = Instant::now();
+        let end = deadline.map_or(started + maximum, |end| end.min(started + maximum));
+        phase_capped(self.progress, maximum, Some(end))?;
+        let window = if draining {
+            Some(
+                self.lease
+                    .delivery_window(self.lease.known_epoch())
+                    .map_err(authority)?,
+            )
+        } else {
+            None
+        };
+        let mut request = RenewalRequest {
+            deadline: end,
+            cancellation: self.cancellation,
+            authority: window,
+        };
+        if draining && request.stopping()? {
+            return Ok(Renewal::Stopping);
+        }
+        let ticket = self.lease.begin_refresh().map_err(authority)?;
         let mut administration = true;
         let mut public_routes = true;
-        let snapshot = bounded_capped(maximum, deadline, self.cancellation, async {
-            let snapshot = self
-                .owner
-                .refresh(|doc, digest| {
-                    let restored = super::super::accepted_policy(self.root, doc, digest)?;
-                    accepted_owner_profile(&restored, self.profile)?;
-                    if let Some(sync) = selected_sync.as_deref_mut().or(self.sync.as_deref_mut()) {
-                        sync.accept(&restored)?;
+        let chain = async {
+            let refresh = async {
+                let snapshot = self
+                    .owner
+                    .refresh(|doc, digest| {
+                        let restored = super::super::accepted_policy(self.root, doc, digest)?;
+                        accepted_owner_profile(&restored, self.profile)?;
+                        if let Some(sync) =
+                            selected_sync.as_deref_mut().or(self.sync.as_deref_mut())
+                        {
+                            sync.accept(&restored)?;
+                        }
+                        if self.archive_selected {
+                            archive::validate(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                        }
+                        if let Some(index) = self.index.as_deref_mut() {
+                            index.accept(&restored)?;
+                        }
+                        administration &= restored.flag("administration.enabled");
+                        public_routes &= restored.flag("network.public.enabled");
+                        Ok(())
+                    })
+                    .await
+                    .map_err(owner_error)?;
+                if snapshot != self.policy {
+                    return Err((4, "accepted policy changed; initial Ingest stopped".into()));
+                }
+                if self.administration.is_some_and(|old| old != administration) {
+                    return Err((
+                        4,
+                        "accepted listener profile changed; initial Ingest stopped".into(),
+                    ));
+                }
+                Ok(snapshot)
+            };
+            let snapshot = if draining {
+                match request.collect(refresh).await? {
+                    Renewal::Renewed(snapshot) => snapshot,
+                    Renewal::Stopping => return Ok(Renewal::Stopping),
+                }
+            } else {
+                refresh.await?
+            };
+            let ingest = async {
+                match native {
+                    Some(NativeOwner::Live(writer)) => {
+                        self.owner
+                            .renew_live_initial_ingest(
+                                writer,
+                                ttl,
+                                |doc, digest| validate_owner(self.root, self.profile, doc, digest),
+                                &Cell::new(false),
+                            )
+                            .await
                     }
-                    if self.archive_selected {
-                        archive::validate(&restored).map_err(|_| OwnerError::InvalidPolicy)?;
+                    Some(NativeOwner::Successor(writer)) => {
+                        self.owner
+                            .renew_live_successor_ingest(
+                                writer,
+                                ttl,
+                                &self.cancellation.requested,
+                                |doc, digest| validate_owner(self.root, self.profile, doc, digest),
+                                &Cell::new(false),
+                            )
+                            .await
                     }
-                    if let Some(index) = self.index.as_deref_mut() {
-                        index.accept(&restored)?;
+                    Some(NativeOwner::Candidate(_)) => {
+                        return Err((4, "candidate cannot renew".into()));
                     }
-                    administration &= restored.flag("administration.enabled");
-                    public_routes &= restored.flag("network.public.enabled");
-                    Ok(())
-                })
-                .await
-                .map_err(owner_error)?;
-            if snapshot != self.policy {
-                return Err((4, "accepted policy changed; initial Ingest stopped".into()));
+                    Some(NativeOwner::Initial(_)) | None => {
+                        self.owner
+                            .renew_initial_ingest(
+                                self.context.initial().map_err(owner_error)?,
+                                ttl,
+                                |doc, digest| validate(self.root, doc, digest),
+                                &Cell::new(false),
+                            )
+                            .await
+                    }
+                }
+                .map_err(owner_error)
+            };
+            if draining {
+                if request.collect(ingest).await? == Renewal::Stopping {
+                    return Ok(Renewal::Stopping);
+                }
+            } else {
+                ingest.await?;
             }
-            match native {
-                Some(NativeOwner::Live(writer)) => {
-                    self.owner
-                        .renew_live_initial_ingest(
-                            writer,
-                            ttl,
-                            |doc, digest| validate_owner(self.root, self.profile, doc, digest),
-                            &Cell::new(false),
-                        )
-                        .await
-                }
-                Some(NativeOwner::Successor(writer)) => {
-                    self.owner
-                        .renew_live_successor_ingest(
-                            writer,
-                            ttl,
-                            &self.cancellation.requested,
-                            |doc, digest| validate_owner(self.root, self.profile, doc, digest),
-                            &Cell::new(false),
-                        )
-                        .await
-                }
-                Some(NativeOwner::Candidate(_)) => {
-                    return Err((4, "candidate cannot renew".into()));
-                }
-                Some(NativeOwner::Initial(_)) | None => {
-                    self.owner
-                        .renew_initial_ingest(
-                            self.context.initial().map_err(owner_error)?,
-                            ttl,
-                            |doc, digest| validate(self.root, doc, digest),
-                            &Cell::new(false),
-                        )
-                        .await
-                }
-            }
-            .map_err(owner_error)?;
             if let Some(index) = self.index.as_deref_mut() {
-                index.renew(self.owner, &Cell::new(false)).await?;
+                let commit_started = Cell::new(false);
+                let renew = index.renew(self.owner, &commit_started);
+                if draining {
+                    if request.collect(renew).await? == Renewal::Stopping {
+                        return Ok(Renewal::Stopping);
+                    }
+                } else {
+                    renew.await?;
+                }
             }
-            Ok(snapshot)
-        })
-        .await?;
-        if self.administration.is_some_and(|old| old != administration) {
-            return Err((
-                4,
-                "accepted listener profile changed; initial Ingest stopped".into(),
-            ));
+            Ok(Renewal::Renewed(snapshot))
+        };
+        let snapshot = match if draining {
+            chain.await?
+        } else {
+            bounded_capped(maximum, deadline, self.cancellation, chain).await?
+        } {
+            Renewal::Renewed(snapshot) => snapshot,
+            Renewal::Stopping => return Ok(Renewal::Stopping),
+        };
+        if draining && request.stopping()? {
+            return Ok(Renewal::Stopping);
         }
         // Include both actual SQL responses in the original request-start window.
         self.lease
@@ -410,7 +565,10 @@ impl<'a> CommandOwner<'a> {
         self.administration = Some(administration);
         self.public_routes = public_routes;
         self.pending_renewed = self.pending.is_some();
-        Ok(started)
+        if draining && request.stopping()? {
+            return Ok(Renewal::Stopping);
+        }
+        Ok(Renewal::Renewed(started))
     }
 
     fn idle_phase(&self, due: Instant) -> Result<()> {
@@ -536,7 +694,9 @@ impl<'a> CommandOwner<'a> {
                 _ = self.cancellation.wait() => return Err((4, "initial Archive cancelled; retain original outcome".into())),
                 _ = tokio::time::sleep_until(deadline) => return Err((4, "initial Archive deadline; retain original outcome".into())),
                 _ = renewal_due(*due) => {
-                    let started = self.renew(deadline).await?;
+                    let Renewal::Renewed(started) = self.renew(deadline).await? else {
+                        return Err((4, "initial Archive renewal stopped; retain original outcome".into()));
+                    };
                     *due = self.next_renewal(started)?;
                     if let Some(management) = management.as_ref() {
                         management.renew_delivery(self.lease.delivery_window(self.lease.known_epoch()).map_err(authority)?)?;
@@ -723,7 +883,10 @@ async fn maintain_context(
         pending: None,
         pending_renewed: false,
     };
-    let started = state.renew_for(Some(store)).await?;
+    let Renewal::Renewed(started) = state.renew_for(Some(store), RenewalMode::FailStop).await?
+    else {
+        return Err((4, "initial Ingest startup stopped before renewal".into()));
+    };
     state
         .source_observation
         .refresh(store, &cancellation.requested, state.index.is_some());
@@ -856,7 +1019,10 @@ async fn maintain_context(
                 biased;
                 _ = cancellation.wait() => return Ok(()),
                 _ = renewal_due(due) => {
-                    let started = state.renew_for(Some(store)).await?;
+                    let Renewal::Renewed(started) = state.renew_for(Some(store), RenewalMode::Maintenance).await? else {
+                        return Ok(());
+                    };
+                    if cancellation.requested.load(Ordering::Acquire) { return Ok(()); }
                     due = state.next_renewal(started)?;
                     state.idle_phase(due)?;
                     if let Some(management) = &management {
@@ -937,10 +1103,10 @@ async fn maintain_context(
                     }).await;
                     state.sync = Some(selected_sync);
                     trace.finish(selected)?;
-                    state.idle_phase(due)?;
                     if cancellation.requested.load(Ordering::Acquire) {
                         return Ok(());
                     }
+                    state.idle_phase(due)?;
                     if admission(Instant::now(), due, None) == Admission::Renew {
                         continue;
                     }
@@ -978,6 +1144,7 @@ async fn maintain_context(
                     }, &reservation).await;
                     state.sync = Some(selected_sync);
                     trace.finish(result)?;
+                    if cancellation.requested.load(Ordering::Acquire) { return Ok(()); }
                     state.source_observation.refresh(store, &cancellation.requested, state.index.is_some());
                     // A timed gap lets HTTP run even under continuous work;
                     // the priority timer prevents continuous HTTP starving Sync.
@@ -1035,6 +1202,250 @@ async fn maintain_context(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn maintenance_renewal_collects_the_same_grant_at_each_stop_boundary() {
+        let root = crate::config::load(
+            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config/recipes/archive-only.toml"),
+        )
+        .unwrap();
+        let budget = super::super::budget(&root, true, false).unwrap();
+        // The three independently held completions stand for refresh, Ingest
+        // scheduling renewal and Index scheduling renewal. No second stage may
+        // be first-polled after the selected stage observes stop.
+        for selected in 0..3 {
+            let cancellation = Cancellation::new();
+            let mut request = RenewalRequest {
+                deadline: Instant::now() + Duration::from_secs(5),
+                cancellation: &cancellation,
+                authority: None,
+            };
+            let polls = Cell::new(0);
+            let completed = Cell::new(0);
+            let (release, wait) = tokio::sync::oneshot::channel();
+            let mut wait = Some(wait);
+            let permit = grant(&budget, MIB, 0).unwrap();
+            let mut chain = std::pin::pin!(async {
+                let _permit = permit;
+                for stage in 0..3 {
+                    let result = request
+                        .collect(async {
+                            polls.set(polls.get() + 1);
+                            if stage == selected {
+                                wait.take().unwrap().await.unwrap();
+                            }
+                            completed.set(completed.get() + 1);
+                            Ok(())
+                        })
+                        .await?;
+                    if result == Renewal::Stopping {
+                        return Ok(Renewal::Stopping);
+                    }
+                }
+                Ok::<_, (u8, String)>(Renewal::Renewed(()))
+            });
+            let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+            assert!(chain.as_mut().poll(&mut context).is_pending());
+            assert_eq!(polls.get(), selected + 1);
+            assert_eq!(completed.get(), selected);
+            cancellation.request();
+            cancellation.request();
+            assert!(chain.as_mut().poll(&mut context).is_pending());
+            assert_eq!(budget.snapshot().active_permits(), 1);
+            assert_eq!(polls.get(), selected + 1);
+            release.send(()).unwrap();
+            assert_eq!(chain.await.unwrap(), Renewal::Stopping);
+            assert_eq!(completed.get(), selected + 1);
+            assert_eq!(polls.get(), selected + 1);
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+        let cancellation = Cancellation::new();
+        cancellation.request();
+        let mut request = RenewalRequest {
+            deadline: Instant::now() + Duration::from_secs(5),
+            cancellation: &cancellation,
+            authority: None,
+        };
+        let polled = Cell::new(false);
+        assert_eq!(
+            request
+                .collect(async {
+                    polled.set(true);
+                    Ok(())
+                })
+                .await
+                .unwrap(),
+            Renewal::Stopping
+        );
+        assert!(!polled.get());
+    }
+
+    #[tokio::test]
+    async fn maintenance_renewal_preserves_errors_and_the_original_deadline() {
+        for reason in [
+            "policy changed",
+            "owner expired",
+            "renewal commit unknown",
+            "backend lost",
+        ] {
+            let cancellation = Cancellation::new();
+            let mut request = RenewalRequest {
+                deadline: Instant::now() + Duration::from_secs(5),
+                cancellation: &cancellation,
+                authority: None,
+            };
+            let result = request
+                .collect(async {
+                    cancellation.request();
+                    Err::<(), _>((4, reason.into()))
+                })
+                .await;
+            assert_eq!(result, Err((4, reason.into())));
+        }
+        let cancellation = Cancellation::new();
+        let mut expired = RenewalRequest {
+            deadline: Instant::now(),
+            cancellation: &cancellation,
+            authority: None,
+        };
+        let polls = Cell::new(0);
+        assert!(
+            expired
+                .collect(async {
+                    polls.set(polls.get() + 1);
+                    Ok(())
+                })
+                .await
+                .is_err()
+        );
+        assert_eq!(polls.get(), 0);
+        // Successive stages keep the admitted absolute bound. Repeated stop
+        // cannot replace the in-flight operation with a fresh timeout/retry.
+        let original = Instant::now() + Duration::from_millis(100);
+        let mut request = RenewalRequest {
+            deadline: original,
+            cancellation: &cancellation,
+            authority: None,
+        };
+        assert_eq!(
+            request.collect(async { Ok(()) }).await.unwrap(),
+            Renewal::Renewed(())
+        );
+        let (release, wait) = tokio::sync::oneshot::channel::<()>();
+        {
+            let mut pending = std::pin::pin!(request.collect(async {
+                wait.await.unwrap();
+                Ok(())
+            }));
+            let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+            assert!(pending.as_mut().poll(&mut context).is_pending());
+            cancellation.request();
+            cancellation.request();
+            assert!(pending.as_mut().poll(&mut context).is_pending());
+            assert!(pending.await.is_err());
+        }
+        assert_eq!(request.deadline, original);
+        assert!(release.send(()).is_err());
+
+        // An independently captured accepted-policy window cannot be extended
+        // by completing another tracker refresh while the chain is stopping.
+        use bigbrotr::runtime::policy_authority::LeaseResponse;
+        let dataset = "01010101010101010101010101010101".parse().unwrap();
+        let incarnation = "02020202020202020202020202020202".parse().unwrap();
+        let epoch = PolicyEpoch::new(1);
+        let mut lease = PolicyLeaseTracker::new(
+            dataset,
+            incarnation,
+            epoch,
+            PolicyLeaseTtl::new(Duration::from_secs(5)).unwrap(),
+        )
+        .unwrap();
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl: Duration::from_millis(100),
+                },
+            )
+            .unwrap();
+        let original_window = lease.delivery_window(epoch).unwrap();
+        tokio::time::sleep(Duration::from_millis(120)).await;
+        let ticket = lease.begin_refresh().unwrap();
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset,
+                    process_incarnation: incarnation,
+                    policy_epoch: epoch,
+                    ttl: Duration::from_secs(5),
+                },
+            )
+            .unwrap();
+        let cancellation = Cancellation::new();
+        cancellation.request();
+        let mut request = RenewalRequest {
+            deadline: Instant::now() + Duration::from_secs(5),
+            cancellation: &cancellation,
+            authority: Some(original_window),
+        };
+        assert!(
+            request
+                .collect(async {
+                    polls.set(polls.get() + 1);
+                    Ok(())
+                })
+                .await
+                .is_err()
+        );
+        assert_eq!(polls.get(), 0);
+    }
+
+    #[tokio::test]
+    async fn fail_stop_renewal_still_drops_cancelled_startup_and_external_work() {
+        assert!(!RenewalMode::FailStop.drains(Profile::Initial, true, None));
+        assert!(!RenewalMode::Maintenance.drains(Profile::Initial, false, None));
+        assert!(!RenewalMode::Maintenance.drains(Profile::Successor, true, None));
+        assert!(!RenewalMode::Maintenance.drains(Profile::Initial, true, Some(Instant::now())));
+        assert!(RenewalMode::Maintenance.drains(Profile::Initial, true, None));
+        // These are the unchanged startup/generic HTTP and external Archive
+        // collectors. Their cancellation must not become maintenance Stopping.
+        let root = crate::config::load(
+            &Path::new(env!("CARGO_MANIFEST_DIR")).join("../../config/recipes/archive-only.toml"),
+        )
+        .unwrap();
+        let budget = super::super::budget(&root, true, false).unwrap();
+        for external in [None, Some(Instant::now() + Duration::from_secs(5))] {
+            let cancellation = Cancellation::new();
+            let permit = grant(&budget, MIB, 0).unwrap();
+            let polled = Cell::new(false);
+            let mut work = std::pin::pin!(bounded_capped(
+                Duration::from_secs(5),
+                external,
+                &cancellation,
+                async {
+                    let _permit = permit;
+                    polled.set(true);
+                    std::future::pending::<()>().await;
+                    Ok(())
+                }
+            ));
+            let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+            assert!(work.as_mut().poll(&mut context).is_pending());
+            assert!(polled.get());
+            assert_eq!(budget.snapshot().active_permits(), 1);
+            cancellation.request();
+            assert_eq!(
+                work.await.unwrap_err().1,
+                "initial Ingest cancelled; original attempt may need recovery"
+            );
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+    }
 
     #[tokio::test]
     async fn sync_safe_point_retains_prepared_input_and_grant_until_reauthorization() {
@@ -1099,7 +1510,7 @@ mod tests {
                 &cancellation,
                 async {
                     wait.await.unwrap();
-                    Ok(Instant::now() + Duration::from_secs(5))
+                    Ok(Renewal::Renewed(Instant::now() + Duration::from_secs(5)))
                 },
             )
             .await?;
@@ -1123,6 +1534,43 @@ mod tests {
         assert_eq!(prepared.observation(), Some(&observation));
         assert_eq!(prepared.verified_event().unwrap().event(), &signed);
         assert_eq!(budget.snapshot().active_permits(), 1);
+        let cancellation = Cancellation::new();
+        let (release, wait) = tokio::sync::oneshot::channel();
+        let mut request_window = RenewalRequest {
+            deadline: Instant::now() + Duration::from_secs(5),
+            cancellation: &cancellation,
+            authority: None,
+        };
+        let mut stopped = std::pin::pin!(async {
+            let next = before_sync_operation(Instant::now(), false, &cancellation, async {
+                request_window
+                    .collect(async {
+                        wait.await.unwrap();
+                        Ok(Instant::now() + Duration::from_secs(5))
+                    })
+                    .await
+            })
+            .await?;
+            if next.is_some() {
+                effects.set(effects.get() + 1);
+            }
+            Ok::<_, (u8, String)>((next, prepared))
+        });
+        let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+        assert!(stopped.as_mut().poll(&mut context).is_pending());
+        cancellation.request();
+        assert!(stopped.as_mut().poll(&mut context).is_pending());
+        assert_eq!(budget.snapshot().active_permits(), 1);
+        assert_eq!(effects.get(), 1);
+        release.send(()).unwrap();
+        let (next, prepared) = stopped.await.unwrap();
+        assert_eq!(next, None);
+        assert_eq!(effects.get(), 1);
+        assert_eq!(std::ptr::from_ref(&*prepared), original);
+        assert_eq!(prepared.request_id(), request);
+        assert_eq!(prepared.observation(), Some(&observation));
+        assert_eq!(prepared.verified_event().unwrap().event(), &signed);
+        assert_eq!(budget.snapshot().active_permits(), 1);
         drop(prepared);
         assert_eq!(budget.snapshot().active_permits(), 0);
     }
@@ -1134,7 +1582,7 @@ mod tests {
         let renewals = Cell::new(0);
         let unchanged = before_sync_operation(due, false, &cancellation, async {
             renewals.set(renewals.get() + 1);
-            Ok(due)
+            Ok(Renewal::Renewed(due))
         })
         .await
         .unwrap();
@@ -1142,7 +1590,7 @@ mod tests {
         assert_eq!(renewals.get(), 0);
         let next = before_sync_operation(due, true, &cancellation, async {
             renewals.set(renewals.get() + 1);
-            Ok(due)
+            Ok(Renewal::Renewed(due))
         })
         .await
         .unwrap();
@@ -1163,7 +1611,7 @@ mod tests {
         }
         let next = before_sync_operation(Instant::now(), false, &cancellation, async {
             cancellation.request();
-            Ok(Instant::now() + Duration::from_secs(5))
+            Ok(Renewal::Renewed(Instant::now() + Duration::from_secs(5)))
         })
         .await
         .unwrap();

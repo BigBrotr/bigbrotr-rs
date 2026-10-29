@@ -185,6 +185,9 @@ BINARY_REQUIRED = {
         'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),
     'initial-commands': tuple(BINARY_GROUPS['initial-commands'] + name for name in (
+        'maintenance_renewal_collects_the_same_grant_at_each_stop_boundary',
+        'maintenance_renewal_preserves_errors_and_the_original_deadline',
+        'fail_stop_renewal_still_drops_cancelled_startup_and_external_work',
         'sync_safe_point_retains_prepared_input_and_grant_until_reauthorization',
         'sync_wire_phase_requires_renewal_even_with_remaining_time',
         'sync_safe_point_refuses_failed_revalidation_and_cancellation',

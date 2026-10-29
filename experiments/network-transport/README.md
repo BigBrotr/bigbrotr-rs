@@ -86,8 +86,14 @@ global request/bridge bounds and recovery-capacity controls. The closed Sync com
 retention of the same prepared signed input and grant across safe-point renewal,
 pre-REQ reauthorization, cancellation/revalidation refusal, refusal before an
 expired operation's first poll, and preservation of a started admission's deadline
-and unknown outcome. Diagnostic progress cannot certify a commit. The binary
-scope contains 86 required names, including pre-effect finite-work admission,
+and unknown outcome. Ordinary initialized renewal controls collect the same
+in-flight stage and grant on stop under one absolute chain deadline, refuse
+later stages and dispatch, and retain startup/external/successor fail-stop
+selection. An expired original accepted-policy window cannot be replaced by a
+new tracker refresh. These controls require actual Rust execution; the Python
+verifier controls alone do not qualify renewal or shutdown. Diagnostic progress
+cannot certify a commit. The binary
+scope contains 104 required names, including pre-effect finite-work admission,
 fair deferral, funded ACK completion and Archive publication/capture, plus parked Archive status retaining its
 last published cut or explicit absence. The library selection is combined
 with its actual compiled inventory, never inferred from this source count. The
