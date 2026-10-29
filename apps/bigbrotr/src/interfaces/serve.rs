@@ -160,7 +160,7 @@ pub(crate) fn command() -> Command {
             .requires("initialize-ingest")
             .help("Explicitly select fresh-only Index initialization alongside --initialize-ingest and the index role. Requires an existing empty private index root, an empty Atomic ClickHouse database, separate initializer/writer credentials and migration0041. Publishes complete native batches through verified physical rows and Control plans; no restart adoption or overall readiness is implied. Partial installation and unresolved remote queries preserve state and park Index. This profile is under qualification"))
         .arg(Arg::new("activate-initial-successor").long("activate-initial-successor").action(clap::ArgAction::SetTrue)
-            .help("Explicitly prepare and activate epoch2 from a fully retired initial Ingest lifetime; select control,ingest with optional sync. Requires retained original inputs or a verified closed-producer floor, and complete positive predecessor outcomes. Uses current accepted policy and keeps native custody until stopped. Existing epoch2, missing retirement proof and selected Archive refuse. Starts no Archive publication; general successor recovery is not implemented. This profile is under qualification"))
+            .help("Explicitly prepare and activate epoch2 from a fully retired initial Ingest lifetime; select control,ingest with optional sync and retained index. Index requires an uncompacted original predecessor fully published with no pending plan; it verifies the same retained generation and commits an explicit zero epoch2 bridge before acquisition, without initializer credentials. Requires retained original inputs or a verified closed-producer floor, and complete positive predecessor outcomes. Uses current accepted policy and keeps native custody until stopped. Existing epoch2, missing retirement proof and selected Archive refuse. Starts no Archive publication; general successor recovery is not implemented. This profile is under qualification"))
         .arg(Arg::new("activate-successor").long("activate-successor").action(clap::ArgAction::SetTrue)
             .conflicts_with("activate-initial-successor")
             .help("Explicitly prepare and activate the next Ingest generation from a fully retired epoch2 or later; select control,ingest with optional sync. Requires migration0038, complete retained lineage and original inputs. Creates a fresh local candidate and keeps its actual writer until stopped. Pending or activated heads, unresolved inputs and selected Archive refuse. Does not adopt an earlier writer, reclaim data or retire the new lifetime on shutdown. This profile is under qualification"))
@@ -169,6 +169,23 @@ pub(crate) fn command() -> Command {
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
     execute_operation(args, Operation::Serve)
+}
+
+fn successor_selection(roles: &BTreeSet<&str>, repeatable: bool) -> Result<(bool, bool)> {
+    if !roles.contains("control")
+        || !roles.contains("ingest")
+        || roles
+            .iter()
+            .any(|role| !matches!(*role, "control" | "ingest" | "sync" | "index"))
+        || (repeatable && roles.contains("index"))
+    {
+        return Err((3, if repeatable {
+            "successor requires control,ingest with optional sync; Archive and Index are unsupported"
+        } else {
+            "initial successor requires control,ingest with optional sync and retained index; Archive is unsupported"
+        }.into()));
+    }
+    Ok((roles.contains("sync"), roles.contains("index")))
 }
 
 fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
@@ -250,26 +267,11 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
         }
         let repeatable = args.get_flag("activate-successor");
         if repeatable || args.get_flag("activate-initial-successor") {
-            if distinct != BTreeSet::from(["control", "ingest"])
-                && distinct != BTreeSet::from(["control", "ingest", "sync"])
-            {
-                return Err((
-                    3,
-                    format!(
-                        "{} requires control,ingest with optional sync; Archive is unsupported",
-                        if repeatable {
-                            "successor"
-                        } else {
-                            "initial successor"
-                        }
-                    ),
-                ));
-            }
-            let sync = distinct.contains("sync");
+            let (sync, index) = successor_selection(&distinct, repeatable)?;
             return if repeatable {
                 initial_ingest::successor_family::run(root, sync, &mut output)
             } else {
-                initial_ingest::successor::run(root, sync, &mut output)
+                initial_ingest::successor::run(root, sync, index, &mut output)
             };
         }
         if args.get_flag("initialize-ingest") {
@@ -1210,7 +1212,7 @@ mod tests {
     }
 
     #[test]
-    fn index_initialization_requires_explicit_fresh_ingest_and_refuses_successors() {
+    fn index_initialization_is_fresh_only_and_initial_successor_retains_optional_index() {
         assert!(
             command()
                 .try_get_matches_from(["serve", "--file", "/unused", "--initialize-index",])
@@ -1228,6 +1230,21 @@ mod tests {
             ])
             .unwrap();
         assert!(args.get_flag("initialize-index"));
+        for sync in [false, true] {
+            let mut roles = BTreeSet::from(["control", "ingest", "index"]);
+            if sync {
+                roles.insert("sync");
+            }
+            assert_eq!(successor_selection(&roles, false).unwrap(), (sync, true));
+            assert!(successor_selection(&roles, true).is_err());
+        }
+        for roles in [
+            BTreeSet::from(["control", "index"]),
+            BTreeSet::from(["control", "ingest", "archive"]),
+            BTreeSet::from(["control", "ingest", "index", "read"]),
+        ] {
+            assert!(successor_selection(&roles, false).is_err());
+        }
         for successor in ["--activate-initial-successor", "--activate-successor"] {
             assert!(
                 command()

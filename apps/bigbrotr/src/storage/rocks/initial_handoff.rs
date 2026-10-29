@@ -125,6 +125,26 @@ impl InitialHandoff {
         self.record.closure_digest
     }
 
+    /// A continuing reader borrows the activated owner. Native advancement is
+    /// allowed, but cannot replace its root, immutable handoff or manifest.
+    pub(in crate::storage) fn require_live_source(
+        &self,
+        store: &IngestStore,
+    ) -> Result<(), AdmissionError> {
+        if store.write_uncertain {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        if !matches!(self.basis, InitialPredecessorBasis::Original)
+            || store.manifest() != self.next_manifest()
+            || store.handoff_root_identity()? != self.native_root
+        {
+            return Err(AdmissionError::StateMismatch);
+        }
+        store.require_admission_owner(None)?;
+        store.handoff_value(self.record.key(), Some(self.encode().as_bytes()))?;
+        Ok(())
+    }
+
     pub fn encode(&self) -> EncodedHandoff {
         self.record.encode()
     }

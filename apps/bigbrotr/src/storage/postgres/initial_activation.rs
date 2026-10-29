@@ -11,11 +11,11 @@ use crate::{
         store::{
             ActiveInitialWriter, AdmissionError, AdmissionLimits, BootstrapError,
             DictionaryPreparation, IngestStore, InitialHandoff, InitialWriterCandidate,
-            ObservedHandoff,
+            ObservedHandoff, PendingBatch, PendingError, PendingReadLimits, SourceHead,
         },
     },
 };
-use bigbrotr_model::{DictionaryKind, PolicyEpoch, ProducerSlotId, QualifiedRef};
+use bigbrotr_model::{DictionaryKind, PolicyEpoch, ProducerSlotId, QualifiedRef, SourceRecordId};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 /// This object cannot be reconstructed from a receipt, manifest or registration.
@@ -31,7 +31,52 @@ pub(super) struct LiveInitialBinding {
     pub(super) control: ingest_registry::ControlOwner,
     activated_at_us: i64,
 }
+
+/// A read-only borrow of the actual activated native owner. It cannot reopen,
+/// detach, mutate, acknowledge or reconstruct that writer from metadata.
+pub struct LiveInitialSource<'a> {
+    native: crate::storage::rocks::store::InitialIndexSource<'a>,
+}
+impl LiveInitialSource<'_> {
+    pub fn manifest(&self) -> &IngestManifest {
+        self.native.manifest()
+    }
+    pub fn handoff(&self) -> &InitialHandoff {
+        self.native.handoff()
+    }
+    pub fn observe(&self, cancelled: &AtomicBool) -> Result<SourceHead, AdmissionError> {
+        self.native.observe(cancelled)
+    }
+    pub fn retained_requests(&self) -> Result<u64, AdmissionError> {
+        self.native.retained_requests()
+    }
+    pub fn read_pending_batch(
+        &self,
+        first: SourceRecordId,
+        limits: PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Option<PendingBatch>, PendingError> {
+        self.native
+            .read_pending_batch(first, limits, permit, cancelled)
+    }
+}
 impl LiveInitialWriter {
+    pub fn index_source(&self) -> Result<LiveInitialSource<'_>, AdmissionError> {
+        if self
+            .handoff()
+            .previous_manifest()
+            .identity()
+            .topology_generation
+            .get()
+            != 0
+            || self.manifest().identity().topology_generation.get() != 1
+        {
+            return Err(AdmissionError::InvalidInput);
+        }
+        let native = self.native.index_source()?;
+        Ok(LiveInitialSource { native })
+    }
     pub fn producer_credit(
         &self,
     ) -> Result<crate::storage::rocks::store::ProducerCredit, AdmissionError> {

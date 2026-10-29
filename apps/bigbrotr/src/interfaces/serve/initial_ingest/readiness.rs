@@ -1,9 +1,14 @@
 //! Bounded observations from the serial native owner, never execution authority.
-use super::{index::Index, owner::NativeOwner};
+use super::{
+    index::{
+        Index,
+        source::{Observed, Source as IndexSource},
+    },
+    owner::NativeOwner,
+};
 use bigbrotr::{
     management::{grants::Revision, roles::*, sessions::SessionError},
     runtime::policy_authority::{AuthorityClock, AuthorityTick, SuspendAwareClock},
-    storage::rocks::store::SourceHead,
 };
 use bigbrotr_model::{DatasetId, SourceCut, TopologyGeneration};
 use std::{sync::atomic::AtomicBool, time::Duration};
@@ -13,18 +18,24 @@ pub(super) const FRESHNESS: Duration = Duration::from_secs(30);
 /// Fixed-size metadata fits the existing retained initial-owner reservation.
 #[derive(Clone, Copy, Default)]
 pub(super) struct Source {
-    observed: Option<(SourceHead, AuthorityTick)>,
+    observed: Option<(Observed, AuthorityTick)>,
 }
 impl Source {
-    pub(super) fn refresh(&mut self, owner: &NativeOwner, cancelled: &AtomicBool) {
-        // This profile does not borrow a successor's hidden native owner. Unknown
-        // stays unknown; its current-epoch counter cannot imply a complete cut.
+    pub(super) fn refresh(
+        &mut self,
+        owner: &NativeOwner,
+        cancelled: &AtomicBool,
+        live_index: bool,
+    ) {
         self.observed = (|| {
-            let store = owner.initial().ok()?;
+            // Preserve the older successor profiles' unknown observation. The
+            // explicit live Index lifetime owns the new complete-vector reader.
+            if matches!(owner, NativeOwner::Live(_)) && !live_index {
+                return None;
+            }
+            let source = IndexSource::from_owner(owner).ok()?;
             let started = SuspendAwareClock.read().ok()?;
-            let head = store
-                .observe_source_head(store.manifest(), cancelled)
-                .ok()?;
+            let head = source.observe(cancelled).ok()?;
             Some((head, started))
         })();
     }
@@ -47,14 +58,10 @@ pub(super) struct ArchiveStatus {
     pub connection_refused: bool,
 }
 
-fn cut(head: SourceHead) -> Result<SourceCut, SessionError> {
-    SourceCut::new(
-        head.identity().dataset_id,
-        head.identity().topology_generation,
-        vec![head.bound()],
-    )
-    .map_err(|_| SessionError::InvalidMetadata)
+fn cut(head: Observed) -> Result<SourceCut, SessionError> {
+    head.cut().map_err(|_| SessionError::InvalidMetadata)
 }
+
 fn age(started: AuthorityTick) -> Option<Duration> {
     SuspendAwareClock.read().ok()?.elapsed_since(started).ok()
 }
@@ -91,7 +98,7 @@ fn revision(value: u64) -> Result<Revision, SessionError> {
     value.to_string().try_into()
 }
 
-/// At most three one-stream cuts are copied. No history-sized collection or
+/// At most three bounded one- or two-stream cuts are copied. No history-sized collection or
 /// engine operation is admitted by a status request. The request's64KiB grant
 /// remains held until the separately charged response takes ownership.
 pub(super) fn snapshot(
@@ -232,7 +239,9 @@ pub(super) fn snapshot(
             } else {
                 StatusReason::DependencyUnavailable
             };
-        } else if observed.failure.is_some() {
+        } else if current.is_some_and(|source| !source.within_history_limit())
+            || observed.failure.is_some()
+        {
             cap.state = CapabilityState::Unavailable;
             cap.reason = StatusReason::DependencyUnavailable;
         } else if (observed.building || observed.active) && cap.state != CapabilityState::Ready {

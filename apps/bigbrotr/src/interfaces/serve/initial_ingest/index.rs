@@ -1,8 +1,10 @@
 //! Initial-only Index consumer. Physical work is pollable and independently
 //! owned; no overall readiness, producer ACK or restart authority is implied.
 pub(in crate::interfaces::serve) mod catch_up;
+mod live;
 mod prepare;
 pub(super) mod readiness;
+pub(super) mod source;
 use super::{Result, required};
 use crate::config::Resolved;
 use bigbrotr::{
@@ -312,6 +314,10 @@ impl Index {
     pub(super) fn accept(&mut self, effective: &Resolved) -> std::result::Result<(), OwnerError> {
         let next = profile(effective)?;
         if self.accepted.is_some_and(|old| old != next)
+            || self
+                .state
+                .as_ref()
+                .is_some_and(|state| state.binding().provenance() != next.provenance)
             || next.query_memory > self.prepared.engine().snapshot().limits().data_bytes()
         {
             return Err(OwnerError::InvalidPolicy);
@@ -512,7 +518,7 @@ impl Index {
     pub(super) async fn tick(
         &mut self,
         owner: &mut ControlSession,
-        store: &IngestStore,
+        store: source::Source<'_>,
         deadline: Instant,
         cancelled: &AtomicBool,
         allow_dispatch: bool,
@@ -550,7 +556,7 @@ impl Index {
         }
         if let Some((operation, completed)) = self.completed.take() {
             let tick = self
-                .complete(owner, store, completed, deadline, cancelled)
+                .complete(owner, &store, completed, deadline, cancelled)
                 .await?;
             // complete() has consumed the joined result and its local permit.
             // This marker says nothing about a surviving named remote query.
@@ -573,7 +579,20 @@ impl Index {
         self.renew(owner, &Cell::new(false)).await?;
         live_window(deadline, cancelled)?;
         let now = self.readiness.sample()?;
-        let probe_source = self.probe_source(store, now, cancelled);
+        // An issued operation was polled/joined above before applying the finite
+        // history boundary. Sync admission remains independently owned.
+        if !store.within_history_limit()? {
+            self.readiness.fail(readiness::Failure::Capacity);
+            self.readiness.abandon();
+            return Ok(Tick::Idle);
+        }
+        if let Some(session) = &self.session {
+            store
+                .require_current(owner, session, self.state.as_ref().unwrap())
+                .await?;
+            live_window(deadline, cancelled)?;
+        }
+        let probe_source = self.probe_source(&store, now, cancelled);
         live_window(deadline, cancelled)?;
         let profile = self.accepted.expect("initialized profile");
         let limits = profile.physical()?;
@@ -655,17 +674,8 @@ impl Index {
                 return Ok(Tick::WaitingForResources);
             };
             let before = self.cut.as_ref().expect("initial cut");
-            let identity = self.source_identity.unwrap();
-            let first = next_source(identity, before)?;
-            let Some(pending) = store
-                .read_pending_batch(first, source_limits, source_grant, cancelled)
-                .map_err(|error| {
-                    (
-                        4,
-                        format!("initial Index refused; preserve retained state: {error}"),
-                    )
-                })?
-            else {
+            let first = store.next(before)?;
+            let Some(pending) = store.read(first, source_limits, source_grant, cancelled)? else {
                 if self.pending.is_some() {
                     return Err(failed("prepared plan lost its retained input"));
                 }
@@ -688,16 +698,14 @@ impl Index {
                 }
             } else {
                 live_window(deadline, cancelled)?;
-                let prepared = owner
-                    .prepare_index_plan(
+                let prepared = store
+                    .prepare(
+                        owner,
                         self.session.as_ref().unwrap(),
-                        self.state.as_ref().unwrap().custody(),
-                        planned.plan(),
-                        planned.source(),
-                        &Cell::new(false),
+                        self.state.as_ref().unwrap(),
+                        &planned,
                     )
-                    .await
-                    .map_err(|_| failed("PG plan preparation failed"))?;
+                    .await?;
                 self.pending = Some(prepared);
             }
             live_window(deadline, cancelled)?;
@@ -746,7 +754,7 @@ impl Index {
     async fn complete(
         &mut self,
         owner: &mut ControlSession,
-        store: &IngestStore,
+        store: &source::Source<'_>,
         completed: Completed,
         deadline: Instant,
         cancelled: &AtomicBool,
@@ -760,6 +768,9 @@ impl Index {
             self.readiness.fail(readiness::Failure::Dependency);
             self.readiness.abandon();
             return Ok(Tick::Parked);
+        }
+        if !store.within_history_limit()? {
+            self.readiness.fail(readiness::Failure::Capacity);
         }
         let state = self.state.as_ref().expect("active state");
         match completed {
@@ -801,16 +812,15 @@ impl Index {
                             .pending
                             .as_ref()
                             .ok_or_else(|| failed("physical result has no prepared plan"))?;
-                        let receipt = owner
-                            .publish_index_plan(
+                        let receipt = store
+                            .publish(
+                                owner,
                                 self.session.as_ref().unwrap(),
-                                state.custody(),
+                                state,
                                 prepared,
                                 proof,
-                                &Cell::new(false),
                             )
-                            .await
-                            .map_err(|_| failed("PG publication failed"))?;
+                            .await?;
                         if receipt.binding != *state.binding()
                             || receipt.plan_digest != prepared.plan().digest()
                             || receipt.revision

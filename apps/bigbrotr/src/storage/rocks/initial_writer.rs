@@ -1,7 +1,7 @@
 //! Local custody for one live initial successor. Portable history is not a writer.
 use super::{
-    AdmissionError, BootstrapError, IngestRecovery, IngestStore, InitialHandoff, ResolvedSource,
-    VerifiedCompactedPrefix,
+    AdmissionError, BootstrapError, IngestRecovery, IngestStore, InitialHandoff, PendingBatch,
+    PendingError, PendingReadLimits, ResolvedSource, SourceHead, VerifiedCompactedPrefix,
 };
 use crate::runtime::OwnedPermit;
 use crate::{
@@ -10,7 +10,7 @@ use crate::{
 };
 use bigbrotr_model::{
     AllocationDomainId, DictionaryKind, OwnerEpoch, PolicyEpoch, ProcessIncarnation,
-    ProducerRequestId, ProducerSlotId, TopologyGeneration,
+    ProducerRequestId, ProducerSlotId, SourceRecordId, TopologyGeneration,
 };
 use std::sync::atomic::AtomicBool;
 
@@ -291,5 +291,92 @@ impl IngestStore {
             return frontier.require_identity(self, request);
         }
         Err(AdmissionError::InvalidInput)
+    }
+}
+
+/// Native read mechanics, constructible only by the continuously retained owner.
+/// The PostgreSQL live wrapper supplies the connected authority for effects.
+pub(in crate::storage) struct InitialIndexSource<'a> {
+    writer: &'a ActiveInitialWriter,
+}
+impl ActiveInitialWriter {
+    pub(in crate::storage) fn index_source(
+        &self,
+    ) -> Result<InitialIndexSource<'_>, AdmissionError> {
+        self.handoff().require_live_source(self.store())?;
+        self.producer_credit()?;
+        Ok(InitialIndexSource { writer: self })
+    }
+}
+impl InitialIndexSource<'_> {
+    pub fn manifest(&self) -> &IngestManifest {
+        self.writer.manifest()
+    }
+    pub fn handoff(&self) -> &InitialHandoff {
+        self.writer.handoff()
+    }
+    pub fn observe(&self, cancelled: &AtomicBool) -> Result<SourceHead, AdmissionError> {
+        self.handoff().require_live_source(self.writer.store())?;
+        self.writer
+            .store()
+            .observe_source_head(self.manifest(), cancelled)
+            .map_err(|_| AdmissionError::StateMismatch)
+    }
+    /// Counts actual requests, independently of fact counts and the bridge's
+    /// extra publication revision. The consumer enforces its own finite limit.
+    pub fn retained_requests(&self) -> Result<u64, AdmissionError> {
+        self.handoff().require_live_source(self.writer.store())?;
+        self.handoff()
+            .issued_through()
+            .checked_add(self.writer.producer_credit()?.issued_through())
+            .ok_or(AdmissionError::Limit)
+    }
+    pub fn read_pending_batch(
+        &self,
+        first: SourceRecordId,
+        limits: PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<Option<PendingBatch>, PendingError> {
+        if permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || permit.request().units().items() == 0
+        {
+            return Err(PendingError::InsufficientReservation);
+        }
+        if cancelled.load(std::sync::atomic::Ordering::Acquire) {
+            return Err(PendingError::Cancelled);
+        }
+        let head = self
+            .observe(cancelled)
+            .map_err(|_| PendingError::IncompleteBatch)?;
+        let id = head.identity();
+        if first.dataset_id != id.dataset_id
+            || first.shard_id != id.shard_id
+            || first.owner_epoch != id.owner_epoch
+        {
+            return Err(PendingError::IncompleteBatch);
+        }
+        if head.through().get().checked_add(1) == Some(first.sequence.get()) {
+            return Ok(None);
+        }
+        if first.sequence.get() > head.through().get() {
+            return Err(PendingError::IncompleteBatch);
+        }
+        let pending = self
+            .writer
+            .store()
+            .read_pending_batch(first, limits, permit, cancelled)?;
+        let after = self
+            .observe(cancelled)
+            .map_err(|_| PendingError::IncompleteBatch)?;
+        if after.manifest() != head.manifest()
+            || after.through() < head.through()
+            || pending
+                .as_ref()
+                .is_some_and(|batch| batch.batch().last().sequence.get() > head.through().get())
+        {
+            return Err(PendingError::IncompleteBatch);
+        }
+        Ok(pending)
     }
 }

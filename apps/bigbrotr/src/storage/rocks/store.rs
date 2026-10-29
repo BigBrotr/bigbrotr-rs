@@ -142,6 +142,7 @@ pub use initial_handoff::{
 
 #[path = "initial_writer.rs"]
 mod initial_writer;
+pub(in crate::storage) use initial_writer::InitialIndexSource;
 pub use initial_writer::{ActiveInitialWriter, InitialWriterCandidate};
 
 #[path = "lineage.rs"]

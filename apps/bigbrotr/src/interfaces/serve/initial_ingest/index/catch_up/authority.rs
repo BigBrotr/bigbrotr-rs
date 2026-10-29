@@ -4,7 +4,7 @@ use bigbrotr::runtime::policy_authority::{PolicyLeaseTracker, PolicyLeaseTtl};
 use std::future::Future;
 use tokio::time::Instant as Timer;
 
-pub(super) struct Authority<'a> {
+pub(in crate::interfaces::serve::initial_ingest::index) struct Authority<'a> {
     root: &'a Resolved,
     progress: &'a watch::Sender<Progress>,
     cancellation: &'a Cancellation,
@@ -12,9 +12,10 @@ pub(super) struct Authority<'a> {
     profile: Profile,
     lease: PolicyLeaseTracker,
     due: Timer,
+    live_initial: Option<&'a bigbrotr::storage::postgres::control_owner::LiveInitialWriter>,
 }
 impl<'a> Authority<'a> {
-    pub(super) fn new(
+    pub(in crate::interfaces::serve::initial_ingest::index) fn new(
         root: &'a Resolved,
         progress: &'a watch::Sender<Progress>,
         cancellation: &'a Cancellation,
@@ -38,10 +39,19 @@ impl<'a> Authority<'a> {
             )
             .map_err(error)?,
             due: Timer::now(),
+            live_initial: None,
         })
     }
 
-    pub(super) async fn refresh(
+    pub(in crate::interfaces::serve::initial_ingest::index) fn with_live_initial(
+        mut self,
+        writer: &'a bigbrotr::storage::postgres::control_owner::LiveInitialWriter,
+    ) -> Self {
+        self.live_initial = Some(writer);
+        self
+    }
+
+    pub(in crate::interfaces::serve::initial_ingest::index) async fn refresh(
         &mut self,
         owner: &mut ControlSession,
         session: Option<&IndexSession>,
@@ -75,6 +85,17 @@ impl<'a> Authority<'a> {
                 ),
             )
             .map_err(error)?;
+        if let Some(writer) = self.live_initial {
+            let root = self.root;
+            let profile = self.profile;
+            self.operation(owner.renew_live_initial_ingest(
+                writer,
+                ttl,
+                |d, h| validate(root, profile, d, h),
+                &Cell::new(false),
+            ))
+            .await?;
+        }
         if let Some(session) = session {
             self.operation(owner.renew_index(session, state.custody(), &Cell::new(false)))
                 .await?;
@@ -85,7 +106,10 @@ impl<'a> Authority<'a> {
         Ok(())
     }
 
-    pub(super) async fn operation<T, E: std::fmt::Debug>(
+    pub(in crate::interfaces::serve::initial_ingest::index) async fn operation<
+        T,
+        E: std::fmt::Debug,
+    >(
         &mut self,
         work: impl Future<Output = std::result::Result<T, E>>,
     ) -> Result<T> {
@@ -110,7 +134,10 @@ impl<'a> Authority<'a> {
             .map_err(error)
     }
 
-    pub(super) fn local<T>(&mut self, work: impl FnOnce(&AtomicBool) -> Result<T>) -> Result<T> {
+    pub(in crate::interfaces::serve::initial_ingest::index) fn local<T>(
+        &mut self,
+        work: impl FnOnce(&AtomicBool) -> Result<T>,
+    ) -> Result<T> {
         self.live()?;
         let timeout = duration(self.root, "renewal_timeout")
             .min(self.lease.remaining_validity().map_err(error)? / 2);
@@ -126,7 +153,7 @@ impl<'a> Authority<'a> {
 
     /// Poll only the actual executor join. On any error Drop cancels and joins
     /// while the parent watchdog and PG driver independently retain custody.
-    pub(super) async fn join<T: Send + 'static>(
+    pub(in crate::interfaces::serve::initial_ingest::index) async fn join<T: Send + 'static>(
         &mut self,
         owner: &mut ControlSession,
         session: Option<&IndexSession>,

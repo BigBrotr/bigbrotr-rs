@@ -296,6 +296,10 @@ BEGIN
     END IF;
     attribution := control.require_current_index_owner(NEW.generation_id);
     IF TG_OP = 'INSERT' THEN
+        IF NEW.source_owner_epoch=2 AND NOT EXISTS(SELECT 1 FROM control.datasets
+            WHERE dataset_id=NEW.dataset_id AND topology_generation=1) THEN
+            RAISE EXCEPTION 'Index epoch2 mutation requires current initial successor topology' USING ERRCODE='23514';
+        END IF;
         SELECT coalesce(current_revision, 0) INTO STRICT head FROM control.consumers
             WHERE consumer_id = NEW.consumer_id AND consumer_role = 'index' FOR UPDATE;
         IF NEW.sealed OR NEW.origin_epoch <> attribution.owner_epoch
@@ -398,6 +402,10 @@ CREATE FUNCTION control.check_complete_index_plan() RETURNS trigger LANGUAGE plp
 SET search_path = pg_catalog, control AS $$
 BEGIN
     PERFORM control.require_complete_index_plan(NEW.generation_id, NEW.plan_digest);
+    IF EXISTS(SELECT 1 FROM control.projection_plans p WHERE p.generation_id=NEW.generation_id AND p.plan_digest=NEW.plan_digest
+        AND p.source_owner_epoch=2 AND NOT EXISTS(SELECT 1 FROM control.datasets d WHERE d.dataset_id=p.dataset_id AND d.topology_generation=1)) THEN
+        RAISE EXCEPTION 'Index epoch2 mutation requires current initial successor topology' USING ERRCODE='23514';
+    END IF;
     PERFORM control.require_current_index_owner(NEW.generation_id);
     RETURN NULL;
 END;
@@ -413,6 +421,10 @@ BEGIN
     END IF;
     PERFORM control.require_index_owner(NEW.dataset_id, NEW.consumer_id, NEW.owner_epoch, NEW.owner_incarnation);
     PERFORM control.require_complete_index_plan(NEW.generation_id, NEW.plan_digest);
+    IF EXISTS(SELECT 1 FROM control.projection_plans p WHERE p.generation_id=NEW.generation_id AND p.plan_digest=NEW.plan_digest
+        AND p.source_owner_epoch=2 AND NOT EXISTS(SELECT 1 FROM control.datasets d WHERE d.dataset_id=p.dataset_id AND d.topology_generation=1)) THEN
+        RAISE EXCEPTION 'Index epoch2 mutation requires current initial successor topology' USING ERRCODE='23514';
+    END IF;
     IF NOT EXISTS (SELECT 1 FROM control.projection_plans p
         WHERE p.generation_id = NEW.generation_id AND p.plan_digest = NEW.plan_digest
             AND p.consumer_id = NEW.consumer_id AND p.frontier_revision = NEW.frontier_revision)
@@ -435,13 +447,46 @@ CREATE TRIGGER index_frontier_plan_guard BEFORE INSERT OR UPDATE OR DELETE ON co
 CREATE TRIGGER index_frontier_plan_truncate_guard BEFORE TRUNCATE ON control.index_frontier_plans
     FOR EACH STATEMENT EXECUTE FUNCTION control.guard_index_frontier_plan();
 
+-- Publication authority is separate from immutable historical verification.
+-- OPEN requires the actual activation's Control to be the Index issuer. CLOSED
+-- requires the existing terminal path; a merely closed/unretired source refuses.
+CREATE FUNCTION control.require_index_handoff_authority(h control.index_frontier_handoffs)
+RETURNS void LANGUAGE plpgsql SET search_path = pg_catalog, control AS $$
+DECLARE attribution control.index_owner_sessions%ROWTYPE;
+        activation control.initial_ingest_activations%ROWTYPE;
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM control.datasets WHERE dataset_id=h.dataset_id AND topology_generation=1) THEN
+        RAISE EXCEPTION 'Index handoff publication requires current initial successor topology' USING ERRCODE='23514';
+    END IF;
+    PERFORM control.require_index_owner(h.dataset_id,h.consumer_id,h.owner_epoch,h.owner_incarnation);
+    attribution := control.require_current_index_owner(h.generation_id);
+    IF ROW(attribution.dataset_id,attribution.resource_id,attribution.owner_epoch,attribution.owner_incarnation)
+        IS DISTINCT FROM ROW(h.dataset_id,h.consumer_id,h.owner_epoch,h.owner_incarnation) THEN
+        RAISE EXCEPTION 'Index handoff requires its current generation owner' USING ERRCODE='23514';
+    END IF;
+    IF EXISTS(SELECT 1 FROM control.source_streams WHERE dataset_id=h.dataset_id
+        AND shard_id=h.source_shard AND owner_epoch=2 AND owner_resource_id=h.ingest_resource AND state='open') THEN
+        PERFORM control.require_active_initial_writer(h.ingest_resource);
+        SELECT * INTO STRICT activation FROM control.initial_ingest_activations WHERE owner_resource_id=h.ingest_resource;
+        IF ROW(activation.dataset_id,activation.activated_by_resource,activation.activated_by_epoch,activation.activated_by_incarnation)
+            IS DISTINCT FROM ROW(attribution.dataset_id,attribution.issuer_resource,attribution.issuer_epoch,attribution.issuer_incarnation) THEN
+            RAISE EXCEPTION 'live Index handoff requires the activating Control as its issuer' USING ERRCODE='23514';
+        END IF;
+    ELSIF control.require_activated_initial_retirement(h.ingest_resource) IS NULL THEN
+        RAISE EXCEPTION 'Index handoff requires live activation or terminal initial succession' USING ERRCODE='23514';
+    END IF;
+    -- Both owners are sampled after activation/retirement parent locks.
+    PERFORM control.require_index_owner(h.dataset_id,h.consumer_id,h.owner_epoch,h.owner_incarnation);
+END;
+$$;
+
 CREATE FUNCTION control.guard_index_frontier_handoff() RETURNS trigger LANGUAGE plpgsql
 SET search_path = pg_catalog, control AS $$
 BEGIN
     IF TG_OP <> 'INSERT' THEN
         RAISE EXCEPTION 'Index handoff receipts are immutable' USING ERRCODE = '23514';
     END IF;
-    PERFORM control.require_index_owner(NEW.dataset_id, NEW.consumer_id, NEW.owner_epoch, NEW.owner_incarnation);
+    PERFORM control.require_index_handoff_authority(NEW);
     PERFORM 1 FROM control.consumers WHERE consumer_id = NEW.consumer_id AND dataset_id = NEW.dataset_id
         AND consumer_role = 'index' AND current_revision = NEW.expected_revision
         AND current_topology_generation = 0 FOR UPDATE;
@@ -467,21 +512,41 @@ CREATE TRIGGER index_frontier_handoff_truncate_guard BEFORE TRUNCATE ON control.
 CREATE FUNCTION control.require_index_handoff_metadata(wanted_consumer bytea, wanted_revision numeric)
 RETURNS void LANGUAGE plpgsql SET search_path = pg_catalog, control AS $$
 DECLARE h control.index_frontier_handoffs%ROWTYPE; s control.initial_ingest_successions%ROWTYPE;
+        a control.initial_ingest_activations%ROWTYPE;
 BEGIN
     SELECT * INTO STRICT h FROM control.index_frontier_handoffs
         WHERE consumer_id = wanted_consumer AND frontier_revision = wanted_revision;
     SELECT * INTO STRICT s FROM control.initial_ingest_successions WHERE owner_resource_id = h.ingest_resource;
-    IF control.require_activated_initial_retirement(h.ingest_resource) IS NULL
+    SELECT * INTO STRICT a FROM control.initial_ingest_activations WHERE owner_resource_id=h.ingest_resource;
+    IF ROW(a.dataset_id,a.target_epoch,a.target_incarnation,a.target_role_instance_id,
+            a.producer_slot_id,a.producer_epoch,a.previous_manifest_sha256,a.target_manifest_sha256,a.handoff_sha256,
+            a.prepared_by_resource,a.prepared_by_epoch,a.prepared_by_incarnation,
+            a.activated_by_resource,a.activated_by_epoch,a.activated_by_incarnation,
+            a.config_revision,a.policy_revision,a.config_digest,a.policy_digest)
+        IS DISTINCT FROM ROW(s.dataset_id,s.target_epoch,s.target_incarnation,s.target_role_instance_id,
+            s.producer_slot_id,s.producer_epoch,s.previous_manifest_sha256,s.target_manifest_sha256,s.handoff_sha256,
+            s.prepared_by_resource,s.prepared_by_epoch,s.prepared_by_incarnation,
+            s.prepared_by_resource,s.prepared_by_epoch,s.prepared_by_incarnation,
+            s.config_revision,s.policy_revision,s.config_digest,s.policy_digest)
+        OR a.activated_at_us < s.created_at_us
         OR s.dataset_id <> h.dataset_id OR s.previous_topology <> 0 OR s.target_topology <> 1
         OR s.shard_id <> h.source_shard OR s.handoff_sha256 <> h.succession_digest
         OR s.last_complete_sequence <> h.predecessor_through
-        OR NOT EXISTS (SELECT 1 FROM control.datasets WHERE dataset_id = h.dataset_id AND topology_generation = 1)
         OR NOT EXISTS (SELECT 1 FROM control.source_streams WHERE dataset_id = h.dataset_id
             AND shard_id = h.source_shard AND owner_epoch = 1 AND owner_resource_id = h.ingest_resource
             AND state = 'closed' AND last_complete_sequence = h.predecessor_through AND closure_digest = s.closure_digest)
         OR NOT EXISTS (SELECT 1 FROM control.source_streams WHERE dataset_id = h.dataset_id
             AND shard_id = h.source_shard AND owner_epoch = 2 AND owner_resource_id = h.ingest_resource
-            AND owner_incarnation = s.target_incarnation AND state = 'closed')
+            AND owner_incarnation = s.target_incarnation)
+        OR NOT EXISTS (SELECT 1 FROM control.producer_epochs p JOIN control.owner_epochs o
+            ON o.resource_id=p.owner_resource_id AND o.epoch=p.owner_epoch
+            JOIN control.role_instances r ON r.role_instance_id=o.role_instance_id
+            WHERE p.producer_slot_id=s.producer_slot_id AND p.producer_epoch=1 AND p.dataset_id=s.dataset_id
+                AND p.owner_resource_id=s.owner_resource_id AND p.owner_epoch=1 AND p.state='retired'
+                AND p.reserved_through_request=s.issued_through AND p.closure_digest=s.closure_digest
+                AND o.state='released' AND o.exclusion_method='storage_fenced' AND o.exclusion_digest=s.closure_digest
+                AND o.process_incarnation=p.owner_incarnation AND o.released_at_us=p.retired_at_us
+                AND r.retired_at_us=p.retired_at_us)
         OR NOT EXISTS (SELECT 1 FROM control.topology_generations WHERE dataset_id = h.dataset_id
             AND generation = 0 AND sealed)
         OR NOT EXISTS (SELECT 1 FROM control.topology_generations WHERE dataset_id = h.dataset_id
@@ -496,7 +561,7 @@ BEGIN
         OR NOT EXISTS (SELECT 1 FROM control.topology_streams WHERE dataset_id = h.dataset_id
             AND topology_generation = 1 AND shard_id = h.source_shard AND owner_epoch = 2
             AND handoff_last_complete_sequence IS NULL) THEN
-        RAISE EXCEPTION 'Index handoff requires exact terminal initial succession and topology inventory' USING ERRCODE = '23514';
+        RAISE EXCEPTION 'Index handoff requires exact initial activation, predecessor and topology inventory' USING ERRCODE = '23514';
     END IF;
     IF EXISTS (SELECT 1 FROM control.projection_plans WHERE generation_id = h.generation_id
             AND frontier_revision = h.frontier_revision)
@@ -534,12 +599,14 @@ $$;
 
 CREATE FUNCTION control.require_typed_index_frontier() RETURNS trigger LANGUAGE plpgsql
 SET search_path = pg_catalog, control AS $$
-DECLARE receipt control.index_frontier_plans%ROWTYPE;
+DECLARE receipt control.index_frontier_plans%ROWTYPE; h control.index_frontier_handoffs%ROWTYPE;
 BEGIN
     IF NEW.consumer_role <> 'index' THEN RETURN NULL; END IF;
     IF EXISTS (SELECT 1 FROM control.index_frontier_handoffs
         WHERE consumer_id = NEW.consumer_id AND frontier_revision = NEW.frontier_revision) THEN
         PERFORM control.require_index_handoff_metadata(NEW.consumer_id, NEW.frontier_revision);
+        SELECT * INTO STRICT h FROM control.index_frontier_handoffs WHERE consumer_id=NEW.consumer_id AND frontier_revision=NEW.frontier_revision;
+        PERFORM control.require_index_handoff_authority(h);
         PERFORM control.require_index_owner(NEW.dataset_id, NEW.owner_resource_id, NEW.owner_epoch, NEW.owner_incarnation);
         IF NOT EXISTS (SELECT 1 FROM control.consumers WHERE consumer_id = NEW.consumer_id
             AND current_revision = NEW.frontier_revision AND current_topology_generation = 1) THEN

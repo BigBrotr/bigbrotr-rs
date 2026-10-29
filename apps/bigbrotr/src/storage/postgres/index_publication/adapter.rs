@@ -1,4 +1,5 @@
 //! PG coordination only. All physical evidence enters through proofs.rs.
+use super::super::LiveInitialWriter;
 use super::{proofs::*, *};
 use crate::storage::rocks::store::PendingBatch;
 use bigbrotr_model::{CompleteThrough, Sequence, StreamBound, StreamId, TopologyGeneration};
@@ -315,7 +316,53 @@ impl ControlSession {
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
     ) -> Result<PreparedIndexPlan, IndexError> {
+        self.prepare_index_plan_in(session, custody, plan, pending, commit_started, None)
+            .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub async fn prepare_live_index_plan(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        plan: &IndexPlan,
+        pending: &PendingBatch,
+        commit_started: &Cell<bool>,
+        writer: &LiveInitialWriter,
+    ) -> Result<PreparedIndexPlan, IndexError> {
+        self.prepare_index_plan_in(
+            session,
+            custody,
+            plan,
+            pending,
+            commit_started,
+            Some(writer),
+        )
+        .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    async fn prepare_index_plan_in(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        plan: &IndexPlan,
+        pending: &PendingBatch,
+        commit_started: &Cell<bool>,
+        live: Option<&LiveInitialWriter>,
+    ) -> Result<PreparedIndexPlan, IndexError> {
         valid_session(self, session, custody)?;
+        if let Some(writer) = live {
+            if writer
+                .index_source()
+                .map_err(|_| IndexError::Conflict)?
+                .retained_requests()
+                .map_err(|_| IndexError::Conflict)?
+                > 64
+            {
+                return Err(IndexError::Exhausted);
+            }
+        }
         if plan.binding != session.binding
             || plan.source != IndexSourceBatch::from_batch(pending.batch())
         {
@@ -329,6 +376,7 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
+        require_live_plan(&tx, session, live, plan).await?;
         require_session(&tx, session).await?;
         binding_matches(&tx, &plan.binding).await?;
         if let Some(retained) = read_plan(&tx, &plan.binding, plan.digest).await? {
@@ -355,6 +403,7 @@ impl ControlSession {
         tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
             .await
             .map_err(pg)?;
+        require_live_plan(&tx, session, live, plan).await?;
         require_session(&tx, session).await?;
         proofs::live(&plan.binding, custody)?;
         commit_started.set(true);
@@ -377,6 +426,41 @@ impl ControlSession {
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
     ) -> Result<IndexPublicationReceipt, IndexError> {
+        self.publish_index_plan_in(session, custody, prepared, proof, commit_started, None)
+            .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub async fn publish_live_index_plan(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        prepared: &PreparedIndexPlan,
+        proof: &VerifiedIndexPlan,
+        commit_started: &Cell<bool>,
+        writer: &LiveInitialWriter,
+    ) -> Result<IndexPublicationReceipt, IndexError> {
+        self.publish_index_plan_in(
+            session,
+            custody,
+            prepared,
+            proof,
+            commit_started,
+            Some(writer),
+        )
+        .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    async fn publish_index_plan_in(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        prepared: &PreparedIndexPlan,
+        proof: &VerifiedIndexPlan,
+        commit_started: &Cell<bool>,
+        live: Option<&LiveInitialWriter>,
+    ) -> Result<IndexPublicationReceipt, IndexError> {
         valid_session(self, session, custody)?;
         let plan = &prepared.plan;
         if plan.binding != session.binding {
@@ -391,6 +475,7 @@ impl ControlSession {
             .await
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
+        require_live_plan(&tx, session, live, plan).await?;
         require_session(&tx, session).await?;
         binding_matches(&tx, &plan.binding).await?;
         let retained = read_plan(&tx, &plan.binding, plan.digest)
@@ -424,6 +509,7 @@ impl ControlSession {
         tx.batch_execute("SET CONSTRAINTS ALL IMMEDIATE")
             .await
             .map_err(pg)?;
+        require_live_plan(&tx, session, live, plan).await?;
         require_session(&tx, session).await?;
         proofs::publication(plan, custody, proof)?;
         commit_started.set(true);
@@ -540,6 +626,31 @@ impl ControlSession {
         self.available = true;
         Ok((previous, state))
     }
+}
+
+async fn require_live_plan(
+    tx: &Transaction<'_>,
+    session: &IndexSession,
+    live: Option<&LiveInitialWriter>,
+    plan: &IndexPlan,
+) -> Result<(), IndexError> {
+    if let Some(writer) = live {
+        writer
+            .binding
+            .require_store(writer.native.store(), session.issuer)
+            .map_err(owner)?;
+        let source = writer.index_source().map_err(|_| IndexError::Conflict)?;
+        let id = source.manifest().identity();
+        if plan.source.first().dataset_id != id.dataset_id
+            || plan.source.first().shard_id != id.shard_id
+            || plan.source.first().owner_epoch != id.owner_epoch
+            || plan.after().topology_generation() != id.topology_generation
+        {
+            return Err(IndexError::Conflict);
+        }
+        writer.binding.require(tx).await.map_err(owner)?;
+    }
+    Ok(())
 }
 
 async fn insert_owner(
