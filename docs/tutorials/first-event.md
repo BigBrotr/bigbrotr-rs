@@ -1,6 +1,6 @@
 # First signed event on Linux
 
-Use the maintained `p01-first-launch` case to initialize a fresh installation,
+Use the maintained `p01-first-launch-tutorial` case to initialize a fresh installation,
 acquire a controlled signed event, publish it to Archive, stop the initial owner,
 then read and export that event through ordinary Control. The fixture, relay,
 authenticated clients and orchestration are supplied by the repository. The
@@ -10,10 +10,11 @@ runner.
 
 This is a development candidate procedure. Run the case against the exact
 candidate you intend to use; its result applies to those recorded input identities
-and declared checks: it does not establish Ingest
-successor/resend, Index/readiness, dependency-outage, capacity or complete M1
-acceptance. The base case also excludes the independent native/C API census and
-typed producer-progress qualification. See
+and declared checks. It adds outside-checkout execution, owned TCP listener
+observations, complete controlled-peer traffic and actual unsupported-capability
+refusals to the existing first-event journey. It does not repeat the separately
+qualified Ingest successor/resend, Index, outage or native/C API census journeys,
+and does not qualify general capacity or the complete product. See
 [practical verification](https://github.com/BigBrotr/bigbrotr-rs/blob/main/docs/development/verification.md#fresh-installed-first-launch-case)
 for the detailed case contract.
 
@@ -35,13 +36,17 @@ configured. Adjacent Index, Discovery, Monitor and public services are disabled.
 Use native Linux amd64, Python 3.11+, Git, a non-root account with access to a
 local Docker daemon, and Docker Compose v2. The extracted executable must also
 run on that host for the CLI clients. Keep ports 15432, 18081 and 7447 free and
-provide more than 65 GiB free completion space. Application plus native work is
+provide more than 65 GiB free completion space. Linux `/proc` must expose the
+owned application and client process identities, descriptors and TCP tables;
+inaccessible observations cannot pass. Application plus native work is
 limited to 6 GiB with no swap, and PostgreSQL to 1.5 GiB; these are configured
 grants, not measured workload capacity. History has a 1 GiB execution grant,
 export 256 MiB and the Archive worker 512 MiB. The history grant also covers
 bounded response and coordination work.
 
-Start from a clean committed checkout:
+Keep the repository as an explicitly declared input. Create a writable directory
+such as `/absolute/first-event` outside every working checkout for the build,
+candidate, execution and evidence. Start from a clean committed checkout:
 
 ```sh
 git clone https://github.com/BigBrotr/bigbrotr-rs.git
@@ -55,6 +60,12 @@ assets over HTTPS, or accepts an explicitly prepared verified bundle through
 `--archive-bundle`; see the
 [native bundle instructions](https://github.com/BigBrotr/bigbrotr-rs/blob/main/packaging/archive-worker/README.md).
 Locked Rust dependencies and toolchains may also need build-time network access.
+The tutorial's Nostr-signing exclusion is bound to the reviewed `99b7d24b` product code,
+dependencies and configuration. Documentation/acceptance-only revisions may reuse
+that code profile; changed product inputs require a fresh reachable-path review.
+The case refuses an unreviewed profile instead of assuming it cannot sign.
+Retain the artifact's source commit in the declared checkout for those recorded
+source comparisons; the normal full clone provides the published history.
 
 ```sh
 python3 tools/build.py --output /absolute/first-event/build
@@ -78,15 +89,20 @@ Acquire the exact runtime images before acceptance; the case does not pull them:
 ```sh
 docker pull --platform linux/amd64 postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94
 docker pull --platform linux/amd64 gcr.io/distroless/cc-debian13@sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6
-python3 tests/acceptance/run.py p01-first-launch \
+BIGBROTR_SOURCE=$(pwd -P)
+cd /absolute/first-event
+python3 "$BIGBROTR_SOURCE/tests/acceptance/run.py" p01-first-launch-tutorial \
   --candidate-manifest /absolute/first-event/candidate/candidate-manifest.json \
-  --source-root "$PWD" --evidence .research/first-event
+  --source-root "$BIGBROTR_SOURCE" --evidence /absolute/first-event/tutorial-evidence
 ```
 
 Choose a new evidence path on each attempt; do not precreate or reuse it. The case
 verifies and extracts the candidate into its own `bundle` child. A fresh evidence
-directory may be outside the checkout, or under its Git-ignored `.research`
-directory. Use paths without symlink components. Intake rejects source
+directory must be outside every working checkout for this tutorial variant, as
+must the execution working directory. Use canonical absolute paths without
+symlink components. The original `p01-first-launch` case still permits a fresh
+Git-ignored `.research` descendant when outside-checkout qualification is not
+selected. Intake rejects source
 equality/ancestor paths, other checkout paths, input collisions and existing
 extraction destinations. This extraction allowance does not relax the assembler's
 output restriction.
@@ -101,6 +117,32 @@ checks the exact signed history and standalone JSONL export, and joins/stops its
 owned processes and containers. A running container or an accepted/queued job
 alone never establishes publication or role readiness.
 
+The observed initial and ordinary application TCP listeners must be exactly
+`127.0.0.1:18081` for their actual owned PIDs; the independent peer must listen
+only on `127.0.0.1:7447`. PostgreSQL must have its actual loopback 15432 published
+binding and accept a TCP connection. These are bounded snapshots of the owned
+processes and declared database route, not a host-wide egress audit.
+
+The selected code profile has no reachable Nostr signer: the event command
+verifies existing signatures, and acquisition emits only `REQ` and `CLOSE`.
+The real peer checks every accepted connection through its protocol close and
+TCP EOF, including quiet cancellation, while the signed acquisition and 353-byte
+export make the observation nonempty. Any peer error, incomplete shutdown or
+unmatched accepted connection fails this claim. The case also tries an assigned,
+enabled but unwired Monitor role and active-write enablement; both must produce
+their exact exit 3 refusals without startup or Ready output. The claim concerns
+Nostr signing and outbound Nostr event publication. Session HMAC, TLS mechanisms
+and the required Archive SQL publication have different meanings.
+
+`initialized` with `ready:false` identifies the fresh owning lifetime; an
+accepted/queued acquisition job does not report durable traversal completion.
+Authenticated role observations describe only selected capabilities. Ordinary
+Control opens no Ingest writer, and reports private history/export observations
+under their own current authority. An absent role cannot be inferred Ready.
+Keep Index and public/signing services disabled in this tutorial; live Index
+succession remains full-product work under P02-T06, separate from this first-event
+procedure and the already qualified finite continuation.
+
 By default it creates a fresh labeled bridge for PostgreSQL. If you need to borrow
 an existing local bridge, explicitly append `--compose-network EXISTING_BRIDGE`;
 the case records its identity and endpoints, leaves unrelated containers alone
@@ -108,6 +150,9 @@ and never removes the borrowed bridge.
 
 Inspect `result.json`: exit 0 means PASS for the declared case, 1 means FAIL and 2
 means NOT_RUN. Missing prerequisites and unreached stages cannot become PASS.
+The `capability-negatives/verdict.json`, `initial/tutorial-listeners.json`,
+`initial/tutorial-peer-verdict.json`, `ordinary/tutorial-listeners.json` and
+`ordinary/tutorial-verdict.json` records describe the added checks.
 Cleanup retains stopped containers, image, network, data and logs for inspection;
 review `resources.json` before later manual retirement. The evidence root is mode
 0700 and contains owner tokens, password/session files and full SQL captures.
