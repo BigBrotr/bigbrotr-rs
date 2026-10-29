@@ -12,6 +12,24 @@ exec psql -X -A -t -q --no-password -h 127.0.0.1 -p 5432 -U bigbrotr_control -d 
 TOPOLOGY_REFUSAL = 'Index handoff publication requires current initial successor topology'
 
 
+def phase_deadline(value, name, now):
+    """Validate the actual child's fixed phase clock, never start a parent clock."""
+    seconds={'submitted':25,'index-proof':45}[name]
+    assert set(value)=={'format','phase','started_monotonic_ns','deadline_monotonic_ns'}
+    assert value['format']=='bigbrotr-installed-live-phase/1' and value['phase']==name
+    started,deadline=value['started_monotonic_ns'],value['deadline_monotonic_ns']
+    assert type(started) is type(deadline) is type(now) is int
+    assert 0<=started<=now<deadline and deadline-started==seconds*1_000_000_000
+    return deadline
+
+
+def phase_release(phase, value, now):
+    accepted=value['accepted_monotonic_ns']
+    assert type(accepted) is type(now) is int
+    assert phase['started_monotonic_ns']<=accepted<=now<phase['deadline_monotonic_ns']
+    index.exact(value,dict(phase,format='bigbrotr-installed-live-phase-release/1',accepted_monotonic_ns=accepted))
+
+
 def cut(dataset, through):
     """Management's flat observation DTO with decimal-string coordinates."""
     assert type(through) is int and through in (0,10)
