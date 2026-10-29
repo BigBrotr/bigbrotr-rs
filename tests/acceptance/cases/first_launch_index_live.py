@@ -3,18 +3,22 @@ import http.client
 import json
 from pathlib import Path
 import time
+import tomllib
 
 from cases import first_launch as base
 from cases.first_launch_index import DATABASE
-from cases.first_launch_index_topology import TopologyIndexRuntime, STAGES
+from cases.first_launch_index_topology import TopologyIndexRuntime, STAGES as FINITE_STAGES
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_topology_oracle as topology
 from cases import first_launch_index_live_oracle as oracle
+
+STAGES = FINITE_STAGES[:-1]+('historical_index_topology','cleanup')
 
 LIMITS = [
     'One actual retained enabled-Index epoch1→2 activation commits its zero-successor bridge before Sync and publishes all three existing signed successor batches while producer2 remains open.',
     'The maintained source, C API and ten-family scientific oracles independently compare all70 chunks/100 bounds, the original event/resend and the new t=allowed event; readiness requires the complete closed1/current2 vector.',
     'Stopping, source closure, Archive catch-up and two finite Index rebinds preserve the live bridge and add no logical publication; original history/export and all original client/query/resource bounds remain in force.',
+    'A genuine epoch3/topology2 activation without Sync/Index preserves historical scientific state; actual runtime PostgreSQL login verifies the retained bridge in a read-only transaction and observes the shared current-authority guard refuse unsupported topology.',
     'NOT_RUN: continuous Archive, generic or arbitrary successor recovery,64-history readiness, broad capacity, unknown remote/native outcome resolution, second-event export and complete M1 task composition.',
 ]
 
@@ -140,3 +144,56 @@ class LiveTopologyIndexRuntime(TopologyIndexRuntime):
         result=oracle.no_work_rebind(self.topology_after,after,report,self.final_science,self.schema,rows,owner_epoch=4)
         base.save(self.topology_output/'retry-verdict.json',result)
         self.index_preserved('retry')
+
+    def historical_index_topology(self):
+        self.source_unchanged()
+        output=self.root/'historical-index-topology';output.mkdir(mode=0o700)
+        before,catalog=self.capture(output,'before')
+        # The ordinary reader narrowed its local configuration. Activation uses
+        # the original normal runtime profile, with no initializer credential.
+        self.config.write_text((self.root/'ordinary/initial-config.toml').read_text())
+        connection=tomllib.loads(self.config.read_text())['postgres']['control']
+        index.exact({k:connection[k] for k in ('database','user','endpoint','password_ref')},
+            dict(database='bigbrotr_control',user='bigbrotr_control',endpoint='127.0.0.1:15432',
+                 password_ref='file:/run/secrets/control'))
+        entry=self.launch('historical-topology','app','serve','--file','/etc/bigbrotr/instance.toml',
+                          '--activate-successor','--roles','control,ingest')
+        started=self.wait(lambda:self.logs(entry,output),'genuine epoch3 activation',20,entry=entry)[0]
+        active,active_catalog=self.capture(output,'active')
+        oracle.later_topology(before,active,started)
+        index.exact(catalog,active_catalog)
+        terminal=self.stop_container(entry,output)
+        final=self.logs(entry,output)[-1]
+        base.require(terminal['State']['ExitCode']==0,'historical successor did not stop normally')
+        index.exact(final,dict(format='bigbrotr-ingest-successor/1',state='stopped',
+            dataset_id=started['dataset_id'],owner_resource_id=started['owner_resource_id'],
+            producer_slot_id=started['producer_slot_id'],producer_epoch='3',native='closed',
+            owner_release='committed',source_closure='not-performed',ready=False))
+        stopped,stopped_catalog=self.capture(output,'stopped')
+        oracle.later_topology(before,stopped,started,stopped=True)
+        index.exact(catalog,stopped_catalog)
+        consumer=index.only(before['consumers'],consumer_role='index')['consumer_id']
+        dataset=index.only(before['datasets'])['dataset_id']
+        statement=oracle.historical_sql(consumer,dataset)
+        base.save(output/'runtime-login-statement.json',dict(statement=statement))
+        # Unlike Runtime.sql's database selector, this is a real TCP login under
+        # the configured runtime role, using the mounted product secret only in
+        # the child environment. The recorded argv never contains its value.
+        result=self.docker('exec','-i','--env','PGCONNECT_TIMEOUT=5','--env',
+            'PGOPTIONS=-c statement_timeout=5000 -c lock_timeout=1000',self.pg['id'],
+            'sh','-ec',oracle.CONTROL_LOGIN,data=statement,timeout=10,check=False,
+            label='historical-index-runtime-login')
+        verdict=oracle.historical_sql_result(result.stdout,result.stderr,result.returncode,consumer,dataset)
+        after,after_catalog=self.capture(output,'after-sql')
+        index.exact(stopped,after);index.exact(catalog,after_catalog)
+        rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
+        index.exact(rows,self.live_rows)
+        self.index_preserved('historical-topology')
+        self.backend_absence(output)
+        verdict.update(status='PASS',producer_epoch=3,topology_generation=2,scientific_requests=0,
+            product_postgres_profile={k:connection[k] for k in ('database','user','endpoint','password_ref')},
+            owner_stopped_and_joined=True,historical_publication='exact',
+            current_authority='shared_guard_refused_unsupported_topology',
+            native_new_bridge_creation='NOT_RUN',both_authority_branches_independently='NOT_RUN')
+        base.save(output/'verdict.json',verdict)
+        self.inputs['historical_index_topology']=verdict

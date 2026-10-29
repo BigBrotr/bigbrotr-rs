@@ -1,5 +1,6 @@
 """Independent live-boundary controls; no product, engine or Docker execution."""
 import copy
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -64,7 +65,98 @@ def bridge_fixture():
     return state,binding,publisher,generation
 
 
+def later_topology_fixture():
+    ds,resource,slot='\\x'+'11'*16,'\\x'+'55'*16,'\\x'+'77'*16
+    before={name:[] for name in base.expected_tables(ROOT,{})}
+    before.update(datasets=[dict(dataset_id=ds,topology_generation=1,config_revision=1,policy_revision=1,xmin='1')],
+        consumers=[dict(consumer_role='index',consumer_id='index',current_revision=8)],
+        owner_epochs=[dict(role='control',epoch=10,process_incarnation='old-control'),
+                      dict(role='ingest',epoch=2,resource_id=resource,process_incarnation='old-ingest')],
+        producer_epochs=[dict(producer_epoch=2,state='retired',reserved_through_request=3,producer_slot_id=slot)],
+        source_streams=[dict(owner_epoch=2,state='closed',last_complete_sequence=10,closure_digest='\\x'+'99'*32)],
+        index_frontier_plans=[dict(frontier_revision=8,xmin='8')],archive_attempts=[dict(attempt_id='old')])
+    after=copy.deepcopy(before);after['datasets'][0].update(topology_generation=2,xmin='2')
+    incarnation='\\x'+'33'*16;control_role='\\x'+'c0'*16;ingest_role='\\x'+'d0'*16
+    after['owner_epochs'] += [dict(dataset_id=ds,role='control',epoch=11,state='active',released_at_us=None,
+        process_incarnation=incarnation,role_instance_id=control_role),dict(dataset_id=ds,role='ingest',epoch=3,
+        state='active',resource_id=resource,process_incarnation=incarnation,role_instance_id=ingest_role)]
+    after['role_instances']=[dict(dataset_id=ds,role=role,role_instance_id=key,retired_at_us=None)
+                             for role,key in (('control',control_role),('ingest',ingest_role))]
+    after['producer_epochs'].append(dict(dataset_id=ds,producer_epoch=3,owner_epoch=3,state='open',
+        reserved_through_request=0,outstanding_request_limit=32,producer_slot_id=slot,producer_role='ingest',
+        owner_role='ingest',producer_role_instance_id=ingest_role,producer_incarnation=incarnation,owner_incarnation=incarnation))
+    after['source_streams'].append(dict(dataset_id=ds,owner_epoch=3,state='open',last_complete_sequence=None,
+        owner_resource_id=resource,owner_incarnation=incarnation))
+    after['topology_generations']=[dict(dataset_id=ds,generation=2,previous_generation=1,sealed=True)]
+    after['topology_streams']=[dict(dataset_id=ds,shard_id=0,owner_epoch=epoch,handoff_last_complete_sequence=last)
+                              for epoch,last in ((1,12),(2,10),(3,None))]
+    after['allocation_domains']=[dict(dataset_id=ds,dictionary_kind=n,allocation_domain=f'new-{n}',
+        owner_epoch=3,owner_resource_id=resource,owner_incarnation=incarnation,state='active') for n in range(1,10)]
+    after['ingest_successions']=[dict(dataset_id=ds,target_epoch=3,previous_epoch=2,previous_topology=1,
+        target_topology=2,terminal_kind=1,issued_through=3,last_complete_sequence=10,closure_digest='\\x'+'99'*32,
+        target_incarnation=incarnation,target_role_instance_id=ingest_role,owner_resource_id=resource,
+        producer_slot_id=slot,target_manifest_sha256='manifest3',handoff_sha256='handoff3')]
+    after['ingest_activations']=[dict(dataset_id=ds,target_epoch=3,target_incarnation=incarnation,
+        target_role_instance_id=ingest_role,target_manifest_sha256='manifest3',handoff_sha256='handoff3',
+        activated_by_epoch=11,activated_by_incarnation=incarnation)]
+    report=dict(format='bigbrotr-ingest-successor/1',state='activated',dataset_id='11'*16,
+        owner_resource_id='55'*16,producer_slot_id='77'*16,producer_epoch='3',process_incarnation='33'*16,
+        role_instance_id='d0'*16,config_revision='1',policy_revision='1',outstanding_request_limit='32',
+        acquisition='not-started',ready=False,predecessor=dict(producer_epoch='2',resolved_requests='3',
+            last_complete_sequence='10',sha256='99'*32))
+    return before,after,report
+
+
 class LiveIndexTopologyControls(unittest.TestCase):
+    def test_genuine_later_topology_preserves_science_and_stops_only_the_new_control(self):
+        before,after,report=later_topology_fixture()
+        live.later_topology(before,after,report)
+        stopped=copy.deepcopy(after)
+        stopped['owner_epochs'][-2].update(state='released',released_at_us=123)
+        stopped['role_instances'][0]['retired_at_us']=123
+        live.later_topology(before,stopped,report,stopped=True)
+        mutations=(
+            lambda s:s['datasets'][0].update(topology_generation=1),
+            lambda s:s['producer_requests'].append(dict(producer_epoch=3)),
+            lambda s:s['producer_epochs'][-1].update(reserved_through_request=1),
+            lambda s:s['index_owner_sessions'].append(dict(owner_epoch=5)),
+            lambda s:s['index_frontier_plans'][0].update(xmin='changed'),
+            lambda s:s['archive_attempts'][0].update(attempt_id='changed'),
+            lambda s:s['topology_streams'][1].update(handoff_last_complete_sequence=9),
+            lambda s:s['ingest_successions'][0].update(issued_through=2),
+            lambda s:s['owner_epochs'][-1].update(process_incarnation='unrelated-process'),
+        )
+        for number,change in enumerate(mutations):
+            wrong=copy.deepcopy(after);change(wrong)
+            with self.subTest(mutation=number),self.assertRaises((AssertionError,ValueError)):
+                live.later_topology(before,wrong,report)
+
+    def test_historical_sql_requires_actual_unprivileged_login_and_exact_topology_refusal(self):
+        consumer,dataset='\\x'+'55'*16,'\\x'+'11'*16
+        identity=dict(event='runtime_login',current_user='bigbrotr_control',session_user='bigbrotr_control',
+            database='bigbrotr_control',dataset_id='11'*16,client_addr='127.0.0.1',read_only='on',
+            role_flags=dict(rolcanlogin=True,rolsuper=False,rolcreatedb=False,rolcreaterole=False,
+                rolinherit=False,rolreplication=False,rolbypassrls=False),memberships=0,
+            database_temp=False,schema_create=False,dataset_topology=2)
+        metadata=dict(event='historical_metadata',consumer_id='55'*16,frontier_revision=5,status='PASS')
+        def output(actor):return json.dumps(actor)+'\n'+json.dumps(metadata)+'\nauthority_sqlstate 23514\n'
+        error='ERROR:  23514: Index handoff publication requires current initial successor topology\nCONTEXT: retained function\n'
+        live.historical_sql_result(output(identity),error,0,consumer,dataset)
+        for key,wrong in [('current_user','postgres'),('session_user','postgres'),('read_only','off'),
+                          ('client_addr',None),('memberships',1),('database_temp',True)]:
+            with self.subTest(field=key),self.assertRaises(AssertionError):
+                live.historical_sql_result(output(dict(identity,**{key:wrong})),error,0,consumer,dataset)
+        privileged=copy.deepcopy(identity);privileged['role_flags']['rolsuper']=True
+        with self.assertRaises(AssertionError):live.historical_sql_result(output(privileged),error,0,consumer,dataset)
+        for wrong in ('ERROR:  23514: owner is unavailable\n',error.replace('23514','42501'),'',error+error):
+            with self.subTest(error=wrong),self.assertRaises(AssertionError):
+                live.historical_sql_result(output(identity),wrong,0,consumer,dataset)
+        sql=live.historical_sql(consumer,dataset)
+        self.assertIn('BEGIN READ ONLY;',sql);self.assertIn('ROLLBACK;',sql)
+        self.assertLess(sql.index('require_index_handoff_metadata'),sql.index('require_index_handoff_authority'))
+        self.assertIn('-h 127.0.0.1',live.CONTROL_LOGIN);self.assertIn('-U bigbrotr_control',live.CONTROL_LOGIN)
+        self.assertIn('read -r live_index_password < /run/secrets/control',live.CONTROL_LOGIN)
+
     def test_original_and_bridge_rows_survive_later_publication_with_exact_mvcc(self):
         initial={name:[] for name in index.INDEX_TABLES}
         initial.update(consumers=[dict(consumer_role='index',consumer_id='index',current_revision=4)],
@@ -184,7 +276,7 @@ class LiveIndexTopologyControls(unittest.TestCase):
                 '--evidence',str(evidence)],capture_output=True,text=True,timeout=5)
             self.assertEqual(result.returncode,2,result.stderr)
             report=base.load(evidence/'result.json')
-            self.assertEqual(report['counts'],dict(collected=15,executed=1,failed=0,skipped=0,not_run=14))
+            self.assertEqual(report['counts'],dict(collected=16,executed=1,failed=0,skipped=0,not_run=15))
             self.assertFalse(list((evidence/'commands').iterdir()))
 
 

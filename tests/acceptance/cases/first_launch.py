@@ -1070,6 +1070,8 @@ def first_launch(args, checks, inputs):
                 operations += [('index_epoch2_catch_up', runtime.index_epoch2_catch_up),
                                ('index_epoch2_exact_retry', runtime.index_epoch2_retry)]
             operations += [('successor_history', runtime.restart_history)]
+            if live_topology:
+                operations += [('historical_index_topology', runtime.historical_index_topology)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'
