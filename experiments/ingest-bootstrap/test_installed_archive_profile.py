@@ -250,6 +250,70 @@ class ProfileTests(unittest.TestCase):
                     self.assertEqual([p[2]['query']['filters'][0]['ids'] for p in posts],[['56'*32]]*3+[['78'*32]])
                     self.assertFalse(any(method=='PUT' or path=='/v1/resources/event_history' for method,path,*_ in requests))
 
+    def test_full_first_export_keeps_d1_through_all_grants_default_and_retained(self):
+        self.save()
+        (self.home/'destination').mkdir();(self.home/'destination/destination.json').write_text('{}')
+        event=dict(id='56'*32);(self.home/'event.jsonl').write_text(json.dumps(event))
+        receipt=dict(format='bigbrotr-job-acceptance/1',command_key='d1'*16,job_id='90'*16,
+            accepted_at_us='100',created=True,execution='unobserved',authority='acceptance-only')
+        for retained in (False,True):
+            selected=dict(scope={},catalog_id='12'*16,destination_id='34'*16)
+            if retained:selected.update(retained_compacted_epoch2=True,startup_quiescence=True)
+            (self.home/'export-input.json').write_text(json.dumps(selected))
+            state=dict(grants=0,accepted=False,logged_out=False);requests=[]
+            class Connection:
+                def __init__(self,*args,**kwargs):pass
+                def request(self,method,path,body,headers):
+                    self.method,self.path=method,path
+                    self.body=None if body is None else json.loads(body)
+                    requests.append((method,path,self.body,headers))
+                def getresponse(self):
+                    if self.path=='/management/v1/me':
+                        status=401 if state['logged_out'] else 200
+                        value=dict(principal_id='ab'*16,stored_actions=OWNER_ACTIONS)
+                    elif self.path.endswith('/reauthenticate'):
+                        status,value=201,dict(proof_id='cd'*16)
+                    elif self.method=='PUT':
+                        state['grants']+=1
+                        status,value=200,dict(created=True,scope_generation='1',account_grant_revision=str(state['grants']+1))
+                    elif self.path=='/v1/resources/event_history':
+                        status=200 if state['grants']==3 else 403
+                        value=dict(items=[event],next_cursor=None,view_stamp=dict(input_generations=[dict(kind='archive',
+                            catalog_id='12'*16,frontier_revision='4',snapshot_id='68' if retained else '5')]))
+                    elif self.path=='/management/v1/jobs':
+                        if state['grants']<3:status,value=403,{}
+                        elif not state['accepted']:
+                            state['accepted']=True;status,value=202,receipt
+                        else:status,value=200,dict(receipt,created=False)
+                    else:
+                        assert self.path=='/management/v1/jobs/'+receipt['job_id']
+                        status,value=200,dict(kind='export',state='succeeded',checkpoint_revision='1')
+                    class Response:
+                        def read(self,limit):return json.dumps(value).encode()
+                    response=Response();response.status=status;return response
+                def close(self):pass
+            def cli(args,**kwargs):
+                if 'login' in args:
+                    Path(args[args.index('--session-output')+1]).write_text(json.dumps(dict(session='opaque',csrf='csrf')))
+                else:state['logged_out']=True
+                return subprocess.CompletedProcess(args,0,b'{}',b'')
+            with self.subTest(retained=retained),patch.object(export.http.client,'HTTPConnection',Connection), \
+                    patch.object(export.subprocess,'run',cli),patch.object(export,'phase',return_value={}) as barrier, \
+                    patch.object(export.time,'monotonic_ns',return_value=10):
+                self.assertEqual(export.run(self.home)['status'],'PASS')
+                self.assertEqual(state['grants'],3);self.assertTrue(state['logged_out'])
+                self.assertEqual(barrier.call_count,int(retained))
+                jobs=[r for r in requests if r[:2]==('POST','/management/v1/jobs')]
+                self.assertEqual(len(jobs),6)
+                self.assertEqual([r[3]['Idempotency-Key'] for r in jobs],['d1'*16]*6)
+                grants=[r for r in requests if r[0]=='PUT']
+                self.assertEqual([r[3]['Idempotency-Key'] for r in grants],[key*16 for key in ('c1','c2','c3')])
+                self.assertEqual([r[2]['command']['action'] for r in grants],['history.read','export','private-export'])
+                observations=json.loads((self.home/'export-observations.json').read_text())
+                accepted,=[r for r in observations if r['case']=='accept-export']
+                self.assertEqual(accepted['receipt'],receipt)
+                self.assertEqual(accepted['key'],receipt['command_key'])
+
 
 if __name__ == '__main__':
     unittest.main()

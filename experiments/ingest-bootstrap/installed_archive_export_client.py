@@ -129,8 +129,8 @@ def run(home):
     body = dict(kind='export', format='signed-events-jsonl', query=query, allocation=allocation,
         destination=dict(id=expected['destination_id'], binding_sha256=hashlib.sha256(marker).hexdigest()),
         expected_config_revision='1', expected_policy_revision='1')
-    key=('d2' if second_job else 'd1')*16
-    keyed = {**auth, 'Idempotency-Key': key}
+    export_key=('d2' if second_job else 'd1')*16
+    keyed = {**auth, 'Idempotency-Key': export_key}
     if not second_job:
         status, denied = request('POST', '/management/v1/jobs', body, keyed)
         record('no-implicit-export-authority',status=status,error=error_summary(denied))
@@ -143,8 +143,8 @@ def run(home):
         command = dict(principal_id=principal, action=action, enabled=True, scope=expected['scope'],
             expected_config_revision='1', expected_policy_revision='1',
             expected_grant_revision=str(revision), allocation=allocation)
-        key = format(0xc0 + revision, '02x')*16
-        headers = {**auth, 'Idempotency-Key': key}
+        grant_key = format(0xc0 + revision, '02x')*16
+        headers = {**auth, 'Idempotency-Key': grant_key}
         password = password_file(password_ref) if profile else 'Independent owner password 2026'
         status, proof = request('POST', '/management/v1/sessions/current/reauthenticate',
             dict(password=password, command=command), headers)
@@ -152,7 +152,7 @@ def run(home):
         assert status == 201, (status, proof)
         status, receipt = request('PUT', '/management/v1/principals/' + principal + '/grants',
             dict(command=command, proof_id=proof['proof_id']), headers)
-        record('enable-' + action, command=command, key=key, status=status, receipt=receipt)
+        record('enable-' + action, command=command, key=grant_key, status=status, receipt=receipt)
         assert status == 200 and receipt['created'], (status, receipt)
         assert receipt['scope_generation'] == '1' and receipt['account_grant_revision'] == str(revision+1)
         if revision < 3:
@@ -164,7 +164,7 @@ def run(home):
         assert status == 200 and history['items'] == [event] and history['next_cursor'] is None
         assert history['view_stamp']['input_generations'] == [dict(kind='archive', **allocation, snapshot_id=selected_snapshot)]
     status, receipt = request('POST', '/management/v1/jobs', body, keyed)
-    record('accept-export', status=status, command=body, key=key, receipt=receipt)
+    record('accept-export', status=status, command=body, key=export_key, receipt=receipt)
     assert status == 202 and receipt['created'] and receipt['execution'] == 'unobserved'
     def retry(label):
         status,repeated=request('POST', '/management/v1/jobs', body, keyed)
@@ -189,7 +189,7 @@ def run(home):
         changed=dict(body,query=dict(query,filters=[dict(ids=[original['id']])]))
         status,conflict=request('POST','/management/v1/jobs',changed,keyed)
         error=error_summary(conflict)
-        record('second-export-changed-event-conflict',status=status,command=changed,key=key,error=error)
+        record('second-export-changed-event-conflict',status=status,command=changed,key=export_key,error=error)
         assert status == 409 and error and error.get('code') == 'command_conflict', (status,error)
     if mode:
         barrier('positive')

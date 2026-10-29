@@ -306,6 +306,52 @@ def second_export_fixture(root,science):
 
 
 class UnboundReplacementControls(unittest.TestCase):
+    def test_first_export_rejects_all_unselected_inventory_default_and_retained(self):
+        # Reuse the literal original353-byte artifact and full82-table fixture.
+        # This control isolates the first-job whole-inventory boundary; it does
+        # not claim another installed execution or full SQL lifecycle proof.
+        for retained_profile in (False,True):
+            with self.subTest(retained=retained_profile),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
+                after,_,_,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
+                before=copy.deepcopy(after);first=verdicts[0];job_id='\\x'+first['job_id']
+                owner=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+                for table in ('owner_epochs','role_instances'):
+                    before[table]=[r for r in before[table] if r.get('role_instance_id')!=owner['role_instance_id']]
+                before['jobs']=[r for r in before['jobs'] if r['kind']!='export']
+                for table in ('export_jobs','export_execution_units','artifacts','artifact_files','job_input_bounds'):
+                    before[table]=[]
+                session=after['browser_sessions'][0]
+                after['browser_sessions']=[dict(session,session_id='\\x'+'ec'*16,issued_at_us=1105,revoked_at_us=1190)]
+                after['jobs'][-1].update(checkpoint_revision=1,input_complete=True,
+                    owner_resource_id=owner['resource_id'],owner_epoch=owner['epoch'])
+                after['job_admissions'].append(dict(job_id=job_id,admission_ordinal=3 if retained_profile else 2))
+                after['export_execution_units']=[dict(job_id=job_id,artifact_id='\\x'+first['artifact_id'],
+                    max_output_bytes=256*1024**2,max_temporary_bytes=512*1024**2)]
+                cuts=[(1,312),(2,10)] if retained_profile else [(1,12)]
+                after['job_input_bounds']=[dict(job_id=job_id,shard_id=0,owner_epoch=epoch,last_complete_sequence=cut) for epoch,cut in cuts]
+                initialized['topology_generation']='0'
+                manifest=copy.deepcopy(first['manifest'])
+                if not retained_profile:
+                    manifest['source'].update(snapshot_id='5',cut=dict(dataset_id='22'*16,topology_generation='0',
+                        bounds=[dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='12')]))
+                raw=(json.dumps(manifest,ensure_ascii=False,separators=(',',':'))+'\n').encode()
+                (destination/first['artifact_id']/'manifest.json').write_bytes(raw)
+                digest='\\x'+hashlib.sha256(raw).hexdigest()
+                after['artifacts'][0].update(manifest_bytes=len(raw),total_bytes=len(raw)+353,manifest_sha256=digest)
+                after['jobs'][-1]['result_manifest_digest']=digest
+                def verify(state):
+                    return exports.validate(before,state,homes[0],initialized,catalog,expected_principal='ee'*16,
+                        expected_table_count=82,expected_tables=before,destination_root=destination,
+                        initial_cut=312 if retained_profile else 12,retained_compacted_epoch2=retained_profile)
+                self.assertEqual(verify(after)['jsonl_bytes'],353)
+                for table in ('export_jobs','export_execution_units','artifacts','artifact_files','job_input_bounds'):
+                    changed=copy.deepcopy(after);extra=dict(changed[table][0])
+                    extra['artifact_id' if table=='artifact_files' else 'job_id']='\\x'+'fe'*16
+                    changed[table].append(extra)
+                    with self.subTest(extra_unselected=table),self.assertRaises((AssertionError,ValueError)):
+                        verify(changed)
+
     def test_second_export_full_state_and_both_standalone_files(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])

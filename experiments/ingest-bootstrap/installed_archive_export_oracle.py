@@ -77,20 +77,31 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     result = json.loads((home / 'export-client-result.json').read_text())
     assert len([r for r in before['jobs'] if r['kind']=='export']) == int(retained_second_export)
     assert len([r for r in after['jobs'] if r['kind']=='export']) == 1+int(retained_second_export)
-    job, = [r for r in after['jobs'] if r['job_id']=='\\x'+result['job_id']]
+    if retained_second_export:
+        job=next_row(after['jobs'],'job_id','\\x'+result['job_id'])
+    else:
+        job,=[r for r in after['jobs'] if r['kind']=='export']
     assert job['job_id'] == '\\x' + result['job_id'] and job['state'] == 'succeeded'
     assert job['checkpoint_revision'] == 1 and job['input_complete']
     assert job['owner_resource_id'] == owner['resource_id'] and job['owner_epoch'] == owner['epoch']
     admission, = [r for r in after['job_admissions'] if r['job_id'] == job['job_id']]
     assert admission['admission_ordinal'] == (4 if retained_second_export else 3 if retained_compacted_epoch2 else 2)
-    detail,unit,artifact = (next_row(after[t],'job_id',job['job_id']) for t in
-        ('export_jobs','export_execution_units','artifacts'))
-    file=next_row(after['artifact_files'],'artifact_id',artifact['artifact_id'])
+    if retained_second_export:
+        detail,unit,artifact = (next_row(after[t],'job_id',job['job_id']) for t in
+            ('export_jobs','export_execution_units','artifacts'))
+        file=next_row(after['artifact_files'],'artifact_id',artifact['artifact_id'])
+        bounds=[r for r in after['job_input_bounds'] if r['job_id']==job['job_id']]
+    else:
+        # First/default export retains the original closed whole inventory.
+        # Only the explicit second job may select among validated prior rows.
+        detail,=after['export_jobs'];unit,=after['export_execution_units']
+        artifact,=after['artifacts'];file,=after['artifact_files']
+        bounds=after['job_input_bounds']
     assert detail['job_id'] == unit['job_id'] == artifact['job_id'] == job['job_id']
     assert file['artifact_id'] == unit['artifact_id'] == artifact['artifact_id']
     assert detail['frontier_revision'] == frontier and detail['catalog_id'] == '\\x' + catalog_id
     assert unit['max_output_bytes'] == 256*1024**2 and unit['max_temporary_bytes'] == 512*1024**2
-    bounds=sorted((r for r in after['job_input_bounds'] if r['job_id']==job['job_id']),key=lambda row:row['owner_epoch'])
+    bounds=sorted(bounds,key=lambda row:row['owner_epoch'])
     assert [(r['owner_epoch'],r['last_complete_sequence']) for r in bounds]==source_bounds
     assert all(r['job_id']==job['job_id'] and r['shard_id']==0 for r in bounds)
     verdict=verify_artifact(after,home,initialized,catalog_id,destination_root=destination_root,
