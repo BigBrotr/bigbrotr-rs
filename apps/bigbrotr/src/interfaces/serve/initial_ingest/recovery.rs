@@ -457,9 +457,10 @@ async fn connected(
                         )?,
                         grant(
                             budget,
-                            limits()
-                                .required_data_bytes()
-                                .map_err(|e| (3, e.to_string()))?,
+                            bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(
+                                limits().event,
+                            )
+                            .map_err(|e| (3, e.to_string()))?,
                             0,
                         )?,
                         validate,
