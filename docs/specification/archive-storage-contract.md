@@ -1200,16 +1200,23 @@ adoption. Its complete Absent result continues the original strict scan under th
 same admitted job, absolute deadline, cancellation and custody; errors never take
 that fallback. The replacement still requires its own canonical exclusion/sealing,
 fresh Present and complete membership before any missing-work plan or frontier
-effect. Current-bound and unique-candidate paths retain these rules.
+effect. Single and unique-candidate paths retain these rules.
 
-For several unbound alternatives, the implementation forms one complete related
-group from that fixed-cutoff inventory, including the original. Same batch digest
-or the same complete original headers requires exact common semantics and headers;
+For several unbound alternatives or an exact current retry of that group, the
+implementation forms one complete related group from that fixed-cutoff inventory,
+including the original. Same batch digest or the same complete original headers
+requires exact common semantics and headers;
 an incompatible third member cannot be filtered away to manufacture uniqueness.
 Validate every actual request/input and persistent coordinator binding before
 effects. Historical issuer/coordinator/worker incarnations remain bound to each
 own immutable request. Preserve all original input owners and grants, including
 absent/failed members and interleaved unrelated attempts, in original ordinal order.
+A current selection may name exactly one full group expectation, including its
+lowest or intermediate ordinal. Check its exact semantics and actual membership,
+all inventory ID/ordinal collisions and ambiguous selections before any recovery
+or catalog effect. A related current expectation absent from the complete group,
+a crossed identity or changed headers refuses; current metadata cannot supply a
+missing original. This requirement does not choose a winner by ordinal.
 
 One joined group job retains the existing 30-second absolute deadline and one
 cancellation flag. Before any catalog resolution it admits the exact wires,
@@ -1232,8 +1239,11 @@ semantic differences, unknown same-digest rows and any second match, including a
 identical duplicate, refuse. Unrelated rows retain the existing global decoding,
 dataset and resource checks. The ordinary strict single-receipt OR guard is unchanged.
 
-After actual process/output join, NONE yields all Absent; a sole member requires
-its own `Sealed` resolution and a fresh existing strict membership inspection in
+After actual process/output join, NONE yields all Absent only for an unbound
+group. A current retry must freshly observe its exact required current member;
+NONE or another admitted member refuses before membership or status delivery.
+A sole member requires its own `Sealed` resolution and a fresh existing strict
+membership inspection in
 another native snapshot. Only joined membership and manager shutdown permit one
 complete result: that member Present and the others Absent. A alone is retained
 when A alone is Present; ordinals never choose a winner. All inventory items and

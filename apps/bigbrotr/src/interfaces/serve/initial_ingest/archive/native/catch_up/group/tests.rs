@@ -40,6 +40,7 @@ async fn grouped_lifetimes_require_every_known_completion_before_any_observation
                 observe_resolved(
                     &resolutions,
                     &mut statuses,
+                    None,
                     deadline,
                     &cancel,
                     |_, _| panic!("unknown seal reached observation"),
@@ -54,6 +55,7 @@ async fn grouped_lifetimes_require_every_known_completion_before_any_observation
             observe_resolved(
                 &resolutions,
                 &mut statuses,
+                None,
                 deadline,
                 &cancel,
                 |_, _| Ok(Some(2)),
@@ -103,6 +105,7 @@ fn grouped_observation_requires_all_resolutions_and_each_selected_members_own_se
         observe_resolved(
             &resolutions,
             &mut statuses,
+            None,
             deadline,
             &cancel,
             |actual, flag| {
@@ -131,6 +134,7 @@ fn grouped_observation_requires_all_resolutions_and_each_selected_members_own_se
             observe_resolved(
                 &[NotImported; 3],
                 &mut statuses,
+                None,
                 deadline,
                 &cancel,
                 |_, _| Ok(Some(selected)),
@@ -145,6 +149,7 @@ fn grouped_observation_requires_all_resolutions_and_each_selected_members_own_se
         observe_resolved(
             &[NotImported; 2],
             &mut statuses,
+            None,
             deadline,
             &cancel,
             |_, _| panic!("incomplete resolution vector reached scan"),
@@ -192,6 +197,7 @@ fn grouped_observation_preserves_errors_cancel_expiry_and_atomic_status_delivery
                 NotImported,
             ],
             &mut statuses,
+            None,
             deadline,
             &cancel,
             |actual, flag| {
@@ -332,4 +338,100 @@ fn grouped_reader_admission_keeps_one_serial_lane_and_returns_failed_reservation
     assert!(metadata_bytes(0, 8).is_err());
     assert!(metadata_bytes(129, 8).is_err());
     assert!(metadata_bytes(128, usize::MAX).is_err());
+}
+
+#[test]
+fn grouped_current_retry_requires_the_same_fresh_member_without_partial_statuses() {
+    let deadline = Instant::now() + Duration::from_secs(30);
+    for required in 0..3 {
+        for observed in [None, Some(0), Some(1), Some(2)] {
+            let cancel = AtomicBool::new(false);
+            let mut statuses = [false; 3];
+            let memberships = Cell::new(0);
+            let result = observe_resolved(
+                &[Sealed {
+                    disabled_current: false,
+                }; 3],
+                &mut statuses,
+                Some(required),
+                deadline,
+                &cancel,
+                |_, _| Ok(observed),
+                |index, _, _| {
+                    assert_eq!(index, required);
+                    memberships.set(memberships.get() + 1);
+                    Ok(())
+                },
+            );
+            if observed == Some(required) {
+                result.unwrap();
+                assert_eq!(statuses, std::array::from_fn(|index| index == required));
+                assert_eq!(memberships.get(), 1);
+            } else {
+                assert!(result.is_err());
+                assert_eq!(statuses, [false; 3]);
+                assert_eq!(memberships.get(), 0);
+            }
+        }
+    }
+    for stage in [
+        "pre-cancel",
+        "after-scan",
+        "after-membership",
+        "membership-error",
+        "unsealed",
+        "out-of-range",
+    ] {
+        let cancel = AtomicBool::new(stage == "pre-cancel");
+        let mut statuses = [false; 3];
+        let mut resolutions = [Sealed {
+            disabled_current: false,
+        }; 3];
+        if stage == "unsealed" {
+            resolutions[1] = NotImported;
+        }
+        let scans = Cell::new(0);
+        let memberships = Cell::new(0);
+        let result = observe_resolved(
+            &resolutions,
+            &mut statuses,
+            Some(if stage == "out-of-range" { 3 } else { 1 }),
+            deadline,
+            &cancel,
+            |actual, flag| {
+                assert_eq!(actual, deadline);
+                assert!(std::ptr::eq(flag, &cancel));
+                scans.set(scans.get() + 1);
+                if stage == "after-scan" {
+                    flag.store(true, Ordering::Release);
+                }
+                Ok(Some(1))
+            },
+            |index, actual, flag| {
+                assert_eq!(index, 1);
+                assert_eq!(actual, deadline);
+                assert!(std::ptr::eq(flag, &cancel));
+                memberships.set(memberships.get() + 1);
+                if stage == "after-membership" {
+                    flag.store(true, Ordering::Release);
+                }
+                if stage == "membership-error" {
+                    return Err(error("original current membership failure"));
+                }
+                Ok(())
+            },
+        );
+        assert!(result.is_err(), "{stage}");
+        assert_eq!(statuses, [false; 3], "{stage}");
+        assert_eq!(
+            scans.get(),
+            usize::from(!matches!(stage, "pre-cancel" | "out-of-range")),
+            "{stage}"
+        );
+        assert_eq!(
+            memberships.get(),
+            usize::from(matches!(stage, "after-membership" | "membership-error")),
+            "{stage}"
+        );
+    }
 }

@@ -10,6 +10,8 @@ use std::{fs::File, mem::size_of, path::Path};
 /// Charged by Inventory's existing metadata permit before any lifetime effect.
 /// LocalAttempt clones the catalog root; its bounded read/manifest buffers are
 /// transient. Each erased driver wrapper stores one Driver and one lock File.
+/// Fixed metadata also covers the optional current identity across the selector,
+/// joined job, validation and observation stages.
 pub(in crate::interfaces::serve::initial_ingest) fn metadata_bytes(
     count: usize,
     root_bytes: usize,
@@ -28,6 +30,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn metadata_bytes(
     per.checked_mul(count)
         .and_then(|n| n.checked_add(4 * MAX_INPUT_BYTES))
         .and_then(|n| n.checked_add(RECORDS * size_of::<ReceiptRange>()))
+        .and_then(|n| n.checked_add(4 * size_of::<Option<Member>>()))
         .ok_or_else(|| error("group metadata overflow"))
 }
 
@@ -44,6 +47,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile(
     root: &Resolved,
     state_root: &Path,
     attempts: &[(&ArchiveAttemptReceipt, &RetainedInputs)],
+    required_current: Option<Member>,
     reader: &Reader,
     custody: &ReaderCustody,
     binding: Digest256,
@@ -119,6 +123,12 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile(
         members: &members,
     };
     read.validate().map_err(error)?;
+    let required_current = required_current
+        .map(|member| {
+            read.member_index(member)
+                .ok_or_else(|| error("required current retained member missing"))
+        })
+        .transpose()?;
     reader
         .route
         .borrowed()
@@ -197,6 +207,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn reconcile(
                 observe_resolved(
                     &resolutions,
                     &mut present,
+                    required_current,
                     deadline,
                     cancel,
                     |deadline, cancel| {
@@ -283,9 +294,10 @@ async fn resolve_members(
 /// No native observation can start with an incomplete resolution vector. Stage
 /// callbacks return only after actual process/output join; statuses change once,
 /// after fresh membership and both delivery checks under the original deadline.
-fn observe_resolved(
+pub(in crate::interfaces::serve::initial_ingest) fn observe_resolved(
     resolutions: &[catalog_guard::Resolution],
     statuses: &mut [bool],
+    required_current: Option<usize>,
     deadline: Instant,
     cancel: &AtomicBool,
     observe: impl FnOnce(Instant, &AtomicBool) -> Result<Option<usize>>,
@@ -296,11 +308,17 @@ fn observe_resolved(
         || statuses.len() > SCAN_LIMIT
         || resolutions.len() != statuses.len()
         || statuses.iter().any(|present| *present)
+        || required_current.is_some_and(|index| index >= statuses.len())
     {
         return Err(error("incomplete retained group resolutions"));
     }
     let selected = observe(deadline, cancel)?;
     active(deadline, cancel)?;
+    if required_current.is_some() && selected != required_current {
+        return Err(error(
+            "fresh retained group differs from required current member",
+        ));
+    }
     if let Some(index) = require_selected(resolutions, selected)? {
         membership(index, deadline, cancel)?;
         active(deadline, cancel)?;
