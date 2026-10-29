@@ -243,7 +243,8 @@ class LiveIndexTopologyControls(unittest.TestCase):
         error='ERROR:  23514: Index handoff publication requires current initial successor topology\nCONTEXT: retained function\n'
         live.historical_sql_result(output(identity),error,0,consumer,dataset)
         for key,wrong in [('current_user','postgres'),('session_user','postgres'),('read_only','off'),
-                          ('client_addr',None),('memberships',1),('database_temp',True)]:
+                          ('client_addr',None),('client_addr','127.0.0.1/32'),('client_addr','127.0.0.1/24'),
+                          ('client_addr','127.0.0.2'),('client_addr','::1'),('memberships',1),('database_temp',True)]:
             with self.subTest(field=key),self.assertRaises(AssertionError):
                 live.historical_sql_result(output(dict(identity,**{key:wrong})),error,0,consumer,dataset)
         privileged=copy.deepcopy(identity);privileged['role_flags']['rolsuper']=True
@@ -252,6 +253,8 @@ class LiveIndexTopologyControls(unittest.TestCase):
             with self.subTest(error=wrong),self.assertRaises(AssertionError):
                 live.historical_sql_result(output(identity),wrong,0,consumer,dataset)
         sql=live.historical_sql(consumer,dataset)
+        self.assertIn("'client_addr',host(inet_client_addr())",sql)
+        self.assertNotIn('inet_client_addr()::text',sql)
         self.assertIn('BEGIN READ ONLY;',sql);self.assertIn('ROLLBACK;',sql)
         self.assertLess(sql.index('require_index_handoff_metadata'),sql.index('require_index_handoff_authority'))
         self.assertIn('-h 127.0.0.1',live.CONTROL_LOGIN);self.assertIn('-U bigbrotr_control',live.CONTROL_LOGIN)

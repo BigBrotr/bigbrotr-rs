@@ -271,7 +271,7 @@ def historical_sql(consumer, dataset):
     consumer=index.raw(consumer,16).hex();dataset=index.raw(dataset,16).hex()
     return fr'''BEGIN READ ONLY;
 SELECT json_build_object('event','runtime_login','current_user',current_user,'session_user',session_user,
- 'database',current_database(),'dataset_id','{dataset}','client_addr',inet_client_addr()::text,'read_only',current_setting('transaction_read_only'),
+ 'database',current_database(),'dataset_id','{dataset}','client_addr',host(inet_client_addr()),'read_only',current_setting('transaction_read_only'),
  'role_flags',(SELECT row_to_json(r) FROM (SELECT rolcanlogin,rolsuper,rolcreatedb,rolcreaterole,rolinherit,
  rolreplication,rolbypassrls FROM pg_roles WHERE rolname=current_user) r),
  'memberships',(SELECT count(*) FROM pg_auth_members WHERE member=(SELECT oid FROM pg_roles WHERE rolname=current_user)),
