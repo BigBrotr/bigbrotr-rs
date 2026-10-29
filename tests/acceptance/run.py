@@ -215,8 +215,8 @@ def main():
     parser.add_argument("--compose-network",
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
-    parser.add_argument("--renewal-stop-outcome", choices=("known", "deadline"),
-                        help="initialized-renewal stop: release the held SQL or retain it through its original deadline")
+    parser.add_argument("--renewal-stop-outcome", choices=("known", "held"),
+                        help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
     args = parser.parse_args()
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):
         parser.error("--renewal-stop-outcome is required only for p01-first-launch-initial-renewal-stop")

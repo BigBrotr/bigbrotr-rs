@@ -1,18 +1,23 @@
 """Discriminating controls for the installed, positively scheduled stop oracle."""
 import copy
 from pathlib import Path
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
-from cases.first_launch_renewal_stop import (EFFECT_TABLES, RENEWAL_QUERY,
-                                           select_waiter, verify_terminal)
+from cases.first_launch import Runtime
+from cases.first_launch_renewal_stop import (EFFECT_TABLES, RENEWAL_QUERY, RenewalStopRuntime,
+    driver_sources, select_waiter, verify_terminal)
 
 
 class RenewalStopOracle(unittest.TestCase):
     def setUp(self):
         self.backend = dict(pid=17, backend_start='2026-10-29T10:00:00+00:00', usename='bigbrotr_control')
-        self.waiter = dict(self.backend, query=RENEWAL_QUERY, wait_event_type='Lock', blocking_pids=[23])
+        self.waiter = dict(self.backend, query=RENEWAL_QUERY, wait_event_type='Lock', blocking_pids=[23],
+                           query_start_us=1000000, xact_start_us=900000)
         self.effects = dict(ingest_owner=[dict(state='active', role='ingest', xmin='11')],
                             **{name: [] for name in EFFECT_TABLES})
         self.effects['producer_epochs'] = [dict(producer_epoch='1')]
@@ -24,9 +29,10 @@ class RenewalStopOracle(unittest.TestCase):
         self.assertEqual(select_waiter([self.waiter], self.backend, 23), self.waiter)
         for key, value in [('pid', 19), ('backend_start', 'another-incarnation'),
                            ('usename', 'postgres'), ('query', 'SELECT 1'),
-                           ('wait_event_type', 'Client'), ('blocking_pids', [23, 29])]:
+                           ('wait_event_type', 'Client'), ('blocking_pids', [23, 29]),
+                           ('query_start_us', 1100000), ('xact_start_us', 950000)]:
             with self.subTest(key=key), self.assertRaises(ValueError):
-                select_waiter([dict(self.waiter, **{key: value})], self.backend, 23)
+                select_waiter([dict(self.waiter, **{key: value})], self.backend, 23, original=self.waiter)
         with self.assertRaises(ValueError):
             select_waiter([self.waiter, self.waiter], self.backend, 23)
 
@@ -42,9 +48,9 @@ class RenewalStopOracle(unittest.TestCase):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 check(**change)
 
-    def test_held_sql_requires_deadline_refusal_and_preserves_unreleased_owner(self):
+    def test_held_sql_requires_refusal_without_positive_release(self):
         def check(code=4, records=None, stderr='initial Ingest deadline', state='active'):
-            verify_terminal('deadline', code, records or [self.initial], stderr,
+            verify_terminal('held', code, records or [self.initial], stderr,
                             [dict(state=state)], self.effects, copy.deepcopy(self.effects))
         check()
         for change in [dict(code=0), dict(code=137), dict(stderr='worker not joined'),
@@ -76,6 +82,27 @@ class RenewalStopOracle(unittest.TestCase):
                     *extra], capture_output=True, text=True, timeout=5)
                 self.assertEqual(result.returncode, 2)
                 self.assertIn('--renewal-stop-outcome is required only', result.stderr)
+
+    def test_changed_driver_or_process_helper_refuses_before_candidate_extraction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory)
+            for relative, actual in driver_sources():
+                target = source/relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(actual, target)
+            runtime = object.__new__(RenewalStopRuntime)
+            runtime.source = source
+            with patch.object(Runtime, 'candidate') as extract:
+                runtime.candidate()
+                extract.assert_called_once()
+            for relative, actual in driver_sources():
+                target = source/relative
+                target.write_bytes(actual.read_bytes()+b'\n# different declared source\n')
+                with self.subTest(relative=relative), patch.object(Runtime, 'candidate') as extract:
+                    with self.assertRaisesRegex(ValueError, 'driver source mismatch'):
+                        runtime.candidate()
+                    extract.assert_not_called()
+                shutil.copyfile(actual, target)
 
 
 if __name__ == '__main__':

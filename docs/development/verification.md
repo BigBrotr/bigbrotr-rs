@@ -295,7 +295,7 @@ that the owner or SQL has stopped.
 Run both schedules with fresh evidence directories:
 
 ```sh
-for outcome in known deadline; do
+for outcome in known held; do
   python3 -B tests/acceptance/run.py p01-first-launch-initial-renewal-stop \
     --source-root "$PWD" \
     --candidate-manifest /absolute/path/to/candidate/candidate-manifest.json \
@@ -305,13 +305,16 @@ done
 ```
 
 `known` verifies that private admission closes while the same parent/backend
-remain alive and blocked, then releases that lock within the original window.
+remain alive and blocked, then releases that lock for collection.
 It requires exit0, native close, committed Control release and independent row/
-backend checks. `deadline` retains the lock through actual deadline refusal and
+backend checks. `held` retains the lock through actual refusal and
 requires exit4 without a positive stopped/released claim. Both compare the original
 Ingest scheduling row (including xmin), producer and job/frontier observations
 to reject subsequent renewal-chain work or dispatch. The fixture explicitly uses
 the existing5s authority/renewal defaults; it does not extend product deadlines.
+The held schedule measures terminal refusal, not the exact query-collection
+cutoff: the deterministic Rust controls prove the original absolute deadline and
+absence of budget reset. Container/native teardown retains its separate join bound.
 
 These are dedicated real-engine qualifications. The maintained first-launch
 Python suite covers their oracle/CLI negatives in ordinary CI; it does not stand

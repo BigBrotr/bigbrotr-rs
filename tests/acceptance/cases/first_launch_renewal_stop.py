@@ -11,14 +11,17 @@ import sys
 import time
 import tomllib
 
-from cases.first_launch import Runtime, require, save
+from pathlib import Path
+
+from cases.first_launch import Runtime, digest, require, save
 from cases.first_launch_index_pin import process_identity
 
 STAGES = ('prerequisites', 'candidate', 'runtime_image', 'fresh_bootstrap',
           'renewal_stop', 'cleanup')
 LIMITS = [
     'Actual initialized Control/Ingest renewal only; no acquisition, Archive/Index worker, mutating HTTP or general shutdown qualification.',
-    'The same positively identified Control backend/query remains blocked through SIGTERM. Known completion must drain; an original deadline must refuse success.',
+    'The same positively identified Control backend/query/transaction remains blocked through SIGTERM. Known completion must drain; the held-query schedule must refuse success.',
+    'The held-query schedule observes refusal and complete termination, not the exact collection cutoff. Deterministic Rust controls prove the original absolute deadline and absence of renewal-budget reset; teardown has its separate join bound.',
     'PostgreSQL administrator observations and lock orchestration are independent of the actual configured product login. No administrator execution substitutes for product privileges.',
     'No rollback or absence of Control renewal effects is inferred on failure; retained rows and original terminal output record the observed outcome.',
 ]
@@ -28,7 +31,18 @@ EFFECT_TABLES = ('producer_epochs', 'producer_requests', 'jobs', 'consumer_front
                  'index_owner_sessions')
 
 
-def select_waiter(rows, backend, holder_pid):
+def driver_sources():
+    return (('tests/acceptance/cases/first_launch_renewal_stop.py', Path(__file__)),
+            ('tests/acceptance/cases/first_launch_index_pin.py',
+             Path(sys.modules[process_identity.__module__].__file__)))
+
+
+def check_driver_sources(source):
+    for relative, actual in driver_sources():
+        require(digest(actual) == digest(source/relative), 'renewal-stop driver source mismatch')
+
+
+def select_waiter(rows, backend, holder_pid, *, original=None):
     if not rows:
         return None
     require(len(rows) == 1, 'multiple product renewal waiters')
@@ -36,7 +50,10 @@ def select_waiter(rows, backend, holder_pid):
     require(all(row[key] == backend[key] for key in ('pid', 'backend_start', 'usename'))
             and row['wait_event_type'] == 'Lock'
             and row['blocking_pids'] == [holder_pid]
+            and type(row['query_start_us']) is int and type(row['xact_start_us']) is int
+            and 0 < row['xact_start_us'] <= row['query_start_us']
             and row['query'] == RENEWAL_QUERY, 'wrong product renewal phase or backend')
+    require(original is None or row == original, 'original renewal query or transaction was replaced')
     return row
 
 
@@ -56,14 +73,18 @@ def verify_terminal(outcome, code, records, stderr, owners, effects_before, effe
                 and records[1]['owner_release'] == 'committed'
                 and owners[0]['state'] == 'released', 'known renewal did not drain and release')
     else:
-        require(outcome == 'deadline' and code == 4 and len(records) == 1
+        require(outcome == 'held' and code == 4 and len(records) == 1
                 and records[0]['state'] == 'initialized' and owners[0]['state'] == 'active'
                 and ('deadline' in stderr or 'expired' in stderr),
-                'held renewal did not preserve its original deadline and unknown outcome')
+                'held renewal did not refuse success with its retained unknown outcome')
 
 
 class RenewalStopRuntime(Runtime):
     holder = None
+
+    def candidate(self):
+        check_driver_sources(self.source)
+        super().candidate()
 
     def load_helpers(self):
         super().load_helpers()
@@ -78,7 +99,6 @@ class RenewalStopRuntime(Runtime):
         for key, value in (('authorization_ttl', '5s'), ('renewal_timeout', '5s')):
             text = self.set_value(text, 'runtime', key, value)
         self.config.write_text(text)
-        from cases.first_launch import digest
         self.inputs['initial_recipe_sha256'] = digest(self.config)
 
     def effects(self):
@@ -95,7 +115,7 @@ class RenewalStopRuntime(Runtime):
         output = self.root / 'renewal-stop'
         output.mkdir(mode=0o700)
         outcome = self.args.renewal_stop_outcome
-        require(outcome in ('known', 'deadline'), 'explicit renewal stop outcome required')
+        require(outcome in ('known', 'held'), 'explicit renewal stop outcome required')
         config = tomllib.loads(self.config.read_text())
         user = config['postgres']['control']['user']
         require(re.fullmatch('[a-z_][a-z0-9_]{0,62}', user), 'closed product role grammar')
@@ -136,12 +156,14 @@ class RenewalStopRuntime(Runtime):
             require(type(holder_pid) is int and holder_pid > 0 and holder_pid != backend['pid'],
                     'independent PostgreSQL lock holder required')
 
-            def blocked():
+            def blocked(*, original=None):
                 rows = json.loads(self.sql('bigbrotr_control', "SELECT coalesce(jsonb_agg(jsonb_build_object("
                     "'pid',pid,'backend_start',backend_start,'usename',usename,'query',query,"
+                    "'query_start_us',(EXTRACT(EPOCH FROM query_start)*1000000)::bigint,"
+                    "'xact_start_us',(EXTRACT(EPOCH FROM xact_start)*1000000)::bigint,"
                     "'wait_event_type',wait_event_type,'blocking_pids',pg_blocking_pids(pid))),'[]') "
                     f"FROM pg_stat_activity WHERE datname=current_database() AND {holder_pid}=ANY(pg_blocking_pids(pid))"))
-                return select_waiter(rows, backend, holder_pid)
+                return select_waiter(rows, backend, holder_pid, original=original)
 
             evidence.update(holder=locked, waiter=self.wait(blocked, 'actual renewal query', 4, entry=entry))
             before = self.effects()
@@ -164,17 +186,17 @@ class RenewalStopRuntime(Runtime):
 
             if outcome == 'known':
                 self.wait(admission_closed, 'private admission closed while renewal blocked', .6, entry=entry)
-                require(blocked() == evidence['waiter'], 'signal abandoned the same PostgreSQL renewal')
+                require(blocked(original=evidence['waiter']) is not None, 'signal abandoned the same PostgreSQL renewal')
                 evidence['admission_closed_before_unlock'] = True
                 evidence['parent_alive_before_unlock'] = self.inspect(entry)['State']['Running']
                 require(evidence['parent_alive_before_unlock'], 'owner exited before known SQL completion')
                 self.holder_send(holder, 'ROLLBACK;\n\\q\n')
                 require(holder.wait(3) == 0 and not holder.stderr and not holder.overflow, 'lock holder did not join')
-            # The negative schedule keeps the lock through the actual terminal
-            # refusal: no success can be manufactured by unlocking after expiry.
+            # The negative schedule keeps the lock through actual refusal. It
+            # does not infer the SQL collection instant from container teardown.
             self.docker('wait', entry['id'], timeout=10)
             evidence['signal_to_terminal_seconds'] = time.monotonic() - signalled
-            if outcome == 'deadline':
+            if outcome == 'held':
                 require(holder.process.poll() is None, 'negative lock disappeared before refusal')
                 self.holder_send(holder, 'ROLLBACK;\n\\q\n')
                 require(holder.wait(3) == 0 and not holder.stderr and not holder.overflow, 'negative holder did not join')
