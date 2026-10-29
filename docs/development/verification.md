@@ -1103,6 +1103,11 @@ freed spool capacity. Complete native/typed science, finite Index/Archive catch-
 and retries, signed history on a fresh process and exact353-byte first-event
 export complete the profile. The independent terminal expectations are67 Archive
 batches/snapshot68/frontier5,322 scientific rows and572 raw Index rows at revision68.
+The existing completed-startup-probe and native-worker-join gate precedes both
+fresh clients inside their original40s export/30s history windows. The isolated
+mixed restore pairs an older checkpoint head with current progress children;
+it requires the independently observed SQL typed-head digest refusal and does
+not claim to reach the later direct floor comparison.
 The live Index gate requires current publication and the complete authenticated
 source vector `[epoch1=312, epoch2=10]`. The original batch/grant/operation/client
 and30s readiness bounds remain; Ready65 is not required or claimed. The native

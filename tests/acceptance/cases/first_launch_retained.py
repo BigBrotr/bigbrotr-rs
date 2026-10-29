@@ -13,6 +13,8 @@ from cases.first_launch_index_live import LiveTopologyIndexRuntime
 from cases.first_launch_index_query_trace import QueryTraceRuntime, query_trace_selection
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_live_oracle as live_oracle
+from cases import first_launch_index_topology_oracle as topology
+from cases import first_launch_index_baseline as baseline
 from cases import first_launch_retained_oracle as oracle
 from cases import first_launch_retained_native as native
 
@@ -221,6 +223,41 @@ class ReclamationRuntime(RetainedRuntime):
     phase_guard=LiveTopologyIndexRuntime.phase_guard
     phase_wait=LiveTopologyIndexRuntime.phase_wait
 
+    def verify_index(self):
+        super().verify_index()
+        self.initial_index_state=load(self.root/'index/after-control.json')
+
+    def cleanup(self):
+        for proxy in getattr(self,'reclamation_proxy_handles',[]):
+            try:proxy.stop()
+            except Exception as error:
+                self.resources['cleanup_errors'].append(dict(resource='reclamation-proxy',error=type(error).__name__))
+        super().cleanup()
+
+    def finish_reclamation_proxy(self,proxy,original,output,recorded=None):
+        import sys
+        primary=sys.exception()
+        def attempt(resource,operation):
+            nonlocal primary
+            try:return operation()
+            except Exception as error:
+                self.resources['cleanup_errors'].append(dict(resource=resource,error=type(error).__name__))
+                if primary is None:primary=error
+        attempt('reclamation-config-restore',lambda:self.config.write_text(original))
+        attempt('reclamation-proxy-stop-command',lambda:self.proxy_send(proxy,'stop\n'))
+        attempt('reclamation-proxy-join',lambda:require(proxy.wait(5)==0,'reclamation proxy did not join'))
+        terminal=attempt('reclamation-proxy-observation',lambda:self.proxy_observation(proxy))
+        if terminal is not None:
+            attempt('reclamation-proxy-output',lambda:save(output/'proxy-terminal.json',terminal))
+        attempt('reclamation-proxy-stop',proxy.stop)
+        if recorded is not None:
+            def persist():
+                recorded.update(status='joined' if proxy.process.poll() is not None else 'unjoined',exit_code=proxy.process.returncode)
+                self.record_resources()
+            attempt('reclamation-proxy-resources',persist)
+        if sys.exception() is None and primary is not None:raise primary
+        return terminal
+
     def load_helpers(self):
         super().load_helpers()
         # Load/pin the existing independent encoders before candidate identity.
@@ -261,11 +298,12 @@ class ReclamationRuntime(RetainedRuntime):
         (self.reclamation_output/(label+'.stdout')).write_text(logs.stdout)
         (self.reclamation_output/(label+'.stderr')).write_text(logs.stderr)
         require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
-            and not info['State']['OOMKilled'] and not logs.stdout.strip() and logs.stderr,
+            and not info['State']['OOMKilled'],
             'unauthorized reclamation must refuse without success')
+        disposition=oracle.reclamation_refusal(label,logs.stdout,logs.stderr)
         self.backend_absence(self.reclamation_output)
         after,after_catalog=self.capture(self.reclamation_output,label+'-after')
-        oracle.control_only(before,after,allow_no_claim=True)
+        oracle.control_only(before,after,claim=disposition)
         index.exact(catalog,after_catalog)
         index.exact(inputs,self.files(self.state/'data/ingest/producer-inputs-v1'))
         index.exact(native_before,self.native_capture(label+'-native-after'))
@@ -286,9 +324,15 @@ class ReclamationRuntime(RetainedRuntime):
         original=self.config.read_text()
         argv=[sys.executable,'-B',str(path),'--mode',mode,'--target','control-closed-reclamation',
             '--profile','retained-catch-up','--upstream-port','15432']
+        if not hasattr(self,'reclamation_proxy_handles'):self.reclamation_proxy_handles=[]
+        require(len(self.reclamation_proxy_handles)<2,'bounded reclamation proxy count')
         proxy=self.proxy_process(argv,input_pipe=True)
-        save(output/'proxy-process.json',dict(argv=argv,pid=proxy.process.pid,source_sha256=digest(path)))
+        self.reclamation_proxy_handles.append(proxy)
+        recorded=dict(pid=proxy.process.pid,argv=argv,status='running')
+        self.resources.setdefault('reclamation_proxies',[]).append(recorded)
         try:
+            self.record_resources()
+            save(output/'proxy-process.json',dict(argv=argv,pid=proxy.process.pid,source_sha256=digest(path)))
             ready=self.proxy_event(proxy,'ready',10)
             require(ready['source_sha256']==digest(path) and ready['target']=='control-closed-reclamation'
                 and ready['upstream_port']==15432,'declared reclamation proxy identity')
@@ -300,20 +344,18 @@ class ReclamationRuntime(RetainedRuntime):
             info=self.inspect(entry);logs=self.docker('logs',entry['id'])
             (output/'serve.stdout').write_text(logs.stdout);(output/'serve.stderr').write_text(logs.stderr)
             require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
-                and not info['State']['OOMKilled'] and not logs.stdout.strip() and 'CommitUnknown' in logs.stderr,
+                and not info['State']['OOMKilled'] and logs.stdout==''
+                and logs.stderr=='error: producer operation unavailable: CommitUnknown\n',
                 'lost reclamation confirmation must report CommitUnknown without unlink')
             require(fault['faults']==1 and fault['client_complete']==0
                 and fault['server_complete']==int(mode=='after-complete'),'actual reclamation COMMIT direction differs')
         finally:
-            self.config.write_text(original)
-            self.proxy_send(proxy,'stop\n');require(proxy.wait(5)==0,'reclamation proxy did not join')
-            terminal=self.proxy_observation(proxy)
-            require(not terminal['stderr'] and not terminal['overflow'],'reclamation proxy output incomplete')
-            save(output/'proxy-terminal.json',terminal)
-            proxy.stop()
+            terminal=self.finish_reclamation_proxy(proxy,original,output,recorded)
         self.backend_absence(output)
         after,after_catalog=self.capture(output,'after')
-        oracle.control_only(before,after);index.exact(catalog,after_catalog)
+        oracle.control_only(before,after,claim='failed',backend_pid=fault['backend_pid'])
+        oracle.reclamation_fault(fault,terminal,mode)
+        index.exact(catalog,after_catalog)
         index.exact(native_before,self.native_capture('commit-'+mode+'-native-after'))
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==inputs,'unknown COMMIT unlinked originals')
         self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
@@ -382,6 +424,13 @@ class ReclamationRuntime(RetainedRuntime):
         # One explicitly incompatible partial restore on an owned copy. It does
         # not rewrite the successful original's PG history or any native bytes.
         self.sql(database,statement)
+        slot=index.raw(old['producer_slot_id'],16).hex()
+        typed_refusal=("DO $proof$ BEGIN BEGIN PERFORM control.require_retained_producer_progress(decode('"+slot+"','hex'),1); "
+            "RAISE EXCEPTION 'mixed typed head unexpectedly accepted'; EXCEPTION WHEN check_violation THEN "
+            "IF SQLERRM <> 'retained producer progress is not a validated typed head' THEN RAISE; END IF; END; END $proof$;")
+        self.sql(database,typed_refusal)
+        save(output/'typed-head-refusal.json',dict(sqlstate='23514',message='retained producer progress is not a validated typed head',
+            fixture='older_head_with_newer_progress_children',direct_floor_comparison='NOT_REACHED'))
         self.resources['reclamation_restore_fixture']=dict(database=database,native_root=str(clone),
             kind='post-reclamation-native-with-actual-older-typed-head',source_checkpoint_revision=64,status='retained')
         self.record_resources()
@@ -398,13 +447,14 @@ class ReclamationRuntime(RetainedRuntime):
             info=self.inspect(entry);logs=self.docker('logs',entry['id'])
             (output/'serve.stdout').write_text(logs.stdout);(output/'serve.stderr').write_text(logs.stderr)
             require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
-                and not info['State']['OOMKilled'] and not logs.stdout.strip() and logs.stderr,
+                and not info['State']['OOMKilled'],
                 'mixed restored checkpoint must refuse without success')
+            disposition=oracle.reclamation_refusal('mixed-checkpoint-refusal',logs.stdout,logs.stderr)
         finally:self.config.write_text(original)
         require(self.sql(database,'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')=='0',
             'mixed fixture backend remains')
         after=self.rows({'postgres':self.pg['id']},database);save(output/'after-control.json',after)
-        oracle.control_only(before,after)
+        oracle.control_only(before,after,claim=disposition)
         index.exact(native_before,self.native_capture('mixed-native-after',store=clone))
         require(self.files(clone/'producer-inputs-v1')=={},'mixed restore fabricated old input files')
         index.exact(self.native_capture('mixed-original-preserved'),self.reclaimed_native)
@@ -425,6 +475,8 @@ class ReclamationRuntime(RetainedRuntime):
         shutil.copyfile(self.source/'tests/fixtures/acquisition/selector-events.json',home/'selector-events.json')
         self.new_event=next(row['event'] for row in load(home/'selector-events.json')['events'] if row['name']=='included')
         require(self.files(self.state/'data/ingest/producer-inputs-v1')=={},'spool must be empty before activation')
+        prebridge,_=self.capture(output,'prebridge')
+        topology.unchanged_index(self.initial_index_state,prebridge)
         entry=self.launch('reclaimed-successor','app','serve','--file','/etc/bigbrotr/instance.toml',
             '--activate-initial-successor','--roles','control,ingest,sync,index')
         started=self.wait(lambda:self.logs(entry,output),'compacted successor activation and retained Index bridge',60,entry=entry)[0]
@@ -433,7 +485,9 @@ class ReclamationRuntime(RetainedRuntime):
             'successor did not authenticate the compacted predecessor')
         self.compacted_started=started
         bridge,_=self.capture(output,'bridge')
-        require(index.only(bridge['consumers'],consumer_role='index')['current_revision']==65,'retained Index bridge65 missing')
+        generation=live_oracle.retained_bridge(prebridge,bridge,self.state/'data/index',retained_boundary=True)
+        live_oracle.startup_index(started['index'],generation,retained_boundary=True)
+        index.exact(self.custody(),self.custody_before)
         self.compacted_bridge=bridge
         with (home/'client.stdout').open('x') as out,(home/'client.stderr').open('x') as err:
             client=subprocess.Popen([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_live_client.py'),
@@ -492,10 +546,12 @@ class ReclamationRuntime(RetainedRuntime):
         self.finite('compacted-abandon-successor',*args,'--abandon-activated-acquisition')
         self.finite('compacted-retire-successor',*args,'--retire-activated-initial')
         self.retired_successor,_=self.capture(output,'retired')
+        live_oracle.publication_unchanged(live,self.retired_successor)
         self.final_native=self.native_capture('successor-native')
         self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,started,self.retained_science,
             self.successor_wires,self.final_native,self.state/'data/ingest',time.time_ns()//1000)
         self.all_input_files=self.files(self.state/'data/ingest/producer-inputs-v1')
+        self.complete_index_state=self.retired_successor
         self.refused_reclamation('refuse-reclamation-after-successor')
         save(output/'reuse-verdict.json',dict(status='PASS',producer_requests=[64,3],cumulative65='genuine_epoch2_request1',
             shared_files=3,shared_file_limit=64,shared_byte_limit=32*1024*1024,index_revision=68,ready65='NOT_CLAIMED'))
@@ -504,17 +560,21 @@ class ReclamationRuntime(RetainedRuntime):
         output=self.reclamation_output/'consumers';output.mkdir(mode=0o700)
         # Finite Index verifies the already-published live compacted history;
         # neither exact retry may add physical rows or a publication revision.
-        for label in ('index-compacted-catch-up','index-compacted-exact-retry'):
+        for owner_epoch,label in enumerate(('index-compacted-catch-up','index-compacted-exact-retry'),3):
             report=self.finite(label,'index','catch-up','--file','/etc/bigbrotr/instance.toml')
             require(report['published_revision_after']==68 and report['new_batches']==0,'finite compacted Index changed complete history')
             state,_=self.capture(output,label)
             rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
-            generation=index.only(state['projection_generations'])['generation_id']
-            oracle.physical_reclamation_rows(rows,self.final_science,generation,self.schema)
+            live_oracle.no_work_rebind(self.complete_index_state,state,report,self.final_science,self.schema,rows,
+                owner_epoch=owner_epoch,retained_boundary=True)
+            live_oracle.append_only_history(self.compacted_bridge,state)
+            index.exact(self.custody(),self.custody_before)
+            self.complete_index_state=state
             save(output/(label+'-rows.json'),rows)
             require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'Index changed retained inputs')
         report=self.finite('archive-compacted-catch-up','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         self.caught_up,self.caught_up_catalog=self.capture(output,'archive')
+        live_oracle.publication_unchanged(self.complete_index_state,self.caught_up)
         require(report['terminal_epoch']==2 and report['frontier_revision']==5 and report['snapshot_id']==68
             and report['compacted_requests']=='64' and report['family_counts']==[73,62,62,62,63],
             'compacted epoch2 Archive publication differs')
@@ -524,6 +584,7 @@ class ReclamationRuntime(RetainedRuntime):
         self.caught_up_files=self.files(self.state/'data/archive')
         retry=self.finite('archive-compacted-exact-retry','archive','catch-up','--file','/etc/bigbrotr/instance.toml')
         after,catalog=self.capture(output,'archive-retry')
+        live_oracle.publication_unchanged(self.complete_index_state,after)
         require(retry['new_attempts']==0 and retry['new_frontier_revisions']==0,'Archive retry added work')
         self.restart_checks.retry_unchanged(self.caught_up,after)
         index.exact(catalog,self.caught_up_catalog)
@@ -533,7 +594,6 @@ class ReclamationRuntime(RetainedRuntime):
 
     def compacted_history_export(self):
         import secrets
-        import sys
         output=self.reclamation_output/'history-export';output.mkdir(mode=0o700)
         self.wait_login_capacity(output)
         destination=secrets.token_hex(16)
@@ -548,13 +608,14 @@ class ReclamationRuntime(RetainedRuntime):
         (home/'destination').mkdir(mode=0o700)
         shutil.copyfile(self.state/'data/export/destination.json',home/'destination/destination.json')
         save(home/'export-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
-            destination_id=destination,retained_compacted_epoch2=True))
-        before,_=self.capture(output,'export-before')
+            destination_id=destination,retained_compacted_epoch2=True,startup_quiescence=True))
+        before,_=self.capture(output,'before')
         entry=self.launch('compacted-signed-export','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'compacted ordinary Control',20,entry=entry)
-        self.command([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_export_client.py'),str(home)],timeout=40,label='compacted-signed-export-client')
+        baseline.startup_client(self,output,entry,client_home=home,retained_compacted_epoch2=True)
         require(self.stop_container(entry,output)['State']['ExitCode']==0,'export owner did not join')
         after,_=self.capture(output,'export-after')
+        live_oracle.publication_unchanged(self.complete_index_state,after)
         verdict=self.export_validate(before,after,home,self.initialized,self.ids['catalog'],expected_principal=self.enrolled['principal_id'],
             expected_table_count=82,expected_tables=self.tables,destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True)
         require(verdict['jsonl_bytes']==353,'complete original signed export bytes differ')
@@ -564,12 +625,15 @@ class ReclamationRuntime(RetainedRuntime):
         shutil.copyfile(self.home/'fixture-profile.json',history/'fixture-profile.json')
         save(history/'events.json',[self.events[0],self.new_event])
         save(history/'read-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
-            frontier_revision=5,snapshot_id=68,config_revision='1',policy_revision='1'))
+            frontier_revision=5,snapshot_id=68,config_revision='1',policy_revision='1',startup_quiescence=True))
+        self.capture(history,'before')
         entry=self.launch('compacted-history-restart','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'fresh compacted history Control',20,entry=entry)
-        self.command([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_catch_up_client.py'),'history',str(history)],timeout=30,label='compacted-history-client')
+        baseline.startup_client(self,history,entry,successor=True,client_home=history,retained_compacted_epoch2=True)
         require(load(history/'history-client-result.json')['status']=='PASS','fresh signed histories differ')
         require(self.stop_container(entry,output)['State']['ExitCode']==0,'history owner did not join')
+        final,_=self.capture(output,'history-after')
+        live_oracle.publication_unchanged(self.complete_index_state,final)
         require(self.files(self.state/'data/archive')==self.caught_up_files,'signed read/export changed Archive objects')
         index.exact(self.native_capture('history-native'),self.final_native)
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'history/export recreated originals')

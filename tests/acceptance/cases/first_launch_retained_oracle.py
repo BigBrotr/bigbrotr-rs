@@ -6,6 +6,8 @@ from pathlib import Path
 
 from cases import first_launch_index_oracle as index
 from cases import first_launch_index_live_oracle as live
+from cases import first_launch_index_topology_oracle as topology
+from cases.first_launch_index_commit_oracle import control_exclusion
 from cases import first_launch_restart as source
 
 
@@ -184,7 +186,34 @@ def science(state, before_proof, report, events, wires, dump, store, completed):
 
 # Reclamation extension of this same frozen64 workload. Product observations
 # supply clocks and fresh identities; expected bytes remain literal encodings.
-RECLAIM_COUNTS=(73,62,62,62,62,62,62,1,63,63)
+REFUSALS={
+    'refuse-open-producer':('failed','producer operation unavailable: Control(InvalidMetadata)'),
+    'refuse-corrupt-original':('failed','producer operation unavailable: Native(Input(Codec(IncompatibleSchema)))'),
+    'refuse-reclamation-after-successor':('none','ingest registration failed: InvalidInput'),
+    # Deliberately restoring only the old head over newer progress children
+    # fails the retained SQL digest check before direct floor/head comparison.
+    'mixed-checkpoint-refusal':('failed','producer operation unavailable: Progress(Backend)'),
+}
+
+
+def reclamation_refusal(label,stdout,stderr):
+    claim,message=REFUSALS[label]
+    assert stdout=='' and stderr=='error: '+message+'\n'
+    return claim
+
+def reclamation_fault(fault,terminal,mode):
+    assert mode in ('before-forward','after-complete')
+    assert terminal['exit']==0 and not terminal['stderr'] and not terminal['overflow']
+    events=[json.loads(line) for line in terminal['stdout'].splitlines()]
+    ended, = [r for r in events if r['event']=='terminal']
+    observed, = [r for r in events if r['event']=='fault']
+    index.exact(observed,fault)
+    for event in (fault,ended):
+        assert event['target']=='control-closed-reclamation' and event['mode']==mode
+        assert event['profile']=='retained-catch-up'
+        index.exact([event[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')],
+            [1,1,int(mode=='after-complete'),0,1])
+    assert ended['unexpected']==0
 
 def retired_initial_native(science,dump):
     """One close-marker write over already authenticated initial science."""
@@ -212,9 +241,9 @@ def live_compacted_publication(state):
     assert index.only(state['producer_epochs'],producer_epoch=2)['state']=='open'
 
 
-def control_only(before,after,*,allow_no_claim=False):
+def control_only(before,after,*,claim='released',backend_pid=None):
     """Exact science plus the ordinary Control claim/release/fencing protocol."""
-    assert set(before)==set(after)
+    assert claim in ('released','failed','none') and set(before)==set(after)
     for table in before.keys()-{'owner_epochs','role_instances'}:
         index.exact(before[table],after[table])
     key=lambda row:(row['resource_id'],row['epoch'])
@@ -223,8 +252,24 @@ def control_only(before,after,*,allow_no_claim=False):
     assert len(previous)==len(before['owner_epochs']) and len(current)==len(after['owner_epochs'])
     assert previous.keys()<=current.keys()
     owners=[row for ident,row in current.items() if ident not in previous]
-    assert len(owners)==(0 if allow_no_claim and not owners else 1)
+    assert len(owners)==(0 if claim=='none' else 1)
     assert all(row['role']=='control' for row in owners)
+    if owners:
+        prior=max((r for r in before['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+        owner=owners[0]
+        assert owner['resource_id']==prior['resource_id'] and owner['dataset_id']==prior['dataset_id']
+        assert owner['epoch']==prior['epoch']+1
+        assert owner['process_incarnation'] not in {r['process_incarnation'] for r in before['owner_epochs']}
+        assert owner['index_publication_protocol'] is None and owner['control_fence_version']==1
+        assert type(owner['control_backend_pid']) is int and owner['control_backend_pid']>0
+        assert isinstance(owner['control_backend_start'],str) and owner['control_backend_start']
+        if backend_pid is not None:assert owner['control_backend_pid']==backend_pid
+        assert prior['acquired_at_us']<=owner['acquired_at_us']<owner['lease_expires_at_us']
+        assert owner['state']==('released' if claim=='released' else 'active')
+        if claim=='released':
+            assert type(owner['released_at_us']) is int and owner['released_at_us']>=owner['acquired_at_us']
+            assert owner['exclusion_method']=='storage_fenced' and owner['exclusion_digest']==control_exclusion(owner,owner)
+        else:assert owner['released_at_us'] is owner['exclusion_method'] is owner['exclusion_digest'] is None
     fenced={}
     for ident,old in previous.items():
         actual=current[ident]
@@ -254,6 +299,14 @@ def control_only(before,after,*,allow_no_claim=False):
         index.exact({k:v for k,v in old.items() if k not in ('retired_at_us','xmin')},
             {k:v for k,v in actual.items() if k not in ('retired_at_us','xmin')})
     assert new_roles.keys()-old_roles.keys()=={r['role_instance_id'] for r in owners}
+    for owner in owners:
+        role=new_roles[owner['role_instance_id']]
+        assert role['dataset_id']==owner['dataset_id'] and role['role']=='control'
+        assert role['created_at_us']<=owner['acquired_at_us']
+        if claim=='released':
+            assert type(role['retired_at_us']) is int and role['retired_at_us']>=owner['released_at_us'] and role['xmin']==owner['xmin']
+        else:assert role['retired_at_us'] is None
+    return owners[0] if owners else None
 
 
 def reclamation_floor(state,science):
@@ -353,11 +406,3 @@ def successor_science(before,after,started,first,wires,dump,store,completed):
     wanted=archive_science(dict(rows=native_rows(science.values)),live_epoch=2,retained_epoch2=True)
     wanted.update(manifest=manifest,inputs=originals,receipts=list(science.receipts.values()),event=new_event)
     return wanted
-
-
-def physical_reclamation_rows(actual,science,generation,schema):
-    rows=index.expected_rows(science,index.raw(generation,16),schema,counts=RECLAIM_COUNTS)
-    for name,columns,_ in schema.FAMILIES:
-        expected=[{key:index.json_value(ty,value) for (key,ty),value in zip(schema.COMMON+columns,row)} for row in rows[name]]
-        index.exact(actual[name],expected)
-    return rows
