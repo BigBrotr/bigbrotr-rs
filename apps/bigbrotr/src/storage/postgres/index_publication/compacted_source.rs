@@ -103,21 +103,20 @@ impl CompactedIndexRequest<'_> {
                 proof,
                 native,
                 registration,
-            } => {
-                producer_compaction::require_initial_index_source(
-                    tx,
-                    proof,
-                    native,
-                    registration,
-                    session.issuer,
-                    self.limits,
-                    self.effects,
-                    &mut lease,
-                    policy,
-                    self.authority.cancelled,
-                )
-                .await
-            }
+            } => producer_compaction::require_initial_index_source(
+                tx,
+                proof,
+                native,
+                registration,
+                session.issuer,
+                self.limits,
+                self.effects,
+                &mut lease,
+                policy,
+                self.authority.cancelled,
+            )
+            .await
+            .map_err(successor_history::compacted_error),
             CompactedIndexSource::Successor { proof, native } => {
                 successor_history::require_compacted_index_source(
                     tx,

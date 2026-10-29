@@ -675,7 +675,11 @@ impl IngestStore {
             std::fs::metadata(&self._reservation.path.0).map_err(|_| BootstrapError::EngineRead)?;
         Ok((metadata.dev(), metadata.ino()))
     }
-    fn handoff_value(&self, key: IngestKey, expected: Option<&[u8]>) -> Result<(), BootstrapError> {
+    pub(in crate::storage::rocks::store) fn handoff_value(
+        &self,
+        key: IngestKey,
+        expected: Option<&[u8]>,
+    ) -> Result<(), BootstrapError> {
         let key = key.encode().map_err(|_| BootstrapError::InvalidIntent)?;
         let cf = self
             .db
