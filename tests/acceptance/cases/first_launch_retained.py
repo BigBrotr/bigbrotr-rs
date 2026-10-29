@@ -650,7 +650,7 @@ class ReclamationRuntime(RetainedRuntime):
         save(output/'archive-state-after.json',state_files)
         oracle.compacted_archive(self.prefix,self.index_live,before,self.caught_up,report,
             self.archive_science,self.prefix_catalog,self.caught_up_catalog)
-        self.final_census=self.census(output,'complete')
+        self.final_census=self.census(output,'complete',profile='closed-reclamation')
         self.restart_checks.publication(self.caught_up,self.final_census,self.archive_science,
             revision=4,snapshot=68,topology=1,cuts=[(1,312),(2,10)],published_ordinals=oracle.ARCHIVE_PUBLISHED_ORDINALS)
         self.caught_up_files=self.files(self.state/'data/archive')

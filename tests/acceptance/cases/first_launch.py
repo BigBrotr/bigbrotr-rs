@@ -723,7 +723,7 @@ class Runtime:
         self.inputs['export'] = {key: self.export_result[key] for key in
             ('jsonl_bytes', 'jsonl_sha256', 'manifest_sha256', 'export_pin_retained', 'all_fresh_readers_released')}
 
-    def census(self, output, name):
+    def census(self, output, name, *, profile='default'):
         """A joined, read-only C API child using only the verified candidate worker."""
         self.inspect(self.pg)
         pg = {'postgres': self.pg['id']}
@@ -737,9 +737,12 @@ class Runtime:
             'file:' + str(self.state / 'secrets/runtime/archive-read'))
         path = output / (name + '-reader.toml')
         path.write_text(config)
-        result = self.command([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
+        command = [sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_archive_read.py'),
             str(path), str(output / (name + '-temporary')), '--worker-root', str(self.bundle / 'archive-worker'),
-            '--catalog-port', '15432', '--full-stream-order', '--override-data-path'], timeout=30, label='census-' + name)
+            '--catalog-port', '15432', '--full-stream-order', '--override-data-path']
+        if profile != 'default':
+            command += ['--census-profile', profile]
+        result = self.command(command, timeout=30, label='census-' + name)
         require(not result.stderr, 'independent C API diagnostic output')
         value = json.loads(result.stdout)
         save(output / (name + '-science.json'), value)

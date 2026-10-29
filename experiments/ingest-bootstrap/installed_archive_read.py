@@ -43,11 +43,20 @@ def sql_path(value):
     return value
 
 
+def census_limits(profile):
+    """Fixed probe envelopes, independent of observed rows or product limits."""
+    assert type(profile) is str and profile in ('default', 'closed-reclamation'), 'native-reader-profile'
+    counts = (16, 16, 16, 16, 16, 8) if profile == 'default' else (73, 62, 62, 62, 63, 67)
+    return dict(zip(('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts',
+                     'provenance_facts', 'archive_commits'), counts))
+
+
 def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
          bundle_root=Path('/build/archive-worker'), catalog_port=5432,
-         override_data_path=False):
+         override_data_path=False, census_profile='default'):
     assert row_bytes in (65536, 262144, 1048576)
     assert type(override_data_path) is bool
+    limits = census_limits(census_profile)
     pg = catalog_settings(config, catalog_port)
     bundle = Path(bundle_root)
     assert bundle.is_absolute()
@@ -144,9 +153,9 @@ def read(config, temporary, *, full_stream_order=False, row_bytes=65536,
             provenance_facts='hex(event_id) AS event_id,ref_value(endpoint_id) AS endpoint_id,ref_value(observer_id) AS observer_id,ref_value(access_scope_id) AS access_scope_id,received_at,clock_value(clock_quality) AS clock_quality,ref_value(verification_method_id) AS verification_method_id,source_value(corrects) AS corrects')
         order = ('source_record_id.dataset_id,source_record_id.shard_id,source_record_id.owner_epoch,source_record_id.sequence'
             if full_stream_order else 'source_record_id.sequence')
-        tables = {name: execute(f'SELECT to_json(r) FROM (SELECT {common},{fields} FROM archive.{name} ORDER BY {order} LIMIT 17) r', name, 16)
+        tables = {name: execute(f'SELECT to_json(r) FROM (SELECT {common},{fields} FROM archive.{name} ORDER BY {order} LIMIT {limits[name]+1}) r', name, limits[name])
             for name, fields in families.items()}
-        tables['archive_commits'] = execute('SELECT to_json(r) FROM (SELECT hex(dataset_id) AS dataset_id,schema_version,topology_generation,hex(batch_digest) AS batch_digest,record_count,input_ranges,hex(attempt_id) AS attempt_id,publication_ordinal FROM archive.archive_commits ORDER BY publication_ordinal LIMIT 9) r', 'commits', 8)
+        tables['archive_commits'] = execute(f'SELECT to_json(r) FROM (SELECT hex(dataset_id) AS dataset_id,schema_version,topology_generation,hex(batch_digest) AS batch_digest,record_count,input_ranges,hex(attempt_id) AS attempt_id,publication_ordinal FROM archive.archive_commits ORDER BY publication_ordinal LIMIT {limits["archive_commits"]+1}) r', 'commits', limits['archive_commits'])
         execute('ROLLBACK', 'rollback')
         return dict(format='bigbrotr-independent-installed-archive-read/1', tables=tables)
     finally:
@@ -161,6 +170,8 @@ if __name__ == '__main__':
     parser.add_argument('config', type=Path)
     parser.add_argument('temporary', type=Path)
     parser.add_argument('--full-stream-order', action='store_true')
+    parser.add_argument('--census-profile', choices=('default', 'closed-reclamation'), default='default',
+        help='fixed probe envelope: default16 rows per family/8 commits; closed-reclamation322 scientific rows/67 commits')
     row_limit = parser.add_mutually_exclusive_group()
     row_limit.add_argument('--large-signed-row', action='store_true')
     row_limit.add_argument('--row-bytes', type=int, choices=(65536, 262144, 1048576),
@@ -176,4 +187,4 @@ if __name__ == '__main__':
     temporary.mkdir(mode=0o700)
     print(json.dumps(read(tomllib.loads(config.read_text()), temporary, full_stream_order=args.full_stream_order,
         row_bytes=args.row_bytes or (262144 if args.large_signed_row else 65536), bundle_root=args.worker_root,
-        catalog_port=args.catalog_port, override_data_path=args.override_data_path)))
+        catalog_port=args.catalog_port, override_data_path=args.override_data_path, census_profile=args.census_profile)))

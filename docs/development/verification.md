@@ -1102,7 +1102,13 @@ must refuse. The successor's genuine request1 is cumulative request65 and uses
 freed spool capacity. Complete native/typed science, finite Index/Archive catch-up
 and retries, signed history on a fresh process and exact353-byte first-event
 export complete the profile. The independent terminal expectations are67 Archive
-batches/snapshot68/frontier5,322 scientific rows and572 raw Index rows at revision68.
+batches with published ordinals1,2,4..68/snapshot68/frontier4,322 scientific rows
+and572 raw Index rows at revision68. The final C API census automatically selects
+the fixed closed-reclamation probe envelope:73/62/62/62/63 rows by family and67
+commits, each queried with one additional overflow sentinel. The probe's default
+16 rows per family/8 commits remains for the smaller cases; these are diagnostic
+envelopes, not product limits. Row-byte, memory, temporary-space and30s command
+bounds remain unchanged.
 The existing completed-startup-probe and native-worker-join gate precedes both
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;
