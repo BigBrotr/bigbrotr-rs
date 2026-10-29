@@ -23,7 +23,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 pub struct LiveInitialWriter {
     pub(super) native: ActiveInitialWriter,
     pub(super) binding: LiveInitialBinding,
-    _permit: OwnedPermit,
+    pub(super) _permit: OwnedPermit,
+    pub(super) check: Option<initial_compaction::Check>,
 }
 pub(super) struct LiveInitialBinding {
     pub(super) previous: ingest_registry::InitialRegistration,
@@ -50,6 +51,9 @@ impl LiveInitialSource<'_> {
     pub fn retained_requests(&self) -> Result<u64, AdmissionError> {
         self.native.retained_requests()
     }
+    pub fn history_request_limit(&self) -> u64 {
+        self.native.history_request_limit()
+    }
     pub fn read_pending_batch(
         &self,
         first: SourceRecordId,
@@ -73,6 +77,9 @@ impl LiveInitialWriter {
             || self.manifest().identity().topology_generation.get() != 1
         {
             return Err(AdmissionError::InvalidInput);
+        }
+        if self.check.is_some() != self.handoff().compacted_floor().is_some() {
+            return Err(AdmissionError::StateMismatch);
         }
         let native = self.native.index_source()?;
         Ok(LiveInitialSource { native })
@@ -482,6 +489,7 @@ impl ControlSession {
             native,
             binding,
             _permit: permit,
+            check: compacted,
         })
     }
 
@@ -584,6 +592,50 @@ fn check(
     if cancelled.load(Ordering::Relaxed) || lease.check_delivery(epoch).is_err() {
         Err(InitialSuccessionError::DeliveryUnknown)
     } else {
+        Ok(())
+    }
+}
+
+impl LiveInitialWriter {
+    /// Fresh borrowed native/canonical proof for this actual live owner. No
+    /// pre-activation sequence stamp is renewed or promoted into live authority.
+    pub(super) async fn require_index_basis(
+        &self,
+        tx: &Transaction<'_>,
+        cancelled: &AtomicBool,
+    ) -> Result<(), OwnerError> {
+        if self.check.is_some() != self.handoff().compacted_floor().is_some() {
+            return Err(OwnerError::InvalidMetadata);
+        }
+        if let Some(check) = &self.check {
+            let id = self.manifest().identity();
+            let ttl = PolicyLeaseTtl::new(Duration::from_secs(30))
+                .map_err(|_| OwnerError::InvalidInput)?;
+            let mut lease = PolicyLeaseTracker::new(
+                id.dataset_id,
+                id.process_incarnation,
+                id.policy_epoch,
+                ttl,
+            )
+            .map_err(|_| OwnerError::Unavailable)?;
+            let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
+            let remaining = self.binding.require(tx).await?;
+            lease
+                .complete_refresh(
+                    &ticket,
+                    LeaseResponse {
+                        dataset: id.dataset_id,
+                        process_incarnation: id.process_incarnation,
+                        policy_epoch: id.policy_epoch,
+                        ttl: Duration::from_secs(30).min(Duration::from_micros(remaining)),
+                    },
+                )
+                .map_err(|_| OwnerError::Unavailable)?;
+            check
+                .require_live_initial(tx, self, &mut lease, id.policy_epoch, cancelled)
+                .await
+                .map_err(|_| OwnerError::Unavailable)?;
+        }
         Ok(())
     }
 }

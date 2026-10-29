@@ -588,7 +588,7 @@ impl Index {
         }
         if let Some(session) = &self.session {
             store
-                .require_current(owner, session, self.state.as_ref().unwrap())
+                .require_current(owner, session, self.state.as_ref().unwrap(), cancelled)
                 .await?;
             live_window(deadline, cancelled)?;
         }
@@ -703,6 +703,7 @@ impl Index {
                         owner,
                         self.session.as_ref().unwrap(),
                         self.state.as_ref().unwrap(),
+                        cancelled,
                         &planned,
                     )
                     .await?;
@@ -817,6 +818,7 @@ impl Index {
                                 owner,
                                 self.session.as_ref().unwrap(),
                                 state,
+                                cancelled,
                                 prepared,
                                 proof,
                             )

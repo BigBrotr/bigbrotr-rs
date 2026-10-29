@@ -100,7 +100,7 @@ impl Index {
             || source
                 .retained_requests()
                 .map_err(|_| failed("request census unavailable"))?
-                > 64
+                > source.history_request_limit()
             || self.session.is_some()
             || self.active.is_some()
             || self.pending.is_some()

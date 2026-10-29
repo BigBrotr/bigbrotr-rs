@@ -112,9 +112,9 @@ if producer_ack:
                          'Connected PG confirmation/ACK, installed two-slot traffic/loss/recovery, '
                          'resource capacity and Archive worker qualification NOT_RUN.')
 if producer_floor:
-    identity['scope'] = ('Non-destructive native compacted-prefix codec, outcome and scientific census '
+    identity['scope'] = ('Closed-producer reclamation kernel, exact native sequence/input deltas and compacted-prefix scientific census '
                          'with affected lineage/input components; CLI/probe compilation and Clippy. '
-                         'Connected PostgreSQL, installed compacted recovery, reclamation, '
+                         'Connected PostgreSQL and installed product reclamation/capacity, '
                          'compacted successor compatibility and crash/restore qualification NOT_RUN.')
 assert identity['rustc'].startswith('rustc 1.98.1 ') and 'host: x86_64-unknown-linux-gnu' in identity['rustc']
 artifacts = Path('/out/artifacts')
@@ -532,7 +532,8 @@ if producer_floor:
     required_controls['archive_retained_frontier'] = [
         'storage::postgres::control_owner::archive_retained_frontier::tests::' + name for name in [
             'only_complete_terminal_history_is_a_loader_prerequisite',
-            'compacted_history_is_not_an_archive_frontier_prerequisite']]
+            'compacted_history_is_not_an_archive_frontier_prerequisite',
+            'explicit_compacted_archive_basis_accepts_terminal_epoch_two_only_with_exact_floor_count']]
     required_controls['successor_history'] = [
         'storage::postgres::control_owner::successor_history::tests::' + name for name in [
             'terminal_genesis_kind_comes_from_activation_even_at_zero',
@@ -553,6 +554,16 @@ if producer_floor:
             'compacted_prefix_binds_custody_inputs_cancellation_and_grants',
             'compacted_outcomes_check_protection_batch_digest_and_residual_names',
             'compacted_outcomes_preserve_full_width_historical_policy_and_reject_row_mismatch']]
+    required_controls['compacted_prefix'].extend(
+        'storage::rocks::store::admission_tests::compacted_prefix_tests::closed_reclamation_tests::'+name for name in [
+            'closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts',
+            'closed_reclamation_refuses_stale_native_or_inventory_before_unlink',
+            'closed_reclamation_cancellation_after_one_unlink_requires_fresh_proof',
+            'closed_reclamation_unknown_native_and_cancelled_authority_never_unlink',
+            'closed_reclamation_rechecks_corrupt_residuals_against_canonical_outcomes',
+            'reclaimed_resubmissions_return_retired_without_input_or_digest_reconstruction',
+            'closed_reclamation_empty_retry_binds_the_actual_spool_directory',
+        ])
     required_controls['request_inputs'] = [
         'storage::rocks::store::request_input_tests::lineage_input_tests::' + name for name in [
             'compacted_input_set_validates_floor_and_required_bounds_separately',

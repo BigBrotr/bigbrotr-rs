@@ -141,12 +141,7 @@ async fn own(
         &cancellation.requested,
     )?;
     let compacted = compacted_prefix.is_some();
-    if selected_index && compacted {
-        return Err((
-            4,
-            "live Index successor requires the original uncompacted predecessor".into(),
-        ));
-    }
+
     {
         let _preparation = grant(&budget, 128 * 1024, 8192)?;
         if compacted {

@@ -453,7 +453,7 @@ impl Index {
             .map_err(|_| failed("readiness final PG state unavailable"))?;
         live_window(deadline, cancelled)?;
         store
-            .require_current(control, self.session.as_ref().unwrap(), state)
+            .require_current(control, self.session.as_ref().unwrap(), state, cancelled)
             .await?;
         live_window(deadline, cancelled)?;
         if !store.within_history_limit()? {

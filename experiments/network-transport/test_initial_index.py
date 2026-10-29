@@ -11,25 +11,25 @@ from initial_index import (BINARY_EXACT, BINARY_GROUPS, BINARY_REQUIRED, GROUPS,
 
 
 class IndexResultControls(unittest.TestCase):
-    def test_binary_scope_requires_all_eighty_seven_named_controls(self):
+    def test_binary_scope_requires_all_eighty_eight_named_controls(self):
         names = sorted(test for tests in BINARY_REQUIRED.values() for test in tests)
-        self.assertEqual(len(names), 87)
-        self.assertEqual(len(set(names)), 87)
+        self.assertEqual(len(names), 88)
+        self.assertEqual(len(set(names)), 88)
         self.assertEqual({name: len(tests) for name, tests in BINARY_REQUIRED.items()}, {
             'initial-admission': 3, 'initial-capacity': 4, 'initial-sync': 4, 'initial-archive': 3,
-            'initial-index': 29, 'initial-commands': 10, 'initial-sync-diagnostic': 8, 'initial-supervision': 6,
+            'initial-index': 30, 'initial-commands': 10, 'initial-sync-diagnostic': 8, 'initial-supervision': 6,
             'initial-watchdog': 2, 'initial-cli': 1, 'index-cli': 1,
             'initial-readiness': 3, 'role-status-http': 3, 'ordinary-observations': 9, 'initial-role-route': 1,
         })
         self.assertEqual(sum('::index::tests::' in name for name in names), 7)
         self.assertEqual(sum('::index::prepare::tests::' in name for name in names), 7)
-        self.assertEqual(sum('::index::catch_up::tests::' in name for name in names), 8)
+        self.assertEqual(sum('::index::catch_up::tests::' in name for name in names), 9)
 
         def select(inventory):
             return selected_tests(inventory, groups=BINARY_GROUPS, required_modules=(),
                                   required_tests=BINARY_REQUIRED)
 
-        text = '\n'.join(name + ': test' for name in names) + '\n\n87 tests, 0 benchmarks\n'
+        text = '\n'.join(name + ': test' for name in names) + '\n\n88 tests, 0 benchmarks\n'
         selected = select(listed_tests(text))
         self.assertEqual({key: sorted(value) for key, value in BINARY_REQUIRED.items()}, selected)
         # Unrelated compiled CLI tests are not part of this focused profile.
@@ -47,18 +47,19 @@ class IndexResultControls(unittest.TestCase):
         # The old library-only inventory cannot satisfy a binary module.
         with self.assertRaises(ValueError):
             select([prefix + 'control' for prefix in GROUPS.values()])
-        for invalid in (text.replace('87 tests', '85 tests'),
+        for invalid in (text.replace('88 tests', '85 tests'),
                         text.replace(names[0] + ': test', names[1] + ': test'),
                         '0 tests, 0 benchmarks\n'):
             with self.assertRaises(ValueError):
                 listed_tests(invalid)
 
-    def test_source_and_connection_scope_requires_all_twenty_named_controls(self):
+    def test_source_and_connection_scope_requires_all_thirty_named_controls(self):
         names = sorted(test for tests in SOURCE_REQUIRED.values() for test in tests)
         self.assertEqual({key: len(tests) for key, tests in SOURCE_REQUIRED.items()},
                          {'funded-reservation': 4, 'funded-dns': 1,
-                          'postgres-route': 4, 'source-closure': 4, 'lineage-pending': 5, 'live-pending': 1, 'live-census': 1})
-        self.assertEqual(len(names), 20)
+                          'postgres-route': 4, 'source-closure': 4, 'lineage-pending': 5, 'live-pending': 1, 'live-census': 1,
+                          'closed-reclamation':7,'compacted-progress':2,'compacted-live':1})
+        self.assertEqual(len(names), 30)
         groups = {name: GROUPS[name] for name in SOURCE_REQUIRED}
 
         def select(inventory):

@@ -25,6 +25,9 @@ GROUPS = {
     'source-closure': 'storage::rocks::store::admission_tests::source_closure_tests::',
     'lineage-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::lineage_tests::lineage_replay_tests::lineage_pending_tests::',
     'signed-source-head': 'storage::rocks::store::admission_tests::actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_receipt',
+    'closed-reclamation': 'storage::rocks::store::admission_tests::compacted_prefix_tests::closed_reclamation_tests::',
+    'compacted-progress': 'storage::postgres::control_owner::producer_progress::recovery::tests::',
+    'compacted-live': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_gap_tests::compacted_handoff_tests::compacted_candidate_binds_fresh_target_and_explicit_activation_only',
     'live-pending': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::borrowed_live_pending_keeps_owned_bytes_across_head_advance_and_refuses_other_streams',
     'live-census': 'storage::rocks::store::admission_tests::initial_reconstruction_tests::initial_writer_tests::live_request_census_counts_receipt_only_requests_without_changing_producer_admission',
     'role-observation': 'management::roles::tests::',
@@ -32,6 +35,17 @@ GROUPS = {
 }
 SOURCE_REQUIRED = {
     **{name: (GROUPS[name],) for name in ('live-pending', 'live-census')},
+    'closed-reclamation': tuple(GROUPS['closed-reclamation']+name for name in (
+        'closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts',
+        'closed_reclamation_refuses_stale_native_or_inventory_before_unlink',
+        'closed_reclamation_cancellation_after_one_unlink_requires_fresh_proof',
+        'closed_reclamation_unknown_native_and_cancelled_authority_never_unlink',
+        'closed_reclamation_rechecks_corrupt_residuals_against_canonical_outcomes',
+        'reclaimed_resubmissions_return_retired_without_input_or_digest_reconstruction',
+        'closed_reclamation_empty_retry_binds_the_actual_spool_directory',
+    )),
+    'compacted-progress': tuple(GROUPS['compacted-progress']+name for name in ('compacted_floor_requires_exact_retained_checkpoint','compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint')),
+    'compacted-live': (GROUPS['compacted-live'],),
     'funded-reservation': tuple(GROUPS['funded-reservation'] + name for name in (
         'whole_operation_admission_is_atomic_and_preserves_error_classes',
         'closed_scope_retains_only_actual_escaped_grants_and_does_not_pin_drain',
@@ -153,6 +167,7 @@ BINARY_REQUIRED = {
         'catch_up::tests::finite_recovery_accepts_only_original_or_exact_initial_successor_metadata',
         'catch_up::tests::explicit_handoff_head_retains_old_cut_and_zero_successor_without_a_batch',
         'catch_up::tests::finite_history_counts_global_requests_and_one_separate_bridge',
+        'catch_up::tests::finite_compacted_history_has_separate_logical_and_spool_bounds',
         'catch_up::tests::complete_successor_vector_cannot_erase_or_advance_closed_predecessor',
         'catch_up::tests::recovery_capacity_includes_real_holders_pending_replay_and_physical_proof',
     )),

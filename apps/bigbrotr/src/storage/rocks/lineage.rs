@@ -26,6 +26,15 @@ mod frontier;
 pub(super) use frontier::AdmittedFrontier;
 pub(in crate::storage) use frontier::CompactedLiveSuccessor;
 
+#[path = "compacted_live_initial.rs"]
+mod compacted_live_initial;
+pub(in crate::storage) use compacted_live_initial::CompactedLiveInitial;
+
+#[path = "closed_reclamation.rs"]
+mod closed_reclamation;
+pub(in crate::storage) use closed_reclamation::ClosedProducerReclamation;
+pub use closed_reclamation::ClosedReclamationReceipt;
+
 #[path = "lineage_census.rs"]
 mod census;
 

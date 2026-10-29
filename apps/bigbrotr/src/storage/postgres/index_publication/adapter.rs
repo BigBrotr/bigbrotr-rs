@@ -3,6 +3,7 @@ use super::super::LiveInitialWriter;
 use super::{proofs::*, *};
 use crate::storage::rocks::store::PendingBatch;
 use bigbrotr_model::{CompleteThrough, Sequence, StreamBound, StreamId, TopologyGeneration};
+use std::sync::atomic::AtomicBool;
 
 #[path = "handoff_adapter.rs"]
 mod handoff_adapter;
@@ -316,7 +317,7 @@ impl ControlSession {
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
     ) -> Result<PreparedIndexPlan, IndexError> {
-        self.prepare_index_plan_in(session, custody, plan, pending, commit_started, None)
+        self.prepare_index_plan_in(session, custody, plan, pending, commit_started, None, None)
             .await
     }
 
@@ -329,6 +330,7 @@ impl ControlSession {
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
         writer: &LiveInitialWriter,
+        cancelled: &AtomicBool,
     ) -> Result<PreparedIndexPlan, IndexError> {
         self.prepare_index_plan_in(
             session,
@@ -336,7 +338,30 @@ impl ControlSession {
             plan,
             pending,
             commit_started,
-            Some(writer),
+            Some((writer, cancelled)),
+            None,
+        )
+        .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub async fn prepare_compacted_index_plan(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        plan: &IndexPlan,
+        pending: &PendingBatch,
+        commit_started: &Cell<bool>,
+        source: &CompactedIndexRequest<'_>,
+    ) -> Result<PreparedIndexPlan, IndexError> {
+        self.prepare_index_plan_in(
+            session,
+            custody,
+            plan,
+            pending,
+            commit_started,
+            None,
+            Some(source),
         )
         .await
     }
@@ -349,16 +374,20 @@ impl ControlSession {
         plan: &IndexPlan,
         pending: &PendingBatch,
         commit_started: &Cell<bool>,
-        live: Option<&LiveInitialWriter>,
+        live: Option<(&LiveInitialWriter, &AtomicBool)>,
+        compacted: Option<&CompactedIndexRequest<'_>>,
     ) -> Result<PreparedIndexPlan, IndexError> {
         valid_session(self, session, custody)?;
-        if let Some(writer) = live
+        if let Some((writer, _)) = live
             && writer
                 .index_source()
                 .map_err(|_| IndexError::Conflict)?
                 .retained_requests()
                 .map_err(|_| IndexError::Conflict)?
-                > 64
+                > writer
+                    .index_source()
+                    .map_err(|_| IndexError::Conflict)?
+                    .history_request_limit()
         {
             return Err(IndexError::Exhausted);
         }
@@ -376,6 +405,9 @@ impl ControlSession {
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
         require_live_plan(&tx, session, live, plan).await?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         require_session(&tx, session).await?;
         binding_matches(&tx, &plan.binding).await?;
         if let Some(retained) = read_plan(&tx, &plan.binding, plan.digest).await? {
@@ -403,6 +435,9 @@ impl ControlSession {
             .await
             .map_err(pg)?;
         require_live_plan(&tx, session, live, plan).await?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         require_session(&tx, session).await?;
         proofs::live(&plan.binding, custody)?;
         commit_started.set(true);
@@ -425,8 +460,16 @@ impl ControlSession {
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
     ) -> Result<IndexPublicationReceipt, IndexError> {
-        self.publish_index_plan_in(session, custody, prepared, proof, commit_started, None)
-            .await
+        self.publish_index_plan_in(
+            session,
+            custody,
+            prepared,
+            proof,
+            commit_started,
+            None,
+            None,
+        )
+        .await
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -438,6 +481,7 @@ impl ControlSession {
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
         writer: &LiveInitialWriter,
+        cancelled: &AtomicBool,
     ) -> Result<IndexPublicationReceipt, IndexError> {
         self.publish_index_plan_in(
             session,
@@ -445,7 +489,30 @@ impl ControlSession {
             prepared,
             proof,
             commit_started,
-            Some(writer),
+            Some((writer, cancelled)),
+            None,
+        )
+        .await
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub async fn publish_compacted_index_plan(
+        &mut self,
+        session: &IndexSession,
+        custody: &HeldIndexCustody,
+        prepared: &PreparedIndexPlan,
+        proof: &VerifiedIndexPlan,
+        commit_started: &Cell<bool>,
+        source: &CompactedIndexRequest<'_>,
+    ) -> Result<IndexPublicationReceipt, IndexError> {
+        self.publish_index_plan_in(
+            session,
+            custody,
+            prepared,
+            proof,
+            commit_started,
+            None,
+            Some(source),
         )
         .await
     }
@@ -458,7 +525,8 @@ impl ControlSession {
         prepared: &PreparedIndexPlan,
         proof: &VerifiedIndexPlan,
         commit_started: &Cell<bool>,
-        live: Option<&LiveInitialWriter>,
+        live: Option<(&LiveInitialWriter, &AtomicBool)>,
+        compacted: Option<&CompactedIndexRequest<'_>>,
     ) -> Result<IndexPublicationReceipt, IndexError> {
         valid_session(self, session, custody)?;
         let plan = &prepared.plan;
@@ -475,6 +543,9 @@ impl ControlSession {
             .map_err(owner)?;
         lock_dataset(&tx, plan.binding.dataset).await?;
         require_live_plan(&tx, session, live, plan).await?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         require_session(&tx, session).await?;
         binding_matches(&tx, &plan.binding).await?;
         let retained = read_plan(&tx, &plan.binding, plan.digest)
@@ -509,6 +580,9 @@ impl ControlSession {
             .await
             .map_err(pg)?;
         require_live_plan(&tx, session, live, plan).await?;
+        if let Some(source) = compacted {
+            source.require(&tx, session).await?;
+        }
         require_session(&tx, session).await?;
         proofs::publication(plan, custody, proof)?;
         commit_started.set(true);
@@ -630,10 +704,10 @@ impl ControlSession {
 async fn require_live_plan(
     tx: &Transaction<'_>,
     session: &IndexSession,
-    live: Option<&LiveInitialWriter>,
+    live: Option<(&LiveInitialWriter, &AtomicBool)>,
     plan: &IndexPlan,
 ) -> Result<(), IndexError> {
-    if let Some(writer) = live {
+    if let Some((writer, cancelled)) = live {
         writer
             .binding
             .require_store(writer.native.store(), session.issuer)
@@ -648,6 +722,10 @@ async fn require_live_plan(
             return Err(IndexError::Conflict);
         }
         writer.binding.require(tx).await.map_err(owner)?;
+        writer
+            .require_index_basis(tx, cancelled)
+            .await
+            .map_err(owner)?;
     }
     Ok(())
 }

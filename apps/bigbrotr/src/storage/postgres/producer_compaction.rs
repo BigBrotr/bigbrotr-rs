@@ -22,8 +22,11 @@ pub type ProducerCompactionError = ProducerOperationError<AdmissionError>;
 /// This is historical integrity evidence, not current Control authority or a
 /// capability to delete detail, admit work, create an outcome or issue ACK.
 pub struct CompactedInitialRetirement<'a> {
-    native: VerifiedCompactedPrefix<'a>,
+    pub(super) native: VerifiedCompactedPrefix<'a>,
     gaps: u64,
+    pub(super) lease: PolicyLeaseTracker,
+    pub(super) policy: PolicyEpoch,
+    pub(super) control: ingest_registry::ControlOwner,
     _metadata: OwnedPermit,
 }
 impl CompactedInitialRetirement<'_> {
@@ -55,6 +58,22 @@ impl CompactedInitialRetirement<'_> {
     }
     pub fn acquisition_gaps(&self) -> u64 {
         self.gaps
+    }
+    pub fn validate_initial_source(&self, cancelled: &AtomicBool) -> Result<(), AdmissionError> {
+        self.native.validate_initial_source(cancelled)
+    }
+    pub fn read_complete_pending_batch(
+        &self,
+        first: bigbrotr_model::SourceRecordId,
+        limits: crate::storage::rocks::store::PendingReadLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<
+        crate::storage::rocks::store::PendingBatch,
+        crate::storage::rocks::store::LineagePendingError,
+    > {
+        self.native
+            .read_initial_pending_batch(first, limits, permit, cancelled)
     }
     pub fn validate(
         &self,
@@ -106,6 +125,7 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        let control = self.identity;
         let (tx, mut lease, policy) = self
             .begin_producer_recovery::<AdmissionError>(
                 recovery,
@@ -199,6 +219,9 @@ impl ControlSession {
         Ok(CompactedInitialRetirement {
             native,
             gaps,
+            lease,
+            policy,
+            control,
             _metadata: metadata_permit,
         })
     }
@@ -288,7 +311,7 @@ pub(super) async fn resolve_initial_outcomes<'a>(
 // Current Control/dataset custody prevents concurrent successor preparation.
 // This first reader accepts only the original initial lifetime, even if a
 // prepared successor has not yet changed the native singleton.
-const NO_SUCCESSOR: &str = "
+pub(super) const NO_SUCCESSOR: &str = "
     SELECT NOT EXISTS(SELECT 1 FROM control.initial_ingest_successions
                WHERE owner_resource_id=$1::bytea)
        AND NOT EXISTS(SELECT 1 FROM control.initial_ingest_activations
@@ -318,3 +341,97 @@ const OUTCOMES: &str = "
     JOIN control.producer_outcomes o USING(producer_slot_id,producer_epoch,request_sequence)
     WHERE r.producer_slot_id=$1::bytea AND r.producer_epoch=1
     ORDER BY r.request_sequence LIMIT 65";
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "final Index transaction, actual source custody and separate authority/effect grants"
+)]
+pub(super) async fn require_initial_index_source(
+    tx: &Transaction<'_>,
+    proof: &CompactedInitialRetirement<'_>,
+    recovery: &IngestRecovery,
+    spec: &ingest_registry::InitialRegistration,
+    control: ingest_registry::ControlOwner,
+    limits: AdmissionLimits,
+    effects: &OwnedPermit,
+    lease: &mut PolicyLeaseTracker,
+    policy: PolicyEpoch,
+    cancelled: &AtomicBool,
+) -> Result<(), ProducerCompactionError> {
+    if proof.control != control
+        || spec.producer_slot_id != proof.producer_slot_id()
+        || proof.native.manifest() != recovery.manifest()
+    {
+        return Err(OwnerError::InvalidInput.into());
+    }
+    proof
+        .validate(recovery, cancelled)
+        .map_err(ProducerCompactionError::Native)?;
+    ingest_registry::require_retirement_registration(tx, spec)
+        .await
+        .map_err(ProducerCompactionError::Registry)?;
+    let slot = &spec.producer_slot_id.as_bytes().as_slice();
+    let resource = &spec.ingest_resource_id.as_bytes().as_slice();
+    if !tx
+        .query_one(NO_SUCCESSOR, &[resource, slot])
+        .await
+        .map_err(backend)?
+        .try_get::<_, bool>(0)
+        .map_err(backend)?
+    {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    let fields = proof.native.floor().fields();
+    tx.query_one(
+        "SELECT control.require_initial_retirement($1::bytea,1,$2::bytea)",
+        &[slot, &&fields.closure_digest[..]],
+    )
+    .await
+    .map_err(backend)?;
+    let state = tx
+        .query_one(
+            producer_retirement::RETIREMENT_STATE,
+            &[
+                slot,
+                resource,
+                &spec.ingest_role_instance_id.as_slice(),
+                &spec.dataset_id.as_bytes().as_slice(),
+                &&fields.closure_digest[..],
+                &fields.issued_through.to_string(),
+                &i64::from(spec.shard_id),
+                &fields.source_through.to_string(),
+            ],
+        )
+        .await
+        .map_err(backend)?;
+    if !state.try_get::<_, bool>(1).map_err(backend)? {
+        return Err(OwnerError::InvalidMetadata.into());
+    }
+    drop(state);
+    producer_progress::recovery::require_compacted_verified_initial(
+        tx,
+        recovery,
+        &proof.native,
+        &proof._metadata,
+        cancelled,
+        || producer_progress::recovery::authority(lease, policy, cancelled),
+    )
+    .await?;
+    let verified = resolve_initial_outcomes(
+        tx,
+        proof
+            .native
+            .initial_recheck_resolution(cancelled)
+            .map_err(ProducerCompactionError::Native)?,
+        limits,
+        effects,
+        lease,
+        policy,
+        cancelled,
+    )
+    .await?;
+    verified
+        .validate(recovery, cancelled)
+        .map_err(ProducerCompactionError::Native)?;
+    initial_history::check_delivery(lease, policy, cancelled)
+}

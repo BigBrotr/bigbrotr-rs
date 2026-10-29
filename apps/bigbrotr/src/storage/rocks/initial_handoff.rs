@@ -9,6 +9,7 @@ use crate::runtime::OwnedPermit;
 use crate::storage::rocks::{
     keys::IngestKey,
     manifest::{IngestManifest, MAX_MANIFEST_BYTES},
+    producer_floor::ClosedProducerFloor,
 };
 use bigbrotr_model::{
     DictionaryKind, Digest256, Ordinal, ProducerEpoch, ProducerRequestId, ProducerSlotId,
@@ -125,6 +126,13 @@ impl InitialHandoff {
         self.record.closure_digest
     }
 
+    pub(in crate::storage) fn compacted_floor(&self) -> Option<&ClosedProducerFloor> {
+        match &self.basis {
+            InitialPredecessorBasis::Compacted { floor, .. } => Some(floor),
+            InitialPredecessorBasis::Original => None,
+        }
+    }
+
     /// A continuing reader borrows the activated owner. Native advancement is
     /// allowed, but cannot replace its root, immutable handoff or manifest.
     pub(in crate::storage) fn require_live_source(
@@ -134,14 +142,22 @@ impl InitialHandoff {
         if store.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
-        if !matches!(self.basis, InitialPredecessorBasis::Original)
-            || store.manifest() != self.next_manifest()
+        if store.manifest() != self.next_manifest()
             || store.handoff_root_identity()? != self.native_root
         {
             return Err(AdmissionError::StateMismatch);
         }
         store.require_admission_owner(None)?;
         store.handoff_value(self.record.key(), Some(self.encode().as_bytes()))?;
+        if let Some(floor) = self.compacted_floor() {
+            store.handoff_value(
+                IngestKey::ProducerState {
+                    producer_slot_id: self.producer_slot_id(),
+                    producer_epoch: self.producer_epoch(),
+                },
+                Some(&floor.encode()),
+            )?;
+        }
         Ok(())
     }
 

@@ -32,6 +32,7 @@ pub(in crate::interfaces::serve) enum Action {
     CloseSource,
     AbandonAcquisition,
     RetireInitial,
+    ReclaimInitial,
     RetireEmptyAttempt,
     CompleteInitialPreparation,
     ActivatedSuccessor,
@@ -316,7 +317,7 @@ async fn connected(
     // The new historical read is explicit and non-destructive. Ordinary
     // original replay continues to reject a reclaimed producer; it cannot
     // manufacture missing input or turn a PG copy into a native outcome.
-    let compacted = if action == Action::RetireInitial {
+    let compacted = if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
         phase(progress, timeout)?;
         compacted::inspect(budget, recovery, &spec, &cancellation.requested)?
     } else {
@@ -340,6 +341,20 @@ async fn connected(
     })
     .await?;
     if let Some(prefix) = compacted {
+        if action == Action::ReclaimInitial {
+            let report = compacted::reclaim(
+                root,
+                budget,
+                progress,
+                cancellation,
+                &mut owner,
+                recovery,
+                &prefix,
+                &spec,
+            )
+            .await?;
+            return Ok((owner, report));
+        }
         let report = compacted::retirement(
             root,
             budget,
@@ -356,7 +371,7 @@ async fn connected(
     phase(progress, timeout)?;
     let closed = bounded(timeout, cancellation, async {
         let permit = grant(budget, 4096, 4096)?;
-        let result = if action == Action::RetireInitial {
+        let result = if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
             owner
                 .observe_initial_retirement(recovery, close_request(), permit, validate)
                 .await
@@ -407,7 +422,7 @@ async fn connected(
             .as_mut()
             .map(replay::Prefix::Source)
             .or_else(|| ack_prefix.as_mut().map(replay::Prefix::Acknowledgement)),
-        if action == Action::RetireInitial {
+        if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
             replay::Mode::InspectRetirement
         } else {
             replay::Mode::Resolve
@@ -426,13 +441,47 @@ async fn connected(
         "native":"closed", "owner_release":"committed", "ready":false});
     if let Some(prefix) = prefix {
         let source = prefix.finish().map_err(|e| (4, e.to_string()))?;
+        if action == Action::ReclaimInitial {
+            use bigbrotr::storage::postgres::control_owner::ConfirmedClosedReclamation;
+            phase(progress, timeout)?;
+            let confirmed = bounded(timeout, cancellation, async {
+                owner
+                    .confirm_initial_producer_reclamation(
+                        &source,
+                        close_request(),
+                        limits().event,
+                        grant(
+                            budget,
+                            ConfirmedClosedReclamation::REQUIRED_DATA_BYTES,
+                            ConfirmedClosedReclamation::REQUIRED_NATIVE_BYTES,
+                        )?,
+                        grant(
+                            budget,
+                            limits()
+                                .required_data_bytes()
+                                .map_err(|e| (3, e.to_string()))?,
+                            0,
+                        )?,
+                        validate,
+                    )
+                    .await
+                    .map_err(|e| (4, e.to_string()))
+            })
+            .await?;
+            drop(source);
+            phase(progress, timeout)?;
+            let receipt = owner
+                .reclaim_closed_producer(recovery, confirmed, &cancellation.requested)
+                .map_err(|e| (4, e.to_string()))?;
+            return Ok((owner, compacted::reclamation_report(&spec, &receipt)));
+        }
         phase(progress, timeout)?;
         bounded(timeout, cancellation, async {
             owner.refresh(validate).await.map_err(owner_error)
         })
         .await?;
         phase(progress, timeout)?;
-        if action == Action::RetireInitial {
+        if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
             let gaps = bounded(timeout, cancellation, async {
                 owner
                     .retire_initial_producer(
@@ -488,6 +537,8 @@ async fn connected(
         }
         report["state"] = json!(match action {
             Action::RetireInitial => "initial-retired",
+            Action::ReclaimInitial =>
+                unreachable!("reclamation returns after its own confirmed boundary"),
             Action::AbandonAcquisition => "acquisition-abandoned",
             Action::CloseSource | Action::Resolve => "source-closed",
             Action::RetireEmptyAttempt
@@ -523,7 +574,7 @@ async fn connected(
             replay,
         )
         .await?;
-        if action == Action::RetireInitial {
+        if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
             report["ingest_retirement"]["native_acknowledged"] =
                 json!(receipt.acknowledged_through().to_string());
         }

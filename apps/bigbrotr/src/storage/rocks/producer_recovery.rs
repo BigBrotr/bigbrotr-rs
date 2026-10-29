@@ -243,6 +243,8 @@ impl IngestRecovery {
         if self.manifest() != context.current_manifest {
             return Err(AdmissionError::InvalidInput.into());
         }
+        self.store
+            .require_unretired_request(request, context.manifest)?;
         let state = self
             .store
             .producer_state(request.producer_slot_id, request.producer_epoch)
