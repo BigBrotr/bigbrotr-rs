@@ -1064,6 +1064,7 @@ def first_launch(args, checks, inputs):
             from cases.first_launch_shared_budget import (SharedBudgetRuntime as IndexRuntime,
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
+    renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1073,8 +1074,12 @@ def first_launch(args, checks, inputs):
         args.case_limits = INDEX_LIMITS
     if tutorial:
         args.case_limits = TUTORIAL_LIMITS
+    if renewal_stop:
+        from cases.first_launch_renewal_stop import RenewalStopRuntime, STAGES as STOP_STAGES, LIMITS as STOP_LIMITS
+        runtime_type = RenewalStopRuntime
+        args.case_limits = STOP_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -1110,6 +1115,8 @@ def first_launch(args, checks, inputs):
             operations += [('successor_history', runtime.restart_history)]
             if live_topology:
                 operations += [('historical_index_topology', runtime.historical_index_topology)]
+        if renewal_stop:
+            operations = operations[:4] + [('renewal_stop', runtime.renewal_stop)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

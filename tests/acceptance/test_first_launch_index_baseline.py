@@ -62,15 +62,18 @@ def successor_observation(provenance=True):
 def retained_observation():
     before,after,roles,start,end,worker=successor_observation()
     for state in (before,after):
-        consumer=state['consumers'][0];catalog=consumer['consumer_id'];consumer['current_revision']=5
-        state['archive_frontier_snapshots'][0].update(frontier_revision=5,snapshot_id=68,
+        # Baseline2 -> compacted bridge3 -> completed frontier4. Intent3 is
+        # retained but absent; native replacement4 and later intents publish.
+        consumer=state['consumers'][0];catalog=consumer['consumer_id'];consumer['current_revision']=4
+        state['archive_frontier_snapshots'][0].update(frontier_revision=4,snapshot_id=68,
             **dict(zip(restart.COUNTS,[73,62,62,62,63])))
         for row in state['consumer_frontiers']:
-            row.update(frontier_revision=5,last_complete_sequence=312 if row['owner_epoch']==1 else 10)
+            row.update(frontier_revision=4,last_complete_sequence=312 if row['owner_epoch']==1 else 10)
         example=state['archive_attempts'][0]
-        state['archive_attempts']=[dict(example,attempt_id='retained-'+str(n),ordinal=n) for n in range(1,68)]
-        state['archive_frontier_batches']=[dict(consumer_id=catalog,frontier_revision=5,attempt_id='retained-'+str(n)) for n in range(1,68)]
-    after['snapshot_leases'][-1]['frontier_revision']=after['archive_snapshot_pins'][-1]['frontier_revision']=5
+        state['archive_attempts']=[dict(example,attempt_id='retained-'+str(n),ordinal=n) for n in range(1,69)]
+        state['archive_frontier_batches']=[dict(consumer_id=catalog,frontier_revision=4,attempt_id='retained-'+str(n))
+                                          for n in [1,2,*range(4,69)]]
+    after['snapshot_leases'][-1]['frontier_revision']=after['archive_snapshot_pins'][-1]['frontier_revision']=4
     for claim in after['retention_claims'][-2:]:claim['last_sequence']=312 if claim['owner_epoch']==1 else 10
     return before,after,roles,start,end,worker
 
@@ -83,6 +86,9 @@ class BaselineControls(unittest.TestCase):
             for mutate in (lambda pg:pg['retention_claims'].pop(),
                 lambda pg:pg['retention_claims'][-2].update(last_sequence=12),
                 lambda pg:pg['archive_frontier_batches'].pop(),
+                lambda pg:pg['consumers'][0].update(current_revision=5),
+                lambda pg:pg['archive_attempts'].pop(2),
+                lambda pg:pg['archive_frontier_batches'][2].update(attempt_id='retained-3'),
                 lambda pg:pg['archive_snapshot_pins'][-1].update(frontier_revision=6),
                 lambda pg:pg['retention_claims'][-1].update(state='active')):
                 changed=list(retained_observation());mutate(changed[1])
