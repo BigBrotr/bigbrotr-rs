@@ -352,16 +352,15 @@ impl ControlSession {
         live: Option<&LiveInitialWriter>,
     ) -> Result<PreparedIndexPlan, IndexError> {
         valid_session(self, session, custody)?;
-        if let Some(writer) = live {
-            if writer
+        if let Some(writer) = live
+            && writer
                 .index_source()
                 .map_err(|_| IndexError::Conflict)?
                 .retained_requests()
                 .map_err(|_| IndexError::Conflict)?
                 > 64
-            {
-                return Err(IndexError::Exhausted);
-            }
+        {
+            return Err(IndexError::Exhausted);
         }
         if plan.binding != session.binding
             || plan.source != IndexSourceBatch::from_batch(pending.batch())
