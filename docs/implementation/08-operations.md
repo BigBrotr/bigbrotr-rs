@@ -487,6 +487,20 @@ It uses documented 1 GiB read/export operation caps; five signed exports under 2
 broader formats/filters and retention/recovery remain required. Original setup and
 oracle failures stay recorded. This is scoped Step 3 evidence, not task completion.
 
+The current P01-T09 composition consumer extends the maintained retained
+closed-reclamation journey with a distinct epoch2 signed export. Its bounded
+Step3 completion criterion is two independently verified standalone artifacts:
+the original353-byte event and the genuinely new358-byte event, both at exact
+frontier4/snapshot68/cuts `[1:312,2:10]`, with complete signed fields/signatures,
+JSONL/manifest hashes and matching job/artifact/pin inventory after ordinary
+same-root Control restart. The new key must retry without another unit/file/pin
+and conflict when selecting the original event. Full Control/science/catalog/
+input/custody preservation, current authority, existing client/native deadlines
+and the64GiB completion reserve remain required. Use the existing
+[retained verification procedure](../development/verification.md); this new
+extension is NOT_RUN until its own installed evidence exists. It does not finish
+broader Step3 or add prerequisites to the qualified M1 evidence collection.
+
 The 2026-10-20 admission investigation in the existing
 [recovery report](evidence/p02-producer-recovery-native-20260920.json)
 (`archive_export_memory_source.catalog_layout_boundary_20261020`) finds an
@@ -617,7 +631,9 @@ matched filesystem custody and current-owner/job CAS do not qualify every refusa
 revocation or pause-COMMIT interruption. These later observations supersede the
 earlier unimplemented status only for these exact paths. Current-authority
 interruption, explicit pause/cancel/resume, output discovery and packaged/mixed-workload acceptance remain
-required; Step3 and M1 are not complete.
+required for full Step3. These historical results do not complete that step;
+the separately qualified [current M1 evidence collection](README.md#coherent-implementation-milestones)
+retains its bounded scope.
 [Native destination qualification](evidence/p08-export-destination-native-20260923.json)
 at a75d0fa passes ten actual Linux/ext4 cases, including bind aliases, cross-process
 custody, fsync EIO and process death around rename. The marker's independent

@@ -155,9 +155,12 @@ product/fixture revision; the milestone reuses reviewed unchanged responsibiliti
 not an invented rerun of every historical case on one binary. The existing
 [inventory](../research/laboratory-inventory.json),
 `implementation_first_launch_maintained_20261026.tutorial_extension`, links the
-critical milestone review and exact final receipts. Full P01-T09 Step1 composition,
-continuous enabled-Index succession and every remaining P00–P10/M2–M5 requirement
-stay open under their existing owners; this does not qualify a production release.
+critical milestone review and exact final receipts. The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`live_readiness.live_initial_successor`, separately qualifies its sixteen-stage
+enabled-Index successor/current-vector slice with source2 OPEN. Full P01-T09
+Step1 composition, arbitrary live epochs, broader recovery/scalable freshness and
+remaining P00–P10/M2–M5 requirements stay with their existing owners. The current
+second-event export extension does not reopen M1 collection or qualify a release.
 
 Milestones are evidence collections, not a mandatory number of clean reviews.
 Commit coherent reviewed outcomes, including their documentation and validation.

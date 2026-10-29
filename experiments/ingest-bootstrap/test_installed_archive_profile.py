@@ -197,6 +197,59 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(result,dict(phase='narrow',started_ns=100,finished_ns=200,limit_seconds=30))
         self.assertEqual(json.loads((self.home/'ordinary-narrow.json').read_text())['payload'],dict(independent='response'))
 
+    def test_closed_second_export_uses_distinct_key_exact_retries_and_changed_event_conflict(self):
+        self.save()
+        (self.home/'destination').mkdir();(self.home/'destination/destination.json').write_text('{}')
+        (self.home/'event.jsonl').write_text(json.dumps(dict(id='56'*32)))
+        (self.home/'conflict-event.jsonl').write_text(json.dumps(dict(id='78'*32)))
+        (self.home/'export-input.json').write_text(json.dumps(dict(scope={},catalog_id='12'*16,destination_id='34'*16,
+            retained_compacted_epoch2=True,retained_second_export=True,startup_quiescence=True)))
+        receipt=dict(format='bigbrotr-job-acceptance/1',command_key='d2'*16,job_id='90'*16,
+            accepted_at_us='100',created=True,execution='unobserved',authority='acceptance-only')
+        for failure in (None,'retry-creates-work','conflict-succeeds','wrong-conflict-code'):
+            requests=[];posts=[];me_calls=[]
+            class Connection:
+                def __init__(self,*args,**kwargs):pass
+                def request(self,method,path,body,headers):
+                    self.method,self.path=method,path
+                    requests.append((method,path,None if body is None else json.loads(body),headers))
+                def getresponse(self):
+                    if self.path=='/management/v1/me':
+                        me_calls.append(True);status=200 if len(me_calls)==1 else 401
+                        value=dict(principal_id='ab'*16,stored_actions=OWNER_ACTIONS)
+                    elif self.path=='/management/v1/jobs':
+                        posts.append(requests[-1]);number=len(posts)
+                        if number==1:status,value=202,receipt
+                        elif number<4:
+                            status,value=200,dict(receipt,created=failure=='retry-creates-work')
+                        else:
+                            status=200 if failure=='conflict-succeeds' else 409
+                            value=dict(error=dict(status=status,code='other' if failure=='wrong-conflict-code' else 'command_conflict',retry_class='check_state'))
+                    else:
+                        assert self.path=='/management/v1/jobs/'+receipt['job_id']
+                        status,value=200,dict(kind='export',state='succeeded',checkpoint_revision='1')
+                    class Response:
+                        def read(self,limit):return json.dumps(value).encode()
+                    response=Response();response.status=status;return response
+                def close(self):pass
+            def cli(args,**kwargs):
+                if 'login' in args:
+                    target=Path(args[args.index('--session-output')+1])
+                    target.write_text(json.dumps(dict(session='opaque',csrf='csrf')))
+                return subprocess.CompletedProcess(args,0,b'{}',b'')
+            with self.subTest(failure=failure),patch.object(export.http.client,'HTTPConnection',Connection), \
+                    patch.object(export.subprocess,'run',cli),patch.object(export,'phase',return_value={}), \
+                    patch.object(export.time,'monotonic_ns',return_value=10):
+                if failure:
+                    with self.assertRaises(AssertionError):export.run(self.home)
+                else:
+                    result=export.run(self.home)
+                    self.assertEqual(result['job_id'],receipt['job_id']);self.assertIsNone(result['history'])
+                    self.assertEqual(len(posts),4)
+                    self.assertEqual([p[3]['Idempotency-Key'] for p in posts],['d2'*16]*4)
+                    self.assertEqual([p[2]['query']['filters'][0]['ids'] for p in posts],[['56'*32]]*3+[['78'*32]])
+                    self.assertFalse(any(method=='PUT' or path=='/v1/resources/event_history' for method,path,*_ in requests))
+
 
 if __name__ == '__main__':
     unittest.main()

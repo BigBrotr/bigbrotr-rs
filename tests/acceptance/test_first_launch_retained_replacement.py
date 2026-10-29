@@ -16,6 +16,7 @@ from cases import first_launch_retained_oracle as check
 from cases import first_launch_index_oracle as index
 from cases import first_launch_restart as source
 from installed_archive_catch_up_fault_oracle import wire_checked, ERRORS
+import installed_archive_export_oracle as exports
 
 
 def catalog_fixture(science,attempts):
@@ -198,7 +199,212 @@ def compacted_history_fixture(science):
     return before,after,startup
 
 
+def second_export_fixture(root,science):
+    """Literal second-job SQL/files over the existing independent full82 fixture."""
+    before,after,startup=compacted_history_fixture(science)
+    scope=dict(dataset_id='22'*16,dictionary_kind=4,allocation_domain='68'*16,ordinal='3')
+    initialized=dict(private_scope=scope);catalog='55'*16;bx='\\x'
+    old=json.loads((ROOT/'tests/fixtures/ingest/import-event.jsonl').read_text())
+    new=next(r['event'] for r in json.loads((ROOT/'tests/fixtures/acquisition/selector-events.json').read_text())['events'] if r['name']=='included')
+    destination=root/'destination';destination.mkdir();(destination/'destination.json').write_text('{}')
+    homes=[];verdicts=[]
+    # Build both portable artifacts from fixture fields and literal contract
+    # values, never from the validator or a candidate serializer.
+    for n,event in enumerate((old,new),1):
+        home=root/str(n);home.mkdir();homes.append(home)
+        (home/'destination').mkdir();(home/'destination/destination.json').write_text('{}')
+        case.save(home/'event.jsonl',event);job=f'{240+n:02x}'*16;artifact=f'{160+n:02x}'*16
+        directory=destination/artifact;directory.mkdir()
+        encoded=(json.dumps({k:event[k] for k in ('id','pubkey','created_at','kind','tags','content','sig')},ensure_ascii=False,separators=(',',':'))+'\n').encode()
+        (directory/'events.jsonl').write_bytes(encoded);sha=hashlib.sha256(encoded).hexdigest()
+        manifest=dict(format='bigbrotr-signed-events-export/1',artifact_id=artifact,job_id=job,
+            visibility='private',fidelity='full-signed-events',origin='retained-scoped-archive',
+            source=dict(cut=dict(dataset_id='22'*16,topology_generation='1',bounds=[
+                dict(stream=dict(shard_id=0,owner_epoch='1'),last_complete_sequence='312'),
+                dict(stream=dict(shard_id=0,owner_epoch='2'),last_complete_sequence='10')]),
+                catalog_id=catalog,frontier_revision='4',snapshot_id='68'),selection=dict(event_id=event['id'],scope=scope),
+            accepted_revisions=dict(configuration='1',policy='1'),included_families=['signed-events'],
+            excluded_families=['internal-payload-envelopes','eligibility-facts','first-local-receive','relay-provenance',
+                'imported-claims','measurements','documents','dictionaries','coverage','derived-results','deployment-state'],
+            files=[dict(file_id='events',path='events.jsonl',format='nostr-jsonl/1',bytes=str(len(encoded)),rows='1',sha256=sha)])
+        raw=(json.dumps(manifest,ensure_ascii=False,separators=(',',':'))+'\n').encode()
+        (directory/'manifest.json').write_bytes(raw);msha=hashlib.sha256(raw).hexdigest()
+        verdicts.append(dict(job_id=job,artifact_id=artifact,jsonl_bytes=len(encoded),jsonl_sha256=sha,manifest_sha256=msha,
+            manifest=manifest,export_pin_retained=True,all_fresh_readers_released=True,original_acquisition_and_publication_unchanged=True))
+        case.save(home/'export-client-result.json',dict(status='PASS',job_id=job))
+    first,second=verdicts;home=homes[1];case.save(home/'conflict-event.jsonl',old)
+    case.save(home/'export-input.json',dict(scope=scope,catalog_id=catalog,destination_id='d3'*16,
+        retained_compacted_epoch2=True,retained_second_export=True,startup_quiescence=True))
+    principal=before['local_accounts'][0]['principal_id'];dataset=bx+'22'*16
+    for state in (before,startup,after):
+        for number,row in enumerate(state['jobs'],1):
+            row.setdefault('kind','acquisition');row.setdefault('job_id','\\x'+f'{number:032x}')
+        state['jobs'].append(dict(job_id=bx+first['job_id'],kind='export',state='succeeded',completed_at_us=1000,result_manifest_digest=bx+first['manifest_sha256'],xmin='94'))
+        state['export_jobs']=[dict(job_id=bx+first['job_id'],request_key=bx+'d1'*16,event_id=bx+old['id'],pin_lease_id='old-export',
+            catalog_id=bx+catalog,frontier_revision=4,destination_id=bx+'d3'*16,destination_binding_sha256=bx+hashlib.sha256(b'{}').hexdigest())]
+        state['export_execution_units']=[dict(job_id=bx+first['job_id'],immutable='old unit',xmin='95')]
+        state['artifacts']=[dict(job_id=bx+first['job_id'],artifact_id=bx+first['artifact_id'],manifest_sha256=bx+first['manifest_sha256'],
+            manifest_bytes=(destination/first['artifact_id']/'manifest.json').stat().st_size,total_bytes=first['jsonl_bytes']+(destination/first['artifact_id']/'manifest.json').stat().st_size,
+            file_count=1,completed_at_us=1000,verification_pin_id='first-reader',xmin='94')]
+        state['artifact_files']=[dict(artifact_id=bx+first['artifact_id'],byte_count=353,row_count=1,sha256=bx+first['jsonl_sha256'],xmin='94')]
+        state['archive_snapshot_pins'].append(dict(lease_id='first-reader',purpose='reader',xmin='96'))
+        state['snapshot_leases'].append(dict(lease_id='first-reader',state='released',xmin='97'))
+        state['scope_grants']=[dict(principal_id=principal,dataset_id=dataset,allocation_domain=bx+'68'*16,ordinal=3,
+            action=action,enabled=True,generation=1,xmin='98') for action in ('history.read','export','private-export')]
+        state['scope_grant_changes']=copy.deepcopy(state['scope_grants'])
+    owner=after['owner_epochs'][-1];session=after['browser_sessions'][0];binding=hashlib.sha256(b'{}').hexdigest()
+    key='d2'*16;job=bx+second['job_id'];artifact=bx+second['artifact_id'];created=1341;completed=1361
+    allocation,execution=[r['lease_id'] for r in after['snapshot_leases'] if r.get('acquired_at_us') in (1340,1360)]
+    export_pin=bx+'da'*16
+    source_pin=next(r for r in after['archive_snapshot_pins'] if r['lease_id']==allocation)
+    source_lease=next(r for r in after['snapshot_leases'] if r['lease_id']==allocation)
+    for row in after['archive_snapshot_pins']:
+        if row['lease_id'] in (allocation,execution):row.update(requested_ttl_us=5_000_000,export_job_id=None)
+    after['archive_snapshot_pins'].append(dict(source_pin,lease_id=export_pin,purpose='export',requested_ttl_us=30_000_000,export_job_id=job,xmin='5200'))
+    after['snapshot_leases'].append(dict(source_lease,lease_id=export_pin,acquired_at_us=created,updated_at_us=created,
+        state='active',lease_revision=1,released_at_us=None,release_reason=None,xmin='5200'))
+    after['retention_claims'].extend(dict(claim_id=bx+f'{900+epoch:032x}',lease_id=export_pin,dataset_id=dataset,topology_generation=1,
+        shard_id=0,owner_epoch=epoch,first_sequence=1,last_sequence=cut,purpose='export',state='active',created_at_us=created,
+        released_at_us=None,release_reason=None,xmin='5200') for epoch,cut in ((1,312),(2,10)))
+    be=lambda v,w=8:int(v).to_bytes(w,'big');r=bytes.fromhex
+    digest=hashlib.sha256(b'bigbrotr/export-event/1\0'+r('22'*16)+r(principal[2:])+r(key)+r('22'*16)+be(4,2)+r('68'*16)+be(3)
+        +r(new['id'])+be(100,2)+r(catalog)+be(4)+r('d3'*16)+r(binding)+b'\x01\x01'+be(1)+be(1)).hexdigest()
+    after['jobs'].append(dict(job_id=job,dataset_id=dataset,principal_id=principal,request_key=bx+key,request_digest=bx+digest,
+        kind='export',config_revision=1,policy_revision=1,created_at_us=created,input_topology_generation=1,input_complete=True,
+        export_job_protocol=1,acquisition_job_protocol=None,state='succeeded',job_revision=4,checkpoint_revision=1,owner_role='control',
+        owner_resource_id=owner['resource_id'],owner_epoch=3,owner_incarnation=owner['process_incarnation'],completed_at_us=completed,
+        reason_code=None,result_manifest_digest=bx+second['manifest_sha256'],xmin='5202'))
+    after['export_jobs'].append(dict(job_id=job,dataset_id=dataset,actor_id=principal,request_key=bx+key,format='signed-events-jsonl',visibility='private',
+        dictionary_kind=4,allocation_domain=bx+'68'*16,ordinal=3,event_id=bx+new['id'],page_size=100,catalog_id=bx+catalog,frontier_revision=4,
+        destination_id=bx+'d3'*16,destination_binding_sha256=bx+binding,pin_lease_id=export_pin,allocation_pin_id=allocation,
+        session_id=session['session_id'],actor_credential_revision=1,actor_authentication_revision=1,actor_grant_revision=4,xmin='5200'))
+    after['job_admissions'].append(dict(job_id=job,admission_ordinal=4,xmin='5200'))
+    after['job_input_bounds'].extend(dict(job_id=job,dataset_id=dataset,topology_generation=1,shard_id=0,owner_epoch=epoch,
+        last_complete_sequence=cut,xmin='5200') for epoch,cut in ((1,312),(2,10)))
+    after['export_execution_units'].append(dict(job_id=job,artifact_id=artifact,max_output_bytes=256*1024**2,max_temporary_bytes=512*1024**2,
+        reservation_transaction='5201',reserved_at_us=1350,xmin='5201'))
+    after['artifacts'].append(dict(artifact_id=artifact,job_id=job,dataset_id=dataset,principal_id=principal,destination_id=bx+'d3'*16,
+        destination_binding_sha256=bx+binding,manifest_format='bigbrotr-signed-events-export/1',manifest_bytes=(destination/second['artifact_id']/'manifest.json').stat().st_size,
+        manifest_sha256=bx+second['manifest_sha256'],file_count=1,total_bytes=(destination/second['artifact_id']/'manifest.json').stat().st_size+358,
+        verification_pin_id=execution,completed_at_us=completed,xmin='5202'))
+    after['artifact_files'].append(dict(artifact_id=artifact,file_id='events',relative_path='events.jsonl',format='nostr-jsonl/1',byte_count=358,row_count=1,sha256=bx+second['jsonl_sha256'],xmin='5202'))
+    audit_id=bx+'d4'*16
+    after['management_commands'].append(dict(actor_id=principal,request_key=bx+key,dataset_id=dataset,action='job.export.accept',request_digest=bx+digest,
+        expected_config_revision=1,policy_revision=1,audit_id=audit_id,accepted_at_us=created,authority_mode=None,document_digest=None,xmin='5200'))
+    after['management_audit'].append(dict(audit_id=audit_id,dataset_id=dataset,actor_id=principal,action='job.export.accept',outcome='accepted',created_at_us=created,
+        config_revision=1,subject_id=bx+key,policy_revision=1,reason=None,requester_database_role=None,requester_os_uid=None,xmin='5200'))
+    body=dict(kind='export',format='signed-events-jsonl',query=dict(version=1,resource='event_history',mode='snapshot',scope=scope,filters=[dict(ids=[new['id']])]),
+        allocation=dict(catalog_id=catalog,frontier_revision='4'),destination=dict(id='d3'*16,binding_sha256=binding),expected_config_revision='1',expected_policy_revision='1')
+    receipt=dict(format='bigbrotr-job-acceptance/1',command_key=key,job_id=second['job_id'],accepted_at_us=str(created),created=True,execution='unobserved',authority='acceptance-only')
+    case.save(home/'export-client-result.json',dict(status='PASS',job_id=second['job_id'],history=None,completed=dict(format='bigbrotr-job-status/1',job_id=second['job_id'],kind='export',state='succeeded',
+        job_revision='4',checkpoint_revision='1',created_at_us=str(created),completed_at_us=str(completed),observed_at_us='1365',reason_code=None,authority='observation-only')))
+    case.save(home/'export-observations.json',[dict(case='accept-export',status=202,command=body,key=key,receipt=receipt),
+        *[dict(case=label,status=200,receipt=dict(receipt,created=False)) for label in ('second-export-identical-retry','second-export-completed-retry')],
+        dict(case='second-export-changed-event-conflict',status=409,key=key,command=dict(body,query=dict(body['query'],filters=[dict(ids=[old['id']])])),
+            error=dict(status=409,code='command_conflict',retry_class='check_state'))])
+    return before,after,startup,homes,initialized,catalog,destination,verdicts
+
+
 class UnboundReplacementControls(unittest.TestCase):
+    def test_second_export_full_state_and_both_standalone_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
+            before,after,startup,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
+            def verify(state):
+                verdict=exports.validate(before,state,homes[1],initialized,catalog,expected_principal='ee'*16,
+                    expected_table_count=82,expected_tables=before,destination_root=destination,initial_cut=312,
+                    retained_compacted_epoch2=True,retained_second_export=True)
+                view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict)
+                check.compacted_history_control(before,view,startup)
+                return verdict
+            self.assertEqual(verify(after),verdicts[1])
+            for home,verdict in zip(homes,verdicts):
+                self.assertEqual(exports.verify_artifact(after,home,initialized,catalog,destination_root=destination),verdict)
+            for table in ('jobs','export_jobs','job_admissions','job_input_bounds','export_execution_units','artifacts','artifact_files',
+                    'management_commands','scope_grants','scope_grant_changes','local_accounts','producer_outcomes','producer_requests',
+                    'producer_checkpoints','archive_attempts','archive_frontier_batches','consumer_frontiers','snapshot_leases',
+                    'archive_snapshot_pins','retention_claims','management_audit','owner_epochs','role_instances'):
+                for operation in ('rewrite','delete'):
+                    state=copy.deepcopy(after)
+                    if not before[table]:continue
+                    original=before[table][0];target=next(r for r in state[table] if r==original)
+                    if operation=='rewrite':target['xmin']='999999'
+                    else:state[table].remove(target)
+                    with self.subTest(old_table=table,operation=operation),self.assertRaises((AssertionError,ValueError)):
+                        verify(state)
+            for table,field,value in (('jobs','checkpoint_revision',2),('jobs','request_digest','\\x'+'00'*32),
+                    ('export_jobs','event_id',before['export_jobs'][0]['event_id']),('export_jobs','actor_grant_revision',3),
+                    ('export_jobs','catalog_id','\\x'+'00'*16),('job_admissions','admission_ordinal',5),
+                    ('job_input_bounds','last_complete_sequence',12),('export_execution_units','max_output_bytes',1),
+                    ('artifacts','manifest_sha256','\\x'+'00'*32),('artifact_files','row_count',0),
+                    ('management_commands','request_key','\\x'+'d1'*16),('management_audit','action','unrelated')):
+                state=copy.deepcopy(after);target=next(r for r in state[table] if r not in before[table]);target[field]=value
+                with self.subTest(new_table=table,field=field),self.assertRaises((AssertionError,ValueError)):
+                    verify(state)
+            for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+                for purpose in ('reader','export'):
+                    state=copy.deepcopy(after)
+                    ids={p['lease_id'] for p in state['archive_snapshot_pins'] if p.get('purpose')==purpose and p not in before['archive_snapshot_pins']}
+                    target=next(r for r in state[table] if r['lease_id'] in ids and r not in startup[table])
+                    field,value={'snapshot_leases':('lease_revision',99),'archive_snapshot_pins':('issuer_epoch',99),'retention_claims':('last_sequence',99)}[table]
+                    target[field]=value
+                    with self.subTest(pin_table=table,purpose=purpose),self.assertRaises((AssertionError,ValueError)):
+                        verify(state)
+            for table in ('jobs','export_jobs','export_execution_units','artifacts','artifact_files','job_admissions',
+                    'management_commands','management_audit','snapshot_leases','archive_snapshot_pins','retention_claims'):
+                state=copy.deepcopy(after);state[table].append(copy.deepcopy(state[table][-1]))
+                with self.subTest(extra_retry_work=table),self.assertRaises((AssertionError,ValueError)):
+                    verify(state)
+            for table in ('jobs','export_jobs','export_execution_units','artifacts','artifact_files'):
+                state=copy.deepcopy(after);state[table].append(copy.deepcopy(before[table][0]))
+                with self.subTest(duplicated_old_row=table),self.assertRaises((AssertionError,ValueError)):
+                    verify(state)
+
+    def test_second_export_rejects_retry_conflict_and_standalone_corruption(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
+            before,after,startup,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
+            path=homes[1]/'export-observations.json';original=path.read_bytes()
+            for label,field,value in (('accept-export','key','d1'*16),('second-export-identical-retry','status',202),
+                    ('second-export-completed-retry','receipt',{}),('second-export-changed-event-conflict','status',200),
+                    ('second-export-changed-event-conflict','error',dict(status=409,code='other',retry_class='check_state'))):
+                observations=json.loads(original);next(r for r in observations if r['case']==label)[field]=value
+                case.save(path,observations)
+                with self.subTest(label=label,field=field),self.assertRaises((AssertionError,ValueError)):
+                    exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1])
+            path.write_bytes(original)
+            for home,verdict in zip(homes,verdicts):
+                for name in ('events.jsonl','manifest.json'):
+                    path=destination/verdict['artifact_id']/name;original=path.read_bytes()
+                    for changed in (b' '+original,original[:-1],bytes([original[0]^1])+original[1:]):
+                        path.write_bytes(changed)
+                        with self.subTest(artifact=home.name,file=name),self.assertRaises(AssertionError):
+                            exports.verify_artifact(after,home,initialized,catalog,destination_root=destination)
+                    path.write_bytes(original)
+            # Mutating both the expected fixture and JSONL cannot hide a bad
+            # signature behind a matching event ID and updated file digest.
+            home=homes[1];event=json.loads((home/'event.jsonl').read_text());event['sig']='00'*64
+            case.save(home/'event.jsonl',event)
+            selected=destination/verdicts[1]['artifact_id']
+            encoded=(json.dumps({k:event[k] for k in ('id','pubkey','created_at','kind','tags','content','sig')},separators=(',',':'))+'\n').encode()
+            (selected/'events.jsonl').write_bytes(encoded)
+            manifest=json.loads((selected/'manifest.json').read_text());sha=hashlib.sha256(encoded).hexdigest()
+            manifest['files'][0]['sha256']=sha
+            raw=(json.dumps(manifest,separators=(',',':'))+'\n').encode();(selected/'manifest.json').write_bytes(raw)
+            state=copy.deepcopy(after);msha=hashlib.sha256(raw).hexdigest()
+            state['artifact_files'][-1]['sha256']='\\x'+sha
+            state['artifacts'][-1]['manifest_sha256']=state['jobs'][-1]['result_manifest_digest']='\\x'+msha
+            with self.assertRaisesRegex(AssertionError,'BIP340'):
+                exports.verify_artifact(state,home,initialized,catalog,destination_root=destination)
+            # This assertion establishes the discriminator: all other file and
+            # metadata relationships still pass if independent crypto is omitted.
+            with patch.object(exports._signed,'equation_verify',return_value=True):
+                exports.verify_artifact(state,home,initialized,catalog,destination_root=destination)
+            public=bytes.fromhex('F9308A019258C31049344F85F89D5229B531C845836F99B08601F113BCE036F9')
+            signature=bytes.fromhex('E907831F80848D1069A5371B402410364BDF1C5F8307B0084C55F1CE2DCA821525F66A4A85EA8B71E482A74F382D2CE5EBEEE8FDB2172F477DF4900D310536C0')
+            self.assertTrue(exports._signed.equation_verify(bytes(32),public,signature))
+            self.assertFalse(exports._signed.equation_verify(b'\x01'+bytes(31),public,signature))
+
     def test_history_login_me_startup_sequence_has_a_separate_touch_transaction(self):
         with tempfile.TemporaryDirectory() as directory:
             science=check.compacted_archive_science(retained_successor_fixture(Path(directory))[-1])
@@ -264,12 +470,17 @@ class UnboundReplacementControls(unittest.TestCase):
             runtime.initialized=dict(private_scope={});runtime.ids=dict(catalog='catalog');runtime.enrolled=dict(principal_id='principal')
             runtime.tables=set();runtime.events=[dict(id='first')];runtime.new_event=dict(id='second')
             runtime.archive_schedule='grouped-publication-loss';runtime.complete_index_state={}
-            before=dict(phase='before');export=dict(phase='export');startup=dict(phase='startup');final=dict(phase='history')
+            before=dict(phase='before');export=dict(phase='export');second=dict(phase='second');startup=dict(phase='startup');final=dict(phase='history')
             runtime.archive_retry_state=before;runtime.final_native={};runtime.all_input_files={}
-            runtime.native_capture=Mock(return_value={});runtime.files=Mock(return_value={})
-            runtime.export_validate=Mock(return_value=dict(jsonl_bytes=353));runtime.restart_checks=Mock()
+            runtime.native_capture=Mock(return_value={})
+            census={name:{} for name in ('.artifact-second.lock','second','second/events.jsonl','second/manifest.json')}
+            file_captures=iter(({},census,census))
+            runtime.files=Mock(side_effect=lambda path:next(file_captures) if path==runtime.state/'data/export' else {})
+            verdicts=[dict(jsonl_bytes=353,job_id='first',artifact_id='first'),dict(jsonl_bytes=358,job_id='second',artifact_id='second')]
+            runtime.export_validate=Mock(side_effect=verdicts);runtime.restart_checks=Mock()
             order=[];captures=iter(((before,{'before':True}),(export,{'export':True}),
-                (export,{'history-before':True}),(final,{'history-after':True})))
+                (export,{'second-before':True}),(second,{'second-after':True}),
+                (second,{'history-before':True}),(final,{'history-after':True})))
             def capture(output,label):order.append('capture:'+label);return next(captures)
             runtime.capture=Mock(side_effect=capture)
             runtime.launch=Mock(side_effect=lambda label,*args:dict(label=label))
@@ -281,14 +492,21 @@ class UnboundReplacementControls(unittest.TestCase):
                 if options.get('successor'):
                     case.save(output/'history-client-result.json',dict(status='PASS'))
                 return startup
-            with patch.object(case.baseline,'startup_client',side_effect=client),patch.object(case.live_oracle,'publication_unchanged'):
+            def reread(*args,**kwargs):order.append('reread:'+args[1].name);return verdicts[args[1].name=='second-export']
+            with patch.object(case.baseline,'startup_client',side_effect=client),patch.object(case.live_oracle,'publication_unchanged'), \
+                    patch.object(exports,'second_job_rows',return_value=second),patch.object(case.oracle,'compacted_history_control') as control, \
+                    patch.object(exports,'verify_artifact',side_effect=reread):
                 runtime.compacted_history_export()
-            runtime.restart_checks.history_unchanged.assert_called_once_with(export,final,startup=startup,retained_compacted_epoch2=True)
+            runtime.restart_checks.history_unchanged.assert_called_once_with(second,final,startup=startup,retained_compacted_epoch2=True)
+            control.assert_called_once_with(export,second,startup)
+            self.assertTrue(runtime.export_validate.call_args.kwargs['retained_second_export'])
             for joined,captured,preserved in (('compacted-signed-export','export-after','export'),
-                    ('compacted-history-restart','history-after','history')):
+                    ('compacted-second-signed-export','after','second-export'),('compacted-history-restart','history-after','history')):
                 self.assertLess(order.index('joined:'+joined),order.index('capture:'+captured))
                 self.assertLess(order.index('capture:'+captured),order.index('preserve:'+preserved))
             self.assertEqual(runtime.verify_archive_preservation.call_args.args[-1],{'history-after':True})
+            self.assertLess(order.index('capture:history-after'),order.index('reread:export'))
+            self.assertLess(order.index('capture:history-after'),order.index('reread:second-export'))
 
     def test_recovery_preserves_the_complete_control_inventory_and_historical_rows(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -325,6 +543,22 @@ class UnboundReplacementControls(unittest.TestCase):
             before,after,startup=compacted_history_fixture(science)
             def verify(state,setup=startup):source.history_unchanged(before,state,startup=setup,retained_compacted_epoch2=True)
             verify(after)
+            startup_ids={r['lease_id'] for r in startup['snapshot_leases']}-{r['lease_id'] for r in before['snapshot_leases']}
+            for operation in ('delete-complete-probe','rewrite-complete-probe'):
+                changed=copy.deepcopy(after)
+                for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+                    if operation=='delete-complete-probe':changed[table]=[r for r in changed[table] if r['lease_id'] not in startup_ids]
+                    else:
+                        for row in changed[table]:
+                            if row['lease_id'] in startup_ids:row['xmin']='5999'
+                with self.subTest(operation=operation),self.assertRaises(AssertionError):verify(changed)
+            for table in ('snapshot_leases','archive_snapshot_pins','retention_claims'):
+                for selected in ('all','xmin'):
+                    changed=copy.deepcopy(after)
+                    if selected=='all':changed[table]=[r for r in changed[table] if r['lease_id'] not in startup_ids]
+                    else:next(r for r in changed[table] if r['lease_id'] in startup_ids)['xmin']='rewritten'
+                    with self.subTest(startup_table=table,corruption=selected),self.assertRaises((AssertionError,ValueError)):
+                        verify(changed)
             for label,mutate in {
                     'changed-outcome':lambda s:s['producer_outcomes'][0].update(xmin='rewritten'),
                     'deleted-checkpoint':lambda s:s['producer_checkpoints'].clear(),

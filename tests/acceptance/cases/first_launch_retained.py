@@ -246,7 +246,7 @@ RECLAMATION_STAGES=STAGES[:-1]+('closed_reclamation','compacted_successor',
 RECLAMATION_LIMITS=LIMITS[:7]+[
     'After the same genuine64-request capture, explicit closure/abandonment/retirement must precede product reclamation and every successor intent. Exact139-byte floor,65 native sequence operations, all retained science/pending/PG/Archive evidence and zero remaining originals are checked independently.',
     'Fresh reclaim retry and fresh compacted retirement read precede actual enabled-Index epoch2 activation. Its ordinary signed client creates request1 only after the old spool is empty, proving cumulative request65; three genuine successor requests retain the unchanged per-producer64 and shared64-file/32MiB bounds.',
-    'Both compacted epoch2 consumers and exact retries, complete322-row Archive science,572 raw Index rows, signed histories and exact353-byte first-event export are required. No Ready65 or scalable history claim follows. Native/SQL unknown and interrupted-unlink mechanics retain separate native/wire fault controls; physical power/fsync failure remains NOT_RUN.',
+    'Both compacted epoch2 consumers and exact retries, complete322-row Archive science,572 raw Index rows, signed histories, exact353-byte first-event export and a distinct signed epoch2 export are required. Both standalone artifacts must survive ordinary same-root Control restart. No Ready65 or scalable history claim follows. Native/SQL unknown and interrupted-unlink mechanics retain separate native/wire fault controls; physical power/fsync failure remains NOT_RUN.',
     'The default unique unbound-publication-loss schedule omits replacement4 native COMMIT confirmation after completion, independently requires receipts1,2,4/issued1..4/currentfrontier2, then reuses4 and issues only64 missing5..68. Explicit grouped-publication-loss instead loses B4 COMMIT before forwarding (native1,2/guard1,2,4), then C5 after completion (native1,2,5/guard1,2,4,5/issued1..5/currentfrontier2). Fresh recovery must seal both original logins, reuse C5 and issue only64 missing6..69. Any observed failed B4 output, including an empty set, is anchored separately and remains preserved and unregistered. All schedules retain original3 custody, bridge3/final4/snapshot68,322 scientific rows and zero-work exact retry. Uninterrupted remains an explicit3-before/65-new schedule. Actual grouped evidence requires its own root-owned installed run.',
 ]
 
@@ -864,6 +864,7 @@ class ReclamationRuntime(RetainedRuntime):
 
     def compacted_history_export(self):
         import secrets
+        from installed_archive_export_oracle import second_job_rows, verify_artifact
         output=self.reclamation_output/'history-export';output.mkdir(mode=0o700)
         self.wait_login_capacity(output)
         destination=secrets.token_hex(16)
@@ -895,14 +896,58 @@ class ReclamationRuntime(RetainedRuntime):
         require(verdict['jsonl_bytes']==353,'complete original signed export bytes differ')
         self.verify_archive_preservation(output,'export',after,catalog)
         save(output/'export-verdict.json',verdict)
-        # A second fresh process proves ordinary signed history of both epochs.
+        original_export_files=self.files(self.state/'data/export')
+        save(output/'original-export-files.json',original_export_files)
+        # A distinct key selects the genuinely new signed event from epoch2.
+        # This fresh ordinary lifetime keeps the original40s/12s limits.
+        second=output/'second-export';second.mkdir(mode=0o700)
+        shutil.copyfile(self.home/'fixture-profile.json',second/'fixture-profile.json')
+        shutil.copyfile(self.home/'event.jsonl',second/'conflict-event.jsonl')
+        save(second/'event.jsonl',self.new_event)
+        (second/'destination').mkdir(mode=0o700)
+        shutil.copyfile(self.state/'data/export/destination.json',second/'destination/destination.json')
+        save(second/'export-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
+            destination_id=destination,retained_compacted_epoch2=True,retained_second_export=True,startup_quiescence=True))
+        self.wait_login_capacity(second)
+        second_before,catalog=self.capture(second,'before')
+        index.exact(second_before,after)
+        self.verify_archive_preservation(second,'before-second-export',second_before,catalog)
+        entry=self.launch('compacted-second-signed-export','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
+        self.wait(lambda:self.logs(entry,second),'second compacted ordinary Control',20,entry=entry)
+        second_startup=baseline.startup_client(self,second,entry,client_home=second,retained_compacted_epoch2=True,
+            retained_archive_schedule=self.archive_schedule)
+        require(self.stop_container(entry,second)['State']['ExitCode']==0,'second export owner did not join')
+        self.backend_absence(second)
+        second_after,catalog=self.capture(second,'after')
+        second_verdict=self.export_validate(second_before,second_after,second,self.initialized,self.ids['catalog'],
+            expected_principal=self.enrolled['principal_id'],expected_table_count=82,expected_tables=self.tables,
+            destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True,retained_second_export=True)
+        # Every projected row is independently checked first. Operation readers
+        # stay in the view for the full82-table startup/session/release oracle.
+        view=second_job_rows(second_before,second_after,second,self.initialized,self.ids['catalog'],second_verdict)
+        oracle.compacted_history_control(second_before,view,second_startup)
+        live_oracle.publication_unchanged(self.complete_index_state,second_after)
+        self.verify_archive_preservation(second,'second-export',second_after,catalog)
+        require(second_verdict['job_id']!=verdict['job_id'] and second_verdict['artifact_id']!=verdict['artifact_id'],
+            'second export reused the first job or artifact')
+        second_export_files=self.files(self.state/'data/export')
+        require(all(second_export_files.get(name)==row for name,row in original_export_files.items()),
+            'second export changed original artifact bytes or custody')
+        identity=second_verdict['artifact_id']
+        require(set(second_export_files)-set(original_export_files)==
+            {'.artifact-'+identity+'.lock',identity,identity+'/events.jsonl',identity+'/manifest.json'},
+            'second export produced unexpected files or retry work')
+        save(second/'export-verdict.json',second_verdict)
+        save(second/'export-files.json',second_export_files)
+        # A further fresh process proves ordinary signed history of both epochs.
         history=output/'history';history.mkdir(mode=0o700)
         shutil.copyfile(self.home/'fixture-profile.json',history/'fixture-profile.json')
         save(history/'events.json',[self.events[0],self.new_event])
         save(history/'read-input.json',dict(scope=self.initialized['private_scope'],catalog_id=self.ids['catalog'],
             frontier_revision=4,snapshot_id=68,config_revision='1',policy_revision='1',startup_quiescence=True))
+        self.wait_login_capacity(history)
         history_before,catalog=self.capture(history,'before')
-        index.exact(history_before,after)
+        index.exact(history_before,second_after)
         self.verify_archive_preservation(history,'before-history',history_before,catalog)
         entry=self.launch('compacted-history-restart','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'fresh compacted history Control',20,entry=entry)
@@ -915,6 +960,14 @@ class ReclamationRuntime(RetainedRuntime):
         self.restart_checks.history_unchanged(history_before,final,startup=startup,retained_compacted_epoch2=True)
         live_oracle.publication_unchanged(self.complete_index_state,final)
         self.verify_archive_preservation(history,'history',final,catalog)
+        index.exact(self.files(self.state/'data/export'),second_export_files)
+        reread=[]
+        for selected,expected in ((home,verdict),(second,second_verdict)):
+            actual=verify_artifact(final,selected,self.initialized,self.ids['catalog'],destination_root=self.state/'data/export')
+            index.exact(actual,expected);reread.append(actual)
+        save(history/'standalone-exports-after-restart.json',dict(status='PASS',artifacts=reread,
+            original_jsonl_bytes=353,frontier_revision=4,snapshot_id=68,cuts=[[1,312],[2,10]],
+            files='exact_bytes_hashes_inodes_modes_links',export_pins='retained',readers='released'))
         index.exact(self.native_capture('history-native'),self.final_native)
         require(self.files(self.state/'data/ingest/producer-inputs-v1')==self.all_input_files,'history/export recreated originals')
         self.source_unchanged()
