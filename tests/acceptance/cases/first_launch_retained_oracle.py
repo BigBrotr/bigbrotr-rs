@@ -365,6 +365,8 @@ def successor_owner(bridge,after,manifest,handoff,job):
         'policy_digest','previous_manifest_sha256','target_manifest_sha256','handoff_sha256',
         'prepared_by_resource','prepared_by_epoch','prepared_by_incarnation'):
         index.exact(activation[key],intent[key])
+    for field in ('resource','epoch','incarnation'):
+        index.exact(activation['prepared_by_'+field],activation['activated_by_'+field])
     assert activation['producer_epoch']==activation['target_epoch']==2
     assert intent['owner_role']=='ingest' and intent['prepared_by_role']=='control'
     assert activation['dataset_id']==dataset['dataset_id']==job['dataset_id']
@@ -377,6 +379,7 @@ def successor_owner(bridge,after,manifest,handoff,job):
         epoch=activation['activated_by_epoch'],process_incarnation=activation['activated_by_incarnation'])
     original=index.only(bridge['owner_epochs'],**identity)
     owner=index.only(after['owner_epochs'],**identity)
+    assert owner['state']=='released' and owner['exclusion_method']=='storage_fenced'
     for key in ('role_instance_id','acquired_at_us'):
         index.exact(original[key],owner[key])
     assert original['acquired_at_us']<=activation['activated_at_us']<original['lease_expires_at_us']

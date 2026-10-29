@@ -141,7 +141,7 @@ def successor_authority_fixture():
         producer_requests=[],producer_outcomes=[],producer_checkpoints=[])
     after=copy.deepcopy(bridge)
     historical=index.only(after['owner_epochs'],role='control')
-    historical.update(state='released',released_at_us=9000,lease_expires_at_us=25000)
+    historical.update(state='released',exclusion_method='storage_fenced',released_at_us=9000,lease_expires_at_us=25000)
     recovery=dict(owner,epoch=owner['epoch']+1,process_incarnation='\\x'+'e1'*16,
         role_instance_id='\\x'+'e2'*16,acquired_at_us=10000,lease_expires_at_us=20000,state='released')
     after['owner_epochs'].append(recovery)
@@ -623,6 +623,13 @@ class ClosedReclamationControls(unittest.TestCase):
         activation.update(activated_by_epoch=recovery['epoch'],activated_by_incarnation=recovery['process_incarnation'])
         for row in changed['producer_requests']:row.update(issuer_epoch=recovery['epoch'],issuer_incarnation=recovery['process_incarnation'])
         with self.assertRaises(AssertionError):check.successor_owner(bridge,changed,manifest,handoff,job)
+        for field,value in (('resource','\\x'+'ef'*16),('epoch',job['owner_epoch']),('incarnation','\\x'+'ed'*16)):
+            b,a=copy.deepcopy((bridge,after))
+            for state in (b,a):
+                for table in ('initial_ingest_activations','initial_ingest_successions'):
+                    state[table][0]['prepared_by_'+field]=value
+            with self.subTest(preparer=field),self.assertRaises(AssertionError):
+                check.successor_owner(b,a,manifest,handoff,job)
 
     def test_compacted_successor_recovery_does_not_replace_or_mutate_the_historical_anchor(self):
         bridge,after,manifest,handoff,job,*_=successor_authority_fixture()
@@ -630,6 +637,8 @@ class ClosedReclamationControls(unittest.TestCase):
             lambda b,a,j:b['index_owner_sessions'][0].update(issuer_incarnation='wrong'),
             lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(acquired_at_us=4501),
             lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(dataset_id='foreign'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(state='active'),
+            lambda b,a,j:index.only(a['owner_epochs'],role='control',epoch=9).update(exclusion_method=None),
             lambda b,a,j:a['acquisition_gaps'][0].update(previous_owner_epoch=j['owner_epoch']),
             lambda b,a,j:a['acquisition_gaps'][0].update(issuer_incarnation='wrong'),
             lambda b,a,j:a['acquisition_gaps'][0].update(source_closure_digest='wrong'),
