@@ -1138,19 +1138,27 @@ fn live_request_census_counts_receipt_only_requests_without_changing_producer_ad
     let fixture = closed_fixture();
     let mut writer = active(&fixture);
     let intent = dictionary(scope(&writer), "writer-public");
-    for sequence in 1..=61 {
+    let limits = AdmissionLimits::default();
+    // The shared retained spool is literally64 inputs, across epochs. Four
+    // original predecessor inputs leave60 new ones; the producer's independent
+    // per-epoch window is still64. No reclamation or65-file state is fabricated.
+    assert_eq!(fixture.originals.len(), 4);
+    assert_eq!(inputs(&fixture.path()).len(), 4);
+    assert_eq!(limits.max_outstanding_requests, 64);
+    for sequence in 1..=60 {
         let outcome = writer
             .store_mut()
             .append_dictionaries(
                 next_request(sequence),
                 &intent,
                 ObservedTime::new(77),
-                AdmissionLimits::default(),
+                limits,
                 append_permit(&fixture),
                 || Ok(()),
             )
             .unwrap();
         assert_eq!(outcome.receipt().request_id(), next_request(sequence));
+        assert_eq!(outcome.receipt().batch().is_some(), sequence == 1);
         drop(outcome);
         let source = writer.index_source().unwrap();
         assert_eq!(source.retained_requests().unwrap(), 4 + sequence);
@@ -1162,14 +1170,88 @@ fn live_request_census_counts_receipt_only_requests_without_changing_producer_ad
                 .get(),
             1
         );
-        if sequence == 60 {
-            assert_eq!(source.retained_requests().unwrap(), 64);
-        }
     }
-    assert_eq!(writer.producer_credit().unwrap().issued_through(), 61);
+    assert_eq!(writer.producer_credit().unwrap().issued_through(), 60);
     assert_eq!(
         writer.index_source().unwrap().retained_requests().unwrap(),
-        65
+        64
     );
+    let mut expected_inputs: Vec<_> = fixture
+        .originals
+        .iter()
+        .enumerate()
+        .map(|(i, original)| (input_name(1, i as u64 + 1), original.input.clone()))
+        .collect();
+    expected_inputs.extend((1..=60).map(|sequence| {
+        (
+            input_name(2, sequence),
+            expected(scope(&writer).allocation_domain.as_bytes(), sequence).input,
+        )
+    }));
+    expected_inputs.sort();
+    assert_eq!(expected_inputs.len(), 64);
+    assert!(expected_inputs.iter().all(|(_, bytes)| bytes.len() <= 8192));
+    assert!(
+        expected_inputs
+            .iter()
+            .map(|(_, bytes)| bytes.len())
+            .sum::<usize>()
+            < 32 * MIB as usize
+    );
+    assert_eq!(inputs(&fixture.path()), expected_inputs);
+    // Request61 still fits the current producer window. The existing shared
+    // input envelope, before native commit, is the discriminating refusal.
+    writer
+        .store()
+        .require_request_capacity(next_request(61), limits.max_outstanding_requests)
+        .unwrap();
+    let before = capture(&fixture, writer.store());
+    let used = fixture.budget.snapshot().used();
+    let permits = fixture.budget.snapshot().active_permits();
+    assert!(matches!(
+        writer.store_mut().append_dictionaries(
+            next_request(61),
+            &intent,
+            ObservedTime::new(77),
+            limits,
+            append_permit(&fixture),
+            || Ok(())
+        ),
+        Err(AdmissionError::RequestInput(RequestInputError::Limit))
+    ));
+    unchanged(&fixture, writer.store(), &before);
+    assert_eq!(fixture.budget.snapshot().used(), used);
+    assert_eq!(fixture.budget.snapshot().active_permits(), permits);
+    assert_eq!(writer.producer_credit().unwrap().issued_through(), 60);
+    assert_eq!(
+        writer.index_source().unwrap().retained_requests().unwrap(),
+        64
+    );
+    let replay = writer
+        .store_mut()
+        .append_dictionaries(
+            next_request(60),
+            &intent,
+            ObservedTime::new(999),
+            limits,
+            append_permit(&fixture),
+            || Ok(()),
+        )
+        .unwrap();
+    assert_eq!(replay.receipt().request_id(), next_request(60));
+    assert!(replay.receipt().batch().is_none());
+    assert_eq!(
+        replay.receipt().encode_persistent(8192).unwrap(),
+        value(
+            writer.store(),
+            IngestKey::Request {
+                request_id: next_request(60)
+            }
+        )
+    );
+    drop(replay);
+    unchanged(&fixture, writer.store(), &before);
+    assert_eq!(fixture.budget.snapshot().used(), used);
+    assert_eq!(fixture.budget.snapshot().active_permits(), permits);
     originals(&fixture, writer.store());
 }
