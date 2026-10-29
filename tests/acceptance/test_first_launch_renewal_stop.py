@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from cases.first_launch import Runtime
 from cases.first_launch_renewal_stop import (EFFECT_TABLES, RENEWAL_QUERY, RenewalStopRuntime,
-    driver_sources, select_waiter, verify_terminal)
+    driver_sources, initialized_effects, select_waiter, verify_terminal)
 
 
 class RenewalStopOracle(unittest.TestCase):
@@ -21,6 +21,7 @@ class RenewalStopOracle(unittest.TestCase):
         self.effects = dict(ingest_owner=[dict(state='active', role='ingest', xmin='11')],
                             **{name: [] for name in EFFECT_TABLES})
         self.effects['producer_epochs'] = [dict(producer_epoch='1')]
+        self.effects['producer_requests'] = [dict(request_sequence=n, acquisition_job_id=None) for n in (1, 2)]
         self.initial = dict(state='initialized')
         self.stopped = dict(state='stopped', native='closed', owner_release='committed')
 
@@ -71,6 +72,18 @@ class RenewalStopOracle(unittest.TestCase):
             with self.subTest(changed=key), self.assertRaises(ValueError):
                 verify_terminal('known', 0, [self.initial, self.stopped], '',
                                 [dict(state='released')], self.effects, changed)
+
+    def test_startup_dictionary_requests_are_required_and_not_acquisition_dispatch(self):
+        initialized_effects(self.effects)
+        for change in (lambda v:v['producer_requests'].clear(),
+                       lambda v:v['producer_requests'].append(dict(request_sequence=3, acquisition_job_id=None)),
+                       lambda v:v['producer_requests'][1].update(request_sequence=1),
+                       lambda v:v['producer_requests'][0].update(acquisition_job_id='new-job'),
+                       lambda v:v['jobs'].append(dict(state='queued'))):
+            value = copy.deepcopy(self.effects)
+            change(value)
+            with self.assertRaises(ValueError):
+                initialized_effects(value)
 
     def test_schedule_is_explicit_and_cannot_change_another_installed_case(self):
         runner = Path(__file__).parent/'run.py'
