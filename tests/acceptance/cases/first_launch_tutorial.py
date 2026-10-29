@@ -242,4 +242,3 @@ class TutorialRuntime(Runtime):
             signed_export_bytes=353,archive_publication='required and independently verified',
             live_index_successor='NOT_RUN; retained P02-T06 full-product work')
         save(self.root/'ordinary/tutorial-verdict.json',value);self.inputs['tutorial']=value
-
