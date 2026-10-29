@@ -3206,7 +3206,7 @@
         }
       },
       "unbound_replacement_recovery": {
-        "status": "SOURCE_CRITICAL_REVIEW_AND_NATIVE_PASS_INSTALLED_NOT_RUN",
+        "status": "PASS_UNIQUE_UNBOUND_REPLACEMENT_NATIVE_INSTALLED_TUTORIAL_SCOPE",
         "owners": [
           "P02-T04 Step4",
           "P02-T06 Step7",
@@ -3245,9 +3245,9 @@
             "receipt": ".research/unbound-retained-acceptance-20261029/.research/unbound-retained-author/critical-review-c0360bc4.json",
             "sha256": "866a6010751b75129d10c42728735010eebcc3b5ee0adc54d98a62ee71ed1a0f"
           },
-          "installed_fault_recovery": "NOT_RUN"
+          "installed_fault_recovery": "PASS_R2_EXACT_NEW_PRODUCT"
         },
-        "next": "Observe actual R2 cut/recovery results and audit all owned processes/containers/proxy/backend/source/candidate pins before integration. Keep original FAIL. Then tutorial and grouped repeated-failure closure under existing P02 owners.",
+        "next": "Commit/check/scan/push coherent main integration, observe exact hosted run without duplicate dispatch/cancellation, then implement ratified grouped recovery under existing P02 owners. No full-task/milestone closure from this unique slice.",
         "grouped_remaining": "Valid A3absent/B4absent/C5Present remains REQUIRED, assigned to same P02 owners/P08; unique slice cannot close repeated-failure recovery.",
         "installed_build": {
           "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
@@ -3293,12 +3293,83 @@
           "receipt": ".research/initial-index-recovery-qualification-20261028/installed-8653849d/acceptance-unbound-r1-environment-refusal.json"
         },
         "installed_r2": {
-          "status": "RUNNING_OUTCOME_UNKNOWN",
+          "status": "PASS_TERMINAL_CUSTODY_VERIFIED",
           "session": 9701,
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2",
           "runner_pid": 1092163,
           "runner_start_ticks": 3082432,
-          "network": "Declared existing bridge bigbrotr-m1-0f80280_default, original ID checked/empty before launch. No source/candidate/build/oracle/deadline change after R1."
+          "network": "Declared existing bridge bigbrotr-m1-0f80280_default, original ID checked/empty before launch. No source/candidate/build/oracle/deadline change after R1.",
+          "exit_code": 0,
+          "counts": {
+            "collected": 11,
+            "executed": 11,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2/root-terminal.json",
+          "terminal_sha256": "a695fc26ff0b397486a1babeb09e89f03c57f7a0b1632a4286f6c0c688c4f392",
+          "custody": {
+            "containers": {
+              "total": 59,
+              "compose": 38,
+              "native_observer": 21,
+              "exit_codes": {
+                "0": 52,
+                "4": 7
+              }
+            },
+            "processes_absent": 28,
+            "command_pids_absent": 6905,
+            "source_pins": 66,
+            "bridge_endpoints": 0
+          },
+          "unbound_proxy_terminal": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-unbound-r2/unbound-proxy-terminal-audit.json",
+          "unbound_proxy_terminal_sha256": "40980480b12268bc32fb33ab94985045faaca7fde8eee3d12b2725be103ac7de",
+          "result": "Actual server-complete/client-undelivered B4 native COMMIT/current frontier2, exact first3 native/science/custody/files and active B login. Fresh process reuses B4 unchanged, canonical seals original login, issues64 missing5..68, publishes bridge3/final4 at snapshot68 with67receipts/322rows, exactretry0/0 and signed history/export/restart; no oracle/timeout/limit weakening."
+        },
+        "tutorial_r1": {
+          "status": "PASS_TUTORIAL_TERMINAL_CUSTODY_VERIFIED",
+          "session": 18824,
+          "exit_code": 0,
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-tutorial-r1",
+          "counts": {
+            "collected": 7,
+            "executed": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "terminal_sha256": "b9eb3f08d8ae62fad4bbfcff87731520a4289ea91d75d0eb48dcc86802abdf2a",
+          "custody": {
+            "containers": {
+              "total": 18,
+              "compose": 18,
+              "native_observer": 0,
+              "exit_codes": {
+                "0": 18
+              }
+            },
+            "processes_absent": 3,
+            "command_pids_absent": 783,
+            "source_pins": 28,
+            "bridge_endpoints": 0
+          },
+          "scope": "Outside-checkout same actual candidate, real loopback/private negatives, nonempty Nostr peer/NoSigner exact-source profile and353byte signed export; no broader signing/capacity/whole-product claim."
+        },
+        "grouped_contract": {
+          "status": "SOURCE_CONTRACT_ONLY_IMPLEMENTATION_AND_REAL_PROOF_NOT_RUN",
+          "path": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/contract-grouped-retained-recovery-8653849d.json",
+          "sha256": "10ae02389401425b7f9ed1c79a53255ad2a3ebd96e9ee49ea8e74288130e4f2a",
+          "output_custody_addendum_sha256": "74b37d0593ba906d0d9a999a60bb9bde10d0101e1c46a628d2ba12a472f8b51d",
+          "scope": "One complete positively excluded group, fullEOF none/sole exact native member, fresh sealed membership, all flags returned together before plan; same128/32KiB/deadline/resource bounds. Actual failed B4 may retain guard import and outputs independently of native absence. No requirement that orphans be nonempty."
+        },
+        "main_integration": {
+          "premerge_main": "6c33e46233f8302dc8920f8bf2b10043bd7b13be",
+          "merge_input": "891a91139721af70f556d2fca7756c021f6a92c9",
+          "qualified_product": "8653849d178e8adf20589b22ece411959f948673",
+          "code_inputs": "Merged complete apps/crates/vendor/Cargo/toolchain/contracts/config/build helper equal qualified productX. Reviewed acceptance/docs only beyond X; same actual parent/candidate remains valid.",
+          "publication": "PENDING exact merged commit/checks/source publication scan/push and new actual hosted qualification. Previous698 run40936964814 now30PASS/scoped exposure reviewed; it does not qualify865."
         }
       }
     }

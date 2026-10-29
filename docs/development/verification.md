@@ -1157,8 +1157,17 @@ Complete-frontier Archive retry may classify an older positively excluded input
 as absent through one exact later replacement already selected by the retained
 frontier. Its unchanged strict receipt reader must observe the replacement
 through full EOF; that replacement still requires its own ordinary resolution
-and physical membership. Replacement commits interrupted before frontier
-publication retain their separate P02-T06/P08 recovery requirement.
+and physical membership. The profile also loses the first replacement4 native
+COMMIT reply before any frontier binding or later publication: independent C API
+science must contain exactly receipts1,2,4 while issued1..4/currentfrontier2 and
+original3 custody remain. Fresh recovery must reuse4 unchanged, seal its original
+login, publish only the64 missing attempts5..68 and bind bridge3/final4. The
+uninterrupted3-before/65-new schedule remains available to the maintained oracle;
+neither schedule derives its expected counts from observed rows. Unique unbound
+adoption requires full-EOF Present; known provisional absence continues the strict
+original read under the same deadline/custody, while errors refuse. Multiple
+candidate/one-Present repeated-failure recovery retains its P02-T04/P02-T06/P08
+requirement. These new source paths need their own actual installed evidence.
 The existing completed-startup-probe and native-worker-join gate precedes both
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;

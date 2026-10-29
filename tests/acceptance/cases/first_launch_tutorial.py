@@ -19,14 +19,14 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '7d8e5998b0d37fdff68e25704e9812481e56f2dd'
+REVIEWED_PRODUCT = '8653849d178e8adf20589b22ece411959f948673'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
 # The profile review includes the storage/custody extension and the initial
 # retirement ordering, reclamation allowance and live Index policy-lifetime fixes;
 # Nostr reachability is unchanged.
 REVIEWED_CODE = {
-    'apps':'9725e15e307dba0bf56ad31e77b07a746f262b84',
+    'apps':'7c6f6d8fcf4f2f9a14987f7fa9c6225aac3e8415',
     'crates':'ee6395cd4bb9cff8d5c818768077f8fc2fe91515',
     'vendor':'cba63f2b14b7c9c7460ff260c56e85ba97f1b611',
     'Cargo.toml':'d3c301c263f5664b2eff1ae563b3a8079169c5b4',
@@ -46,7 +46,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product7d8e5998; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product8653849d; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]

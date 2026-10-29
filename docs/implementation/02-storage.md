@@ -909,6 +909,15 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   Existing migration bytes/checksums and credential lifetimes remain unchanged.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
+  The unique retained replacement before frontier binding is now qualified on
+  product8653849d/acceptance891a9113: actual B4 native COMMIT completion/lost reply,
+  fresh reuse/sealing, only64 missing publications, exact retry and signed
+  history/export/restart pass in the11-stage installed case; same-product
+  tutorial7/7 and native244/38 plus strict-worker singleton pass. The
+  [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+  `unbound_replacement_recovery`, owns exact proof and preserved failures. Grouped
+  A3absent/B4absent/C5Present recovery remains required here, P02-T06 Step7 and P08;
+  this bounded result does not finish these steps or general recovery.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
   existence and full body/receipt reads; a kill after COMMIT returned and metadata
   counts do not cover this boundary. The original normal-INSERT case fails;
@@ -1214,10 +1223,14 @@ source/client, query/freshness/cooldown, retry and resource bounds remain unchan
   frontier while retaining the strict worker guard/full EOF. The ordinary reader
   funds its existing128-input count bound within unchanged byte/native/host caps.
   The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json) retains
-  original failures, corrections and exact scope. Step7/P02-T04 Step4 and P08
-  still must qualify replacement commit followed by interruption before frontier
-  binding; proposala90aef4c is saved, not implemented or executed. Whole steps,
-  arbitrary epochs, Ready65/scalable freshness and general recovery remain open.
+  original failures, corrections and exact scope. Product8653849d/acceptance891a9113
+  now also qualifies the unique B4 COMMIT-loss before frontier binding: fresh reuse,
+  original-login sealing,64 genuinely missing attempts,322rows/67receipts,
+  zero-work retry and signed history/export/restart. Installed11/11, tutorial7/7,
+  native244/38 and the separate strict worker singleton pass. Step7/P02-T04 Step4
+  and P08 still require grouped A3absent/B4absent/C5Present recovery; its ratified
+  contract remains source-only. Whole steps, arbitrary epochs, Ready65/scalable
+  freshness and general recovery remain open.
 - [ ] **Step 5:** Publish affected-key/partition notices before their consumer frontier,
   including legitimate no-output/control-only source ranges.
 - [ ] **Step 6:** Stop at poison/unrecoverable source with typed diagnostics; allow unrelated

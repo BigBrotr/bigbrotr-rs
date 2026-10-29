@@ -76886,7 +76886,7 @@
           "original_preflight_refusal": ".research/initial-index-recovery-qualification-20261028/retained-elf-dedup-preflight-original-refusal-20261029.json"
         },
         "unbound_replacement_recovery": {
-          "status": "INSTALLED_R2_RUNNING_REAL_OUTCOME_UNKNOWN",
+          "status": "UNIQUE_REPLACEMENT_NATIVE_INSTALLED_TUTORIAL_QUALIFIED",
           "base": "698c02e7a44884e3ffdde9f333eaef76e46be89c",
           "product_author": {
             "worktree": ".research/unbound-retained-recovery-20261029",
@@ -76907,7 +76907,7 @@
           "contract": ".research/initial-retained-boundary-20261028/.research/retained-boundary-author/contract-unbound-retained-replacement-698c02e7.json",
           "contract_sha256": "9bf2061e7ec0ef9c65bab9209d89a5dcb98f0b2fe219dc28263c1af260f20c7a",
           "grouped_scope_sha256": "3341fd584676c9a86800d4f59af95b313b7eebcc5ec58c8000e7dc1c662147fa",
-          "engines_builds_cache_locks": "Installed R2 owns current real-engine test resources; native/parent/probe builders reaped and cache lock released. Source/harness authors complete, read-only remote CI watcher active.",
+          "engines_builds_cache_locks": "All session-owned native/parent/probe/installed/tutorial jobs reaped and audited, compiler cache released/original4pins verified, borrowed bridge empty. CI698 watcher/acquisition also reaped. Grouped contract source-only, no implementation or resource launch.",
           "native_preparation": {
             "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-native-8653849d",
             "evidence": ".research/initial-index-recovery-qualification-20261028/r28-8653849d-native",
@@ -76943,8 +76943,22 @@
             "session": 9701,
             "runner_pid": 1092163,
             "runner_start_ticks": 3082432,
-            "status": "RUNNING",
-            "source": "891a91139721af70f556d2fca7756c021f6a92c9"
+            "status": "REAPED_AUDITED_PASS",
+            "source": "891a91139721af70f556d2fca7756c021f6a92c9",
+            "exit_code": 0,
+            "containers": 59,
+            "processes_absent": 28,
+            "command_pids_absent": 6905,
+            "terminal_sha256": "a695fc26ff0b397486a1babeb09e89f03c57f7a0b1632a4286f6c0c688c4f392",
+            "separate_proxy_terminal_sha256": "40980480b12268bc32fb33ab94985045faaca7fde8eee3d12b2725be103ac7de"
+          },
+          "tutorial_r1": {
+            "status": "REAPED_AUDITED_PASS",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/unbound-replacement-installed-8653849d/acceptance-tutorial-r1",
+            "session": 18824,
+            "runner_pid": 1290751,
+            "runner_start_ticks": 3169723,
+            "terminal_sha256": "b9eb3f08d8ae62fad4bbfcff87731520a4289ea91d75d0eb48dcc86802abdf2a"
           }
         }
       }

@@ -758,6 +758,12 @@ terminal cut at the target topology. A later receipt keeps its original topology
 and complete membership; do not retag or split it to fill an intermediate cut.
 A genuinely absent frontier may start directly at the checked target topology.
 
+Unique provisional replacement inspection retains all other nonclone input grants
+and the original attempt/manager custody. A complete absent candidate may be
+followed by the original strict read only as sequential joined workers under the
+same absolute deadline and resource envelope. No candidate probe grants replay,
+publication authority or permission to release the replacement's own custody.
+
 ### Total admitted profile
 
 The first finite profile has the following independent limits. All arithmetic
