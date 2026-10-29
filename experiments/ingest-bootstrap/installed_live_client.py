@@ -7,6 +7,8 @@ Both commands accept --profile DIRECTORY containing the existing strict
 fixture-profile.json. An explicit profile must exist; omitting the option keeps
 the legacy binary and owner fixture. Journey revisions default to 2 and can be
 supplied independently as canonical positive u64 decimal strings.
+Only --live-index-proof adds a separate fixed45s phase after the queued-job
+observation and before logout; ordinary source/client barriers remain25s.
 """
 import argparse
 import base64
@@ -28,6 +30,36 @@ from installed_sync_client import exact, publish, read_frame, relay_listener, se
 ENDPOINT = 'ws://127.0.0.1:7447/installed-live-fixture'
 ORIGIN = 'http://127.0.0.1:18081'
 FIXTURE_SHA = '64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
+LIVE_INDEX_PROOF_SECONDS = 45
+
+
+def barrier(directory, name, observations, errors, *, phase_clock=False):
+    """The child owns each fixed deadline, including its release decision."""
+    assert name in ('prepared', 'submitted', 'commands-finished') or (phase_clock and name == 'index-proof')
+    if phase_clock:
+        started = time.monotonic_ns()
+        seconds = LIVE_INDEX_PROOF_SECONDS if name == 'index-proof' else 25
+        deadline = started + seconds * 1_000_000_000
+        phase = dict(format='bigbrotr-installed-live-phase/1', phase=name,
+            started_monotonic_ns=started, deadline_monotonic_ns=deadline)
+        publish(directory, name + '-phase.json', phase)
+    publish(directory, name + '.json', observations)
+    if not phase_clock:
+        # The ordinary finite client's existing25s starts after publication.
+        deadline = time.monotonic_ns() + 25_000_000_000
+    while True:
+        assert not errors, errors
+        assert time.monotonic_ns() < deadline, name
+        if (directory / (name + '.continue')).exists():
+            accepted = time.monotonic_ns()
+            assert accepted < deadline, name
+            if phase_clock:
+                release = dict(phase, format='bigbrotr-installed-live-phase-release/1',
+                    accepted_monotonic_ns=accepted)
+                publish(directory, name + '-phase-released.json', release)
+                return release
+            return None
+        time.sleep(.01)
 
 
 def explicit_profile(directory):
@@ -224,7 +256,9 @@ def relay(directory, listener, finished, errors):
         listener.close()
 
 
-def journey(directory, profile_directory=None, expected_config_revision='2', expected_policy_revision='2'):
+def journey(directory, profile_directory=None, expected_config_revision='2', expected_policy_revision='2',
+            *, live_index_proof=False):
+    assert type(live_index_proof) is bool
     expected_config_revision = revision(expected_config_revision)
     expected_policy_revision = revision(expected_policy_revision)
     profile = explicit_profile(profile_directory)
@@ -283,30 +317,26 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         args=(directory, relay_listener(), finished, errors))
     worker.start()
 
-    def barrier(name):
-        publish(directory, name + '.json', observations)
-        deadline = time.monotonic() + 25
-        while not (directory / (name + '.continue')).exists():
-            assert not errors, errors
-            assert time.monotonic() < deadline, name
-            time.sleep(.01)
+    def wait(name):
+        return barrier(directory, name, observations, errors, phase_clock=live_index_proof)
 
     try:
-        barrier('prepared')
+        wait('prepared')
         receipt = call('jobs', dict(kind='acquisition', scope_id=scope['scope_id'],
             deadline_us='120000000', **revisions), 'f4' * 16)
         assert receipt['execution'] == 'unobserved' and receipt['authority'] == 'acceptance-only'
-        barrier('submitted')
+        wait('submitted')
         status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
         observed = json.loads(raw)
         assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,
             observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
+        proof_phase = wait('index-proof') if live_index_proof else None
         logged_out = access('logout', '--session-ref', 'file:' + str(session), binary=binary, failure_directory=directory)
         assert json.loads(session.read_text()) == saved
         assert request('GET', '/management/v1/me', headers=auth)[0] == 401
-        barrier('commands-finished')
+        wait('commands-finished')
     finally:
         finished.set()
         worker.join(4)
@@ -317,6 +347,8 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
             ('csrf', b'bigbrotr/browser-csrf/1\0')]}
     result = dict(status='PASS', login=logged_in, logout=logged_out, me=me, digests=digests,
         observations=observations, job_status=observed, relay_joined=True, unauthenticated=401)
+    if live_index_proof:
+        result['live_index_proof'] = proof_phase
     serialized = json.dumps(result)
     assert all(json.dumps(secret)[1:-1] not in serialized
         for secret in (saved['session'], saved['csrf'], password)), 'private result contains sensitive bytes'
@@ -336,11 +368,14 @@ def main(argv=None):
         command.add_argument('--profile', type=Path, help='directory containing required fixture-profile.json')
     traveling.add_argument('--expected-config-revision', type=revision, default='2')
     traveling.add_argument('--expected-policy-revision', type=revision, default='2')
+    traveling.add_argument('--live-index-proof', action='store_true',
+        help='opt in to the separate45s live Index observation phase before logout')
     args = parser.parse_args(argv)
     if args.command == 'serve':
         serve(args.config, args.prefix, args.profile)
     else:
-        journey(args.directory, args.profile, args.expected_config_revision, args.expected_policy_revision)
+        options = dict(live_index_proof=True) if args.live_index_proof else {}
+        journey(args.directory, args.profile, args.expected_config_revision, args.expected_policy_revision, **options)
 
 
 if __name__ == '__main__':

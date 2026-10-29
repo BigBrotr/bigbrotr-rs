@@ -46,8 +46,9 @@ class LiveClientControls(unittest.TestCase):
             expected_principal_id=PRINCIPAL, expected_actions=ACTIONS)
         (self.profile_directory / 'fixture-profile.json').write_text(json.dumps(self.profile))
 
-    def exercise(self, *, profile=True, config='1', policy='1', changed_me=None, leak=None):
+    def exercise(self, *, profile=True, config='1', policy='1', changed_me=None, leak=None, live_index_proof=False):
         commands, posts = [], []
+        self.timeline=[]
         logged_out = False
         me = dict(principal_id=PRINCIPAL if profile else '10' * 16,
             authority='observation-only', config_revision=config, policy_revision=policy,
@@ -56,10 +57,13 @@ class LiveClientControls(unittest.TestCase):
         (self.directory / 'visibility.json').write_text(json.dumps({'ordinal': '3'}))
         for barrier in ('prepared', 'submitted', 'commands-finished'):
             (self.directory / (barrier + '.continue')).touch()
+        if live_index_proof:
+            (self.directory / 'index-proof.continue').touch()
 
         def cli(command, **kwargs):
             nonlocal logged_out
             commands.append(command)
+            self.timeline.append(('cli',command[2]))
             self.assertEqual(kwargs, dict(env={}, capture_output=True, timeout=5))
             if command[2] == 'login':
                 session = Path(command[command.index('--session-output') + 1])
@@ -71,6 +75,7 @@ class LiveClientControls(unittest.TestCase):
             return subprocess.CompletedProcess(command, 0, json.dumps({'message': leak} if leak else {}).encode(), b'')
 
         def request(method, path, body=None, headers=None):
+            self.timeline.append(('request',method,path))
             if method == 'GET' and path == '/management/v1/me':
                 return (200, json.dumps(me).encode()) if headers and not logged_out else (401, b'{}')
             if method == 'GET':
@@ -95,10 +100,16 @@ class LiveClientControls(unittest.TestCase):
                     authority='acceptance-only')
             return 202, json.dumps(value).encode()
 
+        original_publish=live.publish
+        def publish(directory,name,value):
+            self.timeline.append(('publish',name))
+            return original_publish(directory,name,value)
         with patch.object(live.subprocess, 'run', cli), patch.object(live, 'request', request), \
+                patch.object(live,'publish',publish), \
                 patch.object(live, 'relay_listener', return_value=object()), \
                 patch.object(live, 'relay', side_effect=lambda directory, listener, finished, errors: finished.wait(2)):
-            result = live.journey(self.directory, self.profile_directory if profile else None, config, policy)
+            options=dict(live_index_proof=True) if live_index_proof else {}
+            result = live.journey(self.directory, self.profile_directory if profile else None, config, policy,**options)
         return result, commands, posts
 
     def test_supplied_identity_binary_password_and_independent_revisions_propagate(self):
@@ -114,10 +125,55 @@ class LiveClientControls(unittest.TestCase):
         self.assertEqual(result['me']['principal_id'], PRINCIPAL)
         self.assertEqual(result['me']['stored_actions'], ACTIONS)
         self.assertFalse((self.directory / 'password.private').exists())
+        self.assertFalse((self.directory / 'index-proof.json').exists())
+        self.assertNotIn('live_index_proof',result)
         self.assertEqual(self.secret.read_text(), PASSWORD)
         for path in self.directory.glob('*.json'):
             for secret in (PASSWORD, SESSION['session'], SESSION['csrf']):
                 self.assertNotIn(secret, path.read_text())
+
+    def test_live_proof_is_opt_in_after_queued_job_and_before_original_logout(self):
+        result,commands,posts=self.exercise(live_index_proof=True)
+        queued=self.timeline.index(('request','GET','/management/v1/jobs/'+'45'*16))
+        proof=self.timeline.index(('publish','index-proof-phase.json'))
+        logout=self.timeline.index(('cli','logout'))
+        self.assertLess(queued,proof);self.assertLess(proof,logout)
+        self.assertLess(logout,self.timeline.index(('publish','commands-finished.json')))
+        self.assertEqual([c[2] for c in commands],['login','logout'])
+        self.assertEqual(posts[-1][1]['deadline_us'],'120000000')
+        for name,seconds in (('prepared',25),('submitted',25),('index-proof',45),('commands-finished',25)):
+            phase=json.loads((self.directory/(name+'-phase.json')).read_text())
+            released=json.loads((self.directory/(name+'-phase-released.json')).read_text())
+            self.assertEqual(phase['deadline_monotonic_ns']-phase['started_monotonic_ns'],seconds*1_000_000_000)
+            self.assertLess(released['accepted_monotonic_ns'],phase['deadline_monotonic_ns'])
+        self.assertEqual(result['live_index_proof']['phase'],'index-proof')
+        self.assertEqual(result['unauthenticated'],401)
+
+    def test_child_deadline_refuses_even_a_present_or_late_release_flag(self):
+        for clocked,name,seconds in ((False,'submitted',25),(True,'index-proof',45)):
+            for late_stat in (False,True):
+                directory=self.home/(str(clocked)+'-'+str(late_stat));directory.mkdir()
+                (directory/(name+'.continue')).touch()
+                deadline=100+seconds*1_000_000_000
+                ticks=[100,200,deadline] if late_stat else [100,deadline]
+                with self.subTest(clocked=clocked,late_stat=late_stat), \
+                        patch.object(live.time,'monotonic_ns',side_effect=ticks), \
+                        self.assertRaisesRegex(AssertionError,name):
+                    live.barrier(directory,name,[],[],phase_clock=clocked)
+                self.assertFalse((directory/(name+'-phase-released.json')).exists())
+
+    def test_index_phase_requires_opt_in_and_publishes_its_actual_start(self):
+        from cases.first_launch_index_live_oracle import phase_release
+        with self.assertRaises(AssertionError):live.barrier(self.directory,'index-proof',[],[])
+        self.assertFalse((self.directory/'index-proof.json').exists())
+        (self.directory/'index-proof.continue').touch()
+        with patch.object(live.time,'monotonic_ns',side_effect=[100,200,300]):
+            released=live.barrier(self.directory,'index-proof',[],[],phase_clock=True)
+        phase=json.loads((self.directory/'index-proof-phase.json').read_text())
+        self.assertEqual(phase,dict(format='bigbrotr-installed-live-phase/1',phase='index-proof',
+            started_monotonic_ns=100,deadline_monotonic_ns=45_000_000_100))
+        self.assertEqual(released['accepted_monotonic_ns'],300)
+        phase_release(phase,released,400)
 
     def test_observed_identity_actions_or_revisions_cannot_replace_expectations(self):
         for changed in (dict(principal_id='10' * 16), dict(stored_actions=LEGACY_ACTIONS),
@@ -225,6 +281,9 @@ class LiveClientControls(unittest.TestCase):
             live.main(['journey', str(self.directory), '--profile', str(self.profile_directory),
                 '--expected-config-revision', '1', '--expected-policy-revision', '3'])
             journey.assert_called_once_with(self.directory, self.profile_directory, '1', '3')
+            journey.reset_mock()
+            live.main(['journey',str(self.directory),'--live-index-proof'])
+            journey.assert_called_once_with(self.directory,None,'2','2',live_index_proof=True)
 
     def test_noncanonical_or_overflow_revisions_refuse_before_journey(self):
         invalid = ('0', '01', '+1', '-1', '1.0', '1e0', ' 1', '1 ', '\u0661', '18446744073709551616')

@@ -48,13 +48,51 @@ class LiveTopologyIndexRuntime(TopologyIndexRuntime):
     def check_started_index(self, started, generation):
         oracle.startup_index(started['index'],generation)
 
+    def successor_client_options(self):
+        return ['--live-index-proof']
+
+    def phase_guard(self, deadline, client):
+        base.require(time.monotonic_ns()<deadline,'successor client phase expired')
+        base.require(client.poll() is None,'successor client exited during phase')
+        now=time.monotonic_ns()
+        base.require(now<deadline,'successor client phase expired')
+        return now
+
+    def phase_wait(self, predicate, deadline, entry, client):
+        while True:
+            self.phase_guard(deadline,client)
+            result=predicate()
+            self.phase_guard(deadline,client)
+            if result:return result
+            base.require(self.inspect(entry)['State']['Running'],'successor owner exited during phase')
+            self.phase_guard(deadline,client)
+            time.sleep(.05)
+
+    def successor_submission(self, entry, client, classified):
+        phase=base.load(self.successor_home/'submitted-phase.json')
+        deadline=oracle.phase_deadline(phase,'submitted',time.monotonic_ns())
+        self.phase_wait(classified,deadline,entry,client)
+        (self.successor_home/'submitted.continue').write_text('finite three-event head observed\n')
+        released=self.phase_guard(deadline,client)
+        base.save(self.restart_output/'submitted-parent-phase.json',dict(phase,released_monotonic_ns=released))
+
     def successor_published(self, entry, client):
         home=self.successor_home
+        # This transition wait cannot accept a late positive or a dead client.
+        # Once opened, only the child's45s clock bounds all subsequent work.
+        self.phase_wait(lambda:(home/'index-proof.json').exists(),
+            time.monotonic_ns()+15_000_000_000,entry,client)
+        phase=base.load(home/'index-proof-phase.json')
+        deadline=oracle.phase_deadline(phase,'index-proof',time.monotonic_ns())
+        self.phase_guard(deadline,client)
         saved=base.load(home/'session.private')
         base.require(saved['format']=='bigbrotr-cli-session/1' and saved['origin']=='http://127.0.0.1:18081',
                      'successor role session binding')
+        self.phase_guard(deadline,client)
         before,_=self.capture(self.restart_output,'live-roles-before')
+        self.phase_guard(deadline,client)
         clock_before=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        self.phase_guard(deadline,client)
         observations=[];last=0
         expected=oracle.cut(index.only(before['datasets'])['dataset_id'],10)
         def observed():
@@ -69,7 +107,7 @@ class LiveTopologyIndexRuntime(TopologyIndexRuntime):
                 base.require(response.status==200 and len(raw)<=131072,'successor role observation failed')
                 value=json.loads(raw)
             finally:connection.close()
-            base.require(len(observations)<100,'successor role observation bound')
+            base.require(len(observations)<256,'successor role observation bound')
             observations.append(value);base.save(self.restart_output/'live-role-observations.json',observations)
             base.require(value['format']=='bigbrotr-role-status/1' and value['authority']=='observation-only',
                          'successor role observation authority')
@@ -81,29 +119,39 @@ class LiveTopologyIndexRuntime(TopologyIndexRuntime):
                 index.exact(cap['published'],dict(revision='8',cut=expected))
                 return True
             return False
-        # The client owns its original absolute25s submitted barrier. This
-        # observation consumes its remaining interval; it cannot extend it.
-        remaining=25-(time.monotonic()-self.successor_submitted_at)
-        base.require(remaining>0,'successor submitted observation budget exhausted')
-        self.wait(observed,'live full-vector Index readiness',remaining,entry,client)
+        # Reuse the existing45s/256-sample/250ms Index acceptance envelope.
+        # This is separate from classified3/submitted25, and is not a latency SLA.
+        self.phase_wait(observed,deadline,entry,client)
         clock_after=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        self.phase_guard(deadline,client)
         self.live_successor,_=self.capture(self.restart_output,'live-ready')
+        self.phase_guard(deadline,client)
         oracle.ready_roles(observations[-1],self.live_successor,clock_before,clock_after)
         oracle.append_only_history(self.initial_index_state,self.live_successor)
         oracle.append_only_history(self.live_bridge,self.live_successor)
         base.require(before['browser_sessions']==self.live_successor['browser_sessions'],
                      'successor role observation changed the private session')
+        self.phase_guard(deadline,client)
+        base.require(self.inspect(entry)['State']['Running'],'successor owner exited during phase')
+        self.phase_guard(deadline,client)
+        (home/'index-proof.continue').write_text('full-vector live Index proof independently checked\n')
+        self.phase_guard(deadline,client)
+        self.phase_wait(lambda:(home/'index-proof-phase-released.json').exists(),deadline,entry,client)
+        release=base.load(home/'index-proof-phase-released.json')
+        oracle.phase_release(phase,release,self.phase_guard(deadline,client))
+        completed=self.phase_guard(deadline,client)
         base.save(self.restart_output/'live-role-verdict.json',dict(status='PASS',producer='open',
             source_cuts=[[1,12],[2,10]],published_revision=8,physical_verification='full-vector',
             before_successor_stop=True,session_idle='unchanged',observations=len(observations),
-            clock_before_us=str(clock_before),clock_after_us=str(clock_after)))
+            clock_before_us=str(clock_before),clock_after_us=str(clock_after),
+            phase=phase,client_release=release,parent_completed_monotonic_ns=completed))
 
     def restart_ingest(self):
         base.Runtime.restart_ingest(self)
         oracle.publication_unchanged(self.live_successor,self.retired_successor)
         index.exact(self.custody(),self.initial_index_custody)
         # Full physical verification was observed live. Diagnostic ten-family
-        # reads consume no time from the signed client's original25s barrier.
+        # reads consume no time from the client's source25s or Index45s phases.
         self.live_rows={name:self.ch(index.select_rows(self.schema,DATABASE,name),rows=True) for name in index.TARGETS}
         base.save(self.restart_output/'clickhouse-after-live-stop.json',self.live_rows)
 

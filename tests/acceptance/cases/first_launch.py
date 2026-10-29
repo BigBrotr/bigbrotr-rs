@@ -810,7 +810,8 @@ class Runtime:
         self.successor_activated(started, activated)
         with (home / 'client.stdout').open('x') as out, (home / 'client.stderr').open('x') as err:
             client = subprocess.Popen([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_live_client.py'),
-                'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1'],
+                'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1',
+                *self.successor_client_options()],
                 env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
         self.processes.append(client)
         save(output / 'client-process.json', dict(pid=client.pid, process_group=client.pid))
@@ -819,13 +820,11 @@ class Runtime:
         self.restart_checks.prepared(prepared, load(home / 'prepared.json'), self.initialized['private_scope'])
         (home / 'prepared.continue').write_text('source relationships independently checked\n')
         self.wait(lambda: (home / 'submitted.json').exists(), 'successor acquisition', 15, entry, client)
-        self.successor_submitted_at = time.monotonic()
         def classified():
             require(not (home / 'relay-error.json').exists(), 'successor relay failed')
             return self.sql('bigbrotr_control', 'SELECT count(*) FROM control.acquisition_progress WHERE producer_epoch=2 AND classified_events=3') == '1'
-        self.wait(classified, 'three classified successor events', 30, entry, client)
+        self.successor_submission(entry, client, classified)
         self.successor_published(entry, client)
-        (home / 'submitted.continue').write_text('finite three-event head observed\n')
         self.wait(lambda: (home / 'commands-finished.json').exists(), 'successor logout', 15, entry, client)
         def quiet():
             return any(load(path)['number'] >= 2 and not path.with_name(path.name.replace('open', 'closed')).exists()
@@ -861,8 +860,15 @@ class Runtime:
     def successor_activated(self, started, state):
         """Optional bridge observation before the successor client starts."""
 
+    def successor_client_options(self):
+        return []
+
+    def successor_submission(self, entry, client, classified):
+        self.wait(classified, 'three classified successor events', 30, entry, client)
+        (self.successor_home / 'submitted.continue').write_text('finite three-event head observed\n')
+
     def successor_published(self, entry, client):
-        """Optional live observation inside the client's existing submitted gate."""
+        """Optional opt-in observation after the finite submission is released."""
 
     def successor_abandoned(self):
         """Optional case observation at the actual closed, unretired boundary."""

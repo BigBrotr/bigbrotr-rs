@@ -718,8 +718,21 @@ The unchanged signed peer then supplies the new tagged event, predecessor resend
 and exact new-event duplicate. All three successor batches must publish live,
 and authenticated role observations must become Ready against the complete
 ordered vector `[epoch1=12, epoch2=10]` before the successor stops. An old or
-single-epoch Ready is refused. This consumes the existing client's absolute25s
-submission barrier; query, retry, resource and other client bounds are unchanged.
+single-epoch Ready is refused. The original submitted25s gate covers classified3;
+the client then verifies the queued job once. Only this live case opts in to a
+separate pre-logout Index-proof phase, reusing the existing45s/256-sample/250ms
+acceptance envelope. This is a finite qualification bound, not a product latency
+SLA. The15s sweep cooldown and30s whole-sweep freshness remain unchanged.
+
+The child publishes its monotonic phase start/deadline. Parent setup, authenticated
+HTTP, before/after captures and release all consume that exact interval; neither
+late predicate success nor child death can pass it. The child independently checks
+the deadline when accepting release. The same session and quiet relay stay live,
+then the original logout/401 check, commands-finished25s gate and owner stop/join
+run normally. Prepared/submitted/commands-finished25s, job120s, peer128connections/
+3s and product query/retry/resource bounds are preserved. An earlier attempt's
+valid physical Ready arrived after submitted25s expired; its full-case FAIL stays
+retained and is never relabelled by a capture replay.
 The same independent source/C API science and typed ten-family oracle verify
 all70 chunks and100 bounds, including original receipt and raw row multiplicity.
 

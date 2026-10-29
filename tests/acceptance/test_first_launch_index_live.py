@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from cases import first_launch as base
 from cases import first_launch_index_live as case
@@ -110,6 +110,77 @@ def later_topology_fixture():
 
 
 class LiveIndexTopologyControls(unittest.TestCase):
+    def test_phase_clock_is_the_childs_exact_interval_and_release_cannot_reset_it(self):
+        phase=dict(format='bigbrotr-installed-live-phase/1',phase='index-proof',
+            started_monotonic_ns=100,deadline_monotonic_ns=45_000_000_100)
+        self.assertEqual(live.phase_deadline(phase,'index-proof',1000),45_000_000_100)
+        for now in (99,45_000_000_100):
+            with self.subTest(now=now),self.assertRaises(AssertionError):live.phase_deadline(phase,'index-proof',now)
+        for field,value in [('deadline_monotonic_ns',45_000_000_101),('phase','submitted'),
+                            ('started_monotonic_ns',True)]:
+            with self.subTest(field=field),self.assertRaises(AssertionError):
+                live.phase_deadline(dict(phase,**{field:value}),'index-proof',1000)
+        release=dict(phase,format='bigbrotr-installed-live-phase-release/1',accepted_monotonic_ns=1000)
+        live.phase_release(phase,release,1001)
+        with self.assertRaises(AssertionError):
+            live.phase_release(phase,dict(release,accepted_monotonic_ns=45_000_000_100),45_000_000_100)
+        with self.assertRaises(AssertionError):live.phase_release(phase,release,999)
+
+    def test_phase_wait_refuses_late_positive_and_child_death_during_predicate(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime=case.LiveTopologyIndexRuntime(arguments(Path(temporary)),{})
+            for failure in ('expired','dead-before','dead-during'):
+                client=Mock();client.poll.return_value=0 if failure=='dead-before' else None
+                now=[10]
+                def positive():
+                    if failure=='expired':now[0]=100
+                    if failure=='dead-during':client.poll.return_value=0
+                    return True
+                predicate=Mock(side_effect=positive)
+                with self.subTest(failure=failure),patch.object(case.time,'monotonic_ns',side_effect=lambda:now[0]), \
+                        patch.object(runtime,'inspect') as inspect,self.assertRaises(ValueError):
+                    runtime.phase_wait(predicate,100,object(),client)
+                inspect.assert_not_called()
+                if failure=='dead-before':predicate.assert_not_called()
+
+    def test_expired_capture_cannot_produce_a_verdict_or_release_the_client(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=case.LiveTopologyIndexRuntime(arguments(root),{})
+            runtime.restart_output=root/'restart';runtime.restart_output.mkdir()
+            runtime.successor_home=root/'client';runtime.successor_home.mkdir()
+            home=runtime.successor_home
+            base.save(home/'index-proof.json',[])
+            base.save(home/'index-proof-phase.json',dict(format='bigbrotr-installed-live-phase/1',
+                phase='index-proof',started_monotonic_ns=0,deadline_monotonic_ns=45_000_000_000))
+            base.save(home/'session.private',dict(format='bigbrotr-cli-session/1',origin='http://127.0.0.1:18081'))
+            client=Mock();client.poll.return_value=None;now=[1]
+            def capture(*args):now[0]=45_000_000_000;return {},{}
+            with patch.object(case.time,'monotonic_ns',side_effect=lambda:now[0]), \
+                    patch.object(runtime,'capture',side_effect=capture),patch.object(runtime,'sql') as sql, \
+                    patch.object(case.http.client,'HTTPConnection') as http,self.assertRaisesRegex(ValueError,'phase expired'):
+                runtime.successor_published(object(),client)
+            sql.assert_not_called();http.assert_not_called()
+            self.assertFalse((home/'index-proof.continue').exists())
+            self.assertFalse((runtime.restart_output/'live-role-verdict.json').exists())
+
+    def test_live_submission_keeps_original25_and_only_live_case_opts_in(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=case.LiveTopologyIndexRuntime(arguments(root),{})
+            runtime.restart_output=root/'restart';runtime.restart_output.mkdir()
+            runtime.successor_home=root/'client';runtime.successor_home.mkdir()
+            phase=dict(format='bigbrotr-installed-live-phase/1',phase='submitted',
+                started_monotonic_ns=0,deadline_monotonic_ns=25_000_000_000)
+            base.save(runtime.successor_home/'submitted-phase.json',phase)
+            client=Mock();client.poll.return_value=None
+            with patch.object(case.time,'monotonic_ns',return_value=10):
+                runtime.successor_submission(object(),client,lambda:True)
+            recorded=base.load(runtime.restart_output/'submitted-parent-phase.json')
+            self.assertEqual(recorded['deadline_monotonic_ns'],25_000_000_000)
+            self.assertTrue((runtime.successor_home/'submitted.continue').exists())
+            self.assertFalse((runtime.successor_home/'index-proof.continue').exists())
+            self.assertEqual(runtime.successor_client_options(),['--live-index-proof'])
+            self.assertEqual(base.Runtime.successor_client_options(runtime),[])
+
     def test_live_owner_binding_accepts_independent_ingest_target_and_refuses_wrong_issuer(self):
         state=dict(owner_epochs=[dict(role='control',state='active',resource_id='control',epoch=9,
             process_incarnation='control-index'),dict(role='index',epoch=2,process_incarnation='control-index'),
