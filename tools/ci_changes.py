@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select only a proven documentation-only diff; unknown input runs full CI."""
+"""Select proven documentation/control-only diffs; unknown input runs full CI."""
 import argparse
 import json
 from pathlib import Path
@@ -10,6 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCUMENTATION_ROOTS = ('docs/planning/', 'docs/implementation/', 'docs/research/',
                        'docs/reviews/', 'docs/engineering/')
 DOCUMENTATION_FILES = {'README.md', 'AGENTS.md', 'PLAN.md'}
+CONTROL_FILES = {
+    'experiments/identity-contract/signed_fixture.py',
+    'experiments/ingest-bootstrap/installed_archive_export_client.py',
+    'experiments/ingest-bootstrap/installed_archive_export_oracle.py',
+    'experiments/ingest-bootstrap/test_installed_archive_profile.py',
+    'docs/development/verification.md',
+}
 
 
 def documentation_only(paths):
@@ -21,9 +28,19 @@ def documentation_only(paths):
         for path in paths)
 
 
+def controls_only(paths):
+    # Only maintained portable controls and these explicitly covered helpers.
+    # Runtime/build/config inputs and unknown experiments keep the native gate.
+    return bool(paths) and all(
+        documentation_only([path]) or path in CONTROL_FILES or
+        (path.startswith('tests/acceptance/') and path.endswith('.py'))
+        for path in paths)
+
+
 def select(base, head, root=ROOT):
     result = {'format': 'bigbrotr-ci-selection/1', 'base': base, 'head': head,
-              'foundation': True, 'reason': 'unknown or unavailable comparison'}
+              'foundation': True, 'controls': False,
+              'reason': 'unknown or unavailable comparison'}
     if not all(re.fullmatch(r'[0-9a-f]{40}', value or '') and value != '0'*40 for value in (base, head)):
         return result
     try:
@@ -33,8 +50,12 @@ def select(base, head, root=ROOT):
     except (OSError, subprocess.CalledProcessError, UnicodeError):
         return result
     paths = [path for path in paths if path]
-    result.update(paths=paths, foundation=not documentation_only(paths),
-                  reason='documentation-only allowlist' if documentation_only(paths) else 'product, tooling or unknown change')
+    docs = documentation_only(paths)
+    controls = not docs and controls_only(paths)
+    result.update(paths=paths, foundation=not (docs or controls), controls=controls,
+                  reason='documentation-only allowlist' if docs else
+                         'portable control-only allowlist' if controls else
+                         'product, tooling or unknown change')
     return result
 
 
@@ -53,6 +74,7 @@ def main():
     if args.github_output:
         with args.github_output.open('a') as stream:
             stream.write('foundation=' + str(result['foundation']).lower() + '\n')
+            stream.write('controls=' + str(result['controls']).lower() + '\n')
     print(json.dumps(result))
 
 

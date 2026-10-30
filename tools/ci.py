@@ -90,6 +90,14 @@ def documentation_commands(output):
             ('documentation-links', [sys.executable, 'experiments/verify_handoff.py', '--output', str(output/'handoff.json')])]
 
 
+def control_commands():
+    return [('acceptance-controls', [sys.executable, '-m', 'unittest', 'discover',
+                                    '-s', 'tests/acceptance', '-p', 'test_*.py']),
+            ('export-profile-controls', [sys.executable, '-m', 'unittest', 'discover',
+                                        '-s', 'experiments/ingest-bootstrap',
+                                        '-p', 'test_installed_archive_profile.py'])]
+
+
 def commands(output, system, architecture, jobs):
     python = sys.executable
     build = output / 'build'
@@ -103,7 +111,7 @@ def commands(output, system, architecture, jobs):
                    ('dependency-policy', ['cargo', 'deny', '--locked', 'check', 'licenses', 'sources', 'advisories'])]
     # These controls use temporary fixtures and the declared native tools, not
     # the product build. Refuse a broken verifier before workspace compilation.
-    checks += [('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
+    checks += control_commands()
     checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
                                       '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
     checks += [(name, [python, 'tools/ci.py', '--workspace-check', name, '--from-build', str(build)])
@@ -215,6 +223,8 @@ def main():
     parser.add_argument('--jobs', type=positive_jobs, default=2)
     parser.add_argument('--documentation-only', action='store_true',
                         help='run the documentation checks only; does not qualify product behavior')
+    parser.add_argument('--controls-only', action='store_true',
+                        help='run portable controls and documentation; no product build or qualification')
     parser.add_argument('--download-cache', type=Path,
                         help='optional native asset download cache; every asset is size/hash checked')
     parser.add_argument('--workspace-check', choices=WORKSPACE_COMMANDS,
@@ -222,26 +232,31 @@ def main():
     parser.add_argument('--from-build', type=Path, help='preceding trusted exact-source build directory')
     args = parser.parse_args()
     if args.workspace_check or args.from_build:
-        if args.output or args.documentation_only or args.download_cache:
+        if args.output or args.documentation_only or args.controls_only or args.download_cache:
             parser.error('--workspace-check/--from-build and --output are separate operations')
         if not args.workspace_check or not args.from_build:
             parser.error('--workspace-check and --from-build are required together')
         return workspace_check(args.from_build, args.workspace_check)
     if not args.output:
         parser.error('--output is required for a complete CI run')
+    if args.documentation_only and args.controls_only:
+        parser.error('--documentation-only and --controls-only are separate scopes')
     if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
         raise ValueError('CI requires a clean committed source checkout')
     output = args.output.resolve()
     if output.exists():
         raise ValueError('CI requires a new output directory')
-    if args.documentation_only:
+    if args.documentation_only or args.controls_only:
         if args.download_cache:
             parser.error('--download-cache is only used by native foundation checks')
         identity = {'source': {'revision': git(ROOT, 'rev-parse', 'HEAD'),
                                'tree': git(ROOT, 'rev-parse', 'HEAD^{tree}'), 'dirty': False},
                     'helper_sha256': file_hash(Path(__file__)),
-                    'scope': 'Documentation only; no native build or product qualification'}
-        report = execute(documentation_commands(output), output, ROOT, clean_environment(), identity, 600)
+                    'scope': ('Portable controls and documentation; no product build or qualification'
+                              if args.controls_only else
+                              'Documentation only; no native build or product qualification')}
+        checks = (control_commands() if args.controls_only else []) + documentation_commands(output)
+        report = execute(checks, output, ROOT, clean_environment(), identity, 600)
         if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
             report.update(status='FAIL', failure='source-changed-during-CI')
             write_report(output, report)

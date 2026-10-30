@@ -163,6 +163,8 @@ class WorkspaceReuseControls(unittest.TestCase):
     def test_dispatch_cli_requires_complete_exclusive_options(self):
         for args in [['--workspace-check', 'clippy'], ['--from-build', '/absent'],
                      ['--workspace-check', 'clippy', '--from-build', '/absent', '--output', '/unused'],
+                     ['--workspace-check', 'clippy', '--from-build', '/absent', '--controls-only'],
+                     ['--documentation-only', '--controls-only', '--output', '/unused'],
                      ['--workspace-check', 'unknown', '--from-build', '/absent']]:
             with self.subTest(args=args):
                 result = subprocess.run([sys.executable, str(ROOT/'tools/ci.py'), *args],
