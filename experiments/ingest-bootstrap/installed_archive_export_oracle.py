@@ -15,7 +15,7 @@ _spec.loader.exec_module(_signed)
 
 
 def validate(before, after, home, initialized, catalog_id, *, expected_principal='10'*16,
-             expected_table_count=69, expected_tables=None, destination_root=None, initial_cut=12, retained_compacted_epoch2=False, retained_second_export=False):
+             expected_table_count=69, expected_tables=None, destination_root=None, initial_cut=12, retained_compacted_epoch2=False, retained_second_export=False, second_startup=None):
     """Placement/identity expectations come from the caller's independent setup.
 
     A newer schema supplies its expected inventory explicitly; observed table
@@ -24,6 +24,7 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     assert re.fullmatch('[0-9a-f]{32}', expected_principal)
     assert type(retained_compacted_epoch2) is bool
     assert type(retained_second_export) is bool and (not retained_second_export or retained_compacted_epoch2)
+    assert not retained_second_export or isinstance(second_startup,dict), 'second export requires its independent startup capture'
     assert type(initial_cut) is int and initial_cut in ((312,) if retained_compacted_epoch2 else (8,12)), 'closed recipe cut required'
     frontier,snapshot,topology=(4,68,'1') if retained_compacted_epoch2 else (4,5,initialized['topology_generation'])
     source_bounds=[(1,312),(2,10)] if retained_compacted_epoch2 else [(1,initial_cut)]
@@ -113,7 +114,7 @@ def validate(before, after, home, initialized, catalog_id, *, expected_principal
     assert pins[artifact['verification_pin_id']]['purpose'] == 'reader'
     assert all(leases[key]['state'] == 'released' for key, pin in pins.items() if pin['purpose'] == 'reader')
     if retained_second_export:
-        second_job_rows(before,after,home,initialized,catalog_id,verdict)
+        second_job_rows(before,after,home,initialized,catalog_id,verdict,startup=second_startup)
     return verdict
 
 
@@ -122,7 +123,7 @@ def next_row(rows,key,value):
     return row
 
 
-def second_job_rows(before,after,home,initialized,catalog_id,verdict):
+def second_job_rows(before,after,home,initialized,catalog_id,verdict,*,startup):
     """Validate every extra export row before projecting the existing history checks.
 
     Only this closed second job is removed. Its two released operation readers
@@ -142,6 +143,13 @@ def second_job_rows(before,after,home,initialized,catalog_id,verdict):
     session,=after['browser_sessions']
     owner,=[r for r in after['owner_epochs'] if r not in before['owner_epochs']]
     exact=lambda value:json.dumps(value,sort_keys=True,separators=(',',':'))
+    assert isinstance(startup,dict), 'independent second startup capture required'
+    original_session,=startup['browser_sessions']
+    assert original_session['revoked_at_us'] is None and session['revoked_at_us'] is not None
+    # This closed client makes no successful /me after setup. Preserve the
+    # complete startup session/lifetime; only logout's revoke/xmin may change.
+    immutable=lambda row:{k:v for k,v in row.items() if k not in ('revoked_at_us','xmin')}
+    assert exact(immutable(session))==exact(immutable(original_session)), 'second export changed its startup session/lifetime'
     tables=('jobs','export_jobs','job_admissions','job_input_bounds','export_execution_units',
         'artifacts','artifact_files','management_commands')
     added={t:[r for r in after[t] if exact(r) not in {exact(old) for old in before[t]}] for t in tables}
@@ -193,7 +201,7 @@ def second_job_rows(before,after,home,initialized,catalog_id,verdict):
     # Only explicit /me touches idle time. Job traffic authenticates the
     # existing lifetime; its successful status observation must precede expiry.
     assert session['issued_at_us']<=session['last_seen_at_us']<=created
-    assert int(status['observed_at_us'])<min(session['expires_at_us'],session['idle_expires_at_us'])
+    assert int(status['observed_at_us'])<min(original_session['expires_at_us'],original_session['idle_expires_at_us'])
     def same(row,**expected):assert exact(row)==exact(dict(expected,xmin=row['xmin'])), ('closed export row',row)
     raw=bytes.fromhex;be=lambda value,width=8:int(value).to_bytes(width,'big')
     request_digest=hashlib.sha256(b'bigbrotr/export-event/1\0'+raw(scope['dataset_id'])+raw(actor[2:])+raw(key)

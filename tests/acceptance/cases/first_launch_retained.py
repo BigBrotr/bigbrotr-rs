@@ -921,10 +921,11 @@ class ReclamationRuntime(RetainedRuntime):
         second_after,catalog=self.capture(second,'after')
         second_verdict=self.export_validate(second_before,second_after,second,self.initialized,self.ids['catalog'],
             expected_principal=self.enrolled['principal_id'],expected_table_count=82,expected_tables=self.tables,
-            destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True,retained_second_export=True)
+            destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True,retained_second_export=True,
+            second_startup=second_startup)
         # Every projected row is independently checked first. Operation readers
         # stay in the view for the full82-table startup/session/release oracle.
-        view=second_job_rows(second_before,second_after,second,self.initialized,self.ids['catalog'],second_verdict)
+        view=second_job_rows(second_before,second_after,second,self.initialized,self.ids['catalog'],second_verdict,startup=second_startup)
         oracle.compacted_history_control(second_before,view,second_startup)
         live_oracle.publication_unchanged(self.complete_index_state,second_after)
         self.verify_archive_preservation(second,'second-export',second_after,catalog)

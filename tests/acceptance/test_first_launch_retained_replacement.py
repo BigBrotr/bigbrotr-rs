@@ -363,8 +363,8 @@ class UnboundReplacementControls(unittest.TestCase):
             def verify(state):
                 verdict=exports.validate(before,state,homes[1],initialized,catalog,expected_principal='ee'*16,
                     expected_table_count=82,expected_tables=before,destination_root=destination,initial_cut=312,
-                    retained_compacted_epoch2=True,retained_second_export=True)
-                view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict)
+                    retained_compacted_epoch2=True,retained_second_export=True,second_startup=startup)
+                view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict,startup=startup)
                 check.compacted_history_control(before,view,startup)
                 return verdict
             self.assertEqual(verify(after),verdicts[1])
@@ -410,6 +410,35 @@ class UnboundReplacementControls(unittest.TestCase):
                 with self.subTest(duplicated_old_row=table),self.assertRaises((AssertionError,ValueError)):
                     verify(state)
 
+    def test_second_export_rejects_preaccept_refresh_of_the_startup_lifetime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
+            before,after,startup,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
+            def verify(state,setup):
+                verdict=exports.validate(before,state,homes[1],initialized,catalog,expected_principal='ee'*16,
+                    expected_table_count=82,expected_tables=before,destination_root=destination,initial_cut=312,
+                    retained_compacted_epoch2=True,retained_second_export=True,second_startup=setup)
+                view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict,startup=setup)
+                check.compacted_history_control(before,view,setup)
+                return view
+            view=verify(after,startup)
+            with self.assertRaisesRegex(AssertionError,'independent startup capture'):verify(after,None)
+            with self.assertRaises(AssertionError):verify(after,after)
+            with self.assertRaises(TypeError):
+                exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1])
+            changed,setup=copy.deepcopy((after,startup))
+            for state in (changed,setup):
+                row=state['browser_sessions'][0];row['idle_window_us']=40
+                row['idle_expires_at_us']=row['last_seen_at_us']+40
+            changed['browser_sessions'][0].update(last_seen_at_us=1340,idle_expires_at_us=1380)
+            self.assertEqual(setup['browser_sessions'][0]['last_seen_at_us'],1315)
+            self.assertEqual(setup['browser_sessions'][0]['idle_expires_at_us'],1355)
+            # A different client may legitimately touch before its old expiry.
+            # Keep that generic helper behavior, while this closed export must
+            # reject the refresh and status1365 past its original idle1355.
+            check.compacted_history_control(before,dict(view,browser_sessions=changed['browser_sessions']),setup)
+            with self.assertRaises(AssertionError):verify(changed,setup)
+
     def test_second_export_uses_last_explicit_touch_and_existing_auth_expiries(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
@@ -419,12 +448,12 @@ class UnboundReplacementControls(unittest.TestCase):
             self.assertLess(session['last_seen_at_us'],job['completed_at_us'])
             for field in ('last_seen_at_us','idle_expires_at_us'):
                 self.assertEqual(session[field],startup['browser_sessions'][0][field])
-            view=exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1])
+            view=exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1],startup=startup)
             check.compacted_history_control(before,view,startup)
             for field,value in (('issued_at_us',1342),('last_seen_at_us',1342),('last_seen_at_us',1370)):
                 changed=copy.deepcopy(after);changed['browser_sessions'][0][field]=value
                 with self.subTest(pre_auth_or_unissued_touch=(field,value)),self.assertRaises(AssertionError):
-                    exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1])
+                    exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1],startup=startup)
             observed=int(json.loads((homes[1]/'export-client-result.json').read_text())['completed']['observed_at_us'])
             for boundary in ('idle','absolute'):
                 for delta in (0,1):
@@ -439,7 +468,7 @@ class UnboundReplacementControls(unittest.TestCase):
                     # observation-before-expiry bound, without refreshing it.
                     check.compacted_history_control(before,dict(view,browser_sessions=changed['browser_sessions']),setup)
                     with self.subTest(expiry=boundary,at_or_after=delta),self.assertRaises(AssertionError):
-                        exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1])
+                        exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1],startup=setup)
 
     def test_second_export_rejects_retry_conflict_and_standalone_corruption(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -452,7 +481,7 @@ class UnboundReplacementControls(unittest.TestCase):
                 observations=json.loads(original);next(r for r in observations if r['case']==label)[field]=value
                 case.save(path,observations)
                 with self.subTest(label=label,field=field),self.assertRaises((AssertionError,ValueError)):
-                    exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1])
+                    exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1],startup=startup)
             path.write_bytes(original)
             for home,verdict in zip(homes,verdicts):
                 for name in ('events.jsonl','manifest.json'):
@@ -575,12 +604,14 @@ class UnboundReplacementControls(unittest.TestCase):
                 return startup
             def reread(*args,**kwargs):order.append('reread:'+args[1].name);return verdicts[args[1].name=='second-export']
             with patch.object(case.baseline,'startup_client',side_effect=client),patch.object(case.live_oracle,'publication_unchanged'), \
-                    patch.object(exports,'second_job_rows',return_value=second),patch.object(case.oracle,'compacted_history_control') as control, \
+                    patch.object(exports,'second_job_rows',return_value=second) as projection,patch.object(case.oracle,'compacted_history_control') as control, \
                     patch.object(exports,'verify_artifact',side_effect=reread):
                 runtime.compacted_history_export()
             runtime.restart_checks.history_unchanged.assert_called_once_with(second,final,startup=startup,retained_compacted_epoch2=True)
             control.assert_called_once_with(export,second,startup)
             self.assertTrue(runtime.export_validate.call_args.kwargs['retained_second_export'])
+            self.assertIs(runtime.export_validate.call_args.kwargs['second_startup'],startup)
+            self.assertIs(projection.call_args.kwargs['startup'],startup)
             for joined,captured,preserved in (('compacted-signed-export','export-after','export'),
                     ('compacted-second-signed-export','after','second-export'),('compacted-history-restart','history-after','history')):
                 self.assertLess(order.index('joined:'+joined),order.index('capture:'+captured))
