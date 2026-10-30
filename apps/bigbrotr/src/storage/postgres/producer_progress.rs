@@ -246,6 +246,7 @@ pub(super) struct Context {
     pub dataset: DatasetId,
     pub slot: ProducerSlotId,
     pub epoch: u64,
+    pub shard: u32,
     pub manifest: [u8; 32],
 }
 
@@ -281,11 +282,89 @@ pub(super) struct Snapshot {
     input_completion_bytes: u64,
     jobs: Vec<JobHead>,
     dependencies: Vec<FactRef>,
+    prefix_enabled: bool,
+    base: Option<ActiveBase>,
+}
+
+struct ActiveBase {
+    value: crate::storage::producer_prefix::Base,
+    reference: crate::storage::producer_prefix::BaseRef,
+}
+
+impl Context {
+    fn prefix_context(self) -> crate::storage::producer_prefix::Context {
+        crate::storage::producer_prefix::Context {
+            dataset: *self.dataset.as_bytes(),
+            slot: *self.slot.as_bytes(),
+            epoch: self.epoch,
+            manifest: self.manifest,
+        }
+    }
+}
+impl Snapshot {
+    pub(super) fn prefix_enabled(&self) -> bool {
+        self.prefix_enabled
+    }
+    pub(super) fn require_native_base(
+        &self,
+        store: &crate::storage::rocks::store::IngestStore,
+        context: Context,
+    ) -> Result<(), ProducerProgressError> {
+        let epoch = bigbrotr_model::ProducerEpoch::new(context.epoch)
+            .map_err(|_| ProducerProgressError::InvalidContext)?;
+        let floor = store
+            .open_prefix_floor(context.slot, epoch)
+            .map_err(|error| ProducerProgressError::Native(error.into()))?;
+        match (floor, &self.base) {
+            (None, None) => Ok(()),
+            (Some(floor), Some(base)) if self.prefix_enabled => floor
+                .require_base(&base.value)
+                .map_err(|_| ProducerProgressError::InvalidContext),
+            _ => Err(ProducerProgressError::InvalidContext),
+        }
+    }
+    fn format(&self) -> u16 {
+        if self.base.is_some() { 2 } else { 1 }
+    }
+    fn require_charge(
+        &self,
+        jobs: usize,
+        dependencies: usize,
+    ) -> Result<u64, ProducerProgressError> {
+        retained_charge(self.input_completion_bytes, jobs, dependencies)?
+            .checked_add(if self.prefix_enabled {
+                crate::storage::producer_prefix::BASE_SLOTS_CHARGE
+            } else {
+                0
+            })
+            .filter(|n| *n <= RETAINED_BYTES)
+            .ok_or(ProducerProgressError::Limit)
+    }
+    fn covered(&self, context: Context, reference: FactRef) -> Result<bool, ProducerProgressError> {
+        let source = reference.source_record_id;
+        if self.prefix_enabled
+            && (source.dataset_id != context.dataset
+                || source.shard_id != context.shard
+                || source.owner_epoch.get() != context.epoch)
+        {
+            return Err(ProducerProgressError::InvalidContext);
+        }
+        Ok(self
+            .base
+            .as_ref()
+            .is_some_and(|base| source.sequence.get() <= base.value.source))
+    }
 }
 
 const JOB_BYTES: usize = 216;
 const DEPENDENCY_BYTES: usize = 72;
 const DIGEST_DOMAIN: &[u8] = b"bigbrotr/producer-progress/1\0";
+// Both canonical slots plus both decoded job arrays and headers can overlap
+// during replacement. This is runtime memory, separate from the32KiB retained
+// logical slot charge, and remains inside the original2MiB operation grant.
+pub(super) const PREFIX_RUNTIME_BYTES: usize = 2 * crate::storage::producer_prefix::MAX_BASE_BYTES
+    + 2 * (crate::storage::producer_prefix::MAX_JOBS * crate::storage::producer_prefix::JOB_BYTES
+        + std::mem::size_of::<crate::storage::producer_prefix::Base>());
 
 // 64 typed current heads + 16,384 exact references, one SQL parameter/row
 // scratch allowance and bounded transient headers fit this operation grant.
@@ -296,6 +375,7 @@ const _: () = assert!(
         + MAX_DEPENDENCIES * std::mem::size_of::<FactRef>()
         + 2 * 64 * 1024
         + std::mem::size_of::<Snapshot>()
+        + PREFIX_RUNTIME_BYTES
         < ProgressGrant::REQUIRED_DATA_BYTES as usize
 );
 const _: () = assert!(JOB_BYTES <= PROGRESS_CHARGE as usize);
@@ -303,11 +383,19 @@ const _: () = assert!(DEPENDENCY_BYTES <= DEPENDENCY_CHARGE as usize);
 
 fn digest(context: Context, snapshot: &Snapshot) -> [u8; 32] {
     let mut hash = Sha256::new();
-    hash.update(DIGEST_DOMAIN);
+    hash.update(if snapshot.base.is_some() {
+        b"bigbrotr/producer-progress/2\0".as_slice()
+    } else {
+        DIGEST_DOMAIN
+    });
     hash.update(context.dataset.as_bytes());
     hash.update(context.slot.as_bytes());
     hash.update(context.epoch.to_be_bytes());
     hash.update(context.manifest);
+    if let Some(base) = &snapshot.base {
+        hash.update(base.reference.generation.to_be_bytes());
+        hash.update(base.reference.sha256);
+    }
     hash.update(snapshot.revision.to_be_bytes());
     hash.update(snapshot.complete.to_be_bytes());
     hash.update((snapshot.jobs.len() as u64).to_be_bytes());
@@ -408,6 +496,146 @@ fn retained_charge(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn prefix_snapshot() -> (Context, Snapshot) {
+        let context = Context {
+            dataset: [1; 16].try_into().unwrap(),
+            slot: [2; 16].try_into().unwrap(),
+            epoch: 1,
+            shard: 0,
+            manifest: [3; 32],
+        };
+        let base = crate::storage::producer_prefix::Base {
+            context: context.prefix_context(),
+            generation: 1,
+            previous: [0; 32],
+            retired: 64,
+            source: 7,
+            issuer_resource: [8; 16],
+            issuer_epoch: 2,
+            issuer_incarnation: [9; 16],
+            policy_epoch: 3,
+            batches: 1,
+            science: [4; 32],
+            requests: [5; 32],
+            progress_format: 1,
+            progress_revision: 65,
+            progress_digest: [6; 32],
+            jobs: Vec::new(),
+        };
+        let reference = base.reference().unwrap();
+        (
+            context,
+            Snapshot {
+                revision: 65,
+                complete: 64,
+                reserved: 64,
+                input_completion_bytes: 0,
+                jobs: Vec::new(),
+                dependencies: Vec::new(),
+                prefix_enabled: true,
+                base: Some(ActiveBase {
+                    value: base,
+                    reference,
+                }),
+            },
+        )
+    }
+    fn literal(hex: &str) -> [u8; 32] {
+        std::array::from_fn(|i| u8::from_str_radix(&hex[i * 2..i * 2 + 2], 16).unwrap())
+    }
+    #[test]
+    fn format2_progress_digest_binds_exact_base_reference_and_absolute_cut() {
+        // Independent hashlib/struct.pack preimages; no production encoder was
+        // used to obtain either literal expected digest.
+        let (context, mut snapshot) = prefix_snapshot();
+        let base = snapshot.base.as_ref().unwrap();
+        assert_eq!(
+            base.reference.sha256,
+            literal("84183d5a36e364ded347ec45aa82819ef94db0278ab50d170ca66fb2fba76777")
+        );
+        let expected = literal("b478184aa74ae68683f9b68b11a53e26efe53d270fe04ae5a24d7e8ef3628cb8");
+        assert_eq!(digest(context, &snapshot), expected);
+        snapshot.base.as_mut().unwrap().reference.generation = 2;
+        assert_ne!(digest(context, &snapshot), expected);
+        snapshot.base.as_mut().unwrap().reference.generation = 1;
+        snapshot.base.as_mut().unwrap().reference.sha256[0] ^= 1;
+        assert_ne!(digest(context, &snapshot), expected);
+        snapshot.base = None;
+        assert_eq!(snapshot.format(), 1);
+        assert_ne!(digest(context, &snapshot), expected);
+    }
+    #[test]
+    fn prefix_progress_covers_only_exact_stream_and_reserves_both_slots_before_first_base() {
+        use bigbrotr_model::{Digest256, OwnerEpoch, Sequence, SourceRecordId};
+        let (context, mut snapshot) = prefix_snapshot();
+        let reference = FactRef {
+            source_record_id: SourceRecordId {
+                dataset_id: context.dataset,
+                shard_id: context.shard,
+                owner_epoch: OwnerEpoch::new(1).unwrap(),
+                sequence: Sequence::new(7).unwrap(),
+            },
+            payload_digest: Digest256::from_bytes([10; 32]),
+        };
+        assert_eq!(snapshot.covered(context, reference), Ok(true));
+        let mut tail = reference;
+        tail.source_record_id.sequence = Sequence::new(8).unwrap();
+        assert_eq!(snapshot.covered(context, tail), Ok(false));
+        for foreign in [
+            SourceRecordId {
+                shard_id: 1,
+                ..reference.source_record_id
+            },
+            SourceRecordId {
+                owner_epoch: OwnerEpoch::new(2).unwrap(),
+                ..reference.source_record_id
+            },
+            SourceRecordId {
+                dataset_id: [2; 16].try_into().unwrap(),
+                ..reference.source_record_id
+            },
+        ] {
+            assert!(
+                snapshot
+                    .covered(
+                        context,
+                        FactRef {
+                            source_record_id: foreign,
+                            ..reference
+                        }
+                    )
+                    .is_err()
+            );
+        }
+        snapshot.base = None;
+        let reserve = crate::storage::producer_prefix::BASE_SLOTS_CHARGE;
+        assert_eq!(reserve, 32 * 1024);
+        snapshot.input_completion_bytes = RETAINED_BYTES - HEAD_CHARGE - reserve;
+        assert_eq!(snapshot.require_charge(0, 0), Ok(RETAINED_BYTES));
+        snapshot.input_completion_bytes += 1;
+        assert_eq!(
+            snapshot.require_charge(0, 0),
+            Err(ProducerProgressError::Limit)
+        );
+        snapshot.prefix_enabled = false;
+        assert!(snapshot.require_charge(0, 0).is_ok());
+    }
+    #[test]
+    fn prefix_job_decoder_preserves_absolute_mutation_while_old_profile_keeps_64() {
+        let mut head = golden_head();
+        head.kind = 2;
+        head.mutation = 132;
+        let bytes = head.encode();
+        assert!(rows::decode_job(&bytes).is_err());
+        assert_eq!(rows::decode_job_with_limit(&bytes, 132), Ok(head));
+        assert!(rows::decode_job_with_limit(&bytes, 131).is_err());
+        head.mutation = u64::MAX;
+        assert_eq!(
+            rows::decode_job_with_limit(&head.encode(), u64::MAX),
+            Ok(head)
+        );
+    }
 
     #[test]
     fn progress_grant_reserves_native_ack_before_any_dispatch() {
@@ -582,6 +810,8 @@ mod tests {
             input_completion_bytes: 0,
             jobs: vec![golden_head()],
             dependencies: Vec::new(),
+            prefix_enabled: false,
+            base: None,
         }
     }
 
@@ -787,6 +1017,7 @@ mod tests {
             dataset: [1; 16].try_into().unwrap(),
             slot: [2; 16].try_into().unwrap(),
             epoch: 3,
+            shard: 7,
             manifest: [4; 32],
         };
         let mut snapshot = Snapshot {
@@ -804,6 +1035,8 @@ mod tests {
                 },
                 payload_digest: Digest256::from_bytes([10; 32]),
             }],
+            prefix_enabled: false,
+            base: None,
         };
         let expected: [u8; 32] = [
             0x36, 0x4c, 0xbd, 0xab, 0x83, 0x4d, 0x65, 0xfb, 0x71, 0x75, 0x00, 0xd9, 0x4e, 0x89,

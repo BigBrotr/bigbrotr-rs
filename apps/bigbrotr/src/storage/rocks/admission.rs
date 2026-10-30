@@ -51,6 +51,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::StateMismatch => Self::StateMismatch,
             BootstrapError::RequestConflict => Self::RequestConflict,
             BootstrapError::ProducerClosing => Self::ProducerClosing,
+            BootstrapError::RetiredRequest => Self::RetiredRequest,
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
             BootstrapError::RequestInput(error) => Self::RequestInput(error),
@@ -159,8 +160,8 @@ impl PreparedEvent {
             return Err(AdmissionError::InvalidInput);
         }
         store.require_admission_owner(Some(self.request))?;
-        store.require_open_producer(self.request)?;
         store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
+        store.require_open_producer(self.request)?;
         store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
     }
 
@@ -483,7 +484,7 @@ impl IngestStore {
             producer_slot_id: input.request.producer_slot_id,
             producer_epoch: input.request.producer_epoch,
         };
-        let producer = self.admission_value(producer_key, 27, &mut reads)?;
+        let producer = self.admission_value(producer_key, 67, &mut reads)?;
         let producer = producer
             .as_deref()
             .map(super::producer_closing::ProducerState::decode)
@@ -498,7 +499,15 @@ impl IngestStore {
         }
         let (issued, ack, retired) = (producer.issued, producer.acknowledged, producer.retired);
         let sequence = input.request.request_sequence.get();
-        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+        self.require_retained_state(
+            input.request.producer_slot_id,
+            input.request.producer_epoch,
+            producer,
+        )?;
+        if sequence
+            .checked_sub(retired)
+            .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(AdmissionError::Limit);
         }
         let request_key = IngestKey::Request {
@@ -594,13 +603,15 @@ impl IngestStore {
         writes.put(request_key, detail)?;
         writes.put(
             producer_key,
-            frame(
-                &[1, 0x31],
-                &[
-                    &sequence.to_be_bytes(),
-                    &ack.to_be_bytes(),
-                    &retired.to_be_bytes(),
-                ],
+            self.producer_state_bytes(
+                input.request.producer_slot_id,
+                input.request.producer_epoch,
+                super::producer_closing::ProducerState {
+                    issued: sequence,
+                    acknowledged: ack,
+                    retired,
+                    closing: false,
+                },
             )?,
         )?;
         // The shared native commit marks the handle uncertain before FFI, uses

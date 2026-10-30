@@ -399,6 +399,7 @@ async fn require_read(
         dataset: id.dataset_id,
         slot,
         epoch: id.owner_epoch.get(),
+        shard: id.shard_id,
         manifest: Sha256::digest(manifest.encode().as_bytes()).into(),
     };
     let epoch = context.epoch.to_string();
@@ -661,6 +662,7 @@ mod tests {
             dataset: DatasetId::try_from([1; 16]).unwrap(),
             slot: ProducerSlotId::try_from([2; 16]).unwrap(),
             epoch: 1,
+            shard: 0,
             manifest: [3; 32],
         };
         let floor = ClosedProducerFloor::new(ClosedProducerFloorFields {
@@ -698,6 +700,7 @@ mod tests {
             dataset: DatasetId::try_from([1; 16]).unwrap(),
             slot: ProducerSlotId::try_from([2; 16]).unwrap(),
             epoch: 1,
+            shard: 0,
             manifest: [3; 32],
         };
         let floor = ClosedProducerFloor::new(ClosedProducerFloorFields {

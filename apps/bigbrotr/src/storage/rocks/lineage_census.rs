@@ -28,6 +28,9 @@ impl Census<'_> {
         let mut facts = [0_u64; EPOCHS];
         let mut pending = [0_u64; EPOCHS];
         let mut requests = [0_u64; EPOCHS];
+        if let Some(retired) = self.entries.prefix_retired {
+            requests[0] = retired;
+        }
         let (mut manifests, mut sources, mut producers, mut handoffs, mut allocations) =
             (0, 0, 0, 0, 0);
         let head = store.manifest().identity();

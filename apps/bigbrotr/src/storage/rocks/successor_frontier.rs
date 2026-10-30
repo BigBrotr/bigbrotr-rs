@@ -220,6 +220,7 @@ impl AdmittedFrontier {
             entries: CensusEntries {
                 retained: &self.entries,
                 current: Some(current),
+                prefix_retired: None,
             },
             slot: self.slot,
             compacted: self.compacted.as_ref(),

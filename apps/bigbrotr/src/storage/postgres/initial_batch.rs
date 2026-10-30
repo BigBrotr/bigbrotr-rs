@@ -131,6 +131,7 @@ impl<'a> NativeAuthority<'a> {
             dataset: self.dataset(),
             slot: self.slot(),
             epoch: self.epoch(),
+            shard: manifest.identity().shard_id,
             manifest: Sha256::digest(manifest.encode().as_bytes()).into(),
         }
     }
@@ -676,6 +677,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let cancelled = input.cancelled;
         let result = store.certify_event(input, permit, progress.is_some(), || {
             if cancelled.load(Ordering::Relaxed) {
@@ -762,6 +768,9 @@ impl ControlSession {
             producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: RequestSequence::new(1).map_err(|_| OwnerError::InvalidInput)?,
         };
+        store
+            .require_unretired_bootstrap(request)
+            .map_err(InitialBatchError::Native)?;
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
@@ -803,6 +812,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            state
+                .require_native_base(store, progress_context.expect("progress context"))
+                .map_err(InitialBatchError::Progress)?;
+        }
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
@@ -1038,6 +1052,9 @@ impl ControlSession {
                 .map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: input.request_sequence,
         };
+        store
+            .require_unretired_prefix(request)
+            .map_err(InitialEventError::Native)?;
         if (authority.epoch() == 1 && input.request_sequence.get() <= 1)
             || input.limits.max_outstanding_requests > u64::from(authority.limit())
         {
@@ -1084,6 +1101,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let staged = store
             .stage_dictionary_append(request, &input, &permit)
             .map_err(InitialEventError::Native)?;
@@ -1318,6 +1340,9 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        store
+            .require_unretired_prefix(input.event.request_id())
+            .map_err(InitialEventError::Native)?;
         let source = event_source(
             input.relay_source,
             input.acquisition,
@@ -1369,6 +1394,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let staged = store
             .stage_event(&input.event, input.limits, &permit, input.cancelled)
             .map_err(InitialEventError::Native)?;

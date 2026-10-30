@@ -200,7 +200,11 @@ impl IngestStore {
             return Err(AdmissionError::ProducerClosing);
         }
         let sequence = request.request_sequence.get();
-        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+        self.require_retained_state(request.producer_slot_id, request.producer_epoch, state)?;
+        if sequence
+            .checked_sub(state.retired)
+            .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(AdmissionError::Limit);
         }
         if sequence <= state.retired {
@@ -376,13 +380,13 @@ impl IngestStore {
                 producer_slot_id: request.producer_slot_id,
                 producer_epoch: request.producer_epoch,
             },
-            frame(
-                &[1, 0x31],
-                &[
-                    &sequence.to_be_bytes(),
-                    &state.acknowledged.to_be_bytes(),
-                    &state.retired.to_be_bytes(),
-                ],
+            self.producer_state_bytes(
+                request.producer_slot_id,
+                request.producer_epoch,
+                super::producer_closing::ProducerState {
+                    issued: sequence,
+                    ..state
+                },
             )?,
         )?;
         Ok((Some(writes), receipt))

@@ -142,6 +142,8 @@ pub(super) struct Census<'a> {
 struct CensusEntries<'a> {
     retained: &'a [RetainedLineageEntry],
     current: Option<&'a RetainedLineageEntry>,
+    // Only the private initial prefix reader selects a partial retired range.
+    prefix_retired: Option<u64>,
 }
 impl CensusEntries<'_> {
     fn len(&self) -> usize {
@@ -169,6 +171,7 @@ impl<'a> From<&'a [RetainedLineageEntry]> for CensusEntries<'a> {
         Self {
             retained,
             current: None,
+            prefix_retired: None,
         }
     }
 }
@@ -177,6 +180,9 @@ impl Census<'_> {
         self.at(epoch)
     }
     pub(super) fn correction_request_limit(&self) -> Result<u64, BootstrapError> {
+        if self.entries.prefix_retired.is_some() {
+            return Ok(self.entries[0].issued);
+        }
         // Reclaimed initial requests no longer consume a physical spool file.
         // All other retained requests still share the original 64-file ceiling.
         let maximum = super::RETAINED_PRODUCER_REQUEST_LIMIT
@@ -717,6 +723,44 @@ fn entry(
         return Err(BootstrapError::StateMismatch);
     }
     entry_coordinates(recovery, manifest, incoming_sha256, terminal, producer)
+}
+
+impl IngestStore {
+    /// A complete initial namespace/effect census, independently of the PG
+    /// dependency union. This structural observation supplies no authority.
+    pub(super) fn inspect_open_prefix_census(
+        &self,
+        slot: ProducerSlotId,
+        limits: super::AdmissionLimits,
+        effects: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<u64, super::AdmissionError> {
+        if self.manifest.key_schema() != 1
+            || self.manifest.identity().owner_epoch.get() != 1
+            || self.live_initial.is_some()
+            || self.live_successor.is_some()
+        {
+            return Err(super::AdmissionError::InvalidInput);
+        }
+        let epoch = ProducerEpoch::new(1).expect("initial epoch");
+        let state = self
+            .producer_state(slot, epoch)?
+            .ok_or(BootstrapError::StateMismatch)?;
+        self.require_retained_state(slot, epoch, state)?;
+        let entry = entry_coordinates_in(self, self.manifest, [0; 32], None, state)?;
+        let census = Census {
+            entries: CensusEntries {
+                retained: std::slice::from_ref(&entry),
+                current: None,
+                prefix_retired: Some(state.retired),
+            },
+            slot,
+            compacted: None,
+        };
+        census.inspect_store_census(self, cancelled)?;
+        census.verify_store_effect_census(self, 1, limits, effects, cancelled)?;
+        Ok(entry.source_through)
+    }
 }
 
 fn entry_coordinates(

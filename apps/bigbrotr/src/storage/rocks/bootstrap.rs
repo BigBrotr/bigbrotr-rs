@@ -27,6 +27,7 @@ pub enum BootstrapError {
     StateMismatch,
     RequestConflict,
     ProducerClosing,
+    RetiredRequest,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
     /// Exact retained-effect refusal while validating a compacted handoff.
@@ -193,6 +194,7 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
+        self.require_unretired_bootstrap(request)?;
         Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
         self.require_open_producer(request)?;
         let bytes = intent
@@ -228,6 +230,7 @@ impl IngestStore {
         if self.write_uncertain {
             return Err(BootstrapError::CommitUnknown);
         }
+        self.require_unretired_bootstrap(request)?;
         Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
         self.require_open_producer(request)?;
         if let Some(receipt) = self.replay_bootstrap(request, intent, limits)? {
@@ -258,6 +261,20 @@ impl IngestStore {
         drop(input);
         self.commit_prepared(prepared, &mut require_authority)?;
         Ok(StoredReceipt::new(receipt, outcome_copy, permit))
+    }
+
+    /// Positive-only retained bootstrap validation. Never stages or commits.
+    pub(in crate::storage) fn require_unretired_bootstrap(
+        &self,
+        request: ProducerRequestId,
+    ) -> Result<(), BootstrapError> {
+        self.require_unretired_request(request, &self.manifest)
+            .map_err(|error| match error {
+                super::AdmissionError::RetiredRequest => BootstrapError::RetiredRequest,
+                super::AdmissionError::CommitUnknown => BootstrapError::CommitUnknown,
+                super::AdmissionError::EngineRead => BootstrapError::EngineRead,
+                _ => BootstrapError::StateMismatch,
+            })
     }
 
     /// Positive-only retained bootstrap validation. Never stages or commits.
