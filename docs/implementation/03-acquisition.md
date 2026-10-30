@@ -190,6 +190,11 @@ and [Mac component evidence](evidence/p03-selector-mac-20260928.json), plus
   without closing its producer or waiting for EOSE before incremental ACK. Its
   compact base retains classified positions/counts and complete source dependency
   coverage; preparation holes, gaps and job completion keep their existing meaning.
+  Scheduling retains the initial registration's accepted startup threshold and
+  revision/digest. Accepted changes preserve current stop/recovery behavior;
+  prepared checkpoints remain immutable. Later safe-point Live application has
+  the narrow P01-T04 Step6 closure criteria in the same producer protocol; it does
+  not gate this storage increment on all managed configuration work.
   This storage increment does not claim P03-T04's post-EOSE live session/reconnect
   behavior or arbitrary job-history reclamation.
 - [ ] **4. Expose finite CLI jobs.** Define `bigbrotr sync run --scope S --deadline 2m`, `sync status JOB` and `sync gaps --scope S`; `--deadline` bounds the job, not all future coverage. `serve --roles synchronizer` runs scheduling independently. Results include method, attempted interval, last verification, unresolved gaps and remaining work.

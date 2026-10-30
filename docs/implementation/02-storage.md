@@ -220,6 +220,9 @@ One owner serializes exact identity decisions for each writable directory.
   original tail. Its132-batch Archive capacity refusal is distinct from the paired
   128-batch case: retention62, reclamations62/124, four original tail requests and
   complete close/archive/read/export/restart within the unchanged attempt cap.
+  Values64/62 come from their exact accepted startup revision/digest; retain
+  fail-stop/recovery on accepted policy changes. Include coordinated-copy restore
+  of a fully ACKed unretired tail and missing-original/PG-binding refusals.
   Execute the protocol's literal fixture and interruption/refusal controls;
   a raised sequence limit or receipt-only deletion does not close this increment.
   This does not qualify pending-payload GC, arbitrary epochs or full M2 capacity.

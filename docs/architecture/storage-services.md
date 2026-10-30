@@ -67,7 +67,7 @@ whose acknowledged progress outlives a missing dependency.
 | `ingest.pending_max_bytes` | Explicit share of available disk | Hot lowering throttles; never erases pending work |
 | `ingest.identity_cache_bytes` | 256 MiB generic recipe | Restart/adapter-specific live update; counted in host RAM |
 | `ingest.verify_workers` | Resource-derived, explicit override | Drain before reducing |
-| `ingest.request_receipt_retention` | Selected OPEN-prefix policy: 64 retained request details; integer range1..64 | Planned live setting: lowering schedules earlier eligible reclamation; never expires unresolved effects or expands the physical caps |
+| `ingest.request_receipt_retention` | Selected OPEN-prefix policy: 64 retained request details; integer range1..64 | First profile captures accepted startup revision/digest/value and stops on accepted policy change; later Live application belongs to P01-T04 Step6 |
 
 Failure isolates the affected owner partition; producers pause/retry with bounded
 queues. Unknown outcome is not a negative receipt. Maintenance must never run
@@ -228,6 +228,11 @@ job heads. The [selected protocol](../reference/producer-request-inputs.md#open-
 defines its bytes, two-slot PG publication, native floor, input unlink, recovery
 and independent installed discriminator. It is a selected contract, not executed
 qualification.
+The retention threshold uses the initial registration's exact accepted startup
+configuration/policy revisions and digests. Keep existing stop/recovery behavior
+on accepted changes; neither a new numeric value nor planned Live metadata can
+alter an immutable prepared operation. Narrow future safe-point application is
+separate from this storage prerequisite.
 
 Receipt, producer-ledger and original-input retirement form one responsibility:
 dropping receipt keys alone does not release input capacity. Every staged file,

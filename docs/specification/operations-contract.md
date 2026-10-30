@@ -528,6 +528,11 @@ Backup sequence, with exact obligations:
    watermark plus every producer checkpoint that authorizes its retired detail.
    Alternatively quiesce those producers through capture. A post-GC owner image
    plus a pre-checkpoint producer image is rejected even if all files are present.
+   Quiescence excludes in-flight writes, not historical admissions. Preserve and
+   authenticate every unretired `(R,I]` input (R retired, I issued), reservation,
+   outcome and required binding, including resolved/ACKed requests, with the complete input
+   inventory and any supported unresolved/staged tail. Missing such authority
+   refuses restore; the compact base does not replace the unretired tail.
 2. Reach a short fenced archive-publication/catalog-maintenance capture barrier
    and resolve outstanding catalog transactions. Establish the consistent catalog
    backup image and enumerate/pin its exact required data/dictionary/document

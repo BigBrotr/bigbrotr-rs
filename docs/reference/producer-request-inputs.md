@@ -1262,12 +1262,33 @@ This first profile retires the whole resolved prefix through I. It does not
 attempt concurrent admission or partial-prefix selection during reclamation.
 The already-planned `ingest.request_receipt_retention` setting selects a retained
 request-count threshold1..64, default64, for this profile; it is not a TTL or the
-outstanding window. This setting still requires implementation in the typed
-registry/generated configuration reference. After a confirmed ACK reaches the
-retained count `I-R` threshold, schedule reclamation at the next safe point; byte pressure may require
-it earlier. A live lowering can schedule eligible work but cannot close a hole.
-No new input is staged while the physical/charged capacity is exhausted. The
-installed cases use actual accepted settings64 and62, not a private GC bypass.
+outstanding window. The first profile captures its value from the exact accepted
+startup configuration/policy revisions and digests used by InitialRegistration.
+Scheduling uses that captured value and provenance, never a changed seed file,
+unaccepted candidate or a separately polled numeric value. This setting still
+requires implementation in the typed registry/generated configuration reference.
+After a confirmed ACK brings retained count `I-R` to the captured threshold,
+schedule reclamation at the next safe point; byte pressure may require it earlier.
+No new input is staged while the physical/charged capacity is exhausted.
+
+Preserve the initial owner's existing fail-stop/recovery behavior on any changed
+accepted configuration/policy snapshot. This increment does not implement Live
+adoption, even if the setting's planned reload class is Live. An edit cannot mutate
+an immutable prepared base, authorize another stage under stale authority, widen
+physical limits or bypass recovery of an already-prepared operation. Fresh recovery
+uses current authority while preserving that operation's exact captured bytes/cut.
+The installed cases use actual accepted startup settings64 and62 with their exact
+revision/digest/value provenance, not a private GC bypass.
+
+Later Live adoption belongs to the narrow safe-point/current-registration
+application dependency under [P01-T04 Step6](../implementation/01-foundation.md#p01-t04--configuration-defaults-and-topology-resolution).
+Its closure requires an accepted revision/digest transition authenticated by the
+current registration, application only at the serialized safe point, declared
+desired/applied value provenance, unchanged prepared bases across edits and
+interruption, and no authority, unresolved-tail or physical-cap bypass. Qualify
+lowering/raising and interrupted application before claiming Live behavior.
+Completion of all managed configuration work is not a prerequisite for this
+startup-bound storage profile.
 
 ### Compact base and complete source manifest
 
@@ -1488,12 +1509,21 @@ This is preproduction consolidation, not permission to discard required recovery
 evidence, fabricate old metadata or rewrite Git history.
 
 For this profile, backup uses a quiesced coordinated capture, with no prepared
-base/cleanup in progress and no admitted or unjoined native work. Include the
+base/cleanup in progress, in-flight admission/progress/reservation or unjoined
+native operation. Quiescence stops writers; it does not mean that historical
+admissions or their recovery evidence are absent. Include and authenticate the
 exact active base, current format2 head and remaining dependency/job/gap/authority
-rows, unresolved request/outcome rows and originals, and the matching native
-I/A/R, complete source facts/batches and scientific inventory. Preserve the
-original protection class. Restore validates the same base-plus-tail closure;
-post-GC native bytes paired with pre-checkpoint PG or missing source data refuse.
+rows, plus **every** original input, reservation, outcome and attribution/progress
+binding for `(R,I]`, including fully resolved and ACKed but unretired requests.
+For example, I=A=C=Q132/R128 still requires originals and complete PG authority
+for129..132. Capture the matching native I/A/R and PG Q/C, complete actual input
+inventory, all source facts/batches and scientific inventory. Preserve any
+supported staged/unresolved tail beyond I with its existing metadata and explicit
+resolution state; omission or fabrication is not quiescence, and capture does not
+make that tail resolved or grant admission/close authority.
+Preserve the original protection class. Restore authenticates this complete
+base-plus-tail/inventory/scientific closure; a missing resolved-tail original or
+PG authority row refuses just as a mixed post-GC native/pre-checkpoint PG cut does.
 The backup owns self-contained copies of its base and dependency sources until
 its own retention obligations end. A later live-base replacement cannot delete
 those copies. Existing Archive snapshot/export pins remain independently required;
@@ -1564,6 +1594,16 @@ changed retired retry versus changed retained-tail conflict; mixed post-GC nativ
 old PG restore. Include a preparation-hole/proof-only control so compaction cannot
 invent classified coverage. Each refusal checks absence of unauthorized deletion,
 new request identity or advanced coverage, with original failures preserved.
+
+Include a positive isolated coordinated-copy restore with a compact base and a
+nonempty fully ACKed unretired tail, then refuse copies missing one such original,
+reservation/outcome or required binding. A bounded storage fixture can validate
+this closure without implementing the general backup CLI or activating a restored
+writer. Configuration controls accept threshold1/64 and refuse0/>64, prove the
+captured startup revision/digest/value actually schedules reclamation, and exercise
+the declared fail-stop on an accepted policy change. Hold an immutable prepared
+base across an edit/refusal and verify its bytes/cut remain exact and recovery is
+still required; registry reload metadata alone is not a successful Live update.
 
 The literal132/two-cycle case establishes installed request reuse and complete
 source recovery; the128 case establishes complete Archive/read/export composition
