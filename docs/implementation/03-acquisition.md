@@ -185,6 +185,18 @@ and [Mac component evidence](evidence/p03-selector-mac-20260928.json), plus
 - [ ] **1. Freeze scope values and examples.** Define `AcquisitionScope`, finite `AcquisitionJob`, `TraversalPosition`, `PageOutcome` and `AcquisitionGap` using shared unsigned event time, `Finite(u64)/AfterMax`, access and target visibility identities, policy epoch and SourceCut. Preserve explicit collection since/until; exclude generated page limits/tail windows from selector identity.
 - [ ] **2. Implement normalized filter-union identity and validation.** Sort/deduplicate equivalent field values, reject empty lists and unsupported historical search, and record ephemeral retain/drop policy. Do not infer narrowing containment from string inclusion; initially create fresh evidence for every changed semantic scope.
 - [ ] **3. Add typed PG operations.** Register scope, claim finite work and atomically append gap/evidence effects with Receipt/ExistingProof-backed traversal movement under the ownership epoch. A missing/invalid required basis, expired policy grant, failed gap write or stale owner rejects the whole progress update. Persist bounded classified prefixes with deduplicated dependency closure before acknowledging only mutation requests; proof-only pages require no synthetic receipt. Preserve prior evidence when a scope retires.
+  The [first OPEN-prefix consumer](../reference/producer-request-inputs.md#open-prefix-reclamation-selected-next-profile)
+  uses repeated bounded REQs for the same retained job, crossing request64 and128
+  without closing its producer or waiting for EOSE before incremental ACK. Its
+  compact base retains classified positions/counts and complete source dependency
+  coverage; preparation holes, gaps and job completion keep their existing meaning.
+  Scheduling retains the initial registration's accepted startup threshold and
+  revision/digest. Accepted changes preserve current stop/recovery behavior;
+  prepared checkpoints remain immutable. Later safe-point Live application has
+  the narrow P01-T04 Step6 closure criteria in the same producer protocol; it does
+  not gate this storage increment on all managed configuration work.
+  This storage increment does not claim P03-T04's post-EOSE live session/reconnect
+  behavior or arbitrary job-history reclamation.
 - [ ] **4. Expose finite CLI jobs.** Define `bigbrotr sync run --scope S --deadline 2m`, `sync status JOB` and `sync gaps --scope S`; `--deadline` bounds the job, not all future coverage. `serve --roles synchronizer` runs scheduling independently. Results include method, attempted interval, last verification, unresolved gaps and remaining work.
 - [ ] **5. Implement configuration epochs.** `sync.selectors=[{}]`, history_since=0, ephemeral=retain and provenance=local_first_witness change semantic epochs; forced empty/no-filter settings fail without an explicit valid job scope. Render source and reload class without raw credentials.
   Implement `sync.endpoints.mode/urls` from the acquisition/deployment contracts.

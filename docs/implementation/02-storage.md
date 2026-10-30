@@ -212,6 +212,20 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
+  The next bounded capability is the [selected OPEN-prefix protocol](../reference/producer-request-inputs.md#open-prefix-reclamation-selected-next-profile):
+  one initial producer reaches request132 in the same OPEN epoch with a two-slot
+  window, reclaiming prefixes64 and128 within the unchanged64-file/32MiB bounds.
+  Compact checkpoint/dependency closure and exact original-input retirement are
+  required together. Installed restart must authenticate the compact prefix and
+  original tail. Its132-batch Archive capacity refusal is distinct from the paired
+  128-batch case: retention62, reclamations62/124, four original tail requests and
+  complete close/archive/read/export/restart within the unchanged attempt cap.
+  Values64/62 come from their exact accepted startup revision/digest; retain
+  fail-stop/recovery on accepted policy changes. Include coordinated-copy restore
+  of a fully ACKed unretired tail and missing-original/PG-binding refusals.
+  Execute the protocol's literal fixture and interruption/refusal controls;
+  a raised sequence limit or receipt-only deletion does not close this increment.
+  This does not qualify pending-payload GC, arbitrary epochs or full M2 capacity.
   The selected closed-initial continuation now passes on product `7d8e5998`,
   acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
   conservation checks, idempotent restart/retry and a compacted epoch2 accepting
@@ -1050,6 +1064,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
+  Complete publication beyond the retained consumer's128-attempt envelope remains
+  a separate requirement with P02-T06 Steps4/7. Use a genuine larger ordinary
+  Sync history, recover every batch and verify complete read/export/restart under
+  bounded grants, unchanged strict receipt semantics and actual output custody.
+  The OPEN-prefix132-request refusal/128-batch success pair does not close it;
+  do not disguise request limits as source cuts or raise caps just for the fixture.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,
   kill after catalog commit before ACK, and attempt a competing owner. Reopen the
   catalog independently and compare exact logical fact/reference membership.
@@ -1289,6 +1309,10 @@ cannot reclaim required evidence, pending data or readable generations.
   renewal, actual authorized read/export and concurrent reclamation remain open.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
+  OPEN producer receipt/input retirement under P02-T02 Step4 does not implement
+  this step: it preserves all scientific pending facts and complete-batch markers.
+  Require exact pending/archive replay and archive protection at least as strong
+  as the original receipt before reclaiming those payload bytes.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;
   record new membership atomically and retain old generations while pinned.
 - [ ] **Step 4:** Default full events/provenance/actual measurements to permanent retention.
