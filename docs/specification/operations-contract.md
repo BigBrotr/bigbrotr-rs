@@ -289,6 +289,14 @@ all managed configuration/capacity work.
 For each filesystem, record separate physical resident bytes `L`, outstanding
 durable-growth reservations `A`, and reserved completion/recovery bytes `R`.
 Before admitting additional durable growth d require `free - A - d >= R`.
+Charge a new grant once. Its continuation revalidates remaining held coverage
+`free - A >= R_unspent`, without charging its own d again. R_unspent is the
+uncommitted part of full R; assigned completion/recovery may atomically transfer
+its share into A, preserving all other shares. Reconstruct unresolved grants and
+reserve commitments before any writing open/claim after restart; unknown does
+not mean zero. New payload requires full R replenished and stable low water.
+The linked initial-profile contract specifies these distinct transitions and
+their refusal/recovery controls; existing grants never exclude external ENOSPC.
 `L` includes existing WAL/SST, catalog/control, partial files and all pinned file
 generations. Avoid subtracting already resident reservations twice. R includes
 conservative remaining WAL flush/rewrite growth, PG checkpoint/control/receipt

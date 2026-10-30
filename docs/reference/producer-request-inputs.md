@@ -1671,8 +1671,10 @@ Use accepted startup `pending_max_bytes`, high/low fractions and existing
 `runtime.disk_resume_margin_bytes`/`pressure_stable_duration`, bound to the same
 revision/digest as the writer. Apply fractions with checked deterministic rounding:
 high=floor(limit*high_fraction), low=floor(limit*low_fraction). Require
-`0 <= low < high <= limit` and room for a maximum supported pending unit below
-high. Before new payload, require P + outstanding logical reservations + delta
+`1 <= low < high <= limit` and room for a maximum supported pending unit below
+high. A positive fraction whose rounded low is zero refuses before native/PG
+side effects; the strict resume condition below is not replaced by an inclusive
+zero-low exception. Before new payload, require P + outstanding logical reservations + delta
 <= high. Enter pressure on refusal; resume only below low and after filesystem
 low water `free-A >= R+disk_resume_margin_bytes` has held for the configured stable
 duration (default30s). Reopen starts conservatively pressure-latched until the
@@ -1687,15 +1689,38 @@ GC alone must not clear it or make the diagnostic claim payload was reclaimed.
 descriptor-based `fstatvfs` arithmetic and existing native custody, but move/use
 that arithmetic at the shared storage boundary rather than treating export as
 the owner of Ingest policy. Bind observations to the retained actual filesystem
-identity, not a path string. Per filesystem require `free - A - d >= R` before
-new durable work and recheck before its irreversible stages. A is outstanding
+identity, not a path string. Per filesystem require `free - A - d >= R` for a
+new foreground grant; charge only its additional d once. A is outstanding
 not-yet-resident growth already promised to cooperating work; d is this new
 operation's complete incremental growth allowance. Acquire it before input
 creation/PG reservation and retain it through native sync, outcome/progress COMMIT
 and ACK or authoritative resolution. Materialized bytes already reduce free;
 retire their component of A only on positive observation, without subtracting
 resident bytes again. Unknown completion never returns speculative capacity.
-Acquire the qualified open/recovery allowance before native DB open or a PG
+
+Distinguish a new grant from its continuation. Before each irreversible stage,
+revalidate authority/custody and the remaining held allowance, checking aggregate
+coverage `free - A >= R_unspent`; do not subtract that operation's d again after
+it is already in A. Spending beyond the remaining grant needs a new additional
+reservation. R_unspent is the uncommitted part of the configured full R, initially
+R itself. Completion/recovery may atomically transfer r from its assigned reserve
+domain to A: increase A by r and decrease that domain's R_unspent by r, never
+spending another domain's share. The transfer preserves the aggregate coverage
+inequality and is not a new foreground admission against the untouched full R.
+After positively observed materialization, retire only that component of A;
+its reserve share stays drawn until actual headroom allows replenishment. New
+payload requires the full configured R restored, all drawn shares reconciled,
+and the original stable-low conditions; recovery cannot lend the same share to
+intake. A held grant does not exclude external space loss or permit a false ACK
+after ENOSPC/fsync failure.
+
+Before a writing engine open or PG claim, persist or conservatively reconstruct
+all unresolved A and drawn/assigned reserve commitments from retained operation
+and provisioning state. Missing or uncertain accounting cannot become A=0 on
+restart. Accounting persistence itself belongs in the covered allocation domain;
+it cannot perform an unfunded bootstrap write. Unknown materialization retains
+the conservative charge until positive reconciliation. Acquire or recover the
+qualified open/recovery allowance before native DB open or a PG
 claim that can write: opening a recovered Rocks store may itself create/flush
 files. Logical read-only recovery does not imply a physically write-free engine
 open. Never move the first space check after those effects; insufficient recovery
@@ -1786,5 +1811,10 @@ at its pending or filesystem bound without data loss, false coverage or automati
 pending deletion. Reclaiming input files must not reduce P. Restore/reopen must
 reach the same pressure decision. Numerical arithmetic controls can use a fixed
 free100/R40/A20/d41 refusal and d40 equality; they do not replace the real-engine
-growth and interruption evidence. Physical space/RSS/throughput claims remain
+growth and interruption evidence. Continue the admitted d40 using its held grant
+without charging it twice. At free40 with full R40, an assigned8-byte recovery
+transfer must preserve the other32 reserve bytes while new intake stays refused;
+restart cannot reset its unresolved credit before native open. A positive fraction
+rounding low to zero must refuse pre-effect, P=low cannot resume, and reopen must
+restart the complete stable interval. Physical space/RSS/throughput claims remain
 separate measured obligations under P02-T02 Step8/P02-T09.
