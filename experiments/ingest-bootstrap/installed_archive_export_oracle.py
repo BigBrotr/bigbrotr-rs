@@ -190,7 +190,10 @@ def second_job_rows(before,after,home,initialized,catalog_id,verdict):
         job_revision='4',checkpoint_revision='1',created_at_us=str(created),completed_at_us=str(completed),
         observed_at_us=status['observed_at_us'],reason_code=None,authority='observation-only')
     assert created<=unit['reserved_at_us']<completed<=int(status['observed_at_us'])<=session['revoked_at_us']
-    assert session['last_seen_at_us']>=completed and session['issued_at_us']<=created
+    # Only explicit /me touches idle time. Job traffic authenticates the
+    # existing lifetime; its successful status observation must precede expiry.
+    assert session['issued_at_us']<=session['last_seen_at_us']<=created
+    assert int(status['observed_at_us'])<min(session['expires_at_us'],session['idle_expires_at_us'])
     def same(row,**expected):assert exact(row)==exact(dict(expected,xmin=row['xmin'])), ('closed export row',row)
     raw=bytes.fromhex;be=lambda value,width=8:int(value).to_bytes(width,'big')
     request_digest=hashlib.sha256(b'bigbrotr/export-event/1\0'+raw(scope['dataset_id'])+raw(actor[2:])+raw(key)

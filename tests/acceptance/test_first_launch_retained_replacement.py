@@ -253,6 +253,10 @@ def second_export_fixture(root,science):
             action=action,enabled=True,generation=1,xmin='98') for action in ('history.read','export','private-export')]
         state['scope_grant_changes']=copy.deepcopy(state['scope_grants'])
     owner=after['owner_epochs'][-1];session=after['browser_sessions'][0];binding=hashlib.sha256(b'{}').hexdigest()
+    # The second client touches only its initial /me. Job acceptance/status,
+    # retries and logout leave that touch and idle expiry unchanged.
+    for field in ('last_seen_at_us','idle_expires_at_us'):
+        session[field]=startup['browser_sessions'][0][field]
     key='d2'*16;job=bx+second['job_id'];artifact=bx+second['artifact_id'];created=1341;completed=1361
     allocation,execution=[r['lease_id'] for r in after['snapshot_leases'] if r.get('acquired_at_us') in (1340,1360)]
     export_pin=bx+'da'*16
@@ -405,6 +409,37 @@ class UnboundReplacementControls(unittest.TestCase):
                 state=copy.deepcopy(after);state[table].append(copy.deepcopy(before[table][0]))
                 with self.subTest(duplicated_old_row=table),self.assertRaises((AssertionError,ValueError)):
                     verify(state)
+
+    def test_second_export_uses_last_explicit_touch_and_existing_auth_expiries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);science=check.compacted_archive_science(retained_successor_fixture(root)[-1])
+            before,after,startup,homes,initialized,catalog,_,verdicts=second_export_fixture(root,science)
+            session=after['browser_sessions'][0];job=after['jobs'][-1]
+            self.assertLess(session['last_seen_at_us'],job['created_at_us'])
+            self.assertLess(session['last_seen_at_us'],job['completed_at_us'])
+            for field in ('last_seen_at_us','idle_expires_at_us'):
+                self.assertEqual(session[field],startup['browser_sessions'][0][field])
+            view=exports.second_job_rows(before,after,homes[1],initialized,catalog,verdicts[1])
+            check.compacted_history_control(before,view,startup)
+            for field,value in (('issued_at_us',1342),('last_seen_at_us',1342),('last_seen_at_us',1370)):
+                changed=copy.deepcopy(after);changed['browser_sessions'][0][field]=value
+                with self.subTest(pre_auth_or_unissued_touch=(field,value)),self.assertRaises(AssertionError):
+                    exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1])
+            observed=int(json.loads((homes[1]/'export-client-result.json').read_text())['completed']['observed_at_us'])
+            for boundary in ('idle','absolute'):
+                for delta in (0,1):
+                    changed,setup=copy.deepcopy((after,startup));expires=observed-delta
+                    for state in (changed,setup):
+                        row=state['browser_sessions'][0]
+                        if boundary=='idle':row['idle_window_us']=expires-row['last_seen_at_us']
+                        else:row['expires_at_us']=expires
+                        row['idle_expires_at_us']=min(row['expires_at_us'],row['last_seen_at_us']+row['idle_window_us'])
+                    # Other full82/session relationships remain valid. The
+                    # authenticated terminal200 specifically needs this strict
+                    # observation-before-expiry bound, without refreshing it.
+                    check.compacted_history_control(before,dict(view,browser_sessions=changed['browser_sessions']),setup)
+                    with self.subTest(expiry=boundary,at_or_after=delta),self.assertRaises(AssertionError):
+                        exports.second_job_rows(before,changed,homes[1],initialized,catalog,verdicts[1])
 
     def test_second_export_rejects_retry_conflict_and_standalone_corruption(self):
         with tempfile.TemporaryDirectory() as directory:
