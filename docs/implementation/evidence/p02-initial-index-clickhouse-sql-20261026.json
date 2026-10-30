@@ -3418,7 +3418,7 @@
         },
         "qualification_inputs": "Clean work/grouped-retained-qualification merges source18 and reviewed harness351; literal tutorial profile binds apps/crates to18 with nine unchanged Nostr paths, six other code objects unchanged, normalized AST and1 positive/negative control PASS. Actual tutorial7/7 independently executed and audited below.",
         "resources": "Existing laboratory inventory closed_reclamation.grouped_replacement_recovery owns exact worktrees/containers/sessions. Original source/contracts/failures and immutable shared-object retention remain.",
-        "next": "Observe exact1cb hosted CI40970250287. Next existing P01-T09/P08-T04 increment exports the new epoch2 event and verifies both standalone artifacts through restart; not an additional scoped M1 prerequisite. All broader product gates and original failures retain their owners.",
+        "next": "Exact1cb hosted CI40970250287 is PASS30/30 with protocol3/worker6 and257 focused app controls on all3 platforms. Close the second-export startup-bound oracle and real final history without relabeling64531 FAIL; continue accepted OPEN-prefix implementation under existing owners.",
         "native_observer": {
           "status": "PASS_MAINTAINED_PARENT_BOUND_NATIVE_OBSERVER_BUILD",
           "session": 57306,
@@ -3501,7 +3501,130 @@
           "skip": "strace unavailable in ordinary host control; real installed/native proof separately executed",
           "scope": "Affected portable merged controls, not product installed proof; source/acceptance exact hashes match qualified inputs; artifact/link/syntax check PASS."
         },
-        "integrated_main": "1cb61c6aa62280117c927dd5bca4552bcd469fff"
+        "integrated_main": "1cb61c6aa62280117c927dd5bca4552bcd469fff",
+        "second_epoch_export": {
+          "status": "QUALIFIED_SECOND_SIGNED_EXPORT_AND_ORDINARY_RESTART_R2_PASS_R1_FAIL_PRESERVED",
+          "owners": [
+            "P01-T09 composition consumer",
+            "P08-T04 Step3"
+          ],
+          "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+          "acceptance": "46c2c78d4a5f9a2d10051b9564a97564ab7d4982",
+          "scope": "Distinct d2 new signed epoch2 event358-byte export plus original353-byte export at frontier4/snapshot68/cuts[(1,312),(2,10)], exact retry/conflict and independent full JSONL/signature/manifest/hash reread of both standalone artifacts after actual ordinary same-root Control history restart. No Rust/product rebuild.",
+          "author": {
+            "path": ".research/retained-second-export-20261030/.research/retained-second-export-author/author-receipt.json",
+            "sha256": "56aee658f2a0312c5d34d2198f29d07b5e62f39636601e5fdd04afbf6bea6cbd"
+          },
+          "preserved_failed_review": {
+            "path": ".research/retained-second-export-20261030/.research/retained-second-export-author/critical-review-9300b34a.json",
+            "sha256": "ebfc023a4af28508c639b51dfbd93cb5697e20cad691d91632fd1aa6a970f7a2"
+          },
+          "combined_correction": {
+            "path": ".research/retained-second-export-20261030/.research/retained-second-export-author/author-e1-e2-receipt.json",
+            "sha256": "cf414f60b59579d02a5d9515eb202cfd1ffe34efdd8d3a4bbd8493f714d23be9"
+          },
+          "critical_closure": {
+            "path": ".research/retained-second-export-20261030/.research/retained-second-export-author/critical-review-46c2c78d.json",
+            "sha256": "a132e166fd7225e2624a7f2693c4f44b93f38edffa5a5eaf848bc192faf3b479"
+          },
+          "controls": "Original119 PASS; affected correction31 PASS/0skip. Original two first-client wrong-key failures and ten unselected-row false-PASS regressions preserved; corrected wire/receipt/record and closed first/default inventories verified independently.",
+          "installed_case": {
+            "session": 64531,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1",
+            "case": "p01-first-launch-closed-reclamation",
+            "schedule": "grouped-publication-loss",
+            "status": "FAIL_REAPED_ONE",
+            "resource_owner": "Existing inventory grouped_replacement_recovery.second_epoch_export",
+            "exit_code": 1,
+            "counts": {
+              "collected": 11,
+              "executed": 11,
+              "failed": 1,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/result.json",
+              "sha256": "258f83a393afabf99993b4081fd4017f177fcc350985b90fdd497775479c9f0b"
+            },
+            "failure": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/failure.json",
+              "sha256": "4011fd0cec35e27a44f70739a2b9f3c5be8ddeab5d655701cf561e14c51467cb"
+            },
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/root-terminal.json",
+              "sha256": "7ea051673ef3d16566593134d3d81e0488f13d886d74ad53cc287503c1afe6da"
+            },
+            "grouped_proxy_terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/grouped-proxy-terminal-audit.json",
+              "sha256": "0759c79a7bced67117a1760e264a19667da7f77d02f01a501d7cc16de76a0ab1"
+            }
+          },
+          "remaining": "This bounded P01-T09 composition/P08-T04 Step3 extension is qualified; broader export formats/retention/recovery and full role composition remain with existing tasks. OPEN-prefix work is separate and unqualified.",
+          "failure_classification": "Fixture/oracle: second_job_rows line193 incorrectly requires last_seen>=job completion. Product authenticated_session/job-status contract validates existing session without idle touch; /me is the explicit touch. Actual final last_seen/idle equal startup, creation5.291308s and completion5.884155s after it; status is inside both unchanged expiries. Original FAIL remains; no product defect indicated by this boundary.",
+          "executed_scope": "All nine pre-history functional stages and cleanup PASS, including full grouped69/68/67/322 recovery. Second export client completed and standalone353/358 bytes/manifests verified before the invalid assertion. Remaining strict second-job/full82 predicates pass only a source-grounded in-memory replay; final ordinary history restart was NOT_REACHED. This is not installed overall PASS.",
+          "touch_correction": {
+            "source": "a3c10c7b87707effc7ae085b001be3e0a9a0b5a7",
+            "author": {
+              "path": ".research/retained-second-export-touch-20261030/.research/retained-second-export-touch-author/author-t1-receipt.json",
+              "sha256": "b3d7cc7a02de1edee574b87e00c4d4fb25dfb93b0c21d5c55f63e8331db44bc9"
+            },
+            "preserved_intermediate_review": {
+              "path": ".research/retained-second-export-touch-20261030/.research/retained-second-export-touch-author/critical-review-8ee615a9.json",
+              "sha256": "23775b1ef08b2b069740c1b9bc72bb7672ba410d0581e82fe2b9db296519fdca"
+            },
+            "critical_closure": {
+              "path": ".research/retained-second-export-touch-20261030/.research/retained-second-export-touch-author/critical-review-a3c10c7b.json",
+              "sha256": "9099dca7318ffae02bc803ef05336098efb83e3ce8168e5c9c2b6bebc551882c"
+            },
+            "scope": "Explicit independent startup session; preserve every session field except revoked_at/xmin; status within original absolute/idle expiries. Composite illicit idle extension rejects.33 affected controls PASS, unchanged R1 capture replay passes all second-job/full82/artifact predicates; no relabel of R1 or inference of final history."
+          },
+          "retry_r2": {
+            "status": "PASS_REAPED_ZERO_TERMINAL_CUSTODY_VERIFIED",
+            "session": 29403,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2",
+            "product": "18e208ed484a0977897e7a1cf41961f19463ab37",
+            "acceptance": "a3c10c7b87707effc7ae085b001be3e0a9a0b5a7",
+            "scope": "Fresh maintained grouped full path and required actual final history; same candidate/probe/product, no rebuild, R1 raw data/source intact. Resources owned by existing inventory retry_r2.",
+            "exit_code": 0,
+            "counts": {
+              "collected": 11,
+              "executed": 11,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/result.json",
+              "sha256": "515e2d302c0d9a232a2979906fcd9ebe2370e84fbe5229c178629c04b1492086"
+            },
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/root-terminal.json",
+              "sha256": "cce94c0622dfd43bc242e54b1004113f038ad8e51c71581f2f23bbbb08e4c3a3"
+            },
+            "grouped_proxy_terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/grouped-proxy-terminal-audit.json",
+              "sha256": "e487206c00de0adf0ca914b726ae289066ef965c36e4070432ffc9f216c5dabb"
+            },
+            "standalone_artifacts_after_actual_restart": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/reclamation/history-export/history/standalone-exports-after-restart.json",
+              "sha256": "b70f06ee508168d43a655ca047f27041eb0c20d6a9465e2e6ec4040ac3022398"
+            },
+            "session_capsule": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2-session.json",
+              "sha256": "0ac25761936e6aac1b5ecfb3ff1872156ae4925b5d37727f8c7791498b7e9846"
+            },
+            "merged_source_binding": {
+              "acceptance_files": 67,
+              "result": "All67 executed acceptance file SHA256 values equal current merged source; frozen a3 remains clean."
+            },
+            "resources": "62 owned containers stopped/noOOM/PID0:54 exit0 and8 declared negative exit4.30 recorded processes and7771 joined command PIDs absent; both grouped proxies separately checked absent and frozen wire/process oracle replay PASS. Borrowed bridge empty. No local engine or cleanup active; original logs/data/source and all failures preserved."
+          },
+          "merged_checks": {
+            "path": ".research/initial-index-recovery-qualification-20261028/second-export-a3c10c7b/merged-checks.json",
+            "sha256": "c125f7b0c53619023d797c8d6167664c1d2738d8133fc652901831acea157632"
+          }
+        }
       }
     }
   },

@@ -121,26 +121,30 @@ def run(home):
         filters=[dict(ids=[event['id']])])
     retained_compacted=expected.get("retained_compacted_epoch2",False)
     assert type(retained_compacted) is bool
+    second_job=expected.get('retained_second_export',False)
+    assert type(second_job) is bool and (not second_job or (retained_compacted and startup_quiescence and not mode)), 'closed second export profile'
     allocation = dict(catalog_id=expected['catalog_id'], frontier_revision='4')
     selected_snapshot='68' if retained_compacted else '5'
     marker = (home / 'destination/destination.json').read_bytes()
     body = dict(kind='export', format='signed-events-jsonl', query=query, allocation=allocation,
         destination=dict(id=expected['destination_id'], binding_sha256=hashlib.sha256(marker).hexdigest()),
         expected_config_revision='1', expected_policy_revision='1')
-    keyed = {**auth, 'Idempotency-Key': 'd1'*16}
-    status, denied = request('POST', '/management/v1/jobs', body, keyed)
-    record('no-implicit-export-authority',status=status,error=error_summary(denied))
-    assert status == 403
-    status, denied = request('POST', '/v1/resources/event_history', query, auth)
-    record('no-implicit-history-authority',status=status,error=error_summary(denied))
-    assert status == 403
-    record('no-implicit-scope-authority')
-    for revision, action in enumerate(('history.read', 'export', 'private-export'), 1):
+    export_key=('d2' if second_job else 'd1')*16
+    keyed = {**auth, 'Idempotency-Key': export_key}
+    if not second_job:
+        status, denied = request('POST', '/management/v1/jobs', body, keyed)
+        record('no-implicit-export-authority',status=status,error=error_summary(denied))
+        assert status == 403
+        status, denied = request('POST', '/v1/resources/event_history', query, auth)
+        record('no-implicit-history-authority',status=status,error=error_summary(denied))
+        assert status == 403
+        record('no-implicit-scope-authority')
+    for revision, action in (() if second_job else enumerate(('history.read', 'export', 'private-export'), 1)):
         command = dict(principal_id=principal, action=action, enabled=True, scope=expected['scope'],
             expected_config_revision='1', expected_policy_revision='1',
             expected_grant_revision=str(revision), allocation=allocation)
-        key = format(0xc0 + revision, '02x')*16
-        headers = {**auth, 'Idempotency-Key': key}
+        grant_key = format(0xc0 + revision, '02x')*16
+        headers = {**auth, 'Idempotency-Key': grant_key}
         password = password_file(password_ref) if profile else 'Independent owner password 2026'
         status, proof = request('POST', '/management/v1/sessions/current/reauthenticate',
             dict(password=password, command=command), headers)
@@ -148,19 +152,25 @@ def run(home):
         assert status == 201, (status, proof)
         status, receipt = request('PUT', '/management/v1/principals/' + principal + '/grants',
             dict(command=command, proof_id=proof['proof_id']), headers)
-        record('enable-' + action, command=command, key=key, status=status, receipt=receipt)
+        record('enable-' + action, command=command, key=grant_key, status=status, receipt=receipt)
         assert status == 200 and receipt['created'], (status, receipt)
         assert receipt['scope_generation'] == '1' and receipt['account_grant_revision'] == str(revision+1)
         if revision < 3:
             assert request('POST', '/management/v1/jobs', body, keyed)[0] == 403
-    status, history = request('POST', '/v1/resources/event_history', query, auth)
-    record('signed-history', status=status, response=history)
-    assert status == 200 and history['items'] == [event] and history['next_cursor'] is None
-    assert history['view_stamp']['input_generations'] == [dict(kind='archive', **allocation, snapshot_id=selected_snapshot)]
+    history=None
+    if not second_job:
+        status, history = request('POST', '/v1/resources/event_history', query, auth)
+        record('signed-history', status=status, response=history)
+        assert status == 200 and history['items'] == [event] and history['next_cursor'] is None
+        assert history['view_stamp']['input_generations'] == [dict(kind='archive', **allocation, snapshot_id=selected_snapshot)]
     status, receipt = request('POST', '/management/v1/jobs', body, keyed)
-    record('accept-export', status=status, command=body, key='d1'*16, receipt=receipt)
+    record('accept-export', status=status, command=body, key=export_key, receipt=receipt)
     assert status == 202 and receipt['created'] and receipt['execution'] == 'unobserved'
-    assert request('POST', '/management/v1/jobs', body, keyed) == (200, dict(receipt, created=False))
+    def retry(label):
+        status,repeated=request('POST', '/management/v1/jobs', body, keyed)
+        if second_job:record(label,status=status,receipt=repeated)
+        assert (status,repeated) == (200, dict(receipt, created=False))
+    retry('second-export-identical-retry')
     deadline = time.monotonic() + 12
     while True:
         status, observed = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
@@ -172,7 +182,15 @@ def run(home):
         assert time.monotonic() < deadline, 'actual signed export did not complete'
         time.sleep(.25)
     assert observed['checkpoint_revision'] == '1'
-    assert request('POST', '/management/v1/jobs', body, keyed) == (200, dict(receipt, created=False))
+    retry('second-export-completed-retry')
+    if second_job:
+        original=json.loads((home/'conflict-event.jsonl').read_text())
+        assert original['id'] != event['id'], 'second export must select the genuinely new event'
+        changed=dict(body,query=dict(query,filters=[dict(ids=[original['id']])]))
+        status,conflict=request('POST','/management/v1/jobs',changed,keyed)
+        error=error_summary(conflict)
+        record('second-export-changed-event-conflict',status=status,command=changed,key=export_key,error=error)
+        assert status == 409 and error and error.get('code') == 'command_conflict', (status,error)
     if mode:
         barrier('positive')
     if mode == SHORT_PIN_MODE:

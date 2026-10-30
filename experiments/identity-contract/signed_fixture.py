@@ -13,9 +13,6 @@ import json
 import subprocess
 from pathlib import Path
 
-import secp256k1
-import probe
-
 HERE = Path(__file__).resolve().parent
 FIELD = 2**256 - 2**32 - 977
 ORDER = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
@@ -62,6 +59,7 @@ def canonical(event):
 
 
 def sign(author, created, kind, tags, content, aux=0):
+    import secp256k1
     # Deliberately public test secrets 1/2/3: these must never control real funds/accounts.
     key = secp256k1.PrivateKey(int(author).to_bytes(32,'big'), raw=True)
     public = key.pubkey.serialize()[1:]
@@ -79,6 +77,7 @@ def sign(author, created, kind, tags, content, aux=0):
 
 
 def verified(event):
+    import secp256k1
     message = hashlib.sha256(canonical(event)).digest()
     if message.hex() != event['id']: return False
     public = bytes.fromhex(event['pubkey']); signature = bytes.fromhex(event['sig'])
@@ -87,6 +86,7 @@ def verified(event):
 
 
 def build():
+    import secp256k1
     pubs = {name:secp256k1.PrivateKey(i.to_bytes(32,'big'), raw=True).pubkey.serialize()[1:].hex()
             for i,name in enumerate(('A','B','C'),1)}
     events = {}
@@ -200,6 +200,7 @@ def build():
 
 
 def to_candidate(action, events):
+    import probe
     event = events[action['event']]
     expiry = next((int(t[1]) for t in event['tags'] if len(t)>1 and t[0]=='expiration'),None)
     target = next((t[1] for t in event['tags'] if len(t)>1 and t[0]=='e'),None) if event['kind']==5 else None
@@ -209,6 +210,7 @@ def to_candidate(action, events):
 
 
 def check(fixture):
+    import probe
     # Official BIP340 vector 0 independently anchors the research equation checker.
     vector_pub=bytes.fromhex('F9308A019258C31049344F85F89D5229B531C845836F99B08601F113BCE036F9')
     vector_sig=bytes.fromhex('E907831F80848D1069A5371B402410364BDF1C5F8307B0084C55F1CE2DCA821525F66A4A85EA8B71E482A74F382D2CE5EBEEE8FDB2172F477DF4900D310536C0')

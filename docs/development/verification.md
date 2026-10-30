@@ -1144,8 +1144,8 @@ restore refusal on an isolated copy, and actual retained-Index successor
 activation. A later reclamation attempt under successor publication authority
 must refuse. The successor's genuine request1 is cumulative request65 and uses
 freed spool capacity. Complete native/typed science, finite Index/Archive catch-up
-and retries, signed history on a fresh process and exact353-byte first-event
-export complete the profile. The default independent terminal expectations are67
+and retries, signed history on a fresh process, exact353-byte first-event
+export and a distinct358-byte epoch2 export complete the profile. The default independent terminal expectations are67
 Archive batches with published ordinals1,2,4..68/snapshot68/frontier4,322 scientific rows
 and572 raw Index rows at revision68. The final C API census automatically selects
 the fixed closed-reclamation probe envelope:73/62/62/62/63 rows by family and67
@@ -1200,14 +1200,51 @@ control results.
 Final recovery compares the complete82-table Control inventory, preserving all
 producer, checkpoint, job and security rows. Only the validated fresh Control
 lifetime and exact Archive owner/session/publication transitions may change.
-Retry and both joined clients reobserve original group input/journal bytes,
+Retry and every joined export/history client reobserve original group input/journal bytes,
 file identities, available custody locks and sealed replacement logins. Catalog
 captures remain exact, including continued nonregistration of any failed B4
 output. The retained history transition preserves old rows and the completed
 startup probes while requiring exactly two additional joined history readers
 with both source claims; login/logout effects have their own explicit checks.
 
-The existing completed-startup-probe and native-worker-join gate precedes both
+The second export is an explicit closed client profile, `retained_second_export`,
+using key `d2` repeated16 times after the unchanged original `d1` job. Its selected
+signed event is the frozen epoch2 `included` fixture:358 JSONL bytes, SHA-256
+`492cfca9c1834e722bfa814407f961ab7aa91911c4801f985f1c71df1269dbc0`.
+Both jobs retain frontier4/snapshot68 and the complete ordered cuts
+`[(1,312),(2,10)]`; selecting one event must not narrow the source vector.
+Two identical second-job retries, including after completion, must resolve the
+same receipt without new work. The same key selecting the original event must
+return409/`command_conflict`. Prior grants stay exact; the original denial and
+reauthenticated grant-creation journey still executes for the first export.
+Every added job/detail/admission/bound/unit/artifact/file/command/accept-audit/
+export-pin row must satisfy independent literal relationships before the existing
+full82-table Control/session oracle projects it away. Both operation reader pins
+and startup probes remain checked, with exact full-vector released claims.
+
+After the final ordinary same-root history Control restart has joined, retain
+`history-export/history/standalone-exports-after-restart.json` and both original
+export verdicts/client observations. Independently reread both complete JSONLs,
+canonical IDs and BIP340 signatures, literal full manifests and hashes; compare
+job/artifact inventory, retained export pins, released readers and the entire
+export-root byte/hash/inode/mode/link census. Preserve exact Control/catalog,
+original scientific/native rows and A/B/C input/journal/lock/sealed-login evidence,
+including unregistered failed B4 files. An earlier one-artifact installed PASS
+cannot qualify this second-artifact extension. The corrected installed R2 on
+X18/a3 now qualifies it:11/11 PASS, actual same-root history restart and both
+standalone artifact rereads PASS, terminal/process/backend custody verified.
+The existing [Index report](../implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`grouped_replacement_recovery.second_epoch_export`, retains exact receipts and
+the original R1 fixture failure; no product rebuild was required.
+
+Cheap affected controls (no engines or product builds):
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s tests/acceptance -p test_first_launch_retained_replacement.py
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s experiments/ingest-bootstrap -p test_installed_archive_profile.py
+```
+
+The existing completed-startup-probe and native-worker-join gate precedes all
 fresh clients inside their original40s export/30s history windows. The isolated
 mixed restore pairs an older checkpoint head with current progress children;
 it requires the independently observed SQL typed-head digest refusal and does

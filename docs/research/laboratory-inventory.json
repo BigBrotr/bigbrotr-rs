@@ -76975,7 +76975,7 @@
           "current_state": "Older entries naming these branch refs describe historical author state; receipt exact detached HEAD map is current. Only those merged refs retired; pending branches untouched."
         },
         "grouped_replacement_recovery": {
-          "status": "INTEGRATED_MAIN_1CB61C6A_HOSTED_CI_PENDING",
+          "status": "INTEGRATED_MAIN_1CB61C6A_HOSTED_CI_PASS_SECOND_EXPORT_FAIL_PRESERVED",
           "base": "3fed9c0aacb2cb622270421c1d2d98c7b3e413e1",
           "product_author": {
             "worktree": ".research/grouped-retained-recovery-20261029",
@@ -77165,6 +77165,111 @@
           "merged_branch_retirement": {
             "path": ".research/initial-index-recovery-qualification-20261028/grouped-merged-refs-20261030.json",
             "sha256": "ede7c9aa483759132c2790f795ded6bdb29798e2225ff4c37773ec9b1c16d00a"
+          },
+          "second_epoch_export": {
+            "status": "REAPED_ONE_FAIL_PRESERVED_ALL_OWNED_RESOURCES_TERMINAL",
+            "source_worktree": ".research/retained-second-export-20261030",
+            "branch": "work/retained-second-export",
+            "source": "46c2c78d4a5f9a2d10051b9564a97564ab7d4982",
+            "session": 64531,
+            "runner_pid": 1622598,
+            "runner_start_ticks": 4414008,
+            "runner_group": 1622598,
+            "runner_session": 1622598,
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1",
+            "session_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1-session.json",
+            "pre_exec_identity": {
+              "path": ".research/initial-index-recovery-qualification-20261028/second-export-46c2c78d/runner-initial.json",
+              "sha256": "524845dae25ec33e2455d6ead77e5e0010aeb732c9800fa73035e4a396c7a07a"
+            },
+            "launcher": {
+              "path": ".research/initial-index-recovery-qualification-20261028/second-export-46c2c78d/launch.py",
+              "sha256": "a5e4bcfb58d4a59a534472744929571d7d431a6baee07638b87c91bf7f4587a7"
+            },
+            "preflight": {
+              "path": ".research/initial-index-recovery-qualification-20261028/second-export-46c2c78d/preflight.json",
+              "sha256": "9c947d6027d02262e027cbde1e42c8cca01047f4a1ad3e0bae02349ca20ad507"
+            },
+            "candidate": "Same immutable0ed331f5 candidate; X18 product and qualified observer unchanged; only maintained acceptance changes.",
+            "resources": "60 owned containers exited/noOOM/PID0,28 recorded processes absent and7684 joined command PIDs absent; both grouped proxies separately absent with frozen wire/custody replay. Bridge empty. All data/logs/failures preserved; no local engine or cleanup remains active.",
+            "process_note": "PID/start/group/session captured atomically before exec, tool64531 recorded separately afterward; no identity reconstruction or restart on observation timeout.",
+            "exit_code": 1,
+            "result": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/result.json",
+              "sha256": "258f83a393afabf99993b4081fd4017f177fcc350985b90fdd497775479c9f0b"
+            },
+            "failure": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/failure.json",
+              "sha256": "4011fd0cec35e27a44f70739a2b9f3c5be8ddeab5d655701cf561e14c51467cb"
+            },
+            "terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/root-terminal.json",
+              "sha256": "7ea051673ef3d16566593134d3d81e0488f13d886d74ad53cc287503c1afe6da"
+            },
+            "grouped_proxy_terminal": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r1/grouped-proxy-terminal-audit.json",
+              "sha256": "0759c79a7bced67117a1760e264a19667da7f77d02f01a501d7cc16de76a0ab1"
+            },
+            "source_preservation": "Keep46 worktree physically clean/frozen for actual67 source pins; the correction must use a distinct worktree. Original64531 remains FAIL; final history restart NOT_REACHED.",
+            "touch_correction": {
+              "worktree": ".research/retained-second-export-touch-20261030",
+              "branch": "work/retained-second-export-touch",
+              "revision": "a3c10c7b87707effc7ae085b001be3e0a9a0b5a7",
+              "state": "Clean source, startup-bound lifetime and full session preservation;33 controls and unchanged R1 captures PASS, critical closure9099dca7. Original46 remains physically frozen.",
+              "critical_closure": {
+                "path": ".research/retained-second-export-touch-20261030/.research/retained-second-export-touch-author/critical-review-a3c10c7b.json",
+                "sha256": "9099dca7318ffae02bc803ef05336098efb83e3ce8168e5c9c2b6bebc551882c"
+              }
+            },
+            "retry_r2": {
+              "status": "PASS_REAPED_ZERO_ALL_OWNED_RESOURCES_TERMINAL",
+              "session": 29403,
+              "runner_pid": 1865226,
+              "runner_start_ticks": 4702434,
+              "runner_group": 1865226,
+              "runner_session": 1865226,
+              "source_worktree": ".research/retained-second-export-touch-20261030",
+              "source": "a3c10c7b87707effc7ae085b001be3e0a9a0b5a7",
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2",
+              "session_capsule": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2-session.json",
+              "pre_exec_identity": {
+                "path": ".research/initial-index-recovery-qualification-20261028/second-export-a3c10c7b/runner-initial.json",
+                "sha256": "8d8fd7c34e2a871b06ccef0886a3d9ac1e6d4c306b475717e6c445fcfdb0bed5"
+              },
+              "launcher": {
+                "path": ".research/initial-index-recovery-qualification-20261028/second-export-a3c10c7b/launch.py",
+                "sha256": "7961dfd81040eb1a08200793c0cdc4cd63f770e064d15d38281eeec5bb4a525c"
+              },
+              "preflight": {
+                "path": ".research/initial-index-recovery-qualification-20261028/second-export-a3c10c7b/preflight.json",
+                "sha256": "f13bc930d4b3aaa395c23a352b64609c403f41df39b3d52410b59145700a35bb"
+              },
+              "resources": "62 owned containers stopped/noOOM/PID0:54 exit0 and8 declared negative exit4.30 recorded processes and7771 joined command PIDs absent; both grouped proxies separately checked absent and frozen wire/process oracle replay PASS. Borrowed bridge empty. No local engine or cleanup active; original logs/data/source and all failures preserved.",
+              "preflight_free_bytes": 77288669184,
+              "exit_code": 0,
+              "result": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/result.json",
+                "sha256": "515e2d302c0d9a232a2979906fcd9ebe2370e84fbe5229c178629c04b1492086"
+              },
+              "terminal": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/root-terminal.json",
+                "sha256": "cce94c0622dfd43bc242e54b1004113f038ad8e51c71581f2f23bbbb08e4c3a3"
+              },
+              "grouped_proxy_terminal": {
+                "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-18e208ed/acceptance-grouped-second-export-r2/grouped-proxy-terminal-audit.json",
+                "sha256": "e487206c00de0adf0ca914b726ae289066ef965c36e4070432ffc9f216c5dabb"
+              },
+              "session_capsule_sha256": "0ac25761936e6aac1b5ecfb3ff1872156ae4925b5d37727f8c7791498b7e9846"
+            }
+          },
+          "hosted_1cb": {
+            "status": "PASS30_SELECTED_CHECKS_TERMINAL_RESOURCES_REAPED",
+            "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40970250287",
+            "source": "1cb61c6aa62280117c927dd5bca4552bcd469fff",
+            "evidence_root": ".research/ci-publication-20261026/1cb61c6a-real-ci",
+            "receipt_sha256": "c2ef11fb9e32342354f64c06a420673049cfd06e97e3abdb1a583540714eda0b",
+            "details_owner": "Existing P01 hosted foundation report; historical3fed result remains separately retained",
+            "resources": "Watcher3052 and acquisition reaped0; original driver/gh identities absent. No active hosted run or local watcher."
           }
         },
         "retained_index_clone_object_dedup": {
@@ -77250,6 +77355,57 @@
           "processes": "Executor2428 reaped0; no active cleanup. Exact related stopped/no-restart consumers, accessible path/inode observers and mount aliases rechecked; unreadable systemd1250/sd-pam1257 are explicit limits, not a global nonuse claim.",
           "future_use": "This target is retired partial compiler cache: rebuild only in fresh output with retained source/toolchain/native assets and checksum-locked registry dependencies;54 registry archives require reacquisition. Original finished/packaged artifacts and historical failure evidence remain usable.",
           "floor": "Observed free72,388,759,552B exceeded strict71,940,702,208B installed-case floor; recheck before actual allocation. Delta includes concurrent host IO."
+        },
+        "archive_six_compiler_intermediate_retirement": {
+          "status": "RETIRED_VERIFIED_REAPED_ZERO",
+          "session": 79990,
+          "exit_code": 0,
+          "executor_pid": 1857285,
+          "executor_start_ticks": 4675531,
+          "selected_targets": [
+            "archive-0cdd80f",
+            "archive-5c3a8dd",
+            "archive-afc70f3",
+            "archive-c365053",
+            "archive-d459fcd",
+            "archive-02d2a9b"
+          ],
+          "scope": "Only7221 frozen non-executable/single-link/formatted compiler intermediates. All17031 noncandidate target entries,570 final/shared ELF paths and196 original outside pins preserved. Historical owner/status/probe variants remain unchanged. No data/log/failure/container/source/worktree/current cache115/shared alias action.",
+          "proposal": {
+            "path": ".research/initial-index-recovery-qualification-20261028/archive-six-compiler-intermediate-proposal-20261030.json",
+            "sha256": "4aa16f25a24894684cb888d8f1ae534185185836c91561e4e22321d8427b551b"
+          },
+          "allowlist": {
+            "path": ".research/initial-index-recovery-qualification-20261028/archive-six-compiler-intermediate-allowlist-20261030.json",
+            "sha256": "448b4559f5042200faef6a702a8dd27c66e74432a1b97b74184969c446bf340d"
+          },
+          "critical_review": {
+            "path": ".research/initial-index-recovery-qualification-20261028/archive-six-compiler-intermediate-review-20261030.json",
+            "sha256": "656c9cdf3451347af0b74ffbcec084a397d41644cb8b5c8cfe3f962a16e1c5b6"
+          },
+          "executor": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-archive-six-retire-20261030.py",
+            "sha256": "5784a0ff1e3f9e17df6becb6d6f7b483d0c278d696288a1061ee6b9cacd9da7e"
+          },
+          "frozen_manifest": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-archive-six-frozen-20261030.json",
+            "sha256": "00ab0cfb21f45342d976b5a8de82f0ba8b39d68dc1c054afd17913948e9e506c"
+          },
+          "receipt": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-archive-six-retirement-receipt-20261030.json",
+            "sha256": "934d277ca03bcf00aa8589534871359b2268f207a1ecd8d28aaeff177c966714"
+          },
+          "journal": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-archive-six-deleted-paths-20261030.jsonl",
+            "sha256": "5b0b52a566b238287648ec96530ee75ecc734a7c320d57b02a7b0d6922534b67"
+          },
+          "potential_allocated_bytes": 6426923008,
+          "actual_free_delta_bytes": 6421831680,
+          "free_before": 70867087360,
+          "free_after": 77288919040,
+          "processes": "Executor tool79990 reaped0 and recorded PID1857285 absent; no cleanup active. All68 relevant stopped/no-restart projections,13 declared owner/source identities, accessible path/inode and mount-alias checks passed. Only known unreadable owned systemd1250/sd-pam1257 remain disclosed limits.",
+          "future_use": "These six partial targets must never resume incremental Cargo. Rebuild in fresh output using retained exact source/toolchain/native inputs and checksum-locked dependencies; absent registry archives need reacquisition. Original finished/test/probe binaries and outcomes remain.",
+          "measurement_limit": "Actual delta includes concurrent host IO. Current free77,288,919,040B exceeds strict67GiB launch floor with about5.35GB margin; recheck before new allocations."
         }
       }
     }
@@ -77415,5 +77571,45 @@
     "retained_bytes": 7874720,
     "retention": "Keep all original failures, source/recipe snapshots, generated private credentials, catalog captures and databases through actual adapter/product qualification. No existing environment was mutated.",
     "next": "Engines stopped during native compile; column-dependent TTL negative joins next already-required adapter run."
+  },
+  "implementation_open_prefix_reclamation_20261030": {
+    "status": "PARTIAL_SOURCE_ACTIVE_PHYSICAL_GROWTH_ENVELOPE_UNQUALIFIED_NO_GREATER_THAN64_ENABLEMENT",
+    "owners": [
+      "P02-T02 Step4",
+      "P03-T01 Step3",
+      "P02-T04/P02-T06 finite initial Archive consumer"
+    ],
+    "contract": {
+      "author_worktree": ".research/open-prefix-contract-20261030",
+      "revision": "2a35f66ff7611b9c107c13399406035632072719",
+      "integrated_main": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
+      "critical_closure_sha256": "43f18eac774f88c9bdc13cc9735659c3e1da2b2d5f698091a889c4298537ef02"
+    },
+    "author": {
+      "agent": "/root/grouped_product_sol",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "worktree": ".research/open-prefix-initial-sol-20261030",
+      "branch": "work/open-prefix-initial-sol-20261030",
+      "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
+      "partial_commit": "070717e604189e143c720e27cb8bbb8a47ee9c78",
+      "state": "Author active with uncommitted PG42/native retirement/CAS work; partial codec/proof format2 committed, rustfmt parsing/diff check only. No Cargo/native/SQL/installed execution."
+    },
+    "scope": "Initial epoch1 OPEN compact base plus exact tail, authenticated request/input retirement under existing bounds. Scientific pending facts/identity/batch markers remain; generic payload GC and larger Archive history separate. Startup policy capture, stop/recovery on policy change; no promised implemented Live application.",
+    "resources": "Source worktree only. No new native engine, compiler cache, build, installed case or data resource launched; root remains sole launcher.",
+    "next": "Complete independent PG/proof/recovery source and paired genuine132/128 fixture. Resolve concrete physical growth/refusal predicate before enabling more than64 requests; then bounded source review and root-owned real native/PG/installed qualification. No M2 completion claim.",
+    "resource_gate": {
+      "proposal_worktree": ".research/open-prefix-disk-contract-20261030",
+      "proposal_revision": "936d5b6a38403ef6e5ac450e0d9251a088f76177",
+      "status": "Independent critical review active; exact logical pending count selected; physical native/PG-WAL growth envelope and enabled bounds not yet qualified. Existing absolute64 gate retained. Default64GiB reserve+16GiB resume margin requires80GiB before other held/new growth credit; old67GiB laboratory floor does not qualify it."
+    },
+    "acceptance_author": {
+      "agent": "/root/grouped_acceptance_sol",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "xhigh",
+      "worktree": ".research/open-prefix-acceptance-20261030",
+      "branch": "work/open-prefix-acceptance-20261030",
+      "state": "Portable paired132/128 signed fixture and independent oracle source work assigned; no engines/builds/installed proof. Confirm source revision at next coherent author checkpoint."
+    }
   }
 }

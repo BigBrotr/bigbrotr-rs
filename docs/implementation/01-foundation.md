@@ -498,11 +498,15 @@ and queryable with truthful role readiness, without implicit public publishing.
   export256MiB. Native49 rows, current producer progress, Archive12 facts/four commits,
   exact353-byte signed export and unchanged catalog/files pass. This includes an
   ordinary Control restart; successor Ingest/resend is now qualified by Step4,
-  while continuous enabled-Index successor ownership remains open under
-  P02-T06 Steps4/7 and this step's full role-composition consumer. Its active
-  source/bridge authority and complete two-stream readiness need their own real
-  proof; finite terminal recovery does not supply it. M1 requires the relevant
-  first-event/restart slices, not that new live composition or all of P02.
+  and the separately qualified enabled-Index successor slice is recorded in
+  the [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+  `live_readiness.live_initial_successor`: all sixteen installed stages pass on
+  product `6cbe1cb2`/acceptance `1fab2f4b`. It proves retained Ingest1→2/Index
+  ownership, the bridge and complete current vector `[1:12,2:10]` while source2
+  remains OPEN, then finite catch-up/retry and two-event ordinary history.
+  Arbitrary live epochs, remote-query uncertainty and scalable freshness remain
+  bounded by that report's explicit exclusions. M1 evidence collection is already
+  qualified; this result does not finish full Step1 or all of P02.
   Steps6/7 now qualify the tutorial on the declared initial profile. The finite same-installation
   continuation is qualified below. See the laboratory inventory's `implementation_m1_first_launch_20261026`
   corrected-profile evidence; the original history256MiB429 failure is preserved.
@@ -538,6 +542,18 @@ and queryable with truthful role readiness, without implicit public publishing.
   work. Genuine unknown native termination, automatic pin recovery and remaining
   clean-install negatives stay open; original failures remain in that report.
   Complete adjacent Discovery/Monitor is not a prerequisite.
+  The current bounded follow-through extends the existing retained closed-reclamation
+  journey to a distinct epoch2 export. Completion requires the original353-byte
+  artifact plus the new358-byte signed event under distinct keys/jobs/artifacts,
+  exact frontier4/snapshot68/full cuts `[1:312,2:10]`, identical retry with no work,
+  changed-event same-key conflict, and independent reread of both standalone files
+  and manifests after ordinary same-root Control restart. Preserve all prior
+  science, Control rows, inputs, catalog and custody with the unchanged authority,
+  deadlines and64GiB completion reserve. The [verification procedure](../development/verification.md)
+  owns commands/evidence requirements. Corrected installed R2 on X18/a3 qualifies
+  this extension with11/11 PASS, actual history restart and both standalone
+  artifact rereads; terminal custody is verified. The Index report retains exact
+  receipts and the original R1 fixture failure. This does not reopen M1 collection.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
   The maintained `p01-first-launch-index` passes all eight stages on installed
@@ -561,9 +577,10 @@ and queryable with truthful role readiness, without implicit public publishing.
   SQL-copy controls and runtime ACL pass. The same candidate also passes the
   affected epoch1 restart and both publication-COMMIT directions. The report's
   `topology_continuation` owns exact evidence, original grant/HTTP429 failures
-  and critical reviews. General query uncertainty, broader topology recovery,
-  continuous successor ownership/current-selection readiness remain open; the
-  separately qualified Step5 outages below do not complete M1.
+  and critical reviews. The separate sixteen-stage live successor qualification
+  cited in Step1 supplies its bounded continuous ownership/current-vector result.
+  General query uncertainty, arbitrary live epochs and broader topology recovery
+  remain open; those limits do not revoke the qualified M1 evidence collection.
 - [x] **Step 3:** Query the full event through the actual local read entrypoint available in
   the slice; independently verify bytes/signature and first-acquisition metadata.
   Qualified by the October26 corrected-profile journey: real private history,
@@ -634,8 +651,9 @@ and queryable with truthful role readiness, without implicit public publishing.
   while independently verifying published64/cut312; that does not qualify current
   readiness. This finite writer boundary does not require Ready64 and is not an
   additional M1 blocker. Any broader current-readiness/scaling requirement belongs
-  to existing P02-T06/T09 follow-through; continuous enabled-Index successor and
-  current-selection readiness remain separately scoped requirements.
+  to existing P02-T06/T09 follow-through. The separately qualified bounded live
+  successor/current-vector slice cited in Step1 does not establish scalable
+  freshness or arbitrary live-epoch recovery.
 - [x] **Step 6:** **Practical P01-T09:** extract the bundle outside the checkout, start from
   empty volumes, follow the tutorial, inspect real listeners and assert zero
   signing/publication calls. Negative control: an unwired role reporting ready
@@ -659,9 +677,10 @@ and queryable with truthful role readiness, without implicit public publishing.
   describe the private Control/Ingest/Sync/Archive profile, actual lifecycle and
   capability meanings, explicit negatives and portable declared prerequisites.
   Defaults keep Index, public services and active signing disabled. This scoped
-  documentation result does not close Step1 or the whole phase. Live Index
-  succession/current-vector integration remains full-product P02-T06 Steps4/7
-  work with its P01-T09 composition consumer; it is not an added M1 prerequisite.
+  documentation result does not close Step1 or the whole phase. The sixteen-stage
+  live Index succession/current-vector slice is qualified as cited in Step1; its
+  broader epoch/recovery/freshness limits retain P02-T06 Steps4/7 ownership and
+  this composition consumer, without adding prerequisites to qualified M1.
 
 ## Foundation core versus later engine acceptance
 

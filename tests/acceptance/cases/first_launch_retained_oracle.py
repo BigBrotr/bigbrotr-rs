@@ -400,7 +400,10 @@ def compacted_history_control(before,after,startup):
     prior={r['lease_id'] for r in before['snapshot_leases']}
     initial={r['lease_id'] for r in startup['snapshot_leases']}-prior
     final={r['lease_id'] for r in after['snapshot_leases']}-prior
-    assert 1<=len(initial)<=2 and len(final-initial)==2
+    assert 1<=len(initial)<=2 and initial<=final and len(final-initial)==2
+    for table in readers:
+        index.exact([r for r in after[table] if r['lease_id'] in initial],
+            [r for r in startup[table] if r['lease_id'] in initial])
     catalog=index.only(after['consumers'],consumer_role='archive')['consumer_id']
     for state,new_ids in ((startup,initial),(after,final)):
         for table in readers:
