@@ -1292,6 +1292,10 @@ startup-bound storage profile.
 
 ### Compact base and complete source manifest
 
+The [pending/disk admission prerequisite](#pending-and-filesystem-admission-before-open-reclamation)
+below must be implemented and qualified before this profile enables request65.
+Receipt/input reclamation cannot supply credit for retained scientific payload.
+
 Keep one active base and at most one prepared replacement in bounded typed slots
 owned by `producer_checkpoints`, not one row per retired prefix or delivery. A
 base is immutable canonical bytes plus its SHA256; typed SQL fields must decode
@@ -1617,3 +1621,170 @@ bounded total disk/RSS,
 power-loss durability, arbitrary producer/job epochs, full live subscriptions or
 all P02/M2 acceptance. Measure write/scan cost and physical maintenance separately;
 permanent scientific history and its recovery census continue to grow.
+
+### Pending and filesystem admission before OPEN reclamation
+
+Removing the absolute64 request limit also removes its incidental finite bound
+on retained scientific growth. The existing `ingest.pending_max_bytes` validation
+only establishes that one framed unit fits; native admission currently has no
+aggregate counter. Memory/native permits and the export destination free-space
+check are not durable-growth reservations. This is a current P02-T02 Step4
+dependency, not completion of pending-payload GC or a general quota service.
+
+**Exact logical pending charge.** For the initial profile, P is the sum of encoded
+native keys and complete persisted values of every immutable fact covered by a
+retained pending batch, plus each pending-batch key/value exactly once. Include
+dictionaries, bodies, eligibility, receive/provenance/correction facts and their
+stored framing/digests. Do not sum receipt dependency references as additional
+copies. Scientific secondary indices, receipts, inputs, WAL/SST amplification and
+PG storage are separate physical-growth charges, not secretly included in P.
+
+Persist a versioned, manifest-bound pending-byte counter and last complete source
+sequence. Each NewFacts native WriteBatch adds its exact new pending charge and
+updates that counter atomically with facts, marker, source watermark and receipt.
+All bootstrap, dictionary append and event paths share the check. A native replay,
+AlreadyDurable or Rejected result adds zero P; proof-only reads add neither P nor
+a native write. No-effect requests still require input/receipt/PG disk credit.
+ACK, OPEN or closed receipt/input reclamation, Archive publication and producer
+replacement never reduce P. Only the separately authorized future pending-payload
+deletion protocol may do that. A counter is not archive protection authority.
+
+Before original-input staging or PG reservation, preview/reserve a sufficient
+pending delta under the same exclusive native owner and existing operation grants.
+Recheck the exact prepared delta and current counter at the native commit boundary;
+release excess reservation only after the actual result is known. No same-store
+writer can bypass this reservation. Arithmetic overflow, unsupported accounting
+format or a missing required counter refuses. Fresh initialization may create
+zero only with an empty scientific store; an existing store needs explicit fenced
+initialization from a full census, never ordinary startup's guessed zero/backfill.
+Old executables must not silently write the guarded format without accounting.
+
+Reopen/recovery/restore streams every complete pending batch and independently
+recomputes P against the counter and final source watermark. Validate the base cut
+and then its full tail; the base's older source sequence is not the current head.
+A mismatch refuses intake and preserves evidence. An uncertain native write
+poisons both cached accounting and usable credit until positive recovery; neither
+an error return nor a missing receipt can decrement P. The counter and its source
+closure belong in coordinated backups, including ACKed but unretired tails.
+
+Use accepted startup `pending_max_bytes`, high/low fractions and existing
+`runtime.disk_resume_margin_bytes`/`pressure_stable_duration`, bound to the same
+revision/digest as the writer. Apply fractions with checked deterministic rounding:
+high=floor(limit*high_fraction), low=floor(limit*low_fraction). Require
+`0 <= low < high <= limit` and room for a maximum supported pending unit below
+high. Before new payload, require P + outstanding logical reservations + delta
+<= high. Enter pressure on refusal; resume only below low and after filesystem
+low water `free-A >= R+disk_resume_margin_bytes` has held for the configured stable
+duration (default30s). Reopen starts conservatively pressure-latched until the
+same observations pass; restarting cannot erase the required stable interval.
+Zero-pending-delta replay/read work does not consume logical payload credit, but
+any new durable no-effect request or proof checkpoint still needs physical credit.
+Existing stop/recovery on accepted policy change remains. Without payload GC,
+pending pressure may persist until capacity is explicitly reprovisioned; receipt
+GC alone must not clear it or make the diagnostic claim payload was reclaimed.
+
+**One physical growth lane, separate from P.** Reuse the export helper's checked
+descriptor-based `fstatvfs` arithmetic and existing native custody, but move/use
+that arithmetic at the shared storage boundary rather than treating export as
+the owner of Ingest policy. Bind observations to the retained actual filesystem
+identity, not a path string. Per filesystem require `free - A - d >= R` before
+new durable work and recheck before its irreversible stages. A is outstanding
+not-yet-resident growth already promised to cooperating work; d is this new
+operation's complete incremental growth allowance. Acquire it before input
+creation/PG reservation and retain it through native sync, outcome/progress COMMIT
+and ACK or authoritative resolution. Materialized bytes already reduce free;
+retire their component of A only on positive observation, without subtracting
+resident bytes again. Unknown completion never returns speculative capacity.
+Acquire the qualified open/recovery allowance before native DB open or a PG
+claim that can write: opening a recovered Rocks store may itself create/flush
+files. Logical read-only recovery does not imply a physically write-free engine
+open. Never move the first space check after those effects; insufficient recovery
+headroom reports unavailable and preserves the store for explicit provisioning.
+
+d includes block-rounded new input/directory allocation, the actual prepared
+native write serialization plus WAL framing/preallocation, and the operation's
+PG reservation/outcome/checkpoint/ACK footprint. It includes scientific index
+updates and no-effect outcome writes, not merely event JSON length. Distinguish
+foreground WAL from later flush/rewrite debt so the same future write is not
+counted twice. A pending quota grant cannot stand in for this disk grant.
+
+R is the existing configured completion/recovery reserve partitioned explicitly
+for the domains sharing that filesystem: outstanding native WAL rotation/flush,
+SST compaction and metadata; PG WAL/full-page/checkpoint/heap/index maintenance;
+one accepted Archive completion lane when assigned; and control/ACK/recovery
+metadata. Current resident WAL/SST/inputs/PG and pinned/partial files already
+consume free. Optional export/backup/copy work needs its full additional grant
+outside R; it cannot spend Ingest's completion share. Include already-running
+background work even when foreground admission is paused. If measured debt or
+the admitted engine/profile envelope exceeds its assigned share, freeze intake
+before reusing the lane. Missing/stale/unsupported observations, or a zero estimate
+without complete coverage, are not zero debt. Neither a soft WAL target nor memory
+reservation proves physical coverage.
+
+The smallest supported coordination is one serialized initial Ingest growth lane
+and an explicit bounded provisioning record for other writers on its filesystem.
+Do not add a distributed quota framework. Concurrent BigBrotr Archive/export/
+backup/build or another Ingest writer on that filesystem must either share the
+actual reservation authority or remain outside this selected intake profile.
+Where PG and its WAL share the filesystem, they cannot be omitted or assigned
+the same reserve again under a different directory. Before enabling the first
+profile, record actual mount/device identities, the sum of all domain shares,
+PG data/WAL/checkpoint/temporary growth coverage and who owns any concurrent
+reservation. Phase-separate optional bulk work; Control PG remains essential.
+A dedicated database/container alone does not provide filesystem isolation.
+
+This is a cooperating reservation/preflight guarantee, not exclusion of unrelated
+host writers, root allocations or delayed filesystem errors. A fresh stat result
+cannot make an atomic promise about their future consumption. An actual ENOSPC,
+quota/I/O or fsync failure stops affected durable acknowledgements and new work,
+preserves original identity/data and requires native/PG outcome recovery. A
+pressure refusal before staging creates no durable request or negative scientific result;
+after any durable stage, retain its exact original and resolution obligation.
+Do not reclassify pressure/cancellation as Rejected, Absent or a checkpointed
+frame. Read-only certification/recovery and already-funded completion remain
+available under their existing grants; a new proof checkpoint still needs its
+PG growth allowance. Any unavoidable socket stop records the existing coverage
+uncertainty instead of advancing traversal. No pressure cleanup deletes evidence.
+
+**Remaining physical enablement decision.** The exact Rocks11.8.1 sources and
+profile1 options do not supply a hard total WAL or remaining compaction bound;
+the [native profile](ingest-native-profile.md#disk-growth-evidence-required-for-open-prefix-intake)
+records why. Do not remove the lifetime64 guard in the fresh auto-GC dispatch path
+until a bounded exact-profile qualification supplies concrete d/R domain envelopes
+and observable stop conditions for the paired A/B schedules. Codec, census and
+logical-accounting work may proceed independently. This explicit missing evidence
+is not an unqualified perpetual "engine debt" placeholder or a claimed PASS.
+
+The focused qualification must use the actual candidate, fixed A/B signed bytes,
+native options, maximum allowed input/batch sizes and chosen pending allowance.
+Observe native WAL/SST/MANIFEST/LOG and PG allocated-file growth, including WAL
+preallocation, checkpoint full-page writes, retained WAL, temporary work and
+flush/compaction overlap. Bind logical byte counts separately from filesystem
+allocated bytes and `f_bavail`; capture same-filesystem concurrent reservations.
+Exercise enough bounded maximum-unit work to cause real flush/compaction, plus
+repeated ACK/retirement/no-effect/proof progress and ordinary shutdown/reopen.
+The required result is a concrete conservative foreground allowance and remaining
+completion envelope, its supported settings/history/debt range and guard inputs;
+observed peaks alone or a bytes-per-event multiplier are not a hard global bound.
+Those supported bounds must be enforced by the runtime, not merely written in a
+benchmark report. An accepted pending allowance, maximum unit, native options or
+observed debt outside the qualified range refuses the guarded intake profile.
+If source bounds plus observations do not justify that range, qualify a narrower
+explicit pending/native-work envelope or return the exact unresolved native/PG
+allocation question. Do not silently enable larger configurations, disable sync
+or background correctness work, or claim full capacity from these cases.
+
+Independent controls require: literal P deltas for bootstrap/dictionary/NewFacts,
+zero deltas for replay/no-effect/ACK/GC; exact high-boundary admission and next-unit
+deferral with no staged original; counter/source mismatch and mixed-copy refusal;
+two cooperating growth requests that separately fit but jointly exceed free-R;
+same-filesystem PG growth counted once; unknown-write credit retained; threshold
+oscillation that cannot resume before stable low water; and actual injected
+allocation/fsync failures preserving original outcomes. An installed pressure
+case must retain more than64 genuine requests through receipt GC and then stop
+at its pending or filesystem bound without data loss, false coverage or automatic
+pending deletion. Reclaiming input files must not reduce P. Restore/reopen must
+reach the same pressure decision. Numerical arithmetic controls can use a fixed
+free100/R40/A20/d41 refusal and d40 equality; they do not replace the real-engine
+growth and interruption evidence. Physical space/RSS/throughput claims remain
+separate measured obligations under P02-T02 Step8/P02-T09.

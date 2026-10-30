@@ -140,6 +140,46 @@ responses remain unknown until the owner resolves durable state.
 
 ## Focused validation
 
+### Disk-growth evidence required for OPEN-prefix intake
+
+OPEN receipt reclamation needs the separate
+[pending/filesystem admission guard](producer-request-inputs.md#pending-and-filesystem-admission-before-open-reclamation).
+The current owner exposes cache/WBM/memtable usage only; those are not disk debt.
+Pinned RocksDB11.8.1 source inspection establishes these narrower facts:
+
+* [`PreprocessWrite`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/db/db_impl/db_impl_write.cc#L2115)
+  tests total WAL size against its target and requests flushing. It does not
+  reserve that many bytes or impose a total physical ceiling.
+* [`GetWalPreallocateBlockSize`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/db/db_impl/db_impl_write.cc#L3428)
+  begins with CF buffer plus one tenth and takes the configured WAL/DB/WBM minima.
+  This bounds a preallocation block for those settings, not total retained WAL.
+  [`log_writer.cc`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/db/log_writer.cc#L101)
+  fragments the serialized record with block/header/padding overhead. Foreground
+  estimates must include that overhead and possible file rotation/preallocation.
+* Open creates a default SstFileManager. Its default maximum allowed space is zero
+  (unlimited), and [`EnoughRoomForCompaction`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/file/sst_file_manager_impl.cc#L159)
+  performs aggressive filesystem checks only after NoSpace. It is not this
+  application's reserved completion lane and does not cover PG or original inputs.
+* [`db.h`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/include/rocksdb/db.h#L1464)
+  distinguishes total SST size across retained versions from current live SSTs;
+  pending-compaction bytes are an estimate for level compaction. These properties,
+  memtables and authenticated allocated-file observations provide diagnostics and
+  guard inputs, not a coherent worst-case bound on every remaining allocation.
+
+No numeric d/R allocation is qualified by those source facts or existing option
+tests. Before fresh OPEN intake exceeds64, the bounded A/B qualification must pin
+the actual options and source/file identities, exercise real flush/compaction and
+PG checkpoint/WAL overlap, and record a sufficient conservative remaining-growth
+envelope with an explicit supported pending/history range and refusal predicates.
+Account for SST output before old-file deletion, retained snapshots/files, WAL
+rotation/preallocation, MANIFEST/OPTIONS/LOG and error/recovery writes. Merely
+sampling current live SST bytes, subtracting the soft WAL target or assigning a
+multiple of event JSON size is insufficient. If an allocation remains unbounded
+within that profile, the enablement decision stays open for that precise boundary;
+do not claim a general hard disk/RSS guarantee or change native durability options
+to obtain a passing result. This is a focused qualification prerequisite, not an
+instruction to run the full capacity campaign before the storage increment.
+
 Unit tests in `apps/bigbrotr/src/storage/rocks/options.rs` check integer/coupling/accounting refusal,
 closed CF names and absence of implicit creation. Actual RocksDB tests write
 512 KiB to each CF and require WBM usage plus cache/pinned charges to increase,

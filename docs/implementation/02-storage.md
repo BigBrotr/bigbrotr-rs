@@ -226,6 +226,15 @@ One owner serializes exact identity decisions for each writable directory.
   Execute the protocol's literal fixture and interruption/refusal controls;
   a raised sequence limit or receipt-only deletion does not close this increment.
   This does not qualify pending-payload GC, arbitrary epochs or full M2 capacity.
+  Its newly identified [resource prerequisite](../reference/producer-request-inputs.md#pending-and-filesystem-admission-before-open-reclamation)
+  requires an atomic aggregate pending-byte counter, complete census/restore
+  validation and pre-staging physical-growth credit. Before enabling request65,
+  qualify concrete native and same-filesystem PG/WAL completion envelopes for the
+  actual A/B profile; soft WAL targets and sampled compaction estimates are not
+  hard bounds. Verify pressure deferral after more than64 requests, no reduction
+  of pending charge by receipt GC, held credit on unknown writes and stable-low
+  resume. Only the bounded remaining-growth question gates this increment;
+  P02-T02 Step8/P02-T09 retain the broader capacity/maintenance obligations.
   The selected closed-initial continuation now passes on product `7d8e5998`,
   acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
   conservation checks, idempotent restart/retry and a compacted epoch2 accepting
