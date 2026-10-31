@@ -154,11 +154,36 @@ catalog/role/initialization/activation prerequisites. It then refused seed
 retirement under the unfenced original Control. That fixture failure and its
 native/input/SQL state remain preserved. The corrected lifecycle and all38 scoped
 checks remain NOT_RUN and require their own probe compilation and pertinent
-review. Portable false-PASS controls are available with:
+review. At exact `8afb7457`, a subsequent real run recorded42 PASS:30 of the38
+scoped checks and12 setup checks. All five first-set private activation cases
+passed; the first ACK case then refused before its target gate because the
+fixture granted only128KiB to a compacted lineage reader. Its existing checked
+profile requires128KiB scratch plus512B for each of two epochs:132,096 bytes.
+The corrected fixture reserves that exact profile before the recovery Control
+claim, inside the unchanged2GiB payload budget, and moves it once into inspection.
+Nine domains fit within each existing entry allowance; they do not multiply the
+entry count. The original failure and partial proof remain separately bound to
+their source. The corrected build and remaining eight scopes are unqualified;
+there is no completed ACK or lost-ACK advancement claim.
+
+The existing native boundary regression
+`compacted_activated_stamps_refuse_stale_sequence_sidecars_cancellation_and_small_grants`
+refuses a metadata grant of `required_metadata_bytes()-1` while preserving state;
+the fixture uses the same owning formula as installed activated recovery. A
+string/constant-only portable assertion would not exercise that guard. Portable
+false-PASS controls are available with:
 
 ```sh
 python3 -B -m unittest discover -s tests/acceptance -p test_historical_integrity.py -v
 ```
+
+The linked current-format native fixtures require the literal five-put handoff
+and exact rebound counter while preserving every original fact, receipt, index
+and input. Original and compacted historical reconstruction both undo those five
+puts before validating a completed observation; existing drop/reopen/replay and
+zero-write retry tests are the discriminators. These native regressions remain
+separate from connected SQL and use explicitly synthetic native-only floors where
+the fixture declares them. No old counterless format is admitted by this change.
 
 Historical counterless seeds and runners remain bound to their original source.
 This batch does not qualify generic10MiB bodies through the standalone16KiB

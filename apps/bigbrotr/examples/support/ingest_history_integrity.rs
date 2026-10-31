@@ -10,10 +10,13 @@ use bigbrotr::storage::{
         },
         ingest_registry::{CapturedIntakePolicy, RegistryError},
     },
-    rocks::store::{
-        AdmissionLimits, COMPACTED_PREFIX_METADATA_BYTES, InitialWriterCandidate,
-        ProducerRecoveryLimits, RecoveryAcknowledgement, RetainedCompactedPrefix,
-        RetainedRequestInput, compacted_outcome_data_bytes,
+    rocks::{
+        store::{
+            AdmissionLimits, COMPACTED_PREFIX_METADATA_BYTES, InitialWriterCandidate,
+            ProducerRecoveryLimits, RecoveryAcknowledgement, RetainedCompactedPrefix,
+            RetainedRequestInput, compacted_outcome_data_bytes,
+        },
+        succession::SuccessionProfile,
     },
 };
 use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
@@ -693,6 +696,15 @@ pub async fn private(
     drop(writer);
     let mut recovery =
         IngestRecovery::open(path, next, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    // The compacted two-entry reader owns scratch plus both entry allowances.
+    // Admit its exact existing profile before claiming the recovery Control.
+    let metadata = grant(
+        &budget,
+        SuccessionProfile::for_recovery(recovery.manifest().identity().owner_epoch.get(), None)
+            .unwrap()
+            .required_metadata_bytes(),
+        0,
+    );
     snapshot(&observer, path, "ack-before-control-release").await;
     let original = owner.identity();
     owner.release().await.unwrap();
@@ -722,7 +734,7 @@ pub async fn private(
         .inspect_activated_initial_producer_with_compacted(
             &recovery,
             history(path),
-            grant(&budget, 128 * 1024, 0),
+            metadata,
             admission,
             effects(&budget),
             |d, h| validate(&root, d, h),

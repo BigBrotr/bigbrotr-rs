@@ -68,7 +68,7 @@ fn active(fixture: &Fixture) -> ActiveInitialWriter {
     );
     assert_eq!(
         candidate.recovery().store.db.latest_sequence_number(),
-        sequence + 4
+        sequence + 5
     );
     assert_eq!(candidate.require_prepared_handoff(&handoff), Ok(()));
     // No database/activation receipt is involved in this native-only fixture.
@@ -136,7 +136,7 @@ fn append_permit(fixture: &Fixture) -> OwnedPermit {
 fn originals(fixture: &Fixture, store: &IngestStore) {
     let current = kv(store);
     for row in &fixture.closed_rows {
-        if row.1 != [1, 1] {
+        if row.0 != "default" || (row.1 != [1, 1] && row.1 != [1, 11]) {
             assert!(
                 current.contains(row),
                 "old row changed: {} {:?}",
@@ -145,6 +145,7 @@ fn originals(fixture: &Fixture, store: &IngestStore) {
             );
         }
     }
+    assert_current_accounting(&current);
     let current = inputs(&fixture.path());
     for (index, original) in fixture.originals.iter().enumerate() {
         assert!(current.contains(&(input_name(1, index as u64 + 1), original.input.clone())));

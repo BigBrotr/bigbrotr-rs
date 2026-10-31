@@ -147,7 +147,7 @@ fn expected_compacted_rows(f: &Fixture) -> Rows {
 }
 
 #[test]
-fn compacted_handoff_exact_four_writes_and_zero_write_prepared_retry() {
+fn compacted_handoff_exact_five_writes_and_zero_write_prepared_retry() {
     for remaining in [4, 2, 0] {
         let f = closed_fixture();
         let mut r = f.reopen();
@@ -183,14 +183,14 @@ fn compacted_handoff_exact_four_writes_and_zero_write_prepared_retry() {
             r.apply_compacted_initial_handoff(&handoff, scratch(&f), &READY, || Ok(()))
                 .unwrap(),
         );
-        assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
         assert_eq!(kv(&r.store), expected_compacted_rows(&f));
         assert_eq!(inputs(&f.path()), original_inputs);
         drop(
             r.apply_compacted_initial_handoff(&handoff, scratch(&f), &READY, || Ok(()))
                 .unwrap(),
         );
-        assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
         {
             let view = handoff
                 .compacted_predecessor(&r, &permit, &READY)
@@ -224,7 +224,7 @@ fn compacted_handoff_exact_four_writes_and_zero_write_prepared_retry() {
                 .unwrap(),
         );
         assert_eq!(kv(&r.store), before);
-        assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
         assert_eq!(inputs(&f.path()), original_inputs);
     }
 }
@@ -238,7 +238,7 @@ fn compacted_handoff_refuses_stale_custody_inputs_and_dispatch_without_writes() 
         "authority",
         "dispatch-authority",
         "sequence",
-        "after-four",
+        "after-five",
         "uncertain",
         "input-inode",
         "input-content",
@@ -257,7 +257,7 @@ fn compacted_handoff_refuses_stale_custody_inputs_and_dispatch_without_writes() 
                 .db
                 .put([1, 1], f.previous.encode().as_bytes())
                 .unwrap(),
-            "after-four" => {
+            "after-five" => {
                 drop(
                     r.apply_compacted_initial_handoff(&handoff, scratch(&f), &READY, || Ok(()))
                         .unwrap(),
@@ -621,7 +621,7 @@ fn compacted_candidate_binds_fresh_target_and_explicit_activation_only() {
     );
     assert_eq!(
         candidate.recovery().store.db.latest_sequence_number(),
-        sequence + 4
+        sequence + 5
     );
     assert!(candidate.require_prepared_handoff(&handoff).is_err());
     candidate
@@ -633,7 +633,7 @@ fn compacted_candidate_binds_fresh_target_and_explicit_activation_only() {
         .activate_compacted(handoff, &permit, &READY)
         .unwrap();
     assert_eq!(kv(writer.store()), before);
-    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 4);
+    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 5);
     assert_eq!(writer.manifest(), writer.handoff().next_manifest());
     assert!(inputs(&f.path()).is_empty());
     let effects = grant(&f.budget, 40 * MIB, 0);
@@ -683,13 +683,13 @@ fn compacted_handoff_postwrite_authority_refusal_retains_exact_retry() {
         }
     });
     assert!(matches!(refused, Err(BootstrapError::AuthorityUnavailable)));
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(kv(&r.store), expected_compacted_rows(&f));
     drop(
         r.apply_compacted_initial_handoff(&handoff, scratch(&f), &READY, || Ok(()))
             .unwrap(),
     );
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(kv(&r.store), expected_compacted_rows(&f));
 }
 

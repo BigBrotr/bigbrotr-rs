@@ -106,6 +106,10 @@ An uncertain native outcome invalidates cached capacity until positive recovery.
 Handoff preserves total P for every retained predecessor, rebinds the counter to
 the new manifest and sets current-stream S0. The synchronized transition has five
 puts: handoff, manifest, explicit successor source0, OPEN producer and counter.
+An already completed historical handoff reconstructs its pre-transition sequence
+as the observed native sequence minus five, for both original and compacted
+predecessors. Validation adds the same five; a retained pre-native gap keeps its
+existing base sequence. An exact prepared retry adds no native writes.
 Producer encodings retain their distinct meanings: format1 OPEN, format2 CLOSING,
 format3 closed reclamation and format4 OPEN-prefix floor. They are not obsolete
 counter formats. Coordinated backups retain all charged facts/markers, the

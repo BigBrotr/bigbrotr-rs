@@ -86,6 +86,37 @@ fn value(store: &IngestStore, key: IngestKey) -> Vec<u8> {
         .unwrap()
 }
 
+fn assert_current_accounting(current: &Rows) {
+    // Callers preserve the original scientific rows. The mutable singleton
+    // rebinds to the manifest and the complete current framed census/source.
+    let get = |key: &[u8]| {
+        &current
+            .iter()
+            .find(|(cf, found, _)| cf == "default" && found.as_slice() == key)
+            .unwrap()
+            .2
+    };
+    let manifest = get(&[1, 1]);
+    let counter = get(&[1, 11]);
+    assert_eq!(counter.len(), 50);
+    assert_eq!(&counter[..2], &[1, 11]);
+    let manifest_sha256: [u8; 32] = Sha256::digest(manifest).into();
+    assert_eq!(&counter[2..34], &manifest_sha256);
+    let pending = current
+        .iter()
+        .filter(|(cf, _, _)| cf == "facts")
+        .try_fold(0u64, |sum, (_, key, value)| {
+            sum.checked_add(u64::try_from(key.len() + value.len()).unwrap())
+        })
+        .unwrap();
+    assert_eq!(&counter[34..42], &pending.to_be_bytes());
+    let source_key = [&[1, 2][..], &manifest[10..26], &manifest[50..62]].concat();
+    let source = get(&source_key);
+    assert_eq!(source.len(), 10);
+    assert_eq!(&source[..2], &[1, 2]);
+    assert_eq!(&counter[42..50], &source[2..10]);
+}
+
 fn handoff_key() -> IngestKey {
     IngestKey::OwnerHandoff {
         dataset_id: [1; 16].try_into().unwrap(),
@@ -438,10 +469,11 @@ fn reopened_prepared_successor_reads_exact_originals_without_retaining_its_local
     );
     assert_eq!(before.len(), fixture.closed_rows.len() + 3);
     for row in &fixture.closed_rows {
-        if row.0 != "default" || row.1 != [1, 1] {
+        if row.0 != "default" || (row.1 != [1, 1] && row.1 != [1, 11]) {
             assert!(before.contains(row), "original row changed: {}", row.0);
         }
     }
+    assert_current_accounting(&before);
     let bytes = value(&recovery.store, handoff_key());
     let historical = recovery.historical_initial(&bytes).unwrap();
     assert_eq!(historical.manifest(), &fixture.previous);

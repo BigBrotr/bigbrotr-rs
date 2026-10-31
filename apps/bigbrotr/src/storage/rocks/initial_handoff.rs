@@ -453,7 +453,7 @@ impl<'a> HistoricalInitial<'a> {
             record: self.record,
             native_sequence: self
                 .sequence
-                .checked_sub(4)
+                .checked_sub(5)
                 .ok_or(BootstrapError::StateMismatch)?,
             native_root: self.root,
             basis: InitialPredecessorBasis::Original,
