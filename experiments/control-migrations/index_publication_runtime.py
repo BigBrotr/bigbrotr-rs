@@ -30,7 +30,11 @@ PRIVILEGE_REFUSALS = (
     "timeout_cannot_invalidate", "publication_receipt_is_immutable", "prepared_plan_cannot_be_deleted",
 )
 HANDOFF_SQL = 'experiments/control-migrations/index_handoff_cases.sql'
-HANDOFF_COMMON = {'exact_current_seed', 'actual_terminal_classification'}
+HANDOFF_MANIFEST_POSITIVE = {'lineage_current_manifest_epoch1', 'lineage_current_manifest_epoch2',
+    'lineage_current_manifest_epoch3'}
+HANDOFF_MANIFEST_NEGATIVE = {'lineage_value1_epoch1', 'lineage_value1_epoch2', 'lineage_value1_epoch3',
+    'lineage_corrupt_profile_epoch1', 'lineage_corrupt_profile_epoch2', 'lineage_corrupt_profile_epoch3'}
+HANDOFF_COMMON = {'exact_current_seed', 'actual_terminal_classification'} | HANDOFF_MANIFEST_POSITIVE | HANDOFF_MANIFEST_NEGATIVE
 HANDOFF_TERMINAL = HANDOFF_COMMON | {
     'stale_owner', 'stale_head', 'competing_plan_before_handoff', 'competing_plan_after_handoff',
     'fake_batch_handoff_overlap', 'missing_typed_receipt', 'wrong_succession_digest',
@@ -42,7 +46,7 @@ HANDOFF_TERMINAL = HANDOFF_COMMON | {
     'historical_handoff_replays_after_publisher_release',
 }
 HANDOFF_NONTERMINAL = HANDOFF_COMMON | {'nonterminal_successor_refuses_bridge'}
-HANDOFF_POSITIVE = HANDOFF_COMMON | {'positive_bridge_committed', 'all_prior_rows_and_attestation_preserved',
+HANDOFF_POSITIVE = (HANDOFF_COMMON - HANDOFF_MANIFEST_NEGATIVE) | {'positive_bridge_committed', 'all_prior_rows_and_attestation_preserved',
     'retry_captures_typed_handoff_head', 'historical_handoff_replays_after_publisher_release'}
 
 
@@ -108,6 +112,8 @@ def handoff_summary(answer, phase):
         require(row['state'] == state and isinstance(row['classification'], str) and row['classification']
                 and (row['message'] is None if state is None else isinstance(row['message'], str) and bool(row['message'])),
                 'handoff-case-outcome-incomplete')
+        if row['name'] in HANDOFF_MANIFEST_NEGATIVE:
+            require(row['message'] == 'invalid lineage manifest profile', 'lineage-manifest-refusal-differs')
     return summary
 
 

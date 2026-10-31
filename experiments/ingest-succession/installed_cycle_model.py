@@ -142,7 +142,7 @@ class Model:
         kind = 1 if (bool(before['initial_ingest_activations']) if epoch == 3 else
             any(r['target_epoch'] == epoch - 1 for r in before['ingest_activations'])) else 2
         topology = self.ds['topology_generation'] + 1
-        manifest = (bytes.fromhex('01010003000100010001') + binary(ds) + be(topology)
+        manifest = (bytes.fromhex('01010003000200010001') + binary(ds) + be(topology)
             + binary(self.resource) + be(0, 4) + be(epoch) + binary(inc) + previous_manifest[78:94]
             + be(self.ds['policy_revision']) + b'\x01\x09'
             + b''.join(be(k, 2) + binary(domain) for k, domain in enumerate(domains, 1)))
@@ -230,14 +230,12 @@ class Model:
             acquisition='not-started', ready=False, listeners=[dict(kind='private-session-http',
                 host='127.0.0.1', port=18081, profile='initial-source-commands')],
             **(dict(recovery_basis='closed-producer-floor-v3', compacted_requests='7') if compacted else {}))
-        values = native_map(self.native)
-        for cf, key, value in [('default', b'\x01\x01', manifest),
-            ('default', b'\x01\x0a' + binary(ds) + binary(self.resource) + be(epoch - 1), record),
-            ('default', b'\x01\x02' + binary(ds) + be(0, 4) + be(epoch), b'\x01\x02' + be(0)),
-            ('receipts', b'\x01\x31' + binary(self.slot) + be(epoch), b'\x01\x31' + bytes(24))]:
-            assert key == b'\x01\x01' or (cf, key.hex()) not in values
-            values[cf, key.hex()] = value.hex()
-        self.native.update(rows=native_rows(values), sequence=self.native['sequence'] + 4)
+        from initial_succession_oracle import successor_rows
+        previous = {(cf, bytes.fromhex(key)): bytes.fromhex(value)
+            for (cf,key),value in native_map(self.native).items()}
+        values = successor_rows(previous,manifest,binary(self.slot),record,repeatable=True)
+        self.native.update(rows=native_rows({(cf,key.hex()):value.hex() for (cf,key),value in values.items()}),
+            sequence=self.native['sequence'] + 5)
         same(self.pg, observed)
 
     def completed_control(self, observed, *, lease_us=6_000_000):

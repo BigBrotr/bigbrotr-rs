@@ -128,6 +128,51 @@ class PendingAccountingVectors(unittest.TestCase):
         self.assertEqual(int.from_bytes(counter(rows)[42:50], 'big'), 2)
         self.assertEqual(sum(len(key) + len(value) for cf, key, value in rows if cf == 'facts'), 533)
 
+    def test_repeatable_handoff_preserves_science_and_validated_pending_with_five_puts(self):
+        from test_first_launch_restart import fixture
+        from initial_succession_oracle import successor_rows
+        _,_,old,encoded,_=fixture()
+        be=lambda n:n.to_bytes(8,'big')
+        slot=bytes.fromhex(encoded.initial_report['producer_slot_id'])
+        previous={(cf,bytes.fromhex(key)):bytes.fromhex(value) for (cf,key),value in encoded.values.items()}
+        target=bytearray(old)
+        target[2:4]=(3).to_bytes(2,'big');target[26:34]=be(2);target[54:62]=be(3)
+        target[62:78]=bytes.fromhex('dd'*16)
+        for kind in range(1,10):target[106+(kind-1)*18:122+(kind-1)*18]=bytes([150+kind])*16
+        target=bytes(target)
+        handoff=(b'\x02\x0a\x01'+slot+be(2)+be(3)+be(10)+bytes.fromhex('a1'*32)
+            +bytes.fromhex('a2'*32)+len(old).to_bytes(2,'big')+old+len(target).to_bytes(2,'big')+target)
+        result=successor_rows(previous,target,slot,handoff,repeatable=True)
+        changed={key for key,value in result.items() if previous.get(key)!=value}
+        expected={('default',b'\x01\x01'),('default',b'\x01\x0b'),
+            ('default',b'\x01\x0a'+old[10:26]+old[34:50]+be(2)),
+            ('default',b'\x01\x02'+old[10:26]+bytes(4)+be(3)),('receipts',b'\x01\x31'+slot+be(3))}
+        self.assertEqual(changed,expected)
+        self.assertEqual(len(result),len(previous)+3)
+        charge=sum(len(key)+len(value) for (cf,key),value in previous.items() if cf=='facts')
+        self.assertEqual(result['default',b'\x01\x0b'],b'\x01\x0b'+hashlib.sha256(target).digest()+be(charge)+bytes(8))
+        self.assertEqual(previous['default',b'\x01\x0b'][34:42],be(charge))
+        self.assertEqual({k:v for k,v in previous.items() if k[0]=='facts'},
+            {k:v for k,v in result.items() if k[0]=='facts'})
+        for offset in (None,2,34,42):
+            bad=dict(previous)
+            if offset is None:del bad['default',b'\x01\x0b']
+            else:
+                value=bytearray(bad['default',b'\x01\x0b']);value[offset]^=1
+                bad['default',b'\x01\x0b']=bytes(value)
+            with self.subTest(counter_offset=offset),self.assertRaises(AssertionError):
+                successor_rows(bad,target,slot,handoff,repeatable=True)
+        for offset in (3,5,9):
+            bad=bytearray(target)
+            if offset==5:bad[offset]=1  # Explicit obsolete value-schema1.
+            else:bad[offset]^=1
+            with self.subTest(profile_offset=offset),self.assertRaises(AssertionError):
+                successor_rows(previous,bytes(bad),slot,handoff,repeatable=True)
+        for key in expected-{('default',b'\x01\x01'),('default',b'\x01\x0b')}:
+            bad=dict(previous);bad[key]=result[key]
+            with self.subTest(existing=key),self.assertRaises(AssertionError):
+                successor_rows(bad,target,slot,handoff,repeatable=True)
+
     def test_signed_import_corpus_preserves_exact_charge_across_new_event(self):
         before, _, _ = EVENTS.expected_event(bytes([1]) * 16, False)
         after, _, _ = EVENTS.expected_event(bytes([1]) * 16, True)

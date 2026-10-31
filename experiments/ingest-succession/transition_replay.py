@@ -168,7 +168,7 @@ class Model:
         kind = 1 if (bool(self.pg['initial_ingest_activations']) if epoch == 3 else
                      any(r['target_epoch'] == epoch - 1 for r in self.pg['ingest_activations'])) else 2
         topology = self.ds['topology_generation'] + 1
-        manifest = (bytes.fromhex('01010003000100010001') + binary(self.ds['dataset_id']) + be(topology)
+        manifest = (bytes.fromhex('01010003000200010001') + binary(self.ds['dataset_id']) + be(topology)
             + binary(self.resource) + be(self.legacy['shard_id'], 4) + be(epoch) + binary(incarnation)
             + old_manifest[78:94] + be(self.ds['policy_revision']) + b'\x01\x09')
         assert len(domains) == 9
@@ -240,16 +240,12 @@ class Model:
             prepared_by_resource=self.control['resource_id'], prepared_by_epoch=self.control['epoch'],
             prepared_by_role='control', prepared_by_incarnation=self.control['process_incarnation'],
             preparation_transaction=receipt['preparation_transaction'], xmin=xid))
-        values = native_map(self.native)
-        for cf, key, value in [
-            ('default', b'\x01\x01', plan['manifest']),
-            ('default', b'\x01\x0a' + binary(ds) + binary(resource) + be(epoch - 1), plan['record']),
-            ('default', b'\x01\x02' + binary(ds) + be(self.legacy['shard_id'], 4) + be(epoch), b'\x01\x02' + be(0)),
-            ('receipts', b'\x01\x31' + binary(slot) + be(epoch), b'\x01\x31' + bytes(24)),
-        ]:
-            assert (cf, key.hex()) not in values or key == b'\x01\x01'
-            values[cf, key.hex()] = value.hex()
-        self.native.update(rows=native_rows(values), sequence=self.native['sequence'] + 4)
+        from initial_succession_oracle import successor_rows
+        previous = {(cf, bytes.fromhex(key)): bytes.fromhex(value)
+            for (cf,key),value in native_map(self.native).items()}
+        values = successor_rows(previous,plan['manifest'],binary(slot),plan['record'],repeatable=True)
+        self.native.update(rows=native_rows({(cf,key.hex()):value.hex() for (cf,key),value in values.items()}),
+            sequence=self.native['sequence'] + 5)
         same(self.pg, observed)
 
     def retire(self, observed, epoch):

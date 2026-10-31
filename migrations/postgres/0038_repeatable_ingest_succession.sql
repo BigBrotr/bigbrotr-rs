@@ -33,10 +33,10 @@ RETURNS TABLE(key_schema integer,dataset_id bytea,topology numeric,resource byte
 LANGUAGE plpgsql IMMUTABLE STRICT SET search_path=pg_catalog AS $$
 DECLARE i integer; j integer; domain_id bytea;
 BEGIN
-    -- The selected SQL profile has every one of the nine allocation kinds.
+    -- The SQL profile requires native value-schema2 and all nine allocation kinds.
     -- The codec's smaller manifest shapes are not registry authority here.
     IF octet_length(value)<>266 OR substring(value FROM 1 FOR 2)<>decode('0101','hex')
-        OR substring(value FROM 5 FOR 6)<>decode('000100010001','hex')
+        OR substring(value FROM 5 FOR 6)<>decode('000200010001','hex')
         OR get_byte(value,102)<>1 OR get_byte(value,103)<>9 THEN
         RAISE EXCEPTION 'invalid lineage manifest profile' USING ERRCODE='23514';
     END IF;

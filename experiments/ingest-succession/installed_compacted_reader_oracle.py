@@ -6281,6 +6281,7 @@ def verify_later_live(context,initial,expected,*,proxy_port=None,acquisition=Fal
 
 
 def verify_later_live_installed(context,initial,expected,*,import_claim=False):
+    """HISTORICAL seven-request wrapper; current42/native2 closure is in README.md."""
     assert type(import_claim) is bool
     from installed_cycle_replay import process_closed
     assert later_live_specification(context['case'])=='installed' and set(context)==CONTEXT_FIELDS

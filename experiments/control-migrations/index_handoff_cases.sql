@@ -94,6 +94,46 @@ SELECT pg_temp.assert_true('exact_current_seed',
         AND checksum=decode(:'expected_migration_41_sha256','hex')));
 INSERT INTO snapshots VALUES('seed',pg_temp.snapshot());
 
+-- Decoder controls only. Epoch1/2 are the actual retained native manifests;
+-- epoch3 is a literal adjacent metadata shape, with no registry/native effect.
+CREATE TEMP TABLE lineage_manifest_vectors AS
+SELECT 1 AS epoch,previous_manifest AS value FROM control.initial_ingest_successions
+UNION ALL SELECT 2,target_manifest FROM control.initial_ingest_successions
+UNION ALL SELECT 3,overlay(overlay(overlay(target_manifest
+    PLACING decode('0003','hex') FROM 3 FOR 2)
+    PLACING pg_temp.u64(2) FROM 27 FOR 8)
+    PLACING pg_temp.u64(3) FROM 55 FOR 8) FROM control.initial_ingest_successions;
+SELECT pg_temp.assert_true('lineage_current_manifest_epoch1',
+    (SELECT m.key_schema=1 AND m.epoch=1 FROM lineage_manifest_vectors v
+        CROSS JOIN LATERAL control.ingest_lineage_manifest(v.value) m WHERE v.epoch=1));
+SELECT pg_temp.assert_true('lineage_current_manifest_epoch2',
+    (SELECT m.key_schema=2 AND m.epoch=2 FROM lineage_manifest_vectors v
+        CROSS JOIN LATERAL control.ingest_lineage_manifest(v.value) m WHERE v.epoch=2));
+SELECT pg_temp.assert_true('lineage_current_manifest_epoch3',
+    (SELECT m.key_schema=3 AND m.epoch=3 FROM lineage_manifest_vectors v
+        CROSS JOIN LATERAL control.ingest_lineage_manifest(v.value) m WHERE v.epoch=3));
+SELECT pg_temp.expect_error('lineage_value1_epoch1',
+    $$SELECT * FROM control.ingest_lineage_manifest(overlay((SELECT value FROM lineage_manifest_vectors WHERE epoch=1)
+        PLACING decode('0001','hex') FROM 5 FOR 2))$$,
+    'invalid lineage manifest profile','obsolete native value schema refused');
+SELECT pg_temp.expect_error('lineage_value1_epoch2',
+    $$SELECT * FROM control.ingest_lineage_manifest(overlay((SELECT value FROM lineage_manifest_vectors WHERE epoch=2)
+        PLACING decode('0001','hex') FROM 5 FOR 2))$$,
+    'invalid lineage manifest profile','obsolete native value schema refused');
+SELECT pg_temp.expect_error('lineage_value1_epoch3',
+    $$SELECT * FROM control.ingest_lineage_manifest(overlay((SELECT value FROM lineage_manifest_vectors WHERE epoch=3)
+        PLACING decode('0001','hex') FROM 5 FOR 2))$$,
+    'invalid lineage manifest profile','obsolete native value schema refused');
+SELECT pg_temp.expect_error('lineage_corrupt_profile_epoch1',
+    $$SELECT * FROM control.ingest_lineage_manifest(set_byte((SELECT value FROM lineage_manifest_vectors WHERE epoch=1),9,2))$$,
+    'invalid lineage manifest profile','unknown native profile refused');
+SELECT pg_temp.expect_error('lineage_corrupt_profile_epoch2',
+    $$SELECT * FROM control.ingest_lineage_manifest(set_byte((SELECT value FROM lineage_manifest_vectors WHERE epoch=2),9,2))$$,
+    'invalid lineage manifest profile','unknown native profile refused');
+SELECT pg_temp.expect_error('lineage_corrupt_profile_epoch3',
+    $$SELECT * FROM control.ingest_lineage_manifest(set_byte((SELECT value FROM lineage_manifest_vectors WHERE epoch=3),9,2))$$,
+    'invalid lineage manifest profile','unknown native profile refused');
+
 -- A real fresh backend-bound Control claim in this clone. Index transfers below
 -- are explicitly synthetic SQL records, never private application capabilities.
 SELECT pg_advisory_lock(1111651442,1129599564);

@@ -68,20 +68,36 @@ def successor_manifest(previous, incarnation, domains):
     return bytes(target)
 
 
-def successor_rows(previous_rows, target, slot, handoff):
+def successor_rows(previous_rows, target, slot, handoff, *, repeatable=False):
     """Current five-put handoff from already independent, complete old rows."""
+    assert type(repeatable) is bool
     previous = dict(previous_rows)
     assert previous == {(cf,key):value for cf,key,value in
         accounted((cf,key,value) for (cf,key),value in previous.items())}, 'invalid prior accounting'
     old = previous['default', b'\x01\x01']
-    assert len(target) == 266 and target[:10] == bytes.fromhex('01010002000200010001')
-    assert handoff == (b'\x01\x0a'+slot+be(1)+handoff[26:74]
-        +be(len(old),2)+old+be(len(target),2)+target)
+    assert len(old) == len(target) == 266
+    epoch = int.from_bytes(target[54:62], 'big')
+    assert 3 <= epoch <= 255 if repeatable else epoch == 2
+    previous_epoch = epoch - 1
+    assert old[:10] == b'\x01\x01'+be(min(previous_epoch,3),2)+bytes.fromhex('000200010001')
+    assert old[54:62] == be(previous_epoch)
+    assert target[:10] == b'\x01\x01'+be(3 if repeatable else 2,2)+bytes.fromhex('000200010001')
+    if repeatable:
+        assert handoff[2] in (1,2)
+        assert handoff == (b'\x02\x0a'+handoff[2:3]+slot+be(previous_epoch)+handoff[27:107]
+            +be(len(old),2)+old+be(len(target),2)+target)
+    else:
+        assert handoff == (b'\x01\x0a'+slot+be(1)+handoff[26:74]
+            +be(len(old),2)+old+be(len(target),2)+target)
+    for key in (('default',b'\x01\x0a'+old[10:26]+old[34:50]+be(previous_epoch)),
+                ('default',b'\x01\x02'+old[10:26]+old[50:54]+be(epoch)),
+                ('receipts',b'\x01\x31'+slot+be(epoch))):
+        assert key not in previous, 'handoff would overwrite retained successor metadata'
     result = dict(previous)
     result['default',b'\x01\x01'] = target
-    result['default',b'\x01\x0a'+old[10:26]+old[34:50]+be(1)] = handoff
-    result['default',b'\x01\x02'+old[10:26]+be(0,4)+be(2)] = b'\x01\x02'+be(0)
-    result['receipts',b'\x01\x31'+slot+be(2)] = b'\x01\x31'+bytes(24)
+    result['default',b'\x01\x0a'+old[10:26]+old[34:50]+be(previous_epoch)] = handoff
+    result['default',b'\x01\x02'+old[10:26]+old[50:54]+be(epoch)] = b'\x01\x02'+be(0)
+    result['receipts',b'\x01\x31'+slot+be(epoch)] = b'\x01\x31'+bytes(24)
     return {(cf,key):value for cf,key,value in
         accounted((cf,key,value) for (cf,key),value in result.items())}
 

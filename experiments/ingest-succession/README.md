@@ -134,6 +134,26 @@ decoder. The generator uses Python
 standard-library byte construction, `struct` and SHA-256. It neither imports a
 product codec nor executes Rust, SQL or a native store.
 
+Current SQL lineage decoding and the shared `transition_replay.Model` and
+`installed_cycle_model.Model` handoff expectations require value-schema2 and
+five native puts, with independently validated pending bytes preserved and the
+new stream reset to zero. The current82-table Index handoff SQL fixture exercises
+manifest epochs1/2/3 and exact obsolete-value/profile refusals. The standalone
+`installed_family_replay`, target38/75-table SQL replay, acquisition science and
+49-row initial-succession replay retain historical counterless origins and
+source pins; they do not qualify current native formats. Their remaining current
+engine qualification belongs to the existing P02-T02/P02-T06 tasks. Historical
+captures and opaque value1 vectors remain bound to their original sources.
+
+`installed_compacted_reader_oracle.verify_later_live_installed` is explicitly
+HISTORICAL: its seven-request capture fixes93 rows/sequence138. Its callers are
+the source-pinned later-live and later-retirement-import probe/replay paths;
+the current M1 64-request journey does not call it. P02-T02/P02-T06 must supply a
+fresh current42/native2 epoch3 installed capture, independent complete row and
+sequence expectations, and actual engine proof before current qualification.
+Then consolidate or retire the old pinned wrapper under Q40 once its consumers
+are understood; reproduce the original proof from its pinned Git/source.
+
 Run the deterministic selfcheck from the repository root:
 
 ```sh

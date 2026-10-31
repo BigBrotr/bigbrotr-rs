@@ -47,7 +47,8 @@ def summary(phase):
         positive = name in runtime.HANDOFF_POSITIVE
         cases.append(dict(name=name, classification='SQL fixture classification',
             state=None if positive else ('P0002' if name == 'missing_typed_receipt' else '23514'),
-            message=None if positive else 'actual expected guard refusal'))
+            message=None if positive else ('invalid lineage manifest profile'
+                if name in runtime.HANDOFF_MANIFEST_NEGATIVE else 'actual expected guard refusal')))
     return dict(format='bigbrotr-index-handoff-sql-cases/1', kind='SQL_ONLY_NO_NATIVE_PROOF',
         terminal=phase == 'terminal', case_count=len(cases), cases=cases, final_rows_sha256='cd' * 32)
 
@@ -100,13 +101,24 @@ class HandoffSQLControls(unittest.TestCase):
         labels = re.findall(r"SELECT pg_temp\.(?:assert_true|expect_error)\('([^']+)'", program)
         self.assertEqual(len(labels), len(set(labels)))
         self.assertEqual(set(labels), runtime.HANDOFF_TERMINAL | runtime.HANDOFF_NONTERMINAL)
-        self.assertEqual(len(runtime.HANDOFF_TERMINAL), 23)
-        self.assertEqual(len(runtime.HANDOFF_NONTERMINAL), 3)
+        self.assertEqual(len(runtime.HANDOFF_TERMINAL), 32)
+        self.assertEqual(len(runtime.HANDOFF_NONTERMINAL), 12)
         self.assertIn('unsealed competing intent', program)
         self.assertIn('earlier complete batch receipt guard', program)
         self.assertIn('genuine closed unretired successor', program)
         self.assertNotRegex(program, r'(?i)(DISABLE TRIGGER|session_replication_role|SECURITY DEFINER)')
         self.assertLessEqual(len(program.encode()), 64 * 1024)
+
+    def test_lineage_manifest_profile_matches_current_native_schema_without_legacy_fallback(self):
+        native = (ROOT / 'apps/bigbrotr/src/storage/rocks/manifest.rs').read_text()
+        values, = re.findall(r'const HEADER: \[u8; 10\] = \[([0-9, ]+)\];', native)
+        header = bytes(int(v) for v in values.split(','))
+        self.assertEqual(header, bytes.fromhex('01010001000200010001'))
+        sql = (ROOT / 'migrations/postgres/0038_repeatable_ingest_succession.sql').read_text()
+        decoder = sql.split('CREATE FUNCTION control.ingest_lineage_manifest(value bytea)',1)[1].split('END $$;',1)[0]
+        profile, = re.findall(r"substring\(value FROM 5 FOR 6\)<>decode\('([0-9a-f]+)','hex'\)", decoder)
+        self.assertEqual(bytes.fromhex(profile), header[4:10])
+        self.assertNotIn('000100010001', decoder)
 
     def test_summary_requires_every_unique_case_and_actual_refusal_state(self):
         for phase in ('terminal', 'nonterminal'):
@@ -120,6 +132,7 @@ class HandoffSQLControls(unittest.TestCase):
                 lambda s: s['cases'][-1].update(name='different'),
                 lambda s: next(r for r in s['cases'] if r['state'] is not None).update(state='00000'),
                 lambda s: next(r for r in s['cases'] if r['state'] is not None).update(message=None),
+                lambda s: next(r for r in s['cases'] if r['name'] in runtime.HANDOFF_MANIFEST_NEGATIVE).update(message='different refusal'),
             ):
                 changed = copy.deepcopy(valid)
                 change(changed)
