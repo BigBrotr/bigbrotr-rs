@@ -182,6 +182,37 @@ def validate_initial_prefix_profile(control, initialized):
             'fresh four-request journey unexpectedly retired or prepared a prefix')
 
 
+def validate_prefix_runtime_role(profile):
+    require(profile['current_user'] == profile['session_user'] == 'bigbrotr_control'
+        and profile['superuser'] is False and profile['owns_objects'] is False,
+        'prefix probe requires the actual nonowner runtime role')
+    require(profile['private_execute'] == dict(producer_prefix_deletion=False,
+        finalize_producer_prefix=False), 'runtime can execute private prefix helpers')
+    require(profile['guards'] == [
+        dict(table='producer_checkpoint_dependencies', function='guard_producer_prefix_dependency',
+             security_definer=False, enabled='O'),
+        dict(table='producer_outcomes', function='guard_producer_outcome', security_definer=False, enabled='O'),
+        dict(table='producer_requests', function='guard_producer_request', security_definer=False, enabled='O')],
+        'prefix guards differ from the installed invoker triggers')
+
+
+def validate_prefix_refusals(stdout):
+    lines = stdout.splitlines()
+    require(len(lines) == 6, 'incomplete runtime prefix refusal results')
+    before, after = json.loads(lines[0]), json.loads(lines[-1])
+    require(before['current_user'] == before['session_user'] == 'bigbrotr_control'
+        and before == after, 'runtime prefix refusal changed target rows or checkpoint slots')
+    require(set(before['rows']) == {'producer_requests', 'producer_outcomes',
+        'producer_checkpoint_dependencies', 'producer_checkpoints'}
+        and all(len(rows) == 1 for rows in before['rows'].values()),
+        'runtime prefix refusal requires populated exact targets')
+    expected = [name + ' 42501' for name in ('producer_requests', 'producer_outcomes',
+        'producer_checkpoint_dependencies', 'finalize_producer_prefix')]
+    require(lines[1:-1] == expected, 'runtime prefix refusal requires exact SQLSTATE 42501')
+    return dict(sqlstates={line.split()[0]: line.split()[1] for line in expected},
+        target_rows_and_checkpoint_unchanged=True)
+
+
 def stop_process(process):
     # The process group remains owned even if its leader already exited.
     for sig, timeout in ((signal.SIGTERM, 1), (signal.SIGKILL, 2)):
@@ -529,7 +560,12 @@ class Runtime:
             result = test()
             require(time.monotonic() < deadline, 'timeout: ' + label)
             if entry:
-                require(self.inspect(entry)['State']['Running'], 'owner exited before ' + label)
+                if not self.inspect(entry)['State']['Running']:
+                    try:
+                        self.docker('logs', entry['id'], check=False, timeout=5, label='exited-owner')
+                    except Exception:
+                        pass  # The original owner-exit failure remains decisive.
+                    raise ValueError('owner exited before ' + label)
             if client:
                 require(client.poll() is None, 'client exited before ' + label)
             # Ownership inspection can itself block. Its time belongs to this
@@ -542,6 +578,71 @@ class Runtime:
     def sql(self, database, statement):
         self.inspect(self.pg)
         return self.lab.sql({'postgres': self.pg['id']}, database, statement)
+
+    def runtime_control_sql(self, statement, label):
+        self.inspect(self.pg)
+        # Expand only inside the verified database container. The password is
+        # passed to psql's environment, never argv, SQL or the command receipt.
+        return self.docker('exec', '-i', self.pg['id'], 'sh', '-eu', '-c',
+            'export PGPASSWORD="$(cat /run/secrets/control)"; '
+            'exec psql -X -qAt -h 127.0.0.1 -U bigbrotr_control -d bigbrotr_control '
+            '-v ON_ERROR_STOP=1', data=statement, timeout=15, label=label)
+
+    def prefix_runtime_role(self):
+        result = self.runtime_control_sql("""
+            BEGIN READ ONLY;
+            SET LOCAL statement_timeout='3s';
+            SELECT json_build_object('current_user',current_user,'session_user',session_user,
+                'superuser',(SELECT rolsuper FROM pg_roles WHERE rolname=current_user),
+                'owns_objects',EXISTS(SELECT 1 FROM pg_database WHERE datdba=current_user::regrole)
+                    OR EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=current_user::regrole)
+                    OR EXISTS(SELECT 1 FROM pg_class WHERE relowner=current_user::regrole)
+                    OR EXISTS(SELECT 1 FROM pg_proc WHERE proowner=current_user::regrole),
+                'private_execute',json_build_object(
+                    'producer_prefix_deletion',has_function_privilege(current_user,
+                        'control.producer_prefix_deletion(bytea,numeric,bytea,numeric,numeric)','EXECUTE'),
+                    'finalize_producer_prefix',has_function_privilege(current_user,
+                        'control.finalize_producer_prefix(bytea,bytea,numeric,bytea,numeric,bytea)','EXECUTE')),
+                'guards',(SELECT json_agg(r ORDER BY r.table) FROM (
+                    SELECT c.relname AS table,p.proname AS function,p.prosecdef AS security_definer,
+                        t.tgenabled AS enabled FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid
+                        JOIN pg_proc p ON p.oid=t.tgfoid JOIN pg_namespace n ON n.oid=c.relnamespace
+                    WHERE n.nspname='control' AND NOT t.tgisinternal AND p.proname IN (
+                        'guard_producer_request','guard_producer_outcome','guard_producer_prefix_dependency')) r));
+            ROLLBACK;
+        """, 'runtime-prefix-role')
+        profile = json.loads(result.stdout)
+        save(self.root / 'bootstrap/runtime-prefix-role.json', profile)
+        validate_prefix_runtime_role(profile)
+
+    def prefix_refusals(self, output):
+        slot = self.initialized['producer_slot_id']
+        require(re.fullmatch('[0-9a-f]{32}', slot), 'invalid runtime prefix target')
+        identity = "producer_slot_id=decode('" + slot + "','hex') AND producer_epoch=1"
+        selections, actions = [], []
+        for table, keys in (('producer_requests', 'request_sequence'),
+                            ('producer_outcomes', 'request_sequence'),
+                            ('producer_checkpoint_dependencies', 'source_shard,source_epoch,source_sequence'),
+                            ('producer_checkpoints', 'producer_epoch')):
+            target = f'SELECT * FROM control.{table} WHERE {identity} ORDER BY {keys} LIMIT 1'
+            selections.append(f"'{table}',(SELECT coalesce(json_agg(r),'[]') FROM ({target}) r)")
+            if table != 'producer_checkpoints':
+                actions.append((table, f'DELETE FROM control.{table} WHERE {identity} AND ({keys}) IN '
+                    f'(SELECT {keys} FROM control.{table} WHERE {identity} ORDER BY {keys} LIMIT 1)'))
+        observation = ("SELECT json_build_object('current_user',current_user,'session_user',session_user,"
+            "'rows',json_build_object(" + ','.join(selections) + '));\n')
+        actions.append(('finalize_producer_prefix', "SELECT control.finalize_producer_prefix("
+            f"decode('{slot}','hex'),decode(repeat('00',32),'hex'),1,"
+            "decode(repeat('00',16),'hex'),1,decode(repeat('00',16),'hex'))"))
+        statement = "BEGIN; SET LOCAL statement_timeout='3s'; SET LOCAL lock_timeout='1s';\n" + observation
+        for name, action in actions:
+            # Every attempted mutation rolls back even if permission unexpectedly
+            # succeeds. A disconnected/failed psql session also aborts the outer tx.
+            statement += ('SAVEPOINT refusal;\n\\set ON_ERROR_STOP off\n' + action + ';\n'
+                '\\echo ' + name + ' :SQLSTATE\n\\set ON_ERROR_STOP on\nROLLBACK TO SAVEPOINT refusal;\n')
+        result = self.runtime_control_sql(statement + observation + 'ROLLBACK;\n', 'runtime-prefix-refusals')
+        verdict = validate_prefix_refusals(result.stdout)
+        save(output / 'runtime-prefix-refusals.json', verdict)
 
     def capture(self, output, prefix):
         self.inspect(self.pg)
@@ -585,6 +686,7 @@ class Runtime:
         save(self.root / 'bootstrap/applied-control-ledger.json', ledger)
         validate_current_ledger(self.source, ledger)
         provision('control')
+        self.prefix_runtime_role()
         self.finite('config-initialize', 'config', 'initialize', *config)
         self.finite('config-activate', 'config', 'activate-initial', *config,
                     '--request-id', self.ids['activation'], '--expected-revision', '1')
@@ -652,6 +754,11 @@ class Runtime:
         (self.home / 'prepared.continue').write_text('independent source relationships checked\n')
         self.wait(lambda: (self.home / 'submitted.json').exists(), 'submitted acquisition', 15, entry, self.client)
         self.initial_archive_observation(entry, output)
+        # The retained variant overrides that observation. Run its negatives here
+        # after the separate proof is complete and before releasing the client.
+        if (type(self).initial_archive_observation is Runtime.initial_archive_observation
+                or getattr(self.args, 'case', None) == 'p01-first-launch-closed-reclamation'):
+            self.prefix_refusals(output)
         self.initial_publication(entry, output)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)

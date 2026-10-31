@@ -189,7 +189,7 @@ class FirstLaunchControls(unittest.TestCase):
         self.assertEqual(len(current), 58)
         self.assertIn(801, [row['migration'] for row in current])
         last, = [row for row in current if row['migration'] == 42]
-        self.assertEqual(last['checksum'], '9bc752f0a0dc2f42fc7461481e27e7ed5ed9253e8dc9a56ad94d961f477ab5cb')
+        self.assertEqual(last['checksum'], 'fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43')
         case.validate_current_ledger(ROOT, current)
         changed = copy.deepcopy(current)
         changed[0]['checksum'] = '00'*32
@@ -227,6 +227,71 @@ class FirstLaunchControls(unittest.TestCase):
                       {'prefix_active_generation':1}, {'prefix_prepared_sha256':'\\x'+'78'*32}):
             with self.subTest(delta=delta), self.assertRaises(ValueError):
                 case.validate_initial_prefix_profile({'producer_checkpoints':[dict(head, **delta)]}, initialized)
+
+    def test_prefix_runtime_role_refuses_privileged_login_helpers_or_guards(self):
+        profile = dict(current_user='bigbrotr_control', session_user='bigbrotr_control',
+            superuser=False, owns_objects=False, private_execute=dict(
+                producer_prefix_deletion=False, finalize_producer_prefix=False), guards=[
+                dict(table='producer_checkpoint_dependencies', function='guard_producer_prefix_dependency',
+                     security_definer=False, enabled='O'),
+                dict(table='producer_outcomes', function='guard_producer_outcome', security_definer=False, enabled='O'),
+                dict(table='producer_requests', function='guard_producer_request', security_definer=False, enabled='O')])
+        case.validate_prefix_runtime_role(profile)
+        changes = [lambda p: p.update(current_user='postgres'),
+            lambda p: p.update(session_user='postgres'), lambda p: p.update(superuser=True),
+            lambda p: p.update(owns_objects=True),
+            lambda p: p['private_execute'].update(producer_prefix_deletion=True),
+            lambda p: p['private_execute'].update(finalize_producer_prefix=True),
+            lambda p: p['guards'][0].update(security_definer=True),
+            lambda p: p['guards'][1].update(enabled='D'), lambda p: p['guards'].pop()]
+        for change in changes:
+            changed = copy.deepcopy(profile)
+            change(changed)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                case.validate_prefix_runtime_role(changed)
+
+    def test_prefix_refusals_require_populated_unchanged_targets_and_exact_errors(self):
+        tables = ('producer_requests', 'producer_outcomes', 'producer_checkpoint_dependencies', 'producer_checkpoints')
+        before = dict(current_user='bigbrotr_control', session_user='bigbrotr_control',
+            rows={table: [dict(target=1)] for table in tables})
+        errors = [name + ' 42501' for name in (*tables[:3], 'finalize_producer_prefix')]
+        def result(first=before, last=before, states=errors):
+            return '\n'.join([json.dumps(first), *states, json.dumps(last)]) + '\n'
+        self.assertTrue(case.validate_prefix_refusals(result())['target_rows_and_checkpoint_unchanged'])
+        for state in ('00000', '23514', '25006', '57014'):
+            for index in range(4):
+                changed = errors.copy()
+                changed[index] = changed[index].replace('42501', state)
+                with self.subTest(state=state, index=index), self.assertRaises(ValueError):
+                    case.validate_prefix_refusals(result(states=changed))
+        for table in tables:
+            changed = copy.deepcopy(before)
+            changed['rows'][table][0]['target'] = 2
+            with self.subTest(table=table), self.assertRaises(ValueError):
+                case.validate_prefix_refusals(result(last=changed))
+            changed['rows'][table] = []
+            with self.subTest(empty=table), self.assertRaises(ValueError):
+                case.validate_prefix_refusals(result(first=changed, last=changed))
+        with self.assertRaises(ValueError):
+            case.validate_prefix_refusals(result(states=errors[:-1]))
+        changed = dict(before, session_user='postgres')
+        with self.assertRaises(ValueError):
+            case.validate_prefix_refusals(result(first=changed, last=changed))
+
+    def test_runtime_control_probe_uses_verified_tcp_login_and_mounted_secret(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = case.Runtime(arguments(Path(temporary)), {})
+            runtime.pg = dict(id='owned-pg')
+            statement = 'SELECT current_user;'
+            with patch.object(runtime, 'inspect') as inspect, patch.object(runtime, 'docker') as docker:
+                runtime.runtime_control_sql(statement, 'probe')
+            inspect.assert_called_once_with(runtime.pg)
+            args, options = docker.call_args
+            self.assertEqual(args[:6], ('exec', '-i', 'owned-pg', 'sh', '-eu', '-c'))
+            self.assertIn('PGPASSWORD="$(cat /run/secrets/control)"', args[6])
+            self.assertIn('-h 127.0.0.1 -U bigbrotr_control -d bigbrotr_control', args[6])
+            self.assertNotIn('postgres', args[6])
+            self.assertEqual(options, dict(data=statement, timeout=15, label='probe'))
 
 
 class FirstLaunchWaitControls(unittest.TestCase):
@@ -285,8 +350,13 @@ class FirstLaunchWaitControls(unittest.TestCase):
                 with self.subTest(stopped=stopped), \
                         patch.object(case.time, 'monotonic', return_value=100), \
                         patch.object(runtime, 'inspect', side_effect=inspect), \
+                        patch.object(runtime, 'docker', side_effect=ValueError('log retrieval failed')) as docker, \
                         self.assertRaisesRegex(ValueError, '(owner|client) exited before current'):
                     runtime.wait(predicate, 'current', 1, entry={'id': 'owned'}, client=client)
+                if stopped == 'owner':
+                    docker.assert_called_once_with('logs', 'owned', check=False, timeout=5, label='exited-owner')
+                else:
+                    docker.assert_not_called()
 
     def test_final_process_observation_consumes_the_same_deadline(self):
         with tempfile.TemporaryDirectory() as temporary:
