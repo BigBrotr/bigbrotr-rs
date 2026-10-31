@@ -4,6 +4,7 @@ Synthetic metadata traces exercise the verifier only; they mint no product
 capability and are not PostgreSQL/native qualification.
 """
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -65,6 +66,54 @@ class HistoricalScienceControls(unittest.TestCase):
         self.assertIn('current-history-swapped-original-digest',names)
         for name in names:
             self.assertLessEqual(len('bb_hi_'+name.replace('-','_')),63)
+
+
+class HistoricalRevisionControls(unittest.TestCase):
+    def setUp(self):
+        document=json.loads((ROOT/'tests/fixtures/configuration/policy-v3.json').read_text())
+        document['settings']['ingest.producer_outstanding_requests']=2
+        self.before=dict(datasets=[dict(config_revision=1,policy_revision=1)],
+            config_revisions=[dict(revision=1,previous_revision=None,document=copy.deepcopy(document))],
+            policy_revisions=[dict(revision=1,previous_revision=None,config_revision=1,document=copy.deepcopy(document))])
+
+    def check_chain(self,before,planned):
+        rows={name:copy.deepcopy(before[name]) for name in ('config_revisions','policy_revisions')}
+        for table,_,patch in planned: rows[table].append(patch)
+        for table,values in rows.items():
+            for row in values:
+                self.assertEqual(row['previous_revision'],None if row['revision']==1 else row['revision']-1)
+                if row['revision']>1:
+                    self.assertIn(row['previous_revision'],[r['revision'] for r in values])
+                if table=='policy_revisions':
+                    self.assertIn(row['config_revision'],[r['revision'] for r in rows['config_revisions']])
+        for _,_,patch in planned:
+            canonical=json.dumps(patch['document'],sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+            self.assertEqual(patch['document_digest'],'\\x'+hashlib.sha256(b'bigbrotr/product-policy/3\0'+canonical).hexdigest())
+        return rows
+
+    def test_unequal_heads_retain_complete_intermediate_policy_chains(self):
+        original=copy.deepcopy(self.before)
+        planned=HISTORY.current_pair_rows(self.before)
+        self.assertEqual([(t,p['revision'],p['previous_revision'],p.get('config_revision')) for t,_,p in planned],
+            [('config_revisions',2,1,None),('policy_revisions',2,1,1),('policy_revisions',3,2,1),
+             ('policy_revisions',4,3,1),('policy_revisions',5,4,2)])
+        rows=self.check_chain(self.before,planned)
+        self.assertEqual(self.before,original)
+        for row in rows['policy_revisions'][1:4]:
+            self.assertEqual(row['document'],original['policy_revisions'][0]['document'])
+        before=dict(rows,datasets=[dict(config_revision=2,policy_revision=5)])
+        next_rows=HISTORY.current_pair_rows(before,3,8,retention=60,pending_limit=2*1024**3)
+        self.assertEqual([(p['revision'],p['previous_revision'],p['config_revision'])
+                          for t,_,p in next_rows if t=='policy_revisions'],[(6,5,2),(7,6,2),(8,7,3)])
+        self.check_chain(before,next_rows)
+
+    def test_mismatched_intake_pair_still_has_a_valid_adjacent_policy_revision(self):
+        planned=HISTORY.current_pair_rows(self.before,policy_revision=2,mismatched=True)
+        self.assertEqual([(t,p['revision'],p['previous_revision'],p['config_revision']) for t,_,p in planned],
+                         [('policy_revisions',2,1,1)])
+        self.check_chain(self.before,planned)
+        self.assertNotEqual(planned[0][2]['document']['settings']['ingest.request_receipt_retention'],
+                            self.before['config_revisions'][0]['document']['settings']['ingest.request_receipt_retention'])
 
 
 def trace(phase='activation',fault=None):

@@ -292,6 +292,39 @@ def current_originals(dataset):
     return result
 
 
+def current_pair_rows(before, config_revision=2, policy_revision=5, *, mismatched=False,
+                      retention=62, pending_limit=1024**3):
+    """Declared accepted-head precondition with complete immutable chains.
+
+    Intermediate policies retain the previous healthy body's own configuration;
+    only the final policy adopts the changed intake. Privileged insertion still
+    obeys the adjacent-revision CHECK and preserves every original row.
+    """
+    config_head=before['datasets'][0]['config_revision']
+    policy_head=before['datasets'][0]['policy_revision']
+    assert policy_head<policy_revision
+    if not mismatched: assert config_revision==config_head+1
+    rows=[]
+    for table in ('config_revisions','policy_revisions'):
+        head=config_head if table=='config_revisions' else policy_head
+        original,=[r for r in before[table] if r['revision']==head]
+        if mismatched and table=='config_revisions': continue
+        document=copy.deepcopy(original['document'])
+        document['settings']['ingest.request_receipt_retention']=retention
+        document['settings']['ingest.pending_max_bytes']=pending_limit
+        if table=='policy_revisions': document['settings']['sync.linear_limit']=400
+        target=config_revision if table=='config_revisions' else policy_revision
+        for revision in range(head+1,target+1):
+            body=document if revision==target else copy.deepcopy(original['document'])
+            encoded=json.dumps(body,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+            digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
+            patch=dict(revision=revision,previous_revision=revision-1,document=body,document_digest='\\x'+digest)
+            if table=='policy_revisions':
+                patch['config_revision']=(config_head if mismatched else config_revision) if revision==target else original['config_revision']
+            rows.append((table,head,patch))
+    return rows
+
+
 def run_current(state, output, contents, record, prepare, call, inventory):
     """One PG-only current-format batch in the existing policy runner.
 
@@ -338,27 +371,23 @@ def run_current(state, output, contents, record, prepare, call, inventory):
                     retention=62,pending_limit=1024**3):
         before = contents(database)
         statements = []
-        for table in ['config_revisions','policy_revisions']:
-            head = before['datasets'][0]['config_revision' if table=='config_revisions' else 'policy_revision']
-            original_row, = [r for r in before[table] if r['revision']==head]
-            document = copy.deepcopy(original_row['document'])
-            document['settings']['ingest.request_receipt_retention'] = retention
-            document['settings']['ingest.pending_max_bytes'] = pending_limit
-            if table == 'policy_revisions':
-                # Distinct complete digests with equal captured intake values.
-                document['settings']['sync.linear_limit'] = 400
-            digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+compact(document)).hexdigest()
-            revision = config_revision if table == 'config_revisions' else policy_revision
-            patch = dict(revision=revision, previous_revision=head, document=document, document_digest='\\x'+digest)
-            if table == 'policy_revisions': patch['config_revision'] = 1 if mismatched else config_revision
-            if mismatched and table == 'config_revisions': continue
+        planned=current_pair_rows(before,config_revision,policy_revision,mismatched=mismatched,
+                                  retention=retention,pending_limit=pending_limit)
+        for table,head,patch in planned:
             patch_bytes = compact(patch).hex()
             statements.append(f"INSERT INTO control.{table} SELECT (jsonb_populate_record(NULL::control.{table},to_jsonb(t)||convert_from(decode('{patch_bytes}','hex'),'UTF8')::jsonb)).* FROM control.{table} t WHERE revision={head}")
-        statements.append(f'UPDATE control.datasets SET config_revision={1 if mismatched else config_revision},policy_revision={policy_revision}')
+        target_config=before['datasets'][0]['config_revision'] if mismatched else config_revision
+        statements.append(f'UPDATE control.datasets SET config_revision={target_config},policy_revision={policy_revision}')
         sql(database, 'BEGIN; SET LOCAL session_replication_role=replica; '+';'.join(statements)+'; COMMIT;')
         after = contents(database)
         for table in before.keys()-{'config_revisions','policy_revisions','datasets'}:
             assert before[table] == after[table]
+        for table in ('config_revisions','policy_revisions'):
+            assert all(row in after[table] for row in before[table])
+            assert len(after[table])==len(before[table])+sum(name==table for name,_,_ in planned)
+        for table,_,patch in planned:
+            row,=[r for r in after[table] if r['revision']==patch['revision']]
+            assert {key:row[key] for key in patch}==patch
         return after
 
     def capture(name, mode, database, directory):

@@ -84,7 +84,10 @@ Healthy later matching Config2/Policy5 bodies intentionally have different
 revision numbers and different complete digests. A second seed starts under that
 matching changed pair; later Config3/Policy8 remains separate. Privileged fixture
 insertion supplies these declared accepted-head preconditions, and does not
-qualify the future managed-apply command. Independently rehashed Config1/Policy2
+qualify the future managed-apply command. Complete immutable Policy2..4 and6..7
+intermediates retain their preceding healthy body/configuration; Policy5 and8
+adopt the respective changed configuration. Every policy/configuration row keeps
+the ordinary adjacent-revision CHECK. Independently rehashed Config1/Policy2
 with inconsistent intake refuses. Public lookup covers complete-body corruption,
 missing required fields with stale/recomputed digests, old/future schema,
 retention range, ambiguous history and the document-cap boundaries.
