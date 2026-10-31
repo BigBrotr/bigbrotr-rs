@@ -23,6 +23,9 @@ impl Census<'_> {
         store: &IngestStore,
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
+        store
+            .require_pending_accounting()
+            .map_err(|_| BootstrapError::StateMismatch)?;
         let mut dictionaries = [[0_u64; 9]; EPOCHS];
         let mut reverse = [[0_u64; 9]; EPOCHS];
         let mut facts = [0_u64; EPOCHS];
@@ -31,8 +34,14 @@ impl Census<'_> {
         if let Some(retired) = self.entries.prefix_retired {
             requests[0] = retired;
         }
-        let (mut manifests, mut sources, mut producers, mut handoffs, mut allocations) =
-            (0, 0, 0, 0, 0);
+        let (
+            mut manifests,
+            mut accounting,
+            mut sources,
+            mut producers,
+            mut handoffs,
+            mut allocations,
+        ) = (0, 0, 0, 0, 0, 0);
         let head = store.manifest().identity();
         for cf in [
             ColumnFamily::Default,
@@ -52,6 +61,12 @@ impl Census<'_> {
                     .map_err(|_| BootstrapError::StateMismatch)?;
                 let bytes = cursor.value().ok_or(BootstrapError::StateMismatch)?;
                 match key {
+                    IngestKey::PendingAccounting => {
+                        accounting += 1;
+                        if bytes != store.accounting.encode() {
+                            return Err(BootstrapError::StateMismatch);
+                        }
+                    }
                     IngestKey::Manifest => {
                         manifests += 1;
                         if bytes != store.manifest().encode().as_bytes() {
@@ -232,6 +247,7 @@ impl Census<'_> {
             .map(|e| e.allocations.iter().filter(|n| **n > 0).count())
             .sum::<usize>();
         if manifests != 1
+            || accounting != 1
             || handoffs != self.entries.len() - 1
             || producers != self.entries.len()
             || sources

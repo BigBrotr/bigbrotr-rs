@@ -88,7 +88,7 @@ fn replace(rows: &mut Rows, key: IngestKey, value: &[u8]) {
 }
 
 #[test]
-fn successor_candidate_applies_exact_four_puts_from_both_terminal_kinds_and_later_frontier() {
+fn successor_candidate_applies_exact_five_puts_from_both_terminal_kinds_and_later_frontier() {
     for variant in 0..3 {
         let f = prepared_fixture();
         let r = if variant == 2 {
@@ -154,6 +154,15 @@ fn successor_candidate_applies_exact_four_puts_from_both_terminal_kinds_and_late
         let mut wanted = before;
         replace(&mut wanted, p.record().key(), &expected);
         replace(&mut wanted, IngestKey::Manifest, &next);
+        let mut counter = wanted
+            .iter()
+            .find(|(cf, key, _)| cf == "default" && key == &[1, 0x0b])
+            .unwrap()
+            .2
+            .clone();
+        counter[2..34].copy_from_slice(&Sha256::digest(&next));
+        counter[42..50].fill(0);
+        replace(&mut wanted, IngestKey::PendingAccounting, &counter);
         replace(
             &mut wanted,
             source_key(epoch + 1),
@@ -161,7 +170,7 @@ fn successor_candidate_applies_exact_four_puts_from_both_terminal_kinds_and_late
         );
         replace(&mut wanted, producer_key(epoch + 1), &marker(false, 0));
         assert_eq!(kv(&c.recovery().store), wanted);
-        assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 5);
         assert_eq!(inputs(&f.path()), originals);
         assert!(l.validate(c.recovery(), &NOT_CANCELLED).is_err());
         c.apply_handoff(&l, &p, grant(&f.budget, 8192, 8192), &NOT_CANCELLED, || {
@@ -169,7 +178,7 @@ fn successor_candidate_applies_exact_four_puts_from_both_terminal_kinds_and_late
         })
         .unwrap();
         assert_eq!(kv(&c.recovery().store), wanted);
-        assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 5);
         assert!(
             c.recovery()
                 .store
@@ -271,7 +280,7 @@ fn successor_gap_reconstructs_exact_intent_without_adopting_candidate() {
         || Ok(()),
     )
     .unwrap();
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(kv(&r.store).len(), before.len() + 3);
     let after = kv(&r.store);
     r.apply_successor_handoff(
@@ -283,7 +292,7 @@ fn successor_gap_reconstructs_exact_intent_without_adopting_candidate() {
     )
     .unwrap();
     assert_eq!(kv(&r.store), after);
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(inputs(&f.path()), originals);
     assert!(r.store.require_admission_owner(Some(at(3, 1))).is_err());
 }
@@ -401,14 +410,14 @@ fn successor_handoff_last_guard_refuses_and_post_dispatch_failure_keeps_exact_re
         );
         assert!(result.is_err());
         if fault == 3 {
-            assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 4);
+            assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 5);
             let after = kv(&c.recovery().store);
             c.apply_handoff(&l, &p, grant(&f.budget, 8192, 8192), &NOT_CANCELLED, || {
                 Ok(())
             })
             .unwrap();
             assert_eq!(kv(&c.recovery().store), after);
-            assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 4);
+            assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence + 5);
         } else {
             assert_eq!(kv(&c.recovery().store), before);
             assert_eq!(c.recovery().store.db.latest_sequence_number(), sequence);

@@ -11,7 +11,7 @@ from pathlib import Path
 import struct
 
 
-OUTPUT = Path(__file__).with_name("portable-handoff-v2.json")
+OUTPUT = Path(__file__).with_name("portable-handoff-v2-accounted.json")
 CONTRACT_REVISION = "12c3534c6c970839a4371fc00b4ac3eac6730cb0"
 DATASET = bytes.fromhex("102132435465768798a9bacbdcedfe0f")
 RESOURCE = bytes.fromhex("2031425364758697a8b9cadbecfd0e1f")
@@ -35,7 +35,7 @@ def manifest(epoch, *, kinds=tuple(range(1, 10)), identity_number=None):
     number = epoch if identity_number is None else identity_number
     schema = 1 if epoch == 1 else 2 if epoch == 2 else 3
     incarnation = struct.pack(">QQ", 0x5162738495A6B700 + number, 0x89ABCDEF01234567)
-    header = struct.pack(">BBHHHH", 1, 1, schema, 1, 1, 1)
+    header = struct.pack(">BBHHHH", 1, 1, schema, 2, 1, 1)
     fixed = (header + DATASET + u64(TOPOLOGY + number - 1) + RESOURCE
              + struct.pack(">I", 0x8899AABB) + u64(epoch) + incarnation
              + RECOVERY + u64(POLICY + number - 1) + bytes((1, len(kinds))))
@@ -227,6 +227,7 @@ def build():
                                metadata_formula_bytes=131072 + 512 * n,
                                admitted=n <= 255) for n in (254, 255, 256)])
     return dict(format="bigbrotr-repeatable-handoff-fixtures/1", contract_revision=CONTRACT_REVISION,
+                manifest_value_schema=2,
                 scope="Portable codec, chain-link and hash arithmetic only; no positive effects, authority, native, SQL or installed qualification",
                 scalar_note="Legacy closure scalars are fixed synthetic bytes; subset/high-epoch vectors are portable-only, not connected lineage proofs",
                 valid=valid, invalid=invalid, chain_checks=chain_checks,

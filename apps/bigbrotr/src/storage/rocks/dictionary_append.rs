@@ -421,6 +421,8 @@ impl IngestStore {
         context: ReplayContext<'_>,
         lineage: Option<&super::RetainedLineage>,
     ) -> Result<Option<Receipt>, AdmissionError> {
+        self.require_pending_accounting()
+            .map_err(BootstrapError::from)?;
         if &self.manifest != context.current_manifest {
             return Err(AdmissionError::StateMismatch);
         }

@@ -571,6 +571,7 @@ impl IngestRecovery {
                 handoff.record.producer_key(),
                 frame(&[], &[&producer_zero])?,
             )?;
+            self.store.seal_pending_accounting(&mut batch)?;
             self.store.commit_prepared(batch, &mut authority)?;
             self.store.manifest = handoff.record.next;
         }
@@ -602,7 +603,7 @@ impl IngestRecovery {
         let sequence = if completed {
             handoff
                 .native_sequence
-                .checked_add(4)
+                .checked_add(5)
                 .ok_or(BootstrapError::StateMismatch)?
         } else {
             handoff.native_sequence

@@ -13,8 +13,8 @@ big-endian. There is no padding, text encoding or optional trailing extension.
 |---|---|---|
 | 0 | 1 | Value format: `1` |
 | 1 | 1 | Value type: Ingest manifest, `1` |
-| 2 | 2 | Key schema: `1` initially; `2` for an explicitly prepared successor |
-| 4 | 2 | Value schema: `1` |
+| 2 | 2 | Key schema: `1` initially; `2` for the initial successor; `3` for repeatable successors |
+| 4 | 2 | Value schema: `2`, requiring atomic pending accounting |
 | 6 | 2 | Fingerprint profile: `1` |
 | 8 | 2 | Native option profile: `1` |
 | 10 | 16 | Nonzero dataset ID |
@@ -55,8 +55,72 @@ The decoder requires exact length and all five version/profile coordinates plus
 the type byte. Unknown protection spellings and zero allocated identities fail.
 Both the manifest and its encoded output use fixed maximum storage; decoding
 rejects oversized input before processing entries and allocates no heap buffer.
-Future formats require explicit migration; reopening must never rewrite an
-unknown manifest as the current one.
+Before the first production release, the current executable supports only value
+schema2, including embedded manifests. Existing value-schema1/counterless stores
+are explicitly unsupported even when apparently empty. Preserve those stores and
+their frozen matching source/tools; ordinary startup never rewrites an old or
+damaged manifest, inserts a missing counter or guesses zero. No existing-store
+converter is selected. If a later task selects conversion, it must first exclude
+old owners, reconcile exact SQL/embedded-manifest lineage and every scientific
+stream through a full census, then install the new marker and counter atomically.
+That conditional requirement does not authorize startup backfill. Released format
+changes require an explicit migration.
+
+### Mandatory pending accounting
+
+The default-family singleton key `01 0b` has exactly 50 value bytes:
+
+| Offset | Width | Meaning |
+| --- | --- | --- |
+| 0 | 2 | Counter value version/type `01 0b` |
+| 2 | 32 | SHA256 of the exact current singleton manifest bytes |
+| 34 | 8 | P: total retained logical pending bytes, unsigned BE64 |
+| 42 | 8 | S: current manifest stream's last complete source sequence, unsigned BE64 |
+
+P counts every retained Fact key plus its complete framed native value and every
+PendingBatch key/value, once each, across all retained owner streams. It excludes
+secondary index copies, dependency references, receipts, staged inputs, manifest
+and counter bytes. It is not a physical disk charge or permission to delete
+payloads. All addition/conversion is checked; overflow refuses.
+
+Fresh initialization writes the schema2 manifest, explicit source-stream0 and
+bound P0/S0 counter in one WAL-enabled synchronized three-put batch. Existing
+opens require a valid bound
+counter and independently stream all retained facts, complete pending membership
+and source closure before exposing current accounting. Missing/wrong-length/type/
+version/hash, stale or future S and under/overcounted P refuse without repair.
+Every current stream requires its canonical source marker. Missing source always
+refuses, even with counter P0/S0. Explicit zero requires no Fact or PendingBatch
+in that stream and matching accounting S; it does not require issued0, empty
+receipts or OPEN lifecycle. A successor S0 may retain predecessor P>0. Fresh
+bootstrap alone requires exactly the three named default rows and empty
+facts/receipts; a no-output history is not a fresh bootstrap.
+
+Scientific batches include their exact new P/S counter in the final prepared
+put count and byte estimate, before successor sequence sealing. Metadata-only
+ACK, OPEN/closed request-detail GC and Archive/lifecycle work never lower P.
+Historical request replay checks its original effects and separately validates
+current accounting; it does not compare a mutable counter with old result bytes.
+An uncertain native outcome invalidates cached capacity until positive recovery.
+
+Handoff preserves total P for every retained predecessor, rebinds the counter to
+the new manifest and sets current-stream S0. The synchronized transition has five
+puts: handoff, manifest, explicit successor source0, OPEN producer and counter.
+Producer encodings retain their distinct meanings: format1 OPEN, format2 CLOSING,
+format3 closed reclamation and format4 OPEN-prefix floor. They are not obsolete
+counter formats. Coordinated backups retain all charged facts/markers, the
+singleton counter and exact manifest/source lineage, including data below a
+reclaimed request floor and ACKed tails. A prefix base's old source cut is not S.
+
+Initial/initial-successor/repeatable headers are respectively
+`01010001000200010001`, `01010002000200010001` and
+`01010003000200010001`. Key schemas, fingerprint profile1 and native option
+profile1 are unchanged. Frozen f9's exact value-schema predicate refuses these
+headers before application scientific admission. Native open can still recover
+WAL or update engine logs before that refusal; this is not a physical-write-free
+or SQL-effect-free boundary. Source implementation and native qualification are
+separate; exact pre-staging logical reservation and physical growth grants remain
+unqualified while the absolute request64 guard stays in force.
 
 Key schema 2 adds the immutable owner-handoff key below. Existing keys retain
 their exact version-1 bytes. Changing this coordinate in the same synchronized
@@ -149,9 +213,11 @@ acceptance in [P02-T02](../implementation/02-storage.md#p02-t02--atomic-rocksdb-
 
 The [repeatable succession protocol](ingest-registration.md#repeatable-ingest-succession-selected-not-yet-implemented)
 selects manifest key schema3 for owner epochs3 and later. Its manifest has the
-same exact field widths and maximum266 bytes; all other version/profile coordinates
-stay1. Fresh initialization stays schema1. The initial1-to2 receipt and schema2
-manifest retain their exact bytes and decoders. Earlier schema1/2-only binaries
+same exact field widths and maximum266 bytes; value schema is2 and the fingerprint
+and native option profiles stay1. Fresh initialization stays key schema1. The
+initial1-to2 receipt retains its value-version1 field layout and key-schema2
+lifecycle; all current embedded manifests require value-schema2. Frozen
+counterless receipts remain with their matching tools. Earlier schema1/2-only binaries
 refuse schema3; opening a supported manifest still grants no admission authority.
 
 Use the existing42-byte owner-handoff key `01 0a || dataset_id[16] ||
@@ -235,7 +301,8 @@ have distinct domains. This definition adds no ACK/GC or permission to reuse an
 incarnation.
 
 After confirmed PostgreSQL preparation, the native operation writes exactly the
-new receipt, schema3 singleton and explicit zero source/producer markers in one
+new receipt, key-schema3 singleton, explicit zero source/producer markers and
+P-preserving rebound counter in one
 WAL-enabled synchronized batch. Existing-plan retry requires the exact empty
 target state and makes no write. Root device/inode, native sequence and separately
 checked retained input census remain local proof guards, never portable receipt

@@ -61,6 +61,7 @@ Lengths include the two-byte version/domain prefix.
 | `default` | `0x08` | event receive minimum | 92 | dataset16, event ID32, full visibility `QualifiedRef` |
 | `default` | `0x09` | provenance minimum | 218 | dataset16, event ID32, full endpoint, observer, access-scope and visibility `QualifiedRef`s |
 | `default` | `0x0a` | immutable owner handoff (manifest key schema 2) | 42 | dataset16, owner-resource16, predecessor owner epoch BE64 |
+| `default` | `0x0b` | mandatory pending accounting (manifest value schema 2) | 2 | none; exact bound50-byte value is specified with the manifest |
 | `facts` | `0x20` | immutable fact | 38 | full `SourceRecordId` |
 | `facts` | `0x21` | pending admission batch | 38 | full first `SourceRecordId` |
 | `receipts` | `0x30` | request detail | 34 | full `ProducerRequestId` |
@@ -101,8 +102,10 @@ until their archive protection and replay obligations permit reclamation.
 
 ## Compatibility boundary
 
-These bytes are persistent. Changing field order, width, meaning or a domain tag
-requires a new key-format version and an explicit compatible migration. Never
+These bytes are persistent. Changing field order, width, meaning or an assigned
+domain tag requires an explicit reviewed format transition. Before production,
+unsupported private formats may be refused while preserving their matching
+historical source/data; no automatic converter follows. Never
 reinterpret an existing tag, silently accept trailing extension bytes, or open a
 directory whose manifest declares another key format. Unknown future versions and
 domains fail closed in this decoder.
@@ -112,6 +115,13 @@ The additive `0x0a` domain belongs to manifest key schema 2. Its
 retain all existing key bytes and change the manifest compatibility coordinate
 before any successor writer can be enabled. An old schema-1-only implementation
 must refuse that manifest; it cannot silently ignore the new domain and write.
+
+The additive singleton`0x0b` belongs to manifest value-schema2 across key schemas
+1/2/3. Its [exact counter value and atomic composition](ingest-manifest-format.md#mandatory-pending-accounting)
+do not repurpose the native option profile or change existing key bytes. A key
+alone would not fence old ordinary writers; the changed manifest value schema
+does. Counterless value-schema1 stores are unsupported by this candidate, with no
+startup backfill or default-zero recovery.
 
 The selected [repeatable handoff](ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
 keeps this same42-byte key and its predecessor identity/order. It introduces a

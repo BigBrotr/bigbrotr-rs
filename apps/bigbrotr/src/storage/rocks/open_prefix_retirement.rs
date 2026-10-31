@@ -98,6 +98,9 @@ impl PrefixRetirement {
         if store.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
+        store
+            .require_pending_accounting()
+            .map_err(|_| AdmissionError::StateMismatch)?;
         if store.prefix_context(self.slot()?) != self.base.context
             || store.handoff_root_identity()? != self.root
             || store.db.latest_sequence_number() != self.sequence

@@ -102,7 +102,7 @@ fn assert_error(result: Result<IngestStore, StoreError>, expected: StoreError) {
 }
 
 #[test]
-fn explicit_initialization_persists_only_the_exact_manifest_and_reopens() {
+fn explicit_initialization_persists_the_exact_manifest_and_zero_counter_and_reopens() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let budget = budget();
@@ -133,9 +133,14 @@ fn explicit_initialization_persists_only_the_exact_manifest_and_reopens() {
                 .iterator_cf(db.cf_handle(cf).unwrap(), rocksdb::IteratorMode::Start)
                 .collect::<Result<_, _>>()
                 .unwrap();
-            assert_eq!(rows.len(), usize::from(cf == "default"));
+            assert_eq!(rows.len(), if cf == "default" { 3 } else { 0 });
             if cf == "default" {
                 assert_eq!(rows[0].0.as_ref(), &[1, 1]);
+                assert_eq!(&rows[1].0[..2], &[1, 2]);
+                assert_eq!(rows[1].1.as_ref(), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+                assert_eq!(rows[2].0.as_ref(), &[1, 0x0b]);
+                assert_eq!(rows[2].1.len(), 50);
+                assert_eq!(&rows[2].1[34..], &[0; 16]);
             }
         }
     }

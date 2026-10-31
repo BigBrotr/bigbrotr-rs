@@ -67,6 +67,7 @@ fn later_manifest(previous: IngestManifest, epoch: u64) -> IngestManifest {
 
 fn extend_to(f: &Fixture, last: u64) -> IngestRecovery {
     let r = f.reopen();
+    let pending = r.store.accounting.pending_bytes();
     let mut previous = *r.manifest();
     let mut incoming: [u8; 32] = Sha256::digest(value(&r.store, handoff_key())).into();
     for epoch in 3..=last {
@@ -88,6 +89,11 @@ fn extend_to(f: &Fixture, last: u64) -> IngestRecovery {
         put(&r.store, producer_key(epoch), &marker(false, 0));
         put(&r.store, source_key(epoch), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
         put(&r.store, IngestKey::Manifest, next.encode().as_bytes());
+        put(
+            &r.store,
+            IngestKey::PendingAccounting,
+            &PendingAccounting::new(&next, pending, 0).encode(),
+        );
         incoming = Sha256::digest(record.encode().as_bytes()).into();
         previous = next;
     }
@@ -318,6 +324,7 @@ fn zero_fixture(issued: u64) -> Fixture {
     let path = root.path().join("db");
     let mut store =
         IngestStore::initialize(&path, previous, native, grant(&budget, 0, 128 * MIB)).unwrap();
+    let zero_counter = value(&store, IngestKey::PendingAccounting);
     let corpus: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../../tests/fixtures/ingest/signed-event-admission.json"
     ))
@@ -337,6 +344,7 @@ fn zero_fixture(issued: u64) -> Fixture {
             grant(&budget, MIB, 0),
         )
         .unwrap();
+        let native_sequence = store.db.latest_sequence_number();
         let outcome = store
             .admit_event(
                 prepared,
@@ -352,6 +360,10 @@ fn zero_fixture(issued: u64) -> Fixture {
             AdmissionOutcome::Rejected(RejectionReason::Signature)
         ));
         drop(outcome);
+        assert_eq!(store.db.latest_sequence_number(), native_sequence + 2);
+        assert_eq!(value(&store, IngestKey::PendingAccounting), zero_counter);
+        assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
+        assert_eq!(store.pending_accounting().unwrap().source_through(), 0);
         originals.push(Original {
             input,
             outcome: value(
@@ -362,16 +374,11 @@ fn zero_fixture(issued: u64) -> Fixture {
             ),
         });
     }
-    assert!(
-        store
-            .db
-            .get(source_key(1).encode().unwrap().as_bytes())
-            .unwrap()
-            .is_none()
-    );
+    assert_eq!(value(&store, source_key(1)), [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
     drop(store);
     let mut r =
         IngestRecovery::open(&path, previous, native, grant(&budget, 0, 128 * MIB)).unwrap();
+    let native_sequence = r.store.db.latest_sequence_number();
     let closed = r
         .close_producer(
             request(7, 1).producer_slot_id,
@@ -380,6 +387,8 @@ fn zero_fixture(issued: u64) -> Fixture {
             || Ok(()),
         )
         .unwrap();
+    assert_eq!(r.store.db.latest_sequence_number(), native_sequence + 1);
+    assert_eq!(value(&r.store, IngestKey::PendingAccounting), zero_counter);
     let mut source = closed.source_resolution(&r, issued).unwrap();
     for (index, original) in originals.iter().enumerate() {
         let resolved = r
@@ -432,7 +441,7 @@ fn zero_fixture(issued: u64) -> Fixture {
 }
 
 #[test]
-fn lineage_preserves_legacy_zero_with_rejected_originals_and_full_spool() {
+fn lineage_preserves_explicit_initial_zero_with_rejected_originals_and_full_spool() {
     for issued in [0, 1, 64] {
         let f = zero_fixture(issued);
         let r = f.reopen();
@@ -443,12 +452,9 @@ fn lineage_preserves_legacy_zero_with_rejected_originals_and_full_spool() {
             old.terminal_claim(),
             Some((RetainedTerminalKind::Initial, f.closure))
         );
-        assert!(
-            r.store
-                .db
-                .get(source_key(1).encode().unwrap().as_bytes())
-                .unwrap()
-                .is_none()
+        assert_eq!(
+            value(&r.store, source_key(1)),
+            [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]
         );
         drop(lineage);
         if issued == 0 {

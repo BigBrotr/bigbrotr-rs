@@ -2,6 +2,7 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::{ColumnFamily, IngestKey, decode_key};
+use sha2::{Digest, Sha256};
 
 fn target(old: IngestManifest) -> IngestManifest {
     let mut identity = *old.identity();
@@ -119,7 +120,15 @@ fn expected(
         .iter_mut()
         .find(|(cf, key, _)| cf == "default" && key == &[1, 1])
         .unwrap()
-        .2 = successor;
+        .2 = successor.clone();
+    let counter = &mut result
+        .iter_mut()
+        .find(|(cf, key, _)| cf == "default" && key == &[1, 0x0b])
+        .unwrap()
+        .2;
+    assert_eq!(counter.len(), 50);
+    counter[2..34].copy_from_slice(&Sha256::digest(&successor));
+    counter[42..50].fill(0);
     let mut zero = vec![1, 2];
     zero.extend_from_slice(&[0; 8]);
     let mut open = vec![1, 49];
@@ -134,7 +143,7 @@ fn expected(
 }
 
 #[test]
-fn initial_handoff_has_exact_four_key_delta_and_read_only_reopened_replay() {
+fn initial_handoff_has_exact_five_put_delta_and_read_only_reopened_replay() {
     for issued in [0, 1] {
         let (root, store, budget, manifest, native) = setup(false);
         drop(store);

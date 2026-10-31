@@ -4,7 +4,7 @@ use super::{IngestStore, PendingBatchHeader, StoredReceipt};
 use crate::storage::rocks::manifest::IngestManifest;
 use crate::{
     runtime::OwnedPermit,
-    storage::rocks::keys::{ColumnFamily, EncodedKey, IngestKey},
+    storage::rocks::keys::{ColumnFamily, EncodedKey, IngestKey, KeyDomain},
 };
 use bigbrotr_model::{
     AdmissionBatch, DictionaryDescriptor, DictionaryKind, Digest256, EvidenceIntent, Fact,
@@ -97,7 +97,7 @@ impl BootstrapLimits {
             + super::outcome_copy::HANDOFF_DATA_BYTES
             + super::request_inputs::STAGING_OVERHEAD_BYTES
             + vectors
-            + 5 * size_of::<Entry>()
+            + 6 * size_of::<Entry>()
             + size_of::<Receipt>()
             + size_of::<Fact>()) as u64)
     }
@@ -134,20 +134,22 @@ pub(super) struct Prepared {
     entries: Vec<Entry>,
     serialized_bound: usize,
     limit: usize,
+    accounting: Option<(super::PendingAccounting, super::PendingAccounting)>,
 }
 impl Prepared {
     pub(super) fn entry_allocation_bytes(max_mappings: usize) -> usize {
-        (4 * max_mappings + 5) * size_of::<Entry>()
+        (4 * max_mappings + 6) * size_of::<Entry>()
     }
     pub(super) fn new(limits: BootstrapLimits) -> Result<Self, BootstrapError> {
         let mut entries = Vec::new();
         entries
-            .try_reserve_exact(4 * limits.max_mappings + 5)
+            .try_reserve_exact(4 * limits.max_mappings + 6)
             .map_err(|_| BootstrapError::Allocation)?;
         Ok(Self {
             entries,
             serialized_bound: 12,
             limit: limits.max_batch_bytes,
+            accounting: None,
         })
     }
     pub(super) fn put(&mut self, key: IngestKey, value: Vec<u8>) -> Result<(), BootstrapError> {
@@ -249,7 +251,29 @@ impl IngestStore {
             cf: ColumnFamily::Default,
             value: self.manifest.encode().as_bytes().to_vec(),
         };
-        self.require_exact_state(&[manifest])?;
+        let accounting = Entry {
+            key: IngestKey::PendingAccounting
+                .encode()
+                .map_err(|_| BootstrapError::StateMismatch)?,
+            cf: ColumnFamily::Default,
+            value: super::PendingAccounting::new(&self.manifest, 0, 0)
+                .encode()
+                .to_vec(),
+        };
+        let id = self.manifest.identity();
+        let source = Entry {
+            key: IngestKey::SourceStream {
+                dataset_id: id.dataset_id,
+                shard_id: id.shard_id,
+                owner_epoch: id.owner_epoch,
+            }
+            .encode()
+            .map_err(|_| BootstrapError::StateMismatch)?,
+            cf: ColumnFamily::Default,
+            value: vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+        };
+        self.require_exact_state(&[manifest, source, accounting])?;
+        self.seal_pending_accounting(&mut prepared)?;
         let input = intent
             .encode_request_preimage(request, limits.max_batch_bytes)
             .map_err(|error| match error {
@@ -302,6 +326,8 @@ impl IngestStore {
         limits: BootstrapLimits,
         context: ReplayContext<'_>,
     ) -> Result<Option<Receipt>, BootstrapError> {
+        self.require_pending_accounting()
+            .map_err(|_| BootstrapError::StateMismatch)?;
         if &self.manifest != context.current_manifest {
             return Err(BootstrapError::StateMismatch);
         }
@@ -379,6 +405,7 @@ impl IngestStore {
         prepared: Prepared,
         mut require_authority: impl FnMut() -> Result<(), BootstrapError>,
     ) -> Result<(), BootstrapError> {
+        self.validate_prepared_accounting(&prepared)?;
         let mut batch = WriteBatch::with_capacity_bytes(prepared.serialized_bound);
         for entry in &prepared.entries {
             let cf = self
@@ -397,12 +424,141 @@ impl IngestStore {
         options.disable_wal(false);
         options.set_ignore_missing_column_families(false);
         require_authority()?;
+        self.validate_prepared_accounting(&prepared)?;
         self.write_uncertain = true;
         self.db
             .write_opt(batch, &options)
             .map_err(|_| BootstrapError::CommitUnknown)?;
         self.write_uncertain = false;
+        if let Some((_, next)) = prepared.accounting {
+            self.accounting = next;
+        }
         Ok(())
+    }
+
+    /// Explicitly add the accounting put BEFORE a successor frontier seals the
+    /// final count. Metadata-only work preserves the exact existing counter.
+    pub(super) fn seal_pending_accounting(
+        &self,
+        prepared: &mut Prepared,
+    ) -> Result<(), BootstrapError> {
+        if prepared.accounting.is_some()
+            || prepared
+                .entries
+                .iter()
+                .any(|entry| entry.key.domain() == KeyDomain::PendingAccounting)
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        let next = self.prepared_accounting(prepared)?;
+        if next != self.accounting {
+            prepared.put(IngestKey::PendingAccounting, next.encode().to_vec())?;
+            prepared.accounting = Some((self.accounting, next));
+        }
+        Ok(())
+    }
+
+    fn prepared_accounting(
+        &self,
+        prepared: &Prepared,
+    ) -> Result<super::PendingAccounting, BootstrapError> {
+        self.require_pending_accounting()
+            .map_err(|_| BootstrapError::StateMismatch)?;
+        let mut manifest = self.manifest;
+        for entry in &prepared.entries {
+            if entry.key.domain() == KeyDomain::Manifest {
+                manifest = IngestManifest::decode(&entry.value)
+                    .map_err(|_| BootstrapError::StateMismatch)?;
+            }
+        }
+        let id = manifest.identity();
+        let source_key = IngestKey::SourceStream {
+            dataset_id: id.dataset_id,
+            shard_id: id.shard_id,
+            owner_epoch: id.owner_epoch,
+        }
+        .encode()
+        .map_err(|_| BootstrapError::StateMismatch)?;
+        let mut source = if manifest == self.manifest {
+            self.accounting.source_through()
+        } else {
+            0
+        };
+        let mut source_puts = 0;
+        let mut delta = 0;
+        for (index, entry) in prepared.entries.iter().enumerate() {
+            if prepared.entries[..index]
+                .iter()
+                .any(|prior| prior.cf == entry.cf && prior.key == entry.key)
+            {
+                return Err(BootstrapError::StateMismatch);
+            }
+            match entry.key.domain() {
+                KeyDomain::Fact | KeyDomain::PendingBatch => {
+                    let cf = self
+                        .db
+                        .cf_handle("facts")
+                        .ok_or(BootstrapError::EngineRead)?;
+                    if self
+                        .db
+                        .get_pinned_cf_opt(cf, entry.key.as_bytes(), &read_options())
+                        .map_err(|_| BootstrapError::EngineRead)?
+                        .is_some()
+                    {
+                        return Err(BootstrapError::StateMismatch);
+                    }
+                    delta = super::pending_accounting::charge(
+                        delta,
+                        entry.key.as_bytes().len(),
+                        entry.value.len(),
+                    )
+                    .map_err(|_| BootstrapError::Limit)?;
+                }
+                KeyDomain::SourceStream => {
+                    if entry.key != source_key
+                        || entry.value.len() != 10
+                        || entry.value[..2] != [1, 2]
+                    {
+                        return Err(BootstrapError::StateMismatch);
+                    }
+                    source = u64::from_be_bytes(entry.value[2..].try_into().expect("fixed source"));
+                    source_puts += 1;
+                }
+                _ => {}
+            }
+        }
+        if manifest == self.manifest {
+            self.accounting
+                .advance(delta, source)
+                .map_err(|_| BootstrapError::Limit)
+        } else if delta == 0 && source_puts == 1 && source == 0 {
+            Ok(super::PendingAccounting::new(
+                &manifest,
+                self.accounting.pending_bytes(),
+                0,
+            ))
+        } else {
+            Err(BootstrapError::StateMismatch)
+        }
+    }
+
+    fn validate_prepared_accounting(&self, prepared: &Prepared) -> Result<(), BootstrapError> {
+        let next = self.prepared_accounting(prepared)?;
+        let entry = prepared
+            .entries
+            .iter()
+            .find(|entry| entry.key.domain() == KeyDomain::PendingAccounting);
+        match (prepared.accounting, entry) {
+            (None, None) if next == self.accounting => Ok(()),
+            (Some((previous, sealed)), Some(entry))
+                if previous == self.accounting
+                    && sealed == next
+                    && entry.value == next.encode() =>
+            {
+                Ok(())
+            }
+            _ => Err(BootstrapError::StateMismatch),
+        }
     }
 
     fn validate_bootstrap(

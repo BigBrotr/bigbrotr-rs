@@ -303,16 +303,15 @@ impl<'a> SourceResolution<'a> {
             .get_pinned_opt(key.as_bytes(), &read_options())
             .map_err(|_| BootstrapError::EngineRead)?;
         let native_through = match value.as_deref() {
-            None => 0,
             Some(bytes) if bytes.len() == 10 && bytes[..2] == [1, 2] => {
                 u64::from_be_bytes(bytes[2..].try_into().expect("fixed validated length"))
             }
-            Some(_) => return Err(BootstrapError::StateMismatch),
+            _ => return Err(BootstrapError::StateMismatch),
         };
         if native_through != self.prefix.source_through {
             return Err(BootstrapError::StateMismatch);
         }
-        // A missing/zero counter cannot conceal retained source facts. Check the
+        // A zero counter cannot conceal retained source facts. Check the
         // actual last key without decoding or allocating an unbounded tail.
         let source_key = |sequence| {
             IngestKey::Fact {

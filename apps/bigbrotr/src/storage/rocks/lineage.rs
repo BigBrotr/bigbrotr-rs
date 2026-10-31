@@ -785,16 +785,8 @@ fn entry_coordinates_in(
     terminal: Option<(RetainedTerminalKind, u64, u64, [u8; 32])>,
     producer: ProducerState,
 ) -> Result<RetainedLineageEntry, BootstrapError> {
-    let epoch = manifest.identity().owner_epoch.get();
-    let source = store_counter(store, source_key(&manifest))?;
-    // Legacy genesis could close at zero after no-fact requests, without ever
-    // creating a counter. Exact originals still need their later positive replay.
-    if source.is_none()
-        && !(epoch == 1 && producer.closing && terminal.is_some_and(|(_, _, cut, _)| cut == 0))
-    {
-        return Err(BootstrapError::StateMismatch);
-    }
-    let source_through = source.unwrap_or(0);
+    let source_through =
+        store_counter(store, source_key(&manifest))?.ok_or(BootstrapError::StateMismatch)?;
     if (producer.issued == 0 && source_through != 0)
         || terminal.is_some_and(|(kind, issued, cut, _)| {
             !producer.closing
@@ -832,7 +824,7 @@ fn entry_coordinates_in(
         terminal_digest: terminal.map_or([0; 32], |(_, _, _, digest)| digest),
         terminal_kind: terminal.map(|(kind, _, _, _)| kind),
         closing: producer.closing,
-        source_present: source.is_some(),
+        source_present: true,
         allocations,
     })
 }

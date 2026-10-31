@@ -7,7 +7,7 @@ use std::fmt;
 
 // Value format, ingest-manifest tag, key/value schemas, fingerprint and native
 // option profiles. Reinterpreting any of these requires an explicit migration.
-const HEADER: [u8; 10] = [1, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+const HEADER: [u8; 10] = [1, 1, 0, 1, 0, 2, 0, 1, 0, 1];
 const FIXED_BYTES: usize = 104;
 const NAMESPACE_BYTES: usize = 18;
 const DICTIONARY_KINDS: usize = 9;

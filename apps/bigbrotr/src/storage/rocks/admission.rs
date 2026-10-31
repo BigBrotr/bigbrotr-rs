@@ -567,9 +567,7 @@ impl IngestStore {
         })?;
         let outcome = match input.event.take().ok_or(AdmissionError::InvalidInput)? {
             Err(reason) => {
-                if identity.owner_epoch.get() == 2 || self.live_successor.is_some() {
-                    self.admission_source_boundary(limits, &mut reads)?;
-                }
+                self.admission_source_boundary(limits, &mut reads)?;
                 AdmissionOutcome::Rejected(reason)
             }
             Ok(event) => self.prepare_event_effects(
@@ -673,6 +671,8 @@ impl IngestStore {
         reads: &mut ReadBudget,
         context: ReplayContext<'_>,
     ) -> Result<Option<(AdmissionOutcome, super::NativeOutcomeCopy)>, AdmissionError> {
+        self.require_pending_accounting()
+            .map_err(BootstrapError::from)?;
         if &self.manifest != context.current_manifest {
             return Err(AdmissionError::StateMismatch);
         }
@@ -1246,8 +1246,8 @@ impl IngestStore {
     }
 
     /// Source counters have a different zero rule from allocation counters.
-    /// Only this actual live successor can retain an explicit empty source, even
-    /// after no-fact requests advanced its producer. Facts/pending must be absent.
+    /// Every current manifest retains an explicit source, including initial
+    /// zero after no-fact requests. Current accounting and empty science agree.
     pub(super) fn admission_source_boundary(
         &self,
         limits: AdmissionLimits,
@@ -1276,9 +1276,6 @@ impl IngestStore {
             sequence: Sequence::new(last.max(1)).map_err(|_| AdmissionError::StateMismatch)?,
         };
         if last == 0 {
-            if identity.owner_epoch.get() != 2 && self.live_successor.is_none() {
-                return Err(AdmissionError::StateMismatch);
-            }
             self.require_admission_owner(None)?;
             for key in [
                 IngestKey::Fact { source_record_id },

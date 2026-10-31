@@ -152,7 +152,7 @@ fn wal_recovery_refuses_loss_of_a_synced_bootstrap() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
     let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../tests/fixtures/ingest/staged-bootstrap-crash.json"
+        "../../../../../tests/fixtures/ingest/staged-bootstrap-crash-accounted.json"
     ))
     .unwrap();
     for mode in ["intact", "checksum", "truncated"] {
@@ -219,7 +219,7 @@ fn strict_wal_open_is_not_a_proof_against_complete_record_loss() {
     let recovered =
         IngestRecovery::open(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let fixture: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../../../tests/fixtures/ingest/staged-bootstrap-crash.json"
+        "../../../../../tests/fixtures/ingest/staged-bootstrap-crash-accounted.json"
     ))
     .unwrap();
     assert_eq!(rows(&recovered.store.db), fixture["before"]);
