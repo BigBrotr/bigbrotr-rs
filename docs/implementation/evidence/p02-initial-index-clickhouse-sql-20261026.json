@@ -3623,9 +3623,42 @@
           "merged_checks": {
             "path": ".research/initial-index-recovery-qualification-20261028/second-export-a3c10c7b/merged-checks.json",
             "sha256": "c125f7b0c53619023d797c8d6167664c1d2738d8133fc652901831acea157632"
-          }
+          },
+          "integrated_main": "6fa24827d135cb5610237309400ccfce4e2fb67e",
+          "publication_receipt": ".research/ci-publication-20261026/source-second-export-6fa24827-20261030/publication.json"
         }
       }
+    },
+    "open_prefix_reclamation": {
+      "status": "CONTRACT_AND_PREPARED_FIXTURES_SOURCE_ONLY_RUNTIME_NOT_RUN",
+      "owners": [
+        "P02-T02 Step4",
+        "P03-T01 Step3",
+        "P02-T04/P02-T06 finite initial Archive consumer"
+      ],
+      "core_contract": "2a35f66ff7611b9c107c13399406035632072719",
+      "resource_contract": {
+        "revision": "bf5ac2b6ade9d18dccfb4da0338504cffe1f6cc1",
+        "critical_closure": {
+          "path": ".research/open-prefix-disk-credit-fix-20261030/.research/critical-review-bf5ac2b6.json",
+          "sha256": "377adc8bb3b03968e4f89e33440e4e7e11d37d358ca8a81755bf55fa81ea9c64"
+        },
+        "scope": "OPD-F1/F2 closed: held versus new credit and reserve-funded recovery, rounded low>=1. Exact native/PG physical envelopes remain open; default64GiB+16GiB resume headroom unchanged. No request65 enablement."
+      },
+      "product_partial": {
+        "revision": "e9fa4f62",
+        "worktree": ".research/open-prefix-initial-sol-20261030",
+        "state": "Prior WIP saved coherently7061e655; exact raw pending fact/marker read census added e9fa4f62. Active single-current-policy V3/startup capture work; persistent counter/grants/caller remain unqualified. rustfmt/static checks only; no Cargo/native/SQL installed execution. Original absolute64 growth gate preserved."
+      },
+      "acceptance_preparation": {
+        "revision": "1cb3698342b02659c5583d67d210fae9cc1eada5",
+        "author_receipt": {
+          "path": ".research/open-prefix-acceptance-20261030/.research/open-prefix-acceptance-author/author-receipt.json",
+          "sha256": "6d15758b0cc4e36e1a7dc774c94d8b361b5a4055e194346ba8b6fd58f57431fb"
+        },
+        "controls": "132 portable PASS,129 independent signed-event cohort; complete new Runtime and genuine paired A132/B128 installed scope NOT_RUN."
+      },
+      "next": "Complete bounded implementation/accounting and current-policy consolidation; derive enforceable physical completion coverage before >64. Native/PG/installed/pressure/fault qualification still required, not inferred from portable controls."
     }
   },
   "last_updated": "2026-10-29",

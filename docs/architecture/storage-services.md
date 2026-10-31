@@ -234,6 +234,14 @@ on accepted changes; neither a new numeric value nor planned Live metadata can
 alter an immutable prepared operation. Narrow future safe-point application is
 separate from this storage prerequisite.
 
+Before removing the lifetime64 guard, enforce the
+[aggregate pending and filesystem-growth prerequisite](../reference/producer-request-inputs.md#pending-and-filesystem-admission-before-open-reclamation).
+Receipt/input GC leaves scientific pending bytes resident. The initial profile
+must stop new payload at its logical high water or unavailable physical completion
+headroom, preserving exact retry, read-only recovery and funded completion. Its
+native/PG growth envelope remains an explicit qualification gate; current WAL
+targets and memory grants cannot stand in for it.
+
 Receipt, producer-ledger and original-input retirement form one responsibility:
 dropping receipt keys alone does not release input capacity. Every staged file,
 including an interrupted or unrelated retained input, counts in the same full

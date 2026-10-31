@@ -277,9 +277,26 @@ positive process termination; timed-out probes cannot multiply workers.
 
 ### Disk reserve and overload
 
+The [first OPEN-prefix intake profile](../reference/producer-request-inputs.md#pending-and-filesystem-admission-before-open-reclamation)
+must add exact aggregate pending accounting and a serialized filesystem-growth
+guard before removing the lifetime64 limit. Existing memory grants, one-unit
+configuration validation, filesystem identity checks and export-only free-space
+preflight do not supply that guarantee. Its numerical native/PG completion
+envelope requires the bounded exact-profile qualification described there; until
+then fresh auto-GC cannot enable request65. This does not require payload GC or
+all managed configuration/capacity work.
+
 For each filesystem, record separate physical resident bytes `L`, outstanding
 durable-growth reservations `A`, and reserved completion/recovery bytes `R`.
 Before admitting additional durable growth d require `free - A - d >= R`.
+Charge a new grant once. Its continuation revalidates remaining held coverage
+`free - A >= R_unspent`, without charging its own d again. R_unspent is the
+uncommitted part of full R; assigned completion/recovery may atomically transfer
+its share into A, preserving all other shares. Reconstruct unresolved grants and
+reserve commitments before any writing open/claim after restart; unknown does
+not mean zero. New payload requires full R replenished and stable low water.
+The linked initial-profile contract specifies these distinct transitions and
+their refusal/recovery controls; existing grants never exclude external ENOSPC.
 `L` includes existing WAL/SST, catalog/control, partial files and all pinned file
 generations. Avoid subtracting already resident reservations twice. R includes
 conservative remaining WAL flush/rewrite growth, PG checkpoint/control/receipt
