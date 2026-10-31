@@ -51,6 +51,24 @@ fn install_floor(f: &Fixture, r: &IngestRecovery) {
     r.store.db.write(batch).unwrap();
 }
 
+fn literal_pending_accounting(rows: &Rows, manifest: &[u8], source: u64) -> [u8; 50] {
+    assert_eq!(&manifest[4..6], &[0, 2]);
+    let pending = rows
+        .iter()
+        .filter(|(cf, _, _)| cf == "facts")
+        .try_fold(0_u64, |sum, (_, key, value)| {
+            sum.checked_add(u64::try_from(key.len()).unwrap())
+                .and_then(|sum| sum.checked_add(u64::try_from(value.len()).unwrap()))
+        })
+        .unwrap();
+    let mut bytes = [0; 50];
+    bytes[..2].copy_from_slice(&[1, 11]);
+    bytes[2..34].copy_from_slice(&Sha256::digest(manifest));
+    bytes[34..42].copy_from_slice(&pending.to_be_bytes());
+    bytes[42..50].copy_from_slice(&source.to_be_bytes());
+    bytes
+}
+
 fn fixture() -> (Fixture, IngestRecovery) {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
@@ -119,6 +137,26 @@ fn fixture() -> (Fixture, IngestRecovery) {
     put(&r.store, source_key(3), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 1]);
     put(&r.store, producer_key(3), &marker(true, 2));
     install_floor(&f, &r);
+    // Complete this synthetic seed's current-format metadata before admission.
+    // The added epoch3 fact and batch retain all historical framed science.
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 1);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let before = (
+        kv(&r.store),
+        r.store.db.latest_sequence_number(),
+        inputs(&f.path()),
+    );
+    assert_current_accounting(&before.0);
+    drop(r);
+    let r = f.reopen();
+    assert_eq!(
+        (
+            kv(&r.store),
+            r.store.db.latest_sequence_number(),
+            inputs(&f.path())
+        ),
+        before
+    );
     (f, r)
 }
 
