@@ -36,7 +36,7 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 \if :control
 \connect bigbrotr_control
--- Static proposal for fresh PostgreSQL Control target42, applied by the
+-- Static proposal for fresh PostgreSQL Control target43, applied by the
 -- trusted provisioning owner after real migrate apply. Not engine-qualified.
 -- The application role must already be LOGIN NOSUPERUSER NOCREATEDB
 -- NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS, with no memberships,
@@ -49,7 +49,7 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 GRANT CONNECT ON DATABASE bigbrotr_control TO bigbrotr_control;
 GRANT USAGE ON SCHEMA control TO bigbrotr_control;
--- Current target42 catalog only; no ALTER DEFAULT PRIVILEGES.
+-- Current target43 catalog only; no ALTER DEFAULT PRIVILEGES.
 GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control;
 
 GRANT INSERT ON
@@ -175,6 +175,8 @@ GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs
 -- No EXECUTE ON ALL FUNCTIONS and no explicit trigger-function grants.
 -- Trigger functions run from the already-created migration-owned triggers;
 -- their invoker SQL still requires the table/helper grants supplied here.
+GRANT INSERT, UPDATE ON control.acquisition_quanta TO bigbrotr_control;
+
 GRANT EXECUTE ON FUNCTION
     control.acquisition_command_digest(control.acquisition_jobs,control.management_commands),
     control.acquisition_progress_bytes(control.acquisition_progress),
@@ -228,6 +230,7 @@ GRANT EXECUTE ON FUNCTION
     control.require_initial_retirement(bytea,numeric,bytea),
     control.require_prepared_initial_successor(bytea),
     control.require_producer_progress_capacity(bytea,numeric,bigint,integer,integer),
+    control.quantum_retained_charge(bytea,numeric),
     control.require_relay_source(bytea,bytea,bytea,numeric,bytea),
     control.require_retained_producer_progress(bytea,numeric),
     control.retain_control_lock(),

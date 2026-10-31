@@ -48,6 +48,16 @@ impl<'a> NativeOwner<'a> {
     }
 }
 impl NativeOwner<'_> {
+    pub(super) fn quantum_progress_read<'a>(
+        &'a self,
+        scratch: &'a OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<crate::storage::rocks::store::ProgressRead<'a>, AdmissionError> {
+        match self {
+            Self::Store(store) => store.progress_read(scratch),
+            Self::Successor(owner) => owner.quantum_progress_read(scratch, cancelled),
+        }
+    }
     pub(super) fn require_unretired_prefix(
         &self,
         request: ProducerRequestId,

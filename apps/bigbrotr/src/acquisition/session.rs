@@ -120,6 +120,57 @@ impl<'request> ReceivedRelay<'_, 'request> {
     pub fn request(&self) -> Option<ActiveRequest<'request>> {
         self.request
     }
+    pub fn retain_terminal(
+        &self,
+        expected: RequestId,
+        permit: OwnedPermit,
+    ) -> Result<super::quantum::RequestTerminal, super::quantum::QuantumError> {
+        use super::quantum::{QuantumError, RequestTerminal, TerminalKind};
+        if self.request.is_none_or(|request| request.id != expected)
+            || permit.request().units().data_bytes()
+                < (self.envelope.json().len() + size_of::<RequestTerminal>()) as u64
+        {
+            return Err(QuantumError::Context);
+        }
+        let (kind, finish, more, auth) = match self.envelope.message() {
+            RelayMessage::Eose { hints, .. } => (
+                TerminalKind::Eose,
+                hints
+                    .as_ref()
+                    .is_some_and(|values| values.iter().any(|v| v.as_ref() == "finish")),
+                hints
+                    .as_ref()
+                    .is_some_and(|values| values.iter().any(|v| v.as_ref() == "more")),
+                hints
+                    .as_ref()
+                    .is_some_and(|values| values.iter().any(|v| v.as_ref() == "auth")),
+            ),
+            RelayMessage::Closed { .. } => (TerminalKind::Closed, false, false, false),
+            _ => return Err(QuantumError::Context),
+        };
+        let active = self.request.ok_or(QuantumError::Context)?;
+        let predicate = encode_request(
+            "000000000000000000000000000000000000000000000000",
+            active.filters,
+            active.limit,
+            self.limits.wire_bytes,
+        )
+        .map_err(|_| QuantumError::Predicate)?;
+        use sha2::Digest;
+        let predicate = Some(sha2::Sha256::digest(predicate.as_bytes()).into());
+        Ok(RequestTerminal {
+            kind,
+            predicate,
+            request: Some(expected),
+            sequence: Some(self.sequence),
+            received_at_us: self.received.received_at().get(),
+            raw: self.envelope.json().as_bytes().to_vec(),
+            finish,
+            more,
+            auth,
+            _permit: permit,
+        })
+    }
     /// Reserve the copied input before allocating it. A failed reservation leaves
     /// the borrowed response available for bounded backpressure or interruption.
     /// Return this value through the guarded source result, never an outer side
@@ -376,3 +427,76 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
 #[cfg(test)]
 #[path = "preparation_tests.rs"]
 mod preparation_tests;
+
+#[cfg(test)]
+mod quantum_capture_tests {
+    use super::*;
+    use crate::acquisition::quantum::{QuantumError, RequestTerminal, TerminalKind};
+    use crate::runtime::{ProcessEnvelope, ResourceLimits, WaiterLimits};
+    use bigbrotr_model::{NostrTime, acquisition::FilterFields};
+    use sha2::{Digest, Sha256};
+
+    #[test]
+    fn terminal_keeps_empty_unknown_and_contradictory_hints_and_actual_empty_request_predicate() {
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                32 * 1024 * 1024,
+                0,
+                ResourceLimits::new(24 * 1024 * 1024, 8, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let grant = || {
+            budget
+                .try_acquire(ResourceRequest::data(3 * 1024 * 1024, 1, 0).unwrap())
+                .unwrap()
+        };
+        let filters = [Filter::new(FilterFields {
+            since: Some(NostrTime(0)),
+            until: Some(NostrTime(86_399)),
+            ..FilterFields::default()
+        })
+        .unwrap()];
+        let id = RequestId([b'a'; 48]);
+        let limits = EventLimits::default();
+        for (tail, flags) in [
+            ("", (false, false, false)),
+            (",[]", (false, false, false)),
+            (",[\"unknown\"]", (false, false, false)),
+            (",[\"finish\",\"more\",\"auth\"]", (true, true, true)),
+        ] {
+            let raw = format!("[\"EOSE\",\"{}\"{tail}]", id.as_str());
+            let relay = ReceivedRelay {
+                sequence: 7,
+                received: ReceiveClock::new().unwrap().sample().unwrap(),
+                envelope: decode_relay(raw.as_bytes(), limits).unwrap(),
+                request: Some(ActiveRequest {
+                    id,
+                    filters: &filters,
+                    limit: Some(3),
+                }),
+                limits: &limits,
+            };
+            let captured = relay.retain_terminal(id, grant()).unwrap();
+            assert_eq!(captured.kind, TerminalKind::Eose);
+            assert_eq!(captured.raw, raw.as_bytes());
+            assert_eq!((captured.finish, captured.more, captured.auth), flags);
+            let exact=b"[\"REQ\",\"000000000000000000000000000000000000000000000000\",{\"since\":0,\"until\":86399,\"limit\":3}]";
+            assert_eq!(captured.predicate, Some(Sha256::digest(exact).into()));
+            assert!(matches!(
+                relay.retain_terminal(RequestId([b'b'; 48]), grant()),
+                Err(QuantumError::Context)
+            ));
+        }
+        assert!(matches!(
+            RequestTerminal::interruption(TerminalKind::Eose, Some(id), grant()),
+            Err(QuantumError::Context)
+        ));
+        assert!(matches!(
+            RequestTerminal::interruption(TerminalKind::Closed, Some(id), grant()),
+            Err(QuantumError::Context)
+        ));
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+}

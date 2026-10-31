@@ -54,6 +54,22 @@ pub(super) enum NativeOwner {
     Successor(Box<LiveSuccessorWriter>),
 }
 impl NativeOwner {
+    pub(super) fn quantum_source<'a>(
+        &'a mut self,
+        context: RuntimeContext<'a>,
+    ) -> Result<LinearQuantumSource<'a>> {
+        context.require(self).map_err(owner_error)?;
+        match self {
+            Self::Initial(store) => Ok(LinearQuantumSource::Initial(
+                store,
+                context.initial().map_err(owner_error)?,
+            )),
+            Self::Live(writer) => Ok(LinearQuantumSource::Live(writer)),
+            Self::Successor(writer) => Ok(LinearQuantumSource::Successor(writer)),
+            Self::Candidate(_) => Err((4, "candidate cannot dispatch a quantum".into())),
+        }
+    }
+
     pub(super) fn initial(&self) -> Result<&IngestStore> {
         match self {
             Self::Initial(store) => Ok(store),

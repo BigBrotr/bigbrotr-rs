@@ -384,7 +384,7 @@ def ordinary_unchanged(before, after):
     # Status may renew Control and the coalesced probe may add/release pins.
     # Every source/publication/job/auth row is otherwise unchanged in this barrier.
     exact(sorted(before), sorted(after))
-    assert len(before) == 82
+    assert len(before) == 83
     for table in before.keys() - {'owner_epochs','snapshot_leases','archive_snapshot_pins','retention_claims'}:
         exact(before[table], after[table])
 

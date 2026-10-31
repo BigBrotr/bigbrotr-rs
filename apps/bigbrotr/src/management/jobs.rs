@@ -252,11 +252,15 @@ pub struct JobObservation {
     pub completed_at_us: Option<i64>,
     pub observed_at_us: i64,
     pub reason: Option<JobReason>,
+    pub linear_quantum: Option<serde_json::Value>,
 }
 impl Serialize for JobObservation {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut row = serializer.serialize_struct("JobObservation", 11)?;
+        let mut row = serializer.serialize_struct(
+            "JobObservation",
+            11 + usize::from(self.linear_quantum.is_some()),
+        )?;
         row.serialize_field("format", "bigbrotr-job-status/1")?;
         row.serialize_field("job_id", &self.job_id)?;
         row.serialize_field("kind", &self.kind)?;
@@ -271,6 +275,9 @@ impl Serialize for JobObservation {
         row.serialize_field("observed_at_us", &self.observed_at_us.to_string())?;
         row.serialize_field("reason_code", &self.reason)?;
         row.serialize_field("authority", "observation-only")?;
+        if let Some(quantum) = &self.linear_quantum {
+            row.serialize_field("linear_quantum", quantum)?;
+        }
         row.end()
     }
 }

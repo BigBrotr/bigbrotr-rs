@@ -36,6 +36,9 @@ use super::producer_progress::{self, ProducerProgressError, ProgressGrant, SyncP
 use dispatch::NativeOwner;
 #[path = "initial_prefix.rs"]
 mod prefix_operations;
+#[path = "initial_quantum.rs"]
+mod quantum_operations;
+pub use quantum_operations::{LinearQuantumRequest, LinearQuantumSource};
 #[path = "initial_progress.rs"]
 mod progress_operations;
 pub use prefix_operations::{InitialPrefixRequest, ProducerPrefixReceipt};
@@ -51,6 +54,7 @@ pub enum InitialOperationError<E> {
     InputBinding(InputBindingError),
     ImportCheckpoint(ImportCheckpointError),
     Progress(ProducerProgressError),
+    Quantum(crate::acquisition::quantum::QuantumError),
     /// Explicit compacted predecessor authentication within the same live operation.
     Compacted(ProducerResolveError),
     /// The native result exists; this error never authorizes another request ID.
@@ -742,6 +746,12 @@ impl ControlSession {
             return Err(InitialEventError::DeliveryUnknown);
         }
         if result.is_ok() {
+            if let Some(progress) = progress {
+                progress
+                    .confirm_quantum()
+                    .map_err(InitialEventError::Progress)?;
+            }
+
             store.delivered();
         }
         self.available = true;
@@ -1590,6 +1600,11 @@ impl ControlSession {
         store.validate_delivery(cancelled, &mut lease, identity.policy_epoch)?;
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
+        }
+        if let Some(progress) = progress {
+            progress
+                .confirm_quantum()
+                .map_err(InitialEventError::Progress)?;
         }
         store.delivered();
         self.available = true;

@@ -370,7 +370,7 @@ async fn require_inner(
     clippy::too_many_arguments,
     reason = "locked typed head, borrowed native read and existing scratch/authority"
 )]
-async fn require_read(
+pub(in crate::storage::postgres::control_owner) async fn require_read(
     tx: &Transaction<'_>,
     native: ProgressRead<'_>,
     manifest: &IngestManifest,
@@ -624,6 +624,7 @@ async fn require_read(
     if expected.is_some_and(|expected| actual != expected) {
         return Err(ProducerProgressError::InvalidContext);
     }
+    super::quantum::require_history(tx, &native, context, &mut authority).await?;
     authority().map_err(native_error)?;
     native.validate().map_err(native_error)?;
     Ok(complete)

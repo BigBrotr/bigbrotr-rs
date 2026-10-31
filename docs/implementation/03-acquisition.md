@@ -208,6 +208,15 @@ and [Mac component evidence](evidence/p03-selector-mac-20260928.json), plus
 - [ ] **6. Exercise the discriminating fixture.** Two reordered equivalent unions share identity; a wider union, changed access/visibility scope and policy change do not. Inject a durable gap-write failure after body admission: traversal stays unchanged. This catches scalar-cursor advancement and hash-only containment shortcuts.
 - [ ] **7. Run the future p03-t01 journey.** Use the CLI against real PG/Rocks, stop/restart the job and inspect PG plus admission receipts with a separate reader. Preserve before/after scope rows and proof references; a reported “caught up” without method/gaps fails. Document finite-run exits and scope-retirement recovery.
 
+The bounded M2 source increment adds durable linear plans and actual terminal/
+gap/continuation settlement in the maintained finite Sync path, migration0043
+and actor-owned status. It implements only the first interval foundation of
+T05 Steps1/2 and the corresponding T01 Steps3/4 and T02 Steps4/5 persistence
+boundary. See the [owning quantum contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
+Full traversal, current CLI coverage, same-job adoption, age bands and live/NEG
+remain later work. Source/pure controls do not close the actual socket/PG/native
+fault, two-scope finite-turn or restart acceptance gates.
+
 ## P03-T02 — Connect multiplexed sessions to ordered durable admission
 
 Dependencies: P03-T01; P04-T02 guarded network adapter; P01-T03/T05/T06/T07; P02-T02. Contract: preserving wire

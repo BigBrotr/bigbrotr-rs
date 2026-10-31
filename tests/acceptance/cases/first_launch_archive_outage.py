@@ -164,8 +164,12 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         oracle.parked_roles(value, self.index_live, before_us, after_us)
 
     def source_science(self, view, wires, owner, output):
-        return oracle.science(view, self.initialized, load(self.home/"event.jsonl"), wires,
+        event=load(self.home/"event.jsonl")
+        wanted=oracle.science(view, self.initialized, event, wires,
             self.index_rows, self.state/"data/ingest", owner["released_at_us"])
+        from cases.first_launch_quantum_oracle import initial as quantum_initial
+        quantum_initial(view,wires,event,wanted)
+        return wanted
 
     def result_fields(self):
         return dict(format="bigbrotr-installed-archive-outage/1",

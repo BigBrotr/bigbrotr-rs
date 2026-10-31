@@ -209,7 +209,7 @@ def relay(directory, listener, finished, errors):
                 assert re.fullmatch('[0-9a-f]{48}', ident) and int(ident[:32], 16)
                 assert ident[:32] not in nonces
                 nonces.add(ident[:32])
-                assert command[2] == {'kinds': [1], 'limit': 3}
+                assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
                 trace.update(request=command, request_at_us=time.time_ns() // 1000,
                     request_monotonic_ns=time.monotonic_ns())
                 publish(directory, f'relay-open-{number:03}.json', trace)
@@ -328,6 +328,8 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         wait('submitted')
         status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
         observed = json.loads(raw)
+        from installed_sync_client import quantum_status
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
         assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,

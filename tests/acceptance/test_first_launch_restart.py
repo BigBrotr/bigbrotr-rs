@@ -110,7 +110,7 @@ def progress_fixture(new, manifest, science, provenance=True):
     owner = dict(resource_id='\\x' + 'a1' * 16, epoch=9, process_incarnation='\\x' + 'a2' * 16, acquired_at_us=4500, lease_expires_at_us=20000)
     job = dict(dataset_id=common['dataset_id'], job_id='\\x' + 'a3' * 16)
     detail = dict(scope_id='\\x' + 'a4' * 16)
-    wire = dict(request=['REQ', 'ab' * 24, dict(kinds=[1], limit=3)], sent_at_us=5900, closed_at_us=8000, clock_resolution_us=1)
+    wire = dict(request=['REQ', 'ab' * 24, dict(kinds=[1], since=0, until=86399, limit=3)], sent_at_us=5900, closed_at_us=8000, clock_resolution_us=1)
     head = dict(common, progress_format=1, manifest_sha256='\\x' + check.sha(manifest), checkpoint_revision=4,
         complete_through_request=3 if provenance else 2, progress_jobs=1, dependency_count=16 if provenance else 11, issuer_resource=owner['resource_id'],
         issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'], committed_at_us=8500, xmin='104', checkpoint_digest='\\x' + '00' * 32)
@@ -447,7 +447,7 @@ class ProvenanceOffControls(unittest.TestCase):
             producer_epochs=[dict(common, reserved_through_request=4, outstanding_request_limit=32)],
             acquisition_jobs=[dict(job_id='\\x' + 'd1' * 16, scope_id='\\x' + 'd2' * 16)],
             jobs=[dict(job_id='\\x' + 'd1' * 16, request_key='\\x' + 'b1' * 16, state='queued', checkpoint_revision=0)])
-        wires = [dict(number=n, request=['REQ', digit * 48, {'kinds': [1], 'limit': 3}],
+        wires = [dict(number=n, request=['REQ', digit * 48, {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}],
             connected_at_us=1000 + n * 2000, request_at_us=1100 + n * 2000,
             sent_at_us=1200 + n * 2000, closed_at_us=1500 + n * 2000, clock_resolution_us=1,
             frames=['signed', 'forged-signature', 'duplicate', 'EOSE'], completion='request-and-websocket-close')

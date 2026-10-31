@@ -40,6 +40,7 @@ pub(crate) struct CapturedBinding {
     pub observed_at_us: i64,
     pub clock_resolution_us: u64,
     pub clock_anomaly_flags: u32,
+    pub signed_time: u64,
 }
 
 pub struct CapturedEventInput {
@@ -75,9 +76,11 @@ impl CapturedEventInput {
         let observation = attribution
             .received(source.endpoint(), source.route(), captured.received())
             .map_err(CapturedInputError::Observation)?;
+        let signed_time = event.created_at.0;
         let intent = EventIntent::network(1, scope.scope().visibility(), event, observation)
             .map_err(|_| CapturedInputError::Intent)?;
         let binding = CapturedBinding {
+            signed_time,
             request: captured
                 .request()
                 .id()
@@ -166,6 +169,7 @@ mod tests {
         };
         let original = intent(a.clone());
         let binding = CapturedBinding {
+            signed_time: a.created_at.0,
             request: [b'a'; 48],
             wire_sequence: 7,
             input_sha256: [3; 32],

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import threading
 import time
-from installed_sync_client import publish, relay, relay_listener
+from installed_sync_client import publish, relay, relay_listener, quantum_status
 from installed_archive_profile import load as load_profile
 
 
@@ -123,15 +123,25 @@ def run(directory):
         visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
     listener = relay_listener()
     finished = threading.Event()
-    worker = threading.Thread(target=relay, args=(directory, listener, finished, errors, True))
+    linear=(directory/'linear-quantum-profile.json').exists()
+    if linear:
+        from linear_quantum_transport import relay as linear_relay
+    worker = threading.Thread(target=linear_relay if linear else relay,
+        args=(directory,listener,finished,errors) if linear else (directory, listener, finished, errors, True))
     worker.start()
     try:
         barrier('prepared')
         receipt = call('jobs', dict(kind='acquisition', scope_id=scope['scope_id'], deadline_us='120000000', **revisions), 'b1'*16)
         assert receipt['execution'] == 'unobserved' and receipt['authority'] == 'acceptance-only'
+        if linear:
+            other_scope=call('acquisition-scopes',dict(endpoint_id=endpoint['endpoint_id'],access_scope_id=enrollment['access_scope_id'],
+                visibility=visibility,selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'),
+                **revisions),'a2'*16)
+            call('jobs',dict(kind='acquisition',scope_id=other_scope['scope_id'],deadline_us='120000000',**revisions),'b2'*16)
         def status():
             code, observed = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
             assert code == 200
+            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
             assert observed['state'] in ('accepted', 'queued')
             assert observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'], kind='acquisition',
                 state=observed['state'], job_revision='1' if observed['state'] == 'accepted' else '2',

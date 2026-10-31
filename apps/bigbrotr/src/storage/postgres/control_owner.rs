@@ -113,6 +113,7 @@ mod initial_batch;
 pub(super) mod producer_progress;
 pub(in crate::storage) use producer_progress::ConfirmedAcknowledgement;
 pub(in crate::storage) use producer_progress::prefix::ConfirmedPrefixPrepare;
+pub use producer_progress::quantum::{LinearQuantum, QuantumCapture, QuantumGrant};
 pub use producer_progress::{ProducerProgressError, ProgressGrant, SyncProgress};
 #[path = "producer_ack.rs"]
 mod producer_ack;
@@ -168,9 +169,9 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialPrefixRequest, InitialVisibilityRequest, LiveInitialCertificationRequest,
-    LiveInitialDictionaryAppendRequest, LiveInitialEventRequest, LiveInitialObservationRequest,
-    LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
+    InitialPrefixRequest, InitialVisibilityRequest, LinearQuantumRequest, LinearQuantumSource,
+    LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
+    LiveInitialObservationRequest, LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
     LiveSuccessorDictionaryAppendRequest, LiveSuccessorEventRequest,
     LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest, ProducerPrefixReceipt,
 };

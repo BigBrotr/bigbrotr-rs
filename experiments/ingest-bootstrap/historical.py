@@ -720,7 +720,7 @@ def run_current(state, output, contents, record, prepare, call, inventory):
             assert actual['error']==(None if fault is None else 'Registry(InvalidMetadata)')
             if phase=='ack': assert actual['issued']==actual['acknowledged']==1 and actual['idempotent']
             final=contents(db)
-            assert len(final)==len(inventory['tables'])==82
+            assert len(final)==len(inventory['tables'])==83
             # Driver shutdown/release is outside the tested action. It cannot
             # repair the corrupted original or mutate any non-owner relation.
             observed={k:json.loads(v) for k,v in after['state']['control_tables']}

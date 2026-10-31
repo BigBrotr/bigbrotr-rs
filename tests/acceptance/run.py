@@ -203,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static", "p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum"])
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -217,16 +217,20 @@ def main():
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--renewal-stop-outcome", choices=("known", "held"),
                         help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
+    parser.add_argument("--linear-quantum-fault",choices=('plan-before','plan-after','terminal-before','terminal-after','gap-write','stale-authority'),
+                        help='linear quantum only: lose its exact plan or terminal COMMIT in either direction')
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
                         help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     args = parser.parse_args()
+    if args.linear_quantum_fault is not None and args.case!='p03-linear-quantum':
+        parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.retained_archive_schedule is not None and args.case != "p01-first-launch-closed-reclamation":
         parser.error("--retained-archive-schedule is only for p01-first-launch-closed-reclamation")
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):
         parser.error("--renewal-stop-outcome is required only for p01-first-launch-initial-renewal-stop")
-    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage"):
-        parser.error("--native-observer-build is only for finite64 or Index outage")
-    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop")
+    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage", "p03-linear-quantum"):
+        parser.error("--native-observer-build is only for finite64, Index outage or linear quantum")
+    installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")
     if not installed and (args.candidate_manifest or args.compose_network):

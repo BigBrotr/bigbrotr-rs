@@ -42,8 +42,33 @@ pub(super) async fn load(
          WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
             AND producer_epoch=$3::text::numeric", params
     ).await.map_err(backend)?.try_get::<_, i64>(0).map_err(backend)?;
-    let input_completion_bytes =
-        u64::try_from(retained).map_err(|_| ProducerProgressError::Limit)?;
+    let quantum_schema: bool = tx
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=43)",
+            &[],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(backend)?;
+    let quantum_charge = if quantum_schema {
+        tx.query_one(
+            "SELECT control.quantum_retained_charge($1,$2::text::numeric)",
+            &[&&context.slot.as_bytes()[..], &epoch],
+        )
+        .await
+        .map_err(backend)?
+        .try_get::<_, i64>(0)
+        .map_err(backend)?
+    } else {
+        0
+    };
+    let input_completion_bytes = u64::try_from(
+        retained
+            .checked_add(quantum_charge)
+            .ok_or(ProducerProgressError::Limit)?,
+    )
+    .map_err(|_| ProducerProgressError::Limit)?;
     let head_sql = format!(
         "SELECT progress_format, substring(manifest_sha256 FROM 1 FOR 33),
             left(checkpoint_revision::text,21), left(complete_through_request::text,21),

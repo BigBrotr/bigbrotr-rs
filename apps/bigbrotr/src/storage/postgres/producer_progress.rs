@@ -9,6 +9,8 @@ use sha2::{Digest, Sha256};
 mod commit;
 #[path = "producer_prefix.rs"]
 pub(super) mod prefix;
+#[path = "linear_quantum.rs"]
+pub(super) mod quantum;
 #[path = "producer_progress_recovery.rs"]
 pub(super) mod recovery;
 #[path = "producer_progress_rows.rs"]
@@ -52,6 +54,7 @@ pub struct SyncProgress {
     position: Position,
     classify_prefix: bool,
     _grant: ProgressGrant,
+    quantum: Option<std::sync::Arc<std::sync::Mutex<quantum::QuantumEffects>>>,
 }
 
 /// Retained for the complete fenced progress transaction. It is independent of
@@ -83,6 +86,32 @@ impl ProgressGrant {
     }
 }
 impl SyncProgress {
+    pub fn in_quantum(mut self, quantum: &quantum::LinearQuantum) -> Self {
+        self.quantum = Some(quantum.effects.clone());
+        self
+    }
+    pub(super) fn stage_quantum(
+        &self,
+        event: BoundEvent<'_>,
+        basis: &crate::storage::rocks::store::NativeCheckpointBasis<'_>,
+    ) -> Result<(), ProducerProgressError> {
+        if let Some(quantum) = &self.quantum {
+            quantum
+                .lock()
+                .map_err(|_| ProducerProgressError::InvalidContext)?
+                .stage(event, basis)?;
+        }
+        Ok(())
+    }
+    pub(super) fn confirm_quantum(&self) -> Result<(), ProducerProgressError> {
+        if let Some(quantum) = &self.quantum {
+            quantum
+                .lock()
+                .map_err(|_| ProducerProgressError::InvalidContext)?
+                .confirm(self.position)?;
+        }
+        Ok(())
+    }
     pub(super) fn grant(&self) -> &ProgressGrant {
         &self._grant
     }
@@ -182,6 +211,7 @@ impl SyncProgress {
             },
             classify_prefix: true,
             _grant: grant,
+            quantum: None,
         })
     }
 }
@@ -243,7 +273,7 @@ impl BoundEvent<'_> {
 }
 
 /// Coordinates supplied only by the existing connected authority branch.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) struct Context {
     pub dataset: DatasetId,
     pub slot: ProducerSlotId,
@@ -762,6 +792,7 @@ mod tests {
         SyncProgress {
             position,
             classify_prefix: true,
+            quantum: None,
             _grant: ProgressGrant::new(
                 budget
                     .try_acquire(
@@ -785,6 +816,7 @@ mod tests {
         BoundEvent {
             progress,
             captured: crate::acquisition::preparation::CapturedBinding {
+                signed_time: 1,
                 request: progress.position.request,
                 wire_sequence: progress.position.wire_sequence,
                 input_sha256: progress.position.input_digest,

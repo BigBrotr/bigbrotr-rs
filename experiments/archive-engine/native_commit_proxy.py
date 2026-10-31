@@ -36,6 +36,8 @@ CONTROL_TARGETS = {
     'control-export-complete': b'INSERT INTO CONTROL.ARTIFACTS(',
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
     'control-cursor-retention': b'UPDATE CONTROL.CURSOR_KEY_LIFECYCLE SET DECRYPT_UNTIL_US=',
+    'control-quantum-plan': b'INSERT INTO CONTROL.ACQUISITION_QUANTA(',
+    'control-quantum-terminal': b'UPDATE CONTROL.ACQUISITION_QUANTA SET TERMINAL_KIND=',
     'control-producer-progress': b'UPDATE CONTROL.ACQUISITION_PROGRESS SET SCOPE_ID=$5::BYTEA,',
     # The exact final typed-head read occurs only in the initial reclamation
     # factory, after original replay and terminal checks, before its read COMMIT.

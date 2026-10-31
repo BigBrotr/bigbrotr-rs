@@ -41,7 +41,7 @@ def saturation_fixture(root):
     for n in range(1,23):
         values=events[(n-1)*3:n*3] if n<=20 else [events[60],events[61],events[0]] if n==21 else [events[0]]
         at=1500+n*1000
-        wires.append(dict(number=n,request=['REQ',f'{n:032x}'+'0000000000000001',{'kinds':[1],'limit':3}],
+        wires.append(dict(number=n,request=['REQ',f'{n:032x}'+'0000000000000001',{'kinds':[1],'since':0,'until':86399,'limit':3}],
             connected_at_us=at,request_at_us=at+10,sent_at_us=at+100,closed_at_us=at+400,
             clock_resolution_us=1,completion='request-and-websocket-close',retained_quiet=False,
             retained_phase='admission' if n<=20 else 'saturation' if n==21 else 'proof-only',
@@ -331,7 +331,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             def frame(self):
                 self.frame_number+=1
                 if self.frame_number==1:
-                    selector={'kinds':[1],'limit':2 if self.number==bad_round and failure=='protocol' else 3}
+                    selector={'kinds':[1],'since':0,'until':86399,'limit':2 if self.number==bad_round and failure=='protocol' else 3}
                     return 1,json.dumps(['REQ',self.ident,selector]).encode()
                 return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 else (8,b'')
         listener=Mock();accepted=[];closed=[]

@@ -89,7 +89,7 @@ def retained_bridge(before, after, root, *, retained_boundary=False):
     """A real zero bridge precedes any epoch2 request or physical batch."""
     initial,cut,_=topology.initial_profile(retained_boundary)
     index.validate_metadata(before,root,complete=True,retained_boundary=retained_boundary)
-    assert set(before)==set(after) and len(after)==82
+    assert set(before)==set(after) and len(after)==83
     generation=index.only(after['projection_generations'])
     index.exact(before['projection_generations'],after['projection_generations'])
     append_only_history(before,after)
@@ -197,7 +197,7 @@ def no_work_rebind(before, after, report, science, schema, rows, *, owner_epoch,
 
 def later_topology(before, after, report, *, stopped=False):
     """A genuine empty epoch3 adds lifecycle metadata, preserving all science."""
-    assert type(stopped) is bool and set(before)==set(after) and len(after)==82
+    assert type(stopped) is bool and set(before)==set(after) and len(after)==83
     mutable={'datasets','owner_epochs','role_instances','allocation_domains','producer_epochs',
              'source_streams','topology_generations','topology_streams','ingest_successions','ingest_activations'}
     for table in before.keys()-mutable:index.exact(before[table],after[table])

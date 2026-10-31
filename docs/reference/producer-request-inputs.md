@@ -782,6 +782,73 @@ Control/acquisition authority helpers and replaced historical validators remain
 necessary. The migrator owns trigger installation; application SQL does not
 disable those guards or seed checkpoint authority.
 
+### Durable single-interval linear quanta
+
+The maintained finite Sync path now requires migration0043. Before opening a
+socket it commits one immutable `acquisition_quanta` plan under the same claimed
+job, fenced Control and native producer context. It retains the exact normalized
+REQ predicate (fixed zero nonce, limit3), source generation/route, issuer,
+manifest, fixed finite quantum profile1, checkpoint position and random quantum identity. Per-job quantum
+numbers serialize under the existing job lock. An unconfirmed plan COMMIT
+forbids dialing; an unfinished plan remains pending after restart and cannot be
+adopted by a fresh Control epoch. Ordinary fenced recovery and job abandonment
+remain required. Expiry alone does not refund its metadata reservation.
+
+The exclusive frozen horizon is `H=floor(job.created_at_us/1_000_000)`, intersected
+with each conjunction's explicit inclusive upper bound using checked AfterMax
+conversion. The first window is `[history_since,min(history_since+accepted
+sync.window_width,H))`, with checked arithmetic and the24h default. Every
+conjunction is intersected separately; an empty intersection is never replaced
+by an unrestricted filter. The current second and later work remain pending.
+This increment records the first window and pending continuation; it does not
+implement the full interval walker, age bands, dense-second partitioning or live
+subscriptions. Existing finite workloads retain their scientific behavior.
+
+After the source adapter has destroyed the socket and rolled back its source
+transaction, ordered native classifications retain a sealed quantum collector.
+It stores the exact deduplicated FactRef union from each actual authoritative
+outcome, including ExistingProof and references already in the cumulative SQL
+closure. Only positively delivered checkpoint/classification/ACK results confirm
+a collector entry. A preparation hole leaves its suffix unclassified; later valid
+mutations can return credit without filling it. Empty and proof-only quanta create
+no synthetic producer request or mutation ACK. The full current native closure is
+revalidated before terminal commit, and historical recovery independently streams
+the quantum references through the existing native proof validator.
+
+One atomic terminal update retains the correlated actual EOSE/CLOSED frame,
+REQ/sequence/local time, or the distinct local deadline, cancellation, frame/event
+cap, transport/decode or disconnect interruption. Original remote text remains
+private, preserving missing, empty, unknown and contradictory hint fields.
+Protocol terminal and teardown failure remain separate. Interrupted, ordering
+or unclassified suffixes retain the original pending upper bound. Loss is sticky: a later
+EOSE cannot repair a malformed/capped suffix. Ordinary EOSE is `linear_observed`;
+an attributable finish hint is only `relay_reported_exhaustion`, never complete
+traversal. The interval, gaps and pending oldest-verified-second overlap commit
+together with exact checkpoint context. Unknown terminal COMMIT poisons the owner
+and permits no next quantum/cursor; historical absence is not proof of no prior
+execution. `acquisition_progress`, whole-job `acquisition_gaps`, and
+`jobs.checkpoint_revision` retain their existing meanings.
+
+Plans prefund1024 bytes plus predicate bytes,2MiB terminal allowance,3072 effect
+allowance and256 per admitted maximum dependency. Terminal commit settles to1024
+plus actual predicate/frame/effect bytes and256 per retained exact reference.
+All charges join the existing32MiB producer input/completion/progress cap under
+the same producer lock. Pending/unknown attempts retain their full reservation;
+recovery independently recomputes charges from retained rows. This logical cap
+is not a PostgreSQL physical-space guarantee. A separately derived QuantumGrant
+funds filter clones, encoded predicates, capture/effect/reference vectors and
+2MiB closure scratch within the existing accepted Sync/application envelope.
+No process limit is raised. The Control role additionally needs SELECT/INSERT/
+UPDATE on the new relation and EXECUTE on `quantum_retained_charge(bytea,numeric)`;
+no deletion, trigger-helper or finalizer privilege is granted.
+
+Actor-owned acquisition status adds the latest redacted `linear_quantum`
+observation when a plan exists: interval/horizon, result/gap and pending
+continuation, with `coverage=pending`. It exposes neither predicates, remote text
+nor native proofs and grants no execution authority. Compilation, actual socket/
+SQL/native fault schedules and installed qualification of this increment remain
+separate required gates; source and pure controls cannot close them.
+
 ### Native ACK and returned credit (partial qualification)
 
 This P02-T02 increment connects confirmed mutation checkpoints to the existing

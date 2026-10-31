@@ -20,8 +20,8 @@ use bigbrotr::{
     storage::{
         postgres::{
             control_owner::{
-                LiveSuccessorCertificationRequest, LiveSuccessorEventRequest,
-                LiveSuccessorVisibilityRequest, ProgressGrant, RelaySourceError,
+                LinearQuantumRequest, LiveSuccessorCertificationRequest, LiveSuccessorEventRequest,
+                LiveSuccessorVisibilityRequest, ProgressGrant, QuantumGrant, RelaySourceError,
                 RelaySourceRequest, SyncProgress,
             },
             producer_sources::SourceBindingError,
@@ -43,7 +43,7 @@ use std::time::Duration;
 // Safe-point renewal overlaps the retained arrivals/prepared input/progress,
 // using that same permanently held Control/policy grant, with no new socket,
 // input copy or native worker. Preflight already overlaps the complete Sync set.
-pub(super) const ITEMS: u64 = 17;
+pub(super) const ITEMS: u64 = 19;
 pub(super) const INTERVAL: Duration = Duration::from_millis(250);
 
 /// Preclaim capacity check for the complete fixed finite profile. TLS roots are
@@ -80,6 +80,7 @@ pub(super) fn requirements() -> Result<ResourceLimits> {
         + dictionaries.required_dictionary_data_bytes().map_err(error)?
         + event.required_data_bytes().map_err(error)?
         + ProgressGrant::REQUIRED_DATA_BYTES
+        + QuantumGrant::required_data_bytes() + QuantumGrant::terminal_bytes()
         + (wire.parse_bytes + 4 * wire.event_bytes + session + arrivals) as u64
         // Current DirectConnector and DNS each charge 4MiB. RelayWebSocket
         // charges eight maximum frames plus 1MiB handshake/buffer overhead.
@@ -105,7 +106,7 @@ pub(super) struct Sync {
     nomination: Nomination,
     next_request: u64,
     lifecycle: Profile,
-    profile: Option<(usize, bool)>,
+    profile: Option<(usize, bool, u64)>,
 }
 
 /// Inert scheduling metadata, not a claim or authority. Keep the exact selected
@@ -232,6 +233,10 @@ impl Sync {
             || !accepted.flag("sync.enabled")
             || accepted.number("ingest.producer_outstanding_requests")
                 < self.lifecycle.minimum(true)
+            || accepted.number("sync.window_width") < 1_000_000
+            || !accepted
+                .number("sync.window_width")
+                .is_multiple_of(1_000_000)
             || bytes == 0
             || bytes > EventLimits::default().event_bytes
         {
@@ -240,6 +245,7 @@ impl Sync {
         let profile = (
             bytes,
             accepted.text("sync.provenance") == Some("local_first_witness"),
+            accepted.number("sync.window_width") / 1_000_000,
         );
         if self.profile.is_some_and(|old| old != profile) {
             return Err(OwnerError::InvalidPolicy);
@@ -402,7 +408,8 @@ impl Sync {
         {
             return Ok(());
         }
-        let (max_event_bytes, provenance) = self.profile.expect("accepted Sync profile");
+        let (max_event_bytes, provenance, window_width_seconds) =
+            self.profile.expect("accepted Sync profile");
         let Some(attribution) = self
             .observation(&mut work, &scope, &source, provenance)
             .await?
@@ -416,6 +423,35 @@ impl Sync {
         if !work.safe_point(self, true).await? {
             return Ok(());
         }
+        let ttl = work.remaining()?;
+        let Some(plan) = commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::QuantumPlan,
+            None,
+            None,
+            work.commands.owner.plan_linear_quantum(
+                work.writer.quantum_source(work.context)?,
+                LinearQuantumRequest {
+                    ingest_root: path,
+                    job: job.id,
+                    scope: &scope,
+                    source: source.binding(),
+                    window_width_seconds,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                QuantumGrant::new(grant(work.budget, QuantumGrant::required_data_bytes(), 0)?)
+                    .map_err(error)?,
+                |d, h| validate_sync(work.root, self.lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?
+        else {
+            return Ok(());
+        };
         let hard = work.deadline;
         // Compute before SQL/connect, not when a slow peer finally handshakes.
         // Normal idle drops the poisoned protocol session inside a successful
@@ -451,7 +487,7 @@ impl Sync {
                     receive::collect(
                         stream,
                         work.budget,
-                        &scope,
+                        plan.filters(),
                         &attribution,
                         source.route(),
                         max_event_bytes,
@@ -548,7 +584,8 @@ impl Sync {
                 )?)
                 .map_err(error)?,
             )
-            .map_err(error)?;
+            .map_err(error)?
+            .in_quantum(&plan);
             let checkpoint = if prefix.continuous {
                 checkpoint
             } else {
@@ -594,7 +631,7 @@ impl Sync {
             if !work.writer.can_reserve(work.context, self.next_request)? {
                 // A PG checkpoint alone returns no slot. Certification remains
                 // available when native credit or retained history is full.
-                return Ok(());
+                break;
             }
             let event = work.trace.run(
                 Stage::AdmissionPreparation,
@@ -661,6 +698,50 @@ impl Sync {
             work.trace.delivered_admission(self.next_request);
             self.next_request += 1;
         }
+        let receive::Arrivals {
+            events,
+            terminal,
+            teardown_complete,
+            _permit: arrival_permit,
+        } = arrivals;
+        let capture = plan
+            .capture(
+                terminal,
+                &events.iter().map(|(event, _)| event).collect::<Vec<_>>(),
+                teardown_complete,
+            )
+            .map_err(error)?;
+        drop(events);
+        drop(arrival_permit);
+        if !work.safe_point(self, false).await? {
+            return Ok(());
+        }
+        let ttl = work.remaining()?;
+        commands::sync_operation(
+            work.trace,
+            work.deadline,
+            &work.cancel.requested,
+            Stage::QuantumTerminal,
+            None,
+            None,
+            work.commands.owner.finish_linear_quantum(
+                work.writer.quantum_source(work.context)?,
+                LinearQuantumRequest {
+                    ingest_root: path,
+                    job: job.id,
+                    scope: &scope,
+                    source: source.binding(),
+                    window_width_seconds,
+                    policy_ttl: ttl,
+                    cancelled: &work.cancel.requested,
+                },
+                &plan,
+                capture,
+                |d, h| validate_sync(work.root, self.lifecycle, d, h),
+            ),
+        )
+        .await?
+        .map_err(error)?;
         Ok(())
     }
 }

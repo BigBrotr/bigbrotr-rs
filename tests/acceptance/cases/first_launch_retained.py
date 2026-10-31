@@ -28,7 +28,7 @@ LIMITS = [
     'After128 completed rounds and the delivered proof, the finite peer closes its listener before recording completion and accepts no129th connection. Shutdown checks either an actual quiet receive or this independent finite-source end, including closed rounds/proof and a refused loopback connection. Finite completion adds no cancellation evidence or new product capability; Index64/cut312 must still arrive inside the original65s client gate.',
     'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan scheduling needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
     'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All829 native rows and sequence1081, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
-    'Archive stays cut3/revision2 with issued attempt3, original input and custody; all82 Control tables and original Archive files remain checked. NOT_RUN: dynamic pending-byte hysteresis, GC, disk pressure, automatic recovery,64-plan current readiness, full M1 or general capacity. Earlier ACK/commit-loss qualification is reused, not inferred anew.',
+    'Archive stays cut3/revision2 with issued attempt3, original input and custody; all83 Control tables and original Archive files remain checked. NOT_RUN: dynamic pending-byte hysteresis, GC, disk pressure, automatic recovery,64-plan current readiness, full M1 or general capacity. Earlier ACK/commit-loss qualification is reused, not inferred anew.',
 ]
 
 
@@ -222,6 +222,8 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
         self.native_sequence=dump['sequence']
         wanted=oracle.science(view,self.before_proof,self.initialized,self.events,wires,dump,
             self.state/'data/ingest',owner['released_at_us'])
+        from cases.first_launch_quantum_oracle import initial as quantum_initial
+        quantum_initial(view,wires,self.events[0],wanted,retained_events=self.events)
         for table in ('acquisition_progress','producer_checkpoints'):
             index.exact(self.index_live[table],view[table])
         return wanted
@@ -630,6 +632,8 @@ class ReclamationRuntime(RetainedRuntime):
         self.final_native=self.native_capture('successor-native')
         self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,self.compacted_bridge,self.retained_science,
             self.successor_wires,self.final_native,self.state/'data/ingest',time.time_ns()//1000)
+        from cases.first_launch_quantum_oracle import successor as quantum_successor
+        quantum_successor(self.retired_successor,self.successor_wires,self.events[0],self.new_event,self.final_science,before=self.reclaimed)
         self.all_input_files=self.files(self.state/'data/ingest/producer-inputs-v1')
         self.complete_index_state=self.retired_successor
         self.refused_reclamation('refuse-reclamation-after-successor')
@@ -892,7 +896,7 @@ class ReclamationRuntime(RetainedRuntime):
         after,catalog=self.capture(output,'export-after')
         live_oracle.publication_unchanged(self.complete_index_state,after)
         verdict=self.export_validate(before,after,home,self.initialized,self.ids['catalog'],expected_principal=self.enrolled['principal_id'],
-            expected_table_count=82,expected_tables=self.tables,destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True)
+            expected_table_count=83,expected_tables=self.tables,destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True)
         require(verdict['jsonl_bytes']==353,'complete original signed export bytes differ')
         self.verify_archive_preservation(output,'export',after,catalog)
         save(output/'export-verdict.json',verdict)
@@ -920,11 +924,11 @@ class ReclamationRuntime(RetainedRuntime):
         self.backend_absence(second)
         second_after,catalog=self.capture(second,'after')
         second_verdict=self.export_validate(second_before,second_after,second,self.initialized,self.ids['catalog'],
-            expected_principal=self.enrolled['principal_id'],expected_table_count=82,expected_tables=self.tables,
+            expected_principal=self.enrolled['principal_id'],expected_table_count=83,expected_tables=self.tables,
             destination_root=self.state/'data/export',initial_cut=312,retained_compacted_epoch2=True,retained_second_export=True,
             second_startup=second_startup)
         # Every projected row is independently checked first. Operation readers
-        # stay in the view for the full82-table startup/session/release oracle.
+        # stay in the view for the full83-table startup/session/release oracle.
         view=second_job_rows(second_before,second_after,second,self.initialized,self.ids['catalog'],second_verdict,startup=second_startup)
         oracle.compacted_history_control(second_before,view,second_startup)
         live_oracle.publication_unchanged(self.complete_index_state,second_after)

@@ -141,7 +141,7 @@ def transcript(home):
                 'peer connection inventory has a gap')
         require(all(last.get(k)==v for k,v in first.items()) and first['number']==number,'peer open/close binding differs')
         command=last['request']
-        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],limit=3)
+        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],since=0,until=86399,limit=3)
             and re.fullmatch('[0-9a-f]{48}',command[1]) and int(command[1][:32],16)>0
             and command[1][:32] not in nonces,'peer request is not the bounded acquisition command')
         nonces.add(command[1][:32])

@@ -166,7 +166,7 @@ def recovery_sessions(after, binding, owners, commitments, handoff, *, retained_
 def catch_up(before, after, report, science, schema, root, actual, *, retry=False):
     """Closed seven-batch/one-bridge history, independently encoded per family."""
     assert type(retry) is bool
-    index.exact(sorted(before),sorted(after));assert len(after)==82
+    index.exact(sorted(before),sorted(after));assert len(after)==83
     owner_epoch=3 if retry else 2
     if not retry:index.validate_metadata(before,root,complete=True)
     mutable={'owner_epochs','role_instances','index_owner_sessions'}

@@ -227,7 +227,7 @@ def successor_wire(wires, old, new):
     for number, wire in enumerate(wires, 1):
         assert wire['number'] == number
         command = wire['request']
-        assert len(command) == 3 and command[0] == 'REQ' and command[2] == dict(kinds=[1], limit=3)
+        assert len(command) == 3 and command[0] == 'REQ' and command[2] == dict(kinds=[1], since=0, until=86399, limit=3)
         assert re.fullmatch('[0-9a-f]{48}', command[1]) and int(command[1][:32], 16)
         assert command[1][:32] not in nonces
         nonces.add(command[1][:32])

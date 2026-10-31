@@ -27,7 +27,7 @@ impl IngestRecovery {
     }
 }
 impl IngestStore {
-    pub(super) fn progress_read<'a>(
+    pub(in crate::storage) fn progress_read<'a>(
         &'a self,
         scratch: &'a OwnedPermit,
     ) -> Result<ProgressRead<'a>, AdmissionError> {

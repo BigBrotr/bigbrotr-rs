@@ -41,7 +41,7 @@ def wires_checked(wires, events):
     previous=None;nonces=set();proof=[];empties=0
     for number,wire in enumerate(wires,1):
         assert wire['number']==number and wire['request'][0]=='REQ'
-        assert wire['request'][2]=={'kinds':[1],'limit':3}
+        assert wire['request'][2]=={'kinds':[1],'since':0,'until':86399,'limit':3}
         ident=wire['request'][1]
         assert re.fullmatch('[0-9a-f]{48}',ident) and int(ident[:32],16)
         assert ident[:32] not in nonces;nonces.add(ident[:32])

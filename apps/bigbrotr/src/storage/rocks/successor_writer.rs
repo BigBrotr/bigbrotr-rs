@@ -328,6 +328,14 @@ impl ActiveSuccessorWriter {
     pub(in crate::storage) fn matches_configured_root(&self, path: &std::path::Path) -> bool {
         self.store.matches_configured_root(path)
     }
+    pub(in crate::storage) fn quantum_progress_read<'a>(
+        &'a self,
+        scratch: &'a OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<super::ProgressRead<'a>, AdmissionError> {
+        self.validate(cancelled)?;
+        self.store.progress_read(scratch)
+    }
     pub fn prepare_dictionaries<'a>(
         &'a self,
         visibility: QualifiedRef,

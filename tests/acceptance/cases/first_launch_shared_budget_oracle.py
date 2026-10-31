@@ -100,7 +100,7 @@ APPEND = {'acquisition_selectors', 'acquisition_scopes', 'acquisition_scope_comm
     'acquisition_progress', 'archive_attempts', 'archive_frontier_snapshots', 'archive_frontier_batches',
     'projection_plans', 'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds',
     'index_frontier_plans', 'consumer_frontier_revisions', 'consumer_frontiers'}
-MUTABLE = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers'}
+MUTABLE = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers', 'acquisition_quanta'}
 
 
 def same_owner(prefix, current):
@@ -135,7 +135,9 @@ def attempt_owners(prefix, state):
 def pending(prefix, state, record, job_id):
     """Observe actual queued work; no fixed denial role or intermediate cut."""
     denial(record, prefix)
-    assert set(state) == set(prefix) and len(state) == 82
+    from cases.first_launch_quantum_oracle import transition
+    transition(prefix,state)
+    assert set(state) == set(prefix) and len(state) == 83
     for table in set(prefix) - APPEND - MUTABLE:
         index.exact(state[table], prefix[table])
     for table in APPEND:
@@ -220,7 +222,7 @@ def pending(prefix, state, record, job_id):
 
 def preserved(denied, final):
     """The final science oracle independently validates all added rows/bytes."""
-    assert set(denied) == set(final) and len(final) == 82
+    assert set(denied) == set(final) and len(final) == 83
     for table in set(denied) - APPEND - MUTABLE:
         index.exact(denied[table], final[table])
     for table in APPEND - {'jobs', 'projection_chunks', 'acquisition_progress'}:

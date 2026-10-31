@@ -38,6 +38,25 @@ def publish(directory, name, value):
     partial.rename(directory / name)
 
 
+def quantum_status(observed,scope_id,accepted_at_us):
+    """Actor status exposes pending work, never a native proof or history claim."""
+    value=observed.pop('linear_quantum',None)
+    if value is None:return  # Accepted/queued before the first durable plan.
+    assert set(value)=={'format','quantum_number','scope_id','lower','upper','horizon','result',
+        'terminal','gap','continuation_upper','retained_events','classified_prefix','coverage'}
+    assert value['format']=='bigbrotr-linear-quantum-status/1' and value['scope_id']==scope_id
+    assert value['lower']=='0' and value['upper']=='86400' and value['horizon']==str(int(accepted_at_us)//1_000_000)
+    assert value['coverage']=='pending' and int(value['quantum_number'])>=1
+    if value['result']=='pending':
+        assert all(value[key] is None for key in ('terminal','gap','continuation_upper','retained_events','classified_prefix'))
+    else:
+        assert value['result'] in ('linear_observed','relay_reported_exhaustion','interrupted')
+        assert value['terminal'] in ('eose','closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected')
+        assert (value['result']=='interrupted')==(value['gap'] is not None)
+        assert 0<int(value['continuation_upper'])<=86400
+        assert 0<=value['classified_prefix']<=value['retained_events']<=3
+
+
 def exact(connection, count):
     value = bytearray()
     while len(value) < count:
@@ -135,7 +154,7 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 assert re.fullmatch('[0-9a-f]{48}', ident) and int(ident[:32], 16) != 0
                 assert ident[:32] not in request_ids, 'connection nonce reused'
                 request_ids.add(ident[:32])
-                assert command[2] == {'kinds': [1], 'limit': 3}
+                assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
@@ -302,6 +321,7 @@ def run(directory, request, login, logout):
         barrier('submitted')
         status, raw = request('GET', '/management/v1/jobs/'+receipt['job_id'], headers=auth)
         observed = json.loads(raw)
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
         assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None, observed_at_us=observed['observed_at_us'],
@@ -330,6 +350,7 @@ def run(directory, request, login, logout):
             if deferred_receipt:
                 status, raw = request('GET', '/management/v1/jobs/'+deferred_receipt['job_id'], headers=auth)
                 deferred_status = json.loads(raw)
+                quantum_status(deferred_status,other_scope['scope_id'],deferred_receipt['accepted_at_us'])
                 assert status == 200 and deferred_status == dict(observed,
                     job_id=deferred_receipt['job_id'], created_at_us=deferred_receipt['accepted_at_us'],
                     observed_at_us=deferred_status['observed_at_us'])

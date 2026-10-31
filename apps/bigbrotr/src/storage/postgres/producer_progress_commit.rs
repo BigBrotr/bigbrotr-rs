@@ -200,6 +200,9 @@ pub(in crate::storage::postgres::control_owner) async fn record(
         *basis.intent_digest().as_bytes(),
         mutation,
     )?;
+    if let Some(event) = event {
+        event.progress.stage_quantum(event, basis)?;
+    }
     if replacement.is_some_and(|head| {
         snapshot
             .jobs

@@ -116,6 +116,7 @@ async fn job_status_preserves_closed_metadata_and_never_sets_session_cookies() {
             .completion
             .finish(Ok(transport::Reply::JobStatus((!missing).then_some(
                 JobObservation {
+                    linear_quantum: None,
                     kind: bigbrotr::management::jobs::JobKind::Export,
                     job_id: job,
                     state: ExportState::Paused,

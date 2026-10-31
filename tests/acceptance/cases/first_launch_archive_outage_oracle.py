@@ -108,7 +108,7 @@ def retained_age(prefix, parked, first, last, *, capability='archive_publication
 def prefix_preservation(before, after, *, retained_boundary=False, index_unavailable=False):
     assert type(retained_boundary) is type(index_unavailable) is bool
     assert not (retained_boundary and index_unavailable)
-    assert set(before) == set(after) and len(before) == 82
+    assert set(before) == set(after) and len(before) == 83
     additions = dict(acquisition_selectors=1, acquisition_scopes=1, acquisition_scope_commands=1,
         jobs=1, acquisition_jobs=1, job_admissions=1, management_commands=2, management_audit=2,
         producer_requests=2, producer_outcomes=2, producer_checkpoint_dependencies=9,
@@ -125,8 +125,10 @@ def prefix_preservation(before, after, *, retained_boundary=False, index_unavail
         additions.update(archive_attempts=2,archive_frontier_snapshots=2,archive_frontier_batches=7,
             projection_plans=1,projection_plan_chunks=10,projection_chunks=10,
             projection_chunk_bounds=10,index_frontier_plans=0)
+    from cases.first_launch_quantum_oracle import transition
+    transition(before,after)
     appended = set(additions)
-    mutable = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers'}
+    mutable = {'owner_epochs', 'producer_epochs', 'producer_checkpoints', 'consumers', 'acquisition_quanta'}
     assert appended | mutable <= set(before)
     for table in set(before) - appended - mutable:
         index.exact(before[table], after[table])
@@ -169,7 +171,7 @@ def prefix_preservation(before, after, *, retained_boundary=False, index_unavail
 def terminal_preservation(live, after, observed_at_us, *, archive_renewal=False):
     assert type(archive_renewal) is bool
     renewing = ('ingest', 'index', 'archive') if archive_renewal else ('ingest', 'index')
-    assert set(live) == set(after) and len(live) == 82
+    assert set(live) == set(after) and len(live) == 83
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'management_audit'}
     for table in set(live) - mutable:
         index.exact(live[table], after[table])

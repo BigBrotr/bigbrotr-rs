@@ -40,6 +40,7 @@ const SCAN_ADMISSIONS: &str = "
     SELECT substring(b.job_id FROM 1 FOR 17),left(b.admission_ordinal::text,21),
         (SELECT CASE WHEN j.dataset_id=$3::bytea AND j.kind='acquisition'
             AND j.acquisition_job_protocol=1 AND j.checkpoint_revision=0
+            AND NOT EXISTS(SELECT 1 FROM control.acquisition_quanta q WHERE q.job_id=j.job_id AND q.terminal_kind IS NULL)
             AND j.input_complete AND j.input_topology_generation IS NULL
             AND ((j.state='accepted' AND j.job_revision=1
                     AND j.owner_resource_id IS NULL AND j.owner_epoch IS NULL AND j.owner_incarnation IS NULL)
@@ -54,7 +55,7 @@ impl ControlSession {
     /// schema, function and row-lock permissions before publishing startup.
     pub async fn require_acquisition_execution(&mut self) -> Result<(), Error> {
         self.begin_operation().map_err(|_| Error::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 24)
+        let tx = application_transaction(&mut self.client, 43)
             .await
             .map_err(|_| Error::Prerequisite)?;
         require_job_update_schema(&tx).await?;
@@ -94,7 +95,7 @@ impl ControlSession {
             return Err(Error::InvalidInput);
         }
         self.begin_operation().map_err(|_| Error::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 23)
+        let tx = application_transaction(&mut self.client, 43)
             .await
             .map_err(|_| Error::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -237,6 +238,8 @@ const EXECUTION_PRIVILEGES: &str = "
     SELECT bool_and(has_table_privilege(CURRENT_USER, t.name, 'SELECT'))
         AND bool_and(NOT t.row_lock OR has_any_column_privilege(CURRENT_USER, t.name, 'UPDATE'))
         AND has_table_privilege(CURRENT_USER, 'control.jobs', 'UPDATE')
+        AND has_table_privilege(CURRENT_USER, 'control.acquisition_quanta', 'INSERT, UPDATE')
+        AND has_function_privilege(CURRENT_USER, 'control.quantum_retained_charge(bytea,numeric)', 'EXECUTE')
         AND has_function_privilege(CURRENT_USER,
             'control.require_acquisition_job_authority(bytea,bytea)', 'EXECUTE')
         AND has_function_privilege(CURRENT_USER,
@@ -254,6 +257,7 @@ const EXECUTION_PRIVILEGES: &str = "
         ('control.jobs', true),
         ('control.owner_epochs', false),
         ('control.acquisition_jobs', false),
+        ('control.acquisition_quanta', false),
         ('control.job_admissions', false),
         ('control.acquisition_scopes', false),
         ('control.acquisition_selectors', false),
@@ -314,7 +318,7 @@ async fn queue(
     Ok((queued, true))
 }
 
-async fn read(
+pub(super) async fn read(
     tx: &Transaction<'_>,
     dataset: DatasetId,
     job: JobId,

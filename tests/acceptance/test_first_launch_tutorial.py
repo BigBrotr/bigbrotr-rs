@@ -22,7 +22,7 @@ from test_first_launch import ROOT, arguments
 def peer_fixture(root):
     for n in range(1,4):
         before=dict(number=n,connected_at_us=n*1000,request_at_us=n*1000+1,
-            clock_resolution_us=1,request=['REQ',f'{n:032x}'+'0'*16,dict(kinds=[1],limit=3)])
+            clock_resolution_us=1,request=['REQ',f'{n:032x}'+'0'*16,dict(kinds=[1],since=0,until=86399,limit=3)])
         after=dict(before,closed_at_us=n*1000+100,
             frames=['signed','forged-signature','duplicate','EOSE'] if n<=2 else [],
             completion='request-and-websocket-close' if n<=2 else 'quiet-eof')
@@ -190,10 +190,15 @@ class TutorialControls(unittest.TestCase):
         revision=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
         runtime.manifest=dict(artifact=dict(source=dict(revision=revision)))
         runtime.command=lambda command,**_:subprocess.run(command,capture_output=True,text=True,check=True)
-        with patch.object(case.Runtime,'candidate'):
+        # A verifier control declares its fixture profile explicitly. HEAD need
+        # not be the production-reviewed profile; that gate remains pinned and
+        # must reject real changed product code until independent source review.
+        profile={path:subprocess.check_output(['git','-C',str(ROOT),'rev-parse',revision+':'+path],text=True).strip()
+            for path in case.REVIEWED_CODE}
+        with patch.object(case,'REVIEWED_CODE',profile),patch.object(case,'REVIEWED_PRODUCT',revision),patch.object(case.Runtime,'candidate'):
             runtime.candidate()
         self.assertEqual(runtime.inputs['nostr_source_exclusion']['product_revision'],revision)
-        self.assertEqual(runtime.inputs['nostr_source_exclusion']['reviewed_revision'],case.REVIEWED_PRODUCT)
+        self.assertEqual(runtime.inputs['nostr_source_exclusion']['reviewed_revision'],revision)
         runtime.command=Mock(return_value=SimpleNamespace(stdout='0'*40+'\n'))
         with patch.object(case.Runtime,'candidate'):
             with self.assertRaisesRegex(ValueError,'changed product code'):runtime.candidate()

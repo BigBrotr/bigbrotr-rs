@@ -33,5 +33,5 @@ def publication(state, actual, science, schema, root):
         native_rows=50,original_requests=4,original_inputs=4,acknowledged_through=4,retired_through=0,
         prefix_acknowledged_data='three_dictionaries',signed_event_admitted='during_outage',
         index_readiness='unavailable/dependency_unavailable',backend='stopped_retained',
-        control_tables=82,automatic_recovery='NOT_RUN',remote_uncertainty_resolution='NOT_RUN',
+        control_tables=83,automatic_recovery='NOT_RUN',remote_uncertainty_resolution='NOT_RUN',
         general_capacity='NOT_RUN',complete_m1='NOT_RUN')

@@ -4,8 +4,8 @@ import json
 import re
 
 
-CURRENT_SCHEMA = 42
-CURRENT_MIGRATIONS = 58
+CURRENT_SCHEMA = 43
+CURRENT_MIGRATIONS = 59
 
 
 def declared_inventory(source):
@@ -21,7 +21,7 @@ def declared_inventory(source):
         data = (source / name).read_bytes()
         inputs[name] = hashlib.sha256(data).hexdigest()
         tables.update(re.findall(r'^CREATE TABLE control\.([a-z_]+)\s*\(', data.decode(), re.MULTILINE))
-    assert len(tables) == 82, 'current-policy Control table profile changed'
+    assert len(tables) == 83, 'current-policy Control table profile changed'
     return dict(target=CURRENT_SCHEMA, tables=sorted(tables),
                 applied_versions=[entry['version'] for entry in order], inputs_sha256=inputs)
 

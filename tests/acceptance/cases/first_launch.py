@@ -139,12 +139,12 @@ def local_docker_endpoint(environment, context):
 
 def expected_tables(source, inputs=None):
     manifest = load(source / 'migrations/manifest.json')
-    require(manifest['application_order'][-1]['version'] == 42, 'first-launch schema profile changed')
+    require(manifest['application_order'][-1]['version'] == 43, 'first-launch schema profile changed')
     tables = {'schema_versions'}
     for entry in manifest['application_order']:
         tables.update(re.findall(r'CREATE TABLE control\.(\w+)',
                                  (source / 'migrations/postgres' / entry['name']).read_text()))
-    require(len(tables) == 82, 'first-launch Control table profile changed')
+    require(len(tables) == 83, 'first-launch Control table profile changed')
     if inputs is not None:
         names = ['migrations/manifest.json'] + ['migrations/postgres/' + entry['name']
                                                 for entry in manifest['application_order']]
@@ -155,10 +155,10 @@ def expected_tables(source, inputs=None):
 def expected_ledger(source):
     manifest = load(source / 'migrations/manifest.json')
     entries = manifest['application_order']
-    require(manifest['engine'] == 'postgres-control' and len(entries) == 58
-            and entries[-1]['version'] == 42 and len({e['version'] for e in entries}) == 58,
+    require(manifest['engine'] == 'postgres-control' and len(entries) == 59
+            and entries[-1]['version'] == 43 and len({e['version'] for e in entries}) == 59,
             'first-launch current migration profile changed')
-    # Application order includes reserved 8xx/9xx IDs; target42 is not1..42.
+    # Application order includes reserved 8xx/9xx IDs; target43 is not1..43.
     return sorted((dict(engine='postgres-control', migration=e['version'], name=e['name'],
         checksum=digest(source / 'migrations/postgres' / e['name']),
         reader_min=1, reader_max=1, writer_floor=1) for e in entries), key=lambda e:e['migration'])
@@ -656,6 +656,8 @@ class Runtime:
         pg = {'postgres': self.pg['id']}
         control = self.rows(pg, 'bigbrotr_control')
         require(set(control) == self.tables, 'Control inventory differs from migrations')
+        from cases.first_launch_quantum_oracle import shape
+        shape(control)
         catalog = self.catalog_rows(pg, 'bigbrotr_catalog')
         save(output / (prefix + '-control.json'), control)
         save(output / (prefix + '-catalog.json'), catalog)
@@ -683,12 +685,12 @@ class Runtime:
         provision('bootstrap')
         for action in ('plan', 'apply'):
             self.finite('migration-' + action, 'migrate', action, *config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/operator/migrator', '--target', '42', service='initialize')
+                        '--password-ref', 'file:/run/operator/migrator', '--target', '43', service='initialize')
         ledger = json.loads(self.sql('bigbrotr_control', """
             SELECT coalesce(json_agg(row_to_json(v) ORDER BY migration),'[]') FROM (
                 SELECT engine,migration,name,encode(checksum,'hex') AS checksum,
                     reader_min,reader_max,writer_floor
-                FROM control.schema_versions ORDER BY migration LIMIT 59
+                FROM control.schema_versions ORDER BY migration LIMIT 60
             ) v"""))
         save(self.root / 'bootstrap/applied-control-ledger.json', ledger)
         validate_current_ledger(self.source, ledger)
@@ -802,7 +804,7 @@ class Runtime:
                 'unexpected Archive snapshot')
         require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
         validate_initial_prefix_profile(control, self.initialized)
-        save(output / 'current-schema-profile.json', dict(target_version=42,
+        save(output / 'current-schema-profile.json', dict(target_version=43,
             prefix_profile=True, progress_format=1, complete_through_request=4,
             active_base=None, prepared_base=None))
 
@@ -871,7 +873,7 @@ class Runtime:
         save(output / 'after-archive-files.json', files_after)
         require(catalog_after == catalog_before and files_after == files_before, 'ordinary read/export mutated Archive')
         self.export_result = self.export_validate(before, after, self.home, self.initialized, self.ids['catalog'],
-            expected_principal=self.enrolled['principal_id'], expected_table_count=82, expected_tables=self.tables,
+            expected_principal=self.enrolled['principal_id'], expected_table_count=83, expected_tables=self.tables,
             destination_root=self.state / 'data/export', initial_cut=self.initial_cut)
         save(output / 'export-verdict.json', self.export_result)
         self.backend_absence(output)
@@ -927,6 +929,8 @@ class Runtime:
         self.old_event = load(self.home / 'event.jsonl')
         self.first_science = self.restart_checks.first_science(view, self.initialized, self.old_event, wires,
             self.baseline_census, self.state / 'data/ingest', owner['released_at_us'], provenance=self.provenance)
+        from cases.first_launch_quantum_oracle import initial as quantum_initial
+        quantum_initial(view,wires,self.old_event,self.first_science)
         self.restart_checks.publication(initial_after, self.baseline_census, self.first_science,
             revision=4, snapshot=5, topology=0, cuts=[(1, self.initial_cut)])
         self.original_inputs = self.files(self.state / 'data/ingest/producer-inputs-v1')
@@ -1067,6 +1071,8 @@ class Runtime:
         self.final_science = self.restart_checks.successor_science(self.retired_initial, self.successor_after,
             self.successor_started, self.first_science, self.old_event, self.new_event, self.successor_wires,
             self.final_census, self.state / 'data/ingest', self.successor_completed, provenance=self.provenance)
+        from cases.first_launch_quantum_oracle import successor as quantum_successor
+        quantum_successor(self.successor_after,self.successor_wires,self.old_event,self.new_event,self.final_science,before=self.retired_initial)
         self.restart_checks.retired(self.retired_successor, self.successor_retirement, 2, self.final_science,
             cut=self.restart_profile['successor_cut'])
         self.restart_checks.publication(self.caught_up, self.final_census, self.final_science,
@@ -1221,6 +1227,7 @@ def first_launch(args, checks, inputs):
                 STAGES as INDEX_STAGES, LIMITS as INDEX_LIMITS)
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
+    linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1234,8 +1241,12 @@ def first_launch(args, checks, inputs):
         from cases.first_launch_renewal_stop import RenewalStopRuntime, STAGES as STOP_STAGES, LIMITS as STOP_LIMITS
         runtime_type = RenewalStopRuntime
         args.case_limits = STOP_LIMITS
+    if linear_quantum:
+        from cases.first_launch_linear_quantum import LinearQuantumRuntime,STAGES as QUANTUM_STAGES,LIMITS as QUANTUM_LIMITS
+        runtime_type=LinearQuantumRuntime
+        args.case_limits=QUANTUM_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (QUANTUM_STAGES if linear_quantum else STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -1255,7 +1266,7 @@ def first_launch(args, checks, inputs):
             operations += [('index_catch_up', runtime.index_catch_up), ('index_exact_retry', runtime.index_retry)]
         if index_case:
             operations += [('index_publication', runtime.verify_index)]
-        if not archive_outage:
+        if not archive_outage and not linear_quantum:
             operations += [('ordinary_history_export', runtime.ordinary)]
         if pin_release:
             operations += [('pin_release_uncertainty', runtime.pin_release_uncertainty)]
@@ -1271,6 +1282,8 @@ def first_launch(args, checks, inputs):
             operations += [('successor_history', runtime.restart_history)]
             if live_topology:
                 operations += [('historical_index_topology', runtime.historical_index_topology)]
+        if linear_quantum:
+            operations += [('linear_quantum',runtime.verify_linear_quantum)]
         if renewal_stop:
             operations = operations[:4] + [('renewal_stop', runtime.renewal_stop)]
         for current, operation in operations:

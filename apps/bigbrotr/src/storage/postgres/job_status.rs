@@ -50,7 +50,7 @@ impl ControlSession {
             .map_err(|_| SessionError::Unavailable)?;
         let schema = match kind {
             JobKind::Export => 813,
-            JobKind::Acquisition => 22,
+            JobKind::Acquisition => 43,
         };
         let tx = application_transaction(&mut self.client, schema)
             .await
@@ -106,10 +106,22 @@ impl ControlSession {
                 .checked_sub(time)
                 .filter(|v| *v > 0)
                 .ok_or(SessionError::Denied)?;
-            let observation = row
+            let mut observation = row
                 .as_ref()
                 .map(|row| decode(row, time, kind))
                 .transpose()?;
+            if let Some(observation)=&mut observation && kind==JobKind::Acquisition {
+                    observation.linear_quantum=tx.query_opt(
+                        "SELECT jsonb_build_object('format','bigbrotr-linear-quantum-status/1',
+                            'quantum_number',quantum_number::text,'scope_id',encode(scope_id,'hex'),
+                            'lower',interval_lower::text,'upper',interval_upper::text,'horizon',horizon::text,
+                            'result',coalesce(result_class,'pending'),'terminal',terminal_kind,'gap',gap_reason,
+                            'continuation_upper',continuation_upper::text,
+                            'retained_events',retained_events,'classified_prefix',classified_prefix,
+                            'coverage','pending') FROM control.acquisition_quanta WHERE job_id=$1
+                            ORDER BY quantum_number DESC LIMIT 1",&[&&job.as_bytes()[..]])
+                        .await.map_err(backend)?.map(|row|row.try_get(0).map_err(metadata)).transpose()?;
+            }
             Ok(AuthorizedJobStatus {
                 observation,
                 remaining: Duration::from_micros(remaining as u64),
@@ -178,6 +190,7 @@ pub(super) fn decode(
         _ => return Err(SessionError::InvalidMetadata),
     };
     Ok(JobObservation {
+        linear_quantum: None,
         kind,
         job_id,
         state: JobState::from_code(row.try_get("state").map_err(metadata)?)

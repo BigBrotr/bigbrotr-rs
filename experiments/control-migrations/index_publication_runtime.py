@@ -53,7 +53,7 @@ HANDOFF_POSITIVE = (HANDOFF_COMMON - HANDOFF_MANIFEST_NEGATIVE) | {'positive_bri
 def validate_handoff_seed(rows, phase, tables, migration_sha):
     """Closed installed provenance-on seed; no inferred alternate lifecycle."""
     require(phase in ('terminal', 'nonterminal'), 'unknown-handoff-seed-phase')
-    require(len(tables) == 82 and set(rows) == set(tables), 'exact82-seed-tables-required')
+    require(len(tables) == 83 and set(rows) == set(tables), 'exact83-seed-tables-required')
 
     def only(name, **fields):
         selected = [row for row in rows[name] if all(row.get(k) == v for k, v in fields.items())]

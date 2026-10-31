@@ -93,7 +93,7 @@ def archive_request_progress(event, transcript):
         assert wire['number'] == number
         command = wire['request']
         assert len(command) == 3 and command[0] == 'REQ'
-        assert command[2] == {'kinds': [1], 'limit': 3}
+        assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
         request = command[1]
         assert re.fullmatch('[0-9a-f]{48}', request) and int(request[:32], 16)
         assert request[:32] not in nonces

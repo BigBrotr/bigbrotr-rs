@@ -61,7 +61,7 @@ def roles_fixture():
 
 
 class IndexOutageControls(unittest.TestCase):
-    def test_inverse_all82_transition_preserves_index_head_and_unrelated_rows(self):
+    def test_inverse_all83_transition_preserves_index_head_and_unrelated_rows(self):
         before,live=inverse_fixture()
         outage.prefix_preservation(before,live,index_unavailable=True)
         mutations=(lambda v:v['projection_chunks'].pop(),lambda v:v['projection_plans'].append(dict(extra=True)),

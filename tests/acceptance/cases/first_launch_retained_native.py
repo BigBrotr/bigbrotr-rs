@@ -74,14 +74,14 @@ def stop(runtime):
     save(runtime.root/'native-observer-terminal.json',dict(id=info['Id'],state=info['State']))
 
 
-def census(runtime, output, *, store=None):
+def census(runtime, output, *, store=None, expected_writer_exit=0):
     # Original application/backend absence is independently proved first. The
     # read-only bind is a second boundary, not a reason to inspect a live store.
     runtime.backend_absence(output)
     original = load(runtime.root/'initial/terminal-container.json')
     info, = json.loads(runtime.docker('inspect',original['id']).stdout)
     require(not info['State']['Running'] and info['State']['Pid']==0
-        and info['State']['ExitCode']==0 and not info['State']['OOMKilled'], 'writer must be positively joined')
+        and info['State']['ExitCode']==expected_writer_exit and not info['State']['OOMKilled'], 'writer must be positively joined')
     store=runtime.state/'data/ingest' if store is None else Path(store).resolve(strict=True)
     require(store.resolve(strict=True).is_relative_to((runtime.state/'data').resolve(strict=True)), 'native observer store outside owned data')
     require({name:digest(path) for name,path in runtime.native_paths.items()}==runtime.native_hashes,

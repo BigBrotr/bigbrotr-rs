@@ -646,6 +646,7 @@ async fn initial_status_uses_the_same_bounded_job_observation_route() {
         .completion
         .finish(Ok(transport::Reply::JobStatus(Some(
             bigbrotr::management::jobs::JobObservation {
+                linear_quantum: None,
                 kind: JobKind::Acquisition,
                 job_id: job,
                 state: bigbrotr::management::jobs::JobState::Accepted,
