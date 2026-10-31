@@ -3882,5 +3882,18 @@
       "sha256": "a9466570f9a81a024f3f1379c01be799ef60a5b498677335e897ea54de7c49d0"
     },
     "scope": "Original failure/partial platform execution and all preceding6fa/1cb/failure history preserved unchanged; later current-source full success does not rewrite them."
+  },
+  "current_documentation_followup": {
+    "source": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",
+    "run": 41205708456,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41205708456",
+    "status": "PASS_DOCUMENTATION_ONLY",
+    "checks": "20scope controls+3shared documentation checks; exact six-doc comparison, foundation/controls/native jobs correctlySKIP. No new product/worker/Rust build claim.",
+    "audit": {
+      "path": ".research/ci-publication-20261026/source-ci-native-bookkeeping-a3fc81b5-20261031/terminal-audit.json",
+      "sha256": "86ec1e11138acad13dd8a5f3d936ee350e943236a76465de70739aa2536d77a1"
+    },
+    "artifacts": "Two exact run-bound artifact digests verified; six artifact and17workflow-log members/148579expandedB scanned,0pattern candidates/provideralerts. Bounded known-format scope; original fullC90 proof unchanged.",
+    "terminal": "Sole observer and scanner reaped0; exact recorded processes absent; no observer remains."
   }
 }

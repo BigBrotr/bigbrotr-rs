@@ -147,7 +147,11 @@ its consumer exists while the concrete producer/adapter remains unwired.
 | M4: operable distribution | Clean installation, configuration, backup/restore/upgrade, alerts and split-role operation | P08 and dependent practical fault/capacity evidence |
 | M5: complete product | Public/private browser journeys, complete website/docs/blog/download and real tutorial execution | P09/P10 plus final supported-feature/workload evidence |
 
-**M1 evidence collection qualified on 2026-10-29.**
+**M1 evidence collection qualified on 2026-10-29.** Current-policy3 installed
+requalification at `a3fc81b5` on2026-10-31 passes11/11, including two distinct
+standalone exports and ordinary same-root restart/rereads. The existing Index
+report, `installed_application.current_policy_requalification`, owns the exact
+source/artifacts, real-engine captures, independent audit and terminal custody.
 [P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition) records the
 installed signed-event/read/export, same-data provenance-on/off restart, separate
 dependency outages and outside-checkout tutorial results. Each retains its actual

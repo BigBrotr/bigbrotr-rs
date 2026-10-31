@@ -331,7 +331,198 @@
         "status": "FAIL_PRODUCT_SOURCE_LIMIT_COUPLING",
         "reason": "Generic native-input refusal and owner exit4. Source-derived counterexample: atomic5-fact batch versus incorrectly reused4-row ceiling. Original discriminant unobserved; corrected unchanged4-row installed run nowPASS."
       }
-    ]
+    ],
+    "current_policy_requalification": {
+      "status": "PASS_SCOPED_CURRENT_POLICY3_INSTALLED_11_OF_11",
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "650302289298bebe7bdc890650f45703b90b2e509ac4d37fe871e60f98f30add",
+        "revision": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",
+        "state": "builder-supplied",
+        "tree": "1c720bebd6ce8ecef12a97aaa7ccc63e86021e60"
+      },
+      "scope": "Fresh maintained worker-before-parent build, exact standard observer and assembled candidate; actual pinned Linuxamd64 distroless installed grouped-publication-loss journey. This closes the changed-policy installed export/restart gate; does not qualify all P01/P08, arbitrary OPEN lifetimes, capacity or release.",
+      "owner_tasks": [
+        "P01-T08",
+        "P01-T09",
+        "P08-T04"
+      ],
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5",
+      "case_root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1",
+      "command": [
+        "python3",
+        "-B",
+        "/home/tux/bigbrotr-rs/tests/acceptance/run.py",
+        "p01-first-launch-closed-reclamation",
+        "--source-root",
+        "/home/tux/bigbrotr-rs",
+        "--candidate-manifest",
+        "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/candidate/candidate-manifest.json",
+        "--native-observer-build",
+        "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-observer-a3fc81b5/out/build",
+        "--retained-archive-schedule",
+        "grouped-publication-loss",
+        "--compose-network",
+        "bigbrotr-m1-0f80280_default",
+        "--evidence",
+        "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1"
+      ],
+      "counts": {
+        "collected": 11,
+        "executed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      },
+      "tool_session": 58029,
+      "tool_exit": 0,
+      "elapsed_seconds": 751.6841006979812,
+      "artifact_chain": {
+        "build_receipt_sha256": "2825a7fb94d3516d010eb17fae9cfd1a6dd12dfb089d35561be370c1a3beb6d2",
+        "observer_receipt_sha256": "1f651b20280aab99a67073a18e8d9bdb5806443e95682665cbc3c950244b351b",
+        "parent": {
+          "bytes": 43684216,
+          "sha256": "cfbdabbee45c409b35019ac4b99daf272445cc255d87cc731e5114bc96c24046"
+        },
+        "worker": {
+          "bytes": 14460848,
+          "sha256": "d1eebacd5a8b5e300df7daf8a3bf929ef58ce995197912bf3ba3e5061ffda3d1"
+        },
+        "probe_sha256": "86eb2b5f9372917aa869075c9ad20bda4fa66935a913bf22539dbc6c03b9731c",
+        "probe_parent_receipt_sha256": "21a216d03dcaec84b8e91499721fd6356d23eec345d687f53081fdf7d36e1d58",
+        "candidate": {
+          "bytes": 78383703,
+          "name": "bigbrotr-x86_64-unknown-linux-gnu.tar.gz",
+          "sha256": "ab3c6fed23e5cd2f5b88369cbf40ded858ed7f193c21f4aa72e6f521c59e7fff"
+        },
+        "candidate_manifest_sha256": "fee34f81e22e60271d53b4e323736c215e085ce59a12fcba3905d2a4fe4282fe",
+        "candidate_members": 22,
+        "native_assets": "All5pinned assets,closed native subtree,source/provenance/worker and actual installed/tar inventory bytes verified by existing assembler/candidate functions and retained archive hashes."
+      },
+      "actual_policy": {
+        "format": "bigbrotr-product-policy/3",
+        "settings": 217,
+        "retention": 64,
+        "selected_captures": 8,
+        "full_document_digest": "98bfebf7b31803dc2590a48efde91590fccb29ff01ef24704f58afef1cd43354",
+        "meaning": "Full accepted config/policy bodies match each other and the current independent fixture keyset; schema3 and recomputed digest agree in all selected captures. The declared lab overrides are not the default fixture values."
+      },
+      "exports": {
+        "oracle_replay": "Existing validate/second_job_rows/compacted_history_control/history_unchanged/verify_artifact allPASS on new rawcaptures; no candidate serializer supplies literal expected bytes.",
+        "jsonl": [
+          {
+            "bytes": 353,
+            "sha256": "71fcfc6cf6ea29b2464cfe9f41aa749180b4f458b79b44779f94bc65880eefa9",
+            "manifest_sha256": "e8d1bacf43bb66cfb87262747f77018c9452020e097ff2e060ba5b8dab297d58"
+          },
+          {
+            "bytes": 358,
+            "sha256": "492cfca9c1834e722bfa814407f961ab7aa91911c4801f985f1c71df1269dbc0",
+            "manifest_sha256": "540a12dcf81cdc9bf95f9c77a51ea9fc9d26a16a581bec7725a96fc1b798ffb9"
+          }
+        ],
+        "distinct_jobs_and_artifacts": true,
+        "frontier_revision": 4,
+        "snapshot": 68,
+        "cuts": [
+          [
+            1,
+            312
+          ],
+          [
+            2,
+            10
+          ]
+        ],
+        "second_retries_and_changed_event_conflict": "Exact202 acceptance,200samejob retries including aftercompletion,409command_conflict replaychecked by unchanged second_job_rows.",
+        "ordinary_restart_rereads": "Both standalone files/complete literal manifests/independent BIP340 signatures reread after fresh ordinary same-root Control history restart; full82table startup/session/two released-history-reader oracle replayPASS.",
+        "export_file_census": "Actual bytes/SHA/inode/mode/device/link census matches saved second-export census; original export unchanged.",
+        "recorded_client_process_receipts": [
+          {
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1/reclamation/history-export/ordinary-client-process.json",
+            "status": "joined",
+            "exit_code": 0,
+            "limit_seconds": 40
+          },
+          {
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1/reclamation/history-export/second-export/ordinary-client-process.json",
+            "status": "joined",
+            "exit_code": 0,
+            "limit_seconds": 40
+          },
+          {
+            "receipt": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1/reclamation/history-export/history/successor-history-client-process.json",
+            "status": "joined",
+            "exit_code": 0,
+            "limit_seconds": 30
+          }
+        ]
+      },
+      "preservation": {
+        "catalog": "All6before/after export/history captures exactly equal post-recovery catalog; prior native rows/files and unregistered failedB4 output remain captured.",
+        "archive_custody": "Six retained original-byte/lock/sealed-login preservation evidence objects equal; existing full run original oracles supplied their meanings.",
+        "native": "History/consumers/successor raw native snapshots identical; no replay into an engine.",
+        "science_family_rows": {
+          "dictionaries": 73,
+          "events": 62,
+          "event_eligibility_facts": 62,
+          "event_receive_facts": 62,
+          "provenance_facts": 63,
+          "archive_commits": 67
+        },
+        "captured_only_boundary": "Raw producer-input/custody/physical-Archive repeatedchecks retained and pinned through unchanged source/results; no fresh whole store/credential/lock audit or external DB reads performed."
+      },
+      "environment": {
+        "base": {
+          "reference": "gcr.io/distroless/cc-debian13@sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6",
+          "id": "sha256:732d2fe38bb1996cb47f8218b48dc840967684d73c5483894ff2ed638068c1b6"
+        },
+        "postgres": {
+          "reference": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+        },
+        "clickhouse": {
+          "reference": "clickhouse/clickhouse-server:26.8.35.10@sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc",
+          "id": "sha256:324e2f39fa3be72b5838acf05af0f3cd0bfcd90f0096a9b0cf470b757fc355cc"
+        }
+      },
+      "evidence": {
+        "actual_audit": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-a3fc81b5/actual-journey-audit.json",
+          "sha256": "c0d6ced1078fe5c563d7edc7670358be2f0d0733e06fc791aa5202c822fa8a45"
+        },
+        "root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1-root-terminal.json",
+          "sha256": "36309607c90e0f8d8d9cd031491cc5dc90893031e826f2514d857c5def184354"
+        },
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1/result.json",
+          "sha256": "f802d92b2723c59b575dedbe8bd5596f9c9e62e828ba0b1978374aa49e40b8ed"
+        },
+        "build_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-a3fc81b5/build-receipt.json",
+          "sha256": "2825a7fb94d3516d010eb17fae9cfd1a6dd12dfb089d35561be370c1a3beb6d2"
+        },
+        "observer_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/observer-a3fc81b5/receipt.json",
+          "sha256": "1f651b20280aab99a67073a18e8d9bdb5806443e95682665cbc3c950244b351b"
+        }
+      },
+      "terminal": {
+        "owned_containers_stopped": 40,
+        "native_observer_processes_absent": 22,
+        "driver_processes": "both absent",
+        "commands_recorded": 7875,
+        "borrowed_network": "exact same ID/labels/IPAM, empty, retained; no mutation/removal",
+        "cache": "115released, original4single-link executable pins unchanged after parent and observer builds"
+      },
+      "limits": [
+        "Existing original workload, completion-space, native engine, custody and independent oracle limits stay unchanged. Exact detailed runtime/exclusion boundaries remain in the pinned actual audit and previous owning report.",
+        "This installed tuple remains nativeformat1/catalog41. No unfinished OPENcounter/nativeformat2/PG42/typed-intake source is integrated.",
+        "Original X18 successes and original verifier failures remain their own source-specific evidence. No relabeling or new standalone tutorial run.",
+        "Code202 cause, broad query cancellation, remote exclusion, generic capacity/load/power-loss/arm64/release and all selected later milestones remain with existing task owners."
+      ]
+    }
   },
   "live_readiness": {
     "status": "PASS_INITIAL_INSTALLED_SCOPE_ORDINARY_AND_M1_OPEN",

@@ -9,7 +9,7 @@
     "P02-T01 Steps5/6 prerequisite",
     "P03-T01 and P04-T02 source authority consumer"
   ],
-  "scope": "Qualification of current policy-v3 initialization/inspection/retry/initial activation and incompatible-format/body refusals on Linuxamd64; root code integration and broader product/installed qualification remain separate.",
+  "scope": "Qualification of current policy-v3 initialization/inspection/retry/initial activation and incompatible-format/body refusals on Linuxamd64; root code integration and broader product qualification remains separate; the source-specific installed follow-up is recorded below.",
   "predecessor": {
     "report_git_revision": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
     "report_path": "docs/implementation/evidence/p01-policy-versions-native-20260928.json",
@@ -254,8 +254,7 @@
     "load and aged state",
     "arm64",
     "release",
-    "current-policy installed export/restart",
-    "new installed Nostr/client/tutorial qualification"
+    "new standalone documented tutorial and broader Nostr interoperability qualification"
   ],
   "hosted_followup": {
     "revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
@@ -268,5 +267,19 @@
       "path": ".research/ci-publication-20261026/c90d20a8-full-ci/receipt.json",
       "sha256": "3442b377a5a2d033652d30ad0b7eae13a1c882c994925582c4449493a7bcc183"
     }
+  },
+  "installed_followup": {
+    "status": "PASS_SCOPED_CURRENT_POLICY3_INSTALLED_11_OF_11",
+    "source": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",
+    "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#installed_application.current_policy_requalification",
+    "actual_audit": {
+      "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-a3fc81b5/actual-journey-audit.json",
+      "sha256": "c0d6ced1078fe5c563d7edc7670358be2f0d0733e06fc791aa5202c822fa8a45"
+    },
+    "root_terminal": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1-root-terminal.json",
+      "sha256": "36309607c90e0f8d8d9cd031491cc5dc90893031e826f2514d857c5def184354"
+    },
+    "scope": "Current policy3 retention64 through actual installed signed acquisition, Archive/Index/read, two distinct standalone signed exports, exact retries/conflict and ordinary same-root restart/rereads;11/11PASS. No full P01/P08/release or fresh standalone tutorial claim."
   }
 }

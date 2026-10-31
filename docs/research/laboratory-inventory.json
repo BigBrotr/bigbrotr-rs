@@ -66308,6 +66308,26 @@
         "sha256": "83e390b871ca23c1a000f71b2eee1af00b9336cc6a12a2da8b7d73063bc07553",
         "result": "Six bounded roots checked,0eligible retirement bytes; no deletion.272finished/shared ELF paths and all data preserved.8declared/76overlap containers stopped/PID0/noRestart; accessible proc scan0hits with inaccessible-process limits disclosed. Shared currentcache115 excluded. No broader unused-resource claim.",
         "free_bytes_observed": 72548777984
+      },
+      "cache115_bounded_observation_20261031": {
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-archive-read-20261018/checkpoint-cache115-rocks-bounded-observation-20261031.json",
+          "sha256": "edfe3b93cc11defa517142391b6c11170ca599e1490c9d0eb9482bfb4365a510"
+        },
+        "scope": "FourdirectRocksbuilddirs, no proven obsolete nonsharedbatch;0deletions. Required dependency consumers/finished sharedELFs preserved."
+      },
+      "regenerable_source_tar_retirement_20261031": {
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/retirement.json",
+          "sha256": "2eefe5735789dcfc49afde321bbef83f884a92103a2e03a4502d6e8345270705"
+        },
+        "scope": "10explicit completed source.tar caches only; fresh gitarchive bytes exactly equal and full exportedsource inventories preserved.533,782,528allocatedB retired (observed free delta533,774,336B). Git/sourceexports/manifests/ELFs/data/logs/worktrees unchanged; regenerate exact tar before futureconsumer needs it.",
+        "followup_proposal": {
+          "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/headroom-after-installed/owner-profile-resolved/proposal.json",
+          "sha256": "96eaaa54a058e3ae9d09b2f61c7284ff8b2e0ca2971e3c9e614655f9fbf2ea73"
+        },
+        "followup_status": "PROPOSAL_ONLY:15older archives/120,590,336allocatedB verified, not deleted; otheroldresource owner formats unresolved. No expanded deletion.",
+        "free_bytes_after_installed_observed": 70680760320
       }
     },
     "connected_journey": {
@@ -77605,8 +77625,8 @@
       "worktree": ".research/open-prefix-initial-sol-20261030",
       "branch": "work/open-prefix-initial-sol-20261030",
       "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
-      "partial_commit": "ae380546329331c64d37923ab06d71c312d2f346",
-      "state": "Last frozen ae380546; source author correcting fixture policy-chain CHECK violation found by critical review, no engines/builds. Counter/native cc3 actual90PASS, typed historical63 source-critical closed and actualRust7PASS. Harness critical review active; new probe compilation/actualPG NOT_RUN. Grants/staging/scheduling/physical bounds unwired;64 unchanged.",
+      "partial_commit": "8afb7457f84a55ed80094fbf10d89bdad4c444b8",
+      "state": "Clean frozen8afb, authoridle. Counter/nativecc3actual90PASS; capture63actualRust7PASS. Historical38fixture now source-critical F1/F2/F3/F4closed plus30portablecontrols; new8afb coherent pairbuild and actual38PG NOT_RUN. Grants/staging/scheduling/physicalbounds unwired,64 unchanged.",
       "accounting_receipt": {
         "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/pending-accounting-b0da6952.json",
         "sha256": "ab5502c3613831990fc3568c2fc0f08d4a87910d49ef7f3a1880ca785cf3aa75"
@@ -77785,6 +77805,21 @@
         "path": ".research/ci-publication-20261026/c90d20a8-full-ci/installed-reuse-proposal.json",
         "sha256": "19728481607b91ba8165aefcde102f1cfdedd07179f8fd95410cbe651fdcfae9",
         "finding": "Hosted ZIP uploadsreceipts/logsonly/noELFs; cannotreuseabsentparent/worker/probe. ABIUNKNOWN, notassertedincompatible. Exactpinnedassets rehashed; unchangedmaintainedbuild→observer→assembler→existingtwoexportjourney identified. Awaitcoherentproductrevisiontoavoidredundantbuild."
+      },
+      "installed_actual_qualification": {
+        "source": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",
+        "status": "PASS_SCOPED_CURRENT_POLICY3_INSTALLED_11_OF_11",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5",
+        "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#installed_application.current_policy_requalification",
+        "actual_audit": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-a3fc81b5/actual-journey-audit.json",
+          "sha256": "c0d6ced1078fe5c563d7edc7670358be2f0d0733e06fc791aa5202c822fa8a45"
+        },
+        "root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/grouped-replacement-installed-a3fc81b5/acceptance-grouped-second-export-r1-root-terminal.json",
+          "sha256": "36309607c90e0f8d8d9cd031491cc5dc90893031e826f2514d857c5def184354"
+        },
+        "resources": "All40owned containers stopped/PID0/noOOM;22nativeobserver hostPIDs and2driver identities absent. Borrowed1699209a bridge exact/empty/retained; cache115released. Actual130.278s/75.161s build timings and751.684s journey remain scoped, not a causal performance claim."
       }
     },
     "native_accounting_qualification": {
@@ -77848,14 +77883,49 @@
         "resources": "Owned789ed2c6containerstopped0/PID0/noOOM, cache115released/rootreacquiredandoriginal4artifactsunchanged."
       },
       "integrity_fixture": {
-        "source": "ae380546329331c64d37923ab06d71c312d2f346",
-        "tree": "f838bf72b32e4b8de06e147f5fd0135f2ad2ed07",
+        "source": "8afb7457f84a55ed80094fbf10d89bdad4c444b8",
+        "tree": "71d5285c6036e8930523c362897bd5ab64a50529",
         "author_receipt": {
-          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/historical-integrity-ae380546.json",
-          "sha256": "3f3e7b6f6288470afbc4f0113f3f5f7cb22ba8adba3e374cb892da302aadc42a"
+          "path": "/home/tux/bigbrotr-rs/.research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/historical-lifecycle-8afb7457.json",
+          "sha256": "cc90864d593234959cff47e5fb1eee3326693c9ee4036eff6a3d0c4ea8c3b23a"
         },
-        "status": "21portablePASS;38realPG checks/12private cases NOT_RUN; critical review active; production Rust byte-identical to63. ACK positive is real nonzero idempotent1/1, not lost-ACK advancement.",
-        "open_review_finding": "Fixture append_pair skips policy revisions but schema requires revision=previous_revision+1; author must construct complete immutable chain before root execution. No constraint weakening."
+        "critical_closure": {
+          "path": "/home/tux/bigbrotr-rs/.research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-lifecycle-closure-8afb7457.json",
+          "sha256": "a28aa4c70917fab93e8f2bfef7c65a8efcaa1c2c685aea87b224325b2a1d431e"
+        },
+        "status": "SOURCE_CRITICAL_CLOSED_30PORTABLE_PASS; new compiled probe/pair and actual38checks/12private cases NOT_RUN. Full9domains and genuine release/join/freshControl before retirement and activated recovery; original authority attribution/science/SQL/limits unchanged."
+      },
+      "runtime_attempts": {
+        "build4449": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-4449c1dd/root-build-terminal.json",
+          "sha256": "8e4636bd90b5bce8374c7389499dd155d88867e93bf56c5a3975d3d2dbfcba50"
+        },
+        "r1": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-4449c1dd/pg-r1-root-terminal.json",
+          "sha256": "2b07049968f6599d7dc4b7bb41a286d78e2b3d3dca3b9fa3d6db41858fe394fe"
+        },
+        "r2": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-4449c1dd/pg-r2-root-terminal.json",
+          "sha256": "a479075f11aa7ebe54c137dfb9f6770cfa41a5cff4908994237c23ee5de4bcb2"
+        },
+        "build39": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-39e1e4aa/root-build-terminal.json",
+          "sha256": "f5616eff8852e9a7c5c66da9a749cc68930813763a6e172054f4ef1c5c354418"
+        },
+        "r3": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-39e1e4aa/pg-r1-root-terminal.json",
+          "sha256": "6588905b93d188f5d9df561fab7a609e7eebd21ff80ff55d73ba67ad79c8db18"
+        },
+        "classification": "R1fixtureinvalidDBname0cases; R2productSQL42syntax failed firstmigration; corrected39actualcatalog42/app-role/configinit/activate4PASS then fixtureoriginalControlfence refusal before38cases. AllFAIL/rawcaptures retained. Shared full9domains and secondrecoveryControlfence repaired together in8afb, not yet executed."
+      },
+      "migration42_syntax": {
+        "source": "39e1e4aa122e52bb4462cf6b634783bc6193a1d3",
+        "sql_sha256": "9bc752f0a0dc2f42fc7461481e27e7ed5ed9253e8dc9a56ad94d961f477ab5cb",
+        "actual_diagnostic": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-4449c1dd/sql-diagnostic/diagnostic-r2-result.json",
+          "sha256": "6ab1964ba847bdbcc57aa9852c757e0ef5f5fa6986e4c714d6f2071e1b6377ff"
+        },
+        "scope": "Original rawSQL42601 vs correctedfull42compiles under real migrator, bothROLLBACK preserve57-version catalog; actual compiled39 migrate42passed. Root firstdiagnostic nonexistentversion column verifierFAIL retained separately. Two parentheses only; no arithmetic/limit changes."
       }
     },
     "qualified_policy_and_ci_ref_retirement": {
