@@ -21,7 +21,7 @@ class ProfileTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.home = Path(self.temporary.name)
+        self.home = Path(self.temporary.name).resolve(strict=True)
         self.secret = self.home / 'owner.private'
         self.secret.write_text('Independent supplied password 2026 ')
         self.secret.chmod(0o600)
