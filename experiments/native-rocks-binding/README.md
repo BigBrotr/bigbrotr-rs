@@ -392,22 +392,39 @@ untrusted producer. No new workspace, lock, dependency or generic fault service
 is introduced. The historical default driver profile remains unchanged, and its
 existing ARM job does not automatically execute these new component controls.
 
-The 14 direct controls qualify the recorded d3 component tuple only.
-Real default-POSIX ENOSPC, SFM/Resume suppression with retry-count-only and
-single-hook negatives, concurrent fault/query/drop/close, already-started work,
-joined stop, failed-unlink/unknown debt, explicitly funded reopen and positive
-purge remain separate. App wiring, CW-N1/P1/P2, request65, physical bounds and
-release remain open. This component increment is not an M1 prerequisite and must
-not delay unrelated installation reconciliation.
+The 14 direct controls qualify the recorded d3 component tuple only. The bounded
+running-DB result below separately covers real default-POSIX ENOSPC with
+retry-count-only and single-hook negatives. Concurrent fault/query/drop/close,
+already-started work, joined stop, failed-unlink/unknown debt, explicitly funded
+reopen and positive purge remain separate. App wiring, CW-N1/P1/P2, request65,
+physical bounds and release remain open. This component increment is not an M1
+prerequisite and must not delay unrelated installation reconciliation.
 
-### Bounded real POSIX compaction NoSpace controls (NOT_RUN)
+### Bounded real POSIX compaction NoSpace controls
+
+Source `f761ca855cd3f06e9a117ea5106bcd02f0170b73`, tree
+`df1d18858538615e6d4f9e8881e8a13d50c1d9a9`, passed all four real default-POSIX
+tmpfs cases on native Linux AMD64. Root's run `native-guard-real-posix-f761ca85`
+took 11.451 seconds, including 1.216 seconds for frontend compilation and 9.377
+seconds for the four-case command. All cases exited 0 and were reaped; 8,640,790
+retained DB bytes were hashed. The container stopped with exit 0, PID 0 and no
+OOM. Its `out/posix-result.json` SHA-256 is
+`748ab8652d7b65260c5af7e7430c0debeee7c355c809deab84f73cf252ea7b81`.
+The [maintained binding report](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+owns the complete receipts. Independent Astra capture review found no blocker
+within this component scope.
+
+The original `native-guard-real-posix-bf54658a` frontend compilation remains FAIL:
+its raw `DB**` output did not match the owning `DB::Open` API, so no engine case
+ran. The f761 correction passes the existing `std::unique_ptr<DB>` directly;
+destruction order, four-case contracts, limits and oracles are unchanged. The
+original compiler log remains preserved separately from the successful run.
 
 [`background_guard_real_posix_test.cc`](background_guard_real_posix_test.cc) and
 the explicit `guard-real-posix` driver profile implement four fresh running-DB
-cases. No compilation or native execution is claimed by this source increment.
-The default driver and 14 direct callback cases keep their previous behavior.
-This frontend must link the unchanged qualified d3 Cargo release archives with
-the same pinned compiler, standard library and ABI definitions used above. It
+cases. The default driver and 14 direct callback cases keep their previous
+behavior. The qualified frontend linked the unchanged d3 Cargo release archives
+with the same pinned compiler, standard library and ABI definitions used above. It
 does not rebuild or patch the engine, provide a custom Env/FileSystem/SFM, inject
 a Status, enable SyncPoints, call Resume or perform a manual flush/compaction.
 
@@ -500,7 +517,9 @@ overflow or truncation invalidates the run. The independent driver checks the
 frozen accepted logical data digest as well as the frontend's complete byte
 comparison, and copies surviving DB files after process reap, including failed
 state. File creation/deletion observations do not establish purge credit or
-guarantee nonzero retained partial output.
+guarantee nonzero retained partial output. The actual failed-job output-byte
+statistics likewise do not prove a retained nonzero partial SST or physical
+allocation; the failed table creation reports zero bytes and that SST is deleted.
 
 Root owns compilation, trusted archive/toolchain custody, the isolated container,
 its finite resources and final exit/OOM inspection. Use the prior qualified
@@ -553,8 +572,10 @@ python3 -B -m unittest discover -s experiments/native-rocks-binding \
 
 `WaitForCompact(flush=false,close_db=false)` is a background-error query, not a
 join. The frontend emits `close_begin`, calls actual Close, destroys DB and queries
-the retained guard afterward. Native Close has waits without an intrinsic time
-limit; the entire child still has the unchanged 30-second driver deadline.
+the retained guard afterward. The full-guard capture includes failed-SST deletion
+after `close_begin`: Close performs cleanup, and no instantaneous filesystem halt
+is established. Native Close has waits without an intrinsic time limit; the entire
+child still has the unchanged 30-second driver deadline.
 Overrun, wrong producer, OOM/signal/death, missing witness, failed restoration or
 preservation is FAIL/inconclusive. Partial JSONL and DB files remain outside the
 ephemeral mount; root must verify preservation before releasing the container.
@@ -563,7 +584,7 @@ Target raw syscall errno is inferred from the unchanged default POSIX ENOSPC to
 retryable NoSpace mapping; only the filler errno is directly measured. Full-guard
 exclusion of SFM recovery for this handled path is source-backed by callback
 postvalues and `HandleKnownErrors` ordering. There is no measured zero native
-invocation claim, quiet-interval oracle or public-counter substitute. This is
-Linux tmpfs POSIX qualification only: persistent media/crash behavior, other
-error producers, concurrency, funded reopen, app wiring, physical coefficients,
-CW-N1/P1/P2, OPEN65 and release gates remain open.
+invocation claim over the DB lifetime, quiet-interval oracle or public-counter
+substitute. This is Linux tmpfs POSIX qualification only: persistent media/crash
+behavior, other error producers, concurrency, funded reopen, app wiring, physical
+coefficients, CW-N1/P1/P2, OPEN65 and release gates remain open.
