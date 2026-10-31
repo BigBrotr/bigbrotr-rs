@@ -24,9 +24,10 @@ The current source resolves the added guard API, but this historical experiment
 adapter does not install it or inject background NoSpace. Its unchanged cases do
 not qualify the new fail-stop behavior, current product profile or numerical
 bounds. The separate guard controls below establish scoped healthy API/lifetime
-and direct callback behavior. The real POSIX frontend below is implemented but
-NOT_RUN. Running-DB NoSpace, concurrency and new platform qualification remain
-unqualified until their own recorded execution.
+and direct callback behavior, plus four actual default-POSIX tmpfs compaction
+NoSpace cases at f761 on Linux AMD64. Application wiring, other error producers,
+concurrency, persistent-media behavior, physical bounds and new platform
+qualification remain open at their separate gates.
 
 The source audit reused by this experiment is inventoried at
 `.research/checkouts/rocks-dependency-audit-20260917/inventory.json` in the main
@@ -141,8 +142,8 @@ docker run --rm --user "$(id -u):$(id -g)" \
 The image also fixes `CARGO_BUILD_JOBS=2`. The run publishes no ports and the
 mounted fresh output directory is its only host write boundary.
 
-The integrating owner schedules and inventories the Linux run. This branch does
-not mutate Tux or claim amd64/arm64 results before that exact revision executes.
+The integrating owner schedules and inventories each Linux run. Results remain
+tied to the exact source and runtime that actually executed.
 
 The public CI workflow has an explicit `native_rocks_binding=true`
 manual selection for the isolated native Linux arm64 case. It runs only this
@@ -154,11 +155,13 @@ expiry. A queued or successful build without the driver's nonempty case report i
 
 ## Explicit limits
 
-System power loss, firmware cache loss, dedicated-filesystem ENOSPC/fsync failure
-injection, multi-host fencing, and same-process bind-mount or device/inode alias
-enforcement are `NOT_RUN`. The canonical registry case covers a symlink alias.
-This experiment does not create P02 key formats, admission outcomes, source
-allocation, receipts,
+For the historical adapter runs above, system power loss, firmware cache loss,
+dedicated-filesystem ENOSPC/fsync failure injection, multi-host fencing, and
+same-process bind-mount or device/inode alias enforcement are `NOT_RUN`. The later
+real-POSIX guard controls cover only their recorded Linux tmpfs compaction NoSpace
+path.
+The canonical registry case covers a symlink alias. This experiment does not
+create P02 key formats, admission outcomes, source allocation, receipts,
 `CertifyExisting`, resource grants, cancellation, backup closure, or runtime
 ownership authority. A write error or lost response is never labeled rollback or
 success before a fresh open checks its exact keys. Cache and WBM settings are
@@ -180,7 +183,7 @@ product adapter: attach the manager to DB options and observe its actual memory
 accounting after writes, with a disconnected-manager negative control.
 
 
-## Planned guard qualification
+## Guard qualification by source
 
 Source `f8c534f7e5abbeba16a7b26e64a6d623a3261665` passed all five public-API
 binding smoke controls on native Linux AMD64, with zero ignored cases and one
@@ -287,14 +290,12 @@ The container stopped with exit 0, PID 0 and no OOM. This is a scoped healthy C 
 and competing-listener result; it is not Mac/ARM qualification. The ordinary Rust
 workspace CI does not run this separate C test automatically.
 
-The earlier five Rust and C results do not establish the direct callback result
-recorded below. Actual concurrent callback/query/close and real NoSpace injection
-remain separate. Include both single-hook and retry-count-only negative
-controls, healthy automatic maintenance, explicitly
-funded reopen and positive purge/file-pin reconciliation. Current app wiring,
-CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement, full
-workspace/Clippy, affected AMD64/ARM64/macOS qualification, complete
-dependency/license and release gates remain OPEN.
+The earlier five Rust and C results do not establish the later direct callback
+or real-POSIX results recorded below. Actual concurrent callback/query/close,
+explicitly funded reopen and positive purge/file-pin reconciliation remain
+separate. Current app wiring, CW-N1/P1/P2, physical output/reserve bounds,
+absolute64 enablement, full workspace/Clippy, affected AMD64/ARM64/macOS
+qualification, complete dependency/license and release gates remain OPEN.
 
 
 ### Direct callback component controls
@@ -411,8 +412,9 @@ retained DB bytes were hashed. The container stopped with exit 0, PID 0 and no
 OOM. Its `out/posix-result.json` SHA-256 is
 `748ab8652d7b65260c5af7e7430c0debeee7c355c809deab84f73cf252ea7b81`.
 The [maintained binding report](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
-owns the complete receipts. Independent Astra capture review found no blocker
-within this component scope.
+owns the complete receipts under
+`owned_background_guard_20261031.real_posix_controls`. Independent Astra capture
+review found no blocker within this component scope.
 
 The original `native-guard-real-posix-bf54658a` frontend compilation remains FAIL:
 its raw `DB**` output did not match the owning `DB::Open` API, so no engine case

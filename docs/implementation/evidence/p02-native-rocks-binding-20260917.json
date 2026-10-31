@@ -430,5 +430,214 @@
     ],
     "disposition": "Historical raw reports and executed case outcomes are preserved. Their shared configured WBM claim is withdrawn; pointer observations labeled active below are the old harness classification, not accepted resource evidence. Atomicity/reopen/snapshot/lock/CF/ZSTD and separately introspected option observations retain their recorded scopes. The new product options adapter must install WBM on DBOptions and measure its memory accounting with a disconnected-manager negative control.",
     "qualification": "Product WBM configuration and effective accounting NOT_RUN at this correction; no RSS or workload qualification."
+  },
+  "owned_background_guard_20261031": {
+    "status": "PASS_SOURCE_SPECIFIC_HEALTHY_API_DIRECT_CALLBACK_AND_REAL_POSIX_COMPONENT_CONTROLS",
+    "scope": "Separate unintegrated source-specific component results: initial f8 healthy binding/API and ownership controls, d3 direct callbacks, and f761 running-DB Linux tmpfs default-POSIX compaction NoSpace. Historical unpatched results above do not qualify the guard or application.",
+    "source": {
+      "revision": "f8c534f7e5abbeba16a7b26e64a6d623a3261665",
+      "tree": "b262978bf2af590f775ea651dfbfa007e05556ff",
+      "source_manifest_sha256": "344ebd6d51364ae1100d5fea805e0231b41ca67790d75c9a40c3bca7ea9cb6d1"
+    },
+    "critical_review": {
+      "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/critical-review-workspace-tests-f8c534f7.json",
+      "sha256": "be7bdc17064fc14b15df045497f8e4f1704c0d7c34a2aac9aff4b9f8e793d557"
+    },
+    "rust": {
+      "status": "PASS",
+      "tests": 5,
+      "ignored": 0,
+      "elfs": 1,
+      "elf_sha256": "ff7c1110c042a0bb1533c683fe192ea113d5b7d888770d6864443dcbe0e7ff1f",
+      "module": "storage::rocks::options::background_guard_tests",
+      "root_terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-binding-f8c534f7/root-terminal.json",
+        "sha256": "df49812bda170f26215830a7630ae99e3d61b28cf6ecc81fec709cf01d43e663"
+      },
+      "seconds_with_first_cpp_build": 361.9692352419952,
+      "original_composite_outcome": "FAIL after all five controls completed: unfiltered offline Cargo metadata requested unused Android-only dependency. Original metadata exit101 and following compile-JSON NOT_RUN retained; no product defect inferred."
+    },
+    "archive_context": {
+      "status": "PASS_ACTUAL_LINUX_TARGET_ONLY",
+      "root_terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-binding-f8c534f7-context-linux-r1/root-terminal.json",
+        "sha256": "209f8b42da3eaa0b3bbb52b39f61075d91dcaba999504b503fd967a108da70ed"
+      },
+      "context_sha256": "b58625cb83898f417f0bbac3b2a6bab86fea6277189f69393eb6b0f35b5b7bf2",
+      "seconds": 1.533385399990948,
+      "reuse": "Five completed controls and same ELF; zero new test invocations. All271 compiler-artifacts fresh; no engine/product rebuild. Same source/profile/tool/env and exact package-ID/build-script archive selection retained.",
+      "metadata_correction": "--filter-platform x86_64-unknown-linux-gnu limits offline metadata to the actual qualified target, preserving independent archive/ELF guards."
+    },
+    "c_control": {
+      "status": "PASS_SCOPED_WHOLE_NATIVE_C_API_HEALTHY_GUARD_REFUSAL",
+      "root_terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-c-api-f8c534f7/root-terminal.json",
+        "sha256": "d5b86f7bd7307d5cac85873b174f44e7e27587bcbf634329eeb09127dac569d2"
+      },
+      "seconds": 6.59166015998926,
+      "whole_test_phases": 96,
+      "guard_refusal_phase": "table_filter_listener_metadata",
+      "last_phase": "cleanup",
+      "last_line": "PASS",
+      "elf_sha256": "d6696b106e0aea6e8dc4f775c3511a30376203313867caf71e6f829053b4a772",
+      "checks": "Whole c_test.c compiled with pinned CC and -UNDEBUG; source compile-refuses NDEBUG. Pinned CXX linked the exact captured Cargo-built RocksDB/Zstd archives; compile/link/run each exit0. Fresh TEST_TMPDIR, all eight inputs and full4162-file source inventory unchanged. No Cargo, engine rebuild or cache mount.",
+      "meaning": "One added competing-listener refusal control preserves retry7 and the existing real listener callbacks; whole healthy C ABI test passed. No injected background error or NoSpace evidence."
+    },
+    "retention": "Original failures, raw logs, copied ELF/archives, source inventories and stopped owned containers retained. Inventory owns runtime custody; no repeated tests solely for the metadata-query correction.",
+    "remaining": [
+      "Other background-error producers and failure paths beyond the four f761 Linux tmpfs default-POSIX automatic-compaction cases",
+      "Concurrent fault/query/drop/close, global allocation and by-value copy boundaries, already-running work/joined stop/debt",
+      "Final application factory and authorized write/ACK failure wiring; funded reopen preserving unknown debt and science",
+      "Positive purge/file-pin reconciliation, numerical CW-N1/P1/P2 and same-filesystem physical fit",
+      "Affected dependency/license, whole workspace/strict Clippy, selected AMD64/ARM64/macOS and installed/release qualification"
+    ],
+    "limits": "Each result remains tied to its own source/profile. No application guard installation, grants/ACK/format changes, >64 admission, full suite, physical capacity, persistent-media durability, concurrency, new-platform or release qualification follows from these component controls.",
+    "callback_controls": {
+      "status": "PASS_FIVE_RUST_WHOLE_C_AND_FOURTEEN_DIRECT_CALLBACK_CONTROLS",
+      "source": "d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd",
+      "tree": "60cb3ce7f3507fe0ac4caffbfc6757f57e06a574",
+      "source_manifest_sha256": "ab2d925b4c5dd609b4890f14293bbe420aa1d025c4eba71fbfbd321ddacb396e",
+      "critical_review_sha256": "936ffbdfcf30d73c04943862c458a8f37baa890f46dfea2347d4404fe5e17a41",
+      "root_terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-callback-d3dc8d5e/root-terminal.json",
+        "sha256": "c5d46ef6753fe8488e3d8c58be1e497b29b4c6faf8859f7b39be6ebadf4b0c7b"
+      },
+      "seconds": 363.6146517480083,
+      "rust_cases": 5,
+      "whole_C_phases": 96,
+      "direct_callback_cases": 14,
+      "termination_expected_and_actual_exit": 86,
+      "scope": "Actual selected-archive listener; independent code/subcode/message/severity/IOStatus fields, sticky lifetime/recovery-veto and precisely scoped CopyState one-new[] allocation/termination. Trusted actual compiler/link commands, native ABI/NDEBUG, source/archives/context and three retained ELFs verified.",
+      "limits": "Direct component invocation, not running-DB ENOSPC/SFM delivery, concurrency, global OOM/by-value parameter copying, application guard/write/ACK/funded reopen/purge credit, physical fit or new-platform/release qualification.",
+      "integration": "Separate branch; not included in this native2 main integration. Forward e871d061 changes only two READMEs; code remains d3."
+    },
+    "real_posix_controls": {
+      "date": "2026-10-31",
+      "status": "PASS_FOUR_REAL_DEFAULT_POSIX_TMPFS_COMPONENT_CASES",
+      "scope": "Linux tmpfs default-POSIX automatic nontrivial compaction component path; actual C-installed guard forwarded by the test observer, unchanged native archives and frozen fixture. No current-product qualification.",
+      "source": {
+        "revision": "f761ca855cd3f06e9a117ea5106bcd02f0170b73",
+        "tree": "df1d18858538615e6d4f9e8881e8a13d50c1d9a9",
+        "source_manifest_sha256": "eb6034d0e22aebd7d61aa58ba7dd63198ad2ce548c9a5f769a0bf2c9066c8058",
+        "frontend_source_sha256": "38b23065d98397c1c303358bcf29b0ffe981ad8a1954b2f58f042c4f0c785dac",
+        "driver_sha256": "fc74bef271465f5c1e680ed44fbefe4612372ed31fade19774d24b446e2bc245",
+        "frontend_elf_sha256": "ea96f824885b5763928cbfb3182b8bc79f8d2fd34969d7d91aa6f6180bca0c0e"
+      },
+      "native_archives": {
+        "source": "d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd",
+        "context_sha256": "6d231adaf3233e8c528f1007d742cbe39dba1e41bd576600ddd001ae2966cea8",
+        "reuse": "Unchanged qualified d3 Cargo release RocksDB/Zstandard archives, pinned Clang 14.0.6 and matching C++20/NDEBUG=1 ABI. Only the new test frontend was compiled; no Rust/product or engine rebuild."
+      },
+      "receipts": {
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85/out/posix-result.json",
+          "sha256": "748ab8652d7b65260c5af7e7430c0debeee7c355c809deab84f73cf252ea7b81"
+        },
+        "root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85/root-terminal.json",
+          "sha256": "1b34dd7388bb37fa83d8e0911168c042edb69e2c03d35a26c20a73a05b42f7e8"
+        },
+        "critical_capture_review": {
+          "path": ".research/open-growth-decision-20261031/amendment-real-posix-actual-capture-critical-20261031.json",
+          "sha256": "a3add8f2719a1c40a7fd94dc71d02cb0caf5b11a47d996dbfff06bebeeca4176"
+        },
+        "compile": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85/out/compile/result.json",
+          "sha256": "bf9002a5cac83d91390dac6ad732c425841804d1213ac9479fbb1c806282040f"
+        },
+        "runtime": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85/out/runtime/result.json",
+          "sha256": "fda15324eb153f678a8f5339f8c14ebe4b0820134b67deaf829d0968cbe7dfe1"
+        },
+        "qualification": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85/out/qualification.json",
+          "sha256": "a70eed2a29ea167849438ac4976c8ffdcb023bb3b976bddd4bb957d5e4dfe281"
+        }
+      },
+      "execution": {
+        "host": "native Linux AMD64",
+        "tool_session": 59184,
+        "tool_exit": 0,
+        "tool_chunk": "6171c4",
+        "seconds": 11.4508159699908,
+        "frontend_compile_seconds": 1.215630480000982,
+        "four_case_seconds": 9.377138494019164,
+        "container": "ba330cbdc6dfaf4176c395ebc819a948548c357114fd1abf3c5c76dff2f0b4e3",
+        "terminal": "Stopped, exit 0, PID 0, no OOM; all four processes exited 0 and were reaped.",
+        "retained_db_bytes": 8640790,
+        "preservation": "All 8,640,790 retained DB bytes and raw case streams hashed; complete 1025-row accepted-data checks before/after fault, with generation 4 FNV-1a64=8960306059349476819 unchanged."
+      },
+      "cases": [
+        {
+          "name": "full_guard",
+          "status": "PASS",
+          "events_sha256": "10c1a2d61125d07004fe5de042d4820562718f2dc7cdfd69d3029bc3a1f748e5",
+          "observed": "Genuine compaction Append NoSpace enters soft; guard preserves code/subcode/message, promotes fatal and latches; recovery true becomes false. Fatal persists after restored headroom; Close OK/destruction retain latch."
+        },
+        {
+          "name": "retry0_only",
+          "status": "PASS",
+          "events_sha256": "53c07f2ef73e587b10b968ea569516f2c79f6ce6052a2527786ec64b906ab48a",
+          "observed": "Retry count 0 leaves soft error/recovery true. Positive SFM full-space wait, then restored-space automatic job 8 creates output on failed inputs; separate recovery End with old NoSpace/new OK and terminal OK. Output precedes recovery End; no artificial order imposed."
+        },
+        {
+          "name": "promotion_only",
+          "status": "PASS",
+          "events_sha256": "79ed8a25fdc8c58fec54620d0eb2c0593dfded265861e28eab6dcd44ab7008c7",
+          "observed": "Promotion latches fatal while recovery stays true; another native worker emits the actual fatal-resume failure diagnostic. No successful recovery is claimed."
+        },
+        {
+          "name": "recovery_veto_only",
+          "status": "PASS",
+          "events_sha256": "595ed78f20d1623c1455405756cfd04d231a3080b0eea7d68e767e7b8b852ed0",
+          "observed": "Error remains soft, recovery true becomes false and latch sets. After headroom restoration, automatic job 8 creates SST output on the same failed inputs; terminal still reports soft NoSpace."
+        }
+      ],
+      "original_failure": {
+        "source": "bf54658a09a038211090ccc73dd6649a7e9d0193",
+        "status": "FAIL_FIXTURE_COMPILE",
+        "engine_cases": "NOT_RUN",
+        "root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-bf54658a/root-terminal.json",
+          "sha256": "405740a55024429b68c2ed7374a3c0cfd8a13941e3045c41a7740a2dbe9cb81c"
+        },
+        "compiler_log": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-bf54658a/out/compile/frontend-compile.log",
+          "sha256": "5d4abd523fbd027705edf043d8a7b0c5b2b1147f84f091f9b08731d71e37c296"
+        },
+        "classification": "fixture current RocksDB DB::Open unique_ptr API mismatch",
+        "correction": "f761 passes the existing outer std::unique_ptr<DB> directly to DB::Open; raw DB** intermediary removed. DB/guard destruction order, four-case contracts, limits and oracles unchanged. The original compiler FAIL remains separate."
+      },
+      "frozen_limits": {
+        "mount_bytes": 134217728,
+        "minimum_initial_prefill_restored_free_bytes": 67108864,
+        "maximum_input_sst_bytes": 16777216,
+        "write_buffer_bytes": 262144,
+        "keys": 1024,
+        "value_bytes": 1024,
+        "generations": 4,
+        "journal_records": 1024,
+        "files_per_job": 8,
+        "positive_witness_seconds": 25,
+        "case_timeout_seconds": 30,
+        "maximum_retained_files_per_case": 128,
+        "maximum_retained_logical_bytes_per_case": 67108864,
+        "meaning": "Component refusal limits fixed before execution; no product reserve, native physical coefficient or general file-growth bound is established."
+      },
+      "limits": [
+        "Full-guard SFM recovery exclusion applies only to the handled source path and follows observed callback postvalues plus pinned HandleKnownErrors ordering. It is source-backed, not a measured zero invocation count over the DB lifetime.",
+        "Close performs cleanup: full-guard failed-SST deletion is recorded after close_begin. Actual Close OK, DB destruction and process reaping are witnessed; WaitForCompact is not a join, and no per-case five-second close bound is measured.",
+        "Only filler errno 28 is directly measured; target SST errno is inferred from the genuine default-POSIX NoSpace mapping and attributed job/thread/path, without syscall tracing.",
+        "Failed-job output-byte statistics do not prove a retained nonzero partial SST, physical allocation or purge credit. Failed table creation reports zero bytes and the failed SST is deleted.",
+        "Application guard/dispatch/ACK/funding wiring, other error producers, concurrent fault/query/drop/close, funded reopen/unknown debt and positive purge/file-pin reconciliation remain open.",
+        "Persistent-media crash/fsync/ext4/XFS behavior, CW-N1/P1/P2 physical coefficients and reserves, OPEN65, whole product/platform and release qualification remain open."
+      ],
+      "plan_owners": [
+        "P02-T02 Step4: resource prerequisite and application wiring before OPEN>64; no request65 enablement follows from this component result.",
+        "P02-T02 Step7: actual application admission/fault/recovery and concurrent producer scenarios remain at the existing practical task.",
+        "P02-T02 Step8 and P02-T09 Steps4-7: admission/native/physical envelopes, same-filesystem completion, mixed maintenance and measured capacity.",
+        "P02-T07 Steps3/5/7: compaction, retained file pins and positive safe reclamation; no purge credit is inferred here."
+      ]
+    }
   }
 }
