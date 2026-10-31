@@ -240,6 +240,9 @@ oracles; do not derive expected output by calling the implementation under test.
    errors, bounded work and cancellation. Keep operational state separate from
    retained scientific evidence. Update generated contracts, configuration help,
    user documentation and migrations with their actual behavior.
+   Reconcile a changed persistent boundary's callers, shared fixtures and recovery
+   paths in that same increment. Check changed prerequisites cheaply first and
+   preserve setup corrections in the reused tools; aim at an integrable capability.
 5. Run checks appropriate to the changed behavior and its real packaged practical
    scenario. Choose unit/property/fuzz/integration coverage for the risk; a small
    documentation correction needs its affected artifact/example checks, not an

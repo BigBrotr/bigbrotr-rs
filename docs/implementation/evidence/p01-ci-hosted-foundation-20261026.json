@@ -3884,17 +3884,17 @@
     "scope": "Original failure/partial platform execution and all preceding6fa/1cb/failure history preserved unchanged; later current-source full success does not rewrite them."
   },
   "current_documentation_followup": {
-    "source": "aec302c77ce4b8756f3c7ad6cb997232e299fccf",
-    "run": 41212404374,
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41212404374",
+    "source": "c55da9f3203c5aad8cd9603999aa492c74ce6cb8",
+    "run": 41221277439,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41221277439",
     "status": "PASS_DOCUMENTATION_ONLY",
-    "checks": "20 scope controls and 3 shared documentation checks PASS. Exact six-document a3fc-to-aec comparison selects no foundation/controls/native build. Three unselected jobs SKIPPED; no product claim.",
+    "checks": "20 scope controls and three documentation checks PASS, with complete three-document diff and exact source/helper/command/exit bindings. Three unselected jobs SKIPPED; no product claim.",
     "audit": {
-      "path": ".research/ci-publication-20261026/source-current-policy-installed-aec302c7-20261031/terminal-audit.json",
-      "sha256": "0cf2128bfbf3dbb43fd3025b828cced0080b6b42ea9af23da2b771f0623f6d07"
+      "path": ".research/ci-publication-20261026/source-historical-integrity-c55da9f3-20261031/terminal-audit.json",
+      "sha256": "dd138b4a8e97990b77a7605bf43f1c98ad2b7b4887de858ad192c88210096e0a"
     },
-    "public_output": "Two artifact digests/source bindings verified; six artifact and seventeen log members148508B scanned,0credential candidates/provider alerts.",
-    "resources": "Observer and gh child reaped0; exact recorded process identities absent. Product C90 full33 and installed a3fc journey remain separately qualified; no duplicate dispatch."
+    "public_output": "Two artifact ZIP digests and run/source bindings verified; six artifact and17 log members,147938 expanded bytes, scanned with zero credential candidates/provider alerts. Incremental source scan: four objects/4210356 bytes, only previously triaged23eb prose. No raw-data upload; pattern and provider-asynchrony limits remain.",
+    "resources": "Audit processes reaped0 and absent; no watcher or duplicate dispatch. Full product C90 and installed a3 remain separately qualified."
   },
   "preceding_documentation_followup": {
     "source": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",

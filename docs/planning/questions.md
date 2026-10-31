@@ -364,6 +364,14 @@ and real paths together. Use normal increment results to assess setup errors and
 Sol rework and adjust Astra involvement by observed risk. Continue the ACTIVE goal
 and normal checkpoints; no new plan, metrics system or extraordinary checkpoint.
 
+Q38 clarification (2026-10-31): Reconcile a changed persistent format or boundary
+with its actual callers, shared fixtures and recovery paths in the same coherent
+increment. Check changed prerequisites cheaply before expensive work and retain
+setup corrections in the reused tools. Favor demonstrable, integrable capabilities;
+distinguish necessary prerequisites from later extensions rather than opening a
+new refinement chain for every substep. Q38/Q40 apply to prior work too; preserve
+independent evidence and all integrity, authority, cancellation and recovery guarantees.
+
 Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
 with a completely retired nonempty initial producer. Reuse immutable PostgreSQL
 outcomes, the existing source closure and typed checkpoint; do not introduce a
