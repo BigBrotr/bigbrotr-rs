@@ -66326,8 +66326,30 @@
           "path": "/home/tux/bigbrotr-rs/.research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/headroom-after-installed/owner-profile-resolved/proposal.json",
           "sha256": "96eaaa54a058e3ae9d09b2f61c7284ff8b2e0ca2971e3c9e614655f9fbf2ea73"
         },
-        "followup_status": "PROPOSAL_ONLY:15older archives/120,590,336allocatedB verified, not deleted; otheroldresource owner formats unresolved. No expanded deletion.",
-        "free_bytes_after_installed_observed": 70680760320
+        "followup_status": "COMPLETE: fifteen previously proposed source.tar caches only,120,590,336allocatedB retired after fresh source/ownership/stopped-container/file identity and byte-regeneration checks. Original proposal/skips preserved; no other resource deleted.",
+        "free_bytes_after_installed_observed": 70680760320,
+        "known_native_profile_retirement": {
+          "receipt": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/known-native-profile/retirement.json",
+            "sha256": "912df325845f7a43d49a6192fc93c1a0721cac8cedd3571369a6f8f25eb90e71"
+          },
+          "scope": "42 completed source.tar caches,2,167,455,744 allocatedB retired; exact fresh Git archive regeneration/source inventories, stopped owned containers and no active mount overlap verified. Source exports/manifests/Git/ELFs/data/failures/worktrees remain.",
+          "skipped_source_inventory_diagnosis": {
+            "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/known-native-profile/skipped-source-inventory-diagnosis.json",
+            "sha256": "68ff55d8f72d0b0cb4f8dd7b080d993f5a031b2bba567a5ecf360a8a5370e974"
+          },
+          "skip_disposition": "grouped-replacement-worker-18e208ed-r2 preserved. Empty host source underlay is explained by declared read-only source overlay; all2442 overlaid files and regenerated tar match. No source drift; original skip unchanged. Future retirement needs fresh alias-aware admission."
+        },
+        "followup_retirement": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/headroom-after-installed/owner-profile-resolved/retirement.json",
+          "sha256": "ea77196ae825e5a20eb60782433c0ccfc36feea0ba5c1fb5bd45293239670c42"
+        },
+        "latest_free_bytes_observed": 72589811712,
+        "known_native_profile_r2_retirement": {
+          "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-regenerable-source-tars-20261031/known-native-profile-r2/retirement.json",
+          "sha256": "4ac738a694d22dbc790b5bc3983dd3eb717bf84e8245ba89651c5dc7eea9d3e1",
+          "scope": "40 more generated source.tar caches,1,622,654,976allocatedB retired under identical fresh identity/ownership/stopped/no-overlap/fullsource/Git-byte-regeneration checks; observed free delta1,622,605,824B. Protected53/currentinstalled/native115/assets and skippedoverlayroot untouched; all sourceexports/Git/ELFs/data/WAL/failures/worktrees retained."
+        }
       }
     },
     "connected_journey": {
@@ -77625,8 +77647,8 @@
       "worktree": ".research/open-prefix-initial-sol-20261030",
       "branch": "work/open-prefix-initial-sol-20261030",
       "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
-      "partial_commit": "8afb7457f84a55ed80094fbf10d89bdad4c444b8",
-      "state": "Clean frozen8afb, authoridle. Counter/nativecc3actual90PASS; capture63actualRust7PASS. Historical38fixture now source-critical F1/F2/F3/F4closed plus30portablecontrols; new8afb coherent pairbuild and actual38PG NOT_RUN. Grants/staging/scheduling/physicalbounds unwired,64 unchanged.",
+      "partial_commit": "5fb2fd3461a04907d1c10359d67b0fac04775624",
+      "state": "Clean frozen5fb2/tree0bd21f41, three test-only files exactly match independently reviewed proposal hashes. Actual53 native8/coherentpair/PG38+12 and independentaudit remain53-specific. New full nonexternal app-library test/provided-worker binding prepared, NOT_RUN. No product rebuild solely for these test-only edits; grants/staging/scheduling/physicalbounds unwired,64unchanged.",
       "accounting_receipt": {
         "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/pending-accounting-b0da6952.json",
         "sha256": "ab5502c3613831990fc3568c2fc0f08d4a87910d49ef7f3a1880ca785cf3aa75"
@@ -77648,8 +77670,8 @@
       }
     },
     "scope": "Initial epoch1 OPEN compact base plus exact tail, authenticated request/input retirement under existing bounds. Scientific pending facts/identity/batch markers remain; generic payload GC and larger Archive history separate. Startup policy capture, stop/recovery on policy change; no promised implemented Live application.",
-    "resources": "Source worktree only. No new native engine, compiler cache, build, installed case or data resource launched; root remains sole launcher.",
-    "next": "Integrate/publish independently reviewed and actual65PG-qualified current-policy3 increment; use its required full33 hosted run for inheritedMacgate. Continue separately frozen accounting native fixtures/typed grants and CW-P1; no>64enablement.",
+    "resources": "All prior owned native/PG/installed engines and drivers stopped/retained. Root prepared exact5fb2 source snapshot only; Sol prepares bounded existing native-only controller/retainedworker binding without build/test/cache access. Root remains sole launcher. Existing53 PGcleanup137/client143/noOOM/PID0 and WAL/data preserved; no clean-shutdown claim.",
+    "next": "Close the connected native2 repeatable-successor fixture responsibility and its actual nonexternal native library qualification, reusing53 product/PG evidence where unchanged. Then continue existing typed grants/staging/scheduling/OPEN recovery and CW-N1/P1/P2 gates; no>64enablement.",
     "resource_gate": {
       "proposal_worktree": ".research/open-prefix-disk-contract-20261030",
       "proposal_revision": "936d5b6a38403ef6e5ac450e0d9251a088f76177",
@@ -77679,12 +77701,18 @@
         "CW-P1 allowed PG tuple/index/TOAST/FSM/VM and full-page WAL transaction output",
         "CW-P2 whole PG background/retention/recovery allocation before refusal"
       ],
-      "decision_state": "Finite cumulative-work direction proposed only; no complete d/R share justified, no >64 enablement. Native finite retry/logsink/drain possibilities do not close absent inequalities.",
+      "decision_state": "Finite cumulative-work candidate remains proposed, not enforced/qualified. New source-backed NoSpace retry counterexample supersedes max_bgerror_resume_count=1 alone as a finite-lifetime claim. No complete d/R share, arbitrary reserve partition or>64enablement.",
       "cw_p1_amendment": {
         "path": ".research/open-growth-decision-20261031/amendment-cw-p1-20261031.json",
         "sha256": "5598b8fbfe095d324dc4d5aee86493045681c74b56575ce5ac2cda9f8f49a4af",
         "status": "THEORETICAL_PARTIAL_BOUND_TOTAL_P1_OPEN_ENFORCEMENT_ABSENT",
         "scope": "Fixed typed operation tickets/nonrecursive preallocated8KiBhostdebit direction; conditional heap-only bounds and WAL record coefficient. Exact SQL lock/scan, foreground prune/hint/Btree/transaction-SLRU terms and CW-N1/P2 remain. No new physical grant or request65 authorization."
+      },
+      "cw_n1_nospace_amendment": {
+        "path": ".research/open-growth-decision-20261031/amendment-cw-n1-nospace-20261031.json",
+        "sha256": "d1149c130dcf8036a6300bd308c7553b7e1d6655d1c148d202f8dc6283cdd2d0",
+        "status": "CW-N1_OPEN_EXACT_UNBOUNDED_DEFAULT_NOSPACE_RECOVERY_TERM",
+        "scope": "max_bgerror_resume_count does not cap defaultSFM NoSpace recovery/requeue. Before any physical-closure claim, narrow owned pre-open error listener must preserve/latch error, promotefatal and veto automaticrecovery; separate retryableIO count0 and explicitlyfundedreopen. Healthy maintenance preserved. Rust/C capability absent; full per-pass/partial-output/manifest/purge coefficients and P1/P2 stillopen."
       }
     },
     "acceptance_author": {
@@ -77737,7 +77765,7 @@
       "worktree": ".research/current-policy-increment-20261031",
       "branch": "work/current-policy-increment-20261031",
       "base": "d742fe0386df9472f97bb4712ac846a69b0947c0",
-      "status": "INTEGRATED_PUBLIC_C90_POLICY57RUST65PG_PORTABLE376_AND_HOSTED33PASS_INSTALLED_GATE_PENDING",
+      "status": "INTEGRATED_PUBLIC_C90_POLICY57RUST65PG_PORTABLE376_HOSTED33PASS_INSTALLED11PASS",
       "scope": "Isolate current3 policy/retention/init-retry closure from unfinished OPEN/native/PG42 scaffolding. Main-native format and full catalog41/57versions/58inputs/82tables retained; generated UInt retention schema corrected, obsolete write-only Resolved version removed.",
       "source_receipt": {
         "path": ".research/current-policy-increment-20261031/.research/current-policy-source-delta-20261031/receipt.json",
@@ -77752,7 +77780,7 @@
         "sha256": "06a5edf730289020e1c5eaa491e429f4c7a3090f221d1d8a4b39f9c78ad5b2ea"
       },
       "native_run": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08",
-      "resource_custody": "Native runner owns cache115 exclusively and pinned2CPU/6GiB containers; resources.json owns exact identities. Actual native/PG result pending.",
+      "resource_custody": "Actual native57/PG65 and full hosted33PASS are source-bound in the linked policy/CI reports; current-policy3 installed11PASS is recorded below. All these root-owned resources are terminal/retained.",
       "context_result": "277 first-launch controls PASS after restoring exact selected41 shared guard; two original277/64ERROR captures preserved. Tutorial11 PASS after independently permitted fixed code-tree pin refresh; all assertions unchanged.",
       "resources": "All native/PG/portable runners terminal,2695/15509 reaped1 with originalFAILs,38957/48680reaped0. Owned containers stopped/PID0/noOOM; PG0 and deliberate infrastructure sleeper143, all application drivers joined; internalPGnetwork retainedempty, foreignresourcesunchanged, cache115released. Data/logs/source/ELFs/protectedpartial roots preserved.",
       "native_attempts": {
@@ -77857,7 +77885,7 @@
     },
     "historical_intake_capture": {
       "source": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
-      "status": "SOURCE_CRITICAL_CLOSED_SCOPED_RUST7PASS_ACTUAL_PG_PENDING",
+      "status": "PASS_SCOPED_ACTUAL_HISTORICAL38_PLUS12SETUP_AND_NATIVE8_NOT_FULL_OPEN",
       "owner_tasks": [
         "P02-T02 historical recovery",
         "P01-T04 policy authority"
@@ -77893,7 +77921,7 @@
           "path": "/home/tux/bigbrotr-rs/.research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-lifecycle-closure-8afb7457.json",
           "sha256": "a28aa4c70917fab93e8f2bfef7c65a8efcaa1c2c685aea87b224325b2a1d431e"
         },
-        "status": "SOURCE_CRITICAL_CLOSED_30PORTABLE_PASS; new compiled probe/pair and actual38checks/12private cases NOT_RUN. Full9domains and genuine release/join/freshControl before retirement and activated recovery; original authority attribution/science/SQL/limits unchanged."
+        "status": "8afb source-critical lifecycle closure and30portable controls valid; its actual coherent build and partial30/38PG outcome remain in runtime_attempts.84 corrects the132096B reservation/five-write reconstruction;53 separately closes full38/12 in current_qualification. No old result is relabeled."
       },
       "runtime_attempts": {
         "build4449": {
@@ -77916,7 +77944,19 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-39e1e4aa/pg-r1-root-terminal.json",
           "sha256": "6588905b93d188f5d9df561fab7a609e7eebd21ff80ff55d73ba67ad79c8db18"
         },
-        "classification": "R1fixtureinvalidDBname0cases; R2productSQL42syntax failed firstmigration; corrected39actualcatalog42/app-role/configinit/activate4PASS then fixtureoriginalControlfence refusal before38cases. AllFAIL/rawcaptures retained. Shared full9domains and secondrecoveryControlfence repaired together in8afb, not yet executed."
+        "classification": "Original R1 database-name fixture, R2 product SQL42 syntax and39 fence-fixture failures remain unchanged. Actual8afb coherent pairbuild PASS; real PG30/38required plus12setup PASS, then first privateACK setup insufficient reservation. Owning formula proves132096B required, fixture131072B:1024B undergrant. Source84 fixes this and two native2 recovery subtractions4→5; native3PASS/1FAIL/3NOT_RUN, paircompileNOT_RUN. Fourth case was a fixture blindly reopening after intentionally deleting science;53 corrects the exact census/no-repair boundary and separately qualifies38/12 in current_qualification. Original failures remain; lostACK advance is stillNOT_RUN.",
+        "build8afb": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-8afb7457/root-build-terminal.json",
+          "sha256": "8f9c5c85883d7040c48327e78a7219ae766eba12a1cc31e8c7c52e13be094cb4"
+        },
+        "pg8afb": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-8afb7457/pg-r1-root-terminal.json",
+          "sha256": "eb6ac6628882960b436be1f71fb1da1459411d828d02555744c2a1e80f86ca97"
+        },
+        "native84da": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-84da5dcd/root-terminal.json",
+          "sha256": "d290566c0f1ea12028c484f5c68291704befe298400e2774d61a903997592464"
+        }
       },
       "migration42_syntax": {
         "source": "39e1e4aa122e52bb4462cf6b634783bc6193a1d3",
@@ -77926,12 +77966,83 @@
           "sha256": "6ab1964ba847bdbcc57aa9852c757e0ef5f5fa6986e4c714d6f2071e1b6377ff"
         },
         "scope": "Original rawSQL42601 vs correctedfull42compiles under real migrator, bothROLLBACK preserve57-version catalog; actual compiled39 migrate42passed. Root firstdiagnostic nonexistentversion column verifierFAIL retained separately. Two parentheses only; no arithmetic/limit changes."
+      },
+      "current_qualification": {
+        "source": "53f9abc4d802e51f80bc77969321e3ad5b7af563",
+        "tree": "0882e05cad167be50c30dbc4f9abebbe3bd2a2f4",
+        "author_receipt": {
+          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/census-refusal-53f9abc4.json",
+          "sha256": "57af23e82d263d595b952350d27fc8846160522c00528884b2d61af79773e080"
+        },
+        "critical_closure": {
+          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-census-refusal-53f9abc4.json",
+          "sha256": "e9cdfa4cf80dbff19ae30f05fd78f10715305b9898e6829e36699cc1be9582a2"
+        },
+        "native_and_pair": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-53f9abc4/root-terminal.json",
+          "sha256": "4d53497dfe91098cef492f03e26875c13479a219fb304138e0f3a68a83604208"
+        },
+        "actual_pg": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-53f9abc4/pg-r1-root-terminal.json",
+          "sha256": "ee949ab4972b317771356dcd1908ac054b0a18ed814be8fb91fee1529eb44109"
+        },
+        "result": "Actual8native casesPASS and coherent parent/probe build; PG38required+12setupPASS including all12private cases, complete original-body/pair refusals, caps, nonzero idempotent compacted recoveredACK and originalsource preservation. Native217.232s/PG67.532s scopedtimings; no performance improvement claim.",
+        "cleanup": "PostgreSQL137afterfastshutdowncheckpoint exceeded existingdockerstop10s; client143; noOOM/PID0, driversabsent, owned922de864bridgeemptyretained. Tests completed beforecleanup; no clean-shutdown or restart-after-thiskill claim.",
+        "cleanup_followthrough": "P01-T08 lab lifecycle/P02-T09 operational qualification: observe actual graceful-versus-forced shutdown and retained-data recovery; derive any policy change from measured cause, never widen timeout merely forPASS.",
+        "not_run": [
+          "lostACKwatermarkadvance",
+          "OPEN65",
+          "physicalgrowth",
+          "signedacquisitionretirement",
+          "load",
+          "arm64",
+          "whole nativesuite",
+          "strictClippy",
+          "installedOPEN"
+        ],
+        "independent_actual_audit": {
+          "path": ".research/initial-index-recovery-qualification-20261028/historical-integrity-53f9abc4/actual-pg-audit.json",
+          "sha256": "a4fdf0bddb3abfc9838b42db406e54309dc07f1bf9dcf8474c91104554b9d51c"
+        }
       }
     },
     "qualified_policy_and_ci_ref_retirement": {
       "path": ".research/initial-index-recovery-qualification-20261028/policy-ci-merged-refs-20261031.json",
       "sha256": "6b135c16ec3ae23b146b66db5772410f6e0b6dde5121c0d64b01bcc1bd9f807b",
       "physical_resources_removed": false
+    },
+    "native_handoff_correction": {
+      "source": "84da5dcd83b981d6a36aaab9205876951b1b99d0",
+      "author_receipt": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/historical-recovery-84da5dcd.json",
+        "sha256": "1b95ecc9fb060d373bffc9294e7ebce0e02a9ab0f5711097ea9dde8c2bf0d1bc"
+      },
+      "critical_closure": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-handoff-closure-84da5dcd.json",
+        "sha256": "5cfc19008537671668d43dbb8a312f75a3beefeb3ba60fd287c2606c36ba690a"
+      },
+      "actual_native": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-84da5dcd/root-terminal.json",
+        "sha256": "d290566c0f1ea12028c484f5c68291704befe298400e2774d61a903997592464"
+      },
+      "scope": "Metadata boundary, ordinary history reopen and gap history reopen PASS. Original evidence refusal fixture FAIL at mandatory accounting census; last3native cases and parent/probe compile NOT_RUN. No main integration or full-suite/strictClippy/physical qualification.",
+      "later_owner": "P02-T02 Step4: reconcile remaining repeatable-successor current-format fixtures before whole-suite/integration claim; keep exact counter/science/receipt/no-repair invariants."
+    },
+    "connected_compacted_fixture_followthrough": {
+      "source": "5fb2fd3461a04907d1c10359d67b0fac04775624",
+      "tree": "0bd21f41092a5fb4939a5983302882ed410c350b",
+      "author_receipt": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/compacted-successor-5fb2fd34.json",
+        "sha256": "8576bf4adc4f8a20684c8afbfc58faafded79cbdf97f8db10beca9a6d39c9f7a"
+      },
+      "critical_proposal_review": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-compacted-successor-proposal-53f9abc4.json",
+        "sha256": "3d98181cc18989d4b855351751a0c2ed9d8504e56d4a5e9d25f8ae22c02017eb"
+      },
+      "scope": "Three test-only files: valid literal counterP/S1 seed followed by actual reopen and exact3CF/sequence/input preservation; handoff5/empty1/retry0 and descendantdictionary9 with complete expectedcounter rows. All3 final sourcehashes equal independentreviewedproposal; textual Gitdiff/context patch alignment differs, no sourcebyte delta.37shared-seed consumers among40declaredtests. Cheap formatting/diff checksPASS; nativeNOT_RUN.",
+      "prepared_root": "/home/tux/bigbrotr-implementation-20260917/runs/compacted-native-5fb2fd34",
+      "source_manifest_sha256": "fd965e7c3f32863211d654ec263d093cbfbfad2b2e54431294eb4bafdae748af",
+      "next": "Existing native-only loop, complete app--lib inventory minus exact2external ignored drivers; include nonignored signedpending nativeworker test using distinctly bound unchanged a3packagedworker. Root reviews new binding/plan before launch. No product/PG repeat solely for fixture edits."
     }
   },
   "implementation_ci_portable_controls_20261030": {

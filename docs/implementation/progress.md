@@ -8,8 +8,8 @@ development repository; no official release, packages, rename or production depl
 
 ## Current Git and demonstrated result
 
-Last observed main/origin source: `a3fc81b5cf5c928dbeeacae92d488d561719ac6d`,
-push69954/reaped0/remote exact. Root owns this coherent documentation/evidence
+Checkpoint prepared on main/origin `aec302c77ce4b8756f3c7ad6cb997232e299fccf`,
+push69814/reaped0/remote exact. Root owns this coherent documentation/evidence
 update; no product/test/workflow changes or merge/rebase. Pending OPEN/native2/
 PG42/intake source is separate and unintegrated.
 
@@ -38,70 +38,89 @@ valid57Rust/65PG/strictClippy and the separately bound installed follow-up.
 Hosted [C90 run41197628654](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654)
 is fully audited33/33PASS on AMD/ARM/Mac. Exact sources, namespaces, native/workspace
 bindings and artifact/public-output audit pass. [a3fc docs41205708456](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41205708456)
-passes20scope+3docs checks; no product build was selected. No observer remains.
+passes20scope+3docs checks. [AEC docs41212404374](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41212404374)
+also passes20scope+3docs; exact source/artifact digests and public outputs audited,
+no product build selected or observer remaining.
 The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) retains actual
 identities, original d742FAIL/8acreduced-only outcomes, billing/cancellations and
 scope limits. The inherited full-platform/helper gate is closed by C90.
 
 ## Pending original-policy integrity and OPEN work
 
-Sol author is idle after freezing clean
-**8afb7457f84a55ed80094fbf10d89bdad4c444b8**, tree71d5285c, in
+Frozen clean **5fb2fd3461a04907d1c10359d67b0fac04775624**, tree0bd21f41,
 `.research/open-prefix-initial-sol-20261030`, branch
-`work/open-prefix-initial-sol-20261030`. Inventory
-`implementation_open_prefix_reclamation_20261030` owns exact receipts.
-Separate cc3 fix and1cb36983 acceptance worktrees/branches remain preserved.
+`work/open-prefix-initial-sol-20261030`. Still unintegrated. Inventory
+`implementation_open_prefix_reclamation_20261030` owns exact receipts and all
+original failures. Separate cc3/1cb36983 worktrees and ignored evidence remain.
 
-Native accountingcc3 actually passes90distinct binary/test pairs; capture63 has
-critical closure plus actual3Rust scopes/7PASS. External ACK syscall child is
-NOT_RUN. Original compile/bootstrap failures remain in their owning reports.
+Qualified source **53f9abc4**, tree0882e05c: **native8PASS + coherent parent/probe build**, tool79492/reaped0,
+217.232s; root terminal4d53497d. Covers metadata bounds, ordinary/gap reopen,
+exact earlier census or late reconstruction refusal without repair, and compacted
+five-write/retry boundaries. Critical closures84/53 bind the132096B derived grant,
+two four-to-five reconstruction corrections and strict negative-fixture meaning.
+The original84 result3PASS/1FAIL/3NOT_RUN remains unchanged, as do earlier attempts.
 
-History attempts are preserved:4449R1 fixture invalid database name0cases;
-4449R2 product SQL42CASE syntax failure; corrected compiled39 passes full42
-migration/app-role/configinit/activate4checks then refuses the invalid fixture
-original-Control fence. The original/fixed raw42SQL discriminator and unchanged
-ROLLBACK catalog pass; root's first diagnostic-column verifierFAIL also remains.
-No historical38-case success is claimed.
+**Actual PostgreSQL38/38required +12setup PASS**, all12private cases,
+tool16990/reaped0/67.532s; root terminalee949ab4. Real PG16.15/app role/current
+later authority validates full original bodies/pairs, caps, positive unequal
+revision numbers, private activation, nonzero idempotent compacted recoveredACK
+and complete original-source preservation. Independent actual-artifact audit
+**a4fdf0bd PASS** replays the existing pure oracles on actual captures and verifies
+exact source/binary/namespace bindings. Scope excludes lostACK watermark advance, OPEN65, physical capacity,
+signed acquisition retirement, load, arm64, whole native suite and strictClippy.
+The valid earlier native90/capture7 and critical reviews remain source-specific.
 
-8afb's source-critical closurea28aa4c7 binds all9domains and genuine release/join/
-freshControl before retirement and activated recovery. Original attribution,
-science, SQL9bc752f0 and limits are unchanged;30portable controls PASS.
-**New8afb normal parent/probe build and actual38PGchecks/12private cases NOT_RUN.**
-Use a coherent pair: the maintained receipt cannot silently relabel old39 parent
-bytes as a new source/example. Existing reviewed helper:
-`.research/initial-index-recovery-qualification-20261028/prepare-native-identity.py`;
-prior recipe `/home/tux/bigbrotr-implementation-20260917/runs/historical-integrity-39e1e4aa`.
+5fb2 applies the connected fixture correction: three test-only files,
+author receipt8576bf4a, critical proposal review3d98181c. It reconciles
+repeatable handoff5/empty-close1/retry0, a valid P/S1 ancestor seed with real
+reopen, and descendant dictionary9 with exact counter/science preservation.
+All three frozen file hashes equal the reviewed proposal; no product change or
+new runtime qualification claimed. Existing P02-T02Step4 owns all37affected
+consumers before whole-library/integration claims. Prepared source root:
+`/home/tux/bigbrotr-implementation-20260917/runs/compacted-native-5fb2fd34`,
+manifestfd965e7c. Sol prepares the reused native-only controller, including a
+distinctly bound unchanged a3 packaged worker; root reviews before launch.
 
 Grants/staging/scheduler/base+tail/Archive and physical CW-N1/P1/P2 remain open;
-64 gate unchanged. Never fund active successors with historical intake. No strict-
-Clippy claim for unused OPEN scaffolding.1cb's132portable/129signed-input preparation
-is retained; actual128/132 installed/pressure/recovery remains NOT_RUN.
+64 gate unchanged. The source-backed NoSpace amendmentd1149c13 identifies default
+RocksDB SFM automatic recovery outside max_bgerror_resume_count: finite application
+counters alone do not bound it. Narrow pre-open fail-stop listener capability and
+remaining output/overlap/purge coefficients are still unimplemented/unqualified.
+Never fund active successors from historical intake.1cb's132portable/129signed-
+input preparation remains; actual128/132 installed/pressure/recovery NOT_RUN.
 
 ## Resources and next bounded action
 
-All40owned installed-run containers stopped/PID0/noOOM;22native-observer hostPIDs
-and both driver identities absent. All other owned history/native runs are also
-terminal. No builder, engine, watcher or autonomous development process remains;
-subagents idle. Cache115 released; original4single-link executable pins unchanged.
-Borrowed `bigbrotr-m1-0f80280_default` ID1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f
-is exact/empty/retained. Preserve all databases, raw results/failures and worktrees.
+All40installed-run containers remain stopped under prior custody;22native-observer
+hostPIDs and both installed driver identities absent. New53 native/PG containers
+stopped/PID0/noOOM and both PG drivers absent. Cache115 released/root-reacquired,
+original4single-link executable pins unchanged. No builder, engine or watcher;
+only delegated controller preparation. PG bridge922de864 is empty/retained.
+Borrowed1699209a bridge remains preserved. Keep databases, WAL, raw failures,
+worktrees and artifacts.
 
-Last free after installed run:70,680,760,320B (~65.83GiB), below67GiB next-build
-admission and the separate OPEN80GiB startup prerequisite. Inventory owns prior
-cleanup2428/79990 and new ten-source-tar cache retirement (533,782,528allocatedB):
-each tar was freshly regenerated byte-identically; full Git/exportedsource/
-manifest/ELF/data/logs remain. Regenerate retired tars before a future consumer
-needs them. Other bounded cache/intermediate inspections caused no deletion.
-Fifteen older small tar candidates are proposed, not deleted; resolve actual
-recorded ownership profiles before further retirement. Protected archived Git/ELF
+Post-test cleanup is separate: client143; PostgreSQL137 after fast shutdown began
+but its checkpoint exceeded existing dockerstop10s. No main shutdown-complete
+marker. All50assertions preceded cleanup. Do not call this clean shutdown or
+restart-after-kill qualification; P01-T08/P02-T09 own lifecycle/recovery follow-up.
+
+After bounded cache retirement:72,589,811,712B free, before the new5fb2 source
+snapshot allocation. Compare fresh state with67GiB before the
+next significant compiler allocation; separate OPEN80GiB prerequisite remains
+unmet. Inventory owns cleanup2428/79990 and source-tar batches10/42/15/40files,
+4,444,483,584allocatedB retired. Each tar regenerated byte-identically; full Git/
+exportedsource/manifests/ELFs/data/logs preserved. Regenerate exact tars before
+future consumers. One skipped inventory discrepancy is a declared read-only
+source overlay (all2442files match); preserve its root/original skip. No general
+cleanup is active. Archived Git/ELF
 aliases are immutable in bytes and metadata: private copy before mutation; never
 gc/repack or target foreign workloads.
 
-**Next:** restore verified compiler headroom through a bounded regenerable-cache
-batch, then use the existing identity-only recipe for one exact8afb pair build
-and existing policy runner `--historical-integrity` in a fresh owned root/unused
-private/28. Prove original-body public/private refusal, caps/pairs and recovery
-effects before connecting grants. Reuse unchanged native90/capture7/reviews.
+**Next:** review the prepared native-only plan/retained-worker binding, then
+qualify the full current-format app library with exactly two external-driver
+exclusions and the genuine signed-pending worker case included. No product rebuild
+or PG repeat solely for test-only edits; preserve original53 binaries/PG result
+identities. Continue typed grants and OPEN wiring with physical gates explicit.
 
 Remaining owners: Code202/query retirement P02-T06Steps2/4/7; a99Sync/topology429;
 scalable freshness/Ready65, OPEN>64/larger Archive histories, payloadGC P02-T07,
