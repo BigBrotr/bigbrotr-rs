@@ -176,6 +176,10 @@ async fn own(
                     custody.client.as_mut().unwrap(),
                     *instance.as_bytes(),
                     custody.native.as_ref().unwrap(),
+                    ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES,
+                    |document, digest| {
+                        super::super::super::accepted_policy(&root, document, digest).map(|_| ())
+                    },
                 )
                 .await
                 .map_err(error)

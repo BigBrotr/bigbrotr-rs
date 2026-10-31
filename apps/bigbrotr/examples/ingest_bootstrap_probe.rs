@@ -380,7 +380,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         } else {
             2
         },
-        request_receipt_retention: 64,
+        intake_policy: fixture_intake_policy(),
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };
@@ -1185,4 +1185,15 @@ fn main() {
                 run(config, &args[1], Path::new(&args[4])).await;
             }
         });
+}
+
+fn fixture_intake_policy() -> bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy {
+    // Explicit current fixture input; connected registration still checks both
+    // retained document identities and every captured value before effects.
+    let mut document: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/configuration/policy-v3.json"
+    ))
+    .unwrap();
+    let settings = serde_json::from_value(document["settings"].take()).unwrap();
+    bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy::capture(&settings).unwrap()
 }

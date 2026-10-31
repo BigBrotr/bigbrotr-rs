@@ -226,6 +226,15 @@ One owner serializes exact identity decisions for each writable directory.
   Execute the protocol's literal fixture and interruption/refusal controls;
   a raised sequence limit or receipt-only deletion does not close this increment.
   This does not qualify pending-payload GC, arbitrary epochs or full M2 capacity.
+  The current source captures one typed intake-policy projection from both exact
+  accepted startup documents. The historical registry's former metadata-only
+  digest comparison did not authenticate changed original bodies under later
+  current heads. Its public lookup and eight recovery/activation consumers now
+  require both complete original document restorations before capture. Source
+  review and actual original-only corruption/cap/private-effect regressions
+  remain required; the earlier policy and registry results do not close that gap.
+  Pre-stage pending reservations, stable-low recovery and exact commit funding
+  are still unwired, and the absolute64 request guard remains.
   The selected closed-initial continuation now passes on product `7d8e5998`,
   acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
   conservation checks, idempotent restart/retry and a compacted epoch2 accepting

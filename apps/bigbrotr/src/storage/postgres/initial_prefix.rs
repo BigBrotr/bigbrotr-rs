@@ -109,7 +109,7 @@ impl ControlSession {
             control,
             policy,
             progress,
-            input.registration.request_receipt_retention,
+            input.registration.intake_policy.request_receipt_retention(),
             limits,
             budget,
             effects,

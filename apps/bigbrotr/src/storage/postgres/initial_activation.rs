@@ -365,6 +365,7 @@ impl ControlSession {
             &tx,
             *self.request.instance.as_bytes(),
             handoff.previous_manifest(),
+            &mut validate,
         )
         .await
         .map_err(InitialSuccessionError::Registry)?;

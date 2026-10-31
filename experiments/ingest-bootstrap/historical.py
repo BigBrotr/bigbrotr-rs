@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from fractions import Fraction
 
 import lab
 from installed import run as initialize
@@ -23,6 +24,15 @@ def expected(state, native):
     policy, = [r for r in state['policy_revisions'] if r['revision'] == integer(94, 8)]
     config, = [r for r in state['config_revisions'] if r['revision'] == policy['config_revision']]
     topology, = [r for r in state['topology_generations'] if r['generation'] == integer(26, 8)]
+    settings = policy['document']['settings']
+    limit = settings['ingest.pending_max_bytes']
+    intake = dict(pending_limit=limit,
+        pending_high=int(limit*Fraction(str(settings['ingest.pending_high_fraction']))),
+        pending_low=int(limit*Fraction(str(settings['ingest.pending_low_fraction']))),
+        max_pending_unit=settings['ingest.group_commit_max_bytes'],
+        disk_resume_margin=settings['runtime.disk_resume_margin_bytes'],
+        stable_duration_us=settings['runtime.pressure_stable_duration'],
+        request_receipt_retention=settings['ingest.request_receipt_retention'])
     return dict(event='history-loaded', dataset_id=manifest[10:26].hex(),
         instance_id=state['datasets'][0]['instance_id'][2:], control_resource=control['resource_id'][2:],
         control_epoch=control['epoch'], control_role_instance=control['role_instance_id'][2:],
@@ -32,7 +42,7 @@ def expected(state, native):
         config_digest=config['document_digest'][2:], policy_digest=policy['document_digest'][2:],
         previous_topology=topology['previous_generation'],
         allocation_domains=sorted([[r['dictionary_kind'],r['allocation_domain'][2:]] for r in state['allocation_domains']]),
-        producer_slot=slot['producer_slot_id'][2:], window=producer['outstanding_request_limit'],
+        producer_slot=slot['producer_slot_id'][2:], window=producer['outstanding_request_limit'], intake_policy=intake,
         created_at_us=owner['acquired_at_us'], lease_expires_at_us=owner['lease_expires_at_us'], manifest=manifest.hex())
 
 
@@ -76,12 +86,18 @@ def run(pg, client, output, database, name, rows, clone):
     assert next(r for r in base['owner_epochs'] if r['role']=='control')['state']=='released'
     inspect(database, 'history-identical-retry')
     inspect(database, 'history-instance', error='WrongDeployment', mode='history-wrong-instance')
+    inspect(database, 'history-cap-zero', error='InvalidInput', mode='history-cap-zero')
+    inspect(database, 'history-cap-too-large', error='InvalidInput', mode='history-cap-too-large')
+    inspect(database, 'history-cap-one-byte-short', error='InvalidMetadata', mode='history-cap-one-byte-short')
+    assert inspect(database, 'history-cap-exact', mode='history-cap-exact') == original
 
     changed = clone('history_heads', database)
     statements = []
     for table in ['config_revisions','policy_revisions']:
         document = json.loads(json.dumps(base[table][0]['document']))
         document['settings']['ingest.producer_outstanding_requests'] = 16
+        document['settings']['ingest.request_receipt_retention'] = 62
+        document['settings']['ingest.pending_max_bytes'] = 1024**3
         encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
         digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
         patch = dict(revision=2, previous_revision=1, document=document, document_digest='\\x'+digest)
@@ -98,7 +114,13 @@ def run(pg, client, output, database, name, rows, clone):
         'missing-slot': ("DELETE FROM control.producer_slots", 'InvalidMetadata'),
         'missing-domain': ("DELETE FROM control.allocation_domains WHERE dictionary_kind=4", 'InvalidMetadata'),
         'source-incarnation': ("UPDATE control.source_streams SET owner_incarnation=decode(repeat('ab',16),'hex')", 'InvalidMetadata'),
-        'policy-schema': ("UPDATE control.policy_revisions SET schema_version=4 WHERE revision=1", 'HeadsChanged'),
+        'policy-schema': ("UPDATE control.policy_revisions SET schema_version=4 WHERE revision=1", 'InvalidMetadata'),
+        # These clones retain healthy current revision2, but their original
+        # revision1 body changes without its digest. Metadata-only identity or
+        # projecting the intake fields would incorrectly accept that history.
+        'config-body-stale-digest': ("UPDATE control.config_revisions SET document=jsonb_set(document,'{settings,ingest.producer_outstanding_requests}','31') WHERE revision=1", 'InvalidMetadata'),
+        'policy-body-stale-digest': ("UPDATE control.policy_revisions SET document=jsonb_set(document,'{settings,ingest.producer_outstanding_requests}','31') WHERE revision=1", 'InvalidMetadata'),
+        'intake-body-stale-digest': ("UPDATE control.config_revisions SET document=jsonb_set(document,'{settings,ingest.request_receipt_retention}','62') WHERE revision=1; UPDATE control.policy_revisions SET document=jsonb_set(document,'{settings,ingest.request_receipt_retention}','62') WHERE revision=1", 'InvalidMetadata'),
         'ambiguous-slot': ("""
             INSERT INTO control.producer_slots
                 SELECT (jsonb_populate_record(NULL::control.producer_slots,
@@ -111,9 +133,25 @@ def run(pg, client, output, database, name, rows, clone):
             """, 'InvalidMetadata'),
     }
     for fault, (sql, error) in faults.items():
-        db = clone('history_'+fault.replace('-','_'), database)
+        db = clone('history_'+fault.replace('-','_'), changed if 'body-stale-digest' in fault else database)
         lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; '+sql+'; COMMIT;')
         inspect(db, 'history-'+fault, error=error)
+
+    for field, label in [('ingest.pending_low_fraction', 'missing-intake'),
+                         ('relay_policy.banned', 'missing-unrelated')]:
+        for recompute in [False, True]:
+            fault = label + ('-recomputed-digest' if recompute else '-stale-digest')
+            document = json.loads(json.dumps(base['policy_revisions'][0]['document']))
+            del document['settings'][field]
+            encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
+            assignment = f"document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb"
+            if recompute:
+                digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
+                assignment += f",document_digest=decode('{digest}','hex')"
+            db = clone('history_'+fault.replace('-','_'), changed)
+            lab.sql(pg,db,'BEGIN; SET LOCAL session_replication_role=replica; '
+                f'UPDATE control.policy_revisions SET {assignment} WHERE revision=1; COMMIT;')
+            inspect(db, 'history-'+fault, error='InvalidMetadata')
 
     zero = clone('history_zero', 'bb_source_template')
     upgrade_registry(pg,client,output,zero,'history-zero',rows)

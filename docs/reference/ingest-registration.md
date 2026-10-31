@@ -12,6 +12,23 @@ limit and initial times. The new owner/source/producer epochs are all one. A
 missing topology advances to zero; an existing sealed empty topology advances
 by exactly one. A populated predecessor needs the separate handoff operation.
 
+The current startup also retains one `CapturedIntakePolicy` in that registration.
+It captures pending limit, original high/low fractions, serialized group-commit
+bound, disk resume margin, stable duration and request receipt retention from
+both completely restored accepted startup documents. Different projections
+refuse, even if their rounded thresholds agree. Checked decimal arithmetic uses
+`high=floor(limit*high_fraction)` and `low=floor(limit*low_fraction)`;
+`1 <= low < high <= limit` and room for one supported group-commit unit below
+high are required. No omitted key gets a default. The existing registration
+identity query checks the complete seven-setting projection against both exact
+revision/digest rows; it does not poll for or adopt a new policy per event.
+Changing accepted policy preserves the existing stop/recovery boundary.
+
+This capture is metadata, not a logical pending reservation, filesystem growth
+grant or permission to resume intake. Pre-stage reservations, stable-low
+observations, and commit reconciliation remain separate source work. The
+absolute64 request guard remains until the complete physical envelope qualifies.
+
 The transaction checks PostgreSQL 16.15, `fsync`, `full_page_writes`, both exact
 migration receipts, and the caller's application privilege boundary. A superuser,
 control schema/table owner, effective owning-role member or caller with control
@@ -77,6 +94,26 @@ source, topology membership, domain set and policy schema. Missing, ambiguous or
 inconsistent rows refuse; absent predecessor stays distinct from generation zero.
 The retained scheduling expiry may reflect renewal and is not an authority grant.
 
+Before constructing that registration or capturing its intake settings, the
+current loader validates both complete original configuration and policy bodies
+under their original schema/revision/digest identities. Each body is guarded
+at a caller-selected ceiling in1..10MiB in the existing historical query; private
+reconstruction and installed public callers use10MiB. The caller supplies the same complete
+policy restoration/digest validator used for accepted documents and retains its
+document budget through the read, validation and driver completion. LIMIT2 can
+retain four bodies before duplicate-row refusal, at most40MiB of row payload for
+the general reader. Installed callers retain the existing512MiB document/driver
+allowance across sequential current/original restores. The standalone fixed
+fixture probe uses16KiB per body within its unchanged16MiB data capacity; its
+smaller reader does not qualify generic10MiB documents. Comparing
+stored digest columns alone does not validate a changed body with a stale digest.
+The original policy then supplies the bounded seven-setting intake projection,
+with an excess discriminator at2049 bytes; missing, malformed or over2048-byte
+projections refuse. Current heads and startup-file defaults cannot supply those
+values. The eight private reconstruction consumers use the same boundary during
+explicit recovery, handoff or activation, including recovered compacted ACK;
+ordinary live/event ACK does not acquire this additional historical view.
+
 This initial loader refuses noninitial owner epochs. It does not close a producer,
 resolve missing outcomes, establish recovery provenance or activate a successor.
 Existing connected recovery revalidates the complete registration under fresh
@@ -87,8 +124,11 @@ installed initialized stores. All 69 Control tables and 17 native rows remain
 unchanged per read. Original heads survive changed current revisions, and null
 versus zero predecessors are distinct. Missing/ambiguous registration, changed
 source identity, unknown policy schema and wrong instance refuse. This verifies
-bounded attribution only: historical setting validation, blocked-query cancellation,
-installed recovery and successor activation remain separate requirements.
+bounded attribution only at that historical source. The current complete-body
+restoration and captured intake-policy changes still need their own native
+qualification; the old results do not qualify those changes. Blocked-query
+cancellation, installed recovery and successor activation remain separate requirements
+of their owning current paths.
 
 ## Same-Control scheduling renewal
 

@@ -198,6 +198,16 @@ version-aware readers and original initialization/activation retries. Explicit
 legacy ban candidates remain distinct from absent accepted authority. Populated
 CAS upgrade, policy transition/drain and actual acquisition remain open.
 
+Current policy uses the single complete format3. Its typed Ingest startup capture
+keeps the pending limit/fractions, group-commit bound, stable duration, disk resume
+margin and receipt retention under the same accepted revision/digests. Historical
+capture must restore and hash both complete original bodies instead of comparing
+stored digest metadata back to itself. The shared recovery lookup source now
+does that before capture, with bounded document transport and retained grants;
+its original/current-policy separation and corruption refusals still need
+critical source review and actual PostgreSQL qualification under Step6 and
+P02-T02 Steps4/7. No Live policy adoption or new intake grant is implemented.
+
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
   include operational composition/maximum-unit constraints and reject unknown,
   duplicate, unsafe and ineffective options. Do not retain a six-layer policy
