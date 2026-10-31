@@ -152,6 +152,36 @@ def expected_tables(source, inputs=None):
     return tables
 
 
+def expected_ledger(source):
+    manifest = load(source / 'migrations/manifest.json')
+    entries = manifest['application_order']
+    require(manifest['engine'] == 'postgres-control' and len(entries) == 58
+            and entries[-1]['version'] == 42 and len({e['version'] for e in entries}) == 58,
+            'first-launch current migration profile changed')
+    # Application order includes reserved 8xx/9xx IDs; target42 is not1..42.
+    return sorted((dict(engine='postgres-control', migration=e['version'], name=e['name'],
+        checksum=digest(source / 'migrations/postgres' / e['name']),
+        reader_min=1, reader_max=1, writer_floor=1) for e in entries), key=lambda e:e['migration'])
+
+
+def validate_current_ledger(source, observed):
+    require(observed == expected_ledger(source), 'applied Control ledger differs from current source')
+
+
+def validate_initial_prefix_profile(control, initialized):
+    heads = control['producer_checkpoints']
+    require(len(heads) == 1, 'initial producer needs one current checkpoint')
+    head, = heads
+    require((head['dataset_id'], head['producer_slot_id'], head['producer_epoch']) == (
+        '\\x'+initialized['private_scope']['dataset_id'], '\\x'+initialized['producer_slot_id'], 1)
+        and head['prefix_profile'] is True and head['progress_format'] == 1
+        and head['complete_through_request'] == 4, 'initial producer did not use current prefix profile')
+    require(all(head['prefix_'+slot+'_'+field] is None
+                for slot in ('active', 'prepared')
+                for field in ('bytes', 'sha256', 'generation', 'retired', 'source')),
+            'fresh four-request journey unexpectedly retired or prepared a prefix')
+
+
 def stop_process(process):
     # The process group remains owned even if its leader already exited.
     for sig, timeout in ((signal.SIGTERM, 1), (signal.SIGKILL, 2)):
@@ -545,7 +575,15 @@ class Runtime:
         provision('bootstrap')
         for action in ('plan', 'apply'):
             self.finite('migration-' + action, 'migrate', action, *config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/operator/migrator', '--target', '41', service='initialize')
+                        '--password-ref', 'file:/run/operator/migrator', '--target', '42', service='initialize')
+        ledger = json.loads(self.sql('bigbrotr_control', """
+            SELECT coalesce(json_agg(row_to_json(v) ORDER BY migration),'[]') FROM (
+                SELECT engine,migration,name,encode(checksum,'hex') AS checksum,
+                    reader_min,reader_max,writer_floor
+                FROM control.schema_versions ORDER BY migration LIMIT 59
+            ) v"""))
+        save(self.root / 'bootstrap/applied-control-ledger.json', ledger)
+        validate_current_ledger(self.source, ledger)
         provision('control')
         self.finite('config-initialize', 'config', 'initialize', *config)
         self.finite('config-activate', 'config', 'activate-initial', *config,
@@ -649,6 +687,10 @@ class Runtime:
         require(max(row['snapshot_id'] for row in catalog['public.ducklake_snapshot']) == 5,
                 'unexpected Archive snapshot')
         require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
+        validate_initial_prefix_profile(control, self.initialized)
+        save(output / 'current-schema-profile.json', dict(target_version=42,
+            prefix_profile=True, progress_format=1, complete_through_request=4,
+            active_base=None, prepared_base=None))
 
     def initial_source_barrier(self, entry, output):
         # Closed variants may hold the existing source client before later

@@ -6,8 +6,8 @@ use crate::{
     storage::{
         producer_prefix::Base,
         rocks::store::{
-            AdmissionError, PrefixRetirement, ProducerRecoveryLimits, RetainedRequestInput,
-            UnlinkedPrefix,
+            AdmissionError, PrefixOriginalRequest, PrefixReadRequest, PrefixRetirement,
+            ProducerRecoveryLimits, RetainedRequestInput, UnlinkedPrefix,
         },
     },
 };
@@ -89,8 +89,10 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     }
     let mut native = store
         .prefix_read(
-            context.slot,
-            prior,
+            PrefixReadRequest {
+                slot: context.slot,
+                prior,
+            },
             progress.permit(),
             effects,
             budget,
@@ -186,8 +188,10 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
             .map_err(|_| ProducerProgressError::InsufficientReservation)?;
         let original = native
             .resolve(
-                request,
-                Digest256::from_bytes(input_digest),
+                PrefixOriginalRequest {
+                    request,
+                    digest: Digest256::from_bytes(input_digest),
+                },
                 limits,
                 input_permit,
                 effects,

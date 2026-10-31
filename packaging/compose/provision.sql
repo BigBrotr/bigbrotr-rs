@@ -36,7 +36,7 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 \if :control
 \connect bigbrotr_control
--- Static proposal for fresh PostgreSQL Control target41, applied by the
+-- Static proposal for fresh PostgreSQL Control target42, applied by the
 -- trusted provisioning owner after real migrate apply. Not engine-qualified.
 -- The application role must already be LOGIN NOSUPERUSER NOCREATEDB
 -- NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS, with no memberships,
@@ -49,7 +49,7 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 GRANT CONNECT ON DATABASE bigbrotr_control TO bigbrotr_control;
 GRANT USAGE ON SCHEMA control TO bigbrotr_control;
--- Current target41 catalog only; no ALTER DEFAULT PRIVILEGES.
+-- Current target42 catalog only; no ALTER DEFAULT PRIVILEGES.
 GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control;
 
 GRANT INSERT ON

@@ -266,6 +266,11 @@ separately. Raw command receipts and original failures remain local.
 
 `p01-first-launch-tutorial` runs the same seven first-launch stages and data/export
 oracle with the checkout declared as the source of maintained clients/fixtures.
+Fresh shared bootstrap now selects Control target42 and compares its complete
+58-entry ledger, including reserved migration IDs and source SQL checksums.
+The four-request positive publication also requires the initial prefix profile
+with neither an active nor prepared base. Earlier target41 installed evidence
+retains that predecessor schema scope; it does not qualify this forward setup.
 Invoke the runner by absolute path from a directory outside every working
 checkout, with canonical absolute source/candidate/evidence arguments. Bundle,
 state and evidence remain external. See the [first-event tutorial](../tutorials/first-event.md)

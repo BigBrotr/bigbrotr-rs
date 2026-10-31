@@ -41,24 +41,6 @@ impl Context {
     pub fn request_seed(self) -> [u8; 32] {
         hash(&[b"bigbrotr/producer-prefix-requests/1\0", &self.bytes()])
     }
-    pub fn close_digest(
-        self,
-        issued: u64,
-        requests: [u8; 32],
-        source: u64,
-        batches: u64,
-        science: [u8; 32],
-    ) -> [u8; 32] {
-        hash(&[
-            b"bigbrotr/producer-prefix-close/1\0",
-            &self.bytes(),
-            &issued.to_be_bytes(),
-            &requests,
-            &source.to_be_bytes(),
-            &batches.to_be_bytes(),
-            &science,
-        ])
-    }
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -444,7 +426,17 @@ mod tests {
             literal("1bf184f6e0accf1ccbcda48144b9487fd080eed765248ebc3b75739f149358c5")
         );
         assert_eq!(
-            c.close_digest(1, requests, 7, 1, science),
+            // The close preimage is a contract vector, not a current runtime
+            // operation. Retain its literal independently frozen bytes here.
+            hash(&[
+                b"bigbrotr/producer-prefix-close/1\0",
+                &c.bytes(),
+                &1_u64.to_be_bytes(),
+                &requests,
+                &7_u64.to_be_bytes(),
+                &1_u64.to_be_bytes(),
+                &science,
+            ]),
             literal("4dc2219373bed105001bc50392eeecbcb87dc94593d1087bcde9e70a036cd162")
         );
         assert_ne!(next_batch(c.source_seed(), 7, 1, [4; 32]), science);

@@ -23,6 +23,20 @@ use std::sync::atomic::{AtomicBool, Ordering};
 mod retirement;
 pub(in crate::storage) use retirement::{PrefixRetirement, UnlinkedPrefix};
 
+/// Read coordinates only; neither the slot nor an optional prior base grants
+/// authority. The native reader checks their exact current floor binding.
+pub(in crate::storage) struct PrefixReadRequest<'a> {
+    pub slot: ProducerSlotId,
+    pub prior: Option<&'a Base>,
+}
+
+/// Identity of one original input to resolve under the retained native reader.
+/// The request and digest are checked against native input and outcome bytes.
+pub(in crate::storage) struct PrefixOriginalRequest {
+    pub request: ProducerRequestId,
+    pub digest: Digest256,
+}
+
 pub(in crate::storage) struct NativePrefixRead<'a> {
     store: &'a IngestStore,
     slot: ProducerSlotId,
@@ -97,14 +111,14 @@ impl IngestStore {
     }
     pub(in crate::storage) fn prefix_read<'a>(
         &'a self,
-        slot: ProducerSlotId,
-        prior: Option<&'a Base>,
+        request: PrefixReadRequest<'a>,
         scratch: &'a OwnedPermit,
         effects: &OwnedPermit,
         budget: &ResourceBudget,
         cancelled: &AtomicBool,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<NativePrefixRead<'a>, AdmissionError> {
+        let PrefixReadRequest { slot, prior } = request;
         authority()?;
         check(cancelled)?;
         if scratch.request().units().items() == 0
@@ -152,12 +166,11 @@ impl IngestStore {
         let mut batches = 0_u64;
         let mut pending_bytes = 0_u64;
         let mut next = 1_u64;
-        if let Some(base) = prior {
-            if base.source > source
-                || (base.source == 0 && (base.batches != 0 || base.science != science))
-            {
-                return Err(AdmissionError::StateMismatch);
-            }
+        if let Some(base) = prior
+            && (base.source > source
+                || (base.source == 0 && (base.batches != 0 || base.science != science)))
+        {
+            return Err(AdmissionError::StateMismatch);
         }
         let mut prior_seen = prior.is_none_or(|base| base.source == 0);
         while next <= source {
@@ -343,14 +356,14 @@ impl NativePrefixRead<'_> {
     }
     pub fn resolve<'a>(
         &self,
-        request: ProducerRequestId,
-        digest: Digest256,
+        original: PrefixOriginalRequest,
         limits: ProducerRecoveryLimits,
         input: OwnedPermit,
         effects: &'a OwnedPermit,
         cancelled: &AtomicBool,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<PrefixOriginal<'a>, AdmissionError> {
+        let PrefixOriginalRequest { request, digest } = original;
         authority()?;
         self.validate(cancelled)?;
         if request.producer_slot_id != self.slot
