@@ -4,38 +4,33 @@ use serde::Deserialize;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PolicyDocumentVersion {
-    V1,
-    V2,
+    V3,
 }
 
 impl PolicyDocumentVersion {
-    pub const CURRENT: Self = Self::V2;
+    pub const CURRENT: Self = Self::V3;
 
     pub const fn format(self) -> &'static str {
         match self {
-            Self::V1 => "bigbrotr-product-policy/1",
-            Self::V2 => "bigbrotr-product-policy/2",
+            Self::V3 => "bigbrotr-product-policy/3",
         }
     }
 
     pub const fn digest_domain(self) -> &'static [u8] {
         match self {
-            Self::V1 => b"bigbrotr/product-policy/1\0",
-            Self::V2 => b"bigbrotr/product-policy/2\0",
+            Self::V3 => b"bigbrotr/product-policy/3\0",
         }
     }
 
     pub const fn schema_version(self) -> i32 {
         match self {
-            Self::V1 => 1,
-            Self::V2 => 2,
+            Self::V3 => 3,
         }
     }
 
     pub fn from_format(format: &str) -> Result<Self, &'static str> {
         match format {
-            "bigbrotr-product-policy/1" => Ok(Self::V1),
-            "bigbrotr-product-policy/2" => Ok(Self::V2),
+            "bigbrotr-product-policy/3" => Ok(Self::V3),
             _ => Err("incompatible stored policy format"),
         }
     }
@@ -79,19 +74,19 @@ mod tests {
 
     #[test]
     fn policy_header_requires_known_format_and_matching_metadata() {
-        for (version, schema) in [(Version::V1, 1), (Version::V2, 2)] {
-            let document = format!(r#"{{"format":"{}","settings":{{}}}}"#, version.format());
-            assert_eq!(Version::require_metadata(&document, schema), Ok(version));
-            for wrong in [0, 3, 65536, 3 - schema] {
-                assert!(Version::require_metadata(&document, wrong).is_err());
-            }
+        let version = Version::V3;
+        let document = format!(r#"{{"format":"{}","settings":{{}}}}"#, version.format());
+        assert_eq!(Version::require_metadata(&document, 3), Ok(version));
+        for wrong in [0, 1, 2, 65536] {
+            assert!(Version::require_metadata(&document, wrong).is_err());
         }
         for invalid in [
-            r#"{"format":"bigbrotr-product-policy/3","settings":{}}"#,
-            r#"{"format":"bigbrotr-product-policy/1"}"#,
-            r#"{"format":"bigbrotr-product-policy/2","format":"bigbrotr-product-policy/1","settings":{}}"#,
-            r#"{"format":"bigbrotr-product-policy/2","settings":{},"extra":1}"#,
-            r#"{"format":"bigbrotr-product-policy/2","settings":{},"settings":{}}"#,
+            r#"{"format":"bigbrotr-product-policy/1","settings":{}}"#,
+            r#"{"format":"bigbrotr-product-policy/2","settings":{}}"#,
+            r#"{"format":"bigbrotr-product-policy/3"}"#,
+            r#"{"format":"bigbrotr-product-policy/3","format":"bigbrotr-product-policy/3","settings":{}}"#,
+            r#"{"format":"bigbrotr-product-policy/3","settings":{},"extra":1}"#,
+            r#"{"format":"bigbrotr-product-policy/3","settings":{},"settings":{}}"#,
         ] {
             assert!(Version::from_document(invalid).is_err());
         }

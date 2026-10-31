@@ -48,7 +48,7 @@ fn validate(document: &str, _: [u8; 32]) -> Result<(), OwnerError> {
     assert_eq!(
         serde_json::from_str::<serde_json::Value>(document).unwrap(),
         serde_json::from_str::<serde_json::Value>(include_str!(
-            "../../../experiments/configuration-inspection/policy.json"
+            "../../../tests/fixtures/configuration/policy-v3.json"
         ))
         .unwrap()
     );
@@ -163,9 +163,9 @@ async fn run(include_scan: bool) {
     assert_eq!(old, retained);
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT, UPDATE ON control.datasets,control.principals,control.config_revisions,control.policy_revisions,control.management_audit,control.management_commands,control.role_instances,control.owner_epochs TO bigbrotr_control; GRANT INSERT ON control.archive_attempts TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;").await.unwrap();
     let (mut application, application_driver) = connect("bigbrotr_control").await;
-    let document = include_str!("../../../experiments/configuration-inspection/policy.json");
+    let document = include_str!("../../../tests/fixtures/configuration/policy-v3.json");
     let digest: [u8; 32] = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(document.as_bytes())
         .finalize()
         .into();
@@ -677,7 +677,7 @@ async fn seed_runtime(database: &str) {
             assert_eq!(value["settings"]["administration.enabled"], false);
             let compact = serde_json::to_vec(&value).unwrap();
             let actual: [u8; 32] = Sha256::new()
-                .chain_update(b"bigbrotr/product-policy/1\0")
+                .chain_update(b"bigbrotr/product-policy/3\0")
                 .chain_update(compact)
                 .finalize()
                 .into();

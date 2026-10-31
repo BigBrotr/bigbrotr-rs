@@ -216,6 +216,7 @@ pub async fn prepare(
         allocation_domains: domains(),
         producer_slot_id: [66; 16].try_into().unwrap(),
         outstanding_request_limit: outstanding,
+        request_receipt_retention: 64,
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };

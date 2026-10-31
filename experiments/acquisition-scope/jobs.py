@@ -888,7 +888,7 @@ try:
         require(all('\\x' + bytes([n]).hex()*16 not in prior_ids for n in (50,51,52,60,64,80,82,86,87,88)),
                 'fixture-owner-identity-collision')
     policy = basic['config_revisions'][0]['document']
-    require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/2', 'fixture-policy')
+    require(policy == basic['policy_revisions'][0]['document'] and policy['format'] == 'bigbrotr-product-policy/3', 'fixture-policy')
     (output / 'policy.json').write_text(json.dumps(policy, sort_keys=True, separators=(',', ':')))
     ident = lab.docker('create', '--init', '--name', client, '--label', label + '=' + owner,
         '--network', 'container:' + pg['postgres'], '--user', f'{os.getuid()}:{os.getgid()}',

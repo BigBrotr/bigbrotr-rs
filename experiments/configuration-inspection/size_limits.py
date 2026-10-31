@@ -40,7 +40,7 @@ def rendered(value):
 
 def identity(value):
     raw = compact(value).encode()
-    return raw, hashlib.sha256(b'bigbrotr/product-policy/1\0' + raw).hexdigest()
+    return raw, hashlib.sha256(b'bigbrotr/product-policy/3\0' + raw).hexdigest()
 
 
 def main():

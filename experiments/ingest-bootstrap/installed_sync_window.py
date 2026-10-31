@@ -35,7 +35,7 @@ def configure_window(pg, database, rows, output, name):
         document = expected[table][0]['document']
         document['settings']['ingest.producer_outstanding_requests'] = 4
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-        digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
         expected[table][0]['document_digest'] = '\\x'+digest
         statements.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb,document_digest=decode('{digest}','hex')")
     # Same explicit pre-start clone policy setup used by installed.policy_setup;

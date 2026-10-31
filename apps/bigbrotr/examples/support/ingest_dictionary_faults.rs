@@ -85,7 +85,7 @@ pub async fn run(
             admission.required_native_bytes().unwrap(),
         )
     };
-    let validate = |d: &str, h| validate_version(d, h, true);
+    let validate = |d: &str, h| validate(d, h);
     if reuse {
         drop(
             owner

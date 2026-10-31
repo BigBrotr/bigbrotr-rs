@@ -53,7 +53,7 @@ def policy_setup(pg, database, name, rows, output, administration=False, *, prod
         if producer_window is not None:
             document['settings']['ingest.producer_outstanding_requests'] = producer_window
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-        digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
         statements.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, document_digest=decode('{digest}','hex')")
     if name == 'zero-topology':
         statements.extend([

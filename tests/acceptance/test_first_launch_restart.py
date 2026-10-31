@@ -328,7 +328,7 @@ class ProvenanceOffControls(unittest.TestCase):
         selected = tomllib.loads(check.deployment_recipe(text, provenance=False))
         self.assertEqual(selected['sync']['provenance'], 'off')
         self.assertEqual(len(selected['network']['private']['rules']), 2)
-        document = dict(format='bigbrotr-product-policy/2', settings={'sync.provenance': 'off'})
+        document = dict(format='bigbrotr-product-policy/3', settings={'sync.provenance': 'off'})
         state = dict(datasets=[dict(config_revision=1, policy_revision=1)],
             config_revisions=[dict(revision=1, document=document, document_digest='independent-fixture')],
             policy_revisions=[dict(revision=1, config_revision=1, document=copy.deepcopy(document), document_digest='independent-fixture')])

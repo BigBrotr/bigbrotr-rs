@@ -292,8 +292,8 @@ def native_rows():
         raw, _ = author.build(case)
         name = 'archive-event-response.json' if case == 'archive-sample' else 'archive-event-' + case + '.json'
         assert (path.parent / name).read_bytes() == raw
-    original_policy = oracle.load(root / 'experiments/archive-engine/receipt-policy.json')
-    policy = oracle.load(root / 'experiments/archive-engine/native-row-policy.json')
+    original_policy = oracle.load(root / 'tests/fixtures/configuration/receipt-policy-v3.json')
+    policy = oracle.load(root / 'tests/fixtures/configuration/native-row-policy-v3.json')
     expected_policy = copy.deepcopy(original_policy)
     expected_policy['settings']['ingest.max_event_bytes'] = 1048576
     assert policy == expected_policy, 'one explicitly selected fresh fixture policy difference'

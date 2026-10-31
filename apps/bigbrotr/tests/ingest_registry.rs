@@ -37,6 +37,7 @@ fn specification() -> InitialRegistration {
         ],
         producer_slot_id: ProducerSlotId::try_from([12; 16]).unwrap(),
         outstanding_request_limit: 2,
+        request_receipt_retention: 64,
         created_at_us: 0,
         lease_expires_at_us: 60_000_000,
     }
@@ -78,6 +79,8 @@ fn malformed_initial_specifications_are_refused_without_sql() {
         |s| s.config_revision = 0,
         |s| s.policy_revision = 0,
         |s| s.outstanding_request_limit = 0,
+        |s| s.request_receipt_retention = 0,
+        |s| s.request_receipt_retention = 65,
         |s| s.lease_expires_at_us = s.created_at_us,
         |s| s.lease_expires_at_us = s.created_at_us - 1,
         |s| s.allocation_domains.reverse(),

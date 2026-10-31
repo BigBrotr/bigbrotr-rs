@@ -27,7 +27,7 @@ def run(root, state, sql):
                     policy=json.loads(sql(db,'SELECT document FROM control.policy_revisions WHERE revision=2'))
                     policy['settings']['administration.enabled']=True
                     document=json.dumps(policy,sort_keys=True,separators=(',',':'))
-                    digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+                    digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
                     sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 3,dataset_id,2,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=2; UPDATE control.datasets SET policy_revision=3; COMMIT;")
                 client=Process(['docker','exec','-i',state['container_id'],'python3','-B','/out/build/source/experiments/export-execution/shutdown_client.py',name],input_pipe=True)
                 observed['ready']=event(client,'ready');save()

@@ -91,7 +91,7 @@ def policy_setup(seed, setup, original, window, provenance):
         at = observed['accepted_at_us']
         clock(at, setup['server_window'])
         value = dict(old, revision=2, previous_revision=1, document=document,
-            document_digest=bytea(sha(b'bigbrotr/product-policy/2\0' + encoded(document))), accepted_at_us=at, xmin=tx)
+            document_digest=bytea(sha(b'bigbrotr/product-policy/3\0' + encoded(document))), accepted_at_us=at, xmin=tx)
         if table == 'policy_revisions':
             value['config_revision'] = 2
         wanted[table].append(value)

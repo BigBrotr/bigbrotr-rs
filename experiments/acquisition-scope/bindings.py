@@ -910,8 +910,8 @@ def arrival_policy(db, name):
     mutations = []
     for table in ['config_revisions', 'policy_revisions']:
         require(len(before[table]) == 1, 'policy-fixture-single-revision')
-        document = json.loads((SOURCE / 'experiments/configuration-inspection/policy.json').read_text())
-        document['format'] = 'bigbrotr-product-policy/2'
+        document = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
+        document['format'] = 'bigbrotr-product-policy/3'
         settings = document['settings']
         settings['relay_policy.banned'] = []
         settings['sync.provenance'] = 'off'
@@ -929,7 +929,7 @@ def arrival_policy(db, name):
         elif name == 'policy-second':
             settings['sync.provenance'] = 'local_first_witness'
         encoded = json.dumps(document, separators=(',', ':'), sort_keys=True, ensure_ascii=False).encode()
-        digest = sha(b'bigbrotr/product-policy/2\0' + encoded)
+        digest = sha(b'bigbrotr/product-policy/3\0' + encoded)
         expected[table][0].update(document=document, document_digest='\\x' + digest, schema_version=2)
         mutations.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, "
                          f"document_digest=decode('{digest}','hex'),schema_version=2")

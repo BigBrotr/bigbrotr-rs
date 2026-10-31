@@ -1265,8 +1265,9 @@ request-count threshold1..64, default64, for this profile; it is not a TTL or th
 outstanding window. The first profile captures its value from the exact accepted
 startup configuration/policy revisions and digests used by InitialRegistration.
 Scheduling uses that captured value and provenance, never a changed seed file,
-unaccepted candidate or a separately polled numeric value. This setting still
-requires implementation in the typed registry/generated configuration reference.
+unaccepted candidate or a separately polled numeric value. The typed registry/generated configuration reference accepts this setting in the
+complete current policy schema3. Source wiring and native qualification remain
+required for the scheduling behavior below.
 After a confirmed ACK brings retained count `I-R` to the captured threshold,
 schedule reclamation at the next safe point; byte pressure may require it earlier.
 No new input is staged while the physical/charged capacity is exhausted.

@@ -31,7 +31,7 @@ fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
     let frozen: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../experiments/configuration-inspection/policy.json"
+        "../../../tests/fixtures/configuration/policy-v3.json"
     ))
     .unwrap();
     if value != frozen
@@ -271,6 +271,7 @@ async fn run(config: Config, mode: &str) {
             ],
             producer_slot_id: ProducerSlotId::try_from([66; 16]).unwrap(),
             outstanding_request_limit: 2,
+            request_receipt_retention: 64,
             created_at_us: 100,
             lease_expires_at_us: 60_000_100,
         };

@@ -129,7 +129,7 @@ pub async fn run(
     } else {
         None
     };
-    let validate = |d: &str, h| validate_version(d, h, true);
+    let validate = |d: &str, h| validate(d, h);
     let backend = observer
         .query_one(
             "SELECT control_backend_pid,control_backend_start::text FROM control.owner_epochs

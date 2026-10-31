@@ -219,7 +219,7 @@ pub async fn run(
             );
             return result;
         }
-        validate_version(document, digest, true)?;
+        validate(document, digest)?;
         let expected = if invalid { None } else { Some(&event) };
         if candidate.verified_event().map(|v| v.event()) != expected
             || candidate.verification_limit_bytes() != 256 * 1024
@@ -558,7 +558,7 @@ async fn certify(
                     );
                     return result;
                 }
-                validate_version(document, digest, true)?;
+                validate(document, digest)?;
                 let expected = if invalid { None } else { Some(&expected_event) };
                 if candidate.verification_limit_bytes() != 256 * 1024
                     || candidate.verified_event().map(|event| event.event()) != expected
