@@ -6,14 +6,15 @@ It builds the current checkout with declared dependencies and creates a fresh
 isolated PostgreSQL lab. No old executable or private historical build path is a
 prerequisite. The existing lab runner owns container/network/cache lifecycle.
 
-The case applies the complete current catalog through migration42. Its independent
-inventory reads the declared migration SQL in manifest order, records every input
-SHA256 and requires the exact82 Control table names before comparing rows. A
+The case applies the complete selected catalog through migration41:57 ordered
+migrations and58 input hashes including the manifest. Its independent inventory
+reads the declared migration SQL in manifest order, records every input SHA256
+and requires the exact82 Control table names before comparing rows. A
 same-count missing/unexpected table substitution refuses. The previous target19
 was a historical fixture cutoff: the unbound dictionary probe itself needs the
 migration14 bridge (Control ownership7 and registration12), while initialization
 and activation require their declared management migrations. Captured retention
-comes from accepted policy JSON; it does not need a PG42 registration column.
+comes from accepted policy JSON; it does not need another registration column.
 Using the complete current catalog exercises the current SQL trigger closure;
 minimum-schema CLI qualification belongs to the separate migration/CLI cases.
 

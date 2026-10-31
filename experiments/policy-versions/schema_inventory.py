@@ -4,7 +4,8 @@ import json
 import re
 
 
-CURRENT_SCHEMA = 42
+CURRENT_SCHEMA = 41
+CURRENT_MIGRATIONS = 57
 
 
 def declared_inventory(source):
@@ -12,6 +13,7 @@ def declared_inventory(source):
     manifest = json.loads(manifest_path.read_text())
     order = manifest['application_order']
     assert order[-1]['version'] == CURRENT_SCHEMA, 'current-policy schema profile changed'
+    assert len(order) == CURRENT_MIGRATIONS, 'current-policy migration profile changed'
     tables = set()
     inputs = {'migrations/manifest.json': hashlib.sha256(manifest_path.read_bytes()).hexdigest()}
     for entry in order:
