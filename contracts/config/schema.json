@@ -1322,6 +1322,26 @@
           "x-bigbrotr-owner": "ingest",
           "x-bigbrotr-reload": "live"
         },
+        "request_receipt_retention": {
+          "default": 64,
+          "oneOf": [
+            {
+              "maximum": 64,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 64,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
         "verify_workers": {
           "default": 2,
           "oneOf": [
