@@ -118,14 +118,20 @@ class IndexOutageControls(unittest.TestCase):
                 with self.subTest(table=table),self.assertRaises((AssertionError,ValueError)):
                     check.publication(invalid,physical,science,schema,root)
 
-    def test_all49_native_bytes_reject_missing_extra_duplicate_or_corrupt_rows(self):
+    def test_all50_native_bytes_reject_missing_extra_duplicate_or_corrupt_rows(self):
         science=fixture()[3].first
-        dump=dict(event='dump-state',sequence=61,rows=[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in science['native']])
+        dump=dict(event='dump-state',sequence=67,rows=[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in science['native']])
         check.native_rows(dump,science)
         for mutate in (lambda d:d['rows'].pop(),lambda d:d['rows'].append(copy.deepcopy(d['rows'][0])),
             lambda d:d['rows'][0].update(value='00'),lambda d:d.update(sequence=True),lambda d:d.update(sequence=128)):
             invalid=copy.deepcopy(dump);mutate(invalid)
             with self.assertRaises(AssertionError):check.native_rows(invalid,science)
+        for offset in (2,34,42):
+            invalid=copy.deepcopy(dump)
+            counter=next(row for row in invalid['rows'] if row['key']=='010b')
+            value=bytearray.fromhex(counter['value']);value[offset]^=1;counter['value']=value.hex()
+            with self.subTest(counter_offset=offset),self.assertRaises(AssertionError):
+                check.native_rows(invalid,science)
 
     def test_stop_requires_owned_running_identity_before_mutation_and_terminal_proof_after(self):
         with tempfile.TemporaryDirectory() as temporary:

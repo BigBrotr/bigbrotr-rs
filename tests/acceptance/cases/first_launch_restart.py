@@ -247,7 +247,7 @@ def successor_wire(wires, old, new):
 
 
 def successor_science(before, after, report, first, old_event, new_event, wires, census, store, completed, *, provenance=True):
-    from initial_succession_oracle import successor_manifest
+    from initial_succession_oracle import successor_manifest, successor_rows
     from installed_family_science import NetworkScience, decode
     from installed_archive_catch_up_model import archive_science
     from transition_replay import native_rows
@@ -276,7 +276,9 @@ def successor_science(before, after, report, first, old_event, new_event, wires,
     assert report['process_incarnation'] == intent['target_incarnation'][2:]
     assert report['producer_slot_id'] == intent['producer_slot_id'][2:]
     model = SimpleNamespace(ds=only(after['datasets']), slot=intent['producer_slot_id'], legacy=intent,
-        inputs={}, native=dict(event='dump-state', sequence=0, rows=[dict(cf=cf, key=key.hex(), value=value.hex()) for cf, key, value in first['native']]))
+        inputs={}, native=dict(event='dump-state', sequence=5, rows=[dict(cf=cf,key=key.hex(),value=value.hex())
+            for (cf,key),value in sorted(successor_rows({(cf,key):value for cf,key,value in first['native']},
+                manifest, raw(intent['producer_slot_id']), handoff).items())]))
     plan = dict(epoch=2, topology=1, manifest=manifest, domains=domains)
     science = NetworkScience(model, plan, acknowledge=True, new_event=new_event, endpoint=ENDPOINT,
         initial_provenance=provenance)
@@ -321,6 +323,7 @@ def fresh_successor(before, intent, domains):
 
 def successor_progress(state, manifest, science, job, detail, owner, wire, event, completed, *, provenance=True):
     import installed_progress_replay as typed
+    from installed_progress_context_oracle import current_snapshot
     from installed_family_science import decode
     selected = profile(provenance)
     actual = only(state['acquisition_progress'], producer_epoch=2)
@@ -370,8 +373,8 @@ def successor_progress(state, manifest, science, job, detail, owner, wire, event
         lambda row: typed.native_reference(row, science.values)).hex()
     actual_dependencies = sorted([r for r in state['producer_checkpoint_dependencies'] if r['producer_epoch'] == 2],
         key=lambda row: (row['source_shard'], row['source_epoch'], row['source_sequence']))
-    typed.exact_snapshot(head, [actual], actual_dependencies,
-        expected_head, [expected], dependencies, science.values)
+    current_snapshot(head, [actual], actual_dependencies,
+        expected_head, [expected], dependencies, science.values, prefix_profile=False)
 
 
 def publication_receipts(state, science, *, published_ordinals=None):

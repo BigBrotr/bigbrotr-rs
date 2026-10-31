@@ -149,7 +149,7 @@ assert json.dumps(event, sort_keys=True) == original_event
 counts = []
 for received in [None, 300]:
     rows, inputs, receipts = expected(state, report, event, 200, received, 400 if received else None)
-    assert len(rows) == (49 if received else 35)
+    assert len(rows) == (50 if received else 36)
     assert len(inputs) == len(receipts) == (4 if received else 3)
     for raw in inputs+receipts:
         content = raw.split(b'\0', 1)[1]

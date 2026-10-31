@@ -7,6 +7,7 @@ Prepared metadata is never interpreted as admission or replacement-process use.
 import copy
 import hashlib
 import json
+from bootstrap_oracle import accounted
 
 
 def encoded(value):
@@ -57,7 +58,7 @@ def native_rows(rows):
 
 def successor_manifest(previous, incarnation, domains):
     """Independent schema1→2 encoding with explicitly supplied fresh identities."""
-    assert len(previous)==266 and previous[:10]==bytes.fromhex('01010001000100010001')
+    assert len(previous)==266 and previous[:10]==bytes.fromhex('01010001000200010001')
     assert len(incarnation)==16 and any(incarnation)
     assert len(domains)==len(set(domains))==9 and all(len(d)==16 and any(d) for d in domains)
     target=bytearray(previous)
@@ -65,6 +66,24 @@ def successor_manifest(previous, incarnation, domains):
     for kind,domain in enumerate(domains,1):
         target[106+(kind-1)*18:122+(kind-1)*18]=domain
     return bytes(target)
+
+
+def successor_rows(previous_rows, target, slot, handoff):
+    """Current five-put handoff from already independent, complete old rows."""
+    previous = dict(previous_rows)
+    assert previous == {(cf,key):value for cf,key,value in
+        accounted((cf,key,value) for (cf,key),value in previous.items())}, 'invalid prior accounting'
+    old = previous['default', b'\x01\x01']
+    assert len(target) == 266 and target[:10] == bytes.fromhex('01010002000200010001')
+    assert handoff == (b'\x01\x0a'+slot+be(1)+handoff[26:74]
+        +be(len(old),2)+old+be(len(target),2)+target)
+    result = dict(previous)
+    result['default',b'\x01\x01'] = target
+    result['default',b'\x01\x0a'+old[10:26]+old[34:50]+be(1)] = handoff
+    result['default',b'\x01\x02'+old[10:26]+be(0,4)+be(2)] = b'\x01\x02'+be(0)
+    result['receipts',b'\x01\x31'+slot+be(2)] = b'\x01\x31'+bytes(24)
+    return {(cf,key):value for cf,key,value in
+        accounted((cf,key,value) for (cf,key),value in result.items())}
 
 
 def expected(original, native, inputs, timestamp):
