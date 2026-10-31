@@ -19,20 +19,20 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '64d0b08dc6f51019e28ec4f9f5b1cd0d6a798f11'
+REVIEWED_PRODUCT = 'ea90e28bbe883561ab7d813a427219090b05ce76'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
-# The profile review includes the storage/custody extension and the initial
-# retirement ordering, reclamation allowance and live Index policy-lifetime fixes;
-# Complete retained-group/current-retry changes hash receipt identities, read
-# catalogs and retain custody; they add no Nostr signing credentials or calls.
-# Current policy3/startup and complete initialization-retry validation were reviewed.
-# Original policy review removed unused resolve.rs state. Since that review,
-# all nine Nostr paths are unchanged; only two noncapturing example validator
-# wrappers became direct function arguments. Installed production source is unchanged.
+# The selected fresh journey's dispatch, accepted-policy capture/binding, native2
+# accounting writes and complete-batch Archive feed were reviewed. Historical
+# restore and unused observer deferral reuse their exact source-critical reviews.
+# The supplemental reader-coordinate grouping preserves every existing check;
+# its close hash remains a test contract vector, not a runtime close operation.
+# These changes add no Nostr signing credentials/calls or EVENT send path. All
+# nine Nostr paths remain byte-identical to the previously reviewed64d profile.
+# Source eligibility does not qualify current42 bootstrap or installed execution.
 # Fixed code/contract identities retain the full source-only exclusion guard.
 REVIEWED_CODE = {
-    'apps':'fb505040c5a253295b2b9c956587a3c8a92a7aca',
+    'apps':'cb99ac7d133c73e21d6f1d7f3a7c27f4e4ce1447',
     'crates':'80acabc650a601d0f8b37462039158d791d7ae8d',
     'vendor':'cba63f2b14b7c9c7460ff260c56e85ba97f1b611',
     'Cargo.toml':'d3c301c263f5664b2eff1ae563b3a8079169c5b4',
@@ -52,7 +52,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product64d0b08d; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed productea90e28b; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
