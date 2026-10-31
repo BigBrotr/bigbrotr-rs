@@ -9,7 +9,7 @@ use bigbrotr_model::{
 fn expected_bytes() -> Vec<u8> {
     // Independently written fixed-width format, including two allocation kinds.
     let hex = concat!(
-        "01010001000100010001",
+        "01010001000200010001",
         "00112233445566778899aabbccddeeff",
         "ffffffffffffffff",
         "102132435465768798a9bacbdcedfe0f",
@@ -103,7 +103,13 @@ fn manifest_refuses_partial_unknown_and_noncanonical_inputs() {
     );
     for position in [0, 1, 3, 5, 7, 9] {
         let mut changed = bytes.clone();
-        changed[position] = if position == 3 { 4 } else { 2 };
+        changed[position] = if position == 3 {
+            4
+        } else if position == 5 {
+            3
+        } else {
+            2
+        };
         assert_eq!(
             IngestManifest::decode(&changed),
             Err(ManifestError::UnsupportedFormat)
@@ -144,6 +150,25 @@ fn manifest_refuses_partial_unknown_and_noncanonical_inputs() {
     let mut changed = bytes;
     changed[103] = 10;
     assert!(IngestManifest::decode(&changed).is_err());
+}
+
+#[test]
+fn value_schema_two_fences_frozen_counterless_readers_for_every_key_lifecycle() {
+    for schema in [1_u16, 2, 3] {
+        let mut current = expected_bytes();
+        current[2..4].copy_from_slice(&schema.to_be_bytes());
+        assert!(IngestManifest::decode(&current).is_ok());
+        // Frozen f9 decode's exact source predicate, independently retained here.
+        let f9_header = [1, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+        assert_ne!(current[4..10], f9_header[4..10]);
+        let mut counterless = current;
+        counterless[4..6].copy_from_slice(&1_u16.to_be_bytes());
+        assert_eq!(
+            IngestManifest::decode(&counterless),
+            Err(ManifestError::UnsupportedFormat)
+        );
+        assert_eq!(counterless[4..10], f9_header[4..10]);
+    }
 }
 
 #[test]

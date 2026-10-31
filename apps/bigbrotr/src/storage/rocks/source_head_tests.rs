@@ -25,7 +25,7 @@ fn head(store: &IngestStore) -> Result<SourceHead, SourceHeadError> {
 }
 
 #[test]
-fn source_head_fresh_zero_requires_exact_empty_layout_and_never_writes() {
+fn source_head_fresh_explicit_zero_and_missing_source_never_write_or_repair() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
     let store = IngestStore::initialize(
@@ -50,16 +50,13 @@ fn source_head_fresh_zero_requires_exact_empty_layout_and_never_writes() {
         }
     );
     assert_eq!(store.db.latest_sequence_number(), before);
-    // Missing counter plus any committed record is not a fresh empty source.
-    for name in ["default", "facts", "receipts"] {
-        let cf = store.db.cf_handle(name).unwrap();
-        store.db.put_cf(cf, b"unexpected", b"retained").unwrap();
-        let sequence = store.db.latest_sequence_number();
-        assert_eq!(head(&store), Err(SourceHeadError::MissingSource));
-        assert_eq!(store.db.latest_sequence_number(), sequence);
-        store.db.delete_cf(cf, b"unexpected").unwrap();
-    }
-    assert_eq!(head(&store).unwrap().through().get(), 0);
+    store
+        .db
+        .delete(source_key(store.manifest()).as_bytes())
+        .unwrap();
+    let sequence = store.db.latest_sequence_number();
+    assert_eq!(head(&store), Err(SourceHeadError::MissingSource));
+    assert_eq!(store.db.latest_sequence_number(), sequence);
 }
 
 #[test]
@@ -195,7 +192,7 @@ fn source_head_refuses_foreign_identity_persisted_manifest_and_uncertain_write()
 }
 
 #[test]
-fn source_head_refuses_bad_framing_and_preserves_unsigned_exhaustion_without_tail_claim() {
+fn source_head_refuses_bad_framing_and_an_unsigned_head_unbound_to_accounting() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
     let store = IngestStore::initialize(
@@ -206,16 +203,9 @@ fn source_head_refuses_bad_framing_and_preserves_unsigned_exhaustion_without_tai
     )
     .unwrap();
     let key = source_key(store.manifest());
-    // Includes an integer wider than u64 and an explicit zero, which is not
-    // the schema1 encoding of a fresh store. No truncation/default is allowed.
-    for bytes in [
-        vec![],
-        vec![1, 2],
-        vec![1; 9],
-        vec![1; 10],
-        vec![1; 18],
-        vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-    ] {
+    // Includes an integer wider than u64. Explicit initial zero is current;
+    // malformed bytes may not be truncated or replaced by a default.
+    for bytes in [vec![], vec![1, 2], vec![1; 9], vec![1; 10], vec![1; 18]] {
         store.db.put(key.as_bytes(), bytes).unwrap();
         let sequence = store.db.latest_sequence_number();
         assert_eq!(head(&store), Err(SourceHeadError::MalformedSource));
@@ -228,9 +218,18 @@ fn source_head_refuses_bad_framing_and_preserves_unsigned_exhaustion_without_tai
             [1, 2, 255, 255, 255, 255, 255, 255, 255, 255],
         )
         .unwrap();
-    assert_eq!(head(&store).unwrap().through().get(), u64::MAX);
-    // A counter can survive reclamation. This API reads metadata and cannot
-    // claim that its absent tail facts were independently validated.
+    assert_eq!(
+        head(&store),
+        Err(SourceHeadError::Accounting(
+            PendingAccountingError::SourceMismatch
+        ))
+    );
+    // Preserve the unsigned bytes but do not certify a watermark that differs
+    // from mandatory accounting or invent an empty result from that failure.
+    assert_eq!(
+        &store.db.get(key.as_bytes()).unwrap().unwrap()[2..],
+        &u64::MAX.to_be_bytes()
+    );
     let mut facts = store
         .db
         .raw_iterator_cf(store.db.cf_handle("facts").unwrap());
@@ -247,36 +246,51 @@ fn source_head_refuses_bad_framing_and_preserves_unsigned_exhaustion_without_tai
 }
 
 #[test]
-fn source_head_successor_zero_uses_current_epoch_and_requires_empty_current_stream() {
-    for epoch in [2, 3] {
+fn source_head_zero_uses_current_epoch_and_requires_empty_current_stream() {
+    for epoch in [1, 2, 3] {
         let root = tempfile::tempdir().unwrap();
         let b = budget();
         let path = root.path().join("db");
-        let store =
+        let mut store =
             IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        if epoch > 1 {
+            let limits = BootstrapLimits {
+                max_mappings: 8,
+                max_batch_bytes: MIB as usize,
+            };
+            drop(
+                store
+                    .bootstrap_dictionaries(
+                        request(),
+                        &intent("public"),
+                        ObservedTime::new(123),
+                        limits,
+                        grant(
+                            &b,
+                            limits.required_data_bytes().unwrap(),
+                            limits.required_native_bytes().unwrap(),
+                        ),
+                        || Ok(()),
+                    )
+                    .unwrap(),
+            );
+        }
         let identity = ManifestIdentity {
             owner_epoch: OwnerEpoch::new(epoch).unwrap(),
             topology_generation: TopologyGeneration::new(19),
             ..*manifest().identity()
         };
-        let current = if epoch == 2 {
+        let current = if epoch == 1 {
+            IngestManifest::new(identity, *manifest().allocation_namespaces())
+        } else if epoch == 2 {
             IngestManifest::for_successor(identity, *manifest().allocation_namespaces())
         } else {
             IngestManifest::for_repeatable_successor(identity, *manifest().allocation_namespaces())
         };
-        // Model persisted handoff metadata, not activation authority. Keep an
-        // old stream's rows: they cannot be selected as the current head.
+        // Metadata fixture only, not a handoff/activation proof. For successor
+        // heads retain real predecessor science and its charge; current S is0.
+        let pending = store.accounting.pending_bytes();
         store.db.put([1, 1], current.encode().as_bytes()).unwrap();
-        store
-            .db
-            .put(
-                source_key(&manifest()).as_bytes(),
-                [1, 2, 0, 0, 0, 0, 0, 0, 0, 7],
-            )
-            .unwrap();
-        drop(store);
-        let store = IngestStore::reopen(&path, current, native(), grant(&b, 0, 128 * MIB)).unwrap();
-        assert_eq!(head(&store), Err(SourceHeadError::MissingSource));
         store
             .db
             .put(
@@ -284,6 +298,15 @@ fn source_head_successor_zero_uses_current_epoch_and_requires_empty_current_stre
                 [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
             )
             .unwrap();
+        store
+            .db
+            .put(
+                [1, 0x0b],
+                PendingAccounting::new(&current, pending, 0).encode(),
+            )
+            .unwrap();
+        drop(store);
+        let store = IngestStore::reopen(&path, current, native(), grant(&b, 0, 128 * MIB)).unwrap();
         let observed = head(&store).unwrap();
         assert_eq!(observed.identity(), &identity);
         assert_eq!(observed.bound().stream.owner_epoch.get(), epoch);

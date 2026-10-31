@@ -138,13 +138,13 @@ impl HistoricalInitial<'_> {
             record: self.record,
             native_sequence: self
                 .sequence
-                .checked_sub(4)
+                .checked_sub(5)
                 .ok_or(AdmissionError::StateMismatch)?,
             native_root: self.root,
             basis: InitialPredecessorBasis::Compacted { floor, inputs },
         };
         // The verified source retains the already checked input/census grant.
-        // This exact empty-target snapshot supplies the only permitted +4 state.
+        // This exact empty-target snapshot supplies the only permitted +5 state.
         self.recovery.validate_initial_handoff_snapshot(&handoff)?;
         Ok(handoff)
     }

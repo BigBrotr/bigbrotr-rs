@@ -303,9 +303,15 @@ async fn connected(
         |document: &str, digest| super::super::accepted_policy(root, document, digest).map(|_| ());
     phase(progress, timeout)?;
     let spec = bounded(timeout, cancellation, async {
-        ingest_registry::load_historical(&mut client, *instance.as_bytes(), recovery)
-            .await
-            .map_err(|e| (4, e.to_string()))
+        ingest_registry::load_historical(
+            &mut client,
+            *instance.as_bytes(),
+            recovery,
+            ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES,
+            validate,
+        )
+        .await
+        .map_err(|e| (4, e.to_string()))
     })
     .await?;
     let close_request = || ProducerCloseRequest {

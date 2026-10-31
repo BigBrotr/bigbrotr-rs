@@ -119,6 +119,11 @@ fn fixture() -> (Fixture, IngestRecovery) {
     put(&r.store, source_key(3), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 1]);
     put(&r.store, producer_key(3), &marker(true, 2));
     install_floor(&f, &r);
+    // Complete this synthetic seed's current-format metadata before admission.
+    // The added epoch3 fact and batch retain all historical framed science.
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 1);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     (f, r)
 }
 
@@ -300,7 +305,7 @@ fn compacted_ancestor_census_covers_epoch_two_and_later_correction_ancestry() {
     for linked in [true, false] {
         let f = prepared_fixture();
         let r = valid_empty_third(&f);
-        correction_with_link(&f, &r, false, linked);
+        let r = correction_with_link(&f, r, false, linked);
         install_floor(&f, &r);
         let before = kv(&r.store);
         let sequence = r.store.db.latest_sequence_number();

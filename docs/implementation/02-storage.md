@@ -235,6 +235,27 @@ One owner serializes exact identity decisions for each writable directory.
   of pending charge by receipt GC, held credit on unknown writes and stable-low
   resume. Only the bounded remaining-growth question gates this increment;
   P02-T02 Step8/P02-T09 retain the broader capacity/maintenance obligations.
+  The accounting/historical-recovery increment records current manifest value
+  schema2, an atomic pending-byte counter, mandatory full census and explicit
+  source0 at initialization. Counter/source/scientific corruption refuses without
+  repair; every handoff preserves global pending bytes and rebinds the counter in
+  its fifth native put. Receipt/input reclamation never lowers pending science.
+  One typed intake-policy projection is captured from the exact accepted startup
+  pair. Public historical lookup and eight private recovery/activation consumers
+  restore both complete original documents and recompute their own digests before
+  capture, separately from current Control authority and policy. Source53's actual
+  history batch passes38 required checks plus12 setup checks, including all12
+  private activation/recovered-ACK cases. Frozenbb54 separately passes601 native
+  application-library cases, excluding exactly2 external drivers and including
+  the independently bound signed-pending worker case. These remain exact-source
+  results, not runtime qualification of a later reconciliation candidate.
+  The compiled accounting/historical scope does not enable OPEN scheduling,
+  uncertain prefix-commit resolution, residual replay, pre-stage logical funding
+  or stable-low admission. Existing P02-T02 Step4 still owns those requirements;
+  the absolute64 guard remains. The held-growth and physical prerequisites above
+  remain necessary before OPEN intake exceeds64. See the
+  [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
+  for actual original-body controls and preserved failures.
   The selected closed-initial continuation now passes on product `7d8e5998`,
   acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
   conservation checks, idempotent restart/retry and a compacted epoch2 accepting

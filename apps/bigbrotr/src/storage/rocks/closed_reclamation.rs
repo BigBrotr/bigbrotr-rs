@@ -186,6 +186,9 @@ impl ClosedProducerReclamation {
         if store.write_uncertain {
             return Err(AdmissionError::CommitUnknown);
         }
+        store
+            .require_pending_accounting()
+            .map_err(|_| AdmissionError::StateMismatch)?;
         if store.manifest() != &self.manifest
             || !std::sync::Arc::ptr_eq(&store._reservation.custody, &self.custody)
             || store.handoff_root_identity()? != self.root

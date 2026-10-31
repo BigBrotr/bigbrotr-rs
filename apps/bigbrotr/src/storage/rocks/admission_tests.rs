@@ -465,6 +465,85 @@ fn kv(store: &IngestStore) -> Vec<(String, Vec<u8>, Vec<u8>)> {
         })
         .collect()
 }
+
+fn literal_pending_accounting(
+    rows: &[(String, Vec<u8>, Vec<u8>)],
+    manifest: &[u8],
+    source: u64,
+) -> [u8; 50] {
+    use sha2::{Digest, Sha256};
+    assert_eq!(&manifest[4..6], &[0, 2]);
+    let pending = rows
+        .iter()
+        .filter(|(cf, _, _)| cf == "facts")
+        .try_fold(0_u64, |sum, (_, key, value)| {
+            sum.checked_add(u64::try_from(key.len()).unwrap())
+                .and_then(|sum| sum.checked_add(u64::try_from(value.len()).unwrap()))
+        })
+        .unwrap();
+    let mut bytes = [0; 50];
+    bytes[..2].copy_from_slice(&[1, 11]);
+    bytes[2..34].copy_from_slice(&Sha256::digest(manifest));
+    bytes[34..42].copy_from_slice(&pending.to_be_bytes());
+    bytes[42..50].copy_from_slice(&source.to_be_bytes());
+    bytes
+}
+
+fn inputs(path: &std::path::Path) -> Vec<(String, Vec<u8>)> {
+    let mut result: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
+        .unwrap()
+        .map(|entry| {
+            let entry = entry.unwrap();
+            assert!(entry.file_type().unwrap().is_file());
+            (
+                entry.file_name().into_string().unwrap(),
+                std::fs::read(entry.path()).unwrap(),
+            )
+        })
+        .collect();
+    result.sort();
+    result
+}
+
+type NativeSnapshot = (Vec<(String, Vec<u8>, Vec<u8>)>, u64, Vec<(String, Vec<u8>)>);
+
+fn raw_native_snapshot(path: &std::path::Path, budget: &ResourceBudget) -> NativeSnapshot {
+    // Observation only after product admission refuses the corrupt fixture.
+    // No usable product handle or repair is constructed by this raw reader.
+    let _native = grant(budget, 0, 128 * MIB);
+    let db = rocksdb::DB::open_cf_for_read_only(
+        &rocksdb::Options::default(),
+        path,
+        ["default", "facts", "receipts"],
+        false,
+    )
+    .unwrap();
+    let rows = ["default", "facts", "receipts"]
+        .into_iter()
+        .flat_map(|name| {
+            db.iterator_cf(db.cf_handle(name).unwrap(), rocksdb::IteratorMode::Start)
+                .map(move |row| {
+                    let (key, value) = row.unwrap();
+                    (name.to_string(), key.to_vec(), value.to_vec())
+                })
+        })
+        .collect();
+    (rows, db.latest_sequence_number(), inputs(path))
+}
+
+fn native_pending_charge(store: &IngestStore) -> u64 {
+    store
+        .db
+        .iterator_cf(
+            store.db.cf_handle("facts").unwrap(),
+            rocksdb::IteratorMode::Start,
+        )
+        .map(|row| {
+            let (key, value) = row.unwrap();
+            u64::try_from(key.len() + value.len()).unwrap()
+        })
+        .sum()
+}
 fn selected(store: &IngestStore, key: crate::storage::rocks::keys::IngestKey) -> SourceRecordId {
     use crate::storage::rocks::keys::{ColumnFamily, IngestKey, decode_key};
     let encoded = key.encode().unwrap();
@@ -658,6 +737,11 @@ fn all_fifteen_independently_signed_fixture_operations_match_native_inventory() 
             let expected = &operation["expected"];
             let before = facts(&store);
             let before_kv = kv(&store);
+            let before_charge = native_pending_charge(&store);
+            assert_eq!(
+                store.pending_accounting().unwrap().pending_bytes(),
+                before_charge
+            );
             let request = ProducerRequestId {
                 producer_slot_id: input["request_id"]["producer_slot_id"]
                     .as_str()
@@ -722,6 +806,16 @@ fn all_fifteen_independently_signed_fixture_operations_match_native_inventory() 
                 }
             }
             let after = facts(&store);
+            let after_charge = native_pending_charge(&store);
+            assert_eq!(
+                store.pending_accounting().unwrap().pending_bytes(),
+                after_charge,
+                "{name}"
+            );
+            assert!(after_charge >= before_charge, "{name}");
+            if before.len() == after.len() {
+                assert_eq!(after_charge, before_charge, "{name}");
+            }
             let new = &after[before.len()..];
             let scientific_facts: Vec<_> = new
                 .iter()

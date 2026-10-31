@@ -4,8 +4,9 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use crate::storage::rocks::store::{PendingAccountingError, StoreError};
 use sha2::{Digest, Sha256};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 type Rows = Vec<(String, Vec<u8>, Vec<u8>)>;
 
@@ -28,6 +29,9 @@ impl Fixture {
         self.root.path().join("db")
     }
     fn reopen(&self) -> IngestRecovery {
+        self.inspect().unwrap()
+    }
+    fn inspect(&self) -> Result<IngestRecovery, StoreError> {
         // The manifest is read from native state, not supplied as an owner
         // identity and not recovered from a retained InitialHandoff object.
         IngestRecovery::inspect(
@@ -36,7 +40,69 @@ impl Fixture {
             self.native,
             grant(&self.budget, 0, 128 * MIB),
         )
-        .unwrap()
+    }
+}
+
+fn reopen_fixture_unchanged(fixture: &Fixture, recovery: IngestRecovery) -> IngestRecovery {
+    // Only complete, explicitly constructed seeds reach this positive admission.
+    // Capture before opening so admission cannot silently change or repair rows.
+    let before = (
+        kv(&recovery.store),
+        recovery.store.db.latest_sequence_number(),
+        inputs(&fixture.path()),
+    );
+    assert_current_accounting(&before.0);
+    drop(recovery);
+    let recovery = fixture.reopen();
+    assert_eq!(
+        (
+            kv(&recovery.store),
+            recovery.store.db.latest_sequence_number(),
+            inputs(&fixture.path())
+        ),
+        before
+    );
+    recovery
+}
+
+fn raw_snapshot(fixture: &Fixture) -> (Rows, u64, Vec<(String, Vec<u8>)>) {
+    raw_native_snapshot(&fixture.path(), &fixture.budget)
+}
+
+fn assert_corrupt_reconstruction_refused(
+    fixture: &Fixture,
+    injected: IngestRecovery,
+    accounting: Option<PendingAccountingError>,
+    fault: &str,
+) {
+    // Capture the deliberately damaged rows/input bytes before any reopen.
+    let before = (
+        kv(&injected.store),
+        injected.store.db.latest_sequence_number(),
+        inputs(&fixture.path()),
+    );
+    drop(injected);
+    match accounting {
+        Some(expected) => {
+            match fixture.inspect() {
+                Err(error) => assert_eq!(error, StoreError::InvalidAccounting(expected), "{fault}"),
+                Ok(_) => panic!("{fault} must refuse during the accounting census"),
+            }
+            assert_eq!(raw_snapshot(fixture), before, "{fault}");
+        }
+        None => {
+            let recovery = fixture.inspect().unwrap_or_else(|error| {
+                panic!("{fault} must remain admissible before reconstruction: {error:?}")
+            });
+            assert!(reconstruct(fixture, &recovery).is_err(), "{fault}");
+            assert_eq!(kv(&recovery.store), before.0, "{fault}");
+            assert_eq!(
+                recovery.store.db.latest_sequence_number(),
+                before.1,
+                "{fault}"
+            );
+            assert_eq!(inputs(&fixture.path()), before.2, "{fault}");
+        }
     }
 }
 
@@ -86,6 +152,37 @@ fn value(store: &IngestStore, key: IngestKey) -> Vec<u8> {
         .unwrap()
 }
 
+fn assert_current_accounting(current: &Rows) {
+    // Callers preserve the original scientific rows. The mutable singleton
+    // rebinds to the manifest and the complete current framed census/source.
+    let get = |key: &[u8]| {
+        &current
+            .iter()
+            .find(|(cf, found, _)| cf == "default" && found.as_slice() == key)
+            .unwrap()
+            .2
+    };
+    let manifest = get(&[1, 1]);
+    let counter = get(&[1, 11]);
+    assert_eq!(counter.len(), 50);
+    assert_eq!(&counter[..2], &[1, 11]);
+    let manifest_sha256: [u8; 32] = Sha256::digest(manifest).into();
+    assert_eq!(&counter[2..34], &manifest_sha256);
+    let pending = current
+        .iter()
+        .filter(|(cf, _, _)| cf == "facts")
+        .try_fold(0u64, |sum, (_, key, value)| {
+            sum.checked_add(u64::try_from(key.len() + value.len()).unwrap())
+        })
+        .unwrap();
+    assert_eq!(&counter[34..42], &pending.to_be_bytes());
+    let source_key = [&[1, 2][..], &manifest[10..26], &manifest[50..62]].concat();
+    let source = get(&source_key);
+    assert_eq!(source.len(), 10);
+    assert_eq!(&source[..2], &[1, 2]);
+    assert_eq!(&counter[42..50], &source[2..10]);
+}
+
 fn handoff_key() -> IngestKey {
     IngestKey::OwnerHandoff {
         dataset_id: [1; 16].try_into().unwrap(),
@@ -99,22 +196,6 @@ fn input_name(epoch: u64, sequence: u64) -> String {
         "{}-{epoch:016x}-{sequence:016x}.cbor",
         request(7, 1).producer_slot_id
     )
-}
-
-fn inputs(path: &Path) -> Vec<(String, Vec<u8>)> {
-    let mut result: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
-        .unwrap()
-        .map(|entry| {
-            let entry = entry.unwrap();
-            assert!(entry.file_type().unwrap().is_file());
-            (
-                entry.file_name().into_string().unwrap(),
-                std::fs::read(entry.path()).unwrap(),
-            )
-        })
-        .collect();
-    result.sort();
-    result
 }
 
 fn input_digest(original: &Original) -> Digest256 {
@@ -438,10 +519,11 @@ fn reopened_prepared_successor_reads_exact_originals_without_retaining_its_local
     );
     assert_eq!(before.len(), fixture.closed_rows.len() + 3);
     for row in &fixture.closed_rows {
-        if row.0 != "default" || row.1 != [1, 1] {
+        if row.0 != "default" || (row.1 != [1, 1] && row.1 != [1, 11]) {
             assert!(before.contains(row), "original row changed: {}", row.0);
         }
     }
+    assert_current_accounting(&before);
     let bytes = value(&recovery.store, handoff_key());
     let historical = recovery.historical_initial(&bytes).unwrap();
     assert_eq!(historical.manifest(), &fixture.previous);
@@ -656,19 +738,15 @@ fn reconstruction_refuses_missing_or_changed_original_evidence_without_repair() 
             }
             _ => unreachable!(),
         }
-        drop(recovery);
-        let recovery = fixture.reopen();
-        let before = kv(&recovery.store);
-        let sequence = recovery.store.db.latest_sequence_number();
-        let original_inputs = inputs(&fixture.path());
-        assert!(reconstruct(&fixture, &recovery).is_err(), "{fault}");
-        assert_eq!(kv(&recovery.store), before, "{fault}");
-        assert_eq!(
-            recovery.store.db.latest_sequence_number(),
-            sequence,
-            "{fault}"
-        );
-        assert_eq!(inputs(&fixture.path()), original_inputs, "{fault}");
+        let accounting = match fault {
+            "bootstrap-fact" | "dictionary-fact" | "event-fact" | "source-counter" => {
+                Some(PendingAccountingError::ScienceMismatch)
+            }
+            "bootstrap-input" | "dictionary-input" | "event-input" | "receipt"
+            | "successor-context" | "closure-digest" | "recorded-cut" | "recorded-count" => None,
+            _ => unreachable!(),
+        };
+        assert_corrupt_reconstruction_refused(&fixture, recovery, accounting, fault);
     }
 }
 
@@ -769,19 +847,15 @@ fn reconstruction_refuses_nonempty_successor_and_extra_producer_markers() {
             }
             _ => unreachable!(),
         }
-        drop(recovery);
-        let recovery = fixture.reopen();
-        let before = kv(&recovery.store);
-        let sequence = recovery.store.db.latest_sequence_number();
-        let original_inputs = inputs(&fixture.path());
-        assert!(reconstruct(&fixture, &recovery).is_err(), "{fault}");
-        assert_eq!(kv(&recovery.store), before, "{fault}");
-        assert_eq!(
-            recovery.store.db.latest_sequence_number(),
-            sequence,
-            "{fault}"
-        );
-        assert_eq!(inputs(&fixture.path()), original_inputs, "{fault}");
+        let accounting = match fault {
+            "source" => Some(PendingAccountingError::SourceMismatch),
+            "fact" | "pending" => Some(PendingAccountingError::ScienceMismatch),
+            "producer" | "request" | "dictionary" | "allocation" | "extra-producer" | "input" => {
+                None
+            }
+            _ => unreachable!(),
+        };
+        assert_corrupt_reconstruction_refused(&fixture, recovery, accounting, fault);
     }
 }
 

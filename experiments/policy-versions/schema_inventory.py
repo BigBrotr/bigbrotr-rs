@@ -4,8 +4,8 @@ import json
 import re
 
 
-CURRENT_SCHEMA = 41
-CURRENT_MIGRATIONS = 57
+CURRENT_SCHEMA = 42
+CURRENT_MIGRATIONS = 58
 
 
 def declared_inventory(source):

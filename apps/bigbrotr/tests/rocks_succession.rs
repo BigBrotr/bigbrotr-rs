@@ -14,7 +14,7 @@ use sha2::{Digest, Sha256};
 
 fn fixture() -> Value {
     serde_json::from_str(include_str!(
-        "../../../experiments/ingest-succession/portable-handoff-v2.json"
+        "../../../experiments/ingest-succession/portable-handoff-v2-accounted.json"
     ))
     .unwrap()
 }

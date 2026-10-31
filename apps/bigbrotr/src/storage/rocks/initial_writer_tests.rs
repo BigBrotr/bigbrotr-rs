@@ -68,7 +68,7 @@ fn active(fixture: &Fixture) -> ActiveInitialWriter {
     );
     assert_eq!(
         candidate.recovery().store.db.latest_sequence_number(),
-        sequence + 4
+        sequence + 5
     );
     assert_eq!(candidate.require_prepared_handoff(&handoff), Ok(()));
     // No database/activation receipt is involved in this native-only fixture.
@@ -136,7 +136,7 @@ fn append_permit(fixture: &Fixture) -> OwnedPermit {
 fn originals(fixture: &Fixture, store: &IngestStore) {
     let current = kv(store);
     for row in &fixture.closed_rows {
-        if row.1 != [1, 1] {
+        if row.0 != "default" || (row.1 != [1, 1] && row.1 != [1, 11]) {
             assert!(
                 current.contains(row),
                 "old row changed: {} {:?}",
@@ -145,6 +145,7 @@ fn originals(fixture: &Fixture, store: &IngestStore) {
             );
         }
     }
+    assert_current_accounting(&current);
     let current = inputs(&fixture.path());
     for (index, original) in fixture.originals.iter().enumerate() {
         assert!(current.contains(&(input_name(1, index as u64 + 1), original.input.clone())));
@@ -391,13 +392,18 @@ fn assert_append(fixture: &Fixture, writer: &mut ActiveInitialWriter, sequence: 
     for (cf, key, value) in expected.writes {
         rows.insert((cf, key), value);
     }
-    assert_eq!(
-        kv(writer.store()),
-        rows.into_iter()
-            .map(|((cf, key), value)| (cf, key, value))
-            .collect::<Rows>()
-    );
-    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 8);
+    let mut wanted: Rows = rows
+        .into_iter()
+        .map(|((cf, key), value)| (cf, key, value))
+        .collect();
+    let counter = literal_pending_accounting(&wanted, writer.manifest().encode().as_bytes(), 1);
+    let row = wanted
+        .iter_mut()
+        .find(|(cf, key, _)| cf == "default" && key == &[1, 11])
+        .unwrap();
+    row.2 = counter.to_vec();
+    assert_eq!(kv(writer.store()), wanted);
+    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 9);
     let mut input_rows = before.2;
     input_rows.push((input_name(2, sequence), expected.input));
     input_rows.sort();

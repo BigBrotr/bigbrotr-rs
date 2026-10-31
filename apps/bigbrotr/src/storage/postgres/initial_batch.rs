@@ -34,8 +34,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 mod dispatch;
 use super::producer_progress::{self, ProducerProgressError, ProgressGrant, SyncProgress};
 use dispatch::NativeOwner;
+#[path = "initial_prefix.rs"]
+mod prefix_operations;
 #[path = "initial_progress.rs"]
 mod progress_operations;
+pub use prefix_operations::{InitialPrefixRequest, ProducerPrefixReceipt};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialOperationError<E> {
@@ -131,6 +134,7 @@ impl<'a> NativeAuthority<'a> {
             dataset: self.dataset(),
             slot: self.slot(),
             epoch: self.epoch(),
+            shard: manifest.identity().shard_id,
             manifest: Sha256::digest(manifest.encode().as_bytes()).into(),
         }
     }
@@ -676,6 +680,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let cancelled = input.cancelled;
         let result = store.certify_event(input, permit, progress.is_some(), || {
             if cancelled.load(Ordering::Relaxed) {
@@ -762,6 +771,9 @@ impl ControlSession {
             producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: RequestSequence::new(1).map_err(|_| OwnerError::InvalidInput)?,
         };
+        store
+            .require_unretired_bootstrap(request)
+            .map_err(InitialBatchError::Native)?;
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
@@ -803,6 +815,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            state
+                .require_native_base(store, progress_context.expect("progress context"))
+                .map_err(InitialBatchError::Progress)?;
+        }
         let staged = store
             .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
             .map_err(InitialBatchError::Native)?;
@@ -1038,6 +1055,9 @@ impl ControlSession {
                 .map_err(|_| OwnerError::InvalidInput)?,
             request_sequence: input.request_sequence,
         };
+        store
+            .require_unretired_prefix(request)
+            .map_err(InitialEventError::Native)?;
         if (authority.epoch() == 1 && input.request_sequence.get() <= 1)
             || input.limits.max_outstanding_requests > u64::from(authority.limit())
         {
@@ -1084,6 +1104,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let staged = store
             .stage_dictionary_append(request, &input, &permit)
             .map_err(InitialEventError::Native)?;
@@ -1318,6 +1343,9 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        store
+            .require_unretired_prefix(input.event.request_id())
+            .map_err(InitialEventError::Native)?;
         let source = event_source(
             input.relay_source,
             input.acquisition,
@@ -1369,6 +1397,11 @@ impl ControlSession {
         } else {
             None
         };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(state, progress_context.expect("progress context"))
+                .map_err(InitialEventError::Progress)?;
+        }
         let staged = store
             .stage_event(&input.event, input.limits, &permit, input.cancelled)
             .map_err(InitialEventError::Native)?;
@@ -1669,6 +1702,20 @@ impl ControlSession {
         &'a mut self,
         store: &NativeOwner<'_>,
         input: InitialIngestContext<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
+        self.begin_initial_native_stage(store, input, true, validate)
+            .await
+    }
+
+    /// Continue the same exclusively borrowed owner after a positively
+    /// confirmed prefix prepare. No public caller can choose continuation or
+    /// recover a failed session through this internal transaction helper.
+    async fn begin_initial_native_stage<'a, E>(
+        &'a mut self,
+        store: &NativeOwner<'_>,
+        input: InitialIngestContext<'_>,
+        new_operation: bool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
         let authority = input.authority;
@@ -1722,7 +1769,11 @@ impl ControlSession {
         )
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
-        self.begin_operation()?;
+        if new_operation {
+            self.begin_operation()?;
+        } else if self.available {
+            return Err(OwnerError::InvalidInput.into());
+        }
         let tx = application_transaction(
             &mut self.client,
             if input.progress || store.compacted() {

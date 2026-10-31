@@ -33,6 +33,27 @@ def cbor(value):
     raise TypeError(type(value))
 
 
+def accounted(rows):
+    """Current literal logical charge, independent of native/product counters."""
+    original = list(rows)
+    rows = {(cf, key): value for cf, key, value in original}
+    assert len(rows) == len(original), 'duplicate independent native key'
+    manifest = rows['default', b'\x01\x01']
+    assert manifest[:2] == b'\x01\x01' and manifest[4:10] == bytes.fromhex('000200010001')
+    science = [(key, value) for (cf, key), value in rows.items() if cf == 'facts']
+    assert all(key[:2] in (b'\x01\x20', b'\x01\x21') and len(key) == 38 for key, _ in science)
+    pending = sum(len(key) + len(value) for key, value in science)
+    key = b'\x01\x02' + manifest[10:26] + manifest[50:62]
+    if ('default', key) not in rows:
+        assert not science, 'only genuinely fresh independent input omits a source row before serialization'
+        rows['default', key] = b'\x01\x02' + bytes(8)
+    source = rows['default', key]
+    assert len(source) == 10 and source[:2] == b'\x01\x02'
+    rows['default', b'\x01\x0b'] = (b'\x01\x0b' + hashlib.sha256(manifest).digest()
+        + pending.to_bytes(8, 'big') + source[2:])
+    return sorted((cf, key, value) for (cf, key), value in rows.items())
+
+
 def expected(dataset, committed, policy=1, *, domain=bytes([64])*16,
              slot=bytes([66])*16, owner=bytes([61])*16, incarnation=bytes([63])*16,
              recovery=bytes([67])*16, topology=0, namespaces=None, recorded_at=123):
@@ -43,13 +64,13 @@ def expected(dataset, committed, policy=1, *, domain=bytes([64])*16,
     source_key = lambda n: dataset + be(0, 4) + be(1) + be(n)
     reference = lambda n: [dataset, VISIBILITY_KIND, domain, n]
     ref_key = lambda n: dataset + be(VISIBILITY_KIND, 2) + domain + be(n)
-    manifest = (bytes.fromhex("01010001000100010001") + dataset + be(topology)
+    manifest = (bytes.fromhex("01010001000200010001") + dataset + be(topology)
                 + owner + be(0, 4) + be(1) + incarnation
                 + recovery + be(policy) + bytes([1, len(namespaces)])
                 + b''.join(be(kind, 2)+value for kind, value in namespaces))
     rows = [("default", b"\x01\x01", manifest)]
     if not committed:
-        return rows, None, []
+        return accounted(rows), None, []
     assert policy == 1
     facts, refs, entries = [], [], []
     for n, label in enumerate(["public", "private"], 1):
@@ -79,4 +100,4 @@ def expected(dataset, committed, policy=1, *, domain=bytes([64])*16,
         ("receipts", b"\x01\x31" + slot + be(1), b"\x01\x31" + be(1) + be(0) + be(0)),
     ])
     assert len(rows) == 12 and len(set((cf, key) for cf, key, _ in rows)) == 12
-    return sorted(rows), receipt, facts
+    return accounted(rows), receipt, facts

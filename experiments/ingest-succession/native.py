@@ -747,7 +747,7 @@ missing_controls = {name: sorted(set(required) - set(test_names.get(name, [])))
                     if not set(required) <= set(test_names.get(name, []))}
 receipt = dict(identity, status='FAIL' if missing_controls else result['status'], test_counts=counts,
                executables_sha256=executables,
-               independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2.json'))
+               independent_fixture_sha256=file_hash(SOURCE / 'experiments/ingest-succession/portable-handoff-v2-accounted.json'))
 if producer_progress or producer_floor or archive_components or archive_installed:
     receipt.update(test_names=test_names, required_controls=required_controls,
                    missing_controls=missing_controls)

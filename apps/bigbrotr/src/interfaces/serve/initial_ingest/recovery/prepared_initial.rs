@@ -138,6 +138,8 @@ async fn own(
                 custody.client.as_mut().expect("connected client"),
                 *instance.as_bytes(),
                 native,
+                ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES,
+                |document, digest| work.validate(document, digest),
             ))
             .await?;
         if native

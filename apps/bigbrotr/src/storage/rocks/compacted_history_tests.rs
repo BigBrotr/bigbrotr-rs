@@ -506,6 +506,9 @@ fn correction_chain(disconnected: bool) -> (Fixture, IngestRecovery) {
         )
         .unwrap();
     }
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 64);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     (f, r)
 }
 
@@ -746,7 +749,7 @@ fn compacted_archive_pending_requires_matching_basis_full_head_and_whole_batch()
 
     let ordinary = prepared_fixture();
     let original = valid_empty_third(&ordinary);
-    correction(&ordinary, &original, false);
+    let original = correction(&ordinary, original, false);
     let old = inspect(&ordinary, &original, None).unwrap();
     let positive = replay(
         &ordinary,

@@ -6,7 +6,7 @@ or product codec is an expected-value template.
 import hashlib
 import json
 from pathlib import Path
-from oracle import cbor
+from oracle import accounted, cbor
 
 
 def expected_event(dataset, committed, repetitions=1):
@@ -28,7 +28,7 @@ def expected_event(dataset, committed, repetitions=1):
     ref_key = lambda kind, n=1: dataset + be(kind, 2) + domains[kind] + be(n)
     scope = reference(4)
     slot = bytes([66]) * 16
-    manifest = (bytes.fromhex('01010001000100010001') + dataset + be(0)
+    manifest = (bytes.fromhex('01010001000200010001') + dataset + be(0)
                 + bytes([61]) * 16 + be(0, 4) + be(1) + bytes([63]) * 16
                 + bytes([67]) * 16 + be(1) + bytes([1, 3])
                 + b''.join(be(k, 2) + v for k, v in domains.items()))
@@ -81,4 +81,4 @@ def expected_event(dataset, committed, repetitions=1):
         index(7, dataset + body[0] + ref_key(4), 6)
         receipt = finish(2, 'admit', [1, scope, [*body, signature], 'import', reference(9), None], [4, 5, 6], [1, 3, 4, 5, 6])
     assert len(rows) == (26 if committed else 16)
-    return sorted((cf, key, value) for (cf, key), value in rows.items()), receipt, [facts[n] for n in [4, 5, 6]] if committed else []
+    return accounted((cf, key, value) for (cf, key), value in rows.items()), receipt, [facts[n] for n in [4, 5, 6]] if committed else []

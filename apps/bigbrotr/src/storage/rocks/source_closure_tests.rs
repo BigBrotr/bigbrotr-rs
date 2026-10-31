@@ -410,14 +410,34 @@ fn source_closure_refuses_native_counter_disagreement_and_another_producer() {
             bytes.extend_from_slice(&5_u64.to_be_bytes());
             store.db.put(key.as_bytes(), bytes).unwrap();
         }
+        let damaged = (
+            kv(&store),
+            store.db.latest_sequence_number(),
+            inputs(&root.path().join("db")),
+        );
         drop(store);
-        let mut recovery = IngestRecovery::open(
+        let opened = IngestRecovery::open(
             &root.path().join("db"),
             manifest,
             native,
             grant(&budget, 0, 128 * MIB),
-        )
-        .unwrap();
+        );
+        if !extra_producer {
+            assert_eq!(
+                opened.err(),
+                Some(StoreError::InvalidAccounting(
+                    PendingAccountingError::SourceMismatch
+                ))
+            );
+            assert_eq!(
+                raw_native_snapshot(&root.path().join("db"), &budget),
+                damaged
+            );
+            continue;
+        }
+        // The independent second producer remains census-admissible and must
+        // still be refused by the complete source-resolution proof below.
+        let mut recovery = opened.unwrap();
         if extra_producer {
             drop(
                 recovery

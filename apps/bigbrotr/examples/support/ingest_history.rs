@@ -2,6 +2,10 @@
 use super::*;
 use bigbrotr::storage::{postgres::ingest_registry, rocks::store::IngestRecovery};
 
+#[path = "ingest_history_integrity.rs"]
+mod integrity;
+pub use integrity::{private as private_integrity, seed as seed_integrity};
+
 pub async fn run(
     config: Config,
     mode: &str,
@@ -29,8 +33,42 @@ pub async fn run(
         drop(recovery);
         return;
     }
+    // This fixed-fixture reader reserves the remaining existing16MiB payload
+    // envelope for transport/validation before connecting. Its16KiB per-body
+    // SQL guard bounds LIMIT2's four possible bodies to64KiB total. Attribution
+    // scratch and the native permit remain separate; no capacity is increased.
+    assert!(
+        fixture_document().len() <= 16 * 1024,
+        "fixed policy must fit the declared reader cap"
+    );
+    let _documents = grant(&budget, 16 * MIB - 64 * 1024, 0);
+    let root = crate::config::fixture_root(dataset, configured_instance);
+    let validate =
+        |document: &str, digest| crate::config::validate_fixture_policy(document, digest, &root);
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
+    let document_cap =
+        match mode {
+            "history-cap-zero" => 0,
+            "history-cap-too-large" => ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES + 1,
+            "history-cap-exact" | "history-cap-one-byte-short" => {
+                // Boundary input only, not an outcome oracle: measure the complete
+                // original documents, then ask the actual reader for that exact
+                // ceiling or one byte less. Its answer must still be independent.
+                let identity = recovery.manifest().identity();
+                let row = client.query_one(
+                "SELECT greatest(octet_length(c.document::text),octet_length(p.document::text))
+                   FROM control.policy_revisions p JOIN control.config_revisions c
+                     ON c.dataset_id=p.dataset_id AND c.revision=p.config_revision
+                  WHERE p.dataset_id=$1::bytea AND p.revision=$2::text::numeric",
+                &[&&identity.dataset_id.as_bytes()[..], &identity.policy_epoch.get().to_string()],
+            ).await.unwrap();
+                let bytes = usize::try_from(row.get::<_, i32>(0)).unwrap();
+                assert!((2..=16 * 1024).contains(&bytes));
+                bytes - usize::from(mode == "history-cap-one-byte-short")
+            }
+            _ => 16 * 1024,
+        };
     let instance = if mode == "history-wrong-instance" {
         [99; 16]
     } else {
@@ -38,7 +76,7 @@ pub async fn run(
     };
     let result = tokio::time::timeout(
         Duration::from_secs(10),
-        ingest_registry::load_historical(&mut client, instance, &recovery),
+        ingest_registry::load_historical(&mut client, instance, &recovery, document_cap, validate),
     )
     .await
     .expect("bounded historical lookup");
@@ -59,6 +97,15 @@ pub async fn run(
             "allocation_domains":s.allocation_domains.iter().map(|(kind,id)|
                 serde_json::json!([*kind as u16,hex(id.as_bytes())])).collect::<Vec<_>>(),
             "producer_slot":hex(s.producer_slot_id.as_bytes()), "window":s.outstanding_request_limit,
+            "intake_policy": {
+                "pending_limit":s.intake_policy.pending_limit(),
+                "pending_high":s.intake_policy.pending_high(),
+                "pending_low":s.intake_policy.pending_low(),
+                "max_pending_unit":s.intake_policy.max_pending_unit(),
+                "disk_resume_margin":s.intake_policy.disk_resume_margin(),
+                "stable_duration_us":u64::try_from(s.intake_policy.stable_duration().as_micros()).unwrap(),
+                "request_receipt_retention":s.intake_policy.request_receipt_retention(),
+            },
             "created_at_us":s.created_at_us, "lease_expires_at_us":s.lease_expires_at_us,
             "manifest":hex(recovery.manifest().encode().as_bytes()),
         }),

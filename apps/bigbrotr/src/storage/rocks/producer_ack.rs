@@ -562,6 +562,7 @@ pub const RETAINED_PRODUCER_REQUEST_LIMIT: u64 = 64;
 pub struct ProducerCredit {
     issued: u64,
     acknowledged: u64,
+    retired: u64,
 }
 impl ProducerCredit {
     pub fn issued_through(self) -> u64 {
@@ -572,6 +573,12 @@ impl ProducerCredit {
     }
     pub fn outstanding_requests(self) -> u64 {
         self.issued - self.acknowledged
+    }
+    pub fn retired_through(self) -> u64 {
+        self.retired
+    }
+    pub fn retained_requests(self) -> u64 {
+        self.issued - self.retired
     }
 }
 
@@ -630,7 +637,7 @@ impl IngestRecovery {
 impl IngestStore {
     /// A valid closed floor answers the retired range before any original
     /// input, receipt digest comparison or ordinary producer decoder is used.
-    pub(super) fn require_unretired_request(
+    pub(in crate::storage) fn require_unretired_request(
         &self,
         request: bigbrotr_model::ProducerRequestId,
         manifest: &IngestManifest,
@@ -648,6 +655,17 @@ impl IngestStore {
             .db
             .cf_handle("receipts")
             .ok_or(AdmissionError::EngineRead)?;
+        if let Some(floor) =
+            self.open_prefix_floor(request.producer_slot_id, request.producer_epoch)?
+        {
+            if manifest != &self.manifest {
+                return Err(AdmissionError::StateMismatch);
+            }
+            if request.request_sequence.get() <= floor.retired {
+                return Err(AdmissionError::RetiredRequest);
+            }
+            return Ok(());
+        }
         if let Some(bytes) = self
             .db
             .get_pinned_cf_opt(cf, key.as_bytes(), &super::bootstrap::read_options())
@@ -680,7 +698,14 @@ impl IngestStore {
         self.require_unretired_request(request, &self.manifest)?;
         let credit = self.producer_credit(request.producer_slot_id)?;
         let sequence = request.request_sequence.get();
-        if sequence > RETAINED_PRODUCER_REQUEST_LIMIT {
+        // Retain the existing intake ceiling until the accepted aggregate
+        // pending/filesystem lane has concrete qualified bounds. Prefix reads,
+        // retirement and recovery do not supply durable-growth credit.
+        if sequence > RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(credit.retired)
+                .is_none_or(|tail| tail > RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(AdmissionError::Limit);
         }
         // Staging may reserve a contiguous import batch before native issue.
@@ -708,12 +733,14 @@ impl IngestStore {
             None if epoch.get() == 1 => super::producer_closing::ProducerState::default(),
             None => return Err(AdmissionError::StateMismatch),
         };
-        if state.closing || state.retired != 0 || state.issued > RETAINED_PRODUCER_REQUEST_LIMIT {
+        self.require_retained_state(slot, epoch, state)?;
+        if state.closing {
             return Err(AdmissionError::StateMismatch);
         }
         Ok(ProducerCredit {
             issued: state.issued,
             acknowledged: state.acknowledged,
+            retired: state.retired,
         })
     }
 
@@ -759,11 +786,10 @@ impl IngestStore {
         let mut state = self
             .producer_state(target.slot, target.epoch)?
             .ok_or(AdmissionError::StateMismatch)?;
+        self.require_retained_state(target.slot, target.epoch, state)?;
         if state.closing != target.closed
-            || state.retired != 0
             || target.complete < state.acknowledged
             || target.complete > state.issued
-            || state.issued > RETAINED_PRODUCER_REQUEST_LIMIT
         {
             return Err(AdmissionError::StateMismatch);
         }
@@ -785,17 +811,7 @@ impl IngestStore {
             frontier.require_acknowledgement(self, target.complete, sequence)?;
         }
         state.acknowledged = target.complete;
-        let mut bytes = Vec::new();
-        bytes
-            .try_reserve_exact(27)
-            .map_err(|_| AdmissionError::Allocation)?;
-        bytes.extend_from_slice(&[if state.closing { 2 } else { 1 }, 0x31]);
-        bytes.extend_from_slice(&state.issued.to_be_bytes());
-        bytes.extend_from_slice(&state.acknowledged.to_be_bytes());
-        bytes.extend_from_slice(&state.retired.to_be_bytes());
-        if state.closing {
-            bytes.push(1);
-        }
+        let bytes = self.producer_state_bytes(target.slot, target.epoch, state)?;
         let mut batch = Prepared::new(BootstrapLimits {
             max_mappings: 1,
             max_batch_bytes: 1024,

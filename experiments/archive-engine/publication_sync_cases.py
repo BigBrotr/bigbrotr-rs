@@ -290,7 +290,7 @@ def native_ack(root):
     assert build['executables_sha256'] == {'native_components': sha(binary)}
     assert sha(tracer) == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
     assert all(sha(source/p) == digest for p, digest in manifest['files_sha256'].items())
-    fixture = json.loads((source/'tests/fixtures/ingest/staged-bootstrap-crash.json').read_text())
+    fixture = json.loads((source/'tests/fixtures/ingest/staged-bootstrap-crash-accounted.json').read_text())
     before_rows = fixture['after']
     after_rows = [[cf, key, ACK_VALUE.hex() if cf == 'receipts' and key == ACK_KEY.hex() else value]
                   for cf, key, value in before_rows]

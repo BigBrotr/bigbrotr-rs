@@ -19,8 +19,11 @@ const MAX_DOMAINS: usize = 9;
 
 #[path = "ingest_history.rs"]
 mod history;
-pub use history::load_historical;
 pub(super) use history::reconstruct as reconstruct_historical;
+pub use history::{MAX_HISTORICAL_DOCUMENT_BYTES, load_historical};
+#[path = "ingest_intake_policy.rs"]
+mod intake_policy;
+pub use intake_policy::{CapturedIntakePolicy, IntakePolicyError};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RegistryError {
@@ -79,9 +82,9 @@ pub struct InitialRegistration {
     pub allocation_domains: Vec<(DictionaryKind, AllocationDomainId)>,
     pub producer_slot_id: ProducerSlotId,
     pub outstanding_request_limit: u32,
-    /// Captured once from both exact accepted startup documents. This is a
-    /// retained-count threshold, independent of the outstanding window.
-    pub request_receipt_retention: u8,
+    /// Captured once from both exact accepted startup documents, independently
+    /// of the outstanding request window. The constructor alone is not authority.
+    pub intake_policy: CapturedIntakePolicy,
     pub created_at_us: i64,
     pub lease_expires_at_us: i64,
 }
@@ -106,7 +109,6 @@ impl InitialRegistration {
             || self.config_revision == 0
             || self.policy_revision == 0
             || self.outstanding_request_limit == 0
-            || !(1..=64).contains(&self.request_receipt_retention)
             || self.lease_expires_at_us <= self.created_at_us
             || self.allocation_domains.len() > MAX_DOMAINS
         {
@@ -405,8 +407,8 @@ async fn observe_locked(
                substring(p.document_digest FROM 1 FOR 33),
                c.schema_version, p.schema_version,
                left(c.document->>'format',64), left(p.document->>'format',64),
-               c.document->'settings'->'ingest.request_receipt_retention'=to_jsonb($4::integer)
-                   AND p.document->'settings'->'ingest.request_receipt_retention'=to_jsonb($4::integer)
+               c.document->'settings' @> $4::text::jsonb
+                   AND p.document->'settings' @> $4::text::jsonb
           FROM control.config_revisions c
           JOIN control.policy_revisions p
             ON p.dataset_id = c.dataset_id AND p.config_revision = c.revision
@@ -419,7 +421,7 @@ async fn observe_locked(
                 dataset,
                 &config,
                 &policy,
-                &i32::from(s.request_receipt_retention),
+                &s.intake_policy.settings_binding(),
             ],
         )
         .await

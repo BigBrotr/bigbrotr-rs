@@ -216,7 +216,7 @@ pub async fn prepare(
         allocation_domains: domains(),
         producer_slot_id: [66; 16].try_into().unwrap(),
         outstanding_request_limit: outstanding,
-        request_receipt_retention: 64,
+        intake_policy: fixture_intake_policy(matches!(mode, "row_exact" | "row_over")),
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };
@@ -416,4 +416,15 @@ pub async fn prepare(
         serde_json::json!({"event":"signed-reopened","rocks_rows":before.0,"rocks_digest":before.1,"rejections":["Signature","EventId"],"exact_admission_retry":true}),
     );
     store
+}
+
+fn fixture_intake_policy(
+    native_row: bool,
+) -> bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy {
+    // Explicit current fixture input; connected registration still checks both
+    // retained document identities and every captured value before effects.
+    let mut document: serde_json::Value =
+        serde_json::from_str(super::policy_document(native_row)).unwrap();
+    let settings = serde_json::from_value(document["settings"].take()).unwrap();
+    bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy::capture(&settings).unwrap()
 }

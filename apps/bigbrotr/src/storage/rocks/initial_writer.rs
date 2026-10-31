@@ -270,6 +270,8 @@ impl IngestStore {
         &self,
         request: Option<ProducerRequestId>,
     ) -> Result<(), AdmissionError> {
+        self.require_pending_accounting()
+            .map_err(BootstrapError::from)?;
         let epoch = self.manifest.identity().owner_epoch.get();
         if self.manifest.key_schema() == 1
             && epoch == 1

@@ -76,7 +76,7 @@ impl ControlSession {
         recovery: &'a IngestRecovery,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<PreparedInitialHistory<'a>, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
@@ -88,16 +88,20 @@ impl ControlSession {
         let instance = *self.request.instance.as_bytes();
         let current = self.identity;
         let (tx, mut lease, epoch) = self
-            .begin_initial_history(recovery, &input, 2, validate)
+            .begin_initial_history(recovery, &input, 2, &mut validate)
             .await?;
         let intent = read_intent(&tx, recovery).await?;
         let native = recovery
             .historical_initial(&intent.handoff)
             .map_err(InitialSuccessionError::Native)?;
-        let registration =
-            ingest_registry::reconstruct_historical(&tx, instance, native.manifest())
-                .await
-                .map_err(InitialSuccessionError::Registry)?;
+        let registration = ingest_registry::reconstruct_historical(
+            &tx,
+            instance,
+            native.manifest(),
+            &mut validate,
+        )
+        .await
+        .map_err(InitialSuccessionError::Registry)?;
         let history = PreparedInitialHistory {
             native,
             registration,

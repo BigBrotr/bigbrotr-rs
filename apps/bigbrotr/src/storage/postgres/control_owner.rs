@@ -112,6 +112,7 @@ mod initial_batch;
 #[path = "producer_progress.rs"]
 pub(super) mod producer_progress;
 pub(in crate::storage) use producer_progress::ConfirmedAcknowledgement;
+pub(in crate::storage) use producer_progress::prefix::ConfirmedPrefixPrepare;
 pub use producer_progress::{ProducerProgressError, ProgressGrant, SyncProgress};
 #[path = "producer_ack.rs"]
 mod producer_ack;
@@ -167,10 +168,11 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialVisibilityRequest, LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest,
-    LiveInitialEventRequest, LiveInitialObservationRequest, LiveInitialVisibilityRequest,
-    LiveSuccessorCertificationRequest, LiveSuccessorDictionaryAppendRequest,
-    LiveSuccessorEventRequest, LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest,
+    InitialPrefixRequest, InitialVisibilityRequest, LiveInitialCertificationRequest,
+    LiveInitialDictionaryAppendRequest, LiveInitialEventRequest, LiveInitialObservationRequest,
+    LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
+    LiveSuccessorDictionaryAppendRequest, LiveSuccessorEventRequest,
+    LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest, ProducerPrefixReceipt,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{

@@ -370,7 +370,7 @@ impl ControlSession {
         limits: AdmissionLimits,
         metadata: OwnedPermit,
         outcomes: OwnedPermit,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<InitialGapPlan, InitialSuccessionError> {
         if metadata.request().units().items() == 0
             || metadata.request().units().data_bytes() < COMPACTED_HANDOFF_DATA_BYTES
@@ -387,13 +387,14 @@ impl ControlSession {
             HistoricalNative::Prepared(_) => 2,
         };
         let (tx, mut lease, policy) = self
-            .begin_initial_history(recovery, &input, owner_epoch, validate)
+            .begin_initial_history(recovery, &input, owner_epoch, &mut validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let registration = ingest_registry::reconstruct_historical(
             &tx,
             instance,
             intent.record.previous_manifest(),
+            &mut validate,
         )
         .await
         .map_err(InitialSuccessionError::Registry)?;

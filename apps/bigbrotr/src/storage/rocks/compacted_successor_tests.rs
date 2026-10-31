@@ -42,6 +42,23 @@ fn replace(rows: &mut Rows, key: IngestKey, value: &[u8]) {
     rows.sort();
 }
 
+fn expected_handoff_rows(before: &Rows, handoff: &SuccessorHandoff) -> Rows {
+    let mut wanted = before.clone();
+    let manifest = handoff.record().fields().next_manifest.encode();
+    let counter = literal_pending_accounting(before, manifest.as_bytes(), 0);
+    replace(&mut wanted, IngestKey::Manifest, manifest.as_bytes());
+    replace(
+        &mut wanted,
+        handoff.record().key(),
+        handoff.encode().as_bytes(),
+    );
+    replace(&mut wanted, source_key(4), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+    replace(&mut wanted, producer_key(4), &marker(false, 0));
+    replace(&mut wanted, IngestKey::PendingAccounting, &counter);
+    assert_current_accounting(&wanted);
+    wanted
+}
+
 fn checked(f: &Fixture, view: &CompactedSuccessorPredecessor<'_>) {
     let permit = grant(&f.budget, 40 * MIB, 0);
     let mut cursor = view.resolution(&NOT_CANCELLED).unwrap();
@@ -62,7 +79,7 @@ fn checked(f: &Fixture, view: &CompactedSuccessorPredecessor<'_>) {
 }
 
 #[test]
-fn compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry() {
+fn compacted_successor_gap_five_puts_then_empty_one_put_and_fresh_zero_retry() {
     let (f, mut r) = fixture();
     let (lineage, handoff) = plan(&f, &r);
     let sequence = r.store.db.latest_sequence_number();
@@ -99,21 +116,9 @@ fn compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry() {
         || Ok(()),
     )
     .unwrap();
-    let mut wanted = before;
-    replace(
-        &mut wanted,
-        IngestKey::Manifest,
-        handoff.record().fields().next_manifest.encode().as_bytes(),
-    );
-    replace(
-        &mut wanted,
-        handoff.record().key(),
-        handoff.encode().as_bytes(),
-    );
-    replace(&mut wanted, source_key(4), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
-    replace(&mut wanted, producer_key(4), &marker(false, 0));
+    let mut wanted = expected_handoff_rows(&before, &handoff);
     assert_eq!(kv(&r.store), wanted);
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(inputs(&f.path()), originals);
     assert!(lineage.validate(&r, &NOT_CANCELLED).is_err());
     checked(
@@ -136,7 +141,7 @@ fn compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry() {
         || Ok(()),
     )
     .unwrap();
-    assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
     drop(lineage);
     for retry in [false, true] {
         let lineage = inspect_compacted(&f, &r).unwrap();
@@ -183,7 +188,7 @@ fn compacted_successor_gap_four_puts_then_empty_one_put_and_fresh_zero_retry() {
         .unwrap();
         replace(&mut wanted, producer_key(4), &marker(true, 0));
         assert_eq!(kv(&r.store), wanted);
-        assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
+        assert_eq!(r.store.db.latest_sequence_number(), sequence + 6);
         assert_eq!(inputs(&f.path()), originals);
         checked(
             &f,
@@ -313,6 +318,9 @@ fn compacted_successor_candidate_preserves_original_and_activation_refusals() {
             .unwrap()
     };
     let sequence = candidate.recovery().store.db.latest_sequence_number();
+    let before = kv(&candidate.recovery().store);
+    let originals = inputs(&f.path());
+    let wanted = expected_handoff_rows(&before, &handoff);
     candidate
         .apply_compacted_handoff(
             &lineage,
@@ -324,8 +332,10 @@ fn compacted_successor_candidate_preserves_original_and_activation_refusals() {
         .unwrap();
     assert_eq!(
         candidate.recovery().store.db.latest_sequence_number(),
-        sequence + 4
+        sequence + 5
     );
+    assert_eq!(kv(&candidate.recovery().store), wanted);
+    assert_eq!(inputs(&f.path()), originals);
     assert!(
         candidate
             .require_prepared_handoff(&lineage, &handoff, &NOT_CANCELLED)
@@ -355,6 +365,8 @@ fn compacted_successor_dispatch_failure_keeps_exact_completed_retry() {
         let (lineage, handoff) = plan(&f, &r);
         let before = kv(&r.store);
         let sequence = r.store.db.latest_sequence_number();
+        let originals = inputs(&f.path());
+        let completed = expected_handoff_rows(&before, &handoff);
         let mut calls = 0;
         assert!(
             r.apply_compacted_successor_handoff(
@@ -377,8 +389,8 @@ fn compacted_successor_dispatch_failure_keeps_exact_completed_retry() {
             assert_eq!(kv(&r.store), before);
             assert_eq!(r.store.db.latest_sequence_number(), sequence);
         } else {
-            assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
-            let completed = kv(&r.store);
+            assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
+            assert_eq!(kv(&r.store), completed);
             r.apply_compacted_successor_handoff(
                 &lineage,
                 &handoff,
@@ -388,8 +400,9 @@ fn compacted_successor_dispatch_failure_keeps_exact_completed_retry() {
             )
             .unwrap();
             assert_eq!(kv(&r.store), completed);
-            assert_eq!(r.store.db.latest_sequence_number(), sequence + 4);
+            assert_eq!(r.store.db.latest_sequence_number(), sequence + 5);
         }
+        assert_eq!(inputs(&f.path()), originals);
     }
 }
 

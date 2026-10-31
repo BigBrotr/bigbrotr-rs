@@ -31,7 +31,7 @@ fn read(
 fn lineage_pending_reads_original_historical_and_current_batches_without_writes() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, false);
+    let r = correction(&f, r, false);
     let before = kv(&r.store);
     let originals = inputs(&f.path());
     let sequence = r.store.db.latest_sequence_number();
@@ -148,7 +148,7 @@ fn lineage_pending_refuses_foreign_zero_out_of_cut_and_interior_identities() {
     {
         let f = prepared_fixture();
         let r = valid_empty_third(&f);
-        correction(&f, &r, false);
+        let r = correction(&f, r, false);
         let l = inspect(&f, &r, None).unwrap();
         let proof = replay(&f, &r, &l, 3, Some(PredecessorTerminalKind::Activated)).unwrap();
         let before = kv(&r.store);
@@ -210,7 +210,7 @@ fn lineage_pending_refuses_foreign_zero_out_of_cut_and_interior_identities() {
 fn lineage_pending_preserves_limit_cancel_and_grant_errors_without_delivery() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, false);
+    let r = correction(&f, r, false);
     let l = inspect(&f, &r, None).unwrap();
     let proof = replay(&f, &r, &l, 3, Some(PredecessorTerminalKind::Activated)).unwrap();
     let required = limits().required_data_bytes().unwrap();
@@ -309,7 +309,7 @@ fn lineage_pending_refuses_stale_native_and_physical_input_custody() {
     for fault in 0..4 {
         let f = prepared_fixture();
         let r = valid_empty_third(&f);
-        correction(&f, &r, false);
+        let r = correction(&f, r, false);
         let l = inspect(&f, &r, None).unwrap();
         let proof = replay(&f, &r, &l, 3, Some(PredecessorTerminalKind::Activated)).unwrap();
         let sequence = r.store.db.latest_sequence_number();

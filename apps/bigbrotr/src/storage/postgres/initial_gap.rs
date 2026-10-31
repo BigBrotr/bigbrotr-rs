@@ -75,7 +75,7 @@ impl ControlSession {
         recovery: &'a IngestRecovery,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<PreparedInitialGap<'a>, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
@@ -87,7 +87,7 @@ impl ControlSession {
         let instance = *self.request.instance.as_bytes();
         let current = self.identity;
         let (tx, mut lease, epoch) = self
-            .begin_initial_history(recovery, &input, 1, validate)
+            .begin_initial_history(recovery, &input, 1, &mut validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         recovery
@@ -97,6 +97,7 @@ impl ControlSession {
             &tx,
             instance,
             intent.record.previous_manifest(),
+            &mut validate,
         )
         .await
         .map_err(InitialSuccessionError::Registry)?;

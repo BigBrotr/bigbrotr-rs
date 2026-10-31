@@ -51,6 +51,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::StateMismatch => Self::StateMismatch,
             BootstrapError::RequestConflict => Self::RequestConflict,
             BootstrapError::ProducerClosing => Self::ProducerClosing,
+            BootstrapError::RetiredRequest => Self::RetiredRequest,
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
             BootstrapError::RequestInput(error) => Self::RequestInput(error),
@@ -483,7 +484,7 @@ impl IngestStore {
             producer_slot_id: input.request.producer_slot_id,
             producer_epoch: input.request.producer_epoch,
         };
-        let producer = self.admission_value(producer_key, 27, &mut reads)?;
+        let producer = self.admission_value(producer_key, 67, &mut reads)?;
         let producer = producer
             .as_deref()
             .map(super::producer_closing::ProducerState::decode)
@@ -498,7 +499,16 @@ impl IngestStore {
         }
         let (issued, ack, retired) = (producer.issued, producer.acknowledged, producer.retired);
         let sequence = input.request.request_sequence.get();
-        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+        self.require_retained_state(
+            input.request.producer_slot_id,
+            input.request.producer_epoch,
+            producer,
+        )?;
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(retired)
+                .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(AdmissionError::Limit);
         }
         let request_key = IngestKey::Request {
@@ -557,9 +567,7 @@ impl IngestStore {
         })?;
         let outcome = match input.event.take().ok_or(AdmissionError::InvalidInput)? {
             Err(reason) => {
-                if identity.owner_epoch.get() == 2 || self.live_successor.is_some() {
-                    self.admission_source_boundary(limits, &mut reads)?;
-                }
+                self.admission_source_boundary(limits, &mut reads)?;
                 AdmissionOutcome::Rejected(reason)
             }
             Ok(event) => self.prepare_event_effects(
@@ -594,13 +602,15 @@ impl IngestStore {
         writes.put(request_key, detail)?;
         writes.put(
             producer_key,
-            frame(
-                &[1, 0x31],
-                &[
-                    &sequence.to_be_bytes(),
-                    &ack.to_be_bytes(),
-                    &retired.to_be_bytes(),
-                ],
+            self.producer_state_bytes(
+                input.request.producer_slot_id,
+                input.request.producer_epoch,
+                super::producer_closing::ProducerState {
+                    issued: sequence,
+                    acknowledged: ack,
+                    retired,
+                    closing: false,
+                },
             )?,
         )?;
         // The shared native commit marks the handle uncertain before FFI, uses
@@ -661,6 +671,8 @@ impl IngestStore {
         reads: &mut ReadBudget,
         context: ReplayContext<'_>,
     ) -> Result<Option<(AdmissionOutcome, super::NativeOutcomeCopy)>, AdmissionError> {
+        self.require_pending_accounting()
+            .map_err(BootstrapError::from)?;
         if &self.manifest != context.current_manifest {
             return Err(AdmissionError::StateMismatch);
         }
@@ -1234,8 +1246,8 @@ impl IngestStore {
     }
 
     /// Source counters have a different zero rule from allocation counters.
-    /// Only this actual live successor can retain an explicit empty source, even
-    /// after no-fact requests advanced its producer. Facts/pending must be absent.
+    /// Every current manifest retains an explicit source, including initial
+    /// zero after no-fact requests. Current accounting and empty science agree.
     pub(super) fn admission_source_boundary(
         &self,
         limits: AdmissionLimits,
@@ -1264,9 +1276,6 @@ impl IngestStore {
             sequence: Sequence::new(last.max(1)).map_err(|_| AdmissionError::StateMismatch)?,
         };
         if last == 0 {
-            if identity.owner_epoch.get() != 2 && self.live_successor.is_none() {
-                return Err(AdmissionError::StateMismatch);
-            }
             self.require_admission_owner(None)?;
             for key in [
                 IngestKey::Fact { source_record_id },

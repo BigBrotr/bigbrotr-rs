@@ -48,6 +48,26 @@ impl<'a> NativeOwner<'a> {
     }
 }
 impl NativeOwner<'_> {
+    pub(super) fn require_unretired_prefix(
+        &self,
+        request: ProducerRequestId,
+    ) -> Result<(), AdmissionError> {
+        match self {
+            Self::Store(store) => store.require_unretired_request(request, store.manifest()),
+            Self::Successor(_) => Ok(()), // Its unchanged admitted frontier keeps R=0.
+        }
+    }
+    pub(super) fn require_progress_base(
+        &self,
+        state: &producer_progress::Snapshot,
+        context: producer_progress::Context,
+    ) -> Result<(), ProducerProgressError> {
+        match self {
+            Self::Store(store) => state.require_native_base(store, context),
+            Self::Successor(_) if !state.prefix_enabled() && context.epoch >= 2 => Ok(()),
+            _ => Err(ProducerProgressError::InvalidContext),
+        }
+    }
     pub(super) fn compacted(&self) -> bool {
         matches!(self, Self::Successor(owner) if owner.check.is_some())
     }

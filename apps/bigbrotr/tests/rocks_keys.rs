@@ -62,6 +62,12 @@ fn every_domain_matches_independent_literal_bytes_and_round_trips() {
 
     let cases = [
         (
+            IngestKey::PendingAccounting,
+            ColumnFamily::Default,
+            KeyDomain::PendingAccounting,
+            "010b",
+        ),
+        (
             IngestKey::Manifest,
             ColumnFamily::Default,
             KeyDomain::Manifest,

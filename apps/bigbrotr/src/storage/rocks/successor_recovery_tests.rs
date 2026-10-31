@@ -565,8 +565,8 @@ fn successor_recovery_pending_step_is_one_shot_and_rechecks_sidecars_before_acce
 #[test]
 fn successor_recovery_rejects_future_dependencies_before_a_sql_copy_step_exists() {
     let f = prepared_fixture();
-    let mut r = valid_empty_third(&f);
-    correction(&f, &r, true); // literal first receipt borrows request2's later fact
+    let r = valid_empty_third(&f);
+    let mut r = correction(&f, r, true); // literal first receipt borrows request2's later fact
     let before = snapshot(&f, &r.store);
     let mut observed = owner(&f, &r);
     close(&f, &mut r, &mut observed);
@@ -703,8 +703,10 @@ fn successor_recovery_keeps_epoch_255_and_full_original_spool_with_one_allocatio
         incoming = encoded;
         previous = next;
     }
-    drop(r);
-    let mut r = f.reopen();
+    // The literal 255-epoch seed is complete before the one actual admission.
+    let counter = literal_pending_accounting(&kv(&r.store), previous.encode().as_bytes(), 0);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let mut r = reopen_fixture_unchanged(&f, r);
     let before = snapshot(&f, &r.store);
     let minimum = 128 * 1024 + 512 * 255;
     assert!(matches!(

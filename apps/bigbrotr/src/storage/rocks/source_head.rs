@@ -23,6 +23,7 @@ pub enum SourceHeadError {
     MalformedSource,
     NonemptyZeroSource,
     EngineRead,
+    Accounting(super::PendingAccountingError),
 }
 impl fmt::Display for SourceHeadError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -68,8 +69,8 @@ impl IngestStore {
     /// Like other native reads, call on the supervised, joined owner: cancellation
     /// is checked around FFI but cannot interrupt a blocked native operation.
     ///
-    /// A missing counter means zero only in the exact fresh schema1 layout.
-    /// Historical zero-source recovery needs its separate positive replay proof.
+    /// Every current store retains its explicit source watermark, including
+    /// initial zero. A zero head requires an empty current scientific stream.
     /// Established nonzero counters can outlive reclaimed facts/pending markers;
     /// this observation deliberately does not certify their retained contents.
     pub fn observe_source_head(
@@ -117,21 +118,12 @@ impl IngestStore {
                 .map_err(|_| SourceHeadError::EngineRead)?;
             check_cancel(cancelled)?;
             match value.as_deref() {
-                None => {
-                    if expected.key_schema() != 1 {
-                        return Err(SourceHeadError::MissingSource);
-                    }
-                    require_fresh(&self.db, &snapshot, cancelled)?;
-                    0
-                }
+                None => return Err(SourceHeadError::MissingSource),
                 Some(bytes) if bytes.len() == 10 && bytes[..2] == [1, 2] => {
                     // Preserve the full unsigned domain. No next-sequence
                     // addition or narrowing can turn an exhausted head into zero.
                     let head = u64::from_be_bytes(bytes[2..].try_into().expect("checked length"));
                     if head == 0 {
-                        if expected.key_schema() == 1 {
-                            return Err(SourceHeadError::MalformedSource);
-                        }
                         require_empty_stream(&self.db, &snapshot, identity, cancelled)?;
                     }
                     head
@@ -139,6 +131,8 @@ impl IngestStore {
                 Some(_) => return Err(SourceHeadError::MalformedSource),
             }
         };
+        self.require_pending_accounting_at(&snapshot)
+            .map_err(SourceHeadError::Accounting)?;
         drop(snapshot);
         check_cancel(cancelled)?;
         Ok(SourceHead {
@@ -146,33 +140,6 @@ impl IngestStore {
             through: CompleteThrough::new(through),
         })
     }
-}
-
-fn require_fresh(
-    db: &DB,
-    snapshot: &Snapshot<'_>,
-    cancelled: &AtomicBool,
-) -> Result<(), SourceHeadError> {
-    for name in ["default", "facts", "receipts"] {
-        check_cancel(cancelled)?;
-        let cf = db.cf_handle(name).ok_or(SourceHeadError::EngineRead)?;
-        let mut rows = snapshot.raw_iterator_cf_opt(cf, read_options());
-        rows.seek_to_first();
-        rows.status().map_err(|_| SourceHeadError::EngineRead)?;
-        check_cancel(cancelled)?;
-        if name == "default" {
-            if rows.key() != Some(KeyDomain::Manifest.prefix().as_slice()) {
-                return Err(SourceHeadError::MissingSource);
-            }
-            rows.next();
-            rows.status().map_err(|_| SourceHeadError::EngineRead)?;
-            check_cancel(cancelled)?;
-        }
-        if rows.valid() {
-            return Err(SourceHeadError::MissingSource);
-        }
-    }
-    Ok(())
 }
 
 fn require_empty_stream(

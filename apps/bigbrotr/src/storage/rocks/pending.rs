@@ -128,6 +128,7 @@ impl PendingReadLimits {
 pub struct PendingBatch {
     batch: AdmissionBatch,
     records: Vec<Vec<u8>>,
+    pending_bytes: u64,
     _permit: OwnedPermit,
 }
 impl PendingBatch {
@@ -136,6 +137,13 @@ impl PendingBatch {
     }
     pub fn records(&self) -> &[Vec<u8>] {
         &self.records
+    }
+    /// Exact retained logical charge from this same snapshot: complete native
+    /// fact keys/values and the pending marker key/value once. Dependency
+    /// references and secondary indices add no copies to this count. This read
+    /// observation alone supplies neither an intake reservation nor disk credit.
+    pub const fn pending_bytes(&self) -> u64 {
+        self.pending_bytes
     }
     /// The existing pending-data permit stays owned for the complete write.
     /// This only transfers prepared input; never acknowledges or reclaims it.
@@ -183,14 +191,17 @@ impl IngestStore {
         let key = IngestKey::PendingBatch { first }
             .encode()
             .map_err(|_| PendingError::Malformed)?;
-        let header = {
+        let (header, mut pending_bytes) = {
             let Some(value) = snapshot
                 .get_pinned_cf_opt(facts, key.as_bytes(), read_options())
                 .map_err(|_| PendingError::EngineRead)?
             else {
                 return Ok(None);
             };
-            PendingBatchHeader::decode(first, &value)?
+            (
+                PendingBatchHeader::decode(first, &value)?,
+                charge(0, key.as_bytes().len(), value.len())?,
+            )
         };
         let count = header
             .last
@@ -252,6 +263,7 @@ impl IngestStore {
             if pinned.len() < 34 || pinned[..2] != [1, 0x20] {
                 return Err(PendingError::CorruptFact);
             }
+            pending_bytes = charge(pending_bytes, key.as_bytes().len(), pinned.len())?;
             let bytes = &pinned[34..];
             remaining = remaining
                 .checked_sub(bytes.len())
@@ -299,9 +311,17 @@ impl IngestStore {
         Ok(Some(PendingBatch {
             batch,
             records,
+            pending_bytes,
             _permit: permit,
         }))
     }
+}
+
+fn charge(current: u64, key: usize, value: usize) -> Result<u64, PendingError> {
+    current
+        .checked_add(u64::try_from(key).map_err(|_| PendingError::Limit)?)
+        .and_then(|n| n.checked_add(u64::try_from(value).ok()?))
+        .ok_or(PendingError::Limit)
 }
 
 fn read_options() -> ReadOptions {
