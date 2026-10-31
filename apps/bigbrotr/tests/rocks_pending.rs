@@ -218,6 +218,12 @@ fn real_pending_read_survives_reopen_without_receipts_and_holds_its_grant() {
         .unwrap_or_else(|e| panic!("complete native fixture refused: {e}"))
         .unwrap();
     assert_eq!(pending.records(), facts());
+    // Literal native keys are 38B, each fact value has its 34B digest/frame,
+    // and the complete pending marker value is 42B. This expectation comes
+    // from the independent installed key/value fixture, not product encoding.
+    let expected_charge = 38 + 42 + (0..2).map(|i| 38 + value(i).len() as u64).sum::<u64>();
+    assert_eq!(pending.pending_bytes(), expected_charge);
+    assert!(pending.pending_bytes() > pending.records().iter().map(|v| v.len() as u64).sum());
     assert_eq!(pending.batch().first(), id(2));
     assert_eq!(pending.batch().last(), id(3));
     assert_eq!(

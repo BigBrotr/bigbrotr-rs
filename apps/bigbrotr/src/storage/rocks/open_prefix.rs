@@ -37,6 +37,7 @@ pub(in crate::storage) struct NativePrefixRead<'a> {
     source: u64,
     batches: u64,
     science: [u8; 32],
+    pending_bytes: u64,
     _scratch: &'a OwnedPermit,
 }
 
@@ -150,6 +151,7 @@ impl IngestStore {
         )?;
         let mut science = context.source_seed();
         let mut batches = 0_u64;
+        let mut pending_bytes = 0_u64;
         let mut next = 1_u64;
         if let Some(base) = prior {
             if base.source > source
@@ -186,6 +188,9 @@ impl IngestStore {
                 .map_err(|_| AdmissionError::StateMismatch)?
                 .ok_or(AdmissionError::StateMismatch)?;
             let header = PendingBatchHeader::from_batch(pending.batch());
+            pending_bytes = pending_bytes
+                .checked_add(pending.pending_bytes())
+                .ok_or(AdmissionError::Limit)?;
             if header.last().sequence.get() > source {
                 return Err(AdmissionError::StateMismatch);
             }
@@ -260,6 +265,7 @@ impl IngestStore {
             source,
             batches,
             science,
+            pending_bytes,
             _scratch: scratch,
         };
         read.validate(cancelled)?;
@@ -302,6 +308,9 @@ impl NativePrefixRead<'_> {
     }
     pub fn science(&self) -> [u8; 32] {
         self.science
+    }
+    pub fn pending_bytes(&self) -> u64 {
+        self.pending_bytes
     }
     pub fn request_chain(&self) -> Result<[u8; 32], AdmissionError> {
         if self.requests != self.state.issued || self.current_source != self.source {
