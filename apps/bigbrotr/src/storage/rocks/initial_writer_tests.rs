@@ -392,13 +392,18 @@ fn assert_append(fixture: &Fixture, writer: &mut ActiveInitialWriter, sequence: 
     for (cf, key, value) in expected.writes {
         rows.insert((cf, key), value);
     }
-    assert_eq!(
-        kv(writer.store()),
-        rows.into_iter()
-            .map(|((cf, key), value)| (cf, key, value))
-            .collect::<Rows>()
-    );
-    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 8);
+    let mut wanted: Rows = rows
+        .into_iter()
+        .map(|((cf, key), value)| (cf, key, value))
+        .collect();
+    let counter = literal_pending_accounting(&wanted, writer.manifest().encode().as_bytes(), 1);
+    let row = wanted
+        .iter_mut()
+        .find(|(cf, key, _)| cf == "default" && key == &[1, 11])
+        .unwrap();
+    row.2 = counter.to_vec();
+    assert_eq!(kv(writer.store()), wanted);
+    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 9);
     let mut input_rows = before.2;
     input_rows.push((input_name(2, sequence), expected.input));
     input_rows.sort();

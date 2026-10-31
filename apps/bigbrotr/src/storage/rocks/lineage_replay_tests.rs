@@ -296,6 +296,9 @@ fn lineage_evidence_request_one_uses_append_and_retains_equal_old_descriptors() 
     );
     put(&r.store, source_key(3), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 1]);
     put(&r.store, producer_key(3), &marker(true, 2));
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 1);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     let before = kv(&r.store);
     let sequence = r.store.db.latest_sequence_number();
     let originals = inputs(&f.path());
@@ -376,6 +379,11 @@ fn lineage_event_batch_refuses_a_valid_fact_unrelated_to_its_original_input() {
         &PendingBatchHeader::from_batch(&batch).encode(),
     );
     put(&r.store, source_key(3), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 2]);
+    // Keep the deliberately unrelated member census-admissible so the exact
+    // original-input replay, not stale accounting, remains the refusal oracle.
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 2);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     let l = inspect(&f, &r, None).unwrap();
     let before = kv(&r.store);
     let original = inputs(&f.path());

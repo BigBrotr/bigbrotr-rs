@@ -506,6 +506,9 @@ fn correction_chain(disconnected: bool) -> (Fixture, IngestRecovery) {
         )
         .unwrap();
     }
+    let counter = literal_pending_accounting(&kv(&r.store), r.manifest().encode().as_bytes(), 64);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     (f, r)
 }
 

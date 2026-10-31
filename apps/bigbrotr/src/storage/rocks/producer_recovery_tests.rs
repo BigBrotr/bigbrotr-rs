@@ -408,14 +408,34 @@ fn recovery_refuses_foreign_context_and_incomplete_dependency_closure() {
                 )
                 .unwrap();
         }
+        let damaged = (
+            kv(&store),
+            store.db.latest_sequence_number(),
+            inputs(&root.path().join("db")),
+        );
         drop(store);
-        let mut recovery = IngestRecovery::open(
+        let opened = IngestRecovery::open(
             &root.path().join("db"),
             manifest,
             native,
             grant(&budget, 0, 128 * MIB),
-        )
-        .unwrap();
+        );
+        if matches!(fault, "pending" | "fact") {
+            assert_eq!(
+                opened.err(),
+                Some(StoreError::InvalidAccounting(
+                    PendingAccountingError::ScienceMismatch
+                )),
+                "{fault}"
+            );
+            assert_eq!(
+                raw_native_snapshot(&root.path().join("db"), &budget),
+                damaged,
+                "{fault}"
+            );
+            continue;
+        }
+        let mut recovery = opened.unwrap();
         close_for_test(&mut recovery, &budget, 5);
         let before = kv(&recovery.store);
         let sequence = recovery.store.db.latest_sequence_number();

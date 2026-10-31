@@ -4,7 +4,7 @@
 use super::*;
 
 fn literal_manifests() -> (Vec<u8>, Vec<u8>) {
-    let mut previous = vec![1, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+    let mut previous = vec![1, 1, 0, 1, 0, 2, 0, 1, 0, 1];
     previous.extend_from_slice(&[1; 16]);
     previous.extend_from_slice(&1_u64.to_be_bytes());
     previous.extend_from_slice(&[3; 16]);

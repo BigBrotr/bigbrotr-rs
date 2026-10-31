@@ -390,14 +390,15 @@ fn append_and_check(f: &Fixture, writer: &mut ActiveSuccessorWriter, n: u64) {
     for (cf, k, v) in expected.writes {
         wanted.insert((cf, k), v);
     }
-    assert_eq!(
-        kv(writer.store()),
-        wanted
-            .into_iter()
-            .map(|((cf, k), v)| (cf, k, v))
-            .collect::<Rows>()
-    );
-    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 8);
+    let mut wanted: Rows = wanted.into_iter().map(|((cf, k), v)| (cf, k, v)).collect();
+    let counter = literal_pending_accounting(&wanted, writer.manifest().encode().as_bytes(), 1);
+    let row = wanted
+        .iter_mut()
+        .find(|(cf, key, _)| cf == "default" && key == &[1, 11])
+        .unwrap();
+    row.2 = counter.to_vec();
+    assert_eq!(kv(writer.store()), wanted);
+    assert_eq!(writer.store().db.latest_sequence_number(), before.1 + 9);
     assert_eq!(inputs(&f.path()), wanted_inputs);
     let completed = snapshot(f, writer.store());
     drop(
@@ -844,11 +845,16 @@ fn successor_writer_new_event_extends_current_frontier_and_certifies_both_genera
         [vec![1, 2], 4_u64.to_be_bytes().to_vec()].concat()
     );
     assert_eq!(value(writer.store(), producer_key(3)), marker(false, 1));
+    let current = kv(writer.store());
+    let counter = literal_pending_accounting(&current, writer.manifest().encode().as_bytes(), 4);
+    assert_eq!(value(writer.store(), IngestKey::PendingAccounting), counter);
+    assert_current_accounting(&current);
     for row in before.0.iter().filter(|row| {
         row.1 != source_key(3).encode().unwrap().as_bytes()
             && row.1 != producer_key(3).encode().unwrap().as_bytes()
+            && !(row.0 == "default" && row.1 == [1, 11])
     }) {
-        assert!(kv(writer.store()).contains(row));
+        assert!(current.contains(row));
     }
     let after = snapshot(&f, writer.store());
     let repeated = PreparedEvent::new(

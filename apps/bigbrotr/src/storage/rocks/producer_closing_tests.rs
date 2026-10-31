@@ -42,6 +42,19 @@ fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
                 .db
                 .put([1, 1], altered.encode().as_bytes())
                 .unwrap();
+            // Rebind only the complete fixture metadata, preserving its P/S.
+            // This must reach the invalid owner guard after current admission.
+            let counter = literal_pending_accounting(
+                &kv(&recovery.store),
+                altered.encode().as_bytes(),
+                recovery.store.accounting.source_through(),
+            );
+            recovery.store.db.put([1, 11], counter).unwrap();
+            let seeded = (
+                kv(&recovery.store),
+                recovery.store.db.latest_sequence_number(),
+                inputs(&path),
+            );
             drop(recovery);
             let mut recovery = IngestRecovery::inspect(
                 &path,
@@ -50,6 +63,14 @@ fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
                 grant(&budget, 0, 128 * MIB),
             )
             .unwrap();
+            assert_eq!(
+                (
+                    kv(&recovery.store),
+                    recovery.store.db.latest_sequence_number(),
+                    inputs(&path)
+                ),
+                seeded
+            );
             assert_eq!(recovery.manifest(), &altered);
             let before = kv(&recovery.store);
             let sequence = recovery.store.db.latest_sequence_number();
@@ -123,17 +144,37 @@ fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
             assert_eq!(kv(&recovery.store), before);
             assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
             assert_eq!(inputs(), original_inputs);
-            // The same retained positive outcome becomes observable after
-            // restoring only the manifest's schema; the OPEN case may close.
+            // Restore the exact original manifest binding and the same P/S;
+            // the OPEN case may close after a real, unchanged admission.
             recovery
                 .store
                 .db
                 .put([1, 1], manifest.encode().as_bytes())
                 .unwrap();
+            let original_counter = literal_pending_accounting(
+                &before,
+                manifest.encode().as_bytes(),
+                recovery.store.accounting.source_through(),
+            );
+            assert_eq!(&original_counter[34..], &counter[34..]);
+            recovery.store.db.put([1, 11], original_counter).unwrap();
+            let mut restored = before.clone();
+            for (cf, key, value) in &mut restored {
+                if cf == "default" && key == &[1, 1] {
+                    *value = manifest.encode().as_bytes().to_vec();
+                } else if cf == "default" && key == &[1, 11] {
+                    *value = original_counter.to_vec();
+                }
+            }
+            assert_eq!(kv(&recovery.store), restored);
+            assert_eq!(inputs(), original_inputs);
             drop(recovery);
             let mut recovery =
                 IngestRecovery::open(&path, manifest, native, grant(&budget, 0, 128 * MIB))
                     .unwrap();
+            assert_eq!(kv(&recovery.store), restored);
+            assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 2);
+            assert_eq!(inputs(), original_inputs);
             drop(
                 recovery
                     .close_producer(

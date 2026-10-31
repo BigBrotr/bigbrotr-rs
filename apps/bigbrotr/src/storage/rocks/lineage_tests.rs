@@ -202,8 +202,10 @@ fn lineage_follows_all_parent_bytes_and_rejects_older_namespace_reuse() {
         IngestKey::Manifest,
         fields.next_manifest.encode().as_bytes(),
     );
-    drop(r);
-    let r = f.reopen();
+    let counter =
+        literal_pending_accounting(&kv(&r.store), fields.next_manifest.encode().as_bytes(), 0);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let r = reopen_fixture_unchanged(&f, r);
     refusal_preserves(&f, &r);
 }
 

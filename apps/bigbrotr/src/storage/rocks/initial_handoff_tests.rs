@@ -462,14 +462,40 @@ fn initial_handoff_refuses_target_keys_that_predate_the_positive_source_proof() 
                 b"conflicting retained state",
             )
             .unwrap();
+        let damaged = (
+            kv(&store),
+            store.db.latest_sequence_number(),
+            inputs(&root.path().join("db")),
+        );
         drop(store);
-        let mut recovery = IngestRecovery::open(
+        let opened = IngestRecovery::open(
             &root.path().join("db"),
             manifest,
             native,
             grant(&budget, 0, 128 * MIB),
-        )
-        .unwrap();
+        );
+        // Future source/fact rows are refused by the current all-stream census;
+        // the dictionary-only conflict must still reach the handoff guard.
+        let startup = match fault {
+            "source" => Some(PendingAccountingError::SourceMismatch),
+            "fact" => Some(PendingAccountingError::ChargeMismatch),
+            "dictionary" => None,
+            _ => unreachable!(),
+        };
+        if let Some(expected) = startup {
+            assert_eq!(
+                opened.err(),
+                Some(StoreError::InvalidAccounting(expected)),
+                "{fault}"
+            );
+            assert_eq!(
+                raw_native_snapshot(&root.path().join("db"), &budget),
+                damaged,
+                "{fault}"
+            );
+            continue;
+        }
+        let mut recovery = opened.unwrap();
         let handoff = plan(&mut recovery, &budget, 1);
         let before = kv(&recovery.store);
         let sequence = recovery.store.db.latest_sequence_number();

@@ -265,14 +265,36 @@ fn retained_progress_reader_checks_exact_key_full_hash_and_original_frontier() {
             _ => {}
         }
         drop(result);
+        let damaged = (
+            kv(&store),
+            store.db.latest_sequence_number(),
+            inputs(&root.path().join("db")),
+        );
         drop(store);
-        let recovery = IngestRecovery::open(
+        let opened = IngestRecovery::open(
             &root.path().join("db"),
             manifest,
             native,
             grant(&budget, 0, 128 * MIB),
-        )
-        .unwrap();
+        );
+        if matches!(case, "absent" | "wrong-key" | "payload-corrupt") {
+            assert_eq!(
+                opened.err(),
+                Some(StoreError::InvalidAccounting(
+                    PendingAccountingError::ScienceMismatch
+                )),
+                "{case}"
+            );
+            assert_eq!(
+                raw_native_snapshot(&root.path().join("db"), &budget),
+                damaged,
+                "{case}"
+            );
+            continue;
+        }
+        // Healthy science, acknowledged and retired variants remain admitted;
+        // their distinct frontier/read predicates must execute below.
+        let recovery = opened.unwrap();
         let scratch = grant(&budget, 4096, 0);
         let view = recovery.progress_read(&scratch).unwrap();
         let before = kv(&recovery.store);

@@ -160,8 +160,8 @@ impl PreparedEvent {
             return Err(AdmissionError::InvalidInput);
         }
         store.require_admission_owner(Some(self.request))?;
-        store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
         store.require_open_producer(self.request)?;
+        store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
         store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
     }
 

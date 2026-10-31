@@ -703,8 +703,10 @@ fn successor_recovery_keeps_epoch_255_and_full_original_spool_with_one_allocatio
         incoming = encoded;
         previous = next;
     }
-    drop(r);
-    let mut r = f.reopen();
+    // The literal 255-epoch seed is complete before the one actual admission.
+    let counter = literal_pending_accounting(&kv(&r.store), previous.encode().as_bytes(), 0);
+    put(&r.store, IngestKey::PendingAccounting, &counter);
+    let mut r = reopen_fixture_unchanged(&f, r);
     let before = snapshot(&f, &r.store);
     let minimum = 128 * 1024 + 512 * 255;
     assert!(matches!(

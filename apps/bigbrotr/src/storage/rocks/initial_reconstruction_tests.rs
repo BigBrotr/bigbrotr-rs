@@ -6,7 +6,7 @@ use super::*;
 use crate::storage::rocks::keys::IngestKey;
 use crate::storage::rocks::store::{PendingAccountingError, StoreError};
 use sha2::{Digest, Sha256};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 type Rows = Vec<(String, Vec<u8>, Vec<u8>)>;
 
@@ -43,28 +43,30 @@ impl Fixture {
     }
 }
 
+fn reopen_fixture_unchanged(fixture: &Fixture, recovery: IngestRecovery) -> IngestRecovery {
+    // Only complete, explicitly constructed seeds reach this positive admission.
+    // Capture before opening so admission cannot silently change or repair rows.
+    let before = (
+        kv(&recovery.store),
+        recovery.store.db.latest_sequence_number(),
+        inputs(&fixture.path()),
+    );
+    assert_current_accounting(&before.0);
+    drop(recovery);
+    let recovery = fixture.reopen();
+    assert_eq!(
+        (
+            kv(&recovery.store),
+            recovery.store.db.latest_sequence_number(),
+            inputs(&fixture.path())
+        ),
+        before
+    );
+    recovery
+}
+
 fn raw_snapshot(fixture: &Fixture) -> (Rows, u64, Vec<(String, Vec<u8>)>) {
-    // Observation only after product admission refuses the corrupt fixture.
-    // No usable product handle or repair is constructed by this raw reader.
-    let _native = grant(&fixture.budget, 0, 128 * MIB);
-    let db = rocksdb::DB::open_cf_for_read_only(
-        &rocksdb::Options::default(),
-        fixture.path(),
-        ["default", "facts", "receipts"],
-        false,
-    )
-    .unwrap();
-    let rows = ["default", "facts", "receipts"]
-        .into_iter()
-        .flat_map(|name| {
-            db.iterator_cf(db.cf_handle(name).unwrap(), rocksdb::IteratorMode::Start)
-                .map(move |row| {
-                    let (key, value) = row.unwrap();
-                    (name.to_string(), key.to_vec(), value.to_vec())
-                })
-        })
-        .collect();
-    (rows, db.latest_sequence_number(), inputs(&fixture.path()))
+    raw_native_snapshot(&fixture.path(), &fixture.budget)
 }
 
 fn assert_corrupt_reconstruction_refused(
@@ -194,22 +196,6 @@ fn input_name(epoch: u64, sequence: u64) -> String {
         "{}-{epoch:016x}-{sequence:016x}.cbor",
         request(7, 1).producer_slot_id
     )
-}
-
-fn inputs(path: &Path) -> Vec<(String, Vec<u8>)> {
-    let mut result: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
-        .unwrap()
-        .map(|entry| {
-            let entry = entry.unwrap();
-            assert!(entry.file_type().unwrap().is_file());
-            (
-                entry.file_name().into_string().unwrap(),
-                std::fs::read(entry.path()).unwrap(),
-            )
-        })
-        .collect();
-    result.sort();
-    result
 }
 
 fn input_digest(original: &Original) -> Digest256 {
