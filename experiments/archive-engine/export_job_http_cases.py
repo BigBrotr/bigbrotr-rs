@@ -75,10 +75,10 @@ def main(root, profile='ordinary'):
         command(*oldclient,'prepare')
         permissions='GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;'
         sql(db,permissions)
-        policy=json.loads((source/'experiments/archive-engine/receipt-policy.json').read_text())
+        policy=json.loads((source/'tests/fixtures/configuration/receipt-policy-v3.json').read_text())
         policy['settings'].update({'administration.enabled':True,'read.execution.max_memory_bytes':1073741824})
         document=json.dumps(policy,sort_keys=True,separators=(',',':'))
-        digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 2,dataset_id,1,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1; UPDATE control.datasets SET policy_revision=2; COMMIT;")
         command(*oldclient,'enroll')
         result['unselected']=json.loads(command(*client,'unselected'));assert result['unselected']['status']=='PASS'

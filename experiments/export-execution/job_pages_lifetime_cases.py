@@ -179,7 +179,7 @@ def run(root, state, sql):
         policy = json.loads(json.dumps(prior))
         policy['settings'].update({'read.cursor.ttl':5_000_000,'read.cursor.clock_skew':0})
         document = json.dumps(policy,sort_keys=True,separators=(',',':'))
-        digest = hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         query(f"""BEGIN;
             INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,
                 schema_version,document,document_digest,accepted_at_us,actor_id)

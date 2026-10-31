@@ -70,9 +70,9 @@ async fn run() {
     assert_eq!(args.len() == 8, mode.starts_with("fault-"));
     assert_eq!(args.len() == 6, mode.starts_with("read-"));
     let expected: Value = serde_json::from_slice(&std::fs::read(&args[3]).unwrap()).unwrap();
-    assert_eq!(expected["format"], "bigbrotr-product-policy/2");
+    assert_eq!(expected["format"], "bigbrotr-product-policy/3");
     let digest: [u8; 32] = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/2\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(serde_json::to_vec(&expected).unwrap())
         .finalize()
         .into();

@@ -173,7 +173,7 @@ def main():
             policy['settings'][role + '.endpoints.mode'] = 'fixed'
             policy['settings'][role + '.endpoints.urls'] = urls
         compact = json.dumps(policy, ensure_ascii=False, separators=(',', ':'), sort_keys=True)
-        digest = hashlib.sha256(b'bigbrotr/product-policy/1\0' + compact.encode()).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0' + compact.encode()).hexdigest()
         require(candidate['sha256'] == digest and int(candidate['encoded_bytes']) == len(compact.encode()), 'independent candidate identity')
         rendered = int(lab.sql(state, db, "SELECT octet_length($monitor_json$" + compact + "$monitor_json$::jsonb::text);"))
         before = lab.schema_digest(state, db)

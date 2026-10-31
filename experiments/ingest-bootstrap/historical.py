@@ -83,7 +83,7 @@ def run(pg, client, output, database, name, rows, clone):
         document = json.loads(json.dumps(base[table][0]['document']))
         document['settings']['ingest.producer_outstanding_requests'] = 16
         encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
-        digest = hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest()
         patch = dict(revision=2, previous_revision=1, document=document, document_digest='\\x'+digest)
         if table == 'policy_revisions': patch['config_revision'] = 2
         patch_bytes = json.dumps(patch,separators=(',',':')).encode().hex()
@@ -98,7 +98,7 @@ def run(pg, client, output, database, name, rows, clone):
         'missing-slot': ("DELETE FROM control.producer_slots", 'InvalidMetadata'),
         'missing-domain': ("DELETE FROM control.allocation_domains WHERE dictionary_kind=4", 'InvalidMetadata'),
         'source-incarnation': ("UPDATE control.source_streams SET owner_incarnation=decode(repeat('ab',16),'hex')", 'InvalidMetadata'),
-        'policy-schema': ("UPDATE control.policy_revisions SET schema_version=3 WHERE revision=1", 'HeadsChanged'),
+        'policy-schema': ("UPDATE control.policy_revisions SET schema_version=4 WHERE revision=1", 'HeadsChanged'),
         'ambiguous-slot': ("""
             INSERT INTO control.producer_slots
                 SELECT (jsonb_populate_record(NULL::control.producer_slots,

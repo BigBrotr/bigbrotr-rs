@@ -39,9 +39,9 @@ def main():
     output = root / 'initial-activation.json'
     require(not output.exists(), 'existing-report')
     report = {'format': 'bigbrotr-initial-activation-native/1', 'source': revision, 'binary_sha256': state['binary_sha256'], 'status': 'RUNNING', 'cases': [], 'fault_containers': [], 'observations': {}, 'server': state['server']}
-    frozen = json.loads((SOURCE / 'experiments/configuration-inspection/policy.json').read_text())
-    policy_digest = sha(b'bigbrotr/product-policy/1\0' + json.dumps(frozen, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode())
-    require(policy_digest == 'da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9', 'policy-fixture')
+    frozen = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
+    policy_digest = sha(b'bigbrotr/product-policy/3\0' + json.dumps(frozen, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode())
+    require(policy_digest == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b', 'policy-fixture')
     request = '41' * 16
     databases = []
 
@@ -77,7 +77,7 @@ def main():
             p, m = tables['policy_revisions'][0], tables['management_commands'][0]
             a = next(row for row in tables['management_audit'] if row['action'] == 'policy.activate-initial')
             c = tables['config_revisions'][0]
-            require(p == {'revision': 1, 'dataset_id': d['dataset_id'], 'previous_revision': None, 'config_revision': 1, 'schema_version': 1, 'document': policy, 'document_digest': c['document_digest'], 'accepted_at_us': m['accepted_at_us'], 'actor_id': tables['principals'][0]['principal_id']}, 'whole-policy-snapshot')
+            require(p == {'revision': 1, 'dataset_id': d['dataset_id'], 'previous_revision': None, 'config_revision': 1, 'schema_version': 3, 'document': policy, 'document_digest': c['document_digest'], 'accepted_at_us': m['accepted_at_us'], 'actor_id': tables['principals'][0]['principal_id']}, 'whole-policy-snapshot')
             require(m['actor_id'] == a['actor_id'] == p['actor_id'] and m['audit_id'] == a['audit_id'] and m['request_key'] == a['subject_id'] and m['document_digest'] == c['document_digest'] and m['expected_config_revision'] == a['config_revision'] == 1 and m['policy_revision'] == 1 and m['authority_mode'] == c['authority_mode'] and m['action'] == a['action'] == 'policy.activate-initial' and a['outcome'] == 'accepted' and a['reason'] is None and a['requester_database_role'] == 'bigbrotr_control' and a['requester_os_uid'] == os.getuid() and a['created_at_us'] == p['accepted_at_us'], 'receipt-audit-binding')
             expected_digest = sha(b'bigbrotr/activate-initial/1\0' + bytes.fromhex(d['dataset_id'][2:] + d['instance_id'][2:]) + (1).to_bytes(8, 'big') + bytes([c['authority_mode'] == 'declarative']) + bytes.fromhex(c['document_digest'][2:]))
             require(m['request_digest'] == '\\x' + expected_digest, 'independent-command-digest')

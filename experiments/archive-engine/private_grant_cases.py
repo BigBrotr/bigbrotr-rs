@@ -56,11 +56,11 @@ def main(root, history=False, export_grants=False):
         sql('bbpub_control_normal', 'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         # Fixture-only accepted policy successor. The selected Control process
         # validates both complete documents. This is not a policy-change API test.
-        policy=json.loads((source/'experiments/archive-engine/receipt-policy.json').read_text())
+        policy=json.loads((source/'tests/fixtures/configuration/receipt-policy-v3.json').read_text())
         policy['settings']['administration.enabled']=True
         if history or export_grants: policy['settings']['read.execution.max_memory_bytes']=1073741824
         document=json.dumps(policy,sort_keys=True,separators=(',',':'))
-        digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql('bbpub_control_normal',f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 2,dataset_id,1,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1; UPDATE control.datasets SET policy_revision=2; COMMIT;")
         command(*client,'enroll')
         if export_grants:
@@ -115,7 +115,7 @@ def main(root, history=False, export_grants=False):
                         assert sql('bbpub_control_normal',"SELECT (SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active')+(SELECT count(*) FROM control.snapshot_leases WHERE state='active');")=='0'
                         successor={**policy,'settings':{**policy['settings'],**changes}}
                         document=json.dumps(successor,sort_keys=True,separators=(',',':'))
-                        digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+                        digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
                         sql('bbpub_control_normal',f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT {revision},dataset_id,{revision-1},config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision={revision-1}; UPDATE control.datasets SET policy_revision={revision}; COMMIT;")
                         (root/f'out/private-grant-http/policy-{revision}.ready').write_text('accepted\n')
                     http['exit']=process.wait(timeout=60)

@@ -547,6 +547,14 @@ pub fn keys() -> Vec<Key> {
         );
     }
     add!(
+        "ingest.request_receipt_retention",
+        UInt(1, 64),
+        64,
+        "live",
+        "ingest",
+        false
+    );
+    add!(
         "network.http_redirects",
         UInt(0, 10),
         3,

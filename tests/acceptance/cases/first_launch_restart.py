@@ -36,7 +36,7 @@ def accepted_profile(state, provenance=True):
         clock(revision, 1, 1)
     assert config['document'] == policy['document']
     assert config['document_digest'] == policy['document_digest']
-    assert policy['document']['format'] == 'bigbrotr-product-policy/2'
+    assert policy['document']['format'] == 'bigbrotr-product-policy/3'
     assert policy['document']['settings']['sync.provenance'] == ('local_first_witness' if provenance else 'off'), 'accepted provenance differs'
 
 

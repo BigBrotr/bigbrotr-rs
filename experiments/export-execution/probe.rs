@@ -61,7 +61,7 @@ fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
         || digest
             != <[u8; 32]>::from(
                 Sha256::new()
-                    .chain_update(b"bigbrotr/product-policy/1\0")
+                    .chain_update(b"bigbrotr/product-policy/3\0")
                     .chain_update(expected)
                     .finalize(),
             )

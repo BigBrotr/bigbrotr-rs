@@ -131,6 +131,7 @@ fn registration() -> InitialRegistration {
             .collect(),
         producer_slot_id: [11; 16].try_into().unwrap(),
         outstanding_request_limit: 32,
+        request_receipt_retention: 64,
         created_at_us: 100,
         lease_expires_at_us: 1_000_000,
     }

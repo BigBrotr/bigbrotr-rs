@@ -64,7 +64,7 @@ is separate from safe generic settings. A max_connections value of 128 in a host
 route domain does not mean the product supports only 128 endpoints; the recipe, memory
 envelope and measured workload determine active-session capacity.
 
-The initial closed policy seed uses `bigbrotr-product-policy/1`: a compact UTF-8
+The current closed policy seed uses `bigbrotr-product-policy/3`: a compact UTF-8
 JSON object with `format` and `settings`. Settings contain every registered
 non-deployment-locked key, including explicit null and staged disabled values,
 in lexical key order. Values are the schema's normalized booleans, full-domain
@@ -90,7 +90,7 @@ and collapses negative zero. Engine/serializer upgrades must requalify these
 renderings against the real engine. Existing SQL constraints and reader caps stay
 unchanged; this refusal needs no migration and preserves already valid policy
 identities. The candidate digest is
-SHA-256 over `bigbrotr/product-policy/1\0` followed by those exact document bytes.
+SHA-256 over `bigbrotr/product-policy/3\0` followed by those exact document bytes.
 Source-file digest remains separate: comments, equivalent units and deployment
 root edits do not change the policy seed. The seed is candidate data, not accepted
 configuration, an applied security revision or a principal/action grant. Existing
@@ -100,13 +100,22 @@ encoding does not fill in the remaining unimplemented service policy families.
 
 ### Acquisition ban-policy document extension
 
-The next selected extension is `bigbrotr-product-policy/2`, with digest domain
-`bigbrotr/product-policy/2\0`. It adds the required ordinary policy setting
-`relay_policy.banned`; it does not add another desired-state authority. Existing
-v1 documents retain their exact closed setting set, bytes, digest and historical
-rows. They remain usable for the already supported non-acquisition operations.
-They cannot authorize acquisition by inventing an empty ban set. This extension
-is implementation work until its actual codec/engine/issuer evidence is recorded.
+The single current persisted policy format is `bigbrotr-product-policy/3`,
+with schema metadata3 and digest domain `bigbrotr/product-policy/3\0`. Its complete
+setting set includes `relay_policy.banned` and `ingest.request_receipt_retention`.
+The retention count accepts1..64, default64. It is independent of the producer
+outstanding window and binds to both exact accepted startup revisions/digests in
+InitialRegistration. A missing setting is refused; no seed/default projection
+repairs a stored document. The first OPEN-prefix implementation captures the
+count once at startup and keeps stop/recovery on accepted policy change; registry
+Live metadata does not claim Live application.
+
+Under Q40's preproduction consolidation, superseded formats1/2 are incompatible
+with this executable. Their source, historical inputs and evidence remain retained;
+new initialization, retry, inspection, activation and connected consumers use the
+single complete current schema. No populated policy rewrite or automatic upgrade
+is implemented. A deployment with an old schema/format must use its matching
+frozen executable or an explicitly qualified migration/recovery procedure.
 
 Ban rules are a set of closed records containing exactly `endpoint` or `host`.
 Endpoints use the existing complete ws/wss identity, including scheme, effective
@@ -121,27 +130,14 @@ Normalize, sort and deduplicate before encoding. The input array is bounded to
 100,000 entries before deduplication, like existing endpoint sets, and shares the
 10MiB input/compact/JSONB document bounds. Diagnostics redact rule values.
 
-New-format initialization and first activation must agree on schema metadata,
-format and digest domain. Accepted v1 restoration must not import a new ban value
-from the seed file. A populated v1 upgrade is a separate authenticated, idempotent
-expected-revision CAS with an explicitly selected ban set; it never rewrites old
-rows or invokes first activation over runtime history. Advancing the policy
-revision invalidates existing initial Ingest bindings and requires their explicit
-stop/transition. Issuance and both reservation/native-dispatch checks consume
-current bans under dataset serialization. Restrictive changes cancel affected
-actions, with pending/applied state reflecting actual drain. These later consumer
-and upgrade guarantees remain acceptance gates, not consequences of codec tests.
-
-The deployment TOML `config.schema_version` stays independent of persisted policy
-format. New initialization emits v2. For diagnostic comparisons and declarative
-first activation against accepted v1, encode the unchanged candidate using the
-v1 field set and digest domain. Omit only an implicit schema-default empty ban
-set: an explicit file value (including `[]`) selects new semantics and cannot
-match v1. Compare before restoring accepted values. Managed first activation
-still ignores changed seed policy; inspection reports the difference without
-replacing accepted v1. Initialization retry compares against the format and digest
-of its original historical receipt, never today's head or a guessed format. This
-projection grants no acquisition authority and cannot create a new v1 seed.
+Initialization and first activation must agree on current schema metadata,
+format and digest domain. Retry compares the exact immutable accepted receipt;
+a changed candidate never replaces accepted policy. Managed startup ignores unused
+seed policy; declarative drift remains staged/refused under its existing contract.
+Advancing accepted policy invalidates existing initial Ingest bindings and requires
+explicit stop/recovery. Restrictive ban application and populated policy transitions
+retain their separate authority/drain acceptance gates. The deployment TOML
+`config.schema_version` remains independent of persisted policy format.
 
 The finite `config inspect --file PATH` command reads the accepted configuration
 head and document in one PostgreSQL statement, under a read-only transaction and
@@ -178,8 +174,8 @@ Diagnostics redact the complete array; parse errors withhold input values.
 
 Rules are deployment locked and require controlled drain/shutdown and restart;
 there is no file watcher or live root activation. They are excluded from accepted
-v1 policy bytes, just like existing overlay proxies and TLS roots, so old accepted
-documents keep their exact settings and digest. Injecting rules into that document
+policy bytes, just like existing overlay proxies and TLS roots. Injecting rules
+into a stored policy document
 is refused. A private rule creates no identity, enrollment, socket, reader scope,
 publication permission or runtime grant. The acquisition issuer must intersect
 each enrolled route with the current ceiling and revalidate it after restart;

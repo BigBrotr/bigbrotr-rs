@@ -45,6 +45,7 @@ fn specification() -> InitialRegistration {
         ],
         producer_slot_id: ProducerSlotId::try_from([12; 16]).unwrap(),
         outstanding_request_limit: 2,
+        request_receipt_retention: 64,
         created_at_us: 100,
         lease_expires_at_us: 60_000_100,
     }

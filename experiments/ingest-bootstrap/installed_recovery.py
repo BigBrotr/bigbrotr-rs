@@ -190,7 +190,7 @@ print(json.dumps(dict(returncode=result.returncode,stdout='',stderr=result.stder
             document['settings']['ingest.producer_outstanding_requests'] = 1
             encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
             patch = dict(revision=2,previous_revision=1,document=document,
-                document_digest='\\x'+hashlib.sha256(b'bigbrotr/product-policy/2\0'+encoded).hexdigest())
+                document_digest='\\x'+hashlib.sha256(b'bigbrotr/product-policy/3\0'+encoded).hexdigest())
             if table=='policy_revisions': patch['config_revision']=2
             encoded_patch = json.dumps(patch,separators=(',',':')).encode().hex()
             statements.append(f"INSERT INTO control.{table} SELECT (jsonb_populate_record(NULL::control.{table},to_jsonb(t)||convert_from(decode('{encoded_patch}','hex'),'UTF8')::jsonb)).* FROM control.{table} t WHERE revision=1")

@@ -127,7 +127,7 @@ try:
     lab.setup(root, build, SOURCE, 'source_' + revision[:7], subnet=subnet)
     state = lab.load(root); report['server'] = state['server']; save()
     config, _ = prepare('bb_source_upgrade')
-    result = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe', 'write-v2',
+    result = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe', 'write',
         'bb_source_upgrade', '/lab/secrets/application', '/lab/upgrade-store', check=False)
     record('legacy-unbound-real-bootstrap', result.returncode == 0 and '"replay_exact":true' in result.stdout,
         stdout=result.stdout, stderr=result.stderr)

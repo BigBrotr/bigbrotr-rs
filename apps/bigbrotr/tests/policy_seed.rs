@@ -26,7 +26,7 @@ const ROOT: &str = include_str!("../../../config/recipes/archive-only.toml");
 fn normalized_policy_seed_is_distinct_from_source_and_deployment_roots() {
     let original = inspect(ROOT);
     let seed = &original["initial_policy"];
-    assert_eq!(seed["format"], "bigbrotr-product-policy/2");
+    assert_eq!(seed["format"], "bigbrotr-product-policy/3");
     assert_eq!(seed["status"], "candidate-only");
     assert_eq!(seed["sha256"].as_str().unwrap().len(), 64);
     let changed_root = ROOT

@@ -53,7 +53,7 @@ def accepted_profile(state):
            policy['revision'], policy['config_revision']], [1]*5)
     exact(config['document'], policy['document'])
     assert config['document_digest'] == policy['document_digest']
-    assert policy['document']['format'] == 'bigbrotr-product-policy/2'
+    assert policy['document']['format'] == 'bigbrotr-product-policy/3'
     settings = policy['document']['settings']
     assert settings['indexer.enabled'] is True and settings['sync.provenance'] == 'local_first_witness'
     assert type(settings['indexer.batch_max_rows']) is int and settings['indexer.batch_max_rows'] == BATCH_MAX_ROWS

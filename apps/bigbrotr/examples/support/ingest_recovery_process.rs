@@ -48,6 +48,7 @@ pub async fn run(config: Config, mode: &str, path: &Path) {
         ],
         producer_slot_id: [66; 16].try_into().unwrap(),
         outstanding_request_limit: 2,
+        request_receipt_retention: 64,
         created_at_us: row.get(1),
         lease_expires_at_us: row.get(2),
     };

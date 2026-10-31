@@ -501,7 +501,7 @@ class InitialIndexControls(unittest.TestCase):
         self.assertTrue(parsed['archive']['publisher']['enabled'])
 
     def test_both_stored_profiles_must_accept_the_small_batch(self):
-        document=dict(format='bigbrotr-product-policy/2',settings={'indexer.enabled':True,
+        document=dict(format='bigbrotr-product-policy/3',settings={'indexer.enabled':True,
             'indexer.batch_max_rows':4,'sync.provenance':'local_first_witness'})
         state=dict(datasets=[dict(config_revision=1,policy_revision=1)],
             config_revisions=[dict(revision=1,document=document,document_digest='recorded')],

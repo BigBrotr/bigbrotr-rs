@@ -35,8 +35,8 @@ Schema version and the two different documents/digests retain their own meaning.
     only(wanted['datasets']).update(config_revision=2, policy_revision=2, xmin=tx)
     for table in ('config_revisions', 'policy_revisions'):
         previous = only(before[table])
-        assert previous['revision'] == 1 and previous['schema_version'] == 2
-        assert previous['document']['format'] == 'bigbrotr-product-policy/2'
+        assert previous['revision'] == 1 and previous['schema_version'] == 3
+        assert previous['document']['format'] == 'bigbrotr-product-policy/3'
         next_row = dict(previous, revision=2, previous_revision=1,
             accepted_at_us=previous['accepted_at_us'] + 1, xmin=tx)
         if table == 'policy_revisions':

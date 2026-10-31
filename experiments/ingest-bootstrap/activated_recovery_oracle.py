@@ -170,7 +170,7 @@ def policy(wanted, setup, label, before_clock):
         value = dict(previous, revision=3, previous_revision=2, accepted_at_us=at, xmin=tx)
         if table == 'policy_revisions':
             value['config_revision'] = 3
-        assert previous['document_digest'] == '\\x' + sha(b'bigbrotr/product-policy/2\0' + encoded(previous['document']))
+        assert previous['document_digest'] == '\\x' + sha(b'bigbrotr/product-policy/3\0' + encoded(previous['document']))
         wanted[table].append(value)
     wanted['datasets'] = [dict(only(wanted['datasets']), config_revision=3, policy_revision=3, xmin=tx)]
     same(wanted, actual)

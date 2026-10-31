@@ -20,14 +20,14 @@ backend. The lab's separate setup/migration and fixture SQL writes are explicit.
 Stop only the owned lab afterward; retain evidence and protected credentials in
 its inventory. No host port or real relay is needed.
 
-`policy.json` freezes the archive-only normalized settings at source 39c34c5.
-It was transcribed from the static candidate diagnostics and registered units,
-with the three redacted empty endpoint lists restored from the recipe. This is
-not an independent oracle for static defaults. The complete fixture was read;
-its compact bytes/digest were independently reconstructed using Python's JSON
-encoder and hashlib. The runner freezes that digest and applies explicit
-mutations independently of the Rust persisted-policy decoder. Actual output
-expectations and durable nonmutation checks are separate from that decoder.
+The current [policy-v3 fixture](../../tests/fixtures/configuration/policy-v3.json)
+contains the complete explicit setting set, including empty bans and
+receipt-retention64. Its compact bytes/digest are independently reconstructed with
+Python JSON and hashlib. It supplies current persisted-policy validation inputs,
+not an independent oracle for static defaults. The original `policy.json` and its
+recorded source39c34c5/digest remain unchanged historical evidence. Required-key,
+root-injection, normalized-value and unsupported-format mutations are independent
+of the Rust decoder, with separate output and durable relation preservation checks.
 
 The harness does not qualify bootstrap, update CAS, security grants/activation,
 native writer ownership, concurrent revision publication, cancellation during a

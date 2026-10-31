@@ -56,7 +56,7 @@ pub async fn run(
         .then(|| crate::config::fixture_root(spec.dataset_id, spec.instance_id));
     let validate = |document: &str, digest| match &arrival_root {
         Some(root) => crate::config::validate_fixture_policy(document, digest, root),
-        None => validate_version(document, digest, true),
+        None => validate(document, digest),
     };
     let revision = |n: u64| Revision::try_from(n.to_string()).unwrap();
     let hash_budget = ResourceBudget::new(

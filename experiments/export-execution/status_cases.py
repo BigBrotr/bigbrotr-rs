@@ -57,7 +57,7 @@ def run(root, state, sql, policy, *, admission=False):
         assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'")=='0'
         selected=copy.deepcopy(policy);selected['settings'].update({'administration.enabled':True,'export.memory.max_bytes':268435456})
         document=json.dumps(selected,sort_keys=True,separators=(',',':'))
-        digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 3,dataset_id,2,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=2; UPDATE control.datasets SET policy_revision=3; COMMIT;")
         sql(db,'GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control;')
         # Isolated fixture account creation, not a qualification of account management.

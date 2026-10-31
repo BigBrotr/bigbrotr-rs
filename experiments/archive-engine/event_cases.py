@@ -110,7 +110,7 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False, nati
     if native_row_boundary:
         result['scope'] = ('Native exact-row boundary under exclusive trusted fixture custody. '
             'No installed Export authorization, retained job pins, manager overlap or 256MiB process claim.')
-        result['policy_sha256'] = sha(source/'experiments/archive-engine/native-row-policy.json')
+        result['policy_sha256'] = sha(source/'tests/fixtures/configuration/native-row-policy-v3.json')
         result['output_limit'] = output_limit
     if reader_custody:
         baseline = root/'out/native-tests/baseline-event-probe'
@@ -241,9 +241,9 @@ def main(root, capture_cut=False, reader_custody=False, query_lookup=False, nati
                 result[mode+'_files'] = original_files
                 policy = policy_rows(mode)
                 result[mode+'_policy'] = policy
-                literal = (source/'experiments/archive-engine/native-row-policy.json').read_bytes()
+                literal = (source/'tests/fixtures/configuration/native-row-policy-v3.json').read_bytes()
                 document = json.loads(literal)
-                policy_digest = '\\x' + hashlib.sha256(b'bigbrotr/product-policy/1\0' + literal).hexdigest()
+                policy_digest = '\\x' + hashlib.sha256(b'bigbrotr/product-policy/3\0' + literal).hexdigest()
                 assert all(len(policy[name]) == 1 and policy[name][0]['document'] == document
                            and policy[name][0]['document_digest'] == policy_digest for name in ('config', 'policy'))
                 assert policy['config'][0]['accepted_source_digest'] == '\\x' + hashlib.sha256(literal).hexdigest()

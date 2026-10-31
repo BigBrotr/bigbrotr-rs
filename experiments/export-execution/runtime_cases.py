@@ -63,10 +63,10 @@ def main(root, profile=None):
             result['migration815_checksum']=sql(db,"SELECT encode(checksum,'hex') FROM control.schema_versions WHERE migration=815")
             assert result['migration815_checksum']==sha(source/'migrations/postgres/0815_job_admission.sql');save()
         sql(db,'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
-        policy = json.loads((source/'experiments/archive-engine/receipt-policy.json').read_text())
+        policy = json.loads((source/'tests/fixtures/configuration/receipt-policy-v3.json').read_text())
         policy['settings'].update({'administration.enabled':False,'archive.worker_memory_bytes':671088640,'export.memory.max_bytes':1073741824,'export.artifact.max_bytes':2097152,'export.spill.max_bytes':134217728})
         document = json.dumps(policy,sort_keys=True,separators=(',',':'))
-        digest = hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 2,dataset_id,1,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1; UPDATE control.datasets SET policy_revision=2; COMMIT;")
         def observe():
             return json.loads(sql(db,"SELECT jsonb_build_object('states',(SELECT jsonb_agg(state ORDER BY job_id) FROM control.jobs),'units',(SELECT count(*) FROM control.export_execution_units),'artifacts',(SELECT count(*) FROM control.artifacts),'files',(SELECT count(*) FROM control.artifact_files),'readers_active',(SELECT count(*) FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) WHERE p.purpose='reader' AND l.state='active'))"))

@@ -208,8 +208,8 @@ async fn accept(
     let scope = &command.scope_id.as_bytes()[..];
     let configured = tx.query_opt(
         "SELECT e.enabled AND s.policy_revision=d.policy_revision
-                AND c.document->>'format'='bigbrotr-product-policy/2'
-                AND p.document->>'format'='bigbrotr-product-policy/2'
+                AND c.document->>'format'='bigbrotr-product-policy/3'
+                AND p.document->>'format'='bigbrotr-product-policy/3'
                 AND c.document->'settings'->'sync.enabled'='true'::jsonb
                 AND p.document->'settings'->'sync.enabled'='true'::jsonb
          FROM control.acquisition_scopes s

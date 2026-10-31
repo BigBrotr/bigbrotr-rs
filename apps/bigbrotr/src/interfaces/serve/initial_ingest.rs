@@ -496,6 +496,7 @@ async fn own(
     let timeout = duration(&root, "renewal_timeout");
     let commit = Cell::new(false);
     let mut outstanding = u64::MAX;
+    let mut receipt_retention = None;
     phase(&progress, timeout)?;
     let (owner, accepted) = bounded(timeout, &cancellation, async {
         ControlSession::acquire(
@@ -515,6 +516,12 @@ async fn own(
                 }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
+                let captured = u8::try_from(restored.number("ingest.request_receipt_retention"))
+                    .map_err(|_| OwnerError::InvalidPolicy)?;
+                if receipt_retention.is_some_and(|old| old != captured) {
+                    return Err(OwnerError::InvalidPolicy);
+                }
+                receipt_retention = Some(captured);
                 Ok(())
             },
             &commit,
@@ -582,6 +589,12 @@ async fn own(
             (
                 3,
                 "initial producer count is outside supported range".into(),
+            )
+        })?,
+        request_receipt_retention: receipt_retention.ok_or_else(|| {
+            (
+                4,
+                "initial retention setting was not captured from accepted startup policy".into(),
             )
         })?,
         created_at_us: basis.created_at_us,

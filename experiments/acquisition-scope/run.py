@@ -218,7 +218,7 @@ try:
     require(basis_before == json.loads((basis_root/'pass-final.json').read_text()), 'qualified-basis-unchanged')
     policy = basis_before['config_revisions'][0]['document']
     require(policy == basis_before['policy_revisions'][0]['document'] and
-        policy['format'] == 'bigbrotr-product-policy/2', 'exact-v2-fixture-policy')
+        policy['format'] == 'bigbrotr-product-policy/3', 'exact-v2-fixture-policy')
     (output/'policy.json').write_text(json.dumps(policy,sort_keys=True,separators=(',',':')))
     ident = lab.docker('create','--init','--name',client,'--label',label+'='+owner,
         '--network','container:'+pg['postgres'],'--user',f'{os.getuid()}:{os.getgid()}',

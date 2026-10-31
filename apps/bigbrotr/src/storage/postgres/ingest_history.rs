@@ -75,7 +75,8 @@ pub(in crate::storage::postgres) async fn reconstruct(
                substring(s.registered_by_resource_id FROM 1 FOR 17) AS control_resource,
                left(s.registered_by_epoch::text,21) AS control_epoch,
                substring(s.registered_by_incarnation FROM 1 FOR 17) AS control_incarnation,
-               substring(o.role_instance_id FROM 1 FOR 17) AS control_role
+               substring(o.role_instance_id FROM 1 FOR 17) AS control_role,
+               left(p.document->'settings'->>'ingest.request_receipt_retention',3) AS receipt_retention
           FROM control.owner_epochs i
           JOIN control.producer_epochs e
             ON e.dataset_id = i.dataset_id AND e.owner_resource_id = i.resource_id
@@ -154,6 +155,11 @@ pub(in crate::storage::postgres) async fn reconstruct(
             row.try_get::<_, i64>("request_limit").map_err(backend)?,
         )
         .map_err(|_| RegistryError::InvalidMetadata)?,
+        request_receipt_retention: row
+            .try_get::<_, &str>("receipt_retention")
+            .map_err(backend)?
+            .parse()
+            .map_err(|_| RegistryError::InvalidMetadata)?,
         created_at_us: row.try_get("acquired_at_us").map_err(backend)?,
         lease_expires_at_us: row.try_get("lease_expires_at_us").map_err(backend)?,
     })

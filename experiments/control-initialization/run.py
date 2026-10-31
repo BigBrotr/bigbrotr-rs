@@ -44,10 +44,10 @@ def main():
     require(not output.exists(), 'existing-report')
     report = {'format':'bigbrotr-control-initialization-native/1','source':revision,'binary_sha256':mounted,
               'status':'RUNNING','cases':[],'fault_containers':[], 'server':state['server']}
-    policy = json.loads((SOURCE/'experiments/configuration-inspection/policy.json').read_text())
-    fingerprint = 'da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9'
+    policy = json.loads((SOURCE/'tests/fixtures/configuration/policy-v3.json').read_text())
+    fingerprint = '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b'
     canonical = json.dumps(policy,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()
-    require(sha(b'bigbrotr/product-policy/1\0'+canonical) == fingerprint,'frozen-policy-hash')
+    require(sha(b'bigbrotr/product-policy/3\0'+canonical) == fingerprint,'frozen-policy-hash')
     databases = []
 
     def save(): lab.write_json(output,report)
@@ -90,7 +90,7 @@ def main():
             require(d['dataset_id']=='\\x'+roots['dataset_id'] and d['instance_id']=='\\x'+roots['instance_id'],'deployment-identity')
             require(d['singleton'] and d['config_revision']==1 and d['policy_revision'] is None and d['topology_generation'] is None,'no-runtime-heads')
             require(c['dataset_id']==p['dataset_id']==a['dataset_id']==d['dataset_id'],'dataset-binding')
-            require(c['revision']==1 and c['previous_revision'] is None and c['schema_version']==1 and c['authority_mode']==mode,'initial-config')
+            require(c['revision']==1 and c['previous_revision'] is None and c['schema_version']==3 and c['authority_mode']==mode,'initial-config')
             require(c['document']==policy and c['document_digest']=='\\x'+fingerprint and c['accepted_source_digest']=='\\x'+sha(local.read_bytes()),'complete-frozen-policy')
             require(c['actor_id']==p['principal_id']==a['actor_id'] and p['kind']=='installation' and p['database_role']=='bigbrotr_control' and p['local_os_uid']==os.getuid(),'attribution')
             require(d['created_at_us']==c['accepted_at_us']==p['created_at_us']==a['created_at_us'],'atomic-time')

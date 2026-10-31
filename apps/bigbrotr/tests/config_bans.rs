@@ -41,7 +41,7 @@ fn bans_are_versioned_redacted_ordinary_policy_even_when_workers_are_unselected(
     let denied = accepted("[{endpoint='wss://relay.example/PRIVATE_CANARY?token=CANARY'}]");
     assert_eq!(
         denied["initial_policy"]["format"],
-        "bigbrotr-product-policy/2"
+        "bigbrotr-product-policy/3"
     );
     assert_ne!(
         empty["initial_policy"]["sha256"],

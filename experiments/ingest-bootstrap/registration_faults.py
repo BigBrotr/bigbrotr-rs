@@ -112,8 +112,8 @@ def write_policies(directory, original):
     assert documents[0] != documents[1]
     for table, document in zip(('config_revisions', 'policy_revisions'), documents):
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-        assert document['format'] == 'bigbrotr-product-policy/2'
-        assert original[table][0]['document_digest'] == '\\x' + hashlib.sha256(b'bigbrotr/product-policy/2\0' + encoded).hexdigest()
+        assert document['format'] == 'bigbrotr-product-policy/3'
+        assert original[table][0]['document_digest'] == '\\x' + hashlib.sha256(b'bigbrotr/product-policy/3\0' + encoded).hexdigest()
     lab.write_json(directory / 'policies.json', documents)
 
 

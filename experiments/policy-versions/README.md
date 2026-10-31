@@ -1,39 +1,30 @@
-# Persisted policy version compatibility
+# Current persisted policy and incompatible-format refusals
 
-This bounded acceptance recipe uses the existing exact-Git native runner:
+Run the bounded native recipe through
 `experiments/network-transport/lab.py REVISION TREE policy-versions`.
-It requires the separately retained, hash-verified 6c52067 CLI from
-`runs/ingest-visibility-6c52067/out/artifacts`; it never rebuilds that old revision.
-The runner reuses the exclusively locked compiler cache, creates one new internal
-PostgreSQL lab, and preserves stopped containers, databases and native stores.
-The explicit /28 must pass the existing network/route overlap preflight.
+It builds the current checkout with declared dependencies and creates a fresh
+isolated PostgreSQL lab. No old executable or private historical build path is a
+prerequisite. The existing lab runner owns container/network/cache lifecycle.
 
-The old actual CLI initializes v1 managed/declarative databases. The new actual
-CLI inspects them, retries initialization, activates/replays the accepted revision
-and distinguishes implicit empty defaults from explicitly staged bans. Fresh v2
-initialization/activation runs in both modes, including a separate nonempty
-normalized ban set. Frozen settings, literal domains and independent Python
-digests supply expected documents; current product output does not supply them.
-All Control relations and row xmin are captured around each finite CLI command.
-Corrupt metadata and malformed normalized bans live only in separate clones.
+The current single policy schema is `bigbrotr-product-policy/3`. The complete
+explicit independent fixture is [policy-v3.json](../../tests/fixtures/configuration/policy-v3.json);
+Python compact JSON and SHA256 supply its expected bytes and digest. It includes
+explicit bans and receipt-retention64. Managed/declarative initialization,
+inspection, identical retry, first activation and activation retry preserve the
+accepted document. Staging retention62 does not replace accepted64; declarative
+activation refuses drift. Current initial Control/Ingest writes, native reopen
+and durable reads retain the existing independent dictionary/scientific oracle.
 
-The actual Control/Ingest probe reuses its existing dictionary bootstrap,
-identical retry, native reopen and durable read journey for v1 and explicit v2.
-The new mode changes only its independent expected document/digest. Existing
-raw-byte dictionary oracle checks nonreceipt facts/indexes/counters; historical
-configuration, policy, command, audit and principal rows remain unchanged.
-Application-driver termination is checked before stopping the owned laboratory.
+Separate cloned fixtures exercise superseded formats1/2, future4, missing bans,
+missing retention and non-normalized bans, including recomputed digests. The
+current CLI/Control owner must refuse them while preserving the full Control
+relations. Healthy originals, all failed outcomes and resource receipts remain
+retained. A before/after relation comparison is not a proof of no physical WAL or
+row-lock writes: Control acquires transaction/row locks before policy validation.
 
-This does not qualify populated upgrades, acquisition issuance, restrictive
-drain, socket admission, capacity, arm64 or release. Original failures remain
-FAIL; required scenarios not executed remain incomplete. Results belong in the
-existing implementation evidence and laboratory inventory.
-
-The policy header reader uses pinned serde/serde_core1.0.229 and
-serde_json1.0.151. Source inspection of `de/ignored_any.rs` and
-`de.rs::{ignore_value,deserialize_ignored_any}` confirms that ignored settings
-are scanned without constructing a second Value tree; iterative scratch still
-consumes memory bounded by the already capped document. This header scan is not
-the full closed setting validator. The existing512MiB parse allowance remains
-conservative, not a measured RSS or throughput claim. Endpoint identity keeps
-the existing pinned url2.5.8 normalizer; no new dependency or migration is added.
+Historical format1/2 source, inputs and executed evidence remain bound to their
+original revisions. This source recipe no longer claims compatibility with those
+formats. It does not perform a populated migration or repair incomplete documents.
+Actual native execution remains required for this new schema; static tests are
+not engine qualification. OPEN-prefix retirement, Live policy application,
+physical-growth grants, pressure/fault capacity and release remain separate gates.

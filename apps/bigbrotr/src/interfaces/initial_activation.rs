@@ -2,7 +2,6 @@ use super::postgres_command;
 use crate::config::{Resolved, policy::PolicySeed};
 use bigbrotr::{
     runtime::OwnedPermit,
-    runtime::policy_document::PolicyDocumentVersion,
     storage::postgres::activation::{self, ActivationError, ActivationRequest},
 };
 use bigbrotr_model::DatasetId;
@@ -55,10 +54,8 @@ pub(crate) fn activate(
             .map_err(|_| ActivationError::Backend)?;
         let commit_started = Cell::new(false);
         let validate = |document: &str, digest| {
-            let version = PolicyDocumentVersion::from_document(document)
-                .map_err(|_| ActivationError::PolicyInvalid)?;
             if mode == "declarative"
-                && !PolicySeed::matches_accepted(&root, version, digest)
+                && !PolicySeed::matches_accepted(&root, digest)
                     .map_err(|_| ActivationError::PolicyInvalid)?
             {
                 return Err(ActivationError::PolicyInvalid);

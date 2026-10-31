@@ -2,7 +2,6 @@
 use super::{Resolved, policy::PolicySeed, private_routes};
 use bigbrotr::{
     network::{BanSet, DirectPolicy, RouteSelection},
-    runtime::policy_document::PolicyDocumentVersion,
     storage::{
         postgres::control_owner::OwnerError,
         rocks::store::{PreparedCertification, PreparedEvent},
@@ -72,10 +71,7 @@ fn require_collection(
 fn restore_sync(root: &Resolved, document: &str, digest: [u8; 32]) -> Result<Resolved, OwnerError> {
     let accepted = PolicySeed::restore(document, digest, root.clone())
         .map_err(|_| OwnerError::InvalidPolicy)?;
-    if accepted.policy_version != PolicyDocumentVersion::V2
-        || !accepted.local("sync")
-        || !accepted.flag("sync.enabled")
-    {
+    if !accepted.local("sync") || !accepted.flag("sync.enabled") {
         return Err(OwnerError::InvalidPolicy);
     }
     Ok(accepted)
@@ -307,18 +303,6 @@ mod tests {
                 route
             ));
         }
-    }
-
-    #[test]
-    fn legacy_policy_never_inherits_empty_ban_authority() {
-        let mut accepted = root();
-        accepted.policy_version = bigbrotr::runtime::policy_document::PolicyDocumentVersion::V1;
-        assert!(!check(
-            &root(),
-            &accepted,
-            "wss://relay.example/",
-            RouteSelection::Public {}
-        ));
     }
 
     #[test]

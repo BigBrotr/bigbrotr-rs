@@ -63,7 +63,7 @@ pub async fn run(
     );
     let owner_loss = mode == "source-transport-owner-loss";
     let policy_refused = mode == "source-transport-policy-refused";
-    let validate = |doc: &str, digest| validate_version(doc, digest, true);
+    let validate = |doc: &str, digest| validate(doc, digest);
     let listener = TcpListener::bind("127.0.0.1:7447").await.unwrap();
     let endpoint = Endpoint::parse("ws://127.0.0.1:7447/private").unwrap();
     let deployment = include_str!("../../../../config/recipes/archive-only.toml")

@@ -41,7 +41,7 @@ def run(pg, client, output, database, name, rows):
     policy = rows(database)['policy_revisions'][0]['document']
     policy['settings']['network.public.enabled'] = False
     encoded = json.dumps(policy, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-    digest = hashlib.sha256(b'bigbrotr/product-policy/2\0' + encoded).hexdigest()
+    digest = hashlib.sha256(b'bigbrotr/product-policy/3\0' + encoded).hexdigest()
     lab.sql(pg, database, f"""BEGIN; SET LOCAL session_replication_role=replica;
         UPDATE control.policy_revisions SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb,
             document_digest=decode('{digest}','hex'); COMMIT;""")

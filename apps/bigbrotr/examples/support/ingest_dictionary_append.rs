@@ -86,7 +86,7 @@ pub async fn run(
             admission.required_native_bytes().unwrap(),
         )
     };
-    let validate = |d: &str, h| validate_version(d, h, true);
+    let validate = |d: &str, h| validate(d, h);
     emit(
         serde_json::json!({"event":"dictionary-before","state":ingest_snapshot::state(observer,path).await}),
     );
