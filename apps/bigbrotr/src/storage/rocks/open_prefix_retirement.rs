@@ -8,6 +8,7 @@ pub(in crate::storage) struct PrefixRetirement {
     base: Base,
     reference: BaseRef,
     old_retired: u64,
+    pending_bytes: u64,
     closing: bool,
     root: (u64, u64),
     sequence: u64,
@@ -57,6 +58,7 @@ impl PrefixRetirement {
             base,
             reference,
             old_retired: read.state.retired,
+            pending_bytes: read.pending_bytes(),
             closing: read.state.closing,
             root: read.root,
             sequence: read.sequence,
@@ -73,6 +75,9 @@ impl PrefixRetirement {
     }
     pub(in crate::storage) fn old_retired(&self) -> u64 {
         self.old_retired
+    }
+    pub(in crate::storage) fn pending_bytes(&self) -> u64 {
+        self.pending_bytes
     }
 
     fn floor(&self) -> producer_prefix::NativeFloor {

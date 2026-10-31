@@ -6,8 +6,8 @@ use crate::{
     storage::{
         producer_prefix::{Base, NativeFloor},
         rocks::store::{
-            AdmissionError, NativePrefixRead, PrefixRetirement, ProducerRecoveryLimits,
-            RetainedRequestInput, UnlinkedPrefix,
+            AdmissionError, PrefixRetirement, ProducerRecoveryLimits, RetainedRequestInput,
+            UnlinkedPrefix,
         },
     },
 };
@@ -19,6 +19,9 @@ use tokio_postgres::Transaction;
 pub(in crate::storage::postgres::control_owner) struct PendingPrefixPrepare(PrefixRetirement);
 pub(in crate::storage) struct ConfirmedPrefixPrepare(PrefixRetirement);
 impl ConfirmedPrefixPrepare {
+    pub(in crate::storage::postgres::control_owner) fn plan(&self) -> &PrefixRetirement {
+        &self.0
+    }
     pub(in crate::storage) fn into_plan(self) -> PrefixRetirement {
         self.0
     }
@@ -141,29 +144,61 @@ pub(super) async fn observe(
 pub(in crate::storage::postgres::control_owner) async fn prepare(
     tx: &Transaction<'_>,
     context: Context,
-    mut native: NativePrefixRead<'_>,
+    store: &crate::storage::rocks::store::IngestStore,
     control: ControlOwner,
     policy: PolicyEpoch,
-    _progress: &ProgressGrant,
+    progress: &ProgressGrant,
+    retention: u8,
     limits: ProducerRecoveryLimits,
     budget: &ResourceBudget,
     effects: &OwnedPermit,
     metadata: OwnedPermit,
     cancelled: &AtomicBool,
     mut authority: impl FnMut() -> Result<(), AdmissionError>,
-) -> Result<PendingPrefixPrepare, ProducerProgressError> {
+) -> Result<Option<PendingPrefixPrepare>, ProducerProgressError> {
     authority().map_err(ProducerProgressError::Native)?;
-    if context.epoch != 1 || context.prefix_context() != native.context() {
+    if context.epoch != 1
+        || context.prefix_context() != store.prefix_context(context.slot)
+        || !(1..=64).contains(&retention)
+    {
         return Err(ProducerProgressError::InvalidContext);
     }
     let snapshot = load(tx, context).await?;
+    if !snapshot.prefix_enabled || snapshot.revision == 0 {
+        return Err(ProducerProgressError::InvalidContext);
+    }
     let prior = snapshot.base.as_ref().map(|base| &base.value);
+    snapshot.require_native_base(store, context)?;
+    let (issued, acknowledged, retired, _) = store
+        .prefix_observation(context.slot)
+        .map_err(ProducerProgressError::Native)?;
+    let retained = issued
+        .checked_sub(retired)
+        .filter(|n| *n <= 64)
+        .ok_or(ProducerProgressError::InvalidContext)?;
+    if retained < u64::from(retention) {
+        return Ok(None);
+    }
+    let mut native = store
+        .prefix_read(
+            context.slot,
+            prior,
+            progress.permit(),
+            effects,
+            budget,
+            cancelled,
+            &mut authority,
+        )
+        .map_err(ProducerProgressError::Native)?;
     if !snapshot.prefix_enabled
         || snapshot.revision == 0
         || snapshot.complete != snapshot.reserved
         || snapshot.complete != native.issued()
         || native.acknowledged() != native.issued()
         || native.retired() >= native.issued()
+        || native.closing()
+        || issued != native.issued()
+        || acknowledged != native.acknowledged()
         || native
             .prior_reference()
             .map_err(ProducerProgressError::Native)?
@@ -323,7 +358,7 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     .await
     .map_err(backend)?;
     authority().map_err(ProducerProgressError::Native)?;
-    Ok(PendingPrefixPrepare(plan))
+    Ok(Some(PendingPrefixPrepare(plan)))
 }
 
 /// This operation must use a fresh authenticated transaction after unlink. It

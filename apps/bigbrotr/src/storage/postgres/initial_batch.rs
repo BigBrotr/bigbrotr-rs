@@ -34,8 +34,11 @@ use std::sync::atomic::{AtomicBool, Ordering};
 mod dispatch;
 use super::producer_progress::{self, ProducerProgressError, ProgressGrant, SyncProgress};
 use dispatch::NativeOwner;
+#[path = "initial_prefix.rs"]
+mod prefix_operations;
 #[path = "initial_progress.rs"]
 mod progress_operations;
+pub use prefix_operations::{InitialPrefixRequest, ProducerPrefixReceipt};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialOperationError<E> {
@@ -1699,6 +1702,20 @@ impl ControlSession {
         &'a mut self,
         store: &NativeOwner<'_>,
         input: InitialIngestContext<'_>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
+        self.begin_initial_native_stage(store, input, true, validate)
+            .await
+    }
+
+    /// Continue the same exclusively borrowed owner after a positively
+    /// confirmed prefix prepare. No public caller can choose continuation or
+    /// recover a failed session through this internal transaction helper.
+    async fn begin_initial_native_stage<'a, E>(
+        &'a mut self,
+        store: &NativeOwner<'_>,
+        input: InitialIngestContext<'_>,
+        new_operation: bool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
         let authority = input.authority;
@@ -1752,7 +1769,11 @@ impl ControlSession {
         )
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
-        self.begin_operation()?;
+        if new_operation {
+            self.begin_operation()?;
+        } else if self.available {
+            return Err(OwnerError::InvalidInput.into());
+        }
         let tx = application_transaction(
             &mut self.client,
             if input.progress || store.compacted() {

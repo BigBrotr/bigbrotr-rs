@@ -168,10 +168,11 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialVisibilityRequest, LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest,
-    LiveInitialEventRequest, LiveInitialObservationRequest, LiveInitialVisibilityRequest,
-    LiveSuccessorCertificationRequest, LiveSuccessorDictionaryAppendRequest,
-    LiveSuccessorEventRequest, LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest,
+    InitialPrefixRequest, InitialVisibilityRequest, LiveInitialCertificationRequest,
+    LiveInitialDictionaryAppendRequest, LiveInitialEventRequest, LiveInitialObservationRequest,
+    LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
+    LiveSuccessorDictionaryAppendRequest, LiveSuccessorEventRequest,
+    LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest, ProducerPrefixReceipt,
 };
 pub use initial_succession::{InitialSuccessionError, InitialSuccessionRequest};
 pub use producer_closing::{
