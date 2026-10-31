@@ -522,6 +522,40 @@
         "Original X18 successes and original verifier failures remain their own source-specific evidence. No relabeling or new standalone tutorial run.",
         "Code202 cause, broad query cancellation, remote exclusion, generic capacity/load/power-loss/arm64/release and all selected later milestones remain with existing task owners."
       ]
+    },
+    "current42_native2_followthrough": {
+      "status": "FAIL_PRODUCT_INITIAL_RESERVATION_PRIVATE_HELPER_ACL",
+      "source": "f67373270e3240421b6708b4d8e05e07fa69642a",
+      "counts": {
+        "collected": 11,
+        "executed": 6,
+        "failed": 1,
+        "skipped": 0,
+        "not_run": 5
+      },
+      "evidence_root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-f6737327/acceptance-grouped-second-export-r1",
+      "audit_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-f6737327/current42-failure-audit.json",
+      "audit_sha256": "a646542e9bfa19fc6770ca48613fab5fb47249fe2ae6745464d69fcc72fadc4f",
+      "diagnosis": {
+        "classification": "product",
+        "engine_error": "permission denied for function producer_prefix_deletion",
+        "context": "guard_producer_request() line 7 at IF",
+        "effect": "First ordinary native dictionary reservation INSERT is refused for the real nonowner runtime role before signed admission; no installed native2/current42 success claimed",
+        "fix": "Separate PL/pgSQL DELETE dispatch from the SQL expression in three invoker trigger guards; do not grant private helpers or make invoker guards SECURITY DEFINER",
+        "review": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-current42-prefix-invoker-critical-20261031.json",
+        "review_sha256": "d8adda78f061d2d1f2068a0048e817f3f4dc3e1383e0aa65c405adf7bb5d67e8",
+        "reviewed_sql_sha256": "fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43"
+      },
+      "custody_receipt_sha256": "cbe6aebffb7222b43dde6993f799ebb3db2043177d892a7c60052867e9c9163e",
+      "scope": "Fresh build/observer and bootstrap PASS; signed acquisition FAIL, five later stages NOT_RUN. Earlier a3 installed11 and historical M1 qualification remain source-bound, not native2 evidence.",
+      "pending_correction": {
+        "sql_sha256": "fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43",
+        "verifier_review_sha256": "3aa659fb16565a662853628fa2be3ecf1f6145bdf41dedef699232865dbc77ca",
+        "targeted_controls": "23 PASS, tool222432/exit0/0.355s; not engine evidence",
+        "receipt_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/current42-prefix-invoker/targeted-controls.json",
+        "receipt_sha256": "bb0ccb584e3c081d20c11dfb90a0d503ef56facfa91d0ab14a188c824425c015",
+        "scope": "Actual TCP runtime role/private ACL/five invoker trigger bindings; populated selected-row/checkpoint 42501 refusal controls. Original product FAIL retained. Fresh installed execution NOT_RUN."
+      }
     }
   },
   "live_readiness": {

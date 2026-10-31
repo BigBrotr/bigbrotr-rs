@@ -8,9 +8,11 @@ release, package publication, rename or production deployment.
 
 ## Main integration and demonstrated capability
 
-This integration merges **139ec8685dcc39ae72316b62821340ff7fdb442e** over published
-**de27d5106390fdef0a5fbaa8f67e001d7ecc0a33**, retaining newer operating guidance,
-CI and laboratory records. Git supplies the resulting merge SHA/upstream state.
+Published main is **f67373270e3240421b6708b4d8e05e07fa69642a**, tree9500f025,
+merging **139ec8685dcc39ae72316b62821340ff7fdb442e** over **de27d510** and retaining
+newer operating guidance, CI and laboratory records. The active correction branch
+is `work/current42-prefix-invoker-20261031`; its SQL/fixture work is not yet qualified
+or integrated. Git supplies the actual candidate commit/local state.
 Root includes the current four evidence/inventory/checkpoint records and corrects
 the experiment's obsolete private-Actions wording. No other source is folded in.
 
@@ -34,8 +36,25 @@ five-write recovery and all11 schema42 checkpoint fields before strict core math
 Root pinned run17740/reaped0 passes **409/409 controls**,0failures/errors/skips,
 25.958s. Complete logee519223 and terminal7ead4605 are under
 `.research/initial-index-recovery-qualification-20261028/native2-main-139ec868/portable-controls`.
-The unchanged1434 Rust proof is reused. Current42 installed/tutorial and hosted
-whole-workspace/platform qualification remain the next gates.
+The unchanged1434 Rust proof is reused at its recorded source and scope.
+
+Actual current42/native2 installed source **f6737327** now has a verified fresh
+parent/worker build135.299s and exact-parent observer80.167s. Installed grouped
+journey17745/reaped1 fails at first reservation after fresh schema42 bootstrap
+PASS: PostgreSQL refuses private `producer_prefix_deletion` while planning the
+ordinary INSERT trigger. Five later stages are NOT_RUN. Cleanup/custody are PASS:
+all16containers stopped/PID0/noOOM,304command PIDs and two drivers absent, borrowed
+bridge empty, cache115 released. Original data/logs/FAIL remain; audit **a646542e**
+and terminal **cbe6aebf** are linked by the Index report's
+`installed_application.current42_native2_followthrough` and inventory.
+
+The narrow migration42 correction separates procedural DELETE dispatch in three
+invoker guards. Private grants, deletion predicates and finalizer authority remain
+unchanged; critical review **d8adda78** approves SQLfd6b4373 for build/real-role
+regression only. Shared runtime-role/refusal fixtures and the raw-SQL checksum
+golden are integrated with **23 targeted controls PASS**. Critical verifier review
+**3aa659fb** closes a pre-engine five-trigger inventory finding; actual TCP/42501
+and installed current42/tutorial execution remain unqualified.
 
 The [inventory](../research/laboratory-inventory.json),
 `implementation_open_prefix_reclamation_20261030`, owns exact sources, receipts,
@@ -60,13 +79,16 @@ retains20scope+3docsPASS; three unselected jobs SKIPPED. Actual artifact/source/
 helper and public-output audit6b7feda8 found no new credentials; pattern/provider
 asynchrony limits remain. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
 separates billing refusal, cancellation, workflow/product failures and scoped PASS.
-No hosted result for this integration is invented.
+[Full f673 run](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676)
+is running AMD64/ARM64/macOS checks; no terminal result is claimed. It is separate
+from the actual installed startup FAIL and cannot qualify that missing path.
 
 ## Separate native background-error guard
 
 Worktree `.research/native-failstop-binding-20261031`, branch
-`work/native-failstop-binding-20261031`, is clean/frozen at **e871d061**.
-Its code/provenance/locks remain **d3dc8d5e**, tree60cb3ce7; e871 changes only two
+`work/native-failstop-binding-20261031`, last qualified at **e871d061**, has a Sol
+test-only real-POSIX compaction extension in progress. Its qualified
+code/provenance/locks remain **d3dc8d5e**, tree60cb3ce7; e871 changes only two
 result READMEs. This branch is not included in the current main integration.
 
 Actual d3 root run70160/reaped0 passes **5Rust +wholeC96phases +14callback cases**,
@@ -88,8 +110,9 @@ not block independent M1 integration.
 ## Resources and next action
 
 All owned completed native/PG/installed/control containers and driver identities
-are terminal and retained; no local builder, engine, watcher or autonomous
-subagent writer is active. Cache115 is released; original four single-link ELF
+are terminal and retained; no local builder or engine is active. A bounded read-only
+CI observer and the isolated Sol real-POSIX test author are active. Cache115 is released;
+original four single-link ELF
 pins and six a3 worker inputs are unchanged. Source branches139ec/e871 and all
 essential raw data, failures and current labs remain. Root is sole launcher and
 integrator. Shared archived Git/ELF aliases are immutable in bytes and metadata;
@@ -104,10 +127,11 @@ remain. Retired historical engine states need recreation before direct reread;
 no new historical runtime/content claim. The111747072B object proposal remains
 NOT_EXECUTED; immediate cleanup is unnecessary.
 
-**Next:** close/push this coherent main integration after shared documentation
-checks and incremental credential review. Observe actual full GitHub Actions;
-build source-bound installed artifacts and qualify current42 first-launch/tutorial.
-Reuse the reviewed409/Rust evidence while its relevant inputs remain unchanged.
+**Next:** integrate the bounded real-role fixture with the reviewed migration42
+branch correction, run affected controls, build the exact committed candidate and
+repeat the maintained current42 grouped two-export/restart journey. Preserve the
+original FAIL; qualify tutorial next. Observe hosted f673 independently and publish
+the coherent verified correction. Reuse unchanged Rust/oracle evidence at its scope.
 
 Remaining owners: grants/staging/scheduler/base+tail/Archive and physical growth;
 Code202/query retirement P02-T06Steps2/4/7; a99Sync/topology429; freshness/Ready65,

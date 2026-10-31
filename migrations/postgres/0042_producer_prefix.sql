@@ -418,8 +418,12 @@ DECLARE producer control.producer_epochs%ROWTYPE;
         progress control.producer_checkpoints%ROWTYPE;
         complete_through numeric := 0;
 BEGIN
-    IF TG_OP='DELETE' AND control.producer_prefix_deletion(OLD.producer_slot_id,
-            OLD.producer_epoch,OLD.dataset_id,OLD.request_sequence,NULL) THEN RETURN OLD; END IF;
+    -- Dispatch outside the SQL expression: planning an ordinary INSERT must not
+    -- require EXECUTE on the migration owner's private deletion helper.
+    IF TG_OP='DELETE' THEN
+        IF control.producer_prefix_deletion(OLD.producer_slot_id,
+                OLD.producer_epoch,OLD.dataset_id,OLD.request_sequence,NULL) THEN RETURN OLD; END IF;
+    END IF;
     IF TG_OP <> 'INSERT' THEN
         RAISE EXCEPTION 'producer request reservations are retained and immutable'
             USING ERRCODE = '23514';
@@ -485,8 +489,10 @@ CREATE OR REPLACE FUNCTION control.guard_producer_outcome() RETURNS trigger LANG
 SET search_path = pg_catalog, control AS $$
 DECLARE producer control.producer_epochs%ROWTYPE;
 BEGIN
-    IF TG_OP='DELETE' AND control.producer_prefix_deletion(OLD.producer_slot_id,
-            OLD.producer_epoch,OLD.dataset_id,OLD.request_sequence,NULL) THEN RETURN OLD; END IF;
+    IF TG_OP='DELETE' THEN
+        IF control.producer_prefix_deletion(OLD.producer_slot_id,
+                OLD.producer_epoch,OLD.dataset_id,OLD.request_sequence,NULL) THEN RETURN OLD; END IF;
+    END IF;
     IF TG_OP <> 'INSERT' THEN
         RAISE EXCEPTION 'producer outcomes are retained and immutable' USING ERRCODE = '23514';
     END IF;
@@ -639,14 +645,16 @@ END $$;
 CREATE FUNCTION control.guard_producer_prefix_dependency() RETURNS trigger
 LANGUAGE plpgsql SET search_path=pg_catalog AS $$
 BEGIN
-    IF TG_OP='DELETE' AND control.producer_prefix_deletion(OLD.producer_slot_id,
-        OLD.producer_epoch,OLD.dataset_id,NULL,OLD.source_sequence)
-        AND OLD.source_epoch=1
-        AND EXISTS(SELECT 1 FROM control.producer_epochs p JOIN control.source_streams s
-            ON s.dataset_id=p.dataset_id AND s.owner_resource_id=p.owner_resource_id
-                AND s.owner_epoch=p.owner_epoch
-            WHERE p.producer_slot_id=OLD.producer_slot_id AND p.producer_epoch=OLD.producer_epoch
-                AND s.shard_id=OLD.source_shard) THEN RETURN OLD; END IF;
+    IF TG_OP='DELETE' THEN
+        IF control.producer_prefix_deletion(OLD.producer_slot_id,
+            OLD.producer_epoch,OLD.dataset_id,NULL,OLD.source_sequence)
+            AND OLD.source_epoch=1
+            AND EXISTS(SELECT 1 FROM control.producer_epochs p JOIN control.source_streams s
+                ON s.dataset_id=p.dataset_id AND s.owner_resource_id=p.owner_resource_id
+                    AND s.owner_epoch=p.owner_epoch
+                WHERE p.producer_slot_id=OLD.producer_slot_id AND p.producer_epoch=OLD.producer_epoch
+                    AND s.shard_id=OLD.source_shard) THEN RETURN OLD; END IF;
+    END IF;
     RAISE EXCEPTION 'checkpoint dependency is immutable outside exact prefix finalization'
         USING ERRCODE='23514';
 END $$;

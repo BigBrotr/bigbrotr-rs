@@ -78262,6 +78262,38 @@
         "sha256": "7ead4605688e66b1dbe42294e42b5b581877d9ffe3efb6bae8a78e56b2616e0d",
         "result": "409tests PASS,0FAIL/errors/skips, tool17740/reaped0/25.958s; complete log retained. Deliberate negative-fixture output not reclassified as productFAIL."
       }
+    },
+    "current42_installed_followthrough": {
+      "status": "ALL_OWNED_RESOURCES_TERMINAL_RETAINED_AFTER_PRODUCT_FAIL",
+      "source": "f67373270e3240421b6708b4d8e05e07fa69642a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-f6737327",
+      "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-observer-f6737327",
+      "audit_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-f6737327/current42-failure-audit.json",
+      "audit_sha256": "a646542e9bfa19fc6770ca48613fab5fb47249fe2ae6745464d69fcc72fadc4f",
+      "custody": {
+        "status": "FAIL_PRESERVED_TERMINAL_CUSTODY_VERIFIED",
+        "receipt_sha256": "cbe6aebffb7222b43dde6993f799ebb3db2043177d892a7c60052867e9c9163e",
+        "containers": 16,
+        "container_exit_codes": {
+          "0": 15,
+          "4": 1
+        },
+        "pid0_no_oom": true,
+        "commands_joined": 304,
+        "runner_and_catalog_driver_absent": true,
+        "bridge_id": "1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f",
+        "borrowed_bridge_endpoints": 0,
+        "cache115": "released; original four immutable single-link executables unchanged"
+      },
+      "retained": "Actual parent/worker/probe/source/archive/bundle, protected credentials and data, raw original FAIL/logs and all prior evidence preserved. No additional cleanup.",
+      "partial_work": {
+        "branch": "work/current42-prefix-invoker-20261031",
+        "sql": "migrations/postgres/0042_producer_prefix.sql",
+        "author_worktree": ".research/current42-prefix-fixture-sol-20261031",
+        "author_branch": "work/current42-prefix-fixture-20261031",
+        "status": "Reviewed SQL and corrected shared fixture merged into candidate branch;23 targeted Python controls PASS. Actual engine/installed correction qualification NOT_RUN, not integrated main.",
+        "fixture_source": "f350b497bfa49d919f797404e6a19655e6b53746 plus root five-trigger correction bound by critical3aa659fb"
+      }
     }
   },
   "implementation_ci_portable_controls_20261030": {
