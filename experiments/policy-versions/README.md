@@ -101,6 +101,25 @@ confirmations create the seed. The independent oracle retains all three facts,
 two complete batch markers and their exact logical pending charge. A target ACK
 case adds one genuine successor dictionary fact and its batch marker.
 
+The seed registers all nine current dictionary kinds from creation, using unique
+domains `[60 + kind; 16]`; VisibilityScope remains `[64; 16]`. Unused kinds add
+registry/manifest metadata and no scientific facts. The candidate allocates fresh
+domains for the same nine kinds, satisfying the existing exact18-domain recovery
+binding within the266B manifest/610B handoff bounds. The oracle binds every kind
+and domain to the actual manifest and SQL rows; scientific frames and P remain
+independent of that metadata.
+
+Source close precedes release of its original registering Control. The probe
+awaits actual release and driver join, observes that exact backend pid/start
+absent, and acquires a new Control identity through complete accepted-document
+restoration. That owner retires, confirms and reclaims the predecessor. Historical
+`spec.control` stays unchanged. Preparation and activation intentionally keep the
+same owner; only after genuine successor append/drop/reopen does ACK recovery
+release/join the activator and acquire a further current Control. Independent
+snapshots require unchanged native rows/sequence, science and input files across
+both rotations, exact original fencing and only the declared owner/role effects.
+No SQL guard, lease duration, resource budget or scientific input is altered.
+
 Healthy later matching Config2/Policy5 bodies intentionally have different
 revision numbers and different complete digests. A second seed starts under that
 matching changed pair; later Config3/Policy8 remains separate. Privileged fixture
@@ -129,8 +148,13 @@ The exact `4449c1dd` parent/probe build passed. Its first PostgreSQL attempt fai
 at fixture database creation: an unquoted hyphenated label, before any of the38
 integrity checks. That original failure remains retained. The corrected fixture
 and all38 integrity checks remain **NOT_RUN** until the fresh batch completes;
-the built source and current harness are reported separately. Portable false-PASS controls are
-available with:
+the built source and current harness are reported separately. The subsequent
+`39e1e4aa` build also passed, and its actual PostgreSQL run passed all four
+catalog/role/initialization/activation prerequisites. It then refused seed
+retirement under the unfenced original Control. That fixture failure and its
+native/input/SQL state remain preserved. The corrected lifecycle and all38 scoped
+checks remain NOT_RUN and require their own probe compilation and pertinent
+review. Portable false-PASS controls are available with:
 
 ```sh
 python3 -B -m unittest discover -s tests/acceptance -p test_historical_integrity.py -v

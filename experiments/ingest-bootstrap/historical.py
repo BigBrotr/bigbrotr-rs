@@ -93,6 +93,85 @@ def verify_activation(before, after):
         assert before['state'][key]==after['state'][key]
 
 
+def verify_control_rotation(events, stage, next_role, next_incarnation):
+    """Real release/join/acquire changes only the declared Control lifecycle."""
+    def frame(suffix):
+        value,=[e for e in events if e['event']=='history-integrity-state' and e['stage']==stage+'-'+suffix]
+        return value,{k:json.loads(v) for k,v in value['state']['control_tables']}
+    before,old=frame('before-control-release')
+    ended,released=frame('after-control-release')
+    after,current=frame('after-control-acquire')
+    assert old.keys()==released.keys()==current.keys()
+    for name in old.keys()-{'owner_epochs','role_instances'}:
+        assert old[name]==released[name]==current[name],name
+    for snapshot in (ended,after):
+        assert snapshot['rows']==before['rows']
+        for key in ('native_rows','native_sha256','sequence','originals'):
+            assert snapshot['state'][key]==before['state'][key]
+    original,=[r for r in old['owner_epochs'] if r['role']=='control' and r['state']=='active']
+    if stage=='seed':
+        registrar,=old['producer_slots']
+        expected=(registrar['registered_by_resource_id'],registrar['registered_by_epoch'],registrar['registered_by_incarnation'])
+    else:
+        activation,=old['initial_ingest_activations']
+        expected=(activation['activated_by_resource'],activation['activated_by_epoch'],activation['activated_by_incarnation'])
+    identity=(original['resource_id'],original['epoch'],original['process_incarnation'])
+    assert identity==expected
+    owners=lambda rows:{(r['resource_id'],r['epoch']):r for r in rows['owner_epochs']}
+    roles=lambda rows:{r['role_instance_id']:r for r in rows['role_instances']}
+    prior,end,now=map(owners,(old,released,current))
+    key=identity[:2]
+    assert prior.keys()==end.keys() and all(prior[k]==end[k] for k in prior.keys()-{key})
+    digest=hashlib.sha256(b'bigbrotr/control-exclusion/1\0'+bytes.fromhex(original['dataset_id'][2:])
+        +bytes.fromhex(identity[0][2:])+identity[1].to_bytes(8,'big')+bytes.fromhex(identity[2][2:])*2).hexdigest()
+    assert isinstance(end[key]['released_at_us'],int) and int(end[key]['xmin'])>0
+    assert end[key]==dict(original,state='released',exclusion_method='storage_fenced',
+        exclusion_digest='\\x'+digest,released_at_us=end[key]['released_at_us'],xmin=end[key]['xmin'])
+    old_roles,end_roles,new_roles=map(roles,(old,released,current))
+    old_role=original['role_instance_id']
+    assert old_roles.keys()==end_roles.keys()
+    assert all(old_roles[k]==end_roles[k] for k in old_roles.keys()-{old_role})
+    assert old_roles[old_role]['retired_at_us'] is None and isinstance(end_roles[old_role]['retired_at_us'],int)
+    assert end_roles[old_role]==dict(old_roles[old_role],retired_at_us=end_roles[old_role]['retired_at_us'],xmin=end_roles[old_role]['xmin'])
+    assert all(now[k]==v for k,v in end.items()) and len(now)==len(end)+1
+    new_key,=now.keys()-end.keys()
+    fresh=now[new_key]
+    assert new_key==(identity[0],identity[1]+1)
+    assert fresh['control_fence_version']==1 and fresh['control_backend_pid']>0 and fresh['control_backend_start'] is not None
+    assert (fresh['control_backend_pid'],fresh['control_backend_start'])!=(original['control_backend_pid'],original['control_backend_start'])
+    assert fresh['lease_expires_at_us']-fresh['acquired_at_us']==60_000_000
+    assert fresh==dict(original,epoch=identity[1]+1,role_instance_id='\\x'+bytes([next_role]*16).hex(),
+        process_incarnation='\\x'+bytes([next_incarnation]*16).hex(),acquired_at_us=fresh['acquired_at_us'],
+        lease_expires_at_us=fresh['lease_expires_at_us'],control_backend_pid=fresh['control_backend_pid'],
+        control_backend_start=fresh['control_backend_start'],xmin=fresh['xmin'])
+    assert all(new_roles[k]==v for k,v in end_roles.items()) and len(new_roles)==len(end_roles)+1
+    role,=new_roles.keys()-end_roles.keys()
+    assert role==fresh['role_instance_id']
+    assert new_roles[role]==dict(old_roles[old_role],role_instance_id=role,
+        created_at_us=new_roles[role]['created_at_us'],xmin=new_roles[role]['xmin'])
+    event,=[e for e in events if e['event']=='history-integrity-control' and e['stage']==stage]
+    assert event==dict(event='history-integrity-control',stage=stage,resource=identity[0][2:],epoch=identity[1],
+        role=old_role[2:],incarnation=identity[2][2:],released=True,driver_joined=True,backend_absent=True)
+
+
+def verify_current_domains(native, tables):
+    """Bind all nine actual namespaces without adding scientific records."""
+    manifest,=[bytes.fromhex(r['value']) for r in native['rows'] if r['cf']=='default' and r['key']=='0101']
+    assert len(manifest)==266 and manifest[102:104]==b'\x01\x09'
+    domains={int.from_bytes(manifest[i:i+2],'big'):'\\x'+manifest[i+2:i+18].hex() for i in range(104,266,18)}
+    assert sorted(domains)==list(range(1,10)) and len(set(domains.values()))==9
+    epoch=int.from_bytes(manifest[54:62],'big')
+    rows=tables['allocation_domains']
+    assert len(rows)==epoch*9
+    assert all(r['dataset_id']=='\\x'+manifest[10:26].hex()
+               and r['owner_resource_id']=='\\x'+manifest[34:50].hex() for r in rows)
+    assert {r['dictionary_kind']:r['allocation_domain'] for r in rows if r['owner_epoch']==1}=={
+        n:'\\x'+bytes([60+n]*16).hex() for n in range(1,10)}
+    assert {r['dictionary_kind']:r['allocation_domain'] for r in rows if r['owner_epoch']==epoch}==domains
+    if epoch==2:
+        assert not set(domains.values())&{r['allocation_domain'] for r in rows if r['owner_epoch']==1}
+
+
 def expected(state, native):
     """Independent full registration projection from captured original rows/bytes."""
     manifest, = [bytes.fromhex(r['value']) for r in native['rows']
@@ -456,6 +535,8 @@ def run_current(state, output, contents, record, prepare, call, inventory):
             return directory
         originals = only(events,'history-integrity-state',stage='seed-originals')
         compacted = only(events,'history-integrity-state',stage='seed-compacted')
+        verify_control_rotation(events,'seed',33,43)
+        verify_current_domains(dict(rows=compacted['rows']),after)
         assert dict(originals['state']['originals']) == current_originals(bytes.fromhex(dataset))
         assert dict(compacted['state']['originals']) == {} and original_inputs(directory) == {}
         assert verify_native(dict(rows=originals['rows'])) == verify_native(dict(rows=compacted['rows']))
@@ -621,6 +702,7 @@ def run_current(state, output, contents, record, prepare, call, inventory):
             (output/(name+'.stderr')).write_text(stderr)
             assert code==0 and not stderr,(name,code,stderr)
             events=[json.loads(line) for line in stdout.splitlines()]
+            if phase=='ack': verify_control_rotation(events,'ack',212,222)
             before=only(events,'history-integrity-state',stage='before-action')
             after=only(events,'history-integrity-state',stage='after-action')
             assert sorted(k for k,_ in before['state']['control_tables'])==inventory['tables']
@@ -632,6 +714,7 @@ def run_current(state, output, contents, record, prepare, call, inventory):
                 verify_activation(before,after)
             target=None if phase=='activation' else only(events,'history-integrity-target-input')
             verify_native(dict(rows=after['rows']),target=target)
+            verify_current_domains(dict(rows=after['rows']),{k:json.loads(v) for k,v in after['state']['control_tables']})
             actual=only(events,'history-integrity-result')
             assert actual['success']==(fault is None)
             assert actual['error']==(None if fault is None else 'Registry(InvalidMetadata)')

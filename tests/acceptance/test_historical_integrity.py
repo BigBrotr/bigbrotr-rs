@@ -132,6 +132,88 @@ class HistoricalRevisionControls(unittest.TestCase):
                             self.before['config_revisions'][0]['document']['settings']['ingest.request_receipt_retention'])
 
 
+def rotation(stage):
+    epoch,old_role,old_inc,next_role,next_inc=(1,31,41,33,43) if stage=='seed' else (3,211,221,212,222)
+    ident=lambda n:'\\x'+bytes([n]*16).hex()
+    original=dict(dataset_id=ident(1),resource_id=ident(90),epoch=epoch,role='control',
+        role_instance_id=ident(old_role),process_incarnation=ident(old_inc),acquired_at_us=100,
+        lease_expires_at_us=60_000_100,state='active',released_at_us=None,
+        exclusion_method=None,exclusion_digest=None,control_fence_version=1,
+        control_backend_pid=101,control_backend_start='original-start',xmin='5')
+    role=dict(role_instance_id=ident(old_role),dataset_id=ident(1),role='control',
+              created_at_us=90,retired_at_us=None,xmin='4')
+    tables=dict(owner_epochs=[original],role_instances=[role],source_streams=[dict(state='closed')],
+        producer_slots=[dict(registered_by_resource_id=ident(90),registered_by_epoch=epoch,
+                             registered_by_incarnation=ident(old_inc))],initial_ingest_activations=[])
+    if stage=='ack': tables['initial_ingest_activations']=[dict(activated_by_resource=ident(90),
+        activated_by_epoch=epoch,activated_by_incarnation=ident(old_inc))]
+    digest=hashlib.sha256(b'bigbrotr/control-exclusion/1\0'+bytes([1]*16)+bytes([90]*16)
+        +epoch.to_bytes(8,'big')+bytes([old_inc]*32)).hexdigest()
+    released=copy.deepcopy(tables)
+    released['owner_epochs'][0].update(state='released',released_at_us=150,exclusion_method='storage_fenced',
+                                       exclusion_digest='\\x'+digest,xmin='6')
+    released['role_instances'][0].update(retired_at_us=155,xmin='6')
+    current=copy.deepcopy(released)
+    current['owner_epochs'].append(dict(original,epoch=epoch+1,role_instance_id=ident(next_role),
+        process_incarnation=ident(next_inc),acquired_at_us=200,lease_expires_at_us=60_000_200,
+        control_backend_pid=102,control_backend_start='fresh-start',xmin='8'))
+    current['role_instances'].append(dict(role,role_instance_id=ident(next_role),created_at_us=190,xmin='8'))
+    def snapshot(suffix,rows):
+        return dict(event='history-integrity-state',stage=stage+'-'+suffix,rows=[],
+            state=dict(control_tables=[(k,json.dumps(v)) for k,v in rows.items()],
+                       native_rows=0,native_sha256='unchanged',sequence=17,originals=[]))
+    events=[snapshot('before-control-release',tables),
+        dict(event='history-integrity-control',stage=stage,resource=ident(90)[2:],epoch=epoch,
+             role=ident(old_role)[2:],incarnation=ident(old_inc)[2:],released=True,driver_joined=True,backend_absent=True),
+        snapshot('after-control-release',released),snapshot('after-control-acquire',current)]
+    return events,next_role,next_inc
+
+
+class HistoricalLifecycleControls(unittest.TestCase):
+    def test_both_rotations_preserve_science_and_the_actual_original_attribution(self):
+        for stage in ('seed','ack'):
+            events,role,incarnation=rotation(stage)
+            HISTORY.verify_control_rotation(events,stage,role,incarnation)
+
+    def test_missing_join_false_fence_stale_owner_and_unrelated_effects_refuse(self):
+        for stage in ('seed','ack'):
+            events,role,incarnation=rotation(stage)
+            mutations=[]
+            joined=copy.deepcopy(events);joined[1]['driver_joined']=False;mutations.append(joined)
+            backend=copy.deepcopy(events);backend[1]['backend_absent']=False;mutations.append(backend)
+            for field,value in [('state','active'),('exclusion_digest','\\x'+'00'*32)]:
+                changed=copy.deepcopy(events)
+                rows=dict(changed[2]['state']['control_tables'])
+                owners=json.loads(rows['owner_epochs']);owners[0][field]=value
+                changed[2]['state']['control_tables']=[(k,json.dumps(owners) if k=='owner_epochs' else v) for k,v in rows.items()]
+                mutations.append(changed)
+            unrelated=copy.deepcopy(events);unrelated[3]['state']['control_tables'].append(('extra','[]'));mutations.append(unrelated)
+            native=copy.deepcopy(events);native[3]['state']['sequence']+=1;mutations.append(native)
+            stale=copy.deepcopy(events)
+            rows=dict(stale[3]['state']['control_tables'])
+            owners=json.loads(rows['owner_epochs']);owners[-1]['epoch']=owners[0]['epoch']
+            stale[3]['state']['control_tables']=[(k,json.dumps(owners) if k=='owner_epochs' else v) for k,v in rows.items()]
+            mutations.append(stale)
+            for changed in mutations:
+                with self.subTest(stage=stage,events=changed),self.assertRaises(AssertionError):
+                    HISTORY.verify_control_rotation(changed,stage,role,incarnation)
+
+    def test_all_nine_namespaces_add_no_science_and_omission_cannot_pass(self):
+        dataset=bytes([1]*16)
+        domains=[(n,bytes([60+n]*16)) for n in range(1,10)]
+        full,_,_=ORACLE.expected(dataset,True,namespaces=domains)
+        old,_,_=ORACLE.expected(dataset,True)
+        self.assertEqual([r for r in full if r[0]=='facts'],[r for r in old if r[0]=='facts'])
+        native=dict(rows=[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in full])
+        tables=dict(allocation_domains=[dict(dictionary_kind=n,allocation_domain='\\x'+d.hex(),owner_epoch=1,
+            dataset_id='\\x'+dataset.hex(),owner_resource_id='\\x'+bytes([61]*16).hex()) for n,d in domains])
+        HISTORY.verify_current_domains(native,tables)
+        missing=copy.deepcopy(tables);del missing['allocation_domains'][0]
+        with self.assertRaises(AssertionError): HISTORY.verify_current_domains(native,missing)
+        wrong=copy.deepcopy(tables);wrong['allocation_domains'][0]['allocation_domain']='\\x'+'ff'*16
+        with self.assertRaises(AssertionError): HISTORY.verify_current_domains(native,wrong)
+
+
 def trace(phase='activation',fault=None):
     config=lambda revision,digest:dict(revision=revision,document_digest='\\x'+digest*64)
     rows=dict(datasets=[dict(config_revision=3,policy_revision=8)],

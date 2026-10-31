@@ -185,6 +185,37 @@ async fn connect(
     let (client, driver) = config.connect(NoTls).await.unwrap();
     (client, tokio::spawn(driver))
 }
+async fn released_control_joined(
+    observer: &tokio_postgres::Client,
+    identity: ingest_registry::ControlOwner,
+    driver: tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
+    stage: &str,
+) {
+    crate::ingest_closing::join(driver, false).await;
+    let absent: bool = observer
+        .query_one(
+            "SELECT NOT EXISTS(SELECT 1 FROM pg_stat_activity a JOIN control.owner_epochs o
+          ON a.pid=o.control_backend_pid AND a.backend_start=o.control_backend_start
+          WHERE o.resource_id=$1::bytea AND o.epoch=$2::text::numeric)",
+            &[
+                &&identity.resource_id.as_bytes()[..],
+                &identity.epoch.get().to_string(),
+            ],
+        )
+        .await
+        .unwrap()
+        .get(0);
+    assert!(
+        absent,
+        "released original Control backend must actually exit"
+    );
+    emit(
+        serde_json::json!({"event":"history-integrity-control","stage":stage,
+        "resource":hex(identity.resource_id.as_bytes()),"epoch":identity.epoch.get(),
+        "role":hex(&identity.role_instance_id),"incarnation":hex(identity.process_incarnation.as_bytes()),
+        "released":true,"driver_joined":true,"backend_absent":absent}),
+    );
+}
 
 /// Two actual dictionary originals, typed progress/ACK, source retirement and
 /// closed reclamation create the reusable current compacted predecessor.
@@ -259,10 +290,14 @@ pub async fn seed(
         config_digest: Digest256::from_bytes(policy.config_digest),
         policy_digest: Digest256::from_bytes(policy.policy_digest),
         previous_topology: basis.previous_topology,
-        allocation_domains: vec![(
-            DictionaryKind::VisibilityScope,
-            [64; 16].try_into().unwrap(),
-        )],
+        allocation_domains: (1..=9)
+            .map(|number| {
+                (
+                    DictionaryKind::try_from(number).unwrap(),
+                    [60 + number as u8; 16].try_into().unwrap(),
+                )
+            })
+            .collect(),
         producer_slot_id: [66; 16].try_into().unwrap(),
         outstanding_request_limit: 2,
         intake_policy: capture.unwrap(),
@@ -395,6 +430,32 @@ pub async fn seed(
         )
         .await
         .unwrap();
+    snapshot(&observer, path, "seed-before-control-release").await;
+    let original = owner.identity();
+    assert_eq!(original, spec.control);
+    owner.release().await.unwrap();
+    released_control_joined(&observer, original, driver, "seed").await;
+    snapshot(&observer, path, "seed-after-control-release").await;
+    let (client, driver) = connect(&config).await;
+    let (mut owner, current_policy) = ControlSession::acquire(
+        client,
+        ClaimRequest {
+            dataset,
+            instance: instance.try_into().unwrap(),
+            authority_mode: "managed".into(),
+            role_instance_id: [33; 16],
+            incarnation: [43; 16].try_into().unwrap(),
+            lease_ttl: Duration::from_secs(60),
+        },
+        |d, h| validate(&root, d, h),
+        &Cell::new(false),
+    )
+    .await
+    .unwrap();
+    assert_eq!(current_policy, policy);
+    assert_eq!(owner.identity().resource_id, original.resource_id);
+    assert_eq!(owner.identity().epoch.get(), original.epoch.get() + 1);
+    snapshot(&observer, path, "seed-after-control-acquire").await;
     assert_eq!(
         owner
             .retire_initial_producer(
@@ -632,6 +693,31 @@ pub async fn private(
     drop(writer);
     let mut recovery =
         IngestRecovery::open(path, next, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    snapshot(&observer, path, "ack-before-control-release").await;
+    let original = owner.identity();
+    owner.release().await.unwrap();
+    released_control_joined(&observer, original, driver, "ack").await;
+    snapshot(&observer, path, "ack-after-control-release").await;
+    let (client, driver) = connect(&config).await;
+    let (mut owner, current_policy) = ControlSession::acquire(
+        client,
+        ClaimRequest {
+            dataset,
+            instance: instance.try_into().unwrap(),
+            authority_mode: "managed".into(),
+            role_instance_id: [212; 16],
+            incarnation: [222; 16].try_into().unwrap(),
+            lease_ttl: Duration::from_secs(60),
+        },
+        |d, h| validate(&root, d, h),
+        &Cell::new(false),
+    )
+    .await
+    .unwrap();
+    assert_eq!(current_policy, policy);
+    assert_eq!(owner.identity().resource_id, original.resource_id);
+    assert_eq!(owner.identity().epoch.get(), original.epoch.get() + 1);
+    snapshot(&observer, path, "ack-after-control-acquire").await;
     let observed = owner
         .inspect_activated_initial_producer_with_compacted(
             &recovery,
