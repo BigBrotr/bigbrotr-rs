@@ -24,8 +24,9 @@ The current source resolves the added guard API, but this historical experiment
 adapter does not install it or inject background NoSpace. Its unchanged cases do
 not qualify the new fail-stop behavior, current product profile or numerical
 bounds. The separate guard controls below establish scoped healthy API/lifetime
-and direct callback behavior. Running-DB NoSpace, concurrency and new platform
-qualification remain NOT_RUN.
+and direct callback behavior. The real POSIX frontend below is implemented but
+NOT_RUN. Running-DB NoSpace, concurrency and new platform qualification remain
+unqualified until their own recorded execution.
 
 The source audit reused by this experiment is inventoried at
 `.research/checkouts/rocks-dependency-audit-20260917/inventory.json` in the main
@@ -398,3 +399,164 @@ joined stop, failed-unlink/unknown debt, explicitly funded reopen and positive
 purge remain separate. App wiring, CW-N1/P1/P2, request65, physical bounds and
 release remain open. This component increment is not an M1 prerequisite and must
 not delay unrelated installation reconciliation.
+
+### Bounded real POSIX compaction NoSpace controls (NOT_RUN)
+
+[`background_guard_real_posix_test.cc`](background_guard_real_posix_test.cc) and
+the explicit `guard-real-posix` driver profile implement four fresh running-DB
+cases. No compilation or native execution is claimed by this source increment.
+The default driver and 14 direct callback cases keep their previous behavior.
+This frontend must link the unchanged qualified d3 Cargo release archives with
+the same pinned compiler, standard library and ABI definitions used above. It
+does not rebuild or patch the engine, provide a custom Env/FileSystem/SFM, inject
+a Status, enable SyncPoints, call Resume or perform a manual flush/compaction.
+
+Each case first checks two automatic write-buffer flushes, a successful automatic
+nontrivial compaction with actual SST output, and every accepted value. It then
+prepares two more overlapping L0 inputs. The test-only observer wraps the actual
+C-installed listener obtained from `c_options_internal.h`; it records both sides
+of each forwarded callback and the public latch. Full mode forwards both hooks;
+the three negatives forward neither, only background-error promotion, or only
+recovery veto. This intentionally changes listener topology and does not qualify
+the application's final sole-listener configuration or write/ACK enforcement.
+
+The fixture is frozen before execution:
+
+| Input or refusal boundary | Fixed value |
+| --- | --- |
+| Dedicated Linux tmpfs capacity / page size | 128 MiB / 4096 B |
+| Initial, prefill and restored available space | at least 64 MiB |
+| Admitted input SST sum refusal ceiling | 16 MiB |
+| Data | four generations, 1024 common keys, 1024 B per value |
+| Value generator | xorshift32, seed `(generation * 0x9e3779b9) XOR (index + 1)` |
+| Foreground calls | WAL-enabled synchronized generations 1,2; `kick=healthy`; generations 3,4; `kick=fault` |
+| Write buffer / maximum buffers / merge minimum | 256 KiB / 4 / 1 |
+| Automatic level compaction | trigger 2; 3 levels; dynamic level bytes off |
+| SST target / L1 target / compression | 4 MiB / 64 MiB / none |
+| Workers / subcompactions | one flush and one compaction / one |
+| WAL target / open files / background error resume count | 16 MiB / 64 / zero |
+| Other selected settings | paranoid checks, fsync; TTL and periodic compaction off |
+| Journal / file lists / status message / selected native log message | 1024 slots / 8 per job / 1024 B / 2048 B |
+| Positive-witness deadline / complete process deadline | 25 s / existing 30 s |
+| Per-case retained DB copy | at most 128 regular single-link files and 64 MiB logical bytes |
+
+These small component options differ from the application profile. They do not
+change product limits, the 64 OPEN gate, 64 GiB reserve or 16 GiB resume/input
+limits. The 16 MiB input ceiling and 64 MiB free-space predicates are predeclared
+fixture refusals, not measured physical coefficients or product reserve proofs.
+The main thread measures the actual selected input SST sizes. With one admitted
+compaction, source `EnoughRoomForCompaction` requires at most
+`2 * input_sst_sum + 256 KiB` for retry admission after NoSpace; the default SFM's
+soft recovery threshold is its admitted input reservation, and its hard threshold
+is the open-time 256 KiB buffer. The restored 64 MiB predicate covers those source
+conditions within the input ceiling. It does not bound all native file growth.
+
+An oversized batch goes into one memtable. Before the final tiny kick, the
+controller waits for the preceding automatic flush completion so the two inputs
+cannot be merged into one flush. After the selected automatic compaction is
+admitted, one bounded `OnCompactionBegin` gate stops it before `CompactionJob::Run`.
+`NotifyOnCompactionBegin` releases the DB mutex, so the final already-submitted
+synced call and the separate flush worker can finish. The controller checks both
+flush completions and the final write result before filling. It also requires
+the final flush's `OnBackgroundJobPressureChanged` snapshot with zero scheduled
+and running flushes and the admitted compaction scheduled. Source
+`BackgroundCallFlush` publishes this snapshot only after synchronous obsolete-WAL
+cleanup/context cleanup and counter decrements; default
+`avoid_unnecessary_blocking_io=false` is asserted. This prevents that flush tail
+from freeing pages after filler exhaustion. This snapshot is lifecycle
+coordination, not an SFM invocation count or a purge-credit qualification.
+No new submission
+follows that kick; selection flags set earlier are preparation, not the fault
+phase. No DB method is called reentrantly from the gate. Gate timeout fails.
+
+The controller precreates one owned filler outside the DB directory on the exact
+mount/device, writes real pages until raw filler `errno=ENOSPC`, accounts for
+short writes and allocated blocks, and records statvfs capacity/free bytes before,
+at exhaustion and after restoration. It releases the gate only at zero available
+pages. Genuine SST `OnIOError` must report retryable Append NoSpace on that job's
+output path/thread, followed by compaction failure and the two error callbacks.
+It closes the filler descriptor before unlink and records sufficient restored
+headroom before checking terminal witnesses. For retry0, it also waits for the
+native positive `Cannot clear soft error` log while full: SFM has then sampled the
+full mount and enters its source-fixed five-second wait. This avoids relying on
+an unobserved initial poll or racing the restoration record with recovery End.
+
+| Case | Required positive result after genuine compaction NoSpace |
+| --- | --- |
+| `full_guard` | soft becomes fatal preserving code/subcode/message; latch true; recovery true becomes false; after restoration native query remains fatal; latch survives actual Close/destruction |
+| `retry0_only` | soft remains soft and recovery true remains true; after restoration recovery End carries old NoSpace/new OK and a new automatic job produces SST output on the failed inputs |
+| `promotion_only` | soft becomes fatal and recovery true stays true; actual native fatal-resume log appears before close |
+| `recovery_veto_only` | status stays soft and recovery true becomes false; latch true; a new automatic job on the pending input set produces SST output after restoration |
+
+Recovery End and the new job are both required for retry0; either may come first.
+The journal preserves global slot-reservation sequence with release publication,
+native thread/job/file IDs,
+individual status fields, actual IOStatus flags, table creation/deletion events
+and selected native logger records. Logger selection is explicit; unrelated
+informational records are counted and omitted, not represented as a complete LOG.
+Error callbacks neither wait nor perform I/O. Only the foreground controller
+drains preallocated records to evidence outside tmpfs. Any journal/list/message
+overflow or truncation invalidates the run. The independent driver checks the
+frozen accepted logical data digest as well as the frontend's complete byte
+comparison, and copies surviving DB files after process reap, including failed
+state. File creation/deletion observations do not establish purge credit or
+guarantee nonzero retained partial output.
+
+Root owns compilation, trusted archive/toolchain custody, the isolated container,
+its finite resources and final exit/OOM inspection. Use the prior qualified
+toolchain/image and existing CPU/memory/network/read-only-root restrictions,
+read-only source/archive inputs, evidence on a different writable filesystem,
+and one initially empty Docker-managed tmpfs mount with exactly the capacity
+above (for example `/posix`, owned by the actual test uid/gid). Keep tmpfs below
+the existing container memory reservation. Do not mount a native compiler cache
+for this frontend-only compile/link or use a host data volume as the filler root.
+
+```sh
+"$CXX" -std=c++20 -DNDEBUG=1 -DHAVE_ALIGNED_NEW \
+  -DROCKSDB_PLATFORM_POSIX -DROCKSDB_LIB_IO_POSIX -include cstdint \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb/include" \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb" \
+  "$SOURCE/experiments/native-rocks-binding/background_guard_real_posix_test.cc" \
+  "$SYS_OUT/librocksdb.a" "$ZSTD_OUT/libzstd.a" \
+  -pthread -ldl -lrt -lm -o "$QUALIFICATION/background_guard_real_posix_test"
+python3 -B "$SOURCE/experiments/native-rocks-binding/driver.py" \
+  --profile guard-real-posix --binary "$QUALIFICATION/background_guard_real_posix_test" \
+  --source-root "$SOURCE" --source-manifest "$SOURCE_MANIFEST" \
+  --archive-source-manifest "$D3_SOURCE_MANIFEST" --native-context "$D3_NATIVE_CONTEXT" \
+  --cargo-lock "$SOURCE/Cargo.lock" --rocksdb-archive "$SYS_OUT/librocksdb.a" \
+  --zstd-archive "$ZSTD_OUT/libzstd.a" --posix-root /posix \
+  --lab-root "$QUALIFICATION/posix-cases" --output "$QUALIFICATION/posix-result.json"
+```
+
+`SOURCE_MANIFEST` binds this new test frontend/driver. `D3_SOURCE_MANIFEST` and
+`D3_NATIVE_CONTEXT` remain the original unmodified d3 source/archive receipts,
+not relabeled as the new source. The driver checks that every old source manifest
+entry is unchanged except this experiment's README/driver, plus the exact current
+call-chain/lock/provenance and frontend hashes, archive package/features/bytes and
+context. Root verifies complete source and compiler/configuration custody. The
+driver rechecks retained input hashes before/after each case, exact four-case
+inventory, exit, evidence and actual close/destruction. It never enlarges bounds
+or retunes data/options/mount size after observing a result. Its synthetic oracle
+controls can run without any compiler or engine:
+
+```sh
+python3 -B -m unittest discover -s experiments/native-rocks-binding \
+  -p test_real_posix_driver.py -v
+```
+
+`WaitForCompact(flush=false,close_db=false)` is a background-error query, not a
+join. The frontend emits `close_begin`, calls actual Close, destroys DB and queries
+the retained guard afterward. Native Close has waits without an intrinsic time
+limit; the entire child still has the unchanged 30-second driver deadline.
+Overrun, wrong producer, OOM/signal/death, missing witness, failed restoration or
+preservation is FAIL/inconclusive. Partial JSONL and DB files remain outside the
+ephemeral mount; root must verify preservation before releasing the container.
+
+Target raw syscall errno is inferred from the unchanged default POSIX ENOSPC to
+retryable NoSpace mapping; only the filler errno is directly measured. Full-guard
+exclusion of SFM recovery for this handled path is source-backed by callback
+postvalues and `HandleKnownErrors` ordering. There is no measured zero native
+invocation claim, quiet-interval oracle or public-counter substitute. This is
+Linux tmpfs POSIX qualification only: persistent media/crash behavior, other
+error producers, concurrency, funded reopen, app wiring, physical coefficients,
+CW-N1/P1/P2, OPEN65 and release gates remain open.
