@@ -1,5 +1,4 @@
 use super::*;
-use bigbrotr::runtime::policy_document::PolicyDocumentVersion;
 use serde_json::json;
 use std::{
     collections::BTreeSet,
@@ -56,7 +55,6 @@ fn fixture() -> Fixture {
         local_roles: BTreeSet::from(["index".into(), "ingest".into()]),
         dependencies: vec![],
         document_sha256: String::new(),
-        policy_version: PolicyDocumentVersion::CURRENT,
     };
     Fixture {
         _directory: directory,
