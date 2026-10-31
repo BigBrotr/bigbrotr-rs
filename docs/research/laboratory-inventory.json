@@ -77599,8 +77599,8 @@
       "worktree": ".research/open-prefix-initial-sol-20261030",
       "branch": "work/open-prefix-initial-sol-20261030",
       "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
-      "partial_commit": "e9fa4f62",
-      "state": "Prior WIP saved coherently7061e655; exact raw pending fact/marker read census added e9fa4f62. Active single-current-policy V3/startup capture work; persistent counter/grants/caller remain unqualified. rustfmt/static checks only; no Cargo/native/SQL installed execution. Original absolute64 growth gate preserved."
+      "partial_commit": "bc9d05a547bad4fcee35b7c2c6ae6a943b6d73b7",
+      "state": "Coherent policy3/startup retention source committed; V1/V2 obsolete branches removed, current fixtures/runtime guards align.271/272 portable pass,1fixed Nostr code-tree guardERROR retained. Rust/PG/native NOT_RUN; safe-point/persistentP/grants/consumers still being connected. Astra critically reviewing policy3 delta; source init-retry retained-document gap under review."
     },
     "scope": "Initial epoch1 OPEN compact base plus exact tail, authenticated request/input retirement under existing bounds. Scientific pending facts/identity/batch markers remain; generic payload GC and larger Archive history separate. Startup policy capture, stop/recovery on policy change; no promised implemented Live application.",
     "resources": "Source worktree only. No new native engine, compiler cache, build, installed case or data resource launched; root remains sole launcher.",
@@ -77624,7 +77624,17 @@
         "model": "gpt-6-astra",
         "reasoning_effort": "xhigh",
         "scope": "One finite cumulative-work initial Ingest plus exclusive sameFS PG16.15; concrete enforced bounds/remaining allocation question. No numeric coverage qualified; optional work phase-separated, maintenance preserved."
-      }
+      },
+      "bounded_source_decision": {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/decision.json",
+        "sha256": "417b7b9d105248257a0bb672536dc4203c3d378096909a2ed40b0fa233563648"
+      },
+      "exact_open_inequalities": [
+        "CW-N1 native SST/metadata output and retained-file overlap",
+        "CW-P1 allowed PG tuple/index/TOAST/FSM/VM and full-page WAL transaction output",
+        "CW-P2 whole PG background/retention/recovery allocation before refusal"
+      ],
+      "decision_state": "Finite cumulative-work direction proposed only; no complete d/R share justified, no >64 enablement. Native finite retry/logsink/drain possibilities do not close absent inequalities."
     },
     "acceptance_author": {
       "agent": "/root/grouped_acceptance_sol",
@@ -77641,7 +77651,7 @@
     }
   },
   "implementation_ci_portable_controls_20261030": {
-    "status": "CHANGES_REQUIRED_SHARED_PY311_EMPTY_SUITE_ORIGINAL_RESULTS_PRESERVED",
+    "status": "CORRECTED_CANDIDATE_BA627412_ACTUAL_PY311_PASS_HOSTED_PENDING",
     "owner": "/root",
     "model": "gpt-6.1-sol",
     "reasoning_effort": "xhigh",
@@ -77651,7 +77661,7 @@
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-10098d32",
     "custody": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-10098d32/custody.json",
     "scope": "Shared portable controls/documentation with real declared native tool/syscall prerequisites; no Cargo product build, native data engines or worker asset download. Root sole launcher; 2CPU/2GiB/512PIDs/read-only root/uid1000/no capabilities/no Docker socket/no host ports.",
-    "current_hosted": "Exact6fa run41021593508 terminal SUCCESS;30 selected checks, three native platforms; original report/skip/artifact/source audit proposal in progress. No watcher/container running.",
+    "current_hosted": "Exact6fa41021593508 is terminal auditedSUCCESS;30shared checks/three platforms,257+3+6 names each, Python358/358/352 withmac6SKIP, Rust1380/1380/1378 with3/2/2ignored. Existing P01 report owns detailed receipts; sourceba not yet hosted.",
     "remaining": "Targeted control execution, bounded independent review, then coherent integration/publication when appropriate. Measure actual controls-only hosted execution at a required eligible verifier-only increment; no benefit claim from avoided estimated work.",
     "qualification": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-python-selection-20261030/.research/ci-portable-controls-author/qualification.json",
@@ -77666,7 +77676,7 @@
       "sha256": "870934bf95e0c1e821ac57928ac33ec83b185f1a37d5bd424ee2892f801f1624"
     },
     "resources": "Both exact owned containers exited/PID0/noOOM, CLI83964 reaped1 and60490 reaped0; corrected5/5 checks PASS, actual361+10 controls. RO image/root/main object mount, private writable clean clone; /tmp destroyed at stop. Original failure/logs and new result retained; no cache, product engine or current data touched.",
-    "review_state": "CI-EMPTY-PY311: local declared bookworm/Python3.11 accepts empty discovery despite hosted3.12+ refusal. New small shared nonempty/all-skip guard authorized in separate worktree; original10098/R1/R2 remain unchanged. No product build required.",
+    "review_state": "Shared3.11 empty/all-skip falsePASS fixed and independently reviewed. Real367+10 controls+3docs PASS, CLI61626 reaped0, owned27eaedc7db20 container exited0/PID0/noOOM, source clone remains clean; no local CI resource running. Hosted full/eligible-controls qualification pending.",
     "critical_source_review": {
       "path": ".research/ci-python-selection-20261030/.research/ci-portable-controls-independent-sol/review.json",
       "sha256": "aa55cc3bad1cb5ec166c456dd14f73e7ea8b57366b92096a384f10db8f0b9e6d"
@@ -77676,6 +77686,17 @@
       "model": "gpt-6.1-sol",
       "reasoning_effort": "xhigh",
       "scope": "CI source finding/correction and exact6fa hosted evidence proposal; root only integrates/pushes."
+    },
+    "corrected_candidate": "ba627412f523cb6e86497b7ff488a63c80eb7827",
+    "corrected_worktree": ".research/ci-nonempty-controls-20261031",
+    "corrected_branch": "work/ci-nonempty-controls-20261031",
+    "root_delta_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-nonempty-controls-20261031/.research/qualification/root-delta-review.json",
+      "sha256": "07196e1fa62d805ee799cdf4a751c1098afe9ac4365d71fc7f9280ab55743006"
+    },
+    "actual_corrected_shared_py311": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-ba627412/custody.json",
+      "sha256": "28de3d2fddb378752cf6a4499a50cd2b6f8e708d624346a302929ec60e41b07c"
     }
   }
 }

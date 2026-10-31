@@ -7,17 +7,14 @@ no official release, package publication, rename or production deployment.
 
 ## Current revision and integrated capability
 
-Public and local main are `6fa24827d135cb5610237309400ccfce4e2fb67e`, push79125
-reaped0 and remote main verified exact. This coherent integration contains
-reviewed second-export sourcea3, its actual installed result, complete hosted1cb
-proof, accepted OPEN-prefix contract2a35 and audited compiler-cache retirement.
-Publication receipt is `.research/ci-publication-20261026/source-second-export-6fa24827-20261030/publication.json`;
-source reviewef10980c scans49 new commit/blob objects/10,640,954B, six benign
-occurrences/three known fingerprints, zero unclassified or concrete credentials.
-Root is merging accepted resource contractbf5 (no Rust/SQL product code); final
-merge revision is not guessed here. No OPEN-prefix implementation is integrated.
-Root-owned checkpoint/report/inventory updates after publication may be dirty;
-authors use separate worktrees.
+Public main is `6fa24827d135cb5610237309400ccfce4e2fb67e`, push79125 reaped0,
+remote exact verified. Local main10a69aaa integrates the independently closed
+resource contractbf5; root is now merging reviewed CI10098 plus guarded-suite
+correctionba627412, the exact6fa hosted evidence and current resource records.
+No OPEN-prefix Rust/SQL implementation is integrated; its source stays isolated.
+Final merge revision is not guessed here. Publication history and source scan
+remain under `.research/ci-publication-20261026`; new publication review is pending.
+Root owns the merge/report/inventory/checkpoint; authors use separate worktrees.
 
 The current coherent result extends P01-T09 composition / P08-T04 Step3: the
 original353-byte signed export and a distinct358-byte epoch2 export both survive
@@ -60,19 +57,21 @@ closure43f18eac is linked in inventory `implementation_open_prefix_reclamation_2
 Sol `/root/open_prefix_product_sol_20261031` owns the existing
 `.research/open-prefix-initial-sol-20261030` / `work/open-prefix-initial-sol-20261030`.
 Prior partial070 and all WIP are saved in7061e655; e9fa4f62 adds exact pending
-fact/marker read accounting. Connected safe-point/recovery, persistent counter,
-startup setting and consumers are still partial. Current policy V1/V2 consumers
-are mapped for bounded single-current-V3 consolidation under Q40; no arbitrary
-missing-field fill or preserved obsolete internal compatibility. rustfmt/static
-checks PASS; Cargo/native/SQL/installed checks NOT_RUN. Absolute64 gate remains.
+fact/marker read accounting; bc9d05a5 consolidates single-current policy3 and
+startup-bound retention with exact current/historical provenance. Obsolete V1/V2
+branches/private-ELF dependencies removed; corrupt/incompatible refusals remain.
+271/272 portable controls PASS with1fixed Nostr code-tree guardERROR retained;
+rustfmt/static PASS, Cargo/native/SQL/installed NOT_RUN. Connected safe-point/
+recovery, persistent counter/grants and consumers remain partial; absolute64 stays.
 
 Resource contractbf5ac2b6 closes OPD-F1/F2 with independent Astra receipt377adc8b;
 root verified source/author pins. It separates new/held/reserve credit, reconstructs
 unknown commitments before writing open/claim, and requires rounded low>=1.
-No numerical physical native/PG envelope is qualified. Astra
-`/root/open_growth_decision_astra_20261031` now owns that bounded decision: finite
-cumulative native/PG work, same actual filesystem, all writers/background work
-covered once and actual refusal predicates. Default64GiB reserve+16GiB resume
+No numerical physical native/PG envelope is qualified. Bounded source decision
+417b7b9d identifies exact CW-N1/P1/P2 output inequalities and proposed finite-work
+guards; no empirical multiplier or reserve split is accepted. Same Astra agent
+now critically reviews only policy3/startup-authority e9..bc9; a retained-document
+initialization-retry gap is being checked against the actual contract. Default64GiB reserve+16GiB resume
 margin still needs80GiB before A/d; historical67GiB floor is insufficient.
 
 Prepared acceptance1cb36983 in `.research/open-prefix-acceptance-20261030` is
@@ -86,20 +85,18 @@ No author may launch engines/builds; root is sole integrator/cache owner/launche
 No local BigBrotr engine, build, cleanup or CI watcher remains active after R2.
 Only the three source/review assignments recorded here continue. Hosted
 CI41021593508 on6fa is terminal SUCCESS; detailed proposal review is in progress.
-Root also owns clean candidate10098d32 in `.research/ci-python-selection-20261030`,
-branch `work/ci-python-selection-20261030`, for P01-T08 portable-control-only CI.
-It keeps all three platforms and full native gates for runtime/build/workflow/
-selector/unknown changes.24 targeted controls PASS; actual shared5/5 checks PASS
-(361 acceptance+10 profile, no product build/engine downloads) in the pinned
-trusted container. Original noexec-/tmp environment FAIL remains preserved;
-corrected mount changes no source or oracle. Both containers stopped, CLI83964
-reaped1/60490 reaped0. P01 report/inventory `implementation_ci_portable_controls_20261030`
-own receipts. Source review found CI-EMPTY-PY311: the documented local3.11
-image accepts an empty discovered suite, unlike hosted3.12+. Sol
-`/root/ci_controls_review_sol_20261031` preserves the superseded provisional
-verdict and is preparing a small shared nonempty/all-skip guard in a new WT.
-No fixed test-count thresholds, product rebuild or hosted speedup claim. The old
-thread-limit rejection is resolved by new explicitly configured Sol/Astra tasks. Cache115 is retained/released.
+Root owns preserved clean10098 and correctedba627412 in
+`.research/ci-nonempty-controls-20261031`, branch `work/ci-nonempty-controls-20261031`.
+Both full/reduced CI now share nonempty/all-skip guards for supported local3.11
+and hosted3.12+. Independent root delta review07196e1f PASS; actual pinned3.11.2
+shared5/5 checks PASS (367 acceptance+10 profile0skip+3docs), CLI61626 reaped0.
+Container27eaedc7db20 is stopped/PID0/noOOM, source clone clean. Original noexec
+R1FAIL,10098 R2PASS and provisional/corrected source reviews remain preserved.
+Exact6fa hosted audit57e7f7df/ordinary review is collected into P01 report:
+30/30 checks, all2442-source manifests and4 artifacts/513 members matched,
+54 benign occurrences/five known fingerprints/zero new or credential findings.
+No hosted sourceba/eligible-control-matrix success or speedup claim yet.
+Cache115 is retained/released. No local/remote engine/build remains active.
 Borrowed `bigbrotr-m1-0f80280_default` ID
 1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f
 is retained empty; never remove it or touch foreign workloads.
@@ -111,8 +108,8 @@ on exact1cb is terminal SUCCESS:30/30 selected checks across AMD/ARM/mac; each
 actually executes257 focused application controls, protocol3 and worker6 once.
 Whole Rust1380/1380/1378 PASS with3/2/2 ignored; Python353/353/347 PASS with mac6
 explicit SKIP. That run is terminal. New [run41021593508](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41021593508)
-on6fa is terminal SUCCESS:30/30 selected shared checks and scope PASS across
-three platforms; exact artifact/source/output audit proposal is being collected.
+on6fa is terminal audited SUCCESS:30/30 selected shared checks and scope PASS
+across three platforms; exact artifact/source/output audit is integrated in P01.
 Existing [P01 report](evidence/p01-ci-hosted-foundation-20261026.json)
 owns artifact/log/source maps, timings, bounded public-output review and historical
 3fed/billing/cancellation outcomes. Verified optional download caches restored on
@@ -128,12 +125,12 @@ Shared archived Git/ELF aliases are immutable in bytes AND metadata: verified
 private copy before modification/maintenance. Preserve current cache115.
 Check actual space before significant allocation, not by ritual full inventories.
 
-**Next action:** save the accepted bf5 resource-contract integration with the
-current checkpoint, collect and verify the exact6fa hosted proposal, then review
-and qualify only the small shared3.11 suite guard before CI integration/publication.
-Continue independent OPEN implementation and the bounded physical-envelope
-decision; no >64 enabling before actual qualification. No duplicate R2 or product
-build for verifier-only changes. No local/remote engine/build remains active.
+**Next action:** finish merged documentation/selection/source checks, commit and
+public-source review, then push the coherent resource+CI correction/hosted proof.
+Verify the new hosted full run; an eligible necessary verifier-only run must later
+qualify the reduced matrix. Continue connected OPEN source and policy3 critical
+review, then address concrete physical inequalities before >64 enablement. No
+duplicate R2 or product build for verifier-only changes.
 
 Remaining gates retain existing owners: Code202/query retirement P02-T06
 Steps2/4/7; a99 Sync startup/topology HTTP429 uncertainty; scalable freshness/

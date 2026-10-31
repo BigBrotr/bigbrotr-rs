@@ -3646,9 +3646,9 @@
         "scope": "OPD-F1/F2 closed: held versus new credit and reserve-funded recovery, rounded low>=1. Exact native/PG physical envelopes remain open; default64GiB+16GiB resume headroom unchanged. No request65 enablement."
       },
       "product_partial": {
-        "revision": "e9fa4f62",
+        "revision": "bc9d05a547bad4fcee35b7c2c6ae6a943b6d73b7",
         "worktree": ".research/open-prefix-initial-sol-20261030",
-        "state": "Prior WIP saved coherently7061e655; exact raw pending fact/marker read census added e9fa4f62. Active single-current-policy V3/startup capture work; persistent counter/grants/caller remain unqualified. rustfmt/static checks only; no Cargo/native/SQL installed execution. Original absolute64 growth gate preserved."
+        "state": "PriorWIP7061 and raw pending read accounting e9 are preserved; single-current-policy3 and exact startup-bound retention committedbc9.271/272 portable PASS with1fixed Nostr reviewed-tree guardERROR; rustfmt/static PASS. Rust/PG/native/connected proof NOT_RUN; persistentP/grants/safe-point/recovery/consumers remain partial, absolute64 remains."
       },
       "acceptance_preparation": {
         "revision": "1cb3698342b02659c5583d67d210fae9cc1eada5",

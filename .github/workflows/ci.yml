@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       foundation: ${{ steps.select.outputs.foundation }}
+      controls: ${{ steps.select.outputs.controls }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -49,7 +50,7 @@ jobs:
 
   documentation:
     needs: scope
-    if: needs.scope.outputs.foundation == 'false'
+    if: needs.scope.outputs.foundation == 'false' && needs.scope.outputs.controls == 'false'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -63,6 +64,39 @@ jobs:
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: documentation
+          path: |
+            .research/ci/result.json
+            .research/ci/*.log
+            .research/ci/handoff.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  controls:
+    needs: scope
+    if: needs.scope.outputs.controls == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install Linux control prerequisites
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y clang llvm libclang-dev g++ strace nodejs
+      - name: Shared portable controls and documentation
+        run: python3 tools/ci.py --controls-only --output .research/ci
+      - name: Retain public control evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: controls-${{ matrix.runner }}
           path: |
             .research/ci/result.json
             .research/ci/*.log

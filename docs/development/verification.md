@@ -10,7 +10,7 @@ The offline executable cases below require Linux and strace. The first-launch
 case has its separate declared engine prerequisites below.
 
 The GitHub workflow selects the complete native matrix for product, workflow,
-build, fixture, verifier and unknown changes. A narrow allowlist of planning,
+build, runtime fixtures and unknown changes. A narrow allowlist of planning,
 implementation, research, review and engineering Markdown/JSON plus root README,
 AGENTS and PLAN can instead select the shared documentation checks:
 
@@ -18,10 +18,28 @@ AGENTS and PLAN can instead select the shared documentation checks:
 python3 tools/ci.py --documentation-only --output .research/ci-docs
 ```
 
+Portable Python controls under `tests/acceptance`, the explicitly listed signed
+fixture/export-client/oracle/profile helpers, and this verification guide can
+instead select the control matrix on Linux amd64/arm64 and macOS:
+
+```sh
+python3 tools/ci.py --controls-only --output .research/ci-controls
+```
+
+It runs the same acceptance and export-profile controls as full CI plus the
+documentation checks, with declared native compiler/library, OpenSSL, Node and
+Linux strace prerequisites. Both required suites refuse empty discovery or an
+entirely skipped execution on every supported Python version. Tiny native-tool
+smoke probes remain real; no product, worker or Rust workspace build is required,
+and no native engine assets are downloaded. `tools/ci_changes.py` owns the explicit
+allowlist; changes to that selector, the runner, workflow, compiler inputs or unknown helpers retain full
+CI. A changed verifier still needs its affected installed path under the task's
+real-engine qualification; a control-matrix PASS does not supply that evidence.
+
 Selection uses the complete Git diff (including deletions and both rename paths),
 not a truncated provider file list. Missing comparisons, empty diffs and manual
 foundation dispatch select full checks. The selection receipt states the actual
-scope; documentation success does not qualify the product. Pushes run on main,
+scope; documentation/control success does not qualify the product. Pushes run on main,
 PRs on their merge inputs; work-branch pushes do not duplicate PR runs. Concurrent
 obsolete runs on the same ref/track are cancelled and remain incomplete evidence.
 
@@ -45,7 +63,7 @@ The native archive worker additionally needs the exact
 [engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
 with the run. After toolchain, formatting and selected dependency-policy gates,
-the Python acceptance controls run before the fresh exact-source release build.
+the Python acceptance and export-profile controls run before the fresh exact-source release build.
 They use temporary fixtures and the declared native tools, including the native
 C/C++ smoke check and Linux syscall/process observers; they do not require a
 compiled product. A control failure leaves the build and later checks NOT_RUN.

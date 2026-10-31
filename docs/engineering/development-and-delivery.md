@@ -230,6 +230,18 @@ failures and unexecuted steps. It refuses an existing result directory. A timeou
 or failed prerequisite cannot produce PASS; the command group is killed/joined.
 The 120-minute command deadline fits the existing bounded CI track.
 
+For an explicitly allowlisted portable-control-only diff, Actions runs the same
+acceptance/export-profile Python controls and documentation checks on all three
+foundation platforms through `tools/ci.py --controls-only`. The native compiler
+smoke checks and platform-specific syscall controls remain; product/worker
+compilation and native-engine downloads are unnecessary for that scope. Full
+native CI remains required for product/build/workflow/selector inputs and unknown
+changes, and dedicated installed qualifications remain with their existing task.
+The complete Git diff includes deleted and renamed inputs; no empty or missing
+comparison can bypass the native track. Control success is not product evidence.
+The existing documentation-only track remains narrower. Both reduced scopes use
+the same honest execution/termination receipts and reviewed upload allowlists.
+
 On Linux amd64, the pinned cargo-deny installation and dependency policy checks
 run after toolchain/format checks and before the fresh exact-source release
 build starts workspace/native compilation. Policy runs with `--locked` so it
