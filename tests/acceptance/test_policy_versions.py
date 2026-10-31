@@ -55,7 +55,7 @@ class PolicySchemaControls(unittest.TestCase):
 
 
 class PolicyArtifactControls(unittest.TestCase):
-    def run_preflight(self, tampered):
+    def run_preflight(self, tampered, *, historical=False):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             run = home / 'new-owned-run'
@@ -75,7 +75,9 @@ class PolicyArtifactControls(unittest.TestCase):
             )
             modules = dict(lab=lab, oracle=SimpleNamespace(expected=Mock()))
             expected = AssertionError if tampered else EngineBoundaryReached
-            with patch.object(sys, 'argv', [str(RUNNER), str(run), str(build)]), \
+            argv=[str(RUNNER), str(run), str(build)]
+            if historical: argv.append('--historical-integrity')
+            with patch.object(sys, 'argv', argv), \
                     patch.object(sys, 'path', list(sys.path)), patch.dict(sys.modules, modules):
                 if tampered:
                     with self.assertRaisesRegex(expected, 'current ingest probe differs'):
@@ -92,3 +94,9 @@ class PolicyArtifactControls(unittest.TestCase):
 
     def test_matching_current_probe_reaches_the_setup_boundary(self):
         self.run_preflight(False)
+
+    def test_historical_option_preserves_tampered_probe_refusal_before_engines(self):
+        self.run_preflight(True,historical=True)
+
+    def test_historical_option_preserves_matching_probe_admission(self):
+        self.run_preflight(False,historical=True)

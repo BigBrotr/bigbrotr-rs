@@ -1006,7 +1006,10 @@ fn main() {
     let mut config = Config::new();
     config
         .host(
-            if args[1].starts_with("history-")
+            if args[1].starts_with("history-current-") || args[1].starts_with("history-integrity-")
+            {
+                "postgres"
+            } else if args[1].starts_with("history-")
                 || args[1].starts_with("successor-")
                 || args[1].starts_with("empty-")
             {
@@ -1035,14 +1038,36 @@ fn main() {
                     .await
                     .unwrap();
             } else if args[1].starts_with("history-") {
-                ingest_history::run(
-                    config,
-                    &args[1],
-                    Path::new(&args[4]),
-                    args[5].parse().unwrap(),
-                    ingest_history::configured_instance(&args[6]),
-                )
-                .await;
+                let dataset = args[5].parse().unwrap();
+                let instance = ingest_history::configured_instance(&args[6]);
+                if args[1].starts_with("history-integrity-seed") {
+                    ingest_history::seed_integrity(
+                        config,
+                        &args[1],
+                        Path::new(&args[4]),
+                        dataset,
+                        instance,
+                    )
+                    .await;
+                } else if args[1].starts_with("history-integrity-activation-")
+                    || args[1].starts_with("history-integrity-ack-")
+                {
+                    ingest_history::private_integrity(
+                        config,
+                        &args[1],
+                        Path::new(&args[4]),
+                        dataset,
+                        instance,
+                    )
+                    .await;
+                } else {
+                    let mode = args[1]
+                        .strip_prefix("history-current-")
+                        .map(|suffix| format!("history-{suffix}"))
+                        .unwrap_or_else(|| args[1].clone());
+                    ingest_history::run(config, &mode, Path::new(&args[4]), dataset, instance)
+                        .await;
+                }
             } else if args[1].starts_with("recovery-process-") {
                 ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else if args[1].starts_with("empty-") {

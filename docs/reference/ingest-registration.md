@@ -130,6 +130,17 @@ qualification; the old results do not qualify those changes. Blocked-query
 cancellation, installed recovery and successor activation remain separate requirements
 of their owning current paths.
 
+The [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
+now prepares a genuine format2 dictionary predecessor through actual progress,
+retirement and confirmed native reclamation. It exercises original-only corruption
+after preparing a successor or minting a compacted recovered-ACK token, while
+later current documents remain healthy. Matching changed configuration/policy
+pairs use distinct revision numbers; independently rehashed inconsistent intake
+pairs refuse. Complete Control/native/input preservation and validator traces
+are independent acceptance criteria. These connected cases remain NOT_RUN until
+their frozen probe and actual PostgreSQL batch execute. The positive recovered
+ACK is nonzero idempotence, with lost-ACK advancement still unqualified.
+
 ## Same-Control scheduling renewal
 
 The explicit installed first lifetime constructs its attempt from

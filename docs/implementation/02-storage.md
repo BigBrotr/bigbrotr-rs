@@ -230,9 +230,13 @@ One owner serializes exact identity decisions for each writable directory.
   accepted startup documents. The historical registry's former metadata-only
   digest comparison did not authenticate changed original bodies under later
   current heads. Its public lookup and eight recovery/activation consumers now
-  require both complete original document restorations before capture. Source
-  review and actual original-only corruption/cap/private-effect regressions
-  remain required; the earlier policy and registry results do not close that gap.
+  require both complete original document restorations before capture. Bounded
+  source review is closed at `63ab0906`; its seven targeted Rust capture/cap
+  controls pass separately from PostgreSQL qualification. The maintained
+  [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
+  now wires38 integrity checks, including12 actual private activation/recovered-
+  ACK cases, but these connected cases remain NOT_RUN. Earlier policy/registry
+  evidence does not close the original-only corruption/private-effect gap.
   Pre-stage pending reservations, stable-low recovery and exact commit funding
   are still unwired, and the absolute64 request guard remains.
   The selected closed-initial continuation now passes on product `7d8e5998`,

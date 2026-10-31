@@ -2,6 +2,10 @@
 use super::*;
 use bigbrotr::storage::{postgres::ingest_registry, rocks::store::IngestRecovery};
 
+#[path = "ingest_history_integrity.rs"]
+mod integrity;
+pub use integrity::{private as private_integrity, seed as seed_integrity};
+
 pub async fn run(
     config: Config,
     mode: &str,
@@ -38,6 +42,9 @@ pub async fn run(
         "fixed policy must fit the declared reader cap"
     );
     let _documents = grant(&budget, 16 * MIB - 64 * 1024, 0);
+    let root = crate::config::fixture_root(dataset, configured_instance);
+    let validate =
+        |document: &str, digest| crate::config::validate_fixture_policy(document, digest, &root);
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let document_cap =
