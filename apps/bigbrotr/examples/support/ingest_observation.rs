@@ -106,7 +106,7 @@ pub async fn run(
         policy_ttl: Duration::from_secs(2),
         cancelled: &cancelled,
     };
-    let validate = |d: &str, h| validate_version(d, h, true);
+    let validate = |d: &str, h| validate(d, h);
     let before = ingest_snapshot::state(observer, path).await;
     emit(serde_json::json!({"event":"observation-before", "state":before}));
     let baseline = budget.snapshot().used().data_bytes();

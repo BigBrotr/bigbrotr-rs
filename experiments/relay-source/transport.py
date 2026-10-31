@@ -275,14 +275,14 @@ def run_cleanup_case(name, target):
 
 
 def policy_fixture(subject):
-    document = json.loads((SOURCE/'experiments/configuration-inspection/policy.json').read_text())
-    document['format'] = 'bigbrotr-product-policy/2'
+    document = json.loads((SOURCE/'tests/fixtures/configuration/policy-v3.json').read_text())
+    document['format'] = 'bigbrotr-product-policy/3'
     document['settings']['relay_policy.banned'] = [] if subject is None else [{'endpoint':subject}]
     encoded = json.dumps(document,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
-    digest = sha(b'bigbrotr/product-policy/2\0' + encoded)
-    expected = {None:'5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1',
-        'ws://127.0.0.1:7447/private':'11509ebf0022969d4d839f118b99bf3b777b9b30737a3a1af34526fb76c324f1',
-        'ws://127.0.0.1:7447/other':'9625e0f3e9452e367da1d52eadfd7779602a943213a64d20412b826a0336316a'}[subject]
+    digest = sha(b'bigbrotr/product-policy/3\0' + encoded)
+    expected = {None:'77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b',
+        'ws://127.0.0.1:7447/private':'1a9d607a52734b1c914e22a8c12ad7ad77e2d9dc6e7af379707c446e995fdb76',
+        'ws://127.0.0.1:7447/other':'68b792984ec44486e2b6f2c827ee8799c7787e7fa3c493af83aba2b77103d336'}[subject]
     require(digest == expected, 'independent-policy-digest')
     return document,digest
 
@@ -351,7 +351,7 @@ def verify_race_change(before, after, binding, name, writer_xid):
             document,digest=policy_fixture(subject)
             original=before[table][0]
             require(original['document']==policy_fixture(None)[0], 'frozen-initial-policy')
-            wanted=dict(original,revision=2,previous_revision=1,schema_version=2,document=document,
+            wanted=dict(original,revision=2,previous_revision=1,schema_version=3,document=document,
                 document_digest='\\x'+digest,accepted_at_us=original['accepted_at_us']+1,xmin=writer_xid)
             if table=='policy_revisions':wanted['config_revision']=2
             expected[table].append(wanted)

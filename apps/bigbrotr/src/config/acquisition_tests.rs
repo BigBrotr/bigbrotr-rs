@@ -397,14 +397,6 @@ fn fresh_arrival_rechecks_service_endpoint_bans_and_current_private_roots() {
         intent(event(), observation),
         LIMIT
     ));
-    accepted = root.clone();
-    accepted.policy_version = PolicyDocumentVersion::V1;
-    assert!(!check_both(
-        &policy,
-        &accepted,
-        intent(event(), observation),
-        LIMIT
-    ));
     root.values.insert(
         "network.private.rules".into(),
         json!([

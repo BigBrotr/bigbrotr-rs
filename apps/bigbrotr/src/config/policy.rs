@@ -40,13 +40,10 @@ pub(crate) struct PolicySeed {
 }
 impl PolicySeed {
     pub(crate) fn from_resolved(value: &Resolved) -> Result<Self, String> {
-        Self::for_version(value, value.policy_version)
-    }
-
-    fn for_version(value: &Resolved, version: PolicyDocumentVersion) -> Result<Self, String> {
+        let version = PolicyDocumentVersion::CURRENT;
         let mut settings = BTreeMap::new();
         for key in &value.keys {
-            if !key.root && included(version, &key.name) {
+            if !key.root {
                 // A future registry edit must not make a credential reference
                 // ordinary persisted policy just by changing its root flag.
                 if matches!(key.kind, Kind::Secret) {
@@ -58,22 +55,10 @@ impl PolicySeed {
         Self::encode(version, &settings, super::resolve::MAX_CONFIG_BYTES)
     }
 
-    /// Compatibility comparison only, before accepted restoration overwrites the
-    /// candidate. Never use the legacy projection to initialize or grant work.
-    pub(crate) fn matches_accepted(
-        candidate: &Resolved,
-        version: PolicyDocumentVersion,
-        digest: [u8; 32],
-    ) -> Result<bool, String> {
-        if version == PolicyDocumentVersion::V1
-            && let Some(bans) = candidate.values.get("relay_policy.banned")
-            && (candidate.sources.get("relay_policy.banned") != Some(&"schema-default")
-                || !bans.as_array().is_some_and(Vec::is_empty))
-        {
-            // Even explicit [] selects new semantics, not the absence in v1.
-            return Ok(false);
-        }
-        Ok(Self::for_version(candidate, version)?.digest == digest)
+    /// Candidate comparison only, before accepted restoration overwrites it.
+    /// The single current schema has no missing-key projection or backfill.
+    pub(crate) fn matches_accepted(candidate: &Resolved, digest: [u8; 32]) -> Result<bool, String> {
+        Ok(Self::from_resolved(candidate)?.digest == digest)
     }
 
     fn encode(
@@ -122,18 +107,12 @@ impl PolicySeed {
         digest: [u8; 32],
         mut root: Resolved,
     ) -> Result<Resolved, String> {
-        let version = PolicyDocumentVersion::from_document(document)?;
+        PolicyDocumentVersion::from_document(document)?;
         let mut value: Value = serde_json::from_str(document)
             .map_err(|_| "invalid stored policy encoding (values withheld)")?;
         let object = value
             .as_object_mut()
             .ok_or("stored policy must be an object")?;
-        root.policy_version = version;
-        // v1 has no ban authority. Remove new defaults and explicit seed values
-        // from both effective data and diagnostics instead of default-filling.
-        root.keys.retain(|key| included(version, &key.name));
-        root.values.retain(|name, _| included(version, name));
-        root.sources.retain(|name, _| included(version, name));
         let settings = object
             .get_mut("settings")
             .and_then(Value::as_object_mut)
@@ -178,10 +157,6 @@ impl PolicySeed {
         json!({"format":self.version.format(),"status":"candidate-only","sha256":digest,
             "encoded_bytes":self.document.len().to_string(),"settings":self.settings.to_string()})
     }
-}
-
-fn included(version: PolicyDocumentVersion, key: &str) -> bool {
-    version != PolicyDocumentVersion::V1 || key != "relay_policy.banned"
 }
 
 /// Size only, never an alternative serializer or policy identity. Pinned PG16
@@ -282,14 +257,14 @@ mod tests {
 
             let settings = BTreeMap::from([("x", &value)]);
             let expected = format!(
-                "{{\"format\": \"bigbrotr-product-policy/1\", \"settings\": {{\"x\": {rendered}}}}}"
+                "{{\"format\": \"bigbrotr-product-policy/3\", \"settings\": {{\"x\": {rendered}}}}}"
             );
             assert_eq!(
-                jsonb_policy_bytes(PolicyDocumentVersion::V1, &settings, expected.len()).unwrap(),
+                jsonb_policy_bytes(PolicyDocumentVersion::V3, &settings, expected.len()).unwrap(),
                 expected.len()
             );
             assert!(
-                jsonb_policy_bytes(PolicyDocumentVersion::V1, &settings, expected.len() - 1)
+                jsonb_policy_bytes(PolicyDocumentVersion::V3, &settings, expected.len() - 1)
                     .is_err()
             );
         }
@@ -301,19 +276,19 @@ mod tests {
         let null = Value::Null;
         let text = json!("é\n\"");
         let settings = BTreeMap::from([("z", &text), ("a", &maximum), ("n", &null)]);
-        let expected = "{\"format\":\"bigbrotr-product-policy/1\",\"settings\":{\"a\":18446744073709551615,\"n\":null,\"z\":\"é\\n\\\"\"}}";
+        let expected = "{\"format\":\"bigbrotr-product-policy/3\",\"settings\":{\"a\":18446744073709551615,\"n\":null,\"z\":\"é\\n\\\"\"}}";
         let seed =
-            PolicySeed::encode(PolicyDocumentVersion::V1, &settings, expected.len()).unwrap();
+            PolicySeed::encode(PolicyDocumentVersion::V3, &settings, expected.len()).unwrap();
         assert_eq!(seed.document, expected.as_bytes());
         // Independent Python hashlib over the literal UTF-8 document and domain.
         assert_eq!(
             seed.report()["sha256"],
-            "1c8054d6d7d21473b7588e39dfbea8f2cabbd58987763c1a022cb7a6ca101a7a"
+            "2395bef529ff062a1e4e64112d79c376de7fca758bed037be34f0e659678c7b5"
         );
         assert!(
-            PolicySeed::encode(PolicyDocumentVersion::V1, &settings, expected.len() - 1).is_err()
+            PolicySeed::encode(PolicyDocumentVersion::V3, &settings, expected.len() - 1).is_err()
         );
-        assert!(PolicySeed::encode(PolicyDocumentVersion::V1, &settings, 0).is_err());
+        assert!(PolicySeed::encode(PolicyDocumentVersion::V3, &settings, 0).is_err());
     }
 
     fn root() -> Resolved {
@@ -322,122 +297,74 @@ mod tests {
     }
 
     #[test]
-    fn policy_versions_v2_requires_explicit_bans_and_its_own_digest_domain() {
-        let mut document: Value = serde_json::from_str(include_str!(
-            "../../../../experiments/configuration-inspection/policy.json"
-        ))
-        .unwrap();
-        document["format"] = json!("bigbrotr-product-policy/2");
-        document["settings"]["relay_policy.banned"] = json!([]);
-        let bytes = serde_json::to_string(&document).unwrap();
-        // Independent Python json (sorted compact keys) and hashlib, over the
-        // original frozen v1 settings plus this explicitly selected empty set.
-        let expected = "5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1";
-        let digest =
-            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
-        assert_eq!(bytes.len(), 7489);
-        let restored = PolicySeed::restore(&bytes, digest, root()).unwrap();
-        assert_eq!(restored.value("relay_policy.banned"), &json!([]));
-        let seed = PolicySeed::from_resolved(&restored).unwrap();
-        assert_eq!(seed.document(), bytes);
-        assert_eq!(seed.digest(), digest);
-        assert_eq!(seed.report()["format"], "bigbrotr-product-policy/2");
-        let wrong_domain = Sha256::new()
-            .chain_update(b"bigbrotr/product-policy/1\0")
-            .chain_update(&bytes)
-            .finalize()
-            .into();
-        assert!(PolicySeed::restore(&bytes, wrong_domain, root()).is_err());
-        document["settings"]
-            .as_object_mut()
-            .unwrap()
-            .remove("relay_policy.banned");
-        let incomplete = document.to_string();
-        let matching_digest = Sha256::new()
-            .chain_update(b"bigbrotr/product-policy/2\0")
-            .chain_update(&incomplete)
-            .finalize()
-            .into();
-        assert!(PolicySeed::restore(&incomplete, matching_digest, root()).is_err());
-    }
-
-    #[test]
-    fn policy_versions_v1_retains_its_identity_without_inheriting_seed_bans() {
-        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
-        let expected = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9";
-        let digest =
-            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
-        let mut candidate = root();
-        candidate.values.insert(
-            "relay_policy.banned".into(),
-            json!([{"host":"relay.example"}]),
-        );
-        candidate
-            .sources
-            .insert("relay_policy.banned".into(), "file");
-        let restored = PolicySeed::restore(document, digest, candidate).unwrap();
-        assert!(!restored.values.contains_key("relay_policy.banned"));
-        assert!(!restored.sources.contains_key("relay_policy.banned"));
-        assert!(
-            !restored
-                .keys
-                .iter()
-                .any(|k| k.name == "relay_policy.banned")
-        );
-        let seed = PolicySeed::from_resolved(&restored).unwrap();
-        assert_eq!(seed.digest(), digest);
-        assert_eq!(seed.report()["format"], "bigbrotr-product-policy/1");
-    }
-
-    #[test]
-    fn policy_versions_legacy_comparison_omits_only_implicit_empty_bans() {
-        // The frozen v1 fixture has selected overrides; compare its exact
-        // effective values plus the implicit new default, not today's recipe.
-        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
-        let expected = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9";
-        let digest =
-            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
-        let legacy = PolicySeed::restore(document, digest, root()).unwrap();
-        let mut candidate = root();
-        for key in &legacy.keys {
-            if !key.root {
-                candidate
-                    .values
-                    .insert(key.name.clone(), legacy.value(&key.name).clone());
-            }
+    fn startup_receipt_retention_is_a_bounded_count_in_the_complete_policy() {
+        let default = root();
+        assert_eq!(default.number("ingest.request_receipt_retention"), 64);
+        let original = PolicySeed::from_resolved(&default).unwrap();
+        for count in [1, 62, 64] {
+            let accepted = super::super::resolve::parse(&format!(
+                "{}\n[ingest]\nrequest_receipt_retention={count}\n",
+                include_str!("../../../../config/recipes/archive-only.toml")
+            ))
+            .unwrap();
+            assert_eq!(accepted.number("ingest.request_receipt_retention"), count);
+            let seed = PolicySeed::from_resolved(&accepted).unwrap();
+            assert_eq!(seed.digest() == original.digest(), count == 64);
+            assert_eq!(
+                PolicySeed::restore(seed.document(), seed.digest(), root())
+                    .unwrap()
+                    .number("ingest.request_receipt_retention"),
+                count
+            );
         }
-        assert!(
-            PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
-        );
-        assert_ne!(
-            PolicySeed::from_resolved(&candidate).unwrap().digest(),
-            digest
-        );
-        candidate
-            .sources
-            .insert("relay_policy.banned".into(), "file");
-        assert!(
-            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
-        );
-        candidate
-            .sources
-            .insert("relay_policy.banned".into(), "schema-default");
-        candidate.values.insert(
-            "relay_policy.banned".into(),
-            json!([{"host":"relay.example"}]),
-        );
-        assert!(
-            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
-        );
-        candidate
-            .values
-            .insert("relay_policy.banned".into(), json!([]));
-        candidate
-            .values
-            .insert("ingest.max_event_bytes".into(), json!(524288));
-        assert!(
-            !PolicySeed::matches_accepted(&candidate, PolicyDocumentVersion::V1, digest).unwrap()
-        );
+        for invalid in ["0", "65", "18446744073709551615", "1.5", "true", "'1s'"] {
+            assert!(
+                super::super::resolve::parse(&format!(
+                    "{}\n[ingest]\nrequest_receipt_retention={invalid}\n",
+                    include_str!("../../../../config/recipes/archive-only.toml")
+                ))
+                .is_err()
+            );
+        }
+    }
+
+    #[test]
+    fn current_policy_requires_explicit_retention_and_its_own_digest_domain() {
+        let document =
+            include_str!("../../../../tests/fixtures/configuration/policy-v3.json").trim_end();
+        // Independent Python json/structural fixture and hashlib, with the
+        // complete explicit settings. This is not a defaults oracle.
+        let expected = "77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b";
+        let digest =
+            std::array::from_fn(|i| u8::from_str_radix(&expected[2 * i..2 * i + 2], 16).unwrap());
+        assert_eq!(document.len(), 7527);
+        let restored = PolicySeed::restore(document, digest, root()).unwrap();
+        assert_eq!(restored.number("ingest.request_receipt_retention"), 64);
+        let seed = PolicySeed::from_resolved(&restored).unwrap();
+        assert_eq!(seed.document(), document);
+        assert_eq!(seed.digest(), digest);
+        for key in ["ingest.request_receipt_retention", "relay_policy.banned"] {
+            let mut incomplete: Value = serde_json::from_str(document).unwrap();
+            incomplete["settings"].as_object_mut().unwrap().remove(key);
+            let bytes = incomplete.to_string();
+            let matching = Sha256::new()
+                .chain_update(PolicyDocumentVersion::CURRENT.digest_domain())
+                .chain_update(&bytes)
+                .finalize()
+                .into();
+            assert!(PolicySeed::restore(&bytes, matching, root()).is_err());
+        }
+        for version in [1, 2, 4] {
+            let mut incompatible: Value = serde_json::from_str(document).unwrap();
+            incompatible["format"] = json!(format!("bigbrotr-product-policy/{version}"));
+            let bytes = incompatible.to_string();
+            let matching = Sha256::new()
+                .chain_update(format!("bigbrotr/product-policy/{version}\0"))
+                .chain_update(&bytes)
+                .finalize()
+                .into();
+            assert!(PolicySeed::restore(&bytes, matching, root()).is_err());
+        }
     }
 
     #[test]
@@ -557,10 +484,10 @@ mod tests {
     }
 
     #[test]
-    fn private_destination_roots_preserve_frozen_v1_policy_and_refuse_policy_injection() {
-        // Existing independent PG fixture, predating the new root setting.
-        let document = include_str!("../../../../experiments/configuration-inspection/policy.json");
-        let digest: [u8; 32] = "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
+    fn private_destination_roots_preserve_policy_and_refuse_policy_injection() {
+        // Current complete independent PG fixture; private roots stay outside it.
+        let document = include_str!("../../../../tests/fixtures/configuration/policy-v3.json");
+        let digest: [u8; 32] = "77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b"
             .as_bytes()
             .as_chunks::<2>()
             .0
@@ -596,12 +523,12 @@ mod tests {
         injection["settings"]["network.private.rules"] = json!([]);
         let injected = injection.to_string();
         let matching_digest = Sha256::new()
-            .chain_update(b"bigbrotr/product-policy/1\0")
+            .chain_update(b"bigbrotr/product-policy/3\0")
             .chain_update(&injected)
             .finalize()
             .into();
         assert!(PolicySeed::restore(&injected, matching_digest, root()).is_err());
-        // A root addition must not relax the old closed setting set.
+        // A root addition must not relax the closed setting set.
         injection["settings"]
             .as_object_mut()
             .unwrap()

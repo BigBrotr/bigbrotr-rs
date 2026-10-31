@@ -146,7 +146,7 @@ pub async fn run(
     assert!(dropped.get(), "received data must be disposed on refusal");
     if mode == "source-transport-cleanup-timeout" {
         assert_eq!(
-            owner.poll_policy(|d, h| validate_version(d, h, true)).await,
+            owner.poll_policy(validate).await,
             Err(OwnerError::Unavailable)
         );
     }

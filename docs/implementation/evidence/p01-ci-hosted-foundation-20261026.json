@@ -2127,6 +2127,38 @@
     ".research/ci-publication-20261026/d742fe03-real-ci/root-failure-audit-delta-review.json": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/d742fe03-real-ci/root-failure-audit-delta-review.json",
       "sha256": "06895e69b856a0b7fd4d829ffe74ccc91f10247d18de40ad9267a22c8021346b"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/receipt.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/receipt.json",
+      "sha256": "b900dc65eb16eeae5f9b61cccf23dff3b525a7649b4f6fa29b7b09a3e6fb0811"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/outcome.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/outcome.json",
+      "sha256": "f698e6cfc00871fe859f404aa12c6c1ec592c67c19bbdd07b4d42865ed79d76f"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/scan-result.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/scan-result.json",
+      "sha256": "d223761c2f3d4456ebc561acad028fde2cef78696f3a5ca700d03897a39fb79b"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/triage.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/triage.json",
+      "sha256": "924a02c53ee133bb6eb8989be6deaca11e11559f2a7711c0134885c6d4cb489f"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/ordinary-terminal-review.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/ordinary-terminal-review.json",
+      "sha256": "23a138f85bb9acda14fc210790af9ed8dd12fb4129b941958cfbf0a633a3f093"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/watch-session.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/watch-session.json",
+      "sha256": "beb9bc72c5c552c255168ba4fad1df0848691186142324eed821e74936098ffd"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/watch-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/watch-terminal.json",
+      "sha256": "82d04ca113d04755f8adc9e2f52fe8cfbb468ef75fa3aa8e8e44bde2002a4e09"
+    },
+    ".research/ci-publication-20261026/8acbd687-controls-ci/acquisition-terminal.json": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/acquisition-terminal.json",
+      "sha256": "a38724e60bd91a78daf73d033b9c8dc95be875cbc1a85a6f176aabe4f9940ca8"
     }
   },
   "format": "bigbrotr-hosted-foundation-evidence/1",
@@ -3013,7 +3045,7 @@
     "scope": "Hosted foundation unit/control/CLI evidence only. Original separate local component failures and installed grouped recovery/tutorial evidence remain in the existing P02 report with original source/assembly/acceptance and custody limits. Later source is excluded."
   },
   "portable_control_scope_followup": {
-    "status": "ACTUAL_FULL_HOSTED_ATTEMPT_FAILS_MAC_PROFILE_FIXTURE_CORRECTION_READY_REQUIRED_FULL_GATE_OPEN",
+    "status": "ACTUAL_HOSTED_CONTROLS_ONLY_PASS_INHERITED_FULL_PLATFORM_GATE_OPEN",
     "candidate": "10098d32ebd88df6ed82e7bb33c775f2b6a9f19d",
     "owner": "P01-T08/Q41/Q38",
     "author_receipt": {
@@ -3021,7 +3053,7 @@
       "sha256": "89173c44adc3d891a78e2b53efa6d53086c241f44707b731138a795d975a57f1"
     },
     "scope": "Explicit portable-control-only allowlist, same acceptance/export-profile commands on Linux amd64/arm64/macOS; unknown, product, build, workflow and selector changes retain complete native CI. No removal of installed/release/engine qualification. Three platforms retained; docs run on controls too.",
-    "remaining": "Root publishes the necessary fixture-only correction and collects its selected controls-only run. A reduced green cannot close d742 Mac4NOT_RUN. After reduced terminal, root issues exactly one existing regular full dispatch on the exact corrected source to qualify all33/platform/helper gates. No concurrent duplicate/cancellation or speedup claim.",
+    "remaining": "Full gate remains OPEN. If source-closed policy64d0b08 qualifies shortly and root chooses its necessary product push, use its naturally selected full33 run with identical CI helper/fixture; otherwise root performs the earlier sequential regular full8ac dispatch. Earlier scheduling is superseded only if that product-push path is chosen. Require actual full-platform evidence; no duplicate/cancel/new scope machinery or retrospective8ac full qualification.",
     "review_state": "CI-EMPTY-PY311 corrected by shared nonempty/all-skip discovery guard; independent root delta review PASS and actual Python3.11.2 shared5/5 checks PASS (367 acceptance+10 profile cases0skip,3docs). Original10098/R1FAIL/R2PASS and provisional/revised review retained.",
     "independent_review": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-python-selection-20261030/.research/ci-portable-controls-independent-sol/review.json",
@@ -3067,6 +3099,43 @@
         "sha256": "a419dc209f64c8d394e2543915916d70dfa229fd260d828a47956bf77c5e8d54"
       },
       "scope": "One owned TemporaryDirectory resolve(strict=True) line;10existing guarded profile controls/static/diff PASS; security helper and all negatives unchanged. Root-reviewed; hosted qualification pending."
+    },
+    "hosted_controls_run": {
+      "run": 41194126907,
+      "revision": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
+      "status": "PASS_ACTUAL_CONTROLS_ONLY_FULL_PLATFORM_GATE_OPEN",
+      "selected_checks": {
+        "PASS": 15
+      },
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/receipt.json",
+        "sha256": "b900dc65eb16eeae5f9b61cccf23dff3b525a7649b4f6fa29b7b09a3e6fb0811"
+      }
+    },
+    "required_full_gate": {
+      "status": "OPEN_AWAITING_REAL_FULL_CURRENT_POLICY_PRODUCT_PUSH",
+      "inherited_from": {
+        "run": 41188290200,
+        "revision": "d742fe0386df9472f97bb4712ac846a69b0947c0",
+        "global_outcome": "FAILURE",
+        "counts": {
+          "PASS": 28,
+          "FAIL": 1,
+          "NOT_RUN": 4
+        },
+        "mac_required_not_run": [
+          "exact-source-build",
+          "clippy",
+          "rust-doc",
+          "rust-tests"
+        ]
+      },
+      "required_full_checks": 33,
+      "earlier_plan": "After this reduced run terminal, root intended one sequential regular full workflow_dispatch on exact8ac. This remains the fallback, not a completed run.",
+      "current_contingency": "Current-policy proof is complete for this scoped increment. Root selected its meaningful product push to avoid a duplicate full8ac build; inheritedMac4 gate remains until real full-platform evidence.",
+      "chosen_path": "Qualified current-policy product push after native57/PG65/portable376PASS; use its necessary full33 hosted run on the containing merge. No separate8ac dispatch.",
+      "closure": "Only actual full-platform evidence on the selected revision with the same unchanged CI helper and canonical profile fixture can close the inherited gate. Source/fixture equivalence must be verified. Reduced green does not qualify8ac full product builds retroactively.",
+      "scheduling": "No concurrent duplicate/cancellation/new scope mechanism. Root alone dispatches or publishes; observer performs none."
     }
   },
   "preceding_1cb_hosted_success": {
@@ -3128,5 +3197,243 @@
       "sha256": "57e7f7df6a9214c92681f67d84ab8a44b4afe66a74b20d4801d7115528f6f642"
     },
     "scope": "Original complete6fa success and its three-platform30-check proof retained unchanged; all original1cb and previous failure history remains separate."
+  },
+  "portable_controls_hosted_followup": {
+    "status": "PASS_ACTUAL_CONTROLS_ONLY_FULL_PLATFORM_GATE_OPEN",
+    "run": 41194126907,
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41194126907",
+    "revision": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
+    "run_attempt": 1,
+    "terminal_at": "2026-10-31T10:48:32Z",
+    "selected_scope": "Actual complete4-path eligible portable-controls diff; controls=true/foundation=false; three platform5-check jobs. No product build or native-engine asset download selected.",
+    "selected_check_totals": {
+      "PASS": 15
+    },
+    "selection": {
+      "format": "bigbrotr-ci-selection/1",
+      "base": "d742fe0386df9472f97bb4712ac846a69b0947c0",
+      "head": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
+      "foundation": false,
+      "controls": true,
+      "reason": "portable control-only allowlist",
+      "paths": [
+        "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+        "docs/implementation/progress.md",
+        "docs/research/laboratory-inventory.json",
+        "experiments/ingest-bootstrap/test_installed_archive_profile.py"
+      ]
+    },
+    "platforms": {
+      "arm": {
+        "status": "PASS",
+        "counts": {
+          "collected": 5,
+          "executed": 5,
+          "failed": 0,
+          "not_run": 0
+        },
+        "acceptance": {
+          "collected": 367,
+          "passed": 367,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 41.889,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "export_profile": {
+          "collected": 10,
+          "passed": 10,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 0.066,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "documentation_checks": {
+          "collected": 3,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "result_sha256": "f7bc70a4d28c39f1e09c3e3874fe29f3d18557826aae634ef7989df44e387458",
+        "handoff_sha256": "ec2556c2d500b78067e042d8c8d093dd3143e324599944c9cad376877c2bf726",
+        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41194126907/job/124516796859",
+        "job_seconds": 72.0,
+        "sum_check_seconds": 45.684808251999996,
+        "checks_seconds": {
+          "acceptance-controls": 42.515729052,
+          "export-profile-controls": 0.21572504499999923,
+          "planning-artifacts": 2.0215837129999983,
+          "prepare-links": 0.5663375780000024,
+          "documentation-links": 0.36543286399999886
+        },
+        "native_download_cache": "NOT_SELECTED",
+        "product_worker_rust_build": "NOT_SELECTED"
+      },
+      "macos": {
+        "status": "PASS",
+        "counts": {
+          "collected": 5,
+          "executed": 5,
+          "failed": 0,
+          "not_run": 0
+        },
+        "acceptance": {
+          "collected": 367,
+          "passed": 361,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 6,
+          "seconds": 68.21,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "export_profile": {
+          "collected": 10,
+          "passed": 10,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 0.043,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "documentation_checks": {
+          "collected": 3,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "result_sha256": "96e8cdffb4f8058cb962870877850fff281cb769d489e07f22de30ca7947e56d",
+        "handoff_sha256": "ec2556c2d500b78067e042d8c8d093dd3143e324599944c9cad376877c2bf726",
+        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41194126907/job/124516796918",
+        "job_seconds": 86.0,
+        "sum_check_seconds": 73.13917349900001,
+        "checks_seconds": {
+          "acceptance-controls": 69.226837875,
+          "export-profile-controls": 0.3554356660000053,
+          "planning-artifacts": 2.469245041999983,
+          "prepare-links": 0.7196958750000135,
+          "documentation-links": 0.367959041000006
+        },
+        "native_download_cache": "NOT_SELECTED",
+        "product_worker_rust_build": "NOT_SELECTED"
+      },
+      "amd64": {
+        "status": "PASS",
+        "counts": {
+          "collected": 5,
+          "executed": 5,
+          "failed": 0,
+          "not_run": 0
+        },
+        "acceptance": {
+          "collected": 367,
+          "passed": 367,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 40.391,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "export_profile": {
+          "collected": 10,
+          "passed": 10,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "seconds": 0.051,
+          "failed_or_errored_cases": 0,
+          "affected_case_names": [],
+          "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+        },
+        "documentation_checks": {
+          "collected": 3,
+          "passed": 3,
+          "failed": 0,
+          "not_run": 0
+        },
+        "result_sha256": "0e965cef6037058c5d9c91552ac87e37738f8ffeca4ff83c14d413aa2c873b6e",
+        "handoff_sha256": "ec2556c2d500b78067e042d8c8d093dd3143e324599944c9cad376877c2bf726",
+        "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41194126907/job/124516796864",
+        "job_seconds": 65.0,
+        "sum_check_seconds": 43.66827206800002,
+        "checks_seconds": {
+          "acceptance-controls": 41.056100560999994,
+          "export-profile-controls": 0.16440060700000458,
+          "planning-artifacts": 1.6677800549999802,
+          "prepare-links": 0.46494197300000906,
+          "documentation-links": 0.31504887200003395
+        },
+        "native_download_cache": "NOT_SELECTED",
+        "product_worker_rust_build": "NOT_SELECTED"
+      }
+    },
+    "source_helper_sha256": "155c3d133fe7f90e6ff100fff9c34795691c911cb81bc7e678b1ac2a5d191468",
+    "source_scope": "2442-file exact source archive checked locally; reduced receipts bind clean revision/tree/helper. No build/source manifest, product/worker/native installation or full workspace qualification is implied.",
+    "fixture_closure": "New8ac Mac profile10PASS verifies one-line owned-temp-root correction with original symlink/permission/identity negatives and unchanged security helper. Originald74210cases/17subtestERROR events/4laterNOT_RUN remain unchanged.",
+    "public_output_audit": {
+      "status": "PASS_CONTROLS_ONLY_INHERITED_FULL_GATE_OPEN",
+      "artifact_count": 4,
+      "artifact_members": 22,
+      "workflow_log_members": 35,
+      "compressed_bytes": 127844,
+      "expanded_bytes": 408459,
+      "candidate_occurrences": 0,
+      "unique_fingerprints": 0,
+      "new_or_unclassified_candidates": 0,
+      "operational_credentials": 0,
+      "provider_alerts": 0
+    },
+    "public_output_limits": [
+      "Only run41194126907 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
+      "Pattern scan cannot exclude unknown formats or already-masked secrets.",
+      "No extraction, execution, source/settings changes or workflow dispatch.",
+      "No product/worker/Rust compilation, native asset download/cache or full-platform qualification. Original full d74228PASS/1FAIL/4NOT_RUN remains unchanged; required full gate OPEN.",
+      "Actual required controls-only run timings, not a controlled cross-host speedup or compiled/native dependency-reuse measurement. Tiny native compiler smoke probes remain actual.",
+      "Earlier8ac full-dispatch plan is contingent scheduling only; it is superseded only if root chooses a necessary qualified product-push full run with unchanged helper/fixture. Full gate remains OPEN until actual full evidence."
+    ],
+    "receipt": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/receipt.json",
+      "sha256": "b900dc65eb16eeae5f9b61cccf23dff3b525a7649b4f6fa29b7b09a3e6fb0811"
+    },
+    "ordinary_review": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/8acbd687-controls-ci/ordinary-terminal-review.json",
+      "sha256": "23a138f85bb9acda14fc210790af9ed8dd12fb4129b941958cfbf0a633a3f093"
+    },
+    "required_full_gate": {
+      "status": "OPEN_AWAITING_REAL_FULL_CURRENT_POLICY_PRODUCT_PUSH",
+      "inherited_from": {
+        "run": 41188290200,
+        "revision": "d742fe0386df9472f97bb4712ac846a69b0947c0",
+        "global_outcome": "FAILURE",
+        "counts": {
+          "PASS": 28,
+          "FAIL": 1,
+          "NOT_RUN": 4
+        },
+        "mac_required_not_run": [
+          "exact-source-build",
+          "clippy",
+          "rust-doc",
+          "rust-tests"
+        ]
+      },
+      "required_full_checks": 33,
+      "earlier_plan": "After this reduced run terminal, root intended one sequential regular full workflow_dispatch on exact8ac. This remains the fallback, not a completed run.",
+      "current_contingency": "Current-policy proof is complete for this scoped increment. Root selected its meaningful product push to avoid a duplicate full8ac build; inheritedMac4 gate remains until real full-platform evidence.",
+      "chosen_path": "Qualified current-policy product push after native57/PG65/portable376PASS; use its necessary full33 hosted run on the containing merge. No separate8ac dispatch.",
+      "closure": "Only actual full-platform evidence on the selected revision with the same unchanged CI helper and canonical profile fixture can close the inherited gate. Source/fixture equivalence must be verified. Reduced green does not qualify8ac full product builds retroactively.",
+      "scheduling": "No concurrent duplicate/cancellation/new scope mechanism. Root alone dispatches or publishes; observer performs none."
+    }
   }
 }

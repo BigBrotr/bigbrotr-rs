@@ -68,8 +68,8 @@ BEGIN
                 AND e.endpoint_id=s.endpoint_id AND e.access_scope_id=s.access_scope_id
             WHERE d.dataset_id=wanted_dataset AND d.config_revision=job.config_revision
                 AND d.policy_revision=job.policy_revision AND s.policy_revision=d.policy_revision AND e.enabled
-                AND c.document->>'format'='bigbrotr-product-policy/2'
-                AND p.document->>'format'='bigbrotr-product-policy/2'
+                AND c.document->>'format'='bigbrotr-product-policy/3'
+                AND p.document->>'format'='bigbrotr-product-policy/3'
                 AND c.document->'settings'->'sync.enabled'='true'::jsonb
                 AND p.document->'settings'->'sync.enabled'='true'::jsonb) THEN
         RAISE EXCEPTION 'acquisition job requires current authority and original remaining duration'

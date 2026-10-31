@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Actual old/new CLI policy compatibility and current Control/Ingest consumers."""
+"""Actual current policy initialization, replay and superseded-format refusals."""
+import argparse
 import copy
 import hashlib
 import json
 from pathlib import Path
 import re
-import shutil
 import sys
 import tomllib
 
@@ -13,16 +13,33 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 sys.path.insert(0, str(SOURCE / 'experiments/ingest-bootstrap'))
+sys.path.insert(0, str(SOURCE / 'experiments/policy-versions'))
 import lab
 from oracle import expected
+from schema_inventory import declared_inventory, require_tables
 
-root, build = map(Path, sys.argv[1:])
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('root', type=Path)
+parser.add_argument('build', type=Path)
+parser.add_argument('--subnet', default='172.16.240.48/28',
+                    help='isolated private IPv4 /28; existing networks/routes must not overlap')
+args = parser.parse_args()
+root, build = args.root, args.build
 # Refuse before entering cleanup: an existing root belongs to an earlier run.
 assert root.is_absolute() and not root.exists() and not root.is_symlink()
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 receipt = json.loads((build / 'build-result.json').read_text())
-assert receipt['source'] == revision
+assert re.fullmatch('[0-9a-f]{40}', receipt['source']), 'invalid built product revision'
+harness_changes = []
+if receipt['source'] != revision:
+    # Reuse the exact qualified product only across these noncompiled harness
+    # files. Unknown/product/build changes cannot borrow an earlier executable.
+    harness_changes = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only',
+                                  '--no-renames', receipt['source'], revision, '--']).stdout.splitlines()
+    assert set(harness_changes) <= {
+        'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
+        'tests/acceptance/test_policy_versions.py'}, 'built product source changed beyond policy harness'
 
 
 def sha(data):
@@ -37,23 +54,16 @@ def fingerprint(document, version):
     return sha(f'bigbrotr/product-policy/{version}\0'.encode() + compact(document))
 
 
-legacy = Path('/home/tux/bigbrotr-implementation-20260917/runs/ingest-visibility-6c52067/out/artifacts')
-legacy_receipt = json.loads((legacy / 'build-result.json').read_text())
-assert legacy_receipt['source'] == '6c520670bc0c97946b7cb80b8f5d8885d0c7c1a0'
-assert sha((legacy / 'bigbrotr').read_bytes()) == legacy_receipt['binary_sha256'] == '98e1497cc95ad41acd38403ee3eb674b990874d1e1d9588e12169d96164eca68'
-assert not (build / 'legacy-bigbrotr').exists()
-shutil.copy2(legacy / 'bigbrotr', build / 'legacy-bigbrotr')
-assert sha((build / 'legacy-bigbrotr').read_bytes()) == legacy_receipt['binary_sha256']
-assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256']
-
-v1 = json.loads((SOURCE / 'experiments/configuration-inspection/policy.json').read_text())
-v2 = copy.deepcopy(v1)
-v2['format'] = 'bigbrotr-product-policy/2'
-v2['settings']['relay_policy.banned'] = []
-assert fingerprint(v1, 1) == 'da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9'
-assert fingerprint(v2, 2) == '5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1'
-report = dict(format='bigbrotr-policy-versions-native/1', source=revision,
-              build=receipt, legacy_build=legacy_receipt, status='RUNNING', cases=[],
+assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256'], \
+    'current ingest probe differs from its exact-source build receipt'
+assert sha((build / 'bigbrotr').read_bytes()) == receipt['binary_sha256'], \
+    'current product differs from its exact-source build receipt'
+current = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
+assert fingerprint(current, 3) == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b'
+inventory = declared_inventory(SOURCE)
+report = dict(format='bigbrotr-policy-versions-native/1', source=receipt['source'],
+              harness_revision=revision, harness_only_changes=harness_changes,
+              build=receipt, schema=inventory, status='RUNNING', cases=[],
               not_run=['populated policy upgrade', 'source issuance and restrictive drain',
                        'COMMIT transport faults', 'load and aged state', 'arm64', 'release'])
 
@@ -72,16 +82,16 @@ def record(name, passed, **details):
 def contents(database):
     names = json.loads(lab.sql(state, database,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    assert len(names) == 64 and all(re.fullmatch('[a-z_]+', n) for n in names)
+    require_tables(names, inventory)
     branches = [f"SELECT '{name}' AS name, coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text), '[]') AS rows "
                 f"FROM (SELECT *, xmin::text AS lab_xmin FROM control.{name}) t" for name in names]
     return json.loads(lab.sql(state, database,
         'SELECT jsonb_object_agg(name, rows) FROM (' + ' UNION ALL '.join(branches) + ') all_tables'))
 
 
-def call(name, database, action, path, code=0, *, old=False, unchanged=False, extra=(), reason=None):
+def call(name, database, action, path, code=0, *, unchanged=False, extra=(), reason=None):
     before = contents(database)
-    result = lab.docker('exec', state['client'], '/build/' + ('legacy-bigbrotr' if old else 'bigbrotr'),
+    result = lab.docker('exec', state['client'], '/build/bigbrotr',
                        'config', action, '--file', path, *extra, check=False)
     after = contents(database)
     value = json.loads(result.stdout) if result.stdout else None
@@ -103,12 +113,56 @@ def prepare(name, mode):
     text = lab.change(local.read_text(), 'postgres.control', 'password_ref', 'file:/lab/secrets/application')
     text = lab.change(text, 'config', 'authority_mode', mode)
     local.write_text(text)
-    migration = lab.migrate(state, 'apply', path, target=19)
+    migration = lab.migrate(state, 'apply', path, target=inventory['target'])
     record(name + '-migrations', migration.returncode == 0, stdout=migration.stdout, stderr=migration.stderr)
     lab.sql(state, database, 'GRANT USAGE ON SCHEMA control TO bigbrotr_control; '
             'GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; '
             'GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
+    verify_application_role(name, database)
     return database, path, local
+
+
+def verify_application_role(name, database):
+    # This is the existing broad lab role, not the separate deployment-grant
+    # proposal. Preserve its non-owner fence and record the actual grant surface.
+    role = json.loads(lab.sql(state, database, """
+        SELECT jsonb_build_object(
+            'role',r.rolname,'login',r.rolcanlogin,'superuser',r.rolsuper,
+            'create_database',r.rolcreatedb,'create_role',r.rolcreaterole,
+            'replication',r.rolreplication,'bypass_rls',r.rolbypassrls,
+            'memberships',(SELECT count(*) FROM pg_auth_members WHERE member=r.oid),
+            'database_owner',(SELECT pg_get_userbyid(datdba) FROM pg_database WHERE datname=current_database()),
+            'schema_owner',pg_get_userbyid(n.nspowner),
+            'schema_usage',has_schema_privilege(r.oid,n.oid,'USAGE'),
+            'schema_create',has_schema_privilege(r.oid,n.oid,'CREATE'),
+            'tables',(SELECT jsonb_object_agg(c.relname,jsonb_build_object(
+                'owner',pg_get_userbyid(c.relowner),
+                'select',has_table_privilege(r.oid,c.oid,'SELECT'),
+                'insert',has_table_privilege(r.oid,c.oid,'INSERT'),
+                'update',has_table_privilege(r.oid,c.oid,'UPDATE'),
+                'delete',has_table_privilege(r.oid,c.oid,'DELETE'),
+                'truncate',has_table_privilege(r.oid,c.oid,'TRUNCATE'),
+                'references',has_table_privilege(r.oid,c.oid,'REFERENCES'),
+                'trigger',has_table_privilege(r.oid,c.oid,'TRIGGER')))
+                FROM pg_class c WHERE c.relnamespace=n.oid AND c.relkind IN ('r','p')),
+            'functions',(SELECT jsonb_object_agg(p.oid::regprocedure::text,jsonb_build_object(
+                'owner',pg_get_userbyid(p.proowner),'security_definer',p.prosecdef,
+                'execute',has_function_privilege(r.oid,p.oid,'EXECUTE')))
+                FROM pg_proc p WHERE p.pronamespace=n.oid))
+        FROM pg_roles r CROSS JOIN pg_namespace n
+        WHERE r.rolname='bigbrotr_control' AND n.nspname='control'
+    """))
+    require_tables(sorted(role['tables']), inventory)
+    wanted = dict(owner='bigbrotr_migrator', select=True, insert=True, update=True,
+                  delete=False, truncate=False, references=False, trigger=False)
+    record(name + '-application-role',
+           role['role'] == 'bigbrotr_control' and role['login']
+           and not any(role[key] for key in ['superuser','create_database','create_role',
+                                            'replication','bypass_rls','schema_create','memberships'])
+           and role['database_owner'] == role['schema_owner'] == 'bigbrotr_migrator'
+           and role['schema_usage'] and all(value == wanted for value in role['tables'].values())
+           and bool(role['functions']) and all(value['owner'] == 'bigbrotr_migrator' and value['execute']
+                                              for value in role['functions'].values()), profile=role)
 
 
 def bans(text, rules):
@@ -122,129 +176,127 @@ def immutable_rows(rows):
 
 
 try:
-    lab.setup(root, build, SOURCE, 'policy_' + revision[:7], subnet='172.16.240.48/28')
+    lab.setup(root, build, SOURCE, 'policy_' + revision[:7], subnet=args.subnet)
     state = lab.load(root)
     report['server'] = state['server']
     save()
     prepared = {}
     activation = ('--request-id', '04' * 16, '--expected-revision', '1')
-    for version, mode in [(1, 'managed'), (1, 'declarative'), (2, 'managed'), (2, 'declarative')]:
-        name = f'v{version}_{mode}'
+    for mode in ['managed', 'declarative']:
+        name = 'v3_' + mode
         database, path, local = prepare(name, mode)
         original = local.read_text()
-        document = v1 if version == 1 else v2
-        digest = fingerprint(document, version)
-        initialized, rows = call(name + '-initialize', database, 'initialize', path, old=version == 1)
+        digest = fingerprint(current, 3)
+        initialized, rows = call(name + '-initialize', database, 'initialize', path)
         config = rows['config_revisions'][0]
-        record(name + '-independent-policy', config['document'] == document and config['schema_version'] == version
+        record(name + '-independent-policy', config['document'] == current and config['schema_version'] == 3
                and config['document_digest'] == '\\x' + digest and initialized['initial_policy_sha256'] == digest)
         historical = copy.deepcopy(rows['config_revisions'])
         retry, _ = call(name + '-initialize-retry', database, 'initialize', path, unchanged=True)
         record(name + '-original-receipt', retry['status'] == 'already-initialized'
                and retry['installation_actor'] == initialized['installation_actor']
-               and retry['audit_id'] == initialized['audit_id'] and not retry['candidate_policy_differs']
-               and retry['initial_policy_format'] == document['format'])
+               and retry['audit_id'] == initialized['audit_id'] and not retry['candidate_policy_differs'])
         observed, _ = call(name + '-inspect', database, 'inspect', path, unchanged=True)
-        record(name + '-accepted-version', observed['accepted_policy_format'] == document['format']
-               and not observed['candidate_policy_differs']
-               and ('relay_policy.banned' in observed['settings']) == (version == 2))
-        if version == 2:
-            call(name + '-old-reader-refuses', database, 'inspect', path, 1, old=True, unchanged=True)
-            call(name + '-old-activation-refuses', database, 'activate-initial', path, 3,
-                 old=True, unchanged=True, extra=activation)
-        if version == 1:
-            for suffix, rules in [('empty', '[]'), ('nonempty', "[{host='relay.example'}]")]:
-                local.write_text(bans(original, rules))
-                staged, _ = call(name + '-staged-' + suffix, database, 'inspect', path, unchanged=True)
-                record(name + '-staged-' + suffix + '-meaning', staged['candidate_policy_differs']
-                       and 'relay_policy.banned' not in staged['settings'])
-                if mode == 'declarative':
-                    call(name + '-refuse-' + suffix, database, 'activate-initial', path, 3,
-                         unchanged=True, extra=activation, reason='PolicyInvalid')
-            if mode == 'declarative':
-                local.write_text(original)
-            # Managed activation intentionally retains the explicit nonempty seed:
-            # it is unused, not a replacement for accepted v1 or a new veto.
+        record(name + '-accepted-retention', observed['accepted_policy_format'] == current['format']
+               and observed['settings']['ingest.request_receipt_retention']['value'] == '64'
+               and not observed['candidate_policy_differs'])
+        local.write_text(original + '\n[ingest]\nrequest_receipt_retention=62\n')
+        staged, _ = call(name + '-staged-retention', database, 'inspect', path, unchanged=True)
+        record(name + '-captured-value', staged['candidate_policy_differs']
+               and staged['settings']['ingest.request_receipt_retention']['value'] == '64')
+        if mode == 'declarative':
+            call(name + '-refuse-staged-activation', database, 'activate-initial', path, 3,
+                 unchanged=True, extra=activation, reason='PolicyInvalid')
+        local.write_text(original)
         accepted, rows = call(name + '-activate', database, 'activate-initial', path, extra=activation)
         record(name + '-activation-identity', accepted['policy_sha256'] == digest
                and rows['config_revisions'] == historical and len(rows['policy_revisions']) == 1
-               and rows['policy_revisions'][0]['document'] == document
-               and rows['policy_revisions'][0]['schema_version'] == version
-               and rows['policy_revisions'][0]['document_digest'] == '\\x' + digest)
+               and rows['policy_revisions'][0]['document'] == current
+               and rows['policy_revisions'][0]['schema_version'] == 3)
         replayed, _ = call(name + '-activation-replay', database, 'activate-initial', path, unchanged=True, extra=activation)
         record(name + '-identical-activation-receipt', replayed == dict(accepted, status='already-activated'))
-        local.write_text(original)
-        prepared[version, mode] = database, path, local
+        prepared[mode] = database, path, local
 
-    # Corrupt only separate cloned fixtures, retaining the healthy originals.
-    for table, version in [('config_revisions', 1), ('policy_revisions', 1),
-                           ('config_revisions', 2), ('policy_revisions', 2)]:
-        origin, _, _ = prepared[version, 'managed']
-        database = f'bb_policy_bad_{version}_{table}'
+    # Separate invalid clones preserve the healthy current-format original.
+    # No old executable, private binary/cache or legacy-format write path is used.
+    for version in [1, 2, 4]:
+        origin, _, _ = prepared['managed']
+        database = f'bb_policy_incompatible_{version}'
         lab.sql(state, 'postgres', f'CREATE DATABASE {database} TEMPLATE {origin} OWNER bigbrotr_migrator')
-        lab.sql(state, database, f'ALTER TABLE control.{table} DISABLE TRIGGER USER; '
-                f'UPDATE control.{table} SET schema_version={3-version}; '
-                f'ALTER TABLE control.{table} ENABLE TRIGGER USER')
+        invalid = copy.deepcopy(current)
+        invalid['format'] = f'bigbrotr-product-policy/{version}'
+        document = compact(invalid).decode().replace("'", "''")
+        for table in ['config_revisions', 'policy_revisions']:
+            lab.sql(state, database, f"ALTER TABLE control.{table} DISABLE TRIGGER USER; "
+                    f"UPDATE control.{table} SET schema_version={version},document='{document}'::jsonb,"
+                    f"document_digest=decode('{fingerprint(invalid,version)}','hex'); "
+                    f"ALTER TABLE control.{table} ENABLE TRIGGER USER")
         before = contents(database)
+        store = '/lab/store_incompatible_' + str(version)
         result = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe',
-            'write' if version == 1 else 'write-v2', database, '/lab/secrets/application',
-            '/lab/' + database, check=False)
+            'write', database, '/lab/secrets/application', store, check=False)
         after = contents(database)
         record(database + '-owner-refuses', result.returncode != 0 and 'InvalidPolicy' in result.stderr
                and before == after, stdout=result.stdout, stderr=result.stderr,
                before_sha256=sha(compact(before)), after_sha256=sha(compact(after)))
-        lab.write_json(root / (database + '-state.json'), after)
         path = lab.config(root, state, database)
         local = root / Path(path).name
         local.write_text(lab.change(local.read_text(), 'postgres.control', 'password_ref', 'file:/lab/secrets/application'))
-        if table == 'config_revisions':
-            call(database + '-inspect-refuses', database, 'inspect', path, 1, unchanged=True)
+        call(database + '-inspect-refuses', database, 'inspect', path, 1, unchanged=True)
         call(database + '-activation-refuses', database, 'activate-initial', path, 3,
              unchanged=True, extra=activation, reason='InvalidMetadata')
 
-    database, path, local = prepare('v2_rules', 'managed')
+    database, path, local = prepare('v3_rules', 'managed')
     local.write_text(bans(local.read_text(), "[{host='BÜCHER.example.'},{endpoint='WSS://RELAY.example.:443/x/../PRIVATE_CANARY?a=1&a=2'},{host='[::ffff:127.0.0.1]'},{host='127.0.0.1'}]"))
-    wanted_rules = copy.deepcopy(v2)
+    wanted_rules = copy.deepcopy(current)
     wanted_rules['settings']['relay_policy.banned'] = [
         {'endpoint': 'wss://relay.example/PRIVATE_CANARY?a=1&a=2'},
         {'host': '127.0.0.1'}, {'host': 'xn--bcher-kva.example'}]
-    _, rows = call('v2-rules-initialize', database, 'initialize', path)
-    record('v2-rules-independent-jsonb', rows['config_revisions'][0]['document'] == wanted_rules
-           and rows['config_revisions'][0]['document_digest'] == '\\x' + fingerprint(wanted_rules, 2))
-    observed, _ = call('v2-rules-inspect', database, 'inspect', path, unchanged=True)
-    record('v2-rules-redaction', observed['settings']['relay_policy.banned']['value'] == '[redacted]'
+    _, rows = call('v3-rules-initialize', database, 'initialize', path)
+    record('v3-rules-independent-jsonb', rows['config_revisions'][0]['document'] == wanted_rules
+           and rows['config_revisions'][0]['document_digest'] == '\\x' + fingerprint(wanted_rules, 3))
+    observed, _ = call('v3-rules-inspect', database, 'inspect', path, unchanged=True)
+    record('v3-rules-redaction', observed['settings']['relay_policy.banned']['value'] == '[redacted]'
            and 'PRIVATE_CANARY' not in json.dumps(observed))
-    call('v2-rules-activate', database, 'activate-initial', path, extra=activation)
+    call('v3-rules-activate', database, 'activate-initial', path, extra=activation)
 
-    # Full CLI validation must reject missing/newly malformed rules even with a
-    # recomputed digest; metadata recognition alone cannot validate a policy.
-    for name in ['missing-bans', 'non-normalized-bans']:
-        bad = copy.deepcopy(v2)
+    # Initialization retry must validate the retained body too. A recomputed
+    # digest cannot repair a missing setting; a stale digest cannot certify an
+    # altered complete body. Inspect/activation exercise their own boundaries.
+    for name in ['missing-bans', 'missing-retention', 'non-normalized-bans',
+                 'missing-retention-stale-digest', 'changed-body-stale-digest']:
+        bad = copy.deepcopy(current)
         if name == 'missing-bans':
             del bad['settings']['relay_policy.banned']
+        elif name in ('missing-retention', 'missing-retention-stale-digest'):
+            del bad['settings']['ingest.request_receipt_retention']
+        elif name == 'changed-body-stale-digest':
+            bad['settings']['ingest.request_receipt_retention'] = 62
         else:
             bad['settings']['relay_policy.banned'] = [{'host': 'RELAY.example'}]
         database = 'bb_policy_' + name.replace('-', '_')
-        origin, _, _ = prepared[2, 'managed']
+        origin, _, _ = prepared['managed']
         lab.sql(state, 'postgres', f'CREATE DATABASE {database} TEMPLATE {origin} OWNER bigbrotr_migrator')
         document = compact(bad).decode().replace("'", "''")
+        retained_digest = fingerprint(current if name.endswith('stale-digest') else bad, 3)
         lab.sql(state, database, "ALTER TABLE control.config_revisions DISABLE TRIGGER USER; "
                 f"UPDATE control.config_revisions SET document='{document}'::jsonb, "
-                f"document_digest=decode('{fingerprint(bad,2)}','hex'); "
+                f"document_digest=decode('{retained_digest}','hex'); "
                 "ALTER TABLE control.config_revisions ENABLE TRIGGER USER")
         path = lab.config(root, state, database)
         local = root / Path(path).name
         local.write_text(lab.change(local.read_text(), 'postgres.control', 'password_ref', 'file:/lab/secrets/application'))
+        call(name + '-initialize-refuses', database, 'initialize', path, 1, unchanged=True)
         call(name + '-inspect-refuses', database, 'inspect', path, 3, unchanged=True)
         call(name + '-activate-refuses', database, 'activate-initial', path, 3,
              unchanged=True, extra=activation, reason='PolicyInvalid')
 
-    for version in [1, 2]:
-        database, path, local = prepared[version, 'managed']
+    for version in [3]:
+        database, path, local = prepared['managed']
         before = contents(database)
         store = '/lab/store_v' + str(version)
         result = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe',
-            'write' if version == 1 else 'write-v2', database, '/lab/secrets/application', store, check=False)
+            'write', database, '/lab/secrets/application', store, check=False)
         messages = [json.loads(line) for line in result.stdout.splitlines()]
         record(f'v{version}-actual-control-ingest', result.returncode == 0 and not result.stderr
                and messages[-1]['event'] == 'receipt' and messages[-1]['replay_exact'],

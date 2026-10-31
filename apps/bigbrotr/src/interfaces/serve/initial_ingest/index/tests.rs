@@ -1,5 +1,5 @@
 use super::*;
-use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits, policy_document::PolicyDocumentVersion};
+use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits};
 use bigbrotr_model::{
     DatasetId, DictionaryKind, Digest256, PolicyEpoch, RecoveryGenerationId, TopologyGeneration,
 };
@@ -29,7 +29,6 @@ fn root() -> Resolved {
         local_roles: BTreeSet::from(["index".into()]),
         dependencies: vec![],
         document_sha256: String::new(),
-        policy_version: PolicyDocumentVersion::CURRENT,
     }
 }
 
@@ -131,6 +130,7 @@ fn registration() -> InitialRegistration {
             .collect(),
         producer_slot_id: [11; 16].try_into().unwrap(),
         outstanding_request_limit: 32,
+        request_receipt_retention: 64,
         created_at_us: 100,
         lease_expires_at_us: 1_000_000,
     }

@@ -61,7 +61,7 @@ def main(root, profile=None):
         # Offline provisioning, not a management grant-change qualification.
         sql('GRANT SELECT ON control.export_execution_units,control.artifacts,control.artifact_files,control.export_resume_commands TO bigbrotr_control; GRANT UPDATE(principal_id) ON control.principal_grants TO bigbrotr_control; GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         policy=json.loads(sql('SELECT document::text FROM control.policy_revisions WHERE revision=1'));policy['settings']['administration.enabled']=True
-        document=json.dumps(policy,sort_keys=True,separators=(',',':'));digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        document=json.dumps(policy,sort_keys=True,separators=(',',':'));digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 2,dataset_id,1,config_revision,schema_version,$p${document}$p$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=1; UPDATE control.datasets SET policy_revision=2; COMMIT;")
         job=sql('SELECT encode(job_id,\'hex\') FROM control.jobs');result['job']=job
         result['before']=observe();save()

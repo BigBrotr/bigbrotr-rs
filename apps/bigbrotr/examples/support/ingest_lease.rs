@@ -18,7 +18,7 @@ pub async fn run(
     mode: &str,
     scope: QualifiedRef,
 ) -> IngestStore {
-    let validate = |document: &str, digest| validate_version(document, digest, true);
+    let validate = |document: &str, digest| validate(document, digest);
     let cases = [
         "lease-pass",
         "lease-expired",

@@ -27,7 +27,7 @@ def encoded(value):
 
 
 def digest(value):
-    return sha(b'bigbrotr/product-policy/1\0' + encoded(value).encode())
+    return sha(b'bigbrotr/product-policy/3\0' + encoded(value).encode())
 
 
 def main():
@@ -43,11 +43,11 @@ def main():
     require(actual.returncode == 0 and json.loads(actual.stdout) == state['build']['build_info'], 'mounted-artifact-identity')
     output = root / 'configuration-inspection.json'
     require(not output.exists(), 'existing-report')
-    policy = json.loads((SOURCE / 'experiments/configuration-inspection/policy.json').read_text())
-    require(digest(policy) == 'da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9', 'frozen-policy-identity')
+    policy = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
+    require(digest(policy) == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b', 'frozen-policy-identity')
     report = {'format': 'bigbrotr-configuration-inspection/1', 'status': 'RUNNING', 'source': revision,
               'binary_sha256': state['binary_sha256'], 'server': state['server'], 'cases': [],
-              'fixture_sha256': sha((SOURCE / 'experiments/configuration-inspection/policy.json').read_bytes()),
+              'fixture_sha256': sha((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_bytes()),
               'scope': 'Actual CLI and PG read boundaries; independently inserted fixture rows, not product bootstrap or activation.'}
 
     def config(database):
@@ -103,7 +103,7 @@ def main():
         run('empty-configuration', database, path, 4, lambda v,e: not e and v['status'] == 'configuration-not-initialized')
         text = encoded(policy).replace("'", "''")
         source_digest = sha(local.read_bytes())
-        lab.sql(state, database, f"BEGIN; INSERT INTO control.config_revisions(revision,dataset_id,previous_revision,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id) VALUES(1,decode('{dataset}','hex'),NULL,1,'managed','{text}'::jsonb,decode('{digest(policy)}','hex'),decode('{source_digest}','hex'),123,decode(repeat('03',16),'hex')); UPDATE control.datasets SET config_revision=1; COMMIT;")
+        lab.sql(state, database, f"BEGIN; INSERT INTO control.config_revisions(revision,dataset_id,previous_revision,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id) VALUES(1,decode('{dataset}','hex'),NULL,3,'managed','{text}'::jsonb,decode('{digest(policy)}','hex'),decode('{source_digest}','hex'),123,decode(repeat('03',16),'hex')); UPDATE control.datasets SET config_revision=1; COMMIT;")
         run('managed-accepted', database, path, 0, lambda v,e: accepted(v,e) and not v['source_file_differs'] and not v['candidate_policy_differs'])
         original = local.read_text()
         local.write_text(original + '\n# staged source change\n')
@@ -129,7 +129,7 @@ def main():
         value = copy.deepcopy(policy); value['settings']['topology.dataset_id'] = dataset; variants['root-injection'] = value
         value = copy.deepcopy(policy); value['settings']['ingest.max_event_bytes'] = None; variants['required-null'] = value
         value = copy.deepcopy(policy); value['settings']['pipeline.prepare_slot_bytes'] = 4 * 1024**3; variants['root-budget-overflow'] = value
-        value = copy.deepcopy(policy); value['format'] = 'bigbrotr-product-policy/2'; variants['future-format'] = value
+        value = copy.deepcopy(policy); value['format'] = 'bigbrotr-product-policy/2'; variants['superseded-format'] = value
         for name, value in variants.items():
             write_policy(database, value)
             run(name, database, path, 3, lambda v,e: v is None and e.startswith('error:'))

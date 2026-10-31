@@ -125,12 +125,8 @@ impl ControlSession {
                 // snapshot rechecks deployment identity and both documents; a
                 // refusal of either never leaves the first decision usable.
                 let policy = snapshot(&tx, &self.request, &mut |document, digest| {
-                    if PolicyDocumentVersion::from_document(document)
-                        .map_err(|_| OwnerError::InvalidPolicy)?
-                        != PolicyDocumentVersion::V2
-                    {
-                        return Err(OwnerError::InvalidPolicy);
-                    }
+                    PolicyDocumentVersion::from_document(document)
+                        .map_err(|_| OwnerError::InvalidPolicy)?;
                     destination = Some(authorize(document, digest, &endpoint, route)?);
                     Ok(())
                 })

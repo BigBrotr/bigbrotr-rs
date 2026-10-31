@@ -33,7 +33,7 @@ fn validate_fixture_policy(document: &str, digest: [u8; 32]) -> Result<(), Owner
         return Err(OwnerError::InvalidPolicy);
     }
     let expected: [u8; 32] = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/2\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(serde_json::to_vec(&supplied).unwrap())
         .finalize()
         .into();

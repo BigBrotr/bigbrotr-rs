@@ -72,9 +72,8 @@ fn report(root: Resolved, observation: ConfigurationObservation) -> CliResult<(V
             "deployment authority mode disagrees with accepted Control state".into(),
         ));
     }
-    let policy_differs =
-        !PolicySeed::matches_accepted(&root, accepted.policy_version, accepted.document_digest)
-            .map_err(|error| (3, error))?;
+    let policy_differs = !PolicySeed::matches_accepted(&root, accepted.document_digest)
+        .map_err(|error| (3, error))?;
     let hex = |bytes: &[u8]| bytes.iter().map(|b| format!("{b:02x}")).collect::<String>();
     let source_differs = root.document_sha256 != hex(&accepted.source_digest);
     let effective = PolicySeed::restore(&accepted.document, accepted.document_digest, root)
@@ -140,7 +139,16 @@ pub(crate) fn initialize(root: Resolved) -> CliResult<(Value, u8, OwnedPermit)> 
         let commit_started = Cell::new(false);
         let result = match tokio::time::timeout(
             Duration::from_secs(30),
-            initialization::initialize(&mut client, input, &commit_started),
+            initialization::initialize(
+                &mut client,
+                input,
+                |document, digest| {
+                    PolicySeed::restore(document, digest, root.clone())
+                        .map(|_| ())
+                        .map_err(|_| InitializeError::InvalidInput)
+                },
+                &commit_started,
+            ),
         )
         .await
         {
@@ -161,7 +169,7 @@ pub(crate) fn initialize(root: Resolved) -> CliResult<(Value, u8, OwnedPermit)> 
             "audit_id":receipt.audit_id.iter().map(|b|format!("{b:02x}")).collect::<String>(),
             "initial_policy_sha256":receipt.document_digest.iter().map(|b|format!("{b:02x}")).collect::<String>(),
             "initial_policy_format":receipt.policy_version.format(),
-            "candidate_policy_differs":!PolicySeed::matches_accepted(&root, receipt.policy_version, receipt.document_digest).map_err(|error|(3,error))?,
+            "candidate_policy_differs":!PolicySeed::matches_accepted(&root, receipt.document_digest).map_err(|error|(3,error))?,
             "source_file_differs":receipt.source_digest != *source.as_bytes(),
             "owner_enrollment":"not-performed","runtime_authorization":"not-granted",
             "applied_revision":null,"security_revision":null}),

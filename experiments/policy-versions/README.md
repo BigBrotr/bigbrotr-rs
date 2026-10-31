@@ -1,39 +1,70 @@
-# Persisted policy version compatibility
+# Current persisted policy and incompatible-format refusals
 
-This bounded acceptance recipe uses the existing exact-Git native runner:
+Run the bounded native recipe through
 `experiments/network-transport/lab.py REVISION TREE policy-versions`.
-It requires the separately retained, hash-verified 6c52067 CLI from
-`runs/ingest-visibility-6c52067/out/artifacts`; it never rebuilds that old revision.
-The runner reuses the exclusively locked compiler cache, creates one new internal
-PostgreSQL lab, and preserves stopped containers, databases and native stores.
-The explicit /28 must pass the existing network/route overlap preflight.
+It builds the current checkout with declared dependencies and creates a fresh
+isolated PostgreSQL lab. No old executable or private historical build path is a
+prerequisite. The existing lab runner owns container/network/cache lifecycle.
 
-The old actual CLI initializes v1 managed/declarative databases. The new actual
-CLI inspects them, retries initialization, activates/replays the accepted revision
-and distinguishes implicit empty defaults from explicitly staged bans. Fresh v2
-initialization/activation runs in both modes, including a separate nonempty
-normalized ban set. Frozen settings, literal domains and independent Python
-digests supply expected documents; current product output does not supply them.
-All Control relations and row xmin are captured around each finite CLI command.
-Corrupt metadata and malformed normalized bans live only in separate clones.
+To repeat only the PostgreSQL journey with already qualified native artifacts,
+run `python3 -B experiments/policy-versions/run.py /absolute/fresh-run
+/absolute/build-artifacts --subnet 10.253.240.48/28` from the clean selected
+checkout. Choose an unused private IPv4 /28; the shared laboratory guard checks
+actual Docker networks and host routes before creating its network. The default
+is `172.16.240.48/28`; retaining an earlier network may require another subnet.
+The artifact directory supplies `bigbrotr`, `ingest_bootstrap_probe` and their
+`build-result.json`. Both executable digests are checked before setup. Reuse
+across commits permits only this runner, this README and its portable controls
+to differ; product, build, fixture, schema and unknown changes refuse. The report
+records the built product revision separately from the harness revision and
+the exact permitted changes. Preserve the original failed run and use a fresh
+root; this does not reclassify its outcome or qualify a rebuilt product.
 
-The actual Control/Ingest probe reuses its existing dictionary bootstrap,
-identical retry, native reopen and durable read journey for v1 and explicit v2.
-The new mode changes only its independent expected document/digest. Existing
-raw-byte dictionary oracle checks nonreceipt facts/indexes/counters; historical
-configuration, policy, command, audit and principal rows remain unchanged.
-Application-driver termination is checked before stopping the owned laboratory.
+The case applies the complete selected catalog through migration41:57 ordered
+migrations and58 input hashes including the manifest. Its independent inventory
+reads the declared migration SQL in manifest order, records every input SHA256
+and requires the exact82 Control table names before comparing rows. A
+same-count missing/unexpected table substitution refuses. The previous target19
+was a historical fixture cutoff: the unbound dictionary probe itself needs the
+migration14 bridge (Control ownership7 and registration12), while initialization
+and activation require their declared management migrations. Captured retention
+comes from accepted policy JSON; it does not need another registration column.
+Using the complete current catalog exercises the current SQL trigger closure;
+minimum-schema CLI qualification belongs to the separate migration/CLI cases.
 
-This does not qualify populated upgrades, acquisition issuance, restrictive
-drain, socket admission, capacity, arm64 or release. Original failures remain
-FAIL; required scenarios not executed remain incomplete. Results belong in the
-existing implementation evidence and laboratory inventory.
+The isolated laboratory application role retains SELECT/INSERT/UPDATE on all
+current Control tables and EXECUTE on current Control functions. Before each
+fresh database case, the runner records and checks its login flags, lack of role
+memberships, migrator database/schema/table/function custody, exact per-table
+grants, and lack of schema CREATE, DELETE, TRUNCATE, REFERENCES or TRIGGER rights.
+This broad lab role is not qualification of the separate deployment-grant proposal.
 
-The policy header reader uses pinned serde/serde_core1.0.229 and
-serde_json1.0.151. Source inspection of `de/ignored_any.rs` and
-`de.rs::{ignore_value,deserialize_ignored_any}` confirms that ignored settings
-are scanned without constructing a second Value tree; iterative scratch still
-consumes memory bounded by the already capped document. This header scan is not
-the full closed setting validator. The existing512MiB parse allowance remains
-conservative, not a measured RSS or throughput claim. Endpoint identity keeps
-the existing pinned url2.5.8 normalizer; no new dependency or migration is added.
+The current single policy schema is `bigbrotr-product-policy/3`. The complete
+explicit independent fixture is [policy-v3.json](../../tests/fixtures/configuration/policy-v3.json);
+Python compact JSON and SHA256 supply its expected bytes and digest. It includes
+explicit bans and receipt-retention64. Managed/declarative initialization,
+inspection, identical retry, first activation and activation retry preserve the
+accepted document. Staging retention62 does not replace accepted64; declarative
+activation refuses drift. Current initial Control/Ingest writes, native reopen
+and durable reads retain the existing independent dictionary/scientific oracle.
+
+Separate cloned fixtures exercise superseded formats1/2, future4, missing bans,
+missing retention and non-normalized bans, including recomputed digests. The
+current CLI/Control owner must refuse them while preserving the full Control
+relations. Healthy originals, all failed outcomes and resource receipts remain
+retained. A before/after relation comparison is not a proof of no physical WAL or
+row-lock writes: Control acquires transaction/row locks before policy validation.
+
+The runner verifies the current probe SHA256 against its exact-source build
+receipt before engine setup. Portable controls execute this admission boundary
+with a matching fixture and with a probe changed after the receipt. The native
+scenario additionally exercises actual `config initialize` retries against missing
+retention and changed bodies with stale/recomputed digests; initialization must
+restore the complete retained current document before returning its receipt.
+
+Historical format1/2 source, inputs and executed evidence remain bound to their
+original revisions. This source recipe no longer claims compatibility with those
+formats. It does not perform a populated migration or repair incomplete documents.
+Actual native execution remains required for this new schema; static tests are
+not engine qualification. OPEN-prefix retirement, Live policy application,
+physical-growth grants, pressure/fault capacity and release remain separate gates.

@@ -12,7 +12,7 @@ pub fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
     let expected: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
     let canonical = serde_json::to_vec(&expected).unwrap();
     let expected_digest: [u8; 32] = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(canonical)
         .finalize()
         .into();

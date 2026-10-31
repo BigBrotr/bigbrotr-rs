@@ -126,7 +126,7 @@ class RestartIndexControls(unittest.TestCase):
             expected=tomllib.loads(original);expected.setdefault('archive',{})['max_publish_delay']='1s'
             self.assertEqual(configured,expected)
             self.assertEqual(runtime.inputs['initial_recipe_sha256'],base.digest(runtime.config))
-            document=dict(format='bigbrotr-product-policy/2',settings={
+            document=dict(format='bigbrotr-product-policy/3',settings={
                 'indexer.enabled':True,'sync.provenance':'local_first_witness',
                 'indexer.batch_max_rows':4,'archive.max_publish_delay':1_000_000})
             state=dict(datasets=[dict(config_revision=1,policy_revision=1)],

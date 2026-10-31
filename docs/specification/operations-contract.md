@@ -365,7 +365,7 @@ This finite local deployment command requires the protected non-migrator Control
 credential. It is independent of human enrollment; the immutable installation
 principal attributes the transition and is never authenticated as a human.
 The complete accepted product-policy document is restored against current roots
-and snapshotted without changing its closed `bigbrotr-product-policy/1` encoding
+and snapshotted without changing its closed `bigbrotr-product-policy/3` encoding
 or domain-separated digest. The security snapshot references the exact accepted
 configuration revision. It creates no new defaults, action permissions or session.
 Service consumers still validate roots, configured role/action scope and current

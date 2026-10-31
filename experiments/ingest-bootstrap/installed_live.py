@@ -70,7 +70,7 @@ def policy(pg, database, output, label, rows, provenance):
         document['settings']['ingest.producer_outstanding_requests'] = 2
         document['settings']['sync.provenance'] = 'local_first_witness' if provenance else 'off'
         encoded = json.dumps(document, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
-        sha = hashlib.sha256(b'bigbrotr/product-policy/2\0' + encoded).hexdigest()
+        sha = hashlib.sha256(b'bigbrotr/product-policy/3\0' + encoded).hexdigest()
         common = (f"2,dataset_id,1," + ("schema_version,authority_mode," if table == 'config_revisions'
             else "2,schema_version,") + f"convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb,"
             f"decode('{sha}','hex')," + ("accepted_source_digest," if table == 'config_revisions' else "")

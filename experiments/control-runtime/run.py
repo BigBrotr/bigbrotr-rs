@@ -103,7 +103,7 @@ def main():
                 table='config_revisions' if case=='invalid_config' else 'policy_revisions'
                 row=json.loads(lab.sql(state,db,f"SELECT json_build_object('document',document,'digest',encode(document_digest,'hex')) FROM control.{table};"))
                 encode=lambda d:json.dumps(d,ensure_ascii=False,separators=(',',':'),sort_keys=True)
-                digest=lambda d:hashlib.sha256(b'bigbrotr/product-policy/1\0'+encode(d).encode()).hexdigest()
+                digest=lambda d:hashlib.sha256(b'bigbrotr/product-policy/3\0'+encode(d).encode()).hexdigest()
                 require(digest(row['document'])==row['digest'],'independent-policy-encoding')
                 row['document']['settings']['ingest.max_event_bytes']=0
                 doc=encode(row['document']).replace("'","''")

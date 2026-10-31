@@ -81,9 +81,9 @@ fn validate_native_row(document: &str, digest: [u8; 32]) -> Result<(), OwnerErro
 }
 fn policy_document(native_row: bool) -> &'static str {
     if native_row {
-        include_str!("../../../experiments/archive-engine/native-row-policy.json")
+        include_str!("../../../tests/fixtures/configuration/native-row-policy-v3.json")
     } else {
-        include_str!("../../../experiments/archive-engine/receipt-policy.json")
+        include_str!("../../../tests/fixtures/configuration/receipt-policy-v3.json")
     }
 }
 fn validate_selected(document: &str, digest: [u8; 32], native_row: bool) -> Result<(), OwnerError> {
@@ -91,7 +91,7 @@ fn validate_selected(document: &str, digest: [u8; 32], native_row: bool) -> Resu
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
     let expected_digest: [u8; 32] = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(expected)
         .finalize()
         .into();
@@ -209,7 +209,7 @@ async fn initialize_control_policy(database: &str, installed: bool, native_row: 
     let (mut application, driver) = connect(database, "bigbrotr_control").await;
     let document = policy_document(native_row);
     let digest = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(document)
         .finalize()
         .into();
@@ -226,6 +226,11 @@ async fn initialize_control_policy(database: &str, installed: bool, native_row: 
             } else {
                 [3; 32]
             },
+        },
+        |document, digest| {
+            validate_selected(document, digest, native_row).map_err(|_| {
+                bigbrotr::storage::postgres::initialization::InitializeError::InvalidInput
+            })
         },
         &Cell::new(false),
     )

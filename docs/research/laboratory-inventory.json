@@ -77604,11 +77604,26 @@
       "accounting_receipt": {
         "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/pending-accounting-b0da6952.json",
         "sha256": "ab5502c3613831990fc3568c2fc0f08d4a87910d49ef7f3a1880ca785cf3aa75"
+      },
+      "accounting_critical_review": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/pending-accounting-format-decision-20261031/critical-review-b0da6952.json",
+        "sha256": "c468a1742991a9fc7fc3d9feb0f1cad3da8ca67692e654c50a37ad050f639710",
+        "scope": "Source-critical core closed only; all43source hashes/portable controls checked, native/caller grants/fixture migration/scheduler/CW bounds remain open."
+      },
+      "native_candidate": "e7181f2ea056c4b9f345c1ba85b63791a894adf3",
+      "native_candidate_receipt": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/native-accounting-ready-e7181f2e.json",
+        "sha256": "128c9707b83b75e280ccdf0cb6db1c8d9956e5bcb747b038ef7644c9bd0b394e"
+      },
+      "native_delta_critical_review": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/pending-accounting-format-decision-20261031/critical-delta-review-e7181f2e.json",
+        "sha256": "f3024c3d2ab01431b163cce34d1bb825254c557a99b8bd46747df2adcb3a2a9f",
+        "scope": "Post-b0 preview includes conservative73B serialized-bound charge and discards temporary Prepared; real commit rebuilds/sealsonce.22hashes/7portablecontrols verified. Native/PG42 NOT_RUN; no new request65permission."
       }
     },
     "scope": "Initial epoch1 OPEN compact base plus exact tail, authenticated request/input retirement under existing bounds. Scientific pending facts/identity/batch markers remain; generic payload GC and larger Archive history separate. Startup policy capture, stop/recovery on policy change; no promised implemented Live application.",
     "resources": "Source worktree only. No new native engine, compiler cache, build, installed case or data resource launched; root remains sole launcher.",
-    "next": "Join exact907345e native/PG policy run and classify actual result. Continue b0da critical accounting review and typed logical funding, then connected PG/base+tail/scheduler/consumer recovery. Resolve CW-N1/P1/P2 physical bounds before request65.",
+    "next": "Integrate/publish independently reviewed and actual65PG-qualified current-policy3 increment; use its required full33 hosted run for inheritedMacgate. Continue separately frozen accounting native fixtures/typed grants and CW-P1; no>64enablement.",
     "resource_gate": {
       "proposal_worktree": ".research/open-prefix-disk-contract-20261030",
       "proposal_revision": "936d5b6a38403ef6e5ac450e0d9251a088f76177",
@@ -77638,7 +77653,13 @@
         "CW-P1 allowed PG tuple/index/TOAST/FSM/VM and full-page WAL transaction output",
         "CW-P2 whole PG background/retention/recovery allocation before refusal"
       ],
-      "decision_state": "Finite cumulative-work direction proposed only; no complete d/R share justified, no >64 enablement. Native finite retry/logsink/drain possibilities do not close absent inequalities."
+      "decision_state": "Finite cumulative-work direction proposed only; no complete d/R share justified, no >64 enablement. Native finite retry/logsink/drain possibilities do not close absent inequalities.",
+      "cw_p1_amendment": {
+        "path": ".research/open-growth-decision-20261031/amendment-cw-p1-20261031.json",
+        "sha256": "5598b8fbfe095d324dc4d5aee86493045681c74b56575ce5ac2cda9f8f49a4af",
+        "status": "THEORETICAL_PARTIAL_BOUND_TOTAL_P1_OPEN_ENFORCEMENT_ABSENT",
+        "scope": "Fixed typed operation tickets/nonrecursive preallocated8KiBhostdebit direction; conditional heap-only bounds and WAL record coefficient. Exact SQL lock/scan, foreground prune/hint/Btree/transaction-SLRU terms and CW-N1/P2 remain. No new physical grant or request65 authorization."
+      }
     },
     "acceptance_author": {
       "agent": "/root/grouped_acceptance_sol",
@@ -77686,11 +77707,11 @@
       "sha256": "cbe61c2647a8124674535a39e1ab57e84f96049a3ba86128e98e357882cc74f3"
     },
     "coherent_current_policy_increment": {
-      "revision": "907345e5a4b887c595b2dbb11c6735dc2babad2e",
+      "revision": "115d427832a741657b60539a7942b3560f3adc9a",
       "worktree": ".research/current-policy-increment-20261031",
       "branch": "work/current-policy-increment-20261031",
       "base": "d742fe0386df9472f97bb4712ac846a69b0947c0",
-      "status": "SOURCE_CLOSED_NATIVE_PG_QUALIFICATION_ACTIVE",
+      "status": "QUALIFIED_POLICY3_NATIVE57_PG65_PORTABLE376_PENDING_MAIN_MERGE",
       "scope": "Isolate current3 policy/retention/init-retry closure from unfinished OPEN/native/PG42 scaffolding. Main-native format and full catalog41/57versions/58inputs/82tables retained; generated UInt retention schema corrected, obsolete write-only Resolved version removed.",
       "source_receipt": {
         "path": ".research/current-policy-increment-20261031/.research/current-policy-source-delta-20261031/receipt.json",
@@ -77704,14 +77725,57 @@
         "path": ".research/current-policy-increment-20261031/.research/current-policy-native-preflight/shared-catalog-context-failure.json",
         "sha256": "06a5edf730289020e1c5eaa491e429f4c7a3090f221d1d8a4b39f9c78ad5b2ea"
       },
-      "native_run": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-907345e",
-      "tool_session": 2695,
+      "native_run": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08",
       "resource_custody": "Native runner owns cache115 exclusively and pinned2CPU/6GiB containers; resources.json owns exact identities. Actual native/PG result pending.",
-      "context_result": "277 first-launch controls PASS after restoring exact selected41 shared guard; two original277/64ERROR captures preserved. Tutorial11 PASS after independently permitted fixed code-tree pin refresh; all assertions unchanged."
+      "context_result": "277 first-launch controls PASS after restoring exact selected41 shared guard; two original277/64ERROR captures preserved. Tutorial11 PASS after independently permitted fixed code-tree pin refresh; all assertions unchanged.",
+      "resources": "All native/PG/portable runners terminal,2695/15509 reaped1 with originalFAILs,38957/48680reaped0. Owned containers stopped/PID0/noOOM; PG0 and deliberate infrastructure sleeper143, all application drivers joined; internalPGnetwork retainedempty, foreignresourcesunchanged, cache115released. Data/logs/source/ELFs/protectedpartial roots preserved.",
+      "native_attempts": {
+        "policy-versions-907345e": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-907345e/root-terminal.json",
+          "sha256": "241214660d7b60f30e1e82496340dc0dbaed797cdb29ca2ec67fe37bface7934"
+        },
+        "policy-versions-64d0b08": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08/root-terminal.json",
+          "sha256": "9e6588dcef65c1efbba976a57fbd0c55b2f7ac8d126f7509818e00587de05185"
+        }
+      },
+      "pg_only_next": {
+        "harness_source": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08/pg-retry-source-a023",
+        "harness_revision": "a0239a4997898b3803cd6a746cfb7ad08b5939e7",
+        "built_product": "64d0b08dc6f51019e28ec4f9f5b1cd0d6a798f11",
+        "subnet": "10.253.240.48/28",
+        "status": "PASS65_ACTUAL_POSTGRES_NATIVE_CLI",
+        "preflight_controls": "9PASS; both executable hashes before setup, exact three-file harness-only diff allowed, unknown/product/build changes refuse. Source clone detached/clean, shared lab owner/overlap checks unchanged.",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08/pg-r3-subnet",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/policy-versions-64d0b08/pg-r3-root-terminal.json",
+          "sha256": "3db475f9a2fd26eda491b33352f2f4767f0590ffb7cf28eea0ebcedf80bc21cb"
+        },
+        "harness_review": {
+          "path": ".research/current-policy-increment-20261031/.research/policy-harness-review-20261031/review.json",
+          "sha256": "02be658bab2771fe20535b61c3144093390f7fbe3ce51f033029eda6f0a05718"
+        }
+      },
+      "native_product": "64d0b08dc6f51019e28ec4f9f5b1cd0d6a798f11",
+      "pg_harness": "a0239a4997898b3803cd6a746cfb7ad08b5939e7",
+      "shared_portable_qualification": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-115d4278/custody.json",
+        "sha256": "13eaf2c85abbca3c5e85dc8a4d6138fc5ec23184549ead025a30867cd9389f73",
+        "result": "Pinned3.11.2shared5/5checksPASS:376acceptance0skip+10profile0skip+3docs. Original hostLLVMmissing376/373PASS1ERROR2SKIP retained separately."
+      },
+      "nostr_fixed_metadata": {
+        "path": ".research/current-policy-increment-20261031/.research/current-policy-native-preflight/nostr-metadata-64d0b08.json",
+        "sha256": "99b472d4514356cdb86639a9189ede40148f890df48e6484b8e259d00bafecc4",
+        "scope": "All9Nostrpaths identical to critical20f46; only2example wrappers changeapps. Fixedmetadata only,11tutorialcontrolsPASS; no newly executed installedNostr/tut proof."
+      },
+      "report_root_review": {
+        "path": ".research/current-policy-increment-20261031/.research/current-policy-final-evidence/root-proposal-review.json",
+        "sha256": "00b6e9a44bd88b35ab5830b8e68d4932d012c7ae90f06bda80f392ac9e4ddb24"
+      }
     }
   },
   "implementation_ci_portable_controls_20261030": {
-    "status": "SOURCE_INTEGRATED_D742_HOSTED_LINUX_PASS_MAC_FIXTURE_FAILURE_FIX_READY",
+    "status": "SOURCE8AC_REDUCED_THREE_PLATFORM15CHECKS_PASS_REQUIRED_FULL_GATE_OPEN",
     "owner": "/root",
     "model": "gpt-6.1-sol",
     "reasoning_effort": "xhigh",
@@ -77722,7 +77786,7 @@
     "custody": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-10098d32/custody.json",
     "scope": "Shared portable controls/documentation with real declared native tool/syscall prerequisites; no Cargo product build, native data engines or worker asset download. Root sole launcher; 2CPU/2GiB/512PIDs/read-only root/uid1000/no capabilities/no Docker socket/no host ports.",
     "current_hosted": "Exactd742 run41188290200 terminal audited FAILURE10:33:32UTC:33checks/28PASS/1FAIL/4NOT_RUN. Both Linux foundations pass; Mac profile fixture fails before4required build/workspace gates. Full original failure/source/artifact/public-output audit now integrated in existing P01 report; no billing/cancellation/product failure claim.",
-    "remaining": "Integrate reviewed fixture-only11e after terminal report; qualify actual reduced three-platform controls. Then one sequential regular full run on same corrected revision closes inherited Mac full native/workspace gates; reduced green cannot discharge them. No compiled-cache/speedup claim yet.",
+    "remaining": "Root chose necessary qualified current-policy product push for full33/inheritedMac4gate; sameCIhelper/canonicalfixture. No separate8acdispatch, no concurrentduplication/cancellation. Actualfullresultsstillpending.",
     "qualification": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-python-selection-20261030/.research/ci-portable-controls-author/qualification.json",
       "sha256": "89173c44adc3d891a78e2b53efa6d53086c241f44707b731138a795d975a57f1"
@@ -77783,6 +77847,24 @@
       "root-report-delta-review.json": {
         "path": ".research/ci-publication-20261026/d742fe03-real-ci/root-report-delta-review.json",
         "sha256": "feb97cff18c5b646e0f536261c6dbae01335810ea09740e0bc114a2fc0f8cc01"
+      }
+    },
+    "public_revision": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
+    "publication": {
+      "path": ".research/ci-publication-20261026/source-mac-profile-8acbd687-20261031/publication.json",
+      "sha256": "366137089ad2b3052920c7b98f18f3c8c8abc4eea0e2a22e44854dd0fa6946cb"
+    },
+    "hosted_reduced": {
+      "run": 41194126907,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41194126907",
+      "scope": "15/15 shared controls PASS; Linux367acceptance each, Mac361PASS/6SKIP, all10profile+3docs each. Product/worker/Rust/native download NOT_SELECTED; job65/72/86s are scope-specific, not compiled-speedup evidence.",
+      "receipt": {
+        "path": ".research/ci-publication-20261026/8acbd687-controls-ci/receipt.json",
+        "sha256": "b900dc65eb16eeae5f9b61cccf23dff3b525a7649b4f6fa29b7b09a3e6fb0811"
+      },
+      "root_review": {
+        "path": ".research/ci-publication-20261026/8acbd687-controls-ci/root-report-delta-review.json",
+        "sha256": "0a457d601abf08d6a551b90ea6a88b9dc5696cad69ac7336d0ecaed5eeaeb8f6"
       }
     }
   }

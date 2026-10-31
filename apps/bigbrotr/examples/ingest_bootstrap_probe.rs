@@ -84,22 +84,13 @@ fn hex(value: &[u8]) -> String {
     value.iter().map(|v| format!("{v:02x}")).collect()
 }
 fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
-    validate_version(document, digest, false)
-}
-fn validate_version(document: &str, digest: [u8; 32], v2: bool) -> Result<(), OwnerError> {
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
-    let mut expected: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../experiments/configuration-inspection/policy.json"
+    let expected: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/configuration/policy-v3.json"
     ))
     .unwrap();
-    let fingerprint = if v2 {
-        expected["format"] = serde_json::json!("bigbrotr-product-policy/2");
-        expected["settings"]["relay_policy.banned"] = serde_json::json!([]);
-        "5916c8d71ed33b8339c00af4595cb5284d8e149a64875ee9c757e0de39e94ed1"
-    } else {
-        "da36c9bdae45e20a4a99f61e82e3ce1f46f6352ba0bddbf23b2ecf2879d94ea9"
-    };
+    let fingerprint = "77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b";
     if value != expected || hex(&digest) != fingerprint {
         return Err(OwnerError::InvalidPolicy);
     }
@@ -148,7 +139,7 @@ fn fixture_document() -> String {
     // The expected fixture digest names compact JSON, not the pretty source.
     serde_json::to_string(
         &serde_json::from_str::<serde_json::Value>(include_str!(
-            "../../../experiments/configuration-inspection/policy.json"
+            "../../../tests/fixtures/configuration/policy-v3.json"
         ))
         .unwrap(),
     )
@@ -159,7 +150,7 @@ fn setup_preserves_the_independent_frozen_policy_digest() {
     use sha2::{Digest, Sha256};
     let document = fixture_document();
     let digest = Sha256::new()
-        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(b"bigbrotr/product-policy/3\0")
         .chain_update(document.as_bytes())
         .finalize()
         .into();
@@ -203,11 +194,16 @@ async fn initialize_fixture(config: Config) {
             authority_mode: "managed",
             document: &document,
             document_digest: Sha256::new()
-                .chain_update(b"bigbrotr/product-policy/1\0")
+                .chain_update(b"bigbrotr/product-policy/3\0")
                 .chain_update(document.as_bytes())
                 .finalize()
                 .into(),
             source_digest: [3; 32],
+        },
+        |document, digest| {
+            validate(document, digest).map_err(|_| {
+                bigbrotr::storage::postgres::initialization::InitializeError::InvalidInput
+            })
         },
         &Cell::new(false),
     )
@@ -236,8 +232,7 @@ async fn initialize_fixture(config: Config) {
 }
 
 async fn run(mut config: Config, mode: &str, path: &Path) {
-    // The explicit v2 case retains the independent frozen settings and literal
-    // digest; it does not derive expected policy from the product codec.
+    // Current fixture bytes and digest are independent of the product codec.
     let source_mode = mode.starts_with("source-");
     let observation_mode = mode.starts_with("source-observation-");
     let socket_mode = mode.starts_with("source-socket-");
@@ -248,8 +243,6 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let witness = socket_mode || dictionary_fault || (observation_mode && mode.ends_with("-on"));
     let source_fault = mode.starts_with("source-fault-");
     let direct_config = config.clone();
-    let v2 = mode == "write-v2" || source_mode || dictionary_fault || mode.starts_with("lease-");
-    let mode = if mode == "write-v2" { "write" } else { mode };
     let (observer, observer_driver) = config.connect(NoTls).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     let row=observer.query_one("SELECT dataset_id,instance_id,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint FROM control.datasets",&[]).await.unwrap();
@@ -266,7 +259,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .then(|| crate::config::fixture_root(dataset, *instance.as_bytes()));
     let validate = |document: &str, digest| match &arrival_root {
         Some(root) => crate::config::validate_fixture_policy(document, digest, root),
-        None => validate_version(document, digest, v2),
+        None => validate(document, digest),
     };
     if matches!(
         mode,
@@ -387,6 +380,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         } else {
             2
         },
+        request_receipt_retention: 64,
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };

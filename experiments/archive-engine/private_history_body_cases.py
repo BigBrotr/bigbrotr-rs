@@ -66,12 +66,12 @@ def main(root):
         return control("SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'owner',(SELECT json_build_object('epoch',epoch,'expires',lease_expires_at_us) FROM control.owner_epochs WHERE role='control' AND state='active'),'pins',(SELECT json_agg(json_build_object('id',encode(l.lease_id,'hex'),'state',l.state,'acquired',l.acquired_at_us,'expires',l.expires_at_us,'released',l.released_at_us,'requested',p.requested_ttl_us)) FROM control.snapshot_leases l JOIN control.archive_snapshot_pins p USING(lease_id) WHERE l.state='active'))")
     def files():
         return {str(p.relative_to(root / 'out')):sha(p) for p in sorted((root / 'out/signed_large').rglob('*.parquet'))}
-    policy = json.loads((source / 'experiments/archive-engine/receipt-policy.json').read_text())
+    policy = json.loads((source / 'tests/fixtures/configuration/receipt-policy-v3.json').read_text())
     policy['settings'].update({'administration.enabled':True, 'read.execution.max_memory_bytes':1073741824})
     def accept(revision, ttl):
         assert counts() == dict(pins=0, claims=0, controls=0)
         document = json.dumps({**policy,'settings':{**policy['settings'],'read.authorization.lease_ttl':ttl}}, sort_keys=True, separators=(',', ':'))
-        digest = hashlib.sha256(b'bigbrotr/product-policy/1\0' + document.encode()).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0' + document.encode()).hexdigest()
         sql('bbpub_control_large', f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT {revision},dataset_id,{revision-1},config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision={revision-1}; UPDATE control.datasets SET policy_revision={revision}; COMMIT;")
     native = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     script = '/out/build/source/experiments/archive-engine/private_history_body_client.py'

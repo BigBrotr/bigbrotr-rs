@@ -188,7 +188,7 @@ BEGIN
         JOIN control.relay_enrollments e ON e.dataset_id=s.dataset_id AND e.endpoint_id=s.endpoint_id AND e.access_scope_id=s.access_scope_id
         WHERE d.dataset_id=detail.dataset_id AND d.config_revision=command.expected_config_revision
             AND d.policy_revision=command.policy_revision AND s.policy_revision=d.policy_revision AND e.enabled
-            AND c.document->>'format'='bigbrotr-product-policy/2' AND p.document->>'format'='bigbrotr-product-policy/2'
+            AND c.document->>'format'='bigbrotr-product-policy/3' AND p.document->>'format'='bigbrotr-product-policy/3'
             AND c.document->'settings'->'sync.enabled'='true'::jsonb AND p.document->'settings'->'sync.enabled'='true'::jsonb)
         OR NOT EXISTS (SELECT 1 FROM control.principal_grants WHERE dataset_id=detail.dataset_id
             AND principal_id=detail.actor_id AND action='roles.control' AND resource_kind='dataset' AND resource_id=detail.dataset_id) THEN

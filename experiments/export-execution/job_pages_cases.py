@@ -118,7 +118,7 @@ def run(root,state,sql,policy, *, prepare_consumer=False, cursor_lifetime=None):
             selected['settings'].update({'read.cursor.ttl':ttl,'read.cursor.clock_skew':skew})
             result['cursor_lifetime'] = dict(ttl_us=ttl,skew_us=skew)
         document=json.dumps(selected,sort_keys=True,separators=(',',':'))
-        digest=hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest=hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT 3,dataset_id,2,config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision=2; UPDATE control.datasets SET policy_revision=3; COMMIT;")
         # A separate status-only fixture account shares independently hashed
         # credentials. This seeds identity, not an account-management claim.

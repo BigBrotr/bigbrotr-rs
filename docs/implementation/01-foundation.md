@@ -185,18 +185,20 @@ MON-010 offline TLS presence parity is covered by the
 verify-full dependencies require CA and server name, without accessing files or
 servers. Staged unselected dependencies retain syntax-only validation.
 
-The private acquisition destination ceiling now has
-[scoped Mac configuration evidence](evidence/p01-private-routes-mac-20260928.json).
-It is a closed bounded deployment root with controlled restart, not managed
-policy or enrollment. Existing accepted v1 bytes remain unchanged; operational
-route/enrollment and authenticated acquisition are P02-T01 Step6/P04-T02 consumers
-still to implement. No complete step is implied by static validation.
+The [historical Mac private-route capture](evidence/p01-private-routes-mac-20260928.json)
+records the bounded acquisition destination ceiling at base `a87dbd21` plus its
+listed hashes of the changed working files. Its controlled-restart and v1 policy
+observations describe that captured source. Broader operational route/enrollment
+and authenticated acquisition acceptance remains with P02-T01 Step6/P04-T02;
+existing scoped implementations retain their own evidence.
 
-The [actual v1/v2 policy journey](evidence/p01-policy-versions-native-20260928.json)
-qualifies exact ban data, unchanged legacy document bytes, fresh v2 initialization,
-version-aware readers and original initialization/activation retries. Explicit
-legacy ban candidates remain distinct from absent accepted authority. Populated
-CAS upgrade, policy transition/drain and actual acquisition remain open.
+The [current v3 policy journey](evidence/p01-policy-versions-native-20260928.json)
+qualifies managed/declarative initialization, exact retries and first activation,
+accepted retention64 with staged62, and rejection of formats1/2/4 and malformed
+retained bodies while preserving all82 Control relations on required unchanged
+calls. Actual native57 and PostgreSQL65 cases pass; the prior v1/v2 report remains
+bound to its historical Git identity. Populated CAS upgrades, live policy
+transition/drain, issuance and capacity retain their existing gates.
 
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
   include operational composition/maximum-unit constraints and reject unknown,

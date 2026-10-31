@@ -25,7 +25,7 @@ def run(root, state, sql, policy, expected_manifest):
         assert sql(db,"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active'") == '0'
         selected = copy.deepcopy(policy); selected['settings'].update(settings)
         document = json.dumps(selected, sort_keys=True, separators=(',', ':'))
-        digest = hashlib.sha256(b'bigbrotr/product-policy/1\0'+document.encode()).hexdigest()
+        digest = hashlib.sha256(b'bigbrotr/product-policy/3\0'+document.encode()).hexdigest()
         sql(db,f"BEGIN; INSERT INTO control.policy_revisions(revision,dataset_id,previous_revision,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) SELECT {revision},dataset_id,{revision-1},config_revision,schema_version,$policy${document}$policy$::jsonb,decode('{digest}','hex'),accepted_at_us+1,actor_id FROM control.policy_revisions WHERE revision={revision-1}; UPDATE control.datasets SET policy_revision={revision}; COMMIT;")
     def snapshot():
         return {table:json.loads(sql(db,f"SELECT coalesce(jsonb_agg(jsonb_build_object('row',to_jsonb(t),'xmin',xmin::text) ORDER BY {key}),'[]') FROM control.{table} t"))
