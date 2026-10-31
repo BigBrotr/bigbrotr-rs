@@ -484,23 +484,25 @@ impl Sync {
                     authorize_sync_collection(work.root, d, h, endpoint, route, scope.selector())
                 },
                 async |stream| {
-                    receive::collect(
-                        stream,
-                        work.budget,
-                        plan.filters(),
-                        &attribution,
-                        source.route(),
-                        max_event_bytes,
-                        soft,
-                        work.cancel,
+                    Ok::<_, std::io::Error>(
+                        receive::collect(
+                            stream,
+                            work.budget,
+                            plan.filters(),
+                            &attribution,
+                            source.route(),
+                            max_event_bytes,
+                            soft,
+                            work.cancel,
+                        )
+                        .await,
                     )
-                    .await
                 },
             ),
         )
         .await?;
         let arrivals = match arrivals {
-            Ok(arrivals) => arrivals,
+            Ok(arrivals) => arrivals.map_err(error)?,
             // run_relay_source has completed its rollback before these known
             // pre-socket refusals. No adapter timeout/transport error is hidden.
             Err(

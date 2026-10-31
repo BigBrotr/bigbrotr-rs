@@ -190,15 +190,10 @@ class TutorialControls(unittest.TestCase):
         revision=subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
         runtime.manifest=dict(artifact=dict(source=dict(revision=revision)))
         runtime.command=lambda command,**_:subprocess.run(command,capture_output=True,text=True,check=True)
-        # A verifier control declares its fixture profile explicitly. HEAD need
-        # not be the production-reviewed profile; that gate remains pinned and
-        # must reject real changed product code until independent source review.
-        profile={path:subprocess.check_output(['git','-C',str(ROOT),'rev-parse',revision+':'+path],text=True).strip()
-            for path in case.REVIEWED_CODE}
-        with patch.object(case,'REVIEWED_CODE',profile),patch.object(case,'REVIEWED_PRODUCT',revision),patch.object(case.Runtime,'candidate'):
+        with patch.object(case.Runtime,'candidate'):
             runtime.candidate()
         self.assertEqual(runtime.inputs['nostr_source_exclusion']['product_revision'],revision)
-        self.assertEqual(runtime.inputs['nostr_source_exclusion']['reviewed_revision'],revision)
+        self.assertEqual(runtime.inputs['nostr_source_exclusion']['reviewed_revision'],case.REVIEWED_PRODUCT)
         runtime.command=Mock(return_value=SimpleNamespace(stdout='0'*40+'\n'))
         with patch.object(case.Runtime,'candidate'):
             with self.assertRaisesRegex(ValueError,'changed product code'):runtime.candidate()

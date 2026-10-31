@@ -5,11 +5,16 @@ use bigbrotr::{
         quantum::{RequestTerminal, TerminalKind},
         session::{RelaySession, RetainedRelayEvent, SessionError, SessionMessage},
     },
-    network::DirectStream,
+    network::{DirectStream, WebSocketError},
 };
 use bigbrotr_model::{LocalObservation, acquisition::Filter};
 use bigbrotr_protocol::wire::RelayMessage;
-use std::io;
+#[derive(Clone, Copy)]
+pub(super) enum ReceiveFailure {
+    Budget,
+    Context,
+    Session(SessionError),
+}
 
 pub(super) struct Arrivals<'a> {
     pub events: Vec<(RetainedRelayEvent<'a>, LocalObservation)>,
@@ -17,10 +22,34 @@ pub(super) struct Arrivals<'a> {
     pub teardown_complete: bool,
     pub(super) _permit: OwnedPermit,
 }
-fn interruption(error: SessionError) -> TerminalKind {
+impl std::fmt::Debug for ReceiveFailure {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Budget => f.write_str("local receive budget"),
+            Self::Context => f.write_str("local receive context"),
+            Self::Session(error) => f.debug_tuple("local receive session").field(error).finish(),
+        }
+    }
+}
+fn interruption(error: SessionError) -> std::result::Result<TerminalKind, ReceiveFailure> {
+    use bigbrotr_protocol::wire::WireError;
     match error {
-        SessionError::Envelope(_) | SessionError::BinaryMessage => TerminalKind::Decode,
-        _ => TerminalKind::Transport,
+        SessionError::Envelope(WireError::Bounds(EventError::InvalidLimits))
+        | SessionError::WebSocket(WebSocketError::Budget)
+        | SessionError::Budget
+        | SessionError::Capacity
+        | SessionError::Exhausted
+        | SessionError::Unavailable
+        | SessionError::InvalidLimits
+        | SessionError::Clock
+        | SessionError::Request(_) => Err(ReceiveFailure::Session(error)),
+        SessionError::Envelope(_)
+        | SessionError::BinaryMessage
+        | SessionError::WebSocket(WebSocketError::Protocol) => Ok(TerminalKind::Decode),
+        SessionError::WebSocket(WebSocketError::MessageLimit) => Ok(TerminalKind::FrameCap),
+        SessionError::WebSocket(WebSocketError::Handshake | WebSocketError::Unavailable) => {
+            Ok(TerminalKind::Transport)
+        }
     }
 }
 #[allow(
@@ -36,7 +65,7 @@ pub(super) async fn collect<'a>(
     max_event_bytes: usize,
     soft: Instant,
     cancel: &Cancellation,
-) -> io::Result<Arrivals<'a>> {
+) -> std::result::Result<Arrivals<'a>, ReceiveFailure> {
     let permit = budget
         .try_acquire(
             ResourceRequest::data(
@@ -48,14 +77,14 @@ pub(super) async fn collect<'a>(
             )
             .expect("finite arrivals"),
         )
-        .map_err(|e| io::Error::other(format!("arrival budget: {e:?}")))?;
+        .map_err(|_| ReceiveFailure::Budget)?;
     let mut terminal_permit = Some(
         budget
             .try_acquire(
                 ResourceRequest::data(QuantumGrant::terminal_bytes(), 1, 0)
                     .expect("finite terminal"),
             )
-            .map_err(|e| io::Error::other(format!("terminal budget: {e:?}")))?,
+            .map_err(|_| ReceiveFailure::Budget)?,
     );
     let mut events = Vec::with_capacity(3);
     let endpoint = stream.endpoint().clone();
@@ -79,14 +108,14 @@ pub(super) async fn collect<'a>(
         {
             Ok(value) => value,
             Err(error) => {
-                kind = interruption(error);
-                return Ok::<_, io::Error>(());
+                kind = interruption(error)?;
+                return Ok::<_, ReceiveFailure>(());
             }
         };
         let id = match session.open(filters, Some(3)).await {
             Ok(id) => id,
             Err(error) => {
-                kind = interruption(error);
+                kind = interruption(error)?;
                 return Ok(());
             }
         };
@@ -99,7 +128,7 @@ pub(super) async fn collect<'a>(
                     break;
                 }
                 Err(error) => {
-                    kind = interruption(error);
+                    kind = interruption(error)?;
                     break;
                 }
             };
@@ -117,17 +146,17 @@ pub(super) async fn collect<'a>(
                     }
                     let captured = message
                         .retain_event(id, budget)
-                        .map_err(|e| io::Error::other(format!("retained event: {e:?}")))?;
+                        .map_err(|_| ReceiveFailure::Budget)?;
                     let observed = attribution
                         .received(&endpoint, route, captured.received())
-                        .map_err(|e| io::Error::other(format!("received observation: {e:?}")))?;
+                        .map_err(|_| ReceiveFailure::Context)?;
                     events.push((captured, observed));
                 }
                 RelayMessage::Eose { .. } | RelayMessage::Closed { .. } => {
                     terminal = Some(
                         message
                             .retain_terminal(id, terminal_permit.take().expect("one terminal"))
-                            .map_err(io::Error::other)?,
+                            .map_err(|_| ReceiveFailure::Context)?,
                     );
                     break;
                 }
@@ -153,7 +182,7 @@ pub(super) async fn collect<'a>(
             request,
             terminal_permit.take().expect("local terminal grant"),
         )
-        .map_err(io::Error::other)?,
+        .map_err(|_| ReceiveFailure::Context)?,
     };
     Ok(Arrivals {
         events,
@@ -161,4 +190,40 @@ pub(super) async fn collect<'a>(
         teardown_complete,
         _permit: permit,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn local_failure_is_not_a_peer_transport_terminal() {
+        for error in [
+            SessionError::Budget,
+            SessionError::Capacity,
+            SessionError::Clock,
+            SessionError::Exhausted,
+            SessionError::Unavailable,
+            SessionError::InvalidLimits,
+            SessionError::WebSocket(WebSocketError::Budget),
+        ] {
+            assert!(interruption(error).is_err());
+        }
+        for (error, terminal) in [
+            (SessionError::BinaryMessage, TerminalKind::Decode),
+            (
+                SessionError::WebSocket(WebSocketError::Protocol),
+                TerminalKind::Decode,
+            ),
+            (
+                SessionError::WebSocket(WebSocketError::MessageLimit),
+                TerminalKind::FrameCap,
+            ),
+            (
+                SessionError::WebSocket(WebSocketError::Unavailable),
+                TerminalKind::Transport,
+            ),
+        ] {
+            assert!(matches!(interruption(error),Ok(actual) if actual==terminal));
+        }
+    }
 }
