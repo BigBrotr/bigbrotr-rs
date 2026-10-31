@@ -28,7 +28,7 @@ pub async fn run(config: Config) {
             incarnation: [122; 16].try_into().unwrap(),
             lease_ttl: Duration::from_secs(30),
         },
-        |d, h| validate(d, h),
+        validate,
         &Cell::new(false),
     )
     .await
