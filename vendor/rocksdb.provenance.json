@@ -1,0 +1,372 @@
+{
+  "format": "bigbrotr-vendored-source/1",
+  "package": "rocksdb",
+  "version": "0.25.0",
+  "upstream_url": "https://static.crates.io/crates/rocksdb/rocksdb-0.25.0.crate",
+  "upstream_crate_sha256": "d8d90add70d1d420ee487bce4a1449880a8d147451c6051b2ee5f8354553dcbf",
+  "upstream_crate_bytes": 183498,
+  "upstream_commit": "e4aac69f55021e619566b6ca5902665e0ea2af4e",
+  "native_revision": "abeebd9630f11bd08c28b7bd43c7bdfc62050654",
+  "original_members": {
+    ".cargo_vcs_info.json": {
+      "bytes": 94,
+      "sha256": "2f72874c7618832d1f9f9501127be3ab190da221e06204af9bec17eeeba22583"
+    },
+    ".github/workflows/rust.yml": {
+      "bytes": 4897,
+      "sha256": "13dc85b09bb5c52479c7cc106a170b1745e4a5e3d32ed1597fc80fe577e946b2"
+    },
+    ".gitmodules": {
+      "bytes": 219,
+      "sha256": "297e81bc8e9327f0b651e2ef2f93bfb42f5d28949321cc31e6477aa354141181"
+    },
+    "CHANGELOG.md": {
+      "bytes": 26410,
+      "sha256": "fda2bf6b52d31a95846a92aeb3eb7f3a9960a311040d30b7c100b4cdb336b5ae"
+    },
+    "CONTRIBUTING.md": {
+      "bytes": 3600,
+      "sha256": "d743f2c6b329a4725cd8e3e83203e3bf62a124126598d922cae4cd5aa153a7c6"
+    },
+    "Cargo.lock": {
+      "bytes": 20781,
+      "sha256": "7e98bb082c75e61ab674cd737e531ee64cc48b5ba5c67bd19679897bed817868"
+    },
+    "Cargo.toml": {
+      "bytes": 3939,
+      "sha256": "c3e8c59a6ac5ce29caed1b313d846fef5e94de90f125ae8c2d35c11d16554e0a"
+    },
+    "Cargo.toml.orig": {
+      "bytes": 1490,
+      "sha256": "6478801a5e846045f7ebd7a451cc073afaf119b8729f4cdfd49774407ba1c5d1"
+    },
+    "LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "MAINTAINERSHIP.md": {
+      "bytes": 3131,
+      "sha256": "f7a891163a80c3b284899b50fb0d33356e63d88a55844dd0e0991c74bd03cd84"
+    },
+    "README.md": {
+      "bytes": 4085,
+      "sha256": "c2e6e01f8dfc7f6a14f01c3bb4e865999db91aadb8c9a321e7fa01cb9c882664"
+    },
+    "code-of-conduct.md": {
+      "bytes": 3345,
+      "sha256": "c42f29de57c43ae8dfa3f9806fec1c49dc05ffa87097e66a4321359a8cb4b069"
+    },
+    "rust-toolchain.toml": {
+      "bytes": 31,
+      "sha256": "fdaf5c39586fd9584852826851a351483d1392a08014fb0925fb1b23da758cd6"
+    },
+    "src/backup.rs": {
+      "bytes": 11326,
+      "sha256": "41944815b86edf6ba8a119f249ce78843aadbe4bc926b62eeedf028218b68462"
+    },
+    "src/checkpoint.rs": {
+      "bytes": 8697,
+      "sha256": "121f53a250554e9d1cf517e4f7ed1ba107915f1333ca253d8bb9ba70309f938f"
+    },
+    "src/column_family.rs": {
+      "bytes": 6725,
+      "sha256": "8566584605a812c6f092951a4a50ff24ef69d7c73c9236983aabab2787dccee0"
+    },
+    "src/compaction_filter.rs": {
+      "bytes": 6352,
+      "sha256": "74110847db95c557ea506e49e1866d7d18294fc7bafcda4ea6c2c75c6906ccfc"
+    },
+    "src/compaction_filter_factory.rs": {
+      "bytes": 4671,
+      "sha256": "df2026ab74371adc6b29c7b8a9d729f778ee9b3660dfb6f1a0f30be6cc412322"
+    },
+    "src/comparator.rs": {
+      "bytes": 4127,
+      "sha256": "33082fcc67e81a661e8f77063be12894dbe2a8ee998d237b80ea77ae437d7ebb"
+    },
+    "src/db.rs": {
+      "bytes": 95613,
+      "sha256": "424ba7e973ac8f2a9faf075e7fda32fc1b2567398ab958f050a1bb69e3694c91"
+    },
+    "src/db_iterator.rs": {
+      "bytes": 22628,
+      "sha256": "e06d2e670839350fa0300a56362a004b82a542a3d601353b6e14b8eba507b976"
+    },
+    "src/db_options.rs": {
+      "bytes": 188949,
+      "sha256": "25864bca60116e49aaa39dadca9cae038c2386c01e9f5191e5e3b39c4c93b8b3"
+    },
+    "src/db_pinnable_slice.rs": {
+      "bytes": 2199,
+      "sha256": "784c0dd16f667fd3f46853f6ceb44e0610e6b49ca846577713a96d1bffbeaf00"
+    },
+    "src/env.rs": {
+      "bytes": 5057,
+      "sha256": "7496d0735bc9e027857c885fcd6212dc8d5657e23ebae8d1a55bd449f9661730"
+    },
+    "src/ffi_util.rs": {
+      "bytes": 10262,
+      "sha256": "3979e4ab7e9ee2fafe98ae238cf8904c6885b2b30c13111b7fc255607bf1e14f"
+    },
+    "src/iter_range.rs": {
+      "bytes": 3646,
+      "sha256": "c46aaedced124f2da26fb73db277ca7eb0ec8d1820412bf4675f148191874ef5"
+    },
+    "src/lib.rs": {
+      "bytes": 10622,
+      "sha256": "38aeb6af6b949860fa176fcaa1a81647411ad4e633abb1667064c0a8ce91ae7d"
+    },
+    "src/merge_operator.rs": {
+      "bytes": 7529,
+      "sha256": "080b2d7bd0a78452390862160be1ffaa41ee7082484e0bfcd2a01a62c375002f"
+    },
+    "src/perf.rs": {
+      "bytes": 9619,
+      "sha256": "c82d766c40ab5f482e1a7a043d6bdc0fe60cdce30114b256e013128aa23715e4"
+    },
+    "src/prop_name.rs": {
+      "bytes": 8506,
+      "sha256": "70b6f05f1dc29a889b61ac0303e992bbff441768d5612fb27fe525af803458bb"
+    },
+    "src/properties.rs": {
+      "bytes": 11043,
+      "sha256": "1e836fbc05a727866b61771b3a3d10765a22fb55f045e5938cd17ef910d681a5"
+    },
+    "src/raw_ptr.rs": {
+      "bytes": 2307,
+      "sha256": "24b55d58e40b65e9e5c55e138bde485ef956c674603a59fa1a8f67cb37985752"
+    },
+    "src/slice_transform.rs": {
+      "bytes": 3710,
+      "sha256": "10fb0790c618045d26126dfa44d7903e491d7d1cdf515feb474c7b3063b07c6a"
+    },
+    "src/snapshot.rs": {
+      "bytes": 10157,
+      "sha256": "3e85724db072ffd2e177ad7bde3c037b3879f4161994c302aa0b35a96f76d30b"
+    },
+    "src/sst_file_writer.rs": {
+      "bytes": 7366,
+      "sha256": "9cf659f55bce7f3f0436d13867bf030a8d3c7bd4f65542f652a010f1440b1b76"
+    },
+    "src/statistics.rs": {
+      "bytes": 5283,
+      "sha256": "2b7bca9268f012f6a1eaafdc6de33c9c29a56242425f3e53f4bd1bb6a36796f5"
+    },
+    "src/statistics_enum_histogram.rs": {
+      "bytes": 4237,
+      "sha256": "43ff1da1b65a0179a5fb28d893e22085899d6e2a5bf034df6b62d9e87c6a643e"
+    },
+    "src/statistics_enum_ticker.rs": {
+      "bytes": 18232,
+      "sha256": "4d8907c5f402565c45fdaff470fc3833458bc11daa9fe12a5d581f674cfcdf25"
+    },
+    "src/transactions/mod.rs": {
+      "bytes": 893,
+      "sha256": "2c5c7de8cb7cfe7c28ce9570b847cde01376104ead10605ee74eb237ba0e19f9"
+    },
+    "src/transactions/optimistic_transaction_db.rs": {
+      "bytes": 11494,
+      "sha256": "f46e123e365da1485fb7449ab24354f5dd9d7a3c4432b340487541f8d0e8f90a"
+    },
+    "src/transactions/options.rs": {
+      "bytes": 10370,
+      "sha256": "18d1b45ce072aba4804f94ff36e5728fcf9e11ee74471420529dbd332ab2ccb7"
+    },
+    "src/transactions/transaction.rs": {
+      "bytes": 30999,
+      "sha256": "18bcdd4ce698171928680c3638bf603f3936a6398fc7023b527ad3f562d452c4"
+    },
+    "src/transactions/transaction_db.rs": {
+      "bytes": 38291,
+      "sha256": "1a3ecacac783464ec6631575c5179b289f45e03fdce45f9141f0557531367a8e"
+    },
+    "src/write_batch.rs": {
+      "bytes": 18578,
+      "sha256": "81a3bce49a1dbf7cf164d6fd3ab8ffda03b5ecdb863a0be728259f9c179e1bcb"
+    },
+    "tests/fail/checkpoint_outlive_db.rs": {
+      "bytes": 169,
+      "sha256": "40f511967d304797fb9381aeb1d2c9181f919ef21b8de919aa56db1810b660db"
+    },
+    "tests/fail/checkpoint_outlive_db.stderr": {
+      "bytes": 439,
+      "sha256": "11b853f63d8b74252edd18c7410cdbcdb2fd88685dc8cf406a30395276bab3d2"
+    },
+    "tests/fail/iterator_outlive_db.rs": {
+      "bytes": 165,
+      "sha256": "547d8a01c5bcf279d8dcb5b8e0472a530a9d5f056a70a086c26b01a6f8f5f393"
+    },
+    "tests/fail/iterator_outlive_db.stderr": {
+      "bytes": 419,
+      "sha256": "b18cc4bcab2631bfd80893e418971c862f873196b684f3ba86bb3847634f2e2e"
+    },
+    "tests/fail/memory_usage_builder_outlive_db.rs": {
+      "bytes": 260,
+      "sha256": "7d42ab5f2baca3fe4352c3153a2c82fc926b5627dfa6a9272a8de075885dae2c"
+    },
+    "tests/fail/memory_usage_builder_outlive_db.stderr": {
+      "bytes": 483,
+      "sha256": "103fb315adbae60128c8a5848412be074da4cc3ebb2e3292af71d82498fd6471"
+    },
+    "tests/fail/open_with_multiple_refs_as_single_threaded.rs": {
+      "bytes": 336,
+      "sha256": "7d3882aba49bea24f2fc31efc2e96ac29b512623de8334f0cec00ad1f0a3dacf"
+    },
+    "tests/fail/open_with_multiple_refs_as_single_threaded.stderr": {
+      "bytes": 851,
+      "sha256": "e96feeabdf08cc753ff7f84a18619a03da459f2dc7e6a24a5d1a79d53d96c3b0"
+    },
+    "tests/fail/snapshot_outlive_db.rs": {
+      "bytes": 134,
+      "sha256": "d1742887a43c187089e11e2a4a2e71bee5e54bfc4d6fbcd38ab93484d54d0cf0"
+    },
+    "tests/fail/snapshot_outlive_db.stderr": {
+      "bytes": 408,
+      "sha256": "620d7bbe1efee7347b1c1d05463977e70944bde3524ac941ec76cdfeb0bd3bb0"
+    },
+    "tests/fail/snapshot_outlive_transaction.rs": {
+      "bytes": 224,
+      "sha256": "4e501696cd0f60e9a69c94f076476711be8c64d42cf2d9121822f3696122ebc6"
+    },
+    "tests/fail/snapshot_outlive_transaction.stderr": {
+      "bytes": 408,
+      "sha256": "48522813e7f735facb84c42392532a1e490bf4a18b335f07f4c608cfed8b9277"
+    },
+    "tests/fail/snapshot_outlive_transaction_db.rs": {
+      "bytes": 191,
+      "sha256": "4b2d61e93743a84ffbf85ada5ad2d98f38264a44a97add4039c674a672c12e6f"
+    },
+    "tests/fail/snapshot_outlive_transaction_db.stderr": {
+      "bytes": 449,
+      "sha256": "52f5ddba12041800db57b8dea4ea2fadd2bce4cc5e487bdc7d2e69e4e6d6c49d"
+    },
+    "tests/fail/transaction_outlive_transaction_db.rs": {
+      "bytes": 189,
+      "sha256": "b12e28ea2d7284685feac9157bffcfe90c141528851565b99113c5857382955c"
+    },
+    "tests/fail/transaction_outlive_transaction_db.stderr": {
+      "bytes": 445,
+      "sha256": "8c9027e35e92084ed5feff87cb09194d2d5359447ff96a5201cb2c776c16b2b3"
+    },
+    "tests/test_backup.rs": {
+      "bytes": 4145,
+      "sha256": "fbb0f1256b084178cc22d9a7c322425293c437b932df6cf4a5c40798c7253c8f"
+    },
+    "tests/test_checkpoint.rs": {
+      "bytes": 21184,
+      "sha256": "331f379f24a62bf6666a91ff82723b5726e4dcc891335bd8c3bb1a95eb8b38a0"
+    },
+    "tests/test_column_family.rs": {
+      "bytes": 16709,
+      "sha256": "df54dc26bb7d020b9873d7c5adcf2965d32981ded218572a42a6b21bc5109ed2"
+    },
+    "tests/test_compactionfilter.rs": {
+      "bytes": 1962,
+      "sha256": "63151d3dbbb37605447bf2967cd1b0f27efd2adbfedabdf9a2d1d8ec477e0adf"
+    },
+    "tests/test_comparator.rs": {
+      "bytes": 10942,
+      "sha256": "806676814cdf162c9c57338c8c1b68c4359ce00531c8e535671b7a4031980323"
+    },
+    "tests/test_db.rs": {
+      "bytes": 60146,
+      "sha256": "8ffa316856af2d33b12fa374eaa653b74f8ae7f99cf00ea55d7d87b50bd80455"
+    },
+    "tests/test_iterator.rs": {
+      "bytes": 18305,
+      "sha256": "4082b45df7b4e8b2b05194002d3194a6ded870f5c5ef30d697f0d40ba47cd568"
+    },
+    "tests/test_merge_operator.rs": {
+      "bytes": 10495,
+      "sha256": "3e06aae3f8149fd0b25864512c436ed7e311dac398539351c05265b7695f0123"
+    },
+    "tests/test_multithreaded.rs": {
+      "bytes": 1680,
+      "sha256": "7998c440569827463371a5fa2bfcc932073016e47d2b4a9b356bb4d8ff306f7d"
+    },
+    "tests/test_optimistic_transaction_db.rs": {
+      "bytes": 21669,
+      "sha256": "1cd9e21e73d90aec32babf9ff2d0bb163a090e8bf647d44bedcf8124b89fbc59"
+    },
+    "tests/test_optimistic_transaction_db_memory_usage.rs": {
+      "bytes": 2308,
+      "sha256": "ac23f35352638bcae14eaa8f06dc916f6d407a635381ffefdf1bab9493ef0670"
+    },
+    "tests/test_perf.rs": {
+      "bytes": 752,
+      "sha256": "d8732849f55e0bb53c45f88af1e15d269c1f6ef5ce8c347b8f41a3880da335a1"
+    },
+    "tests/test_pinnable_slice.rs": {
+      "bytes": 1764,
+      "sha256": "74044d60242ef1bdceb59673f3ed6cc8c169cd24ac890a31d277d91563b672f9"
+    },
+    "tests/test_property.rs": {
+      "bytes": 3021,
+      "sha256": "2a9dea0ad31de770c1ff8191baa64acbbc029666ceade2d2c9a5654c8b2c43ac"
+    },
+    "tests/test_raw_iterator.rs": {
+      "bytes": 5643,
+      "sha256": "c5a2367ba281df9b8860886b23498adbbdfad310ecf89ed0354fe860d2ab2062"
+    },
+    "tests/test_rocksdb_options.rs": {
+      "bytes": 23168,
+      "sha256": "fa17d5def9cb724fccd7b7d460422cc9a53a77d802e768fb6c444162d7577fb4"
+    },
+    "tests/test_slice_transform.rs": {
+      "bytes": 2435,
+      "sha256": "97dc179930d2934d5040a383aed5499df845a1babaf7c54e6a5e517ae90bf8e3"
+    },
+    "tests/test_sst_file_writer.rs": {
+      "bytes": 6142,
+      "sha256": "4e75de58b70a01145e94bcc051633583ca09eb8c187dd6841360b71fae1ea429"
+    },
+    "tests/test_transaction_db.rs": {
+      "bytes": 28667,
+      "sha256": "b8ef8e851ed978608e82652945ac3e3dedd0c4899cf12399c9ca51adffa9e2d5"
+    },
+    "tests/test_transaction_db_memory_usage.rs": {
+      "bytes": 2559,
+      "sha256": "4ebe3ad6ca246a3ae8d9ebcba7efad0fbb9f728d17c37ff5762e834edeb0a466"
+    },
+    "tests/test_transaction_db_property.rs": {
+      "bytes": 2187,
+      "sha256": "5c60fd8fbd36e63f6b3eb6414ba46478cfc04468ee51a83472382ed29fe4cdeb"
+    },
+    "tests/test_write_batch.rs": {
+      "bytes": 5030,
+      "sha256": "843d44ee3f49ce8e216374e785a6eb5ee767880a3fd5e3dc00b5b931aa8b76af"
+    },
+    "tests/util/mod.rs": {
+      "bytes": 5069,
+      "sha256": "fc6b170bb9726ddfb354cbffb376b405f99d2c2a315a416ff536dde259700042"
+    }
+  },
+  "license": "Apache-2.0",
+  "license_sources": [
+    "LICENSE"
+  ],
+  "changed_members": {
+    "src/db_options.rs": {
+      "bytes": 193141,
+      "sha256": "312e1f726b360b68c7450e23c3213ea3168a3851fbf7b1e3ff816c62e49a7e5e"
+    },
+    "src/lib.rs": {
+      "bytes": 10644,
+      "sha256": "9daa2175c8445a060c3d9b9b52e271df9548dd339d27a95f573798321e1374ce"
+    }
+  },
+  "added_members": {},
+  "patch": {
+    "format": "unified-diff",
+    "application_root": "repository root",
+    "text": "--- a/vendor/rocksdb/src/db_options.rs\n+++ b/vendor/rocksdb/src/db_options.rs\n@@ -1084,6 +1084,43 @@\n }\n \n impl Options {\n+    /// Read the configured background-error Resume retry count.\n+    /// A zero value alone does not prove that an error guard is installed.\n+    pub fn get_max_background_error_resume_count(&self) -> i32 {\n+        unsafe { ffi::rocksdb_options_get_max_bgerror_resume_count(self.inner) }\n+    }\n+\n+    /// Install the owned fail-stop listener on final DB options before open.\n+    ///\n+    /// Refuses any existing listener, including installation on a clone of\n+    /// already guarded options. Success sets `max_bgerror_resume_count` to zero.\n+    /// Non-OK background errors retain their identity and become at least fatal;\n+    /// automatic error recovery is vetoed. A failed status-promotion allocation\n+    /// terminates the process. Healthy automatic maintenance remains enabled.\n+    ///\n+    /// Installation failure leaves options unchanged and must prevent opening\n+    /// an unguarded database. Do not parse, replace or change these options after\n+    /// installation. Clones share sticky failure; each explicitly funded new\n+    /// recovery attempt requires fresh options and a fresh guard. Installation\n+    /// is a live capability that OPTIONS serialization does not restore.\n+    ///\n+    /// This supports the default local POSIX profile, not custom file-scoped\n+    /// retryable filesystems. It does not cover foreground-only errors, check\n+    /// failure before dispatch on the caller's behalf, join work, authorize\n+    /// retries, or establish allocated-byte/purge bounds.\n+    pub fn install_background_error_guard(&mut self) -> Result<BackgroundErrorGuard, Error> {\n+        let inner =\n+            unsafe { ffi::rocksdb_bigbrotr_options_install_background_error_guard(self.inner) };\n+        NonNull::new(inner)\n+            .map(|inner| BackgroundErrorGuard { inner })\n+            .ok_or_else(|| {\n+                Error::new(\n+                    \"Could not install background-error guard: existing listener or native allocation failure\"\n+                        .to_owned(),\n+                )\n+            })\n+    }\n+\n     /// Constructs the DBOptions and ColumnFamilyDescriptors by loading the\n     /// latest RocksDB options file stored in the specified rocksdb database.\n     ///\n@@ -4894,6 +4931,38 @@\n     }\n }\n \n+/// Sticky failure query for the owned native background-error listener.\n+///\n+/// Obtained from [`Options::install_background_error_guard`]. The native listener\n+/// remains installed when this handle is dropped. Options clones and databases\n+/// opened from them share its failure state, with no reset. Querying after the\n+/// Options or database is dropped is safe. A false query is not an atomic permit\n+/// to dispatch work and does not cover foreground-only errors.\n+pub struct BackgroundErrorGuard {\n+    inner: NonNull<ffi::rocksdb_bigbrotr_background_error_guard_t>,\n+}\n+\n+// SAFETY: this owns one opaque handle. Moving it does not move native state.\n+// The listener and handle independently own shared_ptr references; callbacks\n+// write only the sticky atomic (release), and queries read it (acquire). Rust's\n+// shared borrow prevents Drop from racing a query. No Rust callback is retained.\n+unsafe impl Send for BackgroundErrorGuard {}\n+unsafe impl Sync for BackgroundErrorGuard {}\n+\n+impl BackgroundErrorGuard {\n+    /// Whether any background error or attempted automatic recovery was latched.\n+    /// Failure never clears, including after database close.\n+    pub fn failed(&self) -> bool {\n+        unsafe { ffi::rocksdb_bigbrotr_background_error_guard_failed(self.inner.as_ptr()) != 0 }\n+    }\n+}\n+\n+impl Drop for BackgroundErrorGuard {\n+    fn drop(&mut self) {\n+        unsafe { ffi::rocksdb_bigbrotr_background_error_guard_destroy(self.inner.as_ptr()) }\n+    }\n+}\n+\n pub struct WaitForCompactOptions {\n     pub(crate) inner: *mut ffi::rocksdb_wait_for_compact_options_t,\n }\n@@ -4919,6 +4988,21 @@\n }\n \n impl WaitForCompactOptions {\n+    /// Read the configured purge-wait flag. This does not prove purge completed.\n+    pub fn get_wait_for_purge(&self) -> bool {\n+        unsafe { ffi::rocksdb_wait_for_compact_options_get_wait_for_purge(self.inner) != 0 }\n+    }\n+\n+    /// Wait for purge in addition to flush/compaction work (default: false).\n+    /// Set a bounded timeout and suitable abort/flush options separately.\n+    /// Success does not prove all obsolete files, failed unlinks, snapshots or\n+    /// open descriptors have released their allocated bytes.\n+    pub fn set_wait_for_purge(&mut self, v: bool) {\n+        unsafe {\n+            ffi::rocksdb_wait_for_compact_options_set_wait_for_purge(self.inner, c_uchar::from(v));\n+        }\n+    }\n+\n     /// If true, abort waiting if background jobs are paused. If false,\n     /// ContinueBackgroundWork() must be called to resume the background jobs.\n     /// Otherwise, jobs that were queued, but not scheduled yet may never finish\n--- a/vendor/rocksdb/src/lib.rs\n+++ b/vendor/rocksdb/src/lib.rs\n@@ -121,7 +121,7 @@\n         DBWALIterator, Direction, IteratorMode,\n     },\n     db_options::{\n-        BlockBasedIndexType, BlockBasedOptions, BlockBasedTablePinningTier,\n+        BackgroundErrorGuard, BlockBasedIndexType, BlockBasedOptions, BlockBasedTablePinningTier,\n         BottommostLevelCompaction, Cache, ChecksumType, CompactOptions, CompactionPri,\n         CuckooTableOptions, DBCompactionStyle, DBCompressionType, DBPath, DBRecoveryMode,\n         DataBlockIndexType, FifoCompactOptions, FlushOptions, InfoLogger,\n"
+  },
+  "scope": "Whole published package retained. The source-only owned listener/guard extension and focused regressions are NOT_RUN; application wiring, native fault/lifetime and selected target qualification remain pending.",
+  "replacement_condition": "Remove both local patches only after a supported official tuple provides equivalent owned synchronous hooks and purge wait with the same refusal/lifetime semantics, followed by retained source/native/target qualification.",
+  "qualification_controls": {
+    "rust": "apps/bigbrotr/src/storage/rocks/options/background_guard_tests.rs: five public-API dependency-binding smoke controls in the existing application library; upstream wrapper test files restored, no package dev-workspace/test lock required.",
+    "native": "Existing rocksdb/db/c_test.c competing-listener refusal; compile-time NDEBUG rejection requires active C assertions; link same Cargo-built native archives with explicit package/profile/tool/source identities.",
+    "commands": "experiments/native-rocks-binding/README.md#planned-guard-qualification",
+    "status": "NOT_RUN; actual callback/fault/platform/app/capacity gates remain separate."
+  }
+}

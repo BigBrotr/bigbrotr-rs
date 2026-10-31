@@ -432,8 +432,8 @@
     "qualification": "Product WBM configuration and effective accounting NOT_RUN at this correction; no RSS or workload qualification."
   },
   "owned_background_guard_20261031": {
-    "status": "PASS_FIVE_RUST_AND_ONE_SCOPED_C_GUARD_CONTROLS",
-    "scope": "Separate unintegrated source f8; healthy native binding/API and ownership controls only. Historical unpatched results above do not qualify the new guard.",
+    "status": "PASS_SOURCE_SPECIFIC_HEALTHY_API_DIRECT_CALLBACK_AND_REAL_POSIX_COMPONENT_CONTROLS",
+    "scope": "Separate unintegrated source-specific component results: initial f8 healthy binding/API and ownership controls, d3 direct callbacks, and f761 running-DB Linux tmpfs default-POSIX compaction NoSpace. Historical unpatched results above do not qualify the guard or application.",
     "source": {
       "revision": "f8c534f7e5abbeba16a7b26e64a6d623a3261665",
       "tree": "b262978bf2af590f775ea651dfbfa007e05556ff",

@@ -147,8 +147,13 @@
         "bindgen-runtime"
       ],
       "license": "Apache-2.0",
-      "license_notice": "https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/LICENSE",
-      "source": "https://docs.rs/rocksdb/0.25.0/rocksdb/"
+      "license_notice": "vendor/rocksdb/LICENSE",
+      "source": "https://docs.rs/rocksdb/0.25.0/rocksdb/",
+      "source_patch": {
+        "path": "vendor/rocksdb",
+        "provenance": "vendor/rocksdb.provenance.json",
+        "scope": "Safe owned background-error guard installation/query/RAII and purge-wait setter; application wiring and native qualification remain pending."
+      }
     },
     {
       "name": "argon2",
@@ -419,7 +424,18 @@
         "https://docs.rs/crate/zstd-sys/2.1.2+zstd.1.5.7/source/LICENSE.BSD-3-Clause",
         "https://docs.rs/crate/zstd-sys/2.1.2+zstd.1.5.7/source/zstd/LICENSE"
       ],
-      "qualification_scope": "Exact source/license and active feature-graph inspection only in this inventory update. Candidate Mac engine tests and historical isolated binding experiments retain their own evidence. Native Linux product builds, failure/recovery workloads, admission/replay, cross-store authority and full release qualification are not established by this record."
+      "qualification_scope": "Source-specific Linux healthy API/C ABI, direct callback and four default-POSIX tmpfs compaction NoSpace controls pass; maintained binding report owns exact tuples. Application installation/refusal/funded recovery, other producers/concurrency/persistent media, affected workspace/AMD/ARM/Mac and release qualification remain separate gates. Historical unpatched evidence is unchanged.",
+      "source_patch": {
+        "path": "vendor/librocksdb-sys",
+        "provenance": "vendor/librocksdb-sys.provenance.json",
+        "scope": "Dedicated owned native listener and opaque shared-state guard in the existing C ABI; both required callbacks, sticky failure, fatal promotion and recovery veto; no engine algorithm or selected feature changes."
+      },
+      "shipped_notices": [
+        "vendor/rocksdb/LICENSE",
+        "vendor/librocksdb-sys/rocksdb/LICENSE.Apache",
+        "vendor/librocksdb-sys/rocksdb/LICENSE.leveldb",
+        "vendor/librocksdb-sys/XXHASH-LICENSE-BSD-2-Clause.txt"
+      ]
     },
     "archive": {
       "crate": "libduckdb-sys",

@@ -240,7 +240,13 @@ tokio-postgres-rustls 0.14.0 and rustls 0.23.46 with the explicit ring provider,
 configured CA roots and expected server identity. No implicit system/web CA store
 or connection pool is enabled. The selected RocksDB adapter uses `rocksdb` 0.25.0
 with default features disabled and only `zstd`/`bindgen-runtime`, backed by
-`librocksdb-sys` 0.19.0+11.8.1. Its native build requires C++20 and a runtime-loadable
+`librocksdb-sys` 0.19.0+11.8.1. Both complete packages are patched from checked-in
+vendor sources for the [owned error-guard API](../../vendor/README.md#rocksdb-owned-background-error-guard)
+and purge-wait setter. Source-specific Linux API, C ABI, direct callback and
+default-POSIX tmpfs fault controls are recorded in the
+[binding report](../implementation/evidence/p02-native-rocks-binding-20260917.json).
+The application factory remains unguarded; prior unpatched results do not qualify
+the new API or its eventual application wiring. Its native build requires C++20 and a runtime-loadable
 libclang. The inspected `clang-sys` 1.9.1
 [search implementation](https://docs.rs/crate/clang-sys/1.9.1/source/build/common.rs)
 accepts an exact `LIBCLANG_PATH` file, preventing a later search from selecting

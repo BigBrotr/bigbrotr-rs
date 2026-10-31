@@ -74,3 +74,122 @@ dependency for the same native tuple, or as part of a separately qualified
 native-engine update. Then remove the local patch and vendor sources together,
 rerun dependency policy and affected build/runtime checks, and update the release
 inventory and notices. Advisory suppression is not a replacement condition.
+
+## RocksDB owned background-error guard
+
+`rocksdb/` and `librocksdb-sys/` retain the complete published 0.25.0 and
+0.19.0+11.8.1 packages, including their original manifests, package locks,
+engine sources and notices. The [wrapper provenance](rocksdb.provenance.json)
+and [sys provenance](librocksdb-sys.provenance.json) bind every original member,
+the local patch and added notice. The root lock controls product builds; the
+upstream package locks remain unchanged provenance. The standalone
+[native experiment](../experiments/native-rocks-binding/README.md) explicitly
+patches both packages and exports the same checked-in sources.
+
+The sys patch adds three C functions with the `rocksdb_bigbrotr_` prefix in the
+existing owning C binding. Installation rejects any existing listener, including
+a second installation or a clone of guarded Options. It allocates the shared
+atomic state, dedicated native EventListener, query handle and replacement
+one-element vector before committing with a no-throw swap. Success also fixes
+`max_bgerror_resume_count=0`; failure returns no guard and leaves Options
+unchanged. No Rust callback, foreign-listener cast or private-layout copy is used.
+The same additive changes are retained in the upstream C API source templates
+so regeneration keeps the extension. The existing cc/bindgen build is unchanged.
+
+The callback-control source increment moves the existing opaque C
+Options implementation definition into one internal `db/c_options_internal.h`,
+shared by `c.cc` and its source template. Public `c.h`, guard/listener algorithms
+and the Rust API remain unchanged. The maintained experiment's C++ frontend can
+therefore call the real installer/listener without a copied private definition
+or production test API. Its direct callback/status/IOStatus/allocation/lifetime
+controls have the scoped d3 result below, with exact source/archive/frontend
+bindings. See the
+[component recipe](../experiments/native-rocks-binding/README.md#direct-callback-component-controls).
+
+On a non-OK background error, the listener latches failure and raises severity
+to at least fatal using the public Status severity-copy constructor. Original
+code, subcode, message, retryable, data-loss and scope survive; unrecoverable
+severity is never lowered. The copy can allocate: its failure terminates rather
+than unwinding or continuing with a soft error. The recovery-begin callback
+latches failure and vetoes automatic recovery. Both hooks are needed on the
+selected default local POSIX path, in addition to disabling the separate Resume
+retry count. Healthy automatic flush/compaction remains enabled. Custom
+file-scoped retryable filesystem plugins are outside this contract.
+
+The safe wrapper returns `BackgroundErrorGuard` from
+`Options::install_background_error_guard`. Its borrowed `failed()` query exposes
+only sticky refusal, with no diagnostic tuple or borrowed Status. A concurrent
+true query is conservative refusal; the synchronous callback returns the complete
+promoted native status or terminates. The handle and listener independently own
+native shared state. Dropping either Options or the handle first, copying
+Options, failing open or querying after DB close cannot borrow freed Rust state.
+Options clones share the same failure group, and there is no reset API. Final
+Options must not be parsed, replaced or modified after installation. Persisted
+OPTIONS does not recreate the live listener. Every newly funded recovery attempt
+needs fresh final Options/guard and external preservation of prior unknown debt.
+
+`WaitForCompactOptions::set_wait_for_purge` exposes an existing C setter.
+Read-only native-backed getters expose its flag and the configured background
+Resume retry count; these option observations alone prove neither attachment nor
+purge. The setter does not prove failed unlink, snapshot or descriptor credit
+release. Callers must separately bound waiting and positively reconcile actual allocated files/pins.
+
+At source `f8c534f7e5abbeba16a7b26e64a6d623a3261665`, the five canonical
+public-API binding controls passed on native Linux AMD64 with zero ignored cases
+and one retained library ELF. The whole existing C API program also passed,
+including 96 recorded phases, the competing-listener refusal phase exactly once,
+active C assertions and final `PASS`. Both used the pinned Rust 1.98.1 and native
+Clang/LLVM 14 laboratory image with two CPUs, 6 GiB memory, no network and a
+read-only root.
+The C run linked the same captured Cargo-built native archives without a Cargo
+cache mount or engine rebuild. The
+[maintained binding report](../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+retains exact source, inputs, receipts and scope.
+
+The original run remains an overall FAIL after all five Rust controls passed:
+unfiltered offline metadata requested an unused Android-only crate. Separate
+metadata restricted to the actual Linux target and a cached no-run JSON query
+passed without repeating tests or rebuilding. The successful whole C test is a
+further distinct result. These outcomes do not relabel the original failure or
+qualify historical unpatched evidence as guard evidence.
+
+Source `d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd` then passed the five exact
+Rust controls, whole C program with 96 phases and all 14 direct native callback
+cases on Linux AMD64 in the same pinned environment. Actual-Linux offline
+metadata ran before compilation; its frozen result was reused for the later
+same-profile no-run JSON/archive capture. The source-bound C++ frontend exercised
+the actual installed listener and independently checked Status identity/severity,
+genuine IOStatus flags, sticky lifetime and recovery veto. The positive copy
+control and exact isolated termination exit86 both passed. Only the targeted
+`Status::CopyState` array allocation during pointer-taking severity promotion was
+injected; global OOM and by-value callback/parameter-copy failures remain
+unqualified. The run preserved all 4,164 source files, captured archives and three
+retained ELF identities. Although the RocksDB archive matched f8 bytes, the d3
+context/frontend/runtime bindings are distinct. The maintained binding report
+above owns the exact receipts and 363.615-second scoped result.
+
+The controls live in the application's `cfg(test)` options child module, using
+existing root dependencies and lock; original upstream wrapper tests remain
+retained. See the
+[maintained commands](../experiments/native-rocks-binding/README.md#planned-guard-qualification).
+The guard remains absent from the application factory, resource/grant lifetime,
+four write sites and downstream ACK wiring. Persistent formats, the absolute64
+guard and numerical capacity bounds are unchanged. Source f761 separately passes
+four running-DB default-POSIX tmpfs NoSpace cases, including retry-count-only and
+both single-hook controls, using the unchanged d3 native archives. The binding
+report owns the actual capture and critical review. Full-path SFM exclusion is
+source-backed, not a measured lifetime-zero invocation count; Close performs
+cleanup. Persistent-media behavior, other producers, concurrent fault/query/close,
+funded recovery and positive purge/file-pin reconciliation remain open.
+CW-N1/P1/P2, affected full workspace/Clippy, AMD64/ARM64/macOS qualification and
+complete dependency/license and release gates remain open; this one-platform
+component result does not close them.
+
+The wrapper and binding additions use Apache-2.0, preserving upstream headers.
+Retain the engine Apache notice, LevelDB BSD-3-Clause notice, and xxHash
+BSD-2-Clause notice; the added xxHash notice is the exact comment from the
+retained original header. The maintained candidate assembler includes these
+applicable notices. Complete distribution-license qualification remains open.
+Remove both patches only when a supported official tuple provides equivalent
+owned hooks and purge wait with the same refusal/lifetime semantics, followed by
+the retained source, native and target qualification.

@@ -31,6 +31,10 @@ PUBLIC_FILES = ('LICENSE', 'packaging/archive-worker/notices/foldhash-0.1.5.txt'
                 'packaging/archive-worker/notices/webpki-roots-1.0.10.txt',
                 'packaging/archive-worker/notices/zlib-rs-0.6.8.txt',
                 'vendor/libduckdb-sys/LICENSE',
+                'vendor/rocksdb/LICENSE',
+                'vendor/librocksdb-sys/rocksdb/LICENSE.Apache',
+                'vendor/librocksdb-sys/rocksdb/LICENSE.leveldb',
+                'vendor/librocksdb-sys/XXHASH-LICENSE-BSD-2-Clause.txt',
                 'vendor/clickhouse/LICENSE-MIT', 'vendor/clickhouse-types/LICENSE-MIT')
 # A finite inclusion hook, populated only with the agreed tracked journey files.
 JOURNEY_FILES = ('config/recipes/acceptance.toml', 'docs/tutorials/first-event.md',
