@@ -6,6 +6,16 @@ It builds the current checkout with declared dependencies and creates a fresh
 isolated PostgreSQL lab. No old executable or private historical build path is a
 prerequisite. The existing lab runner owns container/network/cache lifecycle.
 
+The PostgreSQL runner can reuse qualified native artifacts after a strictly
+bounded noncompiled harness correction. It records the built product revision
+as `source`, the clean current harness as `harness_revision`, and their exact
+`harness_only_changes`. Git's full name diff with rename detection disabled
+must contain only this runner, this README and its portable controls. Both
+executable hashes must still match `build-result.json` before engine setup.
+Product, build, schema, compiled probe, fixture JSON and unknown paths refuse.
+This carries the qualified current runner's reuse boundary; no old executable
+can stand in for changed compiled inputs.
+
 The case applies the complete current catalog through migration42. Its independent
 inventory reads the declared migration SQL in manifest order, records every input
 SHA256 and requires the exact82 Control table names before comparing rows. A
@@ -70,6 +80,17 @@ path. It does not build or reuse historical private executables. Current history
 probe names explicitly use the lab's `postgres` DNS endpoint; the old shared-
 network loopback modes retain their historical route. The declared dataset and
 instance are written before actual CLI initialization.
+Initial and clone database labels share explicit hyphen-to-underscore
+normalization and lowercase ASCII SQL-identifier/63-byte validation before any
+DDL interpolation. The ordinary policy codec labels retain the same names.
+
+For this historical option only, the noncompiled reuse allowance additionally
+contains exactly `experiments/ingest-bootstrap/historical.py` and
+`tests/acceptance/test_historical_integrity.py`. The ordinary policy codec mode
+keeps its original three-path allowance. The approved five paths let a corrected
+fixture reuse an unchanged exact parent/probe pair; a change to any compiled
+input still requires its own build. Use a fresh owned root and retain the original
+failed run and its built/harness identities.
 
 The maintained `historical.py` batch declares38 integrity checks, including12
 private activation/recovered-ACK cases. Two genuine dictionary originals run
@@ -104,8 +125,11 @@ ACK is nonzero and idempotent at issued1/ACK1; it does not qualify lost-ACK
 watermark advancement. Driver shutdown and normal owner release are separately
 observed after the action snapshots.
 
-These new probe modes and connected cases are **NOT_RUN** until the frozen source
-is compiled and this actual batch completes. Portable false-PASS controls are
+The exact `4449c1dd` parent/probe build passed. Its first PostgreSQL attempt failed
+at fixture database creation: an unquoted hyphenated label, before any of the38
+integrity checks. That original failure remains retained. The corrected fixture
+and all38 integrity checks remain **NOT_RUN** until the fresh batch completes;
+the built source and current harness are reported separately. Portable false-PASS controls are
 available with:
 
 ```sh

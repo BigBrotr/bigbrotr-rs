@@ -20,6 +20,14 @@ CURRENT_PRIVATE_FAULTS = (None, 'config-body-stale-digest', 'policy-body-stale-d
     'missing-unrelated-recomputed-digest', 'pair-mismatch-recomputed-digest')
 
 
+def current_database_name(prefix, name):
+    """Normalize declared fixture labels before interpolation as SQL names."""
+    database=prefix+name.replace('-','_')
+    assert 1<=len(database)<=63 and database[0] in 'abcdefghijklmnopqrstuvwxyz_'
+    assert all(c in 'abcdefghijklmnopqrstuvwxyz_0123456789' for c in database)
+    return database
+
+
 def current_case_names():
     names = ['history-original', 'current-history-original']
     names += ['current-history-cap-'+name for name in ('zero','too-large','one-byte-short','exact')]
@@ -361,8 +369,7 @@ def run_current(state, output, contents, record, prepare, call, inventory):
         return database
 
     def clone(name, template):
-        database = 'bb_hi_'+name.replace('-', '_')
-        assert len(database) <= 63 and all(c in 'abcdefghijklmnopqrstuvwxyz_0123456789' for c in database)
+        database = current_database_name('bb_hi_',name)
         sql('postgres', f'CREATE DATABASE {database} OWNER bigbrotr_migrator TEMPLATE {template}')
         assert contents(database) == contents(template)
         return database

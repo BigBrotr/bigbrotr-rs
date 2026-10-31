@@ -29,6 +29,22 @@ with patch.dict(sys.modules, dict(lab=SimpleNamespace(), oracle=ORACLE)):
 
 
 class HistoricalScienceControls(unittest.TestCase):
+    def test_declared_initial_database_labels_are_normalized_before_sql(self):
+        for label in ('history-original','history-edited','history-mismatch'):
+            with self.subTest(label=label):
+                self.assertEqual(HISTORY.current_database_name('bb_policy_','hi_'+label),
+                                 'bb_policy_hi_'+label.replace('-','_'))
+        self.assertEqual(HISTORY.current_database_name('bb_policy_','v3_managed'),'bb_policy_v3_managed')
+        for name in HISTORY.current_case_names():
+            self.assertRegex(HISTORY.current_database_name('bb_hi_',name),r'^[a-z_][a-z0-9_]{0,62}$')
+
+    def test_unsafe_or_oversized_database_names_refuse_before_sql(self):
+        for prefix,label in [('bb_policy_','Upper'),('bb_policy_',"x'; DROP DATABASE postgres;--"),
+                             ('bb_policy_','with space'),('bb_policy_','é'),('bb_policy_','x'*64),
+                             ('',''),('1','invalid')]:
+            with self.subTest(label=label),self.assertRaises(AssertionError):
+                HISTORY.current_database_name(prefix,label)
+
     def test_actual_seed_starts_with_the_qualified_independent_bootstrap_oracle(self):
         rows,receipt,_ = ORACLE.expected(bytes([1])*16,True)
         expected = [dict(cf=cf,key=key.hex(),value=value.hex()) for cf,key,value in rows if cf=='facts']
