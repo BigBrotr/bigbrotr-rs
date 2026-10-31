@@ -78291,7 +78291,7 @@
         "sql": "migrations/postgres/0042_producer_prefix.sql",
         "author_worktree": ".research/current42-prefix-fixture-sol-20261031",
         "author_branch": "work/current42-prefix-fixture-20261031",
-        "status": "e4e44a25 lineage profile/current-model correction integrated into root candidate branch; bounded source review clear and109 targeted controls reported PASS. Actual current SQL/installed correction NOT_RUN.",
+        "status": "SQL42 and current SQL38/model corrections qualified in root d230 installed runs; see Index report current_requalification for exact results. Integration/push/hosted run follow this ordinary checkpoint.",
         "fixture_source": "f350b497bfa49d919f797404e6a19655e6b53746 plus root five-trigger correction bound by critical3aa659fb"
       },
       "invoker_correction": {
@@ -78316,6 +78316,31 @@
           "bridge_endpoints": 0
         },
         "retained": "All actual build/observer/candidate, unique DB/native/input/data, originalFAIL and protected logs retained; cache released."
+      },
+      "current_requalification": {
+        "source": "d230061d0fd1084842ef6126ca19d4b02ebcbf39",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d",
+        "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-observer-d230061d",
+        "status": "ALL_LOCAL_JOBS_TERMINAL_RETAINED;_CURRENT_QUALIFICATION_PASS",
+        "report": "docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json#installed_application.current42_native2_followthrough.current_requalification",
+        "topology_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-index-topology-r1/root-terminal.json",
+          "sha256": "7139d1318b50e1168dba30695eb81e16bf8e7fcc2f98a204cb68e22abc26c1ee"
+        },
+        "grouped_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r2/root-terminal.json",
+          "sha256": "4f00508033ca22547f9c053a1d6670effb18377a7b782a8d391f168cf0f52402"
+        },
+        "cache": "released; original four cache115 immutable single-link ELF pins unchanged",
+        "retention": "Unique DB/native/input/source/raw failures/current captures retained; borrowed bridge empty. Old monitor reconciliation unchanged; no broad cleanup."
+      },
+      "separate_native_guard": {
+        "branch": "work/native-failstop-binding-20261031",
+        "revision": "b230e9d599bf7b08ed80cb18023d338b46e02074",
+        "qualified_source": "f761ca855cd3f06e9a117ea5106bcd02f0170b73",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85",
+        "status": "FOUR_COMPONENT_CASES_PASS;STOPPED_RETAINED;NOT_MAIN_INTEGRATED",
+        "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.real_posix_controls"
       }
     }
   },

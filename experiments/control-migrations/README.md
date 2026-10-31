@@ -290,8 +290,8 @@ installed owner's resource record and are retained with its normal PG cleanup.
 
 The SQL fixture uses the original terminal/source/Index metadata and a real fresh
 backend-bound Control claim. Its new Index transfer records are explicitly SQL
-fixtures, not native exclusion or CH capabilities. Three nonterminal assertions
-include direct rejection by the new handoff guard. The23 terminal assertions
+fixtures, not native exclusion or CH capabilities. Three nonterminal handoff assertions
+include direct rejection by the new handoff guard. The23 terminal handoff assertions
 cover exact bridge publication and preserved old attestation, missing/changed
 cut and receipt, stale owner/head, atomic head publication, both insertion
 orders of a competing plan intent, immutable handoff receipts and exact typed
@@ -306,6 +306,13 @@ the invoker handoff validator, without ownership, grant option, PUBLIC access or
 trigger-function EXECUTE. This is ACL coverage; the migrator-run fixture does not
 prove invocation by the application role. The installed catch-up remains that gate.
 
+Each phase also runs nine current lineage-profile decoder cases: value2 epochs1/2
+and synthetic epoch3 metadata succeed; obsolete value1 and corrupt profiles fail
+with exact23514/message. Totals are12 nonterminal and32 terminal cases. The d230
+installed finite topology journey passes both phases and actual application
+catch-up/retry; the [Index report](../../docs/implementation/evidence/p02-initial-index-clickhouse-sql-20261026.json)
+owns that current qualification. Synthetic epoch3 is not native repeatable-epoch proof.
+
 Each seed database is capped at64MiB; the two copies add at most128MiB within the
 existing PG resource envelope. The SQL script is capped at64KiB, row captures at
 4MiB, and the existing Session protocol output at64KiB. One30s whole-script
@@ -314,7 +321,8 @@ and seed preservation run on failure too; a secondary cleanup failure does not
 erase the original case failure. A create whose result is unknown is inventoried
 and retained, never silently recreated. `PASS_SQL_ONLY` qualifies these SQL
 invariants only. Native proof, actual product publication and COMMIT uncertainty
-remain separate installed gates. Until executed, this extension is NOT_RUN.
+remain separate installed gates. Recorded results qualify only their exact source
+and executed phase; a new unexecuted scenario remains NOT_RUN.
 
 The focused verifier controls can run without engines:
 

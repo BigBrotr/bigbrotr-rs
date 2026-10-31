@@ -566,6 +566,13 @@ and queryable with truthful role readiness, without implicit public publishing.
   this extension with11/11 PASS, actual history restart and both standalone
   artifact rereads; terminal custody is verified. The Index report retains exact
   receipts and the original R1 fixture failure. This does not reopen M1 collection.
+  Native2/current-format source `d230061d` requalifies all 11 stages with grouped
+  Archive publication-loss recovery, distinct 353/358-byte exports and same-root
+  restart. Its 15-stage finite Index journey also passes current SQL12/32-case
+  clones and runtime catch-up/retry. The Index report's
+  `current42_native2_followthrough.current_requalification` retains the original
+  f673/cf failures and source-specific SQL38/42 correction reviews. Broader
+  composition/freshness/epoch gates remain with their existing tasks.
 - [x] **Step 2:** Enroll the controlled fixture endpoint explicitly, collect one small event
   below all batch thresholds, and observe timer-based archive/index publication.
   The maintained `p01-first-launch-index` passes all eight stages on installed

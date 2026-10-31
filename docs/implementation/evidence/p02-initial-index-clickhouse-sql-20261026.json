@@ -548,14 +548,6 @@
       },
       "custody_receipt_sha256": "cbe6aebffb7222b43dde6993f799ebb3db2043177d892a7c60052867e9c9163e",
       "scope": "Fresh build/observer and bootstrap PASS; signed acquisition FAIL, five later stages NOT_RUN. Earlier a3 installed11 and historical M1 qualification remain source-bound, not native2 evidence.",
-      "pending_correction": {
-        "sql_sha256": "fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43",
-        "verifier_review_sha256": "3aa659fb16565a662853628fa2be3ecf1f6145bdf41dedef699232865dbc77ca",
-        "targeted_controls": "23 PASS, tool222432/exit0/0.355s; not engine evidence",
-        "receipt_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/current42-prefix-invoker/targeted-controls.json",
-        "receipt_sha256": "bb0ccb584e3c081d20c11dfb90a0d503ef56facfa91d0ab14a188c824425c015",
-        "scope": "Actual TCP runtime role/private ACL/five invoker trigger bindings; populated selected-row/checkpoint 42501 refusal controls. Original product FAIL retained. Fresh installed execution NOT_RUN."
-      },
       "invoker_correction": {
         "source": "cf035588daa5cc471fa6cb3641fce42930fcbb87",
         "tutorial": "7/7PASS; realTCP runtime role and four42501 refusals verified",
@@ -563,12 +555,133 @@
         "audit_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-cf035588/current42-followthrough-audit.json",
         "audit_sha256": "a6761c056f8311b6f18e5972d5211e8af3b0dff4d9a783d66ee6705e1a76ac9a",
         "custody_sha256": "8b60ddeafbf5662c4671dba137defa02cc96ed1400a5d44668748439a9caace3",
-        "pending": {
+        "lineage_profile_correction": {
           "source": "e4e44a255aca5753f913cf32fb41d1522d2e80e1",
           "sql38_sha256": "61616dc9a997b897931eac61fe0e377c4a937f32e0115aabd30ed3fb20daf424",
           "review_sha256": "d37b4d2af379556e994a2dbe94e7179247d0f17cad57916b7758eafec1b62ce5",
-          "scope": "Strict current value2 SQL decoder,9 current82-table format cases and reconciled current five-write models. Historical pinned wrappers remain source-bound with existing P02 task closure. Actual SQL/installed correction qualification NOT_RUN."
+          "scope": "Strict current value2 SQL decoder,9 current82-table format cases and reconciled current five-write models. Historical pinned wrappers remain source-bound with existing P02 task closure. Actual SQL/installed correction qualification PASS at d230, as recorded by current_requalification.",
+          "status": "PASS_CURRENT_SQL_AND_INSTALLED_REQUALIFICATION"
         }
+      },
+      "current_requalification": {
+        "status": "PASS_CURRENT_NATIVE2_FORMAT_ROLE_AND_GROUPED_TWO_EXPORT_RESTART",
+        "source": "d230061d0fd1084842ef6126ca19d4b02ebcbf39",
+        "tree": "2723abe8736dd2b5a8bf0ccc54d50131677b710e",
+        "scope": "Current SQL38 value2 and SQL42 invoker dispatch, current callers and shared models qualified on the actual installed artifact. Historical f673/cf failures remain FAIL; M1 evidence collection, not complete P01/P02 or release.",
+        "portable_controls": {
+          "status": "PASS",
+          "tests": 413,
+          "skips": 0,
+          "terminal": {
+            "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/current42-lineage-profile/portable-controls/root-terminal.json",
+            "sha256": "2690e09a947a05d90be709375ad9d0d6ef5559daf7a55050afa8b3a5d7320e44"
+          }
+        },
+        "build": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-d230061d/build-receipt.json",
+          "sha256": "8f330a3756d4ac41c77c431e5c0a24188ab7d1b55370f83281c5c739477d5a01"
+        },
+        "observer": {
+          "path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/observer-d230061d/receipt.json",
+          "sha256": "9c197e4fbed184bf0fe76bb7dbdc9767fadd20392616071b2150b2b14fcfec3c"
+        },
+        "topology": {
+          "status": "PASS",
+          "stages": 15,
+          "session": 61380,
+          "seconds": 127.58848960700561,
+          "sql_cases": {
+            "nonterminal": 12,
+            "terminal": 32
+          },
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-index-topology-r1/result.json",
+            "sha256": "bfb83a9b68552bdaea6b6e98d06d730a3a8c32d6df7d2a2bd94eb94b60a5d5c9"
+          },
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-index-topology-r1/root-terminal.json",
+            "sha256": "7139d1318b50e1168dba30695eb81e16bf8e7fcc2f98a204cb68e22abc26c1ee"
+          },
+          "scope": "Actual installed finite initial/successor bridge, exact retry/history; separate current82 SQL clones preserve rows/xmins. Decoder epoch3 is synthetic metadata, not actual repeatable native qualification."
+        },
+        "grouped": {
+          "status": "PASS",
+          "stages": 11,
+          "session": 82692,
+          "seconds": 759.4751486729947,
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r2/result.json",
+            "sha256": "18007d694da910d838eaefb892fdbaa0b93debf48766958a4abaa4f0f5a6b1bc"
+          },
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r2/root-terminal.json",
+            "sha256": "4f00508033ca22547f9c053a1d6670effb18377a7b782a8d391f168cf0f52402"
+          },
+          "post_restart": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r2/reclamation/history-export/history/standalone-exports-after-restart.json",
+            "sha256": "ba984c6e2433ac9f948e19648ff0be613009d2f2e5d1a2e6f6d179e7362fff05"
+          },
+          "export_bytes": [
+            353,
+            358
+          ],
+          "cuts": [
+            [
+              1,
+              312
+            ],
+            [
+              2,
+              10
+            ]
+          ],
+          "frontier_revision": 4,
+          "snapshot_id": 68,
+          "meaning": "Signed-event acquisition at the64-request boundary, Index publication, retirement/reclamation, both prefix COMMIT-loss directions and mixed restore, compacted successor, both grouped Archive publication-loss directions, exact retries, original science preservation, distinct signed exports and ordinary same-root restart/rereads.",
+          "custody": {
+            "containers": {
+              "total": 62,
+              "compose": 40,
+              "native_observer": 22,
+              "exit_codes": {
+                "0": 54,
+                "4": 8
+              }
+            },
+            "commands_joined": 7732,
+            "processes_absent": 30,
+            "borrowed_bridge": {
+              "id": "1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f",
+              "endpoints": 0
+            },
+            "cleanup_errors": []
+          }
+        },
+        "preflight_not_run": {
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r1/result.json",
+            "sha256": "a2fb4bad7c50399f0cee529392510dae50ba3b695813417f41512a1d1193b31a"
+          },
+          "session": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-d230061d/acceptance-grouped-second-export-r1-session.json",
+            "sha256": "b06d810d4230fb342def84caa851bdc159753bd89a92ad0ec2b87fbf568b27f1"
+          },
+          "status": "NOT_RUN_ENVIRONMENT_PREREQUISITE",
+          "meaning": "Port18081 unavailable at first sequential preflight; no container/image/network created. Later socket inventory empty; instantaneous cause unproven. All five actual ports bound successfully before fresh R2. No product timeout or oracle changed."
+        },
+        "remaining": [
+          "New integration hosted GitHub qualification pending; previous f673 33/33 hosted foundation remains source-bound.",
+          "Current native epoch3 capture/independent rows and consolidation of historical seven-request wrappers: P02-T02/T06.",
+          "Scalable freshness, arbitrary epochs/unknown-query/native-termination, broader operations/capacity and selected P00-P10/M2-M5 remain existing plan gates."
+        ]
+      },
+      "invoker_correction_contract": {
+        "sql_sha256": "fd6b43739a8e2f5639d00ef72ae9bf9edaad8bd9a2e93b81922329bb0e3e2a43",
+        "verifier_review_sha256": "3aa659fb16565a662853628fa2be3ecf1f6145bdf41dedef699232865dbc77ca",
+        "targeted_controls": "23 PASS, tool222432/exit0/0.355s; not engine evidence",
+        "receipt_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/current42-prefix-invoker/targeted-controls.json",
+        "receipt_sha256": "bb0ccb584e3c081d20c11dfb90a0d503ef56facfa91d0ab14a188c824425c015",
+        "scope": "Actual TCP runtime role/private ACL/five invoker trigger bindings; populated selected-row/checkpoint 42501 refusal controls. Original product FAIL retained. Actual cf035 tutorial and d230 current requalification are recorded below; original FAIL retained."
       }
     }
   },
@@ -1129,7 +1242,7 @@
         "resources": "18 containers stopped/PID0/noOOM; focused command exit4, others0. Proxy exit0/absent, parent absent and borrowed bridge empty. Original raw state/logs retained.",
         "not_run": "Actual selected COMMIT outcome, backend/time hold observation, subsequent recovery/retry and final export"
       },
-      "next": "Finite Index topology0→1/Ingest1→2 continuation with explicit typed handoff history and exact retained lineage; general unknown-query recovery remains separate. Original202 is not closed by successful continuations.",
+      "next": "Finite Index topology0\u21921/Ingest1\u21922 continuation with explicit typed handoff history and exact retained lineage; general unknown-query recovery remains separate. Original202 is not closed by successful continuations.",
       "config_fix": {
         "revision": "ace1512e0f8bf713c0d9e797aef989919083017c",
         "checks": "20 targeted controls and retained metadata replay PASS; critical delta review PASS; actual root declares unchanged default5s before initialization. No product change.",
@@ -1297,7 +1410,7 @@
       ],
       "next": "Finite proof remains historical and is requalified on6cbe under live_initial_successor. Separate outages/tutorial and bounded live initial successor now have their own qualifications.",
       "remaining": [
-        "The original finite execution alone does not qualify live ownership; see live_initial_successor for the later bounded1→2 result.",
+        "The original finite execution alone does not qualify live ownership; see live_initial_successor for the later bounded1\u21922 result.",
         "Handoff-COMMIT uncertainty, arbitrary live epochs, broader topology/unknown-query/native-termination/outage/capacity guarantees remain with existing tasks."
       ],
       "actual_review": {
@@ -1704,7 +1817,7 @@
       "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
       "acceptance_revision": "1fab2f4bc026785a07992e91779767e28d74f689",
       "fixture_revision": "4cd3f9ad47dd8b2d0c0c67641a9cb64fd15cb2e2",
-      "scope": "One actual retained enabled-Index Ingest1→2 activation, current full-vector readiness, finite historical rebind/retry and genuine later topology historical/current-authority distinction. No live Archive or arbitrary live Index epoch.",
+      "scope": "One actual retained enabled-Index Ingest1\u21922 activation, current full-vector readiness, finite historical rebind/retry and genuine later topology historical/current-authority distinction. No live Archive or arbitrary live Index epoch.",
       "qualification": {
         "native": {
           "status": "PASS",
@@ -1795,7 +1908,7 @@
         },
         "observed": [
           "Before Sync/client work, actual revision5 bridge carries closed1/cut12 and stored open2/zero without a new physical batch; original generation/storage/custody/table UUIDs and raw historical rows/xmin are exact.",
-          "Three successor batches publish revisions6–8 while producer/source2 remain OPEN. 63 authenticated observations reach current full-vector Ready [1:12,2:10] with the same unrefreshed session; real child release ACK and parent completion are within its published 45s phase.",
+          "Three successor batches publish revisions6\u20138 while producer/source2 remain OPEN. 63 authenticated observations reach current full-vector Ready [1:12,2:10] with the same unrefreshed session; real child release ACK and parent completion are within its published 45s phase.",
           "Independent source/C API and ten-family scientific oracles verify 70 chunks/100 bounds, original body/resend and new t=allowed posting, raw multiplicity and every typed commitment. Archive recovery, two zero-work Index rebinds and ordinary two-event history preserve original receipts/inputs/export.",
           "Genuine control+ingest epoch3/topology2 activation has zero new scientific requests. Actual unprivileged bigbrotr_control TCP login records host-only 127.0.0.1 and read-only transaction; historical metadata succeeds and shared current-authority guard returns exact 23514/topology refusal.",
           "All final post-SQL Control/catalog/CH/data/input/export/custody/schema checks and normal owner stop/join PASS."
@@ -2539,7 +2652,7 @@
             },
             "failure_stage": "compacted_consumers",
             "error_type": "ValueError",
-            "failure_boundary": "first_launch_retained.py653→first_launch.py740 census→command require at244; protected reason36chars/SHA9884a345691db8c1d3741059cafeddf12449a83309d069d94a15b1526069d48a",
+            "failure_boundary": "first_launch_retained.py653\u2192first_launch.py740 census\u2192command require at244; protected reason36chars/SHA9884a345691db8c1d3741059cafeddf12449a83309d069d94a15b1526069d48a",
             "classification": "VERIFIER: missing explicit census envelope for independently declared retained-case cardinality; actual role/assets/ABI/attach/query verified. Old reader row bound stops immediately; product/candidate unchanged.",
             "native_census": "FAIL_COMMAND; complete independent census comparison NOT_RUN/unqualified, any partial output preserved",
             "retry_and_signed_tail": "NOT_RUN",

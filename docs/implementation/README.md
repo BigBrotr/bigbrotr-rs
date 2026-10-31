@@ -152,6 +152,10 @@ requalification at `a3fc81b5` on2026-10-31 passes11/11, including two distinct
 standalone exports and ordinary same-root restart/rereads. The existing Index
 report, `installed_application.current_policy_requalification`, owns the exact
 source/artifacts, real-engine captures, independent audit and terminal custody.
+The native2/current-format repair at `d230061d` also passes the 15-stage finite
+Index journey (12/32 SQL cases) and 11-stage grouped two-export/restart journey;
+`installed_application.current42_native2_followthrough.current_requalification`
+records both original product failures, the SQL38/42 repairs and current proof.
 [P01-T09](01-foundation.md#p01-t09--first-useful-vertical-composition) records the
 installed signed-event/read/export, same-data provenance-on/off restart, separate
 dependency outages and outside-checkout tutorial results. Each retains its actual
