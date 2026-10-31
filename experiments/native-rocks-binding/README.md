@@ -5,7 +5,11 @@ bundled native engine before BigBrotr implements P02 admission. It is an
 unpublished standalone Cargo package and does not share the product workspace or
 claim storage-service authority.
 
-The exact lock selects:
+The original published tuple is retained as complete local packages. The current
+standalone lock selects path patches, so registry checksums below identify the
+original archives, not patched bytes. See the
+[vendored-source contract](../../vendor/README.md#rocksdb-owned-background-error-guard)
+and per-package provenance for current source identity. The exact versions remain:
 
 * `rocksdb 0.25.0`, crate checksum
   `d8d90add70d1d420ee487bce4a1449880a8d147451c6051b2ee5f8354553dcbf`;
@@ -15,6 +19,11 @@ The exact lock selects:
   `abeebd9630f11bd08c28b7bd43c7bdfc62050654`;
 * default features disabled, with only `zstd` and `bindgen-runtime` selected by
   the wrapper (`static` is enabled transitively by `rocksdb`).
+
+The current source resolves the added guard API, but this historical experiment
+adapter does not install it or inject background NoSpace. Its unchanged cases do
+not qualify the new fail-stop behavior, current product profile or numerical
+bounds. Fresh callback/lifetime/fault and cross-platform qualification is NOT_RUN.
 
 The source audit reused by this experiment is inventoried at
 `.research/checkouts/rocks-dependency-audit-20260917/inventory.json` in the main
@@ -67,8 +76,11 @@ these process-death schedules on the tested filesystem and host.
 
 ## macOS run
 
-Run from the repository worktree with isolated Cargo state and a fresh output
-directory:
+Run from a clean exact Git tree with isolated Cargo state and a fresh output
+directory. Both checked-in vendor packages must be present at the repository
+paths; the standalone workspace patches `../../vendor/rocksdb` and
+`../../vendor/librocksdb-sys`, independently of the root workspace. Its own lock
+must remain unchanged during the build:
 
 ```sh
 mkdir -p .research/cargo-home .research/target .research/rawdata
@@ -101,12 +113,20 @@ the committed `Cargo.lock` SHA-256 is
 
 The Dockerfile uses the foundation's pinned Rust 1.98.1 Bookworm manifest and
 adds `libclang-dev` explicitly; the inherited build toolchain already supplies
-GCC/G++ and make. Build with this experiment directory as the context. Run as the
-actual Tux uid/gid and mount only a fresh owned output directory:
+GCC/G++ and make. Export this experiment and both complete vendor packages plus
+provenance from one clean committed revision, preserving their relative paths.
+Use that bounded export as context; the Dockerfile copies only those inputs.
+Run as the actual Tux uid/gid and mount only a fresh owned output directory:
 
 ```sh
+test -z "$(git status --porcelain --untracked-files=all)"
+mkdir -p .research/native-rocks-context
+git archive HEAD experiments/native-rocks-binding vendor/rocksdb vendor/librocksdb-sys \
+  vendor/rocksdb.provenance.json vendor/librocksdb-sys.provenance.json \
+  | tar -x -C .research/native-rocks-context
 docker build --pull=false -t bigbrotr-native-rocks-binding:local \
-  experiments/native-rocks-binding
+  -f .research/native-rocks-context/experiments/native-rocks-binding/Dockerfile \
+  .research/native-rocks-context
 mkdir -p .research/native-rocks-linux
 docker run --rm --user "$(id -u):$(id -g)" \
   --cpus 2 --memory 2g --memory-swap 2g --pids-limit 128 --network none \
@@ -155,3 +175,37 @@ Other observed persistence, snapshot, locking, CF and ZSTD results retain their
 narrow scope. Do not use this old WBM wiring or its pointer-only oracle in the
 product adapter: attach the manager to DB options and observe its actual memory
 accounting after writes, with a disconnected-manager negative control.
+
+
+## Planned guard qualification
+
+All new guard tests are NOT_RUN. The root owner first reviews the local source
+patch and both resolved path graphs, then uses the maintained clean-source native
+builder and environment (pinned compiler/libclang, no ambient prebuilt RocksDB).
+The wrapper's existing test targets contain `background_error_guard_` lifetime,
+failed-open and healthy-write controls; its library tests check retry-count
+installation/refusal and the purge setter. The engine's existing `c_test` adds
+competing-listener refusal while preserving its prior callback counters.
+
+For the wrapper's standalone upstream test workspace, use a fresh source export,
+retain its recorded original lock separately, resolve a qualification lock with
+the explicit sys path patch, then execute the same commands with `--locked`:
+
+```sh
+cargo generate-lockfile --offline --manifest-path vendor/rocksdb/Cargo.toml \
+  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"'
+cargo test --locked --offline --manifest-path vendor/rocksdb/Cargo.toml \
+  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"' \
+  --no-default-features --features zstd,bindgen-runtime --lib bigbrotr_guard_options_tests
+cargo test --locked --offline --manifest-path vendor/rocksdb/Cargo.toml \
+  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"' \
+  --no-default-features --features zstd,bindgen-runtime --test test_db background_error_guard_
+```
+
+These planned commands can require explicit preparation of the locked upstream
+test dependencies; no private cache is a product-build prerequisite. They do not
+replace the actual native callback identity/severity/exception tests or real
+NoSpace recovery-stop proof. Include both single-hook and retry-count-only
+negative controls, healthy automatic maintenance, explicitly funded reopen and
+positive purge/file-pin reconciliation. Current BigBrotr guard installation and
+all four write-site/downstream ACK checks remain separate application work.

@@ -172,7 +172,9 @@ jobs:
           mkdir -p .research/native-binding/source .research/native-binding/out
           git rev-parse HEAD > .research/native-binding/source-revision.txt
           git rev-parse HEAD:experiments/native-rocks-binding > .research/native-binding/experiment-tree.txt
-          git archive HEAD experiments/native-rocks-binding | tar -x -C .research/native-binding/source
+          git archive HEAD experiments/native-rocks-binding vendor/rocksdb vendor/librocksdb-sys \
+            vendor/rocksdb.provenance.json vendor/librocksdb-sys.provenance.json \
+            | tar -x -C .research/native-binding/source
           find .research/native-binding/source -type f -print0 | sort -z | xargs -0 sha256sum > .research/native-binding/source.sha256
           uname -a > .research/native-binding/host.txt
           docker version > .research/native-binding/docker-version.txt
@@ -182,7 +184,8 @@ jobs:
         run: |
           docker build --pull=false --memory 6g --memory-swap 6g --cpu-period 100000 --cpu-quota 200000 \
             --label "org.bigbrotr.source=$GITHUB_SHA" -t "$LAB_IMAGE" \
-            .research/native-binding/source/experiments/native-rocks-binding \
+            -f .research/native-binding/source/experiments/native-rocks-binding/Dockerfile \
+            .research/native-binding/source \
             2>&1 | tee .research/native-binding/build.log
           docker image inspect "$LAB_IMAGE" > .research/native-binding/image.json
           test "$(docker image inspect --format '{{.Architecture}}' "$LAB_IMAGE")" = arm64

@@ -74,3 +74,69 @@ dependency for the same native tuple, or as part of a separately qualified
 native-engine update. Then remove the local patch and vendor sources together,
 rerun dependency policy and affected build/runtime checks, and update the release
 inventory and notices. Advisory suppression is not a replacement condition.
+
+## RocksDB owned background-error guard
+
+`rocksdb/` and `librocksdb-sys/` retain the complete published 0.25.0 and
+0.19.0+11.8.1 packages, including their original manifests, package locks,
+engine sources and notices. The [wrapper provenance](rocksdb.provenance.json)
+and [sys provenance](librocksdb-sys.provenance.json) bind every original member,
+the local patch and added notice. The root lock controls product builds; the
+upstream package locks remain unchanged provenance. The standalone
+[native experiment](../experiments/native-rocks-binding/README.md) explicitly
+patches both packages and exports the same checked-in sources.
+
+The sys patch adds three C functions with the `rocksdb_bigbrotr_` prefix in the
+existing owning C binding. Installation rejects any existing listener, including
+a second installation or a clone of guarded Options. It allocates the shared
+atomic state, dedicated native EventListener, query handle and replacement
+one-element vector before committing with a no-throw swap. Success also fixes
+`max_bgerror_resume_count=0`; failure returns no guard and leaves Options
+unchanged. No Rust callback, foreign-listener cast or private-layout copy is used.
+The same additive changes are retained in the upstream C API source templates
+so regeneration keeps the extension. The existing cc/bindgen build is unchanged.
+
+On a non-OK background error, the listener latches failure and raises severity
+to at least fatal using the public Status severity-copy constructor. Original
+code, subcode, message, retryable, data-loss and scope survive; unrecoverable
+severity is never lowered. The copy can allocate: its failure terminates rather
+than unwinding or continuing with a soft error. The recovery-begin callback
+latches failure and vetoes automatic recovery. Both hooks are needed on the
+selected default local POSIX path, in addition to disabling the separate Resume
+retry count. Healthy automatic flush/compaction remains enabled. Custom
+file-scoped retryable filesystem plugins are outside this contract.
+
+The safe wrapper returns `BackgroundErrorGuard` from
+`Options::install_background_error_guard`. Its borrowed `failed()` query exposes
+only sticky refusal, with no diagnostic tuple or borrowed Status. A concurrent
+true query is conservative refusal; the synchronous callback returns the complete
+promoted native status or terminates. The handle and listener independently own
+native shared state. Dropping either Options or the handle first, copying
+Options, failing open or querying after DB close cannot borrow freed Rust state.
+Options clones share the same failure group, and there is no reset API. Final
+Options must not be parsed, replaced or modified after installation. Persisted
+OPTIONS does not recreate the live listener. Every newly funded recovery attempt
+needs fresh final Options/guard and external preservation of prior unknown debt.
+
+`WaitForCompactOptions::set_wait_for_purge` exposes an existing C setter. It does
+not prove failed unlink, snapshot or descriptor credit release. Callers must
+separately bound waiting and positively reconcile actual allocated files/pins.
+
+This patch is source-only and **NOT_RUN**. It installs no guard in BigBrotr's
+application factory and changes no resource grant, ACK, persistent format,
+absolute64 guard or numerical capacity bound. Earlier unpatched engine/CI results
+do not qualify it. Added wrapper ownership/refusal/healthy-I/O tests and the C
+competing-listener refusal control require actual execution. Native callback
+identity/severity/sticky/recovery and allocation-failure controls, real NoSpace
+injection with both single-hook negative controls, joined stop/funded reopen,
+positive purge reconciliation and selected AMD64/ARM64/macOS builds remain gates.
+The existing dependency/license policy must pass without widened exceptions.
+
+The wrapper and binding additions use Apache-2.0, preserving upstream headers.
+Retain the engine Apache notice, LevelDB BSD-3-Clause notice, and xxHash
+BSD-2-Clause notice; the added xxHash notice is the exact comment from the
+retained original header. The maintained candidate assembler includes these
+applicable notices. Complete distribution-license qualification remains open.
+Remove both patches only when a supported official tuple provides equivalent
+owned hooks and purge wait with the same refusal/lifetime semantics, followed by
+the retained source, native and target qualification.

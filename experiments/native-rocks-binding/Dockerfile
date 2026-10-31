@@ -8,8 +8,12 @@ RUN apt-get update \
 
 ENV LIBCLANG_PATH=/usr/lib/llvm-14/lib
 ENV CARGO_BUILD_JOBS=2
-WORKDIR /experiment
-COPY . .
+# Context is a bounded exact-tree export preserving experiment/vendor paths.
+WORKDIR /source/experiments/native-rocks-binding
+COPY vendor/rocksdb/ /source/vendor/rocksdb/
+COPY vendor/librocksdb-sys/ /source/vendor/librocksdb-sys/
+COPY vendor/rocksdb.provenance.json vendor/librocksdb-sys.provenance.json /source/vendor/
+COPY experiments/native-rocks-binding/ ./
 RUN cargo build --locked --release
 
-ENTRYPOINT ["python3", "driver.py", "--binary", "/experiment/target/release/native-rocks-binding", "--cargo-lock", "/experiment/Cargo.lock"]
+ENTRYPOINT ["python3", "driver.py", "--binary", "/source/experiments/native-rocks-binding/target/release/native-rocks-binding", "--cargo-lock", "/source/experiments/native-rocks-binding/Cargo.lock"]
