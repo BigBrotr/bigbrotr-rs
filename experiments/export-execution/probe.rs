@@ -55,7 +55,7 @@ fn case(name: &str) {
     println!("{}", serde_json::json!({"case":name,"status":"PASS"}));
 }
 fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
-    let expected = include_str!("../archive-engine/receipt-policy.json");
+    let expected = include_str!("../../tests/fixtures/configuration/receipt-policy-v3.json");
     if serde_json::from_str::<serde_json::Value>(document).unwrap()
         != serde_json::from_str::<serde_json::Value>(expected).unwrap()
         || digest

@@ -36,6 +36,8 @@ def fingerprint(document, version):
     return sha(f'bigbrotr/product-policy/{version}\0'.encode() + compact(document))
 
 
+assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256'], \
+    'current ingest probe differs from its exact-source build receipt'
 current = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
 assert fingerprint(current, 3) == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b'
 report = dict(format='bigbrotr-policy-versions-native/1', source=revision,
@@ -192,27 +194,33 @@ try:
            and 'PRIVATE_CANARY' not in json.dumps(observed))
     call('v3-rules-activate', database, 'activate-initial', path, extra=activation)
 
-    # Full CLI validation must reject missing/newly malformed rules even with a
-    # recomputed digest; metadata recognition alone cannot validate a policy.
-    for name in ['missing-bans', 'missing-retention', 'non-normalized-bans']:
+    # Initialization retry must validate the retained body too. A recomputed
+    # digest cannot repair a missing setting; a stale digest cannot certify an
+    # altered complete body. Inspect/activation exercise their own boundaries.
+    for name in ['missing-bans', 'missing-retention', 'non-normalized-bans',
+                 'missing-retention-stale-digest', 'changed-body-stale-digest']:
         bad = copy.deepcopy(current)
         if name == 'missing-bans':
             del bad['settings']['relay_policy.banned']
-        elif name == 'missing-retention':
+        elif name in ('missing-retention', 'missing-retention-stale-digest'):
             del bad['settings']['ingest.request_receipt_retention']
+        elif name == 'changed-body-stale-digest':
+            bad['settings']['ingest.request_receipt_retention'] = 62
         else:
             bad['settings']['relay_policy.banned'] = [{'host': 'RELAY.example'}]
         database = 'bb_policy_' + name.replace('-', '_')
         origin, _, _ = prepared['managed']
         lab.sql(state, 'postgres', f'CREATE DATABASE {database} TEMPLATE {origin} OWNER bigbrotr_migrator')
         document = compact(bad).decode().replace("'", "''")
+        retained_digest = fingerprint(current if name.endswith('stale-digest') else bad, 3)
         lab.sql(state, database, "ALTER TABLE control.config_revisions DISABLE TRIGGER USER; "
                 f"UPDATE control.config_revisions SET document='{document}'::jsonb, "
-                f"document_digest=decode('{fingerprint(bad,3)}','hex'); "
+                f"document_digest=decode('{retained_digest}','hex'); "
                 "ALTER TABLE control.config_revisions ENABLE TRIGGER USER")
         path = lab.config(root, state, database)
         local = root / Path(path).name
         local.write_text(lab.change(local.read_text(), 'postgres.control', 'password_ref', 'file:/lab/secrets/application'))
+        call(name + '-initialize-refuses', database, 'initialize', path, 1, unchanged=True)
         call(name + '-inspect-refuses', database, 'inspect', path, 3, unchanged=True)
         call(name + '-activate-refuses', database, 'activate-initial', path, 3,
              unchanged=True, extra=activation, reason='PolicyInvalid')

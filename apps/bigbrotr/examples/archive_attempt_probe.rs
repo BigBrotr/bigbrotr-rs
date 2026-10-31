@@ -43,15 +43,21 @@ fn dataset() -> DatasetId {
 fn instance() -> DatasetId {
     DatasetId::try_from([2; 16]).unwrap()
 }
-fn validate(document: &str, _: [u8; 32]) -> Result<(), OwnerError> {
+fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
     // Fixture-only validator. Production callers validate the complete roots.
-    assert_eq!(
-        serde_json::from_str::<serde_json::Value>(document).unwrap(),
-        serde_json::from_str::<serde_json::Value>(include_str!(
-            "../../../tests/fixtures/configuration/policy-v3.json"
-        ))
-        .unwrap()
-    );
+    let expected = include_str!("../../../tests/fixtures/configuration/policy-v3.json");
+    if serde_json::from_str::<serde_json::Value>(document).map_err(|_| OwnerError::InvalidPolicy)?
+        != serde_json::from_str::<serde_json::Value>(expected).unwrap()
+        || digest
+            != <[u8; 32]>::from(
+                Sha256::new()
+                    .chain_update(b"bigbrotr/product-policy/3\0")
+                    .chain_update(expected)
+                    .finalize(),
+            )
+    {
+        return Err(OwnerError::InvalidPolicy);
+    }
     Ok(())
 }
 async fn owner(n: u8) -> (ControlSession, Driver) {
@@ -178,6 +184,11 @@ async fn run(include_scan: bool) {
             document,
             document_digest: digest,
             source_digest: [3; 32],
+        },
+        |document, digest| {
+            validate(document, digest).map_err(|_| {
+                bigbrotr::storage::postgres::initialization::InitializeError::InvalidInput
+            })
         },
         &Cell::new(false),
     )

@@ -22,6 +22,13 @@ relations. Healthy originals, all failed outcomes and resource receipts remain
 retained. A before/after relation comparison is not a proof of no physical WAL or
 row-lock writes: Control acquires transaction/row locks before policy validation.
 
+The runner verifies the current probe SHA256 against its exact-source build
+receipt before engine setup. Portable controls execute this admission boundary
+with a matching fixture and with a probe changed after the receipt. The native
+scenario additionally exercises actual `config initialize` retries against missing
+retention and changed bodies with stale/recomputed digests; initialization must
+restore the complete retained current document before returning its receipt.
+
 Historical format1/2 source, inputs and executed evidence remain bound to their
 original revisions. This source recipe no longer claims compatibility with those
 formats. It does not perform a populated migration or repair incomplete documents.
