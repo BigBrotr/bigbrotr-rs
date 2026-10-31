@@ -39,7 +39,7 @@ impl ControlSession {
         input: InitialHistoryRequest<'_>,
         limits: AdmissionLimits,
         outcomes: OwnedPermit,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<CompactedInitialEmptyRetirementPlan, InitialSuccessionError> {
         let metadata = lineage.progress_scratch();
         require_metadata_grant(metadata)?;
@@ -52,7 +52,7 @@ impl ControlSession {
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, policy) = self
-            .begin_empty_initial_history(recovery, &input, validate)
+            .begin_empty_initial_history(recovery, &input, &mut validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let native = recovery
@@ -62,6 +62,7 @@ impl ControlSession {
             &tx,
             instance,
             intent.record.previous_manifest(),
+            &mut validate,
         )
         .await
         .map_err(InitialSuccessionError::Registry)?;

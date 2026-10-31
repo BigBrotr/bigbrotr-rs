@@ -12,7 +12,7 @@ import threading
 import unittest
 from unittest.mock import Mock, patch
 
-from test_first_launch_restart import fixture, progress_fixture
+from test_first_launch_restart import fixture, progress_fixture, current42_head
 from test_first_launch_index import ROOT, schema, metadata_fixture
 from cases import first_launch_retained as case
 from cases import first_launch_retained_oracle as check
@@ -28,6 +28,7 @@ import installed_sync_client as wire
 from installed_archive_oracle import expected
 from installed_sync_oracle import decode
 from installed_progress_replay import head_digest, native_reference, certification_digest
+from installed_progress_context_oracle import current_head_core
 from bootstrap_oracle import cbor
 
 
@@ -53,7 +54,7 @@ def saturation_fixture(root):
         parameters.append((event,received,received+100,1,source.sha(b'bigbrotr/body/1\0'+cbor(body))))
     wanted=expected(state,report,events[0],2000,parameters[0][1],parameters[0][2],1,
         native_options=dict(acknowledge=True,retained_boundary=True,additional_events=parameters[1:]))
-    dump=dict(event='dump-state',sequence=1081,rows=[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in wanted['native']])
+    dump=dict(event='dump-state',sequence=1147,rows=[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in wanted['native']])
     inputs=root/'producer-inputs-v1';inputs.mkdir()
     for n,value in enumerate(wanted['inputs'],1):
         (inputs/f'{report["producer_slot_id"]}-0000000000000001-{n:016x}.cbor').write_bytes(value)
@@ -108,6 +109,7 @@ def saturation_fixture(root):
             issuer_incarnation=control['process_incarnation'],committed_at_us=wire['closed_at_us']+10,
             xmin=current['xmin'],checkpoint_digest='\\x'+'00'*32)
         head['checkpoint_digest']='\\x'+head_digest(head,[current],dependencies,lambda row:native_reference(row,values)).hex()
+        head=current42_head(head,initial=True)
         value.update(acquisition_progress=[current],producer_checkpoints=[head])
     return state,before,report,events,wires,dump,wanted
 
@@ -179,7 +181,7 @@ def successor_authority_fixture():
 
 
 def retained_successor_fixture(root):
-    from initial_succession_oracle import successor_manifest
+    from initial_succession_oracle import successor_manifest, successor_rows
     from installed_family_science import NetworkScience
     from installed_archive_catch_up_model import archive_science
     from transition_replay import native_rows
@@ -187,8 +189,15 @@ def retained_successor_fixture(root):
     previous=next(v for cf,k,v in first['native'] if cf=='default' and k==b'\x01\x01')
     fresh=[bytes([120+k])*16 for k in range(1,10)]
     manifest=successor_manifest(previous,bytes.fromhex('cc'*16),fresh)
+    slot=bytes.fromhex(state['producer_epochs'][0]['producer_slot_id'][2:])
+    closed=bytes.fromhex(source.closure(previous,'\\x'+slot.hex(),1,first['inputs'],first['receipts'],312))
+    handoff=b'\x01\x0a'+slot+index.be(1)+index.be(64)+index.be(312)+closed+index.be(len(previous),2)+previous+index.be(len(manifest),2)+manifest
+    prepared=successor_rows({(cf,bytes.fromhex(key)):bytes.fromhex(value)
+        for cf,key,value in ((r['cf'],r['key'],r['value']) for r in dump['rows'])},manifest,slot,handoff)
     model=SimpleNamespace(ds=state['datasets'][0],slot=state['producer_epochs'][0]['producer_slot_id'],
-        legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=copy.deepcopy(dump))
+        legacy=dict(previous_manifest='\\x'+previous.hex()),inputs={},native=dict(event='dump-state',
+            sequence=dump['sequence']+5,rows=[dict(cf=cf,key=key.hex(),value=value.hex())
+                for (cf,key),value in sorted(prepared.items())]))
     new=next(row['event'] for row in base.load(ROOT/'tests/fixtures/acquisition/selector-events.json')['events'] if row['name']=='included')
     encoded=NetworkScience(model,dict(epoch=2,topology=1,manifest=manifest,domains=['\\x'+d.hex() for d in fresh]),
         acknowledge=True,new_event=new,endpoint=source.ENDPOINT)
@@ -517,9 +526,9 @@ class RetainedBoundaryControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);state,before,report,events,wires,dump,wanted=saturation_fixture(root)
             actual=check.science(state,before,report,events,wires,dump,root,30000)
-            self.assertEqual((len(actual['native']),len(actual['inputs']),len(actual['batches'])),(829,64,64))
+            self.assertEqual((len(actual['native']),len(actual['inputs']),len(actual['batches'])),(830,64,64))
             self.assertEqual([actual['batches'][n]['last'] for n in (0,1,2,63)],[2,3,7,312])
-            mutations=(lambda d:d.update(sequence=1082),lambda d:d['rows'].pop(),
+            mutations=(lambda d:d.update(sequence=1148),lambda d:d['rows'].pop(),
                 lambda d:d['rows'].append(copy.deepcopy(d['rows'][-1])),
                 lambda d:next(r for r in d['rows'] if r['cf']=='receipts' and r['key'].startswith('0131')).update(
                     value='0131'+(65).to_bytes(8,'big').hex()*2+bytes(8).hex()))
@@ -776,7 +785,7 @@ class ClosedReclamationControls(unittest.TestCase):
                     prefix+'_incarnation':recovery['process_incarnation']})
                 if table=='producer_checkpoints':
                     head=changed[table][n]
-                    head['checkpoint_digest']='\\x'+head_digest(head,changed['acquisition_progress'],
+                    head['checkpoint_digest']='\\x'+head_digest(current_head_core(head,prefix_profile=False),changed['acquisition_progress'],
                         changed['producer_checkpoint_dependencies'],lambda row:native_reference(row,science.values)).hex()
                 with self.subTest(table=table,row=n),self.assertRaises(AssertionError):
                     if table=='producer_checkpoints':
@@ -916,18 +925,18 @@ class ClosedReclamationControls(unittest.TestCase):
         producer.update(state='retired',owner_resource_id='\\x'+'aa'*16)
         producer['closure_digest']='\\x'+source.closure(science['manifest'],producer['producer_slot_id'],1,science['inputs'],science['receipts'],312)
         slot=bytes.fromhex(report['producer_slot_id']);marker=(b'\x01\x31'+slot+index.be(1)).hex()
-        before=copy.deepcopy(dump);before['sequence']=1082
+        before=copy.deepcopy(dump);before['sequence']=1148
         next(r for r in before['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
         head=state['producer_checkpoints'][0]
         floor=(b'\x03\x31'+index.be(64)*3+b'\x01'+hashlib.sha256(science['manifest']).digest()+index.be(312)
             +bytes.fromhex(producer['closure_digest'][2:])+index.be(65)+bytes.fromhex(head['checkpoint_digest'][2:]))
-        after=copy.deepcopy(before);after['sequence']=1147
+        after=copy.deepcopy(before);after['sequence']=1213
         after['rows']=[r for r in after['rows'] if not (r['cf']=='receipts' and r['key'].startswith('0130'))]
         next(r for r in after['rows'] if r['cf']=='receipts' and r['key']==marker)['value']=floor.hex()
         pg=self.claimed_control(state)
         result=dict(format='bigbrotr-ingest-recovery/1',state='initial-reclaimed',dataset_id=state['datasets'][0]['dataset_id'][2:],
             owner_resource_id='aa'*16,producer_slot_id=slot.hex(),producer_epoch='1',retired_requests='64',removed_input_files='64',
-            native_sequence='1147',recovery_basis='closed-producer-floor-v3',native='compacted',owner_release='committed',ready=False)
+            native_sequence='1213',recovery_basis='closed-producer-floor-v3',native='compacted',owner_release='committed',ready=False)
         return state,pg,before,after,science,result,floor
 
     def test_reclamation_exact_floor_batch_science_and_postgres_preservation(self):
@@ -951,23 +960,32 @@ class ClosedReclamationControls(unittest.TestCase):
     def test_reclamation_retry_cannot_rewrite_native_or_claim_another_removal(self):
         with tempfile.TemporaryDirectory() as directory:
             state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
+            counter=lambda dump:next(r['value'] for r in dump['rows'] if r['key']=='010b' and r['cf']=='default')
+            self.assertEqual(counter(before),counter(after))
             retry_pg=self.claimed_control(pg)
             retry=dict(result,removed_input_files='0')
             check.reclaimed(pg,retry_pg,after,after,science,retry,retry=True)
             with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,after,science,result,retry=True)
             changed=copy.deepcopy(after);changed['sequence']+=1
             with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,changed,science,retry,retry=True)
+            changed=copy.deepcopy(after)
+            row=next(r for r in changed['rows'] if r['key']=='010b' and r['cf']=='default')
+            value=bytes.fromhex(row['value'])
+            row['value']=(value[:34]+(int.from_bytes(value[34:42],'big')-1).to_bytes(8,'big')+value[42:]).hex()
+            with self.assertRaises(AssertionError):check.reclaimed(pg,retry_pg,after,changed,science,retry,retry=True)
 
     def test_retirement_cannot_promote_corrupt_observed_science_into_gc_expectations(self):
         with tempfile.TemporaryDirectory() as directory:
             state,pg,before,after,science,result,_=self.reclaimed_fixture(Path(directory))
             check.retired_initial_native(science,before)
-            for prefix in ('0120','0121'):
+            for prefix in ('0120','0121','010b'):
                 corrupt_before,corrupt_after=copy.deepcopy(before),copy.deepcopy(after)
-                key=next(r['key'] for r in corrupt_before['rows'] if r['cf']=='facts' and r['key'].startswith(prefix))
+                family='default' if prefix=='010b' else 'facts'
+                key=next(r['key'] for r in corrupt_before['rows'] if r['cf']==family and r['key'].startswith(prefix))
                 for dump in (corrupt_before,corrupt_after):
-                    row=next(r for r in dump['rows'] if r['cf']=='facts' and r['key']==key)
-                    row['value']=row['value'][:-2]+f'{int(row["value"][-2:],16)^1:02x}'
+                    row=next(r for r in dump['rows'] if r['cf']==family and r['key']==key)
+                    value=bytearray.fromhex(row['value']);value[34 if prefix=='010b' else -1]^=1
+                    row['value']=value.hex()
                 # Corruption survives byte-exact into the observed post-GC
                 # baseline. Only the earlier independent science rejects it.
                 with self.subTest(prefix=prefix),self.assertRaises(AssertionError):

@@ -112,7 +112,7 @@ impl ControlSession {
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
         compacted: Option<(AdmissionLimits, OwnedPermit)>,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ProducerAcknowledgementReceipt, ProducerAcknowledgementError> {
         let required = if compacted.is_some() {
             RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES
@@ -147,7 +147,7 @@ impl ControlSession {
                 recovery,
                 &input,
                 if compacted.is_some() { 34 } else { 14 },
-                validate,
+                &mut validate,
             )
             .await?;
         if let Some((limits, outcomes)) = &compacted {
@@ -155,10 +155,14 @@ impl ControlSession {
                 .compacted_initial_predecessor(recovery, &permit, input.cancelled)
                 .map_err(ProducerAcknowledgementError::Native)?
                 .ok_or(OwnerError::InvalidInput)?;
-            let previous =
-                ingest_registry::reconstruct_historical(&tx, instance, ancestor.manifest())
-                    .await
-                    .map_err(ProducerAcknowledgementError::Registry)?;
+            let previous = ingest_registry::reconstruct_historical(
+                &tx,
+                instance,
+                ancestor.manifest(),
+                &mut validate,
+            )
+            .await
+            .map_err(ProducerAcknowledgementError::Registry)?;
             if previous.producer_slot_id != slot {
                 return Err(OwnerError::InvalidMetadata.into());
             }

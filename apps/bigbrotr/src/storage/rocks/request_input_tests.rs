@@ -815,7 +815,7 @@ fn killed_producer_preserves_input_before_and_after_native_commit() {
             bytes.iter().map(|b| format!("{b:02x}")).collect()
         }
         let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../tests/fixtures/ingest/staged-bootstrap-crash.json"
+            "../../../../../tests/fixtures/ingest/staged-bootstrap-crash-accounted.json"
         ))
         .unwrap();
         assert_eq!(

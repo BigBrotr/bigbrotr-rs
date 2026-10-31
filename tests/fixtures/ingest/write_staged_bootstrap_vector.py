@@ -8,7 +8,7 @@ import sys
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'experiments/ingest-bootstrap'))
-from oracle import cbor
+from oracle import accounted, cbor
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     source = [dataset, 0, 1, 1]
     source_key = dataset + be(0, 4) + be(1) + be(1)
     ref_key = dataset + be(4, 2) + domain + be(1)
-    manifest = (bytes.fromhex('01010001000100010001') + dataset + be(0)
+    manifest = (bytes.fromhex('01010001000200010001') + dataset + be(0)
                 + bytes([3])*16 + be(0, 4) + be(1) + bytes([4])*16
                 + bytes([6])*16 + be(1) + bytes([1, 1]) + be(4, 2) + domain)
     before = [('default', b'\x01\x01', manifest)]
@@ -45,8 +45,9 @@ def main():
         ('receipts', b'\x01\x31' + slot + be(1), b'\x01\x31' + be(1) + be(0) + be(0)),
     ]
     rows = lambda values: [[cf, key.hex(), value.hex()] for cf, key, value in sorted(values)]
-    result = dict(format='bigbrotr-staged-bootstrap-crash/1', before=rows(before), after=rows(after), request_hex=request.hex())
-    Path(__file__).with_name('staged-bootstrap-crash.json').write_text(json.dumps(result, indent=2)+'\n')
+    result = dict(format='bigbrotr-staged-bootstrap-crash/1', manifest_value_schema=2,
+                  before=rows(accounted(before)), after=rows(accounted(after)), request_hex=request.hex())
+    Path(__file__).with_name('staged-bootstrap-crash-accounted.json').write_text(json.dumps(result, indent=2)+'\n')
 
 
 if __name__ == '__main__':

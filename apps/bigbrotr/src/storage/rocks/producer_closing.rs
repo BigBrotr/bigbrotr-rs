@@ -14,6 +14,16 @@ pub(super) struct ProducerState {
 }
 impl ProducerState {
     pub(super) fn decode(bytes: &[u8]) -> Result<Self, BootstrapError> {
+        if bytes.starts_with(&[4, 0x31]) {
+            let floor = crate::storage::producer_prefix::NativeFloor::decode(bytes)
+                .map_err(|_| BootstrapError::StateMismatch)?;
+            return Ok(Self {
+                issued: floor.issued,
+                acknowledged: floor.acknowledged,
+                retired: floor.retired,
+                closing: floor.closing,
+            });
+        }
         let closing = match bytes {
             [1, 0x31, ..] if bytes.len() == 26 => false,
             [2, 0x31, ..] if bytes.len() == 27 && bytes[26] == 1 => true,
@@ -163,6 +173,110 @@ impl IngestRecovery {
 }
 
 impl IngestStore {
+    /// Observe v4 data only in its selected initial context. The connected PG
+    /// adapter must independently authenticate the corresponding base.
+    pub(in crate::storage) fn open_prefix_floor(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+    ) -> Result<Option<crate::storage::producer_prefix::NativeFloor>, BootstrapError> {
+        let key = IngestKey::ProducerState {
+            producer_slot_id: slot,
+            producer_epoch: epoch,
+        }
+        .encode()
+        .map_err(|_| BootstrapError::InvalidIntent)?;
+        let cf = self
+            .db
+            .cf_handle("receipts")
+            .ok_or(BootstrapError::EngineRead)?;
+        let bytes = self
+            .db
+            .get_pinned_cf_opt(cf, key.as_bytes(), &read_options())
+            .map_err(|_| BootstrapError::EngineRead)?;
+        match bytes {
+            Some(bytes) if bytes.starts_with(&[4, 0x31]) => {
+                if epoch.get() != 1
+                    || self.manifest.key_schema() != 1
+                    || self.manifest.identity().owner_epoch.get() != 1
+                {
+                    return Err(BootstrapError::StateMismatch);
+                }
+                crate::storage::producer_prefix::NativeFloor::decode(&bytes)
+                    .map(Some)
+                    .map_err(|_| BootstrapError::StateMismatch)
+            }
+            _ => Ok(None),
+        }
+    }
+
+    /// Every ordinary state write preserves an installed prefix reference.
+    /// This cannot install or replace one; only the confirmed prefix kernel can.
+    pub(super) fn producer_state_bytes(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        state: ProducerState,
+    ) -> Result<Vec<u8>, BootstrapError> {
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(67)
+            .map_err(|_| BootstrapError::Allocation)?;
+        if let Some(mut floor) = self.open_prefix_floor(slot, epoch)? {
+            if state.retired != floor.retired
+                || state.issued < floor.issued
+                || state.acknowledged < floor.acknowledged
+                || (floor.closing && !state.closing)
+            {
+                return Err(BootstrapError::StateMismatch);
+            }
+            floor.issued = state.issued;
+            floor.acknowledged = state.acknowledged;
+            floor.closing = state.closing;
+            bytes.extend_from_slice(&floor.encode().map_err(|_| BootstrapError::StateMismatch)?);
+        } else {
+            if state.retired != 0 {
+                return Err(BootstrapError::StateMismatch);
+            }
+            if state.closing {
+                bytes.extend_from_slice(&state.closing_bytes());
+            } else {
+                bytes.extend_from_slice(&[1, 0x31]);
+                bytes.extend_from_slice(&state.issued.to_be_bytes());
+                bytes.extend_from_slice(&state.acknowledged.to_be_bytes());
+                bytes.extend_from_slice(&state.retired.to_be_bytes());
+            }
+        }
+        Ok(bytes)
+    }
+
+    pub(super) fn require_retained_state(
+        &self,
+        slot: ProducerSlotId,
+        epoch: ProducerEpoch,
+        state: ProducerState,
+    ) -> Result<(), BootstrapError> {
+        if state
+            .issued
+            .checked_sub(state.retired)
+            .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
+            return Err(BootstrapError::StateMismatch);
+        }
+        match self.open_prefix_floor(slot, epoch)? {
+            Some(floor)
+                if floor.issued == state.issued
+                    && floor.acknowledged == state.acknowledged
+                    && floor.retired == state.retired
+                    && floor.closing == state.closing =>
+            {
+                Ok(())
+            }
+            None if state.retired == 0 => Ok(()),
+            _ => Err(BootstrapError::StateMismatch),
+        }
+    }
+
     /// The caller checks its selected lifetime, existing state and retained
     /// grant. This shared kernel only installs the same one-way native marker.
     pub(super) fn close_producer_marker(
@@ -177,11 +291,9 @@ impl IngestStore {
                 max_mappings: 1,
                 max_batch_bytes: 1024,
             })?;
-            let mut bytes = Vec::new();
-            bytes
-                .try_reserve_exact(27)
-                .map_err(|_| BootstrapError::Allocation)?;
-            bytes.extend_from_slice(&state.closing_bytes());
+            let mut closing = state;
+            closing.closing = true;
+            let bytes = self.producer_state_bytes(slot, epoch, closing)?;
             batch.put(
                 IngestKey::ProducerState {
                     producer_slot_id: slot,
@@ -237,12 +349,10 @@ impl IngestStore {
     ) -> Result<(), BootstrapError> {
         // Structural no-GC bound only. Connected recovery separately validates
         // ACK <= typed checkpoint and then replays every retained original.
-        if state.acknowledged > state.issued
-            || state.retired != 0
-            || state.issued > super::RETAINED_PRODUCER_REQUEST_LIMIT
-        {
+        if state.acknowledged > state.issued {
             return Err(BootstrapError::StateMismatch);
         }
+        self.require_retained_state(slot, epoch, state)?;
         let key = |n| {
             IngestKey::Request {
                 request_id: ProducerRequestId {
@@ -262,14 +372,14 @@ impl IngestStore {
             .cf_handle("receipts")
             .ok_or(BootstrapError::EngineRead)?;
         let mut iterator = self.db.raw_iterator_cf_opt(cf, read_options());
-        if state.issued == 0 {
+        if state.issued == state.retired {
             iterator.seek(prefix);
         } else {
             iterator.seek_for_prev(maximum.as_bytes());
         }
         iterator.status().map_err(|_| BootstrapError::EngineRead)?;
         let last = iterator.key().filter(|key| key.starts_with(prefix));
-        if state.issued == 0 {
+        if state.issued == state.retired {
             if last.is_some() {
                 return Err(BootstrapError::StateMismatch);
             }

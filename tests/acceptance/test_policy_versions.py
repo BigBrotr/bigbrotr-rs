@@ -25,10 +25,10 @@ class EngineBoundaryReached(Exception):
 class PolicySchemaControls(unittest.TestCase):
     def test_current_inventory_covers_the_complete_declared_catalog(self):
         inventory = SCHEMA.declared_inventory(ROOT)
-        self.assertEqual(inventory['target'], 41)
-        self.assertEqual(inventory['applied_versions'][-1], 41)
-        self.assertEqual(len(inventory['applied_versions']), 57)
-        self.assertEqual(len(inventory['inputs_sha256']), 58)
+        self.assertEqual(inventory['target'], 42)
+        self.assertEqual(inventory['applied_versions'][-1], 42)
+        self.assertEqual(len(inventory['applied_versions']), 58)
+        self.assertEqual(len(inventory['inputs_sha256']), 59)
         self.assertEqual(len(inventory['tables']), 82)
         self.assertIn('acquisition_progress', inventory['tables'])
         self.assertIn('producer_checkpoint_dependencies', inventory['tables'])
@@ -56,7 +56,7 @@ class PolicySchemaControls(unittest.TestCase):
 
 
 class PolicyArtifactControls(unittest.TestCase):
-    def run_preflight(self, tampered=False, *, product_tampered=False, changes=None, subnet=None):
+    def run_preflight(self, tampered=False, *, product_tampered=False, changes=None, subnet=None, historical=False):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             run = home / 'new-owned-run'
@@ -85,11 +85,15 @@ class PolicyArtifactControls(unittest.TestCase):
             modules = dict(lab=lab, oracle=SimpleNamespace(expected=Mock()))
             reason = 'current ingest probe differs' if tampered else \
                 'current product differs' if product_tampered else None
-            if changes and any(path not in {
-                    'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
-                    'tests/acceptance/test_policy_versions.py'} for path in changes.splitlines()):
+            permitted = {'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
+                         'tests/acceptance/test_policy_versions.py'}
+            if historical:
+                permitted |= {'experiments/ingest-bootstrap/historical.py',
+                              'tests/acceptance/test_historical_integrity.py'}
+            if changes and any(path not in permitted for path in changes.splitlines()):
                 reason = 'built product source changed beyond policy harness'
             argv = [str(RUNNER), str(run), str(build)]
+            if historical: argv.append('--historical-integrity')
             if subnet is not None:
                 argv += ['--subnet', subnet]
             with patch.object(sys, 'argv', argv), \
@@ -103,6 +107,9 @@ class PolicyArtifactControls(unittest.TestCase):
             self.assertEqual(lab.setup.call_count, 0 if reason else 1)
             if not reason:
                 self.assertEqual(lab.setup.call_args.kwargs['subnet'], subnet or '172.16.240.48/28')
+            if changes is not None:
+                diff, = [call.args[0] for call in lab.command.call_args_list if 'diff' in call.args[0]]
+                self.assertEqual(diff[4:], ['--name-only','--no-renames','a'*40,'b'*40,'--'])
             lab.docker.assert_not_called()
             self.assertFalse(run.exists(), 'preflight must not create a run or engine state')
 
@@ -125,3 +132,39 @@ class PolicyArtifactControls(unittest.TestCase):
 
     def test_selected_subnet_reaches_the_unchanged_isolation_guard(self):
         self.run_preflight(subnet='10.253.240.48/28')
+
+    def test_historical_option_preserves_tampered_probe_refusal_before_engines(self):
+        self.run_preflight(True,historical=True)
+
+    def test_historical_option_preserves_matching_probe_admission(self):
+        self.run_preflight(False,historical=True)
+
+    def test_historical_option_checks_the_parent_hash_before_engines(self):
+        self.run_preflight(product_tampered=True,historical=True)
+
+    def test_historical_fix_reuses_only_its_exact_noncompiled_paths(self):
+        self.run_preflight(historical=True,changes='\n'.join([
+            'experiments/ingest-bootstrap/historical.py',
+            'experiments/policy-versions/run.py',
+            'experiments/policy-versions/README.md',
+            'tests/acceptance/test_historical_integrity.py',
+            'tests/acceptance/test_policy_versions.py'])+'\n')
+
+    def test_policy_codec_reuse_does_not_gain_the_historical_allowance(self):
+        for path in ['experiments/ingest-bootstrap/historical.py',
+                     'tests/acceptance/test_historical_integrity.py']:
+            with self.subTest(path=path):
+                self.run_preflight(changes=path+'\n')
+
+    def test_historical_reuse_refuses_compiled_probe_schema_fixture_and_unknown_changes(self):
+        for path in ['apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
+                     'apps/bigbrotr/examples/support/ingest_history_integrity.rs',
+                     'migrations/postgres/0001_control.sql',
+                     'tests/fixtures/configuration/policy-v3.json',
+                     'experiments/policy-versions/schema_inventory.py',
+                     'Cargo.lock','tools/build.py','unknown.py']:
+            with self.subTest(path=path):
+                self.run_preflight(historical=True,changes=path+'\n')
+
+    def test_renamed_compiled_input_cannot_hide_in_an_allowed_path(self):
+        self.run_preflight(historical=True,changes='apps/bigbrotr/src/main.rs\nexperiments/ingest-bootstrap/historical.py\n')

@@ -37,7 +37,7 @@ fn specification() -> InitialRegistration {
         ],
         producer_slot_id: ProducerSlotId::try_from([12; 16]).unwrap(),
         outstanding_request_limit: 2,
-        request_receipt_retention: 64,
+        intake_policy: fixture_intake_policy(),
         created_at_us: 0,
         lease_expires_at_us: 60_000_000,
     }
@@ -79,8 +79,6 @@ fn malformed_initial_specifications_are_refused_without_sql() {
         |s| s.config_revision = 0,
         |s| s.policy_revision = 0,
         |s| s.outstanding_request_limit = 0,
-        |s| s.request_receipt_retention = 0,
-        |s| s.request_receipt_retention = 65,
         |s| s.lease_expires_at_us = s.created_at_us,
         |s| s.lease_expires_at_us = s.created_at_us - 1,
         |s| s.allocation_domains.reverse(),
@@ -95,4 +93,15 @@ fn malformed_initial_specifications_are_refused_without_sql() {
             Err(RegistryError::InvalidInput)
         ));
     }
+}
+
+fn fixture_intake_policy() -> bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy {
+    // Explicit current fixture input; connected registration still checks both
+    // retained document identities and every captured value before effects.
+    let mut document: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/configuration/policy-v3.json"
+    ))
+    .unwrap();
+    let settings = serde_json::from_value(document["settings"].take()).unwrap();
+    bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy::capture(&settings).unwrap()
 }

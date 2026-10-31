@@ -6,7 +6,7 @@ bounded by the independent peer and compared inside a complete literal encoding.
 """
 import hashlib
 import json
-from bootstrap_oracle import cbor, expected as bootstrap
+from bootstrap_oracle import accounted, cbor, expected as bootstrap
 from installed import append_private_expected
 
 ENDPOINT = 'ws://127.0.0.1:7447/installed-fixture'
@@ -208,6 +208,14 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
         original=b'bigbrotr/producer-request/1\0'+cbor([[slot,1,ordinal+3],'admit',1,
             [1,scope,[*body,signature],'network',None,[at,ref(2),clock,[ref(1),ref(3),ref(5)]]]])
         commit(ordinal+3,first,first+4,original,[*range(3,8),*range(first,first+5)])
-    assert len(rows) == ((49 if provenance else 35)+13*len(additional_events)
-        if received is not None else (35 if provenance else 23))
-    return sorted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts
+    # Metadata never contributes to P. Rebuild the one mutable counter from
+    # these complete independently encoded fact/marker frames and source head.
+    rows = accounted((cf, k, v) for (cf, k), v in rows.items())
+    extra = len(additional_events)
+    counts = ((29+6*extra, 16+6*extra, 5+extra) if provenance else (19, 12, 5)) \
+        if received is not None else ((22, 10, 4) if provenance else (13, 7, 4))
+    # Default = manifest/source/counter, heads and indices; facts = scientific
+    # records plus each complete-batch marker; receipts = originals plus state.
+    assert tuple(sum(cf == family for cf, _, _ in rows)
+                 for family in ('default', 'facts', 'receipts')) == counts
+    return rows, inputs, receipts

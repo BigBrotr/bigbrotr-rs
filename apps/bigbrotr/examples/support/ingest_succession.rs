@@ -176,8 +176,11 @@ pub async fn run(
         )
         .unwrap(),
     );
-    // Metadata and finite raw laboratory snapshots coexist with one replay.
-    let _metadata = grant(&budget, 16 * MIB, 0);
+    // Retain the production document/driver allowance for current snapshots and
+    // sequential complete original restoration, plus finite lab metadata. This
+    // reserves within the unchanged configured application payload capacity;
+    // native/outcome grants stay separate. No second document grant is acquired.
+    let _metadata = grant(&budget, 512 * MIB, 0);
     let mut recovery =
         IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     let (mut observer, observer_driver) = bounded(config.connect(NoTls)).await.unwrap();
@@ -252,6 +255,8 @@ pub async fn run(
         &mut observer,
         instance,
         &recovery,
+        ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES,
+        validate,
     ))
     .await
     .unwrap();

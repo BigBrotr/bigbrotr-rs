@@ -178,7 +178,7 @@ impl ControlSession {
         permit: OwnedPermit,
         purpose: Purpose,
         compacted: Option<compacted::Inspection>,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
         if permit.request().units().data_bytes() < 128 * 1024
             || permit.request().units().items() == 0
@@ -190,7 +190,7 @@ impl ControlSession {
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, epoch) = self
-            .begin_initial_history_locked(recovery, &input, 2, purpose.schema(), validate)
+            .begin_initial_history_locked(recovery, &input, 2, purpose.schema(), &mut validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let selected = compacted.is_some()
@@ -210,6 +210,7 @@ impl ControlSession {
             &tx,
             instance,
             intent.record.previous_manifest(),
+            &mut validate,
         )
         .await
         .map_err(InitialSuccessionError::Registry)?;

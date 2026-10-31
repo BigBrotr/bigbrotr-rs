@@ -3884,17 +3884,17 @@
     "scope": "Original failure/partial platform execution and all preceding6fa/1cb/failure history preserved unchanged; later current-source full success does not rewrite them."
   },
   "current_documentation_followup": {
-    "source": "c55da9f3203c5aad8cd9603999aa492c74ce6cb8",
-    "run": 41221277439,
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41221277439",
+    "source": "de27d5106390fdef0a5fbaa8f67e001d7ecc0a33",
+    "run": 41231485457,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41231485457",
     "status": "PASS_DOCUMENTATION_ONLY",
-    "checks": "20 scope controls and three documentation checks PASS, with complete three-document diff and exact source/helper/command/exit bindings. Three unselected jobs SKIPPED; no product claim.",
+    "checks": "20 actual scope controls and three shared documentation checks PASS, with complete five-document selection and exact source/helper/exit bindings. Three unselected jobs SKIPPED; no product claim.",
     "audit": {
-      "path": ".research/ci-publication-20261026/source-historical-integrity-c55da9f3-20261031/terminal-audit.json",
-      "sha256": "dd138b4a8e97990b77a7605bf43f1c98ad2b7b4887de858ad192c88210096e0a"
+      "path": ".research/ci-publication-20261026/source-native-library-monitor-de27d510-20261031/terminal-audit.json",
+      "sha256": "6b7feda86f5be6427c9b077048718e43fa26017cee3885b2a6c2e69391d6141f"
     },
-    "public_output": "Two artifact ZIP digests and run/source bindings verified; six artifact and17 log members,147938 expanded bytes, scanned with zero credential candidates/provider alerts. Incremental source scan: four objects/4210356 bytes, only previously triaged23eb prose. No raw-data upload; pattern and provider-asynchrony limits remain.",
-    "resources": "Audit processes reaped0 and absent; no watcher or duplicate dispatch. Full product C90 and installed a3 remain separately qualified."
+    "public_output": "Two artifact ZIP digests and run/source bindings verified; six artifact and17 log members,148160 expanded bytes, scanned with zero credential candidates/provider alerts. Incremental source scan: six objects/4284265 bytes, only previously triaged23eb prose; no sensitive paths/LFS. Pattern and provider-asynchrony limits remain.",
+    "resources": "Scanner93855 and bounded validator reaped0; no watcher or duplicate dispatch. Full product C90 and installed a3 remain separately qualified."
   },
   "preceding_documentation_followup": {
     "source": "a3fc81b5cf5c928dbeeacae92d488d561719ac6d",

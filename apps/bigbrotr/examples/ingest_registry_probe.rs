@@ -45,7 +45,7 @@ fn specification() -> InitialRegistration {
         ],
         producer_slot_id: ProducerSlotId::try_from([12; 16]).unwrap(),
         outstanding_request_limit: 2,
-        request_receipt_retention: 64,
+        intake_policy: fixture_intake_policy(),
         created_at_us: 100,
         lease_expires_at_us: 60_000_100,
     }
@@ -282,4 +282,15 @@ fn main() {
         emit("failure", reason);
         std::process::exit(3);
     }
+}
+
+fn fixture_intake_policy() -> bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy {
+    // Explicit current fixture input; connected registration still checks both
+    // retained document identities and every captured value before effects.
+    let mut document: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/configuration/policy-v3.json"
+    ))
+    .unwrap();
+    let settings = serde_json::from_value(document["settings"].take()).unwrap();
+    bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy::capture(&settings).unwrap()
 }

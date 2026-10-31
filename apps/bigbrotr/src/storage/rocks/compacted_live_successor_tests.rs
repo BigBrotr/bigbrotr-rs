@@ -173,13 +173,18 @@ fn dictionaries(f: &Fixture, writer: &mut ActiveSuccessorWriter) {
     );
     let recorded = receipt.encode_persistent(8192).unwrap();
     drop(result);
-    // One dictionary: fact/pending/index/reverse/allocation/source/request/state.
-    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 8);
+    // Eight dictionary effects plus the bound accounting singleton.
+    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 9);
+    let after = kv(writer.store());
+    let counter = literal_pending_accounting(&after, writer.manifest().encode().as_bytes(), 1);
+    assert_eq!(value(writer.store(), IngestKey::PendingAccounting), counter);
+    assert_current_accounting(&after);
     for row in rows.iter().filter(|row| {
         row.1 != source_key(4).encode().unwrap().as_bytes()
             && row.1 != producer_key(4).encode().unwrap().as_bytes()
+            && !(row.0 == "default" && row.1 == [1, 11])
     }) {
-        assert!(kv(writer.store()).contains(row));
+        assert!(after.contains(row));
     }
     assert_eq!(value(writer.store(), producer_key(4)), marker(false, 1));
     assert_eq!(
@@ -205,7 +210,7 @@ fn dictionaries(f: &Fixture, writer: &mut ActiveSuccessorWriter) {
     assert_eq!(replay.receipt().encode_persistent(8192).unwrap(), recorded);
     drop(replay);
     assert_eq!(kv(writer.store()), before);
-    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 8);
+    assert_eq!(writer.store().db.latest_sequence_number(), sequence + 9);
 }
 
 #[test]

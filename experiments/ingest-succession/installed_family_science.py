@@ -4,6 +4,7 @@ Only clock scalars are extracted from observations. Complete fact/receipt/input
 bytes are rebuilt independently; observed receipts never supply expectations.
 """
 import json
+from bootstrap_oracle import accounted
 
 from live_replay import Science as FactEncoding, OLD_EVENT, NEW_EVENT, body, cbor
 from history_replay import binary, be, sha
@@ -62,6 +63,9 @@ class NetworkScience(FactEncoding):
         self.values = native_map(model.native)
         self.ds, self.slot = binary(model.ds['dataset_id']), binary(model.slot)
         self.epoch, self.manifest = plan['epoch'], plan['manifest']
+        assert bytes.fromhex(self.values['default','0101']) == self.manifest
+        prior = [(cf,bytes.fromhex(key),bytes.fromhex(value)) for (cf,key),value in self.values.items()]
+        assert sorted(prior) == accounted(prior), 'invalid prior accounting'
         self.domains = {k: binary(d) for k, d in enumerate(plan['domains'], 1)}
         old = binary(model.legacy['previous_manifest'])
         self.scope = [self.ds, 4, old[160:176], 3]
@@ -86,6 +90,13 @@ class NetworkScience(FactEncoding):
         self.put('receipts', b'\x01\x30' + self.slot + be(self.epoch) + be(n), receipt)
         self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31' + be(n)
             + (be(n-1)+be(0) if self.acknowledge else bytes(16)))
+        # The independently encoded new fact/marker frames add exactly one
+        # mutable accounting put to this science batch, before a separate ACK.
+        counter = next(value for cf,key,value in accounted(
+            (cf,bytes.fromhex(key),bytes.fromhex(value)) for (cf,key),value in self.values.items())
+            if cf == 'default' and key == b'\x01\x0b')
+        assert self.values['default','010b'] != counter.hex()
+        self.put('default', b'\x01\x0b', counter)
         if self.acknowledge:
             self.put('receipts', b'\x01\x31' + self.slot + be(self.epoch), b'\x01\x31'+be(n)+be(n)+be(0))
         name = self.slot.hex() + f'-{self.epoch:016x}-{n:016x}.cbor'

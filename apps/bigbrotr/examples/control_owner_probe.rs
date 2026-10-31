@@ -37,9 +37,9 @@ fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
     if value != frozen
         || digest
             != [
-                0xda, 0x36, 0xc9, 0xbd, 0xae, 0x45, 0xe2, 0x0a, 0x4a, 0x99, 0xf6, 0x1e, 0x82, 0xe3,
-                0xce, 0x1f, 0x46, 0xf6, 0x35, 0x2b, 0xa0, 0xbd, 0xdb, 0xf2, 0x3b, 0x2e, 0xcf, 0x28,
-                0x79, 0xd9, 0x4e, 0xa9,
+                0x77, 0x32, 0x4b, 0x5f, 0x6a, 0xea, 0x11, 0x3a, 0x4e, 0x4b, 0x81, 0xe1, 0x1d, 0x94,
+                0x6c, 0x0c, 0x4e, 0x11, 0x3b, 0x05, 0x18, 0x51, 0xd3, 0x98, 0xc2, 0x40, 0xde, 0x49,
+                0xa7, 0xa6, 0x32, 0x2b,
             ]
     {
         Err(OwnerError::InvalidPolicy)
@@ -271,7 +271,7 @@ async fn run(config: Config, mode: &str) {
             ],
             producer_slot_id: ProducerSlotId::try_from([66; 16]).unwrap(),
             outstanding_request_limit: 2,
-            request_receipt_retention: 64,
+            intake_policy: fixture_intake_policy(),
             created_at_us: 100,
             lease_expires_at_us: 60_000_100,
         };
@@ -342,4 +342,15 @@ fn main() {
             .await
             .expect("finite probe deadline")
         });
+}
+
+fn fixture_intake_policy() -> bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy {
+    // Explicit current fixture input; connected registration still checks both
+    // retained document identities and every captured value before effects.
+    let mut document: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/configuration/policy-v3.json"
+    ))
+    .unwrap();
+    let settings = serde_json::from_value(document["settings"].take()).unwrap();
+    bigbrotr::storage::postgres::ingest_registry::CapturedIntakePolicy::capture(&settings).unwrap()
 }

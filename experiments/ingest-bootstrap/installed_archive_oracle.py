@@ -38,7 +38,8 @@ def expected(state, report, event, dictionary_time, received, recorded, resoluti
     boundary = (native_options or {}).get('retained_boundary', False)
     native, inputs, receipts = native_expected(state, report, event, dictionary_time, received, recorded,
         resolution, **(native_options or {}))
-    assert len(native) == (829 if boundary else 49 if provenance else 35)
+    # One manifest-bound logical counter accompanies the original full science.
+    assert len(native) == (830 if boundary else 50 if provenance else 36)
     assert len(inputs) == len(receipts) == (64 if boundary else 4)
     facts = []
     tables = {name: [] for name in TABLES}

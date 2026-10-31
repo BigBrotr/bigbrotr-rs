@@ -126,6 +126,8 @@ async fn own(
             unclaimed.client.as_mut().expect("connected client"),
             *instance.as_bytes(),
             candidate.recovery(),
+            ingest_registry::MAX_HISTORICAL_DOCUMENT_BYTES,
+            |document, digest| super::super::accepted_policy(&root, document, digest).map(|_| ()),
         )
         .await
         .map_err(|e| (4, e.to_string()))

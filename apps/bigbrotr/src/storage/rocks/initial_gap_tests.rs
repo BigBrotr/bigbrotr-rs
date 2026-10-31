@@ -3,7 +3,7 @@
 use super::*;
 
 fn literal_manifests() -> (Vec<u8>, Vec<u8>) {
-    let mut previous = vec![1, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+    let mut previous = vec![1, 1, 0, 1, 0, 2, 0, 1, 0, 1];
     previous.extend_from_slice(&[1; 16]); // dataset
     previous.extend_from_slice(&1_u64.to_be_bytes()); // topology
     previous.extend_from_slice(&[3; 16]); // stable owner resource
@@ -56,7 +56,22 @@ fn expected_rows(fixture: &Fixture) -> Rows {
         .find(|(cf, key, _)| cf == "default" && key == &[1, 1])
         .unwrap();
     assert_eq!(manifest.2, previous);
-    manifest.2 = target;
+    manifest.2 = target.clone();
+    let pending = rows
+        .iter()
+        .filter(|(cf, _, _)| cf == "facts")
+        .try_fold(0u64, |sum, (_, key, value)| {
+            sum.checked_add(u64::try_from(key.len() + value.len()).unwrap())
+        })
+        .unwrap();
+    let mut accounting = vec![1, 11];
+    accounting.extend_from_slice(&Sha256::digest(&target));
+    accounting.extend_from_slice(&pending.to_be_bytes());
+    accounting.extend_from_slice(&0_u64.to_be_bytes());
+    rows.iter_mut()
+        .find(|(cf, key, _)| cf == "default" && key == &[1, 11])
+        .unwrap()
+        .2 = accounting;
     let mut handoff = vec![1, 10];
     handoff.extend_from_slice(&[1; 16]);
     handoff.extend_from_slice(&[3; 16]);
@@ -128,7 +143,7 @@ fn rebuild(fixture: &Fixture, recovery: &IngestRecovery) -> InitialHandoff {
 }
 
 #[test]
-fn reopened_initial_gap_requires_all_positive_originals_before_exact_four_write_completion() {
+fn reopened_initial_gap_requires_all_positive_originals_before_exact_five_write_completion() {
     let fixture = closed_fixture();
     // The preparation fixture retained no native proof/plan or live owner.
     assert_eq!(fixture.budget.snapshot().active_permits(), 0);
@@ -188,7 +203,7 @@ fn reopened_initial_gap_requires_all_positive_originals_before_exact_four_write_
         drop(observed);
         assert_eq!(kv(&recovery.store), wanted);
         assert_eq!(wanted.len(), before.len() + 3);
-        assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 4);
+        assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 5);
         assert_eq!(inputs(&fixture.path()), original_inputs);
         assert_eq!(recovery.manifest(), &fixture.next);
         wanted
@@ -204,7 +219,7 @@ fn reopened_initial_gap_requires_all_positive_originals_before_exact_four_write_
             .unwrap(),
     );
     assert_eq!(kv(&recovery.store), wanted);
-    assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 4);
+    assert_eq!(recovery.store.db.latest_sequence_number(), sequence + 5);
     assert_eq!(inputs(&fixture.path()), original_inputs);
 }
 
@@ -243,7 +258,7 @@ fn initial_gap_preflight_and_dispatch_refuse_target_inputs_even_without_native_s
         let sequence = recovery.store.db.latest_sequence_number();
         assert_eq!(
             sequence,
-            old_sequence + if schedule == "completed-replay" { 4 } else { 0 }
+            old_sequence + if schedule == "completed-replay" { 5 } else { 0 }
         );
         if schedule != "before-proof" {
             inject();

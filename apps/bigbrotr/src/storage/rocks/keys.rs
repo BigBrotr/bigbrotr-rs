@@ -39,6 +39,7 @@ pub enum KeyDomain {
     EventReceive = 0x08,
     Provenance = 0x09,
     OwnerHandoff = 0x0a,
+    PendingAccounting = 0x0b,
     Fact = 0x20,
     PendingBatch = 0x21,
     Request = 0x30,
@@ -61,7 +62,8 @@ impl KeyDomain {
             | Self::EventEligibility
             | Self::EventReceive
             | Self::Provenance
-            | Self::OwnerHandoff => ColumnFamily::Default,
+            | Self::OwnerHandoff
+            | Self::PendingAccounting => ColumnFamily::Default,
             Self::Fact | Self::PendingBatch => ColumnFamily::Facts,
             Self::Request | Self::ProducerState => ColumnFamily::Receipts,
         }
@@ -69,7 +71,7 @@ impl KeyDomain {
 
     const fn encoded_len(self) -> usize {
         match self {
-            Self::Manifest => 2,
+            Self::Manifest | Self::PendingAccounting => 2,
             Self::SourceStream => 2 + 16 + 4 + 8,
             Self::AllocationStream => 2 + 16 + 2 + 16,
             Self::Dictionary => 2 + 42,
@@ -96,6 +98,7 @@ impl KeyDomain {
             0x08 => Ok(Self::EventReceive),
             0x09 => Ok(Self::Provenance),
             0x0a => Ok(Self::OwnerHandoff),
+            0x0b => Ok(Self::PendingAccounting),
             0x20 => Ok(Self::Fact),
             0x21 => Ok(Self::PendingBatch),
             0x30 => Ok(Self::Request),
@@ -108,6 +111,7 @@ impl KeyDomain {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IngestKey {
     Manifest,
+    PendingAccounting,
     OwnerHandoff {
         dataset_id: DatasetId,
         owner_resource_id: OwnerResourceId,
@@ -173,6 +177,7 @@ impl IngestKey {
     pub const fn domain(&self) -> KeyDomain {
         match self {
             Self::Manifest => KeyDomain::Manifest,
+            Self::PendingAccounting => KeyDomain::PendingAccounting,
             Self::OwnerHandoff { .. } => KeyDomain::OwnerHandoff,
             Self::SourceStream { .. } => KeyDomain::SourceStream,
             Self::AllocationStream { .. } => KeyDomain::AllocationStream,
@@ -195,7 +200,7 @@ impl IngestKey {
         let mut writer = KeyWriter::new();
         writer.bytes(&domain.prefix());
         match *self {
-            Self::Manifest => {}
+            Self::Manifest | Self::PendingAccounting => {}
             Self::OwnerHandoff {
                 dataset_id,
                 owner_resource_id,
@@ -415,6 +420,7 @@ pub fn decode_key(column_family: ColumnFamily, bytes: &[u8]) -> Result<IngestKey
     let mut reader = KeyReader { bytes, position: 2 };
     let key = match domain {
         KeyDomain::Manifest => IngestKey::Manifest,
+        KeyDomain::PendingAccounting => IngestKey::PendingAccounting,
         KeyDomain::OwnerHandoff => IngestKey::OwnerHandoff {
             dataset_id: reader.dataset()?,
             owner_resource_id: OwnerResourceId::try_from(reader.fixed()?)

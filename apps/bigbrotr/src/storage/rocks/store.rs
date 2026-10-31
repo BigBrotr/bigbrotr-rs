@@ -23,6 +23,13 @@ use std::{
 mod pending;
 pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLimits};
 
+#[path = "pending_accounting.rs"]
+mod pending_accounting;
+pub use pending_accounting::{PENDING_ACCOUNTING_BYTES, PendingAccounting, PendingAccountingError};
+#[cfg(test)]
+#[path = "pending_accounting_tests.rs"]
+mod pending_accounting_tests;
+
 #[path = "source_head.rs"]
 mod source_head;
 pub use source_head::{SourceHead, SourceHeadError};
@@ -115,6 +122,12 @@ mod visibility_tests;
 mod producer_closing;
 pub use producer_closing::ProducerClosing;
 
+#[path = "open_prefix.rs"]
+mod open_prefix;
+pub(in crate::storage) use open_prefix::{
+    PrefixOriginalRequest, PrefixReadRequest, PrefixRetirement, UnlinkedPrefix,
+};
+
 #[path = "producer_recovery.rs"]
 mod producer_recovery;
 pub use producer_recovery::{
@@ -206,6 +219,7 @@ pub enum StoreError {
     InvalidManifest(ManifestError),
     ManifestMismatch,
     ManifestRead,
+    InvalidAccounting(PendingAccountingError),
     /// The synchronized write may have committed. Preserve and resolve the directory.
     ManifestCommitUnknown,
 }
@@ -237,6 +251,9 @@ impl fmt::Display for StoreError {
                 "ingest manifest does not match the complete expected identity"
             }
             Self::ManifestRead => "ingest manifest could not be read",
+            Self::InvalidAccounting(_) => {
+                "mandatory pending accounting or retained source census is invalid"
+            }
             Self::ManifestCommitUnknown => {
                 "manifest commit outcome is unknown; preserve and resolve the store"
             }
@@ -257,6 +274,7 @@ pub struct IngestStore {
     resources: RocksNativeResources,
     _reservation: StoreReservation,
     manifest: IngestManifest,
+    accounting: PendingAccounting,
     write_uncertain: bool,
     // Only consuming a locally minted candidate after connected activation can
     // populate this field. Opening a schema2 manifest never reconstructs it.
@@ -305,7 +323,8 @@ impl IngestRecovery {
 }
 impl IngestStore {
     /// Creates only an absent target under an existing parent, then synchronizes
-    /// the initial manifest. Failure never removes or silently reinitializes data.
+    /// the initial manifest and zero accounting in one batch. Failure never
+    /// removes or silently reinitializes data.
     pub fn initialize(
         path: &Path,
         manifest: IngestManifest,
@@ -351,6 +370,19 @@ impl IngestStore {
         let store = Self::open_native(reservation, Some(manifest), limits)?;
         let mut batch = WriteBatch::default();
         batch.put(KeyDomain::Manifest.prefix(), manifest.encode().as_bytes());
+        batch.put(
+            KeyDomain::PendingAccounting.prefix(),
+            store.accounting.encode(),
+        );
+        let id = manifest.identity();
+        let source = super::keys::IngestKey::SourceStream {
+            dataset_id: id.dataset_id,
+            shard_id: id.shard_id,
+            owner_epoch: id.owner_epoch,
+        }
+        .encode()
+        .map_err(|_| StoreError::InvalidAccounting(PendingAccountingError::SourceMismatch))?;
+        batch.put(source.as_bytes(), [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
         let mut write = WriteOptions::default();
         write.set_sync(true);
         write.disable_wal(false);
@@ -450,11 +482,30 @@ impl IngestStore {
                 IngestManifest::decode(&pinned).map_err(StoreError::InvalidManifest)?
             }
         };
+        let accounting = if initialize.is_some() {
+            // The new target is absent and native creation excludes adoption.
+            // Verify the complete empty layout before the first three-key batch.
+            for name in INGEST_COLUMN_FAMILIES {
+                let cf = db.cf_handle(name).ok_or(StoreError::EngineOpen)?;
+                let mut rows = db.raw_iterator_cf(cf);
+                rows.seek_to_first();
+                if rows.valid() {
+                    return Err(StoreError::InvalidAccounting(
+                        PendingAccountingError::ScienceMismatch,
+                    ));
+                }
+                rows.status().map_err(|_| StoreError::EngineOpen)?;
+            }
+            PendingAccounting::new(&manifest, 0, 0)
+        } else {
+            pending_accounting::census(&db, &manifest).map_err(StoreError::InvalidAccounting)?
+        };
         Ok(Self {
             db,
             resources: profile.resources,
             _reservation: reservation,
             manifest,
+            accounting,
             write_uncertain: false,
             live_initial: None,
             live_successor: None,

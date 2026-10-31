@@ -88,7 +88,7 @@ def finite_peer(value, wires, events, last_closed_sha256):
 
 
 def progress(state, wanted, events, wire, control, completed, *, proof):
-    from installed_progress_context_oracle import typed
+    from installed_progress_context_oracle import typed, current_snapshot
     from installed_sync_oracle import decode
     head=boundary(state,wire,events[0 if proof else 60],proof=proof)
     producer, = state['producer_epochs']
@@ -137,9 +137,9 @@ def progress(state, wanted, events, wire, control, completed, *, proof):
         committed_at_us=head['committed_at_us'],xmin=head['xmin'],checkpoint_digest='\\x'+'00'*32)
     expected_head['checkpoint_digest']='\\x'+typed.head_digest(expected_head,[expected],dependencies,
         lambda row:typed.native_reference(row,values)).hex()
-    return typed.exact_snapshot(head,state['acquisition_progress'],sorted(state['producer_checkpoint_dependencies'],
+    return current_snapshot(head,state['acquisition_progress'],sorted(state['producer_checkpoint_dependencies'],
         key=lambda row:(row['source_shard'],row['source_epoch'],row['source_sequence'])),
-        expected_head,[expected],dependencies,values)
+        expected_head,[expected],dependencies,values,prefix_profile=True)
 
 
 def science(state, before_proof, report, events, wires, dump, store, completed):
@@ -149,8 +149,9 @@ def science(state, before_proof, report, events, wires, dump, store, completed):
     saturation,proof=wires_checked(wires,events)
     original=source.originals(store,report['producer_slot_id'],1,64)
     actual=[(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in dump['rows']]
-    assert dump['event']=='dump-state' and dump['sequence']==1081
-    assert len(actual)==829 and actual==sorted(actual) and len({(cf,key) for cf,key,_ in actual})==829
+    # Fresh3 + bootstrap13 + private9 + source21 +61*event17 +64 ACK puts.
+    assert dump['event']=='dump-state' and dump['sequence']==1147
+    assert len(actual)==830 and actual==sorted(actual) and len({(cf,key) for cf,key,_ in actual})==830
     facts={int.from_bytes(key[-8:],'big'):value for cf,key,value in actual if cf=='facts' and key[:2]==b'\x01\x20'}
     def recorded(n):
         return decode(facts[n][34:].split(b'\0',1)[1])[4]
@@ -219,10 +220,10 @@ def reclamation_fault(fault,terminal,mode):
 def retired_initial_native(science,dump):
     """One close-marker write over already authenticated initial science."""
     wanted={(cf,key.hex()):value.hex() for cf,key,value in science['native']}
-    assert len(wanted)==829
+    assert len(wanted)==830
     marker, = [key for cf,key in wanted if cf=='receipts' and key.startswith('0131')]
     wanted['receipts',marker]=(b'\x02\x31'+index.be(64)*2+index.be(0)+b'\x01').hex()
-    expected=dict(event='dump-state',sequence=1082,rows=[dict(cf=cf,key=key,value=value)
+    expected=dict(event='dump-state',sequence=1148,rows=[dict(cf=cf,key=key,value=value)
         for (cf,key),value in sorted(wanted.items())])
     index.exact(dump,expected)
 
@@ -444,7 +445,7 @@ def reclaimed(before,after,native_before,native_after,science,report,*,retry=Fal
     expected=[dict(cf=cf,key=key,value=value) for (cf,key),value in sorted(wanted.items())]
     index.exact(native_after['rows'],expected)
     assert native_after['sequence']==native_before['sequence']+(0 if retry else 65)
-    assert len(native_after['rows'])==765
+    assert len(native_after['rows'])==766  #830 original rows minus64 receipt details; P is unchanged.
     expected_report=dict(format='bigbrotr-ingest-recovery/1',state='initial-reclaimed',
         dataset_id=index.only(before['datasets'])['dataset_id'][2:],
         owner_resource_id=index.only(before['producer_epochs'],producer_epoch=1)['owner_resource_id'][2:],
@@ -515,7 +516,7 @@ def successor_owner(bridge,after,manifest,handoff,job):
 
 def successor_science(before,after,bridge,first,wires,dump,store,completed):
     from types import SimpleNamespace
-    from initial_succession_oracle import successor_manifest
+    from initial_succession_oracle import successor_manifest, successor_rows
     from installed_family_science import NetworkScience,decode
     from installed_archive_catch_up_model import archive_science
     from transition_replay import native_rows
@@ -536,15 +537,13 @@ def successor_science(before,after,bridge,first,wires,dump,store,completed):
         +bytes.fromhex(digest)+index.be(len(first['manifest']),2)+first['manifest']+index.be(len(manifest),2)+manifest)
     assert index.raw(intent['previous_manifest'])==first['manifest'] and index.raw(intent['target_manifest'])==manifest
     assert index.raw(intent['handoff'])==handoff
-    values={(r['cf'],r['key']):r['value'] for r in first['compacted_native']['rows']}
     ds=index.raw(index.only(after['datasets'])['dataset_id'],16)
-    resource=index.raw(intent['owner_resource_id'],16);slot=index.raw(intent['producer_slot_id'],16)
-    values['default','0101']=manifest.hex()
-    values['default',(b'\x01\x0a'+ds+resource+index.be(1)).hex()]=handoff.hex()
-    values['default',(b'\x01\x02'+ds+bytes(4)+index.be(2)).hex()]=(b'\x01\x02'+index.be(0)).hex()
-    values['receipts',(b'\x01\x31'+slot+index.be(2)).hex()]=(b'\x01\x31'+bytes(24)).hex()
+    slot=index.raw(intent['producer_slot_id'],16)
+    prepared=successor_rows({(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value'])
+        for r in first['compacted_native']['rows']},manifest,slot,handoff)
+    values={(cf,key.hex()):value.hex() for (cf,key),value in prepared.items()}
     model=SimpleNamespace(ds=index.only(after['datasets']),slot=intent['producer_slot_id'],legacy=intent,inputs={},
-        native=dict(event='dump-state',rows=native_rows(values),sequence=first['compacted_native']['sequence']+4))
+        native=dict(event='dump-state',rows=native_rows(values),sequence=first['compacted_native']['sequence']+5))
     plan=dict(epoch=2,topology=1,manifest=manifest,domains=domains)
     science=NetworkScience(model,plan,acknowledge=True,new_event=new_event,endpoint=source.ENDPOINT)
     originals=source.originals(store,slot.hex(),2,3)

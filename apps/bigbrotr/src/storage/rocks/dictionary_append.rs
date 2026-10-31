@@ -93,7 +93,13 @@ impl IngestStore {
         // reservation, including the actual timestamp's variable-width encoding.
         // This read-only preview emits no fact. The caller retains this exclusive
         // owner and the same recorded_at through both PG phases.
-        drop(self.prepare_dictionary_operation(request, intent, recorded_at, limits)?);
+        let (writes, _) =
+            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
+        if let Some(mut writes) = writes {
+            // The real counter put belongs to the same serialized bound. Check
+            // its entry here too, before synchronizing input or reserving PG.
+            self.seal_pending_accounting(&mut writes)?;
+        }
         let bytes = encode_input(request, intent, limits)?;
         self.stage_admission_input(request, intent.request_digest(request), &bytes, cancelled)
     }
@@ -200,7 +206,12 @@ impl IngestStore {
             return Err(AdmissionError::ProducerClosing);
         }
         let sequence = request.request_sequence.get();
-        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT {
+        self.require_retained_state(request.producer_slot_id, request.producer_epoch, state)?;
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(state.retired)
+                .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        {
             return Err(AdmissionError::Limit);
         }
         if sequence <= state.retired {
@@ -376,13 +387,13 @@ impl IngestStore {
                 producer_slot_id: request.producer_slot_id,
                 producer_epoch: request.producer_epoch,
             },
-            frame(
-                &[1, 0x31],
-                &[
-                    &sequence.to_be_bytes(),
-                    &state.acknowledged.to_be_bytes(),
-                    &state.retired.to_be_bytes(),
-                ],
+            self.producer_state_bytes(
+                request.producer_slot_id,
+                request.producer_epoch,
+                super::producer_closing::ProducerState {
+                    issued: sequence,
+                    ..state
+                },
             )?,
         )?;
         Ok((Some(writes), receipt))
@@ -416,6 +427,8 @@ impl IngestStore {
         context: ReplayContext<'_>,
         lineage: Option<&super::RetainedLineage>,
     ) -> Result<Option<Receipt>, AdmissionError> {
+        self.require_pending_accounting()
+            .map_err(BootstrapError::from)?;
         if &self.manifest != context.current_manifest {
             return Err(AdmissionError::StateMismatch);
         }

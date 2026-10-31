@@ -30,10 +30,17 @@ import installed_archive_catch_up_client as history_client
 import installed_archive_profile as history_profile
 import installed_archive_export_client as export_client
 from installed_archive_catch_up_model import archive_science
-from initial_succession_oracle import successor_manifest
+from initial_succession_oracle import successor_manifest, successor_rows
 from installed_family_science import NetworkScience, decode
 from installed_progress_replay import head_digest, native_reference, certification_digest
+from installed_progress_context_oracle import current_head_core
 from transition_replay import native_rows
+
+
+def current42_head(core, *, initial):
+    return dict(core, prefix_profile=initial,
+        **{'prefix_'+slot+'_'+field:None for slot in ('active','prepared')
+            for field in ('bytes','sha256','generation','retired','source')})
 
 
 def fixture(provenance=True):
@@ -51,8 +58,16 @@ def fixture(provenance=True):
     previous = next(value for cf, key, value in first['native'] if cf == 'default' and key == b'\x01\x01')
     fresh = [bytes([120 + k]) * 16 for k in range(1, 10)]
     manifest = successor_manifest(previous, bytes.fromhex('cc' * 16), fresh)
+    cut = 12 if provenance else 8
+    closed = bytes.fromhex(check.closure(previous, '\\x'+slot, 1, first['inputs'], first['receipts'], cut))
+    handoff = (b'\x01\x0a'+bytes.fromhex(slot)+(1).to_bytes(8,'big')+(4).to_bytes(8,'big')
+        +cut.to_bytes(8,'big')+closed+len(previous).to_bytes(2,'big')+previous
+        +len(manifest).to_bytes(2,'big')+manifest)
+    prepared = successor_rows({(cf,key):value for cf,key,value in first['native']},
+        manifest, bytes.fromhex(slot), handoff)
     model = SimpleNamespace(ds=state['datasets'][0], slot='\\x' + slot, legacy=dict(previous_manifest='\\x' + previous.hex()),
-        inputs={}, native=dict(event='dump-state', sequence=0, rows=[dict(cf=cf, key=key.hex(), value=value.hex()) for cf, key, value in first['native']]))
+        inputs={}, native=dict(event='dump-state', sequence=5, rows=[dict(cf=cf,key=key.hex(),value=value.hex())
+            for (cf,key),value in sorted(prepared.items())]))
     plan = dict(epoch=2, topology=1, manifest=manifest, domains=['\\x' + d.hex() for d in fresh])
     artifact = (ROOT / 'tests/fixtures/acquisition/selector-events.json').read_bytes()
     assert check.sha(artifact) == check.SELECTOR_SHA256
@@ -115,6 +130,7 @@ def progress_fixture(new, manifest, science, provenance=True):
         dependencies.append(dict(common, source_shard=0, source_epoch=epoch, source_sequence=sequence,
             payload_digest='\\x' + ref[1].hex(), xmin=str(100 + first)))
     head['checkpoint_digest'] = '\\x' + head_digest(head, [progress], dependencies, lambda row: native_reference(row, science.values)).hex()
+    head=current42_head(head,initial=False)
     state = dict(acquisition_progress=[progress], producer_checkpoints=[head], producer_checkpoint_dependencies=dependencies,
         producer_outcomes=[dict(producer_epoch=2, request_sequence=n, xmin=str(100 + n)) for n in range(1, 4 if provenance else 3)])
     return state, job, detail, owner, wire
@@ -234,11 +250,33 @@ class RestartControls(unittest.TestCase):
             if key == 'classification':
                 state['acquisition_progress'][0]['mutation_request'] = 3
             # Validly encoded and rehashed wrong semantics must still fail.
-            state['producer_checkpoints'][0]['checkpoint_digest'] = '\\x' + head_digest(state['producer_checkpoints'][0],
+            state['producer_checkpoints'][0]['checkpoint_digest'] = '\\x' + head_digest(current_head_core(state['producer_checkpoints'][0],prefix_profile=False),
                 state['acquisition_progress'], state['producer_checkpoint_dependencies'],
                 lambda row: native_reference(row, self.encoded.values)).hex()
             with self.subTest(key=key), self.assertRaises(AssertionError):
                 check.successor_progress(state, self.manifest, self.encoded, job, detail, owner, wire, self.new, 9000)
+
+    def test_current42_requires_all_no_base_fields_and_independent_initial_or_successor_profile(self):
+        state,job,detail,owner,wire=progress_fixture(self.new,self.manifest,self.encoded)
+        check.successor_progress(state,self.manifest,self.encoded,job,detail,owner,wire,self.new,9000)
+        for initial in (True,False):
+            head=dict(state['producer_checkpoints'][0],producer_epoch=1 if initial else 2,prefix_profile=initial)
+            self.assertEqual(len(head),26)
+            core=current_head_core(head,prefix_profile=initial)
+            self.assertEqual(len(core),15)
+            for field in ('prefix_profile',*[f'prefix_{slot}_{name}' for slot in ('active','prepared')
+                    for name in ('bytes','sha256','generation','retired','source')]):
+                missing=dict(head);del missing[field]
+                with self.subTest(initial=initial,missing=field),self.assertRaises(AssertionError):
+                    current_head_core(missing,prefix_profile=initial)
+                altered=dict(head);altered[field]=(not initial) if field=='prefix_profile' else 0
+                with self.subTest(initial=initial,altered=field),self.assertRaises(AssertionError):
+                    current_head_core(altered,prefix_profile=initial)
+            for changed in (dict(head,extra_prefix=None),dict(head,prefix_profile=int(initial)),
+                            dict(head,producer_epoch=2 if initial else 1)):
+                with self.assertRaises(AssertionError):current_head_core(changed,prefix_profile=initial)
+        # Even an otherwise valid old15-column row cannot enter this current42 path.
+        with self.assertRaises(AssertionError):current_head_core(core,prefix_profile=False)
 
     def test_coordinated_unused_older_transaction_is_not_final_proof(self):
         state, job, detail, owner, wire = progress_fixture(self.new, self.manifest, self.encoded)
@@ -341,7 +379,7 @@ class ProvenanceOffControls(unittest.TestCase):
 
     def test_off_literal_facts_inputs_cuts_and_original_science(self):
         first = self.encoded.first
-        self.assertEqual(len(first['native']), 35)
+        self.assertEqual(len(first['native']), 36)
         self.assertEqual([len(rows) for rows in first['tables'].values()], [5, 1, 1, 1, 0])
         self.assertEqual([(b['first'], b['last']) for b in first['batches']], [(1, 2), (3, 3), (4, 4), (5, 8)])
         self.assertEqual([len(rows) for rows in self.science['tables'].values()], [7, 2, 2, 2, 0])
@@ -396,7 +434,7 @@ class ProvenanceOffControls(unittest.TestCase):
         changed['producer_checkpoint_dependencies'].pop(2)
         head = changed['producer_checkpoints'][0]
         head['dependency_count'] = 10
-        head['checkpoint_digest'] = '\\x' + head_digest(head, changed['acquisition_progress'],
+        head['checkpoint_digest'] = '\\x' + head_digest(current_head_core(head,prefix_profile=False), changed['acquisition_progress'],
             changed['producer_checkpoint_dependencies'], lambda r: native_reference(r, self.encoded.values)).hex()
         with self.assertRaises((AssertionError, ValueError)):
             verify(changed)
@@ -405,7 +443,7 @@ class ProvenanceOffControls(unittest.TestCase):
         from installed_progress_context_oracle import verify_archive_progress
         first, state = self.encoded.first, copy.deepcopy(self.encoded.initial_state)
         common = dict(dataset_id=state['datasets'][0]['dataset_id'], producer_slot_id=self.encoded.m.slot, producer_epoch=1)
-        state.update(schema_versions=[dict(migration=39), dict(migration=40)],
+        state.update(schema_versions=[dict(migration=39), dict(migration=40), dict(migration=42)],
             producer_epochs=[dict(common, reserved_through_request=4, outstanding_request_limit=32)],
             acquisition_jobs=[dict(job_id='\\x' + 'd1' * 16, scope_id='\\x' + 'd2' * 16)],
             jobs=[dict(job_id='\\x' + 'd1' * 16, request_key='\\x' + 'b1' * 16, state='queued', checkpoint_revision=0)])
@@ -434,13 +472,14 @@ class ProvenanceOffControls(unittest.TestCase):
             complete_through_request=4, progress_jobs=1, dependency_count=8, issuer_resource=control['resource_id'],
             issuer_epoch=1, issuer_incarnation=control['process_incarnation'], committed_at_us=5600, xmin='109', checkpoint_digest='\\x' + '00' * 32)
         head['checkpoint_digest'] = '\\x' + head_digest(head, [progress], deps, lambda r: native_reference(r, values)).hex()
+        head=current42_head(head,initial=True)
         state.update(producer_checkpoints=[head], acquisition_progress=[progress], producer_checkpoint_dependencies=deps,
             producer_outcomes=[dict(request_sequence=n, producer_epoch=1, xmin=str(100 + n)) for n in range(1, 5)])
         verify = lambda: verify_archive_progress(state, wires, 6000, self.old, first['native'], first['inputs'], first['receipts'], control, provenance=False)
         verify()
         progress['intent_digest'] = '\\x' + certification_digest(self.old, ref(4, 3), ref(2), ref(2),
             [ref(1), ref(3), ref(5)], progress, wires[1]).hex()
-        head['checkpoint_digest'] = '\\x' + head_digest(head, [progress], deps, lambda r: native_reference(r, values)).hex()
+        head['checkpoint_digest'] = '\\x' + head_digest(current_head_core(head,prefix_profile=True), [progress], deps, lambda r: native_reference(r, values)).hex()
         with self.assertRaises(AssertionError):
             verify()
 

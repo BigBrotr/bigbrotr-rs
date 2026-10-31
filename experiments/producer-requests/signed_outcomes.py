@@ -74,7 +74,7 @@ def main(root):
     def sql(db, query):
         return command('docker','exec','-i',state['postgres_id'],'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=query)
     be = lambda n,width=8: n.to_bytes(width,'big')
-    manifest = (bytes.fromhex('01010001000100010001')+DATASET+be(0)+bytes([61])*16
+    manifest = (bytes.fromhex('01010001000200010001')+DATASET+be(0)+bytes([61])*16
                 +be(0,4)+be(1)+bytes([63])*16+bytes([67])*16+be(1)+bytes([1,6])
                 +b''.join(be(k,2)+bytes([k])*16 for k in [1,2,3,4,5,8]))
     manifest_sha = hashlib.sha256(manifest).hexdigest()

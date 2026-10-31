@@ -40,8 +40,11 @@ does not qualify power-loss behavior on every filesystem or device.
 It does not adopt an empty directory or recursively create missing parents.
 Native create and missing-CF creation are enabled only in this path, with
 error-if-exists set.
-The initial application write is a single batch containing only the manifest at
-`01 01`, with WAL enabled, `sync=true` and missing-CF writes forbidden.
+The initial application write is a single three-put batch containing the current
+value-schema2 manifest at`01 01`, explicit current source0 at its`01 02` key and
+its bound pending counter(P0/S0) at`01 0b`,
+with WAL enabled, `sync=true` and missing-CF writes forbidden. The engine layout
+must be empty before this batch; no existing directory is adopted.
 
 A native initialization failure can leave engine files without a manifest. A
 manifest write error is `ManifestCommitUnknown`: the write may have committed.
@@ -58,6 +61,17 @@ the manifest through a pinned native value and requires exact equality with the
 expected manifest. The codec refuses values longer than 266 bytes before field
 processing. It makes no additional Rust copy of an oversized native value; native
 recovery, block reads and allocations are still subject to engine/OS limits.
+
+Before returning a handle, existing opens also require the
+[mandatory pending counter](ingest-manifest-format.md#mandatory-pending-accounting)
+and a bounded streaming census of every retained source stream, contiguous Fact
+range and complete PendingBatch membership. The census hashes pinned encoded
+values and uses fixed application scratch, not an unreserved decoded-Fact vector.
+It independently recomputes P from whole native keys/values, including science
+below reclaimed request floors and ACKed tails. Positive original-input/effect
+replay and current Control authority remain separate requirements. Invalid or
+missing accounting refuses; no inspection handle silently repairs it. Existing
+value-schema1 stores remain with their frozen tools and are unsupported here.
 
 The [native profile](ingest-native-profile.md#selected-options) selects absolute
 WAL consistency. Detected checksum damage and incomplete records refuse native
@@ -83,14 +97,14 @@ schema1/epoch1, initial successor schema2/epoch2 and repeatable schema3/epoch3 o
 later. This comparison identifies the observed stream; it supplies no current
 Control authority.
 
-All reads use one native snapshot with checksums and no cache filling. An absent
-counter means zero only when bounded first-key checks establish the exact fresh
-layout: the manifest is the only `default` record, with empty `facts` and
-`receipts`. Any other missing counter is unavailable, including historical
-zero-output recovery, which has its own positive replay proof. Successor profiles
-retain an explicit zero counter; any current-stream fact or pending marker
-contradicts that zero. A nonzero counter can outlive reclaimed facts and pending
-markers, so observation does not require a retained tail or certify the complete
+All reads use one native snapshot with checksums and no cache filling. Every
+current stream retains its explicit source marker, including initial zero.
+Missing source always refuses, with no guessed zero or repair. Initial and
+successor zero use the same empty-current-stream check and bound accounting S;
+issued requests and valid closing metadata need not be empty. Predecessor science
+remains charged in a successor's global P. Any current-stream fact or pending marker
+contradicts that zero. A nonzero source counter is not reduced by request-detail
+reclamation. Observation does not itself replay a retained tail or certify the complete
 source prefix. The full unsigned counter, including `u64::MAX`, is preserved
 without adding a next sequence or narrowing it. Missing/malformed metadata,
 foreign identity, a locally uncertain write, native errors and cancellation are

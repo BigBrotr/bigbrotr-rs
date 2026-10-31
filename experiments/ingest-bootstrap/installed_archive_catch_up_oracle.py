@@ -313,7 +313,7 @@ def initial(value):
     view=current_owner_view(state['control'],value['initial_setup'])
     rows,inputs,receipts=initial_native(view,report,event,dictionary,received,recorded,first['clock_resolution_us'])
     assert state['native']['rows']==[dict(cf=cf,key=k.hex(),value=v.hex()) for cf,k,v in rows]
-    assert type(state['native']['sequence']) is int and len(rows)==49 and 49<=state['native']['sequence']<128
+    assert type(state['native']['sequence']) is int and len(rows)==50 and 50<=state['native']['sequence']<128
     originals=[bytes.fromhex(v) for k,v in sorted(state['contents'].items())]
     assert originals==inputs and len(inputs)==4
     science=expected(view,report,event,dictionary,received,recorded,first['clock_resolution_us'])

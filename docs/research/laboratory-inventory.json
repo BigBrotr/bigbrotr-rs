@@ -77690,7 +77690,7 @@
       }
     },
     "scope": "Initial epoch1 OPEN compact base plus exact tail, authenticated request/input retirement under existing bounds. Scientific pending facts/identity/batch markers remain; generic payload GC and larger Archive history separate. Startup policy capture, stop/recovery on policy change; no promised implemented Live application.",
-    "resources": "All completed native/PG/installed engines and drivers are terminal/retained. The sole active compiler is nativef8, launcher77899, containerce58c268, owner0c3341d4; cache115 exclusively held. Original four ELF pins and six a3worker files were unchanged at launch; terminal postchecks pending. Frozen bb54 and binding branches preserved; a separate main-reconciliation source candidate is in progress. Root remains sole runtime owner.",
+    "resources": "All owned completed native/PG/installed/control resources terminal/retained; no active local builder, engine or watcher. Cache115 released;4originalsinglelinkELFs and6a3worker inputs unchanged. Source branches139ec/e871 clean/frozen, originaldata/reports preserved. Root closes coherent139ec main merge with four owned documentation/evidence files; no release/deploy.",
     "next": "Qualify reviewed native binding with maintained fiveRust+oneC controls, then realNoSpace/callback/concurrent-failure and app wiring; continue existing logicalgrants/OPEN/physical tasks without losing remainingIndex/Sync/performance/plan owners. Preservebb54native601 and53PG/installed/hosted evidence where inputs unchanged.",
     "resource_gate": {
       "proposal_worktree": ".research/open-prefix-disk-contract-20261030",
@@ -77752,8 +77752,8 @@
           "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/critical-review-workspace-tests-f8c534f7.json",
           "sha256": "be7bdc17064fc14b15df045497f8e4f1704c0d7c34a2aac9aff4b9f8e793d557"
         },
-        "status": "Source f8 is independently clear. The app library owns five canonical public-API controls with existing dependencies/lock; two thin native getters preserve independent observations. C test refuses NDEBUG. Native callback/API ownership is unchanged from0c; app factory remains unwired. Isolated compilation is RUNNING; five Rust controls, C, callback fault and NoSpace are NOT_RUN.",
-        "next": "Observe root launcher77899 and the five exact Rust controls, retaining exact Cargo package/profile archive provenance. Then link and run the whole C test against those same archives with assertions enabled. No parent, worker or PG rebuild; physical and application gates remain open.",
+        "status": "Frozenf8 actual five exact Rust public-API controls and whole native C test PASS. Original composite metadataFAIL101 remains; target-filtered context correction reused all271 compiler artifacts, zero new tests. C links exact captured archives,96phases/activeassertions/exit0. Fault/NoSpace/application/physical and broader platform/license gates remain open.",
+        "next": "Preserve qualifiedf8 and reconcile its maintained recipe/public-CI prose in a forward docs-only commit. Next actual guard callback/fault controls use the bounded selected seam; app wiring, funded reopen/purge and CW envelopes remain existing tasks.",
         "native_seam_source": "0c78e149e3cb08f8f1185990eba9d4fc0713fa07",
         "native_seam_author": {
           "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/source-receipt.json",
@@ -77774,8 +77774,55 @@
           "launcher_session": 77899,
           "container": "ce58c26869835c70a37ea72dbd716ed5e0cff70bfa9a42e734f3321902ec5940",
           "owner": "0c3341d42f664b4781e7e119b3242dd7",
-          "status": "RUNNING_NO_RESULT_YET"
-        }
+          "status": "TERMINAL_RETAINED_NO_OOM_EXIT1_AFTER_FIVE_PASS_METADATA_SETUP_FAIL"
+        },
+        "qualification_report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json",
+        "native_root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-binding-f8c534f7/root-terminal.json",
+          "sha256": "df49812bda170f26215830a7630ae99e3d61b28cf6ecc81fec709cf01d43e663"
+        },
+        "archive_context_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-binding-f8c534f7-context-linux-r1/root-terminal.json",
+          "sha256": "209f8b42da3eaa0b3bbb52b39f61075d91dcaba999504b503fd967a108da70ed"
+        },
+        "c_root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-failstop-c-api-f8c534f7/root-terminal.json",
+          "sha256": "d5b86f7bd7307d5cac85873b174f44e7e27587bcbf634329eeb09127dac569d2"
+        },
+        "forward_docs_revision": "21cd1fdd9846263fa4d957cceb58d32ea3fd167a",
+        "forward_docs_author": {
+          "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/source-receipt-healthy-docs-20261031.json",
+          "sha256": "ad1b73ce4e0333fbb30a418d7a76d0aae2a31441b443e1d2cd9d6ba1fde986d3"
+        },
+        "callback_control_decision": {
+          "path": ".research/open-growth-decision-20261031/amendment-guard-callback-controls-20261031.json",
+          "sha256": "ba321c75aecbaa12307862c11f6a705996e82236422649ee6930a3bab90c1fef"
+        },
+        "partial_work": "e871 source branch clean/frozen; code/provenance/locks byte d3, only two result READMEs added. Actual20 scoped controls bind d3; no running-DB NoSpace/concurrency/app/CW or new-platform claims. Separate from current native2 main integration.",
+        "callback_source": "d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd",
+        "callback_source_tree": "60cb3ce7f3507fe0ac4caffbfc6757f57e06a574",
+        "callback_author": {
+          "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/source-receipt-callback-controls-20261031.json",
+          "sha256": "796dc989e49d2f9a4f312d50f21e818ce4a880aebb1d8d86ea6a04deb1c3b582"
+        },
+        "callback_critical_review": {
+          "path": ".research/native-failstop-binding-20261031/.research/native-failstop-binding/critical-review-callback-controls-d3dc8d5e.json",
+          "sha256": "936ffbdfcf30d73c04943862c458a8f37baa890f46dfea2347d4404fe5e17a41"
+        },
+        "callback_runtime": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-callback-d3dc8d5e",
+          "source_manifest_sha256": "ab2d925b4c5dd609b4890f14293bbe420aa1d025c4eba71fbfbd321ddacb396e",
+          "controller_review_sha256": "de21b4814a1b09c70b67480f6f8a4c4aeac63a1f36fe5dea1f7ebe505c258cf0",
+          "tool_session": 70160,
+          "container": "7da6e85ba2786f13160fc0655e4901bd454af11270506229ee0536e89bdf909d",
+          "owner": "45407425780c4a99af4876a51e202334",
+          "status": "TERMINAL_RETAINED_EXIT0_NO_OOM_PID0;5Rust/wholeC96/14callbacksPASS"
+        },
+        "callback_root_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-callback-d3dc8d5e/root-terminal.json",
+          "sha256": "c5d46ef6753fe8488e3d8c58be1e497b29b4c6faf8859f7b39be6ebadf4b0c7b"
+        },
+        "forward_result_docs_revision": "e871d06167c0aae5e688a53f62e3f42c51549997"
       },
       "space_state": "Owner monitor recovered~556GiB, currentfree~623GiB. Currentlabpins unchanged; former low-headroom condition superseded. Space alone doesnot close CW-N1/P1/P2 or authorize65; stable30s/A+nextd and all numerical/authority gates still required before actualOPEN admission."
     },
@@ -78134,7 +78181,87 @@
         "sha256": "22aff70a080ee67fbbe375cf09000ec204080c8a0a71ef1f660e2adfd46716cb"
       },
       "result": "5f550PASS/51FAIL, then reviewed16-filebb54 correction601PASS in70.106s total/15.40s execution. Exactlysame601names,0ignored,2explicitexcludeddrivers. One product guard-order regression plus sharedcounter/value/census fixtures; N2-F1 positive-restoration counter bug source-caught/fixed before rerun. All original raw failures preserved; no newpair/PG/worker build or causalperformance claim.",
-      "remaining": "ExternalACKsyscall/worker-lifetime drivers, fullworkspace/Clippy, installedOPEN/lostACK/capacity stillNOT_RUN. Native2+PG42 source not integrated into main."
+      "remaining": "ExternalACKsyscall/worker-lifetime drivers, fullworkspace/Clippy, installedOPEN/lostACK/capacity stillNOT_RUN. Native2+PG42 source not integrated into main.",
+      "qualified1434": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native2-main-1434aa04/root-terminal.json",
+        "sha256": "0387b9e8b3a2dee0a54d2cacd6e39c32edf24facff0028938e85702b4a86ced8",
+        "scope": "87.191s total; strict all-app-target releaseClippy plus598libraryPASS,0ignored,2explicitexternal exclusions. Exactly prior601minus three reviewed unreachable model tests; no added/hidden namespace. Distinct genuine worker sourcea3 unchanged. Fullworkspace/hosted/installed current42 remain gates."
+      }
+    },
+    "main_reconciliation": {
+      "worktree": ".research/native2-main-reconciliation-sol-20261031",
+      "branch": "work/native2-main-reconciliation-sol-20261031",
+      "revision": "2e153af4b6da49f31f24fd65ba8ed71cc0fd1259",
+      "tree": "ae81a44d37982932ae7f65dd219bdb8baf13a920",
+      "author": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/candidate-2e153af4.json",
+        "sha256": "cc4472c0b37198172e04fe5ed8dc6cc33181ac8eeec1fbb9530de98c6a6fa6fb"
+      },
+      "critical_review": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/critical-reconciliation-2e153af4.json",
+        "sha256": "45987d4b72b477864a5841cba35e506ba76a50c982c16ad945b1a3c918b42331"
+      },
+      "status": "Root integrates coherent139ec oracle/fixture source over de27 after exact fifteen-file critical review and full pinned409controlsPASS. Product/apps/locks/migrations/tutorialpin byte1434; scoped release all-app-targetClippy/598native proof reused. Actual hosted workspace/platforms and current42 installed/tutorial remain next gates. Original64+2 baseline, host truncated attempt,2e Clippy and author failures remain unchanged.",
+      "remaining": "P02-T02Step4 owns actual locked original/prepared/native-floor recovery/residual proof; three removed pure model tests do not qualify it. No OPEN65/funding/scheduling/CW enablement.",
+      "first_runtime": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native2-main-2e153af4/root-terminal.json",
+        "sha256": "547851558cbd900a443535c45f58693d90db571a0b452eaebbf86aa52fa10985",
+        "result": "FAIL_STRICT_SOURCE_QUALITY_GATE_LIBRARY_NOT_RUN"
+      },
+      "partial_work": "No pending edit in frozen reconciliation worktree. Uncommitted root merge includes reviewed source plus four current owned records; no push yet. Broader OPEN/funding/CW tasks remain unqualified, two external native drivers NOT_RUN.",
+      "forward_revision": "1434aa04dac7b2e6bbdc3c75b7a7fad36c3fae34",
+      "forward_tree": "44ddf1d708dc9004c480a01b87a371f49b218d8b",
+      "forward_author": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/candidate-1434aa04.json",
+        "sha256": "d3ef5a2d20fa3da6c7a08fc6c2192a240591b24b495db914c934808ccbb7bfc0"
+      },
+      "runtime": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native2-main-1434aa04",
+        "source_manifest_sha256": "75c4794d1481a2df1fa40f480cd41cd0b8ed6de7b8f7bd318f10fcf8a402806b",
+        "session": 50095,
+        "container": "ddb136d3eabd811d9b3199f5ab60da707a5e934f12a81f1635e1510f30a2c58a",
+        "owner": "fccb449da55b42919a3877720d381753",
+        "status": "TERMINAL_RETAINED_EXIT0_NO_OOM_PID0"
+      },
+      "qualified_root_terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/native2-main-1434aa04/root-terminal.json",
+        "sha256": "0387b9e8b3a2dee0a54d2cacd6e39c32edf24facff0028938e85702b4a86ced8"
+      },
+      "portable_before": {
+        "root": ".research/initial-index-recovery-qualification-20261028/native2-main-1434aa04/portable-controls-before",
+        "full_log_sha256": "0526ccde85ec36a3488687af24d1b304d1dae680fb721f62fac3935cf716d7e5",
+        "tool_session": 26889,
+        "exit": 1,
+        "unittest_summary": "383 ran;64failures,2classsetup errors,0skips; class members blocked by setup are not PASS.",
+        "resources": "Owned49d43b23/owner33f5e42a stopped1/PID0/noOOM; no cache mount. Complete log retained.",
+        "first_host_attempt": "first-host-controls-failure.json retains68368/5ff109 summary64+4/2skip and explicit original-output truncation; missingLLVM/oldHEADpin were setup issues and absent in the proper clean-container baseline."
+      },
+      "oracle_preview": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/installed-native2-current42-preview-1434aa04.patch",
+        "sha256": "86740ac6db7baeb256232772639080117c3841c731742018124df56b05f427be",
+        "author_receipt_sha256": "86d62261efdf4eac3d362ff1029bbafbe2eefd89d0ac506bba1a85e18b5dde27",
+        "status": "Exact86740 preview committed139ec, critical321642 clear, full pinned409controls PASS; source139 and15filepins exact. Superseded1701 remains partial historical evidence."
+      },
+      "source_publication_review": {
+        "path": ".research/ci-publication-20261026/source-native2-1434aa04-20261031/source-review.json",
+        "sha256": "eb122987bd63bb73f89de1b802c927f9109d38b5cdd7da4e8222e6dd77903b4d",
+        "scope": "1434 reachable new history/source vs publicde27:260objects/5947407B. Four matched psql variable identifiers are byte-identical publicde27 declarations, not credential values;0new/unclassified/sensitive/LFS. Final-oracle/integration newobjects still require incremental scan; no publicpush."
+      },
+      "qualified_oracle_revision": "139ec8685dcc39ae72316b62821340ff7fdb442e",
+      "qualified_oracle_tree": "6f7c1bb83755a7b0ae30ebdd7fc2881330571e75",
+      "oracle_author": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/candidate-139ec868.json",
+        "sha256": "690a12ca3f910ddf23cbaaffb8f7af417bb306752268a3ab793c0bba82a68fc1"
+      },
+      "oracle_critical_review": {
+        "path": ".research/native2-main-reconciliation-sol-20261031/.research/native2-main-reconciliation-author-20261031/critical-installed-native2-current42-preview-86740ac6.json",
+        "sha256": "321642dd56c11bd2195b83872dd3d2e1aca4958df06c834157630ff6939710ba"
+      },
+      "full_portable_controls": {
+        "path": ".research/initial-index-recovery-qualification-20261028/native2-main-139ec868/portable-controls/root-terminal.json",
+        "sha256": "7ead4605688e66b1dbe42294e42b5b581877d9ffe3efb6bae8a78e56b2616e0d",
+        "result": "409tests PASS,0FAIL/errors/skips, tool17740/reaped0/25.958s; complete log retained. Deliberate negative-fixture output not reclassified as productFAIL."
+      }
     }
   },
   "implementation_ci_portable_controls_20261030": {

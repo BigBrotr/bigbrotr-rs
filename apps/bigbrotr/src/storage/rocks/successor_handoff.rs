@@ -422,7 +422,7 @@ impl IngestRecovery {
             handoff
                 .stamp
                 .sequence
-                .checked_add(4)
+                .checked_add(5)
                 .ok_or(BootstrapError::StateMismatch)?
         } else {
             handoff.stamp.sequence
@@ -449,7 +449,7 @@ impl IngestRecovery {
         ] {
             require_value(self, key, completed.then_some(bytes))?;
         }
-        // The old complete census plus the exact sequence delta and four
+        // The old complete census plus the exact sequence delta and five
         // necessary target keys excludes additional native writes. Sidecars
         // remain independently checked because they do not advance that delta.
         lineage.validate_transition_snapshot(self, handoff.stamp, expected, sequence, cancelled)
@@ -512,7 +512,7 @@ impl IngestRecovery {
             handoff
                 .stamp
                 .sequence
-                .checked_add(4)
+                .checked_add(5)
                 .ok_or(BootstrapError::Limit)?;
             let mut batch = Prepared::new(BootstrapLimits {
                 max_mappings: 1,
@@ -531,6 +531,7 @@ impl IngestRecovery {
                 producer_key(&f.next_manifest, f.producer_slot_id),
                 frame(&[], &[&OPEN_PRODUCER])?,
             )?;
+            self.store.seal_pending_accounting(&mut batch)?;
             self.store.commit_prepared(batch, || {
                 require_current_authority(cancelled, &mut authority)
             })?;

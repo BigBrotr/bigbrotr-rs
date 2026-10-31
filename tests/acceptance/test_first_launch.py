@@ -184,6 +184,50 @@ class FirstLaunchControls(unittest.TestCase):
         self.assertIn('producer_requests', expected)
         self.assertIn('schema_versions', expected)
 
+    def test_current_bootstrap_refuses_predecessor_or_changed_ledger_before_control_setup(self):
+        current = case.expected_ledger(ROOT)
+        self.assertEqual(len(current), 58)
+        self.assertIn(801, [row['migration'] for row in current])
+        last, = [row for row in current if row['migration'] == 42]
+        self.assertEqual(last['checksum'], '9bc752f0a0dc2f42fc7461481e27e7ed5ed9253e8dc9a56ad94d961f477ab5cb')
+        case.validate_current_ledger(ROOT, current)
+        changed = copy.deepcopy(current)
+        changed[0]['checksum'] = '00'*32
+        incompatible = copy.deepcopy(current)
+        incompatible[0]['writer_floor'] = 2
+        for ledger in ([row for row in current if row['migration'] != 42], changed, incompatible):
+            with self.subTest(ledger_rows=len(ledger)), tempfile.TemporaryDirectory() as temporary:
+                runtime = case.Runtime(arguments(Path(temporary)), {})
+                runtime.manifest = dict(artifact=dict(build_info={'build': 'bound'}))
+                runtime.finite = Mock(side_effect=[{'build': 'bound'}, {'result': 'verified'}, {}, {}, {}])
+                runtime.launch = Mock(return_value={'id': 'owned-pg'})
+                runtime.inspect = Mock()
+                runtime.wait = Mock()
+                runtime.docker = Mock()
+                runtime.sql = Mock(side_effect=['160015', json.dumps(ledger)])
+                with self.assertRaisesRegex(ValueError, 'applied Control ledger differs'):
+                    runtime.bootstrap()
+                calls = runtime.finite.call_args_list
+                self.assertEqual([call.args[0] for call in calls],
+                    ['build-info', 'verify-worker', 'config-validate', 'migration-plan', 'migration-apply'])
+                for call in calls[-2:]:
+                    self.assertEqual(call.args[-2:], ('--target', '42'))
+                self.assertEqual(runtime.docker.call_count, 1)
+                self.assertEqual(case.load(runtime.root/'bootstrap/applied-control-ledger.json'), ledger)
+
+    def test_fresh_prefix_profile_refuses_old_profile_foreign_identity_or_retirement(self):
+        initialized = dict(private_scope=dict(dataset_id='12'*16), producer_slot_id='34'*16)
+        head = dict(dataset_id='\\x'+'12'*16, producer_slot_id='\\x'+'34'*16,
+            producer_epoch=1, prefix_profile=True, progress_format=1, complete_through_request=4)
+        head.update({'prefix_'+slot+'_'+field:None for slot in ('active','prepared')
+            for field in ('bytes','sha256','generation','retired','source')})
+        case.validate_initial_prefix_profile({'producer_checkpoints':[head]}, initialized)
+        for delta in ({'prefix_profile':False}, {'producer_slot_id':'\\x'+'56'*16},
+                      {'progress_format':2}, {'complete_through_request':3},
+                      {'prefix_active_generation':1}, {'prefix_prepared_sha256':'\\x'+'78'*32}):
+            with self.subTest(delta=delta), self.assertRaises(ValueError):
+                case.validate_initial_prefix_profile({'producer_checkpoints':[dict(head, **delta)]}, initialized)
+
 
 class FirstLaunchWaitControls(unittest.TestCase):
     def test_positive_observation_retains_value_and_live_process_requirements(self):

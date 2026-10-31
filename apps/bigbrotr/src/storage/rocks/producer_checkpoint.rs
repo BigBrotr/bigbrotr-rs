@@ -81,7 +81,6 @@ impl NativeCheckpointBasis<'_> {
         if request.producer_slot_id != slot
             || request.producer_epoch != epoch
             || request.request_sequence.get() > complete
-            || complete > super::RETAINED_PRODUCER_REQUEST_LIMIT
         {
             return Err(AdmissionError::InvalidInput);
         }

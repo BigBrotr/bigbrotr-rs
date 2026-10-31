@@ -13,9 +13,9 @@ def live(prefix, state, root):
 def native_rows(dump, wanted):
     assert set(dump)=={'event','rows','sequence'} and dump['event']=='dump-state'
     # Existing four-request native observer bound; sequence is not an ACK oracle.
-    assert type(dump['sequence']) is int and 49 <= dump['sequence'] < 128
+    assert type(dump['sequence']) is int and 50 <= dump['sequence'] < 128
     actual=[(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in dump['rows']]
-    assert len(actual)==len(set((cf,k) for cf,k,_ in actual))==49
+    assert len(actual)==len(set((cf,k) for cf,k,_ in actual))==50
     index.exact([(cf,k.hex(),v.hex()) for cf,k,v in actual],
                 [(cf,k.hex(),v.hex()) for cf,k,v in wanted['native']])
 
@@ -30,7 +30,7 @@ def publication(state, actual, science, schema, root):
         archive_revision=4,archive_cut=12,index_revision=2,index_cut=3,index_lag_records=9,
         prepared_plan=3,prepared_range=[4,7],prepared_chunks=10,unplanned_range=[8,12],
         physical_rows=3,physical_scope='independently_ready_prefix_before_backend_stop',
-        native_rows=49,original_requests=4,original_inputs=4,acknowledged_through=4,retired_through=0,
+        native_rows=50,original_requests=4,original_inputs=4,acknowledged_through=4,retired_through=0,
         prefix_acknowledged_data='three_dictionaries',signed_event_admitted='during_outage',
         index_readiness='unavailable/dependency_unavailable',backend='stopped_retained',
         control_tables=82,automatic_recovery='NOT_RUN',remote_uncertainty_resolution='NOT_RUN',

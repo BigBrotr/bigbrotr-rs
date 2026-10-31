@@ -118,10 +118,47 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
             )
         };
         store.db.put([1, 1], altered.encode().as_bytes()).unwrap();
+        store
+            .db
+            .put([1, 0x0b], PendingAccounting::new(&altered, 0, 0).encode())
+            .unwrap();
         drop(store);
         let mut store =
             IngestStore::reopen(&path, altered, native(), grant(&b, 0, 128 * MIB)).unwrap();
         let sequence = store.db.latest_sequence_number();
+        let rows = |store: &IngestStore| {
+            let mut rows = Vec::new();
+            for cf in ["default", "facts", "receipts"] {
+                for row in store.db.iterator_cf(
+                    store.db.cf_handle(cf).unwrap(),
+                    rocksdb::IteratorMode::Start,
+                ) {
+                    let (key, value) = row.unwrap();
+                    rows.push((cf, key.into_vec(), value.into_vec()));
+                }
+            }
+            rows
+        };
+        // Independent current fresh3 layout: exact manifest, explicit source0
+        // and counter version/domain + exact manifest SHA + P0/S0. The schema
+        // corruption fixture remains complete enough to reach owner refusal.
+        use sha2::{Digest, Sha256};
+        let mut source_key = vec![1, 2];
+        source_key.extend([1; 16]);
+        source_key.extend(0u32.to_be_bytes());
+        source_key.extend(1u64.to_be_bytes());
+        let mut accounting = vec![1, 0x0b];
+        accounting.extend(Sha256::digest(altered.encode().as_bytes()));
+        accounting.extend([0; 16]);
+        let before = rows(&store);
+        assert_eq!(
+            before,
+            vec![
+                ("default", vec![1, 1], altered.encode().as_bytes().to_vec()),
+                ("default", source_key, vec![1, 2, 0, 0, 0, 0, 0, 0, 0, 0]),
+                ("default", vec![1, 0x0b], accounting),
+            ]
+        );
         let limits = BootstrapLimits {
             max_mappings: 8,
             max_batch_bytes: MIB as usize,
@@ -136,6 +173,7 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
             ),
             Err(BootstrapError::InvalidIntent)
         ));
+        assert_eq!(rows(&store), before);
         assert!(matches!(
             store.bootstrap_dictionaries(
                 request(),
@@ -155,23 +193,14 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         }
         assert!(!path.join("producer-inputs-v1").exists());
         assert_eq!(store.db.latest_sequence_number(), sequence);
-        for cf in ["default", "facts", "receipts"] {
-            let rows = store
-                .db
-                .iterator_cf(
-                    store.db.cf_handle(cf).unwrap(),
-                    rocksdb::IteratorMode::Start,
-                )
-                .collect::<Result<Vec<_>, _>>()
-                .unwrap();
-            assert_eq!(rows.len(), usize::from(cf == "default"));
-            if cf == "default" {
-                assert_eq!(rows[0].0.as_ref(), &[1, 1]);
-                assert_eq!(rows[0].1.as_ref(), altered.encode().as_bytes());
-            }
-        }
-        // Changing only the corrupted schema back permits the same request.
+        assert_eq!(rows(&store), before);
+        // Restoring the original manifest and its exact accounting binding
+        // permits the same request; the explicit source0 stays unchanged.
         store.db.put([1, 1], original.encode().as_bytes()).unwrap();
+        store
+            .db
+            .put([1, 0x0b], PendingAccounting::new(&original, 0, 0).encode())
+            .unwrap();
         drop(store);
         let mut store =
             IngestStore::reopen(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
@@ -402,7 +431,7 @@ fn every_missing_or_changed_batch_member_prevents_replay_and_missing_receipt_is_
             members.push((cf, key, value));
         }
     }
-    assert_eq!(members.len(), 9);
+    assert_eq!(members.len(), 10);
     for (cf, key, value) in members {
         let handle = store.db.cf_handle(cf).unwrap();
         store.db.delete_cf(handle, &key).unwrap();

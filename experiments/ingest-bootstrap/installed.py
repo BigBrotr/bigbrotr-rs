@@ -6,7 +6,7 @@ import re
 import shutil
 import time
 import tomllib
-from bootstrap_oracle import cbor, expected
+from bootstrap_oracle import accounted, cbor, expected
 import lab
 
 
@@ -142,7 +142,7 @@ def append_private_expected(wanted, dataset, domain, slot, recovery, recorded_at
         b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,3,3,refs])).digest()
     wanted['receipts',b'\x01\x30'+slot+be(1)+be(2)] = private_receipt
     wanted['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(2)+be(0)+be(0)
-    wanted = sorted((cf,k,v) for (cf,k),v in wanted.items())
+    wanted = accounted((cf,k,v) for (cf,k),v in wanted.items())
     return wanted, private_input, private_receipt
 
 
@@ -170,7 +170,7 @@ def native_oracle(pg, client, output, database, name, state, report, suffix='',
     with (output/(name+suffix+'-native.json')).open('x') as capture:
         capture.write(dumped.stdout)
     actual = [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in json.loads(dumped.stdout)['rows']]
-    assert actual==wanted and len(actual)==17, 'complete-original-bootstrap-and-private-append'
+    assert actual==wanted and len(actual)==18, 'complete-original-bootstrap-and-private-append'
     assert report['private_scope']==dict(public,ordinal='3') and report['dictionary_count']==3
     reference = lambda n: [dataset,4,dict(domains)[4],n]
     entries = [['dictionary',1,[reference(n),1,'visibility',1,{'class':label}]] for n,label in [(1,'public'),(2,'private')]]

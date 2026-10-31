@@ -39,6 +39,7 @@ pub enum RequestInputError {
     Conflict,
     Filesystem,
     InsufficientReservation,
+    Accounting(super::PendingAccountingError),
     Codec(CodecError),
 }
 
@@ -144,6 +145,8 @@ impl IngestStore {
         digest: Digest256,
         bytes: &[u8],
     ) -> Result<StagedProducerRequest, RequestInputError> {
+        self.require_pending_accounting()
+            .map_err(RequestInputError::Accounting)?;
         self.retain_request_input(request, bytes)?;
         Ok(StagedProducerRequest {
             request,
@@ -161,6 +164,9 @@ impl IngestStore {
         bytes: &[u8],
         cancelled: Option<&std::sync::atomic::AtomicBool>,
     ) -> Result<StagedProducerRequest, super::AdmissionError> {
+        self.require_pending_accounting().map_err(|error| {
+            super::AdmissionError::RequestInput(RequestInputError::Accounting(error))
+        })?;
         self.retain_admission_input(request, bytes, cancelled)?;
         Ok(StagedProducerRequest {
             request,

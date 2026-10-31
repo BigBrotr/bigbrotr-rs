@@ -29,7 +29,7 @@ impl RetainedLineage {
         handoff: &SuccessorHandoff,
         sequence: u64,
     ) -> AdmittedFrontier {
-        // The caller has just validated this exact local plan and completed +4
+        // The caller has just validated this exact local plan and completed +5
         // state. No fallible work, allocation, await or native write follows.
         let fields = handoff.record().fields();
         let head = self.entries.last_mut().expect("checked nonempty lineage");
@@ -220,6 +220,7 @@ impl AdmittedFrontier {
             entries: CensusEntries {
                 retained: &self.entries,
                 current: Some(current),
+                prefix_retired: None,
             },
             slot: self.slot,
             compacted: self.compacted.as_ref(),

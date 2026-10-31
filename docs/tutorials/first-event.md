@@ -60,7 +60,7 @@ assets over HTTPS, or accepts an explicitly prepared verified bundle through
 `--archive-bundle`; see the
 [native bundle instructions](https://github.com/BigBrotr/bigbrotr-rs/blob/main/packaging/archive-worker/README.md).
 Locked Rust dependencies and toolchains may also need build-time network access.
-The tutorial's Nostr-signing exclusion is bound to the reviewed `8653849d` product code,
+The tutorial's Nostr-signing exclusion is bound to the reviewed `ea90e28b` product code,
 dependencies and configuration. Documentation/acceptance-only revisions may reuse
 that code profile; changed product inputs require a fresh reachable-path review.
 The case refuses an unreviewed profile instead of assuming it cannot sign.
@@ -234,9 +234,9 @@ dc up -d --wait database
 dc exec -T --user 0 database psql -X -U postgres -d postgres \
   -v ON_ERROR_STOP=1 -v stage=bootstrap -f /opt/bigbrotr/provision.sql
 dc run --rm --no-deps initialize migrate plan --file /etc/bigbrotr/instance.toml \
-  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 41
+  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 42
 dc run --rm --no-deps initialize migrate apply --file /etc/bigbrotr/instance.toml \
-  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 41
+  --user bigbrotr_migrator --password-ref file:/run/operator/migrator --target 42
 dc exec -T --user 0 database psql -X -U postgres -d postgres \
   -v ON_ERROR_STOP=1 -v stage=control -f /opt/bigbrotr/provision.sql
 dc run --rm --no-deps app config initialize --file /etc/bigbrotr/instance.toml

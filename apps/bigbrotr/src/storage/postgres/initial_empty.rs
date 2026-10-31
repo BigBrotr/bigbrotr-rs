@@ -76,22 +76,26 @@ impl ControlSession {
         recovery: &'a IngestRecovery,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
-        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<PreparedEmptyInitialAttempt<'a>, InitialSuccessionError> {
         require_metadata_grant(&permit)?;
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, epoch) = self
-            .begin_empty_initial_history(recovery, &input, validate)
+            .begin_empty_initial_history(recovery, &input, &mut validate)
             .await?;
         let intent = initial_history::read_intent(&tx, recovery).await?;
         let native = recovery
             .empty_initial_attempt(&intent.handoff)
             .map_err(InitialSuccessionError::Native)?;
-        let registration =
-            ingest_registry::reconstruct_historical(&tx, instance, native.historical().manifest())
-                .await
-                .map_err(InitialSuccessionError::Registry)?;
+        let registration = ingest_registry::reconstruct_historical(
+            &tx,
+            instance,
+            native.historical().manifest(),
+            &mut validate,
+        )
+        .await
+        .map_err(InitialSuccessionError::Registry)?;
         initial_history::require_intent_identity(&tx, &registration, &intent, current, epoch)
             .await?;
         let terminal =

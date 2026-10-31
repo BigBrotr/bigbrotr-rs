@@ -23,6 +23,7 @@ pub(in crate::storage::rocks::store) struct LineageInputSet {
     required_count: u64,
     compacted_initial: Option<(ProducerSlotId, u64)>,
     optional: Option<(ProducerSlotId, ProducerEpoch, u64, u64)>,
+    prefix_residual: Option<(ProducerSlotId, u64, u64)>,
 }
 
 impl From<u64> for LineageInputSet {
@@ -31,11 +32,41 @@ impl From<u64> for LineageInputSet {
             required_count,
             compacted_initial: None,
             optional: None,
+            prefix_residual: None,
         }
     }
 }
 
 impl LineageInputSet {
+    pub(in crate::storage::rocks::store) fn prefix(
+        slot: ProducerSlotId,
+        required_after: u64,
+        through: u64,
+        residual_after: u64,
+    ) -> Result<Self, BootstrapError> {
+        let required_count = through
+            .checked_sub(required_after)
+            .filter(|count| *count <= MAX_FILES as u64)
+            .ok_or(BootstrapError::Limit)?;
+        if residual_after > required_after
+            || through
+                .checked_sub(residual_after)
+                .is_none_or(|n| n > MAX_FILES as u64)
+        {
+            return Err(BootstrapError::Limit);
+        }
+        Ok(Self {
+            required_count,
+            compacted_initial: None,
+            optional: None,
+            prefix_residual: (residual_after < required_after).then_some((
+                slot,
+                residual_after,
+                required_after,
+            )),
+        })
+    }
+
     pub(in crate::storage::rocks::store) fn with_compacted_initial(
         required_count: u64,
         slot: ProducerSlotId,
@@ -52,6 +83,7 @@ impl LineageInputSet {
             required_count,
             compacted_initial: Some((slot, floor)),
             optional: None,
+            prefix_residual: None,
         })
     }
 
@@ -85,11 +117,45 @@ impl LineageInputSet {
             id.producer_slot_id == slot
                 && id.producer_epoch.get() == 1
                 && id.request_sequence.get() <= floor
+        }) || self.prefix_residual.is_some_and(|(slot, after, through)| {
+            id.producer_slot_id == slot
+                && id.producer_epoch.get() == 1
+                && id.request_sequence.get() > after
+                && id.request_sequence.get() <= through
         })
     }
 }
 
 impl IngestStore {
+    pub(in crate::storage::rocks::store) fn prefix_input_inventory(
+        &self,
+        slot: ProducerSlotId,
+        required_after: u64,
+        through: u64,
+        residual_after: u64,
+        cancelled: &AtomicBool,
+    ) -> Result<ClosedInputInventory, BootstrapError> {
+        // A prefix retires files, never its authenticated spool directory.
+        drop(
+            self.input_directory(false)
+                .map_err(BootstrapError::RequestInput)?,
+        );
+        self.lineage_input_scan(
+            LineageInputSet::prefix(slot, required_after, through, residual_after)?,
+            |id| {
+                id.producer_slot_id == slot
+                    && id.producer_epoch.get() == 1
+                    && id.request_sequence.get() > required_after
+                    && id.request_sequence.get() <= through
+            },
+            None,
+            None,
+            None,
+            cancelled,
+        )
+        .map(|scan| scan.inventory)
+    }
+
     pub(in crate::storage::rocks::store) fn lineage_input_census(
         &self,
         inputs: impl Into<LineageInputSet>,

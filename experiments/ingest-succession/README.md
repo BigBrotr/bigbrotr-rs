@@ -122,9 +122,15 @@ contexts. Source-only authoring, controls and runtime status are distinct: this
 new profile is NOT_RUN until root executes and qualifies it. ACK, GC, mutation
 COMMIT loss, unjoined-owner recovery and whole-task completion remain outside it.
 
-`portable-handoff-v2.json` is generated independently from the field tables in
+`portable-handoff-v2-accounted.json` is the current value-schema2 corpus,
+generated independently from the field tables in
 [the manifest contract](../../docs/reference/ingest-manifest-format.md#repeatable-owner-handoff-selected-not-yet-implemented)
-at revision `12c3534c6c970839a4371fc00b4ac3eac6730cb0`. The generator uses Python
+whose handoff layout was selected at revision
+`12c3534c6c970839a4371fc00b4ac3eac6730cb0`. Current embedded manifests require
+value-schema2; fresh initialization has three atomic metadata puts and handoff
+has five. The frozen counterless `portable-handoff-v2.json` remains unchanged
+with its historical source; it is not a compatibility obligation for the current
+decoder. The generator uses Python
 standard-library byte construction, `struct` and SHA-256. It neither imports a
 product codec nor executes Rust, SQL or a native store.
 

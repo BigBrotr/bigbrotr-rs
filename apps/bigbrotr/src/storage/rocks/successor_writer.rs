@@ -564,12 +564,13 @@ impl IngestStore {
 
     pub(super) fn commit_admission(
         &mut self,
-        batch: super::bootstrap::Prepared,
+        mut batch: super::bootstrap::Prepared,
         request: bigbrotr_model::ProducerRequestId,
         source: Option<u64>,
         cancelled: Option<&AtomicBool>,
         authority: impl FnMut() -> Result<(), BootstrapError>,
     ) -> Result<(), AdmissionError> {
+        self.seal_pending_accounting(&mut batch)?;
         let Some(frontier) = &self.live_successor else {
             if cancelled.is_some() {
                 return Err(AdmissionError::InvalidInput);

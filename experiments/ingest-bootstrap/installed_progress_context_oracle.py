@@ -26,6 +26,29 @@ import installed_progress_replay as typed
 from installed_sync_oracle import decode, expected as initial_science, SIGNED_SHA256
 from initial_succession_oracle import only, same
 
+
+def current_head_core(head, *, prefix_profile):
+    """Validate the closed42 no-base profile before reusing format1 digest math.
+
+    The caller selects fresh initial/epoch2 independently. This is neither an
+    old-schema fallback nor permission to normalize a prepared/active slot.
+    """
+    assert type(prefix_profile) is bool
+    slots={'prefix_'+slot+'_'+field for slot in ('active','prepared')
+        for field in ('bytes','sha256','generation','retired','source')}
+    assert set(head)==typed.HEAD_FIELDS|slots|{'prefix_profile'}, 'closed current checkpoint fields'
+    assert head['prefix_profile'] is prefix_profile, 'current checkpoint profile differs'
+    assert head['producer_epoch']==(1 if prefix_profile else 2), 'current checkpoint epoch differs'
+    assert all(head[field] is None for field in slots), 'current journey requires no prefix base or prepare'
+    return {field:head[field] for field in typed.HEAD_FIELDS}
+
+
+def current_snapshot(head, jobs, dependencies, expected_head, expected_jobs,
+                     expected_dependencies, native, *, prefix_profile):
+    core=current_head_core(head,prefix_profile=prefix_profile)
+    return typed.exact_snapshot(core,jobs,dependencies,expected_head,expected_jobs,
+        expected_dependencies,native)
+
 MIGRATIONS = {
     27: ('0027_acquisition_abandonment.sql', '34f9d690076e0acaef0c22df5a3d0079c1d0436f7d2e687429d4e9b407d16093'),
     28: ('0028_acquisition_gap_guard.sql', '043c290a469137589d05317c778714de0d6b6b2f45eaa7f577438c64a5035326'),
@@ -169,8 +192,8 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
         dependencies, lambda row: typed.native_reference(row, values)).hex()
     actual_dependencies = sorted(state['producer_checkpoint_dependencies'],
         key=lambda row: (row['source_shard'], row['source_epoch'], row['source_sequence']))
-    return typed.exact_snapshot(head, state['acquisition_progress'], actual_dependencies,
-        expected_head, [expected_job], dependencies, values)
+    return current_snapshot(head, state['acquisition_progress'], actual_dependencies,
+        expected_head, [expected_job], dependencies, values, prefix_profile=True)
 
 
 def check_upgrade(context, *, ack=False):
@@ -625,15 +648,15 @@ def verify_initial(context, *, ack=False, preparation_hole=False, post_hole_proo
     logged_out(durable,stopping); released(stopping,after)
     actual = context['native']
     assert set(actual) == {'event','rows','sequence'} and actual['event'] == 'dump-state'
-    # One initial manifest write, twelve bootstrap entries (manifest included),
-    # eight private-map, twenty attribution and sixteen signed-event entries.
-    # Two further new-event batches are sixteen writes each. Under0040 each
+    # Fresh manifest/source/counter3, bootstrap13, private-map9, attribution21
+    # and event17 include one accounting put per science batch. Further new
+    # event batches are seventeen writes each. Under0040 each
     # of the six mutating operations contributes one separate ACK state put.
     if ack:
-        assert type(actual['sequence']) is int and actual['sequence']==(112 if preparation_hole else 95), 'ACK native write count differs'
-    assert type(actual['sequence']) is int and actual['sequence'] == 1+12+8+20+16+(48+7 if preparation_hole else 32+6 if ack else 0)
+        assert type(actual['sequence']) is int and actual['sequence']==(121 if preparation_hole else 103), 'ACK native write count differs'
+    assert type(actual['sequence']) is int and actual['sequence'] == 3+13+9+21+17+(51+7 if preparation_hole else 34+6 if ack else 0)
     values = {(r['cf'],bytes.fromhex(r['key'])):bytes.fromhex(r['value']) for r in actual['rows']}
-    assert len(values) == len(actual['rows']) == (88 if preparation_hole else 75 if ack else 49)
+    assert len(values) == len(actual['rows']) == (89 if preparation_hole else 76 if ack else 50)
     facts = {int.from_bytes(key[-8:],'big'):decode(value[34:].split(b'\0',1)[1])
         for (cf,key),value in values.items() if cf == 'facts' and key[:2] == b'\x01\x20'}
     dictionary_at, recorded, received = facts[4][4],facts[8][4],facts[11][5][1]
@@ -657,7 +680,7 @@ def verify_initial(context, *, ack=False, preparation_hole=False, post_hole_proo
         options=dict(additional_events=extra,acknowledge=True,preparation_hole=preparation_hole,
             expected_body_digest=sha(b'bigbrotr/body/1\0'+typed.cbor(typed.body(event))))
     else:
-        assert context['native_result'] == dict(native_rows=49,original_requests=4,
+        assert context['native_result'] == dict(native_rows=50,original_requests=4,
             dictionary_recorded_us=dictionary_at,event_received_us=received,event_recorded_us=recorded)
     wanted, inputs, receipts = initial_science(after,context['report'],event,dictionary_at,received,recorded,resolution,**options)
     if ack:
@@ -1007,9 +1030,9 @@ def verify_hole_recovery(context, seed):
     expected_native=copy.deepcopy(seed[1]); values=model.native_map(expected_native)
     key=('receipts','0131'+producer['producer_slot_id'][2:]+(1).to_bytes(8,'big').hex())
     marker=b'\x01\x31'+(7).to_bytes(8,'big')*2+bytes(8)
-    assert values[key]==marker.hex() and expected_native['sequence']==112
+    assert values[key]==marker.hex() and expected_native['sequence']==121
     values[key]=(b'\x02\x31'+marker[2:]+b'\x01').hex()
-    expected_native.update(rows=model.native_rows(values),sequence=113)
+    expected_native.update(rows=model.native_rows(values),sequence=122)
     assert context['native_before']==(expected_native if retry else seed[1])
     assert context['native_after']==expected_native, 'recovery permits only one closing write'
     # All prior scientific, authorization, checkpoint and audit rows survive.
@@ -1034,7 +1057,7 @@ def verify_hole_recovery(context, seed):
         dataset_id=producer['dataset_id'][2:],owner_resource_id=producer['owner_resource_id'][2:],
         producer_slot_id=producer['producer_slot_id'][2:],producer_epoch='1',issued_through='7',
         reserved_through='7',resolved_requests='7',native='closed',owner_release='committed',ready=False)]
-    return dict(status='PASS',case=case['name'],tables=77,input_files=7,native_rows=88,native_sequence=113,
+    return dict(status='PASS',case=case['name'],tables=77,input_files=7,native_rows=89,native_sequence=122,
         product_native_writes=0 if retry else 1,native_acknowledged=7,native_retired=0,
         typed_heads_dependencies_original_xmins_preserved=True,source_and_job_completion=False)
 
@@ -1046,7 +1069,7 @@ def hole_recovery_controls(context, seed):
         ('unjoined-process',lambda c:c['response']['terminal'].update(reaped=False)),
         ('non-config-only-recovery',lambda c:c['response']['terminal']['command'].append('--close-source')),
         ('backend-not-excluded',lambda c:c['backend'].update(all=[dict(pid=1)])),
-        ('missing-closing-or-extra-write',lambda c:c['native_after'].update(sequence=112)),
+        ('missing-closing-or-extra-write',lambda c:c['native_after'].update(sequence=121)),
         ('native-fact-lost',lambda c:c['native_after']['rows'].pop()),
         ('original-input-lost',lambda c:c['inputs_after'].pop(next(iter(c['inputs_after'])))),
         ('original-request-xmin-rewritten',lambda c:c['after']['producer_requests'][0].update(xmin='4294967000')),
@@ -1063,7 +1086,7 @@ def hole_recovery_controls(context, seed):
         ('catalog-drift',lambda c:c.update(catalog_after=c['catalog_after']+'changed')),
     ]
     if context['case']['name']=='sync-signed-retry':
-        changes.append(('retry-additional-native-write',lambda c:c['native_after'].update(sequence=114)))
+        changes.append(('retry-additional-native-write',lambda c:c['native_after'].update(sequence=123)))
     rejected=[]
     for name,change in changes:
         other=copy.deepcopy(context); change(other)
