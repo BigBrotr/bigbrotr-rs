@@ -159,11 +159,11 @@ BEGIN
     SELECT coalesce(sum(input_bytes::bigint+65536),0) INTO retained
         FROM control.producer_requests
         WHERE producer_slot_id=wanted_slot AND producer_epoch=wanted_epoch;
-    IF retained + additional_input + CASE WHEN EXISTS(SELECT 1 FROM control.producer_checkpoints
+    IF retained + additional_input + (CASE WHEN EXISTS(SELECT 1 FROM control.producer_checkpoints
             WHERE producer_slot_id=wanted_slot AND producer_epoch=wanted_epoch AND prefix_profile)
             OR (wanted_epoch=1 AND NOT EXISTS(SELECT 1 FROM control.producer_checkpoints
                 WHERE producer_slot_id=wanted_slot AND producer_epoch=wanted_epoch))
-            THEN 32768 ELSE 0 END + 1024 + 1024::bigint*wanted_jobs
+            THEN 32768 ELSE 0 END) + 1024 + 1024::bigint*wanted_jobs
             + 256::bigint*wanted_dependencies > 33554432 THEN
         RAISE EXCEPTION 'producer progress and input/completion exceed retained capacity' USING ERRCODE='23514';
     END IF;
