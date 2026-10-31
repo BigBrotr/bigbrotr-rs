@@ -930,9 +930,9 @@ def arrival_policy(db, name):
             settings['sync.provenance'] = 'local_first_witness'
         encoded = json.dumps(document, separators=(',', ':'), sort_keys=True, ensure_ascii=False).encode()
         digest = sha(b'bigbrotr/product-policy/3\0' + encoded)
-        expected[table][0].update(document=document, document_digest='\\x' + digest, schema_version=2)
+        expected[table][0].update(document=document, document_digest='\\x' + digest, schema_version=3)
         mutations.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, "
-                         f"document_digest=decode('{digest}','hex'),schema_version=2")
+                         f"document_digest=decode('{digest}','hex'),schema_version=3")
     lab.sql(pg, db, 'BEGIN; SET LOCAL session_replication_role=replica; ' + '; '.join(mutations) + '; COMMIT;')
     after = rows(db)
     comparable = json.loads(json.dumps(after))

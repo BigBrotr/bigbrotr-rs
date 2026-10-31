@@ -54,9 +54,12 @@ pub struct InitializationReceipt {
 /// The finite CLI owns the protected application connection and a reservation
 /// through driver termination. `commit_started` survives timeout/cancellation;
 /// only a new transaction holding the same lock can resolve an unknown COMMIT.
+/// The validator checks the complete current normalized document and canonical
+/// digest against the actual roots, for both new input and the retained receipt.
 pub async fn initialize(
     client: &mut Client,
     input: InitialConfiguration<'_>,
+    mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), InitializeError>,
     commit_started: &Cell<bool>,
 ) -> Result<InitializationReceipt, InitializeError> {
     let policy_version = PolicyDocumentVersion::from_document(input.document)
@@ -73,6 +76,7 @@ pub async fn initialize(
     {
         return Err(InitializeError::InvalidInput);
     }
+    validate(input.document, input.document_digest).map_err(|_| InitializeError::InvalidInput)?;
     let tx = application_transaction(client, 801).await?;
     tx.query_one(
         "SELECT pg_catalog.pg_advisory_xact_lock($1, $2)",
@@ -91,7 +95,8 @@ pub async fn initialize(
                p.kind = 'installation' AND a.actor_id = c.actor_id
                AND a.created_at_us = c.accepted_at_us AND p.created_at_us = d.created_at_us
                AND c.accepted_at_us = d.created_at_us,
-               left(c.authority_mode,12), c.schema_version, left(c.document->>'format',64)
+               left(c.authority_mode,12), c.schema_version, left(c.document->>'format',64),
+               CASE WHEN octet_length(c.document::text)<=10485760 THEN c.document::text END
           FROM control.datasets d
           LEFT JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = 1
           LEFT JOIN control.principals p ON p.dataset_id = d.dataset_id AND p.principal_id = c.actor_id
@@ -137,6 +142,15 @@ pub async fn initialize(
             )
             .map_err(|_| InitializeError::ExistingState)?,
         };
+        // Header/digest metadata alone does not establish the original complete
+        // current policy. In particular, retry must not certify a missing field
+        // or changed body merely because its old digest is still retained.
+        validate(
+            row.try_get::<_, &str>(11)
+                .map_err(|_| InitializeError::ExistingState)?,
+            receipt.document_digest,
+        )
+        .map_err(|_| InitializeError::ExistingState)?;
         tx.rollback().await.map_err(backend)?;
         return Ok(receipt);
     }

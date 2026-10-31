@@ -200,6 +200,11 @@ async fn initialize_fixture(config: Config) {
                 .into(),
             source_digest: [3; 32],
         },
+        |document, digest| {
+            validate(document, digest).map_err(|_| {
+                bigbrotr::storage::postgres::initialization::InitializeError::InvalidInput
+            })
+        },
         &Cell::new(false),
     )
     .await

@@ -139,7 +139,16 @@ pub(crate) fn initialize(root: Resolved) -> CliResult<(Value, u8, OwnedPermit)> 
         let commit_started = Cell::new(false);
         let result = match tokio::time::timeout(
             Duration::from_secs(30),
-            initialization::initialize(&mut client, input, &commit_started),
+            initialization::initialize(
+                &mut client,
+                input,
+                |document, digest| {
+                    PolicySeed::restore(document, digest, root.clone())
+                        .map(|_| ())
+                        .map_err(|_| InitializeError::InvalidInput)
+                },
+                &commit_started,
+            ),
         )
         .await
         {

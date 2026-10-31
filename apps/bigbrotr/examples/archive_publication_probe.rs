@@ -227,6 +227,11 @@ async fn initialize_control_policy(database: &str, installed: bool, native_row: 
                 [3; 32]
             },
         },
+        |document, digest| {
+            validate_selected(document, digest, native_row).map_err(|_| {
+                bigbrotr::storage::postgres::initialization::InitializeError::InvalidInput
+            })
+        },
         &Cell::new(false),
     )
     .await
