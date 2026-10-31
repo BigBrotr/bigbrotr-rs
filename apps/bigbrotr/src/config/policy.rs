@@ -107,13 +107,12 @@ impl PolicySeed {
         digest: [u8; 32],
         mut root: Resolved,
     ) -> Result<Resolved, String> {
-        let version = PolicyDocumentVersion::from_document(document)?;
+        PolicyDocumentVersion::from_document(document)?;
         let mut value: Value = serde_json::from_str(document)
             .map_err(|_| "invalid stored policy encoding (values withheld)")?;
         let object = value
             .as_object_mut()
             .ok_or("stored policy must be an object")?;
-        root.policy_version = version;
         let settings = object
             .get_mut("settings")
             .and_then(Value::as_object_mut)

@@ -1,5 +1,5 @@
 use super::*;
-use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits, policy_document::PolicyDocumentVersion};
+use bigbrotr::runtime::{ProcessEnvelope, WaiterLimits};
 use bigbrotr_model::{
     DatasetId, DictionaryKind, Digest256, PolicyEpoch, RecoveryGenerationId, TopologyGeneration,
 };
@@ -29,7 +29,6 @@ fn root() -> Resolved {
         local_roles: BTreeSet::from(["index".into()]),
         dependencies: vec![],
         document_sha256: String::new(),
-        policy_version: PolicyDocumentVersion::CURRENT,
     }
 }
 
