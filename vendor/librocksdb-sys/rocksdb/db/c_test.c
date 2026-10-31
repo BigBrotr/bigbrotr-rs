@@ -6,6 +6,9 @@
 #include "rocksdb/c.h"
 
 #include <assert.h>
+#ifdef NDEBUG
+#error "The BigBrotr C API qualification requires enabled assertions"
+#endif
 #include <inttypes.h>
 #include <stddef.h>
 #include <stdio.h>

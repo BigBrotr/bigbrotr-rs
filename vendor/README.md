@@ -118,15 +118,22 @@ Options must not be parsed, replaced or modified after installation. Persisted
 OPTIONS does not recreate the live listener. Every newly funded recovery attempt
 needs fresh final Options/guard and external preservation of prior unknown debt.
 
-`WaitForCompactOptions::set_wait_for_purge` exposes an existing C setter. It does
-not prove failed unlink, snapshot or descriptor credit release. Callers must
-separately bound waiting and positively reconcile actual allocated files/pins.
+`WaitForCompactOptions::set_wait_for_purge` exposes an existing C setter.
+Read-only native-backed getters expose its flag and the configured background
+Resume retry count; these option observations alone prove neither attachment nor
+purge. The setter does not prove failed unlink, snapshot or descriptor credit
+release. Callers must separately bound waiting and positively reconcile actual allocated files/pins.
 
 This patch is source-only and **NOT_RUN**. It installs no guard in BigBrotr's
 application factory and changes no resource grant, ACK, persistent format,
 absolute64 guard or numerical capacity bound. Earlier unpatched engine/CI results
-do not qualify it. Added wrapper ownership/refusal/healthy-I/O tests and the C
-competing-listener refusal control require actual execution. Native callback
+do not qualify it. The five canonical public-API controls now live in the
+application's `cfg(test)` options child module, using existing root dependencies
+and lock; no duplicate tests or private qualification lock remain. The original
+upstream wrapper tests are retained. These ownership/refusal/healthy-I/O tests
+and the existing C competing-listener control require actual execution; see the
+[maintained commands](../experiments/native-rocks-binding/README.md#planned-guard-qualification).
+The C test refuses a build with assertions disabled. Native callback
 identity/severity/sticky/recovery and allocation-failure controls, real NoSpace
 injection with both single-hook negative controls, joined stop/funded reopen,
 positive purge reconciliation and selected AMD64/ARM64/macOS builds remain gates.

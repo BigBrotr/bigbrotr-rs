@@ -255,6 +255,9 @@ impl RocksNativeProfile {
 }
 
 #[cfg(test)]
+mod background_guard_tests;
+
+#[cfg(test)]
 mod tests {
     use super as options;
 

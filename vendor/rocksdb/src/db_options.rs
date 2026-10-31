@@ -1084,6 +1084,12 @@ impl LogLevel {
 }
 
 impl Options {
+    /// Read the configured background-error Resume retry count.
+    /// A zero value alone does not prove that an error guard is installed.
+    pub fn get_max_background_error_resume_count(&self) -> i32 {
+        unsafe { ffi::rocksdb_options_get_max_bgerror_resume_count(self.inner) }
+    }
+
     /// Install the owned fail-stop listener on final DB options before open.
     ///
     /// Refuses any existing listener, including installation on a clone of
@@ -4982,6 +4988,11 @@ impl Drop for WaitForCompactOptions {
 }
 
 impl WaitForCompactOptions {
+    /// Read the configured purge-wait flag. This does not prove purge completed.
+    pub fn get_wait_for_purge(&self) -> bool {
+        unsafe { ffi::rocksdb_wait_for_compact_options_get_wait_for_purge(self.inner) != 0 }
+    }
+
     /// Wait for purge in addition to flush/compaction work (default: false).
     /// Set a bounded timeout and suitable abort/flush options separately.
     /// Success does not prove all obsolete files, failed unlinks, snapshots or
@@ -5282,45 +5293,5 @@ mod tests {
         db3.compact_range(Some(b"a"), Some(b"z"));
         assert!(log_rcv.try_recv().is_ok());
         drop(db3);
-    }
-}
-
-#[cfg(test)]
-mod bigbrotr_guard_options_tests {
-    use super::*;
-
-    #[test]
-    fn installation_fixes_resume_count_and_refusal_preserves_options() {
-        let mut options = Options::default();
-        unsafe { ffi::rocksdb_options_set_max_bgerror_resume_count(options.inner, 7) };
-        let guard = options.install_background_error_guard().unwrap();
-        assert_eq!(
-            unsafe { ffi::rocksdb_options_get_max_bgerror_resume_count(options.inner) },
-            0
-        );
-        assert!(!guard.failed());
-        // An independently changed option is not silently rewritten by a refused
-        // second install. Production callers must freeze final installed options.
-        unsafe { ffi::rocksdb_options_set_max_bgerror_resume_count(options.inner, 9) };
-        assert!(options.install_background_error_guard().is_err());
-        assert_eq!(
-            unsafe { ffi::rocksdb_options_get_max_bgerror_resume_count(options.inner) },
-            9
-        );
-    }
-
-    #[test]
-    fn purge_wait_setter_reaches_native_option() {
-        let mut wait = WaitForCompactOptions::default();
-        wait.set_wait_for_purge(true);
-        assert_eq!(
-            unsafe { ffi::rocksdb_wait_for_compact_options_get_wait_for_purge(wait.inner) },
-            1
-        );
-        wait.set_wait_for_purge(false);
-        assert_eq!(
-            unsafe { ffi::rocksdb_wait_for_compact_options_get_wait_for_purge(wait.inner) },
-            0
-        );
     }
 }

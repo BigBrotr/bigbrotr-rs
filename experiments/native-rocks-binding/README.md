@@ -179,33 +179,94 @@ accounting after writes, with a disconnected-manager negative control.
 
 ## Planned guard qualification
 
-All new guard tests are NOT_RUN. The root owner first reviews the local source
-patch and both resolved path graphs, then uses the maintained clean-source native
-builder and environment (pinned compiler/libclang, no ambient prebuilt RocksDB).
-The wrapper's existing test targets contain `background_error_guard_` lifetime,
-failed-open and healthy-write controls; its library tests check retry-count
-installation/refusal and the purge setter. The engine's existing `c_test` adds
-competing-listener refusal while preserving its prior callback counters.
+All new controls are **NOT_RUN**. The five canonical public-API binding smoke
+controls are in
+[`background_guard_tests.rs`](../../apps/bigbrotr/src/storage/rocks/options/background_guard_tests.rs),
+a `cfg(test)` child of the existing application options module. They use the
+root workspace's existing exact `rocksdb` and `tempfile` dependencies and lock.
+There is no second test workspace, new dependency or qualification lock. The
+vendored upstream wrapper tests remain original. The two thin read-only native
+getters retain the resume-count and purge-flag observations; they do not infer
+listener attachment or purge completion from a Rust mirror.
 
-For the wrapper's standalone upstream test workspace, use a fresh source export,
-retain its recorded original lock separately, resolve a qualification lock with
-the explicit sys path patch, then execute the same commands with `--locked`:
+From the exact clean source, use the maintained isolated native environment,
+compiler pins, source manifest, Cargo configuration checks and owned output
+lifecycle. Compile only the application library in the release profile, then
+list and execute the exact module:
 
 ```sh
-cargo generate-lockfile --offline --manifest-path vendor/rocksdb/Cargo.toml \
-  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"'
-cargo test --locked --offline --manifest-path vendor/rocksdb/Cargo.toml \
-  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"' \
-  --no-default-features --features zstd,bindgen-runtime --lib bigbrotr_guard_options_tests
-cargo test --locked --offline --manifest-path vendor/rocksdb/Cargo.toml \
-  --config 'patch.crates-io.librocksdb-sys.path="vendor/librocksdb-sys"' \
-  --no-default-features --features zstd,bindgen-runtime --test test_db background_error_guard_
+cargo test --locked --offline --release -p bigbrotr --lib \
+  --no-run --message-format=json
+cargo test --locked --offline --release -p bigbrotr --lib \
+  storage::rocks::options::background_guard_tests:: -- --list --format pretty
+cargo test --locked --offline --release -p bigbrotr --lib \
+  storage::rocks::options::background_guard_tests:: -- --test-threads=1
 ```
 
-These planned commands can require explicit preparation of the locked upstream
-test dependencies; no private cache is a product-build prerequisite. They do not
-replace the actual native callback identity/severity/exception tests or real
-NoSpace recovery-stop proof. Include both single-hook and retry-count-only
-negative controls, healthy automatic maintenance, explicitly funded reopen and
-positive purge/file-pin reconciliation. Current BigBrotr guard installation and
-all four write-site/downstream ACK checks remain separate application work.
+Retain the compile JSON and one library test ELF. Require exactly the five
+source-declared names to be listed and executed, zero ignored, and unchanged
+source/tool/ELF hashes before and after. Reuse the existing nonempty
+`listed_tests`/`completed_tests` controls in
+`experiments/network-transport/initial_index.py` and `tools.ci.execute`; a filtered
+zero-test success fails qualification. These commands compile no product binary,
+worker or PostgreSQL journey. The existing workspace `rust-tests` CI command also
+runs this module on AMD64, ARM64 and macOS in its declared workspace profile;
+that does not replace this first exact-source release-profile result. The smoke
+module installs the guard only in its synthetic databases. The application
+factory, resource/grant and four-write-site/downstream ACK wiring remain absent.
+
+### Existing native C test with the same archives
+
+The sixth addition is the competing-listener refusal in the existing
+`vendor/librocksdb-sys/rocksdb/db/c_test.c` phase
+`table_filter_listener_metadata`. It is not a sixth Rust test. Keep the whole C
+test and all its existing assertions. Its `main` ignores arguments; do not invent
+a phase filter or extract a mirrored assertion. It now refuses to compile when
+`NDEBUG` is defined, so disabled C assertions cannot silently produce PASS.
+
+For the first Linux AMD64 qualification, obtain the exact sys and Zstandard
+package IDs from the same locked Cargo metadata. Require the sys manifest to be
+this source's `vendor/librocksdb-sys/Cargo.toml`, version0.19.0+11.8.1, and the
+selected `zstd-sys` version2.1.2+zstd.1.5.7. Match those IDs to unique
+`build-script-executed` messages in the retained compile JSON. Their `out_dir`
+values must lie under the admitted `CARGO_TARGET_DIR/release/build`, from this
+same target/profile/configuration. Refuse absent or ambiguous matches. Select
+only the regular `librocksdb.a` and `libzstd.a` files directly in those exact
+`out_dir` directories, record sizes/SHA-256 and retain their source/tool/config
+binding. Never guess an archive by a wildcard, neighboring cache path or system library.
+
+The root-owned existing native controller supplies `SOURCE`, `QUALIFICATION`,
+`SYS_OUT`, `ZSTD_OUT`, pinned `CC` and `CXX` as explicit verified paths. It creates
+one fresh private `QUALIFICATION/tmp`, then runs these commands through the
+existing finite command/log lifecycle:
+
+```sh
+"$CC" -std=c11 -UNDEBUG -D_POSIX_C_SOURCE=200809L \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb/include" \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb" \
+  -c "$SOURCE/vendor/librocksdb-sys/rocksdb/db/c_test.c" \
+  -o "$QUALIFICATION/c_test.o"
+"$CXX" -std=c++20 "$QUALIFICATION/c_test.o" \
+  "$SYS_OUT/librocksdb.a" "$ZSTD_OUT/libzstd.a" \
+  -pthread -ldl -lrt -lm -o "$QUALIFICATION/c_test"
+TEST_TMPDIR="$QUALIFICATION/tmp" "$QUALIFICATION/c_test"
+```
+
+The engine-root include resolves the existing generated C roundtrip-test
+fragment. Direct pinned compiler invocation inherits no ambient CFLAGS, CXXFLAGS,
+LDFLAGS or prebuilt RocksDB override. The C test is a separate regular retained
+ELF with its own hash. Require exit0, the actual named phase and final `PASS`,
+and unchanged source/compiler/archive/test-ELF hashes afterward. Preserve any
+compile/link/runtime failure. Do not invoke `make c_test`: it may build another
+engine/test-harness configuration. Linking this existing C test uses the same
+Cargo-built native archives; only its C front end and executable are additional
+compilation. This Linux command is **NOT_RUN**, not a link/ABI or Mac/ARM claim.
+The ordinary Rust workspace CI does not run this separate C test automatically.
+
+The first five Rust controls plus this C control do not replace native callback
+identity/severity/sticky/recovery and allocation-failure tests, actual concurrent
+callback/query/close, or real NoSpace injection. Include both single-hook and
+retry-count-only negative controls, healthy automatic maintenance, explicitly
+funded reopen and positive purge/file-pin reconciliation. Current app wiring,
+CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement and release
+qualification remain OPEN.
