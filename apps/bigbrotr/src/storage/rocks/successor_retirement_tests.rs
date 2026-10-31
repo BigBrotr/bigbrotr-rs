@@ -351,7 +351,7 @@ fn successor_retirement_lost_copy_step_cannot_advance_or_restart_replay() {
 fn successor_retirement_refuses_future_dependency_before_existing_copy_acceptance() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, true);
+    let r = correction(&f, r, true);
     let before = snapshot(&f, &r.store);
     let mut observed = retirement(&f, &r);
     observe(&f, &r, &mut observed);

@@ -207,7 +207,7 @@ pub(super) fn census(
     let counter = read_counter(&snapshot, manifest)?;
     require_source(&snapshot, manifest, counter.source_through)?;
     let mut direct_charge = 0;
-    let mut stream_charge = 0;
+    let mut stream_charge = 0u64;
     let mut current_source = false;
     for cf in [
         ColumnFamily::Default,

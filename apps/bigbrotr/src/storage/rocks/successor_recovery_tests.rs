@@ -565,8 +565,8 @@ fn successor_recovery_pending_step_is_one_shot_and_rechecks_sidecars_before_acce
 #[test]
 fn successor_recovery_rejects_future_dependencies_before_a_sql_copy_step_exists() {
     let f = prepared_fixture();
-    let mut r = valid_empty_third(&f);
-    correction(&f, &r, true); // literal first receipt borrows request2's later fact
+    let r = valid_empty_third(&f);
+    let mut r = correction(&f, r, true); // literal first receipt borrows request2's later fact
     let before = snapshot(&f, &r.store);
     let mut observed = owner(&f, &r);
     close(&f, &mut r, &mut observed);
