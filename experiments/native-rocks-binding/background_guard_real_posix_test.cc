@@ -572,9 +572,7 @@ int experiment(const char* name, const std::string& root) {
     }
     journal->publish(identity);
     require(free_space(root, *journal, "mount_before") >= kMinFree, "insufficient frozen initial headroom");
-    DB* opened = nullptr;
-    Status open_status = DB::Open(o, root + "/db", &opened);
-    db.reset(opened);
+    Status open_status = DB::Open(o, root + "/db", &db);
     Record* opened_record = journal->begin("opened");
     if (opened_record) journal->status(opened_record->before, open_status);
     journal->publish(opened_record);
