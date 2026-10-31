@@ -23,8 +23,9 @@ and per-package provenance for current source identity. The exact versions remai
 The current source resolves the added guard API, but this historical experiment
 adapter does not install it or inject background NoSpace. Its unchanged cases do
 not qualify the new fail-stop behavior, current product profile or numerical
-bounds. The separate guard controls below establish healthy API/lifetime behavior
-only; callback faults, real NoSpace and new platform qualification remain NOT_RUN.
+bounds. The separate guard controls below establish scoped healthy API/lifetime
+and direct callback behavior. Running-DB NoSpace, concurrency and new platform
+qualification remain NOT_RUN.
 
 The source audit reused by this experiment is inventoried at
 `.research/checkouts/rocks-dependency-audit-20260917/inventory.json` in the main
@@ -285,27 +286,40 @@ The container stopped with exit 0, PID 0 and no OOM. This is a scoped healthy C 
 and competing-listener result; it is not Mac/ARM qualification. The ordinary Rust
 workspace CI does not run this separate C test automatically.
 
-The first five Rust controls plus this C control do not replace native callback
-identity/severity/sticky/recovery and allocation-failure tests, actual concurrent
-callback/query/close, or real NoSpace injection. Include both single-hook and
-retry-count-only negative controls, healthy automatic maintenance, explicitly
+The earlier five Rust and C results do not establish the direct callback result
+recorded below. Actual concurrent callback/query/close and real NoSpace injection
+remain separate. Include both single-hook and retry-count-only negative
+controls, healthy automatic maintenance, explicitly
 funded reopen and positive purge/file-pin reconciliation. Current app wiring,
 CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement, full
 workspace/Clippy, affected AMD64/ARM64/macOS qualification, complete
 dependency/license and release gates remain OPEN.
 
 
-### Direct callback component controls (NOT_RUN)
+### Direct callback component controls
 
-The next source increment moves only the existing native C Options definition
+Source `d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd` passed all five exact Rust
+controls, the whole C API program with 96 phases and all 14 direct callback cases
+on native Linux AMD64. The run took 363.615 seconds including native compilation,
+using the same pinned Rust 1.98.1/Clang 14 image, two CPUs, 6 GiB memory, no
+network and a read-only root. The
+[maintained binding report](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+owns the actual commands, source/context/archive/three-ELF identities and root
+terminal receipt. All 4,164 source files and retained inputs remained unchanged;
+the container stopped with exit 0, PID 0 and no OOM. The captured RocksDB archive
+matched f8 byte-for-byte; the d3 archive context, compiled C++ frontend and
+executed callback proof have their own d3 bindings. The original f8 setup failure
+and later f8 scoped successes above remain unchanged.
+
+The source increment moves only the existing native C Options definition
 into one owning `db/c_options_internal.h`, included by `c.cc` and its generator
 template. The public C header stays opaque and the listener stays in `c.cc`.
 The new [`background_guard_test.cc`](background_guard_test.cc) uses that same
 internal type, the real C installer and the installed listener's public virtual
 interface. It does not include `c.cc`, copy a listener implementation, fabricate
 an opaque layout or add a production testing API. Application Rust is unchanged.
-The earlier f8 results remain tied to f8; this header/source increment requires
-its own frozen source, archive and frontend identities before qualification.
+The earlier f8 results remain tied to f8. The d3 result uses its own frozen
+source, archive context and frontend identities.
 
 The explicit `guard-callback-controls` profile in the existing driver has 14
 fixed named cases: five NoSpace severities, OK, a different error code, genuine
@@ -332,10 +346,15 @@ throwing `std::bad_alloc`. The handler accepts exactly one expected injection an
 a latched public guard; wrong size, later unarmed array allocation or wrong latch
 uses a different exit. The driver requires the prearmed marker, the exact
 injected-and-latched marker and reserved exit86. A returned callback, escaping
-exception, arbitrary signal/death or zero cases fails. This does not qualify
-parameter-copy failures, arbitrary engine OOM paths or a real NoSpace condition.
+exception, arbitrary signal/death or zero cases fails. The positive copy
+interception and isolated prearmed/injected-and-latched exit86 were observed
+at d3.
+The injected allocation is only the `Status::CopyState` array copy during the
+pointer-taking background-error severity promotion. It does not qualify global
+OOM, allocations before entry to a by-value callback, other parameter-copy
+failures or a real NoSpace condition.
 
-Root first captures the new exact source's selected archives with the same
+For each exact source, first capture its selected archives with the same
 locked actual-platform metadata/package-ID/out-dir controls above. The frontend
 must use the same pinned compiler, standard library, target and native ABI. For
 the first Linux AMD64 profile, keep the selected C++20, default namespace,
@@ -372,7 +391,7 @@ untrusted producer. No new workspace, lock, dependency or generic fault service
 is introduced. The historical default driver profile remains unchanged, and its
 existing ARM job does not automatically execute these new component controls.
 
-All 14 new controls and the new header/archive/frontend tuple are **NOT_RUN**.
+The 14 direct controls qualify the recorded d3 component tuple only.
 Real default-POSIX ENOSPC, SFM/Resume suppression with retry-count-only and
 single-hook negatives, concurrent fault/query/drop/close, already-started work,
 joined stop, failed-unlink/unknown debt, explicitly funded reopen and positive

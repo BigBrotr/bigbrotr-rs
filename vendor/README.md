@@ -96,15 +96,15 @@ unchanged. No Rust callback, foreign-listener cast or private-layout copy is use
 The same additive changes are retained in the upstream C API source templates
 so regeneration keeps the extension. The existing cc/bindgen build is unchanged.
 
-The following callback-control source increment moves the existing opaque C
+The callback-control source increment moves the existing opaque C
 Options implementation definition into one internal `db/c_options_internal.h`,
 shared by `c.cc` and its source template. Public `c.h`, guard/listener algorithms
 and the Rust API remain unchanged. The maintained experiment's C++ frontend can
 therefore call the real installer/listener without a copied private definition
 or production test API. Its direct callback/status/IOStatus/allocation/lifetime
-controls are **NOT_RUN** and need new exact source/archive/frontend qualification;
-they are not inferred from the earlier f8 healthy results below. See the
-[component recipe](../experiments/native-rocks-binding/README.md#direct-callback-component-controls-not_run).
+controls have the scoped d3 result below, with exact source/archive/frontend
+bindings. See the
+[component recipe](../experiments/native-rocks-binding/README.md#direct-callback-component-controls).
 
 On a non-OK background error, the listener latches failure and raises severity
 to at least fatal using the public Status severity-copy constructor. Original
@@ -153,19 +153,33 @@ passed without repeating tests or rebuilding. The successful whole C test is a
 further distinct result. These outcomes do not relabel the original failure or
 qualify historical unpatched evidence as guard evidence.
 
+Source `d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd` then passed the five exact
+Rust controls, whole C program with 96 phases and all 14 direct native callback
+cases on Linux AMD64 in the same pinned environment. Actual-Linux offline
+metadata ran before compilation; its frozen result was reused for the later
+same-profile no-run JSON/archive capture. The source-bound C++ frontend exercised
+the actual installed listener and independently checked Status identity/severity,
+genuine IOStatus flags, sticky lifetime and recovery veto. The positive copy
+control and exact isolated termination exit86 both passed. Only the targeted
+`Status::CopyState` array allocation during pointer-taking severity promotion was
+injected; global OOM and by-value callback/parameter-copy failures remain
+unqualified. The run preserved all 4,164 source files, captured archives and three
+retained ELF identities. Although the RocksDB archive matched f8 bytes, the d3
+context/frontend/runtime bindings are distinct. The maintained binding report
+above owns the exact receipts and 363.615-second scoped result.
+
 The controls live in the application's `cfg(test)` options child module, using
 existing root dependencies and lock; original upstream wrapper tests remain
 retained. See the
 [maintained commands](../experiments/native-rocks-binding/README.md#planned-guard-qualification).
 The guard remains absent from the application factory, resource/grant lifetime,
 four write sites and downstream ACK wiring. Persistent formats, the absolute64
-guard and numerical capacity bounds are unchanged. Native callback
-identity/severity/sticky/recovery and allocation-failure controls, real NoSpace
+guard and numerical capacity bounds are unchanged. Running-DB real NoSpace
 with both single-hook and retry-count-only negatives, concurrent fault/query/close,
 funded recovery and positive purge/file-pin reconciliation remain open.
 CW-N1/P1/P2, affected full workspace/Clippy, AMD64/ARM64/macOS qualification and
-complete dependency/license and release gates remain open; this healthy
-one-platform result does not close them.
+complete dependency/license and release gates remain open; this one-platform
+component result does not close them.
 
 The wrapper and binding additions use Apache-2.0, preserving upstream headers.
 Retain the engine Apache notice, LevelDB BSD-3-Clause notice, and xxHash
