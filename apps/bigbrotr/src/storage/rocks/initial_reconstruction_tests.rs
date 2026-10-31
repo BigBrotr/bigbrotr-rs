@@ -4,6 +4,7 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use crate::storage::rocks::store::{PendingAccountingError, StoreError};
 use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
 
@@ -28,6 +29,9 @@ impl Fixture {
         self.root.path().join("db")
     }
     fn reopen(&self) -> IngestRecovery {
+        self.inspect().unwrap()
+    }
+    fn inspect(&self) -> Result<IngestRecovery, StoreError> {
         // The manifest is read from native state, not supplied as an owner
         // identity and not recovered from a retained InitialHandoff object.
         IngestRecovery::inspect(
@@ -36,7 +40,67 @@ impl Fixture {
             self.native,
             grant(&self.budget, 0, 128 * MIB),
         )
-        .unwrap()
+    }
+}
+
+fn raw_snapshot(fixture: &Fixture) -> (Rows, u64, Vec<(String, Vec<u8>)>) {
+    // Observation only after product admission refuses the corrupt fixture.
+    // No usable product handle or repair is constructed by this raw reader.
+    let _native = grant(&fixture.budget, 0, 128 * MIB);
+    let db = rocksdb::DB::open_cf_for_read_only(
+        &rocksdb::Options::default(),
+        fixture.path(),
+        ["default", "facts", "receipts"],
+        false,
+    )
+    .unwrap();
+    let rows = ["default", "facts", "receipts"]
+        .into_iter()
+        .flat_map(|name| {
+            db.iterator_cf(db.cf_handle(name).unwrap(), rocksdb::IteratorMode::Start)
+                .map(move |row| {
+                    let (key, value) = row.unwrap();
+                    (name.to_string(), key.to_vec(), value.to_vec())
+                })
+        })
+        .collect();
+    (rows, db.latest_sequence_number(), inputs(&fixture.path()))
+}
+
+fn assert_corrupt_reconstruction_refused(
+    fixture: &Fixture,
+    injected: IngestRecovery,
+    accounting: Option<PendingAccountingError>,
+    fault: &str,
+) {
+    // Capture the deliberately damaged rows/input bytes before any reopen.
+    let before = (
+        kv(&injected.store),
+        injected.store.db.latest_sequence_number(),
+        inputs(&fixture.path()),
+    );
+    drop(injected);
+    match accounting {
+        Some(expected) => {
+            match fixture.inspect() {
+                Err(error) => assert_eq!(error, StoreError::InvalidAccounting(expected), "{fault}"),
+                Ok(_) => panic!("{fault} must refuse during the accounting census"),
+            }
+            assert_eq!(raw_snapshot(fixture), before, "{fault}");
+        }
+        None => {
+            let recovery = fixture.inspect().unwrap_or_else(|error| {
+                panic!("{fault} must remain admissible before reconstruction: {error:?}")
+            });
+            assert!(reconstruct(fixture, &recovery).is_err(), "{fault}");
+            assert_eq!(kv(&recovery.store), before.0, "{fault}");
+            assert_eq!(
+                recovery.store.db.latest_sequence_number(),
+                before.1,
+                "{fault}"
+            );
+            assert_eq!(inputs(&fixture.path()), before.2, "{fault}");
+        }
     }
 }
 
@@ -688,19 +752,15 @@ fn reconstruction_refuses_missing_or_changed_original_evidence_without_repair() 
             }
             _ => unreachable!(),
         }
-        drop(recovery);
-        let recovery = fixture.reopen();
-        let before = kv(&recovery.store);
-        let sequence = recovery.store.db.latest_sequence_number();
-        let original_inputs = inputs(&fixture.path());
-        assert!(reconstruct(&fixture, &recovery).is_err(), "{fault}");
-        assert_eq!(kv(&recovery.store), before, "{fault}");
-        assert_eq!(
-            recovery.store.db.latest_sequence_number(),
-            sequence,
-            "{fault}"
-        );
-        assert_eq!(inputs(&fixture.path()), original_inputs, "{fault}");
+        let accounting = match fault {
+            "bootstrap-fact" | "dictionary-fact" | "event-fact" | "source-counter" => {
+                Some(PendingAccountingError::ScienceMismatch)
+            }
+            "bootstrap-input" | "dictionary-input" | "event-input" | "receipt"
+            | "successor-context" | "closure-digest" | "recorded-cut" | "recorded-count" => None,
+            _ => unreachable!(),
+        };
+        assert_corrupt_reconstruction_refused(&fixture, recovery, accounting, fault);
     }
 }
 
@@ -801,19 +861,15 @@ fn reconstruction_refuses_nonempty_successor_and_extra_producer_markers() {
             }
             _ => unreachable!(),
         }
-        drop(recovery);
-        let recovery = fixture.reopen();
-        let before = kv(&recovery.store);
-        let sequence = recovery.store.db.latest_sequence_number();
-        let original_inputs = inputs(&fixture.path());
-        assert!(reconstruct(&fixture, &recovery).is_err(), "{fault}");
-        assert_eq!(kv(&recovery.store), before, "{fault}");
-        assert_eq!(
-            recovery.store.db.latest_sequence_number(),
-            sequence,
-            "{fault}"
-        );
-        assert_eq!(inputs(&fixture.path()), original_inputs, "{fault}");
+        let accounting = match fault {
+            "source" => Some(PendingAccountingError::SourceMismatch),
+            "fact" | "pending" => Some(PendingAccountingError::ScienceMismatch),
+            "producer" | "request" | "dictionary" | "allocation" | "extra-producer" | "input" => {
+                None
+            }
+            _ => unreachable!(),
+        };
+        assert_corrupt_reconstruction_refused(&fixture, recovery, accounting, fault);
     }
 }
 
