@@ -504,9 +504,10 @@ impl IngestStore {
             input.request.producer_epoch,
             producer,
         )?;
-        if sequence
-            .checked_sub(retired)
-            .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(retired)
+                .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
         {
             return Err(AdmissionError::Limit);
         }

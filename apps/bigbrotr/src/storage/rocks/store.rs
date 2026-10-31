@@ -117,7 +117,9 @@ pub use producer_closing::ProducerClosing;
 
 #[path = "open_prefix.rs"]
 mod open_prefix;
-pub(in crate::storage) use open_prefix::{NativePrefixRead, PrefixOriginal};
+pub(in crate::storage) use open_prefix::{
+    NativePrefixRead, PrefixOriginal, PrefixRetirement, UnlinkedPrefix,
+};
 
 #[path = "producer_recovery.rs"]
 mod producer_recovery;

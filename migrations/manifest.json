@@ -229,6 +229,10 @@
     {
       "version": 41,
       "name": "0041_index_publication.sql"
+    },
+    {
+      "version": 42,
+      "name": "0042_producer_prefix.sql"
     }
   ],
   "reserved": [

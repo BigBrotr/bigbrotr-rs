@@ -12,6 +12,23 @@ pub(super) async fn load(
     tx: &Transaction<'_>,
     context: Context,
 ) -> Result<Snapshot, ProducerProgressError> {
+    load_inner(tx, context, false).await
+}
+
+/// Positive observation only. A prepared slot remains visible to the private
+/// recovery coordinator; ordinary dispatch always uses load() and refuses it.
+pub(super) async fn load_resolving(
+    tx: &Transaction<'_>,
+    context: Context,
+) -> Result<Snapshot, ProducerProgressError> {
+    load_inner(tx, context, true).await
+}
+
+async fn load_inner(
+    tx: &Transaction<'_>,
+    context: Context,
+    resolving: bool,
+) -> Result<Snapshot, ProducerProgressError> {
     let epoch = context.epoch.to_string();
     let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[
         &&context.dataset.as_bytes()[..],
@@ -101,7 +118,7 @@ pub(super) async fn load(
         if snapshot.prefix_enabled && context.epoch != 1 {
             return Err(ProducerProgressError::InvalidContext);
         }
-        if row.try_get::<_, bool>(13).map_err(backend)? {
+        if row.try_get::<_, bool>(13).map_err(backend)? && !resolving {
             // A prepared operation must finish through its recovery/finalizer;
             // it cannot be hidden by an otherwise matching current head.
             return Err(ProducerProgressError::Conflict);

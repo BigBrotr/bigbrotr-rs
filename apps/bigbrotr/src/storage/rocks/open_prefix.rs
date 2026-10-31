@@ -19,6 +19,10 @@ use bigbrotr_model::{
 use sha2::{Digest, Sha256};
 use std::sync::atomic::{AtomicBool, Ordering};
 
+#[path = "open_prefix_retirement.rs"]
+mod retirement;
+pub(in crate::storage) use retirement::{PrefixRetirement, UnlinkedPrefix};
+
 pub(in crate::storage) struct NativePrefixRead<'a> {
     store: &'a IngestStore,
     slot: ProducerSlotId,
@@ -62,6 +66,27 @@ pub(in crate::storage) fn pending_limits() -> PendingReadLimits {
 }
 
 impl IngestStore {
+    /// Actual native watermarks for the private fresh SQL-resolution read. This
+    /// observation supplies neither a retirement plan nor reusable capacity.
+    pub(in crate::storage) fn prefix_observation(
+        &self,
+        slot: ProducerSlotId,
+    ) -> Result<(u64, u64, u64, Option<producer_prefix::NativeFloor>), AdmissionError> {
+        if self.write_uncertain {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        let epoch = ProducerEpoch::new(1).expect("initial prefix");
+        let state = self
+            .producer_state(slot, epoch)?
+            .ok_or(AdmissionError::StateMismatch)?;
+        self.require_retained_state(slot, epoch, state)?;
+        Ok((
+            state.issued,
+            state.acknowledged,
+            state.retired,
+            self.open_prefix_floor(slot, epoch)?,
+        ))
+    }
     pub(in crate::storage) fn prefix_context(&self, slot: ProducerSlotId) -> Context {
         Context {
             dataset: *self.manifest.identity().dataset_id.as_bytes(),
@@ -244,6 +269,16 @@ impl IngestStore {
 }
 
 impl NativePrefixRead<'_> {
+    /// Freeze only the exact complete native view. PostgreSQL must still bind
+    /// the captured progress head and confirm its prepared slot before effects.
+    pub(in crate::storage) fn retirement(
+        self,
+        base: Base,
+        metadata: OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<PrefixRetirement, AdmissionError> {
+        PrefixRetirement::capture(self, base, metadata, cancelled)
+    }
     pub fn context(&self) -> Context {
         self.store.prefix_context(self.slot)
     }

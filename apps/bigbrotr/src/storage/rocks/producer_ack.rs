@@ -698,9 +698,13 @@ impl IngestStore {
         self.require_unretired_request(request, &self.manifest)?;
         let credit = self.producer_credit(request.producer_slot_id)?;
         let sequence = request.request_sequence.get();
-        if sequence
-            .checked_sub(credit.retired)
-            .is_none_or(|tail| tail > RETAINED_PRODUCER_REQUEST_LIMIT)
+        // Retain the existing intake ceiling until the accepted aggregate
+        // pending/filesystem lane has concrete qualified bounds. Prefix reads,
+        // retirement and recovery do not supply durable-growth credit.
+        if sequence > RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(credit.retired)
+                .is_none_or(|tail| tail > RETAINED_PRODUCER_REQUEST_LIMIT)
         {
             return Err(AdmissionError::Limit);
         }

@@ -201,9 +201,10 @@ impl IngestStore {
         }
         let sequence = request.request_sequence.get();
         self.require_retained_state(request.producer_slot_id, request.producer_epoch, state)?;
-        if sequence
-            .checked_sub(state.retired)
-            .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
+        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT
+            || sequence
+                .checked_sub(state.retired)
+                .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
         {
             return Err(AdmissionError::Limit);
         }

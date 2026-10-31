@@ -112,6 +112,7 @@ mod initial_batch;
 #[path = "producer_progress.rs"]
 pub(super) mod producer_progress;
 pub(in crate::storage) use producer_progress::ConfirmedAcknowledgement;
+pub(in crate::storage) use producer_progress::prefix::ConfirmedPrefixPrepare;
 pub use producer_progress::{ProducerProgressError, ProgressGrant, SyncProgress};
 #[path = "producer_ack.rs"]
 mod producer_ack;
