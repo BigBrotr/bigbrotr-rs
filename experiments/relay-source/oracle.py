@@ -6,7 +6,7 @@ or product codec is an expected-value template.
 import hashlib
 import json
 from pathlib import Path
-from bootstrap_oracle import cbor
+from bootstrap_oracle import accounted, cbor
 
 
 def expected_source(dataset, committed):
@@ -24,7 +24,7 @@ def expected_source(dataset, committed):
     ref_key = lambda kind, n=1: dataset + be(kind, 2) + domains[kind] + be(n)
     scope = reference(4)
     slot = bytes([66]) * 16
-    manifest = (bytes.fromhex('01010001000100010001') + dataset + be(0)
+    manifest = (bytes.fromhex('01010001000200010001') + dataset + be(0)
                 + bytes([61]) * 16 + be(0, 4) + be(1) + bytes([63]) * 16
                 + bytes([67]) * 16 + be(1) + bytes([1, 3])
                 + b''.join(be(k, 2) + v for k, v in domains.items()))
@@ -76,7 +76,7 @@ def expected_source(dataset, committed):
         finish(2, 'admit', [1, scope, [*body, signature], 'network', None,
             [456, reference(2), clock, None]], [4, 5, 6, 7])
     assert len(rows) == (25 if committed else 14)
-    return sorted((cf, key, value) for (cf, key), value in rows.items()), inputs
+    return accounted((cf, key, value) for (cf, key), value in rows.items()), inputs
 
 
 def complete_source(dataset, committed, closing=False):

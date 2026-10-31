@@ -18,8 +18,10 @@ def load(name, relative):
 
 
 ORACLE = load('pending_bytes_oracle', 'experiments/ingest-bootstrap/oracle.py')
-with patch.dict(sys.modules, dict(oracle=ORACLE)):
+with patch.dict(sys.modules, dict(oracle=ORACLE, bootstrap_oracle=ORACLE)):
     EVENTS = load('pending_events_oracle', 'experiments/ingest-bootstrap/event_oracle.py')
+    RELAY = load('pending_relay_oracle', 'experiments/relay-source/oracle.py')
+    OBSERVATIONS = load('pending_observation_oracle', 'experiments/acquisition-scope/observations.py')
 
 
 def counter(rows):
@@ -56,6 +58,17 @@ class PendingAccountingVectors(unittest.TestCase):
         scientific = [(cf, key, value) for cf, key, value in rows
                       if cf == 'facts' or key in (b'\x01\x01', b'\x01\x0b') or key[:2] == b'\x01\x02']
         self.assertEqual(counter(ORACLE.accounted(scientific)), counter(rows))
+
+    def test_relay_receive_and_dictionary_observation_vectors_include_accounting(self):
+        for committed, wanted, source in [(False, 848, 3), (True, 2072, 7)]:
+            rows, _ = RELAY.expected_source(bytes([1])*16, committed)
+            self.assertEqual(int.from_bytes(counter(rows)[34:42], 'big'), wanted)
+            self.assertEqual(int.from_bytes(counter(rows)[42:50], 'big'), source)
+        for witness, private, wanted, source in [(False, False, 848, 3),
+                                                (True, False, 1838, 6), (True, True, 1838, 6)]:
+            rows, _, _ = OBSERVATIONS.expected(bytes([1])*16, witness, private, ORACLE.cbor)
+            self.assertEqual(int.from_bytes(counter(rows)[34:42], 'big'), wanted)
+            self.assertEqual(int.from_bytes(counter(rows)[42:50], 'big'), source)
 
     def test_handoff_counter_preserves_predecessor_charge_and_rebinds_source_zero(self):
         rows, _, _ = ORACLE.expected(bytes([1]) * 16, True)
