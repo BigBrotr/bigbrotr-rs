@@ -176,5 +176,38 @@ class PosixOracleControls(unittest.TestCase):
                     if r["kind"] == "compaction_begin" and r["job"] == 23).update(inputs=[999, 998]))
 
 
+class PosixArchiveSourceControls(unittest.TestCase):
+    def manifests(self):
+        original, current = DRIVER.POSIX_VENDOR_README_SHA256
+        archive = {"vendor/README.md": original,
+                   "vendor/librocksdb-sys/rocksdb/db/c.cc": "a" * 64,
+                   "vendor/librocksdb-sys/README.md": "b" * 64}
+        return archive, dict(archive, **{"vendor/README.md": current})
+
+    def test_exact_vendor_readme_delta_retains_both_hashes(self):
+        archive, current = self.manifests()
+        self.assertEqual(DRIVER.posix_archive_source_deltas(archive, current), [
+            {"path": "vendor/README.md", "archive_file_sha256": archive["vendor/README.md"],
+             "current_file_sha256": current["vendor/README.md"]}])
+
+    def test_vendor_readme_exception_does_not_allow_native_code_change(self):
+        archive, current = self.manifests()
+        current["vendor/librocksdb-sys/rocksdb/db/c.cc"] = "c" * 64
+        with self.assertRaisesRegex(AssertionError, "db/c.cc"):
+            DRIVER.posix_archive_source_deltas(archive, current)
+
+    def test_no_broad_vendor_documentation_exception(self):
+        archive, current = self.manifests()
+        current["vendor/librocksdb-sys/README.md"] = "c" * 64
+        with self.assertRaisesRegex(AssertionError, "librocksdb-sys/README.md"):
+            DRIVER.posix_archive_source_deltas(archive, current)
+
+    def test_unreviewed_vendor_readme_bytes_fail(self):
+        archive, current = self.manifests()
+        current["vendor/README.md"] = "c" * 64
+        with self.assertRaisesRegex(AssertionError, "reviewed d3/e871"):
+            DRIVER.posix_archive_source_deltas(archive, current)
+
+
 if __name__ == "__main__":
     unittest.main()

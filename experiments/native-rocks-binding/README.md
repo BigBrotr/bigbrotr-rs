@@ -531,7 +531,14 @@ python3 -B "$SOURCE/experiments/native-rocks-binding/driver.py" \
 `SOURCE_MANIFEST` binds this new test frontend/driver. `D3_SOURCE_MANIFEST` and
 `D3_NATIVE_CONTEXT` remain the original unmodified d3 source/archive receipts,
 not relabeled as the new source. The driver checks that every old source manifest
-entry is unchanged except this experiment's README/driver, plus the exact current
+entry is unchanged except this experiment's README/driver and the exact reviewed
+`vendor/README.md` documentation pair: original d3 SHA-256
+`7b9dd6d588d37761afe494e80516b5d8ac54e3dc458b847daef6e2c319726382`,
+current e871 SHA-256
+`2c8c27b20f11738759c33b1bdd8d378af765be5d96c0cff0211d99c59b6a0f4b`.
+The report retains each allowed delta's original/current manifest file hashes;
+current vendor README bytes also participate in before/after input checks. There
+is no general vendor or documentation exception. The driver also checks current
 call-chain/lock/provenance and frontend hashes, archive package/features/bytes and
 context. Root verifies complete source and compiler/configuration custody. The
 driver rechecks retained input hashes before/after each case, exact four-case

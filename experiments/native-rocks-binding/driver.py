@@ -292,6 +292,10 @@ def guard_callback_controls(args):
 
 POSIX_CASES = ("full_guard", "retry0_only", "promotion_only", "recovery_veto_only")
 POSIX_NATIVE_SOURCE = "d3dc8d5e781fee3298a0cbbcea5f4a2e2061c6dd"
+POSIX_VENDOR_README_SHA256 = (
+    "7b9dd6d588d37761afe494e80516b5d8ac54e3dc458b847daef6e2c319726382",
+    "2c8c27b20f11738759c33b1bdd8d378af765be5d96c0cff0211d99c59b6a0f4b",
+)
 POSIX_IDENTITY = (
     "GUARD_REAL_POSIX_PROFILE\tcplusplus=202002\tNDEBUG=1\tstatus_checked=0\tnamespace=rocksdb"
     "\tmount_bytes=134217728\tmin_free_bytes=67108864\tmax_input_bytes=16777216"
@@ -562,6 +566,24 @@ def preserve_posix_db(case_root, destination):
     return records
 
 
+def posix_archive_source_deltas(archive_files, current_files):
+    """Reconcile only this test increment and the exact e871 evidence doc delta."""
+    readme = "vendor/README.md"
+    if (archive_files.get(readme), current_files.get(readme)) != POSIX_VENDOR_README_SHA256:
+        raise AssertionError("vendor/README.md differs from the reviewed d3/e871 documentation pair")
+    allowed_changes = {"experiments/native-rocks-binding/driver.py",
+                       "experiments/native-rocks-binding/README.md", readme}
+    changes = []
+    for name, digest in archive_files.items():
+        current_digest = current_files.get(name)
+        if current_digest != digest:
+            if name not in allowed_changes or current_digest is None:
+                raise AssertionError(f"archive source changed outside the bounded test increment: {name}")
+            changes.append({"path": name, "archive_file_sha256": digest,
+                            "current_file_sha256": current_digest})
+    return changes
+
+
 def guard_real_posix(args):
     required = ("source_root", "source_manifest", "archive_source_manifest", "native_context",
                 "rocksdb_archive", "zstd_archive", "posix_root")
@@ -588,13 +610,10 @@ def guard_real_posix(args):
             or paths["cargo_lock"] != source / "Cargo.lock"
             or context["cargo_lock_sha256"] != file_sha256(paths["cargo_lock"])):
         raise AssertionError("wrong selected frontend/native archive source/profile/lock binding")
-    allowed_changes = {"experiments/native-rocks-binding/driver.py", "experiments/native-rocks-binding/README.md"}
-    for name, digest in archive_manifest["files_sha256"].items():
-        if name not in allowed_changes and manifest["files_sha256"].get(name) != digest:
-            raise AssertionError(f"archive source changed outside the bounded test increment: {name}")
+    source_deltas = posix_archive_source_deltas(archive_manifest["files_sha256"], manifest["files_sha256"])
     source_names = tuple("experiments/native-rocks-binding/" + name for name in
                          ("driver.py", "background_guard_real_posix_test.cc")) + (
-        "Cargo.lock", "vendor/librocksdb-sys.provenance.json", "vendor/librocksdb-sys/build.rs",
+        "Cargo.lock", "vendor/README.md", "vendor/librocksdb-sys.provenance.json", "vendor/librocksdb-sys/build.rs",
         "vendor/librocksdb-sys/rocksdb/db/c_options_internal.h", "vendor/librocksdb-sys/rocksdb/db/c.cc",
         "vendor/librocksdb-sys/rocksdb/db/error_handler.cc", "vendor/librocksdb-sys/rocksdb/db/error_handler.h",
         "vendor/librocksdb-sys/rocksdb/db/event_helpers.cc", "vendor/librocksdb-sys/rocksdb/file/sst_file_manager_impl.cc",
@@ -644,6 +663,7 @@ def guard_real_posix(args):
     report = {"format": "bigbrotr-native-guard-real-posix/1", "result": "RUNNING",
               "source": manifest["revision"], "tree": manifest["tree"],
               "native_archive_source": POSIX_NATIVE_SOURCE, "artifact_identity": hashes,
+              "archive_source_deltas": source_deltas,
               "native_toolchain": context["native_toolchain"], "compiler": context["compiler"],
               "mount": mount, "expected_case_count": 4, "case_timeout_seconds": TIMEOUT_SECONDS,
               "cases": [], "scope": "Linux tmpfs default-POSIX automatic nontrivial compaction component path",
