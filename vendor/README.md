@@ -124,20 +124,38 @@ Resume retry count; these option observations alone prove neither attachment nor
 purge. The setter does not prove failed unlink, snapshot or descriptor credit
 release. Callers must separately bound waiting and positively reconcile actual allocated files/pins.
 
-This patch is source-only and **NOT_RUN**. It installs no guard in BigBrotr's
-application factory and changes no resource grant, ACK, persistent format,
-absolute64 guard or numerical capacity bound. Earlier unpatched engine/CI results
-do not qualify it. The five canonical public-API controls now live in the
-application's `cfg(test)` options child module, using existing root dependencies
-and lock; no duplicate tests or private qualification lock remain. The original
-upstream wrapper tests are retained. These ownership/refusal/healthy-I/O tests
-and the existing C competing-listener control require actual execution; see the
+At source `f8c534f7e5abbeba16a7b26e64a6d623a3261665`, the five canonical
+public-API binding controls passed on native Linux AMD64 with zero ignored cases
+and one retained library ELF. The whole existing C API program also passed,
+including 96 recorded phases, the competing-listener refusal phase exactly once,
+active C assertions and final `PASS`. Both used the pinned Rust 1.98.1 and native
+Clang/LLVM 14 laboratory image with two CPUs, 6 GiB memory, no network and a
+read-only root.
+The C run linked the same captured Cargo-built native archives without a Cargo
+cache mount or engine rebuild. The
+[maintained binding report](../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+retains exact source, inputs, receipts and scope.
+
+The original run remains an overall FAIL after all five Rust controls passed:
+unfiltered offline metadata requested an unused Android-only crate. Separate
+metadata restricted to the actual Linux target and a cached no-run JSON query
+passed without repeating tests or rebuilding. The successful whole C test is a
+further distinct result. These outcomes do not relabel the original failure or
+qualify historical unpatched evidence as guard evidence.
+
+The controls live in the application's `cfg(test)` options child module, using
+existing root dependencies and lock; original upstream wrapper tests remain
+retained. See the
 [maintained commands](../experiments/native-rocks-binding/README.md#planned-guard-qualification).
-The C test refuses a build with assertions disabled. Native callback
+The guard remains absent from the application factory, resource/grant lifetime,
+four write sites and downstream ACK wiring. Persistent formats, the absolute64
+guard and numerical capacity bounds are unchanged. Native callback
 identity/severity/sticky/recovery and allocation-failure controls, real NoSpace
-injection with both single-hook negative controls, joined stop/funded reopen,
-positive purge reconciliation and selected AMD64/ARM64/macOS builds remain gates.
-The existing dependency/license policy must pass without widened exceptions.
+with both single-hook and retry-count-only negatives, concurrent fault/query/close,
+funded recovery and positive purge/file-pin reconciliation remain open.
+CW-N1/P1/P2, affected full workspace/Clippy, AMD64/ARM64/macOS qualification and
+complete dependency/license and release gates remain open; this healthy
+one-platform result does not close them.
 
 The wrapper and binding additions use Apache-2.0, preserving upstream headers.
 Retain the engine Apache notice, LevelDB BSD-3-Clause notice, and xxHash

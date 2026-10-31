@@ -1,7 +1,7 @@
 # Native Rust RocksDB binding qualification
 
-This isolated research experiment exercises the selected Rust binding against its
-bundled native engine before BigBrotr implements P02 admission. It is an
+This historical isolated research experiment exercises the selected Rust binding
+against its bundled native engine at the recorded source revisions. It is an
 unpublished standalone Cargo package and does not share the product workspace or
 claim storage-service authority.
 
@@ -23,7 +23,8 @@ and per-package provenance for current source identity. The exact versions remai
 The current source resolves the added guard API, but this historical experiment
 adapter does not install it or inject background NoSpace. Its unchanged cases do
 not qualify the new fail-stop behavior, current product profile or numerical
-bounds. Fresh callback/lifetime/fault and cross-platform qualification is NOT_RUN.
+bounds. The separate guard controls below establish healthy API/lifetime behavior
+only; callback faults, real NoSpace and new platform qualification remain NOT_RUN.
 
 The source audit reused by this experiment is inventoried at
 `.research/checkouts/rocks-dependency-audit-20260917/inventory.json` in the main
@@ -141,13 +142,13 @@ mounted fresh output directory is its only host write boundary.
 The integrating owner schedules and inventories the Linux run. This branch does
 not mutate Tux or claim amd64/arm64 results before that exact revision executes.
 
-The existing private CI workflow has an explicit `native_rocks_binding=true`
+The public CI workflow has an explicit `native_rocks_binding=true`
 manual selection for the isolated native Linux arm64 case. It runs only this
 research job, using a clean Git archive, the same pinned container recipe and
 finite build/run limits; it does not promote an image or certify the product.
-The job retains source, binary, lock, image and actual case identities in private
-artifacts for 14 days. Download concise evidence before expiry. A queued or
-successful build without the driver's nonempty case report is not acceptance.
+The job retains source, binary, lock, image and actual case identities in publicly
+accessible Actions artifacts for 14 days. Download concise evidence before
+expiry. A queued or successful build without the driver's nonempty case report is not acceptance.
 
 ## Explicit limits
 
@@ -179,8 +180,22 @@ accounting after writes, with a disconnected-manager negative control.
 
 ## Planned guard qualification
 
-All new controls are **NOT_RUN**. The five canonical public-API binding smoke
-controls are in
+Source `f8c534f7e5abbeba16a7b26e64a6d623a3261665` passed all five public-API
+binding smoke controls on native Linux AMD64, with zero ignored cases and one
+retained library ELF. The whole existing C API test also passed, with 96 recorded
+phases, the guard-refusal phase exactly once, enabled assertions and final `PASS`.
+These actual results used the pinned Rust 1.98.1 and native Clang/LLVM 14 image
+under two CPUs, 6 GiB memory, no network and a read-only root. The
+[maintained binding report](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+owns exact identities and the distinction from historical unpatched results.
+
+The first run's overall exit 1 is preserved: its five Rust controls passed before
+unfiltered offline Cargo metadata failed with exit 101 on an unused Android-only dependency.
+A separate 1.533-second context run selected the actual Linux platform; metadata
+and same-profile no-run JSON passed, all 271 compiler-artifact entries reported
+`fresh=true`, and no tests or engine compilation were repeated. The later whole C qualification took
+6.592 seconds and used only the captured archives, without a Cargo cache mount.
+The five canonical controls are in
 [`background_guard_tests.rs`](../../apps/bigbrotr/src/storage/rocks/options/background_guard_tests.rs),
 a `cfg(test)` child of the existing application options module. They use the
 root workspace's existing exact `rocksdb` and `tempfile` dependencies and lock.
@@ -191,10 +206,14 @@ listener attachment or purge completion from a Rust mirror.
 
 From the exact clean source, use the maintained isolated native environment,
 compiler pins, source manifest, Cargo configuration checks and owned output
-lifecycle. Compile only the application library in the release profile, then
-list and execute the exact module:
+lifecycle. Restrict offline metadata to the actual native target before compiling;
+the command below is the recorded Linux selection, not an all-platform cache
+claim. Compile only the application library in the release profile, then list
+and execute the exact module:
 
 ```sh
+cargo metadata --locked --offline --format-version=1 \
+  --filter-platform x86_64-unknown-linux-gnu
 cargo test --locked --offline --release -p bigbrotr --lib \
   --no-run --message-format=json
 cargo test --locked --offline --release -p bigbrotr --lib \
@@ -224,9 +243,9 @@ test and all its existing assertions. Its `main` ignores arguments; do not inven
 a phase filter or extract a mirrored assertion. It now refuses to compile when
 `NDEBUG` is defined, so disabled C assertions cannot silently produce PASS.
 
-For the first Linux AMD64 qualification, obtain the exact sys and Zstandard
-package IDs from the same locked Cargo metadata. Require the sys manifest to be
-this source's `vendor/librocksdb-sys/Cargo.toml`, version0.19.0+11.8.1, and the
+For the Linux AMD64 C qualification, obtain the exact sys and Zstandard package
+IDs from the same locked, actual-platform Cargo metadata above. Require the sys
+manifest to be this source's `vendor/librocksdb-sys/Cargo.toml`, version0.19.0+11.8.1, and the
 selected `zstd-sys` version2.1.2+zstd.1.5.7. Match those IDs to unique
 `build-script-executed` messages in the retained compile JSON. Their `out_dir`
 values must lie under the admitted `CARGO_TARGET_DIR/release/build`, from this
@@ -260,13 +279,17 @@ and unchanged source/compiler/archive/test-ELF hashes afterward. Preserve any
 compile/link/runtime failure. Do not invoke `make c_test`: it may build another
 engine/test-harness configuration. Linking this existing C test uses the same
 Cargo-built native archives; only its C front end and executable are additional
-compilation. This Linux command is **NOT_RUN**, not a link/ABI or Mac/ARM claim.
-The ordinary Rust workspace CI does not run this separate C test automatically.
+compilation. This exact Linux compile/link/run route passed at the recorded f8
+source, preserving all eight admitted input hashes and all 4,162 source files.
+The container stopped with exit 0, PID 0 and no OOM. This is a scoped healthy C ABI
+and competing-listener result; it is not Mac/ARM qualification. The ordinary Rust
+workspace CI does not run this separate C test automatically.
 
 The first five Rust controls plus this C control do not replace native callback
 identity/severity/sticky/recovery and allocation-failure tests, actual concurrent
 callback/query/close, or real NoSpace injection. Include both single-hook and
 retry-count-only negative controls, healthy automatic maintenance, explicitly
 funded reopen and positive purge/file-pin reconciliation. Current app wiring,
-CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement and release
-qualification remain OPEN.
+CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement, full
+workspace/Clippy, affected AMD64/ARM64/macOS qualification, complete
+dependency/license and release gates remain OPEN.
