@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Actual current policy initialization, replay and superseded-format refusals."""
+import argparse
 import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 import tomllib
 
@@ -16,13 +18,28 @@ import lab
 from oracle import expected
 from schema_inventory import declared_inventory, require_tables
 
-root, build = map(Path, sys.argv[1:])
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('root', type=Path)
+parser.add_argument('build', type=Path)
+parser.add_argument('--subnet', default='172.16.240.48/28',
+                    help='isolated private IPv4 /28; existing networks/routes must not overlap')
+args = parser.parse_args()
+root, build = args.root, args.build
 # Refuse before entering cleanup: an existing root belongs to an earlier run.
 assert root.is_absolute() and not root.exists() and not root.is_symlink()
 revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
 assert not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout
 receipt = json.loads((build / 'build-result.json').read_text())
-assert receipt['source'] == revision
+assert re.fullmatch('[0-9a-f]{40}', receipt['source']), 'invalid built product revision'
+harness_changes = []
+if receipt['source'] != revision:
+    # Reuse the exact qualified product only across these noncompiled harness
+    # files. Unknown/product/build changes cannot borrow an earlier executable.
+    harness_changes = lab.command(['git', '-C', str(SOURCE), 'diff', '--name-only',
+                                  '--no-renames', receipt['source'], revision, '--']).stdout.splitlines()
+    assert set(harness_changes) <= {
+        'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
+        'tests/acceptance/test_policy_versions.py'}, 'built product source changed beyond policy harness'
 
 
 def sha(data):
@@ -39,10 +56,13 @@ def fingerprint(document, version):
 
 assert sha((build / 'ingest_bootstrap_probe').read_bytes()) == receipt['probe_sha256'], \
     'current ingest probe differs from its exact-source build receipt'
+assert sha((build / 'bigbrotr').read_bytes()) == receipt['binary_sha256'], \
+    'current product differs from its exact-source build receipt'
 current = json.loads((SOURCE / 'tests/fixtures/configuration/policy-v3.json').read_text())
 assert fingerprint(current, 3) == '77324b5f6aea113a4e4b81e11d946c0c4e113b051851d398c240de49a7a6322b'
 inventory = declared_inventory(SOURCE)
-report = dict(format='bigbrotr-policy-versions-native/1', source=revision,
+report = dict(format='bigbrotr-policy-versions-native/1', source=receipt['source'],
+              harness_revision=revision, harness_only_changes=harness_changes,
               build=receipt, schema=inventory, status='RUNNING', cases=[],
               not_run=['populated policy upgrade', 'source issuance and restrictive drain',
                        'COMMIT transport faults', 'load and aged state', 'arm64', 'release'])
@@ -156,7 +176,7 @@ def immutable_rows(rows):
 
 
 try:
-    lab.setup(root, build, SOURCE, 'policy_' + revision[:7], subnet='172.16.240.48/28')
+    lab.setup(root, build, SOURCE, 'policy_' + revision[:7], subnet=args.subnet)
     state = lab.load(root)
     report['server'] = state['server']
     save()

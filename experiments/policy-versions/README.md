@@ -6,6 +6,20 @@ It builds the current checkout with declared dependencies and creates a fresh
 isolated PostgreSQL lab. No old executable or private historical build path is a
 prerequisite. The existing lab runner owns container/network/cache lifecycle.
 
+To repeat only the PostgreSQL journey with already qualified native artifacts,
+run `python3 -B experiments/policy-versions/run.py /absolute/fresh-run
+/absolute/build-artifacts --subnet 10.253.240.48/28` from the clean selected
+checkout. Choose an unused private IPv4 /28; the shared laboratory guard checks
+actual Docker networks and host routes before creating its network. The default
+is `172.16.240.48/28`; retaining an earlier network may require another subnet.
+The artifact directory supplies `bigbrotr`, `ingest_bootstrap_probe` and their
+`build-result.json`. Both executable digests are checked before setup. Reuse
+across commits permits only this runner, this README and its portable controls
+to differ; product, build, fixture, schema and unknown changes refuse. The report
+records the built product revision separately from the harness revision and
+the exact permitted changes. Preserve the original failed run and use a fresh
+root; this does not reclassify its outcome or qualify a rebuilt product.
+
 The case applies the complete selected catalog through migration41:57 ordered
 migrations and58 input hashes including the manifest. Its independent inventory
 reads the declared migration SQL in manifest order, records every input SHA256

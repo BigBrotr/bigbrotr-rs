@@ -56,35 +56,53 @@ class PolicySchemaControls(unittest.TestCase):
 
 
 class PolicyArtifactControls(unittest.TestCase):
-    def run_preflight(self, tampered):
+    def run_preflight(self, tampered=False, *, product_tampered=False, changes=None, subnet=None):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             run = home / 'new-owned-run'
             build = home / 'build'
             build.mkdir()
             original = b'independent-current-probe-fixture'
+            product = b'independent-current-product-fixture'
             (build / 'ingest_bootstrap_probe').write_bytes(original)
+            (build / 'bigbrotr').write_bytes(product)
             (build / 'build-result.json').write_text(json.dumps(dict(
-                source='a' * 40, probe_sha256=hashlib.sha256(original).hexdigest())))
+                source='a' * 40, probe_sha256=hashlib.sha256(original).hexdigest(),
+                binary_sha256=hashlib.sha256(product).hexdigest())))
             if tampered:
                 (build / 'ingest_bootstrap_probe').write_bytes(original + b' changed after receipt')
+            if product_tampered:
+                (build / 'bigbrotr').write_bytes(product + b' changed after receipt')
+            def command(args):
+                if args[-1] == 'HEAD':
+                    return SimpleNamespace(stdout=('a' if changes is None else 'b') * 40 + '\n')
+                return SimpleNamespace(stdout=changes if 'diff' in args else '')
             lab = SimpleNamespace(
-                command=Mock(side_effect=lambda args: SimpleNamespace(
-                    stdout='a' * 40 + '\n' if args[-1] == 'HEAD' else '')),
+                command=Mock(side_effect=command),
                 setup=Mock(side_effect=EngineBoundaryReached),
                 docker=Mock(side_effect=AssertionError('engine call before preflight')),
             )
             modules = dict(lab=lab, oracle=SimpleNamespace(expected=Mock()))
-            expected = AssertionError if tampered else EngineBoundaryReached
-            with patch.object(sys, 'argv', [str(RUNNER), str(run), str(build)]), \
+            reason = 'current ingest probe differs' if tampered else \
+                'current product differs' if product_tampered else None
+            if changes and any(path not in {
+                    'experiments/policy-versions/run.py', 'experiments/policy-versions/README.md',
+                    'tests/acceptance/test_policy_versions.py'} for path in changes.splitlines()):
+                reason = 'built product source changed beyond policy harness'
+            argv = [str(RUNNER), str(run), str(build)]
+            if subnet is not None:
+                argv += ['--subnet', subnet]
+            with patch.object(sys, 'argv', argv), \
                     patch.object(sys, 'path', list(sys.path)), patch.dict(sys.modules, modules):
-                if tampered:
-                    with self.assertRaisesRegex(expected, 'current ingest probe differs'):
+                if reason:
+                    with self.assertRaisesRegex(AssertionError, reason):
                         runpy.run_path(str(RUNNER), run_name='__main__')
                 else:
-                    with self.assertRaises(expected):
+                    with self.assertRaises(EngineBoundaryReached):
                         runpy.run_path(str(RUNNER), run_name='__main__')
-            self.assertEqual(lab.setup.call_count, 0 if tampered else 1)
+            self.assertEqual(lab.setup.call_count, 0 if reason else 1)
+            if not reason:
+                self.assertEqual(lab.setup.call_args.kwargs['subnet'], subnet or '172.16.240.48/28')
             lab.docker.assert_not_called()
             self.assertFalse(run.exists(), 'preflight must not create a run or engine state')
 
@@ -93,3 +111,17 @@ class PolicyArtifactControls(unittest.TestCase):
 
     def test_matching_current_probe_reaches_the_setup_boundary(self):
         self.run_preflight(False)
+
+    def test_changed_product_is_refused_before_engine_setup(self):
+        self.run_preflight(product_tampered=True)
+
+    def test_harness_only_revision_can_reuse_the_qualified_product(self):
+        self.run_preflight(changes='experiments/policy-versions/run.py\n')
+
+    def test_product_build_and_unknown_changes_cannot_reuse_the_product(self):
+        for path in ['apps/bigbrotr/src/main.rs', 'tools/build.py', 'Cargo.lock', 'unknown.py']:
+            with self.subTest(path=path):
+                self.run_preflight(changes=path + '\n')
+
+    def test_selected_subnet_reaches_the_unchanged_isolation_guard(self):
+        self.run_preflight(subnet='10.253.240.48/28')
