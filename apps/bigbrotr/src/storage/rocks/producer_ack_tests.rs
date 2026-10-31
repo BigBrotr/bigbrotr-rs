@@ -178,9 +178,11 @@ fn acknowledgement_writes_only_watermark_once_and_retains_every_original() {
     let (root, mut store, budget, manifest, native) = setup(false);
     drop(admit(&mut store, &budget, 1).unwrap());
     let before = kv(&store);
+    let accounting = store.pending_accounting().unwrap();
     let original_inputs = inputs(root.path());
     let sequence = store.db.latest_sequence_number();
     acknowledge(&mut store, &budget, 1);
+    assert_eq!(store.pending_accounting().unwrap(), accounting);
     let mut expected = before;
     let key = IngestKey::ProducerState {
         producer_slot_id: request(5, 1).producer_slot_id,

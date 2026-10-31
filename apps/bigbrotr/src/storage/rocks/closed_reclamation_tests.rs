@@ -87,6 +87,8 @@ fn remaining(f: &Fixture) -> usize {
 fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts() {
     let mut f = fixture_at(bigbrotr_model::TopologyGeneration::new(0));
     let plan = original_plan(&f);
+    let accounting = f.recovery.store.pending_accounting().unwrap();
+    assert!(accounting.pending_bytes() > 0);
     let before = kv(&f.recovery.store);
     let sequence = f.recovery.store.db.latest_sequence_number();
     let receipt = plan
@@ -96,6 +98,7 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
     assert_eq!(receipt.removed_input_files(), 4);
     assert_eq!(receipt.native_sequence(), sequence + 5);
     assert_eq!(remaining(&f), 0);
+    assert_eq!(f.recovery.store.pending_accounting().unwrap(), accounting);
     let after = kv(&f.recovery.store);
     let mut expected = before;
     let marker = producer_key().encode().unwrap();
@@ -116,6 +119,7 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
         grant(&f.budget, 0, 128 * MIB),
     )
     .unwrap();
+    assert_eq!(f.recovery.store.pending_accounting().unwrap(), accounting);
     let plan = compacted_plan(&f);
     let sequence = f.recovery.store.db.latest_sequence_number();
     let receipt = plan

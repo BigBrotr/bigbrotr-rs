@@ -118,6 +118,10 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
             )
         };
         store.db.put([1, 1], altered.encode().as_bytes()).unwrap();
+        store
+            .db
+            .put([1, 0x0b], PendingAccounting::new(&altered, 0, 0).encode())
+            .unwrap();
         drop(store);
         let mut store =
             IngestStore::reopen(&path, altered, native(), grant(&b, 0, 128 * MIB)).unwrap();
@@ -402,7 +406,7 @@ fn every_missing_or_changed_batch_member_prevents_replay_and_missing_receipt_is_
             members.push((cf, key, value));
         }
     }
-    assert_eq!(members.len(), 9);
+    assert_eq!(members.len(), 10);
     for (cf, key, value) in members {
         let handle = store.db.cf_handle(cf).unwrap();
         store.db.delete_cf(handle, &key).unwrap();

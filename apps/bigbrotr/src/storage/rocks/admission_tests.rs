@@ -465,6 +465,20 @@ fn kv(store: &IngestStore) -> Vec<(String, Vec<u8>, Vec<u8>)> {
         })
         .collect()
 }
+
+fn native_pending_charge(store: &IngestStore) -> u64 {
+    store
+        .db
+        .iterator_cf(
+            store.db.cf_handle("facts").unwrap(),
+            rocksdb::IteratorMode::Start,
+        )
+        .map(|row| {
+            let (key, value) = row.unwrap();
+            u64::try_from(key.len() + value.len()).unwrap()
+        })
+        .sum()
+}
 fn selected(store: &IngestStore, key: crate::storage::rocks::keys::IngestKey) -> SourceRecordId {
     use crate::storage::rocks::keys::{ColumnFamily, IngestKey, decode_key};
     let encoded = key.encode().unwrap();
@@ -658,6 +672,11 @@ fn all_fifteen_independently_signed_fixture_operations_match_native_inventory() 
             let expected = &operation["expected"];
             let before = facts(&store);
             let before_kv = kv(&store);
+            let before_charge = native_pending_charge(&store);
+            assert_eq!(
+                store.pending_accounting().unwrap().pending_bytes(),
+                before_charge
+            );
             let request = ProducerRequestId {
                 producer_slot_id: input["request_id"]["producer_slot_id"]
                     .as_str()
@@ -722,6 +741,16 @@ fn all_fifteen_independently_signed_fixture_operations_match_native_inventory() 
                 }
             }
             let after = facts(&store);
+            let after_charge = native_pending_charge(&store);
+            assert_eq!(
+                store.pending_accounting().unwrap().pending_bytes(),
+                after_charge,
+                "{name}"
+            );
+            assert!(after_charge >= before_charge, "{name}");
+            if before.len() == after.len() {
+                assert_eq!(after_charge, before_charge, "{name}");
+            }
             let new = &after[before.len()..];
             let scientific_facts: Vec<_> = new
                 .iter()

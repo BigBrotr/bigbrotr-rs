@@ -93,7 +93,13 @@ impl IngestStore {
         // reservation, including the actual timestamp's variable-width encoding.
         // This read-only preview emits no fact. The caller retains this exclusive
         // owner and the same recorded_at through both PG phases.
-        drop(self.prepare_dictionary_operation(request, intent, recorded_at, limits)?);
+        let (writes, _) =
+            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
+        if let Some(mut writes) = writes {
+            // The real counter put belongs to the same serialized bound. Check
+            // its entry here too, before synchronizing input or reserving PG.
+            self.seal_pending_accounting(&mut writes)?;
+        }
         let bytes = encode_input(request, intent, limits)?;
         self.stage_admission_input(request, intent.request_digest(request), &bytes, cancelled)
     }

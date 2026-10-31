@@ -13,6 +13,7 @@ use bigbrotr_model::{
     TopologyGeneration,
 };
 use rocksdb::{ColumnFamilyDescriptor, DB, Options, WriteOptions};
+use sha2::{Digest, Sha256};
 use std::{
     fs,
     path::Path,
@@ -182,7 +183,7 @@ fn recovery_inspection_retains_historical_identity_and_exclusive_custody() {
             .iterator_cf(db.cf_handle(cf).unwrap(), rocksdb::IteratorMode::Start)
             .collect::<Result<_, _>>()
             .unwrap();
-        assert_eq!(rows.len(), usize::from(cf == "default"));
+        assert_eq!(rows.len(), if cf == "default" { 3 } else { 0 });
         if cf == "default" {
             assert_eq!(rows[0].0.as_ref(), &[1, 1]);
             assert_eq!(rows[0].1.as_ref(), original.encode().as_bytes());
@@ -210,7 +211,29 @@ fn schema_three_is_inspectable_but_cannot_initialize_or_recreate_initial_candida
     drop(IngestStore::initialize(&path, original, limits(), permit(&budget)).unwrap());
     // Privileged fixture metadata is deliberately not a valid prepared lineage.
     // The format can be inspected; that alone cannot supply a writer candidate.
-    replace_manifest(&path, Some(successor.encode().as_bytes()));
+    {
+        let db = raw(&path, &["default", "facts", "receipts"], false);
+        let source_key = |value: &IngestManifest| {
+            let id = value.identity();
+            let mut key = vec![1, 2];
+            key.extend(id.dataset_id.as_bytes());
+            key.extend(id.shard_id.to_be_bytes());
+            key.extend(id.owner_epoch.get().to_be_bytes());
+            key
+        };
+        let mut counter = vec![1, 0x0b];
+        counter.extend(Sha256::digest(successor.encode().as_bytes()));
+        counter.extend([0; 16]);
+        let mut fixture = rocksdb::WriteBatch::default();
+        fixture.put([1, 1], successor.encode().as_bytes());
+        fixture.delete(source_key(&original));
+        fixture.put(source_key(&successor), [1, 2, 0, 0, 0, 0, 0, 0, 0, 0]);
+        fixture.put([1, 0x0b], counter);
+        let mut write = WriteOptions::default();
+        write.set_sync(true);
+        write.disable_wal(false);
+        db.write_opt(fixture, &write).unwrap();
+    }
     let sequence = raw(&path, &["default", "facts", "receipts"], false).latest_sequence_number();
     let store = IngestStore::reopen(&path, successor, limits(), permit(&budget)).unwrap();
     assert_eq!(store.manifest(), &successor);
@@ -234,7 +257,7 @@ fn schema_three_is_inspectable_but_cannot_initialize_or_recreate_initial_candida
             .iterator_cf(db.cf_handle(cf).unwrap(), rocksdb::IteratorMode::Start)
             .collect::<Result<_, _>>()
             .unwrap();
-        assert_eq!(rows.len(), usize::from(cf == "default"));
+        assert_eq!(rows.len(), if cf == "default" { 3 } else { 0 });
         if cf == "default" {
             assert_eq!(rows[0].0.as_ref(), &[1, 1]);
             assert_eq!(rows[0].1.as_ref(), successor.encode().as_bytes());

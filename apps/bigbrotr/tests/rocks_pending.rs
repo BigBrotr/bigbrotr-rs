@@ -5,7 +5,10 @@ use bigbrotr::{
     storage::rocks::{
         RocksNativeLimits, RocksNativeSettings,
         manifest::{AllocationNamespaces, IngestManifest, ManifestIdentity},
-        store::{IngestStore, PendingBatchHeader, PendingError, PendingReadLimits},
+        store::{
+            IngestStore, PendingAccountingError, PendingBatchHeader, PendingError,
+            PendingReadLimits, StoreError,
+        },
     },
 };
 use bigbrotr_model::{
@@ -13,6 +16,7 @@ use bigbrotr_model::{
     SourceRecordId, TopologyGeneration, codec::FactDecodeLimits,
 };
 use rocksdb::{DB, Options, WriteBatch, WriteOptions};
+use sha2::{Digest, Sha256};
 use std::{path::Path, sync::atomic::AtomicBool};
 
 const MIB: u64 = 1024 * 1024;
@@ -136,6 +140,26 @@ fn value(index: usize) -> Vec<u8> {
     v.extend(&facts()[index]);
     v
 }
+fn prefix_rows() -> Vec<(Vec<u8>, Vec<u8>)> {
+    // Preserve the frozen genuine dictionary fact/marker at source1. The tested
+    // later batch stays byte-exact at2..3; current whole-store census also needs
+    // a complete prefix. This fixture grants no producer/semantic authority.
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/ingest/staged-bootstrap-crash.json"
+    ))
+    .unwrap();
+    let rows: Vec<_> = fixture["after"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|row| row[0] == "facts")
+        .map(|row| (hex(row[1].as_str().unwrap()), hex(row[2].as_str().unwrap())))
+        .collect();
+    assert_eq!(rows.len(), 2);
+    assert_eq!(rows[0].0, source_key(0x20, Some(1)));
+    assert_eq!(rows[1].0, source_key(0x21, Some(1)));
+    rows
+}
 fn install(path: &Path) -> u64 {
     let db = raw(path);
     let cf = db.cf_handle("facts").unwrap();
@@ -143,10 +167,25 @@ fn install(path: &Path) -> u64 {
     let mut watermark = vec![1, 2];
     watermark.extend(3u64.to_be_bytes());
     batch.put(source_key(2, None), watermark);
+    let mut pending = 0_u64;
+    for (key, value) in prefix_rows() {
+        pending += u64::try_from(key.len() + value.len()).unwrap();
+        batch.put_cf(cf, key, value);
+    }
     batch.put_cf(cf, source_key(0x21, Some(2)), header());
+    pending += u64::try_from(source_key(0x21, Some(2)).len() + header().len()).unwrap();
     for index in 0..2 {
+        pending +=
+            u64::try_from(source_key(0x20, Some(index as u64 + 2)).len() + value(index).len())
+                .unwrap();
         batch.put_cf(cf, source_key(0x20, Some(index as u64 + 2)), value(index));
     }
+    let mut accounting = vec![1, 0x0b];
+    accounting.extend(Sha256::digest(manifest().encode().as_bytes()));
+    accounting.extend(pending.to_be_bytes());
+    accounting.extend(3_u64.to_be_bytes());
+    assert_eq!(accounting.len(), 50);
+    batch.put([1, 0x0b], accounting);
     // Receipt detail is deliberately absent: permanent batch completeness must
     // not depend on an operational request result surviving its authorized GC.
     let mut write = WriteOptions::default();
@@ -156,6 +195,17 @@ fn install(path: &Path) -> u64 {
 }
 fn initialize(path: &Path, b: &ResourceBudget) {
     drop(IngestStore::initialize(path, manifest(), native(), grant(b, 0, 128 * MIB)).unwrap());
+}
+fn native_rows(path: &Path) -> Vec<(String, Vec<u8>, Vec<u8>)> {
+    let db = raw(path);
+    let mut rows = Vec::new();
+    for name in ["default", "facts", "receipts"] {
+        for row in db.iterator_cf(db.cf_handle(name).unwrap(), rocksdb::IteratorMode::Start) {
+            let (key, value) = row.unwrap();
+            rows.push((name.to_owned(), key.to_vec(), value.to_vec()));
+        }
+    }
+    rows
 }
 
 #[test]
@@ -223,6 +273,14 @@ fn real_pending_read_survives_reopen_without_receipts_and_holds_its_grant() {
     // from the independent installed key/value fixture, not product encoding.
     let expected_charge = 38 + 42 + (0..2).map(|i| 38 + value(i).len() as u64).sum::<u64>();
     assert_eq!(pending.pending_bytes(), expected_charge);
+    let prefix_charge: u64 = prefix_rows()
+        .iter()
+        .map(|(key, value)| u64::try_from(key.len() + value.len()).unwrap())
+        .sum();
+    assert_eq!(
+        store.pending_accounting().unwrap().pending_bytes(),
+        expected_charge + prefix_charge
+    );
     assert!(pending.pending_bytes() > pending.records().iter().map(|v| v.len() as u64).sum());
     assert_eq!(pending.batch().first(), id(2));
     assert_eq!(pending.batch().last(), id(3));
@@ -253,17 +311,7 @@ fn incomplete_corrupt_or_unbounded_native_batches_never_return_partial_success()
     let path = root.path().join("db");
     let b = budget();
     initialize(&path, &b);
-    for (fault, expected) in [
-        (0, PendingError::MissingFact),
-        (1, PendingError::CorruptFact),
-        (2, PendingError::IncompleteBatch),
-        (3, PendingError::IncompleteBatch),
-        (4, PendingError::IncompleteBatch),
-        (5, PendingError::Malformed),
-        (6, PendingError::CorruptFact),
-        (7, PendingError::Limit),
-        (8, PendingError::IncompatibleSchema),
-    ] {
+    for fault in 0..9 {
         install(&path);
         {
             let db = raw(&path);
@@ -298,7 +346,6 @@ fn incomplete_corrupt_or_unbounded_native_batches_never_return_partial_success()
                     db.put_cf(cf, source_key(0x21, Some(2)), bytes).unwrap();
                 }
                 8 => {
-                    use sha2::Digest;
                     let mut bytes = value(1);
                     assert_eq!(bytes[48], b'1');
                     bytes[48] = b'2';
@@ -309,13 +356,21 @@ fn incomplete_corrupt_or_unbounded_native_batches_never_return_partial_success()
                 _ => unreachable!(),
             }
         }
-        let store =
-            IngestStore::reopen(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
-        let result =
-            store.read_pending_batch(id(2), limits(), grant(&b, MIB, 0), &AtomicBool::new(false));
+        let before = native_rows(&path);
+        let result = IngestStore::reopen(&path, manifest(), native(), grant(&b, 0, 128 * MIB));
+        let expected = if fault == 4 {
+            PendingAccountingError::SourceMismatch
+        } else {
+            PendingAccountingError::ScienceMismatch
+        };
         assert!(
-            matches!(result,Err(e) if e==expected),
-            "fault {fault} must refuse as {expected:?}"
+            matches!(result,Err(StoreError::InvalidAccounting(error)) if error == expected),
+            "fault {fault} must refuse during the mandatory census as {expected:?}"
+        );
+        assert_eq!(
+            native_rows(&path),
+            before,
+            "fault {fault} must not be repaired"
         );
         assert_eq!(b.snapshot().used().data_bytes(), 0);
     }
