@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 
+#include "db/c_options_internal.h"
 #include "port/port.h"
 #include "rocksdb/advanced_cache.h"
 #include "rocksdb/compaction_filter.h"
@@ -449,9 +450,6 @@ struct rocksdb_readoptions_t {
 
 struct rocksdb_writeoptions_t {
   WriteOptions rep;
-};
-struct rocksdb_options_t {
-  Options rep;
 };
 struct rocksdb_compaction_options_t {
   CompactionOptions rep;

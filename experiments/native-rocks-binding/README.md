@@ -293,3 +293,89 @@ funded reopen and positive purge/file-pin reconciliation. Current app wiring,
 CW-N1/P1/P2, physical output/reserve bounds, absolute64 enablement, full
 workspace/Clippy, affected AMD64/ARM64/macOS qualification, complete
 dependency/license and release gates remain OPEN.
+
+
+### Direct callback component controls (NOT_RUN)
+
+The next source increment moves only the existing native C Options definition
+into one owning `db/c_options_internal.h`, included by `c.cc` and its generator
+template. The public C header stays opaque and the listener stays in `c.cc`.
+The new [`background_guard_test.cc`](background_guard_test.cc) uses that same
+internal type, the real C installer and the installed listener's public virtual
+interface. It does not include `c.cc`, copy a listener implementation, fabricate
+an opaque layout or add a production testing API. Application Rust is unchanged.
+The earlier f8 results remain tied to f8; this header/source increment requires
+its own frozen source, archive and frontend identities before qualification.
+
+The explicit `guard-callback-controls` profile in the existing driver has 14
+fixed named cases: five NoSpace severities, OK, a different error code, genuine
+IOStatus flags across both boolean values and all three scopes, recovery veto,
+sticky/Options-copy/close lifetime, guard-first destruction, successful exact
+promotion allocation, no-copy paths and isolated allocation-failure termination.
+Checks compare code, subcode, message/nullness and severity individually; they do
+not use Status equality, which checks code only. IOStatus uses a normal public
+base reference and its genuine flag accessors. No database is opened, and these
+are direct component calls, not running-DB delivery or concurrent-close evidence.
+
+Only the control executable replaces ordinary array allocation. An inactive
+thread-local gate counts the actual pointer-taking callback's message copy.
+The positive case must intercept exactly one allocation of the independent
+literal message size, including NUL; null-message and already fatal/unrecoverable
+paths must intercept none. The replacement preserves ordinary zero-size,
+alignment, new-handler and matching ordinary/sized/nothrow deallocation semantics;
+over-aligned overload pairs remain the standard library's responsibility. The
+bookkeeping and termination handler allocate no memory themselves.
+
+The termination case prepares options, status, query handle, reporting and a
+terminate handler before arming one size-checked failure. It disarms before
+throwing `std::bad_alloc`. The handler accepts exactly one expected injection and
+a latched public guard; wrong size, later unarmed array allocation or wrong latch
+uses a different exit. The driver requires the prearmed marker, the exact
+injected-and-latched marker and reserved exit86. A returned callback, escaping
+exception, arbitrary signal/death or zero cases fails. This does not qualify
+parameter-copy failures, arbitrary engine OOM paths or a real NoSpace condition.
+
+Root first captures the new exact source's selected archives with the same
+locked actual-platform metadata/package-ID/out-dir controls above. The frontend
+must use the same pinned compiler, standard library, target and native ABI. For
+the first Linux AMD64 profile, keep the selected C++20, default namespace,
+`NDEBUG=1`, aligned-new and POSIX definitions; do not enable
+`ROCKSDB_ASSERT_STATUS_CHECKED`, a lite/debug engine, SyncPoints or a different
+native archive. Unlike the whole C test, this frontend requires NDEBUG and uses
+always-on checks. The positive interception control must work on the actual
+compiler/archive; otherwise qualification fails without changing engine settings.
+
+```sh
+"$CXX" -std=c++20 -DNDEBUG=1 -DHAVE_ALIGNED_NEW \
+  -DROCKSDB_PLATFORM_POSIX -DROCKSDB_LIB_IO_POSIX -include cstdint \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb/include" \
+  -I "$SOURCE/vendor/librocksdb-sys/rocksdb" \
+  "$SOURCE/experiments/native-rocks-binding/background_guard_test.cc" \
+  "$SYS_OUT/librocksdb.a" "$ZSTD_OUT/libzstd.a" \
+  -pthread -ldl -lrt -lm -o "$QUALIFICATION/background_guard_test"
+python3 -B "$SOURCE/experiments/native-rocks-binding/driver.py" \
+  --profile guard-callback-controls --binary "$QUALIFICATION/background_guard_test" \
+  --source-root "$SOURCE" --source-manifest "$SOURCE_MANIFEST" \
+  --native-context "$NATIVE_CONTEXT" --cargo-lock "$SOURCE/Cargo.lock" \
+  --rocksdb-archive "$SYS_OUT/librocksdb.a" --zstd-archive "$ZSTD_OUT/libzstd.a" \
+  --lab-root "$QUALIFICATION/callback-cases" --output "$QUALIFICATION/callback-result.json"
+```
+
+The native context is the existing `bigbrotr-native-c-api-archive-context/1`
+receipt for this exact new source/profile, not an f8 receipt relabeled afterward.
+The driver verifies the new header/frontend/driver and relevant native source
+hashes against the source manifest, archive bytes/features against that context,
+exact nonempty inventory, expected exits/output and unchanged inputs after every
+case. It retains partial failures. Root still owns trusted compilation/link
+custody and compiler/config matching; unsigned hashes do not authenticate an
+untrusted producer. No new workspace, lock, dependency or generic fault service
+is introduced. The historical default driver profile remains unchanged, and its
+existing ARM job does not automatically execute these new component controls.
+
+All 14 new controls and the new header/archive/frontend tuple are **NOT_RUN**.
+Real default-POSIX ENOSPC, SFM/Resume suppression with retry-count-only and
+single-hook negatives, concurrent fault/query/drop/close, already-started work,
+joined stop, failed-unlink/unknown debt, explicitly funded reopen and positive
+purge remain separate. App wiring, CW-N1/P1/P2, request65, physical bounds and
+release remain open. This component increment is not an M1 prerequisite and must
+not delay unrelated installation reconciliation.

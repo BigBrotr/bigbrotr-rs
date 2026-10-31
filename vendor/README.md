@@ -96,6 +96,16 @@ unchanged. No Rust callback, foreign-listener cast or private-layout copy is use
 The same additive changes are retained in the upstream C API source templates
 so regeneration keeps the extension. The existing cc/bindgen build is unchanged.
 
+The following callback-control source increment moves the existing opaque C
+Options implementation definition into one internal `db/c_options_internal.h`,
+shared by `c.cc` and its source template. Public `c.h`, guard/listener algorithms
+and the Rust API remain unchanged. The maintained experiment's C++ frontend can
+therefore call the real installer/listener without a copied private definition
+or production test API. Its direct callback/status/IOStatus/allocation/lifetime
+controls are **NOT_RUN** and need new exact source/archive/frontend qualification;
+they are not inferred from the earlier f8 healthy results below. See the
+[component recipe](../experiments/native-rocks-binding/README.md#direct-callback-component-controls-not_run).
+
 On a non-OK background error, the listener latches failure and raises severity
 to at least fatal using the public Status severity-copy constructor. Original
 code, subcode, message, retryable, data-loss and scope survive; unrecoverable
