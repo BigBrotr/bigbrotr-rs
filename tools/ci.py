@@ -9,6 +9,7 @@ import signal
 import subprocess
 import sys
 import time
+import unittest
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +25,39 @@ WORKSPACE_COMMANDS = {
     'rust-doc': ['cargo', 'doc', '--locked', '--workspace', '--no-deps'],
     'rust-tests': ['cargo', 'test', '--locked', '--workspace'],
 }
+
+CONTROL_SUITES = {
+    'acceptance': ('tests/acceptance', 'test_*.py'),
+    'export-profile': ('experiments/ingest-bootstrap', 'test_installed_archive_profile.py'),
+}
+
+
+class ControlResult(unittest.TextTestResult):
+    # Successful execution can finish with success or expected failure. Setup
+    # skips do not start a test and must not count as an executed case.
+    completed_non_skipped = 0
+
+    def addSuccess(self, test):
+        self.completed_non_skipped += 1
+        super().addSuccess(test)
+
+    def addExpectedFailure(self, test, error):
+        self.completed_non_skipped += 1
+        super().addExpectedFailure(test, error)
+
+
+def control_suite(name):
+    start, pattern = CONTROL_SUITES[name]
+    suite = unittest.defaultTestLoader.discover(start, pattern)
+    discovered = suite.countTestCases()
+    result = unittest.TextTestRunner(resultclass=ControlResult).run(suite)
+    if not result.wasSuccessful():
+        return 1
+    if not discovered or not result.completed_non_skipped:
+        print('CI control suite has no ' + ('discovered cases' if not discovered else
+              'executed non-skipped cases') + ': ' + name, file=sys.stderr)
+        return 1
+    return 0
 
 
 def write_report(output, report):
@@ -91,11 +125,8 @@ def documentation_commands(output):
 
 
 def control_commands():
-    return [('acceptance-controls', [sys.executable, '-m', 'unittest', 'discover',
-                                    '-s', 'tests/acceptance', '-p', 'test_*.py']),
-            ('export-profile-controls', [sys.executable, '-m', 'unittest', 'discover',
-                                        '-s', 'experiments/ingest-bootstrap',
-                                        '-p', 'test_installed_archive_profile.py'])]
+    return [('acceptance-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'acceptance']),
+            ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile'])]
 
 
 def commands(output, system, architecture, jobs):
@@ -230,7 +261,14 @@ def main():
     parser.add_argument('--workspace-check', choices=WORKSPACE_COMMANDS,
                         help='run a default-profile workspace check from this revision\'s clean build')
     parser.add_argument('--from-build', type=Path, help='preceding trusted exact-source build directory')
+    parser.add_argument('--control-suite', choices=CONTROL_SUITES,
+                        help='run one required nonempty portable control suite')
     args = parser.parse_args()
+    if args.control_suite:
+        if (args.output or args.documentation_only or args.controls_only or
+                args.download_cache or args.workspace_check or args.from_build):
+            parser.error('--control-suite is a separate operation')
+        return control_suite(args.control_suite)
     if args.workspace_check or args.from_build:
         if args.output or args.documentation_only or args.controls_only or args.download_cache:
             parser.error('--workspace-check/--from-build and --output are separate operations')

@@ -229,11 +229,8 @@ class CiSelectionControls(unittest.TestCase):
     def test_control_track_shares_checks_with_the_full_track(self):
         ci = CiControls().load()
         expected = [
-            ('acceptance-controls', [sys.executable, '-m', 'unittest', 'discover',
-                                     '-s', 'tests/acceptance', '-p', 'test_*.py']),
-            ('export-profile-controls', [sys.executable, '-m', 'unittest', 'discover',
-                                         '-s', 'experiments/ingest-bootstrap',
-                                         '-p', 'test_installed_archive_profile.py']),
+            ('acceptance-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'acceptance']),
+            ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile']),
         ]
         self.assertEqual(ci.control_commands(), expected)
         for system, architecture in [('Linux', 'x86_64'), ('Linux', 'aarch64'), ('Darwin', 'arm64')]:
@@ -249,6 +246,94 @@ class CiSelectionControls(unittest.TestCase):
         self.assertEqual(len(docs), 3)
         for name, command in docs:
             self.assertEqual(command, full[name])
+
+
+class CiSuiteControls(unittest.TestCase):
+    def run_fixture(self, scope, source):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = (root/'tests/acceptance/test_fixture.py' if scope == 'acceptance' else
+                    root/'experiments/ingest-bootstrap/test_installed_archive_profile.py')
+            path.parent.mkdir(parents=True)
+            if source is not None:
+                path.write_text(source)
+            return subprocess.run([sys.executable, '-B', str(ROOT/'tools/ci.py'),
+                                   '--control-suite', scope], cwd=root,
+                                  capture_output=True, text=True, timeout=10)
+
+    def test_empty_required_suites_fail_with_the_unittest_summary(self):
+        for scope in ['acceptance', 'export-profile']:
+            for source in [None, '']:
+                with self.subTest(scope=scope, source=source):
+                    result = self.run_fixture(scope, source)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn('Ran 0 tests', result.stderr)
+                    self.assertIn('no discovered cases', result.stderr)
+
+    def test_nonempty_suites_pass_and_retain_individual_skip_meaning(self):
+        source = '''import unittest
+class Fixture(unittest.TestCase):
+    def test_positive(self): self.assertEqual(6 * 7, 42)
+    @unittest.skip('finite unrelated platform control')
+    def test_skipped(self): self.fail('must remain skipped')
+'''
+        for scope in ['acceptance', 'export-profile']:
+            with self.subTest(scope=scope):
+                result = self.run_fixture(scope, source)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertIn('Ran 2 tests', result.stderr)
+                self.assertIn('OK (skipped=1)', result.stderr)
+
+    def test_failed_suite_is_not_success_or_an_empty_execution(self):
+        result = self.run_fixture('acceptance', '''import unittest
+class Fixture(unittest.TestCase):
+    def test_negative(self): self.assertEqual(6 * 7, 41)
+''')
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('FAILED (failures=1)', result.stderr)
+        self.assertNotIn('no discovered', result.stderr)
+        self.assertNotIn('no executed', result.stderr)
+
+    def test_all_skipped_suite_fails_after_retaining_its_skip_summary(self):
+        for source in [
+            '''import unittest
+class Fixture(unittest.TestCase):
+    @unittest.skip('finite platform control')
+    def test_skipped(self): self.fail('must remain skipped')
+''',
+            '''import unittest
+class Fixture(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls): raise unittest.SkipTest('finite class prerequisite')
+    def test_skipped(self): self.fail('must remain skipped')
+''', "import unittest\nraise unittest.SkipTest('finite module prerequisite')\n"]:
+            for scope in ['acceptance', 'export-profile']:
+                with self.subTest(source=source, scope=scope):
+                    result = self.run_fixture(scope, source)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn('OK (skipped=1)', result.stderr)
+                    self.assertIn('no executed non-skipped cases', result.stderr)
+
+    def test_class_setup_skip_does_not_hide_an_executed_test(self):
+        result = self.run_fixture('acceptance', '''import unittest
+class A(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls): raise unittest.SkipTest('finite class prerequisite')
+    def test_skipped(self): self.fail('must remain skipped')
+class B(unittest.TestCase):
+    @unittest.expectedFailure
+    def test_expected_failure(self): self.fail('declared expected failure')
+''')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('Ran 1 test', result.stderr)
+        self.assertIn('skipped=1, expected failures=1', result.stderr)
+
+    def test_import_error_keeps_its_error_meaning(self):
+        result = self.run_fixture('export-profile', "raise ImportError('finite required helper absent')\n")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('FAILED (errors=1)', result.stderr)
+        self.assertIn('finite required helper absent', result.stderr)
+        self.assertNotIn('no executed', result.stderr)
 
 
 if __name__ == '__main__':

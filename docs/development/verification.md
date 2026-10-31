@@ -28,10 +28,11 @@ python3 tools/ci.py --controls-only --output .research/ci-controls
 
 It runs the same acceptance and export-profile controls as full CI plus the
 documentation checks, with declared native compiler/library, OpenSSL, Node and
-Linux strace prerequisites. Tiny native-tool smoke probes remain real; no product,
-worker or Rust workspace build is required, and no native engine assets are
-downloaded. `tools/ci_changes.py` owns the explicit allowlist; changes to that
-selector, the runner, workflow, compiler inputs or unknown helpers retain full
+Linux strace prerequisites. Both required suites refuse empty discovery or an
+entirely skipped execution on every supported Python version. Tiny native-tool
+smoke probes remain real; no product, worker or Rust workspace build is required,
+and no native engine assets are downloaded. `tools/ci_changes.py` owns the explicit
+allowlist; changes to that selector, the runner, workflow, compiler inputs or unknown helpers retain full
 CI. A changed verifier still needs its affected installed path under the task's
 real-engine qualification; a control-matrix PASS does not supply that evidence.
 

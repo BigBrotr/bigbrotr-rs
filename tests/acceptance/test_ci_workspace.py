@@ -165,6 +165,11 @@ class WorkspaceReuseControls(unittest.TestCase):
                      ['--workspace-check', 'clippy', '--from-build', '/absent', '--output', '/unused'],
                      ['--workspace-check', 'clippy', '--from-build', '/absent', '--controls-only'],
                      ['--documentation-only', '--controls-only', '--output', '/unused'],
+                     ['--control-suite', 'acceptance', '--output', '/unused'],
+                     ['--control-suite', 'acceptance', '--documentation-only'],
+                     ['--control-suite', 'acceptance', '--controls-only'],
+                     ['--control-suite', 'acceptance', '--download-cache', '/unused'],
+                     ['--control-suite', 'acceptance', '--workspace-check', 'clippy', '--from-build', '/absent'],
                      ['--workspace-check', 'unknown', '--from-build', '/absent']]:
             with self.subTest(args=args):
                 result = subprocess.run([sys.executable, str(ROOT/'tools/ci.py'), *args],
