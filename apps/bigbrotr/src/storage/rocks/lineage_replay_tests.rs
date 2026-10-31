@@ -319,7 +319,7 @@ fn lineage_evidence_request_one_uses_append_and_retains_equal_old_descriptors() 
 fn lineage_event_batch_refuses_a_valid_fact_unrelated_to_its_original_input() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, false);
+    let r = correction(&f, r, false);
     let before_receipt = value(
         &r.store,
         IngestKey::Request {
@@ -559,10 +559,15 @@ fn lineage_record_requires_its_checked_profile_and_unchanged_input_custody() {
 
 /// One actual old receipt supplies its original old-stream closure. The fixture
 /// installs a new received-at minimum at epoch3 and independent request framing.
-fn correction(f: &Fixture, r: &IngestRecovery, future: bool) {
-    correction_with_link(f, r, future, true);
+fn correction(f: &Fixture, r: IngestRecovery, future: bool) -> IngestRecovery {
+    correction_with_link(f, r, future, true)
 }
-fn correction_with_link(f: &Fixture, r: &IngestRecovery, future: bool, linked: bool) {
+fn correction_with_link(
+    f: &Fixture,
+    r: IngestRecovery,
+    future: bool,
+    linked: bool,
+) -> IngestRecovery {
     let input = intent("E_private", 2, 5_000_000);
     let fact = Fact::new(
         fact_id(3, 1),
@@ -670,13 +675,34 @@ fn correction_with_link(f: &Fixture, r: &IngestRecovery, future: bool, linked: b
     );
     put(&r.store, source_key(3), &[1, 2, 0, 0, 0, 0, 0, 0, 0, 1]);
     put(&r.store, producer_key(3), &marker(true, count));
+    // Complete the explicit current-profile fixture and let the real reopen
+    // census validate it. Do not patch a live owner's cached accounting.
+    let pending: u64 = r
+        .store
+        .db
+        .iterator_cf(
+            r.store.db.cf_handle("facts").unwrap(),
+            rocksdb::IteratorMode::Start,
+        )
+        .map(|row| {
+            let (key, value) = row.unwrap();
+            u64::try_from(key.len() + value.len()).unwrap()
+        })
+        .sum();
+    put(
+        &r.store,
+        IngestKey::PendingAccounting,
+        &PendingAccounting::new(r.manifest(), pending, 1).encode(),
+    );
+    drop(r);
+    f.reopen()
 }
 
 #[test]
 fn lineage_positive_frontier_uses_dependency_older_than_predecessor() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, false);
+    let r = correction(&f, r, false);
     let before = kv(&r.store);
     let sequence = r.store.db.latest_sequence_number();
     let original = inputs(&f.path());
@@ -711,7 +737,7 @@ fn lineage_positive_frontier_uses_dependency_older_than_predecessor() {
 fn lineage_frontier_refuses_future_dependencies_without_advancing() {
     let f = prepared_fixture();
     let r = valid_empty_third(&f);
-    correction(&f, &r, true);
+    let r = correction(&f, r, true);
     let l = inspect(&f, &r, None).unwrap();
     let mut p = l
         .resolution(
@@ -740,7 +766,7 @@ fn lineage_positive_finish_rejects_alias_indices_and_stale_minima() {
     for variant in 0..4 {
         let f = prepared_fixture();
         let r = valid_empty_third(&f);
-        correction_with_link(&f, &r, false, variant != 3);
+        let r = correction_with_link(&f, r, false, variant != 3);
         if variant == 0 {
             let old = IngestKey::EventPayload {
                 dataset_id: f.previous.identity().dataset_id,

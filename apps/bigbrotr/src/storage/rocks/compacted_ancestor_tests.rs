@@ -300,7 +300,7 @@ fn compacted_ancestor_census_covers_epoch_two_and_later_correction_ancestry() {
     for linked in [true, false] {
         let f = prepared_fixture();
         let r = valid_empty_third(&f);
-        correction_with_link(&f, &r, false, linked);
+        let r = correction_with_link(&f, r, false, linked);
         install_floor(&f, &r);
         let before = kv(&r.store);
         let sequence = r.store.db.latest_sequence_number();

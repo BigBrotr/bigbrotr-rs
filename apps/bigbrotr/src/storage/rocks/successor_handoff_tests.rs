@@ -93,8 +93,7 @@ fn successor_candidate_applies_exact_five_puts_from_both_terminal_kinds_and_late
         let f = prepared_fixture();
         let r = if variant == 2 {
             let r = valid_empty_third(&f);
-            correction(&f, &r, false);
-            r
+            correction(&f, r, false)
         } else {
             terminal_second(&f)
         };
