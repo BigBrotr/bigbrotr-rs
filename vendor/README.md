@@ -171,7 +171,7 @@ above owns the exact receipts and 363.615-second scoped result.
 The controls live in the application's `cfg(test)` options child module, using
 existing root dependencies and lock; original upstream wrapper tests remain
 retained. See the
-[maintained commands](../experiments/native-rocks-binding/README.md#planned-guard-qualification).
+[maintained commands](../experiments/native-rocks-binding/README.md#guard-qualification-by-source).
 The guard remains absent from the application factory, resource/grant lifetime,
 four write sites and downstream ACK wiring. Persistent formats, the absolute64
 guard and numerical capacity bounds are unchanged. Source f761 separately passes
