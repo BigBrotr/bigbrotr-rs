@@ -890,7 +890,7 @@
         "resources": "18 containers stopped/PID0/noOOM; focused command exit4, others0. Proxy exit0/absent, parent absent and borrowed bridge empty. Original raw state/logs retained.",
         "not_run": "Actual selected COMMIT outcome, backend/time hold observation, subsequent recovery/retry and final export"
       },
-      "next": "Finite Index topology0\u21921/Ingest1\u21922 continuation with explicit typed handoff history and exact retained lineage; general unknown-query recovery remains separate. Original202 is not closed by successful continuations.",
+      "next": "Finite Index topology0→1/Ingest1→2 continuation with explicit typed handoff history and exact retained lineage; general unknown-query recovery remains separate. Original202 is not closed by successful continuations.",
       "config_fix": {
         "revision": "ace1512e0f8bf713c0d9e797aef989919083017c",
         "checks": "20 targeted controls and retained metadata replay PASS; critical delta review PASS; actual root declares unchanged default5s before initialization. No product change.",
@@ -1058,7 +1058,7 @@
       ],
       "next": "Finite proof remains historical and is requalified on6cbe under live_initial_successor. Separate outages/tutorial and bounded live initial successor now have their own qualifications.",
       "remaining": [
-        "The original finite execution alone does not qualify live ownership; see live_initial_successor for the later bounded1\u21922 result.",
+        "The original finite execution alone does not qualify live ownership; see live_initial_successor for the later bounded1→2 result.",
         "Handoff-COMMIT uncertainty, arbitrary live epochs, broader topology/unknown-query/native-termination/outage/capacity guarantees remain with existing tasks."
       ],
       "actual_review": {
@@ -1465,7 +1465,7 @@
       "product_revision": "6cbe1cb2e484a3e4163ba45b2cca5ea944b73ca3",
       "acceptance_revision": "1fab2f4bc026785a07992e91779767e28d74f689",
       "fixture_revision": "4cd3f9ad47dd8b2d0c0c67641a9cb64fd15cb2e2",
-      "scope": "One actual retained enabled-Index Ingest1\u21922 activation, current full-vector readiness, finite historical rebind/retry and genuine later topology historical/current-authority distinction. No live Archive or arbitrary live Index epoch.",
+      "scope": "One actual retained enabled-Index Ingest1→2 activation, current full-vector readiness, finite historical rebind/retry and genuine later topology historical/current-authority distinction. No live Archive or arbitrary live Index epoch.",
       "qualification": {
         "native": {
           "status": "PASS",
@@ -1556,7 +1556,7 @@
         },
         "observed": [
           "Before Sync/client work, actual revision5 bridge carries closed1/cut12 and stored open2/zero without a new physical batch; original generation/storage/custody/table UUIDs and raw historical rows/xmin are exact.",
-          "Three successor batches publish revisions6\u20138 while producer/source2 remain OPEN. 63 authenticated observations reach current full-vector Ready [1:12,2:10] with the same unrefreshed session; real child release ACK and parent completion are within its published 45s phase.",
+          "Three successor batches publish revisions6–8 while producer/source2 remain OPEN. 63 authenticated observations reach current full-vector Ready [1:12,2:10] with the same unrefreshed session; real child release ACK and parent completion are within its published 45s phase.",
           "Independent source/C API and ten-family scientific oracles verify 70 chunks/100 bounds, original body/resend and new t=allowed posting, raw multiplicity and every typed commitment. Archive recovery, two zero-work Index rebinds and ordinary two-event history preserve original receipts/inputs/export.",
           "Genuine control+ingest epoch3/topology2 activation has zero new scientific requests. Actual unprivileged bigbrotr_control TCP login records host-only 127.0.0.1 and read-only transaction; historical metadata succeeds and shared current-authority guard returns exact 23514/topology refusal.",
           "All final post-SQL Control/catalog/CH/data/input/export/custody/schema checks and normal owner stop/join PASS."
@@ -2300,7 +2300,7 @@
             },
             "failure_stage": "compacted_consumers",
             "error_type": "ValueError",
-            "failure_boundary": "first_launch_retained.py653\u2192first_launch.py740 census\u2192command require at244; protected reason36chars/SHA9884a345691db8c1d3741059cafeddf12449a83309d069d94a15b1526069d48a",
+            "failure_boundary": "first_launch_retained.py653→first_launch.py740 census→command require at244; protected reason36chars/SHA9884a345691db8c1d3741059cafeddf12449a83309d069d94a15b1526069d48a",
             "classification": "VERIFIER: missing explicit census envelope for independently declared retained-case cardinality; actual role/assets/ABI/attach/query verified. Old reader row bound stops immediately; product/candidate unchanged.",
             "native_census": "FAIL_COMMAND; complete independent census comparison NOT_RUN/unqualified, any partial output preserved",
             "retry_and_signed_tail": "NOT_RUN",
@@ -3630,7 +3630,7 @@
       }
     },
     "open_prefix_reclamation": {
-      "status": "CONTRACT_AND_PREPARED_FIXTURES_SOURCE_ONLY_RUNTIME_NOT_RUN",
+      "status": "PARTIAL_NATIVE_COUNTER90_AND_TYPED_INTAKE7_PASS_CONNECTED_OPEN_AND_PHYSICAL_GATES_PENDING",
       "owners": [
         "P02-T02 Step4",
         "P03-T01 Step3",
@@ -3646,9 +3646,14 @@
         "scope": "OPD-F1/F2 closed: held versus new credit and reserve-funded recovery, rounded low>=1. Exact native/PG physical envelopes remain open; default64GiB+16GiB resume headroom unchanged. No request65 enablement."
       },
       "product_partial": {
-        "revision": "bc9d05a547bad4fcee35b7c2c6ae6a943b6d73b7",
+        "last_frozen_revision": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
         "worktree": ".research/open-prefix-initial-sol-20261030",
-        "state": "PriorWIP7061 and raw pending read accounting e9 are preserved; single-current-policy3 and exact startup-bound retention committedbc9.271/272 portable PASS with1fixed Nostr reviewed-tree guardERROR; rustfmt/static PASS. Rust/PG/native/connected proof NOT_RUN; persistentP/grants/safe-point/recovery/consumers remain partial, absolute64 remains."
+        "state": "Separate unintegrated source: b0counter/fence source-criticalclosed, correctedcc3actually90native testsPASS;63typedintake/historical full-body restore source-criticalclosed and7RustcasesPASS. Author extends current privatePGfixture; grants/staging/scheduler/base+tail/Archive/physicalbounds remain partial, absolute64 stays.",
+        "integrated_policy_prerequisite": {
+          "main": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
+          "report": "p01-policy-versions-native-20260928.json",
+          "scope": "Only isolated current-policy3 correction/consolidation:57nativeRust/65PG/376portable and hosted33PASS. No counter/nativeformat2/PG42 integration."
+        }
       },
       "acceptance_preparation": {
         "revision": "1cb3698342b02659c5583d67d210fae9cc1eada5",
@@ -3658,9 +3663,57 @@
         },
         "controls": "132 portable PASS,129 independent signed-event cohort; complete new Runtime and genuine paired A132/B128 installed scope NOT_RUN."
       },
-      "next": "Complete bounded implementation/accounting and current-policy consolidation; derive enforceable physical completion coverage before >64. Native/PG/installed/pressure/fault qualification still required, not inferred from portable controls."
+      "next": "Qualify current historical-original PGscope before funding. Preserve real typed dictionary/progress/close/replay/retirement and confirmedreclamation preconditions; no fakePG42 or historicalcounterlessseed. Then connect pre-stage logical/disk grants, scheduling/base+tail/recovery/Archive and prove exactCW-N1/P1/P2 before request65. Existing132portable preparation is not installed proof.",
+      "native_accounting": {
+        "source": "cc3bb4e86b2d0541f510f18859082f02e20ab1bf",
+        "status": "PASS_SELECTED_NATIVE_MECHANICS_ONLY",
+        "logical_scopes": 12,
+        "component_invocations": 17,
+        "distinct_binary_test_pairs": 90,
+        "coverage": [
+          "Manifestvalue-schema2 fence/counterlessold-formatrefusal, exactfresh3/rawsource0/P0S0",
+          "StorewideP andcurrentSourceHead census with malformed/missing/mismatchedrefusal",
+          "Realbootstrap/dictionary/event/correction/provenance/replay/AlreadyDurable/Rejected native paths and independent signed15-operation fixture",
+          "Native-only ACK/closedGCmechanics preserveP; no actualPGconfirmation inferred",
+          "Exact5puthandoff frombothterminalkinds, replay/reopen andWAL/refusal",
+          "Sixpublickey/manifest/store/pending/receipt/successiontestbinaries"
+        ],
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-cc3bb4e8/root-terminal.json",
+          "sha256": "37fd1f2a9629583e11c2aa7cb22e0d4776595d945559dde6964e7f4b2d821016"
+        },
+        "preserved_failures": [
+          "e718compile4sourceerrors/0runtime",
+          "245after10nativePASS:bootstrap5PASS1FAIL stale1rowfixture;cc3nowprovesindependentrawfresh3/allrow/sequencepreservation"
+        ],
+        "not_run": [
+          "externalACKsyscalldriver",
+          "actualPG42OPENprepare/finalize/directretirement",
+          "fullinstalledOPEN/recovery/pressure",
+          "strictClippyunfinishedOPENscaffolding",
+          "newphysicalorlogicalgrantinstallation"
+        ]
+      },
+      "historical_intake": {
+        "source": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
+        "status": "SOURCE_CRITICAL_CLOSED_RUST7PASS_ACTUAL_PG_PENDING",
+        "scope": "Existing recovery gap corrected in source: both complete bounded original bodies validated before typed7fieldcapture across8private/6public callers; normal/liveACK unaffected. Same-row digests/currentauthority separation; cap1..10MiB, narrowprobe16KiBwithin16MiB envelope, productionexisting512MiB. Exactdecimalfloor/no defaults/fullpairbinding.",
+        "critical_review": {
+          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-intake-review-63ab0906.json",
+          "sha256": "fff10190732e2df9b1bef5db496063d473529760df014b87f7849632e61c69cb"
+        },
+        "pair_contract": {
+          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/intake-pair-contract-63ab0906.json",
+          "sha256": "73533314f598dcd17f6d5dda230a2df0b3aeee869467d88f4713710d83c500a1"
+        },
+        "rust_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/intake-capture-63ab0906/root-terminal.json",
+          "sha256": "42a98756666c6518b2d3aa5785c362112c1a8b16a7882c09a62437d9b33426ed"
+        },
+        "actual_PG_gate": "Freshcurrentseed withhealthy latermatchingConfigN/PolicyM: publicbody/cap and privateactivation/compacted-recoveredACK corruptoriginal controls, positive realcoordination, fullControl/native/inputpreservation. Unwired/futurecases NOT_RUN; not a lostACK/watermarkadvanceclaim."
+      }
     }
   },
-  "last_updated": "2026-10-29",
+  "last_updated": "2026-10-31",
   "historical_scope_note": "Original SQL/initial-readiness records and their NOT_RUN lists retain their original execution scopes. Later explicitly identified extensions own subsequent qualifications; no earlier FAIL or missing execution is relabelled."
 }

@@ -255,7 +255,18 @@
     "arm64",
     "release",
     "current-policy installed export/restart",
-    "new installed Nostr/client/tutorial qualification",
-    "required current-policy hosted full-platform CI"
-  ]
+    "new installed Nostr/client/tutorial qualification"
+  ],
+  "hosted_followup": {
+    "revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654",
+    "status": "PASS_ACTUAL_FULL_FOUNDATION33",
+    "report": "p01-ci-hosted-foundation-20261026.json",
+    "source_equivalence": "All apps Gitobjects equal qualified product64; containingmerge adds reviewed metadata/docs/currentCI fixture, no new policy/native product behavior. Hosted complete2447-file manifests and full namespaces boundexactc90.",
+    "scope": "Currentfull platform/helper gate closed by actualall33; independentPG65keepsitsproduct64/harnessa023identity. Installed current-policy export/restart, original historical recovery and release remain separate.",
+    "receipt": {
+      "path": ".research/ci-publication-20261026/c90d20a8-full-ci/receipt.json",
+      "sha256": "3442b377a5a2d033652d30ad0b7eae13a1c882c994925582c4449493a7bcc183"
+    }
+  }
 }

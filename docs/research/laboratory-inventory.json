@@ -77599,8 +77599,8 @@
       "worktree": ".research/open-prefix-initial-sol-20261030",
       "branch": "work/open-prefix-initial-sol-20261030",
       "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
-      "partial_commit": "b0da695283052a9505004107b5219a6b7bb2bcff",
-      "state": "Accounting/value-schema2 source checkpoint committed; uniform explicit source/fresh3, full-stream bounded census, counter-before-seal/handoff5 and replay/GC accounting authored. Six portable controls and succession vectors pass; native tests NOT_RUN. Astra reviews exact b0da critical data/fence semantics; Sol continues typed accepted-policy funding/current fixtures. No >64 enablement.",
+      "partial_commit": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
+      "state": "Counter/nativecc3actually90PASS. Typed historical-intake63sourcecriticalclosed, Rust/actualPG NOT_RUN; author wiring missing privatefaultcases in existingcurrenthistoryfixture. Grants/staging/scheduling/physicalboundsunwired,64unchanged.",
       "accounting_receipt": {
         "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/pending-accounting-b0da6952.json",
         "sha256": "ab5502c3613831990fc3568c2fc0f08d4a87910d49ef7f3a1880ca785cf3aa75"
@@ -77711,7 +77711,7 @@
       "worktree": ".research/current-policy-increment-20261031",
       "branch": "work/current-policy-increment-20261031",
       "base": "d742fe0386df9472f97bb4712ac846a69b0947c0",
-      "status": "QUALIFIED_POLICY3_NATIVE57_PG65_PORTABLE376_PENDING_MAIN_MERGE",
+      "status": "INTEGRATED_PUBLIC_C90_POLICY57RUST65PG_PORTABLE376_AND_HOSTED33PASS_INSTALLED_GATE_PENDING",
       "scope": "Isolate current3 policy/retention/init-retry closure from unfinished OPEN/native/PG42 scaffolding. Main-native format and full catalog41/57versions/58inputs/82tables retained; generated UInt retention schema corrected, obsolete write-only Resolved version removed.",
       "source_receipt": {
         "path": ".research/current-policy-increment-20261031/.research/current-policy-source-delta-20261031/receipt.json",
@@ -77771,11 +77771,85 @@
       "report_root_review": {
         "path": ".research/current-policy-increment-20261031/.research/current-policy-final-evidence/root-proposal-review.json",
         "sha256": "00b6e9a44bd88b35ab5830b8e68d4932d012c7ae90f06bda80f392ac9e4ddb24"
+      },
+      "integrated_main": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
+      "current_branch_state": "Fully merged ref retired; physical115sourceworktree detachedclean, allignoredartifacts preserved",
+      "hosted_full_report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+      "installed_reuse_assessment": {
+        "path": ".research/ci-publication-20261026/c90d20a8-full-ci/installed-reuse-proposal.json",
+        "sha256": "19728481607b91ba8165aefcde102f1cfdedd07179f8fd95410cbe651fdcfae9",
+        "finding": "Hosted ZIP uploadsreceipts/logsonly/noELFs; cannotreuseabsentparent/worker/probe. ABIUNKNOWN, notassertedincompatible. Exactpinnedassets rehashed; unchangedmaintainedbuild→observer→assembler→existingtwoexportjourney identified. Awaitcoherentproductrevisiontoavoidredundantbuild."
       }
+    },
+    "native_accounting_qualification": {
+      "source": "cc3bb4e86b2d0541f510f18859082f02e20ab1bf",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-cc3bb4e8",
+      "tool_session": 98856,
+      "status": "PASS_90_SELECTED_NATIVE_BINARY_TEST_PAIRS",
+      "logical_scopes": 12,
+      "binary_components": 17,
+      "retained_ELFs": 7,
+      "terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-cc3bb4e8/root-terminal.json",
+        "sha256": "37fd1f2a9629583e11c2aa7cb22e0d4776595d945559dde6964e7f4b2d821016"
+      },
+      "resources": "Owned7147f3a3containerstopped0/PID0/noOOM; cache115released and4originalartifacts unchanged; source/tool/compiler/planchecks beforeaftereverycomponent.",
+      "not_run": [
+        "externalACKsyscalldriver native_ack_fsync_boundary",
+        "actualPG42prepare/finalize/OPENretirement",
+        "typedintake63native/PGfaults",
+        "prestagegrants",
+        "installedOPEN",
+        "physicalCWbounds",
+        "strictClippyunfinishedscaffolding"
+      ],
+      "preserved_attempts": [
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-e7181f2e/root-terminal.json",
+          "sha256": "500e2be5fd53b4290d910313b42eeebb70a97eab1ef5d60a5eb6c2427214e4dc"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-24529571/root-terminal.json",
+          "sha256": "abe1f90844a77c611aa61b6ca3a11b19db3b1662e765bf69c54557a853c50109"
+        }
+      ]
+    },
+    "historical_intake_capture": {
+      "source": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
+      "status": "SOURCE_CRITICAL_CLOSED_SCOPED_RUST7PASS_ACTUAL_PG_PENDING",
+      "owner_tasks": [
+        "P02-T02 historical recovery",
+        "P01-T04 policy authority"
+      ],
+      "author_receipt": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/intake-capture-63ab0906.json",
+        "sha256": "a8659264c408b397392ae6adc86574db8a8a35027c51bad3f851fd8a2569f52d"
+      },
+      "critical_review": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/critical-intake-review-63ab0906.json",
+        "sha256": "fff10190732e2df9b1bef5db496063d473529760df014b87f7849632e61c69cb"
+      },
+      "pair_contract": {
+        "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-policy-critical-review/intake-pair-contract-63ab0906.json",
+        "sha256": "73533314f598dcd17f6d5dda230a2df0b3aeee869467d88f4713710d83c500a1"
+      },
+      "actual_gate": "Healthy latercurrentauthority + original-only corruptbody/staledigest/recomputedmissingfield through publiclookup and privateactivation/compacted-recoveredACK; no effects/preservation/budgetcaps, positivechangedmatchingConfigN/PolicyM and mismatchedpairnegative. No per-live-event query, grants notinstalled.",
+      "rust_qualification": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/intake-capture-63ab0906/root-terminal.json",
+        "sha256": "42a98756666c6518b2d3aa5785c362112c1a8b16a7882c09a62437d9b33426ed",
+        "tool_session": 50748,
+        "result": "3scopes/7PASS;2ELFs retained; no query/probeexecution/actualPG; source2459.",
+        "resources": "Owned789ed2c6containerstopped0/PID0/noOOM, cache115released/rootreacquiredandoriginal4artifactsunchanged."
+      }
+    },
+    "qualified_policy_and_ci_ref_retirement": {
+      "path": ".research/initial-index-recovery-qualification-20261028/policy-ci-merged-refs-20261031.json",
+      "sha256": "6b135c16ec3ae23b146b66db5772410f6e0b6dde5121c0d64b01bcc1bd9f807b",
+      "physical_resources_removed": false
     }
   },
   "implementation_ci_portable_controls_20261030": {
-    "status": "SOURCE8AC_REDUCED_THREE_PLATFORM15CHECKS_PASS_REQUIRED_FULL_GATE_OPEN",
+    "status": "C90_FULL33_ACTUAL_AUDITED_PASS_INHERITED_PLATFORM_HELPER_GATE_CLOSED",
     "owner": "/root",
     "model": "gpt-6.1-sol",
     "reasoning_effort": "xhigh",
@@ -77786,7 +77860,7 @@
     "custody": "/home/tux/bigbrotr-implementation-20260917/runs/ci-portable-controls-10098d32/custody.json",
     "scope": "Shared portable controls/documentation with real declared native tool/syscall prerequisites; no Cargo product build, native data engines or worker asset download. Root sole launcher; 2CPU/2GiB/512PIDs/read-only root/uid1000/no capabilities/no Docker socket/no host ports.",
     "current_hosted": "Exactd742 run41188290200 terminal audited FAILURE10:33:32UTC:33checks/28PASS/1FAIL/4NOT_RUN. Both Linux foundations pass; Mac profile fixture fails before4required build/workspace gates. Full original failure/source/artifact/public-output audit now integrated in existing P01 report; no billing/cancellation/product failure claim.",
-    "remaining": "Root chose necessary qualified current-policy product push for full33/inheritedMac4gate; sameCIhelper/canonicalfixture. No separate8acdispatch, no concurrentduplication/cancellation. Actualfullresultsstillpending.",
+    "remaining": "Currentfullplatform/helpergateCLOSEDactualc90. Preservehistoricald742FAIL/8acreducedonly; installedcurrentpolicyexport/restart andbroaderCI/release/capacity/productgates stay with existing owners. No duplicate8acdispatch or cancellations.",
     "qualification": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-python-selection-20261030/.research/ci-portable-controls-author/qualification.json",
       "sha256": "89173c44adc3d891a78e2b53efa6d53086c241f44707b731138a795d975a57f1"
@@ -77849,10 +77923,10 @@
         "sha256": "feb97cff18c5b646e0f536261c6dbae01335810ea09740e0bc114a2fc0f8cc01"
       }
     },
-    "public_revision": "8acbd6872bd4626752040a4630a3ed74978bbf2e",
+    "public_revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
     "publication": {
-      "path": ".research/ci-publication-20261026/source-mac-profile-8acbd687-20261031/publication.json",
-      "sha256": "366137089ad2b3052920c7b98f18f3c8c8abc4eea0e2a22e44854dd0fa6946cb"
+      "path": ".research/ci-publication-20261026/source-current-policy-c90d20a8-20261031/publication.json",
+      "sha256": "1ef31f4591b5357a1984dd196daadfd1fe365d1b81bfa1956f7805d5375c5e12"
     },
     "hosted_reduced": {
       "run": 41194126907,
@@ -77866,6 +77940,33 @@
         "path": ".research/ci-publication-20261026/8acbd687-controls-ci/root-report-delta-review.json",
         "sha256": "0a457d601abf08d6a551b90ea6a88b9dc5696cad69ac7336d0ecaed5eeaeb8f6"
       }
-    }
+    },
+    "full_followthrough": {
+      "run": 41197628654,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654",
+      "source": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
+      "watcher_session": 96193,
+      "driver": {
+        "pid": 2487933,
+        "start_ticks": 17331599
+      },
+      "gh": {
+        "pid": 2487934,
+        "start_ticks": 17331600
+      },
+      "interval_seconds": 60,
+      "observed": "TerminalSUCCESS12:33:47UTC; exact33/33PASS andcomplete3platform/source/namespace/artifact/outputauditPASS. Watcher96193reaped0 andrecordedPIDsabsent; no observer remains.",
+      "source_expectations": "2447files,376acceptance/Mac6SKIP;Rust1378/1378/1376PASS with3/2/2ignored onlyifactualnames/statusmultisetsmatchindependentlyderivednamespace",
+      "gate": "CLOSED_FULL_FOUNDATION_PLATFORM_HELPER_ON_C90_ONLY",
+      "receipt": {
+        "path": ".research/ci-publication-20261026/c90d20a8-full-ci/receipt.json",
+        "sha256": "3442b377a5a2d033652d30ad0b7eae13a1c882c994925582c4449493a7bcc183"
+      },
+      "root_review": {
+        "path": ".research/ci-publication-20261026/c90d20a8-full-ci/root-report-delta-review.json",
+        "sha256": "34e9416ad24b884e4120b18fdf941abe177ae3aa57a54e4fcc3587cf258adfc4"
+      }
+    },
+    "current_ref_state": "Three qualified CI branchrefs retired, physical sourceworktrees detachedclean; allignoredfailure/audit/artifacts preserved."
   }
 }

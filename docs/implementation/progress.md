@@ -7,11 +7,14 @@ no official release, package publication, rename or production deployment.
 
 ## Current revision and integrated capability
 
-Last verified public/main baseline: `8acbd6872bd4626752040a4630a3ed74978bbf2e`,
-push9914 reaped0/remote exact. Root is closing a coherent merge of reviewed
-`work/current-policy-increment-20261031` at115d4278; use Git for its containing
-commit/publication revision. Product changes are staged, root owns current report,
-checkpoint and inventory updates. No OPEN native/counter/PG42 source is integrated.
+Public/main are `c90d20a8f857f1f76ab88297d109a0cb489ad0e5`, push11495
+reaped0/remote exact. Current-policy115 is integrated and source-reviewed before
+publication:142new commit/blob objects/7,034,428B; four pattern hits classified
+(known prose plus unchanged public synthetic unittest inputs),0unclassified or
+operational credentials. Publication receipt is in inventory. Four fully merged
+policy/CI refs retired; physical worktrees remain detached/clean with ignored
+artifacts intact. Root owns subsequent uncommitted checkpoint/inventory updates;
+no OPEN counter/native-format2/PG42 or typed-intake63 source is integrated.
 
 The new coherent capability is **single current policy3** with explicit receipt
 retention1..64/default64, complete retained-document validation on initialization
@@ -65,14 +68,36 @@ complete product claim follows from scoped M1 evidence.
 
 Sol `/root/open_prefix_product_sol_20261031` owns
 `.research/open-prefix-initial-sol-20261030` / `work/open-prefix-initial-sol-20261030`.
-Frozen b0da6952 accounting core is source-critical CLOSED by Astrac468a174:
-manifest value-schema2, exact persistent pending-P census, explicit source/fresh3,
-counter-before-seal and five-put handoff. Producer formats1/2/3/4 remain. Post-b0e718 fixture/preview delta is independently source-critical closed
-(f3024c3d); native tests are still NOT_RUN. Sol reconciled current fixtures, including
-one verified73B conservative serialized-bound preview charge omission, then continues accepted-policy
-capture/logical funding. Scheduler/base+tail recovery/consumers remain incomplete.
-All work stays separate, absolute64 gate unchanged. Root alone launches engines,
-builds, cache mutations and cleanup.
+Frozen b0da6952 accounting core is source-critical CLOSED by Astrac468a174;
+post-b0e718 preview/fixture delta closedf3024c3d. Actual corrected **cc3bb4e8 native
+qualification98856 reaped0:17components/12logical scopes,90distinct binary/test
+pairs PASS**, including fresh3/counter/source census, real replay/reopen, dictionary/
+signed facts, ACK/closedGC preservation, exact five-put handoff, WAL and six public
+binary suites. SevenELFs retained, owned container stopped0/PID0/noOOM and cache
+released/original4artifacts unchanged. Native terminal37fd1f2a under
+`/home/tux/bigbrotr-implementation-20260917/runs/open-prefix-accounting-cc3bb4e8`.
+Opt-in external ACK syscall child is explicitly NOT_RUN, not a passing unit case.
+
+Original e718 compile failure (four source errors,0runtime) and245 bootstrap
+5PASS/1FAIL after10otherPASS remain preserved. Fix245 annotatesu64 and uses3
+real-reopened recovery returns; cc3 strengthens independent exactfresh3/all-row/
+sequence preservation for invalid initial operations. Current Native runtime code
+is unchanged by that fixture correction. No strictClippy claim for unused OPEN
+scaffolding, and no confirmed PG42/directOPEN retirement qualification.
+
+Original author worktree is clean at **63ab0906** (typed historical intake);
+separate fix worktree/branch remains atcc3. Source-critical reviewfff10190 closes
+full original c/p document restoration for all8private+6public recovery callers,
+checked bodycaps/budgets and seven immutable intake fields. Pair-contract73533314
+confirms matching accepted intake is required across referenced config/policy;
+revision numbers may differ. Ordinary live/eventACK does not reconstruct.
+Historical original-body validation was a verified preexisting gap: new source
+fixes it, and actual3Rust scopes/7tests PASS (50748reaped0); public corruption/cap and
+private activation/compactedACK PGfault qualification remains OPEN, under P02-T02/P01-T04. Author is wiring those
+existing fixture/probe paths. Funding/staging/scheduler/base+tail/Archive and all
+physical grants remain incomplete, absolute64 gate unchanged. No historical policy
+may fund current active-successor work. Root alone launches engines/builds/cleanup. All local native runners, including
+63Rust7/50748, are terminal with stopped0/PID0/noOOM and cache released.
 
 OPEN contract2a35 and resource contractbf5 are integrated/source-critical closed;
 manifest2 decision680e5f56 and explicit-source amendmentcbe61c26 remain inventoried.
@@ -97,15 +122,22 @@ passes15/15shared checks across AMD/ARM/Mac: acceptance367/367/361PASS with6MacS
 profile10 and docs3 each. Exact source/helper/commands/four artifact digests and
 bounded output audit pass;0new candidates. Jobs65/72/86s only describe that scope;
 no product/worker/Rust build, native download/cache or compiled-speedup claim.
-Single observer29145 reaped0; no remote observer remains.
+Single reduced observer29145 reaped0; its source-specific outcomes stay separate.
+Required full [c90run41197628654](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654)
+is **terminal auditedSUCCESS:33/33PASS**,12:33:47UTC. Exact2447-source manifests,
+complete expected Rust namespaces (1378/1378/1376PASS,3/2/2ignored), Python
+376/376/370PASS+6MacSKIP and10profile each verify. Named257application/protocol3/
+worker6 and Linux40/65practical pass; all4artifactdigests/516members/41logmembers
+match source/native/workspace bindings.54knownbenignoccurrences/fivefingerprints,
+0new/provideralerts; no broad unknown-secret-format exclusion claim. Optional
+native-downloadcache restored3/3; no compiledcache/causalspeedup inference.
+Sole observer96193reaped0, bothrecordedPIDsabsent; no observer remains.
 
 Original full [d742run41188290200](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41188290200)
 remains FAILURE:28PASS/1FAIL/4NOT_RUN. Both Linux foundations passed; Mac fixture
-failed before build/Clippy/rustdoc/workspace tests. **Required full33 gate OPEN.**
-Use the necessary qualified policy product push with identical CI helper/canonical
-fixture for the next actual full run, avoiding a redundant separate8ac dispatch.
-Verify actual full-platform evidence; reduced green does not qualify8ac full builds
-retroactively. P01's [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
+failed before build/Clippy/rustdoc/workspace tests. **Inherited full33/helper/platform gate CLOSED on c90.**
+The necessary qualified policy product push supplied that real full run; separate
+8acdispatch was unnecessary. Originald742FAIL and8acreduced-only outcomes remain. P01's [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
 retains6fa/1cb successes, original failures/billing/cancellations, source/artifact
 identities and bounded public-output limitations. No credential finding open.
 
@@ -118,10 +150,13 @@ Borrowed `bigbrotr-m1-0f80280_default` ID
 1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f
 is retained; never remove it or modify foreign workloads.
 
-**Next action:** finish current-policy report/source review, commit and publish the
-qualified coherent merge, then observe its full33 hosted run. Requalify the affected
-installed current-policy journey with existing tools; continue separate accounting
-native fixtures and exact physical/logical grant work without enabling request65.
+**Next action:** qualify the coherent current-history realPG fixture batch including
+private corrupt-original activation/compactedACK controls (source author active).
+Prepare reuse of exact c90 hosted parent/worker assets for the remaining installed
+journey; verify ABI/bindings before execution, avoid an unnecessary product build.
+Requalify the affected installed current-policy journey with existing tools;
+connect actual quota/grants/scheduler only after their prerequisites are proven.
+No request65 permission follows from counter90 or source-only intake review.
 
 Remaining work retains existing owners: Code202/query retirement P02-T06
 Steps2/4/7; a99 Sync startup/topology HTTP429 uncertainty; scalable freshness/

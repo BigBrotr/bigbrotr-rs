@@ -242,6 +242,14 @@ comparison can bypass the native track. Control success is not product evidence.
 The existing documentation-only track remains narrower. Both reduced scopes use
 the same honest execution/termination receipts and reviewed upload allowlists.
 
+Foundation uploads currently retain receipts and logs. Installed qualification
+needs executable parent, worker, observer and native payloads from the maintained
+candidate build/assembly path. Verify actual payload availability, mandatory
+bindings and runtime ABI before reuse. A target triple or an uploaded build
+receipt alone cannot establish those properties; record missing payloads and
+unknown ABI honestly. The current hosted evidence lives in the existing
+[P01 report](../implementation/evidence/p01-ci-hosted-foundation-20261026.json).
+
 On Linux amd64, the pinned cargo-deny installation and dependency policy checks
 run after toolchain/format checks and before the fresh exact-source release
 build starts workspace/native compilation. Policy runs with `--locked` so it
@@ -299,10 +307,12 @@ Use two repositories: private candidates at
 release is authorized. Docker Hub visibility applies to a whole repository, not
 individual tags; never make all candidates public as a promotion shortcut.
 Namespace ownership and restricted publishing credentials are operator
-provisioning inputs, not accounts this planning work has created. Private preview
+provisioning inputs. Private preview
 artifacts stay private, including logs, provenance, SBOM and site previews. See
 [Docker Hub access](https://docs.docker.com/docker-hub/repos/manage/access/).
-The current planning authorization creates no public release, crate or website.
+The current development authorization permits the public source repository;
+official releases, package publication, public site publication and production
+deployment require separate authorization.
 
 Build candidates once, push under a unique candidate reference, and test pulled
 digests. Assemble the index from qualified platform manifests and record **both
