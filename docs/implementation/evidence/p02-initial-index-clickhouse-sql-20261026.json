@@ -555,6 +555,20 @@
         "receipt_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/current42-prefix-invoker/targeted-controls.json",
         "receipt_sha256": "bb0ccb584e3c081d20c11dfb90a0d503ef56facfa91d0ab14a188c824425c015",
         "scope": "Actual TCP runtime role/private ACL/five invoker trigger bindings; populated selected-row/checkpoint 42501 refusal controls. Original product FAIL retained. Fresh installed execution NOT_RUN."
+      },
+      "invoker_correction": {
+        "source": "cf035588daa5cc471fa6cb3641fce42930fcbb87",
+        "tutorial": "7/7PASS; realTCP runtime role and four42501 refusals verified",
+        "grouped": "9PASS/1FAIL/1NOT_RUN; Index lineage decoder profile mismatch after signed/index/reclamation/successor stages PASS",
+        "audit_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-cf035588/current42-followthrough-audit.json",
+        "audit_sha256": "a6761c056f8311b6f18e5972d5211e8af3b0dff4d9a783d66ee6705e1a76ac9a",
+        "custody_sha256": "8b60ddeafbf5662c4671dba137defa02cc96ed1400a5d44668748439a9caace3",
+        "pending": {
+          "source": "e4e44a255aca5753f913cf32fb41d1522d2e80e1",
+          "sql38_sha256": "61616dc9a997b897931eac61fe0e377c4a937f32e0115aabd30ed3fb20daf424",
+          "review_sha256": "d37b4d2af379556e994a2dbe94e7179247d0f17cad57916b7758eafec1b62ce5",
+          "scope": "Strict current value2 SQL decoder,9 current82-table format cases and reconciled current five-write models. Historical pinned wrappers remain source-bound with existing P02 task closure. Actual SQL/installed correction qualification NOT_RUN."
+        }
       }
     }
   },

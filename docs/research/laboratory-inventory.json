@@ -78291,8 +78291,31 @@
         "sql": "migrations/postgres/0042_producer_prefix.sql",
         "author_worktree": ".research/current42-prefix-fixture-sol-20261031",
         "author_branch": "work/current42-prefix-fixture-20261031",
-        "status": "Reviewed SQL and corrected shared fixture merged into candidate branch;23 targeted Python controls PASS. Actual engine/installed correction qualification NOT_RUN, not integrated main.",
+        "status": "e4e44a25 lineage profile/current-model correction integrated into root candidate branch; bounded source review clear and109 targeted controls reported PASS. Actual current SQL/installed correction NOT_RUN.",
         "fixture_source": "f350b497bfa49d919f797404e6a19655e6b53746 plus root five-trigger correction bound by critical3aa659fb"
+      },
+      "invoker_correction": {
+        "source": "cf035588daa5cc471fa6cb3641fce42930fcbb87",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-installed-cf035588",
+        "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/current42-observer-cf035588",
+        "status": "TUTORIAL_PASS_GROUPED_FAIL_CURRENT_SQL_LINEAGE_PROFILE",
+        "audit_path": "/home/tux/bigbrotr-rs/.research/initial-index-recovery-qualification-20261028/installed-cf035588/current42-followthrough-audit.json",
+        "audit_sha256": "a6761c056f8311b6f18e5972d5211e8af3b0dff4d9a783d66ee6705e1a76ac9a",
+        "custody": {
+          "sha256": "8b60ddeafbf5662c4671dba137defa02cc96ed1400a5d44668748439a9caace3",
+          "containers": 49,
+          "compose": 31,
+          "native": 18,
+          "exit_codes": {
+            "0": 42,
+            "4": 7
+          },
+          "all_stopped_pid0_no_oom": true,
+          "processes_absent": 23,
+          "commands_joined": 5555,
+          "bridge_endpoints": 0
+        },
+        "retained": "All actual build/observer/candidate, unique DB/native/input/data, originalFAIL and protected logs retained; cache released."
       }
     }
   },

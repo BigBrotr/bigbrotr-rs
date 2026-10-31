@@ -1,184 +1,17 @@
 {
   "date": "2026-10-31",
-  "status": "PASS required full current-policy foundation on exactc90:33/33 selected checks across LinuxAMD64/ARM64/macOS; inherited Mac/full-helper gate closed with actual source/artifact/namespace evidence",
-  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654",
+  "status": "PASS exactf673 required hosted foundation:33/33 across LinuxAMD64/ARM64/macOS; installed startup/recovery failures remain separate",
+  "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676",
   "run_attempt": 1,
-  "revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
-  "terminal_at": "2026-10-31T12:33:47Z",
-  "selected_scope": "Naturally selected necessary current-policy product push; full33source schedule15AMD/10ARM/8mac, same CIhelper/workflow/canonical profile as8ac; no separate8acdispatch.",
+  "revision": "f67373270e3240421b6708b4d8e05e07fa69642a",
+  "terminal_at": "2026-10-31T21:29:01Z",
+  "selected_scope": "Necessary coherent native2/current-policy product push;15AMD64/10ARM64/8macOS foundation commands and20scopecontrols; three unselectedjobsSKIPPED.",
   "selected_check_totals": {
     "PASS": 33
   },
   "platforms": {
     "arm": {
       "status": "PASS",
-      "result_sha256": "7bd5993ea29a742d56f02dc63743a1c5bba8923adc75252ca583844de5c9eb4e",
-      "build_result_sha256": "7964b35a5b8ecb119a415366209eecc716c1e7455ab0a3a77870c8e2962c07a0",
-      "source_manifest_sha256": "9d57d84847f9f8e6082a644261327a1c33ed0acf5abf74e92efcc6b9c5d775c8",
-      "binary_sha256": "82ce98667b4bb097f0a98d618f4bb54cdb3d8e529d9c33c9f1ccc3637d0af8fa",
-      "worker": {
-        "bytes": 13728784,
-        "sha256": "53765864d7b08e2aa2d853eda6ebd3552fc40dd1df2b510281a3999f931f2357"
-      },
-      "target": "aarch64-unknown-linux-gnu",
-      "checks": [
-        {
-          "name": "toolchain",
-          "command": [
-            "rustup",
-            "show"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 6.1350340849999725
-        },
-        {
-          "name": "format",
-          "command": [
-            "cargo",
-            "fmt",
-            "--all",
-            "--check"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 2.3703498510000145
-        },
-        {
-          "name": "acceptance-controls",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--control-suite",
-            "acceptance"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 39.147840392000035
-        },
-        {
-          "name": "export-profile-controls",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--control-suite",
-            "export-profile"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.21499289799999133
-        },
-        {
-          "name": "exact-source-build",
-          "command": [
-            "/usr/bin/python3",
-            "tools/build.py",
-            "--output",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build",
-            "--jobs",
-            "2",
-            "--archive-bundle",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci-native-inputs/archive-bundle"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 1108.443614963
-        },
-        {
-          "name": "clippy",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "clippy",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 768.525758039
-        },
-        {
-          "name": "rust-doc",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-doc",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 8.329754354000215
-        },
-        {
-          "name": "rust-tests",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-tests",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 1378.2006755490002
-        },
-        {
-          "name": "p01-event-cli",
-          "command": [
-            "/usr/bin/python3",
-            "tests/acceptance/run.py",
-            "p01-event-cli",
-            "--binary",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/bigbrotr",
-            "--source-root",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source",
-            "--source-manifest",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source-manifest.json",
-            "--build-result",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/build-result.json",
-            "--evidence",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/p01-event-cli"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.5656169690000752
-        },
-        {
-          "name": "p01-config-static",
-          "command": [
-            "/usr/bin/python3",
-            "tests/acceptance/run.py",
-            "p01-config-static",
-            "--binary",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/bigbrotr",
-            "--source-root",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source",
-            "--source-manifest",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source-manifest.json",
-            "--build-result",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/build-result.json",
-            "--evidence",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/p01-config-static"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.8160214790000282
-        }
-      ],
       "counts": {
         "collected": 10,
         "executed": 10,
@@ -186,7 +19,7 @@
         "not_run": 0
       },
       "rust_tests": {
-        "passed": 1378,
+        "passed": 1399,
         "failed": 0,
         "ignored": 2,
         "measured": 0,
@@ -199,36 +32,27 @@
         "failed_test_names": [],
         "scope": "Complete selected default-profile workspace execution"
       },
-      "cursor_keyring": {
-        "status": "PASS",
+      "acceptance_controls": {
+        "collected": 409,
+        "passed": 409,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 40.533,
+        "failed_or_errored_cases": 0,
+        "affected_case_names": [],
+        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+      },
+      "export_profile_controls": {
+        "collected": 10,
         "passed": 10,
         "failed": 0,
-        "ignored": 0,
-        "required_tests": 10,
-        "tests": [
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
-          "directory_locks_exclude_preparation_and_readers_without_waiting",
-          "modes_links_and_nonregular_files_are_refused_without_modification",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated"
-        ],
-        "test_statuses": {
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys": "ok",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
-          "directory_locks_exclude_preparation_and_readers_without_waiting": "ok",
-          "modes_links_and_nonregular_files_are_refused_without_modification": "ok",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts": "ok",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated": "ok"
-        }
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.214,
+        "failed_or_errored_cases": 0,
+        "affected_case_names": [],
+        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
       },
       "practical": {
         "p01-event-cli": {
@@ -240,7 +64,7 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "5bc08f5d2725ce9382b3674f2c9cd9745358a42821caa51fee0f2f4b04ecc8e0"
+          "result_sha256": "21d10b9210731928a42d06a9aa0714d2c5edf46834c4fd7b5e85ff9e6df8bc95"
         },
         "p01-config-static": {
           "status": "PASS",
@@ -251,1369 +75,26 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "2012010dc126b59591456ebaea0557cb06678b657ba93f71686d42a3e1503870"
+          "result_sha256": "4f143171f0375a9b23652971405314839238d7be9890c2c25f89d2384e333e9f"
         }
       },
-      "total_recorded_check_seconds": 3312.7496585790004,
-      "export_fixtures": {
-        "export_files": {
-          "status": "PASS",
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 6,
-          "tests": [
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not"
-          ],
-          "test_statuses": {
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit": "ok",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging": "ok",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files": "ok",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files": "ok",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes": "ok",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not": "ok"
-          }
-        },
-        "export_files_umask": {
-          "status": "PASS",
-          "passed": 1,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 1,
-          "tests": [
-            "restrictive_umask_changes_only_new_files_and_directories"
-          ],
-          "test_statuses": {
-            "restrictive_umask_changes_only_new_files_and_directories": "ok"
-          }
-        },
-        "export_destination": {
-          "status": "PASS",
-          "passed": 4,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 4,
-          "tests": [
-            "restrictive_umask_cannot_create_an_unusable_marker",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair",
-            "offline_pairing_and_disjointness_never_open_the_destination",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection"
-          ],
-          "test_statuses": {
-            "restrictive_umask_cannot_create_an_unusable_marker": "ok",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair": "ok",
-            "offline_pairing_and_disjointness_never_open_the_destination": "ok",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection": "ok"
-          }
-        },
-        "export_destination_custody": {
-          "status": "PASS",
-          "passed": 2,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 2,
-          "tests": [
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization",
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins"
-          ],
-          "test_statuses": {
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok",
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok"
-          }
-        }
-      },
+      "target": "aarch64-unknown-linux-gnu",
       "job": {
-        "id": 124526950792,
+        "id": 124649954823,
         "name": "foundation (ubuntu-24.04-arm)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950792",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676/job/124649954823",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-31T11:37:53Z",
-        "completed_at": "2026-10-31T12:33:46Z",
-        "wall_seconds": 3353.0,
+        "started_at": "2026-10-31T20:33:00Z",
+        "completed_at": "2026-10-31T21:28:39Z",
+        "wall_seconds": 3339.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
-      },
-      "acceptance_controls": {
-        "collected": 376,
-        "passed": 376,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 0,
-        "seconds": 38.549,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "export_profile_controls": {
-        "collected": 10,
-        "passed": 10,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 0,
-        "seconds": 0.057,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "native_reference": {
-        "status": "PASS",
-        "passed": 257,
-        "failed": 0,
-        "ignored": 0,
-        "not_run": 0,
-        "groups": {
-          "funded-reservation": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "funded-dns": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "clickhouse": {
-            "passed": 51,
-            "failed": 0,
-            "not_run": 0
-          },
-          "indexer": {
-            "passed": 12,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-publication": {
-            "passed": 10,
-            "failed": 0,
-            "not_run": 0
-          },
-          "postgres-route": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-unpolled": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-drop": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-driver": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-receipts": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-inputs": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-input-custody": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-expectations": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-head": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-closure": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "lineage-pending": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "signed-source-head": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "closed-reclamation": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-progress": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-live": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-pending": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-census": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-observation": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "observation-clock": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-admission": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-capacity": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-archive": {
-            "passed": 29,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-index": {
-            "passed": 30,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-commands": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync-diagnostic": {
-            "passed": 8,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-supervision": {
-            "passed": 6,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-watchdog": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-readiness": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-status-http": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-observations": {
-            "passed": 9,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-role-route": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-reader-budget": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          }
-        },
-        "rust_log_sha256": "f6d1030107c3839337adf4f5d85402866e15b484ca84b477e2d0f01c9dbfa463"
-      },
-      "protocol_and_worker_controls": {
-        "protocol": {
-          "status": "PASS",
-          "required": 3,
-          "passed": 3,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "archive_receipt::group::tests::group_digest_binds_literal_common_semantics_and_ordered_identities": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_members_refuse_empty_duplicate_crossed_unordered_and_over_limit": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_reply_requires_the_exact_digest_and_one_complete_admitted_identity": [
-              "ok"
-            ]
-          }
-        },
-        "worker": {
-          "status": "PASS",
-          "required": 6,
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "receipt::group::tests::grouped_receipts_full_eof_selects_none_or_each_exact_member_and_keeps_strict_guard": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_missing_or_corrupt_later_native_object_never_delivers_a_choice": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_reject_second_duplicate_crossed_semantic_and_late_unrelated_rows": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_scan_max_plus_one_and_persisted_range_limits_refuse": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_request_parser_is_closed_and_enforces_exact_wire_and_member_bounds": [
-              "ok"
-            ],
-            "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof": [
-              "ok"
-            ]
-          }
-        }
-      },
-      "python": {
-        "collected": 376,
-        "passed": 376,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 0,
-        "seconds": 38.549,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "rust_workspace": {
-        "passed": 1378,
-        "failed": 0,
-        "ignored": 2,
-        "measured": 0,
-        "filtered_out": 0,
-        "suite_results": 94,
-        "ignored_test_names": [
-          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
-          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
-        ],
-        "failed_test_names": [],
-        "scope": "Complete selected default-profile workspace execution"
-      },
-      "cache": {
-        "status": "EXACT_KEY_HIT_RESTORED",
-        "key": "native-inputs-ubuntu-24.04-arm-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-        "compressed_bytes": 69398315,
-        "step_seconds": 1.0,
-        "workflow_log": "0_foundation (ubuntu-24.04-arm).txt",
-        "workflow_log_sha256": "1a9c8432ca9ccd2e4174a457f650bef28914ca85561b1ebe5c64f515b50563b1",
-        "hit_to_restored_log_seconds": 0.582766,
-        "step_timestamp_resolution_seconds": 1
-      },
-      "timing": {
-        "job_seconds": 3353.0,
-        "checks_seconds": {
-          "toolchain": 6.1350340849999725,
-          "format": 2.3703498510000145,
-          "acceptance-controls": 39.147840392000035,
-          "export-profile-controls": 0.21499289799999133,
-          "exact-source-build": 1108.443614963,
-          "clippy": 768.525758039,
-          "rust-doc": 8.329754354000215,
-          "rust-tests": 1378.2006755490002,
-          "p01-event-cli": 0.5656169690000752,
-          "p01-config-static": 0.8160214790000282
-        },
-        "acceptance_ordinal": 3,
-        "cache": {
-          "status": "EXACT_KEY_HIT_RESTORED",
-          "key": "native-inputs-ubuntu-24.04-arm-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-          "compressed_bytes": 69398315,
-          "step_seconds": 1.0,
-          "workflow_log": "0_foundation (ubuntu-24.04-arm).txt",
-          "workflow_log_sha256": "1a9c8432ca9ccd2e4174a457f650bef28914ca85561b1ebe5c64f515b50563b1",
-          "hit_to_restored_log_seconds": 0.582766,
-          "step_timestamp_resolution_seconds": 1
-        },
-        "pre_first_check_setup_seconds": 5.43254,
-        "setup_window": {
-          "scope": "Aggregate job log shared-step start through first check: native discovery/archive preparation/Python/source setup; pure native preparation not timed separately."
-        },
-        "cargo_finished_durations": {
-          "exact-source-build": [
-            [
-              "release",
-              "2m 32s"
-            ],
-            [
-              "release",
-              "15m 54s"
-            ]
-          ],
-          "clippy": [
-            [
-              "dev",
-              "12m 47s"
-            ]
-          ],
-          "rust-doc": [
-            [
-              "dev",
-              "7.21s"
-            ]
-          ],
-          "rust-tests": [
-            [
-              "test",
-              "18m 15s"
-            ]
-          ]
-        },
-        "not_run_checks": []
-      },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950792",
-      "worker_eof_test": {
-        "status": "PASS",
-        "exact_name": "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof",
-        "observed_successes": 1,
-        "scope": "Included within worker6, not an extra seventh test."
-      }
-    },
-    "macos": {
-      "status": "PASS",
-      "result_sha256": "4f8978d944d58eaab4f556e5e181cc20e55df72920848c0856668938943f739e",
-      "build_result_sha256": "fcdb44e2e9d2011d92c17b89d369c6e6d3f63bc6419f046ae229da085c9ca5db",
-      "source_manifest_sha256": "9d57d84847f9f8e6082a644261327a1c33ed0acf5abf74e92efcc6b9c5d775c8",
-      "binary_sha256": "aa0f05da9b39b7f1a7eca35101a3e44114d75341a446bcb30d749414d72ddb58",
-      "worker": {
-        "bytes": 12253904,
-        "sha256": "a1cfc9169b71c4bb92686c69882ef58d7d64f188e84954fcfebde871c457d36d"
-      },
-      "target": "aarch64-apple-darwin",
-      "checks": [
-        {
-          "name": "toolchain",
-          "command": [
-            "rustup",
-            "show"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 6.681619458
-        },
-        {
-          "name": "format",
-          "command": [
-            "cargo",
-            "fmt",
-            "--all",
-            "--check"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 3.0869849999999133
-        },
-        {
-          "name": "acceptance-controls",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/ci.py",
-            "--control-suite",
-            "acceptance"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 70.05421049999995
-        },
-        {
-          "name": "export-profile-controls",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/ci.py",
-            "--control-suite",
-            "export-profile"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.3066867499999262
-        },
-        {
-          "name": "exact-source-build",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/build.py",
-            "--output",
-            "/Users/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build",
-            "--jobs",
-            "2",
-            "--archive-bundle",
-            "/Users/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci-native-inputs/archive-bundle"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 983.8352571669999
-        },
-        {
-          "name": "clippy",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/ci.py",
-            "--workspace-check",
-            "clippy",
-            "--from-build",
-            "/Users/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 487.0291259580001
-        },
-        {
-          "name": "rust-doc",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-doc",
-            "--from-build",
-            "/Users/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 9.19858079200003
-        },
-        {
-          "name": "rust-tests",
-          "command": [
-            "/opt/homebrew/opt/python@3.15/bin/python3.15",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-tests",
-            "--from-build",
-            "/Users/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 877.373791
-        }
-      ],
-      "counts": {
-        "collected": 8,
-        "executed": 8,
-        "failed": 0,
-        "not_run": 0
-      },
-      "rust_tests": {
-        "passed": 1376,
-        "failed": 0,
-        "ignored": 2,
-        "measured": 0,
-        "filtered_out": 0,
-        "suite_results": 94,
-        "ignored_test_names": [
-          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
-          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
-        ],
-        "failed_test_names": [],
-        "scope": "Complete selected default-profile workspace execution"
-      },
-      "cursor_keyring": {
-        "status": "PASS",
-        "passed": 10,
-        "failed": 0,
-        "ignored": 0,
-        "required_tests": 10,
-        "tests": [
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
-          "directory_locks_exclude_preparation_and_readers_without_waiting",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets",
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys",
-          "modes_links_and_nonregular_files_are_refused_without_modification",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated"
-        ],
-        "test_statuses": {
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
-          "directory_locks_exclude_preparation_and_readers_without_waiting": "ok",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys": "ok",
-          "modes_links_and_nonregular_files_are_refused_without_modification": "ok",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts": "ok",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated": "ok"
-        }
-      },
-      "practical": {
-        "p01-event-cli": "NOT_SELECTED on macOS",
-        "p01-config-static": "NOT_SELECTED on macOS"
-      },
-      "total_recorded_check_seconds": 2437.566256625,
-      "export_fixtures": {
-        "export_files": {
-          "status": "PASS",
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 6,
-          "tests": [
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes"
-          ],
-          "test_statuses": {
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit": "ok",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files": "ok",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging": "ok",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files": "ok",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not": "ok",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes": "ok"
-          }
-        },
-        "export_files_umask": {
-          "status": "PASS",
-          "passed": 1,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 1,
-          "tests": [
-            "restrictive_umask_changes_only_new_files_and_directories"
-          ],
-          "test_statuses": {
-            "restrictive_umask_changes_only_new_files_and_directories": "ok"
-          }
-        },
-        "export_destination": {
-          "status": "PASS",
-          "passed": 4,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 4,
-          "tests": [
-            "offline_pairing_and_disjointness_never_open_the_destination",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair",
-            "restrictive_umask_cannot_create_an_unusable_marker",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection"
-          ],
-          "test_statuses": {
-            "offline_pairing_and_disjointness_never_open_the_destination": "ok",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair": "ok",
-            "restrictive_umask_cannot_create_an_unusable_marker": "ok",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection": "ok"
-          }
-        },
-        "export_destination_custody": {
-          "status": "PASS",
-          "passed": 2,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 2,
-          "tests": [
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization"
-          ],
-          "test_statuses": {
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok"
-          }
-        }
-      },
-      "job": {
-        "id": 124526950725,
-        "name": "foundation (macos-15)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950725",
-        "status": "completed",
-        "conclusion": "success",
-        "started_at": "2026-10-31T11:37:51Z",
-        "completed_at": "2026-10-31T12:18:46Z",
-        "wall_seconds": 2455.0,
-        "failure_steps": [],
-        "cancelled_steps": [],
-        "skipped_steps": [
-          "Install Linux native build tools and syscall observer"
-        ]
-      },
-      "acceptance_controls": {
-        "collected": 376,
-        "passed": 370,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 6,
-        "seconds": 68.747,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "export_profile_controls": {
-        "collected": 10,
-        "passed": 10,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 0,
-        "seconds": 0.035,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "native_reference": {
-        "status": "PASS",
-        "passed": 257,
-        "failed": 0,
-        "ignored": 0,
-        "not_run": 0,
-        "groups": {
-          "funded-reservation": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "funded-dns": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "clickhouse": {
-            "passed": 51,
-            "failed": 0,
-            "not_run": 0
-          },
-          "indexer": {
-            "passed": 12,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-publication": {
-            "passed": 10,
-            "failed": 0,
-            "not_run": 0
-          },
-          "postgres-route": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-unpolled": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-drop": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-driver": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-receipts": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-inputs": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-input-custody": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-expectations": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-head": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-closure": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "lineage-pending": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "signed-source-head": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "closed-reclamation": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-progress": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-live": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-pending": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-census": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-observation": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "observation-clock": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-admission": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-capacity": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-archive": {
-            "passed": 29,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-index": {
-            "passed": 30,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-commands": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync-diagnostic": {
-            "passed": 8,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-supervision": {
-            "passed": 6,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-watchdog": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-readiness": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-status-http": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-observations": {
-            "passed": 9,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-role-route": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-reader-budget": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          }
-        },
-        "rust_log_sha256": "07aa73f6d143db3d70aaed541ca3c604fcce3fedccaaa534aa3656b1e623ddc3"
-      },
-      "protocol_and_worker_controls": {
-        "protocol": {
-          "status": "PASS",
-          "required": 3,
-          "passed": 3,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "archive_receipt::group::tests::group_digest_binds_literal_common_semantics_and_ordered_identities": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_members_refuse_empty_duplicate_crossed_unordered_and_over_limit": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_reply_requires_the_exact_digest_and_one_complete_admitted_identity": [
-              "ok"
-            ]
-          }
-        },
-        "worker": {
-          "status": "PASS",
-          "required": 6,
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "receipt::group::tests::grouped_receipts_full_eof_selects_none_or_each_exact_member_and_keeps_strict_guard": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_missing_or_corrupt_later_native_object_never_delivers_a_choice": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_reject_second_duplicate_crossed_semantic_and_late_unrelated_rows": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_scan_max_plus_one_and_persisted_range_limits_refuse": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_request_parser_is_closed_and_enforces_exact_wire_and_member_bounds": [
-              "ok"
-            ],
-            "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof": [
-              "ok"
-            ]
-          }
-        }
-      },
-      "python": {
-        "collected": 376,
-        "passed": 370,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 6,
-        "seconds": 68.747,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "rust_workspace": {
-        "passed": 1376,
-        "failed": 0,
-        "ignored": 2,
-        "measured": 0,
-        "filtered_out": 0,
-        "suite_results": 94,
-        "ignored_test_names": [
-          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
-          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
-        ],
-        "failed_test_names": [],
-        "scope": "Complete selected default-profile workspace execution"
-      },
-      "cache": {
-        "status": "EXACT_KEY_HIT_RESTORED",
-        "key": "native-inputs-macos-15-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-        "compressed_bytes": 60250616,
-        "step_seconds": 1.0,
-        "workflow_log": "1_foundation (macos-15).txt",
-        "workflow_log_sha256": "11eaa7a1c52392ced35d35b44c1348a7a881019aa279a92313164a4d0d47f2cb",
-        "hit_to_restored_log_seconds": 0.776125,
-        "step_timestamp_resolution_seconds": 1
-      },
-      "timing": {
-        "job_seconds": 2455.0,
-        "checks_seconds": {
-          "toolchain": 6.681619458,
-          "format": 3.0869849999999133,
-          "acceptance-controls": 70.05421049999995,
-          "export-profile-controls": 0.3066867499999262,
-          "exact-source-build": 983.8352571669999,
-          "clippy": 487.0291259580001,
-          "rust-doc": 9.19858079200003,
-          "rust-tests": 877.373791
-        },
-        "acceptance_ordinal": 3,
-        "cache": {
-          "status": "EXACT_KEY_HIT_RESTORED",
-          "key": "native-inputs-macos-15-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-          "compressed_bytes": 60250616,
-          "step_seconds": 1.0,
-          "workflow_log": "1_foundation (macos-15).txt",
-          "workflow_log_sha256": "11eaa7a1c52392ced35d35b44c1348a7a881019aa279a92313164a4d0d47f2cb",
-          "hit_to_restored_log_seconds": 0.776125,
-          "step_timestamp_resolution_seconds": 1
-        },
-        "pre_first_check_setup_seconds": 6.471297,
-        "setup_window": {
-          "scope": "Aggregate job log shared-step start through first check: native discovery/archive preparation/Python/source setup; pure native preparation not timed separately."
-        },
-        "cargo_finished_durations": {
-          "exact-source-build": [
-            [
-              "release",
-              "2m 52s"
-            ],
-            [
-              "release",
-              "13m 25s"
-            ]
-          ],
-          "clippy": [
-            [
-              "dev",
-              "8m 02s"
-            ]
-          ],
-          "rust-doc": [
-            [
-              "dev",
-              "6.81s"
-            ]
-          ],
-          "rust-tests": [
-            [
-              "test",
-              "10m 11s"
-            ]
-          ]
-        },
-        "not_run_checks": []
-      },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950725",
-      "worker_eof_test": {
-        "status": "PASS",
-        "exact_name": "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof",
-        "observed_successes": 1,
-        "scope": "Included within worker6, not an extra seventh test."
       }
     },
     "amd64": {
       "status": "PASS",
-      "result_sha256": "bc804aa9e4a178a93cb3fdb694a17cd36529d4368b6c32ff06607cefeaf3a339",
-      "build_result_sha256": "2f9baf2fb202db0141e01fe7d0645b11b86270ac3c52a964b96c78c787e3abfa",
-      "source_manifest_sha256": "9d57d84847f9f8e6082a644261327a1c33ed0acf5abf74e92efcc6b9c5d775c8",
-      "binary_sha256": "c1fc5261eeb6eda1056f6509eefd9458b4c207dc57a806fdd2c59a8b894b8a7c",
-      "worker": {
-        "bytes": 14462968,
-        "sha256": "b2f43e385bc98195dcca612aeccbda6fe98acdc27d3b1728d6a158c68aca2611"
-      },
-      "target": "x86_64-unknown-linux-gnu",
-      "checks": [
-        {
-          "name": "toolchain",
-          "command": [
-            "rustup",
-            "show"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 7.732670717000005
-        },
-        {
-          "name": "format",
-          "command": [
-            "cargo",
-            "fmt",
-            "--all",
-            "--check"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 1.7182436230000064
-        },
-        {
-          "name": "install-deny",
-          "command": [
-            "cargo",
-            "install",
-            "cargo-deny",
-            "--version",
-            "0.20.2",
-            "--locked",
-            "--root",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/tools"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 103.129619337
-        },
-        {
-          "name": "dependency-policy",
-          "command": [
-            "cargo",
-            "deny",
-            "--locked",
-            "check",
-            "licenses",
-            "sources",
-            "advisories"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 3.121132301000017
-        },
-        {
-          "name": "acceptance-controls",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--control-suite",
-            "acceptance"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 31.929066903999995
-        },
-        {
-          "name": "export-profile-controls",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--control-suite",
-            "export-profile"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.1643644780000102
-        },
-        {
-          "name": "exact-source-build",
-          "command": [
-            "/usr/bin/python3",
-            "tools/build.py",
-            "--output",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build",
-            "--jobs",
-            "2",
-            "--archive-bundle",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci-native-inputs/archive-bundle"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 747.260537431
-        },
-        {
-          "name": "clippy",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "clippy",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 505.0361834240001
-        },
-        {
-          "name": "rust-doc",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-doc",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 6.581202638999912
-        },
-        {
-          "name": "rust-tests",
-          "command": [
-            "/usr/bin/python3",
-            "tools/ci.py",
-            "--workspace-check",
-            "rust-tests",
-            "--from-build",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 1170.131125656
-        },
-        {
-          "name": "planning-artifacts",
-          "command": [
-            "/usr/bin/python3",
-            "experiments/verify_artifacts.py"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 1.6173410589999548
-        },
-        {
-          "name": "prepare-links",
-          "command": [
-            "/usr/bin/python3",
-            "experiments/verify_handoff.py",
-            "--prepare"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.5152458799998385
-        },
-        {
-          "name": "documentation-links",
-          "command": [
-            "/usr/bin/python3",
-            "experiments/verify_handoff.py",
-            "--output",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/handoff.json"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.26464184599990404
-        },
-        {
-          "name": "p01-event-cli",
-          "command": [
-            "/usr/bin/python3",
-            "tests/acceptance/run.py",
-            "p01-event-cli",
-            "--binary",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/bigbrotr",
-            "--source-root",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source",
-            "--source-manifest",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source-manifest.json",
-            "--build-result",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/build-result.json",
-            "--evidence",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/p01-event-cli"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.4649883810002393
-        },
-        {
-          "name": "p01-config-static",
-          "command": [
-            "/usr/bin/python3",
-            "tests/acceptance/run.py",
-            "p01-config-static",
-            "--binary",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/bigbrotr",
-            "--source-root",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source",
-            "--source-manifest",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/source-manifest.json",
-            "--build-result",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/build/build-result.json",
-            "--evidence",
-            "/home/runner/work/bigbrotr-rs/bigbrotr-rs/.research/ci/p01-config-static"
-          ],
-          "status": "PASS",
-          "executed": true,
-          "exit_code": 0,
-          "seconds": 0.7654256539999551
-        }
-      ],
       "counts": {
         "collected": 15,
         "executed": 15,
@@ -1621,7 +102,7 @@
         "not_run": 0
       },
       "rust_tests": {
-        "passed": 1378,
+        "passed": 1399,
         "failed": 0,
         "ignored": 3,
         "measured": 0,
@@ -1635,36 +116,27 @@
         "failed_test_names": [],
         "scope": "Complete selected default-profile workspace execution"
       },
-      "cursor_keyring": {
-        "status": "PASS",
+      "acceptance_controls": {
+        "collected": 409,
+        "passed": 409,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 38.73,
+        "failed_or_errored_cases": 0,
+        "affected_case_names": [],
+        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
+      },
+      "export_profile_controls": {
+        "collected": 10,
         "passed": 10,
         "failed": 0,
-        "ignored": 0,
-        "required_tests": 10,
-        "tests": [
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys",
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets",
-          "directory_locks_exclude_preparation_and_readers_without_waiting",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry",
-          "modes_links_and_nonregular_files_are_refused_without_modification",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated"
-        ],
-        "test_statuses": {
-          "incomplete_staging_is_preserved_and_does_not_regenerate_keys": "ok",
-          "concurrent_preparers_publish_one_identity_and_keep_no_extra_files": "ok",
-          "insufficient_reservation_fails_before_creating_or_opening_secrets": "ok",
-          "directory_locks_exclude_preparation_and_readers_without_waiting": "ok",
-          "explicit_preparation_persists_the_same_keys_across_independent_opens_and_retry": "ok",
-          "modes_links_and_nonregular_files_are_refused_without_modification": "ok",
-          "prepare_key_at_capacity_retries_existing_ids_and_never_overwrites_or_evicts": "ok",
-          "prepare_key_appends_once_preserving_the_exact_existing_ring_and_material": "ok",
-          "prepare_key_refuses_missing_or_partial_state_without_generating_a_replacement": "ok",
-          "independent_wire_fixtures_and_every_single_byte_change_are_discriminated": "ok"
-        }
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 0.089,
+        "failed_or_errored_cases": 0,
+        "affected_case_names": [],
+        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
       },
       "practical": {
         "p01-event-cli": {
@@ -1676,7 +148,7 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "77e16395013b4e6b51b71f69d5689cf86593c538bcfb628a984cfdd13ae24a7f"
+          "result_sha256": "9933ad8553baab979f19493f3aa8770ee52cacd344349a1e17cdfdfa084209c7"
         },
         "p01-config-static": {
           "status": "PASS",
@@ -1687,102 +159,53 @@
             "skipped": 0,
             "not_run": 0
           },
-          "result_sha256": "04f8e80ae285a3c323226a7d7b5281c1970e85026aad085285ff0da48e375f30"
+          "result_sha256": "dc13f85d10365f39485fcb065039ead9c7dea14cb38189b31edc737e8505379c"
         }
       },
-      "total_recorded_check_seconds": 2580.43178933,
-      "export_fixtures": {
-        "export_files": {
-          "status": "PASS",
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 6,
-          "tests": [
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not"
-          ],
-          "test_statuses": {
-            "cancellation_and_limits_refuse_before_staging_and_empty_output_is_explicit": "ok",
-            "refuses_foreign_lock_marker_root_and_unit_before_staging": "ok",
-            "incomplete_known_prefix_is_rebuilt_but_conflicts_preserve_all_files": "ok",
-            "retained_custody_excludes_other_writers_and_rejects_linked_files": "ok",
-            "publishes_complete_files_and_rebuilds_same_nonterminal_unit_on_fresh_inodes": "ok",
-            "every_partial_cleanup_subset_is_recoverable_but_missing_final_file_is_not": "ok"
-          }
-        },
-        "export_files_umask": {
-          "status": "PASS",
-          "passed": 1,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 1,
-          "tests": [
-            "restrictive_umask_changes_only_new_files_and_directories"
-          ],
-          "test_statuses": {
-            "restrictive_umask_changes_only_new_files_and_directories": "ok"
-          }
-        },
-        "export_destination": {
-          "status": "PASS",
-          "passed": 4,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 4,
-          "tests": [
-            "restrictive_umask_cannot_create_an_unusable_marker",
-            "offline_pairing_and_disjointness_never_open_the_destination",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection"
-          ],
-          "test_statuses": {
-            "restrictive_umask_cannot_create_an_unusable_marker": "ok",
-            "offline_pairing_and_disjointness_never_open_the_destination": "ok",
-            "refuses_unowned_contents_links_and_partial_markers_without_repair": "ok",
-            "explicit_destination_survives_restart_and_never_appears_from_inspection": "ok"
-          }
-        },
-        "export_destination_custody": {
-          "status": "PASS",
-          "passed": 2,
-          "failed": 0,
-          "ignored": 0,
-          "required_tests": 2,
-          "tests": [
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization"
-          ],
-          "test_statuses": {
-            "acceptance_observation_keeps_custody_after_the_checker_thread_joins": "ok",
-            "retained_destination_detects_root_substitution_and_excludes_reinitialization": "ok"
-          }
-        }
-      },
+      "target": "x86_64-unknown-linux-gnu",
       "job": {
-        "id": 124526950733,
+        "id": 124649954841,
         "name": "foundation (ubuntu-24.04)",
-        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950733",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676/job/124649954841",
         "status": "completed",
         "conclusion": "success",
-        "started_at": "2026-10-31T11:37:58Z",
-        "completed_at": "2026-10-31T12:21:24Z",
-        "wall_seconds": 2606.0,
+        "started_at": "2026-10-31T20:32:58Z",
+        "completed_at": "2026-10-31T21:29:01Z",
+        "wall_seconds": 3363.0,
         "failure_steps": [],
         "cancelled_steps": [],
         "skipped_steps": []
+      }
+    },
+    "macos": {
+      "status": "PASS",
+      "counts": {
+        "collected": 8,
+        "executed": 8,
+        "failed": 0,
+        "not_run": 0
+      },
+      "rust_tests": {
+        "passed": 1397,
+        "failed": 0,
+        "ignored": 2,
+        "measured": 0,
+        "filtered_out": 0,
+        "suite_results": 94,
+        "ignored_test_names": [
+          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
+          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
+        ],
+        "failed_test_names": [],
+        "scope": "Complete selected default-profile workspace execution"
       },
       "acceptance_controls": {
-        "collected": 376,
-        "passed": 376,
+        "collected": 409,
+        "passed": 403,
         "failed": 0,
         "errors": 0,
-        "skipped": 0,
-        "seconds": 31.288,
+        "skipped": 6,
+        "seconds": 53.871,
         "failed_or_errored_cases": 0,
         "affected_case_names": [],
         "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
@@ -1793,378 +216,30 @@
         "failed": 0,
         "errors": 0,
         "skipped": 0,
-        "seconds": 0.033,
+        "seconds": 0.031,
         "failed_or_errored_cases": 0,
         "affected_case_names": [],
         "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
       },
-      "native_reference": {
-        "status": "PASS",
-        "passed": 257,
-        "failed": 0,
-        "ignored": 0,
-        "not_run": 0,
-        "groups": {
-          "funded-reservation": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "funded-dns": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "clickhouse": {
-            "passed": 51,
-            "failed": 0,
-            "not_run": 0
-          },
-          "indexer": {
-            "passed": 12,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-publication": {
-            "passed": 10,
-            "failed": 0,
-            "not_run": 0
-          },
-          "postgres-route": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-unpolled": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-driver-drop": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-driver": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-group-receipts": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-inputs": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-input-custody": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "archive-expectations": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-head": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "source-closure": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "lineage-pending": {
-            "passed": 5,
-            "failed": 0,
-            "not_run": 0
-          },
-          "signed-source-head": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "closed-reclamation": {
-            "passed": 7,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-progress": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "compacted-live": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-pending": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "live-census": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-observation": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "observation-clock": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-admission": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-capacity": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync": {
-            "passed": 4,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-archive": {
-            "passed": 29,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-index": {
-            "passed": 30,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-commands": {
-            "passed": 13,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-sync-diagnostic": {
-            "passed": 8,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-supervision": {
-            "passed": 6,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-watchdog": {
-            "passed": 2,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "index-cli": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-readiness": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "role-status-http": {
-            "passed": 3,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-observations": {
-            "passed": 9,
-            "failed": 0,
-            "not_run": 0
-          },
-          "initial-role-route": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          },
-          "ordinary-reader-budget": {
-            "passed": 1,
-            "failed": 0,
-            "not_run": 0
-          }
-        },
-        "rust_log_sha256": "a3abe2bf821c744498462de74a330057b949105e2a4be29ff6c19742f25f27d1"
+      "practical": {
+        "p01-event-cli": "NOT_SELECTED on macOS",
+        "p01-config-static": "NOT_SELECTED on macOS"
       },
-      "protocol_and_worker_controls": {
-        "protocol": {
-          "status": "PASS",
-          "required": 3,
-          "passed": 3,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "archive_receipt::group::tests::group_digest_binds_literal_common_semantics_and_ordered_identities": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_members_refuse_empty_duplicate_crossed_unordered_and_over_limit": [
-              "ok"
-            ],
-            "archive_receipt::group::tests::group_reply_requires_the_exact_digest_and_one_complete_admitted_identity": [
-              "ok"
-            ]
-          }
-        },
-        "worker": {
-          "status": "PASS",
-          "required": 6,
-          "passed": 6,
-          "failed": 0,
-          "ignored": 0,
-          "not_run": 0,
-          "observed_test_statuses": {
-            "receipt::group::tests::grouped_receipts_full_eof_selects_none_or_each_exact_member_and_keeps_strict_guard": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_missing_or_corrupt_later_native_object_never_delivers_a_choice": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_reject_second_duplicate_crossed_semantic_and_late_unrelated_rows": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_receipts_scan_max_plus_one_and_persisted_range_limits_refuse": [
-              "ok"
-            ],
-            "receipt::group::tests::grouped_request_parser_is_closed_and_enforces_exact_wire_and_member_bounds": [
-              "ok"
-            ],
-            "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof": [
-              "ok"
-            ]
-          }
-        }
-      },
-      "python": {
-        "collected": 376,
-        "passed": 376,
-        "failed": 0,
-        "errors": 0,
-        "skipped": 0,
-        "seconds": 31.288,
-        "failed_or_errored_cases": 0,
-        "affected_case_names": [],
-        "passed_basis": "Collected minus distinct failing/errored case IDs and skips; subtest events can exceed cases"
-      },
-      "rust_workspace": {
-        "passed": 1378,
-        "failed": 0,
-        "ignored": 3,
-        "measured": 0,
-        "filtered_out": 0,
-        "suite_results": 94,
-        "ignored_test_names": [
-          "storage::archive::lifetime::tests::native_worker_retains_custody_and_separate_process_budgets_until_reaped",
-          "storage::rocks::store::admission_tests::producer_ack_tests::native_ack_fsync_boundary",
-          "publication::tests::native_sync_refusal_prevents_committed_membership_and_attempt_reuse"
-        ],
-        "failed_test_names": [],
-        "scope": "Complete selected default-profile workspace execution"
-      },
-      "cache": {
-        "status": "EXACT_KEY_HIT_RESTORED",
-        "key": "native-inputs-ubuntu-24.04-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-        "compressed_bytes": 75713704,
-        "step_seconds": 2.0,
-        "workflow_log": "3_foundation (ubuntu-24.04).txt",
-        "workflow_log_sha256": "4124cb7cc544d786f9064a4759b472c4e00c095cd607a21baf24970bbc12942d",
-        "hit_to_restored_log_seconds": 1.038399,
-        "step_timestamp_resolution_seconds": 1
-      },
-      "timing": {
-        "job_seconds": 2606.0,
-        "checks_seconds": {
-          "toolchain": 7.732670717000005,
-          "format": 1.7182436230000064,
-          "install-deny": 103.129619337,
-          "dependency-policy": 3.121132301000017,
-          "acceptance-controls": 31.929066903999995,
-          "export-profile-controls": 0.1643644780000102,
-          "exact-source-build": 747.260537431,
-          "clippy": 505.0361834240001,
-          "rust-doc": 6.581202638999912,
-          "rust-tests": 1170.131125656,
-          "planning-artifacts": 1.6173410589999548,
-          "prepare-links": 0.5152458799998385,
-          "documentation-links": 0.26464184599990404,
-          "p01-event-cli": 0.4649883810002393,
-          "p01-config-static": 0.7654256539999551
-        },
-        "acceptance_ordinal": 5,
-        "cache": {
-          "status": "EXACT_KEY_HIT_RESTORED",
-          "key": "native-inputs-ubuntu-24.04-trusted-main-e1b21016e4b37de177aeab13d3cd881fdb1736c887a9a3ce5007ae549a521c07",
-          "compressed_bytes": 75713704,
-          "step_seconds": 2.0,
-          "workflow_log": "3_foundation (ubuntu-24.04).txt",
-          "workflow_log_sha256": "4124cb7cc544d786f9064a4759b472c4e00c095cd607a21baf24970bbc12942d",
-          "hit_to_restored_log_seconds": 1.038399,
-          "step_timestamp_resolution_seconds": 1
-        },
-        "pre_first_check_setup_seconds": 3.855448,
-        "setup_window": {
-          "scope": "Aggregate job log shared-step start through first check: native discovery/archive preparation/Python/source setup; pure native preparation not timed separately."
-        },
-        "cargo_finished_durations": {
-          "exact-source-build": [
-            [
-              "release",
-              "1m 50s"
-            ],
-            [
-              "release",
-              "10m 35s"
-            ]
-          ],
-          "clippy": [
-            [
-              "dev",
-              "8m 23s"
-            ]
-          ],
-          "rust-doc": [
-            [
-              "dev",
-              "5.59s"
-            ]
-          ],
-          "rust-tests": [
-            [
-              "test",
-              "10m 25s"
-            ]
-          ]
-        },
-        "not_run_checks": []
-      },
-      "job_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654/job/124526950733",
-      "worker_eof_test": {
-        "status": "PASS",
-        "exact_name": "receipt::tests::retained_replacement_uses_the_strict_receipt_guard_through_complete_eof",
-        "observed_successes": 1,
-        "scope": "Included within worker6, not an extra seventh test."
+      "target": "aarch64-apple-darwin",
+      "job": {
+        "id": 124649954801,
+        "name": "foundation (macos-15)",
+        "html_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676/job/124649954801",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-10-31T20:32:58Z",
+        "completed_at": "2026-10-31T21:08:04Z",
+        "wall_seconds": 2106.0,
+        "failure_steps": [],
+        "cancelled_steps": [],
+        "skipped_steps": [
+          "Install Linux native build tools and syscall observer"
+        ]
       }
     }
   },
@@ -2175,77 +250,72 @@
     "Cargo.lock": "e3da241338957a9aa647c3717580883fde628359610c296a8c3ebaa4b5aa9412",
     "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
   },
-  "exact_source_files": 2447,
-  "source_context": "All three hosted2447-file manifests equal exact Gitc90. Release/native/compiler/worker/artifact and initial/post workspace identities verify. Selection equals complete Gitdiff. Policy source changed with5old/3new test names; complete current executed namespace matches precomputed source expectations. No whole-app byte-equality or installed-current-policy inference.",
-  "fixture_followup": "Each platform executes all257focused app names/40groups, protocol3 and worker6 once, plus keyring10/export13. Complete Rust1378/1378/1376PASS with3/2/2declared ignores. Acceptance376/376/370PASS with Mac6declaredSKIP; profile10PASS each. Linux practical40/65PASS. Originald742 failure,8acreduced result and earlier6fa/1cb proofs remain separate.",
+  "exact_source_files": 2461,
+  "source_context": "Complete parsed manifest/archive/inventory equality; actual hosted manifest bytes independently bind each build and workspace context. Independent manifest serialization ordering is not treated as actual artifact byte identity.",
+  "fixture_followup": "Current409acceptance controls; Linux409PASS each,macOS403PASS/6SKIP; profile10PASS each. Actual Rust workspace totals/ignored names are retained per platform. No independently regenerated complete whole-workspace Rust namespace oracle is claimed.",
   "not_run_or_skipped": [
-    "Exactc90attempt1:33/33required foundation commandsPASS with no failure, cancellation or selectedNOT_RUN. All three clean release builds and default-profile workspaces actually execute.",
-    "Rust complete namespace1378PASS/3ignored AMD,1378/2ARM,1376/2Mac matches frozen-source5removed/3added policy test delta. Dedicated ignored fault/lifetime drivers remain unexecuted; unchanged cfg exclusions remain source-attributed.",
-    "Every257focused app name/protocol3/worker6 name passes exactly once per platform; those scopes are distinct from complete workspace totals. Original independent references and previous actual proofs remain separately retained.",
-    "Acceptance376collected each:Linux376PASS each,Mac370PASS/6Linux-onlySKIP. Profile10PASS each. Nonverbose Python logs establish aggregate execution; declared names/guards come from exact source AST. Linux practical event-cli40/config-static65PASS; those practical cases NOT_SELECTED on Mac.",
-    "Inherited d742Mac4NOT_RUN/full-helper gate closes on this actual laterc90full product push. Originald742FAIL/28PASS1FAIL4NOT_RUN and8accontrols-only15PASS stay unchanged;8ac is not retroactively full-qualified. Earlier8acdispatch plan was superseded scheduling, no duplicate dispatch/cancellation.",
-    "Three exact native-download cache hits and actual job/check/setup/Cargo durations retained. No compiled-cache reuse, duplicate C++ invocation, controlled savings or causal speedup claim.",
-    "Four ZIPs/516artifact members plus41workflow-log members pass unchanged known-five output gate:54benign occurrences and0new/unclassified/provider alerts. Unknown/masked formats and asynchronous provider completion remain unproved.",
-    "Foundation qualification only: no new installed current-policy Archive/read/export/restart/M1, dedicated ignored drivers, broad capacity, release promotion or OPEN-prefix/source/app/PG42/Rocks/native-format integration claim. Existing P01/P08 and all broader selected owners retain their gates."
+    {
+      "name": "native-rocks-linux-arm64",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "controls",
+      "conclusion": "skipped"
+    },
+    {
+      "name": "documentation",
+      "conclusion": "skipped"
+    }
   ],
-  "failure_classification": "All33required selected checks PASS; no provider admission, workflow setup, cancellation/timeout or product/control failure observed in this exact run.",
+  "failure_classification": "This hosted run succeeded; no billing refusal, workflow fault, workflow timeout, cancellation or product failure observed within its selected checks.",
   "public_output_audit": {
-    "status": "PASS_SCOPED_AUDIT_KNOWN_NON_SECRET_CANDIDATES",
-    "artifact_count": 4,
+    "artifacts": 4,
     "artifact_members": 516,
     "workflow_log_members": 41,
+    "compressed_bytes": 1468323,
+    "expanded_bytes": 7642587,
     "candidate_occurrences": 54,
     "unique_fingerprints": 5,
     "new_or_unclassified_candidates": 0,
     "operational_credentials": 0,
     "provider_alerts": 0,
-    "scope_limits": [
-      "Only run41197628654 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
-      "Pattern scan cannot exclude unknown formats or already-masked secrets.",
-      "No extraction, execution, source/settings changes or workflow dispatch."
-    ]
+    "provider": {
+      "visibility": "public",
+      "settings": {
+        "secret_scanning": "enabled",
+        "secret_scanning_push_protection": "enabled"
+      },
+      "pages": 2,
+      "alerts": [],
+      "completion": "Provider scan is asynchronous; no completion claim"
+    },
+    "triage": "Exactly five prior-reviewed non-secret fingerprints; source hashes unchanged. No candidate values emitted."
   },
-  "public_output_audit_limit": [
-    "Only run41197628654 attempt1 and its four listed artifacts; no repeat history scan, later runs excluded.",
-    "Pattern scan cannot exclude unknown formats or already-masked secrets.",
-    "No extraction, execution, source/settings changes or workflow dispatch."
-  ],
+  "public_output_audit_limit": "Pattern/provider limits retained; original f673 installed startup FAIL and later cf035 recovery FAIL are not qualified by hosted foundation success.",
   "artifacts": [
     {
-      "id": 13043116449,
       "name": "foundation-ubuntu-24.04-arm",
-      "size_in_bytes": 621791,
-      "digest": "sha256:5fc59343bae2e028d9f1df7fd96947be7507d326640fb440e07b8aef5563c9a9",
-      "expired": false,
-      "created_at": "2026-10-31T12:33:44Z",
-      "updated_at": "2026-10-31T12:33:44Z"
+      "id": 13058860244,
+      "size_in_bytes": 622732,
+      "digest": "sha256:d55113ae53cd26cda05b25e2eb56f0073953d303a22cb01f6f0f431c87d6a948"
     },
     {
-      "id": 13042476696,
-      "name": "foundation-macos-15",
-      "size_in_bytes": 170394,
-      "digest": "sha256:6c66bb57031f058d37419b7cbb0fd387feb69d101d0820d3cd03c2e958cdbf9e",
-      "expired": false,
-      "created_at": "2026-10-31T12:18:44Z",
-      "updated_at": "2026-10-31T12:18:44Z"
-    },
-    {
-      "id": 13041989357,
       "name": "foundation-ubuntu-24.04",
-      "size_in_bytes": 601338,
-      "digest": "sha256:ccb15a47ad413d12bed502f87d6f1e496705c58b4613b411e3a1d9915868f39a",
-      "expired": false,
-      "created_at": "2026-10-31T12:21:21Z",
-      "updated_at": "2026-10-31T12:21:21Z"
+      "id": 13058318393,
+      "size_in_bytes": 602664,
+      "digest": "sha256:7089b2330d4996829ddeef204787640c7038b45d7ab555565a056ae478a96e50"
     },
     {
-      "id": 13040668586,
+      "name": "foundation-macos-15",
+      "id": 13057273387,
+      "size_in_bytes": 171639,
+      "digest": "sha256:fda95cf1149c30bcbbca2f86c601807fc4946ddd8e6435280c6c4e3baf9066f4"
+    },
+    {
       "name": "ci-selection",
-      "size_in_bytes": 1358,
-      "digest": "sha256:b9987d2ad34d6f9bb5b1b5934ca866f6e15c6b7c65ccca05566c95d10dbcaabe",
-      "expired": false,
-      "created_at": "2026-10-31T11:37:46Z",
-      "updated_at": "2026-10-31T11:37:46Z"
+      "id": 13056647473,
+      "size_in_bytes": 1585,
+      "digest": "sha256:d97df2cb88f578f5853c914085faa6067ea544a912aae875fd6d91f97e65b0d6"
     }
   ],
   "retained_evidence": {
@@ -2544,7 +614,12 @@
     ".research/ci-publication-20261026/c90d20a8-full-ci/rust-namespace-source-delta.json": {
       "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/c90d20a8-full-ci/rust-namespace-source-delta.json",
       "sha256": "219a512b22c5b7ae8c52c8232fe9bee354d1dc3b3fe9b0c353f7e98f1bcc3e91"
-    }
+    },
+    ".research/ci-publication-20261026/terminal-f6737327-20261031/terminal-audit.json": "2ed707d3698900544e04985d1f4a3b665854a71b098b213d44fd9c1297b9edb8",
+    ".research/ci-publication-20261026/terminal-f6737327-20261031/receipt.json": "9f5d37b5b6e4efa4e774e024b6ec2d36520c3f402ab0e3ee0f2b620407546650",
+    ".research/ci-publication-20261026/terminal-f6737327-20261031/completion-check.json": "3edc3e4623f80fc0dec0a8f4b21e46951eb8edd6a74c564a104e3d4666e44ddb",
+    ".research/ci-publication-20261026/terminal-f6737327-20261031/actual-configurations.json": "75d036c843a697bec0cbb64d95c6bf40b5e6d4e41435dacc126abbe16bf3abff",
+    ".research/ci-publication-20261026/terminal-f6737327-20261031/post-build-contexts.json": "a73148dc51f06cd2aa6dbe2f973b47d100a74e4b1ca4c01fb3826b1223546872"
   },
   "format": "bigbrotr-hosted-foundation-evidence/1",
   "early_dependency_policy": {
@@ -2821,29 +896,29 @@
     "conclusion": "success",
     "failed_required_jobs": [],
     "cancelled_jobs": [],
-    "cancelled_steps": [],
     "required_not_run": [],
-    "retry": "Necessary current-policy push full run only; observer/driver96193reaped0 and recorded identities absent. No separate8acdispatch, retry, cancellation or intermediate push by observer.",
+    "root_audit_path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-f6737327-20261031/terminal-audit.json",
+    "root_audit_sha256": "2ed707d3698900544e04985d1f4a3b665854a71b098b213d44fd9c1297b9edb8",
+    "completion_receipt_sha256": "3edc3e4623f80fc0dec0a8f4b21e46951eb8edd6a74c564a104e3d4666e44ddb",
     "limits": [
-      "Exactc90attempt1:33/33required foundation commandsPASS with no failure, cancellation or selectedNOT_RUN. All three clean release builds and default-profile workspaces actually execute.",
-      "Rust complete namespace1378PASS/3ignored AMD,1378/2ARM,1376/2Mac matches frozen-source5removed/3added policy test delta. Dedicated ignored fault/lifetime drivers remain unexecuted; unchanged cfg exclusions remain source-attributed.",
-      "Every257focused app name/protocol3/worker6 name passes exactly once per platform; those scopes are distinct from complete workspace totals. Original independent references and previous actual proofs remain separately retained.",
-      "Acceptance376collected each:Linux376PASS each,Mac370PASS/6Linux-onlySKIP. Profile10PASS each. Nonverbose Python logs establish aggregate execution; declared names/guards come from exact source AST. Linux practical event-cli40/config-static65PASS; those practical cases NOT_SELECTED on Mac.",
-      "Inherited d742Mac4NOT_RUN/full-helper gate closes on this actual laterc90full product push. Originald742FAIL/28PASS1FAIL4NOT_RUN and8accontrols-only15PASS stay unchanged;8ac is not retroactively full-qualified. Earlier8acdispatch plan was superseded scheduling, no duplicate dispatch/cancellation.",
-      "Three exact native-download cache hits and actual job/check/setup/Cargo durations retained. No compiled-cache reuse, duplicate C++ invocation, controlled savings or causal speedup claim.",
-      "Four ZIPs/516artifact members plus41workflow-log members pass unchanged known-five output gate:54benign occurrences and0new/unclassified/provider alerts. Unknown/masked formats and asynchronous provider completion remain unproved.",
-      "Foundation qualification only: no new installed current-policy Archive/read/export/restart/M1, dedicated ignored drivers, broad capacity, release promotion or OPEN-prefix/source/app/PG42/Rocks/native-format integration claim. Existing P01/P08 and all broader selected owners retain their gates."
+      "Foundation workflow scope only; no release, complete M1, installed engine or full recovery claim.",
+      "The root separately observed an f673 current42 installed startup product failure; original terminal audit SHA256 cbe6aebffb7222b43dde6993f799ebb3db2043177d892a7c60052867e9c9163e remains separate. This hosted PASS does not qualify that path or later repair revisions.",
+      "Actual Rust IGNORED and macOS Python SKIP results remain explicit; platform-unselected tests are not converted to PASS.",
+      "Complete Cargo test execution summaries and focused keyring/export targets were checked; no new independent whole-workspace Rust namespace oracle was constructed.",
+      "Only exact run41239387676 attempt1 and its four synthetic public artifacts/logs inspected; no later revision or repeat history audit.",
+      "Pattern scan cannot exclude unknown formats or already-masked credentials; provider scan is asynchronous with no completion claim.",
+      "No tracked-file edit, commit, build, engine, dispatch, rerun, cancellation, billing or settings mutation; no downloaded artifact content executed."
     ]
   },
   "run_local_build_reuse": {
-    "source_manifest_files": 2447,
-    "source_archive_sha256": "7e94c45a0b15eea7539895eb1267c449008010ab28404d73a2d94c5ae66ebc1d",
-    "post_build_contexts_sha256": "51a5f0e8840cb696fc308b6b9d19f09186f11535838ca6336e69beffcd18e786",
-    "observed": "All three hosted2447-file manifests equal exact Gitc90. Release/native/compiler/worker/artifact and initial/post workspace identities verify. Selection equals complete Gitdiff. Policy source changed with5old/3new test names; complete current executed namespace matches precomputed source expectations. No whole-app byte-equality or installed-current-policy inference.",
+    "source_manifest_files": 2461,
+    "source_archive_sha256": "fdb0389d794c66f8a8d47c4677269cef2b43d6072ce9918afd5d38d1d720cca6",
+    "post_build_contexts_sha256": "a73148dc51f06cd2aa6dbe2f973b47d100a74e4b1ca4c01fb3826b1223546872",
+    "observed": "Complete parsed manifest/archive/inventory equality; actual hosted manifest bytes independently bind each build and workspace context. Independent manifest serialization ordering is not treated as actual artifact byte identity.",
     "job_seconds": {
-      "foundation (ubuntu-24.04-arm)": 3353.0,
-      "foundation (macos-15)": 2455.0,
-      "foundation (ubuntu-24.04)": 2606.0
+      "foundation (ubuntu-24.04-arm)": 3339.0,
+      "foundation (ubuntu-24.04)": 3363.0,
+      "foundation (macos-15)": 2106.0
     },
     "limit": "Actual same-run input contexts, cache hits and elapsed durations only. Different hosts/sources and aggregate times do not establish controlled savings, compiled-unit reuse, duplicate native work or a causal speedup. Every selected platform/profile/clean-build check is retained.",
     "conditional_followup": {
@@ -2854,12 +929,11 @@
     },
     "current_timing": {
       "status": "OBSERVED_REQUIRED_RUN_ONLY_NO_EXTRA_RUNS",
-      "run": 41197628654,
-      "revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
-      "evidence": ".research/ci-publication-20261026/c90d20a8-full-ci/timing-observation.json",
-      "sha256": "1aa89be02aee4f518b635502c96b19bf9480d638181729964d4bb0f7fb0ca92f",
-      "platform_values": "See platforms.{amd64,arm,macos}.timing; original per-check/result evidence retained once.",
-      "limits": "Exact-key native download cache hits, per-check seconds, Cargo-reported elapsed times and setup windows are observations. Pure native preparation is not timed separately. Different hosts/sources and aggregate timings do not establish saved time, compiled-unit reuse or duplicate native work. No extra run, new metrics register or workflow edit."
+      "run": 41239387676,
+      "revision": "f67373270e3240421b6708b4d8e05e07fa69642a",
+      "evidence": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-f6737327-20261031/terminal-audit.json",
+      "sha256": "2ed707d3698900544e04985d1f4a3b665854a71b098b213d44fd9c1297b9edb8",
+      "limits": "Actual job/check durations and validated same-run build/workspace identities only; no controlled-savings, compiled-cache reuse or duplicate-native-work claim. Existing conditional reuse follow-through remains scoped and unproven."
     },
     "same_run_native_followup": {
       "status": "UNPROVEN_RECOMPILATION_NO_CHANGE_JUSTIFIED",
@@ -3908,5 +1982,15 @@
     },
     "artifacts": "Two exact run-bound artifact digests verified; six artifact and17workflow-log members/148579expandedB scanned,0pattern candidates/provideralerts. Bounded known-format scope; original fullC90 proof unchanged.",
     "terminal": "Sole observer and scanner reaped0; exact recorded processes absent; no observer remains."
+  },
+  "preceding_current_policy_baseline": {
+    "revision": "c90d20a8f857f1f76ab88297d109a0cb489ad0e5",
+    "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654",
+    "selected_check_totals": {
+      "PASS": 33
+    },
+    "exact_source_files": 2447,
+    "full_record": "https://github.com/BigBrotr/bigbrotr-rs/blob/f67373270e3240421b6708b4d8e05e07fa69642a/docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json",
+    "git_blob": "ea541d1c0e0070db57ebb32b46701f06f19ace53"
   }
 }

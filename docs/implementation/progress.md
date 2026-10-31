@@ -1,141 +1,130 @@
 # Current execution checkpoint
 
 2026-10-31, Tux. **Goal ACTIVE:** all selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply. Operational coordinator/authors: Sol/xhigh;
-bounded critical reviews: Astra/xhigh. The persistent-boundary guidance is in
-questions.md and agent-handoff.md. Public development repository; no official
-release, package publication, rename or production deployment.
+Q37/Q38/Q40/Q41/Q42 apply. Coordinator/authors: Sol/xhigh; bounded critical
+reviews: Astra/xhigh. Public development repository; no official release,
+package publication, rename or production deployment.
 
-## Main integration and demonstrated capability
+## Revision and current increment
 
-Published main is **f67373270e3240421b6708b4d8e05e07fa69642a**, tree9500f025,
-merging **139ec8685dcc39ae72316b62821340ff7fdb442e** over **de27d510** and retaining
-newer operating guidance, CI and laboratory records. The active correction branch
-is `work/current42-prefix-invoker-20261031`; its SQL/fixture work is not yet qualified
-or integrated. Git supplies the actual candidate commit/local state.
-Root includes the current four evidence/inventory/checkpoint records and corrects
-the experiment's obsolete private-Actions wording. No other source is folded in.
+Published main/origin is **f67373270e3240421b6708b4d8e05e07fa69642a**,
+tree9500f025. Root branch `work/current42-prefix-invoker-20261031` contains
+**cf035588** and **e4e44a255aca5753f913cf32fb41d1522d2e80e1**, tree318a9d83,
+plus this ordinary evidence/checkpoint update. Git supplies the actual committed
+candidate and local state. These corrections are not yet integrated or pushed.
 
-Native2 introduces mandatory value-schema2 pending accounting, full startup
-census/current-source checks, coherent five-write handoff and authenticated
-original-policy capture/recovery. It preserves the absolute64 gate; automatic
-OPEN scheduling, funding/reserves and numerical physical fit remain incomplete.
-
-Qualified code **1434aa04**, apps treecb99ac7d: actual release Clippy over all app
-targets and **598/598 nonexternal library tests PASS**,0ignored,2explicit external
-driver exclusions, including the genuine retained a3 worker. Tool50095/reaped0,
-87.191s; terminal0387b9e8 in `/home/tux/bigbrotr-implementation-20260917/runs/native2-main-1434aa04`.
-Exactly three unreachable model tests were removed under critical reviewd618;
-prepared-slot refusal and CommitUnknown handling remain. P02-T02Step4 still owns
-real locked prepared/active/native-floor recovery and residual proof before OPEN.
-
-Forward **139ec868**, tree6f7c1bb8, changes only15 Python oracles/fixtures; product,
-locks, migrations and tutorial code pin remain byte1434. Critical review321642dd
-covers independent counter/science/input encodings, retained debit preservation,
-five-write recovery and all11 schema42 checkpoint fields before strict core math.
-Root pinned run17740/reaped0 passes **409/409 controls**,0failures/errors/skips,
-25.958s. Complete logee519223 and terminal7ead4605 are under
-`.research/initial-index-recovery-qualification-20261028/native2-main-139ec868/portable-controls`.
-The unchanged1434 Rust proof is reused at its recorded source and scope.
-
-Actual current42/native2 installed source **f6737327** now has a verified fresh
-parent/worker build135.299s and exact-parent observer80.167s. Installed grouped
-journey17745/reaped1 fails at first reservation after fresh schema42 bootstrap
-PASS: PostgreSQL refuses private `producer_prefix_deletion` while planning the
-ordinary INSERT trigger. Five later stages are NOT_RUN. Cleanup/custody are PASS:
-all16containers stopped/PID0/noOOM,304command PIDs and two drivers absent, borrowed
-bridge empty, cache115 released. Original data/logs/FAIL remain; audit **a646542e**
-and terminal **cbe6aebf** are linked by the Index report's
-`installed_application.current42_native2_followthrough` and inventory.
-
-The narrow migration42 correction separates procedural DELETE dispatch in three
-invoker guards. Private grants, deletion predicates and finalizer authority remain
-unchanged; critical review **d8adda78** approves SQLfd6b4373 for build/real-role
-regression only. Shared runtime-role/refusal fixtures and the raw-SQL checksum
-golden are integrated with **23 targeted controls PASS**. Critical verifier review
-**3aa659fb** closes a pre-engine five-trigger inventory finding; actual TCP/42501
-and installed current42/tutorial execution remain unqualified.
-
+Native2/current-source accounting and original-policy recovery were integrated
+in f673. Release Clippy/all app targets and598 nonexternal Rust tests at1434,
+and409 portable controls at139ec, remain source-bound. Absolute64 is unchanged;
+OPEN scheduling/funding/reserves and numerical physical fit are incomplete.
 The [inventory](../research/laboratory-inventory.json),
-`implementation_open_prefix_reclamation_20261030`, owns exact sources, receipts,
-original failures and preserved worktrees. Original2e Clippy FAIL, clean1434
-Python64FAIL+2setup baseline0526ccde, partial previews and author failures remain.
-The earlier host/uncommitted attempt68368 additionally lacked LLVM/saw an oldHEAD
-pin; its original tool output was truncated and the full log was not saved. That
-limitation is recorded, not replaced by the later complete baseline. Source53's
-PG38+12 proof remains source-bound; shutdown137/client143/noOOM/PID0 and retained
-WAL/data do not qualify clean shutdown or restart after that kill.
+`implementation_open_prefix_reclamation_20261030`, owns exact source/proof pins,
+preserved original failures and retained worktrees.
 
-M1 evidence collection was already qualified. Current-policy3 installed source
-**a3fc81b5** retains **11/11 PASS**: actual shipped distroless artifact, PG/ClickHouse,
-two independently checked signed exports, retries/refusal and same-root restart/
-rereads. The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`installed_application.current_policy_requalification`, owns details. This does
-not finish full P01-T09Step1, P08, scalable freshness or the complete product.
+## Actual installed results and current blocker
 
-Hosted [C90 full run](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41197628654)
-retains33/33PASS on AMD64/ARM64/macOS. [de27 docs CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41231485457)
-retains20scope+3docsPASS; three unselected jobs SKIPPED. Actual artifact/source/
-helper and public-output audit6b7feda8 found no new credentials; pattern/provider
-asynchrony limits remain. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
-separates billing refusal, cancellation, workflow/product failures and scoped PASS.
-[Full f673 run](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676)
-is running AMD64/ARM64/macOS checks; no terminal result is claimed. It is separate
-from the actual installed startup FAIL and cannot qualify that missing path.
+Fresh f673 build/observer passed, but installed grouped17745 failed first
+reservation: ordinary INSERT planned private `producer_prefix_deletion` without
+runtime EXECUTE. Five later stages NOT_RUN. Original FAIL/data/logs and all16
+stopped containers remain; custody **cbe6aebf**, audit **a646542e**.
+
+Correction cf035 separates procedural DELETE dispatch in three invoker guards;
+private grants, predicates and finalizer authority remain unchanged. SQL review
+**d8adda78**, verifier review **3aa659fb**;23 targeted and **412 complete portable
+controls PASS**,0skips. Exact fresh parent/worker build99838 and observer56686
+passed; cache released. Source-specific receipts are under
+`.research/initial-index-recovery-qualification-20261028/installed-cf035588`
+and sibling `observer-cf035588`.
+
+Actual cf035 **tutorial60592:7/7PASS**,53.825s: signed admission, Archive,
+ordinary read/export/restart, actual TCP nonowner role, five enabled invoker
+trigger attachments and four exact42501 refusals. The original353-byte export,
+zero outbound Nostr EVENTs and capability refusals pass. All18containers stopped,
+771commands joined; custody **7e144d3d**, tutorial audit **6eadf550**.
+
+Actual cf035 **grouped44310:9PASS/1FAIL/1NOT_RUN**,381.684s. Signed admission,
+Index publication, closed reclamation and successor pass; compacted consumer
+Index catch-up fails `Control(Backend)`. Final history/export NOT_RUN. SQL38's
+lineage decoder still requires obsolete value1; actual retained266-byte manifests
+use value2. All49containers stopped/PID0/noOOM,5555commands and23recorded process
+identities absent, borrowed bridge empty. Custody **8b60ddea**, follow-through
+audit **a6761c05**; original DB/native/input/capture/log state remains intact.
+The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`installed_application.current42_native2_followthrough`, owns both attempts.
+
+e4e44a25 strictly reconciles SQL38 with the current native value2 profile, adds
+nine decoder cases to the existing current82-table Index SQL fixture, and fixes
+two shared current models to validate old accounting and expect five puts with
+unchanged science/P and new-stream S=0. Critical review **d37b4d2a** is clear;
+author reports109 targeted controls PASS and retained-manifest contract PASS.
+Actual SQL/installed correction qualification is **NOT_RUN**. Historical pinned
+seven-request/93-row/sequence138 wrappers require current epoch3 requalification
+or retirement under existing P02-T02/P02-T06; they are not current M1 consumers.
+
+Historical a3 current-policy3 installed11PASS and earlier M1 collection stay
+qualified at their original sources. They are not native2/current42 proof, full
+P01-T09Step1, scalable freshness or complete-product qualification.
+
+## Hosted CI
+
+[Actual full f673 run41239387676](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41239387676)
+completed **SUCCESS:33/33foundation checks**, plus20scope controls. LinuxAMD64
+andARM64 each1399Rust PASS, with3/2IGNORED; macOS1397PASS/2IGNORED. Acceptance
+Linux409PASS each; macOS403PASS/6SKIP; export profiles10PASS each. Three unselected
+jobs remain SKIPPED. All2461source entries and actual build/workspace contexts
+match. Four artifacts/41logs pass the bounded public-output audit: only54known
+non-secret occurrences/five fingerprints,0new candidates/provider alerts.
+
+Terminal audit **2ed707d3**, completion **3edc3e46** are under
+`.research/ci-publication-20261026/terminal-f6737327-20261031` and linked by the
+[CI report](evidence/p01-ci-hosted-foundation-20261026.json). Observers/scanners
+are reaped0. This is hosted foundation proof; installed failures, later repair
+revisions, dedicated ignored drivers and broader delivery gates remain separate.
+No controlled CI speedup or compiled-cache reuse is inferred from durations.
 
 ## Separate native background-error guard
 
 Worktree `.research/native-failstop-binding-20261031`, branch
-`work/native-failstop-binding-20261031`, last qualified at **e871d061**, has a Sol
-test-only real-POSIX compaction extension in progress. Its qualified
-code/provenance/locks remain **d3dc8d5e**, tree60cb3ce7; e871 changes only two
-result READMEs. This branch is not included in the current main integration.
-
-Actual d3 root run70160/reaped0 passes **5Rust +wholeC96phases +14callback cases**,
-363.615s, including independent Status/IOStatus/severity/sticky/lifetime/recovery
-and targeted CopyState allocation/termination86. Root terminalc5d46ef6 in
-`/home/tux/bigbrotr-implementation-20260917/runs/native-guard-callback-d3dc8d5e`
-binds source4164, exact selected Cargo archives, trusted C/C++ compiler/link
-commands and three retained ELFs. Critical review936ffbdf is source-clear.
+`work/native-failstop-binding-20261031`, is clean at **bf54658a**. Its native
+product/provenance/locks remain qualified **d3dc8d5e**. Actual root70160 passed
+5Rust+wholeC96+14direct callbacks; terminal **c5d46ef6** in
+`/home/tux/bigbrotr-implementation-20260917/runs/native-guard-callback-d3dc8d5e`.
 The [binding report](evidence/p02-native-rocks-binding-20260917.json),
-`owned_background_guard_20261031`, owns earlier f8 healthy5+C, original metadata101
-setup failure and Linux-filtered context correction; their identities stay separate.
+`owned_background_guard_20261031`, owns that bounded evidence and original FAILs.
 
-No app factory/write/ACK wiring exists. Running-DB default-POSIX ENOSPC/SFM and
-single-hook/retry0 negatives, concurrent error/query/close, global OOM/parameter
-copy, joined stop/debt, funded reopen/purge and CW-N1/P1/P2 remain OPEN. Direct
-callback controls do not prove those guarantees or authorize request65. They do
-not block independent M1 integration.
+bf546 adds test-only four-case real-POSIX compaction controls.19pure tests PASS;
+critical review **c9fb1b17** clears source for root compile/run. Actual compiler/
+engine execution is **NOT_RUN**. Reuse original d3 native archives/context with
+a distinct new test-source manifest,128MiB tmpfs and unchanged30s case bound.
+No quiet-interval/measured-zero SFM claim. App wiring, other producers,
+concurrency, funded reopen/purge, CW-N1/P1/P2 and OPEN65 remain open. This branch
+is not integrated and does not block independent M1 work.
 
 ## Resources and next action
 
-All owned completed native/PG/installed/control containers and driver identities
-are terminal and retained; no local builder or engine is active. A bounded read-only
-CI observer and the isolated Sol real-POSIX test author are active. Cache115 is released;
-original four single-link ELF
-pins and six a3 worker inputs are unchanged. Source branches139ec/e871 and all
-essential raw data, failures and current labs remain. Root is sole launcher and
-integrator. Shared archived Git/ELF aliases are immutable in bytes and metadata;
-private copy before mutation, never gc/repack.
+At this checkpoint no owned builder, engine, remote CI or autonomous subagent
+writer is active. Completed containers/data/worktrees/raw failures are retained;
+cache115 is released and original immutable ELF pins unchanged. Root is sole
+launcher/integrator. Shared archived Git/ELF aliases are immutable in bytes and
+metadata; private copy before mutation, never gc/repack.
 
-The owner monitor retired only three old physical roots under
-`/home/tux/bigbrotr-qualification-20260917`: data, ch-data, backups/archive02/data.
-Report `/home/tux/bigbrotr-space-recovery-20261031/report.json` SHA1f9f4e0f and
-reconciliation91da1291 are inventoried; observed free space was about623GiB.
-Current implementation pins/labs, sources, evidence, catalog.dump and full corpus
-remain. Retired historical engine states need recreation before direct reread;
-no new historical runtime/content claim. The111747072B object proposal remains
-NOT_EXECUTED; immediate cleanup is unnecessary.
+Monitor report `/home/tux/bigbrotr-space-recovery-20261031/report.json`
+SHA1f9f4e0f and reconciliation91da1291 remain inventoried: only three old physical
+roots under `bigbrotr-qualification-20260917` retired, about556GiB freed. Current
+labs/data/pins, catalog.dump/full corpus and foreign resources remain. Historical
+retired engine states need recreation before direct reread; original results stay
+source-bound. No new broad cleanup or execution of the111747072B object proposal.
 
-**Next:** integrate the bounded real-role fixture with the reviewed migration42
-branch correction, run affected controls, build the exact committed candidate and
-repeat the maintained current42 grouped two-export/restart journey. Preserve the
-original FAIL; qualify tutorial next. Observe hosted f673 independently and publish
-the coherent verified correction. Reuse unchanged Rust/oracle evidence at its scope.
+**Next:** run affected current controls on the reviewed lineage correction,
+build the exact clean committed candidate, execute the maintained current82
+Index SQL format/handoff cases and grouped two-export/restart journey. Reuse the
+cf035 tutorial/unchanged proofs at their scopes. Keep both original FAILs. Publish
+one coherent verified integration, then qualify its necessary hosted checks.
+The reviewed native4-case frontend can progress independently under root custody.
 
 Remaining owners: grants/staging/scheduler/base+tail/Archive and physical growth;
-Code202/query retirement P02-T06Steps2/4/7; a99Sync/topology429; freshness/Ready65,
-larger histories, payloadGC and replay/protection/capacity. Admission cost remains
-P02-T02Step8/T09Step5; ClickHouse P02-T06Step2/T09Step6; coordinator responsibilities
-P01-T05Step5. Portable acceptance/delivery remains P01-T08/P08-T11/T12/P10-T08/T10.
-All selected P03–P10/M2–M5 remain in the existing plan.
+locked prepared/active/native-floor recovery P02-T02Step4; Code202/query retirement
+P02-T06Steps2/4/7; a99Sync/topology429; freshness/Ready65,larger histories,payloadGC,
+replay/protection/capacity. Admission cost remains P02-T02Step8/T09Step5;
+ClickHouse P02-T06Step2/T09Step6; coordinator P01-T05Step5. Portable acceptance/
+delivery remains P01-T08/P08-T11/T12/P10-T08/T10. All selected P03–P10/M2–M5 remain.
