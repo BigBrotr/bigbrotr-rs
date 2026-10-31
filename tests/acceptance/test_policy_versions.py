@@ -1,5 +1,6 @@
 """Current policy-runner artifact admission before any engine setup."""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import runpy
@@ -12,10 +13,45 @@ from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER = ROOT / 'experiments/policy-versions/run.py'
+SPEC = importlib.util.spec_from_file_location('policy_schema_inventory', RUNNER.with_name('schema_inventory.py'))
+SCHEMA = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(SCHEMA)
 
 
 class EngineBoundaryReached(Exception):
     pass
+
+
+class PolicySchemaControls(unittest.TestCase):
+    def test_current_inventory_covers_the_complete_declared_catalog(self):
+        inventory = SCHEMA.declared_inventory(ROOT)
+        self.assertEqual(inventory['target'], 42)
+        self.assertEqual(inventory['applied_versions'][-1], 42)
+        self.assertEqual(len(inventory['applied_versions']), 58)
+        self.assertEqual(len(inventory['tables']), 82)
+        self.assertIn('acquisition_progress', inventory['tables'])
+        self.assertIn('producer_checkpoint_dependencies', inventory['tables'])
+        self.assertIn('index_frontier_handoffs', inventory['tables'])
+        SCHEMA.require_tables(inventory['tables'], inventory)
+
+    def test_same_count_unexpected_relation_cannot_replace_a_declared_table(self):
+        inventory = SCHEMA.declared_inventory(ROOT)
+        altered = sorted(set(inventory['tables']) - {'producer_checkpoints'} | {'unexpected_lab_table'})
+        self.assertEqual(len(altered), len(inventory['tables']))
+        with self.assertRaisesRegex(AssertionError, 'missing=.*producer_checkpoints.*unexpected=.*unexpected_lab_table'):
+            SCHEMA.require_tables(altered, inventory)
+
+    def test_historical_target_is_refused_as_the_current_schema(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary)
+            (source / 'migrations').mkdir()
+            manifest = json.loads((ROOT / 'migrations/manifest.json').read_text())
+            order = manifest['application_order']
+            manifest['application_order'] = order[:next(i for i, entry in enumerate(order)
+                                                        if entry['version'] == 19) + 1]
+            (source / 'migrations/manifest.json').write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(AssertionError, 'schema profile changed'):
+                SCHEMA.declared_inventory(source)
 
 
 class PolicyArtifactControls(unittest.TestCase):

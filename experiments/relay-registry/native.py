@@ -219,7 +219,7 @@ if mode == 'visibility':
     steps.insert(1, ('visibility', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                                   '--lib','visibility_tests','--','--test-threads=1']))
 if mode == 'policy-versions':
-    identity['scope'] = 'Policy v1/v2 and exact bans; no populated upgrade or acquisition permission'
+    identity['scope'] = 'Current policy v3, startup receipt retention and incompatible-format refusals; no populated upgrade or acquisition permission'
     steps.insert(1, ('codec', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
                              '--bin','bigbrotr','config::policy']))
     steps.insert(2, ('bans', ['cargo','test','--locked','--offline','--release','-p','bigbrotr',
