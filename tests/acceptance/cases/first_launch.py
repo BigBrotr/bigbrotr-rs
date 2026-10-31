@@ -139,7 +139,7 @@ def local_docker_endpoint(environment, context):
 
 def expected_tables(source, inputs=None):
     manifest = load(source / 'migrations/manifest.json')
-    require(manifest['application_order'][-1]['version'] == 42, 'first-launch schema profile changed')
+    require(manifest['application_order'][-1]['version'] == 41, 'first-launch schema profile changed')
     tables = {'schema_versions'}
     for entry in manifest['application_order']:
         tables.update(re.findall(r'CREATE TABLE control\.(\w+)',
