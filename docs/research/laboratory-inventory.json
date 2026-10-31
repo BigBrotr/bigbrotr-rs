@@ -66302,7 +66302,13 @@
         "history-capture-b5c862a",
         "catalog-product-dbc5211",
         "catalog-product-652e043"
-      ]
+      ],
+      "bounded_archive_export_observation_20261031": {
+        "path": ".research/tux-maintenance-archive-read-20261018/checkpoint-archive-export-bounded-observation-20261031.json",
+        "sha256": "83e390b871ca23c1a000f71b2eee1af00b9336cc6a12a2da8b7d73063bc07553",
+        "result": "Six bounded roots checked,0eligible retirement bytes; no deletion.272finished/shared ELF paths and all data preserved.8declared/76overlap containers stopped/PID0/noRestart; accessible proc scan0hits with inaccessible-process limits disclosed. Shared currentcache115 excluded. No broader unused-resource claim.",
+        "free_bytes_observed": 72548777984
+      }
     },
     "connected_journey": {
       "status": "FAIL_INITIAL_PUBLICATION_BEFORE_CONTINUATION",
@@ -77599,8 +77605,8 @@
       "worktree": ".research/open-prefix-initial-sol-20261030",
       "branch": "work/open-prefix-initial-sol-20261030",
       "base": "88c58ff1c1bac03061adc1766dbdf4486f4be911",
-      "partial_commit": "63ab09064135e4a3c18e71f3d303a6626e5463f6",
-      "state": "Counter/nativecc3actually90PASS. Typed historical-intake63sourcecriticalclosed, Rust/actualPG NOT_RUN; author wiring missing privatefaultcases in existingcurrenthistoryfixture. Grants/staging/scheduling/physicalboundsunwired,64unchanged.",
+      "partial_commit": "ae380546329331c64d37923ab06d71c312d2f346",
+      "state": "Last frozen ae380546; source author correcting fixture policy-chain CHECK violation found by critical review, no engines/builds. Counter/native cc3 actual90PASS, typed historical63 source-critical closed and actualRust7PASS. Harness critical review active; new probe compilation/actualPG NOT_RUN. Grants/staging/scheduling/physical bounds unwired;64 unchanged.",
       "accounting_receipt": {
         "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/pending-accounting-b0da6952.json",
         "sha256": "ab5502c3613831990fc3568c2fc0f08d4a87910d49ef7f3a1880ca785cf3aa75"
@@ -77840,6 +77846,16 @@
         "tool_session": 50748,
         "result": "3scopes/7PASS;2ELFs retained; no query/probeexecution/actualPG; source2459.",
         "resources": "Owned789ed2c6containerstopped0/PID0/noOOM, cache115released/rootreacquiredandoriginal4artifactsunchanged."
+      },
+      "integrity_fixture": {
+        "source": "ae380546329331c64d37923ab06d71c312d2f346",
+        "tree": "f838bf72b32e4b8de06e147f5fd0135f2ad2ed07",
+        "author_receipt": {
+          "path": ".research/open-prefix-initial-sol-20261030/.research/open-prefix-product-author-20261031/historical-integrity-ae380546.json",
+          "sha256": "3f3e7b6f6288470afbc4f0113f3f5f7cb22ba8adba3e374cb892da302aadc42a"
+        },
+        "status": "21portablePASS;38realPG checks/12private cases NOT_RUN; critical review active; production Rust byte-identical to63. ACK positive is real nonzero idempotent1/1, not lost-ACK advancement.",
+        "open_review_finding": "Fixture append_pair skips policy revisions but schema requires revision=previous_revision+1; author must construct complete immutable chain before root execution. No constraint weakening."
       }
     },
     "qualified_policy_and_ci_ref_retirement": {

@@ -13,7 +13,8 @@ publication:142new commit/blob objects/7,034,428B; four pattern hits classified
 (known prose plus unchanged public synthetic unittest inputs),0unclassified or
 operational credentials. Publication receipt is in inventory. Four fully merged
 policy/CI refs retired; physical worktrees remain detached/clean with ignored
-artifacts intact. Root owns subsequent uncommitted checkpoint/inventory updates;
+artifacts intact. Local checkpoint/evidence commit `1f175884` follows that public
+base; root owns the current coherent documentation update;
 no OPEN counter/native-format2/PG42 or typed-intake63 source is integrated.
 
 The new coherent capability is **single current policy3** with explicit receipt
@@ -85,7 +86,8 @@ sequence preservation for invalid initial operations. Current Native runtime cod
 is unchanged by that fixture correction. No strictClippy claim for unused OPEN
 scaffolding, and no confirmed PG42/directOPEN retirement qualification.
 
-Original author worktree is clean at **63ab0906** (typed historical intake);
+Last frozen author source is **ae380546** (38-check historical-integrity
+fixture atop typed historical intake63);
 separate fix worktree/branch remains atcc3. Source-critical reviewfff10190 closes
 full original c/p document restoration for all8private+6public recovery callers,
 checked bodycaps/budgets and seven immutable intake fields. Pair-contract73533314
@@ -93,8 +95,14 @@ confirms matching accepted intake is required across referenced config/policy;
 revision numbers may differ. Ordinary live/eventACK does not reconstruct.
 Historical original-body validation was a verified preexisting gap: new source
 fixes it, and actual3Rust scopes/7tests PASS (50748reaped0); public corruption/cap and
-private activation/compactedACK PGfault qualification remains OPEN, under P02-T02/P01-T04. Author is wiring those
-existing fixture/probe paths. Funding/staging/scheduler/base+tail/Archive and all
+private activation/compactedACK PGfault qualification remains OPEN under
+P02-T02/P01-T04. Frozen ae380546 extends the existing probe/runner:38 scoped
+checks/12 private cases,21 portable controls PASS, production Rust unchanged
+from63. Critical harness review is active; new example compilation and actual
+PG batch are NOT_RUN. Critical review found the fixture skipped required
+consecutive policy revisions; Sol is correcting the complete immutable chain
+without disabling CHECK constraints, before root execution. Funding/staging/
+scheduler/base+tail/Archive and all
 physical grants remain incomplete, absolute64 gate unchanged. No historical policy
 may fund current active-successor work. Root alone launches engines/builds/cleanup. All local native runners, including
 63Rust7/50748, are terminal with stopped0/PID0/noOOM and cache released.
@@ -146,14 +154,24 @@ complete; inventory owns exact freezes/journals/deltas. Finished ELFs, original
 pins, data, logs, failures and pending work are preserved. Cache115 and shared
 archived Git/ELF aliases remain protected: immutable bytes AND metadata, verified
 private copy before mutation. Check actual headroom before significant allocation.
+A bounded six-root Archive/export observation found0eligible compiler
+intermediates: no deletion or reclaimable-byte claim.272finished/shared ELF paths
+were preserved; the receipt records stopped containers and inspection limits.
+Last observed free space72,548,777,984B; recheck before a build. This is below the
+new OPEN80GiB startup prerequisite, which remains a separate unsatisfied gate.
 Borrowed `bigbrotr-m1-0f80280_default` ID
 1699209a77e4da088cb882aee39a887d45a4ba15a426420beab358562e310d8f
 is retained; never remove it or modify foreign workloads.
 
 **Next action:** qualify the coherent current-history realPG fixture batch including
-private corrupt-original activation/compactedACK controls (source author active).
-Prepare reuse of exact c90 hosted parent/worker assets for the remaining installed
-journey; verify ABI/bindings before execution, avoid an unnecessary product build.
+private corrupt-original activation/compactedACK controls at frozen ae380546
+after the policy-chain correction and critical harness review. One exact
+parent/probe build serves that batch;
+reuse qualified capture/math evidence whose inputs are unchanged.
+The hosted c90 artifact is receipt-only and contains no executable; the existing
+installed-reuse assessment therefore requires a coherent worker-before-parent
+local build and exact probe, with distroless Debian13 ABI/bindings verified.
+Use the maintained build/assemble/journey tools; do not substitute old worker bytes.
 Requalify the affected installed current-policy journey with existing tools;
 connect actual quota/grants/scheduler only after their prerequisites are proven.
 No request65 permission follows from counter90 or source-only intake review.
