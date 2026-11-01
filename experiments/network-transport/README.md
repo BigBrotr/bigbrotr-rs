@@ -34,6 +34,15 @@ offline with `--network none`; fixture traffic stays on container loopback.
 Containers have the pinned laboratory image, two CPUs, 6 GiB memory, 512 PIDs,
 an unprivileged user, read-only root/source and no Docker socket or host ports.
 
+The four retained cache-anchor reads require Linux `O_NOATIME|O_NOFOLLOW`,
+regular single-link files and unchanged descriptor/path stat metadata across each
+hash. Permission/filesystem refusal has no ordinary-read fallback. Synthetic
+controls run in normal CI acceptance discovery without accessing those anchors:
+
+```sh
+python3 -B -m unittest discover -s tests/acceptance -p test_lab_anchors.py
+```
+
 The shared `tools/ci.py` executor bounds and joins commands. The exact test
 executable is retained and hashed outside compiler caches; source hashes are
 checked before/after. This correction profile requires 12 direct TCP/TLS tests,
