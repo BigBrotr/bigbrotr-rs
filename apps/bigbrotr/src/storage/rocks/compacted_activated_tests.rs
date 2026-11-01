@@ -741,6 +741,14 @@ fn compacted_activated_logical_requests_can_exceed_physical_spool_limit() {
             )
             .unwrap(),
     );
+    candidate
+        .bind_pending_quota(
+            crate::storage::rocks::store::bootstrap_tests::fixture_pending_policy(),
+            &handoff,
+            Some(&grant(&f.budget, COMPACTED_HANDOFF_DATA_BYTES, 8192)),
+            &READY,
+        )
+        .unwrap();
     let mut writer = candidate
         .activate_compacted(
             handoff,
@@ -748,6 +756,7 @@ fn compacted_activated_logical_requests_can_exceed_physical_spool_limit() {
             &READY,
         )
         .unwrap();
+    crate::storage::rocks::store::bootstrap_tests::resume_fixture_pending(writer.store_mut());
     for n in 1..=61 {
         let outcome = writer
             .store_mut()

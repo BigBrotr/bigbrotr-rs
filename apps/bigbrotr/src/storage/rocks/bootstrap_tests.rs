@@ -3,6 +3,7 @@ use super::*;
 use crate::runtime::{
     ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
 };
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use crate::storage::rocks::{
     RocksNativeSettings,
     manifest::{AllocationNamespaces, ManifestIdentity},
@@ -105,8 +106,7 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         let path = root.path().join("db");
         let b = budget();
         let original = manifest();
-        let store =
-            IngestStore::initialize(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
+        let store = fixture_initialize(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
         // Model privileged singleton corruption, then use an actual reopened
         // handle. Identity and namespaces remain exactly the valid epoch1 set.
         let altered = if schema == 2 {
@@ -225,7 +225,7 @@ fn synchronized_bootstrap_reopens_as_one_complete_pending_batch_and_exact_receip
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let original = intent("public");
     let result = store
         .bootstrap_dictionaries(
@@ -366,7 +366,7 @@ fn authority_is_checked_again_before_any_native_write() {
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let before = store.db.latest_sequence_number();
     let mut checks = 0;
     let result = store.bootstrap_dictionaries(
@@ -397,7 +397,7 @@ fn authority_is_checked_again_before_any_native_write() {
 fn every_missing_or_changed_batch_member_prevents_replay_and_missing_receipt_is_not_rollback() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -490,7 +490,7 @@ fn every_missing_or_changed_batch_member_prevents_replay_and_missing_receipt_is_
 fn bounds_wrong_epoch_and_unallocated_ordinals_leave_the_initial_directory_unchanged() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -584,7 +584,7 @@ fn noncanonical_endpoint_is_not_a_durable_dictionary_identity() {
         (DictionaryKind::VisibilityScope, scope().allocation_domain),
     ])
     .unwrap();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         IngestManifest::new(*manifest().identity(), namespaces),
         native(),
@@ -642,4 +642,73 @@ fn noncanonical_endpoint_is_not_a_durable_dictionary_identity() {
             assert_eq!(store.db.latest_sequence_number(), before);
         }
     }
+}
+
+/// Explicit native-fixture policy. This exercises production quota validation;
+/// its fixed revision/digests are a test premise, never claimed SQL authority.
+pub(super) fn fixture_pending_policy() -> PendingQuotaPolicy {
+    PendingQuotaPolicy::new(
+        1024 * MIB,
+        512 * MIB,
+        16 * MIB,
+        1,
+        bigbrotr_model::Digest256::from_bytes([0x71; 32]),
+        1,
+        bigbrotr_model::Digest256::from_bytes([0x72; 32]),
+        std::time::Duration::from_nanos(1),
+    )
+    .unwrap()
+}
+pub(super) fn initialize(
+    path: &std::path::Path,
+    manifest: IngestManifest,
+    limits: RocksNativeLimits,
+    permit: OwnedPermit,
+) -> Result<IngestStore, StoreError> {
+    let mut store = IngestStore::initialize(path, manifest, limits, permit)?;
+    store
+        .bind_pending_quota(fixture_pending_policy())
+        .expect("finite fixture policy");
+    Ok(store)
+}
+impl IngestStore {
+    /// Raw sidecar tests declare zero scientific growth and still obtain the
+    /// same owner/request/digest-bound reservation as every other staging path.
+    pub(super) fn retain_fixture_request_input(
+        &mut self,
+        request: bigbrotr_model::ProducerRequestId,
+        bytes: &[u8],
+    ) -> Result<(), RequestInputError> {
+        use sha2::{Digest, Sha256};
+        self.reserve_pending_requests(&[PendingReservationRequest {
+            request,
+            digest: bigbrotr_model::Digest256::from_bytes(Sha256::digest(bytes).into()),
+            allowance_bytes: 0,
+        }])
+        .map_err(|error| {
+            if error == PendingQuotaError::Limit {
+                RequestInputError::Limit
+            } else {
+                RequestInputError::PendingQuota(error)
+            }
+        })?;
+        self.retain_request_input(request, bytes)
+    }
+}
+
+pub(super) fn resume_fixture_pending(store: &mut IngestStore) {
+    store.observe_pending_quota().unwrap();
+    std::thread::sleep(std::time::Duration::from_nanos(1));
+    assert_eq!(
+        store.observe_pending_quota().unwrap(),
+        PendingQuotaStatus::Available
+    );
+}
+pub(super) fn resume_successor_fixture_pending(writer: &mut ActiveSuccessorWriter) {
+    writer.observe_pending_quota().unwrap();
+    std::thread::sleep(std::time::Duration::from_nanos(1));
+    assert_eq!(
+        writer.observe_pending_quota().unwrap(),
+        PendingQuotaStatus::Available
+    );
 }

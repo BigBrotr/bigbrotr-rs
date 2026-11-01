@@ -629,6 +629,14 @@ fn compacted_candidate_binds_fresh_target_and_explicit_activation_only() {
         .unwrap();
     let before = kv(&candidate.recovery().store);
     // This private call supplies synthetic connected authority only.
+    candidate
+        .bind_pending_quota(
+            crate::storage::rocks::store::bootstrap_tests::fixture_pending_policy(),
+            &handoff,
+            Some(&permit),
+            &READY,
+        )
+        .unwrap();
     let writer = candidate
         .activate_compacted(handoff, &permit, &READY)
         .unwrap();

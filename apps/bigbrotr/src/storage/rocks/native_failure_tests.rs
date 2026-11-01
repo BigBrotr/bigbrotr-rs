@@ -2,6 +2,7 @@
 //! invoke the native listener or qualify POSIX faults, FFI races, or recovery.
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::ObservedTime;
 
 const MIB: u64 = 1024 * 1024;
@@ -34,7 +35,7 @@ fn simulated_background_latch_and_foreground_unknown_independently_refuse_bootst
         let path = root.path().join("db");
         let b = budget();
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         let before = rows(&store);
         let sequence = store.db.latest_sequence_number();
         let accounting = store.accounting;
@@ -80,7 +81,7 @@ fn simulated_latch_at_final_dispatch_check_retains_original_without_native_commi
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let before = rows(&store);
     let sequence = store.db.latest_sequence_number();
     let accounting = store.accounting;
@@ -128,7 +129,7 @@ fn simulated_latch_during_exact_replay_refuses_success_and_retains_native_state(
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let input = intent("public");
     drop(
         store
@@ -176,8 +177,7 @@ fn simulated_latch_retains_native_reservation_and_path_until_explicit_close() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let b = budget();
-    let store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let store = fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     store.test_latch_background_failure();
     let other = budget();
     assert!(matches!(
@@ -201,7 +201,7 @@ fn simulated_latch_invalidates_existing_checkpoint_and_credit_without_mutating_s
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let receipt = store
         .bootstrap_checkpoint_dictionaries(
             request(),
@@ -242,7 +242,7 @@ fn simulated_latch_after_synced_bootstrap_withholds_checkpoint_without_claiming_
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let sequence = store.db.latest_sequence_number();
     let simulated = store.test_background_failure();
     let mut checks = 0;

@@ -2,6 +2,7 @@
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::*;
 use crate::storage::rocks::keys::{ColumnFamily, IngestKey};
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::ObservedTime;
 
 const MIB: u64 = 1024 * 1024;
@@ -50,7 +51,7 @@ fn fresh_counter_and_bootstrap_are_atomic_and_replay_preserves_current_accountin
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     assert_eq!(store.db.latest_sequence_number(), 3);
     assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
     assert_eq!(store.pending_accounting().unwrap().source_through(), 0);
@@ -68,7 +69,7 @@ fn fresh_counter_and_bootstrap_are_atomic_and_replay_preserves_current_accountin
     }
     populate(&mut store, &b);
     let counted = charged_native_bytes(&store);
-    assert!(counted > 0);
+    assert_eq!(counted, 306); // independent fixed one-visibility native bytes
     let current = store.pending_accounting().unwrap();
     assert_eq!(current.pending_bytes(), counted);
     assert_eq!(current.source_through(), 1);
@@ -104,7 +105,7 @@ fn current_counter_damage_refuses_reopen_without_repair() {
         let path = root.path().join("db");
         let b = budget();
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         populate(&mut store, &b);
         let mut bytes = store.accounting.encode().to_vec();
         match case {
@@ -196,7 +197,7 @@ fn actual_empty_close_retains_explicit_source_and_counter_across_reopen() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let b = budget();
-    drop(IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap());
+    drop(fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap());
     let mut recovery =
         IngestRecovery::open(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let counter = recovery.store.accounting;
@@ -283,7 +284,7 @@ fn counterless_value_schema_one_refuses_even_for_an_empty_historical_store() {
         let path = root.path().join("db");
         let b = budget();
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         if populated {
             populate(&mut store, &b);
         }

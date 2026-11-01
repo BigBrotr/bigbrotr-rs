@@ -338,7 +338,11 @@ fn successor_recovery_closes_and_replays_real_writer_three_and_four_with_literal
         let f = prepared_fixture();
         let mut writer = if variant == 1 {
             let (mut activation, _) = envelope(&f, false, PredecessorTerminalKind::Activated, true);
-            activation.activate(&NOT_CANCELLED, || Ok(())).unwrap()
+            let mut writer = activation.activate(&NOT_CANCELLED, || Ok(())).unwrap();
+            crate::storage::rocks::store::bootstrap_tests::resume_successor_fixture_pending(
+                &mut writer,
+            );
+            writer
         } else {
             active(&f, variant == 2)
         };

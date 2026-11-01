@@ -63,7 +63,14 @@ fn active(residuals: usize) -> (Fixture, ActiveSuccessorWriter) {
     let rows = kv(&owner.recovery().unwrap().store);
     let sequence = owner.recovery().unwrap().store.db.latest_sequence_number();
     let used = f.budget.snapshot().used();
-    let writer = owner.activate_compacted(&NOT_CANCELLED, || Ok(())).unwrap();
+    owner
+        .bind_pending_quota(
+            crate::storage::rocks::store::bootstrap_tests::fixture_pending_policy(),
+            &NOT_CANCELLED,
+        )
+        .unwrap();
+    let mut writer = owner.activate_compacted(&NOT_CANCELLED, || Ok(())).unwrap();
+    crate::storage::rocks::store::bootstrap_tests::resume_successor_fixture_pending(&mut writer);
     assert!(owner.recovery().is_none());
     assert!(owner.activate_compacted(&NOT_CANCELLED, || Ok(())).is_err());
     assert_eq!(f.budget.snapshot().used(), used);

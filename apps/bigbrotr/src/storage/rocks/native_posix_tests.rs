@@ -5,6 +5,7 @@ use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::producer_ack::AckTarget;
 use super::producer_checkpoint::CheckpointStamp;
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::{ObservedTime, ProducerRequestId, RequestSequence};
 use rocksdb::{FlushOptions, WaitForCompactOptions};
 use sha2::{Digest, Sha256};
@@ -51,7 +52,7 @@ fn exercise(root: &Path, evidence: &Path) {
     let b = budget();
     let path = root.join("db");
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let limits = BootstrapLimits {
         max_mappings: 8,
         max_batch_bytes: MIB as usize,

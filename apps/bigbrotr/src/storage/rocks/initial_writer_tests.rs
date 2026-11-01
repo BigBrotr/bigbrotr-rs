@@ -72,7 +72,16 @@ fn active(fixture: &Fixture) -> ActiveInitialWriter {
     );
     assert_eq!(candidate.require_prepared_handoff(&handoff), Ok(()));
     // No database/activation receipt is involved in this native-only fixture.
-    let writer = candidate.activate(handoff).unwrap();
+    candidate
+        .bind_pending_quota(
+            crate::storage::rocks::store::bootstrap_tests::fixture_pending_policy(),
+            &handoff,
+            None,
+            &AtomicBool::new(false),
+        )
+        .unwrap();
+    let mut writer = candidate.activate(handoff).unwrap();
+    crate::storage::rocks::store::bootstrap_tests::resume_fixture_pending(writer.store_mut());
     assert_eq!(writer.role_instance_id(), role);
     assert_eq!(
         writer.manifest().identity().process_incarnation,

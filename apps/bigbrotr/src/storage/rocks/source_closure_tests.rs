@@ -2,6 +2,7 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use std::sync::atomic::AtomicBool;
 
 #[test]
@@ -361,7 +362,7 @@ fn source_closure_preserves_zero_and_refuses_unissued_reservations() {
     let (root, store, budget, manifest, native) = setup(false);
     drop(store);
     let path = root.path().join("empty");
-    drop(IngestStore::initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap());
+    drop(fixture_initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap());
     let mut recovery =
         IngestRecovery::open(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
     let closed = recovery

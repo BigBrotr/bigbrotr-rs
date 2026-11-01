@@ -2,6 +2,7 @@
 use super::admission_tests::{inputs, kv};
 use super::{bootstrap_tests::*, *};
 use crate::storage::rocks::keys::{ColumnFamily, IngestKey};
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::{DictionaryDescriptor, DictionaryKind, ObservedTime, Ordinal, QualifiedRef};
 
 const MIB: u64 = 1024 * 1024;
@@ -13,7 +14,7 @@ fn read_limits() -> CertificationLimits {
 }
 fn bootstrapped(path: &Path, budget: &crate::runtime::ResourceBudget) -> IngestStore {
     let mut store =
-        IngestStore::initialize(path, manifest(), native(), grant(budget, 0, 128 * MIB)).unwrap();
+        fixture_initialize(path, manifest(), native(), grant(budget, 0, 128 * MIB)).unwrap();
     drop(
         store
             .bootstrap_dictionaries(
@@ -260,7 +261,7 @@ fn visibility_lookup_requires_the_envelopes_visibility_mapping_too() {
     use bigbrotr_model::{DescriptorLabel, DictionaryEntry, EvidenceIntent, EvidenceIntentLimits};
     let root = tempfile::tempdir().unwrap();
     let budget = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),

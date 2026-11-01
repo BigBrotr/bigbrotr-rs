@@ -3,6 +3,7 @@
 use super::super::{producer_ack::AckTarget, producer_checkpoint::CheckpointStamp};
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 
 // Opt-in child of the external syscall oracle. It exits without Drop so a
 // failed sync cannot be hidden by an orderly native close. No SQL is involved.
@@ -48,7 +49,7 @@ fn native_ack_fsync_boundary() {
         );
         std::process::exit(0);
     }
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &path,
         fixture::manifest(),
         fixture::native(),
@@ -177,12 +178,24 @@ fn limited(
 fn acknowledgement_writes_only_watermark_once_and_retains_every_original() {
     let (root, mut store, budget, manifest, native) = setup(false);
     drop(admit(&mut store, &budget, 1).unwrap());
+    let reservations: Vec<_> = (1..=64)
+        .map(|sequence| PendingReservationRequest {
+            request: request(9, sequence),
+            digest: Digest256::from_bytes([9; 32]),
+            allowance_bytes: 16 * MIB,
+        })
+        .collect();
+    assert_eq!(
+        store.reserve_pending_requests(&reservations),
+        Err(PendingQuotaError::Pressure)
+    );
     let before = kv(&store);
     let accounting = store.pending_accounting().unwrap();
     let original_inputs = inputs(root.path());
     let sequence = store.db.latest_sequence_number();
     acknowledge(&mut store, &budget, 1);
     assert_eq!(store.pending_accounting().unwrap(), accounting);
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
     let mut expected = before;
     let key = IngestKey::ProducerState {
         producer_slot_id: request(5, 1).producer_slot_id,

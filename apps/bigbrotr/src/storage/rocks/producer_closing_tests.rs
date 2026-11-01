@@ -1,6 +1,7 @@
 //! A real signed request prepared before the native closing barrier cannot write.
 use super::*;
 use crate::storage::rocks::keys::IngestKey;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 
 #[test]
 fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
@@ -370,8 +371,7 @@ fn empty_producer_closing_preserves_zero_and_refuses_first_bootstrap() {
     let (root, store, budget, manifest, native) = setup(false);
     drop(store);
     let path = root.path().join("empty");
-    let store =
-        IngestStore::initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
+    let store = fixture_initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
     let before = kv(&store);
     drop(store);
     let mut recovery =
