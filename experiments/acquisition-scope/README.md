@@ -1,14 +1,51 @@
 # Acquisition registration laboratory
 
-The current socket wave (`bindings.py RUN_ROOT --socket EXACT_BUILD`) uses the
-maintained policy-version schema inventory and the existing clone-only accepted
-policy setup with local-first-witness provenance. Its dictionary/socket oracle
-recomputes the current logical accounting row after adding the independently
-encoded facts and markers. The old row counts and target24/67-table setup were
-stale verifier prerequisites, not a product refusal. Scientific bytes, operation
-deadlines and the configured stable-low interval are unchanged. This source
-reconciliation is NOT_RUN on PostgreSQL/native until its exact probe is built
-and the ordinary wave runs; older socket results retain their original scope.
+The current socket wave creates its own fresh owned PostgreSQL laboratory. It
+needs a clean checkout at `FRESH_ROOT/source` and an existing exact-source build
+receipt for both `bigbrotr` and `ingest_bootstrap_probe`:
+
+```sh
+git -c gc.auto=0 -c maintenance.auto=false worktree add --detach \
+  /absolute/fresh-socket-attempt/source REVIEWED_HARNESS_REVISION
+python3 -B /absolute/fresh-socket-attempt/source/experiments/acquisition-scope/bindings.py \
+  /absolute/fresh-socket-attempt --socket /absolute/exact-build-artifacts
+```
+
+The root is new apart from that checkout; `pg` and `bindings` must not exist.
+The selected source must be clean. Exact executable hashes are checked before
+setup; differences from the built product revision may contain only the six
+explicit Python/control/README paths in `socket_setup.HARNESS_PATHS`. Renames
+cannot hide their original paths. Product and harness identities are recorded
+separately; compiled probe, policy fixture, schema, build or unknown changes
+refuse. A Python-only setup correction requires no new product compilation.
+
+The existing `control-migrations/lab.py` supplies pinned PG16.15/client images,
+isolated networking, fresh credentials and bounded containers. Images must
+already be available locally. Set `BIGBROTR_SOCKET_SUBNET` to an independently
+selected unused private IPv4 `/28` when an explicit subnet is needed; the existing
+overlap guard still runs. Otherwise the existing Docker address-pool selection
+applies. Fresh attempts use unique resource names, retain their stopped resources,
+and never restart an old source lab. The unchanged preflight requires no other
+running BigBrotr lab and more than 2GiB free.
+
+Shared current-policy preparation applies schema43 and checks all83 declared
+Control tables, then runs real managed initialization and initial activation.
+`bb_source_template` receives the existing Alice credential fixture with an exact
+whole-state insertion check. The broad non-owner laboratory role is checked using
+the same profile as policy-versions; this does not qualify production deployment
+grants. The setup client uses `/lab/secrets` on the private bridge. It is joined
+before the existing socket client starts in the owned PG network namespace with
+`/run/secrets` and loopback migration configuration. Only fresh template clones
+are mutated; accepted policy documents are verified without rewriting their rows; the complete template rows/xmin remain unchanged afterward.
+
+The unchanged three modes cover signed/forged/duplicate frames, dictionary append
+and dictionary intern. Their independent scientific/native/PG oracles recompute
+logical accounting from expected facts. Each probe retains its60s timeout;
+append and intern each wait the configured30s stable-low interval outside PG
+operations, so an enclosing wave must allow those two setup waits. Scientific
+bytes, policy/operation deadlines and process envelopes are unchanged. This fresh
+setup and its three-mode runtime remain **NOT_RUN** until actual exact-artifact
+qualification; portable controls are not PostgreSQL/native evidence.
 
 This trusted native Linux experiment qualifies only the internal P03-T01
 registration boundary. The `acquisition-scope` build profile uses the existing
