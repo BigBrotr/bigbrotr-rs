@@ -5,6 +5,7 @@ the native RocksDB census, typed producer progress or independent C API census.
 All raw evidence is protected: it includes generated credentials and sessions.
 """
 from contextlib import contextmanager
+import datetime
 import hashlib
 import importlib.util
 import json
@@ -827,11 +828,50 @@ class Runtime:
         pass
 
     def backend_absence(self, output):
-        observed = {database: self.sql(database,
-            'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()')
-            for database in ('bigbrotr_control', 'bigbrotr_catalog')}
+        # PG16 pg_stat_activity includes maintenance and extension processes.
+        # Count and identify the same sampled rows; never fetch query/auth bytes.
+        statement = """WITH activity AS MATERIALIZED (
+            SELECT pid,backend_start,backend_type,usename,application_name,state,
+                wait_event_type,wait_event,xact_start,leader_pid
+            FROM pg_catalog.pg_stat_activity WHERE datname=current_database()
+        ), others AS MATERIALIZED (
+            SELECT * FROM activity WHERE pid<>pg_backend_pid()
+        ) SELECT jsonb_build_object('database',current_database(),'observer_pid',pg_backend_pid(),
+            'observer_backend_start',(SELECT backend_start FROM activity WHERE pid=pg_backend_pid()),
+            'count',(SELECT count(*) FROM others),
+            'backends',(SELECT coalesce(jsonb_agg(to_jsonb(b) ORDER BY b.pid),'[]'::jsonb) FROM others b))"""
+        observed = {}
+        for database in ('bigbrotr_control', 'bigbrotr_catalog'):
+            response = self.sql(database, statement)
+            try:observed[database] = json.loads(response)
+            except json.JSONDecodeError:observed[database] = response
         save(output / 'backend-absence.json', observed)
-        require(set(observed.values()) == {'0'}, 'application database backend remains')
+        def timestamp(value):
+            if not isinstance(value,str):return False
+            try:return datetime.datetime.fromisoformat(value).tzinfo is not None
+            except ValueError:return False
+        fields = {'pid','backend_start','backend_type','usename','application_name','state',
+            'wait_event_type','wait_event','xact_start','leader_pid'}
+        for database,sample in observed.items():
+            require(type(sample) is dict and set(sample)=={'database','observer_pid','observer_backend_start','count','backends'},
+                'malformed database backend sample')
+            require(sample['database']==database and type(sample['observer_pid']) is int and sample['observer_pid']>0
+                and timestamp(sample['observer_backend_start']),'invalid backend observer identity')
+            require(type(sample['count']) is int and sample['count']>=0 and type(sample['backends']) is list
+                and sample['count']==len(sample['backends']),'backend count and metadata differ')
+            pids=set()
+            for backend in sample['backends']:
+                require(type(backend) is dict and set(backend)==fields,'malformed database backend metadata')
+                require(type(backend['pid']) is int and backend['pid']>0 and backend['pid']!=sample['observer_pid']
+                    and backend['pid'] not in pids and timestamp(backend['backend_start']),'invalid database backend identity')
+                pids.add(backend['pid'])
+                require(isinstance(backend['backend_type'],str) and backend['backend_type']
+                    and all(backend[key] is None or isinstance(backend[key],str)
+                        for key in ('usename','application_name','state','wait_event_type','wait_event'))
+                    and (backend['xact_start'] is None or timestamp(backend['xact_start']))
+                    and (backend['leader_pid'] is None or (type(backend['leader_pid']) is int and backend['leader_pid']>0)),
+                    'invalid database backend metadata types')
+        require(all(sample['count']==0 for sample in observed.values()), 'database backend remains')
 
     def ordinary_client(self, output, entry):
         result = self.command([sys.executable, '-B', str(self.source /
