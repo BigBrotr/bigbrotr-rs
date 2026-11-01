@@ -112,6 +112,71 @@ class LinearQuantumRuntime(Runtime):
             raise
         if failures:raise failures[0][1]
 
+    def control_lease_observation(self):
+        return json.loads(self.sql('bigbrotr_control',"""
+            WITH observed AS MATERIALIZED (
+                SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS now_us
+            ) SELECT jsonb_build_object('observed_at_us',observed.now_us,
+                'owners',(SELECT coalesce(jsonb_agg(to_jsonb(o)||jsonb_build_object('xmin',o.xmin::text)
+                    ORDER BY o.resource_id,o.epoch),'[]'::jsonb) FROM control.owner_epochs o WHERE o.role='control'),
+                'job_owners',(SELECT coalesce(jsonb_agg(DISTINCT jsonb_build_array(j.dataset_id,
+                    j.owner_resource_id,j.owner_epoch,j.owner_incarnation)),'[]'::jsonb)
+                    FROM control.jobs j WHERE j.kind='acquisition' AND j.owner_epoch IS NOT NULL),
+                'active_unexpired',(SELECT count(*) FROM control.owner_epochs o
+                    WHERE o.role='control' AND o.state='active' AND o.lease_expires_at_us>observed.now_us))
+            FROM observed"""))
+
+    def freeze_control_lease(self,terminal,output):
+        require(not terminal['State']['Running'] and terminal['State']['Pid']==0
+            and not terminal['State']['OOMKilled'],'original Control application is not positively stopped')
+        profile=tomllib.loads(self.config.read_text()).get('runtime',{}).get('lease_ttl','60s')
+        require(profile=='60s','quantum historical restart requires declared 60s Control lease profile')
+        started=time.monotonic();sample=self.control_lease_observation()
+        owners=sample['owners']
+        require(owners and all(row['dataset_id']=='\\x'+self.initialized['dataset_id'] for row in owners),
+            'original Control owner identity differs')
+        job_owner,=sample['job_owners']
+        owner,=[row for row in owners if [row['dataset_id'],row['resource_id'],row['epoch'],row['process_incarnation']]==job_owner]
+        require(all(row==owner or row['state']=='released' for row in owners),
+            'unexpected live Control owner after original application death')
+        require(owner['state'] in ('active','released') and type(sample['observed_at_us']) is int,
+            'original Control lease observation differs')
+        remaining=max(0,owner['lease_expires_at_us']-sample['observed_at_us'])
+        # Retained's existing65s qualification allows5s to observe a60s lease
+        # through SQL. Freeze this budget once; native census consumes it too.
+        self.dead_control_lease=dict(format='bigbrotr-dead-control-lease/1',container_id=terminal['Id'],
+            profile=profile,maximum_remaining_us=60_000_000,original_owner=owner,observation=sample,
+            remaining_us=remaining,started_monotonic=started,
+            deadline_monotonic=started+remaining/1_000_000+5)
+        save(output/'dead-control-lease.json',self.dead_control_lease)
+        require(remaining<=60_000_000,'dead original Control lease exceeds configured maximum')
+
+    def wait_control_expiry(self,output):
+        frozen=self.dead_control_lease
+        witness=dict(format='bigbrotr-dead-control-expiry/1',status='FAIL',
+            started_monotonic=time.monotonic(),deadline_monotonic=frozen['deadline_monotonic'],
+            lease_expires_at_us=frozen['original_owner']['lease_expires_at_us'],observations=0)
+        last_clock=frozen['observation']['observed_at_us']
+        def expired():
+            nonlocal last_clock
+            sample=self.control_lease_observation()
+            witness.update(last_observation=sample,observations=witness['observations']+1)
+            require(sample['owners']==frozen['observation']['owners']
+                and sample['job_owners']==frozen['observation']['job_owners'],'dead original Control lease changed')
+            require(type(sample['observed_at_us']) is int and sample['observed_at_us']>=last_clock,
+                'dead original Control database clock regressed')
+            last_clock=sample['observed_at_us']
+            return sample['active_unexpired']==0 and last_clock>=witness['lease_expires_at_us']
+        try:
+            if not expired():
+                remaining=frozen['deadline_monotonic']-time.monotonic()
+                require(remaining>0,'dead original Control expiry observation budget exhausted')
+                self.wait(expired,'dead original Control lease expiry',remaining)
+            witness['status']='PASS'
+        finally:
+            witness['finished_monotonic']=time.monotonic()
+            save(output/'dead-control-expiry.json',witness)
+
     def withdraw_after_empty_source(self,output):
         # One short owned-PG statement snapshots exact retained science before
         # deleting the actor's grant. The source backend has already completed
@@ -188,6 +253,7 @@ class LinearQuantumRuntime(Runtime):
             report=oracle.terminal_authority_diagnostic((output/'serve.stderr').read_text())
             save(output/'terminal-authority-diagnostic.json',report)
         save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        self.freeze_control_lease(terminal,output)
         stop_process(self.client);self.processes.remove(self.client)
         self.stop_quantum_proxy()
         # The proxy is gone. Historical reads/new Control use the declared direct
@@ -321,8 +387,7 @@ class LinearQuantumRuntime(Runtime):
         # Existing ownership is immutable. Wait for the positively dead owner's
         # actual lease expiry, then start ordinary Control for historical status;
         # this never adopts a same-job Sync/producer lifetime.
-        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
-            'dead original Control lease expiry',20)
+        self.wait_control_expiry(output)
         entry=self.launch('quantum-historical','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'historical Control restart',20,entry=entry)
         after,_=self.capture(output,'historical')
