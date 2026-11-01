@@ -5,7 +5,7 @@ use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::producer_ack::AckTarget;
 use super::producer_checkpoint::CheckpointStamp;
 use super::*;
-use bigbrotr_model::ObservedTime;
+use bigbrotr_model::{ObservedTime, ProducerRequestId, RequestSequence};
 use rocksdb::{FlushOptions, WaitForCompactOptions};
 use sha2::{Digest, Sha256};
 use std::{
@@ -69,15 +69,41 @@ fn exercise(root: &Path, evidence: &Path) {
         request().producer_epoch,
         1,
     );
+    let next = ProducerRequestId {
+        request_sequence: RequestSequence::new(2).unwrap(),
+        ..request()
+    };
+    let append_limits = AdmissionLimits {
+        max_batch_bytes: 256 * 1024,
+        ..AdmissionLimits::default()
+    };
+    // A genuine next operation, with its original synchronized but no native
+    // outcome or SQL reservation. Existing dictionary facts make its intended
+    // result AlreadyDurable; a new receipt/producer state still needs a write.
+    store
+        .stage_dictionary_append(
+            next,
+            &input,
+            ObservedTime::new(125),
+            append_limits,
+            &grant(&b, 4 * MIB, MIB),
+        )
+        .unwrap();
     let before = kv(&store);
     let originals = inputs(&path);
-    assert_eq!(originals.len(), 1);
-    assert_eq!(
-        originals[0].1,
-        input
-            .encode_request_preimage(request(), limits.max_batch_bytes)
-            .unwrap()
-    );
+    assert_eq!(originals.len(), 2);
+    for id in [request(), next] {
+        let bytes = input
+            .encode_request_preimage(id, limits.max_batch_bytes)
+            .unwrap();
+        assert_eq!(
+            originals
+                .iter()
+                .filter(|(_, value)| value == &bytes)
+                .count(),
+            1
+        );
+    }
     let sequence = store.db.latest_sequence_number();
     let accounting = store.accounting;
     let credit = store.producer_credit(request().producer_slot_id).unwrap();
@@ -89,7 +115,8 @@ fn exercise(root: &Path, evidence: &Path) {
         evidence,
         serde_json::json!({"event":"healthy", "sequence":sequence,
         "rows":before.len(), "rows_sha256":format!("{:x}", Sha256::digest(serde_json::to_vec(&before).unwrap())),
-        "original_sha256":format!("{:x}", Sha256::digest(&originals[0].1)), "available_bytes":available(root)}),
+        "originals_sha256":originals.iter().map(|(_, value)| format!("{:x}", Sha256::digest(value))).collect::<Vec<_>>(),
+        "issued":1, "acknowledged":0, "staged_request":2, "available_bytes":available(root)}),
     );
 
     // Only this new file consumes the isolated tmpfs. Drop unlinks it even if
@@ -183,6 +210,27 @@ fn exercise(root: &Path, evidence: &Path) {
         store.test_acknowledge_target(target, &grant(&b, 4096, 4096), || Ok(())),
         Err(AdmissionError::CommitUnknown)
     );
+    assert!(matches!(
+        store.stage_dictionary_append(
+            next,
+            &input,
+            ObservedTime::new(125),
+            append_limits,
+            &grant(&b, 4 * MIB, MIB)
+        ),
+        Err(AdmissionError::CommitUnknown)
+    ));
+    assert!(matches!(
+        store.append_dictionaries(
+            next,
+            &input,
+            ObservedTime::new(125),
+            append_limits,
+            grant(&b, 4 * MIB, MIB),
+            || Ok(())
+        ),
+        Err(AdmissionError::CommitUnknown)
+    ));
     assert!(matches!(
         store.stage_initial_dictionaries(request(), &input, limits, &grant(&b, 8 * MIB, 4 * MIB)),
         Err(BootstrapError::CommitUnknown)
