@@ -78339,7 +78339,7 @@
         "revision": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
         "qualified_source": "f761ca855cd3f06e9a117ea5106bcd02f0170b73",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85",
-        "status": "Componentbranch ancestor of localintegration; current product/workspace/tutorial qualified separately, mainpushnext",
+        "status": "Componentbranch ancestor of publishedmain ebb8;current product/workspace/tutorial qualified separately",
         "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.real_posix_controls"
       },
       "native_guard_integration": {
@@ -78351,22 +78351,57 @@
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-workspace",
         "failed_first_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-post",
         "corrected_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-a24a3dea-controls",
-        "status": "ALL_LOCAL_JOBS_TERMINAL_RETAINED;LOCAL_QUALIFICATION_PASS;HOSTED_NEW_TUPLE_PENDING",
+        "status": "MAIN_INTEGRATED_AND_PUSHED_EBB8;LOCAL_AND_ACTUAL_HOSTED_NATIVE_PASS",
         "qualification": {
           "path": "/home/tux/bigbrotr-rs/.research/native-guard-integration-20261031/workspace-qualification.json",
           "sha256": "a83d95ca9165a8de6eee432fc588aadd27b1773c5a285822eeecac0d9ab62782"
         },
         "cache": "115 released;four original immutable single-link ELF pins unchanged",
-        "retention": "Alloriginalfailures/nativeDB/input/ELF/archive/capture/worktree data preserved. No new broadcleanup; borrowed bridge empty."
+        "retention": "Alloriginalfailures/nativeDB/input/ELF/archive/capture/worktree data preserved. No new broadcleanup; borrowed bridge empty.",
+        "hosted_terminal": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-ebb8ee1b-20261101/terminal-audit.json",
+          "sha256": "b81ea60878d49315deedc207cef7c4dfb81e3773d3724c02bd408f6d9b6d3845"
+        },
+        "documentation_followup": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-1f4f682a-docs-20261101/terminal-audit.json",
+          "sha256": "8411e2959eed939be4b3bd5307c40fb52e1af87900997ef4601361d21dddea04"
+        }
       },
       "linear_quantum_in_progress": {
-        "branch": "work/m2-linear-quantum-20261031",
-        "worktree": ".research/m2-linear-quantum-sol-20261031",
-        "last_reviewed_revision": "82ecffd7a46220f573fabbc0c1fb9e9b53344232",
-        "owner": "current42_prefix_fixture_sol (Sol/xhigh); root remains sole compiler/integrator",
-        "status": "ACTIVE_REPAIR_NOT_INTEGRATED;ENGINE_BUILD_NOT_RUN",
-        "review": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-linear-quantum-critical-20261101.json",
-        "retention": "Preserve current edits, branch/worktree and original review. Four blocking budget/oracle/fault corrections and post-REQ authority proof are being reconciled before qualification."
+        "branch": "work/m2-linear-quantum-acceptance-20261101",
+        "worktree": ".research/m2-linear-quantum-acceptance-20261101",
+        "revision_before_checkpoint": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
+        "product_branch": "work/m2-linear-quantum-integration-20261101",
+        "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
+        "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
+        "author_branch": "work/m2-linear-quantum-20261031",
+        "author_status": "Cleanbatchobservercorrectionmerged/criticalreviewcomplete;93targetedPASS;allagentsidle,noengine/cacheowners.",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313",
+        "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-78c8e313",
+        "failed_first_build": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-2fc85504",
+        "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
+        "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-7bb7a159-controls",
+        "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
+        "status": "CurrentIndex15PASS/sevenfaultsPASS;groupedR1FAILatevidence-tailafterIndex64/proofwithin65,no fullnative/reclamationproof. Allownedlocaljobsnowterminal;bridgeempty. SameprofileGroupR2next;M2notmainintegrated.",
+        "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
+        "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
+        "author_tip": "01cf7e730a8d8a2f32bfe5ee8587b0b515c84f2f",
+        "dev_revision": "e8122ff90edf298e8c1262d3328cde87387c8828",
+        "evidence_report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
+        "failed_historical_controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-20a3d7f4-controls",
+        "failed_index_topology_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1",
+        "index_topology_attempts": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1",
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r2",
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3"
+        ],
+        "current_index_topology": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r4",
+        "prepared_product_worktree_head": "acf7496f042769dcdc5da33bd18a099d0bf2236d",
+        "grouped_first_failure": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1",
+        "formatter_preflight_roots": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-observer-format-26.8.35.10-20261101"
+        ],
+        "formatter_status": "Twoownedlocalformatcontainersstopped0/PID0/noOOM;networknone,noactualdata/cache;raws/receiptsretained."
       }
     }
   },

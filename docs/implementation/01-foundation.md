@@ -311,6 +311,10 @@ queues; process health differs from finite-job and protocol states.
   paths/needless duplication or a concrete reason to retain them, and unchanged
   cancellation/restart/recovery proofs. File size alone is not a defect or a
   reason to introduce another abstraction.
+  The November1 retained128-round comparison localizes a Sync/Index cadence
+  difference during serial work; the [Sync evidence](evidence/p03-initial-sync-native-20261002.json)
+  owns timings and attribution limits. Keep this scheduling/responsibility
+  follow-through open; observer batching does not establish product efficiency.
 - [ ] **Step 6:** Coalesce stuck dependency probes while retaining their permits. Stop
   intake and join owners before closing embedded/native handles.
 - [ ] **Step 7:** **Practical P01-T05:** saturate data work while querying health and issuing

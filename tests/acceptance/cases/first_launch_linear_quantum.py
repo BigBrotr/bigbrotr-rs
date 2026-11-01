@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import subprocess
 import time
+import tomllib
 
 from cases.first_launch import Runtime,load,save,require,digest,stop_process
 from cases import first_launch_quantum_oracle as oracle
@@ -47,28 +48,57 @@ class LinearQuantumRuntime(Runtime):
         save(self.home/'linear-quantum-profile.json',PROFILE)
 
     def bootstrap(self):
+        # Keep unrelated initialization outside the finite fault proxy budget.
+        # Initial owner startup and every dictionary/quantum statement still use it.
+        super().bootstrap()
         self.quantum_fault=getattr(self.args,'linear_quantum_fault',None)
         if self.quantum_fault:save(self.home/'linear-quantum-fault.json',self.quantum_fault)
         if self.quantum_fault:
+            original=self.config.read_text()
+            upstream=tomllib.loads(original)['postgres']['control']['endpoint']
+            require(upstream=='127.0.0.1:15432','quantum proxy requires declared direct Control upstream')
+            direct_recipe_sha256=digest(self.config)
             boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('plan','held')
             path=self.source/'experiments/archive-engine/native_commit_proxy.py'
             self.inputs['acceptance_files_sha256'][str(path.relative_to(self.source))]=digest(path)
-            self.route=self.proxy_process([sys.executable,'-B',str(path),'--mode',
-                'hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
-                'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete',
-                '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
-                'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
-                '--upstream-port','15432'],input_pipe=True)
-            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None)
+            profile='default' if self.quantum_fault in ('plan-before','plan-after') else 'retained-catch-up'
+            mode=('hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
+                'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete')
+            target=('control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
+                'control-quantum-'+('plan' if boundary=='plan' else 'terminal'))
+            # Body/authority captures include more framed Control work before
+            # the selected boundary. Reuse the existing finite traffic profile;
+            # this changes neither its64MiB/120s bounds nor product admission.
+            self.quantum_proxy_binding=dict(source_sha256=digest(path),mode=mode,target=target,profile=profile,
+                frame_limit=20000 if profile=='default' else 131072,
+                connection_limit=16 if profile=='default' else 64,connection_limit_scope='lifetime',
+                wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
+            self.inputs['quantum_proxy']=self.quantum_proxy_binding
+            command=[sys.executable,'-B',str(path),'--mode',mode,'--target',target,'--upstream-port','15432']
+            if profile!='default':command+=['--profile',profile]
+            self.route=self.proxy_process(command,input_pipe=True)
+            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None,
+                upstream_endpoint=upstream,direct_recipe_sha256=direct_recipe_sha256)
             self.record_resources()
             save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             ready=self.proxy_event(self.route,'ready',10)
-            require(ready['source_sha256']==digest(path),'exact quantum proxy source')
+            save(self.root/'quantum-proxy-ready.json',ready)
+            self.validate_quantum_proxy(ready,'ready')
+            self.quantum_proxy_ready=ready
             self.resources['quantum_proxy']['port']=ready['port']
             self.record_resources()
-            self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+            self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
-        super().bootstrap()
+
+    def validate_quantum_proxy(self,value,event):
+        require(value.get('event')==event and all(type(value.get(key)) is type(expected)
+            and value[key]==expected for key,expected in self.quantum_proxy_binding.items()),
+            'quantum proxy '+event+' binding differs')
+        if event=='terminal':
+            require(type(value.get('unexpected')) is int and value['unexpected']==0
+                and all(type(value.get(key)) is int and 0<value[key]<=limit
+                for key,limit in (('frames',value['frame_limit']),('connections',value['connection_limit']),
+                    ('bytes',value['wire_limit']))),'incomplete quantum proxy terminal observation')
 
     def stop_quantum_proxy(self):
         if not hasattr(self,'route') or self.resources['quantum_proxy']['status']=='joined':return
@@ -94,6 +124,13 @@ class LinearQuantumRuntime(Runtime):
             result=self.proxy_observation(route);save(self.root/'quantum-proxy.json',result)
             require(code==0 and streams_joined and not result['stderr'] and not result['overflow'],
                 'incomplete quantum proxy observation')
+            if hasattr(self,'quantum_proxy_ready'):
+                events=[json.loads(line) for line in result['stdout'].splitlines()]
+                ready,=[value for value in events if value.get('event')=='ready']
+                terminal,=[value for value in events if value.get('event')=='terminal']
+                save(self.root/'quantum-proxy-terminal.json',terminal)
+                require(ready==self.quantum_proxy_ready,'quantum proxy ready observation changed')
+                self.validate_quantum_proxy(terminal,'terminal')
         except Exception as error:failures.append(('observation',error))
         self.resources['quantum_proxy'].update(status='joined' if code is not None and streams_joined else 'cleanup-incomplete',exit_code=code)
         self.resources['cleanup_errors'].extend(dict(resource='quantum-proxy',id=route.process.pid,
@@ -103,6 +140,75 @@ class LinearQuantumRuntime(Runtime):
             if failures:raise failures[0][1]
             raise
         if failures:raise failures[0][1]
+
+    def control_lease_observation(self):
+        return json.loads(self.sql('bigbrotr_control',"""
+            WITH observed AS MATERIALIZED (
+                SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS now_us
+            ) SELECT jsonb_build_object('observed_at_us',observed.now_us,
+                'owners',(SELECT coalesce(jsonb_agg(to_jsonb(o)||jsonb_build_object('xmin',o.xmin::text)
+                    ORDER BY o.resource_id,o.epoch),'[]'::jsonb) FROM control.owner_epochs o WHERE o.role='control'),
+                'job_owners',(SELECT coalesce(jsonb_agg(DISTINCT jsonb_build_array(j.dataset_id,
+                    j.owner_resource_id,j.owner_epoch,j.owner_incarnation)),'[]'::jsonb)
+                    FROM control.jobs j WHERE j.kind='acquisition' AND j.owner_epoch IS NOT NULL),
+                'active_unexpired',(SELECT count(*) FROM control.owner_epochs o
+                    WHERE o.role='control' AND o.state='active' AND o.lease_expires_at_us>observed.now_us))
+            FROM observed"""))
+
+    def freeze_control_lease(self,terminal,output):
+        require(not terminal['State']['Running'] and terminal['State']['Pid']==0
+            and not terminal['State']['OOMKilled'],'original Control application is not positively stopped')
+        profile=tomllib.loads(self.config.read_text()).get('runtime',{}).get('lease_ttl','60s')
+        require(profile=='60s','quantum historical restart requires declared 60s Control lease profile')
+        started=time.monotonic();sample=self.control_lease_observation()
+        owners=sample['owners']
+        require(owners and all(row['dataset_id']=='\\x'+self.initialized['dataset_id'] for row in owners),
+            'original Control owner identity differs')
+        job_owner,=sample['job_owners']
+        owner,=[row for row in owners if [row['dataset_id'],row['resource_id'],row['epoch'],row['process_incarnation']]==job_owner]
+        require(all(row==owner or row['state']=='released' for row in owners),
+            'unexpected live Control owner after original application death')
+        require(owner['state'] in ('active','released') and type(sample['observed_at_us']) is int,
+            'original Control lease observation differs')
+        remaining=max(0,owner['lease_expires_at_us']-sample['observed_at_us'])
+        # Retained's existing65s qualification allows5s to observe a60s lease
+        # through SQL. Freeze this budget once; native census consumes it too.
+        self.dead_control_lease=dict(format='bigbrotr-dead-control-lease/1',container_id=terminal['Id'],
+            profile=profile,maximum_remaining_us=60_000_000,original_owner=owner,observation=sample,
+            remaining_us=remaining,started_monotonic=started,
+            deadline_monotonic=started+remaining/1_000_000+5)
+        save(output/'dead-control-lease.json',self.dead_control_lease)
+        require(remaining<=60_000_000,'dead original Control lease exceeds configured maximum')
+
+    def wait_control_expiry(self,output):
+        frozen=self.dead_control_lease
+        deadline=frozen['deadline_monotonic']
+        witness=dict(format='bigbrotr-dead-control-expiry/1',status='FAIL',
+            started_monotonic=time.monotonic(),deadline_monotonic=deadline,
+            lease_expires_at_us=frozen['original_owner']['lease_expires_at_us'],observations=0)
+        last_clock=frozen['observation']['observed_at_us']
+        def expired():
+            nonlocal last_clock
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
+            sample=self.control_lease_observation()
+            witness.update(last_observation=sample,observations=witness['observations']+1)
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
+            require(sample['owners']==frozen['observation']['owners']
+                and sample['job_owners']==frozen['observation']['job_owners'],'dead original Control lease changed')
+            require(type(sample['observed_at_us']) is int and sample['observed_at_us']>=last_clock,
+                'dead original Control database clock regressed')
+            last_clock=sample['observed_at_us']
+            return sample['active_unexpired']==0 and last_clock>=witness['lease_expires_at_us']
+        try:
+            if not expired():
+                remaining=deadline-time.monotonic()
+                require(remaining>0,'dead original Control expiry observation budget exhausted')
+                self.wait(expired,'dead original Control lease expiry',remaining)
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
+            witness['status']='PASS'
+        finally:
+            witness['finished_monotonic']=time.monotonic()
+            save(output/'dead-control-expiry.json',witness)
 
     def withdraw_after_empty_source(self,output):
         # One short owned-PG statement snapshots exact retained science before
@@ -181,6 +287,7 @@ class LinearQuantumRuntime(Runtime):
             report=oracle.terminal_authority_diagnostic((output/'serve.stderr').read_text())
             save(output/'terminal-authority-diagnostic.json',report)
         save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
+        self.freeze_control_lease(terminal,output)
         stop_process(self.client);self.processes.remove(self.client)
         self.stop_quantum_proxy()
         # The proxy is gone. Historical reads/new Control use the declared direct
@@ -314,8 +421,7 @@ class LinearQuantumRuntime(Runtime):
         # Existing ownership is immutable. Wait for the positively dead owner's
         # actual lease expiry, then start ordinary Control for historical status;
         # this never adopts a same-job Sync/producer lifetime.
-        self.wait(lambda:self.sql('bigbrotr_control',"SELECT count(*) FROM control.owner_epochs WHERE role='control' AND state='active' AND lease_expires_at_us>(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint")=='0',
-            'dead original Control lease expiry',20)
+        self.wait_control_expiry(output)
         entry=self.launch('quantum-historical','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'historical Control restart',20,entry=entry)
         after,_=self.capture(output,'historical')

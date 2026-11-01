@@ -699,10 +699,13 @@ def expression(ty, value):
     return value
 
 
-def select_rows(schema, database, target):
+def select_rows(schema, database, target, *, table_marker=False):
     assert database == 'serving_fixture' and target in TARGETS
+    assert type(table_marker) is bool
     columns, = [columns for name,columns,_ in schema.FAMILIES if name == target]
     fields = ','.join(expression(ty,'`'+name+'`')+' AS `'+name+'`' for name,ty in schema.COMMON+columns)
+    if table_marker:
+        fields = f'toUInt8(1) AS `__bigbrotr_table_{target}`,'+fields
     return f'SELECT {fields} FROM {database}.{target} ORDER BY source,discriminator'
 
 

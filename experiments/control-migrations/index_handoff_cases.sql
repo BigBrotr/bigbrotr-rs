@@ -14,15 +14,20 @@ CREATE TEMP TABLE snapshots(name text PRIMARY KEY, value jsonb);
 CREATE TEMP TABLE context AS
 SELECT g.dataset_id,g.owner_resource_id AS consumer,g.generation_id,s.owner_resource_id AS ingest,
     s.shard_id,s.last_complete_sequence AS old_through,s.handoff_sha256 AS succession_digest,
-    c.current_revision AS old_revision, :'expected_terminal'::boolean AS terminal
+    c.current_revision AS old_revision, :'expected_terminal'::boolean AS terminal,
+    :'expected_control_tables'::jsonb AS expected_control_tables
 FROM control.projection_generations g JOIN control.consumers c ON c.consumer_id=g.owner_resource_id
 JOIN control.initial_ingest_successions s ON s.dataset_id=g.dataset_id;
 
 CREATE FUNCTION pg_temp.snapshot() RETURNS jsonb LANGUAGE plpgsql AS $$
-DECLARE names text[]; relation text; part jsonb; answer jsonb:='{}';
+DECLARE names text[]; expected jsonb; relation text; part jsonb; answer jsonb:='{}';
 BEGIN
-    SELECT array_agg(tablename ORDER BY tablename) INTO names FROM pg_tables WHERE schemaname='control';
-    IF cardinality(names)<>82 THEN RAISE EXCEPTION 'exact current82-table inventory required'; END IF;
+    SELECT expected_control_tables INTO STRICT expected FROM context;
+    SELECT array_agg(tablename::text ORDER BY tablename::text COLLATE "C") INTO names
+        FROM pg_catalog.pg_tables WHERE schemaname='control';
+    IF names IS NULL OR to_jsonb(names) IS DISTINCT FROM expected THEN
+        RAISE EXCEPTION 'exact declared Control table inventory required';
+    END IF;
     FOREACH relation IN ARRAY names LOOP
         EXECUTE format('SELECT coalesce(jsonb_agg(v ORDER BY v::text COLLATE "C"),''[]'') FROM '
             '(SELECT to_jsonb(t)||jsonb_build_object(''xmin'',xmin::text) v FROM control.%I t) q',relation) INTO part;

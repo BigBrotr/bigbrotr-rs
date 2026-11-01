@@ -276,8 +276,9 @@ run_handoff_clone(runtime, output / 'index-handoff-terminal', phase='terminal')
 
 The first hook follows actual `abandon-successor` and precedes
 `retire-successor`; the second uses the genuine terminal pre-bridge state. Both
-require the current consolidated0041 checksum, all82 Control tables, the
-provenance-on signed journey's source cuts12/10, four fully published epoch1
+require the current consolidated0041 checksum, the exact Control table names
+declared by the current migration sources, the provenance-on signed journey's
+source cuts12/10, four fully published epoch1
 Index batches and no Index handoff. A completed lifecycle is never rewound to
 manufacture the negative seed. Historical076 databases are incompatible inputs
 and remain untouched. The original database must have positively absent backends
@@ -299,8 +300,9 @@ head capture/replay after another SQL session transfer. Competing intents are
 deliberately unsealed and rolled back; they are not claimed as valid native
 batches. Fake batch overlap and missing attestation are labelled as earlier
 batch/bound guards, separately from direct handoff guard refusals. Every negative
-case checks all82 rows and xmins unchanged, with its specific SQLSTATE and guard
-message or constraint. The positive bridge commits before read-head/retry checks.
+case checks that all rows and xmins in every declared Control table are unchanged,
+with its specific SQLSTATE and guard message or constraint. The positive bridge
+commits before read-head/retry checks.
 The seed assertion also checks the runtime role's effective EXECUTE privilege on
 the invoker handoff validator, without ownership, grant option, PUBLIC access or
 trigger-function EXECUTE. This is ACL coverage; the migrator-run fixture does not

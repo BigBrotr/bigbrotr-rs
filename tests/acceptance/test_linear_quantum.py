@@ -11,12 +11,14 @@ from cases import first_launch_quantum_oracle as check
 from installed_sync_client import quantum_status
 
 
-def fixture(*,pending=False):
+def fixture(*,pending=False,abandoned=False,producer_epoch=1):
     bx=lambda digit:'\\x'+digit*32
     predicate=b'["REQ","000000000000000000000000000000000000000000000000",{"kinds":[1],"since":0,"until":86399,"limit":3}]'
     ident='ab'*24;frame=json.dumps(['EOSE',ident],separators=(',',':')).encode()
     job=dict(dataset_id=bx('1'),job_id=bx('2'),created_at_us=200_000_999_999,
-        owner_resource_id=bx('3'),owner_epoch=1,owner_incarnation=bx('4'))
+        owner_resource_id=bx('3'),owner_epoch=1,owner_incarnation=bx('4'),owner_role='control',
+        kind='acquisition',acquisition_job_protocol=1,state='queued',job_revision=2,checkpoint_revision=0,
+        result_manifest_digest=None,reason_code=None,completed_at_us=None)
     row=dict(quantum_id=bx('5'),quantum_profile=1,quantum_number=1,dataset_id=bx('1'),job_id=bx('2'),scope_id=bx('6'),
         producer_slot_id=bx('7'),producer_epoch=1,issuer_role='control',issuer_resource=bx('3'),
         issuer_epoch=1,issuer_incarnation=bx('4'),interval_lower=0,interval_upper=86400,horizon=200000,
@@ -29,8 +31,25 @@ def fixture(*,pending=False):
         checkpoint_after=None if pending else 3,continuation_upper=None if pending else 86400,
         result_class=None if pending else 'linear_observed',gap_reason=None,teardown_complete=None if pending else True,xmin='11')
     row['charged_bytes']=(1024+len(predicate)+2097152+3072+192*256 if pending else 1024+len(predicate)+len(frame))
-    state=dict(jobs=[job],acquisition_jobs=[dict(job_id=job['job_id'],scope_id=row['scope_id'])],
-        acquisition_quanta=[row],producer_requests=[],producer_checkpoints=[])
+    state=dict(jobs=[job],acquisition_jobs=[dict(dataset_id=job['dataset_id'],job_id=job['job_id'],scope_id=row['scope_id'])],
+        acquisition_quanta=[row],producer_requests=[],producer_checkpoints=[],acquisition_gaps=[],
+        owner_epochs=[dict(dataset_id=job['dataset_id'],resource_id=bx('3'),epoch=1,role='control',
+            process_incarnation=bx('4'),state='active',exclusion_method=None)],
+        producer_epochs=[dict(dataset_id=job['dataset_id'],producer_slot_id=bx('7'),producer_epoch=1)])
+    if abandoned:
+        state['owner_epochs'][0].update(state='released',exclusion_method='storage_fenced')
+        state['owner_epochs'].append(dict(dataset_id=bx('1'),resource_id=bx('3'),epoch=2,role='control',
+            process_incarnation=bx('8'),state='released',exclusion_method='joined'))
+        row['producer_epoch']=state['producer_epochs'][0]['producer_epoch']=producer_epoch
+        reason=('initial_producer_abandoned' if producer_epoch==1 else
+            'activated_initial_producer_abandoned' if producer_epoch==2 else 'ingest_successor_abandoned')
+        job.update(state='cancelled',job_revision=4,reason_code=reason,completed_at_us=200_003_000_000,
+            owner_epoch=2,owner_incarnation=bx('8'))
+        state['acquisition_gaps']=[dict(job_id=bx('2'),dataset_id=bx('1'),producer_slot_id=bx('7'),
+            producer_epoch=producer_epoch,source_owner_epoch=producer_epoch,owner_role='control',
+            previous_job_revision=2,previous_owner_resource=bx('3'),previous_owner_epoch=1,
+            previous_owner_incarnation=bx('4'),issuer_resource=bx('3'),issuer_epoch=2,
+            issuer_incarnation=bx('8'),abandoned_at_us=200_003_000_000,reason=reason)]
     wire=dict(number=1,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],frames=['EOSE'],completion='request-and-websocket-close')
     return state,wire
 
@@ -50,6 +69,9 @@ class LinearQuantumControls(unittest.TestCase):
                     source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='gap-write'),
                     dict(acceptance_files_sha256={}))
                 runtime.home=root/'home';runtime.home.mkdir()
+                original='[postgres.control]\nendpoint = "127.0.0.1:15432"\n'
+                runtime.config=root/'instance.toml';runtime.config.write_text(original)
+                order=[]
                 child=SimpleNamespace(pid=123,returncode=code if name=='already-exited' else None)
                 child.poll=lambda:child.returncode
                 def wait(timeout):
@@ -62,10 +84,15 @@ class LinearQuantumControls(unittest.TestCase):
                 stdout=b'proxy stopped\xff\n';stderr=b'proxy exited early\n' if name=='already-exited' else b''
                 process=SimpleNamespace(process=child,wait=Mock(side_effect=wait),stop=Mock(side_effect=stop),
                     threads=[SimpleNamespace(is_alive=lambda:False)],stdout=stdout,stderr=stderr,overflow=overflow)
-                runtime.proxy_process=Mock(return_value=process)
-                pending=dict(pid=123,status='running',port=None)
+                def launch(*args,**kwargs):
+                    self.assertEqual(order,['bootstrap']);order.append('proxy')
+                    return process
+                runtime.proxy_process=Mock(side_effect=launch)
+                pending=dict(pid=123,status='running',port=None,upstream_endpoint='127.0.0.1:15432',
+                    direct_recipe_sha256=hashlib.sha256(original.encode()).hexdigest())
                 def ready(route,event,timeout):
                     self.assertIs(route,process);self.assertEqual((event,timeout),('ready',10))
+                    self.assertEqual(order,['bootstrap','proxy'])
                     self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],pending)
                     self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),dict(pid=123))
                     raise TimeoutError('proxy ready deadline')
@@ -73,9 +100,14 @@ class LinearQuantumControls(unittest.TestCase):
                 terminal=dict(exit=code,stdout=stdout.decode(errors='replace'),stderr=stderr.decode(),
                     overflow=overflow,remote_exclusion='UNKNOWN')
                 runtime.proxy_send=Mock(side_effect=control_error);runtime.proxy_observation=Mock(return_value=terminal)
-                with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                def base_bootstrap():
+                    runtime.proxy_process.assert_not_called()
+                    self.assertFalse(hasattr(runtime,'route'))
+                    self.assertEqual(runtime.config.read_text(),original)
+                    order.append('bootstrap')
+                with patch.object(case.Runtime,'bootstrap',side_effect=base_bootstrap) as bootstrap:
                     with self.assertRaisesRegex(TimeoutError,'proxy ready deadline'):runtime.bootstrap()
-                    bootstrap.assert_not_called()
+                    bootstrap.assert_called_once_with()
                 runtime.proxy_process.assert_called_once()
                 self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
                 if operations:
@@ -103,6 +135,272 @@ class LinearQuantumControls(unittest.TestCase):
                 else:runtime.cleanup()
                 process.wait.assert_called_once_with(5);process.stop.assert_called_once_with()
 
+    def test_fault_route_records_direct_recipe_and_refuses_an_undeclared_upstream(self):
+        from cases import first_launch_linear_quantum as case
+        for endpoint in ('127.0.0.1:15432','127.0.0.1:25432'):
+            with self.subTest(endpoint=endpoint),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='plan-before'),
+                    dict(acceptance_files_sha256={}))
+                runtime.home=root/'home';runtime.home.mkdir()
+                original='[postgres.control]\nendpoint = "'+endpoint+'"\n'
+                runtime.config=root/'instance.toml';runtime.config.write_text(original)
+                routed='[postgres.control]\nendpoint = "127.0.0.1:34567"\n'
+                runtime.set_value=Mock(return_value=routed)
+                runtime.proxy_process=Mock(return_value=SimpleNamespace(process=SimpleNamespace(pid=123)))
+                def ready(route,event,timeout):
+                    bootstrap.assert_called_once_with()
+                    self.assertEqual(runtime.config.read_text(),original)
+                    saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
+                    self.assertEqual((saved['upstream_endpoint'],saved['direct_recipe_sha256']),
+                        ('127.0.0.1:15432',hashlib.sha256(original.encode()).hexdigest()))
+                    return dict(runtime.quantum_proxy_binding,event='ready',port=34567)
+                runtime.proxy_event=ready
+                with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                    if endpoint!='127.0.0.1:15432':
+                        with self.assertRaisesRegex(ValueError,'declared direct Control upstream'):runtime.bootstrap()
+                        bootstrap.assert_called_once_with();runtime.proxy_process.assert_not_called()
+                        runtime.set_value.assert_not_called();self.assertEqual(runtime.config.read_text(),original)
+                        continue
+                    runtime.bootstrap();bootstrap.assert_called_once_with()
+                self.assertEqual(runtime.proxy_process.call_args.args[0][3:],[
+                    '--mode','before-forward','--target','control-quantum-plan','--upstream-port','15432'])
+                self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
+                runtime.set_value.assert_called_once_with(original,'postgres.control','endpoint','127.0.0.1:34567')
+                self.assertEqual(runtime.config.read_text(),routed)
+                self.assertEqual(runtime.inputs['initial_recipe_sha256'],hashlib.sha256(routed.encode()).hexdigest())
+                saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
+                self.assertEqual(saved['port'],34567)
+                self.assertEqual(saved['direct_recipe_sha256'],hashlib.sha256(original.encode()).hexdigest())
+
+    def test_fault_profiles_keep_plan_default_and_bound_body_terminal_and_authority_captures(self):
+        from cases import first_launch_linear_quantum as case
+        vectors=(('plan-before','before-forward','plan','default',20000,16),
+            ('plan-after','after-complete','plan','default',20000,16),
+            ('terminal-before','before-forward','terminal','retained-catch-up',131072,64),
+            ('terminal-after','after-complete','terminal','retained-catch-up',131072,64),
+            ('gap-write','hold-reply','plan','retained-catch-up',131072,64),
+            ('stale-authority','hold-reply','plan','retained-catch-up',131072,64),
+            ('empty-terminal-authority','hold-source-rollback-reply','source-rollback','retained-catch-up',131072,64))
+        for fault,mode,target,profile,frames,connections in vectors:
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2],linear_quantum_fault=fault),
+                    dict(acceptance_files_sha256={}))
+                runtime.home=root/'home';runtime.home.mkdir()
+                runtime.config=root/'instance.toml'
+                runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n')
+                runtime.set_value=Mock(return_value='[postgres.control]\nendpoint = "127.0.0.1:34567"\n')
+                source=runtime.source/'experiments/archive-engine/native_commit_proxy.py'
+                binding=dict(source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),mode=mode,
+                    target='control-quantum-'+target,profile=profile,frame_limit=frames,connection_limit=connections,
+                    connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+                    upstream_host='127.0.0.1',upstream_port=15432)
+                ready=dict(binding,event='ready',port=34567)
+                runtime.proxy_process=Mock(return_value=SimpleNamespace(process=SimpleNamespace(pid=123)))
+                runtime.proxy_event=Mock(return_value=ready)
+                with patch.object(case.Runtime,'bootstrap'):runtime.bootstrap()
+                expected=[case.sys.executable,'-B',str(source),'--mode',mode,'--target','control-quantum-'+target,
+                    '--upstream-port','15432']
+                if profile!='default':expected+=['--profile','retained-catch-up']
+                runtime.proxy_process.assert_called_once_with(expected,input_pipe=True)
+                self.assertEqual(runtime.inputs['quantum_proxy'],binding)
+                self.assertEqual(json.loads((root/'quantum-proxy-ready.json').read_text()),ready)
+
+    def test_quantum_ready_and_terminal_emit_actual_profile_limits_source_and_route(self):
+        import importlib.util
+        path=Path(__file__).resolve().parents[2]/'experiments/archive-engine/native_commit_proxy.py'
+        spec=importlib.util.spec_from_file_location('linear_profile_proxy_control',path)
+        proxy=importlib.util.module_from_spec(spec);spec.loader.exec_module(proxy)
+        source=hashlib.sha256(path.read_bytes()).hexdigest()
+        for target,mode in (('control-quantum-plan','hold-reply'),('control-quantum-terminal','before-forward'),
+                ('control-quantum-source-rollback','hold-source-rollback-reply')):
+            for profile,frames,connections in (('default',20000,16),('retained-catch-up',131072,64)):
+                with self.subTest(target=target,profile=profile):
+                    route=proxy.Proxy(mode,target,profile=profile,upstream_port=15432)
+                    expected=dict(source_sha256=source,mode=mode,target=target,profile=profile,
+                        frame_limit=frames,connection_limit=connections,connection_limit_scope='lifetime',
+                        wire_limit=67108864,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
+                    for event in ('ready','terminal'):
+                        with patch('builtins.print') as output:route.emit(event)
+                        actual=json.loads(output.call_args.args[0])
+                        self.assertEqual({key:actual[key] for key in expected},expected)
+        # Shared proxy callers outside these three quantum targets retain their
+        # original report shape as well as their original transport behavior.
+        with patch('builtins.print') as output:proxy.Proxy('pass').emit('terminal',unexpected=0)
+        actual=json.loads(output.call_args.args[0])
+        self.assertTrue(set(actual).isdisjoint(('profile','frame_limit','connection_limit',
+            'connection_limit_scope','wire_limit','lifetime_seconds','source_sha256','upstream_host','upstream_port')))
+
+    def test_ready_and_terminal_refuse_substituted_profile_identity_or_budget(self):
+        from cases import first_launch_linear_quantum as case
+        runtime=object.__new__(case.LinearQuantumRuntime)
+        runtime.quantum_proxy_binding=dict(source_sha256='ab'*32,mode='before-forward',
+            target='control-quantum-terminal',profile='retained-catch-up',frame_limit=131072,
+            connection_limit=64,connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+            upstream_host='127.0.0.1',upstream_port=15432)
+        substitutions=dict(source_sha256='cd'*32,mode='after-complete',target='control-quantum-plan',
+            profile='default',frame_limit=20000,connection_limit=16,connection_limit_scope='active',
+            wire_limit=67108865,lifetime_seconds=180,upstream_host='localhost',upstream_port=5432)
+        for event in ('ready','terminal'):
+            valid=dict(runtime.quantum_proxy_binding,event=event,frames=20001,connections=1,bytes=1212047,unexpected=0)
+            runtime.validate_quantum_proxy(valid,event)
+            for key,value in substitutions.items():
+                for changed in (dict(valid,**{key:value}),{field:value for field,value in valid.items() if field!=key}):
+                    with self.subTest(event=event,key=key),self.assertRaisesRegex(ValueError,'binding differs'):
+                        runtime.validate_quantum_proxy(changed,event)
+            with self.assertRaisesRegex(ValueError,'binding differs'):
+                runtime.validate_quantum_proxy(dict(valid,upstream_port=True),event)
+        for key,value in (('frames',131073),('connections',65),('bytes',67108865),('frames',0),('unexpected',1)):
+            with self.subTest(key=key,value=value),self.assertRaisesRegex(ValueError,'terminal observation'):
+                runtime.validate_quantum_proxy(dict(valid,**{key:value}),'terminal')
+
+    def test_joined_proxy_requires_terminal_binding_and_retains_refused_summary(self):
+        from cases import first_launch_linear_quantum as case
+        for failure in (None,'profile','missing','duplicate'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2]),dict(acceptance_files_sha256={}))
+                runtime.quantum_proxy_binding=dict(source_sha256='ab'*32,mode='before-forward',
+                    target='control-quantum-terminal',profile='retained-catch-up',frame_limit=131072,
+                    connection_limit=64,connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+                    upstream_host='127.0.0.1',upstream_port=15432)
+                ready=dict(runtime.quantum_proxy_binding,event='ready',port=34567)
+                terminal=dict(runtime.quantum_proxy_binding,event='terminal',frames=20001,connections=1,bytes=1212047,unexpected=0)
+                if failure=='profile':terminal['profile']='default'
+                events=[ready]+([] if failure=='missing' else [terminal])
+                if failure=='duplicate':events.append(terminal)
+                stdout=('\n'.join(json.dumps(event) for event in events)+'\n').encode()
+                route=SimpleNamespace(process=SimpleNamespace(pid=123,poll=lambda:0),
+                    wait=Mock(return_value=0),stop=Mock(),threads=[SimpleNamespace(is_alive=lambda:False)],
+                    stdout=stdout,stderr=b'',overflow=False)
+                runtime.route=route;runtime.quantum_proxy_ready=ready
+                runtime.resources['quantum_proxy']=dict(pid=123,status='running',port=34567)
+                runtime.proxy_send=Mock()
+                observation=dict(exit=0,stdout=stdout.decode(),stderr='',overflow=False,remote_exclusion='UNKNOWN')
+                runtime.proxy_observation=Mock(return_value=observation)
+                if failure:
+                    with self.assertRaises(ValueError):runtime.stop_quantum_proxy()
+                else:runtime.stop_quantum_proxy()
+                route.wait.assert_called_once_with(5);route.stop.assert_called_once_with()
+                runtime.proxy_send.assert_not_called()
+                self.assertEqual((root/'quantum-proxy.stdout').read_bytes(),stdout)
+                self.assertEqual(json.loads((root/'quantum-proxy.json').read_text()),observation)
+                self.assertEqual(runtime.resources['quantum_proxy']['status'],'joined')
+                self.assertEqual([value['operation'] for value in runtime.resources['cleanup_errors']],
+                    ['observation'] if failure else [])
+                if failure not in ('missing','duplicate'):
+                    self.assertEqual(json.loads((root/'quantum-proxy-terminal.json').read_text()),terminal)
+
+    def test_control_expiry_consumes_frozen_sixty_second_lease_instead_of_fixed_twenty_seconds(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+            runtime.initialized=dict(dataset_id='11'*16,owner_resource_id='44'*16)  # Ingest is distinct.
+            owner=dict(dataset_id='\\x'+'11'*16,resource_id='\\x'+'22'*16,role='control',epoch=2,
+                process_incarnation='\\x'+'33'*16,state='active',acquired_at_us=999_000_000,
+                lease_expires_at_us=1_060_000_000,xmin='7')
+            job_owner=['\\x'+'11'*16,'\\x'+'22'*16,2,'\\x'+'33'*16]
+            terminal=dict(Id='dead-app',State=dict(Running=False,Pid=0,OOMKilled=False))
+            clock=[100.0]
+            def sql(database,statement):
+                self.assertEqual(database,'bigbrotr_control')
+                self.assertIn('clock_timestamp()',statement);self.assertIn('active_unexpired',statement)
+                now=1_000_000_000+round((clock[0]-100)*1_000_000)
+                return json.dumps(dict(observed_at_us=now,owners=[owner],job_owners=[job_owner],active_unexpired=int(now<1_060_000_000)))
+            runtime.sql=Mock(side_effect=sql)
+            runtime.wait=Mock(wraps=runtime.wait)
+            def advance(seconds):clock[0]+=seconds
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]), \
+                    patch.object(case.time,'sleep',side_effect=advance):
+                runtime.freeze_control_lease(terminal,root)
+                frozen=json.loads((root/'dead-control-lease.json').read_text())
+                self.assertEqual((frozen['remaining_us'],frozen['deadline_monotonic']),(60_000_000,165.0))
+                # Ten seconds of native verification consumes the same deadline.
+                clock[0]=110.0
+                runtime.wait_control_expiry(root)
+            self.assertEqual(runtime.wait.call_args.args[1:],('dead original Control lease expiry',55.0))
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual(witness['status'],'PASS')
+            self.assertGreater(witness['finished_monotonic']-witness['started_monotonic'],20)
+            self.assertLessEqual(witness['finished_monotonic'],165.0)
+            self.assertEqual(witness['last_observation']['owners'],[owner])
+            self.assertEqual(witness['last_observation']['active_unexpired'],0)
+            self.assertGreaterEqual(witness['last_observation']['observed_at_us'],1_060_000_000)
+
+    def test_dead_control_expiry_refuses_changed_lease_or_out_of_profile_wait(self):
+        from cases import first_launch_linear_quantum as case
+        for name in ('beyond-maximum','changed-lease','clock-regressed','budget-exhausted','wrong-profile'):
+            with self.subTest(name=name),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+                runtime.config=root/'instance.toml'
+                runtime.config.write_text('[runtime]\nlease_ttl = "'+('61s' if name=='wrong-profile' else '60s')+'"\n')
+                runtime.initialized=dict(dataset_id='11'*16,owner_resource_id='44'*16)
+                owner=dict(dataset_id='\\x'+'11'*16,resource_id='\\x'+'22'*16,role='control',epoch=2,
+                    process_incarnation='\\x'+'33'*16,state='active',
+                    lease_expires_at_us=1_060_000_001 if name=='beyond-maximum' else 1_060_000_000,xmin='7')
+                terminal=dict(Id='dead-app',State=dict(Running=False,Pid=0,OOMKilled=False))
+                sample=dict(observed_at_us=1_000_000_000,owners=[owner],
+                    job_owners=[['\\x'+'11'*16,'\\x'+'22'*16,2,'\\x'+'33'*16]],active_unexpired=1)
+                runtime.sql=Mock(return_value=json.dumps(sample));runtime.wait=Mock()
+                clock=[100.0]
+                with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]):
+                    if name in ('beyond-maximum','wrong-profile'):
+                        with self.assertRaisesRegex(ValueError,'configured maximum|declared 60s'):
+                            runtime.freeze_control_lease(terminal,root)
+                        runtime.wait.assert_not_called()
+                        continue
+                    runtime.freeze_control_lease(terminal,root)
+                    if name=='changed-lease':sample['owners']=[dict(owner,lease_expires_at_us=1_060_000_001)]
+                    elif name=='clock-regressed':sample['observed_at_us']=999_999_999
+                    else:clock[0]=166.0
+                    runtime.sql.return_value=json.dumps(sample)
+                    with self.assertRaisesRegex(ValueError,'lease changed|clock regressed|budget exhausted'):
+                        runtime.wait_control_expiry(root)
+                runtime.wait.assert_not_called()
+                witness=json.loads((root/'dead-control-expiry.json').read_text())
+                self.assertEqual(witness['status'],'FAIL')
+                self.assertEqual(witness['deadline_monotonic'],165.0)
+
+    def test_expired_database_lease_cannot_bypass_exhausted_frozen_host_budget(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            runtime.sql=Mock(return_value=json.dumps(expired));runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',return_value=170.0):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_not_called();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',0,165.0))
+
+    def test_first_expiry_sql_observation_cannot_cross_frozen_deadline(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            clock=[164.0]
+            def sql(database,statement):
+                clock[0]=166.0
+                return json.dumps(expired)
+            runtime.sql=Mock(side_effect=sql);runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_called_once();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',1,165.0))
+            self.assertEqual(witness['last_observation'],expired)
+
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
         self.assertEqual(state['acquisition_quanta'][0]['charged_bytes'],1189)
@@ -123,6 +421,143 @@ class LinearQuantumControls(unittest.TestCase):
         with self.assertRaises(AssertionError):check.transition(state,changed)
         changed=copy.deepcopy(terminal);changed['acquisition_quanta'][0]['xmin']='12'
         with self.assertRaises(AssertionError):check.transition(terminal,changed)
+
+    def test_abandonment_changes_terminal_job_owner_and_preserves_original_quantum_issuer(self):
+        for epoch in (1,2,3):
+            for pending in (False,True):
+                with self.subTest(epoch=epoch,pending=pending):
+                    state,_=fixture(pending=pending,abandoned=True,producer_epoch=epoch)
+                    before=copy.deepcopy(state)
+                    check.shape(state)
+                    self.assertEqual(state,before)
+                    self.assertEqual(state['acquisition_quanta'][0]['issuer_epoch'],1)
+                    self.assertEqual(state['jobs'][0]['owner_epoch'],2)
+        # A terminal job that kept its original owner needs no replacement gap.
+        state,_=fixture()
+        state['jobs'][0].update(state='cancelled',reason_code='fixture_cancelled',completed_at_us=200_003_000_000)
+        state['owner_epochs'][0].update(state='released',exclusion_method='joined')
+        check.shape(state)
+
+    def test_active_job_cannot_use_another_retained_control_owner_or_clear_its_owner(self):
+        historical,_=fixture(abandoned=True)
+        for state_name in ('queued','running'):
+            changed=copy.deepcopy(historical)
+            changed['jobs'][0].update(state=state_name,job_revision=2,reason_code=None,completed_at_us=None)
+            changed['acquisition_gaps']=[]
+            with self.subTest(state=state_name),self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(historical)
+        changed['jobs'][0].update(owner_resource_id=None,owner_epoch=None,owner_incarnation=None)
+        with self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(historical);changed['acquisition_gaps']=[]
+        with self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_historical_transfer_requires_exact_gap_issuer_revision_and_completed_cancellation(self):
+        state,_=fixture(abandoned=True)
+        mutations=(('acquisition_quanta','issuer_epoch',2),('acquisition_quanta','issuer_incarnation','\\x'+'8'*32),
+            ('acquisition_gaps','previous_owner_resource','\\x'+'9'*32),('acquisition_gaps','previous_owner_epoch',2),
+            ('acquisition_gaps','previous_owner_incarnation','\\x'+'8'*32),('acquisition_gaps','issuer_epoch',1),
+            ('acquisition_gaps','issuer_incarnation','\\x'+'4'*32),('acquisition_gaps','previous_job_revision',3),
+            ('acquisition_gaps','dataset_id','\\x'+'9'*32),('acquisition_gaps','producer_slot_id','\\x'+'9'*32),
+            ('acquisition_gaps','producer_epoch',2),('acquisition_gaps','source_owner_epoch',2),
+            ('acquisition_gaps','reason','activated_initial_producer_abandoned'),('acquisition_gaps','owner_role','ingest'),
+            ('jobs','job_revision',3),('jobs','checkpoint_revision',1),('jobs','reason_code','other_reason'),
+            ('jobs','completed_at_us',200_004_000_000),('owner_epochs','exclusion_method','joined'))
+        for table,field,value in mutations:
+            changed=copy.deepcopy(state);changed[table][0][field]=value
+            with self.subTest(table=table,field=field),self.assertRaises(AssertionError):check.shape(changed)
+        # REQUEST_CANCELLATION is transaction-internal. SQL0027's deferred gap
+        # INSERT check requires COMPLETE_CANCELLATION before a capture can see it.
+        changed=copy.deepcopy(state)
+        changed['jobs'][0].update(state='cancel_requested',job_revision=3,completed_at_us=None)
+        with self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(state)
+        changed['acquisition_quanta'][0].update(issuer_epoch=2,issuer_incarnation='\\x'+'8'*32)
+        with self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_quantum_requires_exact_retained_control_and_producer_scope_bindings(self):
+        state,_=fixture()
+        mutations=(('owner_epochs','dataset_id','\\x'+'9'*32),('owner_epochs','resource_id','\\x'+'9'*32),
+            ('owner_epochs','epoch',2),('owner_epochs','role','ingest'),('owner_epochs','process_incarnation','\\x'+'9'*32),
+            ('producer_epochs','dataset_id','\\x'+'9'*32),('producer_epochs','producer_slot_id','\\x'+'9'*32),
+            ('producer_epochs','producer_epoch',2),('acquisition_jobs','dataset_id','\\x'+'9'*32),
+            ('acquisition_jobs','scope_id','\\x'+'9'*32),('jobs','owner_role','ingest'))
+        for table,field,value in mutations:
+            changed=copy.deepcopy(state);changed[table][0][field]=value
+            with self.subTest(table=table,field=field),self.assertRaises(AssertionError):check.shape(changed)
+        for table in ('owner_epochs','producer_epochs'):
+            for rows in ([],state[table]*2):
+                changed=copy.deepcopy(state);changed[table]=rows
+                with self.subTest(table=table,rows=len(rows)),self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_shared_capture_saves_invalid_raw_control_before_validation_without_catalog_query(self):
+        from cases.first_launch import Runtime
+        for failure in ('inventory','quantum'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(Runtime)
+                state,_=fixture();state['owner_epochs']=[]
+                runtime.pg=dict(id='owned-pg');runtime.inspect=Mock()
+                runtime.rows=Mock(return_value=state);runtime.catalog_rows=Mock()
+                runtime.tables=set(state)|({'missing_table'} if failure=='inventory' else set())
+                with self.assertRaises(ValueError if failure=='inventory' else AssertionError):
+                    runtime.capture(root,'invalid')
+                self.assertEqual(json.loads((root/'invalid-control.json').read_text()),state)
+                runtime.rows.assert_called_once_with(dict(postgres='owned-pg'),'bigbrotr_control')
+                runtime.catalog_rows.assert_not_called()
+                self.assertFalse((root/'invalid-catalog.json').exists())
+
+    def test_stopped_quantum_history_preserves_pending_rows_versions_and_cardinality_without_row_order(self):
+        before,_=fixture()
+        pending=fixture(pending=True)[0]['acquisition_quanta'][0]
+        pending.update(quantum_id='\\x'+'9'*32,quantum_number=2)
+        before['acquisition_quanta'].append(pending)
+        check.shape(before)
+        reordered=copy.deepcopy(before)
+        reordered['acquisition_quanta']=[dict(reversed(list(row.items()))) for row in reversed(reordered['acquisition_quanta'])]
+        check.unchanged(before,reordered)
+        completed=copy.deepcopy(before)
+        completed['acquisition_quanta'][1]=dict(before['acquisition_quanta'][0],quantum_id=pending['quantum_id'],quantum_number=2)
+        check.shape(completed)  # A well-shaped terminal cannot rewrite a stopped pending plan.
+        with self.assertRaisesRegex(AssertionError,'stopped quantum history'):check.unchanged(before,completed)
+        for change in ('deleted','added','duplicated','xmin','charge','issuer'):
+            changed=copy.deepcopy(before);rows=changed['acquisition_quanta']
+            if change=='deleted':rows.pop()
+            elif change=='added':rows.append(dict(pending,quantum_id='\\x'+'a'*32,quantum_number=3))
+            elif change=='duplicated':rows.append(copy.deepcopy(pending))
+            elif change=='xmin':rows[1]['xmin']='12'
+            elif change=='charge':rows[1]['charged_bytes']-=1
+            else:rows[1]['issuer_epoch']=2
+            with self.subTest(change=change),self.assertRaisesRegex(AssertionError,'stopped quantum history'):
+                check.unchanged(before,changed)
+
+    def test_restart_retirement_refuses_changed_stopped_quanta_before_later_recovery(self):
+        from cases.first_launch import Runtime
+        for change in ('unchanged','completion','xmin','charge','deleted','added'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(Runtime)
+                before,_=fixture(pending=change!='added')
+                after,_=fixture(pending=change not in ('added','completion'),abandoned=True)
+                rows=after['acquisition_quanta']
+                if change=='xmin':rows[0]['xmin']='12'
+                elif change=='charge':rows[0]['charged_bytes']-=1
+                elif change=='deleted':rows.clear()
+                elif change=='added':
+                    pending=fixture(pending=True)[0]['acquisition_quanta'][0]
+                    rows.append(dict(pending,quantum_id='\\x'+'9'*32,quantum_number=2))
+                runtime.root=runtime.restart_output=root
+                runtime.config=root/'instance.toml';runtime.config.write_text('current fixture config\n')
+                (root/'ordinary').mkdir();(root/'ordinary/initial-config.toml').write_text('initial fixture config\n')
+                runtime.restart_before=before;runtime.first_science={};runtime.initial_cut=12
+                runtime.finite=Mock(side_effect=[dict(acquisition_abandonment=dict(jobs='1',
+                    reason='initial_producer_abandoned',coverage='unknown')),{}])
+                runtime.capture=Mock(return_value=(after,{}))
+                runtime.restart_checks=SimpleNamespace(retired=Mock(side_effect=RuntimeError('later recovery reached')))
+                if change=='unchanged':
+                    with self.assertRaisesRegex(RuntimeError,'later recovery reached'):runtime.restart_ingest()
+                    runtime.restart_checks.retired.assert_called_once()
+                else:
+                    with self.assertRaisesRegex(AssertionError,'stopped quantum history'):runtime.restart_ingest()
+                    runtime.restart_checks.retired.assert_not_called()
+                runtime.capture.assert_called_once_with(root,'retired-initial')
 
     def test_wholly_preexisting_dependency_union_is_exact_and_deduplicated(self):
         ds=bytes.fromhex('11'*16)

@@ -162,6 +162,11 @@ def run_handoff_clone(runtime, output, *, phase):
         absent(seed)
         original = runtime.rows(pg, seed)
         validate_handoff_seed(original, phase, runtime.tables, migration_sha)
+        tables = sorted(runtime.tables)
+        require(all(re.fullmatch('[a-z_][a-z_0-9]{0,62}', name) for name in tables),
+                'handoff-table-identifiers-required')
+        expected_tables = json.dumps(tables, separators=(',', ':'))
+        report['expected_control_tables'] = tables
         lab.write_json(output / 'seed-before.json', original)
         report['seed_identity'] = identity_of(seed)
         require(len(report['seed_identity']) == 1, 'unique-seed-database-required')
@@ -188,7 +193,8 @@ def run_handoff_clone(runtime, output, *, phase):
         resource['psql_pid'] = session.process.pid
         save()
         session.start('\\set expected_terminal ' + ('true' if phase == 'terminal' else 'false')
-                      + '\n\\set expected_migration_41_sha256 ' + migration_sha + '\n\\i ' + script)
+                      + '\n\\set expected_migration_41_sha256 ' + migration_sha
+                      + "\n\\set expected_control_tables '" + expected_tables + "'\n\\i " + script)
         answer = session.finish(timeout=30)
         lab.write_json(output / 'session-output.json', answer)
         session.expect(answer)
