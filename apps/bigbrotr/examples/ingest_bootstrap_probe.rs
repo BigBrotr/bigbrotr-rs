@@ -50,6 +50,8 @@ mod ingest_lease;
 mod ingest_observation;
 #[path = "support/ingest_owner.rs"]
 mod ingest_owner;
+#[path = "support/ingest_pending_quota.rs"]
+mod ingest_pending_quota;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
@@ -684,6 +686,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             owner, &observer, &mut store, &spec, path, &budget, mode, scope,
         )
         .await;
+    } else if mode.starts_with("quota-reconcile-") {
+        let receipt = result.unwrap();
+        let bytes = receipt.receipt().encode_persistent(8192).unwrap();
+        drop(receipt);
+        ingest_pending_quota::run(
+            owner, &observer, store, &spec, &intent, path, &budget, mode, bytes,
+        )
+        .await;
+        drop(observer);
+        ingest_closing::join(driver, false).await;
+        ingest_closing::join(observer_driver, false).await;
+        return;
     } else if matches!(mode, "write" | "after") {
         let receipt = result.unwrap();
         assert_eq!(validated, 4);

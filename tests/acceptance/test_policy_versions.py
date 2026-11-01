@@ -56,7 +56,7 @@ class PolicySchemaControls(unittest.TestCase):
 
 
 class PolicyArtifactControls(unittest.TestCase):
-    def run_preflight(self, tampered=False, *, product_tampered=False, changes=None, subnet=None, historical=False):
+    def run_preflight(self, tampered=False, *, product_tampered=False, changes=None, subnet=None, historical=False, quota=False):
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary)
             run = home / 'new-owned-run'
@@ -90,10 +90,14 @@ class PolicyArtifactControls(unittest.TestCase):
             if historical:
                 permitted |= {'experiments/ingest-bootstrap/historical.py',
                               'tests/acceptance/test_historical_integrity.py'}
+            if quota:
+                permitted |= {'experiments/policy-versions/connected_quota.py',
+                              'tests/acceptance/test_connected_quota.py'}
             if changes and any(path not in permitted for path in changes.splitlines()):
                 reason = 'built product source changed beyond policy harness'
             argv = [str(RUNNER), str(run), str(build)]
             if historical: argv.append('--historical-integrity')
+            if quota: argv.append('--connected-quota')
             if subnet is not None:
                 argv += ['--subnet', subnet]
             with patch.object(sys, 'argv', argv), \
@@ -115,6 +119,12 @@ class PolicyArtifactControls(unittest.TestCase):
 
     def test_changed_probe_is_refused_before_engine_setup(self):
         self.run_preflight(True)
+
+    def test_quota_option_preserves_matching_artifacts_and_rejects_compiled_probe_changes(self):
+        self.run_preflight(quota=True)
+        self.run_preflight(True,quota=True)
+        self.run_preflight(quota=True,changes='apps/bigbrotr/examples/support/ingest_pending_quota.rs\n')
+        self.run_preflight(quota=True,changes='experiments/policy-versions/connected_quota.py\n')
 
     def test_matching_current_probe_reaches_the_setup_boundary(self):
         self.run_preflight(False)
