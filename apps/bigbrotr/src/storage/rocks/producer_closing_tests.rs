@@ -498,6 +498,100 @@ fn lost_closing_authority_preserves_the_actual_before_or_after_commit_state() {
 }
 
 #[test]
+fn simulated_background_latch_at_closing_delivery_preserves_synced_or_replayed_barrier() {
+    // This exercises the Rust observation at the final authority callback,
+    // not native listener delivery, POSIX failure or connected SQL behavior.
+    for already_closing in [false, true] {
+        let (root, mut store, budget, manifest, native) = setup(false);
+        drop(admit(&mut store, &budget, 1).unwrap());
+        drop(store);
+        let path = root.path().join("db");
+        let mut recovery =
+            IngestRecovery::open(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
+        let request = request(5, 1);
+        if already_closing {
+            drop(
+                recovery
+                    .close_producer(
+                        request.producer_slot_id,
+                        request.producer_epoch,
+                        grant(&budget, 4096, 4096),
+                        || Ok(()),
+                    )
+                    .unwrap(),
+            );
+        }
+        let before = kv(&recovery.store);
+        let sequence = recovery.store.db.latest_sequence_number();
+        let originals = inputs(&path);
+        let accounting = recovery.store.accounting;
+        let failure = recovery.store.test_background_failure();
+        let final_check = if already_closing { 2 } else { 3 };
+        let mut checks = 0;
+        assert!(matches!(
+            recovery.close_producer(
+                request.producer_slot_id,
+                request.producer_epoch,
+                grant(&budget, 4096, 4096),
+                || {
+                    checks += 1;
+                    if checks == final_check {
+                        failure.latch();
+                    }
+                    Ok(())
+                },
+            ),
+            Err(BootstrapError::CommitUnknown)
+        ));
+        assert_eq!(checks, final_check);
+        assert!(recovery.native_unavailable());
+        assert!(!recovery.store.write_uncertain);
+        assert_eq!(
+            recovery.store.db.latest_sequence_number(),
+            sequence + u64::from(!already_closing)
+        );
+        let key = IngestKey::ProducerState {
+            producer_slot_id: request.producer_slot_id,
+            producer_epoch: request.producer_epoch,
+        }
+        .encode()
+        .unwrap();
+        let closed = [
+            vec![2, 0x31],
+            1_u64.to_be_bytes().to_vec(),
+            vec![0; 16],
+            vec![1],
+        ]
+        .concat();
+        let mut expected = before;
+        let row = expected
+            .iter_mut()
+            .find(|(cf, candidate, _)| {
+                cf.as_str() == "receipts" && candidate.as_slice() == key.as_bytes()
+            })
+            .expect("the admitted producer has a retained state");
+        if already_closing {
+            assert_eq!(row.2, closed);
+        } else {
+            row.2 = closed;
+        }
+        assert_eq!(kv(&recovery.store), expected);
+        assert_eq!(recovery.store.accounting, accounting);
+        assert_eq!(inputs(&path), originals);
+        assert!(matches!(
+            recovery.observe_closed_producer(
+                request.producer_slot_id,
+                request.producer_epoch,
+                grant(&budget, 4096, 4096),
+            ),
+            Err(BootstrapError::CommitUnknown)
+        ));
+        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
+    }
+}
+
+#[test]
 fn absent_or_wrong_producer_state_cannot_close_over_retained_request_detail() {
     for missing in [true, false] {
         let (root, mut store, budget, manifest, native) = setup(false);

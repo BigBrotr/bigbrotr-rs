@@ -72,7 +72,7 @@ impl ControlSession {
             return Err(OwnerError::InvalidMetadata.into());
         }
         finish(tx, &mut lease, epoch, input.cancelled).await?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || recovery.native_unavailable() {
             return Err(ProducerCloseError::DeliveryUnknown);
         }
         self.available = true;
@@ -140,7 +140,7 @@ impl ControlSession {
         }
         require_retirement_copy(&tx, &resolved, input.request, manifest).await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || recovery.native_unavailable() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
@@ -164,6 +164,9 @@ impl ControlSession {
             ));
         }
         let _reservation = permit;
+        if source.recovery().native_unavailable() {
+            return Err(ProducerCloseError::Native(BootstrapError::CommitUnknown));
+        }
         let spec = input.registration;
         if source.producer().producer_slot_id() != spec.producer_slot_id
             || source.producer().producer_epoch().get() != 1
@@ -309,7 +312,13 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
         }
+        if source.recovery().native_unavailable() {
+            return Err(ProducerCloseError::Native(BootstrapError::CommitUnknown));
+        }
         finish(tx, &mut lease, epoch, input.cancelled).await?;
+        if source.recovery().native_unavailable() {
+            return Err(ProducerCloseError::DeliveryUnknown);
+        }
         if self.client.is_closed() {
             return Err(ProducerCloseError::DeliveryUnknown);
         }

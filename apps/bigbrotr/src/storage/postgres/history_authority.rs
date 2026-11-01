@@ -15,6 +15,9 @@ impl ControlSession {
         required_schema: u32,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        if recovery.native_unavailable() {
+            return Err(ProducerOperationError::DeliveryUnknown);
+        }
         let identity = recovery.manifest().identity();
         let mut lease = PolicyLeaseTracker::new(
             self.request.dataset,
@@ -78,6 +81,9 @@ impl ControlSession {
             )
             .map_err(|_| OwnerError::Unavailable)?;
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
+        if recovery.native_unavailable() {
+            return Err(ProducerOperationError::DeliveryUnknown);
+        }
         Ok((tx, lease, epoch))
     }
 }

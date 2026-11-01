@@ -119,7 +119,7 @@ impl ControlSession {
         )
         .await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || recovery.native_unavailable() {
             return Err(InitialSuccessionError::DeliveryUnknown);
         }
         self.available = true;
@@ -167,7 +167,7 @@ impl ControlSession {
         )
         .await?;
         finish(tx, &mut lease, epoch, input.cancelled).await?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || history.native.recovery().native_unavailable() {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
@@ -283,6 +283,9 @@ pub(super) async fn resolve_original(
         ));
     }
     producer_retirement::require_retirement_copy(tx, &resolved, input.request, manifest).await?;
+    if native.recovery().native_unavailable() {
+        return Err(ProducerResolveError::DeliveryUnknown);
+    }
     Ok(resolved)
 }
 

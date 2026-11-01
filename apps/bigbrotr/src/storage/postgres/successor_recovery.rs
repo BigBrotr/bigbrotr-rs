@@ -426,6 +426,9 @@ impl ControlSession {
                 .validate(recovery, input.cancelled)
                 .map_err(native_error)?;
             rows::require_live(&tx, current, None).await?;
+            if recovery.native_unavailable() {
+                return Err(ProducerResolveError::DeliveryUnknown);
+            }
             initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
             tx.commit()
                 .await
@@ -586,6 +589,9 @@ impl ControlSession {
                     .validate(resolution.recovery, input.cancelled)
                     .map_err(native_error)?;
                 rows::require_live(&tx, current, None).await?;
+                if resolution.recovery.native_unavailable() {
+                    return Err(ProducerResolveError::DeliveryUnknown);
+                }
                 initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
                 tx.commit()
                     .await

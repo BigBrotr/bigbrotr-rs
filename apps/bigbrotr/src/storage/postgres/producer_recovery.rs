@@ -115,13 +115,17 @@ impl ControlSession {
         producer_outcomes::record_recovered(&tx, &reservation, &resolved, recorder)
             .await
             .map_err(ProducerResolveError::Outcome)?;
-        if input.cancelled.load(Ordering::Relaxed) || lease.check_delivery(epoch).is_err() {
+        if input.cancelled.load(Ordering::Relaxed)
+            || recovery.native_unavailable()
+            || lease.check_delivery(epoch).is_err()
+        {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         tx.commit()
             .await
             .map_err(|_| ProducerResolveError::CommitUnknown)?;
         if input.cancelled.load(Ordering::Relaxed)
+            || recovery.native_unavailable()
             || self.client.is_closed()
             || lease.check_delivery(epoch).is_err()
         {
