@@ -1,5 +1,29 @@
 # Current persisted policy and incompatible-format refusals
 
+The bounded connected quota wave reuses this runner and its actual non-owner
+lab-role verification:
+
+```sh
+python3 -B experiments/policy-versions/run.py FRESH_PG_ROOT EXACT_BUILD --connected-quota
+```
+
+Its exact probe seeds one genuine OPEN initial bootstrap, retains the same
+Control and native custody across raw reopen, then allows a clone-only privileged
+PG injection before the explicit whole-original reconciliation. Separate cases
+remove the PG outcome, advance reserved beyond native issued, or change outcome
+content with an independently recomputed hash. Refusals must preserve all current
+Control rows/xmin, complete native bytes/sequence/P and the sole original input;
+the next positive request must produce no input. A healthy proof must remain
+pressure-latched while its exact committed retry succeeds immediately; the next
+new dictionary request must return the ordinary pre-effect `Pressure` refusal.
+The wave waits for no shortened policy and changes no process/operation limits.
+
+The original socket continuation separately waits for the configured stable-low
+interval before new intake. This wave does not qualify that wait, filesystem
+funding, OPEN65, rollback/lease-loss races or production deployment grants. It
+uses the existing broad lab role. Source/verifier controls are not actual PG or
+native execution: this new wave remains NOT_RUN until exact-source qualification.
+
 Run the bounded native recipe through
 `experiments/network-transport/lab.py REVISION TREE policy-versions`.
 It builds the current checkout with declared dependencies and creates a fresh

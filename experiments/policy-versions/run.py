@@ -22,8 +22,11 @@ from historical import current_database_name
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('root', type=Path)
 parser.add_argument('build', type=Path)
-parser.add_argument('--historical-integrity', action='store_true',
+selection = parser.add_mutually_exclusive_group()
+selection.add_argument('--historical-integrity', action='store_true',
                     help='run the current original-policy/private-recovery batch instead of policy codec cases')
+selection.add_argument('--connected-quota', action='store_true',
+                       help='run same-Control OPEN reconciliation, PG refusals and pre-effect pressure')
 parser.add_argument('--subnet', default='172.16.240.48/28')
 args = parser.parse_args()
 root, build = args.root, args.build
@@ -44,6 +47,9 @@ if receipt['source'] != revision:
     if args.historical_integrity:
         permitted |= {'experiments/ingest-bootstrap/historical.py',
                       'tests/acceptance/test_historical_integrity.py'}
+    if args.connected_quota:
+        permitted |= {'experiments/policy-versions/connected_quota.py',
+                      'tests/acceptance/test_connected_quota.py'}
     assert set(harness_changes) <= permitted, 'built product source changed beyond policy harness'
 
 
@@ -91,7 +97,7 @@ def contents(database):
     branches = [f"SELECT '{name}' AS name, coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text), '[]') AS rows "
                 f"FROM (SELECT *, xmin::text AS lab_xmin FROM control.{name}) t" for name in names]
     return json.loads(lab.sql(state, database,
-        ('SET max_parallel_workers_per_gather=0; ' if args.historical_integrity else '')
+        ('SET max_parallel_workers_per_gather=0; ' if args.historical_integrity or args.connected_quota else '')
         + 'SELECT jsonb_object_agg(name, rows) FROM (' + ' UNION ALL '.join(branches) + ') all_tables'))
 
 
@@ -186,7 +192,14 @@ try:
     state = lab.load(root)
     report['server'] = state['server']
     save()
-    if args.historical_integrity:
+    if args.connected_quota:
+        from connected_quota import run as run_connected_quota
+        result = run_connected_quota(state, root, contents, record, prepare, call, inventory, SOURCE)
+        report['format'] = 'bigbrotr-connected-quota-native/1'
+        report['connected_quota'] = result
+        report['not_run'] = result['not_run']
+        report['status'] = result['status']
+    elif args.historical_integrity:
         from historical import run_current
         result = run_current(state, root, contents, record, prepare, call, inventory)
         report['format'] = 'bigbrotr-historical-original-integrity/1'
