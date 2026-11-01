@@ -1,5 +1,6 @@
 """Closed SQL-copy verifier controls; no PostgreSQL or product execution."""
 import copy
+import io
 import json
 import os
 from pathlib import Path
@@ -89,6 +90,8 @@ class HandoffSQLControls(unittest.TestCase):
                 lambda s: s['schema_versions'][0].update(checksum='\\x' + '00' * 32),
                 lambda s: s['producer_epochs'][0].update(state='closing' if phase == 'terminal' else 'retired'),
                 lambda s: s.pop('management_commands'),
+                lambda s: s.update(unexpected_control_table=[]),
+                lambda s: s.update(unexpected_control_table=s.pop('management_commands')),
             ):
                 changed = copy.deepcopy(original)
                 change(changed)
@@ -108,6 +111,16 @@ class HandoffSQLControls(unittest.TestCase):
         self.assertIn('genuine closed unretired successor', program)
         self.assertNotRegex(program, r'(?i)(DISABLE TRIGGER|session_replication_role|SECURITY DEFINER)')
         self.assertLessEqual(len(program.encode()), 64 * 1024)
+
+    def test_snapshot_inventory_uses_declared_names_from_psql_context_outside_function_body(self):
+        program=(ROOT/runtime.HANDOFF_SQL).read_text()
+        context=program.split('CREATE TEMP TABLE context AS\n',1)[1].split('CREATE FUNCTION',1)[0]
+        snapshot=program.split('CREATE FUNCTION pg_temp.snapshot()',1)[1].split('END $$;',1)[0]
+        self.assertIn(":'expected_control_tables'::jsonb AS expected_control_tables",context)
+        self.assertIn('SELECT expected_control_tables INTO STRICT expected FROM context',snapshot)
+        self.assertIn('tablename::text COLLATE "C"',snapshot)
+        self.assertIn('to_jsonb(names) IS DISTINCT FROM expected',snapshot)
+        self.assertNotIn(":'expected_control_tables'",snapshot)
 
     def test_lineage_manifest_profile_matches_current_native_schema_without_legacy_fallback(self):
         native = (ROOT / 'apps/bigbrotr/src/storage/rocks/manifest.rs').read_text()
@@ -215,6 +228,19 @@ class HandoffSQLControls(unittest.TestCase):
                     with patch.object(runtime, 'Session', side_effect=new_session), patch.object(runtime.lab, 'write_json', side_effect=persist):
                         with self.assertRaises(expected_type) as caught:
                             runtime.run_handoff_clone(owner, Path(home) / 'case', phase='terminal')
+                    # Exercise the existing bounded psql writer with the actual
+                    # controller command and round-trip its declared inventory.
+                    command=session.start.call_args.args[0]
+                    sent=Session.__new__(Session)
+                    sent.pending=None;sent.sequence=0;sent.process=Mock(stdin=io.BytesIO())
+                    sent.start(command)
+                    parameters={parts[1]:parts[2] for line in sent.process.stdin.getvalue().decode().splitlines()
+                        if line.startswith('\\set ') for parts in [line.split(' ',2)]}
+                    encoded=parameters['expected_control_tables']
+                    self.assertTrue(encoded.startswith("'") and encoded.endswith("'"))
+                    self.assertEqual(json.loads(encoded[1:-1]),sorted(tables))
+                    receipt=json.loads((Path(home)/'case/result.json').read_text())
+                    self.assertEqual(receipt['expected_control_tables'],sorted(tables))
                     self.assertTrue(final_save)
                     session.close.assert_called_once()
                     self.assertEqual(owner.resources['index_handoff_sql_clones'][0]['status'], 'retained')
