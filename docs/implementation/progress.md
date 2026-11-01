@@ -1,87 +1,85 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordination and bounded work,
-Astra/xhigh independent critical review. Public development repository;
-no official release, package publication, rename or production deployment.
+Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordination/bounded implementation,
+Astra/xhigh critical review. Public development repository; no official release,
+package publication, rename or production deployment.
 
 ## Current increment and revisions
 
 Published **main/origin22a881b2ce2c336b61aa06a1d79273b5787c73b5** contains the
-qualified local M2 linear-quantum slice. Actual hosted run:
-[41276262289](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289),
-attempt1. At06:20UTC macOS15 andLinuxARM64 jobsSUCCESS, LinuxAMD64in_progress;
-terminal source/artifact/public-output audit pending. No failed/cancelled job
-observed. Earlier hosted PASS remains separately source-scoped.
+qualified M2 linear-quantum slice. Actual [hosted run41276262289](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289)
+now **PASS**:33foundation commands +20scope controls;3unselected jobsSKIP,
+zero requiredNOT_RUN. All3source/native/worker contexts and bounded public-output
+scan verified; no billing/workflow/cancellation/product failure. Observer reaped.
+The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) links the terminal
+audit and its limitations; this does not qualify the later application guard.
 
 Current branch `work/ingest-native-fail-stop-20261101`, worktree
-`.research/ingest-native-fail-stop-20261101`, base22a. Observed code integration
-HEAD **663bcb958b6adadb621907be65b466340e800edb**, tree identical to reviewed
-**7de69cc6d6173a5cdf100fe90458da3851b9df0c**. This enclosing checkpoint/fixture
-commit will advance HEAD; use actual Git, not a guessed future hash.
-All factory, connected-recovery and fixture author commits are merged in this
-branch, **not yet qualified or integrated on main**. Only the tutorial source
-pin and this coherent evidence/checkpoint update remained uncommitted at writing.
+`.research/ingest-native-fail-stop-20261101`, base22a. Observed HEAD before this
+checkpoint **21965a0ccec12d83436e340e3dab3ecdfeb44837**. Git supplies the enclosing
+checkpoint revision/dirty files. All production/fixture author commits are merged
+here, **not integrated or pushed on main**. Bounded external gate work continues
+in the existing factory author branch/worktree; preserve it and inspect actual Git.
 
-## Capability and evidence
+## Demonstrated capability and current failure
 
-Current P02-T02Step4 increment installs the mandatory owned native background
-error guard before open and refuses native effects, replay/proofs/ACK and selected
-connected recovery/closing/closure/retirement delivery after observed failure.
-The shared sidecar census now samples health through its completed digest.
-The existing64 lifetime cap remains. A healthy sample is not an atomic dispatch
-or COMMIT permit; preserve unknown outcomes and exact original inputs.
+P02-T02Step4 application-owned native guard is installed fallibly before open;
+selected write/replay/proof/ACK/recovery/closure/retirement paths refuse observed
+failure. The common sidecar census checks health through its final digest.
+Independent Astra reviews closed concrete connected-publication and census gaps.
+The existing64 lifetime cap remains; healthy samples are not atomic COMMIT permits.
 
-The [native binding report](evidence/p02-native-rocks-binding-20260917.json),
-`owned_background_guard_20261031.application_ownership_20261101`, owns current
-review/qualification receipts and limits. Independent Astra reviews found and
-closed connected-publication and final-census gaps. Simulated-latch tests and an
-opt-in real default-POSIX tmpfs test are maintained in the repository; they are
-not interchangeable evidence. The real case includes original bootstrap plus
-staged request2, native NoSpace witnesses, restored-headroom refusal and custody.
+The [binding report](evidence/p02-native-rocks-binding-20260917.json),
+`owned_background_guard_20261031.application_ownership_20261101`, owns receipts:
 
-Intermediate **50e98268** release/worker build PASS (441.005s), exact4191source
-files/native/compiler/bundle verified. Workspace **FAIL**: three E0277 errors
-formatting a sha2 digest array in the new test. Fixed mechanically in7de without
-changing the oracle. Clippy stopped at compilation; Rustdoc, focused native
-Rust tests, library-test ELF capture, actual POSIX fault and installed acceptance
-remain **NOT_RUN**. Original logs/long-type diagnostic retained. Corrected source
-has not been compiled. Fourteen existing tutorial pure controls PASS; independent
-review approves its strict source-exclusion pin reconciliation, not runtime PASS.
+- Production **3dc3e06b**: release/worker, strict all-target Clippy, Rustdoc and
+  **328focused Rocks tests PASS**,0FAIL/2externalIGNORED/299filtered. Actual installed
+  tutorial **7/7PASS**,53.759s: signed acquisition/Archive/read/export/restart and
+  negative capabilities. Independent custody:18containers stopped/PID0/noOOM,
+  790commands joined, borrowed bridge empty. Original50e compileFAIL retained.
+- Test-only **21965a0c**: compile PASS using declared current-source/Cargo-artifact/
+  generated-metadata/copied-ELF receipt; unchanged actual3dc release/worker reused.
+  No new release, repeated328/Rustdoc run or in-ELF metadata claim. Only a Linux
+  cfg(test) File-writer correction changed; production evidence stays source3dc.
+- Actual POSIX **R1FAIL** before native fault: NamedTempFile Write wrapped away raw
+  errno; underlying errno was not captured. Corrected directFile keeps exact28.
+- Actual POSIX **R2FAIL** at unchanged30s latch deadline: filler reached realENOSPC
+  and available0, but native LOG proves successful1563B SST in767us. No native
+  NoSpace or guard defect established. Source shows WAL close trims preallocation
+  before SST output; exact released bytes remain inferred, not syscall-measured.
+  Both original failed journals/DBs/two inputs are retained and custody verified.
 
-The [Sync report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.coordinator_drain_followthrough`, retains prior qualified
-96d6 grouped11/11, exact science/two exports/restart and terminal custody, plus
-source-scoped78/e812 evidence and original failures. Reuse those unaffected claims;
-do not relabel them as current native-guard executions.
+Prior96d6 grouped11/11, science/two exports/restart and earlier source-scoped proofs
+remain in the [Sync report](evidence/p03-initial-sync-native-20261002.json). Do not
+relabel them as current native-fault executions. WholeM1/M2/goal remain incomplete.
 
-## Resources, remaining scope and next action
+## Resources and precise next action
 
-[Inventory](../research/laboratory-inventory.json),
-`implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`,
-owns exact paths. Three redundant M2 local refs were retired after publication;
-their worktrees/data remain detached at22a/96d6/356d. The three native-guard
-worktrees and original author commits remain preserved.50e build/workspace
-launchers are reaped,2owned containers stopped/PID0/noOOM, cache115 released and
-independently reacquired; original4single-link ELF bytes/full metadata unchanged.
-No owned local engine/compiler remains active at this checkpoint. The existing
-CI observer and one remote AMD64job continue; other subagent assignments finished.
-Monitor556GiB retirement remains reconciled; no new deletion/cache-timestamp
-optimization ran. Never gc/repack archived shared Git/ELF objects; private copy
-before changing their bytes or metadata.
+[Inventory](../research/laboratory-inventory.json) owns roots under
+`implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`.
+All50e/3dc/219 compiler jobs and R1/R2fault/tutoral containers are terminal;
+cache115 released/reacquired, original4single-link ELF bytes/fullmetadata unchanged.
+No owned engine/compiler/CIobserver remains active at this checkpoint. Root and
+bounded gate implementation/review remain active; check their live state on resume.
+All worktrees, raw failures, original data and current testELFs preserved. Monitor
+556GiB retirement remains reconciled; no new cleanup/mtime optimization. Never
+GC/repack shared archived Git/ELF objects; private copy before metadata/byte changes.
 
-**Next:** admit the corrected enclosing revision and run its exact-source
-release/workspace qualification with existing guarded recipes. Then run the
-maintained real POSIX case in isolated64MiB tmpfs with external persistent
-custody, the normal installed journey and necessary connected SQL/ACK ambiguity
-controls. Keep actual FAIL/NOT_RUN until observed. Record terminal22a hostedCI
-when available, finish source/publication checks, and integrate/push one qualified
-coherent result. No user input is currently required.
+**Next:** implement and independently review a one-shot external delay-only gate
+AFTER the real writable fresh SST open, BEFORE returning its fd to RocksDB.
+Verify positive fd/path/device/inode/zero allocation; refill the same owned tmpfs
+through actual ENOSPC after WAL trim, then explicitly release within unchanged30s.
+Require actual SST write/pwrite errno28 and all existing nativeNoSpace/guard/sticky/
+science/input/close predicates. Reuse219 ELF and3dc product; no fake errors/Env or
+new Rust/product build. Missing gates/controller errors invalidate the case.
+Preserve R1/R2; qualify a fresh attempt only after the frozen gate/controller review.
+Then reconcile maintained portable procedure/evidence and integrate one qualified
+coherent result on main. No user input currently required.
 
-M1's signed admission→Archive→read→export→restart path is demonstrated; unfinished
-native failure/delivery qualification and P01-T09 acceptance stay explicit.
-Do not treat allP02 as an indivisible prerequisite. OPEN65/funding/funded reopen/
-purge, stable-low, CW-N1/P1/P2, full walker/adoption/age bands/NEG/live, capacity,
-freshness, grants/staging/GC/replay/protection and selected later milestones remain
-in their existing tasks. Admission-cost/CH/coordinator follow-through stays P01-T05/
-P02; portable delivery P01-T08/P08-T11/T12/P10-T08/T10. The full goal is incomplete.
+M1 admission→Archive→read→export→restart is demonstrated; native fault/delivery and
+P01-T09 acceptance remain explicit. Do not gate M1 on allP02. OPEN65/funding/funded
+reopen/purge/stable-low/CW-N1/P1/P2 and full walker/adoption/age bands/NEG/live,
+capacity/freshness/GC/replay/protection and all later selected milestones retain
+their existing tasks. Admission/CH/coordinator follow-through stays P01-T05/P02;
+portable delivery P01-T08/P08-T11/T12/P10-T08/T10. The full goal is incomplete.

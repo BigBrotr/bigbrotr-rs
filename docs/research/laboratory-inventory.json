@@ -78453,14 +78453,18 @@
         "hosted_observation": {
           "revision": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
           "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289",
-          "observed": "2026-11-01T06:20Z: macOS andLinuxARM64 jobsSUCCESS; LinuxAMD64in_progress. Same attempt1; no failure/cancellation. Terminal artifact audit pending.",
-          "receipts": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101"
+          "result": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/terminal-audit.json",
+            "sha256": "0e0600e8f9cc61d5ec2661ff16ca9b49d97293d0478df78ff40dc26e833d7408"
+          },
+          "observer": "Reaped0;noownedobserverremaining"
         }
       },
       "application_guard_in_progress": {
         "branch": "work/ingest-native-fail-stop-20261101",
         "worktree": ".research/ingest-native-fail-stop-20261101",
-        "code_source": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
+        "code_source": "21965a0ccec12d83436e340e3dab3ecdfeb44837",
         "author_worktrees": [
           {
             "path": ".research/ingest-native-factory-sol-20261101",
@@ -78478,10 +78482,17 @@
         "evidence_root": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101",
         "release_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268-workspace",
-        "status": "INTERMEDIATE_RELEASE_PASS_WORKSPACE_COMPILE_FAIL_RETAINED;CORRECTED_SOURCE_REVIEWED_NOT_RUN",
+        "status": "3DC_RELEASE_WORKSPACE_TUTORIAL_PASS;219_TESTONLY_COMPILE_PASS;ACTUALPOSIX_R1_R2_FAIL_RETAINED",
         "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.application_ownership_20261101",
-        "resources": "50e build/workspace terminal/reaped; both containers stopped/PID0/noOOM, cache115 released/reacquired and original4ELF bytes/fullmetadata unchanged. No local engines or active compiler at this checkpoint. Private candidate assembled with maintained assembler; not a release. POSIX outer recipe prepared, no actual POSIX container/testELF exists yet.",
-        "retention": "Original failure/long-type diagnostic, source/archive/binaries/worker/cache/candidate and all3worktrees preserved. No new deletion or cache-timestamp optimization."
+        "resources": "All50e/3dc/219compilerlaunchers reaped andownedcontainersstopped/PID0/noOOM;115released/reacquired,original4ELFfullmetadata/bytes unchanged.3dctutorial18containersterminal/bridgeempty;R1/R2faultcontainers terminalexit101,alloriginalDB/input/logfilesretained. Noownedengine/compiler/CIobserveractive atcheckpoint; boundedgateimplementation/review pending.",
+        "retention": "Preserve all original compile/runtimeFAILs,3dcrelease/worker/candidate/testELFs/current219testtool/sourcearchives/rawcaseDBs/input/logs and allworktrees. No newdeletion or mtimeoptimization.",
+        "current_release_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-3dc3e06b",
+        "current_workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-3dc3e06b-workspace",
+        "test_only_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-test-only-21965a0c",
+        "actual_posix_roots": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-3dc3e06b-r1",
+          "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r2"
+        ]
       }
     }
   },

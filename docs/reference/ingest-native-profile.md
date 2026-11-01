@@ -168,6 +168,15 @@ It requires a positive native NoSpace status and failed guard, then checks stick
 refusal after restoring headroom, unchanged rows/accounting/inputs, and close/grant
 release. It preserves native files and original inputs even on assertion failure.
 
+Current qualification retains two failed setup attempts: the temporary-file
+wrapper originally hid raw errno (corrected by writing through its `File`), then
+a full-before-flush volume still admitted the tiny SST after inactive-WAL close
+trimmed preallocation. Neither attempt observed native NoSpace or qualifies the
+guard. The external delay-only SST-open gate/refill is under qualification; the
+entrypoint below alone is not a reliable fault trigger. Its deadline and native
+NoSpace/state/input/close oracles remain unchanged. See the current application
+section in the [binding report](../implementation/evidence/p02-native-rocks-binding-20260917.json).
+
 Provide an empty, owned **64 MiB tmpfs mountpoint**, a separate empty owned
 persistent evidence directory on another filesystem, a fixed C locale and an
 outer process/container deadline. Never use a shared or production filesystem.

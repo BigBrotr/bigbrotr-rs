@@ -1,4 +1,24 @@
 {
+  "latest_verified_hosted_execution": {
+    "revision": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289",
+    "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+    "foundation_checks": "33/33PASS",
+    "scope_controls": "20/20PASS",
+    "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
+    "source_context": "All3exact4189-file manifests/native targets/worker/post-build contexts verified. Actual Rust counts1407/1407/1405PASS, ignored3/2/2; portable acceptance464/464/458PASS with6declaredmacplatformskips. No application-guard follow-through qualification at this older source.",
+    "terminal_receipt": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/terminal-audit.json",
+      "sha256": "0e0600e8f9cc61d5ec2661ff16ca9b49d97293d0478df78ff40dc26e833d7408"
+    },
+    "completion_receipt": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/completion-check.json",
+      "sha256": "3b9b61596258421915c74282a13a4d458b9d863f8d984db8063d9c8bf0798ad0"
+    },
+    "public_outputs": "4artifacts/516members and34workflowlogs scanned; zero new unclassified/operationalcredential/provideralert. Pattern/asynchronous-provider limits retained; no absolute absence claim.",
+    "failure_classification": "No billing/admission, workflow, cancellation/timeout or product failure observed. Observer reaped0/ownedPIDs absent. No rerun/dispatch/settings change.",
+    "historical_scopes": "Other explicitly sourced fields below retain prior hosted executions; this is the latest completed meaningful hosted execution."
+  },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
   "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41256201712",

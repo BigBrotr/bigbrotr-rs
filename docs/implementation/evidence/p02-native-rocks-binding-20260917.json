@@ -719,7 +719,7 @@
       }
     },
     "application_ownership_20261101": {
-      "status": "IMPLEMENTED_REVIEWED_FINAL_RUNTIME_QUALIFICATION_PENDING",
+      "status": "LOCAL_PRODUCTION_AND_RUST_PASS_REAL_APPLICATION_FAULT_PENDING",
       "code_source": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
       "task": "P02-T02Step4 application-owned native failure prerequisite under unchanged64 lifetime cap",
       "implementation": "Fallible mandatory guard on final DB options before inspection/open; retained DB/resource/custody order; post-open census refusal; native write/replay/certification/witness/ACK and selected connected recovery/closure/retirement delivery gates. Common sidecar scanner checks health through completed digest. Healthy samples are not atomic dispatch/COMMIT permits; unknown outcomes preserve exact identity and original inputs.",
@@ -757,7 +757,56 @@
         "sha256": "dda683806ecfac78ee30ad2f311a6d4eb1cc3f42b98e0b1aefadc6e01d2ddef7",
         "result": "No candidate in selected9commit/60blob delta; later corrected source and public logs/artifacts still require relevant checks."
       },
-      "remaining": "Corrected exact-source build/Clippy/Rustdoc/native tests, actual application default-POSIX fault, normal installed journey and required controlled connected SQL/ACK ambiguity cases. OPEN65/pre-stage logical and physical funding, persistent unresolved debt, stable-low, bounded LOG/diagnostics, funded reopen/purge and CW-N1/P1/P2 remain existing separate prerequisites; no enablement or full M1/M2/goal claim."
+      "remaining": "Real application backgroundNoSpace/stickydelivery qualification remains incomplete. Controlled connectedSQL/ACK ambiguity cases stay P02-T02Step4 before OPEN65/funding/fullrecovery qualification. Existingphysical/log/reopen/purge/CW-N1/P1/P2 and all later selected milestones remain open.",
+      "current_production_3dc": {
+        "source": "3dc3e06bf69ecb2f969521b3645de198cd9913a9",
+        "release": "PASS435.964s;parent/worker/source/native/compiler/custody verified",
+        "build_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/3dc3e06b/build-receipt.json",
+          "sha256": "4e46af7dc42976a38ea00b55c65a41bde14f51329ed2ec93fd5b0770155ff42c"
+        },
+        "workspace": "StrictalltargetClippyPASS;RustdocPASS;328focusedRocksPASS/0FAIL/2externalIGNORED/299filtered;testexecution34.40s",
+        "workspace_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/3dc3e06b/workspace-receipt.json",
+          "sha256": "3da0f93ae6daa56cbc37129be2887bd3912035c798e584886825f1828efb7436"
+        },
+        "installed_tutorial": {
+          "result": "7/7PASS;53.759450s;actualsigned acquisition/Archive/read/export/ordinaryrestart and negativecapabilities under unchangedoracles/deadlines",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-3dc3e06b/acceptance-tutorial-r1",
+          "terminal_sha256": "d4295feed578e126850ba91b7b6f8fc6255aa67634ff590b59d0ef9503208916",
+          "custody": "18ownedcontainers stopped/PID0/noOOM/exit0;790commandreceipts joined/PIDsabsent;3recordedprocessesabsent;30pins;borrowedbridgeempty"
+        }
+      },
+      "fixture_only_219": {
+        "source": "21965a0ccec12d83436e340e3dab3ecdfeb44837",
+        "delta": "Only cfg(test,Linux) native_posix_tests.rs directFile writer to preserve rawerrno. Exact same product/config/dependency/worker/native source inputs as3dc; no release/worker/Rustdoc/328rerun.",
+        "compile": "PASS270.100s;currentfullsource/Cargocompilerartifact/generatedmetadata/copiedELF externalreceipt binds testtool separately from actual3dc product. Libtest does not embedbuildinfo; no new219release claim.",
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/21965a0c-test-only/test-only-receipt.json",
+          "sha256": "cc458fc7c8dc2152db62d724379c0f1e68b1cabe65d9e8c3bfff86f31b9add2d"
+        },
+        "elf_sha256": "d83bda790fbdc78ca8e0433b5d4445429925481bc325c49eca9e04f2fe90e0a5",
+        "review": "IndependentAstra approved one-filecfgtestdelta/rawENOSPCoracle and completeparameterized split-buildrecipe; no runtimeNoSpace inference."
+      },
+      "actual_posix_attempts": [
+        {
+          "source": "3dc3e06b",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-3dc3e06b-r1",
+          "status": "FAIL_BEFORE_NATIVE_FAULT",
+          "classification": "NamedTempFile Write path wrapper losesraw_os_error (Nonevs28). Underlyingerrno notcaptured, so noENOSPC/nativefailureclaim. Fixed219directFilewithoutweakeningoracle.",
+          "terminal_sha256": "cdc7fb4981f848695dcaf39a22c1ddca19f68fd164f320151f7396fed657ea55",
+          "custody": "Original9DBfiles including2inputs verified;exit101/PID0/noOOM;originalrawjournal/logspreserved."
+        },
+        {
+          "source": "21965a0c",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r2",
+          "status": "FAIL_NATIVE_FAULT_NOT_PRODUCED",
+          "classification": "ActualfillerENOSPC/available0 andacceptedasyncflush, then30slatchdeadline. NativeLOG shows1563BdefaultSSTsuccess in767us; no nativefailure or guarddefect established. Atomicflush closes inactiveWAL beforeSST creation; POSIXclose trims preallocation, so initialfull-volume observation is stale. Exact releasedbytes source-inferred, not syscall-measured.",
+          "terminal_sha256": "fffbc4ce69d6965d6f5ff2da31d8756e82b38be4fdd9e4d06e478fb8394f560c",
+          "custody": "Original11DBfiles including2inputs verified;exit101/PID0/noOOM;allrawlogs/inputs retained."
+        }
+      ],
+      "next_actual_fault": "Implement/review a one-shot external delay-only gate after real fresh writableSSTopen/beforefdreturn. Verifypositivefd/path/dev/ino/size0, refill SAMEownedtmpfs throughrawENOSPC/available0 afterWALtrim, thenrelease withinunchanged30s. Require actualSSTwrite/pwrite\u22121errno28 plus unchangednativeNoSpace/guard/sticky/data/input/closepredicates; no fakeEnv/errors. Reuse current219ELF/3dc product, preserve bothFAILs. NOT_RUN."
     }
   }
 }

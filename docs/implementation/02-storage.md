@@ -256,9 +256,12 @@ One owner serializes exact identity decisions for each writable directory.
   remain necessary before OPEN intake exceeds64. The application-owned background
   guard follow-through is implemented/reviewed under the same64 cap; its
   [current evidence](evidence/p02-native-rocks-binding-20260917.json) preserves
-  the intermediate release PASS and test-fixture compile FAIL. Corrected native,
-  real POSIX and connected-delivery qualification remain pending; neither the
-  component guard nor source review enables OPEN65. See the
+  the original compile FAIL and corrected3dc release/Clippy/Rustdoc/328native
+  tests plus installed tutorial PASS. Real application NoSpace attempts remain
+  FAIL: the first lost errno in a fixture wrapper; the second flushed successfully
+  after WAL close reclaimed preallocation. A deterministic real-SST gate/refill
+  is being qualified; native NoSpace and connected-delivery proof remain pending.
+  Neither component evidence nor source review enables OPEN65. See the
   [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
   for actual original-body controls and preserved failures.
   The selected closed-initial continuation now passes on product `7d8e5998`,
