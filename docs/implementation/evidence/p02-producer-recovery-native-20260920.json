@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "FUNDING_RETRY_RUST_PASS_RECOVERY_LIVENESS_CORRECTION_PENDING",
+    "status": "TIMER_AND_SETUP_SOURCE_REVIEWED_CORRECTED_RUNTIME_PENDING",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47382,11 +47382,23 @@
       "provenance_off": "NOT_RUN"
     },
     "recovery_liveness_blocker": {
-      "status": "SOURCE_CONFIRMED_CORRECTION_IN_PROGRESS",
+      "status": "SOURCE_CORRECTED_CRITICALLY_REVIEWED_RUNTIME_NOT_RUN",
       "cause": "Already-pressure positive admission refusal clears below_low_since despite no change to actualP+held. Repeated Sync attempts can prevent stable-low recovery indefinitely.",
       "required": "Preserve observed timer on already-latched refusal; retain new-high latch/reset and actual-high/failed-observation/policy/recovery invalidation. Existing healthy connected socket mode must exercise repeated refusals/no effects/known replay then success after original interval.",
       "fixture": "Separate setup-only same-owner/current-policy full stability bracket before client clocks; preserve25s submitted,40s ordinary,12s export and all current independent expectations.",
-      "reviewer": "gpt-6-astra/xhigh; bounded diagnosis completed; final source review pending"
+      "reviewer": "gpt-6-astra/xhigh; bounded diagnosis completed; final source review pending",
+      "original_commits": [
+        "04d206fdc8fc32f761d2f9ca5973bea38c435e2e",
+        "a64031527742094d9fe29d1161e4b7db5fb9eefe"
+      ],
+      "review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/timer-liveness-review.json",
+        "sha256": "fcbd739878f8d47b9dfa54a3f6f35e49c23323f0741b2cb829b0a002b8ea3919"
+      },
+      "fixture_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/recovery-setup-review.json",
+        "sha256": "6a82cd2ba4de9735e0fad057f55aa369f905f29546f1f3cfed67debf34b2bf61"
+      }
     }
   }
 }

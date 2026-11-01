@@ -16,7 +16,7 @@ M1 scoped collection is QUALIFIED per the phase index and retained review.
 Current work closes logical pending-quota/recovery under the existing lifetime64
 profile, not physical reserve or OPEN65. Integration worktree
 `.research/ingest-logical-ceiling-20261101`, branch
-`work/ingest-logical-ceiling-20261101`, last code HEAD **840d1cc3** before this
+`work/ingest-logical-ceiling-20261101`, last code HEAD **3908415b** before this
 checkpoint. Enclosing Git identifies the documentation revision. Nothing from
 this partial capability is integrated/pushed on main.
 
@@ -45,13 +45,14 @@ Fresh high-ceiling pressure entry and actualP+held>=low, failed/backwards
 observations and policy/recovery changes must retain their proper resets.
 The r2 deadline failure alone does not empirically prove indefinite starvation.
 
-Sol native/probe author implements that bounded correction plus deterministic
-controls and repeated normal admission attempts in existing healthy socket modes.
-Sol fixture author adds a setup-only same-owner/current-policy full stability
-bracket before unchanged client clocks; it must not claim native Available from
-elapsed time or census a live writer as stopped. Preserve25s submission,
-40s ordinary/12s export, current policy and independent expected results.
-Astra reviews changed persistence/oracle boundaries before costly execution.
+Original native04d206fd/a6403152 and fixture1b3bb70b/a1cdebc4 are now merged
+with original ancestry. The pressure timer correction, deterministic native
+controls, three real positive proposals in existing healthy socket modes and
+independent early/late-resume guards passed bounded critical source review.
+The fixture performs a setup-only same-owner/current-policy full interval before
+unchanged client clocks; no native Available claim or live-writer census.
+Preserve25s submission,40s ordinary/12s export and configured30s stability.
+New corrected native/connected/installed runtime remains NOT_RUN.
 
 The [producer report](evidence/p02-producer-recovery-native-20260920.json),
 `logical_pending_quota_20261101`, owns exact receipts and prior scoped evidence:
@@ -65,18 +66,19 @@ Root test tool12114 reaped0; containerace54e48 stopped/PID0/noOOM, cache release
 Installed r2 tool17819 reaped1;21containersstopped/PID0/noOOM,1350commandsjoined,
 1356recordedPIDs/groups absent, no owned native child, borrowed bridge empty.
 R1 is likewise stopped/retained. No compiler/engine/CIobserver currently active;
-only bounded source agents may write their separate author worktrees.
+all bounded source agents completed; author worktrees are clean/retained.
 Original4cacheELF bytes/fullmetadata independently rechecked with O_NOATIME.
 
 All .research, original failures, DBs, input/log captures and author worktrees
 remain; see [inventory](../research/laboratory-inventory.json). Capsule:
 `.research/ingest-logical-ceiling-qualification-20261101`. Root keeps one integrator;
-test sourceeb and fixture1b3 remain separate from unqualified main. Monitor556GiB
+original testeb, fixturea1 and nativea640 ancestry is retained on the integration
+branch, separate from unqualified main. Monitor556GiB
 retirement already reconciled; no new cleanup/Git maintenance/mtime normalization.
 
-**Next:** collect/review the native timer and fixture setup commits; merge their
-original ancestry, bind the actual reviewed source, then one fresh release/probe
-and affected native, sixPG, stable socket and installed on/off qualification.
+**Next:** bind the actual reviewed source, then one fresh release/probe and
+affected allRocks tests plus strict workspace Clippy/Rustdoc, sixPG, stable socket
+and installed on/off qualification.
 Reuse the full840/eb Rust evidence for unchanged responsibilities. Once these
 quota/recovery failures close, implement **P03-T05Step2**: consume the durable
 continuation so a bounded next quantum reaches older signed events through a
