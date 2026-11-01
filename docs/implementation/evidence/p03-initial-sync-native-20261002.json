@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "WINDOW_INSTALLED_PASS_LOCAL_EXCLUSION_BINDING_FIX_PREPARED",
+      "status": "EXCLUSION_BINDING_CORRECTION_RELEASE_RUNNING",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1625,9 +1625,9 @@
         "terminal": "tool85038 reaped0/containerPID0/noOOM/cache released"
       },
       "tutorial_pin": {
-        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
-        "proof": "fb16889f/tutorial-source-pin-proof.json",
-        "scope": "Only the three recorded mechanical Rust corrections since053; nine Nostr paths, six other objects and1919vendor entries unchanged.14 affected tutorial controls PASS; no installed signing/publication result implied."
+        "source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+        "proof": "01fc6e94/tutorial-source-pin-proof.json",
+        "scope": "Ten base-bytea casts only in local exclusion SQL; nine Nostr paths, six other objects and1919vendor entries unchanged.14 affected tutorial controls PASS; no current installed signing/publication result implied."
       },
       "strict_workspace": {
         "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
@@ -1693,7 +1693,8 @@
         "status": "FAIL_PRODUCT",
         "fix": "Ten explicit::bytea casts on local INSERT binary parameters; no domain/authority/durability weakening.",
         "critical_review": "Astra confirmed exact driver source, all ten positions including nullable digest, unchanged constraints and no advancement before failed bind.",
-        "diagnostic": "Actual role/session bigbrotr_control READ ONLY PREPARE: original domain types, corrected bytea types. Owned PG returned to stopped/PID0/noOOM; original failure logs/native data retained."
+        "diagnostic": "Actual role/session bigbrotr_control READ ONLY PREPARE: original domain types, corrected bytea types. Owned PG returned to stopped/PID0/noOOM; original failure logs/native data retained.",
+        "original_diagnostic_capture": "Maintained Runtime.wait already captured commands/0167-exited-owner.stderr; initial/serve.stderr was an earlier startup snapshot. Root subsequent Docker-log copies are duplicate read-only captures, not missing harness diagnostics."
       },
       "verification_reuse": {
         "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
@@ -1701,6 +1702,16 @@
         "critical_review": "Astra: dynamic SQL casts are not validated by those checks; fresh exact-source release/observer and selected real PG/installed/corruption/COMMIT/restart proofs cover the changed responsibility. Full current-source hosted native CI remains required.",
         "diff": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/exclusion-bytea-casts.diff",
         "diff_sha256": "28c7c0375a5c7eaa205c8fde01a00be8ac3742901262e9a21731bc9ede457952"
+      },
+      "binding_correction_build": {
+        "source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+        "tree": "2f8eff5342600976187a38ed17942c9243042339",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94",
+        "tool": 23455,
+        "container": "fae643d75780b3964baba5085cd5a16aae22a515d05c21965fd8bc47456daf0d",
+        "status": "RUNNING_NOT_QUALIFIED",
+        "strict_workspace": "NOT_RUN_REUSED_FB; current-source hosted CI remains required"
       }
     }
   }

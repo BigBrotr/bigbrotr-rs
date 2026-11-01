@@ -8,7 +8,7 @@ Q37/Q38/Q40/Q41/Q42 remain; public development, no official release or deploymen
 P03-T05 Steps1/4 and P03-T01 Step3: qualify finite fixed-width window succession.
 Canonical main/origin **a71b6ea3** is clean, pushed and locally/hosted qualified for
 the preceding continuation. Root owns `.research/m2-linear-continuation-20261101`,
-branch `work/m2-finite-history-20261101`; observed HEAD **2c4eb3ec** before the
+branch `work/m2-finite-history-20261101`; observed HEAD **01fc6e94** before the
 enclosing local-exclusion correction/checkpoint commit. New work is not pushed.
 
 The [P03 report](evidence/p03-initial-sync-native-20261002.json),
@@ -26,8 +26,8 @@ head/status match independently. Owner/peer/engine cleanup PASS. FullM2 remains 
 
 **Actual cappedr1 FAIL_PRODUCT:** local selector-exclusion INSERT inferred10 binary
 parameters as PostgreSQL domains; the driver refuses before Bind/Execute and the
-owner exits4 at quantum-plan. Root captured final Docker logs missing from the
-early harness snapshot. READ ONLY PREPARE under actual product role/session
+owner exits4 at quantum-plan. The maintained exited-owner log already captured the final diagnostic; the
+earlier serve.stderr was only a startup snapshot. READ ONLY PREPARE under actual product role/session
 confirmed domain types; the enclosing ten `::bytea` casts produce base wire types
 while preserving domain constraints. No migration/API/authority change. Original
 failed data/logs retained; no unsupported next request/local advancement claimed.
@@ -44,7 +44,8 @@ transplanted. Earlier compile/lint/live-fixture failures remain in the report.
 All compiler tools89240/46321/99134 are reaped0; window23705 reaped0 and capped60642
 reaped1. Containers stopped/PID0/noOOM, cache115 released. The capped database was
 briefly reopened only for READ ONLY PREPARE diagnostics, then stopped; no INSERT
-or native writer ran. No engine/client/CI observer is active at this checkpoint.
+or native writer ran. **Current release01fc6e94 is running under tool23455/containerfae643d7**,
+holding cache115 exclusively. No engine/client/CI observer is active.
 
 Capsule `.research/m2-window-succession-qualification-20261101`;
 product runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f`.
@@ -55,9 +56,8 @@ with only reviewed prior noncredential fingerprints; no source push has occurred
 audited PASS, scoped to its product. Native-cache followthrough stays in existing
 P01/P08 tasks; it adds no M2 prerequisite.
 
-**Next:** freeze the ten-cast correction and parameterize the same guarded actual
-release and observer recipes, preserving parent guards and explicit fb-workspace
-reuse. Reassemble acceptance from a clean revision; execute the current window,
+**Next:** reap/audit the actual01fc release and build its exact-source observer,
+preserving parent guards and explicit fb-workspace reuse (current strict NOT_RUN). Reassemble acceptance from a clean revision; execute the current window,
 capped/local exclusion, both native-integrity corruptions, failed-gap/q3 COMMIT
 and affected budget/restart cases. Group integration/push after that coherent
 capability, then audit real hosted CI. Full500/partitions/sparse growth/revisits,

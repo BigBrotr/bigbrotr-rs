@@ -78565,7 +78565,7 @@
         "branch": "work/m2-finite-history-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
         "state": "Previous bounded continuation qualified locally and on hosted A71. Profile2 first release failedE0716; minimal lifetime correction committed locally, retry preparation active. Current Python fault/science corrections remain Root-owned uncommitted and not installed-qualified.",
-        "observed_revision": "2c4eb3ec",
+        "observed_revision": "01fc6e94",
         "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
         "portable_controls": {
           "source": "1849721e047710b7efef4f80bc9b025da5c13550",
@@ -78573,7 +78573,7 @@
           "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
         },
-        "pending": "Allfb release/workspace/probe/window/capped processes terminal, cache115 released. Capped PG read-only parameter diagnostic restarted/stopped owned56315f1a; no INSERT/native writer. Ten-cast correction pending fresh release/observer; fb workspace results explicitly reused. No CI observer active.",
+        "pending": "Actual01fc release running viaRoottool23455/containerfae643d7; guarded launcher holds cache115 exclusively. Priorfb jobs and actual-role read-only PG diagnostics terminal. No engine/client/CI observer active. Sourcefb workspace reused by exact ten-cast-only scope; current local strict NOT_RUN.",
         "build": {
           "source": "61769e66c09b2506bfa972f3fa1f524112106a79",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-product-61769e66",
@@ -78662,6 +78662,16 @@
               "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/capped-r1-fixed-parameter-diagnostic.json"
             ],
             "scope": "Owned stopped PG56315f1a briefly reopened for actual-role READ ONLY PREPARE only; stopped/PID0/noOOM afterwards, original final logs retained before restart."
+          },
+          "binding_correction_build": {
+            "source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+            "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-window-product-01fc6e94",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94",
+            "owner": "f218dfa53efed8fc4deea63fb4bf4d3d",
+            "tool": 23455,
+            "container": "fae643d75780b3964baba5085cd5a16aae22a515d05c21965fd8bc47456daf0d",
+            "status": "running at last direct observation"
           }
         }
       },
