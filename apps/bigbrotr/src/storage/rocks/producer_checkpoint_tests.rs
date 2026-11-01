@@ -392,3 +392,157 @@ fn retained_progress_reader_refuses_short_grant_cancel_and_changed_sequence() {
     recovery.store.db.put_cf(cf, key.as_bytes(), bytes).unwrap();
     assert_eq!(view.validate(), Err(AdmissionError::StateMismatch));
 }
+
+#[test]
+fn retained_payload_time_returns_only_the_exact_authenticated_event_pair() {
+    let (_root, mut store, budget, _, _) = setup(false);
+    let result = admit(&mut store, &budget, 1).unwrap();
+    let AdmissionOutcome::Durable(receipt) = result.outcome() else {
+        panic!("signed fixture")
+    };
+    // The frozen fixture emits event dictionary5, payload6, eligibility7 and
+    // receive8. Event-subject dictionaries/eligibility/receive are not payloads.
+    let payload = receipt.batch().unwrap().records()[1];
+    assert_eq!(payload.source_record_id.sequence.get(), 6);
+    let event_id: EventId =
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+            .parse()
+            .unwrap();
+    let scratch = grant(&budget, 8 * MIB, 0);
+    let view = store.progress_read(&scratch).unwrap();
+    let before = (kv(&store), store.db.latest_sequence_number());
+    assert_eq!(
+        view.event_payload_time(payload, || Ok(())),
+        Ok(Some((event_id, 1)))
+    );
+    for reference in receipt.dependencies().records() {
+        if *reference != payload {
+            assert_eq!(view.event_payload_time(*reference, || Ok(())), Ok(None));
+        }
+    }
+    assert_eq!((kv(&store), store.db.latest_sequence_number()), before);
+}
+
+#[test]
+fn retained_payload_time_refuses_missing_corrupt_and_misbound_native_values() {
+    use crate::storage::rocks::keys::IngestKey;
+    use sha2::{Digest, Sha256};
+    for case in [
+        "absent",
+        "digest-header",
+        "payload-corrupt",
+        "wrong-key",
+        "noncanonical-preimage",
+    ] {
+        let (_root, mut store, budget, _, _) = setup(false);
+        let result = admit(&mut store, &budget, 1).unwrap();
+        let AdmissionOutcome::Durable(receipt) = result.outcome() else {
+            panic!("signed fixture")
+        };
+        let mut reference = receipt.batch().unwrap().records()[1];
+        assert_eq!(reference.source_record_id.sequence.get(), 6);
+        let key = IngestKey::Fact {
+            source_record_id: reference.source_record_id,
+        }
+        .encode()
+        .unwrap();
+        let cf = store.db.cf_handle("facts").unwrap();
+        let mut bytes = store.db.get_cf(cf, key.as_bytes()).unwrap().unwrap();
+        match case {
+            "absent" => store.db.delete_cf(cf, key.as_bytes()).unwrap(),
+            "digest-header" => {
+                bytes[2] ^= 1;
+                store.db.put_cf(cf, key.as_bytes(), bytes).unwrap();
+            }
+            "payload-corrupt" => {
+                *bytes.last_mut().unwrap() ^= 1;
+                store.db.put_cf(cf, key.as_bytes(), bytes).unwrap();
+            }
+            "wrong-key" => {
+                reference.source_record_id.sequence = Sequence::new(999).unwrap();
+                let changed = IngestKey::Fact {
+                    source_record_id: reference.source_record_id,
+                }
+                .encode()
+                .unwrap();
+                store.db.put_cf(cf, changed.as_bytes(), bytes).unwrap();
+            }
+            "noncanonical-preimage" => {
+                bytes.push(0);
+                reference.payload_digest =
+                    Digest256::from_bytes(Sha256::digest(&bytes[34..]).into());
+                bytes[2..34].copy_from_slice(reference.payload_digest.as_bytes());
+                store.db.put_cf(cf, key.as_bytes(), bytes).unwrap();
+            }
+            _ => unreachable!(),
+        }
+        // Capture a fresh view after deliberate damage so these refusals exercise
+        // the actual key/hash/source/decoder checks, not only sequence mismatch.
+        let scratch = grant(&budget, 8 * MIB, 0);
+        let view = store.progress_read(&scratch).unwrap();
+        let before = (kv(&store), store.db.latest_sequence_number());
+        if case == "noncanonical-preimage" {
+            // Existing retained-closure checking stays allocation-free and does
+            // not decode the payload; the new scalar lookup must decode it.
+            view.require_fact(reference, || Ok(())).unwrap();
+        }
+        assert_eq!(
+            view.event_payload_time(reference, || Ok(())),
+            Err(AdmissionError::StateMismatch),
+            "{case}"
+        );
+        assert_eq!((kv(&store), store.db.latest_sequence_number()), before);
+    }
+}
+
+#[test]
+fn retained_payload_time_requires_decode_scratch_live_authority_and_unchanged_view() {
+    use crate::storage::rocks::keys::IngestKey;
+    let (_root, mut store, budget, _, _) = setup(false);
+    let result = admit(&mut store, &budget, 1).unwrap();
+    let AdmissionOutcome::Durable(receipt) = result.outcome() else {
+        panic!("signed fixture")
+    };
+    let reference = receipt.batch().unwrap().records()[1];
+    assert_eq!(reference.source_record_id.sequence.get(), 6);
+    let short_scratch = grant(&budget, 8 * MIB - 1, 0);
+    let short_view = store.progress_read(&short_scratch).unwrap();
+    short_view.require_fact(reference, || Ok(())).unwrap();
+    assert_eq!(
+        short_view.event_payload_time(reference, || Ok(())),
+        Err(AdmissionError::InsufficientReservation)
+    );
+    let scratch = grant(&budget, 8 * MIB, 0);
+    let view = store.progress_read(&scratch).unwrap();
+    let before = (kv(&store), store.db.latest_sequence_number());
+    // This small signed fact has one hash chunk: initial, chunk and final checks
+    // each refuse, including withdrawal after the decoded scalar was inspected.
+    for refuse_at in 1..=3 {
+        let mut checks = 0;
+        assert_eq!(
+            view.event_payload_time(reference, || {
+                checks += 1;
+                if checks == refuse_at {
+                    Err(AdmissionError::AuthorityUnavailable)
+                } else {
+                    Ok(())
+                }
+            }),
+            Err(AdmissionError::AuthorityUnavailable)
+        );
+        assert_eq!(checks, refuse_at);
+    }
+    assert_eq!((kv(&store), store.db.latest_sequence_number()), before);
+    let key = IngestKey::Fact {
+        source_record_id: reference.source_record_id,
+    }
+    .encode()
+    .unwrap();
+    let cf = store.db.cf_handle("facts").unwrap();
+    let bytes = store.db.get_cf(cf, key.as_bytes()).unwrap().unwrap();
+    store.db.put_cf(cf, key.as_bytes(), bytes).unwrap();
+    assert_eq!(
+        view.event_payload_time(reference, || Ok(())),
+        Err(AdmissionError::StateMismatch)
+    );
+}

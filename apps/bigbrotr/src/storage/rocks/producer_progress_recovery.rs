@@ -3,7 +3,10 @@
 use super::bootstrap::read_options;
 use super::{AdmissionError, BootstrapError, IngestRecovery, IngestStore};
 use crate::{runtime::OwnedPermit, storage::rocks::keys::IngestKey};
-use bigbrotr_model::{Fact, FactRef, ProducerEpoch, ProducerSlotId};
+use bigbrotr_model::{
+    EventId, Fact, FactPayload, FactRef, ProducerEpoch, ProducerSlotId,
+    codec::FactDecodeLimits,
+};
 use sha2::{Digest, Sha256};
 
 const MAX_FACT_BYTES: usize = 2 * 1024 * 1024;
@@ -31,8 +34,8 @@ impl IngestStore {
         &'a self,
         scratch: &'a OwnedPermit,
     ) -> Result<ProgressRead<'a>, AdmissionError> {
-        // Fixed reader/hash state and one encoded key, not a decoded Fact or
-        // dependency vector. The encompassing reducer accounts its own overlap.
+        // Integrity-only reads need fixed hash state and one encoded key. Payload
+        // lookup separately checks decode scratch; the reducer owns its overlap.
         if scratch.request().units().data_bytes() < 4096 || scratch.request().units().items() == 0 {
             return Err(AdmissionError::InsufficientReservation);
         }
@@ -94,7 +97,40 @@ impl ProgressRead<'_> {
     pub(in crate::storage) fn require_fact(
         &self,
         reference: FactRef,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<(), AdmissionError> {
+        self.inspect_fact(reference, authority, |_| Ok(()))
+    }
+
+    /// Decode only inside the authenticated native read. The caller retains the
+    /// default 8 MiB decode scratch and its original cancellation/policy deadline;
+    /// only a copied event identity/time pair may outlive this call.
+    pub(in crate::storage) fn event_payload_time(
+        &self,
+        reference: FactRef,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<Option<(EventId, u64)>, AdmissionError> {
+        let limits = FactDecodeLimits::default();
+        if self._scratch.request().units().data_bytes() < limits.max_allocation_bytes as u64 {
+            return Err(AdmissionError::InsufficientReservation);
+        }
+        let mut event = None;
+        self.inspect_fact(reference, authority, |preimage| {
+            let fact = Fact::decode_preimage(preimage, reference.payload_digest, limits)
+                .map_err(BootstrapError::from)?;
+            if let FactPayload::EventPayload(payload) = fact.payload() {
+                event = Some((payload.body.event_id, payload.body.created_at.0));
+            }
+            Ok(())
+        })?;
+        Ok(event)
+    }
+
+    fn inspect_fact(
+        &self,
+        reference: FactRef,
         mut authority: impl FnMut() -> Result<(), AdmissionError>,
+        inspect: impl FnOnce(&[u8]) -> Result<(), AdmissionError>,
     ) -> Result<(), AdmissionError> {
         authority()?;
         self.validate()?;
@@ -142,6 +178,7 @@ impl ProgressRead<'_> {
             {
                 return Err(AdmissionError::StateMismatch);
             }
+            inspect(preimage)?;
         } // Release the sole native pin before returning to the SQL row await.
         authority()?;
         self.validate()
