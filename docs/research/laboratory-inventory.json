@@ -78496,7 +78496,15 @@
           "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r3"
         ],
         "gate_compile_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-sst-delay-gate-d4502ff7",
-        "gate_source": "d4502ff7af23b8177d51a8b2051127d21c62f5e0"
+        "gate_source": "d4502ff7af23b8177d51a8b2051127d21c62f5e0",
+        "closing_controls": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-8c7b9b06-controls",
+          "receipt": {
+            "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/8c7b9b06-controls-receipt.json",
+            "sha256": "9b7000ae4969dbd80f13f61bfbe7164c0959bb27da42cafe665e75b1ef0297d6"
+          },
+          "state": "stopped/PID0/noOOM/exit0;launcher reaped/absent;481controlsPASS;originalhost-prerequisiteFAIL retained"
+        }
       }
     }
   },

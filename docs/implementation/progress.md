@@ -40,7 +40,9 @@ The [binding report](evidence/p02-native-rocks-binding-20260917.json),
   metadata/copied-ELF hashes bind this tool externally; no in-ELF/new-release claim.
 - Gate **d4502ff7**:17false-PASS/custody controls and strict C-only compile PASS;
   maintained source/controller/procedure in `experiments/native-rocks-binding`.
-  Shared cheap acceptance CI now collects those controls; real fault is dedicated.
+  Shared cheap acceptance CI now collects those controls; full481controls PASS in
+  the pinned compiler image. Host-only attempt FAIL lacked llvm-config; original
+  retained. Real fault remains dedicated.
 - Actual **R3PASS**: real post-WAL-trim empty SST open delayed; controller refills
   2,306,048bytes to rawENOSPC, releases; actual native write1563returns−1/errno28.
   Real nativeNoSpace/background-error1/ownedguardtrue; after restored headroom,

@@ -825,6 +825,15 @@
         "custody": "Outer87830reaped0/1.726854s;container07018982stopped/PID0/noOOM/exit0;10retainedregularDBfiles/2originals hashes verified;ownedpressurefile unlinked afterjoin;actualtest/library/controllerhashes unchanged.",
         "controls": "17syntheticgate/journal/custodycontrolsPASS;sourcegate14purecontrolsPASS. Sharedacceptance suite now collects17through maintainedtest_native_posix_fixture.py; real C/NoSpace remains dedicatedqualification, not an ordinary-suitePASS.",
         "limits": "Actual application owner/default-POSIX tmpfs fault under controlled delay-only scheduling. Not installed-servicefault, SQL-COMMITrace, fundedreopen/purge, harddisk/RSSreserve, powerloss, broadcapacity, new-platform or wholeM1/M2/goal qualification. OriginalR1/R2FAILs remain."
+      },
+      "closing_shared_controls": {
+        "result": "481PASS/0FAIL/0SKIP in pinned compiler image;26.351s testexecution",
+        "receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/8c7b9b06-controls-receipt.json",
+          "sha256": "9b7000ae4969dbd80f13f61bfbe7164c0959bb27da42cafe665e75b1ef0297d6"
+        },
+        "original_environment_failure": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/closing-controls/result.json",
+        "classification": "Host invocation lacked llvm-config, so acceptance-controls FAIL and4following checks NOT_RUN. Correct-environment acceptance run PASS; original retained. No product defect or weakened prerequisite."
       }
     }
   }
