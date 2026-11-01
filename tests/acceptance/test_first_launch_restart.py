@@ -169,6 +169,61 @@ class RestartControls(unittest.TestCase):
     def setUpClass(cls):
         cls.old, cls.new, cls.manifest, cls.encoded, cls.science = fixture()
 
+    def test_current_initial_bounds_are_literal_and_legacy_capture_scope_stays_explicit(self):
+        from installed_progress_context_oracle import archive_request_progress
+        wires = [dict(number=n, request=['REQ', digit * 48, dict(kinds=[1], since=0, until=upper - 1, limit=3)],
+            connected_at_us=1000 + n * 2000, request_at_us=1100 + n * 2000,
+            sent_at_us=1200 + n * 2000, closed_at_us=1500 + n * 2000, clock_resolution_us=1,
+            frames=['signed', 'forged-signature', 'duplicate', 'EOSE'], completion='request-and-websocket-close')
+            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2))]
+        verify = lambda rows: archive_request_progress(self.old, rows, expected_uppers=check.INITIAL_QUANTUM_UPPERS)
+        self.assertEqual(self.old['created_at'], 1)
+        self.assertEqual(verify(wires), check.request_binding(self.old, wires[0], 1))
+        for key, value in (('until', 86399), ('until', 0), ('since', 1), ('kinds', [2]), ('limit', 2)):
+            changed = copy.deepcopy(wires)
+            changed[1]['request'][2][key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(AssertionError):
+                verify(changed)
+        changed = copy.deepcopy(wires)
+        changed[1]['frames'][1] = 'signed'
+        with self.assertRaises(AssertionError):
+            verify(changed)
+        with self.assertRaises(AssertionError):
+            verify(wires + [dict(wires[1], number=3)])
+        for invalid in ({1: 86400}, {1: 86400, 2: 2, 3: 2}, {1: 86400, 2: '2'},
+                        {1: 86400, 2: True}, {1: 86400, 2: 2.0}, {True: 86400, 2: 2},
+                        {1: 86400, 2: 0}, {1: 86400, 2: 2**64}, [86400, 2]):
+            with self.subTest(bounds=invalid), self.assertRaises(AssertionError):
+                archive_request_progress(self.old, wires, expected_uppers=invalid)
+        with self.assertRaises(AssertionError):
+            archive_request_progress(self.old, wires)
+        historical = copy.deepcopy(wires)
+        historical[1]['request'][2]['until'] = 86399
+        self.assertEqual(archive_request_progress(self.old, historical), check.request_binding(self.old, wires[0], 1))
+        with self.assertRaises(AssertionError):
+            verify(historical)
+
+    def test_unordered_successor_and_quiet_retry_preserve_the_original_bound(self):
+        self.assertEqual((self.new['created_at'], self.old['created_at']), (23, 1))
+        first = dict(number=1, request=['REQ', 'a' * 48, dict(kinds=[1], since=0, until=86399, limit=3)],
+            connected_at_us=1000, request_at_us=1100, sent_at_us=1200, closed_at_us=1500,
+            clock_resolution_us=1, frames=['distinct', 'predecessor', 'distinct-resend', 'EOSE'],
+            event_ids=[self.new['id'], self.old['id'], self.new['id']], completion='request-and-websocket-close')
+        quiet = dict(number=2, request=['REQ', 'b' * 48, dict(kinds=[1], since=0, until=86399, limit=3)],
+            connected_at_us=2000, request_at_us=2100, closed_at_us=2500,
+            clock_resolution_us=1, frames=[], completion='quiet-eof')
+        wires = [first, quiet]
+        self.assertIs(check.successor_wire(wires, self.old, self.new), first)
+        for index, key, value in ((1, 'until', 1), (1, 'since', 1), (0, 'until', 1)):
+            changed = copy.deepcopy(wires)
+            changed[index]['request'][2][key] = value
+            with self.subTest(index=index, key=key), self.assertRaises(AssertionError):
+                check.successor_wire(changed, self.old, self.new)
+        changed = copy.deepcopy(wires)
+        changed[0]['event_ids'][1] = self.new['id']
+        with self.assertRaises(AssertionError):
+            check.successor_wire(changed, self.old, self.new)
+
     def test_recovery_setup_binds_actual_accepted_policy_and_unchanged_owner(self):
         for provenance in (True,False):
             before,after,started=recovery_setup_fixture(provenance)
@@ -558,11 +613,11 @@ class ProvenanceOffControls(unittest.TestCase):
             producer_epochs=[dict(common, reserved_through_request=4, outstanding_request_limit=32)],
             acquisition_jobs=[dict(job_id='\\x' + 'd1' * 16, scope_id='\\x' + 'd2' * 16)],
             jobs=[dict(job_id='\\x' + 'd1' * 16, request_key='\\x' + 'b1' * 16, state='queued', checkpoint_revision=0)])
-        wires = [dict(number=n, request=['REQ', digit * 48, {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}],
+        wires = [dict(number=n, request=['REQ', digit * 48, {'kinds': [1], 'since': 0, 'until': upper - 1, 'limit': 3}],
             connected_at_us=1000 + n * 2000, request_at_us=1100 + n * 2000,
             sent_at_us=1200 + n * 2000, closed_at_us=1500 + n * 2000, clock_resolution_us=1,
             frames=['signed', 'forged-signature', 'duplicate', 'EOSE'], completion='request-and-websocket-close')
-            for n, digit in ((1, 'a'), (2, 'b'))]
+            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2))]
         control = dict(resource_id='\\x' + 'a1' * 16, epoch=1, process_incarnation='\\x' + 'a2' * 16,
             acquired_at_us=1000, lease_expires_at_us=10000)
         progress = dict(common, job_id='\\x' + 'd1' * 16, scope_id='\\x' + 'd2' * 16,
@@ -586,7 +641,8 @@ class ProvenanceOffControls(unittest.TestCase):
         head=current42_head(head,initial=True)
         state.update(producer_checkpoints=[head], acquisition_progress=[progress], producer_checkpoint_dependencies=deps,
             producer_outcomes=[dict(request_sequence=n, producer_epoch=1, xmin=str(100 + n)) for n in range(1, 5)])
-        verify = lambda: verify_archive_progress(state, wires, 6000, self.old, first['native'], first['inputs'], first['receipts'], control, provenance=False)
+        verify = lambda: verify_archive_progress(state, wires, 6000, self.old, first['native'], first['inputs'], first['receipts'], control,
+            provenance=False, expected_uppers=check.INITIAL_QUANTUM_UPPERS)
         verify()
         progress['intent_digest'] = '\\x' + certification_digest(self.old, ref(4, 3), ref(2), ref(2),
             [ref(1), ref(3), ref(5)], progress, wires[1]).hex()

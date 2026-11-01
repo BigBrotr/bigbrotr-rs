@@ -356,6 +356,38 @@ class LinearQuantumControls(unittest.TestCase):
                     current['charged_bytes']-=256
                     with self.subTest(missing=missing),self.assertRaises(AssertionError):verify(changed)
 
+    def test_unordered_successor_quiet_quantum_and_status_keep_the_first_window(self):
+        for provenance in (True,False):
+            state,wire,old,new,science,first=successor_fixture(provenance)
+            self.assertEqual((new['created_at'],old['created_at']),(23,1))
+            self.assertEqual(state['acquisition_quanta'][0]['gap_reason'],'ordering')
+            ident='cd'*24
+            quiet=dict(number=2,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],
+                frames=[],completion='quiet-eof')
+            pending=dict(state['acquisition_quanta'][0],quantum_id='\\x'+'9'*32,quantum_number=2,
+                terminal_kind='deadline',terminal_frame='\\x',request_id='\\x'+ident.encode().hex(),
+                terminal_sequence=None,retained_events=0,classified_prefix=0,effect_records='\\x',dependencies='\\x',
+                checkpoint_before=4,checkpoint_after=4,teardown_complete=False,gap_reason='teardown',
+                charged_bytes=1024+len(check.raw(state['acquisition_quanta'][0]['request_predicate'])))
+            state['acquisition_quanta'].append(pending)
+            verify=lambda value,wires:check.successor(value,wires,old,new,science,before={'acquisition_quanta':[]},
+                provenance=provenance,first_science=first)
+            verify(state,[wire,quiet])
+            changed=copy.deepcopy(state);changed_wire=copy.deepcopy(quiet)
+            predicate=check.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=1,limit=3)])
+            current=changed['acquisition_quanta'][1]
+            current.update(interval_upper=2,continuation_upper=2,request_predicate='\\x'+predicate.hex(),
+                predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),charged_bytes=1024+len(predicate))
+            changed_wire['request'][2]['until']=1
+            with self.subTest(provenance=provenance),self.assertRaises(AssertionError):verify(changed,[wire,changed_wire])
+            status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='2',scope_id='66'*16,
+                lower='0',upper='86400',horizon='200000',result='interrupted',terminal='deadline',gap='teardown',
+                continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending')
+            quantum_status(dict(linear_quantum=status),'66'*16,'200000999999',known_plan=True,expected_uppers={1:86400,2:86400})
+            with self.assertRaises(AssertionError):
+                quantum_status(dict(linear_quantum=dict(status,upper='2',continuation_upper='2')),
+                    '66'*16,'200000999999',known_plan=True,expected_uppers={1:86400,2:86400})
+
     def test_successor_old_frame_declaration_excludes_new_event_dependencies(self):
         for provenance in (True,False):
             state,wire,old,new,science,first=successor_fixture(provenance)
