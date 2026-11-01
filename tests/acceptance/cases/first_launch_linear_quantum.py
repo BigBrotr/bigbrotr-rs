@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import subprocess
 import time
+import tomllib
 
 from cases.first_launch import Runtime,load,save,require,digest,stop_process
 from cases import first_launch_quantum_oracle as oracle
@@ -47,9 +48,16 @@ class LinearQuantumRuntime(Runtime):
         save(self.home/'linear-quantum-profile.json',PROFILE)
 
     def bootstrap(self):
+        # Keep unrelated initialization outside the finite fault proxy budget.
+        # Initial owner startup and every dictionary/quantum statement still use it.
+        super().bootstrap()
         self.quantum_fault=getattr(self.args,'linear_quantum_fault',None)
         if self.quantum_fault:save(self.home/'linear-quantum-fault.json',self.quantum_fault)
         if self.quantum_fault:
+            original=self.config.read_text()
+            upstream=tomllib.loads(original)['postgres']['control']['endpoint']
+            require(upstream=='127.0.0.1:15432','quantum proxy requires declared direct Control upstream')
+            direct_recipe_sha256=digest(self.config)
             boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('plan','held')
             path=self.source/'experiments/archive-engine/native_commit_proxy.py'
             self.inputs['acceptance_files_sha256'][str(path.relative_to(self.source))]=digest(path)
@@ -59,16 +67,16 @@ class LinearQuantumRuntime(Runtime):
                 '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
                 'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
                 '--upstream-port','15432'],input_pipe=True)
-            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None)
+            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None,
+                upstream_endpoint=upstream,direct_recipe_sha256=direct_recipe_sha256)
             self.record_resources()
             save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             ready=self.proxy_event(self.route,'ready',10)
             require(ready['source_sha256']==digest(path),'exact quantum proxy source')
             self.resources['quantum_proxy']['port']=ready['port']
             self.record_resources()
-            self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+            self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
-        super().bootstrap()
 
     def stop_quantum_proxy(self):
         if not hasattr(self,'route') or self.resources['quantum_proxy']['status']=='joined':return

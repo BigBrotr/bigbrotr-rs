@@ -50,6 +50,9 @@ class LinearQuantumControls(unittest.TestCase):
                     source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='gap-write'),
                     dict(acceptance_files_sha256={}))
                 runtime.home=root/'home';runtime.home.mkdir()
+                original='[postgres.control]\nendpoint = "127.0.0.1:15432"\n'
+                runtime.config=root/'instance.toml';runtime.config.write_text(original)
+                order=[]
                 child=SimpleNamespace(pid=123,returncode=code if name=='already-exited' else None)
                 child.poll=lambda:child.returncode
                 def wait(timeout):
@@ -62,10 +65,15 @@ class LinearQuantumControls(unittest.TestCase):
                 stdout=b'proxy stopped\xff\n';stderr=b'proxy exited early\n' if name=='already-exited' else b''
                 process=SimpleNamespace(process=child,wait=Mock(side_effect=wait),stop=Mock(side_effect=stop),
                     threads=[SimpleNamespace(is_alive=lambda:False)],stdout=stdout,stderr=stderr,overflow=overflow)
-                runtime.proxy_process=Mock(return_value=process)
-                pending=dict(pid=123,status='running',port=None)
+                def launch(*args,**kwargs):
+                    self.assertEqual(order,['bootstrap']);order.append('proxy')
+                    return process
+                runtime.proxy_process=Mock(side_effect=launch)
+                pending=dict(pid=123,status='running',port=None,upstream_endpoint='127.0.0.1:15432',
+                    direct_recipe_sha256=hashlib.sha256(original.encode()).hexdigest())
                 def ready(route,event,timeout):
                     self.assertIs(route,process);self.assertEqual((event,timeout),('ready',10))
+                    self.assertEqual(order,['bootstrap','proxy'])
                     self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],pending)
                     self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),dict(pid=123))
                     raise TimeoutError('proxy ready deadline')
@@ -73,9 +81,14 @@ class LinearQuantumControls(unittest.TestCase):
                 terminal=dict(exit=code,stdout=stdout.decode(errors='replace'),stderr=stderr.decode(),
                     overflow=overflow,remote_exclusion='UNKNOWN')
                 runtime.proxy_send=Mock(side_effect=control_error);runtime.proxy_observation=Mock(return_value=terminal)
-                with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                def base_bootstrap():
+                    runtime.proxy_process.assert_not_called()
+                    self.assertFalse(hasattr(runtime,'route'))
+                    self.assertEqual(runtime.config.read_text(),original)
+                    order.append('bootstrap')
+                with patch.object(case.Runtime,'bootstrap',side_effect=base_bootstrap) as bootstrap:
                     with self.assertRaisesRegex(TimeoutError,'proxy ready deadline'):runtime.bootstrap()
-                    bootstrap.assert_not_called()
+                    bootstrap.assert_called_once_with()
                 runtime.proxy_process.assert_called_once()
                 self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
                 if operations:
@@ -102,6 +115,45 @@ class LinearQuantumControls(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError,'owned resource cleanup incomplete'):runtime.cleanup()
                 else:runtime.cleanup()
                 process.wait.assert_called_once_with(5);process.stop.assert_called_once_with()
+
+    def test_fault_route_records_direct_recipe_and_refuses_an_undeclared_upstream(self):
+        from cases import first_launch_linear_quantum as case
+        for endpoint in ('127.0.0.1:15432','127.0.0.1:25432'):
+            with self.subTest(endpoint=endpoint),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='plan-before'),
+                    dict(acceptance_files_sha256={}))
+                runtime.home=root/'home';runtime.home.mkdir()
+                original='[postgres.control]\nendpoint = "'+endpoint+'"\n'
+                runtime.config=root/'instance.toml';runtime.config.write_text(original)
+                routed='[postgres.control]\nendpoint = "127.0.0.1:34567"\n'
+                runtime.set_value=Mock(return_value=routed)
+                runtime.proxy_process=Mock(return_value=SimpleNamespace(process=SimpleNamespace(pid=123)))
+                def ready(route,event,timeout):
+                    bootstrap.assert_called_once_with()
+                    self.assertEqual(runtime.config.read_text(),original)
+                    saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
+                    self.assertEqual((saved['upstream_endpoint'],saved['direct_recipe_sha256']),
+                        ('127.0.0.1:15432',hashlib.sha256(original.encode()).hexdigest()))
+                    return dict(port=34567,source_sha256=case.digest(runtime.source/'experiments/archive-engine/native_commit_proxy.py'))
+                runtime.proxy_event=ready
+                with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                    if endpoint!='127.0.0.1:15432':
+                        with self.assertRaisesRegex(ValueError,'declared direct Control upstream'):runtime.bootstrap()
+                        bootstrap.assert_called_once_with();runtime.proxy_process.assert_not_called()
+                        runtime.set_value.assert_not_called();self.assertEqual(runtime.config.read_text(),original)
+                        continue
+                    runtime.bootstrap();bootstrap.assert_called_once_with()
+                self.assertEqual(runtime.proxy_process.call_args.args[0][3:],[
+                    '--mode','before-forward','--target','control-quantum-plan','--upstream-port','15432'])
+                self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
+                runtime.set_value.assert_called_once_with(original,'postgres.control','endpoint','127.0.0.1:34567')
+                self.assertEqual(runtime.config.read_text(),routed)
+                self.assertEqual(runtime.inputs['initial_recipe_sha256'],hashlib.sha256(routed.encode()).hexdigest())
+                saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
+                self.assertEqual(saved['port'],34567)
+                self.assertEqual(saved['direct_recipe_sha256'],hashlib.sha256(original.encode()).hexdigest())
 
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
