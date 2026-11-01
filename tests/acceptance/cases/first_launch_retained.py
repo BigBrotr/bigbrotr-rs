@@ -19,6 +19,7 @@ from cases import first_launch_index_topology_oracle as topology
 from cases import first_launch_index_baseline as baseline
 from cases import first_launch_retained_oracle as oracle
 from cases import first_launch_retained_native as native
+from cases import first_launch_quantum_oracle as quantum
 
 LIMITS = [
     'Fresh actual source3/Archive2/Index2 prefix under the original15s gate; only the catalog route is then closed and joined. Control, Sync and Index retain their actual owners.',
@@ -453,6 +454,7 @@ class ReclamationRuntime(RetainedRuntime):
         self.finite('reclamation-abandon-initial',*args,'--abandon-acquisition')
         retired=self.finite('reclamation-retire-initial',*args,'--retire-initial')
         before,catalog=self.capture(self.reclamation_output,'retired')
+        quantum.unchanged(self.initial_index_state,before)
         self.restart_checks.retired(before,retired,1,self.retained_science,cut=312)
         require(not any(before[t] for t in ('initial_ingest_successions','initial_ingest_activations','ingest_successions','ingest_activations')),
             'reclamation must precede every successor intent')
@@ -623,11 +625,13 @@ class ReclamationRuntime(RetainedRuntime):
         finally:
             stop_process(client);self.processes.remove(client)
         self.backend_absence(output)
+        stopped,_=self.capture(output,'stopped')
         self.successor_wires=[load(p) for p in sorted(home.glob('relay-closed-*.json'))]
         args=['ingest','recover','--file','/etc/bigbrotr/instance.toml']
         self.finite('compacted-abandon-successor',*args,'--abandon-activated-acquisition')
         self.finite('compacted-retire-successor',*args,'--retire-activated-initial')
         self.retired_successor,_=self.capture(output,'retired')
+        quantum.unchanged(stopped,self.retired_successor)
         live_oracle.publication_unchanged(live,self.retired_successor)
         self.final_native=self.native_capture('successor-native')
         self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,self.compacted_bridge,self.retained_science,

@@ -20,6 +20,8 @@ import subprocess
 import sys
 import time
 
+from cases import first_launch_quantum_oracle as quantum
+
 
 LABEL = 'org.bigbrotr.m1-first-launch'
 IMAGE_LABEL = 'org.bigbrotr.acceptance.bundle-sha256'
@@ -657,8 +659,7 @@ class Runtime:
         control = self.rows(pg, 'bigbrotr_control')
         save(output / (prefix + '-control.json'), control)
         require(set(control) == self.tables, 'Control inventory differs from migrations')
-        from cases.first_launch_quantum_oracle import shape
-        shape(control)
+        quantum.shape(control)
         catalog = self.catalog_rows(pg, 'bigbrotr_catalog')
         save(output / (prefix + '-catalog.json'), catalog)
         return control, catalog
@@ -973,6 +974,7 @@ class Runtime:
             'initial acquisition abandonment differs')
         retired = self.finite('retire-initial', *args, '--retire-initial')
         self.retired_initial, _ = self.capture(output, 'retired-initial')
+        quantum.unchanged(self.restart_before, self.retired_initial)
         self.restart_checks.retired(self.retired_initial, retired, 1, self.first_science, cut=self.initial_cut)
         self.backend_absence(output)
         self.wait_login_capacity(output)
@@ -1036,6 +1038,7 @@ class Runtime:
         self.successor_abandoned()
         self.successor_retirement = self.finite('retire-successor', *args, '--retire-activated-initial')
         self.retired_successor, _ = self.capture(output, 'retired-successor')
+        quantum.unchanged(self.successor_after, self.retired_successor)
         self.backend_absence(output)
 
     def successor_launch(self):
@@ -1062,6 +1065,7 @@ class Runtime:
         output = self.restart_output
         report = self.finite('archive-catch-up', 'archive', 'catch-up', '--file', '/etc/bigbrotr/instance.toml')
         self.caught_up, self.caught_up_catalog = self.capture(output, 'caught-up')
+        quantum.unchanged(self.successor_after, self.caught_up)
         for table in ('producer_requests', 'producer_outcomes', 'producer_checkpoints',
                       'producer_checkpoint_dependencies', 'acquisition_progress'):
             require(self.caught_up[table] == self.successor_after[table], 'terminal replay changed producer evidence: ' + table)

@@ -122,6 +122,13 @@ def transition(before,after):
         else:assert {k:v for k,v in new.items() if k not in mutable}=={k:v for k,v in old.items() if k not in mutable}
 
 
+def unchanged(before,after):
+    """Every stopped obligation survives, including pending fields and row versions."""
+    canonical=lambda row:json.dumps(row,sort_keys=True,allow_nan=False,separators=(',',':'))
+    assert sorted(map(canonical,before['acquisition_quanta']))==sorted(map(canonical,after['acquisition_quanta'])), \
+        'stopped quantum history changed'
+
+
 def reference_bytes(references):
     return b''.join(source[0]+b''.join(number.to_bytes(8,'big') for number in source[1:])+digest
         for source,digest in sorted({(tuple(source),digest) for source,digest in references}))

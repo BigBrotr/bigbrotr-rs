@@ -505,6 +505,60 @@ class LinearQuantumControls(unittest.TestCase):
                 runtime.catalog_rows.assert_not_called()
                 self.assertFalse((root/'invalid-catalog.json').exists())
 
+    def test_stopped_quantum_history_preserves_pending_rows_versions_and_cardinality_without_row_order(self):
+        before,_=fixture()
+        pending=fixture(pending=True)[0]['acquisition_quanta'][0]
+        pending.update(quantum_id='\\x'+'9'*32,quantum_number=2)
+        before['acquisition_quanta'].append(pending)
+        check.shape(before)
+        reordered=copy.deepcopy(before)
+        reordered['acquisition_quanta']=[dict(reversed(list(row.items()))) for row in reversed(reordered['acquisition_quanta'])]
+        check.unchanged(before,reordered)
+        completed=copy.deepcopy(before)
+        completed['acquisition_quanta'][1]=dict(before['acquisition_quanta'][0],quantum_id=pending['quantum_id'],quantum_number=2)
+        check.shape(completed)  # A well-shaped terminal cannot rewrite a stopped pending plan.
+        with self.assertRaisesRegex(AssertionError,'stopped quantum history'):check.unchanged(before,completed)
+        for change in ('deleted','added','duplicated','xmin','charge','issuer'):
+            changed=copy.deepcopy(before);rows=changed['acquisition_quanta']
+            if change=='deleted':rows.pop()
+            elif change=='added':rows.append(dict(pending,quantum_id='\\x'+'a'*32,quantum_number=3))
+            elif change=='duplicated':rows.append(copy.deepcopy(pending))
+            elif change=='xmin':rows[1]['xmin']='12'
+            elif change=='charge':rows[1]['charged_bytes']-=1
+            else:rows[1]['issuer_epoch']=2
+            with self.subTest(change=change),self.assertRaisesRegex(AssertionError,'stopped quantum history'):
+                check.unchanged(before,changed)
+
+    def test_restart_retirement_refuses_changed_stopped_quanta_before_later_recovery(self):
+        from cases.first_launch import Runtime
+        for change in ('unchanged','completion','xmin','charge','deleted','added'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(Runtime)
+                before,_=fixture(pending=change!='added')
+                after,_=fixture(pending=change not in ('added','completion'),abandoned=True)
+                rows=after['acquisition_quanta']
+                if change=='xmin':rows[0]['xmin']='12'
+                elif change=='charge':rows[0]['charged_bytes']-=1
+                elif change=='deleted':rows.clear()
+                elif change=='added':
+                    pending=fixture(pending=True)[0]['acquisition_quanta'][0]
+                    rows.append(dict(pending,quantum_id='\\x'+'9'*32,quantum_number=2))
+                runtime.root=runtime.restart_output=root
+                runtime.config=root/'instance.toml';runtime.config.write_text('current fixture config\n')
+                (root/'ordinary').mkdir();(root/'ordinary/initial-config.toml').write_text('initial fixture config\n')
+                runtime.restart_before=before;runtime.first_science={};runtime.initial_cut=12
+                runtime.finite=Mock(side_effect=[dict(acquisition_abandonment=dict(jobs='1',
+                    reason='initial_producer_abandoned',coverage='unknown')),{}])
+                runtime.capture=Mock(return_value=(after,{}))
+                runtime.restart_checks=SimpleNamespace(retired=Mock(side_effect=RuntimeError('later recovery reached')))
+                if change=='unchanged':
+                    with self.assertRaisesRegex(RuntimeError,'later recovery reached'):runtime.restart_ingest()
+                    runtime.restart_checks.retired.assert_called_once()
+                else:
+                    with self.assertRaisesRegex(AssertionError,'stopped quantum history'):runtime.restart_ingest()
+                    runtime.restart_checks.retired.assert_not_called()
+                runtime.capture.assert_called_once_with(root,'retired-initial')
+
     def test_wholly_preexisting_dependency_union_is_exact_and_deduplicated(self):
         ds=bytes.fromhex('11'*16)
         first=[[ds,0,1,7],bytes.fromhex('aa'*32)]
