@@ -2,7 +2,11 @@
 import copy
 import hashlib
 import json
+from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock, patch
 from cases import first_launch_quantum_oracle as check
 from installed_sync_client import quantum_status
 
@@ -32,6 +36,39 @@ def fixture(*,pending=False):
 
 
 class LinearQuantumControls(unittest.TestCase):
+    def test_proxy_ready_failure_retains_custody_and_cleanup_joins_original_process(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='gap-write'),
+                dict(acceptance_files_sha256={}))
+            runtime.home=root/'home';runtime.home.mkdir()
+            process=SimpleNamespace(process=SimpleNamespace(pid=123),wait=Mock(return_value=0))
+            runtime.proxy_process=Mock(return_value=process)
+            pending=dict(pid=123,status='running',port=None)
+            def ready(route,name,timeout):
+                self.assertIs(route,process);self.assertEqual((name,timeout),('ready',10))
+                self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],pending)
+                self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),dict(pid=123))
+                raise TimeoutError('proxy ready deadline')
+            runtime.proxy_event=ready
+            terminal=dict(exit=0,stdout='proxy stopped\n',stderr='',overflow=False,remote_exclusion='UNKNOWN')
+            runtime.proxy_send=Mock();runtime.proxy_observation=Mock(return_value=terminal)
+            with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                with self.assertRaisesRegex(TimeoutError,'proxy ready deadline'):runtime.bootstrap()
+                bootstrap.assert_not_called()
+            runtime.proxy_process.assert_called_once()
+            self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
+            runtime.stop_quantum_proxy()
+            runtime.proxy_send.assert_called_once_with(process,'stop\n')
+            process.wait.assert_called_once_with(5)
+            runtime.proxy_observation.assert_called_once_with(process)
+            self.assertEqual(json.loads((root/'quantum-proxy.json').read_text()),terminal)
+            self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],dict(pending,status='joined'))
+            self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),dict(pid=123))
+            runtime.stop_quantum_proxy();process.wait.assert_called_once_with(5)
+
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
         self.assertEqual(state['acquisition_quanta'][0]['charged_bytes'],1189)

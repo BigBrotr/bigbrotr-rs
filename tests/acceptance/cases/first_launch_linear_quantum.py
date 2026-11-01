@@ -59,13 +59,15 @@ class LinearQuantumRuntime(Runtime):
                 '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
                 'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
                 '--upstream-port','15432'],input_pipe=True)
+            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None)
+            self.record_resources()
+            save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             ready=self.proxy_event(self.route,'ready',10)
             require(ready['source_sha256']==digest(path),'exact quantum proxy source')
+            self.resources['quantum_proxy']['port']=ready['port']
+            self.record_resources()
             self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
-            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=ready['port'])
-            save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
-            self.record_resources()
         super().bootstrap()
 
     def stop_quantum_proxy(self):

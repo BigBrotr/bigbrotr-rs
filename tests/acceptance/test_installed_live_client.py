@@ -27,6 +27,12 @@ LEGACY_ACTIONS = ['data.read', 'policy.change', 'principals.manage', 'roles.cont
 PASSWORD = 'Independent supplied password 2026 '
 SESSION = dict(format='bigbrotr-cli-session/1', origin='http://127.0.0.1:18081',
     session='cd' * 32, csrf='ef' * 32)
+# Independent pending-plan observation; this wiring control supplies no relay outcome.
+JOB_ACCEPTED_AT_US = '200000999999'
+QUANTUM_STATUS = dict(format='bigbrotr-linear-quantum-status/1', quantum_number='1',
+    scope_id='34' * 16, lower='0', upper='86400', horizon='200000', result='pending',
+    terminal=None, gap=None, continuation_upper=None, retained_events=None,
+    classified_prefix=None, coverage='pending')
 
 
 class LiveClientControls(unittest.TestCase):
@@ -82,8 +88,8 @@ class LiveClientControls(unittest.TestCase):
                 self.assertEqual(path, '/management/v1/jobs/' + '45' * 16)
                 value = dict(format='bigbrotr-job-status/1', job_id='45' * 16,
                     kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
-                    created_at_us='100', completed_at_us=None, observed_at_us='101',
-                    reason_code=None, authority='observation-only')
+                    created_at_us=JOB_ACCEPTED_AT_US, completed_at_us=None, observed_at_us='200001000000',
+                    reason_code=None, authority='observation-only', linear_quantum=copy.deepcopy(QUANTUM_STATUS))
                 return 200, json.dumps(value).encode()
             self.assertEqual(method, 'POST')
             posts.append((path, copy.deepcopy(body)))
@@ -96,7 +102,7 @@ class LiveClientControls(unittest.TestCase):
                 value.update(scope_id='34' * 16)
             else:
                 self.assertEqual(path, '/management/v1/jobs')
-                value.update(job_id='45' * 16, accepted_at_us='100', execution='unobserved',
+                value.update(job_id='45' * 16, accepted_at_us=JOB_ACCEPTED_AT_US, execution='unobserved',
                     authority='acceptance-only')
             return 202, json.dumps(value).encode()
 
@@ -124,6 +130,7 @@ class LiveClientControls(unittest.TestCase):
             self.assertEqual(body['expected_policy_revision'], '3')
         self.assertEqual(result['me']['principal_id'], PRINCIPAL)
         self.assertEqual(result['me']['stored_actions'], ACTIONS)
+        self.assertEqual(result['job_status']['linear_quantum'], QUANTUM_STATUS)
         self.assertFalse((self.directory / 'password.private').exists())
         self.assertFalse((self.directory / 'index-proof.json').exists())
         self.assertNotIn('live_index_proof',result)
@@ -231,6 +238,7 @@ class LiveClientControls(unittest.TestCase):
         shutil.copy2(self.profile_directory / 'fixture-profile.json', self.directory)
         result, commands, posts = self.exercise(profile=False, config='2', policy='2')
         self.assertEqual(result['me']['principal_id'], '10' * 16)
+        self.assertEqual(result['job_status']['linear_quantum'], QUANTUM_STATUS)
         self.assertTrue(all(command[0] == '/build/bigbrotr' for command in commands))
         secret = self.directory / 'password.private'
         self.assertEqual(secret.read_text(), 'Independent owner password 2026')
