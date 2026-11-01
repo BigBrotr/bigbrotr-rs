@@ -48,6 +48,8 @@ mod ingest_initial_history;
 mod ingest_lease;
 #[path = "support/ingest_observation.rs"]
 mod ingest_observation;
+#[path = "support/ingest_owner.rs"]
+mod ingest_owner;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
 #[path = "support/ingest_recovery_process.rs"]
@@ -500,8 +502,13 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .unwrap(),
     );
     let _inputs = grant(&budget, 24 * MIB, 0);
-    let mut store =
-        IngestStore::initialize(path, manifest, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    let mut store = IngestStore::initialize(
+        path,
+        manifest,
+        limits(),
+        ingest_owner::grant(&budget, 128 * MIB),
+    )
+    .unwrap();
     if mode == "retired" {
         observer.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1", &[&&spec.producer_slot_id.as_bytes()[..]]).await.unwrap();
     }
@@ -728,8 +735,13 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         }
         drop(receipt);
         drop(store);
-        store =
-            IngestStore::reopen(path, manifest, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+        store = IngestStore::reopen(
+            path,
+            manifest,
+            limits(),
+            ingest_owner::grant(&budget, 128 * MIB),
+        )
+        .unwrap();
         let retry = owner
             .bootstrap_initial_dictionaries(
                 &mut store,

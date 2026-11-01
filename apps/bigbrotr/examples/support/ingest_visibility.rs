@@ -2,7 +2,7 @@
 use super::*;
 use bigbrotr::storage::{
     postgres::control_owner::{InitialEventError, InitialVisibilityRequest},
-    rocks::store::{AdmissionError, CertificationLimits},
+    rocks::store::{AdmissionError, CertificationLimits, PENDING_QUOTA_OWNER_DATA_BYTES},
 };
 use std::sync::atomic::Ordering;
 
@@ -124,6 +124,10 @@ pub async fn run(
         drop(store);
         store = IngestStore::reopen(path, manifest, super::limits(), grant(budget, 0, 128 * MIB))
             .unwrap();
+        // This reopened handle only reads. Closing the intake owner released
+        // its retained quota ledger grant before this native-only observation.
+        let baseline = baseline - PENDING_QUOTA_OWNER_DATA_BYTES;
+        assert_eq!(budget.snapshot().used().data_bytes(), baseline);
         let read = owner
             .read_initial_visibility(
                 &mut store,

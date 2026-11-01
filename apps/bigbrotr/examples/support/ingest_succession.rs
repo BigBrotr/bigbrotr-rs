@@ -181,8 +181,12 @@ pub async fn run(
     // reserves within the unchanged configured application payload capacity;
     // native/outcome grants stay separate. No second document grant is acquired.
     let _metadata = grant(&budget, 512 * MIB, 0);
-    let mut recovery =
-        IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    let native = if live::is_mode(mode) {
+        crate::ingest_owner::grant(&budget, 128 * MIB)
+    } else {
+        grant(&budget, 0, 128 * MIB)
+    };
+    let mut recovery = IngestRecovery::inspect(&path, dataset, limits(), native).unwrap();
     let (mut observer, observer_driver) = bounded(config.connect(NoTls)).await.unwrap();
     let observer_driver = tokio::spawn(observer_driver);
     if mode == activated_acquisition::MODE {

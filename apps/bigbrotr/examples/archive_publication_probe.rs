@@ -41,6 +41,8 @@ use zeroize::Zeroizing;
 mod custody;
 #[path = "support/publication_ingest.rs"]
 mod ingest;
+#[path = "support/ingest_owner.rs"]
+mod ingest_owner;
 #[path = "support/publication_installation.rs"]
 mod installed_catalog;
 #[path = "support/publication_export_jobs.rs"]

@@ -170,14 +170,19 @@ async fn run_inner(
     let _observations = grant(&budget, 32 * MIB, 0);
     let _transport = grant(&budget, 4 * MIB, 0);
     let metadata = grant(&budget, metadata_bytes, 0);
-    let recovery =
-        IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
-    // Candidate construction can fail and consume recovery. It therefore runs
-    // before any actual Control acquisition. No observed identity is adopted.
     let live = matches!(operation, "live" | "live-new");
     let acquisition = matches!(operation, "abandon" | "acquisition-claims");
     let claims = operation == "acquisition-claims";
-    let native = if operation == "prepare" || live || claims {
+    let prospective_writer = operation == "prepare" || live || claims;
+    let permit = if prospective_writer {
+        crate::ingest_owner::grant(&budget, 128 * MIB)
+    } else {
+        grant(&budget, 0, 128 * MIB)
+    };
+    let recovery = IngestRecovery::inspect(&path, dataset, limits(), permit).unwrap();
+    // Candidate construction can fail and consume recovery. It therefore runs
+    // before any actual Control acquisition. No observed identity is adopted.
+    let native = if prospective_writer {
         let candidate = SuccessorCandidate::new(recovery).unwrap();
         emit_candidate(&candidate);
         Native {

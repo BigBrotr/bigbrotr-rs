@@ -240,8 +240,13 @@ pub async fn prepare(
         },
         AllocationNamespaces::from_entries(&spec.allocation_domains).unwrap(),
     );
-    let mut store =
-        IngestStore::initialize(path, manifest, native(), grant(budget, 0, 128 * MIB)).unwrap();
+    let mut store = IngestStore::initialize(
+        path,
+        manifest,
+        native(),
+        crate::ingest_owner::grant(budget, 128 * MIB),
+    )
+    .unwrap();
     let scope = reference(DictionaryKind::VisibilityScope);
     let intent = EvidenceIntent::new(
         1,
