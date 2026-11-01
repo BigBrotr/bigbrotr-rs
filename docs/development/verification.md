@@ -1176,6 +1176,48 @@ The off case has the same native-census, second-event-export, Index, outage,
 capacity and complete-M1 exclusions. Implemented expectations and offline
 negative controls do not claim a connected PASS; inspect its actual result.
 
+## Bounded linear acquisition and recovery
+
+`p03-linear-quantum` uses the same fresh installed candidate, Docker/Compose,
+protected evidence and custody prerequisites as the first-launch cases. Supply
+the separately built exact-product native observer described in the retained
+boundary case. Product, observer, assembly and acceptance sources have separate
+identities; unchanged product binaries remain reusable after verifier-only edits.
+
+```sh
+python3 -B tests/acceptance/run.py p03-linear-quantum \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --linear-quantum-scenario capped-continuation \
+  --evidence /absolute/fresh-evidence
+```
+
+The capped recipe prepopulates signed events24/23 through one job. A second job
+must continue past an all-known page and retain older signed event1 despite the
+peer clamping the requested three events to two. Its five exact requests, original
+inputs, receipts, full native census and pending status are independently checked.
+Use a fresh evidence root with `--linear-quantum-corruption cursor-time` or
+`foreign-payload` to require exact natural refusal before another plan/socket,
+restored SQL guards and unchanged native/input data. Raw captures contain private
+credentials and must never be uploaded wholesale.
+
+Select `--linear-quantum-scenario interruptions` for eight finite requests across
+two independently declared scope recipes, including known-interruption retries.
+Only this scenario accepts `--linear-quantum-fault plan-before`, `plan-after`,
+`terminal-before` or `terminal-after`: each independently loses one COMMIT at the
+declared boundary and requires no subsequent work plus unchanged historical-only
+Control restart. Gap-write and authority-refusal modes remain available through
+the same flag. Each execution needs its own fresh evidence directory.
+
+This finite profile has three-event pages and same-current-owner continuation;
+it does not qualify the full500-event walker, window succession, partitioning,
+sparse growth, fresh-owner adoption or capacity. Those remain P03/P02 tasks.
+The [P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json)
+owns actual results, original failures and remaining gates. Portable controls use
+`python3 -B tools/ci.py --control-suite acceptance`; they do not replace these
+installed PostgreSQL/native/socket journeys or the separate restart on/off cases.
+
 The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the

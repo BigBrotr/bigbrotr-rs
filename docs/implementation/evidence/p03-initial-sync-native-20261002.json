@@ -1225,9 +1225,9 @@
     "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
     "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2",
     "bounded_continuation": {
-      "status": "QUALIFIED_LOCAL_CAPPED_BINDING_INTERRUPTION_AND_COMMIT_FAULTS;RESTART_IN_PROGRESS;HOSTED_NOT_RUN",
+      "status": "QUALIFIED_LOCAL_BOUNDED_CONTINUATION;MAIN_INTEGRATION_AND_HOSTED_PENDING",
       "task": "P03-T05Step2; bounded same-job current-owner continuation, not full walker/partition/adoption",
-      "observed_source": "8173f2b5",
+      "observed_source": "901c1f534e946657906249a48269feb30e3c40ff",
       "scope": "Locked retained window reconstruction; exact current context/predicate/frozen horizon; known interruption retry; first overlap; empty/repeated pending deferral; same-row authenticated EventPayload ID/time binding with one original native view through pre-COMMIT closure.",
       "source_review": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/critical-source-review.json",
@@ -1238,10 +1238,9 @@
       },
       "format": "Current internal migration0043 consolidates at most three93-byte effects (original61prefix plus captured canonical ID32); old nonempty61-byte effects refused. No existing public-version compatibility or source-history rewrite.",
       "not_run": [
-        "Affected installed restart on/off: on-r1environmentNOT_RUN; on-r2verifierFAIL and later stagesNOT_RUN. Shared correction781ca6ec critically reviewed; on-r3tool79425 running.",
-        "GitHub Actions against new integrated M2 source"
+        "Real GitHub Actions on final integrated M2 revision; A2success remains prior-source evidence."
       ],
-      "next": "Finish affected restart and existing four COMMIT-loss schedules, source-publication scan and coherent main integration/push; then retained finite-history range progression under P03-T05/T01. Full walker/saturation/partition/sparse growth/adoption retain existing owners.",
+      "next": "Prepublication source scan, coherent main integration/push and real hosted qualification; then fixed-width finite-history window succession under P03-T05Steps1/4 andP03-T01Step3. Declare original window end separately from shrinking page upper, retain contiguous attempts/gaps with authenticated immutable quantum history. Full500page/partition/sparsegrowth/adoption remain explicit existing owners.",
       "release617": {
         "status": "PASS_EXACT_SOURCE_BUILD_NOT_RUNTIME_QUALIFICATION",
         "receipt": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66/build-receipt.json",
@@ -1274,16 +1273,17 @@
         "cause": "Tutorial correctly refused stale reviewed apps object; bounded reachable verification review plus unchanged Nostr/dependency/vendor identities support explicit pin update. Targeted positive/negative regression passes. Original failure retained."
       },
       "portable_controls": {
-        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-9aed4b67/receipt.json",
-        "sha256": "03c61986c14d572cece631708273a868128b50fda249b3fcc5ce6582c26c877b",
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-901c1f53/receipt.json",
+        "sha256": "5335d7f64391a5cd3429ffd61cf1b8a5b879156cfc60b1b3236e0298e41ef7a5",
         "status": "PASS",
-        "source": "9aed4b6711f025f1c78c845e842e7281e2da3c17",
+        "source": "901c1f534e946657906249a48269feb30e3c40ff",
         "counts": {
-          "pass_count": 540,
-          "fail": 0,
-          "skip": 0
+          "collected": 549,
+          "passed": 549,
+          "failed": 0,
+          "skipped": 0
         },
-        "scope": "Full maintained discovery before scope/interleaving/port setup fixes; affected merged controls87PASS at8173f2b5. One local invocation omitted PYTHONPATH and failed module import; corrected declared environment87PASS; no product failure."
+        "scope": "Full maintained discovery in qualified2CPU6GiB/no-network container; all4217tracked hashes unchanged pre/post; no compiler/cache/engine mounts."
       },
       "release8f": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/8f4d5f27/build-receipt.json",
@@ -1473,7 +1473,31 @@
           "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/restart-oracle-replay/restart-oracle-replay-20261101.json",
           "sha256": "9b63419b035f8efb1ce23a8835be3117e33e9247fa5a3671d4cf97791cae3a42"
         },
-        "scope": "Offline original baseline replay only3positive/6mutatedrefusals. Actual on-r2FAIL unchanged; corrected current on-r3running. Sol89affectedportablePASS and Rootmerged35restartcontrolsPASS."
+        "scope": "Offline original baseline replay only3positive/6mutatedrefusals. Actual on-r2FAIL unchanged; corrected current on-r3running. Sol89affectedportablePASS and Rootmerged35restartcontrolsPASS. Actual current-source on-r3/off-r1 now12/12PASS each. Saved private replay report/script protected read-only; precommit diff provenance retained, not overwritten by rerunning wrapper. Maintained composed quantum predicate check rejects bool/float wire aliases; helper-only equality is not standalone product qualification."
+      },
+      "affected_restarts": {
+        "on": {
+          "status": "12/12PASS",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-restart-on-r3/result.json",
+            "sha256": "63964d03a7986513043289928a6602e933980839bd8354614e0e9b7b961decd3"
+          },
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "harness": "781ca6ec/901c1f53 docs-only transition; exact imported-file hashes in result",
+          "scope": "Original full scientific/input/typed/request/Archive/publication/history/export checks, successor/resend, exact retry, explicit stopped-quantum history retirement. No native census/physical capacity claim.",
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped and borrowed bridge preserved/empty."
+        },
+        "off": {
+          "status": "12/12PASS",
+          "result": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-restart-off-r1/result.json",
+            "sha256": "bcd43cda067476337cd9c2b5496391793b2612b656a71e6a014c8eab6d55f53e"
+          },
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "harness": "781ca6ec/901c1f53 docs-only transition; exact imported-file hashes in result",
+          "scope": "Original full scientific/input/typed/request/Archive/publication/history/export checks, successor/resend, exact retry, explicit stopped-quantum history retirement. No native census/physical capacity claim.",
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped and borrowed bridge preserved/empty."
+        }
       }
     }
   }
