@@ -276,6 +276,12 @@ class Proxy:
             self.report.update(progress_updates_complete=0, target_occurrence=2)
 
     def emit(self, event, **extra):
+        quantum_summary = self.target.startswith('control-quantum-') and event in ('ready', 'terminal')
+        if quantum_summary:
+            extra.update(profile=self.profile, frame_limit=self.frame_limit,
+                         connection_limit=self.connection_limit, connection_limit_scope='lifetime',
+                         wire_limit=MAX_WIRE, lifetime_seconds=self.lifetime_seconds,
+                         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
         if self.hold_pin_release:
             extra['hold_pin_release'] = True
         if self.hold_index_publication:
@@ -286,7 +292,7 @@ class Proxy:
         if self.profile != 'default':
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit)
-        if self.explicit_catalog or self.upstream_port != 5432 or self.defer_arm:
+        if quantum_summary or self.explicit_catalog or self.upstream_port != 5432 or self.defer_arm:
             extra.update(upstream_host='127.0.0.1', upstream_port=self.upstream_port,
                          catalog_manager=self.catalog_manager, catalog_reader=self.catalog_reader,
                          catalog_database=self.catalog_database, armed=self.armed)
