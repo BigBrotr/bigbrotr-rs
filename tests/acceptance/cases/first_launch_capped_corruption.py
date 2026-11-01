@@ -11,24 +11,29 @@ TRIGGERS=[dict(name='acquisition_quantum_guard',enabled='O'),dict(name='zzz_acqu
 
 def mutation(state,events,profile):
     assert profile in ('cursor-time','foreign-payload')
-    scope=1 if profile=='cursor-time' else 0
-    job=source.only(state['jobs'],request_key='\\x'+('b2' if scope else 'b1')*16)
-    old=source.only(state['acquisition_quanta'],job_id=job['job_id'],quantum_number=3 if scope else 2)
-    event=events[2] if scope else events[1]
-    assert (old['interval_lower'],old['interval_upper'],old['continuation_upper'])==((0,2,2) if scope else (0,24,24))
+    job=source.only(state['jobs'],request_key='\\x'+'b2'*16)
+    old=source.only(state['acquisition_quanta'],job_id=job['job_id'],quantum_number=2)
+    alternate,older=events[3],events[2]
+    assert old['entry_kind']=='request' and old['quantum_profile']==2
+    assert (old['interval_lower'],old['interval_upper'],old['window_end'],old['continuation_upper'])==(0,24,86400,2)
+    assert old['disposition']=='overlap' and old['gap_reason'] is None
     predicate=json.loads(quantum.raw(old['request_predicate']))
-    assert predicate[2]==dict(kinds=[1],since=0 if scope else 23,until=1 if scope else 23,limit=3)
+    assert predicate[2]==dict(kinds=[1],since=0,until=23,limit=3)
     records=quantum.effects(old['effect_records'])
-    assert records==[(1,1,hashlib.sha256(quantum.wire_json(event)).digest(),5,0,event['created_at'],1,bytes.fromhex(event['id']))]
+    assert records==[(number,number,hashlib.sha256(quantum.wire_json(event)).digest(),2,request,
+        event['created_at'],1,bytes.fromhex(event['id']))
+        for number,event,request in ((1,alternate,6),(2,older,7))]
     body=bytearray(quantum.raw(old['effect_records']))
-    body[52:60]=(0 if scope else 1).to_bytes(8,'big')
-    if not scope:body[61:93]=bytes.fromhex(events[2]['id'])
-    changed=dict(old,effect_records='\\x'+body.hex(),continuation_upper=1 if scope else 2)
-    if not scope:
+    if profile=='cursor-time':
+        body[52:60]=(22).to_bytes(8,'big')
+    else:
+        # Same authenticated signed time; the older1 minimum, boundary set and
+        # complete following geometry stay unchanged by either corruption.
+        body[61:93]=bytes.fromhex(events[1]['id'])
         refs=quantum.raw(old['dependencies'])
-        assert all((int.from_bytes(refs[at+24:at+32],'big'),int.from_bytes(refs[at+32:at+40],'big'))!=(1,19)
-            for at in range(0,len(refs),72)),'foreign native payload was already in A dependencies'
-    return old,changed
+        assert all((int.from_bytes(refs[at+24:at+32],'big'),int.from_bytes(refs[at+32:at+40],'big'))!=(1,14)
+            for at in range(0,len(refs),72)),'foreign original23 payload already belongs to B-page2'
+    return old,dict(old,effect_records='\\x'+body.hex())
 
 
 def mutation_sql(old,changed):
@@ -36,7 +41,7 @@ def mutation_sql(old,changed):
     assert re.fullmatch('[0-9]{1,10}',old['xmin'])
     for row in (old,changed):assert type(row['continuation_upper']) is int and 0<row['continuation_upper']<2**64
     before=quantum.raw(old['effect_records']).hex();after=quantum.raw(changed['effect_records']).hex()
-    assert len(before)==len(after)==186
+    assert len(before)==len(after)==372
     trigger_query="""SELECT jsonb_agg(jsonb_build_object('name',tgname,'enabled',tgenabled) ORDER BY tgname) AS modes,
         1/((count(*)=2 AND coalesce(bool_and(tgenabled='O'),false))::integer) AS guard
         FROM pg_trigger WHERE tgrelid='control.acquisition_quanta'::regclass
@@ -47,7 +52,7 @@ def mutation_sql(old,changed):
         WITH modes AS ({trigger_query}) SELECT jsonb_build_object('stage','before','triggers',modes.modes,
             'exact_triggers',modes.guard,'row',(SELECT to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text)
                 FROM control.acquisition_quanta q WHERE quantum_id=decode('{identity.hex()}','hex')),
-            'five_terminal',1/((SELECT count(*)=5 AND bool_and(terminal_kind IS NOT NULL)
+            'seven_settled',1/((SELECT count(*)=7 AND bool_and(disposition IS NOT NULL)
                 FROM control.acquisition_quanta)::integer)) FROM modes;
         ALTER TABLE control.acquisition_quanta DISABLE TRIGGER acquisition_quantum_guard;
         ALTER TABLE control.acquisition_quanta DISABLE TRIGGER zzz_acquisition_quantum_owner;
@@ -70,7 +75,7 @@ def mutation_receipt(text,old,changed):
     assert len(values)==3 and [row['stage'] for row in values]==['before','changed','restored']
     before,updated,restored=values
     assert before['triggers']==restored['triggers']==TRIGGERS
-    assert before['exact_triggers']==before['five_terminal']==restored['exact_triggers']==1
+    assert before['exact_triggers']==before['seven_settled']==restored['exact_triggers']==1
     assert before['row']==old
     assert updated['changed']==updated['exact_one']==1 and updated['row']==restored['row']
     row=updated['row']
@@ -80,8 +85,15 @@ def mutation_receipt(text,old,changed):
 
 
 def diagnostic(text):
-    prefix='error: initial Sync unavailable: Quantum(Context); sync_dispatch='
-    assert text.startswith(prefix) and text.endswith('\n'),'exact Quantum(Context) diagnostic required'
+    # Both source-proven job orders fail at the same planning boundary. B's
+    # own reader reports Quantum(Context); A's settled no-op validates the
+    # producer-wide history and reports Progress(InvalidContext).
+    variants=('Quantum(Context)','Progress(InvalidContext)')
+    prefixes={f'error: initial Sync unavailable: {variant}; sync_dispatch=':variant for variant in variants}
+    matches=[prefix for prefix in prefixes if text.startswith(prefix)]
+    assert len(matches)==1,'exact source-supported native-integrity error required'
+    prefix,=matches
+    assert text.endswith('\n'),'complete native-integrity diagnostic required'
     value,used=json.JSONDecoder().raw_decode(text[len(prefix):])
     assert text[len(prefix)+used:].strip()==''
     assert value['format']=='bigbrotr-initial-sync-diagnostic/1'
@@ -92,8 +104,8 @@ def diagnostic(text):
         assert type(value[key]) is int
     assert 0<=value['entered_us']<=value['returned_us']<value['dispatch_deadline_us']
     assert value['captured_us']>=value['returned_us'] and type(value['last_delivered_admission_sequence']) is int
-    assert value['last_delivered_admission_sequence']==6
-    return value
+    assert value['last_delivered_admission_sequence']==7
+    return dict(value,native_refusal=prefixes[prefix])
 
 
 def natural_refusal(terminal,stderr,*,harness_stop):
@@ -109,8 +121,8 @@ def preserved(before,after,old,changed,observed_at_us):
     for table in before.keys()-{'acquisition_quanta','owner_epochs'}:
         assert canonical(before[table])==canonical(after[table]),'corruption refusal changed '+table
     expected=[changed if row['quantum_id']==old['quantum_id'] else row for row in before['acquisition_quanta']]
-    assert len(expected)==len(after['acquisition_quanta'])==5
-    assert all(row['terminal_kind'] is not None for row in after['acquisition_quanta'])
+    assert len(expected)==len(after['acquisition_quanta'])==7
+    assert all(row['disposition'] is not None for row in after['acquisition_quanta'])
     assert canonical(after['acquisition_quanta'])==canonical(expected),'product changed the injected terminal history'
     identity=lambda row:(row['dataset_id'],row['resource_id'],row['epoch'],row['role'],row['process_incarnation'])
     owners={identity(row):row for row in before['owner_epochs']}
@@ -126,13 +138,13 @@ def preserved(before,after,old,changed,observed_at_us):
         assert re.fullmatch('[0-9]{1,10}',current['xmin'])
 
 
-def native_body_one(science,events):
+def native_foreign_payload(science,events):
     from installed_sync_oracle import decode
     wanted=[]
     for cf,key,value in science['native']:
         if cf!='facts' or key[:2]!=b'\x01\x20':continue
         fact=decode(value[34:].split(b'\0',1)[1])
-        if fact[1]=='event-payload' and fact[5][0]==bytes.fromhex(events[2]['id']):wanted.append(fact)
+        if fact[1]=='event-payload' and fact[5][0]==bytes.fromhex(events[1]['id']):wanted.append(fact)
     fact,=wanted
-    assert fact[0][1:]==[0,1,19] and fact[5][2]==1
-    return dict(event_id=events[2]['id'],created_at=1,source_epoch=1,source_sequence=19)
+    assert fact[0][1:]==[0,1,14] and fact[5][2]==23
+    return dict(event_id=events[1]['id'],created_at=23,source_epoch=1,source_sequence=14)

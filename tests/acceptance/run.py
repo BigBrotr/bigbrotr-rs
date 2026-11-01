@@ -219,8 +219,8 @@ def main():
                         help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
     parser.add_argument("--linear-quantum-fault",choices=('plan-before','plan-after','terminal-before','terminal-after','gap-write','stale-authority','empty-terminal-authority'),
                         help='linear quantum only: COMMIT loss, gap-write failure or actor authority refusal')
-    parser.add_argument('--linear-quantum-scenario',choices=('interruptions','capped-continuation'),
-                        help='linear quantum only: finite interruptions (default) or capped older-page continuation')
+    parser.add_argument('--linear-quantum-scenario',choices=('interruptions','capped-continuation','window-succession'),
+                        help='linear quantum only: finite interruptions, capped continuation or finite window succession')
     parser.add_argument('--linear-quantum-corruption',choices=('cursor-time','foreign-payload'),
                         help='capped continuation only: corrupt one completed cursor or its native payload binding')
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
@@ -230,7 +230,7 @@ def main():
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
-    if args.linear_quantum_scenario=='capped-continuation' and args.linear_quantum_fault is not None:
+    if args.linear_quantum_scenario not in (None,'interruptions') and args.linear_quantum_fault is not None:
         parser.error('--linear-quantum-fault is only for the interruptions scenario')
     if args.linear_quantum_corruption is not None and (args.case!='p03-linear-quantum'
             or args.linear_quantum_scenario!='capped-continuation' or args.linear_quantum_fault is not None):

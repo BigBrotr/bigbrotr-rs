@@ -20,6 +20,22 @@ LIMITS=[
 
 
 class LinearQuantumRuntime(Runtime):
+    def source_view(self,state):
+        return self.current_owner_view(state,dict(control=load(self.root/'initial/before-control.json'),
+            resource=dict(catalog_id=self.ids['catalog'])))
+
+    def wires(self,count):
+        require(not (self.home/'relay-error.json').exists(),'finite relay failed')
+        opened=sorted(self.home.glob('relay-open-*.json'));closed=sorted(self.home.glob('relay-closed-*.json'))
+        require(len(opened)==len(closed)==count,'missing finite transcript or extra accepted socket')
+        wires=[]
+        for number,(before,after) in enumerate(zip(opened,closed),1):
+            require(before.name==f'relay-open-{number:03}.json' and after.name==f'relay-closed-{number:03}.json','finite transcript gap')
+            first,last=load(before),load(after)
+            require(all(last.get(key)==value for key,value in first.items()),'finite open/close binding changed')
+            wires.append(last)
+        return wires
+
     def candidate(self):
         super().candidate()
         require(self.args.native_observer_build is not None,'linear quantum requires declared exact-source native observer')
