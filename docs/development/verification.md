@@ -602,8 +602,8 @@ memory ceiling changes. Missing the declared bounds is a real case failure.
 
 The case requires published Index64/cut312, all640 chunk outcomes and556 literal
 physical rows, while Archive retains revision2/cut3, attempt3, input and custody.
-It records honest non-Ready Index status: current separate250ms dispatch/join
-turns require at least31.75s for64 plans, beyond the unchanged30s whole-sweep
+It records honest non-Ready Index status: readiness-probe dispatch/join still
+uses separate250ms turns, requiring at least31.75s for64 plans beyond the unchanged30s whole-sweep
 freshness window. This case does not qualify current readiness over64 plans.
 This evaluated initial-profile limitation belongs to existing P02-T06/T09
 readiness/scaling follow-through; it is not an additional M1 prerequisite for
@@ -612,11 +612,11 @@ the bounded retained-request proof.
 After actual application exit0, native close and backend absence, the observer
 opens the original native store through a read-only bind in a separately owned
 networkless512MiB/1CPU container, capped at30s and2MiB output. The independent
-oracle compares all829 native rows,64 original receipts and inputs, producer
-issued=ACK64/retired0, and native sequence1081. The separately gated proof adds
+oracle compares all830 native rows,64 original receipts and inputs, producer
+issued=ACK64/retired0, and native sequence1147. The separately gated proof adds
 no native write. Offered overflow leaves no65th reservation, input, fact or ACK;
 the case does not invent an internal refusal token from absent rows. Original
-Archive data/attempts and all82 Control tables retain their exact permitted
+Archive data/attempts and all83 Control tables retain their exact permitted
 transitions. Dynamic pending bytes, hysteresis, GC, general capacity and recovery
 remain separate requirements; existing ACK/commit-loss evidence is reused.
 

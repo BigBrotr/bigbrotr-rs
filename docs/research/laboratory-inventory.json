@@ -78382,7 +78382,7 @@
         "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
         "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-7bb7a159-controls",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
-        "status": "CurrentIndex15PASS/sevenfaultsPASS;groupedR1FAILatevidence-tailafterIndex64/proofwithin65,no fullnative/reclamationproof. Allownedlocaljobsnowterminal;bridgeempty. SameprofileGroupR2next;M2notmainintegrated.",
+        "status": "Local selected slice qualified; main/publication/hostedCI pending. All owned jobs terminal, agents idle, optional cache115 released and borrowed bridge empty.",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
         "author_tip": "356d55183689e1f30affaeb7d464e4a16fcb4838",
@@ -78429,7 +78429,18 @@
           "retention": "Keep original live106/stopped109 quantum snapshots, databases, inputs, logs and all failure artifacts. All16case containers stopped;1265commands joined;3recorded PIDs absent;bridge empty."
         },
         "current_build_state": "96d6 parent/observer/controls/workspace all stopped0/PID0/noOOM. Cache115 released;borrowed bridge empty;all current agents idle.",
-        "current_acceptance_before_checkpoint": "8b65a2e4d95a360fb8590bee751d9ac388735c92"
+        "current_acceptance_before_checkpoint": "8b65a2e4d95a360fb8590bee751d9ac388735c92",
+        "current_grouped_success": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r2",
+          "product": "96d6c868e3ac02e768284a81add568e9b6802b79",
+          "source": "f3b7d3855c6c57de728f359fa51db4ffd0fc623a",
+          "result": "11/11PASS",
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r2/root-terminal.json",
+            "sha256": "721e1216432a1a44262157bc12e48f0646fa1b940b86725af72ae0f93d675403"
+          },
+          "resources": "62stopped containers including8expected fault exit4;7399commands joined;30recorded processes absent;bridgeempty. All databases, native stores, raw captures and original failures retained."
+        }
       }
     }
   },

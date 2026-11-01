@@ -214,8 +214,13 @@ and actor-owned status. It implements only the first interval foundation of
 T05 Steps1/2 and the corresponding T01 Steps3/4 and T02 Steps4/5 persistence
 boundary. See the [owning quantum contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
 Full traversal, current CLI coverage, same-job adoption, age bands and live/NEG
-remain later work. Source/pure controls do not close the actual socket/PG/native
-fault, two-scope finite-turn or restart acceptance gates.
+remain later work. The [Sync report](evidence/p03-initial-sync-native-20261002.json)
+records actual finite and two-scope execution and seven selected PG fault profiles
+on 78c8e313. Revision 96d6c868 additionally passes eleven stages covering 128 source rounds,
+Index, reclamation, grouped Archive recovery, scientific data, two exports and
+ordinary restart. Their source
+and fault scopes remain distinct; these proofs do not complete T01/T02/T05 or
+establish same-job adoption and full traversal.
 
 ## P03-T02 — Connect multiplexed sessions to ordered durable admission
 

@@ -27,8 +27,8 @@ LIMITS = [
     'Two bootstrap requests plus one source-dictionary request leave61 event mutation slots. The frozen62 signed events use public fixture keys1/3. Twenty quanta send3 new events; quantum21 sends event61, eligible event62 and proofevent1. The actual prefix must stop at frame1 before any later proof is released.',
     'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Up to100 legitimate emptyEOSE quanta follow or wait at the gate; later quanta are quiet. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
     'Before the live census, require128 completed source rounds and the delivered proof, independent listener closure/refusal,128 durable quantum terminals and the next excluded pending129 obligation. No129th source connection is accepted. The whole drain and Index64/cut312 observation remain inside the original65s client gate. Finite completion adds no cancellation evidence or new product capability.',
-    'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan scheduling needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
-    'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All829 native rows and sequence1081, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
+    'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan readiness-probe cadence needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
+    'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All830 native rows and sequence1147, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
     'Archive stays cut3/revision2 with issued attempt3, original input and custody; all83 Control tables and original Archive files remain checked. NOT_RUN: dynamic pending-byte hysteresis, GC, disk pressure, automatic recovery,64-plan current readiness, full M1 or general capacity. Earlier ACK/commit-loss qualification is reused, not inferred anew.',
 ]
 
@@ -263,7 +263,7 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
     def result_fields(self):
         return dict(format='bigbrotr-installed-retained-request-boundary/1',
             readiness='archive_unavailable_index_historical_nonready',source_inputs='64_exact_originals',
-            typed_progress='61_mutations_then_one_separately_gated_proof',native_census='829_exact_rows',
+            typed_progress='61_mutations_then_one_separately_gated_proof',native_census='830_exact_rows',
             native_sequence=self.native_sequence,capacity='finite64_retained_request_boundary',
             offered_overflow_event='no_request_input_native_effect_or_ack65',internal_refusal_token='NOT_OBSERVED')
 

@@ -467,11 +467,11 @@
     }
   },
   "linear_quantum_20261101": {
-    "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_SEVEN_FAULTS_DEV_AND_AFFECTED_INDEX_PASS;GROUPED_PENDING",
+    "status": "LOCAL_LINEAR_QUANTUM_SLICE_QUALIFIED;MAIN_AND_HOSTED_CI_PENDING",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
     "acceptance": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
-    "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
+    "main_integration": "Prepared local qualification; main/origin1f4f682a still precedes M2. Coherent integration/publication review/push and actual hosted foundation remain required.",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
       "sha256": "fb37b1189466dfe396c53c7be321012092613717e51e61a8f67b83989fdb093c"
@@ -586,7 +586,7 @@
         "sha256": "348669e67496aebcde1e7df6c79c40e6c1983863088f161ad2f467fe20f531c5"
       }
     ],
-    "open_checks": "ActualGroupR2mustqualify full11stage current78reclamation/successor/groupedArchive/science/twoexports/restart with batchedobserver and unchanged65/128profile. Thenmergepreparedacf,e812testinitializer/sourcepin;fullcoherentcontrol/documentation/finalpublication checks/mainpush/actualhostedCI. R3backendoriginalcauseUNKNOWN and serialworkcostfollowthrough retained;no wholeM2/taskclose.",
+    "open_checks": "Main integration, final source-publication delta and real meaningful hostedCI remain. Full walker/CLI/age bands/NEG/live/OPEN65/adoption and broad capacity retain existing task owners. Original IndexR3 backend causeUNKNOWN; admission/CH/coordinator and native-cache follow-through remains explicit. No whole M2/task completion claim.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -1051,7 +1051,7 @@
       "prior_d230_proof_label_correction": "Raw relay-closed-022 is proof-only12.354113s; previously labeled12.669s belongs to emptyEOSE round023. Original captures unchanged; corrected from retained evidence."
     },
     "observer_batch_followthrough": {
-      "status": "SOURCE_REVIEWED;93PURE_CONTROLS_PASS;PINNED_FORMAT_PREFLIGHT_PASS;ACTUAL_GROUPED_R2_FAILED_BEFORE_READER",
+      "status": "SOURCE_REVIEWED;PURE_CONTROLS_AND_PINNED_FORMAT_PREFLIGHT_PASS;ACTUAL_RETAINED128_GROUPED_R2_AND_BOTH_EXPORTS_PASS",
       "author": "01cf7e730a8d8a2f32bfe5ee8587b0b515c84f2f",
       "merged": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
       "change": "Same10fulloracleSELECTs/readerrole/perquery175rows1MiB/10sserver15sreceive/whole65gate;oneinspect/diskwalk/client through existingmultiquery. Uniqueper-tableUInt8column identity includingemptyresults, removedonlyafterstrictmeta/int1validation;exactuntrimmedJSONframing/bytebounds/duplicate/nonfinite/count/type/errors/deadlinechecks. Scientificoracles/defaultSELECT/otherchcallersunchanged.",
@@ -1116,7 +1116,7 @@
       ]
     },
     "coordinator_drain_followthrough": {
-      "status": "Fresh96d6 build/observer/460portable controls and strict Clippy/Rustdoc/105focused Rust tests PASS. Actual grouped R1 FAIL preserved. Finite-source fixture reviewed/117targeted controls PASS; installed R2 pending.",
+      "status": "LOCAL_QUALIFIED: current96d6 build/observer, strict Clippy/Rustdoc/105focused Rust tests and full11stage retained128/grouped recovery/science/twoexport/restart PASS;main and hostedCI pending.",
       "tasks": "P01-T05Step5/P02-T02Step8/P02-T09Step5; existing IndexP02-T06 lifecycle and actual grouped acceptance remain required.",
       "change": "After actual joined Index installation/publication, reconsider the next batch immediately instead of an unconditional250ms gap. Busy250ms, idle/refusal/retry delays, serial native/Control ownership, all renewal/current-authority/reservation checks and select priorities unchanged.",
       "source_basis": "Index.complete returns Installed/Published only after consuming a joined successful physical result and corresponding PG claim/publication; publish validates exact receipt and clears pending. Next tick cannot report another success without a newly issued and joined operation. Flush interval controls new-batch freshness, not a minimum pause between retained whole immutable batches.",
@@ -1179,11 +1179,11 @@
           "review": "Approved complete393-line helper and exact diff: explicit pre-reclamation index FAIL, first5PASS/last4NOT_RUN/no native or reclamation resources. All common source/artifact/container/process/network guards and default fullcase unchanged. Custody only; original bafca preserved."
         }
       },
-      "pending_fixture_correction": "Shared Retained setup must wait for independently validated finite128 peer end/closed listener and a causally stable exact Control quantum census before live baseline, within unchanged65s. Keep whole-table/xmin terminal_preservation and independent scientific/native oracles strict; no product rebuild required for setup-only correction.",
+      "pending_fixture_correction": "Closed by356d source-reviewed shared barrier and actual current96d6/sourcef3b7d grouped R2. No product rebuild for setup-only correction.",
       "fixture_followthrough": {
         "author": "356d55183689e1f30affaeb7d464e4a16fcb4838",
         "merged": "8b65a2e4d95a360fb8590bee751d9ac388735c92",
-        "result": "Source reviewed;117 affected pure controls PASS;actual installed rerun NOT_RUN.",
+        "result": "Source reviewed;117affected controls PASS;actual installed grouped R2 now11/11PASS.",
         "change": "Shared Retained setup keeps submitted client blocked until independently verified finite128 peer/listener end and exact128terminal plus pending129 same-job/source/issuer boundary, all within original65s. No fallback from unfinished quiet receive. Live census binds all128 wire request identities; unchanged quantum.transition permits legitimate completion of an earlier pending plan. Whole-table terminal_preservation including xmin unchanged.",
         "critical_review": {
           "agent": "/root/joint_coordinator_cost_astra",
@@ -1197,7 +1197,32 @@
       "workspace": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/workspace-receipt.json",
         "sha256": "f17c26a49a0a3ee1a912ba165bb05a66415b4d729919528cad434f993ebdc13a"
+      },
+      "grouped_attempt_2": {
+        "product": "96d6c868e3ac02e768284a81add568e9b6802b79",
+        "source": "f3b7d3855c6c57de728f359fa51db4ffd0fc623a",
+        "result": "11/11PASS;0FAIL;0SKIP;0NOT_RUN",
+        "tool_session": 23257,
+        "seconds": 748.7630073670007,
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r2/root-terminal.json",
+          "sha256": "721e1216432a1a44262157bc12e48f0646fa1b940b86725af72ae0f93d675403"
+        },
+        "result_receipt": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r2/result.json",
+          "sha256": "55a5305b07f6341f2059963038aaef4ca52307b658af32f21b0b20eaf3596ed6"
+        },
+        "scope": "Actual finite128 source, exact128terminals/pending129 and original65s gate;64requests/source312/Index64/640chunks;full literal native830rows/sequence1147 and science;closed producer/native COMMIT-loss both sides/mixed restore;epoch2 capacity reuse;grouped Archive B4before-forward/C5after-complete/exact retries;both consumers/scientific data/two standalone exports/ordinary Control restart. No full M2 or broad capacity claim.",
+        "custody": "62owned containers stopped/PID0/noOOM:54exit0 plus8expected exit4 fault outcomes;7399command receipts joined/PIDs absent;30recorded process identities absent;68source pins checked;borrowed bridge empty. Unchanged bafca fullcase audit; no early-failure substitution.",
+        "gate_observations": {
+          "index64_commit_seconds_approx": 41.451905,
+          "finite_peer_completion_monotonic_seconds": 52.089705667,
+          "limits": "SQL timing uses paired peer wall/monotonic samples. Actual original65s caller gate independently enforced. No isolated CPU/RAM/SQL cost or general throughput claim."
+        },
+        "metadata_label_correction": "Original f3b7d result_fields/LIMITS still said829rows/1081sequence, although the pre-existing139ec868 literal science oracle requires830rows/1147sequence and matched full observed census. Corrected current display/docs only after this audit; original result and its source remain untouched. No oracle, data expectation, deadline or runtime change.65affected controls PASS after label edit."
       }
-    }
+    },
+    "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
+    "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2"
   }
 }
