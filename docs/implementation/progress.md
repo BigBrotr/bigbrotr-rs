@@ -7,17 +7,18 @@ release, package publication, rename or production deployment.
 
 ## Revision and integrated capability
 
-Published main/origin is **c8261bf27a60402ab5bcfa179b366cf80de45cf1**.
-It includes the current native2/SQL38/42 repairs and installed requalification.
-The former current42 integration ref was retired only after its original commits
-were reconciled with main. Required data/worktrees remain.
+Published main/origin is **ebb8ee1b0bb64e7d9cfbe1bdda1647aae7d632e7**:
+qualified native component merged and pushed. Its actual hosted run
+[41256201712](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41256201712)
+is pending; one Sol observer owns it, with no duplicate dispatch or cancellation.
 
-Root worktree `.research/native-guard-main-integration-20261031`, branch
-`work/native-guard-integration-20261031`, is at **a24a3dea9fc0d40952ac57086da7eb8d75f3058e**
-before this coherent evidence/checkpoint update. It merges c826 with the reviewed
-native binding and fixes the tutorial source-review prerequisite. Git supplies
-the enclosing revision and current dirty paths. This increment is locally
-qualified, awaiting main fast-forward/push and actual affected hosted checks.
+M2 product worktree `.research/m2-linear-quantum-main-integration-20261101`,
+branch `work/m2-linear-quantum-integration-20261101`, stays frozen at **d15fb455**.
+Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
+`work/m2-linear-quantum-acceptance-20261101`, is **d40c322e** before this checkpoint
+commit. It merges the author's original fixture commits and preserves the reviewed
+client/proxy custody records. Product objects are identical; only test setup differs.
+M2 is **not main-integrated**. Git supplies this enclosing revision and dirty state.
 
 The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
 `installed_application.current42_native2_followthrough.current_requalification`,
@@ -77,37 +78,51 @@ The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns details an
 timings; no causal speedup or compiled-cache-reuse claim. This older source does
 **not** qualify the new native tuple on hosted AMD64/ARM64/macOS.
 
-Native a24 newly reachable publication inputs were scanned: 1,769 objects,
-42,019,352 bytes, zero credential candidates/sensitive paths. Final documentation
-commit still needs its incremental input scan before main push. No raw private
-captures are published. Source/publication recipes remain protected ignored data.
+Native a24 publication inputs were scanned:1,769objects/42,019,352bytes,
+zero candidates/sensitive paths. The final ebb8 documentation scan found only one
+unchanged previously triaged inventory literal, no new credential candidate.
+M2 newly reachable inputs still require publication review before push. Raw private
+captures stay protected and ignored.
 
 ## Active M2 work and remaining gates
 
-Sol author `current42_prefix_fixture_sol` is actively repairing
-`.research/m2-linear-quantum-sol-20261031`, branch
-`work/m2-linear-quantum-20261031`; last critically reviewed tip **82ecffd7**,
-based on c826. Current edits are owned, partial and **not main-integrated**.
-No compiler/real engine has qualified this M2 source; tutorial eligibility
-intentionally refuses unreviewed product changes.
+The existing [Sync report](evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101`, owns current exact sources, receipts and original FAILs.
+Existing task owners remain P03-T01 Steps3/4, P03-T02 Steps4/5 and the
+single-interval foundation of P03-T05 Steps1/2. No whole task/milestone closes.
 
-Existing owners: P03-T01 Steps3/4, P03-T02 Steps4/5 and the single-interval
-foundation of P03-T05 Steps1/2. Durable pre-wire obligation, actual correlated
-REQ terminal, exact synchronized classifications and atomic outcome/gaps/
-continuation are implemented under review. Metadata must stay within the actual
-shared 32MiB producer envelope and the accepted RAM budget, including empty turns.
-Ordinary EOSE is observation, never complete-history proof or old-epoch adoption.
+- Fresh standard d15 parent/worker build PASS; exact-source native observer PASS.
+- Complete acceptance controls in the declared native image: **430/430 PASS**,
+  zero skips. Earlier host run's fixture failures/missing LLVM/two skips remain.
+- Actual installed finite request case **7/7 PASS**,28.710s: eight requests/two
+  scopes, eight terminal records/two charged pending plans, exact scientific and
+  native preservation. All16 containers stopped0/PID0/noOOM,333commands joined,
+  three recorded processes absent; bridge empty. This is not a full walker.
+- First actual `plan-before` fault **FAIL before the selected fault point**:
+  Registry(Backend) at observation-append, then missing fault event/cleanupFAIL.
+  Raw proxy terminal was lost; cause remains UNKNOWN. All15containers are now
+  stopped, proxy/runner absent; native/PG/input/log data retained. Six later
+  faults are **NOT_RUN**. Do not label this expected COMMIT-loss success.
+- Export-profile controls PASS; strict Clippy FAIL on manual saturating arithmetic.
+  Rustdoc and Rust workspace tests are **NOT_RUN**. A local equivalent expression
+  correction is pending. Original2fc build FAIL was fixed by bounded TEXT/JSON
+  conversion; it remains preserved separately from the successful d15 build.
 
-The bounded Astra review requires four corrections before qualification: include
-quantum charges in the actual request-reservation trigger; independently check
-terminal class/gap/window/predicate and both known-plan statuses; preserve prior
-quantum history in relevant custody oracles; make gap-write failure exercise a
-real gap-producing turn. Also prove revocation **after actual REQ and before
-terminal publication**, including empty completion, through existing SQL reply
-proxy boundaries. Author reports focused pure checks passing; real build, SQL,
-socket/native/fault and installed qualification remain **NOT_RUN**. Preserve that
-distinction and original review. Native and repaired M2 graphs must be reconciled
-and source eligibility critically reviewed before an installed M2 claim.
+Sol author `current42_prefix_fixture_sol` saved a clean correction in the retained worktree
+`.research/m2-linear-quantum-sol-20261031`, branch `work/m2-linear-quantum-20261031`,
+at **da8c003b** (lint/proxy closure,28 affected controls PASS), awaiting root integration
+and bounded critical review. The early interruption still has no proven cause.
+Neither subagent owns engines/cache.
+The first discriminating rerun must preserve routing, targets and existing budgets,
+retaining actual connection/frame/byte/fault counters. Do not assume the16-lifetime-
+connection bound rather than frame/wire/protocol failure; do not widen limits.
+
+Pre-wire durable obligation, correlated REQ terminal, exact synchronized
+classifications, shared32MiB logical metadata funding and atomic outcome/gap/
+continuation have bounded source review and finite installed proof. EOSE remains
+observation, not complete history. Actual lost plan/terminal COMMIT, genuine gap-
+write failure, pre-wire and empty post-REQ authority loss, historical-only restart
+and affected current Index/reclamation/tutorial regressions remain required.
 
 The M1 signed event → admission → Archive → read → export → restart path has
 the above installed evidence; P01-T09 Step1/full P02 are not thereby complete.
@@ -124,11 +139,12 @@ P01-T08/P08-T11/T12/P10-T08/T10. All selected P03–P10/M2–M5 remain in scope.
 
 ## Resources and next action
 
-All root-owned local build/engine/tutorial/CI-observer processes from this
-increment are terminal; only the above source author is active. Cache115 is
-released, its original four single-link immutable ELF pins unchanged. Root is
-sole launcher/compiler/Git integrator. Preserve immutable archived shared Git/ELF
-bytes and metadata; private copy before mutation, never gc/repack/maintenance.
+All local build/control/engine/fault processes from the attempts above are terminal.
+One local CI observer and a bounded critical source review remain active; the
+remote hosted native run may continue. Cache115 is released/reacquired, its four
+original single-link immutable ELF pins unchanged. Root remains sole launcher,
+compiler and Git integrator. Preserve archived shared Git/ELF bytes and metadata;
+private copy before mutation, never gc/repack/maintenance.
 
 The [inventory](../research/laboratory-inventory.json),
 `implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`,
@@ -138,9 +154,10 @@ labs, catalog dump/full corpus, unique data, pending work and foreign resources
 remain. No broad cleanup or old object-deletion proposal was executed. Required
 original failures, native DBs, inputs, logs, artifacts and worktrees are retained.
 
-**Next:** check these documentation/evidence changes, commit, scan only newly
-reachable documentation inputs, fast-forward/push main, then observe necessary
-actual hosted native-platform checks without duplicate dispatch. Meanwhile accept
-the author's coherent M2 repair tip for bounded critical delta review; root then
-qualifies actual shared funding, installed finite turns, empty post-REQ authority
-loss, COMMIT-loss and restart boundaries before integration.
+**Next:** integrate the bounded lint/always-capture proxy closure correction after
+review. Reproduce only `plan-before` once with unchanged routing/budgets and retain
+all proxy counters, so its actual cause can be distinguished without guessing.
+Then apply the pertinent setup/product correction, repeat affected checks and
+finish all selected quantum faults, workspace and current installed regressions.
+Observe the existing native hosted run; publish M2 only after its actual gates.
+Continue the complete selected plan, without a new plan or audit campaign.

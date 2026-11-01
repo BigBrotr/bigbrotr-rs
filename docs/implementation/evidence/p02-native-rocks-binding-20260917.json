@@ -641,7 +641,7 @@
       "integration": "Qualified f761/d3 component retained; current8f9 product/defaultworkspace and a24healthyinstalled tutorial now separately pass. App factory remains unguarded; fault component is not an installed application fault claim."
     },
     "current_main_integration": {
-      "status": "PASS_LOCAL_QUALIFICATION;MAIN_PUSH_AND_AFFECTED_HOSTED_PLATFORM_CHECKS_NEXT",
+      "status": "MAIN_INTEGRATED_AND_PUSHED;PASS_LOCAL_QUALIFICATION;AFFECTED_HOSTED_PLATFORM_CHECKS_PENDING",
       "product": "8f9bd4197aaafc36a743e30c3a9a1c7b15c8692d",
       "acceptance": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
       "branch": "work/native-guard-integration-20261031",
@@ -707,7 +707,9 @@
         "Affected actual hosted AMD64/ARM64/macOS checks for this new integration; c826 hosted33PASS qualifies its old tuple only.",
         "Application factory/write/ACK wiring, other producers/concurrency, funded reopen/purge/CW-N1/P1/P2/OPEN65 remain at existing P02tasks.",
         "Portable native context/archive capture and terminal-audit maintenance: P01-T08/P08-T11/T12; current ignored root recipes are evidence, not final clean-checkout prerequisites."
-      ]
+      ],
+      "integration_commit": "ebb8ee1b0bb64e7d9cfbe1bdda1647aae7d632e7",
+      "pending_hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41256201712"
     }
   }
 }

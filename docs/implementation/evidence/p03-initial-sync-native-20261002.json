@@ -465,5 +465,61 @@
       "source_archive_sha256": "cf71017dc076df13751b6cb649ce556253821e58cbb5c3d851f9c6f316f87c7a",
       "initial_replay_error": "TypeError: omitted not_before clock argument in local replay invocation; corrected from original renewed.json. No native run or evidence changed."
     }
+  },
+  "linear_quantum_20261101": {
+    "status": "QUALIFICATION_INCOMPLETE;FINITE_INSTALLED_SLICE_PASS",
+    "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
+    "product": "d15fb455c2f08cdb11b97db5874e0a3e3344355b",
+    "acceptance": "d40c322ec331384dec056bc003173e8c6ebe7df5",
+    "main_integration": "NOT_INTEGRATED; main/origin ebb8ee1b contains qualified native component; actual hosted native run41256201712 pending",
+    "build": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r2-d15fb455/build-receipt.json",
+      "sha256": "d1501ab2db35c0e5ce0f2c5c47e831fd9b2ef75892ac6a167951cf16a9de62ba"
+    },
+    "observer": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r2-d15fb455/observer/receipt.json",
+      "sha256": "adc3e31af39fc3ffd296dbdce337493a8dce7e261e1246add967a04a4f400970"
+    },
+    "portable_controls": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/repaired-controls-receipt.json",
+      "sha256": "2a45a4a46468a26d3624a2b2784b7330ee4c181b43fef22784abf0d3fa959292",
+      "result": "430PASS/0SKIP in pinned native image"
+    },
+    "finite_installed": {
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-d15fb455/acceptance-linear-r1/root-terminal.json",
+      "sha256": "e56fc5cb681be31579d9b149ea55fc3859dbb8a524405b0a489959a08cdc3d39",
+      "result": "7/7PASS:8actual requests,2scopes,8terminal records,2charged pending plans;5classifications,4mutation requests,native sequence67. Three SQL accounting boundary positives/refusals are rollback-only, not authority/native proof.",
+      "custody": "16containers stopped0/PID0/noOOM;333commands joined;3recorded processes absent;borrowedbridgeempty"
+    },
+    "critical_reviews": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-linear-quantum-critical-20261101.json",
+        "sha256": "ac6c1e39073d3a0a9b46298d6b9cb78a635ea060b032fc584dd941e1a4cd28d9"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-linear-quantum-repair-critical-20261101.json",
+        "sha256": "98de01a4867d14573ac0ebb3cd308d5403c0dc2c86b5619f43113280e677ab1e"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-linear-terminal-caller-critical-20261101.json",
+        "sha256": "26f6bc6c3c68ddac8a1b1ee539ce4e0cbf489c795f1277e89629dfa2f3517560"
+      }
+    ],
+    "original_failures": [
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-build-failure.json",
+        "sha256": "52738a320e62704dc5d05c1a7128c80f62ad0d2c52e3ba1d108678da8cc3c352"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
+        "sha256": "2fd5eea62bd2782cc1c5bf1862eae4896966be11abddf844401c7e0c44230be7"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-fault-and-workspace-failure.json",
+        "sha256": "39ec06488d7d2a26cdd79ce285a7023f6115d35c7286a93d258b119349ad13e3"
+      }
+    ],
+    "open_checks": "StrictClippy manual-saturating expression correction; Rustdoc/Rusttests NOT_RUN. Firstplan-before fault FAIL before selected COMMIT point, plus cleanupFAIL/lost proxy terminal;6laterfaultsNOT_RUN. Capture-only rerun with unchanged routing/budgets is next after robust closure recording. Current Index/reclamation/tutorial regressions remain required for this persistent boundary.",
+    "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open."
   }
 }
