@@ -191,6 +191,50 @@ impl InitialWriterCandidate {
         Ok(())
     }
 
+    /// Bind accepted current policy only after the same complete prepared proof
+    /// and a whole-spool census exclude an unresolved staged original.
+    pub(in crate::storage) fn bind_pending_quota(
+        &mut self,
+        policy: super::PendingQuotaPolicy,
+        handoff: &InitialHandoff,
+        scratch: Option<&OwnedPermit>,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        if let Some(scratch) = scratch {
+            self.require_prepared_compacted_handoff(handoff, scratch, cancelled)?;
+        } else {
+            self.require_prepared_handoff(handoff)?;
+        }
+        if cancelled.load(std::sync::atomic::Ordering::Acquire) {
+            return Err(BootstrapError::AuthorityUnavailable);
+        }
+        let store = &mut self.recovery.store;
+        let slot = handoff.producer_slot_id();
+        if let Some(floor) = handoff.compacted_floor() {
+            let inputs = super::request_inputs::LineageInputSet::with_compacted_initial(
+                0,
+                slot,
+                floor.fields().issued_through,
+            )?;
+            // The compacted proof validates every present original against its
+            // immutable canonical outcome; the census permits that exact range.
+            store.lineage_input_census(inputs, |_| false, cancelled)?;
+        } else {
+            store.lineage_input_census(
+                handoff.issued_through(),
+                |id| {
+                    id.producer_slot_id == slot
+                        && id.producer_epoch.get() == 1
+                        && id.request_sequence.get() <= handoff.issued_through()
+                },
+                cancelled,
+            )?;
+        }
+        store
+            .bind_reconciled_pending_quota(policy)
+            .map_err(BootstrapError::PendingQuota)
+    }
+
     /// The connected adapter calls this only after confirmed activation COMMIT
     /// and final authority checks. Neither an observation nor a decoder calls it.
     pub(in crate::storage) fn activate(

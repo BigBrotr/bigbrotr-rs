@@ -136,6 +136,7 @@ pub(super) struct Prepared {
     serialized_bound: usize,
     limit: usize,
     accounting: Option<(super::PendingAccounting, super::PendingAccounting)>,
+    funding: Option<super::pending_quota::PendingFunding>,
 }
 impl Prepared {
     pub(super) fn entry_allocation_bytes(max_mappings: usize) -> usize {
@@ -151,6 +152,7 @@ impl Prepared {
             serialized_bound: 12,
             limit: limits.max_batch_bytes,
             accounting: None,
+            funding: None,
         })
     }
     pub(super) fn put(&mut self, key: IngestKey, value: Vec<u8>) -> Result<(), BootstrapError> {
@@ -167,6 +169,22 @@ impl Prepared {
         self.entries.push(Entry { key, cf, value });
         Ok(())
     }
+    pub(super) fn fund(
+        &mut self,
+        store: &IngestStore,
+        request: ProducerRequestId,
+        digest: Digest256,
+    ) -> Result<(), BootstrapError> {
+        if self.funding.is_some() {
+            return Err(BootstrapError::StateMismatch);
+        }
+        self.funding = Some(
+            store
+                .pending_funding(request, digest)
+                .map_err(BootstrapError::PendingQuota)?,
+        );
+        Ok(())
+    }
     pub(super) fn put_count(&self) -> usize {
         self.entries.len()
     }
@@ -179,6 +197,36 @@ impl Prepared {
 }
 
 impl IngestStore {
+    /// A sufficient timestamp-independent bound before original/PG creation.
+    /// The exact prepared delta is rechecked by the native commit kernel.
+    pub(in crate::storage) fn bootstrap_pending_reservation(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: BootstrapLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, BootstrapError> {
+        if permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || permit.request().units().native_bytes() < limits.required_native_bytes()?
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        self.require_unretired_bootstrap(request)?;
+        Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
+        self.require_open_producer(request)?;
+        let allowance_bytes = if self.replay_bootstrap(request, intent, limits)?.is_some() {
+            0
+        } else {
+            limits.max_batch_bytes as u64
+        };
+        Ok(super::PendingReservationRequest {
+            request,
+            digest: intent.request_digest(request),
+            allowance_bytes,
+        })
+    }
+
     /// Stage before the connected adapter commits its PG reservation. The
     /// operation permit remains borrowed until it transfers to native dispatch.
     pub(in crate::storage) fn stage_initial_dictionaries(
@@ -206,6 +254,9 @@ impl IngestStore {
                 bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
                 _ => BootstrapError::Limit,
             })?;
+        let reservation = self.bootstrap_pending_reservation(request, intent, limits, permit)?;
+        self.reserve_pending_requests(&[reservation])
+            .map_err(BootstrapError::PendingQuota)?;
         let staged = self
             .stage_producer_request(request, intent.request_digest(request), &bytes)
             .map_err(BootstrapError::RequestInput)?;
@@ -247,6 +298,8 @@ impl IngestStore {
             if self.native_unavailable() {
                 return Err(BootstrapError::CommitUnknown);
             }
+            self.settle_pending_replay(request, intent.request_digest(request))
+                .map_err(BootstrapError::PendingQuota)?;
             return Ok(StoredReceipt::new(receipt, copy, permit));
         }
         let (mut prepared, receipt) =
@@ -289,9 +342,17 @@ impl IngestStore {
                 bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
                 _ => BootstrapError::Limit,
             })?;
+        let delta = self.prepared_pending_delta(&prepared)?;
+        self.reserve_pending_requests(&[super::PendingReservationRequest {
+            request,
+            digest: intent.request_digest(request),
+            allowance_bytes: delta,
+        }])
+        .map_err(BootstrapError::PendingQuota)?;
         self.retain_request_input(request, &input)
             .map_err(BootstrapError::RequestInput)?;
         drop(input);
+        prepared.fund(self, request, intent.request_digest(request))?;
         self.commit_prepared(prepared, &mut require_authority)?;
         Ok(StoredReceipt::new(receipt, outcome_copy, permit))
     }
@@ -418,6 +479,7 @@ impl IngestStore {
             return Err(BootstrapError::CommitUnknown);
         }
         self.validate_prepared_accounting(&prepared)?;
+        self.validate_prepared_funding(&prepared)?;
         let mut batch = WriteBatch::with_capacity_bytes(prepared.serialized_bound);
         for entry in &prepared.entries {
             let cf = self
@@ -440,6 +502,7 @@ impl IngestStore {
             return Err(BootstrapError::CommitUnknown);
         }
         self.validate_prepared_accounting(&prepared)?;
+        self.validate_prepared_funding(&prepared)?;
         if self.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
@@ -453,6 +516,9 @@ impl IngestStore {
         self.write_uncertain = false;
         if let Some((_, next)) = prepared.accounting {
             self.accounting = next;
+        }
+        if let Some(funding) = prepared.funding {
+            self.settle_pending_funding(funding);
         }
         Ok(())
     }
@@ -560,6 +626,47 @@ impl IngestStore {
             ))
         } else {
             Err(BootstrapError::StateMismatch)
+        }
+    }
+
+    pub(super) fn prepared_pending_delta(
+        &self,
+        prepared: &Prepared,
+    ) -> Result<u64, BootstrapError> {
+        self.prepared_accounting(prepared)?
+            .pending_bytes()
+            .checked_sub(self.accounting.pending_bytes())
+            .ok_or(BootstrapError::StateMismatch)
+    }
+    fn validate_prepared_funding(&self, prepared: &Prepared) -> Result<(), BootstrapError> {
+        let delta = self.prepared_pending_delta(prepared)?;
+        match &prepared.funding {
+            Some(funding) => {
+                self.validate_pending_funding(funding, delta)
+                    .map_err(BootstrapError::PendingQuota)?;
+                if !prepared.entries.iter().any(|entry| {
+                    entry.key
+                        == IngestKey::Request {
+                            request_id: funding.request(),
+                        }
+                        .encode()
+                        .expect("fixed request key")
+                }) {
+                    return Err(BootstrapError::StateMismatch);
+                }
+                Ok(())
+            }
+            None if delta == 0
+                && !prepared
+                    .entries
+                    .iter()
+                    .any(|entry| entry.key.domain() == KeyDomain::Request) =>
+            {
+                Ok(())
+            }
+            None => Err(BootstrapError::PendingQuota(
+                super::PendingQuotaError::Unfunded,
+            )),
         }
     }
 

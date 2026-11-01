@@ -41,6 +41,30 @@ fn dictionary_receipts(
 }
 
 impl IngestStore {
+    /// The same shared preparer supplies pre-PG and staging charge estimates.
+    pub(in crate::storage) fn dictionary_pending_reservation(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        require_permit(permit, limits)?;
+        let (writes, _) =
+            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
+        let allowance_bytes = if let Some(mut writes) = writes {
+            self.seal_pending_accounting(&mut writes)?;
+            self.prepared_pending_delta(&writes)?
+        } else {
+            0
+        };
+        Ok(super::PendingReservationRequest {
+            request,
+            digest: intent.request_digest(request),
+            allowance_bytes,
+        })
+    }
     pub(in crate::storage) fn stage_dictionary_append(
         &mut self,
         request: ProducerRequestId,
@@ -93,13 +117,10 @@ impl IngestStore {
         // reservation, including the actual timestamp's variable-width encoding.
         // This read-only preview emits no fact. The caller retains this exclusive
         // owner and the same recorded_at through both PG phases.
-        let (writes, _) =
-            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
-        if let Some(mut writes) = writes {
-            // The real counter put belongs to the same serialized bound. Check
-            // its entry here too, before synchronizing input or reserving PG.
-            self.seal_pending_accounting(&mut writes)?;
-        }
+        let reservation =
+            self.dictionary_pending_reservation(request, intent, recorded_at, limits, permit)?;
+        self.reserve_pending_requests(&[reservation])
+            .map_err(AdmissionError::PendingQuota)?;
         let bytes = encode_input(request, intent, limits)?;
         self.stage_admission_input(request, intent.request_digest(request), &bytes, cancelled)
     }
@@ -175,6 +196,13 @@ impl IngestStore {
         let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
         authority()?;
         if let Some(writes) = writes {
+            let delta = self.prepared_pending_delta(&writes)?;
+            self.reserve_pending_requests(&[super::PendingReservationRequest {
+                request,
+                digest: intent.request_digest(request),
+                allowance_bytes: delta,
+            }])
+            .map_err(AdmissionError::PendingQuota)?;
             let input = encode_input(request, intent, limits)?;
             self.retain_admission_input(request, &input, cancelled)?;
             drop(input);
@@ -185,6 +213,9 @@ impl IngestStore {
                 cancelled,
                 || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
             )?;
+        } else {
+            self.settle_pending_replay(request, intent.request_digest(request))
+                .map_err(AdmissionError::PendingQuota)?;
         }
         if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);

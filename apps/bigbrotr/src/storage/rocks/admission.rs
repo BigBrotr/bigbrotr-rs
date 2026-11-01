@@ -164,7 +164,80 @@ impl PreparedEvent {
         store.require_admission_owner(Some(self.request))?;
         store.require_open_producer(self.request)?;
         store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
+        let reservation = self.pending_reservation_request(store, limits, permit)?;
+        store
+            .reserve_pending_requests(&[reservation])
+            .map_err(AdmissionError::PendingQuota)?;
         store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
+    }
+
+    /// Read-only preflight for aggregate staging. Positive growth uses the
+    /// accepted serialized maximum; zero comes from the actual shared preparer.
+    /// The maximum timestamp covers CBOR's full-width recorded_at field.
+    pub(in crate::storage) fn pending_reservation_request(
+        &self,
+        store: &IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        if permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || permit.request().units().native_bytes() < limits.required_native_bytes()?
+            || permit.request().units().items() == 0
+        {
+            return Err(AdmissionError::InsufficientReservation);
+        }
+        if self.allocation_bytes > limits.facts().max_allocation_bytes {
+            return Err(AdmissionError::Limit);
+        }
+        let mut reads = ReadBudget::new(limits);
+        let replay = store
+            .replay_event(
+                self.request,
+                self.digest,
+                self.verified_event()
+                    .map(|event| super::receipt_effects::ReplayEventIntent {
+                        event: event.event(),
+                        scope: self.scope,
+                        origin: self.origin,
+                        observation: self.observation,
+                    }),
+                matches!(self.event, Some(Err(RejectionReason::EventSize))).then(|| {
+                    (
+                        self.request_preimage.as_slice(),
+                        input_capacity(&self._permit)
+                            .saturating_sub(self.request_preimage.capacity() + size_of::<Self>()),
+                    )
+                }),
+                limits,
+                &mut reads,
+            )?
+            .is_some();
+        let allowance_bytes = if replay || matches!(self.event, Some(Err(_))) {
+            0
+        } else {
+            let mut writes = Prepared::new(BootstrapLimits {
+                max_mappings: 16,
+                max_batch_bytes: limits.max_batch_bytes,
+            })?;
+            store.prepare_event_effects(
+                self,
+                self.verified_event().ok_or(AdmissionError::InvalidInput)?,
+                ObservedTime::new(i64::MAX),
+                limits,
+                &mut reads,
+                &mut writes,
+            )?;
+            if store.prepared_pending_delta(&writes)? == 0 {
+                0
+            } else {
+                limits.max_batch_bytes as u64
+            }
+        };
+        Ok(super::PendingReservationRequest {
+            request: self.request,
+            digest: self.digest,
+            allowance_bytes,
+        })
     }
 
     pub fn new(
@@ -452,7 +525,7 @@ impl IngestStore {
     )]
     fn admit_event_in(
         &mut self,
-        mut input: PreparedEvent,
+        input: PreparedEvent,
         recorded_at: ObservedTime,
         provenance: bool,
         limits: AdmissionLimits,
@@ -554,6 +627,8 @@ impl IngestStore {
             if self.native_unavailable() {
                 return Err(AdmissionError::CommitUnknown);
             }
+            self.settle_pending_replay(input.request, input.digest)
+                .map_err(AdmissionError::PendingQuota)?;
             return Ok(StoredOutcome {
                 outcome,
                 native_outcome,
@@ -573,10 +648,10 @@ impl IngestStore {
             max_mappings: 16,
             max_batch_bytes: limits.max_batch_bytes,
         })?;
-        let outcome = match input.event.take().ok_or(AdmissionError::InvalidInput)? {
+        let outcome = match input.event.as_ref().ok_or(AdmissionError::InvalidInput)? {
             Err(reason) => {
                 self.admission_source_boundary(limits, &mut reads)?;
-                AdmissionOutcome::Rejected(reason)
+                AdmissionOutcome::Rejected(*reason)
             }
             Ok(event) => self.prepare_event_effects(
                 &input,
@@ -624,6 +699,13 @@ impl IngestStore {
         // The shared native commit marks the handle uncertain before FFI, uses
         // sync+WAL, and retains all buffers/permits until native completion.
         authority()?;
+        let delta = self.prepared_pending_delta(&writes)?;
+        self.reserve_pending_requests(&[super::PendingReservationRequest {
+            request: input.request,
+            digest: input.digest,
+            allowance_bytes: delta,
+        }])
+        .map_err(AdmissionError::PendingQuota)?;
         self.retain_admission_input(input.request, &input.request_preimage, cancelled)?;
         let source = match &outcome {
             AdmissionOutcome::Durable(receipt) => {
@@ -942,7 +1024,7 @@ impl IngestStore {
     fn prepare_event_effects(
         &self,
         input: &PreparedEvent,
-        event: VerifiedEvent,
+        event: &VerifiedEvent,
         recorded_at: ObservedTime,
         limits: AdmissionLimits,
         reads: &mut ReadBudget,
@@ -1022,7 +1104,7 @@ impl IngestStore {
         let payload = self.indexed_fact(payload_key, limits, writer.reads)?;
         let has_payload = payload.is_some();
         if let Some(fact) = payload {
-            let event_ordinal = matching_payload(&fact, &event)?;
+            let event_ordinal = matching_payload(&fact, event)?;
             writer.retain(&fact)?;
             let mapping = self.dictionary_dependency(
                 event_ordinal,
@@ -1108,7 +1190,7 @@ impl IngestStore {
                 frame(&[1, 3], &[&reference.ordinal.get().to_be_bytes()])?,
             )?;
             let fact = writer.emit(FactPayload::EventPayload(EventPayload {
-                body: event.into_event().into(),
+                body: event.event().clone().into(),
                 event_ordinal: reference,
             }))?;
             writer.index(payload_key, fact)?;

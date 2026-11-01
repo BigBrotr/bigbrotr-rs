@@ -137,6 +137,11 @@ pub(super) struct PendingFunding {
     custody: Arc<()>,
 }
 
+impl PendingFunding {
+    pub(super) fn request(&self) -> ProducerRequestId {
+        self.terms.request
+    }
+}
 impl IngestStore {
     pub fn pending_quota_status(&self) -> PendingQuotaStatus {
         match &self.pending_quota {
@@ -152,6 +157,93 @@ impl IngestStore {
                 .ok_or(PendingQuotaError::Limit)
         })
     }
+    /// Logical-only observation for the unchanged lifetime64 profile. It says
+    /// nothing about filesystem headroom or OPEN65 enablement. Callers wait
+    /// outside short authority transactions and revalidate before staging.
+    pub fn observe_pending_quota(&mut self) -> Result<PendingQuotaStatus, PendingQuotaError> {
+        self.observe_pending_quota_at(Instant::now())
+    }
+    fn observe_pending_quota_at(
+        &mut self,
+        now: Instant,
+    ) -> Result<PendingQuotaStatus, PendingQuotaError> {
+        let observed = self
+            .require_pending_accounting()
+            .map_err(PendingQuotaError::Accounting)
+            .and_then(|()| self.pending_reserved_bytes())
+            .and_then(|reserved| {
+                reserved
+                    .checked_add(self.accounting.pending_bytes())
+                    .ok_or(PendingQuotaError::Limit)
+            });
+        let total = match observed {
+            Ok(total) => total,
+            Err(error) => {
+                if let PendingQuota::Bound(quota) = &mut self.pending_quota {
+                    quota.pressure = true;
+                    quota.below_low_since = None;
+                }
+                return Err(error);
+            }
+        };
+        let quota = self.quota_mut()?;
+        if quota.pressure {
+            if total >= quota.policy.low_bytes {
+                quota.below_low_since = None;
+            } else if let Some(since) = quota.below_low_since {
+                match now.checked_duration_since(since) {
+                    Some(elapsed) if elapsed >= quota.policy.stable_duration => {
+                        quota.pressure = false;
+                        quota.below_low_since = None;
+                    }
+                    Some(_) => {}
+                    None => quota.below_low_since = None,
+                }
+            } else {
+                quota.below_low_since = Some(now);
+            }
+        }
+        Ok(self.pending_quota_status())
+    }
+
+    /// Only existing complete candidate proofs may call this after authenticating
+    /// every original/receipt and proving that no staged or PG tail is unresolved.
+    /// Native census independently rechecks P; a missing receipt is never zero.
+    pub(super) fn bind_reconciled_pending_quota(
+        &mut self,
+        policy: PendingQuotaPolicy,
+    ) -> Result<(), PendingQuotaError> {
+        let counted = super::pending_accounting::census(&self.db, &self.manifest)
+            .map_err(PendingQuotaError::Accounting)?;
+        if counted != self.accounting {
+            return Err(PendingQuotaError::Accounting(
+                PendingAccountingError::ChargeMismatch,
+            ));
+        }
+        let manifest_sha256 = self.quota_manifest();
+        match &mut self.pending_quota {
+            PendingQuota::Bound(quota) => {
+                if quota.policy != policy || !quota.entries.is_empty() {
+                    return Err(PendingQuotaError::PolicyMismatch);
+                }
+                // A continuously excluded, positively checked transition may
+                // change manifest, preserving pressure and the original timer.
+                quota.manifest_sha256 = manifest_sha256;
+                Ok(())
+            }
+            PendingQuota::Unfunded | PendingQuota::RecoveryBlocked => {
+                self.pending_quota = PendingQuota::Bound(BoundQuota {
+                    policy,
+                    manifest_sha256,
+                    pressure: true,
+                    below_low_since: None,
+                    entries: Vec::new(),
+                });
+                Ok(())
+            }
+        }
+    }
+
     /// Identical binding preserves every unresolved obligation and pressure.
     /// Raw reopen requires positive recovery; census alone cannot discard an
     /// original staged before a missing native receipt or SQL reservation.
@@ -188,8 +280,7 @@ impl IngestStore {
         &mut self,
         requests: &[PendingReservationRequest],
     ) -> Result<(), PendingQuotaError> {
-        self.require_pending_accounting()
-            .map_err(PendingQuotaError::Accounting)?;
+        self.observe_pending_quota()?;
         let quota = self.quota()?;
         if requests.len() > MAX_REQUESTS {
             return Err(PendingQuotaError::Limit);
@@ -197,6 +288,9 @@ impl IngestStore {
         let mut additional = 0u64;
         let mut count = 0usize;
         for (index, request) in requests.iter().enumerate() {
+            if request.request.request_sequence.get() > MAX_REQUESTS as u64 {
+                return Err(PendingQuotaError::Limit);
+            }
             if request.allowance_bytes > quota.policy.max_unit_bytes
                 || request.request.producer_epoch.get()
                     != self.manifest.identity().owner_epoch.get()
@@ -322,6 +416,18 @@ impl IngestStore {
         entry.staged = true;
         Ok(())
     }
+    pub(super) fn staged_pending_digest(
+        &self,
+        request: ProducerRequestId,
+    ) -> Result<Digest256, PendingQuotaError> {
+        let quota = self.quota()?;
+        quota
+            .entries
+            .iter()
+            .find(|entry| entry.terms.request == request && entry.staged)
+            .map(|entry| entry.terms.digest)
+            .ok_or(PendingQuotaError::Unfunded)
+    }
     pub(super) fn pending_funding(
         &self,
         request: ProducerRequestId,
@@ -370,6 +476,25 @@ impl IngestStore {
             .is_none_or(|n| n > quota.policy.high_bytes)
         {
             return Err(PendingQuotaError::Pressure);
+        }
+        Ok(())
+    }
+    pub(super) fn settle_pending_replay(
+        &mut self,
+        request: ProducerRequestId,
+        digest: Digest256,
+    ) -> Result<(), PendingQuotaError> {
+        let PendingQuota::Bound(quota) = &self.pending_quota else {
+            return Ok(());
+        };
+        if quota
+            .entries
+            .iter()
+            .any(|entry| entry.terms.request == request)
+        {
+            let funding = self.pending_funding(request, digest)?;
+            self.validate_pending_funding(&funding, 0)?;
+            self.settle_pending_funding(funding);
         }
         Ok(())
     }

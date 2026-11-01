@@ -248,6 +248,8 @@ impl IngestStore {
         if bytes.is_empty() || bytes.len() > MAX_INPUT {
             return Err(RequestInputError::Limit);
         }
+        self.begin_pending_staging(request, bytes)
+            .map_err(RequestInputError::PendingQuota)?;
         let directory = self.input_directory(true)?;
         let filename = name(request);
         let mut count = 0usize;
@@ -346,6 +348,8 @@ impl IngestStore {
         directory
             .sync_all()
             .map_err(|_| RequestInputError::Filesystem)?;
+        self.finish_pending_staging(request)
+            .map_err(RequestInputError::PendingQuota)?;
         Ok(())
     }
     fn input_directory(&self, create: bool) -> Result<File, RequestInputError> {

@@ -239,6 +239,16 @@ impl SuccessorCandidate {
         Ok(())
     }
 
+    pub(super) fn bind_prepared_pending_quota(
+        &mut self,
+        policy: super::PendingQuotaPolicy,
+    ) -> Result<(), BootstrapError> {
+        self.recovery
+            .store
+            .bind_reconciled_pending_quota(policy)
+            .map_err(BootstrapError::PendingQuota)
+    }
+
     // Infallible field transfer, called only after the envelope's final checked
     // prepared gate. No decoder or recovery path can call a public conversion.
     pub(super) fn into_writer_parts(self) -> (super::IngestStore, [u8; 16]) {
