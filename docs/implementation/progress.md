@@ -9,7 +9,7 @@ P03-T05 Steps1/4 and P03-T01 Step3: finite fixed-width history windows, shared
 query budget, authenticated same-second continuation and local exclusions.
 Canonical main/origin **a71b6ea3** remains clean/pushed and hosted-qualified for
 its preceding source. Root integrates in `.research/m2-linear-continuation-20261101`,
-branch `work/m2-finite-history-20261101`; observed HEAD **dee67719** before this
+branch `work/m2-finite-history-20261101`; observed HEAD **1a087417** before this
 checkpoint commit. Sol5a4d4103 evidence is integrated as717db78c; Root's reviewed
 stop correction is committed asdee67719. No current increment push yet.
 
@@ -35,11 +35,14 @@ does not qualify this new Rust change.
 
 ## Resources and open gates
 
-**Fresh dee67719 release is running: tool26254/container440b8ef2**,
-owner adfb12ed16a85da6e1654d3e4f4f88fb, cache115 held exclusively. Fresh isolated
-fmt/diff/preparation checks PASS; strict Clippy/Rustdoc/application tests and
-exact-parent observer remain NOT_RUN/unbound. No CI observer is running. Sol and
-Astra tasks are terminal; Root is the sole integrator and engine launcher.
+**Fresh dee67719 release PASS:** tool26254 reaped0, container440b8ef2
+stopped/PID0/noOOM, cache released. Actual build receipt SHA
+ce88ff3250cf59619f0a72dafe323164585445637dd540f8a5c5e204c850e35e;
+binary SHA74e0b6b0a1f3766c0e61d4c1355e3159f9377afdb716dbab733a96fdc86b323c.
+**Current strict checks running: tool92644/container1cc7bcd2**,
+owner ecfb7a324a4d0105acfb20248809175f, cache115 held exclusively. Exact-parent
+observer remains NOT_RUN, awaiting this actual strict receipt. No CI observer
+or subagent is active. Root remains sole integrator/engine launcher.
 
 Old release23455/observer72895 and completed installed tools51413/94700/75904/
 45032/48760/66867/4060 reaped0; interruptions85996 reaped1. Their owned containers
@@ -57,9 +60,9 @@ hosted outputs need relevant audit; full current-source hosted CI is still open.
 
 ## Next action
 
-Reap/audit release26254 with existing verify-build.py; bind its actual receipt to
-the prepared strict command, execute current strict checks, then bind/build the
-exact-parent observer. Use unchanged guarded runners. Rerun actual interruptions
+Reap/audit strict92644; retain actual parsed counts/ELF receipt without claiming
+ignored tests ran. Then bind/build the exact-parent observer from the actual
+release and strict receipts. Use unchanged guarded runners. Rerun actual interruptions
 and affected retained-budget/restart on/off cases. Preserve/classify any failure
 before fixing its cause. Complete existing report/inventory/reference, integrate
 and push the coherent capability, then audit a real full current-source hosted
@@ -69,7 +72,11 @@ Then advance the next useful M2 dependency: first passive P04-T07 Monitor with
 P02-T02/T03/T04 typed A05 support and honest dispatch uncertainty. Analysis only,
 no implementation yet: real route/method dictionaries, typed Monitor authority
 (do not bypass Sync require_job), attributable transport phases and coordinated
-native/archive readers are necessary. Intent/lost RAM start never proves action.
+native/archive readers are necessary. Intent/lost RAM start never proves action. Narrow Astra decision: retain attempt
+uncertainty/terminal/resolution in one closed A05 family, restrict to SourceCut
+before resolving, exclude unknowns from outcome denominators. Use stable safe
+scientific direct-route context plus distinct passive-read method; freeze their
+exact schemas/bounds in existing owners before implementation.
 Full500 pages, partitions, sparse growth, slices/adoption/revisits/live/NEG/fleet/
 import and remaining P02 capacity retain existing task owners/acceptance gates;
 no whole-phase prerequisite or erased later obligation.

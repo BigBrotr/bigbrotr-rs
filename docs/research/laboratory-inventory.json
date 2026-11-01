@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "01fc seven bounded cases PASS; interruptions85996 failed orderly stop with final science NOT_RUN. Reviewed read-stop correction dee67719 release is active26254; fresh strict/observer and affected real cases remain required. Original failures/datasets/worktrees retained.",
+          "state": "01fc seven bounded cases PASS; interruptions85996 failed orderly stop with final science NOT_RUN. Read-stop correction dee67719 release PASS/reaped0; current strict92644 running. Observer and affected real cases remain required. Original failures/datasets/worktrees retained.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78762,8 +78762,15 @@
             "owner": "adfb12ed16a85da6e1654d3e4f4f88fb",
             "container": "440b8ef234fc95a2e622a50041c108f78ef4bb88fe54ba5e44f10e323968ad55",
             "tool": 26254,
-            "cache": "network115 held exclusively during current release; original four ELF full-byte/metadata guards retained",
-            "status": "ACTUAL_RELEASE_RUNNING_NOT_QUALIFIED; fresh strict and exact-parent observer NOT_RUN"
+            "cache": "Release26254 released cache115; strict92644 now holds it exclusively. Original four ELF bytes/full metadata guards unchanged.",
+            "status": "RELEASE PASS/reaped0/stopped/PID0/noOOM; strict current-source92644 RUNNING; observer remains parent/prerequisite unbound",
+            "strict_workspace": {
+              "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-workspace",
+              "owner": "ecfb7a324a4d0105acfb20248809175f",
+              "container": "1cc7bcd2a7ef4abb14d8dcf6ae10675fcaf1e3d01638f036b069803fabe18fbd",
+              "tool": 92644,
+              "status": "RUNNING_NOT_QUALIFIED"
+            }
           }
         }
       },
