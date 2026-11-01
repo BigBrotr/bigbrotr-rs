@@ -139,12 +139,12 @@ class LinearQuantumControls(unittest.TestCase):
                     def frame(self):
                         self.frames+=1;ident=f'{self.number:032x}'+'0'*16
                         if self.frames==1:
-                            scope=(self.number-1)%2
+                            scope=peer.TURN_SCOPES[self.number-1]
                             upper=86400 if self.number==1 or scope else 2
                             if failure=='stale-upper' and self.number==3:upper=86400
                             if failure=='wrong-scope' and self.number==2:scope=0
                             return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=scope,until=upper-1,limit=3)])
-                        if self.frames==2 and self.number!=5:return 1,check.wire_json(['CLOSE',ident])
+                        if self.frames==2 and self.number!=6:return 1,check.wire_json(['CLOSE',ident])
                         return 8,b''
                 listener=Mock();listener.accept.side_effect=[(Connection(number),('127.0.0.1',12345)) for number in range(1,9)]
                 errors=[];uppers={0:{1:86400},1:{1:86400}}
@@ -157,8 +157,8 @@ class LinearQuantumControls(unittest.TestCase):
                 if failure is None:
                     wires=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
                     self.assertEqual([wire['scenario'] for wire in wires],list(peer.SCENARIOS))
-                    self.assertEqual([wire['request'][2]['until'] for wire in wires],[86399,86399,1,86399,1,86399,1,86399])
-                    self.assertEqual([wire['scope_number'] for wire in wires],[0,1]*4)
+                    self.assertEqual([wire['request'][2]['until'] for wire in wires],[86399,86399,1,86399,86399,86399,86399,86399])
+                    self.assertEqual([wire['scope_number'] for wire in wires],[0,1,0,1,1,1,1,1])
 
     def test_signed_pages_overlap_once_then_refuse_an_extra_plan_or_socket(self):
         state,wires,event,science=signed_pages_fixture()

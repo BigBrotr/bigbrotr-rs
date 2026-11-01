@@ -336,7 +336,7 @@ class LinearQuantumRuntime(Runtime):
         # proofs, malformed input and empty/gap records add no native operation.
         require(dump['sequence']==67,'unexpected native sequence or synthetic producer mutation')
         wires=[load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
-        from linear_quantum_transport import SCENARIOS
+        from linear_quantum_transport import SCENARIOS,TURN_SCOPES
         require([wire['scenario'] for wire in wires]==list(SCENARIOS),'finite socket scenarios differ')
         rows=state['acquisition_quanta'];oracle.shape(state)
         pending=[row for row in rows if row['terminal_kind'] is None]
@@ -357,11 +357,12 @@ class LinearQuantumRuntime(Runtime):
             row=by_request[wire['request'][1]];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
             declared=declarations[job['job_id'][2:]]
             require(row['scope_id']=='\\x'+declared['scope_id'],'quantum declaration identity differs')
-            scope_number=(wire['number']-1)%2
+            scope_number=TURN_SCOPES[wire['number']-1]
+            quantum_number=TURN_SCOPES[:wire['number']].count(scope_number)
             require(wire['scope_number']==scope_number
                 and declared['selector']['filters'][0].get('since',0)==scope_number
-                and row['quantum_number']==(wire['number']+1)//2,'literal scenario scope/turn identity differs')
-            upper=86400 if wire['number']==1 or scope_number==1 else event['created_at']+1
+                and row['quantum_number']==quantum_number,'literal scenario scope/turn identity differs')
+            upper=86400 if quantum_number==1 or scope_number==1 else event['created_at']+1
             classified=oracle.scenario(row,wire,job,event,refs,selector=declared['selector'],
                 accepted_at_us=declared['accepted_at_us'],expected_upper=upper)
             totals[row['job_id']]=totals.get(row['job_id'],0)+classified
@@ -372,13 +373,14 @@ class LinearQuantumRuntime(Runtime):
             declared=declarations[value['job_id']]
             scope_number=declared['selector']['filters'][0].get('since',0)
             upper=86400 if scope_number else event['created_at']+1
-            uppers={number:86400 if number==1 or scope_number else event['created_at']+1 for number in range(1,5)}
+            count=TURN_SCOPES.count(scope_number)
+            uppers={number:86400 if number==1 or scope_number else event['created_at']+1 for number in range(1,count+1)}
             actual=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
                 selector=declared['selector'],expected_uppers=uppers)
             job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]
             latest=max(job_rows,key=lambda row:row['quantum_number'])
             lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'],expected_upper=upper)
-            require(len(job_rows)==4 and actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number='4',
+            require(len(job_rows)==count and actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(count),
                 scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='linear_observed',
                 terminal='eose',gap=None,continuation_upper=str(upper),retained_events=0 if scope_number else 1,
                 classified_prefix=0 if scope_number else 1,coverage='pending')

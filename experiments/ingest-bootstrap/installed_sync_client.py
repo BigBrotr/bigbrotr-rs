@@ -234,7 +234,11 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                             continuous=all(set(value)==set(event) for value in values)
                             times=[value['created_at'] for value in values if 'created_at' in value]
                             continuous=continuous and all(b<=a for a,b in zip(times,times[1:]))
-                            if retained and trace['retained_phase']=='saturation':continuous=False
+                            if retained and trace['retained_phase']=='saturation':
+                                # The pinned three-body page has an ascending
+                                # pair; the durable oracle also requires its
+                                # request65 refusal and unclassified suffix.
+                                assert len(values)==3 and times[0]<times[1]
                         else:
                             continuous=not window or directory.name=='sync-window-source' or window_rounds==2
                             times=[event['created_at']]

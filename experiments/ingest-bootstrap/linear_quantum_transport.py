@@ -7,7 +7,8 @@ import time
 from installed_sync_client import exact,read_frame,send_frame,publish
 
 PROFILE=dict(format='bigbrotr-linear-quantum-fixture/1',requests=8,scopes=2)
-SCENARIOS=('slow_eose','malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','proof','empty')
+SCENARIOS=('slow_eose','malformed_eose','proof','frame_cap_eose','event_cap_eose','closed','deadline','empty')
+TURN_SCOPES=(0,1,0,1,1,1,1,1)
 
 
 def relay(directory,listener,finished,errors,*,expected_uppers=None):
@@ -16,6 +17,7 @@ def relay(directory,listener,finished,errors,*,expected_uppers=None):
         assert json.loads((directory/'linear-quantum-profile.json').read_text())==PROFILE
         event=json.loads((directory/'event.jsonl').read_text())
         uppers={0:{1:86400},1:{1:86400}} if expected_uppers is None else expected_uppers
+        turns={0:0,1:0}
         fault=json.loads((directory/'linear-quantum-fault.json').read_text()) if (directory/'linear-quantum-fault.json').exists() else None
         scenarios=('body_closed',*SCENARIOS[1:]) if fault=='gap-write' else ('empty',*SCENARIOS[1:]) if fault=='empty-terminal-authority' else SCENARIOS
         for number,scenario in enumerate(scenarios,1):
@@ -40,9 +42,9 @@ def relay(directory,listener,finished,errors,*,expected_uppers=None):
                 connection.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: '+accept+b'\r\n\r\n')
                 opcode,encoded=read_frame(connection);request=json.loads(encoded)
                 assert opcode==1 and len(request)==3 and request[0]=='REQ'
-                scope_number=(number-1)%2
-                quantum_number=(number+1)//2
-                upper=86400 if number==1 or scope_number==1 or fault else event['created_at']+1
+                scope_number=TURN_SCOPES[number-1]
+                turns[scope_number]+=1;quantum_number=turns[scope_number]
+                upper=86400 if quantum_number==1 or scope_number==1 or fault else event['created_at']+1
                 assert request[2]==dict(kinds=[1],since=scope_number,until=upper-1,limit=3)
                 assert uppers[scope_number][quantum_number]==upper
                 uppers[scope_number][quantum_number+1]=(event['created_at']+1
