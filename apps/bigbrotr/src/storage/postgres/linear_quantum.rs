@@ -470,10 +470,10 @@ pub(in crate::storage::postgres::control_owner) async fn exclude(
         issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,window_end,
         window_width,query_budget,query_number,maximum_dependencies,checkpoint_before,classified_before,
         charged_bytes,created_at_us,checkpoint_after,checkpoint_sha256,disposition,result_class,completed_at_us)
-        VALUES($1,$2::text::numeric,'selector_exclusion',$3,$4,$5,$6::text::numeric,$7,$8,$9::text::numeric,$10,
-        $11,$12::text::numeric,$13,$14::text::numeric,$15::text::numeric,$16::text::numeric,$17::text::numeric,
+        VALUES($1::bytea,$2::text::numeric,'selector_exclusion',$3::bytea,$4::bytea,$5::bytea,$6::text::numeric,$7::bytea,$8::bytea,$9::text::numeric,$10::bytea,
+        $11::bytea,$12::text::numeric,$13::bytea,$14::text::numeric,$15::text::numeric,$16::text::numeric,$17::text::numeric,
         $18::text::numeric,$19,$20,0,$21::text::numeric,$22::text::numeric,1024,
-        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,$21::text::numeric,$23,$24,$24,
+        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,$21::text::numeric,$23::bytea,$24,$24,
         (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)",
         &[&&id[..],&(traversal.entries+1).to_string(),&&context.dataset.as_bytes()[..],&&job.id.as_bytes()[..],
         &&scope.as_bytes()[..],&source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..],

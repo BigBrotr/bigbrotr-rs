@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "MECHANICAL_CORRECTIONS_FROZEN_RELEASE_RUNNING",
+      "status": "WINDOW_INSTALLED_PASS_LOCAL_EXCLUSION_BINDING_FIX_PREPARED",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1556,7 +1556,7 @@
         "Exact-source observer build and current installed cap/native-integrity/window/fault journeys",
         "Affected current-product installed/recovery regressions"
       ],
-      "next": "Freeze the mechanical strict-lint corrections and repeat the existing exact-source release/workspace chain. Preserve the complete581 portable result for unchanged Python contracts, repinning only the reviewed tutorial source binding. Then build observer, assemble and execute current installed cap/native/window/fault proof.",
+      "next": "Freeze ten-cast-only correction, fresh actual release/observer with parent guards preserved; reuse fb unchanged-responsibility workspace results explicitly. Reassemble current acceptance, then rerun real window/capped/local/corruption/fault and affected recovery/budget journeys before coherent main integration and full hosted CI.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1660,7 +1660,11 @@
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f",
         "tool": 89240,
         "container": "acfed6d1f2b794abb9d89668f1b253874e2653ebf2fd5d291e6ab8fed29dfd9f",
-        "status": "RUNNING_NOT_QUALIFIED"
+        "status": "PASS_ACTUAL_RELEASE_WORKSPACE_OBSERVER",
+        "build_receipt_sha256": "787429b82d579d58895c5f0b64332db1858925500b390ef8362209a3688b5672",
+        "workspace_receipt_sha256": "96348802024ced978a69977561c822253bd62c1edd29d12b713de83eab59b7fb",
+        "observer_receipt_sha256": "649c6ba34a56083f1ab908af03897c846bcd088e558fb2d33e3f96289d7bf6e3",
+        "terminal": "All3 guarded compilers terminal/PID0/noOOM/cache released; tools89240/46321/99134 reaped0. Library659PASS/3ignored, actualPOSIX NOT_RUN."
       },
       "publication_source_preparation": {
         "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
@@ -1673,6 +1677,30 @@
         "unclassified": 0,
         "triage_sha256": "d59e976407f7b73d0c010da9bd421fd5e7a936d067f0f2a56ffd088b493fc1e0",
         "scope": "Exact known prior noncredential classifications and candidate-bearing source lines match publicA71; no raw values emitted, sensitive/archive/store/LFS paths absent. Later source/history additions and real hosted outputs remain separately scoped; no push performed."
+      },
+      "installed_window": {
+        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
+        "assembly": "2c4eb3ec1e2f03d6444283cffbdaa65427871c53",
+        "status": "PASS",
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/window-r1-receipt.json",
+        "receipt_sha256": "08547de724d8d4f6e635e0ee3adeed5ed925e37e2a0af659caf7b5e851eeaf09",
+        "tool": 23705,
+        "stages": "7/7PASS",
+        "scope": "Eight actual requests/three original windows, three actual empty spans, new same-second ID continued, two retained gaps, prefix259200. Exact76native rows/seq103/6original inputs/receipts/typed head/status; owner+peer+engine cleanup PASS. No fullM2 claim."
+      },
+      "local_exclusion_binding_failure": {
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/capped-r1-failure.json",
+        "status": "FAIL_PRODUCT",
+        "fix": "Ten explicit::bytea casts on local INSERT binary parameters; no domain/authority/durability weakening.",
+        "critical_review": "Astra confirmed exact driver source, all ten positions including nullable digest, unchanged constraints and no advancement before failed bind.",
+        "diagnostic": "Actual role/session bigbrotr_control READ ONLY PREPARE: original domain types, corrected bytea types. Owned PG returned to stopped/PID0/noOOM; original failure logs/native data retained."
+      },
+      "verification_reuse": {
+        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
+        "scope": "Reuse Clippy/Rustdoc/659 application-unit proof for unchanged Rust/API/reducer/native responsibilities, conditional on exact ten-cast-only product diff. Current-source local strict checks NOT_RUN, never transplanted into a new PASS.",
+        "critical_review": "Astra: dynamic SQL casts are not validated by those checks; fresh exact-source release/observer and selected real PG/installed/corruption/COMMIT/restart proofs cover the changed responsibility. Full current-source hosted native CI remains required.",
+        "diff": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/exclusion-bytea-casts.diff",
+        "diff_sha256": "28c7c0375a5c7eaa205c8fde01a00be8ac3742901262e9a21731bc9ede457952"
       }
     }
   }

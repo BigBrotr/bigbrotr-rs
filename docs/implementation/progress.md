@@ -1,81 +1,67 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 remain: bounded Sol/xhigh work, Astra/xhigh critical review;
-public development source; no official release, package or production deployment.
+Q37/Q38/Q40/Q41/Q42 remain; public development, no official release or deployment.
 
-## Objective and actual Git state
+## Current capability and Git
 
-**P03-T05 Steps1/4 and P03-T01 Step3: qualify fixed-width window succession.**
-Canonical main/origin **a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a** is pushed,
-clean and qualified locally and on GitHub for the preceding same-job continuation.
-Root integrates in `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`; observed HEAD **fb16889f** before the enclosing
-checkpoint/wrapper commit. New profile2 code is local and not installed-qualified.
+P03-T05 Steps1/4 and P03-T01 Step3: qualify finite fixed-width window succession.
+Canonical main/origin **a71b6ea3** is clean, pushed and locally/hosted qualified for
+the preceding continuation. Root owns `.research/m2-linear-continuation-20261101`,
+branch `work/m2-finite-history-20261101`; observed HEAD **2c4eb3ec** before the
+enclosing local-exclusion correction/checkpoint commit. New work is not pushed.
 
-The [P03 report](evidence/p03-initial-sync-native-20261002.json), section
-`linear_quantum_20261101.finite_history_windows_20261101`, owns exact sources,
-results, reviewed limitations and failures. Core profile2 adds fixed original
-windows, one frozen query budget, authenticated same-second IDs, atomic retained
-gaps, selector-only exclusions and the contiguous attempted prefix. The owning
-[reference](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta)
-and maintained shared/capped/window consumers are reconciled.
+The [P03 report](evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101.finite_history_windows_20261101`, owns exact receipts.
+Product **fb16889f5fe41bb04935b7685d2a3a78de565443** has release, strict Clippy,
+Rustdoc and659 unfiltered application tests PASS;3 ignored cases remain NOT_RUN.
+Observer/candidate identities verified. Immutable acceptance source **2c4eb3ec**
+is `.research/m2-window-acceptance-2c4eb3ec`; complete portable suite581PASS is
+source86-scoped, with14 affected tutorial-pin controls separately PASS.
 
-## Results and remaining qualification
+**Actual window journey7/7PASS:** eight real requests cross three original windows,
+including empty spans and a new canonical ID at the same second; both gaps remain,
+prefix259200. All76 native rows/seq103, six original inputs/receipts and typed
+head/status match independently. Owner/peer/engine cleanup PASS. FullM2 remains open.
 
-First release source **e23f353e** is **FAIL_PRODUCT_COMPILE_E0716**: temporary
-scope identity did not outlive streamed query parameters. Original compiler logs,
-failed container and source are retained. The mechanical local binding fix is
-committed as **053f287fbca2bc0d0bd6a6ad3c6ee048984d6841**; no transition changed.
-Its guarded release is **PASS**, independently audited. Strict workspace is
-**FAIL** on four Clippy style rules; Rustdoc/library tests and observer/installed
-checks are **NOT_RUN**. Equivalent inequalities/divisibility and a paired
-`Range<u64>` interval correct those forms in the enclosing commit; no lint disabled.
+**Actual cappedr1 FAIL_PRODUCT:** local selector-exclusion INSERT inferred10 binary
+parameters as PostgreSQL domains; the driver refuses before Bind/Execute and the
+owner exits4 at quantum-plan. Root captured final Docker logs missing from the
+early harness snapshot. READ ONLY PREPARE under actual product role/session
+confirmed domain types; the enclosing ten `::bytea` casts produce base wire types
+while preserving domain constraints. No migration/API/authority change. Original
+failed data/logs retained; no unsupported next request/local advancement claimed.
 
-Critical source review of core, SQL buffering, shared/capped/window oracles and
-new fault selection has no remaining blocker. Corrected harness defects include
-late helper hash capture, private scope identity, intentional HTTP-death peer
-lifecycle and ambiguous generic backend error. Required real fault proof selects
-q2's failed gap settlement and q3's window-closing terminal COMMIT before/after;
-its exact23514 constraint witness is tied to the selected live backend/Execute.
-No extra local-exclusion ambiguity injection is claimed: that branch shares the
-reviewed planning COMMIT/error boundary; actual capped exclusion still must run.
+Astra reviewed this exact fix and bounded verification reuse: fb Clippy/Rustdoc/
+659-unit results remain valid for unchanged responsibilities, explicitly fb-scoped.
+New-source local strict checks stay NOT_RUN. Fresh actual release/observer, real
+PG/installed exclusion/corruption/COMMIT/recovery proof and complete current-source
+hosted CI remain required. No parent/observer gate may be weakened or receipt
+transplanted. Earlier compile/lint/live-fixture failures remain in the report.
 
-Current complete portable suite: **581 PASS/0SKIP** at86fdb14f. Original819
-suite579cases/5failure records is retained: an obsolete live-status fake used
-profile1 and inconsistent horizon. Only that fake and discriminating controls
-changed; both secret negatives reach the original sensitive-bytes refusal.
-Targeted controls retain scopes:66 PASS, proxy35 PASS, tutorial14 PASS. They verify independent native/input/typed-head expectations and
-false-PASS controls, not actual product behavior. Existing prior evidence remains
-source-scoped. Root's code/tests/docs corrections are in the enclosing commit;
-agent test-only originals and copied Root partial files remain preserved.
+## Resources and next action
 
-[A71 hosted run](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307)
-is fully audited PASS. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns artifacts, public-output scan and timings; no CI observer remains active.
-A71 does not qualify profile2. Full500 pages, partitions, sparse growth, general
-slices/adoption/live/NEG/fleet/import, reserve/OPEN65/load and fullM2 remain open at
-their existing P03/P02 owners; no whole-P02 barrier or reduced scope is implied.
+All compiler tools89240/46321/99134 are reaped0; window23705 reaped0 and capped60642
+reaped1. Containers stopped/PID0/noOOM, cache115 released. The capped database was
+briefly reopened only for READ ONLY PREPARE diagnostics, then stopped; no INSERT
+or native writer ran. No engine/client/CI observer is active at this checkpoint.
 
-## Active resources and next action
+Capsule `.research/m2-window-succession-qualification-20261101`;
+product runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f`.
+Original4 ELF bytes/full metadata, datasets, raw failures and worktrees remain in
+the [inventory](../research/laboratory-inventory.json). Public-source scanfb passed
+with only reviewed prior noncredential fingerprints; no source push has occurred.
+[A71 CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307) remains fully
+audited PASS, scoped to its product. Native-cache followthrough stays in existing
+P01/P08 tasks; it adds no M2 prerequisite.
 
-Root is sole launcher/integrator. **Releasefb16889f/tool89240/containeracfed6d1 is running**,
-holding cache115 exclusively. No engine, client or CI observer is active. Release85038 reaped0; strictworkspace89271 reaped1;
-portable35396 reaped1 and30731 reaped0. Those preceding containers are stopped/PID0/noOOM; their cache locks were
-released before the current build. Current capsule `.research/m2-window-succession-qualification-20261101/fb16889f`;
-runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f`.
-Frozen053f checkout, originale23 compile failure and original819 portable failure
-are retained. The [inventory](../research/laboratory-inventory.json) owns custody;
-agent worktrees and all original4 ELF bytes/full metadata remain preserved.
-Current native recompilation observation follows the existing P01 cache task,
-with no proven equal-command savings or additional M2 prerequisite.
-
-**Next:** reap/audit the actualfb release, then continue the same guarded
-workspace chain. Bind only the actual verified new parent receipt, then
-complete Rustdoc/unfiltered library checks and the exact-source observer. Retain
-the581 portable result for unchanged Python contracts; update the source-only
-tutorial binding with its narrow equivalence proof. Assemble and preflight changed
-schema/roles/budgets/source completion/fault reachability before fresh installed
-cap/native-integrity and eight-request window/fault journeys. Require actual
-empty spans, two gaps, continued new IDs at the same second and no next request
-after unknown COMMIT. Do not convert generic errors or missing execution into PASS.
+**Next:** freeze the ten-cast correction and parameterize the same guarded actual
+release and observer recipes, preserving parent guards and explicit fb-workspace
+reuse. Reassemble acceptance from a clean revision; execute the current window,
+capped/local exclusion, both native-integrity corruptions, failed-gap/q3 COMMIT
+and affected budget/restart cases. Group integration/push after that coherent
+capability, then audit real hosted CI. Full500/partitions/sparse growth/revisits,
+adoption/live/NEG/fleet/import and remaining P02 capacity stay at existing owners.
+After this increment, read-only dependency selection favors the first passive
+P04-T07 observation producer with narrow A05 storage support; it is a candidate
+next slice, not implemented work or a second plan.
