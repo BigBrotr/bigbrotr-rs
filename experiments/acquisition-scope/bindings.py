@@ -174,7 +174,13 @@ if installed_archive_catch_up:
     built = dict(built, probe_name='ingest_bootstrap_probe',
         probe_sha256=component['executables_sha256']['ingest_bootstrap_probe'])
 assert built['probe_name'] == ('relay_registration_fault_probe' if registration_faults else 'ingest_bootstrap_probe')
-if reuse_build:
+socket_inventory = None
+harness_changes = []
+if socket:
+    sys.path.insert(0, str(SOURCE / 'experiments/policy-versions'))
+    import socket_setup
+    harness_changes = socket_setup.require_build(lab, SOURCE, build, built, revision)
+elif reuse_build:
     # Reuse only reviewed exact artifacts with unchanged production/build inputs.
     # Governance documents are not compiled; retain the original binary identity.
     # Review experiment changes too: this path filter is not a build-input proof.
@@ -183,8 +189,9 @@ if reuse_build:
 else:
     assert built['source'] == revision
 sha = lambda value: hashlib.sha256(value).hexdigest()
-for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
-    assert sha((build / name).read_bytes()) == built[key]
+if not socket:
+    for name, key in [('bigbrotr', 'binary_sha256'), (built['probe_name'], 'probe_sha256')]:
+        assert sha((build / name).read_bytes()) == built[key]
 native_inspector = None
 if registration_http_faults:
     # Reuse the separately retained, qualified native inspector. No product or
@@ -198,17 +205,26 @@ if registration_http_faults:
     assert all(n.startswith(('docs/', 'experiments/', 'contracts/', 'packages/api-client/'))
         or n == 'apps/bigbrotr/examples/relay_registration_fault_probe.rs' for n in changed), changed
 
-pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
-pg = lab.load(pg_root)
-assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
-basis = root.parent / 'acquisition-scope-54d1a18/engine'
-basis_report = (basis / 'result.json').read_bytes()
-assert json.loads(basis_report)['status'] == 'PASS_SCOPED_ACQUISITION_REGISTRATION'
+if socket:
+    assert shutil.disk_usage(root).free > 2 * 1024**3
+    running = lab.docker('ps', '--format', '{{.Names}}').stdout.splitlines()
+    assert not any('bigbrotr' in name for name in running), 'another BigBrotr laboratory is running'
+    pg_root, pg, socket_inventory = socket_setup.prepare(lab, root, build, SOURCE, revision)
+    basis = basis_report = None
+else:
+    pg_root = root.parent / 'relay-source-recheck-e06f580/pg'
+    pg = lab.load(pg_root)
+    assert pg['owner'] == '5e69b0f060b1607c25230d1dbd3e5608' and pg['state'] == 'stopped-retained'
+    basis = root.parent / 'acquisition-scope-54d1a18/engine'
+    basis_report = (basis / 'result.json').read_bytes()
+    assert json.loads(basis_report)['status'] == 'PASS_SCOPED_ACQUISITION_REGISTRATION'
 output = root / 'bindings'
 output.mkdir(mode=0o700)
 owner, label = secrets.token_hex(16), 'org.bigbrotr.acquisition-binding'
 client = ('bigbrotr-scope-command-binding-' if scope_command_faults or scope_http_faults
           else 'bigbrotr-acquisition-binding-') + revision[:7]
+if socket:
+    client += '-' + pg['owner'][:12]
 if installed_sync_progress or ingest_installed_live_progress:
     client += '-progress-initial' if installed_sync_progress else '-progress-activated'
     if installed_sync_ack or ingest_installed_live_ack:
@@ -224,6 +240,12 @@ report = dict(format='bigbrotr-acquisition-binding/1', source=revision, build=bu
     not_run=['installed Sync/progress/M1', 'measured memory capacity/load/aged-state', 'arm64/release']
         + (['Adapter COMMIT/recovery is not repeated in this raw-helper wave; see50b4136 evidence']
            if guards else ['concurrent scope-policy locks and lost COMMIT recovery']))
+
+
+if socket:
+    report.update(source=built['source'],harness_revision=revision,harness_only_changes=harness_changes,
+                  schema=socket_inventory,setup_report=str(pg_root/'socket-setup-result.json'),
+                  role_profile='broad non-owner laboratory role; production grants NOT_RUN')
 
 
 if installed:
@@ -757,6 +779,8 @@ def containers():
 
 
 def rows(db, *, schema=None):
+    if socket:
+        return socket_setup.rows(lab, pg, db, schema or socket_inventory)
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
     if schema is not None:
@@ -938,6 +962,14 @@ def arrival_policy(db, name, *, provenance='off', schema=None):
         expected[table][0].update(document=document, document_digest='\\x' + digest, schema_version=3)
         mutations.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, "
                          f"document_digest=decode('{digest}','hex'),schema_version=3")
+    if socket:
+        # The fresh current template already accepted these exact documents via
+        # the real initializer/activation. Do not rewrite their retained rows.
+        require(expected == before, 'fresh-socket-accepted-policy-differs')
+        after = rows(db, schema=schema)
+        require(after == before, 'fresh-socket-accepted-policy-changed')
+        lab.write_json(output / (name + '-policy-setup.json'), dict(before=before, after=after))
+        return
     lab.sql(pg, db, 'BEGIN; SET LOCAL session_replication_role=replica; ' + '; '.join(mutations) + '; COMMIT;')
     after = rows(db, schema=schema)
     comparable = json.loads(json.dumps(after))
@@ -1311,13 +1343,14 @@ try:
     while lab.docker('exec', target['Id'], 'pg_isready', '-U', 'postgres', check=False).returncode:
         require(time.monotonic() < deadline, 'postgres-readiness')
         time.sleep(.1)
-    basic = rows('bb_scope_54d1a18_basic')
+    basic = None if socket else rows('bb_scope_54d1a18_basic')
     template = rows('bb_source_template')
     if installed_sync_progress or ingest_installed_live_progress:
         lab.write_json(output/'progress-originals-before.json',dict(bb_scope_54d1a18_basic=basic,bb_source_template=template))
     if installed_archive_catch_up:
         lab.write_json(output/'catch-up-originals-before.json',dict(bb_scope_54d1a18_basic=basic,bb_source_template=template))
-    require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
+    if not socket:
+        require(basic == json.loads((basis / 'basic-after.json').read_text()), 'original-scope-basis')
     require(not template['producer_requests'] and not template['owner_epochs'], 'original-template-preconditions')
     registration_basis = ('bb_scope_bind_45f7593_registration_journey' if registration_faults or scope_http
         else 'bb_scope_bind_917c76b_enrollment_journey')
@@ -1885,6 +1918,8 @@ try:
         lab.write_json(output/'catch-up-originals-after.json',original_after)
         require(original_after==dict(bb_scope_54d1a18_basic=basic,bb_source_template=template)
             and (basis/'result.json').read_bytes()==basis_report,'retained-original-changed')
+    elif socket:
+        require(rows('bb_source_template') == template, 'fresh-socket-template-changed')
     else:
         require(rows('bb_scope_54d1a18_basic') == basic and rows('bb_source_template') == template
             and (basis / 'result.json').read_bytes() == basis_report, 'retained-original-changed')
