@@ -7,8 +7,10 @@ come from the encoding contract and frozen signed input, never native output.
 import hashlib
 import json
 import math
+import sys
 import time
 from observations import expected as bootstrap
+from bootstrap_oracle import accounted
 
 ENDPOINT = 'ws://127.0.0.1:7447/private'
 
@@ -74,8 +76,8 @@ def expected(dataset, event, received, clock_resolution, clock_flags, recorded, 
     rows['facts',b'\x01\x21'+src_key(first)] = b'\x01\x21'+be(first+4)+sha(b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,first,first+4,batch]))
     rows['receipts',b'\x01\x30'+slot+be(1)+be(request_sequence)] = receipt
     rows['receipts',b'\x01\x31'+slot+be(1)] = b'\x01\x31'+be(request_sequence)+be(0)+be(0)
-    assert len(rows) == (50 if interned else 48 if appended else 42)
-    return sorted((cf,k,v) for (cf,k),v in rows.items()), inputs+[original], receipts+[receipt]
+    assert len(rows) == (51 if interned else 49 if appended else 43)
+    return accounted((cf,k,v) for (cf,k),v in rows.items()), inputs+[original], receipts+[receipt]
 
 
 def run(context):
@@ -88,8 +90,8 @@ def run(context):
     case(context, True, interned=True)
 
 
-def event_control(before_event, after_event, request_sequence, require):
-    require(len(before_event) == len(after_event) == 67
+def event_control(before_event, after_event, request_sequence, require, tables):
+    require(sorted(before_event) == sorted(after_event) == tables
         and before_event.keys() == after_event.keys()
         and all(before_event[t] == after_event[t] for t in before_event
                 if t not in ('producer_requests', 'producer_outcomes', 'producer_epochs')),
@@ -114,22 +116,28 @@ def event_control(before_event, after_event, request_sequence, require):
 def case(context, appended, *, interned=False):
     lab, pg, client, output, source, rows, clone, report, save, require, oracle = (
         context[k] for k in ('lab','pg','client','output','SOURCE','rows','clone','report','save','require','oracle'))
+    sys.path.insert(0, str(source / 'experiments/policy-versions'))
+    from schema_inventory import declared_inventory
+    inventory = declared_inventory(source)
     name = 'socket-intern' if interned else 'socket-append' if appended else 'socket'
     mode = 'source-socket-dictionary-intern' if interned else 'source-socket-dictionary-append' if appended else 'source-socket-pass'
     request_sequence = 5 if interned else 4 if appended else 2
     database = clone(name+'-pass','bb_source_template')
     config = lab.config(output,dict(pg,client=client),database,endpoint='127.0.0.1:5432',boundary='loopback')
     migrated = lab.cli(dict(pg,client=client),'migrate','apply','--file',config,
-        '--user','bigbrotr_migrator','--password-ref','file:/run/secrets/migrator','--target','24')
+        '--user','bigbrotr_migrator','--password-ref','file:/run/secrets/migrator',
+        '--target',str(inventory['target']))
     (output/(name+'-migration.stdout')).write_text(migrated.stdout)
     (output/(name+'-migration.stderr')).write_text(migrated.stderr)
     require(migrated.returncode == 0,'socket-current-schema')
-    lab.sql(pg,database,'GRANT SELECT,INSERT ON control.acquisition_selectors,control.acquisition_scopes,'
+    lab.sql(pg,database,'GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; '
+        'GRANT INSERT ON control.acquisition_selectors,control.acquisition_scopes,'
         'control.acquisition_jobs TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control; '
         "INSERT INTO control.principal_grants SELECT dataset_id,principal_id,'roles.control','dataset',dataset_id "
         "FROM control.local_accounts WHERE username='alice';")
-    before = rows(database)
-    require(len(before) == 67 and not before['owner_epochs'] and not before['producer_requests'],'fresh-socket-clone')
+    context['arrival_policy'](database, name, provenance='local_first_witness', schema=inventory)
+    before = rows(database, schema=inventory)
+    require(not before['owner_epochs'] and not before['producer_requests'],'fresh-socket-clone')
     lab.write_json(output/(name+'-before.json'),before)
     started = time.time_ns()//1000
     result = lab.docker('exec',client,'/build/ingest_bootstrap_probe',mode,database,
@@ -146,7 +154,7 @@ def case(context, appended, *, interned=False):
     resolution = math.ceil(time.clock_getres(time.CLOCK_REALTIME)*1_000_000)
     recorded = int(admitted[0]['recorded_at'])
     require(all(started <= int(m['received_at']) <= recorded <= finished for m in captured),'independent-realtime-bracket')
-    after = rows(database)
+    after = rows(database, schema=inventory)
     lab.write_json(output/(name+'-after.json'),after)
     dataset = bytes.fromhex(after['datasets'][0]['dataset_id'][2:])
     expected_clock = dict(allocation_domain='41'*16,dataset_id=dataset.hex(),dictionary_kind=2,ordinal='1')
@@ -174,7 +182,7 @@ def case(context, appended, *, interned=False):
     require(messages[-1]['event'] == 'socket-finished' and messages[-1]['status'] == 'PASS','completed-consumer')
     before_event = dict(identity['state']['control_tables'])
     after_event = dict(messages[-1]['state']['control_tables'])
-    event_control(before_event, after_event, request_sequence, require)
+    event_control(before_event, after_event, request_sequence, require, inventory['tables'])
     requests = sorted(after['producer_requests'], key=lambda r:int(r['request_sequence']))
     for sequence, (row, original) in enumerate(zip(requests, inputs), 1):
         require(int(row['request_sequence']) == sequence
@@ -195,13 +203,13 @@ def case(context, appended, *, interned=False):
         if interned:
             prepared = next(m for m in messages if m['event'] == 'dictionary-prepared')
             event_control(dict(initial['state']['control_tables']),
-                dict(prepared['state']['control_tables']), 2, require)
+                dict(prepared['state']['control_tables']), 2, require, inventory['tables'])
             require(prepared['visibility_receipt'] == receipts[1].hex(), 'explicit-visibility-receipt')
             initial = prepared
         event_control(dict(initial['state']['control_tables']),
-            dict(created['state']['control_tables']), append_sequence, require)
+            dict(created['state']['control_tables']), append_sequence, require, inventory['tables'])
         event_control(dict(created['state']['control_tables']),
-            dict(reopened['state']['control_tables']), append_sequence+1, require)
+            dict(reopened['state']['control_tables']), append_sequence+1, require, inventory['tables'])
         require(created['receipt'] == receipts[append_sequence-1].hex()
             and reopened['bootstrap_receipt'] == receipts[0].hex()
             and reopened['reuse_receipt'] == receipts[append_sequence].hex(), 'append-reopen-original-receipts')
@@ -209,7 +217,7 @@ def case(context, appended, *, interned=False):
         base_rows, _, _ = append(dataset, oracle.cbor, interned=interned)
         base_dump = [dict(cf=cf, key=k.hex(), value=v.hex()) for cf,k,v in base_rows]
         digest = hashlib.sha256(json.dumps(base_dump, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
-        require(reopened['state']['native_rows'] == (36 if interned else 34)
+        require(reopened['state']['native_rows'] == (37 if interned else 35)
             and reopened['state']['native_sha256'] == digest, 'literal-reopened-append-state')
     require(lab.sql(pg,database,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'") == '0','unjoined-driver')
     report['cases'].append(dict(name=name+'-signed-forged-duplicate',status='PASS',frames=3,native_rows=len(wanted),

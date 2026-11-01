@@ -23,6 +23,9 @@ with patch.dict(sys.modules, dict(oracle=ORACLE, bootstrap_oracle=ORACLE)):
     EVENTS = load('pending_events_oracle', 'experiments/ingest-bootstrap/event_oracle.py')
     RELAY = load('pending_relay_oracle', 'experiments/relay-source/oracle.py')
     OBSERVATIONS = load('pending_observation_oracle', 'experiments/acquisition-scope/observations.py')
+    DICTIONARIES = load('pending_dictionary_oracle', 'experiments/acquisition-scope/dictionary_append.py')
+    with patch.dict(sys.modules, dict(observations=OBSERVATIONS)):
+        SOCKET = load('pending_socket_oracle', 'experiments/acquisition-scope/socket_arrival.py')
 
 
 def counter(rows):
@@ -31,6 +34,28 @@ def counter(rows):
 
 
 class PendingAccountingVectors(unittest.TestCase):
+    def test_dictionary_and_socket_recompute_current_charge_without_extra_science(self):
+        dataset=bytes([1])*16
+        event=json.loads((ROOT/'tests/fixtures/ingest/import-event.jsonl').read_text())
+        for interned in (False,True):
+            rows,inputs,receipts=DICTIONARIES.expected(dataset,ORACLE.cbor,interned=interned)
+            self.assertEqual(len(rows),37 if interned else 35)
+            self.assertEqual(int.from_bytes(counter(rows)[42:50],'big'),7)
+            self.assertEqual(int.from_bytes(counter(rows)[34:42],'big'),
+                             sum(len(k)+len(v) for cf,k,v in rows if cf=='facts'))
+            self.assertEqual(len(inputs),4 if interned else 3)
+            self.assertEqual(len(receipts),len(inputs))
+        with patch.dict(sys.modules,dict(dictionary_append=DICTIONARIES)):
+            for appended,interned,size,source in [(False,False,43,11),(True,False,49,12),(True,True,51,12)]:
+                rows,inputs,receipts=SOCKET.expected(dataset,event,456,1,0,789,ORACLE.cbor,
+                    appended=appended,interned=interned)
+                self.assertEqual(len(rows),size)
+                self.assertEqual(int.from_bytes(counter(rows)[42:50],'big'),source)
+                self.assertEqual(int.from_bytes(counter(rows)[34:42],'big'),
+                                 sum(len(k)+len(v) for cf,k,v in rows if cf=='facts'))
+                self.assertEqual(len(inputs),5 if interned else 4 if appended else 2)
+                self.assertEqual(len(receipts),len(inputs))
+
     def test_current_ack_wal_and_syscall_discriminators(self):
         result = subprocess.run(
             [sys.executable, '-B', str(ROOT / 'experiments/archive-engine/publication_sync_cases.py'),

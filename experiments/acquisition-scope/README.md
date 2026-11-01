@@ -1,5 +1,15 @@
 # Acquisition registration laboratory
 
+The current socket wave (`bindings.py RUN_ROOT --socket EXACT_BUILD`) uses the
+maintained policy-version schema inventory and the existing clone-only accepted
+policy setup with local-first-witness provenance. Its dictionary/socket oracle
+recomputes the current logical accounting row after adding the independently
+encoded facts and markers. The old row counts and target24/67-table setup were
+stale verifier prerequisites, not a product refusal. Scientific bytes, operation
+deadlines and the configured stable-low interval are unchanged. This source
+reconciliation is NOT_RUN on PostgreSQL/native until its exact probe is built
+and the ordinary wave runs; older socket results retain their original scope.
+
 This trusted native Linux experiment qualifies only the internal P03-T01
 registration boundary. The `acquisition-scope` build profile uses the existing
 exact-Git runner and exclusively locked1154757 compiler cache. It builds the
