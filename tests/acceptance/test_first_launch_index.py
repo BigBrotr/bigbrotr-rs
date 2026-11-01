@@ -12,7 +12,7 @@ import time
 import tomllib
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from cases import first_launch as base
 from cases import first_launch_index as case
@@ -123,6 +123,211 @@ def ordinary_fixture():
             time=dict(observed_at_us='123456789',age_us='1000'),published=dict(revision='4',cut=cut),
             generation=None,storage_incarnation=None) for k in ('private_history','signed_event_export')])
     return state,value
+
+
+class ClickHouseBatchControls(unittest.TestCase):
+    def fixture(self):
+        # Literal heterogeneous wire documents, independent of select_rows and
+        # the decoder. This tests transport framing, not scientific publication.
+        common = [('source','Tuple(FixedString(16), UInt32, UInt64, UInt64)'),
+                  ('generation','FixedString(16)'),('discriminator','UInt64')]
+        families = [
+            ('dictionaries',[('label','Nullable(FixedString(16))')],''),
+            ('events',[('content','String'),('tags','Array(Array(String))')],''),
+            ('event_eligibility_facts',[('sig','FixedString(64)')],''),
+            ('event_receive_facts',[('refs','Array(Tuple(FixedString(16), UInt64))')],''),
+            ('event_id_index',[('ordinal','UInt64')],''),
+            ('event_author_index',[('at','Int64')],''),
+            ('event_time_index',[('at','UInt64')],''),
+            ('event_tag_index',[('key','String'),('value','String')],''),
+            ('provenance_by_event',[('ref','Tuple(FixedString(16), UInt16, FixedString(16), UInt64)')],''),
+            ('provenance_by_relay',[('uncertainty','Nullable(UInt64)')],''),
+        ]
+        metadata = [[('label','Nullable(String)')], [('content','String'),('tags','Array(Array(String))')],
+            [('sig','String')], [('refs','Array(Tuple(String, UInt64))')], [('ordinal','UInt64')],
+            [('at','Int64')], [('at','UInt64')], [('key','String'),('value','String')],
+            [('ref','Tuple(String, UInt16, String, UInt64)')], [('uncertainty','Nullable(UInt64)')]]
+        base_row = dict(source=['11'*16,0,1,18446744073709551615],generation='22'*16,discriminator=0)
+        values = [dict(label=None),dict(content='literal {"data": []}\nλ',tags=[['t','one','two']]),
+            dict(sig='33'*64),dict(refs=[['44'*16,9]]),dict(ordinal=18446744073709551615),
+            dict(at=-7),dict(at=8),None,dict(ref=['55'*16,2,'66'*16,10]),dict(uncertainty=None)]
+        rows = {name:[] if value is None else [dict(base_row,**value)]
+                for (name,_,_),value in zip(families,values)}
+        documents = []
+        for (name,_,_),columns in zip(families,metadata):
+            marker = '__bigbrotr_table_'+name
+            meta = [(marker,'UInt8'),('source','Tuple(String, UInt32, UInt64, UInt64)'),
+                    ('generation','String'),('discriminator','UInt64')]+columns
+            documents.append(dict(meta=[dict(name=k,type=t) for k,t in meta],
+                data=[dict(row,**{marker:1}) for row in rows[name]],
+                rows=len(rows[name]),statistics=dict(elapsed=.001,rows_read=len(rows[name]),bytes_read=32)))
+        return SimpleNamespace(COMMON=common,FAMILIES=families),documents,rows
+
+    def read(self, documents=None, *, raw=None, returncode=0, stderr='', deadline=None, selected_schema=None):
+        selected,original,_ = self.fixture()
+        if selected_schema is not None:
+            selected = selected_schema
+        if raw is None:
+            raw = '\n\n'.join(json.dumps(value,ensure_ascii=False,allow_nan=False)
+                                for value in (original if documents is None else documents))
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = object.__new__(case.IndexRuntime)
+            runtime.schema,runtime.root = selected,Path(temporary)
+            runtime.state,runtime.ch_entry = runtime.root/'state',dict(id='owned-clickhouse')
+            runtime.resources = {}
+            runtime.boundary_deadline = deadline
+            runtime.inspect,runtime.record_resources = Mock(),Mock()
+            runtime.docker = Mock(return_value=subprocess.CompletedProcess(['docker'],returncode,raw,stderr))
+            with patch.object(case.shutil,'disk_usage',return_value=SimpleNamespace(free=70*1024**3)):
+                rows = runtime.ch_table_rows()
+            return rows,runtime
+
+    def test_one_bounded_reader_preserves_every_typed_document_and_empty_table(self):
+        selected,_,expected = self.fixture()
+        rows,runtime = self.read()
+        check.exact(rows,expected)
+        self.assertEqual(rows['event_tag_index'],[])
+        self.assertIs(type(rows['event_id_index'][0]['ordinal']),int)
+        runtime.inspect.assert_called_once_with(runtime.ch_entry)
+        runtime.record_resources.assert_called_once()
+        runtime.docker.assert_called_once()
+        command = runtime.docker.call_args
+        self.assertEqual(command.args,('exec','-i','owned-clickhouse','clickhouse-client','--config-file',
+            '/run/ch-private/reader.xml','--output_format_json_quote_64bit_integers=0','--max_result_rows=175',
+            '--max_result_bytes=1048576','--result_overflow_mode=throw','--max_execution_time=10',
+            '--receive_timeout=15','--multiquery'))
+        self.assertEqual(command.kwargs['data'],'\n'.join(
+            check.select_rows(selected,case.DATABASE,name,table_marker=True)+' FORMAT JSON;' for name in check.TARGETS))
+        self.assertEqual(command.kwargs['label'],'clickhouse-reader')
+        self.assertFalse(command.kwargs['check'])
+
+    def test_default_select_bytes_and_original_order_remain_unchanged(self):
+        selected = SimpleNamespace(COMMON=[('source','UInt64'),('discriminator','UInt64')],
+            FAMILIES=[('events',[('content','String')],'')])
+        original = ('SELECT `source` AS `source`,`discriminator` AS `discriminator`,`content` AS `content` '
+                    'FROM serving_fixture.events ORDER BY source,discriminator')
+        self.assertEqual(check.select_rows(selected,case.DATABASE,'events'),original)
+        self.assertEqual(check.select_rows(selected,case.DATABASE,'events',table_marker=True),
+            'SELECT toUInt8(1) AS `__bigbrotr_table_events`,'+original[len('SELECT '):])
+        with self.assertRaises(AssertionError):
+            check.select_rows(selected,case.DATABASE,'events',table_marker=1)
+
+    def test_real_identical_index_and_provenance_results_cannot_substitute_each_other(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state,expected,science = metadata_fixture(root)
+            documents = []
+            for name,columns,_ in schema.FAMILIES:
+                marker = '__bigbrotr_table_'+name
+                meta = [dict(name=marker,type='UInt8')]+[dict(name=column,type=ty
+                    .replace('FixedString(16)','String').replace('FixedString(32)','String')
+                    .replace('FixedString(64)','String')) for column,ty in schema.COMMON+columns]
+                documents.append(dict(meta=meta,data=[dict(row,**{marker:1}) for row in expected[name]],
+                    rows=len(expected[name]),statistics=dict(elapsed=.001,rows_read=len(expected[name]),bytes_read=32)))
+            rows,_ = self.read(documents,selected_schema=schema)
+            check.publication(state,state,rows,science,schema,root)
+            for original,replacement in ((5,4),(6,4),(9,8)):
+                # These REAL columns and physical values are otherwise equal;
+                # only the independently required table marker distinguishes them.
+                check.exact(documents[original]['meta'][1:],documents[replacement]['meta'][1:])
+                check.exact(expected[check.TARGETS[original]],expected[check.TARGETS[replacement]])
+                changed = copy.deepcopy(documents);changed[original] = copy.deepcopy(changed[replacement])
+                with self.subTest(target=check.TARGETS[original]),self.assertRaises(AssertionError):
+                    self.read(changed,selected_schema=schema)
+
+    def test_empty_result_marker_and_every_row_marker_are_required(self):
+        _,documents,_ = self.fixture()
+        for change in (
+            lambda d:d[7]['meta'][0].update(name='__bigbrotr_table_events'),
+            lambda d:d[7]['meta'].pop(0),
+            lambda d:d[0]['data'][0].pop('__bigbrotr_table_dictionaries'),
+        ):
+            changed = copy.deepcopy(documents);change(changed)
+            with self.subTest(change=change),self.assertRaises((ValueError,AssertionError)):
+                self.read(changed)
+        for value in (True,1.0,'1',0,2):
+            changed = copy.deepcopy(documents)
+            changed[0]['data'][0]['__bigbrotr_table_dictionaries'] = value
+            with self.subTest(value=value),self.assertRaises(ValueError):self.read(changed)
+
+    def test_raw_padding_is_bounded_and_only_json_ascii_whitespace_is_accepted(self):
+        _,documents,expected = self.fixture()
+        raw = '\n'.join(json.dumps(value) for value in documents)
+        rows,_ = self.read(raw=' \t\r\n'+raw+' \t\r\n')
+        check.exact(rows,expected)
+        for padding in ('\u00a0','\u2003','\ufeff'):
+            for changed in (padding+raw,raw+padding):
+                with self.subTest(padding=repr(padding)),self.assertRaises(ValueError):
+                    self.read(raw=changed)
+        padding = ' '*(10*1048576)
+        for changed in (padding+raw,raw+padding):
+            with self.assertRaisesRegex(ValueError,'batch output bound'):
+                self.read(raw=changed)
+
+    def test_missing_extra_or_reordered_query_documents_refuse(self):
+        _,documents,_ = self.fixture()
+        for values in (documents[:-1],documents+[documents[-1]],documents[1:]+documents[:1],
+                       [None]+documents[1:],[]+documents[:7]+documents[8:]):
+            with self.subTest(documents=len(values)),self.assertRaises((ValueError,AssertionError)):
+                self.read(values)
+
+    def test_partial_trailing_duplicate_and_nonfinite_json_refuse(self):
+        _,documents,_ = self.fixture()
+        raw = '\n'.join(json.dumps(value) for value in documents)
+        for changed in (raw[:-1],raw[:len(raw)//2],raw+'trailing',raw+'\n{}',
+                raw.replace('"rows": 1','"rows": 1, "rows": 1',1),
+                raw.replace('"elapsed": 0.001','"elapsed": NaN',1),
+                raw.replace('"elapsed": 0.001','"elapsed": 1e999',1)):
+            with self.subTest(tail=changed[-20:]),self.assertRaises(ValueError):
+                self.read(raw=changed)
+
+    def test_metadata_counts_columns_and_error_envelopes_refuse(self):
+        _,documents,_ = self.fixture()
+        for change in (
+            lambda d:d[0]['meta'][0].update(type='String'),
+            lambda d:d[0]['meta'].reverse(),
+            lambda d:d[7]['meta'][-1].update(type='UInt64'),
+            lambda d:d[0].update(rows=True),lambda d:d[0].update(rows='1'),
+            lambda d:d[0].update(rows=0),lambda d:d[7].update(rows=1),
+            lambda d:d[0].update(data={}),lambda d:d[0].update(data=[None]),
+            lambda d:d[0]['data'][0].pop('label'),lambda d:d[0]['data'][0].update(unexpected=1),
+            lambda d:d[0].update(exception='bounded fixture error'),
+            lambda d:d[0].pop('statistics'),lambda d:d[0]['statistics'].update(elapsed=True),
+            lambda d:d[0]['statistics'].update(rows_read=-1),
+        ):
+            changed = copy.deepcopy(documents);change(changed)
+            with self.subTest(change=change),self.assertRaises((ValueError,AssertionError)):
+                self.read(changed)
+
+    def test_row_values_reach_the_existing_exact_oracle_without_coercion(self):
+        _,documents,expected = self.fixture()
+        for value in ('18446744073709551615',True,18446744073709551616):
+            changed = copy.deepcopy(documents);changed[4]['data'][0]['ordinal'] = value
+            rows,_ = self.read(changed)
+            self.assertIs(type(rows['event_id_index'][0]['ordinal']),type(value))
+            with self.subTest(value=value),self.assertRaises(AssertionError):
+                check.exact(rows,expected)
+
+    def test_per_table_row_and_encoded_byte_bounds_and_aggregate_bound_refuse(self):
+        _,documents,_ = self.fixture()
+        changed = copy.deepcopy(documents)
+        changed[0].update(rows=175,data=changed[0]['data']*175)
+        rows,_ = self.read(changed)
+        self.assertEqual(len(rows['dictionaries']),175)
+        changed[0].update(rows=176,data=changed[0]['data']+[changed[0]['data'][0]])
+        with self.assertRaisesRegex(ValueError,'row count'):self.read(changed)
+        changed = copy.deepcopy(documents);changed[0]['data'][0]['label'] = 'λ'*(512*1024)
+        with self.assertRaisesRegex(ValueError,'table output bound'):self.read(changed)
+        with self.assertRaisesRegex(ValueError,'batch output bound'):
+            self.read(raw='x'*(10*1048576+1))
+
+    def test_cli_error_diagnostics_and_original_caller_deadline_refuse(self):
+        for returncode,stderr in ((1,''),(1,'server refused'),(0,'server refused')):
+            with self.subTest(returncode=returncode,stderr=stderr),self.assertRaises(ValueError):
+                self.read(returncode=returncode,stderr=stderr)
+        with self.assertRaisesRegex(ValueError,'caller deadline'):
+            self.read(deadline=0)
+        self.read(deadline=time.monotonic()+5)
 
 
 class InitialIndexControls(unittest.TestCase):

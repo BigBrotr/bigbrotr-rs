@@ -246,8 +246,7 @@ class ArchiveOutageRuntime(RestartIndexRuntime):
         require(load(intent) == expected, 'retained Archive attempt intent differs')
         self.parked_files = self.files(directory)
         save(output/'catalog-outage-state-files.json', self.parked_files)
-        self.index_rows = {name:self.ch(index.select_rows(self.schema, DATABASE, name), rows=True)
-                           for name in index.TARGETS}
+        self.index_rows = self.ch_table_rows()
         save(output/'clickhouse-outage.json', self.index_rows)
         save(output/'catalog-outage-live-verdict.json', dict(status='PASS', source_cut=self.source_cut,
             archive_revision=2, archive_cut=3, index_revision=self.publication_revision, issued_attempt=3,
