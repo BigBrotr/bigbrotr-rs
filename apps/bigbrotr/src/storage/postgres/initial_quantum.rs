@@ -35,6 +35,7 @@ pub struct LinearQuantumRequest<'a> {
     pub scope: &'a StoredAcquisitionScope,
     pub source: RelaySourceBinding,
     pub window_width_seconds: u64,
+    pub query_budget: u16,
     pub policy_ttl: Duration,
     pub cancelled: &'a AtomicBool,
 }
@@ -95,7 +96,7 @@ impl ControlSession {
         let read = native
             .quantum_progress_read(&permit, input.cancelled)
             .map_err(InitialEventError::Native)?;
-        let window = quantum::next_window(
+        let mut traversal = quantum::next_window(
             &tx,
             &read,
             context,
@@ -104,45 +105,63 @@ impl ControlSession {
             input.source,
             control,
             input.window_width_seconds,
+            input.query_budget,
             &mut || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
         )
         .await
         .map_err(InitialEventError::Quantum)?;
-        let Some(window) = window else {
-            // Empty intersections, empty successful pages and repeated
-            // returned boundaries leave coverage pending without a new plan.
-            // Confirm rollback so other jobs can use the next turn.
-            tx.rollback()
+        let mut local_written = false;
+        while let Some(span) = traversal.geometry.exclusion(input.scope.selector()) {
+            quantum::exclude(
+                &tx,
+                context,
+                &job,
+                input.scope.identity(),
+                input.source,
+                control,
+                &mut traversal,
+                span,
+            )
+            .await
+            .map_err(InitialEventError::Quantum)?;
+            local_written = true;
+        }
+        let plan = if traversal.geometry.settled
+            || traversal.geometry.spent == traversal.geometry.budget
+        {
+            None
+        } else {
+            let geometry = traversal.geometry;
+            let window = crate::acquisition::quantum::LinearWindow::retained(
+                input.scope.selector(),
+                job.accepted_at_us,
+                geometry.lower,
+                geometry.upper,
+                geometry.horizon,
+            )
+            .map_err(InitialEventError::Quantum)?;
+            Some(
+                quantum::prepare(
+                    &tx,
+                    context,
+                    &job,
+                    input.scope.identity(),
+                    input.source,
+                    window,
+                    traversal,
+                    control,
+                    grant,
+                )
                 .await
-                .map_err(|_| InitialEventError::DeliveryUnknown)?;
-            initial_history::check_delivery(&mut lease, policy, input.cancelled)
-                .map_err(InitialEventError::Compacted)?;
-            native.validate_delivery(input.cancelled, &mut lease, policy)?;
-            if self.client.is_closed() {
-                return Err(InitialEventError::DeliveryUnknown);
-            }
-            native.delivered();
-            self.available = true;
-            return Ok(None);
+                .map_err(InitialEventError::Quantum)?,
+            )
         };
-        let plan = quantum::prepare(
-            &tx,
-            context,
-            &job,
-            input.scope.identity(),
-            input.source,
-            window,
-            control,
-            grant,
-        )
-        .await
-        .map_err(InitialEventError::Quantum)?;
         producer_progress::recovery::require_read(
             &tx,
             read,
             native.manifest(),
             context.slot,
-            &plan.permit,
+            &permit,
             None,
             || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
         )
@@ -151,9 +170,15 @@ impl ControlSession {
         native.validate_delivery(input.cancelled, &mut lease, policy)?;
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
-        tx.commit()
-            .await
-            .map_err(|_| InitialEventError::Quantum(QuantumError::CommitUnknown))?;
+        if plan.is_some() || local_written {
+            tx.commit()
+                .await
+                .map_err(|_| InitialEventError::Quantum(QuantumError::CommitUnknown))?;
+        } else {
+            tx.rollback()
+                .await
+                .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        }
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
         }
@@ -162,7 +187,7 @@ impl ControlSession {
         native.validate_delivery(input.cancelled, &mut lease, policy)?;
         native.delivered();
         self.available = true;
-        Ok(Some(plan))
+        Ok(plan)
     }
     pub async fn finish_linear_quantum(
         &mut self,
@@ -174,7 +199,11 @@ impl ControlSession {
     ) -> Result<(), InitialEventError> {
         let (mut native, authority) = source.split();
         let context = authority.progress_context(native.manifest());
-        if context != plan.context || input.job != plan.job || input.scope.identity() != plan.scope
+        if context != plan.context
+            || input.job != plan.job
+            || input.scope.identity() != plan.scope
+            || plan.profile().map_err(InitialEventError::Quantum)?
+                != (input.window_width_seconds, input.query_budget)
         {
             return Err(InitialEventError::Quantum(QuantumError::Context));
         }

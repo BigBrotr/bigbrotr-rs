@@ -106,7 +106,7 @@ pub(super) struct Sync {
     nomination: Nomination,
     next_request: u64,
     lifecycle: Profile,
-    profile: Option<(usize, bool, u64)>,
+    profile: Option<(usize, bool, u64, u16)>,
 }
 
 /// Inert scheduling metadata, not a claim or authority. Keep the exact selected
@@ -237,6 +237,7 @@ impl Sync {
             || !accepted
                 .number("sync.window_width")
                 .is_multiple_of(1_000_000)
+            || !(1..=128).contains(&accepted.number("sync.partition_budget"))
             || bytes == 0
             || bytes > EventLimits::default().event_bytes
         {
@@ -246,6 +247,7 @@ impl Sync {
             bytes,
             accepted.text("sync.provenance") == Some("local_first_witness"),
             accepted.number("sync.window_width") / 1_000_000,
+            accepted.number("sync.partition_budget") as u16,
         );
         if self.profile.is_some_and(|old| old != profile) {
             return Err(OwnerError::InvalidPolicy);
@@ -408,7 +410,7 @@ impl Sync {
         {
             return Ok(());
         }
-        let (max_event_bytes, provenance, window_width_seconds) =
+        let (max_event_bytes, provenance, window_width_seconds, query_budget) =
             self.profile.expect("accepted Sync profile");
         let Some(attribution) = self
             .observation(&mut work, &scope, &source, provenance)
@@ -439,6 +441,7 @@ impl Sync {
                     scope: &scope,
                     source: source.binding(),
                     window_width_seconds,
+                    query_budget,
                     policy_ttl: ttl,
                     cancelled: &work.cancel.requested,
                 },
@@ -743,6 +746,7 @@ impl Sync {
                     scope: &scope,
                     source: source.binding(),
                     window_width_seconds,
+                    query_budget,
                     policy_ttl: ttl,
                     cancelled: &work.cancel.requested,
                 },

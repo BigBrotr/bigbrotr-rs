@@ -1,30 +1,96 @@
-//! Consume retained page evidence under the existing acquisition job lock.
-//! A stopped walk remains pending; no empty page or repeated second is coverage.
+//! Full bounded retained history: geometry follows authenticated page evidence.
 use super::*;
-use crate::acquisition::scope::StoredAcquisitionScope;
+use crate::acquisition::{
+    quantum::{Exclusion, Geometry, Settlement},
+    scope::StoredAcquisitionScope,
+};
 use crate::storage::rocks::store::{AdmissionError, ProgressRead};
 use bigbrotr_model::EventId;
 use bigbrotr_protocol::wire::{RelayMessage, decode_relay};
+use futures_util::TryStreamExt;
 use tokio_postgres::Row;
 
-#[derive(Clone, Copy)]
-struct Completed {
-    number: u64,
-    lower: u64,
-    upper: u64,
-    horizon: u64,
-    continuation: u64,
-    oldest: Option<u64>,
-    interrupted: bool,
+pub(super) const MAX_BOUNDARY_IDS: usize = 3 * 128;
+pub(super) struct Boundary {
+    second: Option<u64>,
+    ids: Vec<EventId>,
 }
-
+impl Boundary {
+    pub(super) fn new() -> Result<Self, QuantumError> {
+        let mut ids = Vec::new();
+        ids.try_reserve_exact(MAX_BOUNDARY_IDS)
+            .map_err(|_| QuantumError::Capacity)?;
+        Ok(Self { second: None, ids })
+    }
+    pub(super) fn settle(
+        &mut self,
+        geometry: &Geometry,
+        terminal: &TerminalState,
+        targets: &[Option<(EventId, u64)>; 3],
+    ) -> Result<Settlement, QuantumError> {
+        let oldest = targets.iter().flatten().map(|(_, time)| *time).min();
+        if terminal.gap().is_some() || (terminal.retained > 0 && oldest.is_none()) {
+            self.second = None;
+            self.ids.clear();
+            return Ok(Settlement {
+                disposition: "retry",
+                continuation: geometry.upper,
+                gap: None,
+            });
+        }
+        let Some(oldest) = oldest else {
+            self.second = None;
+            self.ids.clear();
+            return Ok(Settlement {
+                disposition: "window_closed",
+                continuation: geometry.window_end,
+                gap: None,
+            });
+        };
+        if self.second != Some(oldest) {
+            self.second = Some(oldest);
+            self.ids.clear();
+        }
+        let mut added = false;
+        for (id, time) in targets.iter().flatten() {
+            if *time != oldest {
+                continue;
+            }
+            if let Err(index) = self.ids.binary_search(id) {
+                if self.ids.len() == MAX_BOUNDARY_IDS {
+                    return Err(QuantumError::Context);
+                }
+                self.ids.insert(index, *id);
+                added = true;
+            }
+        }
+        if added {
+            Ok(Settlement {
+                disposition: "overlap",
+                continuation: oldest.checked_add(1).ok_or(QuantumError::Context)?,
+                gap: None,
+            })
+        } else {
+            self.second = None;
+            self.ids.clear();
+            Ok(Settlement {
+                disposition: "saturated_second",
+                continuation: oldest,
+                gap: Some((oldest, oldest.checked_add(1).ok_or(QuantumError::Context)?)),
+            })
+        }
+    }
+}
 #[derive(Debug, PartialEq, Eq)]
 struct DecodedEffects {
-    oldest: Option<u64>,
     ordering: bool,
     targets: [Option<(EventId, u64)>; 3],
 }
-
+pub(in crate::storage::postgres::control_owner) struct Traversal {
+    pub geometry: Geometry,
+    pub(super) boundary: Boundary,
+    pub entries: u16,
+}
 fn number(row: &Row, column: &str) -> Result<u64, QuantumError> {
     let text: &str = row.try_get(column).map_err(failure)?;
     let value = text.parse::<u64>().map_err(|_| QuantumError::Context)?;
@@ -33,10 +99,39 @@ fn number(row: &Row, column: &str) -> Result<u64, QuantumError> {
     }
     Ok(value)
 }
-
+pub(super) fn retained_settlement(row: &Row) -> Result<Settlement, QuantumError> {
+    let disposition: &str = row.try_get("disposition").map_err(failure)?;
+    let disposition = match disposition {
+        "retry" => "retry",
+        "overlap" => "overlap",
+        "saturated_second" => "saturated_second",
+        "window_closed" => "window_closed",
+        _ => return Err(QuantumError::Context),
+    };
+    let gap = match (
+        row.try_get::<_, Option<&str>>("gap_lower")
+            .map_err(failure)?,
+        row.try_get::<_, Option<&str>>("gap_upper")
+            .map_err(failure)?,
+    ) {
+        (None, None) => None,
+        (Some(a), Some(b)) => Some((
+            a.parse().map_err(|_| QuantumError::Context)?,
+            b.parse().map_err(|_| QuantumError::Context)?,
+        )),
+        _ => return Err(QuantumError::Context),
+    };
+    Ok(Settlement {
+        disposition,
+        continuation: number(row, "continuation")?,
+        gap,
+    })
+}
+/// Native authority is an explicit precondition of the geometry fold. All rows,
+/// including earlier windows and local entries, are consumed before any no-op.
 #[allow(
     clippy::too_many_arguments,
-    reason = "same locked job, source and fenced native/Control context as prepare"
+    reason = "same locked job/source/native context"
 )]
 pub(in crate::storage::postgres::control_owner) async fn next_window(
     tx: &Transaction<'_>,
@@ -47,153 +142,130 @@ pub(in crate::storage::postgres::control_owner) async fn next_window(
     source: RelaySourceBinding,
     control: ControlOwner,
     width: u64,
+    budget: u16,
     authority: &mut impl FnMut() -> Result<(), AdmissionError>,
-) -> Result<Option<LinearWindow>, QuantumError> {
-    // Look up by job alone. Filtering by compatible identity would hide a
-    // retained incompatible/unfinished obligation and incorrectly restart it.
-    let latest = read(
-        tx, native, context, job, scope, source, control, None, authority,
-    )
-    .await?;
-    let Some(latest) = latest else {
-        return match LinearWindow::first(scope.selector(), job.accepted_at_us, width) {
-            Ok(window) => Ok(Some(window)),
-            Err(QuantumError::Interval) => Ok(None),
-            Err(error) => Err(error),
-        };
+) -> Result<Traversal, QuantumError> {
+    let geometry = Geometry::new(
+        scope.selector().history_since().0,
+        LinearWindow::frozen_horizon(scope.selector(), job.accepted_at_us)?,
+        width,
+        budget,
+    )?;
+    let mut traversal = Traversal {
+        geometry,
+        boundary: Boundary::new()?,
+        entries: 0,
     };
-    let previous = if latest.number > 1 {
-        Some(
-            read(
-                tx,
-                native,
-                context,
-                job,
-                scope,
-                source,
-                control,
-                Some(latest.number - 1),
-                authority,
-            )
-            .await?
-            .ok_or(QuantumError::Context)?,
-        )
-    } else {
-        None
-    };
-    let upper = choose(&latest, previous.as_ref())?;
-    upper
-        .map(|upper| {
-            LinearWindow::retained(
-                scope.selector(),
-                job.accepted_at_us,
-                latest.lower,
-                upper,
-                latest.horizon,
-            )
-        })
-        .transpose()
+    let epoch = context.epoch.to_string();
+    let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[
+        &&job.id.as_bytes()[..],
+        &&context.dataset.as_bytes()[..],
+        &&scope.identity().as_bytes()[..],
+        &source.enrollment_generation.get().to_string(),
+        &&source.route_id.as_bytes()[..],
+        &&context.slot.as_bytes()[..],
+        &epoch,
+        &&context.manifest[..],
+        &&control.resource_id.as_bytes()[..],
+        &control.epoch.get().to_string(),
+        &&control.process_incarnation.as_bytes()[..],
+    ];
+    let stream=tx.query_raw("SELECT substring(quantum_id FROM 1 FOR 17) AS quantum_id,
+        quantum_number::text AS number, interval_lower::text AS lower,interval_upper::text AS upper,
+        horizon::text AS horizon, window_end::text AS window_end,window_width::text AS width,
+        query_budget,query_number,entry_kind,disposition,gap_lower::text AS gap_lower,gap_upper::text AS gap_upper,
+        quantum_profile=2 AND dataset_id=$2 AND scope_id=$3 AND enrollment_generation=$4::text::numeric
+        AND route_id=$5 AND producer_slot_id=$6 AND producer_epoch=$7::text::numeric AND manifest_sha256=$8
+        AND issuer_resource=$9 AND issuer_epoch=$10::text::numeric AND issuer_role='control'
+        AND issuer_incarnation=$11 AS identity_valid,
+        left(terminal_kind,13) AS terminal_kind,substring(terminal_frame FROM 1 FOR 2097153) AS frame,
+        substring(request_id FROM 1 FOR 49) AS request,terminal_sequence::text AS sequence,
+        substring(request_predicate FROM 1 FOR 2097153) AS predicate,substring(predicate_sha256 FROM 1 FOR 33) AS predicate_digest,
+        teardown_complete,retained_events,classified_prefix,substring(effect_records FROM 1 FOR 280) AS effects,
+        substring(dependencies FROM 1 FOR 55297) AS dependencies,result_class,gap_reason,
+        continuation_upper::text AS continuation,checkpoint_before<=checkpoint_after AS checkpoint_valid
+        FROM control.acquisition_quanta WHERE job_id=$1 ORDER BY quantum_number LIMIT 386",
+        params.iter().copied()).await.map_err(failure)?;
+    futures_util::pin_mut!(stream);
+    while let Some(row) = stream.try_next().await.map_err(failure)? {
+        authority().map_err(QuantumError::Native)?;
+        if traversal.entries as usize >= 3 * usize::from(budget) + 1 {
+            return Err(QuantumError::Context);
+        }
+        traversal.entries += 1;
+        if !row.try_get::<_, bool>("identity_valid").map_err(failure)?
+            || number(&row, "number")? != u64::from(traversal.entries)
+            || number(&row, "horizon")? != geometry.horizon
+            || number(&row, "width")? != width
+            || row.try_get::<_, i16>("query_budget").map_err(failure)? != budget as i16
+        {
+            return Err(QuantumError::Context);
+        }
+        let lower = number(&row, "lower")?;
+        let upper = number(&row, "upper")?;
+        let end = number(&row, "window_end")?;
+        let spent = u16::try_from(row.try_get::<_, i16>("query_number").map_err(failure)?)
+            .map_err(|_| QuantumError::Context)?;
+        if row.try_get::<_, &str>("entry_kind").map_err(failure)? == "selector_exclusion" {
+            let span = traversal
+                .geometry
+                .exclusion(scope.selector())
+                .ok_or(QuantumError::Context)?;
+            if (span.lower, span.upper, span.window_end) != (lower, upper, end)
+                || spent != traversal.geometry.spent
+                || row.try_get::<_, &str>("disposition").map_err(failure)?
+                    != if span.empty_target {
+                        "empty_target"
+                    } else {
+                        "selector_excluded"
+                    }
+            {
+                return Err(QuantumError::Context);
+            }
+            traversal.geometry.exclude(span)?;
+            traversal.boundary.second = None;
+            traversal.boundary.ids.clear();
+            continue;
+        }
+        if row.try_get::<_, &str>("entry_kind").map_err(failure)? != "request" {
+            return Err(QuantumError::Context);
+        }
+        traversal.geometry.request(lower, upper, end, spent)?;
+        let window = LinearWindow::retained(
+            scope.selector(),
+            job.accepted_at_us,
+            lower,
+            upper,
+            geometry.horizon,
+        )?;
+        validate_page(native, &row, &window, &mut traversal, authority)?;
+    }
+    Ok(traversal)
 }
-
-fn choose(latest: &Completed, previous: Option<&Completed>) -> Result<Option<u64>, QuantumError> {
-    if latest.number == 0 || (latest.number == 1) != previous.is_none() {
-        return Err(QuantumError::Context);
-    }
-    if let Some(previous) = previous
-        && (previous.number.checked_add(1) != Some(latest.number)
-            || (previous.lower, previous.horizon) != (latest.lower, latest.horizon)
-            || (!previous.interrupted && previous.oldest.is_none())
-            || latest.upper != previous.continuation)
-    {
-        return Err(QuantumError::Context);
-    }
-    if latest.interrupted {
-        return Ok(Some(latest.upper));
-    }
-    // The first returned boundary is allowed its overlap, even at upper-1.
-    // A second successful page exposing no older time stops this bounded slice.
-    // Canonical-ID-aware saturated-second partitioning belongs to later T05 work.
-    if latest.oldest.is_none()
-        || previous
-            .is_some_and(|previous| !previous.interrupted && previous.oldest == latest.oldest)
-    {
-        Ok(None)
-    } else {
-        Ok(Some(latest.continuation))
-    }
-}
-
-#[allow(
-    clippy::too_many_arguments,
-    reason = "retained identity is checked against the same current planner inputs"
-)]
-async fn read(
-    tx: &Transaction<'_>,
+fn validate_page(
     native: &ProgressRead<'_>,
-    context: Context,
-    job: &AcquisitionJob,
-    scope: &StoredAcquisitionScope,
-    source: RelaySourceBinding,
-    control: ControlOwner,
-    wanted: Option<u64>,
+    row: &Row,
+    window: &LinearWindow,
+    traversal: &mut Traversal,
     authority: &mut impl FnMut() -> Result<(), AdmissionError>,
-) -> Result<Option<Completed>, QuantumError> {
-    let wanted = wanted.map(|value| value.to_string());
-    // One bounded row at a time. Predicates are compared in SQL after canonical
-    // reconstruction; neither two maximum predicates nor terminal decodes overlap.
-    let row = tx.query_opt("SELECT substring(quantum_id FROM 1 FOR 17) AS quantum_id, left(quantum_number::text,21) AS number,
-        left(interval_lower::text,21) AS lower, left(interval_upper::text,21) AS upper,
-        left(horizon::text,21) AS horizon,
-        quantum_profile=1 AND dataset_id=$2 AND scope_id=$3 AND enrollment_generation=$4::text::numeric
-            AND route_id=$5 AND producer_slot_id=$6 AND producer_epoch=$7::text::numeric
-            AND manifest_sha256=$8 AND issuer_resource=$9 AND issuer_epoch=$10::text::numeric
-            AND issuer_role='control' AND issuer_incarnation=$11 AS identity_valid,
-        left(terminal_kind,13) AS terminal_kind, substring(terminal_frame FROM 1 FOR 2097153) AS frame,
-        substring(request_id FROM 1 FOR 49) AS request, left(terminal_sequence::text,21) AS sequence,
-        teardown_complete, retained_events, classified_prefix,
-        substring(effect_records FROM 1 FOR 280) AS effects,
-        substring(dependencies FROM 1 FOR 55297) AS dependencies,
-        left(result_class,26) AS result_class, left(gap_reason,20) AS gap_reason,
-        left(continuation_upper::text,21) AS continuation,
-        checkpoint_before<=checkpoint_after AS checkpoint_valid
-        FROM control.acquisition_quanta WHERE job_id=$1 AND ($12::text IS NULL OR quantum_number=$12::text::numeric)
-        ORDER BY quantum_number DESC LIMIT 1",
-        &[&&job.id.as_bytes()[..], &&context.dataset.as_bytes()[..], &&scope.identity().as_bytes()[..],
-            &source.enrollment_generation.get().to_string(), &&source.route_id.as_bytes()[..],
-            &&context.slot.as_bytes()[..], &context.epoch.to_string(), &&context.manifest[..],
-            &&control.resource_id.as_bytes()[..], &control.epoch.get().to_string(),
-            &&control.process_incarnation.as_bytes()[..], &wanted]).await.map_err(failure)?;
-    let Some(row) = row else { return Ok(None) };
-    if !row.try_get::<_, bool>("identity_valid").map_err(failure)? {
-        return Err(QuantumError::Context);
-    }
-    let number = number(&row, "number")?;
-    let lower = self::number(&row, "lower")?;
-    let upper = self::number(&row, "upper")?;
-    let horizon = self::number(&row, "horizon")?;
-    let window =
-        LinearWindow::retained(scope.selector(), job.accepted_at_us, lower, upper, horizon)?;
+) -> Result<(), QuantumError> {
     let id: &[u8] = row.try_get("quantum_id").map_err(failure)?;
     if id.len() != 16 {
         return Err(QuantumError::Context);
     }
-    let predicate_valid: bool = tx
-        .query_one(
-            "SELECT request_predicate=$2 AND predicate_sha256=$3
-        FROM control.acquisition_quanta WHERE quantum_id=$1",
-            &[&id, &window.predicate(), &&window.predicate_digest()[..]],
-        )
-        .await
-        .map_err(failure)?
-        .try_get(0)
-        .map_err(failure)?;
-    if !predicate_valid || number == 0 {
+    if row.try_get::<_, &[u8]>("predicate").map_err(failure)? != window.predicate()
+        || row
+            .try_get::<_, &[u8]>("predicate_digest")
+            .map_err(failure)?
+            != window.predicate_digest()
+    {
         return Err(QuantumError::Context);
     }
-    // An unfinished/uncertain commit is never a new cursor, even if its current
-    // identity happens to match. The normal error path poisons this owner.
-    let kind: Option<&str> = row.try_get("terminal_kind").map_err(failure)?;
-    let kind = terminal_kind(kind.ok_or(QuantumError::Context)?)?;
+    let kind = terminal_kind(
+        row.try_get::<_, Option<&str>>("terminal_kind")
+            .map_err(failure)?
+            .ok_or(QuantumError::Context)?,
+    )?;
     let retained: i16 = row.try_get("retained_events").map_err(failure)?;
     let prefix: i16 = row.try_get("classified_prefix").map_err(failure)?;
     if !(0..=3).contains(&retained)
@@ -204,45 +276,40 @@ async fn read(
     {
         return Err(QuantumError::Context);
     }
-    let effects: &[u8] = row.try_get("effects").map_err(failure)?;
-    let DecodedEffects {
-        oldest,
-        ordering,
-        targets,
-    } = decode_effects(effects, retained as u16, prefix as u16, &window)?;
+    let decoded = decode_effects(
+        row.try_get("effects").map_err(failure)?,
+        retained as u16,
+        prefix as u16,
+        window.lower(),
+        window.upper(),
+    )?;
     let frame: &[u8] = row.try_get("frame").map_err(failure)?;
     let request: Option<&[u8]> = row.try_get("request").map_err(failure)?;
     if request.is_some_and(|value| {
         value.len() != 48
-            || value
+            || !value
                 .iter()
-                .any(|value| !value.is_ascii_digit() && !(b'a'..=b'f').contains(value))
+                .all(|v| v.is_ascii_digit() || (b'a'..=b'f').contains(v))
     }) {
         return Err(QuantumError::Context);
     }
     let mut flags = (false, false, false);
     let sequence: Option<&str> = row.try_get("sequence").map_err(failure)?;
     if matches!(kind, TerminalKind::Eose | TerminalKind::Closed) {
-        let request = request
-            .filter(|value| {
-                value.len() == 48
-                    && value
-                        .iter()
-                        .all(|value| value.is_ascii_digit() || (b'a'..=b'f').contains(value))
-            })
-            .ok_or(QuantumError::Context)?;
-        let terminal_sequence = sequence
+        let request = request.ok_or(QuantumError::Context)?;
+        let sequence = sequence
             .ok_or(QuantumError::Context)?
             .parse::<u64>()
             .map_err(|_| QuantumError::Context)?;
+        let effects: &[u8] = row.try_get("effects").map_err(failure)?;
         let last = effects
             .as_chunks::<93>()
             .0
             .iter()
-            .map(|record| u64::from_be_bytes(record[2..10].try_into().expect("effect")))
+            .map(|r| u64::from_be_bytes(r[2..10].try_into().expect("effect")))
             .max()
             .unwrap_or(0);
-        if terminal_sequence <= last {
+        if sequence <= last {
             return Err(QuantumError::Context);
         }
         let envelope = decode_relay(frame, bigbrotr_protocol::EventLimits::default())
@@ -258,7 +325,7 @@ async fn read(
                 let has = |wanted: &str| {
                     hints
                         .as_ref()
-                        .is_some_and(|values| values.iter().any(|value| value.as_ref() == wanted))
+                        .is_some_and(|v| v.iter().any(|v| v.as_ref() == wanted))
                 };
                 flags = (has("finish"), has("more"), has("auth"));
             }
@@ -269,50 +336,57 @@ async fn read(
     } else if !frame.is_empty() || sequence.is_some() || (retained > 0 && request.is_none()) {
         return Err(QuantumError::Context);
     }
-    // Terminal decode allocations have ended before native Fact decoding uses
-    // the same reserved scratch. Match only this quantum's exact dependency
-    // union, never global body membership or another page's cumulative closure.
-    let dependencies: &[u8] = row.try_get("dependencies").map_err(failure)?;
-    require_payloads(dependencies, &targets, |reference| {
-        native
-            .event_payload_time(reference, &mut *authority)
-            .map_err(QuantumError::Native)
-    })?;
+    // Authenticate against this row's union BEFORE any boundary or geometry use.
+    require_payloads(
+        row.try_get("dependencies").map_err(failure)?,
+        &decoded.targets,
+        |reference| {
+            native
+                .event_payload_time(reference, &mut *authority)
+                .map_err(QuantumError::Native)
+        },
+    )?;
     let terminal = TerminalState {
         kind,
         teardown: row.try_get("teardown_complete").map_err(failure)?,
         prefix: prefix as usize,
         retained: retained as usize,
-        ordering,
+        ordering: decoded.ordering,
         finish: flags.0,
         more: flags.1,
         auth: flags.2,
     };
-    let gap: Option<&str> = row.try_get("gap_reason").map_err(failure)?;
-    let class: &str = row.try_get("result_class").map_err(failure)?;
-    let continuation = self::number(&row, "continuation")?;
-    if gap != terminal.gap()
-        || class != terminal.class()
-        || continuation
-            != if gap.is_some() {
-                upper
-            } else {
-                window.continuation(oldest)
-            }
+    let settlement = traversal
+        .boundary
+        .settle(&traversal.geometry, &terminal, &decoded.targets)?;
+    let (class, gap) = page_result(&terminal, &decoded.targets, &settlement);
+    if row.try_get::<_, &str>("result_class").map_err(failure)? != class
+        || row
+            .try_get::<_, Option<&str>>("gap_reason")
+            .map_err(failure)?
+            != gap
+        || retained_settlement(row)? != settlement
     {
         return Err(QuantumError::Context);
     }
-    Ok(Some(Completed {
-        number,
-        lower,
-        upper,
-        horizon,
-        continuation,
-        oldest,
-        interrupted: gap.is_some(),
-    }))
+    traversal.geometry.finish(settlement)
 }
-
+pub(super) fn page_result(
+    terminal: &TerminalState,
+    targets: &[Option<(EventId, u64)>; 3],
+    settlement: &Settlement,
+) -> (&'static str, Option<&'static str>) {
+    if settlement.disposition == "saturated_second" {
+        (terminal.class(), Some("saturated_second"))
+    } else if terminal.retained > 0
+        && targets.iter().all(Option::is_none)
+        && terminal.gap().is_none()
+    {
+        ("interrupted", Some("no_verified_boundary"))
+    } else {
+        (terminal.class(), terminal.gap())
+    }
+}
 fn terminal_kind(value: &str) -> Result<TerminalKind, QuantumError> {
     Ok(match value {
         "eose" => TerminalKind::Eose,
@@ -363,13 +437,14 @@ fn decode_effects(
     bytes: &[u8],
     retained: u16,
     prefix: u16,
-    window: &LinearWindow,
+    lower: u64,
+    upper: u64,
 ) -> Result<DecodedEffects, QuantumError> {
     if bytes.len() > 3 * 93 || !bytes.len().is_multiple_of(93) {
         return Err(QuantumError::Context);
     }
-    let (mut ordinal, mut wire, mut classified, mut oldest, mut previous_time, mut ordering) =
-        (0, 0, 0, None, None, false);
+    let (mut ordinal, mut wire, mut classified, mut previous_time, mut ordering) =
+        (0, 0, 0, None, false);
     let mut targets = [None; 3];
     for record in bytes.as_chunks::<93>().0 {
         let next = u16::from_be_bytes(record[..2].try_into().expect("effect"));
@@ -393,10 +468,9 @@ fn decode_effects(
             classified += 1;
         }
         if matches!(kind, 2 | 3 | 5) {
-            if !(window.lower()..window.upper()).contains(&time) {
+            if !(lower..upper).contains(&time) {
                 return Err(QuantumError::Context);
             }
-            oldest = Some(oldest.map_or(time, |old: u64| old.min(time)));
             ordering |= previous_time.is_some_and(|previous| time > previous);
             previous_time = Some(time);
             targets[usize::from(next) - 1] = Some((
@@ -410,79 +484,128 @@ fn decode_effects(
     if classified != prefix {
         return Err(QuantumError::Context);
     }
-    Ok(DecodedEffects {
-        oldest,
-        ordering,
-        targets,
+    Ok(DecodedEffects { ordering, targets })
+}
+
+/// Redacted observation only. This repeats the same bounded geometry reducer;
+/// unlike planning, it supplies no native capability or physical-integrity claim.
+pub(in crate::storage::postgres::control_owner) async fn observe_status(
+    tx: &Transaction<'_>,
+    job: bigbrotr_model::JobId,
+) -> Result<Option<serde_json::Value>, QuantumError> {
+    let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[&&job.as_bytes()[..]];
+    let stream=tx.query_raw("SELECT quantum_profile,quantum_number::text AS number,entry_kind,disposition,
+        encode(scope_id,'hex') AS scope,interval_lower::text AS lower,interval_upper::text AS upper,
+        window_end::text AS window_end,window_width::text AS width,horizon::text AS horizon,
+        query_budget,query_number,result_class,terminal_kind,gap_reason,
+        continuation_upper::text AS continuation,gap_lower::text AS gap_lower,gap_upper::text AS gap_upper,
+        retained_events,classified_prefix FROM control.acquisition_quanta WHERE job_id=$1
+        ORDER BY quantum_number LIMIT 386",params.iter().copied()).await.map_err(failure)?;
+    futures_util::pin_mut!(stream);
+    let mut geometry: Option<Geometry> = None;
+    let mut result = None;
+    let mut count = 0u16;
+    let mut scope: Option<String> = None;
+    while let Some(row) = stream.try_next().await.map_err(failure)? {
+        count += 1;
+        let lower = number(&row, "lower")?;
+        let upper = number(&row, "upper")?;
+        let end = number(&row, "window_end")?;
+        let horizon = number(&row, "horizon")?;
+        let width = number(&row, "width")?;
+        let budget = u16::try_from(row.try_get::<_, i16>("query_budget").map_err(failure)?)
+            .map_err(|_| QuantumError::Context)?;
+        let spent = u16::try_from(row.try_get::<_, i16>("query_number").map_err(failure)?)
+            .map_err(|_| QuantumError::Context)?;
+        let current_scope: &str = row.try_get("scope").map_err(failure)?;
+        if geometry.is_none() {
+            geometry = Some(Geometry::new(lower, horizon, width, budget)?);
+            scope = Some(current_scope.to_owned());
+        }
+        let geometry = geometry.as_mut().expect("first row initialized");
+        if row.try_get::<_, i16>("quantum_profile").map_err(failure)? != 2
+            || number(&row, "number")? != u64::from(count)
+            || (horizon, width, budget) != (geometry.horizon, geometry.width, geometry.budget)
+            || scope.as_deref() != Some(current_scope)
+            || count > 3 * budget + 1
+        {
+            return Err(QuantumError::Context);
+        }
+        let entry: &str = row.try_get("entry_kind").map_err(failure)?;
+        let disposition: Option<&str> = row.try_get("disposition").map_err(failure)?;
+        match entry {
+            "request" => {
+                geometry.request(lower, upper, end, spent)?;
+                if disposition.is_some() {
+                    geometry.finish(retained_settlement(&row)?)?;
+                }
+            }
+            "selector_exclusion" => {
+                if spent != geometry.spent
+                    || !matches!(disposition, Some("selector_excluded" | "empty_target"))
+                {
+                    return Err(QuantumError::Context);
+                }
+                geometry.exclude(Exclusion {
+                    lower,
+                    upper,
+                    window_end: end,
+                    empty_target: disposition == Some("empty_target"),
+                })?;
+            }
+            _ => return Err(QuantumError::Context),
+        }
+        let pending =
+            (!geometry.settled).then(|| [geometry.lower.to_string(), geometry.upper.to_string()]);
+        let value = serde_json::json!({
+            "format":"bigbrotr-linear-quantum-status/2","quantum_number":count.to_string(),"scope_id":current_scope,
+            "entry_kind":entry,"disposition":disposition,"lower":lower.to_string(),"upper":upper.to_string(),
+            "window_end":end.to_string(),"horizon":horizon.to_string(),"window_width":width.to_string(),
+            "query_budget":budget,"queries_spent":geometry.spent,"attempted_prefix":geometry.attempted_prefix.to_string(),
+            "gap_count":geometry.gap_count,"pending_work":geometry.pending_work(),"pending_interval":pending,
+            "result":row.try_get::<_,Option<&str>>("result_class").map_err(failure)?.unwrap_or("pending"),
+            "terminal":row.try_get::<_,Option<&str>>("terminal_kind").map_err(failure)?,
+            "gap":row.try_get::<_,Option<&str>>("gap_reason").map_err(failure)?,
+            "continuation_upper":row.try_get::<_,Option<&str>>("continuation").map_err(failure)?,
+            "retained_events":row.try_get::<_,Option<i16>>("retained_events").map_err(failure)?,
+            "classified_prefix":row.try_get::<_,Option<i16>>("classified_prefix").map_err(failure)?,"coverage":"pending"
+        });
+        if serde_json::to_vec(&value)
+            .map_err(|_| QuantumError::Context)?
+            .len()
+            > 1024
+        {
+            return Err(QuantumError::Context);
+        }
+        result = Some(value);
+    }
+    Ok(result)
+}
+
+pub(super) fn authenticate_saved_effects(
+    native: &ProgressRead<'_>,
+    effects: &[u8],
+    retained: i16,
+    prefix: i16,
+    lower: u64,
+    upper: u64,
+    dependencies: &[u8],
+    authority: &mut impl FnMut() -> Result<(), AdmissionError>,
+) -> Result<(), QuantumError> {
+    if !(0..=3).contains(&retained) || !(0..=retained).contains(&prefix) || lower >= upper {
+        return Err(QuantumError::Context);
+    }
+    let decoded = decode_effects(effects, retained as u16, prefix as u16, lower, upper)?;
+    require_payloads(dependencies, &decoded.targets, |reference| {
+        native
+            .event_payload_time(reference, &mut *authority)
+            .map_err(QuantumError::Native)
     })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn page(number: u64, upper: u64, oldest: Option<u64>) -> Completed {
-        Completed {
-            number,
-            lower: 0,
-            upper,
-            horizon: 200_000,
-            continuation: oldest.map_or(upper, |time| time + 1),
-            oldest,
-            interrupted: false,
-        }
-    }
-
-    #[test]
-    fn overlap_short_or_known_pages_and_stop_only_after_returned_boundary_repeats() {
-        let first = page(1, 86_400, Some(1));
-        assert_eq!(choose(&first, None), Ok(Some(2)));
-        let older = page(2, 2, Some(0));
-        assert_eq!(choose(&older, Some(&first)), Ok(Some(1)));
-        let repeated_zero = page(3, 1, Some(0));
-        assert_eq!(choose(&repeated_zero, Some(&older)), Ok(None));
-        let at_upper = page(1, 1, Some(0));
-        assert_eq!(choose(&at_upper, None), Ok(Some(1)));
-        assert_eq!(choose(&page(2, 1, Some(0)), Some(&at_upper)), Ok(None));
-        assert_eq!(choose(&page(1, 86_400, None), None), Ok(None));
-    }
-
-    #[test]
-    fn known_interruption_retries_exact_interval_and_malformed_chain_refuses() {
-        let first = Completed {
-            interrupted: true,
-            ..page(1, 86_400, None)
-        };
-        assert_eq!(choose(&first, None), Ok(Some(86_400)));
-        let resumed = page(2, 86_400, Some(1));
-        assert_eq!(choose(&resumed, Some(&first)), Ok(Some(2)));
-        for bad in [
-            Completed {
-                number: 3,
-                ..resumed
-            },
-            Completed {
-                lower: 1,
-                ..resumed
-            },
-            Completed {
-                horizon: 199_999,
-                ..resumed
-            },
-            Completed {
-                upper: 2,
-                ..resumed
-            },
-        ] {
-            assert_eq!(choose(&bad, Some(&first)), Err(QuantumError::Context));
-        }
-        assert_eq!(choose(&resumed, None), Err(QuantumError::Context));
-        assert_eq!(
-            choose(&page(2, 86_400, Some(1)), Some(&page(1, 86_400, None))),
-            Err(QuantumError::Context)
-        );
-    }
-
     fn effect(ordinal: u16, sequence: u64, kind: u16, time: u64, prefix: u8) -> [u8; 93] {
         let mut record = [0; 93];
         record[..2].copy_from_slice(&ordinal.to_be_bytes());
@@ -496,16 +619,19 @@ mod tests {
         record[61..].copy_from_slice(&[1; 32]);
         record
     }
-
     fn summary(
         bytes: &[u8],
         retained: u16,
         prefix: u16,
         window: &LinearWindow,
     ) -> Result<(Option<u64>, bool), QuantumError> {
-        decode_effects(bytes, retained, prefix, window).map(|value| (value.oldest, value.ordering))
+        decode_effects(bytes, retained, prefix, window.lower(), window.upper()).map(|value| {
+            (
+                value.targets.iter().flatten().map(|(_, time)| *time).min(),
+                value.ordering,
+            )
+        })
     }
-
     #[test]
     fn retained_effects_distinguish_valid_times_ordering_holes_and_invalid_shape() {
         use bigbrotr_model::acquisition::{
@@ -539,7 +665,6 @@ mod tests {
         );
         assert_eq!(summary(&known, 1, 0, &window), Err(QuantumError::Context));
     }
-
     #[test]
     fn cursor_uses_only_exact_payload_pairs_in_this_pages_dependencies() {
         use bigbrotr_model::acquisition::{
@@ -575,27 +700,54 @@ mod tests {
         let mut second = effect(2, 2, 5, 60, 1);
         second[61..].copy_from_slice(id(2).as_bytes());
         let good = [effect(1, 1, 2, 80, 1), second].concat();
-        let decoded = decode_effects(&good, 2, 2, &window).unwrap();
+        let decoded = decode_effects(&good, 2, 2, window.lower(), window.upper()).unwrap();
         require_payloads(&refs, &decoded.targets, lookup).unwrap();
-        assert_eq!(window.continuation(decoded.oldest), 61);
+        assert_eq!(
+            window.continuation(
+                decoded
+                    .targets
+                    .iter()
+                    .flatten()
+                    .map(|(_, time)| *time)
+                    .min()
+            ),
+            61
+        );
 
         let mut forged = good.clone();
         forged[93 + 52..93 + 60].copy_from_slice(&20u64.to_be_bytes());
-        let decoded = decode_effects(&forged, 2, 2, &window).unwrap();
-        assert_eq!(window.continuation(decoded.oldest), 21); // Formula alone accepts this.
+        let decoded = decode_effects(&forged, 2, 2, window.lower(), window.upper()).unwrap();
+        assert_eq!(
+            window.continuation(
+                decoded
+                    .targets
+                    .iter()
+                    .flatten()
+                    .map(|(_, time)| *time)
+                    .min()
+            ),
+            21
+        ); // Formula alone accepts this.
         assert_eq!(
             require_payloads(&refs, &decoded.targets, lookup),
             Err(QuantumError::Context)
         );
         forged[93 + 61..93 + 93].copy_from_slice(id(3).as_bytes());
-        let decoded = decode_effects(&forged, 2, 2, &window).unwrap();
+        let decoded = decode_effects(&forged, 2, 2, window.lower(), window.upper()).unwrap();
         // The correct pair exists globally at3, but not in this row's union.
         assert_eq!(
             require_payloads(&refs, &decoded.targets, lookup),
             Err(QuantumError::Context)
         );
 
-        let proof = decode_effects(&effect(1, 1, 5, 80, 1), 1, 1, &window).unwrap();
+        let proof = decode_effects(
+            &effect(1, 1, 5, 80, 1),
+            1,
+            1,
+            window.lower(),
+            window.upper(),
+        )
+        .unwrap();
         require_payloads(&dependency(1), &proof.targets, lookup).unwrap();
         assert_eq!(
             require_payloads(&dependency(1), &proof.targets, |_| Ok(None)),
@@ -611,16 +763,112 @@ mod tests {
             ))),
             Err(QuantumError::Native(AdmissionError::StateMismatch))
         );
-        let repeated = page(2, 81, Some(80));
-        assert_eq!(choose(&repeated, Some(&page(1, 100, Some(80)))), Ok(None));
         assert_eq!(
-            require_payloads(&[], &proof.targets, lookup)
-                .and_then(|()| choose(&repeated, Some(&page(1, 100, Some(80))))),
+            decode_effects(&good[..61], 1, 1, window.lower(), window.upper()),
             Err(QuantumError::Context)
         );
+    }
+    #[test]
+    fn same_second_accumulates_ids_and_interruption_resets_comparison() {
+        let mut boundary = Boundary::new().unwrap();
+        let geometry = Geometry::new(0, 100, 100, 128).unwrap();
+        let terminal = TerminalState {
+            kind: TerminalKind::Eose,
+            teardown: true,
+            prefix: 1,
+            retained: 1,
+            ordering: false,
+            finish: false,
+            more: false,
+            auth: false,
+        };
+        let a = Some((EventId::from_bytes([1; 32]), 23));
+        let b = Some((EventId::from_bytes([2; 32]), 23));
         assert_eq!(
-            decode_effects(&good[..61], 1, 1, &window),
-            Err(QuantumError::Context)
+            boundary
+                .settle(&geometry, &terminal, &[a, None, None])
+                .unwrap()
+                .disposition,
+            "overlap"
+        );
+        assert_eq!(
+            boundary
+                .settle(&geometry, &terminal, &[b, None, None])
+                .unwrap()
+                .disposition,
+            "overlap"
+        );
+        assert_eq!(boundary.ids.len(), 2);
+        assert_eq!(
+            boundary
+                .settle(&geometry, &terminal, &[a, b, None])
+                .unwrap(),
+            Settlement {
+                disposition: "saturated_second",
+                continuation: 23,
+                gap: Some((23, 24))
+            }
+        );
+        assert!(boundary.ids.is_empty());
+        boundary
+            .settle(&geometry, &terminal, &[a, None, None])
+            .unwrap();
+        let interrupted = TerminalState {
+            kind: TerminalKind::Closed,
+            ..terminal
+        };
+        assert_eq!(
+            boundary
+                .settle(&geometry, &interrupted, &[a, None, None])
+                .unwrap()
+                .disposition,
+            "retry"
+        );
+        assert_eq!(
+            boundary
+                .settle(&geometry, &terminal, &[a, None, None])
+                .unwrap()
+                .disposition,
+            "overlap"
+        );
+        let older = Some((EventId::from_bytes([3; 32]), 1));
+        boundary
+            .settle(&geometry, &terminal, &[older, None, None])
+            .unwrap();
+        assert_eq!(boundary.second, Some(1));
+        assert_eq!(boundary.ids.len(), 1);
+    }
+    #[test]
+    fn rejection_only_is_retry_and_only_actual_empty_closes_window() {
+        let mut boundary = Boundary::new().unwrap();
+        let geometry = Geometry::new(0, 100, 100, 128).unwrap();
+        let rejected = TerminalState {
+            kind: TerminalKind::Eose,
+            teardown: true,
+            prefix: 1,
+            retained: 1,
+            ordering: false,
+            finish: false,
+            more: false,
+            auth: false,
+        };
+        let settlement = boundary.settle(&geometry, &rejected, &[None; 3]).unwrap();
+        assert_eq!(settlement.disposition, "retry");
+        assert_eq!(
+            page_result(&rejected, &[None; 3], &settlement),
+            ("interrupted", Some("no_verified_boundary"))
+        );
+        let empty = TerminalState {
+            prefix: 0,
+            retained: 0,
+            ..rejected
+        };
+        assert_eq!(
+            boundary
+                .settle(&geometry, &empty, &[None; 3])
+                .unwrap()
+                .disposition,
+            "window_closed"
         );
     }
 }

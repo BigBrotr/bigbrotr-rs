@@ -2,75 +2,81 @@
 -- an ordinary EOSE is complete history. Native proof remains the typed owner's.
 CREATE TABLE control.acquisition_quanta (
     quantum_id control.id16 PRIMARY KEY,
-    quantum_profile smallint NOT NULL DEFAULT 1 CHECK(quantum_profile=1),
-    quantum_number control.u64 NOT NULL CHECK(quantum_number>0),
-    dataset_id control.id16 NOT NULL,
-    job_id control.id16 NOT NULL,
-    scope_id control.id16 NOT NULL,
-    enrollment_generation control.u64 NOT NULL CHECK(enrollment_generation>0),
-    route_id control.id16 NOT NULL,
-    producer_slot_id control.id16 NOT NULL,
-    producer_epoch control.u64 NOT NULL CHECK(producer_epoch>0),
-    manifest_sha256 control.digest32 NOT NULL,
-    issuer_resource control.id16 NOT NULL,
+    quantum_profile smallint NOT NULL DEFAULT 2 CHECK(quantum_profile=2),
+    quantum_number control.u64 NOT NULL CHECK(quantum_number BETWEEN 1 AND 385),
+    entry_kind text NOT NULL DEFAULT 'request' CHECK(entry_kind IN ('request','selector_exclusion')),
+    dataset_id control.id16 NOT NULL, job_id control.id16 NOT NULL, scope_id control.id16 NOT NULL,
+    enrollment_generation control.u64 NOT NULL CHECK(enrollment_generation>0), route_id control.id16 NOT NULL,
+    producer_slot_id control.id16 NOT NULL, producer_epoch control.u64 NOT NULL CHECK(producer_epoch>0),
+    manifest_sha256 control.digest32 NOT NULL, issuer_resource control.id16 NOT NULL,
     issuer_epoch control.u64 NOT NULL CHECK(issuer_epoch>0),
-    issuer_role text NOT NULL DEFAULT 'control' CHECK(issuer_role='control'),
-    issuer_incarnation control.id16 NOT NULL,
-    interval_lower control.u64 NOT NULL,
-    interval_upper control.u64 NOT NULL,
-    horizon control.u64 NOT NULL,
-    request_predicate bytea NOT NULL CHECK(octet_length(request_predicate) BETWEEN 1 AND 2097152),
-    predicate_sha256 control.digest32 NOT NULL CHECK(predicate_sha256=sha256(request_predicate)),
+    issuer_role text NOT NULL DEFAULT 'control' CHECK(issuer_role='control'), issuer_incarnation control.id16 NOT NULL,
+    interval_lower control.u64 NOT NULL, interval_upper control.u64 NOT NULL, horizon control.u64 NOT NULL,
+    window_end control.u64 NOT NULL, window_width control.u64 NOT NULL CHECK(window_width>0),
+    query_budget smallint NOT NULL CHECK(query_budget BETWEEN 1 AND 128),
+    query_number smallint NOT NULL CHECK(query_number BETWEEN 0 AND 128 AND query_number<=query_budget),
+    request_predicate bytea CHECK(octet_length(request_predicate) BETWEEN 1 AND 2097152),
+    predicate_sha256 control.digest32 CHECK(predicate_sha256=sha256(request_predicate)),
     maximum_dependencies integer NOT NULL CHECK(maximum_dependencies BETWEEN 0 AND 768),
-    checkpoint_before control.u64 NOT NULL,
-    classified_before control.u64 NOT NULL,
-    charged_bytes bigint NOT NULL CHECK(charged_bytes BETWEEN 1024 AND 33554432),
-    created_at_us bigint NOT NULL,
-    terminal_kind text CHECK(terminal_kind IN ('eose','closed','deadline','cancelled','frame_cap',
-        'event_cap','transport','decode','disconnected')),
+    checkpoint_before control.u64 NOT NULL, classified_before control.u64 NOT NULL,
+    charged_bytes bigint NOT NULL CHECK(charged_bytes BETWEEN 1024 AND 33554432), created_at_us bigint NOT NULL,
+    terminal_kind text CHECK(terminal_kind IN ('eose','closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected')),
     terminal_frame bytea CHECK(octet_length(terminal_frame)<=2097152),
     request_id bytea CHECK(octet_length(request_id)=48 AND encode(request_id,'escape')~'^[0-9a-f]{48}$'),
-    terminal_sequence control.u64,
-    terminal_received_at_us bigint,
-    teardown_complete boolean,
+    terminal_sequence control.u64, terminal_received_at_us bigint, teardown_complete boolean,
     retained_events smallint CHECK(retained_events BETWEEN 0 AND 3),
     classified_prefix smallint CHECK(classified_prefix BETWEEN 0 AND 3),
     effect_records bytea CHECK(octet_length(effect_records)%93=0 AND octet_length(effect_records)<=279),
     dependencies bytea CHECK(octet_length(dependencies)%72=0 AND octet_length(dependencies)<=55296),
-    checkpoint_after control.u64,
-    checkpoint_sha256 control.digest32,
-    result_class text CHECK(result_class IN ('interrupted','linear_observed','relay_reported_exhaustion')),
-    gap_reason text CHECK(gap_reason IN ('closed','deadline','cancelled','frame_cap','event_cap',
-        'transport','decode','disconnected','unclassified_suffix','teardown','contradictory_hints','auth','ordering')),
+    checkpoint_after control.u64, checkpoint_sha256 control.digest32,
+    result_class text CHECK(result_class IN ('interrupted','linear_observed','relay_reported_exhaustion','selector_excluded','empty_target')),
+    gap_reason text CHECK(gap_reason IN ('closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected',
+        'unclassified_suffix','teardown','contradictory_hints','auth','ordering','no_verified_boundary','saturated_second')),
     continuation_upper control.u64,
-    completed_at_us bigint,
-    CHECK(interval_lower<interval_upper AND interval_upper<=horizon),
-    CHECK((terminal_kind IS NULL)=(completed_at_us IS NULL)),
-    CHECK((terminal_kind IS NULL AND num_nonnulls(terminal_frame,request_id,terminal_sequence,
-        terminal_received_at_us,teardown_complete,retained_events,classified_prefix,effect_records,
-        dependencies,checkpoint_after,checkpoint_sha256,result_class,gap_reason,continuation_upper)=0)
-        OR (terminal_kind IS NOT NULL AND terminal_frame IS NOT NULL
-            AND terminal_received_at_us IS NOT NULL AND teardown_complete IS NOT NULL
-            AND retained_events IS NOT NULL AND classified_prefix IS NOT NULL
-            AND classified_prefix<=retained_events AND effect_records IS NOT NULL
-            AND dependencies IS NOT NULL AND checkpoint_after IS NOT NULL
-            AND result_class IS NOT NULL AND continuation_upper IS NOT NULL
-            AND continuation_upper>interval_lower AND continuation_upper<=interval_upper
-            AND (result_class='interrupted')=(gap_reason IS NOT NULL)
-            AND (terminal_kind NOT IN ('eose','closed') OR (request_id IS NOT NULL AND terminal_sequence>0))
-            AND octet_length(dependencies)/72<=maximum_dependencies)),
+    disposition text CHECK(disposition IN ('retry','overlap','saturated_second','window_closed','selector_excluded','empty_target')),
+    gap_lower control.u64, gap_upper control.u64, completed_at_us bigint,
+    CHECK(coalesce((entry_kind='request' AND query_number>0 AND interval_lower<interval_upper AND interval_upper<=window_end
+            AND window_end<=horizon AND request_predicate IS NOT NULL AND predicate_sha256 IS NOT NULL
+            AND ((terminal_kind IS NULL AND completed_at_us IS NULL
+                AND num_nonnulls(terminal_frame,request_id,terminal_sequence,terminal_received_at_us,teardown_complete,
+                    retained_events,classified_prefix,effect_records,dependencies,checkpoint_after,checkpoint_sha256,
+                    result_class,gap_reason,continuation_upper,disposition,gap_lower,gap_upper)=0)
+            OR (terminal_kind IS NOT NULL AND completed_at_us IS NOT NULL AND terminal_frame IS NOT NULL
+                AND terminal_received_at_us IS NOT NULL AND teardown_complete IS NOT NULL
+                AND retained_events IS NOT NULL AND classified_prefix IS NOT NULL AND classified_prefix<=retained_events
+                AND effect_records IS NOT NULL AND dependencies IS NOT NULL AND checkpoint_after IS NOT NULL
+                AND result_class IN ('interrupted','linear_observed','relay_reported_exhaustion')
+                AND continuation_upper IS NOT NULL AND disposition IN ('retry','overlap','saturated_second','window_closed')
+                AND (terminal_kind NOT IN ('eose','closed') OR (request_id IS NOT NULL AND terminal_sequence>0))
+                AND octet_length(dependencies)/72<=maximum_dependencies
+                AND ((disposition='retry' AND continuation_upper=interval_upper AND gap_reason IS NOT NULL
+                        AND result_class='interrupted' AND gap_lower IS NULL AND gap_upper IS NULL)
+                    OR (disposition='overlap' AND continuation_upper>interval_lower AND continuation_upper<=interval_upper
+                        AND gap_reason IS NULL AND gap_lower IS NULL AND gap_upper IS NULL)
+                    OR (disposition='window_closed' AND continuation_upper=window_end AND retained_events=0
+                        AND gap_reason IS NULL AND gap_lower IS NULL AND gap_upper IS NULL)
+                    OR (disposition='saturated_second' AND gap_reason='saturated_second'
+                        AND gap_lower>=interval_lower AND gap_lower<interval_upper AND gap_upper=gap_lower+1
+                        AND continuation_upper=gap_lower)))))
+        OR (entry_kind='selector_exclusion' AND completed_at_us IS NOT NULL AND charged_bytes=1024
+            AND maximum_dependencies=0 AND checkpoint_after=checkpoint_before
+            AND disposition IN ('selector_excluded','empty_target') AND result_class=disposition
+            AND num_nonnulls(request_predicate,predicate_sha256,terminal_kind,terminal_frame,request_id,terminal_sequence,
+                terminal_received_at_us,teardown_complete,retained_events,classified_prefix,effect_records,dependencies,
+                gap_reason,continuation_upper,gap_lower,gap_upper)=0
+            AND ((disposition='selector_excluded' AND interval_lower<interval_upper AND interval_upper<=window_end AND window_end<=horizon)
+                OR (disposition='empty_target' AND interval_lower=interval_upper AND window_end=interval_lower AND interval_lower=horizon))),false)),
     UNIQUE(job_id,quantum_number),
     FOREIGN KEY(job_id) REFERENCES control.acquisition_jobs(job_id),
     FOREIGN KEY(dataset_id,scope_id) REFERENCES control.acquisition_scopes(dataset_id,scope_id),
-    FOREIGN KEY(producer_slot_id,producer_epoch,dataset_id)
-        REFERENCES control.producer_epochs(producer_slot_id,producer_epoch,dataset_id),
+    FOREIGN KEY(producer_slot_id,producer_epoch,dataset_id) REFERENCES control.producer_epochs(producer_slot_id,producer_epoch,dataset_id),
     FOREIGN KEY(dataset_id,issuer_resource,issuer_epoch,issuer_role,issuer_incarnation)
         REFERENCES control.owner_epochs(dataset_id,resource_id,epoch,role,process_incarnation)
 );
 CREATE INDEX acquisition_quanta_producer ON control.acquisition_quanta(producer_slot_id,producer_epoch);
 CREATE INDEX acquisition_quanta_job ON control.acquisition_quanta(job_id,quantum_number DESC);
 CREATE UNIQUE INDEX acquisition_quantum_pending ON control.acquisition_quanta(job_id)
-    WHERE terminal_kind IS NULL;
+    WHERE entry_kind='request' AND terminal_kind IS NULL;
 
 CREATE FUNCTION control.quantum_retained_charge(wanted_slot bytea,wanted_epoch numeric)
 RETURNS bigint LANGUAGE sql STABLE STRICT SET search_path=pg_catalog AS $$
@@ -142,7 +148,7 @@ BEGIN
         RAISE EXCEPTION 'linear quantum requires its exact current complete producer and job' USING ERRCODE='23514';
     END IF;
     IF TG_WHEN='AFTER' THEN
-        IF NEW.terminal_kind IS NOT NULL AND (NEW.checkpoint_after<>coalesce(h.checkpoint_revision,0)
+        IF NEW.completed_at_us IS NOT NULL AND (NEW.checkpoint_after<>coalesce(h.checkpoint_revision,0)
             OR NEW.checkpoint_sha256 IS DISTINCT FROM h.checkpoint_digest) THEN
             RAISE EXCEPTION 'linear quantum checkpoint changed before commit' USING ERRCODE='23514';
         END IF;
@@ -153,20 +159,30 @@ BEGIN
                 FROM control.acquisition_quanta q WHERE q.job_id=NEW.job_id)
             OR NEW.classified_before<>coalesce((SELECT classified_events FROM control.acquisition_progress
                 WHERE producer_slot_id=NEW.producer_slot_id AND producer_epoch=NEW.producer_epoch AND job_id=NEW.job_id),0)
-            OR NEW.terminal_kind IS NOT NULL OR NEW.checkpoint_before<>coalesce(h.checkpoint_revision,0)
-            OR NEW.charged_bytes<>1024+octet_length(NEW.request_predicate)+2097152
-                +3*1024+256::bigint*NEW.maximum_dependencies THEN
+            OR NEW.checkpoint_before<>coalesce(h.checkpoint_revision,0)
+            OR EXISTS(SELECT 1 FROM control.acquisition_quanta q WHERE q.job_id=NEW.job_id
+                AND q.entry_kind='request' AND q.terminal_kind IS NULL)
+            OR NEW.quantum_number>3*NEW.query_budget+1
+            OR NEW.query_number<>(SELECT count(*) FROM control.acquisition_quanta q WHERE q.job_id=NEW.job_id
+                AND q.entry_kind='request')+(CASE WHEN NEW.entry_kind='request' THEN 1 ELSE 0 END)
+            OR EXISTS(SELECT 1 FROM control.acquisition_quanta q WHERE q.job_id=NEW.job_id
+                AND (q.horizon,q.window_width,q.query_budget) IS DISTINCT FROM (NEW.horizon,NEW.window_width,NEW.query_budget))
+            OR (NEW.entry_kind='request' AND (NEW.terminal_kind IS NOT NULL OR NEW.charged_bytes<>
+                1024+octet_length(NEW.request_predicate)+2097152+3*1024+256::bigint*NEW.maximum_dependencies))
+            OR (NEW.entry_kind='selector_exclusion' AND (NEW.charged_bytes<>1024
+                OR NEW.checkpoint_after<>coalesce(h.checkpoint_revision,0)
+                OR NEW.checkpoint_sha256 IS DISTINCT FROM h.checkpoint_digest)) THEN
             RAISE EXCEPTION 'linear plan requires prefunded immutable completion' USING ERRCODE='23514';
         END IF;
     ELSE
         previous_charge:=OLD.charged_bytes;
-        IF OLD.terminal_kind IS NOT NULL OR NEW.terminal_kind IS NULL
+        IF OLD.entry_kind<>'request' OR OLD.terminal_kind IS NOT NULL OR NEW.terminal_kind IS NULL
             OR (to_jsonb(NEW)-ARRAY['charged_bytes','terminal_kind','terminal_frame','request_id','terminal_sequence',
                 'terminal_received_at_us','teardown_complete','retained_events','classified_prefix','effect_records',
-                'dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason','continuation_upper','completed_at_us'])
+                'dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason','continuation_upper','disposition','gap_lower','gap_upper','completed_at_us'])
             IS DISTINCT FROM (to_jsonb(OLD)-ARRAY['charged_bytes','terminal_kind','terminal_frame','request_id','terminal_sequence',
                 'terminal_received_at_us','teardown_complete','retained_events','classified_prefix','effect_records',
-                'dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason','continuation_upper','completed_at_us'])
+                'dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason','continuation_upper','disposition','gap_lower','gap_upper','completed_at_us'])
             OR NEW.checkpoint_after<>coalesce(h.checkpoint_revision,0)
             OR NEW.checkpoint_sha256 IS DISTINCT FROM h.checkpoint_digest
             OR NEW.charged_bytes<>1024+octet_length(NEW.request_predicate)+octet_length(NEW.terminal_frame)

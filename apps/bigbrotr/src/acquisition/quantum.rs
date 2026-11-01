@@ -154,7 +154,7 @@ impl LinearWindow {
         Self::from_interval(selector, lower, upper, horizon)
     }
 
-    fn frozen_horizon(
+    pub(crate) fn frozen_horizon(
         selector: &CollectionSelector,
         accepted_at_us: i64,
     ) -> Result<u64, QuantumError> {
@@ -183,7 +183,7 @@ impl LinearWindow {
         upper: u64,
         horizon: u64,
     ) -> Result<Self, QuantumError> {
-        if lower != selector.history_since().0 || lower >= upper || upper > horizon {
+        if lower < selector.history_since().0 || lower >= upper || upper > horizon {
             return Err(QuantumError::Interval);
         }
         let mut filters = Vec::with_capacity(selector.filters().len());
@@ -251,6 +251,228 @@ impl LinearWindow {
     }
 }
 
+/// Geometry only: applying an entry never authenticates its effects. The planner
+/// must validate its complete retained stream and each row's native payload union
+/// before using this reducer. Status uses the same reducer for observations only.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Geometry {
+    pub origin: u64,
+    pub lower: u64,
+    pub upper: u64,
+    pub window_end: u64,
+    pub horizon: u64,
+    pub width: u64,
+    pub budget: u16,
+    pub spent: u16,
+    pub attempted_prefix: u64,
+    pub gap_count: u16,
+    pub settled: bool,
+    pub pending: bool,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Settlement {
+    pub disposition: &'static str,
+    pub continuation: u64,
+    pub gap: Option<(u64, u64)>,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Exclusion {
+    pub lower: u64,
+    pub upper: u64,
+    pub window_end: u64,
+    pub empty_target: bool,
+}
+impl Geometry {
+    pub fn new(origin: u64, horizon: u64, width: u64, budget: u16) -> Result<Self, QuantumError> {
+        if width == 0 || !(1..=128).contains(&budget) {
+            return Err(QuantumError::Interval);
+        }
+        let end = origin.saturating_add(width).min(horizon);
+        Ok(Self {
+            origin,
+            lower: origin,
+            upper: end.max(origin),
+            window_end: end.max(origin),
+            horizon,
+            width,
+            budget,
+            spent: 0,
+            attempted_prefix: origin.min(horizon),
+            gap_count: 0,
+            settled: false,
+            pending: false,
+        })
+    }
+    pub fn pending_work(&self) -> &'static str {
+        if self.pending {
+            "request_pending"
+        } else if self.settled {
+            "settled"
+        } else if self.spent == self.budget {
+            "budget_deferred"
+        } else {
+            "query_ready"
+        }
+    }
+    pub fn request(
+        &mut self,
+        lower: u64,
+        upper: u64,
+        end: u64,
+        spent: u16,
+    ) -> Result<(), QuantumError> {
+        if self.settled
+            || self.pending
+            || self.spent == self.budget
+            || (lower, upper, end) != (self.lower, self.upper, self.window_end)
+            || lower >= upper
+            || spent != self.spent + 1
+        {
+            return Err(QuantumError::Context);
+        }
+        self.spent = spent;
+        self.pending = true;
+        Ok(())
+    }
+    fn close(&mut self, end: u64) {
+        self.attempted_prefix = end;
+        self.lower = end;
+        self.window_end = end.saturating_add(self.width).min(self.horizon);
+        self.upper = self.window_end;
+        self.settled = end == self.horizon;
+    }
+    pub fn finish(&mut self, value: Settlement) -> Result<(), QuantumError> {
+        if !self.pending {
+            return Err(QuantumError::Context);
+        }
+        match value.disposition {
+            "retry" if value.continuation == self.upper && value.gap.is_none() => {}
+            "overlap"
+                if self.lower < value.continuation
+                    && value.continuation <= self.upper
+                    && value.gap.is_none() =>
+            {
+                self.upper = value.continuation;
+            }
+            "saturated_second" => {
+                let (lower, upper) = value.gap.ok_or(QuantumError::Context)?;
+                if lower < self.lower
+                    || lower >= self.upper
+                    || lower.checked_add(1) != Some(upper)
+                    || value.continuation != lower
+                {
+                    return Err(QuantumError::Context);
+                }
+                self.gap_count = self.gap_count.checked_add(1).ok_or(QuantumError::Context)?;
+                if lower == self.lower {
+                    self.close(self.window_end);
+                } else {
+                    self.upper = lower;
+                }
+            }
+            "window_closed" if value.gap.is_none() && value.continuation == self.window_end => {
+                self.close(self.window_end);
+            }
+            _ => return Err(QuantumError::Context),
+        }
+        self.pending = false;
+        Ok(())
+    }
+    /// Time algebra over the bounded conjunction set, including empty future
+    /// windows in one grid calculation. No loop proportional to signed time.
+    pub fn exclusion(&self, selector: &CollectionSelector) -> Option<Exclusion> {
+        if self.settled || self.pending {
+            return None;
+        }
+        if self.origin >= self.horizon {
+            return Some(Exclusion {
+                lower: self.horizon,
+                upper: self.horizon,
+                window_end: self.horizon,
+                empty_target: true,
+            });
+        }
+        let intersects = |lower: u64, upper: u64| {
+            selector.filters().iter().any(|filter| {
+                let fields = filter.fields();
+                let begin = fields.since.map_or(lower, |time| time.0.max(lower));
+                let end = fields
+                    .until
+                    .and_then(|time| time.0.checked_add(1))
+                    .unwrap_or(upper)
+                    .min(upper);
+                begin < end
+            })
+        };
+        if intersects(self.lower, self.upper) {
+            return None;
+        }
+        let mut end = self.window_end;
+        if self.upper == self.window_end {
+            let next = selector
+                .filters()
+                .iter()
+                .filter_map(|filter| {
+                    let fields = filter.fields();
+                    let begin = fields.since.map_or(end, |time| time.0.max(end));
+                    let last = fields
+                        .until
+                        .and_then(|time| time.0.checked_add(1))
+                        .unwrap_or(self.horizon)
+                        .min(self.horizon);
+                    (begin < last).then_some(begin)
+                })
+                .min();
+            end = next.map_or(self.horizon, |time| {
+                self.origin + ((time - self.origin) / self.width) * self.width
+            });
+            end = end.max(self.window_end).min(self.horizon);
+        }
+        Some(Exclusion {
+            lower: self.lower,
+            upper: if self.upper == self.window_end {
+                end
+            } else {
+                self.upper
+            },
+            window_end: end,
+            empty_target: false,
+        })
+    }
+    pub fn exclude(&mut self, span: Exclusion) -> Result<(), QuantumError> {
+        if self.pending || self.settled {
+            return Err(QuantumError::Context);
+        }
+        if span.empty_target {
+            if self.origin < self.horizon
+                || (span.lower, span.upper, span.window_end)
+                    != (self.horizon, self.horizon, self.horizon)
+            {
+                return Err(QuantumError::Context);
+            }
+            self.settled = true;
+            return Ok(());
+        }
+        if span.lower != self.lower {
+            return Err(QuantumError::Context);
+        }
+        if span.lower >= span.upper
+            || span.window_end > self.horizon
+            || (self.upper < self.window_end
+                && (span.upper, span.window_end) != (self.upper, self.window_end))
+            || (self.upper == self.window_end
+                && (span.upper != span.window_end
+                    || span.window_end < self.window_end
+                    || (span.window_end != self.horizon
+                        && (span.window_end - self.origin) % self.width != 0)))
+        {
+            return Err(QuantumError::Context);
+        }
+        self.close(span.window_end);
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -273,6 +495,115 @@ mod tests {
         )
         .unwrap()
     }
+    fn apply(
+        geometry: &mut Geometry,
+        disposition: &'static str,
+        continuation: u64,
+        gap: Option<(u64, u64)>,
+    ) {
+        geometry
+            .request(
+                geometry.lower,
+                geometry.upper,
+                geometry.window_end,
+                geometry.spent + 1,
+            )
+            .unwrap();
+        geometry
+            .finish(Settlement {
+                disposition,
+                continuation,
+                gap,
+            })
+            .unwrap();
+    }
+    #[test]
+    fn three_windows_keep_original_end_and_contiguous_attempted_prefix_with_gaps() {
+        let mut pass = Geometry::new(0, 259200, 86400, 128).unwrap();
+        apply(&mut pass, "overlap", 2, None);
+        assert_eq!(
+            (pass.upper, pass.window_end, pass.attempted_prefix),
+            (2, 86400, 0)
+        );
+        apply(&mut pass, "saturated_second", 1, Some((1, 2)));
+        assert_eq!((pass.upper, pass.window_end, pass.gap_count), (1, 86400, 1));
+        apply(&mut pass, "window_closed", 86400, None);
+        assert_eq!(
+            (pass.lower, pass.upper, pass.attempted_prefix),
+            (86400, 172800, 86400)
+        );
+        apply(&mut pass, "window_closed", 172800, None);
+        apply(&mut pass, "overlap", 172802, None);
+        apply(
+            &mut pass,
+            "saturated_second",
+            172801,
+            Some((172801, 172802)),
+        );
+        apply(&mut pass, "window_closed", 259200, None);
+        assert!(pass.settled);
+        assert_eq!(
+            (pass.spent, pass.gap_count, pass.attempted_prefix),
+            (7, 2, 259200)
+        );
+    }
+    #[test]
+    fn fixed_query_budget_counts_pending_retries_and_complete_pass_wins() {
+        let mut pass = Geometry::new(0, 10, 10, 128).unwrap();
+        for _ in 0..127 {
+            apply(&mut pass, "retry", 10, None);
+        }
+        pass.request(0, 10, 10, 128).unwrap();
+        assert_eq!(pass.pending_work(), "request_pending");
+        pass.finish(Settlement {
+            disposition: "retry",
+            continuation: 10,
+            gap: None,
+        })
+        .unwrap();
+        assert_eq!(pass.pending_work(), "budget_deferred");
+        assert!(pass.request(0, 10, 10, 129).is_err());
+        let mut last = Geometry::new(0, 10, 10, 1).unwrap();
+        apply(&mut last, "window_closed", 10, None);
+        assert_eq!(last.pending_work(), "settled");
+        assert!(Geometry::new(0, 10, 10, 129).is_err());
+        assert!(Geometry::new(0, 10, 10, 0).is_err());
+    }
+    #[test]
+    fn exclusions_coalesce_empty_grid_windows_and_close_original_end_after_stall() {
+        let collection = selector(0, &[(Some(23), Some(86399))]);
+        let mut pass = Geometry::new(0, 86400, 86400, 128).unwrap();
+        apply(&mut pass, "overlap", 24, None);
+        apply(&mut pass, "saturated_second", 23, Some((23, 24)));
+        let excluded = pass.exclusion(&collection).unwrap();
+        assert_eq!(
+            excluded,
+            Exclusion {
+                lower: 0,
+                upper: 23,
+                window_end: 86400,
+                empty_target: false
+            }
+        );
+        pass.exclude(excluded).unwrap();
+        assert!(pass.settled);
+        assert_eq!(pass.attempted_prefix, 86400);
+        let distant = selector(0, &[(Some(1_000_000_001), None)]);
+        let mut sparse = Geometry::new(0, 2_000_000_000, 86400, 128).unwrap();
+        let span = sparse.exclusion(&distant).unwrap();
+        assert_eq!(span.upper, (1_000_000_001 / 86400) * 86400);
+        sparse.exclude(span).unwrap();
+        assert!(sparse.exclusion(&distant).is_none());
+        let empty = selector(100, &[(None, Some(10))]);
+        let mut pass = Geometry::new(100, 11, 86400, 128).unwrap();
+        let span = pass.exclusion(&empty).unwrap();
+        assert!(span.empty_target);
+        assert_eq!(span.lower, span.upper);
+        pass.exclude(span).unwrap();
+        assert!(pass.settled);
+        assert_eq!(pass.attempted_prefix, 11);
+    }
+
     #[test]
     fn frozen_first_window_preserves_empty_intersections_and_checked_seconds() {
         let window = LinearWindow::first(
@@ -360,7 +691,6 @@ mod tests {
             (80_999_999, 10, 37, 81),
             (-1, 10, 37, 81),
             (100_999_999, 9, 37, 81),
-            (100_999_999, 11, 37, 81),
             (100_999_999, 10, 10, 81),
             (100_999_999, 10, 9, 81),
             (100_999_999, 10, 82, 81),

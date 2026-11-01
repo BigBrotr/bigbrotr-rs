@@ -40,7 +40,7 @@ const SCAN_ADMISSIONS: &str = "
     SELECT substring(b.job_id FROM 1 FOR 17),left(b.admission_ordinal::text,21),
         (SELECT CASE WHEN j.dataset_id=$3::bytea AND j.kind='acquisition'
             AND j.acquisition_job_protocol=1 AND j.checkpoint_revision=0
-            AND NOT EXISTS(SELECT 1 FROM control.acquisition_quanta q WHERE q.job_id=j.job_id AND q.terminal_kind IS NULL)
+            AND NOT EXISTS(SELECT 1 FROM control.acquisition_quanta q WHERE q.job_id=j.job_id AND q.entry_kind='request' AND q.terminal_kind IS NULL)
             AND j.input_complete AND j.input_topology_generation IS NULL
             AND ((j.state='accepted' AND j.job_revision=1
                     AND j.owner_resource_id IS NULL AND j.owner_epoch IS NULL AND j.owner_incarnation IS NULL)

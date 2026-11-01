@@ -15,7 +15,10 @@ use tokio_postgres::Transaction;
 
 #[path = "linear_continuation.rs"]
 mod continuation;
-pub(in crate::storage::postgres::control_owner) use continuation::next_window;
+use continuation::page_result;
+pub(in crate::storage::postgres::control_owner) use continuation::{
+    Traversal, next_window, observe_status,
+};
 
 pub struct QuantumGrant {
     pub(in crate::storage::postgres::control_owner) permit: Arc<OwnedPermit>,
@@ -30,11 +33,15 @@ impl QuantumGrant {
             // A prior terminal is decoded one row at a time before retaining
             // the next plan. Fund the same bounded wire parser used at receive.
             + bigbrotr_protocol::EventLimits::default().parse_bytes as u64
+            // Streaming rows retain bounded predicate bytes beside terminal bytes.
+            + bigbrotr_protocol::EventLimits::default().wire_bytes as u64
             + (MAX_PREIMAGE_BYTES
                 + MAX_TOTAL_VALUES * size_of::<String>()
                 + MAX_FILTERS * size_of::<Filter>()
                 + 2 * 3 * 256 * (size_of::<FactRef>() + 72)
-                + 128 * 1024) as u64
+                + 128 * 1024
+                + continuation::MAX_BOUNDARY_IDS * size_of::<bigbrotr_model::EventId>()
+                + size_of::<Traversal>()) as u64
     }
     pub fn terminal_bytes() -> u64 {
         (bigbrotr_protocol::EventLimits::default().wire_bytes + size_of::<RequestTerminal>()) as u64
@@ -59,12 +66,17 @@ pub struct LinearQuantum {
     pub(in crate::storage::postgres::control_owner) before: u64,
     pub(in crate::storage::postgres::control_owner) classified_before: u64,
     pub(in crate::storage::postgres::control_owner) window: LinearWindow,
+    traversal: Mutex<Traversal>,
     pub(in crate::storage::postgres::control_owner) permit: Arc<OwnedPermit>,
     pub(in crate::storage::postgres::control_owner) effects: Arc<Mutex<QuantumEffects>>,
 }
 impl LinearQuantum {
     pub fn filters(&self) -> &[bigbrotr_model::acquisition::Filter] {
         self.window.filters()
+    }
+    pub(crate) fn profile(&self) -> Result<(u64, u16), QuantumError> {
+        let traversal = self.traversal.lock().map_err(|_| QuantumError::Context)?;
+        Ok((traversal.geometry.width, traversal.geometry.budget))
     }
     pub fn capture(
         &self,
@@ -263,8 +275,8 @@ pub(in crate::storage::postgres::control_owner) async fn require_history(
     if !enabled {
         return Ok(());
     }
-    let valid:bool=tx.query_one("SELECT coalesce(bool_and(quantum_profile=1 AND dataset_id=$3 AND manifest_sha256=$4
-        AND charged_bytes=CASE WHEN terminal_kind IS NULL THEN
+    let valid:bool=tx.query_one("SELECT coalesce(bool_and(quantum_profile=2 AND dataset_id=$3 AND manifest_sha256=$4
+        AND charged_bytes=CASE WHEN entry_kind='selector_exclusion' THEN 1024 WHEN terminal_kind IS NULL THEN
             1024+octet_length(request_predicate)+2097152+3*1024+256::bigint*maximum_dependencies
             ELSE 1024+octet_length(request_predicate)+octet_length(terminal_frame)
                 +octet_length(effect_records)+256::bigint*(octet_length(dependencies)/72) END),true)
@@ -278,7 +290,7 @@ pub(in crate::storage::postgres::control_owner) async fn require_history(
         &[&&context.slot.as_bytes()[..], &context.epoch.to_string()];
     let stream=tx.query_raw("SELECT substring(q.dependencies FROM 1+72*g.i FOR 72)
         FROM control.acquisition_quanta q CROSS JOIN LATERAL generate_series(0,octet_length(q.dependencies)/72-1) g(i)
-        WHERE q.producer_slot_id=$1 AND q.producer_epoch=$2::text::numeric AND q.terminal_kind IS NOT NULL
+        WHERE q.producer_slot_id=$1 AND q.producer_epoch=$2::text::numeric AND q.entry_kind='request' AND q.terminal_kind IS NOT NULL
         ORDER BY q.quantum_id,g.i",params.iter().copied()).await.map_err(|_|ProducerProgressError::Backend)?;
     futures_util::pin_mut!(stream);
     let mut count = 0usize;
@@ -301,6 +313,39 @@ pub(in crate::storage::postgres::control_owner) async fn require_history(
             .require_fact(reference, &mut authority)
             .map_err(ProducerProgressError::Native)?;
     }
+    let stream = tx
+        .query_raw(
+            "SELECT interval_lower::text,interval_upper::text,
+        retained_events,classified_prefix,substring(effect_records FROM 1 FOR 280),
+        substring(dependencies FROM 1 FOR 55297) FROM control.acquisition_quanta
+        WHERE producer_slot_id=$1 AND producer_epoch=$2::text::numeric
+        AND entry_kind='request' AND terminal_kind IS NOT NULL ORDER BY job_id,quantum_number",
+            params.iter().copied(),
+        )
+        .await
+        .map_err(|_| ProducerProgressError::Backend)?;
+    futures_util::pin_mut!(stream);
+    while let Some(row) = stream
+        .try_next()
+        .await
+        .map_err(|_| ProducerProgressError::Backend)?
+    {
+        authority().map_err(ProducerProgressError::Native)?;
+        continuation::authenticate_saved_effects(
+            native,
+            row.try_get(4).map_err(|_| ProducerProgressError::Backend)?,
+            row.try_get(2).map_err(|_| ProducerProgressError::Backend)?,
+            row.try_get(3).map_err(|_| ProducerProgressError::Backend)?,
+            rows::number(&row, 0)?,
+            rows::number(&row, 1)?,
+            row.try_get(5).map_err(|_| ProducerProgressError::Backend)?,
+            &mut authority,
+        )
+        .map_err(|error| match error {
+            QuantumError::Native(error) => ProducerProgressError::Native(error),
+            _ => ProducerProgressError::InvalidContext,
+        })?;
+    }
     Ok(())
 }
 #[allow(
@@ -314,6 +359,7 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     scope: AcquisitionScopeId,
     source: RelaySourceBinding,
     window: LinearWindow,
+    mut traversal: Traversal,
     control: ControlOwner,
     grant: QuantumGrant,
 ) -> Result<LinearQuantum, QuantumError> {
@@ -326,6 +372,12 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
         .iter()
         .find(|head| head.job == job.id)
         .map_or(0, |head| head.classified);
+    traversal.geometry.request(
+        window.lower(),
+        window.upper(),
+        traversal.geometry.window_end,
+        traversal.geometry.spent + 1,
+    )?;
     let maximum_dependencies = 3 * crate::storage::rocks::store::AdmissionLimits::default()
         .max_dependencies
         .max(crate::storage::rocks::store::CertificationLimits::default().max_dependencies);
@@ -338,17 +390,18 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
         + 256 * maximum_dependencies as i64;
     tx.execute("INSERT INTO control.acquisition_quanta(quantum_id,quantum_number,dataset_id,job_id,scope_id,
         enrollment_generation,route_id,producer_slot_id,producer_epoch,manifest_sha256,
-        issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,
+        issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,window_end,window_width,query_budget,query_number,
         request_predicate,predicate_sha256,maximum_dependencies,checkpoint_before,classified_before,charged_bytes,created_at_us)
         VALUES($1::bytea,(SELECT coalesce(max(q.quantum_number),0)+1 FROM control.acquisition_quanta q WHERE q.job_id=$3::bytea),$2::bytea,$3::bytea,$4::bytea,$5::text::numeric,$6::bytea,$7::bytea,$8::text::numeric,$9::bytea,$10::bytea,$11::text::numeric,$12::bytea,
-        $13::text::numeric,$14::text::numeric,$15::text::numeric,$16::bytea,$17::bytea,$18,$19::text::numeric,$20::text::numeric,$21,
+        $13::text::numeric,$14::text::numeric,$15::text::numeric,$22::text::numeric,$23::text::numeric,$24,$25,$16::bytea,$17::bytea,$18,$19::text::numeric,$20::text::numeric,$21,
         (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)",
         &[&&id[..],&&context.dataset.as_bytes()[..],&&job.id.as_bytes()[..],&&scope.as_bytes()[..],
             &source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..],&&context.slot.as_bytes()[..],
             &context.epoch.to_string(),&&context.manifest[..],&&control.resource_id.as_bytes()[..],&control.epoch.get().to_string(),
             &&control.process_incarnation.as_bytes()[..],&window.lower().to_string(),&window.upper().to_string(),&window.horizon().to_string(),
             &window.predicate(),&&window.predicate_digest()[..],&(maximum_dependencies as i32),&snapshot.revision.to_string(),
-            &classified_before.to_string(),&charge]).await.map_err(failure)?;
+            &classified_before.to_string(),&charge,&traversal.geometry.window_end.to_string(),
+            &traversal.geometry.width.to_string(),&(traversal.geometry.budget as i16),&(traversal.geometry.spent as i16)]).await.map_err(failure)?;
     let mut effects = Vec::new();
     effects
         .try_reserve_exact(3)
@@ -365,6 +418,7 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
         before: snapshot.revision,
         classified_before,
         window,
+        traversal: Mutex::new(traversal),
         permit: grant.permit.clone(),
         effects: Arc::new(Mutex::new(QuantumEffects {
             job: job.id,
@@ -378,6 +432,62 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     })
 }
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "same locked authority and native history as request planning"
+)]
+pub(in crate::storage::postgres::control_owner) async fn exclude(
+    tx: &Transaction<'_>,
+    context: Context,
+    job: &AcquisitionJob,
+    scope: AcquisitionScopeId,
+    source: RelaySourceBinding,
+    control: ControlOwner,
+    traversal: &mut Traversal,
+    span: crate::acquisition::quantum::Exclusion,
+) -> Result<(), QuantumError> {
+    let snapshot = load(tx, context).await.map_err(|_| QuantumError::Context)?;
+    if snapshot.complete != snapshot.reserved
+        || traversal.entries as usize >= 3 * usize::from(traversal.geometry.budget) + 1
+    {
+        return Err(QuantumError::Context);
+    }
+    let classified = snapshot
+        .jobs
+        .iter()
+        .find(|head| head.job == job.id)
+        .map_or(0, |head| head.classified);
+    let digest = (snapshot.revision > 0).then(|| super::digest(context, &snapshot));
+    let mut id = [0; 16];
+    getrandom::fill(&mut id).map_err(|_| QuantumError::Context)?;
+    let disposition = if span.empty_target {
+        "empty_target"
+    } else {
+        "selector_excluded"
+    };
+    tx.execute("INSERT INTO control.acquisition_quanta(quantum_id,quantum_number,entry_kind,dataset_id,
+        job_id,scope_id,enrollment_generation,route_id,producer_slot_id,producer_epoch,manifest_sha256,
+        issuer_resource,issuer_epoch,issuer_incarnation,interval_lower,interval_upper,horizon,window_end,
+        window_width,query_budget,query_number,maximum_dependencies,checkpoint_before,classified_before,
+        charged_bytes,created_at_us,checkpoint_after,checkpoint_sha256,disposition,result_class,completed_at_us)
+        VALUES($1,$2::text::numeric,'selector_exclusion',$3,$4,$5,$6::text::numeric,$7,$8,$9::text::numeric,$10,
+        $11,$12::text::numeric,$13,$14::text::numeric,$15::text::numeric,$16::text::numeric,$17::text::numeric,
+        $18::text::numeric,$19,$20,0,$21::text::numeric,$22::text::numeric,1024,
+        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,$21::text::numeric,$23,$24,$24,
+        (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)",
+        &[&&id[..],&(traversal.entries+1).to_string(),&&context.dataset.as_bytes()[..],&&job.id.as_bytes()[..],
+        &&scope.as_bytes()[..],&source.enrollment_generation.get().to_string(),&&source.route_id.as_bytes()[..],
+        &&context.slot.as_bytes()[..],&context.epoch.to_string(),&&context.manifest[..],&&control.resource_id.as_bytes()[..],
+        &control.epoch.get().to_string(),&&control.process_incarnation.as_bytes()[..],&span.lower.to_string(),
+        &span.upper.to_string(),&traversal.geometry.horizon.to_string(),&span.window_end.to_string(),
+        &traversal.geometry.width.to_string(),&(traversal.geometry.budget as i16),&(traversal.geometry.spent as i16),
+        &snapshot.revision.to_string(),&classified.to_string(),&digest.as_ref().map(|v|v.as_slice()),&disposition])
+        .await.map_err(failure)?;
+    traversal.geometry.exclude(span)?;
+    traversal.entries += 1;
+    Ok(())
+}
+
 pub(in crate::storage::postgres::control_owner) async fn finish(
     tx: &Transaction<'_>,
     plan: &LinearQuantum,
@@ -389,7 +499,7 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
     if snapshot.complete != snapshot.reserved || snapshot.revision < plan.before {
         return Err(QuantumError::Context);
     }
-    let (request, prefix, records, dependencies, continuation, class, gap, digest, charge) = {
+    let (request, prefix, records, dependencies, settlement, class, gap, digest, charge) = {
         let effects = plan.effects.lock().map_err(|_| QuantumError::Context)?;
         if effects.effects.iter().any(|effect| !effect.confirmed) {
             return Err(QuantumError::Context);
@@ -452,12 +562,6 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             records.push(u8::from(effect.prefix));
             records.extend_from_slice(effect.event_id.as_bytes());
         }
-        let oldest = effects
-            .effects
-            .iter()
-            .filter(|effect| matches!(effect.kind, 2 | 3 | 5))
-            .map(|effect| effect.signed_time)
-            .min();
         let ordering_gap = effects
             .effects
             .iter()
@@ -476,15 +580,18 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             more: capture.terminal.more,
             auth: capture.terminal.auth,
         };
-        let gap = terminal.gap();
-        // A lost/unclassified/ordering suffix keeps the original pending upper;
-        // successful later mutations cannot move a cursor past that obligation.
-        let continuation = if gap.is_some() {
-            plan.window.upper()
-        } else {
-            plan.window.continuation(oldest)
-        };
-        let class = terminal.class();
+        let mut traversal = plan.traversal.lock().map_err(|_| QuantumError::Context)?;
+        let mut targets = [None; 3];
+        for effect in &effects.effects {
+            if matches!(effect.kind, 2 | 3 | 5) {
+                targets[usize::from(effect.position.ordinal) - 1] =
+                    Some((effect.event_id, effect.signed_time));
+            }
+        }
+        let geometry = traversal.geometry;
+        let settlement = traversal.boundary.settle(&geometry, &terminal, &targets)?;
+        let (class, gap) = page_result(&terminal, &targets, &settlement);
+        traversal.geometry.finish(settlement)?;
         let digest = (snapshot.revision > 0).then(|| super::digest(plan.context, &snapshot));
         let charge = 1024
             + plan.window.predicate().len() as i64
@@ -496,7 +603,7 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             prefix,
             records,
             dependencies,
-            continuation,
+            settlement,
             class,
             gap,
             digest,
@@ -508,12 +615,14 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
         terminal_sequence=$5::text::numeric,terminal_received_at_us=$6,teardown_complete=$7,retained_events=$8,
         classified_prefix=$9,effect_records=$10,dependencies=$11,checkpoint_after=$12::text::numeric,checkpoint_sha256=$13::bytea,
         result_class=$14,gap_reason=$15,continuation_upper=$16::text::numeric,charged_bytes=$17,
+        disposition=$18,gap_lower=$19::text::numeric,gap_upper=$20::text::numeric,
         completed_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint
-        WHERE quantum_id=$1 AND terminal_kind IS NULL",
+        WHERE quantum_id=$1 AND entry_kind='request' AND terminal_kind IS NULL",
         &[&&plan.id[..],&kind,&capture.terminal.raw,&request,&capture.terminal.sequence.map(|n|n.to_string()),
             &capture.terminal.received_at_us,&capture.teardown_complete,&(capture.frames.len() as i16),&(prefix as i16),
             &records,&dependencies,&snapshot.revision.to_string(),&digest.as_ref().map(|value|value.as_slice()),
-            &class,&gap,&continuation.to_string(),&charge]).await.map_err(failure)?;
+            &class,&gap,&settlement.continuation.to_string(),&charge,&settlement.disposition,
+            &settlement.gap.map(|(a,_)|a.to_string()),&settlement.gap.map(|(_,b)|b.to_string())]).await.map_err(failure)?;
     if changed != 1 {
         return Err(QuantumError::Context);
     }
