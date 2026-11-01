@@ -1223,6 +1223,40 @@
       }
     },
     "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
-    "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2"
+    "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2",
+    "bounded_continuation": {
+      "status": "IMPLEMENTED_LOCAL_NOT_PRODUCT_QUALIFIED",
+      "task": "P03-T05Step2; bounded same-job current-owner continuation, not full walker/partition/adoption",
+      "observed_source": "1849721e047710b7efef4f80bc9b025da5c13550",
+      "scope": "Locked retained window reconstruction; exact current context/predicate/frozen horizon; known interruption retry; first overlap; empty/repeated pending deferral; same-row authenticated EventPayload ID/time binding with one original native view through pre-COMMIT closure.",
+      "source_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/critical-source-review.json",
+        "sha256": "47daf2d52bc02103c96789969636855657c3a37ba82559744b780fcf0db220c2",
+        "status": "PASS_BOUNDED_SOURCE_AND_SHARED_ORACLE_REVIEW",
+        "model": "gpt-6-astra",
+        "reasoning_effort": "xhigh"
+      },
+      "portable_controls": {
+        "source": "1849721e047710b7efef4f80bc9b025da5c13550",
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-1849721e/receipt.json",
+        "status": "FAIL",
+        "counts": {
+          "collected": 522,
+          "pass": 521,
+          "error": 1,
+          "skip": 0
+        },
+        "failure_class": "fixture/source-qualification",
+        "cause": "Tutorial correctly refused stale reviewed apps object; bounded reachable verification review plus unchanged Nostr/dependency/vendor identities support explicit pin update. Targeted positive/negative regression passes. Original failure retained."
+      },
+      "format": "Current internal migration0043 consolidates at most three93-byte effects (original61prefix plus captured canonical ID32); old nonempty61-byte effects refused. No existing public-version compatibility or source-history rewrite.",
+      "not_run": [
+        "Current-source Rust/native/composed planner tests",
+        "Real SQL/native corrupt-time and out-of-row payload rejection",
+        "Actual capped relay/all-known page reaches older signed data",
+        "Affected installed and unknown-COMMIT continuation journeys"
+      ],
+      "next": "Exact-source isolated build/workspace qualification; integrate bounded capped harness using existing artifact/native/science infrastructure. Later interval succession/saturation partition/sparse growth/adoption remain existing P03 owners."
+    }
   }
 }

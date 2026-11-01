@@ -78564,7 +78564,21 @@
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
         "branch": "work/m2-linear-continuation-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-        "state": "Boundedcontractreviewbeforeimplementation; noengineallocation."
+        "state": "Retained continuation/native payload binding and shared fixtures integrated on local branch; qualified source/oracle review ongoing, product execution NOT_RUN.",
+        "observed_revision": "1849721e047710b7efef4f80bc9b025da5c13550",
+        "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
+        "portable_controls": {
+          "source": "1849721e047710b7efef4f80bc9b025da5c13550",
+          "root": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-1849721e",
+          "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
+          "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
+        },
+        "pending": "No M2 compiler/native/SQL/socket/install campaign launched. Existing bounded hostedA2 observer active; capped/all-known continuation harness delegated in a separate worktree. Original four cache ELF bytes/full metadata remain protected; no broad cleanup."
+      },
+      "retired_refs_after_pushed_a2": {
+        "audit": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/branch-retirement-a2a42f22.json",
+        "sha256": "238264896b4921c0b7328ffe0513327fb9468503cda158d5ef3c1ffa9021804c",
+        "status": "49 original-tip ancestor refs retired after pushedA2; 46 clean worktrees detached at identical HEAD, no worktree/data/cache deletion; 43 non-ancestor tips preserved. Remote short-pin-checkpoint ref retired only after exact-tip and ancestry checks. This records that audit, not current branch totals."
       }
     }
   },

@@ -375,12 +375,12 @@ class LinearQuantumRuntime(Runtime):
             upper=86400 if scope_number else event['created_at']+1
             count=TURN_SCOPES.count(scope_number)
             uppers={number:86400 if number==1 or scope_number else event['created_at']+1 for number in range(1,count+1)}
-            actual=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
+            status=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
                 selector=declared['selector'],expected_uppers=uppers)
             job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]
             latest=max(job_rows,key=lambda row:row['quantum_number'])
             lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'],expected_upper=upper)
-            require(len(job_rows)==count and actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(count),
+            require(len(job_rows)==count and status==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(count),
                 scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='linear_observed',
                 terminal='eose',gap=None,continuation_upper=str(upper),retained_events=0 if scope_number else 1,
                 classified_prefix=0 if scope_number else 1,coverage='pending')

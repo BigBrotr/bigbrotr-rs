@@ -6,66 +6,80 @@ public development repository, no official release/package/deployment.
 
 ## Current objective and Git
 
-**P03-T05 Step2 — bounded linear continuation.** Consume the existing durable
-request-local continuation so the next quantum reaches older signed events
-through a real capped relay. A short/all-known page does not complete traversal;
-a repeated boundary must stop bounded work with explicit pending uncertainty.
-No whole-P02 barrier or full walker/partition/adoption expansion is implied.
+**P03-T05 Step2 — bounded linear continuation.** M1 scoped collection and the
+logical pending-quota/recovery increment remain locally qualified on main/origin
+**a2a42f2284790e38f85979d4aea17eab5e9a4644**. Full P00–P10 remains incomplete.
 
-Main/origin are **a2a42f2284790e38f85979d4aea17eab5e9a4644**, pushed successfully.
-New integration worktree `.research/m2-linear-continuation-20261101`, branch
-`work/m2-linear-continuation-20261101`, baseA2; enclosing Git identifies current
-local revision. Only this checkpoint/CI/inventory documentation changes initially;
-no M2 implementation or new local build/experiment has started.
+Root integrates in `.research/m2-linear-continuation-20261101`, branch
+`work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD
+**1849721e047710b7efef4f80bc9b025da5c13550**; enclosing Git identifies subsequent
+commits. Root owns two pending verifier metadata corrections (tutorial reviewed
+source pin and native-row report shadow), this checkpoint and inventory. Product
+window/native helpers and the shared fixture commits are integrated locally;
+no M2 code has been merged/pushed to main or qualified by product execution.
 
-Current dependency question: select/validate the prior completed quantum under
-the existing job lock and same job/source/native/current authority, retain frozen
-horizon and full native dependency closure, and refuse pending/unknown/corrupt
-terminal state before any next socket. Reconcile changed request bounds with
-shared peers, fixture preparation, recovery/readers and independent oracles in
-this increment. Astra owns this bounded read-only contract review; Root integrates.
+The planner reads latest retained pages under the existing job lock, validates
+current identity/predicate/frozen horizon, retries exact known interruptions,
+overlaps successful pages, and defers empty/repeated boundaries with coverage
+pending. Astra found and reviewed a necessary integrity correction: each cursor
+ID/time must match an authenticated native EventPayload in that quantum's own
+FactRef union. Current effects are93bytes; capture/native handoffs and fresh0043
+initialization are reconciled. One native view survives through full pre-COMMIT
+recovery. See the [owning contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
 
-## Valid evidence and remaining gates
+## Evidence and open gates
 
-M1 scoped collection remains QUALIFIED. The logical pending-quota/recovery gate
-under lifetime64 is now integrated and locally qualified. The [producer report](
-evidence/p02-producer-recovery-native-20260920.json), logical_pending_quota_20261101,
-owns exact product51/test47/harness identities and original failures:347native
-PASS, strict Clippy/Rustdoc,6realPGcases,3real socket modes including repeated
-positive refusals/resume after original30s, and installed on/off12/12 each.
-Merged portable discovery516PASS/0SKIP at5847; old fullRust1447PASS retains its
-unchanged source scope. Do not redo these checks for unchanged inputs.
+Pure/native/composed Rust controls are written but **NOT_RUN**. No new product
+build, real SQL, socket or installed campaign has started. Astra's bounded source
+reviews accepted the binding; final shared oracle review is in progress. Sol's
+shared fixture controls passed118 affected cases; earlier host-wide controls had
+two explicit missing-strace skips. These are fixture evidence, not product proof.
 
-[HostedA2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038) is
-**IN_PROGRESS, not PASS**. Existing bounded observer tool46117, control root
-`.research/ci-publication-20261026/terminal-a2a42f22-20261101`, driver738243/start27229600,
-watcher738246/start27229603 at launch. [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
-keeps fully audited064 separate. New-source unfiltered platform checks and
-public-output/alert audit remain required. Avoid a second push cancelling this run;
-independent local M2 development can proceed.
+Frozen184 portable container discovery: **521PASS/1ERROR/0SKIP**, original logs at
+`.research/m2-linear-continuation-qualification-20261101/portable-1849721e`.
+The ERROR is the tutorial correctly refusing its stale reviewed apps-tree pin,
+not a product failure. Reachable verifier paths were reviewed; all9 Nostr paths,
+other6 code/dependency/config objects and the complete vendor tree are unchanged.
+The pin is reconciled locally and its positive/negative regression passes.
+Repeat affected final portable checks after integration; preserve this failure.
 
-Physicald/R,persistentA,funded reopen/purge,CW-N1/P1/P2/OPEN65 remainP02-T02Step4;
-load/maintenanceStep8/P02-T09. Later interval succession/partitioning/sparse walk,
-adoption, live/fleet/import responsibilities remain their existing P03 owners.
-Admission cost/ClickHouse/coordinator follow-through staysP01-T05/P02; portable
-harness/deliveryP01-T08/P08/P10. Full product scope remains incomplete.
+Sol owns the bounded capped-relay acceptance harness in its separate worktree:
+prepopulateA with signed24/23, thenB must continue past an all-known short page
+and acquire signed1. Literal bounds/corpus/transcript plus full independent native
+rows, original inputs and receipts must prove the result. Existing interrupted,
+unknown-COMMIT, wrong-context and missing earlier dependency refusals remain
+required; new composed timestamp/ID corruption refusals must run before declaring
+Step2 qualified. No complete walker, partition or adoption claim is implied.
+
+The [producer report](evidence/p02-producer-recovery-native-20260920.json),
+logical_pending_quota_20261101, retains quota/recovery source identities,347native,
+6realPG,3socket and installed on/off12/12 results and original failures. Merged
+5847 portable516PASS retains unchanged scope. Reuse these valid results.
+
+[HostedA2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038) remains
+**IN_PROGRESS, not full PASS**. Mac job/source/artifact audit passed (1445Rust,
+2ignored; acceptance504PASS/12declaredSKIP); both Linux foundations were running
+at last actual API observation. Observer tool46117 and its existing control root
+`.research/ci-publication-20261026/terminal-a2a42f22-20261101` remain active.
+Final platform/context/public-output audit is pending. Avoid a second push cancelling
+this run. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns prior
+audited064 and the pendingA2 boundary.
 
 ## Resources and next action
 
-All localcompiler/native/PG/client/installed tools are terminal/reaped; owned
-containers stopped/PID0/noOOM, borrowed bridge empty at custody checks. Cachefree;
-original4ELF bytes/fullmetadata preserved O_NOATIME. CI observer remains active.
-Author source work is integrated; no engine or autonomous source implementation
-continues outside Root's coordination. Bounded Sol branch-ref retirement may
-change only verified merged clean refs, preserving all worktrees/data and activeM2.
+Portable184 container is stopped/PID0/noOOM; launcher22361 reaped1. No local
+compiler, native/PG/client or installed process is active for M2. Agents perform
+bounded source/oracle/harness work; Root is sole integrator. Preserve all original
+labs, failures and worktrees. The [inventory](../research/laboratory-inventory.json)
+records the49 verified merged branch-ref retirements after pushedA2; no worktree,
+data or cache was deleted. Original4 cache ELF bytes/full metadata stay protected
+with O_NOATIME reads; no Git maintenance or timestamp normalization.
 
-The [inventory](../research/laboratory-inventory.json) and capsule
-`.research/ingest-logical-ceiling-qualification-20261101` retain .research, original
-FAIL/PASS captures, DBs, logs, inputs and sourceworktrees. Monitor556GiB retirement
-was already reconciled. No data cleanup, Gitmaintenance or timestamp normalization.
-
-**Next:** resolve the bounded planner/locking/continuation contract, then implement
-one useful capped-page continuation with independent corpus/transcript checks and
-required authority/recovery negatives. Review the critical persistent/read/oracle
-delta before expensive execution. Reuse the existing finite profile/fixture tools;
-keep mutation totals within64 and later qualifications with their task owners.
+**Next:** finish the bounded oracle review, commit the coherent candidate and
+use the existing exact-source isolated build/workspace drivers with their cache,
+source/native/compiler, resource and lifecycle guards. Integrate the capped
+harness without rebuilding unchanged product code. Run necessary composed/native
+controls, then real continuation/fault and affected installed paths. Preserve
+physical reserve/reopen/OPEN65 atP02-T02Step4, load/maintenanceStep8/P02-T09,
+interval succession/partition/sparse growth/adoption at their existing P03 owners,
+and later delivery atP01-T08/P08/P10. No whole-P02 barrier or scope reduction.
