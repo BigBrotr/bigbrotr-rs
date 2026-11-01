@@ -85,6 +85,7 @@ def transition(before,after):
         'teardown_complete','retained_events','classified_prefix','effect_records','dependencies','checkpoint_after',
         'checkpoint_sha256','result_class','gap_reason','continuation_upper','completed_at_us','xmin'}
     for old in before['acquisition_quanta']:
+        assert old['quantum_id'] in current,'retained quantum history deleted'
         new=current[old['quantum_id']]
         if old['terminal_kind'] is not None:assert new==old
         else:assert {k:v for k,v in new.items() if k not in mutable}=={k:v for k,v in old.items() if k not in mutable}
@@ -111,6 +112,8 @@ def journey(state,wires,epoch,expected):
     assert rows and len(wires)<=len(rows)<=len(wires)+1
     for number,wire in enumerate(wires,1):
         row=rows[number-1]
+        job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
+        window(row,job,wire)
         assert row['request_predicate']=='\\x'+wire_json(['REQ','0'*48,*wire['request'][2:]]).hex()
         assert row['quantum_number']==number
         if row['terminal_kind'] is None:
@@ -132,6 +135,12 @@ def journey(state,wires,epoch,expected):
         good=[event['created_at'] for event,kind,_,_ in declared if kind in (2,3,5)]
         ordered=all(later<=earlier for earlier,later in zip(good,good[1:]))
         continuous=row['terminal_kind']=='eose' and len(declared)==row['retained_events'] and ordered
+        if 'EOSE' in wire['frames']:
+            assert row['teardown_complete'] is True and wire['completion']=='request-and-websocket-close'
+            gap='unclassified_suffix' if len(declared)<row['retained_events'] else 'ordering' if not ordered else None
+            assert row['gap_reason']==gap and row['result_class']==('interrupted' if gap else 'linear_observed')
+        else:
+            assert row['teardown_complete'] is False and row['gap_reason']=='teardown' and row['result_class']=='interrupted'
         assert row['continuation_upper']==(min(good)+1 if good and continuous else row['interval_upper'])
 
 
@@ -156,3 +165,90 @@ def successor(state,wires,old,new,science,*,before):
     assert all(row in state['acquisition_quanta'] for row in before['acquisition_quanta']), 'old quantum history changed'
     refs=lambda request:receipt_refs(science['receipts'][request-1])
     journey(state,wires,2,{1:[(new,2,2,refs(2)),(old,2,3,refs(3)),(new,5,0,refs(2))]})
+
+
+def window(row,job,wire=None,*,selector=None,accepted_at_us=None):
+    from installed_sync_client import quantum_window
+    if accepted_at_us is not None:assert job['created_at_us']==int(accepted_at_us)
+    lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'])
+    assert (row['interval_lower'],row['interval_upper'],row['horizon'])==(lower,upper,horizon)
+    command=json.loads(raw(row['request_predicate']))
+    assert command[:2]==['REQ','0'*48] and command[2:]==filters
+    if wire is not None:
+        assert wire['request'][0]=='REQ' and wire['request'][2:]==filters
+        assert raw(row['request_predicate'])==wire_json(['REQ','0'*48,*wire['request'][2:]])
+    return upper
+
+
+# Literal peer scenarios; the cap fixtures deliberately omit the WebSocket close
+# acknowledgement, making teardown failure an observed input rather than an
+# unchecked alternative selected from the product's own result.
+SCENARIO_RESULTS={
+    'slow_eose':('eose',1,1,True,'linear_observed',None,2),
+    'malformed_eose':('eose',2,0,True,'interrupted','unclassified_suffix',3),
+    'frame_cap_eose':('frame_cap',0,0,False,'interrupted','teardown',None),
+    'event_cap_eose':('event_cap',3,3,False,'interrupted','teardown',None),
+    'closed':('closed',0,0,True,'interrupted','closed',1),
+    'deadline':('deadline',0,0,False,'interrupted','teardown',None),
+    'empty':('eose',0,0,True,'linear_observed',None,1),
+    'proof':('eose',1,1,True,'linear_observed',None,2),
+    'body_closed':('closed',1,1,True,'interrupted','closed',2),
+}
+
+
+def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None):
+    upper=window(row,job,wire,selector=selector,accepted_at_us=accepted_at_us)
+    terminal,retained,classified,teardown,result,gap,sequence=SCENARIO_RESULTS[wire['scenario']]
+    assert (row['terminal_kind'],row['retained_events'],row['classified_prefix'],row['teardown_complete'],
+        row['result_class'],row['gap_reason'],row['terminal_sequence'])==(terminal,retained,classified,teardown,result,gap,sequence)
+    ident=wire['request'][1]
+    assert raw(row['request_id'])==ident.encode()
+    if terminal in ('eose','closed'):
+        expected=['EOSE',ident] if terminal=='eose' else ['CLOSED',ident,'rate-limited']
+        assert wire['terminal_frame_hex']==wire_json(expected).hex()
+        assert raw(row['terminal_frame'])==wire_json(expected)
+    else:assert raw(row['terminal_frame'])==b''
+    close=wire['teardown']
+    assert set(close)=={'request_close','websocket_close','ack_sent','eof'} and close['eof'] is True
+    if teardown:
+        assert close==dict(request_close=terminal!='closed',websocket_close=True,ack_sent=True,eof=True)
+        assert wire['completion']=='request-and-websocket-close'
+    else:
+        assert close['ack_sent'] is False and wire['completion']=='interrupted-socket-close'
+        if terminal=='deadline':assert close['request_close'] is close['websocket_close'] is False
+    if wire['scenario']=='frame_cap_eose':assert wire['frames']==['NOTICE']*33+['EOSE']
+    if wire['scenario']=='event_cap_eose':assert wire['frames']==['EVENT']*4+['EOSE']
+    if wire['scenario']=='malformed_eose':assert wire['frames']==['EVENT','EVENT','EOSE']
+    records=effects(row['effect_records'])
+    assert len(records)==classified
+    assert raw(row['dependencies'])==(refs if classified else b'')
+    for ordinal,record in enumerate(records,1):
+        kind,request=(2,4) if wire['scenario'] in ('slow_eose','body_closed') else (5,0)
+        assert record==(ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1)
+    assert row['continuation_upper']==(event['created_at']+1 if classified and gap is None else upper)
+    return classified
+
+
+def terminal_authority_diagnostic(text):
+    assert 'initial Sync unavailable: Source(Unavailable); sync_dispatch=' in text
+    report,_=json.JSONDecoder().raw_decode(text.split('sync_dispatch=',1)[1])
+    assert report['stage']=='quantum-terminal' and report['reason']=='operation-error'
+    assert report['returned_us'] is not None and report['entered_us']<=report['returned_us']<report['dispatch_deadline_us']
+    return report
+
+
+def empty_authority(before,after,wire,completed,held,delivered):
+    assert completed['server_ready'] is True and completed['backend_pid']==held['backend_pid']==delivered['backend_pid']
+    assert held['stage']=='source-rollback-reply' and held['source_queries_complete']==held['source_server_rollback']==1
+    assert held['source_client_rollback']==0 and delivered['source_server_rollback']==delivered['source_client_rollback']==1
+    assert wire['scenario']=='empty' and wire['frames']==['EOSE']
+    assert wire['terminal_frame_hex']==wire_json(['EOSE',wire['request'][1]]).hex()
+    assert wire['teardown']==dict(request_close=True,websocket_close=True,ack_sent=True,eof=True)
+    assert wire['completion']=='request-and-websocket-close'
+    plan,=before['acquisition_quanta']
+    assert plan['terminal_kind'] is plan['continuation_upper'] is plan['result_class'] is plan['gap_reason'] is None
+    assert plan['charged_bytes']==1024+len(raw(plan['request_predicate']))+2097152+3072+256*plan['maximum_dependencies']
+    for table,old in before.items():
+        canonical=lambda row:json.dumps(row,sort_keys=True,separators=(',',':'))
+        assert sorted(after[table],key=canonical)==sorted(old,key=canonical),'empty terminal changed retained '+table
+    assert len(after['producer_requests'])==len(after['producer_outcomes'])==3 and not after['acquisition_progress']

@@ -36,6 +36,8 @@ CONTROL_TARGETS = {
     'control-export-complete': b'INSERT INTO CONTROL.ARTIFACTS(',
     'control-export-pause': b"UPDATE CONTROL.JOBS SET STATE='PAUSED',",
     'control-cursor-retention': b'UPDATE CONTROL.CURSOR_KEY_LIFECYCLE SET DECRYPT_UNTIL_US=',
+    'control-quantum-source-rollback': (b'SELECT LEASE_EXPIRES_AT_US - (EXTRACT(EPOCH FROM PG_CATALOG.CLOCK_TIMESTAMP()) * 1000000)::BIGINT '
+        b'FROM CONTROL.OWNER_EPOCHS WHERE RESOURCE_ID=$1::BYTEA AND EPOCH=$2::TEXT::NUMERIC'),
     'control-quantum-plan': b'INSERT INTO CONTROL.ACQUISITION_QUANTA(',
     'control-quantum-terminal': b'UPDATE CONTROL.ACQUISITION_QUANTA SET TERMINAL_KIND=',
     'control-producer-progress': b'UPDATE CONTROL.ACQUISITION_PROGRESS SET SCOPE_ID=$5::BYTEA,',
@@ -48,7 +50,7 @@ CONTROL_TARGETS = {
 
 
 def control_target_query(target, query):
-    if target == 'control-closed-reclamation':
+    if target in ('control-closed-reclamation','control-quantum-source-rollback'):
         return b' '.join(query.upper().split()) == CONTROL_TARGETS[target]
     if target in ('control-pin-release','control-index-publication'):
         return query == CONTROL_TARGETS[target]
@@ -68,8 +70,9 @@ class SessionCommandObserver:
     PostgreSQL16 protocol-flow/message-formats define these response boundaries.
     No SQL parameters, authentication bytes or row data are retained.
     """
-    def __init__(self, target):
+    def __init__(self, target, *, command_complete=None):
         self.target = target
+        self.command_complete=command_complete
         self.statements = set()
         self.bound = False
         self.pending = deque()
@@ -105,7 +108,7 @@ class SessionCommandObserver:
             if self.pending[0] == b'Q':
                 return False
             selected = self.pending.popleft()
-            expected = b'INSERT 0 1\0' if self.target.endswith('issue') else b'UPDATE 1\0'
+            expected = self.command_complete or (b'INSERT 0 1\0' if self.target.endswith('issue') else b'UPDATE 1\0')
             return selected and body == expected
         if tag == b'E':
             # The server skips the remaining extended cycle through Sync on
@@ -192,6 +195,8 @@ class Proxy:
                  index_consumer=None, hold_index_publication=False):
         self.mode = mode
         self.target = target
+        if target=='control-quantum-source-rollback' and mode!='hold-source-rollback-reply':
+            raise ValueError('quantum-source-rollback-profile')
         if type(upstream_port) is not int or not 1 <= upstream_port <= 65535:
             raise ValueError('upstream-port')
         supplied = (catalog_manager, catalog_reader, catalog_database)
@@ -258,6 +263,8 @@ class Proxy:
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
+        if target=='control-quantum-source-rollback':
+            self.report.update(source_queries_complete=0,source_server_rollback=0,source_client_rollback=0)
         if profile == 'ordinary-reader':
             self.report.update(unframed_bytes=0, unframed_connections=0,
                                framed_connections=0, target_connection=None,
@@ -438,6 +445,8 @@ class Proxy:
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
+        source_target = self.target == 'control-quantum-source-rollback'
+        state.update(source_query=False,source_rollback=False,rollback_completion=None,source_reply_forwarded=False)
         progress_target = self.target == 'control-producer-progress'
         release_target = self.target == 'control-pin-release'
         index_target = self.target == 'control-index-publication'
@@ -445,6 +454,8 @@ class Proxy:
         progress_transaction = False
         session_commands = SessionCommandObserver(self.target) if self.target in (
             'control-session-issue', 'control-session-revoke', 'control-producer-progress', 'control-pin-release') else None
+        if source_target:
+            session_commands=SessionCommandObserver(self.target,command_complete=b'SELECT 1\0')
         if index_target:
             if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
                 raise ValueError('index-publication-backend')
@@ -487,7 +498,7 @@ class Proxy:
                         return
                 if session_commands is not None:
                     if frontend:
-                        session_commands.frontend(tag, body, eligible=(not (release_target or index_target) or
+                        session_commands.frontend(tag, body, eligible=(not (release_target or index_target or source_target) or
                             (self.armed and not self.target_selected)))
                     elif session_commands.backend(tag, body):
                         if release_target or index_target:
@@ -504,6 +515,13 @@ class Proxy:
                                 # custody before permitting the real COMMIT.
                                 if not await self.hold(stage, state['backend_pid']):
                                     return
+                        elif source_target:
+                            if (parameters.get(b'user')!=b'bigbrotr_control' or database!=b'bigbrotr_control'
+                                    or not progress_transaction or state['backend_pid'] is None or self.target_selected):
+                                raise ValueError('quantum-source-backend')
+                            self.target_selected=True;state['source_query']=True
+                            self.report['source_queries_complete']+=1
+                            self.emit('source-query-complete',backend_pid=state['backend_pid'])
                         elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
                             # UPDATE1; the gated repeat completes UPDATE2 on this
@@ -565,7 +583,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or source_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -620,6 +638,8 @@ class Proxy:
                         continue
                 if frontend and tag == b'Q':
                     query = body.upper()
+                    if source_target and state['source_query'] and query.rstrip(b'\0; \r\n')==b'ROLLBACK':
+                        state['source_rollback']=True
                     if (self.mode == 'hold-capture-rollback' and capture_manager
                             and database == self.reader_database == self.catalog_database.encode('ascii')
                             and query.rstrip(b'\0; \r\n') == b'ROLLBACK'):
@@ -664,7 +684,7 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target):
+                if not frontend and (progress_target or release_target or index_target or source_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                     elif tag == b'Z':
@@ -713,6 +733,18 @@ class Proxy:
                     if not await self.hold('reply', state['backend_pid']):
                         return
                     self.report['client_complete'] += 1
+                if source_target and not frontend and state['source_rollback']:
+                    if tag==b'C' and body==b'ROLLBACK\0':
+                        if state['rollback_completion'] is not None:raise ValueError('duplicate-source-rollback')
+                        state['rollback_completion']=tag+header+body
+                        continue  # Retain both completion and ReadyForQuery until explicit release.
+                    if tag==b'Z':
+                        if body!=b'I' or state['rollback_completion'] is None:raise ValueError('source-rollback-ready')
+                        self.report['source_server_rollback']+=1
+                        self.emit('source-rollback-complete',backend_pid=state['backend_pid'],server_ready=True)
+                        if not await self.hold('source-rollback-reply',state['backend_pid']):return
+                        destination.write(state['rollback_completion']);await destination.drain()
+                        state['rollback_completion']=None;state['source_reply_forwarded']=True
                 if not frontend and tag == b'Z' and body == b'I':
                     # A failed native attempt can roll back and reuse this
                     # connection. Its later transactions need fresh classification.
@@ -732,6 +764,10 @@ class Proxy:
                 except ConnectionError:
                     if not (not frontend and self.mode == 'hold-manager-owner' and state['owner_forwarded']):
                         raise
+                if source_target and not frontend and tag==b'Z' and state['source_reply_forwarded']:
+                    self.report['source_client_rollback']+=1
+                    self.emit('source-rollback-delivered',backend_pid=state['backend_pid'],server_ready=True)
+                    state['source_query']=state['source_rollback']=state['source_reply_forwarded']=False
                 if frontend and self.mode == 'hold-manager-commit' and tag == b'Q' and body.rstrip(b'\0; \r\n').upper() == b'COMMIT':
                     # Once explicitly released, observe the real server COMMIT
                     # before handling the dead manager's EOF. This fixture owns
@@ -803,7 +839,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-capture-verify', 'hold-resume-authority', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-source-rollback-reply', 'hold-capture-verify', 'hold-resume-authority', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')

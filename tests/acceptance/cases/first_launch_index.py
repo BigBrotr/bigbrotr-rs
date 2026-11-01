@@ -452,6 +452,8 @@ class IndexRuntime(Runtime):
         wires = [load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
         science = self.science_checks.first_science(view, self.initialized, load(self.home/'event.jsonl'),
             wires, census, self.state/'data/ingest', owner['released_at_us'])
+        from cases.first_launch_quantum_oracle import initial as quantum_initial
+        quantum_initial(view,wires,load(self.home/'event.jsonl'),science)
         self.index_science = science
         result = oracle.publication(self.index_live, after, self.index_rows, science, self.schema, self.state/'data/index')
         # publication() still checks the original typed bytes against the signed

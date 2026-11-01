@@ -23,11 +23,11 @@ def fixture(*,pending=False):
         request_id=None if pending else '\\x'+ident.encode().hex(),terminal_sequence=None if pending else 1,
         retained_events=None if pending else 0,classified_prefix=None if pending else 0,
         checkpoint_after=None if pending else 3,continuation_upper=None if pending else 86400,
-        result_class=None if pending else 'linear_observed',gap_reason=None,xmin='11')
+        result_class=None if pending else 'linear_observed',gap_reason=None,teardown_complete=None if pending else True,xmin='11')
     row['charged_bytes']=(1024+len(predicate)+2097152+3072+192*256 if pending else 1024+len(predicate)+len(frame))
     state=dict(jobs=[job],acquisition_jobs=[dict(job_id=job['job_id'],scope_id=row['scope_id'])],
         acquisition_quanta=[row],producer_requests=[],producer_checkpoints=[])
-    wire=dict(number=1,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],frames=['EOSE'])
+    wire=dict(number=1,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],frames=['EOSE'],completion='request-and-websocket-close')
     return state,wire
 
 
@@ -80,8 +80,115 @@ class LinearQuantumControls(unittest.TestCase):
         status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='1',scope_id='66'*16,
             lower='0',upper='86400',horizon='200000',result='pending',terminal=None,gap=None,
             continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
-        observed=dict(linear_quantum=status);quantum_status(observed,'66'*16,'200000999999');self.assertEqual(observed,{})
+        observed=dict(linear_quantum=status);quantum_status(observed,'66'*16,'200000999999',known_plan=True);self.assertEqual(observed,dict(linear_quantum=status))
         for field,value in [('coverage','complete'),('result','linear_observed'),('horizon','200001'),('dependencies',[])]:
             changed=dict(status,**{field:value})
             with self.subTest(field=field),self.assertRaises((AssertionError,TypeError)):
-                quantum_status(dict(linear_quantum=changed),'66'*16,'200000999999')
+                quantum_status(dict(linear_quantum=changed),'66'*16,'200000999999',known_plan=True)
+
+
+    def test_known_plan_cannot_disappear_and_bounded_scope_freezes_its_own_horizon(self):
+        with self.assertRaisesRegex(AssertionError,'known durable plan'):
+            quantum_status({},'66'*16,'200000999999',known_plan=True)
+        value=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='1',scope_id='66'*16,
+            lower='0',upper='86400',horizon='86400',result='pending',terminal=None,gap=None,
+            continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
+        selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain')
+        observed=dict(linear_quantum=value)
+        self.assertIs(quantum_status(observed,'66'*16,'200000999999',known_plan=True,selector=selector),value)
+        with self.assertRaises(AssertionError):
+            quantum_status(dict(linear_quantum=dict(value,horizon='200000')),'66'*16,'200000999999',known_plan=True,selector=selector)
+
+    def test_malformed_eose_requires_a_gap_exact_window_predicate_and_teardown(self):
+        state,wire=fixture();row=state['acquisition_quanta'][0];job=state['jobs'][0]
+        row.update(terminal_sequence=3,retained_events=2,classified_prefix=0,
+            result_class='interrupted',gap_reason='unclassified_suffix')
+        wire.update(scenario='malformed_eose',frames=['EVENT','EVENT','EOSE'],
+            terminal_frame_hex=check.raw(row['terminal_frame']).hex(),
+            teardown=dict(request_close=True,websocket_close=True,ack_sent=True,eof=True),completion='request-and-websocket-close')
+        event=dict(created_at=1)
+        check.shape(state);check.scenario(row,wire,job,event,b'')
+        mutations=[dict(result_class='linear_observed',gap_reason=None),dict(gap_reason='closed'),
+            dict(teardown_complete=False),dict(horizon=199999),dict(terminal_sequence=2)]
+        for changes in mutations:
+            changed=dict(row,**changes)
+            with self.subTest(changes=changes),self.assertRaises(AssertionError):check.scenario(changed,wire,job,event,b'')
+        changed=dict(row)
+        predicate=check.raw(row['request_predicate']).replace(b'"since":0',b'"since":1')
+        changed.update(request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest())
+        altered=dict(state,acquisition_quanta=[changed]);check.shape(altered)
+        with self.assertRaises(AssertionError):check.scenario(changed,wire,job,event,b'')
+
+    def test_closed_terminal_requires_original_reason_text_and_no_synthetic_close_req(self):
+        state,wire=fixture();row=state['acquisition_quanta'][0];job=state['jobs'][0]
+        frame=check.wire_json(['CLOSED',wire['request'][1],'rate-limited'])
+        old=len(check.raw(row['terminal_frame']))
+        row.update(terminal_kind='closed',terminal_frame='\\x'+frame.hex(),result_class='interrupted',gap_reason='closed',
+            charged_bytes=row['charged_bytes']+len(frame)-old)
+        wire.update(scenario='closed',frames=['CLOSED'],terminal_frame_hex=frame.hex(),
+            teardown=dict(request_close=False,websocket_close=True,ack_sent=True,eof=True),completion='request-and-websocket-close')
+        check.scenario(row,wire,job,dict(created_at=1),b'')
+        altered=dict(row,terminal_frame='\\x'+check.wire_json(['CLOSED',wire['request'][1],'other-reason']).hex())
+        with self.assertRaises(AssertionError):check.scenario(altered,wire,job,dict(created_at=1),b'')
+        altered_wire=dict(wire,teardown=dict(wire['teardown'],request_close=True))
+        with self.assertRaises(AssertionError):check.scenario(row,altered_wire,job,dict(created_at=1),b'')
+
+    def test_reservation_boundary_vectors_include_quanta_and_missing_head_allowance(self):
+        # Independent arithmetic for the actual rollback-only SQL trigger probe;
+        # executing that probe remains a root-owned PostgreSQL qualification.
+        retained=16777216+65536
+        vectors=((38912,2097152,14510080),(33792,2097152,14515200),(33792,0,16612352))
+        for metadata,quanta,new_input in vectors:
+            self.assertEqual(retained+metadata+quanta+new_input+65536,33554432)
+            self.assertGreater(retained+metadata+quanta+new_input+1+65536,33554432)
+            old_metadata=metadata if metadata==38912 else 32768
+            self.assertLessEqual(retained+old_metadata+new_input+1+65536,33554432)
+
+    def test_source_rollback_observer_requires_exact_query_completion_and_handles_cached_execute(self):
+        import importlib.util
+        from pathlib import Path
+        path=Path(__file__).resolve().parents[2]/'experiments/archive-engine/native_commit_proxy.py'
+        spec=importlib.util.spec_from_file_location('linear_rollback_proxy_control',path)
+        proxy=importlib.util.module_from_spec(spec);spec.loader.exec_module(proxy)
+        query=proxy.CONTROL_TARGETS['control-quantum-source-rollback']
+        self.assertTrue(proxy.control_target_query('control-quantum-source-rollback',b'\n '+query.lower()))
+        self.assertFalse(proxy.control_target_query('control-quantum-source-rollback',query+b' WHERE false'))
+        observer=proxy.SessionCommandObserver('control-quantum-source-rollback',command_complete=b'SELECT 1\0')
+        observer.frontend(b'P',b'q\0'+query+b'\0\0\0')
+        for eligible,expected in ((True,True),(False,False)):
+            observer.frontend(b'B',b'\0q\0');observer.frontend(b'E',bytes(5),eligible=eligible);observer.frontend(b'S',b'')
+            self.assertEqual(observer.backend(b'C',b'SELECT 1\0'),expected)
+            self.assertFalse(observer.backend(b'Z',b'T'))
+        observer.frontend(b'Q',b'ROLLBACK\0')
+        self.assertFalse(observer.backend(b'C',b'ROLLBACK\0'));self.assertFalse(observer.backend(b'Z',b'I'))
+
+    def test_terminal_authority_refusal_must_be_returned_after_relay_delivery_not_timeout(self):
+        report=dict(stage='quantum-terminal',reason='operation-error',entered_us=10,returned_us=20,dispatch_deadline_us=30)
+        text='initial Sync unavailable: Source(Unavailable); sync_dispatch='+json.dumps(report)
+        self.assertEqual(check.terminal_authority_diagnostic(text),report)
+        for fields in (dict(stage='relay-collection'),dict(returned_us=None),dict(returned_us=30)):
+            with self.subTest(fields=fields),self.assertRaises(AssertionError):
+                check.terminal_authority_diagnostic(text.split('sync_dispatch=')[0]+'sync_dispatch='+json.dumps(dict(report,**fields)))
+        with self.assertRaises(AssertionError):check.terminal_authority_diagnostic(text.replace('Source(Unavailable)','deadline'))
+
+    def test_empty_terminal_withdrawal_retains_exact_plan_charge_and_science(self):
+        before,wire=fixture(pending=True)
+        before.update(producer_requests=[dict(request_sequence=n) for n in (1,2,3)],
+            producer_outcomes=[dict(request_sequence=n) for n in (1,2,3)],acquisition_progress=[])
+        after=copy.deepcopy(before)
+        wire.update(scenario='empty',terminal_frame_hex=check.wire_json(['EOSE',wire['request'][1]]).hex(),
+            teardown=dict(request_close=True,websocket_close=True,ack_sent=True,eof=True),completion='request-and-websocket-close')
+        completed=dict(server_ready=True,backend_pid=42)
+        held=dict(stage='source-rollback-reply',backend_pid=42,source_queries_complete=1,source_server_rollback=1,source_client_rollback=0)
+        delivered=dict(backend_pid=42,source_server_rollback=1,source_client_rollback=1)
+        check.empty_authority(before,after,wire,completed,held,delivered)
+        for table,change in [('acquisition_quanta',lambda rows:rows[0].update(charged_bytes=1024)),
+                ('acquisition_quanta',lambda rows:rows[0].update(continuation_upper=1)),
+                ('producer_outcomes',lambda rows:rows.pop())]:
+            altered=copy.deepcopy(after);change(altered[table])
+            with self.subTest(table=table),self.assertRaises(AssertionError):
+                check.empty_authority(before,altered,wire,completed,held,delivered)
+        with self.assertRaises(AssertionError):
+            check.empty_authority(before,after,wire,dict(completed,server_ready=False),held,delivered)
+        with self.assertRaises(AssertionError):
+            check.empty_authority(before,after,wire,completed,held,dict(delivered,source_client_rollback=0))

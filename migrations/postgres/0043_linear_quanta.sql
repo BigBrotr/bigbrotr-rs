@@ -100,6 +100,21 @@ BEGIN
     END IF;
 END $$;
 
+-- Reservation INSERTs also fund NEW input/completion through the same envelope.
+-- The pre-insert history guard cannot account for an as-yet absent reservation.
+CREATE OR REPLACE FUNCTION control.reserve_producer_outcome_capacity() RETURNS trigger
+LANGUAGE plpgsql SET search_path=pg_catalog AS $$
+DECLARE head control.producer_checkpoints%ROWTYPE;
+BEGIN
+    PERFORM 1 FROM control.producer_epochs WHERE producer_slot_id=NEW.producer_slot_id
+        AND producer_epoch=NEW.producer_epoch FOR UPDATE;
+    SELECT * INTO head FROM control.producer_checkpoints WHERE producer_slot_id=NEW.producer_slot_id
+        AND producer_epoch=NEW.producer_epoch;
+    PERFORM control.require_producer_progress_capacity(NEW.producer_slot_id,NEW.producer_epoch,
+        NEW.input_bytes::bigint+65536,coalesce(head.progress_jobs,0),coalesce(head.dependency_count,0));
+    RETURN NEW;
+END $$;
+
 CREATE FUNCTION control.guard_acquisition_quantum() RETURNS trigger
 LANGUAGE plpgsql SET search_path=pg_catalog AS $$
 DECLARE scope control.acquisition_scopes%ROWTYPE; producer control.producer_epochs%ROWTYPE;

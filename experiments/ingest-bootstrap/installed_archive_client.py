@@ -137,22 +137,26 @@ def run(directory):
             other_scope=call('acquisition-scopes',dict(endpoint_id=endpoint['endpoint_id'],access_scope_id=enrollment['access_scope_id'],
                 visibility=visibility,selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'),
                 **revisions),'a2'*16)
-            call('jobs',dict(kind='acquisition',scope_id=other_scope['scope_id'],deadline_us='120000000',**revisions),'b2'*16)
-        def status():
+            other_receipt=call('jobs',dict(kind='acquisition',scope_id=other_scope['scope_id'],deadline_us='120000000',**revisions),'b2'*16)
+        def status(*,known_plan=False,receipt=receipt,scope=scope,selector=None):
             code, observed = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
             assert code == 200
-            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
+            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=known_plan,selector=selector)
             assert observed['state'] in ('accepted', 'queued')
-            assert observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'], kind='acquisition',
+            assert {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'], kind='acquisition',
                 state=observed['state'], job_revision='1' if observed['state'] == 'accepted' else '2',
                 checkpoint_revision='0', created_at_us=receipt['accepted_at_us'], completed_at_us=None,
                 observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
             return observed
         barrier('submitted', seconds=65, poll=status)
-        final_status = status()
+        final_status = status(known_plan=True)
         assert final_status['state'] == 'queued'
         statuses.append(final_status)
         publish(directory, 'status-observations.json', statuses)
+        if linear:
+            second_status=status(known_plan=True,receipt=other_receipt,scope=other_scope,
+                selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'))
+            publish(directory,'linear-status-observations.json',[final_status,second_status])
         logged_out = cli('logout', '--session-ref', 'file:' + str(session))
         assert json.loads(session.read_text()) == saved
         assert request('GET', '/management/v1/me', headers=auth)[0] == 401

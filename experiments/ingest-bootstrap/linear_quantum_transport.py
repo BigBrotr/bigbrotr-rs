@@ -15,7 +15,9 @@ def relay(directory,listener,finished,errors):
     try:
         assert json.loads((directory/'linear-quantum-profile.json').read_text())==PROFILE
         event=json.loads((directory/'event.jsonl').read_text())
-        for number,scenario in enumerate(SCENARIOS,1):
+        fault=json.loads((directory/'linear-quantum-fault.json').read_text()) if (directory/'linear-quantum-fault.json').exists() else None
+        scenarios=('body_closed',*SCENARIOS[1:]) if fault=='gap-write' else ('empty',*SCENARIOS[1:]) if fault=='empty-terminal-authority' else SCENARIOS
+        for number,scenario in enumerate(scenarios,1):
             while True:
                 try:connection,remote=listener.accept();break
                 except socket.timeout:
@@ -47,6 +49,7 @@ def relay(directory,listener,finished,errors):
                     [['EVENT',ident,{'malformed':True}],['EVENT',ident,event],['EOSE',ident]] if scenario=='malformed_eose' else
                     [['NOTICE','bounded frame']]*33+[['EOSE',ident]] if scenario=='frame_cap_eose' else
                     [['EVENT',ident,event]]*4+[['EOSE',ident]] if scenario=='event_cap_eose' else
+                    [['EVENT',ident,event],['CLOSED',ident,'rate-limited']] if scenario=='body_closed' else
                     [['CLOSED',ident,'rate-limited']] if scenario=='closed' else
                     [['EOSE',ident]] if scenario=='empty' else [])
                 trace['sent_at_us']=time.time_ns()//1000
@@ -54,21 +57,34 @@ def relay(directory,listener,finished,errors):
                     try:send_frame(connection,frame)
                     except (BrokenPipeError,ConnectionResetError):break
                     trace['frames'].append(frame[0])
+                    if frame[0] in ('EOSE','CLOSED'):trace['terminal_frame_hex']=json.dumps(frame,separators=(',',':')).encode().hex()
                     if scenario=='slow_eose' and index==0:
                         publish(directory,'slow-event-sent.json',dict(number=number))
                         time.sleep(.05)
-                graceful=scenario!='deadline'
-                if graceful:
+                teardown=dict(request_close=False,websocket_close=False,ack_sent=False,eof=False)
+                capped=scenario in ('frame_cap_eose','event_cap_eose')
+                if capped:
+                    # All cap+later-EOSE frames were emitted. Deliberately omit a
+                    # WebSocket close ACK: the actual teardown must fail.
+                    connection.shutdown(socket.SHUT_WR)
+                if scenario!='deadline':
                     try:
-                        opcode,raw=read_frame(connection);assert opcode==1 and json.loads(raw)==['CLOSE',ident]
-                        opcode,raw=read_frame(connection);assert opcode==8 and raw==b''
-                        connection.sendall(b'\x88\x00');connection.shutdown(socket.SHUT_WR)
+                        opcode,raw=read_frame(connection)
+                        if scenario not in ('closed','body_closed'):
+                            assert opcode==1 and json.loads(raw)==['CLOSE',ident]
+                            teardown['request_close']=True
+                            opcode,raw=read_frame(connection)
+                        assert opcode==8 and raw==b'';teardown['websocket_close']=True
+                        if not capped:
+                            connection.sendall(b'\x88\x00');connection.shutdown(socket.SHUT_WR)
+                            teardown['ack_sent']=True
                     except (EOFError,BrokenPipeError,ConnectionResetError):
-                        assert scenario in ('frame_cap_eose','event_cap_eose');graceful=False
+                        assert capped
                 try:assert connection.recv(1)==b''
-                except ConnectionResetError:assert not graceful
-                trace.update(closed_at_us=time.time_ns()//1000,
-                    completion='request-and-websocket-close' if graceful else 'interrupted-socket-close')
+                except ConnectionResetError:assert capped
+                teardown['eof']=True
+                trace.update(closed_at_us=time.time_ns()//1000,teardown=teardown,
+                    completion='request-and-websocket-close' if teardown['ack_sent'] else 'interrupted-socket-close')
                 publish(directory,f'relay-closed-{number:03}.json',trace)
         publish(directory,'linear-peer-complete.json',dict(format=PROFILE['format'],requests=8,listener_closed=True))
     except BaseException as error:

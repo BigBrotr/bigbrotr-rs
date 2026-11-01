@@ -329,8 +329,8 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
         observed = json.loads(raw)
         from installed_sync_client import quantum_status
-        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
-        assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True)
+        assert status == 200 and {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,
             observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')

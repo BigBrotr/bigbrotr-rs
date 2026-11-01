@@ -812,7 +812,9 @@ closure. Only positively delivered checkpoint/classification/ACK results confirm
 a collector entry. A preparation hole leaves its suffix unclassified; later valid
 mutations can return credit without filling it. Empty and proof-only quanta create
 no synthetic producer request or mutation ACK. The full current native closure is
-revalidated before terminal commit, and historical recovery independently streams
+revalidated before terminal commit for the selected no-open-base format1/absolute64
+profile. An active SQL42 prefix/format2 remains a refusal, not OPEN65 support.
+Historical recovery independently streams
 the quantum references through the existing native proof validator.
 
 One atomic terminal update retains the correlated actual EOSE/CLOSED frame,
@@ -832,6 +834,8 @@ execution. `acquisition_progress`, whole-job `acquisition_gaps`, and
 Plans prefund1024 bytes plus predicate bytes,2MiB terminal allowance,3072 effect
 allowance and256 per admitted maximum dependency. Terminal commit settles to1024
 plus actual predicate/frame/effect bytes and256 per retained exact reference.
+Every reservation INSERT also calls the same common capacity helper with NEW
+input plus64KiB completion, including the1024-byte allowance before any head exists.
 All charges join the existing32MiB producer input/completion/progress cap under
 the same producer lock. Pending/unknown attempts retain their full reservation;
 recovery independently recomputes charges from retained rows. This logical cap

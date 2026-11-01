@@ -222,6 +222,8 @@ def pending(prefix, state, record, job_id):
 
 def preserved(denied, final):
     """The final science oracle independently validates all added rows/bytes."""
+    from cases.first_launch_quantum_oracle import transition
+    transition(denied,final)
     assert set(denied) == set(final) and len(final) == 83
     for table in set(denied) - APPEND - MUTABLE:
         index.exact(denied[table], final[table])

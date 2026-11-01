@@ -199,6 +199,26 @@ class SharedBudgetControls(unittest.TestCase):
                 mutated=copy.deepcopy(final);mutated[table][0][field]=value
                 with self.subTest(accepted=accepted,table=table),self.assertRaises((AssertionError,ValueError)):check.preserved(pending,mutated)
 
+    def test_follow_through_retains_completed_quantum_rows_and_transaction_identity(self):
+        from test_linear_quantum import fixture as quantum_fixture
+        _,denied,_,_,_=pending_fixture()
+        raw=lambda n:'\\x'+f'{n:032x}'
+        job=denied['jobs'][0];job.update(dataset_id=raw(1),created_at_us=200_000_999_999)
+        denied['producer_checkpoints'][0].update(progress_jobs=0,dependency_count=3,prefix_profile=True)
+        for row in denied['producer_requests']:row.update(producer_slot_id=raw(30),input_bytes=0)
+        quantum=quantum_fixture()[0]['acquisition_quanta'][0]
+        quantum.update(dataset_id=raw(1),job_id=job['job_id'],scope_id=denied['acquisition_jobs'][0]['scope_id'],
+            producer_slot_id=raw(30),issuer_resource=raw(2),issuer_incarnation=raw(20))
+        denied['acquisition_quanta']=[quantum]
+        final=copy.deepcopy(denied)
+        for row in final['projection_chunks']:
+            if row['state']=='prepared':row.update(state='committed',committed_at_us=4000,engine_receipt_digest='proof',xmin='40')
+        check.preserved(denied,final)
+        deleted=copy.deepcopy(final);deleted['acquisition_quanta']=[]
+        changed=copy.deepcopy(final);changed['acquisition_quanta'][0]['xmin']='99'
+        for altered in (deleted,changed):
+            with self.assertRaises(AssertionError):check.preserved(denied,altered)
+
     def test_new_archive_publication_is_bound_to_the_same_control_and_coordinator(self):
         prefix,state,denied,_,job=pending_fixture()
         consumer=index.only(state['consumers'],consumer_role='archive');consumer['current_revision']=3

@@ -228,6 +228,8 @@ class RestartIndexRuntime(IndexRuntime):
         wires=[load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
         self.index_science=self.science_checks.first_science(view,final,load(self.home/'event.jsonl'),wires,
             self.baseline_census,self.state/'data/ingest',owner['released_at_us'])
+        from cases.first_launch_quantum_oracle import initial as quantum_initial
+        quantum_initial(view,wires,load(self.home/'event.jsonl'),self.index_science)
         index.exact(self.custody(),self.custody_before)
         report=self.finite('index-source-close','ingest','recover','--close-source','--file','/etc/bigbrotr/instance.toml')
         self.closed,_=self.capture(output,'source-closed')

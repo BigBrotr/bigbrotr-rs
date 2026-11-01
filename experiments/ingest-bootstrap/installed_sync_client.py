@@ -38,23 +38,49 @@ def publish(directory, name, value):
     partial.rename(directory / name)
 
 
-def quantum_status(observed,scope_id,accepted_at_us):
-    """Actor status exposes pending work, never a native proof or history claim."""
-    value=observed.pop('linear_quantum',None)
-    if value is None:return  # Accepted/queued before the first durable plan.
+def quantum_window(selector,accepted_at_us):
+    """Independent finite fixture interval from declared intent, never SQL counters."""
+    selector=selector or dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')
+    accepted=int(accepted_at_us)//1_000_000
+    lower=selector['history_since']
+    assert type(lower) is int and 0<=lower<=2**64-1 and accepted>=0
+    upper_bounds=[]
+    for part in selector['filters']:
+        until=part.get('until',2**64-1)
+        assert type(until) is int and 0<=until<=2**64-1
+        upper_bounds.append(min(accepted,until+1))  # Checked AfterMax intersection.
+    horizon=max(upper_bounds);upper=min(lower+86400,horizon)
+    assert lower<upper
+    filters=[]
+    for part in selector['filters']:
+        since=max(lower,part.get('since',lower));until=min(upper-1,part.get('until',upper-1))
+        if since<=until:filters.append(dict(part,since=since,until=until,limit=3))
+    assert filters
+    return lower,upper,horizon,filters
+
+
+def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=None):
+    """Validate and retain actor status; absence is allowed only before a known plan."""
+    value=observed.get('linear_quantum')
+    if value is None:
+        assert not known_plan,'known durable plan missing from actor status'
+        return None
     assert set(value)=={'format','quantum_number','scope_id','lower','upper','horizon','result',
         'terminal','gap','continuation_upper','retained_events','classified_prefix','coverage'}
     assert value['format']=='bigbrotr-linear-quantum-status/1' and value['scope_id']==scope_id
-    assert value['lower']=='0' and value['upper']=='86400' and value['horizon']==str(int(accepted_at_us)//1_000_000)
+    lower,upper,horizon,_=quantum_window(selector,accepted_at_us)
+    assert (value['lower'],value['upper'],value['horizon'])==tuple(map(str,(lower,upper,horizon)))
     assert value['coverage']=='pending' and int(value['quantum_number'])>=1
+    assert str(int(value['quantum_number']))==value['quantum_number']
     if value['result']=='pending':
         assert all(value[key] is None for key in ('terminal','gap','continuation_upper','retained_events','classified_prefix'))
     else:
         assert value['result'] in ('linear_observed','relay_reported_exhaustion','interrupted')
         assert value['terminal'] in ('eose','closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected')
         assert (value['result']=='interrupted')==(value['gap'] is not None)
-        assert 0<int(value['continuation_upper'])<=86400
+        assert lower<int(value['continuation_upper'])<=upper
         assert 0<=value['classified_prefix']<=value['retained_events']<=3
+    return value
 
 
 def exact(connection, count):
@@ -321,8 +347,8 @@ def run(directory, request, login, logout):
         barrier('submitted')
         status, raw = request('GET', '/management/v1/jobs/'+receipt['job_id'], headers=auth)
         observed = json.loads(raw)
-        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'])
-        assert status == 200 and observed == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True)
+        assert status == 200 and {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None, observed_at_us=observed['observed_at_us'],
             reason_code=None, authority='observation-only')
@@ -351,7 +377,7 @@ def run(directory, request, login, logout):
                 status, raw = request('GET', '/management/v1/jobs/'+deferred_receipt['job_id'], headers=auth)
                 deferred_status = json.loads(raw)
                 quantum_status(deferred_status,other_scope['scope_id'],deferred_receipt['accepted_at_us'])
-                assert status == 200 and deferred_status == dict(observed,
+                assert status == 200 and {k:v for k,v in deferred_status.items() if k!='linear_quantum'} == dict({k:v for k,v in observed.items() if k!='linear_quantum'},
                     job_id=deferred_receipt['job_id'], created_at_us=deferred_receipt['accepted_at_us'],
                     observed_at_us=deferred_status['observed_at_us'])
                 assert int(deferred_status['observed_at_us']) >= int(deferred_receipt['accepted_at_us'])

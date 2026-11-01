@@ -217,8 +217,8 @@ def main():
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--renewal-stop-outcome", choices=("known", "held"),
                         help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
-    parser.add_argument("--linear-quantum-fault",choices=('plan-before','plan-after','terminal-before','terminal-after','gap-write','stale-authority'),
-                        help='linear quantum only: lose its exact plan or terminal COMMIT in either direction')
+    parser.add_argument("--linear-quantum-fault",choices=('plan-before','plan-after','terminal-before','terminal-after','gap-write','stale-authority','empty-terminal-authority'),
+                        help='linear quantum only: COMMIT loss, gap-write failure or actor authority refusal')
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
                         help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     args = parser.parse_args()

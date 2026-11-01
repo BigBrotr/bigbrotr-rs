@@ -14,7 +14,7 @@ STAGES=('prerequisites','candidate','runtime_image','fresh_bootstrap','signed_ac
 LIMITS=[
     'Two original finite scopes share the current Control/Sync/native owner. Eight real requests exercise slow EVENT/EOSE, malformed EVENT then EOSE, frame/event caps then EOSE, CLOSED, deadline, empty and proof-only work.',
     'The finite listener closes after8; two charged unfinished plans remain pending. An actual source refusal neither completes a traversal nor synthesizes a producer request. All original input bytes, full native rows/sequence and independently expected classification/dependency records are compared after positive owner join.',
-    'Optional exact plan/terminal COMMIT before-forward/after-complete schedules prove no next socket/quantum and historical-only restart, including missing plan versus retained pending/terminal record. NOT_RUN: full walker, age bands, NEG/live, OPEN65, same-job adoption, physical capacity. The stale actor schedule is before dialing and does not qualify every terminal authority race.',
+    'Optional exact plan/terminal COMMIT before-forward/after-complete schedules prove no next socket/quantum and historical-only restart, including missing plan versus retained pending/terminal record. NOT_RUN: full walker, age bands, NEG/live, OPEN65, same-job adoption, physical capacity. Empty post-REQ authority withdrawal is isolated by the actual completed source-rollback reply; broader terminal races remain separate.',
 ]
 
 
@@ -26,7 +26,8 @@ class LinearQuantumRuntime(Runtime):
         self.inputs['native_observer_artifacts_sha256']=self.native_hashes
         for name in ('tests/acceptance/cases/first_launch_linear_quantum.py',
             'tests/acceptance/cases/first_launch_quantum_oracle.py',
-            'experiments/ingest-bootstrap/linear_quantum_transport.py'):
+            'experiments/ingest-bootstrap/linear_quantum_transport.py',
+            'experiments/control-migrations/linear_quantum_capacity.sql'):
             self.inputs['acceptance_files_sha256'][name]=digest(self.source/name)
 
     def load_helpers(self):
@@ -47,13 +48,16 @@ class LinearQuantumRuntime(Runtime):
 
     def bootstrap(self):
         self.quantum_fault=getattr(self.args,'linear_quantum_fault',None)
+        if self.quantum_fault:save(self.home/'linear-quantum-fault.json',self.quantum_fault)
         if self.quantum_fault:
-            boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority') else ('plan','held')
+            boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('plan','held')
             path=self.source/'experiments/archive-engine/native_commit_proxy.py'
             self.inputs['acceptance_files_sha256'][str(path.relative_to(self.source))]=digest(path)
             self.route=self.proxy_process([sys.executable,'-B',str(path),'--mode',
+                'hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
                 'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete',
-                '--target','control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
+                '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
+                'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
                 '--upstream-port','15432'],input_pipe=True)
             ready=self.proxy_event(self.route,'ready',10)
             require(ready['source_sha256']==digest(path),'exact quantum proxy source')
@@ -70,6 +74,37 @@ class LinearQuantumRuntime(Runtime):
         require(not result['stderr'] and not result['overflow'],'incomplete quantum proxy observation')
         self.resources['quantum_proxy']['status']='joined';self.record_resources()
 
+    def withdraw_after_empty_source(self,output):
+        # One short owned-PG statement snapshots exact retained science before
+        # deleting the actor's grant. The source backend has already completed
+        # ROLLBACK/ReadyForQuery, so no socket-held SHARE lock is bypassed.
+        held=self.proxy_event(self.route,'held',20)
+        require(held['stage']=='source-rollback-reply' and held['source_queries_complete']==held['source_server_rollback']==1
+            and held['source_client_rollback']==0,'actual completed source rollback must be held')
+        wire=load(self.home/'relay-closed-001.json')
+        require(wire['scenario']=='empty' and wire['frames']==['EOSE'] and wire['teardown']==dict(
+            request_close=True,websocket_close=True,ack_sent=True,eof=True),'actual empty REQ/EOSE/teardown required')
+        completed=self.proxy_event(self.route,'source-rollback-complete',10)
+        require(completed['server_ready'] is True and completed['backend_pid']==held['backend_pid'],'actual source ReadyForQuery required')
+        save(output/'completed-source-rollback.json',completed)
+        save(output/'held-source-rollback.json',held)
+        tables=('acquisition_quanta','producer_requests','producer_outcomes','producer_checkpoints',
+            'producer_checkpoint_dependencies','acquisition_progress')
+        fields=','.join("'"+name+"',(SELECT coalesce(jsonb_agg(to_jsonb(t)||jsonb_build_object('xmin',xmin::text)),'[]'::jsonb) FROM control."+name+" t)" for name in tables)
+        statement="WITH before AS MATERIALIZED (SELECT jsonb_build_object("+fields+") value), removed AS ("             "DELETE FROM control.principal_grants g WHERE g.action='roles.control' "             "AND g.dataset_id=(SELECT dataset_id FROM control.acquisition_quanta) "             "AND g.principal_id=(SELECT j.principal_id FROM control.jobs j JOIN control.acquisition_quanta q USING(job_id)) "             "AND (SELECT value IS NOT NULL FROM before) RETURNING 1) "             "SELECT jsonb_build_object('before',(SELECT value FROM before),'removed',(SELECT count(*) FROM removed))"
+        captured=json.loads(self.sql('bigbrotr_control',statement))
+        require(captured['removed']==1,'exact actor grant withdrawal did not commit')
+        self.empty_source_before=captured['before']
+        plan,=self.empty_source_before['acquisition_quanta']
+        require(plan['terminal_kind'] is None and plan['continuation_upper'] is None,'empty plan already gained terminal credit')
+        require(len(self.empty_source_before['producer_requests'])==len(self.empty_source_before['producer_outcomes'])==3
+            and not self.empty_source_before['acquisition_progress'],'empty source must precede any event outcome')
+        save(output/'empty-authority-before.json',captured)
+        self.proxy_send(self.route,'release\n')
+        delivered=self.proxy_event(self.route,'source-rollback-delivered',10)
+        require(delivered['source_server_rollback']==delivered['source_client_rollback']==1,'source rollback result not delivered')
+        save(output/'source-rollback-delivered.json',delivered)
+
     def initial(self):
         if not self.quantum_fault:return super().initial()
         output=self.root/'initial';output.mkdir(mode=0o700)
@@ -83,11 +118,16 @@ class LinearQuantumRuntime(Runtime):
         self.processes.append(self.client)
         self.wait(lambda:(self.home/'prepared.json').exists(),'prepared quantum fault source',15,entry,self.client)
         (self.home/'prepared.continue').write_text('fresh exact source accepted\n')
-        if self.quantum_fault in ('gap-write','stale-authority'):
+        if self.quantum_fault=='empty-terminal-authority':
+            self.withdraw_after_empty_source(output)
+        elif self.quantum_fault in ('gap-write','stale-authority'):
             held=self.proxy_event(self.route,'held',20);save(output/'held-plan-reply.json',held)
             require(held['stage']=='reply','plan must be server committed before injection')
             if self.quantum_fault=='gap-write':
-                self.sql('bigbrotr_control',"ALTER TABLE control.acquisition_quanta ADD CONSTRAINT fixture_gap_write_refusal CHECK(terminal_kind IS NULL) NOT VALID")
+                captured=self.sql('bigbrotr_control',"SELECT to_jsonb(q)||jsonb_build_object('xmin',xmin::text) FROM control.acquisition_quanta q; "
+                    "ALTER TABLE control.acquisition_quanta ADD CONSTRAINT fixture_gap_write_refusal CHECK(gap_reason IS NULL) NOT VALID")
+                self.gap_plan_before=json.loads(captured)
+                save(output/'gap-plan-before.json',self.gap_plan_before)
             else:
                 baseline=self.sql('bigbrotr_control',"SELECT lease_expires_at_us FROM control.owner_epochs WHERE role='control' AND state='active'")
                 removed=self.sql('bigbrotr_control',"WITH removed AS (DELETE FROM control.principal_grants WHERE action='roles.control' RETURNING 1) SELECT count(*) FROM removed")
@@ -106,6 +146,9 @@ class LinearQuantumRuntime(Runtime):
         terminal=self.inspect(entry);self.logs(entry,output)
         expected_exit=0 if self.quantum_fault=='stale-authority' else 4
         require(terminal['State']['ExitCode']==expected_exit and not terminal['State']['OOMKilled'],'quantum refusal exit differs')
+        if self.quantum_fault=='empty-terminal-authority':
+            report=oracle.terminal_authority_diagnostic((output/'serve.stderr').read_text())
+            save(output/'terminal-authority-diagnostic.json',report)
         save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
         stop_process(self.client);self.processes.remove(self.client)
         self.stop_quantum_proxy()
@@ -134,6 +177,14 @@ class LinearQuantumRuntime(Runtime):
         from cases.first_launch_restart import originals
         output=self.root/'linear-quantum';output.mkdir(mode=0o700)
         state,_=self.capture(output,'after')
+        self.backend_absence(output)
+        capacity=json.loads(self.sql('bigbrotr_control',(self.source/'experiments/control-migrations/linear_quantum_capacity.sql').read_text()))
+        require(capacity==dict(scope='isolated_sql_accounting_not_native_authority',positives=3,refusals=3,
+            boundaries=dict(typed_head_and_quanta=14510080,no_head_and_quanta=14515200,no_head_zero_quanta=16612352)),
+            'actual reservation trigger accounting boundaries differ')
+        save(output/'capacity-probe.json',capacity)
+        restored,_=self.capture(output,'capacity-rollback')
+        require(restored==state,'rollback-only SQL accounting probe changed retained Control evidence')
         dump=native.census(self,output)
         actual=[(row['cf'],bytes.fromhex(row['key']),bytes.fromhex(row['value'])) for row in dump['rows']]
         facts={int.from_bytes(key[-8:],'big'):value for cf,key,value in actual if cf=='facts' and key[:2]==b'\x01\x20'}
@@ -154,18 +205,35 @@ class LinearQuantumRuntime(Runtime):
         require(len(rows)==10 and len(pending)==2 and len({row['job_id'] for row in pending})==2,'unfinished plans or finite turn count differs')
         by_request={oracle.raw(row['request_id']).decode():row for row in rows if row['request_id'] is not None}
         refs=oracle.reference_bytes(oracle.receipt_refs(wanted['receipts'][3]));totals={}
-        expected=(('eose',1,1),('eose',2,0),('frame_cap',0,0),('event_cap',3,3),
-            ('closed',0,0),('deadline',0,0),('eose',0,0),('eose',1,1))
-        for wire,(terminal,retained,classified) in zip(wires,expected):
-            row=by_request[wire['request'][1]];records=oracle.effects(row['effect_records'])
-            require((row['terminal_kind'],row['retained_events'],row['classified_prefix'])==(terminal,retained,classified),'actual terminal or classified prefix differs')
-            require(len(records)==classified,'unclassified suffix gained an outcome')
-            require(oracle.raw(row['dependencies'])==(refs if classified else b''),'per-quantum proof union differs')
-            for ordinal,record in enumerate(records,1):
-                kind,request=(2,4) if wire['number']==1 else (5,0)
-                require(record==(ordinal,ordinal,hashlib.sha256(oracle.wire_json(event)).digest(),kind,request,event['created_at'],1),'independent actual classification differs')
-            count=totals.setdefault(row['job_id'],0);totals[row['job_id']]=count+classified
-            require(row['continuation_upper']==(2 if classified and terminal=='eose' else 86400),'pending seconds overlap differs')
+        declarations={}
+        commands=load(self.home/'submitted.json')
+        selectors={item['body']['scope_id']:item['input']['selector'] for item in commands if item['path']=='acquisition-scopes'}
+        declared={oracle.wire_json(value) for value in selectors.values()}
+        require(declared=={oracle.wire_json(dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')),
+            oracle.wire_json(dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'))},'two literal collection declarations differ')
+        for item in commands:
+            if item['path']=='jobs':
+                declarations[item['body']['job_id']]=dict(selector=selectors[item['input']['scope_id']],
+                    scope_id=item['input']['scope_id'],accepted_at_us=item['body']['accepted_at_us'])
+        for wire in wires:
+            row=by_request[wire['request'][1]];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
+            declared=declarations[job['job_id'][2:]]
+            require(row['scope_id']=='\\x'+declared['scope_id'],'quantum declaration identity differs')
+            classified=oracle.scenario(row,wire,job,event,refs,selector=declared['selector'],accepted_at_us=declared['accepted_at_us'])
+            totals[row['job_id']]=totals.get(row['job_id'],0)+classified
+        statuses=load(self.home/'linear-status-observations.json')
+        require({value['job_id'] for value in statuses}==set(declarations),'both known-plan actor statuses required')
+        from installed_sync_client import quantum_status,quantum_window
+        for value in statuses:
+            declared=declarations[value['job_id']]
+            actual=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,selector=declared['selector'])
+            job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]
+            latest=max(job_rows,key=lambda row:row['quantum_number'])
+            lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'])
+            require(actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(len(job_rows)),
+                scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='pending',
+                terminal=None,gap=None,continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
+                and latest['terminal_kind'] is None,'known final pending status differs')
         require(set(totals)=={job['job_id'] for job in state['jobs']},'both controlled scopes must receive finite turns')
         require(sum(totals.values())==5,'finite expected classification total differs')
         for head in state['acquisition_progress']:
@@ -183,7 +251,7 @@ class LinearQuantumRuntime(Runtime):
         actual=[(row['cf'],bytes.fromhex(row['key']),bytes.fromhex(row['value'])) for row in dump['rows']]
         facts={int.from_bytes(key[-8:],'big'):value for cf,key,value in actual if cf=='facts' and key[:2]==b'\x01\x20'}
         at=lambda number:decode(facts[number][34:].split(b'\0',1)[1])[4]
-        boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority') else ('terminal' if self.quantum_fault=='gap-write' else 'plan','known')
+        boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('terminal' if self.quantum_fault=='gap-write' else 'plan','known')
         requests=3 if boundary=='plan' else 4
         inputs=originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,requests)
         received=decode(inputs[3].split(b'\0',1)[1])[3][5][0] if boundary=='terminal' else None
@@ -197,8 +265,21 @@ class LinearQuantumRuntime(Runtime):
             plan,=plans
             require((plan['terminal_kind'] is not None)==(self.quantum_fault=='terminal-after'),'actual terminal commit direction differs')
         opened=list(self.home.glob('relay-open-*.json'))
-        require(len(opened)==(0 if boundary=='plan' else 1),'unknown COMMIT permitted a socket or next quantum')
+        require(len(opened)==(1 if self.quantum_fault=='empty-terminal-authority' else 0 if boundary=='plan' else 1),'unknown COMMIT permitted a socket or next quantum')
         require(len(state['producer_requests'])==len(state['producer_outcomes'])==requests,'unknown metadata commit invented a producer request')
+        if self.quantum_fault=='gap-write':
+            wire=load(self.home/'relay-closed-001.json')
+            require(plan==self.gap_plan_before,'failed gap UPDATE changed original pending plan/charge/cursor')
+            job=next(job for job in state['jobs'] if job['job_id']==plan['job_id'])
+            oracle.window(plan,job,wire)
+            require(wire['scenario']=='body_closed' and wire['frames']==['EVENT','CLOSED']
+                and wire['terminal_frame_hex']==oracle.wire_json(['CLOSED',wire['request'][1],'rate-limited']).hex(),
+                'gap-write fault did not actually attempt a gap')
+        if self.quantum_fault=='empty-terminal-authority':
+            source_output=self.root/'initial'
+            oracle.empty_authority(self.empty_source_before,state,load(self.home/'relay-closed-001.json'),
+                load(source_output/'completed-source-rollback.json'),load(source_output/'held-source-rollback.json'),
+                load(source_output/'source-rollback-delivered.json'))
         # Existing ownership is immutable. Wait for the positively dead owner's
         # actual lease expiry, then start ordinary Control for historical status;
         # this never adopts a same-job Sync/producer lifetime.
