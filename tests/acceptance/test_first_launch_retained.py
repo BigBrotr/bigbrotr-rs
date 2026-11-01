@@ -472,12 +472,15 @@ class RetainedBoundaryControls(unittest.TestCase):
             in_flight=copy.deepcopy(rows[21])
             in_flight.update(terminal_kind=None,completed_at_us=None)
             check.finite_quanta(rows,wires,before+[in_flight],post_proof='closed')
+            nonlast_closed=next(n for n,wire in enumerate(wires[:-1]) if wire.get('retained_phase')=='budget-closed')
             mutations=(lambda r:r.pop(127),lambda r:r.pop(),
                 lambda r:r[127].update(terminal_kind=None),
                 lambda r:r[127].update(completed_at_us=None),
                 lambda r:r[127].update(request_id=r[126]['request_id']),
                 lambda r:r[-1].update(quantum_number=130),
                 lambda r:r[-1].update(checkpoint_before=64),
+                lambda r:r[nonlast_closed].update(checkpoint_after=66),
+                lambda r:r[nonlast_closed].update(checkpoint_before=66,checkpoint_after=66),
                 lambda r:r[-1].update(request_id=r[0]['request_id']),
                 lambda r:r[-1].update(query_budget=127),
                 lambda r:r[-1].update(terminal_kind='eose'),

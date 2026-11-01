@@ -113,6 +113,7 @@ def finite_quanta(rows, wires, before, *, post_proof='quiet'):
         assert row['terminal_kind'] is not None and type(row['completed_at_us']) is int
         assert index.raw(row['request_id'])==wire['request'][1].encode()
         if post_proof=='closed' and number>proof:
+            assert row['checkpoint_before']==row['checkpoint_after']==65
             assert wire['retained_phase']=='budget-closed' and wire['frames']==['CLOSED']
             assert wire['retained_quiet'] is False and wire['completion']=='request-and-websocket-close'
             assert (row['terminal_kind'],row['disposition'],row['result_class'],row['gap_reason'],
