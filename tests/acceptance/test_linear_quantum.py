@@ -155,6 +155,112 @@ class LinearQuantumControls(unittest.TestCase):
                 self.assertEqual(saved['port'],34567)
                 self.assertEqual(saved['direct_recipe_sha256'],hashlib.sha256(original.encode()).hexdigest())
 
+    def test_control_expiry_consumes_frozen_sixty_second_lease_instead_of_fixed_twenty_seconds(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            runtime.config=root/'instance.toml';runtime.config.write_text('[runtime]\n')
+            runtime.initialized=dict(dataset_id='11'*16,owner_resource_id='44'*16)  # Ingest is distinct.
+            owner=dict(dataset_id='\\x'+'11'*16,resource_id='\\x'+'22'*16,role='control',epoch=2,
+                process_incarnation='\\x'+'33'*16,state='active',acquired_at_us=999_000_000,
+                lease_expires_at_us=1_060_000_000,xmin='7')
+            job_owner=['\\x'+'11'*16,'\\x'+'22'*16,2,'\\x'+'33'*16]
+            terminal=dict(Id='dead-app',State=dict(Running=False,Pid=0,OOMKilled=False))
+            clock=[100.0]
+            def sql(database,statement):
+                self.assertEqual(database,'bigbrotr_control')
+                self.assertIn('clock_timestamp()',statement);self.assertIn('active_unexpired',statement)
+                now=1_000_000_000+round((clock[0]-100)*1_000_000)
+                return json.dumps(dict(observed_at_us=now,owners=[owner],job_owners=[job_owner],active_unexpired=int(now<1_060_000_000)))
+            runtime.sql=Mock(side_effect=sql)
+            runtime.wait=Mock(wraps=runtime.wait)
+            def advance(seconds):clock[0]+=seconds
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]), \
+                    patch.object(case.time,'sleep',side_effect=advance):
+                runtime.freeze_control_lease(terminal,root)
+                frozen=json.loads((root/'dead-control-lease.json').read_text())
+                self.assertEqual((frozen['remaining_us'],frozen['deadline_monotonic']),(60_000_000,165.0))
+                # Ten seconds of native verification consumes the same deadline.
+                clock[0]=110.0
+                runtime.wait_control_expiry(root)
+            self.assertEqual(runtime.wait.call_args.args[1:],('dead original Control lease expiry',55.0))
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual(witness['status'],'PASS')
+            self.assertGreater(witness['finished_monotonic']-witness['started_monotonic'],20)
+            self.assertLessEqual(witness['finished_monotonic'],165.0)
+            self.assertEqual(witness['last_observation']['owners'],[owner])
+            self.assertEqual(witness['last_observation']['active_unexpired'],0)
+            self.assertGreaterEqual(witness['last_observation']['observed_at_us'],1_060_000_000)
+
+    def test_dead_control_expiry_refuses_changed_lease_or_out_of_profile_wait(self):
+        from cases import first_launch_linear_quantum as case
+        for name in ('beyond-maximum','changed-lease','clock-regressed','budget-exhausted','wrong-profile'):
+            with self.subTest(name=name),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+                runtime.config=root/'instance.toml'
+                runtime.config.write_text('[runtime]\nlease_ttl = "'+('61s' if name=='wrong-profile' else '60s')+'"\n')
+                runtime.initialized=dict(dataset_id='11'*16,owner_resource_id='44'*16)
+                owner=dict(dataset_id='\\x'+'11'*16,resource_id='\\x'+'22'*16,role='control',epoch=2,
+                    process_incarnation='\\x'+'33'*16,state='active',
+                    lease_expires_at_us=1_060_000_001 if name=='beyond-maximum' else 1_060_000_000,xmin='7')
+                terminal=dict(Id='dead-app',State=dict(Running=False,Pid=0,OOMKilled=False))
+                sample=dict(observed_at_us=1_000_000_000,owners=[owner],
+                    job_owners=[['\\x'+'11'*16,'\\x'+'22'*16,2,'\\x'+'33'*16]],active_unexpired=1)
+                runtime.sql=Mock(return_value=json.dumps(sample));runtime.wait=Mock()
+                clock=[100.0]
+                with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]):
+                    if name in ('beyond-maximum','wrong-profile'):
+                        with self.assertRaisesRegex(ValueError,'configured maximum|declared 60s'):
+                            runtime.freeze_control_lease(terminal,root)
+                        runtime.wait.assert_not_called()
+                        continue
+                    runtime.freeze_control_lease(terminal,root)
+                    if name=='changed-lease':sample['owners']=[dict(owner,lease_expires_at_us=1_060_000_001)]
+                    elif name=='clock-regressed':sample['observed_at_us']=999_999_999
+                    else:clock[0]=166.0
+                    runtime.sql.return_value=json.dumps(sample)
+                    with self.assertRaisesRegex(ValueError,'lease changed|clock regressed|budget exhausted'):
+                        runtime.wait_control_expiry(root)
+                runtime.wait.assert_not_called()
+                witness=json.loads((root/'dead-control-expiry.json').read_text())
+                self.assertEqual(witness['status'],'FAIL')
+                self.assertEqual(witness['deadline_monotonic'],165.0)
+
+    def test_expired_database_lease_cannot_bypass_exhausted_frozen_host_budget(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            runtime.sql=Mock(return_value=json.dumps(expired));runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',return_value=170.0):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_not_called();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',0,165.0))
+
+    def test_first_expiry_sql_observation_cannot_cross_frozen_deadline(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            clock=[164.0]
+            def sql(database,statement):
+                clock[0]=166.0
+                return json.dumps(expired)
+            runtime.sql=Mock(side_effect=sql);runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_called_once();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',1,165.0))
+            self.assertEqual(witness['last_observation'],expired)
+
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
         self.assertEqual(state['acquisition_quanta'][0]['charged_bytes'],1189)
