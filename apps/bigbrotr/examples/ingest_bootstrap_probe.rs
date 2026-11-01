@@ -742,6 +742,26 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             ingest_owner::grant(&budget, 128 * MIB),
         )
         .unwrap();
+        ingest_owner::reconcile_initial_pending_quota(
+            &mut owner,
+            &mut store,
+            bigbrotr::storage::postgres::control_owner::InitialPendingQuotaRequest {
+                ingest_root: path,
+                registration: &spec,
+                limits: ingest_recovery::initial_limits(
+                    bigbrotr::storage::rocks::store::AdmissionLimits {
+                        max_outstanding_requests: u64::from(spec.outstanding_request_limit),
+                        ..bigbrotr::storage::rocks::store::AdmissionLimits::default()
+                    },
+                ),
+                policy_ttl: Duration::from_secs(2),
+                cancelled: &cancelled,
+            },
+            &budget,
+            validate,
+        )
+        .await
+        .unwrap();
         let retry = owner
             .bootstrap_initial_dictionaries(
                 &mut store,

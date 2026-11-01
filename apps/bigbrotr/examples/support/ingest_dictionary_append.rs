@@ -216,6 +216,21 @@ pub async fn run(
         crate::ingest_owner::grant(budget, 128 * MIB),
     )
     .unwrap();
+    crate::ingest_owner::reconcile_initial_pending_quota(
+        owner,
+        &mut store,
+        bigbrotr::storage::postgres::control_owner::InitialPendingQuotaRequest {
+            ingest_root: path,
+            registration: spec,
+            limits: crate::ingest_recovery::initial_limits(admission),
+            policy_ttl: Duration::from_secs(2),
+            cancelled: &cancelled,
+        },
+        budget,
+        validate,
+    )
+    .await
+    .unwrap();
     for (sequence, expected) in [
         (append_sequence, &first_bytes),
         (reuse_sequence, &reused_bytes),
