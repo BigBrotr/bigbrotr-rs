@@ -202,7 +202,10 @@ same live owner and accepted config/policy; setup waits the full accepted
 `runtime.pressure_stable_duration` outside PostgreSQL transactions and policy
 leases, then checks the same policy, renewed owners, retained original input bytes
 and unchanged logical PG/catalog state. This elapsed-time bracket is setup only,
-not proof of native intake readiness. The subsequent real admissions must still
+not proof of native intake readiness. Only the activation-bound Control and Ingest
+leases must remain current; unchanged historical rows may still say active after
+their lease expires. Changed active rows retain the same renewal checks. The
+subsequent real admissions must still
 succeed within the original 25s submitted barrier and 30s observation; ordinary
 history/export retains 40s/12s. No accepted stable duration is reduced.
 

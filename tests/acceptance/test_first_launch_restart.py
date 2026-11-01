@@ -178,8 +178,10 @@ class RestartControls(unittest.TestCase):
                     'accepted-stable':lambda pg:pg['policy_revisions'][0]['document']['settings'].update({'runtime.pressure_stable_duration':1}),
                     'policy-digest':lambda pg:pg['policy_revisions'][0].update(document_digest='\\x'+'ee'*32),
                     'policy-head':lambda pg:pg['datasets'][0].update(policy_revision=2),
-                    'owner':lambda pg:pg['owner_epochs'][1].update(process_incarnation='\\x'+'ee'*16),
-                    'expired':lambda pg:pg['owner_epochs'][0].update(lease_expires_at_us=40_000_000),
+                    'ingest-owner':lambda pg:pg['owner_epochs'][1].update(process_incarnation='\\x'+'ee'*16),
+                    'control-owner':lambda pg:pg['owner_epochs'][0].update(process_incarnation='\\x'+'ee'*16),
+                    'expired-control':lambda pg:pg['owner_epochs'][0].update(lease_expires_at_us=40_000_000),
+                    'expired-ingest':lambda pg:pg['owner_epochs'][1].update(lease_expires_at_us=40_000_000),
                     'new-input':lambda pg:pg['producer_requests'].append({'unexpected':'request'}),
             }.items():
                 changed=copy.deepcopy(after);change(changed)
@@ -191,6 +193,25 @@ class RestartControls(unittest.TestCase):
                     changed[table][0]['document']['settings']['runtime.pressure_stable_duration']=invalid
                 with self.subTest(stable=invalid),self.assertRaises(AssertionError):
                     check.recovery_stability_basis(changed,started,10_000_000)
+
+    def test_recovery_setup_preserves_historical_active_archive_after_natural_expiry(self):
+        before,after,started=recovery_setup_fixture()
+        archive=dict(before['owner_epochs'][0],resource_id='\\x'+'ee'*16,epoch=1,role='archive',
+            role_instance_id='\\x'+'e1'*16,process_incarnation='\\x'+'e2'*16)
+        for state in (before,after):state['owner_epochs'].append(copy.deepcopy(archive))
+        result=check.recovery_stability_preserved(before,after,started,10_000_000,40_000_000)
+        self.assertEqual(result['stable_duration_us'],30_000_000)
+        self.assertEqual(before['owner_epochs'][-1],after['owner_epochs'][-1])
+        for owner in (0,1):
+            changed=copy.deepcopy(after);changed['owner_epochs'][owner]=copy.deepcopy(before['owner_epochs'][owner])
+            with self.subTest(unchanged_expired_current=owner),self.assertRaises(AssertionError):
+                check.recovery_stability_preserved(before,changed,started,10_000_000,40_000_000)
+        for change in (lambda pg:pg['owner_epochs'][-1].update(lease_expires_at_us=11_000_000),
+                lambda pg:pg['owner_epochs'][-1].update(lease_expires_at_us=13_000_000),
+                lambda pg:pg['owner_epochs'][-1].update(process_incarnation='\\x'+'ff'*16)):
+            changed=copy.deepcopy(after);change(changed)
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                check.recovery_stability_preserved(before,changed,started,10_000_000,40_000_000)
 
     def test_recovery_setup_waits_full_accepted_interval_without_observers_or_client(self):
         for provenance,stable_us in ((True,30_000_000),(False,2_500_000)):
