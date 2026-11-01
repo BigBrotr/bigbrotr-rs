@@ -735,7 +735,7 @@ class Runtime:
             save(output / 'terminal-container.json', dict(id=info['Id'], state=info['State']))
         return info
 
-    def initial(self):
+    def initial_start(self):
         self.source_unchanged()
         output = self.root / 'initial'
         output.mkdir(mode=0o700)
@@ -759,10 +759,13 @@ class Runtime:
                 env=self.environment, cwd=self.root, stdout=out, stderr=err, start_new_session=True)
         self.processes.append(self.client)
         save(output / 'client-process.json', dict(pid=self.client.pid, process_group=self.client.pid))
+        return entry,output,setup
+
+    def initial_commands(self,entry,output,setup):
         self.initial_source_barrier(entry, output)
         self.wait(lambda: (self.home / 'prepared.json').exists(), 'source commands', 15, entry, self.client)
         prepared, _ = self.capture(output, 'prepared')
-        self.validate_source(self.current_owner_view(prepared, setup), first, load(self.home / 'prepared.json'))
+        self.validate_source(self.current_owner_view(prepared, setup), self.initialized, load(self.home / 'prepared.json'))
         (self.home / 'prepared.continue').write_text('independent source relationships checked\n')
         self.initial_submission(entry,output)
         self.initial_archive_observation(entry, output)
@@ -774,6 +777,10 @@ class Runtime:
         self.initial_publication(entry, output)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
+
+    def initial(self):
+        entry,output,setup=self.initial_start()
+        self.initial_commands(entry,output,setup)
         self.wait(self.initial_source_quiet, 'quiet controlled receive', 5, entry, self.client)
         (self.home / 'stop-requested').write_text('owned orderly stop\n')
         terminal = self.stop_container(entry, output)
