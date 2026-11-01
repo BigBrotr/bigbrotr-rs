@@ -1800,7 +1800,7 @@
         "affected_installed_interruptions": "FAIL01fc; reviewed read-stop correction NOT_RUN"
       },
       "immutable_read_stop_20261101": {
-        "status": "CORRECTION_SOURCE_REVIEWED_NOT_COMPILED",
+        "status": "SOURCE_REVIEWED_ACTUAL_RELEASE_RUNNING",
         "tasks": [
           "P03-T05 Steps1/4",
           "P03-T01 Step3"
@@ -1814,8 +1814,26 @@
         },
         "classification": "Source-confirmed product cancellation race: immutable attribution/visibility read can finish rollback then refuse delivery on SIGTERM and leave owner unavailable. The original run has no separate durable rollback witness; exact failure bytes retained, no claimed successful rollback for that capture.",
         "correction": "Only three Sync immutable visibility/observation reads drain once under their original policy/grants/deadline with a private false cancellation token. Real stop skips before first poll or discards validated success. Native errors, closed-client/rollback/lease/deadline failures and effectful operations remain fatal. Post-append absence becomes StateMismatch before stop discard.",
-        "critical_review": "Astra approved bounded caller-side drain; its post-append-absence finding was corrected before compilation. Five discriminating unit controls added; NOT_RUN until actual exact-source strict execution.",
-        "remaining": "Fresh exact-source release, strict workspace tests, observer and affected actual installed stop/budget/restart qualification; current-source hosted CI."
+        "critical_review": "Astra bounded review approved caller-side drain. Post-append absence finding corrected inside read completion before stop discard; five discriminating unit controls remain NOT_RUN until actual strict run.",
+        "remaining": "Fresh exact-source release, strict workspace tests, observer and affected actual installed stop/budget/restart qualification; current-source hosted CI.",
+        "source": "dee67719ca55952a21c3a41c1c93d67990e08771",
+        "tree": "3dfd97d1c059e41a750528711af87f8b9e76fa4d",
+        "build": {
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719",
+          "tool": 26254,
+          "container": "440b8ef234fc95a2e622a50041c108f78ef4bb88fe54ba5e44f10e323968ad55",
+          "owner": "adfb12ed16a85da6e1654d3e4f4f88fb",
+          "status": "RUNNING_NOT_QUALIFIED",
+          "preflight": "Fresh exact-source isolated fmt/diff and preparation syntax PASS; no Rust tests or engine execution",
+          "strict": "NOT_RUN_REQUIRED_CURRENT_SOURCE; no fb-scoped reuse for this new Rust change",
+          "observer": "NOT_RUN_PARENT_UNBOUND"
+        },
+        "source_scan": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-window-source-dee67719-20261101/source-triage.json",
+          "sha256": "bdc191a3b42728c171f242a5ff8920f8063a0eb1e3f4d873b19b961bd1151ea1",
+          "scope": "fb scan plus dee delta:26objects/21,218,416B; five identical previously public/triaged noncredential candidates, zero unclassified. Later additions/hosted outputs still need relevant audit."
+        }
       }
     }
   }

@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "Current01fc release/observer and seven bounded installed cases PASS. Interruptions85996 reaped1 with orderly-stop failure and final science NOT_RUN; reviewed immutable-read stop correction remains unbuilt. Owned cases stopped, data/logs retained; strict/budget/restart/current hosted CI gates open.",
+          "state": "01fc seven bounded cases PASS; interruptions85996 failed orderly stop with final science NOT_RUN. Reviewed read-stop correction dee67719 release is active26254; fresh strict/observer and affected real cases remain required. Original failures/datasets/worktrees retained.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78752,6 +78752,18 @@
             "affected_installed_restart": "NOT_RUN",
             "current_source_hosted_ci": "NOT_RUN",
             "affected_installed_interruptions": "FAIL01fc orderly-stop; source correction reviewed, not built"
+          },
+          "immutable_read_stop_correction": {
+            "source": "dee67719ca55952a21c3a41c1c93d67990e08771",
+            "tree": "3dfd97d1c059e41a750528711af87f8b9e76fa4d",
+            "source_root": "/home/tux/bigbrotr-rs/.research/m2-window-product-dee67719",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719",
+            "owner": "adfb12ed16a85da6e1654d3e4f4f88fb",
+            "container": "440b8ef234fc95a2e622a50041c108f78ef4bb88fe54ba5e44f10e323968ad55",
+            "tool": 26254,
+            "cache": "network115 held exclusively during current release; original four ELF full-byte/metadata guards retained",
+            "status": "ACTUAL_RELEASE_RUNNING_NOT_QUALIFIED; fresh strict and exact-parent observer NOT_RUN"
           }
         }
       },
