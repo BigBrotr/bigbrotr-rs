@@ -1,7 +1,7 @@
 //! Native option profile 1. These controls are not a process RSS or disk ceiling.
 use rocksdb::{
-    BlockBasedOptions, Cache, ColumnFamilyDescriptor, DBCompressionType, DBRecoveryMode, Options,
-    WriteBufferManager,
+    BackgroundErrorGuard, BlockBasedOptions, Cache, ColumnFamilyDescriptor, DBCompressionType,
+    DBRecoveryMode, Options, WriteBufferManager,
 };
 use std::fmt;
 
@@ -170,12 +170,32 @@ pub struct RocksNativeUsage {
 /// Retain beside the DB and the owner's native reservation; no mutating handle
 /// escapes. RocksDB also retains shared references through its opened Options.
 pub(crate) struct RocksNativeResources {
+    owned_background_guard: BackgroundErrorGuard,
     cache: Cache,
     write_buffers: WriteBufferManager,
     limits: RocksNativeLimits,
+    #[cfg(test)]
+    simulated_background_failure: SimulatedBackgroundFailure,
 }
 
 impl RocksNativeResources {
+    pub(crate) fn background_failed(&self) -> bool {
+        #[cfg(test)]
+        if self
+            .simulated_background_failure
+            .0
+            .load(std::sync::atomic::Ordering::Acquire)
+        {
+            return true;
+        }
+        self.owned_background_guard.failed()
+    }
+
+    #[cfg(test)]
+    pub(in crate::storage) fn test_background_failure(&self) -> SimulatedBackgroundFailure {
+        self.simulated_background_failure.clone()
+    }
+
     pub(crate) fn usage(&self) -> RocksNativeUsage {
         RocksNativeUsage {
             cache_bytes: self.cache.get_usage(),
@@ -189,6 +209,21 @@ impl RocksNativeResources {
     }
 }
 
+/// A simulated Rust observation only: this never invokes a native listener.
+/// It can latch once and has no reset, just like the production observation.
+#[cfg(test)]
+#[derive(Clone, Default)]
+pub(in crate::storage) struct SimulatedBackgroundFailure(
+    std::sync::Arc<std::sync::atomic::AtomicBool>,
+);
+
+#[cfg(test)]
+impl SimulatedBackgroundFailure {
+    pub(in crate::storage) fn latch(&self) {
+        self.0.store(true, std::sync::atomic::Ordering::Release);
+    }
+}
+
 /// Open inputs only. The store owner alone authorizes creation/reopen, checks
 /// the manifest/CF set and imposes WAL-enabled synchronized write options.
 pub(crate) struct RocksNativeProfile {
@@ -198,7 +233,10 @@ pub(crate) struct RocksNativeProfile {
 }
 
 impl RocksNativeProfile {
-    pub(crate) fn build(limits: RocksNativeLimits) -> Self {
+    pub(crate) fn build(
+        limits: RocksNativeLimits,
+        initialize: bool,
+    ) -> Result<Self, rocksdb::Error> {
         let cache = Cache::new_lru_cache(limits.block_cache_bytes);
         let write_buffers = WriteBufferManager::new_write_buffer_manager_with_cache(
             limits.write_buffer_manager_bytes,
@@ -220,9 +258,9 @@ impl RocksNativeProfile {
             ColumnFamilyDescriptor::new(name, options)
         });
         let mut db_options = Options::default();
-        db_options.create_if_missing(false);
-        db_options.create_missing_column_families(false);
-        db_options.set_error_if_exists(false);
+        db_options.create_if_missing(initialize);
+        db_options.create_missing_column_families(initialize);
+        db_options.set_error_if_exists(initialize);
         // This belongs to DBOptions. The native CF descriptor conversion drops
         // a manager assigned only to per-family Options, silently leaving it idle.
         db_options.set_write_buffer_manager(&write_buffers);
@@ -242,15 +280,21 @@ impl RocksNativeProfile {
         db_options.set_allow_mmap_writes(false);
         db_options.set_max_log_file_size(1024 * 1024);
         db_options.set_keep_log_file_num(4);
-        Self {
+        // This must be the last mutation of the final DB options. A failed
+        // installation never supplies an unguarded profile to list_cf/open.
+        let owned_background_guard = db_options.install_background_error_guard()?;
+        Ok(Self {
             db_options,
             column_families,
             resources: RocksNativeResources {
+                owned_background_guard,
                 cache,
                 write_buffers,
                 limits,
+                #[cfg(test)]
+                simulated_background_failure: SimulatedBackgroundFailure::default(),
             },
-        }
+        })
     }
 }
 
@@ -387,13 +431,49 @@ mod tests {
     fn profile_does_not_authorize_implicit_creation() {
         let root = tempfile::tempdir().unwrap();
         let path = root.path().join("not-initialized");
-        let profile = RocksNativeProfile::build(RocksNativeLimits::new(settings()).unwrap());
+        let profile =
+            RocksNativeProfile::build(RocksNativeLimits::new(settings()).unwrap(), false).unwrap();
         let names: Vec<_> = profile.column_families.iter().map(|cf| cf.name()).collect();
         assert_eq!(names, ["default", "facts", "receipts"]);
         assert!(
             DB::open_cf_descriptors(&profile.db_options, &path, profile.column_families).is_err()
         );
         assert!(!path.join("CURRENT").exists());
+        assert!(!profile.resources.background_failed());
+        drop(profile.db_options);
+        assert!(!profile.resources.background_failed());
+    }
+
+    #[test]
+    fn final_factory_options_require_a_guard_for_both_open_modes() {
+        for initialize in [false, true] {
+            let mut profile =
+                RocksNativeProfile::build(RocksNativeLimits::new(settings()).unwrap(), initialize)
+                    .unwrap();
+            assert_eq!(
+                profile.db_options.get_max_background_error_resume_count(),
+                0
+            );
+            // An intentional refused second installation independently checks
+            // that zero resume count did not stand in for an installed listener.
+            assert!(profile.db_options.install_background_error_guard().is_err());
+            assert!(!profile.resources.background_failed());
+        }
+    }
+
+    #[test]
+    fn simulated_background_failure_is_sticky_and_scoped_to_one_factory() {
+        let limits = RocksNativeLimits::new(settings()).unwrap();
+        let profile = RocksNativeProfile::build(limits, false).unwrap();
+        let fresh = RocksNativeProfile::build(limits, false).unwrap();
+        let simulated = profile.resources.test_background_failure();
+        assert!(!profile.resources.background_failed());
+        simulated.latch();
+        drop(simulated);
+        assert!(profile.resources.background_failed());
+        assert!(!fresh.resources.background_failed());
+        // This simulated observation never exercised the native callback.
+        assert!(!profile.resources.owned_background_guard.failed());
     }
 
     fn synced() -> WriteOptions {
@@ -407,10 +487,8 @@ mod tests {
     fn actual_database_options_bind_shared_wbm_and_cache_to_every_family() {
         let root = tempfile::tempdir().unwrap();
         let path = root.path().join("positive");
-        let mut profile = RocksNativeProfile::build(RocksNativeLimits::new(settings()).unwrap());
-        profile.db_options.create_if_missing(true);
-        profile.db_options.create_missing_column_families(true);
-        profile.db_options.set_error_if_exists(true);
+        let profile =
+            RocksNativeProfile::build(RocksNativeLimits::new(settings()).unwrap(), true).unwrap();
         let db =
             DB::open_cf_descriptors(&profile.db_options, &path, profile.column_families).unwrap();
         drop(profile.db_options);

@@ -193,7 +193,7 @@ impl IngestStore {
         {
             return Err(BootstrapError::InsufficientReservation);
         }
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         self.require_unretired_bootstrap(request)?;
@@ -205,8 +205,13 @@ impl IngestStore {
                 bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
                 _ => BootstrapError::Limit,
             })?;
-        self.stage_producer_request(request, intent.request_digest(request), &bytes)
-            .map_err(BootstrapError::RequestInput)
+        let staged = self
+            .stage_producer_request(request, intent.request_digest(request), &bytes)
+            .map_err(BootstrapError::RequestInput)?;
+        if self.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        Ok(staged)
     }
 
     /// Internal primitive, never a public authority-by-callback interface.
@@ -229,7 +234,7 @@ impl IngestStore {
             return Err(BootstrapError::InsufficientReservation);
         }
         require_authority()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         self.require_unretired_bootstrap(request)?;
@@ -238,6 +243,9 @@ impl IngestStore {
         if let Some(receipt) = self.replay_bootstrap(request, intent, limits)? {
             let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
             require_authority()?;
+            if self.native_unavailable() {
+                return Err(BootstrapError::CommitUnknown);
+            }
             return Ok(StoredReceipt::new(receipt, copy, permit));
         }
         let (mut prepared, receipt) =
@@ -405,6 +413,9 @@ impl IngestStore {
         prepared: Prepared,
         mut require_authority: impl FnMut() -> Result<(), BootstrapError>,
     ) -> Result<(), BootstrapError> {
+        if self.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         self.validate_prepared_accounting(&prepared)?;
         let mut batch = WriteBatch::with_capacity_bytes(prepared.serialized_bound);
         for entry in &prepared.entries {
@@ -424,11 +435,20 @@ impl IngestStore {
         options.disable_wal(false);
         options.set_ignore_missing_column_families(false);
         require_authority()?;
+        if self.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         self.validate_prepared_accounting(&prepared)?;
+        if self.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         self.write_uncertain = true;
         self.db
             .write_opt(batch, &options)
             .map_err(|_| BootstrapError::CommitUnknown)?;
+        if self.resources.background_failed() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         self.write_uncertain = false;
         if let Some((_, next)) = prepared.accounting {
             self.accounting = next;

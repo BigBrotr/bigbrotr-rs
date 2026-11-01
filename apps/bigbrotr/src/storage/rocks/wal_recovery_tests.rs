@@ -160,13 +160,11 @@ fn wal_recovery_refuses_loss_of_a_synced_bootstrap() {
             let reference = root.path().join(format!("{mode}-permissive"));
             seed(&reference);
             damage_last_record(&reference, mode);
-            let mut profile = RocksNativeProfile::build(native());
-            profile
-                .db_options
-                .set_wal_recovery_mode(rocksdb::DBRecoveryMode::PointInTime);
-            let db =
-                DB::open_cf_descriptors(&profile.db_options, &reference, profile.column_families)
-                    .unwrap();
+            // Independent intentionally permissive negative control, never
+            // mutate the production factory's final guarded DB options.
+            let mut options = rocksdb::Options::default();
+            options.set_wal_recovery_mode(rocksdb::DBRecoveryMode::PointInTime);
+            let db = DB::open_cf(&options, &reference, INGEST_COLUMN_FAMILIES).unwrap();
             assert_eq!(
                 rows(&db),
                 fixture["before"],

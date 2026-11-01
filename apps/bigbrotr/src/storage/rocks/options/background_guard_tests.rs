@@ -1,5 +1,5 @@
-//! Dependency-binding smoke controls only. The application factory remains
-//! unguarded; these tests do not qualify callbacks, NoSpace, or physical bounds.
+//! Dependency-binding smoke controls only. These tests do not qualify application
+//! failure delivery, native error callbacks, NoSpace, or physical bounds.
 use rocksdb::{DB, Options, WaitForCompactOptions, WriteOptions};
 use std::thread;
 
