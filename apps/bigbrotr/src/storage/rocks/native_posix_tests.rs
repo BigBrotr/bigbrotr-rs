@@ -136,13 +136,16 @@ fn exercise(root: &Path, evidence: &Path) {
             started.elapsed() < DEADLINE,
             "filler deadline; no fault conclusion"
         );
-        match filler.write(&chunk) {
+        // NamedTempFile::write wraps errors with path context and loses
+        // raw_os_error(). Use the underlying File for the exact errno oracle.
+        match filler.as_file_mut().write(&chunk) {
             Ok(0) => panic!("filler made no progress without ENOSPC"),
             Ok(count) => filled += count as u64,
             Err(error) => {
                 assert_eq!(
                     error.raw_os_error(),
-                    Some(rustix::io::Errno::NOSPC.raw_os_error())
+                    Some(rustix::io::Errno::NOSPC.raw_os_error()),
+                    "filler must return raw ENOSPC: {error}"
                 );
                 break;
             }
