@@ -39,6 +39,11 @@ pub(super) fn prepare_control_shared(
     password_reference: &str,
     budget: &ResourceBudget,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    // Of this existing Control allowance, 128 MiB owns buffered SQL receive
+    // backing for history rows bounded to 5 MiB: queued/current/pending chunks,
+    // Framed's partial message and one resize overlap. query_raw is not a
+    // one-row memory bound. The held permit also owns prior connection high
+    // water and TLS/socket lifetime; application decode scratch is separate.
     prepare_database(
         config,
         "postgres.control",

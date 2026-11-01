@@ -30,8 +30,9 @@ impl QuantumGrant {
         };
         ProgressGrant::REQUIRED_DATA_BYTES
             + bigbrotr_protocol::EventLimits::default().wire_bytes as u64
-            // A prior terminal is decoded one row at a time before retaining
-            // the next plan. Fund the same bounded wire parser used at receive.
+            // Application terminal decode uses the same bounded wire parser.
+            // Driver chunk/backing retention belongs to the held Control grant,
+            // including its explicit 128 MiB buffered SQL receive allowance.
             + bigbrotr_protocol::EventLimits::default().parse_bytes as u64
             // Streaming rows retain bounded predicate bytes beside terminal bytes.
             + bigbrotr_protocol::EventLimits::default().wire_bytes as u64
