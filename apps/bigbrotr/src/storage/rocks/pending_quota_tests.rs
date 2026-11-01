@@ -865,7 +865,9 @@ fn logical_pressure_needs_strict_low_and_a_complete_fresh_stable_interval() {
     store.write_uncertain = true;
     assert_eq!(
         store.observe_pending_quota_at(start + Duration::from_secs(201)),
-        Err(PendingQuotaError::WriteUncertain)
+        Err(PendingQuotaError::Accounting(
+            PendingAccountingError::WriteUncertain
+        ))
     );
     let PendingQuota::Bound(quota) = &store.pending_quota else {
         panic!()
