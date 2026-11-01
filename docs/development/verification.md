@@ -189,6 +189,13 @@ export oracle compares the full manifest, file bytes and all 77 Control tables;
 catalog/Archive files must remain unchanged during ordinary read/export, and
 application database backends must be absent after each lifetime.
 
+The base and restart cases use the shared completed-startup-probe observer before
+the initial permission checks. It verifies the same Control parent, released
+reader leases and claims, and no native child within the original 40s client
+window. The initial provenance-on/off cuts and counts come from the existing
+declared fixture profiles. All 403 expectations, single attempts and the 12s export
+deadline remain unchanged; a later 429 still fails.
+
 This base case does **not** run the independent RocksDB census, typed producer
 progress oracle or C API Archive census. These are recorded as NOT_RUN scope
 limits, not implied by its PASS. Ingest successor/resend, Index readiness,

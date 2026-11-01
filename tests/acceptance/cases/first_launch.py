@@ -416,9 +416,10 @@ class Runtime:
         self.set_value, self.current_owner_view = set_value, current_owner_view
         self.export_validate, self.validate_source = validate, validate_source
         self.signed_sha256 = SIGNED_SHA256
+        # Load the shared startup observer and fixture profiles before candidate
+        # source capture. Their import cycle precludes a module-level import.
+        from cases import first_launch_index_baseline, first_launch_restart
         if self.restart_case:
-            from cases import first_launch_restart
-            from cases import first_launch_index_baseline
             # Load every independent owner before recording source identity.
             import installed_archive_read
             import installed_archive_catch_up_oracle
@@ -874,10 +875,9 @@ class Runtime:
         require(all(sample['count']==0 for sample in observed.values()), 'database backend remains')
 
     def ordinary_client(self, output, entry):
-        result = self.command([sys.executable, '-B', str(self.source /
-            'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)],
-            timeout=40, label='ordinary-client')
-        require(not result.stderr, 'ordinary client diagnostic output')
+        from cases import first_launch_index_baseline
+        return first_launch_index_baseline.ordinary_client(self,output,entry,
+            initial_provenance=self.provenance)
 
     def ordinary(self):
         self.source_unchanged()
