@@ -20,6 +20,7 @@ from installed_sync_client import REFUSED_VISIBILITIES, common_final_status
 
 EVENT_CASES = ('sync-signed', 'sync-peer-refusals', 'sync-expired-before-valid',
     'sync-window-event', 'sync-window-source')
+COMMON_FINAL_CASES = ('sync-signed', 'sync-expired-before-valid')
 CASES = ['sync-signed', 'sync-quiet', 'sync-function', 'sync-lock', 'sync-public-visibility',
     'sync-source-function', 'sync-scope-function', 'sync-change-read', 'sync-peer-refusals']
 VISIBILITY_CASES = ['sync-absent-visibility', 'sync-bootstrap-private-visibility']
@@ -524,7 +525,7 @@ finally:
         traces = sorted(directory.glob('relay-closed-*.json'))
         if visibility_refusal:
             assert not traces and (directory/'relay-monitor-started.json').exists()
-        elif len(traces) < (3 if not progress and name in ('sync-signed','sync-expired-before-valid') else 2):
+        elif len(traces) < (3 if not progress and name in COMMON_FINAL_CASES else 2):
             return None
         current = rows(database)
         now = int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
@@ -535,7 +536,7 @@ finally:
             return None
         assert len(current['producer_requests']) == len(current['producer_outcomes']) == wanted_count
         assert min(r['lease_expires_at_us'] for r in current['owner_epochs']) > now
-        if not progress and name in ('sync-signed','sync-expired-before-valid'):
+        if not progress and name in COMMON_FINAL_CASES:
             settled=lab.sql(pg,database,"SELECT count(*)=3 AND bool_and(entry_kind='request' AND terminal_kind IS NOT NULL) FROM control.acquisition_quanta")
             if settled!='t':return None
         return current, now
@@ -580,12 +581,12 @@ finally:
     from initial_jobs import logged_out
     logged_out(current, before_stop)
     selected_quiet = None
-    stalled=not progress and name in ('sync-signed','sync-expired-before-valid','sync-window-source')
+    stalled=not progress and name in COMMON_FINAL_CASES
     stall_evidence=None
     if stalled:
         traces=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
         assert len(list(directory.glob('relay-open-*.json')))==len(traces)
-        if not full_window:assert len(traces)==3
+        assert len(traces)==3
         quanta=json.loads(lab.sql(pg,database,"SELECT coalesce(jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) ORDER BY quantum_number),'[]'::jsonb) FROM control.acquisition_quanta q"))
         job,=[item['body'] for item in observations if item['path']=='jobs' and item['key']=='b1'*16]
         stall_evidence=validate_stall(quanta,traces,json.loads((directory/'event.jsonl').read_text()),job['job_id'])

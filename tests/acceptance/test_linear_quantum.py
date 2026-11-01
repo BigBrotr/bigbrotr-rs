@@ -338,6 +338,65 @@ class LinearQuantumControls(unittest.TestCase):
                 self.assertEqual(len(gates),1 if runtime_type is base.Runtime else 0)
                 if gates:self.assertIn('before final HTTP status',gates[0])
 
+    def test_window_source_keeps_setup_interruptions_and_older_quiet_remainder(self):
+        from test_first_launch_restart import ROOT as repository
+        import installed_sync_client as peer
+        from installed_sync import COMMON_FINAL_CASES
+        self.assertEqual(COMMON_FINAL_CASES,('sync-signed','sync-expired-before-valid'))
+        self.assertNotIn('sync-window-source',COMMON_FINAL_CASES)
+        for stale_upper in (False,True):
+            with self.subTest(stale_upper=stale_upper),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)/'sync-window-source';directory.mkdir()
+                for source,target in (('tests/fixtures/ingest/import-event.jsonl','event.jsonl'),
+                        ('tests/fixtures/acquisition/selector-events.json','selector-events.json')):
+                    (directory/target).write_bytes((repository/source).read_bytes())
+                finished=threading.Event();accepted=[];sent=[]
+                class Connection:
+                    def __init__(self,number):
+                        self.number=number;self.frames=0
+                        self.header=bytearray(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
+                            'Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\n'
+                            'Sec-WebSocket-Key: '+base64.b64encode(bytes(16)).decode()+'\r\n\r\n').encode())
+                    def __enter__(self):return self
+                    def __exit__(self,*args):pass
+                    def settimeout(self,value):pass
+                    def sendall(self,value):pass
+                    def shutdown(self,value):pass
+                    def recv(self,count):
+                        if not self.header and self.number==5:finished.set()
+                        result=bytes(self.header[:count]);del self.header[:count];return result
+                    def frame(self):
+                        self.frames+=1;ident=f'{self.number:032x}'+'0000000000000001'
+                        if self.frames==1:
+                            upper=(86400,86400,86400,2,2 if stale_upper else 1)[self.number-1]
+                            return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=0,until=upper-1,limit=3)])
+                        if self.number>2 and self.frames==2:return 1,check.wire_json(['CLOSE',ident])
+                        return 8,b''
+                def accept():
+                    number=len(accepted)+1;self.assertLessEqual(number,5)
+                    if number==3:(directory/'window-release').write_text('full producer window observed\n')
+                    accepted.append(number);return Connection(number),('127.0.0.1',12345)
+                listener=Mock();listener.accept.side_effect=accept;errors=[];uppers={1:86400}
+                with patch.object(peer,'read_frame',side_effect=lambda connection:connection.frame()), \
+                        patch.object(peer,'send_frame',side_effect=lambda connection,value:sent.append((connection.number,value[0]))):
+                    peer.relay(directory,listener,finished,errors,True,window=True,expected_uppers=uppers)
+                listener.close.assert_called_once()
+                self.assertEqual(bool(errors),stale_upper,errors)
+                wires=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
+                self.assertEqual([wire['request'][2]['until'] for wire in wires],
+                    [86399,86399,86399,1] if stale_upper else [86399,86399,86399,1,0])
+                self.assertEqual([kind for _,kind in sent if kind in ('CLOSED','EOSE')],['CLOSED','CLOSED','EOSE','EOSE'])
+                self.assertEqual([wire['window_sequence'] for wire in wires if 'window_sequence' in wire],[1,2])
+                self.assertEqual(uppers[5],1)
+                if stale_upper:continue
+                self.assertEqual(wires[-1]['completion'],'quiet-eof');self.assertEqual(wires[-1]['frames'],[])
+                status=status_fixture(quantum_number='5',scope_id='66'*16,lower='0',upper='1',horizon='86400',
+                    result='pending',terminal=None,gap=None,continuation_upper=None,retained_events=None,
+                    classified_prefix=None,coverage='pending',gap_count=3)
+                observed=dict(linear_quantum=status)
+                peer.quantum_status(observed,'66'*16,'200000999999',known_plan=True,expected_uppers=uppers)
+                with self.assertRaises(AssertionError):peer.common_final_status(observed,'66'*16,'200000999999')
+
     def test_finite_scenarios_keep_declared_scope_identity_and_continued_bounds(self):
         for order in ((0,0,0,1,1,1,1,1,1),(0,1,0,1,0,1,1,1,1)):
             for failure in (None,'stale-upper','unknown-scope'):

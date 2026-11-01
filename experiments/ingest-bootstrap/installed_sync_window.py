@@ -186,8 +186,11 @@ def observe_window(pg, database, output, name, rows, filled, initialized, stage,
 
     traces = wait_for(received, 'full-window event and subsequent certification rounds', 6)
     assert [trace['window_sequence'] for trace in traces] == [1, 2]
+    event = json.loads((directory/'event.jsonl').read_text())
+    uppers = (86400, event['created_at']+1 if source_case else 86400)
     for index, trace in enumerate(traces):
         assert trace['completion'] == 'request-and-websocket-close' and trace['sent_at_us'] >= released_us
+        assert trace['request'][2] == dict(kinds=[1], since=0, until=uppers[index]-1, limit=3)
         expected = ['signed', 'distinct-signed', 'duplicate', 'EOSE'] if not source_case and index == 0 else [
             'signed', 'duplicate', 'duplicate', 'EOSE']
         assert trace['frames'] == expected

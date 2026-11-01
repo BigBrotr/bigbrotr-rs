@@ -324,6 +324,10 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                             continuous=not window or directory.name=='sync-window-source' or window_rounds==2
                             times=[event['created_at']]
                         if continuous and times:uppers[number+1]=min(times)+1
+                    if window and directory.name=='sync-window-source' and window_rounds==2:
+                        # The repeated boundary retains its second as a gap.
+                        # The older remainder stays quiet for the owned signal.
+                        uppers[number+1]=event['created_at']
                     if signed and not refusals and not window and split is None and event_sender is None and number==2:
                         uppers[3]=1  # Declare the next interval before emitting this page's EOSE.
                     if event_sender is None and split is None:
