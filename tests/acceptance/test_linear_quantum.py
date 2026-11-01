@@ -2,7 +2,11 @@
 import copy
 import hashlib
 import json
+from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import Mock, patch
 from cases import first_launch_quantum_oracle as check
 from installed_sync_client import quantum_status
 
@@ -32,6 +36,73 @@ def fixture(*,pending=False):
 
 
 class LinearQuantumControls(unittest.TestCase):
+    def test_proxy_ready_failure_retains_custody_and_cleanup_joins_original_process(self):
+        from cases import first_launch_linear_quantum as case
+        vectors=(('normal',0,None,None,None,False,[]),
+            ('already-exited',9,None,None,None,True,['join','observation']),
+            ('closed-stdin',0,ValueError('write to closed file'),None,None,False,['control']),
+            ('wait-error',-15,None,TimeoutError('proxy join deadline'),None,False,['join','observation']),
+            ('stop-error',0,None,None,OSError('proxy stop failed'),False,['stop']))
+        for name,code,control_error,wait_error,stop_error,overflow,operations in vectors:
+            with self.subTest(name=name),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2],linear_quantum_fault='gap-write'),
+                    dict(acceptance_files_sha256={}))
+                runtime.home=root/'home';runtime.home.mkdir()
+                child=SimpleNamespace(pid=123,returncode=code if name=='already-exited' else None)
+                child.poll=lambda:child.returncode
+                def wait(timeout):
+                    if wait_error:raise wait_error
+                    child.returncode=code
+                    return code
+                def stop():
+                    child.returncode=code
+                    if stop_error:raise stop_error
+                stdout=b'proxy stopped\xff\n';stderr=b'proxy exited early\n' if name=='already-exited' else b''
+                process=SimpleNamespace(process=child,wait=Mock(side_effect=wait),stop=Mock(side_effect=stop),
+                    threads=[SimpleNamespace(is_alive=lambda:False)],stdout=stdout,stderr=stderr,overflow=overflow)
+                runtime.proxy_process=Mock(return_value=process)
+                pending=dict(pid=123,status='running',port=None)
+                def ready(route,event,timeout):
+                    self.assertIs(route,process);self.assertEqual((event,timeout),('ready',10))
+                    self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],pending)
+                    self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),dict(pid=123))
+                    raise TimeoutError('proxy ready deadline')
+                runtime.proxy_event=ready
+                terminal=dict(exit=code,stdout=stdout.decode(errors='replace'),stderr=stderr.decode(),
+                    overflow=overflow,remote_exclusion='UNKNOWN')
+                runtime.proxy_send=Mock(side_effect=control_error);runtime.proxy_observation=Mock(return_value=terminal)
+                with patch.object(case.Runtime,'bootstrap') as bootstrap:
+                    with self.assertRaisesRegex(TimeoutError,'proxy ready deadline'):runtime.bootstrap()
+                    bootstrap.assert_not_called()
+                runtime.proxy_process.assert_called_once()
+                self.assertEqual(runtime.proxy_process.call_args.kwargs,dict(input_pipe=True))
+                if operations:
+                    original=control_error or wait_error or stop_error
+                    with self.assertRaises(type(original) if original else ValueError) as raised:
+                        runtime.stop_quantum_proxy()
+                    if original:self.assertIs(raised.exception,original)
+                else:runtime.stop_quantum_proxy()
+                if name=='already-exited':runtime.proxy_send.assert_not_called()
+                else:runtime.proxy_send.assert_called_once_with(process,'stop\n')
+                process.wait.assert_called_once_with(5);process.stop.assert_called_once_with()
+                runtime.proxy_observation.assert_called_once_with(process)
+                self.assertEqual((root/'quantum-proxy.stdout').read_bytes(),stdout)
+                self.assertEqual((root/'quantum-proxy.stderr').read_bytes(),stderr)
+                self.assertEqual(json.loads((root/'quantum-proxy.json').read_text()),terminal)
+                self.assertEqual(json.loads((root/'resources.json').read_text())['quantum_proxy'],
+                    dict(pending,status='joined',exit_code=code))
+                self.assertEqual(json.loads((root/'quantum-proxy-process.json').read_text()),
+                    dict(pid=123,exit_code=code,overflow=overflow,streams_joined=True))
+                failures=json.loads((root/'resources.json').read_text())['cleanup_errors']
+                self.assertEqual([item['operation'] for item in failures],operations)
+                self.assertTrue(all(item['resource']=='quantum-proxy' and item['id']==123 for item in failures))
+                if operations:
+                    with self.assertRaisesRegex(ValueError,'owned resource cleanup incomplete'):runtime.cleanup()
+                else:runtime.cleanup()
+                process.wait.assert_called_once_with(5);process.stop.assert_called_once_with()
+
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
         self.assertEqual(state['acquisition_quanta'][0]['charged_bytes'],1189)

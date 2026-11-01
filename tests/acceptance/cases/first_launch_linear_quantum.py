@@ -59,21 +59,50 @@ class LinearQuantumRuntime(Runtime):
                 '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
                 'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
                 '--upstream-port','15432'],input_pipe=True)
+            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None)
+            self.record_resources()
+            save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             ready=self.proxy_event(self.route,'ready',10)
             require(ready['source_sha256']==digest(path),'exact quantum proxy source')
+            self.resources['quantum_proxy']['port']=ready['port']
+            self.record_resources()
             self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
-            self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=ready['port'])
-            save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
-            self.record_resources()
         super().bootstrap()
 
     def stop_quantum_proxy(self):
         if not hasattr(self,'route') or self.resources['quantum_proxy']['status']=='joined':return
-        self.proxy_send(self.route,'stop\n');require(self.route.wait(5)==0,'quantum proxy did not join')
-        result=self.proxy_observation(self.route);save(self.root/'quantum-proxy.json',result)
-        require(not result['stderr'] and not result['overflow'],'incomplete quantum proxy observation')
-        self.resources['quantum_proxy']['status']='joined';self.record_resources()
+        route=self.route;failures=[]
+        if route.process.poll() is None:
+            try:self.proxy_send(route,'stop\n')
+            except Exception as error:failures.append(('control',error))
+        try:require(route.wait(5)==0,'quantum proxy did not join')
+        except Exception as error:failures.append(('join',error))
+        # Process.stop owns bounded terminate/kill and pipe-reader joins, even
+        # after a closed control stream or an unsuccessful wait.
+        try:route.stop()
+        except Exception as error:failures.append(('stop',error))
+        code=route.process.poll()
+        streams_joined=not any(thread.is_alive() for thread in route.threads)
+        for name,data in (('quantum-proxy.stdout',route.stdout),('quantum-proxy.stderr',route.stderr)):
+            try:(self.root/name).write_bytes(data)
+            except Exception as error:failures.append(('output',error))
+        try:save(self.root/'quantum-proxy-process.json',dict(pid=route.process.pid,
+            exit_code=code,overflow=route.overflow,streams_joined=streams_joined))
+        except Exception as error:failures.append(('process-record',error))
+        try:
+            result=self.proxy_observation(route);save(self.root/'quantum-proxy.json',result)
+            require(code==0 and streams_joined and not result['stderr'] and not result['overflow'],
+                'incomplete quantum proxy observation')
+        except Exception as error:failures.append(('observation',error))
+        self.resources['quantum_proxy'].update(status='joined' if code is not None and streams_joined else 'cleanup-incomplete',exit_code=code)
+        self.resources['cleanup_errors'].extend(dict(resource='quantum-proxy',id=route.process.pid,
+            operation=operation,error=type(error).__name__) for operation,error in failures)
+        try:self.record_resources()
+        except Exception:
+            if failures:raise failures[0][1]
+            raise
+        if failures:raise failures[0][1]
 
     def withdraw_after_empty_source(self,output):
         # One short owned-PG statement snapshots exact retained science before
