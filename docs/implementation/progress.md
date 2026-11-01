@@ -50,13 +50,19 @@ owner permit retains64KiBDATA; existing64request/process limits stay unchanged.
 This supplies no physical reserve or overall filesystem readiness. Source review
 fixed zero-growth-over-high and legitimate raw-reopen caller regressions.
 
-New quota compilation, native tests, connected PG negative/pressure/reopen and
-installed healthy restart are **NOT_RUN**; format/diff checks PASS. The existing
+Exact-source **f0221a01 release/worker and installed tutorial7/7 PASS**. The
+52.998s tutorial proves healthy signed acquisition/archive/read/export/restart;
+18containers stopped,772commands joined,3ownedPIDs absent,bridge empty. Strict
+workspace/new native tests and connected PG negative/pressure remain **NOT_RUN**.
+The release compiler emitted one unused test-only type export; root limits that
+alias to cfg(test) before strict checks. Runtime behavior unchanged, fix uncompiled. The existing
 [producer report](evidence/p02-producer-recovery-native-20260920.json),
 `logical_pending_quota_20261101`, owns this scope and critical review receipt.
 
-No local compiler or engine launched yet. Completed Sol implementation and Astra
-source review are idle; the only owned active process is the existing064 hosted
+Local build and tutorial are terminal/reaped0, with retained source/binary/result
+identities and custody receipts. Sol is reconciling current dictionary/socket
+fixtures and connected PG refusal probes in a separate worktree; Astra review
+is complete. The only owned active runtime process is the existing064 hosted
 observer, Sol `ack_current_oracle_sol`: driver331077/start25166019,
 gh331080/start25166022, session67014; protected root
 `.research/ci-publication-20261026/terminal-064d054d-20261101`.
@@ -68,10 +74,11 @@ no broad cleanup, GC, repack or mtime optimization is underway.
 
 ## Next bounded action
 
-Commit source/checkpoint on the work branch, mechanically rebind the existing
-reviewed tutorial product/apps pin to that actual source while checking unchanged
-signing/publication paths, then run one exact-source maintained native build.
-Reuse the existing isolated/cache-guarded builder and verification tools. Complete
+Group the cfg(test) lint correction with ready shared fixture/probe followthrough;
+keep f022 release/tutorial evidence scoped to its actual source. Rebind the existing
+reviewed tutorial product/apps pin only after actual coherent source is committed;
+unchanged signing/vendor checks and14controls already PASS for f022. Reuse the
+isolated/cache-guarded builder and verified tools. Complete
 strict workspace checks and actual native/PG/installed pressure and healthy restart
 qualification; preserve FAIL/unknown outcomes and fix their actual cause. Integrate
 only qualified coherent work. Physical d/R, persistent unresolved A, funded

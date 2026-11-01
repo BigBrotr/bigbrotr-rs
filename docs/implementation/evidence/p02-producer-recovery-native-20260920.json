@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+    "status": "RELEASE_AND_INSTALLED_HEALTHY_PASS_NATIVE_PG_PRESSURE_NOT_RUN",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47237,11 +47237,31 @@
     },
     "checks": {
       "format_and_diff": "PASS",
-      "new_Rust_compilation": "NOT_RUN",
+      "new_Rust_compilation": "PASS_RELEASE_WORKER_AND_PARENT; strict workspace and new native tests NOT_RUN",
       "new_native_tests": "NOT_RUN",
       "connected_PostgreSQL_pressure_and_reopen": "NOT_RUN",
-      "installed_healthy_restart": "NOT_RUN"
+      "installed_healthy_restart": "PASS_7_OF_7_TUTORIAL_52.998_SECONDS"
     },
-    "remaining": "Compile exact source once, exercise native discriminators, connected PG complete-set/reopen/refusal and installed pressure/healthy restart. Physical growth/reserves, persistent unresolved A, funded reopen/purge/CW-N1/P1/P2 and OPEN65 remain open at P02-T02 Step4; broader load/maintenance remains Step8/P02-T09. No overall capacity or filesystem readiness claim."
+    "remaining": "Compile exact source once, exercise native discriminators, connected PG complete-set/reopen/refusal and installed pressure/healthy restart. Physical growth/reserves, persistent unresolved A, funded reopen/purge/CW-N1/P1/P2 and OPEN65 remain open at P02-T02 Step4; broader load/maintenance remains Step8/P02-T09. No overall capacity or filesystem readiness claim.",
+    "qualified_source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
+    "build": {
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/build-receipt.json",
+      "sha256": "069a10b5c370fafb63e6a92c1b33c27c82e15e3a14419a442e46b94c7b45be5e",
+      "elapsed_seconds": 441.0597363350098,
+      "warning": "Unused storage-private InitialQuotaReconciliation export; root moves only that test-used alias under cfg(test) before strict qualification. This does not change runtime behavior; lint correction itself not yet compiled."
+    },
+    "installed_tutorial": {
+      "result": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-f0221a01/acceptance-tutorial-r1/result.json",
+      "result_sha256": "06aae3f2b68177a35d08d440be3bf542c6d21d6ce8e924ed02c568fd78ee2940",
+      "terminal": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-f0221a01/acceptance-tutorial-r1/root-terminal.json",
+      "terminal_sha256": "6182051a145db87e1d509a23dfd8e2a23f5ed60cbc4bf02330125e3a1e414b70",
+      "checks": "7/7PASS",
+      "terminal_custody": "18containersstopped/PID0/noOOM;772commandreceiptsjoined;3ownedPIDsabsent;borrowedbridgeempty;30acceptancefilesverified",
+      "limits": "Healthy signed acquisition/archive/read/export/restart only; not pressure, PG corruption/refusal, new Rust tests, physical funding or OPEN65."
+    },
+    "invocation_refusal": {
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/initial-launch-refusal.json",
+      "classification": "Setup; actual HEAD mismatch refused before cache lock or container; corrected arguments read from exact prepared manifest. No product execution at original refusal."
+    }
   }
 }

@@ -152,9 +152,9 @@ pub use producer_recovery::{
 #[path = "initial_quota_reconciliation.rs"]
 mod initial_quota_reconciliation;
 pub use initial_quota_reconciliation::INITIAL_QUOTA_RECONCILIATION_DATA_BYTES;
-pub(in crate::storage) use initial_quota_reconciliation::{
-    InitialQuotaOriginal, InitialQuotaReconciliation,
-};
+pub(in crate::storage) use initial_quota_reconciliation::InitialQuotaOriginal;
+#[cfg(test)]
+use initial_quota_reconciliation::InitialQuotaReconciliation;
 
 #[path = "source_closure.rs"]
 mod source_closure;
