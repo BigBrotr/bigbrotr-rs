@@ -24,30 +24,71 @@ def refusal():
     return dict(format='bigbrotr-initial-sync-diagnostic/1',reason='operation-error',
         scope='caller-progress-not-commit-outcome',timing='monotonic-offset-microseconds-saturating',
         stage='quantum-plan',entered_us=10,returned_us=20,dispatch_deadline_us=30,captured_us=21,
-        frame_ordinal=None,request_sequence=None,last_delivered_admission_sequence=6)
+        frame_ordinal=None,request_sequence=None,last_delivered_admission_sequence=7)
 
 
-def stderr(value):
-    return 'error: initial Sync unavailable: Quantum(Context); sync_dispatch='+json.dumps(value)+'\n'
+def stderr(value,variant='Quantum(Context)'):
+    return 'error: initial Sync unavailable: '+variant+'; sync_dispatch='+json.dumps(value)+'\n'
 
 
 def receipt(old,changed):
     updated=dict(changed,xmin=str(int(old['xmin'])+1))
-    return [dict(stage='before',triggers=copy.deepcopy(check.TRIGGERS),exact_triggers=1,five_terminal=1,row=old),
+    return [dict(stage='before',triggers=copy.deepcopy(check.TRIGGERS),exact_triggers=1,seven_settled=1,row=old),
         dict(stage='changed',changed=1,exact_one=1,row=updated),
         dict(stage='restored',triggers=copy.deepcopy(check.TRIGGERS),exact_triggers=1,row=updated)]
 
 
 class CappedCorruptionControls(unittest.TestCase):
-    def test_literal_mutations_change_only_cursor_time_or_foreign_native_id_time(self):
+    def test_both_native_corruptions_preserve_minimum_order_boundary_and_full_geometry(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state,_,events,wires,_,_,receipts,commands=fixture(Path(temporary))
+            cap.quanta(state,wires,events,receipts,commands)
+            def geometry(value):
+                quantum.shape(value);result=[]
+                for scope,key in enumerate(('b1','b2')):
+                    job=next(row for row in value['jobs'] if row['request_key']=='\\x'+key*16)
+                    rows=sorted((row for row in value['acquisition_quanta'] if row['job_id']==job['job_id']),key=lambda row:row['quantum_number'])
+                    boundary=None;known=set();upper=86400
+                    for row,entry in zip(rows,cap.ENTRIES[scope]):
+                        self.assertEqual((row['entry_kind'],row['interval_lower'],row['interval_upper'],row['window_end']),entry[:4])
+                        if row['entry_kind']=='selector_exclusion':
+                            result.append(('local',scope,row['interval_upper'],row['window_end']));continue
+                        self.assertEqual(row['interval_upper'],upper)
+                        records=[record for record in quantum.effects(row['effect_records']) if record[3] in (2,3,5)]
+                        ordered=all(later[5]<=earlier[5] for earlier,later in zip(records,records[1:]));self.assertTrue(ordered)
+                        if not records:
+                            oldest=None;ids=set();disposition='window_closed';upper=row['window_end']
+                        else:
+                            oldest=min(record[5] for record in records)
+                            ids={record[7] for record in records if record[5]==oldest}
+                            if oldest!=boundary:boundary=oldest;known.clear()
+                            if ids<=known:
+                                disposition='saturated_second';upper=oldest;boundary=None;known.clear()
+                            else:
+                                disposition='overlap';upper=oldest+1;known|=ids
+                        self.assertEqual((row['disposition'],row['continuation_upper']),(disposition,upper))
+                        result.append((scope,row['query_number'],oldest,tuple(sorted(ids)),ordered,disposition,upper))
+                return result
+            before=geometry(state)
+            for profile in ('cursor-time','foreign-payload'):
+                old,changed=check.mutation(state,events,profile);value=copy.deepcopy(state)
+                value['acquisition_quanta']=[changed if row['quantum_id']==old['quantum_id'] else row for row in value['acquisition_quanta']]
+                with self.subTest(profile=profile):
+                    self.assertEqual(geometry(value),before)
+                    self.assertEqual(quantum.effects(changed['effect_records'])[1],quantum.effects(old['effect_records'])[1])
+                    self.assertEqual({k:v for k,v in changed.items() if k!='effect_records'},
+                        {k:v for k,v in old.items() if k!='effect_records'})
+                    self.assertEqual(changed['continuation_upper'],2)
+
+    def test_literal_mutations_change_only_the_nonminimum_alt23_effect(self):
         with tempfile.TemporaryDirectory() as temporary:
             state,_,events,_,_,_,_,_=fixture(Path(temporary))
-            for profile,created,upper in (('cursor-time',0,1),('foreign-payload',1,2)):
+            for profile,created,event_index in (('cursor-time',22,3),('foreign-payload',23,1)):
                 old,changed=check.mutation(state,events,profile)
-                self.assertEqual(quantum.effects(changed['effect_records'])[0][5:],(created,1,bytes.fromhex(events[2]['id'])))
-                self.assertEqual(changed['continuation_upper'],upper)
-                self.assertEqual({key:value for key,value in old.items() if key not in ('effect_records','continuation_upper')},
-                    {key:value for key,value in changed.items() if key not in ('effect_records','continuation_upper')})
+                self.assertEqual(quantum.effects(changed['effect_records'])[0][5:],(created,1,bytes.fromhex(events[event_index]['id'])))
+                self.assertEqual(changed['continuation_upper'],2)
+                self.assertEqual({key:value for key,value in old.items() if key!='effect_records'},
+                    {key:value for key,value in changed.items() if key!='effect_records'})
                 sql=check.mutation_sql(old,changed)
                 self.assertEqual(sql.count('BEGIN;'),1);self.assertEqual(sql.count('COMMIT;'),1)
                 for name in ('acquisition_quantum_guard','zzz_acquisition_quantum_owner'):
@@ -75,14 +116,18 @@ class CappedCorruptionControls(unittest.TestCase):
 
     def test_only_exact_natural_context_planning_refusal_can_pass(self):
         terminal=dict(Running=False,Pid=0,ExitCode=4,OOMKilled=False)
-        self.assertEqual(check.natural_refusal(terminal,stderr(refusal()),harness_stop=False),refusal())
+        for variant in ('Quantum(Context)','Progress(InvalidContext)'):
+            self.assertEqual(check.natural_refusal(terminal,stderr(refusal(),variant),harness_stop=False),dict(refusal(),native_refusal=variant))
         substitutions=(dict(stage='quantum-terminal'),dict(reason='deadline'),dict(returned_us=None),
-            dict(returned_us=30),dict(frame_ordinal=0),dict(request_sequence=6),dict(last_delivered_admission_sequence=5))
+            dict(returned_us=30),dict(frame_ordinal=0),dict(request_sequence=7),dict(last_delivered_admission_sequence=6),
+            dict(last_delivered_admission_sequence=8),dict(stage='admission'),dict(reason='cancelled'))
         for fields in substitutions:
             with self.subTest(fields=fields),self.assertRaises(AssertionError):
                 check.natural_refusal(terminal,stderr(dict(refusal(),**fields)),harness_stop=False)
         for message in (stderr(refusal()).replace('Quantum(Context)','Quantum(Interval)'),
                 stderr(refusal()).replace('Quantum(Context)','Source(Unavailable)'),
+                stderr(refusal(),'Quantum(Backend)'),stderr(refusal(),'Progress(Backend)'),
+                stderr(refusal(),'Native(Context)'),
                 'error: arbitrary exit4\n'):
             with self.subTest(message=message),self.assertRaises(AssertionError):check.natural_refusal(terminal,message,harness_stop=False)
         for fields in (dict(ExitCode=0),dict(Pid=1),dict(OOMKilled=True),dict(Running=True)):
@@ -100,7 +145,7 @@ class CappedCorruptionControls(unittest.TestCase):
                 value=copy.deepcopy(after)
                 if change=='extra-quantum':value['acquisition_quanta'].append(copy.deepcopy(changed))
                 elif change=='another-row':value['acquisition_quanta'][0]['xmin']='other'
-                elif change=='producer-effect':value['producer_requests'].append(dict(request_sequence=7))
+                elif change=='producer-effect':value['producer_requests'].append(dict(request_sequence=8))
                 else:value['jobs'][0]['state']='cancelled'
                 with self.subTest(change=change),self.assertRaises(AssertionError):check.preserved(before,value,old,changed,300_000_000_000)
             before['owner_epochs'][-1]['xmin']='1';after['owner_epochs'][-1]['xmin']='2'
@@ -109,18 +154,22 @@ class CappedCorruptionControls(unittest.TestCase):
             after['owner_epochs'][-1]['lease_expires_at_us']+=60_000_001
             with self.assertRaises(AssertionError):check.preserved(before,after,old,changed,300_000_000_000)
 
-    def test_globally_present_body_one_is_verified_from_independent_native_science(self):
+    def test_globally_present_original23_is_verified_and_absent_from_target_union(self):
         with tempfile.TemporaryDirectory() as temporary:
             state,report,events,wires,dump,inputs,_,_=fixture(Path(temporary))
             science=cap.science(state,report,events,wires,dump,inputs,200_001_010_000)
-            self.assertEqual(check.native_body_one(science,events)['created_at'],1)
+            self.assertEqual(check.native_foreign_payload(science,events),dict(event_id=events[1]['id'],created_at=23,source_epoch=1,source_sequence=14))
+            old,_=check.mutation(state,events,'foreign-payload')
+            refs=quantum.raw(old['dependencies'])
+            self.assertNotIn((1,14),[(int.from_bytes(refs[at+24:at+32],'big'),int.from_bytes(refs[at+32:at+40],'big'))
+                for at in range(0,len(refs),72)])
             changed=copy.deepcopy(science)
             for at,(cf,key,value) in enumerate(changed['native']):
-                if cf=='facts' and key[:2]==b'\x01\x20' and key.endswith((19).to_bytes(8,'big')):
-                    fact=decode(value[34:].split(b'\0',1)[1]);fact[5][2]=0
+                if cf=='facts' and key[:2]==b'\x01\x20' and key.endswith((14).to_bytes(8,'big')):
+                    fact=decode(value[34:].split(b'\0',1)[1]);fact[5][2]=22
                     preimage=b'bigbrotr/fact/1\0'+cbor(fact)
                     changed['native'][at]=(cf,key,b'\x01\x20'+hashlib.sha256(preimage).digest()+preimage)
-            with self.assertRaises(AssertionError):check.native_body_one(changed,events)
+            with self.assertRaises(AssertionError):check.native_foreign_payload(changed,events)
 
     def test_parent_setup_failure_propagates_without_becoming_a_negative_pass(self):
         runtime=object.__new__(CappedQuantumRuntime)
