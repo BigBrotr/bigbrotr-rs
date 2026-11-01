@@ -101,6 +101,60 @@ def fixture(root):
 
 
 class CappedQuantumControls(unittest.TestCase):
+    def test_source_acceptance_projects_each_scope_but_preserves_both_jobs_and_true_ordinals(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state,report,_,_,_,_,_,commands=fixture(Path(temporary))
+            actor='\\x'+'10'*16;session='\\x'+'20'*16;dataset=state['datasets'][0]['dataset_id']
+            owner=source.only(state['owner_epochs'],role='control')
+            state['local_accounts']=[dict(principal_id=actor,credential_revision=1,authentication_revision=1,grant_revision=1)]
+            state['browser_sessions']=[dict(session_id=session,principal_id=actor,dataset_id=dataset)]
+            state.update(jobs=[],acquisition_jobs=[],job_admissions=[],management_commands=[],management_audit=[],
+                acquisition_scopes=[],acquisition_selectors=[],acquisition_scope_commands=[])
+            for number in range(2):
+                scoped,accepted=commands[2+number*2:4+number*2]
+                key=accepted['key'];job='\\x'+accepted['body']['job_id'];scope='\\x'+scoped['body']['scope_id']
+                at=int(accepted['body']['accepted_at_us']);audit='\\x'+f'{number+31:02x}'*16;selector='\\x'+f'{number+41:02x}'*16
+                digest='\\x'+source.sha(b'bigbrotr/acquisition-job/1\0'+source.raw(dataset)+source.raw(actor)+bytes.fromhex(key)
+                    +source.raw(scope)+(120000000).to_bytes(8,'big')+(1).to_bytes(8,'big')*2)
+                accepted['body'].update(format='bigbrotr-job-acceptance/1',execution='unobserved',authority='acceptance-only')
+                state['acquisition_scopes'].append(dict(scope_id=scope,selector_id=selector))
+                state['acquisition_selectors'].append(dict(selector_id=selector))
+                state['acquisition_scope_commands'].append(dict(scope_id=scope))
+                state['jobs'].append(dict(job_id=job,dataset_id=dataset,principal_id=actor,request_key='\\x'+key,
+                    request_digest=digest,kind='acquisition',config_revision=1,policy_revision=1,created_at_us=at,state='queued',
+                    job_revision=2,checkpoint_revision=0,reason_code=None,result_manifest_digest=None,
+                    owner_resource_id=owner['resource_id'],owner_epoch=owner['epoch'],owner_role='control',
+                    owner_incarnation=owner['process_incarnation'],completed_at_us=None,input_topology_generation=None,
+                    input_complete=True,export_job_protocol=None,acquisition_job_protocol=1))
+                state['acquisition_jobs'].append(dict(job_id=job,dataset_id=dataset,actor_id=actor,request_key='\\x'+key,
+                    scope_id=scope,duration_us=120000000,deadline_at_us=at+120000000,session_id=session,
+                    actor_credential_revision=1,actor_authentication_revision=1,actor_grant_revision=1))
+                state['job_admissions'].append(dict(job_id=job,admission_ordinal=number+1))
+                state['management_commands'].append(dict(dataset_id=dataset,actor_id=actor,request_key='\\x'+key,
+                    request_digest=digest,action='job.acquisition.accept',accepted_at_us=at,expected_config_revision=1,
+                    policy_revision=1,audit_id=audit,authority_mode=None,document_digest=None))
+                state['management_audit'].append(dict(dataset_id=dataset,actor_id=actor,audit_id=audit,
+                    action='job.acquisition.accept',outcome='accepted',subject_id='\\x'+key,created_at_us=at,
+                    config_revision=1,policy_revision=1,reason=None,requester_os_uid=None,requester_database_role=None))
+            seen=[]
+            def source_view(view,*args,**kwargs):
+                self.assertEqual(len(view['acquisition_scopes']),1)
+                self.assertEqual([len(view[table]) for table in ('jobs','acquisition_jobs','job_admissions')],[2,2,2])
+                self.assertEqual([row['admission_ordinal'] for row in view['job_admissions']],[1,2])
+                seen.append(view['acquisition_scopes'][0]['scope_id'])
+            with patch('installed_sync.validate_source',side_effect=source_view):
+                check.source_rows(state,report,commands,principal=actor[2:])
+                self.assertEqual(seen,[row['scope_id'] for row in state['acquisition_scopes']])
+                self.assertEqual([row['job_revision'] for row in state['jobs']],[2,2])
+                for change in ('foreign-job','foreign-scope','wrong-digest','wrong-ordinal'):
+                    value=copy.deepcopy(state)
+                    if change=='foreign-job':value['acquisition_jobs'][1]['job_id']=value['jobs'][0]['job_id']
+                    elif change=='foreign-scope':value['acquisition_jobs'][1]['scope_id']=value['acquisition_scopes'][0]['scope_id']
+                    elif change=='wrong-digest':value['jobs'][1]['request_digest']='\\x'+'00'*32
+                    else:value['job_admissions'][1]['admission_ordinal']=1
+                    with self.subTest(change=change),self.assertRaises((AssertionError,ValueError)):
+                        check.source_rows(value,report,commands,principal=actor[2:])
+
     def test_existing_encoder_reproduces_all_three_events_and_six_original_requests(self):
         with tempfile.TemporaryDirectory() as temporary:
             state,report,events,wires,dump,inputs,receipts,commands=fixture(Path(temporary))

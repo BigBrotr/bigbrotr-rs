@@ -72,7 +72,7 @@ def source_rows(state,report,commands,*,principal,prepopulated=False):
         view['acquisition_scope_commands']=[row for row in state['acquisition_scope_commands'] if row['scope_id']=='\\x'+value['scope_id']]
         observations=commands[:2]+[commands[2+number*2]]
         validate_source(view,report,observations,nonces=('91','92','a1' if number==0 else 'a2'),selector_document=SELECTORS[number])
-        validate_queued(state,commands,ordinal=number+1,key=('b1' if number==0 else 'b2')*16,
+        validate_queued(view,commands,ordinal=number+1,key=('b1' if number==0 else 'b2')*16,
             total_jobs=len(declared),expected_principal=principal)
     return declared
 
