@@ -422,15 +422,17 @@ fn undersized_allowance_refuses_before_original_and_cancellation_keeps_staged_de
         Err(BootstrapError::AuthorityUnavailable)
     ));
     assert_eq!(store.pending_reserved_bytes(), Ok(0));
-    let stage = store
-        .stage_initial_dictionaries(
-            request(),
-            &intent("public"),
-            limits(),
-            &grant(&b, 4 * MIB, MIB),
-        )
-        .unwrap();
-    drop(stage); // a dropped connected staging witness never returns credit
+    {
+        let _stage = store
+            .stage_initial_dictionaries(
+                request(),
+                &intent("public"),
+                limits(),
+                &grant(&b, 4 * MIB, MIB),
+            )
+            .unwrap();
+        // Ending this witness scope never returns the owner's retained credit.
+    }
     assert_eq!(store.pending_reserved_bytes(), Ok(256 * 1024));
     let calls = std::cell::Cell::new(0);
     let result = store.bootstrap_dictionaries(
