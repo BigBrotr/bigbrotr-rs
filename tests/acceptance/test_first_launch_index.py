@@ -155,14 +155,18 @@ class ClickHouseBatchControls(unittest.TestCase):
                 for (name,_,_),value in zip(families,values)}
         documents = []
         for (name,_,_),columns in zip(families,metadata):
-            meta = [('source','Tuple(String, UInt32, UInt64, UInt64)'),
+            marker = '__bigbrotr_table_'+name
+            meta = [(marker,'UInt8'),('source','Tuple(String, UInt32, UInt64, UInt64)'),
                     ('generation','String'),('discriminator','UInt64')]+columns
-            documents.append(dict(meta=[dict(name=k,type=t) for k,t in meta],data=rows[name],
+            documents.append(dict(meta=[dict(name=k,type=t) for k,t in meta],
+                data=[dict(row,**{marker:1}) for row in rows[name]],
                 rows=len(rows[name]),statistics=dict(elapsed=.001,rows_read=len(rows[name]),bytes_read=32)))
         return SimpleNamespace(COMMON=common,FAMILIES=families),documents,rows
 
-    def read(self, documents=None, *, raw=None, returncode=0, stderr='', deadline=None):
+    def read(self, documents=None, *, raw=None, returncode=0, stderr='', deadline=None, selected_schema=None):
         selected,original,_ = self.fixture()
+        if selected_schema is not None:
+            selected = selected_schema
         if raw is None:
             raw = '\n\n'.join(json.dumps(value,ensure_ascii=False,allow_nan=False)
                                 for value in (original if documents is None else documents))
@@ -193,9 +197,72 @@ class ClickHouseBatchControls(unittest.TestCase):
             '--max_result_bytes=1048576','--result_overflow_mode=throw','--max_execution_time=10',
             '--receive_timeout=15','--multiquery'))
         self.assertEqual(command.kwargs['data'],'\n'.join(
-            check.select_rows(selected,case.DATABASE,name)+' FORMAT JSON;' for name in check.TARGETS))
+            check.select_rows(selected,case.DATABASE,name,table_marker=True)+' FORMAT JSON;' for name in check.TARGETS))
         self.assertEqual(command.kwargs['label'],'clickhouse-reader')
         self.assertFalse(command.kwargs['check'])
+
+    def test_default_select_bytes_and_original_order_remain_unchanged(self):
+        selected = SimpleNamespace(COMMON=[('source','UInt64'),('discriminator','UInt64')],
+            FAMILIES=[('events',[('content','String')],'')])
+        original = ('SELECT `source` AS `source`,`discriminator` AS `discriminator`,`content` AS `content` '
+                    'FROM serving_fixture.events ORDER BY source,discriminator')
+        self.assertEqual(check.select_rows(selected,case.DATABASE,'events'),original)
+        self.assertEqual(check.select_rows(selected,case.DATABASE,'events',table_marker=True),
+            'SELECT toUInt8(1) AS `__bigbrotr_table_events`,'+original[len('SELECT '):])
+        with self.assertRaises(AssertionError):
+            check.select_rows(selected,case.DATABASE,'events',table_marker=1)
+
+    def test_real_identical_index_and_provenance_results_cannot_substitute_each_other(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            state,expected,science = metadata_fixture(root)
+            documents = []
+            for name,columns,_ in schema.FAMILIES:
+                marker = '__bigbrotr_table_'+name
+                meta = [dict(name=marker,type='UInt8')]+[dict(name=column,type=ty
+                    .replace('FixedString(16)','String').replace('FixedString(32)','String')
+                    .replace('FixedString(64)','String')) for column,ty in schema.COMMON+columns]
+                documents.append(dict(meta=meta,data=[dict(row,**{marker:1}) for row in expected[name]],
+                    rows=len(expected[name]),statistics=dict(elapsed=.001,rows_read=len(expected[name]),bytes_read=32)))
+            rows,_ = self.read(documents,selected_schema=schema)
+            check.publication(state,state,rows,science,schema,root)
+            for original,replacement in ((5,4),(6,4),(9,8)):
+                # These REAL columns and physical values are otherwise equal;
+                # only the independently required table marker distinguishes them.
+                check.exact(documents[original]['meta'][1:],documents[replacement]['meta'][1:])
+                check.exact(expected[check.TARGETS[original]],expected[check.TARGETS[replacement]])
+                changed = copy.deepcopy(documents);changed[original] = copy.deepcopy(changed[replacement])
+                with self.subTest(target=check.TARGETS[original]),self.assertRaises(AssertionError):
+                    self.read(changed,selected_schema=schema)
+
+    def test_empty_result_marker_and_every_row_marker_are_required(self):
+        _,documents,_ = self.fixture()
+        for change in (
+            lambda d:d[7]['meta'][0].update(name='__bigbrotr_table_events'),
+            lambda d:d[7]['meta'].pop(0),
+            lambda d:d[0]['data'][0].pop('__bigbrotr_table_dictionaries'),
+        ):
+            changed = copy.deepcopy(documents);change(changed)
+            with self.subTest(change=change),self.assertRaises((ValueError,AssertionError)):
+                self.read(changed)
+        for value in (True,1.0,'1',0,2):
+            changed = copy.deepcopy(documents)
+            changed[0]['data'][0]['__bigbrotr_table_dictionaries'] = value
+            with self.subTest(value=value),self.assertRaises(ValueError):self.read(changed)
+
+    def test_raw_padding_is_bounded_and_only_json_ascii_whitespace_is_accepted(self):
+        _,documents,expected = self.fixture()
+        raw = '\n'.join(json.dumps(value) for value in documents)
+        rows,_ = self.read(raw=' \t\r\n'+raw+' \t\r\n')
+        check.exact(rows,expected)
+        for padding in ('\u00a0','\u2003','\ufeff'):
+            for changed in (padding+raw,raw+padding):
+                with self.subTest(padding=repr(padding)),self.assertRaises(ValueError):
+                    self.read(raw=changed)
+        padding = ' '*(10*1048576)
+        for changed in (padding+raw,raw+padding):
+            with self.assertRaisesRegex(ValueError,'batch output bound'):
+                self.read(raw=changed)
 
     def test_missing_extra_or_reordered_query_documents_refuse(self):
         _,documents,_ = self.fixture()

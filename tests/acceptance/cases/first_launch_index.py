@@ -275,7 +275,8 @@ class IndexRuntime(Runtime):
         self.record_resources()
         return info
 
-    def ch(self, sql, role='reader', *, rows=False, error=None, strict_stderr=False):
+    def ch(self, sql, role='reader', *, rows=False, error=None, strict_output=False):
+        require(not strict_output or (not rows and error is None), 'strict ClickHouse output profile')
         self.inspect(self.ch_entry)
         used = sum(p.stat().st_size for folder in ('data', 'logs')
                    for p in (self.state/'clickhouse'/folder).rglob('*') if p.is_file())
@@ -294,7 +295,9 @@ class IndexRuntime(Runtime):
             require(result.returncode != 0 and error in result.stderr, 'expected ClickHouse refusal')
             return
         require(result.returncode == 0, 'ClickHouse observer failed')
-        require(not strict_stderr or not result.stderr, 'ClickHouse observer diagnostic output')
+        if strict_output:
+            require(not result.stderr, 'ClickHouse observer diagnostic output')
+            return result.stdout
         return [json.loads(line) for line in result.stdout.splitlines()] if rows else result.stdout.strip()
 
     def ch_table_rows(self):
@@ -302,9 +305,9 @@ class IndexRuntime(Runtime):
         require(tuple(name for name,_,_ in self.schema.FAMILIES) == oracle.TARGETS,
                 'ClickHouse batch table inventory')
         deadlines = [getattr(self,name,None) for name in ('prefix_deadline','boundary_deadline')]
-        statements = [oracle.select_rows(self.schema,DATABASE,name)+' FORMAT JSON;'
+        statements = [oracle.select_rows(self.schema,DATABASE,name,table_marker=True)+' FORMAT JSON;'
                       for name in oracle.TARGETS]
-        raw = self.ch('\n'.join(statements), strict_stderr=True)
+        raw = self.ch('\n'.join(statements), strict_output=True)
         require(len(raw.encode()) <= len(statements)*1048576, 'ClickHouse batch output bound')
         def unique(pairs):
             value = dict(pairs)
@@ -329,7 +332,9 @@ class IndexRuntime(Runtime):
                     'incomplete ClickHouse table response')
             # select_rows hex-encodes FixedString leaves recursively; metadata
             # also binds the declared types when a table contains no data rows.
-            expected = [dict(name=column,type=re.sub(r'FixedString\([0-9]+\)','String',ty))
+            marker = '__bigbrotr_table_'+name
+            expected = [dict(name=marker,type='UInt8')]+[
+                        dict(name=column,type=re.sub(r'FixedString\([0-9]+\)','String',ty))
                         for column,ty in self.schema.COMMON+columns]
             oracle.exact(document['meta'],expected)
             data = document['data']
@@ -337,14 +342,15 @@ class IndexRuntime(Runtime):
                     and type(data) is list and len(data) == document['rows'],
                     'ClickHouse table row count')
             names = {column for column,_ in self.schema.COMMON+columns}
-            require(all(type(row) is dict and set(row) == names for row in data),
+            require(marker not in names and all(type(row) is dict and set(row) == names|{marker}
+                    and type(row[marker]) is int and row[marker] == 1 for row in data),
                     'ClickHouse table row columns')
             statistics = document['statistics']
             require(type(statistics) is dict and set(statistics) == {'elapsed','rows_read','bytes_read'}
                     and type(statistics['elapsed']) in (int,float) and statistics['elapsed'] >= 0
                     and all(type(statistics[key]) is int and statistics[key] >= 0
                             for key in ('rows_read','bytes_read')), 'ClickHouse table statistics')
-            rows[name] = data
+            rows[name] = [{key:value for key,value in row.items() if key != marker} for row in data]
         require(not raw[position:].strip(' \t\r\n'), 'extra ClickHouse batch output')
         require(all(deadline is None or time.monotonic() < deadline for deadline in deadlines),
                 'ClickHouse batch exceeded caller deadline')
