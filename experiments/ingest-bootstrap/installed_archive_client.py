@@ -96,8 +96,8 @@ def run(directory):
                 format='bigbrotr-installed-index-prefix-gate/1', started_ns=started,
                 deadline_ns=started + seconds * 1_000_000_000))
         if name == 'submitted' and (directory/'retained-request-profile.json').exists():
-            from installed_retained_transport import PROFILE
-            assert json.loads((directory/'retained-request-profile.json').read_text()) == PROFILE
+            from installed_retained_transport import PROFILE, CLOSED_PROFILE
+            assert json.loads((directory/'retained-request-profile.json').read_text()) in (PROFILE, CLOSED_PROFILE)
             assert seconds == 65
             started = time.monotonic_ns()
             publish(directory, 'retained-request-deadline.json', dict(

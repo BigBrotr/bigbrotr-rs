@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import installed_archive_client as archive
 import installed_archive_export_client as export
@@ -155,6 +155,86 @@ class ProfileTests(unittest.TestCase):
                 dict(principal_id='ab' * 16, stored_actions=['status.read'])):
             with self.assertRaises(AssertionError):
                 self.wire(archive, me)
+
+    def archive_to_submitted(self, directory, retained_profile, *, clock=(1., 10., 10., 10.)):
+        (directory/'fixture-profile.json').write_text(json.dumps(self.profile))
+        (directory/'visibility.json').write_text(json.dumps(dict(ordinal='3')))
+        (directory/'prepared.continue').touch()
+        if retained_profile is not None:
+            (directory/'retained-request-profile.json').write_text(json.dumps(retained_profile))
+        class Connection:
+            def __init__(self, *args, **kwargs):pass
+            def request(self, method, path, body, headers):
+                self.method, self.path, self.headers = method, path, headers
+            def getresponse(self):
+                if self.path == '/management/v1/me':
+                    status, value = 200, dict(principal_id='ab'*16, stored_actions=OWNER_ACTIONS)
+                elif self.method == 'GET':
+                    raise RuntimeError('submitted status reached')
+                else:
+                    status, value = 202, dict(created=True, command_key=self.headers['Idempotency-Key'],
+                        endpoint_id='cd'*16, access_scope_id='ef'*16, scope_id='12'*16,
+                        generation='1', enabled=True, execution='unobserved', authority='acceptance-only',
+                        job_id='34'*16, accepted_at_us='86400000000')
+                class Response:
+                    def read(self, limit):return json.dumps(value).encode()
+                response = Response();response.status = status;return response
+            def close(self):pass
+        def cli(args, **kwargs):
+            target = Path(args[args.index('--session-output')+1])
+            target.write_text(json.dumps(dict(format='bigbrotr-cli-session/1',
+                origin='http://127.0.0.1:18081', session='opaque-session', csrf='opaque-csrf')))
+            target.chmod(0o600)
+            return subprocess.CompletedProcess(args, 0, b'{}', b'')
+        worker = Mock();worker.is_alive.return_value = False
+        with patch.object(archive.http.client, 'HTTPConnection', Connection), \
+                patch.object(archive.subprocess, 'run', cli), \
+                patch.object(archive, 'relay_listener', return_value=Mock()), \
+                patch.object(archive.threading, 'Thread', return_value=worker), \
+                patch.object(archive.time, 'monotonic_ns', return_value=10_000_000_000), \
+                patch.object(archive.time, 'monotonic', side_effect=clock):
+            archive.run(directory)
+
+    def test_archive_submitted_accepts_both_exact_retained_profiles_and_keeps_ordinary_client(self):
+        # Literal expectations are independent of the shared profile constants.
+        for number, profile in enumerate((None, dict(format='bigbrotr-installed-retained-requests/1'),
+                dict(format='bigbrotr-installed-retained-requests/1', post_proof_terminal='closed'))):
+            directory = self.home/str(number);directory.mkdir()
+            with self.subTest(profile=profile):
+                with self.assertRaisesRegex(RuntimeError, '^submitted status reached$'):
+                    self.archive_to_submitted(directory, profile)
+                submitted = json.loads((directory/'submitted.json').read_text())
+                self.assertEqual([row['path'] for row in submitted],
+                    ['relay-endpoints', 'relay-enrollments', 'acquisition-scopes', 'jobs'])
+                deadline = directory/'retained-request-deadline.json'
+                self.assertEqual(deadline.exists(), profile is not None)
+                if profile is not None:
+                    self.assertEqual(json.loads(deadline.read_text()), dict(format='bigbrotr-retained-request-gate/1',
+                        started_ns=10_000_000_000, deadline_ns=75_000_000_000))
+
+    def test_archive_submitted_rejects_unknown_retained_fields_values_and_shapes(self):
+        invalid = [dict(format='other'), dict(format='bigbrotr-installed-retained-requests/1', extra=True)]
+        invalid += [dict(format='bigbrotr-installed-retained-requests/1', post_proof_terminal=value)
+            for value in ('quiet', 'eose', True, None)]
+        invalid += [dict(format='bigbrotr-installed-retained-requests/1', post_proof_terminal='closed', extra=True),
+            'bigbrotr-installed-retained-requests/1', []]
+        for number, profile in enumerate(invalid):
+            directory = self.home/str(number);directory.mkdir()
+            with self.subTest(profile=profile), self.assertRaises(AssertionError):
+                self.archive_to_submitted(directory, profile)
+            self.assertFalse((directory/'retained-request-deadline.json').exists())
+            self.assertFalse((directory/'submitted.json').exists())
+
+    def test_archive_submitted_retained_deadline_starts_here_and_expires_at65_seconds(self):
+        for number, profile in enumerate((dict(format='bigbrotr-installed-retained-requests/1'),
+                dict(format='bigbrotr-installed-retained-requests/1', post_proof_terminal='closed'))):
+            directory = self.home/str(number);directory.mkdir()
+            with self.subTest(profile=profile):
+                with self.assertRaisesRegex(AssertionError, '^submitted$'):
+                    self.archive_to_submitted(directory, profile, clock=(1., 75.))
+                self.assertEqual(json.loads((directory/'retained-request-deadline.json').read_text()),
+                    dict(format='bigbrotr-retained-request-gate/1', started_ns=10_000_000_000, deadline_ns=75_000_000_000))
+                self.assertTrue((directory/'submitted.json').exists())
 
     def test_export_uses_supplied_principal_and_exact_reauthentication_password(self):
         self.save()
