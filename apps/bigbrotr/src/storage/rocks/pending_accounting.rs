@@ -127,7 +127,7 @@ impl IngestStore {
         &self,
         snapshot: &Snapshot<'_>,
     ) -> Result<(), PendingAccountingError> {
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(PendingAccountingError::WriteUncertain);
         }
         let manifest = snapshot

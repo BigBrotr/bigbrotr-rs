@@ -77,7 +77,7 @@ impl ProgressRead<'_> {
 
     pub(in crate::storage) fn validate(&self) -> Result<(), AdmissionError> {
         let store = self.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if store.handoff_root_identity()? != self.root

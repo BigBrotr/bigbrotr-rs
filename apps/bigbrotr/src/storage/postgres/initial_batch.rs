@@ -847,6 +847,9 @@ impl ControlSession {
         {
             return Err(OwnerError::Unavailable.into());
         }
+        if store.native_unavailable() {
+            return Err(InitialBatchError::Native(BootstrapError::CommitUnknown));
+        }
         reservation_tx
             .commit()
             .await
@@ -913,6 +916,7 @@ impl ControlSession {
             }
         };
         if input.cancelled.load(Ordering::Relaxed)
+            || store.native_unavailable()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialBatchError::DeliveryUnknown);
@@ -953,6 +957,7 @@ impl ControlSession {
             None
         };
         if input.cancelled.load(Ordering::Relaxed)
+            || store.native_unavailable()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialBatchError::DeliveryUnknown);
@@ -972,6 +977,7 @@ impl ControlSession {
             }
         };
         if input.cancelled.load(Ordering::Relaxed)
+            || store.native_unavailable()
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -991,7 +997,7 @@ impl ControlSession {
                     InitialBatchError::Progress(ProducerProgressError::Native(error))
                 })?;
         }
-        if self.client.is_closed() {
+        if self.client.is_closed() || store.native_unavailable() {
             return Err(InitialBatchError::DeliveryUnknown);
         }
         self.available = true;
@@ -1136,6 +1142,10 @@ impl ControlSession {
         {
             return Err(OwnerError::Unavailable.into());
         }
+        store
+            .require_available()
+            .map_err(AdmissionError::from)
+            .map_err(InitialEventError::Native)?;
         reservation_tx
             .commit()
             .await
@@ -1191,6 +1201,7 @@ impl ControlSession {
             }
         };
         if input.cancelled.load(Ordering::Relaxed)
+            || store.require_available().is_err()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
@@ -1231,6 +1242,7 @@ impl ControlSession {
             None
         };
         if input.cancelled.load(Ordering::Relaxed)
+            || store.require_available().is_err()
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
@@ -1455,6 +1467,10 @@ impl ControlSession {
         {
             return Err(OwnerError::Unavailable.into());
         }
+        store
+            .require_available()
+            .map_err(AdmissionError::from)
+            .map_err(InitialEventError::Native)?;
         reservation_tx
             .commit()
             .await
@@ -1511,7 +1527,9 @@ impl ControlSession {
                 return Err(InitialEventError::Native(error));
             }
         };
-        if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
+        if cancelled.load(Ordering::Relaxed)
+            || store.require_available().is_err()
+            || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
@@ -1548,7 +1566,9 @@ impl ControlSession {
         };
         // SQL awaits can consume the lease or observe cancellation after native
         // completion. Do not publish its copy/progress with expired authority.
-        if cancelled.load(Ordering::Relaxed) || lease.check_delivery(identity.policy_epoch).is_err()
+        if cancelled.load(Ordering::Relaxed)
+            || store.require_available().is_err()
+            || lease.check_delivery(identity.policy_epoch).is_err()
         {
             return Err(InitialEventError::DeliveryUnknown);
         }
@@ -1699,6 +1719,9 @@ impl ControlSession {
                 .await
                 .map_err(InitialEventError::Reservation)?;
         }
+        if store.native_unavailable() {
+            return Err(InitialEventError::Native(AdmissionError::CommitUnknown));
+        }
         if input.cancelled.load(Ordering::Relaxed)
             || lease.check_delivery(identity.policy_epoch).is_err()
         {
@@ -1709,11 +1732,19 @@ impl ControlSession {
         tx.commit()
             .await
             .map_err(|_| InitialEventError::InputBinding(InputBindingError::CommitUnknown))?;
+        if self.client.is_closed() || store.native_unavailable() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         self.available = true;
         Ok(())
     }
 
-    async fn begin_initial_native_operation<'a, E>(
+    async fn begin_initial_native_operation<'a, E: From<BootstrapError>>(
         &'a mut self,
         store: &NativeOwner<'_>,
         input: InitialIngestContext<'_>,
@@ -1726,13 +1757,16 @@ impl ControlSession {
     /// Continue the same exclusively borrowed owner after a positively
     /// confirmed prefix prepare. No public caller can choose continuation or
     /// recover a failed session through this internal transaction helper.
-    async fn begin_initial_native_stage<'a, E>(
+    async fn begin_initial_native_stage<'a, E: From<BootstrapError>>(
         &'a mut self,
         store: &NativeOwner<'_>,
         input: InitialIngestContext<'_>,
         new_operation: bool,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
+        store
+            .require_available()
+            .map_err(|error| InitialOperationError::Native(error.into()))?;
         let authority = input.authority;
         let control = authority.control();
         let expected_policy = authority.policy();
@@ -1897,6 +1931,9 @@ impl ControlSession {
             .require_compacted(&tx, &mut lease, identity.policy_epoch, input.cancelled)
             .await
             .map_err(InitialOperationError::Compacted)?;
+        store
+            .require_available()
+            .map_err(|error| InitialOperationError::Native(error.into()))?;
         Ok((tx, lease))
     }
 }

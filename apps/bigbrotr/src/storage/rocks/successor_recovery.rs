@@ -201,7 +201,7 @@ impl NativeSuccessorRecovery {
         if self.failed {
             return Err(BootstrapError::AuthorityUnavailable);
         }
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         let identity = || {

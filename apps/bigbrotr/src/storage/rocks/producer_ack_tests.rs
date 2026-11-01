@@ -438,3 +438,80 @@ fn acknowledgement_postwrite_authority_loss_preserves_ack_and_sequence_mismatch_
         Err(AdmissionError::CommitUnknown)
     );
 }
+
+#[test]
+fn simulated_background_latch_after_ack_sync_withholds_credit_but_preserves_committed_watermark() {
+    let (root, mut store, budget, _, _) = setup(false);
+    drop(admit(&mut store, &budget, 1).unwrap());
+    let target = target(&store, 5, 1);
+    let sequence = store.db.latest_sequence_number();
+    let original_inputs = inputs(root.path());
+    let simulated = store.test_background_failure();
+    let mut checks = 0;
+    assert_eq!(
+        store.test_acknowledge_target(target, &grant(&budget, 4096, 4096), || {
+            checks += 1;
+            if checks == 3 {
+                simulated.latch();
+            }
+            Ok(())
+        }),
+        Err(AdmissionError::CommitUnknown)
+    );
+    assert_eq!(checks, 3, "latch after the native ACK write");
+    assert_eq!(store.db.latest_sequence_number(), sequence + 1);
+    let producer = IngestKey::ProducerState {
+        producer_slot_id: request(5, 1).producer_slot_id,
+        producer_epoch: ProducerEpoch::new(1).unwrap(),
+    }
+    .encode()
+    .unwrap();
+    let raw = store
+        .db
+        .get_cf(store.db.cf_handle("receipts").unwrap(), producer.as_bytes())
+        .unwrap()
+        .unwrap();
+    // Literal native state: issued1, ACK1, retired0. Error is not rollback.
+    assert_eq!(
+        raw,
+        [
+            vec![1, 0x31],
+            1_u64.to_be_bytes().to_vec(),
+            1_u64.to_be_bytes().to_vec(),
+            vec![0; 8]
+        ]
+        .concat()
+    );
+    assert_eq!(inputs(root.path()), original_inputs);
+    assert_eq!(
+        store.producer_credit(request(5, 1).producer_slot_id),
+        Err(AdmissionError::CommitUnknown)
+    );
+}
+
+#[test]
+fn simulated_background_latch_on_exact_ack_replay_refuses_delivery_without_another_write() {
+    let (root, mut store, budget, _, _) = setup(false);
+    drop(admit(&mut store, &budget, 1).unwrap());
+    acknowledge(&mut store, &budget, 1);
+    let target = target(&store, 5, 1);
+    let sequence = store.db.latest_sequence_number();
+    let before = kv(&store);
+    let original_inputs = inputs(root.path());
+    let simulated = store.test_background_failure();
+    let mut checks = 0;
+    assert_eq!(
+        store.test_acknowledge_target(target, &grant(&budget, 4096, 4096), || {
+            checks += 1;
+            if checks == 2 {
+                simulated.latch();
+            }
+            Ok(())
+        }),
+        Err(AdmissionError::CommitUnknown)
+    );
+    assert_eq!(checks, 2, "latch at no-write replay delivery");
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+    assert_eq!(kv(&store), before);
+    assert_eq!(inputs(root.path()), original_inputs);
+}

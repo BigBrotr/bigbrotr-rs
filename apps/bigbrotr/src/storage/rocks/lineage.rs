@@ -372,7 +372,7 @@ impl RetainedLineage {
             return Err(BootstrapError::InsufficientReservation);
         }
         check_cancelled(cancelled)?;
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if head.key_schema() != if epoch == 2 { 2 } else { 3 } {
@@ -550,7 +550,7 @@ impl RetainedLineage {
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
         check_cancelled(cancelled)?;
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.transition_stamp() != stamp
@@ -574,7 +574,7 @@ impl RetainedLineage {
         cancelled: &AtomicBool,
     ) -> Result<(), BootstrapError> {
         check_cancelled(cancelled)?;
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.entries.last().map(|e| &e.manifest) != Some(recovery.manifest())

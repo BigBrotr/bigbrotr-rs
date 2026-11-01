@@ -252,6 +252,11 @@ impl ControlSession {
                 return Err(ProducerAcknowledgementError::DeliveryUnknown);
             }
             initial_history::check_delivery(&mut lease, policy, input.cancelled)?;
+            if recovery.native_unavailable() {
+                return Err(ProducerAcknowledgementError::Native(
+                    AdmissionError::CommitUnknown,
+                ));
+            }
             self.available = true;
             return Ok(ProducerAcknowledgementReceipt {
                 slot,
@@ -290,6 +295,11 @@ impl ControlSession {
         .map_err(ProducerAcknowledgementError::Native)?;
         if self.client.is_closed() {
             return Err(ProducerAcknowledgementError::DeliveryUnknown);
+        }
+        if recovery.native_unavailable() {
+            return Err(ProducerAcknowledgementError::Native(
+                AdmissionError::CommitUnknown,
+            ));
         }
         self.available = true;
         Ok(ProducerAcknowledgementReceipt {

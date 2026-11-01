@@ -153,7 +153,7 @@ impl PreparedEvent {
         {
             return Err(AdmissionError::InsufficientReservation);
         }
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if self.scope.dataset_id != store.manifest.identity().dataset_id {
@@ -466,7 +466,7 @@ impl IngestStore {
             return Err(AdmissionError::Limit);
         }
         authority()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = *self.manifest.identity();
@@ -546,6 +546,9 @@ impl IngestStore {
                 return Err(AdmissionError::StateMismatch);
             }
             authority()?;
+            if self.native_unavailable() {
+                return Err(AdmissionError::CommitUnknown);
+            }
             return Ok(StoredOutcome {
                 outcome,
                 native_outcome,

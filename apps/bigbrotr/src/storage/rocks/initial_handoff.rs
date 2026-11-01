@@ -139,7 +139,7 @@ impl InitialHandoff {
         &self,
         store: &IngestStore,
     ) -> Result<(), AdmissionError> {
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if store.manifest() != self.next_manifest()
@@ -488,7 +488,7 @@ impl<'a> HistoricalInitial<'a> {
 
     pub(super) fn validate(&self) -> Result<(), BootstrapError> {
         let store = &self.recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if store.manifest != self.record.next
@@ -596,7 +596,7 @@ impl IngestRecovery {
         &self,
         handoff: &InitialHandoff,
     ) -> Result<(), BootstrapError> {
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         let completed = self.manifest() == &handoff.record.next;
@@ -624,7 +624,7 @@ impl IngestRecovery {
         &self,
         record: &InitialHandoffRecord,
     ) -> Result<(), BootstrapError> {
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.manifest() != record.previous_manifest() {

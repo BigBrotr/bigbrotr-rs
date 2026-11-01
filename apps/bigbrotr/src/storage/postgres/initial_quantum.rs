@@ -155,6 +155,7 @@ impl ControlSession {
         }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
+        native.validate_delivery(input.cancelled, &mut lease, policy)?;
         native.delivered();
         self.available = true;
         Ok(Some(plan))
@@ -209,6 +210,7 @@ impl ControlSession {
         }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
+        native.validate_delivery(input.cancelled, &mut lease, policy)?;
         native.delivered();
         self.available = true;
         Ok(())

@@ -20,15 +20,19 @@ pub(super) struct CheckpointStamp {
 }
 impl CheckpointStamp {
     pub(super) fn capture(store: &IngestStore) -> Result<Self, AdmissionError> {
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         store.require_admission_owner(None)?;
-        Ok(Self {
+        let stamp = Self {
             root: store.handoff_root_identity()?,
             sequence: store.db.latest_sequence_number(),
             manifest: Sha256::digest(store.manifest.encode().as_bytes()).into(),
-        })
+        };
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        Ok(stamp)
     }
 
     pub(super) fn require(self, store: &IngestStore) -> Result<(), AdmissionError> {
@@ -150,6 +154,9 @@ impl IngestStore {
         }?;
         let stamp = CheckpointStamp::capture(self)?;
         authority()?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(result.bind_checkpoint(stamp, captured))
     }
 
@@ -188,6 +195,9 @@ impl IngestStore {
         }?;
         let stamp = CheckpointStamp::capture(self)?;
         authority()?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(result.bind_checkpoint(stamp))
     }
 
@@ -217,6 +227,9 @@ impl IngestStore {
             _ => BootstrapError::StateMismatch,
         })?;
         authority()?;
+        if self.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         Ok(result.bind_checkpoint(stamp))
     }
 

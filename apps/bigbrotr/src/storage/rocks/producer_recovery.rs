@@ -108,7 +108,7 @@ impl ResolvedProducerRequest {
         &self,
         recovery: &IngestRecovery,
     ) -> Result<(), BootstrapError> {
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if recovery.store.handoff_root_identity()? != self.native_root
@@ -171,7 +171,7 @@ impl IngestRecovery {
             return Err(AdmissionError::InsufficientReservation.into());
         }
         authority()?;
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown.into());
         }
         let native_root = self

@@ -123,7 +123,7 @@ impl ControlSession {
             tx.rollback().await.map_err(backend)?;
             initial_history::check_delivery(&mut lease, policy, input.cancelled)
                 .map_err(InitialEventError::Compacted)?;
-            if self.client.is_closed() {
+            if self.client.is_closed() || store.native_unavailable() {
                 return Err(InitialEventError::DeliveryUnknown);
             }
             self.available = true;
@@ -131,11 +131,14 @@ impl ControlSession {
         };
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
             .map_err(InitialEventError::Compacted)?;
+        if store.native_unavailable() {
+            return Err(InitialEventError::Native(AdmissionError::CommitUnknown));
+        }
         let confirmed = pending
             .commit(tx)
             .await
             .map_err(InitialEventError::Progress)?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || store.native_unavailable() {
             return Err(InitialEventError::DeliveryUnknown);
         }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)
@@ -171,7 +174,7 @@ impl ControlSession {
         })
         .await
         .map_err(InitialEventError::Progress)?;
-        if self.client.is_closed() {
+        if self.client.is_closed() || store.native_unavailable() {
             return Err(InitialEventError::DeliveryUnknown);
         }
         initial_history::check_delivery(&mut lease, policy, input.cancelled)

@@ -24,7 +24,7 @@ impl IngestStore {
         }
         let limits = limits.reads()?;
         authority()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let dataset = self.manifest.identity().dataset_id;
@@ -124,6 +124,9 @@ impl IngestStore {
         })();
         drop(dependencies);
         authority()?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(result?.map(|witness| StoredObservation {
             visibility: input.visibility,
             observer: input.observer.reference(),

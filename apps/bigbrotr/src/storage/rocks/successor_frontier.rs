@@ -82,7 +82,7 @@ impl AdmittedFrontier {
             if self.poisoned.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
-            if store.write_uncertain {
+            if store.native_unavailable() {
                 return Err(AdmissionError::CommitUnknown);
             }
             if store.manifest != self.manifest

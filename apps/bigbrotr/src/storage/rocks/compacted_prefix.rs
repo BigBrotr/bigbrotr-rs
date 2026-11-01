@@ -378,7 +378,7 @@ impl IngestRecovery {
         cancelled: &AtomicBool,
     ) -> Result<bool, BootstrapError> {
         check_cancelled(cancelled)?;
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         let id = self.manifest().identity();
@@ -415,7 +415,7 @@ impl IngestRecovery {
         &self,
         slot: ProducerSlotId,
     ) -> Result<Option<ClosedProducerFloor>, BootstrapError> {
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.manifest().key_schema() != 1 || self.manifest().identity().owner_epoch.get() != 1 {
@@ -465,7 +465,7 @@ impl RetainedCompactedPrefix {
             return Err(AdmissionError::InsufficientReservation);
         }
         check_cancelled(cancelled)?;
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let manifest = *recovery.manifest();
@@ -539,7 +539,7 @@ impl RetainedCompactedPrefix {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         check_cancelled(cancelled)?;
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if recovery.manifest() != self.manifest()

@@ -116,7 +116,7 @@ impl IngestRecovery {
         &self,
         handoff: &[u8],
     ) -> Result<EmptyInitialAttempt<'_>, BootstrapError> {
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         let record = InitialHandoffRecord::decode(handoff)?;
@@ -156,7 +156,7 @@ impl IngestRecovery {
         &self,
         retirement: &EmptyInitialRetirement,
     ) -> Result<EmptyTargetState, BootstrapError> {
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.manifest() != retirement.target_manifest()

@@ -67,7 +67,7 @@ impl IngestStore {
             return Err(AdmissionError::InsufficientReservation);
         }
         check_cancelled(cancelled)?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if self.live_successor.is_some() {
@@ -121,6 +121,9 @@ impl IngestStore {
         self.require_dictionary_indices(entry, limits, &mut preparation.reads)?;
         preparation.require_closure(&fact)?;
         check_cancelled(cancelled)?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(preparation)
     }
 }
@@ -131,7 +134,7 @@ impl DictionaryPreparation<'_> {
         &mut self,
         descriptor: DictionaryDescriptor,
     ) -> Result<QualifiedRef, AdmissionError> {
-        check_cancelled(self.cancelled)?;
+        self.require_available()?;
         self.reads.charge(0)?;
         let heap = descriptor.heap_allocation_bytes();
         if heap > self.limits.max_batch_bytes {
@@ -149,6 +152,7 @@ impl DictionaryPreparation<'_> {
             .iter()
             .find(|entry| entry.descriptor() == &descriptor)
         {
+            self.require_available()?;
             return Ok(prior.reference());
         }
         if heap
@@ -213,7 +217,7 @@ impl DictionaryPreparation<'_> {
             }
             Some(ordinal)
         };
-        check_cancelled(self.cancelled)?;
+        self.require_available()?;
         // Moving the validated descriptor preserves its already charged capacity.
         let entry = DictionaryEntry::new(reference, probe.into_parts().1)
             .map_err(|_| AdmissionError::InvalidInput)?;
@@ -222,6 +226,7 @@ impl DictionaryPreparation<'_> {
         if let Some(next) = next {
             self.through[slot] = Some(next);
         }
+        self.require_available()?;
         Ok(reference)
     }
 
@@ -229,7 +234,7 @@ impl DictionaryPreparation<'_> {
     /// window, timestamp and full new dependency closure are checked by staging;
     /// an ambiguous retry must keep this intent rather than repeat interning.
     pub fn finish(self) -> Result<PreparedDictionaries, AdmissionError> {
-        check_cancelled(self.cancelled)?;
+        self.require_available()?;
         if self.store.live_successor.is_some() {
             self.store
                 .require_successor_operation(Some(self.cancelled))?;
@@ -250,10 +255,23 @@ impl DictionaryPreparation<'_> {
             EvidenceIntentError::EmptyEntries => AdmissionError::InvalidInput,
             _ => AdmissionError::Limit,
         })?;
+        check_cancelled(self.cancelled)?;
+        if self.store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(PreparedDictionaries {
             intent,
             _permit: self.permit,
         })
+    }
+
+    fn require_available(&self) -> Result<(), AdmissionError> {
+        check_cancelled(self.cancelled)?;
+        if self.store.native_unavailable() {
+            Err(AdmissionError::CommitUnknown)
+        } else {
+            Ok(())
+        }
     }
 
     fn find_candidate(

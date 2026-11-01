@@ -48,7 +48,7 @@ impl ActivatedInitial {
         recovery: &IngestRecovery,
         record: InitialHandoffRecord,
     ) -> Result<bool, BootstrapError> {
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if recovery.manifest() != record.next_manifest()
@@ -204,7 +204,7 @@ impl ActivatedInitial {
         record: InitialHandoffRecord,
     ) -> Result<Self, BootstrapError> {
         let store = &recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if recovery.manifest() != record.next_manifest() {
@@ -300,7 +300,7 @@ impl ActivatedInitial {
 
     fn validate_identity(&self, recovery: &IngestRecovery) -> Result<(), BootstrapError> {
         let store = &recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if recovery.manifest() != self.manifest()

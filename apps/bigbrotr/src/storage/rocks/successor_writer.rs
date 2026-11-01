@@ -153,6 +153,10 @@ const _: () = assert!(
         < crate::storage::rocks::succession::LINEAGE_SCRATCH_BYTES as usize
 );
 impl ActiveSuccessorWriter {
+    pub(in crate::storage) fn native_unavailable(&self) -> bool {
+        self.store.native_unavailable()
+    }
+
     pub(in crate::storage) fn compacted_view<'a>(
         &'a self,
         limits: AdmissionLimits,

@@ -30,7 +30,7 @@ impl IngestStore {
         }
         let limits = limits.reads()?;
         authority()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if reference.dataset_id != self.manifest.identity().dataset_id
@@ -49,6 +49,9 @@ impl IngestStore {
         // scratch first so other budget users cannot race its deallocation.
         drop(dependencies);
         authority()?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(entry.map(|entry| StoredVisibility {
             entry,
             _permit: permit,

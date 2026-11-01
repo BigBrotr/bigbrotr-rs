@@ -79,7 +79,7 @@ impl IngestStore {
         cancelled: &AtomicBool,
     ) -> Result<SourceHead, SourceHeadError> {
         check_cancel(cancelled)?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(SourceHeadError::WriteUncertain);
         }
         if &self.manifest != expected {

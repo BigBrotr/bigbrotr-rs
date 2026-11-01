@@ -29,7 +29,7 @@ impl InitialWriterCandidate {
     /// requires an explicit original or compacted proof and relational retirement.
     pub fn new(recovery: IngestRecovery) -> Result<Self, BootstrapError> {
         let previous = *recovery.manifest();
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if previous.key_schema() != 1 || previous.identity().owner_epoch.get() != 1 {

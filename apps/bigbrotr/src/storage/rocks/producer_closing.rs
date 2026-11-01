@@ -107,7 +107,7 @@ impl IngestRecovery {
         {
             return Err(BootstrapError::InsufficientReservation);
         }
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if manifest.key_schema() != 1
@@ -147,7 +147,7 @@ impl IngestRecovery {
             return Err(BootstrapError::InsufficientReservation);
         }
         authority()?;
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.store.manifest.key_schema() != 1

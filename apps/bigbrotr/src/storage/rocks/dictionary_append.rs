@@ -186,6 +186,9 @@ impl IngestStore {
                 || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
             )?;
         }
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(StoredReceipt::new(receipt, copy, permit))
     }
 
@@ -551,7 +554,7 @@ impl IngestStore {
         lineage: Option<&super::RetainedLineage>,
     ) -> Result<(), AdmissionError> {
         limits.required_dictionary_data_bytes()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = manifest.identity();

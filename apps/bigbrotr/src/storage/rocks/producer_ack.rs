@@ -148,7 +148,7 @@ impl AckStamp {
                 manifest,
                 compacted,
             } => {
-                if store.write_uncertain {
+                if store.native_unavailable() {
                     return Err(AdmissionError::CommitUnknown);
                 }
                 if store.handoff_root_identity()? != *root
@@ -167,6 +167,9 @@ impl AckStamp {
                     {
                         return Err(AdmissionError::StateMismatch);
                     }
+                }
+                if store.native_unavailable() {
+                    return Err(AdmissionError::CommitUnknown);
                 }
                 Ok(())
             }
@@ -271,7 +274,7 @@ impl RecoveryAcknowledgement {
         issued: u64,
     ) -> Result<Self, BootstrapError> {
         let store = &recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         let epoch = ProducerEpoch::new(manifest.identity().owner_epoch.get())
@@ -609,6 +612,10 @@ impl AckTarget {
 }
 
 impl IngestRecovery {
+    pub(in crate::storage) fn native_unavailable(&self) -> bool {
+        self.store.native_unavailable()
+    }
+
     pub(in crate::storage) fn acknowledge_compacted_checkpoint(
         &mut self,
         confirmed: ConfirmedAcknowledgement,
@@ -642,7 +649,7 @@ impl IngestStore {
         request: bigbrotr_model::ProducerRequestId,
         manifest: &IngestManifest,
     ) -> Result<(), AdmissionError> {
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let key = IngestKey::ProducerState {
@@ -725,7 +732,7 @@ impl IngestStore {
             producer_epoch: epoch,
             request_sequence: bigbrotr_model::RequestSequence::new(1).expect("nonzero"),
         }))?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let state = match self.producer_state(slot, epoch)? {
@@ -736,6 +743,9 @@ impl IngestStore {
         self.require_retained_state(slot, epoch, state)?;
         if state.closing {
             return Err(AdmissionError::StateMismatch);
+        }
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
         }
         Ok(ProducerCredit {
             issued: state.issued,
@@ -795,9 +805,12 @@ impl IngestStore {
         }
         if target.complete == state.acknowledged {
             authority()?;
-            return if target.stamp.compacted().is_some() {
+            if target.stamp.compacted().is_some() {
                 target.stamp.require(self, cancelled)?;
-                authority()
+                authority()?;
+            }
+            return if self.native_unavailable() {
+                Err(AdmissionError::CommitUnknown)
             } else {
                 Ok(())
             };
@@ -844,9 +857,15 @@ impl IngestStore {
             inputs.require(self, cancelled.ok_or(AdmissionError::StateMismatch)?)?;
             authority()?;
         }
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(())
     }
     fn require_acknowledgement_sequence(&mut self, expected: u64) -> Result<(), AdmissionError> {
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         if self.db.latest_sequence_number() != expected {
             self.write_uncertain = true;
             if let Some(frontier) = &self.live_successor {

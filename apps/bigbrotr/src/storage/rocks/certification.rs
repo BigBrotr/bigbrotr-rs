@@ -184,7 +184,7 @@ impl IngestStore {
             return Err(AdmissionError::Limit);
         }
         authority()?;
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let identity = self.manifest.identity();
@@ -212,6 +212,9 @@ impl IngestStore {
         };
         if checkpoint.is_some() {
             authority()?;
+        }
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
         }
         Ok(StoredCertification {
             outcome,

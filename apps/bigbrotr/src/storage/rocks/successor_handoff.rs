@@ -49,7 +49,7 @@ impl SuccessorCandidate {
     pub fn new(recovery: IngestRecovery) -> Result<Self, BootstrapError> {
         let previous = *recovery.manifest();
         let epoch = previous.identity().owner_epoch.get();
-        if recovery.store.write_uncertain {
+        if recovery.store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if epoch < 2 || previous.key_schema() != if epoch == 2 { 2 } else { 3 } {

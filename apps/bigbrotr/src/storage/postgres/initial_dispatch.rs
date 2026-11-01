@@ -1,5 +1,5 @@
 //! Private native dispatch. Successor work always crosses its admitted-frontier
-//! wrapper; a raw IngestStore reference is retained only for the legacy paths.
+//! wrapper; initial and activated initial owners retain an IngestStore borrow.
 use super::*;
 use crate::storage::rocks::{
     manifest::IngestManifest,
@@ -48,6 +48,20 @@ impl<'a> NativeOwner<'a> {
     }
 }
 impl NativeOwner<'_> {
+    /// A failed observation refuses this owner. A healthy observation does not
+    /// exclude a later callback or replace authority at an irreversible stage.
+    pub(super) fn require_available(&self) -> Result<(), BootstrapError> {
+        let unavailable = match self {
+            Self::Store(store) => store.native_unavailable(),
+            Self::Successor(owner) => owner.native_unavailable(),
+        };
+        if unavailable {
+            Err(BootstrapError::CommitUnknown)
+        } else {
+            Ok(())
+        }
+    }
+
     pub(super) fn quantum_progress_read<'a>(
         &'a self,
         scratch: &'a OwnedPermit,
@@ -106,6 +120,9 @@ impl NativeOwner<'_> {
         lease: &mut PolicyLeaseTracker,
         policy: PolicyEpoch,
     ) -> Result<(), InitialEventError> {
+        self.require_available()
+            .map_err(AdmissionError::from)
+            .map_err(InitialEventError::Native)?;
         if let Self::Successor(owner) = self
             && let Some(check) = owner.check
         {
@@ -115,7 +132,9 @@ impl NativeOwner<'_> {
             initial_history::check_delivery(lease, policy, cancelled)
                 .map_err(InitialEventError::Compacted)?;
         }
-        Ok(())
+        self.require_available()
+            .map_err(AdmissionError::from)
+            .map_err(InitialEventError::Native)
     }
     pub(super) fn delivered(&mut self) {
         if let Self::Successor(owner) = self {

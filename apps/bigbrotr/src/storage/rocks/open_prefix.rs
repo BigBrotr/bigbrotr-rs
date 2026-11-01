@@ -86,7 +86,7 @@ impl IngestStore {
         &self,
         slot: ProducerSlotId,
     ) -> Result<(u64, u64, u64, Option<producer_prefix::NativeFloor>), AdmissionError> {
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let epoch = ProducerEpoch::new(1).expect("initial prefix");
@@ -126,7 +126,7 @@ impl IngestStore {
         {
             return Err(AdmissionError::InsufficientReservation);
         }
-        if self.write_uncertain {
+        if self.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         let root = self.handoff_root_identity()?;
@@ -337,7 +337,7 @@ impl NativePrefixRead<'_> {
     }
     pub fn validate(&self, cancelled: &AtomicBool) -> Result<(), AdmissionError> {
         check(cancelled)?;
-        if self.store.write_uncertain {
+        if self.store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         if self.store.handoff_root_identity()? != self.root

@@ -192,3 +192,92 @@ fn simulated_latch_retains_native_reservation_and_path_until_explicit_close() {
     assert_eq!(other.snapshot().used().native_bytes(), 0);
     assert!(path.join("CURRENT").exists());
 }
+
+#[test]
+fn simulated_latch_invalidates_existing_checkpoint_and_credit_without_mutating_science() {
+    use super::producer_checkpoint::CheckpointStamp;
+
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let mut store =
+        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let receipt = store
+        .bootstrap_checkpoint_dictionaries(
+            request(),
+            &intent("public"),
+            ObservedTime::new(123),
+            limits(),
+            grant(&b, 8 * MIB, 4 * MIB),
+            || Ok(()),
+        )
+        .unwrap();
+    let basis = store.checkpoint_evidence(&receipt).unwrap();
+    let stamp = CheckpointStamp::capture(&store).unwrap();
+    let before = rows(&store);
+    let sequence = store.db.latest_sequence_number();
+    let accounting = store.accounting;
+    store.test_latch_background_failure();
+    assert_eq!(stamp.require(&store), Err(AdmissionError::CommitUnknown));
+    assert_eq!(
+        store.require_checkpoint_basis(&basis),
+        Err(AdmissionError::CommitUnknown)
+    );
+    assert!(matches!(
+        store.checkpoint_evidence(&receipt),
+        Err(AdmissionError::CommitUnknown)
+    ));
+    assert_eq!(
+        store.producer_credit(request().producer_slot_id),
+        Err(AdmissionError::CommitUnknown)
+    );
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+    assert_eq!(store.accounting, accounting);
+    assert_eq!(rows(&store), before);
+}
+
+#[test]
+fn simulated_latch_after_synced_bootstrap_withholds_checkpoint_without_claiming_rollback() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let mut store =
+        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let sequence = store.db.latest_sequence_number();
+    let simulated = store.test_background_failure();
+    let mut checks = 0;
+    assert!(matches!(
+        store.bootstrap_checkpoint_dictionaries(
+            request(),
+            &intent("public"),
+            ObservedTime::new(123),
+            limits(),
+            grant(&b, 8 * MIB, 4 * MIB),
+            || {
+                checks += 1;
+                if checks == 3 {
+                    simulated.latch();
+                }
+                Ok(())
+            },
+        ),
+        Err(BootstrapError::CommitUnknown)
+    ));
+    assert_eq!(
+        checks, 3,
+        "latch at the final checkpoint authority callback"
+    );
+    assert!(store.db.latest_sequence_number() > sequence);
+    assert!(
+        !store.write_uncertain,
+        "the native sync completed before the latch"
+    );
+    assert!(store.native_unavailable());
+    assert_eq!(
+        std::fs::read_dir(path.join("producer-inputs-v1"))
+            .unwrap()
+            .count(),
+        1
+    );
+    assert_eq!(b.snapshot().used().data_bytes(), 0);
+}

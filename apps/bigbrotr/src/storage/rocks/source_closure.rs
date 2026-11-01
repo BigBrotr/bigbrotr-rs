@@ -40,7 +40,7 @@ impl ResolvedSource<'_> {
         if cancelled.load(Ordering::Acquire) {
             return Err(BootstrapError::AuthorityUnavailable);
         }
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if self.historical.is_some()
@@ -116,7 +116,7 @@ impl ResolvedSource<'_> {
             historical.validate()?;
         }
         let store = &self.recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if store.handoff_root_identity()? != self.native_root
@@ -232,7 +232,7 @@ impl<'a> SourceResolution<'a> {
             return Err(BootstrapError::StateMismatch);
         }
         let store = &self.recovery.store;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(BootstrapError::CommitUnknown);
         }
         if let Some(view) = &self.historical {
