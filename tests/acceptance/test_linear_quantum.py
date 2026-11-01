@@ -21,9 +21,11 @@ def fixture(*,pending=False,abandoned=False,producer_epoch=1):
         owner_resource_id=bx('3'),owner_epoch=1,owner_incarnation=bx('4'),owner_role='control',
         kind='acquisition',acquisition_job_protocol=1,state='queued',job_revision=2,checkpoint_revision=0,
         result_manifest_digest=None,reason_code=None,completed_at_us=None)
-    row=dict(quantum_id=bx('5'),quantum_profile=1,quantum_number=1,dataset_id=bx('1'),job_id=bx('2'),scope_id=bx('6'),
+    row=dict(quantum_id=bx('5'),quantum_profile=2,quantum_number=1,entry_kind='request',dataset_id=bx('1'),job_id=bx('2'),scope_id=bx('6'),
         producer_slot_id=bx('7'),producer_epoch=1,issuer_role='control',issuer_resource=bx('3'),
-        issuer_epoch=1,issuer_incarnation=bx('4'),interval_lower=0,interval_upper=86400,horizon=200000,
+        issuer_epoch=1,issuer_incarnation=bx('4'),interval_lower=0,interval_upper=86400,horizon=86400,window_end=86400,window_width=86400,query_budget=128,query_number=1,
+        classified_before=0,disposition=None if pending else 'window_closed',gap_lower=None,gap_upper=None,
+        terminal_received_at_us=None if pending else 200_001_000_000,checkpoint_sha256=None,
         request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),
         maximum_dependencies=192,checkpoint_before=3,terminal_kind=None if pending else 'eose',
         completed_at_us=None if pending else 200_002_000_000,dependencies=None if pending else '\\x',
@@ -56,6 +58,17 @@ def fixture(*,pending=False,abandoned=False,producer_epoch=1):
     return state,wire
 
 
+def status_fixture(**fields):
+    result=fields.get('result','pending');upper=fields.get('upper','86400')
+    disposition=fields.pop('disposition',None if result=='pending' else 'retry' if result=='interrupted' else 'overlap')
+    value=dict(format='bigbrotr-linear-quantum-status/2',entry_kind='request',window_end='86400',
+        window_width='86400',query_budget=128,queries_spent=int(fields['quantum_number']),
+        attempted_prefix='0',gap_count=0,pending_work='request_pending' if result=='pending' else 'query_ready',
+        pending_interval=['0',upper],disposition=disposition)
+    value.update(fields)
+    return value
+
+
 def successor_fixture(provenance):
     from test_first_launch_restart import fixture as signed_science
     old,new,_,encoded,_=signed_science(provenance)
@@ -80,7 +93,7 @@ def successor_fixture(provenance):
     row.update(terminal_sequence=4,retained_events=3,classified_prefix=3,effect_records='\\x'+records.hex(),
         dependencies='\\x'+dependencies.hex(),checkpoint_before=0,checkpoint_after=4,
         gap_reason=gap,result_class='interrupted' if gap else 'linear_observed',
-        continuation_upper=row['interval_upper'] if gap else min(times)+1)
+        continuation_upper=row['interval_upper'] if gap else min(times)+1,disposition='retry' if gap else 'overlap')
     row['charged_bytes']=1024+len(check.raw(row['request_predicate']))+len(check.raw(row['terminal_frame']))+len(records)+256*(len(dependencies)//72)
     return state,wire,old,new,science,first
 
@@ -94,22 +107,27 @@ def signed_pages_fixture():
             if 'dataset_id' in value:value['dataset_id']=encoded.m.ds['dataset_id']
     original=state['acquisition_quanta'][0]
     refs=check.reference_bytes(check.receipt_refs(science['receipts'][3]))
-    for number,upper in ((1,86400),(2,event['created_at']+1)):
+    for number,upper in ((1,86400),(2,event['created_at']+1),(3,event['created_at'])):
         ident=f'{number:048x}';frame=check.wire_json(['EOSE',ident])
         predicate=check.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=upper-1,limit=3)])
-        bodies=(event,dict(event,sig='00'*64),event)
+        bodies=() if number==3 else (event,dict(event,sig='00'*64),event)
         kinds=((2,4),(6,0),(5,0)) if number==1 else ((5,0),(6,0),(5,0))
         records=b''.join(ordinal.to_bytes(2,'big')+ordinal.to_bytes(8,'big')+
             hashlib.sha256(check.wire_json(body)).digest()+kind.to_bytes(2,'big')+
             request.to_bytes(8,'big')+body['created_at'].to_bytes(8,'big')+b'\x01'+bytes.fromhex(body['id'])
             for ordinal,(body,(kind,request)) in enumerate(zip(bodies,kinds),1))
-        rows.append(dict(original,quantum_id='\\x'+f'{number:032x}',quantum_number=number,
+        rows.append(dict(original,quantum_id='\\x'+f'{number:032x}',quantum_number=number,query_number=number,
             interval_upper=upper,request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),
-            terminal_frame='\\x'+frame.hex(),request_id='\\x'+ident.encode().hex(),terminal_sequence=4,
-            retained_events=3,classified_prefix=3,dependencies='\\x'+refs.hex(),effect_records='\\x'+records.hex(),
-            continuation_upper=event['created_at']+1,charged_bytes=1024+len(predicate)+len(frame)+len(records)+256*(len(refs)//72)))
+            terminal_frame='\\x'+frame.hex(),request_id='\\x'+ident.encode().hex(),terminal_sequence=1 if number==3 else 4,
+            retained_events=0 if number==3 else 3,classified_prefix=0 if number==3 else 3,
+            dependencies='\\x' if number==3 else '\\x'+refs.hex(),effect_records='\\x'+records.hex(),
+            disposition=('overlap','saturated_second','window_closed')[number-1],
+            gap_reason='saturated_second' if number==2 else None,
+            gap_lower=1 if number==2 else None,gap_upper=2 if number==2 else None,
+            continuation_upper=(2,1,86400)[number-1],
+            charged_bytes=1024+len(predicate)+len(frame)+len(records)+(0 if number==3 else 256*(len(refs)//72))))
         wires.append(dict(number=number,request=['REQ',ident,dict(kinds=[1],since=0,until=upper-1,limit=3)],
-            frames=['signed','forged-signature','duplicate','EOSE'],completion='request-and-websocket-close'))
+            frames=['EOSE'] if number==3 else ['signed','forged-signature','duplicate','EOSE'],completion='request-and-websocket-close'))
     state['acquisition_quanta']=rows
     return state,wires,event,science
 
@@ -120,7 +138,7 @@ def finite_peer_fixture(directory,order,*,failure=None,fault=None,first_only=Fal
     (directory/'event.jsonl').write_bytes((root/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
     (directory/'linear-quantum-profile.json').write_text(json.dumps(peer.PROFILE))
     if fault:(directory/'linear-quantum-fault.json').write_text(json.dumps(fault))
-    recipes=(('slow_eose','proof'),('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
+    recipes=(('slow_eose','proof','empty'),('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
     class Connection:
         def __init__(self,number):
             self.number=number;self.frames=0;self.scope=order[number-1]
@@ -141,7 +159,7 @@ def finite_peer_fixture(directory,order,*,failure=None,fault=None,first_only=Fal
         def frame(self):
             self.frames+=1;ident=f'{self.number:048x}'
             if self.frames==1:
-                scope=self.scope;upper=86400 if self.ordinal==1 or scope==1 or fault else 2
+                scope=self.scope;upper=86400 if scope==1 or fault else (86400,2,1)[self.ordinal-1] if self.ordinal<=3 else 1
                 if failure=='stale-upper' and scope==0 and self.ordinal==2:upper=86400
                 if failure=='unknown-scope' and self.number==2:scope=2
                 return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=scope,until=upper-1,limit=3)])
@@ -166,11 +184,11 @@ def interruption_rows(wires,event):
     other_job=dict(job,job_id='\\x'+'8'*32)
     state['jobs'].append(other_job)
     state['acquisition_jobs'].append(dict(detail,job_id=other_job['job_id'],scope_id='\\x'+'9'*32))
-    selectors=(dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain'),
+    selectors=(dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'),
         dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'))
     declarations={value['job_id'][2:]:dict(selector=selectors[number],scope_id=state['acquisition_jobs'][number]['scope_id'][2:],
         accepted_at_us=str(value['created_at_us'])) for number,value in enumerate(state['jobs'])}
-    results=dict(slow_eose=('eose',1,1,True,'linear_observed',None,2),proof=('eose',1,1,True,'linear_observed',None,2),
+    results=dict(slow_eose=('eose',1,1,True,'linear_observed',None,2),proof=('eose',1,1,True,'linear_observed','saturated_second',2),
         malformed_eose=('eose',2,0,True,'interrupted','unclassified_suffix',3),
         frame_cap_eose=('frame_cap',0,0,False,'interrupted','teardown',None),
         event_cap_eose=('event_cap',3,3,False,'interrupted','teardown',None),
@@ -188,21 +206,80 @@ def interruption_rows(wires,event):
             +bytes.fromhex(event['id']) for number in range(1,classified+1))
         frame=bytes.fromhex(wire['terminal_frame_hex']) if terminal in ('eose','closed') else b''
         rows.append(dict(original,quantum_id='\\x'+f"{wire['number']:032x}",quantum_number=ordinal,
-            job_id=selected['job_id'],scope_id=state['acquisition_jobs'][scope]['scope_id'],horizon=200000 if scope==0 else 86400,
+            job_id=selected['job_id'],scope_id=state['acquisition_jobs'][scope]['scope_id'],horizon=86400,query_number=ordinal,
             interval_upper=wire['request'][2]['until']+1,request_predicate='\\x'+predicate.hex(),
             predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),terminal_kind=terminal,terminal_frame='\\x'+frame.hex(),
             request_id='\\x'+wire['request'][1].encode().hex(),terminal_sequence=sequence,retained_events=retained,
             classified_prefix=classified,teardown_complete=teardown,result_class=result,gap_reason=gap,
-            continuation_upper=2 if wire['scenario'] in ('slow_eose','proof') else 86400,
+            continuation_upper=2 if wire['scenario']=='slow_eose' else 1 if wire['scenario']=='proof' else 86400,
+            disposition='overlap' if wire['scenario']=='slow_eose' else 'saturated_second' if wire['scenario']=='proof'
+                else 'window_closed' if wire['scenario']=='empty' else 'retry',
+            gap_lower=1 if wire['scenario']=='proof' else None,gap_upper=2 if wire['scenario']=='proof' else None,
             dependencies='\\x'+(refs.hex() if classified else ''),effect_records='\\x'+effects.hex(),
             charged_bytes=1024+len(predicate)+len(frame)+len(effects)+(256 if classified else 0)))
     state['acquisition_quanta']=rows
     return state,refs,declarations
 
 
+def exclusion_fixture(*,empty_target=False):
+    state,_=fixture();row=state['acquisition_quanta'][0]
+    selector=dict(version=1,filters=[dict(kinds=[1],since=200000)],history_since=0,ephemeral='retain')
+    if empty_target:selector=dict(version=1,filters=[dict(kinds=[1],until=10)],history_since=100,ephemeral='retain')
+    horizon=11 if empty_target else 200000;lower=horizon if empty_target else 0
+    row.update(entry_kind='selector_exclusion',interval_lower=lower,interval_upper=horizon,
+        horizon=horizon,window_end=horizon,query_number=0,maximum_dependencies=0,charged_bytes=1024,
+        disposition='empty_target' if empty_target else 'selector_excluded',
+        result_class='empty_target' if empty_target else 'selector_excluded')
+    for key in ('request_predicate','predicate_sha256','terminal_kind','terminal_frame','request_id','terminal_sequence',
+            'terminal_received_at_us','teardown_complete','retained_events','classified_prefix','effect_records',
+            'dependencies','gap_reason','continuation_upper','gap_lower','gap_upper'):
+        row[key]=None
+    entries=(('selector_exclusion',lower,horizon,horizon,row['disposition']),)
+    return state,selector,entries
+
+
 class LinearQuantumControls(unittest.TestCase):
+    def test_local_exclusion_has_no_fake_request_payload_and_proves_all_filter_times_empty(self):
+        for empty_target in (False,True):
+            state,selector,entries=exclusion_fixture(empty_target=empty_target)
+            summary=check.journey(state,[],1,{},selector=selector,entries=entries)
+            self.assertEqual(summary,dict(queries_spent=0,attempted_prefix=11 if empty_target else 200000,
+                gap_count=0,pending_work='settled',pending_interval=None))
+            for key,value in (('charged_bytes',2048),('maximum_dependencies',1),('checkpoint_after',4),
+                    ('terminal_kind','eose'),('effect_records','\\x'),('request_predicate','\\x'),('query_number',1)):
+                changed=copy.deepcopy(state);changed['acquisition_quanta'][0][key]=value
+                with self.subTest(empty_target=empty_target,key=key),self.assertRaises(AssertionError):
+                    check.shape(changed)
+            old=copy.deepcopy(state);changed=copy.deepcopy(state);changed['acquisition_quanta'][0]['xmin']='12'
+            with self.assertRaises(AssertionError):check.transition(old,changed)
+        state,selector,entries=exclusion_fixture()
+        selector['filters'][0]['since']=199999
+        with self.assertRaisesRegex(AssertionError,'selector time'):
+            check.journey(state,[],1,{},selector=selector,entries=entries)
+        state['acquisition_quanta'][0]['quantum_profile']=1
+        with self.assertRaises(AssertionError):check.shape(state)
+
+    def test_status_uses_declared_later_window_bounds_without_inferring_them_from_product(self):
+        selector=dict(version=1,filters=[dict(kinds=[1],until=259199)],history_since=0,ephemeral='retain')
+        entries={1:('request',0,86400,86400),2:('request',0,2,86400),3:('request',0,1,86400),
+            4:('request',86400,172800,172800)}
+        status=status_fixture(quantum_number='4',scope_id='66'*16,lower='86400',upper='172800',
+            window_end='172800',horizon='259200',result='linear_observed',terminal='eose',gap=None,
+            continuation_upper='172800',retained_events=0,classified_prefix=0,coverage='pending',
+            disposition='window_closed',attempted_prefix='172800',gap_count=1,pending_interval=['172800','259200'])
+        quantum_status(dict(linear_quantum=status),'66'*16,'300000999999',known_plan=True,
+            selector=selector,expected_entries=entries)
+        for key,value in (('lower','0'),('window_end','259200'),('queries_spent',True),('gap_count',True),
+                ('pending_work','settled'),('coverage','complete')):
+            with self.subTest(key=key),self.assertRaises(AssertionError):
+                quantum_status(dict(linear_quantum=dict(status,**{key:value})),'66'*16,'300000999999',
+                    known_plan=True,selector=selector,expected_entries=entries)
+        with self.assertRaisesRegex(AssertionError,'conflicting'):
+            quantum_status(dict(linear_quantum=status),'66'*16,'300000999999',selector=selector,
+                expected_entries=entries,expected_uppers={1:86400})
+
     def test_finite_scenarios_keep_declared_scope_identity_and_continued_bounds(self):
-        for order in ((0,0,1,1,1,1,1,1),(0,1,0,1,1,1,1,1)):
+        for order in ((0,0,0,1,1,1,1,1,1),(0,1,0,1,0,1,1,1,1)):
             for failure in (None,'stale-upper','unknown-scope'):
                 with self.subTest(order=order,failure=failure),tempfile.TemporaryDirectory() as temporary:
                     directory=Path(temporary);wires,errors,uppers=finite_peer_fixture(directory,order,failure=failure)
@@ -210,25 +287,25 @@ class LinearQuantumControls(unittest.TestCase):
                     self.assertEqual((directory/'linear-peer-complete.json').exists(),failure is None)
                     if failure:continue
                     self.assertEqual([wire['scope_number'] for wire in wires],list(order))
-                    self.assertEqual([wire['scenario'] for wire in wires if wire['scope_number']==0],['slow_eose','proof'])
+                    self.assertEqual([wire['scenario'] for wire in wires if wire['scope_number']==0],['slow_eose','proof','empty'])
                     self.assertEqual([wire['scenario'] for wire in wires if wire['scope_number']==1],
                         ['malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'])
-                    self.assertEqual([wire['request'][2]['until'] for wire in wires if wire['scope_number']==0],[86399,1])
+                    self.assertEqual([wire['request'][2]['until'] for wire in wires if wire['scope_number']==0],[86399,1,0])
                     self.assertEqual([wire['request'][2]['until'] for wire in wires if wire['scope_number']==1],[86399]*6)
-                    self.assertEqual(uppers,{0:{1:86400,2:2,3:2},1:dict.fromkeys(range(1,8),86400)})
+                    self.assertEqual(uppers,{0:{1:86400,2:2,3:1,4:1},1:dict.fromkeys(range(1,8),86400)})
                     event=json.loads((directory/'event.jsonl').read_text());state,refs,declarations=interruption_rows(wires,event)
                     self.assertEqual(check.scenarios(state,wires,event,refs,declarations),
                         {state['jobs'][0]['job_id']:2,state['jobs'][1]['job_id']:3})
 
     def test_finite_recipes_refuse_extra_scope_turns_or_a_foreign_first_body(self):
-        for order in ((0,0,0,1,1,1,1,1),(0,1,1,1,1,1,1,1),(1,0,0,1,1,1,1,1)):
+        for order in ((0,0,0,0,1,1,1,1,1),(0,1,1,1,1,1,1,1,1),(1,0,0,0,1,1,1,1,1)):
             with self.subTest(order=order),tempfile.TemporaryDirectory() as temporary:
                 directory=Path(temporary);_,errors,_=finite_peer_fixture(directory,order)
                 self.assertTrue(errors);self.assertFalse((directory/'linear-peer-complete.json').exists())
 
     def test_interleaved_recipe_oracle_refuses_missing_duplicate_bounds_classification_and_roles(self):
         with tempfile.TemporaryDirectory() as temporary:
-            directory=Path(temporary);wires,errors,_=finite_peer_fixture(directory,(0,0,1,1,1,1,1,1))
+            directory=Path(temporary);wires,errors,_=finite_peer_fixture(directory,(0,0,0,1,1,1,1,1,1))
             self.assertFalse(errors)
             event=json.loads((directory/'event.jsonl').read_text());state,refs,declarations=interruption_rows(wires,event)
             for change in ('missing','duplicate','scenario-role','scope-role','local-turn','bounds','classification','issuer-role','charge'):
@@ -261,7 +338,7 @@ class LinearQuantumControls(unittest.TestCase):
     def test_signed_pages_overlap_once_then_refuse_an_extra_plan_or_socket(self):
         state,wires,event,science=signed_pages_fixture()
         check.initial(state,wires,event,science)
-        self.assertEqual([row['interval_upper'] for row in state['acquisition_quanta']],[86400,2])
+        self.assertEqual([row['interval_upper'] for row in state['acquisition_quanta']],[86400,2,1])
         for change in ('upper','predicate','third-plan','third-socket'):
             changed=copy.deepcopy(state);transcript=copy.deepcopy(wires)
             if change=='upper':changed['acquisition_quanta'][1]['interval_upper']=86400
@@ -271,38 +348,43 @@ class LinearQuantumControls(unittest.TestCase):
                 changed['acquisition_quanta'][1]['predicate_sha256']='\\x'+hashlib.sha256(predicate).hexdigest()
             else:
                 changed['acquisition_quanta'].append(dict(changed['acquisition_quanta'][1],
-                    quantum_id='\\x'+f'{3:032x}',quantum_number=3))
-                if change=='third-socket':transcript.append(dict(transcript[-1],number=3))
+                    quantum_id='\\x'+f'{4:032x}',quantum_number=4,query_number=4))
+                if change=='third-socket':transcript.append(dict(transcript[-1],number=4))
             with self.subTest(change=change),self.assertRaises(AssertionError):check.initial(changed,transcript,event,science)
 
     def test_successful_empty_defers_without_an_extra_plan(self):
         state,wire=fixture();check.journey(state,[wire],1,{})
-        extra=copy.deepcopy(state['acquisition_quanta'][0]);extra.update(quantum_id='\\x'+'9'*32,quantum_number=2)
+        extra=copy.deepcopy(state['acquisition_quanta'][0]);extra.update(quantum_id='\\x'+'9'*32,quantum_number=2,query_number=2)
         state['acquisition_quanta'].append(extra)
-        with self.assertRaisesRegex(AssertionError,'stopped bounded traversal'):check.journey(state,[wire],1,{})
+        with self.assertRaisesRegex(AssertionError,'declared entry count'):check.journey(state,[wire],1,{})
 
     def test_closed_page_retries_exact_interval_before_successful_overlap(self):
         state,wires,event,science=signed_pages_fixture()
-        first,second=state['acquisition_quanta']
+        first,second=state['acquisition_quanta'][:2]
+        state['acquisition_quanta']=state['acquisition_quanta'][:2];wires=wires[:2]
         closed=check.wire_json(['CLOSED',wires[0]['request'][1],'fixture setup interruption'])
         first['charged_bytes']+=len(closed)-len(check.raw(first['terminal_frame']))
         first.update(terminal_kind='closed',terminal_frame='\\x'+closed.hex(),gap_reason='closed',
-            result_class='interrupted',continuation_upper=86400)
+            result_class='interrupted',continuation_upper=86400,disposition='retry')
         wires[0]['frames'][-1]='CLOSED'
         predicate=check.raw(first['request_predicate'])
         second['charged_bytes']+=len(predicate)-len(check.raw(second['request_predicate']))
-        second.update(interval_upper=86400,request_predicate='\\x'+predicate.hex(),
+        second.update(interval_upper=86400,disposition='overlap',gap_reason=None,gap_lower=None,gap_upper=None,continuation_upper=2,request_predicate='\\x'+predicate.hex(),
             predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest())
         wires[1]['request'][2]['until']=86399
         pending=fixture(pending=True)[0]['acquisition_quanta'][0]
         predicate=check.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=1,limit=3)])
-        pending.update(dataset_id=first['dataset_id'],quantum_number=3,quantum_id='\\x'+f'{3:032x}',
+        pending.update(dataset_id=first['dataset_id'],quantum_number=3,query_number=3,quantum_id='\\x'+f'{3:032x}',
             interval_upper=2,request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),
             charged_bytes=1024+len(predicate)+2097152+3072+192*256)
         state['acquisition_quanta'].append(pending)
-        check.initial(state,wires,event,science)
+        refs=check.receipt_refs(science['receipts'][3]);forged=dict(event,sig='00'*64)
+        expected={1:[(event,2,4,refs),(forged,6,0,[]),(event,5,0,refs)],
+            2:[(event,5,0,refs),(forged,6,0,[]),(event,5,0,refs)]}
+        entries=(('request',0,86400,86400),('request',0,86400,86400),('request',0,2,86400))
+        check.journey(state,wires,1,expected,entries=entries)
         changed=copy.deepcopy(state);changed['acquisition_quanta'][1]['interval_upper']=2
-        with self.assertRaises(AssertionError):check.initial(changed,wires,event,science)
+        with self.assertRaises(AssertionError):check.journey(changed,wires,1,expected,entries=entries)
 
     def test_installed_stall_validator_requires_both_terminal_pages_and_exact_bounds(self):
         from installed_sync import validate_stall
@@ -315,14 +397,14 @@ class LinearQuantumControls(unittest.TestCase):
         with self.assertRaises(AssertionError):validate_stall(rows[:1],wires[:1],event,job)
 
     def test_status_uses_declared_query_ordinal_bounds_and_rejects_an_old_upper(self):
-        status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='2',scope_id='66'*16,
-            lower='0',upper='2',horizon='200000',result='linear_observed',terminal='eose',gap=None,
+        status=status_fixture(quantum_number='2',scope_id='66'*16,
+            lower='0',upper='2',horizon='86400',result='linear_observed',terminal='eose',gap=None,
             continuation_upper='2',retained_events=3,classified_prefix=3,coverage='pending')
         quantum_status(dict(linear_quantum=status),'66'*16,'200000999999',known_plan=True,expected_uppers={1:86400,2:2})
         with self.assertRaises(AssertionError):
             quantum_status(dict(linear_quantum=dict(status,upper='86400')),'66'*16,'200000999999',
                 known_plan=True,expected_uppers={1:86400,2:2})
-        with self.assertRaises(KeyError):
+        with self.assertRaises(AssertionError):
             quantum_status(dict(linear_quantum=dict(status,quantum_number='3')),'66'*16,'200000999999',
                 known_plan=True,expected_uppers={1:86400,2:2})
 
@@ -364,7 +446,7 @@ class LinearQuantumControls(unittest.TestCase):
             ident='cd'*24
             quiet=dict(number=2,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],
                 frames=[],completion='quiet-eof')
-            pending=dict(state['acquisition_quanta'][0],quantum_id='\\x'+'9'*32,quantum_number=2,
+            pending=dict(state['acquisition_quanta'][0],quantum_id='\\x'+'9'*32,quantum_number=2,query_number=2,
                 terminal_kind='deadline',terminal_frame='\\x',request_id='\\x'+ident.encode().hex(),
                 terminal_sequence=None,retained_events=0,classified_prefix=0,effect_records='\\x',dependencies='\\x',
                 checkpoint_before=4,checkpoint_after=4,teardown_complete=False,gap_reason='teardown',
@@ -380,8 +462,8 @@ class LinearQuantumControls(unittest.TestCase):
                 predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),charged_bytes=1024+len(predicate))
             changed_wire['request'][2]['until']=1
             with self.subTest(provenance=provenance),self.assertRaises(AssertionError):verify(changed,[wire,changed_wire])
-            status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='2',scope_id='66'*16,
-                lower='0',upper='86400',horizon='200000',result='interrupted',terminal='deadline',gap='teardown',
+            status=status_fixture(quantum_number='2',scope_id='66'*16,
+                lower='0',upper='86400',horizon='86400',result='interrupted',terminal='deadline',gap='teardown',
                 continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending')
             quantum_status(dict(linear_quantum=status),'66'*16,'200000999999',known_plan=True,expected_uppers={1:86400,2:86400})
             with self.assertRaises(AssertionError):
@@ -860,14 +942,14 @@ class LinearQuantumControls(unittest.TestCase):
     def test_stopped_quantum_history_preserves_pending_rows_versions_and_cardinality_without_row_order(self):
         before,_=fixture()
         pending=fixture(pending=True)[0]['acquisition_quanta'][0]
-        pending.update(quantum_id='\\x'+'9'*32,quantum_number=2)
+        pending.update(quantum_id='\\x'+'9'*32,quantum_number=2,query_number=2)
         before['acquisition_quanta'].append(pending)
         check.shape(before)
         reordered=copy.deepcopy(before)
         reordered['acquisition_quanta']=[dict(reversed(list(row.items()))) for row in reversed(reordered['acquisition_quanta'])]
         check.unchanged(before,reordered)
         completed=copy.deepcopy(before)
-        completed['acquisition_quanta'][1]=dict(before['acquisition_quanta'][0],quantum_id=pending['quantum_id'],quantum_number=2)
+        completed['acquisition_quanta'][1]=dict(before['acquisition_quanta'][0],quantum_id=pending['quantum_id'],quantum_number=2,query_number=2)
         check.shape(completed)  # A well-shaped terminal cannot rewrite a stopped pending plan.
         with self.assertRaisesRegex(AssertionError,'stopped quantum history'):check.unchanged(before,completed)
         for change in ('deleted','added','duplicated','xmin','charge','issuer'):
@@ -935,8 +1017,8 @@ class LinearQuantumControls(unittest.TestCase):
                 self.assertFalse(proxy.control_target_query(target,other))
 
     def test_status_preserves_pending_and_rejects_false_coverage_or_hidden_proof_fields(self):
-        status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='1',scope_id='66'*16,
-            lower='0',upper='86400',horizon='200000',result='pending',terminal=None,gap=None,
+        status=status_fixture(quantum_number='1',scope_id='66'*16,
+            lower='0',upper='86400',horizon='86400',result='pending',terminal=None,gap=None,
             continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
         observed=dict(linear_quantum=status);quantum_status(observed,'66'*16,'200000999999',known_plan=True);self.assertEqual(observed,dict(linear_quantum=status))
         for field,value in [('coverage','complete'),('result','linear_observed'),('horizon','200001'),('dependencies',[])]:
@@ -948,7 +1030,7 @@ class LinearQuantumControls(unittest.TestCase):
     def test_known_plan_cannot_disappear_and_bounded_scope_freezes_its_own_horizon(self):
         with self.assertRaisesRegex(AssertionError,'known durable plan'):
             quantum_status({},'66'*16,'200000999999',known_plan=True)
-        value=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='1',scope_id='66'*16,
+        value=status_fixture(quantum_number='1',scope_id='66'*16,
             lower='0',upper='86400',horizon='86400',result='pending',terminal=None,gap=None,
             continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
         selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain')
@@ -960,7 +1042,7 @@ class LinearQuantumControls(unittest.TestCase):
     def test_malformed_eose_requires_a_gap_exact_window_predicate_and_teardown(self):
         state,wire=fixture();row=state['acquisition_quanta'][0];job=state['jobs'][0]
         row.update(terminal_sequence=3,retained_events=2,classified_prefix=0,
-            result_class='interrupted',gap_reason='unclassified_suffix')
+            result_class='interrupted',gap_reason='unclassified_suffix',disposition='retry')
         wire.update(scenario='malformed_eose',frames=['EVENT','EVENT','EOSE'],
             terminal_frame_hex=check.raw(row['terminal_frame']).hex(),
             teardown=dict(request_close=True,websocket_close=True,ack_sent=True,eof=True),completion='request-and-websocket-close')
@@ -981,7 +1063,7 @@ class LinearQuantumControls(unittest.TestCase):
         state,wire=fixture();row=state['acquisition_quanta'][0];job=state['jobs'][0]
         frame=check.wire_json(['CLOSED',wire['request'][1],'rate-limited'])
         old=len(check.raw(row['terminal_frame']))
-        row.update(terminal_kind='closed',terminal_frame='\\x'+frame.hex(),result_class='interrupted',gap_reason='closed',
+        row.update(terminal_kind='closed',terminal_frame='\\x'+frame.hex(),result_class='interrupted',gap_reason='closed',disposition='retry',
             charged_bytes=row['charged_bytes']+len(frame)-old)
         wire.update(scenario='closed',frames=['CLOSED'],terminal_frame_hex=frame.hex(),
             teardown=dict(request_close=False,websocket_close=True,ack_sent=True,eof=True),completion='request-and-websocket-close')

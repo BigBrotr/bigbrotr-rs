@@ -25,8 +25,8 @@ LIMITS = [
     'Fresh actual source3/Archive2/Index2 prefix under the original15s gate; only the catalog route is then closed and joined. Control, Sync and Index retain their actual owners.',
     'Writer-only lifecycle logging retains the existing1024-row queue/512-row flush threshold/7500ms interval and writer quota1. After independently verified prefix readiness, one ClickHouse clock query records a start-time cutoff before catalog fault/source release under the same15s deadline. After actual joins, the8192-row/4MiB/30s collector applies that cutoff to both count and rows. Later64-workload queries are excluded; incomplete pairs stay diagnostic INCOMPLETE. All-query coverage and remote termination/exclusion remain NOT_PROVEN; this does not close the earlier Code202 cause.',
     'Two bootstrap requests plus one source-dictionary request leave61 event mutation slots. The frozen62 signed events use public fixture keys1/3. Twenty quanta send3 new events; quantum21 sends event61, eligible event62 and proofevent1. The actual prefix must stop at frame1 before any later proof is released.',
-    'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Up to100 legitimate emptyEOSE quanta follow or wait at the gate; later quanta are quiet. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
-    'Before the live census, require128 completed source rounds and the delivered proof, independent listener closure/refusal,128 durable quantum terminals and the next excluded pending129 obligation. No129th source connection is accepted. The whole drain and Index64/cut312 observation remain inside the original65s client gate. Finite completion adds no cancellation evidence or new product capability.',
+    'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Later requests wait at the gate or remain quiet; no synthetic empty EOSE closes their interval. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
+    'Before the live census, require128 completed source rounds and the delivered proof, independent listener closure/refusal,128 durable terminal request entries, budget-deferred remainder and no129th plan. No129th source connection is accepted. The whole drain and Index64/cut312 observation remain inside the original65s client gate. Finite completion adds no cancellation evidence or new product capability.',
     'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan readiness-probe cadence needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
     'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All830 native rows and sequence1147, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
     'Archive stays cut3/revision2 with issued attempt3, original input and custody; all83 Control tables and original Archive files remain checked. NOT_RUN: dynamic pending-byte hysteresis, GC, disk pressure, automatic recovery,64-plan current readiness, full M1 or general capacity. Earlier ACK/commit-loss qualification is reused, not inferred anew.',
@@ -188,10 +188,8 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
             return (self.home/'relay-finite-complete.json').exists()
         self.wait(ended,'complete finite128 retained peer',deadline-time.monotonic(),entry,self.client)
         require(self.initial_source_quiet(),'finite retained source was not verified')
-        # The128th socket can close before its durable terminal is committed.
-        # A fresh129th plan then meets the already closed listener and remains
-        # pending; nomination excludes that job. Observe this stable boundary
-        # before the live census, without changing its later exact-row oracle.
+        # Source EOF can precede the128th terminal COMMIT. The frozen query
+        # budget spends pending plans too; no129th obligation may be inserted.
         context=index.only(self.before_proof['acquisition_quanta'],quantum_number=21)
         identity=[f"{key}=decode('{index.raw(context[key],16).hex()}','hex')" for key in
             ('dataset_id','job_id','scope_id','producer_slot_id','issuer_resource','issuer_incarnation','route_id')]
@@ -199,13 +197,13 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
             index.be(context[key]);identity.append(f'{key}={context[key]}')
         require(context['issuer_role']=='control','finite retained quantum issuer role')
         identity.append("issuer_role='control'")
-        statement=("SELECT CASE WHEN count(*)=129 AND min(quantum_number)=1 AND max(quantum_number)=129 "
-            "AND count(*) FILTER(WHERE terminal_kind IS NOT NULL AND completed_at_us IS NOT NULL)=128 "
-            "AND count(*) FILTER(WHERE quantum_number=129 AND terminal_kind IS NULL "
-            "AND completed_at_us IS NULL AND checkpoint_before=65)=1 AND bool_and("
+        statement=("SELECT CASE WHEN count(*)=128 AND min(quantum_number)=1 AND max(quantum_number)=128 "
+            "AND bool_and(entry_kind='request' AND terminal_kind IS NOT NULL AND completed_at_us IS NOT NULL "
+            "AND query_number=quantum_number AND query_budget=128 AND window_width=86400 AND window_end=86400 AND horizon=86400) "
+            "AND count(*) FILTER(WHERE quantum_number=128 AND checkpoint_after=65 AND continuation_upper=2)=1 AND bool_and("
             +' AND '.join(identity)+") THEN 1 ELSE 0 END FROM control.acquisition_quanta")
         self.wait(lambda:self.sql('bigbrotr_control',statement)=='1',
-            '128 durable terminals and excluded pending129',deadline-time.monotonic(),entry,self.client)
+            '128 durable terminals and budget-deferred remainder without129',deadline-time.monotonic(),entry,self.client)
 
     def observed_publication(self, caps):
         return caps.get('index_publication',{}).get('state') in ('building','stale','unavailable')

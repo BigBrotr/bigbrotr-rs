@@ -38,22 +38,32 @@ def publish(directory, name, value):
     partial.rename(directory / name)
 
 
-def quantum_window(selector,accepted_at_us,*,expected_upper=None):
-    """Independent finite fixture interval from declared intent, never SQL counters."""
-    selector=selector or dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')
+COMMON_SELECTOR=dict(version=1,filters=[dict(kinds=[1],until=86399)],history_since=0,ephemeral='retain')
+INITIAL_ENTRIES=(('request',0,86400,86400),('request',0,2,86400),('request',0,1,86400))
+
+
+def frozen_horizon(selector,accepted_at_us):
     accepted=int(accepted_at_us)//1_000_000
-    lower=selector['history_since']
-    assert type(lower) is int and 0<=lower<=2**64-1 and accepted>=0
-    upper_bounds=[]
+    assert accepted>=0 and selector['filters']
+    bounds=[]
     for part in selector['filters']:
         until=part.get('until',2**64-1)
         assert type(until) is int and 0<=until<=2**64-1
-        upper_bounds.append(min(accepted,until+1))  # Checked AfterMax intersection.
-    horizon=max(upper_bounds);upper=min(lower+86400,horizon)
-    if expected_upper is not None:
-        assert type(expected_upper) is int and lower<expected_upper<=upper
-        upper=expected_upper
-    assert lower<upper
+        bounds.append(min(accepted,until+1))
+    return max(bounds)
+
+
+def quantum_window(selector,accepted_at_us,*,expected_upper=None,expected_lower=None,window_end=None,width=86400):
+    """Reconstruct a declared request, independently of SQL cursor metadata."""
+    selector=selector or COMMON_SELECTOR
+    origin=selector['history_since'];horizon=frozen_horizon(selector,accepted_at_us)
+    assert type(origin) is int and 0<=origin<=2**64-1 and type(width) is int and width>0
+    lower=origin if expected_lower is None else expected_lower
+    assert type(lower) is int and origin<=lower<horizon
+    end=min(lower+width,horizon) if window_end is None else window_end
+    assert type(end) is int and lower<end<=horizon
+    upper=end if expected_upper is None else expected_upper
+    assert type(upper) is int and lower<upper<=end
     filters=[]
     for part in selector['filters']:
         since=max(lower,part.get('since',lower));until=min(upper-1,part.get('until',upper-1))
@@ -62,30 +72,77 @@ def quantum_window(selector,accepted_at_us,*,expected_upper=None):
     return lower,upper,horizon,filters
 
 
-def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=None,expected_uppers=None):
-    """Validate and retain actor status; absence is allowed only before a known plan."""
+def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=None,
+        expected_uppers=None,expected_entries=None,width=86400,budget=128):
+    """Strict redacted profile2 observation against a predeclared entry recipe."""
     value=observed.get('linear_quantum')
     if value is None:
         assert not known_plan,'known durable plan missing from actor status'
         return None
-    assert set(value)=={'format','quantum_number','scope_id','lower','upper','horizon','result',
-        'terminal','gap','continuation_upper','retained_events','classified_prefix','coverage'}
-    assert value['format']=='bigbrotr-linear-quantum-status/1' and value['scope_id']==scope_id
-    number=int(value['quantum_number'])
-    assert number>=1 and str(number)==value['quantum_number']
-    expected_upper=None if expected_uppers is None else expected_uppers[number]
-    lower,upper,horizon,_=quantum_window(selector,accepted_at_us,expected_upper=expected_upper)
-    assert (value['lower'],value['upper'],value['horizon'])==tuple(map(str,(lower,upper,horizon)))
-    assert value['coverage']=='pending' and int(value['quantum_number'])>=1
-    assert str(int(value['quantum_number']))==value['quantum_number']
-    if value['result']=='pending':
+    assert set(value)=={'format','quantum_number','scope_id','entry_kind','disposition','lower','upper',
+        'window_end','horizon','window_width','query_budget','queries_spent','attempted_prefix','gap_count',
+        'pending_work','pending_interval','result','terminal','gap','continuation_upper','retained_events',
+        'classified_prefix','coverage'}
+    assert value['format']=='bigbrotr-linear-quantum-status/2' and value['scope_id']==scope_id
+    selector=selector or COMMON_SELECTOR;horizon=frozen_horizon(selector,accepted_at_us)
+    number=int(value['quantum_number']);assert number>=1 and str(number)==value['quantum_number']
+    assert expected_entries is None or expected_uppers is None,'conflicting declared quantum recipes'
+    if expected_entries is None:
+        uppers={1:min(selector['history_since']+width,horizon)} if expected_uppers is None else expected_uppers
+        expected_entries={n:('request',selector['history_since'],upper,min(selector['history_since']+width,horizon))
+            for n,upper in uppers.items()}
+    assert all(type(n) is int and n>=1 for n in expected_entries)
+    assert set(range(1,number+1))<=set(expected_entries),'declared entry prefix incomplete'
+    entry=expected_entries[number];kind,lower,upper,end=entry[:4]
+    assert all(type(v) is int for v in (lower,upper,end,width,budget)) and 1<=budget<=128
+    assert (value['entry_kind'],value['lower'],value['upper'],value['window_end'],value['horizon'],value['window_width'])==(
+        kind,str(lower),str(upper),str(end),str(horizon),str(width))
+    assert value['coverage']=='pending'
+    assert type(value['query_budget']) is int and value['query_budget']==budget
+    spent=sum(expected_entries[n][0]=='request' for n in range(1,number+1))
+    assert type(value['queries_spent']) is int and value['queries_spent']==spent<=budget
+    assert type(value['gap_count']) is int and 0<=value['gap_count']<=spent
+    attempted=value['attempted_prefix'];assert type(attempted) is str and str(int(attempted))==attempted
+    assert min(selector['history_since'],horizon)<=int(attempted)<=horizon
+    assert value['pending_work'] in ('request_pending','query_ready','budget_deferred','settled')
+    interval=value['pending_interval']
+    if value['pending_work']=='settled':assert interval is None and int(attempted)==horizon
+    else:
+        assert type(interval) is list and len(interval)==2 and all(type(n) is str and str(int(n))==n for n in interval)
+        assert selector['history_since']<=int(interval[0])<int(interval[1])<=horizon
+        assert (value['pending_work']=='budget_deferred')==(spent==budget and value['result']!='pending')
+    if kind=='selector_exclusion':
+        assert len(entry)==5 and entry[4] in ('selector_excluded','empty_target')
+        assert value['disposition']==value['result']==entry[4]
         assert all(value[key] is None for key in ('terminal','gap','continuation_upper','retained_events','classified_prefix'))
     else:
-        assert value['result'] in ('linear_observed','relay_reported_exhaustion','interrupted')
-        assert value['terminal'] in ('eose','closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected')
-        assert (value['result']=='interrupted')==(value['gap'] is not None)
-        assert lower<int(value['continuation_upper'])<=upper
-        assert 0<=value['classified_prefix']<=value['retained_events']<=3
+        assert kind=='request' and len(entry)==4
+        quantum_window(selector,accepted_at_us,expected_lower=lower,expected_upper=upper,window_end=end,width=width)
+        if value['result']=='pending':
+            assert value['pending_work']=='request_pending'
+            assert all(value[key] is None for key in ('disposition','terminal','gap','continuation_upper','retained_events','classified_prefix'))
+        else:
+            assert value['result'] in ('linear_observed','relay_reported_exhaustion','interrupted')
+            assert value['terminal'] in ('eose','closed','deadline','cancelled','frame_cap','event_cap','transport','decode','disconnected')
+            assert value['disposition'] in ('retry','overlap','saturated_second','window_closed')
+            continuation=value['continuation_upper'];assert type(continuation) is str and str(int(continuation))==continuation
+            assert lower<=int(continuation)<=end
+            if value['disposition']=='saturated_second':assert value['gap']=='saturated_second'
+            else:assert (value['result']=='interrupted')==(value['gap'] is not None)
+            assert type(value['classified_prefix']) is int and type(value['retained_events']) is int
+            assert 0<=value['classified_prefix']<=value['retained_events']<=3
+    closes=kind=='selector_exclusion' or value['disposition']=='window_closed' or (
+        value['disposition']=='saturated_second' and int(value['continuation_upper'])==lower)
+    if closes:
+        expected_pending=None if end==horizon else [str(end),str(min(end+width,horizon))]
+        expected_attempted=end
+    else:
+        next_upper=(int(value['continuation_upper']) if value['disposition'] in ('overlap','saturated_second') else upper)
+        expected_pending=[str(lower),str(next_upper)];expected_attempted=lower
+    expected_work=('request_pending' if value['result']=='pending' else 'settled' if expected_pending is None
+        else 'budget_deferred' if spent==budget else 'query_ready')
+    assert value['pending_interval']==expected_pending and value['pending_work']==expected_work
+    assert value['attempted_prefix']==str(expected_attempted)
     return value
 
 
@@ -157,6 +214,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 continue
             number += 1
             assert number <= 128 and remote[0] == '127.0.0.1'
+            if signed and not refusals and not window and split is None and event_sender is None:
+                assert number<=3,'settled common fixture opened a fourth socket'
             trace = dict(number=number, connected_at_us=time.time_ns()//1000,
                 clock_resolution_us=math.ceil(time.clock_getres(time.CLOCK_REALTIME)*1_000_000))
             with connection:
@@ -192,6 +251,7 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
+                ordinary_empty=signed and not refusals and not window and split is None and event_sender is None and number==3
                 window_ready = window and (directory/'window-release').exists() and window_rounds < 2
                 if retained:
                     selected = split.select(ident, number)
@@ -199,7 +259,15 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 publish(directory, f'relay-open-{number:03}.json', trace)
                 if not retained:
                     selected = split.select(ident, number) if split is not None else None
-                if (selected is not None if split is not None else signed and (number <= 2 or window_ready)):
+                if ordinary_empty:
+                    assert command[2]==dict(kinds=[1],since=0,until=0,limit=3)
+                    ident=command[1];trace['frames']=['EOSE'];trace['sent_at_us']=time.time_ns()//1000
+                    send_frame(connection,['EOSE',ident])
+                    opcode,raw=read_frame(connection);assert opcode==1 and json.loads(raw)==['CLOSE',ident]
+                    opcode,raw=read_frame(connection);assert opcode==8 and raw==b''
+                    connection.sendall(b'\x88\x00');connection.shutdown(socket.SHUT_WR);assert connection.recv(1)==b''
+                    trace['completion']='request-and-websocket-close'
+                elif (selected is not None if split is not None else signed and (number <= 2 or window_ready)):
                     event = json.loads((directory/'event.jsonl').read_bytes())
                     if split is not None:
                         values = split.describe(trace, selected)
@@ -243,6 +311,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                             continuous=not window or directory.name=='sync-window-source' or window_rounds==2
                             times=[event['created_at']]
                         if continuous and times:uppers[number+1]=min(times)+1
+                    if signed and not refusals and not window and split is None and event_sender is None and number==2:
+                        uppers[3]=1  # Declare the next interval before emitting this page's EOSE.
                     if event_sender is None and split is None:
                         trace['sent_at_us'] = time.time_ns()//1000
                     for value in values:
@@ -356,7 +426,7 @@ def run(directory, request, login, logout):
         route={'class': 'private', 'cidr': '127.0.0.1/32'}, enabled=True, expected_generation=None, **revisions), '92'*16)
     assert enrollment['generation'] == '1' and enrollment['enabled'] is True
     scope = call('acquisition-scopes', dict(endpoint_id=endpoint['endpoint_id'], access_scope_id=enrollment['access_scope_id'],
-        visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
+        visibility=visibility, selector=COMMON_SELECTOR, **revisions), 'a1'*16)
     listener = relay_listener()
     finished, errors = threading.Event(), []
     expected_uppers={1:86400}
@@ -400,7 +470,7 @@ def run(directory, request, login, logout):
                     expected_generation=None, **revisions), '94'*16)
                 other_scope = call('acquisition-scopes', dict(endpoint_id=other['endpoint_id'],
                     access_scope_id=other_enrollment['access_scope_id'], visibility=visibility,
-                    selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
+                    selector=COMMON_SELECTOR,
                     **revisions), 'a2'*16)
                 deferred_receipt = call('jobs', dict(kind='acquisition', scope_id=other_scope['scope_id'],
                     deadline_us='120000000', **revisions), 'b2'*16)

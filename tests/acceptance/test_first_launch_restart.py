@@ -175,7 +175,8 @@ class RestartControls(unittest.TestCase):
             connected_at_us=1000 + n * 2000, request_at_us=1100 + n * 2000,
             sent_at_us=1200 + n * 2000, closed_at_us=1500 + n * 2000, clock_resolution_us=1,
             frames=['signed', 'forged-signature', 'duplicate', 'EOSE'], completion='request-and-websocket-close')
-            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2))]
+            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2), (3, 'c', 1))]
+        wires[2].update(frames=['EOSE'])
         verify = lambda rows: archive_request_progress(self.old, rows, expected_uppers=check.INITIAL_QUANTUM_UPPERS)
         self.assertEqual(self.old['created_at'], 1)
         self.assertEqual(verify(wires), check.request_binding(self.old, wires[0], 1))
@@ -197,7 +198,7 @@ class RestartControls(unittest.TestCase):
                 archive_request_progress(self.old, wires, expected_uppers=invalid)
         with self.assertRaises(AssertionError):
             archive_request_progress(self.old, wires)
-        historical = copy.deepcopy(wires)
+        historical = copy.deepcopy(wires[:2])
         historical[1]['request'][2]['until'] = 86399
         self.assertEqual(archive_request_progress(self.old, historical), check.request_binding(self.old, wires[0], 1))
         with self.assertRaises(AssertionError):
@@ -617,7 +618,8 @@ class ProvenanceOffControls(unittest.TestCase):
             connected_at_us=1000 + n * 2000, request_at_us=1100 + n * 2000,
             sent_at_us=1200 + n * 2000, closed_at_us=1500 + n * 2000, clock_resolution_us=1,
             frames=['signed', 'forged-signature', 'duplicate', 'EOSE'], completion='request-and-websocket-close')
-            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2))]
+            for n, digit, upper in ((1, 'a', 86400), (2, 'b', 2), (3, 'c', 1))]
+        wires[2].update(frames=['EOSE'])
         control = dict(resource_id='\\x' + 'a1' * 16, epoch=1, process_incarnation='\\x' + 'a2' * 16,
             acquired_at_us=1000, lease_expires_at_us=10000)
         progress = dict(common, job_id='\\x' + 'd1' * 16, scope_id='\\x' + 'd2' * 16,
@@ -641,6 +643,7 @@ class ProvenanceOffControls(unittest.TestCase):
         head=current42_head(head,initial=True)
         state.update(producer_checkpoints=[head], acquisition_progress=[progress], producer_checkpoint_dependencies=deps,
             producer_outcomes=[dict(request_sequence=n, producer_epoch=1, xmin=str(100 + n)) for n in range(1, 5)])
+        wires[2].update(connected_at_us=5500,request_at_us=5600,sent_at_us=5650,closed_at_us=5800)
         verify = lambda: verify_archive_progress(state, wires, 6000, self.old, first['native'], first['inputs'], first['receipts'], control,
             provenance=False, expected_uppers=check.INITIAL_QUANTUM_UPPERS)
         verify()

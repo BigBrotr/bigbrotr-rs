@@ -32,7 +32,7 @@ def shape(state):
     """Bound every retained record and independently recompute its logical charge."""
     rows=state['acquisition_quanta'];totals={};jobs={}
     for row in rows:
-        assert row['quantum_profile']==1
+        assert type(row['quantum_profile']) is int and row['quantum_profile']==2
         key=(row['producer_slot_id'],row['producer_epoch']);totals[key]=totals.get(key,0)+row['charged_bytes']
         job=next(value for value in state['jobs'] if value['job_id']==row['job_id'])
         detail=next(value for value in state['acquisition_jobs'] if value['job_id']==row['job_id'])
@@ -70,37 +70,85 @@ def shape(state):
             assert job['completed_at_us']==gap['abandoned_at_us']>=job['created_at_us']
         else:
             assert issuer==current
-        assert 0<=row['interval_lower']<row['interval_upper']<=row['horizon']<=job['created_at_us']//1_000_000
-        predicate=raw(row['request_predicate']);command=json.loads(predicate)
-        assert command[:2]==['REQ','0'*48] and len(command)>=3
-        assert all(part['limit']==3 and row['interval_lower']<=part['since']<=part['until']<row['interval_upper'] for part in command[2:])
-        assert hashlib.sha256(predicate).digest()==raw(row['predicate_sha256'])
-        assert 0<=row['maximum_dependencies']<=768
+        integer_fields=('quantum_number','producer_epoch','issuer_epoch','interval_lower','interval_upper',
+            'window_end','horizon','window_width','query_budget','query_number','maximum_dependencies',
+            'checkpoint_before','classified_before','charged_bytes')
+        assert all(type(row[key]) is int for key in integer_fields)
+        assert 1<=row['query_budget']<=128 and 0<=row['query_number']<=row['query_budget']
+        assert row['window_width']>0 and 0<=row['horizon']<=job['created_at_us']//1_000_000
         jobs.setdefault(row['job_id'],[]).append(row)
-        if row['terminal_kind'] is None:
-            charge=1024+len(predicate)+2*1024*1024+3*1024+256*row['maximum_dependencies']
-            assert row['completed_at_us'] is None and row['dependencies'] is None and row['effect_records'] is None
+        if row['entry_kind']=='selector_exclusion':
+            assert row['disposition'] in ('selector_excluded','empty_target')
+            assert row['result_class']==row['disposition'] and row['completed_at_us'] is not None
+            assert row['checkpoint_after']==row['checkpoint_before'] and row['maximum_dependencies']==0
+            assert all(row[key] is None for key in ('request_predicate','predicate_sha256','terminal_kind',
+                'terminal_frame','request_id','terminal_sequence','terminal_received_at_us','teardown_complete',
+                'retained_events','classified_prefix','effect_records','dependencies','gap_reason',
+                'continuation_upper','gap_lower','gap_upper'))
+            if row['disposition']=='empty_target':
+                assert row['interval_lower']==row['interval_upper']==row['window_end']==row['horizon']
+            else:assert 0<=row['interval_lower']<row['interval_upper']<=row['window_end']<=row['horizon']
+            charge=1024
         else:
-            records=effects(row['effect_records']);refs=raw(row['dependencies'])
-            assert len(refs)%72==0 and len(refs)//72<=row['maximum_dependencies']
-            assert 0<=row['classified_prefix']<=row['retained_events']<=3
-            assert all(1<=part[0]<=row['retained_events'] and part[1]>0 and part[3] in range(2,7) and part[6] in (0,1) for part in records)
-            assert sum(part[6] for part in records)==row['classified_prefix']
-            assert [part[0] for part in records if part[6]]==list(range(1,row['classified_prefix']+1))
-            assert row['checkpoint_before']<=row['checkpoint_after']
-            assert row['interval_lower']<row['continuation_upper']<=row['interval_upper']
-            assert (row['result_class']=='interrupted')==(row['gap_reason'] is not None)
-            frame=raw(row['terminal_frame'])
-            if row['terminal_kind'] in ('eose','closed'):
-                terminal=json.loads(frame)
-                assert terminal[0].lower()==row['terminal_kind'] and terminal[1].encode()==raw(row['request_id'])
-                assert row['terminal_sequence']>0
-            else:assert frame==b'' and row['terminal_sequence'] is None
-            charge=1024+len(predicate)+len(frame)+len(raw(row['effect_records']))+256*(len(refs)//72)
+            assert row['entry_kind']=='request' and row['query_number']>0
+            assert 0<=row['interval_lower']<row['interval_upper']<=row['window_end']<=row['horizon']
+            predicate=raw(row['request_predicate']);command=json.loads(predicate)
+            assert command[:2]==['REQ','0'*48] and len(command)>=3
+            assert all(type(part.get('limit')) is int and part['limit']==3
+                and type(part.get('since')) is int and type(part.get('until')) is int
+                and row['interval_lower']<=part['since']<=part['until']<row['interval_upper'] for part in command[2:])
+            assert hashlib.sha256(predicate).digest()==raw(row['predicate_sha256'])
+            assert 0<=row['maximum_dependencies']<=768
+            if row['terminal_kind'] is None:
+                charge=1024+len(predicate)+2*1024*1024+3*1024+256*row['maximum_dependencies']
+                assert row['completed_at_us'] is None
+                assert all(row[key] is None for key in ('terminal_frame','request_id','terminal_sequence',
+                    'terminal_received_at_us','checkpoint_sha256','teardown_complete','retained_events','classified_prefix','effect_records','dependencies',
+                    'checkpoint_after','result_class','gap_reason','continuation_upper','disposition','gap_lower','gap_upper'))
+            else:
+                records=effects(row['effect_records']);refs=raw(row['dependencies'])
+                assert len(refs)%72==0 and len(refs)//72<=row['maximum_dependencies']
+                assert type(row['classified_prefix']) is int and type(row['retained_events']) is int
+                assert 0<=row['classified_prefix']<=row['retained_events']<=3
+                assert all(1<=part[0]<=row['retained_events'] and part[1]>0 and part[3] in range(2,7) and part[6] in (0,1) for part in records)
+                assert sum(part[6] for part in records)==row['classified_prefix']
+                assert [part[0] for part in records if part[6]]==list(range(1,row['classified_prefix']+1))
+                assert row['checkpoint_before']<=row['checkpoint_after'] and row['completed_at_us'] is not None
+                disposition=row['disposition'];continuation=row['continuation_upper']
+                assert type(continuation) is int
+                if disposition=='retry':
+                    assert continuation==row['interval_upper'] and row['result_class']=='interrupted'
+                    assert row['gap_reason'] is not None and row['gap_reason']!='saturated_second'
+                elif disposition=='overlap':
+                    assert row['interval_lower']<continuation<=row['interval_upper'] and row['gap_reason'] is None
+                elif disposition=='window_closed':
+                    assert continuation==row['window_end'] and row['gap_reason'] is None and row['retained_events']==0
+                else:
+                    assert disposition=='saturated_second' and row['gap_reason']=='saturated_second'
+                    assert type(row['gap_lower']) is int and type(row['gap_upper']) is int
+                    assert row['interval_lower']<=row['gap_lower']<row['interval_upper']
+                    assert continuation==row['gap_lower'] and row['gap_upper']==row['gap_lower']+1
+                if disposition!='saturated_second':assert row['gap_lower'] is row['gap_upper'] is None
+                assert row['result_class'] in ('linear_observed','relay_reported_exhaustion','interrupted')
+                assert (row['result_class']=='interrupted')==(disposition=='retry')
+                frame=raw(row['terminal_frame'])
+                if row['terminal_kind'] in ('eose','closed'):
+                    terminal=json.loads(frame)
+                    assert terminal[0].lower()==row['terminal_kind'] and terminal[1].encode()==raw(row['request_id'])
+                    assert row['terminal_sequence']>0
+                else:assert frame==b'' and row['terminal_sequence'] is None
+                charge=1024+len(predicate)+len(frame)+len(raw(row['effect_records']))+256*(len(refs)//72)
         assert charge==row['charged_bytes']
     for rows in jobs.values():
-        assert sorted(row['quantum_number'] for row in rows)==list(range(1,len(rows)+1))
-        pending=[row for row in rows if row['terminal_kind'] is None]
+        rows=sorted(rows,key=lambda row:row['quantum_number'])
+        assert [row['quantum_number'] for row in rows]==list(range(1,len(rows)+1))
+        frozen={(row['horizon'],row['window_width'],row['query_budget']) for row in rows};assert len(frozen)==1
+        assert len(rows)<=3*rows[0]['query_budget']+1
+        spent=0
+        for row in rows:
+            spent+=row['entry_kind']=='request'
+            assert row['query_number']==spent<=row['query_budget']
+        pending=[row for row in rows if row['entry_kind']=='request' and row['terminal_kind'] is None]
         assert len(pending)<=1 and (not pending or pending[0]['quantum_number']==len(rows))
     for (slot,epoch),charge in totals.items():
         inputs=sum(row['input_bytes']+65536 for row in state['producer_requests'] if (row['producer_slot_id'],row['producer_epoch'])==(slot,epoch))
@@ -114,11 +162,11 @@ def transition(before,after):
     current={row['quantum_id']:row for row in after['acquisition_quanta']}
     mutable={'charged_bytes','terminal_kind','terminal_frame','request_id','terminal_sequence','terminal_received_at_us',
         'teardown_complete','retained_events','classified_prefix','effect_records','dependencies','checkpoint_after',
-        'checkpoint_sha256','result_class','gap_reason','continuation_upper','completed_at_us','xmin'}
+        'checkpoint_sha256','result_class','gap_reason','continuation_upper','disposition','gap_lower','gap_upper','completed_at_us','xmin'}
     for old in before['acquisition_quanta']:
         assert old['quantum_id'] in current,'retained quantum history deleted'
         new=current[old['quantum_id']]
-        if old['terminal_kind'] is not None:assert new==old
+        if old['entry_kind']=='selector_exclusion' or old['terminal_kind'] is not None:assert new==old
         else:assert {k:v for k,v in new.items() if k not in mutable}=={k:v for k,v in old.items() if k not in mutable}
 
 
@@ -139,62 +187,105 @@ def receipt_refs(receipt):
     return decode(receipt.split(b'\0',1)[1])[5]
 
 
-def journey(state,wires,epoch,expected,*,selector=None):
-    """expected maps wire number to literal (event, classification, request, refs).
+def journey(state,wires,epoch,expected,*,selector=None,entries=None,width=86400,budget=128):
+    """Validate literal entry geometry and independently declared event effects.
 
-    Membership comes from the independent science encoder and declared workload;
-    no observed counter, effect record or dependency selects an expectation.
+    Request tuples are ('request',a,c,b); local tuples append their disposition.
+    Effects are keyed by per-job request ordinal, independently of local entries.
+    No SQL effect, counter, cursor or gap chooses an expected scientific value.
     """
+    from installed_sync_client import COMMON_SELECTOR,frozen_horizon
+    selector=selector or COMMON_SELECTOR
     shape(state)
     rows=sorted((row for row in state['acquisition_quanta'] if row['producer_epoch']==epoch),key=lambda row:row['quantum_number'])
-    assert rows and len(wires)<=len(rows)<=len(wires)+1
-    upper=None;previous_boundary=None;stopped=False
-    for number,wire in enumerate(wires,1):
-        assert not stopped,'stopped bounded traversal opened another socket'
-        row=rows[number-1]
-        job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-        upper=window(row,job,wire,expected_upper=upper,selector=selector)
-        assert row['request_predicate']=='\\x'+wire_json(['REQ','0'*48,*wire['request'][2:]]).hex()
-        assert row['quantum_number']==number
-        if row['terminal_kind'] is None:
-            assert number==len(rows);continue  # Unknown/local teardown remains pending.
+    assert rows
+    job=next(job for job in state['jobs'] if job['job_id']==rows[0]['job_id'])
+    horizon=frozen_horizon(selector,job['created_at_us']);origin=selector['history_since']
+    first_end=min(origin+width,horizon)
+    entries=(('request',origin,first_end,first_end),) if entries is None else tuple(entries)
+    assert len(rows)==len(entries),'declared entry count differs: missing work or extra plan'
+    request_count=sum(entry[0]=='request' for entry in entries)
+    assert len(wires)<=request_count<=len(wires)+1
+    assert all(type(n) is int and 1<=n<=request_count for n in expected)
+    assert all(len(entry) in (4,5) and all(type(value) is int for value in entry[1:4]) for entry in entries)
+    lower=origin;end=min(origin+width,horizon);upper=max(lower,end)
+    boundary=None;ids=set();spent=0;attempted=min(origin,horizon);gaps=0;stopped=False;pending=False
+    for number,(row,entry) in enumerate(zip(rows,entries),1):
+        assert not stopped,'stopped bounded traversal retained another entry'
+        kind,a,c,b=entry[:4]
+        assert row['quantum_number']==number and row['job_id']==job['job_id']
+        assert (row['entry_kind'],row['interval_lower'],row['interval_upper'],row['window_end'])==(kind,a,c,b)
+        assert (row['horizon'],row['window_width'],row['query_budget'])==(horizon,width,budget)
+        if kind=='selector_exclusion':
+            assert len(entry)==5 and row['query_number']==spent
+            disposition=entry[4];assert row['disposition']==disposition
+            if disposition=='empty_target':
+                assert origin>=horizon and (a,c,b)==(horizon,horizon,horizon) and spent==0
+                stopped=True
+            else:
+                assert disposition=='selector_excluded' and a==lower and a<c<=b<=horizon
+                assert all(max(a,part.get('since',a))>=min(c,part.get('until',c-1)+1) for part in selector['filters']), \
+                    'local exclusion intersects accepted selector time'
+                if upper<end:assert (c,b)==(upper,end),'excluded older remainder changed original window end'
+                else:assert c==b and b>=end and (b==horizon or (b-origin)%width==0)
+                attempted=b;lower=b;end=min(b+width,horizon);upper=end;stopped=b==horizon
+            boundary=None;ids.clear();continue
+        assert kind=='request' and len(entry)==4 and (a,c,b)==(lower,upper,end)
+        assert spent<budget,'query budget authorized an extra request'
+        spent+=1;assert row['query_number']==spent
+        wire=wires[spent-1] if spent<=len(wires) else None
+        window(row,job,wire,selector=selector,expected_lower=a,expected_upper=c,window_end=b,width=width)
+        if wire is None or row['terminal_kind'] is None:
+            assert row['terminal_kind'] is None and number==len(rows)
+            pending=True;continue
         assert raw(row['request_id'])==wire['request'][1].encode()
-        declared=expected.get(number,[])
-        records=effects(row['effect_records'])
-        wanted=[];refs=[]
-        for ordinal,(event,kind,request,dependencies) in enumerate(declared,1):
-            wanted.append((ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1,bytes.fromhex(event['id'])))
+        declared=expected.get(spent,[]);wanted=[];refs=[]
+        for ordinal,(event,classification,request,dependencies) in enumerate(declared,1):
+            wanted.append((ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),classification,request,
+                event['created_at'],1,bytes.fromhex(event['id'])))
             refs.extend(dependencies)
-        assert records==wanted
+        assert effects(row['effect_records'])==wanted
         assert raw(row['dependencies'])==reference_bytes(refs)
         terminal=wire['frames'][-1] if wire['frames'] else None
         if terminal in ('EOSE','CLOSED'):
             assert row['retained_events']==len(wire['frames'])-1
-            assert row['terminal_kind']==terminal.lower()
-            expected_frame=['EOSE',wire['request'][1]] if terminal=='EOSE' else ['CLOSED',wire['request'][1],'fixture setup interruption']
-            assert json.loads(raw(row['terminal_frame']))==expected_frame
-            assert row['terminal_sequence']==len(wire['frames'])
-        else:assert not declared and row['terminal_kind'] in ('deadline','cancelled','disconnected')
-        good=[event['created_at'] for event,kind,_,_ in declared if kind in (2,3,5)]
-        ordered=all(later<=earlier for earlier,later in zip(good,good[1:]))
-        continuous=row['terminal_kind']=='eose' and len(declared)==row['retained_events'] and ordered
-        if terminal in ('EOSE','CLOSED'):
-            assert row['teardown_complete'] is True and wire['completion']=='request-and-websocket-close'
-            gap='closed' if terminal=='CLOSED' else 'unclassified_suffix' if len(declared)<row['retained_events'] else 'ordering' if not ordered else None
-            assert row['gap_reason']==gap and row['result_class']==('interrupted' if gap else 'linear_observed')
+            assert row['terminal_kind']==terminal.lower() and row['teardown_complete'] is True
+            assert wire['completion']=='request-and-websocket-close'
+            frame=['EOSE',wire['request'][1]] if terminal=='EOSE' else ['CLOSED',wire['request'][1],'fixture setup interruption']
+            assert json.loads(raw(row['terminal_frame']))==frame and row['terminal_sequence']==len(wire['frames'])
         else:
-            assert row['teardown_complete'] is False and row['gap_reason']=='teardown' and row['result_class']=='interrupted'
-        assert row['continuation_upper']==(min(good)+1 if good and continuous else row['interval_upper'])
-        if continuous:
-            boundary=min(good)+1 if good else None
-            stopped=boundary is None or (boundary==upper and boundary==previous_boundary)
-            if boundary is not None:upper=boundary
-            previous_boundary=boundary
-        else:previous_boundary=None
-    if len(rows)>len(wires):
-        assert not stopped,'stopped bounded traversal retained another plan'
-        row=rows[-1];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-        window(row,job,expected_upper=upper,selector=selector)
+            assert not declared and row['terminal_kind'] in ('deadline','cancelled','disconnected')
+            assert row['teardown_complete'] is False
+        good=[event for event,classification,_,_ in declared if classification in (2,3,5)]
+        ordered=all(later['created_at']<=earlier['created_at'] for earlier,later in zip(good,good[1:]))
+        gap=('teardown' if not row['teardown_complete'] else 'unclassified_suffix' if len(declared)<row['retained_events']
+            else 'ordering' if not ordered else 'closed' if terminal=='CLOSED' else None)
+        continuation=c;disposition='retry';gap_span=None
+        if gap is not None:boundary=None;ids.clear()
+        elif row['retained_events']==0:
+            disposition='window_closed';continuation=b
+            attempted=b;lower=b;end=min(b+width,horizon);upper=end;stopped=b==horizon
+            boundary=None;ids.clear()
+        elif not good:
+            gap='no_verified_boundary';boundary=None;ids.clear()
+        else:
+            oldest=min(event['created_at'] for event in good)
+            current={event['id'] for event in good if event['created_at']==oldest}
+            if oldest!=boundary:boundary=oldest;ids.clear()
+            if current<=ids:
+                disposition='saturated_second';gap='saturated_second';gap_span=(oldest,oldest+1)
+                continuation=oldest;gaps+=1;boundary=None;ids.clear()
+                if oldest==lower:
+                    attempted=b;lower=b;end=min(b+width,horizon);upper=end;stopped=b==horizon
+                else:upper=oldest
+            else:
+                disposition='overlap';continuation=oldest+1;upper=continuation;ids|=current
+        result='interrupted' if disposition=='retry' else 'linear_observed'
+        assert (row['disposition'],row['continuation_upper'],row['result_class'],row['gap_reason'])==(disposition,continuation,result,gap)
+        assert (row['gap_lower'],row['gap_upper'])==(gap_span if gap_span else (None,None))
+    return dict(queries_spent=spent,attempted_prefix=attempted,gap_count=gaps,
+        pending_work='request_pending' if pending else 'settled' if stopped else 'budget_deferred' if spent==budget else 'query_ready',
+        pending_interval=None if stopped else [str(lower),str(upper)])
 
 
 def initial(state,wires,event,science,*,retained_events=None):
@@ -211,7 +302,13 @@ def initial(state,wires,event,science,*,retained_events=None):
         proof=[wire['number'] for wire in wires if wire.get('retained_phase')=='proof-only']
         assert len(proof)==1
         expected[proof[0]]=[(retained_events[0],5,0,refs(4))]
-    journey(state,wires,1,expected)
+    if retained_events is None:
+        from installed_sync_client import INITIAL_ENTRIES
+        entries=INITIAL_ENTRIES
+    else:
+        proof_number=proof[0]
+        entries=tuple(('request',0,86400 if n<=proof_number else 2,86400) for n in range(1,129))
+    journey(state,wires,1,expected,entries=entries)
 
 
 def successor(state,wires,old,new,science,*,before,provenance,first_science=None):
@@ -229,13 +326,15 @@ def successor(state,wires,old,new,science,*,before,provenance,first_science=None
         dependencies=[[list(source),digest] for source,digest in sorted(
             {(tuple(source),digest) for source,digest in dependencies})]
         old_effect=(old,5,0,dependencies)
-    journey(state,wires,2,{1:[(new,2,2,refs(2)),old_effect,(new,5,0,refs(2))]})
+    journey(state,wires,2,{1:[(new,2,2,refs(2)),old_effect,(new,5,0,refs(2))]},
+        entries=tuple(('request',0,86400,86400) for _ in wires))
 
 
-def window(row,job,wire=None,*,selector=None,accepted_at_us=None,expected_upper=None):
+def window(row,job,wire=None,*,selector=None,accepted_at_us=None,expected_upper=None,expected_lower=None,window_end=None,width=86400):
     from installed_sync_client import quantum_window
     if accepted_at_us is not None:assert job['created_at_us']==int(accepted_at_us)
-    lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'],expected_upper=expected_upper)
+    lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'],expected_upper=expected_upper,
+        expected_lower=expected_lower,window_end=window_end,width=width)
     assert (row['interval_lower'],row['interval_upper'],row['horizon'])==(lower,upper,horizon)
     command=json.loads(raw(row['request_predicate']))
     assert command[:2]==['REQ','0'*48] and command[2:]==filters
@@ -256,21 +355,21 @@ SCENARIO_RESULTS={
     'closed':('closed',0,0,True,'interrupted','closed',1),
     'deadline':('deadline',0,0,False,'interrupted','teardown',None),
     'empty':('eose',0,0,True,'linear_observed',None,1),
-    'proof':('eose',1,1,True,'linear_observed',None,2),
+    'proof':('eose',1,1,True,'linear_observed','saturated_second',2),
     'body_closed':('closed',1,1,True,'interrupted','closed',2),
 }
 
 
 def scenarios(state,wires,event,refs,declarations):
     """Validate the two literal interruption recipes under any legal interleaving."""
-    recipes=(('slow_eose','proof'),
+    recipes=(('slow_eose','proof','empty'),
         ('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
     shape(state)
     rows=state['acquisition_quanta']
-    assert len(rows)==len(wires)==8 and all(row['terminal_kind'] is not None for row in rows)
+    assert len(rows)==len(wires)==9 and all(row['terminal_kind'] is not None for row in rows)
     assert len(declarations)==2
     by_request={raw(row['request_id']).decode():row for row in rows}
-    assert len(by_request)==8 and len({wire['request'][1] for wire in wires})==8
+    assert len(by_request)==9 and len({wire['request'][1] for wire in wires})==9
     turns={0:0,1:0};totals={}
     for number,wire in enumerate(wires,1):
         assert wire['number']==number and len(wire['request'])==3
@@ -279,7 +378,7 @@ def scenarios(state,wires,event,refs,declarations):
         turns[scope]+=1;ordinal=turns[scope]
         assert ordinal<=len(recipes[scope]) and wire['scenario']==recipes[scope][ordinal-1]
         assert wire['scope_number']==scope and wire['quantum_number']==ordinal
-        upper=86400 if ordinal==1 or scope==1 else 2
+        upper=86400 if scope==1 else (86400,2,1)[ordinal-1]
         assert wire['request'][2]==dict(kinds=[1],since=scope,until=upper-1,limit=3)
         row=by_request[wire['request'][1]]
         job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
@@ -289,7 +388,7 @@ def scenarios(state,wires,event,refs,declarations):
         classified=scenario(row,wire,job,event,refs,selector=declared['selector'],
             accepted_at_us=declared['accepted_at_us'],expected_upper=upper)
         totals[row['job_id']]=totals.get(row['job_id'],0)+classified
-    assert turns=={0:2,1:6}
+    assert turns=={0:3,1:6}
     return totals
 
 
@@ -322,7 +421,12 @@ def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None,expecte
     for ordinal,record in enumerate(records,1):
         kind,request=(2,4) if wire['scenario'] in ('slow_eose','body_closed') else (5,0)
         assert record==(ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1,bytes.fromhex(event['id']))
-    assert row['continuation_upper']==(event['created_at']+1 if classified and gap is None else upper)
+    disposition=('saturated_second' if wire['scenario']=='proof' else 'window_closed' if wire['scenario']=='empty'
+        else 'overlap' if wire['scenario']=='slow_eose' else 'retry')
+    continuation=(event['created_at'] if disposition=='saturated_second' else row['window_end'] if disposition=='window_closed'
+        else event['created_at']+1 if disposition=='overlap' else upper)
+    assert row['disposition']==disposition and row['continuation_upper']==continuation
+    assert (row['gap_lower'],row['gap_upper'])==((event['created_at'],event['created_at']+1) if disposition=='saturated_second' else (None,None))
     return classified
 
 

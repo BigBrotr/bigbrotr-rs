@@ -316,7 +316,7 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
     assert enrollment['generation'] == '1' and enrollment['enabled']
     scope = call('acquisition-scopes', dict(endpoint_id=endpoint['endpoint_id'],
         access_scope_id=enrollment['access_scope_id'], visibility=visibility,
-        selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
+        selector=dict(version=1, filters=[{'kinds': [1],'until':86399}], history_since=0, ephemeral='retain'),
         **revisions), 'f3' * 16)
     expected_uppers={1:86400}
     worker = threading.Thread(target=relay,

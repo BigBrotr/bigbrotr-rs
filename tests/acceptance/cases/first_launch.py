@@ -806,14 +806,14 @@ class Runtime:
             return any(load(path)['number'] >= 3 and load(path).get('retained_quiet') is True
                        and not path.with_name(path.name.replace('open', 'closed')).exists()
                        for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
-        # The declared second signed page repeats second1. A retained successful
-        # boundary now defers coverage without opening a third request. The
-        # independent post-join oracle still checks every row and transcript.
-        require(not (self.home / 'relay-open-003.json').exists(),
-                'repeated signed boundary opened another socket')
-        if not (self.home / 'relay-closed-002.json').exists():
+        # Two signed pages retain the second1 gap; the declared third request
+        # actually observes the older [0,1) empty remainder before stopping at H.
+        # The independent post-join oracle checks every row and transcript.
+        require(not (self.home / 'relay-open-004.json').exists(),
+                'settled finite target opened another socket')
+        if not (self.home / 'relay-closed-003.json').exists():
             return False
-        return self.sql('bigbrotr_control', "SELECT count(*)=2 AND bool_and(terminal_kind IS NOT NULL) "
+        return self.sql('bigbrotr_control', "SELECT count(*)=3 AND bool_and(entry_kind='request' AND terminal_kind IS NOT NULL) "
                         "FROM control.acquisition_quanta") == 't'
 
     def initial_archive_observation(self, entry, output):
@@ -1361,6 +1361,8 @@ def first_launch(args, checks, inputs):
         from cases.first_launch_linear_quantum import LinearQuantumRuntime,STAGES as QUANTUM_STAGES,LIMITS as QUANTUM_LIMITS
         if getattr(args,'linear_quantum_scenario',None)=='capped-continuation':
             from cases.first_launch_capped_quantum import CappedQuantumRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
+        if getattr(args,'linear_quantum_scenario',None)=='window-succession':
+            from cases.first_launch_window_succession import WindowSuccessionRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         runtime_type=LinearQuantumRuntime
         args.case_limits=QUANTUM_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'

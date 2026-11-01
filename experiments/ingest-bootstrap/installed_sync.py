@@ -71,7 +71,7 @@ def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, non
     enrollment, = state['relay_enrollments']; route, = state['network_routes']
     scope, = state['acquisition_scopes']; selector, = state['acquisition_selectors']
     assert bytes.fromhex(endpoint['url_bytes'][2:]).decode() == url
-    canonical = (b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
+    canonical = (b'{"version":1,"filters":[{"kinds":[1],"until":86399}],"history_since":0,"ephemeral":"retain"}'
         if selector_document is None else json.dumps(selector_document,ensure_ascii=False,separators=(',',':')).encode())
     assert selector['document'] == '\\x'+canonical.hex()
     assert selector['candidate_digest'] == '\\x'+hashlib.sha256(canonical).hexdigest()
@@ -282,20 +282,24 @@ while True:
 
 
 def validate_stall(quanta,transcript,event,job_id):
-    """Two consecutive returned boundaries end bounded work with no next plan."""
-    assert 2<=len(quanta)==len(transcript)
-    assert [row['quantum_number'] for row in quanta]==list(range(1,len(quanta)+1))
-    assert all(row['job_id']=='\\x'+job_id for row in quanta)
-    upper=event['created_at']+1
-    for row,wire,requested in zip(quanta[-2:],transcript[-2:],(86400,upper)):
-        assert row['interval_lower']==0 and row['interval_upper']==requested
-        assert wire['request'][2]==dict(kinds=[1],since=0,until=requested-1,limit=3)
-        assert row['terminal_kind']=='eose' and row['result_class']=='linear_observed' and row['gap_reason'] is None
-        assert row['teardown_complete'] is True and row['continuation_upper']==upper
-        assert row['retained_events']==row['classified_prefix']==3
+    """Two signed pages retain a gap; the real older-empty query closes H."""
+    assert len(quanta)==len(transcript)==3
+    assert [row['quantum_number'] for row in quanta]==[1,2,3]
+    assert all(row['job_id']=='\\x'+job_id and row['entry_kind']=='request' for row in quanta)
+    t=event['created_at'];uppers=(86400,t+1,t)
+    for number,(row,wire,upper) in enumerate(zip(quanta,transcript,uppers),1):
+        assert (row['interval_lower'],row['interval_upper'],row['window_end'],row['horizon'])==(0,upper,86400,86400)
+        assert wire['request'][2]==dict(kinds=[1],since=0,until=upper-1,limit=3)
+        assert row['terminal_kind']=='eose' and row['result_class']=='linear_observed' and row['teardown_complete'] is True
+        assert row['disposition']==('overlap','saturated_second','window_closed')[number-1]
+        assert row['continuation_upper']==(t+1,t,86400)[number-1]
+        assert row['gap_reason']==('saturated_second' if number==2 else None)
+        assert (row['gap_lower'],row['gap_upper'])==((t,t+1) if number==2 else (None,None))
+        assert row['retained_events']==row['classified_prefix']==(0 if number==3 else 3)
         assert wire['completion']=='request-and-websocket-close' and wire['frames'][-1]=='EOSE'
+        if number==3:assert wire['frames']==['EOSE']
         assert bytes.fromhex(row['request_id'][2:])==wire['request'][1].encode()
-    return dict(terminal_quanta=len(quanta),next_plan=False,next_socket=False,coverage='pending')
+    return dict(terminal_quanta=3,next_plan=False,next_socket=False,coverage='pending',gap_count=1,attempted_prefix=86400)
 
 
 def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False, preparation_hole=False, post_hole_proof=False):
@@ -578,7 +582,7 @@ finally:
     if stalled:
         traces=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
         assert len(list(directory.glob('relay-open-*.json')))==len(traces)
-        if not full_window:assert len(traces)==2
+        if not full_window:assert len(traces)==3
         quanta=json.loads(lab.sql(pg,database,"SELECT coalesce(jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) ORDER BY quantum_number),'[]'::jsonb) FROM control.acquisition_quanta q"))
         job,=[item['body'] for item in observations if item['path']=='jobs' and item['key']=='b1'*16]
         stall_evidence=validate_stall(quanta,traces,json.loads((directory/'event.jsonl').read_text()),job['job_id'])

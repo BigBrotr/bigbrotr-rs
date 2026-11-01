@@ -15,7 +15,7 @@ COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_cou
 PROGRESS_FIELDS = ('progress_request_id', 'progress_event_ordinal', 'progress_wire_sequence', 'progress_input_sha256')
 # This maintained peer sends signed time1 on both pages. The second page must
 # overlap that second, then the repeated boundary leaves coverage pending.
-INITIAL_QUANTUM_UPPERS = {1: 86400, 2: 2}
+INITIAL_QUANTUM_UPPERS = {1: 86400, 2: 2, 3: 1}
 
 
 def sha(value):
@@ -256,7 +256,7 @@ def prepared(state, commands, visibility):
     assert scope['visibility_domain'] == '\\x' + visibility['allocation_domain']
     assert scope['dataset_id'] == '\\x' + visibility['dataset_id']
     selector = only(state['acquisition_selectors'], selector_id=scope['selector_id'])
-    document = b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
+    document = b'{"version":1,"filters":[{"kinds":[1],"until":86399}],"history_since":0,"ephemeral":"retain"}'
     assert selector['document'] == '\\x' + document.hex() and selector['candidate_digest'] == '\\x' + sha(document)
 
 

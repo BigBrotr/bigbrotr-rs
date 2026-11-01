@@ -331,7 +331,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             def frame(self):
                 self.frame_number+=1
                 if self.frame_number==1:
-                    upper=2 if retained and release and self.number>22 or not retained and self.number>1 else 86400
+                    upper=(2 if release and self.number>22 else 86400) if retained else (86400,2,1)[self.number-1]
                     selector={'kinds':[1],'since':0,'until':upper-1,'limit':2 if self.number==bad_round and failure=='protocol' else 3}
                     return 1,json.dumps(['REQ',self.ident,selector]).encode()
                 return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 else (8,b'')
@@ -395,21 +395,18 @@ class RetainedBoundaryControls(unittest.TestCase):
         for number,wire in enumerate(wires,1):
             row=copy.deepcopy(original)
             row.update(quantum_number=number,quantum_id='\\x'+f'{number:032x}',
-                request_id='\\x'+wire['request'][1].encode().hex(),checkpoint_before=65,checkpoint_after=65)
+                request_id='\\x'+wire['request'][1].encode().hex(),checkpoint_before=65,checkpoint_after=65,query_number=number,
+                disposition='retry',result_class='interrupted',gap_reason='teardown',continuation_upper=2)
             rows.append(row)
-        pending=quantum_fixture(pending=True)[0]['acquisition_quanta'][0]
-        pending.update(quantum_number=129,quantum_id='\\x'+f'{129:032x}',checkpoint_before=65,
-            terminal_received_at_us=None,checkpoint_sha256=None,route_id=original['route_id'])
-        rows.append(pending)
         before=copy.deepcopy(rows[:21])
         return rows,wires,before
 
-    def test_finite_census_requires128_terminals_and_original_pending129(self):
+    def test_finite_census_requires128_terminals_budget_deferral_and_no129(self):
         with tempfile.TemporaryDirectory() as directory:
             rows,wires,before=self.drained_fixture(Path(directory))
             check.finite_quanta(rows,wires,before)
-            in_flight=copy.deepcopy(rows[-1])
-            in_flight.update(quantum_number=22,quantum_id=rows[21]['quantum_id'])
+            in_flight=copy.deepcopy(rows[21])
+            in_flight.update(terminal_kind=None,completed_at_us=None)
             check.finite_quanta(rows,wires,before+[in_flight])
             mutations=(lambda r:r.pop(127),lambda r:r.pop(),
                 lambda r:r[127].update(terminal_kind=None),
@@ -418,7 +415,8 @@ class RetainedBoundaryControls(unittest.TestCase):
                 lambda r:r[-1].update(quantum_number=130),
                 lambda r:r[-1].update(checkpoint_before=64),
                 lambda r:r[-1].update(request_id=r[0]['request_id']),
-                lambda r:r[-1].update(effect_records='\\x'),
+                lambda r:r[-1].update(query_budget=127),
+                lambda r:r.append(dict(r[-1],quantum_number=129,query_number=129)),
                 lambda r:r[0].update(xmin='changed'))
             for number,mutate in enumerate(mutations):
                 changed=copy.deepcopy(rows);mutate(changed)
@@ -500,11 +498,11 @@ class RetainedBoundaryControls(unittest.TestCase):
                 self.assertFalse((root/'relay-finite-complete.json').exists())
                 self.assertEqual(listener.accept.call_count,17 if bad_round else 128)
 
-    def test_unrelated_relay_keeps_its_original_quiet_receive_and_no_finite_receipt(self):
+    def test_common_relay_completes_the_older_empty_remainder_without_a_retained_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root,retained=False)
             self.assertEqual((accepted,closed,errors),([1,2,3],[True],[]))
-            self.assertEqual(base.load(root/'relay-closed-003.json')['completion'],'quiet-eof')
+            self.assertEqual(base.load(root/'relay-closed-003.json')['completion'],'request-and-websocket-close')
             self.assertFalse((root/'relay-finite-complete.json').exists())
 
     def test_ordinary_source_requires_terminal_repeated_boundary_and_retained_keeps_own_quiet_gate(self):
@@ -515,9 +513,10 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-closed-002.json',dict(number=2))
             self.assertFalse(ordinary.initial_source_quiet())
+            base.save(root/'relay-closed-003.json',dict(number=3))
             ordinary.sql.return_value='t'
             self.assertTrue(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
-            base.save(root/'relay-open-003.json',dict(number=3))
+            base.save(root/'relay-open-004.json',dict(number=4))
             with self.assertRaisesRegex(ValueError,'another socket'):ordinary.initial_source_quiet()
             self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-open-003.json',dict(number=3,retained_quiet=True))

@@ -20,19 +20,19 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '57f670cb721b26408f6734ebce65953accf06671'
+REVIEWED_PRODUCT = '452d3ae70713f9ab929f0a8b7bdb3d38f11fd759'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
-# The reviewed continuation delta changes retained query bounds, capture ID/time
-# binding and authenticated native payload reads. Both capture handoffs retain
-# their existing verifier; no proof or signing capability is minted by readback.
+# The reviewed finite-history delta changes bounded window/query succession,
+# retained geometry and native ID/time reads. Capture handoffs retain their
+# existing verifier; readback creates no signing or publication capability.
 # All nine Nostr paths and the other
 # declared code, dependency and configuration objects remain unchanged from the
 # previous reviewed product. No signer or outbound-publication API was added.
 # Bind vendor code and provenance strictly; only its nonexecutable guide may vary.
 # Source review does not establish installed runtime behavior.
 REVIEWED_CODE = {
-    'apps': '439b1e9e019a1724345d29cff6a797a6cdc65a77',
+    'apps': 'cccf670efbe9a88525d3a5c4fb0649a44c2bfc23',
     'crates': '80acabc650a601d0f8b37462039158d791d7ae8d',
     'Cargo.toml': 'ebaf694cebdd6b0eda55a8849ee0261b6aa18790',
     'Cargo.lock': '33bb87c694d94a6e329ff2b426cb89d296bdb6d0',
@@ -53,7 +53,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product57f670cb; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product452d3ae7; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
@@ -175,7 +175,7 @@ def transcript(home):
     require(not any((home/name).exists() for name in ('relay-error.json','relay-shutdown.json')),
             'peer transcript incomplete or failed')
     opened=sorted(home.glob('relay-open-*.json'));closed=sorted(home.glob('relay-closed-*.json'))
-    require(len(opened)==len(closed)==2,'two signed pages must stop before another socket')
+    require(len(opened)==len(closed)==3,'two signed pages and the older-empty query must stop at H')
     nonces=set()
     for number,(before,after) in enumerate(zip(opened,closed),1):
         first,last=load(before),load(after)
@@ -183,14 +183,14 @@ def transcript(home):
                 'peer connection inventory has a gap')
         require(all(last.get(k)==v for k,v in first.items()) and first['number']==number,'peer open/close binding differs')
         command=last['request']
-        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],since=0,until=86399 if number==1 else 1,limit=3)
+        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],since=0,until=(86399,1,0)[number-1],limit=3)
             and re.fullmatch('[0-9a-f]{48}',command[1]) and int(command[1][:32],16)>0
             and command[1][:32] not in nonces,'peer request is not the bounded acquisition command')
         nonces.add(command[1][:32])
         require(last['connected_at_us']<=last['request_at_us']<=last['closed_at_us']
             and 0<last['closed_at_us']-last['request_at_us']<3_000_000,'peer chronology/bound differs')
         require((last['frames'],last['completion'])==(
-            ['signed','forged-signature','duplicate','EOSE'],'request-and-websocket-close'),
+            ['EOSE'] if number==3 else ['signed','forged-signature','duplicate','EOSE'],'request-and-websocket-close'),
             'peer round lacks complete validated REQ/CLOSE/EOF traffic')
     return dict(connections=len(closed),signed_rounds=2,outbound_nostr_event_frames=0,
         scope='all accepted controlled-peer connections; parser requires CLOSE/empty WS close/TCP EOF or quiet EOF')

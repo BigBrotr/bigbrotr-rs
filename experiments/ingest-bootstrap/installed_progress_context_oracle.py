@@ -80,12 +80,12 @@ def sha(value):
 
 
 def archive_request_progress(event, transcript, *, expected_uppers=None):
-    """The unchanged Archive peer sends two signed/forged/duplicate quanta.
+    """The Archive peer sends two signed/forged/duplicate quanta and a declared empty remainder.
 
     The forged signatures remain structurally valid captured inputs and reach
     native certification rejection. All three EVENTs classify in each REQ;
-    quiet later REQs produce neither reservations nor classified progress.
-    The default retains the historical fixed-window capture profile. Current
+    a current third empty EOSE produces neither reservations nor progress.
+    The default retains historical fixed-window quiet captures only. Current
     callers declare their exact bounded continuation recipe before comparison;
     neither observed requests nor retained SQL select those expected bounds.
     """
@@ -118,6 +118,10 @@ def archive_request_progress(event, transcript, *, expected_uppers=None):
             assert wire['completion'] == 'request-and-websocket-close'
             typed.integer(wire['sent_at_us'])
             assert wire['request_at_us'] <= wire['sent_at_us'] <= wire['closed_at_us']
+        elif number==3 and expected_uppers[number]==1:
+            assert wire['frames']==['EOSE'] and wire['completion']=='request-and-websocket-close'
+            typed.integer(wire['sent_at_us'])
+            assert wire['request_at_us']<=wire['sent_at_us']<=wire['closed_at_us']
         else:
             assert wire['frames'] == [] and wire['completion'] == 'quiet-eof'
     # send_frame serializes the signed event object this way; this is the

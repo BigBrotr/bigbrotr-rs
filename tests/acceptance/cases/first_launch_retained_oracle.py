@@ -87,29 +87,28 @@ def finite_peer(value, wires, events, last_closed_sha256):
 
 
 def finite_quanta(rows, wires, before):
-    """Freeze the declared128 rounds and the next undelivered obligation."""
+    """The fixed128 query budget retains all terminals and no129th plan."""
     assert len(wires)==128 and [wire['number'] for wire in wires]==list(range(1,129))
     rows=sorted(rows,key=lambda row:row['quantum_number'])
-    assert [row['quantum_number'] for row in rows]==list(range(1,130))
+    assert len(rows)==128 and [row['quantum_number'] for row in rows]==list(range(1,129))
     context=index.only(before,quantum_number=21)
     fields=('dataset_id','job_id','scope_id','producer_slot_id','producer_epoch','issuer_role',
         'issuer_resource','issuer_epoch','issuer_incarnation','route_id')
-    for row in rows:
+    for number,(row,wire) in enumerate(zip(rows,wires),1):
         index.exact({key:row[key] for key in fields},{key:context[key] for key in fields})
-    for row,wire in zip(rows,wires):
+        assert row['quantum_profile']==2 and row['entry_kind']=='request'
+        assert row['query_number']==number and row['query_budget']==128
+        assert (row['window_width'],row['window_end'],row['horizon'])==(86400,86400,86400)
         assert row['terminal_kind'] is not None and type(row['completed_at_us']) is int
         assert index.raw(row['request_id'])==wire['request'][1].encode()
-    pending=rows[-1]
-    assert pending['checkpoint_before']==65
-    assert all(pending[key] is None for key in ('terminal_kind','terminal_frame','request_id',
-        'terminal_sequence','terminal_received_at_us','teardown_complete','retained_events','classified_prefix',
-        'effect_records','dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason',
-        'continuation_upper','completed_at_us'))
-    # Completed rows already present at saturation retain their xmin. An
-    # in-flight next plan follows the existing quantum transition oracle.
+    last=rows[-1];proof_last=wires[-1].get('retained_phase')=='proof-only'
+    assert last['checkpoint_after']==65 and last['checkpoint_before']==(64 if proof_last else 65)
+    assert last['disposition']==('overlap' if proof_last else 'retry') and last['continuation_upper']==2
     current={row['quantum_id']:row for row in rows}
-    assert all(current.get(row['quantum_id'])==row for row in before if row['terminal_kind'] is not None), \
+    assert all(current.get(row['quantum_id'])==row for row in before
+        if row['entry_kind']=='selector_exclusion' or row['terminal_kind'] is not None), \
         'saturated completed quantum history changed'
+    return dict(queries_spent=128,pending_work='budget_deferred',next_plan=False,coverage='pending')
 
 
 def progress(state, wanted, events, wire, control, completed, *, proof):

@@ -13,8 +13,8 @@ from cases import first_launch_retained_native as native
 
 STAGES=('prerequisites','candidate','runtime_image','fresh_bootstrap','signed_acquisition','linear_quantum','cleanup')
 LIMITS=[
-    'Two original finite scopes share the current Control/Sync/native owner. Eight real requests exercise slow EVENT/EOSE, malformed EVENT then EOSE, frame/event caps then EOSE, CLOSED, deadline, empty and proof-only work.',
-    'The finite listener closes after8; proof repeats the first scope boundary and empty defers the second, with no next plan and pending coverage. An actual source refusal neither completes a traversal nor synthesizes a producer request. All original input bytes, full native rows/sequence and independently expected classification/dependency records are compared after positive owner join.',
+    'Two original finite scopes share the current Control/Sync/native owner. Nine real requests exercise slow EVENT/EOSE, malformed EVENT then EOSE, frame/event caps then EOSE, CLOSED, deadline, empty and proof-only work.',
+    'The finite listener closes after9; the first scope retains its repeated-second gap and observes the older empty remainder; the second closes its window on empty, with no next plan and pending coverage. An actual source refusal neither completes a traversal nor synthesizes a producer request. All original input bytes, full native rows/sequence and independently expected classification/dependency records are compared after positive owner join.',
     'Optional exact plan/terminal COMMIT before-forward/after-complete schedules prove no next socket/quantum and historical-only restart, including missing plan versus retained pending/terminal record. NOT_RUN: full walker, age bands, NEG/live, OPEN65, same-job adoption, physical capacity. Empty post-REQ authority withdrawal is isolated by the actual completed source-rollback reply; broader terminal races remain separate.',
 ]
 
@@ -299,8 +299,8 @@ class LinearQuantumRuntime(Runtime):
         def complete():
             require(not (self.home/'relay-error.json').exists(),'finite linear peer failed')
             if not (self.home/'linear-peer-complete.json').exists():return False
-            return self.sql('bigbrotr_control',"SELECT count(*)||':'||count(*) FILTER(WHERE terminal_kind IS NULL) FROM control.acquisition_quanta")=='8:0'
-        self.wait(complete,'eight terminal results and both bounded stops',30,entry,self.client)
+            return self.sql('bigbrotr_control',"SELECT count(*)||':'||count(*) FILTER(WHERE entry_kind='request' AND terminal_kind IS NULL) FROM control.acquisition_quanta")=='9:0'
+        self.wait(complete,'nine terminal results and both bounded stops',30,entry,self.client)
         live,_=self.capture(output,'linear-live')
         require(len(live['jobs'])==len(live['acquisition_jobs'])==2,'two real accepted scopes required')
 
@@ -342,7 +342,7 @@ class LinearQuantumRuntime(Runtime):
         commands=load(self.home/'submitted.json')
         selectors={item['body']['scope_id']:item['input']['selector'] for item in commands if item['path']=='acquisition-scopes'}
         declared={oracle.wire_json(value) for value in selectors.values()}
-        require(declared=={oracle.wire_json(dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')),
+        require(declared=={oracle.wire_json(dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain')),
             oracle.wire_json(dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'))},'two literal collection declarations differ')
         for item in commands:
             if item['path']=='jobs':
@@ -355,25 +355,27 @@ class LinearQuantumRuntime(Runtime):
         for value in statuses:
             declared=declarations[value['job_id']]
             scope_number=declared['selector']['filters'][0].get('since',0)
-            upper=86400 if scope_number else 2
-            count=2 if scope_number==0 else 6
-            uppers={number:86400 if number==1 or scope_number else 2 for number in range(1,count+1)}
+            upper=86400 if scope_number else 1
+            count=3 if scope_number==0 else 6
+            uppers={number:86400 if scope_number else (86400,2,1)[number-1] for number in range(1,count+1)}
             status=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
                 selector=declared['selector'],expected_uppers=uppers)
             job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]
             latest=max(job_rows,key=lambda row:row['quantum_number'])
             lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'],expected_upper=upper)
-            require(len(job_rows)==count and status==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(count),
-                scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='linear_observed',
-                terminal='eose',gap=None,continuation_upper=str(upper),retained_events=0 if scope_number else 1,
-                classified_prefix=0 if scope_number else 1,coverage='pending')
+            require(len(job_rows)==count and status==dict(format='bigbrotr-linear-quantum-status/2',quantum_number=str(count),
+                scope_id=declared['scope_id'],entry_kind='request',disposition='window_closed',
+                lower=str(lower),upper=str(upper),window_end='86400',horizon=str(horizon),window_width='86400',
+                query_budget=128,queries_spent=count,attempted_prefix='86400',gap_count=0 if scope_number else 1,
+                pending_work='settled',pending_interval=None,result='linear_observed',terminal='eose',gap=None,
+                continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending')
                 and latest['terminal_kind']=='eose','known final stopped status differs')
         require(set(totals)=={job['job_id'] for job in state['jobs']},'both controlled scopes must receive finite turns')
         require(sum(totals.values())==5,'finite expected classification total differs')
         for head in state['acquisition_progress']:
             require(head['classified_events']==head['successful_events']==totals[head['job_id']] and head['rejected_events']==0,'independent per-job progress differs')
         head,=state['producer_checkpoints'];require(head['checkpoint_revision']==8 and head['complete_through_request']==4,'native completion or classified checkpoint differs')
-        save(output/'verdict.json',dict(status='PASS',requests=8,scopes=2,terminal_records=8,pending_plans=0,
+        save(output/'verdict.json',dict(status='PASS',requests=9,scopes=2,terminal_records=9,pending_plans=0,
             classifications=5,mutation_requests=4,native_rows=len(actual),native_sequence=67,coverage='pending'))
 
     def verify_fault(self):

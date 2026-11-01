@@ -20,12 +20,12 @@ from test_first_launch import ROOT, arguments
 
 
 def peer_fixture(root):
-    for n in range(1,3):
+    for n in range(1,4):
         before=dict(number=n,connected_at_us=n*1000,request_at_us=n*1000+1,
-            clock_resolution_us=1,request=['REQ',f'{n:032x}'+'0'*16,dict(kinds=[1],since=0,until=86399 if n==1 else 1,limit=3)])
+            clock_resolution_us=1,request=['REQ',f'{n:032x}'+'0'*16,dict(kinds=[1],since=0,until=(86399,1,0)[n-1],limit=3)])
         after=dict(before,closed_at_us=n*1000+100,
-            frames=['signed','forged-signature','duplicate','EOSE'] if n<=2 else [],
-            completion='request-and-websocket-close' if n<=2 else 'quiet-eof')
+            frames=['signed','forged-signature','duplicate','EOSE'] if n<=2 else ['EOSE'],
+            completion='request-and-websocket-close')
         base.save(root/f'relay-open-{n:03}.json',before);base.save(root/f'relay-closed-{n:03}.json',after)
 
 
@@ -141,7 +141,7 @@ class TutorialControls(unittest.TestCase):
     def test_peer_evidence_is_nonempty_complete_and_bound_to_every_accepted_connection(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);peer_fixture(root)
-            self.assertEqual(case.transcript(root)['connections'],2)
+            self.assertEqual(case.transcript(root)['connections'],3)
             for marker in ('relay-error.json','relay-shutdown.json'):
                 path=root/marker;base.save(path,dict(error='incomplete frame'))
                 with self.subTest(marker=marker),self.assertRaises(ValueError):case.transcript(root)
