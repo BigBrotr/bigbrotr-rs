@@ -16,7 +16,7 @@ from registrations import upgrade as upgrade_registry
 from scopes import upgrade as upgrade_scopes
 from initial_jobs import released, unchanged, validate_job, upgrade_gap_schema
 from installed_sync_oracle import ENDPOINT, SIGNED_SHA256, decode, expected
-from installed_sync_client import REFUSED_VISIBILITIES
+from installed_sync_client import REFUSED_VISIBILITIES, common_final_status
 
 EVENT_CASES = ('sync-signed', 'sync-peer-refusals', 'sync-expired-before-valid',
     'sync-window-event', 'sync-window-source')
@@ -524,7 +524,7 @@ finally:
         traces = sorted(directory.glob('relay-closed-*.json'))
         if visibility_refusal:
             assert not traces and (directory/'relay-monitor-started.json').exists()
-        elif len(traces) < 2:
+        elif len(traces) < (3 if not progress and name in ('sync-signed','sync-expired-before-valid') else 2):
             return None
         current = rows(database)
         now = int(lab.sql(pg, database, 'SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
@@ -535,6 +535,9 @@ finally:
             return None
         assert len(current['producer_requests']) == len(current['producer_outcomes']) == wanted_count
         assert min(r['lease_expires_at_us'] for r in current['owner_epochs']) > now
+        if not progress and name in ('sync-signed','sync-expired-before-valid'):
+            settled=lab.sql(pg,database,"SELECT count(*)=3 AND bool_and(entry_kind='request' AND terminal_kind IS NOT NULL) FROM control.acquisition_quanta")
+            if settled!='t':return None
         return current, now
     current, now = wait_for(completed, 'durable events and healthy renewal beyond original lease', 16)
     lab.write_json(output/(name+'-durable.json'), current)
@@ -606,9 +609,8 @@ finally:
     if stalled:
         quanta_after=json.loads(lab.sql(pg,database,"SELECT coalesce(jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) ORDER BY quantum_number),'[]'::jsonb) FROM control.acquisition_quanta q"))
         assert quanta_after==quanta,'bounded stall changed during owned shutdown'
-        status=json.loads((directory/'client-result.json').read_text())['job_status']['linear_quantum']
-        assert status['coverage']=='pending' and status['terminal']=='eose' and status['result']=='linear_observed'
-        assert int(status['quantum_number'])==len(quanta) and int(status['upper'])==int(status['continuation_upper'])==2
+        observed=json.loads((directory/'client-result.json').read_text())['job_status']
+        common_final_status(observed,primary_scope[2:],job['accepted_at_us'])
     released(before_stop, after)
     if expiry:
         preserve_expired(expired_original, after)

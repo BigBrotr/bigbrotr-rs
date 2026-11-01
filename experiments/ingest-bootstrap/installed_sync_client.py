@@ -146,6 +146,19 @@ def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=
     return value
 
 
+def common_final_status(observed,scope_id,accepted_at_us):
+    """Exact final observation after the host verifies all three request terminals."""
+    value=quantum_status(observed,scope_id,accepted_at_us,known_plan=True,
+        selector=COMMON_SELECTOR,expected_entries=dict(enumerate(INITIAL_ENTRIES,1)))
+    assert value==dict(format='bigbrotr-linear-quantum-status/2',quantum_number='3',scope_id=scope_id,
+        entry_kind='request',disposition='window_closed',lower='0',upper='1',window_end='86400',
+        horizon='86400',window_width='86400',query_budget=128,queries_spent=3,attempted_prefix='86400',
+        gap_count=1,pending_work='settled',pending_interval=None,result='linear_observed',terminal='eose',
+        gap=None,continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending'), \
+        'common final quantum summary differs from the declared three-request recipe'
+    return value
+
+
 def exact(connection, count):
     value = bytearray()
     while len(value) < count:
@@ -450,6 +463,8 @@ def run(directory, request, login, logout):
         status, raw = request('GET', '/management/v1/jobs/'+receipt['job_id'], headers=auth)
         observed = json.loads(raw)
         quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True,expected_uppers=expected_uppers)
+        if signed and not refusals and not window and not (directory/'progress-context.json').exists():
+            common_final_status(observed,scope['scope_id'],receipt['accepted_at_us'])
         assert status == 200 and {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None, observed_at_us=observed['observed_at_us'],

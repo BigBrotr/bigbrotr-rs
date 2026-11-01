@@ -778,6 +778,9 @@ class Runtime:
                 or getattr(self.args, 'case', None) == 'p01-first-launch-closed-reclamation'):
             self.prefix_refusals(output)
         self.initial_publication(entry, output)
+        if type(self).initial_source_quiet is Runtime.initial_source_quiet:
+            self.wait(self.initial_source_quiet, 'three durable common request terminals before final HTTP status',
+                5, entry, self.client)
         (self.home / 'submitted.continue').write_text('original frontier observed\n')
         self.wait(lambda: (self.home / 'commands-finished.json').exists(), 'client logout', 15, entry, self.client)
 

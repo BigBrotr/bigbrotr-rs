@@ -8,7 +8,7 @@ import subprocess
 import sys
 import threading
 import time
-from installed_sync_client import publish, relay, relay_listener, quantum_status, COMMON_SELECTOR
+from installed_sync_client import publish, relay, relay_listener, quantum_status, common_final_status, COMMON_SELECTOR
 from installed_archive_profile import load as load_profile
 
 
@@ -171,6 +171,8 @@ def run(directory):
                 endpoint,enrollment,visibility,revisions)
         barrier('submitted', seconds=65, poll=status)
         final_status = status(known_plan=True)
+        if not (linear or capped or windows) and not (directory/'retained-request-profile.json').exists() and not (directory/'progress-context.json').exists():
+            common_final_status(final_status,scope['scope_id'],receipt['accepted_at_us'])
         assert final_status['state'] == 'queued'
         statuses.append(final_status)
         publish(directory, 'status-observations.json', statuses)

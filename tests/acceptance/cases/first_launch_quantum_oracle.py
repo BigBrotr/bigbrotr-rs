@@ -234,7 +234,7 @@ def journey(state,wires,epoch,expected,*,selector=None,entries=None,width=86400,
         assert spent<budget,'query budget authorized an extra request'
         spent+=1;assert row['query_number']==spent
         wire=wires[spent-1] if spent<=len(wires) else None
-        window(row,job,wire,selector=selector,expected_lower=a,expected_upper=c,window_end=b,width=width)
+        window(row,job,wire,selector=selector,expected_lower=a,expected_upper=c,window_end=b,width=width,budget=budget)
         if wire is None or row['terminal_kind'] is None:
             assert row['terminal_kind'] is None and number==len(rows)
             pending=True;continue
@@ -330,12 +330,16 @@ def successor(state,wires,old,new,science,*,before,provenance,first_science=None
         entries=tuple(('request',0,86400,86400) for _ in wires))
 
 
-def window(row,job,wire=None,*,selector=None,accepted_at_us=None,expected_upper=None,expected_lower=None,window_end=None,width=86400):
+def window(row,job,wire=None,*,selector=None,accepted_at_us=None,expected_upper=None,expected_lower=None,window_end=None,width=86400,budget=128):
     from installed_sync_client import quantum_window
     if accepted_at_us is not None:assert job['created_at_us']==int(accepted_at_us)
     lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'],expected_upper=expected_upper,
         expected_lower=expected_lower,window_end=window_end,width=width)
     assert (row['interval_lower'],row['interval_upper'],row['horizon'])==(lower,upper,horizon)
+    declared_end=min(lower+width,horizon) if window_end is None else window_end
+    assert type(width) is int and type(budget) is int
+    assert all(type(row[key]) is int for key in ('window_end','window_width','query_budget'))
+    assert (row['window_end'],row['window_width'],row['query_budget'])==(declared_end,width,budget)
     command=json.loads(raw(row['request_predicate']))
     assert command[:2]==['REQ','0'*48] and command[2:]==filters
     if wire is not None:

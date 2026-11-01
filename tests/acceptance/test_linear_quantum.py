@@ -278,6 +278,66 @@ class LinearQuantumControls(unittest.TestCase):
             quantum_status(dict(linear_quantum=status),'66'*16,'300000999999',selector=selector,
                 expected_entries=entries,expected_uppers={1:86400})
 
+    def test_common_final_http_summary_is_exact_after_three_completed_requests(self):
+        from installed_sync_client import common_final_status
+        status=status_fixture(quantum_number='3',scope_id='66'*16,lower='0',upper='1',horizon='86400',
+            result='linear_observed',terminal='eose',gap=None,continuation_upper='86400',retained_events=0,
+            classified_prefix=0,coverage='pending',disposition='window_closed',attempted_prefix='86400',
+            gap_count=1,pending_work='settled',pending_interval=None)
+        observed=dict(linear_quantum=status)
+        self.assertIs(common_final_status(observed,'66'*16,'200000999999'),status)
+        for key,value in (('gap_count',0),('gap_count',2),('gap_count',3),('queries_spent',2),
+                ('attempted_prefix','0'),('pending_work','query_ready'),('pending_interval',['0','1']),
+                ('quantum_number','2'),('upper','2'),('continuation_upper','2')):
+            with self.subTest(key=key,value=value),self.assertRaises(AssertionError):
+                common_final_status(dict(linear_quantum=dict(status,**{key:value})),'66'*16,'200000999999')
+        # Interim observations remain valid for polling but cannot substitute for
+        # the independently declared final three-request response.
+        interim=status_fixture(quantum_number='1',scope_id='66'*16,lower='0',upper='86400',horizon='86400',
+            result='pending',terminal=None,gap=None,continuation_upper=None,retained_events=None,
+            classified_prefix=None,coverage='pending')
+        quantum_status(dict(linear_quantum=interim),'66'*16,'200000999999',known_plan=True)
+        with self.assertRaises(AssertionError):common_final_status(dict(linear_quantum=interim),'66'*16,'200000999999')
+
+    def test_earlier_finite_page_binds_original_end_width_and_budget(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary);wires,errors,_=finite_peer_fixture(directory,(0,0,0,1,1,1,1,1,1))
+            self.assertFalse(errors)
+            event=json.loads((directory/'event.jsonl').read_text());state,refs,declarations=interruption_rows(wires,event)
+            row=state['acquisition_quanta'][1];wire=wires[1];job=state['jobs'][0]
+            declaration=declarations[job['job_id'][2:]]
+            def verify(value):
+                return check.scenario(value,wire,job,event,refs,selector=declaration['selector'],
+                    accepted_at_us=declaration['accepted_at_us'],expected_upper=2)
+            self.assertEqual(verify(row),1)
+            for key,value in (('window_end',2),('window_width',1),('query_budget',64),
+                    ('window_end',86400.0),('window_width',86400.0),('query_budget',128.0)):
+                with self.subTest(key=key),self.assertRaises(AssertionError):verify(dict(row,**{key:value}))
+
+    def test_common_final_http_barrier_waits_for_source_before_releasing_client(self):
+        from cases import first_launch as base
+        class DifferentRecipe(base.Runtime):
+            def initial_source_quiet(self):return True
+        for runtime_type in (base.Runtime,DifferentRecipe):
+            with self.subTest(runtime_type=runtime_type.__name__),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(runtime_type);runtime.home=root
+                runtime.initialized={};runtime.client=Mock();runtime.args=SimpleNamespace(case='p01-first-launch')
+                base.save(root/'prepared.json',[])
+                runtime.initial_source_barrier=Mock();runtime.capture=Mock(return_value=({},{}))
+                runtime.current_owner_view=Mock(return_value={});runtime.validate_source=Mock()
+                runtime.initial_submission=Mock();runtime.initial_archive_observation=Mock();runtime.prefix_refusals=Mock()
+                runtime.initial_publication=Mock();runtime.initial_source_quiet=Mock(return_value=True)
+                gates=[]
+                def wait(predicate,label,*args,**kwargs):
+                    if predicate is runtime.initial_source_quiet:
+                        self.assertFalse((root/'submitted.continue').exists())
+                        self.assertTrue(predicate());gates.append(label)
+                runtime.wait=Mock(side_effect=wait)
+                runtime.initial_commands({},root,{})
+                self.assertTrue((root/'submitted.continue').exists())
+                self.assertEqual(len(gates),1 if runtime_type is base.Runtime else 0)
+                if gates:self.assertIn('before final HTTP status',gates[0])
+
     def test_finite_scenarios_keep_declared_scope_identity_and_continued_bounds(self):
         for order in ((0,0,0,1,1,1,1,1,1),(0,1,0,1,0,1,1,1,1)):
             for failure in (None,'stale-upper','unknown-scope'):
