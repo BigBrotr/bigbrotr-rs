@@ -170,13 +170,17 @@ impl ControlSession {
         // Already-closing PG rows still require the native operation above. Do
         // not rewrite them or mistake PG's state for an attested native bound.
         tx.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1 AND state='open'", &[&&spec.producer_slot_id.as_bytes()[..]]).await.map_err(backend)?;
-        if input.cancelled.load(Ordering::Relaxed) || lease.check_delivery(current_epoch).is_err() {
+        if input.cancelled.load(Ordering::Relaxed)
+            || recovery.native_unavailable()
+            || lease.check_delivery(current_epoch).is_err()
+        {
             return Err(ProducerCloseError::DeliveryUnknown);
         }
         tx.commit()
             .await
             .map_err(|_| ProducerCloseError::CommitUnknown)?;
         if input.cancelled.load(Ordering::Relaxed)
+            || recovery.native_unavailable()
             || self.client.is_closed()
             || lease.check_delivery(current_epoch).is_err()
         {
@@ -200,6 +204,9 @@ impl ControlSession {
         locks: ingest_registry::RegistryLocks,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        if recovery.native_unavailable() {
+            return Err(ProducerOperationError::DeliveryUnknown);
+        }
         let identity = *recovery.manifest().identity();
         let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
             .map_err(|_| OwnerError::InvalidInput)?;
@@ -282,6 +289,9 @@ impl ControlSession {
                 },
             )
             .map_err(|_| OwnerError::Unavailable)?;
+        if recovery.native_unavailable() {
+            return Err(ProducerOperationError::DeliveryUnknown);
+        }
         Ok((tx, lease, current_epoch))
     }
 }

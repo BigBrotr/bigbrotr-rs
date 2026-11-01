@@ -111,6 +111,9 @@ impl ControlSession {
                 BootstrapError::AuthorityUnavailable,
             ));
         }
+        if source.recovery().native_unavailable() {
+            return Err(SourceCloseError::Native(BootstrapError::CommitUnknown));
+        }
         let spec = input.registration;
         if source.producer().producer_slot_id() != spec.producer_slot_id
             || source.producer().producer_epoch().get() != 1
@@ -183,12 +186,18 @@ impl ControlSession {
             }
             _ => return Err(OwnerError::InvalidMetadata.into()),
         }
+        if source.recovery().native_unavailable() {
+            return Err(SourceCloseError::Native(BootstrapError::CommitUnknown));
+        }
         if input.cancelled.load(Ordering::Relaxed) || lease.check_delivery(epoch).is_err() {
             return Err(SourceCloseError::DeliveryUnknown);
         }
         tx.commit()
             .await
             .map_err(|_| SourceCloseError::CommitUnknown)?;
+        if source.recovery().native_unavailable() {
+            return Err(SourceCloseError::DeliveryUnknown);
+        }
         if input.cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(epoch).is_err()

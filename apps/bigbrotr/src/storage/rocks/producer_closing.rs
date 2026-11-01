@@ -122,6 +122,9 @@ impl IngestRecovery {
             .filter(|state| state.closing)
             .ok_or(BootstrapError::StateMismatch)?;
         self.store.require_producer_boundary(slot, epoch, state)?;
+        if self.store.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         Ok(ProducerClosing {
             slot,
             epoch,
@@ -162,6 +165,9 @@ impl IngestRecovery {
             .store
             .close_producer_marker(slot, epoch, state, &mut authority)?;
         authority()?;
+        if self.store.native_unavailable() {
+            return Err(BootstrapError::CommitUnknown);
+        }
         Ok(ProducerClosing {
             slot,
             epoch,

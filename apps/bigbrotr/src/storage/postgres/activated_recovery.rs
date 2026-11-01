@@ -628,6 +628,9 @@ impl ControlSession {
                 .await
                 .map_err(ProducerResolveError::Outcome)?;
         }
+        if recovery.native_unavailable() {
+            return Err(ProducerResolveError::DeliveryUnknown);
+        }
         initial_history::check_delivery(&mut lease, epoch, input.cancelled)?;
         tx.commit()
             .await
