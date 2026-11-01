@@ -194,8 +194,8 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         assert!(!path.join("producer-inputs-v1").exists());
         assert_eq!(store.db.latest_sequence_number(), sequence);
         assert_eq!(rows(&store), before);
-        // Restoring the original manifest and its exact accounting binding
-        // permits the same request; the explicit source0 stays unchanged.
+        // Restoring the original manifest/accounting makes reads compatible.
+        // Raw reopen still cannot fund new intake or adopt an old owner.
         store.db.put([1, 1], original.encode().as_bytes()).unwrap();
         store
             .db
@@ -204,18 +204,22 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         drop(store);
         let mut store =
             IngestStore::reopen(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
-        drop(
-            store
-                .bootstrap_dictionaries(
-                    request(),
-                    &input,
-                    ObservedTime::new(123),
-                    limits,
-                    grant(&b, 8 * MIB, 4 * MIB),
-                    || Ok(()),
-                )
-                .unwrap(),
-        );
+        let sequence = store.db.latest_sequence_number();
+        assert!(matches!(
+            store.bootstrap_dictionaries(
+                request(),
+                &input,
+                ObservedTime::new(123),
+                limits,
+                grant(&b, 8 * MIB, 4 * MIB),
+                || Ok(()),
+            ),
+            Err(BootstrapError::PendingQuota(
+                PendingQuotaError::RecoveryBlocked
+            ))
+        ));
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
     }
 }
 

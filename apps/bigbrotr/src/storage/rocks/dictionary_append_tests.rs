@@ -995,14 +995,6 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
     drop(receipt);
     drop(prepared);
     assert_eq!(b.snapshot().used().data_bytes(), 0);
-    drop(store);
-    let mut store = IngestStore::reopen(
-        &path,
-        installed_manifest(),
-        native(),
-        grant(&b, 0, 128 * MIB),
-    )
-    .unwrap();
     let before = rows(&store);
     let mut preparation = store
         .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
@@ -1042,6 +1034,34 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
             assert_eq!(after.get(&key), Some(&value));
         }
     }
+    drop(result);
+    drop(prepared);
+    drop(store);
+    let mut store = IngestStore::reopen(
+        &path,
+        installed_manifest(),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    assert_eq!(
+        preparation
+            .intern(observer(1).descriptor().clone())
+            .unwrap(),
+        reference(DictionaryKind::Observer, 1)
+    );
+    let prepared = preparation.finish().unwrap();
+    assert!(matches!(
+        append(&mut store, &b, 5, prepared.intent()),
+        Err(AdmissionError::PendingQuota(
+            PendingQuotaError::RecoveryBlocked
+        ))
+    ));
+    assert_eq!(rows(&store), before);
 }
 
 #[test]
