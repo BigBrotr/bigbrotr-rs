@@ -38,10 +38,11 @@ def boundary(state, wire, event, *, proof=False):
 
 def wires_checked(wires, events):
     assert 22<=len(wires)<=128
-    previous=None;nonces=set();proof=[];empties=0
+    previous=None;nonces=set();proof=[]
     for number,wire in enumerate(wires,1):
         assert wire['number']==number and wire['request'][0]=='REQ'
-        assert wire['request'][2]=={'kinds':[1],'since':0,'until':86399,'limit':3}
+        upper=events[0]['created_at']+1 if proof else 86400
+        assert wire['request'][2]=={'kinds':[1],'since':0,'until':upper-1,'limit':3}
         ident=wire['request'][1]
         assert re.fullmatch('[0-9a-f]{48}',ident) and int(ident[:32],16)
         assert ident[:32] not in nonces;nonces.add(ident[:32])
@@ -56,8 +57,6 @@ def wires_checked(wires, events):
             phase,values='saturation',[events[60],events[61],events[0]]
         elif wire.get('retained_phase')=='proof-only':
             phase,values='proof-only',[events[0]];proof.append(wire)
-        elif wire.get('retained_phase')=='empty':
-            phase,values='empty',[];empties+=1
         else:
             assert wire['retained_quiet'] is True and wire['frames']==[] and wire['completion']=='quiet-eof'
             continue
@@ -68,7 +67,7 @@ def wires_checked(wires, events):
         assert wire['event_json_sha256']==[hashlib.sha256(json.dumps(event,ensure_ascii=False,
             separators=(',',':')).encode()).hexdigest() for event in values]
         assert wire['request_at_us']<=wire['sent_at_us']<=wire['closed_at_us']
-    assert len(proof)==1 and empties<=100
+    assert len(proof)==1
     return wires[20],proof[0]
 
 

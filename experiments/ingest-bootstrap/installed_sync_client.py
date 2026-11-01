@@ -38,7 +38,7 @@ def publish(directory, name, value):
     partial.rename(directory / name)
 
 
-def quantum_window(selector,accepted_at_us):
+def quantum_window(selector,accepted_at_us,*,expected_upper=None):
     """Independent finite fixture interval from declared intent, never SQL counters."""
     selector=selector or dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')
     accepted=int(accepted_at_us)//1_000_000
@@ -50,6 +50,9 @@ def quantum_window(selector,accepted_at_us):
         assert type(until) is int and 0<=until<=2**64-1
         upper_bounds.append(min(accepted,until+1))  # Checked AfterMax intersection.
     horizon=max(upper_bounds);upper=min(lower+86400,horizon)
+    if expected_upper is not None:
+        assert type(expected_upper) is int and lower<expected_upper<=upper
+        upper=expected_upper
     assert lower<upper
     filters=[]
     for part in selector['filters']:
@@ -59,7 +62,7 @@ def quantum_window(selector,accepted_at_us):
     return lower,upper,horizon,filters
 
 
-def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=None):
+def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=None,expected_uppers=None):
     """Validate and retain actor status; absence is allowed only before a known plan."""
     value=observed.get('linear_quantum')
     if value is None:
@@ -68,7 +71,10 @@ def quantum_status(observed,scope_id,accepted_at_us,*,known_plan=False,selector=
     assert set(value)=={'format','quantum_number','scope_id','lower','upper','horizon','result',
         'terminal','gap','continuation_upper','retained_events','classified_prefix','coverage'}
     assert value['format']=='bigbrotr-linear-quantum-status/1' and value['scope_id']==scope_id
-    lower,upper,horizon,_=quantum_window(selector,accepted_at_us)
+    number=int(value['quantum_number'])
+    assert number>=1 and str(number)==value['quantum_number']
+    expected_upper=None if expected_uppers is None else expected_uppers[number]
+    lower,upper,horizon,_=quantum_window(selector,accepted_at_us,expected_upper=expected_upper)
     assert (value['lower'],value['upper'],value['horizon'])==tuple(map(str,(lower,upper,horizon)))
     assert value['coverage']=='pending' and int(value['quantum_number'])>=1
     assert str(int(value['quantum_number']))==value['quantum_number']
@@ -116,7 +122,7 @@ def send_frame(connection, value):
 
 
 def relay(directory, listener, finished, errors, signed, refusals=False, window=False,
-          event_sender=None):
+          event_sender=None, expected_uppers=None):
     assert event_sender is None or (signed and not refusals and not window)
     split = None
     retained = (directory / 'retained-request-profile.json').exists()
@@ -131,6 +137,7 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
         split = SplitEvents(directory, json.loads((directory / 'event.jsonl').read_bytes()), 'initial',
             event_sequence=ack_events(directory))
     request_ids = set()
+    uppers={1:86400} if expected_uppers is None else expected_uppers
     completed = None
     try:
         number = 0
@@ -180,7 +187,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                 assert re.fullmatch('[0-9a-f]{48}', ident) and int(ident[:32], 16) != 0
                 assert ident[:32] not in request_ids, 'connection nonce reused'
                 request_ids.add(ident[:32])
-                assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
+                assert command[2] == {'kinds': [1], 'since': 0, 'until': uppers[number]-1, 'limit': 3}
+                uppers[number+1]=uppers[number]  # Known quiet interruptions retry this interval.
                 trace.update(request=command, request_at_us=time.time_ns()//1000)
                 if split is not None:
                     trace['request_monotonic_ns'] = time.monotonic_ns()
@@ -198,6 +206,8 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     elif event_sender is not None:
                         trace['sent_at_us'] = time.time_ns()//1000
                         trace['frames'] = event_sender(connection, ident, number)
+                        assert trace['frames']==['signed','duplicate','EOSE']
+                        uppers[number+1]=event['created_at']+1
                         values = ()
                     elif window_ready and number > 2:
                         from installed_sync_window import window_frames
@@ -214,14 +224,30 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     else:
                         values = (event, dict(event, sig='00'*64), event)
                         trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
+                    setup_closed=window and number<=2
+                    if setup_closed:
+                        trace['frames'][-1]='CLOSED'
+                    if not setup_closed and not refusals and event_sender is None:
+                        if split is not None:
+                            # These frozen recipes declare whether every body can
+                            # be classified; malformed holes retain their interval.
+                            continuous=all(set(value)==set(event) for value in values)
+                            times=[value['created_at'] for value in values if 'created_at' in value]
+                            continuous=continuous and all(b<=a for a,b in zip(times,times[1:]))
+                            if retained and trace['retained_phase']=='saturation':continuous=False
+                        else:
+                            continuous=not window or directory.name=='sync-window-source' or window_rounds==2
+                            times=[event['created_at']]
+                        if continuous and times:uppers[number+1]=min(times)+1
                     if event_sender is None and split is None:
                         trace['sent_at_us'] = time.time_ns()//1000
                     for value in values:
                         send_frame(connection, ['EVENT', ident, value])
-                    send_frame(connection, ['EOSE', ident])
+                    send_frame(connection, ['CLOSED', ident, 'fixture setup interruption'] if setup_closed else ['EOSE', ident])
                     opcode, raw = read_frame(connection)
-                    assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
-                    opcode, raw = read_frame(connection)
+                    if not setup_closed:
+                        assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
+                        opcode, raw = read_frame(connection)
                     assert opcode == 8 and raw == b''
                     connection.sendall(b'\x88\x00')
                     connection.shutdown(socket.SHUT_WR)
@@ -329,8 +355,10 @@ def run(directory, request, login, logout):
         visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
     listener = relay_listener()
     finished, errors = threading.Event(), []
+    expected_uppers={1:86400}
     worker = threading.Thread(target=no_connections if visibility_refusal else relay,
-        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals, window))
+        args=(directory, listener, finished, errors) if visibility_refusal else (directory, listener, finished, errors, signed, refusals, window),
+        kwargs={} if visibility_refusal else dict(expected_uppers=expected_uppers))
     worker.start()
     deferred_worker = None
     try:
@@ -347,7 +375,7 @@ def run(directory, request, login, logout):
         barrier('submitted')
         status, raw = request('GET', '/management/v1/jobs/'+receipt['job_id'], headers=auth)
         observed = json.loads(raw)
-        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True)
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True,expected_uppers=expected_uppers)
         assert status == 200 and {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None, observed_at_us=observed['observed_at_us'],
@@ -382,6 +410,13 @@ def run(directory, request, login, logout):
                     observed_at_us=deferred_status['observed_at_us'])
                 assert int(deferred_status['observed_at_us']) >= int(deferred_receipt['accepted_at_us'])
                 publish(directory, 'window-job-status.json', deferred_status)
+            previous=observed
+            status,raw=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)
+            observed=json.loads(raw)
+            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True,expected_uppers=expected_uppers)
+            assert status==200 and {k:v for k,v in observed.items() if k!='linear_quantum'}==dict(
+                {k:v for k,v in previous.items() if k!='linear_quantum'},observed_at_us=observed['observed_at_us'])
+            assert int(observed['observed_at_us'])>=int(previous['observed_at_us'])
         logged_out = logout(session, saved, auth)
         barrier('commands-finished')  # Host stops Serve while our relay remains available.
     finally:

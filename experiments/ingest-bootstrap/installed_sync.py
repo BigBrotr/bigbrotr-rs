@@ -280,6 +280,23 @@ while True:
     return selected
 
 
+def validate_stall(quanta,transcript,event,job_id):
+    """Two consecutive returned boundaries end bounded work with no next plan."""
+    assert 2<=len(quanta)==len(transcript)
+    assert [row['quantum_number'] for row in quanta]==list(range(1,len(quanta)+1))
+    assert all(row['job_id']=='\\x'+job_id for row in quanta)
+    upper=event['created_at']+1
+    for row,wire,requested in zip(quanta[-2:],transcript[-2:],(86400,upper)):
+        assert row['interval_lower']==0 and row['interval_upper']==requested
+        assert wire['request'][2]==dict(kinds=[1],since=0,until=requested-1,limit=3)
+        assert row['terminal_kind']=='eose' and row['result_class']=='linear_observed' and row['gap_reason'] is None
+        assert row['teardown_complete'] is True and row['continuation_upper']==upper
+        assert row['retained_events']==row['classified_prefix']==3
+        assert wire['completion']=='request-and-websocket-close' and wire['frames'][-1]=='EOSE'
+        assert bytes.fromhex(row['request_id'][2:])==wire['request'][1].encode()
+    return dict(terminal_quanta=len(quanta),next_plan=False,next_socket=False,coverage='pending')
+
+
 def run(pg, client, output, database, name, rows, *, gap_schema=None, progress=False, ack=False, preparation_hole=False, post_hole_proof=False):
     assert type(progress) is bool and (not progress or (name == 'sync-signed' and gap_schema is None))
     assert type(ack) is bool and (not ack or progress)
@@ -555,7 +572,17 @@ finally:
     from initial_jobs import logged_out
     logged_out(current, before_stop)
     selected_quiet = None
-    if visibility_refusal:
+    stalled=not progress and name in ('sync-signed','sync-expired-before-valid','sync-window-source')
+    stall_evidence=None
+    if stalled:
+        traces=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
+        assert len(list(directory.glob('relay-open-*.json')))==len(traces)
+        if not full_window:assert len(traces)==2
+        quanta=json.loads(lab.sql(pg,database,"SELECT coalesce(jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) ORDER BY quantum_number),'[]'::jsonb) FROM control.acquisition_quanta q"))
+        job,=[item['body'] for item in observations if item['path']=='jobs' and item['key']=='b1'*16]
+        stall_evidence=validate_stall(quanta,traces,json.loads((directory/'event.jsonl').read_text()),job['job_id'])
+        lab.write_json(output/(name+'-bounded-stall.json'),dict(stall_evidence,quanta=quanta))
+    if visibility_refusal or stalled:
         (directory/'stop-requested').write_text('SIGTERM requested by owned host fixture\n')
         signal_at = time.monotonic()
         stop(client, prefix)
@@ -571,6 +598,12 @@ finally:
     wait_for((directory/'client-exit.json').exists, 'independent clients joined', 6)
     assert json.loads((directory/'client-exit.json').read_text())['exit_code'] == 0, (directory/'client.stderr').read_text()
     after = rows(database); lab.write_json(output/(name+'-after.json'), after)
+    if stalled:
+        quanta_after=json.loads(lab.sql(pg,database,"SELECT coalesce(jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',q.xmin::text) ORDER BY quantum_number),'[]'::jsonb) FROM control.acquisition_quanta q"))
+        assert quanta_after==quanta,'bounded stall changed during owned shutdown'
+        status=json.loads((directory/'client-result.json').read_text())['job_status']['linear_quantum']
+        assert status['coverage']=='pending' and status['terminal']=='eose' and status['result']=='linear_observed'
+        assert int(status['quantum_number'])==len(quanta) and int(status['upper'])==int(status['continuation_upper'])==2
     released(before_stop, after)
     if expiry:
         preserve_expired(expired_original, after)
@@ -624,6 +657,7 @@ finally:
     return dict(name=name, status='PASS', actual_cli=True, actual_http=True, actual_pg_rocks=True,
         websocket_rounds=len(transcript), same_owner_renewed=True, signal_seconds=signal_elapsed,
         selected_quiet_signal=selected_quiet,
+        bounded_stall=stall_evidence,
         natural_expiry=expiry_evidence,
         full_window=window_evidence,
         # ACK's native_result is a capture marker; the completed scientific

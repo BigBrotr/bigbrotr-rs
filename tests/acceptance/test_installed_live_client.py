@@ -113,7 +113,7 @@ class LiveClientControls(unittest.TestCase):
         with patch.object(live.subprocess, 'run', cli), patch.object(live, 'request', request), \
                 patch.object(live,'publish',publish), \
                 patch.object(live, 'relay_listener', return_value=object()), \
-                patch.object(live, 'relay', side_effect=lambda directory, listener, finished, errors: finished.wait(2)):
+                patch.object(live, 'relay', side_effect=lambda directory, listener, finished, errors, **kwargs: finished.wait(2)):
             options=dict(live_index_proof=True) if live_index_proof else {}
             result = live.journey(self.directory, self.profile_directory if profile else None, config, policy,**options)
         return result, commands, posts

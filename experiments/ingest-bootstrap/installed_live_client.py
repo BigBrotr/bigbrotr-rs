@@ -152,7 +152,7 @@ def access(*arguments, binary='/build/bigbrotr', failure_directory=None):
             os.close(parent)
 
 
-def relay(directory, listener, finished, errors):
+def relay(directory, listener, finished, errors, *, expected_uppers=None):
     old = json.loads((directory / 'event.jsonl').read_bytes())
     artifact = (directory / 'selector-events.json').read_bytes()
     assert hashlib.sha256(artifact).hexdigest() == FIXTURE_SHA
@@ -167,6 +167,7 @@ def relay(directory, listener, finished, errors):
         from installed_progress_transport import SplitEvents, ack_events
         split = SplitEvents(directory, new, 'activated', event_sequence=ack_events(directory))
     nonces = set()
+    uppers={1:86400} if expected_uppers is None else expected_uppers
     try:
         number = 0
         while not finished.is_set():
@@ -209,13 +210,17 @@ def relay(directory, listener, finished, errors):
                 assert re.fullmatch('[0-9a-f]{48}', ident) and int(ident[:32], 16)
                 assert ident[:32] not in nonces
                 nonces.add(ident[:32])
-                assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
+                assert command[2] == {'kinds': [1], 'since': 0, 'until': uppers[number]-1, 'limit': 3}
+                uppers[number+1]=uppers[number]
                 trace.update(request=command, request_at_us=time.time_ns() // 1000,
                     request_monotonic_ns=time.monotonic_ns())
                 publish(directory, f'relay-open-{number:03}.json', trace)
                 selected = split.select(ident, number) if split is not None else None
                 if selected is not None:
                     values = split.describe(trace, selected)
+                    times=[value['created_at'] for value in values if 'created_at' in value]
+                    if all(set(value)==set(new) for value in values) and all(b<=a for a,b in zip(times,times[1:])):
+                        uppers[number+1]=min(times)+1
                     for value in values:
                         send_frame(connection, ['EVENT', ident, value])
                     send_frame(connection, ['EOSE', ident])
@@ -313,8 +318,9 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         access_scope_id=enrollment['access_scope_id'], visibility=visibility,
         selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'),
         **revisions), 'f3' * 16)
+    expected_uppers={1:86400}
     worker = threading.Thread(target=relay,
-        args=(directory, relay_listener(), finished, errors))
+        args=(directory, relay_listener(), finished, errors),kwargs=dict(expected_uppers=expected_uppers))
     worker.start()
 
     def wait(name):
@@ -329,7 +335,7 @@ def journey(directory, profile_directory=None, expected_config_revision='2', exp
         status, raw = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
         observed = json.loads(raw)
         from installed_sync_client import quantum_status
-        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True)
+        quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True,expected_uppers=expected_uppers)
         assert status == 200 and {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'],
             kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
             created_at_us=receipt['accepted_at_us'], completed_at_us=None,

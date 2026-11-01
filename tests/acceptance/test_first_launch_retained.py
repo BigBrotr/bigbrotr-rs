@@ -331,7 +331,8 @@ class RetainedBoundaryControls(unittest.TestCase):
             def frame(self):
                 self.frame_number+=1
                 if self.frame_number==1:
-                    selector={'kinds':[1],'since':0,'until':86399,'limit':2 if self.number==bad_round and failure=='protocol' else 3}
+                    upper=2 if retained and release and self.number>22 or not retained and self.number>1 else 86400
+                    selector={'kinds':[1],'since':0,'until':upper-1,'limit':2 if self.number==bad_round and failure=='protocol' else 3}
                     return 1,json.dumps(['REQ',self.ident,selector]).encode()
                 return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 else (8,b'')
         listener=Mock();accepted=[];closed=[]
@@ -758,7 +759,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             invalid=copy.deepcopy(info);change(invalid)
             with self.assertRaises(ValueError):native.identity(invalid,runtime,entry)
 
-    def test_transport_has_one_bound_proof_and_exact_empty_round_cap(self):
+    def test_transport_has_one_bound_proof_and_quiet_interruption_while_waiting(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary)
             (root/'retained-request-profile.json').write_text(json.dumps(PROFILE))
@@ -768,14 +769,14 @@ class RetainedBoundaryControls(unittest.TestCase):
             for n in range(1,21):self.assertEqual(len(peer.select(str(n),n)[1]),3)
             selected=peer.select('boundary',21)
             self.assertEqual(selected[1],[peer.events[60],peer.events[61],peer.events[0]])
-            self.assertEqual(peer.select('22',22),('empty',[]))
+            self.assertIsNone(peer.select('22',22))
             release=dict(format='bigbrotr-retained-request-proof-release/1',boundary_request='wrong',
                 classified_events=61,complete_through_request=64,checkpoint_revision=64)
             (root/'retained-proof.continue').write_text(json.dumps(release))
             with self.assertRaises(AssertionError):peer.select('23',23)
             release['boundary_request']='boundary';(root/'retained-proof.continue').write_text(json.dumps(release))
             self.assertEqual(peer.select('23',23),('proof-only',[peer.events[0]]))
-            for n in range(99):self.assertEqual(peer.select(str(24+n),24+n),('empty',[]))
+            for n in range(99):self.assertIsNone(peer.select(str(24+n),24+n))
             self.assertIsNone(peer.select('123',123))
 
     def test_absolute_client_deadline_does_not_reset(self):

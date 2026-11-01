@@ -17,13 +17,13 @@ def wire_json(value):
 
 
 def effects(value):
-    value=raw(value);assert len(value)%61==0 and len(value)<=3*61
+    value=raw(value);assert len(value)%93==0 and len(value)<=3*93
     result=[]
-    for at in range(0,len(value),61):
-        part=value[at:at+61]
+    for at in range(0,len(value),93):
+        part=value[at:at+93]
         result.append((int.from_bytes(part[:2],'big'),int.from_bytes(part[2:10],'big'),part[10:42],
             int.from_bytes(part[42:44],'big'),int.from_bytes(part[44:52],'big'),
-            int.from_bytes(part[52:60],'big'),part[60]))
+            int.from_bytes(part[52:60],'big'),part[60],part[61:93]))
     assert [value[0] for value in result]==sorted({value[0] for value in result})
     return result
 
@@ -148,10 +148,12 @@ def journey(state,wires,epoch,expected):
     shape(state)
     rows=sorted((row for row in state['acquisition_quanta'] if row['producer_epoch']==epoch),key=lambda row:row['quantum_number'])
     assert rows and len(wires)<=len(rows)<=len(wires)+1
+    upper=None;previous_boundary=None;stopped=False
     for number,wire in enumerate(wires,1):
+        assert not stopped,'stopped bounded traversal opened another socket'
         row=rows[number-1]
         job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-        window(row,job,wire)
+        upper=window(row,job,wire,expected_upper=upper)
         assert row['request_predicate']=='\\x'+wire_json(['REQ','0'*48,*wire['request'][2:]]).hex()
         assert row['quantum_number']==number
         if row['terminal_kind'] is None:
@@ -161,25 +163,38 @@ def journey(state,wires,epoch,expected):
         records=effects(row['effect_records'])
         wanted=[];refs=[]
         for ordinal,(event,kind,request,dependencies) in enumerate(declared,1):
-            wanted.append((ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1))
+            wanted.append((ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1,bytes.fromhex(event['id'])))
             refs.extend(dependencies)
         assert records==wanted
         assert raw(row['dependencies'])==reference_bytes(refs)
-        if 'EOSE' in wire['frames']:
+        terminal=wire['frames'][-1] if wire['frames'] else None
+        if terminal in ('EOSE','CLOSED'):
             assert row['retained_events']==len(wire['frames'])-1
-            assert row['terminal_kind']=='eose' and json.loads(raw(row['terminal_frame']))==['EOSE',wire['request'][1]]
+            assert row['terminal_kind']==terminal.lower()
+            expected_frame=['EOSE',wire['request'][1]] if terminal=='EOSE' else ['CLOSED',wire['request'][1],'fixture setup interruption']
+            assert json.loads(raw(row['terminal_frame']))==expected_frame
             assert row['terminal_sequence']==len(wire['frames'])
         else:assert not declared and row['terminal_kind'] in ('deadline','cancelled','disconnected')
         good=[event['created_at'] for event,kind,_,_ in declared if kind in (2,3,5)]
         ordered=all(later<=earlier for earlier,later in zip(good,good[1:]))
         continuous=row['terminal_kind']=='eose' and len(declared)==row['retained_events'] and ordered
-        if 'EOSE' in wire['frames']:
+        if terminal in ('EOSE','CLOSED'):
             assert row['teardown_complete'] is True and wire['completion']=='request-and-websocket-close'
-            gap='unclassified_suffix' if len(declared)<row['retained_events'] else 'ordering' if not ordered else None
+            gap='closed' if terminal=='CLOSED' else 'unclassified_suffix' if len(declared)<row['retained_events'] else 'ordering' if not ordered else None
             assert row['gap_reason']==gap and row['result_class']==('interrupted' if gap else 'linear_observed')
         else:
             assert row['teardown_complete'] is False and row['gap_reason']=='teardown' and row['result_class']=='interrupted'
         assert row['continuation_upper']==(min(good)+1 if good and continuous else row['interval_upper'])
+        if continuous:
+            boundary=min(good)+1 if good else None
+            stopped=boundary is None or (boundary==upper and boundary==previous_boundary)
+            if boundary is not None:upper=boundary
+            previous_boundary=boundary
+        else:previous_boundary=None
+    if len(rows)>len(wires):
+        assert not stopped,'stopped bounded traversal retained another plan'
+        row=rows[-1];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
+        window(row,job,expected_upper=upper)
 
 
 def initial(state,wires,event,science,*,retained_events=None):
@@ -217,10 +232,10 @@ def successor(state,wires,old,new,science,*,before,provenance,first_science=None
     journey(state,wires,2,{1:[(new,2,2,refs(2)),old_effect,(new,5,0,refs(2))]})
 
 
-def window(row,job,wire=None,*,selector=None,accepted_at_us=None):
+def window(row,job,wire=None,*,selector=None,accepted_at_us=None,expected_upper=None):
     from installed_sync_client import quantum_window
     if accepted_at_us is not None:assert job['created_at_us']==int(accepted_at_us)
-    lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'])
+    lower,upper,horizon,filters=quantum_window(selector,job['created_at_us'],expected_upper=expected_upper)
     assert (row['interval_lower'],row['interval_upper'],row['horizon'])==(lower,upper,horizon)
     command=json.loads(raw(row['request_predicate']))
     assert command[:2]==['REQ','0'*48] and command[2:]==filters
@@ -246,8 +261,8 @@ SCENARIO_RESULTS={
 }
 
 
-def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None):
-    upper=window(row,job,wire,selector=selector,accepted_at_us=accepted_at_us)
+def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None,expected_upper=None):
+    upper=window(row,job,wire,selector=selector,accepted_at_us=accepted_at_us,expected_upper=expected_upper)
     terminal,retained,classified,teardown,result,gap,sequence=SCENARIO_RESULTS[wire['scenario']]
     assert (row['terminal_kind'],row['retained_events'],row['classified_prefix'],row['teardown_complete'],
         row['result_class'],row['gap_reason'],row['terminal_sequence'])==(terminal,retained,classified,teardown,result,gap,sequence)
@@ -274,7 +289,7 @@ def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None):
     assert raw(row['dependencies'])==(refs if classified else b'')
     for ordinal,record in enumerate(records,1):
         kind,request=(2,4) if wire['scenario'] in ('slow_eose','body_closed') else (5,0)
-        assert record==(ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1)
+        assert record==(ordinal,ordinal,hashlib.sha256(wire_json(event)).digest(),kind,request,event['created_at'],1,bytes.fromhex(event['id']))
     assert row['continuation_upper']==(event['created_at']+1 if classified and gap is None else upper)
     return classified
 

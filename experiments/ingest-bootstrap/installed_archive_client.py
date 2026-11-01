@@ -124,10 +124,12 @@ def run(directory):
     listener = relay_listener()
     finished = threading.Event()
     linear=(directory/'linear-quantum-profile.json').exists()
+    expected_uppers={0:{1:86400},1:{1:86400}} if linear else {1:86400}
     if linear:
         from linear_quantum_transport import relay as linear_relay
     worker = threading.Thread(target=linear_relay if linear else relay,
-        args=(directory,listener,finished,errors) if linear else (directory, listener, finished, errors, True))
+        args=(directory,listener,finished,errors) if linear else (directory, listener, finished, errors, True),
+        kwargs=dict(expected_uppers=expected_uppers))
     worker.start()
     try:
         barrier('prepared')
@@ -135,13 +137,14 @@ def run(directory):
         assert receipt['execution'] == 'unobserved' and receipt['authority'] == 'acceptance-only'
         if linear:
             other_scope=call('acquisition-scopes',dict(endpoint_id=endpoint['endpoint_id'],access_scope_id=enrollment['access_scope_id'],
-                visibility=visibility,selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'),
+                visibility=visibility,selector=dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'),
                 **revisions),'a2'*16)
             other_receipt=call('jobs',dict(kind='acquisition',scope_id=other_scope['scope_id'],deadline_us='120000000',**revisions),'b2'*16)
-        def status(*,known_plan=False,receipt=receipt,scope=scope,selector=None):
+        def status(*,known_plan=False,receipt=receipt,scope=scope,selector=None,scope_number=0):
             code, observed = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
             assert code == 200
-            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=known_plan,selector=selector)
+            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=known_plan,selector=selector,
+                expected_uppers=expected_uppers[scope_number] if linear else expected_uppers)
             assert observed['state'] in ('accepted', 'queued')
             assert {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'], kind='acquisition',
                 state=observed['state'], job_revision='1' if observed['state'] == 'accepted' else '2',
@@ -155,7 +158,7 @@ def run(directory):
         publish(directory, 'status-observations.json', statuses)
         if linear:
             second_status=status(known_plan=True,receipt=other_receipt,scope=other_scope,
-                selector=dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'))
+                selector=dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'),scope_number=1)
             publish(directory,'linear-status-observations.json',[final_status,second_status])
         logged_out = cli('logout', '--session-ref', 'file:' + str(session))
         assert json.loads(session.read_text()) == saved

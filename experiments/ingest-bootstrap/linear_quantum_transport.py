@@ -7,14 +7,15 @@ import time
 from installed_sync_client import exact,read_frame,send_frame,publish
 
 PROFILE=dict(format='bigbrotr-linear-quantum-fixture/1',requests=8,scopes=2)
-SCENARIOS=('slow_eose','malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty','proof')
+SCENARIOS=('slow_eose','malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','proof','empty')
 
 
-def relay(directory,listener,finished,errors):
+def relay(directory,listener,finished,errors,*,expected_uppers=None):
     """Every request uses the real handshake and actual generated nonce."""
     try:
         assert json.loads((directory/'linear-quantum-profile.json').read_text())==PROFILE
         event=json.loads((directory/'event.jsonl').read_text())
+        uppers={0:{1:86400},1:{1:86400}} if expected_uppers is None else expected_uppers
         fault=json.loads((directory/'linear-quantum-fault.json').read_text()) if (directory/'linear-quantum-fault.json').exists() else None
         scenarios=('body_closed',*SCENARIOS[1:]) if fault=='gap-write' else ('empty',*SCENARIOS[1:]) if fault=='empty-terminal-authority' else SCENARIOS
         for number,scenario in enumerate(scenarios,1):
@@ -39,9 +40,15 @@ def relay(directory,listener,finished,errors):
                 connection.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: '+accept+b'\r\n\r\n')
                 opcode,encoded=read_frame(connection);request=json.loads(encoded)
                 assert opcode==1 and len(request)==3 and request[0]=='REQ'
-                assert request[2]==dict(kinds=[1],since=0,until=86399,limit=3)
+                scope_number=(number-1)%2
+                quantum_number=(number+1)//2
+                upper=86400 if number==1 or scope_number==1 or fault else event['created_at']+1
+                assert request[2]==dict(kinds=[1],since=scope_number,until=upper-1,limit=3)
+                assert uppers[scope_number][quantum_number]==upper
+                uppers[scope_number][quantum_number+1]=(event['created_at']+1
+                    if scenario in ('slow_eose','proof') else upper)
                 ident=request[1];assert len(ident)==48 and int(ident,16)
-                trace=dict(number=number,scenario=scenario,request=request,connected_at_us=connected,
+                trace=dict(number=number,scenario=scenario,scope_number=scope_number,request=request,connected_at_us=connected,
                     request_at_us=time.time_ns()//1000,clock_resolution_us=1,frames=[])
                 publish(directory,f'relay-open-{number:03}.json',trace)
                 # The first deliberately slow complete EVENT precedes EOSE.

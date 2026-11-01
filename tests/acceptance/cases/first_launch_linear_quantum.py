@@ -14,7 +14,7 @@ from cases import first_launch_retained_native as native
 STAGES=('prerequisites','candidate','runtime_image','fresh_bootstrap','signed_acquisition','linear_quantum','cleanup')
 LIMITS=[
     'Two original finite scopes share the current Control/Sync/native owner. Eight real requests exercise slow EVENT/EOSE, malformed EVENT then EOSE, frame/event caps then EOSE, CLOSED, deadline, empty and proof-only work.',
-    'The finite listener closes after8; two charged unfinished plans remain pending. An actual source refusal neither completes a traversal nor synthesizes a producer request. All original input bytes, full native rows/sequence and independently expected classification/dependency records are compared after positive owner join.',
+    'The finite listener closes after8; proof repeats the first scope boundary and empty defers the second, with no next plan and pending coverage. An actual source refusal neither completes a traversal nor synthesizes a producer request. All original input bytes, full native rows/sequence and independently expected classification/dependency records are compared after positive owner join.',
     'Optional exact plan/terminal COMMIT before-forward/after-complete schedules prove no next socket/quantum and historical-only restart, including missing plan versus retained pending/terminal record. NOT_RUN: full walker, age bands, NEG/live, OPEN65, same-job adoption, physical capacity. Empty post-REQ authority withdrawal is isolated by the actual completed source-rollback reply; broader terminal races remain separate.',
 ]
 
@@ -299,8 +299,8 @@ class LinearQuantumRuntime(Runtime):
         def complete():
             require(not (self.home/'relay-error.json').exists(),'finite linear peer failed')
             if not (self.home/'linear-peer-complete.json').exists():return False
-            return self.sql('bigbrotr_control',"SELECT count(*) FROM control.acquisition_quanta WHERE terminal_kind IS NULL")=='2'
-        self.wait(complete,'eight terminal results and two pending refusals',30,entry,self.client)
+            return self.sql('bigbrotr_control',"SELECT count(*)||':'||count(*) FILTER(WHERE terminal_kind IS NULL) FROM control.acquisition_quanta")=='8:0'
+        self.wait(complete,'eight terminal results and both bounded stops',30,entry,self.client)
         live,_=self.capture(output,'linear-live')
         require(len(live['jobs'])==len(live['acquisition_jobs'])==2,'two real accepted scopes required')
 
@@ -340,7 +340,7 @@ class LinearQuantumRuntime(Runtime):
         require([wire['scenario'] for wire in wires]==list(SCENARIOS),'finite socket scenarios differ')
         rows=state['acquisition_quanta'];oracle.shape(state)
         pending=[row for row in rows if row['terminal_kind'] is None]
-        require(len(rows)==10 and len(pending)==2 and len({row['job_id'] for row in pending})==2,'unfinished plans or finite turn count differs')
+        require(len(rows)==8 and not pending,'bounded stops retained a new plan or finite turn count differs')
         by_request={oracle.raw(row['request_id']).decode():row for row in rows if row['request_id'] is not None}
         refs=oracle.reference_bytes(oracle.receipt_refs(wanted['receipts'][3]));totals={}
         declarations={}
@@ -348,7 +348,7 @@ class LinearQuantumRuntime(Runtime):
         selectors={item['body']['scope_id']:item['input']['selector'] for item in commands if item['path']=='acquisition-scopes'}
         declared={oracle.wire_json(value) for value in selectors.values()}
         require(declared=={oracle.wire_json(dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain')),
-            oracle.wire_json(dict(version=1,filters=[{'kinds':[1],'until':86399}],history_since=0,ephemeral='retain'))},'two literal collection declarations differ')
+            oracle.wire_json(dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'))},'two literal collection declarations differ')
         for item in commands:
             if item['path']=='jobs':
                 declarations[item['body']['job_id']]=dict(selector=selectors[item['input']['scope_id']],
@@ -357,27 +357,38 @@ class LinearQuantumRuntime(Runtime):
             row=by_request[wire['request'][1]];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
             declared=declarations[job['job_id'][2:]]
             require(row['scope_id']=='\\x'+declared['scope_id'],'quantum declaration identity differs')
-            classified=oracle.scenario(row,wire,job,event,refs,selector=declared['selector'],accepted_at_us=declared['accepted_at_us'])
+            scope_number=(wire['number']-1)%2
+            require(wire['scope_number']==scope_number
+                and declared['selector']['filters'][0].get('since',0)==scope_number
+                and row['quantum_number']==(wire['number']+1)//2,'literal scenario scope/turn identity differs')
+            upper=86400 if wire['number']==1 or scope_number==1 else event['created_at']+1
+            classified=oracle.scenario(row,wire,job,event,refs,selector=declared['selector'],
+                accepted_at_us=declared['accepted_at_us'],expected_upper=upper)
             totals[row['job_id']]=totals.get(row['job_id'],0)+classified
         statuses=load(self.home/'linear-status-observations.json')
         require({value['job_id'] for value in statuses}==set(declarations),'both known-plan actor statuses required')
         from installed_sync_client import quantum_status,quantum_window
         for value in statuses:
             declared=declarations[value['job_id']]
-            actual=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,selector=declared['selector'])
+            scope_number=declared['selector']['filters'][0].get('since',0)
+            upper=86400 if scope_number else event['created_at']+1
+            uppers={number:86400 if number==1 or scope_number else event['created_at']+1 for number in range(1,5)}
+            actual=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
+                selector=declared['selector'],expected_uppers=uppers)
             job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]
             latest=max(job_rows,key=lambda row:row['quantum_number'])
-            lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'])
-            require(actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number=str(len(job_rows)),
-                scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='pending',
-                terminal=None,gap=None,continuation_upper=None,retained_events=None,classified_prefix=None,coverage='pending')
-                and latest['terminal_kind'] is None,'known final pending status differs')
+            lower,upper,horizon,_=quantum_window(declared['selector'],declared['accepted_at_us'],expected_upper=upper)
+            require(len(job_rows)==4 and actual==dict(format='bigbrotr-linear-quantum-status/1',quantum_number='4',
+                scope_id=declared['scope_id'],lower=str(lower),upper=str(upper),horizon=str(horizon),result='linear_observed',
+                terminal='eose',gap=None,continuation_upper=str(upper),retained_events=0 if scope_number else 1,
+                classified_prefix=0 if scope_number else 1,coverage='pending')
+                and latest['terminal_kind']=='eose','known final stopped status differs')
         require(set(totals)=={job['job_id'] for job in state['jobs']},'both controlled scopes must receive finite turns')
         require(sum(totals.values())==5,'finite expected classification total differs')
         for head in state['acquisition_progress']:
             require(head['classified_events']==head['successful_events']==totals[head['job_id']] and head['rejected_events']==0,'independent per-job progress differs')
         head,=state['producer_checkpoints'];require(head['checkpoint_revision']==8 and head['complete_through_request']==4,'native completion or classified checkpoint differs')
-        save(output/'verdict.json',dict(status='PASS',requests=8,scopes=2,terminal_records=8,pending_plans=2,
+        save(output/'verdict.json',dict(status='PASS',requests=8,scopes=2,terminal_records=8,pending_plans=0,
             classifications=5,mutation_requests=4,native_rows=len(actual),native_sequence=67,coverage='pending'))
 
     def verify_fault(self):

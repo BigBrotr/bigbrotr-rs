@@ -173,7 +173,7 @@ def transcript(home):
     require(not any((home/name).exists() for name in ('relay-error.json','relay-shutdown.json')),
             'peer transcript incomplete or failed')
     opened=sorted(home.glob('relay-open-*.json'));closed=sorted(home.glob('relay-closed-*.json'))
-    require(3<=len(opened)==len(closed)<=128,'every accepted peer connection must close within original bound')
+    require(len(opened)==len(closed)==2,'two signed pages must stop before another socket')
     nonces=set()
     for number,(before,after) in enumerate(zip(opened,closed),1):
         first,last=load(before),load(after)
@@ -181,15 +181,15 @@ def transcript(home):
                 'peer connection inventory has a gap')
         require(all(last.get(k)==v for k,v in first.items()) and first['number']==number,'peer open/close binding differs')
         command=last['request']
-        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],since=0,until=86399,limit=3)
+        require(len(command)==3 and command[0]=='REQ' and command[2]==dict(kinds=[1],since=0,until=86399 if number==1 else 1,limit=3)
             and re.fullmatch('[0-9a-f]{48}',command[1]) and int(command[1][:32],16)>0
             and command[1][:32] not in nonces,'peer request is not the bounded acquisition command')
         nonces.add(command[1][:32])
         require(last['connected_at_us']<=last['request_at_us']<=last['closed_at_us']
             and 0<last['closed_at_us']-last['request_at_us']<3_000_000,'peer chronology/bound differs')
         require((last['frames'],last['completion'])==(
-            (['signed','forged-signature','duplicate','EOSE'],'request-and-websocket-close') if number<=2
-            else ([], 'quiet-eof')),'peer round lacks complete validated REQ/CLOSE/EOF traffic')
+            ['signed','forged-signature','duplicate','EOSE'],'request-and-websocket-close'),
+            'peer round lacks complete validated REQ/CLOSE/EOF traffic')
     return dict(connections=len(closed),signed_rounds=2,outbound_nostr_event_frames=0,
         scope='all accepted controlled-peer connections; parser requires CLOSE/empty WS close/TCP EOF or quiet EOF')
 

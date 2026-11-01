@@ -29,13 +29,6 @@ class RetainedEvents:
         assert self.events[0] == json.loads((directory/'event.jsonl').read_text())
         self.boundary_request = None
         self.proof_sent = False
-        self.empty_rounds = 0
-
-    def empty(self):
-        if (self.directory/'commands-finished.json').exists() or self.empty_rounds == 100:
-            return None
-        self.empty_rounds += 1
-        return 'empty', []
 
     def select(self, ident, number):
         if number <= 20:
@@ -45,10 +38,10 @@ class RetainedEvents:
             self.boundary_request = ident
             return 'saturation', [self.events[60], self.events[61], self.events[0]]
         if self.proof_sent:
-            return self.empty()
+            return None
         path = self.directory/'retained-proof.continue'
         if not path.exists():
-            return self.empty()
+            return None  # A quiet interruption preserves the still-needed interval.
         assert stat.S_ISREG(path.lstat().st_mode) and path.stat().st_size <= 512
         release = json.loads(path.read_text())
         assert release == dict(format='bigbrotr-retained-request-proof-release/1',

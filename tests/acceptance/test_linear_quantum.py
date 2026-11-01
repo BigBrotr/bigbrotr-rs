@@ -1,9 +1,11 @@
 """Independent quantum evidence/refusal controls; no product or engine runs."""
 import copy
+import base64
 import hashlib
 import json
 from pathlib import Path
 import tempfile
+import threading
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
@@ -67,7 +69,7 @@ def successor_fixture(provenance):
     frames=[(new,2,2),(old,2,3) if provenance else (old,5,0),(new,5,0)]
     records=b''.join(number.to_bytes(2,'big')+number.to_bytes(8,'big')+
         hashlib.sha256(check.wire_json(event)).digest()+kind.to_bytes(2,'big')+
-        request.to_bytes(8,'big')+event['created_at'].to_bytes(8,'big')+b'\x01'
+        request.to_bytes(8,'big')+event['created_at'].to_bytes(8,'big')+b'\x01'+bytes.fromhex(event['id'])
         for number,(event,kind,request) in enumerate(frames,1))
     refs=check.receipt_refs(science['receipts'][1])
     refs+=check.receipt_refs(science['receipts'][2]) if provenance else (
@@ -83,7 +85,149 @@ def successor_fixture(provenance):
     return state,wire,old,new,science,first
 
 
+def signed_pages_fixture():
+    from test_first_launch_restart import fixture as signed_science
+    event,_,_,encoded,_=signed_science()
+    science=encoded.first;state,_=fixture();rows=[];wires=[]
+    for values in state.values():
+        for value in values:
+            if 'dataset_id' in value:value['dataset_id']=encoded.m.ds['dataset_id']
+    original=state['acquisition_quanta'][0]
+    refs=check.reference_bytes(check.receipt_refs(science['receipts'][3]))
+    for number,upper in ((1,86400),(2,event['created_at']+1)):
+        ident=f'{number:048x}';frame=check.wire_json(['EOSE',ident])
+        predicate=check.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=upper-1,limit=3)])
+        bodies=(event,dict(event,sig='00'*64),event)
+        kinds=((2,4),(6,0),(5,0)) if number==1 else ((5,0),(6,0),(5,0))
+        records=b''.join(ordinal.to_bytes(2,'big')+ordinal.to_bytes(8,'big')+
+            hashlib.sha256(check.wire_json(body)).digest()+kind.to_bytes(2,'big')+
+            request.to_bytes(8,'big')+body['created_at'].to_bytes(8,'big')+b'\x01'+bytes.fromhex(body['id'])
+            for ordinal,(body,(kind,request)) in enumerate(zip(bodies,kinds),1))
+        rows.append(dict(original,quantum_id='\\x'+f'{number:032x}',quantum_number=number,
+            interval_upper=upper,request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),
+            terminal_frame='\\x'+frame.hex(),request_id='\\x'+ident.encode().hex(),terminal_sequence=4,
+            retained_events=3,classified_prefix=3,dependencies='\\x'+refs.hex(),effect_records='\\x'+records.hex(),
+            continuation_upper=event['created_at']+1,charged_bytes=1024+len(predicate)+len(frame)+len(records)+256*(len(refs)//72)))
+        wires.append(dict(number=number,request=['REQ',ident,dict(kinds=[1],since=0,until=upper-1,limit=3)],
+            frames=['signed','forged-signature','duplicate','EOSE'],completion='request-and-websocket-close'))
+    state['acquisition_quanta']=rows
+    return state,wires,event,science
+
+
 class LinearQuantumControls(unittest.TestCase):
+    def test_finite_scenarios_keep_declared_scope_identity_and_continued_bounds(self):
+        import linear_quantum_transport as peer
+        root=Path(__file__).resolve().parents[2]
+        for failure in (None,'stale-upper','wrong-scope'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary)
+                (directory/'event.jsonl').write_bytes((root/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
+                (directory/'linear-quantum-profile.json').write_text(json.dumps(peer.PROFILE))
+                class Connection:
+                    def __init__(self,number):
+                        self.number=number;self.frames=0
+                        self.header=bytearray(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
+                            'Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\n'
+                            'Sec-WebSocket-Key: '+base64.b64encode(bytes(16)).decode()+'\r\n\r\n').encode())
+                    def __enter__(self):return self
+                    def __exit__(self,*args):pass
+                    def settimeout(self,value):pass
+                    def sendall(self,value):pass
+                    def shutdown(self,value):pass
+                    def recv(self,count):
+                        result=bytes(self.header[:count]);del self.header[:count];return result
+                    def frame(self):
+                        self.frames+=1;ident=f'{self.number:032x}'+'0'*16
+                        if self.frames==1:
+                            scope=(self.number-1)%2
+                            upper=86400 if self.number==1 or scope else 2
+                            if failure=='stale-upper' and self.number==3:upper=86400
+                            if failure=='wrong-scope' and self.number==2:scope=0
+                            return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=scope,until=upper-1,limit=3)])
+                        if self.frames==2 and self.number!=5:return 1,check.wire_json(['CLOSE',ident])
+                        return 8,b''
+                listener=Mock();listener.accept.side_effect=[(Connection(number),('127.0.0.1',12345)) for number in range(1,9)]
+                errors=[];uppers={0:{1:86400},1:{1:86400}}
+                with patch.object(peer,'read_frame',side_effect=lambda connection:connection.frame()), \
+                        patch.object(peer,'send_frame'),patch.object(peer.time,'sleep'):
+                    peer.relay(directory,listener,threading.Event(),errors,expected_uppers=uppers)
+                listener.close.assert_called_once()
+                self.assertEqual(bool(errors),failure is not None)
+                self.assertEqual((directory/'linear-peer-complete.json').exists(),failure is None)
+                if failure is None:
+                    wires=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
+                    self.assertEqual([wire['scenario'] for wire in wires],list(peer.SCENARIOS))
+                    self.assertEqual([wire['request'][2]['until'] for wire in wires],[86399,86399,1,86399,1,86399,1,86399])
+                    self.assertEqual([wire['scope_number'] for wire in wires],[0,1]*4)
+
+    def test_signed_pages_overlap_once_then_refuse_an_extra_plan_or_socket(self):
+        state,wires,event,science=signed_pages_fixture()
+        check.initial(state,wires,event,science)
+        self.assertEqual([row['interval_upper'] for row in state['acquisition_quanta']],[86400,2])
+        for change in ('upper','predicate','third-plan','third-socket'):
+            changed=copy.deepcopy(state);transcript=copy.deepcopy(wires)
+            if change=='upper':changed['acquisition_quanta'][1]['interval_upper']=86400
+            elif change=='predicate':
+                predicate=check.raw(changed['acquisition_quanta'][1]['request_predicate']).replace(b'"until":1',b'"until":86399')
+                changed['acquisition_quanta'][1]['request_predicate']='\\x'+predicate.hex()
+                changed['acquisition_quanta'][1]['predicate_sha256']='\\x'+hashlib.sha256(predicate).hexdigest()
+            else:
+                changed['acquisition_quanta'].append(dict(changed['acquisition_quanta'][1],
+                    quantum_id='\\x'+f'{3:032x}',quantum_number=3))
+                if change=='third-socket':transcript.append(dict(transcript[-1],number=3))
+            with self.subTest(change=change),self.assertRaises(AssertionError):check.initial(changed,transcript,event,science)
+
+    def test_successful_empty_defers_without_an_extra_plan(self):
+        state,wire=fixture();check.journey(state,[wire],1,{})
+        extra=copy.deepcopy(state['acquisition_quanta'][0]);extra.update(quantum_id='\\x'+'9'*32,quantum_number=2)
+        state['acquisition_quanta'].append(extra)
+        with self.assertRaisesRegex(AssertionError,'stopped bounded traversal'):check.journey(state,[wire],1,{})
+
+    def test_closed_page_retries_exact_interval_before_successful_overlap(self):
+        state,wires,event,science=signed_pages_fixture()
+        first,second=state['acquisition_quanta']
+        closed=check.wire_json(['CLOSED',wires[0]['request'][1],'fixture setup interruption'])
+        first['charged_bytes']+=len(closed)-len(check.raw(first['terminal_frame']))
+        first.update(terminal_kind='closed',terminal_frame='\\x'+closed.hex(),gap_reason='closed',
+            result_class='interrupted',continuation_upper=86400)
+        wires[0]['frames'][-1]='CLOSED'
+        predicate=check.raw(first['request_predicate'])
+        second['charged_bytes']+=len(predicate)-len(check.raw(second['request_predicate']))
+        second.update(interval_upper=86400,request_predicate='\\x'+predicate.hex(),
+            predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest())
+        wires[1]['request'][2]['until']=86399
+        pending=fixture(pending=True)[0]['acquisition_quanta'][0]
+        predicate=check.wire_json(['REQ','0'*48,dict(kinds=[1],since=0,until=1,limit=3)])
+        pending.update(dataset_id=first['dataset_id'],quantum_number=3,quantum_id='\\x'+f'{3:032x}',
+            interval_upper=2,request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),
+            charged_bytes=1024+len(predicate)+2097152+3072+192*256)
+        state['acquisition_quanta'].append(pending)
+        check.initial(state,wires,event,science)
+        changed=copy.deepcopy(state);changed['acquisition_quanta'][1]['interval_upper']=2
+        with self.assertRaises(AssertionError):check.initial(changed,wires,event,science)
+
+    def test_installed_stall_validator_requires_both_terminal_pages_and_exact_bounds(self):
+        from installed_sync import validate_stall
+        state,wires,event,_=signed_pages_fixture();rows=state['acquisition_quanta'];job=state['jobs'][0]['job_id'][2:]
+        self.assertEqual(validate_stall(rows,wires,event,job)['coverage'],'pending')
+        for field,value in (('interval_upper',86400),('terminal_kind',None),('classified_prefix',2),
+                ('continuation_upper',1),('request_id',rows[0]['request_id'])):
+            changed=copy.deepcopy(rows);changed[-1][field]=value
+            with self.subTest(field=field),self.assertRaises(AssertionError):validate_stall(changed,wires,event,job)
+        with self.assertRaises(AssertionError):validate_stall(rows[:1],wires[:1],event,job)
+
+    def test_status_uses_declared_query_ordinal_bounds_and_rejects_an_old_upper(self):
+        status=dict(format='bigbrotr-linear-quantum-status/1',quantum_number='2',scope_id='66'*16,
+            lower='0',upper='2',horizon='200000',result='linear_observed',terminal='eose',gap=None,
+            continuation_upper='2',retained_events=3,classified_prefix=3,coverage='pending')
+        quantum_status(dict(linear_quantum=status),'66'*16,'200000999999',known_plan=True,expected_uppers={1:86400,2:2})
+        with self.assertRaises(AssertionError):
+            quantum_status(dict(linear_quantum=dict(status,upper='86400')),'66'*16,'200000999999',
+                known_plan=True,expected_uppers={1:86400,2:2})
+        with self.assertRaises(KeyError):
+            quantum_status(dict(linear_quantum=dict(status,quantum_number='3')),'66'*16,'200000999999',
+                known_plan=True,expected_uppers={1:86400,2:2})
+
     def test_successor_on_off_quantum_requires_exact_effects_and_dependency_union(self):
         for provenance in (True,False):
             state,wire,old,new,science,first=successor_fixture(provenance)
@@ -91,13 +235,17 @@ class LinearQuantumControls(unittest.TestCase):
                 check.successor(value,[wire],old,new,science,before={'acquisition_quanta':[]},
                     provenance=provenance,first_science=first)
             verify(state)
-            for change in ('classification','event-digest','dependency-digest'):
+            for change in ('classification','event-digest','dependency-digest','canonical-event-id','event-time'):
                 changed=copy.deepcopy(state);row=changed['acquisition_quanta'][0]
                 key='dependencies' if change=='dependency-digest' else 'effect_records'
                 body=bytearray(check.raw(row[key]))
-                at=40 if change=='dependency-digest' else 61+(43 if change=='classification' else 10)
+                at=40 if change=='dependency-digest' else 93+dict(classification=43,**{'event-digest':10,'canonical-event-id':61,'event-time':52})[change]
                 body[at]^=1;row[key]='\\x'+body.hex()
                 with self.subTest(provenance=provenance,change=change),self.assertRaises(AssertionError):verify(changed)
+            old_format=copy.deepcopy(state);records=check.raw(old_format['acquisition_quanta'][0]['effect_records'])
+            old_format['acquisition_quanta'][0]['effect_records']='\\x'+b''.join(records[at:at+61] for at in range(0,len(records),93)).hex()
+            old_format['acquisition_quanta'][0]['charged_bytes']-=96
+            with self.assertRaises(AssertionError):verify(old_format)
             if not provenance:
                 row=state['acquisition_quanta'][0];raw=check.raw(row['dependencies'])
                 parts=[raw[at:at+72] for at in range(0,len(raw),72)]
