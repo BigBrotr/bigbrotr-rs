@@ -77,12 +77,14 @@ impl ControlSession {
         drop(producer);
         // The native proof is bounded by64. Inspect complete PG sets as well,
         // including extras: a watermark alone cannot hide an unresolved tail.
+        // Dataset is a checked row identity, never a filter that hides corrupt
+        // foreign-dataset rows belonging to this same producer slot/epoch.
         for table in ["producer_requests", "producer_outcomes"] {
             let rows = tx
                 .query(
                     &format!(
-                        "SELECT left(request_sequence::text,21) FROM control.{table}
-                    WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea
+                        "SELECT dataset_id=$1::bytea,left(request_sequence::text,21) FROM control.{table}
+                    WHERE producer_slot_id=$2::bytea
                     AND producer_epoch=1 ORDER BY request_sequence LIMIT 65"
                     ),
                     &[
@@ -96,9 +98,10 @@ impl ControlSession {
                 return Err(OwnerError::InvalidMetadata.into());
             }
             for (index, row) in rows.iter().enumerate() {
-                if ingest_registry::decimal(row.try_get(0).map_err(backend)?)
-                    .map_err(|_| OwnerError::InvalidMetadata)?
-                    != index as u64 + 1
+                if !row.try_get::<_, bool>(0).map_err(backend)?
+                    || ingest_registry::decimal(row.try_get(1).map_err(backend)?)
+                        .map_err(|_| OwnerError::InvalidMetadata)?
+                        != index as u64 + 1
                 {
                     return Err(OwnerError::InvalidMetadata.into());
                 }

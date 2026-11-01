@@ -11,7 +11,11 @@ Its exact probe seeds one genuine OPEN initial bootstrap, retains the same
 Control and native custody across raw reopen, then allows a clone-only privileged
 PG injection before the explicit whole-original reconciliation. Separate cases
 remove the PG outcome, advance reserved beyond native issued, or change outcome
-content with an independently recomputed hash. Refusals must preserve all current
+content with an independently recomputed hash. Two separate foreign-tail cases
+insert request2 or outcome2 for the same slot/epoch with one dataset byte flipped,
+keeping native issued1 and PG reserved1. The census must inspect the entire
+slot/epoch prefix and check dataset identity on each row; filtering by dataset
+would hide these corrupt extras. Refusals must preserve all current
 Control rows/xmin, complete native bytes/sequence/P and the sole original input;
 the next positive request must produce no input. A healthy proof must remain
 pressure-latched while its exact committed retry succeeds immediately; the next
@@ -21,8 +25,10 @@ The wave waits for no shortened policy and changes no process/operation limits.
 The original socket continuation separately waits for the configured stable-low
 interval before new intake. This wave does not qualify that wait, filesystem
 funding, OPEN65, rollback/lease-loss races or production deployment grants. It
-uses the existing broad lab role. Source/verifier controls are not actual PG or
-native execution: this new wave remains NOT_RUN until exact-source qualification.
+uses the existing broad lab role. The original four real PG/native cases passed
+at source310b44eb in their bounded scope. Both new foreign-tail cases remain
+NOT_RUN until exact-source qualification; portable verifier controls do not
+qualify them or the complete logical capability.
 
 Run the bounded native recipe through
 `experiments/network-transport/lab.py REVISION TREE policy-versions`.
