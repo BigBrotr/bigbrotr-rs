@@ -71,7 +71,8 @@ class PendingAccountingVectors(unittest.TestCase):
                    dict(event='socket-before'),dict(event='socket-admitted')]
         SOCKET.quota_recovery(events,True,stable,self.assertTrue)
         SOCKET.quota_recovery([],False,stable,self.assertTrue)
-        for fault in ('native','control','input','debt','early','short-policy','missing','late-zero','wrong-result'):
+        for fault in ('native','control','input','debt','early','short-policy','missing','late-zero','wrong-result',
+                      'late-resume-bound','late-resume-after'):
             bad=copy.deepcopy(events)
             if fault=='native':bad[2]['state']['native_sha256']='changed'
             if fault=='control':bad[2]['state']['control_tables'].append(['changed','xmin'])
@@ -82,6 +83,8 @@ class PendingAccountingVectors(unittest.TestCase):
             if fault=='missing':bad.pop(3)
             if fault=='late-zero':bad[0]['known_retry_elapsed_us']=stable
             if fault=='wrong-result':bad[2]['result']='Control(Unavailable)'
+            if fault=='late-resume-bound':bad[5]['elapsed_us']=bad[4]['started_us']+stable
+            if fault=='late-resume-after':bad[5]['elapsed_us']=bad[4]['started_us']+stable+1
             with self.subTest(fault=fault),self.assertRaises(AssertionError):
                 SOCKET.quota_recovery(bad,True,stable,self.assertTrue)
         with self.assertRaises(AssertionError):

@@ -139,7 +139,8 @@ def quota_recovery(messages, appended, stable_us, require):
         if index:
             require(attempt['started_us']>=attempts[index-1]['finished_us'],'sequential-positive-attempts')
     require(type(resumed['refusals']) is int and resumed['refusals']==3 and type(resumed['elapsed_us']) is int
-        and resumed['elapsed_us']>=anchor['reconciliation_finished_us']+stable_us,
+        and resumed['elapsed_us']>=anchor['reconciliation_finished_us']+stable_us
+        and resumed['elapsed_us']<attempts[-1]['started_us']+stable_us,
         'available-at-original-interval-after-active-attempts')
     # The real signed event and its existing independent state oracle qualify
     # successful positive intake after this bound, with a freshly created job.
