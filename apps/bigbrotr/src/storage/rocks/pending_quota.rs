@@ -480,12 +480,7 @@ impl IngestStore {
             custody: Arc::clone(&self._reservation.custody),
         })
     }
-    pub(super) fn validate_pending_funding(
-        &self,
-        funding: &PendingFunding,
-        delta: u64,
-    ) -> Result<(), PendingQuotaError> {
-        let quota = self.quota()?;
+    fn validate_pending_binding(&self, funding: &PendingFunding) -> Result<u64, PendingQuotaError> {
         let held = self.pending_funding(funding.terms.request, funding.terms.digest)?;
         if !Arc::ptr_eq(&funding.custody, &self._reservation.custody)
             || funding.manifest_sha256 != held.manifest_sha256
@@ -494,9 +489,24 @@ impl IngestStore {
         {
             return Err(PendingQuotaError::Conflict);
         }
-        if delta > held.terms.allowance_bytes {
+        Ok(held.terms.allowance_bytes)
+    }
+    pub(super) fn validate_pending_funding(
+        &self,
+        funding: &PendingFunding,
+        delta: u64,
+    ) -> Result<(), PendingQuotaError> {
+        let allowance = self.validate_pending_binding(funding)?;
+        if delta > allowance {
             return Err(PendingQuotaError::InsufficientAllowance);
         }
+        // A positively reconciled smaller policy may already retain P above
+        // high. Replay and new zero-P outcomes still need exact funding, but
+        // add no scientific growth that could require positive payload credit.
+        if delta == 0 {
+            return Ok(());
+        }
+        let quota = self.quota()?;
         if self
             .accounting
             .pending_bytes()

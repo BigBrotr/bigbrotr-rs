@@ -247,6 +247,143 @@ fn literal_bootstrap_dictionary_charges_reach_high_then_no_effect_survives_press
 }
 
 #[test]
+fn rebound_high_below_retained_p_permits_funded_replay_and_new_zero_p_outcome() {
+    use super::super::admission_tests::kv;
+    let (root, mut store, b) = fixture();
+    store.bind_pending_quota(policy(2000, 1000, 1000)).unwrap();
+    bootstrap(&mut store, &b).unwrap();
+    let admission = AdmissionLimits {
+        max_batch_bytes: 256 * 1024,
+        ..AdmissionLimits::default()
+    };
+    let private = dictionary(2, "private");
+    let original = store
+        .append_dictionaries(
+            at(2),
+            &private,
+            ObservedTime::new(20),
+            admission,
+            grant(&b, 4 * MIB, MIB),
+            || Ok(()),
+        )
+        .unwrap();
+    let dependencies = original.receipt().batch().unwrap().records().to_vec();
+    drop(original);
+    // The two independent fixed visibility charges are306+306, as above.
+    let accounting = store.pending_accounting().unwrap();
+    assert_eq!(accounting.pending_bytes(), 612);
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    // The complete native fixture has no unresolved request. This private
+    // reconciliation supplies the lowered-policy premise, never SQL authority.
+    let rebound = PendingQuotaPolicy::new(
+        400,
+        200,
+        399,
+        2,
+        Digest256::from_bytes([9; 32]),
+        2,
+        Digest256::from_bytes([10; 32]),
+        Duration::from_secs(30),
+    )
+    .unwrap();
+    store.bind_reconciled_pending_quota(rebound).unwrap();
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
+
+    let before_replay = kv(&store);
+    let replay_sequence = store.db.latest_sequence_number();
+    let permit = grant(&b, 4 * MIB, MIB);
+    let replay = store
+        .bootstrap_pending_reservation(request(), &intent("public"), limits(), &permit)
+        .unwrap();
+    assert_eq!(replay.allowance_bytes, 0);
+    store.reserve_pending_requests(&[replay]).unwrap();
+    store
+        .stage_initial_dictionaries(request(), &intent("public"), limits(), &permit)
+        .unwrap();
+    drop(permit);
+    bootstrap(&mut store, &b).unwrap();
+    assert_eq!(store.db.latest_sequence_number(), replay_sequence);
+    assert_eq!(kv(&store), before_replay);
+    assert_eq!(store.pending_accounting().unwrap(), accounting);
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+
+    let before_zero = kv(&store);
+    let permit = grant(&b, 4 * MIB, MIB);
+    let zero = store
+        .dictionary_pending_reservation(at(3), &private, ObservedTime::new(999), admission, &permit)
+        .unwrap();
+    assert_eq!(zero.allowance_bytes, 0);
+    store.reserve_pending_requests(&[zero]).unwrap();
+    store
+        .stage_dictionary_append(at(3), &private, ObservedTime::new(999), admission, &permit)
+        .unwrap();
+    let outcome = store
+        .append_dictionaries(
+            at(3),
+            &private,
+            ObservedTime::new(999),
+            admission,
+            permit,
+            || Ok(()),
+        )
+        .unwrap();
+    assert!(outcome.receipt().batch().is_none());
+    assert_eq!(outcome.receipt().request_id(), at(3));
+    assert_eq!(
+        outcome.receipt().request_digest(),
+        private.request_digest(at(3))
+    );
+    assert_eq!(outcome.receipt().dependencies().records(), dependencies);
+    drop(outcome);
+    assert_eq!(store.db.latest_sequence_number(), replay_sequence + 2);
+    assert_eq!(store.pending_accounting().unwrap(), accounting);
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
+
+    // Only the new receipt and issued watermark may change; every charged
+    // fact/marker and all previous immutable metadata remain byte-exact.
+    let request_key = IngestKey::Request { request_id: at(3) }.encode().unwrap();
+    let producer_key = IngestKey::ProducerState {
+        producer_slot_id: request().producer_slot_id,
+        producer_epoch: request().producer_epoch,
+    }
+    .encode()
+    .unwrap();
+    let after_zero = kv(&store);
+    let mut preserved = after_zero.clone();
+    preserved.retain(|(cf, key, _)| !(cf == "receipts" && key == request_key.as_bytes()));
+    let mut expected = before_zero;
+    expected
+        .iter_mut()
+        .find(|(cf, key, _)| cf == "receipts" && key == producer_key.as_bytes())
+        .unwrap()
+        .2 = [vec![1, 0x31], 3u64.to_be_bytes().to_vec(), vec![0; 16]].concat();
+    assert_eq!(preserved, expected);
+    assert_eq!(after_zero.len(), preserved.len() + 1);
+
+    // A supported positive unit still cannot consume credit above high, and
+    // its refusal precedes original creation and all native changes.
+    assert!(matches!(
+        store.stage_dictionary_append(
+            at(4),
+            &dictionary(3, "other"),
+            ObservedTime::new(20),
+            admission,
+            &grant(&b, 4 * MIB, MIB)
+        ),
+        Err(AdmissionError::PendingQuota(PendingQuotaError::Pressure))
+    ));
+    assert_eq!(kv(&store), after_zero);
+    assert_eq!(store.db.latest_sequence_number(), replay_sequence + 2);
+    assert_eq!(
+        std::fs::read_dir(root.path().join("db/producer-inputs-v1"))
+            .unwrap()
+            .count(),
+        3
+    );
+}
+
+#[test]
 fn undersized_allowance_refuses_before_original_and_cancellation_keeps_staged_debt() {
     let (root, mut store, b) = fixture();
     store
