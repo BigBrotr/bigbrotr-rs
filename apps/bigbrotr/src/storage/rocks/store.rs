@@ -149,6 +149,12 @@ pub use producer_recovery::{
     ProducerRecoveryError, ProducerRecoveryLimits, ResolvedProducerRequest,
 };
 
+#[path = "initial_quota_reconciliation.rs"]
+mod initial_quota_reconciliation;
+pub(in crate::storage) use initial_quota_reconciliation::{
+    INITIAL_QUOTA_RECONCILIATION_DATA_BYTES, InitialQuotaOriginal, InitialQuotaReconciliation,
+};
+
 #[path = "source_closure.rs"]
 mod source_closure;
 pub use source_closure::{
