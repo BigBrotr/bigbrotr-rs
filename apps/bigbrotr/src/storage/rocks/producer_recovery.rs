@@ -1,7 +1,8 @@
 //! Positive original-request resolution under exclusive historical ownership.
 use super::{
     ActivatedInitial, AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapError,
-    BootstrapLimits, IngestRecovery, NativeOutcomeCopy, RequestInputError, StoredOutcome,
+    BootstrapLimits, IngestRecovery, IngestStore, NativeOutcomeCopy, RequestInputError,
+    StoredOutcome,
 };
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::manifest::IngestManifest;
@@ -267,22 +268,72 @@ impl IngestRecovery {
         let (_, intent, _input_permit) = retained.into_parts();
         let event = matches!(&intent, MutationIntent::Event(_));
         authority()?;
+        let (outcome, copy) = self.store.replay_original_intent(
+            request,
+            digest,
+            limits,
+            intent,
+            context,
+            &profile,
+            &outcome_permit,
+        )?;
+        authority()?;
+        let resolved = ResolvedProducerRequest {
+            outcome: StoredOutcome::new(outcome, copy, outcome_permit),
+            input_bytes,
+            event,
+            native_root,
+            native_sequence,
+            lineage_inputs: match &profile {
+                RecoveryContext::Lineage { lineage, .. } => Some(lineage.input_stamp()),
+                RecoveryContext::Successor { owner, .. } => Some(owner.lineage().input_stamp()),
+                _ => None,
+            },
+        };
+        resolved
+            .require_native_context(self)
+            .map_err(AdmissionError::from)?;
+        Ok(resolved)
+    }
+}
+
+impl IngestStore {
+    /// Shared positive semantic replay only. Its explicit callers supply their
+    /// separate OPEN or CLOSING proof; this helper grants no lifecycle bypass.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "exact original and historical interpretation under retained grants"
+    )]
+    pub(super) fn replay_original_intent(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        limits: ProducerRecoveryLimits,
+        intent: MutationIntent,
+        context: ReplayContext<'_>,
+        profile: &RecoveryContext<'_>,
+        outcome_permit: &OwnedPermit,
+    ) -> Result<(AdmissionOutcome, NativeOutcomeCopy), ProducerRecoveryError> {
+        if outcome_permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || outcome_permit.request().units().items() == 0
+        {
+            return Err(AdmissionError::InsufficientReservation.into());
+        }
         let (outcome, copy) = match intent {
             MutationIntent::Evidence(ref intent) => {
                 let receipt = if request.producer_epoch.get() == 1
                     && context.manifest.identity().owner_epoch.get() == 1
                     && request.request_sequence.get() == 1
                 {
-                    self.store
-                        .replay_bootstrap_in(request, intent, limits.bootstrap, context)
+                    self.replay_bootstrap_in(request, intent, limits.bootstrap, context)
                         .map_err(AdmissionError::from)?
                 } else {
-                    self.store.replay_dictionary_append_in(
+                    self.replay_dictionary_append_in(
                         request,
                         intent,
                         limits.event,
                         context,
-                        match &profile {
+                        match profile {
                             RecoveryContext::Lineage { lineage, .. } => Some(*lineage),
                             RecoveryContext::Successor { owner, .. } => Some(owner.lineage()),
                             _ => None,
@@ -304,7 +355,6 @@ impl IngestRecovery {
                 let verified =
                     super::admission::verify_event(intent.into_event(), 4 * 1024 * 1024)?;
                 let observed = self
-                    .store
                     .replay_event_in(
                         request,
                         digest,
@@ -325,12 +375,12 @@ impl IngestRecovery {
                 if let (
                     RecoveryContext::Lineage { .. } | RecoveryContext::Successor { .. },
                     AdmissionOutcome::Durable(receipt),
-                ) = (&profile, &observed.0)
+                ) = (profile, &observed.0)
                 {
                     let event = verified
                         .as_ref()
                         .map_err(|_| AdmissionError::StateMismatch)?;
-                    self.store.require_lineage_event_batch(
+                    self.require_lineage_event_batch(
                         receipt,
                         super::receipt_effects::ReplayEventIntent {
                             event: event.event(),
@@ -354,26 +404,10 @@ impl IngestRecovery {
             }
             // Policy belongs to the historical decision, not today's recovery
             // authority. Never rewrite it from the manifest/current PG snapshot.
-            if let RecoveryContext::Activated(view) = &profile {
+            if let RecoveryContext::Activated(view) = profile {
                 view.require_receipt_bounds(receipt)?;
             }
         }
-        authority()?;
-        let resolved = ResolvedProducerRequest {
-            outcome: StoredOutcome::new(outcome, copy, outcome_permit),
-            input_bytes,
-            event,
-            native_root,
-            native_sequence,
-            lineage_inputs: match &profile {
-                RecoveryContext::Lineage { lineage, .. } => Some(lineage.input_stamp()),
-                RecoveryContext::Successor { owner, .. } => Some(owner.lineage().input_stamp()),
-                _ => None,
-            },
-        };
-        resolved
-            .require_native_context(self)
-            .map_err(AdmissionError::from)?;
-        Ok(resolved)
+        Ok((outcome, copy))
     }
 }

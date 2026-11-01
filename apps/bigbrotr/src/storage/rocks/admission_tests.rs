@@ -1631,3 +1631,6 @@ fn event_preview_allows_zero_pending_work_under_pressure_and_checks_operation_gr
     assert_eq!(store.pending_reserved_bytes(), Ok(0));
     assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
 }
+
+#[path = "initial_quota_reconciliation_tests.rs"]
+mod initial_quota_reconciliation_tests;
