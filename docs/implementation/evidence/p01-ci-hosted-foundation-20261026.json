@@ -1,23 +1,23 @@
 {
   "latest_verified_hosted_execution": {
-    "revision": "94c497a2f530b6a551099fbbb6faff9585370577",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717",
+    "revision": "064d054d101932d50defabce0fb626f93f42ed81",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189",
     "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
     "foundation_checks": "33/33PASS",
     "scope_controls": "20/20PASS",
     "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
-    "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. AMD64/ARM64 Rust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance481/481/475PASS (mac6declaredskips),export10each. Binding5/application-native-failure6 perplatform PASS; dedicatedrealNoSpace remainsseparate.",
+    "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. LinuxRust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance482PASSLinux,476PASSmacOS/6declaredskips;export10each. Added cheap ACK control is in actual standard discovery.",
     "terminal_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/terminal-audit.json",
-      "sha256": "4050431815a10d23db7ff69b86d640a3878478b74467440bf507750a6b1f0b3d"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/terminal-audit.json",
+      "sha256": "5f6be53a86f73dcd3249fdacc47b71485ccc9dc7a30a18ded1fc4ff2ee1af642"
     },
     "completion_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/completion-check.json",
-      "sha256": "57d0b6ffb5b91b4b6f2cc68accacbf5780fe93cedac5675a6f756de9f6f2dbee"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/completion-check.json",
+      "sha256": "de696540186795acd04b70dcf1e39d4d7f6ac93bb417d60542280b5013324712"
     },
-    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Boundedpattern/asynchronous-providerlimits retained.",
-    "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observerreaped0/ownedPIDsabsent; no duplicate dispatch/rerun/settingschange.",
-    "historical_scopes": "Other source-scoped fields retain their original executions."
+    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
+    "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observer reaped0/no owned observeractive; original94evidence intact.",
+    "historical_scopes": "Other source-scoped fields retain original executions."
   },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
@@ -2258,12 +2258,26 @@
       "public_outputs": "4artifacts/516members and34workflowlogs scanned; zero new unclassified/operationalcredential/provideralert. Pattern/asynchronous-provider limits retained; no absolute absence claim.",
       "failure_classification": "No billing/admission, workflow, cancellation/timeout or product failure observed. Observer reaped0/ownedPIDs absent. No rerun/dispatch/settings change.",
       "historical_scopes": "Other explicitly sourced fields below retain prior hosted executions; this is the latest completed meaningful hosted execution."
+    },
+    {
+      "revision": "94c497a2f530b6a551099fbbb6faff9585370577",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717",
+      "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+      "foundation_checks": "33/33PASS",
+      "scope_controls": "20/20PASS",
+      "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
+      "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. AMD64/ARM64 Rust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance481/481/475PASS (mac6declaredskips),export10each. Binding5/application-native-failure6 perplatform PASS; dedicatedrealNoSpace remainsseparate.",
+      "terminal_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/terminal-audit.json",
+        "sha256": "4050431815a10d23db7ff69b86d640a3878478b74467440bf507750a6b1f0b3d"
+      },
+      "completion_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/completion-check.json",
+        "sha256": "57d0b6ffb5b91b4b6f2cc68accacbf5780fe93cedac5675a6f756de9f6f2dbee"
+      },
+      "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Boundedpattern/asynchronous-providerlimits retained.",
+      "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observerreaped0/ownedPIDsabsent; no duplicate dispatch/rerun/settingschange.",
+      "historical_scopes": "Other source-scoped fields retain their original executions."
     }
-  ],
-  "pending_hosted_execution": {
-    "revision": "064d054d101932d50defabce0fb626f93f42ed81",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189",
-    "status": "IN_PROGRESS_NOT_YET_QUALIFIED",
-    "observer_root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101"
-  }
+  ]
 }

@@ -78524,7 +78524,7 @@
       }
     },
     "logical_pending_quota_20261101": {
-      "status": "f022release-and-installed-healthyPASS;strict-native-PG-pressurepending",
+      "status": "310release-and-fourconnectedcasesPASS;strict310ClippyFAIL;currentPGcompletenessfixpending",
       "integration_worktree": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-20261101",
       "branch": "work/ingest-logical-ceiling-20261101",
       "base_main": "064d054d101932d50defabce0fb626f93f42ed81",
@@ -78534,11 +78534,19 @@
       ],
       "evidence": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101",
       "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#logical_pending_quota_20261101",
-      "processes": "Buildlauncher40023reaped0;builder225c206f stopped/PID0/noOOM/exit0,cache115released/original4ELFbytes+metadataunchanged. Installedlauncher54635reaped0/18containersstopped/772commandsjoined/borrowedbridgeempty. No local engine/compiler active. Existing064CIobserver remains active.",
+      "processes": "No local compiler/engine/CI observer active after recorded terminal results. Sol source editing active in separate worktree; other reviews complete. Current PG root remains stopped-retained; network10.240.0.0/28 retained.",
       "retention": "Preserve current labs, originals, failed captures, author commits and ignored evidence. Monitor retirement already reconciled in existing open-growth resource record; no additional cleanup.",
       "qualified_run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-f0221a01",
       "source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
-      "partial_source": "Root cfg(test)-only alias lint fix; Sol connected probe/shared fixture followthrough in separate inventoried-by-author worktree; runtime negatives NOT_RUN."
+      "partial_source": "Root cfg(test)-only alias lint fix; Sol connected probe/shared fixture followthrough in separate inventoried-by-author worktree; runtime negatives NOT_RUN.",
+      "integration_head_observed": "2771203320cbe01a3af6560ff9c7a12885c9e9ef",
+      "test_only_worktree": ".research/ingest-quota-tests-20261101@4e779cc4 (clean, merged original; prepared campaign NOT_RUN_SUPERSEDED)",
+      "author_worktree": ".research/ingest-quota-connected-sol-20261101 (Sol current PG census correction; partial source retained)",
+      "qualified_source310": "310b44eb4e46c8293fec642416acc769ac4cb6de",
+      "probe_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-310b44eb-probe-r2",
+      "connected_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-310b44eb-connected-quota-r2",
+      "preserved_failures": "f022argument-guard refusal;310ClippytestlintFAIL;privateprobeR1Cargo-home setupFAIL;connectedR1defaultCIDR refusal (root contains reserved names/secrets but allocated no Docker resource; actual R2 owner differs). No result relabeled.",
+      "remaining": "Source/schema completeness counterexample and full verification remaining at existing P02-T02Step4/P01-T08. Original4ELFmetadata/bytes preserved, cache released. No new cleanup/GC/mtime normalization."
     }
   },
   "implementation_ci_portable_controls_20261030": {

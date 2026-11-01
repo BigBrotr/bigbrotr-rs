@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "RELEASE_AND_INSTALLED_HEALTHY_PASS_NATIVE_PG_PRESSURE_NOT_RUN",
+    "status": "PARTIAL_EXECUTED_CRITICAL_PG_COMPLETENESS_FIX_PENDING",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47242,7 +47242,7 @@
       "connected_PostgreSQL_pressure_and_reopen": "NOT_RUN",
       "installed_healthy_restart": "PASS_7_OF_7_TUTORIAL_52.998_SECONDS"
     },
-    "remaining": "Compile exact source once, exercise native discriminators, connected PG complete-set/reopen/refusal and installed pressure/healthy restart. Physical growth/reserves, persistent unresolved A, funded reopen/purge/CW-N1/P1/P2 and OPEN65 remain open at P02-T02 Step4; broader load/maintenance remains Step8/P02-T09. No overall capacity or filesystem readiness claim.",
+    "remaining": "Complete bounded PG census correction and independent review, then coherent exact-source build/workspace/probe, all six PG cases, actual configured stable resume/socket and affected installed successor/restart; syscall fault regressions with exact test artifact where needed. Existing physical d/R/persistent A/funded reopen/purge/CW-N1/P1/P2/OPEN65 and broader tasks remain open.",
     "qualified_source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
     "build": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/build-receipt.json",
@@ -47275,6 +47275,42 @@
       ],
       "checks": "Focused policy/schema17 and verifier2 PASS; actual probe compilation/connected execution NOT_RUN",
       "limits": "Current broad non-owner lab role, not deployment-grant profile. No connected high-water or stable-resume claim."
+    },
+    "release310": {
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/310b44eb/build-receipt.json",
+      "sha256": "0bb0e36e90db9d87d4054525d984aeac3641553aa2d83fd6180cab94ccdec9f3",
+      "status": "PASS_EXACT_SOURCE_RELEASE_WORKER_AND_PARENT;441.007s;source310"
+    },
+    "strict_workspace310": {
+      "status": "FAIL_CLIPPY_TEST_ONLY_DROP_NON_DROP;Rustdoc_and_Rust_tests_NOT_RUN",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/310b44eb/workspace-failure.json",
+      "sha256": "4316631e4259421c876ffbc2e5ca21a442b8c08bad5639ff3180eddf8aad1071",
+      "correction": "Original4e779cc4 lexical staging-witness scope merged; no product behavior change, not yet compiled. Prepared test-only campaign was superseded before any run by the newly necessary product correction."
+    },
+    "private_probe310": {
+      "status": "PASS_COMPILE_AND_STRICT_CLIPPY;177.873s",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/310b44eb/probe-r2/terminal-receipt.json",
+      "sha256": "f63cacd9a8ae6c193e39140b297b8fcb7debcef4e2129004155dace0ad2afc09",
+      "limits": "Worker-free private CLI/probe, distinct from packaged release310; exact source/native/compiler and Cargo configuration checks. Original compiler-check environment failure retained."
+    },
+    "connected310": {
+      "status": "PASS_FOUR_SELECTED_RUNTIME_CASES_PLUS16_SETUP_CHECKS",
+      "result": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-310b44eb-connected-quota-r2/policy-versions-result.json",
+      "sha256": "d2a5e6cbb6e6d83dafae337112baa039497e7d81d37be7dff2c5a1ef6f4ff922",
+      "cases": [
+        "recovery-pressure-latch/known-retry/pre-effect-positive-refusal",
+        "missing-outcome",
+        "reserved-ahead",
+        "outcome-conflict"
+      ],
+      "observed": "Each case preserves13native rows and one262-byte original plus all83PGtables/xmin after the declared injection. Complete exact independent native/input oracle and driver join required. PG/client stopped/PID0/noOOM; client exit143 is controlled idle-client teardown, not a product failure.",
+      "limits": "No foreign-dataset-tail or connected high-water/stable-resume qualification. Source310 has the separate completeness gap below; four scopedPASSs do not qualify the entire capability."
+    },
+    "current_blocker": {
+      "review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/pg-completeness-counterexample.json",
+      "sha256": "f074fd3e5cc824b6f31944ffe219cf992255b8b91d2ee0c095079dfd35ca56b9",
+      "required": "Census same producer slot+epoch without hiding wrong-dataset rows; check each dataset. Distinct foreign-request-tail/outcome-tail regressions in the existing wave. No schema change.",
+      "status": "Sol implementing; new cases NOT_RUN"
     }
   }
 }

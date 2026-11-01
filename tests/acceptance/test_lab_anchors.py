@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 
 
-LAB = Path(__file__).with_name('lab.py')
+LAB = Path(__file__).resolve().parents[2] / 'experiments/network-transport/lab.py'
 # The runner has deliberate top-level launch guards. Load only this exact helper
 # so these controls cannot inspect Docker or enter the laboratory lifecycle.
 function, = [node for node in ast.parse(LAB.read_text()).body
