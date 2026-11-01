@@ -332,6 +332,9 @@ class Runtime:
         for port in PORTS:
             try:
                 with socket.socket() as listener:
+                    # A completed previous journey can leave TIME_WAIT sockets.
+                    # Reuse that address while still refusing a live listener.
+                    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                     listener.bind(('127.0.0.1', port))
             except OSError as error:
                 raise MissingPrerequisite(f'loopback port {port} unavailable') from error

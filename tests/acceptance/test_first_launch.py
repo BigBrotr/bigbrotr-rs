@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import socket
 import subprocess
 import sys
 import tempfile
@@ -23,6 +24,47 @@ def arguments(root):
 
 
 class FirstLaunchControls(unittest.TestCase):
+    def check_port_preflight(self, root, port):
+        candidate = root / 'candidate.json'
+        candidate.write_text('{}')
+        args = arguments(root)
+        args.candidate_manifest = candidate
+        runtime = case.Runtime(args, {})
+        runtime.docker = Mock(side_effect=RuntimeError('ports accepted'))
+        with patch.object(case.platform, 'system', return_value='Linux'), \
+                patch.object(case.platform, 'machine', return_value='x86_64'), \
+                patch.object(case.os, 'geteuid', return_value=1000), \
+                patch.object(case.shutil, 'which', return_value='/usr/bin/docker'), \
+                patch.object(case.shutil, 'disk_usage', return_value=SimpleNamespace(free=100 * 1024**3)), \
+                patch.object(case, 'PORTS', (port,)):
+            runtime.preflight()
+
+    def test_preflight_refuses_live_listener(self):
+        with tempfile.TemporaryDirectory() as temporary, socket.socket() as listener:
+            listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listener.bind(('127.0.0.1', 0))
+            listener.listen()
+            port = listener.getsockname()[1]
+            with self.assertRaisesRegex(case.MissingPrerequisite, f'port {port} unavailable'):
+                self.check_port_preflight(Path(temporary), port)
+
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'Linux TIME_WAIT bind semantics')
+    def test_preflight_accepts_closed_journey_time_wait(self):
+        with socket.socket() as listener:
+            listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listener.bind(('127.0.0.1', 0))
+            listener.listen()
+            port = listener.getsockname()[1]
+            with socket.create_connection(('127.0.0.1', port)) as client:
+                connection, _ = listener.accept()
+                connection.close()
+                self.assertEqual(client.recv(1), b'')
+        with socket.socket() as exclusive, tempfile.TemporaryDirectory() as temporary:
+            with self.assertRaises(OSError):
+                exclusive.bind(('127.0.0.1', port))
+            with self.assertRaisesRegex(RuntimeError, 'ports accepted'):
+                self.check_port_preflight(Path(temporary), port)
+
     def test_missing_input_records_not_run_without_docker(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
