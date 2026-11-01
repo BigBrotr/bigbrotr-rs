@@ -76,7 +76,7 @@ class SocketFixtureControls(unittest.TestCase):
         after['principals']=[dict(principal_id=principal,dataset_id=dataset,kind='local',created_at_us=0,
                                   database_role='fixture',local_os_uid=0,xmin='2')]
         after['local_accounts']=[dict(principal_id=principal,dataset_id=dataset,username='alice',
-            initial_owner=True,active=True,credential_revision=1,grant_revision=1,xmin='2')]
+            initial_owner=True,active=True,credential_revision=1,grant_revision=1,authentication_revision=1,xmin='2')]
         after['local_credentials']=[dict(principal_id=principal,dataset_id=dataset,credential_revision=1,
             format='argon2id-v1',argon_version=19,memory_kib=65536,passes=3,lanes=1,salt='\\x'+'02'*16,
             password_hash='\\xa9f16b27ee4188b48954ee896ca04320bdbe34f4c2c0b9f4f332d9daffc892ff',xmin='2')]
@@ -86,11 +86,17 @@ class SocketFixtureControls(unittest.TestCase):
             SOCKET.seed_alice(lab,{},'bb_source_template',{},capture)
         self.assertTrue(observed[-1][0])
         self.assertIn('BEGIN;',lab.sql.call_args.args[-1])
+        self.assertIn('grant_revision,authentication_revision)',lab.sql.call_args.args[-1])
         for table in ('other','datasets'):
             changed=copy.deepcopy(after);changed[table][0]['xmin']='3'
             with self.subTest(table=table),patch.object(SOCKET,'rows',side_effect=[before,changed]), \
                     self.assertRaisesRegex(RuntimeError,'alice-only-template-seed'):
                 SOCKET.seed_alice(lab,{},'bb_source_template',{},record)
+        changed=copy.deepcopy(after)
+        changed['local_accounts'][0]['authentication_revision']=2
+        with patch.object(SOCKET,'rows',side_effect=[before,changed]), \
+                self.assertRaisesRegex(RuntimeError,'alice-only-template-seed'):
+            SOCKET.seed_alice(lab,{},'bb_source_template',{},record)
 
     def test_socket_keeps_real_accepted_policy_and_refuses_drift_without_replica_repair(self):
         tree=ast.parse((ROOT/'experiments/acquisition-scope/bindings.py').read_text())
