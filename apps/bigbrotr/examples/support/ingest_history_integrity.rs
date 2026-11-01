@@ -324,8 +324,13 @@ pub async fn seed(
         },
         AllocationNamespaces::from_entries(&spec.allocation_domains).unwrap(),
     );
-    let mut store =
-        IngestStore::initialize(path, manifest, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    let mut store = IngestStore::initialize(
+        path,
+        manifest,
+        limits(),
+        crate::ingest_owner::grant(&budget, 128 * MIB),
+    )
+    .unwrap();
     let public = scope(dataset, [64; 16], 1);
     let input = evidence(
         public,
@@ -507,8 +512,13 @@ pub async fn private(
     let budget = owner_budget(&root);
     let _documents = grant(&budget, 512 * MIB, 0);
     let (mut observer, observer_driver) = connect(&config).await;
-    let recovery =
-        IngestRecovery::inspect(path, dataset, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
+    let recovery = IngestRecovery::inspect(
+        path,
+        dataset,
+        limits(),
+        crate::ingest_owner::grant(&budget, 128 * MIB),
+    )
+    .unwrap();
     let spec = ingest_registry::load_historical(
         &mut observer,
         instance,

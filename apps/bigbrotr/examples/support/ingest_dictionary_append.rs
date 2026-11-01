@@ -209,7 +209,13 @@ pub async fn run(
     let before_reopen = ingest_snapshot::state(observer, path).await;
     let manifest = *store.manifest();
     drop(store);
-    store = IngestStore::reopen(path, manifest, limits(), grant(budget, 0, 128 * MIB)).unwrap();
+    store = IngestStore::reopen(
+        path,
+        manifest,
+        limits(),
+        crate::ingest_owner::grant(budget, 128 * MIB),
+    )
+    .unwrap();
     for (sequence, expected) in [
         (append_sequence, &first_bytes),
         (reuse_sequence, &reused_bytes),
