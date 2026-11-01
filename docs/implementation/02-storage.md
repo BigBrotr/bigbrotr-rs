@@ -253,7 +253,12 @@ One owner serializes exact identity decisions for each writable directory.
   uncertain prefix-commit resolution, residual replay, pre-stage logical funding
   or stable-low admission. Existing P02-T02 Step4 still owns those requirements;
   the absolute64 guard remains. The held-growth and physical prerequisites above
-  remain necessary before OPEN intake exceeds64. See the
+  remain necessary before OPEN intake exceeds64. The application-owned background
+  guard follow-through is implemented/reviewed under the same64 cap; its
+  [current evidence](evidence/p02-native-rocks-binding-20260917.json) preserves
+  the intermediate release PASS and test-fixture compile FAIL. Corrected native,
+  real POSIX and connected-delivery qualification remain pending; neither the
+  component guard nor source review enables OPEN65. See the
   [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
   for actual original-body controls and preserved failures.
   The selected closed-initial continuation now passes on product `7d8e5998`,

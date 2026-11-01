@@ -78368,13 +78368,13 @@
         }
       },
       "linear_quantum_in_progress": {
-        "branch": "work/m2-linear-quantum-acceptance-20261101",
+        "branch": null,
         "worktree": ".research/m2-linear-quantum-acceptance-20261101",
         "revision_before_checkpoint": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
-        "product_branch": "work/m2-linear-quantum-integration-20261101",
+        "product_branch": null,
         "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
-        "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-        "author_branch": "work/m2-linear-quantum-20261031",
+        "product_revision": "96d6c868e3ac02e768284a81add568e9b6802b79",
+        "author_branch": null,
         "author_status": "Clean;finite-source fixture correction merged;117targeted controls PASS;Astra review approved;no engine/build/resource launches.",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313",
         "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-78c8e313",
@@ -78382,7 +78382,7 @@
         "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
         "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-7bb7a159-controls",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
-        "status": "Local selected slice qualified; main/publication/hostedCI pending. All owned jobs terminal, agents idle, optional cache115 released and borrowed bridge empty.",
+        "status": "LOCAL_LINEAR_QUANTUM_SLICE_QUALIFIED_MAIN_PUSHED_22A_HOSTED_PENDING",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
         "author_tip": "356d55183689e1f30affaeb7d464e4a16fcb4838",
@@ -78440,7 +78440,48 @@
             "sha256": "721e1216432a1a44262157bc12e48f0646fa1b940b86725af72ae0f93d675403"
           },
           "resources": "62stopped containers including8expected fault exit4;7399commands joined;30recorded processes absent;bridgeempty. All databases, native stores, raw captures and original failures retained."
+        },
+        "retired_refs_20261101": {
+          "result": "Three redundant local branch refs deleted only after verified clean worktrees, full original ancestry on publishedmain22a, no remote counterpart and owned/common-directory checks. Worktrees/files/ignored evidence preserved detached.",
+          "heads": {
+            ".research/m2-linear-quantum-acceptance-20261101": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
+            ".research/m2-linear-quantum-main-integration-20261101": "96d6c868e3ac02e768284a81add568e9b6802b79",
+            ".research/m2-linear-quantum-sol-20261031": "356d55183689e1f30affaeb7d464e4a16fcb4838"
+          },
+          "audit": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/branch-retirement.json"
+        },
+        "hosted_observation": {
+          "revision": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
+          "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289",
+          "observed": "2026-11-01T06:20Z: macOS andLinuxARM64 jobsSUCCESS; LinuxAMD64in_progress. Same attempt1; no failure/cancellation. Terminal artifact audit pending.",
+          "receipts": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101"
         }
+      },
+      "application_guard_in_progress": {
+        "branch": "work/ingest-native-fail-stop-20261101",
+        "worktree": ".research/ingest-native-fail-stop-20261101",
+        "code_source": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
+        "author_worktrees": [
+          {
+            "path": ".research/ingest-native-factory-sol-20261101",
+            "branch": "work/ingest-native-factory-sol-20261101",
+            "head": "5e4dc634331e0291880613ed66ed35864fe5fd00",
+            "state": "Clean original factory/test author commits merged; no separate pending changes."
+          },
+          {
+            "path": ".research/ingest-native-recovery-guard-astra-20261101",
+            "branch": "work/ingest-native-recovery-guard-astra-20261101",
+            "head": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
+            "state": "Clean; independent critical correction and subsequent root Sol census/digest fixes all merged. Branch/worktree preserved until verified integration."
+          }
+        ],
+        "evidence_root": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101",
+        "release_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268",
+        "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268-workspace",
+        "status": "INTERMEDIATE_RELEASE_PASS_WORKSPACE_COMPILE_FAIL_RETAINED;CORRECTED_SOURCE_REVIEWED_NOT_RUN",
+        "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.application_ownership_20261101",
+        "resources": "50e build/workspace terminal/reaped; both containers stopped/PID0/noOOM, cache115 released/reacquired and original4ELF bytes/fullmetadata unchanged. No local engines or active compiler at this checkpoint. Private candidate assembled with maintained assembler; not a release. POSIX outer recipe prepared, no actual POSIX container/testELF exists yet.",
+        "retention": "Original failure/long-type diagnostic, source/archive/binaries/worker/cache/candidate and all3worktrees preserved. No new deletion or cache-timestamp optimization."
       }
     }
   },

@@ -717,6 +717,47 @@
         },
         "report": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json"
       }
+    },
+    "application_ownership_20261101": {
+      "status": "IMPLEMENTED_REVIEWED_FINAL_RUNTIME_QUALIFICATION_PENDING",
+      "code_source": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
+      "task": "P02-T02Step4 application-owned native failure prerequisite under unchanged64 lifetime cap",
+      "implementation": "Fallible mandatory guard on final DB options before inspection/open; retained DB/resource/custody order; post-open census refusal; native write/replay/certification/witness/ACK and selected connected recovery/closure/retirement delivery gates. Common sidecar scanner checks health through completed digest. Healthy samples are not atomic dispatch/COMMIT permits; unknown outcomes preserve exact identity and original inputs.",
+      "critical_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/critical-review.json",
+        "sha256": "eb3474836d70f8d555b8771ca8f3b75452764ca087c689ac91f295565238c90b",
+        "scope": "Bounded independent Astra reviews; identified connected-publication and final-census gaps corrected; test-only digest formatting fix reviewed mechanically. No universal lifecycle or runtime claim."
+      },
+      "intermediate_50e": {
+        "source": "50e98268a512e243e37e06202452a5c0110db946",
+        "tree": "0cca02130c0176ebd21c85ae57c3eedd155f988f",
+        "release": "PASS;441.005s, actual worker/native/source/ELF custody verified",
+        "release_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/50e98268/build-receipt.json",
+          "sha256": "495172c82c7b83a087b7c2f60268272b1d71160293d0a0e64e6e526ace0bddeb"
+        },
+        "workspace": "FAIL: Clippy lib-test compilation E0277 at native_posix_tests.rs117/118/307; sha2 digest array lacks LowerHex. Test-fixture compile defect, not a runtime native failure. Fixed7de using ordinary per-byte formatting, without changing oracle. Original logs and long-type diagnostic retained.",
+        "failure_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/50e98268/workspace-failure-receipt.json",
+          "sha256": "4fd468ff842beabbdbb096b19df8a15d99509d4ba974d2c2e82122caf4b7096d"
+        },
+        "not_run": [
+          "Rustdoc",
+          "focused native Rust tests",
+          "library-test artifact capture",
+          "actual application POSIX fault",
+          "installed acceptance"
+        ],
+        "custody": "Both launchers reaped,2owned containers stopped/PID0/noOOM, cache115 released/reacquired, original4ELF bytes/full metadata unchanged."
+      },
+      "maintained_tests": "Existing owner fixtures plus simulated sticky observations; deterministic post-census regression; opt-in real Linux64MiB tmpfs NoSpace test in native_posix_tests.rs. That real test requires scheduled asynchronous flush, explicit native NoSpace status/guard/background-error witnesses, staged request2 plus both original inputs, sticky refusal after restored headroom and returned native destruction/grant release. Ordinary tests ignore this dedicated external profile.",
+      "tutorial_prerequisite": "14existing pure tutorial controls PASS; source exclusion rebinds reviewed apps7de with9unchanged Nostr paths,6unchanged code/dependency/config objects and1919unchanged vendor leaves. No signer/publication API introduced; no runtime PASS inferred.",
+      "publication_source_through_50e": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/ingest-native-owner-source-50e98268-20261101/source-triage.json",
+        "sha256": "dda683806ecfac78ee30ad2f311a6d4eb1cc3f42b98e0b1aefadc6e01d2ddef7",
+        "result": "No candidate in selected9commit/60blob delta; later corrected source and public logs/artifacts still require relevant checks."
+      },
+      "remaining": "Corrected exact-source build/Clippy/Rustdoc/native tests, actual application default-POSIX fault, normal installed journey and required controlled connected SQL/ACK ambiguity cases. OPEN65/pre-stage logical and physical funding, persistent unresolved debt, stable-low, bounded LOG/diagnostics, funded reopen/purge and CW-N1/P1/P2 remain existing separate prerequisites; no enablement or full M1/M2/goal claim."
     }
   }
 }
