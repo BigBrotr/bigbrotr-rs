@@ -302,6 +302,81 @@ class FirstLaunchControls(unittest.TestCase):
             self.assertEqual(options, dict(data=statement, timeout=15, label='probe'))
 
 
+class BackendAbsenceControls(unittest.TestCase):
+    def sample(self,database,backends=None):
+        backends=[] if backends is None else backends
+        return dict(database=database,observer_pid=100,observer_backend_start='2026-11-01T03:09:21.390000+00:00',
+            count=len(backends),backends=backends)
+
+    def backend(self,kind='client backend'):
+        return dict(pid=200,backend_start='2026-11-01T03:09:20.000000+00:00',backend_type=kind,
+            usename='bigbrotr_control',application_name='',state='idle',wait_event_type='Client',
+            wait_event='ClientRead',xact_start=None,leader_pid=None)
+
+    def observe(self,samples,*,failure=None):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.Runtime)
+            runtime.sql=Mock(side_effect=lambda database,statement:samples[database]
+                if isinstance(samples[database],str) else json.dumps(samples[database]))
+            runtime.wait=Mock(side_effect=AssertionError('unexpected backend retry'))
+            if failure:
+                with self.assertRaisesRegex(ValueError,failure):runtime.backend_absence(root)
+            else:runtime.backend_absence(root)
+            self.assertEqual(case.load(root/'backend-absence.json'),samples)
+            self.assertEqual([call.args[0] for call in runtime.sql.call_args_list],
+                ['bigbrotr_control','bigbrotr_catalog'])
+            runtime.wait.assert_not_called()
+            statements=[call.args[1] for call in runtime.sql.call_args_list]
+            self.assertEqual(statements[0],statements[1])
+            return statements[0]
+
+    def test_zero_sample_counts_and_metadata_share_one_projection_without_query_or_credentials(self):
+        samples={database:self.sample(database) for database in ('bigbrotr_control','bigbrotr_catalog')}
+        statement=self.observe(samples)
+        self.assertEqual(statement.count('pg_catalog.pg_stat_activity'),1)
+        self.assertIn('activity AS MATERIALIZED',statement)
+        self.assertIn("'count',(SELECT count(*) FROM others)",statement)
+        self.assertIn("jsonb_agg(to_jsonb(b) ORDER BY b.pid)",statement)
+        self.assertIn('FROM others b',statement)
+        self.assertIn('WHERE datname=current_database()',statement)
+        self.assertIn('WHERE pid<>pg_backend_pid()',statement)
+        self.assertNotRegex(statement.lower(),r'\b(query|query_id|password|client_addr|limit)\b')
+        self.assertNotIn("backend_type=",statement)
+
+    def test_any_other_backend_refuses_and_preserves_metadata_including_maintenance_and_unknown_types(self):
+        for database in ('bigbrotr_control','bigbrotr_catalog'):
+            for kind in ('client backend','autovacuum worker','unknown extension worker'):
+                with self.subTest(database=database,kind=kind):
+                    samples={name:self.sample(name) for name in ('bigbrotr_control','bigbrotr_catalog')}
+                    backend=self.backend(kind)
+                    if kind!='client backend':
+                        backend.update(usename=None,state=None,wait_event_type=None,wait_event=None,
+                            xact_start='2026-11-01T03:09:21+00:00')
+                    samples[database]=self.sample(database,[backend])
+                    self.observe(samples,failure='database backend remains')
+
+    def test_malformed_or_inconsistent_sample_cannot_pass_and_raw_observation_survives(self):
+        zero=self.sample('bigbrotr_control')
+        present=self.sample('bigbrotr_control',[self.backend()])
+        mutations=[dict(zero,database='other'),dict(zero,observer_pid=True),dict(zero,observer_pid=0),
+            dict(zero,observer_backend_start='not a timestamp'),dict(zero,observer_backend_start='2026-11-01T03:09:21'),
+            dict(zero,count='0'),dict(zero,count=False),dict(zero,count=-1),dict(zero,backends={}),
+            dict(present,count=0),dict(zero,count=1),dict(present,backends=[dict(self.backend(),pid=100)]),
+            dict(present,backends=[dict(self.backend(),pid=True)]),
+            dict(present,backends=[dict(self.backend(),backend_start=None)]),
+            dict(present,backends=[dict(self.backend(),leader_pid='100')]),
+            dict(present,backends=[dict(self.backend(),xact_start='not a timestamp')]),
+            dict(present,backends=[dict(self.backend(),wait_event_type=1)]),
+            dict(present,backends=[dict(self.backend(),backend_type=None)]),
+            dict(present,backends=[dict(self.backend(),unexpected='field')]),
+            dict(present,count=2,backends=[self.backend(),dict(self.backend(),backend_start='2026-11-01T03:09:21+00:00')]),
+            dict(zero,unexpected='field'),'{invalid JSON']
+        for number,sample in enumerate(mutations):
+            with self.subTest(mutation=number):
+                self.observe(dict(bigbrotr_control=sample,bigbrotr_catalog=self.sample('bigbrotr_catalog')),
+                    failure='backend|database')
+
+
 class FirstLaunchWaitControls(unittest.TestCase):
     def test_positive_observation_retains_value_and_live_process_requirements(self):
         with tempfile.TemporaryDirectory() as temporary:
