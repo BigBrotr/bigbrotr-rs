@@ -5,80 +5,67 @@ Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordination/bounded work; Astra/xhigh
 critical review. Public development repository; no official release, package
 publication, rename or production deployment.
 
-## Current integration and capability
+## Integrated capability and current increment
 
-Last published baseline **main/origin22a881b2ce2c336b61aa06a1d79273b5787c73b5**:
-[actual hosted41276262289](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289)
-**PASS**,33foundation +20scope checks,3unselectedSKIP/zero requiredNOT_RUN.
-All3source/native/worker contexts and bounded public-output scan verified.
-No billing/workflow/cancellation/product failure; observer reaped. The
-[CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact receipts.
+Actual **main/origin94c497a2f530b6a551099fbbb6faff9585370577** contains the
+application-owned native fail-stop increment. Production3dc release/worker,
+strict Clippy/Rustdoc/328focused Rocks tests, installed tutorial7/7, the actual
+R3POSIX NoSpace and481shared controls PASS in their separately recorded scopes.
+Original fixture/compiler/environment failures are retained. The
+[binding report](evidence/p02-native-rocks-binding-20260917.json),
+`owned_background_guard_20261031.application_ownership_20261101`, owns details.
+This does not finish OPEN65, connected SQL races, physical funding, M1/M2 or P02.
 
-Current integration branch/worktree: `work/ingest-native-fail-stop-20261101`,
-`.research/ingest-native-fail-stop-20261101`. Git supplies its enclosing revision;
-all original factory, connected-recovery, final-census and gate author commits are
-merged. This closing documentation/verifier update is not a new product change.
-Finish publication/integration checks and push one coherent qualified slice.
-Verify actual main/origin after that step; never infer a future hash from this text.
+[Actual hosted41287328717](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717)
+is **IN_PROGRESS**, source94c497a2: scopePASS, three platform foundation jobs
+running, three unselected jobsSKIP. It is not yet hostedPASS. Previous22a
+[hosted41276262289](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289)
+PASS remains valid for its source; the [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
+owns its completed53checks/public-output audit. No duplicate run dispatched.
 
-P02-T02Step4's application-owned native failure prerequisite now has bounded local
-qualification under the unchanged64 lifetime cap: mandatory final-options guard,
-post-open census refusal, native effects/replay/proofs/ACK and selected connected
-recovery/closing/closure/retirement gates, with final sidecar health checks.
-Healthy samples are not atomic dispatch/COMMIT permits; preserve unknown outcomes.
-Independent Astra reviews closed concrete publication/census/custody defects.
+Current worktree `.research/ingest-ack-boundary-20261101`, branch
+`work/ingest-ack-boundary-20261101`, starts at94c497a2. Git supplies the enclosing
+revision. Current coherent source increment reconciles P02-T02Step4/P01-T08's
+external ACK syscall driver, its maintained build caller, shared controls and
+current initialization documentation. No product/Rust-test source changes.
 
-The [binding report](evidence/p02-native-rocks-binding-20260917.json),
-`owned_background_guard_20261031.application_ownership_20261101`, owns detail:
+Read-only Sol derivation: initialize3puts + bootstrap10puts = sequence13/all10rows;
+ACK changes only ProducerState at14, preserving P306/S1 and one183-byte original.
+The accounted shared fixture is already current; no new golden copy. The driver
+now uses that fixture and an independently frozen75-byte WAL record. Existing
+19negative/two diagnostic controls plus the literal check pass; all11pending-
+accounting controls pass. Independent Astra found no bounded source/envelope
+blocker; exact exported revision now supplies the tree as suggested.
 
-- Production **3dc3e06b** release/worker, strict all-target Clippy, Rustdoc and
-  **328focused Rocks tests PASS**,0FAIL/2externalIGNORED/299filtered. Actual
-  installed tutorial **7/7PASS**: signed acquisition/Archive/read/export/restart
-  and negative capabilities. Original50e test-fixture compileFAIL retained.
-- Test-only **21965a0c** compile PASS; one Linux cfg(test) File-writer fix only.
-  Unchanged3dc product/worker reused. Current source/Cargo artifact/generated
-  metadata/copied-ELF hashes bind this tool externally; no in-ELF/new-release claim.
-- Gate **d4502ff7**:17false-PASS/custody controls and strict C-only compile PASS;
-  maintained source/controller/procedure in `experiments/native-rocks-binding`.
-  Shared cheap acceptance CI now collects those controls; full481controls PASS in
-  the pinned compiler image. Host-only attempt FAIL lacked llvm-config; original
-  retained. Real fault remains dedicated.
-- Actual **R3PASS**: real post-WAL-trim empty SST open delayed; controller refills
-  2,306,048bytes to rawENOSPC, releases; actual native write1563returns−1/errno28.
-  Real nativeNoSpace/background-error1/ownedguardtrue; after restored headroom,
-  new admission/replay/checkpoint/credit/ACK refuse; full10rows/seq13/accounting/
-  twooriginals unchanged; DB destruction returns/nativegrant0. No fake Env/error.
-- **R1/R2 remain FAIL**: lost wrapped errno, then successful tiny flush after WAL
-  trim. Both raw journals/DBs/inputs retained. No guard defect was inferred from
-  a failure that the fixture did not produce. The C-build prelaunch inspection
-  refusal and temporary DNS failure preparing documentation are preserved too.
-  Planning/direct link checks pass using the unchanged previously pinned slugger.
-
-These scopes do not qualify installed-service NoSpace, connected SQL-COMMIT races,
-funded reopen/purge, physical reserves, new-platform faults, power loss or full
-M1/M2. Earlier96d6 grouped/Index/two-export/restart and source-specific proofs stay
-in the [Sync report](evidence/p03-initial-sync-native-20261002.json).
+**Real current ACK fault NOT_RUN at this source checkpoint.** Reuse the original
+21965 libtest/context/source identity, separately from the current driver: no
+product rebuild or relabeling. Original b005d91 nine-row/sequence11 evidence stays
+historical. One stale WAL-test diagnostic string can be corrected with the next
+Rust-owning increment; its actual shared-fixture recovery assertion is current.
 
 ## Resources and next action
 
-[Inventory](../research/laboratory-inventory.json) owns exact roots under
-`implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`.
-Allcompiler/Cgate/tutorial/R1–R3 containers stopped/PID0/noOOM; launchers reaped;
-R3pressurefile removed afterjoin. Cache115 released/reacquired, original4single-
-link ELF bytes/fullmetadata unchanged. No owned engines/compilers/autonomous writes
-or CIobserver active at this checkpoint. Worktrees, original commits/data/failures/
-sourcearchives/testELFs preserved. Monitor556GiB retirement reconciled; no new
-cleanup/mtime optimization. Never GC/repack archived shared Git/ELF objects.
+[Inventory](../research/laboratory-inventory.json) owns retained guard/Cgate/
+tutorial/R1–R3/control/compiler roots. All locally owned prior runs stopped/PID0/
+noOOM; no engines/compilers or CIobserver active. Cache115 released, original4ELF
+bytes/fullmetadata unchanged; current ACK work does not mount that cache.
+Guard branches retired only after verified pushed ancestry; original worktrees,
+commits and ignored artifacts preserved. Retirement receipt:
+`.research/ingest-native-fail-stop-qualification-20261101/branch-retirement.json`.
+Monitor556GiB retirement remains reconciled; no broad cleanup/GC/mtime work.
 
-**Next:** finish current source/publication/docs checks, integrate/push this local
-qualified slice on main, observe its actual hosted CI without duplicate runs, and
-retire redundant branch refs only after ancestry/ownership/clean-state checks.
-Then continue P02-T02Step4: reconcile the stale external ACK syscall fixture's
-historical10/11 sequence/old rows against current source0/pending-accounting
-bootstrap13→ACK14 with independent literal/WAL expectations, then run its actual
-uncertainty controls. Keep connected SQL/ACK fault obligations and pre-staging
-logical/physicalfunding/stable-low/reopen/purge/CW profiles explicit before OPEN65.
-Do not fit or weaken an oracle for PASS. No user input is currently required.
+Current ACK qualification capsule:
+`.research/ingest-ack-boundary-qualification-20261101/run-ack.py`. It verifies
+retained219 and tracer9b30 ownership/identity before using individual read-only
+mounts; all new DB/trace outputs are persistent and resource/deadline bounded.
+No current ACK container launched yet. Source review agents are finished.
+
+**Next:** commit this source slice, run its maintained ACK control/EIO/fresh-reopen
+cases with the reviewed envelope and retained219 tool, inspect exact results and
+terminal custody, then record/integrate one coherent result. Observe actual94 CI
+alongside it and audit terminal public logs/artifacts when available. Continue
+P02-T02Step4's pre-staging logical/physicalfunding, persistentunresolveddebt,
+stable-low, boundedLOG, fundedreopen/purge and CW profiles before OPEN65.
 
 M1 admission→Archive→read→export→restart is demonstrated; P01-T09 acceptance and
 remaining failure/delivery obligations stay explicit. Do not gate M1 on allP02.

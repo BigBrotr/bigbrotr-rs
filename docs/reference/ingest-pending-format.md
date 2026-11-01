@@ -30,11 +30,12 @@ and unknown scientific formats remain `IncompatibleSchema`; none is reported as
 corruption of an otherwise valid record.
 
 These metadata bytes are operational storage framing, not new fingerprint
-domains. Existing scientific preimages stay unchanged. The new key tag is added
-before the first product admission writer exists; existing initialized directories
-contain only the unchanged manifest. No populated admission format or released
-reader is being migrated. A future incompatible value meaning needs explicit
-format negotiation/migration; unknown versions never fall back to v1.
+domains. Existing scientific preimages stay unchanged. A fresh current store
+contains its manifest, an explicit source-zero watermark and empty pending
+accounting. Admission updates these metadata records atomically with its complete
+batch. Unknown value versions refuse rather than falling back to v1. Internal
+development consolidation follows Q40; future released format transitions need
+explicit negotiation and recovery guarantees.
 
 ## Retention and missing data
 

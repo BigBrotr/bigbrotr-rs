@@ -37,7 +37,8 @@ Dropping an async future cannot cancel native FFI.
 ## Closed initial state
 
 Only producer epoch one, request sequence one, owner epoch one and admission
-policy version one are accepted. A new bootstrap requires exactly its manifest;
+policy version one are accepted. A new bootstrap requires exactly the three
+initialized rows: manifest, source-zero watermark and empty pending accounting;
 replay requires the complete retained initial batch. Dictionaries are
 caller ordered, with ordinals contiguous from one in each registered namespace.
 The first visibility mapping may reference itself. Every other envelope or
@@ -58,7 +59,8 @@ context, dependencies and receipt bytes.
 A retry reconstructs and compares every immutable initial member, the manifest,
 allocation counters, pending closure and exact receipt. Later dictionary/event
 admissions may advance allocation/source/issued counters and add keys; replay
-checks that those counters have not regressed and ACK/retired remain zero. It never rewrites them or certifies
+checks that those counters have not regressed, acknowledged does not exceed issued,
+and retired remains zero. It never rewrites them or certifies
 the later source cut. Missing or changed required members fail closed. In particular,
 missing receipt detail with other persisted effects is not rollback. A changed
 digest for the same retained request returns RequestConflict. This allows the

@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
 import sys
 import unittest
 from unittest.mock import patch
@@ -30,6 +31,16 @@ def counter(rows):
 
 
 class PendingAccountingVectors(unittest.TestCase):
+    def test_current_ack_wal_and_syscall_discriminators(self):
+        result = subprocess.run(
+            [sys.executable, '-B', str(ROOT / 'experiments/archive-engine/publication_sync_cases.py'),
+             '--check-ack-oracle'], check=True, capture_output=True, text=True)
+        controls = json.loads(result.stdout)
+        self.assertEqual(controls['literal_current_wal'], 'ACCEPTED')
+        self.assertEqual(controls['cross_thread_close'], 'REJECTED')
+        self.assertEqual(controls['later_sync'], 'REJECTED')
+        self.assertEqual(controls['trailing_byte'], 'REJECTED')
+
     def test_installed_current_vectors_cover_preparation_ack_off_hole_and_retained_inputs(self):
         # Import only the maintained portable fixture modules, never product codecs.
         import test_first_launch_restart

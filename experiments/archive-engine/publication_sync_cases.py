@@ -98,10 +98,11 @@ ACK_TEST = ('storage::rocks::store::admission_tests::producer_ack_tests::'
             'native_ack_fsync_boundary')
 ACK_KEY = bytes.fromhex('0131') + bytes([5])*16 + (1).to_bytes(8, 'big')
 ACK_VALUE = bytes.fromhex('0131') + (1).to_bytes(8, 'big')*2 + bytes(8)
-# initialize puts the manifest once; bootstrap puts it again plus eight other
-# entries. Nine distinct final rows therefore represent ten native puts.
-ACK_BEFORE_SEQUENCE = 10
-ACK_AFTER_SEQUENCE = 11
+# Initialization puts manifest, source0 and pending accounting (three puts).
+# Bootstrap replaces those three and adds seven rows (ten puts). ACK replaces
+# only ProducerState. The complete rows come from the shared accounted fixture.
+ACK_BEFORE_SEQUENCE = 13
+ACK_AFTER_SEQUENCE = 14
 
 
 def ack_record():
@@ -206,6 +207,13 @@ def ack_trace(lines, wal, descriptor, before, after, fault):
 
 
 def ack_oracle_controls():
+    # Independently frozen profile-1 ACK at sequence14: payload68bytes,
+    # unmasked CRC32C b5c50b62, masked b9485662. Never use observed WAL bytes
+    # to determine the expected record or choose the native sequence.
+    assert ack_record() == bytes.fromhex(
+        '625648b94400010e000000000000000100000005021a0131'
+        '050505050505050505050505050505050000000000000001'
+        '1a0131000000000000000100000000000000010000000000000000')
     # Construct a valid complete input first, then mutate it outside the caught
     # verifier. Constructor errors never count as negative controls.
     wal, fd, prefix = '/case/db/000004.log', 9, b'prior-complete-records'
@@ -225,7 +233,7 @@ def ack_oracle_controls():
     ]
     verify = lambda r, after=prefix+suffix: ack_trace(decoded_lines('\n'.join(r)), wal, fd, prefix, after, True)
     assert verify(raw)['fsync_index'] == 2
-    controls = {}
+    controls = {'literal_current_wal': 'ACCEPTED'}
     diagnostic = 'While fsync: '+wal+': Input/output error\n'
     # Keep the literal path in the trace string: hex-escaping every payload byte
     # would not reproduce the old substring false refusal.
@@ -275,31 +283,47 @@ def ack_oracle_controls():
     return controls
 
 
-def native_ack(root):
-    """Same owned build container; one native child at a time, no PostgreSQL."""
-    source = root/'build/source'
-    assert root == Path('/out') and Path(__file__).resolve().parents[2] == source
-    manifest_path = root/'build/source-manifest.json'
+def native_ack(root, compiled):
+    """Read-only qualified libtest inputs; fresh output, no PostgreSQL.
+
+    Driver-only fixes reuse the original compiled source identity. They never
+    turn that artifact into a build of the driver's newer revision.
+    """
+    source = compiled/'build/source'
+    driver = Path(__file__).resolve().parents[2]
+    manifest_path = compiled/'build/source-manifest.json'
     manifest = json.loads(manifest_path.read_text())
-    build = json.loads((root/'artifacts/ack-fault-build.json').read_text())
-    binary = root/'artifacts/native_components'
+    context_path = compiled/'artifacts/test-tool-artifact.json'
+    build = json.loads(context_path.read_text())
+    binary = compiled/'artifacts/bigbrotr-library-tests'
     tracer = Path('/instrument/strace-exit-fixed')
-    assert build['status'] == 'PASS_PRODUCER_ACK_FAULT_BUILD_ONLY'
-    assert build['source'] == manifest['revision'] and build['tree'] == manifest['tree']
+    assert build['format'] == 'bigbrotr-test-tool-artifact/1'
+    assert build['kind'] == 'TEST_ONLY_COMPILATION_NOT_RELEASE'
+    assert build['test_source'] == manifest['revision'] and build['test_tree'] == manifest['tree']
     assert build['source_manifest_sha256'] == sha(manifest_path)
-    assert build['executables_sha256'] == {'native_components': sha(binary)}
+    assert build['test_source_manifest'] == manifest
+    assert build['artifact']['sha256'] == sha(binary)
+    assert build['artifact']['bytes'] == binary.stat().st_size
+    assert build['cargo_artifact']['target']['name'] == 'bigbrotr'
+    assert build['cargo_artifact']['target']['kind'] == ['lib']
+    assert build['cargo_artifact']['profile']['test'] is True
     assert sha(tracer) == '509ea4b8a7eb303990155f013e1e288df1054d63e5c81b11bc3c31b5905b7458'
     assert all(sha(source/p) == digest for p, digest in manifest['files_sha256'].items())
-    fixture = json.loads((source/'tests/fixtures/ingest/staged-bootstrap-crash-accounted.json').read_text())
+    shared = ['tests/fixtures/ingest/staged-bootstrap-crash-accounted.json',
+              'apps/bigbrotr/src/storage/rocks/producer_ack_tests.rs']
+    assert all(sha(driver/p) == manifest['files_sha256'][p] for p in shared), \
+        'driver fixture/endpoint differs from compiled source'
+    fixture = json.loads((source/shared[0]).read_text())
     before_rows = fixture['after']
     after_rows = [[cf, key, ACK_VALUE.hex() if cf == 'receipts' and key == ACK_KEY.hex() else value]
                   for cf, key, value in before_rows]
-    assert len(before_rows) == 9 and after_rows != before_rows
+    assert len(before_rows) == 10 and after_rows != before_rows
     original = bytes.fromhex(fixture['request_hex'])
     home = root/'ack-sync-cases'
     home.mkdir()
-    result = dict(status='INCOMPLETE', source=build['source'], tree=build['tree'],
-                  source_manifest_sha256=sha(manifest_path), build_sha256=sha(root/'artifacts/ack-fault-build.json'),
+    result = dict(status='INCOMPLETE', source=build['test_source'], tree=build['test_tree'],
+                  source_manifest_sha256=sha(manifest_path), build_sha256=sha(context_path),
+                  harness_sha256=sha(Path(__file__)),
                   binary_sha256=sha(binary), tracer_sha256=sha(tracer), cases=[],
                   scope='Native private test target, real ACK write with substituted fsync EIO; no SQL/device/power-loss claim')
     def save():
@@ -439,7 +463,7 @@ def native_ack(root):
         result['controls'] = ack_oracle_controls()
         index = run('control')
         run('eio', index)
-        assert build['executables_sha256'] == {'native_components': sha(binary)}
+        assert build['artifact']['sha256'] == sha(binary)
         assert all(sha(source/p) == digest for p, digest in manifest['files_sha256'].items())
         result['status'] = 'PASS_NATIVE_ACK_FSYNC_EIO'
     except BaseException as error:
@@ -539,8 +563,15 @@ def main(root):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 3 and sys.argv[1] == '--native-ack':
-        native_ack(Path(sys.argv[2]).resolve())
+    if len(sys.argv) > 1 and sys.argv[1] == '--native-ack':
+        import argparse
+        parser = argparse.ArgumentParser(description=native_ack.__doc__)
+        parser.add_argument('--compiled', required=True, type=Path,
+                            help='read-only qualified build/source and artifacts root')
+        parser.add_argument('--output', required=True, type=Path,
+                            help='fresh owned output directory')
+        args = parser.parse_args(sys.argv[2:])
+        native_ack(args.output.resolve(strict=True), args.compiled.resolve(strict=True))
     elif sys.argv[1:] == ['--check-ack-oracle']:
         print(json.dumps(ack_oracle_controls(), indent=2))
     elif sys.argv[1:] == ['--check-oracle']:

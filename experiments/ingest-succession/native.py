@@ -132,7 +132,7 @@ if producer_ack_fault:
         ('clippy', ['cargo', 'clippy', '--locked', '--offline', '--release', '-p',
                     'bigbrotr', '--lib', '--', '-D', 'warnings']),
     ], checks, SOURCE, env, identity, 1800)
-    paths = set()
+    compiled = {}
     log = checks / 'compile.log'
     for line in log.read_text().splitlines() if log.exists() else []:
         if not line.startswith('{'):
@@ -142,25 +142,36 @@ if producer_ack_fault:
                 and message['target']['name'] == 'bigbrotr'
                 and message['target']['kind'] == ['lib'] and message['profile']['test']):
             assert Path(message['target']['src_path']) == SOURCE / 'apps/bigbrotr/src/lib.rs'
-            paths.add(message['executable'])
+            compiled[message['executable']] = message
     executables = {}
-    if paths:
-        assert len(paths) == 1
-        executable = Path(paths.pop())
+    if compiled:
+        assert len(compiled) == 1
+        executable = Path(next(iter(compiled)))
         assert executable.is_relative_to(build / 'target') and not executable.is_symlink()
         with executable.open('rb') as stream:
             assert stream.read(4) == b'\x7fELF'
-        retained = artifacts / 'native_components'
+        retained = artifacts / 'bigbrotr-library-tests'
         shutil.copy2(executable, retained)
         assert file_hash(retained) == file_hash(executable)
-        executables['native_components'] = file_hash(retained)
+        executables['bigbrotr-library-tests'] = file_hash(retained)
     assert sources() == manifest['files_sha256']
     assert all(file_hash(Path(tool['path'])) == tool['sha256'] for tool in native['tools'].values())
-    built = result['status'] == 'PASS' and set(executables) == {'native_components'}
+    built = result['status'] == 'PASS' and set(executables) == {'bigbrotr-library-tests'}
     receipt = dict(identity, executables_sha256=executables,
                    status='PASS_PRODUCER_ACK_FAULT_BUILD_ONLY' if built else 'FAIL',
                    tests_executed=0, clippy_scope='library; cfg(test) fixture compiled, not linted')
-    (artifacts / 'ack-fault-build.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    if built:
+        context = dict(format='bigbrotr-test-tool-artifact/1',
+                       kind='TEST_ONLY_COMPILATION_NOT_RELEASE',
+                       test_source=manifest['revision'], test_tree=manifest['tree'],
+                       source_manifest_sha256=identity['source_manifest_sha256'],
+                       test_source_manifest=manifest,
+                       cargo_artifact=compiled[str(executable)],
+                       artifact=dict(path=str(retained), bytes=retained.stat().st_size,
+                                     sha256=executables['bigbrotr-library-tests']),
+                       embedding='NOT_CLAIMED; external Cargo/source/ELF provenance only',
+                       compilation=receipt)
+        (artifacts / 'test-tool-artifact.json').write_text(json.dumps(context, indent=2) + '\n')
     qualification = dict(receipt, status='INCOMPLETE' if built else 'FAIL',
                          runtime_status='NOT_RUN')
     qualification_path = Path('/out/qualification.json')
@@ -169,12 +180,13 @@ if producer_ack_fault:
     try:
         runtime = execute([('ack-fsync', [sys.executable, '-B',
             str(SOURCE / 'experiments/archive-engine/publication_sync_cases.py'),
-            '--native-ack', '/out'])], Path('/out/fault-checks'), SOURCE, env, identity, 120)
+            '--native-ack', '--compiled', '/out', '--output', '/out'])],
+            Path('/out/fault-checks'), SOURCE, env, identity, 120)
         qualification['runtime_status'] = runtime['status']
         assert runtime['status'] == 'PASS'
         evidence = Path('/out/ack-sync-cases/result.json')
         assert json.loads(evidence.read_text())['status'] == 'PASS_NATIVE_ACK_FSYNC_EIO'
-        assert file_hash(artifacts / 'native_components') == executables['native_components']
+        assert file_hash(artifacts / 'bigbrotr-library-tests') == executables['bigbrotr-library-tests']
         assert sources() == manifest['files_sha256']
         qualification.update(status='PASS_PRODUCER_ACK_FAULT',
                              runtime_result_sha256=file_hash(evidence))

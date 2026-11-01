@@ -920,6 +920,40 @@ The report retains two preceding fixture failures and their bounded corrections.
 This exercises the native kernel with a private test target: kernel page cache
 survives, and no connected PostgreSQL error delivery or physical loss is claimed.
 
+The current shared accounted-bootstrap fixture has ten rows and native sequence13:
+initialization writes manifest/source0/accounting (three puts), then bootstrap
+writes ten puts. ACK changes only ProducerState, reaching sequence14 while
+retaining pending P306/S1 and the original183-byte request. The maintained
+`publication_sync_cases.py` driver uses this fixture and an independently frozen
+75-byte WAL suffix, including its CRC, complete batch and exhaustion. This
+reconciliation does not alter the historical b005d91 result above.
+
+The native syscall driver consumes a qualified `bigbrotr-test-tool-artifact/1`
+context, its original `build/source-manifest.json`/export and
+`artifacts/bigbrotr-library-tests`. The maintained `producer-ack-fault` build
+profile emits this layout. Driver-only changes may reuse these read-only inputs
+with their original compiled revision; record the driver revision separately.
+After verifying the independently qualified tracer and mounting it read-only at
+`/instrument/strace-exit-fixed`, run inside the isolated Linux qualification
+envelope with a fresh persistent output directory:
+
+```sh
+python3 -B experiments/archive-engine/publication_sync_cases.py --check-ack-oracle
+python3 -B experiments/archive-engine/publication_sync_cases.py --native-ack \
+  --compiled /compiled --output /out
+```
+
+The [tracer procedure](../../experiments/archive-engine/strace-exit-probe.md)
+declares its source archive, patch, build and qualification. The outer envelope
+must bind the actual context/ELF/source/tracer hashes, retain the original compiled
+source identity, bound resources/deadline, preserve output on failure and verify
+all owned processes have exited. Use no network, credentials or PostgreSQL.
+The driver requires complete pre/post rows, exact traced ACK write/fsync, refused
+credit after EIO, original-input preservation and a distinct fresh reader.
+Shared cheap acceptance controls exercise its literal WAL and false-PASS
+discriminators; the real traced cases remain a dedicated P02-T02/P01-T08 gate.
+Missing execution or terminal custody is not PASS.
+
 Additive migration `0040_producer_ack.sql` separates the absolute retained limit
 from the coordination window: the next reservation is at most validated typed
 C plus the registered window, and never exceeds64. An absent or opaque legacy

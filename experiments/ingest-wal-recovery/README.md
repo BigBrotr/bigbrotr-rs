@@ -11,7 +11,9 @@ The real native tests in
 `apps/bigbrotr/src/storage/rocks/wal_recovery_tests.rs` start a child product store,
 synchronize the frozen bootstrap, observe its completion marker, SIGKILL/reap the
 actual process, then reopen the same directory. They compare every original key
-and value against `tests/fixtures/ingest/staged-bootstrap-crash.json`.
+and value against `tests/fixtures/ingest/staged-bootstrap-crash-accounted.json`,
+including the explicit source watermark and pending accounting. The counterless
+fixture remains the historical original, not the current initialized inventory.
 
 One case flips one CRC byte in the bootstrap's complete WAL record; another removes
 its final payload byte. A separate permissive-mode control for each loses the
