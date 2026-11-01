@@ -1125,7 +1125,19 @@
         "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-index-drain-critical-20261101.json",
         "sha256": "1a3291f846e62ffd18d8cf4953c978d9a60901b501f01b8b5bdd9ca17d2d3cce"
       },
-      "fairness_limit": "Newly queued HTTP may wait behind one additional bounded Index dispatch; retained-command priority unchanged; general mixed-load management latency remains P01-T05Step7."
+      "fairness_limit": "Newly queued HTTP may wait behind one additional bounded Index dispatch; retained-command priority unchanged; general mixed-load management latency remains P01-T05Step7.",
+      "tutorial_source_pin": {
+        "reviewed_product": "b5824793cd6d5e31b2d837987c6dd285fc5e831d",
+        "apps_object": "877b46daedf008030a1022d6e6cead1d74ef64e9",
+        "checks": "14pure tutorial checks PASS;all9Nostr paths byte-identical to e812;other6codeobjects unchanged.",
+        "critical_review": {
+          "agent": "/root/joint_coordinator_cost_astra",
+          "model": "gpt-6-astra",
+          "reasoning_effort": "xhigh",
+          "result": "APPROVED;no findings;independently verified all7pins/9paths and unchanged strict source/vendor/peer/refusal boundaries."
+        },
+        "limits": "Source-exclusion review only;actual new installed execution NOT_RUN."
+      }
     }
   }
 }
