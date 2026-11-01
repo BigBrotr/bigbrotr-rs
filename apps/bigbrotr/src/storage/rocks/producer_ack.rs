@@ -261,7 +261,9 @@ impl<'a> RecoveryAcknowledgementResolution<'a> {
     }
 }
 impl RecoveryAcknowledgement {
-    /// Retained completion token/manifest/lease plus the streamed PG validator.
+    /// Nondecode completion token/manifest/lease and streamed PG validator.
+    /// Connected historical factories additionally require
+    /// `control_owner::historical_progress_data_bytes` for full Fact readback.
     pub const REQUIRED_DATA_BYTES: u64 = 8192;
     /// One fixed synced producer-state WriteBatch; no decoded scientific data.
     pub const REQUIRED_NATIVE_BYTES: u64 = 4096;

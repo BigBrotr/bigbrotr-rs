@@ -156,13 +156,8 @@ impl ControlSession {
         permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<u64, ProducerCloseError> {
-        if permit.request().units().data_bytes() < 128 * 1024
-            || permit.request().units().items() == 0
-        {
-            return Err(ProducerCloseError::Native(
-                BootstrapError::InsufficientReservation,
-            ));
-        }
+        producer_progress::recovery::require_scratch(&permit, 128 * 1024)
+            .map_err(|_| ProducerCloseError::Native(BootstrapError::InsufficientReservation))?;
         let _reservation = permit;
         if source.recovery().native_unavailable() {
             return Err(ProducerCloseError::Native(BootstrapError::CommitUnknown));

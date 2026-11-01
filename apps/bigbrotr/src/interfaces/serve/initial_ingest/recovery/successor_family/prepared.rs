@@ -76,7 +76,7 @@ impl Work<'_> {
             // taking their replacements. Never rebase or reuse the old witness.
             drop(custody.gap.take());
             drop(custody.history.take());
-            let metadata = grant(self.budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
+            let metadata = history_grant(self.budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
             let closing = grant(self.budget, 4096, 4096)?;
             self.inspect_prepared(custody, metadata).await?;
             let fresh = custody.history.as_ref().expect("fresh prepared history");

@@ -41,9 +41,35 @@ const _: () = assert!(
         + 2 * std::mem::size_of::<Context>()
         + JOB_BYTES
         + DEPENDENCY_BYTES
+        + super::quantum::HISTORICAL_SCALAR_BYTES
         + 2048 // fixed query parameters, row/stream headers and native reader/key
         < SCRATCH_BYTES as usize
 );
+
+/// Required application bytes for a historical progress read and its retained
+/// operation. `operation_bytes` is the existing nondecode allowance, including
+/// any metadata/result retained beside the streaming reducer's local scratch.
+/// The reducer needs at least 4 KiB; one fully decoded Fact coexists with it.
+/// Native pins and SQL driver buffers retain their separate owner reservations.
+/// This does not fund the live wire parser or continuation boundary-ID set.
+pub fn historical_progress_data_bytes(operation_bytes: u64) -> Result<u64, ProducerProgressError> {
+    operation_bytes
+        .max(SCRATCH_BYTES)
+        .checked_add(bigbrotr_model::codec::FactDecodeLimits::default().max_allocation_bytes as u64)
+        .ok_or(ProducerProgressError::Limit)
+}
+
+pub(in crate::storage::postgres::control_owner) fn require_scratch(
+    scratch: &OwnedPermit,
+    operation_bytes: u64,
+) -> Result<(), ProducerProgressError> {
+    if scratch.request().units().data_bytes() < historical_progress_data_bytes(operation_bytes)?
+        || scratch.request().units().items() == 0
+    {
+        return Err(ProducerProgressError::InsufficientReservation);
+    }
+    Ok(())
+}
 
 fn backend(_: tokio_postgres::Error) -> ProducerProgressError {
     ProducerProgressError::Backend
@@ -390,11 +416,7 @@ pub(in crate::storage::postgres::control_owner) async fn require_read(
     {
         return Err(ProducerProgressError::InvalidContext);
     }
-    if scratch.request().units().data_bytes() < SCRATCH_BYTES
-        || scratch.request().units().items() == 0
-    {
-        return Err(ProducerProgressError::InsufficientReservation);
-    }
+    require_scratch(scratch, 0)?;
     let context = Context {
         dataset: id.dataset_id,
         slot,
@@ -654,8 +676,79 @@ fn require_compacted_head(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::runtime::{
+        ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+    };
     use crate::storage::rocks::producer_floor::ClosedProducerFloorFields;
     use bigbrotr_model::DatasetId;
+
+    #[test]
+    fn historical_read_requires_decode_scratch_beside_the_existing_operation() {
+        const DECODE: u64 = 8 * 1024 * 1024;
+        assert_eq!(historical_progress_data_bytes(0), Ok(DECODE + 4096));
+        assert_eq!(historical_progress_data_bytes(4096), Ok(DECODE + 4096));
+        assert_eq!(historical_progress_data_bytes(8192), Ok(DECODE + 8192));
+        assert_eq!(
+            historical_progress_data_bytes(128 * 1024),
+            Ok(DECODE + 128 * 1024)
+        );
+        assert_eq!(
+            historical_progress_data_bytes(256 * 1024),
+            Ok(DECODE + 256 * 1024)
+        );
+        assert_eq!(
+            historical_progress_data_bytes(u64::MAX),
+            Err(ProducerProgressError::Limit)
+        );
+        let budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                32 * 1024 * 1024,
+                0,
+                ResourceLimits::new(16 * 1024 * 1024, 1, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        for (bytes, expected) in [
+            (4096, Err(ProducerProgressError::InsufficientReservation)),
+            (DECODE, Err(ProducerProgressError::InsufficientReservation)),
+            (
+                DECODE + 4095,
+                Err(ProducerProgressError::InsufficientReservation),
+            ),
+            (DECODE + 4096, Ok(())),
+        ] {
+            let permit = budget
+                .try_acquire(ResourceRequest::data(bytes, 1, 0).unwrap())
+                .unwrap();
+            assert_eq!(require_scratch(&permit, 0), expected);
+        }
+        // A permit that covers the bare decoder must still refuse when the
+        // retained ACK/result/lineage allowance is short by one byte.
+        for operation in [8192, 128 * 1024, 132096, 256 * 1024] {
+            for short in [true, false] {
+                let bytes = DECODE + operation - u64::from(short);
+                let permit = budget
+                    .try_acquire(ResourceRequest::data(bytes, 1, 0).unwrap())
+                    .unwrap();
+                assert_eq!(
+                    require_scratch(&permit, operation),
+                    if short {
+                        Err(ProducerProgressError::InsufficientReservation)
+                    } else {
+                        Ok(())
+                    }
+                );
+            }
+        }
+        let no_item = budget
+            .try_acquire(ResourceRequest::data(DECODE + 4096, 0, 0).unwrap())
+            .unwrap();
+        assert_eq!(
+            require_scratch(&no_item, 0),
+            Err(ProducerProgressError::InsufficientReservation)
+        );
+    }
 
     #[test]
     fn compacted_recovery_keeps_initial_head_distinct_from_target_checkpoint() {

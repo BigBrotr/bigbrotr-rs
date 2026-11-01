@@ -36,6 +36,8 @@ impl CompactedInitialRetirement<'_> {
 
     /// One bounded SQL outcome row, fixed parameters, typed-head hash scratch
     /// and the confirmed wrapper. Native decoded effects have a separate grant.
+    /// This is the whole nondecode operation allowance; the connected factory
+    /// adds historical Fact decode through `historical_progress_data_bytes`.
     pub const REQUIRED_DATA_BYTES: u64 = 128 * 1024;
 
     pub fn producer_slot_id(&self) -> ProducerSlotId {
@@ -103,11 +105,13 @@ impl ControlSession {
         outcome_permit: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<CompactedInitialRetirement<'a>, ProducerCompactionError> {
-        if metadata_permit.request().units().data_bytes()
-            < CompactedInitialRetirement::REQUIRED_DATA_BYTES
-            || metadata_permit.request().units().items() == 0
-            || outcome_permit.request().units().data_bytes()
-                < compacted_outcome_data_bytes(limits).map_err(ProducerCompactionError::Native)?
+        producer_progress::recovery::require_scratch(
+            &metadata_permit,
+            CompactedInitialRetirement::REQUIRED_DATA_BYTES,
+        )
+        .map_err(|_| ProducerCompactionError::Native(AdmissionError::InsufficientReservation))?;
+        if outcome_permit.request().units().data_bytes()
+            < compacted_outcome_data_bytes(limits).map_err(ProducerCompactionError::Native)?
             || outcome_permit.request().units().items() == 0
         {
             return Err(ProducerCompactionError::Native(

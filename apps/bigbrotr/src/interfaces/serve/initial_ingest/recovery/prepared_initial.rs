@@ -236,14 +236,14 @@ impl Work<'_> {
     fn preflight(&self) -> Result<()> {
         // These phases are serial on this sole worker. Charge each overlap
         // before a claim, without retaining vectors of decoded requests.
-        let metadata = grant(self.budget, METADATA_BYTES, 0)?;
+        let metadata = history_grant(self.budget, METADATA_BYTES, 0)?;
         let structural = grant(self.budget, STRUCTURAL_BYTES, 0)?;
         drop(self.effect_grant()?);
         drop(structural);
-        let source = grant(self.budget, 4096, 4096)?;
+        let source = history_grant(self.budget, 4096, 4096)?;
         drop(replay_grants(self.budget)?);
         drop(source);
-        let dispatch = grant(self.budget, COMPACTED_HANDOFF_DATA_BYTES, 8192)?;
+        let dispatch = history_grant(self.budget, COMPACTED_HANDOFF_DATA_BYTES, 8192)?;
         drop(self.effect_grant()?);
         drop(dispatch);
         drop(metadata);
@@ -268,7 +268,7 @@ impl Work<'_> {
         let owner = custody.owner.as_mut().expect("claimed Control");
         let native = custody.native.as_mut().expect("native custody");
         if compacted {
-            let metadata = grant(self.budget, METADATA_BYTES, 0)?;
+            let metadata = history_grant(self.budget, METADATA_BYTES, 0)?;
             let effects = self.effect_grant()?;
             let plan = if let Some(prefix) = &custody.prefix {
                 self.operation(owner.inspect_prepared_compacted_initial_gap(
@@ -319,7 +319,7 @@ impl Work<'_> {
                         policy_ttl: duration(self.root, "authorization_ttl"),
                         cancelled: &self.cancellation.requested,
                     },
-                    grant(self.budget, 4096, 4096)?,
+                    history_grant(self.budget, 4096, 4096)?,
                     |d, h| self.validate(d, h),
                 ))
                 .await?;
@@ -346,7 +346,7 @@ impl Work<'_> {
                 .operation(owner.inspect_prepared_initial_history(
                     native,
                     self.request(),
-                    grant(self.budget, METADATA_BYTES, 0)?,
+                    history_grant(self.budget, METADATA_BYTES, 0)?,
                     |d, h| self.validate(d, h),
                 ))
                 .await?;
@@ -381,7 +381,7 @@ impl Work<'_> {
                 plan,
                 self.request(),
                 limits().event,
-                grant(self.budget, COMPACTED_HANDOFF_DATA_BYTES, 8192)?,
+                history_grant(self.budget, COMPACTED_HANDOFF_DATA_BYTES, 8192)?,
                 self.effect_grant()?,
                 |d, h| self.validate(d, h),
             ))

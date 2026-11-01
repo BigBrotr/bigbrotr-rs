@@ -117,7 +117,7 @@ pub(super) async fn acknowledge(
                     recovery,
                     replay,
                     input,
-                    grant(
+                    history_grant(
                         budget,
                         RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES,
                         RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
@@ -133,7 +133,7 @@ pub(super) async fn acknowledge(
                     recovery,
                     replay,
                     input,
-                    grant(
+                    history_grant(
                         budget,
                         RecoveryAcknowledgement::REQUIRED_DATA_BYTES,
                         RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,
@@ -242,7 +242,7 @@ async fn own(
     // There is only this worker, so later per-request acquisition cannot race
     // another consumer. Never retain a vector of requests or decoded outcomes.
     {
-        let closing = grant(&budget, 4096, 4096)?;
+        let closing = history_grant(&budget, 4096, 4096)?;
         drop(replay_grants(&budget)?);
         drop(closing);
     }
@@ -376,7 +376,7 @@ async fn connected(
     }
     phase(progress, timeout)?;
     let closed = bounded(timeout, cancellation, async {
-        let permit = grant(budget, 4096, 4096)?;
+        let permit = history_grant(budget, 4096, 4096)?;
         let result = if matches!(action, Action::RetireInitial | Action::ReclaimInitial) {
             owner
                 .observe_initial_retirement(recovery, close_request(), permit, validate)
@@ -456,7 +456,7 @@ async fn connected(
                         &source,
                         close_request(),
                         limits().event,
-                        grant(
+                        history_grant(
                             budget,
                             ConfirmedClosedReclamation::REQUIRED_DATA_BYTES,
                             ConfirmedClosedReclamation::REQUIRED_NATIVE_BYTES,
@@ -494,7 +494,7 @@ async fn connected(
                     .retire_initial_producer(
                         &source,
                         close_request(),
-                        grant(budget, 128 * 1024, 0)?,
+                        history_grant(budget, 128 * 1024, 0)?,
                         validate,
                     )
                     .await

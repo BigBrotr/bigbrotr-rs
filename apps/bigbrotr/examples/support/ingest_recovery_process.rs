@@ -101,7 +101,7 @@ pub async fn run(config: Config, mode: &str, path: &Path) {
                         policy_ttl: Duration::from_secs(2),
                         cancelled: &cancelled,
                     },
-                    grant(&budget, 4096, 4096),
+                    history_grant(&budget, 4096, 4096),
                     validate,
                 )
                 .await

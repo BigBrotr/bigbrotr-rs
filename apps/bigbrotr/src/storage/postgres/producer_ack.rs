@@ -119,10 +119,10 @@ impl ControlSession {
         } else {
             RecoveryAcknowledgement::REQUIRED_DATA_BYTES
         };
-        if permit.request().units().data_bytes() < required
-            || permit.request().units().native_bytes()
-                < RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES
-            || permit.request().units().items() == 0
+        producer_progress::recovery::require_scratch(&permit, required).map_err(|_| {
+            ProducerAcknowledgementError::Native(AdmissionError::InsufficientReservation)
+        })?;
+        if permit.request().units().native_bytes() < RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES
         {
             return Err(ProducerAcknowledgementError::Native(
                 AdmissionError::InsufficientReservation,

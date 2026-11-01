@@ -308,10 +308,9 @@ impl ControlSession {
         compacted: Option<initial_compaction::Check>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<LiveInitialWriter, InitialSuccessionError> {
-        if permit.request().units().data_bytes() < 128 * 1024
-            || permit.request().units().native_bytes() < 8192
-            || permit.request().units().items() == 0
-        {
+        producer_progress::recovery::require_scratch(&permit, 128 * 1024)
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
+        if permit.request().units().native_bytes() < 8192 {
             return Err(InitialSuccessionError::Native(
                 BootstrapError::InsufficientReservation,
             ));

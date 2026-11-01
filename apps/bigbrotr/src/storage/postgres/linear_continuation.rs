@@ -86,6 +86,17 @@ struct DecodedEffects {
     ordering: bool,
     targets: [Option<(EventId, u64)>; 3],
 }
+// Historical authentication retains only these fixed scalars beside the full
+// Fact decode grant. Count decoder/return overlap, matching state, the current
+// reference/result and fixed counters/slice/range/closure headers. It allocates
+// neither the live Boundary IDs nor a wire parser.
+pub(in crate::storage::postgres::control_owner) const HISTORICAL_SCALAR_BYTES: usize = 2
+    * size_of::<DecodedEffects>()
+    + size_of::<[bool; 3]>()
+    + size_of::<Option<bigbrotr_model::SourceRecordId>>()
+    + size_of::<FactRef>()
+    + 2 * size_of::<Option<(EventId, u64)>>()
+    + 16 * size_of::<u64>();
 pub(in crate::storage::postgres::control_owner) struct Traversal {
     pub geometry: Geometry,
     pub(super) boundary: Boundary,

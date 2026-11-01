@@ -289,7 +289,7 @@ def verify(events, before, native, inputs, case, server_window):
     assert set(resource) == {'event', 'metadata_bytes', 'metadata_scratch_bytes', 'metadata_entry_bytes',
         'input_bytes', 'outcome_bytes', 'effect_bytes', 'native_bytes', 'transport_bytes',
         'observation_bytes', 'operation_timeout_ms', 'frame_bytes'}
-    assert resource == dict(resource, metadata_bytes=132608 if success else 132095,
+    assert resource == dict(resource, metadata_bytes=8 * 1024**2 + (132608 if success else 132095),
         metadata_scratch_bytes=131072, metadata_entry_bytes=512, native_bytes=128 * 1024**2,
         transport_bytes=4 * 1024**2, observation_bytes=32 * 1024**2,
         operation_timeout_ms=10000, frame_bytes=16 * 1024**2)

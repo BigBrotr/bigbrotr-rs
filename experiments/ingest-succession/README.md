@@ -239,6 +239,15 @@ The reader only reads retained artifacts; it never starts an engine or repairs a
 capture. Artificial reader controls are separately labeled and do not qualify a
 connected product run. See the current checkpoint for actual execution status.
 
+Current historical factories reserve the default 8 MiB Fact decode allowance
+beside the requested nondecode metadata capacity. The examples' resource event
+reports their complete charged grant in `metadata_bytes`; case arguments and
+native lineage observations still describe the structural metadata capacity.
+Current strict resource expectations include that decode allowance. Replay an
+older real capture with its recorded source and original verifier Git revision;
+its smaller resource event is evidence for that source only. Preserve the
+original capture bytes rather than rewriting them for the current verifier.
+
 `transition.py RUN_ROOT BUILD_ARTIFACTS` exercises nine finite invocations on
 three fresh copies: preparation3, fresh empty retirement3, exact retirement retry,
 and preparation4 from each genuine terminal2 origin, plus a future-metadata

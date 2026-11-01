@@ -95,7 +95,7 @@ async fn own(
     phase(&progress, timeout)?;
     let lineage = RetainedLineage::inspect_initial_empty_attempt(
         custody.native.as_ref().expect("native custody"),
-        grant(&budget, STRUCTURAL_BYTES, 0)?,
+        history_grant(&budget, STRUCTURAL_BYTES, 0)?,
         &cancellation.requested,
     )
     .map_err(error)?;

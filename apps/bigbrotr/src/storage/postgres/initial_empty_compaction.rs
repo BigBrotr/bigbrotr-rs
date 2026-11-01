@@ -42,6 +42,11 @@ impl ControlSession {
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<CompactedInitialEmptyRetirementPlan, InitialSuccessionError> {
         let metadata = lineage.progress_scratch();
+        producer_progress::recovery::require_scratch(
+            metadata,
+            lineage.profile().required_metadata_bytes(),
+        )
+        .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
         require_metadata_grant(metadata)?;
         if outcomes.request().units().items() == 0
             || outcomes.request().units().data_bytes()

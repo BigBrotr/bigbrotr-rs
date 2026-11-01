@@ -61,7 +61,7 @@ async fn own(
     let timeout = duration(&root, "renewal_timeout");
     let ttl = duration(&root, "authorization_ttl");
     let _inputs = grant(&budget, 24 * MIB, 0)?;
-    let activation = grant(&budget, 128 * 1024, 8192)?;
+    let activation = history_grant(&budget, 128 * 1024, 8192)?;
     if cancellation.requested.load(Ordering::Acquire) {
         return Err((4, "initial successor cancelled before native open".into()));
     }
@@ -141,7 +141,7 @@ async fn own(
     let compacted = compacted_prefix.is_some();
 
     {
-        let _preparation = grant(&budget, 128 * 1024, 8192)?;
+        let _preparation = history_grant(&budget, 128 * 1024, 8192)?;
         if compacted {
             drop(grant(
                 &budget,
@@ -150,7 +150,7 @@ async fn own(
                 0,
             )?);
         } else {
-            let _source = grant(&budget, 4096, 4096)?;
+            let _source = history_grant(&budget, 4096, 4096)?;
             drop(recovery::replay_grants(&budget)?);
         }
     }
@@ -218,7 +218,7 @@ async fn own(
                         cancelled: &cancellation.requested,
                     },
                     limits,
-                    grant(&budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+                    history_grant(&budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
                     grant(&budget, outcome_bytes, 0)?,
                     validate,
                 )
@@ -264,7 +264,7 @@ async fn own(
                         policy_ttl: ttl,
                         cancelled: &cancellation.requested,
                     },
-                    grant(&budget, 4096, 4096)?,
+                    history_grant(&budget, 4096, 4096)?,
                     validate,
                 )
                 .await
@@ -347,7 +347,7 @@ async fn own(
                 policy_ttl: ttl,
                 cancelled: &cancellation.requested,
             };
-            let metadata = grant(&budget, 128 * 1024, 8192)?;
+            let metadata = history_grant(&budget, 128 * 1024, 8192)?;
             let result = if compacted {
                 let limits = recovery::limits().event;
                 let bytes = compacted_outcome_data_bytes(limits).map_err(|e| (3, e.to_string()))?;

@@ -285,6 +285,14 @@ impl ControlSession {
         projection::require_context(&tx, &intent, current, purpose).await?;
         let activation = projection::activation(&tx, &intent).await?;
         let head = history_rows::read_epoch(&tx, recovery, epoch).await?;
+        let profile =
+            crate::storage::rocks::succession::SuccessionProfile::for_recovery(epoch, None)
+                .map_err(|_| native_error(BootstrapError::InsufficientReservation))?;
+        producer_progress::recovery::require_scratch(
+            &metadata_permit,
+            profile.required_metadata_bytes(),
+        )
+        .map_err(|_| native_error(BootstrapError::InsufficientReservation))?;
         let native = if compacted.is_some() {
             NativeSuccessorRecovery::inspect_with_compacted_initial(
                 recovery,

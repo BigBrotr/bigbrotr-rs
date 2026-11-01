@@ -53,7 +53,8 @@ enum Inspection {
 
 /// Owns the single compact lineage allocation and its metadata grant. The fixed
 /// SQL head and the transient projections below use that grant's 128KiB scratch;
-/// no second history vector or metadata grant is retained.
+/// historical Fact decode adds its allowance to the same retained permit.
+/// No second history vector or metadata grant is retained.
 pub struct SuccessorHistory {
     lineage: RetainedLineage,
     head: Epoch,
@@ -89,7 +90,8 @@ pub struct SuccessorReplayRequest<'a> {
 // Fixed PG context, cursor and both callee/caller 64-tuple buffers fit scratch.
 // Native sidecar inspection and SQL projection decoding run serially. Transport
 // buffers/policy documents retain the existing separate Control/driver grant;
-// semantic input/effect decoding has its own admission grant.
+// original input/canonical-effect decoding has its own admission grant. These
+// bounds describe the nondecode operation; historical Fact decode is additional.
 const _: () = assert!(size_of::<SuccessorHistory>() < LINEAGE_SCRATCH_BYTES as usize / 8);
 const _: () =
     assert!(size_of::<SuccessorHistoryResolution<'_>>() < LINEAGE_SCRATCH_BYTES as usize / 8);
@@ -311,6 +313,13 @@ impl ControlSession {
         let native_epoch = recovery.manifest().identity().owner_epoch.get();
         let pending = pending_target(native_epoch, registered)?;
         rows::require_head(&tx, recovery, &head).await?;
+        let profile = crate::storage::rocks::succession::SuccessionProfile::for_recovery(
+            native_epoch,
+            pending,
+        )
+        .map_err(|_| native_error(BootstrapError::InsufficientReservation))?;
+        producer_progress::recovery::require_scratch(&permit, profile.required_metadata_bytes())
+            .map_err(|_| native_error(BootstrapError::InsufficientReservation))?;
         let lineage = match &inspection {
             Inspection::Original => {
                 RetainedLineage::inspect(recovery, pending, permit, input.cancelled)

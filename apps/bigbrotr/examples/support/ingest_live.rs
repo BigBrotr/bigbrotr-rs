@@ -107,7 +107,7 @@ pub(super) async fn run(
             &mut candidate,
             input,
             limits,
-            grant(&probe.budget, 128 * 1024, 8192),
+            history_grant(&probe.budget, 128 * 1024, 8192),
             grant(
                 &probe.budget,
                 compacted_outcome_data_bytes(limits).unwrap(),
@@ -120,7 +120,7 @@ pub(super) async fn run(
         bounded(owner.prepare_live_initial_successor(
             &mut candidate,
             input,
-            grant(&probe.budget, 128 * 1024, 8192),
+            history_grant(&probe.budget, 128 * 1024, 8192),
             |doc, digest| probe.validate(doc, digest),
         ))
         .await
@@ -154,7 +154,7 @@ pub(super) async fn run(
             attempt.handoff,
             input,
             limits,
-            grant(&probe.budget, 128 * 1024, 8192),
+            history_grant(&probe.budget, 128 * 1024, 8192),
             grant(
                 &probe.budget,
                 compacted_outcome_data_bytes(limits).unwrap(),
@@ -168,7 +168,7 @@ pub(super) async fn run(
             candidate,
             attempt.handoff,
             input,
-            grant(&probe.budget, 128 * 1024, 8192),
+            history_grant(&probe.budget, 128 * 1024, 8192),
             |doc, digest| probe.validate(doc, digest),
         ))
         .await

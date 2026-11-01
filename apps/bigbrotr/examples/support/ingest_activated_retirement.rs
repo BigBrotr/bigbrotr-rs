@@ -103,7 +103,7 @@ async fn run_in(
     assert_eq!(recovery.manifest().identity().owner_epoch.get(), 2);
     // Preclaim overlap: retained metadata + closing proof coexist with one
     // original replay, final retirement, never a vector.
-    let metadata = grant(
+    let metadata = history_grant(
         &probe.budget,
         if wait.is_some() { 132096 } else { 128 * 1024 },
         0,

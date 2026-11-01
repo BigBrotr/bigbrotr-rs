@@ -169,7 +169,7 @@ async fn run_inner(
     // census limits and its emitted frame limit, not a physical-RSS guarantee.
     let _observations = grant(&budget, 32 * MIB, 0);
     let _transport = grant(&budget, 4 * MIB, 0);
-    let metadata = grant(&budget, metadata_bytes, 0);
+    let metadata = history_grant(&budget, metadata_bytes, 0);
     let live = matches!(operation, "live" | "live-new");
     let acquisition = matches!(operation, "abandon" | "acquisition-claims");
     let claims = operation == "acquisition-claims";
@@ -248,7 +248,7 @@ async fn run_inner(
         retirement::preflight(&budget);
     }
     emit(
-        serde_json::json!({"event":"lineage-history-resources","metadata_bytes":metadata_bytes,
+        serde_json::json!({"event":"lineage-history-resources","metadata_bytes":bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(metadata_bytes).unwrap(),
         "metadata_scratch_bytes":LINEAGE_SCRATCH_BYTES,"metadata_entry_bytes":LINEAGE_ENTRY_BYTES,
         "input_bytes":RetainedRequestInput::required_data_bytes(recovery_limits().input).unwrap(),
         "outcome_bytes":recovery_limits().required_data_bytes().unwrap(),

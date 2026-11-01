@@ -116,6 +116,14 @@ fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }
+fn history_grant(budget: &ResourceBudget, operation_bytes: u64, native: u64) -> OwnedPermit {
+    grant(
+        budget,
+        bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(operation_bytes)
+            .unwrap(),
+        native,
+    )
+}
 fn raw_state(path: &Path) -> (Vec<serde_json::Value>, u64) {
     // Independent raw native observation, deliberately outside the product API.
     let db = rocksdb::DB::open_cf_for_read_only(

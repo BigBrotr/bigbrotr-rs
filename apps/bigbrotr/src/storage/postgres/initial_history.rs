@@ -22,8 +22,10 @@ pub struct InitialHistoryRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
-/// The borrow retains actual native exclusion. The metadata permit covers the
-/// bounded intent and registration; neither these bytes nor this type is a lease.
+/// The borrow retains actual native exclusion. The existing 128 KiB operation
+/// allowance covers the bounded intent, registration and streaming reader locals;
+/// the same retained permit additionally funds full historical Fact decode.
+/// Neither these bytes nor this type is a lease.
 pub struct PreparedInitialHistory<'a> {
     native: HistoricalInitial<'a>,
     registration: ingest_registry::InitialRegistration,
@@ -78,13 +80,8 @@ impl ControlSession {
         permit: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<PreparedInitialHistory<'a>, InitialSuccessionError> {
-        if permit.request().units().data_bytes() < 128 * 1024
-            || permit.request().units().items() == 0
-        {
-            return Err(InitialSuccessionError::Native(
-                BootstrapError::InsufficientReservation,
-            ));
-        }
+        producer_progress::recovery::require_scratch(&permit, 128 * 1024)
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
         let instance = *self.request.instance.as_bytes();
         let current = self.identity;
         let (tx, mut lease, epoch) = self

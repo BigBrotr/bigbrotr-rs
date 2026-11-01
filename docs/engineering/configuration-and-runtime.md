@@ -357,6 +357,14 @@ settings and cgroup ceilings have distinct functions; do not shrink an engine's
 global thread pool as though it were a CPU quota without testing startup and
 background progress. Actual bound/overshoot qualification belongs to engine tests.
 
+Historical producer progress reads retain the default 8 MiB Fact decode
+allowance beside the operation's existing metadata, result and streaming scratch.
+The shared `historical_progress_data_bytes` requirement adds that allowance once
+to the existing operation reservation (at least 4 KiB). Closing, recovered ACK,
+retirement, reclamation and retained lineage readers fund the same full decode;
+their native metadata capacity limits and process ceilings stay separate.
+Original input permits already large enough for this sequential read are reused.
+
 CPU-heavy signature verification, compression and ranking use explicit bounded
 pools or isolated workers. Do not spawn one blocking task per event and rely on
 Tokio to discover a sensible CPU limit. A started blocking task cannot generally

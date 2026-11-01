@@ -90,7 +90,7 @@ async fn own(
     let metadata_bytes = SuccessionProfile::for_recovery(2, None)
         .map_err(|e| (3, e.to_string()))?
         .required_metadata_bytes();
-    let metadata = grant(&budget, metadata_bytes, 0)?;
+    let metadata = history_grant(&budget, metadata_bytes, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
     if mode == Mode::Resolve {

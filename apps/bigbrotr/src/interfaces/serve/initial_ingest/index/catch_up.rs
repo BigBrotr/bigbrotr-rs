@@ -1,8 +1,8 @@
 //! Finite same-store recovery. Published history, retained pending work and new
 //! backlog have distinct cursors; physical verification is never publication.
 use super::super::{
-    Cancellation, Progress, bounded, duration, grant, native_limits, owner_budget, owner_error,
-    phase, recovery, supervision,
+    Cancellation, Progress, bounded, duration, grant, history_grant, native_limits, owner_budget,
+    owner_error, phase, recovery, supervision,
 };
 use super::*;
 use crate::interfaces::{lifecycle_output::LifecycleOutput, postgres_command};
@@ -135,7 +135,7 @@ async fn own(
     index_driver.attach(state.custody()).map_err(error)?;
     let _metadata = grant(&budget, METADATA_BYTES, 0)?;
     let mut lineage_metadata = if manifest.key_schema() == 2 {
-        Some(grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?)
+        Some(history_grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?)
     } else {
         None
     };
@@ -151,7 +151,7 @@ async fn own(
     // connection preparations. Index has a separate complete-operation check
     // against these same real holders in its first accepted-policy callback.
     {
-        let closing = grant(&budget, 4096, 4096)?;
+        let closing = history_grant(&budget, 4096, 4096)?;
         drop(recovery::replay_grants(&budget)?);
         drop(closing);
     }
@@ -251,7 +251,7 @@ async fn own(
         if let Some(prefix) = &custody.compacted {
             let proof=authority.operation(owner.inspect_initial_compacted_retirement(custody.native.as_ref().unwrap(),prefix,
                 request(&root,&cancellation,spec)?,recovery::limits().event,
-                grant(&budget,bigbrotr::storage::postgres::control_owner::CompactedInitialRetirement::REQUIRED_DATA_BYTES,0)?,
+                history_grant(&budget,bigbrotr::storage::postgres::control_owner::CompactedInitialRetirement::REQUIRED_DATA_BYTES,0)?,
                 grant(&budget,bigbrotr::storage::rocks::store::compacted_outcome_data_bytes(recovery::limits().event).map_err(error)?,0)?,
                 |d,h| validate(&root,profile,d,h))).await?;
             source::Source::compacted_initial(
@@ -273,7 +273,7 @@ async fn own(
                 .operation(owner.observe_initial_retirement(
                     custody.native.as_ref().unwrap(),
                     request(&root, &cancellation, spec)?,
-                    grant(&budget, 4096, 4096)?,
+                    history_grant(&budget, 4096, 4096)?,
                     |d, h| validate(&root, profile, d, h),
                 ))
                 .await?;
@@ -439,7 +439,13 @@ fn preflight(profile: Profile, budget: &ResourceBudget) -> Result<()> {
         .checked_add(profile.source().required_data_bytes().map_err(error)?)
         .and_then(|n| n.checked_add(plan::required_data_bytes(profile.source()).ok()?))
         .and_then(|n| n.checked_add(required_recovery_metadata_bytes()))
-        .and_then(|n| n.checked_add(64 * 1024 + 4096))
+        .and_then(|n| n.checked_add(64 * 1024))
+        .and_then(|n| {
+            n.checked_add(
+                bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(4096)
+                    .ok()?,
+            )
+        })
         .ok_or_else(|| error("recovery reservation overflow"))?;
     let request = ResourceRequest::data(
         bytes,

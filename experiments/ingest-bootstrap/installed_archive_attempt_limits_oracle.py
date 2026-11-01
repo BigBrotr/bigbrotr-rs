@@ -116,7 +116,7 @@ def local_inputs(before,after,science):
 
 def snapshots(events,before,after,science,window,cap):
     resources,=[e for e in events if e['event']=='archive-attempt-resources']
-    expected=dict(event='archive-attempt-resources',mode='cap' if cap else 'holder',metadata_bytes=262144,native_bytes=128*1024**2,
+    expected=dict(event='archive-attempt-resources',mode='cap' if cap else 'holder',metadata_bytes=8*1024**2+262144,native_bytes=128*1024**2,
         observation_bytes=32*1024**2,transport_bytes=4*1024**2,input_bytes=1024**2,items=16,operation_timeout_ms=10000,
         holder_timeout_ms=180000,new_attempts=122 if cap else 0,pending_bytes=resources['pending_bytes'])
     assert resources==expected and type(resources['pending_bytes']) is int and 9*1024**2<resources['pending_bytes']<10*1024**2

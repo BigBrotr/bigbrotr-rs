@@ -128,7 +128,7 @@ async fn own(
     // One lineage allocation includes its fixed PG/native scratch. Retain the
     // mutation grant alongside it; input/outcome replay and the final effect
     // census are serial. Admit each actual overlap before a claim or barrier.
-    let metadata = grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
+    let metadata = history_grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
     let mutation_bytes = if mode == Mode::RetireEmpty {
         8192
     } else {
@@ -149,7 +149,7 @@ async fn own(
         let ack_effects = compacted_replay
             .then(|| compacted_grant(&budget))
             .transpose()?;
-        drop(grant(
+        drop(history_grant(
             &budget,
             if compacted_replay {
                 RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES

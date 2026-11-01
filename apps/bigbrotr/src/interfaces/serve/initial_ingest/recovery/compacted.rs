@@ -29,7 +29,7 @@ pub(in crate::interfaces::serve::initial_ingest) fn inspect(
     // census uses the same outcome allowance sequentially; its decoded facts
     // and grant do not survive inspect_initial.
     drop((
-        grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+        history_grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
         grant(budget, outcome_bytes, 0)?,
     ));
     RetainedCompactedPrefix::inspect_initial(
@@ -77,7 +77,7 @@ pub(super) async fn retirement(
                     cancelled: &cancellation.requested,
                 },
                 limits,
-                grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+                history_grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
                 grant(budget, outcome_bytes, 0)?,
                 validate,
             )
@@ -137,7 +137,7 @@ pub(super) async fn reclaim(
                     cancelled: &cancellation.requested,
                 },
                 limits().event,
-                grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
+                history_grant(budget, CompactedInitialRetirement::REQUIRED_DATA_BYTES, 0)?,
                 grant(
                     budget,
                     compacted_outcome_data_bytes(limits().event).map_err(|e| (3, e.to_string()))?,

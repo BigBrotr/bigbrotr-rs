@@ -212,6 +212,19 @@ fn grant(budget: &ResourceBudget, bytes: u64, native: u64) -> Result<OwnedPermit
             )
         })
 }
+fn history_grant(
+    budget: &ResourceBudget,
+    operation_bytes: u64,
+    native: u64,
+) -> Result<OwnedPermit> {
+    // Existing operation allowances already cover their metadata/result and
+    // reducer locals. Retain one additional Fact decode allowance alongside
+    // them, including when this permit moves into a historical result.
+    let bytes =
+        bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(operation_bytes)
+            .map_err(|e| (3, e.to_string()))?;
+    grant(budget, bytes, native)
+}
 fn native_owner_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
     // The logical ledger persists after operation grants return and is dropped
     // before this same store-owned reservation. Native bytes cover the engine.
@@ -722,6 +735,34 @@ fn index_observation(index: Option<&index::Index>) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn historical_work_prefunds_decode_without_changing_native_reservation() {
+        const REQUIRED: u64 = 8 * MIB + 4096;
+        for (data, native, accepted) in [
+            (4096, 4096, false),
+            (REQUIRED - 1, 4096, false),
+            (REQUIRED, 4095, false),
+            (REQUIRED, 4096, true),
+        ] {
+            let budget = ResourceBudget::new(
+                ProcessEnvelope::new(
+                    32 * MIB,
+                    0,
+                    ResourceLimits::new(data, 1, native, 0),
+                    WaiterLimits::new(0, 0),
+                )
+                .unwrap(),
+            );
+            let result = history_grant(&budget, 4096, 4096);
+            assert_eq!(result.is_ok(), accepted);
+            if let Ok(permit) = result {
+                assert_eq!(permit.request().units().data_bytes(), REQUIRED);
+                assert_eq!(permit.request().units().native_bytes(), 4096);
+            }
+        }
+    }
+
     #[tokio::test]
     async fn a_late_native_completion_cannot_reset_the_phase_watchdog() {
         let expired = Instant::now() - std::time::Duration::from_secs(1);

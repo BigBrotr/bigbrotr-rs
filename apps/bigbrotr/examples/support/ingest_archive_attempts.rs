@@ -63,7 +63,7 @@ pub async fn run(config: Config, file: &Path, metadata: u64, gate: Option<&Path>
     );
     let _observations = grant(&budget, 32 * MIB, 0);
     let _transport = grant(&budget, 4 * MIB, 0);
-    let metadata = grant(&budget, metadata, 0);
+    let metadata = history_grant(&budget, metadata, 0);
     let mut custody = Custody {
         native: Some(
             IngestRecovery::inspect(&path, dataset, limits(), grant(&budget, 0, 128 * MIB))
@@ -87,7 +87,7 @@ pub async fn run(config: Config, file: &Path, metadata: u64, gate: Option<&Path>
     drop(preflight_pending);
     emit(
         serde_json::json!({"event":"archive-attempt-resources","mode":if gate.is_some(){"holder"}else{"cap"},
-        "metadata_bytes":MAX_LINEAGE_METADATA_BYTES,"native_bytes":128*MIB,"observation_bytes":32*MIB,
+        "metadata_bytes":bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(MAX_LINEAGE_METADATA_BYTES).unwrap(),"native_bytes":128*MIB,"observation_bytes":32*MIB,
         "transport_bytes":4*MIB,"input_bytes":RetainedInputs::required_data_bytes(),
         "pending_bytes":pending_limits.required_data_bytes().unwrap(),"items":16,"operation_timeout_ms":10000,
         "holder_timeout_ms":180000,"new_attempts":if gate.is_some(){0}else{122}}),

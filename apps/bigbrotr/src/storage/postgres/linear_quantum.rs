@@ -17,7 +17,7 @@ use tokio_postgres::Transaction;
 mod continuation;
 use continuation::page_result;
 pub(in crate::storage::postgres::control_owner) use continuation::{
-    Traversal, next_window, observe_status,
+    HISTORICAL_SCALAR_BYTES, Traversal, next_window, observe_status,
 };
 
 pub struct QuantumGrant {

@@ -33,6 +33,9 @@ impl ConfirmedNativeReclamation {
     }
 }
 impl ConfirmedClosedReclamation {
+    /// Existing nondecode operation/result allowance, including reader locals.
+    /// The original-replay confirmation factory additionally funds historical
+    /// Fact decode via `historical_progress_data_bytes` before retaining the plan.
     pub const REQUIRED_DATA_BYTES: u64 = ClosedProducerReclamation::DATA_BYTES;
     pub const REQUIRED_NATIVE_BYTES: u64 = ClosedProducerReclamation::NATIVE_BYTES;
 }
@@ -77,6 +80,11 @@ impl ControlSession {
         effects: OwnedPermit,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ConfirmedClosedReclamation, ProducerReclamationError> {
+        producer_progress::recovery::require_scratch(
+            &metadata,
+            ClosedProducerReclamation::DATA_BYTES,
+        )
+        .map_err(|_| ProducerReclamationError::Native(AdmissionError::InsufficientReservation))?;
         let recovery = source.recovery();
         source
             .validate_initial(input.cancelled)

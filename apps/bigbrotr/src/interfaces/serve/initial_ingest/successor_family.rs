@@ -71,7 +71,7 @@ async fn own(
     // The existing input-memory allowance is separate from the persistent
     // 64-file/32MiB spool bound. Succession reclaims neither input nor history.
     let _inputs = grant(&budget, 24 * MIB, 0)?;
-    let metadata = grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
+    let metadata = history_grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
     let mutation = grant(&budget, 8192, 8192)?;
     if cancellation.requested.load(Ordering::Acquire) {
         return Err((4, "successor cancelled before native open".into()));

@@ -914,7 +914,7 @@ impl Probe {
                 0,
             )
         };
-        let metadata = || grant(&self.budget, 128 * 1024, 8192);
+        let metadata = || history_grant(&self.budget, 128 * 1024, 8192);
         let plan = if matches!(self.mode, Mode::Gap { .. }) {
             let slot = [
                 0x36_u8, 0xa0, 0x25, 0x3e, 0x6d, 0x94, 0xc1, 0x80, 0x99, 0xf6, 0xc4, 0xda, 0xe9,
@@ -1011,7 +1011,7 @@ impl Probe {
                 policy_ttl: self.policy_ttl(),
                 cancelled: &self.cancelled,
             },
-            grant(&self.budget, 128 * 1024, 0),
+            history_grant(&self.budget, 128 * 1024, 0),
             |document, digest| self.validate(document, digest),
         ))
         .await
@@ -1068,7 +1068,7 @@ impl Probe {
                 policy_ttl: self.policy_ttl(),
                 cancelled: &self.cancelled,
             },
-            grant(&self.budget, 4096, 4096),
+            history_grant(&self.budget, 4096, 4096),
             |document, digest| self.validate(document, digest),
         ))
         .await

@@ -51,6 +51,8 @@ impl Check {
         policy: PolicyEpoch,
         cancelled: &AtomicBool,
     ) -> Result<(), InitialSuccessionError> {
+        producer_progress::recovery::require_scratch(metadata, COMPACTED_HANDOFF_DATA_BYTES)
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
         let predecessor = handoff
             .compacted_predecessor(recovery, metadata, cancelled)
             .map_err(InitialSuccessionError::Native)?
@@ -372,13 +374,8 @@ impl ControlSession {
         outcomes: OwnedPermit,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<InitialGapPlan, InitialSuccessionError> {
-        if metadata.request().units().items() == 0
-            || metadata.request().units().data_bytes() < COMPACTED_HANDOFF_DATA_BYTES
-        {
-            return Err(InitialSuccessionError::Native(
-                BootstrapError::InsufficientReservation,
-            ));
-        }
+        producer_progress::recovery::require_scratch(&metadata, COMPACTED_HANDOFF_DATA_BYTES)
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
         let check = Check::new(limits, outcomes)?;
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();

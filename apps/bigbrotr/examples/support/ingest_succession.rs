@@ -807,7 +807,7 @@ impl Probe {
                 policy_ttl: self.policy_ttl(),
                 cancelled: &self.cancelled,
             },
-            grant(&self.budget, 4096, 4096),
+            history_grant(&self.budget, 4096, 4096),
             |doc, digest| self.validate(doc, digest),
         ))
         .await
@@ -943,7 +943,7 @@ impl Probe {
                 cancelled: &self.cancelled,
             },
             limits,
-            grant(&self.budget, 128 * 1024, 0),
+            history_grant(&self.budget, 128 * 1024, 0),
             grant(
                 &self.budget,
                 compacted_outcome_data_bytes(limits).unwrap(),
@@ -1110,7 +1110,7 @@ impl Probe {
                 recovery,
                 input,
                 limits,
-                grant(&self.budget, 128 * 1024, 8192),
+                history_grant(&self.budget, 128 * 1024, 8192),
                 grant(
                     &self.budget,
                     compacted_outcome_data_bytes(limits).unwrap(),
@@ -1123,7 +1123,7 @@ impl Probe {
             bounded(owner.prepare_initial_successor(
                 recovery,
                 input,
-                grant(&self.budget, 128 * 1024, 8192),
+                history_grant(&self.budget, 128 * 1024, 8192),
                 validate,
             ))
             .await

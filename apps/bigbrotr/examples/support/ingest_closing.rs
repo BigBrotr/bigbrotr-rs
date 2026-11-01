@@ -205,7 +205,7 @@ pub async fn run(
             .close_initial_producer(
                 &mut recovery,
                 request(),
-                grant(budget, 4096, 4096),
+                history_grant(budget, 4096, 4096),
                 |d, h| {
                     validate(d, h)?;
                     validations += 1;

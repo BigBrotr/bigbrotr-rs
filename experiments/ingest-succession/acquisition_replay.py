@@ -284,7 +284,7 @@ def verify_seed(events,before,native,inputs,case,server_window,*,compacted=False
         exact(extra,dict(event='lineage-transition-compacted',command='successor-compacted-acquisition-claims',compacted_outcome_bytes=extra['compacted_outcome_bytes']))
         assert type(extra['compacted_outcome_bytes']) is int and 0<extra['compacted_outcome_bytes']<=256*1024**2
     resource = t.take('resources')
-    exact(resource, dict(event='lineage-history-resources', metadata_bytes=262144,
+    exact(resource, dict(event='lineage-history-resources', metadata_bytes=8 * 1024**2 + 262144,
         metadata_scratch_bytes=131072, metadata_entry_bytes=512, native_bytes=128 * 1024**2,
         transport_bytes=4 * 1024**2, observation_bytes=32 * 1024**2, operation_timeout_ms=10000,
         frame_bytes=16 * 1024**2, **{k: resource[k] for k in ('input_bytes', 'outcome_bytes', 'effect_bytes')}))
@@ -407,7 +407,7 @@ def verify_terminal(events,before,native,inputs,case,server_window,index):
         'observation_bytes', 'operation_timeout_ms', 'frame_bytes'}
     for field in ('input_bytes', 'outcome_bytes', 'effect_bytes'):
         assert type(resources[field]) is int and 0 < resources[field] <= 256 * 1024**2
-    exact(resources, dict(event='lineage-history-resources', metadata_bytes=262144,
+    exact(resources, dict(event='lineage-history-resources', metadata_bytes=8 * 1024**2 + 262144,
         metadata_scratch_bytes=131072, metadata_entry_bytes=512, input_bytes=resources['input_bytes'],
         outcome_bytes=resources['outcome_bytes'], effect_bytes=resources['outcome_bytes'], native_bytes=128 * 1024**2,
         transport_bytes=4 * 1024**2, observation_bytes=32 * 1024**2, operation_timeout_ms=10000, frame_bytes=16 * 1024**2))

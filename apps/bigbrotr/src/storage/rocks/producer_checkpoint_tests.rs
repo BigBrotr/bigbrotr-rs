@@ -496,6 +496,7 @@ fn retained_payload_time_refuses_missing_corrupt_and_misbound_native_values() {
 
 #[test]
 fn retained_payload_time_requires_decode_scratch_live_authority_and_unchanged_view() {
+    use crate::storage::postgres::control_owner::historical_progress_data_bytes;
     use crate::storage::rocks::keys::IngestKey;
     let (_root, mut store, budget, _, _) = setup(false);
     let result = admit(&mut store, &budget, 1).unwrap();
@@ -511,7 +512,9 @@ fn retained_payload_time_requires_decode_scratch_live_authority_and_unchanged_vi
         short_view.event_payload_time(reference, || Ok(())),
         Err(AdmissionError::InsufficientReservation)
     );
-    let scratch = grant(&budget, 8 * MIB, 0);
+    // A connected historical reader keeps its 4 KiB reducer beside the Fact.
+    // Funding that full overlap must preserve authority/sequence refusals.
+    let scratch = grant(&budget, historical_progress_data_bytes(4096).unwrap(), 0);
     let view = store.progress_read(&scratch).unwrap();
     let before = (kv(&store), store.db.latest_sequence_number());
     // This small signed fact has one hash chunk: initial, chunk and final checks

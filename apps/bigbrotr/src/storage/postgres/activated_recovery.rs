@@ -180,13 +180,8 @@ impl ControlSession {
         compacted: Option<compacted::Inspection>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ActivatedInitialRecovery, InitialSuccessionError> {
-        if permit.request().units().data_bytes() < 128 * 1024
-            || permit.request().units().items() == 0
-        {
-            return Err(InitialSuccessionError::Native(
-                BootstrapError::InsufficientReservation,
-            ));
-        }
+        producer_progress::recovery::require_scratch(&permit, 128 * 1024)
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
         let current = self.identity;
         let instance = *self.request.instance.as_bytes();
         let (tx, mut lease, epoch) = self
@@ -196,6 +191,18 @@ impl ControlSession {
         let selected = compacted.is_some()
             && ActivatedInitial::compacted_initial_selected(recovery, intent.record)
                 .map_err(InitialSuccessionError::Native)?;
+        if selected {
+            let profile =
+                crate::storage::rocks::succession::SuccessionProfile::for_recovery(2, None)
+                    .map_err(|_| {
+                        InitialSuccessionError::Native(BootstrapError::InsufficientReservation)
+                    })?;
+            producer_progress::recovery::require_scratch(
+                &permit,
+                profile.required_metadata_bytes(),
+            )
+            .map_err(|_| InitialSuccessionError::Native(BootstrapError::InsufficientReservation))?;
+        }
         // Factories without explicit compacted support retain strict original inspection.
         let mut permit = Some(permit);
         let ordinary = if selected {

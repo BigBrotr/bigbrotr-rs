@@ -392,7 +392,7 @@ pub async fn seed(
         .close_initial_producer(
             &mut recovery,
             closing(path, &spec),
-            grant(&budget, 4096, 4096),
+            history_grant(&budget, 4096, 4096),
             |d, h| validate(&root, d, h),
         )
         .await
@@ -469,7 +469,7 @@ pub async fn seed(
             .retire_initial_producer(
                 &source,
                 closing(path, &spec),
-                grant(&budget, 128 * 1024, 0),
+                history_grant(&budget, 128 * 1024, 0),
                 |d, h| validate(&root, d, h)
             )
             .await
@@ -477,7 +477,7 @@ pub async fn seed(
         0
     );
     let confirmed = owner.confirm_initial_producer_reclamation(&source, closing(path, &spec), admission,
-        grant(&budget, bigbrotr::storage::postgres::control_owner::ConfirmedClosedReclamation::REQUIRED_DATA_BYTES,
+        history_grant(&budget, bigbrotr::storage::postgres::control_owner::ConfirmedClosedReclamation::REQUIRED_DATA_BYTES,
             bigbrotr::storage::postgres::control_owner::ConfirmedClosedReclamation::REQUIRED_NATIVE_BYTES),
         effects(&budget), |d, h| validate(&root, d, h)).await.unwrap();
     drop(source);
@@ -565,7 +565,7 @@ pub async fn private(
             &prefix,
             closing(path, &spec),
             recovery_limits().event,
-            grant(&budget, 128 * 1024, 0),
+            history_grant(&budget, 128 * 1024, 0),
             effects(&budget),
             |d, h| validate(&root, d, h),
         )
@@ -597,7 +597,7 @@ pub async fn private(
                     cancelled: &CANCELLED,
                 },
                 recovery_limits().event,
-                grant(&budget, 128 * 1024, 8192),
+                history_grant(&budget, 128 * 1024, 8192),
                 effects(&budget),
                 |d, h| validate(&root, d, h),
             )
@@ -621,7 +621,7 @@ pub async fn private(
             handoff,
             history(path),
             recovery_limits().event,
-            grant(&budget, 128 * 1024, 8192),
+            history_grant(&budget, 128 * 1024, 8192),
             effects(&budget),
             |d, h| validate(&root, d, h),
         )
@@ -708,7 +708,7 @@ pub async fn private(
         IngestRecovery::open(path, next, limits(), grant(&budget, 0, 128 * MIB)).unwrap();
     // The compacted two-entry reader owns scratch plus both entry allowances.
     // Admit its exact existing profile before claiming the recovery Control.
-    let metadata = grant(
+    let metadata = history_grant(
         &budget,
         SuccessionProfile::for_recovery(recovery.manifest().identity().owner_epoch.get(), None)
             .unwrap()
@@ -814,7 +814,7 @@ pub async fn private(
             &mut recovery,
             replay,
             history(path),
-            grant(
+            history_grant(
                 &budget,
                 RecoveryAcknowledgement::COMPACTED_REQUIRED_DATA_BYTES,
                 RecoveryAcknowledgement::REQUIRED_NATIVE_BYTES,

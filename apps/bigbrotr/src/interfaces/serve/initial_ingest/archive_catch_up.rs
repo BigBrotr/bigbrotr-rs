@@ -176,7 +176,7 @@ async fn own(
         required(&root, "postgres.control.password_ref")?,
         &budget,
     )?;
-    let metadata = grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
+    let metadata = history_grant(&budget, MAX_LINEAGE_METADATA_BYTES, 0)?;
     drop(recovery::replay_grants(&budget)?);
     drop(grant(
         &budget,
