@@ -36,7 +36,8 @@ def boundary(state, wire, event, *, proof=False):
     return head
 
 
-def wires_checked(wires, events):
+def wires_checked(wires, events, *, post_proof='quiet'):
+    assert post_proof in ('quiet','closed')
     assert 22<=len(wires)<=128
     previous=None;nonces=set();proof=[]
     for number,wire in enumerate(wires,1):
@@ -57,7 +58,15 @@ def wires_checked(wires, events):
             phase,values='saturation',[events[60],events[61],events[0]]
         elif wire.get('retained_phase')=='proof-only':
             phase,values='proof-only',[events[0]];proof.append(wire)
+        elif wire.get('retained_phase')=='budget-closed':
+            assert post_proof=='closed' and proof, 'unexpected or pre-proof CLOSED budget round'
+            assert wire['retained_quiet'] is False and wire['frames']==['CLOSED']
+            assert wire['completion']=='request-and-websocket-close'
+            assert wire['event_ids']==wire['event_json_sha256']==[]
+            assert wire['request_at_us']<=wire['sent_at_us']<=wire['closed_at_us']
+            continue
         else:
+            assert not proof or post_proof=='quiet', 'post-proof budget round did not send CLOSED'
             assert wire['retained_quiet'] is True and wire['frames']==[] and wire['completion']=='quiet-eof'
             continue
         assert wire['retained_quiet'] is False and wire['retained_phase']==phase
@@ -71,14 +80,14 @@ def wires_checked(wires, events):
     return wires[20],proof[0]
 
 
-def finite_peer(value, wires, events, last_closed_sha256):
+def finite_peer(value, wires, events, last_closed_sha256, *, post_proof='quiet'):
     """Finite peer end is a source boundary, never quiet cancellation proof."""
     assert set(value)=={'format','reason','connections','proof_sent','last_closed_monotonic_ns',
         'last_closed_sha256','listener_closed','completed_monotonic_ns'}
     assert value['format']=='bigbrotr-retained-relay-completion/1' and value['reason']=='connection_limit'
     assert type(value['connections']) is int and value['connections']==len(wires)==128
     assert value['proof_sent'] is True and value['listener_closed'] is True
-    _,proof=wires_checked(wires,events)
+    _,proof=wires_checked(wires,events,post_proof=post_proof)
     assert proof['completion']=='request-and-websocket-close'
     assert re.fullmatch('[0-9a-f]{64}',last_closed_sha256)
     assert value['last_closed_sha256']==last_closed_sha256
@@ -86,9 +95,11 @@ def finite_peer(value, wires, events, last_closed_sha256):
     assert 0<value['last_closed_monotonic_ns']==wires[-1]['closed_monotonic_ns']<=value['completed_monotonic_ns']
 
 
-def finite_quanta(rows, wires, before):
+def finite_quanta(rows, wires, before, *, post_proof='quiet'):
     """The fixed128 query budget retains all terminals and no129th plan."""
+    assert post_proof in ('quiet','closed')
     assert len(wires)==128 and [wire['number'] for wire in wires]==list(range(1,129))
+    proof, = [wire['number'] for wire in wires if wire.get('retained_phase')=='proof-only']
     rows=sorted(rows,key=lambda row:row['quantum_number'])
     assert len(rows)==128 and [row['quantum_number'] for row in rows]==list(range(1,129))
     context=index.only(before,quantum_number=21)
@@ -101,6 +112,15 @@ def finite_quanta(rows, wires, before):
         assert (row['window_width'],row['window_end'],row['horizon'])==(86400,86400,86400)
         assert row['terminal_kind'] is not None and type(row['completed_at_us']) is int
         assert index.raw(row['request_id'])==wire['request'][1].encode()
+        if post_proof=='closed' and number>proof:
+            assert wire['retained_phase']=='budget-closed' and wire['frames']==['CLOSED']
+            assert wire['retained_quiet'] is False and wire['completion']=='request-and-websocket-close'
+            assert (row['terminal_kind'],row['disposition'],row['result_class'],row['gap_reason'],
+                row['teardown_complete'],row['retained_events'],row['classified_prefix'])==(
+                'closed','retry','interrupted','closed',True,0,0)
+            assert row['continuation_upper']==2
+            assert json.loads(index.raw(row['terminal_frame']))==['CLOSED',wire['request'][1],'fixture setup interruption']
+            assert row['terminal_sequence']==1
     last=rows[-1];proof_last=wires[-1].get('retained_phase')=='proof-only'
     assert last['checkpoint_after']==65 and last['checkpoint_before']==(64 if proof_last else 65)
     assert last['disposition']==('overlap' if proof_last else 'retry') and last['continuation_upper']==2
@@ -166,11 +186,11 @@ def progress(state, wanted, events, wire, control, completed, *, proof):
         expected_head,[expected],dependencies,values,prefix_profile=True)
 
 
-def science(state, before_proof, report, events, wires, dump, store, completed):
+def science(state, before_proof, report, events, wires, dump, store, completed, *, post_proof='quiet'):
     from installed_archive_oracle import expected
     from installed_sync_oracle import decode
     from bootstrap_oracle import cbor
-    saturation,proof=wires_checked(wires,events)
+    saturation,proof=wires_checked(wires,events,post_proof=post_proof)
     original=source.originals(store,report['producer_slot_id'],1,64)
     actual=[(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in dump['rows']]
     # Fresh3 + bootstrap13 + private9 + source21 +61*event17 +64 ACK puts.

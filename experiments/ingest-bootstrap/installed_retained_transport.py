@@ -6,6 +6,7 @@ import time
 
 CORPUS_SHA256 = '9534ec146a38123c10d5927a212000284c7c2fcae4b74ab0c1956d4879600860'
 PROFILE = dict(format='bigbrotr-installed-retained-requests/1')
+CLOSED_PROFILE = dict(PROFILE, post_proof_terminal='closed')
 
 
 def corpus(path):
@@ -23,7 +24,9 @@ def corpus(path):
 
 class RetainedEvents:
     def __init__(self, directory):
-        assert json.loads((directory/'retained-request-profile.json').read_text()) == PROFILE
+        profile = json.loads((directory/'retained-request-profile.json').read_text())
+        assert profile in (PROFILE, CLOSED_PROFILE)
+        self.post_proof_closed = profile == CLOSED_PROFILE
         self.directory = directory
         self.events = corpus(directory/'retained-requests.json')
         assert self.events[0] == json.loads((directory/'event.jsonl').read_text())
@@ -38,7 +41,7 @@ class RetainedEvents:
             self.boundary_request = ident
             return 'saturation', [self.events[60], self.events[61], self.events[0]]
         if self.proof_sent:
-            return None
+            return ('budget-closed', []) if self.post_proof_closed else None
         path = self.directory/'retained-proof.continue'
         if not path.exists():
             return None  # A quiet interruption preserves the still-needed interval.
@@ -52,7 +55,10 @@ class RetainedEvents:
 
     def describe(self, trace, selected):
         phase, values = selected
-        trace.update(retained_phase=phase, frames=['signed']*len(values)+['EOSE'],
+        if phase == 'budget-closed':
+            assert not values
+        terminal = 'CLOSED' if phase == 'budget-closed' else 'EOSE'
+        trace.update(retained_phase=phase, frames=['signed']*len(values)+[terminal],
             event_ids=[value['id'] for value in values],
             event_json_sha256=[hashlib.sha256(json.dumps(value, ensure_ascii=False,
                 separators=(',', ':')).encode()).hexdigest() for value in values],

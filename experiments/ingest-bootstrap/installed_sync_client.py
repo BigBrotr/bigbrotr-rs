@@ -305,10 +305,10 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                     else:
                         values = (event, dict(event, sig='00'*64), event)
                         trace['frames'] = ['signed', 'forged-signature', 'duplicate', 'EOSE']
-                    setup_closed=window and number<=2
-                    if setup_closed:
+                    fixture_closed=(window and number<=2) or (retained and trace['retained_phase']=='budget-closed')
+                    if fixture_closed:
                         trace['frames'][-1]='CLOSED'
-                    if not setup_closed and not refusals and event_sender is None:
+                    if not fixture_closed and not refusals and event_sender is None:
                         if split is not None:
                             # These frozen recipes declare whether every body can
                             # be classified; malformed holes retain their interval.
@@ -334,9 +334,9 @@ def relay(directory, listener, finished, errors, signed, refusals=False, window=
                         trace['sent_at_us'] = time.time_ns()//1000
                     for value in values:
                         send_frame(connection, ['EVENT', ident, value])
-                    send_frame(connection, ['CLOSED', ident, 'fixture setup interruption'] if setup_closed else ['EOSE', ident])
+                    send_frame(connection, ['CLOSED', ident, 'fixture setup interruption'] if fixture_closed else ['EOSE', ident])
                     opcode, raw = read_frame(connection)
-                    if not setup_closed:
+                    if not fixture_closed:
                         assert opcode == 1 and json.loads(raw) == ['CLOSE', ident]
                         opcode, raw = read_frame(connection)
                     assert opcode == 8 and raw == b''

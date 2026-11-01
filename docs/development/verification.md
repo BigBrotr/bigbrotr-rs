@@ -618,14 +618,17 @@ past the unadmitted event.
 
 An atomic release then permits exactly one proof-only REQ for event1. It advances
 classification61→62 and checkpoint64→65, preserving all64 requests/inputs and
-source312. The peer may send at most100 empty EOSE rounds while gated or after
-the proof, then quiet rounds; it switches to quiet receive after logout for the
-existing orderly-stop check. If all128 rounds finish first, the retained peer
-closes its listener and records finite completion without accepting a129th
-connection. The shutdown observer independently checks all128 closed rounds,
-the delivered proof and a refused loopback connection. This finite source end
-does not qualify quiet cancellation; other cases retain their quiet-receive
-check. The original128 connections,3s socket, three-event
+source312. Before that proof is released, the peer remains quiet on additional
+requests. The finite-budget profile then sends immediate, attributable CLOSED
+responses with no events for every post-proof request, using the shared
+WebSocket close exchange. These are known interruptions that preserve the
+pending interval; an empty EOSE would close that window and is refused by the
+oracle. After all128 rounds finish, the peer closes its listener and records
+finite completion without accepting a129th connection. The shutdown observer
+independently checks all128 closed rounds, the delivered proof and a refused
+loopback connection. This finite source end does not qualify quiet cancellation;
+the closed-reclamation extension retains its separate explicit quiet source
+profile. The original128 connections,3s socket,500ms product receive, three-event
 quantum,15s prefix and65s submitted gates remain. No product deadline, credit or
 memory ceiling changes. Missing the declared bounds is a real case failure.
 

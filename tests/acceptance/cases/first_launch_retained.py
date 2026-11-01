@@ -21,11 +21,13 @@ from cases import first_launch_retained_oracle as oracle
 from cases import first_launch_retained_native as native
 from cases import first_launch_quantum_oracle as quantum
 
+QUIET_SOURCE_LIMIT = 'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Later requests wait at the gate or remain quiet; no synthetic empty EOSE closes their interval. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.'
+
 LIMITS = [
     'Fresh actual source3/Archive2/Index2 prefix under the original15s gate; only the catalog route is then closed and joined. Control, Sync and Index retain their actual owners.',
     'Writer-only lifecycle logging retains the existing1024-row queue/512-row flush threshold/7500ms interval and writer quota1. After independently verified prefix readiness, one ClickHouse clock query records a start-time cutoff before catalog fault/source release under the same15s deadline. After actual joins, the8192-row/4MiB/30s collector applies that cutoff to both count and rows. Later64-workload queries are excluded; incomplete pairs stay diagnostic INCOMPLETE. All-query coverage and remote termination/exclusion remain NOT_PROVEN; this does not close the earlier Code202 cause.',
     'Two bootstrap requests plus one source-dictionary request leave61 event mutation slots. The frozen62 signed events use public fixture keys1/3. Twenty quanta send3 new events; quantum21 sends event61, eligible event62 and proofevent1. The actual prefix must stop at frame1 before any later proof is released.',
-    'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Later requests wait at the gate or remain quiet; no synthetic empty EOSE closes their interval. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
+    'One independently gated proof-only REQ then advances classification61→62 and checkpoint64→65, with complete64, source312 and all64 original requests unchanged. Pre-proof requests stay quiet; an explicit source profile sends immediate CLOSED with no bodies for every post-proof budget-consuming request. No empty EOSE closes the pending interval. Original128 connections,3s socket,500ms product receive and65s submitted bounds remain; no issued input is retried.',
     'Before the live census, require128 completed source rounds and the delivered proof, independent listener closure/refusal,128 durable terminal request entries, budget-deferred remainder and no129th plan. No129th source connection is accepted. The whole drain and Index64/cut312 observation remain inside the original65s client gate. Finite completion adds no cancellation evidence or new product capability.',
     'Exact publishedIndex64/cut312,640 chunk outcomes and all556 physical rows are independently checked. Do not require Ready: unchanged64-plan readiness-probe cadence needs at least31.75s before final verification, beyond the product30s sweep. HTTP must preserve its truthful non-Ready historical observation.',
     'After positive writer/backend join, a separately declared exact-product-source observer opens the native store read-only in an owned networknone/512MiB/1CPU container,30s/2MiB output cap. All830 native rows and sequence1147, issued=ACK64/retired0,64 receipts/inputs and no65th effect are compared with literal encodings.',
@@ -75,6 +77,7 @@ def compacted_spool_sizes(directory, census, observe):
 
 class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
     retained_boundary = True
+    retained_post_proof = 'closed'
     source_cut, publication_revision, request_count = 312, 64, 64
 
     def preflight(self):
@@ -107,7 +110,9 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
     def prepare_state(self):
         super().prepare_state()
         shutil.copyfile(self.source/'tests/fixtures/acquisition/retained-requests.json',self.home/'retained-requests.json')
-        save(self.home/'retained-request-profile.json',self.transport.PROFILE)
+        profile=self.transport.CLOSED_PROFILE if self.retained_post_proof=='closed' else self.transport.PROFILE
+        save(self.home/'retained-request-profile.json',profile)
+        self.inputs['retained_request_profile']=profile
 
     def command(self, command, **options):
         deadline=getattr(self,'boundary_deadline',None)
@@ -182,7 +187,7 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
     def drain_retained_peer(self, entry, deadline):
         # Index can finish before the independent finite source. Keep the client
         # at its original submitted barrier until all128 rounds have completed;
-        # releasing it early changes the remaining empty rounds into shutdown.
+        # releasing it early changes the remaining interruption rounds into shutdown.
         def ended():
             require(not (self.home/'relay-error.json').exists(),'controlled retained-request relay failed')
             return (self.home/'relay-finite-complete.json').exists()
@@ -216,7 +221,8 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
         wires=[load(p) for p in sorted(self.home.glob('relay-closed-*.json'))]
         require({p.name for p in self.home.glob('relay-open-*.json')}==
             {f'relay-open-{n:03}.json' for n in range(1,129)},'finite retained peer accepted extra/missing connection')
-        oracle.finite_peer(load(path),wires,self.events,digest(self.home/'relay-closed-128.json'))
+        oracle.finite_peer(load(path),wires,self.events,digest(self.home/'relay-closed-128.json'),
+            post_proof=self.retained_post_proof)
         with socket.socket() as connection:
             connection.settimeout(1)
             refused=connection.connect_ex(('127.0.0.1',7447))
@@ -235,7 +241,8 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
         try:
             super().initial_publication(entry,output)
             wires=[load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
-            oracle.finite_quanta(self.index_live['acquisition_quanta'],wires,self.before_proof['acquisition_quanta'])
+            oracle.finite_quanta(self.index_live['acquisition_quanta'],wires,self.before_proof['acquisition_quanta'],
+                post_proof=self.retained_post_proof)
             quantum.transition(self.before_proof,self.index_live)
             proof, = [wire for wire in wires if wire.get('retained_phase')=='proof-only']
             oracle.boundary(self.index_live,proof,self.events[0],proof=True)
@@ -251,7 +258,7 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
         dump=native.census(self,output)
         self.native_sequence=dump['sequence']
         wanted=oracle.science(view,self.before_proof,self.initialized,self.events,wires,dump,
-            self.state/'data/ingest',owner['released_at_us'])
+            self.state/'data/ingest',owner['released_at_us'],post_proof=self.retained_post_proof)
         from cases.first_launch_quantum_oracle import initial as quantum_initial
         quantum_initial(view,wires,self.events[0],wanted,retained_events=self.events)
         for table in ('acquisition_progress','producer_checkpoints'):
@@ -275,7 +282,7 @@ class RetainedRuntime(QueryTraceRuntime, ArchiveOutageRuntime):
 
 RECLAMATION_STAGES=STAGES[:-1]+('closed_reclamation','compacted_successor',
     'compacted_consumers','compacted_history_export','cleanup')
-RECLAMATION_LIMITS=LIMITS[:7]+[
+RECLAMATION_LIMITS=LIMITS[:3]+[QUIET_SOURCE_LIMIT]+LIMITS[4:7]+[
     'After the same genuine64-request capture, explicit closure/abandonment/retirement must precede product reclamation and every successor intent. Exact139-byte floor,65 native sequence operations, all retained science/pending/PG/Archive evidence and zero remaining originals are checked independently.',
     'Fresh reclaim retry and fresh compacted retirement read precede actual enabled-Index epoch2 activation. Its ordinary signed client creates request1 only after the old spool is empty, proving cumulative request65; three genuine successor requests retain the unchanged per-producer64 and shared64-file/32MiB bounds.',
     'Both compacted epoch2 consumers and exact retries, complete322-row Archive science,572 raw Index rows, signed histories, exact353-byte first-event export and a distinct signed epoch2 export are required. Both standalone artifacts must survive ordinary same-root Control restart. No Ready65 or scalable history claim follows. Native/SQL unknown and interrupted-unlink mechanics retain separate native/wire fault controls; physical power/fsync failure remains NOT_RUN.',
@@ -285,6 +292,7 @@ RECLAMATION_LIMITS=LIMITS[:7]+[
 
 class ReclamationRuntime(RetainedRuntime):
     """The existing finite64 journey extended through real capacity return."""
+    retained_post_proof = 'quiet'
     phase_guard=LiveTopologyIndexRuntime.phase_guard
     phase_wait=LiveTopologyIndexRuntime.phase_wait
     archive_schedule='unbound-publication-loss'

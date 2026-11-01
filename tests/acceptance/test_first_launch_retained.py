@@ -22,7 +22,7 @@ from cases import first_launch as base
 from test_first_launch import arguments
 from cases import first_launch_index_oracle as index
 from cases import first_launch_restart as source
-from installed_retained_transport import corpus, RetainedEvents, PROFILE
+from installed_retained_transport import corpus, RetainedEvents, PROFILE, CLOSED_PROFILE
 from installed_sync_client import publish
 import installed_sync_client as wire
 from installed_archive_oracle import expected
@@ -306,11 +306,12 @@ def compacted_archive_fixture(science,*,schedule='uninterrupted'):
 
 
 class RetainedBoundaryControls(unittest.TestCase):
-    def finite_relay(self,root,*,bad_round=None,release=True,failure='protocol',retained=True):
+    def finite_relay(self,root,*,bad_round=None,release=True,failure='protocol',retained=True,
+            post_proof='closed',proof_round=22):
         for source_name,target_name in (('tests/fixtures/acquisition/retained-requests.json','retained-requests.json'),
                 ('tests/fixtures/ingest/import-event.jsonl','event.jsonl')):
             (root/target_name).write_bytes((ROOT/source_name).read_bytes())
-        if retained:base.save(root/'retained-request-profile.json',PROFILE)
+        if retained:base.save(root/'retained-request-profile.json',CLOSED_PROFILE if post_proof=='closed' else PROFILE)
         test=self;finished=threading.Event()
         class Connection:
             def __init__(self,number):
@@ -331,14 +332,15 @@ class RetainedBoundaryControls(unittest.TestCase):
             def frame(self):
                 self.frame_number+=1
                 if self.frame_number==1:
-                    upper=(2 if release and self.number>22 else 86400) if retained else (86400,2,1)[self.number-1]
+                    upper=(2 if release and self.number>proof_round else 86400) if retained else (86400,2,1)[self.number-1]
                     selector={'kinds':[1],'since':0,'until':upper-1,'limit':2 if self.number==bad_round and failure=='protocol' else 3}
                     return 1,json.dumps(['REQ',self.ident,selector]).encode()
-                return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 else (8,b'')
-        listener=Mock();accepted=[];closed=[]
+                closed=retained and post_proof=='closed' and release and self.number>proof_round
+                return (1,json.dumps(['CLOSE',self.ident]).encode()) if self.frame_number==2 and not closed else (8,b'')
+        listener=Mock();accepted=[];closed=[];listener.sent_frames=[]
         def accept():
             number=len(accepted)+1
-            if number==22 and release:
+            if number==proof_round and release:
                 base.save(root/'retained-proof.continue',dict(format='bigbrotr-retained-request-proof-release/1',
                     boundary_request=f'{21:032x}'+'0000000000000001',classified_events=61,
                     complete_through_request=64,checkpoint_revision=64))
@@ -350,7 +352,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             closed.append(True)
         listener.accept.side_effect=accept;listener.close.side_effect=close;errors=[]
         with patch.object(wire,'read_frame',side_effect=lambda connection:connection.frame()), \
-                patch.object(wire,'send_frame'):
+                patch.object(wire,'send_frame',side_effect=lambda connection,value:listener.sent_frames.append((connection.number,value))):
             wire.relay(root,listener,finished,errors,True)
         return listener,accepted,closed,errors
 
@@ -363,14 +365,17 @@ class RetainedBoundaryControls(unittest.TestCase):
             receipt=base.load(root/'relay-finite-complete.json')
             wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
             events=corpus(root/'retained-requests.json')
-            check.finite_peer(receipt,wires,events,base.digest(root/'relay-closed-128.json'))
+            check.finite_peer(receipt,wires,events,base.digest(root/'relay-closed-128.json'),post_proof='closed')
             self.assertEqual(sum(w.get('retained_phase')=='proof-only' for w in wires),1)
+            self.assertEqual([number for number,frame in listener.sent_frames if frame[0]=='CLOSED'],list(range(23,129)))
+            self.assertTrue(all(frame==['CLOSED',wires[number-1]['request'][1],'fixture setup interruption']
+                for number,frame in listener.sent_frames if frame[0]=='CLOSED'))
             for change in (lambda v:v.update(connections=127),lambda v:v.update(connections=129),lambda v:v.update(listener_closed=False),
                     lambda v:v.update(proof_sent=False),lambda v:v.update(last_closed_sha256='0'*64),
                     lambda v:v.update(completed_monotonic_ns=0)):
                 invalid=copy.deepcopy(receipt);change(invalid)
                 with self.assertRaises(AssertionError):
-                    check.finite_peer(invalid,wires,events,base.digest(root/'relay-closed-128.json'))
+                    check.finite_peer(invalid,wires,events,base.digest(root/'relay-closed-128.json'),post_proof='closed')
             runtime=case.RetainedRuntime(arguments(root),{});runtime.home=root;runtime.events=events
             (root/'initial').mkdir()
             connection=Mock();connection.connect_ex.return_value=errno.ECONNREFUSED
@@ -397,17 +402,76 @@ class RetainedBoundaryControls(unittest.TestCase):
             row.update(quantum_number=number,quantum_id='\\x'+f'{number:032x}',
                 request_id='\\x'+wire['request'][1].encode().hex(),checkpoint_before=65,checkpoint_after=65,query_number=number,
                 disposition='retry',result_class='interrupted',gap_reason='teardown',continuation_upper=2)
+            if wire.get('retained_phase')=='budget-closed':
+                frame=['CLOSED',wire['request'][1],'fixture setup interruption']
+                row.update(terminal_kind='closed',gap_reason='closed',teardown_complete=True,
+                    retained_events=0,classified_prefix=0,terminal_sequence=1,
+                    terminal_frame='\\x'+json.dumps(frame,separators=(',',':')).encode().hex())
             rows.append(row)
         before=copy.deepcopy(rows[:21])
         return rows,wires,before
 
+    def test_delayed_proof_preserves_preproof_quiet_then_uses_closed_budget_rounds(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root,proof_round=25)
+            self.assertEqual((accepted,closed,errors),(list(range(1,129)),[True],[]))
+            wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
+            self.assertTrue(all(w['retained_quiet'] and w['frames']==[] for w in wires[21:24]))
+            self.assertEqual(wires[24]['retained_phase'],'proof-only')
+            self.assertTrue(all(w['retained_phase']=='budget-closed' and w['frames']==['CLOSED'] for w in wires[25:]))
+            self.assertEqual([number for number,frame in listener.sent_frames if frame[0]=='CLOSED'],list(range(26,129)))
+            check.finite_peer(base.load(root/'relay-finite-complete.json'),wires,
+                corpus(root/'retained-requests.json'),base.digest(root/'relay-closed-128.json'),post_proof='closed')
+
+    def test_closed_profile_refuses_empty_eose_quiet_or_incomplete_source_terminals(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);self.finite_relay(root)
+            receipt=base.load(root/'relay-finite-complete.json')
+            wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
+            events=corpus(root/'retained-requests.json');last=base.digest(root/'relay-closed-128.json')
+            for change in (lambda w:w[-1].update(frames=['EOSE']),
+                    lambda w:w[-1].update(completion='quiet-eof'),
+                    lambda w:w[-1].update(event_ids=[events[0]['id']]),
+                    lambda w:w[-1].update(event_json_sha256=['0'*64]),
+                    lambda w:w[-1].update(retained_quiet=True),
+                    lambda w:w[-1].update(retained_phase='proof-only'),
+                    lambda w:w[-1].update(retained_phase=None,retained_quiet=True,frames=[],completion='quiet-eof')):
+                invalid=copy.deepcopy(wires);change(invalid)
+                with self.assertRaises(AssertionError):
+                    check.finite_peer(receipt,invalid,events,last,post_proof='closed')
+            with self.assertRaises(AssertionError):check.finite_peer(receipt,wires,events,last)
+
+    def test_reclamation_keeps_the_explicit_legacy_quiet_source_profile(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);listener,accepted,closed,errors=self.finite_relay(root,post_proof='quiet')
+            self.assertEqual((accepted,closed,errors),(list(range(1,129)),[True],[]))
+            self.assertFalse(any(frame[0]=='CLOSED' for _,frame in listener.sent_frames))
+            wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
+            check.finite_peer(base.load(root/'relay-finite-complete.json'),wires,
+                corpus(root/'retained-requests.json'),base.digest(root/'relay-closed-128.json'))
+            self.assertEqual(case.ReclamationRuntime.retained_post_proof,'quiet')
+
+    def test_runtime_writes_its_selected_source_profile_without_changing_the_corpus(self):
+        import installed_retained_transport
+        for runtime_class,profile in ((case.RetainedRuntime,CLOSED_PROFILE),(case.ReclamationRuntime,PROFILE)):
+            with self.subTest(runtime=runtime_class.__name__),tempfile.TemporaryDirectory() as directory:
+                runtime=object.__new__(runtime_class);runtime.home=Path(directory);runtime.source=ROOT
+                runtime.transport=installed_retained_transport;runtime.inputs={}
+                with patch.object(case.QueryTraceRuntime,'prepare_state') as prepare:
+                    runtime.prepare_state()
+                prepare.assert_called_once()
+                self.assertEqual(base.load(runtime.home/'retained-request-profile.json'),profile)
+                self.assertEqual(runtime.inputs['retained_request_profile'],profile)
+                self.assertEqual((runtime.home/'retained-requests.json').read_bytes(),
+                    (ROOT/'tests/fixtures/acquisition/retained-requests.json').read_bytes())
+
     def test_finite_census_requires128_terminals_budget_deferral_and_no129(self):
         with tempfile.TemporaryDirectory() as directory:
             rows,wires,before=self.drained_fixture(Path(directory))
-            check.finite_quanta(rows,wires,before)
+            check.finite_quanta(rows,wires,before,post_proof='closed')
             in_flight=copy.deepcopy(rows[21])
             in_flight.update(terminal_kind=None,completed_at_us=None)
-            check.finite_quanta(rows,wires,before+[in_flight])
+            check.finite_quanta(rows,wires,before+[in_flight],post_proof='closed')
             mutations=(lambda r:r.pop(127),lambda r:r.pop(),
                 lambda r:r[127].update(terminal_kind=None),
                 lambda r:r[127].update(completed_at_us=None),
@@ -416,19 +480,25 @@ class RetainedBoundaryControls(unittest.TestCase):
                 lambda r:r[-1].update(checkpoint_before=64),
                 lambda r:r[-1].update(request_id=r[0]['request_id']),
                 lambda r:r[-1].update(query_budget=127),
+                lambda r:r[-1].update(terminal_kind='eose'),
+                lambda r:r[-1].update(gap_reason='teardown'),
+                lambda r:r[-1].update(teardown_complete=False),
+                lambda r:r[-1].update(retained_events=1),
+                lambda r:r[-1].update(terminal_sequence=2),
+                lambda r:r[-1].update(terminal_frame='\\x'+b'["EOSE","unrelated"]'.hex()),
                 lambda r:r.append(dict(r[-1],quantum_number=129,query_number=129)),
                 lambda r:r[0].update(xmin='changed'))
             for number,mutate in enumerate(mutations):
                 changed=copy.deepcopy(rows);mutate(changed)
                 with self.subTest(mutation=number),self.assertRaises(AssertionError):
-                    check.finite_quanta(changed,wires,before)
+                    check.finite_quanta(changed,wires,before,post_proof='closed')
             for field in ('dataset_id','job_id','scope_id','producer_slot_id','producer_epoch','issuer_role',
                     'issuer_resource','issuer_epoch','issuer_incarnation','route_id'):
                 changed=copy.deepcopy(rows)
                 changed[-1][field]=2 if field.endswith('epoch') else 'foreign'
                 with self.subTest(identity=field),self.assertRaises(AssertionError):
-                    check.finite_quanta(changed,wires,before)
-            with self.assertRaises(AssertionError):check.finite_quanta(rows,wires[:-1],before)
+                    check.finite_quanta(changed,wires,before,post_proof='closed')
+            with self.assertRaises(AssertionError):check.finite_quanta(rows,wires[:-1],before,post_proof='closed')
 
     def drain_runtime(self,root,before):
         runtime=object.__new__(case.RetainedRuntime)
@@ -777,6 +847,27 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertEqual(peer.select('23',23),('proof-only',[peer.events[0]]))
             for n in range(99):self.assertIsNone(peer.select(str(24+n),24+n))
             self.assertIsNone(peer.select('123',123))
+
+    def test_closed_transport_requires_a_bound_proof_and_refuses_other_profile_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            (root/'retained-requests.json').write_bytes((ROOT/'tests/fixtures/acquisition/retained-requests.json').read_bytes())
+            (root/'event.jsonl').write_bytes((ROOT/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
+            for invalid in (dict(PROFILE,post_proof_terminal='eose'),dict(CLOSED_PROFILE,extra=True),
+                    dict(PROFILE,post_proof_terminal=True)):
+                base.save(root/'retained-request-profile.json',invalid)
+                with self.assertRaises(AssertionError):RetainedEvents(root)
+            base.save(root/'retained-request-profile.json',CLOSED_PROFILE)
+            peer=RetainedEvents(root);peer.select('boundary',21)
+            self.assertIsNone(peer.select('before-proof',22))
+            base.save(root/'retained-proof.continue',dict(format='bigbrotr-retained-request-proof-release/1',
+                boundary_request='boundary',classified_events=61,complete_through_request=64,checkpoint_revision=64))
+            self.assertEqual(peer.select('proof',23),('proof-only',[peer.events[0]]))
+            for number in (24,25,128):
+                selected=peer.select(str(number),number);trace={}
+                self.assertEqual(selected,('budget-closed',[]));self.assertEqual(peer.describe(trace,selected),[])
+                self.assertEqual((trace['retained_phase'],trace['frames'],trace['event_ids'],trace['event_json_sha256']),
+                    ('budget-closed',['CLOSED'],[],[]))
 
     def test_absolute_client_deadline_does_not_reset(self):
         declaration=dict(format='bigbrotr-retained-request-gate/1',started_ns=1_000_000_000,deadline_ns=66_000_000_000)
