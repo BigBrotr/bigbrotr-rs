@@ -1,4 +1,5 @@
 """Independent current raw-accounting vectors; no native/runtime qualification."""
+import copy
 import hashlib
 import importlib.util
 import json
@@ -55,6 +56,36 @@ class PendingAccountingVectors(unittest.TestCase):
                                  sum(len(k)+len(v) for cf,k,v in rows if cf=='facts'))
                 self.assertEqual(len(inputs),5 if interned else 4 if appended else 2)
                 self.assertEqual(len(receipts),len(inputs))
+
+    def test_active_socket_recovery_requires_unchanged_attempts_and_original_interval(self):
+        stable=30_000_000
+        state=dict(native_rows=35,native_sha256='independent-fixture',sequence=47,
+                   control_tables=[['fixture','unchanged']],originals=[['original','retained']])
+        events=[dict(event='dictionary-reopened',state=state,known_retry_elapsed_us=1000),
+                dict(event='socket-quota-recovery',anchor='reconciliation-start',
+                     reconciliation_finished_us=500,stable_duration_us=stable,held_bytes=0)]
+        events += [dict(event='socket-quota-pressure',attempt=n+1,result='Pressure',held_bytes=0,
+                        started_us=n*10_000_000+2000,finished_us=n*10_000_000+3000,state=copy.deepcopy(state))
+                   for n in range(3)]
+        events += [dict(event='socket-quota-resumed',refusals=3,elapsed_us=stable+500),
+                   dict(event='socket-before'),dict(event='socket-admitted')]
+        SOCKET.quota_recovery(events,True,stable,self.assertTrue)
+        SOCKET.quota_recovery([],False,stable,self.assertTrue)
+        for fault in ('native','control','input','debt','early','short-policy','missing','late-zero','wrong-result'):
+            bad=copy.deepcopy(events)
+            if fault=='native':bad[2]['state']['native_sha256']='changed'
+            if fault=='control':bad[2]['state']['control_tables'].append(['changed','xmin'])
+            if fault=='input':bad[2]['state']['originals'].append(['new','input'])
+            if fault=='debt':bad[2]['held_bytes']=1
+            if fault=='early':bad[5]['elapsed_us']=stable+499
+            if fault=='short-policy':bad[1]['stable_duration_us']=stable-1
+            if fault=='missing':bad.pop(3)
+            if fault=='late-zero':bad[0]['known_retry_elapsed_us']=stable
+            if fault=='wrong-result':bad[2]['result']='Control(Unavailable)'
+            with self.subTest(fault=fault),self.assertRaises(AssertionError):
+                SOCKET.quota_recovery(bad,True,stable,self.assertTrue)
+        with self.assertRaises(AssertionError):
+            SOCKET.quota_recovery(events,False,stable,self.assertTrue)
 
     def test_current_ack_wal_and_syscall_discriminators(self):
         result = subprocess.run(

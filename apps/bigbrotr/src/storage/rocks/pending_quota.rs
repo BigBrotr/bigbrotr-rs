@@ -335,7 +335,14 @@ impl IngestStore {
         &mut self,
         requests: &[PendingReservationRequest],
     ) -> Result<(), PendingQuotaError> {
-        self.observe_pending_quota()?;
+        self.reserve_pending_requests_at(requests, Instant::now())
+    }
+    fn reserve_pending_requests_at(
+        &mut self,
+        requests: &[PendingReservationRequest],
+        now: Instant,
+    ) -> Result<(), PendingQuotaError> {
+        self.observe_pending_quota_at(now)?;
         let quota = self.quota()?;
         if requests.len() > MAX_REQUESTS {
             return Err(PendingQuotaError::Limit);
@@ -388,7 +395,12 @@ impl IngestStore {
             .pending_reserved_bytes()?
             .checked_add(self.accounting.pending_bytes())
             .and_then(|n| n.checked_add(additional));
-        if additional > 0 && (quota.pressure || total.is_none_or(|n| n > quota.policy.high_bytes)) {
+        if additional > 0 && quota.pressure {
+            // The observer used actual P+held credit. A refused proposal adds
+            // nothing and must not restart an already healthy stable-low timer.
+            return Err(PendingQuotaError::Pressure);
+        }
+        if additional > 0 && total.is_none_or(|n| n > quota.policy.high_bytes) {
             let quota = self.quota_mut()?;
             quota.pressure = true;
             quota.below_low_since = None;

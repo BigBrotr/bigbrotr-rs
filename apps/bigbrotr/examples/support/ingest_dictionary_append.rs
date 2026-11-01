@@ -2,7 +2,8 @@
 //! Python supplies independent complete native/input/receipt expectations.
 use super::*;
 use bigbrotr::storage::{
-    postgres::control_owner::InitialDictionaryAppendRequest, rocks::store::AdmissionLimits,
+    postgres::control_owner::InitialDictionaryAppendRequest,
+    rocks::store::{AdmissionLimits, PendingQuotaStatus},
 };
 use bigbrotr_model::{ClockSource, ObserverDescriptor, RequestSequence};
 
@@ -71,7 +72,11 @@ pub async fn run(
     budget: &ResourceBudget,
     bootstrap: &EvidenceIntent,
     interned: bool,
-) -> (IngestStore, EvidenceIntent) {
+) -> (
+    IngestStore,
+    EvidenceIntent,
+    (tokio::time::Instant, tokio::time::Instant),
+) {
     let fixed = private_intent(bootstrap);
     let cancelled = AtomicBool::new(false);
     let admission = AdmissionLimits {
@@ -216,7 +221,8 @@ pub async fn run(
         crate::ingest_owner::grant(budget, 128 * MIB),
     )
     .unwrap();
-    crate::ingest_owner::reconcile_initial_pending_quota(
+    let reconciliation_started = tokio::time::Instant::now();
+    let status = crate::ingest_owner::reconcile_initial_pending_quota(
         owner,
         &mut store,
         bigbrotr::storage::postgres::control_owner::InitialPendingQuotaRequest {
@@ -231,6 +237,8 @@ pub async fn run(
     )
     .await
     .unwrap();
+    let reconciliation_finished = tokio::time::Instant::now();
+    assert_eq!(status, PendingQuotaStatus::Pressure);
     for (sequence, expected) in [
         (append_sequence, &first_bytes),
         (reuse_sequence, &reused_bytes),
@@ -296,8 +304,15 @@ pub async fn run(
     drop(replay);
     assert_eq!(ingest_snapshot::state(observer, path).await, before_reopen);
     emit(
-        serde_json::json!({"event":"dictionary-reopened","bootstrap_receipt":hex(&bootstrap_bytes),"reuse_receipt":hex(&reused_bytes),"state":before_reopen}),
+        serde_json::json!({"event":"dictionary-reopened","bootstrap_receipt":hex(&bootstrap_bytes),"reuse_receipt":hex(&reused_bytes),"state":before_reopen,
+            "known_retry_elapsed_us":u64::try_from(reconciliation_started.elapsed().as_micros()).unwrap()}),
     );
-    // The fixture retains the fixed full descriptor set for socket attribution.
-    (store, fixed)
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
+    // These real clock brackets surround binding; no timestamp is fabricated.
+    // The socket fixture exercises refused positive proposals during this interval.
+    (
+        store,
+        fixed,
+        (reconciliation_started, reconciliation_finished),
+    )
 }

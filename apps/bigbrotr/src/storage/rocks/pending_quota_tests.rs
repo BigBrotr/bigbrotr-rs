@@ -749,35 +749,71 @@ fn reopened_original_without_receipt_stays_recovery_blocked_and_metadata_is_zero
 
 #[test]
 fn logical_pressure_needs_strict_low_and_a_complete_fresh_stable_interval() {
-    let (_root, mut store, _b) = fixture();
+    let (root, mut store, _b) = fixture();
     store.bind_pending_quota(policy(100, 50, 99)).unwrap();
-    let PendingQuota::Bound(quota) = &mut store.pending_quota else {
-        panic!()
-    };
-    quota.pressure = true;
     store.reserve_pending_requests(&[terms(1, 0)]).unwrap();
     let start = Instant::now();
     let PendingQuota::Bound(quota) = &mut store.pending_quota else {
         panic!()
     };
+    quota.pressure = true;
     quota.below_low_since = None;
     assert_eq!(
         store.observe_pending_quota_at(start),
         Ok(PendingQuotaStatus::Pressure)
     );
+    // These are the same reservation kernel as public calls, with only its
+    // private monotonic observation instant supplied deterministically.
+    for seconds in [0, 1, 10, 29] {
+        assert_eq!(
+            store.reserve_pending_requests_at(&[terms(2, 1)], start + Duration::from_secs(seconds)),
+            Err(PendingQuotaError::Pressure)
+        );
+        let PendingQuota::Bound(quota) = &store.pending_quota else {
+            panic!()
+        };
+        assert_eq!(quota.below_low_since, Some(start));
+        assert_eq!(quota.entries.len(), 1);
+        assert_eq!(quota.entries[0].terms, terms(1, 0));
+        assert_eq!(store.pending_reserved_bytes(), Ok(0));
+        assert_eq!(store.db.latest_sequence_number(), 3);
+        assert!(!root.path().join("db/producer-inputs-v1").exists());
+    }
     assert_eq!(
-        store.observe_pending_quota_at(start + Duration::from_secs(29)),
+        store.observe_pending_quota_at(start + Duration::from_secs(30)),
+        Ok(PendingQuotaStatus::Available)
+    );
+    // A newly oversized aggregate still starts a fresh pressure episode. It
+    // neither publishes a partial reservation nor inherits the old interval.
+    assert_eq!(
+        store.reserve_pending_requests_at(
+            &[terms(2, 60), terms(3, 60)],
+            start + Duration::from_secs(40)
+        ),
+        Err(PendingQuotaError::Pressure)
+    );
+    let PendingQuota::Bound(quota) = &store.pending_quota else {
+        panic!()
+    };
+    assert_eq!(quota.below_low_since, None);
+    assert_eq!(quota.entries.len(), 1);
+    assert_eq!(
+        store.reserve_pending_requests_at(&[terms(2, 1)], start + Duration::from_secs(41)),
+        Err(PendingQuotaError::Pressure)
+    );
+    assert_eq!(
+        store.observe_pending_quota_at(start + Duration::from_secs(70)),
         Ok(PendingQuotaStatus::Pressure)
     );
     assert_eq!(
-        store.observe_pending_quota_at(start + Duration::from_secs(30)),
+        store.observe_pending_quota_at(start + Duration::from_secs(71)),
         Ok(PendingQuotaStatus::Available)
     );
     let PendingQuota::Bound(quota) = &mut store.pending_quota else {
         panic!()
     };
     quota.pressure = true;
-    quota.below_low_since = None;
+    quota.below_low_since = Some(start + Duration::from_secs(71));
     quota.entries[0].terms.allowance_bytes = 50;
     assert_eq!(
         store.observe_pending_quota_at(start + Duration::from_secs(100)),
@@ -786,11 +822,12 @@ fn logical_pressure_needs_strict_low_and_a_complete_fresh_stable_interval() {
     let PendingQuota::Bound(quota) = &mut store.pending_quota else {
         panic!()
     };
-    assert_eq!(quota.below_low_since, None); // equality never starts stability
+    assert_eq!(quota.below_low_since, None); // actual equality clears stability
     quota.entries[0].terms.allowance_bytes = 49;
+    // Proposed 49+1 equals low; only actual P+held49 governs the observer.
     assert_eq!(
-        store.observe_pending_quota_at(start + Duration::from_secs(101)),
-        Ok(PendingQuotaStatus::Pressure)
+        store.reserve_pending_requests_at(&[terms(2, 1)], start + Duration::from_secs(101)),
+        Err(PendingQuotaError::Pressure)
     );
     store.bind_pending_quota(policy(100, 50, 99)).unwrap();
     assert_eq!(
@@ -801,6 +838,41 @@ fn logical_pressure_needs_strict_low_and_a_complete_fresh_stable_interval() {
         store.observe_pending_quota_at(start + Duration::from_secs(131)),
         Ok(PendingQuotaStatus::Available)
     );
+    let PendingQuota::Bound(quota) = &mut store.pending_quota else {
+        panic!()
+    };
+    quota.pressure = true;
+    quota.below_low_since = Some(start + Duration::from_secs(200));
+    assert_eq!(
+        store.observe_pending_quota_at(start + Duration::from_secs(199)),
+        Ok(PendingQuotaStatus::Pressure)
+    );
+    let PendingQuota::Bound(quota) = &store.pending_quota else {
+        panic!()
+    };
+    assert_eq!(quota.below_low_since, None); // backwards observations invalidate time
+    assert_eq!(
+        store.observe_pending_quota_at(start + Duration::from_secs(200)),
+        Ok(PendingQuotaStatus::Pressure)
+    );
+    let PendingQuota::Bound(quota) = &store.pending_quota else {
+        panic!()
+    };
+    assert_eq!(
+        quota.below_low_since,
+        Some(start + Duration::from_secs(200))
+    );
+    store.write_uncertain = true;
+    assert_eq!(
+        store.observe_pending_quota_at(start + Duration::from_secs(201)),
+        Err(PendingQuotaError::WriteUncertain)
+    );
+    let PendingQuota::Bound(quota) = &store.pending_quota else {
+        panic!()
+    };
+    assert_eq!(quota.below_low_since, None);
+    assert_eq!(quota.entries.len(), 1); // an unknown owner never releases debt
+    assert_eq!(quota.entries[0].terms.allowance_bytes, 49);
 }
 
 #[test]

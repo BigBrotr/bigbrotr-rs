@@ -113,6 +113,42 @@ def event_control(before_event, after_event, request_sequence, require, tables):
         'only-producer-reservation-bound-advances')
 
 
+def quota_recovery(messages, appended, stable_us, require):
+    """Original reconciliation interval survives normal refused positive calls."""
+    selected = [m for m in messages if m['event'] in
+                ('socket-quota-recovery','socket-quota-pressure','socket-quota-resumed')]
+    if not appended:
+        require(not selected,'fresh-socket-does-not-claim-recovery')
+        return
+    require([m['event'] for m in selected] == ['socket-quota-recovery']
+        + ['socket-quota-pressure']*3 + ['socket-quota-resumed'], 'complete-positive-pressure-attempt-set')
+    anchor,*attempts,resumed = selected
+    reopened, = [m for m in messages if m['event']=='dictionary-reopened']
+    require(type(stable_us) is int and stable_us>0 and anchor['anchor']=='reconciliation-start'
+        and anchor['stable_duration_us']==stable_us and anchor['held_bytes']==0,
+        'original-configured-stable-anchor')
+    require(type(anchor['reconciliation_finished_us']) is int and anchor['reconciliation_finished_us']>=0
+        and type(reopened['known_retry_elapsed_us']) is int
+        and anchor['reconciliation_finished_us'] <= reopened['known_retry_elapsed_us'] < stable_us,'known-zero-retry-immediate-under-latch')
+    for index,attempt in enumerate(attempts):
+        require(type(attempt['attempt']) is int and attempt['attempt']==index+1 and attempt['result']=='Pressure' and attempt['held_bytes']==0
+            and type(attempt['started_us']) is int and type(attempt['finished_us']) is int
+            and stable_us*index//3 <= attempt['started_us'] < stable_us
+            and attempt['finished_us'] >= attempt['started_us']
+            and attempt['state']==reopened['state'],'positive-pressure-has-no-native-input-pg-or-debt-effect')
+        if index:
+            require(attempt['started_us']>=attempts[index-1]['finished_us'],'sequential-positive-attempts')
+    require(type(resumed['refusals']) is int and resumed['refusals']==3 and type(resumed['elapsed_us']) is int
+        and resumed['elapsed_us']>=anchor['reconciliation_finished_us']+stable_us,
+        'available-at-original-interval-after-active-attempts')
+    # The real signed event and its existing independent state oracle qualify
+    # successful positive intake after this bound, with a freshly created job.
+    require(messages.index(reopened)<messages.index(anchor)
+        and messages.index(resumed)<next(i for i,m in enumerate(messages) if m['event']=='socket-before')
+        <next(i for i,m in enumerate(messages) if m['event']=='socket-admitted'),
+        'recovery-precedes-original-socket-job-and-admission')
+
+
 def case(context, appended, *, interned=False):
     lab, pg, client, output, source, rows, clone, report, save, require, oracle = (
         context[k] for k in ('lab','pg','client','output','SOURCE','rows','clone','report','save','require','oracle'))
@@ -147,6 +183,9 @@ def case(context, appended, *, interned=False):
     (output/(name+'.stderr')).write_text(result.stderr)
     require(result.returncode == 0 and not result.stderr,'actual-socket-admission')
     messages = [json.loads(s) for s in result.stdout.splitlines()]
+    policy = json.loads((source/'tests/fixtures/configuration/policy-v3.json').read_text())
+    stable_us = policy['settings']['runtime.pressure_stable_duration']
+    quota_recovery(messages,appended,stable_us,require)
     captured = [m for m in messages if m['event'] == 'socket-captured']
     admitted = [m for m in messages if m['event'] == 'socket-admitted']
     require(len(captured) == 3 and len(admitted) == 1,'three-frames-one-admission')
@@ -215,6 +254,10 @@ def case(context, appended, *, interned=False):
             and reopened['reuse_receipt'] == receipts[append_sequence].hex(), 'append-reopen-original-receipts')
         from dictionary_append import expected as append
         base_rows, _, _ = append(dataset, oracle.cbor, interned=interned)
+        accounting, = [value for cf,key,value in base_rows if cf=='default' and key==b'\x01\x0b']
+        anchor, = [m for m in messages if m['event']=='socket-quota-recovery']
+        require(anchor['pending_bytes']==int.from_bytes(accounting[34:42],'big'),
+                'independent-reopened-logical-pending-charge')
         base_dump = [dict(cf=cf, key=k.hex(), value=v.hex()) for cf,k,v in base_rows]
         digest = hashlib.sha256(json.dumps(base_dump, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
         require(reopened['state']['native_rows'] == (37 if interned else 35)
