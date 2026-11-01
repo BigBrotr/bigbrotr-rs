@@ -199,10 +199,22 @@ def initial(state,wires,event,science,*,retained_events=None):
     journey(state,wires,1,expected)
 
 
-def successor(state,wires,old,new,science,*,before):
+def successor(state,wires,old,new,science,*,before,provenance,first_science=None):
     assert all(row in state['acquisition_quanta'] for row in before['acquisition_quanta']), 'old quantum history changed'
+    assert type(provenance) is bool
+    assert len(science['receipts'])==(3 if provenance else 2)
     refs=lambda request:receipt_refs(science['receipts'][request-1])
-    journey(state,wires,2,{1:[(new,2,2,refs(2)),(old,2,3,refs(3)),(new,5,0,refs(2))]})
+    if provenance:
+        old_effect=(old,2,3,refs(3))
+    else:
+        assert first_science is not None and len(first_science['receipts'])==4
+        # ExistingProof retains the stored event/receive descriptors and this
+        # input's current observer. The new event's receipt is not its proof.
+        dependencies=receipt_refs(first_science['receipts'][3])+refs(1)
+        dependencies=[[list(source),digest] for source,digest in sorted(
+            {(tuple(source),digest) for source,digest in dependencies})]
+        old_effect=(old,5,0,dependencies)
+    journey(state,wires,2,{1:[(new,2,2,refs(2)),old_effect,(new,5,0,refs(2))]})
 
 
 def window(row,job,wire=None,*,selector=None,accepted_at_us=None):
