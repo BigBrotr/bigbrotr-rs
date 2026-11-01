@@ -202,14 +202,23 @@ class SharedBudgetControls(unittest.TestCase):
     def test_follow_through_retains_completed_quantum_rows_and_transaction_identity(self):
         from test_linear_quantum import fixture as quantum_fixture
         _,denied,_,_,_=pending_fixture()
-        raw=lambda n:'\\x'+f'{n:032x}'
-        job=denied['jobs'][0];job.update(dataset_id=raw(1),created_at_us=200_000_999_999)
+        qualified,_=quantum_fixture()
+        job,detail,producer=(qualified[table][0] for table in ('jobs','acquisition_jobs','producer_epochs'))
+        head=denied['producer_checkpoints'][0]
+        bindings={job['dataset_id']:denied['datasets'][0]['dataset_id'],job['job_id']:denied['jobs'][0]['job_id'],
+            job['owner_resource_id']:denied['jobs'][0]['owner_resource_id'],
+            job['owner_incarnation']:denied['jobs'][0]['owner_incarnation'],
+            detail['scope_id']:denied['acquisition_jobs'][0]['scope_id'],
+            producer['producer_slot_id']:head['producer_slot_id']}
+        # Rebind the complete qualified quantum fixture to the existing shared
+        # scheduler identities; its authority fields stay with its retained row.
+        for table in ('jobs','acquisition_jobs','producer_epochs','acquisition_quanta'):
+            bound={key:bindings.get(value,value) if isinstance(value,str) else value
+                for key,value in qualified[table][0].items()}
+            if table=='acquisition_quanta':denied[table]=[bound]
+            else:denied[table][0]=dict(bound,**denied[table][0])
         denied['producer_checkpoints'][0].update(progress_jobs=0,dependency_count=3,prefix_profile=True)
-        for row in denied['producer_requests']:row.update(producer_slot_id=raw(30),input_bytes=0)
-        quantum=quantum_fixture()[0]['acquisition_quanta'][0]
-        quantum.update(dataset_id=raw(1),job_id=job['job_id'],scope_id=denied['acquisition_jobs'][0]['scope_id'],
-            producer_slot_id=raw(30),issuer_resource=raw(2),issuer_incarnation=raw(20))
-        denied['acquisition_quanta']=[quantum]
+        for row in denied['producer_requests']:row.update(producer_slot_id=head['producer_slot_id'],input_bytes=0)
         final=copy.deepcopy(denied)
         for row in final['projection_chunks']:
             if row['state']=='prepared':row.update(state='committed',committed_at_us=4000,engine_receipt_digest='proof',xmin='40')
