@@ -261,6 +261,38 @@ SCENARIO_RESULTS={
 }
 
 
+def scenarios(state,wires,event,refs,declarations):
+    """Validate the two literal interruption recipes under any legal interleaving."""
+    recipes=(('slow_eose','proof'),
+        ('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
+    shape(state)
+    rows=state['acquisition_quanta']
+    assert len(rows)==len(wires)==8 and all(row['terminal_kind'] is not None for row in rows)
+    assert len(declarations)==2
+    by_request={raw(row['request_id']).decode():row for row in rows}
+    assert len(by_request)==8 and len({wire['request'][1] for wire in wires})==8
+    turns={0:0,1:0};totals={}
+    for number,wire in enumerate(wires,1):
+        assert wire['number']==number and len(wire['request'])==3
+        scope=wire['request'][2].get('since')
+        assert type(scope) is int and scope in (0,1) and (number!=1 or scope==0)
+        turns[scope]+=1;ordinal=turns[scope]
+        assert ordinal<=len(recipes[scope]) and wire['scenario']==recipes[scope][ordinal-1]
+        assert wire['scope_number']==scope and wire['quantum_number']==ordinal
+        upper=86400 if ordinal==1 or scope==1 else 2
+        assert wire['request'][2]==dict(kinds=[1],since=scope,until=upper-1,limit=3)
+        row=by_request[wire['request'][1]]
+        job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
+        declared=declarations[job['job_id'][2:]]
+        assert row['scope_id']=='\\x'+declared['scope_id'] and row['quantum_number']==ordinal
+        assert declared['selector']['filters'][0].get('since',0)==scope
+        classified=scenario(row,wire,job,event,refs,selector=declared['selector'],
+            accepted_at_us=declared['accepted_at_us'],expected_upper=upper)
+        totals[row['job_id']]=totals.get(row['job_id'],0)+classified
+    assert turns=={0:2,1:6}
+    return totals
+
+
 def scenario(row,wire,job,event,refs,*,selector=None,accepted_at_us=None,expected_upper=None):
     upper=window(row,job,wire,selector=selector,accepted_at_us=accepted_at_us,expected_upper=expected_upper)
     terminal,retained,classified,teardown,result,gap,sequence=SCENARIO_RESULTS[wire['scenario']]

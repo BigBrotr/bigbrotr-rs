@@ -336,13 +336,8 @@ class LinearQuantumRuntime(Runtime):
         # proofs, malformed input and empty/gap records add no native operation.
         require(dump['sequence']==67,'unexpected native sequence or synthetic producer mutation')
         wires=[load(path) for path in sorted(self.home.glob('relay-closed-*.json'))]
-        from linear_quantum_transport import SCENARIOS,TURN_SCOPES
-        require([wire['scenario'] for wire in wires]==list(SCENARIOS),'finite socket scenarios differ')
-        rows=state['acquisition_quanta'];oracle.shape(state)
-        pending=[row for row in rows if row['terminal_kind'] is None]
-        require(len(rows)==8 and not pending,'bounded stops retained a new plan or finite turn count differs')
-        by_request={oracle.raw(row['request_id']).decode():row for row in rows if row['request_id'] is not None}
-        refs=oracle.reference_bytes(oracle.receipt_refs(wanted['receipts'][3]));totals={}
+        rows=state['acquisition_quanta']
+        refs=oracle.reference_bytes(oracle.receipt_refs(wanted['receipts'][3]))
         declarations={}
         commands=load(self.home/'submitted.json')
         selectors={item['body']['scope_id']:item['input']['selector'] for item in commands if item['path']=='acquisition-scopes'}
@@ -353,28 +348,16 @@ class LinearQuantumRuntime(Runtime):
             if item['path']=='jobs':
                 declarations[item['body']['job_id']]=dict(selector=selectors[item['input']['scope_id']],
                     scope_id=item['input']['scope_id'],accepted_at_us=item['body']['accepted_at_us'])
-        for wire in wires:
-            row=by_request[wire['request'][1]];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-            declared=declarations[job['job_id'][2:]]
-            require(row['scope_id']=='\\x'+declared['scope_id'],'quantum declaration identity differs')
-            scope_number=TURN_SCOPES[wire['number']-1]
-            quantum_number=TURN_SCOPES[:wire['number']].count(scope_number)
-            require(wire['scope_number']==scope_number
-                and declared['selector']['filters'][0].get('since',0)==scope_number
-                and row['quantum_number']==quantum_number,'literal scenario scope/turn identity differs')
-            upper=86400 if quantum_number==1 or scope_number==1 else event['created_at']+1
-            classified=oracle.scenario(row,wire,job,event,refs,selector=declared['selector'],
-                accepted_at_us=declared['accepted_at_us'],expected_upper=upper)
-            totals[row['job_id']]=totals.get(row['job_id'],0)+classified
+        totals=oracle.scenarios(state,wires,event,refs,declarations)
         statuses=load(self.home/'linear-status-observations.json')
         require({value['job_id'] for value in statuses}==set(declarations),'both known-plan actor statuses required')
         from installed_sync_client import quantum_status,quantum_window
         for value in statuses:
             declared=declarations[value['job_id']]
             scope_number=declared['selector']['filters'][0].get('since',0)
-            upper=86400 if scope_number else event['created_at']+1
-            count=TURN_SCOPES.count(scope_number)
-            uppers={number:86400 if number==1 or scope_number else event['created_at']+1 for number in range(1,count+1)}
+            upper=86400 if scope_number else 2
+            count=2 if scope_number==0 else 6
+            uppers={number:86400 if number==1 or scope_number else 2 for number in range(1,count+1)}
             status=quantum_status(value,declared['scope_id'],declared['accepted_at_us'],known_plan=True,
                 selector=declared['selector'],expected_uppers=uppers)
             job_rows=[row for row in rows if row['job_id']=='\\x'+value['job_id']]

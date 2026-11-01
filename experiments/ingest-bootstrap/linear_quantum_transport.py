@@ -7,8 +7,9 @@ import time
 from installed_sync_client import exact,read_frame,send_frame,publish
 
 PROFILE=dict(format='bigbrotr-linear-quantum-fixture/1',requests=8,scopes=2)
-SCENARIOS=('slow_eose','malformed_eose','proof','frame_cap_eose','event_cap_eose','closed','deadline','empty')
-TURN_SCOPES=(0,1,0,1,1,1,1,1)
+SCOPE_SCENARIOS=(('slow_eose','proof'),
+    ('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
+UPPERS=((86400,2),(86400,)*6)
 
 
 def relay(directory,listener,finished,errors,*,expected_uppers=None):
@@ -19,8 +20,7 @@ def relay(directory,listener,finished,errors,*,expected_uppers=None):
         uppers={0:{1:86400},1:{1:86400}} if expected_uppers is None else expected_uppers
         turns={0:0,1:0}
         fault=json.loads((directory/'linear-quantum-fault.json').read_text()) if (directory/'linear-quantum-fault.json').exists() else None
-        scenarios=('body_closed',*SCENARIOS[1:]) if fault=='gap-write' else ('empty',*SCENARIOS[1:]) if fault=='empty-terminal-authority' else SCENARIOS
-        for number,scenario in enumerate(scenarios,1):
+        for number in range(1,9):
             while True:
                 try:connection,remote=listener.accept();break
                 except socket.timeout:
@@ -42,15 +42,23 @@ def relay(directory,listener,finished,errors,*,expected_uppers=None):
                 connection.sendall(b'HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: '+accept+b'\r\n\r\n')
                 opcode,encoded=read_frame(connection);request=json.loads(encoded)
                 assert opcode==1 and len(request)==3 and request[0]=='REQ'
-                scope_number=TURN_SCOPES[number-1]
+                scope_number=request[2].get('since')
+                assert type(scope_number) is int and scope_number in (0,1)
+                assert number!=1 or scope_number==0
                 turns[scope_number]+=1;quantum_number=turns[scope_number]
-                upper=86400 if quantum_number==1 or scope_number==1 or fault else event['created_at']+1
+                assert quantum_number<=len(SCOPE_SCENARIOS[scope_number])
+                scenario=SCOPE_SCENARIOS[scope_number][quantum_number-1]
+                if number==1:
+                    if fault=='gap-write':scenario='body_closed'
+                    elif fault=='empty-terminal-authority':scenario='empty'
+                upper=86400 if fault else UPPERS[scope_number][quantum_number-1]
                 assert request[2]==dict(kinds=[1],since=scope_number,until=upper-1,limit=3)
                 assert uppers[scope_number][quantum_number]==upper
                 uppers[scope_number][quantum_number+1]=(event['created_at']+1
                     if scenario in ('slow_eose','proof') else upper)
                 ident=request[1];assert len(ident)==48 and int(ident,16)
-                trace=dict(number=number,scenario=scenario,scope_number=scope_number,request=request,connected_at_us=connected,
+                trace=dict(number=number,scenario=scenario,scope_number=scope_number,quantum_number=quantum_number,
+                    request=request,connected_at_us=connected,
                     request_at_us=time.time_ns()//1000,clock_resolution_us=1,frames=[])
                 publish(directory,f'relay-open-{number:03}.json',trace)
                 # The first deliberately slow complete EVENT precedes EOSE.
@@ -95,6 +103,7 @@ def relay(directory,listener,finished,errors,*,expected_uppers=None):
                 trace.update(closed_at_us=time.time_ns()//1000,teardown=teardown,
                     completion='request-and-websocket-close' if teardown['ack_sent'] else 'interrupted-socket-close')
                 publish(directory,f'relay-closed-{number:03}.json',trace)
+        assert turns=={0:2,1:6}
         publish(directory,'linear-peer-complete.json',dict(format=PROFILE['format'],requests=8,listener_closed=True))
     except BaseException as error:
         errors.append(type(error).__name__+': '+str(error));publish(directory,'relay-error.json',dict(error=errors[-1]))

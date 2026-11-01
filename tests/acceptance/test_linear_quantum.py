@@ -114,51 +114,149 @@ def signed_pages_fixture():
     return state,wires,event,science
 
 
+def finite_peer_fixture(directory,order,*,failure=None,fault=None,first_only=False):
+    import linear_quantum_transport as peer
+    root=Path(__file__).resolve().parents[2]
+    (directory/'event.jsonl').write_bytes((root/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
+    (directory/'linear-quantum-profile.json').write_text(json.dumps(peer.PROFILE))
+    if fault:(directory/'linear-quantum-fault.json').write_text(json.dumps(fault))
+    recipes=(('slow_eose','proof'),('malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'))
+    class Connection:
+        def __init__(self,number):
+            self.number=number;self.frames=0;self.scope=order[number-1]
+            self.ordinal=order[:number].count(self.scope)
+            self.scenario=recipes[self.scope][self.ordinal-1] if self.ordinal<=len(recipes[self.scope]) else None
+            if number==1 and fault in ('gap-write','empty-terminal-authority'):
+                self.scenario='body_closed' if fault=='gap-write' else 'empty'
+            self.header=bytearray(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
+                'Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\n'
+                'Sec-WebSocket-Key: '+base64.b64encode(bytes(16)).decode()+'\r\n\r\n').encode())
+        def __enter__(self):return self
+        def __exit__(self,*args):pass
+        def settimeout(self,value):pass
+        def sendall(self,value):pass
+        def shutdown(self,value):pass
+        def recv(self,count):
+            result=bytes(self.header[:count]);del self.header[:count];return result
+        def frame(self):
+            self.frames+=1;ident=f'{self.number:048x}'
+            if self.frames==1:
+                scope=self.scope;upper=86400 if self.ordinal==1 or scope==1 or fault else 2
+                if failure=='stale-upper' and scope==0 and self.ordinal==2:upper=86400
+                if failure=='unknown-scope' and self.number==2:scope=2
+                return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=scope,until=upper-1,limit=3)])
+            if self.frames==2 and self.scenario not in ('closed','body_closed'):
+                return 1,check.wire_json(['CLOSE',ident])
+            return 8,b''
+    listener=Mock();finished=threading.Event()
+    listener.accept.side_effect=([(Connection(1),('127.0.0.1',12345)),peer.socket.timeout()] if first_only else
+        [(Connection(number),('127.0.0.1',12345)) for number in range(1,len(order)+1)])
+    if first_only:finished.set()
+    errors=[];uppers={0:{1:86400},1:{1:86400}}
+    with patch.object(peer,'read_frame',side_effect=lambda connection:connection.frame()), \
+            patch.object(peer,'send_frame'),patch.object(peer.time,'sleep'):
+        peer.relay(directory,listener,finished,errors,expected_uppers=uppers)
+    listener.close.assert_called_once()
+    wires=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
+    return wires,errors,uppers
+
+
+def interruption_rows(wires,event):
+    state,_=fixture();original=state['acquisition_quanta'][0];job=state['jobs'][0];detail=state['acquisition_jobs'][0]
+    other_job=dict(job,job_id='\\x'+'8'*32)
+    state['jobs'].append(other_job)
+    state['acquisition_jobs'].append(dict(detail,job_id=other_job['job_id'],scope_id='\\x'+'9'*32))
+    selectors=(dict(version=1,filters=[{'kinds':[1]}],history_since=0,ephemeral='retain'),
+        dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'))
+    declarations={value['job_id'][2:]:dict(selector=selectors[number],scope_id=state['acquisition_jobs'][number]['scope_id'][2:],
+        accepted_at_us=str(value['created_at_us'])) for number,value in enumerate(state['jobs'])}
+    results=dict(slow_eose=('eose',1,1,True,'linear_observed',None,2),proof=('eose',1,1,True,'linear_observed',None,2),
+        malformed_eose=('eose',2,0,True,'interrupted','unclassified_suffix',3),
+        frame_cap_eose=('frame_cap',0,0,False,'interrupted','teardown',None),
+        event_cap_eose=('event_cap',3,3,False,'interrupted','teardown',None),
+        closed=('closed',0,0,True,'interrupted','closed',1),deadline=('deadline',0,0,False,'interrupted','teardown',None),
+        empty=('eose',0,0,True,'linear_observed',None,1))
+    refs=bytes.fromhex('11'*16)+(0).to_bytes(8,'big')+(1).to_bytes(8,'big')+(8).to_bytes(8,'big')+bytes.fromhex('aa'*32)
+    rows=[]
+    for wire in wires:
+        scope=wire['scope_number'];ordinal=wire['quantum_number'];selected=state['jobs'][scope]
+        predicate=check.wire_json(['REQ','0'*48,*wire['request'][2:]])
+        terminal,retained,classified,teardown,result,gap,sequence=results[wire['scenario']]
+        kind,request=(2,4) if wire['scenario']=='slow_eose' else (5,0)
+        effects=b''.join(number.to_bytes(2,'big')+number.to_bytes(8,'big')+hashlib.sha256(check.wire_json(event)).digest()
+            +kind.to_bytes(2,'big')+request.to_bytes(8,'big')+event['created_at'].to_bytes(8,'big')+b'\x01'
+            +bytes.fromhex(event['id']) for number in range(1,classified+1))
+        frame=bytes.fromhex(wire['terminal_frame_hex']) if terminal in ('eose','closed') else b''
+        rows.append(dict(original,quantum_id='\\x'+f"{wire['number']:032x}",quantum_number=ordinal,
+            job_id=selected['job_id'],scope_id=state['acquisition_jobs'][scope]['scope_id'],horizon=200000 if scope==0 else 86400,
+            interval_upper=wire['request'][2]['until']+1,request_predicate='\\x'+predicate.hex(),
+            predicate_sha256='\\x'+hashlib.sha256(predicate).hexdigest(),terminal_kind=terminal,terminal_frame='\\x'+frame.hex(),
+            request_id='\\x'+wire['request'][1].encode().hex(),terminal_sequence=sequence,retained_events=retained,
+            classified_prefix=classified,teardown_complete=teardown,result_class=result,gap_reason=gap,
+            continuation_upper=2 if wire['scenario'] in ('slow_eose','proof') else 86400,
+            dependencies='\\x'+(refs.hex() if classified else ''),effect_records='\\x'+effects.hex(),
+            charged_bytes=1024+len(predicate)+len(frame)+len(effects)+(256 if classified else 0)))
+    state['acquisition_quanta']=rows
+    return state,refs,declarations
+
+
 class LinearQuantumControls(unittest.TestCase):
     def test_finite_scenarios_keep_declared_scope_identity_and_continued_bounds(self):
-        import linear_quantum_transport as peer
-        root=Path(__file__).resolve().parents[2]
-        for failure in (None,'stale-upper','wrong-scope'):
-            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+        for order in ((0,0,1,1,1,1,1,1),(0,1,0,1,1,1,1,1)):
+            for failure in (None,'stale-upper','unknown-scope'):
+                with self.subTest(order=order,failure=failure),tempfile.TemporaryDirectory() as temporary:
+                    directory=Path(temporary);wires,errors,uppers=finite_peer_fixture(directory,order,failure=failure)
+                    self.assertEqual(bool(errors),failure is not None)
+                    self.assertEqual((directory/'linear-peer-complete.json').exists(),failure is None)
+                    if failure:continue
+                    self.assertEqual([wire['scope_number'] for wire in wires],list(order))
+                    self.assertEqual([wire['scenario'] for wire in wires if wire['scope_number']==0],['slow_eose','proof'])
+                    self.assertEqual([wire['scenario'] for wire in wires if wire['scope_number']==1],
+                        ['malformed_eose','frame_cap_eose','event_cap_eose','closed','deadline','empty'])
+                    self.assertEqual([wire['request'][2]['until'] for wire in wires if wire['scope_number']==0],[86399,1])
+                    self.assertEqual([wire['request'][2]['until'] for wire in wires if wire['scope_number']==1],[86399]*6)
+                    self.assertEqual(uppers,{0:{1:86400,2:2,3:2},1:dict.fromkeys(range(1,8),86400)})
+                    event=json.loads((directory/'event.jsonl').read_text());state,refs,declarations=interruption_rows(wires,event)
+                    self.assertEqual(check.scenarios(state,wires,event,refs,declarations),
+                        {state['jobs'][0]['job_id']:2,state['jobs'][1]['job_id']:3})
+
+    def test_finite_recipes_refuse_extra_scope_turns_or_a_foreign_first_body(self):
+        for order in ((0,0,0,1,1,1,1,1),(0,1,1,1,1,1,1,1),(1,0,0,1,1,1,1,1)):
+            with self.subTest(order=order),tempfile.TemporaryDirectory() as temporary:
+                directory=Path(temporary);_,errors,_=finite_peer_fixture(directory,order)
+                self.assertTrue(errors);self.assertFalse((directory/'linear-peer-complete.json').exists())
+
+    def test_interleaved_recipe_oracle_refuses_missing_duplicate_bounds_classification_and_roles(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary);wires,errors,_=finite_peer_fixture(directory,(0,0,1,1,1,1,1,1))
+            self.assertFalse(errors)
+            event=json.loads((directory/'event.jsonl').read_text());state,refs,declarations=interruption_rows(wires,event)
+            for change in ('missing','duplicate','scenario-role','scope-role','local-turn','bounds','classification','issuer-role','charge'):
+                value=copy.deepcopy(state);transcript=copy.deepcopy(wires)
+                if change=='missing':transcript.pop()
+                elif change=='duplicate':transcript[2]=copy.deepcopy(transcript[1])
+                elif change=='scenario-role':transcript[1]['scenario']='malformed_eose'
+                elif change=='scope-role':transcript[1]['scope_number']=1
+                elif change=='local-turn':transcript[1]['quantum_number']=1
+                elif change=='bounds':transcript[1]['request'][2]['until']=86399
+                elif change=='classification':
+                    body=bytearray(check.raw(value['acquisition_quanta'][1]['effect_records']));body[43]=2
+                    value['acquisition_quanta'][1]['effect_records']='\\x'+body.hex()
+                elif change=='issuer-role':value['acquisition_quanta'][1]['issuer_role']='ingest'
+                else:value['acquisition_quanta'][1]['charged_bytes']-=1
+                with self.subTest(change=change),self.assertRaises(AssertionError):
+                    check.scenarios(value,transcript,event,refs,declarations)
+
+    def test_fault_profiles_preserve_the_first_query_specialization(self):
+        for fault,scenario,frames in (('gap-write','body_closed',['EVENT','CLOSED']),
+                ('empty-terminal-authority','empty',['EOSE']),('terminal-before','slow_eose',['EVENT','EOSE'])):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
                 directory=Path(temporary)
-                (directory/'event.jsonl').write_bytes((root/'tests/fixtures/ingest/import-event.jsonl').read_bytes())
-                (directory/'linear-quantum-profile.json').write_text(json.dumps(peer.PROFILE))
-                class Connection:
-                    def __init__(self,number):
-                        self.number=number;self.frames=0
-                        self.header=bytearray(('GET /installed-fixture HTTP/1.1\r\nHost: 127.0.0.1:7447\r\n'
-                            'Upgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\n'
-                            'Sec-WebSocket-Key: '+base64.b64encode(bytes(16)).decode()+'\r\n\r\n').encode())
-                    def __enter__(self):return self
-                    def __exit__(self,*args):pass
-                    def settimeout(self,value):pass
-                    def sendall(self,value):pass
-                    def shutdown(self,value):pass
-                    def recv(self,count):
-                        result=bytes(self.header[:count]);del self.header[:count];return result
-                    def frame(self):
-                        self.frames+=1;ident=f'{self.number:032x}'+'0'*16
-                        if self.frames==1:
-                            scope=peer.TURN_SCOPES[self.number-1]
-                            upper=86400 if self.number==1 or scope else 2
-                            if failure=='stale-upper' and self.number==3:upper=86400
-                            if failure=='wrong-scope' and self.number==2:scope=0
-                            return 1,check.wire_json(['REQ',ident,dict(kinds=[1],since=scope,until=upper-1,limit=3)])
-                        if self.frames==2 and self.number!=6:return 1,check.wire_json(['CLOSE',ident])
-                        return 8,b''
-                listener=Mock();listener.accept.side_effect=[(Connection(number),('127.0.0.1',12345)) for number in range(1,9)]
-                errors=[];uppers={0:{1:86400},1:{1:86400}}
-                with patch.object(peer,'read_frame',side_effect=lambda connection:connection.frame()), \
-                        patch.object(peer,'send_frame'),patch.object(peer.time,'sleep'):
-                    peer.relay(directory,listener,threading.Event(),errors,expected_uppers=uppers)
-                listener.close.assert_called_once()
-                self.assertEqual(bool(errors),failure is not None)
-                self.assertEqual((directory/'linear-peer-complete.json').exists(),failure is None)
-                if failure is None:
-                    wires=[json.loads(path.read_text()) for path in sorted(directory.glob('relay-closed-*.json'))]
-                    self.assertEqual([wire['scenario'] for wire in wires],list(peer.SCENARIOS))
-                    self.assertEqual([wire['request'][2]['until'] for wire in wires],[86399,86399,1,86399,86399,86399,86399,86399])
-                    self.assertEqual([wire['scope_number'] for wire in wires],[0,1,0,1,1,1,1,1])
+                wires,errors,_=finite_peer_fixture(directory,(0,),fault=fault,first_only=True)
+                self.assertFalse(errors);self.assertEqual(len(wires),1)
+                self.assertEqual((wires[0]['scope_number'],wires[0]['quantum_number']),(0,1))
+                self.assertEqual(wires[0]['scenario'],scenario);self.assertEqual(wires[0]['frames'],frames)
+                self.assertEqual(wires[0]['request'][2],dict(kinds=[1],since=0,until=86399,limit=3))
 
     def test_signed_pages_overlap_once_then_refuse_an_extra_plan_or_socket(self):
         state,wires,event,science=signed_pages_fixture()
