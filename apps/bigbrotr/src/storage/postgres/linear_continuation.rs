@@ -99,14 +99,13 @@ fn choose(latest: &Completed, previous: Option<&Completed>) -> Result<Option<u64
     if latest.number == 0 || (latest.number == 1) != previous.is_none() {
         return Err(QuantumError::Context);
     }
-    if let Some(previous) = previous {
-        if previous.number.checked_add(1) != Some(latest.number)
+    if let Some(previous) = previous
+        && (previous.number.checked_add(1) != Some(latest.number)
             || (previous.lower, previous.horizon) != (latest.lower, latest.horizon)
             || (!previous.interrupted && previous.oldest.is_none())
-            || latest.upper != previous.continuation
-        {
-            return Err(QuantumError::Context);
-        }
+            || latest.upper != previous.continuation)
+    {
+        return Err(QuantumError::Context);
     }
     if latest.interrupted {
         return Ok(Some(latest.upper));
@@ -237,7 +236,9 @@ async fn read(
             .parse::<u64>()
             .map_err(|_| QuantumError::Context)?;
         let last = effects
-            .chunks_exact(93)
+            .as_chunks::<93>()
+            .0
+            .iter()
             .map(|record| u64::from_be_bytes(record[2..10].try_into().expect("effect")))
             .max()
             .unwrap_or(0);
@@ -332,12 +333,12 @@ fn require_payloads(
     targets: &[Option<(EventId, u64)>; 3],
     mut lookup: impl FnMut(FactRef) -> Result<Option<(EventId, u64)>, QuantumError>,
 ) -> Result<(), QuantumError> {
-    if dependencies.len() > 768 * 72 || dependencies.len() % 72 != 0 {
+    if dependencies.len() > 768 * 72 || !dependencies.len().is_multiple_of(72) {
         return Err(QuantumError::Context);
     }
     let mut matched = [false; 3];
     let mut previous = None;
-    for bytes in dependencies.chunks_exact(72) {
+    for bytes in dependencies.as_chunks::<72>().0 {
         let reference = rows::decode_dependency(bytes).map_err(|_| QuantumError::Context)?;
         if previous.is_some_and(|old| old >= reference.source_record_id) {
             return Err(QuantumError::Context);
@@ -364,13 +365,13 @@ fn decode_effects(
     prefix: u16,
     window: &LinearWindow,
 ) -> Result<DecodedEffects, QuantumError> {
-    if bytes.len() > 3 * 93 || bytes.len() % 93 != 0 {
+    if bytes.len() > 3 * 93 || !bytes.len().is_multiple_of(93) {
         return Err(QuantumError::Context);
     }
     let (mut ordinal, mut wire, mut classified, mut oldest, mut previous_time, mut ordering) =
         (0, 0, 0, None, None, false);
     let mut targets = [None; 3];
-    for record in bytes.chunks_exact(93) {
+    for record in bytes.as_chunks::<93>().0 {
         let next = u16::from_be_bytes(record[..2].try_into().expect("effect"));
         let sequence = u64::from_be_bytes(record[2..10].try_into().expect("effect"));
         let kind = u16::from_be_bytes(record[42..44].try_into().expect("effect"));

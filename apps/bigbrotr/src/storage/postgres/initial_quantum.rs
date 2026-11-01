@@ -109,7 +109,6 @@ impl ControlSession {
         .await
         .map_err(InitialEventError::Quantum)?;
         let Some(window) = window else {
-            drop(read);
             // Empty intersections, empty successful pages and repeated
             // returned boundaries leave coverage pending without a new plan.
             // Confirm rollback so other jobs can use the next turn.
