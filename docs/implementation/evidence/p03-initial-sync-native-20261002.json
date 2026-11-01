@@ -1225,7 +1225,7 @@
     "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
     "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2",
     "bounded_continuation": {
-      "status": "QUALIFIED_LOCAL_CAPPED_AND_CORRUPTION;AFFECTED_RESTART_AND_COMMIT_REGRESSIONS_IN_PROGRESS;HOSTED_NOT_RUN",
+      "status": "QUALIFIED_LOCAL_CAPPED_BINDING_INTERRUPTION_AND_COMMIT_FAULTS;RESTART_IN_PROGRESS;HOSTED_NOT_RUN",
       "task": "P03-T05Step2; bounded same-job current-owner continuation, not full walker/partition/adoption",
       "observed_source": "8173f2b5",
       "scope": "Locked retained window reconstruction; exact current context/predicate/frozen horizon; known interruption retry; first overlap; empty/repeated pending deferral; same-row authenticated EventPayload ID/time binding with one original native view through pre-COMMIT closure.",
@@ -1238,8 +1238,7 @@
       },
       "format": "Current internal migration0043 consolidates at most three93-byte effects (original61prefix plus captured canonical ID32); old nonempty61-byte effects refused. No existing public-version compatibility or source-history rewrite.",
       "not_run": [
-        "Affected installed restart on/off: on-r1environmentNOT_RUN; on-r2verifierFAIL and later stagesNOT_RUN. Shared explicit-window correction in isolated Sol worktree.",
-        "Current-product plan/terminal COMMIT before/after schedules: plan-before-r1 tool36870 running, remaining threeNOT_RUN.",
+        "Affected installed restart on/off: on-r1environmentNOT_RUN; on-r2verifierFAIL and later stagesNOT_RUN. Shared correction781ca6ec critically reviewed; on-r3tool79425 running.",
         "GitHub Actions against new integrated M2 source"
       ],
       "next": "Finish affected restart and existing four COMMIT-loss schedules, source-publication scan and coherent main integration/push; then retained finite-history range progression under P03-T05/T01. Full walker/saturation/partition/sparse growth/adoption retain existing owners.",
@@ -1340,6 +1339,141 @@
           "sha256": "e157b4263f9e41a5718ce8bd4b0497206faa14bc63fd7a68841a4cd64c18ce65"
         },
         "scope": "First6stagesPASS; restart_baseline old shared archive_request_progress still requires until86399 for every request. Current continuation contract gives second upper2; original failure preserved. Recovery/catchup/successor4stagesNOT_RUN, cleanupPASS. Sol correction isolated; no product rebuild warranted."
+      },
+      "current_commit_faults": {
+        "plan-before": {
+          "status": "7/7PASS",
+          "harness": "8173f2b5; docs-only checkpoint commit during run; exact imported-file hashes retained in result.json",
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "evidence": {
+            "result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-before-r1/result.json",
+              "sha256": "c5f133a0116c05a3791eade477d142733222bacbd21c970bd1156d06fa753734"
+            },
+            "linear-quantum/verdict.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-before-r1/linear-quantum/verdict.json",
+              "sha256": "ea8cba45d0f033c478b0a1bc5aa86dfabcfb4e39ae097795a29c06e0be32d425"
+            },
+            "quantum-proxy-terminal.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-before-r1/quantum-proxy-terminal.json",
+              "sha256": "dc2c90c859050f156c1368ecb5ab616d85281155a04d42c83adc64bb1b563e33"
+            }
+          },
+          "scope": {
+            "status": "PASS",
+            "fault": "plan-before",
+            "requests": 3,
+            "native_sequence": 49,
+            "plans": 0,
+            "socket_requests": 0,
+            "recovery": "historical_only",
+            "coverage": "pending"
+          },
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped, borrowed bridge preserved."
+        },
+        "plan-after": {
+          "status": "7/7PASS",
+          "harness": "7d770fb8",
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "evidence": {
+            "result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-after-r1/result.json",
+              "sha256": "0d0375eb24b8047928c96ac40d5aa2e4eacc3029a244003abe1e5b9defba65c3"
+            },
+            "linear-quantum/verdict.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-after-r1/linear-quantum/verdict.json",
+              "sha256": "2cac28dce0d14614a21a3a047b0a7833b0389b5fe9f972b3782daf157d802d65"
+            },
+            "quantum-proxy-terminal.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-plan-after-r1/quantum-proxy-terminal.json",
+              "sha256": "297eb279a0554e8956c936e3d027f047f17bed7624a20d04837658d014e866c2"
+            }
+          },
+          "scope": {
+            "status": "PASS",
+            "fault": "plan-after",
+            "requests": 3,
+            "native_sequence": 49,
+            "plans": 1,
+            "socket_requests": 0,
+            "recovery": "historical_only",
+            "coverage": "pending"
+          },
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped, borrowed bridge preserved."
+        },
+        "terminal-before": {
+          "status": "7/7PASS",
+          "harness": "7d770fb8",
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "evidence": {
+            "result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-before-r1/result.json",
+              "sha256": "f78b1c7fc15600b0951838f32a5d37e06853f88ba10a463bfd3624fffd0e055d"
+            },
+            "linear-quantum/verdict.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-before-r1/linear-quantum/verdict.json",
+              "sha256": "5010561e9ff5f348e79305e1482944e18e467909edad17f4b1de6135c830f073"
+            },
+            "quantum-proxy-terminal.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-before-r1/quantum-proxy-terminal.json",
+              "sha256": "748ffd21ee071aad8e8f686621116dc9351486c2baf591fb24c796a42dee91f7"
+            }
+          },
+          "scope": {
+            "status": "PASS",
+            "fault": "terminal-before",
+            "requests": 4,
+            "native_sequence": 67,
+            "plans": 1,
+            "socket_requests": 1,
+            "recovery": "historical_only",
+            "coverage": "pending"
+          },
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped, borrowed bridge preserved."
+        },
+        "terminal-after": {
+          "status": "7/7PASS",
+          "product": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+          "harness": "7d770fb8",
+          "evidence": {
+            "result.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-after-r1/result.json",
+              "sha256": "1997843aa6934f292bac1e28ebd878244d39ab8a2ef7873dea858ef8e27c744c"
+            },
+            "linear-quantum/verdict.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-after-r1/linear-quantum/verdict.json",
+              "sha256": "a9e1521620756903f799bd0497036efb3afb8b4b92bbfb5224deb95b72136b9a"
+            },
+            "quantum-proxy-terminal.json": {
+              "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-terminal-after-r1/quantum-proxy-terminal.json",
+              "sha256": "155776ee57ce2f8048589051292ea14c5de98061a733b3804c1c860bfef36de9"
+            }
+          },
+          "scope": {
+            "status": "PASS",
+            "fault": "terminal-after",
+            "requests": 4,
+            "native_sequence": 67,
+            "plans": 1,
+            "socket_requests": 1,
+            "recovery": "historical_only",
+            "coverage": "pending"
+          },
+          "custody": "Maintained cleanupPASS/noerrors; owned containers stopped, borrowedbridge preserved."
+        }
+      },
+      "restart_oracle_correction": {
+        "source": "c82f46473707e2d84da56a962df6783f9159a785",
+        "integrated_at": "781ca6ec",
+        "review": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/restart-oracle-review.json",
+          "sha256": "bb5d93d88b18e663afe53f3439db55cfdc4df4c1d566dc191f61549bb18e7705"
+        },
+        "replay": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/restart-oracle-replay/restart-oracle-replay-20261101.json",
+          "sha256": "9b63419b035f8efb1ce23a8835be3117e33e9247fa5a3671d4cf97791cae3a42"
+        },
+        "scope": "Offline original baseline replay only3positive/6mutatedrefusals. Actual on-r2FAIL unchanged; corrected current on-r3running. Sol89affectedportablePASS and Rootmerged35restartcontrolsPASS."
       }
     }
   }

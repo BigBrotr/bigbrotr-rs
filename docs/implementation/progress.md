@@ -12,7 +12,7 @@ collection and logical pending-quota/recovery are qualified locally and on
 Main/origin: **a2a42f2284790e38f85979d4aea17eab5e9a4644**. Full product incomplete.
 
 Root integrates in `.research/m2-linear-continuation-20261101`, branch
-`work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD **8173f2b5**;
+`work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD **781ca6ec**;
 enclosing Git identifies the checkpoint commit. Current uncommitted changes are
 Root's existing evidence/inventory/checkpoint updates. Immutable qualified product:
 **8f4d5f27fcd953e0cfd74ff4a859a029862f1e34**. Subsequent commits affect Python
@@ -37,7 +37,8 @@ failures, artifact hashes and review links. Current product8f:
   all-target Clippy/Rustdoc **PASS**; unfiltered application library **656PASS,
   0FAIL,3ignored,0filtered**. Ignored external/POSIX cases are not claimed PASS.
 - Full portable acceptance controls at9aed: **540PASS/0SKIP**. After scope,
-  interleaving and port-setup fixes, affected merged controls **87PASS**.
+  interleaving and port-setup fixes, affected merged controls **87PASS**; shared
+  restart correction89affectedPASS, Root merged restart controls35PASS.
 - Real capped continuation **7/7PASS**: five pages across two jobs include an
   all-known page followed by the older signed event; exact original inputs,
   receipts and76 native rows/sequence103. Coverage stays pending.
@@ -55,13 +56,18 @@ actual capped-r2PASS); restart-on-r1 **NOT_RUN** because completed TCP TIME_WAIT
 was misclassified as an occupied port. Shared preflight now accepts TIME_WAIT
 while a live listener still refuses, with real-socket regression controls.
 Restart-on-r2 passed acquisition/export but **FAIL** at baseline: the shared
-progress oracle still requires the initial upper on every request. Its correction
-is isolated with Sol; later recovery/catchup/successor stages are **NOT_RUN**.
+progress oracle still requires the initial upper on every request. The explicit
+current-recipe correction is integrated781ca6ec and critically reviewed; retained
+baseline replay3positive/6refusal controls passes. OriginalFAIL stays; actual
+recovery/catchup/successor qualification remains pending.
 One local targeted invocation lacked PYTHONPATH and failed module import; the
 correct declared environment passed. None is relabeled as a product PASS.
 
+All four current-product plan/terminal COMMIT before/after schedules **7/7PASS
+each**, including unchanged historical-only restart and exact native/input science.
+
 **Remaining for this increment:** current-product installed restart on/off;
-four existing plan/terminal COMMIT before/after fault schedules; coherent source
+coherent source
 publication scan/main integration/push and real hosted verification. Astra's
 bounded review confirms the existing terminal-after case already discriminates
 an unconfirmed successful page causing an illegal next request; no new ordinal
@@ -79,14 +85,12 @@ original4 ELF bytes/full metadata are preserved using O_NOATIME reads. Completed
 installed runs have cleanupPASS/noerrors, stopped owned containers and an empty
 preserved borrowed bridge. No dataset/worktree/cache deletion or Git maintenance.
 
-**Active:** Root's installed plan-before-r1, tool36870, evidence
-`acceptance-plan-before-r1`. Root is sole integrator. Bounded Astra COMMIT-scope
-review is complete/read-only. Sol now owns the isolated shared restart-oracle
-window correction; no engines/builds delegated. Unrelated InspireHEP/Mongo workloads remain untouched.
+**Active:** Root's installed restart-on-r3, tool79425, evidence
+`acceptance-restart-on-r3`. Root is sole integrator. Sol's clean isolated
+restart-oracle worktree is preserved; no delegated engines/builds. Astra's bounded
+COMMIT/oracle reviews are complete; next-window authority design is read-only. Unrelated InspireHEP/Mongo workloads remain untouched.
 
-**Next:** observe plan-before-r1, integrate/replay the shared restart-oracle fix,
-then repeat affected restart on/off and finish the existing fault
-schedules with the same product/candidate/observer. Record actual outcomes before
+**Next:** observe restart-on-r3, then run provenance-off with the same product/candidate/observer. Record actual outcomes before
 integration. After this slice, next useful M2 capacity is retained finite-history
 window succession under P03-T05 Steps1/4 and P03-T01 Step3; retain explicit gaps
 and contiguous attempted-range authority. Full walker/partition/sparse growth,

@@ -78565,7 +78565,7 @@
         "branch": "work/m2-linear-continuation-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
         "state": "Product8f release/workspace/native observerPASS; capped, two native-binding corruption refusals and eight-interruption installed journeysPASS. No main integration/new hosted run yet.",
-        "observed_revision": "8173f2b5",
+        "observed_revision": "781ca6ec",
         "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
         "portable_controls": {
           "source": "1849721e047710b7efef4f80bc9b025da5c13550",
@@ -78573,7 +78573,7 @@
           "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
         },
-        "pending": "Root current plan-before-r1 tool36870 active. Restart-on-r2terminal verifierFAIL/cleanupPASS, original captures retained; Sol shared-window expectation fix isolated/read-write only, no engines. Root sole integrator; no compiler active. Other3faults/restartcompletion/newhostedCI pending.",
+        "pending": "Root current installed restart-on-r3 tool79425 active; all4existingcurrentCOMMIT-lossjourneys7/7PASS each andcleanupPASS. Sol isolatedrestart-oraclefix c82f4647 integrated781ca6ec, clean agentWT retained,89controls+capture replay reviewed; no agentengines. Astra boundednextdesignread-only ongoing; Rootsoleintegrator; no compiler.",
         "build": {
           "source": "61769e66c09b2506bfa972f3fa1f524112106a79",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-product-61769e66",
