@@ -5,8 +5,9 @@ import json
 import os
 import re
 import secrets
+import tomllib
 
-from current_lab import prepare_database
+from current_lab import prepare_database, verify_application_role
 from schema_inventory import declared_inventory, require_tables
 
 # Exact noncompiled changes reviewed for this fixture increment. An unrestricted
@@ -41,6 +42,19 @@ def rows(lab, state, database, inventory):
                f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     return json.loads(lab.sql(state, database, 'SET max_parallel_workers_per_gather=0; '
         'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(queries) + ') t'))
+
+
+def prepare_browser_role(lab, state, database, local, inventory, record):
+    user = tomllib.loads(local.read_text())['postgres']['control']['user']
+    assert user == 'bigbrotr_control', 'unexpected configured socket application user'
+    # Login issuance always cleans terminal sessions, including in an empty
+    # table. This is the same narrow grant in packaging/compose/provision.sql;
+    # reauthentication proof issuance is outside this socket fixture.
+    lab.sql(state,database,'GRANT DELETE ON control.browser_sessions TO bigbrotr_control;')
+    def checked(name,condition,**details):
+        record(name,condition,configured_user=user,**details)
+    verify_application_role(lab,state,'socket-template-browser-session',database,inventory,checked,
+                            delete_tables=('browser_sessions',))
 
 
 def seed_alice(lab, state, database, inventory, record):
@@ -137,8 +151,9 @@ def prepare(lab, root, build, source, revision):
         lab.setup(pg_root,build,source,'socket_'+revision[:7]+'_'+secrets.token_hex(6),
                   subnet=os.environ.get('BIGBROTR_SOCKET_SUBNET'))
         state = lab.load(pg_root)
-        _, path, _ = prepare_database(lab,state,pg_root,'socket-template','bb_source_template',
-                                       'managed',inventory,record)
+        _, path, local = prepare_database(lab,state,pg_root,'socket-template','bb_source_template',
+                                          'managed',inventory,record)
+        prepare_browser_role(lab,state,'bb_source_template',local,inventory,record)
         for action, extra in [('initialize',()),('activate-initial',
                 ('--request-id','77'*16,'--expected-revision','1'))]:
             result = lab.cli(state,'config',action,'--file',path,*extra)
