@@ -150,7 +150,7 @@ impl LinearWindow {
             .max()
             .ok_or(QuantumError::Interval)?;
         let lower = selector.history_since().0;
-        let upper = lower.checked_add(width).unwrap_or(u64::MAX).min(horizon);
+        let upper = lower.saturating_add(width).min(horizon);
         if width == 0 || lower >= upper {
             return Err(QuantumError::Interval);
         }
