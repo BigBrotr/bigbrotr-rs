@@ -64,6 +64,7 @@ class LinearQuantumRuntime(Runtime):
             self.config.write_text(self.set_value(self.config.read_text(),'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
             self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=ready['port'])
+            save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             self.record_resources()
         super().bootstrap()
 
@@ -116,6 +117,7 @@ class LinearQuantumRuntime(Runtime):
             self.client=subprocess.Popen([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_client.py'),str(self.home)],
                 env=self.environment,cwd=self.root,stdout=out,stderr=err,start_new_session=True)
         self.processes.append(self.client)
+        save(output/'client-process.json',dict(pid=self.client.pid,process_group=self.client.pid))
         self.wait(lambda:(self.home/'prepared.json').exists(),'prepared quantum fault source',15,entry,self.client)
         (self.home/'prepared.continue').write_text('fresh exact source accepted\n')
         if self.quantum_fault=='empty-terminal-authority':
