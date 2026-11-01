@@ -1,7 +1,7 @@
 //! Finite logical admission controls. These exercise the actual native owner;
 //! fixed revision/digests are explicit fixture policy, not SQL authority.
 use super::super::{
-    AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
+    AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
     bootstrap::Prepared,
     bootstrap_tests::{budget, grant, intent, manifest, native, request, scope},
 };
