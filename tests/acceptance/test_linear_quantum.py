@@ -136,7 +136,7 @@ class LinearQuantumControls(unittest.TestCase):
                     saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
                     self.assertEqual((saved['upstream_endpoint'],saved['direct_recipe_sha256']),
                         ('127.0.0.1:15432',hashlib.sha256(original.encode()).hexdigest()))
-                    return dict(port=34567,source_sha256=case.digest(runtime.source/'experiments/archive-engine/native_commit_proxy.py'))
+                    return dict(runtime.quantum_proxy_binding,event='ready',port=34567)
                 runtime.proxy_event=ready
                 with patch.object(case.Runtime,'bootstrap') as bootstrap:
                     if endpoint!='127.0.0.1:15432':
@@ -154,6 +154,127 @@ class LinearQuantumControls(unittest.TestCase):
                 saved=json.loads((root/'resources.json').read_text())['quantum_proxy']
                 self.assertEqual(saved['port'],34567)
                 self.assertEqual(saved['direct_recipe_sha256'],hashlib.sha256(original.encode()).hexdigest())
+
+    def test_fault_profiles_keep_plan_default_and_bound_body_terminal_and_authority_captures(self):
+        from cases import first_launch_linear_quantum as case
+        vectors=(('plan-before','before-forward','plan','default',20000,16),
+            ('plan-after','after-complete','plan','default',20000,16),
+            ('terminal-before','before-forward','terminal','retained-catch-up',131072,64),
+            ('terminal-after','after-complete','terminal','retained-catch-up',131072,64),
+            ('gap-write','hold-reply','plan','retained-catch-up',131072,64),
+            ('stale-authority','hold-reply','plan','retained-catch-up',131072,64),
+            ('empty-terminal-authority','hold-source-rollback-reply','source-rollback','retained-catch-up',131072,64))
+        for fault,mode,target,profile,frames,connections in vectors:
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2],linear_quantum_fault=fault),
+                    dict(acceptance_files_sha256={}))
+                runtime.home=root/'home';runtime.home.mkdir()
+                runtime.config=root/'instance.toml'
+                runtime.config.write_text('[postgres.control]\nendpoint = "127.0.0.1:15432"\n')
+                runtime.set_value=Mock(return_value='[postgres.control]\nendpoint = "127.0.0.1:34567"\n')
+                source=runtime.source/'experiments/archive-engine/native_commit_proxy.py'
+                binding=dict(source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),mode=mode,
+                    target='control-quantum-'+target,profile=profile,frame_limit=frames,connection_limit=connections,
+                    connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+                    upstream_host='127.0.0.1',upstream_port=15432)
+                ready=dict(binding,event='ready',port=34567)
+                runtime.proxy_process=Mock(return_value=SimpleNamespace(process=SimpleNamespace(pid=123)))
+                runtime.proxy_event=Mock(return_value=ready)
+                with patch.object(case.Runtime,'bootstrap'):runtime.bootstrap()
+                expected=[case.sys.executable,'-B',str(source),'--mode',mode,'--target','control-quantum-'+target,
+                    '--upstream-port','15432']
+                if profile!='default':expected+=['--profile','retained-catch-up']
+                runtime.proxy_process.assert_called_once_with(expected,input_pipe=True)
+                self.assertEqual(runtime.inputs['quantum_proxy'],binding)
+                self.assertEqual(json.loads((root/'quantum-proxy-ready.json').read_text()),ready)
+
+    def test_quantum_ready_and_terminal_emit_actual_profile_limits_source_and_route(self):
+        import importlib.util
+        path=Path(__file__).resolve().parents[2]/'experiments/archive-engine/native_commit_proxy.py'
+        spec=importlib.util.spec_from_file_location('linear_profile_proxy_control',path)
+        proxy=importlib.util.module_from_spec(spec);spec.loader.exec_module(proxy)
+        source=hashlib.sha256(path.read_bytes()).hexdigest()
+        for target,mode in (('control-quantum-plan','hold-reply'),('control-quantum-terminal','before-forward'),
+                ('control-quantum-source-rollback','hold-source-rollback-reply')):
+            for profile,frames,connections in (('default',20000,16),('retained-catch-up',131072,64)):
+                with self.subTest(target=target,profile=profile):
+                    route=proxy.Proxy(mode,target,profile=profile,upstream_port=15432)
+                    expected=dict(source_sha256=source,mode=mode,target=target,profile=profile,
+                        frame_limit=frames,connection_limit=connections,connection_limit_scope='lifetime',
+                        wire_limit=67108864,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
+                    for event in ('ready','terminal'):
+                        with patch('builtins.print') as output:route.emit(event)
+                        actual=json.loads(output.call_args.args[0])
+                        self.assertEqual({key:actual[key] for key in expected},expected)
+        # Shared proxy callers outside these three quantum targets retain their
+        # original report shape as well as their original transport behavior.
+        with patch('builtins.print') as output:proxy.Proxy('pass').emit('terminal',unexpected=0)
+        actual=json.loads(output.call_args.args[0])
+        self.assertTrue(set(actual).isdisjoint(('profile','frame_limit','connection_limit',
+            'connection_limit_scope','wire_limit','lifetime_seconds','source_sha256','upstream_host','upstream_port')))
+
+    def test_ready_and_terminal_refuse_substituted_profile_identity_or_budget(self):
+        from cases import first_launch_linear_quantum as case
+        runtime=object.__new__(case.LinearQuantumRuntime)
+        runtime.quantum_proxy_binding=dict(source_sha256='ab'*32,mode='before-forward',
+            target='control-quantum-terminal',profile='retained-catch-up',frame_limit=131072,
+            connection_limit=64,connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+            upstream_host='127.0.0.1',upstream_port=15432)
+        substitutions=dict(source_sha256='cd'*32,mode='after-complete',target='control-quantum-plan',
+            profile='default',frame_limit=20000,connection_limit=16,connection_limit_scope='active',
+            wire_limit=67108865,lifetime_seconds=180,upstream_host='localhost',upstream_port=5432)
+        for event in ('ready','terminal'):
+            valid=dict(runtime.quantum_proxy_binding,event=event,frames=20001,connections=1,bytes=1212047,unexpected=0)
+            runtime.validate_quantum_proxy(valid,event)
+            for key,value in substitutions.items():
+                for changed in (dict(valid,**{key:value}),{field:value for field,value in valid.items() if field!=key}):
+                    with self.subTest(event=event,key=key),self.assertRaisesRegex(ValueError,'binding differs'):
+                        runtime.validate_quantum_proxy(changed,event)
+            with self.assertRaisesRegex(ValueError,'binding differs'):
+                runtime.validate_quantum_proxy(dict(valid,upstream_port=True),event)
+        for key,value in (('frames',131073),('connections',65),('bytes',67108865),('frames',0),('unexpected',1)):
+            with self.subTest(key=key,value=value),self.assertRaisesRegex(ValueError,'terminal observation'):
+                runtime.validate_quantum_proxy(dict(valid,**{key:value}),'terminal')
+
+    def test_joined_proxy_requires_terminal_binding_and_retains_refused_summary(self):
+        from cases import first_launch_linear_quantum as case
+        for failure in (None,'profile','missing','duplicate'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary)
+                runtime=case.LinearQuantumRuntime(SimpleNamespace(evidence=root,
+                    source_root=Path(__file__).resolve().parents[2]),dict(acceptance_files_sha256={}))
+                runtime.quantum_proxy_binding=dict(source_sha256='ab'*32,mode='before-forward',
+                    target='control-quantum-terminal',profile='retained-catch-up',frame_limit=131072,
+                    connection_limit=64,connection_limit_scope='lifetime',wire_limit=67108864,lifetime_seconds=120,
+                    upstream_host='127.0.0.1',upstream_port=15432)
+                ready=dict(runtime.quantum_proxy_binding,event='ready',port=34567)
+                terminal=dict(runtime.quantum_proxy_binding,event='terminal',frames=20001,connections=1,bytes=1212047,unexpected=0)
+                if failure=='profile':terminal['profile']='default'
+                events=[ready]+([] if failure=='missing' else [terminal])
+                if failure=='duplicate':events.append(terminal)
+                stdout=('\n'.join(json.dumps(event) for event in events)+'\n').encode()
+                route=SimpleNamespace(process=SimpleNamespace(pid=123,poll=lambda:0),
+                    wait=Mock(return_value=0),stop=Mock(),threads=[SimpleNamespace(is_alive=lambda:False)],
+                    stdout=stdout,stderr=b'',overflow=False)
+                runtime.route=route;runtime.quantum_proxy_ready=ready
+                runtime.resources['quantum_proxy']=dict(pid=123,status='running',port=34567)
+                runtime.proxy_send=Mock()
+                observation=dict(exit=0,stdout=stdout.decode(),stderr='',overflow=False,remote_exclusion='UNKNOWN')
+                runtime.proxy_observation=Mock(return_value=observation)
+                if failure:
+                    with self.assertRaises(ValueError):runtime.stop_quantum_proxy()
+                else:runtime.stop_quantum_proxy()
+                route.wait.assert_called_once_with(5);route.stop.assert_called_once_with()
+                runtime.proxy_send.assert_not_called()
+                self.assertEqual((root/'quantum-proxy.stdout').read_bytes(),stdout)
+                self.assertEqual(json.loads((root/'quantum-proxy.json').read_text()),observation)
+                self.assertEqual(runtime.resources['quantum_proxy']['status'],'joined')
+                self.assertEqual([value['operation'] for value in runtime.resources['cleanup_errors']],
+                    ['observation'] if failure else [])
+                if failure not in ('missing','duplicate'):
+                    self.assertEqual(json.loads((root/'quantum-proxy-terminal.json').read_text()),terminal)
 
     def test_control_expiry_consumes_frozen_sixty_second_lease_instead_of_fixed_twenty_seconds(self):
         from cases import first_launch_linear_quantum as case

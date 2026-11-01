@@ -61,22 +61,44 @@ class LinearQuantumRuntime(Runtime):
             boundary,direction=self.quantum_fault.split('-') if self.quantum_fault not in ('gap-write','stale-authority','empty-terminal-authority') else ('plan','held')
             path=self.source/'experiments/archive-engine/native_commit_proxy.py'
             self.inputs['acceptance_files_sha256'][str(path.relative_to(self.source))]=digest(path)
-            self.route=self.proxy_process([sys.executable,'-B',str(path),'--mode',
-                'hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
-                'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete',
-                '--target','control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
-                'control-quantum-'+('plan' if boundary=='plan' else 'terminal'),
-                '--upstream-port','15432'],input_pipe=True)
+            profile='default' if self.quantum_fault in ('plan-before','plan-after') else 'retained-catch-up'
+            mode=('hold-source-rollback-reply' if self.quantum_fault=='empty-terminal-authority' else
+                'hold-reply' if direction=='held' else 'before-forward' if direction=='before' else 'after-complete')
+            target=('control-quantum-source-rollback' if self.quantum_fault=='empty-terminal-authority' else
+                'control-quantum-'+('plan' if boundary=='plan' else 'terminal'))
+            # Body/authority captures include more framed Control work before
+            # the selected boundary. Reuse the existing finite traffic profile;
+            # this changes neither its64MiB/120s bounds nor product admission.
+            self.quantum_proxy_binding=dict(source_sha256=digest(path),mode=mode,target=target,profile=profile,
+                frame_limit=20000 if profile=='default' else 131072,
+                connection_limit=16 if profile=='default' else 64,connection_limit_scope='lifetime',
+                wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
+            self.inputs['quantum_proxy']=self.quantum_proxy_binding
+            command=[sys.executable,'-B',str(path),'--mode',mode,'--target',target,'--upstream-port','15432']
+            if profile!='default':command+=['--profile',profile]
+            self.route=self.proxy_process(command,input_pipe=True)
             self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None,
                 upstream_endpoint=upstream,direct_recipe_sha256=direct_recipe_sha256)
             self.record_resources()
             save(self.root/'quantum-proxy-process.json',dict(pid=self.route.process.pid))
             ready=self.proxy_event(self.route,'ready',10)
-            require(ready['source_sha256']==digest(path),'exact quantum proxy source')
+            save(self.root/'quantum-proxy-ready.json',ready)
+            self.validate_quantum_proxy(ready,'ready')
+            self.quantum_proxy_ready=ready
             self.resources['quantum_proxy']['port']=ready['port']
             self.record_resources()
             self.config.write_text(self.set_value(original,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
             self.inputs['initial_recipe_sha256']=digest(self.config)
+
+    def validate_quantum_proxy(self,value,event):
+        require(value.get('event')==event and all(type(value.get(key)) is type(expected)
+            and value[key]==expected for key,expected in self.quantum_proxy_binding.items()),
+            'quantum proxy '+event+' binding differs')
+        if event=='terminal':
+            require(type(value.get('unexpected')) is int and value['unexpected']==0
+                and all(type(value.get(key)) is int and 0<value[key]<=limit
+                for key,limit in (('frames',value['frame_limit']),('connections',value['connection_limit']),
+                    ('bytes',value['wire_limit']))),'incomplete quantum proxy terminal observation')
 
     def stop_quantum_proxy(self):
         if not hasattr(self,'route') or self.resources['quantum_proxy']['status']=='joined':return
@@ -102,6 +124,13 @@ class LinearQuantumRuntime(Runtime):
             result=self.proxy_observation(route);save(self.root/'quantum-proxy.json',result)
             require(code==0 and streams_joined and not result['stderr'] and not result['overflow'],
                 'incomplete quantum proxy observation')
+            if hasattr(self,'quantum_proxy_ready'):
+                events=[json.loads(line) for line in result['stdout'].splitlines()]
+                ready,=[value for value in events if value.get('event')=='ready']
+                terminal,=[value for value in events if value.get('event')=='terminal']
+                save(self.root/'quantum-proxy-terminal.json',terminal)
+                require(ready==self.quantum_proxy_ready,'quantum proxy ready observation changed')
+                self.validate_quantum_proxy(terminal,'terminal')
         except Exception as error:failures.append(('observation',error))
         self.resources['quantum_proxy'].update(status='joined' if code is not None and streams_joined else 'cleanup-incomplete',exit_code=code)
         self.resources['cleanup_errors'].extend(dict(resource='quantum-proxy',id=route.process.pid,
