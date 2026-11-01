@@ -1,23 +1,41 @@
 {
   "latest_verified_hosted_execution": {
-    "revision": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038",
+    "revision": "a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307",
     "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
-    "foundation_checks": "33/33PASS",
-    "scope_controls": "20/20PASS",
-    "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
-    "source_context": "All3exact4209-file source/native/worker identities and9post-build contexts verified. Unfiltered94Rustsuites each: amd64/arm1447PASS (4/3ignored),macOS1445PASS/2ignored; acceptance516PASS bothLinux,504PASSmacOS/12declaredskips. Actual selected controls and platform/installed boundaries retain their declared scope.",
+    "foundation_checks": "33/33 PASS",
+    "scope_controls": "20/20 PASS",
+    "unselected_jobs": "3 SKIP; zero required NOT_RUN",
+    "source_context": "All 3 exact 4,217-file source/native/worker identities and 9 post-build contexts verified. Each platform ran 94 unfiltered Rust suites: AMD64/ARM64 1,458 PASS (4/3 ignored), macOS 1,456 PASS/2 ignored. Portable acceptance: 549 PASS on each Linux platform; macOS 536 PASS/13 declared platform skips. Exact-source method/class guards account for those 13 skips; compact logs report their total rather than individual skipped names.",
     "terminal_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/terminal-audit.json",
-      "sha256": "3c1d166c218afb96f09ea5a9d618d7694fb5f0227d0f03b75e9e6c0e2cee1fcb"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a71b6ea3-20261101/terminal-audit.json",
+      "sha256": "623f71ea57adfe6b8faa88b085f6b54b7f40ca90cf223b977d04c5f3c536d66c"
     },
     "completion_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/completion-check.json",
-      "sha256": "dfe05bc85def526396384bc0b73370fe4e94335b8799e1eb236fd3fd7ec74ce0"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a71b6ea3-20261101/completion-check.json",
+      "sha256": "fdbfd1f229ff21fd25257941b5f815ba2c75d24b7173be8d55803da2aa31e8f2"
     },
-    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/operationalcredentials/provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
-    "failure_classification": "No billing/admission, workflow, cancellation or product failure. Watcher46117/acquisition53934 reaped0; owned observerPIDs absent. Existing evidence hashes/external pins checked.",
-    "historical_scopes": "Other source-scoped fields and previous_verified_hosted_executions retain their original execution scope."
+    "public_outputs": "4 artifacts/516 members plus 34 workflow logs; 54 occurrences/5 known nonsecret fingerprints, zero new unclassified candidates, operational credentials or provider alerts. Existing bounded-pattern and asynchronous-provider limits apply.",
+    "failure_classification": "No billing/admission, workflow, cancellation, timeout or product failure. Watcher39908 and acquisition94491 reaped with exit0; owned observer PIDs absent and zero active owned observers. Evidence hashes and 25 external source-review pins rechecked.",
+    "timing_cache_observation": {
+      "receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a71b6ea3-20261101/timing-cache-observation.json",
+        "sha256": "790285bdd62084cd3a10faf5ef7d07a8a4bbf8a7b995eed1433119202b1ebb53"
+      },
+      "native_download_cache": "All 3 configured pinned native-download caches hit and restored; macOS restored 60,250,616 bytes. CI/build helpers, workflow, archive registry, committed Rust toolchain pin and lockfile match A2. These are download-cache observations; compiled workspace artifacts remain excluded.",
+      "macos_seconds": {
+        "job_wall": 2781.0,
+        "exact_source_build": 1074.724,
+        "clippy": 507.953,
+        "rust_tests_command": 1073.576,
+        "acceptance_controls": 77.335,
+        "rust_suite_elapsed_sum": 358.6
+      },
+      "cargo_timings": "macOS completed in 46m21s: release worker/application builds report 3m15s/14m29s; Clippy dev build 8m22s; test compilation 11m43s. The 94 Rust suites report 358.6s elapsed in total. Cargo registry downloads and librocksdb-sys compiling markers occur in the retained logs.",
+      "limits": "One already-required hosted run, without profiling or cache/workflow changes. Check durations include setup and compilation; suite elapsed fields are wall times, not CPU attribution. No failed configured cache, isolated avoidable time or measured optimization/speedup is established. Existing native_cache_followthrough_20261101 retains its separate source/reuse scope and task ownership."
+    },
+    "qualification_scope": "Only the selected default-profile hosted foundation at A71. Installed journeys retain their separate exact-source receipts; full M2, later local profile2 changes, later revisions and release readiness are not qualified by this run.",
+    "historical_scopes": "Other top-level source-scoped fields, including revision/run_url/platforms, preserve the explicitly named ebb8 run41256201712 and their earlier followups. Previous_verified_hosted_executions preserves A2 and earlier exact-source execution scope; none is retroactively qualified by A71."
   },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
@@ -2257,7 +2275,7 @@
       },
       "public_outputs": "4artifacts/516members and34workflowlogs scanned; zero new unclassified/operationalcredential/provideralert. Pattern/asynchronous-provider limits retained; no absolute absence claim.",
       "failure_classification": "No billing/admission, workflow, cancellation/timeout or product failure observed. Observer reaped0/ownedPIDs absent. No rerun/dispatch/settings change.",
-      "historical_scopes": "Other explicitly sourced fields below retain prior hosted executions; this is the latest completed meaningful hosted execution."
+      "historical_scopes": "This record qualifies only the named 22a execution. Other source-scoped fields and later exact-source hosted runs retain their separate execution scope."
     },
     {
       "revision": "94c497a2f530b6a551099fbbb6faff9585370577",
@@ -2298,6 +2316,26 @@
       "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
       "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observer reaped0/no owned observeractive; original94evidence intact.",
       "historical_scopes": "Other source-scoped fields retain original executions."
+    },
+    {
+      "revision": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038",
+      "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+      "foundation_checks": "33/33PASS",
+      "scope_controls": "20/20PASS",
+      "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
+      "source_context": "All3exact4209-file source/native/worker identities and9post-build contexts verified. Unfiltered94Rustsuites each: amd64/arm1447PASS (4/3ignored),macOS1445PASS/2ignored; acceptance516PASS bothLinux,504PASSmacOS/12declaredskips. Actual selected controls and platform/installed boundaries retain their declared scope.",
+      "terminal_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/terminal-audit.json",
+        "sha256": "3c1d166c218afb96f09ea5a9d618d7694fb5f0227d0f03b75e9e6c0e2cee1fcb"
+      },
+      "completion_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/completion-check.json",
+        "sha256": "dfe05bc85def526396384bc0b73370fe4e94335b8799e1eb236fd3fd7ec74ce0"
+      },
+      "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/operationalcredentials/provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
+      "failure_classification": "No billing/admission, workflow, cancellation or product failure. Watcher46117/acquisition53934 reaped0; owned observerPIDs absent. Existing evidence hashes/external pins checked.",
+      "historical_scopes": "Other source-scoped fields and previous_verified_hosted_executions retain their original execution scope."
     }
   ]
 }
