@@ -586,7 +586,10 @@ fn simulated_background_latch_at_closing_delivery_preserves_synced_or_replayed_b
             ),
             Err(BootstrapError::CommitUnknown)
         ));
-        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            budget.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
         assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
     }
 }

@@ -272,7 +272,10 @@ fn exercise(root: &Path, evidence: &Path) {
     assert_eq!(store.accounting, accounting);
     assert_eq!(kv(&store), before);
     assert_eq!(inputs(&path), originals);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
     let retained = store.db.wait_for_compact(&wait).unwrap_err();
     assert!(no_space(&retained));

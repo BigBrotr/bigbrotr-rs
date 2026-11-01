@@ -95,6 +95,12 @@ pub(super) fn budget() -> ResourceBudget {
     )
 }
 pub(super) fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
+    // Only the retained owner profile gains long-lived DATA, never operations.
+    let data = if native >= 128 * MIB {
+        data + PENDING_QUOTA_OWNER_DATA_BYTES
+    } else {
+        data
+    };
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }
@@ -194,8 +200,8 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         assert!(!path.join("producer-inputs-v1").exists());
         assert_eq!(store.db.latest_sequence_number(), sequence);
         assert_eq!(rows(&store), before);
-        // Restoring the original manifest and its exact accounting binding
-        // permits the same request; the explicit source0 stays unchanged.
+        // Restoring the original manifest/accounting makes reads compatible.
+        // Raw reopen still cannot fund new intake or adopt an old owner.
         store.db.put([1, 1], original.encode().as_bytes()).unwrap();
         store
             .db
@@ -204,18 +210,22 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
         drop(store);
         let mut store =
             IngestStore::reopen(&path, original, native(), grant(&b, 0, 128 * MIB)).unwrap();
-        drop(
-            store
-                .bootstrap_dictionaries(
-                    request(),
-                    &input,
-                    ObservedTime::new(123),
-                    limits,
-                    grant(&b, 8 * MIB, 4 * MIB),
-                    || Ok(()),
-                )
-                .unwrap(),
-        );
+        let sequence = store.db.latest_sequence_number();
+        assert!(matches!(
+            store.bootstrap_dictionaries(
+                request(),
+                &input,
+                ObservedTime::new(123),
+                limits,
+                grant(&b, 8 * MIB, 4 * MIB),
+                || Ok(()),
+            ),
+            Err(BootstrapError::PendingQuota(
+                PendingQuotaError::RecoveryBlocked
+            ))
+        ));
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
     }
 }
 
@@ -390,7 +400,10 @@ fn authority_is_checked_again_before_any_native_write() {
     assert!(matches!(result, Err(BootstrapError::AuthorityUnavailable)));
     assert!(checks >= 2);
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -572,7 +585,10 @@ fn bounds_wrong_epoch_and_unallocated_ordinals_leave_the_initial_directory_uncha
         Err(BootstrapError::InvalidIntent)
     ));
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]

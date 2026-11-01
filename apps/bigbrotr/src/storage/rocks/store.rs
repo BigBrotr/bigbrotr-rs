@@ -29,7 +29,8 @@ pub use pending_accounting::{PENDING_ACCOUNTING_BYTES, PendingAccounting, Pendin
 #[path = "pending_quota.rs"]
 mod pending_quota;
 pub use pending_quota::{
-    PendingQuotaError, PendingQuotaPolicy, PendingQuotaStatus, PendingReservationRequest,
+    PENDING_QUOTA_OWNER_DATA_BYTES, PendingQuotaError, PendingQuotaPolicy, PendingQuotaStatus,
+    PendingReservationRequest,
 };
 
 #[cfg(test)]
@@ -290,14 +291,14 @@ impl std::error::Error for StoreError {}
 /// an async timeout cannot cancel FFI or authorize a replacement writer.
 pub struct IngestStore {
     // Field order is the lifetime invariant, including every error after open:
-    // CFs/DB and native jobs close before resources, permit and path reservation.
+    // DB/jobs and logical ledger allocations close before their retained grants.
     db: DB,
     resources: RocksNativeResources,
+    pending_quota: pending_quota::PendingQuota,
     _reservation: StoreReservation,
     manifest: IngestManifest,
     accounting: PendingAccounting,
     write_uncertain: bool,
-    pending_quota: pending_quota::PendingQuota,
     // Only consuming a locally minted candidate after connected activation can
     // populate this field. Opening a schema2 manifest never reconstructs it.
     live_initial: Option<initial_writer::LiveInitialBinding>,
