@@ -788,17 +788,18 @@ The maintained finite Sync path now requires migration0043. Before opening a
 socket it commits one immutable `acquisition_quanta` plan under the same claimed
 job, fenced Control and native producer context. It retains the exact normalized
 REQ predicate (fixed zero nonce, limit3), source generation/route, issuer,
-manifest, fixed finite quantum profile1, checkpoint position and random quantum identity. Per-job quantum
+manifest, finite quantum profile2, checkpoint position and random quantum identity. Per-job quantum
 numbers serialize under the existing job lock. An unconfirmed plan COMMIT
 forbids dialing; an unfinished plan remains pending after restart and cannot be
 adopted by a fresh Control epoch. Ordinary fenced recovery and job abandonment
 remain required. Expiry alone does not refund its metadata reservation.
 
-The bounded profile1 is qualified at A71 in the
-[P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json).
-The next P03-T05 Steps1/4 and P03-T01 Step3 increment consolidates the following
-**profile2 contract, currently under implementation**. Its implementation and
-installed qualification are not established by profile1's earlier receipts.
+The current profile2 implements the following P03-T05 Steps1/4 and P03-T01 Step3
+contract. Its exact-source installed qualification and remaining gates are in the
+[P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101.finite_history_windows_20261101`. Earlier profile1
+evidence remains source-scoped to A71; fresh profile2 does not execute that
+superseded format or inherit its installed results.
 
 Freeze three pass values at its first history entry: exclusive horizon
 `H=floor(job.created_at_us/1_000_000)` intersected with the selector's inclusive
@@ -877,13 +878,21 @@ wire operation. A committed local settlement can return without a socket, but a
 later nomination must revalidate history before returning a no-op. Preserve the
 existing job/source/producer locks and native view through full pre-COMMIT closure.
 
-Consolidate fresh0043 around these discriminated profile2 shapes, including its
-pending index, charges, admission guards, terminal selection and recovery. A local
-settled entry with no terminal frame is not a pending request. Reject superseded
-profile1 execution/checksum inputs; preserve immutable8f artifacts and their
-source-specific historical evidence. Do not add a compatibility scaffold or
-rewrite Git history. Full500-event pages, partitions, sparse growth, fresh-owner
-adoption, horizon extensions and general slice scheduling remain explicit
+Sync drains only already-admitted immutable visibility/attribution reads during
+orderly stop, using their original policy/grants/deadline and explicit rollback.
+Stop before polling skips the read; after completion all errors and the required
+post-append mapping invariant precede discarding a successful result. This does
+not shield dictionary append, certification/progress, quantum writes or ACKs;
+their uncertain outcomes still require recovery. The report records the original
+installed stop failure and the correction's separate qualification status.
+
+Fresh0043 uses these discriminated profile2 shapes in its pending index, charges,
+admission guards, terminal selection and recovery. A local
+settled entry with no terminal frame is not a pending request. Superseded profile1
+execution/checksum inputs are rejected. Immutable8f artifacts and their
+source-specific historical evidence remain retained; no compatibility scaffold
+or rewritten Git history is required. Full500-event pages, partitions, sparse
+growth, fresh-owner adoption, horizon extensions and general slice scheduling remain explicit
 P03-T05/T01/T07 responsibilities, not qualifications of this bounded increment.
 
 After the source adapter has destroyed the socket and rolled back its source

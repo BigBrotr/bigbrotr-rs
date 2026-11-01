@@ -124,13 +124,13 @@ impl Sync {
             return Ok(None);
         }
         let ttl = work.remaining()?;
-        let existing = commands::sync_operation(
+        let read_cancelled = AtomicBool::new(false);
+        let read_grant = grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?;
+        let existing = lookup(
             work.trace,
             work.deadline,
             &work.cancel.requested,
             Stage::ObservationLookup,
-            None,
-            None,
             work.writer.observation(
                 work.commands.owner,
                 work.context,
@@ -139,14 +139,16 @@ impl Sync {
                     bindings,
                     limits: reads,
                     policy_ttl: ttl,
-                    cancelled: &work.cancel.requested,
+                    cancelled: &read_cancelled,
                 },
-                grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?,
+                read_grant,
                 |d, h| validate_sync(work.root, lifecycle, d, h),
             ),
         )
-        .await?
-        .map_err(error)?;
+        .await?;
+        if work.stopped() {
+            return Ok(None);
+        }
         if let Some(existing) = existing {
             return Ok(Some(existing));
         }
@@ -205,30 +207,37 @@ impl Sync {
             return Ok(None);
         }
         let ttl = work.remaining()?;
-        commands::sync_operation(
+        let read_cancelled = AtomicBool::new(false);
+        let read_grant = grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?;
+        let existing = lookup(
             work.trace,
             work.deadline,
             &work.cancel.requested,
             Stage::ObservationRelookup,
-            None,
-            None,
-            work.writer.observation(
-                work.commands.owner,
-                work.context,
-                LiveSuccessorObservationRequest {
-                    ingest_root: path,
-                    bindings,
-                    limits: reads,
-                    policy_ttl: ttl,
-                    cancelled: &work.cancel.requested,
-                },
-                grant(work.budget, reads.required_data_bytes().map_err(error)?, 0)?,
-                |d, h| validate_sync(work.root, lifecycle, d, h),
-            ),
+            async {
+                committed_observation(
+                    work.writer
+                        .observation(
+                            work.commands.owner,
+                            work.context,
+                            LiveSuccessorObservationRequest {
+                                ingest_root: path,
+                                bindings,
+                                limits: reads,
+                                policy_ttl: ttl,
+                                cancelled: &read_cancelled,
+                            },
+                            read_grant,
+                            |d, h| validate_sync(work.root, lifecycle, d, h),
+                        )
+                        .await?,
+                )
+            },
         )
-        .await?
-        .map_err(error)?
-        .ok_or_else(|| error("committed observation missing after append"))
-        .map(Some)
+        .await?;
+        if work.stopped() {
+            return Ok(None);
+        }
+        Ok(existing)
     }
 }

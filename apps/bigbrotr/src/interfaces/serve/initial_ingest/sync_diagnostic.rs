@@ -342,6 +342,150 @@ mod tests {
         assert_eq!(record.last_delivered_admission, Some(4));
     }
 
+    #[tokio::test]
+    async fn a_stopped_immutable_lookup_never_polls_its_read() {
+        let (progress, _, _) = fixture();
+        let polled = std::cell::Cell::new(false);
+        let result = super::super::sync::lookup(
+            Trace::new(&progress),
+            Instant::now() + Duration::from_secs(1),
+            &AtomicBool::new(true),
+            Stage::ObservationLookup,
+            async {
+                polled.set(true);
+                Ok(Some(1))
+            },
+        )
+        .await;
+        assert_eq!(result, Ok(None));
+        assert!(!polled.get());
+        assert_eq!(capture(&progress.borrow()).unwrap().record.returned, None);
+    }
+
+    #[tokio::test]
+    async fn an_admitted_immutable_lookup_drains_once_then_discards_its_result() {
+        use std::sync::atomic::Ordering;
+        for value in [None, Some(7)] {
+            let (progress, _, _) = fixture();
+            let cancelled = AtomicBool::new(false);
+            let polls = std::cell::Cell::new(0);
+            let (release, held) = tokio::sync::oneshot::channel();
+            let mut read = pin!(super::super::sync::lookup(
+                Trace::new(&progress),
+                Instant::now() + Duration::from_secs(1),
+                &cancelled,
+                Stage::ObservationLookup,
+                async {
+                    polls.set(polls.get() + 1);
+                    held.await.unwrap();
+                    Ok(value)
+                },
+            ));
+            let mut context = Context::from_waker(Waker::noop());
+            assert!(read.as_mut().poll(&mut context).is_pending());
+            cancelled.store(true, Ordering::Release);
+            assert!(read.as_mut().poll(&mut context).is_pending());
+            release.send(()).unwrap();
+            assert_eq!(read.as_mut().poll(&mut context), Poll::Ready(Ok(None)));
+            assert_eq!(polls.get(), 1);
+            assert!(
+                capture(&progress.borrow())
+                    .unwrap()
+                    .record
+                    .returned
+                    .is_some()
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn immutable_lookup_errors_precede_simultaneous_stop() {
+        use bigbrotr::storage::{
+            postgres::control_owner::InitialEventError, rocks::store::AdmissionError,
+        };
+        use std::sync::atomic::Ordering;
+        for failure in [
+            InitialEventError::DeliveryUnknown,
+            InitialEventError::Native(AdmissionError::StateMismatch),
+            InitialEventError::Native(AdmissionError::CommitUnknown),
+            InitialEventError::Native(AdmissionError::AuthorityUnavailable),
+        ] {
+            let (progress, _, _) = fixture();
+            let cancelled = AtomicBool::new(false);
+            let expected = format!("initial Sync unavailable: {failure:?}");
+            let result = super::super::sync::lookup::<u8>(
+                Trace::new(&progress),
+                Instant::now() + Duration::from_secs(1),
+                &cancelled,
+                Stage::Visibility,
+                async {
+                    cancelled.store(true, Ordering::Release);
+                    Err(failure)
+                },
+            )
+            .await;
+            assert_eq!(result, Err((4, expected)));
+        }
+    }
+
+    #[tokio::test]
+    async fn stop_cannot_hide_an_absent_committed_observation() {
+        use std::sync::atomic::Ordering;
+        let (progress, _, _) = fixture();
+        let cancelled = AtomicBool::new(false);
+        let result = super::super::sync::lookup::<u8>(
+            Trace::new(&progress),
+            Instant::now() + Duration::from_secs(1),
+            &cancelled,
+            Stage::ObservationRelookup,
+            async {
+                cancelled.store(true, Ordering::Release);
+                super::super::sync::committed_observation(None)
+            },
+        )
+        .await;
+        assert_eq!(
+            result,
+            Err((4, "initial Sync unavailable: Native(StateMismatch)".into()))
+        );
+    }
+
+    #[tokio::test]
+    async fn immutable_lookup_cannot_refresh_or_ignore_its_deadline_on_stop() {
+        use std::sync::atomic::Ordering;
+        let (progress, _, _) = fixture();
+        let cancelled = AtomicBool::new(false);
+        let polled = std::cell::Cell::new(false);
+        let result = super::super::sync::lookup(
+            Trace::new(&progress),
+            Instant::now(),
+            &cancelled,
+            Stage::Visibility,
+            async {
+                polled.set(true);
+                Ok(Some(1))
+            },
+        )
+        .await;
+        assert!(result.is_err());
+        assert!(!polled.get());
+        let result = super::super::sync::lookup(
+            Trace::new(&progress),
+            Instant::now() + Duration::from_millis(10),
+            &cancelled,
+            Stage::ObservationLookup,
+            async {
+                cancelled.store(true, Ordering::Release);
+                // A synchronous native read can return after the timer's last
+                // poll. Its late positive still cannot establish valid delivery.
+                std::thread::sleep(Duration::from_millis(15));
+                Ok(Some(1))
+            },
+        )
+        .await;
+        assert!(result.unwrap_err().1.starts_with("initial Sync deadline"));
+    }
+
     pub(super) fn fixture() -> (watch::Sender<Progress>, watch::Receiver<Progress>, Window) {
         let start = Instant::now();
         let window = Window {

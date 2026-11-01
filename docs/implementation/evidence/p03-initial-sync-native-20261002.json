@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "PASS_CURRENT_BOUNDED_CASES_PARTIAL_QUALIFICATION",
+      "status": "CURRENT_FINITE_PROOF_PASS_STOP_RACE_CORRECTION_PREPARED",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1552,12 +1552,11 @@
         "checks": "All three signatures checked by libsecp256k1 and independent group equation; body/signature negatives. Two portable fixture tests PASS. Existing six-event selector corpus still verifies. No product execution claimed."
       },
       "verification_not_run": [
-        "Current-source local strict workspace/library execution NOT_RUN_REUSED_FB; prior fb Clippy/Rustdoc/659 PASS/3 ignored retain their actual source scope",
-        "Current-source third-terminal COMMIT-after installed fault case; tool 4060 active without a terminal receipt at this snapshot",
-        "Affected current-product installed budget/restart regressions",
-        "Full current-source hosted native CI after integration/push"
+        "Current immutable-read stop correction release/strict workspace/library/observer and affected installed qualification",
+        "Affected retained-budget and restart regressions",
+        "Full current-source hosted native CI after coherent integration/push"
       ],
-      "next": "Finish actual current-source third-terminal COMMIT-after and affected installed budget/restart cases with unchanged parent guards and explicit fb-scoped strict reuse; integrate the coherent capability, then audit full current-source hosted CI. Keep fullM2 and remaining capacity qualifications open.",
+      "next": "Freeze/rebuild and strictly verify the reviewed read-stop correction, then rerun actual interruptions and affected installed budget/restart cases. Reuse seven01fc case receipts only within unchanged responsibilities; audit full current-source hosted CI after coherent main push.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1732,7 +1731,7 @@
         "assembly": "9e4e43fc9cdbb479e1214c5f1edc32a4df2f021c",
         "assembly_tree": "8ce80358eaef1fc6117bae07587f6af2378c6f62",
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94",
-        "status": "PASS_SIX_BOUNDED_CASES_REMAINING_GATES_OPEN",
+        "status": "SEVEN_BOUNDED_CASES_PASS_ORDERLY_STOP_REGRESSION_FAILED",
         "cases": {
           "capped_r2": {
             "status": "PASS",
@@ -1781,15 +1780,42 @@
             "tool": 66867,
             "stages": "7/7 PASS",
             "scope": "Third-terminal COMMIT-before fault preserves prefix 0/one gap and pending interval [0,1) after three sockets/four mutations/seq67. Historical-only recovery retains the original state without unsupported advancement."
+          },
+          "window_terminal_after_r1": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/window-terminal-after-r1-receipt.json",
+            "receipt_sha256": "7a811ea1de3d7ca854c7a52dca81222fa415bc56265a628a9b6d4cb9272b2add",
+            "tool": 4060,
+            "stages": "7/7 PASS",
+            "scope": "Third-terminal COMMIT completes in the server but its acknowledgement is lost. Prefix86400/one gap and next interval[86400,172800) retained, no fourth socket; three sockets/four mutations/seq67. Historical-only restart preserves original records."
           }
         },
-        "scope": "Actual packaged current-source PostgreSQL/RocksDB and controlled real socket evidence; all six recorded cases 7/7 PASS with zero failed/skipped/not_run stages. Per-case receipt hashes bind result/verdict/resources; cleanup is recorded in the laboratory inventory. FullM2 and current-source local strict qualification remain open."
+        "scope": "Actual packaged01fc PostgreSQL/RocksDB and controlled socket evidence: seven cases each7/7PASS. Subsequent interruptions regression failed orderly stop; final quantum/native census NOT_RUN. No fullM2 qualification."
       },
       "remaining_qualification": {
-        "third_terminal_commit_after": "NOT_RUN; tool 4060 active at Root observation, no terminal receipt at this snapshot",
+        "third_terminal_commit_after": "PASS01fc; receipt in current_installed_qualification.cases",
         "affected_installed_budget": "NOT_RUN",
         "affected_installed_restart": "NOT_RUN",
-        "current_source_hosted_ci": "NOT_RUN"
+        "current_source_hosted_ci": "NOT_RUN",
+        "affected_installed_interruptions": "FAIL01fc; reviewed read-stop correction NOT_RUN"
+      },
+      "immutable_read_stop_20261101": {
+        "status": "CORRECTION_SOURCE_REVIEWED_NOT_COMPILED",
+        "tasks": [
+          "P03-T05 Steps1/4",
+          "P03-T01 Step3"
+        ],
+        "original_failure": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/interruptions-r1-failure.json",
+          "receipt_sha256": "83efdef03a4cd48f43364225b2503567d07ee08213191917a9843b7e18b2bde7",
+          "tool": 85996,
+          "stages": "6 executed /1 FAIL /1 NOT_RUN; cleanup PASS",
+          "observed": "Nine terminal quanta and four producer outcomes retained before SIGTERM. Initial owner exited4/noOOM at observation-lookup with DeliveryUnknown, well before the diagnostic deadline. Final native/quantum verification did not run."
+        },
+        "classification": "Source-confirmed product cancellation race: immutable attribution/visibility read can finish rollback then refuse delivery on SIGTERM and leave owner unavailable. The original run has no separate durable rollback witness; exact failure bytes retained, no claimed successful rollback for that capture.",
+        "correction": "Only three Sync immutable visibility/observation reads drain once under their original policy/grants/deadline with a private false cancellation token. Real stop skips before first poll or discards validated success. Native errors, closed-client/rollback/lease/deadline failures and effectful operations remain fatal. Post-append absence becomes StateMismatch before stop discard.",
+        "critical_review": "Astra approved bounded caller-side drain; its post-append-absence finding was corrected before compilation. Five discriminating unit controls added; NOT_RUN until actual exact-source strict execution.",
+        "remaining": "Fresh exact-source release, strict workspace tests, observer and affected actual installed stop/budget/restart qualification; current-source hosted CI."
       }
     }
   }

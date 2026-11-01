@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "Current 01fc release/observer and six bounded installed cases PASS; original e23 compile,053 Clippy,819 portable and fb cappedr1 failures retained in the existing P03 report/capsule. Current local strict NOT_RUN_REUSED_FB; terminal-COMMIT-after, affected budget/restart and current hosted CI gates remain open.",
+          "state": "Current01fc release/observer and seven bounded installed cases PASS. Interruptions85996 reaped1 with orderly-stop failure and final science NOT_RUN; reviewed immutable-read stop correction remains unbuilt. Owned cases stopped, data/logs retained; strict/budget/restart/current hosted CI gates open.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78729,16 +78729,29 @@
                 "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-window-terminal-before-r1",
                 "owner": "81ac792a7b25495493b6effeb213dfb3",
                 "tool": 66867
+              },
+              {
+                "case": "window-terminal-after-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-window-terminal-after-r1",
+                "owner": "eb7d7aeb1a7e3bd1a1e85b12b193c041",
+                "tool": 4060
+              },
+              {
+                "case": "interruptions-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-interruptions-r1",
+                "owner": "54dac4942485691ac4e8f320813d7f39",
+                "tool": 85996
               }
             ],
-            "cleanup": "All six completed case receipts record reaped0; their resource manifests verify stopped owned containers/PID0, exited native observers and empty cleanup_errors. Owned process groups joined; gap and third-terminal-before proxies joined0. Actual owner/peer/engine cleanup passed; borrowed bridge bigbrotr-m1-0f80280_default preserved.",
+            "cleanup": "All eight case tools reaped; seven0, interruptions1. Owned cleanup PASS and empty cleanup_errors, containers stopped; original inputs/native data/logs retained. Borrowed bridge preserved. No compiler/cache owner active.",
             "retention": "Private raw logs, exact scientific/native data, failures, worktrees and original four protected ELF bytes/full metadata remain retained. No protected ELF was opened or changed by this update."
           },
           "remaining_qualification": {
-            "third_terminal_commit_after": "NOT_RUN; tool 4060 active at Root observation, no terminal receipt at this snapshot",
+            "third_terminal_commit_after": "PASS01fc; terminal receipt retained",
             "affected_installed_budget": "NOT_RUN",
             "affected_installed_restart": "NOT_RUN",
-            "current_source_hosted_ci": "NOT_RUN"
+            "current_source_hosted_ci": "NOT_RUN",
+            "affected_installed_interruptions": "FAIL01fc orderly-stop; source correction reviewed, not built"
           }
         }
       },

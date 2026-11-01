@@ -158,6 +158,50 @@ fn error(error: impl std::fmt::Debug) -> (u8, String) {
     (4, format!("initial Sync unavailable: {error:?}"))
 }
 
+/// Drain only immutable visibility/attribution reads. Their callers supply a
+/// separate false cancellation token to the native read, never to an effect.
+/// Stop before polling, or discard a successful result after its known rollback;
+/// errors, policy expiry and the original deadline still precede shutdown.
+pub(super) async fn lookup<T>(
+    trace: Trace<'_>,
+    deadline: Instant,
+    cancelled: &AtomicBool,
+    stage: Stage,
+    future: impl std::future::Future<Output = std::result::Result<Option<T>, InitialEventError>>,
+) -> Result<Option<T>> {
+    trace.enter(stage, None, None);
+    if cancelled.load(Ordering::Acquire) {
+        return Ok(None);
+    }
+    let result = commands::sync_operation(
+        trace,
+        deadline,
+        &AtomicBool::new(false),
+        stage,
+        None,
+        None,
+        future,
+    )
+    .await?
+    .map_err(error)?;
+    if Instant::now() >= deadline {
+        return Err((4, "initial Sync deadline; preserve original outcome".into()));
+    }
+    Ok(result.filter(|_| !cancelled.load(Ordering::Acquire)))
+}
+
+/// Absence is permitted before interning, but not after its confirmed append.
+/// Validate this inside the drained read, before a stop can discard success.
+pub(super) fn committed_observation<T>(
+    value: Option<T>,
+) -> std::result::Result<Option<T>, InitialEventError> {
+    value
+        .ok_or(InitialEventError::Native(
+            bigbrotr::storage::rocks::store::AdmissionError::StateMismatch,
+        ))
+        .map(Some)
+}
+
 /// Preparation refusals have no durable classification in this first slice.
 /// Later valid events retain mutation handoff and credit, but cannot advance
 /// the classified acquisition prefix past that hole in this actual REQ.
@@ -374,13 +418,12 @@ impl Sync {
                 .expect("validated path"),
         );
         let ttl = work.remaining()?;
-        let Some(visible) = commands::sync_operation(
+        let read_cancelled = AtomicBool::new(false);
+        let Some(visible) = lookup(
             work.trace,
             work.deadline,
             &work.cancel.requested,
             Stage::Visibility,
-            None,
-            None,
             work.writer.visibility(
                 work.commands.owner,
                 work.context,
@@ -389,14 +432,13 @@ impl Sync {
                     reference: scope.scope().visibility(),
                     limits,
                     policy_ttl: ttl,
-                    cancelled: &work.cancel.requested,
+                    cancelled: &read_cancelled,
                 },
                 grant(work.budget, limits.required_data_bytes().map_err(error)?, 0)?,
                 |d, h| validate_sync(work.root, self.lifecycle, d, h),
             ),
         )
         .await?
-        .map_err(error)?
         else {
             // Command acceptance checks identity, not native allocation. The
             // completed read rollback leaves this owner usable for other jobs.
