@@ -2279,5 +2279,13 @@
       "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observerreaped0/ownedPIDsabsent; no duplicate dispatch/rerun/settingschange.",
       "historical_scopes": "Other source-scoped fields retain their original executions."
     }
-  ]
+  ],
+  "pending_hosted_execution": {
+    "revision": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038",
+    "status": "IN_PROGRESS_NOT_YET_QUALIFIED",
+    "scope": "Significant integrated logicalquota/recovery andsharedharnessdelta; fullselectedfoundation/platform/source/native/worker/postcontext andpublic-outputauditrequired.",
+    "observer": "Existingboundedobserver tool46117; control .research/ci-publication-20261026/terminal-a2a42f22-20261101; Sol/xhigh, no newdispatch orsourcepushwhilethisrunpending.",
+    "last_completed": "064d054d remains latest fullyauditedhostedexecution untilterminal evidence."
+  }
 }
