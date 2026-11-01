@@ -1,90 +1,74 @@
 # Current execution checkpoint
 
-2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 remain; public development, no official release or deployment.
+2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
+Q37/Q38/Q40/Q41/Q42 remain; public development, no official release/deployment.
 
-## Capability and Git
+## Current increment and Git
 
-P03-T05 Steps1/4 and P03-T01 Step3: finite fixed-width history windows, shared
-query budget, authenticated same-second continuation and local exclusions.
-Canonical main/origin **a71b6ea3** remains clean/pushed and hosted-qualified for
-its preceding source. Root integrates in `.research/m2-linear-continuation-20261101`,
-branch `work/m2-finite-history-20261101`; observed HEAD **47c93fd4** before this
-checkpoint commit. Sol5a4d4103 evidence is integrated as717db78c; Root's reviewed
-stop correction is committed asdee67719. No current increment push yet.
+P03-T05 Steps1/4 and P03-T01 Step3: finite fixed-width history, shared query budget,
+same-second IDs and local exclusions. Main/origin **a71b6ea3** remains clean/pushed
+and hosted-qualified for its source. Root owns `.research/m2-linear-continuation-20261101`,
+branch `work/m2-finite-history-20261101`, observed HEAD **9b1ca39f** before this
+checkpoint commit. No current increment push. Source-reviewed quota fixture167/
+60aa is integrated as e2aa8772/9b1ca39f; no uncommitted product edit in Root.
 
 [The P03 report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.finite_history_windows_20261101`, owns exact artifact
-identities, proofs, original failures and qualification limits. Product01fc6e94 /
-assembly9e4e43fc has actual release/observer PASS and seven installed7/7PASS cases:
-capped/local exclusion, both native-integrity corruptions, three-window traversal,
-failed gap write and third-terminal COMMIT before/after. These verify exact data,
-receipts, gaps/prefix and historical restart, including no unsupported next socket.
-FullM2 remains open. Portable581PASS is source86-scoped; fb strict Clippy/Rustdoc/
-659 application tests retain their actual scope, with3 ignored cases NOT_RUN.
+`linear_quantum_20261101.finite_history_windows_20261101`, owns exact evidence,
+source scopes and original failures. Old01fc's seven connected window/cap/
+corruption/COMMIT cases remain PASS for unchanged responsibilities. Corrected
+product **dee67719** has actual release, strict Clippy/Rustdoc, library659PASS
+(3ignored NOT_RUN), binary212PASS including five new read-stop controls, and
+exact-parent observer PASS. The library/CLI target-selection audit failure is
+preserved and closed by actual binary execution. Portable581 covers unchanged
+logic; affected pin14 and retained132/57 controls separately PASS.
 
-**Interruptions85996 failed:** initial owner exited4/noOOM at observation lookup
-during orderly SIGTERM, after nine terminal quanta/four producer outcomes. Final
-science is NOT_RUN; cleanup PASS. Source review found a product cancellation race
-in immutable read delivery. New **dee67719** drains only three immutable Sync
-reads within original authority/budget/deadline; errors and post-append absence
-precede stop discard. Astra's finding was fixed and bounded recheck approved.
-Common write/COMMIT/poison semantics are unchanged. Five added unit controls now PASS in binary212; actual installed correction
-proof remains NOT_RUN. Prior SQL-only strict reuse
-does not qualify this new Rust change.
+**Current installed stop regression PASS7/7:** interruptions12049, nine requests,
+two scopes, full50 native rows/seq67/four inputs, native closed and Control release
+committed. Actual assemblydc77ff05/bundlee050f25e; observerb18c1513. Actual build
+manifest6edc3dac differs only in JSON serialization from expected82214ca7.
 
-## Resources and open gates
+## Open defects and resources
 
-**Fresh dee67719 release PASS:** tool26254 reaped0, container440b8ef2
-stopped/PID0/noOOM, cache released. Actual build receipt SHA
-ce88ff3250cf59619f0a72dafe323164585445637dd540f8a5c5e204c850e35e;
-binary SHA74e0b6b0a1f3766c0e61d4c1355e3159f9377afdb716dbab733a96fdc86b323c.
-**Current Rust/observer qualification PASS:** strict92644 reaped0,
-library659PASS/0FAIL/3ignored/0filtered; binary78547 reaped0,212PASS/0FAIL/
-0ignored/0filtered including all five new controls. The original audit caught
-the --lib/CLI target mismatch; it is preserved, with actual binary execution
-closing that gap. Library receipt4294372c; binary receipt42c80ba1. Exact-parent
-observer48676 reaped0, receipt8a4e7617, binaryb18c1513; actual source-manifest
-SHA6edc3dac (expected preparation JSON82214ca7 parses identically but has different
-serialization). All owned compiler containers stopped/PID0/noOOM/cache released.
-No compiler, engine, CI observer or subagent is active. Root remains sole integrator.
-Tutorial's mechanical product/apps pin update is integrated as47c93fd4;14 affected
-portable controls PASS. Full portable581 remains valid for unchanged verifier logic.
+**Retained budget47715 FAIL_FIXTURE:**83 closed wires, proof at14.174s, quiet
+median0.497s, gate65s expired; final native/Index census NOT_RUN. Original capture
+retained. Approved correction uses explicit empty CLOSED retries only after the
+bound proof, preserving pre-proof quiet and current reclamation behavior, all128/
+3s/500ms/15s/65s bounds, exact native/Index results and no129 checks. Every post-proof
+checkpoint must remain65→65. Source/portable qualification PASS; real rerun pending.
 
-Old release23455/observer72895 and completed installed tools51413/94700/75904/
-45032/48760/66867/4060 reaped0; interruptions85996 reaped1. Their owned containers
-are stopped/PID0, cleanup verified. Preserve all data/logs, original failures,
-worktrees, original4 ELF bytes/full metadata and borrowed bridge. Resource custody
-is in [the inventory](../research/laboratory-inventory.json). Capsule:
-`.research/m2-window-succession-qualification-20261101/dee67719`; active runtime:
-`/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719`.
-Launch free space557,652,590,592 bytes; guarded65GiB floor. No cleanup started.
+**Restart-on38371 FAIL_PRODUCT:** acquisition/history/export/baseline PASS;
+initial source close refuses Progress(Native(InsufficientReservation)) before
+its closing effects. New full-Fact history authentication needs8MiB decode scratch;
+old historical callers supply4KiB. Three final stages NOT_RUN, cleanupPASS.
+Sol owns `.research/m2-historical-read-scratch-20261102`, branch
+`fix/m2-historical-read-scratch-20261102`: shared derived scratch plus existing
+nondecode metadata, all real grants/preflights and current resource oracles.
+Astra's two caller/entry-check findings are fixed; final small bound review/commit
+pending. No new build or test claim; don't repeat known-failing restart-off yet.
 
-[A71 hosted CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307)
-remains fully audited PASS for A71. Sourcefb plus dee delta scans found only
-identical prior public/triaged noncredentials. Later source additions and actual
-hosted outputs need relevant audit; full current-source hosted CI is still open.
+No local compiler, test engine or CI observer is active. Sol source work and
+Astra review only; Root remains sole integrator/engine launcher. All completed
+case tools are reaped, owned processes stopped; original data/logs/.research/
+worktrees/4protectedELFs and borrowed bridge retained. [Inventory](../research/laboratory-inventory.json)
+owns custody. Current capsule `.research/m2-window-succession-qualification-20261101/dee67719`;
+runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719`.
+No cleanup. [A71 CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307)
+remains fully audited PASS; current source hosted CI and later source/output
+publication audit remain open. Sourcefb+dee scans passed with prior noncredentials.
 
-## Next action
+## Next
 
-Freeze a clean acceptance/assembly revision and use maintained release assembler
-with the actual dee parent/build manifest. Execute interruptions first to verify
-the original orderly-stop regression; then affected window/cap, retained-budget
-and restart on/off cases. Reuse old01fc fault/corruption results only for their
-unchanged responsibilities; document exact source scopes. Preserve/classify any
-failure before fixing its cause. Complete existing records, integrate/push the
-coherent capability and audit a real full current-source hosted run. No product
-rebuild for verifier/documentation-only changes.
+Freeze clean verifier source; run the corrected CLOSED128 fixture on unchanged
+dee product/observer/candidate, preserving old failure. Integrate the reviewed
+historical scratch correction, then fresh exact-source build/strict library AND
+binary/observer and installed restart on/off through all previously unreached
+stages. Reuse unaffected evidence honestly; no product rebuild for verifier-only
+changes. Update existing records, integrate/push a coherent main revision and
+qualify real full hosted CI.
 
-Then advance the next useful M2 dependency: first passive P04-T07 Monitor with
-P02-T02/T03/T04 typed A05 support and honest dispatch uncertainty. Analysis only,
-no implementation yet: real route/method dictionaries, typed Monitor authority
-(do not bypass Sync require_job), attributable transport phases and coordinated
-native/archive readers are necessary. Intent/lost RAM start never proves action. Narrow Astra decision: retain attempt
-uncertainty/terminal/resolution in one closed A05 family, restrict to SourceCut
-before resolving, exclude unknowns from outcome denominators. Use stable safe
-scientific direct-route context plus distinct passive-read method; freeze their
-exact schemas/bounds in existing owners before implementation.
-Full500 pages, partitions, sparse growth, slices/adoption/revisits/live/NEG/fleet/
-import and remaining P02 capacity retain existing task owners/acceptance gates;
-no whole-phase prerequisite or erased later obligation.
+Then first passive P04-T07 Monitor/P02 typed A05, analysis only so far: one A05
+family for unknown/terminal/resolution, cut-before-resolution and no unknown
+outcome votes; stable safe route context, distinct method and actual dispatch
+attribution. Full500/partitions/sparse growth/adoption/revisits/live/NEG/fleet/import
+and remaining P02 capacity retain existing owners/gates. No whole-phase barrier,
+parallel plan or erased requirement.

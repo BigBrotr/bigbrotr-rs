@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "CURRENT_FINITE_PROOF_PASS_STOP_RACE_CORRECTION_PREPARED",
+      "status": "READ_STOP_FIXED_INSTALLED_QUOTA_FIXTURE_CORRECTION_IN_REVIEW",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1556,7 +1556,7 @@
         "Affected retained-budget and restart regressions",
         "Full current-source hosted native CI after coherent integration/push"
       ],
-      "next": "Freeze/rebuild and strictly verify the reviewed read-stop correction, then rerun actual interruptions and affected installed budget/restart cases. Reuse seven01fc case receipts only within unchanged responsibilities; audit full current-source hosted CI after coherent main push.",
+      "next": "Run corrected CLOSED128 fixture on unchanged dee candidate; then integrate reviewed shared historical scratch correction, fresh exact-source release/Clippy/Rustdoc/library+binary/observer and installed restart on/off. No known-failing duplicate restart-off before correction. Preserve scope of reusable proofs and real hosted CI/main integration gate.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1794,13 +1794,13 @@
       },
       "remaining_qualification": {
         "third_terminal_commit_after": "PASS01fc; receipt in current_installed_qualification.cases",
-        "affected_installed_budget": "NOT_RUN",
-        "affected_installed_restart": "NOT_RUN",
+        "affected_installed_budget": "FAIL_FIXTURE/current; reviewed protocol correction not yet rerun",
+        "affected_installed_restart": "FAIL_PRODUCT currentdee at initialclose grant;3finalchecksNOT_RUN. Current-source scratch correction not built.",
         "current_source_hosted_ci": "NOT_RUN",
-        "affected_installed_interruptions": "FAIL01fc; reviewed read-stop correction NOT_RUN"
+        "affected_installed_interruptions": "PASS_CURRENT_DEE7/7; original01fc failure retained"
       },
       "immutable_read_stop_20261101": {
-        "status": "CURRENT_RELEASE_RUST_OBSERVER_PASS_INSTALLED_PENDING",
+        "status": "PASS_INSTALLED_ORDERLY_STOP_CURRENT_SOURCE",
         "tasks": [
           "P03-T05 Steps1/4",
           "P03-T01 Step3"
@@ -1889,7 +1889,47 @@
           "binary_sha256": "b18c15133593005684a1fa1da84f65d03d11f410f0638fce32600e48664dde3d",
           "source_manifest_sha256": "6edc3dacaf4f84e22b4978bff34a888e8072dcc3b2916e2d13c1a7e0cf96d2c0",
           "terminal": "Reaped0, stopped/PID0/noOOM/cache released"
+        },
+        "installed_regression": {
+          "status": "PASS7/7",
+          "tool": 12049,
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/interruptions-r2-receipt.json",
+          "receipt_sha256": "9074b8a85eec4d0b25f66b9196f0915a0193accca2fa2078b2c88f70f8fc84eb",
+          "scope": "Currentdee/DC assembly: nine wires/two scopes/nine terminal requests, four original mutations, full50 native rows/seq67, actual native closed/Control release committed, cleanup PASS. Original01fc failure retained."
         }
+      },
+      "retained_budget_20261101": {
+        "status": "FAIL_FIXTURE_CORRECTION_PENDING",
+        "original": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/retained-budget-r1-failure.json",
+          "sha256": "274213f6da8c7b2cc1f05475fbfaaf8449e7c803384534a8374c8695ab964818",
+          "tool": 47715,
+          "result": "6executed/1FAIL/1NOT_RUN; cleanupPASS"
+        },
+        "cause": "Post-proof quiet rounds consume receive deadlines inside the original65s client gate;83 wires closed, no relayerror, source128 completion absent. Final native/Index verification NOT_RUN; no product budget-reset defect established.",
+        "correction": "Source-reviewed immediate correlated empty CLOSED retries after the sole bound proof, keeping pre-proof quiet gate, all128 queries/500ms receive/3s socket/65s submitted limits and original native/Index expectations. Independent CLOSED/teardown/empty-effect/checkpoint/source-end controls required.",
+        "implementation": "CLOSED fixture16745359 + non-last checkpoint guard60aa7770 integrated as e2aa8772/9b1ca39f. Source critical review finding closed;132 affected controls PASS, then57 retained controls PASS/0skip for exact pair65\u219265. Fresh real rerun NOT_RUN.",
+        "remaining": "Actual128 durable terminal requests/no129, complete830-native-row/64-input receipt census and publishedIndex64/cut312/556physical rows still require fresh real PASS."
+      },
+      "historical_scratch_20261102": {
+        "status": "FAIL_PRODUCT_CORRECTION_REVIEWED_NOT_BUILT",
+        "tasks": [
+          "P03-T05 Steps1/4",
+          "P03-T01 Step3",
+          "P02-T02 producer lifecycle/recovery"
+        ],
+        "original": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/restart-on-r1-failure.json",
+          "receipt_sha256": "cbbc03f4ee167909fd409437fae68c1fc97b64fbb7ab77b0dc0b62bdce1fd45d",
+          "tool": 38371,
+          "stages": "9executed/1FAIL/3NOT_RUN; cleanupPASS"
+        },
+        "cause": "close_initial_producer4KiB data permit reaches retained quantum full-Fact payload authentication requiring default8MiB. Source confirms refusal before this operation native-close/SQLclose; earlier ownership may have committed.",
+        "correction": "Shared checked default decode8MiB + max(existing whole nondecode operation allowance,4KiB), prefunded with existing ResourceBudget and validated at factories. Update grants/preflights/caller fixtures including ACK/retirement/reclamation/activated/successor/compacted/archive/index; preserve original input already-large grants and native/event/process limits.",
+        "review": "Astra found and Sol fixed post-native-handoff metadata reacquisition and compacted initial-gap final dispatch. Exact fixed-scalar overlap included in shared4KiB bound. Actual-total resource telemetry stays exact; current strict assertions add independent8MiB, old source-pinned captures untouched.",
+        "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
+        "branch": "fix/m2-historical-read-scratch-20261102",
+        "qualification": "Source/format/diff only. Rust build/tests and new installed recovery remain NOT_RUN; final critical review/commit pending."
       }
     }
   }

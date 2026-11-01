@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "01fc seven installed finite cases PASS; original interruptions85996 failure retained. Correcteddee current release/Rust/observer PASS; candidate assembly/actual installed correction and affected cases remain pending. No active compiler or engine.",
+          "state": "No engines/compilers active. Correcteddee installedstop PASS. Current budget FAIL_FIXTURE original65squietdrain; CLOSED correction reviewed/integrated, realrerun pending. Restart-on FAIL_PRODUCT4KiB/8MiB historicalscratch; source correction in separateSol worktree, notbuilt. Alloriginaldata/logs/worktrees retained.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78786,7 +78786,63 @@
               "container": "990da7f43a2f92dd8c3440c6fda529298e2ad3920c4f7ffef62bfceb610ea154",
               "tool": 48676,
               "status": "PASS actual exact-parent build; reaped0/stopped/PID0/noOOM"
-            }
+            },
+            "assembly": {
+              "status": "PASS_MAINTAINED_CANDIDATE_ASSEMBLY",
+              "tool_session": 81382,
+              "exit_code": 0,
+              "product_source": {
+                "dirty": false,
+                "manifest_sha256": "6edc3dacaf4f84e22b4978bff34a888e8072dcc3b2916e2d13c1a7e0cf96d2c0",
+                "revision": "dee67719ca55952a21c3a41c1c93d67990e08771",
+                "state": "builder-supplied",
+                "tree": "3dfd97d1c059e41a750528711af87f8b9e76fa4d"
+              },
+              "assembly": {
+                "revision": "dc77ff050f2abb42bc7f692d31d0a4e1a0e2f7c9",
+                "tree": "69e037aeec671ee01a64d438a49fceab7635eeaa"
+              },
+              "manifest_sha256": "b3f178482db0531bee7aac782e51d6fc264e527c2ef7f966238fcacb9d0dca43",
+              "bundle": {
+                "bytes": 78663865,
+                "name": "bigbrotr-x86_64-unknown-linux-gnu.tar.gz",
+                "sha256": "e050f25ef6e5f876f7a524249876accc9ce20ee0d6ab6f9268c90fd095881369"
+              },
+              "scope": "Actual maintained native candidate assembly and integrity, no official release/publication or installed qualification yet."
+            },
+            "acceptance_source": {
+              "revision": "dc77ff050f2abb42bc7f692d31d0a4e1a0e2f7c9",
+              "root": "/home/tux/bigbrotr-rs/.research/m2-window-acceptance-dc77ff05",
+              "state": "Frozen clean; exact current verifier/candidate source identities retained"
+            },
+            "installed_cases": [
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719/acceptance-interruptions-r2",
+                "owner": "a3ff08aaf09c043f37c0b1c0750c5c43",
+                "tool": 12049,
+                "status": "PASS7/7; originalstopregressionclosed",
+                "cleanup": "PASS/stopped; raw data/logs retained"
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719/acceptance-retained-budget-r1",
+                "owner": "0b1fd4f9fc49bd4141ee20171e1a99fe",
+                "tool": 47715,
+                "status": "FAIL_FIXTURE65sdrain; finalnative/IndexNOT_RUN",
+                "cleanup": "PASS/stopped; raw data/logs retained"
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719/acceptance-restart-on-r1",
+                "owner": "c427a80aa9872ad2d9a7236fe20877a4",
+                "tool": 38371,
+                "status": "FAIL_PRODUCT initial-close scratch; reaped1, cleanupPASS/allownedstopped; dataset/logs retained"
+              }
+            ]
+          },
+          "historical_scratch_work": {
+            "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
+            "branch": "fix/m2-historical-read-scratch-20261102",
+            "state": "Sol source implementation, critical review finalizing; no build/test/engine/cache work",
+            "retention": "Unique unintegrated source and original restart-on failure preserved"
           }
         }
       },
