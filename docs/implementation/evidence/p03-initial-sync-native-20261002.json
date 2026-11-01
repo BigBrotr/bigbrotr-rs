@@ -467,10 +467,10 @@
     }
   },
   "linear_quantum_20261101": {
-    "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_AND_TWO_PLAN_FAULTS_PASS",
+    "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_ALL_SEVEN_SELECTED_FAULTS_AND_DEV_PASS",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-    "acceptance": "30dae516312454198f4be20991c1494355c5a042",
+    "acceptance": "83c478d3de390d33b49591cd8c1d09309fadcac5",
     "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
@@ -522,6 +522,10 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-e812-independent-dev-invocation-critical-20261101.json",
         "sha256": "ba576255bc88df892bcf4df8cd300b538a1b63cfe1db0d4d54e22e9ade51daec"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-quantum-trace-profile-critical-20261101.json",
+        "sha256": "334630dcfbcfefcec75b399a307847fb7dee9e8b889ac75a32e286620acd0096"
       }
     ],
     "original_failures": [
@@ -546,7 +550,7 @@
         "sha256": "fc7f60a50bc81edaa355b7bb02a3450ed3bb77c4060e2cb03ed326025041d249"
       }
     ],
-    "open_checks": "Terminal-before/after,gap-write,stale-authority,empty-terminal-authority remain required. Default terminal-before-r2 exhausted proxy20000frames beforetarget,not a selectedfaultPASS. Appropriate existing bounded capture profile is under source correction/review; all productbudgets/science/authority/deadline oracles stay unchanged. Current Index/topology and grouped reclamation regressions remain required for this persistent boundary. Plan proofs and finite/tutorial results are retained without unnecessary rerun.",
+    "open_checks": "Affected current Index/topology and grouped closed reclamation/successor/Archive/export/restart regressions remain required before integration. Full current-source hosted CI and final delivery remain open. Finite/tutorial, both default plan faults, five retained-catch-up faults and independent e812 dev evidence are qualified within their explicit scopes; no whole task or M2 closure.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -613,6 +617,245 @@
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-plan-before-r1",
         "result": "Selectedfault1 reached and science/native checks passed; historical restart verifier FAIL used20s wait against real60slease.515corrects frozen positive expiry;original FAILretained."
       }
+    },
+    "remaining_faults": {
+      "terminal-before": {
+        "result": "7/7PASS",
+        "seconds": 84.11751110097975,
+        "source": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/root-terminal.json",
+          "sha256": "fad14f4366ad200e61645dc0be0577d3db89785a5a8aafd97ba95233fae1fbf5"
+        },
+        "ready": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/quantum-proxy-ready.json",
+          "sha256": "e2c7b9d127abcb59681536e956936547cdf33c3e6d3b3896a1734ca2d737b8f1"
+        },
+        "proxy_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/quantum-proxy-terminal.json",
+          "sha256": "da7f9eaa69e4833c0c4a3c6289ad9cd513154be7e33a8a85bdeabb649de74b9c"
+        },
+        "verdict": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/linear-quantum/verdict.json",
+          "sha256": "5010561e9ff5f348e79305e1482944e18e467909edad17f4b1de6135c830f073"
+        },
+        "frozen_lease": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/initial/dead-control-lease.json",
+          "sha256": "a451c467c2ad089ebe1f52a78b2cbb08d300698ab7a762b847a47d2a43decdb1"
+        },
+        "positive_expiry": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-before-r3/linear-quantum/dead-control-expiry.json",
+          "sha256": "f5ca95a4b2c18d660b0449afd7c549045dd695d0e4a10945208159e6a716fa9a"
+        },
+        "counters": {
+          "mode": "before-forward",
+          "target": "control-quantum-terminal",
+          "profile": "retained-catch-up",
+          "frame_limit": 131072,
+          "connection_limit": 64,
+          "wire_limit": 67108864,
+          "lifetime_seconds": 120,
+          "frames": 23136,
+          "connections": 1,
+          "bytes": 1390610,
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 1,
+          "unexpected": 0
+        }
+      },
+      "terminal-after": {
+        "result": "7/7PASS",
+        "seconds": 83.91104498598725,
+        "source": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/root-terminal.json",
+          "sha256": "d47690292f9481ec5998882a3d7c213eeec65a345ce39c68672e530f49c9ca78"
+        },
+        "ready": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/quantum-proxy-ready.json",
+          "sha256": "f45645b1f38f4248d26a0ac770d9c5c57a3dfe59f249e60a2a5d4bfa791c6895"
+        },
+        "proxy_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/quantum-proxy-terminal.json",
+          "sha256": "da04a0ac4fdd52ed361f8ad3fcfd99123ba1d6e1575572b0ba7bd2e1d038efd1"
+        },
+        "verdict": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/linear-quantum/verdict.json",
+          "sha256": "a9e1521620756903f799bd0497036efb3afb8b4b92bbfb5224deb95b72136b9a"
+        },
+        "frozen_lease": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/initial/dead-control-lease.json",
+          "sha256": "9eb2fce2cea9ff2d0cf365240e46f8ed52bd973338f2d2302e035398e5b8cdfd"
+        },
+        "positive_expiry": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-terminal-after-r3/linear-quantum/dead-control-expiry.json",
+          "sha256": "56a10933250381e780b778e949979d189c5431daa56aa57f2c7b6b1cb914443d"
+        },
+        "counters": {
+          "mode": "after-complete",
+          "target": "control-quantum-terminal",
+          "profile": "retained-catch-up",
+          "frame_limit": 131072,
+          "connection_limit": 64,
+          "wire_limit": 67108864,
+          "lifetime_seconds": 120,
+          "frames": 23139,
+          "connections": 1,
+          "bytes": 1390633,
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 1,
+          "unexpected": 0
+        }
+      },
+      "gap-write": {
+        "result": "7/7PASS",
+        "seconds": 84.26936594999279,
+        "source": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/root-terminal.json",
+          "sha256": "fc07e1a7a3aaade2450ea7d1c6e2d3d6e9cf50f07afb6697291d522b0977a7b0"
+        },
+        "ready": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/quantum-proxy-ready.json",
+          "sha256": "08413d91c96a63fb0f78483905c86414791e2e660b43d83d2bba614643c20ce6"
+        },
+        "proxy_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/quantum-proxy-terminal.json",
+          "sha256": "a846b96d91e8d04a34ab2919dfb8128b12123e6b9048c95a3de1ca766708e7f7"
+        },
+        "verdict": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/linear-quantum/verdict.json",
+          "sha256": "c869567aeaf1df0f8ae1550c502c0961f6374bd391958fe4509770394314a801"
+        },
+        "frozen_lease": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/initial/dead-control-lease.json",
+          "sha256": "342b010bd4966acd904a9a0d07853d0c701ce7d131fd8850a25e5d89ad35c405"
+        },
+        "positive_expiry": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-gap-write-r3/linear-quantum/dead-control-expiry.json",
+          "sha256": "438f1ab2211df42443eed1e1362ba54576c0fcce6c24a1554e0075208289fe18"
+        },
+        "counters": {
+          "mode": "hold-reply",
+          "target": "control-quantum-plan",
+          "profile": "retained-catch-up",
+          "frame_limit": 131072,
+          "connection_limit": 64,
+          "wire_limit": 67108864,
+          "lifetime_seconds": 120,
+          "frames": 23141,
+          "connections": 1,
+          "bytes": 1391906,
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 0,
+          "unexpected": 0
+        }
+      },
+      "stale-authority": {
+        "result": "7/7PASS",
+        "seconds": 86.52410751199932,
+        "source": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/root-terminal.json",
+          "sha256": "be6cd88369dcdbdd87ab2b95a6819b4d74038f7e3ad372ae5147afd4f09578b6"
+        },
+        "ready": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/quantum-proxy-ready.json",
+          "sha256": "cd5d37ba8666c86e113ea5f2ef66f002a69b79270170427abd74d81a9e21f0c4"
+        },
+        "proxy_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/quantum-proxy-terminal.json",
+          "sha256": "930d1e551730f47dd94d605db3cbb08afe9155e27d108adf5176315d783a7cf6"
+        },
+        "verdict": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/linear-quantum/verdict.json",
+          "sha256": "b3255c81a11380d0bfa13fc2f04ebeb37f7d0b49dcc551472601be398b8dd560"
+        },
+        "frozen_lease": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/initial/dead-control-lease.json",
+          "sha256": "9ed3971c176808b643c0a302238627e16cee6682624f1298cbce3ba3a3004bca"
+        },
+        "positive_expiry": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-stale-authority-r3/linear-quantum/dead-control-expiry.json",
+          "sha256": "11568eef9fd3611ef58df5e0e60639aea806ff9c35f805e06cbb8fae1d5dd039"
+        },
+        "counters": {
+          "mode": "hold-reply",
+          "target": "control-quantum-plan",
+          "profile": "retained-catch-up",
+          "frame_limit": 131072,
+          "connection_limit": 64,
+          "wire_limit": 67108864,
+          "lifetime_seconds": 120,
+          "frames": 26225,
+          "connections": 1,
+          "bytes": 1558910,
+          "data_queries": 1,
+          "data_commits": 1,
+          "faults": 0,
+          "unexpected": 0
+        }
+      },
+      "empty-terminal-authority": {
+        "result": "7/7PASS",
+        "seconds": 84.07106001902139,
+        "source": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/root-terminal.json",
+          "sha256": "11fc0edbae7554739346dd8d0faaef04c13e34091097457a7bd3518b2bc6f68d"
+        },
+        "ready": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/quantum-proxy-ready.json",
+          "sha256": "84360dd12322f48b52ff4d79d89df0f9caf420fddfca6795e080227942b591ff"
+        },
+        "proxy_terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/quantum-proxy-terminal.json",
+          "sha256": "075fba8adcb045e3df80657f4c4b96f870e8485ac1a05782b75333ece1363682"
+        },
+        "verdict": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/linear-quantum/verdict.json",
+          "sha256": "fca2735548bef8528a20bfcd842105582fe3fc015769f0d5f05cf2c4b35c42cc"
+        },
+        "frozen_lease": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/initial/dead-control-lease.json",
+          "sha256": "cf6d109c96b611b8223670f0945884386e11a2bf62edecf91f7c52f95244ad05"
+        },
+        "positive_expiry": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-empty-terminal-authority-r3/linear-quantum/dead-control-expiry.json",
+          "sha256": "d836e1577bbe1373163481e16e00122896295ae2eafb1817fc82a47fb80b2c13"
+        },
+        "counters": {
+          "mode": "hold-source-rollback-reply",
+          "target": "control-quantum-source-rollback",
+          "profile": "retained-catch-up",
+          "frame_limit": 131072,
+          "connection_limit": 64,
+          "wire_limit": 67108864,
+          "lifetime_seconds": 120,
+          "frames": 19353,
+          "connections": 1,
+          "bytes": 1191210,
+          "data_queries": 0,
+          "data_commits": 0,
+          "faults": 0,
+          "unexpected": 0
+        }
+      }
+    },
+    "capture_profile_disposition": "Two plan faults retain original default-profile proof. Five remaining actual captures qualify existing retained-catch-up131072frames/64lifetimeconnections/64MiB/120s, binding actual ready/terminal/source/mode/target/upstream. Original default terminal-before admission FAIL/strict cleanup errors remain FAIL. No product budget/deadline/oracle change; frames are not SQL transaction/round-trip/admission-cost proof (P02-T02Step8/P02-T09Step5 remain).",
+    "source_publication_preparation": {
+      "scan": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-quantum-source-83c478d3-20261101/source-scan.json",
+        "sha256": "ca8e38581d1acda240412c41f22827e3c1fb95add255100d1bfab73b054edcba"
+      },
+      "triage": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-quantum-source-83c478d3-20261101/source-triage.json",
+        "sha256": "9d5bc0b47fa94796ace0638183f48145d1db497a0e45aea8d47e2fe978a27cf5"
+      },
+      "scope": "Through83c478d3 only:24commits/127blobs/11515305bytes. Six fingerprints new to initial baseline already present in published1f4: runtime-variable/command references and synthetic test/diagnostic literals, no unclassified credential. Final additional commits still require incremental publication review; bounded pattern limits remain."
     }
   }
 }

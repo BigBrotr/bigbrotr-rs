@@ -13,8 +13,8 @@ qualification report. M2 remains **unintegrated**, with no whole task/milestone
 completion claim.
 
 Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`, is **c64fadcc** before this checkpoint
-commit: current main documentation merged after the two plan-fault audits.
+`work/m2-linear-quantum-acceptance-20261101`, is **83c478d3** before this checkpoint
+commit: current main documentation and reviewed trace-profile correction merged.
 Installed product remains **78c8e31339e760c16bcfa036dabff38dcdf86544**; all eight
 product code/config objects in acceptance equal that source. The separately
 qualified dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
@@ -50,7 +50,7 @@ funding and atomic outcome/gap/continuation. EOSE is observation, not full histo
   cache reacquisition and original four single-link ELF pins verified. Reused78
   worker/assets; no new release or installed-e812 claim.
 
-## Current failures and next bounded work
+## Selected fault closure and next bounded work
 
 All original failures remain in their owning report/captures. In particular:
 first2fc compile FAIL; first host fixture/LLVM failures and skips; d15 first
@@ -64,28 +64,35 @@ capture limit before target selection; one connection,1,212,047bytes, zero selec
 queries/commits/faults, proxyexit3. Strict cleanup errors are preserved; stopped
 resource observations are not a common terminal-custody PASS. The cause is fixture
 trace admission; no selected terminal fault or acceptable product cost is proven.
-Remaining terminal-after/gap-write/stale-authority/empty-terminal-authority were
-**NOT_RUN**. No product budget, oracle or deadline changes are authorized for PASS.
+The five remaining variants then ran against unchanged78 under reviewed source83:
+**terminal-before, terminal-after, gap-write, stale-authority and
+empty-terminal-authority each7/7 PASS**,84.118s/83.911s/84.269s/86.524s/84.071s.
+Exact selected terminal faults reach the intended boundary; stale authority opens
+no socket and the empty post-REQ terminal still rechecks current authority.
+Body/native/input science, original frozen positive lease expiry and historical
+no-adoption/restart checks remain. Independent unchanged terminal auditor
+qualifies all five:17containers each stopped/PID0/noOOM,1037/1043/1058/1099/1051
+commands joined, four recorded PIDs absent each; borrowed bridge empty.
 
-Sol/xhigh author `quantum_trace_profile_sol` owns only the bounded fixture/reporting
-correction in `.research/m2-linear-quantum-sol-20261031`, branch
-`work/m2-linear-quantum-20261031`, based on **5155223f**. The existing
-`retained-catch-up` profile is source-reviewed as appropriate for remaining
-integrated captures:131,072frames/64lifetimeconnections, unchanged64MiB/120s.
-It changes finite instrumentation admission/reporting, not product limits or
-COMMIT handling. Bind actual source/mode/target/upstream/profile/counters, retain
-positive selected-fault witnesses and all body/science/authority/recovery checks.
-Final correction still needs targeted critical review and actual qualification.
-The two default-profile plan proofs remain valid and need no automatic rerun.
-Frame counts are instrumentation work, not SQL transaction/round-trip cost proof.
+The existing `retained-catch-up` capture profile uses131,072frames/64lifetime
+connections, unchanged64MiB/120s; actual ready/terminal bind source, mode, target,
+upstream, profile, limits and counters. The two plan proofs remain qualified under
+their original default profile. No product budget, oracle or deadline changed;
+no old FAIL became PASS. Frame counts remain instrumentation work, not product
+SQL transaction/round-trip/admission-cost proof. The exact author5191111b/merged83
+change is critically reviewed; Sol/xhigh source-author and read-only preparation
+are complete, Astra/xhigh review complete. No subagent owns engines/cache.
 
-**Next:** integrate/review that correction while preserving root client/proxy
-custody records, run only the remaining selected faults against unchanged78
-artifacts, then qualify affected current Index/topology and grouped reclamation,
-successor/Archive/export/restart paths. Reuse finite/tutorial/dev evidence whose
-inputs remain unchanged. Keep exact product/acceptance identities until these
-runs and audits finish; merge the separately qualified test initializer afterward.
-Review new publication inputs before coherent M2 main integration/push.
+**Next:** run affected current Index/topology, then grouped closed reclamation,
+successor/Archive/export/restart regressions, serially with unchanged78 candidate.
+Use the existing `run-installed.py`; preflight15432/18081/7447 plus18123/19000 and
+empty borrowed bridge. Topology rejects `--native-observer-build`; supply observer78
+only for grouped reclamation, with `--retained-archive-schedule grouped-publication-loss`.
+Shared SQL43/59migration entries/83Controltables/status/roles and actual artifacts
+were read-only checked; no mismatch found. Keep executing source frozen until
+terminal observations finish. Reuse finite/tutorial/dev/fault evidence whose
+inputs remain unchanged. Merge the separately qualified test initializer afterward,
+review final publication delta, and integrate/push coherent qualified M2 work.
 
 ## Hosted CI and publication
 
@@ -104,8 +111,9 @@ remain. No causal cache/speedup claim.
 also actually PASS:20scope controls and three docs checks; unselected foundation,
 controls and native experiment SKIPPED. Its ignored terminal receipt is under
 `.research/ci-publication-20261026/terminal-1f4f682a-docs-20261101/`.
-M2 has not yet been published/scanned/hosted-qualified; these earlier runs do not
-qualify its new tuple. Raw private captures stay protected and ignored.
+M2 is not published or hosted-qualified; these earlier runs do not qualify its new
+tuple. Preliminary newly reachable83 source review found no unclassified credential;
+the final publication delta still needs review. Raw private captures remain ignored.
 
 ## Existing gates and retained resources
 
@@ -138,7 +146,7 @@ The [inventory](../research/laboratory-inventory.json),
 owns current78/observer/dev roots and pending work. All owned local builders,
 controls and engine cases above are terminal; cache115 released/reacquired,
 original four immutable single-link ELF pins unchanged, borrowed bridge empty.
-Only the bounded source-author task is active at this observation. Root remains
+All source-author/review/preparation tasks are complete at this observation. Root remains
 sole launcher/compiler/Git integrator. Preserve archived shared Git/ELF bytes and
 metadata; private copy before mutation, never gc/repack/maintenance.
 Monitor556GiB retirement is already reconciled and affects only three old
