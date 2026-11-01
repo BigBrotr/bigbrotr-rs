@@ -19,7 +19,8 @@ use crate::{
         manifest::AllocationNamespaces,
         store::{
             AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, CertificationLimits,
-            IngestStore, PreparedCertification, PreparedEvent, StoredCertification, StoredOutcome,
+            IngestStore, PendingQuotaError, PendingQuotaPolicy, PendingReservationRequest,
+            PreparedCertification, PreparedEvent, StoredCertification, StoredOutcome,
             StoredReceipt, StoredVisibility,
         },
     },
@@ -45,6 +46,11 @@ pub use prefix_operations::{InitialPrefixRequest, ProducerPrefixReceipt};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InitialOperationError<E> {
+    /// Logical capacity refused before any native staging or PG transaction.
+    /// Preserve the original frame/request position and retry after readiness.
+    Pressure,
+    /// Positive native-original replay could not establish a complete known cut.
+    Recovery(crate::storage::rocks::store::ProducerRecoveryError),
     Control(OwnerError),
     Registry(ingest_registry::RegistryError),
     Native(E),
@@ -78,6 +84,10 @@ impl<E> From<OwnerError> for InitialOperationError<E> {
 
 pub type InitialBatchError = InitialOperationError<BootstrapError>;
 pub type InitialEventError = InitialOperationError<AdmissionError>;
+
+#[path = "initial_pending_quota.rs"]
+mod pending_quota_reconciliation;
+pub use pending_quota_reconciliation::InitialPendingQuotaRequest;
 
 fn event_source<'a>(
     binding: Option<RelaySourceBinding>,
@@ -202,6 +212,51 @@ impl<'a> NativeAuthority<'a> {
             Self::Live(b) => b.intent.policy,
             Self::Successor(b) => b.policy(),
         }
+    }
+    fn quota_policy(self) -> Result<PendingQuotaPolicy, OwnerError> {
+        match self {
+            Self::Initial(spec) => spec
+                .intake_policy
+                .pending_quota_policy(self.policy())
+                .map_err(|_| OwnerError::InvalidPolicy),
+            Self::Live(binding) => Ok(binding.quota_policy),
+            Self::Successor(binding) => Ok(binding.quota_policy()),
+        }
+    }
+}
+
+/// This runs outside short authority leases and PG transactions. Its accepted
+/// policy is checked again by the existing connected dispatch before effects.
+fn prepare_logical_intake<E: From<BootstrapError>>(
+    store: &mut NativeOwner<'_>,
+    authority: NativeAuthority<'_>,
+) -> Result<(), InitialOperationError<E>> {
+    store
+        .bind_pending_quota(authority.quota_policy()?)
+        .map_err(|error| {
+            InitialOperationError::Native(BootstrapError::PendingQuota(error).into())
+        })?;
+    store.observe_pending_quota().map_err(|error| {
+        InitialOperationError::Native(BootstrapError::PendingQuota(error).into())
+    })?;
+    Ok(())
+}
+
+fn reserve_logical_intake<E: From<BootstrapError>>(
+    store: &mut NativeOwner<'_>,
+    requests: &[PendingReservationRequest],
+) -> Result<(), InitialOperationError<E>> {
+    match store.reserve_pending_requests(requests) {
+        Ok(()) => Ok(()),
+        Err(PendingQuotaError::Pressure) => {
+            // The preflight has started no transaction, input or native write.
+            // A normal capacity deferral must not poison compacted custody.
+            store.pre_effect_deferred();
+            Err(InitialOperationError::Pressure)
+        }
+        Err(error) => Err(InitialOperationError::Native(
+            BootstrapError::PendingQuota(error).into(),
+        )),
     }
 }
 
@@ -784,6 +839,22 @@ impl ControlSession {
         store
             .require_unretired_bootstrap(request)
             .map_err(InitialBatchError::Native)?;
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialBatchError::Native(
+                BootstrapError::AuthorityUnavailable,
+            ));
+        }
+        if !self.available {
+            return Err(OwnerError::Unavailable.into());
+        }
+        prepare_logical_intake::<BootstrapError>(
+            &mut NativeOwner::Store(&mut *store),
+            NativeAuthority::Initial(spec),
+        )?;
+        let pending = store
+            .bootstrap_pending_reservation(request, input.intent, input.limits, &permit)
+            .map_err(InitialBatchError::Native)?;
+        reserve_logical_intake::<BootstrapError>(&mut NativeOwner::Store(&mut *store), &[pending])?;
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &NativeOwner::Store(&mut *store),
@@ -1079,6 +1150,19 @@ impl ControlSession {
         {
             return Err(OwnerError::InvalidInput.into());
         }
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        if !self.available {
+            return Err(OwnerError::Unavailable.into());
+        }
+        prepare_logical_intake::<AdmissionError>(&mut store, authority)?;
+        let pending = store
+            .pending_dictionary_reservation(request, &input, &permit)
+            .map_err(InitialEventError::Native)?;
+        reserve_logical_intake::<AdmissionError>(&mut store, &[pending])?;
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &store,
@@ -1381,6 +1465,19 @@ impl ControlSession {
             .map_err(InitialEventError::Progress)?;
         let progress_context = progress.map(|_| authority.progress_context(store.manifest()));
         let identity = *store.manifest().identity();
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        if !self.available {
+            return Err(OwnerError::Unavailable.into());
+        }
+        prepare_logical_intake::<AdmissionError>(&mut store, authority)?;
+        let pending = store
+            .pending_event_reservation(&input.event, input.limits, &permit)
+            .map_err(InitialEventError::Native)?;
+        reserve_logical_intake::<AdmissionError>(&mut store, &[pending])?;
         let (reservation_tx, mut reservation_lease) = self
             .begin_initial_native_operation(
                 &store,
@@ -1643,7 +1740,9 @@ impl ControlSession {
         mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
     ) -> Result<(), InitialEventError> {
         let spec = input.registration;
-        if input.events.len() != input.batch.record_count()
+        if input.events.is_empty()
+            || input.events.len() > 64
+            || input.events.len() != input.batch.record_count()
             || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
             || permit.request().units().data_bytes()
                 < input
@@ -1672,6 +1771,32 @@ impl ControlSession {
                 ));
             }
         }
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        if !self.available {
+            return Err(OwnerError::Unavailable.into());
+        }
+        prepare_logical_intake::<AdmissionError>(
+            &mut NativeOwner::Store(&mut *store),
+            NativeAuthority::Initial(spec),
+        )?;
+        // Validate and reserve the whole finite batch before its first original.
+        // These obligations belong to the store after this method returns.
+        let mut pending = Vec::new();
+        pending
+            .try_reserve_exact(input.events.len())
+            .map_err(|_| InitialEventError::Native(AdmissionError::Allocation))?;
+        for event in input.events {
+            pending.push(
+                event
+                    .pending_reservation_request(store, input.limits, &permit)
+                    .map_err(InitialEventError::Native)?,
+            );
+        }
+        reserve_logical_intake::<AdmissionError>(&mut NativeOwner::Store(&mut *store), &pending)?;
         let identity = *store.manifest().identity();
         let (tx, mut lease) = self
             .begin_initial_native_operation(

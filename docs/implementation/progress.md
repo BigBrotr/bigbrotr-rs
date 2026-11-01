@@ -1,85 +1,79 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordination/bounded work; Astra/xhigh
-critical review. Public development repository; no official release, package
-publication, rename or production deployment.
+Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordination and bounded implementation;
+Astra/xhigh critical review. Public development repository; no official release,
+package publication, rename or production deployment.
 
-## Integrated capability and current increment
+## Integrated capability
 
-Actual **main/origin94c497a2f530b6a551099fbbb6faff9585370577** contains the
-application-owned native fail-stop increment. Production3dc release/worker,
-strict Clippy/Rustdoc/328focused Rocks tests, installed tutorial7/7, the actual
-R3POSIX NoSpace and481shared controls PASS in their separately recorded scopes.
-Original fixture/compiler/environment failures are retained. The
-[binding report](evidence/p02-native-rocks-binding-20260917.json),
-`owned_background_guard_20261031.application_ownership_20261101`, owns details.
-This does not finish OPEN65, connected SQL races, physical funding, M1/M2 or P02.
+Actual main and origin/main are **064d054d101932d50defabce0fb626f93f42ed81**.
+The owned native fail-stop increment and current-accounted native ACK are
+integrated and pushed. Their source-specific release/worker, Clippy/Rustdoc,
+328focused Rocks tests, tutorial7/7, real R3POSIX NoSpace, shared controls and
+ACK control/EIO/fresh-reopen evidence remain valid in their recorded scopes.
+See the [binding report](evidence/p02-native-rocks-binding-20260917.json) and
+[producer recovery report](evidence/p02-producer-recovery-native-20260920.json).
+Original fixture/compiler/environment FAILs remain preserved.
 
-[Actual hosted41287328717](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717)
-is **IN_PROGRESS**, source94c497a2: scopePASS, three platform foundation jobs
-running, three unselected jobsSKIP. It is not yet hostedPASS. Previous22a
-[hosted41276262289](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289)
-PASS remains valid for its source; the [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns its completed53checks/public-output audit. No duplicate run dispatched.
+[Hosted94](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717)
+completed **33foundation+20scope PASS**,3unselectedSKIP,0requiredNOT_RUN.
+All three exact source/native/worker identities and public-output audit passed;
+no new unclassified credential finding within the documented scan limits.
+[Hosted064](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189)
+is **IN_PROGRESS**, scopePASS, three foundations running, no observedFAIL.
+The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact
+receipts and limitations. Do not push a new source while064 is still active:
+the existing cancel-in-progress would interrupt its required execution.
 
-Current worktree `.research/ingest-ack-boundary-20261101`, branch
-`work/ingest-ack-boundary-20261101`, starts at94c497a2. Git supplies the enclosing
-revision. Current coherent source increment reconciles P02-T02Step4/P01-T08's
-external ACK syscall driver, its maintained build caller, shared controls and
-current initialization documentation. No product/Rust-test source changes.
+**M1 scoped evidence collection is already QUALIFIED**, per phase index and
+retained critical review. Current42 journey11/11 and tutorial7/7 receipts were
+authenticated without rerunning. P01-T09Step1 broader role composition,
+P01-T08 reusable harness, M2+ and all later selected requirements remain open.
+OPEN65 and physical funding are not new M1 blockers. Admission cost, ClickHouse
+transport/decode and coordinator responsibilities retain P01-T05/P02 follow-through.
 
-Read-only Sol derivation: initialize3puts + bootstrap10puts = sequence13/all10rows;
-ACK changes only ProducerState at14, preserving P306/S1 and one183-byte original.
-The accounted shared fixture is already current; no new golden copy. The driver
-now uses that fixture and an independently frozen75-byte WAL record. Existing
-19negative/two diagnostic controls plus the literal check pass; all11pending-
-accounting controls pass. Independent Astra found no bounded source/envelope
-blocker; exact exported revision now supplies the tree as suggested.
+## Current increment and resources
 
-**Current native ACK control/EIO/fresh-reopen PASS**, driver7d7d880d and the
-original compiled21965 identity. Exact13→14/all10rows/P306S1/one183B original and
-75BWAL checked independently; EIO refuses ACK/credit/capacity. Outer terminal
-custody/immutable input bytes+fullmetadata PASS, no forced native kill. The
-[producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
-`native_ack_fsync_qualification_20261023.current_accounted_followthrough_20261101`,
-owns exact receipts and limitations. No product rebuild or relabeling. Historical
-b005d91 evidence stays historical. Updated cold build-caller emission is reviewed/
-syntax-checked, not executed; its clean-checkout qualification stays P01-T08/P08.
-One stale WAL-test diagnostic string can join the next Rust-owning increment;
-its actual shared-fixture recovery assertion is current.
+Worktree `.research/ingest-logical-ceiling-20261101`, branch
+`work/ingest-logical-ceiling-20261101`, base064; Git supplies the enclosing revision.
+Original Sol native commits through81c44098 and probe commits throughc1146d03
+are merged with their ancestry preserved. Root PG/Serve integration is being
+committed coherently after source review; no new quota implementation is on main.
 
-## Resources and next action
+Expected capacity: reserve logical pending credit before original input/PG
+reservation, retain identity-bound debt on unknown/cancelled work, check exact
+prepared P, and permit zero-growth replay under pressure. Raw reopen stays blocked
+until complete original/native/PG agreement, known rollback and final authority;
+then only strict stable-low logical readiness can resume positive intake. Same
+owner permit retains64KiBDATA; existing64request/process limits stay unchanged.
+This supplies no physical reserve or overall filesystem readiness. Source review
+fixed zero-growth-over-high and legitimate raw-reopen caller regressions.
 
-[Inventory](../research/laboratory-inventory.json) owns retained guard/Cgate/
-tutorial/R1–R3/control/compiler roots. All locally owned prior runs stopped/PID0/
-noOOM; no engines/compilers or CIobserver active. Cache115 released, original4ELF
-bytes/fullmetadata unchanged; current ACK work does not mount that cache.
-Guard branches retired only after verified pushed ancestry; original worktrees,
-commits and ignored artifacts preserved. Retirement receipt:
-`.research/ingest-native-fail-stop-qualification-20261101/branch-retirement.json`.
-Monitor556GiB retirement remains reconciled; no broad cleanup/GC/mtime work.
+New quota compilation, native tests, connected PG negative/pressure/reopen and
+installed healthy restart are **NOT_RUN**; format/diff checks PASS. The existing
+[producer report](evidence/p02-producer-recovery-native-20260920.json),
+`logical_pending_quota_20261101`, owns this scope and critical review receipt.
 
-Current ACK qualification capsule:
-`.research/ingest-ack-boundary-qualification-20261101/run-ack.py`. It verifies
-retained219 and tracer9b30 ownership/identity before using individual read-only
-mounts; all new DB/trace outputs are persistent and resource/deadline bounded.
-ACK containerf1ec08d0 stopped/PID0/noOOM/exit0; launcher27808 reaped0/absent;
-all DBs/traces/inputs retained. No current owned local runtime writes. Sol source
-derivation finished; Astra bounded next-increment dependency assessment active.
+No local compiler or engine launched yet. Completed Sol implementation and Astra
+source review are idle; the only owned active process is the existing064 hosted
+observer, Sol `ack_current_oracle_sol`: driver331077/start25166019,
+gh331080/start25166022, session67014; protected root
+`.research/ci-publication-20261026/terminal-064d054d-20261101`.
+Prior owned containers stopped/PID0/noOOM; cache115 released and original4ELF
+bytes/fullmetadata preserved. Author worktrees, originals, failures and current
+labs remain retained. The [inventory](../research/laboratory-inventory.json)
+already reconciles the monitor's556GiB retirement and unchanged current lab;
+no broad cleanup, GC, repack or mtime optimization is underway.
 
-**Next:** finish source/publication checks and integrate this verified ACK slice
-locally. Keep its push grouped with a coherent result after hosted94 finishes:
-the workflow's existing cancel-in-progress would otherwise interrupt that required
-run. Do not dispatch a duplicate or call its pending result PASS. Audit terminal
-public logs/artifacts when available. In parallel, assess/implement the next
-P02-T02Step4 dependency: logical pending preview/reservation before input staging
-and PG reservation under unchanged64cap. Physicalfunding, persistentunresolveddebt,
-stable-low/filesystem coverage, boundedLOG, fundedreopen/purge/CW remain before
-OPEN65; logical quota alone cannot qualify them.
+## Next bounded action
 
-M1 admission→Archive→read→export→restart is demonstrated; P01-T09 acceptance and
-remaining failure/delivery obligations stay explicit. Do not gate M1 on allP02.
-Full walker/adoption/age bands/NEG/live, capacity/freshness/GC/replay/protection and
-all later selected milestones retain their tasks. Admission/CH/coordinator work
-stays P01-T05/P02; portable delivery P01-T08/P08-T11/T12/P10-T08/T10. Goal incomplete.
+Commit source/checkpoint on the work branch, mechanically rebind the existing
+reviewed tutorial product/apps pin to that actual source while checking unchanged
+signing/publication paths, then run one exact-source maintained native build.
+Reuse the existing isolated/cache-guarded builder and verification tools. Complete
+strict workspace checks and actual native/PG/installed pressure and healthy restart
+qualification; preserve FAIL/unknown outcomes and fix their actual cause. Integrate
+only qualified coherent work. Physical d/R, persistent unresolved A, funded
+reopen/purge, CW-N1/P1/P2 and OPEN-prefix132 remain at P02-T02Step4; broader
+load/maintenance at Step8/P02-T09, portable delivery at P01-T08/P08/P10. Goal incomplete.

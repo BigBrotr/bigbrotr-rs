@@ -47217,5 +47217,31 @@
         }
       }
     }
+  },
+  "logical_pending_quota_20261101": {
+    "status": "SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+    "tasks": [
+      "P02-T02 Step4",
+      "P01-T08"
+    ],
+    "base_main": "064d054d101932d50defabce0fb626f93f42ed81",
+    "source": "work/ingest-logical-ceiling-20261101; enclosing Git revision identifies the coherent source",
+    "capability": "Bounded request/digest/current-policy logical reservation before input creation or PG reservation; exact prepared pending-byte recheck; debt retained across cancellation/unknown outcomes. Same-Control reopened initial owner requires complete original/native/PG agreement, known rollback and final authority before logical stable-low intake.",
+    "resources": "64KiB DATA retained by the same native owner permit; existing request64 cap and process/operation envelopes unchanged. Read-only owners remain native-only.",
+    "review": {
+      "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/critical-review.json",
+      "sha256": "afe37529b9fc4e237d4ef3f32908e43593aad920c21a7f304f57472e07691252",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "limits": "Critical AI source review, not execution. Zero-growth over-high and raw-reopen caller regressions corrected; actual compilation/native/connected/installed qualification remains NOT_RUN."
+    },
+    "checks": {
+      "format_and_diff": "PASS",
+      "new_Rust_compilation": "NOT_RUN",
+      "new_native_tests": "NOT_RUN",
+      "connected_PostgreSQL_pressure_and_reopen": "NOT_RUN",
+      "installed_healthy_restart": "NOT_RUN"
+    },
+    "remaining": "Compile exact source once, exercise native discriminators, connected PG complete-set/reopen/refusal and installed pressure/healthy restart. Physical growth/reserves, persistent unresolved A, funded reopen/purge/CW-N1/P1/P2 and OPEN65 remain open at P02-T02 Step4; broader load/maintenance remains Step8/P02-T09. No overall capacity or filesystem readiness claim."
   }
 }

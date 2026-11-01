@@ -169,9 +169,10 @@ pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest,
     InitialDictionaryAppendRequest, InitialEventError, InitialEventRequest,
     InitialImportBatchRequest, InitialObservationRequest, InitialOperationError,
-    InitialPrefixRequest, InitialVisibilityRequest, LinearQuantumRequest, LinearQuantumSource,
-    LiveInitialCertificationRequest, LiveInitialDictionaryAppendRequest, LiveInitialEventRequest,
-    LiveInitialObservationRequest, LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
+    InitialPendingQuotaRequest, InitialPrefixRequest, InitialVisibilityRequest,
+    LinearQuantumRequest, LinearQuantumSource, LiveInitialCertificationRequest,
+    LiveInitialDictionaryAppendRequest, LiveInitialEventRequest, LiveInitialObservationRequest,
+    LiveInitialVisibilityRequest, LiveSuccessorCertificationRequest,
     LiveSuccessorDictionaryAppendRequest, LiveSuccessorEventRequest,
     LiveSuccessorObservationRequest, LiveSuccessorVisibilityRequest, ProducerPrefixReceipt,
 };

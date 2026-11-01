@@ -1,23 +1,23 @@
 {
   "latest_verified_hosted_execution": {
-    "revision": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289",
+    "revision": "94c497a2f530b6a551099fbbb6faff9585370577",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41287328717",
     "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
     "foundation_checks": "33/33PASS",
     "scope_controls": "20/20PASS",
     "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
-    "source_context": "All3exact4189-file manifests/native targets/worker/post-build contexts verified. Actual Rust counts1407/1407/1405PASS, ignored3/2/2; portable acceptance464/464/458PASS with6declaredmacplatformskips. No application-guard follow-through qualification at this older source.",
+    "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. AMD64/ARM64 Rust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance481/481/475PASS (mac6declaredskips),export10each. Binding5/application-native-failure6 perplatform PASS; dedicatedrealNoSpace remainsseparate.",
     "terminal_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/terminal-audit.json",
-      "sha256": "0e0600e8f9cc61d5ec2661ff16ca9b49d97293d0478df78ff40dc26e833d7408"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/terminal-audit.json",
+      "sha256": "4050431815a10d23db7ff69b86d640a3878478b74467440bf507750a6b1f0b3d"
     },
     "completion_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/completion-check.json",
-      "sha256": "3b9b61596258421915c74282a13a4d458b9d863f8d984db8063d9c8bf0798ad0"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-94c497a2-20261101/completion-check.json",
+      "sha256": "57d0b6ffb5b91b4b6f2cc68accacbf5780fe93cedac5675a6f756de9f6f2dbee"
     },
-    "public_outputs": "4artifacts/516members and34workflowlogs scanned; zero new unclassified/operationalcredential/provideralert. Pattern/asynchronous-provider limits retained; no absolute absence claim.",
-    "failure_classification": "No billing/admission, workflow, cancellation/timeout or product failure observed. Observer reaped0/ownedPIDs absent. No rerun/dispatch/settings change.",
-    "historical_scopes": "Other explicitly sourced fields below retain prior hosted executions; this is the latest completed meaningful hosted execution."
+    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Boundedpattern/asynchronous-providerlimits retained.",
+    "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observerreaped0/ownedPIDsabsent; no duplicate dispatch/rerun/settingschange.",
+    "historical_scopes": "Other source-scoped fields retain their original executions."
   },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
@@ -2237,5 +2237,33 @@
     "closure": "Within existing optional cache preparation, preserve timestamps only for byte-and-membership-verified identical native inputs or another verified equivalent mechanism; force invalidation for changed contents/membership. Preserve archive/source identities, compiler flags/tool pins and pre/post validation. Never fixed-backdate arbitrary changed inputs. Measure actual necessary CI runs; cache absence must still build.",
     "documentation": "https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed",
     "current_local_evidence_report": "p03-initial-sync-native-20261002.json#linear_quantum_20261101.coordinator_drain_followthrough"
+  },
+  "previous_verified_hosted_executions": [
+    {
+      "revision": "22a881b2ce2c336b61aa06a1d79273b5787c73b5",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41276262289",
+      "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+      "foundation_checks": "33/33PASS",
+      "scope_controls": "20/20PASS",
+      "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
+      "source_context": "All3exact4189-file manifests/native targets/worker/post-build contexts verified. Actual Rust counts1407/1407/1405PASS, ignored3/2/2; portable acceptance464/464/458PASS with6declaredmacplatformskips. No application-guard follow-through qualification at this older source.",
+      "terminal_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/terminal-audit.json",
+        "sha256": "0e0600e8f9cc61d5ec2661ff16ca9b49d97293d0478df78ff40dc26e833d7408"
+      },
+      "completion_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-22a881b2-20261101/completion-check.json",
+        "sha256": "3b9b61596258421915c74282a13a4d458b9d863f8d984db8063d9c8bf0798ad0"
+      },
+      "public_outputs": "4artifacts/516members and34workflowlogs scanned; zero new unclassified/operationalcredential/provideralert. Pattern/asynchronous-provider limits retained; no absolute absence claim.",
+      "failure_classification": "No billing/admission, workflow, cancellation/timeout or product failure observed. Observer reaped0/ownedPIDs absent. No rerun/dispatch/settings change.",
+      "historical_scopes": "Other explicitly sourced fields below retain prior hosted executions; this is the latest completed meaningful hosted execution."
+    }
+  ],
+  "pending_hosted_execution": {
+    "revision": "064d054d101932d50defabce0fb626f93f42ed81",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189",
+    "status": "IN_PROGRESS_NOT_YET_QUALIFIED",
+    "observer_root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101"
   }
 }

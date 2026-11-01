@@ -39,7 +39,7 @@ use bigbrotr::{
         rocks::{
             RocksNativeLimits, RocksNativeSettings,
             manifest::{AllocationNamespaces, IngestManifest, ManifestIdentity},
-            store::IngestStore,
+            store::{IngestStore, PENDING_QUOTA_OWNER_DATA_BYTES},
         },
     },
 };
@@ -212,6 +212,15 @@ fn grant(budget: &ResourceBudget, bytes: u64, native: u64) -> Result<OwnedPermit
             )
         })
 }
+fn native_owner_grant(budget: &ResourceBudget) -> Result<OwnedPermit> {
+    // The logical ledger persists after operation grants return and is dropped
+    // before this same store-owned reservation. Native bytes cover the engine.
+    grant(
+        budget,
+        PENDING_QUOTA_OWNER_DATA_BYTES,
+        native_limits().native_allowance_bytes(),
+    )
+}
 fn required<'a>(root: &'a Resolved, key: &str) -> Result<&'a str> {
     root.text(key)
         .ok_or_else(|| (3, format!("{key}: required for initial Ingest")))
@@ -230,7 +239,7 @@ pub(super) fn run(
         index: None,
         sync: None,
         archive: None,
-        native: grant(&budget, 0, native_limits().native_allowance_bytes())?,
+        native: native_owner_grant(&budget)?,
         dictionaries: dictionaries::SetupGrants::reserve(&budget)?,
     };
     let inputs = grant(&budget, 24 * MIB, 0)?;

@@ -13,7 +13,8 @@ use crate::{
         store::{
             ActiveInitialWriter, AdmissionError, AdmissionLimits, BootstrapError,
             DictionaryPreparation, IngestStore, InitialHandoff, InitialWriterCandidate,
-            ObservedHandoff, PendingBatch, PendingError, PendingReadLimits, SourceHead,
+            ObservedHandoff, PendingBatch, PendingError, PendingQuotaPolicy, PendingReadLimits,
+            SourceHead,
         },
     },
 };
@@ -32,6 +33,7 @@ pub(super) struct LiveInitialBinding {
     pub(super) previous: ingest_registry::InitialRegistration,
     pub(super) intent: initial_history::Intent,
     pub(super) control: ingest_registry::ControlOwner,
+    pub(super) quota_policy: PendingQuotaPolicy,
     activated_at_us: i64,
 }
 
@@ -299,7 +301,7 @@ impl ControlSession {
     )]
     async fn activate_initial_writer_in(
         &mut self,
-        candidate: InitialWriterCandidate,
+        mut candidate: InitialWriterCandidate,
         handoff: InitialHandoff,
         input: InitialHistoryRequest<'_>,
         permit: OwnedPermit,
@@ -350,6 +352,11 @@ impl ControlSession {
         lock_control(&tx, self.identity).await?;
         require(&tx, self.request.dataset, self.identity).await?;
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
+        let quota_policy =
+            ingest_registry::CapturedIntakePolicy::load_accepted(&tx, self.request.dataset, policy)
+                .await?
+                .pending_quota_policy(policy)
+                .map_err(|_| OwnerError::InvalidPolicy)?;
         let intent = initial_history::read_intent(&tx, candidate.recovery()).await?;
         if intent.handoff != handoff.encode().as_bytes()
             || intent.role != candidate.role_instance_id()
@@ -433,6 +440,7 @@ impl ControlSession {
             previous,
             intent,
             control: self.identity,
+            quota_policy,
             activated_at_us,
         };
         // Reacquire current custody without extending the pre-COMMIT deadline.
@@ -471,6 +479,15 @@ impl ControlSession {
                 )
                 .await?;
         }
+        check(&mut lease, target.policy_epoch, input.cancelled)?;
+        candidate
+            .bind_pending_quota(
+                quota_policy,
+                &handoff,
+                compacted.as_ref().map(|_| &permit),
+                input.cancelled,
+            )
+            .map_err(InitialSuccessionError::Native)?;
         check(&mut lease, target.policy_epoch, input.cancelled)?;
         let native = initial_compaction::activate(
             compacted.as_ref(),

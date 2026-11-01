@@ -20,9 +20,9 @@ use bigbrotr::{
     storage::{
         postgres::{
             control_owner::{
-                LinearQuantumRequest, LiveSuccessorCertificationRequest, LiveSuccessorEventRequest,
-                LiveSuccessorVisibilityRequest, ProgressGrant, QuantumGrant, RelaySourceError,
-                RelaySourceRequest, SyncProgress,
+                InitialEventError, LinearQuantumRequest, LiveSuccessorCertificationRequest,
+                LiveSuccessorEventRequest, LiveSuccessorVisibilityRequest, ProgressGrant,
+                QuantumGrant, RelaySourceError, RelaySourceRequest, SyncProgress,
             },
             producer_sources::SourceBindingError,
         },
@@ -692,8 +692,17 @@ impl Sync {
                     |d, h, e| policy.admission(d, h, e),
                 ),
             )
-            .await?
-            .map_err(error)?;
+            .await?;
+            let outcome = match outcome {
+                Ok(outcome) => outcome,
+                Err(InitialEventError::Pressure) => {
+                    // Same incomplete-classification path as a full native
+                    // window above: retain the genuine terminal, but do not
+                    // classify this frame, spend its ID or claim coverage.
+                    break;
+                }
+                Err(failure) => return Err(error(failure)),
+            };
             if !matches!(outcome.outcome(), AdmissionOutcome::Durable(_)) {
                 return Err(error("certified event changed before admission"));
             }
@@ -791,6 +800,9 @@ impl Dispatch<'_, '_> {
     }
     fn admission_limits(&self) -> Result<AdmissionLimits> {
         Ok(AdmissionLimits {
+            max_batch_bytes: usize::try_from(self.root.number("ingest.group_commit_max_bytes"))
+                .map_err(error)?
+                .min(AdmissionLimits::default().max_batch_bytes),
             max_outstanding_requests: u64::from(self.writer.limit(self.context)?),
             ..AdmissionLimits::default()
         })

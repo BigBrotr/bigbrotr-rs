@@ -48,6 +48,72 @@ impl<'a> NativeOwner<'a> {
     }
 }
 impl NativeOwner<'_> {
+    pub(super) fn bind_pending_quota(
+        &mut self,
+        policy: PendingQuotaPolicy,
+    ) -> Result<(), PendingQuotaError> {
+        match self {
+            Self::Store(store) => store.bind_pending_quota(policy),
+            Self::Successor(owner) => owner.bind_pending_quota(policy),
+        }
+    }
+    pub(super) fn observe_pending_quota(
+        &mut self,
+    ) -> Result<crate::storage::rocks::store::PendingQuotaStatus, PendingQuotaError> {
+        match self {
+            Self::Store(store) => store.observe_pending_quota(),
+            Self::Successor(owner) => owner.observe_pending_quota(),
+        }
+    }
+    pub(super) fn reserve_pending_requests(
+        &mut self,
+        requests: &[PendingReservationRequest],
+    ) -> Result<(), PendingQuotaError> {
+        match self {
+            Self::Store(store) => store.reserve_pending_requests(requests),
+            Self::Successor(owner) => owner.reserve_pending_requests(requests),
+        }
+    }
+    pub(super) fn pre_effect_deferred(&mut self) {
+        if let Self::Successor(owner) = self {
+            owner.delivered = true;
+        }
+    }
+    pub(super) fn pending_event_reservation(
+        &self,
+        event: &PreparedEvent,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<PendingReservationRequest, AdmissionError> {
+        match self {
+            Self::Store(store) => event.pending_reservation_request(store, limits, permit),
+            Self::Successor(owner) => owner.pending_event_reservation(event, limits, permit),
+        }
+    }
+    pub(super) fn pending_dictionary_reservation(
+        &self,
+        request: ProducerRequestId,
+        input: &LiveInitialDictionaryAppendRequest<'_>,
+        permit: &OwnedPermit,
+    ) -> Result<PendingReservationRequest, AdmissionError> {
+        match self {
+            Self::Store(store) => store.dictionary_pending_reservation(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+            ),
+            Self::Successor(owner) => owner.dictionary_pending_reservation(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+            ),
+        }
+    }
+
     /// A failed observation refuses this owner. A healthy observation does not
     /// exclude a later callback or replace authority at an irreversible stage.
     pub(super) fn require_available(&self) -> Result<(), BootstrapError> {

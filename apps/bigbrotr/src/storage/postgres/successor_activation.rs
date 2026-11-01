@@ -82,6 +82,7 @@ pub(in crate::storage::postgres::control_owner) struct LiveSuccessorBinding {
     instance: [u8; 16],
     activated_at_us: i64,
     transaction: u64,
+    quota_policy: crate::storage::rocks::store::PendingQuotaPolicy,
 }
 impl LiveSuccessorWriter {
     pub fn producer_credit(
@@ -158,6 +159,11 @@ impl LiveSuccessorBinding {
     }
     pub(in crate::storage::postgres::control_owner) fn policy(&self) -> PolicySnapshot {
         self.intent.policy
+    }
+    pub(in crate::storage::postgres::control_owner) fn quota_policy(
+        &self,
+    ) -> crate::storage::rocks::store::PendingQuotaPolicy {
+        self.quota_policy
     }
     pub(in crate::storage::postgres::control_owner) fn limit(&self) -> u32 {
         self.intent.limit
@@ -284,6 +290,9 @@ impl ControlSession {
             if snapshot(&tx,&self.request,&mut validate).await? != intent.policy {
                 return Err(OwnerError::InvalidPolicy.into());
             }
+            let quota_policy = ingest_registry::CapturedIntakePolicy::load_accepted(
+                &tx, self.request.dataset, intent.policy,
+            ).await?.pending_quota_policy(intent.policy).map_err(|_| OwnerError::InvalidPolicy)?;
             rows::require_intent(&tx,&intent).await?;
             rows::require_target(&tx,&intent,"prepared").await?;
             let remaining = remaining(&tx,&intent).await?;
@@ -304,6 +313,7 @@ impl ControlSession {
                 RETURNING activated_at_us,activation_transaction::text",&[&&id.owner_resource_id.as_bytes()[..],&intent.epoch().to_string()])
                 .await.map_err(backend)?;
             let binding = LiveSuccessorBinding { intent,instance,activated_at_us:row.try_get(0).map_err(backend)?,
+                quota_policy,
                 transaction:ingest_registry::decimal(row.try_get(1).map_err(backend)?)
                     .map_err(|_|OwnerError::InvalidMetadata)? };
             drop(row);
@@ -327,6 +337,7 @@ impl ControlSession {
             } else { owner.native.require_prepared(input.cancelled).map_err(native_error)?; }
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             tx.rollback().await.map_err(|_|ProducerResolveError::DeliveryUnknown)?;
+            owner.native.bind_pending_quota(quota_policy,input.cancelled).map_err(native_error)?;
             if let Some(check) = &owner.check { check.validate_activation(&owner.native, input.cancelled)?; }
             initial_history::check_delivery(&mut lease,id.policy_epoch,input.cancelled)?;
             // The callback follows native's last complete validation and precedes

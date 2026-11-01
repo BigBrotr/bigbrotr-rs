@@ -42,6 +42,12 @@ fn binding(epoch: u64) -> LiveSuccessorBinding {
         },
         namespaces(6),
     );
+    let policy = PolicySnapshot {
+        config_revision: 5,
+        policy_revision: 7,
+        config_digest: [11; 32],
+        policy_digest: [12; 32],
+    };
     LiveSuccessorBinding {
         intent: Intent {
             record: SuccessionRecord::new(SuccessionFields {
@@ -57,12 +63,7 @@ fn binding(epoch: u64) -> LiveSuccessorBinding {
             })
             .unwrap(),
             role: [10; 16],
-            policy: PolicySnapshot {
-                config_revision: 5,
-                policy_revision: 7,
-                config_digest: [11; 32],
-                policy_digest: [12; 32],
-            },
+            policy,
             created: 100,
             deadline: 20_000_100,
             limit: 2,
@@ -76,6 +77,17 @@ fn binding(epoch: u64) -> LiveSuccessorBinding {
         instance: [16; 16],
         activated_at_us: 101,
         transaction: 201,
+        quota_policy: crate::storage::rocks::store::PendingQuotaPolicy::new(
+            1024,
+            512,
+            256,
+            policy.config_revision,
+            bigbrotr_model::Digest256::from_bytes(policy.config_digest),
+            policy.policy_revision,
+            bigbrotr_model::Digest256::from_bytes(policy.policy_digest),
+            Duration::from_secs(30),
+        )
+        .unwrap(),
     }
 }
 

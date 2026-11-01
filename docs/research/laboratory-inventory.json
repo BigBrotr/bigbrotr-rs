@@ -78522,6 +78522,20 @@
           "sha256": "523e8aadb99a56bdde40431a7347daf937a486dc741acc0c6002e1df17a3fb9c"
         }
       }
+    },
+    "logical_pending_quota_20261101": {
+      "status": "source-committing-before-exact-build; runtime-NOT_RUN",
+      "integration_worktree": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-20261101",
+      "branch": "work/ingest-logical-ceiling-20261101",
+      "base_main": "064d054d101932d50defabce0fb626f93f42ed81",
+      "retained_author_worktrees": [
+        ".research/ingest-logical-core-sol-20261101",
+        ".research/ingest-quota-native-grants-sol-20261101"
+      ],
+      "evidence": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101",
+      "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#logical_pending_quota_20261101",
+      "processes": "No local compile/engine launched yet. Hosted064 observer remains owned by ack_current_oracle_sol; exact IDs/checks in its protected terminal capsule. Completed source reviewers idle.",
+      "retention": "Preserve current labs, originals, failed captures, author commits and ignored evidence. Monitor retirement already reconciled in existing open-growth resource record; no additional cleanup."
     }
   },
   "implementation_ci_portable_controls_20261030": {

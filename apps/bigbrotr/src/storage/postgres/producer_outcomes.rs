@@ -119,6 +119,33 @@ pub(super) async fn require_recovered(
     recovered(tx, reservation, resolved, None).await
 }
 
+/// Require the already stored PG copy of a positively replayed OPEN original.
+/// This never inserts a missing outcome or repairs a conflicting copy.
+pub(super) async fn require_quota_original(
+    tx: &Transaction<'_>,
+    reservation: &super::producer_requests::ProducerReservation,
+    original: &crate::storage::rocks::store::InitialQuotaOriginal,
+) -> Result<(), OutcomeError> {
+    let outcome = original.native_outcome();
+    require_reservation(reservation, outcome, original.input_bytes())?;
+    record_native(tx, outcome, None).await
+}
+
+fn require_reservation(
+    reservation: &super::producer_requests::ProducerReservation,
+    outcome: &NativeOutcomeCopy,
+    input_bytes: u32,
+) -> Result<(), OutcomeError> {
+    if outcome.request() != reservation.request
+        || outcome.digest() != reservation.digest
+        || outcome.manifest_sha256() != reservation.manifest_sha256
+        || input_bytes != reservation.input_bytes
+    {
+        return Err(OutcomeError::Conflict);
+    }
+    Ok(())
+}
+
 async fn recovered(
     tx: &Transaction<'_>,
     reservation: &super::producer_requests::ProducerReservation,
@@ -126,13 +153,7 @@ async fn recovered(
     recorder: Option<ControlOwner>,
 ) -> Result<(), OutcomeError> {
     let outcome = resolved.native_outcome();
-    if outcome.request() != reservation.request
-        || outcome.digest() != reservation.digest
-        || outcome.manifest_sha256() != reservation.manifest_sha256
-        || resolved.input_bytes() != reservation.input_bytes
-    {
-        return Err(OutcomeError::Conflict);
-    }
+    require_reservation(reservation, outcome, resolved.input_bytes())?;
     record_native(tx, outcome, recorder).await
 }
 

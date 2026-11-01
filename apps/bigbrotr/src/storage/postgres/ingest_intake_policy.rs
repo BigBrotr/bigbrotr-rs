@@ -39,6 +39,72 @@ pub struct CapturedIntakePolicy {
     binding: String,
 }
 impl CapturedIntakePolicy {
+    /// Convert the captured projection without substituting another accepted
+    /// pair. This is still a policy value, not native funding or SQL authority.
+    pub fn pending_quota_policy(
+        &self,
+        accepted: crate::storage::postgres::control_owner::PolicySnapshot,
+    ) -> Result<crate::storage::rocks::store::PendingQuotaPolicy, IntakePolicyError> {
+        crate::storage::rocks::store::PendingQuotaPolicy::new(
+            self.pending_high,
+            self.pending_low,
+            self.max_pending_unit,
+            accepted.config_revision,
+            bigbrotr_model::Digest256::from_bytes(accepted.config_digest),
+            accepted.policy_revision,
+            bigbrotr_model::Digest256::from_bytes(accepted.policy_digest),
+            self.stable_duration,
+        )
+        .map_err(|_| IntakePolicyError)
+    }
+
+    /// Called after the existing complete-document snapshot validation in the
+    /// same transaction. Activation uses its current accepted pair; a previous
+    /// registrar's projection cannot supply a new writer's quota policy.
+    pub(in crate::storage::postgres) async fn load_accepted(
+        tx: &tokio_postgres::Transaction<'_>,
+        dataset: bigbrotr_model::DatasetId,
+        accepted: crate::storage::postgres::control_owner::PolicySnapshot,
+    ) -> Result<Self, crate::storage::postgres::control_owner::OwnerError> {
+        use crate::storage::postgres::control_owner::OwnerError;
+        let row = tx
+            .query_opt(
+                "SELECT left((SELECT jsonb_object_agg(key,value)
+                     FROM jsonb_each(p.document->'settings') WHERE key=ANY($6::text[]))::text,2049),
+                    NOT EXISTS(SELECT 1 FROM unnest($6::text[]) AS k(key)
+                        WHERE c.document->'settings'->k.key IS DISTINCT FROM p.document->'settings'->k.key
+                           OR p.document->'settings'->k.key IS NULL)
+                 FROM control.config_revisions c JOIN control.policy_revisions p
+                   ON p.dataset_id=c.dataset_id AND p.config_revision=c.revision
+                 WHERE c.dataset_id=$1::bytea AND c.revision=$2::text::numeric
+                   AND p.revision=$3::text::numeric AND c.document_digest=$4::bytea
+                   AND p.document_digest=$5::bytea",
+                &[
+                    &&dataset.as_bytes()[..],
+                    &accepted.config_revision.to_string(),
+                    &accepted.policy_revision.to_string(),
+                    &&accepted.config_digest[..],
+                    &&accepted.policy_digest[..],
+                    &&KEYS[..],
+                ],
+            )
+            .await
+            .map_err(|_| OwnerError::Backend)?
+            .ok_or(OwnerError::InvalidPolicy)?;
+        if !row
+            .try_get::<_, bool>(1)
+            .map_err(|_| OwnerError::InvalidPolicy)?
+        {
+            return Err(OwnerError::InvalidPolicy);
+        }
+        let projection: &str = row.try_get(0).map_err(|_| OwnerError::InvalidPolicy)?;
+        if projection.len() > 2048 {
+            return Err(OwnerError::InvalidPolicy);
+        }
+        let settings = serde_json::from_str(projection).map_err(|_| OwnerError::InvalidPolicy)?;
+        Self::capture(&settings).map_err(|_| OwnerError::InvalidPolicy)
+    }
+
     /// Extract only the closed intake projection from normalized settings that
     /// the caller has restored and validated. No omitted key is synthesized.
     /// The constructor alone grants no ownership or permission to stage/write.

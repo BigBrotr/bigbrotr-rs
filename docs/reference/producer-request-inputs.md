@@ -1731,9 +1731,10 @@ permanent scientific history and its recovery census continue to grow.
 ### Pending and filesystem admission before OPEN reclamation
 
 Removing the absolute64 request limit also removes its incidental finite bound
-on retained scientific growth. The existing `ingest.pending_max_bytes` validation
-only establishes that one framed unit fits; native admission currently has no
-aggregate counter. Memory/native permits and the export destination free-space
+on retained scientific growth. The current native store has the manifest-bound
+aggregate counter and mandatory full census described below; configuration
+validation alone does not reserve admission capacity. Memory/native permits and
+the export destination free-space
 check are not durable-growth reservations. This is a current P02-T02 Step4
 dependency, not completion of pending-payload GC or a general quota service.
 
@@ -1904,6 +1905,20 @@ If source bounds plus observations do not justify that range, qualify a narrower
 explicit pending/native-work envelope or return the exact unresolved native/PG
 allocation question. Do not silently enable larger configurations, disable sync
 or background correctness work, or claim full capacity from these cases.
+
+The independent logical subgate may be implemented under the unchanged lifetime64
+profile before this physical enablement. Its status is **logical readiness**, not
+overall storage health or combined pressure recovery. Proven-empty initialization
+may bind ready; raw reopen refuses intake until full census and retained-original,
+native-outcome and PostgreSQL reconciliation establish every logical obligation.
+After reconciliation, start logically pressure-latched and require
+`P + outstanding logical reservations < low` for a complete fresh stable interval.
+Equality, uncertainty or a failed observation invalidates that interval. Continuous
+custody promotion and identical policy binding preserve the ledger, latch and
+timer; they cannot reset debt or pressure. Wait outside PostgreSQL transactions
+and policy leases, then revalidate authority before effects. This logical-only
+guard does not invent a filesystem-ready observation or assume `A=R=0`: the full
+combined low-water condition and all physical/OPEN65 gates above remain required.
 
 Independent controls require: literal P deltas for bootstrap/dictionary/NewFacts,
 zero deltas for replay/no-effect/ACK/GC; exact high-boundary admission and next-unit

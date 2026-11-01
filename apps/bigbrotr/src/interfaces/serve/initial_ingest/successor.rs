@@ -65,13 +65,9 @@ async fn own(
     if cancellation.requested.load(Ordering::Acquire) {
         return Err((4, "initial successor cancelled before native open".into()));
     }
-    let recovery = IngestRecovery::inspect(
-        path,
-        dataset,
-        native_limits(),
-        grant(&budget, 0, native_limits().native_allowance_bytes())?,
-    )
-    .map_err(|e| (4, e.to_string()))?;
+    let recovery =
+        IngestRecovery::inspect(path, dataset, native_limits(), native_owner_grant(&budget)?)
+            .map_err(|e| (4, e.to_string()))?;
     if recovery.manifest().identity().owner_epoch.get() != 1 {
         return Err((
             4,

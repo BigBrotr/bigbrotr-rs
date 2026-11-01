@@ -66,6 +66,12 @@ pub(super) async fn initialize(
     } = grants;
     let timeout = duration(root, "renewal_timeout");
     let ttl = duration(root, "authorization_ttl");
+    let maximum_batch = usize::try_from(spec.intake_policy.max_pending_unit()).map_err(|_| {
+        (
+            3,
+            "initial dictionary unit does not fit this platform".into(),
+        )
+    })?;
     let path = Path::new(required(root, "storage.ingest_root")?);
     let public = QualifiedRef {
         dataset_id: spec.dataset_id,
@@ -121,7 +127,7 @@ pub(super) async fn initialize(
                     recorded_at: ObservedTime::new(spec.created_at_us),
                     limits: BootstrapLimits {
                         max_mappings: 2,
-                        max_batch_bytes: MIB as usize,
+                        max_batch_bytes: maximum_batch.min(MIB as usize),
                     },
                     policy_ttl: ttl,
                     cancelled: &cancellation.requested,
@@ -172,7 +178,10 @@ pub(super) async fn initialize(
                     request_sequence: RequestSequence::new(2).unwrap(),
                     intent: &intent,
                     recorded_at: ObservedTime::new(spec.created_at_us),
-                    limits: PRIVATE_LIMITS,
+                    limits: AdmissionLimits {
+                        max_batch_bytes: maximum_batch.min(PRIVATE_LIMITS.max_batch_bytes),
+                        ..PRIVATE_LIMITS
+                    },
                     policy_ttl: ttl,
                     cancelled: &cancellation.requested,
                 },

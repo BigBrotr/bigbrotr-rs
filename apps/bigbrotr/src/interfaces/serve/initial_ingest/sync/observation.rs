@@ -26,7 +26,9 @@ impl Sync {
         // Use a separate bound from event admission, so repeated observations
         // do not retain a full event batch's scratch while receiving a socket.
         let limits = AdmissionLimits {
-            max_batch_bytes: 64 * 1024,
+            max_batch_bytes: usize::try_from(work.root.number("ingest.group_commit_max_bytes"))
+                .map_err(error)?
+                .min(64 * 1024),
             max_dependencies: 8,
             max_outstanding_requests: u64::from(work.writer.limit(work.context)?),
         };
@@ -191,8 +193,12 @@ impl Sync {
                 |d, h| validate_sync(work.root, lifecycle, d, h),
             ),
         )
-        .await?
-        .map_err(error)?;
+        .await?;
+        let appended = match appended {
+            Ok(appended) => appended,
+            Err(InitialEventError::Pressure) => return Ok(None),
+            Err(failure) => return Err(error(failure)),
+        };
         drop(appended);
         self.next_request += 1;
         if !work.safe_point(self, false).await? {

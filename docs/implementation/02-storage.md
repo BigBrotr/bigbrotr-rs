@@ -268,6 +268,12 @@ One owner serializes exact identity decisions for each writable directory.
   remain before OPEN65; these bounded proofs do not enable growth. See the
   [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
   for actual original-body controls and preserved failures.
+  The logical-only owner-credit increment is source-reviewed under the same64
+  cap: pre-input/PG request credit, retained debt, zero-growth replay and complete
+  OPEN-initial original/native/PG reconciliation before stable-low restart. Its
+  [owning evidence](evidence/p02-producer-recovery-native-20260920.json) records
+  compilation/native/connected/installed checks as NOT_RUN until executed. It
+  supplies no filesystem readiness, physical reserve or OPEN65 permission.
   The selected closed-initial continuation now passes on product `7d8e5998`,
   acceptance `b74c2508`: actual64-request reclamation, both final-COMMIT loss
   conservation checks, idempotent restart/retry and a compacted epoch2 accepting

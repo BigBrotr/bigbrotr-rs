@@ -76,13 +76,9 @@ async fn own(
     if cancellation.requested.load(Ordering::Acquire) {
         return Err((4, "successor cancelled before native open".into()));
     }
-    let recovery = IngestRecovery::inspect(
-        path,
-        dataset,
-        native_limits(),
-        grant(&budget, 0, native_limits().native_allowance_bytes())?,
-    )
-    .map_err(error)?;
+    let recovery =
+        IngestRecovery::inspect(path, dataset, native_limits(), native_owner_grant(&budget)?)
+            .map_err(error)?;
     // Construction can fail and consume recovery, so it precedes Control.
     // All identities are minted internally; no recorded attempt is adopted.
     let mut startup = Startup {

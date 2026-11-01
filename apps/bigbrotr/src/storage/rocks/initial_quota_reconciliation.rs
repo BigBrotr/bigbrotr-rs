@@ -20,7 +20,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-pub(in crate::storage) const INITIAL_QUOTA_RECONCILIATION_DATA_BYTES: u64 = 64 * 1024;
+pub const INITIAL_QUOTA_RECONCILIATION_DATA_BYTES: u64 = 64 * 1024;
 
 struct Stamp {
     root: (u64, u64),
