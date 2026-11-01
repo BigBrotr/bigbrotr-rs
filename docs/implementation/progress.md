@@ -13,8 +13,8 @@ qualification report. M2 remains **unintegrated**, with no whole task/milestone
 completion claim.
 
 Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`, is **83c478d3** before this checkpoint
-commit: current main documentation and reviewed trace-profile correction merged.
+`work/m2-linear-quantum-acceptance-20261101`, is **7bb7a159** before this checkpoint
+commit: reviewed historical-owner/frozen-row corrections and complete shared fixture merged.
 Installed product remains **78c8e31339e760c16bcfa036dabff38dcdf86544**; all eight
 product code/config objects in acceptance equal that source. The separately
 qualified dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
@@ -83,16 +83,41 @@ SQL transaction/round-trip/admission-cost proof. The exact author5191111b/merged
 change is critically reviewed; Sol/xhigh source-author and read-only preparation
 are complete, Astra/xhigh review complete. No subagent owns engines/cache.
 
-**Next:** run affected current Index/topology, then grouped closed reclamation,
-successor/Archive/export/restart regressions, serially with unchanged78 candidate.
-Use the existing `run-installed.py`; preflight15432/18081/7447 plus18123/19000 and
-empty borrowed bridge. Topology rejects `--native-observer-build`; supply observer78
-only for grouped reclamation, with `--retained-archive-schedule grouped-publication-loss`.
-Shared SQL43/59migration entries/83Controltables/status/roles and actual artifacts
-were read-only checked; no mismatch found. Keep executing source frozen until
-terminal observations finish. Reuse finite/tutorial/dev/fault evidence whose
-inputs remain unchanged. Merge the separately qualified test initializer afterward,
-review final publication delta, and integrate/push coherent qualified M2 work.
+Current Index/topology R1 **FAIL** at acceptance877763be/product78,67.030s:
+first eight stages PASS (signed acquisition/Index/history/export/restart baseline),
+then `ingest_restart_resend` hit shared shape's historical/current owner assertion;
+five later stages NOT_RUN, cleanupPASS. Original raw Control remains in
+`acceptance-index-topology-r1/commands/0858-docker.stdout`:83tables/28quanta/onegap.
+All21containers stopped/PID0/noOOM,945commands joined/948recorded PIDs absent;
+bridge empty. The existing report owns the exact original failure/custody hashes.
+
+The defect was the verifier: SQL27/38 atomically transfer terminal cancellation
+through an exact immutable gap to new Control4, while SQL43 retains quantum
+issuerControl2. Corrected shape authenticates both histories and the cancelled/+2
+relation, refuses persistedcancel_requested/+1, and preserves direct active-owner
+checks. No wall-clock ordering rule was invented. The same increment freezes exact
+quantum rows/cardinality/xmin across all four ordinary/grouped retirements and
+ordinary replay; one grouped post-stop capture was added. Raw Control is saved
+before validation. Author1af6382f/merged20a3d7f4 have bounded Astra clearance.
+Original installed FAIL stays FAIL; actual corrected-path qualification is pending.
+
+Initial full controls at20a3 were445PASS/1ERROR from a secondary minimal shared-
+budget fixture. Mechanical b80726f1 reuses complete qualified quantum records;
+original error remains. Corrected full pinned-image suite at7bb is **446/446 PASS,
+zero skips**; targeted29quantum/23firstlaunch/12sharedbudget controls PASS.
+Author read-only replay34snapshots/nine frozen pairs PASS; this is not runtime PASS.
+
+**Next:** rerun corrected current Index/topology as `acceptance-index-topology-r2`,
+then grouped closed reclamation/successor/Archive/export/restart, serially with
+unchanged78 candidate. Use existing `run-installed.py`; preflight15432/18081/7447
+plus18123/19000 and empty borrowed bridge. Topology rejects
+`--native-observer-build`; supply observer78 only for grouped reclamation, with
+`--retained-archive-schedule grouped-publication-loss`. Shared SQL43/59migration
+entries/83Controltables/status/roles and actual artifacts are reconciled. Keep
+executing source frozen until terminal observations finish. Reuse unchanged
+finite/tutorial/dev/seven-fault evidence. Merge the separately qualified test
+initializer afterward, review final publication delta, and integrate/push coherent
+qualified M2 work. All author/reviewer tasks are complete; root owns engines/cache.
 
 ## Hosted CI and publication
 

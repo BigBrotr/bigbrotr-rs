@@ -470,7 +470,7 @@
     "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_ALL_SEVEN_SELECTED_FAULTS_AND_DEV_PASS",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-    "acceptance": "83c478d3de390d33b49591cd8c1d09309fadcac5",
+    "acceptance": "7bb7a1591eea63f0019665bb4bd0b8108fcbe58d",
     "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
@@ -481,9 +481,9 @@
       "sha256": "4d4f327c84916f8231b981ae64b1d0de1651a86ea1d287751db8540f3246c7f6"
     },
     "portable_controls": {
-      "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/controls-receipt.json",
-      "sha256": "cb1b8198f2aecac06cd769b9915d200d061d63a2900a4690c9e99a7087b97e26",
-      "result": "431PASS/0SKIP in pinned native image at9b76; later33focused lease controls separately PASS"
+      "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/historical-controls-receipt.json",
+      "sha256": "aa35efd05bb3c8052179f238f8f778a7ddec8793cdd920a3fd5d34b9e245ad5e",
+      "result": "446PASS/0SKIP;fullmaintainedsuite at7bb; original20a3 445PASS/1ERRORretained"
     },
     "finite_installed": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-linear-r1/root-terminal.json",
@@ -526,6 +526,10 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-quantum-trace-profile-critical-20261101.json",
         "sha256": "334630dcfbcfefcec75b399a307847fb7dee9e8b889ac75a32e286620acd0096"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-historical-quantum-issuer-critical-20261101.json",
+        "sha256": "52d3f5a7d5f92f41b2d315dd0a9b2886659ef2c10df3ca2e5fd49d1cfdea5a7c"
       }
     ],
     "original_failures": [
@@ -548,9 +552,17 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/terminal-before-r2-trace-admission-failure.json",
         "sha256": "fc7f60a50bc81edaa355b7bb02a3450ed3bb77c4060e2cb03ed326025041d249"
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1/root-terminal.json",
+        "sha256": "0dd0736ffea7242612b14111f74d809e0c06b086bec432ae3ae2b3d545bb8425"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/historical-controls-original-failure.json",
+        "sha256": "528c55f41fc9cfa7dc9e22519763d97721a8406a218b7692a4fb756cf55f75a1"
       }
     ],
-    "open_checks": "Affected current Index/topology and grouped closed reclamation/successor/Archive/export/restart regressions remain required before integration. Full current-source hosted CI and final delivery remain open. Finite/tutorial, both default plan faults, five retained-catch-up faults and independent e812 dev evidence are qualified within their explicit scopes; no whole task or M2 closure.",
+    "open_checks": "Corrected current Index/topology rerun and grouped closed reclamation/successor/Archive/export/restart remain required before integration. Full current-source hosted CI and finaldelivery remain open. Unchanged78 finite/tutorial/sevenfault evidence and independente812dev evidence retained; no whole task orM2closure.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -856,6 +868,20 @@
         "sha256": "9d5bc0b47fa94796ace0638183f48145d1db497a0e45aea8d47e2fe978a27cf5"
       },
       "scope": "Through83c478d3 only:24commits/127blobs/11515305bytes. Six fingerprints new to initial baseline already present in published1f4: runtime-variable/command references and synthetic test/diagnostic literals, no unclassified credential. Final additional commits still require incremental publication review; bounded pattern limits remain."
+    },
+    "historical_quantum_followthrough": {
+      "status": "CORRECTED_AND_SOURCE_REVIEWED;PURE_CONTROLS_PASS;INSTALLED_RERUN_PENDING",
+      "author": "1af6382fbb0574ca0a4f1c93d41ed9e6b99a16a5",
+      "fixture_followup": "b80726f1a611a63b879d54c0a6b2b5147d82a0bc",
+      "merged": "7bb7a1591eea63f0019665bb4bd0b8108fcbe58d",
+      "original_index_result": "First8stagesPASS;ingest_restart_resendFAIL at historicalissuer/currentjobowner assertion;5laterNOT_RUN;cleanupPASS.21containersstopped/945commandsjoined/948PIDsabsent/bridgeempty.",
+      "raw_original_control": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1/commands/0858-docker.stdout",
+        "sha256": "082dd6381835b07c17e40aacc35958261bebeee53a9950df1cd230462b14d09b"
+      },
+      "diagnosis": "28oldControl2quanta remain immutable after cancelledjob transfers toControl4. SQL27/38 require exact retained gap and cancelled/previous_revision+2; persistedcancel_requested/+1 is not authorized by deferred completion. Quantum issuer remains historical underSQL43.",
+      "correction": "Authenticate original/current exact Control owner_epochs and sole authorized gap-backed transfer; retain active-owner equality and all charge/science checks. Save rawControl before validation. Freeze exact whole quantum rows/cardinality/xmin across allfour ordinary/groupedretirements and ordinaryreplay; one groupedpoststopcapture added. No cross-record wall-clock gate, product/SQL/budget/deadline change.",
+      "pure": "29quantum+23firstlaunch+12sharedbudget targetedPASS;full446PASS/0SKIP. Author read-onlyreplay34snapshots/9preservationpairs PASS, snapshotlistdigest cd2842d99bca50763cab08780720eb4d223f9eb3b973321f0c84974467f57116;not runtimePASS."
     }
   }
 }
