@@ -238,6 +238,7 @@ fn finite_acquisition_uses_the_same_typed_job_envelope_and_original_digest() {
 fn acquisition_status_is_typed_redacted_and_keeps_exact_revision_strings() {
     use bigbrotr::management::jobs::{JobKind, JobObservation, JobState};
     let observation = JobObservation {
+        linear_quantum: None,
         kind: JobKind::Acquisition,
         job_id: [9; 16].try_into().unwrap(),
         state: JobState::Accepted,
