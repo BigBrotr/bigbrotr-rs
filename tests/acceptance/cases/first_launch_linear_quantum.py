@@ -153,14 +153,17 @@ class LinearQuantumRuntime(Runtime):
 
     def wait_control_expiry(self,output):
         frozen=self.dead_control_lease
+        deadline=frozen['deadline_monotonic']
         witness=dict(format='bigbrotr-dead-control-expiry/1',status='FAIL',
-            started_monotonic=time.monotonic(),deadline_monotonic=frozen['deadline_monotonic'],
+            started_monotonic=time.monotonic(),deadline_monotonic=deadline,
             lease_expires_at_us=frozen['original_owner']['lease_expires_at_us'],observations=0)
         last_clock=frozen['observation']['observed_at_us']
         def expired():
             nonlocal last_clock
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
             sample=self.control_lease_observation()
             witness.update(last_observation=sample,observations=witness['observations']+1)
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
             require(sample['owners']==frozen['observation']['owners']
                 and sample['job_owners']==frozen['observation']['job_owners'],'dead original Control lease changed')
             require(type(sample['observed_at_us']) is int and sample['observed_at_us']>=last_clock,
@@ -169,9 +172,10 @@ class LinearQuantumRuntime(Runtime):
             return sample['active_unexpired']==0 and last_clock>=witness['lease_expires_at_us']
         try:
             if not expired():
-                remaining=frozen['deadline_monotonic']-time.monotonic()
+                remaining=deadline-time.monotonic()
                 require(remaining>0,'dead original Control expiry observation budget exhausted')
                 self.wait(expired,'dead original Control lease expiry',remaining)
+            require(time.monotonic()<deadline,'dead original Control expiry observation budget exhausted')
             witness['status']='PASS'
         finally:
             witness['finished_monotonic']=time.monotonic()

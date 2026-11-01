@@ -226,6 +226,41 @@ class LinearQuantumControls(unittest.TestCase):
                 self.assertEqual(witness['status'],'FAIL')
                 self.assertEqual(witness['deadline_monotonic'],165.0)
 
+    def test_expired_database_lease_cannot_bypass_exhausted_frozen_host_budget(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            runtime.sql=Mock(return_value=json.dumps(expired));runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',return_value=170.0):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_not_called();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',0,165.0))
+
+    def test_first_expiry_sql_observation_cannot_cross_frozen_deadline(self):
+        from cases import first_launch_linear_quantum as case
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);runtime=object.__new__(case.LinearQuantumRuntime)
+            owner=dict(epoch=2,lease_expires_at_us=1_060_000_000)
+            frozen=dict(observed_at_us=1_000_000_000,owners=[owner],job_owners=[['control',2]])
+            runtime.dead_control_lease=dict(deadline_monotonic=165.0,original_owner=owner,observation=frozen)
+            expired=dict(frozen,observed_at_us=1_070_000_000,active_unexpired=0)
+            clock=[164.0]
+            def sql(database,statement):
+                clock[0]=166.0
+                return json.dumps(expired)
+            runtime.sql=Mock(side_effect=sql);runtime.wait=Mock()
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]):
+                with self.assertRaisesRegex(ValueError,'budget exhausted'):runtime.wait_control_expiry(root)
+            runtime.sql.assert_called_once();runtime.wait.assert_not_called()
+            witness=json.loads((root/'dead-control-expiry.json').read_text())
+            self.assertEqual((witness['status'],witness['observations'],witness['deadline_monotonic']),('FAIL',1,165.0))
+            self.assertEqual(witness['last_observation'],expired)
+
     def test_empty_terminal_has_charged_metadata_and_no_fabricated_effect_or_dependency(self):
         state,wire=fixture();check.shape(state);check.journey(state,[wire],1,{})
         self.assertEqual(state['acquisition_quanta'][0]['charged_bytes'],1189)
