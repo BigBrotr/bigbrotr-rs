@@ -317,7 +317,7 @@ impl PreparedEvent {
         max_event_bytes: usize,
     ) -> Result<Self, AdmissionError> {
         let (intent, binding, permit) = input.into_parts();
-        if intent.certification_digest() != binding.certification_digest {
+        if !binding.matches(&intent) {
             return Err(AdmissionError::InvalidInput);
         }
         let mut prepared = Self::new(request, intent, max_event_bytes, permit)?;

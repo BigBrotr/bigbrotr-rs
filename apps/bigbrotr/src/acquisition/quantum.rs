@@ -92,6 +92,7 @@ pub enum QuantumError {
     Capacity,
     Context,
     Backend,
+    Native(crate::storage::rocks::store::AdmissionError),
     CommitUnknown,
 }
 impl std::fmt::Display for QuantumError {
@@ -335,27 +336,16 @@ mod tests {
 
     #[test]
     fn retained_window_preserves_zero_and_after_max_selector_bounds() {
-        let at_zero = LinearWindow::retained(
-            &selector(0, &[(None, Some(0))]),
-            20_000_999,
-            0,
-            1,
-            1,
-        )
-        .unwrap();
+        let at_zero =
+            LinearWindow::retained(&selector(0, &[(None, Some(0))]), 20_000_999, 0, 1, 1).unwrap();
         assert_eq!(
             (at_zero.lower(), at_zero.upper(), at_zero.horizon()),
             (0, 1, 1)
         );
         assert_eq!(at_zero.predicate(),br#"["REQ","000000000000000000000000000000000000000000000000",{"since":0,"until":0,"limit":3}]"#);
-        let maximum = LinearWindow::retained(
-            &selector(0, &[(None, Some(u64::MAX))]),
-            2_999_999,
-            0,
-            2,
-            2,
-        )
-        .unwrap();
+        let maximum =
+            LinearWindow::retained(&selector(0, &[(None, Some(u64::MAX))]), 2_999_999, 0, 2, 2)
+                .unwrap();
         assert_eq!(maximum.filters()[0].fields().until, Some(NostrTime(1)));
     }
 

@@ -35,7 +35,7 @@ CREATE TABLE control.acquisition_quanta (
     teardown_complete boolean,
     retained_events smallint CHECK(retained_events BETWEEN 0 AND 3),
     classified_prefix smallint CHECK(classified_prefix BETWEEN 0 AND 3),
-    effect_records bytea CHECK(octet_length(effect_records)<=768),
+    effect_records bytea CHECK(octet_length(effect_records)%93=0 AND octet_length(effect_records)<=279),
     dependencies bytea CHECK(octet_length(dependencies)%72=0 AND octet_length(dependencies)<=55296),
     checkpoint_after control.u64,
     checkpoint_sha256 control.digest32,

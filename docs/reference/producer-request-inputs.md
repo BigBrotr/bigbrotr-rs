@@ -800,9 +800,19 @@ conversion. The first window is `[history_since,min(history_since+accepted
 sync.window_width,H))`, with checked arithmetic and the24h default. Every
 conjunction is intersected separately; an empty intersection is never replaced
 by an unrestricted filter. The current second and later work remain pending.
-This increment records the first window and pending continuation; it does not
-implement the full interval walker, age bands, dense-second partitioning or live
-subscriptions. Existing finite workloads retain their scientific behavior.
+The bounded continuation consumer reads the latest obligation by job under that
+same job lock, then checks its exact current source, native and Control context.
+It reconstructs the normalized predicate and frozen bounds from accepted intent;
+incompatible, corrupt or unfinished records refuse a replacement plan. A known
+completed interruption retries its exact interval. A successfully classified
+page overlaps its oldest verified second, including zero, even when the page is
+short or contains only already-known bodies. The first returned boundary permits
+one overlap; repeated successful pages exposing no older time defer further work
+with coverage pending. A successful empty page also defers without inferring an
+unqueried range. These cases create no new plan or charge and confirm transaction
+rollback before yielding the owner to another job. Full interval succession,
+canonical-ID-aware saturation/partitioning, sparse growth, age bands and live
+subscriptions remain P03-T05/T04/T07 work, not completed coverage.
 
 After the source adapter has destroyed the socket and rolled back its source
 transaction, ordered native classifications retain a sealed quantum collector.
@@ -814,8 +824,19 @@ mutations can return credit without filling it. Empty and proof-only quanta crea
 no synthetic producer request or mutation ACK. The full current native closure is
 revalidated before terminal commit for the selected no-open-base format1/absolute64
 profile. An active SQL42 prefix/format2 remains a refusal, not OPEN65 support.
-Historical recovery independently streams
-the quantum references through the existing native proof validator.
+Historical recovery independently streams the quantum references through the
+existing native proof validator. Each current effect record retains its original
+61-byte position/classification/time prefix plus the captured canonical event ID
+(93 bytes total, at most three records). Before a retained verified time can
+select another query, that exact ID/time must match an authenticated native
+EventPayload within that quantum's own dependency union. A global payload or
+another page's cumulative references cannot satisfy it. Rejected classifications
+never contribute a cursor. The native view remains pinned to its original root
+and sequence through selection and the full pre-COMMIT closure check. Old internal
+nonempty 61-byte records are refused, not adapted; fresh initialization uses the
+consolidated migration0043 constraint. Earlier source-specific evidence keeps its
+original format scope. Native Fact and terminal decoding reuse reserved scratch
+sequentially; decoded facts and native pins do not survive a SQL await.
 
 One atomic terminal update retains the correlated actual EOSE/CLOSED frame,
 REQ/sequence/local time, or the distinct local deadline, cancellation, frame/event

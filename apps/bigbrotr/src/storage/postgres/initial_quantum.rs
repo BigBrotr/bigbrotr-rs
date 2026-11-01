@@ -1,10 +1,7 @@
 //! Pre-wire and terminal commits on the same current acquisition/native owner.
 use super::producer_progress::quantum::{self, LinearQuantum, QuantumCapture, QuantumGrant};
 use super::*;
-use crate::acquisition::{
-    quantum::{LinearWindow, QuantumError},
-    scope::StoredAcquisitionScope,
-};
+use crate::acquisition::{quantum::QuantumError, scope::StoredAcquisitionScope};
 
 pub enum LinearQuantumSource<'a> {
     Initial(
@@ -94,29 +91,40 @@ impl ControlSession {
         if job.scope != input.scope.identity() {
             return Err(InitialEventError::Quantum(QuantumError::Context));
         }
-        let window = match LinearWindow::first(
-            input.scope.selector(),
-            job.accepted_at_us,
+        let permit = grant.permit.clone();
+        let read = native
+            .quantum_progress_read(&permit, input.cancelled)
+            .map_err(InitialEventError::Native)?;
+        let window = quantum::next_window(
+            &tx,
+            &read,
+            context,
+            &job,
+            input.scope,
+            input.source,
+            control,
             input.window_width_seconds,
-        ) {
-            Ok(window) => window,
-            Err(QuantumError::Interval) => {
-                // No query or persistent plan exists for an empty intersection.
-                // The job remains pending; another scope may use the next turn.
-                tx.rollback()
-                    .await
-                    .map_err(|_| InitialEventError::DeliveryUnknown)?;
-                initial_history::check_delivery(&mut lease, policy, input.cancelled)
-                    .map_err(InitialEventError::Compacted)?;
-                native.validate_delivery(input.cancelled, &mut lease, policy)?;
-                if self.client.is_closed() {
-                    return Err(InitialEventError::DeliveryUnknown);
-                }
-                native.delivered();
-                self.available = true;
-                return Ok(None);
+            &mut || producer_progress::recovery::authority(&mut lease, policy, input.cancelled),
+        )
+        .await
+        .map_err(InitialEventError::Quantum)?;
+        let Some(window) = window else {
+            drop(read);
+            // Empty intersections, empty successful pages and repeated
+            // returned boundaries leave coverage pending without a new plan.
+            // Confirm rollback so other jobs can use the next turn.
+            tx.rollback()
+                .await
+                .map_err(|_| InitialEventError::DeliveryUnknown)?;
+            initial_history::check_delivery(&mut lease, policy, input.cancelled)
+                .map_err(InitialEventError::Compacted)?;
+            native.validate_delivery(input.cancelled, &mut lease, policy)?;
+            if self.client.is_closed() {
+                return Err(InitialEventError::DeliveryUnknown);
             }
-            Err(error) => return Err(InitialEventError::Quantum(error)),
+            native.delivered();
+            self.available = true;
+            return Ok(None);
         };
         let plan = quantum::prepare(
             &tx,
@@ -130,9 +138,6 @@ impl ControlSession {
         )
         .await
         .map_err(InitialEventError::Quantum)?;
-        let read = native
-            .quantum_progress_read(&plan.permit, input.cancelled)
-            .map_err(InitialEventError::Native)?;
         producer_progress::recovery::require_read(
             &tx,
             read,

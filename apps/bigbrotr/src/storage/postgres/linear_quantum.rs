@@ -13,8 +13,12 @@ use bigbrotr_model::{AcquisitionScopeId, FactRef, JobId};
 use std::sync::{Arc, Mutex};
 use tokio_postgres::Transaction;
 
+#[path = "linear_continuation.rs"]
+mod continuation;
+pub(in crate::storage::postgres::control_owner) use continuation::next_window;
+
 pub struct QuantumGrant {
-    permit: Arc<OwnedPermit>,
+    pub(in crate::storage::postgres::control_owner) permit: Arc<OwnedPermit>,
 }
 impl QuantumGrant {
     pub fn required_data_bytes() -> u64 {
@@ -23,6 +27,9 @@ impl QuantumGrant {
         };
         ProgressGrant::REQUIRED_DATA_BYTES
             + bigbrotr_protocol::EventLimits::default().wire_bytes as u64
+            // A prior terminal is decoded one row at a time before retaining
+            // the next plan. Fund the same bounded wire parser used at receive.
+            + bigbrotr_protocol::EventLimits::default().parse_bytes as u64
             + (MAX_PREIMAGE_BYTES
                 + MAX_TOTAL_VALUES * size_of::<String>()
                 + MAX_FILTERS * size_of::<Filter>()
@@ -102,11 +109,54 @@ pub struct QuantumCapture {
     teardown_complete: bool,
 }
 
+/// Shared terminal interpretation for capture and retained continuation reads.
+/// This preserves the precedence of sticky loss over remote hints.
+struct TerminalState {
+    kind: TerminalKind,
+    teardown: bool,
+    prefix: usize,
+    retained: usize,
+    ordering: bool,
+    finish: bool,
+    more: bool,
+    auth: bool,
+}
+impl TerminalState {
+    fn gap(&self) -> Option<&'static str> {
+        if !self.teardown {
+            Some("teardown")
+        } else if self.prefix < self.retained {
+            Some("unclassified_suffix")
+        } else if self.ordering {
+            Some("ordering")
+        } else if self.more && self.finish {
+            Some("contradictory_hints")
+        } else if self.auth {
+            Some("auth")
+        } else {
+            match self.kind {
+                TerminalKind::Eose => None,
+                kind => Some(kind.code()),
+            }
+        }
+    }
+    fn class(&self) -> &'static str {
+        if self.gap().is_some() {
+            "interrupted"
+        } else if self.finish {
+            "relay_reported_exhaustion"
+        } else {
+            "linear_observed"
+        }
+    }
+}
+
 pub(in crate::storage::postgres::control_owner) struct QuantumEffect {
     position: Position,
     kind: u16,
     mutation: u64,
     signed_time: u64,
+    event_id: bigbrotr_model::EventId,
     prefix: bool,
     confirmed: bool,
 }
@@ -167,6 +217,7 @@ impl QuantumEffects {
                 .request()
                 .map_or(0, |request| request.request_sequence.get()),
             signed_time: captured.signed_time,
+            event_id: captured.event_id,
             prefix: event.classifies_prefix(),
             confirmed: false,
         });
@@ -399,6 +450,7 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             records.extend_from_slice(&effect.mutation.to_be_bytes());
             records.extend_from_slice(&effect.signed_time.to_be_bytes());
             records.push(u8::from(effect.prefix));
+            records.extend_from_slice(effect.event_id.as_bytes());
         }
         let oldest = effects
             .effects
@@ -406,7 +458,6 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             .filter(|effect| matches!(effect.kind, 2 | 3 | 5))
             .map(|effect| effect.signed_time)
             .min();
-        let kind = capture.terminal.kind;
         let ordering_gap = effects
             .effects
             .iter()
@@ -415,29 +466,17 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
             .collect::<Vec<_>>()
             .windows(2)
             .any(|pair| pair[1] > pair[0]);
-        let gap = if !capture.teardown_complete {
-            Some("teardown")
-        } else if prefix < capture.frames.len() {
-            Some("unclassified_suffix")
-        } else if ordering_gap {
-            Some("ordering")
-        } else if capture.terminal.more && capture.terminal.finish {
-            Some("contradictory_hints")
-        } else if capture.terminal.auth {
-            Some("auth")
-        } else {
-            match kind {
-                TerminalKind::Eose => None,
-                TerminalKind::Closed => Some("closed"),
-                TerminalKind::Deadline => Some("deadline"),
-                TerminalKind::Cancelled => Some("cancelled"),
-                TerminalKind::FrameCap => Some("frame_cap"),
-                TerminalKind::EventCap => Some("event_cap"),
-                TerminalKind::Transport => Some("transport"),
-                TerminalKind::Decode => Some("decode"),
-                TerminalKind::Disconnected => Some("disconnected"),
-            }
+        let terminal = TerminalState {
+            kind: capture.terminal.kind,
+            teardown: capture.teardown_complete,
+            prefix,
+            retained: capture.frames.len(),
+            ordering: ordering_gap,
+            finish: capture.terminal.finish,
+            more: capture.terminal.more,
+            auth: capture.terminal.auth,
         };
+        let gap = terminal.gap();
         // A lost/unclassified/ordering suffix keeps the original pending upper;
         // successful later mutations cannot move a cursor past that obligation.
         let continuation = if gap.is_some() {
@@ -445,13 +484,7 @@ pub(in crate::storage::postgres::control_owner) async fn finish(
         } else {
             plan.window.continuation(oldest)
         };
-        let class = if gap.is_some() {
-            "interrupted"
-        } else if capture.terminal.finish {
-            "relay_reported_exhaustion"
-        } else {
-            "linear_observed"
-        };
+        let class = terminal.class();
         let digest = (snapshot.revision > 0).then(|| super::digest(plan.context, &snapshot));
         let charge = 1024
             + plan.window.predicate().len() as i64

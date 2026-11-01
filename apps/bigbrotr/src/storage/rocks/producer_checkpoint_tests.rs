@@ -404,10 +404,9 @@ fn retained_payload_time_returns_only_the_exact_authenticated_event_pair() {
     // receive8. Event-subject dictionaries/eligibility/receive are not payloads.
     let payload = receipt.batch().unwrap().records()[1];
     assert_eq!(payload.source_record_id.sequence.get(), 6);
-    let event_id: EventId =
-        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
-            .parse()
-            .unwrap();
+    let event_id: EventId = "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+        .parse()
+        .unwrap();
     let scratch = grant(&budget, 8 * MIB, 0);
     let view = store.progress_read(&scratch).unwrap();
     let before = (kv(&store), store.db.latest_sequence_number());

@@ -41,6 +41,14 @@ pub(crate) struct CapturedBinding {
     pub clock_resolution_us: u64,
     pub clock_anomaly_flags: u32,
     pub signed_time: u64,
+    pub event_id: bigbrotr_model::EventId,
+}
+impl CapturedBinding {
+    pub(crate) fn matches(&self, intent: &EventIntent) -> bool {
+        self.certification_digest == intent.certification_digest()
+            && self.event_id == intent.event().id
+            && self.signed_time == intent.event().created_at.0
+    }
 }
 
 pub struct CapturedEventInput {
@@ -77,10 +85,12 @@ impl CapturedEventInput {
             .received(source.endpoint(), source.route(), captured.received())
             .map_err(CapturedInputError::Observation)?;
         let signed_time = event.created_at.0;
+        let event_id = event.id;
         let intent = EventIntent::network(1, scope.scope().visibility(), event, observation)
             .map_err(|_| CapturedInputError::Intent)?;
         let binding = CapturedBinding {
             signed_time,
+            event_id,
             request: captured
                 .request()
                 .id()
@@ -170,6 +180,7 @@ mod tests {
         let original = intent(a.clone());
         let binding = CapturedBinding {
             signed_time: a.created_at.0,
+            event_id: a.id,
             request: [b'a'; 48],
             wire_sequence: 7,
             input_sha256: [3; 32],
@@ -202,6 +213,32 @@ mod tests {
             let handoff = || CapturedEventInput {
                 intent: changed.clone(),
                 binding,
+                permit: grant(),
+            };
+            assert!(matches!(
+                PreparedCertification::from_captured(handoff(), 256 * 1024),
+                Err(AdmissionError::InvalidInput)
+            ));
+            assert!(matches!(
+                PreparedEvent::from_captured(request, handoff(), 256 * 1024),
+                Err(AdmissionError::InvalidInput)
+            ));
+        }
+        // Cursor identity/time must match the same sealed intent even when its
+        // certification digest itself was left untouched by corruption.
+        for changed in [
+            CapturedBinding {
+                signed_time: binding.signed_time + 1,
+                ..binding
+            },
+            CapturedBinding {
+                event_id: bigbrotr_model::EventId::from_bytes([0; 32]),
+                ..binding
+            },
+        ] {
+            let handoff = || CapturedEventInput {
+                intent: original.clone(),
+                binding: changed,
                 permit: grant(),
             };
             assert!(matches!(

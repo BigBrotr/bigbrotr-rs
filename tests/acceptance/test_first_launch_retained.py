@@ -506,17 +506,24 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertEqual(base.load(root/'relay-closed-003.json')['completion'],'quiet-eof')
             self.assertFalse((root/'relay-finite-complete.json').exists())
 
-    def test_only_ordinary_source_can_finish_on_a_prelimit_quiet_receive(self):
+    def test_ordinary_source_requires_terminal_repeated_boundary_and_retained_keeps_own_quiet_gate(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);ordinary=object.__new__(base.Runtime);ordinary.home=root
+            ordinary.sql=Mock(return_value='f')
             retained=object.__new__(case.RetainedRuntime);retained.home=root
             self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
-            base.save(root/'relay-open-003.json',dict(number=3))
+            base.save(root/'relay-closed-002.json',dict(number=2))
+            self.assertFalse(ordinary.initial_source_quiet())
+            ordinary.sql.return_value='t'
             self.assertTrue(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
+            base.save(root/'relay-open-003.json',dict(number=3))
+            with self.assertRaisesRegex(ValueError,'another socket'):ordinary.initial_source_quiet()
+            self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-open-003.json',dict(number=3,retained_quiet=True))
             self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-closed-003.json',dict(number=3))
-            self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
+            with self.assertRaisesRegex(ValueError,'another socket'):ordinary.initial_source_quiet()
+            self.assertFalse(retained.initial_source_quiet())
 
     def prefix_runtime(self,root,clock=100):
         runtime=case.RetainedRuntime(arguments(root),{})

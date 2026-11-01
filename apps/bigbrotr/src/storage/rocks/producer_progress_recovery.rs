@@ -4,8 +4,7 @@ use super::bootstrap::read_options;
 use super::{AdmissionError, BootstrapError, IngestRecovery, IngestStore};
 use crate::{runtime::OwnedPermit, storage::rocks::keys::IngestKey};
 use bigbrotr_model::{
-    EventId, Fact, FactPayload, FactRef, ProducerEpoch, ProducerSlotId,
-    codec::FactDecodeLimits,
+    EventId, Fact, FactPayload, FactRef, ProducerEpoch, ProducerSlotId, codec::FactDecodeLimits,
 };
 use sha2::{Digest, Sha256};
 

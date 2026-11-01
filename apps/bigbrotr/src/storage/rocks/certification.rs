@@ -50,10 +50,10 @@ impl PreparedCertification {
         max_event_bytes: usize,
     ) -> Result<Self, AdmissionError> {
         let (intent, binding, permit) = input.into_parts();
-        let mut prepared = Self::new(intent, max_event_bytes, permit)?;
-        if prepared.digest != binding.certification_digest {
+        if !binding.matches(&intent) {
             return Err(AdmissionError::InvalidInput);
         }
+        let mut prepared = Self::new(intent, max_event_bytes, permit)?;
         prepared.captured = Some(binding);
         Ok(prepared)
     }

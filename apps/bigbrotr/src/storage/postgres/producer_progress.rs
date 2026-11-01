@@ -817,6 +817,7 @@ mod tests {
             progress,
             captured: crate::acquisition::preparation::CapturedBinding {
                 signed_time: 1,
+                event_id: bigbrotr_model::EventId::from_bytes([1; 32]),
                 request: progress.position.request,
                 wire_sequence: progress.position.wire_sequence,
                 input_sha256: progress.position.input_digest,

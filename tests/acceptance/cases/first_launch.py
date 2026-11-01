@@ -792,10 +792,19 @@ class Runtime:
         self.backend_absence(output)
 
     def initial_source_quiet(self):
-        return any(load(path)['number'] >= 3
-                   and (not getattr(self, 'retained_boundary', False) or load(path).get('retained_quiet') is True)
-                   and not path.with_name(path.name.replace('open', 'closed')).exists()
-                   for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
+        if getattr(self, 'retained_boundary', False):
+            return any(load(path)['number'] >= 3 and load(path).get('retained_quiet') is True
+                       and not path.with_name(path.name.replace('open', 'closed')).exists()
+                       for path in sorted(self.home.glob('relay-open-*.json'), reverse=True))
+        # The declared second signed page repeats second1. A retained successful
+        # boundary now defers coverage without opening a third request. The
+        # independent post-join oracle still checks every row and transcript.
+        require(not (self.home / 'relay-open-003.json').exists(),
+                'repeated signed boundary opened another socket')
+        if not (self.home / 'relay-closed-002.json').exists():
+            return False
+        return self.sql('bigbrotr_control', "SELECT count(*)=2 AND bool_and(terminal_kind IS NOT NULL) "
+                        "FROM control.acquisition_quanta") == 't'
 
     def initial_archive_observation(self, entry, output):
         def published():
