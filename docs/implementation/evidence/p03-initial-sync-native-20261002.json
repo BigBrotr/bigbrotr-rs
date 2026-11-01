@@ -1815,7 +1815,7 @@
         "classification": "Source-confirmed product cancellation race: immutable attribution/visibility read can finish rollback then refuse delivery on SIGTERM and leave owner unavailable. The original run has no separate durable rollback witness; exact failure bytes retained, no claimed successful rollback for that capture.",
         "correction": "Only three Sync immutable visibility/observation reads drain once under their original policy/grants/deadline with a private false cancellation token. Real stop skips before first poll or discards validated success. Native errors, closed-client/rollback/lease/deadline failures and effectful operations remain fatal. Post-append absence becomes StateMismatch before stop discard.",
         "critical_review": "Astra bounded review/recheck approved read drain and post-append-absence ordering. All five new controls actually executed and passed in the current binary suite.",
-        "remaining": "Assemble current candidate with updated reviewed tutorial pin; run actual installed stop regression and affected window/budget/restart checks, then coherent main push and real hosted CI. Old01fc connected fault/corruption proof stays scoped to unchanged responsibilities.",
+        "remaining": "Installed stop regression12049 PASS7/7 on actualdee; current538 historical scratch changes require their affected recovery proof, then coherent main publication and hosted CI.",
         "source": "dee67719ca55952a21c3a41c1c93d67990e08771",
         "tree": "3dfd97d1c059e41a750528711af87f8b9e76fa4d",
         "build": {
@@ -1847,7 +1847,7 @@
           "container": "1cc7bcd2a7ef4abb14d8dcf6ae10675fcaf1e3d01638f036b069803fabe18fbd",
           "owner": "ecfb7a324a4d0105acfb20248809175f",
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-workspace",
-          "scope": "The five newly added Sync controls belong to binary src/main.rs, not library src/lib.rs. They remain NOT_RUN and require actual binary-target execution with same parent/source guards. No repetition of qualified library/Clippy/Rustdoc is needed.",
+          "scope": "Actual declared application library scope only. Five new Sync binary controls were separately executed and passed in tool78547; library receipt remains scoped and unchanged.",
           "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/workspace-receipt.json",
           "receipt_sha256": "4294372cc8580f4f91931d6536e931e79df5d490046e1e42f1743d3be65ee7a9",
           "application_library": {
@@ -1899,7 +1899,7 @@
         }
       },
       "retained_budget_20261101": {
-        "status": "FAIL_FIXTURE_CORRECTION_PENDING",
+        "status": "FAIL_FIXTURE_CLIENT_CORRECTION_REVIEWED_REAL_RERUN_PENDING",
         "original": {
           "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/retained-budget-r1-failure.json",
           "sha256": "274213f6da8c7b2cc1f05475fbfaaf8449e7c803384534a8374c8695ab964818",
@@ -1908,11 +1908,20 @@
         },
         "cause": "Post-proof quiet rounds consume receive deadlines inside the original65s client gate;83 wires closed, no relayerror, source128 completion absent. Final native/Index verification NOT_RUN; no product budget-reset defect established.",
         "correction": "Source-reviewed immediate correlated empty CLOSED retries after the sole bound proof, keeping pre-proof quiet gate, all128 queries/500ms receive/3s socket/65s submitted limits and original native/Index expectations. Independent CLOSED/teardown/empty-effect/checkpoint/source-end controls required.",
-        "implementation": "CLOSED fixture16745359 + non-last checkpoint guard60aa7770 integrated as e2aa8772/9b1ca39f. Source critical review finding closed;132 affected controls PASS, then57 retained controls PASS/0skip for exact pair65\u219265. Fresh real rerun NOT_RUN.",
-        "remaining": "Actual128 durable terminal requests/no129, complete830-native-row/64-input receipt census and publishedIndex64/cut312/556physical rows still require fresh real PASS."
+        "implementation": "CLOSED fixture16745359 and checkpoint guard60aa7770 integrated as e2aa8772/9b1ca39f. Their132/57 affected controls PASS. Actual r2 exposed another shared client guard before submitted publication; corrected49500f65 integrated as d6a74562.",
+        "remaining": "Actual128 durable terminal requests/no129, complete830-native-row/64-input receipt census and publishedIndex64/cut312/556physical rows still require fresh real PASS.",
+        "client_profile_mismatch": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/retained-budget-r2-failure.json",
+          "sha256": "cf71833f18e543201de2b3be7c4d733ae99a480dd218243e850446da194b1311",
+          "product": "dee67719ca55952a21c3a41c1c93d67990e08771",
+          "verifier": "b5383d3429d01ed58ab4c1f1a65fe5852d0acf50",
+          "classification": "FAIL_FIXTURE: submitted client compared valid CLOSED_PROFILE only to PROFILE; AssertionError/clientexit1 before submitted/deadline publication or first source connection. Final drain/native/Index NOT_RUN. All16 actual owned containers inspected stopped/PID0; cleanupPASS.",
+          "correction": "Shared exact PROFILE/CLOSED_PROFILE allowlist at actual submitted barrier; retain client-owned monotonic65s deadline and strict invalid profile refusal. Ordinary reclamation quiet unchanged.",
+          "controls": "Sol actual export-profile13PASS and retained57PASS at49500f65; new CLOSED-specific controls reproduced2 failures before fix. Astra independent actual source/caller/oracle review approved; no engine proof claimed."
+        }
       },
       "historical_scratch_20261102": {
-        "status": "FAIL_PRODUCT_CORRECTION_REVIEWED_NOT_BUILT",
+        "status": "CORRECTION_INTEGRATED_CURRENT_RELEASE_RUNNING",
         "tasks": [
           "P03-T05 Steps1/4",
           "P03-T01 Step3",
@@ -1929,7 +1938,30 @@
         "review": "Astra found and Sol fixed post-native-handoff metadata reacquisition and compacted initial-gap final dispatch. Exact fixed-scalar overlap included in shared4KiB bound. Actual-total resource telemetry stays exact; current strict assertions add independent8MiB, old source-pinned captures untouched.",
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
         "branch": "fix/m2-historical-read-scratch-20261102",
-        "qualification": "Source/format/diff only. Rust build/tests and new installed recovery remain NOT_RUN; final critical review/commit pending."
+        "qualification": "Source/Astra critical review and fresh isolated fmt/diff PASS. Current release85000 RUNNING. Current strict library AND binary, exact-parent observer and installed restart on/off NOT_RUN; no old results relabeled.",
+        "original_commit": "26232a5414c867962c3e922fc28f3bd328e67693",
+        "integrated_source": "53802a461c89d5f36dabf941a705f012f2492f77",
+        "tree": "c2bb2bb64fe55eea69524d0306d0f3b6ed574948",
+        "current_build": {
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46",
+          "tool": 85000,
+          "container": "742ee6b3799147044a37aa80e816a5142177253632714c12da71a9dc4a7cd2aa",
+          "owner": "21f39e5852a62a78b21e987295712d35",
+          "status": "RUNNING_NOT_YET_QUALIFIED",
+          "recipe": "Existing guarded release/workspace/bin/probe recipes parameterized; source/native/compiler/cache/protectedELF guards retained. Scope limits in preparation-audit.json."
+        },
+        "portable": {
+          "status": "ORIGINAL_FAIL_RETAINED_TARGETED_CORRECTION_PASS",
+          "original": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/portable-53802a46/receipt.json",
+          "original_sha256": "f788883406b06c94309145d2c7f479767109290e0d3a0b7bd1f340cd563ade67",
+          "observed": "586 actual acceptance cases; one stale tutorial reviewed-code identity error. Other585 cases passed; no skipped case observed. This full run remains FAIL.",
+          "classification": "Fixture source pin not reconciled before execution, not product defect. Actual product code review does not add signer/publication API; nine Nostr paths/other code/dependency/configuration/vendor objects identical to dee.",
+          "correction_source": "fed87a8e5fb2c8fa8cfe1a56b766d8d6ac25be12",
+          "targeted_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/tutorial-fed87a8e/receipt.json",
+          "targeted_sha256": "99fdd3f3445e442a32b0dc6eb946b6d97f7871e13c388c15d276d83f69aa03aa",
+          "targeted_result": "14PASS/0FAIL/0skip; unaffected585 retain original scope; no second full portable run required for this pin-only correction."
+        }
       }
     }
   }

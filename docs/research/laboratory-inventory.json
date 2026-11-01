@@ -78748,10 +78748,10 @@
           },
           "remaining_qualification": {
             "third_terminal_commit_after": "PASS01fc; terminal receipt retained",
-            "affected_installed_budget": "NOT_RUN",
-            "affected_installed_restart": "NOT_RUN",
+            "affected_installed_budget": "R1/R2 FAIL_FIXTURE; reviewed common client correction495 integratedd6a; real rerunpending",
+            "affected_installed_restart": "FAIL_PRODUCT dee historical scratch; reviewed integrated538 currentbuildrunning",
             "current_source_hosted_ci": "NOT_RUN",
-            "affected_installed_interruptions": "FAIL01fc orderly-stop; source correction reviewed, not built"
+            "affected_installed_interruptions": "PASSdee12049/7of7; original01fcFAILpreserved"
           },
           "immutable_read_stop_correction": {
             "source": "dee67719ca55952a21c3a41c1c93d67990e08771",
@@ -78763,13 +78763,13 @@
             "container": "440b8ef234fc95a2e622a50041c108f78ef4bb88fe54ba5e44f10e323968ad55",
             "tool": 26254,
             "cache": "Release26254, strict92644, binary78547 and probe48676 all terminal/cache115 released; original4ELF bytes/full metadata preserved",
-            "status": "Current release/Clippy/Rustdoc/library659/binary212/exact-parent observer PASS; five new CLI controls executed; installed correction proof remains NOT_RUN",
+            "status": "Actual release/Clippy/Rustdoc/library659/binary212/observer PASS, installed stop regression PASS7/7. Later538 historical grant correction under separate qualification.",
             "strict_workspace": {
               "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-workspace",
               "owner": "ecfb7a324a4d0105acfb20248809175f",
               "container": "1cc7bcd2a7ef4abb14d8dcf6ae10675fcaf1e3d01638f036b069803fabe18fbd",
               "tool": 92644,
-              "status": "PASS_SCOPED_LIBRARY; reaped0/stopped/PID0/noOOM; actual new binary tests pending"
+              "status": "PASS_SCOPED_LIBRARY; reaped0/stopped/PID0/noOOM; binary separately PASS78547"
             },
             "application_binary_tests": {
               "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-application-bin",
@@ -78835,14 +78835,40 @@
                 "owner": "c427a80aa9872ad2d9a7236fe20877a4",
                 "tool": 38371,
                 "status": "FAIL_PRODUCT initial-close scratch; reaped1, cleanupPASS/allownedstopped; dataset/logs retained"
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719/acceptance-retained-budget-r2",
+                "owner": "f753cbaa1fccb4de6a1859baa33c9e5a",
+                "tool": 75142,
+                "status": "FAIL_FIXTURE clientprofile before submitted/deadline; finaldrain/native/IndexNOT_RUN",
+                "cleanup": "Actual16 owned containers inspected stopped/PID0; cleanup_errors empty; data/logs retained"
               }
             ]
           },
           "historical_scratch_work": {
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
             "branch": "fix/m2-historical-read-scratch-20261102",
-            "state": "Sol source implementation, critical review finalizing; no build/test/engine/cache work",
-            "retention": "Unique unintegrated source and original restart-on failure preserved"
+            "state": "Original26232a54 clean source integrated byRoot as53802a46; actual release running85000. No unintegrated edits or autonomous agent writes.",
+            "retention": "Original restart-on failure and source WT retained; compilation/strict/installed proof pending."
+          },
+          "historical_scratch_qualification": {
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46",
+            "source_root": "/home/tux/bigbrotr-rs/.research/m2-window-product-53802a46",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46",
+            "source": "53802a461c89d5f36dabf941a705f012f2492f77",
+            "tree": "c2bb2bb64fe55eea69524d0306d0f3b6ed574948",
+            "tool": 85000,
+            "container": "742ee6b3799147044a37aa80e816a5142177253632714c12da71a9dc4a7cd2aa",
+            "owner": "21f39e5852a62a78b21e987295712d35",
+            "status": "RELEASE_RUNNING; original cache115 lock held only by this guarded launcher, no engine active",
+            "retention": "No cleanup. Protected original4ELFs guarded with O_NOATIME/fullmetadata equality; raw failures and current datasets retained."
+          },
+          "retained_client_profile_work": {
+            "worktree": "/home/tux/bigbrotr-rs/.research/m2-retained-client-profile-20261102",
+            "branch": "fix/m2-retained-client-profile-20261102",
+            "source": "49500f6500c27deb7a6a895461765caff0b1304b",
+            "state": "Clean/integratedd6a74562; criticalreviewapproved/13+57controlsPASS; no engine/cachework bySol",
+            "acceptance_root": "/home/tux/bigbrotr-rs/.research/m2-window-acceptance-fed87a8e"
           }
         }
       },
