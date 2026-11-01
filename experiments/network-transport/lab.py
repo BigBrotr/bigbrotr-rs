@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Trusted exact-Git Tux runner with exclusive reuse of an owned compiler cache."""
 import datetime
+import errno
 import fcntl
 import hashlib
 import json
@@ -9,6 +10,7 @@ from pathlib import Path
 import re
 import secrets
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -43,6 +45,32 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def original_anchor_sha(path):
+    """Hash one retained single-link anchor without changing its stat metadata."""
+    flags = ('O_RDONLY', 'O_NOFOLLOW', 'O_NOATIME')
+    if sys.platform != 'linux' or any(not hasattr(os, name) for name in flags):
+        raise OSError(errno.ENOTSUP, 'original anchors require Linux O_NOATIME/O_NOFOLLOW')
+
+    def metadata(value):
+        return {name: getattr(value, name) for name in dir(value) if name.startswith('st_')}
+
+    before = path.lstat()
+    if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
+        raise ValueError('original anchor must be a regular single-link file')
+    expected = metadata(before)
+    # Permission or filesystem refusal must propagate. An ordinary read fallback
+    # could alter atime before the failed guard had a chance to report it.
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME)
+    with os.fdopen(descriptor, 'rb') as stream:
+        if metadata(os.fstat(stream.fileno())) != expected:
+            raise ValueError('original anchor changed between lstat and open')
+        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+        after = metadata(os.fstat(stream.fileno()))
+    if after != expected or metadata(path.lstat()) != expected:
+        raise ValueError('original anchor metadata changed during hashing')
+    return digest
+
+
 def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
 
@@ -72,9 +100,10 @@ for item in prior:
 # original executables are retained separately before sharing it with this run.
 original_result = json.loads((cache_root / 'out/tests/result.json').read_text())
 assert original_result['source'] == old['source']
+assert len(original_result['executables_sha256']) == 4
 for name, digest in original_result['executables_sha256'].items():
     assert re.fullmatch('[a-z_]+', name)
-    assert sha(cache_root / 'out/artifacts' / name) == digest
+    assert original_anchor_sha(cache_root / 'out/artifacts' / name) == digest
 cache_lock = os.open(cache_root / '.compiler-cache.lock', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
 fcntl.flock(cache_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
 preflight = dict(observed_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
