@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "CORRECTED_FUNDING_RETRY_SOURCE_READY_NEW_QUALIFICATION_PENDING",
+    "status": "FUNDING_RETRY_RUST_PASS_RECOVERY_LIVENESS_CORRECTION_PENDING",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47237,12 +47237,12 @@
     },
     "checks": {
       "format_and_diff": "PASS",
-      "new_Rust_compilation": "PASS_RELEASE_WORKER_AND_PARENT; strict workspace and new native tests NOT_RUN",
-      "new_native_tests": "NOT_RUN",
+      "new_Rust_compilation": "PASS_RELEASE840_WORKER_AND_PARENT; strictClippy/Rustdoc/fullRust on one-file cfg(test) sourceeb PASS",
+      "new_native_tests": "PASS_645_APPLICATION_LIBRARY_TESTS_3_IGNORED; fullworkspace1447PASS_4ignored; later pressure-timer defect still open",
       "connected_PostgreSQL_pressure_and_reopen": "NOT_RUN",
-      "installed_healthy_restart": "PASS_7_OF_7_TUTORIAL_52.998_SECONDS"
+      "installed_healthy_restart": "FAIL840_R1_FIXTURE_STARTUP_RACE; R2_ORDINARY_AND_BASELINE_PASS_SUCCESSOR_NOT_REACHED_BEFORE25S_FIXTURE_BOUND; recovery liveness defect source-confirmed"
     },
-    "remaining": "Compile/reviewed coherent new source, full Rust workspace, six connected PG cases, actual configured stable socket continuation and installed initial-successor/restart path. Reuse unchanged fault/capture evidence for its real dependency scope; repeat safety/fault checks affected by the final diff. Close this bounded quota/recovery capability, then select next concrete M2 increment by actual dependencies. Physical d/R,persistentA,funded reopen/purge/CW-N1/P1/P2/OPEN65 and broader load/distribution/special-case qualification remain owned by existing P02/P08 tasks, not a blanket phase prerequisite.",
+    "remaining": "Close timer liveness and recovery setup corrections; review before fresh exact-source release/probe, affected native checks, six connectedPG cases, three configured-stable socket modes and installed on/off successor/restart. Full unfiltered Rust1447 at eb remains valid for unchanged responsibilities; do not automatically repeat unrelated Archive worker tests. Then P03-T05Step2 consumes durable continuation in next bounded quantum. Existing later physical/Open65/load/distribution gates remain at their task owners.",
     "qualified_source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
     "build": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/build-receipt.json",
@@ -47330,13 +47330,63 @@
       "original_commit": "642cba67ea1fabb6802c7c32f05f0f191a97a495",
       "review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/funding-retry-fix-review.json",
       "review_sha256": "e57efe7339ee18c9c3a3441b43145a3b984e958ab2ee0a8dbdd8de814f2ef031",
-      "status": "SOURCE_REVIEWED_NOT_COMPILED;native_and_connected_runtime_NOT_RUN",
+      "status": "COMPILED_AND_FULL_RUST_REGRESSIONS_PASS_SOURCEeb_PRODUCT840; connected qualification still pending",
       "scope": "Consistent fresh max_batch bound and original held amount on continuation; actual growth checked before further effects, no topup/debt clear; actual known timestamp versus explicit conservative import encoding bound. Correct fixture grants/pressure premise, existing timestamp retry oracles preserved."
     },
     "socket_fixture": {
       "original_commit": "194a298ca61545ab14ff9511559c90c4745455dd",
       "status": "SOURCE_CRITICAL_REVIEW_NO_BLOCKER;actual_socket_modes_NOT_RUN",
       "scope": "Fresh owned current-schema PG/template, actual managed initialization/activation and broad non-owner role checks; accepted rows unchanged, no old lab start. Product/harness identities separated by exact6path noncompiled fence.505 full acceptance controlsPASS at d8f6 source; later native signatures are not runtime-qualified by Python controls."
+    },
+    "release840": {
+      "status": "PASS_EXACT_SOURCE_RELEASE_WORKER_AND_PARENT",
+      "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/840d1cc3/build-receipt.json",
+      "sha256": "a41cb55432564ed47353451c7296b2fb5db78ebc73549c339962a713a054b9de"
+    },
+    "workspace840_failure": {
+      "status": "FAIL_TEST_ONLY_UNUSED_IMPORT;RUSTDOC_AND_RUST_TESTS_NOT_RUN",
+      "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/840d1cc3/workspace-failure.json",
+      "sha256": "4b23d8d90df37cff9333039a681827b1e76a69a4353118525738c91c0a860bcd"
+    },
+    "full_test_workspace_eb": {
+      "status": "PASS_STRICT_CLIPPY_RUSTDOC_FULL_UNFILTERED_RUST",
+      "test_source": "eb7754046cc9754426d210b805f3c057412494c4",
+      "reused_product": "840d1cc32070d0acc1c8cf7dd17592754b16534a",
+      "summary": "1447PASS/0FAIL/4ignored across94summaries; application library645PASS/3ignored; test-only import removal, no new product release identity",
+      "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/eb775404-tests/terminal-receipt.json",
+      "sha256": "f50674d99130eaa0629c3e7dec60cf943c4e89a48e7ec8b5f9ddae7f6ef6ec41"
+    },
+    "installed840": {
+      "product": "840d1cc32070d0acc1c8cf7dd17592754b16534a",
+      "r1": {
+        "status": "6PASS_1FAIL_5NOT_RUN",
+        "cause": "Fixture startup-admission race supported by source/timing, exact429 branch not uniquely measured. Shared completed-reader barrier corrected and source-reviewed in1b3b.",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-840d1cc3/acceptance-restart-r1/terminal-receipt.json",
+          "sha256": "cae65e076d1c6fc14c3934c2cd27cf4be05ff71ef36f3d046ab6f828096ff988"
+        }
+      },
+      "r2": {
+        "harness": "1b3bb70b7e58cd9fb1a0588dc0425a1f6d789b75",
+        "status": "8PASS_1FAIL_3NOT_RUN",
+        "cause": "Ordinary/export and restart baseline PASS; successor submitted25s barrier expires before configured30s recovery stability. Separate native retry-reset liveness defect source-confirmed; this run alone does not measure indefinite starvation.",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-840d1cc3/acceptance-restart-r2/terminal-receipt.json",
+          "sha256": "be8305793f3510a7814b8c528e12059dc1fce21028198422461ebe1e3c8d8373"
+        }
+      },
+      "fixture_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/840d1cc3/startup-fixture-review.json",
+        "sha256": "a842af9d20c6e2f0b99333261b816ac14585ac7936bbca322a28de59ffe1f6a0"
+      },
+      "provenance_off": "NOT_RUN"
+    },
+    "recovery_liveness_blocker": {
+      "status": "SOURCE_CONFIRMED_CORRECTION_IN_PROGRESS",
+      "cause": "Already-pressure positive admission refusal clears below_low_since despite no change to actualP+held. Repeated Sync attempts can prevent stable-low recovery indefinitely.",
+      "required": "Preserve observed timer on already-latched refusal; retain new-high latch/reset and actual-high/failed-observation/policy/recovery invalidation. Existing healthy connected socket mode must exercise repeated refusals/no effects/known replay then success after original interval.",
+      "fixture": "Separate setup-only same-owner/current-policy full stability bracket before client clocks; preserve25s submitted,40s ordinary,12s export and all current independent expectations.",
+      "reviewer": "gpt-6-astra/xhigh; bounded diagnosis completed; final source review pending"
     }
   }
 }

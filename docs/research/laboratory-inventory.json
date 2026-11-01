@@ -78524,31 +78524,35 @@
       }
     },
     "logical_pending_quota_20261101": {
-      "status": "642funding-retryand194freshsocket source-reviewed;newcompile/runtimepending",
+      "status": "840release_and_eb_fullRustPASS;installedoriginalFAILs_preserved;timer_and_setup_corrections_in_progress",
       "integration_worktree": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-20261101",
       "branch": "work/ingest-logical-ceiling-20261101",
       "base_main": "064d054d101932d50defabce0fb626f93f42ed81",
       "retained_author_worktrees": [
         ".research/ingest-logical-core-sol-20261101",
+        ".research/ingest-quota-connected-sol-20261101",
+        ".research/ingest-quota-tests-20261101",
         ".research/ingest-quota-native-grants-sol-20261101"
       ],
       "evidence": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101",
       "report": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json#logical_pending_quota_20261101",
-      "processes": "No active compiler, engine or CIobserver; all reviewed/source tasks completed.505acceptancecontrolcontainer350fdeb stopped/PID0/noOOM; tool65161 reaped0. Root next owns coherent corrected build.",
+      "processes": "No active compiler, PG/client or hosted observer after Root12114 reaped0 and installed17819 reaped1. Sol native/probe and fixture agents implement bounded corrections; Astra diagnosis/reviews idle pending their source. Cache released; original4ELF bytes/fullmetadata independently rechecked O_NOATIME.",
       "retention": "Preserve current labs, originals, failed captures, author commits and ignored evidence. Monitor retirement already reconciled in existing open-growth resource record; no additional cleanup.",
       "qualified_run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-f0221a01",
       "source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
-      "partial_source": "Root cfg(test)-only alias lint fix; Sol connected probe/shared fixture followthrough in separate inventoried-by-author worktree; runtime negatives NOT_RUN.",
-      "integration_head_observed": "2771203320cbe01a3af6560ff9c7a12885c9e9ef",
+      "partial_source": "Root integration840 unchanged production; eb775404 test-only import correction retained in tests worktree; fixture1b3b retained in core author worktree. Native timer and setup barrier corrections pending author commits, no integration/push.",
+      "integration_head_observed": "840d1cc32070d0acc1c8cf7dd17592754b16534a before this documentation checkpoint",
       "test_only_worktree": ".research/ingest-quota-tests-20261101@4e779cc4 (clean, merged original; prepared campaign NOT_RUN_SUPERSEDED)",
       "author_worktree": ".research/ingest-quota-connected-sol-20261101@642cba67 clean; original native/PG fix and socket source merged",
       "qualified_source310": "310b44eb4e46c8293fec642416acc769ac4cb6de",
       "probe_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-310b44eb-probe-r2",
       "connected_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-310b44eb-connected-quota-r2",
-      "preserved_failures": "f022argument-guard refusal;310ClippytestlintFAIL;privateprobeR1Cargo-home setupFAIL;connectedR1defaultCIDR refusal (root contains reserved names/secrets but allocated no Docker resource; actual R2 owner differs). No result relabeled.",
-      "remaining": "Close bounded quota/recovery capability with pertinent tests, then real-dependency nextM2 increment. Do not automatically expand into later load/distribution/OPEN65 qualification; retain existing task owners.",
-      "current_correction": "Source901 closes producer/dataset census gap; source642 fixes genuine wider-time funding retry and staged-conflict regressions while correcting fiveunderfunded/onepressure fixtures. Both critical source reviews complete; no current-source Rust/PG/socket runtime PASS yet.",
-      "aba_workspace": "Clippy/RustdocPASS;applicationlibrary632PASS/11FAIL/3ignored; exactfailedELF+logs retained out/failure-artifacts, original4ELFpins unchanged/cache released."
+      "preserved_failures": "Original aba11Rust failures,840strictClippy import failure and840installedr1/r2 failures remain at their exact retained capsules/run roots; no success relabel.",
+      "remaining": "Reviewed timer+setup correction, new exact-source product/probe and affected quota/recovery qualification; next bounded M2 walker at P03-T05Step2. No broad cleanup or all-P02 barrier.",
+      "current_correction": "Already-pressure refusal must preserve stable-low timer; fresh-high and real invalidation resets remain. Installed setup must precede unchanged25s client interval.",
+      "aba_workspace": "Clippy/RustdocPASS;applicationlibrary632PASS/11FAIL/3ignored; exactfailedELF+logs retained out/failure-artifacts, original4ELFpins unchanged/cache released.",
+      "latest_build": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-840d1cc3",
+      "full_rust_run": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-logical-ceiling-eb775404-tests"
     }
   },
   "implementation_ci_portable_controls_20261030": {
