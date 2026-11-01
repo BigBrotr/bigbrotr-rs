@@ -613,6 +613,9 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )
             .await;
             store = reopened;
+            ingest_owner::wait_for_initial_pending_quota(&mut store, &spec)
+                .await
+                .unwrap();
             appended
         } else {
             intent
