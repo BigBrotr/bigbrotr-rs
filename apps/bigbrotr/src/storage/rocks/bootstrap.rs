@@ -30,6 +30,7 @@ pub enum BootstrapError {
     RetiredRequest,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
+    PendingQuota(super::PendingQuotaError),
     /// Exact retained-effect refusal while validating a compacted handoff.
     Compacted(super::AdmissionError),
     /// No negative outcome is implied. Close/join and resolve the exact request.

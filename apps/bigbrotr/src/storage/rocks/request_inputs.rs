@@ -40,6 +40,7 @@ pub enum RequestInputError {
     Filesystem,
     InsufficientReservation,
     Accounting(super::PendingAccountingError),
+    PendingQuota(super::PendingQuotaError),
     Codec(CodecError),
 }
 

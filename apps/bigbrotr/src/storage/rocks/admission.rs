@@ -31,6 +31,7 @@ pub enum AdmissionError {
     ProducerClosing,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
+    PendingQuota(super::PendingQuotaError),
     CommitUnknown,
 }
 impl fmt::Display for AdmissionError {
@@ -55,6 +56,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
             BootstrapError::RequestInput(error) => Self::RequestInput(error),
+            BootstrapError::PendingQuota(error) => Self::PendingQuota(error),
             BootstrapError::Compacted(error) => error,
         }
     }
@@ -227,6 +229,9 @@ impl PreparedEvent {
     }
     pub fn verified_event(&self) -> Option<&VerifiedEvent> {
         self.event.as_ref()?.as_ref().ok()
+    }
+    pub fn request_digest(&self) -> Digest256 {
+        self.digest
     }
     pub fn request_id(&self) -> ProducerRequestId {
         self.request
