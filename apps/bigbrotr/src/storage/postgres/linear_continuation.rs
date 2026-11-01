@@ -190,7 +190,7 @@ pub(in crate::storage::postgres::control_owner) async fn next_window(
     futures_util::pin_mut!(stream);
     while let Some(row) = stream.try_next().await.map_err(failure)? {
         authority().map_err(QuantumError::Native)?;
-        if traversal.entries as usize >= 3 * usize::from(budget) + 1 {
+        if traversal.entries as usize > 3 * usize::from(budget) {
             return Err(QuantumError::Context);
         }
         traversal.entries += 1;
@@ -588,15 +588,23 @@ pub(super) fn authenticate_saved_effects(
     effects: &[u8],
     retained: i16,
     prefix: i16,
-    lower: u64,
-    upper: u64,
+    interval: std::ops::Range<u64>,
     dependencies: &[u8],
     authority: &mut impl FnMut() -> Result<(), AdmissionError>,
 ) -> Result<(), QuantumError> {
-    if !(0..=3).contains(&retained) || !(0..=retained).contains(&prefix) || lower >= upper {
+    if !(0..=3).contains(&retained)
+        || !(0..=retained).contains(&prefix)
+        || interval.start >= interval.end
+    {
         return Err(QuantumError::Context);
     }
-    let decoded = decode_effects(effects, retained as u16, prefix as u16, lower, upper)?;
+    let decoded = decode_effects(
+        effects,
+        retained as u16,
+        prefix as u16,
+        interval.start,
+        interval.end,
+    )?;
     require_payloads(dependencies, &decoded.targets, |reference| {
         native
             .event_payload_time(reference, &mut *authority)

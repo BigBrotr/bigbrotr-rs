@@ -337,8 +337,7 @@ pub(in crate::storage::postgres::control_owner) async fn require_history(
             row.try_get(4).map_err(|_| ProducerProgressError::Backend)?,
             row.try_get(2).map_err(|_| ProducerProgressError::Backend)?,
             row.try_get(3).map_err(|_| ProducerProgressError::Backend)?,
-            rows::number(&row, 0)?,
-            rows::number(&row, 1)?,
+            rows::number(&row, 0)?..rows::number(&row, 1)?,
             row.try_get(5).map_err(|_| ProducerProgressError::Backend)?,
             &mut authority,
         )
@@ -449,7 +448,7 @@ pub(in crate::storage::postgres::control_owner) async fn exclude(
 ) -> Result<(), QuantumError> {
     let snapshot = load(tx, context).await.map_err(|_| QuantumError::Context)?;
     if snapshot.complete != snapshot.reserved
-        || traversal.entries as usize >= 3 * usize::from(traversal.geometry.budget) + 1
+        || traversal.entries as usize > 3 * usize::from(traversal.geometry.budget)
     {
         return Err(QuantumError::Context);
     }

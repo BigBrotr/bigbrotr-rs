@@ -464,7 +464,7 @@ impl Geometry {
                 && (span.upper != span.window_end
                     || span.window_end < self.window_end
                     || (span.window_end != self.horizon
-                        && (span.window_end - self.origin) % self.width != 0)))
+                        && !(span.window_end - self.origin).is_multiple_of(self.width))))
         {
             return Err(QuantumError::Context);
         }

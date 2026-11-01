@@ -2254,7 +2254,16 @@
     "measured_scope": "Both retained release logs compile librocksdb-sys. Parent Cargo duration406s versus407s does not isolate native compilation cost. e812 dev/test source/profile is a different reuse context.",
     "closure": "Within existing optional cache preparation, preserve timestamps only for byte-and-membership-verified identical native inputs or another verified equivalent mechanism; force invalidation for changed contents/membership. Preserve archive/source identities, compiler flags/tool pins and pre/post validation. Never fixed-backdate arbitrary changed inputs. Measure actual necessary CI runs; cache absence must still build.",
     "documentation": "https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed",
-    "current_local_evidence_report": "p03-initial-sync-native-20261002.json#linear_quantum_20261101.coordinator_drain_followthrough"
+    "current_local_evidence_report": "p03-initial-sync-native-20261002.json#linear_quantum_20261101.coordinator_drain_followthrough",
+    "current_local_observation": {
+      "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
+      "context": "Strict Clippy workspace; optional cache115. Existing followthrough only, no added M2 gate.",
+      "build_script_phase_seconds": 264.41,
+      "object_files": 343,
+      "archive_bytes": 486500500,
+      "finding": "1713 native vendor entries and toolchain inputs remain byte-identical to8f. Exported unchanged-file mtimes advance16:30:59 to20:01:31UTC; mtime-based watched inputs provide the existing sufficient invalidation mechanism. Container source path/Cargo path fingerprint unchanged.",
+      "limits": "Phase includes bindgen, compilation and archiving. Retained8f comparison artifact is a different library-test profile/dependency context; exact first dirty trigger/equal-command duplication and causal savings are not established. No cache mutation or extra experiment performed."
+    }
   },
   "previous_verified_hosted_executions": [
     {

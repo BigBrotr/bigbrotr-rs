@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "CORRECTED_RELEASE_RUNNING_INSTALLED_NOT_RUN",
+      "status": "RELEASE_PASS_WORKSPACE_CLIPPY_FAIL_MECHANICAL_CORRECTION_PREPARED",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1556,7 +1556,7 @@
         "Exact-source observer build and current installed cap/native-integrity/window/fault journeys",
         "Affected current-product installed/recovery regressions"
       ],
-      "next": "Retry the existing guarded release at corrected source053f; bind actual verified parent before workspace/probe. Close the correlated exact gap ErrorResponse witness review before actual fault journeys; reuse unchanged product after Python-only changes.",
+      "next": "Freeze the mechanical strict-lint corrections and repeat the existing exact-source release/workspace chain. Preserve the complete581 portable result for unchanged Python contracts, repinning only the reviewed tutorial source binding. Then build observer, assemble and execute current installed cap/native/window/fault proof.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1618,12 +1618,40 @@
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/053f287f",
         "tool": 85038,
         "container": "6a8be5cb981cc3599e4d5ca6dcb625d4864484b0252fda54f0ecd67b1dead4c1",
-        "status": "RUNNING_NOT_QUALIFIED"
+        "status": "PASS_ACTUAL_VERIFIED_RELEASE",
+        "receipt_sha256": "116586220323ff695d1f509f5f55ce476e06902ee62d88f27ca77c816eec47e0",
+        "binary_sha256": "1f7d15d50ed4acf3a2c171582d6f9831998f07ba39ab46488db320ed41c48202",
+        "binary_bytes": 45691728,
+        "terminal": "tool85038 reaped0/containerPID0/noOOM/cache released"
       },
       "tutorial_pin": {
         "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
         "proof": "053f287f/tutorial-source-pin-proof.json",
         "scope": "Only mechanical scope identity lifetime binding since reviewed452; nine Nostr paths, six other code/config/dependency objects and1919vendor entries unchanged.14 targeted tutorial controls PASS; runtime behavior still requires actual installed execution."
+      },
+      "strict_workspace": {
+        "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
+        "status": "FAIL_FOUR_STRICT_CLIPPY_RULES",
+        "original": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/053f287f/workspace-failure.json",
+        "tool": 89271,
+        "terminal": "reaped1/containerPID0/noOOM/cache released",
+        "remaining": "Rustdoc/application tests NOT_RUN. Equivalent local style corrections prepared; no disabled lint or changed oracle."
+      },
+      "portable_full": {
+        "source": "86fdb14f2d60924b62af472c40aef33b9a973cbd",
+        "status": "PASS",
+        "tests": 581,
+        "skipped": 0,
+        "seconds": 28.688,
+        "tool": 30731,
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/portable-86fdb14f",
+        "scope": "Actual maintained complete portable suite. Original819 suite579cases/5failure records retained separately; obsolete live-client /1 fake and inconsistent horizon corrected without changing actual live client or security-negative criteria. No installed qualification."
+      },
+      "portable_original_failure": {
+        "source": "81991301f59446a8b49691a5a4cdf8d9c730e806",
+        "path": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/portable-81991301/failure.json",
+        "classification": "test_fixture_contract",
+        "scope": "Five failure records in live-client fake profile1/horizon200000; actual declared until86399 requiresH86400/profile2. Both sensitive-bytes negatives now reach their original boundary; no security exception added."
       }
     }
   }
