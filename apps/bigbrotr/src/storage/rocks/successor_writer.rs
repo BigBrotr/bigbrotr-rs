@@ -86,6 +86,24 @@ impl NativeSuccessorActivation {
     pub(in crate::storage) fn lineage(&self) -> Option<&RetainedLineage> {
         self.parts.as_ref().map(|(_, lineage, _)| lineage)
     }
+    /// Connected accepted-policy binding follows the complete retained lineage
+    /// proof. Neither a raw open nor portable handoff bytes can select it.
+    pub(in crate::storage) fn bind_pending_quota(
+        &mut self,
+        policy: super::PendingQuotaPolicy,
+        cancelled: &AtomicBool,
+    ) -> Result<(), BootstrapError> {
+        let (candidate, lineage, handoff) = self
+            .parts
+            .as_mut()
+            .ok_or(BootstrapError::AuthorityUnavailable)?;
+        if lineage.has_compacted_initial() {
+            candidate.require_prepared_compacted_handoff(lineage, handoff, cancelled)?;
+        } else {
+            candidate.require_prepared_handoff(lineage, handoff, cancelled)?;
+        }
+        candidate.bind_prepared_pending_quota(policy)
+    }
     pub(in crate::storage) fn activate_compacted(
         &mut self,
         cancelled: &AtomicBool,
@@ -173,6 +191,49 @@ impl ActiveSuccessorWriter {
     }
     pub(in crate::storage) fn poison(&self) {
         self.store.poison_successor();
+    }
+    /// Idempotent current-policy check under the admitted native frontier.
+    pub(in crate::storage) fn bind_pending_quota(
+        &mut self,
+        policy: super::PendingQuotaPolicy,
+    ) -> Result<(), super::PendingQuotaError> {
+        if self.native_unavailable() {
+            return Err(super::PendingQuotaError::WriteUncertain);
+        }
+        self.store
+            .require_admission_owner(None)
+            .map_err(|_| super::PendingQuotaError::Conflict)?;
+        self.store.bind_pending_quota(policy)
+    }
+    pub(in crate::storage) fn observe_pending_quota(
+        &mut self,
+    ) -> Result<super::PendingQuotaStatus, super::PendingQuotaError> {
+        self.store.observe_pending_quota()
+    }
+    pub(in crate::storage) fn reserve_pending_requests(
+        &mut self,
+        requests: &[super::PendingReservationRequest],
+    ) -> Result<(), super::PendingQuotaError> {
+        self.store.reserve_pending_requests(requests)
+    }
+    pub(in crate::storage) fn dictionary_pending_reservation(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        self.store
+            .dictionary_pending_reservation(request, intent, recorded_at, limits, permit)
+    }
+    pub(in crate::storage) fn pending_event_reservation(
+        &self,
+        event: &PreparedEvent,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        event.pending_reservation_request(&self.store, limits, permit)
     }
     pub fn producer_credit(&self) -> Result<super::ProducerCredit, AdmissionError> {
         self.store.producer_credit(self.producer_slot_id())
@@ -583,6 +644,10 @@ impl IngestStore {
         authority: impl FnMut() -> Result<(), BootstrapError>,
     ) -> Result<(), AdmissionError> {
         self.seal_pending_accounting(&mut batch)?;
+        let digest = self
+            .staged_pending_digest(request)
+            .map_err(AdmissionError::PendingQuota)?;
+        batch.fund(self, request, digest)?;
         let Some(frontier) = &self.live_successor else {
             if cancelled.is_some() {
                 return Err(AdmissionError::InvalidInput);

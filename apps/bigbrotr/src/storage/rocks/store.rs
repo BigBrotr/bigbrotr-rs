@@ -26,6 +26,12 @@ pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLim
 #[path = "pending_accounting.rs"]
 mod pending_accounting;
 pub use pending_accounting::{PENDING_ACCOUNTING_BYTES, PendingAccounting, PendingAccountingError};
+#[path = "pending_quota.rs"]
+mod pending_quota;
+pub use pending_quota::{
+    PendingQuotaError, PendingQuotaPolicy, PendingQuotaStatus, PendingReservationRequest,
+};
+
 #[cfg(test)]
 #[path = "pending_accounting_tests.rs"]
 mod pending_accounting_tests;
@@ -291,6 +297,7 @@ pub struct IngestStore {
     manifest: IngestManifest,
     accounting: PendingAccounting,
     write_uncertain: bool,
+    pending_quota: pending_quota::PendingQuota,
     // Only consuming a locally minted candidate after connected activation can
     // populate this field. Opening a schema2 manifest never reconstructs it.
     live_initial: Option<initial_writer::LiveInitialBinding>,
@@ -535,6 +542,11 @@ impl IngestStore {
             manifest,
             accounting,
             write_uncertain: false,
+            pending_quota: if initialize.is_some() {
+                pending_quota::PendingQuota::Unfunded
+            } else {
+                pending_quota::PendingQuota::RecoveryBlocked
+            },
             live_initial: None,
             live_successor: None,
         })
