@@ -7,6 +7,7 @@ import hashlib
 import http.client
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -274,7 +275,7 @@ class IndexRuntime(Runtime):
         self.record_resources()
         return info
 
-    def ch(self, sql, role='reader', *, rows=False, error=None):
+    def ch(self, sql, role='reader', *, rows=False, error=None, strict_stderr=False):
         self.inspect(self.ch_entry)
         used = sum(p.stat().st_size for folder in ('data', 'logs')
                    for p in (self.state/'clickhouse'/folder).rglob('*') if p.is_file())
@@ -293,7 +294,61 @@ class IndexRuntime(Runtime):
             require(result.returncode != 0 and error in result.stderr, 'expected ClickHouse refusal')
             return
         require(result.returncode == 0, 'ClickHouse observer failed')
+        require(not strict_stderr or not result.stderr, 'ClickHouse observer diagnostic output')
         return [json.loads(line) for line in result.stdout.splitlines()] if rows else result.stdout.strip()
+
+    def ch_table_rows(self):
+        """Read all ten families with one client; retain each complete typed result."""
+        require(tuple(name for name,_,_ in self.schema.FAMILIES) == oracle.TARGETS,
+                'ClickHouse batch table inventory')
+        deadlines = [getattr(self,name,None) for name in ('prefix_deadline','boundary_deadline')]
+        statements = [oracle.select_rows(self.schema,DATABASE,name)+' FORMAT JSON;'
+                      for name in oracle.TARGETS]
+        raw = self.ch('\n'.join(statements), strict_stderr=True)
+        require(len(raw.encode()) <= len(statements)*1048576, 'ClickHouse batch output bound')
+        def unique(pairs):
+            value = dict(pairs)
+            require(len(value) == len(pairs), 'duplicate ClickHouse JSON field')
+            return value
+        def finite(value):
+            number = float(value)
+            require(math.isfinite(number), 'nonfinite ClickHouse JSON number')
+            return number
+        def invalid_constant(value):
+            raise ValueError('nonfinite ClickHouse JSON constant')
+        decoder = json.JSONDecoder(object_pairs_hook=unique, parse_float=finite,
+                                   parse_constant=invalid_constant)
+        rows,position = {},0
+        for name,columns,_ in self.schema.FAMILIES:
+            while position < len(raw) and raw[position] in ' \t\r\n':
+                position += 1
+            start = position
+            document,position = decoder.raw_decode(raw,position)
+            require(len(raw[start:position].encode()) <= 1048576, 'ClickHouse table output bound')
+            require(type(document) is dict and set(document) == {'meta','data','rows','statistics'},
+                    'incomplete ClickHouse table response')
+            # select_rows hex-encodes FixedString leaves recursively; metadata
+            # also binds the declared types when a table contains no data rows.
+            expected = [dict(name=column,type=re.sub(r'FixedString\([0-9]+\)','String',ty))
+                        for column,ty in self.schema.COMMON+columns]
+            oracle.exact(document['meta'],expected)
+            data = document['data']
+            require(type(document['rows']) is int and 0 <= document['rows'] <= 175
+                    and type(data) is list and len(data) == document['rows'],
+                    'ClickHouse table row count')
+            names = {column for column,_ in self.schema.COMMON+columns}
+            require(all(type(row) is dict and set(row) == names for row in data),
+                    'ClickHouse table row columns')
+            statistics = document['statistics']
+            require(type(statistics) is dict and set(statistics) == {'elapsed','rows_read','bytes_read'}
+                    and type(statistics['elapsed']) in (int,float) and statistics['elapsed'] >= 0
+                    and all(type(statistics[key]) is int and statistics[key] >= 0
+                            for key in ('rows_read','bytes_read')), 'ClickHouse table statistics')
+            rows[name] = data
+        require(not raw[position:].strip(' \t\r\n'), 'extra ClickHouse batch output')
+        require(all(deadline is None or time.monotonic() < deadline for deadline in deadlines),
+                'ClickHouse batch exceeded caller deadline')
+        return rows
 
     def bootstrap(self):
         super().bootstrap()
