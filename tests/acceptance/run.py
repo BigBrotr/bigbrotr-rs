@@ -219,11 +219,17 @@ def main():
                         help="initialized-renewal stop: release the held SQL or retain it through terminal refusal")
     parser.add_argument("--linear-quantum-fault",choices=('plan-before','plan-after','terminal-before','terminal-after','gap-write','stale-authority','empty-terminal-authority'),
                         help='linear quantum only: COMMIT loss, gap-write failure or actor authority refusal')
+    parser.add_argument('--linear-quantum-scenario',choices=('interruptions','capped-continuation'),
+                        help='linear quantum only: finite interruptions (default) or capped older-page continuation')
     parser.add_argument("--retained-archive-schedule", choices=("uninterrupted", "unbound-publication-loss", "grouped-publication-loss"),
                         help="closed-reclamation Archive fault schedule; default is unique unbound publication loss")
     args = parser.parse_args()
     if args.linear_quantum_fault is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
+    if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
+        parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
+    if args.linear_quantum_scenario=='capped-continuation' and args.linear_quantum_fault is not None:
+        parser.error('--linear-quantum-fault is only for the interruptions scenario')
     if args.retained_archive_schedule is not None and args.case != "p01-first-launch-closed-reclamation":
         parser.error("--retained-archive-schedule is only for p01-first-launch-closed-reclamation")
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):

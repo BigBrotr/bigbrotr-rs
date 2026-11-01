@@ -764,7 +764,7 @@ class Runtime:
         prepared, _ = self.capture(output, 'prepared')
         self.validate_source(self.current_owner_view(prepared, setup), first, load(self.home / 'prepared.json'))
         (self.home / 'prepared.continue').write_text('independent source relationships checked\n')
-        self.wait(lambda: (self.home / 'submitted.json').exists(), 'submitted acquisition', 15, entry, self.client)
+        self.initial_submission(entry,output)
         self.initial_archive_observation(entry, output)
         # The retained variant overrides that observation. Run its negatives here
         # after the separate proof is complete and before releasing the client.
@@ -824,6 +824,9 @@ class Runtime:
         # Closed variants may hold the existing source client before later
         # admissions. The ordinary signed journey has no additional barrier.
         pass
+
+    def initial_submission(self,entry,output):
+        self.wait(lambda: (self.home/'submitted.json').exists(),'submitted acquisition',15,entry,self.client)
 
     def initial_launch(self):
         return self.launch('initial', 'app', 'serve', '--file', '/etc/bigbrotr/instance.toml',
@@ -1346,6 +1349,8 @@ def first_launch(args, checks, inputs):
         args.case_limits = STOP_LIMITS
     if linear_quantum:
         from cases.first_launch_linear_quantum import LinearQuantumRuntime,STAGES as QUANTUM_STAGES,LIMITS as QUANTUM_LIMITS
+        if getattr(args,'linear_quantum_scenario',None)=='capped-continuation':
+            from cases.first_launch_capped_quantum import CappedQuantumRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         runtime_type=LinearQuantumRuntime
         args.case_limits=QUANTUM_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'

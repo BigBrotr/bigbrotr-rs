@@ -191,7 +191,7 @@ def request_binding(event, wire, ordinal):
 
 
 def requests(state, epoch, manifest, inputs, receipts, owner, bindings, observations):
-    """Exact current request/outcome columns, including typed wire attribution."""
+    """Exact current columns; attribution is shared or declared per mutation."""
     producer = only(state['producer_epochs'], producer_epoch=epoch)
     assert producer['outstanding_request_limit'] == 32
     assert producer['reserved_through_request'] == len(inputs) == len(receipts)
@@ -202,9 +202,11 @@ def requests(state, epoch, manifest, inputs, receipts, owner, bindings, observat
     assert len(actual_requests) == len(outcomes) == len(inputs)
     columns = ('relay_endpoint_id', 'relay_access_scope_id', 'relay_enrollment_generation',
         'relay_route_id', 'acquisition_scope_id', 'acquisition_job_id')
+    per_request=set(observations)!=set(columns)
+    if per_request:assert set(observations)==set(bindings) and all(set(value)==set(columns) for value in observations.values())
     for n, (row, outcome, original, receipt) in enumerate(zip(actual_requests, outcomes, inputs, receipts), 1):
         binding = bindings.get(n)
-        attribution = observations if binding else dict.fromkeys(columns)
+        attribution = (observations[n] if per_request else observations) if binding else dict.fromkeys(columns)
         expected = dict(common, request_sequence=n, request_digest='\\x' + sha(original),
             input_bytes=len(original), input_profile=1, issuer_role='control', issuer_resource=owner['resource_id'],
             issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'], **attribution,

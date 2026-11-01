@@ -61,7 +61,7 @@ def validate_queued(state, observations, *, ordinal=1, key='b1'*16, total_jobs=N
     validate_job(accepted, receipt, key=key, expected_principal=expected_principal)
 
 
-def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, nonces=('91', '92', 'a1')):
+def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, nonces=('91', '92', 'a1'),selector_document=None):
     assert ordinal in (1, 2, 3, 99)
     visibility = dict(report['public_scope'], ordinal=str(ordinal))
     assert report['private_scope'] == dict(report['public_scope'], ordinal='3')
@@ -71,7 +71,8 @@ def validate_source(state, report, observations, *, ordinal=3, url=ENDPOINT, non
     enrollment, = state['relay_enrollments']; route, = state['network_routes']
     scope, = state['acquisition_scopes']; selector, = state['acquisition_selectors']
     assert bytes.fromhex(endpoint['url_bytes'][2:]).decode() == url
-    canonical = b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
+    canonical = (b'{"version":1,"filters":[{"kinds":[1]}],"history_since":0,"ephemeral":"retain"}'
+        if selector_document is None else json.dumps(selector_document,ensure_ascii=False,separators=(',',':')).encode())
     assert selector['document'] == '\\x'+canonical.hex()
     assert selector['candidate_digest'] == '\\x'+hashlib.sha256(canonical).hexdigest()
     assert scope['selector_id'] == selector['selector_id'] and scope['endpoint_id'] == endpoint['endpoint_id']

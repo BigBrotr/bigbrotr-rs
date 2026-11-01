@@ -108,6 +108,10 @@ def run(directory):
     visibility = json.loads((directory / 'visibility.json').read_text())
     assert visibility['ordinal'] == '3'
     revisions = dict(expected_config_revision='1', expected_policy_revision='1')
+    capped=(directory/'linear-capped-profile.json').exists()
+    if capped:
+        from linear_capped_transport import SELECTORS,UPPERS
+        from linear_capped_client import continue_after_prepopulation
     endpoint = call('relay-endpoints', dict(url='WS://127.0.0.1:7447/a/../installed-fixture', **revisions), '91'*16)
     enrollment = call('relay-enrollments', dict(endpoint_id=endpoint['endpoint_id'], visibility=visibility,
         route={'class': 'private', 'cidr': '127.0.0.1/32'}, enabled=True, expected_generation=None, **revisions), '92'*16)
@@ -120,16 +124,20 @@ def run(directory):
         # observes that prefix and establishes the independent engine outage.
         barrier('index-prefix')
     scope = call('acquisition-scopes', dict(endpoint_id=endpoint['endpoint_id'], access_scope_id=enrollment['access_scope_id'],
-        visibility=visibility, selector=dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
+        visibility=visibility, selector=SELECTORS[0] if capped else dict(version=1, filters=[{'kinds': [1]}], history_since=0, ephemeral='retain'), **revisions), 'a1'*16)
     listener = relay_listener()
     finished = threading.Event()
     linear=(directory/'linear-quantum-profile.json').exists()
-    expected_uppers={0:{1:86400},1:{1:86400}} if linear else {1:86400}
-    if linear:
+    assert not (linear and capped)
+    expected_uppers=({scope:dict(enumerate(values,1)) for scope,values in enumerate(UPPERS)} if capped
+        else {0:{1:86400},1:{1:86400}} if linear else {1:86400})
+    if capped:
+        from linear_capped_transport import relay as linear_relay
+    elif linear:
         from linear_quantum_transport import relay as linear_relay
-    worker = threading.Thread(target=linear_relay if linear else relay,
-        args=(directory,listener,finished,errors) if linear else (directory, listener, finished, errors, True),
-        kwargs=dict(expected_uppers=expected_uppers))
+    worker = threading.Thread(target=linear_relay if linear or capped else relay,
+        args=(directory,listener,finished,errors) if linear or capped else (directory, listener, finished, errors, True),
+        kwargs={} if capped else dict(expected_uppers=expected_uppers))
     worker.start()
     try:
         barrier('prepared')
@@ -143,20 +151,24 @@ def run(directory):
         def status(*,known_plan=False,receipt=receipt,scope=scope,selector=None,scope_number=0):
             code, observed = request('GET', '/management/v1/jobs/' + receipt['job_id'], headers=auth)
             assert code == 200
-            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=known_plan,selector=selector,
-                expected_uppers=expected_uppers[scope_number] if linear else expected_uppers)
+            quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=known_plan,
+                selector=SELECTORS[scope_number] if capped else selector,
+                expected_uppers=expected_uppers[scope_number] if linear or capped else expected_uppers)
             assert observed['state'] in ('accepted', 'queued')
             assert {k:v for k,v in observed.items() if k!='linear_quantum'} == dict(format='bigbrotr-job-status/1', job_id=receipt['job_id'], kind='acquisition',
                 state=observed['state'], job_revision='1' if observed['state'] == 'accepted' else '2',
                 checkpoint_revision='0', created_at_us=receipt['accepted_at_us'], completed_at_us=None,
                 observed_at_us=observed['observed_at_us'], reason_code=None, authority='observation-only')
             return observed
+        if capped:
+            other_scope,other_receipt=continue_after_prepopulation(directory,call,barrier,status,
+                endpoint,enrollment,visibility,revisions)
         barrier('submitted', seconds=65, poll=status)
         final_status = status(known_plan=True)
         assert final_status['state'] == 'queued'
         statuses.append(final_status)
         publish(directory, 'status-observations.json', statuses)
-        if linear:
+        if linear or capped:
             second_status=status(known_plan=True,receipt=other_receipt,scope=other_scope,
                 selector=dict(version=1,filters=[{'kinds':[1],'since':1,'until':86399}],history_since=0,ephemeral='retain'),scope_number=1)
             publish(directory,'linear-status-observations.json',[final_status,second_status])

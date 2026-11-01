@@ -139,7 +139,7 @@ def receipt_refs(receipt):
     return decode(receipt.split(b'\0',1)[1])[5]
 
 
-def journey(state,wires,epoch,expected):
+def journey(state,wires,epoch,expected,*,selector=None):
     """expected maps wire number to literal (event, classification, request, refs).
 
     Membership comes from the independent science encoder and declared workload;
@@ -153,7 +153,7 @@ def journey(state,wires,epoch,expected):
         assert not stopped,'stopped bounded traversal opened another socket'
         row=rows[number-1]
         job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-        upper=window(row,job,wire,expected_upper=upper)
+        upper=window(row,job,wire,expected_upper=upper,selector=selector)
         assert row['request_predicate']=='\\x'+wire_json(['REQ','0'*48,*wire['request'][2:]]).hex()
         assert row['quantum_number']==number
         if row['terminal_kind'] is None:
@@ -194,7 +194,7 @@ def journey(state,wires,epoch,expected):
     if len(rows)>len(wires):
         assert not stopped,'stopped bounded traversal retained another plan'
         row=rows[-1];job=next(job for job in state['jobs'] if job['job_id']==row['job_id'])
-        window(row,job,expected_upper=upper)
+        window(row,job,expected_upper=upper,selector=selector)
 
 
 def initial(state,wires,event,science,*,retained_events=None):
