@@ -87,6 +87,32 @@ def finite_peer(value, wires, events, last_closed_sha256):
     assert 0<value['last_closed_monotonic_ns']==wires[-1]['closed_monotonic_ns']<=value['completed_monotonic_ns']
 
 
+def finite_quanta(rows, wires, before):
+    """Freeze the declared128 rounds and the next undelivered obligation."""
+    assert len(wires)==128 and [wire['number'] for wire in wires]==list(range(1,129))
+    rows=sorted(rows,key=lambda row:row['quantum_number'])
+    assert [row['quantum_number'] for row in rows]==list(range(1,130))
+    context=index.only(before,quantum_number=21)
+    fields=('dataset_id','job_id','scope_id','producer_slot_id','producer_epoch','issuer_role',
+        'issuer_resource','issuer_epoch','issuer_incarnation','route_id')
+    for row in rows:
+        index.exact({key:row[key] for key in fields},{key:context[key] for key in fields})
+    for row,wire in zip(rows,wires):
+        assert row['terminal_kind'] is not None and type(row['completed_at_us']) is int
+        assert index.raw(row['request_id'])==wire['request'][1].encode()
+    pending=rows[-1]
+    assert pending['checkpoint_before']==65
+    assert all(pending[key] is None for key in ('terminal_kind','terminal_frame','request_id',
+        'terminal_sequence','terminal_received_at_us','teardown_complete','retained_events','classified_prefix',
+        'effect_records','dependencies','checkpoint_after','checkpoint_sha256','result_class','gap_reason',
+        'continuation_upper','completed_at_us'))
+    # Completed rows already present at saturation retain their xmin. An
+    # in-flight next plan follows the existing quantum transition oracle.
+    current={row['quantum_id']:row for row in rows}
+    assert all(current.get(row['quantum_id'])==row for row in before if row['terminal_kind'] is not None), \
+        'saturated completed quantum history changed'
+
+
 def progress(state, wanted, events, wire, control, completed, *, proof):
     from installed_progress_context_oracle import typed, current_snapshot
     from installed_sync_oracle import decode
