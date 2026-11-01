@@ -60,9 +60,9 @@ alias to cfg(test) before strict checks. Runtime behavior unchanged, fix uncompi
 `logical_pending_quota_20261101`, owns this scope and critical review receipt.
 
 Local build and tutorial are terminal/reaped0, with retained source/binary/result
-identities and custody receipts. Sol is reconciling current dictionary/socket
-fixtures and connected PG refusal probes in a separate worktree; Astra review
-is complete. The only owned active runtime process is the existing064 hosted
+identities and custody receipts. Sol originaledd00253/2d9ed976 fixture and connected refusal probes are now
+merged; author worktree is clean and retained. Focused oracle/policy/verifier
+controls PASS, Astra critical source review complete; connected runtime NOT_RUN. The only owned active runtime process is the existing064 hosted
 observer, Sol `ack_current_oracle_sol`: driver331077/start25166019,
 gh331080/start25166022, session67014; protected root
 `.research/ci-publication-20261026/terminal-064d054d-20261101`.
@@ -74,7 +74,7 @@ no broad cleanup, GC, repack or mtime optimization is underway.
 
 ## Next bounded action
 
-Group the cfg(test) lint correction with ready shared fixture/probe followthrough;
+The cfg(test) lint correction and shared fixture/probe followthrough are committed;
 keep f022 release/tutorial evidence scoped to its actual source. Rebind the existing
 reviewed tutorial product/apps pin only after actual coherent source is committed;
 unchanged signing/vendor checks and14controls already PASS for f022. Reuse the

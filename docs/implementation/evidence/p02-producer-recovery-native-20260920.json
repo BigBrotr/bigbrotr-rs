@@ -47262,6 +47262,19 @@
     "invocation_refusal": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/initial-launch-refusal.json",
       "classification": "Setup; actual HEAD mismatch refused before cache lock or container; corrected arguments read from exact prepared manifest. No product execution at original refusal."
+    },
+    "connected_source": {
+      "author_commit": "2d9ed976617056f8fd99e247042a676fcea6d4e7",
+      "review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/connected-source-review.json",
+      "review_sha256": "3b1c7c1ea05f8c6c5b252816eafe44b86fc90a9e6fdb6826d699fc86c884abe5",
+      "cases": [
+        "recovery-pressure-latch/known-retry/pre-effect-positive-refusal",
+        "missing-PG-outcome",
+        "reserved-ahead-of-native",
+        "altered-PG-outcome-content"
+      ],
+      "checks": "Focused policy/schema17 and verifier2 PASS; actual probe compilation/connected execution NOT_RUN",
+      "limits": "Current broad non-owner lab role, not deployment-grant profile. No connected high-water or stable-resume claim."
     }
   }
 }
