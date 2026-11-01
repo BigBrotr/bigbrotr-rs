@@ -364,13 +364,21 @@ and real paths together. Use normal increment results to assess setup errors and
 Sol rework and adjust Astra involvement by observed risk. Continue the ACTIVE goal
 and normal checkpoints; no new plan, metrics system or extraordinary checkpoint.
 
-Q38 clarification (2026-10-31): Reconcile a changed persistent format or boundary
-with its actual callers, shared fixtures and recovery paths in the same coherent
-increment. Check changed prerequisites cheaply before expensive work and retain
-setup corrections in the reused tools. Favor demonstrable, integrable capabilities;
-distinguish necessary prerequisites from later extensions rather than opening a
-new refinement chain for every substep. Q38/Q40 apply to prior work too; preserve
-independent evidence and all integrity, authority, cancellation and recovery guarantees.
+Q38 clarifications (2026-10-31 and 2026-11-01): Reconcile a changed persistent
+format, admission rule or internal interface with its callers, readers, recovery,
+shared fixtures and documentation in the same coherent increment. Check changed
+scenario premises cheaply before costly runs: schema, actual roles, budgets,
+data preparation, source completion and reachability of the intended fault.
+Prioritize the next concrete integrable capability. Additional depth must address
+a necessary dependency, a concrete defect or an important current risk; phase
+numbers are not whole-phase barriers. Keep later load, distribution and special-
+case qualifications in their existing tasks with explicit owners. Critical review
+precedes costly campaigns and repeats for substantive changes or real uncertainty.
+Reuse artifacts and evidence for their actual input/provenance scope; test-only
+changes do not require rebuilding an unchanged product. Close current quota and
+recovery failures correctly, then advance the next M2 increment by real dependency.
+Q38/Q40 also apply to prior work, preserving independent evidence and integrity,
+authority, durability, cancellation and recovery guarantees.
 
 Q39 (implementation decision, 2026-10-23): Begin acknowledged-detail reclamation
 with a completely retired nonempty initial producer. Reuse immutable PostgreSQL

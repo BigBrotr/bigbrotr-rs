@@ -44,26 +44,34 @@ PASS. Actual PostgreSQL16.15/Rocks wave310 passes four selected runtime cases
 reserved ahead, altered outcome) plus16setup checks. Each preserves the complete
 13-row native seed, one262B original and all83PGtables/xmin after injection.
 
-Strict all-target workspace310 **FAIL**: non-Drop staging witness explicitly
-consumed with drop in a test. Original4e779cc4 replaces it with lexical scope;
-Rustdoc/full Rust tests are **NOT_RUN**, not PASS. The prepared test-only campaign
-was superseded before launch because the next required change affects product SQL.
+Exact **aba release/worker PASS**. Its strict all-target Clippy and Rustdoc PASS;
+full Rust command stopped at the application library: **632PASS/11FAIL/3ignored**.
+The exact failed Cargo ELF/logs and original contexts are retained outside cache.
+Five failures were an underfunded dictionary fixture, one was a1ns pressure
+premise, three were genuine funding/retry regressions, two were staged-input
+conflict classification regressions. Original642cba67 corrects these shared paths
+and fixtures with a completed critical source review, **not yet compiled**.
+Fresh positive credit is conservative before effects; continuations retain their
+original amount without topup. Single-operation callers carry actual timestamps;
+timestamp-free import keeps a separately documented conservative encoding bound.
+Existing timestamp and tight-limit retry oracles remain; process limits unchanged.
 
-**Current integrity correction:** source310 PG censuses hide corrupt wrong-dataset
-extras for the SAME producer slot/epoch. Schema guards forbid ordinary creation,
-but the existing replica corruption model can retain such a tail. Astra verified
-the source/schema counterexample. Original901f98ed now fixes both censuses by
-slot+epoch with each dataset checked, and adds distinct foreign-request-tail/
-outcome-tail regressions. Critical delta review found no bounded blocker. No
-schema change/general audit; corrected compilation and new cases are NOT_RUN.
+Original901f98ed already corrected both PG censuses and added separate foreign
+request/outcome tails. The source/schema completeness gap is closed in source;
+those six-case runtime checks still await the coherent corrected artifact.
+Original194a298c supplies fresh current-schema socket setup without old labs;
+its helpers/current broad-role/artifact controls are in actual **505PASS/0SKIP**
+full acceptance discovery. Actual three socket modes remain NOT_RUN.
 The [producer report](evidence/p02-producer-recovery-native-20260920.json),
 `logical_pending_quota_20261101`, owns exact receipts, failures and scope limits.
 
 ## Processes, retained resources and next action
 
-No local compiler/engine/hosted observer remains active at this source checkpoint.
-Sol original901f98ed is merged; its author worktree is clean and retained. Root
-owns integration and the upcoming exact-source qualification; reviews completed. PG/client for connected310r2 stopped/PID0/noOOM
+No compiler/engine/hosted observer remains active at this source checkpoint.
+Sol642 source and194 socket setup are merged; author worktrees are clean/retained.
+Root owns integration; critical reviews completed. Control container350fdeb stopped/
+PID0/noOOM, tool65161 reaped0. All original FAIL/NOT_RUN scopes remain explicit.
+PG/client for connected310r2 stopped/PID0/noOOM
 (client143 is controlled idle-client teardown); the owned10.240.0.0/28 network,
 DBs, originals, captures and logs remain. Cache115 released and original4ELF
 bytes/fullmetadata preserved with O_NOATIME checks. Current labs, author worktrees
@@ -75,12 +83,14 @@ The [inventory](../research/laboratory-inventory.json) identifies run roots and
 ownership. Setup failures remain setup/environment failures: probeR1 Cargo-home
 verification, connectedR1 occupied default CIDR; neither ran product engine tests.
 
-**Next:** corrected source and its actual reviewed Nostr pin are now committed;
-Git supplies the enclosing revision. Run the guarded exact-source build/workspace/
-probe once; execute all six
-PG cases, real configured stable resume/socket and affected installed successor/
-restart paths with independent expectations. Reuse valid tools/captures; do not
-run the obsolete4e test-only campaign. Fix actual causes, preserving FAIL/NOT_RUN.
-Physical d/R, persistent unresolved A, funded reopen/purge/CW-N1/P1/P2 and OPEN
-prefix132 remain at P02-T02Step4; broader load/maintenance at Step8/P02-T09.
-Goal incomplete; no scope reduction or completion claim.
+**Next:** bind the source pin to the actual reviewed code, then one coherent
+exact-source build/workspace/probe; execute six PG cases, configured stable socket
+continuation and affected installed successor/restart. Reuse unchanged artifacts,
+reads and evidence for their proven scope; repeat only affected safety/fault checks.
+Do not run the superseded4e test-only preparation. Close current quota/recovery
+failures before integration; then advance the next useful M2 capability by real
+dependency and risk. Phase numbers do not require all of P02 first. Later physical
+d/R,persistentA,funded reopen/purge/CW-N1/P1/P2/OPEN65 stay at P02-T02Step4;
+broader load/maintenance at Step8/P02-T09 and delivery/distribution at P08/P10.
+The latest owner clarification is reconciled into Q38 and the existing guide;
+no parallel plan or reporting system. Goal remains ACTIVE/incomplete.

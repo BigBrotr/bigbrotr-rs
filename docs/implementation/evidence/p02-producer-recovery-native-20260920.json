@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "COHERENT_CORRECTED_SOURCE_READY_RUNTIME_QUALIFICATION_PENDING",
+    "status": "CORRECTED_FUNDING_RETRY_SOURCE_READY_NEW_QUALIFICATION_PENDING",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47242,7 +47242,7 @@
       "connected_PostgreSQL_pressure_and_reopen": "NOT_RUN",
       "installed_healthy_restart": "PASS_7_OF_7_TUTORIAL_52.998_SECONDS"
     },
-    "remaining": "Complete bounded PG census correction and independent review, then coherent exact-source build/workspace/probe, all six PG cases, actual configured stable resume/socket and affected installed successor/restart; syscall fault regressions with exact test artifact where needed. Existing physical d/R/persistent A/funded reopen/purge/CW-N1/P1/P2/OPEN65 and broader tasks remain open.",
+    "remaining": "Compile/reviewed coherent new source, full Rust workspace, six connected PG cases, actual configured stable socket continuation and installed initial-successor/restart path. Reuse unchanged fault/capture evidence for its real dependency scope; repeat safety/fault checks affected by the final diff. Close this bounded quota/recovery capability, then select next concrete M2 increment by actual dependencies. Physical d/R,persistentA,funded reopen/purge/CW-N1/P1/P2/OPEN65 and broader load/distribution/special-case qualification remain owned by existing P02/P08 tasks, not a blanket phase prerequisite.",
     "qualified_source": "f0221a0115c67d69208b0002248cd439c1a9be8b",
     "build": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/f0221a01/build-receipt.json",
@@ -47314,6 +47314,29 @@
       "original_commit": "901f98edc25f99a21c08c241e4498c98b07e05a7",
       "fix_review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/pg-completeness-fix-review.json",
       "fix_review_sha256": "3713d286a6f104841feb564955337336048fc9eafb18901b44bb20bc7a7f0bbf"
+    },
+    "release_aba": {
+      "status": "PASS_EXACT_SOURCE_RELEASE_AND_WORKER;sourceaba20c2f",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/aba20c2f/build-receipt.json",
+      "sha256": "503fcb382e64c032dec1694d128953aa6d2eb6ac940b2fd1f27edde1bf2eeaf9"
+    },
+    "workspace_aba": {
+      "status": "CLIPPY_PASS_RUSTDOC_PASS_RUST_TESTS_FAIL",
+      "receipt": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/aba20c2f/workspace-failure.json",
+      "sha256": "b78843cd8cc233ed4c64f0945875ef12344b4605fe134dd9cba58349c429e563",
+      "scope": "First application library632PASS/11FAIL/3ignored; other workspace packages not all executed after the library failure. Actual failing Cargo ELF324881192B retained outside mutable cache at out/failure-artifacts with separate failed-artifact identity, not a qualified test tool."
+    },
+    "funding_retry_fix": {
+      "original_commit": "642cba67ea1fabb6802c7c32f05f0f191a97a495",
+      "review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/funding-retry-fix-review.json",
+      "review_sha256": "e57efe7339ee18c9c3a3441b43145a3b984e958ab2ee0a8dbdd8de814f2ef031",
+      "status": "SOURCE_REVIEWED_NOT_COMPILED;native_and_connected_runtime_NOT_RUN",
+      "scope": "Consistent fresh max_batch bound and original held amount on continuation; actual growth checked before further effects, no topup/debt clear; actual known timestamp versus explicit conservative import encoding bound. Correct fixture grants/pressure premise, existing timestamp retry oracles preserved."
+    },
+    "socket_fixture": {
+      "original_commit": "194a298ca61545ab14ff9511559c90c4745455dd",
+      "status": "SOURCE_CRITICAL_REVIEW_NO_BLOCKER;actual_socket_modes_NOT_RUN",
+      "scope": "Fresh owned current-schema PG/template, actual managed initialization/activation and broad non-owner role checks; accepted rows unchanged, no old lab start. Product/harness identities separated by exact6path noncompiled fence.505 full acceptance controlsPASS at d8f6 source; later native signatures are not runtime-qualified by Python controls."
     }
   }
 }

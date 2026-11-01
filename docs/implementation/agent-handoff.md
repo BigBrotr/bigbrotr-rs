@@ -156,10 +156,11 @@ Use ordinary increment results to assess setup errors and Sol rework and adjust
 Astra involvement by risk, without another checklist, metrics system or rewrite.
 
 Select the next increment by dependency, risk and capability unlocked. Keep a short
-M1 blocker list in the checkpoint, separating its signed-event admission/archive/
-read/export/restart requirements from later work. Name the concrete risk requiring
-any deeper prerequisite; do not gate M1 on all of P02. Preserve later obligations
-in the existing plan. Updates should explain what now works, its evidence, the
+current-milestone blocker list in the checkpoint. Once M1's signed admission,
+archive, read, export and restart scope is qualified, advance concrete M2 capacity
+without making all of P02 a barrier. Deepen a subproblem only for a necessary
+dependency, a concrete defect or an important risk of the active increment.
+Preserve later qualifications in their existing tasks with explicit owners. Updates should explain what now works, its evidence, the
 remaining blocker and next useful result. Commit/test counts are not productivity
 or quality measures; there is no imposed deadline or reduced product scope.
 
@@ -240,9 +241,11 @@ oracles; do not derive expected output by calling the implementation under test.
    errors, bounded work and cancellation. Keep operational state separate from
    retained scientific evidence. Update generated contracts, configuration help,
    user documentation and migrations with their actual behavior.
-   Reconcile a changed persistent boundary's callers, shared fixtures and recovery
-   paths in that same increment. Check changed prerequisites cheaply first and
-   preserve setup corrections in the reused tools; aim at an integrable capability.
+   Reconcile a changed persistent format, admission rule or internal interface
+   with its callers, readers, recovery, shared fixtures and documentation in the
+   same increment. Before expensive scenarios check changed schema, actual roles,
+   budgets, input preparation, source completion and fault reachability; retain
+   setup corrections in the reused tools. Aim at an integrable capability.
 5. Run checks appropriate to the changed behavior and its real packaged practical
    scenario. Choose unit/property/fuzz/integration coverage for the risk; a small
    documentation correction needs its affected artifact/example checks, not an
