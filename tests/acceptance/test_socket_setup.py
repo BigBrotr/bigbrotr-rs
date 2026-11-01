@@ -76,7 +76,7 @@ class SocketFixtureControls(unittest.TestCase):
         after['principals']=[dict(principal_id=principal,dataset_id=dataset,kind='local',created_at_us=0,
                                   database_role='fixture',local_os_uid=0,xmin='2')]
         after['local_accounts']=[dict(principal_id=principal,dataset_id=dataset,username='alice',
-            initial_owner=True,active=True,credential_revision=1,grant_revision=1,xmin='2')]
+            initial_owner=True,active=True,credential_revision=1,grant_revision=1,authentication_revision=1,xmin='2')]
         after['local_credentials']=[dict(principal_id=principal,dataset_id=dataset,credential_revision=1,
             format='argon2id-v1',argon_version=19,memory_kib=65536,passes=3,lanes=1,salt='\\x'+'02'*16,
             password_hash='\\xa9f16b27ee4188b48954ee896ca04320bdbe34f4c2c0b9f4f332d9daffc892ff',xmin='2')]
@@ -86,11 +86,17 @@ class SocketFixtureControls(unittest.TestCase):
             SOCKET.seed_alice(lab,{},'bb_source_template',{},capture)
         self.assertTrue(observed[-1][0])
         self.assertIn('BEGIN;',lab.sql.call_args.args[-1])
+        self.assertIn('grant_revision,authentication_revision)',lab.sql.call_args.args[-1])
         for table in ('other','datasets'):
             changed=copy.deepcopy(after);changed[table][0]['xmin']='3'
             with self.subTest(table=table),patch.object(SOCKET,'rows',side_effect=[before,changed]), \
                     self.assertRaisesRegex(RuntimeError,'alice-only-template-seed'):
                 SOCKET.seed_alice(lab,{},'bb_source_template',{},record)
+        changed=copy.deepcopy(after)
+        changed['local_accounts'][0]['authentication_revision']=2
+        with patch.object(SOCKET,'rows',side_effect=[before,changed]), \
+                self.assertRaisesRegex(RuntimeError,'alice-only-template-seed'):
+            SOCKET.seed_alice(lab,{},'bb_source_template',{},record)
 
     def test_socket_keeps_real_accepted_policy_and_refuses_drift_without_replica_repair(self):
         tree=ast.parse((ROOT/'experiments/acquisition-scope/bindings.py').read_text())
@@ -146,6 +152,7 @@ class SocketFixtureControls(unittest.TestCase):
                              producer_requests=[],producer_outcomes=[])
                 with patch.object(SOCKET,'prepare_database',return_value=(
                         'bb_source_template','/lab/bb_source_template.toml',pg_root/'bb_source_template.toml')) as prepare, \
+                        patch.object(SOCKET,'prepare_browser_role') as browser_role, \
                         patch.object(SOCKET,'rows',return_value=current),patch.object(SOCKET,'seed_alice') as seed, \
                         patch.object(SOCKET,'stop_setup') as stop,patch.dict('os.environ',{'BIGBROTR_SOCKET_SUBNET':'10.253.240.64/28'}):
                     if failed:
@@ -162,6 +169,8 @@ class SocketFixtureControls(unittest.TestCase):
                              '--request-id','77'*16,'--expected-revision','1'))
                         seed.assert_called_once()
                     self.assertEqual(prepare.call_args.args[5],'managed')
+                    self.assertEqual(browser_role.call_args.args[:5],
+                        (lab,state,'bb_source_template',pg_root/'bb_source_template.toml',SOCKET.declared_inventory(ROOT)))
                     self.assertEqual(lab.setup.call_args.kwargs['subnet'],'10.253.240.64/28')
                     stop.assert_called_once()
                 report=json.loads((pg_root/'socket-setup-result.json').read_text())
@@ -191,6 +200,48 @@ class SocketFixtureControls(unittest.TestCase):
                         verify(lab,{},'template','bb_source_template',inventory,record)
                 else:
                     verify(lab,{},'template','bb_source_template',inventory,record)
+        lab=SimpleNamespace(sql=Mock(return_value=json.dumps(role)))
+        with self.assertRaisesRegex(AssertionError,'unsupported laboratory DELETE exception'):
+            verify(lab,{},'template','bb_source_template',inventory,record,delete_tables=('producer_requests',))
+        for changed in (None,'missing-browser-select','missing-browser-insert','missing-browser-update',
+                        'missing-browser-delete','extra-delete','superuser','foreign-user'):
+            actual=copy.deepcopy(role)
+            actual['tables']['browser_sessions']['delete']=True
+            if changed and changed.startswith('missing-browser-'):
+                actual['tables']['browser_sessions'][changed.removeprefix('missing-browser-')]=False
+            if changed=='extra-delete':actual['tables']['producer_requests']['delete']=True
+            if changed=='superuser':actual['superuser']=True
+            with self.subTest(socket_role=changed),tempfile.TemporaryDirectory() as temporary:
+                local=Path(temporary)/'bb_source_template.toml'
+                local.write_text('[postgres.control]\nuser = "'+('postgres' if changed=='foreign-user' else 'bigbrotr_control')+'"\n')
+                lab=SimpleNamespace(sql=Mock(side_effect=['',json.dumps(actual)]))
+                if changed:
+                    with self.assertRaises((AssertionError,RuntimeError)):
+                        SOCKET.prepare_browser_role(lab,{},'bb_source_template',local,inventory,record)
+                    if changed=='foreign-user':lab.sql.assert_not_called()
+                else:
+                    checked=Mock(side_effect=record)
+                    SOCKET.prepare_browser_role(lab,{},'bb_source_template',local,inventory,checked)
+                    self.assertEqual(lab.sql.call_args_list[0].args[-1],
+                        'GRANT DELETE ON control.browser_sessions TO bigbrotr_control;')
+                    self.assertEqual(checked.call_args.kwargs['configured_user'],'bigbrotr_control')
+                    self.assertIn("has_table_privilege(r.oid,c.oid,'DELETE')",lab.sql.call_args.args[-1])
+
+    def test_browser_role_refusal_stops_setup_before_managed_mutations(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);pg_root=root/'pg'
+            lab=SimpleNamespace(setup=Mock(side_effect=lambda *args,**kwargs:pg_root.mkdir()),
+                load=Mock(return_value={}),write_json=write_json,cli=Mock())
+            with patch.object(SOCKET,'prepare_database',return_value=(
+                    'bb_source_template','/lab/bb_source_template.toml',pg_root/'bb_source_template.toml')), \
+                    patch.object(SOCKET,'prepare_browser_role',side_effect=RuntimeError('browser-role-refused')), \
+                    patch.object(SOCKET,'seed_alice') as seed,patch.object(SOCKET,'stop_setup') as stop:
+                with self.assertRaisesRegex(RuntimeError,'browser-role-refused'):
+                    SOCKET.prepare(lab,root,root/'build',ROOT,'a'*40)
+                lab.cli.assert_not_called()
+                seed.assert_not_called()
+                stop.assert_called_once()
+            self.assertEqual(json.loads((pg_root/'socket-setup-result.json').read_text())['status'],'FAIL')
 
     def test_existing_pg_or_output_is_refused_before_setup(self):
         for entry in ('pg','bindings'):

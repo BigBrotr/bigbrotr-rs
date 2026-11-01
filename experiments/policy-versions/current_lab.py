@@ -20,7 +20,7 @@ def prepare_database(lab, state, root, name, database, mode, inventory, record):
     return database, path, local
 
 
-def verify_application_role(lab, state, name, database, inventory, record):
+def verify_application_role(lab, state, name, database, inventory, record, *, delete_tables=()):
     # This is the existing broad lab role, not the separate deployment-grant
     # proposal. Preserve its non-owner fence and record the actual grant surface.
     role = json.loads(lab.sql(state, database, """
@@ -51,6 +51,8 @@ def verify_application_role(lab, state, name, database, inventory, record):
         WHERE r.rolname='bigbrotr_control' AND n.nspname='control'
     """))
     require_tables(sorted(role['tables']), inventory)
+    assert set(delete_tables) <= {'browser_sessions'}, 'unsupported laboratory DELETE exception'
+    assert set(delete_tables) <= set(inventory['tables']), 'unknown laboratory DELETE table'
     wanted = dict(owner='bigbrotr_migrator', select=True, insert=True, update=True,
                   delete=False, truncate=False, references=False, trigger=False)
     record(name + '-application-role',
@@ -58,6 +60,7 @@ def verify_application_role(lab, state, name, database, inventory, record):
            and not any(role[key] for key in ['superuser','create_database','create_role',
                                             'replication','bypass_rls','schema_create','memberships'])
            and role['database_owner'] == role['schema_owner'] == 'bigbrotr_migrator'
-           and role['schema_usage'] and all(value == wanted for value in role['tables'].values())
+           and role['schema_usage'] and all(value == dict(wanted,delete=table in delete_tables)
+                                          for table,value in role['tables'].items())
            and bool(role['functions']) and all(value['owner'] == 'bigbrotr_migrator' and value['execute']
                                               for value in role['functions'].values()), profile=role)

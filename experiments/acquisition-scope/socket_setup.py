@@ -5,8 +5,9 @@ import json
 import os
 import re
 import secrets
+import tomllib
 
-from current_lab import prepare_database
+from current_lab import prepare_database, verify_application_role
 from schema_inventory import declared_inventory, require_tables
 
 # Exact noncompiled changes reviewed for this fixture increment. An unrestricted
@@ -43,6 +44,19 @@ def rows(lab, state, database, inventory):
         'SELECT jsonb_object_agg(name,rows) FROM (' + ' UNION ALL '.join(queries) + ') t'))
 
 
+def prepare_browser_role(lab, state, database, local, inventory, record):
+    user = tomllib.loads(local.read_text())['postgres']['control']['user']
+    assert user == 'bigbrotr_control', 'unexpected configured socket application user'
+    # Login issuance always cleans terminal sessions, including in an empty
+    # table. This is the same narrow grant in packaging/compose/provision.sql;
+    # reauthentication proof issuance is outside this socket fixture.
+    lab.sql(state,database,'GRANT DELETE ON control.browser_sessions TO bigbrotr_control;')
+    def checked(name,condition,**details):
+        record(name,condition,configured_user=user,**details)
+    verify_application_role(lab,state,'socket-template-browser-session',database,inventory,checked,
+                            delete_tables=('browser_sessions',))
+
+
 def seed_alice(lab, state, database, inventory, record):
     """The existing fixed credential fixture, inserted only in the new template."""
     before = rows(lab, state, database, inventory)
@@ -56,8 +70,8 @@ def seed_alice(lab, state, database, inventory, record):
         BEGIN;
         INSERT INTO control.principals(principal_id,dataset_id,kind,created_at_us,database_role,local_os_uid)
             SELECT decode(repeat('10',16),'hex'),dataset_id,'local',0,'fixture',0 FROM control.datasets;
-        INSERT INTO control.local_accounts(principal_id,dataset_id,username,initial_owner,active,credential_revision,grant_revision)
-            SELECT decode(repeat('10',16),'hex'),dataset_id,'alice',true,true,1,1 FROM control.datasets;
+        INSERT INTO control.local_accounts(principal_id,dataset_id,username,initial_owner,active,credential_revision,grant_revision,authentication_revision)
+            SELECT decode(repeat('10',16),'hex'),dataset_id,'alice',true,true,1,1,1 FROM control.datasets;
         INSERT INTO control.local_credentials(principal_id,dataset_id,credential_revision,format,argon_version,memory_kib,passes,lanes,salt,password_hash)
             SELECT principal_id,dataset_id,1,'argon2id-v1',19,65536,3,1,decode(repeat('02',16),'hex'),
                 decode('a9f16b27ee4188b48954ee896ca04320bdbe34f4c2c0b9f4f332d9daffc892ff','hex') FROM control.local_accounts;
@@ -67,8 +81,9 @@ def seed_alice(lab, state, database, inventory, record):
     expected = copy.deepcopy(before)
     expected['principals'].append(dict(principal_id=principal,dataset_id=dataset,kind='local',created_at_us=0,
                                       database_role='fixture',local_os_uid=0))
+    # Migration 0806 starts a fresh account's authentication generation at one.
     expected['local_accounts'] = [dict(principal_id=principal,dataset_id=dataset,username='alice',
-        initial_owner=True,active=True,credential_revision=1,grant_revision=1)]
+        initial_owner=True,active=True,credential_revision=1,grant_revision=1,authentication_revision=1)]
     expected['local_credentials'] = [dict(principal_id=principal,dataset_id=dataset,credential_revision=1,
         format='argon2id-v1',argon_version=19,memory_kib=65536,passes=3,lanes=1,
         salt='\\x'+'02'*16,password_hash='\\x'+password_hash)]
@@ -136,8 +151,9 @@ def prepare(lab, root, build, source, revision):
         lab.setup(pg_root,build,source,'socket_'+revision[:7]+'_'+secrets.token_hex(6),
                   subnet=os.environ.get('BIGBROTR_SOCKET_SUBNET'))
         state = lab.load(pg_root)
-        _, path, _ = prepare_database(lab,state,pg_root,'socket-template','bb_source_template',
-                                       'managed',inventory,record)
+        _, path, local = prepare_database(lab,state,pg_root,'socket-template','bb_source_template',
+                                          'managed',inventory,record)
+        prepare_browser_role(lab,state,'bb_source_template',local,inventory,record)
         for action, extra in [('initialize',()),('activate-initial',
                 ('--request-id','77'*16,'--expected-revision','1'))]:
             result = lab.cli(state,'config',action,'--file',path,*extra)
