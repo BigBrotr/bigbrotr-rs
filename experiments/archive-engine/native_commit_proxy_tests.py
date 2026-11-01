@@ -13,7 +13,16 @@ import sys
 import unittest
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
-                                IndexPublicationObserver, Proxy, control_target_query)
+                                IndexPublicationObserver, SessionCommandObserver, Proxy, control_target_query, gap_write_refusal)
+
+
+def gap_error(**changes):
+    fields = dict(S=b'ERROR', V=b'ERROR', C=b'23514',
+                  M=b'fixture-private-message', D=b'fixture-private-row-and-parameters',
+                  s=b'control', t=b'acquisition_quanta', n=b'fixture_gap_write_refusal',
+                  F=b'fixture-private-source', L=b'100', R=b'ExecConstraints')
+    fields.update(changes)
+    return b''.join(key.encode() + value + b'\0' for key, value in fields.items() if value is not None) + b'\0'
 
 
 def index_bind(values=(bytes.fromhex('aa'*16),b'3',b'0',b'2')):
@@ -261,6 +270,29 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_gap_error_tracking_keeps_existing_queue_and_statement_bounds(self):
+        observer = SessionCommandObserver('control-quantum-terminal', track_errors=True)
+        for _ in range(128):
+            observer.frontend(b'P', b'other\0SELECT 1\0\0\0')
+        with self.assertRaises(AssertionError):
+            observer.frontend(b'P', b'other\0SELECT 1\0\0\0')
+        observer = SessionCommandObserver('control-quantum-terminal', track_errors=True)
+        for number in range(16):
+            observer.frontend(b'P', str(number).encode() + b'\0UPDATE control.acquisition_quanta SET terminal_kind=$1\0\0\0')
+            observer.backend(b'1', b'')
+        self.assertEqual(len(observer.prepared), 16)
+        with self.assertRaises(AssertionError):
+            observer.frontend(b'P', b'extra\0UPDATE control.acquisition_quanta SET terminal_kind=$1\0\0\0')
+
+    def test_gap_error_classification_uses_only_exact_structured_identifiers(self):
+        self.assertEqual(gap_write_refusal(gap_error()), dict(schema='control', table='acquisition_quanta'))
+        self.assertEqual(gap_write_refusal(gap_error(s=None, t=None)), {})
+        for error in (gap_error(C=b'23503'), gap_error(n=b'other_constraint'), gap_error(s=b'other'),
+                      gap_error(t=b'other'), gap_error(n=None), gap_error()[:-1],
+                      gap_error()[:-1] + b'C23514\0\0', b'\0\0'):
+            with self.subTest(error=error):
+                self.assertIsNone(gap_write_refusal(error))
+
     def test_commit_ordinal_is_bounded_and_only_extends_quantum_commit_modes(self):
         for value in (0, 129, -1, True, False, 1.0, '2', None):
             with self.subTest(value=value), self.assertRaisesRegex(ValueError, '^commit-ordinal$'):
@@ -480,6 +512,139 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def held_second_plan(self, proxy):
+        connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
+        await self.prepare_gap_statement(connection)
+        for number in (1, 2):
+            await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+            await self.quantum_execute(connection, 'control-quantum-plan', parse=number == 1)
+            if number == 1:
+                await self.exchange(connection, b'Q', b'COMMIT\0', [(b'C', b'COMMIT\0'), (b'Z', b'I')])
+            else:
+                await self.exchange(connection, b'Q', b'COMMIT\0')
+                connection[3].write(message(b'C', b'COMMIT\0') + message(b'Z', b'I'))
+                await connection[3].drain()
+        held = await proxy.event('held')
+        self.assertEqual((held['stage'], held['matched_commits'], held['selected_client_complete']), ('reply', 2, 0))
+        await proxy.command('release', 'released')
+        self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'C', b'COMMIT\0'))
+        self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'Z', b'I'))
+        return connection, held
+
+    async def prepare_gap_statement(self, connection, *, close=False):
+        if close:
+            await self.exchange(connection, b'C', b'Sgap\0', [(b'3', b'')])
+        await self.exchange(connection, b'P',
+            b'gap\0UPDATE control.acquisition_quanta SET terminal_kind=$1 WHERE quantum_id=$2\0\0\0', [(b'1', b'')])
+        await self.exchange(connection, b'D', b'Sgap\0', [(b't', struct.pack('!HII', 2, 25, 17)), (b'n', b'')])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'I')])
+
+    async def gap_execute_error(self, connection, error, *, statement=b'gap'):
+        await self.exchange(connection, b'B', b'\0' + statement + b'\0\0\0\0\0\0\0', [(b'2', b'')])
+        await self.exchange(connection, b'E', b'\0' * 5, [(b'E', error)])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'E')])
+        await self.exchange(connection, b'Q', b'ROLLBACK\0', [(b'C', b'ROLLBACK\0'), (b'Z', b'I')])
+
+    async def skipped_gap_execute(self, connection, *, fail_at=b'E', skipped_parse=None):
+        query = b'UPDATE control.acquisition_quanta SET terminal_kind=$1 WHERE quantum_id=$2'
+        if fail_at == b'P':
+            requests = [(b'P', b'newgap\0' + query + b'\0\0\0')]
+            statement = b'newgap'
+        else:
+            requests = []
+            statement = b'gap'
+        if fail_at == b'E':
+            await self.exchange(connection, b'P', b'other\0SELECT 1\0\0\0', [(b'1', b'')])
+            await self.exchange(connection, b'B', b'\0other\0\0\0\0\0\0\0', [(b'2', b'')])
+            requests.append((b'E', b'\0' * 5))
+        if skipped_parse is not None:
+            statement, replacement = skipped_parse
+            requests.append((b'P', statement + b'\0' + replacement + b'\0\0\0'))
+        requests += [(b'B', b'\0' + statement + b'\0\0\0\0\0\0\0'), (b'E', b'\0' * 5), (b'S', b'')]
+        for tag, body in requests:
+            await self.exchange(connection, tag, body)
+        # The target Execute is already on the wire, but PostgreSQL rejects a
+        # preceding Parse/Bind/unrelated Execute and skips it through Sync.
+        for reply in ((b'E', gap_error()), (b'Z', b'E')):
+            connection[3].write(message(*reply)); await connection[3].drain()
+            self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), reply)
+        await self.exchange(connection, b'Q', b'ROLLBACK\0', [(b'C', b'ROLLBACK\0'), (b'Z', b'I')])
+
+    async def test_gap_rejection_witness_is_execute_bound_redacted_and_survives_error_recovery(self):
+        cases = ('fresh', 'cached', 'recovery', 'recovery-cached', 'sqlstate', 'constraint', 'schema', 'table',
+                 'unrelated', 'parse-only', 'parse-error', 'bind-error', 'skipped', 'skipped-reparse',
+                 'completed-target', 'foreign-session', 'eof')
+        for case in cases:
+            with self.subTest(case=case):
+                async with SocketProxy(self, 'hold-reply', target='control-quantum-plan', deferred=False,
+                                       commit_ordinal=2, profile='retained-catch-up') as proxy:
+                    connection, held = await self.held_second_plan(proxy)
+                    if case == 'fresh':
+                        await self.prepare_gap_statement(connection, close=True)
+                    if case == 'foreign-session':
+                        connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
+                        await self.prepare_gap_statement(connection)
+                    await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                    if case in ('recovery', 'recovery-cached', 'skipped', 'skipped-reparse', 'parse-error', 'bind-error'):
+                        skipped_parse = {
+                            'recovery-cached': (b'gap', b'SELECT 1'),
+                            'skipped-reparse': (b'other', b'UPDATE control.acquisition_quanta SET terminal_kind=$1'),
+                        }.get(case)
+                        await self.skipped_gap_execute(connection, fail_at={'parse-error': b'P', 'bind-error': b'B'}.get(case, b'E'),
+                            skipped_parse=skipped_parse)
+                        if case in ('recovery', 'recovery-cached', 'skipped-reparse'):
+                            await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                            await self.gap_execute_error(connection, gap_error(), statement=b'other' if case == 'skipped-reparse' else b'gap')
+                    elif case == 'parse-only':
+                        await self.exchange(connection, b'P', b'notexecuted\0UPDATE control.acquisition_quanta SET terminal_kind=$1\0\0\0',
+                            [(b'E', gap_error())])
+                        await self.exchange(connection, b'S', b'', [(b'Z', b'E')])
+                    elif case == 'eof':
+                        await self.exchange(connection, b'B', b'\0gap\0\0\0\0\0\0\0', [(b'2', b'')])
+                        await self.exchange(connection, b'E', b'\0' * 5)
+                        connection[3].close(); await connection[3].wait_closed()
+                        self.assertEqual(await asyncio.wait_for(connection[0].read(), 3), b'')
+                    else:
+                        error = gap_error(**{'sqlstate': dict(C=b'23503'), 'constraint': dict(n=b'other_constraint'),
+                            'schema': dict(s=b'other'), 'table': dict(t=b'other')}.get(case, {}))
+                        statement = b'gap'
+                        if case in ('unrelated', 'completed-target'):
+                            if case == 'completed-target':
+                                await self.exchange(connection, b'B', b'\0gap\0\0\0\0\0\0\0', [(b'2', b'')])
+                                await self.exchange(connection, b'E', b'\0' * 5, [(b'C', b'UPDATE 1\0')])
+                            await self.exchange(connection, b'P', b'other\0SELECT 1\0\0\0', [(b'1', b'')])
+                            statement = b'other'
+                        await self.gap_execute_error(connection, error, statement=statement)
+                    await proxy.stop()
+                    witnesses = [event for event in proxy.events if event['event'] == 'quantum-gap-write-rejected']
+                    positive = case in ('fresh', 'cached', 'recovery', 'recovery-cached')
+                    self.assertEqual(len(witnesses), int(positive))
+                    self.assertEqual(proxy.events[-1]['gap_write_rejections'], int(positive))
+                    if positive:
+                        witness, = witnesses
+                        self.assertEqual({key: witness[key] for key in ('classification', 'sqlstate', 'constraint', 'backend_pid', 'schema', 'table')},
+                            dict(classification='fixture-gap-write-refusal', sqlstate='23514', constraint='fixture_gap_write_refusal',
+                                 backend_pid=held['backend_pid'], schema='control', table='acquisition_quanta'))
+                    encoded = json.dumps(proxy.events)
+                    for private in ('fixture-private-message', 'fixture-private-row-and-parameters', 'fixture-private-source'):
+                        self.assertNotIn(private, encoded)
+
+    async def test_gap_rejection_witness_refuses_a_second_matching_rejection(self):
+        async with SocketProxy(self, 'hold-reply', target='control-quantum-plan', deferred=False,
+                               commit_ordinal=2, unexpected=1) as proxy:
+            connection, _ = await self.held_second_plan(proxy)
+            await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+            await self.gap_execute_error(connection, gap_error())
+            await proxy.event('quantum-gap-write-rejected')
+            await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+            await self.exchange(connection, b'B', b'\0gap\0\0\0\0\0\0\0', [(b'2', b'')])
+            await self.exchange(connection, b'E', b'\0' * 5)
+            connection[3].write(message(b'E', gap_error())); await connection[3].drain()
+            self.assertEqual(await asyncio.wait_for(connection[0].read(), 3), b'')
+            await proxy.stop()
+            self.assertEqual(proxy.events[-1]['gap_write_rejections'], 1)
+            self.assertEqual(sum(event['event'] == 'quantum-gap-write-rejected' for event in proxy.events), 1)
+
     async def quantum_execute(self, connection, target, *, parse=False, count=1):
         if parse:
             query = (b'INSERT INTO control.acquisition_quanta(quantum_id) VALUES ($1::bytea)'

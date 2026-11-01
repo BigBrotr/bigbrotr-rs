@@ -63,6 +63,28 @@ def unexpected_failure(error):
         (ConnectionError, asyncio.IncompleteReadError, asyncio.CancelledError))
 
 
+def gap_write_refusal(body):
+    """Return only fixed optional identifiers from this fixture's exact error."""
+    fields = body.split(b'\0')
+    if fields[-2:] != [b'', b'']:
+        return None
+    selected = {}
+    for field in fields[:-2]:
+        if not field:
+            return None
+        key = field[:1]
+        if key in (b'C', b'n', b's', b't'):
+            if key in selected:
+                return None
+            selected[key] = field[1:]
+    if (selected.get(b'C') != b'23514' or selected.get(b'n') != b'fixture_gap_write_refusal'
+            or selected.get(b's', b'control') != b'control'
+            or selected.get(b't', b'acquisition_quanta') != b'acquisition_quanta'):
+        return None
+    return {name: value for key, name, value in ((b's', 'schema', 'control'),
+            (b't', 'table', 'acquisition_quanta')) if key in selected}
+
+
 class SessionCommandObserver:
     """Correlate extended Execute completions, including a following audit INSERT.
 
@@ -71,15 +93,20 @@ class SessionCommandObserver:
     PostgreSQL16 protocol-flow/message-formats define these response boundaries.
     No SQL parameters, authentication bytes or row data are retained.
     """
-    def __init__(self, target, *, command_complete=None):
+    def __init__(self, target, *, command_complete=None, track_errors=False):
         self.target = target
         self.command_complete=command_complete
         self.statements = set()
         self.bound = False
         self.pending = deque()
         self.discard_until_sync = False
+        self.responses = deque() if track_errors else None
+        self.prepared = set()
+        self.executing_target = False
 
     def frontend(self, tag, body, *, eligible=True):
+        discarded = self.discard_until_sync and tag != b'S'
+        response = None
         if tag == b'P':
             statement, query, _ = body.split(b'\0', 2)
             assert len(statement) <= 64
@@ -87,12 +114,15 @@ class SessionCommandObserver:
             if control_target_query(self.target, query):
                 self.statements.add(statement)
             assert len(self.statements) <= 16
+            response = (statement, statement in self.statements)
         elif tag == b'C' and body[:1] == b'S':
             self.statements.discard(body[1:-1])
+            response = body[1:-1]
         elif tag == b'B':
             portal, statement, _ = body.split(b'\0', 2)
             assert portal == b''
             self.bound = statement in self.statements
+            response = statement
         elif tag == b'E':
             assert body == b'\0' * 5
             if not self.discard_until_sync:
@@ -102,8 +132,63 @@ class SessionCommandObserver:
             self.pending.append(tag)
             self.discard_until_sync = False
         assert len(self.pending) <= 128
+        if self.responses is not None and not discarded and tag in (b'P', b'B', b'C', b'D', b'E', b'Q', b'S'):
+            if tag in (b'B', b'C') and response is not None and len(response) > 64:
+                raise ValueError('session-response-name')
+            self.responses.append((tag, response))
+            assert len(self.responses) <= 128
+
+    def failing_execute(self):
+        # An already queued Execute cannot turn a preceding Parse/Bind/Describe
+        # error into execution evidence. Inspect before backend clears recovery.
+        return (self.responses is not None and bool(self.responses) and self.responses[0][0] == b'E'
+                and self.executing_target and bool(self.pending) and type(self.pending[0]) is bool)
+
+    def observe_response(self, tag, body):
+        if tag == b'E':
+            while self.responses and self.responses[0][0] not in (b'S', b'Q'):
+                self.responses.popleft()
+            self.executing_target = False
+        elif tag in (b'1', b'2', b'3'):
+            expected = {b'1': b'P', b'2': b'B', b'3': b'C'}[tag]
+            if not self.responses:
+                raise ValueError('session-response-phase')
+            phase, response = self.responses.popleft()
+            if phase != expected:
+                raise ValueError('session-response-phase')
+            # Publish preparation/binding metadata only after its real success.
+            # A skipped Parse after an earlier error cannot relabel a cached
+            # unrelated statement in a later recovered Execute.
+            if tag == b'1':
+                statement, selected = response
+                self.prepared.discard(statement)
+                if selected:
+                    self.prepared.add(statement)
+                assert len(self.prepared) <= 16
+            elif tag == b'2':
+                self.executing_target = response in self.prepared
+            elif response is not None:
+                self.prepared.discard(response)
+        elif tag in (b'C', b'T', b'n', b't'):
+            if not self.responses:
+                raise ValueError('session-response-phase')
+            phase = self.responses[0][0]
+            if phase == b'Q':
+                return
+            expected = b'E' if tag == b'C' else b'D'
+            if phase != expected:
+                raise ValueError('session-response-phase')
+            if tag != b't':
+                self.responses.popleft()
+        elif tag == b'Z' and self.responses:
+            if self.responses.popleft()[0] not in (b'S', b'Q'):
+                raise ValueError('session-response-phase')
+        if tag == b'Z' and body == b'I':
+            self.executing_target = False
 
     def backend(self, tag, body):
+        if self.responses is not None:
+            self.observe_response(tag, body)
         if tag == b'C':
             assert self.pending and self.pending[0] != b'S'
             if self.pending[0] == b'Q':
@@ -275,6 +360,9 @@ class Proxy:
             self.report.update(commit_ordinal=commit_ordinal, matched_commits=0,
                                skipped_commits=0, selected_commits=0,
                                selected_server_complete=0, selected_client_complete=0)
+        if target == 'control-quantum-plan':
+            self.report['gap_write_rejections'] = 0
+            self.quantum_selected_session = self.quantum_selected_backend_pid = None
         if target=='control-quantum-source-rollback':
             self.report.update(source_queries_complete=0,source_server_rollback=0,source_client_rollback=0)
         if profile == 'ordinary-reader':
@@ -477,6 +565,9 @@ class Proxy:
         if self.quantum_commit_target:
             session_commands = SessionCommandObserver(self.target,
                 command_complete=b'INSERT 0 1\0' if self.target == 'control-quantum-plan' else b'UPDATE 1\0')
+        quantum_session = object() if self.target == 'control-quantum-plan' else None
+        gap_commands = (SessionCommandObserver('control-quantum-terminal', track_errors=True)
+                        if quantum_session is not None and self.mode == 'hold-reply' else None)
         if index_target:
             if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
                 raise ValueError('index-publication-backend')
@@ -512,6 +603,25 @@ class Proxy:
                     return
                 tag, header, body = frame
                 selected_reply = False
+                if gap_commands is not None:
+                    if frontend:
+                        gap_commands.frontend(tag, body)
+                    else:
+                        if tag == b'E' and gap_commands.failing_execute():
+                            identifiers = gap_write_refusal(body)
+                            if (identifiers is not None and self.quantum_selected_session is quantum_session
+                                    and self.quantum_selected_backend_pid == state['backend_pid']
+                                    and self.held and self.action == 'release'
+                                    and self.report['selected_client_complete'] == 1):
+                                if not progress_transaction or state['backend_pid'] is None:
+                                    raise ValueError('quantum-gap-rejection-transaction')
+                                if self.report['gap_write_rejections']:
+                                    raise ValueError('quantum-gap-rejection-budget')
+                                self.report['gap_write_rejections'] = 1
+                                self.emit('quantum-gap-write-rejected', classification='fixture-gap-write-refusal',
+                                    sqlstate='23514', constraint='fixture_gap_write_refusal',
+                                    backend_pid=state['backend_pid'], **identifiers)
+                        gap_commands.backend(tag, body)
                 if frontend and resume_authority is not None:
                     assert parameters.get(b'user') == b'bigbrotr_control' and database == b'bbpub_control_normal'
                     selected = resume_authority.frontend(tag, body)
@@ -705,6 +815,9 @@ class Proxy:
                             self.report['matched_commits'] += 1
                             state['commit_selected'] = self.report['matched_commits'] == self.commit_ordinal
                             self.report['selected_commits' if state['commit_selected'] else 'skipped_commits'] += 1
+                            if state['commit_selected'] and quantum_session is not None:
+                                self.quantum_selected_session = quantum_session
+                                self.quantum_selected_backend_pid = state['backend_pid']
                         if state['commit_selected']:
                             if not await self.hold('manager-commit', state['backend_pid']):
                                 return

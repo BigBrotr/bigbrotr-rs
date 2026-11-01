@@ -331,6 +331,24 @@ Use the existing `--profile retained-catch-up` when that fixture requires its
 120/180-second lifetime ceilings do not change. These are fault-selection controls,
 not PostgreSQL/product evidence or permission to restart a historical owner.
 
+For the held-plan gap-write fixture, plan-target receipts also include
+`gap_write_rejections` (0 or 1). After the selected plan reply is explicitly
+released and delivered, its same live session/backend can emit exactly one
+`quantum-gap-write-rejected` marker for an actual terminal UPDATE Execute rejected
+with SQLSTATE `23514` and constraint `fixture_gap_write_refusal`. The marker
+contains that backend PID and the fixed classification `fixture-gap-write-refusal`;
+reported schema/table identifiers must equal `control` / `acquisition_quanta` and
+are included only when PostgreSQL supplies them. Error messages, row detail,
+parameters, SQL and authentication bytes are never logged. The existing bounded
+command observer distinguishes an executing statement from preparation errors,
+including when a later Execute is already queued and skipped through Sync.
+Cached statements and a subsequent recovered protocol cycle remain correlated.
+An unrelated query, different SQLSTATE/constraint/schema/table, completed earlier
+UPDATE, another session or EOF cannot produce the witness; a second matching
+rejection fails the observer. The caller must require exactly one marker, counter
+1 and the original held-plan backend PID alongside its independent durable/native
+state proof. A generic backend failure or pending row alone is insufficient.
+
 `--defer-arm` forwards baseline traffic until one stdin `arm` line, then emits
 `armed`. The installed caller owns the scenario's independent admission proof:
 the ordinary short-pin case requires positive Ready/quiescence, while the
