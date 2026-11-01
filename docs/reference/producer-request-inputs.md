@@ -794,25 +794,97 @@ forbids dialing; an unfinished plan remains pending after restart and cannot be
 adopted by a fresh Control epoch. Ordinary fenced recovery and job abandonment
 remain required. Expiry alone does not refund its metadata reservation.
 
-The exclusive frozen horizon is `H=floor(job.created_at_us/1_000_000)`, intersected
-with each conjunction's explicit inclusive upper bound using checked AfterMax
-conversion. The first window is `[history_since,min(history_since+accepted
-sync.window_width,H))`, with checked arithmetic and the24h default. Every
-conjunction is intersected separately; an empty intersection is never replaced
-by an unrestricted filter. The current second and later work remain pending.
-The bounded continuation consumer reads the latest obligation by job under that
-same job lock, then checks its exact current source, native and Control context.
-It reconstructs the normalized predicate and frozen bounds from accepted intent;
-incompatible, corrupt or unfinished records refuse a replacement plan. A known
-completed interruption retries its exact interval. A successfully classified
-page overlaps its oldest verified second, including zero, even when the page is
-short or contains only already-known bodies. The first returned boundary permits
-one overlap; repeated successful pages exposing no older time defer further work
-with coverage pending. A successful empty page also defers without inferring an
-unqueried range. These cases create no new plan or charge and confirm transaction
-rollback before yielding the owner to another job. Full interval succession,
-canonical-ID-aware saturation/partitioning, sparse growth, age bands and live
-subscriptions remain P03-T05/T04/T07 work, not completed coverage.
+The bounded profile1 is qualified at A71 in the
+[P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json).
+The next P03-T05 Steps1/4 and P03-T01 Step3 increment consolidates the following
+**profile2 contract, currently under implementation**. Its implementation and
+installed qualification are not established by profile1's earlier receipts.
+
+Freeze three pass values at its first history entry: exclusive horizon
+`H=floor(job.created_at_us/1_000_000)` intersected with the selector's inclusive
+upper bounds using checked AfterMax conversion; accepted fixed width `W`; and
+query budget `B=sync.partition_budget`. This finite profile supports `1..=128`
+request plans for one same-owner job, including retries across all windows.
+Larger accepted settings refuse this unsupported profile rather than being
+clipped. Nomination, an interruption or another window never resets spent budget.
+A pending plan consumes its slot; expiry or an unobserved result never refunds it.
+General slice scheduling remains later P03-T07 work.
+
+Windows ascend from the accepted `history_since` toward H. Distinguish original
+window `[a,b)` from its shrinking newest-to-oldest request `[a,c)`, where
+`a < c <= b <= H`. After closing one window, the next is
+`[b,min(b+W,H))`, with checked arithmetic. Intersect every original conjunction
+separately; an empty intersection never becomes an unrestricted filter. Later
+wall time cannot move this pass's horizon. It remains a separate obligation.
+
+Replay the entire ordered job history, validating its sequential identity,
+source/native/Control context, frozen values, predicates, native dependencies,
+window transitions and local dispositions before any next request or settled/
+budget-deferred no-op. A pending or corrupt obligation refuses continuation.
+Derive the contiguous attempted prefix from that validated chain, never from a
+maximum observed time, a skipped child or an independently writable cursor.
+Any retained per-entry summary is redundant checked data, not an authority.
+
+Known interruptions retry the exact `[a,c)` interval and reset the consecutive
+clean-boundary comparison. An authenticated older second starts a new boundary
+set; a new canonical ID at the same second extends that set and permits another
+overlap at `oldest+1`. A clean page exposing neither an older second nor a new
+boundary ID retains an unresolved saturated-second gap `[t,t+1)` and continues
+with older `[a,t)`. At `t==a` there is no older request. An interrupted prefix
+cannot establish a stall. A truly empty page means `retained_events==0` and
+closes the current window's remaining attempted obligation. A rejection-only
+page is not empty: it consumes budget and retries with `no_verified_boundary`.
+Short pages and global dedupe hits never terminate traversal.
+
+The ID buffer contains only cursor-contributing classifications2/3/5 whose exact
+ID/time matches a native EventPayload in that entry's own authenticated dependency
+union. It is a sorted flat buffer of at most `3*128=384` IDs (12,288 ID bytes),
+allocated after acquiring its QuantumGrant. Charge its capacity and fixed reducer
+bookkeeping explicitly; move/reuse it rather than retaining an uncharged copy.
+Reconstruct it from the existing effects; do not persist another ID ledger.
+
+History distinguishes `request` from `selector_exclusion`. A local exclusion is
+inserted already settled under the same authority and native-history checks,
+with sequential history number, context, frozen H/W/B and its excluded span. It
+has no REQ predicate, request ID, relay terminal/frame/sequence or teardown claim;
+checkpoint before/after is unchanged. It creates no classification, producer
+request or ACK. Existing legitimate dictionary setup remains separate. Exclusion
+requires every accepted conjunction's time intersection to be empty; observed
+relay responses or archive membership cannot establish that proof.
+
+After a committed boundary gap, a selector-empty older remainder may close the
+original window at b, rather than the shrinking c. Coalesce consecutive whole
+selector-empty windows using the bounded conjunction list and fixed window grid,
+stopping at the next potentially eligible window or H; never loop over years of
+empty windows. An all-excluded nonempty pass retains one durable anchor/exclusion
+entry. For `history_since>=H`, retain an explicit `empty_target` local entry with
+no inverted span or future traversal claim. Status distinguishes these policy
+exclusions from query evidence.
+
+Local exclusions cost1024 logical bytes and consume no query slots. With maximal
+coalescing there are at most `3B+1` history entries (385 at B128). Bound streaming
+replay, scratch and deadline checks accordingly. At B, settle only further proven
+local exclusions, then retain eligible remaining work as `budget_deferred`, with
+no request plan B+1. Completing the last obligation takes precedence over budget
+deferral. This finite job is not the general unlimited walker or permanent
+exhaustion. Reaching H means the frozen obligation was attempted with its recorded
+gaps/qualifications, never that the relay's entire immutable history is known.
+
+Commit request terminal evidence, its gap effect and transition disposition in
+one atomic update. A failed settlement leaves the pending plan/frontier intact;
+unknown request or local-settlement COMMIT poisons the owner and permits no next
+wire operation. A committed local settlement can return without a socket, but a
+later nomination must revalidate history before returning a no-op. Preserve the
+existing job/source/producer locks and native view through full pre-COMMIT closure.
+
+Consolidate fresh0043 around these discriminated profile2 shapes, including its
+pending index, charges, admission guards, terminal selection and recovery. A local
+settled entry with no terminal frame is not a pending request. Reject superseded
+profile1 execution/checksum inputs; preserve immutable8f artifacts and their
+source-specific historical evidence. Do not add a compatibility scaffold or
+rewrite Git history. Full500-event pages, partitions, sparse growth, fresh-owner
+adoption, horizon extensions and general slice scheduling remain explicit
+P03-T05/T01/T07 responsibilities, not qualifications of this bounded increment.
 
 After the source adapter has destroyed the socket and rolled back its source
 transaction, ordered native classifications retain a sealed quantum collector.
@@ -862,7 +934,8 @@ the same producer lock. Pending/unknown attempts retain their full reservation;
 recovery independently recomputes charges from retained rows. This logical cap
 is not a PostgreSQL physical-space guarantee. A separately derived QuantumGrant
 funds filter clones, encoded predicates, capture/effect/reference vectors and
-2MiB closure scratch within the existing accepted Sync/application envelope.
+wire/native parsing scratch within the existing accepted Sync/application envelope.
+Profile2 additionally funds its bounded boundary-ID buffer and reducer bookkeeping.
 No process limit is raised. The Control role additionally needs SELECT/INSERT/
 UPDATE on the new relation and EXECUTE on `quantum_retained_charge(bytea,numeric)`;
 no deletion, trigger-helper or finalizer privilege is granted.

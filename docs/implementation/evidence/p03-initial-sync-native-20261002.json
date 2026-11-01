@@ -1225,7 +1225,7 @@
     "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
     "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2",
     "bounded_continuation": {
-      "status": "QUALIFIED_LOCAL_BOUNDED_CONTINUATION;MAIN_INTEGRATION_AND_HOSTED_PENDING",
+      "status": "QUALIFIED_LOCAL_AND_PUSHED_MAIN_A71;HOSTED_IN_PROGRESS",
       "task": "P03-T05Step2; bounded same-job current-owner continuation, not full walker/partition/adoption",
       "observed_source": "901c1f534e946657906249a48269feb30e3c40ff",
       "scope": "Locked retained window reconstruction; exact current context/predicate/frozen horizon; known interruption retry; first overlap; empty/repeated pending deferral; same-row authenticated EventPayload ID/time binding with one original native view through pre-COMMIT closure.",
@@ -1238,7 +1238,7 @@
       },
       "format": "Current internal migration0043 consolidates at most three93-byte effects (original61prefix plus captured canonical ID32); old nonempty61-byte effects refused. No existing public-version compatibility or source-history rewrite.",
       "not_run": [
-        "Real GitHub Actions on final integrated M2 revision; A2success remains prior-source evidence."
+        "Terminal audited GitHub Actions result forA71; actual run is in progress, not PASS."
       ],
       "next": "Prepublication source scan, coherent main integration/push and real hosted qualification; then fixed-width finite-history window succession under P03-T05Steps1/4 andP03-T01Step3. Declare original window end separately from shrinking page upper, retain contiguous attempts/gaps with authenticated immutable quantum history. Full500page/partition/sparsegrowth/adoption remain explicit existing owners.",
       "release617": {
@@ -1498,7 +1498,64 @@
           "scope": "Original full scientific/input/typed/request/Archive/publication/history/export checks, successor/resend, exact retry, explicit stopped-quantum history retirement. No native census/physical capacity claim.",
           "custody": "Maintained cleanupPASS/noerrors; owned containers stopped and borrowed bridge preserved/empty."
         }
+      },
+      "main_integration": {
+        "revision": "a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a",
+        "tree": "a665caaa5b8fe90405c7e23b8fde9beb7a44c318",
+        "push": "PASS",
+        "scope": "Fast-forward fromA2; original c82 restart-oracle commit reconciled by a no-tree-change normal merge; product/native/config/package sources unchanged from qualified8f."
+      },
+      "source_publication_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-linear-source-a71b6ea3-20261101/source-triage.json",
+        "sha256": "503c022c21ee8e05cd2fcbcff286eba6d615b305907561a23de0fe132041f06d",
+        "status": "PASS_BOUNDED_INCREMENTAL_REVIEW",
+        "scope": "111newreachableobjects/30.3MB;23occurrences/6knownnonsecretfingerprints,0unclassified; allcandidate-bearinglines unchanged in auditedA2. No sensitive paths/rawstores/archives/LFS. New hosted output separately audited."
+      },
+      "hosted": {
+        "status": "IN_PROGRESS",
+        "revision": "a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a",
+        "run": 41334125307,
+        "attempt": 1,
+        "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307",
+        "observer": "Sol reused qualified A2 watcher tool39908; exact clean source4217files/treea665caaa independently frozen, no workflow dispatch or cancellation."
       }
+    },
+    "finite_history_windows_20261101": {
+      "status": "CORE_IMPLEMENTED_IN_AGENT_NOT_COMPILED",
+      "tasks": [
+        "P03-T05 Steps1/4",
+        "P03-T01 Step3"
+      ],
+      "core": {
+        "worktree": "/home/tux/bigbrotr-rs/.research/m2-window-succession-core-20261101",
+        "branch": "work/m2-window-succession-core-20261101",
+        "source": "3d6a77f3386198e7902e89ff2b6ec6dc24115d30",
+        "implementation": "b6684890",
+        "checks": "rustfmt and whitespace checks only; SQL delimiter and fixed status-size source checks; no Cargo or product execution."
+      },
+      "critical_review": {
+        "model": "gpt-6-astra",
+        "reasoning_effort": "xhigh",
+        "reviewed": "b6684890",
+        "result": "NO_BLOCKING_FINDING_BOUNDED_SOURCE_REVIEW",
+        "scope": "Persistent transitions, authority, full-history native binding, local exclusions, bounded IDs and query accounting. Source review does not establish runtime qualification.",
+        "driver": "Pinned tokio-postgres0.7.18/futures-channel0.3.34/tokio-util0.7.19/bytes1.12.1 permit multiple chunks, not one-row storage. Conservative128MiB receive backing explicitly owned within existing Control512MiB allowance; no process-limit increase. QuantumGrant separately funds application predicate/frame overlap."
+      },
+      "fixture": {
+        "path": "tests/fixtures/acquisition/linear-window-events.json",
+        "sha256": "b6ae647fbaa641c8bb2c4ae7dbcf12987a8b3bd01cd14eecbf15476c344111cc",
+        "events": 3,
+        "authoring": "Maintained selector_events.py --linear-window --write; declared secp256k1 0.14.0. Existing verified cached authoring bundle reused without installation or cache mutation; portable acquisition is documented.",
+        "checks": "All three signatures checked by libsecp256k1 and independent group equation; body/signature negatives. Two portable fixture tests PASS. Existing six-event selector corpus still verifies. No product execution claimed."
+      },
+      "verification_not_run": [
+        "Compilation and Rust/native tests for profile2",
+        "Updated maintained Python journey/oracle controls",
+        "Installed islands, exclusions, budget and gap/COMMIT fault evidence",
+        "Affected current-product installed/recovery regressions"
+      ],
+      "next": "Integrate reviewed core locally; reconcile common bounded selectors and exact status/history/retirement oracles. Eight-request island profile includes a new ID at the same second before the repeated-ID stall. Capped negatives use alternate same-second body on B page2 to keep corrupted history geometry coherent; verify source/native-row membership independently before real runs.",
+      "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners."
     }
   }
 }

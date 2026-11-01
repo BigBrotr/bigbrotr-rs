@@ -1218,6 +1218,20 @@ owns actual results, original failures and remaining gates. Portable controls us
 `python3 -B tools/ci.py --control-suite acceptance`; they do not replace these
 installed PostgreSQL/native/socket journeys or the separate restart on/off cases.
 
+The next window-succession increment uses frozen
+`tests/fixtures/acquisition/linear-window-events.json`: an alternate body at
+second23 and two distinct bodies at second172801. These are public test keys,
+never operational credentials. Portable controls verify canonical IDs and the
+independent BIP340 group equation without an optional authoring dependency.
+The installed product must still perform its own real signature verification.
+For optional regeneration, use Python3.12 in a separate virtual environment with
+`secp256k1==0.14.0`, `cffi==2.1.1` and `pycparser==3.11`, then run
+`python3 tests/fixtures/acquisition/selector_events.py --linear-window --write`.
+Omit `--write` to verify the frozen corpus with both libsecp256k1 and the equation
+checker. The existing selector corpus remains the default of that maintained
+tool. A local cached authoring environment is optional; no laboratory path or
+package cache is required to obtain these declared dependencies.
+
 The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
 the actual persistent executable against an isolated PostgreSQL engine, with
 external row/lock observations and process signals. It is separate from the

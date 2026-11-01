@@ -78562,10 +78562,10 @@
       "next_increment": {
         "task": "P03-T05Step2",
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
-        "branch": "work/m2-linear-continuation-20261101",
+        "branch": "work/m2-finite-history-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-        "state": "Current bounded continuation fully qualified locally: release/workspace/observer,549portable, capped/two corruptions/eightinterruptions/all4COMMITfaults and12/12restarton/off. Main/hostednewsource pending.",
-        "observed_revision": "901c1f534e946657906249a48269feb30e3c40ff",
+        "state": "Bounded continuation locally qualified and pushedmainA71; new hosted run41334125307 inprogress. Next fixedwidth succession design/fixture contracts under bounded review.",
+        "observed_revision": "a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a",
         "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
         "portable_controls": {
           "source": "1849721e047710b7efef4f80bc9b025da5c13550",
@@ -78573,7 +78573,7 @@
           "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
         },
-        "pending": "All Rootlocalcompiler/engine/client/controlcontainers terminal by maintainedcleanup, ownedtools79425/2411/27345 reaped0; borrowedbridge preserved/empty at lastterminal captures. Sol prepares reused hostedobserver locally, no remoteobserver/download launched; boundedAstradesign/reviews complete, no delegatedwrites/engines. Rootsoleintegrator. All partial worktrees/captures preserved.",
+        "pending": "All Rootlocalengines/compilers/clients terminal with maintainedcleanupPASS. SolCIobserver39908 active remotelyread-only; exactA71 archive frozen. SeparateSol sharedfixtureanalysis andAstra boundedpersistentcontractdesign read-only; no delegatedengine/build. Rootsoleintegrator; preservedallpartialworktrees/evidence and original4cache metadata.",
         "build": {
           "source": "61769e66c09b2506bfa972f3fa1f524112106a79",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-product-61769e66",
@@ -78601,7 +78601,8 @@
           "receipts_owner": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101.bounded_continuation",
           "compiler": "Release3255ed24/workspace582a1782/probef05567b7 stopped/PID0/noOOM; tool handles78714/12155/1045 reaped0; cache115 released, original4 ELF bytes/full metadata preserved.",
           "preservation": "Original617 lint and184 portable failures, capped-r1 oracleFAIL, restart-on-r1 environmentNOT_RUN, all fresh databases/native stores/logs/captures retained; borrowedbridge1699209a preserved."
-        }
+        },
+        "branch_transition": "Former Root work/m2-linear-continuation-20261101 ref renamed after exacttipA71 integrated/pushed to main. Same owned worktree preserved; no data or unique source removed."
       },
       "retired_refs_after_pushed_a2": {
         "audit": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/branch-retirement-a2a42f22.json",

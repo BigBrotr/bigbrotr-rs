@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-linear-window-events/1",
+  "test_keys": "Public integers 1 and 3 only; never real accounts",
+  "authoring": "python-secp256k1 0.14.0",
+  "events": [
+    {
+      "name": "same-second-alternate",
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 23,
+        "kind": 1,
+        "tags": [
+          [
+            "t",
+            "allowed"
+          ]
+        ],
+        "content": "same-second-alternate",
+        "id": "18c15755c92def447b33546307951bf25dab36ca8063b852e99c1705b4431ada",
+        "sig": "e5e1be11ea68dd33ca7e21c26abf34c196ca3d6dab9e56f99dc6168106fbc0a0d95eeaf31693d22eb5306eeac7513d4bb776cf1bd08d361f2c45ac3f42f58ce4"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c32332c312c5b5b2274222c22616c6c6f776564225d5d2c2273616d652d7365636f6e642d616c7465726e617465225d"
+    },
+    {
+      "name": "island-first",
+      "event": {
+        "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+        "created_at": 172801,
+        "kind": 1,
+        "tags": [],
+        "content": "island-first",
+        "id": "fac8ef0b0353caa848edc035806ccdb65f1ff1d17e78535126a86796bcc09e2e",
+        "sig": "3765fda551b1cc77b63b538b11df8b4ea73c94366946a575666c7d176db8fb1f68e7a4e77e3b181065fcdb3f36892e98621a82f78cd4c4e186c824772cd7bc6e"
+      },
+      "canonical_hex": "5b302c2266393330386130313932353863333130343933343466383566383964353232396235333163383435383336663939623038363031663131336263653033366639222c3137323830312c312c5b5d2c2269736c616e642d6669727374225d"
+    },
+    {
+      "name": "island-second",
+      "event": {
+        "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+        "created_at": 172801,
+        "kind": 1,
+        "tags": [],
+        "content": "island-second",
+        "id": "a6d21c3e069f3f776259ef542ca4022054924a3f6d89ac5a9254101e2044f003",
+        "sig": "2f7fc101796a13543d2ca5c32eeec7875bf56815a3dfd9b4d1f775e95fb25f1366ca47fdfd1103807f81288ac302985e2ff6ad7cf23dfed9bb18a6632c0970c1"
+      },
+      "canonical_hex": "5b302c2266393330386130313932353863333130343933343466383566383964353232396235333163383435383336663939623038363031663131336263653033366639222c3137323830312c312c5b5d2c2269736c616e642d7365636f6e64225d"
+    }
+  ]
+}
