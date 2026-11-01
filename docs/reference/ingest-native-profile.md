@@ -41,8 +41,13 @@ These native range and arithmetic details come from the pinned engine's
 [`GetBGJobLimits`](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/db/db_impl/db_impl_compaction_flush.cc#L3461)
 and [WBM constructor](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/memtable/write_buffer_manager.cc#L23).
 
-`RocksNativeProfile::build(limits)` returns DB options, three explicit CF
-descriptors, and `RocksNativeResources`. The store retains those resources beside
+`RocksNativeProfile::build(limits, initialize)` fallibly returns DB options,
+three explicit CF descriptors, and `RocksNativeResources`. The store selects
+creation only after its fresh-initialization checks. All final DB options,
+including creation flags, are set before installing the mandatory owned
+`BackgroundErrorGuard`; installation failure refuses open rather than supplying
+an unguarded profile. No subsequent option parsing or mutation is permitted.
+The store retains those resources beside
 its database and live runtime reservation. Cache/WBM handles remain private;
 `usage()` exposes independently sampled cache, pinned-cache and memtable counters
 without setters. WBM usage overlaps cache accounting, and pinned cache is part of
@@ -95,9 +100,10 @@ it is not a native noncommit witness. The initial producer resolver remains
 positive-only; authoritatively resolving reserved-but-uncommitted work requires
 additional provenance and exclusion evidence before checkpoint/retirement use.
 
-The builder starts with creation and missing-CF creation disabled. The store may
-enable them only after its explicit fresh-initialization checks; reopen separately
-requires the exact CF set, existing healthy metadata and compatible manifest.
+Reopening disables creation and requires the exact CF set, existing healthy
+metadata and compatible manifest. Fresh initialization additionally refuses an
+existing directory. Both paths refuse a failed native observation after open
+and the complete retained-state census, before returning a usable owner.
 The builder does not change the default bytewise comparator or configure TTL.
 Background scheduling uses RocksDB's shared default environment. `Env::new()` in
 this wrapper also returns that shared environment; it does not create private
@@ -139,6 +145,46 @@ atomic flush supplies that per-call guarantee. Synchronization errors and lost
 responses remain unknown until the owner resolves durable state.
 
 ## Focused validation
+
+### Application-owned background failure handling
+
+The mandatory guard observes native background errors, promotes their status
+without changing the error identity and vetoes automatic recovery. The application
+combines its sticky observation with foreground uncertain-write state. It checks
+that state before and after native effects, at replay/certification/read witnesses,
+and around connected SQL progress, ACK and final delivery. A healthy sample is
+not an atomic dispatch or COMMIT permit: a later callback can leave native or SQL
+work committed while delivery is refused. Preserve the original inputs and exact
+identity; never infer rollback, reset the latch or reopen automatically.
+Keep workers/drivers joined and the DB closed before releasing native resources
+or path custody. Explicit fenced recovery uses a fresh guard and full census.
+
+The ordinary `native_failure_tests` and affected owner tests use a test-only Rust
+latch to exercise these refusal boundaries. They do not invoke the native listener
+or prove NoSpace, callback ordering, physical bounds or installed-process behavior.
+The opt-in Linux test below instead uses the real production factory/default Env,
+legitimate synchronized bootstrap, a dedicated full tmpfs and asynchronous flush.
+It requires a positive native NoSpace status and failed guard, then checks sticky
+refusal after restoring headroom, unchanged rows/accounting/inputs, and close/grant
+release. It preserves native files and original inputs even on assertion failure.
+
+Provide an empty, owned **64 MiB tmpfs mountpoint**, a separate empty owned
+persistent evidence directory on another filesystem, a fixed C locale and an
+outer process/container deadline. Never use a shared or production filesystem.
+Run from an exact-source build with the declared compiler/native dependencies:
+
+```sh
+LC_ALL=C BIGBROTR_NATIVE_POSIX_ROOT="$POSIX_ROOT" \
+  BIGBROTR_NATIVE_POSIX_EVIDENCE="$EVIDENCE_ROOT" \
+  cargo test --locked -p bigbrotr --lib \
+  storage::rocks::store::native_posix_tests::real_posix_background_nospace_latches_application_owner \
+  -- --exact --ignored --nocapture
+```
+
+This dedicated qualification is explicitly ignored by ordinary workspace tests.
+Its result must be recorded separately; compilation or simulated-latch success
+cannot count as execution. It does not qualify OPEN65, physical funding, general
+concurrency, power loss or the full installed product journey.
 
 ### Disk-growth evidence required for OPEN-prefix intake
 

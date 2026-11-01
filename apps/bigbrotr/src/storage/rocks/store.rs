@@ -64,6 +64,10 @@ mod bootstrap_tests;
 #[path = "native_failure_tests.rs"]
 mod native_failure_tests;
 
+#[cfg(all(test, target_os = "linux"))]
+#[path = "native_posix_tests.rs"]
+mod native_posix_tests;
+
 #[cfg(test)]
 #[path = "request_input_tests.rs"]
 mod request_input_tests;
