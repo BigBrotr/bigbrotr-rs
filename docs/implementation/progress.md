@@ -2,82 +2,76 @@
 
 2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
 Q37/Q38/Q40/Q41/Q42: Sol/xhigh default, bounded Astra/xhigh critical review;
-public development repository, no official release/package/deployment.
+public development repository; no official release, package or deployment.
 
-## Current objective and revision
+## Current objective and Git
 
-**Next M2 capability: fixed-width finite-history window succession** under
-P03-T05 Steps1/4 and P03-T01 Step3. Core profile2 is implemented in a separate agent worktree, not yet compiled or
-integrated: `3d6a77f3` (implementation`b6684890`). Bounded Astra source review found
-no blocker; this is not runtime evidence. Durable exclusions and128-query/384-ID
-contracts are settled in the owning reference; shared fixtures still need
-reconciliation.
-Keep original ascending window end separate from shrinking page upper. Preserve
-qualified gaps and derive only the contiguous attempted prefix from immutable
-quantum history; unknown COMMIT never permits another request. No parallel
-cursor ledger, whole-P02 barrier or reduced full-product scope.
+**P03-T05 Steps1/4 and P03-T01 Step3: qualify fixed-width window succession.**
+Profile2 core and maintained shared/capped/window journeys are implemented locally.
+No new Rust compilation or installed product qualification yet.
 
-Main/origin **a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a** is pushed and contains
-the locally qualified bounded same-job continuation. Root integrates at
-`.research/m2-linear-continuation-20261101`, now branch
-`work/m2-finite-history-20261101`; old Root branch was renamed after its exact tip
-reached main. Last observed HEAD A71; current dirty documentation belongs to Root.
-Canonical main remains clean A71 for hosted qualification. Do not push a redundant
-checkpoint-only run while the significant current CI revision is qualifying.
+Main/origin **a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a** is pushed and fully qualified
+locally and on GitHub for the preceding bounded same-job continuation. Root's
+worktree remains `.research/m2-linear-continuation-20261101`, branch
+`work/m2-finite-history-20261101`. Last observed HEAD **d0f78261**; enclosing Git
+identifies checkpoint/source-freeze commits. Root owns current documentation and
+the cap science-wrapper hash-binding correction. Canonical main is clean A71;
+new profile2 work is not pushed.
 
-## Evidence and remaining gates
+## Evidence and actual limits
 
-The [P03 report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.bounded_continuation`, owns detailed receipts and original
-failures. Immutable executed product **8f4d5f27fcd953e0cfd74ff4a859a029862f1e34**;
-A71 product/native/config/package inputs are unchanged. Release/observer,
-Clippy/Rustdoc, 656 application tests and 549 portable controls PASS within their
-recorded scope. Actual capped continuation, both native-binding corruption
-refusals, eight interruptions, four COMMIT-loss schedules and installed restart
-on/off are PASS (7/7 or12/12 as declared). Coverage remains pending; no full
-walker/500page/window succession/adoption/capacity claim. Original verifier,
-lint and environment failures remain preserved, never relabeled as product PASS.
+The [P03 report](evidence/p03-initial-sync-native-20261002.json) owns
+`linear_quantum_20261101.bounded_continuation` and
+`finite_history_windows_20261101`. Preserve their distinct source scopes.
+Executed immutable product8f and all original data/failures remain unchanged.
 
-Prepublication source review PASS:111 new objects/30.3MB, 23 occurrences/6 known
-nonsecret fingerprints,0unclassified; no sensitive paths/rawstores/archives/LFS.
-Review pin is linked by the P03 report. Candidate-bearing lines were unchanged
-in audited A2; new hosted logs/artifacts/provider alerts have a separate audit.
+[Hosted A71](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307)
+is **SUCCESS, fully audited PASS**. Exact source/native/worker identities,
+required checks, all declared skips and public outputs are verified; no unknown
+credential candidates/provider alerts within the bounded scan. The existing
+[CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns receipts and actual
+counts/timings. Native-download caches hit on all platforms; measured compilation
+cost is not proof of a broken cache. No observer remains active. A71 does not
+qualify later profile2 source.
 
-[Hosted A71](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41334125307),
-attempt1, is **IN_PROGRESS**, not PASS. Sol observer tool39908 owns its reused
-terminal/audit pipeline; exact source archive4217 files/treea665caaa is frozen.
-Foundation selected and all3 platform native checks started; terminal counts,
-artifacts, exposure and cleanup remain pending. Prior A2 is fully audited SUCCESS,
-qualifying the preceding quota/recovery increment, not this new source.
+Local profile2 core integrated as f93cb354/452d3ae7; shared oracles and corrections
+as4d44463b/dc7694b8/46c0381f; cap/window draft b792c3f8, explicit four-event encoder
+861620e6 and controls632bd798/d0f78261. Core, pinned driver and shared/capped
+critical source reviews have no remaining blocker, conditional on freezing the
+reviewed science-wrapper hash correction. New-window runtime review remains.
+Rustfmt1.98.1 PASS; combined new-window/cap/corruption/input controls **33PASS,
+0SKIP**, and existing encoder/restart controls35PASS. Shared targeted suites
+retain their recorded scopes. No current-profile Cargo, native or installed PASS.
 
-## Owners, resources and next action
+The finite contract is frozen in the [reference](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta):
+original window end distinct from shrinking request upper; one job's128 request
+budget,384 boundary IDs and bounded385-entry authenticated history; local
+exclusions have no wire evidence. Atomic dispositions/gaps and full native history
+precede movement or no-op. All500-page/partition/sparse-growth/general-slice/
+adoption/live/NEG/fleet/import and reserve/OPEN65/load work remains at existing
+P03/P02 owners. No scope reduction or whole-P02 barrier.
 
-Root is sole integrator. SolCI observer runs read-only; a second Sol agent completed the core implementation in
-`.research/m2-window-succession-core-20261101`; Astra completed bounded source
-and pinned-driver reviews. No delegated build or engine. All Root local compiler/engine/client
-runs are terminal with cleanupPASS; cache115 released. Original4 ELF bytes/full
-metadata preserved with O_NOATIME reads. Borrowed bridge preserved/empty at the
-last terminal captures. Unrelated workloads remain untouched.
+## Resources and next action
 
-Protected current capsule: `.research/m2-linear-continuation-qualification-20261101`;
-fresh runtime data/captures under
-`/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27`.
-CI capsule: `.research/ci-publication-20261026/terminal-a71b6ea3-20261101`.
-The [inventory](../research/laboratory-inventory.json) owns custody; all partial
-worktrees, original failures and unique data remain. Saved baseline replay
-provenance is read-only; no new laboratory cleanup or Git maintenance.
+Root is sole integrator. All local compiler/engine/client runs from8f are terminal
+with cleanupPASS; cache115 released; original4 ELF bytes/full metadata preserved
+with O_NOATIME reads. Borrowed bridge retained/empty at last terminal captures;
+unrelated workloads untouched. Current input authoring reused the verified
+retained signing bundle; portable dependencies and regeneration are documented.
+All partial worktrees and original transition failures remain in the inventory.
 
-New frozen input `linear-window-events.json` contains three independently signed
-test bodies; two portable input/crypto tests PASS. Optional authoring reuses the
-maintained generator with documented dependencies; no cache is a prerequisite.
+Previous capsule: `.research/m2-linear-continuation-qualification-20261101`.
+Runtime data: `/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27`.
+Completed CI capsule: `.research/ci-publication-20261026/terminal-a71b6ea3-20261101`.
+The [inventory](../research/laboratory-inventory.json) owns custody.
 
-**Next:** integrate the reviewed core locally, then reconcile common selectors,
-status/history/retirement and maintained scientific oracles before compilation.
-Capped negatives use B-page2 alternate23: change its time to22 without changing
-the older1 cursor; substitute the globally valid original23 ID absent from that
-row. This preserves geometry and isolates native binding. Demonstrate populated
-islands with actual empty middle/older queries, explicit saturated-second gaps,
-and failed gap/frontier settlement. Reconcile readers, recovery, schema, shared
-fixtures and documentation together before expensive execution. Full500pages,
-partition/sparse growth/adoption/live/NEG/fleet/import and physical reserve/OPEN65/
-load remain at their existing P03/P02 owners. Continue the entire selected goal.
+**Next:** freeze the corrected source; parameterize the already qualified isolated
+worker-before-parent release recipe without weakening source/compiler/native/cache/
+original-ELF/lifecycle guards. Then run strict workspace/library checks. In parallel,
+close new-window critical oracle review and prepare the minimum real failed-gap/
+window-closing COMMIT schedules using maintained tools. Verify changed schema,
+roles, budgets, exact source completion and fault reachability before installed
+runs. Reuse unchanged binaries after Python-only changes. The new eight-request
+proof must reach both islands through actual empty spans, continue on new IDs at
+the same second, retain two gaps and show the exact contiguous prefix. No ninth
+request, unsupported advancement or generic error may qualify as PASS.

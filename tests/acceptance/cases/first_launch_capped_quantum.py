@@ -27,7 +27,8 @@ class CappedQuantumRuntime(LinearQuantumRuntime):
             'experiments/ingest-bootstrap/linear_capped_client.py',
             'tests/acceptance/cases/first_launch_capped_quantum.py',
             'tests/acceptance/cases/first_launch_capped_oracle.py',
-            'tests/acceptance/cases/first_launch_capped_corruption.py')
+            'tests/acceptance/cases/first_launch_capped_corruption.py',
+            'tests/acceptance/cases/first_launch_quantum_science.py')
         for name in names:self.inputs['acceptance_files_sha256'][name]=digest(self.source/name)
         from linear_capped_transport import IMPORT_SHA256,REFUSAL_SHA256,WINDOW_SHA256
         self.inputs['capped_corpus_sha256']={name:digest(self.source/name) for name in (
