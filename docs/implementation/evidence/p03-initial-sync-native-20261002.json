@@ -470,7 +470,7 @@
     "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_SEVEN_FAULTS_DEV_AND_AFFECTED_INDEX_PASS;GROUPED_PENDING",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-    "acceptance": "59cf9de1de981d324ae68dcbeec84e50a9f54af3",
+    "acceptance": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
     "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
@@ -534,6 +534,14 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-index-handoff-inventory-critical-20261101.json",
         "sha256": "d3abbd3c075ed9b5ac3641d47ec6c7b4ad475c295de5a13d88b1b7ed8aeb6e99"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-index-observer-batch-critical-20261101.json",
+        "sha256": "f873257e924de0ddea828373c496abcb4f61be30cfde89ccdcc866b35ed964f6"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-status-fixture-tutorial-source-critical-20261101.json",
+        "sha256": "1ef808d51f66e6038d62f21ec5bba9b4d0db5a6eac820540d33d03482da97974"
       }
     ],
     "original_failures": [
@@ -572,9 +580,13 @@
       {
         "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3/root-terminal.json",
         "sha256": "da9417529e1fc4e5d11e0b1d46ba259199c03c3c54788c7b5431bf205e57f377"
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/root-terminal.json",
+        "sha256": "348669e67496aebcde1e7df6c79c40e6c1983863088f161ad2f467fe20f531c5"
       }
     ],
-    "open_checks": "Current groupedclosedreclamation/successor/Archive/export/restart must qualify, then separatelyqualifiede812testinitializer integration/sourceeligibility, finalpublication review/mainpush/actualhostedCI. OriginalR3backendcauseUNKNOWN retained withexistingoperation/loadfollowthrough. No fullwalker/task/M2close.",
+    "open_checks": "ActualGroupR2mustqualify full11stage current78reclamation/successor/groupedArchive/science/twoexports/restart with batchedobserver and unchanged65/128profile. Thenmergepreparedacf,e812testinitializer/sourcepin;fullcoherentcontrol/documentation/finalpublication checks/mainpush/actualhostedCI. R3backendoriginalcauseUNKNOWN and serialworkcostfollowthrough retained;no wholeM2/taskclose.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -965,6 +977,100 @@
         "scope": "Actualsource/Index/restart/successor/resend/Archivecatchup/exactretry/epoch2Indexbridge/exactretry/historicalread;SQL12nonterminal/32terminal,epoch3metadataonly. No generalcapacity/recovery/fullM2claim."
       },
       "grouped": "NOT_RUN_CURRENT_TUPLE;next"
+    },
+    "grouped_attempt_1": {
+      "result": "FAIL;5laterNOT_RUN;cleanupPASS",
+      "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
+      "source": "dc6d9f47fc804b610119e8c60494a0be60ff21cf",
+      "tool": 62520,
+      "seconds": 105.88236519598286,
+      "terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/root-terminal.json",
+        "sha256": "348669e67496aebcde1e7df6c79c40e6c1983863088f161ad2f467fe20f531c5"
+      },
+      "classification": "Observed65sretainedgate pressure at second of10sequentialCHexports. Initial15sprefixPASS;64retainedrequests/proof/Index64 observed, but fullnative/scientificverification and reclamationNOT_RUN. Noexclusiveproduct/environmentcausalclaim.",
+      "current_gate_seconds": {
+        "proof_only_complete": 13.382,
+        "finite_peer_end": 51.911378,
+        "index64_commit": 63.854,
+        "index64_observed": 63.933,
+        "first_CH_export": 64.792,
+        "second_export_start": 64.9575,
+        "second_export_timeout": 0.04247898899484426
+      },
+      "prior_d230_gate_seconds": {
+        "proof_only_complete": 12.669,
+        "finite_peer_end": 46.475118,
+        "index64_commit": 59.644,
+        "first_CH_export": 60.58,
+        "ten_exports_complete": 62.1405
+      },
+      "cadence_seconds": {
+        "current_empty": 0.336953,
+        "prior_empty": 0.29219,
+        "current_busy_index": 1.015448,
+        "prior_busy_index": 0.880855,
+        "current_post_peer_index": 0.788677,
+        "prior_post_peer_index": 0.877493
+      },
+      "pending_scope": {
+        "quanta": 129,
+        "completed": 128,
+        "pending": 1,
+        "pending_created_after_gate_start": 52.229771,
+        "post_peer_new_quanta": 1,
+        "interpretation": "Pending-row admission exclusion blocksfurtherclaims;no persistedpost-peer quantum/socket creationhotloop. Nominationreadcostnotmeasured."
+      },
+      "limits": "Derived retained timeline/cadence observations, not CPU/RAM/SQL-cost isolation or throughput certificate; corresponding taskfollowthrough remainsP01-T05Step5/P02-T02Step8/P02-T09Step5. OriginalFAILunchanged.",
+      "capture_anchors": [
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/initial/index-prefix-verdict.json",
+          "sha256": "f6f83b8b4f7a614d3ed34c874d325d968ed246d7c9216ec6816079f6a4c9976b"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/initial/retained-request-deadline.json",
+          "sha256": "d22cdf5eb78ba53fc4cdd1f6f63d6ee9971ae73b98712ed6c6dffff15babf266"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/archive-export/retained-request-deadline.json",
+          "sha256": "d8c34a7a12c35a6278ec38065268519e5bd62a5ef92e27278c7b8b29c61e7087"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/initial/retained-proof-release.json",
+          "sha256": "1fa23f0fc45a4dbf1bee47e0652eda0d666b603194627d533bfbc8bf46a3cd3c"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/archive-export/relay-finite-complete.json",
+          "sha256": "9022520184dbfefb3791e18bbb1744ea8eba9cd49fa9a94b5d2041769afa5ed5"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/initial/catalog-outage-control.json",
+          "sha256": "ccdf09a1bfa4498d476b58c59266c3480dd235826db279e12638a4f2634207e2"
+        }
+      ]
+    },
+    "observer_batch_followthrough": {
+      "status": "SOURCE_REVIEWED;93PURE_CONTROLS_PASS;PINNED_FORMAT_PREFLIGHT_PASS;ACTUAL_GROUPED_RERUN_PENDING",
+      "author": "01cf7e730a8d8a2f32bfe5ee8587b0b515c84f2f",
+      "merged": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
+      "change": "Same10fulloracleSELECTs/readerrole/perquery175rows1MiB/10sserver15sreceive/whole65gate;oneinspect/diskwalk/client through existingmultiquery. Uniqueper-tableUInt8column identity includingemptyresults, removedonlyafterstrictmeta/int1validation;exactuntrimmedJSONframing/bytebounds/duplicate/nonfinite/count/type/errors/deadlinechecks. Scientificoracles/defaultSELECT/otherchcallersunchanged.",
+      "pure": "93Index/ArchiveOutage/RetainedPASS0SKIP;originalc36identity/trimfindingsclosedin01cf;noactualPASSinferred.",
+      "literal_format": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-observer-format-26.8.35.10-20261101/receipt.json",
+        "sha256": "dad976481cf20d9dc5fd647f5d935477b7dbb06afbf693d4e60bd3e751489e16"
+      },
+      "ten_family_format": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-observer-format-26.8.35.10-20261101/ten-tables/receipt.json",
+        "sha256": "7a24db646b02bcb2236563d2557e35e1ecefa42f0d64b178437ca922008f362f"
+      },
+      "format_scope": "Selected26.8.35.10 local actualtwoJSONdocs(UInt64max/nullable/array/empty)andtenemptyMemoryfamilies/nestedhexmetadata/markers throughmaintaineddecoder. No network/server/reader-auth/MergeTree/scientific/lifecycle/65s workload qualification."
+    },
+    "pending_test_initializer_integration": {
+      "dev_source": "e8122ff90edf298e8c1262d3328cde87387c8828",
+      "prepared_branch_head": "acf7496f042769dcdc5da33bd18a099d0bf2236d",
+      "worktree": ".research/m2-linear-quantum-main-integration-20261101",
+      "status": "PREPARED_NOT_MERGED_DURING78_INSTALLED_RUNS",
+      "tutorial": "14purePASS;currentpinreplacedtoe812/apps7b9afteroneNoneinitializerchange;allnineNostrpathsandotherguardedobjectsunchanged;sourceonlyreview1ef808d5,no runtimeproofrelabeled."
     }
   }
 }

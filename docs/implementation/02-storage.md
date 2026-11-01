@@ -600,6 +600,9 @@ One owner serializes exact identity decisions for each writable directory.
   and ACK guarantees; retain a measured adequate design or verify a justified
   improvement with those same guarantees. A small successful admission is not a
   throughput result.
+  Reuse the November1 [Sync observations](evidence/p03-initial-sync-native-20261002.json)
+  when selecting the mixed-load probe; serial quantum/Index cadence is measured,
+  but per-quantum SQL, synchronization, CPU and memory costs remain unisolated.
 
 ## P02-T03 — Portable dictionaries and deduplicated source documents
 
