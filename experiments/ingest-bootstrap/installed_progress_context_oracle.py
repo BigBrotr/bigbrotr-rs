@@ -79,21 +79,30 @@ def sha(value):
     return hashlib.sha256(value).hexdigest()
 
 
-def archive_request_progress(event, transcript):
+def archive_request_progress(event, transcript, *, expected_uppers=None):
     """The unchanged Archive peer sends two signed/forged/duplicate quanta.
 
     The forged signatures remain structurally valid captured inputs and reach
     native certification rejection. All three EVENTs classify in each REQ;
     quiet later REQs produce neither reservations nor classified progress.
+    The default retains the historical fixed-window capture profile. Current
+    callers declare their exact bounded continuation recipe before comparison;
+    neither observed requests nor retained SQL select those expected bounds.
     """
     assert 2 <= len(transcript) <= 128
+    if expected_uppers is None:
+        expected_uppers = {number: 86400 for number in range(1, len(transcript) + 1)}
+    assert isinstance(expected_uppers, dict), 'declared request bounds must be indexed'
+    assert set(expected_uppers) == set(range(1, len(transcript) + 1)), 'declared request count differs'
+    assert all(type(number) is int and type(upper) is int and 0 < upper <= 2**64 - 1
+        for number, upper in expected_uppers.items()), 'invalid declared request bounds'
     nonces = set()
     previous_closed = None
     for number, wire in enumerate(transcript, 1):
         assert wire['number'] == number
         command = wire['request']
         assert len(command) == 3 and command[0] == 'REQ'
-        assert command[2] == {'kinds': [1], 'since': 0, 'until': 86399, 'limit': 3}
+        assert command[2] == {'kinds': [1], 'since': 0, 'until': expected_uppers[number] - 1, 'limit': 3}
         request = command[1]
         assert re.fullmatch('[0-9a-f]{48}', request) and int(request[:32], 16)
         assert request[:32] not in nonces
@@ -119,7 +128,8 @@ def archive_request_progress(event, transcript):
         progress_input_sha256='\\x'+sha(raw))
 
 
-def verify_archive_progress(state, transcript, completed_us, event, native, inputs, receipts, control, *, provenance=True):
+def verify_archive_progress(state, transcript, completed_us, event, native, inputs, receipts, control, *,
+                            provenance=True, expected_uppers=None):
     """Exact target40 head for the original one-event Archive recipe/window32.
 
     Three dictionary operations precede six classified EVENTs: new facts,
@@ -128,7 +138,7 @@ def verify_archive_progress(state, transcript, completed_us, event, native, inpu
     durable progress class, unlike a malformed JSON preparation refusal.
     """
     assert type(provenance) is bool
-    binding = archive_request_progress(event, transcript)
+    binding = archive_request_progress(event, transcript, expected_uppers=expected_uppers)
     assert {39, 40} <= {row['migration'] for row in state['schema_versions']}
     assert len(inputs) == len(receipts) == 4
     producer, = state['producer_epochs']

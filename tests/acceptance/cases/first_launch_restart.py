@@ -13,6 +13,9 @@ ENDPOINT = 'ws://127.0.0.1:7447/installed-live-fixture'
 SELECTOR_SHA256 = '64f3d2ad64cf6960aaa9908e8b85b21205ca89786cb2c21dacb3c4e8e4d1938f'
 COUNTS = ('dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')
 PROGRESS_FIELDS = ('progress_request_id', 'progress_event_ordinal', 'progress_wire_sequence', 'progress_input_sha256')
+# This maintained peer sends signed time1 on both pages. The second page must
+# overlap that second, then the repeated boundary leaves coverage pending.
+INITIAL_QUANTUM_UPPERS = {1: 86400, 2: 2}
 
 
 def sha(value):
@@ -276,9 +279,9 @@ def first_science(state, report, event, wires, census, store, completed, *, prov
     manifest = next(value for cf, key, value in science['native'] if cf == 'default' and key == b'\x01\x01')
     owner = only(state['owner_epochs'], role='control')
     requests(state, 1, manifest, science['inputs'], science['receipts'], owner,
-        {4: archive_request_progress(event, wires)}, source)
+        {4: archive_request_progress(event, wires, expected_uppers=INITIAL_QUANTUM_UPPERS)}, source)
     verify_archive_progress(state, wires, completed, event, science['native'], science['inputs'], science['receipts'], owner,
-        provenance=provenance)
+        provenance=provenance, expected_uppers=INITIAL_QUANTUM_UPPERS)
     science['manifest'] = manifest
     for batch in science['batches']:
         batch.update(epoch=1, topology=0)
@@ -293,6 +296,8 @@ def successor_wire(wires, old, new):
     for number, wire in enumerate(wires, 1):
         assert wire['number'] == number
         command = wire['request']
+        # distinct23/predecessor1/resend23 violates descending signed time.
+        # Its interruption and all subsequent quiet retries keep the first bound.
         assert len(command) == 3 and command[0] == 'REQ' and command[2] == dict(kinds=[1], since=0, until=86399, limit=3)
         assert re.fullmatch('[0-9a-f]{48}', command[1]) and int(command[1][:32], 16)
         assert command[1][:32] not in nonces

@@ -64,9 +64,9 @@ def science(state, report, event, wires, rows, store, completed):
     manifest = next(value for cf, key, value in wanted['native'] if cf == 'default' and key == b'\x01\x01')
     owner = index.only(state['owner_epochs'], role='control')
     source.requests(state, 1, manifest, wanted['inputs'], wanted['receipts'], owner,
-                    {4: archive_request_progress(event, wires)}, attribution)
+                    {4: archive_request_progress(event, wires, expected_uppers=source.INITIAL_QUANTUM_UPPERS)}, attribution)
     verify_archive_progress(state, wires, completed, event, wanted['native'], wanted['inputs'],
-                            wanted['receipts'], owner)
+                            wanted['receipts'], owner, expected_uppers=source.INITIAL_QUANTUM_UPPERS)
     for batch in wanted['batches']:
         batch.update(epoch=1, topology=0)
     return wanted
