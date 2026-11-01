@@ -604,6 +604,7 @@ class ReclamationRuntime(RetainedRuntime):
         live_oracle.startup_index(started['index'],generation,retained_boundary=True)
         index.exact(self.custody(),self.custody_before)
         self.compacted_bridge=bridge
+        self.successor_recovery_setup(started,entry,output)
         with (home/'client.stdout').open('x') as out,(home/'client.stderr').open('x') as err:
             client=subprocess.Popen([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_live_client.py'),
                 'journey',str(home),'--profile',str(home),'--expected-config-revision','1','--expected-policy-revision','1','--live-index-proof'],

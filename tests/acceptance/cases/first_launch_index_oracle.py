@@ -171,8 +171,10 @@ def content_conflict(before, after):
             exact(before[name], after[name])
 
 
-def ordinary_selection(state):
-    """Current complete Archive membership, independently fixed rev4/cut12/5."""
+def ordinary_selection(state, *, provenance=True):
+    """Initial rev4/snapshot5 and the declared signed fixture's cut/counts."""
+    from cases.first_launch_restart import profile
+    selected = profile(provenance)
     dataset = only(state['datasets'])['dataset_id']
     consumer = only(state['consumers'], consumer_role='archive')
     assert consumer['dataset_id'] == dataset
@@ -181,10 +183,10 @@ def ordinary_selection(state):
     snapshot = only(state['archive_frontier_snapshots'], consumer_id=catalog, frontier_revision=4)
     exact([snapshot[k] for k in ('dataset_id', 'catalog_id', 'topology_generation', 'snapshot_id',
           'dictionary_count', 'payload_count', 'eligibility_count', 'receive_count', 'provenance_count')],
-          [dataset, catalog, 0, 5, 8, 1, 1, 1, 1])
+          [dataset, catalog, 0, 5, *selected['initial_counts']])
     bound = only(state['consumer_frontiers'], consumer_id=catalog, frontier_revision=4)
     exact([bound[k] for k in ('dataset_id', 'topology_generation', 'shard_id', 'owner_epoch', 'last_complete_sequence')],
-          [dataset, 0, 0, 1, 12])
+          [dataset, 0, 0, 1, selected['initial_cut']])
     members = [r for r in state['archive_frontier_batches'] if r['consumer_id'] == catalog and r['frontier_revision'] == 4]
     assert len(members) == len({r['attempt_id'] for r in members}) == 4
     attempts = sorted((only(state['archive_attempts'], attempt_id=r['attempt_id']) for r in members), key=lambda r:r['ordinal'])
@@ -193,15 +195,17 @@ def ordinary_selection(state):
     return attempts
 
 
-def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
+def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss',initial_provenance=True):
     """Only the existing initial and finite epoch2 Archive fixture selections."""
     assert type(retained_compacted_epoch2) is bool
     assert retained_archive_schedule in ('unbound-publication-loss','uninterrupted','grouped-publication-loss')
     assert retained_compacted_epoch2 or retained_archive_schedule=='unbound-publication-loss'
+    assert type(initial_provenance) is bool and (initial_provenance or
+        (successor is None and not retained_compacted_epoch2)), 'closed initial provenance profile'
     grouped=retained_archive_schedule=='grouped-publication-loss'
     if successor is None and not retained_compacted_epoch2:
-        ordinary_selection(state)
-        return 4, [(1,12)]
+        ordinary_selection(state,provenance=initial_provenance)
+        return 4, [(1,12 if initial_provenance else 8)]
     assert successor is None or type(successor) is bool
     from cases.first_launch_restart import profile
     selected = (dict(snapshot=68,counts=[73,62,62,62,63],initial_cut=312,successor_cut=10,successor_requests=3)
@@ -231,9 +235,9 @@ def startup_selection(state, successor=None, *, retained_compacted_epoch2=False,
     return revision,cuts
 
 
-def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
+def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss',initial_provenance=True):
     assert successor is None or phase == 'setup'
-    startup_selection(state,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
+    startup_selection(state,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule,initial_provenance=initial_provenance)
     dataset = only(state['datasets'])
     control = only(state['owner_epochs'], role='control', state='active')
     assert control['dataset_id'] == dataset['dataset_id']
@@ -250,7 +254,7 @@ def ordinary_roles(value, state, clock_before, clock_after, phase=None, *, succe
     caps = value['capabilities']
     assert len(caps) == 2
     published = dict(revision='4',cut=dict(dataset_id=raw(dataset['dataset_id'],16).hex(),
-        topology_generation='0', bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12')]))
+        topology_generation='0', bounds=[dict(shard_id='0',owner_epoch='1',last_complete_sequence='12' if initial_provenance else '8')]))
     for cap,kind in zip(caps, ('private_history','signed_event_export')):
         exact(sorted(cap), sorted(('capability','state','reason','freshness','time','published','generation','storage_incarnation')))
         assert cap['capability'] == kind and cap['generation'] is cap['storage_incarnation'] is None
@@ -310,13 +314,13 @@ def startup_reader_pending(before, after, *, successor=None, retained_compacted_
     return pending
 
 
-def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss'):
+def ordinary_startup(before, after, roles, clock_before, clock_after, worker, *, successor=None, retained_compacted_epoch2=False,retained_archive_schedule='unbound-publication-loss',initial_provenance=True):
     """Fresh operation caches remain empty after an actually completed full probe."""
     def require(condition, message):
         assert condition, message
-    revision,cuts = startup_selection(after,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
+    revision,cuts = startup_selection(after,successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule,initial_provenance=initial_provenance)
     topology = 0 if successor is None and not retained_compacted_epoch2 else 1
-    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule)
+    ordinary_roles(roles,after,clock_before,clock_after,'setup',successor=successor,retained_compacted_epoch2=retained_compacted_epoch2,retained_archive_schedule=retained_archive_schedule,initial_provenance=initial_provenance)
     catalog = only(after['consumers'],consumer_role='archive')['consumer_id']
     require(worker is None, 'startup native child remains')
     reader_ids = {row['lease_id'] for row in after['archive_snapshot_pins'] if row['purpose'] == 'reader'}

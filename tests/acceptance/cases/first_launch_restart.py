@@ -106,6 +106,65 @@ def clock(value, lower, upper):
     return value
 
 
+def recovery_stability_basis(state, started, now_us):
+    """Bind setup timing to the actual accepted policy and live activation."""
+    dataset=only(state['datasets'])
+    activation=only(state['initial_ingest_activations'],producer_epoch=2)
+    assert started['state']=='activated' and started['producer_epoch']=='2' and activation['target_epoch']==2
+    assert activation['dataset_id']==dataset['dataset_id']=='\\x'+started['dataset_id']
+    for field,report in (('owner_resource_id','owner_resource_id'),('target_incarnation','process_incarnation'),
+            ('producer_slot_id','producer_slot_id')):
+        assert activation[field]=='\\x'+started[report], 'activation report identity'
+    assert str(activation['activated_at_us'])==started['activated_at_us']
+    clock(activation['activated_at_us'],1,now_us)
+    for kind in ('config','policy'):
+        revision=dataset[kind+'_revision']
+        row=only(state[kind+'_revisions'],revision=revision)
+        assert row['dataset_id']==dataset['dataset_id']
+        assert activation[kind+'_revision']==revision and str(revision)==started[kind+'_revision']
+        assert activation[kind+'_digest']==row['document_digest']=='\\x'+started[kind+'_sha256']
+    config=only(state['config_revisions'],revision=dataset['config_revision'])
+    policy=only(state['policy_revisions'],revision=dataset['policy_revision'])
+    assert policy['config_revision']==config['revision']
+    stable=config['document']['settings']['runtime.pressure_stable_duration']
+    exact(stable,policy['document']['settings']['runtime.pressure_stable_duration'],'accepted stability duration differs')
+    clock(stable,1,2**63-1)
+    control=only(state['owner_epochs'],resource_id=activation['activated_by_resource'],
+        epoch=activation['activated_by_epoch'])
+    ingest=only(state['owner_epochs'],resource_id=activation['owner_resource_id'],epoch=2)
+    assert control['role']=='control' and control['process_incarnation']==activation['activated_by_incarnation']
+    assert ingest['role']=='ingest' and ingest['process_incarnation']==activation['target_incarnation']
+    assert ingest['role_instance_id']==activation['target_role_instance_id']
+    for owner in (control,ingest):
+        assert owner['dataset_id']==dataset['dataset_id'] and owner['state']=='active'
+        assert owner['lease_expires_at_us']>now_us and owner['released_at_us'] is None
+    return dict(stable_duration_us=stable,activated_at_us=activation['activated_at_us'],
+        config_revision=config['revision'],policy_revision=policy['revision'],
+        config_digest=config['document_digest'],policy_digest=policy['document_digest'])
+
+
+def recovery_stability_preserved(before, after, started, before_us, after_us):
+    """No setup effects apart from renewal of the same live owner rows."""
+    assert after_us>=before_us, 'setup PostgreSQL clock moved backwards'
+    basis=recovery_stability_basis(before,started,before_us)
+    exact(recovery_stability_basis(after,started,after_us),basis,'setup accepted policy changed')
+    assert set(before)==set(after)
+    for table in before.keys()-{'owner_epochs'}:
+        exact(after[table],before[table],'recovery setup mutated '+table)
+    old={(r['resource_id'],r['epoch']):r for r in before['owner_epochs']}
+    new={(r['resource_id'],r['epoch']):r for r in after['owner_epochs']}
+    assert old.keys()==new.keys(), 'recovery setup owner changed'
+    for key,row in old.items():
+        current=new[key]
+        ignored={'lease_expires_at_us','xmin'} if row['state']=='active' else set()
+        exact({k:v for k,v in current.items() if k not in ignored},
+            {k:v for k,v in row.items() if k not in ignored},'recovery setup owner identity changed')
+        if ignored:
+            assert current['lease_expires_at_us']>=row['lease_expires_at_us']
+            assert current['lease_expires_at_us']>after_us, 'recovery setup owner expired'
+    return basis
+
+
 def originals(store, slot, epoch, count):
     paths = sorted((store / 'producer-inputs-v1').glob(f'{slot}-{epoch:016x}-*.cbor'))
     assert [path.name for path in paths] == [f'{slot}-{epoch:016x}-{n:016x}.cbor' for n in range(1, count + 1)]

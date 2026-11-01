@@ -416,9 +416,10 @@ class Runtime:
         self.set_value, self.current_owner_view = set_value, current_owner_view
         self.export_validate, self.validate_source = validate, validate_source
         self.signed_sha256 = SIGNED_SHA256
+        # Load the shared startup observer and fixture profiles before candidate
+        # source capture. Their import cycle precludes a module-level import.
+        from cases import first_launch_index_baseline, first_launch_restart
         if self.restart_case:
-            from cases import first_launch_restart
-            from cases import first_launch_index_baseline
             # Load every independent owner before recording source identity.
             import installed_archive_read
             import installed_archive_catch_up_oracle
@@ -874,10 +875,9 @@ class Runtime:
         require(all(sample['count']==0 for sample in observed.values()), 'database backend remains')
 
     def ordinary_client(self, output, entry):
-        result = self.command([sys.executable, '-B', str(self.source /
-            'experiments/ingest-bootstrap/installed_archive_export_client.py'), str(self.home)],
-            timeout=40, label='ordinary-client')
-        require(not result.stderr, 'ordinary client diagnostic output')
+        from cases import first_launch_index_baseline
+        return first_launch_index_baseline.ordinary_client(self,output,entry,
+            initial_provenance=self.provenance)
 
     def ordinary(self):
         self.source_unchanged()
@@ -1035,6 +1035,7 @@ class Runtime:
         save(output / 'successor-started.json', started)
         activated, _ = self.capture(output, 'successor-started')
         self.successor_activated(started, activated)
+        self.successor_recovery_setup(started,entry,output)
         with (home / 'client.stdout').open('x') as out, (home / 'client.stderr').open('x') as err:
             client = subprocess.Popen([sys.executable, '-B', str(self.source / 'experiments/ingest-bootstrap/installed_live_client.py'),
                 'journey', str(home), '--profile', str(home), '--expected-config-revision', '1', '--expected-policy-revision', '1',
@@ -1087,6 +1088,54 @@ class Runtime:
 
     def successor_activated(self, started, state):
         """Optional bridge observation before the successor client starts."""
+
+    def successor_recovery_setup(self, started, entry, output):
+        """Full accepted stability interval before any successor client clock.
+
+        This is setup only: elapsed time and unchanged original inputs do not
+        prove native Available. Actual subsequent admission must still succeed.
+        """
+        from cases.first_launch_index_pin import process_identity
+        output=output/'recovery-stability';output.mkdir(mode=0o700)
+        require(not self.processes,'recovery setup has an unjoined observer/client')
+        before,catalog=self.capture(output,'before')
+        before_us=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        basis=self.restart_checks.recovery_stability_basis(before,started,before_us)
+        parent=process_identity(self.inspect(entry)['State']['Pid'])
+        require(parent is not None,'recovery setup live parent')
+        inputs=self.files(self.state/'data/ingest/producer-inputs-v1')
+        save(output/'before-files.json',dict(inputs=inputs))
+        # All SQL/file observers have returned and joined. Hold no fixture PG
+        # transaction, policy lease or native reader while the owner renews.
+        require(not self.processes,'recovery setup observer did not join')
+        begin=time.monotonic_ns()
+        due=begin+basis['stable_duration_us']*1000
+        deadline=due+30_000_000_000
+        while time.monotonic_ns()<due:
+            info=self.inspect(entry)
+            require(info['State']['Running'] and process_identity(info['State']['Pid'])==parent,
+                'recovery setup owner changed or ended')
+            require(not self.processes,'recovery setup wait has an unjoined observer')
+            remaining=due-time.monotonic_ns()
+            if remaining>0:time.sleep(min(5,remaining/1_000_000_000))
+        waited=time.monotonic_ns()
+        require(due<=waited<deadline,'recovery setup stability bracket')
+        after,after_catalog=self.capture(output,'after')
+        after_us=int(self.sql('bigbrotr_control','SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint'))
+        self.restart_checks.recovery_stability_preserved(before,after,started,before_us,after_us)
+        require(catalog==after_catalog,'recovery setup changed Archive catalog')
+        after_inputs=self.files(self.state/'data/ingest/producer-inputs-v1')
+        save(output/'after-files.json',dict(inputs=after_inputs))
+        require(inputs==after_inputs,'recovery setup changed original input files')
+        info=self.inspect(entry)
+        require(info['State']['Running'] and process_identity(info['State']['Pid'])==parent,
+            'recovery setup same live parent')
+        completed=time.monotonic_ns()
+        require(not self.processes and completed<deadline,'recovery setup observation deadline/join')
+        save(output/'verdict.json',dict(status='PASS',scope='setup_only_not_native_readiness',
+            **basis,parent=parent,started_monotonic_ns=begin,waited_monotonic_ns=waited,
+            completed_monotonic_ns=completed,before_us=before_us,after_us=after_us,
+            native_readiness='not_observed',inputs='unchanged',client='not_started'))
 
     def successor_client_options(self):
         return []

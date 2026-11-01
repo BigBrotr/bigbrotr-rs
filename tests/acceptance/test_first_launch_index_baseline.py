@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
@@ -14,6 +15,7 @@ from cases import first_launch_index as index
 from cases import first_launch_index_oracle as oracle
 from cases import first_launch_index_baseline as baseline
 from cases import first_launch_restart as restart
+from cases import first_launch
 from cases.first_launch_index_pin import ShortPinRuntime, process_identity
 from cases.first_launch_index_pin_release import PinReleaseRuntime
 from cases.first_launch_index_restart import RestartIndexRuntime
@@ -22,11 +24,17 @@ from test_first_launch_index_pin_release import setup_observation
 import installed_archive_export_client as client
 
 
-def startup_observation():
+def startup_observation(provenance=True):
     before,after,_,start,end = setup_observation()
     science,roles = ordinary_fixture()
     for name in ('datasets','consumers','archive_frontier_snapshots','consumer_frontiers','archive_frontier_batches','archive_attempts'):
         before[name]=copy.deepcopy(science[name]); after[name]=copy.deepcopy(science[name])
+    selected=restart.profile(provenance)
+    for state in (before,after):
+        state['archive_frontier_snapshots'][0].update(**dict(zip(restart.COUNTS,selected['initial_counts'])))
+        state['consumer_frontiers'][0]['last_complete_sequence']=selected['initial_cut']
+        for claim in state['retention_claims']:
+            if 'last_sequence' in claim:claim['last_sequence']=selected['initial_cut']
     owner=after['owner_epochs'][-1]
     roles['identity']['process_incarnation']=owner['process_incarnation'][2:]
     roles['observed_at_us']='100900000'
@@ -82,6 +90,97 @@ def retained_observation(*, archive_schedule='unbound-publication-loss'):
 
 
 class BaselineControls(unittest.TestCase):
+    def test_base_and_restart_clients_share_the_declared_startup_profile(self):
+        source=Path(__file__).resolve().parents[2]
+        for name,provenance in (('p01-first-launch',True),('p01-first-launch-restart',True),
+                (first_launch.OFF_CASE,False)):
+            with self.subTest(case=name),tempfile.TemporaryDirectory() as temporary:
+                output=Path(temporary)
+                runtime=first_launch.Runtime(SimpleNamespace(evidence=output,source_root=source,case=name),{})
+                runtime.home=output
+                runtime.command=Mock(side_effect=AssertionError('unguarded ordinary client'))
+                runtime.inspect=Mock(return_value=dict(State=dict(Running=True)))
+                selected=dict(scope={'declared':'scope'},catalog_id='catalog',destination_id='destination')
+                (output/'export-input.json').write_text(json.dumps(selected))
+                (output/'before-control.json').write_text('{}')
+                (output/'ordinary-setup.json').write_text(json.dumps(dict(phase='setup',
+                    started_ns=10_000_000_000,deadline_ns=40_000_000_000)))
+                entry={'id':'owned-control'}
+                child=Mock(pid=123,returncode=0)
+                child.poll.return_value=None
+                with patch.object(baseline.subprocess,'Popen',return_value=child), \
+                        patch.object(baseline,'stop_process'), \
+                        patch.object(baseline.time,'monotonic',return_value=10), \
+                        patch.object(baseline,'startup_quiescence',return_value=({'complete':True},)) as observe:
+                    self.assertEqual(runtime.ordinary_client(output,entry),{'complete':True})
+                options=dict(successor=None,session_path=None)
+                if not provenance:options['initial_provenance']=False
+                observe.assert_called_once_with(runtime,output/'startup',entry,{},40,**options)
+                child.wait.assert_called_once_with(timeout=40)
+                self.assertEqual(runtime.processes,[])
+                self.assertEqual(json.loads((output/'export-input.json').read_text()),dict(selected,startup_quiescence=True))
+                runtime.command.assert_not_called()
+
+    def test_initial_provenance_off_uses_existing_cut8_counts_and_joined_claim(self):
+        values=startup_observation(False)
+        before,after,roles,start,end,_=values
+        options=dict(initial_provenance=False)
+        self.assertEqual(oracle.startup_selection(after,**options),(4,[(1,8)]))
+        with tempfile.TemporaryDirectory() as temporary:
+            parent=dict(pid=123,start_ticks=456)
+            runtime=Mock();runtime.inspect.return_value=dict(State=dict(Pid=123,Running=True))
+            runtime.capture.return_value=(after,{})
+            with patch.object(baseline,'process_identity',return_value=parent), \
+                    patch.object(baseline.time,'monotonic',return_value=0), \
+                    patch.object(ShortPinRuntime,'bounded_sql',side_effect=[start,end]), \
+                    patch.object(ShortPinRuntime,'roles',return_value=roles), \
+                    patch.object(ShortPinRuntime,'worker',return_value=None):
+                result=baseline.startup_quiescence(runtime,Path(temporary)/'startup',{},before,1,**options)
+            self.assertEqual(result[-1]['epoch'],2)
+        with self.assertRaises(AssertionError):oracle.ordinary_startup(*values)
+        for change in (lambda pg:pg['archive_frontier_snapshots'][0].update(dictionary_count=8),
+                lambda pg:pg['archive_frontier_snapshots'][0].update(provenance_count=1),
+                lambda pg:pg['consumer_frontiers'][0].update(last_complete_sequence=12),
+                lambda pg:pg['retention_claims'][-1].update(last_sequence=12)):
+            changed=copy.deepcopy(values);change(changed[1])
+            with self.subTest(change=change),self.assertRaises(AssertionError):
+                oracle.ordinary_startup(*changed,**options)
+        with self.assertRaises(AssertionError):oracle.startup_selection(after,initial_provenance=0)
+        with self.assertRaises(AssertionError):oracle.startup_selection(after,successor=False,**options)
+
+    def test_ordinary_setup_precedes_permissions_and_does_not_retry_later429(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            home=Path(temporary)
+            (home/'export-input.json').write_text(json.dumps(dict(scope={},catalog_id='catalog',
+                destination_id='destination',startup_quiescence=True)))
+            (home/'event.jsonl').write_text(json.dumps({'id':'one'}))
+            (home/'destination').mkdir();(home/'destination/destination.json').write_text('{}')
+            (home/'export-session.private').write_text(json.dumps(dict(session='ab'*32,csrf='cd'*32)))
+            profile=dict(product_binary='/unused',password_ref='file:/unused',expected_principal_id='principal',expected_actions=['data.read'])
+            me=dict(principal_id='principal',stored_actions=['data.read'])
+            answers=[]
+            for status,value in ((200,me),(403,{}),(429,{'error':{'code':'capacity_or_rate_limited'}})):
+                answer=Mock(status=status);answer.read.return_value=json.dumps(value).encode();answers.append(answer)
+            connection=Mock();connection.getresponse.side_effect=answers
+            def phase(path,name,*,enclosing_deadline_ns):
+                self.assertEqual((path,name,enclosing_deadline_ns),(home,'setup',40_000_000_010))
+                self.assertEqual(connection.request.call_count,1)
+                self.assertEqual(connection.request.call_args.args[:2],('GET','/management/v1/me'))
+                return {'phase':'setup','finished_ns':20}
+            with patch.object(client,'load_profile',return_value=profile), \
+                    patch.object(client.time,'monotonic_ns',return_value=10), \
+                    patch.object(client.http.client,'HTTPConnection',return_value=connection), \
+                    patch.object(client.subprocess,'run',return_value=SimpleNamespace(returncode=0,stderr=b'',stdout=b'{}')), \
+                    patch.object(client,'phase',side_effect=phase) as barrier:
+                with self.assertRaises(AssertionError):client.run(home)
+            barrier.assert_called_once()
+            self.assertEqual([call.args[:2] for call in connection.request.call_args_list],
+                [('GET','/management/v1/me'),('POST','/management/v1/jobs'),('POST','/v1/resources/event_history')])
+            observations=json.loads((home/'export-observations.json').read_text())
+            self.assertEqual([(row['case'],row['status']) for row in observations],
+                [('no-implicit-export-authority',403),('no-implicit-history-authority',429)])
+            self.assertFalse((home/'export-client-result.json').exists())
+
     def test_grouped_startup_preserves_all69_issued_but_selects_only_native67(self):
         options=dict(retained_compacted_epoch2=True,retained_archive_schedule='grouped-publication-loss')
         for successor in (None,True):
