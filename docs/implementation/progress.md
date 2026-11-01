@@ -15,8 +15,8 @@ Its eight product/config objects equal installed **78c8e31339e760c16bcfa036dabff
 Freeze executing acceptance source until each installed terminal audit finishes.
 
 Product/dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
-branch `work/m2-linear-quantum-integration-20261101`: clean **acf7496f**,
-prepared for later merge. It includes separately qualified **e8122ff9**'s one
+branch `work/m2-linear-quantum-integration-20261101`: **acf7496f** plus the
+merged acceptance42d and current bounded Index drain correction. It includes separately qualified **e8122ff9**'s one
 integration-test initializer and its reviewed tutorial source pin. Runtime/Nostr
 code unchanged; do not relabel installed78 evidence as an e812/acf release.
 Author worktree `.research/m2-linear-quantum-sol-20261031`, branch
@@ -80,7 +80,7 @@ validated marker is removed before unchanged science oracles. Both critical
 findings are closed in the one review receipt. Selected26.8.35.10 local formatter
 preflights PASS for two literal documents and ten empty declared families/nested
 hex metadata/markers. They do not qualify actual data, reader authorization,
-MergeTree, lifecycle or the grouped workload. Actual grouped R2 remains required.
+MergeTree, lifecycle or the grouped workload. Actual grouped R2 failed before reaching that reader; it remains unqualified.
 
 ## Open issues, resources and next action
 
@@ -108,15 +108,21 @@ unique data, .research and pending work. Monitor556GiB retirement was reconciled
 current labs remain intact. No broad cleanup or old object-deletion proposal ran.
 Preserve archived shared Git/ELF bytes/metadata; private copy first, nevergc/repack.
 
-**Next:** run current candidate78 `p01-first-launch-closed-reclamation` as
-`acceptance-grouped-second-export-r2`, using existingrun-installed.py, observer78,
---retained-archive-schedule grouped-publication-loss and all five port/bridge/
-space/ownership preconditions. Keep acceptance source frozen. Require actual
-64-request retirement/reclamation, prefix COMMIT-loss directions/mixed restore,
-compacted successor, grouped Archive losses/exact retries, science, two exports
-and ordinary restart; audit with unchanged linear-profile terminal auditor.
-Then merge preparedacf (e812initializer/source pin), run final affected coherent
-controls/docs/publication review, main-integrate/push and observe actual hostedCI.
+R2 (source42d/product78) is also FAIL,102.331s: Index64 committed64.110s /
+observed64.238s, Control/Catalog capture ended64.967s, then the Control clock
+probe exhausted its remaining0.021348s. The batch reader was NOT_REACHED;
+five later stages NOT_RUN. All16owned containers stopped0/PID0/noOOM,
+1667commands joined, three recorded processes absent, borrowed bridge empty.
+The owning report preserves exact anchors and classification limits.
+
+**Next:** qualify the bounded coordinator correction in the integration worktree:
+immediate continuation only after joined Index Installed/Published; existing
+Busy250ms/idle/refusal/retry delays, serial authority, renewal, grants and priority
+remain. Critical source review, fresh exact-source worker/parent/observer and
+changed workspace checks precede actual unchanged128-peer/64-request/65s grouped
+scenario. Preserve all78 results under their original source; do not relabel them.
+Complete the actual11stage scenario and terminal audit, then coherent controls,
+publication review, main integration/push and real hostedCI. No fullM2 claim.
 
 Hosted meaningfulebb8 run41256201712:33required+20scopePASS; docs1f4
 run41261536463 alsoPASS. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json)

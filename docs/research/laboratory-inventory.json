@@ -78401,7 +78401,18 @@
         "formatter_preflight_roots": [
           "/home/tux/bigbrotr-implementation-20260917/runs/m2-observer-format-26.8.35.10-20261101"
         ],
-        "formatter_status": "Twoownedlocalformatcontainersstopped0/PID0/noOOM;networknone,noactualdata/cache;raws/receiptsretained."
+        "formatter_status": "Twoownedlocalformatcontainersstopped0/PID0/noOOM;networknone,noactualdata/cache;raws/receiptsretained.",
+        "grouped_attempt_2": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2",
+          "source": "42d668efdcf71096031860f6faa765ecc4e031fe",
+          "result": "FAIL;batchreaderNOT_REACHED;later5NOT_RUN",
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2/root-terminal.json",
+            "sha256": "7f8ebfd5a8e1a6ad373a9095effda43dfe76c5cd0b0290164863aa9a505c4411"
+          },
+          "resources": "16stoppedownedcontainers/0PIDs/noOOM;1667commandsjoined;3recordedprocessesabsent;bridgeempty",
+          "retention": "Preserve original failure, signed fixture/input, database, logs, raw captures and source pins for diagnosis; no cleanup."
+        }
       }
     }
   },

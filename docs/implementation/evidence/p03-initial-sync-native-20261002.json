@@ -999,7 +999,7 @@
         "second_export_timeout": 0.04247898899484426
       },
       "prior_d230_gate_seconds": {
-        "proof_only_complete": 12.669,
+        "proof_only_complete": 12.354113054,
         "finite_peer_end": 46.475118,
         "index64_commit": 59.644,
         "first_CH_export": 60.58,
@@ -1047,10 +1047,11 @@
           "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r1/initial/catalog-outage-control.json",
           "sha256": "ccdf09a1bfa4498d476b58c59266c3480dd235826db279e12638a4f2634207e2"
         }
-      ]
+      ],
+      "prior_d230_proof_label_correction": "Raw relay-closed-022 is proof-only12.354113s; previously labeled12.669s belongs to emptyEOSE round023. Original captures unchanged; corrected from retained evidence."
     },
     "observer_batch_followthrough": {
-      "status": "SOURCE_REVIEWED;93PURE_CONTROLS_PASS;PINNED_FORMAT_PREFLIGHT_PASS;ACTUAL_GROUPED_RERUN_PENDING",
+      "status": "SOURCE_REVIEWED;93PURE_CONTROLS_PASS;PINNED_FORMAT_PREFLIGHT_PASS;ACTUAL_GROUPED_R2_FAILED_BEFORE_READER",
       "author": "01cf7e730a8d8a2f32bfe5ee8587b0b515c84f2f",
       "merged": "d37f9a86a8355183f58aba08cde2c19f5a7bb4ac",
       "change": "Same10fulloracleSELECTs/readerrole/perquery175rows1MiB/10sserver15sreceive/whole65gate;oneinspect/diskwalk/client through existingmultiquery. Uniqueper-tableUInt8column identity includingemptyresults, removedonlyafterstrictmeta/int1validation;exactuntrimmedJSONframing/bytebounds/duplicate/nonfinite/count/type/errors/deadlinechecks. Scientificoracles/defaultSELECT/otherchcallersunchanged.",
@@ -1071,6 +1072,60 @@
       "worktree": ".research/m2-linear-quantum-main-integration-20261101",
       "status": "PREPARED_NOT_MERGED_DURING78_INSTALLED_RUNS",
       "tutorial": "14purePASS;currentpinreplacedtoe812/apps7b9afteroneNoneinitializerchange;allnineNostrpathsandotherguardedobjectsunchanged;sourceonlyreview1ef808d5,no runtimeproofrelabeled."
+    },
+    "grouped_attempt_2": {
+      "result": "FAIL;5laterNOT_RUN;cleanupPASS",
+      "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
+      "source": "42d668efdcf71096031860f6faa765ecc4e031fe",
+      "tool": 47377,
+      "seconds": 102.33062118000817,
+      "terminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2/root-terminal.json",
+        "sha256": "7f8ebfd5a8e1a6ad373a9095effda43dfe76c5cd0b0290164863aa9a505c4411"
+      },
+      "failure": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2/failure.json",
+        "sha256": "b7122a92f0659b5ead5722976ee5401982f1c5e44ac121ab37e1161c27029e0a"
+      },
+      "classification": "The unchanged retained65s deadline expired during the Control clock probe after catalog-outage capture, before the updated batch ClickHouse reader was reached. Initial15s prefix passed. No exclusive product/environment attribution; original FAIL retained.",
+      "gate_seconds": {
+        "proof_release": 13.054532227,
+        "finite_peer_end": 51.912373627,
+        "index64_commit": 64.110262,
+        "index64_observed": 64.238128,
+        "proof_poll_complete": 64.344558,
+        "runtime_refusals_complete": 64.456635,
+        "before_clock_complete": 64.548826,
+        "control_snapshot_complete": 64.766483,
+        "catalog_snapshot_complete": 64.96737,
+        "clock_probe_start": 64.978672,
+        "clock_probe_joined": 65.004556,
+        "clock_probe_timeout_seconds": 0.021347740985220298,
+        "proof_only_complete": 13.110645795
+      },
+      "custody": "16owned containers stopped/exit0/PID0/noOOM;1667command receipts joined and PIDs absent;3recorded processes absent;68source pins checked;borrowed bridge empty.",
+      "capture_anchors": [
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2/initial/retained-request-deadline.json",
+          "sha256": "99eee6e93a8f13d8bc8ac1de1becadf447b76adcb4587d54a11dfedc7eac5f39"
+        },
+        {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-grouped-second-export-r2/initial/catalog-outage-control.json",
+          "sha256": "42b6e19e869962a2ee650aac09b811cb8ed6028f00faaf35d79cdf3e6fcebdd6"
+        }
+      ]
+    },
+    "coordinator_drain_followthrough": {
+      "status": "SOURCE_CHANGE;BUILD_AND_INSTALLED_VERIFICATION_NOT_RUN",
+      "tasks": "P01-T05Step5/P02-T02Step8/P02-T09Step5; existing IndexP02-T06 lifecycle and actual grouped acceptance remain required.",
+      "change": "After actual joined Index installation/publication, reconsider the next batch immediately instead of an unconditional250ms gap. Busy250ms, idle/refusal/retry delays, serial native/Control ownership, all renewal/current-authority/reservation checks and select priorities unchanged.",
+      "source_basis": "Index.complete returns Installed/Published only after consuming a joined successful physical result and corresponding PG claim/publication; publish validates exact receipt and clears pending. Next tick cannot report another success without a newly issued and joined operation. Flush interval controls new-batch freshness, not a minimum pause between retained whole immutable batches.",
+      "limits": "No net speedup or isolated SQL/CPU/RAM claim before actual equal-workload measurement. Never extend65s or reduce128peer/64request workload. Existing before-wire actual renewals remain unchanged.",
+      "critical_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-index-drain-critical-20261101.json",
+        "sha256": "1a3291f846e62ffd18d8cf4953c978d9a60901b501f01b8b5bdd9ca17d2d3cce"
+      },
+      "fairness_limit": "Newly queued HTTP may wait behind one additional bounded Index dispatch; retained-command priority unchanged; general mixed-load management latency remains P01-T05Step7."
     }
   }
 }

@@ -306,6 +306,14 @@ atomically commits all ten chunks, their typed frontier binding and the next
 contiguous consumer head. This adapter currently requires the same retained
 topology on both cuts; it refuses an unwired topology handoff.
 
+After a joined installation or publication, the initial coordinator immediately
+reconsiders the next retained batch. It first checks cancellation, renewal and
+the other due roles, and every dispatch still requires current authority and its
+complete reservation. An outstanding physical operation retains the bounded
+polling interval; idle, resource-refused and retry states keep their existing
+delays. The flush interval does not impose an extra pause between already
+available immutable batches.
+
 In the initial owner, a known connection failure with no surviving named query
 keeps the immutable prepared plan retryable and marks Index readiness
 `unavailable/dependency_unavailable`. This applies both before dispatch and to

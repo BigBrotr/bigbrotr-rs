@@ -1167,7 +1167,11 @@ async fn maintain_context(
                         !deferred.any(),
                     )).await.map_err(|_| (4, "initial Index deadline; preserve original outcome".into()))??;
                     index_due = Instant::now() + match tick {
-                        index::Tick::Busy | index::Tick::Installed | index::Tick::Published => sync::INTERVAL,
+                        // A joined success has released its operation/credit.
+                        // Drain retained batches without another polling gap;
+                        // the next turn still checks stop, renewal and peers.
+                        index::Tick::Installed | index::Tick::Published => Duration::ZERO,
+                        index::Tick::Busy => sync::INTERVAL,
                         _ => index.delay(),
                     };
                     state.idle_phase(due)?;
