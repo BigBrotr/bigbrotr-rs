@@ -200,6 +200,13 @@ async fn resolve(
 ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
     let cancelled = AtomicBool::new(mode == "event-recovery-cancelled");
     let mut validations = 0;
+    let mut limits = initial_limits(AdmissionLimits {
+        max_outstanding_requests: u64::from(spec.outstanding_request_limit),
+        ..AdmissionLimits::default()
+    });
+    if mode == "event-recovery-resource" {
+        limits.input.values.max_encoded_bytes = 1;
+    }
     current
         .resolve_initial_producer_request(
             recovery,
@@ -211,29 +218,7 @@ async fn resolve(
                     producer_epoch: ProducerEpoch::new(1).unwrap(),
                     request_sequence: RequestSequence::new(sequence).unwrap(),
                 },
-                limits: ProducerRecoveryLimits {
-                    input: RequestDecodeLimits {
-                        values: FactDecodeLimits {
-                            max_encoded_bytes: if mode == "event-recovery-resource" {
-                                1
-                            } else {
-                                MIB as usize
-                            },
-                            max_allocation_bytes: MIB as usize,
-                            max_tag_nodes: 1024,
-                            max_string_bytes: MIB as usize,
-                        },
-                        max_dictionaries: 8,
-                    },
-                    bootstrap: BootstrapLimits {
-                        max_mappings: 8,
-                        max_batch_bytes: MIB as usize,
-                    },
-                    event: AdmissionLimits {
-                        max_outstanding_requests: u64::from(spec.outstanding_request_limit),
-                        ..AdmissionLimits::default()
-                    },
-                },
+                limits,
                 policy_ttl: Duration::from_secs(2),
                 cancelled: &cancelled,
             },
@@ -252,4 +237,23 @@ async fn resolve(
             },
         )
         .await
+}
+
+pub(super) fn initial_limits(event: AdmissionLimits) -> ProducerRecoveryLimits {
+    ProducerRecoveryLimits {
+        input: RequestDecodeLimits {
+            values: FactDecodeLimits {
+                max_encoded_bytes: MIB as usize,
+                max_allocation_bytes: MIB as usize,
+                max_tag_nodes: 1024,
+                max_string_bytes: MIB as usize,
+            },
+            max_dictionaries: 8,
+        },
+        bootstrap: BootstrapLimits {
+            max_mappings: 8,
+            max_batch_bytes: MIB as usize,
+        },
+        event,
+    }
 }

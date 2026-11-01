@@ -41,6 +41,10 @@ use zeroize::Zeroizing;
 mod custody;
 #[path = "support/publication_ingest.rs"]
 mod ingest;
+#[allow(
+    dead_code,
+    reason = "publication only uses the shared native owner grant"
+)]
 #[path = "support/ingest_owner.rs"]
 mod ingest_owner;
 #[path = "support/publication_installation.rs"]
