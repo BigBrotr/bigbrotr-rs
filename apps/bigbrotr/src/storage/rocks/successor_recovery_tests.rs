@@ -100,6 +100,34 @@ fn closed_recovery(f: &Fixture) -> IngestRecovery {
 }
 
 #[test]
+fn successor_recovery_refuses_a_simulated_background_latch_at_the_completed_input_census() {
+    let f = prepared_fixture();
+    drop(active(&f, false));
+    let r = f.reopen();
+    let observed = owner(&f, &r);
+    let before = snapshot(&f, &r.store);
+    let accounting = r.store.accounting;
+    r.store
+        .test_background_failure()
+        .latch_after_next_input_census();
+    assert!(
+        !r.native_unavailable(),
+        "arming is not an early failed observation"
+    );
+    assert_eq!(
+        observed.validate(&r, &NOT_CANCELLED),
+        Err(BootstrapError::CommitUnknown)
+    );
+    assert!(r.native_unavailable());
+    assert!(!r.store.write_uncertain);
+    assert_eq!(snapshot(&f, &r.store), before);
+    assert_eq!(r.store.accounting, accounting);
+    drop(observed);
+    assert_eq!(f.budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(f.budget.snapshot().used().native_bytes(), 128 * MIB);
+}
+
+#[test]
 fn successor_source_observes_only_existing_closing_without_native_writes() {
     let f = prepared_fixture();
     let mut writer = active(&f, false);
