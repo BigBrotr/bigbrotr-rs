@@ -250,6 +250,18 @@ class ArchiveOutageControls(unittest.TestCase):
             with self.subTest(mutation=number), self.assertRaises(AssertionError):
                 check.terminal_preservation(live, changed, 7000)
 
+    def test_terminal_preserves_completed_and_pending_quantum_rows_with_xmin(self):
+        _,live,terminal=preservation_fixture()
+        live['acquisition_quanta']=[dict(quantum_id='complete',terminal_kind='eose',xmin='50'),
+            dict(quantum_id='pending',terminal_kind=None,xmin='51')]
+        terminal['acquisition_quanta']=copy.deepcopy(live['acquisition_quanta'])
+        check.terminal_preservation(live,terminal,7000)
+        for mutate in (lambda rows:rows.pop(),lambda rows:rows.append(dict(quantum_id='new')),
+                lambda rows:rows[0].update(xmin='changed'),lambda rows:rows[1].update(xmin='changed'),
+                lambda rows:rows[1].update(terminal_kind='deadline')):
+            changed=copy.deepcopy(terminal);mutate(changed['acquisition_quanta'])
+            with self.assertRaises(AssertionError):check.terminal_preservation(live,changed,7000)
+
     def test_old_observation_must_age_across_actual_request_brackets(self):
         first = dict(before_ns=1_000_000_000, after_ns=1_000_100_000)
         last = dict(before_ns=3_000_000_000, after_ns=3_000_100_000)

@@ -364,7 +364,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             events=corpus(root/'retained-requests.json')
             check.finite_peer(receipt,wires,events,base.digest(root/'relay-closed-128.json'))
             self.assertEqual(sum(w.get('retained_phase')=='proof-only' for w in wires),1)
-            for change in (lambda v:v.update(connections=129),lambda v:v.update(listener_closed=False),
+            for change in (lambda v:v.update(connections=127),lambda v:v.update(connections=129),lambda v:v.update(listener_closed=False),
                     lambda v:v.update(proof_sent=False),lambda v:v.update(last_closed_sha256='0'*64),
                     lambda v:v.update(completed_monotonic_ns=0)):
                 invalid=copy.deepcopy(receipt);change(invalid)
@@ -384,6 +384,110 @@ class RetainedBoundaryControls(unittest.TestCase):
             base.save(root/'relay-open-129.json',dict(number=129,retained_quiet=True))
             with self.assertRaisesRegex(ValueError,'extra/missing connection'):runtime.initial_source_quiet()
 
+    def drained_fixture(self,root):
+        from test_linear_quantum import fixture as quantum_fixture
+        self.finite_relay(root)
+        wires=[base.load(p) for p in sorted(root.glob('relay-closed-*.json'))]
+        original=quantum_fixture()[0]['acquisition_quanta'][0]
+        original['route_id']='\\x'+'8'*32
+        rows=[]
+        for number,wire in enumerate(wires,1):
+            row=copy.deepcopy(original)
+            row.update(quantum_number=number,quantum_id='\\x'+f'{number:032x}',
+                request_id='\\x'+wire['request'][1].encode().hex(),checkpoint_before=65,checkpoint_after=65)
+            rows.append(row)
+        pending=quantum_fixture(pending=True)[0]['acquisition_quanta'][0]
+        pending.update(quantum_number=129,quantum_id='\\x'+f'{129:032x}',checkpoint_before=65,
+            terminal_received_at_us=None,checkpoint_sha256=None,route_id=original['route_id'])
+        rows.append(pending)
+        before=copy.deepcopy(rows[:21])
+        return rows,wires,before
+
+    def test_finite_census_requires128_terminals_and_original_pending129(self):
+        with tempfile.TemporaryDirectory() as directory:
+            rows,wires,before=self.drained_fixture(Path(directory))
+            check.finite_quanta(rows,wires,before)
+            in_flight=copy.deepcopy(rows[-1])
+            in_flight.update(quantum_number=22,quantum_id=rows[21]['quantum_id'])
+            check.finite_quanta(rows,wires,before+[in_flight])
+            mutations=(lambda r:r.pop(127),lambda r:r.pop(),
+                lambda r:r[127].update(terminal_kind=None),
+                lambda r:r[127].update(completed_at_us=None),
+                lambda r:r[127].update(request_id=r[126]['request_id']),
+                lambda r:r[-1].update(quantum_number=130),
+                lambda r:r[-1].update(checkpoint_before=64),
+                lambda r:r[-1].update(request_id=r[0]['request_id']),
+                lambda r:r[-1].update(effect_records='\\x'),
+                lambda r:r[0].update(xmin='changed'))
+            for number,mutate in enumerate(mutations):
+                changed=copy.deepcopy(rows);mutate(changed)
+                with self.subTest(mutation=number),self.assertRaises(AssertionError):
+                    check.finite_quanta(changed,wires,before)
+            for field in ('dataset_id','job_id','scope_id','producer_slot_id','producer_epoch','issuer_role',
+                    'issuer_resource','issuer_epoch','issuer_incarnation','route_id'):
+                changed=copy.deepcopy(rows)
+                changed[-1][field]=2 if field.endswith('epoch') else 'foreign'
+                with self.subTest(identity=field),self.assertRaises(AssertionError):
+                    check.finite_quanta(changed,wires,before)
+            with self.assertRaises(AssertionError):check.finite_quanta(rows,wires[:-1],before)
+
+    def drain_runtime(self,root,before):
+        runtime=object.__new__(case.RetainedRuntime)
+        runtime.home=runtime.root=root;runtime.events=corpus(root/'retained-requests.json')
+        (root/'initial').mkdir()
+        runtime.before_proof=dict(acquisition_quanta=before)
+        runtime.client=Mock();runtime.client.poll.return_value=None
+        runtime.inspect=Mock(return_value={'State':{'Running':True}})
+        runtime.sql=Mock(return_value='1')
+        return runtime
+
+    def test_drain_checks_source_before_sql_and_keeps_original_gate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);rows,wires,before=self.drained_fixture(root)
+            runtime=self.drain_runtime(root,before)
+            runtime.sql.side_effect=['0','1']  # Peer EOF alone is not a durable terminal/pending boundary.
+            connection=Mock();connection.connect_ex.return_value=errno.ECONNREFUSED
+            with patch.object(case.time,'monotonic',return_value=10),patch.object(case.time,'sleep'), \
+                    patch.object(case.socket,'socket') as socket:
+                socket.return_value.__enter__.return_value=connection
+                runtime.drain_retained_peer({},66)
+            self.assertEqual(runtime.sql.call_count,2)
+            statement=runtime.sql.call_args.args[1]
+            for key in ('dataset_id','job_id','scope_id','producer_slot_id','issuer_resource','issuer_incarnation','route_id'):
+                self.assertIn(f"{key}=decode('{index.raw(before[20][key]).hex()}','hex')",statement)
+            self.assertEqual(base.load(root/'initial/retained-peer-completion.json')['connections'],128)
+            # Even a true SQL predicate cannot pass after the original deadline.
+            clock=[10]
+            def delayed(*args):clock[0]=67;return '1'
+            runtime.sql=Mock(side_effect=delayed)
+            with patch.object(case.time,'monotonic',side_effect=lambda:clock[0]),patch.object(case.socket,'socket') as socket:
+                socket.return_value.__enter__.return_value=connection
+                with self.assertRaisesRegex(ValueError,'timeout: 128 durable terminals'):
+                    runtime.drain_retained_peer({},66)
+
+    def test_drain_does_not_accept_early_end_or_quiet_source_as_finite128(self):
+        for invalid in ('missing','early','open-listener','relay-error','deadline'):
+            with self.subTest(invalid=invalid),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);rows,wires,before=self.drained_fixture(root)
+                runtime=self.drain_runtime(root,before)
+                receipt=base.load(root/'relay-finite-complete.json')
+                if invalid=='missing':
+                    (root/'relay-finite-complete.json').unlink()
+                    base.save(root/'relay-open-129.json',dict(number=129,retained_quiet=True))
+                elif invalid=='early':
+                    receipt['connections']=127;base.save(root/'relay-finite-complete.json',receipt)
+                elif invalid=='open-listener':receipt['listener_closed']=False;base.save(root/'relay-finite-complete.json',receipt)
+                elif invalid=='relay-error':base.save(root/'relay-error.json',dict(error='protocol'))
+                clock=[10]
+                def now():
+                    clock[0]+=.1
+                    return clock[0]
+                with patch.object(case.time,'monotonic',side_effect=now), \
+                        patch.object(case.time,'sleep',side_effect=lambda _:clock.__setitem__(0,67)), \
+                        self.assertRaises((ValueError,AssertionError)):
+                    runtime.drain_retained_peer({},9 if invalid=='deadline' else 66)
+                runtime.sql.assert_not_called()
+
     def test_prelimit_protocol_failure_or_missing_proof_is_not_finite_completion(self):
         for bad_round,release,failure in ((17,True,'protocol'),(17,True,'socket'),(None,False,'protocol')):
             with self.subTest(bad_round=bad_round,failure=failure),tempfile.TemporaryDirectory() as directory:
@@ -402,7 +506,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             self.assertEqual(base.load(root/'relay-closed-003.json')['completion'],'quiet-eof')
             self.assertFalse((root/'relay-finite-complete.json').exists())
 
-    def test_default_quiet_source_and_retained_quiet_receive_keep_old_meaning(self):
+    def test_only_ordinary_source_can_finish_on_a_prelimit_quiet_receive(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);ordinary=object.__new__(base.Runtime);ordinary.home=root
             retained=object.__new__(case.RetainedRuntime);retained.home=root
@@ -410,7 +514,7 @@ class RetainedBoundaryControls(unittest.TestCase):
             base.save(root/'relay-open-003.json',dict(number=3))
             self.assertTrue(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-open-003.json',dict(number=3,retained_quiet=True))
-            self.assertTrue(retained.initial_source_quiet())
+            self.assertFalse(retained.initial_source_quiet())
             base.save(root/'relay-closed-003.json',dict(number=3))
             self.assertFalse(ordinary.initial_source_quiet());self.assertFalse(retained.initial_source_quiet())
 
@@ -512,10 +616,12 @@ class RetainedBoundaryControls(unittest.TestCase):
                 self.assertFalse((directory/'retained-proof.continue.partial').exists())
                 order.append('released')
             runtime.publish_peer=Mock(side_effect=release)
+            runtime.drain_retained_peer=Mock(side_effect=lambda *args:order.append('drained'))
             runtime.wait=lambda predicate,*args:self.assertTrue(predicate())
             with patch.object(case.time,'monotonic',return_value=10):
                 runtime.initial_archive_observation({},output)
-            self.assertEqual(order,['captured','released'])
+            self.assertEqual(order,['captured','released','drained'])
+            runtime.drain_retained_peer.assert_called_once_with({},66)
             (home/'retained-proof.continue').unlink()
             runtime.publish_peer.reset_mock();before['acquisition_progress'][0]['event_ordinal']=2
             with patch.object(case.time,'monotonic',return_value=10),self.assertRaises(AssertionError):
