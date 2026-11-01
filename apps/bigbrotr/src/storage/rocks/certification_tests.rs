@@ -251,6 +251,79 @@ fn certification_refuses_uncertain_state_bad_grants_and_lost_delivery_authority(
 }
 
 #[test]
+fn simulated_background_latch_at_certification_delivery_returns_no_proof_or_checkpoint() {
+    // Deterministic Rust observation only; no native listener/POSIX failure
+    // delivery, SQL checkpoint, or producer credit is qualified here.
+    for checkpoint in [false, true] {
+        let (root, mut store, budget, _, _) = setup(false);
+        drop(admit(&mut store, &budget, 1).unwrap());
+        let healthy = certify(
+            &mut store,
+            &budget,
+            intent("E_private", 2, 10_000_000),
+            false,
+        )
+        .unwrap();
+        assert!(matches!(
+            healthy.outcome(),
+            CertificationOutcome::Existing(_)
+        ));
+        drop(healthy);
+        let path = root.path().join("db");
+        let before = kv(&store);
+        let sequence = store.db.latest_sequence_number();
+        let originals = inputs(&path);
+        let accounting = store.accounting;
+        let simulated = store.test_background_failure();
+        let prepared = PreparedCertification::new(
+            intent("E_private", 2, 10_000_000),
+            256 * 1024,
+            grant(&budget, MIB, 0),
+        )
+        .unwrap();
+        let final_check = if checkpoint { 3 } else { 2 };
+        let mut checks = 0;
+        let mut authority = || {
+            checks += 1;
+            if checks == final_check {
+                simulated.latch();
+            }
+            Ok(())
+        };
+        let result = if checkpoint {
+            store.certify_checkpoint_event(
+                prepared,
+                false,
+                CertificationLimits::default(),
+                grant(&budget, 32 * MIB, 0),
+                &mut authority,
+            )
+        } else {
+            store.certify_event(
+                prepared,
+                false,
+                CertificationLimits::default(),
+                grant(&budget, 32 * MIB, 0),
+                &mut authority,
+            )
+        };
+        assert_eq!(result.err(), Some(AdmissionError::CommitUnknown));
+        assert_eq!(checks, final_check);
+        assert!(store.native_unavailable());
+        assert!(
+            !store.write_uncertain,
+            "certification performs no native write"
+        );
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        assert_eq!(store.accounting, accounting);
+        assert_eq!(kv(&store), before);
+        assert_eq!(inputs(&path), originals);
+        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
+    }
+}
+
+#[test]
 fn certification_retains_both_input_and_historical_lineage() {
     let mut dictionaries = entries(false);
     dictionaries.push(

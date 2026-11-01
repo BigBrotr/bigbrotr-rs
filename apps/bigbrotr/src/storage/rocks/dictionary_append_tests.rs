@@ -1,4 +1,5 @@
 //! Native append invariants; independent portable-byte checks live in the lab.
+use super::admission_tests::inputs;
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request, scope};
 use super::*;
 use bigbrotr_model::*;
@@ -133,6 +134,70 @@ fn append_preserves_original_bootstrap_and_replays_original_receipts_after_reope
     );
     drop(second);
     assert_eq!(store.db.latest_sequence_number(), before);
+}
+
+#[test]
+fn simulated_background_latch_at_dictionary_replay_delivery_refuses_both_receipt_kinds() {
+    // A simulated sticky Rust observation, not native callback/POSIX proof.
+    for sequence in [2, 3] {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("db");
+        let b = budget();
+        let mut store =
+            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        drop(
+            store
+                .bootstrap_dictionaries(
+                    request(),
+                    &intent("public"),
+                    ObservedTime::new(10),
+                    bootstrap_limits(),
+                    grant(&b, 4 * MIB, MIB),
+                    || Ok(()),
+                )
+                .unwrap(),
+        );
+        let value = private_intent();
+        drop(append(&mut store, &b, 2, &value).unwrap());
+        let already_durable = append(&mut store, &b, 3, &value).unwrap();
+        assert!(already_durable.receipt().batch().is_none());
+        drop(already_durable);
+        let before = rows(&store);
+        let native_sequence = store.db.latest_sequence_number();
+        let originals = inputs(&path);
+        let accounting = store.accounting;
+        let simulated = store.test_background_failure();
+        let mut checks = 0;
+        assert_eq!(
+            store
+                .append_dictionaries(
+                    next_request(sequence),
+                    &value,
+                    ObservedTime::new(999),
+                    limits(),
+                    grant(&b, 4 * MIB, MIB),
+                    || {
+                        checks += 1;
+                        if checks == 2 {
+                            simulated.latch();
+                        }
+                        Ok(())
+                    },
+                )
+                .err(),
+            Some(AdmissionError::CommitUnknown),
+            "retained request {sequence}"
+        );
+        assert_eq!(checks, 2);
+        assert!(store.native_unavailable());
+        assert!(!store.write_uncertain, "replay dispatched no native write");
+        assert_eq!(store.db.latest_sequence_number(), native_sequence);
+        assert_eq!(store.accounting, accounting);
+        assert_eq!(rows(&store), before);
+        assert_eq!(inputs(&path), originals);
+        assert_eq!(b.snapshot().used().data_bytes(), 0);
+        assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
+    }
 }
 
 fn evidence(scope: QualifiedRef, entries: Vec<DictionaryEntry>) -> EvidenceIntent {
@@ -975,6 +1040,66 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
         if key.0 == "facts" {
             assert_eq!(after.get(&key), Some(&value));
         }
+    }
+}
+
+#[test]
+fn simulated_background_latch_refuses_retained_dictionary_preparation_cache_and_finish() {
+    use std::sync::atomic::AtomicBool;
+    // These are provisional preparation results, not write authority. Latching
+    // the Rust observation never invokes the native error listener.
+    for finish in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("db");
+        let b = budget();
+        let mut store = IngestStore::initialize(
+            &path,
+            installed_manifest(),
+            native(),
+            grant(&b, 0, 128 * MIB),
+        )
+        .unwrap();
+        boot_installed(&mut store, &b);
+        let before = rows(&store);
+        let sequence = store.db.latest_sequence_number();
+        let originals = inputs(&path);
+        let accounting = store.accounting;
+        let cancelled = AtomicBool::new(false);
+        let descriptor = observer(1).descriptor().clone();
+        let mut preparation = store
+            .prepare_dictionaries(
+                reference(DictionaryKind::VisibilityScope, 1),
+                limits(),
+                grant(&b, 4 * MIB, 0),
+                &cancelled,
+            )
+            .unwrap();
+        assert_eq!(
+            preparation.intern(descriptor.clone()).unwrap(),
+            reference(DictionaryKind::Observer, 1)
+        );
+        store.test_latch_background_failure();
+        if finish {
+            assert_eq!(
+                preparation.finish().err(),
+                Some(AdmissionError::CommitUnknown)
+            );
+        } else {
+            // Same descriptor takes the retained entries' cached-return path.
+            assert_eq!(
+                preparation.intern(descriptor),
+                Err(AdmissionError::CommitUnknown)
+            );
+            drop(preparation);
+        }
+        assert!(store.native_unavailable());
+        assert!(!store.write_uncertain);
+        assert_eq!(store.db.latest_sequence_number(), sequence);
+        assert_eq!(store.accounting, accounting);
+        assert_eq!(rows(&store), before);
+        assert_eq!(inputs(&path), originals);
+        assert_eq!(b.snapshot().used().data_bytes(), 0);
+        assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
     }
 }
 

@@ -1,4 +1,5 @@
 //! Actual native mappings; these tests do not grant source or network authority.
+use super::admission_tests::{inputs, kv};
 use super::{bootstrap_tests::*, *};
 use crate::storage::rocks::keys::{ColumnFamily, IngestKey};
 use bigbrotr_model::{DictionaryDescriptor, DictionaryKind, ObservedTime, Ordinal, QualifiedRef};
@@ -149,6 +150,50 @@ fn visibility_lookup_preserves_limit_retry_uncertainty_and_authority_boundaries(
     assert_eq!(checks, 2);
     assert_eq!(store.db.latest_sequence_number(), before);
     assert_eq!(budget.snapshot().used().data_bytes(), 0);
+}
+
+#[test]
+fn simulated_background_latch_at_visibility_delivery_returns_no_mapping() {
+    // The latch simulates only the Rust observation; this is not listener or
+    // actual POSIX background-fault qualification.
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let budget = budget();
+    let mut store = bootstrapped(&path, &budget);
+    let data = read_limits().required_data_bytes().unwrap();
+    drop(
+        store
+            .read_visibility(scope(), read_limits(), grant(&budget, data, 0), || Ok(()))
+            .unwrap()
+            .expect("the fixture has a committed visibility mapping"),
+    );
+    let before = kv(&store);
+    let sequence = store.db.latest_sequence_number();
+    let originals = inputs(&path);
+    let accounting = store.accounting;
+    let simulated = store.test_background_failure();
+    let mut checks = 0;
+    assert_eq!(
+        store
+            .read_visibility(scope(), read_limits(), grant(&budget, data, 0), || {
+                checks += 1;
+                if checks == 2 {
+                    simulated.latch();
+                }
+                Ok(())
+            })
+            .err(),
+        Some(AdmissionError::CommitUnknown)
+    );
+    assert_eq!(checks, 2);
+    assert!(store.native_unavailable());
+    assert!(!store.write_uncertain);
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+    assert_eq!(store.accounting, accounting);
+    assert_eq!(kv(&store), before);
+    assert_eq!(inputs(&path), originals);
+    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
 }
 
 #[test]
