@@ -18,6 +18,13 @@ use std::{
 const MIB: u64 = 1024 * 1024;
 const DEADLINE: Duration = Duration::from_secs(30);
 
+fn sha256(bytes: &[u8]) -> String {
+    Sha256::digest(bytes)
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
+}
+
 fn emit(evidence: &Path, event: serde_json::Value) {
     let mut file = fs::OpenOptions::new()
         .append(true)
@@ -114,8 +121,8 @@ fn exercise(root: &Path, evidence: &Path) {
     emit(
         evidence,
         serde_json::json!({"event":"healthy", "sequence":sequence,
-        "rows":before.len(), "rows_sha256":format!("{:x}", Sha256::digest(serde_json::to_vec(&before).unwrap())),
-        "originals_sha256":originals.iter().map(|(_, value)| format!("{:x}", Sha256::digest(value))).collect::<Vec<_>>(),
+        "rows":before.len(), "rows_sha256":sha256(&serde_json::to_vec(&before).unwrap()),
+        "originals_sha256":originals.iter().map(|(_, value)| sha256(value)).collect::<Vec<_>>(),
         "issued":1, "acknowledged":0, "staged_request":2, "available_bytes":available(root)}),
     );
 
@@ -304,7 +311,7 @@ fn preserve(root: &Path, evidence: &Path) {
                 let bytes = fs::read(entry.path()).unwrap();
                 assert_eq!(fs::read(&destination).unwrap(), bytes);
                 records.push(serde_json::json!({"path":destination, "bytes":info.len(),
-                    "allocated_bytes":info.blocks() * 512, "sha256":format!("{:x}", Sha256::digest(bytes))}));
+                    "allocated_bytes":info.blocks() * 512, "sha256":sha256(&bytes)}));
             }
         }
     }
