@@ -47463,6 +47463,19 @@
         "sha256": "e7d6172540cc78e628c3bb74b0b1d9c0fa986f16a84c3aff356e7d61bbe50c19"
       },
       "classification": "Native assertion error-context mismatch; historicalArchivelease setup overconstraint; offquantum expectation incorrectlyrequiredthirdmutation; Aliceauthgeneration omission; labmissingDELETE forlogin. Correctedfromcurrentcontracts andretainedreplays; originalFAILsnotrelabeled."
+    },
+    "merged_acceptance_controls": {
+      "source": "5847a914",
+      "status": "516PASS_0FAIL_0SKIP",
+      "path": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/merged-controls-5847a914/receipt.json",
+      "sha256": "d50a292f3fb278d694f1a0b369c44163910707881b7907ef7d332fb9a6ba1063",
+      "scope": "Complete mergedmaintainedPythoncontrol discovery; productruntime evidence remains separatelysourcebound."
+    },
+    "publication_source_audit": {
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/quota-integration-source-5847a914-20261101/source-triage.json",
+      "sha256": "09711c53befc46579d0caa63810cda6f94b0f926f84c420e2afabb9aa3afe789",
+      "status": "NO_NEW_UNCLASSIFIED_PATTERN_CANDIDATES",
+      "scope": "Chained064\u219251\u21925847Gitobjects/history; sixfixedfixture/reference/diagnostic fingerprints classifiedwithoutvalues. Finalmetadata-onlycommit getsseparatedelta audit; futureCIoutputs/provideralerts separate."
     }
   }
 }

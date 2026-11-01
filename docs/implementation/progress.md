@@ -69,8 +69,13 @@ ownednetworks are in the [inventory](../research/laboratory-inventory.json).
 Capsule `.research/ingest-logical-ceiling-qualification-20261101` links exact
 receipts. No cleanup/Gitmaintenance/mtime normalization underway.
 
-**Next:** finish mergedportable checks and publication-input audit, commit/push
-this coherent result tomain and start bounded hostedCI observation. Then implement
+Merged portable discovery:516PASS/0FAIL/0SKIP at5847, with noCargo/engine/cache.
+ChainedGit/history publication audit found no newunclassifiedpatterncandidates;
+classifiedfixture/reference values stayed protected. Finalmetadata-onlyaudit and
+push remain before new hosted execution.
+
+**Next:** commit/push this coherent result tomain and start bounded hostedCI
+observation. Then implement
 **P03-T05Step2**: consume durable continuation so a next bounded quantum reaches
 older signed events through a real capped relay. Use actualdependencies; no
 all-P02 barrier, extraaudit or physical-qualification detour. Preserve later
