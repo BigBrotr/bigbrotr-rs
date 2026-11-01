@@ -84,6 +84,14 @@ before and after each command. Cargo's mutable target remains separate from the
 copied release parent/worker used by artifact CLI acceptance. The default-profile
 build metadata states `dev`; the copied artifacts retain their release identity.
 
+For a scoped Rust run, check which Cargo target owns the changed module. In the
+same verified build environment, `cargo test --locked -p bigbrotr --lib` exercises
+the application library; CLI/configuration/serve modules declared by `src/main.rs`
+require `cargo test --locked -p bigbrotr --bin bigbrotr`. The shared full
+`rust-tests` command includes both. Verify the actual target and executed
+regression names in Cargo/test output; all-target Clippy only compiles those
+tests. A successful library run does not qualify newly added binary tests.
+
 The dispatch binds the copied worker at compile time and supplies its path,
 size and hash to the connected signed-pending test. The receipt is a trusted
 local build input here, not independent release authentication. Manual Cargo

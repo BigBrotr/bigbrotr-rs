@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "01fc seven bounded cases PASS; interruptions85996 failed orderly stop with final science NOT_RUN. Read-stop correction dee67719 release PASS/reaped0; current strict92644 running. Observer and affected real cases remain required. Original failures/datasets/worktrees retained.",
+          "state": "01fc seven installed finite cases PASS; original interruptions85996 failure retained. Correcteddee current release/Rust/observer PASS; candidate assembly/actual installed correction and affected cases remain pending. No active compiler or engine.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78762,14 +78762,30 @@
             "owner": "adfb12ed16a85da6e1654d3e4f4f88fb",
             "container": "440b8ef234fc95a2e622a50041c108f78ef4bb88fe54ba5e44f10e323968ad55",
             "tool": 26254,
-            "cache": "Release26254 released cache115; strict92644 now holds it exclusively. Original four ELF bytes/full metadata guards unchanged.",
-            "status": "RELEASE PASS/reaped0/stopped/PID0/noOOM; strict current-source92644 RUNNING; observer remains parent/prerequisite unbound",
+            "cache": "Release26254, strict92644, binary78547 and probe48676 all terminal/cache115 released; original4ELF bytes/full metadata preserved",
+            "status": "Current release/Clippy/Rustdoc/library659/binary212/exact-parent observer PASS; five new CLI controls executed; installed correction proof remains NOT_RUN",
             "strict_workspace": {
               "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-workspace",
               "owner": "ecfb7a324a4d0105acfb20248809175f",
               "container": "1cc7bcd2a7ef4abb14d8dcf6ae10675fcaf1e3d01638f036b069803fabe18fbd",
               "tool": 92644,
-              "status": "RUNNING_NOT_QUALIFIED"
+              "status": "PASS_SCOPED_LIBRARY; reaped0/stopped/PID0/noOOM; actual new binary tests pending"
+            },
+            "application_binary_tests": {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-application-bin",
+              "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/application-bin",
+              "owner": "55b39a37bc5a60848890e2f114f18b01",
+              "container": "80c53472e0857c33200fab29e596ff16b15d7cd2e6b311525925fa0a5faa9709",
+              "tool": 78547,
+              "status": "PASS212/0FAIL/0ignored/0filtered; reaped0/stopped/PID0/noOOM"
+            },
+            "observer": {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-probe",
+              "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/probe",
+              "owner": "379d4317fd87691aab4646349186ac05",
+              "container": "990da7f43a2f92dd8c3440c6fda529298e2ad3920c4f7ffef62bfceb610ea154",
+              "tool": 48676,
+              "status": "PASS actual exact-parent build; reaped0/stopped/PID0/noOOM"
             }
           }
         }

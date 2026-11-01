@@ -1800,7 +1800,7 @@
         "affected_installed_interruptions": "FAIL01fc; reviewed read-stop correction NOT_RUN"
       },
       "immutable_read_stop_20261101": {
-        "status": "ACTUAL_RELEASE_PASS_CURRENT_STRICT_RUNNING",
+        "status": "CURRENT_RELEASE_RUST_OBSERVER_PASS_INSTALLED_PENDING",
         "tasks": [
           "P03-T05 Steps1/4",
           "P03-T01 Step3"
@@ -1814,8 +1814,8 @@
         },
         "classification": "Source-confirmed product cancellation race: immutable attribution/visibility read can finish rollback then refuse delivery on SIGTERM and leave owner unavailable. The original run has no separate durable rollback witness; exact failure bytes retained, no claimed successful rollback for that capture.",
         "correction": "Only three Sync immutable visibility/observation reads drain once under their original policy/grants/deadline with a private false cancellation token. Real stop skips before first poll or discards validated success. Native errors, closed-client/rollback/lease/deadline failures and effectful operations remain fatal. Post-append absence becomes StateMismatch before stop discard.",
-        "critical_review": "Astra bounded review approved caller-side drain. Post-append absence finding corrected inside read completion before stop discard; five discriminating unit controls remain NOT_RUN until actual strict run.",
-        "remaining": "Fresh exact-source release, strict workspace tests, observer and affected actual installed stop/budget/restart qualification; current-source hosted CI.",
+        "critical_review": "Astra bounded review/recheck approved read drain and post-append-absence ordering. All five new controls actually executed and passed in the current binary suite.",
+        "remaining": "Assemble current candidate with updated reviewed tutorial pin; run actual installed stop regression and affected window/budget/restart checks, then coherent main push and real hosted CI. Old01fc connected fault/corruption proof stays scoped to unchanged responsibilities.",
         "source": "dee67719ca55952a21c3a41c1c93d67990e08771",
         "tree": "3dfd97d1c059e41a750528711af87f8b9e76fa4d",
         "build": {
@@ -1826,8 +1826,8 @@
           "owner": "adfb12ed16a85da6e1654d3e4f4f88fb",
           "status": "PASS_ACTUAL_CURRENT_RELEASE",
           "preflight": "Fresh exact-source isolated fmt/diff and preparation syntax PASS; no Rust tests or engine execution",
-          "strict": "RUNNING current-source tool92644, actual-parent receipt bound; no result yet",
-          "observer": "NOT_RUN_PARENT_UNBOUND",
+          "strict": "Current Clippy/Rustdoc/library659 PASS92644 plus binary212 PASS78547 with five actual controls; library3ignored remain NOT_RUN",
+          "observer": "PASS_EXACT_CURRENT_PARENT48676",
           "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/build-receipt.json",
           "receipt_sha256": "ce88ff3250cf59619f0a72dafe323164585445637dd540f8a5c5e204c850e35e",
           "binary": {
@@ -1842,12 +1842,53 @@
           "scope": "fb scan plus dee delta:26objects/21,218,416B; five identical previously public/triaged noncredential candidates, zero unclassified. Later additions/hosted outputs still need relevant audit."
         },
         "strict_workspace": {
-          "status": "RUNNING_NOT_QUALIFIED",
+          "status": "PASS_ACTUAL_DECLARED_LIBRARY_SCOPE",
           "tool": 92644,
           "container": "1cc7bcd2a7ef4abb14d8dcf6ae10675fcaf1e3d01638f036b069803fabe18fbd",
           "owner": "ecfb7a324a4d0105acfb20248809175f",
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-workspace",
-          "scope": "Current-source all-target Clippy/Rustdoc and unfiltered application library tests, including five added controls. No fb reuse or relabeled receipt."
+          "scope": "The five newly added Sync controls belong to binary src/main.rs, not library src/lib.rs. They remain NOT_RUN and require actual binary-target execution with same parent/source guards. No repetition of qualified library/Clippy/Rustdoc is needed.",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/workspace-receipt.json",
+          "receipt_sha256": "4294372cc8580f4f91931d6536e931e79df5d490046e1e42f1743d3be65ee7a9",
+          "application_library": {
+            "passed": 659,
+            "failed": 0,
+            "ignored": 3,
+            "filtered": 0
+          },
+          "terminal": "Tool92644 reaped0, container stopped/PID0/noOOM/cache released; Clippy/Rustdoc/library659 PASS;3ignored NOT_RUN"
+        },
+        "target_scope_correction": {
+          "status": "CLOSED_ACTUAL_BINARY_TARGET_PASS",
+          "failure": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/workspace-audit-first-observation.json",
+          "sha256": "31bdf090a30e048ec3633814b23babb6758d8bc2493b492dd9a0a8386ed969cc",
+          "classification": "Verification target-selection defect, not product failure. Actual library PASS is retained with its original scope; no new-test claim.",
+          "maintained_guidance": "docs/development/verification.md names library versus CLI target and requires actual regression-name evidence. Full hosted rust-tests already includes both.",
+          "tool": 78547,
+          "container": "80c53472e0857c33200fab29e596ff16b15d7cd2e6b311525925fa0a5faa9709",
+          "owner": "55b39a37bc5a60848890e2f114f18b01",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-dee67719-application-bin",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/application-bin",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/application-bin/terminal-receipt.json",
+          "receipt_sha256": "42c80ba1f00c779b3571cdf3d1d2baf2c16f385361c0a35e6579ce10d507dac9",
+          "rust_summary": {
+            "passed": 212,
+            "failed": 0,
+            "ignored": 0,
+            "measured": 0,
+            "filtered_out": 0
+          },
+          "terminal": "Tool78547 reaped0, stopped/PID0/noOOM/cache released; five required controls each pass exactly once"
+        },
+        "observer": {
+          "status": "PASS_ACTUAL_EXACT_PARENT_OBSERVER",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/probe/terminal-receipt.json",
+          "receipt_sha256": "8a4e76176dc4cd5ff46be325412f62c709a833e10b171b42f676a56b4aabbf34",
+          "tool": 48676,
+          "container": "990da7f43a2f92dd8c3440c6fda529298e2ad3920c4f7ffef62bfceb610ea154",
+          "binary_sha256": "b18c15133593005684a1fa1da84f65d03d11f410f0638fce32600e48664dde3d",
+          "source_manifest_sha256": "6edc3dacaf4f84e22b4978bff34a888e8072dcc3b2916e2d13c1a7e0cf96d2c0",
+          "terminal": "Reaped0, stopped/PID0/noOOM/cache released"
         }
       }
     }
