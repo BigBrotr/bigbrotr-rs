@@ -183,7 +183,7 @@ impl RocksNativeResources {
         #[cfg(test)]
         if self
             .simulated_background_failure
-            .0
+            .failed
             .load(std::sync::atomic::Ordering::Acquire)
         {
             return true;
@@ -194,6 +194,17 @@ impl RocksNativeResources {
     #[cfg(test)]
     pub(in crate::storage) fn test_background_failure(&self) -> SimulatedBackgroundFailure {
         self.simulated_background_failure.clone()
+    }
+
+    #[cfg(test)]
+    pub(in crate::storage) fn test_input_census_finished(&self) {
+        let failure = &self.simulated_background_failure;
+        if failure
+            .after_census
+            .swap(false, std::sync::atomic::Ordering::AcqRel)
+        {
+            failure.latch();
+        }
     }
 
     pub(crate) fn usage(&self) -> RocksNativeUsage {
@@ -213,14 +224,23 @@ impl RocksNativeResources {
 /// It can latch once and has no reset, just like the production observation.
 #[cfg(test)]
 #[derive(Clone, Default)]
-pub(in crate::storage) struct SimulatedBackgroundFailure(
-    std::sync::Arc<std::sync::atomic::AtomicBool>,
-);
+pub(in crate::storage) struct SimulatedBackgroundFailure {
+    failed: std::sync::Arc<std::sync::atomic::AtomicBool>,
+    after_census: std::sync::Arc<std::sync::atomic::AtomicBool>,
+}
 
 #[cfg(test)]
 impl SimulatedBackgroundFailure {
     pub(in crate::storage) fn latch(&self) {
-        self.0.store(true, std::sync::atomic::Ordering::Release);
+        self.failed
+            .store(true, std::sync::atomic::Ordering::Release);
+    }
+
+    /// Arm one deterministic Rust observation after the next complete sidecar
+    /// census. This never invokes a native callback or changes production I/O.
+    pub(in crate::storage) fn latch_after_next_input_census(&self) {
+        self.after_census
+            .store(true, std::sync::atomic::Ordering::Release);
     }
 }
 

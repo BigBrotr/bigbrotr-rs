@@ -112,6 +112,44 @@ fn refusal_preserves(f: &Fixture, r: &IngestRecovery) {
 }
 
 #[test]
+fn lineage_refuses_a_simulated_background_latch_at_the_completed_input_census() {
+    let f = prepared_fixture();
+    let r = f.reopen();
+    let lineage = inspect(&f, &r, Some(3)).unwrap();
+    let before = (
+        kv(&r.store),
+        r.store.db.latest_sequence_number(),
+        inputs(&f.path()),
+    );
+    let accounting = r.store.accounting;
+    r.store
+        .test_background_failure()
+        .latch_after_next_input_census();
+    assert!(
+        !r.native_unavailable(),
+        "arming is not an early failed observation"
+    );
+    assert_eq!(
+        lineage.validate(&r, &AtomicBool::new(false)),
+        Err(BootstrapError::CommitUnknown)
+    );
+    assert!(r.native_unavailable());
+    assert!(!r.store.write_uncertain);
+    assert_eq!(
+        (
+            kv(&r.store),
+            r.store.db.latest_sequence_number(),
+            inputs(&f.path())
+        ),
+        before
+    );
+    assert_eq!(r.store.accounting, accounting);
+    drop(lineage);
+    assert_eq!(f.budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(f.budget.snapshot().used().native_bytes(), 128 * MIB);
+}
+
+#[test]
 fn lineage_observes_exact_genesis_and_pending_target_without_authority() {
     let f = prepared_fixture();
     let r = f.reopen();

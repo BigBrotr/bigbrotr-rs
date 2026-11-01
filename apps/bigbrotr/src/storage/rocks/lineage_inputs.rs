@@ -268,6 +268,8 @@ impl IngestStore {
         let check = || {
             if cancelled.load(Ordering::Relaxed) {
                 Err(BootstrapError::AuthorityUnavailable)
+            } else if self.native_unavailable() {
+                Err(BootstrapError::CommitUnknown)
             } else {
                 Ok(())
             }
@@ -447,6 +449,8 @@ impl IngestStore {
         } else {
             all
         };
+        #[cfg(test)]
+        self.resources.test_input_census_finished();
         check()?;
         Ok(InputScan {
             all,
