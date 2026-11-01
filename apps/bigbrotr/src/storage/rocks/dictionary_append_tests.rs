@@ -2,6 +2,7 @@
 use super::admission_tests::inputs;
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request, scope};
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::*;
 
 const MIB: u64 = 1024 * 1024;
@@ -55,7 +56,7 @@ fn append_preserves_original_bootstrap_and_replays_original_receipts_after_reope
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let original = intent("public");
     let first = store
         .bootstrap_dictionaries(
@@ -144,7 +145,7 @@ fn simulated_background_latch_at_dictionary_replay_delivery_refuses_both_receipt
         let path = root.path().join("db");
         let b = budget();
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         drop(
             store
                 .bootstrap_dictionaries(
@@ -341,7 +342,7 @@ fn six_mapping_private_bundle_closes_observation_and_mixed_existing_new_ordinals
     use crate::acquisition::observation::ObservationBindings;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -416,7 +417,7 @@ fn six_mapping_private_bundle_closes_observation_and_mixed_existing_new_ordinals
 fn predictable_invalid_plans_fail_before_staging_and_leave_request_identity_available() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -500,7 +501,7 @@ fn closed_producer_resolves_bootstrap_append_and_reuse_without_fresh_writes() {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &path,
         installed_manifest(),
         native(),
@@ -578,7 +579,7 @@ fn closed_producer_resolves_bootstrap_append_and_reuse_without_fresh_writes() {
 fn limits_conflicts_gap_window_and_lost_authority_cannot_change_committed_rows() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -688,7 +689,7 @@ fn limits_conflicts_gap_window_and_lost_authority_cannot_change_committed_rows()
 fn preview_charges_the_actual_timestamp_before_staging() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -793,7 +794,7 @@ fn replay_requires_every_original_member_and_the_receipts_own_exact_closure() {
     use crate::storage::rocks::keys::IngestKey;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -873,7 +874,7 @@ fn exhausted_allocation_refuses_before_staging_without_reusing_an_ordinal() {
     use crate::storage::rocks::keys::IngestKey;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -924,7 +925,7 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &path,
         installed_manifest(),
         native(),
@@ -1052,7 +1053,7 @@ fn simulated_background_latch_refuses_retained_dictionary_preparation_cache_and_
         let root = tempfile::tempdir().unwrap();
         let path = root.path().join("db");
         let b = budget();
-        let mut store = IngestStore::initialize(
+        let mut store = fixture_initialize(
             &path,
             installed_manifest(),
             native(),
@@ -1108,7 +1109,7 @@ fn dictionary_preparation_does_not_reuse_a_matching_private_fact_for_a_public_pl
     use std::sync::atomic::AtomicBool;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -1172,7 +1173,7 @@ fn dictionary_preparation_bounds_owned_capacity_cancellation_and_invalid_descrip
     use std::sync::atomic::{AtomicBool, Ordering};
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -1273,7 +1274,7 @@ fn dictionary_preparation_treats_hash_hits_as_bounded_candidates_not_identity_or
     use std::sync::atomic::AtomicBool;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),
@@ -1352,7 +1353,7 @@ fn dictionary_preparation_reuse_requires_the_matching_facts_transitive_method() 
     use std::sync::atomic::AtomicBool;
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         installed_manifest(),
         native(),

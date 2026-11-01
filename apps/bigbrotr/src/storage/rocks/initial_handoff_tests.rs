@@ -2,6 +2,7 @@
 use super::producer_recovery_tests::recovery_limits;
 use super::*;
 use crate::storage::rocks::keys::{ColumnFamily, IngestKey, decode_key};
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use sha2::{Digest, Sha256};
 
 fn target(old: IngestManifest) -> IngestManifest {
@@ -150,8 +151,7 @@ fn initial_handoff_has_exact_five_put_delta_and_read_only_reopened_replay() {
         let path = root.path().join(if issued == 0 { "empty" } else { "db" });
         if issued == 0 {
             drop(
-                IngestStore::initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB))
-                    .unwrap(),
+                fixture_initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap(),
             );
         }
         let mut recovery =
@@ -189,7 +189,7 @@ fn initial_handoff_has_exact_five_put_delta_and_read_only_reopened_replay() {
         assert_eq!(kv(&recovery.store), expected);
         assert_eq!(recovery.store.db.latest_sequence_number(), sequence);
         assert!(
-            IngestStore::initialize(
+            fixture_initialize(
                 &root.path().join("fresh-successor"),
                 *plan.next_manifest(),
                 native,

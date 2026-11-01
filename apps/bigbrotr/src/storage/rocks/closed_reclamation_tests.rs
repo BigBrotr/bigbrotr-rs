@@ -88,6 +88,11 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
     let mut f = fixture_at(bigbrotr_model::TopologyGeneration::new(0));
     let plan = original_plan(&f);
     let accounting = f.recovery.store.pending_accounting().unwrap();
+    let quota_status = f.recovery.store.pending_quota_status();
+    assert_eq!(
+        quota_status,
+        crate::storage::rocks::store::PendingQuotaStatus::RecoveryBlocked
+    );
     assert!(accounting.pending_bytes() > 0);
     let before = kv(&f.recovery.store);
     let sequence = f.recovery.store.db.latest_sequence_number();
@@ -99,6 +104,7 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
     assert_eq!(receipt.native_sequence(), sequence + 5);
     assert_eq!(remaining(&f), 0);
     assert_eq!(f.recovery.store.pending_accounting().unwrap(), accounting);
+    assert_eq!(f.recovery.store.pending_quota_status(), quota_status);
     let after = kv(&f.recovery.store);
     let mut expected = before;
     let marker = producer_key().encode().unwrap();
@@ -120,6 +126,7 @@ fn closed_reclamation_installs_exact_batch_then_preserves_science_and_restarts()
     )
     .unwrap();
     assert_eq!(f.recovery.store.pending_accounting().unwrap(), accounting);
+    assert_eq!(f.recovery.store.pending_quota_status(), quota_status);
     let plan = compacted_plan(&f);
     let sequence = f.recovery.store.db.latest_sequence_number();
     let receipt = plan

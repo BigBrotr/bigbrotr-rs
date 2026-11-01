@@ -1,6 +1,7 @@
 //! Detected WAL damage refuses ordinary open; an intact lost boundary is distinct.
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::ObservedTime;
 use std::{
     io::{BufRead, Write},
@@ -122,7 +123,7 @@ fn rows(db: &DB) -> serde_json::Value {
 fn wal_recovery_refuses_loss_of_a_synced_bootstrap() {
     if let Some(path) = std::env::var_os(CHILD) {
         let b = budget();
-        let mut store = IngestStore::initialize(
+        let mut store = fixture_initialize(
             Path::new(&path),
             manifest(),
             native(),

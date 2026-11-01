@@ -46,16 +46,23 @@ fn envelope(
             )
             .unwrap();
     }
-    (
-        NativeSuccessorActivation::new(candidate, lineage, handoff),
-        allocation,
-    )
+    let mut owner = NativeSuccessorActivation::new(candidate, lineage, handoff);
+    if complete {
+        owner
+            .bind_pending_quota(
+                crate::storage::rocks::store::bootstrap_tests::fixture_pending_policy(),
+                &NOT_CANCELLED,
+            )
+            .unwrap();
+    }
+    (owner, allocation)
 }
 fn active(f: &Fixture, later: bool) -> ActiveSuccessorWriter {
     let (mut owner, pointer) = envelope(f, later, PredecessorTerminalKind::UnactivatedEmpty, true);
     let before = snapshot(f, &owner.recovery().unwrap().store);
     let reserved = f.budget.snapshot().used();
-    let writer = owner.activate(&NOT_CANCELLED, || Ok(())).unwrap();
+    let mut writer = owner.activate(&NOT_CANCELLED, || Ok(())).unwrap();
+    crate::storage::rocks::store::bootstrap_tests::resume_successor_fixture_pending(&mut writer);
     assert_eq!(f.budget.snapshot().used(), reserved);
     assert!(owner.recovery().is_none());
     assert!(matches!(

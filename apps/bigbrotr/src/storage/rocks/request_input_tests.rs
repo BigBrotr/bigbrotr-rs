@@ -3,6 +3,7 @@ use super::bootstrap_tests::{budget, grant, intent, manifest, native, request};
 use super::*;
 use crate::runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, WaiterLimits};
 use crate::storage::rocks::manifest::AllocationNamespaces;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use bigbrotr_model::{
     DescriptorLabel, DictionaryDescriptor, DictionaryEntry, DictionaryKind, EvidenceIntent,
     EvidenceIntentLimits, ObservedTime, ProducerRequestId, RequestSequence,
@@ -21,7 +22,7 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
     let original = intent("public");
     let digest = original.request_digest(request());
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let before = store.db.latest_sequence_number();
     let mut checks = 0;
     let result = store.bootstrap_dictionaries(
@@ -211,8 +212,7 @@ fn complete_signed_and_rejected_inputs_survive_native_admission_and_reopen() {
     );
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
-    let mut store =
-        IngestStore::initialize(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let mut store = fixture_initialize(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
     let bootstrap_id = ProducerRequestId {
         request_sequence: RequestSequence::new(1).unwrap(),
         ..id
@@ -395,7 +395,7 @@ fn staged_input_conflict_partial_file_and_reduced_limits_preserve_native_state()
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let original = intent("public");
     let digest = original.request_digest(request());
     let input = original.encode_request_preimage(request(), 8192).unwrap();
@@ -536,7 +536,7 @@ fn restrictive_umask_cannot_commit_an_unreadable_producer_input() {
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let spool = path.join("producer-inputs-v1");
     std::fs::create_dir(&spool).unwrap();
     std::fs::set_permissions(&spool, std::fs::Permissions::from_mode(0o700)).unwrap();
@@ -579,7 +579,7 @@ fn retained_spool_count_and_byte_limits_allow_exact_retry_without_reclamation() 
     let path = root.path().join("db");
     let b = budget();
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let original = intent("public");
     for n in 1..=64 {
         let id = ProducerRequestId {
@@ -587,18 +587,19 @@ fn retained_spool_count_and_byte_limits_allow_exact_retry_without_reclamation() 
             ..request()
         };
         let bytes = original.encode_request_preimage(id, 8192).unwrap();
-        store.retain_request_input(id, &bytes).unwrap();
+        store.retain_fixture_request_input(id, &bytes).unwrap();
     }
     let id = ProducerRequestId {
         request_sequence: RequestSequence::new(65).unwrap(),
         ..request()
     };
     assert_eq!(
-        store.retain_request_input(id, &original.encode_request_preimage(id, 8192).unwrap()),
+        store
+            .retain_fixture_request_input(id, &original.encode_request_preimage(id, 8192).unwrap()),
         Err(RequestInputError::Limit)
     );
     store
-        .retain_request_input(
+        .retain_fixture_request_input(
             request(),
             &original.encode_request_preimage(request(), 8192).unwrap(),
         )
@@ -615,9 +616,9 @@ fn retained_spool_count_and_byte_limits_allow_exact_retry_without_reclamation() 
     // measure logical staging limits only, not resident disk capacity or ENOSPC.
     let path = root.path().join("bytes");
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     store
-        .retain_request_input(
+        .retain_fixture_request_input(
             request(),
             &original.encode_request_preimage(request(), 8192).unwrap(),
         )
@@ -641,7 +642,10 @@ fn retained_spool_count_and_byte_limits_allow_exact_retry_without_reclamation() 
         ..request()
     };
     assert_eq!(
-        store.retain_request_input(next, &original.encode_request_preimage(next, 8192).unwrap()),
+        store.retain_fixture_request_input(
+            next,
+            &original.encode_request_preimage(next, 8192).unwrap()
+        ),
         Err(RequestInputError::Limit)
     );
     assert_eq!(std::fs::read_dir(spool).unwrap().count(), 2);
@@ -667,7 +671,7 @@ fn substituted_input_paths_are_refused_without_following_or_mutating_them() {
     ] {
         let path = root.path().join(mode);
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         let spool = path.join("producer-inputs-v1");
         let outside = root.path().join(format!("outside-{mode}"));
         std::fs::create_dir(&outside).unwrap();
@@ -737,7 +741,7 @@ fn killed_producer_preserves_input_before_and_after_native_commit() {
         let path = std::path::PathBuf::from(std::env::var_os("BIGBROTR_INPUT_CRASH_PATH").unwrap());
         let b = budget();
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         let original = intent("public");
         let mut checks = 0;
         let suspend = || {
@@ -852,7 +856,7 @@ fn pre_reservation_staging_has_no_native_effect_and_retains_exact_identity() {
         max_batch_bytes: MIB as usize,
     };
     let mut store =
-        IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let before = store.db.latest_sequence_number();
     assert!(matches!(
         store.stage_initial_dictionaries(request(), &original, limits, &grant(&b, 1, 1)),

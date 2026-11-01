@@ -1190,7 +1190,7 @@ impl IngestStore {
                 frame(&[1, 3], &[&reference.ordinal.get().to_be_bytes()])?,
             )?;
             let fact = writer.emit(FactPayload::EventPayload(EventPayload {
-                body: event.event().clone().into(),
+                body: copy_event_body(event.event())?,
                 event_ordinal: reference,
             }))?;
             writer.index(payload_key, fact)?;
@@ -1470,6 +1470,38 @@ impl EventWrites<'_> {
         Ok(())
     }
 }
+/// Preview and commit share the same borrowed verified event. Own only the
+/// payload that a newly emitted fact needs, with explicit allocation refusal.
+fn copy_event_body(event: &SignedEvent) -> Result<EventBody, AdmissionError> {
+    fn text(value: &str) -> Result<String, AdmissionError> {
+        let mut copy = String::new();
+        copy.try_reserve_exact(value.len())
+            .map_err(|_| AdmissionError::Allocation)?;
+        copy.push_str(value);
+        Ok(copy)
+    }
+    let mut tags = Vec::new();
+    tags.try_reserve_exact(event.tags.len())
+        .map_err(|_| AdmissionError::Allocation)?;
+    for tag in &event.tags {
+        let mut copy = Vec::new();
+        copy.try_reserve_exact(tag.len())
+            .map_err(|_| AdmissionError::Allocation)?;
+        for value in tag {
+            copy.push(text(value)?);
+        }
+        tags.push(copy);
+    }
+    Ok(EventBody {
+        event_id: event.id,
+        pubkey: event.pubkey,
+        created_at: event.created_at,
+        kind: event.kind,
+        tags,
+        content: text(&event.content)?,
+    })
+}
+
 pub(super) fn matching_payload(
     fact: &Fact,
     event: &VerifiedEvent,

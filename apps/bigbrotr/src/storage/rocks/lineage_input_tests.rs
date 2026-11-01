@@ -1,6 +1,7 @@
 //! Real shared-spool scans under an actual exclusive native owner. Literal
 //! payloads exercise census accounting/stamps, not canonical request replay or GC.
 use super::{MIB, budget, grant, manifest, native};
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use crate::storage::rocks::store::{
     BootstrapError, IngestStore, RequestInputError,
     request_inputs::{LineageInputSet, SuccessorStagedInput},
@@ -34,7 +35,7 @@ const FULL: &[(&str, &[u8])] = &[
 fn fixture() -> (tempfile::TempDir, IngestStore) {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let store = IngestStore::initialize(
+    let store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),

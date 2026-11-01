@@ -1,6 +1,7 @@
 //! Structural observations only. The test-only later handoffs deliberately do
 //! not establish SQL terminal authority or a positively replayed frontier.
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use crate::storage::rocks::store::{RetainedLineage, RetainedTerminalKind};
 use crate::storage::rocks::succession::{
     PredecessorTerminalKind, SuccessionFields, SuccessionProfile, SuccessionRecord,
@@ -363,7 +364,7 @@ fn zero_fixture(issued: u64) -> Fixture {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let mut store =
-        IngestStore::initialize(&path, previous, native, grant(&budget, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, previous, native, grant(&budget, 0, 128 * MIB)).unwrap();
     let zero_counter = value(&store, IngestKey::PendingAccounting);
     let corpus: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../../tests/fixtures/ingest/signed-event-admission.json"

@@ -128,6 +128,13 @@ struct Reservation {
     staged: bool,
 }
 
+// The retained ledger and worst old/new allocation overlap fit the existing
+// owner staging allowance; no request count or process budget is increased.
+const _: () = assert!(
+    2 * MAX_REQUESTS * std::mem::size_of::<Reservation>() + std::mem::size_of::<PendingQuota>()
+        < super::request_inputs::STAGING_OVERHEAD_BYTES
+);
+
 /// Private proof minted from the owner's ledger after original staging.
 /// Drop has no effect on the ledger, including on every failed native path.
 pub(super) struct PendingFunding {
@@ -223,11 +230,18 @@ impl IngestStore {
         let manifest_sha256 = self.quota_manifest();
         match &mut self.pending_quota {
             PendingQuota::Bound(quota) => {
-                if quota.policy != policy || !quota.entries.is_empty() {
-                    return Err(PendingQuotaError::PolicyMismatch);
+                if !quota.entries.is_empty() {
+                    return Err(PendingQuotaError::RecoveryBlocked);
                 }
-                // A continuously excluded, positively checked transition may
-                // change manifest, preserving pressure and the original timer.
+                // Only this complete stopped/handoff proof may accept a new
+                // policy. Its changed thresholds/duration require a fresh full
+                // interval; identical policy preserves the existing latch/time.
+                if quota.policy != policy {
+                    quota.policy = policy;
+                    quota.pressure = true;
+                    quota.below_low_since =
+                        (self.accounting.pending_bytes() < policy.low_bytes).then(Instant::now);
+                }
                 quota.manifest_sha256 = manifest_sha256;
                 Ok(())
             }
@@ -236,7 +250,8 @@ impl IngestStore {
                     policy,
                     manifest_sha256,
                     pressure: true,
-                    below_low_since: None,
+                    below_low_since: (self.accounting.pending_bytes() < policy.low_bytes)
+                        .then(Instant::now),
                     entries: Vec::new(),
                 });
                 Ok(())
@@ -511,3 +526,7 @@ impl IngestStore {
         quota.entries.remove(index);
     }
 }
+
+#[cfg(test)]
+#[path = "pending_quota_tests.rs"]
+mod tests;

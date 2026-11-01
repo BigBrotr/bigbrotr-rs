@@ -1,6 +1,7 @@
 //! Actual RocksDB reads; raw mutations model corrupt metadata, not authority.
 use super::bootstrap_tests::{budget, grant, intent, manifest, native, request, scope};
 use super::*;
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use crate::storage::rocks::{
     keys::{EncodedKey, IngestKey},
     manifest::ManifestIdentity,
@@ -28,7 +29,7 @@ fn head(store: &IngestStore) -> Result<SourceHead, SourceHeadError> {
 fn source_head_fresh_explicit_zero_and_missing_source_never_write_or_repair() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let store = IngestStore::initialize(
+    let store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -63,7 +64,7 @@ fn source_head_fresh_explicit_zero_and_missing_source_never_write_or_repair() {
 fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -153,7 +154,7 @@ fn source_head_tracks_dictionary_commits_and_not_no_output_retries() {
 fn source_head_refuses_foreign_identity_persisted_manifest_and_uncertain_write() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let mut store = IngestStore::initialize(
+    let mut store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -195,7 +196,7 @@ fn source_head_refuses_foreign_identity_persisted_manifest_and_uncertain_write()
 fn source_head_refuses_bad_framing_and_an_unsigned_head_unbound_to_accounting() {
     let root = tempfile::tempdir().unwrap();
     let b = budget();
-    let store = IngestStore::initialize(
+    let store = fixture_initialize(
         &root.path().join("db"),
         manifest(),
         native(),
@@ -252,7 +253,7 @@ fn source_head_zero_uses_current_epoch_and_requires_empty_current_stream() {
         let b = budget();
         let path = root.path().join("db");
         let mut store =
-            IngestStore::initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+            fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
         if epoch > 1 {
             let limits = BootstrapLimits {
                 max_mappings: 8,

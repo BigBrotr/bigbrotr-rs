@@ -3,6 +3,7 @@ use super::*;
 use crate::runtime::{
     ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
 };
+use crate::storage::rocks::store::bootstrap_tests::initialize as fixture_initialize;
 use crate::storage::rocks::{
     RocksNativeSettings,
     manifest::{AllocationNamespaces, ManifestIdentity},
@@ -136,7 +137,7 @@ fn setup_entries_at(
     })
     .unwrap();
     let mut store =
-        IngestStore::initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
+        fixture_initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
     let bootstrap = EvidenceIntent::new(
         1,
         reference(DictionaryKind::VisibilityScope, 1),
@@ -170,6 +171,7 @@ fn actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_rec
     let (root, mut store, budget, manifest, native) = setup(false);
     let path = root.path().join("db");
     let cancelled = std::sync::atomic::AtomicBool::new(false);
+    let initial_charge = store.pending_accounting().unwrap().pending_bytes();
     let sequence = store.db.latest_sequence_number();
     let initial = store.observe_source_head(&manifest, &cancelled).unwrap();
     assert_eq!(initial.manifest(), &manifest);
@@ -207,6 +209,13 @@ fn actual_signed_event_commits_payload_scope_and_receive_with_dictionary_and_rec
             .get(),
         8
     );
+    // Independent fixed bytes: framed fact values216/287/282/248, four
+    // 38-byte fact keys and one38+42-byte pending marker total1265.
+    assert_eq!(
+        store.pending_accounting().unwrap().pending_bytes() - initial_charge,
+        1265
+    );
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
     let original = receipt.encode_persistent(8192).unwrap();
     drop(outcome);
     drop(store);
@@ -1543,3 +1552,73 @@ mod producer_ack_tests;
 
 #[path = "compacted_prefix_tests.rs"]
 mod compacted_prefix_tests;
+
+#[test]
+fn event_preview_allows_zero_pending_work_under_pressure_and_checks_operation_grants() {
+    let (_root, mut store, budget, _manifest, _native) = setup(false);
+    let limits = AdmissionLimits::default();
+    let input = PreparedEvent::new(
+        request(5, 1),
+        intent("E_private", 2, 10_000_000),
+        256 * 1024,
+        grant(&budget, MIB, 0),
+    )
+    .unwrap();
+    drop(
+        store
+            .admit_event(
+                input,
+                ObservedTime::new(10_000_000),
+                false,
+                limits,
+                grant(&budget, 40 * MIB, 10 * MIB),
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    let reservations: Vec<_> = (1..=64)
+        .map(|sequence| PendingReservationRequest {
+            request: request(9, sequence),
+            digest: Digest256::from_bytes([9; 32]),
+            allowance_bytes: 16 * MIB,
+        })
+        .collect();
+    assert_eq!(
+        store.reserve_pending_requests(&reservations),
+        Err(PendingQuotaError::Pressure)
+    );
+    let charge = store.pending_accounting().unwrap().pending_bytes();
+    let input = PreparedEvent::new(
+        request(5, 2),
+        intent("E_private", 2, 10_000_000),
+        256 * 1024,
+        grant(&budget, MIB, 0),
+    )
+    .unwrap();
+    assert_eq!(
+        input.pending_reservation_request(&store, limits, &grant(&budget, 1, 1)),
+        Err(AdmissionError::InsufficientReservation)
+    );
+    let permit = grant(&budget, 40 * MIB, 10 * MIB);
+    let preview = input
+        .pending_reservation_request(&store, limits, &permit)
+        .unwrap();
+    assert_eq!(preview.allowance_bytes, 0);
+    input.stage(&mut store, limits, &permit).unwrap();
+    let outcome = store
+        .admit_event(
+            input,
+            ObservedTime::new(i64::MAX),
+            false,
+            limits,
+            permit,
+            || Ok(()),
+        )
+        .unwrap();
+    assert!(
+        matches!(outcome.outcome(),AdmissionOutcome::Durable(receipt) if receipt.batch().is_none())
+    );
+    assert_eq!(store.pending_accounting().unwrap().pending_bytes(), charge);
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
+}
