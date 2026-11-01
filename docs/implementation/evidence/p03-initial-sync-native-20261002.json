@@ -470,7 +470,7 @@
     "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_ALL_SEVEN_SELECTED_FAULTS_AND_DEV_PASS",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-    "acceptance": "7bb7a1591eea63f0019665bb4bd0b8108fcbe58d",
+    "acceptance": "1a305197e65b9b64096defe3d51807b4884d1eaa",
     "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
@@ -530,6 +530,10 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-historical-quantum-issuer-critical-20261101.json",
         "sha256": "52d3f5a7d5f92f41b2d315dd0a9b2886659ef2c10df3ca2e5fd49d1cfdea5a7c"
+      },
+      {
+        "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-index-handoff-inventory-critical-20261101.json",
+        "sha256": "d3abbd3c075ed9b5ac3641d47ec6c7b4ad475c295de5a13d88b1b7ed8aeb6e99"
       }
     ],
     "original_failures": [
@@ -560,9 +564,17 @@
       {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/historical-controls-original-failure.json",
         "sha256": "528c55f41fc9cfa7dc9e22519763d97721a8406a218b7692a4fb756cf55f75a1"
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r2/root-terminal.json",
+        "sha256": "6b9bf129eeb0d7560cc69162513d47675f13f93176a696d6e8733d321cc170f5"
+      },
+      {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3/root-terminal.json",
+        "sha256": "da9417529e1fc4e5d11e0b1d46ba259199c03c3c54788c7b5431bf205e57f377"
       }
     ],
-    "open_checks": "Corrected current Index/topology rerun and grouped closed reclamation/successor/Archive/export/restart remain required before integration. Full current-source hosted CI and finaldelivery remain open. Unchanged78 finite/tutorial/sevenfault evidence and independente812dev evidence retained; no whole task orM2closure.",
+    "open_checks": "NextIndexR4mustqualify actual15stage path and32terminalSQLcases with strictbackendidentitydiagnostic;R3unknownremainsUNKNOWN regardless laterresult. Groupedclosedreclamation/successor/Archive/export/restart required afterward. FullcurrenthostedCI/finaldelivery open. Product78 finite/tutorial/sevenfault ande812dev proofs retained;nowholeM2/taskclose.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -882,6 +894,32 @@
       "diagnosis": "28oldControl2quanta remain immutable after cancelledjob transfers toControl4. SQL27/38 require exact retained gap and cancelled/previous_revision+2; persistedcancel_requested/+1 is not authorized by deferred completion. Quantum issuer remains historical underSQL43.",
       "correction": "Authenticate original/current exact Control owner_epochs and sole authorized gap-backed transfer; retain active-owner equality and all charge/science checks. Save rawControl before validation. Freeze exact whole quantum rows/cardinality/xmin across allfour ordinary/groupedretirements and ordinaryreplay; one groupedpoststopcapture added. No cross-record wall-clock gate, product/SQL/budget/deadline change.",
       "pure": "29quantum+23firstlaunch+12sharedbudget targetedPASS;full446PASS/0SKIP. Author read-onlyreplay34snapshots/9preservationpairs PASS, snapshotlistdigest cd2842d99bca50763cab08780720eb4d223f9eb3b973321f0c84974467f57116;not runtimePASS."
+    },
+    "index_inventory_followthrough": {
+      "author": "f84a934c49106e8dca6d67fdb2bea88781181e59",
+      "merged": "a0f52fab8b298a269c4836ded32a5af9a4f8dc45",
+      "original_R2": "FAIL obsolete82-table SQL snapshot prerequisite versus source-declared83;no12casePASS;seedunchanged,23containersstopped/1061joins/1066PIDabsent.",
+      "correction": "Exact source-declared names passed as canonical JSON into strict SQL temp context;C-sorted pg_catalog inventory must match. Missing/extra/same-count substitutions refuse;all rows/xmin/4MiB/64MiB/deadlines/12and32caseoracles unchanged.",
+      "pure": "9handoff+13topologyPASS",
+      "actual_nonterminal": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3/restart/index-handoff-nonterminal/result.json",
+        "sha256": "096b037dd9b265369ad10456993b0bce8e5b6c81ab3c631709db3e3931698d49",
+        "result": "12/12PASS_SQL_ONLY atR3;seedpreserved;terminal32NOT_RUN"
+      }
+    },
+    "backend_diagnostic_followthrough": {
+      "status": "ORIGINAL_R3_CAUSE_UNKNOWN;STRICT_DIAGNOSTIC_SOURCE_REVIEWED;ACTUAL_RERUN_PENDING",
+      "original": "R3first9stagesPASS inclingest_restart_resend/12nonterminalSQL;archive_catch_upFAIL atpost-CAPIbackendabsenceControl1/Catalog0;later4NOT_RUN;cleanupPASS.25containersstopped/1096joins/1101PIDabsent.",
+      "sample": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3/restart/backend-absence-989/backend-absence.json",
+        "sha256": "a3685e608cd19c695cb60ce12dce38ac6b1321b757c1a6249a174a8ee8f0002d"
+      },
+      "facts": "FiniteArchivecontainerexit0/PID0 at03:09:20.738UTC;CAPIchildjoined03:09:21.380599;Controlcount1sample03:09:21.391410\u201321.469167,Catalog0. CAPI source opensCatalogonly. RetainedPGlogs lackconnection/disconnection/autovacuum identity;no applicationleak/maintenance/observercauseclaim.",
+      "author": "6ceae14359b0bbeb9f89acc4ffdb424e7d24a4d2",
+      "merged": "1a305197e65b9b64096defe3d51807b4884d1eaa",
+      "change": "One MATERIALIZED rowset perDB supplies count+allowlisted safe processidentity metadata;persistbeforevalidation. Original zero-forALLnonselfbackends condition preserved;nonzero maintenance/unknown stillFAIL;no querytext,filter,retry,wait,timeout/productchange. One currentstructured backend-absence.json format;noactualoldformatreaders;oldcapturesuntouched.",
+      "pure": "26firstlaunch+26topology/restartPASS;newrealSQLsampleNOT_RUN",
+      "reference": "https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW"
     }
   }
 }

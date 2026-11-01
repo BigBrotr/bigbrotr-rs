@@ -78370,26 +78370,31 @@
       "linear_quantum_in_progress": {
         "branch": "work/m2-linear-quantum-acceptance-20261101",
         "worktree": ".research/m2-linear-quantum-acceptance-20261101",
-        "revision_before_checkpoint": "7bb7a1591eea63f0019665bb4bd0b8108fcbe58d",
+        "revision_before_checkpoint": "1a305197e65b9b64096defe3d51807b4884d1eaa",
         "product_branch": "work/m2-linear-quantum-integration-20261101",
         "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
         "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
         "author_branch": "work/m2-linear-quantum-20261031",
-        "author_status": "Clean originalhistoricalowner/freeze/fixture commits merged;Astrareview complete;author/revieweridle. Noagents ownengines/cache.",
+        "author_status": "Clean originalinventory+diagnosticcommitsmerged;boundedAstraSQL/unknowndiagnosiscomplete,Soltargetedcontrolscomplete;agentsidle,noengine/cacheowners.",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313",
         "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-78c8e313",
         "failed_first_build": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-2fc85504",
         "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
         "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-7bb7a159-controls",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
-        "status": "AllsevenselectedfaultsPASS;correctedfull446portablecontrolsPASS. OriginalIndextopologyR1and20a3controlsfailuresretained;alllocaljobsnowterminal,borrowedbridgeempty. CurrentIndexR2then groupedregressionsnext;M2notmainintegrated.",
+        "status": "SevenselectedfaultsPASS;446fullcontrols7bbPASS;laterSQL9/13anddiagnostic52focusedPASS. IndexR2fixtureinventoryFAIL/R3unknownbackendFAILretained,12nonterminalSQLPASS;alllocaljobsnowterminal,bridgeempty. NextstrictdiagnosticIndexR4then grouped;M2notmainintegrated.",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
-        "author_tip": "b80726f1a611a63b879d54c0a6b2b5147d82a0bc",
+        "author_tip": "6ceae14359b0bbeb9f89acc4ffdb424e7d24a4d2",
         "dev_revision": "e8122ff90edf298e8c1262d3328cde87387c8828",
         "evidence_report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "failed_historical_controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-20a3d7f4-controls",
-        "failed_index_topology_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1"
+        "failed_index_topology_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1",
+        "index_topology_attempts": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1",
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r2",
+          "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3"
+        ]
       }
     }
   },

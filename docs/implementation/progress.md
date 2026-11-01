@@ -13,8 +13,8 @@ qualification report. M2 remains **unintegrated**, with no whole task/milestone
 completion claim.
 
 Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`, is **7bb7a159** before this checkpoint
-commit: reviewed historical-owner/frozen-row corrections and complete shared fixture merged.
+`work/m2-linear-quantum-acceptance-20261101`, is **1a305197** before this checkpoint
+commit: historical/freeze, declared-inventory and strict backend-diagnostic corrections merged.
 Installed product remains **78c8e31339e760c16bcfa036dabff38dcdf86544**; all eight
 product code/config objects in acceptance equal that source. The separately
 qualified dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
@@ -107,17 +107,40 @@ original error remains. Corrected full pinned-image suite at7bb is **446/446 PAS
 zero skips**; targeted29quantum/23firstlaunch/12sharedbudget controls PASS.
 Author read-only replay34snapshots/nine frozen pairs PASS; this is not runtime PASS.
 
-**Next:** rerun corrected current Index/topology as `acceptance-index-topology-r2`,
-then grouped closed reclamation/successor/Archive/export/restart, serially with
-unchanged78 candidate. Use existing `run-installed.py`; preflight15432/18081/7447
-plus18123/19000 and empty borrowed bridge. Topology rejects
-`--native-observer-build`; supply observer78 only for grouped reclamation, with
-`--retained-archive-schedule grouped-publication-loss`. Shared SQL43/59migration
-entries/83Controltables/status/roles and actual artifacts are reconciled. Keep
-executing source frozen until terminal observations finish. Reuse unchanged
-finite/tutorial/dev/seven-fault evidence. Merge the separately qualified test
-initializer afterward, review final publication delta, and integrate/push coherent
-qualified M2 work. All author/reviewer tasks are complete; root owns engines/cache.
+Index R2 at53a5fd5e **FAIL**,93.978s: historical-owner/freeze path succeeded,
+then nested SQL snapshot still demanded82tables before its12cases. Original seed
+unchanged;23containers stopped/1061joins/1066PIDs absent. Current f84a934c/mergeda0f
+binds SQL snapshot to exact source-declared names, with C collation, including all
+rows/xmin. The old count literal is gone; sizes/deadlines/case oracles unchanged.
+Targeted9handoff/13topology controls PASS; bounded Astra delta clearance recorded.
+
+Index R3 ata0f **FAIL**,104.854s: first nine stages PASS and real nonterminal
+SQL clone **12/12 PASS_SQL_ONLY**, seed unchanged. Archive catch-up then failed
+post-CAPI `backend_absence`:Control1/Catalog0. Four later stages NOT_RUN, cleanupPASS;
+25containers stopped/1096commands joined/1101PIDs absent;bridge empty. FiniteArchive
+exit0/PID0 preceded joined CAPI child; its source opensCatalog only. Original
+probe records counts without identity; PGlogs cannot identify the backend.
+Cause remains **UNKNOWN**: no application-leak/observer/maintenance inference.
+
+Sol6ceae143/merged1a305 adds a diagnostic-only same-rowset count plus safe backend
+identity metadata, saved before validation in the existing backend-absence.json.
+Zero for **all** nonself database backends stays mandatory, including maintenance
+and unknown types. No query text, filter, retry, wait, deadline or product change.
+26firstlaunch+26topology/restart focused controls PASS; actual richer sample pending.
+Earlier446fullsuite remains source-bound at7bb; unaffected proofs are reused.
+
+**Next:** run `acceptance-index-topology-r4` with strict identity diagnostics, then
+qualify grouped closed reclamation/successor/Archive/export/restart. No maintained
+mid-case resumption exists; the fresh installed chain supplies the remaining
+actual15stage/32terminalSQL proof without rebuilding unchanged78. Preserve original
+R3 UNKNOWN even if a later run passes. Use existing run-installed.py, source frozen
+until terminal observations finish; preflight15432/18081/7447 plus18123/19000 and
+empty borrowed bridge. Topology rejects --native-observer-build; grouped uses
+observer78 and --retained-archive-schedule grouped-publication-loss. Merge the
+separately qualified e812 test initializer only after installed audits, review
+final publication delta, integrate/push coherent qualified work and observe hosted
+CI. All author/reviewer tasks are complete; root owns engines/cache. All selected
+later phases and existing operation/capacity/admission-cost obligations remain.
 
 ## Hosted CI and publication
 
