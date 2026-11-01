@@ -185,7 +185,7 @@ provisioning/migration/activation/enrollment commands, then runs the existing
 independent signed relay and authenticated clients. It checks the initial
 Archive frontier and snapshot, orderly owner shutdown, ordinary Control restart,
 explicit scope authorization, exact signed history and JSONL export. The existing
-export oracle compares the full manifest, file bytes and all 77 Control tables;
+export oracle compares the full manifest, file bytes and all 83 Control tables;
 catalog/Archive files must remain unchanged during ordinary read/export, and
 application database backends must be absent after each lifetime.
 
@@ -195,6 +195,16 @@ reader leases and claims, and no native child within the original 40s client
 window. The initial provenance-on/off cuts and counts come from the existing
 declared fixture profiles. All 403 expectations, single attempts and the 12s export
 deadline remain unchanged; a later 429 still fails.
+
+Successor acquisition has a separate recovery-stability setup before its client
+starts. After the existing activation hook, joined read-only captures bind the
+same live owner and accepted config/policy; setup waits the full accepted
+`runtime.pressure_stable_duration` outside PostgreSQL transactions and policy
+leases, then checks the same policy, renewed owners, retained original input bytes
+and unchanged logical PG/catalog state. This elapsed-time bracket is setup only,
+not proof of native intake readiness. The subsequent real admissions must still
+succeed within the original 25s submitted barrier and 30s observation; ordinary
+history/export retains 40s/12s. No accepted stable duration is reduced.
 
 This base case does **not** run the independent RocksDB census, typed producer
 progress oracle or C API Archive census. These are recorded as NOT_RUN scope

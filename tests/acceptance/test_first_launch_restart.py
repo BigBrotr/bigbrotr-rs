@@ -43,6 +43,34 @@ def current42_head(core, *, initial):
             for field in ('bytes','sha256','generation','retired','source')})
 
 
+def recovery_setup_fixture(provenance=True, stable_us=30_000_000):
+    dataset='\\x'+'11'*16;digest='\\x'+'dd'*32
+    document=dict(settings={'runtime.pressure_stable_duration':stable_us,
+        'sync.provenance':'local_first_witness' if provenance else 'off'})
+    owners=[dict(resource_id='\\x'+value*16,epoch=epoch,role=role,dataset_id=dataset,
+        process_incarnation='\\x'+inc*16,role_instance_id='\\x'+instance*16,
+        acquired_at_us=8_000_000,lease_expires_at_us=12_000_000,state='active',released_at_us=None,xmin='1')
+        for value,epoch,role,inc,instance in (('aa',3,'control','a1','a2'),('bb',2,'ingest','b1','b2'))]
+    control,ingest=owners
+    activation=dict(dataset_id=dataset,owner_resource_id=ingest['resource_id'],target_epoch=2,
+        target_incarnation=ingest['process_incarnation'],target_role_instance_id=ingest['role_instance_id'],
+        producer_slot_id='\\x'+'cc'*16,producer_epoch=2,activated_at_us=9_000_000,
+        activated_by_resource=control['resource_id'],activated_by_epoch=3,
+        activated_by_incarnation=control['process_incarnation'],config_revision=1,policy_revision=1,
+        config_digest=digest,policy_digest=digest)
+    before=dict(datasets=[dict(dataset_id=dataset,config_revision=1,policy_revision=1)],
+        config_revisions=[dict(dataset_id=dataset,revision=1,document=copy.deepcopy(document),document_digest=digest)],
+        policy_revisions=[dict(dataset_id=dataset,revision=1,config_revision=1,document=copy.deepcopy(document),document_digest=digest)],
+        initial_ingest_activations=[activation],owner_epochs=owners,producer_requests=[],producer_outcomes=[],jobs=[])
+    after=copy.deepcopy(before)
+    for row in after['owner_epochs']:row.update(lease_expires_at_us=12_000_000+stable_us,xmin='2')
+    started=dict(state='activated',producer_epoch='2',dataset_id=dataset[2:],
+        owner_resource_id=ingest['resource_id'][2:],process_incarnation=ingest['process_incarnation'][2:],
+        producer_slot_id=activation['producer_slot_id'][2:],activated_at_us='9000000',
+        config_revision='1',policy_revision='1',config_sha256=digest[2:],policy_sha256=digest[2:])
+    return before,after,started
+
+
 def fixture(provenance=True):
     ds, slot = '22' * 16, '33' * 16
     domains = {k: bytes([100 + k]) * 16 for k in range(1, 10)}
@@ -140,6 +168,68 @@ class RestartControls(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.old, cls.new, cls.manifest, cls.encoded, cls.science = fixture()
+
+    def test_recovery_setup_binds_actual_accepted_policy_and_unchanged_owner(self):
+        for provenance in (True,False):
+            before,after,started=recovery_setup_fixture(provenance)
+            result=check.recovery_stability_preserved(before,after,started,10_000_000,40_000_000)
+            self.assertEqual(result['stable_duration_us'],30_000_000)
+            for label,change in {
+                    'accepted-stable':lambda pg:pg['policy_revisions'][0]['document']['settings'].update({'runtime.pressure_stable_duration':1}),
+                    'policy-digest':lambda pg:pg['policy_revisions'][0].update(document_digest='\\x'+'ee'*32),
+                    'policy-head':lambda pg:pg['datasets'][0].update(policy_revision=2),
+                    'owner':lambda pg:pg['owner_epochs'][1].update(process_incarnation='\\x'+'ee'*16),
+                    'expired':lambda pg:pg['owner_epochs'][0].update(lease_expires_at_us=40_000_000),
+                    'new-input':lambda pg:pg['producer_requests'].append({'unexpected':'request'}),
+            }.items():
+                changed=copy.deepcopy(after);change(changed)
+                with self.subTest(provenance=provenance,label=label),self.assertRaises((AssertionError,ValueError)):
+                    check.recovery_stability_preserved(before,changed,started,10_000_000,40_000_000)
+            for invalid in (0,True,-1):
+                changed=copy.deepcopy(before)
+                for table in ('config_revisions','policy_revisions'):
+                    changed[table][0]['document']['settings']['runtime.pressure_stable_duration']=invalid
+                with self.subTest(stable=invalid),self.assertRaises(AssertionError):
+                    check.recovery_stability_basis(changed,started,10_000_000)
+
+    def test_recovery_setup_waits_full_accepted_interval_without_observers_or_client(self):
+        for provenance,stable_us in ((True,30_000_000),(False,2_500_000)):
+            with self.subTest(provenance=provenance),tempfile.TemporaryDirectory() as temporary:
+                output=Path(temporary);before,after,started=recovery_setup_fixture(provenance,stable_us)
+                runtime=object.__new__(case.Runtime)
+                runtime.state=output/'instance';runtime.processes=[];runtime.restart_checks=check
+                runtime.capture=Mock(side_effect=[(before,{}),(after,{})])
+                runtime.sql=Mock(side_effect=[str(10_000_000),str(10_000_000+stable_us)])
+                runtime.files=Mock(return_value={'retained':{'inode':1,'sha256':'unchanged'}})
+                runtime.inspect=Mock(return_value=dict(State=dict(Pid=123,Running=True)))
+                timer=SimpleNamespace(now=0,sleeps=[])
+                def sleep(seconds):
+                    self.assertEqual(runtime.capture.call_count,1)
+                    self.assertEqual(runtime.sql.call_count,1)
+                    self.assertEqual(runtime.processes,[])
+                    self.assertLessEqual(seconds,5)
+                    timer.sleeps.append(seconds);timer.now+=int(seconds*1_000_000_000)
+                with patch.object(case.time,'monotonic_ns',side_effect=lambda:timer.now), \
+                        patch.object(case.time,'sleep',side_effect=sleep), \
+                        patch('cases.first_launch_index_pin.process_identity',return_value=dict(pid=123,start_ticks=456)):
+                    runtime.successor_recovery_setup(started,{'id':'owner'},output)
+                verdict=json.loads((output/'recovery-stability/verdict.json').read_text())
+                self.assertEqual(verdict['scope'],'setup_only_not_native_readiness')
+                self.assertEqual(verdict['client'],'not_started')
+                self.assertEqual(verdict['waited_monotonic_ns']-verdict['started_monotonic_ns'],stable_us*1000)
+                self.assertEqual(sum(timer.sleeps),stable_us/1_000_000)
+                self.assertEqual(runtime.capture.call_count,2)
+                self.assertEqual(runtime.sql.call_count,2)
+                self.assertEqual([call.args[0] for call in runtime.files.call_args_list],
+                    [runtime.state/'data/ingest/producer-inputs-v1']*2)
+
+    def test_recovery_setup_refuses_an_existing_client_before_any_wait(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime=object.__new__(case.Runtime);runtime.processes=[Mock()]
+            runtime.capture=Mock()
+            with patch.object(case.time,'sleep') as sleep,self.assertRaisesRegex(ValueError,'unjoined observer/client'):
+                runtime.successor_recovery_setup({},None,Path(temporary))
+            runtime.capture.assert_not_called();sleep.assert_not_called()
 
     def test_sql_safe_research_paths_and_traversal_refusal(self):
         self.assertEqual(sql_path('/home/tux/bigbrotr-rs/.research/first-launch/data/archive'),
