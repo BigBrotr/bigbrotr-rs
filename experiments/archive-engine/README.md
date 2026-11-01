@@ -300,6 +300,37 @@ reader/capture gates to those exact startup identities. Without these options,
 the original port 5432 and legacy catalog identities/marker shape remain intact.
 Traffic, frame, connection and lifetime ceilings remain unchanged.
 
+For `control-quantum-plan` and `control-quantum-terminal`, `--commit-ordinal N`
+selects the Nth matching transaction's actual simple-query COMMIT across all
+proxy sessions. N is a canonical integer 1–128 and defaults to 1. Only a successful
+matching extended Execute completion marks that transaction; Parse, Bind,
+unrelated commands, failed execution and rolled-back work consume no ordinal.
+Cached prepared statements remain eligible, and multiple matching executions in
+one transaction consume one ordinal. The existing SQL target patterns determine
+matches; this selector does not authenticate a quantum number or its parameters.
+Nondefault ordinals are limited to these two targets with `pass`,
+`before-forward`, `after-complete`, `hold-commit` or `hold-reply`.
+
+Their markers include `commit_ordinal`, `matched_commits`, `skipped_commits` and
+`selected_commits` (0 or 1), plus `selected_server_complete` and
+`selected_client_complete`. Skipped counts every nonselected matching COMMIT,
+including later matches after the selected one. The existing `data_commits`,
+`server_complete` and `client_complete` counters still cover all matching
+transactions. Selected client completion counts only after its frame is written
+and drained. A healthy proxy stop with no selected boundary or an early peer
+close is not a successful fault: the caller must require the exact ordinal,
+selected completion counters and fault/hold stage, then independently inspect
+durable state and exclude further requests.
+
+The bounded window fixture can hold the second plan COMMIT reply with
+`--mode hold-reply --target control-quantum-plan --commit-ordinal 2`, or close
+before/after the third terminal COMMIT with `--mode before-forward` /
+`--mode after-complete --target control-quantum-terminal --commit-ordinal 3`.
+Use the existing `--profile retained-catch-up` when that fixture requires its
+131,072-frame/64-lifetime-connection admission; the 8 MiB frame, 64 MiB wire and
+120/180-second lifetime ceilings do not change. These are fault-selection controls,
+not PostgreSQL/product evidence or permission to restart a historical owner.
+
 `--defer-arm` forwards baseline traffic until one stdin `arm` line, then emits
 `armed`. The installed caller owns the scenario's independent admission proof:
 the ordinary short-pin case requires positive Ready/quiescence, while the

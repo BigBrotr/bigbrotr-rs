@@ -261,6 +261,37 @@ class CancellationCleanup(unittest.IsolatedAsyncioTestCase):
 
 
 class ClosedProfile(unittest.TestCase):
+    def test_commit_ordinal_is_bounded_and_only_extends_quantum_commit_modes(self):
+        for value in (0, 129, -1, True, False, 1.0, '2', None):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, '^commit-ordinal$'):
+                Proxy('before-forward', 'control-quantum-plan', commit_ordinal=value)
+        for target in ('control-quantum-plan', 'control-quantum-terminal'):
+            for mode in ('pass', 'before-forward', 'after-complete', 'hold-commit', 'hold-reply'):
+                for ordinal in (1, 128):
+                    proxy = Proxy(mode, target, profile='retained-catch-up', commit_ordinal=ordinal)
+                    self.assertEqual(proxy.report['commit_ordinal'], ordinal)
+                    self.assertEqual((proxy.frame_limit, proxy.connection_limit, proxy.lifetime_seconds), (131072, 64, 120))
+            for mode in ('hold-data', 'hold-manager-commit', 'omit-auth-final'):
+                with self.assertRaisesRegex(ValueError, '^commit-ordinal-profile$'):
+                    Proxy(mode, target, commit_ordinal=2)
+        for target in ('publication', 'control-pin', 'control-quantum-source-rollback'):
+            mode = 'hold-source-rollback-reply' if target.endswith('rollback') else 'before-forward'
+            with self.assertRaisesRegex(ValueError, '^commit-ordinal-profile$'):
+                Proxy(mode, target, commit_ordinal=2)
+        legacy = Proxy('before-forward')
+        self.assertEqual(legacy.commit_ordinal, 1)
+        self.assertNotIn('matched_commits', legacy.report)
+
+    def test_cli_rejects_invalid_commit_ordinals_before_network_or_payload_output(self):
+        for value in ('0', '129', '-1', '01', '+2', '1.0', 'true', ' 2', '9999'):
+            with self.subTest(value=value):
+                result = subprocess.run([sys.executable, '-B', str(Path(__file__).with_name('native_commit_proxy.py')),
+                    '--mode', 'before-forward', '--target', 'control-quantum-plan', '--commit-ordinal', value],
+                    capture_output=True, timeout=3, check=False)
+                self.assertEqual(result.returncode, 3)
+                self.assertEqual(result.stdout, b'')
+                self.assertEqual(result.stderr, b'native commit proxy failed\n')
+
     def test_ordinary_profile_requires_explicit_fresh_reader_gate(self):
         for change in ({'mode':'pass'}, {'mode':'hold-capture-verify'}, {'target':'native-schema'},
                        {'defer_arm':False}, {'catalog_manager':None,'catalog_reader':None,'catalog_database':None}):
@@ -339,11 +370,12 @@ async def read_message(reader):
 class SocketProxy:
     """Actual proxy subprocess and loopback streams; the upstream is framing only."""
     def __init__(self, case, mode, *, target='publication', deferred=True, profile='default', unexpected=0,
-                 hold_pin_release=False,index_consumer=None):
+                 hold_pin_release=False,index_consumer=None,commit_ordinal=None):
         self.case, self.mode, self.target, self.deferred = case, mode, target, deferred
         self.profile, self.unexpected = profile, unexpected
         self.hold_pin_release = hold_pin_release
         self.index_consumer = index_consumer
+        self.commit_ordinal = commit_ordinal
         self.connections = []
         self.events = []
         self.process = None
@@ -366,6 +398,8 @@ class SocketProxy:
             command.append('--hold-pin-release')
         if self.index_consumer is not None:
             command += ['--index-consumer',self.index_consumer,'--hold-index-publication']
+        if self.commit_ordinal is not None:
+            command += ['--commit-ordinal', str(self.commit_ordinal)]
         self.process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
         try:
@@ -446,6 +480,138 @@ class SocketProxy:
 
 
 class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
+    async def quantum_execute(self, connection, target, *, parse=False, count=1):
+        if parse:
+            query = (b'INSERT INTO control.acquisition_quanta(quantum_id) VALUES ($1::bytea)'
+                     if target == 'control-quantum-plan' else
+                     b'UPDATE control.acquisition_quanta SET terminal_kind=$1 WHERE quantum_id=$2')
+            await self.exchange(connection, b'P', b'quantum\0' + query + b'\0\0\0', [(b'1', b'')])
+        for _ in range(count):
+            await self.exchange(connection, b'B', b'\0quantum\0\0\0\0\0\0\0', [(b'2', b'')])
+            await self.exchange(connection, b'E', b'\0' * 5,
+                [(b'C', b'INSERT 0 1\0' if target == 'control-quantum-plan' else b'UPDATE 1\0')])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+
+    async def quantum_preparation_controls(self, connection, target):
+        begin = [(b'C', b'BEGIN\0'), (b'Z', b'T')]
+        commit = [(b'C', b'COMMIT\0'), (b'Z', b'I')]
+        query = (b'INSERT INTO control.acquisition_quanta(quantum_id) VALUES ($1::bytea)'
+                 if target == 'control-quantum-plan' else
+                 b'UPDATE control.acquisition_quanta SET terminal_kind=$1 WHERE quantum_id=$2')
+        await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+        for preparation in range(2):
+            if preparation:
+                await self.exchange(connection, b'C', b'Squantum\0', [(b'3', b'')])
+            await self.exchange(connection, b'P', b'quantum\0' + query + b'\0\0\0', [(b'1', b'')])
+            await self.exchange(connection, b'B', b'\0quantum\0\0\0\0\0\0\0', [(b'2', b'')])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+        # No Execute occurred: preparation must not consume ordinal1.
+        await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+        await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+        await self.exchange(connection, b'P', b'other\0SELECT 1\0\0\0', [(b'1', b'')])
+        await self.exchange(connection, b'B', b'\0other\0\0\0\0\0\0\0', [(b'2', b'')])
+        await self.exchange(connection, b'E', b'\0' * 5, [(b'C', b'SELECT 1\0')])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'T')])
+        await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+        # Successful target execution followed by rollback consumes no COMMIT.
+        await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+        await self.quantum_execute(connection, target)
+        await self.exchange(connection, b'Q', b'ROLLBACK\0', [(b'C', b'ROLLBACK\0'), (b'Z', b'I')])
+        await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+        await self.exchange(connection, b'Q', b'COMMIT\0', commit)
+        # An executed but failed statement cannot select its aborted transaction.
+        await self.exchange(connection, b'Q', b'BEGIN\0', begin)
+        await self.exchange(connection, b'B', b'\0quantum\0\0\0\0\0\0\0', [(b'2', b'')])
+        await self.exchange(connection, b'E', b'\0' * 5, [(b'E', b'SERROR\0C23514\0Mfixture refusal\0\0')])
+        await self.exchange(connection, b'S', b'', [(b'Z', b'E')])
+        await self.exchange(connection, b'Q', b'COMMIT\0', [(b'C', b'ROLLBACK\0'), (b'Z', b'I')])
+
+    async def test_quantum_ordinals_select_actual_commits_across_sessions_and_keep_default_first(self):
+        schedules = [('control-quantum-plan', 'hold-reply', 2),
+                     ('control-quantum-terminal', 'before-forward', 3),
+                     ('control-quantum-terminal', 'after-complete', 3)]
+        schedules += [(target, mode, None) for target in ('control-quantum-plan', 'control-quantum-terminal')
+                      for mode in ('before-forward', 'after-complete')]
+        for target, mode, ordinal in schedules:
+            with self.subTest(target=target, mode=mode, ordinal=ordinal):
+                async with SocketProxy(self, mode, target=target, deferred=False, commit_ordinal=ordinal,
+                                       profile='retained-catch-up') as proxy:
+                    number = ordinal or 1
+                    self.assertEqual(proxy.events[0]['commit_ordinal'], number)
+                    connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
+                    await self.quantum_preparation_controls(connection, target)
+                    for previous in range(1, number):
+                        await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                        # Two executions in one transaction still match once.
+                        await self.quantum_execute(connection, target, count=2 if previous == 1 else 1)
+                        await self.exchange(connection, b'Q', b'COMMIT\0', [(b'C', b'COMMIT\0'), (b'Z', b'I')])
+                    # The ordinal is global to the proxy, across real sessions.
+                    connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
+                    await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                    await self.quantum_execute(connection, target, parse=True)
+                    connection[1].write(message(b'Q', b'COMMIT\0'))
+                    await connection[1].drain()
+                    if mode != 'before-forward':
+                        self.assertEqual(await asyncio.wait_for(read_message(connection[2]), 3), (b'Q', b'COMMIT\0'))
+                        connection[3].write(message(b'C', b'COMMIT\0') + message(b'Z', b'I'))
+                        await connection[3].drain()
+                    marker = await proxy.event('held' if mode == 'hold-reply' else 'fault')
+                    self.assertEqual([marker[key] for key in ('matched_commits', 'skipped_commits', 'selected_commits',
+                        'data_commits', 'server_complete', 'client_complete', 'selected_server_complete', 'selected_client_complete')],
+                        [number, number - 1, 1, number, number - int(mode == 'before-forward'), number - 1,
+                         int(mode != 'before-forward'), 0])
+                    if mode == 'hold-reply':
+                        self.assertEqual(marker['stage'], 'reply')
+                        with self.assertRaises(asyncio.TimeoutError):
+                            await asyncio.wait_for(read_message(connection[0]), .05)
+                        await proxy.command('release', 'released')
+                        self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'C', b'COMMIT\0'))
+                        self.assertEqual(await asyncio.wait_for(read_message(connection[0]), 3), (b'Z', b'I'))
+                        # Once selected and released, a later match forwards.
+                        await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                        await self.quantum_execute(connection, target)
+                        await self.exchange(connection, b'Q', b'COMMIT\0', [(b'C', b'COMMIT\0'), (b'Z', b'I')])
+                    else:
+                        self.assertEqual(await asyncio.wait_for(connection[0].read(), 3), b'')
+                        self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
+                    await proxy.stop()
+                    terminal = proxy.events[-1]
+                    self.assertEqual(terminal['selected_client_complete'], int(mode == 'hold-reply'))
+                    self.assertEqual(terminal['selected_commits'], 1)
+                    self.assertEqual(terminal['skipped_commits'], number - 1 + int(mode == 'hold-reply'))
+                    self.assertEqual(terminal['faults'], int(mode != 'hold-reply'))
+
+    async def test_unmatched_or_early_close_cannot_claim_the_selected_commit_outcome(self):
+        for selected in (False, True):
+            async with SocketProxy(self, 'after-complete', target='control-quantum-terminal', deferred=False,
+                                   commit_ordinal=2) as proxy:
+                connection = await proxy.connect('bigbrotr_control', 'bigbrotr_control')
+                await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                await self.quantum_execute(connection, 'control-quantum-terminal', parse=True)
+                await self.exchange(connection, b'Q', b'COMMIT\0', [(b'C', b'COMMIT\0'), (b'Z', b'I')])
+                if selected:
+                    await self.exchange(connection, b'Q', b'BEGIN\0', [(b'C', b'BEGIN\0'), (b'Z', b'T')])
+                    await self.quantum_execute(connection, 'control-quantum-terminal')
+                    await self.exchange(connection, b'Q', b'COMMIT\0')
+                connection[1].close()
+                await connection[1].wait_closed()
+                self.assertEqual(await asyncio.wait_for(connection[2].read(), 3), b'')
+                await proxy.stop()
+                terminal = proxy.events[-1]
+                # Healthy observer exit is not evidence for a fault schedule.
+                self.assertEqual(terminal['matched_commits'], 1 + int(selected))
+                self.assertEqual(terminal['skipped_commits'], 1)
+                self.assertEqual(terminal['selected_commits'], int(selected))
+                self.assertEqual((terminal['selected_server_complete'], terminal['selected_client_complete'], terminal['faults']), (0, 0, 0))
+                self.assertFalse(any(item['event'] in ('fault', 'held') for item in proxy.events))
+
+    async def test_cli_accepts_ordinal_ceiling_without_inventing_a_match(self):
+        async with SocketProxy(self, 'pass', target='control-quantum-plan', deferred=False, commit_ordinal=128) as proxy:
+            await proxy.stop()
+            terminal = proxy.events[-1]
+            self.assertEqual([terminal[key] for key in ('commit_ordinal', 'matched_commits', 'skipped_commits', 'selected_commits')],
+                             [128, 0, 0, 0])
+
     async def test_index_publication_hold_is_bound_and_both_commit_results_stay_distinct(self):
         for mode in ('before-forward','after-complete'):
             async with SocketProxy(self,mode,target='control-index-publication',index_consumer='aa'*16) as proxy:

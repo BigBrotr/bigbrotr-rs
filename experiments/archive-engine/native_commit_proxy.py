@@ -4,6 +4,7 @@
 DuckLake uses several native connections and commits during attach. Target only
 the publication INSERT by default, or explicitly the scientific schema or guard
 installation transaction. Log counters, never SQL/authentication payloads.
+Plan/terminal targets can select one bounded ordinal of actual matching COMMITs.
 """
 import argparse
 import asyncio
@@ -192,9 +193,16 @@ class Proxy:
     def __init__(self, mode, target='publication', lifetime_seconds=120, profile='default', *,
                  upstream_port=5432, catalog_manager=None, catalog_reader=None,
                  catalog_database=None, defer_arm=False, hold_pin_release=False,
-                 index_consumer=None, hold_index_publication=False):
+                 index_consumer=None, hold_index_publication=False, commit_ordinal=1):
         self.mode = mode
         self.target = target
+        self.quantum_commit_target = target in ('control-quantum-plan', 'control-quantum-terminal')
+        if type(commit_ordinal) is not int or not 1 <= commit_ordinal <= 128:
+            raise ValueError('commit-ordinal')
+        if commit_ordinal != 1 and not (self.quantum_commit_target and mode in (
+                'pass', 'before-forward', 'after-complete', 'hold-commit', 'hold-reply')):
+            raise ValueError('commit-ordinal-profile')
+        self.commit_ordinal = commit_ordinal
         if target=='control-quantum-source-rollback' and mode!='hold-source-rollback-reply':
             raise ValueError('quantum-source-rollback-profile')
         if type(upstream_port) is not int or not 1 <= upstream_port <= 65535:
@@ -263,6 +271,10 @@ class Proxy:
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
         self.report.update(resume_expiry_rejections=0, resume_expiry_idle=0)
+        if self.quantum_commit_target:
+            self.report.update(commit_ordinal=commit_ordinal, matched_commits=0,
+                               skipped_commits=0, selected_commits=0,
+                               selected_server_complete=0, selected_client_complete=0)
         if target=='control-quantum-source-rollback':
             self.report.update(source_queries_complete=0,source_server_rollback=0,source_client_rollback=0)
         if profile == 'ordinary-reader':
@@ -449,7 +461,7 @@ class Proxy:
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
-        state = dict(data=False, commit=False, backend_pid=None,
+        state = dict(data=False, commit=False, commit_selected=False, backend_pid=None,
                      owner_statement=None, owner_waiting=False, owner_forwarded=False, capture_statements=set(), resume_expiry_waiting=False)
         source_target = self.target == 'control-quantum-source-rollback'
         state.update(source_query=False,source_rollback=False,rollback_completion=None,source_reply_forwarded=False)
@@ -462,6 +474,9 @@ class Proxy:
             'control-session-issue', 'control-session-revoke', 'control-producer-progress', 'control-pin-release') else None
         if source_target:
             session_commands=SessionCommandObserver(self.target,command_complete=b'SELECT 1\0')
+        if self.quantum_commit_target:
+            session_commands = SessionCommandObserver(self.target,
+                command_complete=b'INSERT 0 1\0' if self.target == 'control-quantum-plan' else b'UPDATE 1\0')
         if index_target:
             if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
                 raise ValueError('index-publication-backend')
@@ -496,6 +511,7 @@ class Proxy:
                         await asyncio.Future()
                     return
                 tag, header, body = frame
+                selected_reply = False
                 if frontend and resume_authority is not None:
                     assert parameters.get(b'user') == b'bigbrotr_control' and database == b'bbpub_control_normal'
                     selected = resume_authority.frontend(tag, body)
@@ -528,6 +544,15 @@ class Proxy:
                             self.target_selected=True;state['source_query']=True
                             self.report['source_queries_complete']+=1
                             self.emit('source-query-complete',backend_pid=state['backend_pid'])
+                        elif self.quantum_commit_target:
+                            # Preparation and Bind alone cannot mark a plan or
+                            # terminal transaction. This also sees cached Execute
+                            # requests and counts multiple target statements as
+                            # only one matching following COMMIT.
+                            if not progress_transaction or state['backend_pid'] is None:
+                                raise ValueError('quantum-commit-transaction')
+                            state['data'] = True
+                            self.report['data_queries'] += 1
                         elif progress_target:
                             # Closed fixture: NEW first inserts; OLD completes
                             # UPDATE1; the gated repeat completes UPDATE2 on this
@@ -589,7 +614,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or source_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or source_target or self.quantum_commit_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -671,16 +696,24 @@ class Proxy:
                         if not await self.hold('data', state['backend_pid']):
                             return
                     if query.rstrip(b'\0; \r\n') == b'COMMIT' and state['data']:
+                        if self.quantum_commit_target and state['commit']:
+                            raise ValueError('duplicate-target-commit')
                         state['commit'] = True
+                        state['commit_selected'] = True
                         self.report['data_commits'] += 1
-                        if not await self.hold('manager-commit', state['backend_pid']):
-                            return
-                        if not await self.hold('commit', state['backend_pid']):
-                            return
-                        if self.mode == 'before-forward' and not self.report['faults']:
-                            self.report['faults'] += 1
-                            self.emit('fault', backend_pid=state['backend_pid'])
-                            return
+                        if self.quantum_commit_target:
+                            self.report['matched_commits'] += 1
+                            state['commit_selected'] = self.report['matched_commits'] == self.commit_ordinal
+                            self.report['selected_commits' if state['commit_selected'] else 'skipped_commits'] += 1
+                        if state['commit_selected']:
+                            if not await self.hold('manager-commit', state['backend_pid']):
+                                return
+                            if not await self.hold('commit', state['backend_pid']):
+                                return
+                            if self.mode == 'before-forward' and not self.report['faults']:
+                                self.report['faults'] += 1
+                                self.emit('fault', backend_pid=state['backend_pid'])
+                                return
                 if not frontend and tag == b'K':
                     assert len(body) == 8
                     if ordinary_target and state['backend_pid'] is not None:
@@ -690,13 +723,15 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target or source_target):
+                if not frontend and (progress_target or release_target or index_target or source_target or self.quantum_commit_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
+                        state['commit_selected'] = False
                     elif tag == b'Z':
                         progress_transaction = body == b'T'
                         if not progress_transaction:
                             state['data'] = state['commit'] = False
+                            state['commit_selected'] = False
                 if not frontend and tag == b'E' and state['data']:
                     fields = body.split(b'\0')
                     if (self.target == 'control-export-resume' and state['commit']
@@ -730,14 +765,20 @@ class Proxy:
                 if not frontend and tag == b'C' and body == b'COMMIT\0' and state['commit']:
                     self.report['server_complete'] += 1
                     manager_committed.set()
+                    selected = state['commit_selected']
+                    if self.quantum_commit_target and selected:
+                        self.report['selected_server_complete'] += 1
                     state['commit'] = False
+                    state['commit_selected'] = False
                     state['data'] = False
-                    if self.mode == 'after-complete' and not self.report['faults']:
-                        self.report['faults'] += 1
-                        self.emit('fault', backend_pid=state['backend_pid'])
-                        return
-                    if not await self.hold('reply', state['backend_pid']):
-                        return
+                    if selected:
+                        if self.mode == 'after-complete' and not self.report['faults']:
+                            self.report['faults'] += 1
+                            self.emit('fault', backend_pid=state['backend_pid'])
+                            return
+                        if not await self.hold('reply', state['backend_pid']):
+                            return
+                    selected_reply = self.quantum_commit_target and selected
                     self.report['client_complete'] += 1
                 if source_target and not frontend and state['source_rollback']:
                     if tag==b'C' and body==b'ROLLBACK\0':
@@ -755,6 +796,7 @@ class Proxy:
                     # A failed native attempt can roll back and reuse this
                     # connection. Its later transactions need fresh classification.
                     state['commit'] = False
+                    state['commit_selected'] = False
                     state['data'] = False
                     if state['resume_expiry_waiting']:
                         self.report['resume_expiry_idle'] += 1
@@ -767,6 +809,8 @@ class Proxy:
                 try:
                     destination.write(tag + header + body)
                     await destination.drain()
+                    if selected_reply:
+                        self.report['selected_client_complete'] += 1
                 except ConnectionError:
                     if not (not frontend and self.mode == 'hold-manager-owner' and state['owner_forwarded']):
                         raise
@@ -847,6 +891,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'hold-capture-rollback', 'hold-source-rollback-reply', 'hold-capture-verify', 'hold-resume-authority', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', *CONTROL_TARGETS], default='publication')
+    parser.add_argument('--commit-ordinal', default='1',
+                        help='Plan/terminal COMMIT selector, canonical integer 1..128; default selects the first match')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     parser.add_argument('--profile', choices=['default', 'retained-catch-up', 'ordinary-reader'], default='default',
@@ -865,11 +911,14 @@ if __name__ == '__main__':
         args = parser.parse_args()
         if not re.fullmatch(r'[1-9][0-9]{0,4}', args.upstream_port):
             raise ValueError('upstream-port')
+        if not re.fullmatch(r'[1-9][0-9]{0,2}', args.commit_ordinal):
+            raise ValueError('commit-ordinal')
         sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds, args.profile,
             upstream_port=int(args.upstream_port), catalog_manager=args.catalog_manager,
             catalog_reader=args.catalog_reader, catalog_database=args.catalog_database,
             defer_arm=args.defer_arm, hold_pin_release=args.hold_pin_release,
-            index_consumer=args.index_consumer,hold_index_publication=args.hold_index_publication).run()))
+            index_consumer=args.index_consumer,hold_index_publication=args.hold_index_publication,
+            commit_ordinal=int(args.commit_ordinal)).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)
