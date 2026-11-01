@@ -1165,7 +1165,8 @@ class Runtime:
             self.successor_started, self.first_science, self.old_event, self.new_event, self.successor_wires,
             self.final_census, self.state / 'data/ingest', self.successor_completed, provenance=self.provenance)
         from cases.first_launch_quantum_oracle import successor as quantum_successor
-        quantum_successor(self.successor_after,self.successor_wires,self.old_event,self.new_event,self.final_science,before=self.retired_initial)
+        quantum_successor(self.successor_after,self.successor_wires,self.old_event,self.new_event,self.final_science,
+            before=self.retired_initial,provenance=self.provenance,first_science=self.first_science)
         self.restart_checks.retired(self.retired_successor, self.successor_retirement, 2, self.final_science,
             cut=self.restart_profile['successor_cut'])
         self.restart_checks.publication(self.caught_up, self.final_census, self.final_science,

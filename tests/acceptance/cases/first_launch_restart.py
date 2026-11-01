@@ -156,6 +156,11 @@ def recovery_stability_preserved(before, after, started, before_us, after_us):
     assert old.keys()==new.keys(), 'recovery setup owner changed'
     for key,row in old.items():
         current=new[key]
+        if current==row:
+            # The current activation owners were checked live above; exact
+            # historical rows can naturally expire without being rewritten.
+            exact(current,row,'recovery setup owner row changed')
+            continue
         ignored={'lease_expires_at_us','xmin'} if row['state']=='active' else set()
         exact({k:v for k,v in current.items() if k not in ignored},
             {k:v for k,v in row.items() if k not in ignored},'recovery setup owner identity changed')

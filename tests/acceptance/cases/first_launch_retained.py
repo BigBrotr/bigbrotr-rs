@@ -669,7 +669,8 @@ class ReclamationRuntime(RetainedRuntime):
         self.final_science=oracle.successor_science(self.reclaimed,self.retired_successor,self.compacted_bridge,self.retained_science,
             self.successor_wires,self.final_native,self.state/'data/ingest',time.time_ns()//1000)
         from cases.first_launch_quantum_oracle import successor as quantum_successor
-        quantum_successor(self.retired_successor,self.successor_wires,self.events[0],self.new_event,self.final_science,before=self.reclaimed)
+        quantum_successor(self.retired_successor,self.successor_wires,self.events[0],self.new_event,self.final_science,
+            before=self.reclaimed,provenance=True)
         self.all_input_files=self.files(self.state/'data/ingest/producer-inputs-v1')
         self.complete_index_state=self.retired_successor
         self.refused_reclamation('refuse-reclamation-after-successor')

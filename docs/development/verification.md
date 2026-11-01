@@ -202,7 +202,10 @@ same live owner and accepted config/policy; setup waits the full accepted
 `runtime.pressure_stable_duration` outside PostgreSQL transactions and policy
 leases, then checks the same policy, renewed owners, retained original input bytes
 and unchanged logical PG/catalog state. This elapsed-time bracket is setup only,
-not proof of native intake readiness. The subsequent real admissions must still
+not proof of native intake readiness. Only the activation-bound Control and Ingest
+leases must remain current; unchanged historical rows may still say active after
+their lease expires. Changed active rows retain the same renewal checks. The
+subsequent real admissions must still
 succeed within the original 25s submitted barrier and 30s observation; ordinary
 history/export retains 40s/12s. No accepted stable duration is reduced.
 
@@ -1160,7 +1163,13 @@ both successor resends are proof-only. The final typed checkpoint has 11
 cumulative dependencies, including five historical references first retained
 by the predecessor proof transaction. That transaction must follow the two
 mutation outcomes and precede the final proof head in this fresh, nonwrapping
-fixture. The final Archive has 6 commits, snapshot7 and frontier6. Retry and
+fixture. The old frame's quantum classification is ExistingProof with no mutation
+request: its dependencies are the deduplicated union of the independent initial
+event receipt and successor dictionary receipt, retaining historical receive and
+observer facts plus the current observer. The new event receipt contributes only
+through its own frames to the complete quantum union. Provenance-on retains its
+separate old-frame mutation and third successor request.
+The final Archive has 6 commits, snapshot7 and frontier6. Retry and
 ordinary history preserve the same science and original export.
 
 The off case has the same native-census, second-event-export, Index, outage,

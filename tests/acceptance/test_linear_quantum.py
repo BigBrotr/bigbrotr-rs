@@ -54,7 +54,81 @@ def fixture(*,pending=False,abandoned=False,producer_epoch=1):
     return state,wire
 
 
+def successor_fixture(provenance):
+    from test_first_launch_restart import fixture as signed_science
+    old,new,_,encoded,_=signed_science(provenance)
+    first=encoded.first;science=dict(receipts=list(encoded.receipts.values()))
+    state,wire=fixture();row=state['acquisition_quanta'][0]
+    for rows in state.values():
+        for value in rows:
+            if 'dataset_id' in value:value['dataset_id']=encoded.m.ds['dataset_id']
+    row['producer_epoch']=state['producer_epochs'][0]['producer_epoch']=2
+    wire['frames']=['distinct','predecessor','distinct-resend','EOSE']
+    frames=[(new,2,2),(old,2,3) if provenance else (old,5,0),(new,5,0)]
+    records=b''.join(number.to_bytes(2,'big')+number.to_bytes(8,'big')+
+        hashlib.sha256(check.wire_json(event)).digest()+kind.to_bytes(2,'big')+
+        request.to_bytes(8,'big')+event['created_at'].to_bytes(8,'big')+b'\x01'
+        for number,(event,kind,request) in enumerate(frames,1))
+    refs=check.receipt_refs(science['receipts'][1])
+    refs+=check.receipt_refs(science['receipts'][2]) if provenance else (
+        check.receipt_refs(first['receipts'][3])+check.receipt_refs(science['receipts'][0]))
+    dependencies=check.reference_bytes(refs)
+    times=[event['created_at'] for event,_,_ in frames]
+    gap=None if all(later<=earlier for earlier,later in zip(times,times[1:])) else 'ordering'
+    row.update(terminal_sequence=4,retained_events=3,classified_prefix=3,effect_records='\\x'+records.hex(),
+        dependencies='\\x'+dependencies.hex(),checkpoint_before=0,checkpoint_after=4,
+        gap_reason=gap,result_class='interrupted' if gap else 'linear_observed',
+        continuation_upper=row['interval_upper'] if gap else min(times)+1)
+    row['charged_bytes']=1024+len(check.raw(row['request_predicate']))+len(check.raw(row['terminal_frame']))+len(records)+256*(len(dependencies)//72)
+    return state,wire,old,new,science,first
+
+
 class LinearQuantumControls(unittest.TestCase):
+    def test_successor_on_off_quantum_requires_exact_effects_and_dependency_union(self):
+        for provenance in (True,False):
+            state,wire,old,new,science,first=successor_fixture(provenance)
+            def verify(value):
+                check.successor(value,[wire],old,new,science,before={'acquisition_quanta':[]},
+                    provenance=provenance,first_science=first)
+            verify(state)
+            for change in ('classification','event-digest','dependency-digest'):
+                changed=copy.deepcopy(state);row=changed['acquisition_quanta'][0]
+                key='dependencies' if change=='dependency-digest' else 'effect_records'
+                body=bytearray(check.raw(row[key]))
+                at=40 if change=='dependency-digest' else 61+(43 if change=='classification' else 10)
+                body[at]^=1;row[key]='\\x'+body.hex()
+                with self.subTest(provenance=provenance,change=change),self.assertRaises(AssertionError):verify(changed)
+            if not provenance:
+                row=state['acquisition_quanta'][0];raw=check.raw(row['dependencies'])
+                parts=[raw[at:at+72] for at in range(0,len(raw),72)]
+                coordinates=lambda part:(int.from_bytes(part[24:32],'big'),int.from_bytes(part[32:40],'big'))
+                self.assertEqual({coordinates(part) for part in parts},
+                    {(1,n) for n in range(3,9)}|{(2,n) for n in range(1,6)})
+                for missing in ((1,4),(1,8),(2,1),(2,5)):
+                    changed=copy.deepcopy(state);current=changed['acquisition_quanta'][0]
+                    current['dependencies']='\\x'+b''.join(part for part in parts if coordinates(part)!=missing).hex()
+                    current['charged_bytes']-=256
+                    with self.subTest(missing=missing),self.assertRaises(AssertionError):verify(changed)
+
+    def test_successor_old_frame_declaration_excludes_new_event_dependencies(self):
+        for provenance in (True,False):
+            state,wire,old,new,science,first=successor_fixture(provenance)
+            with patch.object(check,'journey') as journey:
+                check.successor(state,[wire],old,new,science,before={'acquisition_quanta':[]},
+                    provenance=provenance,first_science=first)
+            declared=journey.call_args.args[3][1]
+            self.assertEqual(declared[1][:3],(old,2,3) if provenance else (old,5,0))
+            if provenance:
+                self.assertEqual(check.reference_bytes(declared[1][3]),check.reference_bytes(check.receipt_refs(science['receipts'][2])))
+            else:
+                refs=declared[1][3]
+                self.assertEqual(len(refs),7)
+                self.assertEqual({(source[2],source[3]) for source,_ in refs},
+                    {(1,n) for n in range(3,9)}|{(2,1)})
+                with self.assertRaises(AssertionError):
+                    check.successor(state,[wire],old,new,science,before={'acquisition_quanta':[]},
+                        provenance=False)
+
     def test_proxy_ready_failure_retains_custody_and_cleanup_joins_original_process(self):
         from cases import first_launch_linear_quantum as case
         vectors=(('normal',0,None,None,None,False,[]),
