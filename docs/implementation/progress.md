@@ -1,163 +1,148 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** all selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply. Coordinator and ordinary authors: Sol/xhigh;
-bounded critical review: Astra/xhigh. Public development repository; no official
-release, package publication, rename or production deployment.
+Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordinator and ordinary authors;
+Astra/xhigh for bounded critical review. Public development repository;
+no official release, package publication, rename or production deployment.
 
-## Revision and integrated capability
+## Integrated state and current capability
 
-Published main/origin is **ebb8ee1b0bb64e7d9cfbe1bdda1647aae7d632e7**:
-qualified native component merged and pushed. Its actual hosted run
-[41256201712](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41256201712)
-is pending; one Sol observer owns it, with no duplicate dispatch or cancellation.
+Published main/origin is **1f4f682aec870312cfa6a5e6dc3f5bc62b71f2c4**.
+It contains the qualified native integration **ebb8ee1b** and its actual hosted
+qualification report. M2 remains **unintegrated**, with no whole task/milestone
+completion claim.
 
-M2 product worktree `.research/m2-linear-quantum-main-integration-20261101`,
-branch `work/m2-linear-quantum-integration-20261101`, stays frozen at **d15fb455**.
 Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`, is **d40c322e** before this checkpoint
-commit. It merges the author's original fixture commits and preserves the reviewed
-client/proxy custody records. Product objects are identical; only test setup differs.
-M2 is **not main-integrated**. Git supplies this enclosing revision and dirty state.
+`work/m2-linear-quantum-acceptance-20261101`, is **c64fadcc** before this checkpoint
+commit: current main documentation merged after the two plan-fault audits.
+Installed product remains **78c8e31339e760c16bcfa036dabff38dcdf86544**; all eight
+product code/config objects in acceptance equal that source. The separately
+qualified dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
+branch `work/m2-linear-quantum-integration-20261101`, is clean **e8122ff9**.
+Its only difference from78 is the integration-test initializer, not runtime code.
+Do not conflate its dev qualification with the installed78 artifact identity.
+Git supplies this enclosing revision and current dirty state.
 
-The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
-`installed_application.current42_native2_followthrough.current_requalification`,
-owns c826's installed proof: fresh d230 parent/worker and observer, **413 portable
-controls**, **15/15 topology** with **12 nonterminal/32 terminal SQL cases**, and
-**11/11 grouped recovery**. Grouped proof includes 64 requests, both prefix
-COMMIT-loss directions, mixed restore, both Archive publication-loss directions,
-exact retries, scientific preservation, distinct 353/358-byte exports and ordinary
-same-root restart/reread. All owned resources are terminal. Original f673 private-
-helper planning FAIL, cf035 value1/value2 decoder FAIL and d230 first grouped
-preflight NOT_RUN remain preserved. Current roots: `current42-installed-d230061d`
-and `current42-observer-d230061d` under the inventoried implementation runs root.
+The [Sync report](evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101`, owns exact sources, hashes, original failures and scope.
+Current slice: P03-T01 Steps3/4, P03-T02 Steps4/5 and the single-interval foundation
+of P03-T05 Steps1/2. It demonstrates a durable pre-wire plan, correlated finite
+REQ terminal, exact synchronized classifications, shared32MiB logical metadata
+funding and atomic outcome/gap/continuation. EOSE is observation, not full history.
 
-## Native integration qualification
+- Fresh78 parent/worker and exact-source native observer **PASS**. Pinned-image
+  portable controls **431/431 PASS**, zero skips, at acceptance9b76; later focused
+  lease controls33 PASS. Original host setup failures/skips remain preserved.
+- Actual installed finite case **7/7 PASS**: eight requests/two scopes, eight
+  terminal records/two charged pending plans, exact scientific/native preservation.
+- Same78 full M1 tutorial **7/7 PASS**: signed admission → Archive → history/read
+  → export → restart, runtime ACL refusals and zero peer publication. This is the
+  demonstrated M1 path; P01-T09 Step1/full P02 are not thereby complete.
+- Actual `plan-before` and `plan-after` each **7/7 PASS**,91.023s/83.658s, under
+  the default bounded proxy. Exact selected COMMIT loss, zero socket requests,
+  respectively zero plans/one durable pending plan, unchanged original Control
+  lease positively expired before historical-only restart, no old-job adoption.
+  Independent terminal audit binds source30dae:17containers stopped each
+  (16exit0/one expected exit4),1088/1083commands joined, four recorded PIDs absent,
+  bridge empty. Maintained science/authority checks remain mandatory.
+- Independent honest e812 dev qualification **PASS**: strict Clippy, Rustdoc and
+  **1,407 Rust PASS/3 IGNORED**. Post-input checks, invocation/container exit0,
+  cache reacquisition and original four single-link ELF pins verified. Reused78
+  worker/assets; no new release or installed-e812 claim.
 
-The [binding report](evidence/p02-native-rocks-binding-20260917.json),
-`owned_background_guard_20261031.current_main_integration`, owns exact receipts:
+## Current failures and next bounded work
 
-- Standard worker-before-parent **8f9 build PASS**; reviewed a24 changes only
-  acceptance source eligibility, its tests and a vendor guide anchor.
-- Actual locked dependency policy and formatting PASS. Default workspace
-  **1,404 Rust PASS/3 IGNORED**, strict Clippy, Rustdoc and 10 export-profile
-  controls PASS. All five new binding API tests execute.
-- Corrected a24 portable controls **416/416 PASS**, zero skips. Original 8f9
-  source-review prerequisite refusal remains **412 PASS/1 ERROR**, with later
-  workspace checks initially NOT_RUN and separately executed afterward.
-- Standard assembled product, launched outside the checkout, **7/7 tutorial PASS**:
-  signed admission, Archive/history, 353-byte export, restart, exact runtime ACL
-  refusals and zero peer publication. All 18 containers stopped/PID0/noOOM,
-  797 commands joined and three recorded processes absent; borrowed bridge empty.
-- Source gate and custody-auditor caller changes independently reviewed. Seven
-  product/config objects and all 1,919 vendor leaves remain strict; the regular
-  nonexecutable UTF-8 vendor guide can vary with separately recorded identity.
-  Native package source remains exactly the qualified d3 source.
+All original failures remain in their owning report/captures. In particular:
+first2fc compile FAIL; first host fixture/LLVM failures and skips; d15 first
+fault UNKNOWN/lost proxy terminal; captured default proxy exhaustion before plan;
+d15 Clippy FAIL;78 test initializer compile FAIL;78 first plan fault's20s historical
+restart wait FAIL against the real60s lease. The corrected frozen-expiry verifier
+is separately reviewed and actually passes both plan faults. No old FAIL is relabeled.
 
-The d3 callback and f761 four-case real POSIX ENOSPC proofs remain component
-results. Original frontend compile FAIL remains engine NOT_RUN. SFM exclusion is
-source-backed, not measured lifetime-zero; failed-job bytes establish neither
-retained partial SST nor purge credit. Application guard installation, write/ACK
-wiring, other producers/concurrency, funded reopen/purge, CW-N1/P1/P2 and OPEN65
-remain at existing P02 gates. The merge does not declare those app guarantees.
-Upstream warnings remain explicit; no performance claim or unrelated vendor rewrite.
+Latest78 `terminal-before-r2` **FAIL**: actual proxy frames20,001 exceed its20,000
+capture limit before target selection; one connection,1,212,047bytes, zero selected
+queries/commits/faults, proxyexit3. Strict cleanup errors are preserved; stopped
+resource observations are not a common terminal-custody PASS. The cause is fixture
+trace admission; no selected terminal fault or acceptable product cost is proven.
+Remaining terminal-after/gap-write/stale-authority/empty-terminal-authority were
+**NOT_RUN**. No product budget, oracle or deadline changes are authorized for PASS.
+
+Sol/xhigh author `quantum_trace_profile_sol` owns only the bounded fixture/reporting
+correction in `.research/m2-linear-quantum-sol-20261031`, branch
+`work/m2-linear-quantum-20261031`, based on **5155223f**. The existing
+`retained-catch-up` profile is source-reviewed as appropriate for remaining
+integrated captures:131,072frames/64lifetimeconnections, unchanged64MiB/120s.
+It changes finite instrumentation admission/reporting, not product limits or
+COMMIT handling. Bind actual source/mode/target/upstream/profile/counters, retain
+positive selected-fault witnesses and all body/science/authority/recovery checks.
+Final correction still needs targeted critical review and actual qualification.
+The two default-profile plan proofs remain valid and need no automatic rerun.
+Frame counts are instrumentation work, not SQL transaction/round-trip cost proof.
+
+**Next:** integrate/review that correction while preserving root client/proxy
+custody records, run only the remaining selected faults against unchanged78
+artifacts, then qualify affected current Index/topology and grouped reclamation,
+successor/Archive/export/restart paths. Reuse finite/tutorial/dev evidence whose
+inputs remain unchanged. Keep exact product/acceptance identities until these
+runs and audits finish; merge the separately qualified test initializer afterward.
+Review new publication inputs before coherent M2 main integration/push.
 
 ## Hosted CI and publication
 
-[c826 actual run41248449149](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41248449149)
-completed **33/33 required foundation checks** plus 20 scope controls. Linux
-AMD64/ARM64 Rust 1,399 PASS each (3/2 IGNORED); macOS 1,397 PASS/2 IGNORED.
-Acceptance: 413 PASS on each Linux, 407 PASS/6 SKIP macOS; profiles 10 PASS each.
-Three unselected jobs remain SKIPPED. All three source contexts match. Four
-artifacts and public logs pass bounded publication review: no new unclassified
-credential candidate/provider alert; pattern/asynchronous-provider limits remain.
-No billing refusal, workflow fault, remote cancellation or product failure in
-these selected checks. A finite local watcher expired and was reaped; a second
-non-overlapping watcher observed actual completion. No remote rerun/cancel.
-The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns details and
-timings; no causal speedup or compiled-cache-reuse claim. This older source does
-**not** qualify the new native tuple on hosted AMD64/ARM64/macOS.
+[Meaningful ebb8 run41256201712](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41256201712)
+actually completed **33/33 required foundation checks plus20 scope controls**.
+AMD64/ARM64:1,404 Rust PASS each (3/2 IGNORED); macOS:1,402 PASS/2 IGNORED.
+All five new binding API tests execute on each platform. Acceptance416 PASS on
+Linux,410 PASS/6 SKIP macOS; profiles10 PASS each. Three unselected jobs SKIPPED.
+Exact source/native package contexts, public artifacts/logs and publication review
+are linked from the [CI report](evidence/p01-ci-hosted-foundation-20261026.json).
+No new credential candidate/provider alert, billing/workflow failure, cancellation
+or product failure in these selected checks; bounded pattern/asynchronous limits
+remain. No causal cache/speedup claim.
 
-Native a24 publication inputs were scanned:1,769objects/42,019,352bytes,
-zero candidates/sensitive paths. The final ebb8 documentation scan found only one
-unchanged previously triaged inventory literal, no new credential candidate.
-M2 newly reachable inputs still require publication review before push. Raw private
-captures stay protected and ignored.
+[Documentation-only1f4 run41261536463](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41261536463)
+also actually PASS:20scope controls and three docs checks; unselected foundation,
+controls and native experiment SKIPPED. Its ignored terminal receipt is under
+`.research/ci-publication-20261026/terminal-1f4f682a-docs-20261101/`.
+M2 has not yet been published/scanned/hosted-qualified; these earlier runs do not
+qualify its new tuple. Raw private captures stay protected and ignored.
 
-## Active M2 work and remaining gates
+## Existing gates and retained resources
 
-The existing [Sync report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101`, owns current exact sources, receipts and original FAILs.
-Existing task owners remain P03-T01 Steps3/4, P03-T02 Steps4/5 and the
-single-interval foundation of P03-T05 Steps1/2. No whole task/milestone closes.
+The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json),
+`installed_application.current42_native2_followthrough.current_requalification`,
+retains d230's413controls,15/15topology(12nonterminal/32terminal SQL cases) and
+11/11grouped recovery with both prefix COMMIT-loss directions, mixed restore,
+both Archive publication-loss directions, exact retries, independent science,
+353/358-byte exports and same-root restart. Its source predates M2; affected
+regressions remain necessary. Original f673/cf035 failures and d230 preflight
+NOT_RUN remain. Native guard integration's local and hosted qualification is in
+[the binding report](evidence/p02-native-rocks-binding-20260917.json).
+Application guard installation/write/ACK/other producers/concurrency, funded
+reopen/purge/CW-N1/P1/P2/OPEN65 remain open; component ENOSPC results do not prove
+them. SFM exclusion is source-backed, not measured lifetime-zero; failed-job bytes
+are neither retained partial SST nor purge credit.
 
-- Fresh standard d15 parent/worker build PASS; exact-source native observer PASS.
-- Complete acceptance controls in the declared native image: **430/430 PASS**,
-  zero skips. Earlier host run's fixture failures/missing LLVM/two skips remain.
-- Actual installed finite request case **7/7 PASS**,28.710s: eight requests/two
-  scopes, eight terminal records/two charged pending plans, exact scientific and
-  native preservation. All16 containers stopped0/PID0/noOOM,333commands joined,
-  three recorded processes absent; bridge empty. This is not a full walker.
-- First actual `plan-before` fault **FAIL before the selected fault point**:
-  Registry(Backend) at observation-append, then missing fault event/cleanupFAIL.
-  Raw proxy terminal was lost; cause remains UNKNOWN. All15containers are now
-  stopped, proxy/runner absent; native/PG/input/log data retained. Six later
-  faults are **NOT_RUN**. Do not label this expected COMMIT-loss success.
-- Export-profile controls PASS; strict Clippy FAIL on manual saturating arithmetic.
-  Rustdoc and Rust workspace tests are **NOT_RUN**. A local equivalent expression
-  correction is pending. Original2fc build FAIL was fixed by bounded TEXT/JSON
-  conversion; it remains preserved separately from the successful d15 build.
-
-Sol author `current42_prefix_fixture_sol` saved a clean correction in the retained worktree
-`.research/m2-linear-quantum-sol-20261031`, branch `work/m2-linear-quantum-20261031`,
-at **da8c003b** (lint/proxy closure,28 affected controls PASS), awaiting root integration
-and bounded critical review. The early interruption still has no proven cause.
-Neither subagent owns engines/cache.
-The first discriminating rerun must preserve routing, targets and existing budgets,
-retaining actual connection/frame/byte/fault counters. Do not assume the16-lifetime-
-connection bound rather than frame/wire/protocol failure; do not widen limits.
-
-Pre-wire durable obligation, correlated REQ terminal, exact synchronized
-classifications, shared32MiB logical metadata funding and atomic outcome/gap/
-continuation have bounded source review and finite installed proof. EOSE remains
-observation, not complete history. Actual lost plan/terminal COMMIT, genuine gap-
-write failure, pre-wire and empty post-REQ authority loss, historical-only restart
-and affected current Index/reclamation/tutorial regressions remain required.
-
-The M1 signed event → admission → Archive → read → export → restart path has
-the above installed evidence; P01-T09 Step1/full P02 are not thereby complete.
-Current native epoch3/independent-row qualification and historical seven-request
-wrapper consolidation remain P02-T02/T06. Do not make all P02 indivisible before
-useful M2 work. Further gates remain in the existing plan: grants/staging,
-scheduler/base+tail/Archive/physical growth; prepared/active/native-floor recovery
-P02-T02 Step4; Code202/query retirement P02-T06 Steps2/4/7; a99Sync/topology429;
-scalable freshness, larger histories, payload GC, replay/protection/capacity.
-Admission cost: P02-T02 Step8/T09 Step5; ClickHouse decode/transport:
-P02-T06 Step2/T09 Step6; coordinator responsibilities: P01-T05 Step5.
-Portable acceptance/context/custody tools and final delivery remain
-P01-T08/P08-T11/T12/P10-T08/T10. All selected P03–P10/M2–M5 remain in scope.
-
-## Resources and next action
-
-All local build/control/engine/fault processes from the attempts above are terminal.
-One local CI observer and a bounded critical source review remain active; the
-remote hosted native run may continue. Cache115 is released/reacquired, its four
-original single-link immutable ELF pins unchanged. Root remains sole launcher,
-compiler and Git integrator. Preserve archived shared Git/ELF bytes and metadata;
-private copy before mutation, never gc/repack/maintenance.
+Further work stays in existing tasks: native epoch3/independent-row and old
+seven-request wrappers P02-T02/T06; grants/staging/scheduler/base+tail/Archive/
+physical growth; prepared/active/native-floor recovery P02-T02 Step4; Code202/query
+retirement P02-T06 Steps2/4/7; a99 Sync/topology429, scalable freshness, larger
+histories, payload GC/replay/protection/capacity. Admission cost: P02-T02 Step8 /
+P02-T09 Step5; ClickHouse decode/transport: P02-T06 Step2 / P02-T09 Step6;
+coordinator responsibilities: P01-T05 Step5. Portable acceptance/context/custody
+maintenance and delivery remain P01-T08/P08-T11/T12/P10-T08/T10. All selected
+P03–P10/M2–M5 remain in scope; no parallel plan or audit campaign.
 
 The [inventory](../research/laboratory-inventory.json),
 `implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`,
-owns current roots, partial M2 work and monitor reconciliation. The monitor's
-556GiB retirement affects only three old September17 physical roots; current
-labs, catalog dump/full corpus, unique data, pending work and foreign resources
-remain. No broad cleanup or old object-deletion proposal was executed. Required
-original failures, native DBs, inputs, logs, artifacts and worktrees are retained.
-
-**Next:** integrate the bounded lint/always-capture proxy closure correction after
-review. Reproduce only `plan-before` once with unchanged routing/budgets and retain
-all proxy counters, so its actual cause can be distinguished without guessing.
-Then apply the pertinent setup/product correction, repeat affected checks and
-finish all selected quantum faults, workspace and current installed regressions.
-Observe the existing native hosted run; publish M2 only after its actual gates.
-Continue the complete selected plan, without a new plan or audit campaign.
+owns current78/observer/dev roots and pending work. All owned local builders,
+controls and engine cases above are terminal; cache115 released/reacquired,
+original four immutable single-link ELF pins unchanged, borrowed bridge empty.
+Only the bounded source-author task is active at this observation. Root remains
+sole launcher/compiler/Git integrator. Preserve archived shared Git/ELF bytes and
+metadata; private copy before mutation, never gc/repack/maintenance.
+Monitor556GiB retirement is already reconciled and affects only three old
+September17 roots. Current labs, full corpus/catalog dump, unique data, pending
+work and foreign resources remain. No broad cleanup or old object-deletion
+proposal was executed. Retain original failures, native/PG data, logs, inputs,
+artifacts and worktrees needed by these open gates.

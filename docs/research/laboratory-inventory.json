@@ -78351,33 +78351,43 @@
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-workspace",
         "failed_first_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-post",
         "corrected_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-a24a3dea-controls",
-        "status": "MAIN_INTEGRATED_AND_PUSHED_EBB8;ALL_LOCAL_JOBS_TERMINAL;ACTUAL_HOSTED_NATIVE_TUPLE_PENDING_RUN41256201712",
+        "status": "MAIN_INTEGRATED_AND_PUSHED_EBB8;LOCAL_AND_ACTUAL_HOSTED_NATIVE_PASS",
         "qualification": {
           "path": "/home/tux/bigbrotr-rs/.research/native-guard-integration-20261031/workspace-qualification.json",
           "sha256": "a83d95ca9165a8de6eee432fc588aadd27b1773c5a285822eeecac0d9ab62782"
         },
         "cache": "115 released;four original immutable single-link ELF pins unchanged",
-        "retention": "Alloriginalfailures/nativeDB/input/ELF/archive/capture/worktree data preserved. No new broadcleanup; borrowed bridge empty."
+        "retention": "Alloriginalfailures/nativeDB/input/ELF/archive/capture/worktree data preserved. No new broadcleanup; borrowed bridge empty.",
+        "hosted_terminal": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-ebb8ee1b-20261101/terminal-audit.json",
+          "sha256": "b81ea60878d49315deedc207cef7c4dfb81e3773d3724c02bd408f6d9b6d3845"
+        },
+        "documentation_followup": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-1f4f682a-docs-20261101/terminal-audit.json",
+          "sha256": "8411e2959eed939be4b3bd5307c40fb52e1af87900997ef4601361d21dddea04"
+        }
       },
       "linear_quantum_in_progress": {
         "branch": "work/m2-linear-quantum-acceptance-20261101",
         "worktree": ".research/m2-linear-quantum-acceptance-20261101",
-        "revision_before_checkpoint": "d40c322ec331384dec056bc003173e8c6ebe7df5",
+        "revision_before_checkpoint": "30dae516312454198f4be20991c1494355c5a042",
         "product_branch": "work/m2-linear-quantum-integration-20261101",
         "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
-        "product_revision": "d15fb455c2f08cdb11b97db5874e0a3e3344355b",
+        "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
         "author_branch": "work/m2-linear-quantum-20261031",
-        "author_status": "Clean da8c003b correction saved;28affectedpurePASS, pending bounded critical review/root integration. No engine/cache owner exceptroot.",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-d15fb455",
-        "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-d15fb455",
+        "author_status": "Sol/xhigh author owns bounded existing capture-profile correction only;noengines/cache.515lease correction integrated;actual two planfaultsPASS.",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313",
+        "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-78c8e313",
         "failed_first_build": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-2fc85504",
         "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
-        "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-d40c322e-controls",
-        "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-d15fb455-workspace",
-        "status": "Allcurrentlocalbuilders/controls/engines terminal;cache115 released and original4ELFs unchanged;borrowedbridgeempty. Bounded critical source review and oneCIobserver active. No M2 mainintegration.",
+        "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-9b76cd01-controls",
+        "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
+        "status": "Allowned localbuilders/controls/engines terminal;cache115released/reacquired and4originalELFs unchanged;borrowedbridgeempty. Remaining selectedfaultsNOT_RUN afterpreserved traceadmissionFAIL. NoM2mainintegration.",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
-        "retention": "Preserve original compile/mixed-host-controls/fault/cleanup/Clippy failures, all native/PG data and logs. Proxy rawterminal for firstplan-before is unavailable; recorded running flag is stale, PID absent. No obsolete proposal executed.",
-        "author_tip": "da8c003b9769df4123115419e0b32a43ec172f39"
+        "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
+        "author_tip": "5155223f73c37cc5a2d0c6199ce487ca9a6dae72",
+        "dev_revision": "e8122ff90edf298e8c1262d3328cde87387c8828",
+        "evidence_report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101"
       }
     }
   },
