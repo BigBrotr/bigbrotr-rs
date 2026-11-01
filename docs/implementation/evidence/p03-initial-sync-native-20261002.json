@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "EXCLUSION_BINDING_CORRECTION_RELEASE_RUNNING",
+      "status": "PASS_CURRENT_BOUNDED_CASES_PARTIAL_QUALIFICATION",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1552,11 +1552,12 @@
         "checks": "All three signatures checked by libsecp256k1 and independent group equation; body/signature negatives. Two portable fixture tests PASS. Existing six-event selector corpus still verifies. No product execution claimed."
       },
       "verification_not_run": [
-        "Corrected-source release compilation and strict workspace/library qualification",
-        "Exact-source observer build and current installed cap/native-integrity/window/fault journeys",
-        "Affected current-product installed/recovery regressions"
+        "Current-source local strict workspace/library execution NOT_RUN_REUSED_FB; prior fb Clippy/Rustdoc/659 PASS/3 ignored retain their actual source scope",
+        "Current-source third-terminal COMMIT-after installed fault case; tool 4060 active without a terminal receipt at this snapshot",
+        "Affected current-product installed budget/restart regressions",
+        "Full current-source hosted native CI after integration/push"
       ],
-      "next": "Freeze ten-cast-only correction, fresh actual release/observer with parent guards preserved; reuse fb unchanged-responsibility workspace results explicitly. Reassemble current acceptance, then rerun real window/capped/local/corruption/fault and affected recovery/budget journeys before coherent main integration and full hosted CI.",
+      "next": "Finish actual current-source third-terminal COMMIT-after and affected installed budget/restart cases with unchanged parent guards and explicit fb-scoped strict reuse; integrate the coherent capability, then audit full current-source hosted CI. Keep fullM2 and remaining capacity qualifications open.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1701,7 +1702,11 @@
         "scope": "Reuse Clippy/Rustdoc/659 application-unit proof for unchanged Rust/API/reducer/native responsibilities, conditional on exact ten-cast-only product diff. Current-source local strict checks NOT_RUN, never transplanted into a new PASS.",
         "critical_review": "Astra: dynamic SQL casts are not validated by those checks; fresh exact-source release/observer and selected real PG/installed/corruption/COMMIT/restart proofs cover the changed responsibility. Full current-source hosted native CI remains required.",
         "diff": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/exclusion-bytea-casts.diff",
-        "diff_sha256": "28c7c0375a5c7eaa205c8fde01a00be8ac3742901262e9a21731bc9ede457952"
+        "diff_sha256": "28c7c0375a5c7eaa205c8fde01a00be8ac3742901262e9a21731bc9ede457952",
+        "current_source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+        "status": "NOT_RUN_REUSED_FB",
+        "record": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94/strict-workspace-reuse.json",
+        "record_sha256": "aa52957246c3c4480235352a6f1c33d5b061fa4ccc7a8f9ada49d7904a258e57"
       },
       "binding_correction_build": {
         "source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
@@ -1710,8 +1715,81 @@
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94",
         "tool": 23455,
         "container": "fae643d75780b3964baba5085cd5a16aae22a515d05c21965fd8bc47456daf0d",
-        "status": "RUNNING_NOT_QUALIFIED",
-        "strict_workspace": "NOT_RUN_REUSED_FB; current-source hosted CI remains required"
+        "status": "PASS_ACTUAL_CURRENT_RELEASE_AND_NATIVE_OBSERVER",
+        "strict_workspace": "NOT_RUN_REUSED_FB; fb Clippy/Rustdoc/659 PASS/3 ignored remain fb-scoped; full current-source hosted CI remains required",
+        "build_receipt_sha256": "02ac8b60a1e2a3822861411289b09796563ba0b2154c64f819a130c7f1c7d9b9",
+        "binary_sha256": "e3295271584e7e3217f92d30288a2ff615029b3dfc3783c2bd7431ae2ef9c0d2",
+        "worker_sha256": "d1eebacd5a8b5e300df7daf8a3bf929ef58ce995197912bf3ba3e5061ffda3d1",
+        "observer_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94/probe/terminal-receipt.json",
+        "observer_receipt_sha256": "e53c65a009843b459edd428670fb4f46214a7e0273b81f4c3e0d7c01547960a9",
+        "observer_tool": 72895,
+        "observer_sha256": "b18c15133593005684a1fa1da84f65d03d11f410f0638fce32600e48664dde3d",
+        "terminal": "Compiler 23455 and observer 72895 reaped0; both containers stopped/PID0/noOOM, exclusive cache115 released. Fresh release retains the actual current parent/worker/native/source identity guards."
+      },
+      "current_installed_qualification": {
+        "source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+        "tree": "2f8eff5342600976187a38ed17942c9243042339",
+        "assembly": "9e4e43fc9cdbb479e1214c5f1edc32a4df2f021c",
+        "assembly_tree": "8ce80358eaef1fc6117bae07587f6af2378c6f62",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94",
+        "status": "PASS_SIX_BOUNDED_CASES_REMAINING_GATES_OPEN",
+        "cases": {
+          "capped_r2": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/capped-r2-receipt.json",
+            "receipt_sha256": "f9752d755f4ea40ef2c829a049ddd305095647450b29bd2d47ca33952ce5c572",
+            "tool": 51413,
+            "stages": "7/7 PASS",
+            "scope": "Six actual sockets/seven settled entries; all-known first page continues, one local selector exclusion settles, no pending plan. Seven original inputs/receipts and all 89 native rows/seq121 verified; original cappedr1 failure remains above."
+          },
+          "cursor_time_r1": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/cursor-time-r1-receipt.json",
+            "receipt_sha256": "da5e621c65d086b0e2e007382e81412cf23cced773602a57cb7d144b1c912fc7",
+            "tool": 94700,
+            "stages": "7/7 PASS",
+            "scope": "Cursor-time corruption naturally refuses with Progress(InvalidContext) at quantum-plan, without a harness stop before refusal. Both guards restored; all 89 native rows/seq121 and seven original inputs/receipts unchanged."
+          },
+          "foreign_payload_r1": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/foreign-payload-r1-receipt.json",
+            "receipt_sha256": "65b31dd4faa89bc0776d0ede13886df9b7675eecab3594515d08274d556c5f09",
+            "tool": 75904,
+            "stages": "7/7 PASS",
+            "scope": "Foreign-payload corruption naturally refuses with Quantum(Context) at quantum-plan, without a harness stop before refusal. Both guards restored; all 89 native rows/seq121 and seven original inputs/receipts unchanged."
+          },
+          "window_r2": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/window-r2-receipt.json",
+            "receipt_sha256": "44e3980481f8cd1dc5c16d5bde9e7d705670226b80fd662eea0ca5e6f4c04648",
+            "tool": 45032,
+            "stages": "7/7 PASS",
+            "scope": "Eight actual requests across three fixed windows; empty middle/older spans queried and new same-second canonical ID continued. Both saturated-second gaps retained, prefix 259200, no pending plan; all 76 native rows/seq103 and six original inputs/receipts verified."
+          },
+          "window_gap_r1": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/window-gap-r1-receipt.json",
+            "receipt_sha256": "0b25d084278a9671c93e9a277009697f50ad5fe5ce5713e8a78c909008729045",
+            "tool": 48760,
+            "stages": "7/7 PASS",
+            "scope": "Failed gap-write preserves attempted prefix 0/no gap and pending interval [0,2) after two sockets/four mutations/seq67. Historical-only recovery observes the original state; no unsupported advancement."
+          },
+          "window_terminal_before_r1": {
+            "status": "PASS",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/window-terminal-before-r1-receipt.json",
+            "receipt_sha256": "7cabe432d00bd94c07f08a58feb78957c9f2ea60f907aa22e756289d6fc472ed",
+            "tool": 66867,
+            "stages": "7/7 PASS",
+            "scope": "Third-terminal COMMIT-before fault preserves prefix 0/one gap and pending interval [0,1) after three sockets/four mutations/seq67. Historical-only recovery retains the original state without unsupported advancement."
+          }
+        },
+        "scope": "Actual packaged current-source PostgreSQL/RocksDB and controlled real socket evidence; all six recorded cases 7/7 PASS with zero failed/skipped/not_run stages. Per-case receipt hashes bind result/verdict/resources; cleanup is recorded in the laboratory inventory. FullM2 and current-source local strict qualification remain open."
+      },
+      "remaining_qualification": {
+        "third_terminal_commit_after": "NOT_RUN; tool 4060 active at Root observation, no terminal receipt at this snapshot",
+        "affected_installed_budget": "NOT_RUN",
+        "affected_installed_restart": "NOT_RUN",
+        "current_source_hosted_ci": "NOT_RUN"
       }
     }
   }

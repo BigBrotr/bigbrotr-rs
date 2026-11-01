@@ -78614,7 +78614,7 @@
             "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101",
             "/home/tux/bigbrotr-rs/.research/m2-live-status-fixture-sol-20261101"
           ],
-          "state": "053 releasePASS/strictClippy4FAIL; immutable original receipts retained. Full portable86PASS581/0SKIP after obsolete live-status fake correction. Rust style corrections prepared locally; observer/installed qualification NOT_RUN.",
+          "state": "Current 01fc release/observer and six bounded installed cases PASS; original e23 compile,053 Clippy,819 portable and fb cappedr1 failures retained in the existing P03 report/capsule. Current local strict NOT_RUN_REUSED_FB; terminal-COMMIT-after, affected budget/restart and current hosted CI gates remain open.",
           "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
           "first_build": {
             "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
@@ -78671,7 +78671,74 @@
             "owner": "f218dfa53efed8fc4deea63fb4bf4d3d",
             "tool": 23455,
             "container": "fae643d75780b3964baba5085cd5a16aae22a515d05c21965fd8bc47456daf0d",
-            "status": "running at last direct observation"
+            "status": "Fresh current-source release PASS; compiler 23455 reaped0/containerPID0/noOOM/cache released",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94/build-receipt.json",
+            "observer": {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94-probe",
+              "owner": "597db0cfb38ef10aaedc678c21d2ccfb",
+              "container": "44b7c5cd52ec5b153574326377a54832206822ba00ea7a59690eb90c6cb7e827",
+              "tool": 72895,
+              "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/01fc6e94/probe/terminal-receipt.json",
+              "status": "Fresh current exact-parent native observer PASS; tool 72895 reaped0/containerPID0/noOOM/cache released"
+            },
+            "strict_workspace": "NOT_RUN_REUSED_FB; actual fb Clippy/Rustdoc/659 PASS/3 ignored retain their own source scope",
+            "cache": "Compiler 23455 and observer 72895 both terminal; cache115 exclusive during each build and released afterwards."
+          },
+          "current_acceptance_source": {
+            "source": "9e4e43fc9cdbb479e1214c5f1edc32a4df2f021c",
+            "worktree": "/home/tux/bigbrotr-rs/.research/m2-window-acceptance-9e4e43fc",
+            "candidate": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/candidate",
+            "product_source": "01fc6e9446f8b0e52bcdd160874bfed69566e237",
+            "state": "Immutable source/candidate and all original captures/datasets retained; current real case receipts bind exact product and assembly identities."
+          },
+          "current_installed_resources": {
+            "observation": "Sanitized terminal receipts/results/resources read on 2026-11-01; no new container/build/test started by this documentation update.",
+            "cases": [
+              {
+                "case": "capped-r2",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-capped-r2",
+                "owner": "3432122e5634d3077506173121933ba8",
+                "tool": 51413
+              },
+              {
+                "case": "cursor-time-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-cursor-time-r1",
+                "owner": "0e8373a2364ca714a78ea80e463620b7",
+                "tool": 94700
+              },
+              {
+                "case": "foreign-payload-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-foreign-payload-r1",
+                "owner": "7b96dfdf95a512fdb36a79605215ba9b",
+                "tool": 75904
+              },
+              {
+                "case": "window-r2",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-window-r2",
+                "owner": "e315f64162f89c0a0a5e04c7d197a5d3",
+                "tool": 45032
+              },
+              {
+                "case": "window-gap-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-window-gap-r1",
+                "owner": "f2adddd72c37ca288a93aa6643c4dfb2",
+                "tool": 48760
+              },
+              {
+                "case": "window-terminal-before-r1",
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-01fc6e94/acceptance-window-terminal-before-r1",
+                "owner": "81ac792a7b25495493b6effeb213dfb3",
+                "tool": 66867
+              }
+            ],
+            "cleanup": "All six completed case receipts record reaped0; their resource manifests verify stopped owned containers/PID0, exited native observers and empty cleanup_errors. Owned process groups joined; gap and third-terminal-before proxies joined0. Actual owner/peer/engine cleanup passed; borrowed bridge bigbrotr-m1-0f80280_default preserved.",
+            "retention": "Private raw logs, exact scientific/native data, failures, worktrees and original four protected ELF bytes/full metadata remain retained. No protected ELF was opened or changed by this update."
+          },
+          "remaining_qualification": {
+            "third_terminal_commit_after": "NOT_RUN; tool 4060 active at Root observation, no terminal receipt at this snapshot",
+            "affected_installed_budget": "NOT_RUN",
+            "affected_installed_restart": "NOT_RUN",
+            "current_source_hosted_ci": "NOT_RUN"
           }
         }
       },
