@@ -10,7 +10,7 @@ public development source; no official release, package or production deployment
 Canonical main/origin **a71b6ea3c577114f03bdd43d6b6dec620cd6dd7a** is pushed,
 clean and qualified locally and on GitHub for the preceding same-job continuation.
 Root integrates in `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`; observed HEAD **86fdb14f** before the enclosing
+`work/m2-finite-history-20261101`; observed HEAD **fb16889f** before the enclosing
 checkpoint/wrapper commit. New profile2 code is local and not installed-qualified.
 
 The [P03 report](evidence/p03-initial-sync-native-20261002.json), section
@@ -59,19 +59,19 @@ their existing P03/P02 owners; no whole-P02 barrier or reduced scope is implied.
 
 ## Active resources and next action
 
-Root is sole launcher/integrator. No owned compiler, engine, client or CI observer
-is active at this checkpoint. Release85038 reaped0; strictworkspace89271 reaped1;
-portable35396 reaped1 and30731 reaped0. Containers are stopped/PID0/noOOM and
-cache115 released. Capsule `.research/m2-window-succession-qualification-20261101/053f287f`;
-runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-053f287f`.
+Root is sole launcher/integrator. **Releasefb16889f/tool89240/containeracfed6d1 is running**,
+holding cache115 exclusively. No engine, client or CI observer is active. Release85038 reaped0; strictworkspace89271 reaped1;
+portable35396 reaped1 and30731 reaped0. Those preceding containers are stopped/PID0/noOOM; their cache locks were
+released before the current build. Current capsule `.research/m2-window-succession-qualification-20261101/fb16889f`;
+runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f`.
 Frozen053f checkout, originale23 compile failure and original819 portable failure
 are retained. The [inventory](../research/laboratory-inventory.json) owns custody;
 agent worktrees and all original4 ELF bytes/full metadata remain preserved.
 Current native recompilation observation follows the existing P01 cache task,
 with no proven equal-command savings or additional M2 prerequisite.
 
-**Next:** freeze the strict-lint corrections and parameterize the same guarded
-release/workspace chain. Bind only the actual verified new parent receipt, then
+**Next:** reap/audit the actualfb release, then continue the same guarded
+workspace chain. Bind only the actual verified new parent receipt, then
 complete Rustdoc/unfiltered library checks and the exact-source observer. Retain
 the581 portable result for unchanged Python contracts; update the source-only
 tutorial binding with its narrow equivalence proof. Assemble and preflight changed

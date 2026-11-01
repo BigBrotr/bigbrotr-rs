@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "RELEASE_PASS_WORKSPACE_CLIPPY_FAIL_MECHANICAL_CORRECTION_PREPARED",
+      "status": "MECHANICAL_CORRECTIONS_FROZEN_RELEASE_RUNNING",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1625,9 +1625,9 @@
         "terminal": "tool85038 reaped0/containerPID0/noOOM/cache released"
       },
       "tutorial_pin": {
-        "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
-        "proof": "053f287f/tutorial-source-pin-proof.json",
-        "scope": "Only mechanical scope identity lifetime binding since reviewed452; nine Nostr paths, six other code/config/dependency objects and1919vendor entries unchanged.14 targeted tutorial controls PASS; runtime behavior still requires actual installed execution."
+        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
+        "proof": "fb16889f/tutorial-source-pin-proof.json",
+        "scope": "Only the three recorded mechanical Rust corrections since053; nine Nostr paths, six other objects and1919vendor entries unchanged.14 affected tutorial controls PASS; no installed signing/publication result implied."
       },
       "strict_workspace": {
         "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
@@ -1652,6 +1652,27 @@
         "path": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/portable-81991301/failure.json",
         "classification": "test_fixture_contract",
         "scope": "Five failure records in live-client fake profile1/horizon200000; actual declared until86399 requiresH86400/profile2. Both sensitive-bytes negatives now reach their original boundary; no security exception added."
+      },
+      "current_build": {
+        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
+        "tree": "e04ccdf1643fe00a6cbffaab6184a6abada2e27e",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/fb16889f",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-fb16889f",
+        "tool": 89240,
+        "container": "acfed6d1f2b794abb9d89668f1b253874e2653ebf2fd5d291e6ab8fed29dfd9f",
+        "status": "RUNNING_NOT_QUALIFIED"
+      },
+      "publication_source_preparation": {
+        "source": "fb16889f5fe41bb04935b7685d2a3a78de565443",
+        "capsule": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-window-source-fb16889f-20261101",
+        "status": "PASS_BOUNDED_PREPUBLICATION_SOURCE_SCAN",
+        "objects": 112,
+        "scanned_bytes": 19954131,
+        "occurrences": 16,
+        "known_noncredential_fingerprints": 7,
+        "unclassified": 0,
+        "triage_sha256": "d59e976407f7b73d0c010da9bd421fd5e7a936d067f0f2a56ffd088b493fc1e0",
+        "scope": "Exact known prior noncredential classifications and candidate-bearing source lines match publicA71; no raw values emitted, sensitive/archive/store/LFS paths absent. Later source/history additions and real hosted outputs remain separately scoped; no push performed."
       }
     }
   }
