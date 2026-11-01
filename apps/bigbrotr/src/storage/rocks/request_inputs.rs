@@ -148,6 +148,9 @@ impl IngestStore {
     ) -> Result<StagedProducerRequest, RequestInputError> {
         self.require_pending_accounting()
             .map_err(RequestInputError::Accounting)?;
+        if Digest256::from_bytes(Sha256::digest(bytes).into()) != digest {
+            return Err(RequestInputError::Conflict);
+        }
         self.retain_request_input(request, bytes)?;
         Ok(StagedProducerRequest {
             request,
@@ -168,6 +171,11 @@ impl IngestStore {
         self.require_pending_accounting().map_err(|error| {
             super::AdmissionError::RequestInput(RequestInputError::Accounting(error))
         })?;
+        if Digest256::from_bytes(Sha256::digest(bytes).into()) != digest {
+            return Err(super::AdmissionError::RequestInput(
+                RequestInputError::Conflict,
+            ));
+        }
         self.retain_admission_input(request, bytes, cancelled)?;
         Ok(StagedProducerRequest {
             request,

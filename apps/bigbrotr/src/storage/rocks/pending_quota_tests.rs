@@ -399,6 +399,10 @@ fn exact_commit_recheck_rejects_foreign_and_undersized_grants_without_writes() {
         first.commit_prepared(zero, || Ok(())),
         Err(BootstrapError::PendingQuota(PendingQuotaError::Unfunded))
     );
+    assert!(matches!(
+        first.stage_producer_request(request(), Digest256::from_bytes([99; 32]), &bytes),
+        Err(super::super::RequestInputError::Conflict)
+    ));
     let writes = adversarial_prepared(&first);
     assert_eq!(
         second.commit_prepared(writes, || Ok(())),
