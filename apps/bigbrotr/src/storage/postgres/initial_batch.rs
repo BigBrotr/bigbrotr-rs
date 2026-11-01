@@ -364,6 +364,9 @@ pub struct LiveInitialObservationRequest<'a> {
 
 /// Complete event-only JSONL batch supplied by a trusted source/policy consumer.
 /// The prepared events retain their separate memory grants while being staged.
+/// No commit timestamps are supplied here: preview uses a conservative full-width
+/// encoding bound and holds each complete max_batch_bytes allowance. Dispatch
+/// later checks its actual timestamp against those unchanged retained terms.
 /// This API binds existing job metadata; it does not accept an operator job.
 pub struct InitialImportBatchRequest<'a> {
     pub ingest_root: &'a std::path::Path,
@@ -852,7 +855,13 @@ impl ControlSession {
             NativeAuthority::Initial(spec),
         )?;
         let pending = store
-            .bootstrap_pending_reservation(request, input.intent, input.limits, &permit)
+            .bootstrap_pending_reservation(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                &permit,
+            )
             .map_err(InitialBatchError::Native)?;
         reserve_logical_intake::<BootstrapError>(&mut NativeOwner::Store(&mut *store), &[pending])?;
         let (reservation_tx, mut reservation_lease) = self
@@ -902,7 +911,13 @@ impl ControlSession {
                 .map_err(InitialBatchError::Progress)?;
         }
         let staged = store
-            .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
+            .stage_initial_dictionaries(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                &permit,
+            )
             .map_err(InitialBatchError::Native)?;
         producer_requests::reserve(&reservation_tx, &staged, spec.control, None, None, None)
             .await
@@ -1475,7 +1490,7 @@ impl ControlSession {
         }
         prepare_logical_intake::<AdmissionError>(&mut store, authority)?;
         let pending = store
-            .pending_event_reservation(&input.event, input.limits, &permit)
+            .pending_event_reservation(&input.event, input.recorded_at, input.limits, &permit)
             .map_err(InitialEventError::Native)?;
         reserve_logical_intake::<AdmissionError>(&mut store, &[pending])?;
         let (reservation_tx, mut reservation_lease) = self
@@ -1522,7 +1537,13 @@ impl ControlSession {
                 .map_err(InitialEventError::Progress)?;
         }
         let staged = store
-            .stage_event(&input.event, input.limits, &permit, input.cancelled)
+            .stage_event(
+                &input.event,
+                input.recorded_at,
+                input.limits,
+                &permit,
+                input.cancelled,
+            )
             .map_err(InitialEventError::Native)?;
         let scope = input.acquisition.map(|context| context.scope().identity());
         let job = input
@@ -1792,7 +1813,7 @@ impl ControlSession {
         for event in input.events {
             pending.push(
                 event
-                    .pending_reservation_request(store, input.limits, &permit)
+                    .pending_import_reservation(store, input.limits, &permit)
                     .map_err(InitialEventError::Native)?,
             );
         }
@@ -1832,7 +1853,7 @@ impl ControlSession {
             }
             staged.push(
                 event
-                    .stage(store, input.limits, &permit)
+                    .stage_import(store, input.limits, &permit)
                     .map_err(InitialEventError::Native)?,
             );
         }

@@ -51,6 +51,7 @@ fn simulated_background_latch_and_foreground_unknown_independently_refuse_bootst
             store.stage_initial_dictionaries(
                 request(),
                 &intent("public"),
+                ObservedTime::new(123),
                 limits(),
                 &grant(&b, 8 * MIB, 4 * MIB),
             ),

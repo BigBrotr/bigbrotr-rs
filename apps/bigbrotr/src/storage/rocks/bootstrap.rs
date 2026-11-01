@@ -197,12 +197,13 @@ impl Prepared {
 }
 
 impl IngestStore {
-    /// A sufficient timestamp-independent bound before original/PG creation.
-    /// The exact prepared delta is rechecked by the native commit kernel.
+    /// A full serialized bound for fresh positive work before original/PG
+    /// creation. Actual-time preview checks held credit; commit rechecks exact P.
     pub(in crate::storage) fn bootstrap_pending_reservation(
         &self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
         limits: BootstrapLimits,
         permit: &OwnedPermit,
     ) -> Result<super::PendingReservationRequest, BootstrapError> {
@@ -215,16 +216,19 @@ impl IngestStore {
         self.require_unretired_bootstrap(request)?;
         Self::validate_bootstrap(request, intent, limits, &self.manifest)?;
         self.require_open_producer(request)?;
-        let allowance_bytes = if self.replay_bootstrap(request, intent, limits)?.is_some() {
+        let required_growth = if self.replay_bootstrap(request, intent, limits)?.is_some() {
             0
         } else {
-            limits.max_batch_bytes as u64
+            let (prepared, _) =
+                Self::prepare_bootstrap(request, intent, recorded_at, limits, &self.manifest)?;
+            self.prepared_pending_delta(&prepared)?
         };
-        Ok(super::PendingReservationRequest {
+        self.pending_input_reservation(
             request,
-            digest: intent.request_digest(request),
-            allowance_bytes,
-        })
+            intent.request_digest(request),
+            limits.max_batch_bytes as u64,
+            required_growth,
+        )
     }
 
     /// Stage before the connected adapter commits its PG reservation. The
@@ -233,6 +237,7 @@ impl IngestStore {
         &mut self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
+        recorded_at: ObservedTime,
         limits: BootstrapLimits,
         permit: &OwnedPermit,
     ) -> Result<super::StagedProducerRequest, BootstrapError> {
@@ -254,7 +259,8 @@ impl IngestStore {
                 bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
                 _ => BootstrapError::Limit,
             })?;
-        let reservation = self.bootstrap_pending_reservation(request, intent, limits, permit)?;
+        let reservation =
+            self.bootstrap_pending_reservation(request, intent, recorded_at, limits, permit)?;
         self.reserve_pending_requests(&[reservation])
             .map_err(BootstrapError::PendingQuota)?;
         let staged = self
@@ -343,12 +349,14 @@ impl IngestStore {
                 _ => BootstrapError::Limit,
             })?;
         let delta = self.prepared_pending_delta(&prepared)?;
-        self.reserve_pending_requests(&[super::PendingReservationRequest {
+        let reservation = self.pending_input_reservation(
             request,
-            digest: intent.request_digest(request),
-            allowance_bytes: delta,
-        }])
-        .map_err(BootstrapError::PendingQuota)?;
+            intent.request_digest(request),
+            limits.max_batch_bytes as u64,
+            delta,
+        )?;
+        self.reserve_pending_requests(&[reservation])
+            .map_err(BootstrapError::PendingQuota)?;
         self.retain_request_input(request, &input)
             .map_err(BootstrapError::RequestInput)?;
         drop(input);

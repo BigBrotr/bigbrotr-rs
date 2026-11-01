@@ -243,7 +243,13 @@ fn exercise(root: &Path, evidence: &Path) {
         Err(AdmissionError::CommitUnknown)
     ));
     assert!(matches!(
-        store.stage_initial_dictionaries(request(), &input, limits, &grant(&b, 8 * MIB, 4 * MIB)),
+        store.stage_initial_dictionaries(
+            request(),
+            &input,
+            ObservedTime::new(123),
+            limits,
+            &grant(&b, 8 * MIB, 4 * MIB)
+        ),
         Err(BootstrapError::CommitUnknown)
     ));
     assert!(matches!(

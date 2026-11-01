@@ -295,6 +295,40 @@ impl IngestStore {
             PendingQuota::Bound(_) => Err(PendingQuotaError::PolicyMismatch),
         }
     }
+    /// Fresh positive work reserves the full checked serialized bound. A held
+    /// request continues only within its original allowance, regardless of a
+    /// later operation's larger allocation limit or changed recorded_at width.
+    pub(super) fn pending_request_terms(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        maximum: u64,
+        required_growth: u64,
+    ) -> Result<PendingReservationRequest, PendingQuotaError> {
+        let quota = self.quota()?;
+        if let Some(entry) = quota
+            .entries
+            .iter()
+            .find(|entry| entry.terms.request == request)
+        {
+            if entry.terms.digest != digest {
+                return Err(PendingQuotaError::Conflict);
+            }
+            if required_growth > entry.terms.allowance_bytes {
+                return Err(PendingQuotaError::InsufficientAllowance);
+            }
+            return Ok(entry.terms);
+        }
+        if required_growth > maximum {
+            return Err(PendingQuotaError::InsufficientAllowance);
+        }
+        Ok(PendingReservationRequest {
+            request,
+            digest,
+            allowance_bytes: if required_growth == 0 { 0 } else { maximum },
+        })
+    }
+
     /// Atomic aggregate preflight before the first original or PG reservation.
     /// Credit stays here when the connected adapter returns or is cancelled.
     pub fn reserve_pending_requests(

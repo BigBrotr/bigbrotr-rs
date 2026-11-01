@@ -481,7 +481,13 @@ fn successor_recovery_preserves_one_unresolved_staged_tail_and_refuses_foreign_f
         let staged = event(&f, 3, 2, true);
         let permit = grant(&f.budget, 40 * MIB, 10 * MIB);
         let actual = writer
-            .stage_event(&staged, AdmissionLimits::default(), &permit, &NOT_CANCELLED)
+            .stage_event(
+                &staged,
+                ObservedTime::new(77),
+                AdmissionLimits::default(),
+                &permit,
+                &NOT_CANCELLED,
+            )
             .unwrap();
         drop(staged);
         drop(permit);

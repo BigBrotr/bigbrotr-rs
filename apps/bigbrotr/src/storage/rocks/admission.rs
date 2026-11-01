@@ -127,23 +127,26 @@ impl PreparedEvent {
     pub(in crate::storage) fn stage(
         &self,
         store: &mut IngestStore,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
-        self.stage_in(store, limits, permit, None)
+        self.stage_in(store, recorded_at, limits, permit, None)
     }
     pub(super) fn stage_successor(
         &self,
         store: &mut IngestStore,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
-        self.stage_in(store, limits, permit, Some(cancelled))
+        self.stage_in(store, recorded_at, limits, permit, Some(cancelled))
     }
     fn stage_in(
         &self,
         store: &mut IngestStore,
+        preview_time: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
         cancelled: Option<&AtomicBool>,
@@ -164,19 +167,30 @@ impl PreparedEvent {
         store.require_admission_owner(Some(self.request))?;
         store.require_open_producer(self.request)?;
         store.require_request_capacity(self.request, limits.max_outstanding_requests)?;
-        let reservation = self.pending_reservation_request(store, limits, permit)?;
+        let reservation = self.preview_pending_reservation(store, preview_time, limits, permit)?;
         store
             .reserve_pending_requests(&[reservation])
             .map_err(AdmissionError::PendingQuota)?;
         store.stage_admission_input(self.request, self.digest, &self.request_preimage, cancelled)
     }
 
-    /// Read-only preflight for aggregate staging. Positive growth uses the
-    /// accepted serialized maximum; zero comes from the actual shared preparer.
-    /// The maximum timestamp covers CBOR's full-width recorded_at field.
+    /// Read-only preflight with the actual operation timestamp. Positive fresh
+    /// growth uses the serialized maximum; held work keeps its original terms.
     pub(in crate::storage) fn pending_reservation_request(
         &self,
         store: &IngestStore,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        self.preview_pending_reservation(store, recorded_at, limits, permit)
+    }
+
+    // Both timestamp contracts use this one preparer and funding selector.
+    fn preview_pending_reservation(
+        &self,
+        store: &IngestStore,
+        preview_time: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::PendingReservationRequest, AdmissionError> {
@@ -212,7 +226,7 @@ impl PreparedEvent {
                 &mut reads,
             )?
             .is_some();
-        let allowance_bytes = if replay || matches!(self.event, Some(Err(_))) {
+        let required_growth = if replay || matches!(self.event, Some(Err(_))) {
             0
         } else {
             let mut writes = Prepared::new(BootstrapLimits {
@@ -222,22 +236,45 @@ impl PreparedEvent {
             store.prepare_event_effects(
                 self,
                 self.verified_event().ok_or(AdmissionError::InvalidInput)?,
-                ObservedTime::new(i64::MAX),
+                preview_time,
                 limits,
                 &mut reads,
                 &mut writes,
             )?;
-            if store.prepared_pending_delta(&writes)? == 0 {
-                0
-            } else {
-                limits.max_batch_bytes as u64
-            }
+            store.prepared_pending_delta(&writes)?
         };
-        Ok(super::PendingReservationRequest {
-            request: self.request,
-            digest: self.digest,
-            allowance_bytes,
-        })
+        store
+            .pending_input_reservation(
+                self.request,
+                self.digest,
+                limits.max_batch_bytes as u64,
+                required_growth,
+            )
+            .map_err(Into::into)
+    }
+
+    /// Import-batch reservation precedes choosing individual commit times.
+    /// This is only a full-width CBOR encoding bound, never a dispatch timestamp.
+    /// The shared preparer conservatively checks growth against any held amount;
+    /// a later actual-time dispatch still rechecks its exact delta and binding.
+    pub(in crate::storage) fn pending_import_reservation(
+        &self,
+        store: &IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        self.preview_pending_reservation(store, ObservedTime::new(i64::MAX), limits, permit)
+    }
+
+    /// The import payload does not supply a timestamp. Keep the same conservative
+    /// preview for staging; this cannot enlarge an already held reservation.
+    pub(in crate::storage) fn stage_import(
+        &self,
+        store: &mut IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        self.stage_in(store, ObservedTime::new(i64::MAX), limits, permit, None)
     }
 
     pub fn new(
@@ -700,12 +737,14 @@ impl IngestStore {
         // sync+WAL, and retains all buffers/permits until native completion.
         authority()?;
         let delta = self.prepared_pending_delta(&writes)?;
-        self.reserve_pending_requests(&[super::PendingReservationRequest {
-            request: input.request,
-            digest: input.digest,
-            allowance_bytes: delta,
-        }])
-        .map_err(AdmissionError::PendingQuota)?;
+        let reservation = self.pending_input_reservation(
+            input.request,
+            input.digest,
+            limits.max_batch_bytes as u64,
+            delta,
+        )?;
+        self.reserve_pending_requests(&[reservation])
+            .map_err(AdmissionError::PendingQuota)?;
         self.retain_admission_input(input.request, &input.request_preimage, cancelled)?;
         let source = match &outcome {
             AdmissionOutcome::Durable(receipt) => {

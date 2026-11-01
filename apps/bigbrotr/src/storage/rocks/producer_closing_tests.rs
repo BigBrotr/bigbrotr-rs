@@ -126,6 +126,7 @@ fn later_schema_with_initial_identity_cannot_close_observe_or_recover() {
             assert!(matches!(
                 pending.stage(
                     &mut recovery.store,
+                    ObservedTime::new(100),
                     AdmissionLimits::default(),
                     &grant(&budget, 40 * MIB, 10 * MIB)
                 ),
@@ -318,6 +319,7 @@ fn native_closing_preserves_effects_and_refuses_a_previously_verified_request() 
     assert!(matches!(
         pending.stage(
             &mut recovery.store,
+            ObservedTime::new(100),
             AdmissionLimits::default(),
             &grant(&budget, 40 * MIB, 10 * MIB)
         ),
@@ -405,6 +407,7 @@ fn empty_producer_closing_preserves_zero_and_refuses_first_bootstrap() {
         recovery.store.stage_initial_dictionaries(
             request(7, 1),
             &bootstrap,
+            ObservedTime::new(123),
             limits,
             &grant(&budget, 8 * MIB, 4 * MIB)
         ),

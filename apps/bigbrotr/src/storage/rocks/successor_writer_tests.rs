@@ -516,7 +516,13 @@ fn successor_writer_no_fact_request_one_uses_older_than_predecessor_frontier() {
         let input = event(&f, 3, 1, rejected);
         let permit = grant(&f.budget, 40 * MIB, 10 * MIB);
         writer
-            .stage_event(&input, AdmissionLimits::default(), &permit, &NOT_CANCELLED)
+            .stage_event(
+                &input,
+                ObservedTime::new(77),
+                AdmissionLimits::default(),
+                &permit,
+                &NOT_CANCELLED,
+            )
             .unwrap();
         let result = writer
             .admit_event(
@@ -668,6 +674,7 @@ fn successor_writer_refuses_reopening_and_ordinary_store_entrypoints() {
     assert!(matches!(
         event(&f, 3, 1, true).stage_successor(
             &mut reopened,
+            ObservedTime::new(77),
             AdmissionLimits::default(),
             &grant(&f.budget, 40 * MIB, 10 * MIB),
             &NOT_CANCELLED
@@ -699,7 +706,13 @@ fn successor_writer_staging_census_refuses_unknown_native_and_sidecar_changes() 
         let input = event(&f, 3, 1, true);
         let permit = grant(&f.budget, 40 * MIB, 10 * MIB);
         writer
-            .stage_event(&input, AdmissionLimits::default(), &permit, &NOT_CANCELLED)
+            .stage_event(
+                &input,
+                ObservedTime::new(77),
+                AdmissionLimits::default(),
+                &permit,
+                &NOT_CANCELLED,
+            )
             .unwrap();
         match fault {
             0 => {
@@ -755,6 +768,7 @@ fn successor_writer_bounds_fact_frontier_and_cancelled_staging_without_writes() 
                 writer
                     .stage_event(
                         &event(&f, 3, 1, true),
+                        ObservedTime::new(77),
                         AdmissionLimits::default(),
                         &grant(&f.budget, 40 * MIB, 10 * MIB),
                         &cancelled
@@ -803,6 +817,7 @@ fn successor_writer_preserves_full_spool_and_refuses_sixty_fifth_input() {
     assert!(matches!(
         writer.stage_event(
             &event(&f, 3, 1, true),
+            ObservedTime::new(77),
             AdmissionLimits::default(),
             &grant(&f.budget, 40 * MIB, 10 * MIB),
             &NOT_CANCELLED

@@ -82,12 +82,17 @@ impl NativeOwner<'_> {
     pub(super) fn pending_event_reservation(
         &self,
         event: &PreparedEvent,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<PendingReservationRequest, AdmissionError> {
         match self {
-            Self::Store(store) => event.pending_reservation_request(store, limits, permit),
-            Self::Successor(owner) => owner.pending_event_reservation(event, limits, permit),
+            Self::Store(store) => {
+                event.pending_reservation_request(store, recorded_at, limits, permit)
+            }
+            Self::Successor(owner) => {
+                owner.pending_event_reservation(event, recorded_at, limits, permit)
+            }
         }
     }
     pub(super) fn pending_dictionary_reservation(
@@ -234,13 +239,14 @@ impl NativeOwner<'_> {
     pub(super) fn stage_event(
         &mut self,
         input: &PreparedEvent,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<StagedProducerRequest, AdmissionError> {
         match self {
-            Self::Store(s) => input.stage(s, limits, permit),
-            Self::Successor(s) => s.stage_event(input, limits, permit, cancelled),
+            Self::Store(s) => input.stage(s, recorded_at, limits, permit),
+            Self::Successor(s) => s.stage_event(input, recorded_at, limits, permit, cancelled),
         }
     }
     pub(super) fn stage_dictionary_append(
