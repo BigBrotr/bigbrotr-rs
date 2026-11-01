@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "IMPLEMENTED_LOCAL_NOT_COMPILED",
+      "status": "FIRST_BUILD_FAILED_FIX_PREPARED_NOT_QUALIFIED",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1587,6 +1587,13 @@
         "format": "cargo +1.98.1 fmt --all -- --check",
         "result": "PASS",
         "scope": "Current Rust inputs; final source revision/diff pin recorded by build preparation."
+      },
+      "first_build_failure": {
+        "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/e23f353e",
+        "result": "FAIL_PRODUCT_COMPILE_E0716",
+        "receipt_sha256": "ccd1eb53afd45515fd6b6e0882aa2d15f80d99f8d30178df091750157d960e86",
+        "scope": "Original terminal logs and exited builder/cache-release evidence retained. One local identity binding correction prepared; actual strict workspace, native observer and installed checks remain NOT_RUN."
       }
     }
   }

@@ -157,10 +157,11 @@ pub(in crate::storage::postgres::control_owner) async fn next_window(
         entries: 0,
     };
     let epoch = context.epoch.to_string();
+    let scope_id = scope.identity();
     let params: &[&(dyn tokio_postgres::types::ToSql + Sync)] = &[
         &&job.id.as_bytes()[..],
         &&context.dataset.as_bytes()[..],
-        &&scope.identity().as_bytes()[..],
+        &&scope_id.as_bytes()[..],
         &source.enrollment_generation.get().to_string(),
         &&source.route_id.as_bytes()[..],
         &&context.slot.as_bytes()[..],
