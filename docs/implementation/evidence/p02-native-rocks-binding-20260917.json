@@ -432,8 +432,8 @@
     "qualification": "Product WBM configuration and effective accounting NOT_RUN at this correction; no RSS or workload qualification."
   },
   "owned_background_guard_20261031": {
-    "status": "PASS_SOURCE_SPECIFIC_HEALTHY_API_DIRECT_CALLBACK_AND_REAL_POSIX_COMPONENT_CONTROLS",
-    "scope": "Separate unintegrated source-specific component results: initial f8 healthy binding/API and ownership controls, d3 direct callbacks, and f761 running-DB Linux tmpfs default-POSIX compaction NoSpace. Historical unpatched results above do not qualify the guard or application.",
+    "status": "PASS_CURRENT_LINUX_WORKSPACE_AND_INSTALLED_HEALTHY_TUTORIAL;SOURCE_SPECIFIC_FAULT_COMPONENT_PROOFS_RETAINED",
+    "scope": "Current8f9 standard build/workspace and installed healthy tutorial with reviewed acceptancea24. f8/d3 API/direct callbacks and f761 default-POSIX faults remain source-specific component results; no application guard installation or physical/capacity qualification.",
     "source": {
       "revision": "f8c534f7e5abbeba16a7b26e64a6d623a3261665",
       "tree": "b262978bf2af590f775ea651dfbfa007e05556ff",
@@ -638,7 +638,76 @@
         "P02-T02 Step8 and P02-T09 Steps4-7: admission/native/physical envelopes, same-filesystem completion, mixed maintenance and measured capacity.",
         "P02-T07 Steps3/5/7: compaction, retained file pins and positive safe reclamation; no purge credit is inferred here."
       ],
-      "integration": "Separate retained branch work/native-failstop-binding-20261031 at b230e9d5 (source f761, subsequent docs only); not current main product. Whole-workspace/platform/application qualification still required."
+      "integration": "Qualified f761/d3 component retained; current8f9 product/defaultworkspace and a24healthyinstalled tutorial now separately pass. App factory remains unguarded; fault component is not an installed application fault claim."
+    },
+    "current_main_integration": {
+      "status": "PASS_LOCAL_QUALIFICATION;MAIN_PUSH_AND_AFFECTED_HOSTED_PLATFORM_CHECKS_NEXT",
+      "product": "8f9bd4197aaafc36a743e30c3a9a1c7b15c8692d",
+      "acceptance": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
+      "branch": "work/native-guard-integration-20261031",
+      "package_identity": "Both vendored package trees are byte-identical to qualifiedd3; selected versions/features unchanged. Actual locked licenses/sources/advisories and format PASS before compilation.",
+      "build": {
+        "path": "/home/tux/bigbrotr-rs/.research/native-guard-integration-20261031/build-receipt.json",
+        "sha256": "fb1a6bd4ea721b813977c0d5478f0837ebe9883916eb6d22053df11518f28c3c"
+      },
+      "workspace": {
+        "path": "/home/tux/bigbrotr-rs/.research/native-guard-integration-20261031/workspace-qualification.json",
+        "sha256": "a83d95ca9165a8de6eee432fc588aadd27b1773c5a285822eeecac0d9ab62782"
+      },
+      "workspace_rust": {
+        "passed": 1404,
+        "ignored": 3,
+        "source_result_rows": 94,
+        "new_guard_api_tests": 5,
+        "limits": "Defaultworkspace only; ignored native ACK/lifetime/publication-fault drivers retain separate gates."
+      },
+      "tutorial": {
+        "status": "PASS",
+        "stages": 7,
+        "seconds": 53.13603414699901,
+        "tool_session": 55996,
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419/acceptance-tutorial-r1",
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419/acceptance-tutorial-r1/root-terminal.json",
+          "sha256": "bf9263024ea11a0b2cc483e7ba0cae25730857006f9e91b352610763b47f1820"
+        },
+        "custody": "All18 containers stopped0/PID0/noOOM;797commands joined;3recorded processes absent;borrowed bridge empty."
+      },
+      "source_gate": {
+        "review": {
+          "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-native-integration-tutorial-source-gate-critical-20261101.json",
+          "sha256": "908948192dd78d4f2994284f11bd8362daf4dba75c2bebdca47c0f50a594af73"
+        },
+        "implementation_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-native-tutorial-gate-implementation-critical-20261101.json",
+          "sha256": "436ab26749b1890d14bfbe75575e94403f8d29fea9ce1afbc7cd7153df8caedb"
+        },
+        "auditor_caller_review": {
+          "path": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-native-tutorial-auditor-caller-critical-20261101.json",
+          "sha256": "9f1b8bcf2ec5eca6b78e9db0d7338e4d7e9e28439b15ad36488527f56cd907ee"
+        },
+        "policy": "Seven product code/config objects and all1919 vendor leaves remain strict. Only maintained regular nonexecutable UTF-8 vendor guide content may differ; actual artifact/acceptance/guide identities remain separate. Nine Nostr paths unchanged; actual peer zero-publication proof retained."
+      },
+      "original_failure": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-post",
+        "status": "FAIL_SOURCE_REVIEW_PREREQUISITE",
+        "meaning": "413controls:412PASS/1ERROR;later4NOT_RUN. The tutorial gate correctly refused newly patched dependencies before source review. Original report/logs retained; corrected a24 full416PASS and independent8f9remaining workspace4PASS do not relabel it."
+      },
+      "source_publication": {
+        "source": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
+        "objects": 1769,
+        "bytes": 42019352,
+        "candidates": 0,
+        "scan": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/native-guard-source-20261101/source-scan.json",
+          "sha256": "14adcfdcec3e2a1ca48c7f583c3b4879a0d0916f86c3f986a4d35f5b5bcd844d"
+        }
+      },
+      "remaining": [
+        "Affected actual hosted AMD64/ARM64/macOS checks for this new integration; c826 hosted33PASS qualifies its old tuple only.",
+        "Application factory/write/ACK wiring, other producers/concurrency, funded reopen/purge/CW-N1/P1/P2/OPEN65 remain at existing P02tasks.",
+        "Portable native context/archive capture and terminal-audit maintenance: P01-T08/P08-T11/T12; current ignored root recipes are evidence, not final clean-checkout prerequisites."
+      ]
     }
   }
 }
