@@ -1,4 +1,5 @@
 """Installed finite traversal across populated islands and an empty window."""
+import json
 import shutil
 import time
 
@@ -30,10 +31,10 @@ LIMITS = [
 ]
 
 
-def check_wires(wires, events):
+def check_wires(wires, events, *, count=8):
     assert tuple(event['id'] for event in events) == EVENT_IDS
     assert [event['created_at'] for event in events] == [1, 172801, 172801]
-    assert len(wires) == 8
+    assert count in (2, 3, 8) and len(wires) == count
     nonces, previous = set(), None
     import re
     for number, (wire, entry, page) in enumerate(zip(wires, ENTRIES, PAGES), 1):
@@ -64,7 +65,7 @@ def check_history(state, wires, events, receipts):
     assert quantum.journey(state, wires, 1, declared, selector=SELECTOR, entries=ENTRIES) == SUMMARY
 
 
-def check_progress(state, report, wires, events, science, completed):
+def check_progress(state, report, wires, events, science, completed, *, fault_prefix=False):
     import installed_progress_replay as typed
     from installed_progress_context_oracle import current_snapshot
     ds = source.raw(state['datasets'][0]['dataset_id'])
@@ -74,11 +75,15 @@ def check_progress(state, report, wires, events, science, completed):
     common = dict(dataset_id='\\x' + ds.hex(), producer_slot_id='\\x' + report['producer_slot_id'], producer_epoch=1)
     job, detail, _ = source.attribution(state, 'b1')
     actual = source.only(state['acquisition_progress'], job_id=job['job_id'])
-    wire, event = wires[6], events[2]
-    progress = dict(common, job_id=job['job_id'], scope_id=detail['scope_id'], progress_revision=5,
+    # The fault schedules stop after the first body and its repeated proof.
+    # Both shapes are literal fixture expectations, not inferred SQL counters.
+    wire, event = (wires[1], events[0]) if fault_prefix else (wires[6], events[2])
+    revision, count, complete, dependency_count = ((2, 5, 4, 12)
+        if fault_prefix else (5, 8, 6, 22))
+    progress = dict(common, job_id=job['job_id'], scope_id=detail['scope_id'], progress_revision=revision,
         request_id='\\x' + wire['request'][1].encode().hex(), event_ordinal=1, wire_sequence=1,
         input_sha256='\\x' + source.sha(quantum.wire_json(event)), classification=5, mutation_request=None,
-        classified_events=5, successful_events=5, rejected_events=0, observed_at_us=actual['observed_at_us'],
+        classified_events=revision, successful_events=revision, rejected_events=0, observed_at_us=actual['observed_at_us'],
         clock_resolution_us=wire['clock_resolution_us'], clock_anomaly_flags=4 if wire['clock_resolution_us'] > 1 else 0,
         xmin=actual['xmin'])
     source.clock(progress['observed_at_us'], wire['sent_at_us'], wire['closed_at_us'])
@@ -86,7 +91,7 @@ def check_progress(state, report, wires, events, science, completed):
         [ref(1), ref(3), ref(5)], progress, wire).hex()
     values = {(cf, key.hex()): value.hex() for cf, key, value in science['native']}
     dependencies = []
-    for number in range(1, 23):
+    for number in range(1, dependency_count + 1):
         first = 1 if number <= 2 else 2 if number == 3 else 3 if number <= 7 else 4 + (number - 8) // 5
         key = b'\x01\x20' + ds + bytes(4) + source.be(1) + source.be(number)
         value = bytes.fromhex(values['facts', key.hex()])
@@ -97,7 +102,7 @@ def check_progress(state, report, wires, events, science, completed):
     source.clock(head['committed_at_us'], wire['sent_at_us'], completed)
     assert head['committed_at_us'] < owner['lease_expires_at_us']
     expected = dict(common, progress_format=1, manifest_sha256='\\x' + source.sha(science['manifest']),
-        checkpoint_revision=8, complete_through_request=6, progress_jobs=1, dependency_count=22,
+        checkpoint_revision=count, complete_through_request=complete, progress_jobs=1, dependency_count=dependency_count,
         issuer_resource=owner['resource_id'], issuer_epoch=owner['epoch'], issuer_incarnation=owner['process_incarnation'],
         committed_at_us=head['committed_at_us'], xmin=head['xmin'], checkpoint_digest='\\x' + '00' * 32)
     expected['checkpoint_digest'] = '\\x' + typed.head_digest(expected, [progress], dependencies,
@@ -108,6 +113,28 @@ def check_progress(state, report, wires, events, science, completed):
 
 
 class WindowSuccessionRuntime(LinearQuantumRuntime):
+    def quantum_proxy_ordinal(self):
+        return 2 if self.quantum_fault == 'gap-write' else 3
+
+    def fault_owner_joined(self, output):
+        require(self.client.poll() is None, 'window fault peer exited before original owner join')
+        listeners = self.owned_listeners(self.client.pid)
+        self.loopback_listener(listeners, 7447)
+        self.wires(2 if self.quantum_fault == 'gap-write' else 3)
+        save(output / 'window-fault-live-listener.json', listeners)
+
+    def prepare_gap_refusal(self, output):
+        self.gap_plans_before = json.loads(self.sql('bigbrotr_control',
+            "SELECT jsonb_agg(to_jsonb(q)||jsonb_build_object('xmin',xmin::text) ORDER BY quantum_number) "
+            "FROM control.acquisition_quanta q; "
+            "ALTER TABLE control.acquisition_quanta ADD CONSTRAINT fixture_gap_write_refusal "
+            "CHECK(gap_reason IS NULL) NOT VALID"))
+        require(len(self.gap_plans_before) == 2
+            and self.gap_plans_before[0]['disposition'] == 'overlap'
+            and self.gap_plans_before[1]['terminal_kind'] is None,
+            'gap refusal must follow the first overlap and the committed second plan')
+        save(output / 'gap-plans-before.json', self.gap_plans_before)
+
     def candidate(self):
         super().candidate()
         self.inputs['linear_quantum_scenario'] = 'window-succession'
@@ -173,6 +200,8 @@ class WindowSuccessionRuntime(LinearQuantumRuntime):
                         "FROM control.acquisition_quanta") == 't'
 
     def verify_linear_quantum(self):
+        if self.quantum_fault:
+            return self.verify_window_fault()
         self.source_unchanged()
         output = self.root / 'linear-quantum'
         output.mkdir(mode=0o700)
@@ -220,3 +249,104 @@ class WindowSuccessionRuntime(LinearQuantumRuntime):
             history_entries=8, pending_plans=0, mutation_requests=6, native_rows=len(science['native']),
             native_sequence=103, attempted_prefix=259200, saturated_gaps=[[1, 2], [172801, 172802]],
             new_same_second_id_continued=True, empty_middle_window_queried=True, coverage='pending'))
+
+    def verify_window_fault(self):
+        self.source_unchanged()
+        output = self.root / 'linear-quantum'
+        output.mkdir(mode=0o700)
+        state, _ = self.capture(output, 'fault')
+        self.backend_absence(output)
+        view = self.source_view(state)
+        count = 2 if self.quantum_fault == 'gap-write' else 3
+        wires = self.wires(count)
+        check_wires(wires, self.events, count=count)
+        require(not (self.home / 'relay-error.json').exists(), 'window fault peer failed')
+        # The selected terminal is observed after an actual complete socket
+        # teardown. The source remains available; no following request is allowed.
+        require(not (self.home / f'relay-open-{count + 1:03}.json').exists(),
+                'unconfirmed window movement opened another socket')
+        from installed_sync import validate_source, validate_queued
+        commands = load(self.home / 'submitted.json')
+        require(len(commands) == 4 and commands[-1]['input']['deadline_us'] == '120000000',
+                'window fault source declaration differs')
+        validate_source(view, self.initialized, commands[:3], selector_document=SELECTOR)
+        validate_queued(view, commands, expected_principal=self.enrolled['principal_id'])
+        dump = native.census(self, output, expected_writer_exit=4)
+        inputs = source.originals(self.state / 'data/ingest', self.initialized['producer_slot_id'], 1, 4)
+        completed = time.time_ns() // 1000
+        job, _, attribution = source.attribution(view, 'b1')
+        science = initial_science(view, self.initialized, self.events, wires, dump, inputs, completed,
+            mutations=((0, 4, 0, 8),), first_accepted_at_us=job['created_at_us'], native_sequence=67)
+        source.requests(view, 1, science['manifest'], science['inputs'], science['receipts'],
+            source.only(view['owner_epochs'], role='control'),
+            {4: source.request_binding(self.events[0], wires[0], 1)}, attribution)
+        check_progress(view, self.initialized, wires, self.events, science, completed, fault_prefix=True)
+        refs = quantum.receipt_refs(science['receipts'][3])
+        summary = quantum.journey(view, wires, 1,
+            {1: [(self.events[0], 2, 4, refs)], 2: [(self.events[0], 5, 0, refs)]},
+            selector=SELECTOR, entries=ENTRIES[:count])
+        after_commit = self.quantum_fault == 'terminal-after'
+        wanted = dict(queries_spent=count, attempted_prefix=86400 if after_commit else 0,
+            gap_count=0 if self.quantum_fault == 'gap-write' else 1,
+            pending_work='query_ready' if after_commit else 'request_pending',
+            pending_interval=['86400', '172800'] if after_commit else ['0', '2' if count == 2 else '1'])
+        require(summary == wanted, 'failed window commit changed the exact gap/prefix obligation')
+        if self.quantum_fault == 'gap-write':
+            require(sorted(view['acquisition_quanta'], key=lambda row: row['quantum_number']) == self.gap_plans_before,
+                    'refused gap settlement changed the retained original history')
+        terminal = load(self.root / 'quantum-proxy-terminal.json')
+        ordinal = self.quantum_proxy_ordinal()
+        require(all(type(terminal[key]) is int for key in ('commit_ordinal', 'matched_commits',
+            'skipped_commits', 'selected_commits', 'selected_server_complete', 'selected_client_complete', 'faults')),
+            'invalid selected COMMIT counter types')
+        require(terminal['commit_ordinal'] == terminal['matched_commits'] == ordinal
+            and terminal['skipped_commits'] == ordinal - 1 and terminal['selected_commits'] == 1,
+            'fault did not select the exact real COMMIT ordinal')
+        require(terminal['selected_server_complete'] == (0 if self.quantum_fault == 'terminal-before' else 1)
+            and terminal['selected_client_complete'] == (1 if self.quantum_fault == 'gap-write' else 0),
+            'selected COMMIT completion/delivery direction differs')
+        require(terminal['faults'] == (0 if self.quantum_fault == 'gap-write' else 1),
+                'selected COMMIT fault count differs')
+        if self.quantum_fault == 'gap-write':
+            events = [json.loads(line) for line in load(self.root / 'quantum-proxy.json')['stdout'].splitlines()]
+            rejected = gap_write_rejection(terminal, events, load(self.root / 'initial/held-plan-reply.json'))
+            self.validate_quantum_proxy(rejected, 'quantum-gap-write-rejected')
+            save(output / 'gap-write-rejected.json', rejected)
+        diagnostic = window_fault_diagnostic((self.root / 'initial/serve.stderr').read_text(), self.quantum_fault)
+        save(output / 'window-fault-diagnostic.json', diagnostic)
+        self.historical_quantum_restart(state, output)
+        save(output / 'verdict.json', dict(status='PASS', scenario='window-succession', fault=self.quantum_fault,
+            socket_requests=count, mutation_requests=4, native_sequence=67, summary=summary,
+            recovery='historical_only', coverage='pending'))
+
+
+def gap_write_rejection(terminal, events, held):
+    require(type(terminal['gap_write_rejections']) is int and terminal['gap_write_rejections'] == 1,
+            'missing actual injected gap constraint refusal')
+    rejected, = [event for event in events if event.get('event') == 'quantum-gap-write-rejected']
+    require(rejected['classification'] == 'fixture-gap-write-refusal' and rejected['sqlstate'] == '23514'
+        and rejected['constraint'] == 'fixture_gap_write_refusal'
+        and type(rejected['backend_pid']) is int and rejected['backend_pid'] > 0
+        and rejected['backend_pid'] == held['backend_pid'],
+        'gap constraint refusal is not bound to the actual second plan backend')
+    return rejected
+
+
+def window_fault_diagnostic(text, fault):
+    assert fault in ('gap-write', 'terminal-before', 'terminal-after')
+    error = 'Backend' if fault == 'gap-write' else 'CommitUnknown'
+    prefix = f'error: initial Sync unavailable: Quantum({error}); sync_dispatch='
+    assert text.startswith(prefix) and text.endswith('\n'), 'exact window settlement refusal required'
+    value, used = json.JSONDecoder().raw_decode(text[len(prefix):])
+    assert text[len(prefix) + used:].strip() == ''
+    assert value['format'] == 'bigbrotr-initial-sync-diagnostic/1'
+    assert value['scope'] == 'caller-progress-not-commit-outcome'
+    assert value['timing'] == 'monotonic-offset-microseconds-saturating'
+    assert value['stage'] == 'quantum-terminal' and value['reason'] == 'operation-error'
+    assert value['frame_ordinal'] is value['request_sequence'] is None
+    assert value['last_delivered_admission_sequence'] == 4
+    for key in ('entered_us', 'returned_us', 'dispatch_deadline_us', 'captured_us'):
+        assert type(value[key]) is int
+    assert 0 <= value['entered_us'] <= value['returned_us'] < value['dispatch_deadline_us']
+    assert value['captured_us'] >= value['returned_us']
+    return value

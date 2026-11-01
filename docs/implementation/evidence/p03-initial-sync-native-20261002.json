@@ -1520,7 +1520,7 @@
       }
     },
     "finite_history_windows_20261101": {
-      "status": "FIRST_BUILD_FAILED_FIX_PREPARED_NOT_QUALIFIED",
+      "status": "CORRECTED_RELEASE_RUNNING_INSTALLED_NOT_RUN",
       "tasks": [
         "P03-T05 Steps1/4",
         "P03-T01 Step3"
@@ -1552,12 +1552,11 @@
         "checks": "All three signatures checked by libsecp256k1 and independent group equation; body/signature negatives. Two portable fixture tests PASS. Existing six-event selector corpus still verifies. No product execution claimed."
       },
       "verification_not_run": [
-        "Compilation and Rust/native tests for profile2",
-        "Updated maintained Python journey/oracle controls",
-        "Installed islands, exclusions, budget and gap/COMMIT fault evidence",
+        "Corrected-source release compilation and strict workspace/library qualification",
+        "Exact-source observer build and current installed cap/native-integrity/window/fault journeys",
         "Affected current-product installed/recovery regressions"
       ],
-      "next": "Freeze the corrected source and reuse the existing guarded exact-source release build, then strict workspace/library checks. Complete new-window critical review and required fault reachability/control additions while compilation runs; no installed PASS claimed.",
+      "next": "Retry the existing guarded release at corrected source053f; bind actual verified parent before workspace/probe. Close the correlated exact gap ErrorResponse witness review before actual fault journeys; reuse unchanged product after Python-only changes.",
       "limits": "Three-event pages and one finite same-owner job slice. Full500-page, partitions, sparse growth, general slice scheduling/adoption and fullM2 remain incomplete in existing owners.",
       "integration_observed": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
       "shared_oracles": {
@@ -1594,6 +1593,37 @@
         "result": "FAIL_PRODUCT_COMPILE_E0716",
         "receipt_sha256": "ccd1eb53afd45515fd6b6e0882aa2d15f80d99f8d30178df091750157d960e86",
         "scope": "Original terminal logs and exited builder/cache-release evidence retained. One local identity binding correction prepared; actual strict workspace, native observer and installed checks remain NOT_RUN."
+      },
+      "window_oracle_review": {
+        "model": "gpt-6-astra",
+        "reasoning_effort": "xhigh",
+        "reviewed_source": "e23f353e plus current Python-only corrections",
+        "scope": "Eight literal windows, independent full science, typed progress, actual peer lifecycle and fault oracle; no engine execution",
+        "findings": "Late-import identity closure corrected in shared Linear runtime for cap/window; private proof scope3 retained; explicit window fault barrier retains peer through HTTP death; exact Execute-correlated23514 constraint witness and complete source/route/profile marker binding implemented and reviewed.",
+        "controls": "66 targeted portable controls PASS/0SKIP in1.409s, actual reaped tool60077; three cold-B candidate profiles, complete one-body science and typed fault prefix. No installed PASS.",
+        "result": "NO_REMAINING_BLOCKER_BOUNDED_SOURCE_REVIEW"
+      },
+      "fault_proxy": {
+        "commits": [
+          "493bf183",
+          "5b5bf8a4"
+        ],
+        "scope": "Bounded actual matching COMMIT ordinal plus same-session/backend terminal Execute23514 refusal witness after selected plan reply delivery; original resource/network/traffic limits retained.",
+        "controls": "35 portable proxy controls PASS in3.696s, tool51956 reaped0. Synthetic framing uses real loopback sockets, not PostgreSQL or product execution.",
+        "critical_review": "Astra source review closed after exact marker source/route/profile binding and Parse/Bind error-recovery/cached-statement controls; Root final emission regression included."
+      },
+      "retry_build": {
+        "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
+        "tree": "f34000f9e966099eb23dcfe0176cdd233ac1556b",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/053f287f",
+        "tool": 85038,
+        "container": "6a8be5cb981cc3599e4d5ca6dcb625d4864484b0252fda54f0ecd67b1dead4c1",
+        "status": "RUNNING_NOT_QUALIFIED"
+      },
+      "tutorial_pin": {
+        "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
+        "proof": "053f287f/tutorial-source-pin-proof.json",
+        "scope": "Only mechanical scope identity lifetime binding since reviewed452; nine Nostr paths, six other code/config/dependency objects and1919vendor entries unchanged.14 targeted tutorial controls PASS; runtime behavior still requires actual installed execution."
       }
     }
   }

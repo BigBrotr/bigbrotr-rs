@@ -168,11 +168,17 @@ class WindowFaultControls(unittest.TestCase):
                 ordinal = 2 if fault == 'gap-write' else 3
                 (root / 'quantum-proxy-terminal.json').write_text(json.dumps(dict(commit_ordinal=ordinal,
                     matched_commits=ordinal, skipped_commits=ordinal - 1, selected_commits=1,
-                    faults=0 if fault == 'gap-write' else 1,
+                    faults=0 if fault == 'gap-write' else 1, gap_write_rejections=1 if fault == 'gap-write' else 0,
                     selected_server_complete=0 if fault == 'terminal-before' else 1,
                     selected_client_complete=1 if fault == 'gap-write' else 0)))
                 (root / 'initial').mkdir()
                 (root / 'initial/serve.stderr').write_text(diagnostic(fault))
+                if fault == 'gap-write':
+                    runtime.quantum_proxy_binding = dict(commit_ordinal=2)
+                    rejected = dict(event='quantum-gap-write-rejected', classification='fixture-gap-write-refusal',
+                        sqlstate='23514', constraint='fixture_gap_write_refusal', backend_pid=321, commit_ordinal=2)
+                    (root / 'quantum-proxy.json').write_text(json.dumps(dict(stdout=json.dumps(rejected)+'\n')))
+                    (root / 'initial/held-plan-reply.json').write_text(json.dumps(dict(backend_pid=321)))
                 with patch('installed_sync.validate_source'), patch('installed_sync.validate_queued'), \
                         patch.object(window.native, 'census', return_value=dump) as census, \
                         patch.object(source, 'originals', return_value=inputs), patch.object(source, 'requests'):
@@ -182,6 +188,22 @@ class WindowFaultControls(unittest.TestCase):
                 self.assertEqual((verdict['mutation_requests'], verdict['native_sequence']), (4, 67))
                 census.assert_called_once_with(runtime, root / 'linear-quantum', expected_writer_exit=4)
                 runtime.historical_quantum_restart.assert_called_once_with(state, root / 'linear-quantum')
+
+    def test_gap_refusal_requires_one_correlated_literal_constraint_error(self):
+        rejected = dict(event='quantum-gap-write-rejected', classification='fixture-gap-write-refusal',
+            sqlstate='23514', constraint='fixture_gap_write_refusal', backend_pid=321)
+        terminal, held = dict(gap_write_rejections=1), dict(backend_pid=321)
+        self.assertEqual(window.gap_write_rejection(terminal, [rejected], held), rejected)
+        for count in (0, 2, True):
+            with self.subTest(count=count), self.assertRaises(ValueError):
+                window.gap_write_rejection(dict(gap_write_rejections=count), [rejected], held)
+        for events in ([], [rejected, rejected], [dict(rejected, event='other')]):
+            with self.subTest(events=events), self.assertRaises(ValueError):
+                window.gap_write_rejection(terminal, events, held)
+        for fields in (dict(sqlstate='08006'), dict(constraint='unrelated_constraint'),
+                dict(classification='unknown'), dict(backend_pid=322), dict(backend_pid=True), dict(backend_pid=0)):
+            with self.subTest(fields=fields), self.assertRaises(ValueError):
+                window.gap_write_rejection(terminal, [dict(rejected, **fields)], held)
 
     def test_diagnostic_requires_exact_error_stage_delivery_and_non_timeout_clock(self):
         for fault in FAULTS:
@@ -298,16 +320,19 @@ class WindowFaultControls(unittest.TestCase):
             from pathlib import Path
             from types import SimpleNamespace
             from unittest.mock import patch
-            source, root = map(Path, sys.argv[1:])
+            source, root = map(Path, sys.argv[1:3])
             sys.path.insert(0, str(source/'tests/acceptance'))
             from cases import first_launch as base
             from cases import first_launch_window_succession as window
+            from cases import first_launch_capped_quantum as capped
+            from cases import first_launch_linear_quantum as linear
             import candidate
             names = ('installed_progress_replay', 'installed_progress_context_oracle', 'installed_family_science', 'live_replay')
             assert all(name not in sys.modules for name in names), 'control requires cold module state'
             selected = dict(bundle_root=str(root/'bundle'), manifest_sha256='manifest', bundle_sha256='bundle',
                 manifest=dict(artifact=dict(source={}), assembly=dict(revision='revision', tree='tree')))
-            runtime = window.WindowSuccessionRuntime(SimpleNamespace(evidence=root, source_root=source,
+            runtime_type = dict(window=window.WindowSuccessionRuntime, capped=capped.CappedQuantumRuntime, linear=linear.LinearQuantumRuntime)[sys.argv[3]]
+            runtime = runtime_type(SimpleNamespace(evidence=root, source_root=source,
                 candidate_manifest=root/'candidate.json', native_observer_build=root/'observer'), {})
             with patch.object(candidate, 'extract_candidate', return_value=selected), \\
                     patch.object(base, 'expected_tables', return_value=set()), \\
@@ -319,15 +344,16 @@ class WindowFaultControls(unittest.TestCase):
                 assert closure[str(path.relative_to(source))] == hashlib.sha256(path.read_bytes()).hexdigest(), name
             print(json.dumps(sorted(str(Path(sys.modules[name].__file__).resolve().relative_to(source)) for name in names)))
         ''')
-        with tempfile.TemporaryDirectory() as temporary:
-            result = subprocess.run([sys.executable, '-B', '-c', script, str(ROOT), temporary],
-                capture_output=True, text=True, timeout=15)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(json.loads(result.stdout), [
-            'experiments/ingest-bootstrap/installed_progress_context_oracle.py',
-            'experiments/ingest-succession/installed_family_science.py',
-            'experiments/ingest-succession/installed_progress_replay.py',
-            'experiments/ingest-succession/live_replay.py'])
+        for profile in ('window', 'capped', 'linear'):
+            with self.subTest(profile=profile), tempfile.TemporaryDirectory() as temporary:
+                result = subprocess.run([sys.executable, '-B', '-c', script, str(ROOT), temporary, profile],
+                    capture_output=True, text=True, timeout=15)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout), [
+                'experiments/ingest-bootstrap/installed_progress_context_oracle.py',
+                'experiments/ingest-succession/installed_family_science.py',
+                'experiments/ingest-succession/installed_progress_replay.py',
+                'experiments/ingest-succession/live_replay.py'])
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ No PostgreSQL engine, product runtime, authentication or cleanup qualification.
 import asyncio
 from contextlib import redirect_stdout
 import io
+import hashlib
 import json
 from pathlib import Path
 import struct
@@ -622,6 +623,13 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(proxy.events[-1]['gap_write_rejections'], int(positive))
                     if positive:
                         witness, = witnesses
+                        self.assertEqual({key: witness[key] for key in ('profile', 'frame_limit', 'connection_limit',
+                            'connection_limit_scope', 'wire_limit', 'lifetime_seconds', 'source_sha256',
+                            'upstream_host', 'upstream_port')}, dict(profile='retained-catch-up', frame_limit=131072,
+                            connection_limit=64, connection_limit_scope='lifetime', wire_limit=MAX_WIRE,
+                            lifetime_seconds=120, source_sha256=hashlib.sha256(
+                                Path(__file__).with_name('native_commit_proxy.py').read_bytes()).hexdigest(),
+                            upstream_host='127.0.0.1', upstream_port=proxy.server.sockets[0].getsockname()[1]))
                         self.assertEqual({key: witness[key] for key in ('classification', 'sqlstate', 'constraint', 'backend_pid', 'schema', 'table')},
                             dict(classification='fixture-gap-write-refusal', sqlstate='23514', constraint='fixture_gap_write_refusal',
                                  backend_pid=held['backend_pid'], schema='control', table='acquisition_quanta'))

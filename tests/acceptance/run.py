@@ -230,8 +230,9 @@ def main():
         parser.error('--linear-quantum-fault is only for p03-linear-quantum')
     if args.linear_quantum_scenario is not None and args.case!='p03-linear-quantum':
         parser.error('--linear-quantum-scenario is only for p03-linear-quantum')
-    if args.linear_quantum_scenario not in (None,'interruptions') and args.linear_quantum_fault is not None:
-        parser.error('--linear-quantum-fault is only for the interruptions scenario')
+    if args.linear_quantum_fault is not None and args.linear_quantum_scenario not in (None,'interruptions'):
+        if args.linear_quantum_scenario!='window-succession' or args.linear_quantum_fault not in ('gap-write','terminal-before','terminal-after'):
+            parser.error('--linear-quantum-fault requires interruptions, or window-succession with gap-write/terminal-before/terminal-after')
     if args.linear_quantum_corruption is not None and (args.case!='p03-linear-quantum'
             or args.linear_quantum_scenario!='capped-continuation' or args.linear_quantum_fault is not None):
         parser.error('--linear-quantum-corruption is only for capped-continuation without --linear-quantum-fault')

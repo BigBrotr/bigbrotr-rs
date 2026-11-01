@@ -12,6 +12,17 @@ from installed_sync_client import publish, relay, relay_listener, quantum_status
 from installed_archive_profile import load as load_profile
 
 
+def submitted_status_poll(directory, windows, status):
+    fault = directory / 'linear-quantum-fault.json'
+    if windows and fault.exists():
+        assert json.loads(fault.read_text()) in ('gap-write', 'terminal-before', 'terminal-after')
+        # These explicit host-controlled fault cases kill the HTTP owner.
+        # Keep the peer alive at the same bounded gate until host cleanup;
+        # HTTP disappearance must not silently close the relay first.
+        return None
+    return status
+
+
 def run(directory):
     profile = load_profile(directory)
     binary = profile['product_binary'] if profile else '/build/bigbrotr'
@@ -169,7 +180,7 @@ def run(directory):
         if capped:
             other_scope,other_receipt=continue_after_prepopulation(directory,call,barrier,status,
                 endpoint,enrollment,visibility,revisions)
-        barrier('submitted', seconds=65, poll=status)
+        barrier('submitted', seconds=65, poll=submitted_status_poll(directory, windows, status))
         final_status = status(known_plan=True)
         if not (linear or capped or windows) and not (directory/'retained-request-profile.json').exists() and not (directory/'progress-context.json').exists():
             common_final_status(final_status,scope['scope_id'],receipt['accepted_at_us'])

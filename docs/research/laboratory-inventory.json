@@ -78564,8 +78564,8 @@
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
         "branch": "work/m2-finite-history-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-        "state": "Previous bounded continuation is qualified locally and on hosted A71. Profile2 core/shared/capped/window draft and portable controls are integrated locally; no new compiler or engine launched yet.",
-        "observed_revision": "d0f7826183d1f26f4933cf47533edd85b8c207d7",
+        "state": "Previous bounded continuation qualified locally and on hosted A71. Profile2 first release failedE0716; minimal lifetime correction committed locally, retry preparation active. Current Python fault/science corrections remain Root-owned uncommitted and not installed-qualified.",
+        "observed_revision": "5b5bf8a4",
         "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
         "portable_controls": {
           "source": "1849721e047710b7efef4f80bc9b025da5c13550",
@@ -78573,7 +78573,7 @@
           "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
         },
-        "pending": "No active CI observer remains: watcher39908/acquisition94491 reaped0 and owned PIDs absent. Root new compiler preparation follows current source freeze; original cache115 released and original4 ELF metadata preserved. Partial/source worktrees retained; no broad cleanup or Git maintenance.",
+        "pending": "Corrected release053f running under Root tool85038/container6a8be5cb, exclusive cache115 lock held by its guarded launcher. Proxy/window critical review closed and portable controls passed; no engine journey active. CI observers remain terminal. No resource cleanup/Git maintenance.",
         "build": {
           "source": "61769e66c09b2506bfa972f3fa1f524112106a79",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-product-61769e66",
@@ -78609,9 +78609,31 @@
           "core_worktree": "/home/tux/bigbrotr-rs/.research/m2-window-succession-core-20261101",
           "test_worktrees": [
             "/home/tux/bigbrotr-rs/.research/m2-capped-profile2-tests-sol",
-            "/home/tux/bigbrotr-rs/.research/m2-window-controls-sol"
+            "/home/tux/bigbrotr-rs/.research/m2-window-controls-sol",
+            "/home/tux/bigbrotr-rs/.research/m2-window-fault-selection-sol",
+            "/home/tux/bigbrotr-rs/.research/m2-window-fault-controls-sol-20261101"
           ],
-          "state": "Local code/controls only; tests and critical reviews indexed by existing P03 evidence report. New Rust compilation/installed qualification not run. Preserve test transition logs and all original8f artifacts."
+          "state": "Original e23 compileFAIL retained; corrected053f release running. Current Python fault/source-binding controls qualified portably and source-reviewed; installed proof NOT_RUN.",
+          "qualification_capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101",
+          "first_build": {
+            "source": "e23f353e7c03d0ddc867c144165ca3e2ea3ab7f4",
+            "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-window-product-e23f353e",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/e23f353e",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-e23f353e",
+            "container": "227c65cf214791bc986093a02c181f60227840b54204229c9deec6b34544c896",
+            "owner": "796d54d9bb31f5d22b2ec94013e6d635",
+            "terminal": "Compiler101 / launcher1, reaped83189, PID0/noOOM/cache lock released; originals4 bytes/full metadata checked after build through O_NOATIME|O_NOFOLLOW."
+          },
+          "retry_build": {
+            "source": "053f287fbca2bc0d0bd6a6ad3c6ee048984d6841",
+            "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-window-product-053f287f",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/053f287f",
+            "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-053f287f",
+            "owner": "b098b88fb16be76c186bdf3fa902492c",
+            "tool": 85038,
+            "container": "6a8be5cb981cc3599e4d5ca6dcb625d4864484b0252fda54f0ecd67b1dead4c1",
+            "status": "running at last direct inspection"
+          }
         }
       },
       "retired_refs_after_pushed_a2": {

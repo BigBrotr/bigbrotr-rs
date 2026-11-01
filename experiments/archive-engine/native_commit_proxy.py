@@ -376,7 +376,8 @@ class Proxy:
             self.report.update(progress_updates_complete=0, target_occurrence=2)
 
     def emit(self, event, **extra):
-        quantum_summary = self.target.startswith('control-quantum-') and event in ('ready', 'terminal')
+        quantum_summary = self.target.startswith('control-quantum-') and event in (
+            'ready', 'terminal', 'quantum-gap-write-rejected')
         if quantum_summary:
             extra.update(profile=self.profile, frame_limit=self.frame_limit,
                          connection_limit=self.connection_limit, connection_limit_scope='lifetime',

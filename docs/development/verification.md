@@ -1194,38 +1194,61 @@ python3 -B tests/acceptance/run.py p03-linear-quantum \
 ```
 
 The capped recipe prepopulates signed events24/23 through one job. A second job
-must continue past an all-known page and retain older signed event1 despite the
-peer clamping the requested three events to two. Its five exact requests, original
-inputs, receipts, full native census and pending status are independently checked.
-Use a fresh evidence root with `--linear-quantum-corruption cursor-time` or
-`foreign-payload` to require exact natural refusal before another plan/socket,
-restored SQL guards and unchanged native/input data. Raw captures contain private
-credentials and must never be uploaded wholesale.
+continues past an all-known page and retains a different signed event23 and older
+event1 despite the peer clamping three requested events to two. Six exact requests
+and one selector-only exclusion produce seven settled history entries. The
+independent oracle checks all seven original mutation inputs and receipts, the
+complete native census and both pending-coverage statuses. The exclusion has no
+relay terminal or native mutation. Use a fresh evidence root with
+`--linear-quantum-corruption cursor-time` or `foreign-payload` to require exact
+natural native-integrity refusal before another plan/socket, restored SQL guards
+and unchanged native/input data. Both mutations preserve pagination geometry:
+one changes the nonminimum body23 time to22; the other substitutes a globally
+present body23 absent from that request's own native union. Raw captures contain
+private credentials and must never be uploaded wholesale.
 
-Select `--linear-quantum-scenario interruptions` for eight finite requests across
+Select `--linear-quantum-scenario interruptions` for nine finite requests across
 two independently declared scope recipes, including known-interruption retries.
-Only this scenario accepts `--linear-quantum-fault plan-before`, `plan-after`,
-`terminal-before` or `terminal-after`: each independently loses one COMMIT at the
-declared boundary and requires no subsequent work plus unchanged historical-only
-Control restart. Gap-write and authority-refusal modes remain available through
-the same flag. Each execution needs its own fresh evidence directory.
+`--linear-quantum-fault plan-before`, `plan-after`, `terminal-before` or
+`terminal-after` loses the first selected COMMIT at the declared boundary and
+requires no subsequent work plus unchanged historical-only Control restart.
+Gap-write and authority-refusal modes also apply to that scenario.
 
-This finite profile has three-event pages and same-current-owner continuation;
-it does not qualify the full500-event walker, window succession, partitioning,
-sparse growth, fresh-owner adoption or capacity. Those remain P03/P02 tasks.
+Select `--linear-quantum-scenario window-succession` for eight real requests across
+three fixed86400-second windows. It retains both populated islands, actually
+queries the empty middle window and older remainders, continues when a new
+canonical ID arrives at the same second, and retains two saturated-second gaps.
+Its independent oracle checks all six original mutation inputs and receipts,
+76 native rows/sequence103, the exact contiguous attempted prefix259200 and no
+ninth request. Pending coverage remains explicit; an attempted interval is not
+proof that all events were obtained.
+
+The window scenario also accepts `--linear-quantum-fault gap-write`,
+`terminal-before` or `terminal-after`. The gap case holds the second actual plan
+COMMIT reply before installing a failing gap-write constraint. The terminal
+cases lose the third terminal COMMIT, closing the first original window, either
+before forwarding or after server completion. Each requires the selected proxy
+ordinal/completion witness, exact retained pending/settled rows, unchanged native
+science and no next socket, followed by nonmutating historical-only restart.
+An unselected fault, generic error, timeout or early proxy closure is not PASS.
+Each execution needs its own fresh evidence directory.
+
+These maintained recipes use three-event pages and same-current-owner finite
+continuation. They do not qualify full500-event pages, partitioning, sparse
+growth, fresh-owner adoption or physical capacity; those remain P03/P02 tasks.
 The [P03 evidence](../implementation/evidence/p03-initial-sync-native-20261002.json)
-owns actual results, original failures and remaining gates. Portable controls use
+owns actual results, original failures and remaining gates: implementation of a
+recipe or portable control is not an installed PASS. Portable controls use
 `python3 -B tools/ci.py --control-suite acceptance`; they do not replace these
 installed PostgreSQL/native/socket journeys or the separate restart on/off cases.
 
-The next window-succession increment uses frozen
-`tests/fixtures/acquisition/linear-window-events.json`: an alternate body at
-second23 and two distinct bodies at second172801. These are public test keys,
-never operational credentials. Portable controls verify canonical IDs and the
-independent BIP340 group equation without an optional authoring dependency.
-The installed product must still perform its own real signature verification.
-For optional regeneration, use Python3.12 in a separate virtual environment with
-`secp256k1==0.14.0`, `cffi==2.1.1` and `pycparser==3.11`, then run
+The frozen `tests/fixtures/acquisition/linear-window-events.json` contains an
+alternate body at second23 and two distinct bodies at second172801. These use
+public test keys, never operational credentials. Portable controls verify
+canonical IDs and the independent BIP340 group equation without an optional
+authoring dependency. The installed product must perform real signature
+verification. For optional regeneration, use Python3.12 in a separate virtual
+environment with `secp256k1==0.14.0`, `cffi==2.1.1` and `pycparser==3.11`, then run
 `python3 tests/fixtures/acquisition/selector_events.py --linear-window --write`.
 Omit `--write` to verify the frozen corpus with both libsecp256k1 and the equation
 checker. The existing selector corpus remains the default of that maintained

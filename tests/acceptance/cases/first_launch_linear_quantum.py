@@ -1,9 +1,7 @@
 """Two current scopes, finite real socket turns and durable refusal obligations."""
 import hashlib
 import json
-from pathlib import Path
 import sys
-import subprocess
 import time
 import tomllib
 
@@ -20,6 +18,18 @@ LIMITS=[
 
 
 class LinearQuantumRuntime(Runtime):
+    def quantum_proxy_ordinal(self):
+        return 1
+
+    def fault_owner_joined(self, output):
+        pass
+
+    def prepare_gap_refusal(self, output):
+        captured=self.sql('bigbrotr_control',"SELECT to_jsonb(q)||jsonb_build_object('xmin',xmin::text) FROM control.acquisition_quanta q; "
+            "ALTER TABLE control.acquisition_quanta ADD CONSTRAINT fixture_gap_write_refusal CHECK(gap_reason IS NULL) NOT VALID")
+        self.gap_plan_before=json.loads(captured)
+        save(output/'gap-plan-before.json',self.gap_plan_before)
+
     def source_view(self,state):
         return self.current_owner_view(state,dict(control=load(self.root/'initial/before-control.json'),
             resource=dict(catalog_id=self.ids['catalog'])))
@@ -57,6 +67,11 @@ class LinearQuantumRuntime(Runtime):
         import installed_archive_oracle
         import installed_sync_oracle
         import linear_quantum_transport
+        # Both capped and window journeys use these decisive post-join owners.
+        # Load the transitive closure before candidate() freezes verifier hashes.
+        import installed_progress_replay
+        import installed_progress_context_oracle
+        import installed_family_science
 
     def image_and_state(self):
         super().image_and_state()
@@ -89,8 +104,12 @@ class LinearQuantumRuntime(Runtime):
                 frame_limit=20000 if profile=='default' else 131072,
                 connection_limit=16 if profile=='default' else 64,connection_limit_scope='lifetime',
                 wire_limit=64*1024*1024,lifetime_seconds=120,upstream_host='127.0.0.1',upstream_port=15432)
+            ordinal=self.quantum_proxy_ordinal()
+            require(type(ordinal) is int and 1<=ordinal<=128,'invalid quantum proxy COMMIT ordinal')
+            if ordinal!=1:self.quantum_proxy_binding['commit_ordinal']=ordinal
             self.inputs['quantum_proxy']=self.quantum_proxy_binding
             command=[sys.executable,'-B',str(path),'--mode',mode,'--target',target,'--upstream-port','15432']
+            if ordinal!=1:command+=['--commit-ordinal',str(ordinal)]
             if profile!='default':command+=['--profile',profile]
             self.route=self.proxy_process(command,input_pipe=True)
             self.resources['quantum_proxy']=dict(pid=self.route.process.pid,status='running',port=None,
@@ -259,17 +278,10 @@ class LinearQuantumRuntime(Runtime):
 
     def initial(self):
         if not self.quantum_fault:return super().initial()
-        output=self.root/'initial';output.mkdir(mode=0o700)
-        entry=self.initial_launch()
-        self.initialized=self.wait(lambda:self.logs(entry,output),'initial quantum fault owner',20,entry=entry)[0]
-        save(output/'initialized.json',self.initialized)
-        save(self.home/'visibility.json',self.initialized['private_scope'])
-        with (self.home/'client.stdout').open('x') as out,(self.home/'client.stderr').open('x') as err:
-            self.client=subprocess.Popen([sys.executable,'-B',str(self.source/'experiments/ingest-bootstrap/installed_archive_client.py'),str(self.home)],
-                env=self.environment,cwd=self.root,stdout=out,stderr=err,start_new_session=True)
-        self.processes.append(self.client)
-        save(output/'client-process.json',dict(pid=self.client.pid,process_group=self.client.pid))
+        entry,output,setup=self.initial_start()
         self.wait(lambda:(self.home/'prepared.json').exists(),'prepared quantum fault source',15,entry,self.client)
+        prepared,_=self.capture(output,'prepared')
+        self.validate_source(self.current_owner_view(prepared,setup),self.initialized,load(self.home/'prepared.json'))
         (self.home/'prepared.continue').write_text('fresh exact source accepted\n')
         if self.quantum_fault=='empty-terminal-authority':
             self.withdraw_after_empty_source(output)
@@ -277,10 +289,7 @@ class LinearQuantumRuntime(Runtime):
             held=self.proxy_event(self.route,'held',20);save(output/'held-plan-reply.json',held)
             require(held['stage']=='reply','plan must be server committed before injection')
             if self.quantum_fault=='gap-write':
-                captured=self.sql('bigbrotr_control',"SELECT to_jsonb(q)||jsonb_build_object('xmin',xmin::text) FROM control.acquisition_quanta q; "
-                    "ALTER TABLE control.acquisition_quanta ADD CONSTRAINT fixture_gap_write_refusal CHECK(gap_reason IS NULL) NOT VALID")
-                self.gap_plan_before=json.loads(captured)
-                save(output/'gap-plan-before.json',self.gap_plan_before)
+                self.prepare_gap_refusal(output)
             else:
                 baseline=self.sql('bigbrotr_control',"SELECT lease_expires_at_us FROM control.owner_epochs WHERE role='control' AND state='active'")
                 removed=self.sql('bigbrotr_control',"WITH removed AS (DELETE FROM control.principal_grants WHERE action='roles.control' RETURNING 1) SELECT count(*) FROM removed")
@@ -304,6 +313,7 @@ class LinearQuantumRuntime(Runtime):
             save(output/'terminal-authority-diagnostic.json',report)
         save(output/'terminal-container.json',dict(id=terminal['Id'],state=terminal['State']))
         self.freeze_control_lease(terminal,output)
+        self.fault_owner_joined(output)
         stop_process(self.client);self.processes.remove(self.client)
         self.stop_quantum_proxy()
         # The proxy is gone. Historical reads/new Control use the declared direct
@@ -435,6 +445,11 @@ class LinearQuantumRuntime(Runtime):
         # Existing ownership is immutable. Wait for the positively dead owner's
         # actual lease expiry, then start ordinary Control for historical status;
         # this never adopts a same-job Sync/producer lifetime.
+        self.historical_quantum_restart(state,output)
+        save(output/'verdict.json',dict(status='PASS',fault=self.quantum_fault,requests=requests,
+            native_sequence=dump['sequence'],plans=len(plans),socket_requests=len(opened),recovery='historical_only',coverage='pending'))
+
+    def historical_quantum_restart(self,state,output):
         self.wait_control_expiry(output)
         entry=self.launch('quantum-historical','app','serve','--file','/etc/bigbrotr/instance.toml','--roles','control')
         self.wait(lambda:self.logs(entry,output),'historical Control restart',20,entry=entry)
@@ -444,8 +459,6 @@ class LinearQuantumRuntime(Runtime):
             require(after[table]==state[table],'historical restart mutated or adopted '+table)
         self.stop_container(entry,output)
         self.backend_absence(output)
-        save(output/'verdict.json',dict(status='PASS',fault=self.quantum_fault,requests=requests,
-            native_sequence=dump['sequence'],plans=len(plans),socket_requests=len(opened),recovery='historical_only',coverage='pending'))
 
     def cleanup(self):
         try:
