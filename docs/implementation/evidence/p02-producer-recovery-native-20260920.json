@@ -43380,6 +43380,38 @@
                 "sha256": "9ad336347e49f6ff507ebbb356a0f7ec13cfc9658d8ea33c6455e343e4b115d7",
                 "bytes": 4198
               }
+            },
+            "current_accounted_followthrough_20261101": {
+              "status": "PASS_SCOPED_CURRENT_NATIVE_ACK_FSYNC_EIO_AND_FRESH_REPLAY",
+              "driver_source": "7d7d880d2d9335c245db67653e50d4b53c3ea2b7",
+              "compiled_source": "21965a0ccec12d83436e340e3dab3ecdfeb44837",
+              "source_reuse": "All compiled code/fixtures/metadata retain original219 identities; current driver/caller/controls/docs separately bound. No product/test rebuild or embedding claim.",
+              "expected": "Independent initialize3 + bootstrap10puts gives sequence13/all10rows. SoleProducerStateput gives14; pendingP306/S1/one183B original unchanged. Sharedaccountedfixture alreadycurrent; no copiedgolden.",
+              "wal_suffix": {
+                "bytes": 75,
+                "sha256": "cbdf906f04b626b3655ad5a885b3043d015ec60a2db961d9fa824d59ac095831",
+                "recipe": "Payload68B, sequenceLE64=14/countLE32=1/CFput05/receiptsCF02/key+value26B each. CRC32C b5c50b62/masked b9485662; entireframe/exhaustion literal checked."
+              },
+              "controls": "11focusedpending-accountingtestsPASS, including nativeACKliteral +19negative/twoaccepteddiagnosticcontrols. SharedCIcollects this regression. No broad suite repeated for driver-only changes.",
+              "critical_review": {
+                "path": "/home/tux/bigbrotr-rs/.research/ingest-ack-boundary-qualification-20261101/critical-review.json",
+                "sha256": "c0c5e4d3b9e7124e0180e2e4cbc435154de27aeea96af38f1453984fa3c2a64a"
+              },
+              "actual": {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-ack-21965a0c-r1",
+                "root_terminal": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-ack-21965a0c-r1/root-terminal.json",
+                  "sha256": "523e8aadb99a56bdde40431a7347daf937a486dc741acc0c6002e1df17a3fb9c"
+                },
+                "result": {
+                  "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-ack-21965a0c-r1/out/ack-sync-cases/result.json",
+                  "sha256": "e15b276932d90dce213f0e566d79cc0adbe1b98a910f9e5a34b1d0d1962264c7"
+                },
+                "observed": "Control and EIO bothPASS, each distinctfreshreopen; exact75BWALappend atfsyncindex17, no laterwrite/sync. EIOreturnsCommitUnknown forACK/credit/capacity. Full10rows/seq14 andsingleoriginalpreserved, copiedbeforefreshreader.",
+                "seconds": 1.587198716995772
+              },
+              "limits": "Tracer substitutes fsyncEIO, not actual device writeback/media/powerloss. Kernelpagecache survives. No connectedSQL authority/fault delivery, physicalfunding/OPEN65/fullM1/M2 qualification. Historicalb005 andoriginalfailures unchanged.",
+              "maintained_caller": "Updated producer-ack-fault build profile emits the shared test-tool artifact and invokes the new explicit CLI. Source/syntax/caller review PASS; full cold producer-ack-fault build profile NOT_RUN in this increment. P01-T08/P08-T11 retain clean-checkout tool qualification; current actual run uses separately verified retained219 input, not a fabricated cold-build result."
             }
           }
         },

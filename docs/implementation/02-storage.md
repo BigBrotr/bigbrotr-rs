@@ -260,9 +260,12 @@ One owner serializes exact identity decisions for each writable directory.
   tests plus installed tutorial PASS. Actual application-owner NoSpace R3 now
   passes: a delay-only real-SST gate/refill observes actual write errno28, sticky
   refusal after restoredheadroom and unchanged science/inputs/close custody.
-  Both original setup FAILs remain. Connected SQL/ACK fault proof and the stale
-  external ACK verifier's current-format literal/WAL reconciliation remain here
-  before OPEN65; native-owner proof does not close those or enable growth. See the
+  Both original setup FAILs remain. The current accounted external nativeACK
+  control/EIO/freshreopen now also passes: independent literal13→14/all10rows and
+  exact75BWAL, retained219tool/current7d7d880ddriver, unchangedP306/S1/original.
+  Its [owning report](evidence/p02-producer-recovery-native-20260920.json) keeps
+  historicalb005 separate. Connected SQL/ACK delivery races and physical funding
+  remain before OPEN65; these bounded proofs do not enable growth. See the
   [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
   for actual original-body controls and preserved failures.
   The selected closed-initial continuation now passes on product `7d8e5998`,

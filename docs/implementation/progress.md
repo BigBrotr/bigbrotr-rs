@@ -37,11 +37,17 @@ now uses that fixture and an independently frozen75-byte WAL record. Existing
 accounting controls pass. Independent Astra found no bounded source/envelope
 blocker; exact exported revision now supplies the tree as suggested.
 
-**Real current ACK fault NOT_RUN at this source checkpoint.** Reuse the original
-21965 libtest/context/source identity, separately from the current driver: no
-product rebuild or relabeling. Original b005d91 nine-row/sequence11 evidence stays
-historical. One stale WAL-test diagnostic string can be corrected with the next
-Rust-owning increment; its actual shared-fixture recovery assertion is current.
+**Current native ACK control/EIO/fresh-reopen PASS**, driver7d7d880d and the
+original compiled21965 identity. Exact13→14/all10rows/P306S1/one183B original and
+75BWAL checked independently; EIO refuses ACK/credit/capacity. Outer terminal
+custody/immutable input bytes+fullmetadata PASS, no forced native kill. The
+[producer recovery report](evidence/p02-producer-recovery-native-20260920.json),
+`native_ack_fsync_qualification_20261023.current_accounted_followthrough_20261101`,
+owns exact receipts and limitations. No product rebuild or relabeling. Historical
+b005d91 evidence stays historical. Updated cold build-caller emission is reviewed/
+syntax-checked, not executed; its clean-checkout qualification stays P01-T08/P08.
+One stale WAL-test diagnostic string can join the next Rust-owning increment;
+its actual shared-fixture recovery assertion is current.
 
 ## Resources and next action
 
@@ -58,14 +64,19 @@ Current ACK qualification capsule:
 `.research/ingest-ack-boundary-qualification-20261101/run-ack.py`. It verifies
 retained219 and tracer9b30 ownership/identity before using individual read-only
 mounts; all new DB/trace outputs are persistent and resource/deadline bounded.
-No current ACK container launched yet. Source review agents are finished.
+ACK containerf1ec08d0 stopped/PID0/noOOM/exit0; launcher27808 reaped0/absent;
+all DBs/traces/inputs retained. No current owned local runtime writes. Sol source
+derivation finished; Astra bounded next-increment dependency assessment active.
 
-**Next:** commit this source slice, run its maintained ACK control/EIO/fresh-reopen
-cases with the reviewed envelope and retained219 tool, inspect exact results and
-terminal custody, then record/integrate one coherent result. Observe actual94 CI
-alongside it and audit terminal public logs/artifacts when available. Continue
-P02-T02Step4's pre-staging logical/physicalfunding, persistentunresolveddebt,
-stable-low, boundedLOG, fundedreopen/purge and CW profiles before OPEN65.
+**Next:** finish source/publication checks and integrate this verified ACK slice
+locally. Keep its push grouped with a coherent result after hosted94 finishes:
+the workflow's existing cancel-in-progress would otherwise interrupt that required
+run. Do not dispatch a duplicate or call its pending result PASS. Audit terminal
+public logs/artifacts when available. In parallel, assess/implement the next
+P02-T02Step4 dependency: logical pending preview/reservation before input staging
+and PG reservation under unchanged64cap. Physicalfunding, persistentunresolveddebt,
+stable-low/filesystem coverage, boundedLOG, fundedreopen/purge/CW remain before
+OPEN65; logical quota alone cannot qualify them.
 
 M1 admission→Archive→read→export→restart is demonstrated; P01-T09 acceptance and
 remaining failure/delivery obligations stay explicit. Do not gate M1 on allP02.

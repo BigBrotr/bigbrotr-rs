@@ -78504,6 +78504,22 @@
             "sha256": "9b7000ae4969dbd80f13f61bfbe7164c0959bb27da42cafe665e75b1ef0297d6"
           },
           "state": "stopped/PID0/noOOM/exit0;launcher reaped/absent;481controlsPASS;originalhost-prerequisiteFAIL retained"
+        },
+        "branch_retirement": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/branch-retirement.json",
+          "sha256": "23dbc8ed7e803dbed4ff7bd63aeb1555a599e1ce54e8f297b4eaa90cf4847d25"
+        }
+      },
+      "native_ack_accounted_followthrough_20261101": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-ack-21965a0c-r1",
+        "driver_source": "7d7d880d2d9335c245db67653e50d4b53c3ea2b7",
+        "test_source": "21965a0ccec12d83436e340e3dab3ecdfeb44837",
+        "container": "f1ec08d01a2dc1581eeedb199bc62f1a65e3acf7f042000f77ddd30ca0b3fc19",
+        "state": "stopped/PID0/noOOM/exit0;launcher27808reaped0/absent;immutable5anchorbytes/fullnsmetadata andbothsourceexports unchanged;noCargo/cachemount",
+        "evidence_owner": "p02-producer-recovery-native-20260920.json native_ack_fsync_qualification_20261023.current_accounted_followthrough_20261101",
+        "custody": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-ack-21965a0c-r1/root-terminal.json",
+          "sha256": "523e8aadb99a56bdde40431a7347daf937a486dc741acc0c6002e1df17a3fb9c"
         }
       }
     }

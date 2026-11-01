@@ -757,7 +757,7 @@
         "sha256": "dda683806ecfac78ee30ad2f311a6d4eb1cc3f42b98e0b1aefadc6e01d2ddef7",
         "result": "No candidate in selected9commit/60blob delta; later corrected source and public logs/artifacts still require relevant checks."
       },
-      "remaining": "P02-T02Step4 retains controlled connectedSQL/ACK ambiguity cases before OPEN65/funding/fullrecovery qualification. Reconcile stale external ACK syscall fixture (publication_sync_cases.py historical sequence10/11 and old initial rows) against current mandatory source0/pending-accounting initialization: source/current matching bootstrap reaches13 before ACK,14after. Derive current literal WAL/row oracle independently, preserve older evidence and run actualdriver; do not fit an oracle to observed output. Real NoSpaceR3 is not synthetic fsync/SQL proof. Pre-staging logical/physicalfunding, persistentunresolveddebt, stable-low, boundedLOG/diagnostics, fundedreopen/purge/CW-N1/P1/P2 remain open; allselected later milestones required.",
+      "remaining": "P02-T02Step4 retains connectedSQL/ACK delivery races beyond isolatednativeACK, pre-staging logical/physicalfunding, persistentunresolveddebt, stable-low, boundedLOG/diagnostics, fundedreopen/purge/CW-N1/P1/P2 before OPEN65. Currentformat externalACK oracle/fault/reopen reconciliation is qualified separately; neither it nor actualNoSpaceR3 supplies SQL/media/physicalfunding proof. All selected later milestones required.",
       "current_production_3dc": {
         "source": "3dc3e06bf69ecb2f969521b3645de198cd9913a9",
         "release": "PASS435.964s;parent/worker/source/native/compiler/custody verified",
@@ -834,7 +834,8 @@
         },
         "original_environment_failure": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/closing-controls/result.json",
         "classification": "Host invocation lacked llvm-config, so acceptance-controls FAIL and4following checks NOT_RUN. Correct-environment acceptance run PASS; original retained. No product defect or weakened prerequisite."
-      }
+      },
+      "ack_syscall_followthrough": "Current accounted nativeACK control/EIO/distinctfreshreopen PASS on retained219 tool with driver7d7d880d. Exact13\u219214/all10rows/P306S1/oneoriginal/75BWAL; owning producer-recovery report native_ack_fsync_qualification_20261023.current_accounted_followthrough_20261101 records detail."
     }
   }
 }
