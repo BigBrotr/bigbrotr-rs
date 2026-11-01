@@ -78469,8 +78469,9 @@
           {
             "path": ".research/ingest-native-factory-sol-20261101",
             "branch": "work/ingest-native-factory-sol-20261101",
-            "head": "5e4dc634331e0291880613ed66ed35864fe5fd00",
-            "state": "Clean original factory/test author commits merged; no separate pending changes."
+            "head": "d4502ff7af23b8177d51a8b2051127d21c62f5e0",
+            "state": "Clean originalfactory/tests plus newmaintainedexperimentalgate/controller commitmerged;allworkpreserved.",
+            "original_merged_author_tip": "5e4dc634331e0291880613ed66ed35864fe5fd00"
           },
           {
             "path": ".research/ingest-native-recovery-guard-astra-20261101",
@@ -78482,17 +78483,20 @@
         "evidence_root": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101",
         "release_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-50e98268-workspace",
-        "status": "3DC_RELEASE_WORKSPACE_TUTORIAL_PASS;219_TESTONLY_COMPILE_PASS;ACTUALPOSIX_R1_R2_FAIL_RETAINED",
+        "status": "LOCAL_BOUNDED_GUARD_QUALIFIED_WITH_REAL_POSIX_R3;INTEGRATION_PENDING",
         "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.application_ownership_20261101",
-        "resources": "All50e/3dc/219compilerlaunchers reaped andownedcontainersstopped/PID0/noOOM;115released/reacquired,original4ELFfullmetadata/bytes unchanged.3dctutorial18containersterminal/bridgeempty;R1/R2faultcontainers terminalexit101,alloriginalDB/input/logfilesretained. Noownedengine/compiler/CIobserveractive atcheckpoint; boundedgateimplementation/review pending.",
+        "resources": "Allcompiler,gate-Ccompile,tutorial,R1/R2/R3containers stopped/PID0/noOOM;launchersreaped andCIobserverterminal. Cache115released/reacquired,original4ELFbytes/fullmetadataunchanged;gatebuilddidnotmountCargo/cache. R3Root87830reaped0 andpressurefilecleanedafterjoin. Noownedengine/compiler/autonomoussubagentwritespending. Preserve allrawfailures/data/worktrees;noadditionaldeletion.",
         "retention": "Preserve all original compile/runtimeFAILs,3dcrelease/worker/candidate/testELFs/current219testtool/sourcearchives/rawcaseDBs/input/logs and allworktrees. No newdeletion or mtimeoptimization.",
         "current_release_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-3dc3e06b",
         "current_workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-fail-stop-3dc3e06b-workspace",
         "test_only_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-test-only-21965a0c",
         "actual_posix_roots": [
           "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-3dc3e06b-r1",
-          "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r2"
-        ]
+          "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r2",
+          "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r3"
+        ],
+        "gate_compile_root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-sst-delay-gate-d4502ff7",
+        "gate_source": "d4502ff7af23b8177d51a8b2051127d21c62f5e0"
       }
     }
   },

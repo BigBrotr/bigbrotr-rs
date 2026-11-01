@@ -719,7 +719,7 @@
       }
     },
     "application_ownership_20261101": {
-      "status": "LOCAL_PRODUCTION_AND_RUST_PASS_REAL_APPLICATION_FAULT_PENDING",
+      "status": "LOCAL_BOUNDED_APPLICATION_GUARD_QUALIFIED_INTEGRATION_PENDING",
       "code_source": "7de69cc6d6173a5cdf100fe90458da3851b9df0c",
       "task": "P02-T02Step4 application-owned native failure prerequisite under unchanged64 lifetime cap",
       "implementation": "Fallible mandatory guard on final DB options before inspection/open; retained DB/resource/custody order; post-open census refusal; native write/replay/certification/witness/ACK and selected connected recovery/closure/retirement delivery gates. Common sidecar scanner checks health through completed digest. Healthy samples are not atomic dispatch/COMMIT permits; unknown outcomes preserve exact identity and original inputs.",
@@ -757,7 +757,7 @@
         "sha256": "dda683806ecfac78ee30ad2f311a6d4eb1cc3f42b98e0b1aefadc6e01d2ddef7",
         "result": "No candidate in selected9commit/60blob delta; later corrected source and public logs/artifacts still require relevant checks."
       },
-      "remaining": "Real application backgroundNoSpace/stickydelivery qualification remains incomplete. Controlled connectedSQL/ACK ambiguity cases stay P02-T02Step4 before OPEN65/funding/fullrecovery qualification. Existingphysical/log/reopen/purge/CW-N1/P1/P2 and all later selected milestones remain open.",
+      "remaining": "P02-T02Step4 retains controlled connectedSQL/ACK ambiguity cases before OPEN65/funding/fullrecovery qualification. Reconcile stale external ACK syscall fixture (publication_sync_cases.py historical sequence10/11 and old initial rows) against current mandatory source0/pending-accounting initialization: source/current matching bootstrap reaches13 before ACK,14after. Derive current literal WAL/row oracle independently, preserve older evidence and run actualdriver; do not fit an oracle to observed output. Real NoSpaceR3 is not synthetic fsync/SQL proof. Pre-staging logical/physicalfunding, persistentunresolveddebt, stable-low, boundedLOG/diagnostics, fundedreopen/purge/CW-N1/P1/P2 remain open; allselected later milestones required.",
       "current_production_3dc": {
         "source": "3dc3e06bf69ecb2f969521b3645de198cd9913a9",
         "release": "PASS435.964s;parent/worker/source/native/compiler/custody verified",
@@ -806,7 +806,26 @@
           "custody": "Original11DBfiles including2inputs verified;exit101/PID0/noOOM;allrawlogs/inputs retained."
         }
       ],
-      "next_actual_fault": "Implement/review a one-shot external delay-only gate after real fresh writableSSTopen/beforefdreturn. Verifypositivefd/path/dev/ino/size0, refill SAMEownedtmpfs throughrawENOSPC/available0 afterWALtrim, thenrelease withinunchanged30s. Require actualSSTwrite/pwrite\u22121errno28 plus unchangednativeNoSpace/guard/sticky/data/input/closepredicates; no fakeEnv/errors. Reuse current219ELF/3dc product, preserve bothFAILs. NOT_RUN."
+      "next_actual_fault": "The selected native-owner application fault is qualified by R3; do not rerun unchanged proof ritualistically. Reuse current producer/worker/test/gate identities. Full installed-service/connected authority fault qualifications remain at their existing task gates.",
+      "actual_posix_r3": {
+        "status": "PASS_APPLICATION_OWNER_REAL_POSIX_NOSPACE_AND_TERMINAL_CUSTODY",
+        "test_source": "21965a0ccec12d83436e340e3dab3ecdfeb44837",
+        "reused_production_source": "3dc3e06bf69ecb2f969521b3645de198cd9913a9",
+        "gate_source": "d4502ff7af23b8177d51a8b2051127d21c62f5e0",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-native-posix-21965a0c-r3",
+        "terminal_sha256": "834d5788acef1aeb52122163460cc2e66da325e8e3ccdd2548c090c81ee03376",
+        "gate_compile_receipt": {
+          "path": "/home/tux/bigbrotr-rs/.research/ingest-native-fail-stop-qualification-20261101/sst-delay-gate-d4502ff7/compile-qualification.json",
+          "sha256": "ee37bf62213768dd0116f53472e4e576d3873c821e322a0765f091e84cd64102"
+        },
+        "gate_library_sha256": "6d90e81dfe1087c2b885226ec593da8d2c23b9160119c36f06e9116629eeae50",
+        "controller_sha256": "b676a136f629651b460ce9ed18f1dc5a53e902238b9fe639e5bcb0749100fe89",
+        "observed": "One successful empty writableSSTopen/BGtid11/fd9/dev69/ino17. Controller actually refilled2306048bytes afterWALtrim to rawENOSPC/available0, released; real native write1563returned\u22121errno28. No syscall result/error or Env replacement.",
+        "application": "NativeNoSpace/background-error1/ownedguardtrue; restored headroom60514304bytes still refuses newrequest2 append/stage, bootstrap/replay/checkpoint/credit/ACK. Full10rows/seq13/accounting/twooriginals preserved; native destruction returned/grant0 at1.060277s.",
+        "custody": "Outer87830reaped0/1.726854s;container07018982stopped/PID0/noOOM/exit0;10retainedregularDBfiles/2originals hashes verified;ownedpressurefile unlinked afterjoin;actualtest/library/controllerhashes unchanged.",
+        "controls": "17syntheticgate/journal/custodycontrolsPASS;sourcegate14purecontrolsPASS. Sharedacceptance suite now collects17through maintainedtest_native_posix_fixture.py; real C/NoSpace remains dedicatedqualification, not an ordinary-suitePASS.",
+        "limits": "Actual application owner/default-POSIX tmpfs fault under controlled delay-only scheduling. Not installed-servicefault, SQL-COMMITrace, fundedreopen/purge, harddisk/RSSreserve, powerloss, broadcapacity, new-platform or wholeM1/M2/goal qualification. OriginalR1/R2FAILs remain."
+      }
     }
   }
 }

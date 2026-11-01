@@ -168,32 +168,32 @@ It requires a positive native NoSpace status and failed guard, then checks stick
 refusal after restoring headroom, unchanged rows/accounting/inputs, and close/grant
 release. It preserves native files and original inputs even on assertion failure.
 
-Current qualification retains two failed setup attempts: the temporary-file
-wrapper originally hid raw errno (corrected by writing through its `File`), then
-a full-before-flush volume still admitted the tiny SST after inactive-WAL close
-trimmed preallocation. Neither attempt observed native NoSpace or qualifies the
-guard. The external delay-only SST-open gate/refill is under qualification; the
-entrypoint below alone is not a reliable fault trigger. Its deadline and native
-NoSpace/state/input/close oracles remain unchanged. See the current application
-section in the [binding report](../implementation/evidence/p02-native-rocks-binding-20260917.json).
+Actual qualification uses the maintained [delay-only SST gate and controller](../../experiments/native-rocks-binding/posix_sst_gate.md).
+The first attempt lost raw errno in a temporary-file wrapper (fixed by using its
+`File`); the second filled before flush but WAL close released preallocation,
+allowing the small SST to succeed. Both remain FAIL. The corrected fixture gates
+a real successful empty SST open, refills after WAL trimming, and requires an
+actual SST write returning ENOSPC, plus all existing application oracles.
 
-Provide an empty, owned **64 MiB tmpfs mountpoint**, a separate empty owned
-persistent evidence directory on another filesystem, a fixed C locale and an
-outer process/container deadline. Never use a shared or production filesystem.
-Run from an exact-source build with the declared compiler/native dependencies:
+Linux AMD64 test source21965/gate sourced450 passes that bounded real case,
+reusing unchanged production source3dc. The [binding report](../implementation/evidence/p02-native-rocks-binding-20260917.json)
+records the precise source/tool/ELF identities and syscall witness. The current
+library test does not embed build metadata: its verified Cargo-artifact/generated-
+metadata/source-manifest/ELF receipt provides the external provenance. An ordinary
+workspace run still ignores this dedicated case; compilation or simulated-latch
+success cannot count as execution.
 
-```sh
-LC_ALL=C BIGBROTR_NATIVE_POSIX_ROOT="$POSIX_ROOT" \
-  BIGBROTR_NATIVE_POSIX_EVIDENCE="$EVIDENCE_ROOT" \
-  cargo test --locked -p bigbrotr --lib \
-  storage::rocks::store::native_posix_tests::real_posix_background_nospace_latches_application_owner \
-  -- --exact --ignored --nocapture
-```
+Follow the linked maintained procedure with an empty owned **64 MiB Linux tmpfs**,
+separate empty persistent evidence/control directories, the declared test ELF and
+compiled C fixture, a fixed C locale and joined outer deadline/custody. Never use
+a shared or production filesystem. Filling before flush alone is insufficient.
+The gate preserves real syscall arguments/results/errno and changes scheduling
+only; it supplies no fake Env/error or production option.
 
-This dedicated qualification is explicitly ignored by ordinary workspace tests.
-Its result must be recorded separately; compilation or simulated-latch success
-cannot count as execution. It does not qualify OPEN65, physical funding, general
-concurrency, power loss or the full installed product journey.
+This qualifies the recorded default-POSIX application-owner failure/refusal/input/
+close path. It does not qualify an installed-service fault, connected SQL COMMIT
+races, OPEN65, physical funding, general concurrency, power loss or the full
+installed product journey. Existing tasks retain those obligations.
 
 ### Disk-growth evidence required for OPEN-prefix intake
 

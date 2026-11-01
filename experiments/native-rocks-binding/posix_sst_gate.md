@@ -1,7 +1,11 @@
 # Experimental application SST delay gate
 
-This Linux AMD64 fixture has not yet qualified an actual fault. It addresses one
-specific scheduling problem in the application-owner tmpfs test: closing an old
+This Linux AMD64 fixture qualified an actual application-owner SST write ENOSPC
+on 2026-11-01: test source21965, gate sourced450, reused product3dc. The
+[owning report](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json)
+records exact inputs, syscall/application witnesses and original failed attempts.
+This is a bounded qualification, not OPEN65 or general capacity evidence.
+It addresses one specific scheduling problem in the application-owner tmpfs test: closing an old
 WAL before an SST flush can release preallocated pages after the test's first
 ENOSPC observation. A full-filesystem observation before that close does not
 establish that the subsequent SST write encounters ENOSPC.
@@ -44,10 +48,15 @@ python3 -B experiments/native-rocks-binding/test_posix_sst_gate.py
 ```
 
 These controls cover synthetic journal rejection and cleanup failures. They do
-not load the shim, execute RocksDB or qualify POSIX NoSpace.
+not load the shim, execute RocksDB or qualify POSIX NoSpace. The same17
+controls are collected by `tests/acceptance/test_native_posix_fixture.py` in the
+shared cheap GitHub/local acceptance suite; actual fault execution stays a
+dedicated qualification at P02-T02/P01-T08 and P08-T11/T12.
 
 After source review, compile only the C fixture in the pinned qualification
-compiler image. The existing product and application library-test ELFs remain
+compiler image (the declared Linux toolchain is built from
+[the acceptance Dockerfile](../../tests/acceptance/linux/Dockerfile); record the
+actual resulting image/tool identity). The existing product and application library-test ELFs remain
 immutable inputs. For example, with an empty owned output directory and the
 qualification's verified image identity:
 
