@@ -71,7 +71,10 @@ fn simulated_background_latch_and_foreground_unknown_independently_refuse_bootst
         assert_eq!(store.db.latest_sequence_number(), sequence);
         assert_eq!(store.accounting, accounting);
         assert_eq!(rows(&store), before);
-        assert_eq!(b.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            b.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
     }
 }
 
@@ -120,7 +123,10 @@ fn simulated_latch_at_final_dispatch_check_retains_original_without_native_commi
         .collect();
     assert_eq!(files.len(), 1);
     assert_eq!(std::fs::read(&files[0]).unwrap(), original);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -169,7 +175,10 @@ fn simulated_latch_during_exact_replay_refuses_success_and_retains_native_state(
     assert_eq!(store.db.latest_sequence_number(), sequence);
     assert_eq!(store.accounting, accounting);
     assert_eq!(rows(&store), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -279,5 +288,8 @@ fn simulated_latch_after_synced_bootstrap_withholds_checkpoint_without_claiming_
             .count(),
         1
     );
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }

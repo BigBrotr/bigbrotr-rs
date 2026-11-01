@@ -44,9 +44,6 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
     );
     assert!(matches!(result, Err(BootstrapError::AuthorityUnavailable)));
     assert_eq!(store.db.latest_sequence_number(), before);
-    drop(store);
-    let mut store =
-        IngestStore::reopen(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let limits = RequestDecodeLimits {
         values: bigbrotr_model::codec::FactDecodeLimits {
             max_encoded_bytes: 8192,
@@ -66,8 +63,8 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
     };
     assert_eq!(recovered, original);
     assert_eq!(store.db.latest_sequence_number(), before);
-    // Recovered bytes drive the real mutation primitive. This test callback
-    // supplies only fixture authority, not a new production incarnation.
+    // Under continuous custody, exact recovered bytes and retained funding may
+    // complete the original operation. This supplies native fixture authority.
     let receipt = store
         .bootstrap_dictionaries(
             id,
@@ -129,8 +126,17 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
     assert_eq!(replay.receipt().encode_persistent(8192).unwrap(), expected);
     assert_eq!(replay.native_outcome().unwrap().bytes(), expected);
     assert_eq!(store.db.latest_sequence_number(), committed);
-}
 
+    drop(replay);
+    drop(store);
+    let store = IngestStore::reopen(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let retained = store
+        .read_request_input(request(), digest, limits, grant(&b, MIB, 0))
+        .unwrap();
+    let (found, recovered, _grant) = retained.into_parts();
+    assert_eq!(found, request());
+    assert!(matches!(recovered,MutationIntent::Evidence(value) if value==original));
+}
 #[test]
 fn complete_signed_and_rejected_inputs_survive_native_admission_and_reopen() {
     use bigbrotr_model::{

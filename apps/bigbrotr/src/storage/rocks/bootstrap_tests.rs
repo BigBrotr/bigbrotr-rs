@@ -95,6 +95,12 @@ pub(super) fn budget() -> ResourceBudget {
     )
 }
 pub(super) fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
+    // Only the retained owner profile gains long-lived DATA, never operations.
+    let data = if native >= 128 * MIB {
+        data + PENDING_QUOTA_OWNER_DATA_BYTES
+    } else {
+        data
+    };
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }
@@ -394,7 +400,10 @@ fn authority_is_checked_again_before_any_native_write() {
     assert!(matches!(result, Err(BootstrapError::AuthorityUnavailable)));
     assert!(checks >= 2);
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -576,7 +585,10 @@ fn bounds_wrong_epoch_and_unallocated_ordinals_leave_the_initial_directory_uncha
         Err(BootstrapError::InvalidIntent)
     ));
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]

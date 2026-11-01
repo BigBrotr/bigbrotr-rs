@@ -27,6 +27,12 @@ fn request(slot: u8, sequence: u64) -> ProducerRequestId {
     }
 }
 fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
+    // Only the retained owner profile gains long-lived DATA, never operations.
+    let data = if native >= 128 * MIB {
+        data + PENDING_QUOTA_OWNER_DATA_BYTES
+    } else {
+        data
+    };
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }
@@ -1047,7 +1053,10 @@ fn simulated_background_latch_at_event_replay_delivery_refuses_the_retained_resu
     assert_eq!(store.accounting, accounting);
     assert_eq!(kv(&store), before);
     assert_eq!(inputs(&path), originals);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
 }
 #[test]

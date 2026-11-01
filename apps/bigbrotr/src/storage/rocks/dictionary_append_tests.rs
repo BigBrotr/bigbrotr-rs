@@ -196,7 +196,10 @@ fn simulated_background_latch_at_dictionary_replay_delivery_refuses_both_receipt
         assert_eq!(store.accounting, accounting);
         assert_eq!(rows(&store), before);
         assert_eq!(inputs(&path), originals);
-        assert_eq!(b.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            b.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
         assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
     }
 }
@@ -987,14 +990,17 @@ fn dictionary_preparation_reuses_full_values_and_reserves_same_kind_ordinals_wit
     );
     assert_eq!(
         b.snapshot().used().data_bytes(),
-        4 * MIB,
+        4 * MIB + crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES,
         "sealed mappings retain their grant"
     );
     let receipt = append(&mut store, &b, 2, prepared.intent()).unwrap();
     assert_eq!(receipt.receipt().batch().unwrap().records().len(), 3);
     drop(receipt);
     drop(prepared);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     let before = rows(&store);
     let mut preparation = store
         .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
@@ -1119,7 +1125,10 @@ fn simulated_background_latch_refuses_retained_dictionary_preparation_cache_and_
         assert_eq!(store.accounting, accounting);
         assert_eq!(rows(&store), before);
         assert_eq!(inputs(&path), originals);
-        assert_eq!(b.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            b.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
         assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
     }
 }
@@ -1284,7 +1293,10 @@ fn dictionary_preparation_bounds_owned_capacity_cancellation_and_invalid_descrip
         AdmissionError::AuthorityUnavailable
     );
     assert_eq!(rows(&store), before);
-    assert_eq!(b.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        b.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]

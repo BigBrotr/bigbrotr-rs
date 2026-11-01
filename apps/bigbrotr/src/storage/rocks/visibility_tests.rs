@@ -52,10 +52,16 @@ fn visibility_lookup_reopens_exact_mapping_without_writing_or_allocating_source_
         matches!(mapping.entry().descriptor(), DictionaryDescriptor::Visibility { class }
         if class.as_str()=="restricted")
     );
-    assert_eq!(budget.snapshot().used().data_bytes(), data);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        data + crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(store.db.latest_sequence_number(), before);
     drop(mapping);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     let absent = bigbrotr_model::QualifiedRef {
         ordinal: Ordinal::new(2).unwrap(),
         ..scope()
@@ -67,7 +73,10 @@ fn visibility_lookup_reopens_exact_mapping_without_writing_or_allocating_source_
             .is_none()
     );
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -150,7 +159,10 @@ fn visibility_lookup_preserves_limit_retry_uncertainty_and_authority_boundaries(
     );
     assert_eq!(checks, 2);
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -193,7 +205,10 @@ fn simulated_background_latch_at_visibility_delivery_returns_no_mapping() {
     assert_eq!(store.accounting, accounting);
     assert_eq!(kv(&store), before);
     assert_eq!(inputs(&path), originals);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
 }
 

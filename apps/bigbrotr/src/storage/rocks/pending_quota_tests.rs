@@ -573,3 +573,22 @@ fn invalid_policy_never_rounds_or_defaults_into_an_available_owner() {
         );
     }
 }
+
+#[test]
+fn binding_requires_retained_owner_data_while_raw_reads_remain_available() {
+    use crate::runtime::ResourceRequest;
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let permit = b
+        .try_acquire(ResourceRequest::data(0, 1, 128 * MIB).unwrap())
+        .unwrap();
+    let mut store =
+        IngestStore::initialize(&root.path().join("db"), manifest(), native(), permit).unwrap();
+    assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
+    assert_eq!(
+        store.bind_pending_quota(policy(100, 50, 99)),
+        Err(PendingQuotaError::InsufficientReservation)
+    );
+    assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Unfunded);
+    assert_eq!(store.db.latest_sequence_number(), 3);
+}

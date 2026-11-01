@@ -146,7 +146,10 @@ fn lineage_refuses_a_simulated_background_latch_at_the_completed_input_census() 
     );
     assert_eq!(r.store.accounting, accounting);
     drop(lineage);
-    assert_eq!(f.budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        f.budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(f.budget.snapshot().used().native_bytes(), 128 * MIB);
 }
 

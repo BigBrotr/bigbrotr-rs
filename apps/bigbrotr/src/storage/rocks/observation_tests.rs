@@ -217,9 +217,15 @@ fn observation_reopens_committed_bundle_and_matches_the_actual_source() {
             Err(ObservationError::ClockMismatch)
         );
         assert_eq!(store.db.latest_sequence_number(), before);
-        assert_eq!(budget.snapshot().used().data_bytes(), data);
+        assert_eq!(
+            budget.snapshot().used().data_bytes(),
+            data + crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
         drop(context);
-        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            budget.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
     }
 }
 
@@ -476,7 +482,10 @@ fn observation_distinguishes_absence_corruption_limits_and_lost_authority_withou
         Some(AdmissionError::StateMismatch)
     );
     assert_eq!(store.db.latest_sequence_number(), before);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
 }
 
 #[test]
@@ -527,6 +536,9 @@ fn simulated_background_latch_at_observation_delivery_returns_no_receiver_contex
     assert_eq!(store.accounting, accounting);
     assert_eq!(kv(&store), before);
     assert_eq!(inputs(&path), originals);
-    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(
+        budget.snapshot().used().data_bytes(),
+        crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+    );
     assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
 }

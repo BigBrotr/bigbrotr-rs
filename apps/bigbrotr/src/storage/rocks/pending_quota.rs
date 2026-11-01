@@ -10,10 +10,14 @@ use std::{
 };
 
 const MAX_REQUESTS: usize = 64;
+/// Retained application memory for the bounded request/digest ledger. This is
+/// carried by the native owner's DATA grant until its actual directory closes.
+pub const PENDING_QUOTA_OWNER_DATA_BYTES: u64 = 64 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PendingQuotaError {
     InvalidPolicy,
+    InsufficientReservation,
     Unfunded,
     RecoveryBlocked,
     PolicyMismatch,
@@ -220,6 +224,7 @@ impl IngestStore {
         &mut self,
         policy: PendingQuotaPolicy,
     ) -> Result<(), PendingQuotaError> {
+        self.require_pending_quota_owner_reservation()?;
         let counted = super::pending_accounting::census(&self.db, &self.manifest)
             .map_err(PendingQuotaError::Accounting)?;
         if counted != self.accounting {
@@ -266,6 +271,7 @@ impl IngestStore {
         &mut self,
         policy: PendingQuotaPolicy,
     ) -> Result<(), PendingQuotaError> {
+        self.require_pending_quota_owner_reservation()?;
         self.require_pending_accounting()
             .map_err(PendingQuotaError::Accounting)?;
         let manifest_sha256 = self.quota_manifest();
@@ -371,6 +377,13 @@ impl IngestStore {
                     staged: false,
                 });
             }
+        }
+        Ok(())
+    }
+    fn require_pending_quota_owner_reservation(&self) -> Result<(), PendingQuotaError> {
+        if self._reservation._permit.request().units().data_bytes() < PENDING_QUOTA_OWNER_DATA_BYTES
+        {
+            return Err(PendingQuotaError::InsufficientReservation);
         }
         Ok(())
     }

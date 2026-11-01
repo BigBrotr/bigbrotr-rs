@@ -318,7 +318,10 @@ fn simulated_background_latch_at_certification_delivery_returns_no_proof_or_chec
         assert_eq!(store.accounting, accounting);
         assert_eq!(kv(&store), before);
         assert_eq!(inputs(&path), originals);
-        assert_eq!(budget.snapshot().used().data_bytes(), 0);
+        assert_eq!(
+            budget.snapshot().used().data_bytes(),
+            crate::storage::rocks::store::PENDING_QUOTA_OWNER_DATA_BYTES
+        );
         assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
     }
 }
