@@ -1,88 +1,77 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** full selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 remain: Sol/xhigh default, bounded Astra/xhigh critical
-review; public development repository, no official release/package/deployment.
+Q37/Q38/Q40/Q41/Q42: Sol/xhigh default, bounded Astra/xhigh critical review;
+public development repository, no official release/package/deployment.
 
-## Baseline and current increment
+## Current result and repository
 
-Verified/pushed main remains **064d054d101932d50defabce0fb626f93f42ed81**.
+**Logical pending-quota/recovery within lifetime64 is locally qualified.**
+Request/digest/current-policy credit precedes originals and PG reservations;
+held retries retain debt/amount, unknown writes refuse, zero-growth replay stays
+available. Complete original/native/PG proof gates reopened intake. Rejected
+positive demand preserves the below-low timer; actual equality/failed/backwards
+observations and policy/recovery changes keep their invalidation rules.
+
+Verified/pushed main remains064d054d before this coherent integration.
 [Hosted064](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189)
-completed33foundation+20scopePASS,3unselectedSKIP,0requiredNOT_RUN; the
-[CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact identities,
-platform counts and bounded public-output audit. No observer remains.
+completed33foundation+20scopePASS; three latest hosted runs stillsuccess on fresh
+GitHub inspection. The new significant merged snapshot needs an actual hosted
+run after push. See [CI report](evidence/p01-ci-hosted-foundation-20261026.json).
 
-M1 scoped collection is QUALIFIED per the phase index and retained review.
-Current work closes logical pending-quota/recovery under the existing lifetime64
-profile, not physical reserve or OPEN65. Integration worktree
-`.research/ingest-logical-ceiling-20261101`, branch
-`work/ingest-logical-ceiling-20261101`, last code HEAD **3908415b** before this
-checkpoint. Enclosing Git identifies the documentation revision. Nothing from
-this partial capability is integrated/pushed on main.
+Integration worktree `.research/ingest-logical-ceiling-20261101`, branch
+`work/ingest-logical-ceiling-20261101`; enclosing Git identifies current revision.
+Qualified product **51d24e2c1f5e6aea3e0c8279410d9d7592d2cf6b**. Original test47f7338a,
+fixture1c96394f and socket15427db6 ancestry now merged. These follow-ups change
+one cfg(test) assertion and noncompiled harness/docs, not product behavior.
 
-## Actual results and remaining defects
-
-Exact product840 release/worker PASS. **Full unfiltered Rust workspace on
-`eb7754046cc9754426d210b805f3c057412494c4`:1447PASS/0FAIL/4ignored**,94summaries;
-application library645PASS/3ignored. Strict all-target Clippy and Rustdoc PASS.
-Only the cfg(test) unused import differs from product840; product/worker were
-reused without rebuilding or relabeling. Original aba632PASS/11FAIL and840
-strict-Clippy import FAIL remain preserved. Funding/timestamp/held-credit retry
-regressions now pass; this is not complete quota/recovery qualification.
-
-Installed840 r1:6PASS/1FAIL/5NOT_RUN, fixture starts history before native startup
-observation releases capacity. Shared completed-reader barrier corrected in
-**1b3bb70b**,144targetedcontrolsPASS, critical review complete. Installed r2 with
-that harness: **ordinary read/export and restart baseline PASS**, then successor
-submission fails; total8PASS/1FAIL/3NOT_RUN. Configured recovery stability is30s,
-but submission begins0.86s after activation with a25s bound. Off-case NOT_RUN.
-
-Separately, critical source diagnosis confirms a **product liveness defect**:
-positive refusal while already pressure-latched resets the stable-low timestamp,
-so repeated Sync attribution attempts can prevent recovery indefinitely. An
-unadmitted proposal creates no debt/effects and must preserve the observer timer.
-Fresh high-ceiling pressure entry and actualP+held>=low, failed/backwards
-observations and policy/recovery changes must retain their proper resets.
-The r2 deadline failure alone does not empirically prove indefinite starvation.
-
-Original native04d206fd/a6403152 and fixture1b3bb70b/a1cdebc4 are now merged
-with original ancestry. The pressure timer correction, deterministic native
-controls, three real positive proposals in existing healthy socket modes and
-independent early/late-resume guards passed bounded critical source review.
-The fixture performs a setup-only same-owner/current-policy full interval before
-unchanged client clocks; no native Available claim or live-writer census.
-Preserve25s submission,40s ordinary/12s export and configured30s stability.
-New corrected native/connected/installed runtime remains NOT_RUN.
+## Evidence and limits
 
 The [producer report](evidence/p02-producer-recovery-native-20260920.json),
-`logical_pending_quota_20261101`, owns exact receipts and prior scoped evidence:
-f022healthy7/7,310fourrealPGcases, complete-census901source fix and194fresh socket
-fixture. Current six-casePG/three-mode socket/new successor qualification remains
-NOT_RUN. Reuse unaffected scope; no prior PASS closes these new defects.
+`logical_pending_quota_20261101`, owns exact identities, receipts and failures:
+
+- Product51 release/worker and private CLI/probe compile/strictClippy PASS.
+- Test47:347nativePASS/0FAIL/2ignored/299filtered; strict all-target workspace
+  Clippy/Rustdoc PASS. Old fullRust1447PASS/4ignored at sourceeb remains valid for
+  its unchanged scope; no new-source fullRust claim replaces required hosted CI.
+- Six realPG recovery/refusal cases PASS, including separate foreign-dataset
+  request/outcome tails;13native rows/262B original/all83tables+xmin preserved.
+- Three actual signed/forged/duplicate socket modes PASS. Appended/interned owners
+  preserve state/debt on normal positive proposals near0/10/20s, immediately replay
+  known zero growth, then resume after configured30s (30.018332/30.019238s).
+- Installed on/off successor journeys each12/12PASS: exact authorization,
+  history/export, same-storeepoch2/resend, CAPIscience, Archivecatchup/exactretry
+  andsuccessorhistory. Onharnesse50; off1c963 independently preserves old-frame
+  ExistingProof7refs and wholequantum11refs, with2successor mutationrequests.
+
+All original FAILs remain: funding retries, cfgtest lint/error-context mistakes,
+startup capacity race,25s-vs30s setup, naturally expired historicallease,
+off third-receipt assumption, omittedauthentication_revision and labmissing
+browser-session DELETE. Current contracts/independent replays justify fixes;
+no deadline, stability, oracle, authority or data guarantee was weakened.
+
+M1 scoped collection remains QUALIFIED. This logical subgate supplies no physical
+readiness/reserve or OPEN65 permission. Physicald/R,persistentA,funded reopen/purge,
+CW-N1/P1/P2/OPEN65 remainP02-T02Step4, load/maintenanceStep8/P02-T09; portable
+harness/deliveryP01-T08/P08/P10. Admission-cost/ClickHouse/coordinator follow-through
+keeps its existing P01-T05/P02 owners. All selected later phases remain open.
 
 ## Custody and next action
 
-Root test tool12114 reaped0; containerace54e48 stopped/PID0/noOOM, cache released.
-Installed r2 tool17819 reaped1;21containersstopped/PID0/noOOM,1350commandsjoined,
-1356recordedPIDs/groups absent, no owned native child, borrowed bridge empty.
-R1 is likewise stopped/retained. No compiler/engine/CIobserver currently active;
-all bounded source agents completed; author worktrees are clean/retained.
-Original4cacheELF bytes/fullmetadata independently rechecked with O_NOATIME.
+All local compiler/probe/PG/client/installed tools are reaped andownedcontainers
+stopped/PID0/noOOM; idlelabclient143 is controlled teardown. Installedon/off
+26containers each closed, all recordedPIDs/groups/nativechildren absent, borrowed
+bridge empty at custody checks. Cachefree; original4ELF bytes/fullmetadata preserved
+withO_NOATIME. Agents completed; no autonomousdevelopment or CIobserver active.
 
-All .research, original failures, DBs, input/log captures and author worktrees
-remain; see [inventory](../research/laboratory-inventory.json). Capsule:
-`.research/ingest-logical-ceiling-qualification-20261101`. Root keeps one integrator;
-original testeb, fixturea1 and nativea640 ancestry is retained on the integration
-branch, separate from unqualified main. Monitor556GiB
-retirement already reconciled; no new cleanup/Git maintenance/mtime normalization.
+Retained .research, rawFAIL/PASS captures, DBs, originals, sourceworktrees and
+ownednetworks are in the [inventory](../research/laboratory-inventory.json).
+Capsule `.research/ingest-logical-ceiling-qualification-20261101` links exact
+receipts. No cleanup/Gitmaintenance/mtime normalization underway.
 
-**Next:** bind the actual reviewed source, then one fresh release/probe and
-affected allRocks tests plus strict workspace Clippy/Rustdoc, sixPG, stable socket
-and installed on/off qualification.
-Reuse the full840/eb Rust evidence for unchanged responsibilities. Once these
-quota/recovery failures close, implement **P03-T05Step2**: consume the durable
-continuation so a bounded next quantum reaches older signed events through a
-real capped relay. No all-P02 barrier. Interval succession/partitioning, adoption,
-fleet/live/import work stay at their existing P03 owners; physicald/R,persistentA,
-funded reopen/purge/CW-N1/P1/P2/OPEN65 remain P02-T02Step4, broader load/maintenance
-Step8/P02-T09, portable delivery P01-T08/P08/P10. Scope and guarantees unchanged.
+**Next:** finish mergedportable checks and publication-input audit, commit/push
+this coherent result tomain and start bounded hostedCI observation. Then implement
+**P03-T05Step2**: consume durable continuation so a next bounded quantum reaches
+older signed events through a real capped relay. Use actualdependencies; no
+all-P02 barrier, extraaudit or physical-qualification detour. Preserve later
+interval succession/partitioning, adoption, live/fleet/import tasks and full goal.
