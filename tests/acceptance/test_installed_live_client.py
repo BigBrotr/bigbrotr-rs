@@ -27,10 +27,14 @@ LEGACY_ACTIONS = ['data.read', 'policy.change', 'principals.manage', 'roles.cont
 PASSWORD = 'Independent supplied password 2026 '
 SESSION = dict(format='bigbrotr-cli-session/1', origin='http://127.0.0.1:18081',
     session='cd' * 32, csrf='ef' * 32)
-# Independent pending-plan observation; this wiring control supplies no relay outcome.
+# Independent profile2 pending plan; the accepted selector ends at86399 even
+# though the job is accepted later. This wiring control supplies no relay outcome.
 JOB_ACCEPTED_AT_US = '200000999999'
-QUANTUM_STATUS = dict(format='bigbrotr-linear-quantum-status/1', quantum_number='1',
-    scope_id='34' * 16, lower='0', upper='86400', horizon='200000', result='pending',
+QUANTUM_STATUS = dict(format='bigbrotr-linear-quantum-status/2', quantum_number='1',
+    scope_id='34' * 16, entry_kind='request', disposition=None,
+    lower='0', upper='86400', window_end='86400', horizon='86400', window_width='86400',
+    query_budget=128, queries_spent=1, attempted_prefix='0', gap_count=0,
+    pending_work='request_pending', pending_interval=['0', '86400'], result='pending',
     terminal=None, gap=None, continuation_upper=None, retained_events=None,
     classified_prefix=None, coverage='pending')
 
@@ -52,7 +56,8 @@ class LiveClientControls(unittest.TestCase):
             expected_principal_id=PRINCIPAL, expected_actions=ACTIONS)
         (self.profile_directory / 'fixture-profile.json').write_text(json.dumps(self.profile))
 
-    def exercise(self, *, profile=True, config='1', policy='1', changed_me=None, leak=None, live_index_proof=False):
+    def exercise(self, *, profile=True, config='1', policy='1', changed_me=None,
+            changed_quantum=None, leak=None, live_index_proof=False):
         commands, posts = [], []
         self.timeline=[]
         logged_out = False
@@ -90,6 +95,7 @@ class LiveClientControls(unittest.TestCase):
                     kind='acquisition', state='queued', job_revision='2', checkpoint_revision='0',
                     created_at_us=JOB_ACCEPTED_AT_US, completed_at_us=None, observed_at_us='200001000000',
                     reason_code=None, authority='observation-only', linear_quantum=copy.deepcopy(QUANTUM_STATUS))
+                value['linear_quantum'].update(changed_quantum or {})
                 return 200, json.dumps(value).encode()
             self.assertEqual(method, 'POST')
             posts.append((path, copy.deepcopy(body)))
@@ -156,6 +162,28 @@ class LiveClientControls(unittest.TestCase):
         self.assertEqual(result['live_index_proof']['phase'],'index-proof')
         self.assertEqual(result['unauthenticated'],401)
 
+    def test_live_ordering_retry_keeps_the_original_window_without_common_completion(self):
+        # The live peer's distinct23/predecessor1/resend23 is unordered, unlike
+        # the initial common fixture's repeat/gap/older-empty three-query pass.
+        fields = dict(disposition='retry', result='interrupted', terminal='eose', gap='ordering',
+            continuation_upper='86400', retained_events=3, classified_prefix=3, pending_work='query_ready')
+        result, commands, _ = self.exercise(changed_quantum=fields)
+        self.assertEqual(result['job_status']['linear_quantum'], dict(QUANTUM_STATUS, **fields))
+        self.assertEqual([command[2] for command in commands], ['login', 'logout'])
+        self.assertEqual(result['job_status']['linear_quantum']['pending_interval'], ['0', '86400'])
+
+    def test_superseded_or_inconsistent_quantum_status_refuses_before_logout(self):
+        for number, fields in enumerate((dict(format='bigbrotr-linear-quantum-status/1'),
+                dict(horizon='200000'), dict(window_end='200000'), dict(scope_id='56' * 16),
+                dict(queries_spent=2), dict(attempted_prefix='86400'), dict(classified_prefix=0))):
+            self.directory = self.home / ('status-' + str(number))
+            self.directory.mkdir(mode=0o700)
+            with self.subTest(fields=fields), self.assertRaises(AssertionError):
+                self.exercise(changed_quantum=fields)
+            self.assertIn(('request', 'GET', '/management/v1/jobs/' + '45' * 16), self.timeline)
+            self.assertNotIn(('cli', 'logout'), self.timeline)
+            self.assertFalse((self.directory / 'client-result.json').exists())
+
     def test_child_deadline_refuses_even_a_present_or_late_release_flag(self):
         for clocked,name,seconds in ((False,'submitted',25),(True,'index-proof',45)):
             for late_stat in (False,True):
@@ -197,6 +225,10 @@ class LiveClientControls(unittest.TestCase):
             self.secret.write_text(password)
             with self.subTest(number=number), self.assertRaisesRegex(AssertionError, 'sensitive bytes'):
                 self.exercise(leak=password)
+            # Reach the real redaction boundary after valid current status and
+            # normal logout, rather than passing on an earlier schema refusal.
+            self.assertIn(('cli', 'logout'), self.timeline)
+            self.assertIn(('publish', 'commands-finished.json'), self.timeline)
             self.assertFalse((self.directory / 'client-result.json').exists())
 
     def test_cli_failure_does_not_print_sensitive_stderr(self):
