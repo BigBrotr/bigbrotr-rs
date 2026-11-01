@@ -36,14 +36,23 @@ the same profile as policy-versions; this does not qualify production deployment
 grants. The setup client uses `/lab/secrets` on the private bridge. It is joined
 before the existing socket client starts in the owned PG network namespace with
 `/run/secrets` and loopback migration configuration. Only fresh template clones
-are mutated; accepted policy documents are verified without rewriting their rows; the complete template rows/xmin remain unchanged afterward.
+are mutated; accepted policy documents are verified without rewriting their rows.
+The complete template rows/xmin remain unchanged afterward.
 
 The unchanged three modes cover signed/forged/duplicate frames, dictionary append
 and dictionary intern. Their independent scientific/native/PG oracles recompute
 logical accounting from expected facts. Each probe retains its60s timeout;
-append and intern each wait the configured30s stable-low interval outside PG
-operations, so an enclosing wave must allow those two setup waits. Scientific
-bytes, policy/operation deadlines and process envelopes are unchanged. This fresh
+append and intern each test the configured30s stable-low interval outside PG
+operations. Three ordinary connected positive dictionary proposals at the start,
+one-third and two-thirds must return Pressure with byte-exact native/input/PG
+state and zero held debt. Known zero-growth replay remains immediate. The original
+reconciliation clock bracket bounds the final Available observation; refused
+proposals cannot restart that interval. Attempt timestamps/results and the stable
+anchor are checked independently. The existing signed socket admission then
+succeeds with its freshly created30s acquisition job and original scientific rows;
+no sentinel is committed. An enclosing wave still allows the same two configured
+setup intervals. Scientific bytes, deadlines and process envelopes are unchanged.
+The product liveness fix and active recovery proof remain runtime NOT_RUN. This fresh
 setup and its three-mode runtime remain **NOT_RUN** until actual exact-artifact
 qualification; portable controls are not PostgreSQL/native evidence.
 

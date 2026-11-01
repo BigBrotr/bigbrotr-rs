@@ -603,7 +603,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             if dictionary_append { 2 } else { 6 }
         );
         let intent = if dictionary_append {
-            let (reopened, appended) = ingest_dictionary_append::run(
+            let (reopened, appended, reconciliation) = ingest_dictionary_append::run(
                 &mut owner,
                 &observer,
                 store,
@@ -615,9 +615,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )
             .await;
             store = reopened;
-            ingest_owner::wait_for_initial_pending_quota(&mut store, &spec)
-                .await
-                .unwrap();
+            ingest_pending_quota::resume_healthy(
+                &mut owner,
+                &observer,
+                &mut store,
+                &spec,
+                path,
+                &budget,
+                if dictionary_intern { 5 } else { 4 },
+                &appended,
+                reconciliation,
+            )
+            .await;
             appended
         } else {
             intent

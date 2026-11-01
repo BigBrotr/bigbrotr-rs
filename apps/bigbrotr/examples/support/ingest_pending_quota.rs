@@ -204,3 +204,128 @@ pub async fn run(
         serde_json::json!({"event":"quota-complete","mode":mode,"next_input":false,"status":format!("{status:?}")}),
     );
 }
+
+/// Healthy below-low continuation for the existing append/intern socket modes.
+/// All proposals occur before creating the unchanged 30s acquisition job. Their
+/// refusals exercise the normal connected path; the real signed socket event is
+/// admitted only after the original configured interval, with no extra facts.
+#[allow(clippy::too_many_arguments, reason = "one retained healthy fixture")]
+pub async fn resume_healthy(
+    owner: &mut ControlSession,
+    observer: &tokio_postgres::Client,
+    store: &mut IngestStore,
+    spec: &InitialRegistration,
+    path: &Path,
+    budget: &ResourceBudget,
+    next_sequence: u64,
+    dictionaries: &EvidenceIntent,
+    reconciliation: (tokio::time::Instant, tokio::time::Instant),
+) {
+    let stable = spec.intake_policy.stable_duration();
+    assert!(!stable.is_zero());
+    let (started, finished) = reconciliation;
+    assert!(started <= finished);
+    assert_eq!(
+        store.observe_pending_quota().unwrap(),
+        PendingQuotaStatus::Pressure
+    );
+    let pending = store
+        .pending_accounting()
+        .unwrap()
+        .pending_bytes()
+        .checked_add(store.pending_reserved_bytes().unwrap())
+        .unwrap();
+    assert!(pending < spec.intake_policy.pending_low());
+    assert_eq!(store.pending_reserved_bytes().unwrap(), 0);
+    let scope = dictionaries.visibility_scope_id();
+    let fresh = EvidenceIntent::new(
+        1,
+        scope,
+        vec![
+            DictionaryEntry::new(
+                QualifiedRef {
+                    ordinal: Ordinal::new(scope.ordinal.get() + 1).unwrap(),
+                    ..scope
+                },
+                DictionaryDescriptor::Visibility {
+                    class: DescriptorLabel::new("quota-resume-probe".into()).unwrap(),
+                },
+            )
+            .unwrap(),
+        ],
+        EvidenceIntentLimits {
+            max_entries: 8,
+            max_encoded_intent_bytes: 8192,
+            max_validation_scratch_bytes: 1024,
+        },
+    )
+    .unwrap();
+    let admission = AdmissionLimits {
+        max_batch_bytes: MIB as usize,
+        max_dependencies: 16,
+        max_outstanding_requests: u64::from(spec.outstanding_request_limit),
+    };
+    let cancelled = AtomicBool::new(false);
+    let before = ingest_snapshot::state(observer, path).await;
+    emit(
+        serde_json::json!({"event":"socket-quota-recovery","anchor":"reconciliation-start",
+        "reconciliation_finished_us":u64::try_from(finished.duration_since(started).as_micros()).unwrap(),
+        "stable_duration_us":u64::try_from(stable.as_micros()).unwrap(),"pending_bytes":pending,"held_bytes":0}),
+    );
+    for attempt in 0..3u32 {
+        tokio::time::sleep_until(started + (stable / 3) * attempt).await;
+        // Each refusal must be a normal positive proposal during the original
+        // latch, never an attempted mutation after stable-low already completed.
+        let attempted_at = started.elapsed();
+        assert!(
+            attempted_at < stable,
+            "fixture missed its pressure interval"
+        );
+        let result = owner
+            .append_initial_dictionaries(
+                store,
+                InitialDictionaryAppendRequest {
+                    ingest_root: path,
+                    registration: spec,
+                    request_sequence: RequestSequence::new(next_sequence).unwrap(),
+                    intent: &fresh,
+                    recorded_at: ObservedTime::new(1000),
+                    limits: admission,
+                    policy_ttl: Duration::from_secs(2),
+                    cancelled: &cancelled,
+                },
+                grant(
+                    budget,
+                    admission.required_dictionary_data_bytes().unwrap(),
+                    admission.required_native_bytes().unwrap(),
+                ),
+                validate,
+            )
+            .await;
+        let returned_at = started.elapsed();
+        assert_eq!(result.err(), Some(InitialEventError::Pressure));
+        assert_eq!(store.pending_quota_status(), PendingQuotaStatus::Pressure);
+        assert_eq!(store.pending_reserved_bytes().unwrap(), 0);
+        let after = ingest_snapshot::state(observer, path).await;
+        assert_eq!(after, before, "pressure created native/input/PG effects");
+        emit(
+            serde_json::json!({"event":"socket-quota-pressure","attempt":attempt+1,
+            "started_us":u64::try_from(attempted_at.as_micros()).unwrap(),
+            "finished_us":u64::try_from(returned_at.as_micros()).unwrap(),
+            "result":"Pressure","held_bytes":0,"state":after}),
+        );
+    }
+    // Binding happened no later than finished. Repeated refused proposals must
+    // not shift this original end point. No operation or PG lease crosses sleep.
+    tokio::time::sleep_until(finished + stable).await;
+    assert_eq!(
+        store.observe_pending_quota().unwrap(),
+        PendingQuotaStatus::Available
+    );
+    assert_eq!(store.pending_reserved_bytes().unwrap(), 0);
+    assert_eq!(ingest_snapshot::state(observer, path).await, before);
+    emit(
+        serde_json::json!({"event":"socket-quota-resumed","refusals":3,
+        "elapsed_us":u64::try_from(started.elapsed().as_micros()).unwrap()}),
+    );
+}
