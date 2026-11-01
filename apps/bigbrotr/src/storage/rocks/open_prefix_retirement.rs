@@ -95,7 +95,7 @@ impl PrefixRetirement {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         check(cancelled)?;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         store
@@ -114,7 +114,11 @@ impl PrefixRetirement {
         {
             return Err(AdmissionError::StateMismatch);
         }
-        check(cancelled)
+        check(cancelled)?;
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        Ok(())
     }
     fn slot(&self) -> Result<ProducerSlotId, AdmissionError> {
         self.base
@@ -209,12 +213,15 @@ impl PrefixRetirement {
         options.set_sync(true);
         options.disable_wal(false);
         options.set_ignore_missing_column_families(false);
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         store.write_uncertain = true;
         store
             .db
             .write_opt(batch, &options)
             .map_err(|_| AdmissionError::CommitUnknown)?;
-        if store.db.latest_sequence_number() != expected {
+        if store.resources.background_failed() || store.db.latest_sequence_number() != expected {
             return Err(AdmissionError::CommitUnknown);
         }
         store.write_uncertain = false;
@@ -240,13 +247,22 @@ impl PrefixRetirement {
             epoch,
             self.base.retired,
             cancelled,
-            || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
+            || {
+                authority().map_err(|_| BootstrapError::AuthorityUnavailable)?;
+                if store.native_unavailable() {
+                    return Err(BootstrapError::CommitUnknown);
+                }
+                Ok(())
+            },
         )?;
         if removed != count || self.inventory.range_count(slot, epoch, self.base.retired) != 0 {
             return Err(AdmissionError::StateMismatch);
         }
         self.validate(store, cancelled)?;
         authority()?;
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(UnlinkedPrefix(self))
     }
 }

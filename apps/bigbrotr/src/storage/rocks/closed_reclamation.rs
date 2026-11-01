@@ -183,7 +183,7 @@ impl ClosedProducerReclamation {
         cancelled: &AtomicBool,
     ) -> Result<(), AdmissionError> {
         check_cancelled(cancelled)?;
-        if store.write_uncertain {
+        if store.native_unavailable() {
             return Err(AdmissionError::CommitUnknown);
         }
         store
@@ -205,6 +205,9 @@ impl ClosedProducerReclamation {
             return Err(AdmissionError::StateMismatch);
         }
         check_cancelled(cancelled)?;
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(())
     }
     /// Consumed only after a positively observed PostgreSQL COMMIT. Native
@@ -280,12 +283,16 @@ impl ClosedProducerReclamation {
             options.set_sync(true);
             options.disable_wal(false);
             options.set_ignore_missing_column_families(false);
+            if store.native_unavailable() {
+                return Err(AdmissionError::CommitUnknown);
+            }
             store.write_uncertain = true;
             store
                 .db
                 .write_opt(batch, &options)
                 .map_err(|_| AdmissionError::CommitUnknown)?;
-            if store.db.latest_sequence_number() != expected {
+            if store.resources.background_failed() || store.db.latest_sequence_number() != expected
+            {
                 return Err(AdmissionError::CommitUnknown);
             }
             store.write_uncertain = false;
@@ -295,6 +302,9 @@ impl ClosedProducerReclamation {
             store.handoff_value(marker, Some(&self.floor.encode()))?;
         }
         authority()?;
+        // Exact-floor retries skip the native write. They still cannot unlink
+        // after a failure observed during the final authority check.
+        self.require_store(store, cancelled)?;
         let before =
             self.inventory
                 .range_count(self.slot, self.epoch, self.floor.fields().issued_through);
@@ -304,13 +314,22 @@ impl ClosedProducerReclamation {
             self.epoch,
             self.floor.fields().issued_through,
             cancelled,
-            || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
+            || {
+                authority().map_err(|_| BootstrapError::AuthorityUnavailable)?;
+                if store.native_unavailable() {
+                    return Err(BootstrapError::CommitUnknown);
+                }
+                Ok(())
+            },
         )?;
         if removed != before {
             return Err(AdmissionError::StateMismatch);
         }
         self.require_store(store, cancelled)?;
         authority()?;
+        if store.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
         Ok(ClosedReclamationReceipt {
             requests: self.floor.fields().issued_through,
             removed,

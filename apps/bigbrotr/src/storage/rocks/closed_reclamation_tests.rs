@@ -247,6 +247,76 @@ fn closed_reclamation_unknown_native_and_cancelled_authority_never_unlink() {
         assert_eq!(remaining(&f), 4);
     }
 }
+
+#[test]
+fn simulated_background_latch_at_final_authority_prevents_write_and_exact_floor_unlink() {
+    // Only the Rust health observation is simulated. Neither SQL authority nor
+    // native listener delivery is qualified by these mechanics controls.
+    for compacted in [false, true] {
+        let mut f = if compacted {
+            fixture()
+        } else {
+            fixture_at(bigbrotr_model::TopologyGeneration::new(0))
+        };
+        let plan = if compacted {
+            compacted_plan(&f)
+        } else {
+            original_plan(&f)
+        };
+        let before = kv(&f.recovery.store);
+        let sequence = f.recovery.store.db.latest_sequence_number();
+        let accounting = f.recovery.store.accounting;
+        let simulated = f.recovery.store.test_background_failure();
+        let mut checks = 0;
+        assert!(matches!(
+            plan.test_apply(&mut f.recovery, &AtomicBool::new(false), || {
+                checks += 1;
+                if checks == 2 {
+                    simulated.latch();
+                }
+                Ok(())
+            }),
+            Err(AdmissionError::CommitUnknown)
+        ));
+        assert_eq!(checks, 2);
+        assert!(f.recovery.store.native_unavailable());
+        assert!(!f.recovery.store.write_uncertain);
+        assert_eq!(remaining(&f), 4);
+        assert_eq!(f.recovery.store.db.latest_sequence_number(), sequence);
+        assert_eq!(f.recovery.store.accounting, accounting);
+        assert_eq!(kv(&f.recovery.store), before);
+    }
+}
+
+#[test]
+fn simulated_background_latch_stops_exact_floor_cleanup_before_the_next_unlink() {
+    // Latch immediately before unlink1 or at the next iteration after unlink1.
+    // A previous positive unlink remains real; the failed observation permits
+    // no further unlink and cannot mint a completion receipt.
+    for (fail_at, residuals) in [(4, 4), (5, 3)] {
+        let mut f = fixture();
+        let plan = compacted_plan(&f);
+        let before = kv(&f.recovery.store);
+        let sequence = f.recovery.store.db.latest_sequence_number();
+        let simulated = f.recovery.store.test_background_failure();
+        let mut checks = 0;
+        assert!(matches!(
+            plan.test_apply(&mut f.recovery, &AtomicBool::new(false), || {
+                checks += 1;
+                if checks == fail_at {
+                    simulated.latch();
+                }
+                Ok(())
+            }),
+            Err(AdmissionError::CommitUnknown)
+        ));
+        assert_eq!(checks, fail_at);
+        assert!(f.recovery.store.native_unavailable());
+        assert_eq!(remaining(&f), residuals);
+        assert_eq!(f.recovery.store.db.latest_sequence_number(), sequence);
+        assert_eq!(kv(&f.recovery.store), before);
+    }
+}
 #[test]
 fn closed_reclamation_rechecks_corrupt_residuals_against_canonical_outcomes() {
     let f = fixture();

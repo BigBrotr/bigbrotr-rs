@@ -61,6 +61,10 @@ pub use bootstrap::{BootstrapError, BootstrapLimits};
 mod bootstrap_tests;
 
 #[cfg(test)]
+#[path = "native_failure_tests.rs"]
+mod native_failure_tests;
+
+#[cfg(test)]
 #[path = "request_input_tests.rs"]
 mod request_input_tests;
 
@@ -213,6 +217,9 @@ pub enum StoreError {
     ParentDirectorySync,
     AlreadyOpen,
     ReservationUnavailable,
+    BackgroundGuardInstall,
+    /// Background failure was observed. Preserve the directory for recovery.
+    NativeUnavailable,
     EngineOpen,
     ColumnFamiliesMismatch,
     MissingManifest,
@@ -243,6 +250,10 @@ impl fmt::Display for StoreError {
             }
             Self::AlreadyOpen => "store path is already reserved by this process",
             Self::ReservationUnavailable => "store reservation state is unavailable",
+            Self::BackgroundGuardInstall => "native background-error guard installation failed",
+            Self::NativeUnavailable => {
+                "native background failure observed; preserve and resolve the store"
+            }
             Self::EngineOpen => "native store inspection or exclusive open failed",
             Self::ColumnFamiliesMismatch => "store column families do not match the ingest layout",
             Self::MissingManifest => "ingest manifest is absent; existing state must be preserved",
@@ -367,7 +378,7 @@ impl IngestStore {
         .map_err(|_| StoreError::ParentDirectorySync)?;
         rustix::fs::fsync(&parent).map_err(|_| StoreError::ParentDirectorySync)?;
         drop(parent);
-        let store = Self::open_native(reservation, Some(manifest), limits)?;
+        let mut store = Self::open_native(reservation, Some(manifest), limits)?;
         let mut batch = WriteBatch::default();
         batch.put(KeyDomain::Manifest.prefix(), manifest.encode().as_bytes());
         batch.put(
@@ -387,10 +398,18 @@ impl IngestStore {
         write.set_sync(true);
         write.disable_wal(false);
         write.set_ignore_missing_column_families(false);
+        if store.native_unavailable() {
+            return Err(StoreError::NativeUnavailable);
+        }
+        store.write_uncertain = true;
         store
             .db
             .write_opt(batch, &write)
             .map_err(|_| StoreError::ManifestCommitUnknown)?;
+        if store.resources.background_failed() {
+            return Err(StoreError::ManifestCommitUnknown);
+        }
+        store.write_uncertain = false;
         Ok(store)
     }
 
@@ -444,12 +463,9 @@ impl IngestStore {
     ) -> Result<Self, StoreError> {
         // On a failed native open, this later local drops its native allocations
         // before the reservation argument can release the budget/path.
-        let mut profile = RocksNativeProfile::build(limits);
-        if initialize.is_some() {
-            profile.db_options.create_if_missing(true);
-            profile.db_options.create_missing_column_families(true);
-            profile.db_options.set_error_if_exists(true);
-        } else {
+        let profile = RocksNativeProfile::build(limits, initialize.is_some())
+            .map_err(|_| StoreError::BackgroundGuardInstall)?;
+        if initialize.is_none() {
             let mut names = DB::list_cf(&profile.db_options, &reservation.path.0)
                 .map_err(|_| StoreError::EngineOpen)?;
             if names.len() != INGEST_COLUMN_FAMILIES.len() {
@@ -466,6 +482,9 @@ impl IngestStore {
             profile.column_families,
         )
         .map_err(|_| StoreError::EngineOpen)?;
+        if profile.resources.background_failed() {
+            return Err(StoreError::NativeUnavailable);
+        }
         let manifest = match initialize {
             Some(manifest) => manifest,
             None => {
@@ -500,6 +519,11 @@ impl IngestStore {
         } else {
             pending_accounting::census(&db, &manifest).map_err(StoreError::InvalidAccounting)?
         };
+        // Neither successful open nor a complete census is a promise that the
+        // background listener stayed healthy while those operations ran.
+        if profile.resources.background_failed() {
+            return Err(StoreError::NativeUnavailable);
+        }
         Ok(Self {
             db,
             resources: profile.resources,
@@ -526,6 +550,25 @@ impl IngestStore {
     }
     pub fn native_usage(&self) -> RocksNativeUsage {
         self.resources.usage()
+    }
+
+    /// Sticky native availability observation, including foreground unknown
+    /// writes. A false result is not an atomic permit for later work: a native
+    /// callback may race the next instruction, and no rollback is implied.
+    pub(in crate::storage) fn native_unavailable(&self) -> bool {
+        self.write_uncertain || self.resources.background_failed()
+    }
+
+    #[cfg(test)]
+    pub(in crate::storage) fn test_background_failure(
+        &self,
+    ) -> super::options::SimulatedBackgroundFailure {
+        self.resources.test_background_failure()
+    }
+
+    #[cfg(test)]
+    pub(in crate::storage) fn test_latch_background_failure(&self) {
+        self.test_background_failure().latch();
     }
 }
 
