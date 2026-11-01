@@ -6,88 +6,89 @@ public development repository, no official release/package/deployment.
 
 ## Current objective and Git
 
-**P03-T05 Step2 — bounded linear continuation.** M1 scoped collection and the
-logical pending-quota/recovery increment remain locally qualified on main/origin
-**a2a42f2284790e38f85979d4aea17eab5e9a4644**. Full P00–P10 remains incomplete.
+**P03-T05 Step2 — qualify bounded same-job linear continuation.** M1 scoped
+collection and logical pending-quota/recovery are qualified locally and on
+[hosted A2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038).
+Main/origin: **a2a42f2284790e38f85979d4aea17eab5e9a4644**. Full product incomplete.
 
 Root integrates in `.research/m2-linear-continuation-20261101`, branch
-`work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD
-**57f670cb721b26408f6734ebce65953accf06671**; enclosing Git identifies subsequent
-commits. The tutorial source pin/native-row report corrections are committed;
-Root owns ongoing checkpoint/inventory updates. Product
-window/native helpers and the shared fixture commits are integrated locally;
-no M2 code has been merged/pushed to main or qualified by product execution.
+`work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD **8173f2b5**;
+enclosing Git identifies the checkpoint commit. Current uncommitted changes are
+Root's existing evidence/inventory/checkpoint updates. Immutable qualified product:
+**8f4d5f27fcd953e0cfd74ff4a859a029862f1e34**. Subsequent commits affect Python
+acceptance tooling only; reuse its exact binary, worker and native observer.
+No M2 code has yet been merged/pushed to main or exercised by hosted CI.
 
-The planner reads latest retained pages under the existing job lock, validates
-current identity/predicate/frozen horizon, retries exact known interruptions,
-overlaps successful pages, and defers empty/repeated boundaries with coverage
-pending. Astra found and reviewed a necessary integrity correction: each cursor
-ID/time must match an authenticated native EventPayload in that quantum's own
-FactRef union. Current effects are93bytes; capture/native handoffs and fresh0043
-initialization are reconciled. One native view survives through full pre-COMMIT
-recovery. See the [owning contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
+The retained planner validates current context, exact predicate and frozen horizon,
+retries known interruptions, overlaps successful pages, and parks empty/repeated
+boundaries with pending coverage. Each93-byte effect binds captured canonical
+ID/time to an authenticated EventPayload in that quantum's own dependency union;
+one original native view remains through pre-COMMIT recovery. Fresh0043, callers,
+recovery, shared fixtures and the [contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta)
+are reconciled. This is not the complete history walker or fresh-owner adoption.
 
-## Evidence and open gates
+## Evidence and remaining gates
 
-Release617 **PASS** with independently checked exact-source/native/compiler/worker
-identities. Strict workspace617 **FAIL** on seven style lints; no lint suppressed.
-Rustdoc/application-library tests and real SQL/socket/installed paths are **NOT_RUN**.
-Mechanical corrections are committed at57f670cb; fresh qualification is required. Astra's bounded source
-and final shared oracle reviews accepted the current binding and independent checks. Sol's
-shared fixture controls passed118 affected cases; earlier host-wide controls had
-two explicit missing-strace skips. These are fixture evidence, not product proof.
+The [P03 report](evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101.bounded_continuation`, owns exact inputs, receipts,
+failures, artifact hashes and review links. Current product8f:
 
-Frozen184 portable container discovery: **521PASS/1ERROR/0SKIP**, original logs at
-`.research/m2-linear-continuation-qualification-20261101/portable-1849721e`.
-The ERROR is the tutorial correctly refusing its stale reviewed apps-tree pin,
-not a product failure. Reachable verifier paths were reviewed; all9 Nostr paths,
-other6 code/dependency/config objects and the complete vendor tree are unchanged.
-The pin is reconciled locally and its positive/negative regression passes.
-Repeat affected final portable checks after integration; preserve this failure.
+- Exact-source release and maintained native observer **PASS**; strict workspace
+  all-target Clippy/Rustdoc **PASS**; unfiltered application library **656PASS,
+  0FAIL,3ignored,0filtered**. Ignored external/POSIX cases are not claimed PASS.
+- Full portable acceptance controls at9aed: **540PASS/0SKIP**. After scope,
+  interleaving and port-setup fixes, affected merged controls **87PASS**.
+- Real capped continuation **7/7PASS**: five pages across two jobs include an
+  all-known page followed by the older signed event; exact original inputs,
+  receipts and76 native rows/sequence103. Coverage stays pending.
+- Real forged timestamp and out-of-row native-payload profiles **7/7PASS each**:
+  exact natural `Quantum(Context)` before any next plan/socket or harness stop;
+  triggers restored, native/input/receipt state preserved.
+- Real finite interruption journey **7/7PASS**: eight terminal quanta, known
+  retries, two fixed scope recipes, five classifications, four mutation inputs,
+  50native rows/sequence67, no ninth request or pending plan.
 
-The positive capped-relay harness is integrated at3da8df74 and critically reviewed.
-Sol now owns the two bounded cursor-time/foreign-payload corruption profiles in
-its separate `.research/m2-capped-acceptance-sol` worktree. Positive workload:
-prepopulateA with signed24/23, thenB must continue past an all-known short page
-and acquire signed1. Literal bounds/corpus/transcript plus full independent native
-rows, original inputs and receipts must prove the result. Existing interrupted,
-unknown-COMMIT, wrong-context and missing earlier dependency refusals remain
-required; new composed timestamp/ID corruption refusals must run before declaring
-Step2 qualified. No complete walker, partition or adoption claim is implied.
+Preserved originals:184 portable ERROR from a stale reviewed tutorial pin;617
+Clippy FAIL corrected mechanically; capped-r1 verifier FAIL from projecting both
+scope rows into a singleton scope check (capture replay separately labeled;
+actual capped-r2PASS); restart-on-r1 **NOT_RUN** because completed TCP TIME_WAIT
+was misclassified as an occupied port. Shared preflight now accepts TIME_WAIT
+while a live listener still refuses, with real-socket regression controls.
+Restart-on-r2 passed acquisition/export but **FAIL** at baseline: the shared
+progress oracle still requires the initial upper on every request. Its correction
+is isolated with Sol; later recovery/catchup/successor stages are **NOT_RUN**.
+One local targeted invocation lacked PYTHONPATH and failed module import; the
+correct declared environment passed. None is relabeled as a product PASS.
 
-The [producer report](evidence/p02-producer-recovery-native-20260920.json),
-logical_pending_quota_20261101, retains quota/recovery source identities,347native,
-6realPG,3socket and installed on/off12/12 results and original failures. Merged
-5847 portable516PASS retains unchanged scope. Reuse these valid results.
-
-[HostedA2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038) is
-**SUCCESS and fully audited PASS**:33foundation/20scope, zero requiredNOT_RUN,
-all3 source/native/worker identities and9 postcontexts. Unfiltered Rust94suites
-per platform: Linux1447PASS (4/3ignored), Mac1445PASS/2ignored; acceptance516PASS
-bothLinux, Mac504PASS/12declaredSKIP. Public4artifacts/516members+34logs:
-zero unknown credential candidates/provider alerts within bounded/asynchronous
-limits. Observer46117/acquisition53934 reaped0, owned PIDs absent. The
-[CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact receipts;
-quota/recovery is now closed locally and on GitHub atA2. New M2 source is unpushed.
+**Remaining for this increment:** current-product installed restart on/off;
+four existing plan/terminal COMMIT before/after fault schedules; coherent source
+publication scan/main integration/push and real hosted verification. Astra's
+bounded review confirms the existing terminal-after case already discriminates
+an unconfirmed successful page causing an illegal next request; no new ordinal
+proxy is needed. Earlier fault receipts retain their original source scope.
 
 ## Resources and next action
 
-Portable184 container stopped/PID0/noOOM, launcher22361 reaped1. Build617
-container39ebc084 stopped/PID0/noOOM; tool80621 reaped0; build receipt in
-`.research/m2-linear-continuation-qualification-20261101/61769e66`.
-Workspace617 containerbb94a4ab stopped/PID0/noOOM; tool6043 reaped1, original
-Clippy log/failure receipt retained. Cache115 lock released; original4 ELF
-bytes/full metadata preserved with O_NOATIME reads. No local compiler, engine,
-client or observer process is active at this boundary. Root is sole integrator;
-Sol works only on the bounded negative harness. The [inventory](../research/laboratory-inventory.json)
-retains owned resources, failures, worktrees and49 verified branch-ref retirements;
-no worktree/data/cache deletion, Git maintenance or timestamp normalization.
+Protected capsule: `.research/m2-linear-continuation-qualification-20261101`.
+Fresh runtime stores/captures:
+`/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27`;
+native observer sibling ends`-probe`; frozen product worktree ends`8f4d5f27`.
+The [inventory](../research/laboratory-inventory.json) owns resource custody.
+Build/workspace/observer compilers are terminal/PID0/noOOM; cache115 is released;
+original4 ELF bytes/full metadata are preserved using O_NOATIME reads. Completed
+installed runs have cleanupPASS/noerrors, stopped owned containers and an empty
+preserved borrowed bridge. No dataset/worktree/cache deletion or Git maintenance.
 
-**Next:** qualify the corrected57 product delta using the existing isolated
-build/workspace recipes, integrate the bounded negative harness, then run the
-actual capped/negative and affected installed/fault paths. Reuse unchanged
-product components and old receipts only within their exact scope; do not treat
-new artifacts as qualified by old-source results. Keep physical reserve/reopen/
-OPEN65 atP02-T02Step4, load/maintenanceStep8/P02-T09, interval succession/
-partition/sparse growth/adoption at existing P03 owners and portability/delivery
-atP01-T08/P08/P10. No whole-P02 barrier or scope reduction.
+**Active:** Root's installed plan-before-r1, tool36870, evidence
+`acceptance-plan-before-r1`. Root is sole integrator. Bounded Astra COMMIT-scope
+review is complete/read-only. Sol now owns the isolated shared restart-oracle
+window correction; no engines/builds delegated. Unrelated InspireHEP/Mongo workloads remain untouched.
+
+**Next:** observe plan-before-r1, integrate/replay the shared restart-oracle fix,
+then repeat affected restart on/off and finish the existing fault
+schedules with the same product/candidate/observer. Record actual outcomes before
+integration. After this slice, next useful M2 capacity is retained finite-history
+window succession under P03-T05 Steps1/4 and P03-T01 Step3; retain explicit gaps
+and contiguous attempted-range authority. Full walker/partition/sparse growth,
+adoption/live/NEG/fleet/import and physical reserve/OPEN65/load remain their
+existing P03/P02 owners. Do not make all of P02 a barrier or reduce full scope.

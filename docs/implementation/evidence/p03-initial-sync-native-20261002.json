@@ -1225,9 +1225,9 @@
     "product_scope": "Initial78 build/finite/tutorial/fault fields retain their original source. Current96d6 build/dev/retained128 qualifications are owned by coordinator_drain_followthrough; do not relabel older evidence.",
     "current_qualification": "coordinator_drain_followthrough.grouped_attempt_2",
     "bounded_continuation": {
-      "status": "IMPLEMENTED_LOCAL_NOT_PRODUCT_QUALIFIED",
+      "status": "QUALIFIED_LOCAL_CAPPED_AND_CORRUPTION;AFFECTED_RESTART_AND_COMMIT_REGRESSIONS_IN_PROGRESS;HOSTED_NOT_RUN",
       "task": "P03-T05Step2; bounded same-job current-owner continuation, not full walker/partition/adoption",
-      "observed_source": "1849721e047710b7efef4f80bc9b025da5c13550",
+      "observed_source": "8173f2b5",
       "scope": "Locked retained window reconstruction; exact current context/predicate/frozen horizon; known interruption retry; first overlap; empty/repeated pending deferral; same-row authenticated EventPayload ID/time binding with one original native view through pre-COMMIT closure.",
       "source_review": {
         "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/critical-source-review.json",
@@ -1236,27 +1236,13 @@
         "model": "gpt-6-astra",
         "reasoning_effort": "xhigh"
       },
-      "portable_controls": {
-        "source": "1849721e047710b7efef4f80bc9b025da5c13550",
-        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-1849721e/receipt.json",
-        "status": "FAIL",
-        "counts": {
-          "collected": 522,
-          "pass": 521,
-          "error": 1,
-          "skip": 0
-        },
-        "failure_class": "fixture/source-qualification",
-        "cause": "Tutorial correctly refused stale reviewed apps object; bounded reachable verification review plus unchanged Nostr/dependency/vendor identities support explicit pin update. Targeted positive/negative regression passes. Original failure retained."
-      },
       "format": "Current internal migration0043 consolidates at most three93-byte effects (original61prefix plus captured canonical ID32); old nonempty61-byte effects refused. No existing public-version compatibility or source-history rewrite.",
       "not_run": [
-        "Current-source Rust/native/composed planner tests",
-        "Real SQL/native corrupt-time and out-of-row payload rejection",
-        "Actual capped relay/all-known page reaches older signed data",
-        "Affected installed and unknown-COMMIT continuation journeys"
+        "Affected installed restart on/off: on-r1environmentNOT_RUN; on-r2verifierFAIL and later stagesNOT_RUN. Shared explicit-window correction in isolated Sol worktree.",
+        "Current-product plan/terminal COMMIT before/after schedules: plan-before-r1 tool36870 running, remaining threeNOT_RUN.",
+        "GitHub Actions against new integrated M2 source"
       ],
-      "next": "Exact-source isolated build/workspace qualification; integrate bounded capped harness using existing artifact/native/science infrastructure. Later interval succession/saturation partition/sparse growth/adoption remain existing P03 owners.",
+      "next": "Finish affected restart and existing four COMMIT-loss schedules, source-publication scan and coherent main integration/push; then retained finite-history range progression under P03-T05/T01. Full walker/saturation/partition/sparse growth/adoption retain existing owners.",
       "release617": {
         "status": "PASS_EXACT_SOURCE_BUILD_NOT_RUNTIME_QUALIFICATION",
         "receipt": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66/build-receipt.json",
@@ -1271,8 +1257,89 @@
       "positive_harness": {
         "source": "50750845d90e28257d7bb7686e35f5e1e5ba7303",
         "integrated_at": "3da8df74",
-        "status": "PASS_BOUNDED_CRITICAL_SOURCE_REVIEW;actual installed NOT_RUN",
+        "status": "PASS_BOUNDED_CRITICAL_REVIEW_AND_ACTUAL_INSTALLED_CAPPED_R2",
         "workload": "A24/23 prepopulation thenB all-known24/23 reachesolder1; exact5pages/6mutationrequests/76nativeRows/sequence103/eightclassifications; observed-lifetime noextra socket/plan; reuseexistingfullscienceencoder."
+      },
+      "product_source": "8f4d5f27fcd953e0cfd74ff4a859a029862f1e34",
+      "original_portable_failure": {
+        "source": "1849721e047710b7efef4f80bc9b025da5c13550",
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-1849721e/receipt.json",
+        "status": "FAIL",
+        "counts": {
+          "collected": 522,
+          "pass": 521,
+          "error": 1,
+          "skip": 0
+        },
+        "failure_class": "fixture/source-qualification",
+        "cause": "Tutorial correctly refused stale reviewed apps object; bounded reachable verification review plus unchanged Nostr/dependency/vendor identities support explicit pin update. Targeted positive/negative regression passes. Original failure retained."
+      },
+      "portable_controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/portable-9aed4b67/receipt.json",
+        "sha256": "03c61986c14d572cece631708273a868128b50fda249b3fcc5ce6582c26c877b",
+        "status": "PASS",
+        "source": "9aed4b6711f025f1c78c845e842e7281e2da3c17",
+        "counts": {
+          "pass_count": 540,
+          "fail": 0,
+          "skip": 0
+        },
+        "scope": "Full maintained discovery before scope/interleaving/port setup fixes; affected merged controls87PASS at8173f2b5. One local invocation omitted PYTHONPATH and failed module import; corrected declared environment87PASS; no product failure."
+      },
+      "release8f": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/8f4d5f27/build-receipt.json",
+        "sha256": "765875bb47f2060cb7986227a02514789adf1dd653b11ad595de78504664c6ca",
+        "status": "PASS",
+        "binary_sha256": "eb73215b831fe9161901c8ecac0459f678dfc17a7cafc1efe41b79af09ee75e0"
+      },
+      "workspace8f": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/8f4d5f27/workspace-receipt.json",
+        "sha256": "9257c04771fbbef9c85a4608d5111041c6a6a9bb2d7641e6eb988b2af348ee70",
+        "status": "PASS",
+        "scope": "Strict all-target workspace Clippy; Rustdoc; unfiltered bigbrotr application library656PASS/0FAIL/3ignored/0filtered. Other workspace Rust suites retain earlier source scope; current hosted gates pending."
+      },
+      "observer8f": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/8f4d5f27/probe/terminal-receipt.json",
+        "sha256": "13f1624de1a1dc70c8cdf9e51b4cf9340c32ad0215f4c180ee8c36751f170735",
+        "status": "PASS_EXACT_SOURCE_OBSERVER_BUILD",
+        "scope": "Maintained ingest-registry/build_probe.py artifact contract; guarded source/native/compiler/cache and original4 metadata; unused relay-arrival proposal NOT_STARTED, preserved as superseded."
+      },
+      "installed": {
+        "capped-r2": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/capped-r2-terminal.json",
+          "sha256": "96735f9996b44a8e978b407e819cc4b5d220037a8e96adf9a9fa3de8000e470a"
+        },
+        "cursor-time-r1": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/cursor-time-r1-terminal.json",
+          "sha256": "8f67c94966aada35413c96fc37abd409f0ff4b2fd45b357d06fcbbceb7d544b2"
+        },
+        "foreign-payload-r1": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/foreign-payload-r1-terminal.json",
+          "sha256": "0fce1cccb81650e80a203042a08bec585efc3115abc8a6d5dd813c1976160e94"
+        },
+        "interruptions-r1": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/interruptions-r1-terminal.json",
+          "sha256": "c3c9ee10c7c4bef3943e5a7285da7b5ec53444fca3a892f82778d700d66e5f79"
+        }
+      },
+      "original_capped_failure": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/capped-r1-terminal.json",
+        "sha256": "1e24f00d7cc33678b1185b54d912984859de1d76df4ae794bb9dd26f15b17006",
+        "status": "FAIL_ORACLE_SCOPE_PROJECTION",
+        "scope": "Native/scientific checks passed; final per-job status oracle wrongly used both scope rows. Fixed singleton scope projection preserves full jobs, admissions, digest and ordinal checks. OriginalFAIL unchanged; recorded capture replay only, followed by real capped-r2PASS."
+      },
+      "commit_boundary_review": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/commit-boundary-review.json",
+        "sha256": "32bd180569348015cbe56b704e121e3efe1bd99d1f80c7b8c9f34a914f175dec"
+      },
+      "restart_on_r2": {
+        "status": "FAIL",
+        "classification": "fixture/verifier",
+        "result": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-8f4d5f27/acceptance-restart-on-r2/result.json",
+          "sha256": "e157b4263f9e41a5718ce8bd4b0497206faa14bc63fd7a68841a4cd64c18ce65"
+        },
+        "scope": "First6stagesPASS; restart_baseline old shared archive_request_progress still requires until86399 for every request. Current continuation contract gives second upper2; original failure preserved. Recovery/catchup/successor4stagesNOT_RUN, cleanupPASS. Sol correction isolated; no product rebuild warranted."
       }
     }
   }
