@@ -41,6 +41,8 @@ pub async fn run(
             | "quota-reconcile-missing-outcome"
             | "quota-reconcile-reserved-ahead"
             | "quota-reconcile-outcome-conflict"
+            | "quota-reconcile-foreign-request-tail"
+            | "quota-reconcile-foreign-outcome-tail"
     ));
     let cancelled = AtomicBool::new(false);
     let manifest = *store.manifest();

@@ -4,7 +4,8 @@ import hashlib
 import json
 import time
 
-CASES = ('pressure', 'missing-outcome', 'reserved-ahead', 'outcome-conflict')
+CASES = ('pressure', 'missing-outcome', 'reserved-ahead', 'outcome-conflict',
+         'foreign-request-tail', 'foreign-outcome-tail')
 
 
 def injection(before, case):
@@ -12,6 +13,27 @@ def injection(before, case):
     if case == 'pressure':
         return '', copy.deepcopy(before)
     expected = copy.deepcopy(before)
+    if case in ('foreign-request-tail', 'foreign-outcome-tail'):
+        table = 'producer_requests' if case == 'foreign-request-tail' else 'producer_outcomes'
+        original, = expected[table]
+        producer, = expected['producer_epochs']
+        assert original['request_sequence'] == original['producer_epoch'] == 1
+        assert producer['reserved_through_request'] == 1
+        dataset = bytearray.fromhex(original['dataset_id'][2:])
+        assert len(dataset) == 16 and any(dataset)
+        # Flip one byte while keeping a nonzero ID even for a single-byte ID.
+        dataset[0 if any(dataset[1:]) else 1] ^= 1
+        foreign = '\\x'+dataset.hex()
+        assert foreign != original['dataset_id'] and any(dataset)
+        extra = dict(original, request_sequence=2, dataset_id=foreign)
+        extra.pop('lab_xmin')
+        expected[table].append(extra)
+        slot = bytes.fromhex(original['producer_slot_id'][2:]).hex()
+        sql = (f'INSERT INTO control.{table} SELECT (jsonb_populate_record(NULL::control.{table}, '
+               "to_jsonb(r)||jsonb_build_object('request_sequence',2,'dataset_id',"
+               f"decode('{dataset.hex()}','hex')))).* FROM control.{table} r "
+               f"WHERE producer_slot_id=decode('{slot}','hex') AND producer_epoch=1 AND request_sequence=1")
+        return sql, expected
     if case == 'missing-outcome':
         assert len(expected['producer_outcomes']) == 1
         expected['producer_outcomes'] = []
@@ -37,7 +59,11 @@ def verify_injection(before, expected, actual, case):
         table = 'producer_epochs' if case == 'reserved-ahead' else 'producer_outcomes'
         row, = comparable[table]
         assert int(row.pop('lab_xmin')) > int(before[table][0]['lab_xmin'])
-    assert comparable == expected, 'unexpected clone-only injection effect'
+    if case in ('foreign-request-tail', 'foreign-outcome-tail'):
+        table = 'producer_requests' if case == 'foreign-request-tail' else 'producer_outcomes'
+        extra, = [row for row in comparable[table] if row['request_sequence'] == 2]
+        assert int(extra.pop('lab_xmin')) > int(before[table][0]['lab_xmin'])
+    assert ordered(comparable) == ordered(expected), 'unexpected clone-only injection effect'
 
 
 def ordered(rows):

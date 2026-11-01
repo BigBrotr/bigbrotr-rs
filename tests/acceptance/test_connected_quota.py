@@ -14,8 +14,11 @@ SPEC.loader.exec_module(QUOTA)
 
 
 def baseline():
+    original=dict(dataset_id='\\x'+'01'*16,producer_slot_id='\\x'+'42'*16,
+                  producer_epoch=1,request_sequence=1)
     return dict(producer_epochs=[dict(reserved_through_request=1,lab_xmin='10')],
-                producer_outcomes=[dict(outcome_bytes='\\x010203',
+                producer_requests=[dict(original,input_bytes=3,lab_xmin='9')],
+                producer_outcomes=[dict(original,outcome_bytes='\\x010203',
                     outcome_sha256='\\x'+hashlib.sha256(b'\x01\x02\x03').hexdigest(),lab_xmin='11')],
                 unchanged=[dict(value='retained',lab_xmin='12')])
 
@@ -50,6 +53,9 @@ class ConnectedQuotaControls(unittest.TestCase):
             if case in ('reserved-ahead','outcome-conflict'):
                 table='producer_epochs' if case=='reserved-ahead' else 'producer_outcomes'
                 actual[table][0]['lab_xmin']='20'
+            elif case in ('foreign-request-tail','foreign-outcome-tail'):
+                table='producer_requests' if case=='foreign-request-tail' else 'producer_outcomes'
+                actual[table][1]['lab_xmin']='20'
             QUOTA.verify_injection(original,planned,actual,case)
             self.assertEqual(bool(sql),case!='pressure')
             changed=copy.deepcopy(actual)
@@ -66,6 +72,40 @@ class ConnectedQuotaControls(unittest.TestCase):
         row=planned['producer_outcomes'][0]
         self.assertEqual(row['outcome_bytes'],'\\x000203')
         self.assertEqual(row['outcome_sha256'],'\\x'+hashlib.sha256(b'\x00\x02\x03').hexdigest())
+
+    def test_foreign_tails_target_each_same_producer_census_without_changing_the_prefix(self):
+        original=baseline()
+        for case,table in [('foreign-request-tail','producer_requests'),
+                           ('foreign-outcome-tail','producer_outcomes')]:
+            sql,planned=QUOTA.injection(original,case)
+            first,extra=planned[table]
+            self.assertIn('INSERT INTO control.'+table,sql)
+            self.assertEqual(first,original[table][0])
+            self.assertEqual(extra['request_sequence'],2)
+            self.assertEqual(extra['producer_slot_id'],first['producer_slot_id'])
+            self.assertEqual(extra['producer_epoch'],first['producer_epoch'])
+            self.assertNotEqual(extra['dataset_id'],first['dataset_id'])
+            self.assertEqual(len(bytes.fromhex(extra['dataset_id'][2:])),16)
+            # The old dataset filter would see the intact prefix and hide row2.
+            self.assertEqual([r for r in planned[table] if r['dataset_id']==first['dataset_id']],
+                             original[table])
+            self.assertEqual({k:v for k,v in planned.items() if k!=table},
+                             {k:v for k,v in original.items() if k!=table})
+            actual=copy.deepcopy(planned);actual[table][1]['lab_xmin']='20'
+            QUOTA.verify_injection(original,planned,actual,case)
+            for mutate in [lambda r:r[table][0].update(lab_xmin='21'),
+                           lambda r:r[table][1].update(dataset_id=first['dataset_id']),
+                           lambda r:r[table][1].update(producer_epoch=2),
+                           lambda r:r['producer_epochs'][0].update(reserved_through_request=2),
+                           lambda r:r[table].pop(0)]:
+                changed=copy.deepcopy(actual);mutate(changed)
+                with self.subTest(case=case,mutate=mutate),self.assertRaises((AssertionError,ValueError)):
+                    QUOTA.verify_injection(original,planned,changed,case)
+        for dataset in (bytes([1])+bytes(15),bytes(15)+bytes([1])):
+            values=baseline()
+            values['producer_requests'][0]['dataset_id']='\\x'+dataset.hex()
+            _,planned=QUOTA.injection(values,'foreign-request-tail')
+            self.assertTrue(any(bytes.fromhex(planned['producer_requests'][1]['dataset_id'][2:])))
 
     def test_refusal_requires_exact_error_and_no_new_effects(self):
         for case in QUOTA.CASES:
