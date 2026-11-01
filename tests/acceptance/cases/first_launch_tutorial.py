@@ -20,19 +20,17 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '21965a0ccec12d83436e340e3dab3ecdfeb44837'
+REVIEWED_PRODUCT = '49fcfbb6bc5db459ed6cf1b8a7fc5a3a3a51ec48'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
-# The reviewed application guard delta changes storage failure/refusal checks
-# and their tests only. All nine Nostr paths and the other declared code,
-# dependency and configuration objects remain unchanged from b5824793.
-# The later21965 delta only corrects a Linux test-only File errno observation.
-# No signing API, signer configuration or network-publication path was added.
-# The merged native packages match reviewed d3. Source review does not qualify
-# installed execution. Bind every vendor leaf except the nonexecutable guide;
-# package documentation, provenance and newly introduced entries stay strict.
+# The reviewed guard and logical-credit/reconciliation deltas change storage,
+# intake refusal and their callers/tests. All nine Nostr paths and the other
+# declared code, dependency and configuration objects remain unchanged from the
+# previous reviewed product. No signer or outbound-publication API was added.
+# Bind vendor code and provenance strictly; only its nonexecutable guide may vary.
+# Source review does not establish installed runtime behavior.
 REVIEWED_CODE = {
-    'apps': '9892d598e8b71a05435ab6e1043cacb47e5fd50e',
+    'apps': '1f352647b9c1cc016cc7f4272c94109f4aaa0499',
     'crates': '80acabc650a601d0f8b37462039158d791d7ae8d',
     'Cargo.toml': 'ebaf694cebdd6b0eda55a8849ee0261b6aa18790',
     'Cargo.lock': '33bb87c694d94a6e329ff2b426cb89d296bdb6d0',
@@ -53,7 +51,7 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product21965a0c; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product49fcfbb6; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
