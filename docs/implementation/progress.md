@@ -13,8 +13,8 @@ qualification report. M2 remains **unintegrated**, with no whole task/milestone
 completion claim.
 
 Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`, is **1a305197** before this checkpoint
-commit: historical/freeze, declared-inventory and strict backend-diagnostic corrections merged.
+`work/m2-linear-quantum-acceptance-20261101`, is **59cf9de1** before this checkpoint
+commit: all bounded corrections above, current Index/topology qualification complete.
 Installed product remains **78c8e31339e760c16bcfa036dabff38dcdf86544**; all eight
 product code/config objects in acceptance equal that source. The separately
 qualified dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
@@ -129,18 +129,27 @@ and unknown types. No query text, filter, retry, wait, deadline or product chang
 26firstlaunch+26topology/restart focused controls PASS; actual richer sample pending.
 Earlier446fullsuite remains source-bound at7bb; unaffected proofs are reused.
 
-**Next:** run `acceptance-index-topology-r4` with strict identity diagnostics, then
-qualify grouped closed reclamation/successor/Archive/export/restart. No maintained
-mid-case resumption exists; the fresh installed chain supplies the remaining
-actual15stage/32terminalSQL proof without rebuilding unchanged78. Preserve original
-R3 UNKNOWN even if a later run passes. Use existing run-installed.py, source frozen
-until terminal observations finish; preflight15432/18081/7447 plus18123/19000 and
-empty borrowed bridge. Topology rejects --native-observer-build; grouped uses
-observer78 and --retained-archive-schedule grouped-publication-loss. Merge the
-separately qualified e812 test initializer only after installed audits, review
-final publication delta, integrate/push coherent qualified work and observe hosted
-CI. All author/reviewer tasks are complete; root owns engines/cache. All selected
-later phases and existing operation/capacity/admission-cost obligations remain.
+Current Index R4, source59cf/product78, **15/15 PASS**,137.439s. Both real
+SQL copies PASS:12nonterminal/32terminal cases, complete seed rows/xmin preserved.
+The installed journey includes initial Index/export, successor/resend, Archive
+catch-up/exact retry, epoch2Index bridge/exact retry and historical read.
+All29containers stopped/PID0/noOOM;1311commands joined/1318recorded PIDs absent;
+12rich backend probes all strictzero;bridge empty. OriginalR3 remains UNKNOWN,
+with metadata/reproducer retained for the existing P02-T06 Steps4/7 / P02-T09/P08
+shutdown/query-retirement/operations/load work. No causal explanation is inferred
+from this new PASS; nativeepoch3 remains synthetic metadata, not engine proof.
+
+**Next:** run `acceptance-grouped-second-export-r1` for the current78 candidate
+with source frozen until terminal audit: existing run-installed.py, case
+p01-first-launch-closed-reclamation, observer78 and
+--retained-archive-schedule grouped-publication-loss. Preflight15432/18081/7447
+plus18123/19000 and empty borrowed bridge; existing free-space/ownership bounds
+remain. It must demonstrate64-request retirement/reclamation, both prefix COMMIT
+loss directions, mixed restore refusal, compacted successor, grouped Archive loss,
+exact retries, science, two exports and ordinary restart. Reuse unchanged proofs.
+After qualification, merge the separately qualified e812test initializer, reconcile
+strict tutorial source eligibility, review final publication delta, main-integrate/
+push coherent work and observe actual hostedCI. All selected later phases remain.
 
 ## Hosted CI and publication
 

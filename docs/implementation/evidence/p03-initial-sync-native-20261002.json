@@ -467,10 +467,10 @@
     }
   },
   "linear_quantum_20261101": {
-    "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_ALL_SEVEN_SELECTED_FAULTS_AND_DEV_PASS",
+    "status": "QUALIFICATION_INCOMPLETE;FINITE_TUTORIAL_SEVEN_FAULTS_DEV_AND_AFFECTED_INDEX_PASS;GROUPED_PENDING",
     "tasks": "P03-T01Steps3/4,P03-T02Steps4/5,P03-T05Steps1/2 single-interval foundation only",
     "product": "78c8e31339e760c16bcfa036dabff38dcdf86544",
-    "acceptance": "1a305197e65b9b64096defe3d51807b4884d1eaa",
+    "acceptance": "59cf9de1de981d324ae68dcbeec84e50a9f54af3",
     "main_integration": "NOT_INTEGRATED; main/origin1f4f682a contains qualified native component and actual hosted33PASS report",
     "build": {
       "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r3-78c8e313/build-receipt.json",
@@ -574,7 +574,7 @@
         "sha256": "da9417529e1fc4e5d11e0b1d46ba259199c03c3c54788c7b5431bf205e57f377"
       }
     ],
-    "open_checks": "NextIndexR4mustqualify actual15stage path and32terminalSQLcases with strictbackendidentitydiagnostic;R3unknownremainsUNKNOWN regardless laterresult. Groupedclosedreclamation/successor/Archive/export/restart required afterward. FullcurrenthostedCI/finaldelivery open. Product78 finite/tutorial/sevenfault ande812dev proofs retained;nowholeM2/taskclose.",
+    "open_checks": "Current groupedclosedreclamation/successor/Archive/export/restart must qualify, then separatelyqualifiede812testinitializer integration/sourceeligibility, finalpublication review/mainpush/actualhostedCI. OriginalR3backendcauseUNKNOWN retained withexistingoperation/loadfollowthrough. No fullwalker/task/M2close.",
     "limits": "No full walker, age bands, NEG/live, OPEN65, same-job adoption, broad capacity or full M2 claim. Logical funding is not measured RSS/PG physical allocation. All selected later phases remain open.",
     "tutorial": {
       "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-tutorial-r1/root-terminal.json",
@@ -879,7 +879,18 @@
         "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-quantum-source-83c478d3-20261101/source-triage.json",
         "sha256": "9d5bc0b47fa94796ace0638183f48145d1db497a0e45aea8d47e2fe978a27cf5"
       },
-      "scope": "Through83c478d3 only:24commits/127blobs/11515305bytes. Six fingerprints new to initial baseline already present in published1f4: runtime-variable/command references and synthetic test/diagnostic literals, no unclassified credential. Final additional commits still require incremental publication review; bounded pattern limits remain."
+      "scope": "Through83c478d3 only:24commits/127blobs/11515305bytes. Six fingerprints new to initial baseline already present in published1f4: runtime-variable/command references and synthetic test/diagnostic literals, no unclassified credential. Final additional commits still require incremental publication review; bounded pattern limits remain.",
+      "subsequent_interval": {
+        "scan": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-quantum-source-59cf9de1-20261101/source-scan.json",
+          "sha256": "ab4e21e35fe54be542b5cf8b7dd6ea6bff099ced0105ff80621d6a8ad828e0ad"
+        },
+        "triage": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-quantum-source-59cf9de1-20261101/source-triage.json",
+          "sha256": "619a42f1015cb8047b87cfa9f5d72e3c4fcfbe9804ab20befce53bf0833da5aa"
+        },
+        "scope": "After83through59cf:12commits/23blobs/12945742bytes;twoinitial-baselinefingerprints reclassified from priortriage/actualpublic1f4,noneunclassified. Final additionalcommitsstillrequireincrementalreview."
+      }
     },
     "historical_quantum_followthrough": {
       "status": "CORRECTED_AND_SOURCE_REVIEWED;PURE_CONTROLS_PASS;INSTALLED_RERUN_PENDING",
@@ -919,7 +930,41 @@
       "merged": "1a305197e65b9b64096defe3d51807b4884d1eaa",
       "change": "One MATERIALIZED rowset perDB supplies count+allowlisted safe processidentity metadata;persistbeforevalidation. Original zero-forALLnonselfbackends condition preserved;nonzero maintenance/unknown stillFAIL;no querytext,filter,retry,wait,timeout/productchange. One currentstructured backend-absence.json format;noactualoldformatreaders;oldcapturesuntouched.",
       "pure": "26firstlaunch+26topology/restartPASS;newrealSQLsampleNOT_RUN",
-      "reference": "https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW"
+      "reference": "https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW",
+      "actual_rerun": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r4/root-terminal.json",
+        "sha256": "14b7f4b5e3f66c443664b8a9c64fc0511e491cb3f8f576c29a9de988b4b4552a",
+        "result": "R4PASS15;12actualstructuredprobesstrictzero;originalR3causeUNKNOWNnotreclassified",
+        "followthrough": "Retainoriginalincident/reproducer and safe metadata for later required shutdown/query-retirement/operations and load evidence under existingP02-T06Steps4/7,P02-T09/P08;no separate audit campaign."
+      }
+    },
+    "affected_regressions": {
+      "topology": {
+        "result": "15/15PASS",
+        "source": "59cf9de1de981d324ae68dcbeec84e50a9f54af3",
+        "seconds": 137.43899216200225,
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r4/root-terminal.json",
+          "sha256": "14b7f4b5e3f66c443664b8a9c64fc0511e491cb3f8f576c29a9de988b4b4552a"
+        },
+        "sql": {
+          "nonterminal": {
+            "cases": 12,
+            "status": "PASS_SQL_ONLY",
+            "seed_preserved": true,
+            "path": "restart/index-handoff-nonterminal"
+          },
+          "terminal": {
+            "cases": 32,
+            "status": "PASS_SQL_ONLY",
+            "seed_preserved": true,
+            "path": "index-topology/sql-constraints"
+          }
+        },
+        "custody": "29containersstopped/PID0/noOOM;1311commandsjoined/1318recordedPIDsabsent;12strictstructuredbackendprobesallzero;borrowedbridgeempty",
+        "scope": "Actualsource/Index/restart/successor/resend/Archivecatchup/exactretry/epoch2Indexbridge/exactretry/historicalread;SQL12nonterminal/32terminal,epoch3metadataonly. No generalcapacity/recovery/fullM2claim."
+      },
+      "grouped": "NOT_RUN_CURRENT_TUPLE;next"
     }
   }
 }

@@ -78370,7 +78370,7 @@
       "linear_quantum_in_progress": {
         "branch": "work/m2-linear-quantum-acceptance-20261101",
         "worktree": ".research/m2-linear-quantum-acceptance-20261101",
-        "revision_before_checkpoint": "1a305197e65b9b64096defe3d51807b4884d1eaa",
+        "revision_before_checkpoint": "59cf9de1de981d324ae68dcbeec84e50a9f54af3",
         "product_branch": "work/m2-linear-quantum-integration-20261101",
         "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
         "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
@@ -78382,7 +78382,7 @@
         "failed_host_controls": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/first-controls-failure.json",
         "controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-7bb7a159-controls",
         "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-e8122ff9-dev",
-        "status": "SevenselectedfaultsPASS;446fullcontrols7bbPASS;laterSQL9/13anddiagnostic52focusedPASS. IndexR2fixtureinventoryFAIL/R3unknownbackendFAILretained,12nonterminalSQLPASS;alllocaljobsnowterminal,bridgeempty. NextstrictdiagnosticIndexR4then grouped;M2notmainintegrated.",
+        "status": "Current78IndexR4actual15PASS/12+32SQL;sevenfaultsPASS;allownedlocaljobsnowterminal;bridgeempty. Rootnextgroupedinstalledqualification. OriginalR1/R2FAIL/R3UNKNOWN and20a3suiteFAILpreserved;M2notmainintegrated.",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
         "author_tip": "6ceae14359b0bbeb9f89acc4ffdb424e7d24a4d2",
@@ -78394,7 +78394,8 @@
           "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r1",
           "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r2",
           "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r3"
-        ]
+        ],
+        "current_index_topology": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313/acceptance-index-topology-r4"
       }
     }
   },
