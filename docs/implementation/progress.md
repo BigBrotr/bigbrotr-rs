@@ -12,9 +12,9 @@ logical pending-quota/recovery increment remain locally qualified on main/origin
 
 Root integrates in `.research/m2-linear-continuation-20261101`, branch
 `work/m2-linear-continuation-20261101`, baseA2. Last observed HEAD
-**1849721e047710b7efef4f80bc9b025da5c13550**; enclosing Git identifies subsequent
-commits. Root owns two pending verifier metadata corrections (tutorial reviewed
-source pin and native-row report shadow), this checkpoint and inventory. Product
+**57f670cb721b26408f6734ebce65953accf06671**; enclosing Git identifies subsequent
+commits. The tutorial source pin/native-row report corrections are committed;
+Root owns ongoing checkpoint/inventory updates. Product
 window/native helpers and the shared fixture commits are integrated locally;
 no M2 code has been merged/pushed to main or qualified by product execution.
 
@@ -29,9 +29,11 @@ recovery. See the [owning contract](../reference/producer-request-inputs.md#dura
 
 ## Evidence and open gates
 
-Pure/native/composed Rust controls are written but **NOT_RUN**. No new product
-build, real SQL, socket or installed campaign has started. Astra's bounded source
-reviews accepted the binding; final shared oracle review is in progress. Sol's
+Release617 **PASS** with independently checked exact-source/native/compiler/worker
+identities. Strict workspace617 **FAIL** on seven style lints; no lint suppressed.
+Rustdoc/application-library tests and real SQL/socket/installed paths are **NOT_RUN**.
+Mechanical corrections are committed at57f670cb; fresh qualification is required. Astra's bounded source
+and final shared oracle reviews accepted the current binding and independent checks. Sol's
 shared fixture controls passed118 affected cases; earlier host-wide controls had
 two explicit missing-strace skips. These are fixture evidence, not product proof.
 
@@ -43,7 +45,9 @@ other6 code/dependency/config objects and the complete vendor tree are unchanged
 The pin is reconciled locally and its positive/negative regression passes.
 Repeat affected final portable checks after integration; preserve this failure.
 
-Sol owns the bounded capped-relay acceptance harness in its separate worktree:
+The positive capped-relay harness is integrated at3da8df74 and critically reviewed.
+Sol now owns the two bounded cursor-time/foreign-payload corruption profiles in
+its separate `.research/m2-capped-acceptance-sol` worktree. Positive workload:
 prepopulateA with signed24/23, thenB must continue past an all-known short page
 and acquire signed1. Literal bounds/corpus/transcript plus full independent native
 rows, original inputs and receipts must prove the result. Existing interrupted,
@@ -56,30 +60,34 @@ logical_pending_quota_20261101, retains quota/recovery source identities,347nati
 6realPG,3socket and installed on/off12/12 results and original failures. Merged
 5847 portable516PASS retains unchanged scope. Reuse these valid results.
 
-[HostedA2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038) remains
-**IN_PROGRESS, not full PASS**. Mac job/source/artifact audit passed (1445Rust,
-2ignored; acceptance504PASS/12declaredSKIP); both Linux foundations were running
-at last actual API observation. Observer tool46117 and its existing control root
-`.research/ci-publication-20261026/terminal-a2a42f22-20261101` remain active.
-Final platform/context/public-output audit is pending. Avoid a second push cancelling
-this run. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns prior
-audited064 and the pendingA2 boundary.
+[HostedA2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038) is
+**SUCCESS and fully audited PASS**:33foundation/20scope, zero requiredNOT_RUN,
+all3 source/native/worker identities and9 postcontexts. Unfiltered Rust94suites
+per platform: Linux1447PASS (4/3ignored), Mac1445PASS/2ignored; acceptance516PASS
+bothLinux, Mac504PASS/12declaredSKIP. Public4artifacts/516members+34logs:
+zero unknown credential candidates/provider alerts within bounded/asynchronous
+limits. Observer46117/acquisition53934 reaped0, owned PIDs absent. The
+[CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns exact receipts;
+quota/recovery is now closed locally and on GitHub atA2. New M2 source is unpushed.
 
 ## Resources and next action
 
-Portable184 container is stopped/PID0/noOOM; launcher22361 reaped1. No local
-compiler, native/PG/client or installed process is active for M2. Agents perform
-bounded source/oracle/harness work; Root is sole integrator. Preserve all original
-labs, failures and worktrees. The [inventory](../research/laboratory-inventory.json)
-records the49 verified merged branch-ref retirements after pushedA2; no worktree,
-data or cache was deleted. Original4 cache ELF bytes/full metadata stay protected
-with O_NOATIME reads; no Git maintenance or timestamp normalization.
+Portable184 container stopped/PID0/noOOM, launcher22361 reaped1. Build617
+container39ebc084 stopped/PID0/noOOM; tool80621 reaped0; build receipt in
+`.research/m2-linear-continuation-qualification-20261101/61769e66`.
+Workspace617 containerbb94a4ab stopped/PID0/noOOM; tool6043 reaped1, original
+Clippy log/failure receipt retained. Cache115 lock released; original4 ELF
+bytes/full metadata preserved with O_NOATIME reads. No local compiler, engine,
+client or observer process is active at this boundary. Root is sole integrator;
+Sol works only on the bounded negative harness. The [inventory](../research/laboratory-inventory.json)
+retains owned resources, failures, worktrees and49 verified branch-ref retirements;
+no worktree/data/cache deletion, Git maintenance or timestamp normalization.
 
-**Next:** finish the bounded oracle review, commit the coherent candidate and
-use the existing exact-source isolated build/workspace drivers with their cache,
-source/native/compiler, resource and lifecycle guards. Integrate the capped
-harness without rebuilding unchanged product code. Run necessary composed/native
-controls, then real continuation/fault and affected installed paths. Preserve
-physical reserve/reopen/OPEN65 atP02-T02Step4, load/maintenanceStep8/P02-T09,
-interval succession/partition/sparse growth/adoption at their existing P03 owners,
-and later delivery atP01-T08/P08/P10. No whole-P02 barrier or scope reduction.
+**Next:** qualify the corrected57 product delta using the existing isolated
+build/workspace recipes, integrate the bounded negative harness, then run the
+actual capped/negative and affected installed/fault paths. Reuse unchanged
+product components and old receipts only within their exact scope; do not treat
+new artifacts as qualified by old-source results. Keep physical reserve/reopen/
+OPEN65 atP02-T02Step4, load/maintenanceStep8/P02-T09, interval succession/
+partition/sparse growth/adoption at existing P03 owners and portability/delivery
+atP01-T08/P08/P10. No whole-P02 barrier or scope reduction.

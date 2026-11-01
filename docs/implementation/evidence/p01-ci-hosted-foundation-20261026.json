@@ -1,23 +1,23 @@
 {
   "latest_verified_hosted_execution": {
-    "revision": "064d054d101932d50defabce0fb626f93f42ed81",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189",
+    "revision": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038",
     "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
     "foundation_checks": "33/33PASS",
     "scope_controls": "20/20PASS",
     "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
-    "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. LinuxRust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance482PASSLinux,476PASSmacOS/6declaredskips;export10each. Added cheap ACK control is in actual standard discovery.",
+    "source_context": "All3exact4209-file source/native/worker identities and9post-build contexts verified. Unfiltered94Rustsuites each: amd64/arm1447PASS (4/3ignored),macOS1445PASS/2ignored; acceptance516PASS bothLinux,504PASSmacOS/12declaredskips. Actual selected controls and platform/installed boundaries retain their declared scope.",
     "terminal_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/terminal-audit.json",
-      "sha256": "5f6be53a86f73dcd3249fdacc47b71485ccc9dc7a30a18ded1fc4ff2ee1af642"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/terminal-audit.json",
+      "sha256": "3c1d166c218afb96f09ea5a9d618d7694fb5f0227d0f03b75e9e6c0e2cee1fcb"
     },
     "completion_receipt": {
-      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/completion-check.json",
-      "sha256": "de696540186795acd04b70dcf1e39d4d7f6ac93bb417d60542280b5013324712"
+      "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a2a42f22-20261101/completion-check.json",
+      "sha256": "dfe05bc85def526396384bc0b73370fe4e94335b8799e1eb236fd3fd7ec74ce0"
     },
-    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
-    "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observer reaped0/no owned observeractive; original94evidence intact.",
-    "historical_scopes": "Other source-scoped fields retain original executions."
+    "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/operationalcredentials/provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
+    "failure_classification": "No billing/admission, workflow, cancellation or product failure. Watcher46117/acquisition53934 reaped0; owned observerPIDs absent. Existing evidence hashes/external pins checked.",
+    "historical_scopes": "Other source-scoped fields and previous_verified_hosted_executions retain their original execution scope."
   },
   "date": "2026-11-01",
   "status": "PASS_SCOPED_FOUNDATION_NATIVE_TUPLE_AND_PUBLIC_OUTPUT_AUDIT",
@@ -2278,14 +2278,26 @@
       "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Boundedpattern/asynchronous-providerlimits retained.",
       "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observerreaped0/ownedPIDsabsent; no duplicate dispatch/rerun/settingschange.",
       "historical_scopes": "Other source-scoped fields retain their original executions."
+    },
+    {
+      "revision": "064d054d101932d50defabce0fb626f93f42ed81",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41292582189",
+      "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+      "foundation_checks": "33/33PASS",
+      "scope_controls": "20/20PASS",
+      "unselected_jobs": "3SKIP;zero requiredNOT_RUN",
+      "source_context": "All3exact4196-file source/native/worker identities and9post-build contexts verified. LinuxRust1428PASS (4/3ignored),macOS1426PASS/2ignored; acceptance482PASSLinux,476PASSmacOS/6declaredskips;export10each. Added cheap ACK control is in actual standard discovery.",
+      "terminal_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/terminal-audit.json",
+        "sha256": "5f6be53a86f73dcd3249fdacc47b71485ccc9dc7a30a18ded1fc4ff2ee1af642"
+      },
+      "completion_receipt": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-064d054d-20261101/completion-check.json",
+        "sha256": "de696540186795acd04b70dcf1e39d4d7f6ac93bb417d60542280b5013324712"
+      },
+      "public_outputs": "4artifacts/516members+34logs;54occurrences/5knownnonsecretfingerprints,0newunclassified/0provideralerts. Existing bounded-pattern/asynchronous-provider limits apply.",
+      "failure_classification": "No billing/admission, workflow, cancellation or productfailure. Observer reaped0/no owned observeractive; original94evidence intact.",
+      "historical_scopes": "Other source-scoped fields retain original executions."
     }
-  ],
-  "pending_hosted_execution": {
-    "revision": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038",
-    "status": "IN_PROGRESS_NOT_YET_QUALIFIED",
-    "scope": "Significant integrated logicalquota/recovery andsharedharnessdelta; fullselectedfoundation/platform/source/native/worker/postcontext andpublic-outputauditrequired.",
-    "observer": "Existingboundedobserver tool46117; control .research/ci-publication-20261026/terminal-a2a42f22-20261101; Sol/xhigh, no newdispatch orsourcepushwhilethisrunpending.",
-    "last_completed": "064d054d remains latest fullyauditedhostedexecution untilterminal evidence."
-  }
+  ]
 }

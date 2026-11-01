@@ -1256,7 +1256,24 @@
         "Actual capped relay/all-known page reaches older signed data",
         "Affected installed and unknown-COMMIT continuation journeys"
       ],
-      "next": "Exact-source isolated build/workspace qualification; integrate bounded capped harness using existing artifact/native/science infrastructure. Later interval succession/saturation partition/sparse growth/adoption remain existing P03 owners."
+      "next": "Exact-source isolated build/workspace qualification; integrate bounded capped harness using existing artifact/native/science infrastructure. Later interval succession/saturation partition/sparse growth/adoption remain existing P03 owners.",
+      "release617": {
+        "status": "PASS_EXACT_SOURCE_BUILD_NOT_RUNTIME_QUALIFICATION",
+        "receipt": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66/build-receipt.json",
+        "sha256": "e8abfe9187a722bdf103d087b7757b0b66030810c68c3481328cc6e12537f3ad"
+      },
+      "workspace617": {
+        "status": "FAIL",
+        "classification": "source/lint",
+        "failure_receipt": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66/workspace-failure.json",
+        "scope": "Seven style diagnostics; corrected mechanically at57f670cb without lint suppression. Rustdoc and app-library NOT_RUN."
+      },
+      "positive_harness": {
+        "source": "50750845d90e28257d7bb7686e35f5e1e5ba7303",
+        "integrated_at": "3da8df74",
+        "status": "PASS_BOUNDED_CRITICAL_SOURCE_REVIEW;actual installed NOT_RUN",
+        "workload": "A24/23 prepopulation thenB all-known24/23 reachesolder1; exact5pages/6mutationrequests/76nativeRows/sequence103/eightclassifications; observed-lifetime noextra socket/plan; reuseexistingfullscienceencoder."
+      }
     }
   }
 }

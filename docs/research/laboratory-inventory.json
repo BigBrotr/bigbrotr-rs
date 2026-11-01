@@ -78564,8 +78564,8 @@
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
         "branch": "work/m2-linear-continuation-20261101",
         "base": "a2a42f2284790e38f85979d4aea17eab5e9a4644",
-        "state": "Retained continuation/native payload binding and shared fixtures integrated on local branch; qualified source/oracle review ongoing, product execution NOT_RUN.",
-        "observed_revision": "1849721e047710b7efef4f80bc9b025da5c13550",
+        "state": "Release617PASS; strictClippy617FAIL sevenstylelints, Rustdoc/app-libraryNOT_RUN. Corrections57 and positive capped harness3da integrated locally; pending new source qualification/negative harness.",
+        "observed_revision": "57f670cb721b26408f6734ebce65953accf06671",
         "evidence": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101",
         "portable_controls": {
           "source": "1849721e047710b7efef4f80bc9b025da5c13550",
@@ -78573,13 +78573,33 @@
           "status": "FAIL:521PASS/1ERROR/0SKIP; correct refusal of stale tutorial reviewed-code pin. Original logs retained; reviewed source pin reconciled locally and targeted regression PASS. Owned container stopped/PID0/noOOM, launcher22361 reaped1.",
           "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-controls-1849721e"
         },
-        "pending": "No M2 compiler/native/SQL/socket/install campaign launched. Existing bounded hostedA2 observer active; capped/all-known continuation harness delegated in a separate worktree. Original four cache ELF bytes/full metadata remain protected; no broad cleanup."
+        "pending": "No active compiler/engine/client at observed boundary. Sol negativeharness sourcework only. Corrected source qualification and all real M2 journeys NOT_RUN.",
+        "build": {
+          "source": "61769e66c09b2506bfa972f3fa1f524112106a79",
+          "frozen_source": "/home/tux/bigbrotr-rs/.research/m2-linear-product-61769e66",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-61769e66",
+          "tool": 80621,
+          "container": "39ebc08402166b33d83ffb7d10b26ec1913d604e3968a7f1c26ef85267903bc2",
+          "owner": "bfc307d7929778ab1f50ccebba2b15e0",
+          "launcher_pid": 761901,
+          "launcher_start_ticks": 27566024,
+          "status": "PASS independently audited; tool80621reaped0, containerstopped/PID0/noOOM, exclusive cachelockreleased.",
+          "receipt_sha256": "e8abfe9187a722bdf103d087b7757b0b66030810c68c3481328cc6e12537f3ad"
+        },
+        "workspace617": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-continuation-61769e66-workspace",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-qualification-20261101/61769e66",
+          "tool": 6043,
+          "status": "FAIL strictClippy7stylelints; Rustdoc/application-libraryNOT_RUN; containerbb94a4abstopped/PID0/noOOM, launcherreaped1, cachereleased. Originalstdout/logs preserved."
+        }
       },
       "retired_refs_after_pushed_a2": {
         "audit": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/branch-retirement-a2a42f22.json",
         "sha256": "238264896b4921c0b7328ffe0513327fb9468503cda158d5ef3c1ffa9021804c",
         "status": "49 original-tip ancestor refs retired after pushedA2; 46 clean worktrees detached at identical HEAD, no worktree/data/cache deletion; 43 non-ancestor tips preserved. Remote short-pin-checkpoint ref retired only after exact-tip and ancestry checks. This records that audit, not current branch totals."
-      }
+      },
+      "hosted_a2": "PASS audited run41319313038; observer46117/acquisition53934reaped0, noownedPIDactive. CI report owns receipts and limits."
     }
   },
   "implementation_ci_portable_controls_20261030": {

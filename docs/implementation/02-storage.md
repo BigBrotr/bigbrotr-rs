@@ -268,13 +268,16 @@ One owner serializes exact identity decisions for each writable directory.
   remain before OPEN65; these bounded proofs do not enable growth. See the
   [current history batch](../../experiments/policy-versions/README.md#current-historical-original-integrity-batch)
   for actual original-body controls and preserved failures.
-  The logical-only owner-credit gate is locally qualified under the same64 cap:
+  The logical-only owner-credit gate is qualified under the same64 cap:
   exact product51 release/probe, strict Clippy/Rustdoc and347 focused native tests,
   six real PG recovery/refusal cases, three real signed socket modes and installed
   on/off successor journeys12/12 each. Repeated positive refusals at0/10/20s retain
   all obligations and resume after the original configured30s interval. Retained
-  old fullRust1447 results cover their unchanged scope; hosted new-source CI remains
-  required. The [owning evidence](evidence/p02-producer-recovery-native-20260920.json)
+  old fullRust1447 results cover their unchanged scope. IntegratedA2 also passed
+  [hosted CI](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41319313038):
+  all33 foundation and20 scope checks, unfiltered Rust on all three platforms,
+  source/native/worker identities and public-output audit. Declared ignored/skipped
+  cases retain their limits. The [owning evidence](evidence/p02-producer-recovery-native-20260920.json)
   preserves exact product/test/harness identities, original failures and limits.
   This closes pre-input/PG credit and logical stable-low continuation only;
   physical readiness/reserve, funded reopen and OPEN65 remain separate Step4 gates.
