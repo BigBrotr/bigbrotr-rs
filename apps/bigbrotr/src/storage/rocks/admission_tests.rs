@@ -448,7 +448,7 @@ fn facts(store: &IngestStore) -> Vec<Fact> {
         })
         .collect()
 }
-fn kv(store: &IngestStore) -> Vec<(String, Vec<u8>, Vec<u8>)> {
+pub(super) fn kv(store: &IngestStore) -> Vec<(String, Vec<u8>, Vec<u8>)> {
     ["default", "facts", "receipts"]
         .into_iter()
         .flat_map(|name| {
@@ -489,7 +489,7 @@ fn literal_pending_accounting(
     bytes
 }
 
-fn inputs(path: &std::path::Path) -> Vec<(String, Vec<u8>)> {
+pub(super) fn inputs(path: &std::path::Path) -> Vec<(String, Vec<u8>)> {
     let mut result: Vec<_> = std::fs::read_dir(path.join("producer-inputs-v1"))
         .unwrap()
         .map(|entry| {
@@ -988,6 +988,58 @@ fn retained_replay_with_reduced_dependency_limit_is_not_corrupt_state() {
     };
     assert_eq!(receipt.encode_persistent(8192).unwrap(), encoded);
     assert_eq!(kv(&store), before);
+}
+
+#[test]
+fn simulated_background_latch_at_event_replay_delivery_refuses_the_retained_result() {
+    // Only the Rust failure observation is simulated; this does not exercise
+    // native listener delivery or an actual POSIX background fault.
+    let (root, mut store, budget, _, _) = setup(false);
+    let original = admit(&mut store, &budget, 1).unwrap();
+    assert!(matches!(original.outcome(), AdmissionOutcome::Durable(_)));
+    drop(original);
+    let path = root.path().join("db");
+    let before = kv(&store);
+    let sequence = store.db.latest_sequence_number();
+    let originals = inputs(&path);
+    let accounting = store.accounting;
+    let simulated = store.test_background_failure();
+    let prepared = PreparedEvent::new(
+        request(5, 1),
+        intent("E_private", 2, 10_000_000),
+        256 * 1024,
+        grant(&budget, MIB, 0),
+    )
+    .unwrap();
+    let mut checks = 0;
+    assert_eq!(
+        store
+            .admit_event(
+                prepared,
+                ObservedTime::new(999),
+                false,
+                AdmissionLimits::default(),
+                grant(&budget, 40 * MIB, 10 * MIB),
+                || {
+                    checks += 1;
+                    if checks == 2 {
+                        simulated.latch();
+                    }
+                    Ok(())
+                },
+            )
+            .err(),
+        Some(AdmissionError::CommitUnknown)
+    );
+    assert_eq!(checks, 2, "the latch belongs to replay's delivery callback");
+    assert!(store.native_unavailable());
+    assert!(!store.write_uncertain, "replay dispatched no native write");
+    assert_eq!(store.db.latest_sequence_number(), sequence);
+    assert_eq!(store.accounting, accounting);
+    assert_eq!(kv(&store), before);
+    assert_eq!(inputs(&path), originals);
+    assert_eq!(budget.snapshot().used().data_bytes(), 0);
+    assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB);
 }
 #[test]
 fn inconsistent_counter_or_scope_inventory_cannot_recreate_scientific_state() {
