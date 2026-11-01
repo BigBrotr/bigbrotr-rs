@@ -655,11 +655,11 @@ class Runtime:
         self.inspect(self.pg)
         pg = {'postgres': self.pg['id']}
         control = self.rows(pg, 'bigbrotr_control')
+        save(output / (prefix + '-control.json'), control)
         require(set(control) == self.tables, 'Control inventory differs from migrations')
         from cases.first_launch_quantum_oracle import shape
         shape(control)
         catalog = self.catalog_rows(pg, 'bigbrotr_catalog')
-        save(output / (prefix + '-control.json'), control)
         save(output / (prefix + '-catalog.json'), catalog)
         return control, catalog
 

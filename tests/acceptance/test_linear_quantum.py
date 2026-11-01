@@ -11,12 +11,14 @@ from cases import first_launch_quantum_oracle as check
 from installed_sync_client import quantum_status
 
 
-def fixture(*,pending=False):
+def fixture(*,pending=False,abandoned=False,producer_epoch=1):
     bx=lambda digit:'\\x'+digit*32
     predicate=b'["REQ","000000000000000000000000000000000000000000000000",{"kinds":[1],"since":0,"until":86399,"limit":3}]'
     ident='ab'*24;frame=json.dumps(['EOSE',ident],separators=(',',':')).encode()
     job=dict(dataset_id=bx('1'),job_id=bx('2'),created_at_us=200_000_999_999,
-        owner_resource_id=bx('3'),owner_epoch=1,owner_incarnation=bx('4'))
+        owner_resource_id=bx('3'),owner_epoch=1,owner_incarnation=bx('4'),owner_role='control',
+        kind='acquisition',acquisition_job_protocol=1,state='queued',job_revision=2,checkpoint_revision=0,
+        result_manifest_digest=None,reason_code=None,completed_at_us=None)
     row=dict(quantum_id=bx('5'),quantum_profile=1,quantum_number=1,dataset_id=bx('1'),job_id=bx('2'),scope_id=bx('6'),
         producer_slot_id=bx('7'),producer_epoch=1,issuer_role='control',issuer_resource=bx('3'),
         issuer_epoch=1,issuer_incarnation=bx('4'),interval_lower=0,interval_upper=86400,horizon=200000,
@@ -29,8 +31,25 @@ def fixture(*,pending=False):
         checkpoint_after=None if pending else 3,continuation_upper=None if pending else 86400,
         result_class=None if pending else 'linear_observed',gap_reason=None,teardown_complete=None if pending else True,xmin='11')
     row['charged_bytes']=(1024+len(predicate)+2097152+3072+192*256 if pending else 1024+len(predicate)+len(frame))
-    state=dict(jobs=[job],acquisition_jobs=[dict(job_id=job['job_id'],scope_id=row['scope_id'])],
-        acquisition_quanta=[row],producer_requests=[],producer_checkpoints=[])
+    state=dict(jobs=[job],acquisition_jobs=[dict(dataset_id=job['dataset_id'],job_id=job['job_id'],scope_id=row['scope_id'])],
+        acquisition_quanta=[row],producer_requests=[],producer_checkpoints=[],acquisition_gaps=[],
+        owner_epochs=[dict(dataset_id=job['dataset_id'],resource_id=bx('3'),epoch=1,role='control',
+            process_incarnation=bx('4'),state='active',exclusion_method=None)],
+        producer_epochs=[dict(dataset_id=job['dataset_id'],producer_slot_id=bx('7'),producer_epoch=1)])
+    if abandoned:
+        state['owner_epochs'][0].update(state='released',exclusion_method='storage_fenced')
+        state['owner_epochs'].append(dict(dataset_id=bx('1'),resource_id=bx('3'),epoch=2,role='control',
+            process_incarnation=bx('8'),state='released',exclusion_method='joined'))
+        row['producer_epoch']=state['producer_epochs'][0]['producer_epoch']=producer_epoch
+        reason=('initial_producer_abandoned' if producer_epoch==1 else
+            'activated_initial_producer_abandoned' if producer_epoch==2 else 'ingest_successor_abandoned')
+        job.update(state='cancelled',job_revision=4,reason_code=reason,completed_at_us=200_003_000_000,
+            owner_epoch=2,owner_incarnation=bx('8'))
+        state['acquisition_gaps']=[dict(job_id=bx('2'),dataset_id=bx('1'),producer_slot_id=bx('7'),
+            producer_epoch=producer_epoch,source_owner_epoch=producer_epoch,owner_role='control',
+            previous_job_revision=2,previous_owner_resource=bx('3'),previous_owner_epoch=1,
+            previous_owner_incarnation=bx('4'),issuer_resource=bx('3'),issuer_epoch=2,
+            issuer_incarnation=bx('8'),abandoned_at_us=200_003_000_000,reason=reason)]
     wire=dict(number=1,request=['REQ',ident,dict(kinds=[1],since=0,until=86399,limit=3)],frames=['EOSE'],completion='request-and-websocket-close')
     return state,wire
 
@@ -402,6 +421,89 @@ class LinearQuantumControls(unittest.TestCase):
         with self.assertRaises(AssertionError):check.transition(state,changed)
         changed=copy.deepcopy(terminal);changed['acquisition_quanta'][0]['xmin']='12'
         with self.assertRaises(AssertionError):check.transition(terminal,changed)
+
+    def test_abandonment_changes_terminal_job_owner_and_preserves_original_quantum_issuer(self):
+        for epoch in (1,2,3):
+            for pending in (False,True):
+                with self.subTest(epoch=epoch,pending=pending):
+                    state,_=fixture(pending=pending,abandoned=True,producer_epoch=epoch)
+                    before=copy.deepcopy(state)
+                    check.shape(state)
+                    self.assertEqual(state,before)
+                    self.assertEqual(state['acquisition_quanta'][0]['issuer_epoch'],1)
+                    self.assertEqual(state['jobs'][0]['owner_epoch'],2)
+        # A terminal job that kept its original owner needs no replacement gap.
+        state,_=fixture()
+        state['jobs'][0].update(state='cancelled',reason_code='fixture_cancelled',completed_at_us=200_003_000_000)
+        state['owner_epochs'][0].update(state='released',exclusion_method='joined')
+        check.shape(state)
+
+    def test_active_job_cannot_use_another_retained_control_owner_or_clear_its_owner(self):
+        historical,_=fixture(abandoned=True)
+        for state_name in ('queued','running'):
+            changed=copy.deepcopy(historical)
+            changed['jobs'][0].update(state=state_name,job_revision=2,reason_code=None,completed_at_us=None)
+            changed['acquisition_gaps']=[]
+            with self.subTest(state=state_name),self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(historical)
+        changed['jobs'][0].update(owner_resource_id=None,owner_epoch=None,owner_incarnation=None)
+        with self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(historical);changed['acquisition_gaps']=[]
+        with self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_historical_transfer_requires_exact_gap_issuer_revision_and_completed_cancellation(self):
+        state,_=fixture(abandoned=True)
+        mutations=(('acquisition_quanta','issuer_epoch',2),('acquisition_quanta','issuer_incarnation','\\x'+'8'*32),
+            ('acquisition_gaps','previous_owner_resource','\\x'+'9'*32),('acquisition_gaps','previous_owner_epoch',2),
+            ('acquisition_gaps','previous_owner_incarnation','\\x'+'8'*32),('acquisition_gaps','issuer_epoch',1),
+            ('acquisition_gaps','issuer_incarnation','\\x'+'4'*32),('acquisition_gaps','previous_job_revision',3),
+            ('acquisition_gaps','dataset_id','\\x'+'9'*32),('acquisition_gaps','producer_slot_id','\\x'+'9'*32),
+            ('acquisition_gaps','producer_epoch',2),('acquisition_gaps','source_owner_epoch',2),
+            ('acquisition_gaps','reason','activated_initial_producer_abandoned'),('acquisition_gaps','owner_role','ingest'),
+            ('jobs','job_revision',3),('jobs','checkpoint_revision',1),('jobs','reason_code','other_reason'),
+            ('jobs','completed_at_us',200_004_000_000),('owner_epochs','exclusion_method','joined'))
+        for table,field,value in mutations:
+            changed=copy.deepcopy(state);changed[table][0][field]=value
+            with self.subTest(table=table,field=field),self.assertRaises(AssertionError):check.shape(changed)
+        # REQUEST_CANCELLATION is transaction-internal. SQL0027's deferred gap
+        # INSERT check requires COMPLETE_CANCELLATION before a capture can see it.
+        changed=copy.deepcopy(state)
+        changed['jobs'][0].update(state='cancel_requested',job_revision=3,completed_at_us=None)
+        with self.assertRaises(AssertionError):check.shape(changed)
+        changed=copy.deepcopy(state)
+        changed['acquisition_quanta'][0].update(issuer_epoch=2,issuer_incarnation='\\x'+'8'*32)
+        with self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_quantum_requires_exact_retained_control_and_producer_scope_bindings(self):
+        state,_=fixture()
+        mutations=(('owner_epochs','dataset_id','\\x'+'9'*32),('owner_epochs','resource_id','\\x'+'9'*32),
+            ('owner_epochs','epoch',2),('owner_epochs','role','ingest'),('owner_epochs','process_incarnation','\\x'+'9'*32),
+            ('producer_epochs','dataset_id','\\x'+'9'*32),('producer_epochs','producer_slot_id','\\x'+'9'*32),
+            ('producer_epochs','producer_epoch',2),('acquisition_jobs','dataset_id','\\x'+'9'*32),
+            ('acquisition_jobs','scope_id','\\x'+'9'*32),('jobs','owner_role','ingest'))
+        for table,field,value in mutations:
+            changed=copy.deepcopy(state);changed[table][0][field]=value
+            with self.subTest(table=table,field=field),self.assertRaises(AssertionError):check.shape(changed)
+        for table in ('owner_epochs','producer_epochs'):
+            for rows in ([],state[table]*2):
+                changed=copy.deepcopy(state);changed[table]=rows
+                with self.subTest(table=table,rows=len(rows)),self.assertRaises(AssertionError):check.shape(changed)
+
+    def test_shared_capture_saves_invalid_raw_control_before_validation_without_catalog_query(self):
+        from cases.first_launch import Runtime
+        for failure in ('inventory','quantum'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);runtime=object.__new__(Runtime)
+                state,_=fixture();state['owner_epochs']=[]
+                runtime.pg=dict(id='owned-pg');runtime.inspect=Mock()
+                runtime.rows=Mock(return_value=state);runtime.catalog_rows=Mock()
+                runtime.tables=set(state)|({'missing_table'} if failure=='inventory' else set())
+                with self.assertRaises(ValueError if failure=='inventory' else AssertionError):
+                    runtime.capture(root,'invalid')
+                self.assertEqual(json.loads((root/'invalid-control.json').read_text()),state)
+                runtime.rows.assert_called_once_with(dict(postgres='owned-pg'),'bigbrotr_control')
+                runtime.catalog_rows.assert_not_called()
+                self.assertFalse((root/'invalid-catalog.json').exists())
 
     def test_wholly_preexisting_dependency_union_is_exact_and_deduplicated(self):
         ds=bytes.fromhex('11'*16)

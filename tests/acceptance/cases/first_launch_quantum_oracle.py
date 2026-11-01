@@ -36,9 +36,40 @@ def shape(state):
         key=(row['producer_slot_id'],row['producer_epoch']);totals[key]=totals.get(key,0)+row['charged_bytes']
         job=next(value for value in state['jobs'] if value['job_id']==row['job_id'])
         detail=next(value for value in state['acquisition_jobs'] if value['job_id']==row['job_id'])
-        assert row['dataset_id']==job['dataset_id'] and row['scope_id']==detail['scope_id']
-        assert row['issuer_role']=='control' and row['issuer_resource']==job['owner_resource_id']
-        assert row['issuer_epoch']==job['owner_epoch'] and row['issuer_incarnation']==job['owner_incarnation']
+        assert row['dataset_id']==job['dataset_id']==detail['dataset_id'] and row['scope_id']==detail['scope_id']
+        assert job['kind']=='acquisition' and job['acquisition_job_protocol']==1
+        assert row['issuer_role']==job['owner_role']=='control'
+        owner_key=lambda owner:(owner['dataset_id'],owner['resource_id'],owner['epoch'],owner['role'],owner['process_incarnation'])
+        issuer=(row['dataset_id'],row['issuer_resource'],row['issuer_epoch'],'control',row['issuer_incarnation'])
+        current=(job['dataset_id'],job['owner_resource_id'],job['owner_epoch'],'control',job['owner_incarnation'])
+        original=[owner for owner in state['owner_epochs'] if owner_key(owner)==issuer]
+        assert len(original)==1 and all(value is not None for value in current)
+        assert sum(owner_key(owner)==current for owner in state['owner_epochs'])==1
+        assert sum((producer['producer_slot_id'],producer['producer_epoch'],producer['dataset_id'])
+            ==(row['producer_slot_id'],row['producer_epoch'],row['dataset_id'])
+            for producer in state['producer_epochs'])==1
+        gaps=[gap for gap in state['acquisition_gaps'] if gap['job_id']==row['job_id']]
+        if gaps:
+            # SQL0027/0036/0038 transfer only the terminal cancellation write.
+            # SQL0043 retains the quantum's original Control issuer unchanged.
+            assert len(gaps)==1
+            gap=gaps[0]
+            reason=('initial_producer_abandoned' if row['producer_epoch']==1 else
+                'activated_initial_producer_abandoned' if row['producer_epoch']==2 else 'ingest_successor_abandoned')
+            assert 1<=row['producer_epoch']<=255 and gap['owner_role']=='control'
+            assert (gap['dataset_id'],gap['producer_slot_id'],gap['producer_epoch'],gap['source_owner_epoch'])==(
+                row['dataset_id'],row['producer_slot_id'],row['producer_epoch'],row['producer_epoch'])
+            assert (gap['dataset_id'],gap['previous_owner_resource'],gap['previous_owner_epoch'],
+                'control',gap['previous_owner_incarnation'])==issuer
+            assert (gap['dataset_id'],gap['issuer_resource'],gap['issuer_epoch'],
+                'control',gap['issuer_incarnation'])==current
+            assert original[0]['state']=='released' and original[0]['exclusion_method']=='storage_fenced'
+            assert job['state']=='cancelled' and job['job_revision']==gap['previous_job_revision']+2
+            assert job['checkpoint_revision']==0 and job['result_manifest_digest'] is None
+            assert job['reason_code']==gap['reason']==reason
+            assert job['completed_at_us']==gap['abandoned_at_us']>=job['created_at_us']
+        else:
+            assert issuer==current
         assert 0<=row['interval_lower']<row['interval_upper']<=row['horizon']<=job['created_at_us']//1_000_000
         predicate=raw(row['request_predicate']);command=json.loads(predicate)
         assert command[:2]==['REQ','0'*48] and len(command)>=3
