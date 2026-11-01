@@ -230,10 +230,11 @@ impl ActiveSuccessorWriter {
     pub(in crate::storage) fn pending_event_reservation(
         &self,
         event: &PreparedEvent,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::PendingReservationRequest, AdmissionError> {
-        event.pending_reservation_request(&self.store, limits, permit)
+        event.pending_reservation_request(&self.store, recorded_at, limits, permit)
     }
     pub fn producer_credit(&self) -> Result<super::ProducerCredit, AdmissionError> {
         self.store.producer_credit(self.producer_slot_id())
@@ -414,11 +415,12 @@ impl ActiveSuccessorWriter {
     pub(in crate::storage) fn stage_event(
         &mut self,
         input: &PreparedEvent,
+        recorded_at: ObservedTime,
         limits: AdmissionLimits,
         permit: &OwnedPermit,
         cancelled: &AtomicBool,
     ) -> Result<StagedProducerRequest, AdmissionError> {
-        input.stage_successor(&mut self.store, limits, permit, cancelled)
+        input.stage_successor(&mut self.store, recorded_at, limits, permit, cancelled)
     }
     #[allow(
         clippy::too_many_arguments,

@@ -80,7 +80,13 @@ fn successor_retirement_requires_existing_closing_without_tail_or_legacy_adoptio
     let staged = event(&f, 3, 1, true);
     let permit = grant(&f.budget, 40 * MIB, 10 * MIB);
     writer
-        .stage_event(&staged, AdmissionLimits::default(), &permit, &NOT_CANCELLED)
+        .stage_event(
+            &staged,
+            ObservedTime::new(77),
+            AdmissionLimits::default(),
+            &permit,
+            &NOT_CANCELLED,
+        )
         .unwrap();
     drop(staged);
     drop(permit);

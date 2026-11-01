@@ -865,13 +865,25 @@ fn pre_reservation_staging_has_no_native_effect_and_retains_exact_identity() {
         fixture_initialize(&path, manifest(), native(), grant(&b, 0, 128 * MIB)).unwrap();
     let before = store.db.latest_sequence_number();
     assert!(matches!(
-        store.stage_initial_dictionaries(request(), &original, limits, &grant(&b, 1, 1)),
+        store.stage_initial_dictionaries(
+            request(),
+            &original,
+            ObservedTime::new(123),
+            limits,
+            &grant(&b, 1, 1)
+        ),
         Err(BootstrapError::InsufficientReservation)
     ));
     assert!(!path.join("producer-inputs-v1").exists());
     let permit = grant(&b, 8 * MIB, 4 * MIB);
     let staged = store
-        .stage_initial_dictionaries(request(), &original, limits, &permit)
+        .stage_initial_dictionaries(
+            request(),
+            &original,
+            ObservedTime::new(123),
+            limits,
+            &permit,
+        )
         .unwrap();
     assert_eq!(staged.request, request());
     assert_eq!(staged.dataset, manifest().identity().dataset_id);
@@ -884,12 +896,24 @@ fn pre_reservation_staging_has_no_native_effect_and_retains_exact_identity() {
     );
     assert_eq!(store.db.latest_sequence_number(), before);
     let retry = store
-        .stage_initial_dictionaries(request(), &original, limits, &permit)
+        .stage_initial_dictionaries(
+            request(),
+            &original,
+            ObservedTime::new(123),
+            limits,
+            &permit,
+        )
         .unwrap();
     assert_eq!(retry.digest, staged.digest);
     assert_eq!(store.db.latest_sequence_number(), before);
     assert!(matches!(
-        store.stage_initial_dictionaries(request(), &intent("changed"), limits, &permit),
+        store.stage_initial_dictionaries(
+            request(),
+            &intent("changed"),
+            ObservedTime::new(123),
+            limits,
+            &permit
+        ),
         Err(BootstrapError::RequestInput(RequestInputError::Conflict))
     ));
     assert_eq!(store.db.latest_sequence_number(), before);

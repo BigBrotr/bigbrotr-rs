@@ -140,6 +140,36 @@ impl IngestStore {
         Ok(())
     }
 
+    /// Select logical terms before any original or PG effect. A changed
+    /// request against an actual retained original keeps its input-conflict
+    /// meaning; a ledger conflict without that original remains a quota error.
+    pub(super) fn pending_input_reservation(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        maximum: u64,
+        required_growth: u64,
+    ) -> Result<super::PendingReservationRequest, super::BootstrapError> {
+        match self.pending_request_terms(request, digest, maximum, required_growth) {
+            Ok(terms) => Ok(terms),
+            Err(super::PendingQuotaError::Conflict) => {
+                match self
+                    .input_directory(false)
+                    .and_then(|directory| open_input(&directory, &name(request)))
+                {
+                    Ok(_) => Err(super::BootstrapError::RequestInput(
+                        RequestInputError::Conflict,
+                    )),
+                    Err(RequestInputError::Missing) => Err(super::BootstrapError::PendingQuota(
+                        super::PendingQuotaError::Conflict,
+                    )),
+                    Err(error) => Err(super::BootstrapError::RequestInput(error)),
+                }
+            }
+            Err(error) => Err(super::BootstrapError::PendingQuota(error)),
+        }
+    }
+
     pub(super) fn stage_producer_request(
         &mut self,
         request: ProducerRequestId,

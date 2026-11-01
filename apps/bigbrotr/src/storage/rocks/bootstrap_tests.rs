@@ -174,6 +174,7 @@ fn later_schema_with_initial_identity_cannot_stage_or_bootstrap() {
             store.stage_initial_dictionaries(
                 request(),
                 &input,
+                ObservedTime::new(123),
                 limits,
                 &grant(&b, 8 * MIB, 4 * MIB)
             ),

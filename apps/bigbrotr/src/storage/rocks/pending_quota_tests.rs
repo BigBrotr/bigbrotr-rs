@@ -117,6 +117,7 @@ fn raw_owner_is_unfunded_and_refuses_every_original_and_new_native_admission() {
         store.stage_initial_dictionaries(
             request(),
             &intent("public"),
+            ObservedTime::new(123),
             limits(),
             &grant(&b, 4 * MIB, MIB)
         ),
@@ -128,7 +129,9 @@ fn raw_owner_is_unfunded_and_refuses_every_original_and_new_native_admission() {
     );
     assert_eq!(store.db.latest_sequence_number(), 3);
     assert!(!root.path().join("db/producer-inputs-v1").exists());
-    store.bind_pending_quota(policy(1000, 500, 500)).unwrap();
+    store
+        .bind_pending_quota(policy(1024 * 1024, 512 * 1024, 256 * 1024))
+        .unwrap();
     bootstrap(&mut store, &b).unwrap();
     // Frozen one-visibility fixture: full framed fact plus its complete marker.
     assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 306);
@@ -187,7 +190,9 @@ fn aggregate_reservations_equal_high_and_refusal_creates_no_partial_credit_or_or
 #[test]
 fn literal_bootstrap_dictionary_charges_reach_high_then_no_effect_survives_pressure() {
     let (root, mut store, b) = fixture();
-    store.bind_pending_quota(policy(612, 100, 306)).unwrap();
+    store
+        .bind_pending_quota(policy(1024 * 1024, 512 * 1024, 256 * 1024))
+        .unwrap();
     bootstrap(&mut store, &b).unwrap();
     let admission = AdmissionLimits {
         max_batch_bytes: 256 * 1024,
@@ -208,17 +213,18 @@ fn literal_bootstrap_dictionary_charges_reach_high_then_no_effect_survives_press
     // Extra class byte and one fewer recorded_at byte cancel exactly.
     assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 612);
     assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    // Both genuine writes were funded by their conservative operation maxima.
+    // With no unresolved requests, the native fixture can now prove the smaller
+    // literal policy. Exercise 612+1>612 as ledger arithmetic, rather than claim
+    // that a 256KiB operation is supported by a 306-byte maximum unit.
+    store
+        .bind_reconciled_pending_quota(policy(612, 100, 306))
+        .unwrap();
     let before = store.db.latest_sequence_number();
-    assert!(matches!(
-        store.stage_dictionary_append(
-            at(3),
-            &dictionary(3, "other"),
-            ObservedTime::new(20),
-            admission,
-            &grant(&b, 4 * MIB, MIB)
-        ),
-        Err(AdmissionError::PendingQuota(PendingQuotaError::Pressure))
-    ));
+    assert_eq!(
+        store.reserve_pending_requests(&[terms(3, 1)]),
+        Err(PendingQuotaError::Pressure)
+    );
     assert_eq!(store.db.latest_sequence_number(), before);
     assert_eq!(
         std::fs::read_dir(root.path().join("db/producer-inputs-v1"))
@@ -250,7 +256,9 @@ fn literal_bootstrap_dictionary_charges_reach_high_then_no_effect_survives_press
 fn rebound_high_below_retained_p_permits_funded_replay_and_new_zero_p_outcome() {
     use super::super::admission_tests::kv;
     let (root, mut store, b) = fixture();
-    store.bind_pending_quota(policy(2000, 1000, 1000)).unwrap();
+    store
+        .bind_pending_quota(policy(1024 * 1024, 512 * 1024, 256 * 1024))
+        .unwrap();
     bootstrap(&mut store, &b).unwrap();
     let admission = AdmissionLimits {
         max_batch_bytes: 256 * 1024,
@@ -293,12 +301,24 @@ fn rebound_high_below_retained_p_permits_funded_replay_and_new_zero_p_outcome() 
     let replay_sequence = store.db.latest_sequence_number();
     let permit = grant(&b, 4 * MIB, MIB);
     let replay = store
-        .bootstrap_pending_reservation(request(), &intent("public"), limits(), &permit)
+        .bootstrap_pending_reservation(
+            request(),
+            &intent("public"),
+            ObservedTime::new(123),
+            limits(),
+            &permit,
+        )
         .unwrap();
     assert_eq!(replay.allowance_bytes, 0);
     store.reserve_pending_requests(&[replay]).unwrap();
     store
-        .stage_initial_dictionaries(request(), &intent("public"), limits(), &permit)
+        .stage_initial_dictionaries(
+            request(),
+            &intent("public"),
+            ObservedTime::new(123),
+            limits(),
+            &permit,
+        )
         .unwrap();
     drop(permit);
     bootstrap(&mut store, &b).unwrap();
@@ -361,18 +381,13 @@ fn rebound_high_below_retained_p_permits_funded_replay_and_new_zero_p_outcome() 
     assert_eq!(preserved, expected);
     assert_eq!(after_zero.len(), preserved.len() + 1);
 
-    // A supported positive unit still cannot consume credit above high, and
-    // its refusal precedes original creation and all native changes.
-    assert!(matches!(
-        store.stage_dictionary_append(
-            at(4),
-            &dictionary(3, "other"),
-            ObservedTime::new(20),
-            admission,
-            &grant(&b, 4 * MIB, MIB)
-        ),
-        Err(AdmissionError::PendingQuota(PendingQuotaError::Pressure))
-    ));
+    // A 306-byte logical unit is supported by the smaller 399-byte maximum, but
+    // 612+306>400 still refuses before any input or native change. The existing
+    // 256KiB operation profile is not misrepresented as a 306-byte reservation.
+    assert_eq!(
+        store.reserve_pending_requests(&[terms(4, 306)]),
+        Err(PendingQuotaError::Pressure)
+    );
     assert_eq!(kv(&store), after_zero);
     assert_eq!(store.db.latest_sequence_number(), replay_sequence + 2);
     assert_eq!(
@@ -427,6 +442,7 @@ fn undersized_allowance_refuses_before_original_and_cancellation_keeps_staged_de
             .stage_initial_dictionaries(
                 request(),
                 &intent("public"),
+                ObservedTime::new(123),
                 limits(),
                 &grant(&b, 4 * MIB, MIB),
             )
@@ -458,6 +474,105 @@ fn undersized_allowance_refuses_before_original_and_cancellation_keeps_staged_de
     bootstrap(&mut store, &b).unwrap();
     assert_eq!(store.pending_reserved_bytes(), Ok(0));
     assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 306);
+}
+
+#[test]
+fn staged_underfunded_continuation_refuses_without_enlarging_or_releasing_debt() {
+    let (root, mut store, b) = fixture();
+    store
+        .bind_pending_quota(policy(1024 * 1024, 512 * 1024, 256 * 1024))
+        .unwrap();
+    let input = intent("public");
+    let bytes = input.encode_request_preimage(request(), 8192).unwrap();
+    // Deliberately insufficient held terms exercise refusal, not an alternative
+    // native admission profile. The real prepared delta is the frozen 306 bytes.
+    store
+        .reserve_pending_requests(&[PendingReservationRequest {
+            request: request(),
+            digest: input.request_digest(request()),
+            allowance_bytes: 305,
+        }])
+        .unwrap();
+    store.retain_request_input(request(), &bytes).unwrap();
+    assert_eq!(
+        bootstrap(&mut store, &b),
+        Err(BootstrapError::PendingQuota(
+            PendingQuotaError::InsufficientAllowance
+        ))
+    );
+    assert_eq!(store.pending_reserved_bytes(), Ok(305));
+    assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
+    assert_eq!(store.db.latest_sequence_number(), 3);
+    let path = root.path().join("db/producer-inputs-v1").join(format!(
+        "{}-0000000000000001-0000000000000001.cbor",
+        request().producer_slot_id
+    ));
+    assert_eq!(std::fs::read(path).unwrap(), bytes);
+}
+
+#[test]
+fn held_bootstrap_keeps_original_credit_across_larger_bounds_and_changed_time() {
+    let (root, mut store, b) = fixture();
+    store
+        .bind_pending_quota(policy(1024 * 1024, 512 * 1024, 512 * 1024))
+        .unwrap();
+    let input = intent("public");
+    let first = grant(&b, 4 * MIB, MIB);
+    store
+        .stage_initial_dictionaries(request(), &input, ObservedTime::new(123), limits(), &first)
+        .unwrap();
+    drop(first);
+    let path = root.path().join("db/producer-inputs-v1").join(format!(
+        "{}-0000000000000001-0000000000000001.cbor",
+        request().producer_slot_id
+    ));
+    let original = std::fs::read(&path).unwrap();
+    assert_eq!(store.pending_reserved_bytes(), Ok(256 * 1024));
+    let larger = BootstrapLimits {
+        max_batch_bytes: 512 * 1024,
+        ..limits()
+    };
+    let permit = grant(&b, 4 * MIB, 2 * MIB);
+    let terms = store
+        .bootstrap_pending_reservation(
+            request(),
+            &input,
+            ObservedTime::new(i64::MAX),
+            larger,
+            &permit,
+        )
+        .unwrap();
+    assert_eq!(terms.allowance_bytes, 256 * 1024);
+    store
+        .stage_initial_dictionaries(
+            request(),
+            &input,
+            ObservedTime::new(i64::MAX),
+            larger,
+            &permit,
+        )
+        .unwrap();
+    assert_eq!(store.pending_reserved_bytes(), Ok(256 * 1024));
+    assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 0);
+    assert_eq!(store.db.latest_sequence_number(), 3);
+    assert_eq!(std::fs::read(&path).unwrap(), original);
+    drop(
+        store
+            .bootstrap_dictionaries(
+                request(),
+                &input,
+                ObservedTime::new(i64::MAX),
+                larger,
+                permit,
+                || Ok(()),
+            )
+            .unwrap(),
+    );
+    assert_eq!(store.pending_reserved_bytes(), Ok(0));
+    // The original123 has a 2-byte CBOR integer; MAX has 9. Only this one
+    // dictionary fact changes width, so the frozen 306-byte charge grows by 7.
+    assert_eq!(store.pending_accounting().unwrap().pending_bytes(), 313);
+    assert_eq!(std::fs::read(&path).unwrap(), original);
 }
 
 fn adversarial_prepared(store: &IngestStore) -> Prepared {
@@ -578,6 +693,7 @@ fn reopened_original_without_receipt_stays_recovery_blocked_and_metadata_is_zero
         .stage_initial_dictionaries(
             request(),
             &intent("public"),
+            ObservedTime::new(123),
             limits(),
             &grant(&b, 4 * MIB, MIB),
         )

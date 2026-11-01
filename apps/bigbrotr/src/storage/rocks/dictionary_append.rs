@@ -53,17 +53,19 @@ impl IngestStore {
         require_permit(permit, limits)?;
         let (writes, _) =
             self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
-        let allowance_bytes = if let Some(mut writes) = writes {
+        let required_growth = if let Some(mut writes) = writes {
             self.seal_pending_accounting(&mut writes)?;
             self.prepared_pending_delta(&writes)?
         } else {
             0
         };
-        Ok(super::PendingReservationRequest {
+        self.pending_input_reservation(
             request,
-            digest: intent.request_digest(request),
-            allowance_bytes,
-        })
+            intent.request_digest(request),
+            limits.max_batch_bytes as u64,
+            required_growth,
+        )
+        .map_err(Into::into)
     }
     pub(in crate::storage) fn stage_dictionary_append(
         &mut self,
@@ -197,12 +199,14 @@ impl IngestStore {
         authority()?;
         if let Some(writes) = writes {
             let delta = self.prepared_pending_delta(&writes)?;
-            self.reserve_pending_requests(&[super::PendingReservationRequest {
+            let reservation = self.pending_input_reservation(
                 request,
-                digest: intent.request_digest(request),
-                allowance_bytes: delta,
-            }])
-            .map_err(AdmissionError::PendingQuota)?;
+                intent.request_digest(request),
+                limits.max_batch_bytes as u64,
+                delta,
+            )?;
+            self.reserve_pending_requests(&[reservation])
+                .map_err(AdmissionError::PendingQuota)?;
             let input = encode_input(request, intent, limits)?;
             self.retain_admission_input(request, &input, cancelled)?;
             drop(input);

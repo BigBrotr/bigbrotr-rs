@@ -1585,6 +1585,26 @@ fn event_preview_allows_zero_pending_work_under_pressure_and_checks_operation_gr
             )
             .unwrap(),
     );
+    let charge = store.pending_accounting().unwrap().pending_bytes();
+    let accepted = super::bootstrap_tests::fixture_pending_policy();
+    // The ordinary 1ns fixture interval may legitimately expire. This complete
+    // native fixture instead puts P exactly at low, where pressure must persist
+    // for every real observation regardless of test scheduling.
+    store
+        .bind_reconciled_pending_quota(
+            PendingQuotaPolicy::new(
+                accepted.high_bytes(),
+                charge,
+                accepted.max_unit_bytes(),
+                1,
+                Digest256::from_bytes([0x71; 32]),
+                1,
+                Digest256::from_bytes([0x72; 32]),
+                std::time::Duration::from_nanos(1),
+            )
+            .unwrap(),
+        )
+        .unwrap();
     let reservations: Vec<_> = (1..=64)
         .map(|sequence| PendingReservationRequest {
             request: request(9, sequence),
@@ -1596,7 +1616,6 @@ fn event_preview_allows_zero_pending_work_under_pressure_and_checks_operation_gr
         store.reserve_pending_requests(&reservations),
         Err(PendingQuotaError::Pressure)
     );
-    let charge = store.pending_accounting().unwrap().pending_bytes();
     let input = PreparedEvent::new(
         request(5, 2),
         intent("E_private", 2, 10_000_000),
@@ -1605,15 +1624,22 @@ fn event_preview_allows_zero_pending_work_under_pressure_and_checks_operation_gr
     )
     .unwrap();
     assert_eq!(
-        input.pending_reservation_request(&store, limits, &grant(&budget, 1, 1)),
+        input.pending_reservation_request(
+            &store,
+            ObservedTime::new(i64::MAX),
+            limits,
+            &grant(&budget, 1, 1)
+        ),
         Err(AdmissionError::InsufficientReservation)
     );
     let permit = grant(&budget, 40 * MIB, 10 * MIB);
     let preview = input
-        .pending_reservation_request(&store, limits, &permit)
+        .pending_reservation_request(&store, ObservedTime::new(i64::MAX), limits, &permit)
         .unwrap();
     assert_eq!(preview.allowance_bytes, 0);
-    input.stage(&mut store, limits, &permit).unwrap();
+    input
+        .stage(&mut store, ObservedTime::new(i64::MAX), limits, &permit)
+        .unwrap();
     let outcome = store
         .admit_event(
             input,

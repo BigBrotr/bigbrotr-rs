@@ -54,7 +54,13 @@ fn fixture() -> InitialFixture {
             &evidence,
             ObservedTime::new(20),
             AdmissionLimits::default(),
-            grant(&budget, 40 * MIB, 10 * MIB),
+            grant(
+                &budget,
+                AdmissionLimits::default()
+                    .required_dictionary_data_bytes()
+                    .unwrap(),
+                AdmissionLimits::default().required_native_bytes().unwrap(),
+            ),
             || Ok(()),
         )
         .unwrap();
