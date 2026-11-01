@@ -112,15 +112,23 @@ impl ControlSession {
                 .transpose()?;
             if let Some(observation)=&mut observation && kind==JobKind::Acquisition {
                     observation.linear_quantum=tx.query_opt(
-                        "SELECT jsonb_build_object('format','bigbrotr-linear-quantum-status/1',
+                        "SELECT left(jsonb_build_object('format','bigbrotr-linear-quantum-status/1',
                             'quantum_number',quantum_number::text,'scope_id',encode(scope_id,'hex'),
                             'lower',interval_lower::text,'upper',interval_upper::text,'horizon',horizon::text,
                             'result',coalesce(result_class,'pending'),'terminal',terminal_kind,'gap',gap_reason,
                             'continuation_upper',continuation_upper::text,
                             'retained_events',retained_events,'classified_prefix',classified_prefix,
-                            'coverage','pending') FROM control.acquisition_quanta WHERE job_id=$1
+                            'coverage','pending')::text,1025) FROM control.acquisition_quanta WHERE job_id=$1
                             ORDER BY quantum_number DESC LIMIT 1",&[&&job.as_bytes()[..]])
-                        .await.map_err(backend)?.map(|row|row.try_get(0).map_err(metadata)).transpose()?;
+                        .await.map_err(backend)?.map(|row| {
+                            // The fixed redacted projection is bounded in SQL before
+                            // allocation; no optional PostgreSQL JSON codec is needed.
+                            let text: &str = row.try_get(0).map_err(metadata)?;
+                            if text.len() > 1024 {
+                                return Err(SessionError::InvalidMetadata);
+                            }
+                            serde_json::from_str(text).map_err(|_| SessionError::InvalidMetadata)
+                        }).transpose()?;
             }
             Ok(AuthorizedJobStatus {
                 observation,
