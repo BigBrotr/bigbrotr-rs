@@ -756,13 +756,18 @@ def containers():
     return json.loads(lab.docker('inspect', *lab.docker('ps', '-aq').stdout.split()).stdout)
 
 
-def rows(db):
+def rows(db, *, schema=None):
     names = json.loads(lab.sql(pg, db,
         "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
-    require(len(names) in ((64, 66, 67, 68, 69, 70, 71, 72, 75, 77)
+    if schema is not None:
+        sys.path.insert(0, str(SOURCE / 'experiments/policy-versions'))
+        from schema_inventory import require_tables
+        require_tables(names, schema)
+    else:
+        require(len(names) in ((64, 66, 67, 68, 69, 70, 71, 72, 75, 77)
         if installed_sync_progress or ingest_installed_live_progress else
         (64, 66, 67, 68, 69, 70, 71, 72, 75) if installed_archive_catch_up else
-        (64, 66, 67, 68, 69, 70, 71, 72)) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
+            (64, 66, 67, 68, 69, 70, 71, 72)) and all(re.fullmatch('[a-z_]+', n) for n in names), 'table-set')
     parts = [f"SELECT '{n}' AS name,coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows "
              f"FROM (SELECT *,xmin::text AS xmin FROM control.{n}) t" for n in names]
     # This finite observer can otherwise launch parallel aggregate workers for
@@ -897,14 +902,14 @@ def refuse_dispatch(db):
     """)
 
 
-def arrival_policy(db, name):
+def arrival_policy(db, name, *, provenance='off', schema=None):
     """Independent policy documents injected into this fresh clone before ownership.
 
     This is no management activation/transition claim. The original template and
     every applied migration remain unchanged; neither expected bytes nor policy
     fingerprints call the production codec.
     """
-    before = rows(db)
+    before = rows(db, schema=schema)
     require(not before['owner_epochs'] and not before['producer_requests'], 'policy-fixture-not-empty')
     expected = json.loads(json.dumps(before))
     mutations = []
@@ -914,7 +919,7 @@ def arrival_policy(db, name):
         document['format'] = 'bigbrotr-product-policy/3'
         settings = document['settings']
         settings['relay_policy.banned'] = []
-        settings['sync.provenance'] = 'off'
+        settings['sync.provenance'] = provenance
         if table == 'config_revisions':
             if name == 'policy-provenance':
                 settings['sync.provenance'] = 'local_first_witness'
@@ -934,7 +939,7 @@ def arrival_policy(db, name):
         mutations.append(f"UPDATE control.{table} SET document=convert_from(decode('{encoded.hex()}','hex'),'UTF8')::jsonb, "
                          f"document_digest=decode('{digest}','hex'),schema_version=3")
     lab.sql(pg, db, 'BEGIN; SET LOCAL session_replication_role=replica; ' + '; '.join(mutations) + '; COMMIT;')
-    after = rows(db)
+    after = rows(db, schema=schema)
     comparable = json.loads(json.dumps(after))
     for table in ['config_revisions', 'policy_revisions']:
         comparable[table][0]['xmin'] = before[table][0]['xmin']

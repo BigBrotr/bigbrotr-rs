@@ -4,7 +4,7 @@ No Rust codec or native dump supplies expected bytes. The input sequence and
 timestamps are fixed by the isolated probe, not inferred from its receipt.
 """
 import hashlib
-from bootstrap_oracle import expected as bootstrap
+from bootstrap_oracle import accounted, expected as bootstrap
 
 
 def expected(dataset, cbor, *, interned=False):
@@ -61,5 +61,5 @@ def expected(dataset, cbor, *, interned=False):
         inputs.append(request)
         receipts.append(receipt)
     rows['receipts', b'\x01\x31' + slot + be(1)] = b'\x01\x31' + be(4 if interned else 3) + be(0) + be(0)
-    assert len(rows) == (36 if interned else 34)
-    return sorted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts
+    assert len(rows) == (37 if interned else 35)
+    return accounted((cf, k, v) for (cf, k), v in rows.items()), inputs, receipts
