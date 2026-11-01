@@ -1116,7 +1116,7 @@
       ]
     },
     "coordinator_drain_followthrough": {
-      "status": "SOURCE_CHANGE;BUILD_AND_INSTALLED_VERIFICATION_NOT_RUN",
+      "status": "Fresh96d6 build/observer/460portable controls and strict Clippy/Rustdoc/105focused Rust tests PASS. Actual grouped R1 FAIL preserved. Finite-source fixture reviewed/117targeted controls PASS; installed R2 pending.",
       "tasks": "P01-T05Step5/P02-T02Step8/P02-T09Step5; existing IndexP02-T06 lifecycle and actual grouped acceptance remain required.",
       "change": "After actual joined Index installation/publication, reconsider the next batch immediately instead of an unconditional250ms gap. Busy250ms, idle/refusal/retry delays, serial native/Control ownership, all renewal/current-authority/reservation checks and select priorities unchanged.",
       "source_basis": "Index.complete returns Installed/Published only after consuming a joined successful physical result and corresponding PG claim/publication; publish validates exact receipt and clears pending. Next tick cannot report another success without a newly issued and joined operation. Flush interval controls new-batch freshness, not a minimum pause between retained whole immutable batches.",
@@ -1137,6 +1137,66 @@
           "result": "APPROVED;no findings;independently verified all7pins/9paths and unchanged strict source/vendor/peer/refusal boundaries."
         },
         "limits": "Source-exclusion review only;actual new installed execution NOT_RUN."
+      },
+      "product": "96d6c868e3ac02e768284a81add568e9b6802b79",
+      "build": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/build-receipt.json",
+        "sha256": "d70afbe8906d5a2e0d2ebd3a05714a78abe937e44af16f31749fe933bb46e9d2"
+      },
+      "observer": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/observer/receipt.json",
+        "sha256": "e618f1eb5e01c73b0f62ee68b371234a8b6c043c55eb73f780e0aec2d18e7639"
+      },
+      "portable_controls": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/controls-receipt.json",
+        "sha256": "943ee2a7f693584135df6bad3927136303a2c5bcaea1b8f2a57b52ce819f0e12"
+      },
+      "source_publication_preparation": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-index-drain-source-96d6c868-20261101/source-triage.json",
+        "sha256": "7929213fcee00b20a8f6313ca4601a959df6fadc094d163f91fa7f09dd69fe21"
+      },
+      "grouped_attempt_1": {
+        "product": "96d6c868e3ac02e768284a81add568e9b6802b79",
+        "source": "96d6c868e3ac02e768284a81add568e9b6802b79",
+        "result": "FAIL;4laterNOT_RUN;cleanupPASS",
+        "tool_session": 16474,
+        "seconds": 79.83902979499544,
+        "terminal": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r1/root-terminal.json",
+          "sha256": "326c22726d19bf607952d09c503ca5cfe3371e37d204ea517c895d16ac07dbdd"
+        },
+        "failure": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r1/failure.json",
+          "sha256": "328a8a370c7e3b4bca0601828b6c185b966e8471664fd5bb276e487045dca721"
+        },
+        "classification": "Setup race exposed by faster Index: initial live census has106 complete quanta, stopped census has108 complete plus pending109; all original106 rows/xmin unchanged. No finite128 peer completion receipt; only109 closed rounds. The fixture released the client and accepted an early quiet round. Signed-acquisition stage PASS does not establish the complete128-round workload or scientific/native acceptance.",
+        "observation": "Index64 committed41.436415s after retained gate; this earlier milestone is not a completed equal128-workload speedup.",
+        "custody": "16owned containers stopped0/PID0/noOOM;1265command receipts joined/PIDs absent;3recorded processes absent;68source pins checked;borrowed bridge empty.",
+        "audit_profile": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/verify-acceptance-terminal-linear-profile-v2.py",
+          "sha256": "abbe8c2fdf3475ecd9ed219883e4025acd2c22f71e51456521c2d2d0fa2e2af3",
+          "reviewer": "/root/joint_coordinator_cost_astra;gpt-6-astra/xhigh",
+          "review": "Approved complete393-line helper and exact diff: explicit pre-reclamation index FAIL, first5PASS/last4NOT_RUN/no native or reclamation resources. All common source/artifact/container/process/network guards and default fullcase unchanged. Custody only; original bafca preserved."
+        }
+      },
+      "pending_fixture_correction": "Shared Retained setup must wait for independently validated finite128 peer end/closed listener and a causally stable exact Control quantum census before live baseline, within unchanged65s. Keep whole-table/xmin terminal_preservation and independent scientific/native oracles strict; no product rebuild required for setup-only correction.",
+      "fixture_followthrough": {
+        "author": "356d55183689e1f30affaeb7d464e4a16fcb4838",
+        "merged": "8b65a2e4d95a360fb8590bee751d9ac388735c92",
+        "result": "Source reviewed;117 affected pure controls PASS;actual installed rerun NOT_RUN.",
+        "change": "Shared Retained setup keeps submitted client blocked until independently verified finite128 peer/listener end and exact128terminal plus pending129 same-job/source/issuer boundary, all within original65s. No fallback from unfinished quiet receive. Live census binds all128 wire request identities; unchanged quantum.transition permits legitimate completion of an earlier pending plan. Whole-table terminal_preservation including xmin unchanged.",
+        "critical_review": {
+          "agent": "/root/joint_coordinator_cost_astra",
+          "model": "gpt-6-astra",
+          "reasoning_effort": "xhigh",
+          "result": "APPROVED;no critical findings across all4files and complete changed caller/deadline/peer/quantum/terminal boundaries. No new runtime qualification."
+        },
+        "checks": "Retained52/Archive13/quantum29/replacement23 pure PASS in4.60s; both original78 129-row/128-wire snapshots pass census-only and transition replay; original96 truncated snapshot refused. One standalone quantum test invocation lacked bootstrap PYTHONPATH; corrected environment29PASS, no source change.",
+        "limits": "Retained raw captures and replay are fixture evidence only; actual current product128workload/science/native/reclamation/twoexport/restart still required."
+      },
+      "workspace": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-quantum-qualification-20261101/r4-96d6c868/workspace-receipt.json",
+        "sha256": "f17c26a49a0a3ee1a912ba165bb05a66415b4d729919528cad434f993ebdc13a"
       }
     }
   }

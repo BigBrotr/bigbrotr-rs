@@ -1,131 +1,96 @@
 # Current execution checkpoint
 
 2026-11-01, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply: Sol/xhigh coordinator/ordinary work, bounded critical
-review Astra/xhigh. Public development repository; no official release, package
-publication, rename or production deployment.
+Q37/Q38/Q40/Q41/Q42 apply. Sol/xhigh owns ordinary coordination/work;
+Astra/xhigh reviews bounded critical decisions. Public development repository;
+no official release, package publication, rename or production deployment.
 
-## Revisions and current increment
+## Current increment and revisions
 
 Published main/origin: **1f4f682aec870312cfa6a5e6dc3f5bc62b71f2c4**.
-Qualified native integration ebb8 and actual hosted report are published; M2 is not.
-Acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`, branch
-`work/m2-linear-quantum-acceptance-20261101`: **d37f9a86** before this checkpoint.
-Its eight product/config objects equal installed **78c8e31339e760c16bcfa036dabff38dcdf86544**.
-Freeze executing acceptance source until each installed terminal audit finishes.
+Native integration ebb8 and its actual hosted qualification are published; M2 is not.
 
+Current acceptance worktree `.research/m2-linear-quantum-acceptance-20261101`,
+branch `work/m2-linear-quantum-acceptance-20261101`: **8b65a2e4** before this
+checkpoint. Git supplies the enclosing revision and dirty state. Its product
+objects equal current installed **96d6c868e3ac02e768284a81add568e9b6802b79**.
 Product/dev worktree `.research/m2-linear-quantum-main-integration-20261101`,
-branch `work/m2-linear-quantum-integration-20261101`: **acf7496f** plus the
-merged acceptance42d and current bounded Index drain correction. It includes separately qualified **e8122ff9**'s one
-integration-test initializer and its reviewed tutorial source pin. Runtime/Nostr
-code unchanged; do not relabel installed78 evidence as an e812/acf release.
+branch `work/m2-linear-quantum-integration-20261101`, is clean96d6; its exact
+build context has completed focused workspace qualification.
+
 Author worktree `.research/m2-linear-quantum-sol-20261031`, branch
-`work/m2-linear-quantum-20261031`: clean **01cf7e73**, corrections merged.
-Git supplies this enclosing revision and current dirty state.
+`work/m2-linear-quantum-20261031`: clean **356d5518**. Its shared finite-peer/
+stable-quantum fixture correction is merged and critically reviewed;117affected
+pure controls PASS. Actual installed verification remains pending. Root integrates
+and launches all builds/engines. Preserve every worktree and original failure.
+
+## What works and the current blocker
 
 The [Sync report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101`, owns current receipts, original failures and scope.
-Slice: P03-T01 Steps3/4, P03-T02 Steps4/5, single-interval P03-T05 Steps1/2.
-Durable pre-wire plan, correlated finite terminal, exact synchronized science,
-shared32MiB logical funding and atomic outcome/gap/continuation are implemented;
-EOSE remains observation, not full history. No whole task or M2 completion claim.
+`linear_quantum_20261101`, owns receipts, failures and limits. Current96d6 release,
+worker binding, exact-source native observer and460portable acceptance controls
+PASS. The reviewed scheduler removes only the extra gap after a joined successful
+Index installation/publication; pending/refused/retry delays, authority, renewal,
+reservations and cancellation/join remain unchanged.
 
-## Valid evidence
+Actual96d6 grouped R1 is **FAIL**,79.839s. Index64 committed at41.436s, but the
+fixture then stopped the peer early: live106 quanta versus stopped109, with all
+original rows/xmin preserved. Only109 rounds completed and no finite128 receipt
+exists. Its signed-acquisition PASS is not complete128-workload or scientific
+qualification. Four later stages are NOT_RUN. All16case containers stopped0/PID0/
+noOOM,1265commands joined, three recorded processes absent and bridge empty.
+The reviewed explicit FAIL-custody audit preserves this exact outcome.
 
-- Fresh78 parent/worker and exact-source native observer PASS. Actual finite
-  case7/7, full M1 tutorial7/7 and all seven selected commit/gap/authority fault
-  cases7/7 each PASS, within their separately recorded source/profile scopes.
-  Frozen original Control lease expiry and historical-only/no-adoption checks
-  execute. Default plan captures and retained-catch-up terminal/authority captures
-  retain distinct identities; no product limits/oracles were widened.
-- Independent actual e812 dev qualification: strict Clippy/Rustdoc and1,407Rust
-  PASS/3IGNORED; post-input checks, tool/container0, exclusive cache reacquisition
-  and four original single-link immutable ELF pins verified. Not a new release.
-- Full pinned-image acceptance suite7bb:446PASS/0SKIP. Later affected helpers have
-  targeted checks, including current batch reader93PASS/0SKIP and tutorial14PASS;
-  no current full-suite or new product-build result is inferred from them.
-- Current Index/topology R4:15/15PASS,137.439s; real12nonterminal/32terminalSQL
-  copies preserve complete seed rows/xmin.29containers stopped/PID0/noOOM,
-  1311commands joined/1318recorded PIDs absent;12strict backend probes allzero;
-  bridge empty. Signed initial Index/export, successor/resend, Archive/Index
-  catch-up/exact retries and historical read execute. Epoch3 is metadata only.
+**Correction merged/source-reviewed:** before the live baseline, validate the actual
+finite128 peer/listener end and exact terminal/pending quantum boundary inside
+the original65s gate. Preserve whole-table/xmin terminal preservation and all
+independent scientific/native oracles. This is shared setup only; reuse96d6
+binaries/observer after source review, not another product rebuild.
+
+Unchanged earlier evidence remains valid within its recorded source/profile:
+78 finite7/7, tutorial7/7, seven selected commit/gap/authority fault cases7/7 each;
+Index/topology R4 fifteen stages and12nonterminal/32terminalSQL cases;
+e812 strict Clippy/Rustdoc and1,407Rust PASS/3IGNORED. Current96d6 strict Clippy/Rustdoc and105focused initial-ingest Rust tests also
+PASS/0ignored (102other bin tests filtered); this is not a full Rust-suite claim.
+Do not relabel earlier proofs as96d6 execution. Both earlier
+78 grouped65s failures remain FAIL. IndexR3's unidentified Control backend cause
+remains UNKNOWN despite later R4 PASS.
 
 The M1 signed admission→Archive→read→export→restart path is demonstrated;
-P01-T09 Step1/fullP02 are not thereby complete. The [Index report](evidence/p02-initial-index-clickhouse-sql-20261026.json)
-and [native report](evidence/p02-native-rocks-binding-20260917.json) retain prior
-qualified components and their limits; do not repeat unchanged proofs.
+P01-T09/fullP02 and wholeM1/M2 are not thereby complete. Application native guards,
+funded reopen/purge and fault/load/authority gates, epoch/recovery/freshness,
+larger histories, physical growth, grants/staging/GC/replay/protection retain their
+existing task owners. Admission cost, CH decoding/transport and coordinator
+responsibilities remain P01-T05/P02 follow-through. All selected later milestones
+remain required. Portable acceptance/delivery stays P01-T08/P08-T11/T12/P10-T08/T10.
 
-## Current grouped failure and prepared correction
+## Resources and next action
 
-`acceptance-grouped-second-export-r1`, sourceDC6/product78, is FAIL,105.882s.
-Initial15s source3/Archive2/Index2 prefix PASS. Under the separate retained65s gate,
-proof-only completed13.382s, finite128-peer end51.911s, Index64 commit63.854s /
-observed63.933s. Refusal/custody checks consumed~0.86s; ten separate reader exports
-started64.792s, second received only0.042479s and timed out. Full native/scientific
-verification and five later stages are NOT_RUN. Original FAIL/captures preserved;
-unchanged auditor verifies16containers stopped0/PID0/noOOM,1667commands joined,
-three recorded processes absent, bridge empty. This is not initial-prefix failure.
-
-The report owns matched d230/current cadence observations and attribution limits.
-Quanta129 contains128completed/onepending; pending exclusion prevents repeated
-post-peer claims/socket creation. Active serial Sync/Index cost remains follow-
-through at P01-T05 Step5/P02-T02 Step8/P02-T09 Step5; no isolated SQL/CPU/RAM cost
-or general performance claim. No budget, deadline or128-round workload reduction.
-
-Reviewed c36+01cf/mergedd37 batches the same ten full reader SELECTs through one
-existing client/inspection/disk walk. Per-query175rows/1MiB and original timeouts/
-65s caller gate stay strict. Table-specificUInt8 identities bind empty responses;
-raw JSON/framing/bytes/types/counts/errors/deadlines refuse false PASS. Only the
-validated marker is removed before unchanged science oracles. Both critical
-findings are closed in the one review receipt. Selected26.8.35.10 local formatter
-preflights PASS for two literal documents and ten empty declared families/nested
-hex metadata/markers. They do not qualify actual data, reader authorization,
-MergeTree, lifecycle or the grouped workload. Actual grouped R2 failed before reaching that reader; it remains unqualified.
-
-## Open issues, resources and next action
-
-Original compile/fixture/proxy/frame-admission/lease/Clippy/Index/control-suite
-failures remain in the owning reports and ignored artifacts. IndexR3's one
-unidentified Control backend remains causeUNKNOWN; strict diagnostic-only capture
-preserves the zero-all-backends predicate and R4 actually passes it. Keep that
-incident with existing P02-T06 Steps4/7 / P02-T09/P08 operations/load follow-through;
-a later PASS does not explain or relabel it.
-
-Other existing gates remain: application native guard/write/ACK/concurrency,
-funded reopen/purge/CW-N1/P1/P2/OPEN65, nativeepoch3/old wrappers, grants/staging/
-scheduler/base+tail/physical growth, typed-head/native-floor recovery, Code202/query
-retirement, scalable freshness/larger histories/GC/replay/protection/capacity.
-Admission cost, CHdecode/transport and coordinator ownership retain their existing
-task owners. Portable maintenance/acceptance and delivery remain
-P01-T08/P08-T11/T12/P10-T08/T10. All selected P03–P10/M2–M5 remain open.
-
-The [inventory](../research/laboratory-inventory.json),
+[Inventory](../research/laboratory-inventory.json),
 `implementation_open_prefix_reclamation_20261030.current42_installed_followthrough`,
-owns78/observer/dev roots, all retained attempts and two tiny networknone formatter
-containers. All owned jobs are terminal now; agents idle, cache115 released, bridge
-empty. Root is sole launcher/compiler/Git integrator. Preserve original failures,
-unique data, .research and pending work. Monitor556GiB retirement was reconciled;
-current labs remain intact. No broad cleanup or old object-deletion proposal ran.
-Preserve archived shared Git/ELF bytes/metadata; private copy first, nevergc/repack.
+owns exact paths. Current roots under `/home/tux/bigbrotr-implementation-20260917/runs`:
+`m2-linear-quantum-96d6c868`, `m2-quantum-observer-96d6c868`,
+`m2-linear-quantum-96d6c868-controls` and `m2-linear-quantum-96d6c868-workspace`.
+Parent/observer/controls/workspace are terminal0/PID0/noOOM. Workspace tool7783
+is reaped0, post-input guards pass and cache115 is released/reacquired; original
+four single-link ELF hashes are unchanged. No local engines or compilers remain
+active; agents idle, borrowed bridge empty. Keep timing-sensitive installed runs
+free of concurrent compilation.
 
-R2 (source42d/product78) is also FAIL,102.331s: Index64 committed64.110s /
-observed64.238s, Control/Catalog capture ended64.967s, then the Control clock
-probe exhausted its remaining0.021348s. The batch reader was NOT_REACHED;
-five later stages NOT_RUN. All16owned containers stopped0/PID0/noOOM,
-1667commands joined, three recorded processes absent, borrowed bridge empty.
-The owning report preserves exact anchors and classification limits.
+Monitor556GiB retirement is reconciled; current labs/unique data remain intact.
+No broad cleanup or historical object-deletion proposal ran. Preserve original
+failures, unique data, pending work and archived shared Git/ELF bytes/metadata;
+private copy first, never gc/repack. Cache invalidation from unchanged native
+source timestamps is assigned to P01-T01/P08-T11 in the existing CI report;
+no cache fix or speedup is claimed.
 
-**Next:** qualify the bounded coordinator correction in the integration worktree:
-immediate continuation only after joined Index Installed/Published; existing
-Busy250ms/idle/refusal/retry delays, serial authority, renewal, grants and priority
-remain. Critical source review, fresh exact-source worker/parent/observer and
-changed workspace checks precede actual unchanged128-peer/64-request/65s grouped
-scenario. Preserve all78 results under their original source; do not relabel them.
-Complete the actual11stage scenario and terminal audit, then coherent controls,
-publication review, main integration/push and real hostedCI. No fullM2 claim.
+**Next:** run96d6 grouped R2 with existingrun-installed.py, current acceptance source,
+observer96d6 and unchanged128rounds/64requests/65s limits. Require all11stages,
+scientific/native preservation, losses/retries, two exports and restart, then
+unchanged fullcase terminal custody. Continue coherent main integration/publication
+review/push and real hostedCI. No new product build for fixture/docs-only edits.
 
-Hosted meaningfulebb8 run41256201712:33required+20scopePASS; docs1f4
-run41261536463 alsoPASS. The [CI report](evidence/p01-ci-hosted-foundation-20261026.json)
-owns platform counts/publication limits. Newly reachable source through83 then59cf
-was reviewed with no unclassified credential candidate; subsequent final delta
-still needs review. M2 is neither published nor hosted-qualified yet.
+Hosted ebb8 run41256201712 required33+20scopePASS; docs1f4 run41261536463 PASS.
+The [CI report](evidence/p01-ci-hosted-foundation-20261026.json) owns results and
+publication limits. New source through96d6 was reviewed with no new unclassified
+credential candidate; subsequent source/log/artifact deltas still need review.

@@ -78375,7 +78375,7 @@
         "product_worktree": ".research/m2-linear-quantum-main-integration-20261101",
         "product_revision": "78c8e31339e760c16bcfa036dabff38dcdf86544",
         "author_branch": "work/m2-linear-quantum-20261031",
-        "author_status": "Cleanbatchobservercorrectionmerged/criticalreviewcomplete;93targetedPASS;allagentsidle,noengine/cacheowners.",
+        "author_status": "Clean;finite-source fixture correction merged;117targeted controls PASS;Astra review approved;no engine/build/resource launches.",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-78c8e313",
         "observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-78c8e313",
         "failed_first_build": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-2fc85504",
@@ -78385,7 +78385,7 @@
         "status": "CurrentIndex15PASS/sevenfaultsPASS;groupedR1FAILatevidence-tailafterIndex64/proofwithin65,no fullnative/reclamationproof. Allownedlocaljobsnowterminal;bridgeempty. SameprofileGroupR2next;M2notmainintegrated.",
         "report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "retention": "Preserve all original failures, native/PG data, captures, input, logs, worktrees and unintegrated source. Current evidence/report owns exact identities; no new cleanup executed.",
-        "author_tip": "01cf7e730a8d8a2f32bfe5ee8587b0b515c84f2f",
+        "author_tip": "356d55183689e1f30affaeb7d464e4a16fcb4838",
         "dev_revision": "e8122ff90edf298e8c1262d3328cde87387c8828",
         "evidence_report": "docs/implementation/evidence/p03-initial-sync-native-20261002.json#linear_quantum_20261101",
         "failed_historical_controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-20a3d7f4-controls",
@@ -78412,7 +78412,24 @@
           },
           "resources": "16stoppedownedcontainers/0PIDs/noOOM;1667commandsjoined;3recordedprocessesabsent;bridgeempty",
           "retention": "Preserve original failure, signed fixture/input, database, logs, raw captures and source pins for diagnosis; no cleanup."
-        }
+        },
+        "current_product": "96d6c868e3ac02e768284a81add568e9b6802b79",
+        "current_product_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868",
+        "current_observer_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-quantum-observer-96d6c868",
+        "current_controls_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868-controls",
+        "current_workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868-workspace",
+        "current_workspace_state": "Terminal:tool7783/container0/PID0/noOOM;Clippy/Rustdoc/105focused Rust tests PASS;post-input guards PASS;cache115released/reacquired;original4ELFs unchanged.",
+        "current_grouped_failure": {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r1",
+          "result": "FAIL at Index terminal preservation;finite128 workload truncated by setup;4laterNOT_RUN",
+          "terminal": {
+            "path": "/home/tux/bigbrotr-implementation-20260917/runs/m2-linear-quantum-96d6c868/acceptance-grouped-second-export-r1/root-terminal.json",
+            "sha256": "326c22726d19bf607952d09c503ca5cfe3371e37d204ea517c895d16ac07dbdd"
+          },
+          "retention": "Keep original live106/stopped109 quantum snapshots, databases, inputs, logs and all failure artifacts. All16case containers stopped;1265commands joined;3recorded PIDs absent;bridge empty."
+        },
+        "current_build_state": "96d6 parent/observer/controls/workspace all stopped0/PID0/noOOM. Cache115 released;borrowed bridge empty;all current agents idle.",
+        "current_acceptance_before_checkpoint": "8b65a2e4d95a360fb8590bee751d9ac388735c92"
       }
     }
   },

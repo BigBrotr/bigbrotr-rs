@@ -49,12 +49,16 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
 - [ ] **Step 4:** Establish Linux amd64/arm64 build targets and macOS development checks.
   Record native/FFI dependency build requirements and offline asset expectations.
   Follow [development and delivery](../engineering/development-and-delivery.md):
-  Mac authoring, exact-revision isolated Tux runs, and native Linux arm64
+  Tux development, exact-revision isolated runs, and native Linux arm64
   acceptance on an available isolated runner; emulation is labeled separately.
 - [x] **Step 5:** Add formatting/lint/build/documentation jobs with warnings selected by
   relevance; no arbitrary comment length, coverage ratio or test-count rule.
   Start isolated least-privilege CI here, with pinned actions and no untrusted
   PR access to Tux, trusted caches or release credentials.
+  P08-T11 Step2 retains the measured native-cache invalidation follow-through in
+  the [CI report](evidence/p01-ci-hosted-foundation-20261026.json): unchanged
+  exported native bytes currently receive fresh watched timestamps. Safe reuse
+  must detect changed contents/membership; a missing cache must still build.
 - [x] **Step 6:** Build from a clean extracted source tree without undeclared cached files;
   compare reported identity with the supplied lock/toolchain metadata.
 - [x] **Step 7:** **Practical P01-T01:** run the built binary from outside the checkout with

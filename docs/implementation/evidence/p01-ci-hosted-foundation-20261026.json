@@ -2204,5 +2204,18 @@
     "git_blob": "a9f12344dcaa1210369c47cc3ee2c8af00cd1a34",
     "archived_report_sha256": "6d9f49b975c739fbd79460fac62dc818fa91b1c18c2289c04f77ebb4ffb194a5",
     "scope": "Full c826 platform, source, public-output and observer evidence remains in this immutable Git record. Its historical failures and source-scoped repairs are retained; that earlier source does not qualify the ebb8 native tuple."
+  },
+  "native_cache_followthrough_20261101": {
+    "tasks": "P01-T01Steps5/6;P08-T11Step2",
+    "status": "Measured invalidation mechanism; cache correction NOT_IMPLEMENTED; no native speedup claim.",
+    "source_revisions": [
+      "78c8e31339e760c16bcfa036dabff38dcdf86544",
+      "96d6c868e3ac02e768284a81add568e9b6802b79"
+    ],
+    "finding": "All1713native vendor manifest entries and Cargo/compiler/config/native toolchain inputs match, but git archive/extractall advances unchanged native source mtimes from1793494739 to1793506975. librocksdb-sys build.rs watches rocksdb/ recursively; retained parent Cargo fingerprint uses mtime-based RerunIfChanged/CheckDepInfo. This supplies a sufficient invalidation mechanism; exact first dirty trigger was not logged.",
+    "measured_scope": "Both retained release logs compile librocksdb-sys. Parent Cargo duration406s versus407s does not isolate native compilation cost. e812 dev/test source/profile is a different reuse context.",
+    "closure": "Within existing optional cache preparation, preserve timestamps only for byte-and-membership-verified identical native inputs or another verified equivalent mechanism; force invalidation for changed contents/membership. Preserve archive/source identities, compiler flags/tool pins and pre/post validation. Never fixed-backdate arbitrary changed inputs. Measure actual necessary CI runs; cache absence must still build.",
+    "documentation": "https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed",
+    "current_local_evidence_report": "p03-initial-sync-native-20261002.json#linear_quantum_20261101.coordinator_drain_followthrough"
   }
 }
