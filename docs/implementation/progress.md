@@ -49,20 +49,21 @@ consumed with drop in a test. Original4e779cc4 replaces it with lexical scope;
 Rustdoc/full Rust tests are **NOT_RUN**, not PASS. The prepared test-only campaign
 was superseded before launch because the next required change affects product SQL.
 
-**Current integrity blocker:** the two PG censuses hide corrupt wrong-dataset
+**Current integrity correction:** source310 PG censuses hide corrupt wrong-dataset
 extras for the SAME producer slot/epoch. Schema guards forbid ordinary creation,
 but the existing replica corruption model can retain such a tail. Astra verified
-the source/schema counterexample. Sol is narrowing the fix: census by slot+epoch,
-check each dataset, add distinct foreign-request-tail/outcome-tail regressions in
-the existing wave. No schema change/general audit. These new cases are NOT_RUN.
+the source/schema counterexample. Original901f98ed now fixes both censuses by
+slot+epoch with each dataset checked, and adds distinct foreign-request-tail/
+outcome-tail regressions. Critical delta review found no bounded blocker. No
+schema change/general audit; corrected compilation and new cases are NOT_RUN.
 The [producer report](evidence/p02-producer-recovery-native-20260920.json),
 `logical_pending_quota_20261101`, owns exact receipts, failures and scope limits.
 
 ## Processes, retained resources and next action
 
-No local compiler/engine/hosted observer remains active. Source-only Sol work
-continues in `.research/ingest-quota-connected-sol-20261101`; root owns integration.
-Other reviews completed. PG/client for connected310r2 stopped/PID0/noOOM
+No local compiler/engine/hosted observer remains active at this source checkpoint.
+Sol original901f98ed is merged; its author worktree is clean and retained. Root
+owns integration and the upcoming exact-source qualification; reviews completed. PG/client for connected310r2 stopped/PID0/noOOM
 (client143 is controlled idle-client teardown); the owned10.240.0.0/28 network,
 DBs, originals, captures and logs remain. Cache115 released and original4ELF
 bytes/fullmetadata preserved with O_NOATIME checks. Current labs, author worktrees
@@ -74,9 +75,9 @@ The [inventory](../research/laboratory-inventory.json) identifies run roots and
 ownership. Setup failures remain setup/environment failures: probeR1 Cargo-home
 verification, connectedR1 occupied default CIDR; neither ran product engine tests.
 
-**Next:** integrate the narrow PG census fix, critical-review its two regressions,
-commit coherent source and bind the existing Nostr source pin to an actual reviewed
-revision. Run the guarded exact-source build/workspace/probe once; execute all six
+**Next:** corrected source and its actual reviewed Nostr pin are now committed;
+Git supplies the enclosing revision. Run the guarded exact-source build/workspace/
+probe once; execute all six
 PG cases, real configured stable resume/socket and affected installed successor/
 restart paths with independent expectations. Reuse valid tools/captures; do not
 run the obsolete4e test-only campaign. Fix actual causes, preserving FAIL/NOT_RUN.

@@ -47219,7 +47219,7 @@
     }
   },
   "logical_pending_quota_20261101": {
-    "status": "PARTIAL_EXECUTED_CRITICAL_PG_COMPLETENESS_FIX_PENDING",
+    "status": "COHERENT_CORRECTED_SOURCE_READY_RUNTIME_QUALIFICATION_PENDING",
     "tasks": [
       "P02-T02 Step4",
       "P01-T08"
@@ -47310,7 +47310,10 @@
       "review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/pg-completeness-counterexample.json",
       "sha256": "f074fd3e5cc824b6f31944ffe219cf992255b8b91d2ee0c095079dfd35ca56b9",
       "required": "Census same producer slot+epoch without hiding wrong-dataset rows; check each dataset. Distinct foreign-request-tail/outcome-tail regressions in the existing wave. No schema change.",
-      "status": "Sol implementing; new cases NOT_RUN"
+      "status": "SOURCE_FIXED_CRITICALLY_REVIEWED_RUNTIME_NOT_RUN",
+      "original_commit": "901f98edc25f99a21c08c241e4498c98b07e05a7",
+      "fix_review": "/home/tux/bigbrotr-rs/.research/ingest-logical-ceiling-qualification-20261101/pg-completeness-fix-review.json",
+      "fix_review_sha256": "3713d286a6f104841feb564955337336048fc9eafb18901b44bb20bc7a7f0bbf"
     }
   }
 }
