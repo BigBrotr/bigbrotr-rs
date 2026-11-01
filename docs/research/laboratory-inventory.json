@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-10-29",
+  "updated_at": "2026-11-01",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -78336,11 +78336,37 @@
       },
       "separate_native_guard": {
         "branch": "work/native-failstop-binding-20261031",
-        "revision": "b230e9d599bf7b08ed80cb18023d338b46e02074",
+        "revision": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
         "qualified_source": "f761ca855cd3f06e9a117ea5106bcd02f0170b73",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-real-posix-f761ca85",
-        "status": "FOUR_COMPONENT_CASES_PASS;STOPPED_RETAINED;NOT_MAIN_INTEGRATED",
+        "status": "Componentbranch ancestor of localintegration; current product/workspace/tutorial qualified separately, mainpushnext",
         "report": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json#owned_background_guard_20261031.real_posix_controls"
+      },
+      "native_guard_integration": {
+        "source": "8f9bd4197aaafc36a743e30c3a9a1c7b15c8692d",
+        "acceptance": "a24a3dea9fc0d40952ac57086da7eb8d75f3058e",
+        "branch": "work/native-guard-integration-20261031",
+        "worktree": ".research/native-guard-main-integration-20261031",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419",
+        "workspace_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-workspace",
+        "failed_first_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-8f9bd419-post",
+        "corrected_controls": "/home/tux/bigbrotr-implementation-20260917/runs/native-guard-integration-a24a3dea-controls",
+        "status": "ALL_LOCAL_JOBS_TERMINAL_RETAINED;LOCAL_QUALIFICATION_PASS;HOSTED_NEW_TUPLE_PENDING",
+        "qualification": {
+          "path": "/home/tux/bigbrotr-rs/.research/native-guard-integration-20261031/workspace-qualification.json",
+          "sha256": "a83d95ca9165a8de6eee432fc588aadd27b1773c5a285822eeecac0d9ab62782"
+        },
+        "cache": "115 released;four original immutable single-link ELF pins unchanged",
+        "retention": "Alloriginalfailures/nativeDB/input/ELF/archive/capture/worktree data preserved. No new broadcleanup; borrowed bridge empty."
+      },
+      "linear_quantum_in_progress": {
+        "branch": "work/m2-linear-quantum-20261031",
+        "worktree": ".research/m2-linear-quantum-sol-20261031",
+        "last_reviewed_revision": "82ecffd7a46220f573fabbc0c1fb9e9b53344232",
+        "owner": "current42_prefix_fixture_sol (Sol/xhigh); root remains sole compiler/integrator",
+        "status": "ACTIVE_REPAIR_NOT_INTEGRATED;ENGINE_BUILD_NOT_RUN",
+        "review": "/home/tux/bigbrotr-rs/.research/open-growth-decision-20261031/amendment-m2-linear-quantum-critical-20261101.json",
+        "retention": "Preserve current edits, branch/worktree and original review. Four blocking budget/oracle/fault corrections and post-REQ authority proof are being reconciled before qualification."
       }
     }
   },

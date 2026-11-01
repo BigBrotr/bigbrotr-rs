@@ -135,7 +135,8 @@ def main():
     slugger = SLUG_ROOT / "index.js"
     if not slugger.exists():
         raise SystemExit("Missing canonical slugger; run with --prepare (requires network and Node).")
-    paths = [ROOT / name for name in ("README.md", "AGENTS.md", "PLAN.md")]
+    # Include our maintained vendor guide without traversing imported package docs.
+    paths = [ROOT / name for name in ("README.md", "AGENTS.md", "PLAN.md", "vendor/README.md")]
     paths += sorted((ROOT / "docs").rglob("*.md"))
     paths += sorted((ROOT / "experiments").rglob("*.md"))
     texts = {path: prose(path.read_text()) for path in paths}

@@ -10,3 +10,8 @@ publish = false
 
 [dependencies]
 rocksdb = { version = "=0.25.0", default-features = false, features = ["zstd", "bindgen-runtime"] }
+
+# This experiment is its own workspace: root patches do not propagate here.
+[patch.crates-io]
+rocksdb = { path = "../../vendor/rocksdb" }
+librocksdb-sys = { path = "../../vendor/librocksdb-sys" }

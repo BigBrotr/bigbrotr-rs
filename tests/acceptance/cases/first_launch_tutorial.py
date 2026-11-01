@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import socket
+import stat
 import subprocess
 import sys
 import time
@@ -19,28 +20,25 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = 'ea90e28bbe883561ab7d813a427219090b05ce76'
+REVIEWED_PRODUCT = '8f9bd4197aaafc36a743e30c3a9a1c7b15c8692d'
 # Git objects bind all product code/dependencies/configuration, allowing a
 # documentation/acceptance-only commit without pretending a new signer was reviewed.
-# The selected fresh journey's dispatch, accepted-policy capture/binding, native2
-# accounting writes and complete-batch Archive feed were reviewed. Historical
-# restore and unused observer deferral reuse their exact source-critical reviews.
-# The supplemental reader-coordinate grouping preserves every existing check;
-# its close hash remains a test contract vector, not a runtime close operation.
-# These changes add no Nostr signing credentials/calls or EVENT send path. All
-# nine Nostr paths remain byte-identical to the previously reviewed64d profile.
-# Source eligibility does not qualify current42 bootstrap or installed execution.
-# Fixed code/contract identities retain the full source-only exclusion guard.
+# The current main/native-guard integration adds only test code to the
+# application; all nine selected Nostr paths are unchanged. Both native patches
+# match the separately reviewed d3 source. This review does not qualify installed
+# execution. Bind every vendor leaf except the maintained, nonexecutable guide;
+# package documentation, provenance and newly introduced entries stay strict.
 REVIEWED_CODE = {
-    'apps':'cb99ac7d133c73e21d6f1d7f3a7c27f4e4ce1447',
-    'crates':'80acabc650a601d0f8b37462039158d791d7ae8d',
-    'vendor':'cba63f2b14b7c9c7460ff260c56e85ba97f1b611',
-    'Cargo.toml':'d3c301c263f5664b2eff1ae563b3a8079169c5b4',
-    'Cargo.lock':'fd13862f44669853b73b9aaa03a189fbfeecb597',
-    'rust-toolchain.toml':'c3f67b6771b777215340531caf051bc25cef066c',
-    'contracts':'ba9aa9ccd6319abcf6edf02d99581af9d2579a14',
-    'config':'1e22ccc281bc6bdda677b3db238584fa01e6cdd1',
+    'apps': '33aede524ac89756c1ea0eb1ce3120d93855f5c4',
+    'crates': '80acabc650a601d0f8b37462039158d791d7ae8d',
+    'Cargo.toml': 'ebaf694cebdd6b0eda55a8849ee0261b6aa18790',
+    'Cargo.lock': '33bb87c694d94a6e329ff2b426cb89d296bdb6d0',
+    'rust-toolchain.toml': 'c3f67b6771b777215340531caf051bc25cef066c',
+    'contracts': '305e113ff5e5cefe4c741d5d0605a7597a3d6ece',
+    'config': '1e22ccc281bc6bdda677b3db238584fa01e6cdd1',
 }
+REVIEWED_VENDOR_ENTRIES = 1919
+REVIEWED_VENDOR_SHA256 = '8db169aa24d138e9a9135fc779db034de25c67923300709a8bb6e859a2feb71d'
 NOSTR_PATHS = ('apps/bigbrotr/src/main.rs','apps/bigbrotr/src/cli.rs',
     'apps/bigbrotr/src/event.rs','crates/bigbrotr-protocol/src/event.rs',
     'apps/bigbrotr/src/interfaces/serve.rs','apps/bigbrotr/src/config/resolve.rs',
@@ -52,10 +50,51 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed productea90e28b; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed product8f9bd419; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
     'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
+
+
+def reviewed_vendor(stdout, readme):
+    """Bind all compiled/provenance leaves; permit only guide text to change."""
+    records = stdout.split('\0')
+    require(records[-1] == '' and len(records) == REVIEWED_VENDOR_ENTRIES + 2,
+            'Nostr vendor inventory is incomplete or changed')
+    records.pop()
+    names = []
+    for row in records:
+        metadata, separator, name = row.partition('\t')
+        require(separator and name
+                and re.fullmatch(r'[0-7]{6} (blob|commit) [0-9a-f]{40}', metadata),
+                'Nostr vendor inventory has a malformed entry')
+        names.append(name)
+    require(len(names) == len(set(names)), 'Nostr vendor inventory has duplicate paths')
+    guides = [row for row in records if row.rpartition('\t')[2] == 'README.md']
+    require(len(guides) == 1 and re.fullmatch(r'100644 blob [0-9a-f]{40}\tREADME\.md', guides[0]),
+            'Nostr vendor guide must be a regular nonexecutable Git blob')
+    entries = [row for row in records if row not in guides]
+    canonical = ('\0'.join(sorted(entries, key=lambda row: row.partition('\t')[2].encode('utf-8')))
+                 + '\0').encode('utf-8')
+    require(hashlib.sha256(canonical).hexdigest() == REVIEWED_VENDOR_SHA256,
+            'Nostr vendor code/provenance changed and needs review')
+    before = readme.lstat()
+    require(stat.S_ISREG(before.st_mode) and before.st_mode & 0o111 == 0,
+            'Nostr vendor guide must remain regular nonexecutable documentation')
+    document_hash = hashlib.sha256()
+    with os.fdopen(os.open(readme, os.O_RDONLY | os.O_NOFOLLOW),
+                   encoding='utf-8', newline='') as document:
+        opened = os.fstat(document.fileno())
+        require((opened.st_dev, opened.st_ino) == (before.st_dev, before.st_ino)
+                and stat.S_ISREG(opened.st_mode) and opened.st_mode & 0o111 == 0,
+                'Nostr vendor guide changed during observation')
+        while chunk := document.read(65536):
+            require('\0' not in chunk, 'Nostr vendor guide must be UTF-8 documentation without NUL')
+            document_hash.update(chunk.encode('utf-8'))
+    return dict(entries=len(entries), entries_sha256=REVIEWED_VENDOR_SHA256,
+                guide_git_object=guides[0].partition('\t')[0].split(' ')[2],
+                working_guide_sha256=document_hash.hexdigest(),
+                excluded='vendor/README.md: regular nonexecutable UTF-8 documentation')
 
 
 def canonical_inputs(args):
@@ -170,6 +209,8 @@ class TutorialRuntime(Runtime):
         for path,expected in REVIEWED_CODE.items():
             observed=self.command(['git','-C',str(self.source),'rev-parse',revision+':'+path],label='nostr-code-profile')
             require(observed.stdout.strip()==expected,'Nostr exclusion needs review of changed product code/dependencies/configuration')
+        vendor=self.command(['git','-C',str(self.source),'ls-tree','-r','-z',revision+':vendor'],label='nostr-vendor-profile')
+        vendor_profile=reviewed_vendor(vendor.stdout,self.source/'vendor/README.md')
         hashes={}
         for name in NOSTR_PATHS:
             recorded=self.command(['git','-C',str(self.source),'show',revision+':'+name],label='nostr-source')
@@ -177,7 +218,7 @@ class TutorialRuntime(Runtime):
                     'reviewed Nostr source path differs from executed product source')
             hashes[name]=digest(self.source/name)
         self.inputs['nostr_source_exclusion']=dict(product_revision=revision,reviewed_revision=REVIEWED_PRODUCT,
-            code_git_objects=REVIEWED_CODE,files_sha256=hashes,
+            code_git_objects=REVIEWED_CODE,vendor_profile=vendor_profile,files_sha256=hashes,
             signing='no reachable Nostr signing API in selected profile',sending='session REQ/CLOSE only',
             mechanism='source review plus exact artifact identity; not a runtime call counter')
 

@@ -198,6 +198,76 @@ class TutorialControls(unittest.TestCase):
         with patch.object(case.Runtime,'candidate'):
             with self.assertRaisesRegex(ValueError,'changed product code'):runtime.candidate()
 
+    def test_vendor_profile_allows_only_maintained_guide_text_to_change(self):
+        inventory = subprocess.check_output(
+            ['git', '-C', str(ROOT), 'ls-tree', '-r', '-z', 'HEAD:vendor'], text=True)
+        with tempfile.TemporaryDirectory() as temporary:
+            guide = Path(temporary) / 'README.md'
+            guide.write_text('# Maintained guide\n', encoding='utf-8')
+            observed = case.reviewed_vendor(inventory, guide)
+            self.assertEqual(observed['entries'], 1919)
+            self.assertEqual(observed['entries_sha256'], case.REVIEWED_VENDOR_SHA256)
+            rows = inventory.split('\0')[:-1]
+            for index, row in enumerate(rows):
+                if row.rpartition('\t')[2] == 'README.md':
+                    rows[index] = '100644 blob ' + '1' * 40 + '\tREADME.md'
+            guide.write_text('# Revised documentation\n', encoding='utf-8')
+            revised = case.reviewed_vendor('\0'.join(reversed(rows)) + '\0', guide)
+            self.assertEqual(revised['entries'], observed['entries'])
+            self.assertEqual(revised['entries_sha256'], observed['entries_sha256'])
+            self.assertNotEqual(revised['guide_git_object'], observed['guide_git_object'])
+            self.assertNotEqual(revised['working_guide_sha256'], observed['working_guide_sha256'])
+
+    def test_vendor_profile_refuses_package_provenance_inventory_and_guide_mode_changes(self):
+        inventory = subprocess.check_output(
+            ['git', '-C', str(ROOT), 'ls-tree', '-r', '-z', 'HEAD:vendor'], text=True)
+        rows = inventory.split('\0')[:-1]
+        guide_row, = [row for row in rows if row.rpartition('\t')[2] == 'README.md']
+        mutations = {
+            'new entry': rows + ['100644 blob ' + '1' * 40 + '\tunreviewed.rs'],
+            'missing entry': rows[1:],
+            'duplicate guide': rows + [guide_row],
+            'missing guide': [row for row in rows if row != guide_row],
+            'executable Git guide': [row.replace('100644', '100755', 1) if row == guide_row else row for row in rows],
+            'symlink Git guide': [row.replace('100644', '120000', 1) if row == guide_row else row for row in rows],
+        }
+        for path in ('librocksdb-sys/rocksdb/db/c.cc', 'rocksdb.provenance.json', 'rocksdb/README.md'):
+            changed = list(rows)
+            index, = [n for n, row in enumerate(rows) if row.rpartition('\t')[2] == path]
+            metadata, _, name = rows[index].partition('\t')
+            mode, kind, _ = metadata.split(' ')
+            changed[index] = f'{mode} {kind} ' + '1' * 40 + '\t' + name
+            mutations[path] = changed
+        with tempfile.TemporaryDirectory() as temporary:
+            guide = Path(temporary) / 'README.md'
+            guide.write_text('# Maintained guide\n', encoding='utf-8')
+            for name, changed in mutations.items():
+                with self.subTest(change=name), self.assertRaises(ValueError):
+                    case.reviewed_vendor('\0'.join(changed) + '\0', guide)
+            with self.assertRaises(ValueError):
+                case.reviewed_vendor(inventory[:-1], guide)
+
+    def test_vendor_profile_refuses_working_guide_substitution_and_invalid_encoding(self):
+        inventory = subprocess.check_output(
+            ['git', '-C', str(ROOT), 'ls-tree', '-r', '-z', 'HEAD:vendor'], text=True)
+        with tempfile.TemporaryDirectory() as temporary:
+            guide = Path(temporary) / 'README.md'
+            guide.write_text('# Guide\n', encoding='utf-8')
+            guide.chmod(0o700)
+            with self.assertRaises(ValueError):
+                case.reviewed_vendor(inventory, guide)
+            guide.chmod(0o600)
+            guide.write_bytes(b'\xff')
+            with self.assertRaises(UnicodeError):
+                case.reviewed_vendor(inventory, guide)
+            guide.write_bytes(b'# Guide\0')
+            with self.assertRaises(ValueError):
+                case.reviewed_vendor(inventory, guide)
+            guide.unlink()
+            guide.symlink_to(ROOT / 'vendor/README.md')
+            with self.assertRaises(ValueError):
+                case.reviewed_vendor(inventory, guide)
+
     def test_dispatch_preserves_original_seven_stages_and_cleanup_after_failure(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);args=arguments(root);args.case='p01-first-launch-tutorial';checks=[]

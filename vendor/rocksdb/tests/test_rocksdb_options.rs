@@ -1,0 +1,694 @@
+// Copyright 2020 Tyler Neely
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+mod util;
+
+use std::{fs, io::Read as _};
+
+use rocksdb::checkpoint::Checkpoint;
+use rocksdb::{
+    BlockBasedOptions, BlockBasedTablePinningTier, Cache, ColumnFamilyDescriptor,
+    DBCompressionType, DataBlockIndexType, Env, LruCacheOptions, Options, ReadOptions, DB,
+};
+use util::DBPath;
+
+fn read_settings_from_log(path: &DBPath) -> String {
+    let mut rocksdb_log = fs::File::open(format!("{}/LOG", path.as_ref().to_str().unwrap()))
+        .expect("rocksdb creates a LOG file");
+    let mut settings = String::new();
+    rocksdb_log
+        .read_to_string(&mut settings)
+        .expect("rocksdb log file is readable");
+    settings
+}
+
+#[test]
+fn test_load_latest() {
+    let n = DBPath::new("_rust_rocksdb_test_load_latest");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.create_missing_column_families(true);
+        let _ = DB::open_cf(&opts, &n, vec!["cf0", "cf1"]).unwrap();
+    }
+    let (_, cfs) = Options::load_latest(
+        &n,
+        Env::new().unwrap(),
+        true,
+        Cache::new_lru_cache(1024 * 8),
+    )
+    .unwrap();
+    assert!(cfs.iter().any(|cf| cf.name() == "default"));
+    assert!(cfs.iter().any(|cf| cf.name() == "cf0"));
+    assert!(cfs.iter().any(|cf| cf.name() == "cf1"));
+}
+
+#[test]
+fn test_get_options_from_string() {
+    let mut opts = Options::default();
+    opts.set_use_fsync(true);
+    let new_opts = opts.get_options_from_string("use_fsync=false").unwrap();
+    assert!(!new_opts.get_use_fsync());
+    assert!(opts
+        .get_options_from_string("notarealoptionstring")
+        .is_err());
+
+    // test an option with a NUL byte
+    let err = match opts.get_options_from_string("use_fsync=false\0") {
+        Ok(_) => panic!("expected error"),
+        Err(e) => e,
+    };
+    assert!(
+        err.to_string().contains("must not contain NUL"),
+        "err={err:?}"
+    );
+}
+
+#[test]
+fn test_set_num_levels() {
+    let n = DBPath::new("_rust_rocksdb_test_set_num_levels");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_num_levels(2);
+        let _db = DB::open(&opts, &n).unwrap();
+    }
+}
+
+#[test]
+fn test_increase_parallelism() {
+    let n = DBPath::new("_rust_rocksdb_test_increase_parallelism");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.increase_parallelism(4);
+        let _db = DB::open(&opts, &n).unwrap();
+    }
+}
+
+#[test]
+fn test_set_level_compaction_dynamic_level_bytes() {
+    let n = DBPath::new("_rust_rocksdb_test_set_level_compaction_dynamic_level_bytes");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_level_compaction_dynamic_level_bytes(true);
+        let _db = DB::open(&opts, &n).unwrap();
+    }
+}
+
+#[test]
+fn test_block_based_options() {
+    // First check the default values.
+    let n = DBPath::new("_rust_rocksdb_test_block_based_options");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+
+        let _db = DB::open(&opts, &n).unwrap();
+
+        let settings = read_settings_from_log(&n);
+
+        assert!(settings.contains("cache_index_and_filter_blocks: 0\n"));
+        assert!(settings.contains("pin_l0_filter_and_index_blocks_in_cache: 0\n"));
+        assert!(settings.contains("format_version: 7\n"));
+        assert!(settings.contains("index_block_restart_interval: 1\n"));
+        assert!(settings.contains("cache_index_and_filter_blocks_with_high_priority: 1\n"));
+    }
+
+    // Now check that block options do change the defaults.
+    let n = DBPath::new("_rust_rocksdb_test_block_based_options2");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+
+        let mut block_opts = BlockBasedOptions::default();
+        block_opts.set_cache_index_and_filter_blocks(true);
+        block_opts.set_pin_l0_filter_and_index_blocks_in_cache(true);
+        block_opts.set_format_version(4);
+        block_opts.set_index_block_restart_interval(16);
+        block_opts.set_cache_index_and_filter_blocks_with_high_priority(false);
+
+        opts.set_block_based_table_factory(&block_opts);
+        let _db = DB::open(&opts, &n).unwrap();
+
+        let settings = read_settings_from_log(&n);
+
+        // check the settings are set in the LOG file
+        assert!(settings.contains("cache_index_and_filter_blocks: 1\n"));
+        assert!(settings.contains("pin_l0_filter_and_index_blocks_in_cache: 1\n"));
+        assert!(settings.contains("format_version: 4\n"));
+        assert!(settings.contains("index_block_restart_interval: 16\n"));
+        assert!(settings.contains("cache_index_and_filter_blocks_with_high_priority: 0\n"));
+    }
+}
+
+#[test]
+fn test_read_options() {
+    let mut read_opts = ReadOptions::default();
+    read_opts.set_verify_checksums(false);
+    read_opts.set_deadline(1_000_000);
+    read_opts.set_io_timeout(500_000);
+}
+
+#[test]
+fn test_set_data_block_index_type() {
+    let path = "_rust_rocksdb_test_set_data_block_index_type";
+    let n = DBPath::new(path);
+
+    // Default is `BinarySearch`
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+
+        let block_opts = BlockBasedOptions::default();
+        opts.set_block_based_table_factory(&block_opts);
+        let _db = DB::open(&opts, &n).expect("open a db works");
+
+        let settings = read_settings_from_log(&n);
+        assert!(settings.contains("data_block_index_type: 0"));
+        assert!(settings.contains("data_block_hash_table_util_ratio: 0.750000"));
+    }
+
+    // Setting the index type and hash table utilization ratio works
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(false);
+
+        let mut block_opts = BlockBasedOptions::default();
+        block_opts.set_data_block_index_type(DataBlockIndexType::BinaryAndHash);
+        block_opts.set_data_block_hash_ratio(0.35);
+        opts.set_block_based_table_factory(&block_opts);
+        let _db = DB::open(&opts, &n).expect("open a db works");
+
+        let settings = read_settings_from_log(&n);
+        assert!(settings.contains("data_block_index_type: 1"));
+        assert!(settings.contains("data_block_hash_table_util_ratio: 0.350000"));
+    }
+}
+
+#[test]
+#[cfg(feature = "zstd")]
+fn set_compression_options_zstd_max_train_bytes() {
+    let path = DBPath::new("_rust_set_compression_options_zstd_max_train_bytes");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_compression_options(4, 5, 6, 7);
+        opts.set_zstd_max_train_bytes(100);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+}
+
+#[test]
+fn set_wal_compression_zstd() {
+    let path = DBPath::new("_set_wal_compression_zstd");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_wal_compression_type(DBCompressionType::None);
+        opts.set_wal_compression_type(DBCompressionType::Zstd);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+}
+
+#[test]
+#[should_panic(expected = "Lz4 is not supported for WAL compression")]
+fn set_wal_compression_unsupported() {
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_wal_compression_type(DBCompressionType::Lz4);
+    }
+}
+
+fn test_compression_type(ty: DBCompressionType) {
+    let path = DBPath::new("_test_compression_type");
+
+    let mut opts = Options::default();
+    opts.set_compression_type(ty);
+    opts.create_if_missing(true);
+    let db = DB::open(&opts, &path);
+
+    let should_open = match ty {
+        DBCompressionType::None => true,
+        DBCompressionType::Snappy => cfg!(feature = "snappy"),
+        DBCompressionType::Zlib => cfg!(feature = "zlib"),
+        DBCompressionType::Bz2 => cfg!(feature = "bzip2"),
+        DBCompressionType::Lz4 | DBCompressionType::Lz4hc => cfg!(feature = "lz4"),
+        DBCompressionType::Zstd => cfg!(feature = "zstd"),
+    };
+
+    if should_open {
+        let _db = db.unwrap();
+    } else {
+        let _err = db.unwrap_err();
+    }
+}
+
+#[test]
+fn test_none_compression() {
+    test_compression_type(DBCompressionType::None);
+}
+
+#[test]
+fn test_snappy_compression() {
+    test_compression_type(DBCompressionType::Snappy);
+}
+
+#[test]
+fn test_zlib_compression() {
+    test_compression_type(DBCompressionType::Zlib);
+}
+
+#[test]
+fn test_bz2_compression() {
+    test_compression_type(DBCompressionType::Bz2);
+}
+
+#[test]
+fn test_lz4_compression() {
+    test_compression_type(DBCompressionType::Lz4);
+    test_compression_type(DBCompressionType::Lz4hc);
+}
+
+#[test]
+fn test_zstd_compression() {
+    test_compression_type(DBCompressionType::Zstd);
+}
+
+#[test]
+fn test_add_compact_on_deletion_collector_factory() {
+    let n = DBPath::new("_rust_rocksdb_test_add_compact_on_deletion_collector_factory");
+
+    let mut opts = Options::default();
+    opts.create_if_missing(true);
+    opts.add_compact_on_deletion_collector_factory(5, 10, 0.5);
+    let _db = DB::open(&opts, &n).unwrap();
+
+    let settings = read_settings_from_log(&n);
+    assert!(settings.contains("CompactOnDeletionCollector (Sliding window size = 5 Deletion trigger = 10 Deletion ratio = 0.5)"));
+}
+
+#[test]
+fn test_set_avoid_unnecessary_blocking_io() {
+    let path = DBPath::new("_set_avoid_unnecessary_blocking_io");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_avoid_unnecessary_blocking_io(true);
+        let db = DB::open(&opts, &path).unwrap();
+        let _ = db.put(b"k1", b"a");
+        assert_eq!(&*db.get(b"k1").unwrap().unwrap(), b"a");
+    }
+}
+
+#[test]
+fn test_set_experimental_mempurge_threshold() {
+    let path = DBPath::new("_set_experimental_mempurge_threshold");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_experimental_mempurge_threshold(1.0);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+
+    let settings = read_settings_from_log(&path);
+    assert!(settings.contains("experimental_mempurge_threshold: 1.000000"));
+}
+
+#[test]
+fn test_set_track_and_verify_wals_in_manifest() {
+    let path = DBPath::new("_set_track_and_verify_wals_in_manifest");
+
+    // test the defaults and the setter/accessor
+    let mut opts = Options::default();
+    assert!(!opts.get_track_and_verify_wals_in_manifest());
+    opts.set_track_and_verify_wals_in_manifest(true);
+    assert!(opts.get_track_and_verify_wals_in_manifest());
+    opts.set_track_and_verify_wals_in_manifest(false);
+    assert!(!opts.get_track_and_verify_wals_in_manifest());
+
+    // verify that a database created with this option works
+    // TODO: Check that the MANIFEST actually contains WalAddition/WalDeletion records
+    opts.create_if_missing(true);
+    opts.set_track_and_verify_wals_in_manifest(true);
+    let db = DB::open(&opts, &path).unwrap();
+    db.put(b"k1", b"a").expect("put must work");
+    assert_eq!(db.get(b"k1").unwrap().unwrap(), b"a");
+}
+
+#[test]
+fn test_set_periodic_compaction_seconds() {
+    let path = DBPath::new("_set_periodic_compaction_seconds");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_periodic_compaction_seconds(5);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+}
+
+#[test]
+fn test_set_ttl() {
+    let path = DBPath::new("_set_ttl_0");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_ttl(0);
+        let _db = DB::open(&opts, &path).unwrap();
+
+        let settings = read_settings_from_log(&path);
+        assert!(settings.contains("Options.ttl: 0\n"));
+    }
+    let path = DBPath::new("_set_ttl_day");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_ttl(86400);
+        let _db = DB::open(&opts, &path).unwrap();
+
+        let settings = read_settings_from_log(&path);
+        assert!(settings.contains("Options.ttl: 86400\n"));
+    }
+}
+
+#[test]
+fn test_set_ratelimiter() {
+    let path = DBPath::new("_set_ratelimiter");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_ratelimiter(1024000, 1000, 1);
+        let db = DB::open(&opts, &path).unwrap();
+
+        let _ = db.put(b"k1", b"a");
+        assert_eq!(&*db.get(b"k1").unwrap().unwrap(), b"a");
+    }
+
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.set_auto_tuned_ratelimiter(1024000, 1000, 1);
+        let db = DB::open(&opts, &path).unwrap();
+
+        let _ = db.put(b"k2", b"a");
+        assert_eq!(&*db.get(b"k2").unwrap().unwrap(), b"a");
+    }
+}
+
+#[test]
+fn test_set_blob_cache() {
+    let path = DBPath::new("_set_blob_cache");
+    let cache = Cache::new_hyper_clock_cache(1024 * 1024, 4 * 1024);
+
+    let mut opts = Options::default();
+    opts.create_if_missing(true);
+    opts.set_enable_blob_files(true);
+    opts.set_min_blob_size(16);
+    opts.set_blob_cache(&cache);
+
+    let db = DB::open(&opts, &path).unwrap();
+
+    const KEY: &[u8] = b"k1";
+    const VALUE: &[u8] = b"01234567890123456789";
+    db.put(KEY, VALUE).unwrap();
+
+    // Cache miss
+    assert_eq!(&*db.get(KEY).unwrap().unwrap(), VALUE);
+
+    // Cache hit
+    assert_eq!(&*db.get(KEY).unwrap().unwrap(), VALUE);
+}
+
+#[test]
+fn test_lru_cache_custom_opts() {
+    let path = DBPath::new("_set_blob_cache");
+
+    let mut lru_opts = LruCacheOptions::default();
+    lru_opts.set_capacity(16 * 1024 * 1024);
+    lru_opts.set_num_shard_bits(2);
+    let cache = Cache::new_lru_cache_opts(&lru_opts);
+
+    let mut opts = Options::default();
+    opts.create_if_missing(true);
+    opts.set_row_cache(&cache);
+
+    // Must work even if we dropped the options: test that.
+    drop(lru_opts);
+
+    let db = DB::open(&opts, &path).unwrap();
+
+    const KEY: &[u8] = b"k1";
+    const VALUE: &[u8] = b"01234567890123456789";
+    db.put(KEY, VALUE).unwrap();
+
+    // Cache miss
+    assert_eq!(&*db.get(KEY).unwrap().unwrap(), VALUE);
+
+    // Cache hit
+    assert_eq!(&*db.get(KEY).unwrap().unwrap(), VALUE);
+}
+
+#[test]
+fn test_set_write_dbid_to_manifest() {
+    let path = DBPath::new("_set_write_dbid_to_manifest");
+
+    // test the defaults and the setter/accessor
+    let mut opts = Options::default();
+    assert!(opts.get_write_dbid_to_manifest());
+    opts.set_write_dbid_to_manifest(false);
+    assert!(!opts.get_write_dbid_to_manifest());
+    opts.set_write_dbid_to_manifest(true);
+    assert!(opts.get_write_dbid_to_manifest());
+
+    // verify the DBID is preserved across checkpoints. If set to false this is not true
+    opts.create_if_missing(true);
+    opts.set_write_dbid_to_manifest(true);
+    let db_orig = DB::open(&opts, &path).unwrap();
+    let db_orig_id = db_orig.get_db_identity().unwrap();
+
+    // a checkpoint from this database has the SAME DBID if it is in the manifest
+    let checkpoint_path = DBPath::new("set_write_dbid_checkpoint");
+    let checkpoint = Checkpoint::new(&db_orig).unwrap();
+    checkpoint.create_checkpoint(&checkpoint_path).unwrap();
+
+    let db_checkpoint = DB::open(&opts, &checkpoint_path).unwrap();
+    let db_checkpoint_id = db_checkpoint.get_db_identity().unwrap();
+    assert_eq!(
+        db_orig_id,
+        db_checkpoint_id,
+        "expected database identity to be preserved across checkpoints; db_orig={} db_checkpoint={}",
+        String::from_utf8_lossy(&db_orig_id),
+        String::from_utf8_lossy(&db_checkpoint_id)
+    );
+}
+
+#[test]
+fn test_block_based_table_pinning_tier() {
+    let path = DBPath::new("_block_based_table_pinning_tier");
+
+    // Test that we can create all enum variants
+    let _fallback = BlockBasedTablePinningTier::Fallback;
+    let _none = BlockBasedTablePinningTier::None;
+    let _flush_and_similar = BlockBasedTablePinningTier::FlushAndSimilar;
+    let _all = BlockBasedTablePinningTier::All;
+
+    // Test that enum values match expected C constants
+    assert_eq!(BlockBasedTablePinningTier::Fallback as i32, 0);
+    assert_eq!(BlockBasedTablePinningTier::None as i32, 1);
+    assert_eq!(BlockBasedTablePinningTier::FlushAndSimilar as i32, 2);
+    assert_eq!(BlockBasedTablePinningTier::All as i32, 3);
+
+    // Test that we can use the setter methods with BlockBasedOptions
+    let mut block_opts = BlockBasedOptions::default();
+    block_opts.set_top_level_index_pinning_tier(BlockBasedTablePinningTier::FlushAndSimilar);
+    block_opts.set_partition_pinning_tier(BlockBasedTablePinningTier::All);
+    block_opts.set_unpartitioned_pinning_tier(BlockBasedTablePinningTier::None);
+
+    // Test that we can create a database with these options
+    let mut opts = Options::default();
+    opts.create_if_missing(true);
+    opts.set_block_based_table_factory(&block_opts);
+
+    let db = DB::open(&opts, &path).unwrap();
+    db.put(b"test_key", b"test_value").unwrap();
+    assert_eq!(&*db.get(b"test_key").unwrap().unwrap(), b"test_value");
+}
+
+#[test]
+fn jemalloc_init() {
+    let path = DBPath::new("_jemalloc_init");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+
+    let mut rocksdb_log =
+        fs::File::open((&path).as_ref().join("LOG")).expect("rocksdb creates a LOG file");
+    let mut log_content = String::new();
+    rocksdb_log
+        .read_to_string(&mut log_content)
+        .expect("can read the LOG file");
+
+    if cfg!(feature = "jemalloc")
+        && !(
+            // See NO_JEMALLOC_TARGETS in librocksdb-sys/build.rs
+            cfg!(target_os = "android")
+                || cfg!(target_os = "dragonfly")
+                || cfg!(target_env = "musl")
+                || cfg!(target_os = "macos")
+                || cfg!(target_os = "ios")
+        )
+    {
+        assert!(log_content.contains("Jemalloc supported: 1"));
+    } else {
+        assert!(log_content.contains("Jemalloc supported: 0"));
+    }
+}
+
+// Verify we passed through the compiler flags to enable hardware CRC32 (if supported).
+#[test]
+fn test_crc32_build() {
+    let path = DBPath::new("_crc32");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        let _db = DB::open(&opts, &path).unwrap();
+    }
+
+    let mut rocksdb_log =
+        fs::File::open((&path).as_ref().join("LOG")).expect("rocksdb creates a LOG file");
+    let mut log_content = String::new();
+    rocksdb_log
+        .read_to_string(&mut log_content)
+        .expect("can read the LOG file");
+
+    // look for the log line with prefix "Fast CRC32 supported:"
+    let log_line = log_content
+        .lines()
+        .find(|line| line.contains("Fast CRC32 supported:"));
+    assert!(log_line.is_some(), "{log_content}");
+    let log_line = log_line.unwrap();
+
+    let expected_supported = if cfg!(target_arch = "x86_64") {
+        // Default Linux x86-64 (x86-64-v1) does not support CRC32. Nearly all CPUs since ~2014
+        // should support it (>= x86-64-v2), but RocksDB only does compile-time detection.
+        // Our build.rs should match the Rust target settings
+        if cfg!(target_feature = "crc") {
+            Some(true)
+        } else {
+            Some(false)
+        }
+    } else if cfg!(target_arch = "aarch64") {
+        // Default Linux aarch64 does not support CRC32. RocksDB's runtime feature detection is
+        // also buggy as of 10.110 (2026-01-23), but it should report "Supported" if the feature is
+        // enabled at compile time.
+        if cfg!(target_feature = "crc") {
+            Some(true)
+        } else {
+            // TODO: Fix when upstream RocksDB fixes the runtime feature detection
+            Some(false)
+        }
+    } else {
+        println!(
+            "TODO: test_crc32_build needs to be extended to support ARCH={}",
+            std::env::consts::ARCH
+        );
+        None
+    };
+    if let Some(expected_supported) = expected_supported {
+        if expected_supported {
+            assert!(
+                log_line.contains("Supported on "),
+                "expected 'Supported on ' log_line={log_line}"
+            );
+        } else {
+            assert!(
+                log_line.contains("Not supported on "),
+                "expected 'Not supported on ' log_line={log_line}"
+            );
+        }
+    }
+
+    // split the last word as the supported arch
+    let crc32_supported_arch = log_line.split_whitespace().last().unwrap();
+
+    // Verify that the RocksDB reported architecture matches this test
+    // this may fail if RocksDB changes its string formatting
+    let expected_arch = if cfg!(target_arch = "x86_64") {
+        "x86".to_string()
+    } else if cfg!(target_arch = "aarch64") {
+        // TODO: RocksDB has a bug: it can report x86 when the CRC feature is not enabled
+        // This should just be "Arm64" when the RocksDB bug is fixed
+        if cfg!(target_feature = "crc") {
+            "Arm64".to_string()
+        } else {
+            "x86".to_string()
+        }
+    } else if cfg!(target_arch = "powerpc64") {
+        "PPC".to_string()
+    } else {
+        format!("unknown Rust ARCH={} (fix test)", std::env::consts::ARCH)
+    };
+
+    assert_eq!(
+        crc32_supported_arch, expected_arch,
+        "Expected CRC32 support for architecture '{expected_arch}', but RocksDB reported support for '{crc32_supported_arch}'"
+    );
+}
+
+#[test]
+fn test_set_cf_paths() {
+    let path = DBPath::new("_rust_rocksdb_test_set_cf_paths");
+    let cf_dir = (&path).as_ref().join("cf1_sst");
+    {
+        let mut opts = Options::default();
+        opts.create_if_missing(true);
+        opts.create_missing_column_families(true);
+
+        let mut cf_opts = Options::default();
+        let cf_path = rocksdb::DBPath::new(&cf_dir, 0).unwrap();
+        cf_opts.set_cf_paths(&[cf_path]);
+
+        let db = DB::open_cf_descriptors(
+            &opts,
+            &path,
+            vec![ColumnFamilyDescriptor::new("cf1", cf_opts)],
+        )
+        .unwrap();
+        let cf1 = db.cf_handle("cf1").unwrap();
+        db.put_cf(&cf1, b"k1", b"v1").unwrap();
+        db.flush_cf(&cf1).unwrap();
+
+        assert_eq!(db.get_cf(&cf1, b"k1").unwrap().unwrap(), b"v1");
+
+        let has_sst = |dir: &std::path::Path| {
+            fs::read_dir(dir).is_ok_and(|entries| {
+                entries
+                    .filter_map(Result::ok)
+                    .any(|entry| entry.path().extension().is_some_and(|ext| ext == "sst"))
+            })
+        };
+        assert!(
+            has_sst(&cf_dir),
+            "SST files for cf1 should be under its cf path"
+        );
+        assert!(
+            !has_sst((&path).as_ref()),
+            "no SST files should be under the DB path"
+        );
+    }
+}
