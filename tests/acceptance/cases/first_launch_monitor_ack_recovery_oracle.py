@@ -1,24 +1,38 @@
-"""One already committed Monitor checkpoint; positive historical ACK only."""
+"""Strict PG C4/Native A3 and PG C3/Native I4 historical recovery boundaries."""
 import hashlib
 from cases import first_launch_index_oracle as inventory
 from cases import first_launch_passive_oracle as passive
 
 
-def fault(wire, dataset, slot):
+def _fault(wire, dataset, slot, *, mode, complete):
     assert wire['event']=='fault' and wire['target']=='control-measurement-checkpoint'
-    assert wire['mode']=='after-complete' and wire['armed'] is True
+    assert wire['mode']==mode and wire['armed'] is True
+    assert all(type(wire[k]) is int for k in ('data_queries','data_commits','server_complete',
+        'client_complete','faults','measurement_updates_complete'))
     assert [wire[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults',
-        'measurement_updates_complete')]==[1,1,1,0,1,1]
+        'measurement_updates_complete')]==[1,1,complete,0,1,1]
     assert wire['measurement_identity_sha256']==hashlib.sha256(bytes.fromhex(dataset+slot)).hexdigest()
     assert type(wire['backend_pid']) is int and wire['backend_pid']>0
 
 
-def terminal(state, initialized, selection, originals, cbor, decode):
-    """Original input/receipt binds the historical attempt, without a fake report."""
+def fault(wire, dataset, slot):
+    _fault(wire,dataset,slot,mode='after-complete',complete=1)
+
+
+def fault_before_forward(wire, dataset, slot):
+    _fault(wire,dataset,slot,mode='before-forward',complete=0)
+
+
+def original_measurement(state, initialized, selection, originals, decode):
+    """Original request and dispatch attribution, independent of SQL outcome presence."""
     inventory.control_inventory(state)
     assert all(not state[name] for name in passive.EMPTY_TABLES)
     dispatch=passive.only(state['measurement_dispatches'])
     refs=passive.references(state,initialized)
+    assert dispatch['dataset_id']=='\\x'+initialized['private_scope']['dataset_id']
+    owner=passive.only(state['owner_epochs'],role='control',resource_id=dispatch['issuer_resource'],
+        epoch=dispatch['issuer_epoch'],process_incarnation=dispatch['issuer_incarnation'])
+    assert owner['dataset_id']==dispatch['dataset_id']
     assert passive.raw(dispatch['context_bytes'],294)==passive.context_bytes(refs)
     assert all(dispatch[key]=='\\x'+selection[key] for key in ('endpoint_id','access_scope_id','route_id'))
     assert dispatch['profile_version']==1 and dispatch['enrollment_generation']==1
@@ -38,15 +52,28 @@ def terminal(state, initialized, selection, originals, cbor, decode):
     assert measurement[3][0]==passive.reference(refs['clock_id'])
     assert measurement[4][0]==2, 'known terminal measurement required; unknown/resolution cannot pass'
     requests=sorted(state['producer_requests'],key=lambda r:r['request_sequence'])
-    outcomes=sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
-    assert [r['request_sequence'] for r in requests]==[1,2,3,4]==[r['request_sequence'] for r in outcomes]
+    assert [r['request_sequence'] for r in requests]==[1,2,3,4]
     assert all(r['acquisition_job_id'] is None and r['acquisition_scope_id'] is None for r in requests)
     assert all(r['monitor_attempt_id'] is None and r['monitor_resolution'] is None for r in requests[:3])
-    request=requests[3];outcome=outcomes[3]
+    request=requests[3]
+    assert request['issuer_role']==dispatch['issuer_role']=='control'
     assert request['monitor_attempt_id']==dispatch['attempt_id'] and request['monitor_resolution'] is False
     for key in ('endpoint_id','access_scope_id','route_id'):
         assert request['relay_'+key]==dispatch[key]
     assert request['relay_enrollment_generation']==1
+    for key in ('resource','epoch','incarnation'):
+        assert request['issuer_'+key]==dispatch['issuer_'+key]
+    return refs,measurement
+
+
+def terminal(state, initialized, selection, originals, cbor, decode):
+    """Original known-C4 case retains its initial-admission recorder checks."""
+    refs,measurement=original_measurement(state,initialized,selection,originals,decode)
+    dispatch=passive.only(state['measurement_dispatches'])
+    requests=sorted(state['producer_requests'],key=lambda r:r['request_sequence'])
+    outcomes=sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
+    assert [r['request_sequence'] for r in outcomes]==[1,2,3,4]
+    request=requests[3];outcome=outcomes[3]
     for key in ('resource','epoch','incarnation'):
         assert request['issuer_'+key]==outcome['recorder_'+key]==dispatch['issuer_'+key]
     receipt=decode(passive.raw(outcome['outcome_bytes']).split(b'\0',1)[1])
@@ -54,6 +81,130 @@ def terminal(state, initialized, selection, originals, cbor, decode):
         refs,measurement,originals,cbor,decode)
     passive.checkpoint(state,initialized,receipts)
     return receipts
+
+
+def retained_science(measurement, refs, authority, wire, event, before, after, cbor):
+    """Adapt the original typed input to the same independent scientific checks."""
+    attempt,context,profile,clock,state=measurement
+    kind,terminal=state
+    observed,ended,reason,teardown=terminal
+    execution,opened,read,counters=observed
+    destination,result,first=execution
+    tcp,tls,websocket=opened
+    flushed,valid,eose,verified,auth,closed=read
+    def moment(value):
+        utc,elapsed=value
+        return dict(observed_at=str(utc),elapsed_us=str(elapsed))
+    event_id,received,checked=valid
+    payload=dict(attempt_id=attempt.hex(),subject_kind=0,
+        **{key:refs[key] for key in ('endpoint_id','observer_id','route_id','access_scope_id','method_id')},
+        profile=profile,clock_quality=dict(clock_id=refs['clock_id'],resolution_us=str(clock[1]),
+            uncertainty_us=clock[2],anomaly_flags=clock[3]),state_kind=kind,prior_unknown=None,
+        observed=dict(execution=dict(destination=destination,result=result[0],error=None,observed_at=str(first)),
+            open=dict(tcp_connected=moment(tcp),tls_completed=tls,websocket_opened=moment(websocket)),
+            read=dict(request_flushed=moment(flushed),first_valid_event=dict(event_id=event_id.hex(),
+                received=moment(received),verified=moment(checked)),eose=moment(eose),
+                eose_prefix_verified=verified,auth_observed=auth,correlated_closed=closed),
+            counters=dict(zip(('rx_physical_frames','rx_messages','event_candidates','rx_ws_bytes',
+                'rx_payload_bytes','tx_ws_bytes'),counters))),ended=moment(ended),
+        termination=dict(kind=reason[0],phase=None,failure=None,limit_code=None),teardown=teardown)
+    expected=passive.scientific_payload(payload,attempt.hex(),authority,refs,wire,event,before,after)
+    assert cbor(expected)==cbor(measurement), 'original input has altered or additional scientific fields'
+    return expected
+
+
+def native_outcome(state, dump, initialized, selection, originals, cbor, decode, wire, event, before, after):
+    """Observe only Fact10's independent clock scalar, never its receipt/digest."""
+    eligible(state)
+    producer=passive.only(state['producer_epochs'])
+    assert producer['dataset_id']=='\\x'+initialized['private_scope']['dataset_id']
+    assert producer['producer_slot_id']=='\\x'+initialized['producer_slot_id']
+    refs,measurement=original_measurement(state,initialized,selection,originals,decode)
+    assert type(before) is type(after) is int and -(2**63)<=before<=after<2**63
+    dispatch=passive.only(state['measurement_dispatches'])
+    measurement=retained_science(measurement,refs,dispatch['authority_ceiling_us'],wire,event,before,after,cbor)
+    receipts=passive.retained_before_terminal(state,initialized,refs,measurement,originals,cbor,decode)
+    passive.checkpoint_before_terminal(state,initialized,receipts)
+    dataset=bytes.fromhex(initialized['private_scope']['dataset_id']);slot=bytes.fromhex(initialized['producer_slot_id'])
+    source=[dataset,0,1,10]
+    key=b'\x01\x20'+dataset+bytes(4)+(1).to_bytes(8,'big')+(10).to_bytes(8,'big')
+    actual=passive.native_rows(dump)[('facts',key)]
+    assert actual[34:].startswith(b'bigbrotr/fact/1\0')
+    fields=decode(actual[34:].split(b'\0',1)[1])
+    assert type(fields) is list and len(fields)==6
+    recorded_at=fields[4]
+    # Admission samples this separately from the retained Measurement. It is
+    # an observed scalar inside the independently captured fixture window, not
+    # the terminal timestamp or evidence of monotonic UTC ordering.
+    assert type(recorded_at) is int and -(2**63)<=recorded_at<2**63 and before<=recorded_at<=after
+    preimage=b'bigbrotr/fact/1\0'+cbor([source,'measurement',1,
+        passive.reference(refs['visibility_scope_id']),recorded_at,measurement])
+    digest=hashlib.sha256(preimage).digest()
+    assert actual==b'\x01\x20'+digest+preimage, 'Native Fact10 differs from independently encoded original science'
+    references={source[3]:[source,digest] for receipt in receipts for source,digest in receipt[4]}
+    assert sorted(references)==list(range(1,10))
+    final=[source,digest]
+    receipt=[1,[slot,1,4],hashlib.sha256(originals[3]).digest(),
+        [dataset,0,1,bytes.fromhex(initialized['recovery_generation']),1],
+        [final],[references[number] for number in range(3,10)]+[final]]
+    receipts=[*receipts,receipt]
+    passive.native_physical(dump,initialized,receipts,cbor,
+        passive.raw(state['producer_requests'][0]['manifest_sha256'],32),phase='reply-lost')
+    return receipts
+
+
+def repaired_terminal(state, initialized, selection, originals, receipts, cbor, decode):
+    """Actual SQL copy must match the independently reconstructed original."""
+    refs,measurement=original_measurement(state,initialized,selection,originals,decode)
+    actual=passive.retained(state,initialized,{'measurement':{'payload_digest':receipts[3][4][0][1].hex()}},
+        refs,measurement,originals,cbor,decode)
+    assert [cbor(value) for value in actual]==[cbor(value) for value in receipts]
+    passive.checkpoint(state,initialized,actual)
+    return actual
+
+
+def repaired(before, after, initialized, receipts, cbor, *, retry=False):
+    inventory.control_inventory(before);inventory.control_inventory(after)
+    changed={'owner_epochs','role_instances','producer_epochs','producer_outcomes',
+        'producer_checkpoints','producer_checkpoint_dependencies'}
+    assert all(not after[name] for name in passive.EMPTY_TABLES)
+    for table in inventory.CONTROL_TABLES-changed:
+        assert after[table]==before[table], 'repair changed retained '+table
+    recovered_owners(before,after,retry=retry)
+    if retry:
+        passive.checkpoint(before,initialized,receipts)
+        passive.checkpoint(after,initialized,receipts)
+        for table in ('producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+            assert after[table]==before[table], 'exact repair retry rewrote '+table
+        return
+    passive.checkpoint_before_terminal(before,initialized,receipts[:3])
+    passive.checkpoint(after,initialized,receipts)
+    old=sorted(before['producer_outcomes'],key=lambda r:r['request_sequence'])
+    new=sorted(after['producer_outcomes'],key=lambda r:r['request_sequence'])
+    assert [row['request_sequence'] for row in old]==[1,2,3]
+    assert [row['request_sequence'] for row in new]==[1,2,3,4] and new[:3]==old
+    prior=passive.only(before['producer_checkpoints']);head=passive.only(after['producer_checkpoints'])
+    mutable={'checkpoint_revision','complete_through_request','dependency_count','checkpoint_digest',
+        'committed_at_us','issuer_resource','issuer_epoch','issuer_incarnation','xmin'}
+    assert {k:v for k,v in head.items() if k not in mutable}=={k:v for k,v in prior.items() if k not in mutable}
+    assert head['xmin']!=prior['xmin']
+    control=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    for key,column in (('resource','resource_id'),('epoch','epoch'),('incarnation','process_incarnation')):
+        assert head['issuer_'+key]==new[3]['recorder_'+key]==control[column]
+    for row,field in ((head,'committed_at_us'),(new[3],'recorded_at_us')):
+        assert type(row[field]) is int and control['acquired_at_us']<=row[field]<=control['released_at_us']
+    encoded=b'bigbrotr/receipt/1\0'+cbor(receipts[3])
+    expected=dict(old[2])
+    expected.update(request_sequence=4,request_digest='\\x'+receipts[3][2].hex(),
+        outcome_bytes='\\x'+encoded.hex(),outcome_sha256='\\x'+hashlib.sha256(encoded).hexdigest(),
+        recorder_resource=control['resource_id'],recorder_epoch=control['epoch'],
+        recorder_incarnation=control['process_incarnation'],recorded_at_us=new[3]['recorded_at_us'],xmin=head['xmin'])
+    assert new[3]==expected
+    old_dependencies=sorted(before['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
+    dependencies=sorted(after['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
+    assert dependencies[:9]==old_dependencies and len(dependencies)==10
+    expected=dict(old_dependencies[-1],source_sequence=10,payload_digest='\\x'+receipts[3][4][0][1].hex(),xmin=head['xmin'])
+    assert dependencies[-1]==expected
 
 
 def eligible(state):
@@ -70,6 +221,11 @@ def recovered(before, after, *, retry=False):
     assert all(not after[name] for name in passive.EMPTY_TABLES)
     for table in inventory.CONTROL_TABLES-{'owner_epochs','role_instances','producer_epochs'}:
         assert after[table]==before[table], 'recovery changed retained '+table
+    recovered_owners(before,after,retry=retry)
+
+
+def recovered_owners(before, after, *, retry=False):
+    """Shared historical exclusion, fresh Control and producer-close observations."""
     ingest=passive.only(before['owner_epochs'],role='ingest')
     assert passive.only(after['owner_epochs'],role='ingest')==ingest
     producer=passive.only(before['producer_epochs']);actual=passive.only(after['producer_epochs'])

@@ -136,23 +136,13 @@ def moment(value, before, after):
     return [utc,elapsed]
 
 
-def scientific(document, report, refs, wire, event, before, after, cbor):
-    assert set(document) == {'format','state','audience','catalog_id','frontier_revision','topology_generation','policy_revision','cut','fact'}
-    assert document['format'] == 'bigbrotr-archive-measurement/1' and document['state'] == 'present'
-    assert document['audience'] == 'trusted-local-operator' and document['policy_revision'] == '1'
-    fact = document['fact']
-    assert set(fact) == {'source_record_id','record_schema_version','record_kind','visibility_scope_id','payload_digest','recorded_at','payload'}
-    assert fact['record_kind'] == 'measurement' and type(fact['record_schema_version']) is int and fact['record_schema_version'] == 1
-    coordinate = report['measurement']
-    assert fact['source_record_id'] == {k:v for k,v in coordinate.items() if k != 'payload_digest'}
-    assert fact['payload_digest'] == coordinate['payload_digest'] and fact['visibility_scope_id'] == refs['visibility_scope_id']
-    at = integer(fact['recorded_at'],signed=True); assert before <= at <= after
-    payload = fact['payload']
+def scientific_payload(payload, attempt_id, authority, refs, wire, event, before, after):
+    """Independent terminal A05 science, shared by typed inspection and retained input."""
     assert set(payload) == {'attempt_id','subject_kind','endpoint_id','observer_id','route_id','access_scope_id','method_id',
         'profile','clock_quality','state_kind','prior_unknown','observed','ended','termination','teardown'}
-    assert payload['attempt_id'] == report['attempt_id'] and payload['subject_kind'] == 0
+    assert payload['attempt_id'] == attempt_id and payload['subject_kind'] == 0
     assert all(payload[key] == refs[key] for key in ('endpoint_id','observer_id','route_id','access_scope_id','method_id'))
-    assert payload['profile'] == PROFILE+[integer(report['effective_authority_us'])]
+    assert payload['profile'] == PROFILE+[authority]
     assert all(type(value) is int for value in payload['profile'])
     assert payload['state_kind'] == 2 and payload['prior_unknown'] is None and payload['teardown'] == 1
     quality = payload['clock_quality']
@@ -181,8 +171,24 @@ def scientific(document, report, refs, wire, event, before, after, cbor):
     context = [[0,reference(refs['endpoint_id'])]]+[reference(refs[key]) for key in ('observer_id','route_id','access_scope_id','method_id')]
     captured = [[1,[0],first],[tcp,None,ws],[request,[bytes.fromhex(event['id']),delivered,verified],eose,True,False,False],
         [observed['counters'][name] for name in ('rx_physical_frames','rx_messages','event_candidates','rx_ws_bytes','rx_payload_bytes','tx_ws_bytes')]]
-    value = [bytes.fromhex(report['attempt_id']),context,PROFILE+[integer(report['effective_authority_us'])],
+    value = [bytes.fromhex(attempt_id),context,PROFILE+[authority],
         [reference(refs['clock_id']),wire['clock_resolution_us'],None,0],[2,[captured,ended,[0],1]]]
+    return value
+
+
+def scientific(document, report, refs, wire, event, before, after, cbor):
+    assert set(document) == {'format','state','audience','catalog_id','frontier_revision','topology_generation','policy_revision','cut','fact'}
+    assert document['format'] == 'bigbrotr-archive-measurement/1' and document['state'] == 'present'
+    assert document['audience'] == 'trusted-local-operator' and document['policy_revision'] == '1'
+    fact = document['fact']
+    assert set(fact) == {'source_record_id','record_schema_version','record_kind','visibility_scope_id','payload_digest','recorded_at','payload'}
+    assert fact['record_kind'] == 'measurement' and type(fact['record_schema_version']) is int and fact['record_schema_version'] == 1
+    coordinate = report['measurement']
+    assert fact['source_record_id'] == {k:v for k,v in coordinate.items() if k != 'payload_digest'}
+    assert fact['payload_digest'] == coordinate['payload_digest'] and fact['visibility_scope_id'] == refs['visibility_scope_id']
+    at = integer(fact['recorded_at'],signed=True); assert before <= at <= after
+    value = scientific_payload(fact['payload'],report['attempt_id'],integer(report['effective_authority_us']),
+        refs,wire,event,before,after)
     source = [bytes.fromhex(coordinate['dataset_id']),0,1,10]
     encoded = b'bigbrotr/fact/1\0'+cbor([source,'measurement',1,reference(refs['visibility_scope_id']),at,value])
     assert hashlib.sha256(encoded).hexdigest() == fact['payload_digest'], 'independently recomputed original A05 digest'
@@ -207,19 +213,38 @@ def dictionary_request(refs, slot, cbor):
     return b'bigbrotr/producer-request/1\0'+cbor([[bytes.fromhex(slot),1,3],'admit-evidence',1,[1,visibility,entries]])
 
 
-def retained(state, initialized, report, refs, measurement, originals, cbor, decode):
+def retained_inputs(state, initialized, refs, measurement, originals, cbor):
+    """Four original reservations exist even when the terminal SQL copy does not."""
     assert len(originals) == 4
-    slot = bytes.fromhex(initialized['producer_slot_id']); dataset = bytes.fromhex(refs['endpoint_id']['dataset_id'])
+    slot = bytes.fromhex(initialized['producer_slot_id'])
     visibility = reference(refs['visibility_scope_id'])
     assert originals[2] == dictionary_request(refs,initialized['producer_slot_id'],cbor)
     expected = b'bigbrotr/producer-request/1\0'+cbor([[slot,1,4],'admit-evidence',1,[1,visibility,'measurement/1',measurement]])
     assert originals[3] == expected, 'original typed measurement input differs'
+    requests = sorted(state['producer_requests'],key=lambda r:r['request_sequence'])
+    assert [row['request_sequence'] for row in requests] == [1,2,3,4]
+    assert all(row['manifest_sha256'] == requests[0]['manifest_sha256'] for row in requests)
+    for request, original in zip(requests,originals):
+        assert request['dataset_id'] == '\\x'+refs['endpoint_id']['dataset_id']
+        assert all(type(request[field]) is int for field in ('request_sequence','producer_epoch','input_bytes','input_profile'))
+        assert raw(request['request_digest'],32) == hashlib.sha256(original).digest()
+        assert request['input_bytes'] == len(original) and request['input_profile'] == 1
+        assert request['producer_slot_id'] == '\\x'+slot.hex() and request['producer_epoch'] == 1
+    return requests
+
+
+def _retained_receipts(state, initialized, refs, measurement, originals, cbor, decode, *, count):
+    assert type(count) is int and count in (3,4)
+    requests = retained_inputs(state,initialized,refs,measurement,originals,cbor)
+    slot = bytes.fromhex(initialized['producer_slot_id']); dataset = bytes.fromhex(refs['endpoint_id']['dataset_id'])
+    outcomes = sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
+    assert [row['request_sequence'] for row in outcomes] == list(range(1,count+1))
     references_by_source, receipts = {}, []
     ranges = [(1,2),(3,3),(4,9),(10,10)]
     for index,(request,outcome,original,bounds) in enumerate(zip(
-            sorted(state['producer_requests'],key=lambda r:r['request_sequence']),
-            sorted(state['producer_outcomes'],key=lambda r:r['request_sequence']),originals,ranges),1):
+            requests,outcomes,originals,ranges),1):
         digest = hashlib.sha256(original).digest()
+        assert outcome['dataset_id'] == request['dataset_id']
         assert raw(request['request_digest'],32) == raw(outcome['request_digest'],32) == digest
         assert request['input_bytes'] == len(original) and request['input_profile'] == 1
         assert request['producer_slot_id'] == outcome['producer_slot_id'] == '\\x'+slot.hex()
@@ -238,6 +263,17 @@ def retained(state, initialized, report, refs, measurement, originals, cbor, dec
         dependencies = list(range(bounds[0],bounds[1]+1)) if index <= 2 else list(range(3,bounds[1]+1))
         assert receipt[5] == [references_by_source[n] for n in dependencies]
         receipts.append(receipt)
+    return receipts
+
+
+def retained_before_terminal(state, initialized, refs, measurement, originals, cbor, decode):
+    """PG has exactly outcomes1..3; never invent a fourth row for the old oracle."""
+    return _retained_receipts(state,initialized,refs,measurement,originals,cbor,decode,count=3)
+
+
+def retained(state, initialized, report, refs, measurement, originals, cbor, decode):
+    receipts = _retained_receipts(state,initialized,refs,measurement,originals,cbor,decode,count=4)
+    references_by_source = {source[3]:[source,digest] for receipt in receipts for source,digest in receipt[4]}
     assert references_by_source[10][1].hex() == report['measurement']['payload_digest']
     return receipts
 
@@ -299,24 +335,26 @@ def inspection_pin(before, after, catalog_id):
         owner['dataset_id'],0,0,1,1,10)
 
 
-def checkpoint(state, initialized, receipts):
-    """Literal generic C4 and exact ten-reference closure, with no Sync heads."""
+def _checkpoint(state, initialized, receipts, *, through):
+    """The two explicit initial prefixes share bytes, never observed head selection."""
+    assert type(through) is int and through in (3,4)
     dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
     slot = bytes.fromhex(initialized['producer_slot_id'])
-    assert len(receipts) == 4 and all(not state[name] for name in EMPTY_TABLES)
+    count = 9 if through == 3 else 10
+    assert len(receipts) == through and all(not state[name] for name in EMPTY_TABLES)
     expected = [reference for receipt in receipts for reference in receipt[4]]
-    assert [r[0] for r in expected] == [[dataset,0,1,n] for n in range(1,11)]
+    assert [r[0] for r in expected] == [[dataset,0,1,n] for n in range(1,count+1)]
     head = only(state['producer_checkpoints'])
     assert all(type(head[field]) is int for field in ('checkpoint_revision','complete_through_request',
         'progress_format','progress_jobs','dependency_count'))
     assert (head['checkpoint_revision'],head['complete_through_request'],head['progress_format'],
-        head['progress_jobs'],head['dependency_count']) == (4,4,1,0,10)
+        head['progress_jobs'],head['dependency_count']) == (through,through,1,0,count)
     assert head['dataset_id'] == '\\x'+dataset.hex() and head['producer_slot_id'] == '\\x'+slot.hex()
     assert head['producer_epoch'] == 1
     manifest = raw(state['producer_requests'][0]['manifest_sha256'],32)
     assert raw(head['manifest_sha256'],32) == manifest
     rows = sorted(state['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
-    assert len(rows) == 10
+    assert len(rows) == count
     for row, (source, digest) in zip(rows,expected):
         assert (row['dataset_id'],row['producer_slot_id'],row['producer_epoch']) == ('\\x'+dataset.hex(),'\\x'+slot.hex(),1)
         assert (row['source_shard'],row['source_epoch'],row['source_sequence']) == tuple(source[1:])
@@ -324,34 +362,47 @@ def checkpoint(state, initialized, receipts):
     # Version1 producer-progress bytes: fixed identity/head, zero jobs, sorted
     # full references. No product reducer, supplied digest or observed C chooses it.
     body = b'bigbrotr/producer-progress/1\0'+dataset+slot+(1).to_bytes(8,'big')+manifest
-    body += b''.join(n.to_bytes(8,'big') for n in (4,4,0,10))
+    body += b''.join(n.to_bytes(8,'big') for n in (through,through,0,count))
     for source, digest in expected:
         body += source[0]+b''.join(n.to_bytes(8,'big') for n in source[1:])+digest
     assert raw(head['checkpoint_digest'],32) == hashlib.sha256(body).digest()
-    outcome = only(state['producer_outcomes'],request_sequence=4)
+    outcome = only(state['producer_outcomes'],request_sequence=through)
     assert head['xmin'] == outcome['xmin'] == rows[-1]['xmin'], 'outcome and checkpoint must commit together'
     for field in ('resource','epoch','incarnation'):
         assert head['issuer_'+field] == outcome['recorder_'+field]
-    return dict(generic_checkpoint=4,checkpoint_revision=4,checkpoint_dependencies=10,
+    return dict(generic_checkpoint=through,checkpoint_revision=through,checkpoint_dependencies=count,
         checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
 
 
-def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
-    """Read physical producer ACK and retained science/receipts after writer join."""
+def checkpoint(state, initialized, receipts):
+    """Literal generic C4 and exact ten-reference closure, with no Sync heads."""
+    return _checkpoint(state,initialized,receipts,through=4)
+
+
+def checkpoint_before_terminal(state, initialized, receipts):
+    """Literal generic C3 and nine dependencies, atomically bound to outcome3."""
+    return _checkpoint(state,initialized,receipts,through=3)
+
+
+def native_rows(dump):
     assert set(dump) == {'event','rows','sequence'} and dump['event'] == 'dump-state'
     assert type(dump['sequence']) is int and dump['sequence'] > 0
-    assert len(receipts) == 4
-    outcomes = sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
-    assert [row['request_sequence'] for row in outcomes] == [1,2,3,4]
-    dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
-    assert [reference[0] for receipt in receipts for reference in receipt[4]] == [[dataset,0,1,n] for n in range(1,11)]
     values = {}
     for row in dump['rows']:
         assert set(row) == {'cf','key','value'} and row['cf'] in ('default','facts','receipts')
+        assert bytes.fromhex(row['key']).hex() == row['key'] and bytes.fromhex(row['value']).hex() == row['value']
         key = (row['cf'],bytes.fromhex(row['key']))
         assert key not in values
         values[key] = bytes.fromhex(row['value'])
+    return values
+
+
+def native_physical(dump, initialized, receipts, cbor, manifest_digest, *, phase):
+    """Physical I4/facts/receipts; each caller separately proves its exact PG phase."""
+    values = native_rows(dump)
+    assert len(receipts) == 4
     dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
+    assert [reference[0] for receipt in receipts for reference in receipt[4]] == [[dataset,0,1,n] for n in range(1,11)]
     slot = bytes.fromhex(initialized['producer_slot_id'])
     be = lambda n:n.to_bytes(8,'big')
     assert phase in ('admitted','reply-lost','recovered')
@@ -361,7 +412,7 @@ def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
     assert len([key for cf,key in values if cf=='receipts']) == 5
     assert values[('default',b'\x01\x02'+dataset+bytes(4)+be(1))] == b'\x01\x02'+be(10)
     manifest = values[('default',b'\x01\x01')]
-    assert hashlib.sha256(manifest).digest() == raw(state['producer_requests'][0]['manifest_sha256'],32)
+    assert hashlib.sha256(manifest).digest() == manifest_digest
     source_key = lambda n:dataset+bytes(4)+be(1)+be(n)
     fact_keys = {b'\x01\x20'+source_key(n) for n in range(1,11)}
     ranges = [(1,2),(3,3),(4,9),(10,10)]
@@ -369,10 +420,9 @@ def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
     # Both tagged domains live in Facts CF. Require the closed literal key set,
     # including complete pending metadata, rather than counting observed rows.
     assert {key for cf,key in values if cf=='facts'} == fact_keys | pending_keys
-    for number,(outcome,receipt,(first,last)) in enumerate(zip(outcomes,receipts,ranges),1):
+    for number,(receipt,(first,last)) in enumerate(zip(receipts,ranges),1):
         assert receipt[0] == 1 and receipt[1] == [slot,1,number]
-        original = raw(outcome['outcome_bytes'])
-        assert original == b'bigbrotr/receipt/1\0'+cbor(receipt)
+        original = b'bigbrotr/receipt/1\0'+cbor(receipt)
         assert values[('receipts',b'\x01\x30'+slot+be(1)+be(number))] == original
         assert [source for source,_ in receipt[4]] == [[dataset,0,1,n] for n in range(first,last+1)]
         digest = hashlib.sha256(b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,first,last,receipt[4]])).digest()
@@ -383,3 +433,13 @@ def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
             assert fact[:34] == b'\x01\x20'+digest
             assert hashlib.sha256(fact[34:]).digest() == digest
     return dict(native_acknowledged=acknowledged,native_issued=4,native_retired=0,native_facts=10,native_pending_batches=4,native_receipts=4)
+
+
+def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
+    """Old admitted/C4 cases still require every exact PG outcome before physics."""
+    outcomes = sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
+    assert [row['request_sequence'] for row in outcomes] == [1,2,3,4] and len(receipts) == 4
+    for outcome,receipt in zip(outcomes,receipts):
+        assert raw(outcome['outcome_bytes']) == b'bigbrotr/receipt/1\0'+cbor(receipt)
+    return native_physical(dump,initialized,receipts,cbor,
+        raw(state['producer_requests'][0]['manifest_sha256'],32),phase=phase)

@@ -111,10 +111,9 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):old.frontend(b'B',bind(values).replace(b'checkpoint',b'publish',1))
 
     def test_measurement_identity_is_selected_once_before_arm_without_payload_logging(self):
-        for options in (dict(),dict(defer_arm=True,mode='before-forward'),dict(defer_arm=True,mode='pass'),
+        for options in (dict(),dict(defer_arm=True,mode='pass'),
                 dict(defer_arm=True,mode='hold-reply'),dict(defer_arm=True,profile='ordinary-reader'),
                 dict(defer_arm=True,profile='unknown'),dict(defer_arm=True,lifetime_seconds=180),
-                dict(defer_arm=True,profile='retained-catch-up',mode='before-forward'),
                 dict(defer_arm=True,profile='retained-catch-up',lifetime_seconds=180)):
             options=dict(dict(mode='after-complete',target='control-measurement-checkpoint'),**options)
             with self.assertRaises(ValueError):Proxy(**options)
@@ -545,7 +544,7 @@ class SocketProxy:
         await self.process.stdin.drain()
         return await self.event(marker)
 
-    async def connect(self, user='reader', database='catalog'):
+    async def connect(self, user='reader', database='catalog', *, backend_pid=7331):
         client, sender = await asyncio.open_connection('127.0.0.1', self.port)
         self.connections.append(sender)
         startup = b'\x00\x03\x00\x00user\x00' + user.encode() + b'\x00database\x00' + database.encode() + b'\x00\x00'
@@ -557,7 +556,7 @@ class SocketProxy:
         self.case.assertEqual(await asyncio.wait_for(upstream.readexactly(size - 4), 3), startup)
         # Synthetic frames only. The cancel key must never appear in a marker.
         for tag, body in ((b'R', struct.pack('!I', 0)),
-                          (b'K', struct.pack('!II', 7331, 0x1234abcd)), (b'Z', b'I')):
+                          (b'K', struct.pack('!II', backend_pid, 0x1234abcd)), (b'Z', b'I')):
             responder.write(message(tag, body))
             await responder.drain()
             self.case.assertEqual(await asyncio.wait_for(read_message(client), 3), (tag, body))
@@ -935,8 +934,13 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
             with self.subTest(profile=profile):
                 await self.measurement_checkpoint_reply_loss(profile)
 
-    async def measurement_checkpoint_reply_loss(self, profile):
-        async with SocketProxy(self,'after-complete',target='control-measurement-checkpoint',profile=profile) as proxy:
+    async def test_measurement_checkpoint_before_forward_never_delivers_the_selected_commit(self):
+        for profile in ('default','retained-catch-up'):
+            with self.subTest(profile=profile):
+                await self.measurement_checkpoint_reply_loss(profile,mode='before-forward')
+
+    async def measurement_checkpoint_reply_loss(self, profile, *, mode='after-complete'):
+        async with SocketProxy(self,mode,target='control-measurement-checkpoint',profile=profile) as proxy:
             connection=await proxy.connect('bigbrotr_control','bigbrotr_control')
             await proxy.command('select-measurement '+'aa'*16+' '+'bb'*16,'measurement-selected')
             await proxy.command('arm','armed')
@@ -959,11 +963,18 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
             selected=await proxy.event('measurement-checkpoint-update-complete')
             self.assertEqual(selected['measurement_updates_complete'],1)
             await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+            foreign=await proxy.connect('bigbrotr_control','bigbrotr_control',backend_pid=7332)
+            await self.exchange(foreign,b'Q',b'COMMIT\0',commit)
             connection[1].write(message(b'Q',b'COMMIT\0'));await connection[1].drain()
-            self.assertEqual(await read_message(connection[2]),(b'Q',b'COMMIT\0'))
-            connection[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await connection[3].drain()
+            if mode=='after-complete':
+                self.assertEqual(await read_message(connection[2]),(b'Q',b'COMMIT\0'))
+                connection[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await connection[3].drain()
             fault=await proxy.event('fault')
-            self.assertEqual([fault[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')],[1,1,1,0,1])
+            self.assertEqual([fault[k] for k in ('measurement_updates_complete','data_queries','data_commits','server_complete','client_complete','faults')],
+                [1,1,1,int(mode=='after-complete'),0,1])
+            self.assertEqual(fault['backend_pid'],selected['backend_pid'])
+            self.assertEqual(fault['backend_pid'],7331)
+            self.assertEqual(fault['measurement_identity_sha256'],selected['measurement_identity_sha256'])
             self.assertEqual(await asyncio.wait_for(connection[0].read(),3),b'')
             self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
 

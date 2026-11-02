@@ -592,6 +592,61 @@ lost-RAM/durable-start recovery, renewal, scheduling and retirement remain the
 existing P04-T07 Steps2/6 and P02 gates. SQL/file absence proves neither nonexecution
 nor permission for replacement I/O.
 
+### Recover a Native measurement before its PostgreSQL checkpoint committed
+
+`p04-monitor-native-outcome-recovery` is a separate parameter of the same
+maintained Monitor recovery runtime. Its real installed execution is **NOT_RUN**;
+synthetic controls and replay of the older C4/A3 captures are not C3 repair proof.
+Use a fresh database with the repaired product's matching current0044 ledger,
+candidate and exact-product observer. The earlier `cc8bdcf8` product/observer and
+its applied0044 checksum cannot qualify this repaired path.
+
+```sh
+python3 -B tests/acceptance/run.py p04-monitor-native-outcome-recovery \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --evidence /absolute/fresh-private-evidence
+```
+
+The original after-complete case remains unchanged. This parameter uses the same
+exact C4 UPDATE1/Bind identity and same-session COMMIT selector, but explicitly
+chooses `before-forward`. The proxy must report one completed matching UPDATE,
+one data query, one selected COMMIT, zero server/client COMMIT completions and one
+fault on that backend. Its fixed envelope remains 131,072 frames, 64 lifetime
+connections, 64MiB and 120s. The application still reports parked/`CommitUnknown`;
+fixture knowledge that COMMIT was withheld does not grant product certainty.
+
+After positive original writer/native-worker and PG backend exclusion, independent
+observations require PG C3/revision3, exactly nine dependencies, reservations1..4
+and outcomes1..3, alongside physical Native I4/A3/R0, ten Facts, four PendingBatch
+headers and four original receipts. No fourth SQL outcome is fabricated to call
+the older C4 oracle. Only Fact10's `recorded_at` is an observed scalar: an exact
+signed i64 integer within the independently captured host fixture window. It is
+not derived from the request, equated to terminal UTC or used to infer monotonic
+ordering. The complete Fact preimage, digest, receipt4, batch and dependency
+closure are independently rebuilt from fixed source10/schema/kind, original typed
+measurement/context/profile/science, visibility and references, then compared
+byte-for-byte with the actual Native state.
+
+Installed default recovery must use fresh Control and atomically insert that
+exact original outcome4 with C4 and dependency10. The head and new outcome use
+fresh recovery attribution; the original request/dispatch keep theirs. Their new
+rows share one xmin while outcomes1..3 and dependencies1..9 retain all bytes and
+xmins. The original Native producer reaches closing I4/A4/R0. Exact retry adds no
+Native write and rewrites no SQL outcome, checkpoint or dependency. Both calls
+preserve all inputs/science and observe the same live one-connection peer, with no
+new socket or Sync work. Separate actual PG rollback/refusal, lost repair COMMIT
+and exact-existing-outcome/C3 qualification remain required with the new product.
+
+Focused source controls, without product or database engines:
+
+```sh
+python3 -B -m unittest discover -s tests/acceptance -p test_monitor_ack_recovery.py
+python3 -B -m unittest discover -s experiments/archive-engine -p native_commit_proxy_tests.py
+node experiments/identity-contract/reference.mjs tests/fixtures/model/passive-monitor-recovery.json
+```
+
 ### Same-store installed Index restart with backlog
 
 `p01-first-launch-index-restart` selects a separate fresh variant with the same

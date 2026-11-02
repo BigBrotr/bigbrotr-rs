@@ -145,6 +145,14 @@ uses fresh authority. Exact completed-checkpoint replay preserves its rows.
 Native ACK still requires the separate final full-prefix confirmation; a lost
 repair COMMIT response cannot immediately ACK or authorize another probe.
 
+The maintained source-only
+[`p04-monitor-native-outcome-recovery` case](../development/verification.md#recover-a-native-measurement-before-its-postgresql-checkpoint-committed)
+defines the separate I4/C3 qualification with a fresh matching product/ledger:
+original Native science must authenticate the original outcome before SQL repair, fresh Control
+must commit the exact outcome and complete checkpoint together, and retry must
+preserve both stores without a new probe. Its actual installed execution remains
+NOT_RUN; the earlier C4/A3 proof does not establish this capability.
+
 This extension consolidates the dependency guard in the current pre-release
 0044 migration. A previously applied 0044 with different bytes is refused by the
 complete checksum ledger, including older reader floors. It is not silently

@@ -368,7 +368,7 @@ class Proxy:
                               or target in ('control-pin-release','control-index-publication','control-measurement-checkpoint')):
             raise ValueError('defer-arm-mode')
         self.defer_arm = defer_arm
-        if target == 'control-measurement-checkpoint' and (mode!='after-complete' or not defer_arm
+        if target == 'control-measurement-checkpoint' and (mode not in ('before-forward','after-complete') or not defer_arm
                 or profile not in ('default','retained-catch-up') or lifetime_seconds!=120):
             raise ValueError('measurement-checkpoint-profile')
         self.measurement_identity = [None,None]

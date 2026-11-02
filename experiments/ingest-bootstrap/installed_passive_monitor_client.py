@@ -135,8 +135,9 @@ def run(directory, request, cli, logged_in, session, saved, auth):
     recovery_profile = directory/'monitor-ack-recovery.json'
     recovery = recovery_profile.exists()
     if recovery:
-        assert json.loads(recovery_profile.read_text()) == dict(format='bigbrotr-monitor-ack-recovery-peer/1',
-            boundary='checkpoint-after-complete',observed_seconds=120)
+        profile=json.loads(recovery_profile.read_text())
+        assert profile in [dict(format='bigbrotr-monitor-ack-recovery-peer/1',boundary='checkpoint-'+mode,
+            observed_seconds=120) for mode in ('after-complete','before-forward')]
     visibility = json.loads((directory / 'visibility.json').read_text())
     revisions = dict(expected_config_revision='1', expected_policy_revision='1')
     finished = threading.Event()

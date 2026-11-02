@@ -347,6 +347,17 @@ are refused. Compilation, Rust tests and connected qualification remain NOT_RUN 
 new-source receipts exist. Staged-before-PG, lost RAM, durable start, successors,
 renewal, repeated scheduling and retirement remain outside this extension.
 
+The separate source-only `p04-monitor-native-outcome-recovery` parameter now
+specifies the Native I4/PG C3 boundary in the same maintained runtime. It withholds
+the exact selected C4 COMMIT before forwarding, independently authenticates PG
+outcomes1..3/C3 versus four original Native receipts, and requires fresh-Control
+atomic outcome4/checkpoint/dependency repair plus exact retry. The older C4/A3
+checks remain strict. [Verification](../development/verification.md#recover-a-native-measurement-before-its-postgresql-checkpoint-committed)
+records its independent observed-timestamp/Fact/receipt construction, unchanged
+fixture limits and new product/ledger prerequisites. Real execution is NOT_RUN;
+neither synthetic controls nor retained C4/A3 capture replay closes Steps2/6 or
+the separate PG negative/rollback/lost-repair-COMMIT/existing-outcome gates.
+
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.
 - [ ] **3. Schedule liveness and catalog independently.** Defaults are 5m and 6h, claim 100, concurrency 32, host concurrency 1, host start budget 32/min and 0.1 jitter. Use 15s check timeout/45s overlay; retries=1 total attempt. Failure due decay factor 2 caps at 7d; achieved coverage/backlog is reported rather than promised cadence. A retry_initial of 1s is inactive until attempts exceed one.

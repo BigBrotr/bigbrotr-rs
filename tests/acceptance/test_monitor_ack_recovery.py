@@ -5,16 +5,18 @@ import json
 from pathlib import Path
 import tempfile
 import tomllib
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock,patch
 
-from cases.first_launch import Runtime
+from cases.first_launch import Runtime,first_launch
 from cases import first_launch_index_oracle as inventory
 from cases import first_launch_monitor_ack_recovery as case
 from cases import first_launch_monitor_ack_recovery_oracle as oracle
 from cases import first_launch_passive_oracle as passive
 from test_passive_index import native_fixture
-from test_passive_monitor import encoder,decode,retained_fixture
+from test_passive_monitor import encoder,decode,retained_fixture,sample
+from bootstrap_oracle import cbor as wire_cbor
 from installed import set_value
 
 
@@ -68,6 +70,247 @@ def recovered_fixture(before, *, retry=False):
     after['role_instances'].append(dict(role='control',role_instance_id=current['role_instance_id'],dataset_id=current['dataset_id'],
         retired_at_us=550+epoch,created_at_us=500+epoch,xmin=str(550+epoch)))
     return after
+
+
+def native_outcome_fixture():
+    state,dump,initialized,receipts,originals,selection=fixture()
+    frozen=json.loads((Path(__file__).resolve().parents[2]/'tests/fixtures/model/passive-monitor-recovery.json').read_text())
+    for outcome in state['producer_outcomes']:outcome['recorded_at_us']=70+outcome['request_sequence']
+    state['producer_outcomes'].pop()
+    state['producer_checkpoint_dependencies'].pop()
+    state['producer_checkpoints'][0].update(checkpoint_revision=3,complete_through_request=3,
+        dependency_count=9,checkpoint_digest='\\x'+frozen['expected'][1]['sha256'],committed_at_us=80,xmin='403',
+        prefix_profile=True,prefix_prepared_bytes=None,prefix_active_generation=None,prefix_active_sha256=None)
+    return state,dump,initialized,receipts,originals,selection
+
+
+def repaired_fixture(before):
+    after=recovered_fixture(before)
+    control=after['owner_epochs'][-1]
+    original=fixture()[0]['producer_outcomes'][-1]
+    outcome=dict(original,recorder_resource=control['resource_id'],recorder_epoch=control['epoch'],
+        recorder_incarnation=control['process_incarnation'],recorded_at_us=530,xmin='610')
+    after['producer_outcomes'].append(outcome)
+    after['producer_checkpoints'][0].update(checkpoint_revision=4,complete_through_request=4,
+        dependency_count=10,checkpoint_digest='\\xac79a894d24aaccec13adf1dbc5f317557a35f6ee2b746d200ffb37fe753fbe9',
+        committed_at_us=531,issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],
+        issuer_incarnation=control['process_incarnation'],xmin='610')
+    receipt=decode(passive.raw(outcome['outcome_bytes']).split(b'\0',1)[1])
+    after['producer_checkpoint_dependencies'].append(dict(after['producer_checkpoint_dependencies'][-1],
+        source_sequence=10,payload_digest='\\x'+receipt[4][0][1].hex(),xmin='610'))
+    return after
+
+
+def rewrite_native_fact(dump, receipts, change):
+    """Self-consistent actual bytes use the separate existing wire encoder."""
+    row=next(r for r in dump['rows'] if r['cf']=='facts' and r['key'].startswith('0120') and r['key'].endswith('000000000000000a'))
+    fields=decode(bytes.fromhex(row['value'])[34:].split(b'\0',1)[1]);change(fields)
+    encoded=b'bigbrotr/fact/1\0'+wire_cbor(fields);digest=hashlib.sha256(encoded).digest()
+    row['value']=(b'\x01\x20'+digest+encoded).hex()
+    receipt=copy.deepcopy(receipts[3]);receipt[4][0][1]=digest;receipt[5][-1][1]=digest
+    native=next(r for r in dump['rows'] if r['cf']=='receipts' and r['key'].startswith('0130') and r['key'].endswith('0000000000000004'))
+    native['value']=(b'bigbrotr/receipt/1\0'+wire_cbor(receipt)).hex()
+    pending=next(r for r in dump['rows'] if r['cf']=='facts' and r['key'].startswith('0121') and r['key'].endswith('000000000000000a'))
+    batch=hashlib.sha256(b'bigbrotr/admission-batch/1\0'+wire_cbor([bytes.fromhex('01'*16),0,1,10,10,receipt[4]])).digest()
+    pending['value']=(b'\x01\x21'+(10).to_bytes(8,'big')+batch).hex()
+    return receipt
+
+
+class NativeOutcomeRecoveryControls(unittest.TestCase):
+    def checked(self, values, *, before=100, after=200):
+        state,dump,initialized,receipts,originals,selection=values
+        _,_,_,wire,event,_=sample()
+        return oracle.native_outcome(state,dump,initialized,selection,originals,encoder.cbor,decode,wire,event,before,after)
+
+    def test_independent_node_receipt_and_literal_C3_C4_vectors_bind_both_phases(self):
+        values=native_outcome_fixture();state,dump,initialized,expected,*_=values
+        actual=self.checked(values)
+        frozen=json.loads((Path(__file__).resolve().parents[2]/'tests/fixtures/model/passive-monitor-recovery.json').read_text())
+        self.assertEqual([r['name'] for r in frozen['expected']],['original-monitor-receipt4','generic-C3','generic-C4','original-monitor-input4'])
+        self.assertEqual(b'bigbrotr/receipt/1\0'+encoder.cbor(actual[3]),bytes.fromhex(frozen['expected'][0]['preimage_hex']))
+        self.assertEqual(values[4][3],bytes.fromhex(frozen['expected'][3]['preimage_hex']))
+        self.assertEqual(actual[3][2].hex(),frozen['expected'][3]['sha256'])
+        self.assertEqual(actual,expected)
+        self.assertEqual(passive.checkpoint_before_terminal(state,initialized,actual[:3])['checkpoint_sha256'],frozen['expected'][1]['sha256'])
+        old,*_=fixture()
+        self.assertEqual(passive.checkpoint(old,initialized,actual)['checkpoint_sha256'],frozen['expected'][2]['sha256'])
+        # The known C4/A3 oracle stays strict; neither phase borrows a fake SQL row.
+        with self.assertRaises((AssertionError,ValueError)):
+            oracle.terminal(state,initialized,values[5],values[4],encoder.cbor,decode)
+        with self.assertRaises(AssertionError):
+            passive.native_ack(dump,state,initialized,actual,encoder.cbor,phase='reply-lost')
+        with self.assertRaises(AssertionError):self.checked(fixture())
+
+    def test_observed_native_timestamp_is_typed_bounded_and_not_the_terminal_clock(self):
+        for recorded in (True,2**63,-(2**63),99,201):
+            values=native_outcome_fixture();rewrite_native_fact(values[1],values[3],lambda f:f.__setitem__(4,recorded))
+            with self.subTest(recorded=recorded),self.assertRaises(AssertionError):
+                self.checked(values,before=0 if type(recorded) is bool else 100)
+        values=native_outcome_fixture();expected=rewrite_native_fact(values[1],values[3],lambda f:f.__setitem__(4,107))
+        self.assertEqual(self.checked(values)[3],expected)  # Original terminal UTC is108, not a bound on this separate sample.
+        for recorded in (-1,-(2**63)):
+            values=native_outcome_fixture();expected=rewrite_native_fact(values[1],values[3],lambda f:f.__setitem__(4,recorded))
+            self.assertEqual(self.checked(values,before=recorded)[3],expected)
+        for before,after in ((True,200),(100,False),(201,100),(-(2**63)-1,200),(100,2**63)):
+            with self.subTest(window=(before,after)),self.assertRaises(AssertionError):self.checked(values,before=before,after=after)
+
+    def test_self_consistent_native_fact_alterations_do_not_choose_the_expectation(self):
+        for field,value in ((0,[bytes.fromhex('01'*16),0,1,9]),(1,'dictionary'),(2,2),
+                (3,[bytes.fromhex('01'*16),4,bytes([4])*16,1])):
+            values=native_outcome_fixture();rewrite_native_fact(values[1],values[3],lambda f:f.__setitem__(field,value))
+            with self.subTest(field=field),self.assertRaises(AssertionError):self.checked(values)
+        values=native_outcome_fixture()
+        rewrite_native_fact(values[1],values[3],lambda f:f[5][4][1][0][3].__setitem__(2,0))
+        with self.assertRaises(AssertionError):self.checked(values)
+
+    def test_original_scientific_fields_and_full_input_cannot_be_laundered(self):
+        for change in ('profile','auth','counter','extra','wrong-boolean','original-bytes'):
+            values=list(native_outcome_fixture());state,dump,initialized,receipts,originals,selection=values
+            originals=list(originals);request=decode(originals[3].split(b'\0',1)[1]);measurement=request[3][3]
+            if change=='profile':measurement[2][13]=65
+            elif change=='auth':measurement[4][1][0][2][4]=True
+            elif change=='counter':measurement[4][1][0][3][2]=0
+            elif change=='extra':measurement.append(None)
+            elif change=='wrong-boolean':measurement[4][1][0][2][3]=1
+            originals[3]=b'bigbrotr/producer-request/1\0'+wire_cbor(request)+(b'\0' if change=='original-bytes' else b'')
+            state['producer_requests'][3].update(request_digest='\\x'+hashlib.sha256(originals[3]).hexdigest(),input_bytes=len(originals[3]))
+            values[4]=originals
+            with self.subTest(change=change),self.assertRaises((AssertionError,TypeError,ValueError)):self.checked(values)
+
+    def test_exact_PG_C3_reservations_dependencies_and_native_originals_are_required(self):
+        for change in ('checkpoint4','revision4','extra-dependency','changed-dependency','missing-outcome',
+                'reservation3','input4-manifest','input4-dataset','outcome-dataset','producer-dataset',
+                'producer-slot','dispatch','dispatch-owner','request-role','native-receipt','native-closure'):
+            values=native_outcome_fixture();state,dump,*_=values
+            if change=='checkpoint4':state['producer_checkpoints'][0]['complete_through_request']=4
+            elif change=='revision4':state['producer_checkpoints'][0]['checkpoint_revision']=4
+            elif change=='extra-dependency':state['producer_checkpoint_dependencies'].append(dict(state['producer_checkpoint_dependencies'][-1],source_sequence=10))
+            elif change=='changed-dependency':state['producer_checkpoint_dependencies'][0]['payload_digest']='\\x'+'ab'*32
+            elif change=='missing-outcome':state['producer_outcomes'].pop()
+            elif change=='reservation3':state['producer_epochs'][0]['reserved_through_request']=3
+            elif change=='input4-manifest':state['producer_requests'][3]['manifest_sha256']='\\x'+'ab'*32
+            elif change=='input4-dataset':state['producer_requests'][3]['dataset_id']='\\x'+'ab'*16
+            elif change=='outcome-dataset':state['producer_outcomes'][0]['dataset_id']='\\x'+'ab'*16
+            elif change=='producer-dataset':state['producer_epochs'][0]['dataset_id']='\\x'+'ab'*16
+            elif change=='producer-slot':state['producer_epochs'][0]['producer_slot_id']='\\x'+'ab'*16
+            elif change=='dispatch':state['measurement_dispatches'][0]['context_bytes']='\\x'+'ab'*294
+            elif change=='dispatch-owner':state['measurement_dispatches'][0]['issuer_incarnation']='\\x'+'ab'*16
+            elif change=='request-role':state['producer_requests'][3]['issuer_role']='ingest'
+            else:
+                row=next(r for r in dump['rows'] if r['cf']=='receipts' and r['key'].startswith('0130') and r['key'].endswith('0000000000000004'))
+                if change=='native-receipt':row['value']+='00'
+                else:
+                    value=decode(bytes.fromhex(row['value']).split(b'\0',1)[1]);value[5].pop()
+                    row['value']=(b'bigbrotr/receipt/1\0'+wire_cbor(value)).hex()
+            with self.subTest(change=change),self.assertRaises((AssertionError,ValueError)):self.checked(values)
+
+    def test_missing_outcome_repair_is_atomic_fresh_Control_and_exact_retry_is_read_only(self):
+        before,dump,initialized,receipts,originals,selection=native_outcome_fixture();after=repaired_fixture(before)
+        oracle.repaired(before,after,initialized,receipts,encoder.cbor)
+        self.assertEqual(oracle.repaired_terminal(after,initialized,selection,originals,receipts,encoder.cbor,decode),receipts)
+        retry=recovered_fixture(after,retry=True)
+        oracle.repaired(after,retry,initialized,receipts,encoder.cbor,retry=True)
+        self.assertEqual(oracle.repaired_terminal(retry,initialized,selection,originals,receipts,encoder.cbor,decode),receipts)
+        native=copy.deepcopy(dump);next(r for r in native['rows'] if r['key'].startswith('0131'))['value']='0231'+''.join(n.to_bytes(8,'big').hex() for n in (4,4,0))+'01';native['sequence']+=2
+        passive.native_ack(native,after,initialized,receipts,encoder.cbor,phase='recovered')
+        oracle.native_transition(dump,native,initialized)
+        oracle.native_transition(native,copy.deepcopy(native),initialized,retry=True)
+        self.assertNotEqual(after['producer_epochs'][0]['xmin'],after['producer_checkpoints'][0]['xmin'])
+
+    def test_repair_refuses_rewritten_history_wrong_authority_and_nonatomic_new_rows(self):
+        before,_,initialized,receipts,originals,selection=native_outcome_fixture();after=repaired_fixture(before)
+        for change in ('outcome-old-xmin','dependency-old-xmin','head-xmin','outcome4-xmin','dependency10-xmin',
+                'old-recorder','request-issuer','dispatch','prefix-base','extra-state','missing-outcome4','rewritten-input'):
+            changed=copy.deepcopy(after)
+            if change=='outcome-old-xmin':changed['producer_outcomes'][0]['xmin']='999'
+            elif change=='dependency-old-xmin':changed['producer_checkpoint_dependencies'][0]['xmin']='999'
+            elif change=='head-xmin':changed['producer_checkpoints'][0]['xmin']='999'
+            elif change=='outcome4-xmin':changed['producer_outcomes'][3]['xmin']='999'
+            elif change=='dependency10-xmin':changed['producer_checkpoint_dependencies'][9]['xmin']='999'
+            elif change=='old-recorder':
+                changed['producer_outcomes'][3]['recorder_epoch']=1;changed['producer_outcomes'][3]['recorder_incarnation']='\\x'+'52'*16
+                changed['producer_checkpoints'][0].update(issuer_epoch=1,issuer_incarnation='\\x'+'52'*16)
+            elif change=='request-issuer':changed['producer_requests'][3]['issuer_epoch']=2
+            elif change=='dispatch':changed['measurement_dispatches'][0]['xmin']='new'
+            elif change=='prefix-base':changed['producer_checkpoints'][0]['prefix_active_generation']=1
+            elif change=='extra-state':changed['jobs'].append({})
+            elif change=='missing-outcome4':changed['producer_outcomes'].pop()
+            else:changed['producer_requests'][3]['request_digest']='\\x'+'00'*32
+            with self.subTest(change=change),self.assertRaises((AssertionError,ValueError)):
+                oracle.repaired(before,changed,initialized,receipts,encoder.cbor)
+                oracle.repaired_terminal(changed,initialized,selection,originals,receipts,encoder.cbor,decode)
+        for table in ('producer_checkpoints','producer_checkpoint_dependencies','producer_outcomes'):
+            changed=recovered_fixture(after,retry=True);changed[table][-1]['xmin']='999'
+            with self.subTest(retry_table=table),self.assertRaises(AssertionError):
+                oracle.repaired(after,changed,initialized,receipts,encoder.cbor,retry=True)
+
+    def test_before_forward_fault_is_explicit_and_never_becomes_known_checkpoint_completion(self):
+        wire=dict(event='fault',target='control-measurement-checkpoint',mode='before-forward',armed=True,
+            data_queries=1,data_commits=1,server_complete=0,client_complete=0,faults=1,measurement_updates_complete=1,
+            measurement_identity_sha256=hashlib.sha256(bytes.fromhex('01'*16+'44'*16)).hexdigest(),backend_pid=7331)
+        oracle.fault_before_forward(wire,'01'*16,'44'*16)
+        with self.assertRaises(AssertionError):oracle.fault(wire,'01'*16,'44'*16)
+        for field,value in (('mode','after-complete'),('server_complete',1),('client_complete',1),('data_queries',2),
+                ('measurement_updates_complete',True),('backend_pid',0),('measurement_identity_sha256','00'*32)):
+            with self.subTest(field=field),self.assertRaises(AssertionError):oracle.fault_before_forward(dict(wire,**{field:value}),'01'*16,'44'*16)
+
+    def test_new_case_missing_candidate_and_fault_failure_preserve_not_run_stages(self):
+        root=Path(__file__).resolve().parents[2]
+        with tempfile.TemporaryDirectory() as directory:
+            directory=Path(directory)
+            import subprocess,sys
+            result=subprocess.run([sys.executable,'-B',str(root/'tests/acceptance/run.py'),'p04-monitor-native-outcome-recovery',
+                '--source-root',str(root),'--candidate-manifest',str(directory/'absent'),'--evidence',str(directory/'evidence')],capture_output=True,timeout=5)
+            report=json.loads((directory/'evidence/result.json').read_text())
+            self.assertEqual((result.returncode,report['result']),(2,'NOT_RUN'))
+            self.assertEqual([r['name'] for r in report['checks']],['first_launch_'+s for s in case.NATIVE_OUTCOME_STAGES])
+            self.assertFalse(list((directory/'evidence/commands').iterdir()))
+        with tempfile.TemporaryDirectory() as directory:
+            args=SimpleNamespace(case='p04-monitor-native-outcome-recovery',evidence=Path(directory),source_root=root);checks=[]
+            with patch.object(case,'MonitorAckRecoveryRuntime') as runtime:
+                runtime.return_value.checkpoint_reply_loss.side_effect=ValueError('unproven C3')
+                first_launch(args,checks,{})
+                runtime.return_value.recover_ack.assert_not_called();runtime.return_value.retry_ack.assert_not_called()
+            self.assertEqual([r['result'] for r in checks],['PASS']*4+['FAIL','NOT_RUN','NOT_RUN','PASS'])
+
+    def test_new_case_retains_the_same_deployment_and_selects_before_forward_before_source_work(self):
+        source=Path(__file__).resolve().parents[2];path=source/'experiments/archive-engine/native_commit_proxy.py'
+        ready=dict(source_sha256=case.digest(path),armed=False,upstream_host='127.0.0.1',upstream_port=15432,
+            port=43210,mode='before-forward',target='control-measurement-checkpoint',profile='retained-catch-up',
+            frame_limit=131072,connection_limit=64,connection_limit_scope='lifetime',wire_limit=64*1024*1024,lifetime_seconds=120)
+        for field,value in ((None,None),('mode','after-complete'),('frame_limit',20000),
+                ('connection_limit_scope','active'),('lifetime_seconds',180)):
+            with self.subTest(field=field),tempfile.TemporaryDirectory() as temporary:
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.native_outcome=True
+                runtime.source=source;runtime.root=Path(temporary);runtime.config=runtime.root/'instance.toml'
+                original=(source/'config/recipes/acceptance.toml').read_text();runtime.config.write_text(original)
+                runtime.set_value=set_value;proxy=Mock();proxy.process.pid=123
+                runtime.proxy_process=Mock(return_value=proxy)
+                runtime.proxy_event=Mock(return_value=ready if field is None else dict(ready,**{field:value}))
+                runtime.finish_fault_proxy=Mock();runtime.passive_begin=Mock(side_effect=RuntimeError('ready accepted; no source launched'))
+                with self.assertRaisesRegex(RuntimeError if field is None else ValueError,
+                        'ready accepted' if field is None else 'wrong deferred checkpoint proxy'):
+                    runtime.checkpoint_reply_loss()
+                runtime.proxy_process.assert_called_once_with([case.sys.executable,'-B',str(path),'--upstream-port','15432',
+                    '--mode','before-forward','--target','control-measurement-checkpoint','--profile','retained-catch-up','--defer-arm'],input_pipe=True)
+                self.assertEqual(runtime.passive_begin.call_count,int(field is None))
+                runtime.finish_fault_proxy.assert_called_once_with(runtime.root/'passive-native-outcome-loss',failed=True)
+                self.assertEqual(runtime.config.read_text(),original)
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.native_outcome=True
+            runtime.root=Path(temporary);runtime.state=runtime.root/'instance';runtime.state.mkdir()
+            runtime.home=runtime.root/'archive-export';runtime.home.mkdir();runtime.config=runtime.state/'instance.toml'
+            runtime.config.write_text((source/'config/recipes/acceptance.toml').read_text());runtime.inputs={};runtime.set_value=set_value
+            with patch.object(Runtime,'prepare_state'):runtime.prepare_state()
+            self.assertEqual(json.loads((runtime.home/'monitor-ack-recovery.json').read_text()),dict(
+                format='bigbrotr-monitor-ack-recovery-peer/1',boundary='checkpoint-before-forward',observed_seconds=120))
+            self.assertEqual(tomllib.loads(runtime.config.read_text())['topology']['local_roles'],['control','ingest','monitor','archive'])
+            runtime.launch=Mock(return_value='owner');runtime.passive_launch()
+            runtime.launch.assert_called_once_with('monitor-native-outcome-loss','app','serve','--file',
+                '/etc/bigbrotr/instance.toml','--roles','control,ingest,monitor','--initialize-ingest',
+                '--monitor-once','/var/lib/bigbrotr/monitor-once.json')
+            self.assertEqual(runtime.recovery_label(retry=False),'monitor-outcome-recovery')
+            self.assertEqual(runtime.recovery_label(retry=True),'monitor-outcome-retry')
 
 
 class MonitorAckRecoveryControls(unittest.TestCase):
