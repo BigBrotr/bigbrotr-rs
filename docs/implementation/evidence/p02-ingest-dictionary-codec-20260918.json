@@ -160,7 +160,7 @@
       },
       "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN.",
       "producer_ack_followthrough": {
-        "status": "SOURCE_IMPLEMENTED_CRITICAL_REVIEW_APPROVED_RUST_INSTALLED_NOT_RUN",
+        "status": "BUILD_STRICT_LIB_BIN_PORTABLE_PASS_INSTALLED_FAIL_ORACLE_CORRECTION_PENDING",
         "tasks": "P04-T07 Steps2/5/6;P02 producer-progress/reclamation tasks",
         "scope": "Initial-only opt-in reuses InternalEvidence record(None), actual measurement append/replay current-root stamp and retained ProgressGrant. Capacity prepared before staging, head rechecked after reservationCOMMIT; outcome and checkpoint atomic; only confirmed COMMIT authorizes NativeACK. Historical Monitor attribution remains; Sync source/job/event bindings absent.",
         "acceptance": "Installed request4 must yield PG C4/nativeA4 with exact original input/receipt/science and dependencies throughsource10; no acquisition jobs/progress/quanta or second probe. Replay idempotent; wrongroot/digest/owner/stale/gap/cancel/unknown and insufficient capacity refuse without credit.",
@@ -169,7 +169,34 @@
         "integrated": "ca6d3e10",
         "review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/ack-critical-review-adc80fc9.json",
         "review_sha256": "8ee39b5ee215e4777215af5dd2c4071017f983452013a2089b34ad2d539e3152",
-        "cheap_checks": "Author94 focusedPythonPASS, changedPythonparse, sixRustfmt and diffPASS; exact logs in original author WT/.research/measurement-ack-controls. No Rust/PG/Native installed execution inferred."
+        "cheap_checks": "Author94 focusedPythonPASS, changedPythonparse, sixRustfmt and diffPASS; exact logs in original author WT/.research/measurement-ack-controls. No Rust/PG/Native installed execution inferred.",
+        "current_qualification": {
+          "source": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+          "tree": "10949ae41c1443e20890c2312842e5c753c86b61",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-cc8bdcf8",
+          "build": "Alltarget281.848s/Clippy20.704s/Rustdoc3.772s PASS before maintained worker-bound parent release; tool67953 reaped0, container4e2dbca0 stopped/PID0/noOOM,751.634s,cache released; original4ELF bytes/fullstat unchanged.",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/build-receipt.json",
+          "receipt_sha256": "9dccefd3e43456772e99dd7ee8b32e3af04e7e9534c7de322eaeaca76517cf21",
+          "binary_sha256": "f4fe975c160f0a94c0df1daf19117fa188bf055cec9c4a8229fe96da1ed189bb",
+          "portable": "bcd07e7d assembly/test-only source,627acceptance+13export-profilePASS/0SKIP in declared compilerimage/minimumPython; tool9068 reaped0/ce300d00 stopped/PID0/noOOM. Initialcc8 stale tutorial pinERROR retained. Subsequent role-fixture-only pin reconciliation14targeted tutorial controlsPASS; no product rebuild.",
+          "rust_assertions": "Unfiltered actual library701PASS/3dedicatedignored/0filtered and binary233PASS/0ignored/0filtered. Historical scratch and all3newNative controls eachPASSonce; all7required bin controls once. Tool96964reaped0/a669e198 stopped/PID0/noOOM/cache released; original4ELF bytes/fullstat unchanged.",
+          "observer": "Maintained exact-parent ingest_bootstrap_probe built and bound to actual candidate/compiler/native. Tool42807reaped0/29437a7c stopped/PID0/noOOM/cache released; original4ELF fullstat guard completed. Actual read-only observer ran under installedr1; partial census is not full journey qualification.",
+          "assembly_source": "bcd07e7dc0c02cbbf68251e0f62f5cda31f4ef59",
+          "limitations": "Dormant prefix veto execution/old-schema compatibility, lost-RAM/staged-before-PG recovery/renewal/repeated scheduling and fullM2 remain open existing P02/P04 owners.",
+          "rust_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/library/qualification-receipt.json",
+          "rust_receipt_sha256": "951af5f8b56373d5161301708e528ad3f6f259f866a3495733fc902d50d8c720",
+          "installed_r1": {
+            "status": "FAIL_CLASSIFIED_VERIFIER_DEFECT",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-cc8bdcf8/acceptance-passive-index-ack-r1",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/installed-ack-index-r1-receipt.json",
+            "receipt_sha256": "3de84c4e175b06a8005da3eec2956b7cb4ed310a923522993ee34c5864dbe941",
+            "counts": "5PASS/1FAIL/1NOT_RUN of7stages; cleanupPASS,17ownedcontainers independently stopped/PID0/noOOM, borrowedbridge preserved.",
+            "cause": "native_ack line362 counts every FactsCF row as Fact. Persisted key contract includes Fact0120 and PendingBatch0121 there; current10Fact+4batch headers are not a product defect. C4/I4/A4/R0 checks before that assertion completed; later exact fact/receipt loop and restarted inspectionNOT_RUN.",
+            "next": "Require exact10Fact+four contract-derived batch headers/ranges/digests, retain negative controls/originalFAIL, critical review and capture replay before a fresh complete real run. Reuse unchangedcc8product."
+          },
+          "assembly_manifest_sha256": "02f592ad1d2091a088c28c308350c8cdb1a53cb6db7d4ef491a1a655b8ecbac0"
+        }
       }
     },
     "passive_driver": {
@@ -210,7 +237,12 @@
           "review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/tutorial-review.json",
           "review_sha256": "8e2ba63524a71b9b0f82da307d880ed41c4fb5bad3871fb70a8b97ca873283b2",
           "scope": "Independent Astra approved selected tutorial Sync exclusion for ACK delta, with all other pinned trees unchanged. Source/oracle pin only; cc8 installed product build remains reusable.",
-          "original_portable": "cc8 exact compilerimage627collected/626PASS/1ERROR stale exclusion pin,0assertionFAIL/0SKIP. Export-profileNOT_RUN. Original runtime/logs preserved at /home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-cc8bdcf8. Correction requires portable rerun, no product rebuild."
+          "original_portable": "cc8 exact compilerimage627collected/626PASS/1ERROR stale exclusion pin,0assertionFAIL/0SKIP. Export-profileNOT_RUN. Original runtime/logs preserved at /home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-cc8bdcf8. Correction requires portable rerun, no product rebuild.",
+          "cli_fixture_followthrough": {
+            "source": "4da3b0b9911a56e1b363c60153a9c41dbd26c73d",
+            "apps_git_object": "9c5e6bd6e942883f512a03e47dc0ca79dc14f468",
+            "scope": "Root verified the only pinned-product path changed after critically reviewedcc8 is control_runtime_entrypoint.rs, an integration test. Runtime source, dependencies, configuration and original Nostr files unchanged. Reuse bounded Astra exclusion review, retain all negative/source/vendor checks. Current buildcc8 and installed harnessbcd remain reusable; affected tutorial controls repeated separately."
+          }
         }
       },
       "clickhouse_preflight": {

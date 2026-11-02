@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "ca6d3e10",
-      "state": "Main0d010f22 unchanged; local builder correctionde034ad3 and source-onlyACKca6d3e10 committed. Independent critical review approved; exact-source guarded compilation/installed qualification next. FullM2/recovery incomplete.",
+      "observed_source": "4da3b0b9911a56e1b363c60153a9c41dbd26c73d",
+      "state": "Main0d unchanged. cc8build/strict/library701/bin233 and bcdportable627+13PASS. InstalledACKr1FAIL oracle FactsCF-domain assumption;17ownedcontainers stopped/PID0/noOOM, data retained. Sol correction/Astrareview pending; no local engine/compiler active.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79067,11 +79067,11 @@
         ".research/m2-measurement-ack-20261102"
       ],
       "active_assignments": {
-        "native_timestamp_review": "Astra/xhigh bounded ACK source/oracle review completed, no blocker; no active execution.",
-        "current_control_inventory": "Sol/xhigh ACK sourceadc80fc9 saved clean and integratedca6d3e10; author idle.94Python/sixRustfmtPASS, Rust/PG/installedNOT_RUN.",
-        "measurement_clickhouse_prep": "Sol/xhigh read-only hosted run41451793817 watcher/acquisition; no cancellation/dispatch/push."
+        "native_timestamp_review": "Astra/xhigh bounded correction review pending exact Sol commit; independent domain/header diagnosis agrees verifier defect. No engine/build/edit assignment.",
+        "current_control_inventory": "Sol/xhigh bounded existing oracle/fixture correction for Fact0120/PendingBatch0121 contract, source-only in original ACK WT; capture replay/cheap controls permitted, no engine/build/cache/ELF.",
+        "measurement_clickhouse_prep": "Sol/xhigh exact0d hosted terminal audit complete; watcher reaped, no active assignment."
       },
-      "resources": "All owned local build/test/installed processes terminal.25882 build reaped0/06bfb960 stopped;55955 portable reaped0/7ae3ffb0 stopped;76807 wrapper reaped1 only metadata namespace defect, Cargo698PASS and reconciledELFcopyPASS/d0bdb655 stopped. Cache released; all protected4ELF bytes/fullstat unchanged.19Index+18earlier passivecontainers/data retained, borrowedbridge unchanged; no cleanup.",
+      "resources": "All owned local builds/tests/installed processes terminal, cache released. Newcc8 parent4e2dbca0/liba669e198/probe29437a7c stopped; installedr1 all17containers stopped/PID0/noOOM. Candidate assembly complete. Old19Index+18passive containers/data and all failed/successful artifacts/worktrees retained, borrowedbridge1699209a unchanged. Source-only oracle correction/review agents active; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79162,14 +79162,24 @@
         "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/ci-observation",
         "pid": 1799544,
         "tool": 32258,
-        "state": "Read-only60s watcher; run41451793817 Linux jobs in progress at13:55:18Z. Mac partial failure preserved and scanned. Do not supersede current run by pushing until terminal."
+        "state": "TERMINAL: watcher reapedexit1/notexpired; run41451793817 completedFAILURE14:16:46Z. Terminalaudit owns exact platform outcomes; no active remote/local observer."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
         "branch": "work/m2-measurement-ack-20261102",
         "source": "adc80fc9",
-        "state": "Source implemented/critically reviewed, not runtime qualified.94Python/sixRustfmtPASS; Rust/PG/observer/installedNOT_RUN. Dormant retirement veto execution deferred to existing reclamation wiring.",
-        "integrated": "ca6d3e10"
+        "state": "Build/strict/portable qualified for scope; new Native assertions, bin retained-grant test and installed physicalC4/A4 still pending. Defensive dormant retirement veto remains NOT_RUN under reclamation wiring.",
+        "integrated": "ca6d3e10",
+        "qualification": {
+          "product_source": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-cc8bdcf8",
+          "build_receipt_sha256": "9dccefd3e43456772e99dd7ee8b32e3af04e7e9534c7de322eaeaca76517cf21",
+          "library_tool": 96964,
+          "library_container": "a669e198f19666a2b146f0d60a86c01453399819bcf7e26d6bc65a2e729c0afd",
+          "state": "Parent/lib/bin/probe tools67953/96964/42807 reaped0, allcontainers stopped/PID0/noOOM and cache released; original4ELF bytes/fullstat guards complete. Actual library701/bin233PASS. Installedr1tool12434reaped1:5PASS/1FAIL/1NOT_RUN;17containers stopped, unique state/captures retained. Fresh corrected installed proof still required.",
+          "installed_failure_receipt_sha256": "3de84c4e175b06a8005da3eec2956b7cb4ed310a923522993ee34c5864dbe941"
+        }
       }
     }
   }
