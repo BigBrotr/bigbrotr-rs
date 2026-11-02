@@ -241,6 +241,8 @@ impl NativeOwner<'_> {
         input: &LiveMeasurementRequest<'_>,
         permit: &OwnedPermit,
     ) -> Result<crate::storage::rocks::store::StagedProducerRequest, AdmissionError> {
+        // The optional Native flag selects successor fencing. Initial owners
+        // use None; this bridge checks cancellation at its authority fences.
         match self {
             Self::Store(s) => s.stage_measurement_append(
                 request,
@@ -248,7 +250,7 @@ impl NativeOwner<'_> {
                 input.recorded_at,
                 input.limits,
                 permit,
-                Some(input.cancelled),
+                None,
             ),
             Self::Successor(s) => s.stage_measurement_append(
                 request,
@@ -274,7 +276,7 @@ impl NativeOwner<'_> {
                 input.recorded_at,
                 input.limits,
                 permit,
-                Some(input.cancelled),
+                None,
                 authority,
             ),
             Self::Successor(s) => s.append_measurement(

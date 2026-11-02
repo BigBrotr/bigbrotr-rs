@@ -36,20 +36,20 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 
 \if :control
 \connect bigbrotr_control
--- Static proposal for fresh PostgreSQL Control target43, applied by the
+-- Static proposal for fresh PostgreSQL Control target44, applied by the
 -- trusted provisioning owner after real migrate apply. Not engine-qualified.
 -- The application role must already be LOGIN NOSUPERUSER NOCREATEDB
 -- NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS, with no memberships,
 -- schema/table/function ownership, schema CREATE, or database CREATE/TEMP.
 -- This file grants no schema_versions write, DELETE beyond session/proof cleanup,
 -- TRUNCATE, REFERENCES, TRIGGER, DDL, parameter SET, or grant option.
--- Initial Control/Ingest/Sync/Archive/Index + ordinary read/export + ingest recovery
+-- Initial Control/Ingest/Sync/Monitor/Archive/Index + ordinary read/export + ingest recovery
 -- and successor flows. Cursor initialization is included; optional key lifecycle,
 -- job-page cursor retention, export resume, pin recovery and import writes are not.
 
 GRANT CONNECT ON DATABASE bigbrotr_control TO bigbrotr_control;
 GRANT USAGE ON SCHEMA control TO bigbrotr_control;
--- Current target43 catalog only; no ALTER DEFAULT PRIVILEGES.
+-- Current target44 catalog only; no ALTER DEFAULT PRIVILEGES.
 GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control;
 
 GRANT INSERT ON
@@ -72,6 +72,8 @@ GRANT INSERT ON
     control.producer_slots,
     control.producer_epochs,
     control.producer_requests,
+    control.measurement_dispatches,
+    control.measurement_dispatch_refusals,
     control.producer_outcomes,
     control.producer_input_bindings,
     control.producer_checkpoints,
@@ -162,6 +164,7 @@ GRANT UPDATE(state,failed_attempts,consumed_principal,consumed_at_us)
 -- Row locks need UPDATE on at least one column, even on immutable records.
 -- guard_producer_epoch() locks producer_slots during initial epoch INSERT.
 GRANT UPDATE(producer_slot_id) ON control.producer_slots TO bigbrotr_control;
+GRANT UPDATE(attempt_id) ON control.measurement_dispatches TO bigbrotr_control;
 GRANT UPDATE(proof_id) ON control.reauthentication_proofs TO bigbrotr_control;
 GRANT UPDATE(principal_id) ON control.principal_grants TO bigbrotr_control;
 GRANT UPDATE(artifact_id) ON control.artifacts TO bigbrotr_control;
@@ -196,6 +199,7 @@ GRANT EXECUTE ON FUNCTION
     control.lock_archive_pins(bytea,bytea),
     control.lock_ingest_lineage(bytea,numeric),
     control.lock_initial_empty_retirement(bytea,bytea),
+    control.measurement_context_valid(bytea,bytea),
     control.producer_progress_digest(control.producer_checkpoints),
     control.relay_endpoint_candidate(bytea),
     control.relay_enrollment_digest(control.relay_enrollment_changes,control.management_commands),
@@ -228,6 +232,7 @@ GRANT EXECUTE ON FUNCTION
     control.require_initial_empty_claims(control.initial_ingest_successions),
     control.require_initial_empty_transition(bytea,bytea,bigint),
     control.require_initial_retirement(bytea,numeric,bytea),
+    control.require_measurement_evidence(bytea,bytea,bytea,bytea,numeric,bytea),
     control.require_prepared_initial_successor(bytea),
     control.require_producer_progress_capacity(bytea,numeric,bigint,integer,integer),
     control.quantum_retained_charge(bytea,numeric),

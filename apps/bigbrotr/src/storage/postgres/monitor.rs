@@ -160,7 +160,10 @@ impl ControlSession {
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
-        let allowed:bool=tx.query_one("SELECT (SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM(VALUES('control.measurement_dispatches'),('control.measurement_dispatch_refusals'),('control.producer_requests'))t(name) CROSS JOIN(VALUES('SELECT'),('INSERT'),('UPDATE'))p(privilege)) AND has_function_privilege(CURRENT_USER,'control.measurement_context_valid(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_measurement_evidence(bytea,bytea,bytea,bytea,numeric,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE')", &[]).await.map_err(backend)?.try_get(0).map_err(backend)?;
+        // Dispatch rows are immutable, but SELECT FOR SHARE also needs UPDATE
+        // on one column. Refusals and producer requests are only read/inserted;
+        // do not require broad UPDATE grants on either history table.
+        let allowed:bool=tx.query_one("SELECT (SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM(VALUES('control.measurement_dispatches'),('control.measurement_dispatch_refusals'),('control.producer_requests'))t(name) CROSS JOIN(VALUES('SELECT'),('INSERT'))p(privilege)) AND has_column_privilege(CURRENT_USER,'control.measurement_dispatches','attempt_id','UPDATE') AND has_function_privilege(CURRENT_USER,'control.measurement_context_valid(bytea,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_measurement_evidence(bytea,bytea,bytea,bytea,numeric,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.require_relay_source(bytea,bytea,bytea,numeric,bytea)','EXECUTE') AND has_function_privilege(CURRENT_USER,'control.command_u64_bytes(control.u64)','EXECUTE')", &[]).await.map_err(backend)?.try_get(0).map_err(backend)?;
         if !allowed {
             return Err(OwnerError::Unavailable);
         }
