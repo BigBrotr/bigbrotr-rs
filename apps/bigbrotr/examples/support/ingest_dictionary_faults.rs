@@ -9,15 +9,9 @@ use bigbrotr::storage::{
         producer_outcomes::OutcomeError,
         producer_requests::ReservationError,
     },
-    rocks::store::{
-        AdmissionLimits, AdmissionOutcome, IngestRecovery, ProducerRecoveryError,
-        ProducerRecoveryLimits,
-    },
+    rocks::store::{AdmissionLimits, AdmissionOutcome, IngestRecovery, ProducerRecoveryError},
 };
-use bigbrotr_model::{
-    ProducerEpoch, ProducerRequestId, RequestSequence,
-    codec::{FactDecodeLimits, request::RequestDecodeLimits},
-};
+use bigbrotr_model::{ProducerEpoch, ProducerRequestId, RequestSequence};
 
 async fn gate(path: &Path, extension: &str) {
     let deadline = tokio::time::Instant::now() + Duration::from_secs(20);
@@ -202,7 +196,8 @@ pub async fn run(
     emit(serde_json::json!({"event":"dictionary-closed","state":baseline}));
     let mut previous = None;
     for attempt in 0..if unresolved { 1 } else { 2 } {
-        let (input, outcome, progress) = ingest_recovery::replay_grants(budget);
+        let limits = ingest_recovery::initial_limits(admission);
+        let (input, outcome, progress) = ingest_recovery::replay_grants(budget, limits.input);
         let result = current
             .resolve_initial_producer_request(
                 &recovery,
@@ -214,22 +209,7 @@ pub async fn run(
                         producer_epoch: ProducerEpoch::new(1).unwrap(),
                         request_sequence: RequestSequence::new(sequence).unwrap(),
                     },
-                    limits: ProducerRecoveryLimits {
-                        input: RequestDecodeLimits {
-                            values: FactDecodeLimits {
-                                max_encoded_bytes: MIB as usize,
-                                max_allocation_bytes: MIB as usize,
-                                max_tag_nodes: 1024,
-                                max_string_bytes: MIB as usize,
-                            },
-                            max_dictionaries: 8,
-                        },
-                        bootstrap: BootstrapLimits {
-                            max_mappings: 8,
-                            max_batch_bytes: MIB as usize,
-                        },
-                        event: admission,
-                    },
+                    limits,
                     policy_ttl: Duration::from_secs(2),
                     cancelled: &cancelled,
                 },

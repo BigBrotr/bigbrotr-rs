@@ -24,15 +24,13 @@ use bigbrotr::{
             producer_sources::SourceBindingError,
         },
         rocks::store::{
-            AdmissionLimits, AdmissionOutcome, IngestRecovery, PreparedEvent,
-            ProducerRecoveryError, ProducerRecoveryLimits,
+            AdmissionLimits, AdmissionOutcome, IngestRecovery, PreparedEvent, ProducerRecoveryError,
         },
     },
 };
 use bigbrotr_model::{
     ClockQuality, DurationUs, EventIntent, LocalObservation, ProducerEpoch, ProducerRequestId,
     RequestSequence,
-    codec::{FactDecodeLimits, request::RequestDecodeLimits},
 };
 
 #[allow(
@@ -413,7 +411,8 @@ pub async fn run(
     );
     let mut previous = None;
     for attempt in 0..if unresolved { 1 } else { 2 } {
-        let (input, outcome, progress) = ingest_recovery::replay_grants(budget);
+        let limits = ingest_recovery::initial_limits(admission);
+        let (input, outcome, progress) = ingest_recovery::replay_grants(budget, limits.input);
         let result = current
             .resolve_initial_producer_request(
                 &recovery,
@@ -423,22 +422,7 @@ pub async fn run(
                     request,
                     policy_ttl: Duration::from_secs(2),
                     cancelled: &cancelled,
-                    limits: ProducerRecoveryLimits {
-                        input: RequestDecodeLimits {
-                            values: FactDecodeLimits {
-                                max_encoded_bytes: MIB as usize,
-                                max_allocation_bytes: MIB as usize,
-                                max_tag_nodes: 1024,
-                                max_string_bytes: MIB as usize,
-                            },
-                            max_dictionaries: 8,
-                        },
-                        bootstrap: BootstrapLimits {
-                            max_mappings: 8,
-                            max_batch_bytes: MIB as usize,
-                        },
-                        event: admission,
-                    },
+                    limits,
                 },
                 input,
                 outcome,

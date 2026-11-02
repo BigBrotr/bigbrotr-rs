@@ -2,13 +2,16 @@
 use super::*;
 use bigbrotr::{
     storage::postgres::{
-        control_owner::{ProducerResolveError, ProducerResolveRequest, ProgressGrant},
+        control_owner::{
+            ProducerResolveError, ProducerResolveRequest, ProgressGrant,
+            historical_progress_data_bytes,
+        },
         producer_outcomes::OutcomeError,
         producer_requests::ReservationError,
     },
     storage::rocks::store::{
         AdmissionError, AdmissionLimits, IngestRecovery, ProducerRecoveryError,
-        ProducerRecoveryLimits, RequestInputError, ResolvedProducerRequest,
+        ProducerRecoveryLimits, RequestInputError, ResolvedProducerRequest, RetainedRequestInput,
     },
 };
 use bigbrotr_model::{
@@ -16,9 +19,18 @@ use bigbrotr_model::{
     codec::{CodecError, FactDecodeLimits, request::RequestDecodeLimits},
 };
 
-pub(super) fn replay_grants(budget: &ResourceBudget) -> (OwnedPermit, OwnedPermit, ProgressGrant) {
+pub(super) fn replay_grants(
+    budget: &ResourceBudget,
+    limits: RequestDecodeLimits,
+) -> (OwnedPermit, OwnedPermit, ProgressGrant) {
+    // The same transferred input grant first funds the historical read and
+    // then canonical input decoding. The separate checkpoint grant cannot fund
+    // either operation, even for a legacy profile with no checkpoint head.
+    let input = RetainedRequestInput::required_data_bytes(limits)
+        .unwrap()
+        .max(historical_progress_data_bytes(0).unwrap());
     (
-        grant(budget, 3 * MIB, 0),
+        grant(budget, input, 0),
         grant(budget, 40 * MIB, 0),
         ProgressGrant::new(grant(
             budget,
@@ -35,7 +47,7 @@ pub(super) fn replay_grants(budget: &ResourceBudget) -> (OwnedPermit, OwnedPermi
 pub(super) fn preflight_replay(budget: &ResourceBudget) {
     let native = grant(budget, 0, 128 * MIB);
     let closing = history_grant(budget, 4096, 4096);
-    let replay = replay_grants(budget);
+    let replay = replay_grants(budget, initial_limits(AdmissionLimits::default()).input);
     drop(replay);
     drop(closing);
     drop(native);
@@ -232,7 +244,7 @@ async fn resolve(
     if mode == "event-recovery-resource" {
         limits.input.values.max_encoded_bytes = 1;
     }
-    let (input, outcome, progress) = replay_grants(budget);
+    let (input, outcome, progress) = replay_grants(budget, limits.input);
     current
         .resolve_initial_producer_request(
             recovery,
@@ -282,5 +294,69 @@ pub(super) fn initial_limits(event: AdmissionLimits) -> ProducerRecoveryLimits {
             max_batch_bytes: MIB as usize,
         },
         event,
+    }
+}
+
+#[cfg(test)]
+mod grant_tests {
+    use super::*;
+
+    fn budget() -> ResourceBudget {
+        ResourceBudget::new(
+            ProcessEnvelope::new(
+                241 * MIB,
+                0,
+                ResourceLimits::new(96 * MIB, 8, 144 * MIB, MIB),
+                WaiterLimits::new(1, 1),
+            )
+            .unwrap(),
+        )
+    }
+
+    #[test]
+    fn fixture_replay_funds_history_and_decode_beside_retained_scope_and_closing() {
+        for max_encoded_bytes in [MIB as usize, 1] {
+            let budget = budget();
+            let inputs = grant(&budget, 24 * MIB, 0);
+            let scope = grant(&budget, 8 * MIB, 0);
+            preflight_replay(&budget);
+            assert_eq!(budget.snapshot().active_permits(), 2);
+            assert_eq!(budget.snapshot().used().data_bytes(), 32 * MIB);
+
+            let native = grant(&budget, 0, 128 * MIB);
+            let closing = history_grant(&budget, 4096, 4096);
+            let mut limits = initial_limits(AdmissionLimits::default()).input;
+            limits.values.max_encoded_bytes = max_encoded_bytes;
+            let (input, outcome, progress) = replay_grants(&budget, limits);
+            assert_eq!(input.request().units().data_bytes(), 8 * MIB + 4096);
+            assert!(
+                input.request().units().data_bytes()
+                    >= RetainedRequestInput::required_data_bytes(limits).unwrap()
+            );
+            assert_eq!(outcome.request().units().data_bytes(), 40 * MIB);
+            assert_eq!(budget.snapshot().used().data_bytes(), 90 * MIB + 8192);
+            assert_eq!(budget.snapshot().used().native_bytes(), 128 * MIB + 8192);
+            assert_eq!(budget.snapshot().active_permits(), 7);
+            drop((native, closing, input, outcome, progress));
+            assert_eq!(budget.snapshot().used().data_bytes(), 32 * MIB);
+            drop((inputs, scope));
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+    }
+
+    #[test]
+    fn fixture_replay_keeps_a_larger_actual_decode_requirement() {
+        let budget = budget();
+        let mut limits = initial_limits(AdmissionLimits::default()).input;
+        limits.values.max_encoded_bytes = 12 * MIB as usize;
+        limits.values.max_allocation_bytes = 12 * MIB as usize;
+        let (input, outcome, progress) = replay_grants(&budget, limits);
+        assert_eq!(
+            input.request().units().data_bytes(),
+            RetainedRequestInput::required_data_bytes(limits).unwrap()
+        );
+        assert!(input.request().units().data_bytes() > 24 * MIB);
+        drop((input, outcome, progress));
+        assert_eq!(budget.snapshot().active_permits(), 0);
     }
 }
