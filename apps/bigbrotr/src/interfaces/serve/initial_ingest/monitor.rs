@@ -108,13 +108,32 @@ fn requirements() -> Result<ResourceLimits> {
                 .required_dictionary_preparation_data_bytes()
                 .map_err(error)?
             + limits.required_dictionary_data_bytes().map_err(error)?
-            + limits.required_data_bytes().map_err(error)?
+            + limits.required_dictionary_data_bytes().map_err(error)?
             + ProgressGrant::REQUIRED_DATA_BYTES
             + FIXED_BYTES,
         ITEMS - 2,
         limits.required_native_bytes().map_err(error)? * 2 + ProgressGrant::REQUIRED_NATIVE_BYTES,
         0,
     ))
+}
+
+/// The original process budget admits the driver's ONE funded reservation.
+/// Metadata/dictionary work has its ordinary grants; it creates no child scope.
+/// Acquire the shared evidence kernel's full permit before that reservation and
+/// before dispatch COMMIT/IO. Either preparation failure releases both owners.
+fn fund_attempt(
+    parent: &ResourceBudget,
+    endpoint: &Endpoint,
+    spec: AttemptSpec,
+    limits: AdmissionLimits,
+) -> Result<(PreparedPassiveRead, OwnedPermit)> {
+    let admission = grant(
+        parent,
+        limits.required_dictionary_data_bytes().map_err(error)?,
+        limits.required_native_bytes().map_err(error)?,
+    )?;
+    let capture = PreparedPassiveRead::prepare(parent, endpoint, spec).map_err(error)?;
+    Ok((capture, admission))
 }
 
 /// Only fixed measurements and private no-I/O proofs survive a source error.
@@ -228,7 +247,7 @@ impl Monitor {
         self.status["reason"] = json!(reason);
         if let Some(Retained::Capture(failure)) = &self.retained {
             let retained = failure.observations();
-            self.status["retained_capture"] = json!({"candidates":retained.read_prefix().candidates,
+            self.status["retained_capture"] = json!({"candidates":retained.read_prefix().event_candidates,
                 "first_valid_event_observed":retained.read_prefix().first_valid_event.is_some(),
                 "terminal_observed":retained.terminal().is_some(),"first_io_observed":retained.transport().first_io.is_some(),
                 "reserved_bytes":retained.reserved_bytes(),"reserved_items":retained.reserved_items()});
@@ -258,15 +277,13 @@ impl Monitor {
     ) -> Result<()> {
         let registration = runtime.initial().map_err(owner_error)?;
         let root = commands.root;
-        let reservation = budget.try_reserve(requirements()?).map_err(error)?;
-        let work = reservation.budget();
         let maximum = commands.monitor_window(native, management, due).await?;
         let source = bounded(maximum, commands.cancellation, async {
             commands
                 .owner
                 .read_monitor_source(
                     selection.source,
-                    grant(work, StoredRelaySource::REQUIRED_BYTES, 0)?,
+                    grant(budget, StoredRelaySource::REQUIRED_BYTES, 0)?,
                 )
                 .await
                 .map_err(error)
@@ -306,7 +323,7 @@ impl Monitor {
                         policy_ttl: maximum,
                         cancelled: &commands.cancellation.requested,
                     },
-                    grant(work, reads().required_data_bytes().map_err(error)?, 0)?,
+                    grant(budget, reads().required_data_bytes().map_err(error)?, 0)?,
                     |d, h| authorize(root, d, h, source.endpoint(), source.route()).map(|_| ()),
                 )
                 .await
@@ -323,7 +340,7 @@ impl Monitor {
             &source,
             limits,
             grant(
-                work,
+                budget,
                 limits
                     .required_dictionary_preparation_data_bytes()
                     .map_err(error)?,
@@ -332,7 +349,7 @@ impl Monitor {
             &commands.cancellation.requested,
         )?;
         let checkpoint = ProgressGrant::new(grant(
-            work,
+            budget,
             ProgressGrant::REQUIRED_DATA_BYTES,
             ProgressGrant::REQUIRED_NATIVE_BYTES,
         )?)
@@ -358,7 +375,7 @@ impl Monitor {
                         cancelled: &commands.cancellation.requested,
                     },
                     grant(
-                        work,
+                        budget,
                         limits.required_dictionary_data_bytes().map_err(error)?,
                         limits.required_native_bytes().map_err(error)?,
                     )?,
@@ -384,8 +401,8 @@ impl Monitor {
             .as_bytes())
         .try_into()
         .map_err(error)?;
-        let capture = PreparedPassiveRead::prepare(
-            work,
+        let (capture, admission) = fund_attempt(
+            budget,
             source.endpoint(),
             AttemptSpec {
                 attempt_id: attempt,
@@ -394,12 +411,7 @@ impl Monitor {
                     .map_err(error)?,
                 effective_authority_us: authority,
             },
-        )
-        .map_err(error)?;
-        let admission = grant(
-            work,
-            limits.required_data_bytes().map_err(error)?,
-            limits.required_native_bytes().map_err(error)?,
+            limits,
         )?;
         let profile = PassiveReadProfile::first(authority).map_err(error)?;
         let intent =
@@ -458,10 +470,9 @@ impl Monitor {
         };
         drop(source);
         drop(visibility);
-        // All remaining work uses the already-held admission/capture grants and
-        // permanent Control allowance. Closing the parent releases unused wire,
-        // verifier, descriptor and DNS capacity; its live grants retain funding.
-        drop(reservation);
+        // Finalization has closed the driver's sole reservation, releasing
+        // unused wire/verifier/DNS capacity. Only its compact capture grant and
+        // the already-held evidence permit survive; no ambient grant is needed.
         let captured = match captured {
             Err(failure) => {
                 self.retained = Some(Retained::Capture(failure));
@@ -700,6 +711,114 @@ fn recorded() -> Result<bigbrotr_model::ObservedTime> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn attempt_spec() -> AttemptSpec {
+        let reference = |dictionary_kind, ordinal| QualifiedRef {
+            dataset_id: [1; 16].try_into().unwrap(),
+            dictionary_kind,
+            allocation_domain: [2; 16].try_into().unwrap(),
+            ordinal: bigbrotr_model::Ordinal::new(ordinal).unwrap(),
+        };
+        AttemptSpec {
+            attempt_id: [3; 16].try_into().unwrap(),
+            context: MeasurementContext {
+                subject: MeasurementSubject::RelayEndpoint(reference(DictionaryKind::Endpoint, 1)),
+                observer_id: reference(DictionaryKind::Observer, 1),
+                route_id: reference(DictionaryKind::Route, 1),
+                access_scope_id: reference(DictionaryKind::AccessScope, 1),
+                method_id: reference(DictionaryKind::Method, 1),
+            },
+            clock_quality: ClockQuality::new(
+                reference(DictionaryKind::Observer, 2),
+                DurationUs::new(1),
+                None,
+                0,
+            )
+            .unwrap(),
+            effective_authority_us: DurationUs::new(5_000_000),
+        }
+    }
+
+    fn attempt_budget(data: u64, items: u64, native: u64) -> ResourceBudget {
+        ResourceBudget::new(
+            ProcessEnvelope::new(
+                data + native,
+                0,
+                ResourceLimits::new(data, items, native, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        )
+    }
+
+    #[test]
+    fn one_capture_reservation_and_full_evidence_permit_are_funded_before_dispatch() {
+        let limits = limits(2);
+        let evidence = limits.required_dictionary_data_bytes().unwrap();
+        assert!(evidence > limits.required_data_bytes().unwrap());
+        let native = limits.required_native_bytes().unwrap();
+        let bytes = PreparedPassiveRead::REQUIRED_DATA_BYTES + evidence;
+        let items = PreparedPassiveRead::REQUIRED_ITEMS + 1;
+        let parent = attempt_budget(bytes, items, native);
+        let endpoint = Endpoint::parse("wss://relay.example/").unwrap();
+        // Exercise the exact production helper, including actual driver's
+        // try_reserve, checked template, verifier and capture grant acquisition.
+        let (capture, admission) =
+            fund_attempt(&parent, &endpoint, attempt_spec(), limits).unwrap();
+        assert!(capture.transport_trace().snapshot().first_io.is_none());
+        assert_eq!(admission.request().units().data_bytes(), evidence);
+        assert_eq!(admission.request().units().native_bytes(), native);
+        assert_eq!(
+            parent.snapshot().used(),
+            ResourceLimits::new(bytes, items, native, 0)
+        );
+        assert_eq!(parent.snapshot().active_permits(), 2);
+        // Finalization closes only the driver's scope. The separately funded
+        // exact evidence permit remains usable without late ambient capacity.
+        assert!(capture.finish_unclassified().unwrap().is_none());
+        assert_eq!(
+            parent.snapshot().used(),
+            ResourceLimits::new(evidence, 1, native, 0)
+        );
+        assert_eq!(parent.snapshot().active_permits(), 1);
+        drop(admission);
+        assert_eq!(parent.snapshot().used(), ResourceLimits::default());
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
+
+    #[test]
+    fn incomplete_combined_attempt_capacity_refuses_before_io_and_releases_grants() {
+        let limits = limits(2);
+        let evidence = limits.required_dictionary_data_bytes().unwrap();
+        let native = limits.required_native_bytes().unwrap();
+        let bytes = PreparedPassiveRead::REQUIRED_DATA_BYTES + evidence;
+        let items = PreparedPassiveRead::REQUIRED_ITEMS + 1;
+        let endpoint = Endpoint::parse("wss://relay.example/").unwrap();
+        for (data, item_limit, native_limit) in [
+            (bytes - 1, items, native),
+            (bytes, items - 1, native),
+            (bytes, items, native - 1),
+            (
+                PreparedPassiveRead::REQUIRED_DATA_BYTES + limits.required_data_bytes().unwrap(),
+                items,
+                native,
+            ),
+        ] {
+            let parent = attempt_budget(data, item_limit, native_limit);
+            assert!(fund_attempt(&parent, &endpoint, attempt_spec(), limits).is_err());
+            assert_eq!(parent.snapshot().used(), ResourceLimits::default());
+            assert_eq!(parent.snapshot().active_permits(), 0);
+        }
+        // Also unwind a checked profile refusal after the complete permit and
+        // driver reservation have actually been admitted, not merely calculated.
+        let parent = attempt_budget(bytes, items, native);
+        let mut invalid = attempt_spec();
+        invalid.effective_authority_us = DurationUs::new(0);
+        assert!(fund_attempt(&parent, &endpoint, invalid, limits).is_err());
+        assert_eq!(parent.snapshot().used(), ResourceLimits::default());
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
+
     #[test]
     fn once_profile_refuses_the_unimplemented_default_checks_and_parameter_changes() {
         let mut root = crate::config::load(
