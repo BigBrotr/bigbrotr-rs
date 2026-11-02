@@ -2,7 +2,7 @@
 use super::*;
 use bigbrotr::{
     storage::postgres::{
-        control_owner::{ProducerResolveError, ProducerResolveRequest},
+        control_owner::{ProducerResolveError, ProducerResolveRequest, ProgressGrant},
         producer_outcomes::OutcomeError,
         producer_requests::ReservationError,
     },
@@ -15,6 +15,31 @@ use bigbrotr_model::{
     ProducerEpoch, ProducerRequestId, RequestSequence,
     codec::{CodecError, FactDecodeLimits, request::RequestDecodeLimits},
 };
+
+pub(super) fn replay_grants(budget: &ResourceBudget) -> (OwnedPermit, OwnedPermit, ProgressGrant) {
+    (
+        grant(budget, 3 * MIB, 0),
+        grant(budget, 40 * MIB, 0),
+        ProgressGrant::new(grant(
+            budget,
+            ProgressGrant::REQUIRED_DATA_BYTES,
+            ProgressGrant::REQUIRED_NATIVE_BYTES,
+        ))
+        .unwrap(),
+    )
+}
+
+/// Check the complete future overlap before the fresh claim or closing barrier.
+/// No native handle is open here. Retained fixture input/scope grants stay held;
+/// this temporary owner allowance and closing scratch preserve their real bounds.
+pub(super) fn preflight_replay(budget: &ResourceBudget) {
+    let native = grant(budget, 0, 128 * MIB);
+    let closing = history_grant(budget, 4096, 4096);
+    let replay = replay_grants(budget);
+    drop(replay);
+    drop(closing);
+    drop(native);
+}
 
 #[allow(
     clippy::too_many_arguments,
@@ -207,6 +232,7 @@ async fn resolve(
     if mode == "event-recovery-resource" {
         limits.input.values.max_encoded_bytes = 1;
     }
+    let (input, outcome, progress) = replay_grants(budget);
     current
         .resolve_initial_producer_request(
             recovery,
@@ -222,8 +248,9 @@ async fn resolve(
                 policy_ttl: Duration::from_secs(2),
                 cancelled: &cancelled,
             },
-            grant(budget, 3 * MIB, 0),
-            grant(budget, 40 * MIB, 0),
+            input,
+            outcome,
+            &progress,
             |document, digest| {
                 validate(document, digest)?;
                 validations += 1;

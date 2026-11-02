@@ -1,7 +1,65 @@
 //! Exact historical Monitor attribution, separate from live source admission.
 use super::*;
-use crate::storage::rocks::store::HistoricalMeasurementCheckpoint;
+use crate::storage::rocks::store::{HistoricalMeasurementCheckpoint, ResolvedProducerRequest};
 use tokio_postgres::Transaction;
+
+/// Select the new growth profile without changing older positive-copy recovery.
+/// Resolution originals and non-Monitor/non-checkpoint profiles remain copy-only.
+/// This is not a validation fallback: a selected binding, head or native witness
+/// must pass every strict check below, including already-complete exact replay.
+pub(in crate::storage::postgres::control_owner) async fn supports_measurement_recovery(
+    tx: &Transaction<'_>,
+    context: Context,
+    original: &ResolvedProducerRequest,
+) -> Result<bool, ProducerProgressError> {
+    if original.measurement().is_none_or(|m| m.resolution) {
+        return Ok(false);
+    }
+    let installed: bool = tx
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=44)",
+            &[],
+        )
+        .await
+        .map_err(|_| ProducerProgressError::Backend)?
+        .try_get(0)
+        .map_err(|_| ProducerProgressError::Backend)?;
+    if !installed {
+        return Ok(false);
+    }
+    // The common historical preflight already validated any retained typed
+    // head under producer UPDATE. Only its profile selects repair; dispatch
+    // identity, prepared state, gaps and capacity are never fallback criteria.
+    let row = tx
+        .query_one(
+            "SELECT r.monitor_attempt_id IS NOT NULL,
+        EXISTS(SELECT 1 FROM control.producer_checkpoints h
+            WHERE h.dataset_id=r.dataset_id AND h.producer_slot_id=r.producer_slot_id
+                AND h.producer_epoch=r.producer_epoch AND h.progress_format=1 AND h.prefix_profile)
+        FROM control.producer_requests r WHERE r.dataset_id=$1::bytea
+            AND r.producer_slot_id=$2::bytea AND r.producer_epoch=$3::text::numeric
+            AND r.request_sequence=$4::text::numeric",
+            &[
+                &&context.dataset.as_bytes()[..],
+                &&context.slot.as_bytes()[..],
+                &context.epoch.to_string(),
+                &original
+                    .native_outcome()
+                    .request()
+                    .request_sequence
+                    .get()
+                    .to_string(),
+            ],
+        )
+        .await
+        .map_err(|_| ProducerProgressError::Backend)?;
+    Ok(row
+        .try_get::<_, bool>(0)
+        .map_err(|_| ProducerProgressError::Backend)?
+        && row
+            .try_get::<_, bool>(1)
+            .map_err(|_| ProducerProgressError::Backend)?)
+}
 
 /// snapshot() already holds dataset UPDATE before registry/producer locks. The
 /// immutable dispatch and reservation may therefore be checked without a new
@@ -27,18 +85,6 @@ pub(in crate::storage::postgres::control_owner) async fn prepare_measurement_rec
         || request.producer_slot_id != context.slot
         || request.producer_epoch.get() != context.epoch
     {
-        return Err(ProducerProgressError::InvalidContext);
-    }
-    let installed: bool = tx
-        .query_one(
-            "SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=44)",
-            &[],
-        )
-        .await
-        .map_err(|_| ProducerProgressError::Backend)?
-        .try_get(0)
-        .map_err(|_| ProducerProgressError::Backend)?;
-    if !installed {
         return Err(ProducerProgressError::InvalidContext);
     }
     let m = measurement;

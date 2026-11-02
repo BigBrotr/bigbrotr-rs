@@ -116,11 +116,6 @@ impl ControlSession {
                 },
             )
             .map_err(ProducerResolveError::Native)?;
-        let witness = resolved
-            .measurement()
-            .map(|_| recovery.measurement_checkpoint(&resolved))
-            .transpose()
-            .map_err(|error| ProducerResolveError::Native(error.into()))?;
         let context = producer_progress::Context {
             dataset: input.registration.dataset_id,
             slot: input.request.producer_slot_id,
@@ -128,6 +123,16 @@ impl ControlSession {
             shard: input.registration.shard_id,
             manifest,
         };
+        let witness =
+            if producer_progress::supports_measurement_recovery(&tx, context, &resolved).await? {
+                Some(
+                    recovery
+                        .measurement_checkpoint(&resolved)
+                        .map_err(|error| ProducerResolveError::Native(error.into()))?,
+                )
+            } else {
+                None
+            };
         let mut progress_state = match &witness {
             Some(witness) => Some(
                 producer_progress::prepare_measurement_recovery(&tx, context, witness, progress)

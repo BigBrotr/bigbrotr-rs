@@ -144,6 +144,9 @@ pub async fn run(
         owner.release().await.unwrap();
     }
     join(old_driver, false).await;
+    if recovering {
+        crate::ingest_recovery::preflight_replay(budget);
+    }
     let direct_config = config.clone();
     if matches!(
         mode,

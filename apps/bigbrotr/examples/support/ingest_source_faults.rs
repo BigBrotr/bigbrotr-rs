@@ -325,6 +325,7 @@ pub async fn run(
     // Positive historical resolution must survive actual source revocation.
     // This fresh owner/session, unlike the injected concurrency writer, performs
     // the real authenticated management operation before closing the old target.
+    ingest_recovery::preflight_replay(budget);
     let (client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let (mut current, _) = ControlSession::acquire(
@@ -412,6 +413,7 @@ pub async fn run(
     );
     let mut previous = None;
     for attempt in 0..if unresolved { 1 } else { 2 } {
+        let (input, outcome, progress) = ingest_recovery::replay_grants(budget);
         let result = current
             .resolve_initial_producer_request(
                 &recovery,
@@ -438,8 +440,9 @@ pub async fn run(
                         event: admission,
                     },
                 },
-                grant(budget, 3 * MIB, 0),
-                grant(budget, 40 * MIB, 0),
+                input,
+                outcome,
+                &progress,
                 validate,
             )
             .await;

@@ -271,16 +271,40 @@ receive/witness effects and complete dictionary closure, plus the original pendi
 marker for NewFacts. It does not consult newer minima to replace historical facts.
 The original receipt/rejection bytes and policy remain the historical decision.
 Foreign receipt topology/recovery generations are unsupported by this initial
-path; all facts and original input must still be locally retained. ACK and retired
-watermarks must be zero and owner/producer epochs must be one.
+path; all facts and original input must still be locally retained. The retired
+watermark must be zero and owner/producer epochs must be one. The native ACK must
+fit the checked retained PostgreSQL checkpoint; old schemas without confirmed
+checkpoint support still require ACK zero.
 
 Only that internal native witness can enter the existing outcome-copy adapter.
 Before SQL insertion, it compares request, digest, manifest and the actual encoded
 input length with the locked reservation. Identical copies retain every original
 row field, including recorder, timestamp and xmin; new copies attribute the
 current Control recorder separately from the original issuer. No migration or
-backfill is needed: migration0012 already supports that distinction. Native state,
-input files, producer reservations, logical checkpoints and ACK remain unchanged.
+backfill is needed for outcome attribution: migration0012 already supports that
+distinction. Native state, input files and producer reservations remain unchanged.
+
+The current0044 source adds one opt-in historical completion profile to this
+resolver: an initial, non-resolution Measurement original with immutable Monitor
+attribution and an existing typed, prefix-enabled checkpoint. Its actual positive
+native replay supplies a borrowed root/sequence/manifest-bound witness. The
+connected transaction compares the original attempt/context/profile and immutable
+dispatch/source tuple without reenrollment, a fresh execution token or reuse of
+the old scheduling deadline. Only the next contiguous retained Monitor tail may
+extend the generic checkpoint; outcome copy and checkpoint/dependency growth
+commit together. An exact existing outcome is never rewritten, and an already
+complete checkpoint replay is read-only. A selected profile with invalid binding,
+head, capacity or native stamp refuses rather than falling back to copy-only.
+Resolution originals, legacy schemas and non-Monitor/non-checkpoint profiles retain
+their earlier positive outcome-copy behavior without adopting new progress.
+Current0044 consolidates the narrow closing dependency guard; an older0044 ledger
+checksum is refused rather than silently accepted as this contract.
+
+This resolver never writes native ACK. The default installed recovery command
+confirms the complete original prefix in its separate final checkpoint transaction
+before native ACK. A lost repair COMMIT grants no immediate ACK authority; fresh
+Control must inspect and replay the same identities. No socket, Sync position,
+acquisition work or retirement permission is created by historical completion.
 
 Missing original input, missing request detail at or below issued, or a request
 above issued never establishes noncommit. The latter two remain Unresolved, with
@@ -291,10 +315,16 @@ the same request. Lost COMMIT is CommitUnknown, including when the exact outcome
 row was committed; never undo native effects or insert under a replacement ID.
 
 Separate transferred grants cover input decoding and native outcome/dependency
-inspection plus PostgreSQL handoff. Dictionary closure keeps two bounded vectors
-of fixed-size references and decodes one fact at a time. This is not a whole-store
-scrub, an archive fallback, causal backup validation, contiguous resolved prefix,
-input repair, ACK/GC or logical import completion. Those remain required tasks.
+inspection plus PostgreSQL handoff. A separately borrowed `ProgressGrant` funds
+the additional checkpoint snapshot throughout the connected transaction. The
+installed consumer and maintained connected fixtures preflight their overlapping
+native owner, closing scratch, input/outcome and checkpoint allowances before
+claim/barrier effects. Dictionary closure keeps two bounded vectors of fixed-size
+references and decodes one fact at a time. This is not a whole-store scrub, an
+archive fallback, causal backup validation, input repair, prefix reclamation or
+logical import completion. Staged-before-PG/lost-RAM recovery and later retirement
+remain assigned to P04-T07/P02; source, native and connected qualifications retain
+their separate evidence boundaries.
 
 The planned reserved-but-uncommitted resolver has an additional prerequisite:
 healthy recovery provenance must exclude silent loss of a previously committed

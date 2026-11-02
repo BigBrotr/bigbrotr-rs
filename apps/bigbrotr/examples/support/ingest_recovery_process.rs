@@ -77,6 +77,9 @@ pub async fn run(config: Config, mode: &str, path: &Path) {
     let _inputs = grant(&budget, 24 * MIB, 0);
     let before = crate::ingest_snapshot::state(&observer, path).await;
     emit(serde_json::json!({"event":"process-before", "state":before}));
+    if mode == "recovery-process-resume" {
+        crate::ingest_recovery::preflight_replay(&budget);
+    }
     let opened = IngestRecovery::open(path, manifest, limits(), grant(&budget, 0, 128 * MIB));
     if mode == "recovery-process-held" {
         assert!(matches!(opened, Err(StoreError::EngineOpen)));
