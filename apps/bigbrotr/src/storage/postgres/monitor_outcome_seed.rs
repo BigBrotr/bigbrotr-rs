@@ -75,7 +75,9 @@ fn encoded(text: &str, maximum: usize) -> Vec<u8> {
         "fixture encoding bound"
     );
     text.as_bytes()
-        .chunks_exact(2)
+        .as_chunks::<2>()
+        .0
+        .iter()
         .map(|pair| bytes::<1>(std::str::from_utf8(pair).expect("hex"))[0])
         .collect()
 }
