@@ -100,24 +100,33 @@ Linux jobs; consider only a same-source targeted Mac retry after terminal sealin
 
 ## Active work, resources and next action
 
-Two independent, partial M2 source assignments remain unintegrated:
+The combined C3 product source f12/286/a01 is locally integrated as
+**d0b29c3e/ea965507/782524bb**; plain Python case fc581 is integrated as **5ae5a2fc**.
+Both critical reviews approve the actual combined source. Three missed probe
+callers, copy-only replay selection and historical input scratch funding were
+reconciled before build. Fixture overlap is90MiB+8192/seven permits within unchanged
+96MiB/eight-permit limits; new grant/example controls remain NOT_RUN. Root matched
+integrated runtime/migration blobs to approved source, authenticated unchanged
+selected Sync entrypoints/dependencies/configuration, and passed14 tutorial controls.
+Compilation/Rust/native/PG/installed qualification has not started.
 
-- Sol current_control_inventory: Rust/native/PG/funding/tests for initial
-  NativeI4/PGC3 checkpoint repair in `.research/m2-monitor-ack-recovery-20261102`,
-  sourcef12. Actual Astra review is BLOCKED: three maintained probe callers need
-  the new grant, and repair selection must preserve existing resolution/unsupported
-  copy-only replay. Sol fixes these plus the owning reference contract before a
-  bounded follow-up review. No compilation/build or runtime test has started.
-- Sol measurement_clickhouse_prep: shared Python fault journey/oracle in
-  `.research/m2-monitor-native-outcome-20261102`, branch
-  `work/m2-monitor-native-outcome-20261102`, basedeb09. Reuse the exact C4 selector
-  before COMMIT forwarding; independently prove durable C3/nine dependencies,
-  NativeI4/A3 and original receipt4, then repair and exact retry. No synthetic PG
-  outcome. Observed fact timestamp needs an independent fixture window and complete
-  reference reconstruction; Astra approved that design, not unseen code.
+The new oracle independently constructs Fact10 and receipt4 using original
+measurement plus only a bounded observed timestamp scalar; no native digest,
+receipt/dependency list or synthetic SQL outcome supplies its expectation. Old
+C4/A3 checks remain strict. Independent18 recovery/42 proxy/4 Node controls PASS.
+This permits only plain missing-outcome4/C3 qualification and healthy retry; full
+SQL-guard/resolver refusal, rollback, lost-repair-COMMIT and existing-outcome4/C3
+gates remain in P04-T07Steps2/6/P02.
 
-Both assignments are source/cheap-controls only: no engines/build/cache/protected
-ELF/remote/push. Root owns integration and the current Mac fixture correction.
+Sol measurement_clickhouse_prep prepares a closed10-stage repair-fault variant in
+`.research/m2-monitor-native-outcome-20261102` while Root builds: rollback before
+repair COMMIT, lost completed repair reply with A still3, then direct ACK/retry.
+It reuses the approved selector/product API and needs critical delta review before
+execution. Plain approved cases remain unchanged. Sol current_control_inventory
+has finished the clean a01 source; no active implementation assignment.
+
+The remaining assignment is source/cheap-controls only: no engines/build/cache/
+protected ELF/remote/push. Root owns integration and the upcoming qualification.
 Sol ci_recovery_publication_sol completed source admission/observer setup and is
 idle; its one bounded read-only watcher remains active under Root custody.
 
@@ -135,9 +144,10 @@ keep the dormant attribution veto and originals. Fleet/catalog/methods, capacity
 operations and Q40 admission-cost/ClickHouse/coordinator work retain their owners.
 No selected later work is removed or claimed complete.
 
-**Next Root action:** critically review the independent C3 product/oracle work,
-then qualify the changed product through focused/native and installed recovery
-paths. Observe the existing f4ad CI without superseding it; wake
-ci_recovery_publication_sol at its terminal boundary for actual artifact/public
-output audit. Keep this local checkpoint unpublished until a coherent boundary.
-Goal ACTIVE and incomplete; all selected requirements remain.
+**Next Root action:** freeze the approved combined source and start the isolated
+worker-bound build with all-target/strict preflight, then affected Rust/native/
+example and fresh-ledger installed proofs. Observe existing f4ad CI without
+superseding it; after Linux is terminal and sealed, consider only its missing Mac
+retry. Qualify the separately reviewed repair-fault variant with the same binary.
+Keep this local checkpoint unpublished until a coherent boundary. Goal ACTIVE
+and incomplete; all selected requirements remain.

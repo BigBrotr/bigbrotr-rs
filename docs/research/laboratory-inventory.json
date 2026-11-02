@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "f4ad5fda635eed725ccba65e3d0f2d3e1421e76f",
-      "state": "CoherentknownACKreplyloss/recovery+CItooling+Macfixture correction integrated/pushed cleanmain/originf4ad; actualnewCI41491599696 pending. NewC3Rust/PG andPythonoracle source work isolated/unintegrated.",
+      "observed_source": "5ae5a2fc",
+      "state": "Publicmainf4adCIstillactive; localC3productf12/286/a01andplainPythonfc581integratedas d0b29/ea965/782524/5ae5. Combinedsource/criticaloracle approved, allruntimequalificationNOT_RUN; preparingexactfrozenbuild. No mainpush.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79075,10 +79075,11 @@
         ".research/m2-monitor-native-outcome-20261102"
       ],
       "active_assignments": {
-        "current_control_inventory": "Sol/xhigh sourcefollowupto f12 blockedAstrareview: fix3maintainedprobecallers/grants andexplicitrepairselectionpreservingresolution/unsupportedcopy-onlyprofiles; reconcileowningreference. No engines/build/cache/protectedELF/remote/push.",
-        "native_timestamp_review": "Astraactualf12reviewcompleteBLOCKEDtwofindings; no currentrunningturn. Re-reviewboundedfollowupbeforebuild. Initialdesign/oracleconditions remainapproved, notruntimeproof.",
-        "measurement_clickhouse_prep": "Sol/xhigh nowPythonNativeI4/PGC3faultcase/oracle implementation in .research/m2-monitor-native-outcome-20261102 branchwork/m2-monitor-native-outcome-20261102 basedeb09. Noengine/build/cache/protectedELF/remote/push; Rootintegrates.",
-        "ci_recovery_publication_sol": "Sol/xhigh idleaftersetup; Rootownsreplacementwatcher1678. Wakeagentatterminalforactualacquisition/audit; agentcannotresumeRoottool. Originalunreceiptedwatcher preserved, no remote/source mutation."
+        "current_control_inventory": "Sol/xhigh productsourcefinishedcleanata01; actualRust/native/PG/examplesNOT_RUN. No currentengine/build/cache/protectedELF/remote/push assignment.",
+        "native_timestamp_review": "Astra combinedproductsourcea01 andselectedfreshSyncsecuritypinreuseapproved; no currentrunningturn. Sourceapprovalonly, no compilation/native/PGtests.",
+        "measurement_clickhouse_prep": "Sol/xhigh extendsSAMEC3harness withclosed10-stage before-forwardrepairrollback/after-completelostrepairCOMMIT/directACK/retry variant, sourceonly; plainfc581casecriticallyapproved/integrated. No productAPI/engine/build/cache/protectedELF/remote/push; actualdelta reviewrequired.",
+        "ci_recovery_publication_sol": "Sol/xhigh idleaftersetup; Rootownsreplacementwatcher1678. Wakeagentatterminalforactualacquisition/audit; agentcannotresumeRoottool. Originalunreceiptedwatcher preserved, no remote/source mutation.",
+        "ci_proxy_scope_review": "Astra independentplainC3Pythonfc581oracleapproved,18recovery/42proxy/4NodechecksPASS; source-only. Newfaultvariantneedsdelta reviewbeforeengines."
       },
       "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers/r2 fifteencontainers/r3 fifteencontainers/r4twentycontainers inclall3observers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Oldhostedobserver65527/PID1902888 reapedexit1; original80126observerlost/unreceipted and preserved; replacementRootreadonlywatcher1678/PID1948046(driver1948045) active; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
