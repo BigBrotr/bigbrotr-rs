@@ -5,12 +5,15 @@ use super::{
     ControlSession, OwnerError, PolicySnapshot, backend, require, snapshot, transaction_error,
 };
 use crate::{
-    acquisition::relay_source::source_visibility_allowed,
+    acquisition::relay_source::{RelaySourceBinding, StoredRelaySource, source_visibility_allowed},
     network::{
         DirectAttempt, DirectConnector, DirectPolicy, DirectStream, RouteSelection, Target,
         TransportError, TransportTrace,
     },
-    runtime::policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
+    runtime::{
+        OwnedPermit,
+        policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
+    },
     storage::{
         postgres::{initialization::application_transaction, producer_sources},
         rocks::store::StoredVisibility,
@@ -152,6 +155,38 @@ pub struct MonitorEvidenceHistory {
 }
 
 impl ControlSession {
+    /// Read the exact current enrollment's immutable destination, retaining its
+    /// decode allowance. This is preparation metadata only: the intent/source
+    /// operations still recheck both policies, enrollment, route and visibility.
+    /// The caller bounds the SQL operation and retains its connection driver.
+    pub async fn read_monitor_source(
+        &mut self,
+        binding: RelaySourceBinding,
+        permit: OwnedPermit,
+    ) -> Result<StoredRelaySource, MonitorSourceError> {
+        if permit.request().units().data_bytes() < StoredRelaySource::REQUIRED_BYTES
+            || permit.request().units().items() == 0
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        self.begin_operation()?;
+        let tx = application_transaction(&mut self.client, 44)
+            .await
+            .map_err(transaction_error)?;
+        require(&tx, self.request.dataset, self.identity).await?;
+        producer_sources::require_current_enrollment(&tx, self.request.dataset, binding, None)
+            .await
+            .map_err(MonitorSourceError::Source)?;
+        let (endpoint, route) =
+            super::relay_source::load_destination(&tx, self.request.dataset, binding).await?;
+        tx.rollback().await.map_err(backend)?;
+        if self.client.is_closed() {
+            return Err(OwnerError::Unavailable.into());
+        }
+        self.available = true;
+        Ok(StoredRelaySource::new(binding, endpoint, route, permit))
+    }
+
     /// Read-only startup prerequisite. This grants neither dispatch nor evidence
     /// authority and must run before publishing Monitor readiness.
     pub async fn require_monitor_execution(&mut self) -> Result<(), OwnerError> {
