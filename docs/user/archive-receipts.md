@@ -1,4 +1,4 @@
-# Inspect a retained archive receipt
+# Inspect retained archive receipts and measurements
 
 The implementation candidate provides an explicit observation command. It needs
 the existing [local and Control coordinator bindings](archive-initialization.md),
@@ -87,8 +87,8 @@ The default inspects the current transaction snapshot. Add
 `--snapshot-id N` to require exactly that retained native snapshot; missing or
 expired snapshots never fall back to current data.
 
-Exit0 emits `bigbrotr-archive-batch-membership/1`, the actual `snapshot_id`, five
-`family_counts` (dictionaries, payloads, eligibility, receive, provenance) and
+Exit0 emits `bigbrotr-archive-batch-membership/1`, the actual `snapshot_id`, six
+`family_counts` (dictionaries, payloads, eligibility, receive, provenance, measurement) and
 `files` (populated family files plus the receipt). It also reports the original
 identity, policy revision and committed Control release. There is no successful
 Absent state. `max-facts` is a complete-batch cap; it does not truncate the batch.
@@ -105,6 +105,66 @@ passes23 CLI cases and two actual blocked-reader cases over signed normal/histor
 fixtures, including identical restored retries and two PG crashes/restarts.
 The120-second deadline returns after120102ms in that lab. This finite10/12-fact
 corpus does not qualify aged archives or capacity at the default limits.
+
+## Inspect one original compound measurement after restart
+
+The `archive measurement-inspect` candidate reads one exact retained A05 fact.
+Stop the running owner first, retain the same initialized Archive/Control/state
+roots and complete publication inputs, and configure the separate SELECT-only
+reader above. Explicitly select the deployment root `archive.reader.enabled=true`.
+The command restores the current accepted configuration and supervises its policy
+revision throughout work; it starts no listener or network measurement.
+
+```sh
+bigbrotr archive measurement-inspect --file /etc/bigbrotr/instance.toml \
+  --shard-id 0 --owner-epoch 1 --sequence 9 \
+  --payload-digest 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+```
+
+Use the actual immutable measurement source and original digest from admission.
+The dataset comes from the deployment root. These operands select a fact, not an
+attempt reduction or the latest replacement for an unknown observation. An
+original unknown and its later resolution remain independently inspectable by
+their own identities. This is trusted local operator access to the configured
+dataset, including private facts; protect stdout and redirected files accordingly.
+It does not implement a public observatory resource or management-session grant.
+
+The command selects the actual current complete published frontier from Control,
+binds its complete retained inputs, captures that exact native snapshot under the
+catalog barrier and obtains a real Archive reader pin. It never manufactures a
+pin from a snapshot number or falls back to the catalog head. The native reader
+verifies full cut membership and reconstructs the typed scientific measurement,
+recomputes its original canonical digest, and verifies any strong prior-unknown
+reference within that same cut, including its access/visibility context. This
+does not perform a new dictionary-payload scrub or availability/count reduction.
+
+One newline-delimited `bigbrotr-archive-measurement/1` document carries the complete
+typed fact, its source/digest, and verified snapshot/frontier/topology/policy and
+cut-digest/count metadata. It preserves null versus zero, signed UTC samples and
+the original compound attempt. Inline observations are not separate votes. The
+scientific document is at most20KiB. Its output worker, retained inputs and real
+ReaderCustody stay inside current Control and the actual pin/barrier lifetime.
+After output, pin release, barrier rollback and the catalog driver join, the
+command releases Control and emits a separate
+`bigbrotr-archive-measurement-completion/1` diagnostic. Exit0 requires both the
+scientific document and successful cleanup. Partial output without that completion
+and exit0 is incomplete; an already emitted observation never proves a later
+cleanup succeeded.
+
+The inherited profile permits at most128 whole-catalog receipts and a30-second
+operation deadline, with the original pin/action authority window remaining
+binding and nonrenewed. Accepted application/native budgets still apply; no scan
+is truncated to fit. Missing inputs/facts, wrong digests, conflicting source IDs,
+out-of-cut references, changed publication or policy, unavailable authority and
+expired pins refuse with exit4. There is no successful Absent result. Invalid
+operands/preflight use2/3, and local/diagnostic I/O can use1; scientific output
+failure or unjoined work is unresolved4 and retains the pin obligation. Signals
+cancel and join owned work before cleanup; unknown joins/COMMITs preserve their
+obligations. A filesystem/kernel call is not promised a hard cancellation bound.
+Private read-only scratch is removed only after a positively joined native child;
+unknown native termination preserves it. Rust/native/installed restart and slow
+output qualification for this new command remain required; source controls alone
+do not establish those results.
 
 The [native CLI qualification](../implementation/evidence/p02-receipt-cli-native-20260919.json)
 at `d78bcc5` covers 22 retained attempts, refusal boundaries, real blocked-reader

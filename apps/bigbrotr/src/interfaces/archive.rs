@@ -15,6 +15,7 @@ pub fn command() -> clap::Command {
         .subcommand(super::catalog_inspection::command())
         .subcommand(super::archive_receipt::command())
         .subcommand(super::archive_receipt::membership_command())
+        .subcommand(super::serve::measurement_inspect_command())
         .subcommand(super::archive_initialization::command("initialize"))
         .subcommand(super::archive_initialization::command("recover"))
         .subcommand(super::serve::coordinator_command())
@@ -31,6 +32,9 @@ pub fn command() -> clap::Command {
 }
 
 pub fn execute(matches: &clap::ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("measurement-inspect") {
+        super::serve::inspect_measurement(args);
+    }
     if let Some(args) = matches.subcommand_matches("catch-up") {
         super::serve::archive_catch_up(args);
     }

@@ -112,8 +112,21 @@ and digest with an independent client, including withdrawal/restricted input.
 
 The private router owns authentication, action grants, CSRF/origin/session rules,
 expected revisions, idempotency and desired-versus-applied state. It never accepts
-SQL or shell code. All lists use bounded authorized pagination. These routes
-complete the workflows promised by P08/P09:
+SQL or shell code. All lists use bounded authorized pagination.
+
+The separate trusted-host `archive measurement-inspect` operator candidate reads
+one exact original A05 fact using deployment credentials and current Control,
+local Archive custody and explicit `archive.reader.enabled`. Its source operands
+bind the configured dataset and original digest. It selects the real current
+complete publication, binds retained inputs and holds an actual native catalog
+capture/Archive pin through full typed read and bounded scientific output join.
+It can expose private measurements to the local operator and grants no public or
+management-session read authority. Missing/refused is never a successful Absent
+observation. The [operator contract](../user/archive-receipts.md#inspect-one-original-compound-measurement-after-restart)
+defines its20KiB document, cleanup status and remaining native/installed gates;
+public `relay_measurements` and count-once reductions remain P04/P06 work.
+
+These routes complete the workflows promised by P08/P09:
 
 | Private route | Selected action / CLI or browser purpose |
 |---|---|

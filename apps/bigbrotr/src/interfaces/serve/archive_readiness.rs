@@ -1,5 +1,5 @@
-//! Coalesced ordinary Archive observation, outside request handling. The complete
-//! published selection is verified without acquiring publication/source authority.
+//! Shared complete published Archive observation and exact local A05 inspection.
+//! The same selected inputs, native capture, real pin and joined cleanup apply.
 use super::{
     Result, duration,
     native_grants::{self, OnShutdown, Supervisor, WorkerError, unavailable},
@@ -13,9 +13,9 @@ use bigbrotr::{
     runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
     storage::{
         archive::{
-            CatalogReaderCredentials, LocalCoordinator, ObservedCut, Preparation, PreparationError,
-            ProcessError, ReaderCustody, ReceiptError, RetainedInputReader, RetainedInputs,
-            WorkerBudgets,
+            ArchiveMeasurementError, ArchivedMeasurement, CatalogReaderCredentials,
+            LocalCoordinator, ObservedCut, Preparation, PreparationError, ProcessError,
+            ReaderCustody, ReceiptError, RetainedInputReader, RetainedInputs, WorkerBudgets,
         },
         postgres::{
             catalog_guard::{self, CatalogCapture},
@@ -26,6 +26,11 @@ use bigbrotr::{
             transport,
         },
     },
+};
+use bigbrotr_model::FactRef;
+use bigbrotr_protocol::{
+    archive_cut::{CutObservation, CutRead},
+    archive_measurement::MeasurementRead,
 };
 use std::{
     cell::{Cell, RefCell},
@@ -91,9 +96,25 @@ fn inputs(
 
 struct Observation {
     selection: ArchiveReadSelection,
-    _observed: ObservedCut,
+    observed: NativeObservation,
     _metadata: OwnedPermit,
     _inputs: Vec<RetainedInputs>,
+}
+enum NativeObservation {
+    Cut(ObservedCut),
+    Measurement(Box<ArchivedMeasurement>),
+}
+impl NativeObservation {
+    fn cut(&self) -> &CutObservation {
+        match self {
+            Self::Cut(observed) => observed.observation(),
+            Self::Measurement(observed) => observed.cut(),
+        }
+    }
+}
+enum Request {
+    Cut(CutRead),
+    Measurement(MeasurementRead),
 }
 enum Probe {
     Current(Box<Observation>),
@@ -109,6 +130,7 @@ struct Native {
     custody: ReaderCustody,
     expected: BoundArchiveReadExpectations,
     retained: Vec<RetainedInputs>,
+    fact: Option<FactRef>,
 }
 impl Native {
     fn observe(
@@ -130,78 +152,122 @@ impl Native {
         limits.max_encoded_bytes = 1024 * 1024;
         let route = preflight::NativeRoute::new(&self.config, &self.route, self.reader.tls)
             .map_err(unavailable)?;
-        // Preflight the complete request before allocating scratch or a child.
-        bigbrotr::storage::archive::validate_cut_limits(limits, &read, facts).map_err(|error| {
-            match error {
-                ReceiptError::ResourceLimit => WorkerError::Refused(SessionError::Capacity),
-                _ => unavailable(error),
-            }
-        })?;
+        let request = match self.fact {
+            Some(fact) => Request::Measurement(MeasurementRead { cut: read, fact }),
+            None => Request::Cut(read),
+        };
         let credentials = CatalogReaderCredentials {
             login: native_grants::required(&self.config, "postgres.catalog.read_user")?,
             password: std::str::from_utf8(self.reader.password.as_bytes()).map_err(unavailable)?,
         };
-        route
-            .borrowed()
-            .validate_cut(&read, self.custody.identity(), credentials)
-            .map_err(unavailable)?;
+        // Preflight the complete request before allocating scratch or a child.
+        match &request {
+            Request::Cut(read) => {
+                bigbrotr::storage::archive::validate_cut_limits(limits, read, facts)
+                    .map_err(receipt_error)?;
+                route
+                    .borrowed()
+                    .validate_cut(read, self.custody.identity(), credentials)
+                    .map_err(receipt_error)?;
+            }
+            Request::Measurement(read) => {
+                bigbrotr::storage::archive::validate_measurement_limits(limits, read, facts)
+                    .map_err(measurement_error)?;
+                route
+                    .borrowed()
+                    .validate_measurement(read, self.custody.identity(), credentials)
+                    .map_err(measurement_error)?;
+            }
+        }
         // An opaque preparation failure can leave scratch. Halt rather than
         // multiply unclassified directories on every readiness tick.
         let (installation, scratch, _) = preflight::worker(
             &self.config,
             self.custody.identity(),
             None,
-            "ordinary-archive-readiness",
+            if self.fact.is_some() {
+                "measurement-inspect"
+            } else {
+                "ordinary-archive-readiness"
+            },
             limits,
             deadline.into_std(),
             cancel,
         )
         .map_err(|_| WorkerError::OutputFailure)?;
-        let result = Preparation {
+        let preparation = Preparation {
             installation: &installation,
             temp_root: &scratch,
             limits,
             deadline: deadline.into_std(),
             cancelled: cancel,
-        }
-        .inspect_cut(
-            read,
-            self.custody,
-            &route.borrowed(),
-            CatalogReaderCredentials {
-                login: native_grants::required(&self.config, "postgres.catalog.read_user")?,
-                password: std::str::from_utf8(self.reader.password.as_bytes())
-                    .map_err(unavailable)?,
-            },
-            WorkerBudgets::combined(&self.budget),
-            facts,
-        );
-        if matches!(
-            result,
-            Err(ReceiptError::TerminationUnknown
-                | ReceiptError::Preparation(PreparationError::Process(
-                    ProcessError::TerminationUnknown
-                )))
-        ) {
+        };
+        let credentials = CatalogReaderCredentials {
+            login: native_grants::required(&self.config, "postgres.catalog.read_user")?,
+            password: std::str::from_utf8(self.reader.password.as_bytes()).map_err(unavailable)?,
+        };
+        let result = match request {
+            Request::Cut(read) => preparation
+                .inspect_cut(
+                    read,
+                    self.custody,
+                    &route.borrowed(),
+                    credentials,
+                    WorkerBudgets::combined(&self.budget),
+                    facts,
+                )
+                .map(NativeObservation::Cut)
+                .map_err(receipt_error),
+            Request::Measurement(read) => preparation
+                .read_measurement(
+                    read,
+                    self.custody,
+                    &route.borrowed(),
+                    credentials,
+                    WorkerBudgets::combined(&self.budget),
+                    facts,
+                )
+                .map(|observed| NativeObservation::Measurement(Box::new(observed)))
+                .map_err(measurement_error),
+        };
+        if matches!(result, Err(WorkerError::Unjoined)) {
             return Err(WorkerError::Unjoined);
         }
         std::fs::remove_dir_all(&scratch).map_err(|_| WorkerError::OutputFailure)?;
-        let observed = result.map_err(|error| match error {
-            ReceiptError::ResourceLimit => WorkerError::Refused(SessionError::Capacity),
-            _ => unavailable(error),
-        })?;
-        if observed.observation().snapshot_id != receipt.snapshot_id
-            || observed.observation().request_digest != receipt.request_digest
-            || observed.observation().family_counts != receipt.family_counts
+        let observed = result?;
+        if observed.cut().snapshot_id != receipt.snapshot_id
+            || observed.cut().request_digest != receipt.request_digest
+            || observed.cut().family_counts != receipt.family_counts
         {
             return Err(unavailable(()));
         }
         Ok(Observation {
             selection,
-            _observed: observed,
+            observed,
             _metadata: metadata,
             _inputs: self.retained,
         })
+    }
+}
+fn receipt_error(error: ReceiptError) -> WorkerError {
+    match error {
+        ReceiptError::TerminationUnknown
+        | ReceiptError::Preparation(PreparationError::Process(ProcessError::TerminationUnknown)) => {
+            WorkerError::Unjoined
+        }
+        ReceiptError::ResourceLimit => WorkerError::Refused(SessionError::Capacity),
+        _ => unavailable(error),
+    }
+}
+fn measurement_error(error: ArchiveMeasurementError) -> WorkerError {
+    match error {
+        ArchiveMeasurementError::TerminationUnknown
+        | ArchiveMeasurementError::Preparation(PreparationError::Process(
+            ProcessError::TerminationUnknown,
+        )) => WorkerError::Unjoined,
+        ArchiveMeasurementError::Reader(error) => receipt_error(error),
+        ArchiveMeasurementError::ResourceLimit => WorkerError::Refused(SessionError::Capacity),
+        _ => unavailable(error),
     }
 }
 
@@ -214,7 +280,7 @@ pub(super) async fn execute(
     if let Some(observations) = authority.observations.as_mut() {
         observations.begin_probe();
     }
-    let outcome = execute_inner(config, budget, coordinator, authority).await;
+    let outcome = execute_inner(config, budget, coordinator, authority, None).await;
     if let Some(observations) = authority.observations.as_mut() {
         if let Ok(Probe::Current(observed)) = &outcome {
             // execute_inner has already checked currentness, rolled back the
@@ -230,11 +296,26 @@ pub(super) async fn execute(
     outcome.map(|_| ())
 }
 
+pub(super) async fn inspect_measurement(
+    config: Arc<Resolved>,
+    budget: ResourceBudget,
+    coordinator: &LocalCoordinator,
+    authority: &mut Supervisor<'_>,
+    fact: FactRef,
+) -> Result<()> {
+    match execute_inner(config, budget, coordinator, authority, Some(fact)).await? {
+        Probe::Current(_) => Ok(()),
+        Probe::SelectionChanged => Err((4, "Archive publication changed during measurement inspection; retry".into())),
+        Probe::Unavailable => Err((4, "measurement missing, refused or unavailable at the complete published cut; no absence certified".into())),
+    }
+}
+
 async fn execute_inner(
     config: Arc<Resolved>,
     budget: ResourceBudget,
     coordinator: &LocalCoordinator,
     authority: &mut Supervisor<'_>,
+    fact: Option<FactRef>,
 ) -> Result<Probe> {
     let deadline = Instant::now() + OPERATION;
     let Ok(metadata) = budget.try_acquire(
@@ -342,11 +423,12 @@ async fn execute_inner(
             .ok_or_else(|| (4, "invalid Archive readiness pin lifetime; retain obligation".into()))?;
         let window = RefCell::new(pending.complete(lifetime).ok());
         let permitted = || window.borrow_mut().as_mut().is_some_and(|window| window.check().is_ok());
+        let delivery_budget = budget.clone();
         let native = Native {
             config, budget, reader: prepared.reader, route,
             custody: coordinator.reader_custody()
                 .map_err(|_| (4, "Archive readiness native custody refused".into()))?,
-            expected, retained,
+            expected, retained, fact,
         };
         let result = authority.blocking_while(deadline, &permitted,
             move |cancel| native.observe(deadline, cancel)).await?;
@@ -366,7 +448,26 @@ async fn execute_inner(
                     }
                     match current {
                         Some(current) if current != observed.selection => Probe::SelectionChanged,
-                        Some(_) if permitted() => Probe::Current(Box::new(observed)),
+                        Some(_) if permitted() => {
+                            // The scientific document belongs to the same pinned
+                            // unit as the read. Keep all charged inputs/custody
+                            // through the actual output join before cleanup.
+                            let observed = if fact.is_some() {
+                                let budget = delivery_budget;
+                                let policy = authority.snapshot.policy_revision;
+                                match authority.blocking_while(deadline, &permitted, move |cancel| {
+                                    let NativeObservation::Measurement(measurement) = &observed.observed else {
+                                        return Err(unavailable(()));
+                                    };
+                                    super::measurement_inspect::deliver(&observed.selection, measurement, policy, &budget, cancel)?;
+                                    Ok(observed)
+                                }).await? {
+                                    Ok(observed) => observed,
+                                    Err(_) => return Err((4, "measurement output refused; retain pin until outcome is classified".into())),
+                                }
+                            } else { observed };
+                            Probe::Current(Box::new(observed))
+                        },
                         Some(_) | None => Probe::Unavailable,
                     }
                 } else { Probe::Unavailable }

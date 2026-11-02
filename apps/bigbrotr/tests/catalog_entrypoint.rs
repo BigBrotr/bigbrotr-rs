@@ -93,6 +93,69 @@ fn receipt_inspection_refuses_unselected_archive_before_work() {
 }
 
 #[test]
+fn measurement_inspection_requires_local_archive_and_reader_roots_before_custody() {
+    let dir = tempfile::tempdir().unwrap();
+    for (recipe, reason) in [
+        ("serve-existing", "local Archive role"),
+        ("archive-only", "postgres.catalog.read_user"),
+    ] {
+        write(dir.path(), &example(dir.path(), recipe));
+        let result = run(
+            dir.path(),
+            &[
+                "archive",
+                "measurement-inspect",
+                "--file",
+                "instance.toml",
+                "--shard-id",
+                "0",
+                "--owner-epoch",
+                "1",
+                "--sequence",
+                "1",
+                "--payload-digest",
+                "1111111111111111111111111111111111111111111111111111111111111111",
+            ],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(String::from_utf8_lossy(&result.stderr).contains(reason));
+        assert!(result.stdout.is_empty());
+        assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+    }
+}
+
+#[test]
+fn measurement_inspection_rejects_invalid_identity_and_snapshot_override_before_config_io() {
+    let dir = tempfile::tempdir().unwrap();
+    let base = [
+        "archive",
+        "measurement-inspect",
+        "--file",
+        "absent.toml",
+        "--shard-id",
+        "0",
+        "--owner-epoch",
+        "1",
+        "--sequence",
+        "1",
+        "--payload-digest",
+        "1111111111111111111111111111111111111111111111111111111111111111",
+    ];
+    for (index, value) in [(5, "4294967296"), (7, "0"), (9, "0"), (11, "ABC")] {
+        let mut args = base;
+        args[index] = value;
+        let result = run(dir.path(), &args);
+        assert_eq!(result.status.code(), Some(2), "{result:?}");
+        assert!(result.stdout.is_empty());
+    }
+    let args: Vec<_> = base.into_iter().chain(["--snapshot-id", "1"]).collect();
+    let result = run(dir.path(), &args);
+    assert_eq!(result.status.code(), Some(2), "{result:?}");
+    assert!(result.stdout.is_empty());
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 0);
+}
+
+#[test]
 fn batch_inspection_rejects_impossible_limits_before_configuration_io() {
     let dir = tempfile::tempdir().unwrap();
     for (flag, value) in [

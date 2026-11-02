@@ -4,6 +4,7 @@ mod cursor_keys;
 mod export_jobs;
 mod history;
 mod initial_ingest;
+mod measurement_inspect;
 mod native_grants;
 mod resume_export;
 mod role_status;
@@ -47,6 +48,7 @@ enum Operation {
     Serve,
     InitializeCoordinator,
     InspectReceipt,
+    InspectMeasurement,
     RecoverIngest,
     ArchiveCatchUp,
     IndexCatchUp,
@@ -149,6 +151,12 @@ pub(super) fn initialize_coordinator(args: &ArgMatches) -> ! {
 pub(super) fn inspect_receipt(args: &ArgMatches) -> ! {
     execute_operation(args, Operation::InspectReceipt)
 }
+pub(super) fn inspect_measurement(args: &ArgMatches) -> ! {
+    execute_operation(args, Operation::InspectMeasurement)
+}
+pub(super) fn measurement_inspect_command() -> Command {
+    measurement_inspect::command()
+}
 
 pub(crate) fn command() -> Command {
     Command::new("serve")
@@ -247,12 +255,16 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                     "coordinator initialization requires the local Control role".into(),
                 ));
             }
-            return run(root, &mut output, operation, None);
+            return run(root, &mut output, operation, None, None);
         }
         if matches!(operation, Operation::InspectReceipt) {
             archive_receipt::Options::validate_roots(&root)?;
             let options = archive_receipt::Options::parse(args)?;
-            return run(root, &mut output, operation, Some(options));
+            return run(root, &mut output, operation, Some(options), None);
+        }
+        if matches!(operation, Operation::InspectMeasurement) {
+            let fact = measurement_inspect::parse(&root, args)?;
+            return run(root, &mut output, operation, None, Some(fact));
         }
         let requested: Vec<&str> = args
             .get_many::<String>("roles")
@@ -306,7 +318,7 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                     .into(),
             ));
         }
-        run(root, &mut output, operation, None)
+        run(root, &mut output, operation, None, None)
     })();
     let mut code = match outcome {
         Ok(()) => 0,
@@ -350,6 +362,7 @@ impl Stop {
 struct ArchiveRun {
     coordinator: Option<bigbrotr::storage::archive::LocalCoordinator>,
     receipt: Option<(archive_receipt::Options, ResourceBudget)>,
+    measurement: Option<(bigbrotr_model::FactRef, ResourceBudget)>,
     initialization_budget: Option<ResourceBudget>,
     management_budget: Option<ResourceBudget>,
     management_assets: Option<management::Assets>,
@@ -363,6 +376,7 @@ fn run(
     output: &mut LifecycleOutput,
     operation: Operation,
     receipt: Option<archive_receipt::Options>,
+    measurement: Option<bigbrotr_model::FactRef>,
 ) -> Result<()> {
     // Acquire before Control startup or any future issuance. The stable archive
     // anchor prevents choosing another state root to bypass an old coordinator.
@@ -394,6 +408,19 @@ fn run(
     let receipt = receipt
         .map(|options| Ok((options, archive_preflight::budget(&root, 5)?)))
         .transpose()?;
+    // One grant for each of the bounded original publication inputs, alongside
+    // Control, metadata, catalog/reader, native read and scientific output.
+    let measurement = measurement
+        .map(|fact| {
+            Ok((
+                fact,
+                archive_preflight::budget(
+                    &root,
+                    bigbrotr_protocol::archive_cut::MAX_BATCHES as u64 + 10,
+                )?,
+            ))
+        })
+        .transpose()?;
     let initialization_budget = matches!(operation, Operation::InitializeCoordinator)
         .then(|| archive_preflight::budget(&root, 2))
         .transpose()?;
@@ -422,6 +449,7 @@ fn run(
     let shared_budget = receipt
         .as_ref()
         .map(|(_, budget)| budget)
+        .or(measurement.as_ref().map(|(_, budget)| budget))
         .or(initialization_budget.as_ref())
         .or(management_budget.as_ref());
     let (prepared, grant) = if let Some(budget) = shared_budget {
@@ -464,7 +492,7 @@ fn run(
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget, management_assets,
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, measurement, initialization_budget, management_budget, management_assets,
             export_destination: export_destination.clone(), export_custody: export_custody.clone(),
             cursor_keys: cursor_keys.clone() }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
@@ -599,6 +627,56 @@ async fn supervise(
                 "persistence_created":persistence_created, "publication_authority":"not-granted", "ready":false}),
             );
         }
+    }
+    if let Some((fact, budget)) = archive.measurement {
+        let accepted = Arc::new(
+            accepted.ok_or_else(|| (3, "accepted measurement policy unavailable".into()))?,
+        );
+        measurement_inspect::authorize(&accepted)?;
+        let coordinator = archive
+            .coordinator
+            .as_ref()
+            .expect("measurement roots require local Archive");
+        tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4, "measurement reader prerequisites cancelled".into())),
+            result = tokio::time::timeout(duration(root, "renewal_timeout")
+                .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?),
+                owner.require_archive_reader()) => result
+                    .map_err(|_| (4, "measurement reader prerequisites deadline".into()))?
+                    .map_err(native_grants::pin_error)?,
+        }
+        let mut refresh_due = Instant::now()
+            + (lease.remaining_validity().map_err(|e| (4, e.to_string()))? / 2)
+                .min(duration(root, "heartbeat_interval").saturating_sub(renewed.elapsed()));
+        let mut management = None;
+        let mut authority = native_grants::Supervisor {
+            owner: &mut owner,
+            lease: &mut lease,
+            renewed: &mut renewed,
+            refresh_due: &mut refresh_due,
+            dataset,
+            snapshot,
+            root,
+            stop,
+            management: &mut management,
+            observations: None,
+            stopping: false,
+        };
+        archive_readiness::inspect_measurement(accepted, budget, coordinator, &mut authority, fact)
+            .await?;
+        authority
+            .lease
+            .check_delivery(authority.lease.known_epoch())
+            .map_err(|e| (4, e.to_string()))?;
+        tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
+            .await
+            .unwrap_or(Err(OwnerError::CommitUnknown))
+            .map_err(owner_error)?;
+        return Ok(
+            json!({"format":"bigbrotr-archive-measurement-completion/1", "state":"complete",
+            "owner_release":"committed", "policy_revision":snapshot.policy_revision.to_string()}),
+        );
     }
     if let Some((options, budget)) = archive.receipt {
         let coordinator = archive

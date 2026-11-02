@@ -247,7 +247,7 @@ impl Supervisor<'_> {
         if matches!(terminal, Err(WorkerError::OutputFailure)) {
             return Err((
                 4,
-                "native filesystem work failed; preserve scratch and any output unit for recovery"
+                    "supervised filesystem or output work failed; preserve scratch, pins and any output unit for recovery"
                     .into(),
             ));
         }
