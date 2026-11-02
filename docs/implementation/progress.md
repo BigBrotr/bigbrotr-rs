@@ -2,92 +2,107 @@
 
 2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
 Q37/Q38/Q40/Q41/Q42 remain; public development, no official release/deployment.
-The latest capability-first instruction is reconciled in Q38/the execution guide;
-no second plan or whole-phase barrier.
+The capability-first direction is in Q38/the execution guide; one existing plan.
 
-## Qualified increment and Git
+## Current source and demonstrated capability
 
-P03-T05 Steps1/4 and P03-T01 Step3: finite fixed-width history, shared query budget,
-same-second IDs/local exclusions, orderly stop and historical recovery funding.
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, HEAD **98288897** (new descriptor source only local). Canonical main/origin remain
-clean at pushed **a37f7829**. Local checkpoint updates remain uncommitted.
-Mac fixture21842fe8 is integrated as a37f7829: direct nonblocking accept after final
-source EOF replaces unsupported listener introspection; original timeouts, exact
-extra-request refusals and owned shutdown remain. Astra source review approved;
-48 affected Linux controls PASS. Real Mac qualification is still pending.
+`work/m2-finite-history-20261101`. Source HEAD **6d473c3e**. Canonical main/origin
+remain clean at pushed **a37f7829**. New Monitor work is local, incomplete and not
+pushed. At recording, only this checkpoint, P01/P02 evidence and inventory have
+uncommitted documentation updates; Native source was saved in6d473c3e.
 
-[The P03 report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.finite_history_windows_20261101`, owns exact identities,
-receipts and original failures. Product **53802a46** now has:
+**Quota/history recovery is qualified.** P03-T05 Steps1/4 and P03-T01 Step3 now
+provide finite fixed-width history, a shared query budget, same-second IDs/local
+exclusions, orderly stop and funded historical recovery. The owning
+[P03 report](evidence/p03-initial-sync-native-20261002.json),
+`linear_quantum_20261101.finite_history_windows_20261101`, retains exact source,
+receipts and original failures. Installed product53802a46 passed restart on/off
+12/12 each and finite128 retained boundary7/7. Former scratch, quiet-drain and
+client-profile failures retain their original classification and corrected proof;
+unchanged stop/older window evidence is reused within its scope.
 
-- Actual release85000 PASS; source/native/compiler/worker audit PASS.
-- Clippy/Rustdoc and library **660PASS/0FAIL/3ignored/0filtered**. Outer91572 failed
-  only its private expected-module-name audit after successful tests. Original
-  error retained; source-declared namespace/captured ELF audit closed it without
-  recompilation or test replay. Ignored3 remain NOT_RUN.
-- Binary59504 **213PASS**, including six exact required controls; observer48098
-  exact-parent PASS. Candidate assembly96822 uses clean verifier **fed87a8e**.
-- Installed restart with provenance on8532 and off84411: **12/12PASS each**,
-  including initial abandonment, successor resend, Archive catch-up, exact retry
-  and successor history. Former scratch refusal is closed; originalFAIL retained.
-- Installed finite128 retained boundary92265: **7/7PASS**;128 completed/durable
-  requests/no129/listener refused, all post-proof checkpoints65→65, native830rows/
-  seq1147,64 originals, Index64/cut312/640chunks/556physical rows. Original65s and
-  all source/product bounds unchanged; earlier quiet-drain/client-profile FAILs
-  retained. Quiet cancellation and broad capacity are not claimed.
+**Current hosted gate PASS:** [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
+exact a37f7829:33/33 selected foundation checks and20 scope controls PASS on
+Linux amd64, Linux arm64 and macOS; zero required NOT_RUN. The P01 report's
+`latest_verified_hosted_execution` owns source/native/compiler/worker identities,
+94 unfiltered Rust suites per platform, ignored/skipped exclusions and public
+output audit. No unclassified credential candidate or provider alert was found
+in the bounded scan. Earlier70d5912c run41365283319 remains CANCELLED, with the
+Mac fixture failure and both Linux interruptions explicitly retained. The
+portable listener correction is qualified by the new real matrix; old failures
+are not relabeled PASS.
 
-Old01fc's seven connected window/cap/corruption/COMMIT cases and dee's installed
-stop7/7 remain valid for unchanged responsibilities. Portable538 ran586 cases,
-585PASS plus one stale tutorial-pin ERROR; original run stays FAIL. Pin correction
-then passed14 affected controls; export-profile13 and retained57 PASS separately.
-No unchanged full suite was repeated. Current full hosted CI is **IN_PROGRESS**, with the macOS failure below still unclassified.
+## Active M2 increment: one passive read retained across restart
 
-## Resources and next action
+Expected result: explicit operator-enrolled direct endpoint → guarded bounded
+passive WebSocket read → typed A05 admission → Archive → installed standalone
+inspection after restart. Shared-source Index intake is a necessary dependency;
+refusing the new family would block later source progress. No full Monitor/M2 or
+runtime storage qualification is claimed yet.
 
-[Inventory](../research/laboratory-inventory.json), `window_succession`, owns custody.
-Capsule `.research/m2-window-succession-qualification-20261101/53802a46`;
-runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46`.
-Frozen acceptance `.research/m2-window-acceptance-fed87a8e`. All tools reaped;
-compiler/cache115/observer and all case containers stopped/PID0, cleanupPASS.
-Original4ELF bytes/full metadata, raw failures/data/worktrees/.research and borrowed
-bridge retained. Source/review agents finished; one Sol CI observer is active as described below. No autonomous development writes or local engine/compiler. No cleanup.
+[The P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
+`passive_monitor_descriptors_20261102` and `passive_measurement_20261102`, owns:
 
-**Hosted gate:** new [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
-exact pushed a37f7829, is IN_PROGRESS. Required full matrix remains open.
-Previous [run41365283319](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41365283319)
-for70d5912c is CANCELLED by the existing supersession policy after the coherent
-fixture-fix push. Mac captured two missing completion-marker assertions; the
-unsupported Darwin SO_ACCEPTCONN source path explains the defect, but its original
-relay exception was not retained. Both Linux jobs were interrupted; partial
-release/Clippy states and later NOT_RUN checks must retain that classification.
-The prior A71 full PASS does not qualify current product changes.
-Sol `history_scratch_build_prep_sol` owns terminal70 audit under
-`.research/ci-publication-20261026/terminal-70d5912c-20261102`; its sole watcher11460
-is reaped. Four artifacts/23members and38 workflow logs scanned without candidates;
-33checks finalized:13PASS/1FAIL/2INTERRUPTED/17NOT_RUN, scope20PASS; Rust tests NOT_RUN on every platform. Old watcher11460 is fully reaped. Sole new watcher68260 owns a37 under `.research/ci-publication-20261026/terminal-a37f7829-20261102`; no duplicate observer or manual retry.
-**Next:** observe exact newa37 run, classify failures
-and audit its required terminal checks/public logs/artifacts. Final source audits
-through70 and a37 PASS (a37:5objects/zero candidates); later source/output needs its
-scope. Actual maintained documentation checks11831 PASS.
+- A04 sourceb8380f84 integrated98288897: direct-route and passive-read descriptors;
+  isolated model70PASS. Native/Archive/Index authored controls still NOT_RUN.
+- A05 originals d35af507/e6c4e597 integratedf57d8c87/4d833d90: four closed states,
+  fixed profile, typed observations, stable attempt identity and strong resolution.
+  Counter contradictions were corrected under independent Astra review. Request
+  source2ecf73ec plus corrected afa8ea50 preserves exact canonical typed input;
+  accidental old AdmissionBatch digest removal was restored before execution.
+  Actual isolated model45154 atafa8ea50: **81PASS/0FAIL/0ignored/0filtered**, all11
+  source-derived A05/request controls passed once. Original48 fact literals and27
+  added request literals independently checked. The initial Docker-create mount
+  error remains a separate **NOT_RUN setup failure**, not a product failure.
+- Transport originals8fc0497a/5f6ec0db integrated5d564dff/ea7124fa: actual syscall-
+  return witness, externally retained fixed trace, lower TLS anchors and observed-
+  only caps. Independent Astra closed payload-byte, allocation and signed-UTC
+  findings. Rust transport controls/builds remain **NOT_RUN**.
+- Native6d473c3e: two immutable initial/resolution inventory slots plus the shared
+  evidence staging/commit kernel, exact original replay, new AlreadyDurable
+  outcomes, strong closure and census/recovery consumers. **Independent Astra source review approved;
+  Native tests NOT_RUN.** Earlier binaries already refuse new domains during the
+  mandatory all-CF open census; no unrelated manifest bump was introduced.
 
-In parallel, next passive **P04-T07/P02 A05**: explicit operator-enrolled endpoint → bounded
-read → typed evidence/admission → Archive → standalone inspection after restart.
-Bounded architecture review proposes four evidence variants (execution unknown,
-completion unknown, terminal, immutable resolution), stable route/method/clock
-references, typed open/read children, cut-before-resolution/count-once and trusted
-transport phase attribution. Aggregate profile caps still require an explicit
-choice in the owning contracts before coding independent oracles. No implementation
-of the Measurement family yet. Sol now owns the unintegrated descriptor prerequisite
-under `.research/m2-monitor-descriptors-20261102`, branch
-`work/m2-monitor-descriptors-20261102`, basea37, clean original **b8380f84**, locally integrated **98288897**: direct-route/public-private with a
-stable safe label and a distinct passive-ws-read method. Model/codec/native/Archive/
-Index callers and26independent vectors are reconciled; original20 unchanged. Source
-review approved. Actual isolated model package51327 passed70/0FAIL/0ignored; compiler
-and cache custody verified, tool/container stopped. Native/Archive/Index authored
-controls remain NOT_RUN. [Descriptor evidence](evidence/p02-ingest-dictionary-codec-20260918.json)
-owns exact source/scope/receipts. Root owns remaining measurement/dispatch/installed acceptance. Next bounded work:
-freeze the A05 evidence/profile contract, reconcile its reference/receipt/Archive
-consumers and implement the first guarded passive path. Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import,
-all-excluded installed coverage and remaining P02 producer/compacted/reclamation
-capacity retain existing task owners/gates. This slice does not complete M2/T05.
+The five-second policy authority bound remains enforced. Nominal15s checks and
+10s OPEN do not imply a15s renewable grant. Actual renewal and trusted durable
+start remain explicit P04-T07/P04-T02 work; RAM/input presence cannot manufacture
+a durable start or CompletionUnknown proof.
+
+## Agents, resources and next action
+
+One integrating owner, separate writable worktrees:
+
+- Astra `a05_model_boundary_review_astra`: Native6d473c3e source review approved;
+  targeted review of new test oracles remains before execution.
+- Sol `history_scratch_build_prep_sol`: author Native admission/reopen/replay/
+  conflict/closure controls in `.research/m2-monitor-native-tests-20261102` from
+  6d473c3e. No build/engine execution authorized for that assignment yet.
+- Sol `quota_r2_diagnosis_sol`: `.research/m2-monitor-archive-20261102` fromafa8ea50,
+  adding sixth Measurement family, typed readback/strong closure and eleventh
+  Index target, including narrowly assigned PG count/catalog callers and fixtures.
+  Partial source, not integrated or verified with engines.
+- Original descriptor/model/transport author and CI watchers have finished.
+
+[Inventory](../research/laboratory-inventory.json) owns custody. Current model
+capsule `.research/m2-monitor-descriptors-qualification-20261102/afa8ea50`:
+model45154 reaped0, container174e5520 exited0/PID0/noOOM; fresh target retained,
+cargo-home/cache115 lock released and independently reacquired. Original4ELF
+bytes and every available stat field unchanged through guarded reads. Installed
+538 capsule/runtime, original failures/data, all worktrees and borrowed bridge
+remain preserved. No owned local compiler/engine or hosted watcher is active at
+this observation; source/review agents above continue. No cleanup performed.
+
+**Next Root action:** finish the bounded Native review/test corrections while
+Archive/Index is implemented, then add the real typed PG Monitor dispatch and
+map the guarded trace into A05. Reconcile source/schema/roles/budgets/fixture
+assumptions before the first relevant real-engine/installed run; do not re-run
+unchanged model or hosted source merely for a new document.
+
+Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import and
+remaining producer/compacted/reclamation/capacity gates retain existing P03/P02/
+P04/P08 owners. Admission cost, ClickHouse transport/decoding and coordinator
+follow-through retain their existing Q40 task acceptance; no measured performance
+claim follows from source simplification. All selected later P00–P10/M1–M5 work
+remains in scope. This increment does not complete P04-T07 or M2.

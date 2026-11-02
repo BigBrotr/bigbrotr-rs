@@ -90,5 +90,44 @@
       "Actual A05/model/admission/Archive family, bounded guarded execution, crash uncertainty and installed first passive journey remain unimplemented."
     ],
     "custody": "Tool51327 reaped0; owned container stopped/PID0/noOOM; Cargo-home lock released; original4ELF bytes/full metadata guarded unchanged."
+  },
+  "passive_measurement_20261102": {
+    "status": "PASS_PURE_MODEL_ONLY_RUNTIME_STORAGE_INTEGRATION_IN_PROGRESS",
+    "scope": "P04-T07 first explicit-endpoint passive read prerequisite: closed A05 model and exact retained request input. Does not qualify native/PG/Archive/Index/installed Monitor or complete M2.",
+    "source": {
+      "model_original": "d35af507411eeabb0d027b5aa34cae5a297b4dab",
+      "counter_correction_original": "e6c4e5970da0eec4c98809c9d42af5cf42029571",
+      "integrated_model": "f57d8c87",
+      "integrated_counter_correction": "4d833d90",
+      "request_input": "2ecf73ecb84a93265ae90a02e6fac8ac286356c0",
+      "request_refactor_correction": "afa8ea50cfc702d27a2a966a296e48c599d766a0"
+    },
+    "review": "Independent Astra approved e6 actual-observation counter minima/enum vectors and afa8 exact typed request/canonical/allocation/oracle scope. Original counter contradiction and accidental AdmissionBatch::digest deletion in2ecf remain preserved in Git; both corrected before package execution.",
+    "independent_literals": "15 positive/33 negative fact literals;19 positive/8 negative exact measurement requests, generated with Python/OpenSSL and separately checked by existing Node reference encoder. Original fact literals unchanged.",
+    "actual_model_package": {
+      "status": "PASS_ACTUAL_PURE_MODEL_PACKAGE_TESTS",
+      "source": "afa8ea50cfc702d27a2a966a296e48c599d766a0",
+      "tree": "5354aee616f110588eadee28454e9dc9ee12dc5d",
+      "command": "cargo test --locked --message-format=json -p bigbrotr-model",
+      "result": "81PASS/0FAIL/0ignored/0filtered;17suite summaries;all11 source-derived model7/intent4 controls passed once under exact target/src_path audit",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-descriptors-qualification-20261102/afa8ea50/model-receipt.json",
+      "receipt_sha256": "2bc8b62a3d9c1fb64d9adfe14c2187475afe5bd2531a5aa8926b5a5225cbded7",
+      "original_setup_failure": "R1 Docker-create mount binding error: NOT_RUN before container/test execution; original command/stderr/full4ELF guards retained separately, corrected solely to derived r2 output binding. See receipt original_setup_failure."
+    },
+    "transport": {
+      "original": "8fc0497aac8d86336249e3a7c8115785fd82e8ad",
+      "correction": "5f6ec0db816779183698909470bc1e0bb23fb2dc",
+      "local_integrated": "ea7124fa5eb9ef609befce666d72fe2e34805802",
+      "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
+      "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
+    },
+    "next": "Reconcile typed Native admission/original-request replay and strong closure, Archive/Index scientific family and callers, then typed PG Monitor dispatch and installed endpoint-to-Archive/restart evidence. Current five-second authority bound remains enforced; nominal15s refresh/durable-start claims retain existing P04 owners.",
+    "native_admission": {
+      "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
+      "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
+      "scope": "Two immutable dataset/attempt inventory slots; shared existing dictionary/measurement evidence staging, original request lifecycle, quota/input/atomic commit kernel; exact original and new AlreadyDurable distinction; resolution strong closure and Native closing/open-prefix/census reconciliation. Event receipt validation refuses Measurement. No current Native/PG/Archive/Index or installed Monitor qualification.",
+      "design_review": "Independent Astra confirmed two immutable slots fit current immutable census/compaction. Current all-CF pending-accounting census already refuses new domains for earlier binaries; exclusive native LOCK excludes concurrent old owner, so no speculative global manifest-version bump. Portable cross-shard resolution remains outside this single-shard Native adapter.",
+      "implementation_review": "Independent Astra approved exact6d473c3e: old dictionary equivalence, shared quota/input/authority/atomic commit, immutable initial/resolution, original/new request distinction, closure, visibility, lineage and fail-closed bounds. Requires actual native duplicate/conflict/replay/corruption/authority/staged-input controls; excludes PG runtime, Archive/Index and read reduction."
+    }
   }
 }

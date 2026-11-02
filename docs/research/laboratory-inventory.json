@@ -73507,7 +73507,7 @@
   },
   "implementation_ci_publication_20261026": {
     "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026",
-    "status": "40814795307 on exact5cc9cbb1 SUCCESS; all30 selected checks PASS. Original failures, cancellations and excluded scopes remain preserved.",
+    "status": "Latest exact a37f7829 run41366972298: selected hosted foundation and public-output audit PASS; zero active owned observers. Original failures/cancellations and excluded scopes preserved.",
     "source_base": "2d207233a3cd54f0f80a0999acae337cfec69b97",
     "hosted_run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/40303460687/attempts/3",
     "audit": {
@@ -74030,13 +74030,13 @@
       "resources": "Originalwatch94369reaped1 andbothprocessidentitiesabsent. All4providerZIPs/logs retained; interruptedcommands lackpostcheckproof."
     },
     "latest_verified_run": {
-      "root": ".research/ci-publication-20261026/run-40814795307-exposure",
-      "source": "5cc9cbb188378093f97d64f3e51ff11444934b98",
-      "receipt_sha256": "352e039b96fe2906794623f70a9183f8c177849f8097da00ac09a127ccb88dff",
-      "ordinary_review_sha256": "a8d933f95e43e11b308df14fe1258c5a3b367d214263219c130814b34c3f6c26",
-      "status": "PASS_SELECTED_SCOPE",
-      "resources": "Watcher15729 reaped0; driver1524296/start662844522 and gh1524297/start662844523 absent. Early60207/63143 and terminal20136 reaped0; two completed platform ZIPs reused. Four artifacts and attempt1 logs retained; no engine/container created.",
-      "limits": "All30 selected checks, native210/34groups per platform and exact282 Python source controls qualified; mac276PASS+6SKIP and dedicated ignored/cfg exclusions remain explicit. Newer local common-wait source and installed/product/release gates remain separate."
+      "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a37f7829-20261102",
+      "source": "a37f78290c37d27ef8d608ca45652ada9614b7e0",
+      "status": "PASS_SELECTED_FOUNDATION_AND_PUBLIC_OUTPUT_AUDIT",
+      "terminal_receipt_sha256": "48f1d68c01a1311be30b87f7d1251d52c287a268dd853cc96ccac526178a2b2f",
+      "completion_receipt_sha256": "aae9a562c295e5eceb91985de92004c42ece81613452a6fb5af98c0a6de0d772",
+      "resources": "Four artifact ZIPs, 34 workflow logs and original source-scoped receipts retained. Watcher68260/acquisition20810 reaped; observer PID identities absent. No engine/container created.",
+      "details": "docs/implementation/evidence/p01-ci-hosted-foundation-20261026.json#latest_verified_hosted_execution"
     },
     "verification_in_progress": null,
     "run_40702272536": {
@@ -79040,6 +79040,16 @@
       "tool": 51327,
       "container": "3298d787117c0723b06016695349736d686a94216b0d7d2c9fd30af9b91a2873",
       "state": "reaped0/stopped/PID0/noOOM; cargo-home lock released, fresh model target retained; original4ELFs unchanged"
+    },
+    "measurement_model": {
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-descriptors-qualification-20261102/afa8ea50",
+      "source": "afa8ea50cfc702d27a2a966a296e48c599d766a0",
+      "tree": "5354aee616f110588eadee28454e9dc9ee12dc5d",
+      "receipt_sha256": "2bc8b62a3d9c1fb64d9adfe14c2187475afe5bd2531a5aa8926b5a5225cbded7",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-model-afa8ea50-r2",
+      "state": "Pure model tool45154 reaped0; owned container174e55200a2452fab0470a4925ed1d48b64adc887e6bed58c1689458d3f6949c exited0/PID0/noOOM. Fresh model target; cargo-home/cache115 lock released and independently reacquired, no live overlapping mounts. Original4ELF bytes and all available16stat fields unchanged through required guards. R1 prelaunch NOT_RUN command/stderr preserved.",
+      "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
+      "retention": "Retain exact model source, command, logs/compiler/marker/guard receipts, original setup failure and partial integration worktrees. No native/application engine qualification claimed."
     }
   }
 }
