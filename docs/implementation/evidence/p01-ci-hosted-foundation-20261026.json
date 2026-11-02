@@ -2534,7 +2534,7 @@
   },
   "pending_monitor_publication_20261102": {
     "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
-    "status": "F4AD_HOSTED_FOUNDATION_QUALIFIED_B05_C3_LOCAL_QUALIFIED",
+    "status": "C3_SOURCE_PUSHED_CURRENT_HOSTED_RUN_PENDING",
     "public_source_audit": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
       "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
@@ -2762,6 +2762,39 @@
         "macos_job": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696/job/125474252470",
         "scope": "Actual same-source f4ad baseline, including fixed canonical temporary-root tests. Attempt1 provider cancellation and earlier d32 fixture FAIL remain unchanged."
       }
+    },
+    "c3_reconciliation_publication": {
+      "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
+      "status": "PUSHED_ACTUAL_RUN_IN_PROGRESS",
+      "source_admission": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-source-16adbee0-20261102/publication-admission.json",
+      "source_admission_sha256": "2bffc77440aab2046d2f85078e44286fc517374d23735d76c6505344eba1d73e",
+      "source_scope": "15 outgoing commits/98 objects/32,309,989 bytes across36 historical paths; zero sensitive/raw/private-capture/LFS/nontext inputs or new/unclassified credential candidates. Eleven matches are two known nonsecret fingerprints; bounded scanning limits apply.",
+      "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/push-receipt.json",
+      "push_receipt_sha256": "88ecc73ffb428531c00bee766a8b10340e2da431b579c3bb10e3325970b112ee",
+      "documentation": "Exact16ad maintained documentation-only3/3 PASS, tool54780; receipt008046c912240d8055686710cfc85d6db4bd5a74aa373d4730538c15d495bcd3.",
+      "local_product": "Qualified b05 strict/worker/Rust/observer and three installed recovery cases;16ad changes only evidence/docs. P02 owns exact qualification scope. Separate pending fixture work is not integrated.",
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41512656056",
+      "attempt": 1,
+      "event": "push",
+      "initial_jobs": {
+        "scope": 125508187004,
+        "amd64": 125508351879,
+        "arm64": 125508351817,
+        "macos": 125508351877
+      },
+      "declared_source": "4274 full source files;36 required commands16/11/9,655 acceptance/42 proxy/13 export/scope20,12 mandatory Native controls from this actual source (not older11).",
+      "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation",
+      "watcher": {
+        "tool": 15724,
+        "driver_pid": 2031539,
+        "driver_start_ticks": "37534335",
+        "pid": 2031542,
+        "start_ticks": "37534337",
+        "interval_seconds": 60,
+        "bound_seconds": 7500,
+        "state": "ROOT_OWNED_READ_ONLY_RUNNING"
+      },
+      "next": "Root owns watcher; wake CI Sol for terminal acquisition/public audit. No second push that supersedes current run. Real changed-source CI remains pending; f4ad is only the previous verified baseline."
     }
   }
 }

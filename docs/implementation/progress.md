@@ -8,10 +8,11 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and demonstrated M2 capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **b05b0a26** before this coherent
-evidence update. Main/origin last verified **f4ad5fda**. Current changed files are
-the existing P01/P02 evidence, verification/P04 task prose, inventory and this
-checkpoint; product and maintained acceptance code match qualified b05.
+`work/m2-finite-history-20261101`, observed HEAD **16adbee0** before this
+publication-custody journal. Canonical main/origin and GitHub main are independently
+verified **16adbee0** after the authorized fast-forward/push. Root has only current
+P01/inventory/checkpoint journal edits; product and acceptance match qualified b05.
+Do not push this journal immediately and cancel the active same-ref CI run.
 
 Corrected product **b05b0a26**, tree **a9dc791d**, passes all three real installed
 Monitor recovery journeys with its matching0044 ledger and exact-source observer:
@@ -60,7 +61,17 @@ attempt2 logs, zero new/unclassified credential candidates or provider alerts.
 Pattern/asynchronous-provider limits remain. Original provider admission failure
 and earlier Mac fixture FAIL are preserved. Root watcher59722 reaped0 without
 expiry; recorded PIDs absent. No active hosted observer. f4ad success does not
-qualify the changed b05 source on GitHub; its real hosted run follows publication.
+qualify the changed b05 source on GitHub. The coherent16ad publication passed
+source/object/path/credential admission (15 commits/98 objects; no new/unclassified
+credentials or private captures), plus exact documentation3/3. Push receipt88ecc73f
+confirms remote/main and origin/main. Actual
+[run41512656056](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41512656056)
+now executes exact16ad/push/attempt1: scope125508187004PASS, three platforms
+125508351879/125508351817/125508351877 RUNNING at initial observation. Source4274,
+full36 commands,655/42/13 portable suites and **12** mandatory Native controls
+are source-bound. Root watcher **15724**, driver2031539/GH2031542 with verified
+start ticks37534335/37534337,60s/7500s bound, is the only active observer. On terminal
+wake ci_recovery_publication_sol for acquisition/public audit. Do not supersede it.
 
 ## Remaining work and custody
 
@@ -72,8 +83,9 @@ tasks; no all-P02 barrier or deleted scope.
 
 Sol `measurement_clickhouse_prep` is writing the test-only existing-outcome fixture
 on `work/m2-monitor-c3-guards-20261102`, separate worktree of that name, baseb05.
-Last observed changes were the two shared recovery/passive oracle modules; work is
-partial, not integrated or runtime-qualified. The approved architecture uses a
+Last observed changes include the two shared oracles, cfg(test) owner module/seam,
+Python seed helper and focused controls; work is partial, not integrated or
+runtime-qualified. The approved architecture uses a
 cfg(test) same-backend genuine ControlSession to seed only the authenticated
 original outcome, then ordinary installed recovery. Full expected policy documents
 must be frozen from qualified source/config before admission, never adopted from
@@ -82,14 +94,15 @@ the database. Concrete fixture diff and oracle review remain required before eng
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
 All Root compiler/test/installed processes are terminal; cache115 is released and
-independently reacquired, protected four ELF bytes/fullstat unchanged. Source
-agent only is active; no new engines. Preserve all original failures,data,.research,
+independently reacquired, protected four ELF bytes/fullstat unchanged. The source
+agent and one Root read-only CI watcher are active; no new engines. Preserve all original failures,data,.research,
 worktrees and borrowed bridge. October31 space recovery is already reconciled;
 no cleanup was started.
 
-**Next Root action:** finish current documentation checks and publication admission,
-commit one coherent qualified C3/evidence increment, fast-forward authorized main
-and verify its actual new-source GitHub run. Continue the bounded existing-outcome
-fixture and connected gates with critical review before real execution. Admission
+**Next Root action:** keep actual16ad CI under the owned watcher and seal its
+terminal/public audit when ready. Review the bounded existing-outcome fixture as
+Sol completes source work, then qualify its test-only artifact and real same-backend
+seed/recovery with independent critical review before engines. Reuse unchanged b05
+product where its scope remains valid. Keep connected gates explicit. Admission
 cost, ClickHouse decoding/transport, coordinator maintenance and all selected later
 P00–P10/M1–M5 work retain their existing owners and completion criteria.
