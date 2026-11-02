@@ -219,7 +219,7 @@ class PassiveMonitorRuntime(Runtime):
         require(self.before_us <= self.after_us, 'host UTC regressed across fixture bracket')
         self.original_inputs = self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4)
         self.native_dump = native.census(self,output,writer_terminal=output/'terminal-container.json')
-        self.native_ack = oracle.native_ack(self.native_dump,self.stopped,self.initialized,self.receipts)
+        self.native_ack = oracle.native_ack(self.native_dump,self.stopped,self.initialized,self.receipts,self.cbor)
         save(output/'native-census.json',self.native_dump)
         save(output/'checkpoint-ack-verdict.json',dict(status='PASS',**self.checkpoint,**self.native_ack))
         self.archive_files = self.files(self.state/'data/archive')

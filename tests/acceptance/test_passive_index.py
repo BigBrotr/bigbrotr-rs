@@ -162,8 +162,20 @@ def native_fixture():
     values=[('default',b'\x01\x01',manifest),
         ('default',b'\x01\x02'+dataset+bytes(4)+be(1),b'\x01\x02'+be(10)),
         ('receipts',b'\x01\x31'+slot+be(1),b'\x01\x31'+be(4)+be(4)+be(0))]
-    for n,outcome in enumerate(state['producer_outcomes'],1):
-        values.append(('receipts',b'\x01\x30'+slot+be(1)+be(n),passive.raw(outcome['outcome_bytes'])))
+    references={source[3]:[source,digest] for receipt in receipts for source,digest in receipt[4]}
+    # Original native receipts and pending headers use the separate maintained
+    # bootstrap encoder; the oracle receives the identity-contract encoder.
+    for n,(outcome,receipt,(first,last)) in enumerate(zip(state['producer_outcomes'],receipts,
+            [(1,2),(3,3),(4,9),(10,10)]),1):
+        receipt[5]=[references[k] for k in (range(first,last+1) if n<=2 else range(3,last+1))]
+        original=b'bigbrotr/receipt/1\0'+bootstrap_cbor(receipt)
+        outcome['outcome_bytes']='\\x'+original.hex()
+        outcome['outcome_sha256']='\\x'+hashlib.sha256(original).hexdigest()
+        values.append(('receipts',b'\x01\x30'+slot+be(1)+be(n),original))
+        batch_digest=hashlib.sha256(b'bigbrotr/admission-batch/1\0'+bootstrap_cbor(
+            [dataset,0,1,first,last,receipt[4]])).digest()
+        values.append(('facts',b'\x01\x21'+dataset+bytes(4)+be(1)+be(first),
+            b'\x01\x21'+be(last)+batch_digest))
     for n,fact in enumerate((fact for batch in science['batches'] for fact in batch['facts']),1):
         preimage=bytes.fromhex(fact['preimage_hex'])
         values.append(('facts',b'\x01\x20'+dataset+bytes(4)+be(1)+be(n),
@@ -175,15 +187,15 @@ def native_fixture():
 class PassiveIndexControls(unittest.TestCase):
     def test_physical_ACK_requires_exact_producer_bytes_original_receipts_and_fact_commitments(self):
         dump,state,initialized,receipts=native_fixture()
-        self.assertEqual(passive.native_ack(dump,state,initialized,receipts),dict(
-            native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_receipts=4))
+        self.assertEqual(passive.native_ack(dump,state,initialized,receipts,encoder.cbor),dict(
+            native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_pending_batches=4,native_receipts=4))
         for missing in ('receipt','outcome','batch-reference'):
             altered_state=copy.deepcopy(state);altered_receipts=copy.deepcopy(receipts)
             if missing=='receipt':altered_receipts.pop()
             elif missing=='outcome':altered_state['producer_outcomes'].pop()
             else:altered_receipts[-1][4]=[]
             with self.subTest(missing=missing),self.assertRaises(AssertionError):
-                passive.native_ack(dump,altered_state,initialized,altered_receipts)
+                passive.native_ack(dump,altered_state,initialized,altered_receipts,encoder.cbor)
         for change in ('ack3','issued5','retired4','missing-state','missing-receipt','changed-receipt',
                 'extra-receipt','duplicate-key','wrong-manifest','wrong-cut','missing-fact','changed-fact'):
             altered=copy.deepcopy(dump)
@@ -206,7 +218,47 @@ class PassiveIndexControls(unittest.TestCase):
                 if change=='missing-fact':altered['rows'].remove(row)
                 else:row['value']+='00'
             with self.subTest(change=change),self.assertRaises((AssertionError,KeyError,ValueError)):
-                passive.native_ack(altered,state,initialized,receipts)
+                passive.native_ack(altered,state,initialized,receipts,encoder.cbor)
+
+    def test_pending_batches_require_the_exact_tagged_keys_ranges_and_receipt_digests(self):
+        dump,state,initialized,receipts=native_fixture()
+        pending=[row for row in dump['rows'] if row['cf']=='facts' and row['key'].startswith('0121')]
+        self.assertEqual([int(row['key'][-16:],16) for row in pending],[1,3,4,10])
+        self.assertEqual([int(row['value'][4:20],16) for row in pending],[2,3,9,10])
+        for first in (1,3,4,10):
+            for change in ('missing','wrong-first','foreign-dataset','wrong-shard','wrong-epoch',
+                    'short-key','long-key','unknown-tag','bad-version','extra-fact','extra-pending',
+                    'unknown-extra-tag','wrong-value-tag','short-value','long-value','wrong-last',
+                    'wrong-digest','foreign-receipt-digest'):
+                altered=copy.deepcopy(dump)
+                row=next(r for r in altered['rows'] if r['cf']=='facts' and r['key'].startswith('0121')
+                    and int(r['key'][-16:],16)==first)
+                if change=='missing':altered['rows'].remove(row)
+                elif change=='wrong-first':row['key']=row['key'][:-16]+(first+1).to_bytes(8,'big').hex()
+                elif change=='foreign-dataset':row['key']=row['key'][:4]+'ab'*16+row['key'][36:]
+                elif change=='wrong-shard':row['key']=row['key'][:36]+'00000001'+row['key'][44:]
+                elif change=='wrong-epoch':row['key']=row['key'][:44]+(2).to_bytes(8,'big').hex()+row['key'][60:]
+                elif change=='short-key':row['key']=row['key'][:-2]
+                elif change=='long-key':row['key']+='00'
+                elif change=='unknown-tag':row['key']='01ff'+row['key'][4:]
+                elif change=='bad-version':row['key']='0221'+row['key'][4:]
+                elif change in ('extra-fact','extra-pending','unknown-extra-tag'):
+                    tag={'extra-fact':'0120','extra-pending':'0121','unknown-extra-tag':'01ff'}[change]
+                    altered['rows'].append(dict(row,key=tag+row['key'][4:-16]+(11).to_bytes(8,'big').hex()))
+                elif change=='wrong-value-tag':row['value']='0120'+row['value'][4:]
+                elif change=='short-value':row['value']=row['value'][:-2]
+                elif change=='long-value':row['value']+='00'
+                elif change=='wrong-last':row['value']=row['value'][:4]+(11).to_bytes(8,'big').hex()+row['value'][20:]
+                elif change=='wrong-digest':row['value']=row['value'][:20]+'ab'*32
+                else:
+                    other=next(r for r in pending if int(r['key'][-16:],16)!=first)
+                    row['value']=row['value'][:20]+other['value'][20:]
+                with self.subTest(first=first,change=change),self.assertRaises((AssertionError,KeyError,ValueError)):
+                    passive.native_ack(altered,state,initialized,receipts,encoder.cbor)
+        altered_receipts=copy.deepcopy(receipts)
+        altered_receipts[2][4][0][1]=bytes.fromhex('ab'*32)
+        with self.assertRaises(AssertionError):
+            passive.native_ack(dump,state,initialized,altered_receipts,encoder.cbor)
 
     def test_recipe_and_launch_use_real_index_initializer_and_six_row_policy(self):
         with tempfile.TemporaryDirectory() as temporary:

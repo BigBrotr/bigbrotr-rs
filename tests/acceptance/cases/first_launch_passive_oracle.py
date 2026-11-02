@@ -336,7 +336,7 @@ def checkpoint(state, initialized, receipts):
         checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
 
 
-def native_ack(dump, state, initialized, receipts):
+def native_ack(dump, state, initialized, receipts, cbor):
     """Read physical producer ACK and retained science/receipts after writer join."""
     assert set(dump) == {'event','rows','sequence'} and dump['event'] == 'dump-state'
     assert type(dump['sequence']) is int and dump['sequence'] > 0
@@ -359,12 +359,24 @@ def native_ack(dump, state, initialized, receipts):
     assert values[('default',b'\x01\x02'+dataset+bytes(4)+be(1))] == b'\x01\x02'+be(10)
     manifest = values[('default',b'\x01\x01')]
     assert hashlib.sha256(manifest).digest() == raw(state['producer_requests'][0]['manifest_sha256'],32)
-    assert len([key for cf,key in values if cf=='facts']) == 10
-    for number,(outcome,receipt) in enumerate(zip(outcomes,receipts),1):
-        assert values[('receipts',b'\x01\x30'+slot+be(1)+be(number))] == raw(outcome['outcome_bytes'])
+    source_key = lambda n:dataset+bytes(4)+be(1)+be(n)
+    fact_keys = {b'\x01\x20'+source_key(n) for n in range(1,11)}
+    ranges = [(1,2),(3,3),(4,9),(10,10)]
+    pending_keys = {b'\x01\x21'+source_key(first) for first,_ in ranges}
+    # Both tagged domains live in Facts CF. Require the closed literal key set,
+    # including complete pending metadata, rather than counting observed rows.
+    assert {key for cf,key in values if cf=='facts'} == fact_keys | pending_keys
+    for number,(outcome,receipt,(first,last)) in enumerate(zip(outcomes,receipts,ranges),1):
+        assert receipt[0] == 1 and receipt[1] == [slot,1,number]
+        original = raw(outcome['outcome_bytes'])
+        assert original == b'bigbrotr/receipt/1\0'+cbor(receipt)
+        assert values[('receipts',b'\x01\x30'+slot+be(1)+be(number))] == original
+        assert [source for source,_ in receipt[4]] == [[dataset,0,1,n] for n in range(first,last+1)]
+        digest = hashlib.sha256(b'bigbrotr/admission-batch/1\0'+cbor([dataset,0,1,first,last,receipt[4]])).digest()
+        assert values[('facts',b'\x01\x21'+source_key(first))] == b'\x01\x21'+be(last)+digest
         for source,digest in receipt[4]:
             assert source[:3] == [dataset,0,1]
             fact = values[('facts',b'\x01\x20'+dataset+bytes(4)+be(1)+be(source[3]))]
             assert fact[:34] == b'\x01\x20'+digest
             assert hashlib.sha256(fact[34:]).digest() == digest
-    return dict(native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_receipts=4)
+    return dict(native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_pending_batches=4,native_receipts=4)
