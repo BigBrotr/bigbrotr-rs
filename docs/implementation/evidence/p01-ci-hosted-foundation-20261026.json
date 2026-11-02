@@ -2267,10 +2267,15 @@
       "limits": "No compiled-target restoration/ownership, cache hit, hosted execution or speedup qualified. Conservative helper equality rejects old references including5c85bb4c/f474b5a0; a new helper-qualified reference is required before opt-in use. Fresh targets gain no timestamp-only benefit; measure reuse in already-needed future runs.",
       "python_minimum_followthrough": {
         "source": "caefdad80ca0495b887ae78c3ed534873f326856",
-        "status": "FAIL_FIXTURE_RUNTIME_COMPATIBILITY_CORRECTED_NOT_YET_MINIMUM_RUNTIME_RETESTED",
+        "status": "PASS_DECLARED_PYTHON311_IMAGE_INTEGRATED_PORTABLE624_AND_EXPORT13",
         "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-caefdad8",
         "detail": "Declared builder Python3.11.2 lacks TarFile.extractall filter keyword:624 collected,40 setup/subtestERRORs, no assertionFAIL; export groupNOT_RUN. Own trusted Git fixture now feature-detects that keyword, retaining explicit policy on newer Python and older supported extraction on3.11. No oracle or timestamp mutation guard weakened.",
-        "host_check": "11 timestamp controlsPASS on host after the compatibility fix; full declared-image retest pending."
+        "host_check": "11 timestamp controlsPASS on host after the compatibility fix; full declared-image retest pending.",
+        "retest": {
+          "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-fae99008",
+          "result": "624 acceptance and13 export-profile controlsPASS,0FAIL/ERROR/SKIP. Corrected minimumPython fixture setup; originalcaef40ERRORs remain."
+        }
       }
     }
   },
@@ -2437,5 +2442,18 @@
       "completion_receipt_sha256": "aae9a562c295e5eceb91985de92004c42ece81613452a6fb5af98c0a6de0d772"
     },
     "latest_fully_verified_source": "a37f7829 is the current complete hosted PASS. Local538 installed evidence is independently source-scoped in P03; later Monitor changes remain unqualified."
+  },
+  "pending_monitor_publication_20261102": {
+    "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+    "status": "LOCAL_COHERENT_FIRST_PASSIVE_CAPABILITY_QUALIFIED_HOSTED_PENDING",
+    "public_source_audit": {
+      "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
+      "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
+      "scope": "428 newly reachable source/commit objects aftera37, zero sensitive/raw-store/LFS paths or unclassified operational credential candidates. Known fixture/shell/diagnostic contexts triaged without emitting values; bounded scanner limits remain."
+    },
+    "provider_open_alerts": 0,
+    "remote_baseline": "a37f7829 current; latest41366972298 completedSUCCESS,70d precedingCANCELLED preserved. No billing/settings/publication-policy change.",
+    "portable": "Declared compilerimage/Python3.11.2,624 acceptance+13 export-profilePASS/0SKIP; exact inputs/logs in runtime.",
+    "next": "One coherent main push, then actual selected hosted matrix/log/artifact qualification; no release/package/deployment authorization."
   }
 }

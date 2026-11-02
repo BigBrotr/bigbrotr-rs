@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "0e9b7912",
-      "state": "Local not pushed; first actual installed passive Archive+ClickHouse and PG restart inspection PASS atf474 with frozen62ae harness. Source-reviewed fixture/Rustdoc/build-tool follow-through needs final current-source qualification; no whole M2 or release claim.",
+      "observed_source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+      "state": "Coherent local firstpassive Archive/Index capability qualified; current build/Clippy/Rustdoc/library and portablePASS. Other unchanged realinstalled/Rustf474 evidence retained. Main/publichosted integration next; full M2/recovery not complete.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79066,11 +79066,11 @@
         ".research/m2-current-control-inventory-20261102"
       ],
       "active_assignments": {
-        "current_control_inventory": "Sol source-only causal diagnosis may return a counterexample; Root fixtured20 committed and Astra-approved, test NOT_RUN. No edit authorization.",
-        "measurement_clickhouse_prep": "CBOR correction97a9 saved clean and critically approved; integrated88b7330b. ActualcaseRootPASS.",
-        "native_timestamp_review": "Bounded critical reviews complete through oracle97a9 and fixtured20; no ongoing runtime assignment."
+        "native_timestamp_review": "Next known-outcome genericACK design delivered source-only, no implementation/process.",
+        "current_control_inventory": "Source-only diagnosis requested; no further edit authorization. Root verified correction with698PASS.",
+        "measurement_clickhouse_prep": "Authorcorrection97a9 integrated; actualfirstcasePASS; no runtime assignment."
       },
-      "resources": "All owned build/engine/test processes terminal atrecording. caef tool98128 reaped1 (actual E0505 compilerFAIL, not interrupted), d23e533f stopped/PID0/noOOM/cache released, original4ELF guardsPASS. Portablecaef tool77521 reaped1,92c0cb95 stopped/PID0/noOOM; minimumPython fixtureAPI ERROR preserved. Earlier19Index+18passive containers/data retained and borrowednetwork unchanged. No cleanup.",
+      "resources": "All owned local build/test/installed processes terminal.25882 build reaped0/06bfb960 stopped;55955 portable reaped0/7ae3ffb0 stopped;76807 wrapper reaped1 only metadata namespace defect, Cargo698PASS and reconciledELFcopyPASS/d0bdb655 stopped. Cache released; all protected4ELF bytes/fullstat unchanged.19Index+18earlier passivecontainers/data retained, borrowedbridge unchanged; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79090,14 +79090,22 @@
           ".research/m2-monitor-core-product-5c85bb4c",
           ".research/m2-monitor-core-product-214e72cb",
           ".research/m2-monitor-core-product-f474b5a0",
-          ".research/m2-monitor-core-product-caefdad8"
+          ".research/m2-monitor-core-product-caefdad8",
+          ".research/m2-monitor-core-product-fae99008"
         ],
         "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation",
         "latest_verified_build": {
-          "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
-          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/f474b5a0",
-          "receipt_sha256": "2617c028f4dc2cd2ba589ed167fabb72f6f3fb682ddc1ae71cfd97c17100bc8b",
-          "state": "Tool57082 reaped0; e4a606ed exited0/PID0/noOOM/cache released, protected4ELF fullstat intact."
+          "status": "PASS_FRESH_WORKER_BOUND_INSTALLED_BUILD",
+          "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+          "tree": "c1e7fe9cc80ebf2445517b7a8cab679911da7d51",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/fae99008/build-receipt.json",
+          "receipt_sha256": "8836af5f11dc37482316f18faa2e7fc0c2597caf7000d090832ffb515f2efd47",
+          "binary": {
+            "bytes": 47191448,
+            "sha256": "d6611f6a21f200ee6db4d84bd9a7a3f6de6f9f62bad257897036600c0b30787e"
+          },
+          "preflight": "All-target270.308s, strictClippy9.481s, strictRustdoc3.521s PASS before maintained release build. Source/native/compiler/worker bytes audited.",
+          "resources": "Tool25882 reaped0,06bfb960 exited0/PID0/noOOM/cache released; all4 originalELF bytes/fullstat unchanged."
         },
         "latest_strict": {
           "source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
@@ -79136,6 +79144,17 @@
         "portable_failure": {
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-caefdad8",
           "state": "624 collected/40 fixture setup/subtestERRORs, no assertionFAIL; Python3.11.2 filter keyword unsupported. Fixture compatibility correction source-only; full minimum-runtime retest pending."
+        },
+        "application_library": {
+          "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+          "receipt_sha256": "2a8f1f6355459e116942dbe03777abee9b0d86defd72b07213ec8ea116569ccb",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-fae99008-library",
+          "state": "Cargo698PASS/3dedicatedignored; original metadata parserCLI1 retained; namespace reconciled and copy/source auditPASS without test rerun."
+        },
+        "portable": {
+          "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-fae99008",
+          "state": "624+13PASS,0SKIP, ownedcontainer stopped/PID0/noOOM; original minimumPython setupFAIL retained."
         }
       }
     }

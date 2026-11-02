@@ -7,10 +7,10 @@ One existing plan, capability-first execution, one integrating owner.
 ## Source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source **0e9b7912**; this checkpoint,
-evidence/inventory and tutorial-pin updates are pending the recording commit.
-Canonical main/origin remain clean at pushed **a37f7829**. New Monitor work is
-local and not pushed while the final coherent integration gates are closed.
+`work/m2-finite-history-20261101`. Qualified current source **fae99008**;
+only evidence/checkpoint/task documentation changes follow in this recording.
+Canonical main/origin are clean at pushed **a37f7829**, rechecked before integration.
+The coherent first passive capability is ready for main and its actual hosted gate.
 
 **First real passive Archive/Index capability PASS:** installed **f474b5a0** with
 separately frozen assembly/acceptance source **62ae5dbc** passed the maintained
@@ -33,44 +33,39 @@ proof remains valid within its scope; no need to rerun that unchanged subset.
 
 ## Qualification and remaining integration gates
 
-Exactf474 passed all-target compilation, strict Clippy and the maintained release
-worker/parent build with source/native/compiler/worker byte verification.
-Unfiltered library: **697PASS/1FAIL/3ignored/0filtered**; all eight new real Native
-measurement controls passed. The sole descriptor fixture attempted fresh work
-after raw reopen, which deliberately remains RecoveryBlocked. Correctiond20 keeps
-fresh reuse/conflict in the funded lifetime, then replays both original receipt
-kinds after reopen and preserves all rows/inputs. Conflict must be StateMismatch.
-Astra approved this fixture-only correction; its execution is **NOT_RUN**.
-0e9b7912 then fixes the fixture ownership error using the existing checked
-constructor: EvidenceIntent is not Clone. Actualcaef all-target compilation
-reported two E0505 errors; Clippy/Rustdoc/release/assertions were NOT_RUN. The
-builder was already terminal when controlled stop was inspected. Original logs
-and guards remain; no quota binding, recovery behavior or expectation weakened.
+Current **fae99008** passed all-target compilation, strict Clippy, strict Rustdoc
+and the maintained release worker/parent build with exact byte/source audit.
+Its unfiltered library passed **698/0FAIL/3dedicatedignored/0filtered**, including
+the corrected descriptor fixture and all eight real Native measurement controls.
+The earlier f474 library697PASS/1FAIL and caef two E0505 errors remain preserved:
+raw reopen correctly forbids fresh intake; the fixture now uses the funded owner
+for fresh reuse/conflict, owns its intents through the existing checked constructor,
+then verifies exact original receipt replay/unchanged rows and inputs after reopen.
+No quota or recovery behavior was changed. Rustdoc-only correction is now executed.
 
-The remaining five f474 Rust groups completed: binary232, real Monitor wire12,
-catalog entrypoint16, Protocol56 and Archive-worker78 PASS, with one dedicated
-worker test ignored. This includes seven inspection controls with actual full
-pipes. Earlier libraryFAIL and RustdocFAIL remain original.65accd30 fixes only
-Rustdoc code markup; corrected full Rustdoc still requires execution.
+The original library wrapper returned1 solely because its metadata copier expected
+an obsolete historical-control namespace after Cargo itself passed. Root checked
+actual module declarations and reconciled the already-copied ELF under exclusive
+cache custody; source/compiler/worker/log/copy and10 required controls passed.
+No test rerun or failure relabeling. Original parser/invocation retained; reusable
+next-run template corrected. The P02 report owns both original and reconciled scope.
 
-Critical review caught and closed the Index oracle's bool-as-int CBOR defect
-before engines ran. Corrected97a9 has three independently frozen Node-checked
-vectors including negative UTC, unchanged56 event preimages and43 controlsPASS.
-Schema44's two new tables are reconciled through one independent exact85-name
-inventory, preserving missing/extra/same-count substitution and lifecycle checks.
-Agent's full portable audit:622collected/621run, zero FAIL/ERROR,2 strace skips,
-1 explicit native-build NOT_RUN. Separately the unchanged four native-tool controls
-passed in the declared compiler image; the host's missing LLVM was ENVIRONMENT.
-The declared builder Python3.11.2 exposed a second setup error: the new fixture
-used a newer tar extraction keyword (40 setup/subtestERRORs; no assertionFAIL).
-The owned Git fixture now detects keyword support; newer runtimes retain explicit
-policy. Host11 controlsPASS; final minimum-runtime/full integrated retest pending.
+Unchanged f474 evidence remains: binary232, actual Monitor wire12, catalog16,
+Protocol56 and Archive-worker78 PASS (one dedicated worker test ignored), plus
+actual installed Archive/ClickHouse/restart above. No aggregate release claim.
+Declared compiler image/Python3.11.2 now passes **624 acceptance +13 export-profile
+controls, zero FAIL/ERROR/SKIP**. Original schema83 and extraction-keyword failures
+remain retained; exact85-name inventory/negative substitutions and supported
+extraction setup are reconciled. The Index oracle's bool/signed CBOR defect was
+closed before engines; independent Node vectors and56 old event preimages remain.
 
 Hosted baseline [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298)
 passed all33 selected commands plus20 scope controls at a37. The
 [P01 report](evidence/p01-ci-hosted-foundation-20261026.json) owns that scope and
-public-output audit. New source still needs its final exposure scan and real hosted
-qualification. The optional native timestamp preparer is integrated and reviewed
+public-output audit. New fae source scan covered428 new objects, no sensitive/raw-store/LFS paths or
+unclassified operational credential candidates; three new fixture/shell/diagnostic
+contexts were reviewed without exposing values. GitHub open secret alerts=0.
+Only documentation changes follow; actual new hosted qualification remains open. The optional native timestamp preparer is integrated and reviewed
 with21 controlsPASS; no compiled-cache hit or measured speedup is claimed.
 
 ## Open requirements, custody and next action
@@ -87,18 +82,17 @@ its existing tasks; no selected later requirement is removed.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns paths.
-All owned build/test/installed processes are terminal at recording. Workspace-r3
-89102 reaped0, all19 new installed containers stopped/PID0/noOOM, peer joined,
-listener closed/final queue empty, cleanup errors empty. Earlier18 installed
-containers/data remain retained; borrowed bridge1699209a is unchanged. All4
-original ELF bytes/fullstat passed no-atime guards. No cleanup performed.
-Root is sole integrator; author worktrees, original FAILs, .research and unique
-data are retained. Astra's bounded critical reviews are complete; Sol's remaining
-source-only diagnosis may supply a counterexample, with no edit authorization.
+All owned local builds/tests/installed processes are terminal; cache locks released,
+protected4ELF bytes/fullstat unchanged. All19 Index and earlier18 passive containers,
+private data/logs and borrowed bridge1699209a are retained; no cleanup performed.
+Root is the only integrator. Critical reviews/design are complete; no source agent
+has further edit authorization. Original failures, worktrees and .research persist.
 
-**Next Root action:** freeze coherent corrected source, anticipate all-target,
-Clippy and Rustdoc before the maintained build, qualify the corrected descriptor
-fixture and changed build tools, and run the integrated portable gates. Reuse
-unchanged f474 installed/other Rust evidence within its actual scope. Finish the
-bounded public scan and actual GitHub qualification around one coherent main
-push, then advance the next useful M2 capability without making all P02 a barrier.
+**Next Root action:** fast-forward/push one coherent main increment, verify its
+actual selected GitHub matrix and public outputs, then implement the bounded
+known measurement → generic checkpoint → confirmed native ACK increment. Use
+existing InternalEvidence with no Sync progress; require PG C4/native A4 and
+unchanged science/input/receipt. ACK is not retirement: preserve settlement/unique
+attribution through prefix deletion or refuse Monitor retirement intact. Follow
+P04-T07/P02; full lost-RAM/reconciliation/renewal/fleet and all later selected phases
+remain open. The goal is ACTIVE and incomplete.
