@@ -2445,7 +2445,7 @@
   },
   "pending_monitor_publication_20261102": {
     "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
-    "status": "PUSHED_FIRST_PASSIVE_CAPABILITY_HOSTED_MAC_BUILD_TOOL_FAILURE_LINUX_RUNNING",
+    "status": "PUSHED_FIRST_PASSIVE_CAPABILITY_HOSTED_FAILED_BUILD_TOOL_AND_STALE_CLI_TEST",
     "public_source_audit": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
       "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
@@ -2454,17 +2454,24 @@
     "provider_open_alerts": 0,
     "remote_baseline": "main/origin0d010f223fd0ff31e1ea217f2bf50fdf502ecf52, push independently verified. Latest full hosted PASS remains a37/run41366972298; current run41451793817 is incomplete. No billing/settings/publication-policy change.",
     "portable": "Declared compilerimage/Python3.11.2,624 acceptance+13 export-profilePASS/0SKIP; exact inputs/logs in runtime.",
-    "next": "Let the existing Linux jobs finish without superseding their concurrency group; publish the reviewed common export correction coherently, then qualify the actual new hosted matrix. No release/package/deployment authorization.",
+    "next": "Qualify the bounded ACK product locally, then publish both CI corrections with the coherent capability and verify the actual selected hosted matrix. Preserve old runFAIL/NOT_RUN and separate source-scoped local proofs; no release/deployment.",
     "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/push-receipt.json",
     "hosted_current": {
       "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41451793817",
       "source": "0d010f223fd0ff31e1ea217f2bf50fdf502ecf52",
       "attempt": 1,
       "observed_at": "2026-11-02T13:55:18Z",
-      "scope": "20 scope controlsPASS;33 selected foundation commands declared; Linuxamd64/arm64RUNNING. Mac609PASS/1FAIL/1ERROR/13 platformskips out of624; remaining5 Mac commandsNOT_RUN. Three other jobs unselectedSKIP, not required selected work.",
-      "classification": "BUILD_TOOL_PORTABILITY: Python3.15 data extraction default rewrites modes, rejected by the unchanged native source mode inventory. Not a Rust/runtime defect, billing refusal or cancellation.",
+      "scope": "Foundation18PASS/3FAIL/12NOT_RUN; scope20PASS. BothLinux624portable+13export/exactrelease/Clippy/RustdocPASS; Rust1052PASS/1sameCLIassertFAIL/0filtered, amd643dedicatedignored/arm2. All8Native measurement controlsPASS bothLinux; later packages/practical checksNOT_RUN. Mac609PASS/1FAIL/1ERROR/13platformskips, product/build/RustNOT_RUN.",
+      "classification": "BUILD_TOOL_PORTABILITY onMac and STALE_TEST_EXPECTATION onLinux. No billing/admission refusal, cancellation or demonstrated product defect in these failures.",
       "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/ci-observation",
-      "partial_macos_receipt_sha256": "e113d2c275f7096f1d036207f4759cbe320d4ac4f333ad83cf69e592cc350e61"
+      "partial_macos_receipt_sha256": "e113d2c275f7096f1d036207f4759cbe320d4ac4f333ad83cf69e592cc350e61",
+      "status": "COMPLETED_FAILURE",
+      "completed_at": "2026-11-02T14:16:46Z",
+      "terminal_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/ci-observation/terminal-audit.json",
+      "terminal_audit_sha256": "7358588bd5235c2738fa9e929ea5ebb75f433f5bb61ef3fb1ae4fd1ebb2e97fe",
+      "public_output_receipt_sha256": "d037ea3c13bb92171d394d43723d1b3a7df1fbb97f0396b6a2e0d96d2d2485a9",
+      "public_output": "Fourartifacts,31logmembers,zero bounded credential candidates/provider openalerts; asynchronous/provider limits retained.",
+      "observer": "Watcher reapedexit1/notexpired after actual workflowFAILURE; no remaining observer, cancellation/rerun/dispatch."
     },
     "archive_extraction_correction": {
       "status": "SOURCE_REVIEWED_HOST_CONTROLS_PASS_HOSTED_PENDING",
@@ -2473,6 +2480,14 @@
       "correction": "Explicit fully_trusted only after unchanged all-member validation of the builder-generated selected Git archive. Older Python without filters remains supported; archive modes/hash/identity/CWD guards unchanged.",
       "checks": "11 timestamp+10workspace host controlsPASS, no product/native rebuild. Astra critical source/evidence review approved.",
       "limits": "New actual hosted Mac/Linux gates remain required; this correction does not imply full hostedPASS."
+    },
+    "role_refusal_correction": {
+      "status": "SOURCE_CORRECTED_RELEASE_BINARY_SCENARIOS_PASS_HOSTED_TARGET_PENDING",
+      "classification": "Test compares entire evolving optional-role list although its scenarios test missing mandatory Control/Ingest roles. Current explicit once-only Monitor wording changed the list; role rejection remains correct.",
+      "correction": "Require the initial Control/Ingest refusal prefix, exit3 and emptystdout, add explicit absence of protected-password boundary. Existing final config/directory absence checks retained.",
+      "observed": "Five original bad-role cases passed against verifiedcc8 releaseELF with env cleared; no configuration mutation or password-boundary diagnostic. Changed Cargo target execution remains for actual next hosted run.",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/role-refusal-reproduction-r2/receipt.json",
+      "setup_failure": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/role-refusal-reproduction/setup-failure.json"
     }
   }
 }

@@ -128,10 +128,12 @@ fn explicit_initial_ingest_refuses_omitted_roles_and_unsupported_consumers_befor
         let wrong = invoke(roles);
         assert_eq!(wrong.status.code(), Some(3));
         assert!(wrong.stdout.is_empty());
+        let error = String::from_utf8_lossy(&wrong.stderr);
         assert!(
-            String::from_utf8_lossy(&wrong.stderr)
-                .contains("requires control,ingest with optional sync, archive and index roles")
+            error.starts_with("error: initial Ingest requires control,ingest"),
+            "{error}"
         );
+        assert!(!error.contains("protected PostgreSQL password"));
     }
     let administration = invoke("control,ingest");
     assert_eq!(administration.status.code(), Some(3));
