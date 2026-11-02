@@ -20,7 +20,8 @@ pub use admission::{EventIntent, LocalObservation, ProducerRequestId, WitnessCon
 pub use archive::{ArchiveBatch, ArchiveRange};
 pub use dictionary::{
     AccessClass, AccessScopeDescriptor, ClockSource, DatasetLineageDescriptor, DescriptorLabel,
-    DictionaryDescriptor, DictionaryEntry, EndpointDescriptor, ObserverDescriptor, RouteClass,
+    DictionaryDescriptor, DictionaryEntry, DirectRouteClass, DirectRouteDescriptor,
+    EndpointDescriptor, ObserverDescriptor, RouteClass,
 };
 pub use effect::{
     EventEffectBasis, ExistingProof, ProtectionClass, ProtectionContext, Receipt,

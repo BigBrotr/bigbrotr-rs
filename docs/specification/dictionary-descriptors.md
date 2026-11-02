@@ -1,7 +1,7 @@
 # Closed dictionary descriptors v1
 
-This is the field-level A04 contract for the first signed-event admission
-consumer, refining [archival data](data-contracts.md#a04--endpoint-observer-scope-and-method-dictionaries)
+This is the field-level A04 contract for signed-event admission and passive
+Monitor attribution, refining [archival data](data-contracts.md#a04--endpoint-observer-scope-and-method-dictionaries)
 and [identity/encoding](identity-and-encoding.md#portable-allocation-and-topology).
 The model and CBOR codecs implement these closed values. Allocation, atomic
 persistence, source/visibility authorization and archive/export closure still
@@ -21,9 +21,9 @@ Neither digest is an authorization token or proof that a mapping was committed.
 
 The schema and dictionary kind must agree exactly. Unknown kind, schema, enum,
 normalization version, descriptor version or required field is refused. Known
-portable kind 6 (route) and kind 7 (HTTP resource) have no descriptor codec in this
-slice and are refused rather than represented by arbitrary JSON. A later real
-producer must define their closed schemas. New semantic fields require a new
+portable kind 7 (HTTP resource) has no descriptor codec in this slice and is
+refused rather than represented by arbitrary JSON. A later real producer must
+define its closed schema. New semantic fields require a new
 version; old bytes/digests remain readable under their original version.
 
 Values are definite CBOR maps with the exact keys below in their listed order,
@@ -50,6 +50,8 @@ secret references, process IDs, worker IDs or per-delivery identifiers.
 | 2 / `observer` | `clock: ClockSource|null`, `vantage: Label|null`, `software: Label|null`, `method_id: QualifiedRef|null`, `public_key: bytes32|null`, `route_class: RouteClass|null`, `software_version: Label|null` |
 | 3 / `access-scope` | `class: AccessClass`, `label: Label|null`, `visibility_scope_id: QualifiedRef` |
 | 5 / `event-verification` | `input: text`, `algorithm: text`, `capability: text`, `output_unit: text`, `failure_taxonomy: text`, `algorithm_version: u16`, `protocol_revision: text`; all fixed values below |
+| 5 / `passive-ws-read` | The same seven fixed method fields, with the distinct values below |
+| 6 / `direct-route` | `class: DirectRouteClass`, `label: Label` |
 | 9 / `dataset-lineage` | `format: Label`, `format_version: u16`, `source_dataset_id: bytes16|null`, `source_artifact_digest: bytes32` |
 
 `event` binds the exact event ID to its allocated compact reference. The mapping
@@ -95,8 +97,14 @@ historical attribution scope; current policy still governs export and use. The
 mapping is independent of a socket, transient authentication challenge or process.
 It does not prove that an authentication attempt succeeded.
 
-The initial method descriptor is deliberately one specific implemented method,
-not a generic method registration framework. Its exact fields are:
+`direct-route.class` is exactly `public` or `private`; overlay classes `tor`,
+`i2p` and `lokinet` are refused by this direct-only schema. The required label
+names stable safe scientific route context. It contains no CIDR, URL, credential,
+process identity or per-attempt label. It supplies attribution, not network
+authority. The typed Archive and Index rows use their existing `class` and
+`label` fields, with the descriptor schema distinguishing their meaning.
+
+The closed `event-verification` method has these exact fields:
 
 | Field | Fixed value |
 |---|---|
@@ -120,6 +128,25 @@ not latency or a numeric score. Failure taxonomy distinguishes `invalid-parser-l
 not evidence of a bad signature. The success case supplies a verified invocation.
 Rust dependency versions are build evidence, not scientific capability identity.
 A changed semantic baseline or taxonomy needs a new descriptor version.
+
+The closed `passive-ws-read` method has these exact fields:
+
+| Field | Fixed value |
+|---|---|
+| `input` | `nip01-passive-read/1` |
+| `algorithm` | `guarded-ws-ordered-read` |
+| `capability` | `scoped-passive-read-observation` |
+| `output_unit` | `compound-attempt` |
+| `failure_taxonomy` | `bigbrotr-passive-ws-read/1` |
+| `algorithm_version` | `1` |
+| `protocol_revision` | `a2494f4f81d46684e5814a9bf35e2b1df978f955` |
+
+This identity describes one guarded passive WebSocket request/open and ordered
+read phase. It includes no signer, AUTH response or publish operation and claims
+no general NIP conformance. Actual dispatch, phase outcomes, per-attempt numeric
+budgets and cadence belong to the owning A05 evidence/execution contract. They
+cannot be encoded as mutable method labels. These two unit method descriptors
+provide no generic method registration framework, scheduling or network authority.
 
 `dataset-lineage` attributes the retained input artifact without exposing a local
 path, temporary job, transport credential or fabricated local observation. Format

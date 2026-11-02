@@ -249,24 +249,37 @@ mod tests {
                 );
             }
         }
-        assert_eq!(facts.len(), 14);
-        let batch = AdmissionBatch::new(facts.iter().map(Fact::fact_ref).collect()).unwrap();
-        let records: Vec<_> = facts
-            .iter()
-            .map(|f| f.encode_preimage(8192).unwrap())
-            .collect();
-        let mut wire = Vec::new();
-        let cancel = AtomicBool::new(false);
-        archive_batch::write_batch(&batch, &records, &mut wire, limits(), &cancel).unwrap();
-        let temp = tempfile::tempdir().unwrap();
-        let prepared =
-            PreparedBatch::prepare(engine(temp.path()), wire.as_slice(), limits(), &cancel)
-                .unwrap();
-        assert_eq!(prepared.batch(), &batch);
-        assert_eq!(prepared.counts().unwrap(), [10, 1, 1, 1, 1]);
-        let ordinal: u64=prepared.engine.connection.query_row("SELECT descriptor_value.method_id.ordinal FROM stage.dictionaries WHERE descriptor_schema='observer' AND descriptor_value.method_id IS NOT NULL",[],|r|r.get(0)).unwrap();
-        assert_eq!(ordinal, 1);
-        let row:(String,u16,u64)=prepared.engine.connection.query_row("SELECT origin, import_lineage.dictionary_kind, import_lineage.ordinal FROM stage.event_eligibility_facts",[],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?))).unwrap();
-        assert_eq!(row, ("import".into(), 9, 1));
+        assert_eq!(facts.len(), 17);
+        let mut counts = [0; 5];
+        // The expanded literal corpus crosses the existing16-record local cap.
+        // Keep that cap and exercise both bounded preparations.
+        for facts in facts.chunks(limits().max_records) {
+            let batch = AdmissionBatch::new(facts.iter().map(Fact::fact_ref).collect()).unwrap();
+            let records: Vec<_> = facts
+                .iter()
+                .map(|f| f.encode_preimage(8192).unwrap())
+                .collect();
+            let mut wire = Vec::new();
+            let cancel = AtomicBool::new(false);
+            archive_batch::write_batch(&batch, &records, &mut wire, limits(), &cancel).unwrap();
+            let temp = tempfile::tempdir().unwrap();
+            let prepared =
+                PreparedBatch::prepare(engine(temp.path()), wire.as_slice(), limits(), &cancel)
+                    .unwrap();
+            assert_eq!(prepared.batch(), &batch);
+            let actual = prepared.counts().unwrap();
+            for (total, count) in counts.iter_mut().zip(actual) {
+                *total += count;
+            }
+            if actual[0] != 0 {
+                let ordinal: u64=prepared.engine.connection.query_row("SELECT descriptor_value.method_id.ordinal FROM stage.dictionaries WHERE descriptor_schema='observer' AND descriptor_value.method_id IS NOT NULL",[],|r|r.get(0)).unwrap();
+                assert_eq!(ordinal, 1);
+            }
+            if actual[2] != 0 {
+                let row:(String,u16,u64)=prepared.engine.connection.query_row("SELECT origin, import_lineage.dictionary_kind, import_lineage.ordinal FROM stage.event_eligibility_facts",[],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?))).unwrap();
+                assert_eq!(row, ("import".into(), 9, 1));
+            }
+        }
+        assert_eq!(counts, [13, 1, 1, 1, 1]);
     }
 }

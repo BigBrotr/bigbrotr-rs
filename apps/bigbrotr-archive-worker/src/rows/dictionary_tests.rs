@@ -77,6 +77,21 @@ fn expected(name: &str) -> (u16, &'static str, Value) {
             "event-verification",
             json!({"input":"nip01-event/1","algorithm":"sha256-bip340","capability":"event-id-and-signature","output_unit":"verification-result","failure_taxonomy":"bigbrotr-nip01-verifier/1","algorithm_version":1,"protocol_revision":"a2494f4f81d46684e5814a9bf35e2b1df978f955"}),
         ),
+        "passive-ws-read" => (
+            5,
+            "passive-ws-read",
+            json!({"input":"nip01-passive-read/1","algorithm":"guarded-ws-ordered-read","capability":"scoped-passive-read-observation","output_unit":"compound-attempt","failure_taxonomy":"bigbrotr-passive-ws-read/1","algorithm_version":1,"protocol_revision":"a2494f4f81d46684e5814a9bf35e2b1df978f955"}),
+        ),
+        "direct-route-public" => (
+            6,
+            "direct-route",
+            json!({"class":"public","label":"public-a"}),
+        ),
+        "direct-route-private" => (
+            6,
+            "direct-route",
+            json!({"class":"private","label":"private-a"}),
+        ),
         "lineage-native" => (
             9,
             "dataset-lineage",
@@ -135,7 +150,7 @@ fn scalar(array: &dyn Array, row: usize) -> Value {
 #[test]
 fn all_closed_descriptors_survive_native_parquet_with_nulls_and_foreign_lineage() {
     let fixtures = fixtures();
-    assert_eq!(fixtures.len(), 10);
+    assert_eq!(fixtures.len(), 13);
     let rows = Rows::dictionaries(
         &fixtures.iter().map(|(_, _, f)| f).collect::<Vec<_>>(),
         tests::limits(),
@@ -165,7 +180,7 @@ fn all_closed_descriptors_survive_native_parquet_with_nulls_and_foreign_lineage(
             );
         }
     }
-    assert_eq!(actual.len(), 10);
+    assert_eq!(actual.len(), 13);
     let names = [
         "event_id",
         "class",

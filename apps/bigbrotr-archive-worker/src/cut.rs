@@ -209,7 +209,7 @@ pub(crate) fn reference_closure(
     refuses(
         c,
         &format!(
-            "SELECT 1 FROM cut_dictionaries WHERE ({valid_key} AND normalization_version=1 AND descriptor_version=1 AND reference.dictionary_kind=CASE descriptor_schema WHEN 'endpoint' THEN 1 WHEN 'observer' THEN 2 WHEN 'access-scope' THEN 3 WHEN 'visibility' THEN 4 WHEN 'event-verification' THEN 5 WHEN 'event' THEN 8 WHEN 'dataset-lineage' THEN 9 ELSE 0 END) IS NOT TRUE"
+            "SELECT 1 FROM cut_dictionaries WHERE ({valid_key} AND normalization_version=1 AND descriptor_version=1 AND reference.dictionary_kind=CASE descriptor_schema WHEN 'endpoint' THEN 1 WHEN 'observer' THEN 2 WHEN 'access-scope' THEN 3 WHEN 'visibility' THEN 4 WHEN 'event-verification' THEN 5 WHEN 'passive-ws-read' THEN 5 WHEN 'direct-route' THEN 6 WHEN 'event' THEN 8 WHEN 'dataset-lineage' THEN 9 ELSE 0 END) IS NOT TRUE"
         ),
     )?;
     refuses(

@@ -2,11 +2,11 @@ use super::*;
 use bigbrotr_model::{
     AccessClass, AccessScopeDescriptor, AllocationDomainId, ClockQuality, ClockSource,
     CompleteThrough, DatasetId, DatasetLineageDescriptor, DescriptorLabel, DictionaryDescriptor,
-    DictionaryEntry, DictionaryKind, Digest256, DurationUs, EndpointDescriptor, EventBody,
-    EventEligibility, EventId, EventOrigin, EventPayload, EventReceive, FactPayload, NostrTime,
-    ObservedTime, ObserverDescriptor, Ordinal, OwnerEpoch, Provenance, PublicKey, RouteClass,
-    Sequence, Signature, SourceCut, StreamBound, StreamId, TopologyGeneration,
-    codec::FactDecodeLimits,
+    DictionaryEntry, DictionaryKind, Digest256, DirectRouteClass, DirectRouteDescriptor,
+    DurationUs, EndpointDescriptor, EventBody, EventEligibility, EventId, EventOrigin,
+    EventPayload, EventReceive, FactPayload, NostrTime, ObservedTime, ObserverDescriptor, Ordinal,
+    OwnerEpoch, Provenance, PublicKey, RouteClass, Sequence, Signature, SourceCut, StreamBound,
+    StreamId, TopologyGeneration, codec::FactDecodeLimits,
 };
 use std::collections::BTreeMap;
 
@@ -476,6 +476,15 @@ fn all_dictionary_descriptor_variants_keep_their_typed_fields_and_nulls() {
             visibility_scope_id: reference(DictionaryKind::VisibilityScope, 9),
         }),
         DictionaryDescriptor::EventVerification,
+        DictionaryDescriptor::PassiveWsRead,
+        DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+            class: DirectRouteClass::Public,
+            label: label("public-a"),
+        }),
+        DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+            class: DirectRouteClass::Private,
+            label: label("private-a"),
+        }),
         DictionaryDescriptor::DatasetLineage(DatasetLineageDescriptor {
             format: label("native"),
             format_version: 7,
@@ -491,6 +500,9 @@ fn all_dictionary_descriptor_variants_keep_their_typed_fields_and_nulls() {
         serde_json::json!({}),
         serde_json::json!({"class": "protected", "label": "restricted", "access_visibility_scope": [[vec![0x11; 16], 4, vec![0x22; 16], 9]]}),
         serde_json::json!({"input": "nip01-event/1", "algorithm": "sha256-bip340", "capability": "event-id-and-signature", "output_unit": "verification-result", "failure_taxonomy": "bigbrotr-nip01-verifier/1", "algorithm_version": 1, "protocol_revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955"}),
+        serde_json::json!({"input":"nip01-passive-read/1","algorithm":"guarded-ws-ordered-read","capability":"scoped-passive-read-observation","output_unit":"compound-attempt","failure_taxonomy":"bigbrotr-passive-ws-read/1","algorithm_version":1,"protocol_revision":"a2494f4f81d46684e5814a9bf35e2b1df978f955"}),
+        serde_json::json!({"class":"public","label":"public-a"}),
+        serde_json::json!({"class":"private","label":"private-a"}),
         serde_json::json!({"format": "native", "format_version": 7, "source_dataset_id": vec![0x66; 16], "source_artifact_digest": vec![0x77; 32]}),
     ];
     for (descriptor, expected) in descriptors.into_iter().zip(expected) {

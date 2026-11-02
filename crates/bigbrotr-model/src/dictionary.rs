@@ -8,6 +8,7 @@ use std::fmt;
 pub const MAX_DESCRIPTOR_LABEL_BYTES: usize = 64;
 pub const MAX_DESCRIPTOR_ENDPOINT_BYTES: usize = 8192;
 pub const EVENT_VERIFICATION_NIPS_REVISION: &str = "a2494f4f81d46684e5814a9bf35e2b1df978f955";
+pub const PASSIVE_WS_READ_NIPS_REVISION: &str = "a2494f4f81d46684e5814a9bf35e2b1df978f955";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DictionaryError {
@@ -121,6 +122,25 @@ impl RouteClass {
         }
     }
 }
+/// Closed direct-route subset; overlay adapters require their own descriptors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DirectRouteClass {
+    Public,
+    Private,
+}
+impl DirectRouteClass {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Public => "public",
+            Self::Private => "private",
+        }
+    }
+}
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DirectRouteDescriptor {
+    pub class: DirectRouteClass,
+    pub label: DescriptorLabel,
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClockSource {
     SystemUtc,
@@ -172,8 +192,8 @@ pub struct DatasetLineageDescriptor {
     pub source_artifact_digest: Digest256,
 }
 
-/// Only actual admission dependencies are implemented. Route and HTTP-resource
-/// references remain valid portable names, but have no accepted descriptor here.
+/// Closed admission and passive-read attribution values. HTTP-resource names
+/// remain portable references without an accepted descriptor here.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DictionaryDescriptor {
     Event(EventId),
@@ -182,6 +202,8 @@ pub enum DictionaryDescriptor {
     Observer(ObserverDescriptor),
     AccessScope(AccessScopeDescriptor),
     EventVerification,
+    PassiveWsRead,
+    DirectRoute(DirectRouteDescriptor),
     DatasetLineage(DatasetLineageDescriptor),
 }
 impl DictionaryDescriptor {
@@ -204,7 +226,8 @@ impl DictionaryDescriptor {
             }),
             Self::AccessScope(value) => value.label.as_ref().map_or(0, |label| label.0.capacity()),
             Self::DatasetLineage(value) => value.format.0.capacity(),
-            Self::Event(_) | Self::EventVerification => 0,
+            Self::DirectRoute(value) => value.label.0.capacity(),
+            Self::Event(_) | Self::EventVerification | Self::PassiveWsRead => 0,
         }
     }
 
@@ -215,7 +238,8 @@ impl DictionaryDescriptor {
             Self::Endpoint(_) => DictionaryKind::Endpoint,
             Self::Observer(_) => DictionaryKind::Observer,
             Self::AccessScope(_) => DictionaryKind::AccessScope,
-            Self::EventVerification => DictionaryKind::Method,
+            Self::EventVerification | Self::PassiveWsRead => DictionaryKind::Method,
+            Self::DirectRoute(_) => DictionaryKind::Route,
             Self::DatasetLineage(_) => DictionaryKind::DatasetLineage,
         }
     }
@@ -227,6 +251,8 @@ impl DictionaryDescriptor {
             Self::Observer(_) => "observer",
             Self::AccessScope(_) => "access-scope",
             Self::EventVerification => "event-verification",
+            Self::PassiveWsRead => "passive-ws-read",
+            Self::DirectRoute(_) => "direct-route",
             Self::DatasetLineage(_) => "dataset-lineage",
         }
     }

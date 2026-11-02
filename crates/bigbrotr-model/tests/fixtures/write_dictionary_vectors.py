@@ -58,6 +58,14 @@ rows = [
     ("event-verification", 5, "event-verification", method),
     ("lineage-native", 9, "dataset-lineage", {"format": "bigbrotr-native", "format_version": 1, "source_dataset_id": bytes([3])*16, "source_artifact_digest": bytes([0xcc])*32}),
     ("lineage-jsonl", 9, "dataset-lineage", {"format": "nostr-jsonl", "format_version": 1, "source_dataset_id": None, "source_artifact_digest": bytes([0xdd])*32}),
+    ("direct-route-public", 6, "direct-route", {"class": "public", "label": "public-a"}),
+    ("direct-route-private", 6, "direct-route", {"class": "private", "label": "private-a"}),
+    ("passive-ws-read", 5, "passive-ws-read", {
+        "input": "nip01-passive-read/1", "algorithm": "guarded-ws-ordered-read",
+        "capability": "scoped-passive-read-observation", "output_unit": "compound-attempt",
+        "failure_taxonomy": "bigbrotr-passive-ws-read/1", "algorithm_version": 1,
+        "protocol_revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+    }),
 ]
 result = []
 for name, kind, schema, value in rows:

@@ -14,7 +14,7 @@ fn dictionary_facts_decode_independent_literal_preimages() {
     let fixture: serde_json::Value =
         serde_json::from_str(include_str!("fixtures/dictionary-v1.json")).unwrap();
     let rows = fixture["vectors"].as_array().unwrap();
-    assert_eq!(rows.len(), 20);
+    assert_eq!(rows.len(), 26);
     for row in rows.iter().filter(|row| row["family"] == "fact") {
         let input = bytes(row["preimage_hex"].as_str().unwrap());
         let digest = row["sha256"].as_str().unwrap().parse().unwrap();
@@ -28,9 +28,9 @@ fn dictionary_facts_decode_independent_literal_preimages() {
 use bigbrotr_model::{
     AccessClass, AccessScopeDescriptor, AllocationDomainId, ClockSource, DatasetId,
     DatasetLineageDescriptor, DescriptorLabel, DictionaryDescriptor, DictionaryEntry,
-    DictionaryKind, Digest256, EndpointDescriptor, EventId, FactPayload, ObservedTime,
-    ObserverDescriptor, Ordinal, OwnerEpoch, PublicKey, QualifiedRef, RouteClass, Sequence,
-    SourceRecordId,
+    DictionaryKind, Digest256, DirectRouteClass, DirectRouteDescriptor, EndpointDescriptor,
+    EventId, FactPayload, ObservedTime, ObserverDescriptor, Ordinal, OwnerEpoch, PublicKey,
+    QualifiedRef, RouteClass, Sequence, SourceRecordId,
     codec::{CodecError, DictionaryDecodeLimits},
     dictionary::DictionaryError,
 };
@@ -123,6 +123,21 @@ fn descriptor(name: &str) -> DictionaryDescriptor {
             })
         }
         "event-verification" => DictionaryDescriptor::EventVerification,
+        "passive-ws-read" => DictionaryDescriptor::PassiveWsRead,
+        "direct-route-public" | "direct-route-private" => {
+            DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+                class: if name == "direct-route-public" {
+                    DirectRouteClass::Public
+                } else {
+                    DirectRouteClass::Private
+                },
+                label: label(if name == "direct-route-public" {
+                    "public-a"
+                } else {
+                    "private-a"
+                }),
+            })
+        }
         "lineage-native" | "lineage-jsonl" => {
             DictionaryDescriptor::DatasetLineage(DatasetLineageDescriptor {
                 format: label(if name == "lineage-native" {
@@ -319,6 +334,12 @@ fn closure_contains_actual_dependencies_and_does_not_invent_attribution() {
             ],
         ),
         ("lineage-native", vec![DictionaryKind::VisibilityScope]),
+        ("direct-route-public", vec![DictionaryKind::VisibilityScope]),
+        (
+            "direct-route-private",
+            vec![DictionaryKind::VisibilityScope],
+        ),
+        ("passive-ws-read", vec![DictionaryKind::VisibilityScope]),
     ] {
         let value = descriptor(name);
         let fact = Fact::new(
@@ -555,6 +576,9 @@ fn text_and_allocation_limits_precede_allocation_and_unknown_is_not_empty() {
         ("observer-known", 5 + 8 + 9),
         ("observer-unknown", 0),
         ("event-verification", 0),
+        ("passive-ws-read", 0),
+        ("direct-route-public", 8),
+        ("direct-route-private", 9),
     ] {
         let input = &corpus.iter().find(|r| r.0 == name).unwrap().1;
         let mut limits = DictionaryDecodeLimits {
@@ -757,4 +781,123 @@ fn closed_enums_and_dictionary_fact_namespace_remain_explicit() {
     let utf8 = position(&encoded, "é".as_bytes());
     invalid_utf8[utf8] = 0xff;
     assert!(decode(&invalid_utf8).is_err());
+}
+
+#[test]
+fn passive_method_and_direct_routes_reject_incompatible_closed_values() {
+    let corpus = fixtures("dictionary");
+    for name in [
+        "direct-route-public",
+        "direct-route-private",
+        "passive-ws-read",
+    ] {
+        let input = &corpus.iter().find(|row| row.0 == name).unwrap().1;
+        let value = descriptor(name);
+        let entry = DictionaryEntry::new(reference(value.kind()), value.clone()).unwrap();
+        for number in 1..=9 {
+            let kind = DictionaryKind::try_from(number).unwrap();
+            if kind == value.kind() {
+                continue;
+            }
+            assert!(DictionaryEntry::new(reference(kind), value.clone()).is_err());
+            let mut wrong = input.clone();
+            wrong[b"bigbrotr/dictionary/1\0".len() + 19] = number as u8;
+            assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+        }
+        let schema = position(input, entry.descriptor_schema().as_bytes());
+        for offset in [
+            b"bigbrotr/dictionary/1\0".len() + 38,
+            schema + entry.descriptor_schema().len(),
+        ] {
+            let mut wrong = input.clone();
+            wrong[offset] = 2;
+            assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+        }
+        let mut wrong = input.clone();
+        wrong[schema] = b'X';
+        assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+        let mut foreign = entry.reference();
+        foreign.ordinal = Ordinal::new(2).unwrap();
+        let other = DictionaryEntry::new(foreign, value).unwrap();
+        assert_eq!(
+            entry.require_same_mapping(&other),
+            Err(DictionaryError::DifferentReference)
+        );
+        assert_eq!(
+            entry.encode_descriptor(4096).unwrap(),
+            other.encode_descriptor(4096).unwrap()
+        );
+        let conflict = DictionaryEntry::new(
+            entry.reference(),
+            if name == "passive-ws-read" {
+                DictionaryDescriptor::EventVerification
+            } else {
+                DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+                    class: DirectRouteClass::Public,
+                    label: label("different"),
+                })
+            },
+        )
+        .unwrap();
+        assert_eq!(
+            entry.require_same_mapping(&conflict),
+            Err(DictionaryError::MappingConflict)
+        );
+    }
+    let route = &corpus
+        .iter()
+        .find(|row| row.0 == "direct-route-public")
+        .unwrap()
+        .1;
+    let map = position(route, &bytes("a265636c617373"));
+    for replacement in [
+        "a165636c617373667075626c6963",                 // missing label
+        "a265636c617373667075626c6963656c6162656cf6",   // null label
+        "a265636c617373667075626c6963656c6162656c60",   // empty label
+        "a265636c617373667075626c6963656c6162656c612f", // unsafe label
+        "a2656c6162656c687075626c69632d6165636c617373667075626c6963", // reordered
+        "a365636c617373667075626c6963656c6162656c687075626c69632d6165657874726101", // extra
+    ] {
+        let mut wrong = route[..map].to_vec();
+        wrong.extend(bytes(replacement));
+        assert!(decode(&wrong).is_err());
+    }
+    for class in ["tor", "i2p", "lokinet", "protected", "PUBLIC"] {
+        let mut wrong = route.clone();
+        let at = position(route, b"\x66public");
+        let mut encoded = vec![0x60 + class.len() as u8];
+        encoded.extend(class.as_bytes());
+        wrong.splice(at..at + 7, encoded);
+        assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+    }
+    let method = &corpus
+        .iter()
+        .find(|row| row.0 == "passive-ws-read")
+        .unwrap()
+        .1;
+    for literal in [
+        "nip01-passive-read/1",
+        "guarded-ws-ordered-read",
+        "scoped-passive-read-observation",
+        "compound-attempt",
+        "bigbrotr-passive-ws-read/1",
+        "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+    ] {
+        let mut wrong = method.clone();
+        wrong[position(method, literal.as_bytes())] = b'X';
+        assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+    }
+    let mut wrong = method.clone();
+    wrong[position(method, b"algorithm_version") + 17] = 2;
+    assert_eq!(decode(&wrong), Err(CodecError::IncompatibleSchema));
+    for class in [DirectRouteClass::Public, DirectRouteClass::Private] {
+        let mut text = String::with_capacity(256);
+        text.push_str("safe-context");
+        let value = DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+            class,
+            label: DescriptorLabel::new(text).unwrap(),
+        });
+        assert!(value.heap_allocation_bytes() >= 256);
+        assert!(!format!("{value:?}").contains("safe-context"));
+    }
 }

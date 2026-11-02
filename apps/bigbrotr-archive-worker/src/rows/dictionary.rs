@@ -236,6 +236,21 @@ impl<'a> Descriptor<'a> {
                 ),
                 ..Self::default()
             },
+            D::PassiveWsRead => Self {
+                input: Some("nip01-passive-read/1"),
+                algorithm: Some("guarded-ws-ordered-read"),
+                capability: Some("scoped-passive-read-observation"),
+                output_unit: Some("compound-attempt"),
+                failure_taxonomy: Some("bigbrotr-passive-ws-read/1"),
+                algorithm_version: Some(1),
+                protocol_revision: Some(bigbrotr_model::dictionary::PASSIVE_WS_READ_NIPS_REVISION),
+                ..Self::default()
+            },
+            D::DirectRoute(value) => Self {
+                class: Some(value.class.as_str()),
+                label: Some(value.label.as_str()),
+                ..Self::default()
+            },
             D::DatasetLineage(value) => Self {
                 format: Some(value.format.as_str()),
                 format_version: Some(value.format_version),

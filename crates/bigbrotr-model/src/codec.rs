@@ -4,13 +4,14 @@
 use crate::{
     AccessClass, AccessScopeDescriptor, AllocationDomainId, ClockQuality, ClockSource, DatasetId,
     DatasetLineageDescriptor, DescriptorLabel, DictionaryDescriptor, DictionaryEntry,
-    DictionaryKind, Digest256, DurationUs, EndpointDescriptor, EventBody, EventEligibility,
-    EventId, EventOrigin, EventPayload, EventReceive, Fact, FactPayload, NostrTime, ObservedTime,
-    ObserverDescriptor, Ordinal, OwnerEpoch, Provenance, PublicKey, QualifiedRef, RouteClass,
-    Sequence, Signature, SourceRecordId,
+    DictionaryKind, Digest256, DirectRouteClass, DirectRouteDescriptor, DurationUs,
+    EndpointDescriptor, EventBody, EventEligibility, EventId, EventOrigin, EventPayload,
+    EventReceive, Fact, FactPayload, NostrTime, ObservedTime, ObserverDescriptor, Ordinal,
+    OwnerEpoch, Provenance, PublicKey, QualifiedRef, RouteClass, Sequence, Signature,
+    SourceRecordId,
     dictionary::{
         DictionaryError, EVENT_VERIFICATION_NIPS_REVISION, MAX_DESCRIPTOR_ENDPOINT_BYTES,
-        MAX_DESCRIPTOR_LABEL_BYTES,
+        MAX_DESCRIPTOR_LABEL_BYTES, PASSIVE_WS_READ_NIPS_REVISION,
     },
     fact::FactError,
     fingerprint,
@@ -558,6 +559,40 @@ impl<'a> FactReader<'a> {
                 self.literal("protocol_revision")?;
                 self.literal(EVENT_VERIFICATION_NIPS_REVISION)?;
                 DictionaryDescriptor::EventVerification
+            }
+            (DictionaryKind::Method, "passive-ws-read") => {
+                self.map(7)?;
+                for (key, value) in [
+                    ("input", "nip01-passive-read/1"),
+                    ("algorithm", "guarded-ws-ordered-read"),
+                    ("capability", "scoped-passive-read-observation"),
+                    ("output_unit", "compound-attempt"),
+                    ("failure_taxonomy", "bigbrotr-passive-ws-read/1"),
+                ] {
+                    self.literal(key)?;
+                    self.literal(value)?;
+                }
+                self.literal("algorithm_version")?;
+                if self.decoder.u16()? != 1 {
+                    return Err(CodecError::IncompatibleSchema);
+                }
+                self.literal("protocol_revision")?;
+                self.literal(PASSIVE_WS_READ_NIPS_REVISION)?;
+                DictionaryDescriptor::PassiveWsRead
+            }
+            (DictionaryKind::Route, "direct-route") => {
+                self.map(2)?;
+                self.literal("class")?;
+                let class = match self.decoder.str()? {
+                    "public" => DirectRouteClass::Public,
+                    "private" => DirectRouteClass::Private,
+                    _ => return Err(CodecError::IncompatibleSchema),
+                };
+                self.literal("label")?;
+                DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+                    class,
+                    label: self.label()?,
+                })
             }
             (DictionaryKind::DatasetLineage, "dataset-lineage") => {
                 self.map(4)?;

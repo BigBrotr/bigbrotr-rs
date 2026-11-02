@@ -270,6 +270,32 @@ fn dictionary_descriptor_fields<W: Write>(
                 .str("protocol_revision")?
                 .str(crate::dictionary::EVENT_VERIFICATION_NIPS_REVISION)?;
         }
+        DictionaryDescriptor::PassiveWsRead => {
+            encoder
+                .map(7)?
+                .str("input")?
+                .str("nip01-passive-read/1")?
+                .str("algorithm")?
+                .str("guarded-ws-ordered-read")?
+                .str("capability")?
+                .str("scoped-passive-read-observation")?
+                .str("output_unit")?
+                .str("compound-attempt")?
+                .str("failure_taxonomy")?
+                .str("bigbrotr-passive-ws-read/1")?
+                .str("algorithm_version")?
+                .u16(1)?
+                .str("protocol_revision")?
+                .str(crate::dictionary::PASSIVE_WS_READ_NIPS_REVISION)?;
+        }
+        DictionaryDescriptor::DirectRoute(value) => {
+            encoder
+                .map(2)?
+                .str("class")?
+                .str(value.class.as_str())?
+                .str("label")?
+                .str(value.label.as_str())?;
+        }
         DictionaryDescriptor::DatasetLineage(value) => {
             encoder
                 .map(4)?

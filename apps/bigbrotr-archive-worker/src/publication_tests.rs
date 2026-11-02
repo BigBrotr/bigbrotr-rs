@@ -50,6 +50,94 @@ fn facts() -> Vec<Fact> {
     })
     .collect()
 }
+
+#[test]
+fn passive_method_and_direct_routes_survive_publication_and_complete_cut() {
+    use bigbrotr_model::{DictionaryEntry, FactPayload, Ordinal};
+    use bigbrotr_protocol::{
+        archive_cut::{CutBound, CutRead},
+        archive_receipt::ReceiptExpectation,
+    };
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../crates/bigbrotr-model/tests/fixtures/dictionary-v1.json"
+    ))
+    .unwrap();
+    let mut all = facts();
+    for name in [
+        "direct-route-public",
+        "direct-route-private",
+        "passive-ws-read",
+    ] {
+        let vector = fixture["vectors"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|row| row["family"] == "fact" && row["name"] == name)
+            .unwrap();
+        let fact = decode(vector, "sha256");
+        let FactPayload::Dictionary(entry) = fact.payload() else {
+            unreachable!()
+        };
+        let mut reference = entry.reference();
+        if name == "direct-route-private" {
+            reference.ordinal = Ordinal::new(2).unwrap();
+        }
+        let mut source = fact.source_record_id();
+        source.sequence = Sequence::new(all.len() as u64 + 1).unwrap();
+        all.push(
+            Fact::new(
+                source,
+                fact.visibility_scope_id(),
+                fact.recorded_at(),
+                FactPayload::Dictionary(
+                    DictionaryEntry::new(reference, entry.descriptor().clone()).unwrap(),
+                ),
+            )
+            .unwrap(),
+        );
+    }
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let catalog = home.path().join("catalog.ducklake");
+    let data = home.path().join("objects");
+    let engine = open(temp.path(), &catalog, &data);
+    schema::initialize(&engine.connection).unwrap();
+    let (prepared, request) = prepare(engine, &all, &data);
+    let archive = ArchiveBatch::new(
+        1,
+        request.topology_generation,
+        std::slice::from_ref(prepared.batch()),
+    )
+    .unwrap();
+    let read = CutRead {
+        dataset_id: all[0].source_record_id().dataset_id,
+        topology_generation: request.topology_generation,
+        bounds: vec![CutBound {
+            shard_id: 0,
+            owner_epoch: 1,
+            complete_through: 6,
+        }],
+        receipts: vec![
+            ReceiptExpectation::from_archive(
+                &archive,
+                request.attempt_id,
+                request.publication_ordinal,
+            )
+            .unwrap(),
+        ],
+        snapshot_id: Some(2),
+    };
+    prepared.publish_attached(&request).unwrap();
+    drop(prepared);
+    let temp = tempfile::tempdir().unwrap();
+    let engine = open(temp.path(), &catalog, &data);
+    assert_eq!(
+        crate::cut::inspect_attached(&engine.connection, &read, &data, 4, 6)
+            .unwrap()
+            .family_counts,
+        [5, 1, 0, 0, 0]
+    );
+}
 fn open(temp: &Path, catalog: &Path, data: &Path) -> Engine {
     // Ordinary attachment requires the operator's existing canonical data root.
     fs::create_dir_all(data).unwrap();

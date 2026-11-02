@@ -3,8 +3,9 @@ use super::{
     ReceiveRow, RowsError, TagRow, reference_tuple, source_tuple,
 };
 use bigbrotr_model::{
-    DictionaryDescriptor, Fact, FactPayload, ProjectionGenerationId, codec::FactDecodeLimits,
-    dictionary::EVENT_VERIFICATION_NIPS_REVISION,
+    DictionaryDescriptor, Fact, FactPayload, ProjectionGenerationId,
+    codec::FactDecodeLimits,
+    dictionary::{EVENT_VERIFICATION_NIPS_REVISION, PASSIVE_WS_READ_NIPS_REVISION},
 };
 use std::{borrow::Cow, mem::size_of};
 
@@ -181,6 +182,19 @@ impl<'a> FactRows<'a> {
                 row.failure_taxonomy = Some(Cow::Borrowed("bigbrotr-nip01-verifier/1"));
                 row.algorithm_version = Some(1);
                 row.protocol_revision = Some(Cow::Borrowed(EVENT_VERIFICATION_NIPS_REVISION));
+            }
+            DictionaryDescriptor::PassiveWsRead => {
+                row.input = Some(Cow::Borrowed("nip01-passive-read/1"));
+                row.algorithm = Some(Cow::Borrowed("guarded-ws-ordered-read"));
+                row.capability = Some(Cow::Borrowed("scoped-passive-read-observation"));
+                row.output_unit = Some(Cow::Borrowed("compound-attempt"));
+                row.failure_taxonomy = Some(Cow::Borrowed("bigbrotr-passive-ws-read/1"));
+                row.algorithm_version = Some(1);
+                row.protocol_revision = Some(Cow::Borrowed(PASSIVE_WS_READ_NIPS_REVISION));
+            }
+            DictionaryDescriptor::DirectRoute(value) => {
+                row.class = Some(Cow::Borrowed(value.class.as_str()));
+                row.label = Some(Cow::Borrowed(value.label.as_str()));
             }
             DictionaryDescriptor::DatasetLineage(value) => {
                 row.format = Some(Cow::Borrowed(value.format.as_str()));

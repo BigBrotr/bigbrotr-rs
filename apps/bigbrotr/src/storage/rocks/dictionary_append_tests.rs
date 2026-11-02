@@ -1450,3 +1450,102 @@ fn dictionary_preparation_reuse_requires_the_matching_facts_transitive_method() 
             .is_none()
     );
 }
+
+#[test]
+fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts() {
+    use crate::storage::rocks::manifest::AllocationNamespaces;
+    use std::sync::atomic::AtomicBool;
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let namespaces = [
+        DictionaryKind::VisibilityScope,
+        DictionaryKind::Method,
+        DictionaryKind::Route,
+    ]
+    .map(|kind| (kind, reference(kind, 1).allocation_domain));
+    let manifest = IngestManifest::new(
+        *manifest().identity(),
+        AllocationNamespaces::from_entries(&namespaces).unwrap(),
+    );
+    let mut store = fixture_initialize(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
+    boot_installed(&mut store, &b);
+    let public = reference(DictionaryKind::VisibilityScope, 1);
+    let descriptors = [
+        DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+            class: DirectRouteClass::Public,
+            label: DescriptorLabel::new("monitor-a".into()).unwrap(),
+        }),
+        DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+            class: DirectRouteClass::Private,
+            label: DescriptorLabel::new("monitor-a".into()).unwrap(),
+        }),
+        DictionaryDescriptor::PassiveWsRead,
+        DictionaryDescriptor::EventVerification,
+    ];
+    let expected = [
+        reference(DictionaryKind::Route, 1),
+        reference(DictionaryKind::Route, 2),
+        reference(DictionaryKind::Method, 1),
+        reference(DictionaryKind::Method, 2),
+    ];
+    let cancelled = AtomicBool::new(false);
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    for (descriptor, expected) in descriptors.iter().zip(expected) {
+        assert_eq!(preparation.intern(descriptor.clone()).unwrap(), expected);
+        assert_eq!(preparation.intern(descriptor.clone()).unwrap(), expected);
+    }
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(prepared.intent().dictionaries().len(), 4);
+    assert_eq!(rows(&store), before);
+    assert_eq!(
+        append(&mut store, &b, 2, prepared.intent())
+            .unwrap()
+            .receipt()
+            .batch()
+            .unwrap()
+            .records()
+            .len(),
+        4
+    );
+    drop(prepared);
+    drop(store);
+    let mut store =
+        IngestStore::reopen(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
+    let before = rows(&store);
+    let mut preparation = store
+        .prepare_dictionaries(public, limits(), grant(&b, 4 * MIB, 0), &cancelled)
+        .unwrap();
+    for (descriptor, expected) in descriptors.iter().zip(expected) {
+        assert_eq!(preparation.intern(descriptor.clone()).unwrap(), expected);
+    }
+    let prepared = preparation.finish().unwrap();
+    assert_eq!(rows(&store), before);
+    assert!(
+        append(&mut store, &b, 3, prepared.intent())
+            .unwrap()
+            .receipt()
+            .batch()
+            .is_none()
+    );
+    drop(prepared);
+    let before = rows(&store);
+    let conflict = evidence(
+        public,
+        vec![
+            DictionaryEntry::new(
+                expected[0],
+                DictionaryDescriptor::DirectRoute(DirectRouteDescriptor {
+                    class: DirectRouteClass::Public,
+                    label: DescriptorLabel::new("other-context".into()).unwrap(),
+                }),
+            )
+            .unwrap(),
+        ],
+    );
+    assert!(append(&mut store, &b, 4, &conflict).is_err());
+    assert_eq!(rows(&store), before);
+}
