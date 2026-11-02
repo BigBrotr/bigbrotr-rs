@@ -121,13 +121,65 @@
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
     },
-    "next": "Reconcile typed Native admission/original-request replay and strong closure, Archive/Index scientific family and callers, then typed PG Monitor dispatch and installed endpoint-to-Archive/restart evidence. Current five-second authority bound remains enforced; nominal15s refresh/durable-start claims retain existing P04 owners.",
+    "next": "Finish the existing first once-only operator source/admission and supervised installed measurement inspection. Reconcile actual schema44 packaged roles, source completion, budgets and exact pinned inputs before affected build/native/PG/Archive/Index and installed qualification. No whole-P02 prerequisite or full Monitor/M2 claim.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
       "scope": "Two immutable dataset/attempt inventory slots; shared existing dictionary/measurement evidence staging, original request lifecycle, quota/input/atomic commit kernel; exact original and new AlreadyDurable distinction; resolution strong closure and Native closing/open-prefix/census reconciliation. Event receipt validation refuses Measurement. No current Native/PG/Archive/Index or installed Monitor qualification.",
       "design_review": "Independent Astra confirmed two immutable slots fit current immutable census/compaction. Current all-CF pending-accounting census already refuses new domains for earlier binaries; exclusive native LOCK excludes concurrent old owner, so no speculative global manifest-version bump. Portable cross-shard resolution remains outside this single-shard Native adapter.",
-      "implementation_review": "Independent Astra approved exact6d473c3e: old dictionary equivalence, shared quota/input/authority/atomic commit, immutable initial/resolution, original/new request distinction, closure, visibility, lineage and fail-closed bounds. Requires actual native duplicate/conflict/replay/corruption/authority/staged-input controls; excludes PG runtime, Archive/Index and read reduction."
+      "implementation_review": "Independent Astra approved exact6d473c3e: old dictionary equivalence, shared quota/input/authority/atomic commit, immutable initial/resolution, original/new request distinction, closure, visibility, lineage and fail-closed bounds. Requires actual native duplicate/conflict/replay/corruption/authority/staged-input controls; excludes PG runtime, Archive/Index and read reduction.",
+      "tests": {
+        "originals": [
+          "201a5705",
+          "815de418"
+        ],
+        "integrated": [
+          "4a61c57c",
+          "b00498ef"
+        ],
+        "status": "SOURCE_ORACLE_REVIEW_APPROVED_8_CONTROLS_NOT_RUN",
+        "scope": "Initial/resolution, original and distinct requests, conflict, exact closure/corruption, method/visibility, preflight resources and authority, closing producer, final authority refusal retaining staged input only. Unissued closing request remains Unresolved; not a recovery-completion claim."
+      }
+    },
+    "control_dispatch": {
+      "original": "369b5726d46a5cf7f638c777533f7df931569cc7",
+      "integrated": "0221c3a3",
+      "correction": "c147185a4115248cfeb07ab1c31733afe2122482",
+      "config": "731e7d6e9c655ffc1dd79e3e268c0721729c856f",
+      "status": "SOURCE_REVIEW_APPROVED_BUILD_ENGINE_NOT_RUN",
+      "scope": "Schema44 immutable exact-context dispatch and unique fresh positive-COMMIT token; unresolved-source veto, private positive no-I/O closure, original typed producer evidence admission. Initial Native mode corrected; packaged column row-lock grants and invoker helpers reconciled without broad history UPDATE. Independent Astra closed both identified blockers. Real packaged-role/token/Native tests remain NOT_RUN.",
+      "open_recovery": "Before resolving intent-only as ExecutionUnknown, reconcile actual Native input/producer inventory. Staged input can precede absent/unknown PG reservation; history/file presence alone proves neither no prior terminal input nor trusted start. Current positive custody/exclusion and original-request recovery remain required under P04-T07 Steps2/6 and P02 recovery tasks.",
+      "source_metadata": {
+        "source": "646ab78f",
+        "correction": "b1e688cc50b540a6409a9f6ae9d37d75e2bfde39",
+        "status": "SOURCE_REVIEW_APPROVED_NOT_RUN",
+        "scope": "Read exact enrolled immutable destination under Control with128KiB retained grant, without fake acquisition scope. Original646 incorrectly used visibility-required helper withNone; independent review caught it before execution. b1e extracts unchanged enrollment-only SQL; actual dispatch/admission still require exact nonnull scientific visibility."
+      }
+    },
+    "passive_driver": {
+      "originals": [
+        "4ba8",
+        "1560f8c6"
+      ],
+      "integrated": [
+        "6cfc1a2f",
+        "c698b43e05f4e98306f98bdf978b061892a6ec5c"
+      ],
+      "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUST_WIRE_TESTS_NOT_RUN",
+      "scope": "Funded one-use connector/capture, kind1 limit1 passive REQ, independent signature verification and correlated EOSE/CLOSED barriers; no AUTH/signing/retry/Sync event. Consumption errors now retain bounded observations and capture grant, without inventing a terminal cause. 19 authored controls remain NOT_RUN."
+    },
+    "archive_index": {
+      "originals": [
+        "eb97f50e32f10b95bf41a94c6fbeb993ea3df138",
+        "f287375d67f2539b6bdee7a383abde76417fea0d"
+      ],
+      "integrated": [
+        "e5e316ee",
+        "6737d8b0"
+      ],
+      "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUST_NATIVE_CLICKHOUSE_NOT_RUN",
+      "scope": "Sixth scientific family and typed full-digest/strong-prior read under caller-held real pin/capture/current scope and custody; eleventh Index target. Related family6/count/schema2/frontier2 consumers and fixtures reconciled. Restart fixture now selects actual old/current snapshots via production read-only options; original expected outcomes unchanged.",
+      "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim."
     }
   }
 }

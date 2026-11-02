@@ -2,107 +2,98 @@
 
 2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
 Q37/Q38/Q40/Q41/Q42 remain; public development, no official release/deployment.
-The capability-first direction is in Q38/the execution guide; one existing plan.
+The capability-first direction is reconciled in Q38/the execution guide; one plan.
 
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Source HEAD **6d473c3e**. Canonical main/origin
-remain clean at pushed **a37f7829**. New Monitor work is local, incomplete and not
-pushed. At recording, only this checkpoint, P01/P02 evidence and inventory have
-uncommitted documentation updates; Native source was saved in6d473c3e.
+`work/m2-finite-history-20261101`. Observed source HEAD **b1e688cc**; checkpoint,
+P02 evidence, guide and inventory updates are pending this recording commit.
+Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
+local, incomplete and not pushed; it has not yet been built or engine-qualified.
 
-**Quota/history recovery is qualified.** P03-T05 Steps1/4 and P03-T01 Step3 now
-provide finite fixed-width history, a shared query budget, same-second IDs/local
-exclusions, orderly stop and funded historical recovery. The owning
+**Quota/history recovery is qualified.** Installed53802a46 passed restart on/off
+12/12 each and finite128 retained boundary7/7. The
 [P03 report](evidence/p03-initial-sync-native-20261002.json),
-`linear_quantum_20261101.finite_history_windows_20261101`, retains exact source,
-receipts and original failures. Installed product53802a46 passed restart on/off
-12/12 each and finite128 retained boundary7/7. Former scratch, quiet-drain and
-client-profile failures retain their original classification and corrected proof;
-unchanged stop/older window evidence is reused within its scope.
+`linear_quantum_20261101.finite_history_windows_20261101`, owns exact revisions,
+receipts, original failures and their classifications. Reuse unchanged evidence
+within its scope; no unresolved quota failure is concealed by advancing M2.
 
-**Current hosted gate PASS:** [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
-exact a37f7829:33/33 selected foundation checks and20 scope controls PASS on
-Linux amd64, Linux arm64 and macOS; zero required NOT_RUN. The P01 report's
-`latest_verified_hosted_execution` owns source/native/compiler/worker identities,
-94 unfiltered Rust suites per platform, ignored/skipped exclusions and public
-output audit. No unclassified credential candidate or provider alert was found
-in the bounded scan. Earlier70d5912c run41365283319 remains CANCELLED, with the
-Mac fixture failure and both Linux interruptions explicitly retained. The
-portable listener correction is qualified by the new real matrix; old failures
-are not relabeled PASS.
+**Hosted foundation PASS:** [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
+exacta37f7829, all33 selected checks plus20 scope controls, zero required NOT_RUN.
+The [P01 report](evidence/p01-ci-hosted-foundation-20261026.json) owns platform,
+compiler/native/worker identities, exclusions and bounded public-output audit.
+Earlier70d5912c cancellation/failure remains preserved. New local source has no
+hosted qualification or publication scan yet.
 
 ## Active M2 increment: one passive read retained across restart
 
 Expected result: explicit operator-enrolled direct endpoint → guarded bounded
 passive WebSocket read → typed A05 admission → Archive → installed standalone
-inspection after restart. Shared-source Index intake is a necessary dependency;
-refusing the new family would block later source progress. No full Monitor/M2 or
-runtime storage qualification is claimed yet.
+inspection after restart. Shared-source Index intake is a necessary dependency.
+Full Monitor/M2, cadence/fleet and runtime storage qualification remain open.
 
-[The P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
-`passive_monitor_descriptors_20261102` and `passive_measurement_20261102`, owns:
+The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
+`passive_monitor_descriptors_20261102` / `passive_measurement_20261102`, owns details:
 
-- A04 sourceb8380f84 integrated98288897: direct-route and passive-read descriptors;
-  isolated model70PASS. Native/Archive/Index authored controls still NOT_RUN.
-- A05 originals d35af507/e6c4e597 integratedf57d8c87/4d833d90: four closed states,
-  fixed profile, typed observations, stable attempt identity and strong resolution.
-  Counter contradictions were corrected under independent Astra review. Request
-  source2ecf73ec plus corrected afa8ea50 preserves exact canonical typed input;
-  accidental old AdmissionBatch digest removal was restored before execution.
-  Actual isolated model45154 atafa8ea50: **81PASS/0FAIL/0ignored/0filtered**, all11
-  source-derived A05/request controls passed once. Original48 fact literals and27
-  added request literals independently checked. The initial Docker-create mount
-  error remains a separate **NOT_RUN setup failure**, not a product failure.
-- Transport originals8fc0497a/5f6ec0db integrated5d564dff/ea7124fa: actual syscall-
-  return witness, externally retained fixed trace, lower TLS anchors and observed-
-  only caps. Independent Astra closed payload-byte, allocation and signed-UTC
-  findings. Rust transport controls/builds remain **NOT_RUN**.
-- Native6d473c3e: two immutable initial/resolution inventory slots plus the shared
-  evidence staging/commit kernel, exact original replay, new AlreadyDurable
-  outcomes, strong closure and census/recovery consumers. **Independent Astra source review approved;
-  Native tests NOT_RUN.** Earlier binaries already refuse new domains during the
-  mandatory all-CF open census; no unrelated manifest bump was introduced.
+- A04 descriptors: isolated model70PASS; A05 typed observations/exact request input:
+  isolated afa8ea50 model81PASS, zero failed/ignored/filtered. Original literals
+  and setup NOT_RUN failure preserved. These are pure-model results.
+- Native6d473c3e and eight admission/replay/corruption/authority controls integrated
+  throughb00498ef; independent source/oracle review approved, tests **NOT_RUN**.
+- Guarded transport ea7124fa and passive driver c698b43e: source/oracle approved;
+  consuming errors now preserve known observations and their grant. Runtime/wire
+  tests **NOT_RUN**. RX read versus guard-consumed semantics are explicit.
+- Control schema44 integrated0221c3a3; correctionc147185a fixes Initial Native mode
+  and packaged least-privilege Monitor grants/preflight. Independent Astra closed
+  both blockers. Actual packaged-role/token/admission tests **NOT_RUN**.
+  Metadata reader646ab78f required correctionb1e688cc: preparation now uses
+  the enrollment-only helper; dispatch still requires exact visibility.
+  Independent Astra approved the correction before execution.
+- Archive sixth family / Index eleventh target integratede5e316ee; related current
+  counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
+  selects the actual old/current snapshot without changing expectations. Bounded
+  source/oracle review approved; Rust/Arrow/Parquet/ClickHouse **NOT_RUN**. Author's
+  portable320PASS/1ERROR is a preserved stale tutorial-review-pin failure; update
+  only after exact candidate review and rerun the affected control.
 
-The five-second policy authority bound remains enforced. Nominal15s checks and
-10s OPEN do not imply a15s renewable grant. Actual renewal and trusted durable
-start remain explicit P04-T07/P04-T02 work; RAM/input presence cannot manufacture
-a durable start or CompletionUnknown proof.
+The five-second policy authority bound remains enforced; nominal15s checks are
+not15s renewable grants. Durable-start/renewal remain P04-T07/P04-T02 work.
+**Recovery gate:** typed terminal input may be staged before an absent/unknown PG
+reservation. Reconcile actual Native input and producer inventory before deciding
+intent-only → ExecutionUnknown. Historical SQL/file presence cannot prove a start,
+no prior terminal input or old-worker exclusion. Closing an unissued request still
+returns Unresolved in the authored negative control; no functional settlement is
+claimed. Existing P04-T07 Steps2/6 and P02 recovery tasks retain these obligations.
 
 ## Agents, resources and next action
 
-One integrating owner, separate writable worktrees:
+One integrating owner; separate writable worktrees, all partial source retained:
 
-- Astra `a05_model_boundary_review_astra`: Native6d473c3e source review approved;
-  targeted review of new test oracles remains before execution.
-- Sol `history_scratch_build_prep_sol`: author Native admission/reopen/replay/
-  conflict/closure controls in `.research/m2-monitor-native-tests-20261102` from
-  6d473c3e. No build/engine execution authorized for that assignment yet.
-- Sol `quota_r2_diagnosis_sol`: `.research/m2-monitor-archive-20261102` fromafa8ea50,
-  adding sixth Measurement family, typed readback/strong closure and eleventh
-  Index target, including narrowly assigned PG count/catalog callers and fixtures.
-  Partial source, not integrated or verified with engines.
-- Original descriptor/model/transport author and CI watchers have finished.
+- Sol `history_scratch_build_prep_sol`: `.research/m2-monitor-operator-20261102`,
+  explicit `serve --initialize-ingest --monitor-once` for one exact enrolled source;
+  actual Native/socket custody and original producer admission. Source in progress.
+- Sol `quota_r2_diagnosis_sol`: `work/m2-measurement-inspect-20261102`, actual installed
+  typed measurement inspection using existing expectation/pin/capture/supervisor
+  lifecycle; bounded scientific output under current authority. Source in progress.
+- Astra `a05_model_boundary_review_astra`: PG correction and narrow metadata
+  reader correction approved. Archive reviewer approved eb97f50e plusf287375d correction.
+  Native/model/transport source authors and previous CI watchers have finished.
 
-[Inventory](../research/laboratory-inventory.json) owns custody. Current model
-capsule `.research/m2-monitor-descriptors-qualification-20261102/afa8ea50`:
-model45154 reaped0, container174e5520 exited0/PID0/noOOM; fresh target retained,
-cargo-home/cache115 lock released and independently reacquired. Original4ELF
-bytes and every available stat field unchanged through guarded reads. Installed
-538 capsule/runtime, original failures/data, all worktrees and borrowed bridge
-remain preserved. No owned local compiler/engine or hosted watcher is active at
-this observation; source/review agents above continue. No cleanup performed.
+[Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
+capsules. Targeted Docker observation now shows only four unrelated services;
+no owned local compiler/engine or hosted watcher is running. Source agents above
+continue. No cleanup performed; protected original ELF files were not opened this
+increment. Earlier guarded identity observations remain in their owning receipts.
+Preserve original failures, .research, databases, worktrees and the borrowed bridge.
 
-**Next Root action:** finish the bounded Native review/test corrections while
-Archive/Index is implemented, then add the real typed PG Monitor dispatch and
-map the guarded trace into A05. Reconcile source/schema/roles/budgets/fixture
-assumptions before the first relevant real-engine/installed run; do not re-run
-unchanged model or hosted source merely for a new document.
+**Next Root action:** finish/review the real once-only Source→admission and
+installed pinned inspection, then freeze the exact coherent candidate. Check
+changed schema, packaged roles, budgets, source completion and fault reachability
+before affected build/native/PG/Archive/Index and installed qualification. Reuse
+unchanged model/hosted evidence; do not relabel source approval as runtime PASS.
 
-Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import and
-remaining producer/compacted/reclamation/capacity gates retain existing P03/P02/
-P04/P08 owners. Admission cost, ClickHouse transport/decoding and coordinator
-follow-through retain their existing Q40 task acceptance; no measured performance
-claim follows from source simplification. All selected later P00–P10/M1–M5 work
-remains in scope. This increment does not complete P04-T07 or M2.
+Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import,
+producer/compacted/reclamation/capacity and Q40 admission-cost/ClickHouse/coordinator
+follow-through retain existing P03/P02/P04/P08 owners. All selected later phases
+remain in scope. This increment does not complete P04-T07 or M2.

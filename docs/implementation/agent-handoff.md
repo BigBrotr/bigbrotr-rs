@@ -160,7 +160,12 @@ current-milestone blocker list in the checkpoint. Once M1's signed admission,
 archive, read, export and restart scope is qualified, advance concrete M2 capacity
 without making all of P02 a barrier. Deepen a subproblem only for a necessary
 dependency, a concrete defect or an important risk of the active increment.
-Preserve later qualifications in their existing tasks with explicit owners. Updates should explain what now works, its evidence, the
+Reconcile changed persistent formats, admission rules and internal interfaces
+with their callers, readers, recovery, common fixtures and documentation in the
+same increment. Before costly runs, check changed schema, actual roles, budgets,
+data preparation, source completion and fault reachability cheaply.
+Preserve later qualifications in their existing tasks with explicit owners.
+Updates should explain what now works, its evidence, the
 remaining blocker and next useful result. Commit/test counts are not productivity
 or quality measures; there is no imposed deadline or reduced product scope.
 

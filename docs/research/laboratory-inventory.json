@@ -79050,6 +79050,24 @@
       "state": "Pure model tool45154 reaped0; owned container174e55200a2452fab0470a4925ed1d48b64adc887e6bed58c1689458d3f6949c exited0/PID0/noOOM. Fresh model target; cargo-home/cache115 lock released and independently reacquired, no live overlapping mounts. Original4ELF bytes and all available16stat fields unchanged through required guards. R1 prelaunch NOT_RUN command/stderr preserved.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "retention": "Retain exact model source, command, logs/compiler/marker/guard receipts, original setup failure and partial integration worktrees. No native/application engine qualification claimed."
+    },
+    "runtime_integration": {
+      "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
+      "branch": "work/m2-finite-history-20261101",
+      "observed_source": "b1e688cc50b540a6409a9f6ae9d37d75e2bfde39",
+      "state": "Local source integration only, not pushed; independent Native/Control/driver/Archive boundary reviews approved. All new application/native/real-engine and installed controls NOT_RUN. Root is sole integrator.",
+      "retained_source_worktrees": [
+        ".research/m2-monitor-native-tests-20261102",
+        ".research/m2-monitor-control-20261102",
+        ".research/m2-monitor-passive-driver-20261102",
+        ".research/m2-monitor-archive-20261102"
+      ],
+      "active_assignments": {
+        "history_scratch_build_prep_sol": ".research/m2-monitor-operator-20261102: bounded explicit initial-owner once-only source and producer admission",
+        "quota_r2_diagnosis_sol": "work/m2-measurement-inspect-20261102: bounded installed measurement inspection under actual pin/capture/custody"
+      },
+      "resources": "Targeted Docker observation: only four unrelated existing services running, no owned local compiler or engine. No new cleanup or engine run. Earlier model/native/CI custody and protected original ELF observations remain linked in owning evidence; source agents continue.",
+      "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102"
     }
   }
 }
