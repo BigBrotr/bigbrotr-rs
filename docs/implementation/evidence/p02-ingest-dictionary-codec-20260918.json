@@ -272,16 +272,16 @@
           }
         },
         "initial_measurement_c3_repair": {
-          "status": "LIVE_ISSUANCE_DEFECT_CORRECTED_SOURCE_APPROVED_NEW_QUALIFICATION_NOT_RUN",
+          "status": "PASS_BOUNDED_C3_REPAIR_AND_FAULT_FOLLOWTHROUGH_CONNECTED_GATES_OPEN",
           "tasks": "P04-T07 Steps2/6; P02 producer-progress/recovery",
           "original": "f12db3545764bf8beee477281eb6649741969a02",
           "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/measurement-c3-repair-source-controls/source-controls.json",
           "source_controls_sha256": "a6ec0a4677c12ec85023112b49d5ae9e96df2b904a49777d02115c56a72141f0",
           "scope": "BorrowedactualhistoricalMeasurementNativewitness; freshControl atomicoriginaloutcome+genericcheckpointrepair; separatefundedsnapshot/preclaimoverlap; current0044narrowclosingdependencyguard. ExistingfinalfullprefixconfirmedACK unchanged. No generalresolution/successor/retirement qualification.",
           "review": "Astra approvedcombinedsource througha01 aftercompletef12/286/fundingdelta andowning/callerreview. Closedthree missingprobecallers, resolution/unsupportedcopy-onlyselection andtouchedfixtureinputfundingmismatch. Historicalwitness/root/sequence/manifest/length/deps, atomicity, currentControl/SQLnarrowclosingguard, cancellation/unknownandunchangedfinalACK approved. NativeR0 restrictionmatchespriorinitialresolver; compact/successorotherAPIsunchanged.",
-          "checks": "Original source/Rustfmt/caller/checksum controls PASS; eb384 strict/optimized build PASS but actual library FAIL exposed liveissuancegap, later targetsNOT_RUN. See qualification and live_issuance_correction; corrected77cc source approved,14tutorialcontrolsPASS, Rust/installedqualificationNOT_RUN.",
+          "checks": "Corrected b05 source passed all-target compilation, strict Clippy/Rustdoc, maintained worker/parent release, four affected unfiltered Rust targets, exact-parent observer, and all three installed recovery journeys. Original eb384 library FAIL remains preserved; other required connected refusals and exact-existing-outcome tests remain open.",
           "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102",
-          "next": "Freeze corrected source and reconciled tutorial pin; reuse existing verified builder/cache/native inputs, rerun affected strict/build and four unfiltered Rust targets. After actual PASS, build exact-parent observer and qualify plainC3, oldC4regression, repair-fault journey on fresh matchingledgers. Connected refusal/existing-outcome4C3 and remaining P04/P02 tasks remain explicit.",
+          "next": "Integrate the coherent locally qualified b05 capability with its source-scoped evidence and actual hosted f4ad baseline, then observe required new-source CI. Finish the bounded existing-outcome fixture and connected gates with critical review before engines; broader scheduling/unknown-start/retirement remain at their existing owners.",
           "originals": [
             "f12db3545764bf8beee477281eb6649741969a02",
             "28643e3c9bfa618d27934ce2ac48312942a7be77",
@@ -299,16 +299,18 @@
             "source_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-native-outcome-20261102/.research/native-outcome-controls/source-only-receipt.json",
             "source_receipt_sha256": "d20a2ae7a0d6d44f56ac3533920d6f3e04eb1ebc56b0bef66f3e025a2685bf62",
             "review": "IndependentAstra complete13filedelta/affectedowners approved: exactbefore-forwardC4UPDATE1same-sessionCOMMIT; positivewriter/backendexclusion; independentPGC3/nine-dependency andnativeI4/A3/R0 closure. Onlyboundedexact-inti64recorded_atobservedfromFact10, independentfixturewindow; entirefact/referencehash/receipt4/batchclosure reconstructedindependently, no actualnativedigest/receipt/depschooseexpected andno syntheticPGoutcomerow. Oldnative_ackstillbindsallfourPGoutcomes.",
-            "checks": "Reviewerindependent18recovery+42proxy+fourNodevectorsPASS,sourcehashes/AST/diffPASS. Actualretainedcc8r4replayonlyoldC4/A3regression. Newproduct/plainC3journeyALLNOT_RUN.",
+            "checks": "Independent source controls and critical reviews retained; actual b05 plain C3 journey now PASS8/8 with terminal custody. Older C4/A3 capture replay remains only its original regression scope.",
             "limits": "Missing-outcome4/C3repair+healthyretryonly; entireSQLguard/resolvernotqualifiedbypositivejourney. Connectedrefusals, rollback, lostrepairCOMMIT/noACK andexact-existingoutcome4/C3remainexistingP04-T07Steps2/6/P02gates. No preciseUTCsamplinginstant orcapacityclaim.",
             "repair_fault_followthrough": {
               "original": "dd9b01f3b6acf7fd932d2747b34974c6b728790c",
               "integrated": "5911bc3e",
-              "status": "CRITICAL_SOURCE_APPROVED_INSTALLED_NOT_RUN",
+              "status": "PASS_ACTUAL_B05_TEN_STAGE_REPAIR_FAULT_JOURNEY",
               "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-native-outcome-20261102/.research/repair-fault-controls/source-only-receipt.json",
               "receipt_sha256": "b8deb52063ed3dbb44905d5464d96311438c636af69b2ab52030d46722691413",
               "review": "Astraapprovedactual9filedelta; independent27recoverycontrols/hash/AST/diffPASS, reusedcodec/proxy/Nodeproofs. Closed10stagevariant: repairCOMMITwithheldkeepsPGC3/NativeclosingA3(+1write), lostcommittedreplyPGC4/NativeA3(+0), freshdirectACK(+1), retry(+0). FailedfreshControlactive/unreleasedandnextfreshclaimexcludesit; oldhealthyreleasedwrappersstrict. Shared30scommanddeadline/120speer+proxyunchanged. No newproductAPI/oracleweakening.",
-              "scope": "Requiredrepairrollback/lostrepairCOMMIT/noimmediateACK followthroughusingSAMEeb384binary afterqualification. Exact-existingoutcome4/C3 andotherconnectedrefusalgates remainexistingP04/P02owners, notclaimedPASS."
+              "scope": "Actual rollback, lost completed repair reply without immediate ACK, fresh direct completion and exact retry qualified on b05. Exact-existing-outcome4/C3 and connected refusal boundaries remain separate P04/P02 gates.",
+              "actual_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/faults-r1-receipt.json",
+              "actual_receipt_sha256": "763a476e43d1c6cd53f8757b859e63e8736e28da2db9e21958838f5b7bb29177"
             }
           },
           "mechanical_lint_fix": {
@@ -354,6 +356,134 @@
             "checks": "Declared-image targeted Rustfmt PASS; first missing-CARGO_HOME invocation ENV_FAIL before source parse retained in source-review.14tutorialcontrolsPASS; all9selectedNOSTRpaths/othercodeobjects authenticated, boundedAstraSyncexclusionreuseapproved. Corrected-sourceRust/installedNOT_RUN.",
             "source_review": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101/.research/live-issuance-boundary/source-review.json",
             "source_review_sha256": "4be8a364b57cd8b4c1eddc722ba3cf9ef4e7709b7315bebabe0e5666972fc056"
+          },
+          "corrected_qualification": {
+            "source": "b05b0a267d362cdef1b4f396076b980620509178",
+            "tree": "a9dc791dd6d8aed46ccb2eed932c13279a64171c",
+            "source_files": 4274,
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-b05b0a26",
+            "build_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/build-receipt.json",
+            "build_receipt_sha256": "6981e9e51a07235620109b1a94d1da4ad5f00173db8c2343aa4d0b96ce08e32c",
+            "binary": {
+              "bytes": 47264600,
+              "sha256": "d44b5a6327e6f7d6c6ac24b8bc8bca49146b96db1e41f21ab2bb787bc79166ed"
+            },
+            "strict_checks": [
+              {
+                "name": "all-target-check",
+                "status": "PASS",
+                "seconds": 7.929378999979235
+              },
+              {
+                "name": "strict-clippy",
+                "status": "PASS",
+                "seconds": 9.58323216100689
+              },
+              {
+                "name": "strict-rustdoc",
+                "status": "PASS",
+                "seconds": 3.972536923014559
+              }
+            ],
+            "rust_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/library/qualification-receipt.json",
+            "rust_receipt_sha256": "f9f8442f6e571485777703bf697f082bd92810050dcb62a657d1f99a88fd1732",
+            "rust_targets": {
+              "library": {
+                "passed": 702,
+                "failed": 0,
+                "ignored": 3,
+                "measured": 0,
+                "filtered_out": 0
+              },
+              "binary": {
+                "passed": 234,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              },
+              "schema": {
+                "passed": 40,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              },
+              "example": {
+                "passed": 24,
+                "failed": 0,
+                "ignored": 0,
+                "measured": 0,
+                "filtered_out": 0
+              }
+            },
+            "observer_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/probe/qualification-receipt.json",
+            "observer_receipt_sha256": "fb974719bd46b2181cf6de5469c12b9ddb31233cf43355e3b29714a826b9f267",
+            "portable_receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/portable-receipt.json",
+            "portable_receipt_sha256": "c2c1d1cd01f0f1ae0a5878feacbe2978ae5c208cb61e34e8732228147d917fb7",
+            "portable": "655 acceptance,13 export-profile and42 proxy controls PASS; zero SKIP in declared Linux image. No product rebuild for those portable suites.",
+            "installed": {
+              "plain-r1": {
+                "case": "p04-monitor-native-outcome-recovery",
+                "status": "PASS_MAINTAINED_INSTALLED_CASE_AND_TERMINAL_CUSTODY",
+                "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/plain-r1-receipt.json",
+                "receipt_sha256": "d25a3e48be8a10518e22629b133026069bab4da651552d86c6356eea1d9f310d",
+                "counts": {
+                  "collected": 8,
+                  "executed": 8,
+                  "failed": 0,
+                  "skipped": 0,
+                  "not_run": 0
+                },
+                "scope": "Physical Native I4/A3/R0 with PG C3/outcomes1..3 is repaired atomically to original outcome4/C4/dependency10 under fresh Control, then separately ACK4; exact retry adds no Native write.",
+                "stopped_containers": 20,
+                "absent_processes": 5
+              },
+              "ack-r1": {
+                "case": "p04-monitor-ack-recovery",
+                "status": "PASS_MAINTAINED_INSTALLED_CASE_AND_TERMINAL_CUSTODY",
+                "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/ack-r1-receipt.json",
+                "receipt_sha256": "3b9d701906bc3074fe70d175941cfa69e541b59370eec2a041e31a78482e596a",
+                "counts": {
+                  "collected": 8,
+                  "executed": 8,
+                  "failed": 0,
+                  "skipped": 0,
+                  "not_run": 0
+                },
+                "scope": "Regression of genuine persisted C4 with lost COMMIT reply: fresh default recovery confirms ACK4, preserving original rows and xmins; retry adds no Native write.",
+                "stopped_containers": 20,
+                "absent_processes": 5
+              },
+              "faults-r1": {
+                "case": "p04-monitor-native-outcome-faults",
+                "status": "PASS_MAINTAINED_INSTALLED_CASE_AND_TERMINAL_CUSTODY",
+                "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/b05b0a26/installed/faults-r1-receipt.json",
+                "receipt_sha256": "763a476e43d1c6cd53f8757b859e63e8736e28da2db9e21958838f5b7bb29177",
+                "counts": {
+                  "collected": 10,
+                  "executed": 10,
+                  "failed": 0,
+                  "skipped": 0,
+                  "not_run": 0
+                },
+                "scope": "Repair COMMIT withheld retains C3/A3; completed repair reply lost retains C4/A3; fresh direct completion confirms ACK4, followed by no-write exact retry.",
+                "stopped_containers": 24,
+                "absent_processes": 9
+              }
+            },
+            "scope": "Source-bound bounded initial Monitor recovery only. Native writes follow closing/ACK ownership; no new probe/Sync work, all original inputs, receipt identities, scientific rows and applicable xmins preserved. No whole M2, fleet, retirement, capacity or release claim."
+          },
+          "remaining_connected_gates": {
+            "owner": "P04-T07 Steps2/6 and P02 producer progress/recovery",
+            "required": [
+              "Exact existing outcome4/C3: preserve its original bytes, recorder, timestamp and xmin while only new head/dependency receive fresh attribution.",
+              "Selected invalid binding must refuse without copy-only fallback; closing growth must retain narrow binding/prefix/tail/retirement restrictions.",
+              "Actual owner/backend authority and deferred/invoker guards must reject excluded or borrowed identities without effects.",
+              "Dependency-count/byte-charge boundaries require independently calculated paired controls; direct SQL capacity proof is distinct from installed resolver exhaustion."
+            ],
+            "active_work": "Sol owns work/m2-monitor-c3-guards-20261102 at b05 base, separate worktree. Test-only genuine same-backend ControlSession seed and strict existing-outcome oracle are in progress; not integrated, source/connected execution NOT_RUN. Astra approved architecture and closed full-document fixture validator in principle; concrete diff still needs review."
           }
         }
       }

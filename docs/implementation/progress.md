@@ -1,101 +1,95 @@
 # Current execution checkpoint
 
 2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply. Public development; no official release or deployment.
-One existing plan; Root is sole integrator, Sol/xhigh operational default,
-Astra/xhigh for bounded critical review.
+Q37/Q38/Q40/Q41/Q42 apply; one plan and Root sole integrator.
+Sol/xhigh is operational default; Astra/xhigh owns bounded critical review.
+Public development does not authorize official releases, packages or deployment.
 
-## Current revision and capability
+## Revision and demonstrated M2 capability
 
-Root worktree `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`; observed local HEAD **77cc045a** before this
-pin/evidence/checkpoint commit. Public main/origin remain **f4ad5fda**, clean.
-Do not push a partial increment that supersedes the active same-ref hosted run.
+Root `.research/m2-linear-continuation-20261101`, branch
+`work/m2-finite-history-20261101`, observed HEAD **b05b0a26** before this coherent
+evidence update. Main/origin last verified **f4ad5fda**. Current changed files are
+the existing P01/P02 evidence, verification/P04 task prose, inventory and this
+checkpoint; product and maintained acceptance code match qualified b05.
 
-The active M2 increment is original Monitor Measurement recovery from Native I4 /
-PG C3, with atomic outcome4/checkpoint/dependency repair and separate confirmed
-full-prefix ACK, followed by exact retry. It does not finish all scheduling,
-unknown-start, retirement or fleet work. Existing P04-T07 Steps2/6 and P02 own
-those explicit gates; phase numbering is not an all-P02 prerequisite.
+Corrected product **b05b0a26**, tree **a9dc791d**, passes all three real installed
+Monitor recovery journeys with its matching0044 ledger and exact-source observer:
 
-Already demonstrated, source-scoped: cc8bdcf8 + ffc57174 recovered actual persisted
-C4/Native A3 after a completed COMMIT reply was lost, then retried without a native
-write (8/8 installed stages PASS). Original data/science/xmins were preserved;
-all20 containers stopped, five processes absent, peer joined and borrowed bridge
-preserved. Earlier passive Archive/Index, known ACK/restart, quota/history and
-finite-window proofs remain valid for their recorded inputs. Reuse their owning
-[P02](evidence/p02-ingest-dictionary-codec-20260918.json) and
-[P03](evidence/p03-initial-sync-native-20261002.json) records, not historical
-success as proof of the changed C3 product.
+- **Native I4/PG C3:** atomically copy the independently authenticated original
+  outcome4 and C4/dependency10 under fresh Control; separately confirm ACK4;
+  exact retry adds no Native write. Eight stages PASS, receipt **d25a3e48**.
+- **Persisted C4/ACK reply loss regression:** default fresh recovery reaches
+  closing I4/A4/R0 while preserving originals/xmins; retry adds no Native write.
+  Eight stages PASS, receipt **3b9d7019**.
+- **Repair faults:** withheld COMMIT preserves C3/A3; completed repair reply lost
+  preserves C4/A3; fresh direct completion confirms ACK4; retry adds no write.
+  Ten stages PASS, receipt **763a476e**.
 
-## Current defect, correction and verification
+All original inputs, receipt identities, scientific closure and applicable xmins
+are retained. One peer, no replacement probe or Sync work. Actual resource audits
+found20/20/24 containers stopped/PID0/no OOM,5/5/9 recorded processes absent and
+peers joined; borrowed bridge1699209a preserved. This is bounded initial recovery,
+not complete scheduling, fleet capacity, retirement or full M2.
 
-Frozen eb384d20/tree f5f43dad,4274 files, passed all-target, strict Clippy/Rustdoc
-and actual maintained worker/parent release. Independent build receipt8e05bae4
-binds binary0267adcd and worker. Build76832 reaped0; container959c33fb stopped.
-
-Four-target qualifier3687 then stopped on the library: **701 PASS / 1 FAIL /
-3 dedicated ignored / 0 filtered**. The failed historical-original test exposed
-an internal authority-separation defect: matching root/sequence/manifest alone
-could pass shared live validation and construct a live ACK target without the
-original operation's issuance stamp. Actual recovery never calls that conversion;
-native ACK also rejects the live target against a closing producer. No unauthorized
-persisted ACK was demonstrated. Original FAIL receipt **d5b0690f** remains intact.
-Later binary/control_schema/example targets, observer and installed cases NOT_RUN.
-
-Corrected **77cc045a** reuses the existing outcome issuance stamp at both live
-validation and ACK-target conversion, retaining certification and historical
-repair/full-prefix confirmation. The original failed assertion is unchanged;
-a direct historical ACK-conversion refusal was added across all three originals.
-Astra reviewed the actual3file diff and relevant constructors/callers: approved.
-Targeted declared-image Rustfmt and14 tutorial controls PASS. Root authenticated
-all9 unchanged selected Nostr files and remaining dependency/configuration objects;
-Astra approved narrow selected-fresh-Sync source-pin reuse. Corrected-source build,
-Rust assertions and installed journeys remain **NOT_RUN**.
-
-P02 `producer_ack_followthrough.initial_measurement_c3_repair` owns original
-7e8 preparation/Clippy failures, eb384 receipts, source fix/review and next gates.
-Both plain C3 and closed10-stage repair rollback/lost-reply oracles are critically
-approved with independent controls. Their eb384 command preparation is retained,
-blocked by the actual library FAIL; no candidate bundle or engine was created.
+[P02](evidence/p02-ingest-dictionary-codec-20260918.json),
+`producer_ack_followthrough.initial_measurement_c3_repair.corrected_qualification`,
+owns exact commands, receipts, identities, reviews and limits. Strict compilation,
+Clippy/Rustdoc and worker/parent release PASS; four affected unfiltered Rust
+targets702/234/40/24 PASS (three dedicated library ignores remain separate).
+Observer build and655 acceptance/13 export/42 proxy controls PASS. The original
+eb384 library FAIL exposed missing live-issuance validation; reviewed77cc fix
+retains its assertion and adds direct historical ACK-conversion refusal. Original
+preparation, Clippy and installed fixture failures remain preserved, never relabelled.
+Earlier M1/passive/Archive/Index/quota/history evidence retains its original scope.
 
 ## Hosted CI
 
 [P01](evidence/p01-ci-hosted-foundation-20261026.json),
-`pending_monitor_publication_20261102`, owns exact hosted/publication audits.
-[Run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696)
-uses pushed f4ad5fda. Attempt1 is sealed: both Linux/scope PASS,27 foundation
-commands PASS; Mac acquired no runner and was cancelled by provider admission,
-leaving nine commands and11 Native controls NOT_RUN. No billing or product
-failure was established. Linux manifests/compiler/worker/tests and public scan
-passed; original failures/observer custody are retained in P01.
+`latest_verified_hosted_execution`, now names actual
+[f4ad run41491599696](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41491599696):
+**36/36 required foundation commands PASS**, scope20PASS, zero FAIL/requiredNOT_RUN.
+Both Linux jobs are original attempt1 successes; the actual Mac attempt2 succeeded,
+including all four corrected selection regressions. Mac acceptance623PASS plus13
+source-bound Linux-only SKIP are distinct; Linux636PASS each. Each platform passed
+41 proxy/13 export/11 mandatory Native controls. Three full source manifests,
+compiler/native/worker identity and nine workspace postguards verified.
 
-Root requested only the missing same-source Mac retry. Actual attempt2 job
-125474252470 has an assigned runner and is RUNNING. Root observational tool59722,
-driver1967679/GH1967680 with verified start ticks,60s/7500s bound. Linux/scope
-results are reused original execution, not new Linux runs. Do not supersede it.
-On terminal wake ci_recovery_publication_sol for acquisition/public audit.
-Previous d32 Mac fixture FAIL remains preserved; f4ad corrects only owned canonical
-temporary roots, without changing production selection behavior.
+Audit **e0251a89**, public receipt **7b2104d0**: four artifacts/519 members and ten
+attempt2 logs, zero new/unclassified credential candidates or provider alerts.
+Pattern/asynchronous-provider limits remain. Original provider admission failure
+and earlier Mac fixture FAIL are preserved. Root watcher59722 reaped0 without
+expiry; recorded PIDs absent. No active hosted observer. f4ad success does not
+qualify the changed b05 source on GitHub; its real hosted run follows publication.
 
-## Resources and next action
+## Remaining work and custody
+
+P04-T07 Steps2/6 and P02 retain exact-existing-outcome4/C3 preservation and connected
+binding/closing-prefix/authority/capacity refusals. Direct SQL capacity checks are
+not installed resolver exhaustion. Broader staged-before-PG, lost-RAM/durable-start,
+renewal, repeated scheduling, retirement and fleet work stay in their existing
+tasks; no all-P02 barrier or deleted scope.
+
+Sol `measurement_clickhouse_prep` is writing the test-only existing-outcome fixture
+on `work/m2-monitor-c3-guards-20261102`, separate worktree of that name, baseb05.
+Last observed changes were the two shared recovery/passive oracle modules; work is
+partial, not integrated or runtime-qualified. The approved architecture uses a
+cfg(test) same-backend genuine ControlSession to seed only the authenticated
+original outcome, then ordinary installed recovery. Full expected policy documents
+must be frozen from qualified source/config before admission, never adopted from
+the database. Concrete fixture diff and oracle review remain required before engines.
 
 [Inventory](../research/laboratory-inventory.json),
-`implementation_monitor_descriptors_20261102.runtime_integration`, owns custody.
-All current local compiler/test processes are terminal: eb384 builder0 and library1,
-both stopped/PID0/noOOM; launcher1968542/1975608 absent. Cache115 released and
-independently reacquired; all four protected ELF bytes and full recorded stat fields
-unchanged through O_NOATIME/O_NOFOLLOW guards. No new observer or installed engines.
-Source/preparation/review agents are idle/completed; Root owns the read-only CI
-watcher. Original data, failures,.research/worktrees and borrowed bridge1699209a
-are retained. The October31 monitor space recovery is already reconciled; no cleanup.
+`implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
+All Root compiler/test/installed processes are terminal; cache115 is released and
+independently reacquired, protected four ELF bytes/fullstat unchanged. Source
+agent only is active; no new engines. Preserve all original failures,data,.research,
+worktrees and borrowed bridge. October31 space recovery is already reconciled;
+no cleanup was started.
 
-**Next Root action:** freeze the corrected source with its reconciled tutorial pin,
-reuse the verified existing build recipe/cache/native inputs and qualify strict
-worker-bound release plus four affected unfiltered Rust targets. After actual PASS,
-build the exact-parent observer; qualify plain C3, old C4 regression and repair-
-fault journeys on fresh matching ledgers. Preserve connected refusal and exact-
-existing-outcome4/C3 gates in P04/P02. Seal actual Mac attempt2 when terminal.
-Then select the next useful M2 increment by its real dependencies. Admission-cost,
-ClickHouse transport/decoding, coordinator maintenance and all selected later
-P00–P10/M1–M5 work retain their existing owners; no scope is removed or called done.
+**Next Root action:** finish current documentation checks and publication admission,
+commit one coherent qualified C3/evidence increment, fast-forward authorized main
+and verify its actual new-source GitHub run. Continue the bounded existing-outcome
+fixture and connected gates with critical review before real execution. Admission
+cost, ClickHouse decoding/transport, coordinator maintenance and all selected later
+P00–P10/M1–M5 work retain their existing owners and completion criteria.

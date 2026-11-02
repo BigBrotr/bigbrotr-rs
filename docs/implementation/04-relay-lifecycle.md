@@ -344,25 +344,28 @@ snapshot grant is funded beside input/outcome grants before claim or closing.
 Current0044 narrowly permits closing dependency growth for this retained initial
 Monitor tail; acquisition progress remains OPEN-only and changed old0044 ledgers
 are refused. The first actual library run exposed a shared live-issuance validation
-gap; the reviewed correction preserves historical repair and separate complete-prefix ACK.
-Corrected-source Rust and connected qualification remain NOT_RUN until their
-new-source receipts exist. Staged-before-PG, lost RAM, durable start, successors,
+gap; the reviewed correction preserves historical repair and separate full-prefix
+ACK.
+Corrected product `b05b0a26` passes strict build, the four affected Rust targets,
+and the plain C3, C4 regression and ten-stage repair-fault installed journeys.
+P02 `initial_measurement_c3_repair.corrected_qualification` owns exact receipts.
+Staged-before-PG, lost RAM, durable start, successors,
 renewal, repeated scheduling and retirement remain outside this extension.
 
-The separate source-only `p04-monitor-native-outcome-recovery` parameter now
+The separate `p04-monitor-native-outcome-recovery` parameter
 specifies the Native I4/PG C3 boundary in the same maintained runtime. It withholds
 the exact selected C4 COMMIT before forwarding, independently authenticates PG
 outcomes1..3/C3 versus four original Native receipts, and requires fresh-Control
 atomic outcome4/checkpoint/dependency repair plus exact retry. The older C4/A3
 checks remain strict. [Verification](../development/verification.md#recover-a-native-measurement-before-its-postgresql-checkpoint-committed)
 records its independent observed-timestamp/Fact/receipt construction, unchanged
-fixture limits and new product/ledger prerequisites. Real execution is NOT_RUN;
-neither synthetic controls nor retained C4/A3 capture replay closes Steps2/6 or
-the separate PG negative/rollback/lost-repair-COMMIT/existing-outcome gates.
+fixture limits and matching product/ledger prerequisites. All eight real stages
+pass on b05. Neither this positive case nor retained C4/A3 captures close the
+separate connected refusal and exact-existing-outcome gates in Steps2/6/P02.
 Its closed `p04-monitor-native-outcome-faults` variant additionally specifies
 rollback and lost-repair-COMMIT followthrough, preserving honest uncertainty and
-withholding Native ACK until fresh direct completion; its real execution also
-remains NOT_RUN. [Fault verification](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
+withholding Native ACK until fresh direct completion; all ten real stages pass
+on the same b05 product. [Fault verification](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
 fixes the independent state, custody and write-count expectations without widening
 the same peer/proxy limits.
 

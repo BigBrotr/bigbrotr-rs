@@ -586,7 +586,8 @@ bound. No consumer publication is claimed by this case.
 Product `cc8bdcf8` with acceptance `ffc57174` passed all eight installed stages;
 [P02 evidence](../implementation/evidence/p02-ingest-dictionary-codec-20260918.json),
 `producer_ack_followthrough.ack_recovery`, binds the actual receipt and preserved
-fixture failures. This covers C4 persisted/A3 only. Native I4/C3 advancement,
+fixture failures. The corrected `b05b0a26` product also passed this eight-stage regression. This
+case covers C4 persisted/A3 only. Native I4/C3 advancement,
 staged-before-PG, absent-original,
 lost-RAM/durable-start recovery, renewal, scheduling and retirement remain the
 existing P04-T07 Steps2/6 and P02 gates. SQL/file absence proves neither nonexecution
@@ -595,8 +596,10 @@ nor permission for replacement I/O.
 ### Recover a Native measurement before its PostgreSQL checkpoint committed
 
 `p04-monitor-native-outcome-recovery` is a separate parameter of the same
-maintained Monitor recovery runtime. Its real installed execution is **NOT_RUN**;
-synthetic controls and replay of the older C4/A3 captures are not C3 repair proof.
+maintained Monitor recovery runtime. Product `b05b0a26` passed all eight real
+installed stages, including atomic repair and no-write exact retry; P02 `initial_measurement_c3_repair.corrected_qualification`
+binds the actual receipts. Synthetic controls and older C4/A3 captures alone do
+not establish C3 repair.
 Use a fresh database with the repaired product's matching current0044 ledger,
 candidate and exact-product observer. The earlier `cc8bdcf8` product/observer and
 its applied0044 checksum cannot qualify this repaired path.
@@ -636,8 +639,9 @@ rows share one xmin while outcomes1..3 and dependencies1..9 retain all bytes and
 xmins. The original Native producer reaches closing I4/A4/R0. Exact retry adds no
 Native write and rewrites no SQL outcome, checkpoint or dependency. Both calls
 preserve all inputs/science and observe the same live one-connection peer, with no
-new socket or Sync work. Separate actual PG rollback/refusal, lost repair COMMIT
-and exact-existing-outcome/C3 qualification remain required with the new product.
+new socket or Sync work. The separate fault variant below qualifies actual rollback
+and lost repair COMMIT without immediate ACK. Connected refusals and exact-existing-outcome/C3
+qualification remain required with the corrected product.
 
 Focused source controls, without product or database engines:
 
@@ -650,9 +654,10 @@ node experiments/identity-contract/reference.mjs tests/fixtures/model/passive-mo
 ### Preserve uncertainty across Monitor checkpoint repair faults
 
 `p04-monitor-native-outcome-faults` is a closed ten-stage variant of the same
-runtime and initial independently authenticated PG C3/Native I4 boundary. Its
-installed execution is **NOT_RUN**, pending critical review and matching qualified
-product/ledger/observer. It adds no product recovery action or fixture budget:
+runtime and initial independently authenticated PG C3/Native I4 boundary. Product
+`b05b0a26` passed all ten real installed stages with its matching ledger and observer; P02
+`initial_measurement_c3_repair.corrected_qualification` owns the receipts. It adds
+no product recovery action or fixture budget:
 the one peer still has its original120s lifetime, and each selected proxy keeps
 the same 131,072-frame/64-lifetime-connection/64MiB/120s envelope. Each new faulted
 recovery shares one30s command deadline across selector wait and positive join.
