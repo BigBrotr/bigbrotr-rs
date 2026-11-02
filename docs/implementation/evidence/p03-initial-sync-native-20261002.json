@@ -1899,7 +1899,7 @@
         }
       },
       "retained_budget_20261101": {
-        "status": "FAIL_FIXTURE_CLIENT_CORRECTION_REVIEWED_REAL_RERUN_PENDING",
+        "status": "PASS_ACTUAL_CURRENT_FINITE128_AFTER_FIXTURE_CORRECTIONS",
         "original": {
           "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/retained-budget-r1-failure.json",
           "sha256": "274213f6da8c7b2cc1f05475fbfaaf8449e7c803384534a8374c8695ab964818",
@@ -1909,7 +1909,7 @@
         "cause": "Post-proof quiet rounds consume receive deadlines inside the original65s client gate;83 wires closed, no relayerror, source128 completion absent. Final native/Index verification NOT_RUN; no product budget-reset defect established.",
         "correction": "Source-reviewed immediate correlated empty CLOSED retries after the sole bound proof, keeping pre-proof quiet gate, all128 queries/500ms receive/3s socket/65s submitted limits and original native/Index expectations. Independent CLOSED/teardown/empty-effect/checkpoint/source-end controls required.",
         "implementation": "CLOSED fixture16745359 and checkpoint guard60aa7770 integrated as e2aa8772/9b1ca39f. Their132/57 affected controls PASS. Actual r2 exposed another shared client guard before submitted publication; corrected49500f65 integrated as d6a74562.",
-        "remaining": "Actual128 durable terminal requests/no129, complete830-native-row/64-input receipt census and publishedIndex64/cut312/556physical rows still require fresh real PASS.",
+        "remaining": "No open blocker in this bounded finite128 quota slice. Quiet cancellation, closed reclamation and broad capacity retain their separate existing tasks; current source hosted CI still required.",
         "client_profile_mismatch": {
           "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/dee67719/retained-budget-r2-failure.json",
           "sha256": "cf71833f18e543201de2b3be7c4d733ae99a480dd218243e850446da194b1311",
@@ -1917,11 +1917,43 @@
           "verifier": "b5383d3429d01ed58ab4c1f1a65fe5852d0acf50",
           "classification": "FAIL_FIXTURE: submitted client compared valid CLOSED_PROFILE only to PROFILE; AssertionError/clientexit1 before submitted/deadline publication or first source connection. Final drain/native/Index NOT_RUN. All16 actual owned containers inspected stopped/PID0; cleanupPASS.",
           "correction": "Shared exact PROFILE/CLOSED_PROFILE allowlist at actual submitted barrier; retain client-owned monotonic65s deadline and strict invalid profile refusal. Ordinary reclamation quiet unchanged.",
-          "controls": "Sol actual export-profile13PASS and retained57PASS at49500f65; new CLOSED-specific controls reproduced2 failures before fix. Astra independent actual source/caller/oracle review approved; no engine proof claimed."
+          "controls": "Sol actual export-profile13PASS and retained57PASS at49500f65; new CLOSED-specific controls reproduced2 failures before fix. Astra independent actual source/caller/oracle review approved; no engine proof claimed.",
+          "correction_result": "Closed by actual current538 installed run92265; original r2 remains FAIL_FIXTURE."
+        },
+        "installed_correction": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/retained-budget-r3-receipt.json",
+          "receipt_sha256": "dcb7dd890e69ebe75fb53147396aedebe5b0aa134f1d4424f220bb68f2df90ae",
+          "tool": 92265,
+          "counts": {
+            "collected": 7,
+            "executed": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "observed": {
+            "source_connections": 128,
+            "durable_terminal_requests": 128,
+            "query129": false,
+            "listener_refused": true,
+            "proof_request": 22,
+            "postproof_checkpoint": "65_to65_each",
+            "native_rows": 830,
+            "native_sequence": 1147,
+            "original_inputs": 64,
+            "source_cut": 312,
+            "index_revision": 64,
+            "committed_chunks": 640,
+            "physical_rows": 556,
+            "archive_cut": 3,
+            "quiet_cancellation": "NOT_RUN"
+          },
+          "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-retained-budget-r3",
+          "cleanup": "PASS; all16 owned containers actually inspected stopped/PID0"
         }
       },
       "historical_scratch_20261102": {
-        "status": "CORRECTION_INTEGRATED_CURRENT_RELEASE_RUNNING",
+        "status": "PASS_ACTUAL_INSTALLED_RESTART_ON_AND_OFF",
         "tasks": [
           "P03-T05 Steps1/4",
           "P03-T01 Step3",
@@ -1938,7 +1970,7 @@
         "review": "Astra found and Sol fixed post-native-handoff metadata reacquisition and compacted initial-gap final dispatch. Exact fixed-scalar overlap included in shared4KiB bound. Actual-total resource telemetry stays exact; current strict assertions add independent8MiB, old source-pinned captures untouched.",
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
         "branch": "fix/m2-historical-read-scratch-20261102",
-        "qualification": "Source/Astra critical review and fresh isolated fmt/diff PASS. Current release85000 RUNNING. Current strict library AND binary, exact-parent observer and installed restart on/off NOT_RUN; no old results relabeled.",
+        "qualification": "Actual current release/Clippy/Rustdoc/library660+binary213/observer and both installed restart modes12/12 PASS. Dedicated library3ignored remain NOT_RUN. Original91572 metadata namespace assertion FAIL preserved; product commands all passed, actual source-derived-name audit closed it without rerun.",
         "original_commit": "26232a5414c867962c3e922fc28f3bd328e67693",
         "integrated_source": "53802a461c89d5f36dabf941a705f012f2492f77",
         "tree": "c2bb2bb64fe55eea69524d0306d0f3b6ed574948",
@@ -1948,8 +1980,15 @@
           "tool": 85000,
           "container": "742ee6b3799147044a37aa80e816a5142177253632714c12da71a9dc4a7cd2aa",
           "owner": "21f39e5852a62a78b21e987295712d35",
-          "status": "RUNNING_NOT_YET_QUALIFIED",
-          "recipe": "Existing guarded release/workspace/bin/probe recipes parameterized; source/native/compiler/cache/protectedELF guards retained. Scope limits in preparation-audit.json."
+          "status": "PASS_ACTUAL_CURRENT_RELEASE",
+          "recipe": "Existing guarded release/workspace/bin/probe recipes parameterized; source/native/compiler/cache/protectedELF guards retained. Scope limits in preparation-audit.json.",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/build-receipt.json",
+          "receipt_sha256": "1a188d16a691914bcaceaa297936be944311e6033adc7ecc96b538cd015da854",
+          "binary": {
+            "bytes": 45714384,
+            "sha256": "68470ffbac067a7f98e1bb432aa1b6327fe75f52daad69c69bd2fdc80af66eef"
+          },
+          "terminal": "85000 reaped0; stopped/PID0/noOOM/cache released"
         },
         "portable": {
           "status": "ORIGINAL_FAIL_RETAINED_TARGETED_CORRECTION_PASS",
@@ -1961,8 +2000,60 @@
           "targeted_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/tutorial-fed87a8e/receipt.json",
           "targeted_sha256": "99fdd3f3445e442a32b0dc6eb946b6d97f7871e13c388c15d276d83f69aa03aa",
           "targeted_result": "14PASS/0FAIL/0skip; unaffected585 retain original scope; no second full portable run required for this pin-only correction."
-        }
-      }
+        },
+        "current_checks": {
+          "workspace_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/workspace-receipt.json",
+          "workspace_receipt_sha256": "3d3336cfc1f1097d91ab8dfa870ccf945ea1b35f08ad61ad545cfa623c36ab68",
+          "binary_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/application-bin/terminal-receipt.json",
+          "binary_receipt_sha256": "6326d6160748c81b09aff37acb9c439cef8b370a406b3ba67c480499a0b3a4f2",
+          "observer_receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/probe/terminal-receipt.json",
+          "observer_receipt_sha256": "606f6a8aedf69493b2a16bd13f0f0f20f65c6e48bac4afdb4a4f70ac74fb7464",
+          "audit_namespace_failure": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/workspace-audit-first-observation.json",
+          "classification": "Private metadata-verifier name error: #[path] declarations map the test to control_owner::producer_progress::recovery. Actual660/0FAIL/3ignored/0filtered and required test PASS. No rebuild/suite replay. Current maintained guide records declared-module names."
+        },
+        "installed": {
+          "provenance_on": {
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/restart-on-r2-receipt.json",
+            "receipt_sha256": "e56a9e818dd38f7a82238e706092505ab7a242b00a1315ee604348362e38a46e",
+            "tool": 8532,
+            "counts": {
+              "collected": 12,
+              "executed": 12,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-restart-on-r2",
+            "cleanup": "PASS; all26 owned containers actually inspected stopped/PID0"
+          },
+          "provenance_off": {
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/restart-off-r1-receipt.json",
+            "receipt_sha256": "0edcea8e96416e0e15b7db56cd90a9aaedaf1b3e15402bb426b3bb49d304c4a9",
+            "tool": 84411,
+            "counts": {
+              "collected": 12,
+              "executed": 12,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-restart-off-r1",
+            "cleanup": "PASS; all26 owned containers actually inspected stopped/PID0"
+          }
+        },
+        "argument_preflight": {
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-window-succession-qualification-20261101/53802a46/restart-on-r2-argument-preflight.json",
+          "classification": "NOT_RUN invocation setup error before engine creation: observer argument not applicable to restart case. Removed unsupported argument, original CLI logs preserved; subsequent actual run8532 PASS."
+        },
+        "remaining": "Current full hosted CI after coherent main integration; later producer/compacted/reclamation capacity qualification remains owned by existing P02-T02/P08 tasks. Source caller/oracle reconciliation is complete, not a new claim that every historical engine scenario reran."
+      },
+      "current_publication_input_audit": {
+        "source": "e7a7f752",
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-window-source-e7a7f752-20261102/source-triage.json",
+        "receipt_sha256": "2b60832cc2e8978f56be2eba76af42e45da465b4585b07873606918792490fd2",
+        "scope": "Afterdee99objects/24,124,402B;12 occurrences/4 candidate fingerprints all exact publicA71 source lines; zero unclassified/sensitive/archive/LFS. Later documentation delta and actual hosted outputs still need audit."
+      },
+      "remaining": "Integrate this coherent source-reviewed/local-engine-qualified increment and complete actual hosted CI. Full500, partitions, sparse growth, adoption/slices/revisits/live/NEG/fleet/import, all-excluded installed coverage and remaining P02 capacity stay with existing owners; finite windows do not complete M2/P03-T05."
     }
   }
 }

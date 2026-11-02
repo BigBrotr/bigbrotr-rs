@@ -91,6 +91,9 @@ require `cargo test --locked -p bigbrotr --bin bigbrotr`. The shared full
 `rust-tests` command includes both. Verify the actual target and executed
 regression names in Cargo/test output; all-target Clippy only compiles those
 tests. A successful library run does not qualify newly added binary tests.
+Rust test names follow declared module paths, including `#[path]` mappings,
+not source filenames. Bind any required-name audit to those declarations and the
+actual target; retain a metadata-audit failure separately from completed tests.
 
 The dispatch binds the copied worker at compile time and supplies its path,
 size and hash to the connected signed-pending test. The receipt is a trusted

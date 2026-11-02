@@ -78748,9 +78748,9 @@
           },
           "remaining_qualification": {
             "third_terminal_commit_after": "PASS01fc; terminal receipt retained",
-            "affected_installed_budget": "R1/R2 FAIL_FIXTURE; reviewed common client correction495 integratedd6a; real rerunpending",
-            "affected_installed_restart": "FAIL_PRODUCT dee historical scratch; reviewed integrated538 currentbuildrunning",
-            "current_source_hosted_ci": "NOT_RUN",
+            "affected_installed_budget": "PASS53892265 finite128/7of7; r1/r2 failures preserved",
+            "affected_installed_restart": "PASS538 on8532/off84411, each12of12; originaldeeFAILpreserved",
+            "current_source_hosted_ci": "NOT_RUN_PENDING_COHERENT_MAIN_PUSH",
             "affected_installed_interruptions": "PASSdee12049/7of7; original01fcFAILpreserved"
           },
           "immutable_read_stop_correction": {
@@ -78848,7 +78848,7 @@
           "historical_scratch_work": {
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-historical-read-scratch-20261102",
             "branch": "fix/m2-historical-read-scratch-20261102",
-            "state": "Original26232a54 clean source integrated byRoot as53802a46; actual release running85000. No unintegrated edits or autonomous agent writes.",
+            "state": "Original26232a54 clean/integrated538; current release/strict targets/observer and installed restarton/off qualified. No agent writes.",
             "retention": "Original restart-on failure and source WT retained; compilation/strict/installed proof pending."
           },
           "historical_scratch_qualification": {
@@ -78860,14 +78860,38 @@
             "tool": 85000,
             "container": "742ee6b3799147044a37aa80e816a5142177253632714c12da71a9dc4a7cd2aa",
             "owner": "21f39e5852a62a78b21e987295712d35",
-            "status": "RELEASE_RUNNING; original cache115 lock held only by this guarded launcher, no engine active",
-            "retention": "No cleanup. Protected original4ELFs guarded with O_NOATIME/fullmetadata equality; raw failures and current datasets retained."
+            "status": "Release85000 reaped0, strict91572 actualcommandsPASS with namespaceauditFAILclosedposthoc, binary59504/observer48098 PASS; all stopped/PID0/noOOM/cache released",
+            "retention": "No cleanup. Protected original4ELFs guarded with O_NOATIME/fullmetadata equality; raw failures and current datasets retained.",
+            "installed_cases": [
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-restart-on-r2",
+                "owner": "7a7c392eec6e6bf1e7288afcc7a88d6e",
+                "tool": 8532,
+                "status": "PASS_ACTUAL_INSTALLED_RESTART_PROVENANCE_ON",
+                "cleanup": "All26 owned containers inspected stopped/PID0; raw data/logs retained"
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-restart-off-r1",
+                "owner": "88130e7d0a53a3725660ef5a5119b322",
+                "tool": 84411,
+                "status": "PASS_ACTUAL_INSTALLED_RESTART_PROVENANCE_OFF",
+                "cleanup": "All26 owned containers inspected stopped/PID0; raw data/logs retained"
+              },
+              {
+                "root": "/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53802a46/acceptance-retained-budget-r3",
+                "owner": "fe1d697ee9d537935dc86e954c4398fe",
+                "tool": 92265,
+                "status": "PASS_ACTUAL_INSTALLED_FINITE128_RETAINED_QUOTA",
+                "cleanup": "All16 owned containers inspected stopped/PID0; raw data/logs retained"
+              }
+            ],
+            "cache": "115 exclusive lock released; original4ELF bytes and full metadata guarded unchanged through all build phases. No local engine/compiler/observer remains active."
           },
           "retained_client_profile_work": {
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-retained-client-profile-20261102",
             "branch": "fix/m2-retained-client-profile-20261102",
             "source": "49500f6500c27deb7a6a895461765caff0b1304b",
-            "state": "Clean/integratedd6a74562; criticalreviewapproved/13+57controlsPASS; no engine/cachework bySol",
+            "state": "Clean/integratedd6a74562; criticalreviewapproved/13+57controlsPASS; actual538 finite12892265PASS; no agent writes",
             "acceptance_root": "/home/tux/bigbrotr-rs/.research/m2-window-acceptance-fed87a8e"
           }
         }
