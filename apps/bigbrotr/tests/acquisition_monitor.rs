@@ -6,6 +6,7 @@ mod support;
 use bigbrotr::{
     acquisition::monitor::{AttemptSpec, CaptureError, PreparedPassiveRead},
     network::{TransportError, TransportSnapshot},
+    runtime::ResourceBudget,
 };
 use bigbrotr_model::{
     ClockQuality, DictionaryKind, DurationUs, EventId, Ordinal, QualifiedRef, measurement::*,
@@ -132,6 +133,15 @@ async fn cleanup(stream: &mut TcpStream, id: &str, nip_close: bool) {
         Err(error) => panic!("fixture close reply failed: {error}"),
     }
     eof(stream).await;
+}
+
+fn assert_compact_grant(parent: &ResourceBudget, bytes: u64, items: u64) {
+    assert!(bytes > 0 && bytes < 128 * 1024);
+    assert_eq!(items, 1);
+    assert_eq!(parent.snapshot().used().data_bytes(), bytes);
+    assert_eq!(parent.snapshot().used().items(), items);
+    assert_eq!(parent.snapshot().used().native_bytes(), 0);
+    assert_eq!(parent.snapshot().active_permits(), 1);
 }
 #[derive(Clone, Copy)]
 enum Script {
@@ -278,6 +288,11 @@ async fn exchange_finishing(
     );
     assert_eq!(snapshot.relay_connect_calls, 1);
     assert_eq!(snapshot.resolver_connect_calls, 0);
+    assert_compact_grant(
+        &resources,
+        captured.reserved_bytes(),
+        captured.reserved_items(),
+    );
     drop(captured);
     assert_eq!(resources.snapshot().active_permits(), 0);
     (terminal, snapshot, result)
@@ -709,7 +724,16 @@ async fn a_second_capture_cannot_consume_another_attempts_observed_stream() {
     .unwrap();
     assert_eq!(result, Err(TransportError::Operation));
     assert!(other.transport_trace().snapshot().first_io.is_none());
-    assert!(matches!(other.finish(result), Err(CaptureError::Binding)));
+    let failure = other.finish(result).err().unwrap();
+    assert_eq!(failure.kind(), CaptureError::Binding);
+    assert!(failure.observations().binding_refused());
+    assert!(failure.observations().transport().first_io.is_none());
+    assert_compact_grant(
+        &other_parent,
+        failure.observations().reserved_bytes(),
+        failure.observations().reserved_items(),
+    );
+    drop(failure);
     drop(prepared);
     assert_eq!(resources.snapshot().active_permits(), 0);
     assert_eq!(other_parent.snapshot().active_permits(), 0);
@@ -750,9 +774,167 @@ async fn unclassified_outer_refusal_preserves_known_terminal_but_never_invents_a
     assert_eq!(result, Err(TransportError::Operation));
     assert!(prepared.transport_trace().snapshot().first_io.is_some());
     assert!(prepared.transport_trace().snapshot().stop.is_none());
-    assert!(matches!(
-        prepared.finish_unclassified(),
-        Err(CaptureError::TerminalUnavailable)
-    ));
+    let failure = prepared.finish_unclassified().err().unwrap();
+    assert_eq!(failure.kind(), CaptureError::TerminalUnavailable);
+    assert!(failure.observations().transport().first_io.is_some());
+    assert!(failure.observations().terminal().is_none());
+    assert!(
+        failure
+            .observations()
+            .read_prefix()
+            .first_valid_event
+            .is_none()
+    );
+    assert_compact_grant(
+        &resources,
+        failure.observations().reserved_bytes(),
+        failure.observations().reserved_items(),
+    );
+    drop(failure);
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn unclassified_post_io_capture_retains_verified_prefix_and_only_its_compact_grant() {
+    use bigbrotr::network::TransportTrace;
+    let support::Connection {
+        listener,
+        resources,
+        connector,
+        attempt,
+        cancel: _cancel,
+    } = support::connection().await;
+    let address = listener.local_addr().unwrap();
+    let endpoint = Endpoint::parse(&format!("ws://{address}/events?order=1&order=2")).unwrap();
+    let expected = spec();
+    let prepared = PreparedPassiveRead::prepare(&resources, &endpoint, spec()).unwrap();
+    let connector = prepared.connector(&connector);
+    let old_connector = prepared.connector(&connector);
+    let peer = async {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        let response = support::handshake(&mut stream, address).await;
+        stream.write_all(response.as_bytes()).await.unwrap();
+        let id = request(&mut stream).await;
+        stream
+            .write_all(
+                &[
+                    frame("[\"AUTH\",\"never-retained\"]"),
+                    frame(&format!("[\"EVENT\",\"{id}\",{}]", corpus("E_private"))),
+                ]
+                .concat(),
+            )
+            .await
+            .unwrap();
+        eof(&mut stream).await;
+    };
+    let interrupted = async {
+        let consumer =
+            connector.run_observed(attempt, prepared.transport_trace(), async |stream| {
+                prepared.read(stream).await
+            });
+        tokio::pin!(consumer);
+        let prefix = async {
+            while prepared
+                .transport_trace()
+                .snapshot()
+                .websocket
+                .rx_logical_messages_delivered
+                < 2
+            {
+                tokio::task::yield_now().await;
+            }
+        };
+        tokio::select! {
+            biased;
+            result = &mut consumer => panic!("unexpected terminal before external future drop: {result:?}"),
+            () = prefix => {}
+        }
+        // Drop the joined branch's in-progress connector future without
+        // inventing a Network cancellation/deadline or a PG failure fixture.
+    };
+    timeout(Duration::from_secs(3), async {
+        tokio::join!(interrupted, peer)
+    })
+    .await
+    .unwrap();
+    let trace = prepared.transport_trace().snapshot();
+    assert!(trace.first_io.is_some());
+    assert!(trace.stop.is_none());
+    let failure = prepared.finish_unclassified().err().unwrap();
+    assert_eq!(failure.kind(), CaptureError::TerminalUnavailable);
+    let retained = failure.observations();
+    assert_eq!(retained.attempt_id(), expected.attempt_id);
+    assert_eq!(retained.context(), expected.context);
+    assert_eq!(
+        retained.profile().effective_authority_us(),
+        expected.effective_authority_us
+    );
+    assert_eq!(retained.clock_quality(), expected.clock_quality);
+    assert_eq!(retained.phase(), Some(MeasurementPhase::ResponseRead));
+    assert!(retained.terminal().is_none());
+    assert_eq!(retained.teardown(), TeardownObservation::NotAttempted);
+    let prefix = retained.read_prefix();
+    assert!(prefix.request_started);
+    assert!(prefix.auth_observed);
+    assert_eq!(prefix.event_candidates, 1);
+    let event = prefix.first_valid_event.unwrap();
+    assert_eq!(
+        event.event_id,
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+            .parse::<EventId>()
+            .unwrap()
+    );
+    assert_eq!(
+        event.delivered.monotonic,
+        trace.last_message_delivered.unwrap().monotonic
+    );
+    assert!(event.verified.monotonic >= event.delivered.monotonic);
+    assert!(prefix.eose.is_none() && !prefix.eose_prefix_verified && !prefix.correlated_closed);
+    assert_eq!(
+        retained.transport().first_io.unwrap().returned_at.monotonic,
+        trace.first_io.unwrap().returned_at.monotonic
+    );
+    assert_eq!(
+        retained.transport().websocket.rx_ws_framed_bytes_read,
+        trace.websocket.rx_ws_framed_bytes_read
+    );
+    assert_eq!(
+        retained.transport().websocket.rx_ws_payload_bytes_consumed,
+        trace.websocket.rx_ws_payload_bytes_consumed
+    );
+    assert_eq!(
+        retained.transport().websocket.rx_logical_messages_delivered,
+        2
+    );
+    assert_compact_grant(
+        &resources,
+        retained.reserved_bytes(),
+        retained.reserved_items(),
+    );
+    // An old connector clone holds only the closed child admission handle.
+    // Even a fresh finite attempt cannot allocate a connection after handoff.
+    let later = support::connection().await;
+    let later_trace = TransportTrace::new();
+    assert_eq!(
+        old_connector
+            .run_observed(later.attempt, &later_trace, async |_stream| Ok(()))
+            .await,
+        Err(TransportError::Budget)
+    );
+    assert!(later_trace.snapshot().first_io.is_none());
+    assert!(
+        timeout(Duration::from_millis(20), later.listener.accept())
+            .await
+            .is_err()
+    );
+    assert_eq!(later.resources.snapshot().active_permits(), 0);
+    assert_compact_grant(
+        &resources,
+        retained.reserved_bytes(),
+        retained.reserved_items(),
+    );
+    drop(failure);
+    assert_eq!(resources.snapshot().used().data_bytes(), 0);
+    assert_eq!(resources.snapshot().used().items(), 0);
     assert_eq!(resources.snapshot().active_permits(), 0);
 }

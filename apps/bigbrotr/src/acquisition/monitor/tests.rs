@@ -411,3 +411,141 @@ fn authority_cancel_deadline_and_post_submit_local_refusals_remain_distinct() {
         MeasurementTermination::AuthorityInterruption(MeasurementPhase::Tls)
     );
 }
+
+#[test]
+fn consuming_mapping_and_binding_errors_retain_fixed_knowledge_and_close_work_capacity() {
+    use crate::runtime::AcquireError;
+    let endpoint = Endpoint::parse("ws://127.0.0.1/").unwrap();
+    for expected_error in [CaptureError::Clock, CaptureError::Observation] {
+        let parent = budget(PreparedPassiveRead::REQUIRED_DATA_BYTES);
+        let prepared = PreparedPassiveRead::prepare(&parent, &endpoint, spec(4_000_000)).unwrap();
+        let old_budget = prepared.reservation.budget().clone();
+        prepared.state().invalid_binding = true;
+        let failure = prepared.finish(Ok(())).err().unwrap();
+        assert_eq!(failure.kind(), CaptureError::Binding);
+        assert!(failure.observations().binding_refused());
+        assert_eq!(failure.observations().context(), spec(4_000_000).context);
+        assert_eq!(
+            failure.observations().clock_quality(),
+            spec(4_000_000).clock_quality
+        );
+        assert_eq!(
+            old_budget
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .err(),
+            Some(AcquireError::Closed)
+        );
+        let (kind, mut retained) = failure.into_parts();
+        assert_eq!(kind, CaptureError::Binding);
+        assert_eq!(
+            parent.snapshot().used().data_bytes(),
+            retained.reserved_bytes()
+        );
+        assert_eq!(parent.snapshot().used().items(), retained.reserved_items());
+        assert_eq!(parent.snapshot().active_permits(), 1);
+        assert!(retained.reserved_bytes() < 128 * 1024);
+        // Privileged synthetic corruption exercises the two model/time error
+        // paths. These fields are never injected into a production trace and
+        // this control establishes no runtime execution/start evidence.
+        let anchor = Instant::now();
+        let at = |us| TransportInstant {
+            monotonic: anchor + Duration::from_micros(us),
+            unix_us: Some(-(us as i64)),
+        };
+        retained.trace = TransportSnapshot {
+            first_io: Some(FirstIo {
+                target: FirstIoTarget::RelayConnect,
+                returned_at: at(10),
+                submission: ConnectSubmission::InProgress,
+            }),
+            relay_connected: Some(at(11)),
+            websocket_upgrade_validated: Some(at(12)),
+            first_text_write_flushed: Some(at(13)),
+            websocket: WebSocketCounters {
+                rx_physical_frames_started: 2,
+                rx_logical_messages_delivered: 2,
+                rx_ws_framed_bytes_read: 137,
+                rx_ws_framed_bytes_consumed: 10,
+                // Deliberate inconsistency: known AUTH/EVENT without consumed
+                // payload. The refusal must preserve it for diagnosis.
+                rx_ws_payload_bytes_consumed: 0,
+                tx_ws_framed_bytes_written: 80,
+                ..WebSocketCounters::default()
+            },
+            ..TransportSnapshot::default()
+        };
+        retained.state = State {
+            entered: true,
+            phase: Some(MeasurementPhase::ResponseRead),
+            request_started: true,
+            candidates: 1,
+            auth: true,
+            first_event: Some(ValidEvent {
+                id: EventId::from_bytes([0xaa; 32]),
+                delivered: at(14),
+                verified: at(15),
+            }),
+            terminal: Some((
+                MeasurementTermination::Failed {
+                    phase: MeasurementPhase::ResponseRead,
+                    class: MeasurementFailure::Transport,
+                },
+                at(if expected_error == CaptureError::Clock {
+                    9
+                } else {
+                    16
+                }),
+            )),
+            ..State::default()
+        };
+        let failure = retained.finalize(None, false).err().unwrap();
+        assert_eq!(failure.kind(), expected_error);
+        let retained = failure.observations();
+        assert_eq!(retained.attempt_id(), spec(4_000_000).attempt_id);
+        assert_eq!(
+            retained.profile().effective_authority_us(),
+            DurationUs::new(4_000_000)
+        );
+        assert_eq!(retained.clock_quality(), spec(4_000_000).clock_quality);
+        assert_eq!(
+            retained.transport().first_io.unwrap().returned_at.monotonic,
+            at(10).monotonic
+        );
+        assert_eq!(retained.transport().websocket.rx_ws_framed_bytes_read, 137);
+        assert_eq!(
+            retained.transport().websocket.rx_ws_payload_bytes_consumed,
+            0
+        );
+        let prefix = retained.read_prefix();
+        assert!(prefix.auth_observed && prefix.request_started);
+        assert_eq!(prefix.event_candidates, 1);
+        assert_eq!(
+            prefix.first_valid_event.unwrap().event_id,
+            EventId::from_bytes([0xaa; 32])
+        );
+        assert_eq!(
+            prefix.first_valid_event.unwrap().delivered.monotonic,
+            at(14).monotonic
+        );
+        assert_eq!(
+            prefix.first_valid_event.unwrap().verified.monotonic,
+            at(15).monotonic
+        );
+        assert_eq!(
+            parent.snapshot().used().data_bytes(),
+            retained.reserved_bytes()
+        );
+        assert_eq!(parent.snapshot().used().items(), 1);
+        assert_eq!(parent.snapshot().active_permits(), 1);
+        assert_eq!(
+            old_budget
+                .try_acquire(ResourceRequest::data(1, 1, 0).unwrap())
+                .err(),
+            Some(AcquireError::Closed)
+        );
+        drop(failure);
+        assert_eq!(parent.snapshot().used().data_bytes(), 0);
+        assert_eq!(parent.snapshot().used().items(), 0);
+        assert_eq!(parent.snapshot().active_permits(), 0);
+    }
+}
