@@ -190,7 +190,8 @@
         "scope": "Independent Astra reviewed changed tutorial selected Sync dispatch/lifecycle, shared session/transport and callers: no reachable signer or outbound Nostr text beyond REQ/CLOSE; explicit Monitor once-only selection is separate. Ordinary Monitor startup negative without initialization remains unchanged. Whole-code object pins updated; stale blanket Monitor wording corrected. No general egress or Monitor/storage reapproval inferred.",
         "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run.",
         "documentation_only_followthrough": "65accd30 only wraps Mutex<State> in Rustdoc code markup after actualf474 Rustdoc unclosed-HTML FAIL. Root inspected the exact one-comment delta and reused unchanged f474 signer/egress review; no product rebuild or fresh runtime claim.",
-        "fixture_only_followthrough": "d20a84d7 only changes cfg(test) descriptor-fixture lifetime and exact replay/conflict assertions, independently reviewed. Root checked the only other app delta is Rustdoc markup; all f474 production Nostr behavior remains unchanged. Pin now namesd20 source."
+        "fixture_only_followthrough": "d20a84d7 only changes cfg(test) descriptor-fixture lifetime and exact replay/conflict assertions, independently reviewed. Root checked the only other app delta is Rustdoc markup; all f474 production Nostr behavior remains unchanged. Pin now namesd20 source.",
+        "ownership_followthrough": "0e9b7912 only constructs owned fixture intents via existing checked builder and verifies equality; original d20 semantic review retained. No production Nostr path changed."
       },
       "clickhouse_preflight": {
         "source": "f11024b87fdf917518a6512a92ceeaa9a0787b8d",
@@ -252,6 +253,15 @@
           "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/3fde120f/resource.json",
           "resource_sha256": "e7d9a870f81913c9286bd6fad2989d08cae609bac6412a73a3f8263f6ed867ff",
           "terminal": "Tool34813 reaped1; containerd8357828 exited1/PID0/noOOM; cache released and full4ELF byte/stat guards passed."
+        },
+        {
+          "source": "caefdad80ca0495b887ae78c3ed534873f326856",
+          "status": "FAIL",
+          "classification": "FIXTURE_BORROW_SOURCE_COMPILE",
+          "detail": "Two actual E0505 errors from cloning references to non-Clone EvidenceIntent across prepared-value drop.0e9b7912 constructs owned intents through existing fixture builder and asserts equality. Original correction/rustdoc/release/assertions were not qualified atcaef.",
+          "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/caefdad8/compile-failure.json",
+          "receipt_sha256": "37eb962d0939181cfdb2e5ae6162157518630ddd68ea8043adb456b321133485",
+          "terminal": "Tool98128 reaped1; d23e533f exited1/PID0/noOOM/cache released, original4ELF guardsPASS. Already terminal at attempted controlled-stop inspection."
         }
       ],
       "source_corrections": [
@@ -350,9 +360,10 @@
         "failure_classification": "FIXTURE_LIFETIME_PRECONDITION",
         "correction": {
           "source": "d20a84d7816d390a5bba65025517b51f77b8e1bf",
-          "status": "SOURCE_REVIEW_APPROVED_CORRECTED_TEST_NOT_RUN",
+          "status": "SEMANTIC_SOURCE_REVIEW_APPROVED_OWNERSHIP_CORRECTION_TEST_NOT_RUN",
           "cause": "The descriptor fixture attempted fresh preparation/admission after raw reopen, which deliberately retains RecoveryBlocked until positive recovery. Its fresh work now stays in the original funded lifetime; raw reopen validates only exact original/new-AlreadyDurable receipt replay and unchanged Native rows/inputs. Conflict must be StateMismatch, not any refusal.",
-          "review": "Independent Astra approved unchanged test purpose and replay/closure coverage; no product code, quota binding or recovery bypass."
+          "review": "Independent Astra approved unchanged test purpose and replay/closure coverage; no product code, quota binding or recovery bypass.",
+          "ownership_correction": "0e9b7912c2a2e4690e3e2024c3fafffc96e068d4"
         }
       },
       "remaining_assertions": {

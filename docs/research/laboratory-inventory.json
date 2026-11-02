@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "d20a84d7",
+      "observed_source": "0e9b7912",
       "state": "Local not pushed; first actual installed passive Archive+ClickHouse and PG restart inspection PASS atf474 with frozen62ae harness. Source-reviewed fixture/Rustdoc/build-tool follow-through needs final current-source qualification; no whole M2 or release claim.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79070,7 +79070,7 @@
         "measurement_clickhouse_prep": "CBOR correction97a9 saved clean and critically approved; integrated88b7330b. ActualcaseRootPASS.",
         "native_timestamp_review": "Bounded critical reviews complete through oracle97a9 and fixtured20; no ongoing runtime assignment."
       },
-      "resources": "At recording all owned compiler/engine/test/client processes are terminal. Tool89102 reaped0 with cache released; actualIndex tool5765 reaped0 and19containers stopped/PID0/noOOM, listenerjoined/closed/queueempty, cleanup errors empty. Earlier18containers/data retained, borrowedbridge1699209a unchanged, all4 protectedELF bytes/fullstat intact. No cleanup.",
+      "resources": "All owned build/engine/test processes terminal atrecording. caef tool98128 reaped1 (actual E0505 compilerFAIL, not interrupted), d23e533f stopped/PID0/noOOM/cache released, original4ELF guardsPASS. Portablecaef tool77521 reaped1,92c0cb95 stopped/PID0/noOOM; minimumPython fixtureAPI ERROR preserved. Earlier19Index+18passive containers/data retained and borrowednetwork unchanged. No cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79089,7 +79089,8 @@
           ".research/m2-monitor-core-product-3fde120f",
           ".research/m2-monitor-core-product-5c85bb4c",
           ".research/m2-monitor-core-product-214e72cb",
-          ".research/m2-monitor-core-product-f474b5a0"
+          ".research/m2-monitor-core-product-f474b5a0",
+          ".research/m2-monitor-core-product-caefdad8"
         ],
         "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation",
         "latest_verified_build": {
@@ -79126,6 +79127,15 @@
           "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-f474b5a0/acceptance-passive-index-r1",
           "receipt_sha256": "92e5a09725a92f164ec9cdeefcb9e033f94f9e2f97d8accc329b5b3659da7bc7",
           "state": "7stagesPASS;19 ownedcontainers stopped/PID0/noOOM, private data/captures preserved; see P02 for science/original audit-transcription failure. Borrowednetwork preserved."
+        },
+        "latest_compile_failure": {
+          "source": "caefdad80ca0495b887ae78c3ed534873f326856",
+          "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/caefdad8",
+          "state": "Source E0505 failed all-target preflight; no release/assertions. Ownership correction0e9b approved semanticpurpose, freshqualification pending; all original source/commands/logs retained."
+        },
+        "portable_failure": {
+          "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-caefdad8",
+          "state": "624 collected/40 fixture setup/subtestERRORs, no assertionFAIL; Python3.11.2 filter keyword unsupported. Fixture compatibility correction source-only; full minimum-runtime retest pending."
         }
       }
     }

@@ -36,9 +36,10 @@ def export(root, output, mtime):
     output.mkdir(); source = output/'source'; source.mkdir()
     git(root, 'archive', '--format=tar', '--output', str(output/'source.tar'), 'HEAD')
     with tarfile.open(output/'source.tar') as archive:
-        # This is the fixture's own Git archive, never supplied input. Omit the
-        # newer filter keyword to support the declared Python3.11 minimum.
-        archive.extractall(source)
+        # Only the fixture's own Git archive is read. Python3.11 predates this
+        # keyword; newer runtimes require an explicit extraction policy.
+        options = {'filter': 'fully_trusted'} if hasattr(tarfile, 'fully_trusted_filter') else {}
+        archive.extractall(source, **options)
     for path in [source/'vendor', *(source/'vendor').rglob('*')]:
         os.utime(path, ns=(mtime, mtime))
     manifest = {'format': 'bigbrotr-source/1', 'revision': git(root, 'rev-parse', 'HEAD'),

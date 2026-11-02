@@ -7,7 +7,7 @@ One existing plan, capability-first execution, one integrating owner.
 ## Source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source **d20a84d7**; this checkpoint,
+`work/m2-finite-history-20261101`. Observed source **0e9b7912**; this checkpoint,
 evidence/inventory and tutorial-pin updates are pending the recording commit.
 Canonical main/origin remain clean at pushed **a37f7829**. New Monitor work is
 local and not pushed while the final coherent integration gates are closed.
@@ -41,7 +41,11 @@ after raw reopen, which deliberately remains RecoveryBlocked. Correctiond20 keep
 fresh reuse/conflict in the funded lifetime, then replays both original receipt
 kinds after reopen and preserves all rows/inputs. Conflict must be StateMismatch.
 Astra approved this fixture-only correction; its execution is **NOT_RUN**.
-No quota binding, product recovery behavior or expectation was weakened.
+0e9b7912 then fixes the fixture ownership error using the existing checked
+constructor: EvidenceIntent is not Clone. Actualcaef all-target compilation
+reported two E0505 errors; Clippy/Rustdoc/release/assertions were NOT_RUN. The
+builder was already terminal when controlled stop was inspected. Original logs
+and guards remain; no quota binding, recovery behavior or expectation weakened.
 
 The remaining five f474 Rust groups completed: binary232, real Monitor wire12,
 catalog entrypoint16, Protocol56 and Archive-worker78 PASS, with one dedicated
@@ -57,7 +61,10 @@ inventory, preserving missing/extra/same-count substitution and lifecycle checks
 Agent's full portable audit:622collected/621run, zero FAIL/ERROR,2 strace skips,
 1 explicit native-build NOT_RUN. Separately the unchanged four native-tool controls
 passed in the declared compiler image; the host's missing LLVM was ENVIRONMENT.
-Final integrated portable/current-source checks remain required.
+The declared builder Python3.11.2 exposed a second setup error: the new fixture
+used a newer tar extraction keyword (40 setup/subtestERRORs; no assertionFAIL).
+The owned Git fixture now detects keyword support; newer runtimes retain explicit
+policy. Host11 controlsPASS; final minimum-runtime/full integrated retest pending.
 
 Hosted baseline [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298)
 passed all33 selected commands plus20 scope controls at a37. The
