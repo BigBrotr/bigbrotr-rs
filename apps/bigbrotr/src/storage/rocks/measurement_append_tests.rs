@@ -1212,6 +1212,214 @@ fn measurement_preflight_resource_and_authority_refusals_have_no_effects() {
     assert_eq!(snapshot(&store, &path), before);
 }
 
+#[test]
+fn final_authority_fence_retains_only_staged_input_not_a_measurement_outcome() {
+    // Closing is irreversible. Use separate real owners for same-original retry
+    // and closing recovery of an input that never acquired an issued outcome.
+    for close in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("db");
+        let b = budget();
+        let mut store = initialize(&path, &b, DictionaryDescriptor::PassiveWsRead);
+        let value = measurement(literal("execution-unknown"));
+        let before = snapshot(&store, &path);
+        assert_eq!(before.reserved, Ok(0));
+        let permit = operation_permit(&b);
+        let terms = store
+            .measurement_pending_reservation(
+                next_request(3),
+                &value,
+                ObservedTime::new(30),
+                limits(),
+                &permit,
+            )
+            .unwrap();
+        drop(permit);
+        assert_eq!(terms.request, next_request(3));
+        assert_eq!(terms.allowance_bytes, limits().max_batch_bytes as u64);
+        assert_eq!(snapshot(&store, &path), before);
+        let mut authority = 0;
+        assert_eq!(
+            store
+                .append_measurement(
+                    next_request(3),
+                    &value,
+                    ObservedTime::new(30),
+                    limits(),
+                    operation_permit(&b),
+                    None,
+                    || {
+                        authority += 1;
+                        if authority == 3 {
+                            Err(AdmissionError::AuthorityUnavailable)
+                        } else {
+                            Ok(())
+                        }
+                    },
+                )
+                .err(),
+            Some(AdmissionError::AuthorityUnavailable)
+        );
+        assert_eq!(authority, 3, "the final pre-write fence must be reached");
+        assert!(!store.write_uncertain);
+        assert!(!store.native_unavailable());
+        let staged = snapshot(&store, &path);
+        assert_eq!(staged.rows, before.rows);
+        assert_eq!(staged.native_sequence, before.native_sequence);
+        assert_eq!(staged.accounting, before.accounting);
+        assert_eq!(staged.quota, before.quota);
+        assert_eq!(staged.reserved, Ok(terms.allowance_bytes));
+        assert_source(&store, 7);
+        assert_producer(&store, 2, false);
+        for key in [
+            IngestKey::Request {
+                request_id: next_request(3),
+            },
+            index(&value),
+            IngestKey::Fact {
+                source_record_id: source(8),
+            },
+            IngestKey::PendingBatch { first: source(8) },
+        ] {
+            assert!(raw(&store, key).is_none(), "staging emitted {key:?}");
+        }
+        assert_eq!(staged.inputs.len(), before.inputs.len() + 1);
+        assert!(
+            before
+                .inputs
+                .iter()
+                .all(|input| staged.inputs.contains(input))
+        );
+        let added: Vec<_> = staged
+            .inputs
+            .iter()
+            .filter(|input| !before.inputs.contains(input))
+            .collect();
+        assert_eq!(added.len(), 1);
+        let (_, encoded) = added[0];
+        assert_eq!(
+            encoded,
+            &value
+                .encode_request_preimage(next_request(3), 65536)
+                .unwrap()
+        );
+        let digest = Digest256::from_bytes(Sha256::digest(encoded).into());
+        assert_eq!(digest, terms.digest);
+        assert_eq!(store.staged_pending_digest(next_request(3)), Ok(digest));
+        let (id, decoded) = decode_request(encoded, digest, recovery_limits().input).unwrap();
+        assert_eq!(id, next_request(3));
+        assert_eq!(
+            decoded,
+            MutationIntent::Measurement(measurement(value.measurement().clone()))
+        );
+        drop(decoded);
+        assert_eq!(
+            b.snapshot().used().data_bytes(),
+            PENDING_QUOTA_OWNER_DATA_BYTES
+        );
+        assert_eq!(b.snapshot().used().native_bytes(), 128 * MIB);
+        if close {
+            drop(store);
+            let mut recovery = IngestRecovery::open(
+                &path,
+                installed_manifest(),
+                native(),
+                grant(&b, 0, 128 * MIB),
+            )
+            .unwrap();
+            let closing = recovery
+                .close_producer(
+                    request().producer_slot_id,
+                    request().producer_epoch,
+                    grant(&b, 4096, 4096),
+                    || Ok(()),
+                )
+                .unwrap();
+            assert_eq!(closing.issued_through(), 2);
+            assert_eq!(closing.acknowledged_through(), 0);
+            drop(closing);
+            assert_source(&recovery.store, 7);
+            assert_producer(&recovery.store, 2, true);
+            assert_eq!(inputs(&path), staged.inputs);
+            let closed = snapshot(&recovery.store, &path);
+            // A valid typed original survives reopen/closing, yet is neither a
+            // durable Measurement nor a trusted execution/start observation.
+            let retained = recovery
+                .store
+                .read_request_input(
+                    next_request(3),
+                    digest,
+                    recovery_limits().input,
+                    grant(&b, MIB, 0),
+                )
+                .unwrap();
+            assert_eq!(retained.encoded_bytes() as usize, encoded.len());
+            let (id, decoded, permit) = retained.into_parts();
+            assert_eq!(id, next_request(3));
+            assert_eq!(
+                decoded,
+                MutationIntent::Measurement(measurement(value.measurement().clone()))
+            );
+            drop(decoded);
+            drop(permit);
+            let recovery_limits = recovery_limits();
+            assert_eq!(
+                recovery
+                    .resolve_original_request(
+                        next_request(3),
+                        digest,
+                        recovery_limits,
+                        grant(
+                            &b,
+                            RetainedRequestInput::required_data_bytes(recovery_limits.input)
+                                .unwrap(),
+                            0
+                        ),
+                        grant(&b, recovery_limits.required_data_bytes().unwrap(), 0),
+                        || Ok(()),
+                    )
+                    .err(),
+                Some(ProducerRecoveryError::Unresolved)
+            );
+            assert_eq!(snapshot(&recovery.store, &path), closed);
+        } else {
+            let permit = operation_permit(&b);
+            assert_eq!(
+                store
+                    .measurement_pending_reservation(
+                        next_request(3),
+                        &value,
+                        ObservedTime::new(30),
+                        limits(),
+                        &permit
+                    )
+                    .unwrap(),
+                terms,
+                "same original retains its existing credit terms"
+            );
+            drop(permit);
+            assert_eq!(snapshot(&store, &path), staged);
+            let receipt = append(&mut store, &b, 3, &value, 30).unwrap();
+            let reference = assert_fact(&store, &value, 8, 30);
+            assert_eq!(receipt.batch().unwrap().records(), &[reference]);
+            assert_closure(&store, &receipt, 8);
+            assert_eq!(receipt.request_digest(), digest);
+            assert_eq!(
+                inputs(&path),
+                staged.inputs,
+                "retry reuses the synchronized original"
+            );
+            assert_eq!(store.pending_reserved_bytes(), Ok(0));
+            assert_source(&store, 8);
+            assert_producer(&store, 3, false);
+            assert!(
+                store.pending_accounting().unwrap().pending_bytes()
+                    > before.accounting.pending_bytes()
+            );
+        }
+    }
+}
+
 fn resolve(
     recovery: &IngestRecovery,
     b: &ResourceBudget,
