@@ -196,13 +196,16 @@ pub struct ReadObservation {
 /// Actual observed counts, including control/unrelated/rejected/teardown input.
 /// A declared payload length is not consumed bytes. A cap is an admission bound,
 /// not permission to clip observations; a rejecting header/read may cross it.
-/// Counters have independent meanings and are not inferred from one another.
+/// Received payload octets are a subset of received framed-stream octets. Known
+/// distinct NIP-01 messages supply conservative minima, never inferred totals.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct MeasurementCounters {
     pub rx_physical_frames: u64,
     pub rx_messages: u64,
     pub event_candidates: u64,
+    /// Actually consumed WS framing and payload, excluding HTTP/TLS overhead.
     pub rx_ws_bytes: u64,
+    /// Actually consumed WS payload octets, excluding frame headers.
     pub rx_payload_bytes: u64,
     pub tx_ws_bytes: u64,
 }
@@ -450,6 +453,24 @@ impl ObservedAttempt {
             || self.execution.destination == ConnectDestination::Relay
                 && matches!(self.execution.result, ConnectCallResult::ImmediateError(_))
                 && open.tcp_connected.is_some()
+        {
+            return Err(MeasurementError::Observation);
+        }
+        // These are distinct complete NIP-01 envelope kinds, including a known
+        // delivery whose clock samples are unavailable. Each needs at least one
+        // logical message, physical frame and payload octet. No configured cap,
+        // exact wire length or total traffic is inferred from these lower bounds.
+        let known_messages = u64::from(read.first_valid_event.is_some())
+            + u64::from(read.eose.is_some())
+            + u64::from(read.auth_observed)
+            + u64::from(read.correlated_closed);
+        let counters = self.counters;
+        if counters.rx_messages < known_messages
+            || counters.rx_physical_frames < known_messages
+            || counters.rx_payload_bytes < known_messages
+            || counters.rx_payload_bytes > counters.rx_ws_bytes
+            || read.first_valid_event.is_some() && counters.event_candidates == 0
+            || read.request_flushed.is_some() && counters.tx_ws_bytes == 0
         {
             return Err(MeasurementError::Observation);
         }

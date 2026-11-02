@@ -20,6 +20,12 @@
     "terminal": ["observed", "ended:moment", "termination", "teardown_code"],
     "FactRef": ["SourceRecordId", "payload_digest:bytes32"]
   },
+  "counter_invariants": [
+    "rx_ws_bytes counts actually consumed WS framing plus payload octets, excluding HTTP/TLS overhead. rx_payload_bytes counts the consumed payload subset, excluding frame headers, and must not exceed rx_ws_bytes. Declared potential lengths are neither counter.",
+    "Known first valid EVENT, EOSE delivery, AUTH and correlated CLOSED are distinct NIP-01 envelope kinds. Count each known observation once: rx_messages, rx_physical_frames and rx_payload_bytes must each be at least that sum. This is a conservative minimum, not a reconstruction of total traffic or exact message sizes.",
+    "A known first valid event requires event_candidates >= 1. A known completed REQ flush requires tx_ws_bytes > 0. A non-null phase/moment with null clock samples is still a known observation.",
+    "The same invariants apply to CompletionUnknown and terminal/resolution observations. TCP/upgrade-only prefixes with no WS message or request observations may retain all-zero counters. Incomplete or unclassified input may have received bytes/frames but no complete message observation. No relation to configured cap values is imposed and observed cap crossings remain representable."
+  ],
   "state_arrays": {
     "execution_unknown": [0],
     "completion_unknown": [1, "observed"],

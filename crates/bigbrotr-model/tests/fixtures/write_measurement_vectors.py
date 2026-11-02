@@ -90,6 +90,23 @@ cap = fact(8, [2, [
      [65, 0, 0, 130, 0, 100]], [0, 1], [6, 2], 2]])
 cross_stream = copy.deepcopy(resolution)
 cross_stream[0] = source(1, 2)
+closed_observed = observed()
+closed_observed[2][5] = True
+closed = fact(9, [2, [closed_observed, [3, 10000], [1], 1]])
+authority = fact(10, [2, [observed(True), [3, 10000], [3, 6], 3]])
+silent_observed = [[1, [0], 0], opened(),
+                   [[None, None], None, None, False, False, False],
+                   [0, 0, 0, 0, 0, 140]]
+cancelled = fact(11, [2, [silent_observed, [None, 5000], [4, 6], 3]])
+tcp_prefix = fact(12, [1, [
+    [1, [0], None], [[None, None], None, None],
+    [None, None, None, False, False, False], [0]*6]])
+upgrade_prefix = fact(13, [1, [
+    [1, [0], None], [[None, None], None, [None, None]],
+    [None, None, None, False, False, False], [0]*6]])
+partial_input = fact(14, [1, [
+    [1, [0], None], [[None, None], None, [None, None]],
+    [None, None, None, False, False, False], [1, 0, 0, 5, 3, 0]]])
 
 positive = [
     ("execution-unknown", unknown), ("completion-unknown-prefix-pending", completion),
@@ -97,6 +114,11 @@ positive = [
     ("resolve-execution-unknown", resolution), ("resolve-completion-unknown", completion_resolution),
     ("immediate-local-permission", immediate), ("physical-frame-cap", cap),
     ("resolve-across-owner-stream", cross_stream),
+    ("correlated-closed", closed), ("event-before-authority-interruption", authority),
+    ("cancelled-after-request-before-response", cancelled),
+    ("completion-unknown-tcp-zero-counters", tcp_prefix),
+    ("completion-unknown-upgrade-zero-counters", upgrade_prefix),
+    ("completion-unknown-partial-input", partial_input),
 ]
 
 
@@ -128,6 +150,21 @@ negative = [
     ("unknown-teardown", altered(empty, [5, 4, 1, 3], 4)),
     ("future-resolution-target", altered(resolution, [5, 4, 1, 0, 3], 6)),
     ("foreign-resolution-target", altered(resolution, [5, 4, 1, 0, 0], bytes([9])*16)),
+    ("known-empty-eose-auth-zero-counters", altered(empty, [5, 4, 1, 0, 3], [0]*6)),
+    ("known-completion-prefix-zero-counters", altered(completion, [5, 4, 1, 3], [0]*6)),
+    ("known-request-null-time-zero-tx", altered(cancelled, [5, 4, 1, 0, 3, 5], 0)),
+    ("known-distinct-messages-undercounted", altered(empty, [5, 4, 1, 0, 3, 1], 1)),
+    ("known-distinct-frames-undercounted", altered(empty, [5, 4, 1, 0, 3, 0], 1)),
+    ("known-distinct-payloads-undercounted", altered(empty, [5, 4, 1, 0, 3, 4], 1)),
+    ("verified-event-without-candidate", altered(event_timeout, [5, 4, 1, 0, 3, 2], 0)),
+    ("payload-exceeds-consumed-framed-bytes", altered(empty, [5, 4, 1, 0, 3, 4], 701)),
+    ("partial-payload-exceeds-consumed-framed-bytes", altered(partial_input, [5, 4, 1, 3, 4], 6)),
+    ("unknown-deadline-phase", altered(event_timeout, [5, 4, 1, 2], [2, 9])),
+    ("unknown-authority-phase", altered(authority, [5, 4, 1, 2], [3, 9])),
+    ("unknown-cancelled-phase", altered(cancelled, [5, 4, 1, 2], [4, 9])),
+    ("unknown-failure-phase", altered(immediate, [5, 4, 1, 2], [5, 9, 0])),
+    ("unknown-failure-class", altered(immediate, [5, 4, 1, 2], [5, 2, 11])),
+    ("unknown-limit-code", altered(cap, [5, 4, 1, 2], [6, 8])),
 ]
 
 

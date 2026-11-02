@@ -73,7 +73,7 @@ fn with_state(value: &Measurement, state: MeasurementState) -> Measurement {
 fn all_four_states_match_independent_literal_bytes_and_digests() {
     let fixture = fixture();
     let rows = fixture["valid"].as_array().unwrap();
-    assert_eq!(rows.len(), 9);
+    assert_eq!(rows.len(), 15);
     for row in rows {
         let input = bytes(row["preimage_hex"].as_str().unwrap());
         let expected = row["sha256"].as_str().unwrap().parse().unwrap();
@@ -136,7 +136,7 @@ fn all_four_states_match_independent_literal_bytes_and_digests() {
 fn independent_negative_controls_and_noncanonical_bytes_are_refused() {
     let fixture = fixture();
     let rows = fixture["invalid"].as_array().unwrap();
-    assert_eq!(rows.len(), 18);
+    assert_eq!(rows.len(), 33);
     for row in rows {
         assert!(
             decode(&bytes(row["preimage_hex"].as_str().unwrap())).is_err(),
@@ -207,6 +207,58 @@ fn literal_observations_preserve_unknown_empty_auth_event_timeout_and_utc_rollba
     assert_eq!(cap.observed.counters.rx_physical_frames, 65);
     assert_eq!(cap.observed.counters.rx_messages, 0);
     assert_eq!(cap.observed.counters.rx_payload_bytes, 0);
+}
+
+#[test]
+fn counter_minima_preserve_silent_unknown_prefixes_and_closed_termination_kinds() {
+    let closed = terminal(&literal("correlated-closed"));
+    assert_eq!(closed.termination, MeasurementTermination::Closed);
+    assert!(closed.observed.read.correlated_closed);
+    assert!(closed.observed.read.auth_observed);
+    let authority = terminal(&literal("event-before-authority-interruption"));
+    assert_eq!(
+        authority.termination,
+        MeasurementTermination::AuthorityInterruption(MeasurementPhase::ResponseRead)
+    );
+    assert!(authority.observed.read.first_valid_event.is_some());
+    let cancelled = terminal(&literal("cancelled-after-request-before-response"));
+    assert_eq!(
+        cancelled.termination,
+        MeasurementTermination::Cancelled(MeasurementPhase::ResponseRead)
+    );
+    assert_eq!(
+        cancelled.observed.read.request_flushed,
+        Some(MeasurementMoment {
+            observed_at: None,
+            elapsed_us: None
+        })
+    );
+    assert_eq!(cancelled.observed.counters.rx_messages, 0);
+    assert_eq!(cancelled.observed.counters.rx_physical_frames, 0);
+    assert_eq!(cancelled.observed.counters.rx_ws_bytes, 0);
+    assert_eq!(cancelled.observed.counters.rx_payload_bytes, 0);
+    assert!(cancelled.observed.counters.tx_ws_bytes > 0);
+    for name in [
+        "completion-unknown-tcp-zero-counters",
+        "completion-unknown-upgrade-zero-counters",
+    ] {
+        let value = literal(name);
+        let MeasurementState::CompletionUnknown(observed) = measurement(&value).state() else {
+            panic!()
+        };
+        assert!(observed.open.tcp_connected.is_some());
+        assert_eq!(observed.read, ReadObservation::default());
+        assert_eq!(observed.counters, MeasurementCounters::default());
+    }
+    let partial = literal("completion-unknown-partial-input");
+    let MeasurementState::CompletionUnknown(observed) = measurement(&partial).state() else {
+        panic!()
+    };
+    assert_eq!(observed.read, ReadObservation::default());
+    assert_eq!(observed.counters.rx_physical_frames, 1);
+    assert_eq!(observed.counters.rx_messages, 0);
+    assert_eq!(observed.counters.rx_payload_bytes, 3);
+    assert_eq!(observed.counters.rx_ws_bytes, 5);
 }
 
 #[test]

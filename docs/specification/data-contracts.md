@@ -284,7 +284,14 @@ signed-event limit (raw event JSON can be larger), 64 received physical frames,
 32 logical messages, three event candidates, 4MiB cumulative received WS bytes and
 64KiB transmitted WS bytes. Controls, unrelated/rejected input and teardown count.
 Actual counters are never synthesized from declared payload lengths or clipped to
-limits; an offending header/read can cross a cap before refusal. DNS transport
+limits; an offending header/read can cross a cap before refusal. Consumed WS
+payload bytes are a subset of consumed framing-plus-payload bytes. Each known
+distinct EVENT/EOSE/AUTH/CLOSED observation requires at least one logical message,
+physical frame and payload byte; first verified EVENT also requires an event
+candidate, and a completed REQ flush requires transmitted WS bytes. These minima
+apply even when known observations have unavailable clock samples and also to
+completion-unknown prefixes. No-message prefixes may retain zero counters.
+DNS transport
 remains TCP, with 2s per exchange, at most nine exchanges per family, a 4KiB frame
 and 64 addresses, inside the shrinking attempt deadline; these bounds do not claim
 DNS catalog checks.
