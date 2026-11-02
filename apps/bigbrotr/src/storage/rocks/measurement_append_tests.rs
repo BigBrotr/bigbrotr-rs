@@ -1512,6 +1512,17 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
             recovery.store.require_checkpoint_basis(basis).is_err(),
             "historical recovery evidence cannot enter the live checkpoint/ACK authority path"
         );
+        assert!(
+            matches!(
+                basis.acknowledgement_target(
+                    request().producer_slot_id,
+                    request().producer_epoch,
+                    receipt.request_id().request_sequence.get(),
+                ),
+                Err(AdmissionError::InvalidInput)
+            ),
+            "historical replay requires the complete recovery prefix before ACK"
+        );
         assert_eq!(snapshot(&recovery.store, &path), before);
         let AdmissionOutcome::Durable(actual) = result.outcome() else {
             panic!("not durable")

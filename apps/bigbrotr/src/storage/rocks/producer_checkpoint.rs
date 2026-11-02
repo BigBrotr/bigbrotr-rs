@@ -77,12 +77,26 @@ pub(in crate::storage) struct NativeCheckpointBasis<'a> {
     captured: Option<crate::acquisition::preparation::CapturedBinding>,
 }
 impl NativeCheckpointBasis<'_> {
+    fn require_live_observation(&self) -> Result<(), AdmissionError> {
+        // Historical replay retains exact outcome bytes without the serialized
+        // live operation's checkpoint stamp. Equal coordinates cannot promote
+        // that replay into live checkpoint or intermediate ACK authority.
+        if self
+            .request
+            .is_some_and(|copy| copy.checkpoint() != Some(self.stamp))
+        {
+            return Err(AdmissionError::InvalidInput);
+        }
+        Ok(())
+    }
+
     pub(in crate::storage) fn acknowledgement_target(
         &self,
         slot: bigbrotr_model::ProducerSlotId,
         epoch: bigbrotr_model::ProducerEpoch,
         complete: u64,
     ) -> Result<super::producer_ack::AckTarget, AdmissionError> {
+        self.require_live_observation()?;
         let request = self.request.ok_or(AdmissionError::InvalidInput)?.request();
         if request.producer_slot_id != slot
             || request.producer_epoch != epoch
@@ -433,6 +447,7 @@ impl IngestStore {
         &self,
         basis: &NativeCheckpointBasis<'_>,
     ) -> Result<(), AdmissionError> {
+        basis.require_live_observation()?;
         basis.stamp.require(self)
     }
 

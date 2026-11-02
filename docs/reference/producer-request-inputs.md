@@ -1006,6 +1006,14 @@ all seven stages, C4 and physical I4/A4/R0 with retained originals and restarted
 typed inspection. P02 `control_dispatch.producer_ack_followthrough` owns the exact
 receipt and original verifier failure; this is not recovery or reclamation proof.
 
+Historical closed-producer replay borrows its own exact-original checkpoint
+evidence and cannot enter the live checkpoint or intermediate ACK path. Shared
+live validation and ACK-target conversion require the original result's issuance
+stamp, not just matching root/sequence/manifest coordinates. Historical replay has
+no such stamp; its ACK still requires the separately confirmed complete recovery
+prefix. Nonmutating certification retains its existing validation and grants no
+mutation ACK target.
+
 ACK does not retire Monitor detail. Dispatch settlement and one-request-per-attempt
 uniqueness currently depend on retained monitor-attributed request/outcome rows.
 The open-prefix coordinator refuses such a producer before native retirement
