@@ -174,7 +174,7 @@ impl ControlSession {
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
-        producer_sources::require_current_enrollment(&tx, self.request.dataset, binding, None)
+        producer_sources::require_enrollment_binding(&tx, self.request.dataset, binding)
             .await
             .map_err(MonitorSourceError::Source)?;
         let (endpoint, route) =

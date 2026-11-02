@@ -346,6 +346,35 @@ pub(super) async fn require_current_enrollment(
     let visibility = visibility
         .filter(|v| v.dataset_id == dataset && v.dictionary_kind == DictionaryKind::VisibilityScope)
         .ok_or(SourceBindingError::Conflict)?;
+    require_enrollment_binding(tx, dataset, source).await?;
+    let matches = tx
+        .query_opt(
+            MATCH_VISIBILITY,
+            &[
+                &&dataset.as_bytes()[..],
+                &&source.access_scope_id.as_bytes()[..],
+                &&visibility.allocation_domain.as_bytes()[..],
+                &visibility.ordinal.get().to_string(),
+            ],
+        )
+        .await
+        .map_err(backend)?
+        .map(|row| row.try_get::<_, bool>(0))
+        .transpose()
+        .map_err(backend)?;
+    if matches != Some(true) {
+        return Err(SourceBindingError::Conflict);
+    }
+    Ok(())
+}
+
+/// Enrollment-only preparation check. Socket/admission callers must additionally
+/// validate their actual scientific visibility through require_current_enrollment.
+pub(super) async fn require_enrollment_binding(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    source: RelaySourceBinding,
+) -> Result<(), SourceBindingError> {
     const REQUIRE_SOURCE: &str = "
         SELECT control.require_relay_source(
             $1::bytea, $2::bytea, $3::bytea, $4::text::numeric, $5::bytea)";
@@ -370,24 +399,6 @@ pub(super) async fn require_current_enrollment(
             SourceBindingError::Backend
         }
     })?;
-    let matches = tx
-        .query_opt(
-            MATCH_VISIBILITY,
-            &[
-                &&dataset.as_bytes()[..],
-                &&source.access_scope_id.as_bytes()[..],
-                &&visibility.allocation_domain.as_bytes()[..],
-                &visibility.ordinal.get().to_string(),
-            ],
-        )
-        .await
-        .map_err(backend)?
-        .map(|row| row.try_get::<_, bool>(0))
-        .transpose()
-        .map_err(backend)?;
-    if matches != Some(true) {
-        return Err(SourceBindingError::Conflict);
-    }
     Ok(())
 }
 
