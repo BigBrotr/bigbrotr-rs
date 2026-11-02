@@ -6,6 +6,7 @@ mod capacity;
 mod commands;
 mod dictionaries;
 pub(super) mod index;
+mod monitor;
 mod owner;
 mod readiness;
 pub(super) mod successor;
@@ -64,6 +65,7 @@ use tokio::{
 const MIB: u64 = 1024 * 1024;
 
 struct InitialGrants {
+    monitor: Option<monitor::Monitor>,
     index: Option<index::Index>,
     sync: Option<sync::Sync>,
     archive: Option<archive::Archive>,
@@ -244,11 +246,25 @@ pub(super) fn run(
     sync: bool,
     archive: bool,
     index: bool,
+    monitor_path: Option<&Path>,
     output: &mut LifecycleOutput,
 ) -> Result<()> {
     selected_roots(&root)?;
-    let budget = owner_budget(&root, sync, archive, if index { index::ITEMS } else { 0 })?;
+    // Pin the trusted local trigger parent before resource/native allocation.
+    let monitor_path = monitor_path
+        .map(monitor::SelectionPath::prepare)
+        .transpose()?;
+    let retained = (if index { index::ITEMS } else { 0 })
+        + if monitor_path.is_some() {
+            monitor::ITEMS
+        } else {
+            0
+        };
+    let budget = owner_budget(&root, sync, archive, retained)?;
     let initial = InitialGrants {
+        monitor: monitor_path
+            .map(|path| monitor::Monitor::prepare(&root, &budget, path))
+            .transpose()?,
         index: None,
         sync: None,
         archive: None,
@@ -500,6 +516,7 @@ async fn own(
     index_driver: IndexDriverCustody,
 ) -> Result<Value> {
     let mut index = initial.index;
+    let monitor = initial.monitor;
     let mut sync = initial.sync;
     let mut archive = initial.archive;
     let path = Path::new(required(&root, "storage.ingest_root")?);
@@ -538,6 +555,9 @@ async fn own(
                 }
                 if let Some(index) = &mut index {
                     index.accept(&restored)?;
+                }
+                if monitor.is_some() {
+                    monitor::accept(&restored)?;
                 }
                 outstanding =
                     outstanding.min(restored.number("ingest.producer_outstanding_requests"));
@@ -702,6 +722,7 @@ async fn own(
         &progress,
         &cancellation,
         report,
+        monitor,
     )
     .await?;
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;

@@ -444,6 +444,7 @@ async fn own(
         &progress,
         &cancellation,
         report,
+        None,
     )
     .await?;
     phase(&progress, duration(&root, "graceful_shutdown_timeout"))?;

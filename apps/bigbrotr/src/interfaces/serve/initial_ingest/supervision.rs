@@ -40,12 +40,22 @@ pub(super) async fn collect<T>(
 ) -> Collected<T> {
     tokio::pin!(stop);
     let mut reported = false;
+    let mut monitor_report = None;
     let mut deadline_diagnostic = None;
     let (terminal, interrupted) = loop {
         let current = observed.borrow_and_update().clone();
-        if !reported && let Some(report) = current.initialized {
-            emit(report);
+        if !reported && let Some(report) = current.initialized.as_ref() {
+            monitor_report = report.get("monitor_once").cloned();
+            emit(report.clone());
             reported = true;
+        } else if let Some(report) = current
+            .initialized
+            .as_ref()
+            .and_then(|report| report.get("monitor_once"))
+            && monitor_report.as_ref() != Some(report)
+        {
+            emit(report.clone());
+            monitor_report = Some(report.clone());
         }
         let reason = tokio::select! {
             biased;
@@ -94,6 +104,19 @@ pub(super) async fn collect<T>(
     };
     if let Some(shutdown) = &observed.borrow().shutdown {
         shutdown.stop_admission();
+    }
+    // Cover a completed source winning over its watch notification. This is
+    // bounded diagnostics, not a durable receipt or readiness assertion.
+    let latest = observed
+        .borrow()
+        .initialized
+        .as_ref()
+        .and_then(|report| report.get("monitor_once"))
+        .cloned();
+    if let Some(report) = latest
+        && monitor_report.as_ref() != Some(&report)
+    {
+        emit(report);
     }
     // Also cover a terminal worker winning over watch delivery, including the
     // actual cancellation-grace join. Safety and join precede formatting.
@@ -189,6 +212,50 @@ mod tests {
         Arc,
         atomic::{AtomicBool, Ordering},
     };
+
+    #[tokio::test]
+    async fn completed_monitor_coordinates_are_emitted_even_when_join_wins_watch_delivery() {
+        let cancel = Cancellation::new();
+        let completed = json!({"format":"bigbrotr-monitor-once/1","state":"completed","ready":false,
+            "measurement":{"dataset_id":"11".repeat(16),"shard_id":0,"owner_epoch":"1","sequence":"10","payload_digest":"22".repeat(32)}});
+        let (progress, mut observed) = watch::channel(Progress {
+            deadline: Instant::now() + Duration::from_secs(60),
+            phase: None,
+            initialized: Some(json!({"state":"initialized","monitor_once":{"state":"armed"}})),
+            shutdown: None,
+            sync: None,
+            capacity: None,
+        });
+        let mut worker = tokio::spawn(async { Ok(json!({"state":"closed"})) });
+        tokio::task::yield_now().await;
+        let mut reports = Vec::new();
+        let result = collect(
+            &mut worker,
+            &mut observed,
+            &cancel,
+            std::future::pending(),
+            Duration::from_secs(1),
+            |report| {
+                if report["state"] == "initialized" {
+                    progress.send_modify(|p| {
+                        p.initialized.as_mut().unwrap()["monitor_once"] = completed.clone()
+                    });
+                }
+                reports.push(report);
+            },
+        )
+        .await;
+        assert!(matches!(
+            result,
+            Collected::Joined {
+                terminal: Ok(Ok(_)),
+                interrupted: false
+            }
+        ));
+        assert_eq!(reports.len(), 2);
+        assert_eq!(reports[1], completed);
+        assert!(!cancel.requested.load(Ordering::Acquire));
+    }
 
     #[tokio::test]
     async fn parent_watchdog_freezes_sync_stage_before_grace() {

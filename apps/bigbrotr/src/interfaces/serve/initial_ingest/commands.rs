@@ -264,6 +264,37 @@ fn check_external_deadline(deadline: Instant, cancellation: &Cancellation) -> Re
 }
 
 impl<'a> CommandOwner<'a> {
+    pub(super) fn progress(&self) -> &watch::Sender<Progress> {
+        self.progress
+    }
+
+    /// Renew between completed operations, never inside a borrowed socket.
+    /// The source token keeps its original finite ceiling and policy snapshot.
+    pub(super) async fn monitor_window(
+        &mut self,
+        native: &NativeOwner,
+        management: &mut Option<management::Management>,
+        due: &mut Instant,
+    ) -> Result<Duration> {
+        if self.cancellation.requested.load(Ordering::Acquire) {
+            return Err((4, "Monitor stopped before the next operation".into()));
+        }
+        let Renewal::Renewed(started) = self.renew_for(Some(native), RenewalMode::FailStop).await?
+        else {
+            return Err((4, "Monitor stopped before renewal".into()));
+        };
+        *due = self.next_renewal(started)?;
+        if let Some(management) = management.as_ref() {
+            management.renew_delivery(
+                self.lease
+                    .delivery_window(self.lease.known_epoch())
+                    .map_err(authority)?,
+            )?;
+        }
+        let maximum = self.maximum()?.min(Duration::from_secs(5));
+        phase(self.progress, maximum)?;
+        Ok(maximum)
+    }
     /// Archive remains an initial-only consumer. Return the original context's
     /// reference, without borrowing the command owner across its later waits.
     pub(super) fn initial_registration(&self) -> Result<&'a InitialRegistration> {
@@ -769,6 +800,10 @@ impl<'a> CommandOwner<'a> {
     }
 }
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "retain the existing explicit owner/supervisor boundary and optional one-shot state"
+)]
 pub(super) async fn maintain(
     custody: &mut Custody,
     spec: &InitialRegistration,
@@ -777,6 +812,7 @@ pub(super) async fn maintain(
     progress: &watch::Sender<Progress>,
     cancellation: &Cancellation,
     report: Value,
+    monitor: Option<monitor::Monitor>,
 ) -> Result<()> {
     let context = match custody.store.as_ref() {
         Some(NativeOwner::Initial(_)) => RuntimeContext::Initial(spec),
@@ -796,6 +832,7 @@ pub(super) async fn maintain(
         progress,
         cancellation,
         report,
+        monitor,
     )
     .await
 }
@@ -822,10 +859,15 @@ pub(super) async fn maintain_successor(
         progress,
         cancellation,
         report,
+        None,
     )
     .await
 }
 
+#[allow(
+    clippy::too_many_arguments,
+    reason = "one serial owner loop retains all selected services and their supervisor"
+)]
 async fn maintain_context(
     custody: &mut Custody,
     context: RuntimeContext<'_>,
@@ -834,6 +876,7 @@ async fn maintain_context(
     progress: &watch::Sender<Progress>,
     cancellation: &Cancellation,
     mut report: Value,
+    mut monitor: Option<monitor::Monitor>,
 ) -> Result<()> {
     let Custody {
         index,
@@ -893,6 +936,19 @@ async fn maintain_context(
     // Measure the actual renewal, before independent startup work consumes time.
     // An overdue due time after startup is still handled by the renewal arm.
     let mut due = state.next_renewal(started)?;
+    if monitor.is_some() {
+        monitor::accept(root).map_err(owner_error)?;
+        let maximum = state.maximum()?;
+        phase(progress, maximum)?;
+        bounded(maximum, cancellation, async {
+            state
+                .owner
+                .require_monitor_execution()
+                .await
+                .map_err(owner_error)
+        })
+        .await?;
+    }
     if state.sync.is_some() {
         let maximum = state.maximum()?;
         phase(progress, maximum)?;
@@ -996,6 +1052,8 @@ async fn maintain_context(
         } else {
             json!([])
         };
+        if let Some(monitor)=&monitor { report["monitor_once"]=monitor.status(); }
+        let mut monitor_due = Instant::now() + monitor::INTERVAL;
         let mut dispatch_due = Instant::now() + sync::INTERVAL;
         let mut index_due = Instant::now();
         let mut publish_due = Instant::now() + archive.as_ref().map_or(Duration::ZERO, archive::Archive::delay);
@@ -1031,6 +1089,13 @@ async fn maintain_context(
                             .map_err(authority)?;
                         management.renew_delivery(window)?;
                     }
+                },
+                _ = tokio::time::sleep_until(monitor_due), if monitor.as_ref().is_some_and(monitor::Monitor::armed) => {
+                    if admission(Instant::now(), due, None) == Admission::Renew { continue; }
+                    monitor.as_mut().expect("selected Monitor").poll(&mut state,store,context,budget,&mut management,&mut due).await?;
+                    state.source_observation.refresh(store,&cancellation.requested,state.index.is_some());
+                    monitor_due=Instant::now()+monitor::INTERVAL;
+                    state.idle_phase(due)?;
                 },
                 _ = tokio::time::sleep_until(publish_due), if archive.as_ref().is_some_and(|archive| !archive.parked())
                     && deferred.allows(super::admission::Role::Archive) => {

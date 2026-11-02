@@ -169,6 +169,9 @@ pub(crate) fn command() -> Command {
         .arg(Arg::new("initialize-index").long("initialize-index").action(clap::ArgAction::SetTrue)
             .requires("initialize-ingest")
             .help("Explicitly select fresh-only Index initialization alongside --initialize-ingest and the index role. Requires an existing empty private index root, an empty Atomic ClickHouse database, separate initializer/writer credentials and migration0041. Publishes complete native batches through verified physical rows and Control plans; no restart adoption or overall readiness is implied. Partial installation and unresolved remote queries preserve state and park Index. This profile is under qualification"))
+        .arg(Arg::new("monitor-once").long("monitor-once").value_name("SOURCE.json")
+            .requires("initialize-ingest")
+            .help("Arm one protected local source selection with control,ingest,monitor; optional archive/index, no sync. Requires monitor checks/store_checks exactly [open,read], check_timeout=15s and retries=1. Pin an absolute canonical owned mode 0700 parent; absent selection waits for management enrollment, then atomically publish an owned mode 0600 regular file. Consumes once, no retry/rearm. One passive kind1/limit1 request produces measurement metadata only. Source authority is at most 5s; the nominal 15s profile grants no longer authority. Serve continues for publication and supervised shutdown"))
         .arg(Arg::new("activate-initial-successor").long("activate-initial-successor").action(clap::ArgAction::SetTrue)
             .help("Explicitly prepare and activate epoch2 from a fully retired initial Ingest lifetime; select control,ingest with optional sync and retained index. Index requires an uncompacted original predecessor fully published with no pending plan; it verifies the same retained generation and commits an explicit zero epoch2 bridge before acquisition, without initializer credentials. Requires retained original inputs or a verified closed-producer floor, and complete positive predecessor outcomes. Uses current accepted policy and keeps native custody until stopped. Existing epoch2, missing retirement proof and selected Archive refuse. Starts no Archive publication; general successor recovery is not implemented. This profile is under qualification"))
         .arg(Arg::new("activate-successor").long("activate-successor").action(clap::ArgAction::SetTrue)
@@ -179,6 +182,14 @@ pub(crate) fn command() -> Command {
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
     execute_operation(args, Operation::Serve)
+}
+
+fn monitor_selection(selected: bool, armed: bool, sync: bool) -> Result<()> {
+    if selected != armed || (armed && sync) {
+        Err((3,"Monitor requires both the monitor role and --monitor-once with --initialize-ingest; simultaneous Sync is unsupported by this finite producer sequence".into()))
+    } else {
+        Ok(())
+    }
 }
 
 fn successor_selection(roles: &BTreeSet<&str>, repeatable: bool) -> Result<(bool, bool)> {
@@ -295,22 +306,28 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
             let sync = distinct.contains("sync");
             let archive = distinct.contains("archive");
             let index = distinct.contains("index");
+            let monitor = distinct.contains("monitor");
+            let monitor_path = args.get_one::<String>("monitor-once").map(Path::new);
             if !distinct.contains("control")
                 || !distinct.contains("ingest")
                 || distinct.iter().any(|role| {
-                    !matches!(*role, "control" | "ingest" | "sync" | "archive" | "index")
+                    !matches!(
+                        *role,
+                        "control" | "ingest" | "sync" | "archive" | "index" | "monitor"
+                    )
                 })
             {
                 return Err((
                     3,
-                    "initial Ingest requires control,ingest with optional sync, archive and index roles"
+                    "initial Ingest requires control,ingest with optional sync, archive, index or explicit once-only monitor roles"
                         .into(),
                 ));
             }
             if index != args.get_flag("initialize-index") {
                 return Err((3, "fresh Index requires both the index role and --initialize-index; retained Index recovery is not implemented by this lifetime".into()));
             }
-            return initial_ingest::run(root, sync, archive, index, &mut output);
+            monitor_selection(monitor, monitor_path.is_some(), sync)?;
+            return initial_ingest::run(root, sync, archive, index, monitor_path, &mut output);
         }
         if distinct.iter().any(|role| *role != "control") {
             return Err((
@@ -1244,6 +1261,46 @@ fn accepted_policy(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn monitor_once_requires_fresh_initialization_and_exact_role_selection() {
+        assert!(
+            command()
+                .try_get_matches_from([
+                    "serve",
+                    "--file",
+                    "instance.toml",
+                    "--monitor-once",
+                    "/protected/source.json"
+                ])
+                .is_err()
+        );
+        let args = command()
+            .try_get_matches_from([
+                "serve",
+                "--file",
+                "instance.toml",
+                "--initialize-ingest",
+                "--roles",
+                "control,ingest,monitor,archive",
+                "--monitor-once",
+                "/protected/source.json",
+            ])
+            .unwrap();
+        assert_eq!(
+            args.get_one::<String>("monitor-once").unwrap(),
+            "/protected/source.json"
+        );
+        assert!(monitor_selection(true, true, false).is_ok());
+        for (selected, armed, sync) in [
+            (true, false, false),
+            (false, true, false),
+            (true, true, true),
+        ] {
+            assert!(monitor_selection(selected, armed, sync).is_err());
+        }
+        assert!(monitor_selection(false, false, true).is_ok());
+    }
 
     #[test]
     fn initial_ingest_startup_requires_an_explicit_flag() {
