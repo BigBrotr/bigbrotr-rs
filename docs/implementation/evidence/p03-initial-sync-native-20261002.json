@@ -2123,6 +2123,12 @@
     "oracle_integrated": "540452150802e32a85001f6fa582535bfb0c5f92",
     "review": "Independent Astra approved authority/retirement/source custody/SQL64 and the separate five-query oracle after concrete fixes. Root byte-compared all33 production and14 unmerged oracle paths against approved originals; only common first_launch.py/run.py combine existing Monitor hooks. Schema45/61ledger/86tables; source-only, no compilation/engine acceptance yet.",
     "next": "Run integrated source/schema/dispatch/oracle controls and current-source docs checks before fresh exact-source production/worker/observer qualification. Installed five-query and new authority/unknown outcome/SQL65/later zero-query paths remain explicit gates.",
-    "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks."
+    "scope": "Existing P03-T01/T05 and P02 succession work; no new plan, native format, OPEN65 or current resource limit increase. Wider scheduling/capacity/fleet remains its owning tasks.",
+    "initial_host_controls": {
+      "path": "/home/tux/bigbrotr-rs/.research/m2-adoption-integration-20261103/initial-host-control-attempt.json",
+      "sha256": "ec5ec60942be0a7e413d67c7496c05bcd7efa97c130ccbdf05ba1138a5dbf5b0"
+    },
+    "cheap_fixture_correction": "Owning bootstrap test retained --target44 while current manifest requires45. Updated only that literal, retaining previous/changed/incompatible ledger rejection cases;28 owning controls PASS. Full suite will run in the declared native-toolchain image, not an unqualified LLVM-less host.",
+    "documentation_checks": "Exact85b0fa3c tools/ci.py documentation-only PASS3/3 at .research/ci-doc-m2-adoption-85b0fa3c/result.json; later source correction still needs its relevant final checks."
   }
 }

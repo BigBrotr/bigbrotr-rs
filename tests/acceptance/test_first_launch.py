@@ -254,7 +254,7 @@ class FirstLaunchControls(unittest.TestCase):
                 self.assertEqual([call.args[0] for call in calls],
                     ['build-info', 'verify-worker', 'config-validate', 'migration-plan', 'migration-apply'])
                 for call in calls[-2:]:
-                    self.assertEqual(call.args[-2:], ('--target', '44'))
+                    self.assertEqual(call.args[-2:], ('--target', '45'))
                 self.assertEqual(runtime.docker.call_count, 1)
                 self.assertEqual(case.load(runtime.root/'bootstrap/applied-control-ledger.json'), ledger)
 
