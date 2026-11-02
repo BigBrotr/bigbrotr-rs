@@ -80,7 +80,7 @@ pub(crate) fn ingest_command() -> Command {
         .subcommand(Command::new("recover")
             .about("Close an explicitly selected producer and resolve retained positive outcomes")
             .group(clap::ArgGroup::new("recovery-mode").multiple(false).args([
-                "close-source", "abandon-acquisition", "retire-initial", "reclaim-initial", "retire-empty-attempt",
+                "close-source", "abandon-acquisition", "seal-acquisition", "seal-activated-acquisition", "seal-successor-acquisition", "retire-initial", "reclaim-initial", "retire-empty-attempt",
                 "complete-initial-preparation",
                 "activated-successor", "close-activated-source", "abandon-activated-acquisition",
                 "retire-activated-initial", "successor", "close-successor-source",
@@ -91,6 +91,12 @@ pub(crate) fn ingest_command() -> Command {
                 .help("Also close the initial source after complete positive resolution; does not retire or activate a successor"))
             .arg(Arg::new("abandon-acquisition").long("abandon-acquisition").action(clap::ArgAction::SetTrue)
                 .help("Close the initial source and explicitly abandon its original queued acquisition intents; retains coverage gaps"))
+            .arg(Arg::new("seal-acquisition").long("seal-acquisition").action(clap::ArgAction::SetTrue)
+                .help("Close the initial source and seal settled finite acquisition jobs for explicit native succession; preserves job identity, deadline and historical issuer"))
+            .arg(Arg::new("seal-activated-acquisition").long("seal-activated-acquisition").action(clap::ArgAction::SetTrue)
+                .help("Close activated source2 and seal settled acquisition jobs, including zero-new-query adopted claims; does not retire or activate a writer"))
+            .arg(Arg::new("seal-successor-acquisition").long("seal-successor-acquisition").action(clap::ArgAction::SetTrue)
+                .help("Seal settled finite jobs of a closed repeatable successor source for the next explicit activation; requires complete retained originals"))
             .arg(Arg::new("retire-initial").long("retire-initial").action(clap::ArgAction::SetTrue)
                 .help("Retire the initial producer/domains and release Ingest after explicit source closure and acquisition abandonment; retains all detail"))
             .arg(Arg::new("reclaim-initial").long("reclaim-initial").action(clap::ArgAction::SetTrue)
@@ -249,6 +255,12 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                 Action::ReclaimInitial
             } else if args.get_flag("retire-initial") {
                 Action::RetireInitial
+            } else if args.get_flag("seal-acquisition") {
+                Action::SealAcquisition
+            } else if args.get_flag("seal-activated-acquisition") {
+                Action::SealActivatedAcquisition
+            } else if args.get_flag("seal-successor-acquisition") {
+                Action::SealSuccessorAcquisition
             } else if args.get_flag("abandon-acquisition") {
                 Action::AbandonAcquisition
             } else if args.get_flag("close-source") {

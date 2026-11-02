@@ -15,6 +15,7 @@ pub(super) enum Mode {
     Resolve,
     CloseSource,
     AbandonAcquisition,
+    SealAcquisition,
     RetireInitial,
 }
 
@@ -93,10 +94,16 @@ async fn own(
     let metadata = history_grant(&budget, metadata_bytes, 0)?;
     let closing = grant(&budget, 4096, 4096)?;
     drop(replay_grants(&budget)?);
+    if mode == Mode::SealAcquisition {
+        drop(continuation_grant(&budget)?);
+    }
     if mode == Mode::Resolve {
         drop(compacted_effect_grant(&budget)?);
     }
-    if matches!(mode, Mode::CloseSource | Mode::AbandonAcquisition) {
+    if matches!(
+        mode,
+        Mode::CloseSource | Mode::AbandonAcquisition | Mode::SealAcquisition
+    ) {
         // Publication overlaps metadata and closing, after dropping replay data.
         let _transaction = grant(&budget, 64 * 1024, 0)?;
         drop(compacted_effect_grant(&budget)?);
@@ -167,7 +174,7 @@ async fn own(
             )
             .await?
         }
-        Mode::CloseSource | Mode::AbandonAcquisition => {
+        Mode::CloseSource | Mode::AbandonAcquisition | Mode::SealAcquisition => {
             source::resolve(
                 &root,
                 &budget,

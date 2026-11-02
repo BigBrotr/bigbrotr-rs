@@ -44,7 +44,7 @@ const SCAN_ADMISSIONS: &str = "
             AND j.input_complete AND j.input_topology_generation IS NULL
             AND ((j.state='accepted' AND j.job_revision=1
                     AND j.owner_resource_id IS NULL AND j.owner_epoch IS NULL AND j.owner_incarnation IS NULL)
-                OR (j.state='queued' AND j.job_revision=2
+                OR (j.state='queued' AND (j.job_revision=2 OR control.acquisition_adopted_claim(j.job_id,j.job_revision))
                     AND j.owner_resource_id=$4::bytea AND j.owner_epoch=$5::text::numeric
                     AND j.owner_incarnation=$6::bytea))
          THEN true ELSE false END FROM control.jobs j WHERE j.job_id=b.job_id)
@@ -55,7 +55,7 @@ impl ControlSession {
     /// schema, function and row-lock permissions before publishing startup.
     pub async fn require_acquisition_execution(&mut self) -> Result<(), Error> {
         self.begin_operation().map_err(|_| Error::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 43)
+        let tx = application_transaction(&mut self.client, 45)
             .await
             .map_err(|_| Error::Prerequisite)?;
         require_job_update_schema(&tx).await?;
@@ -95,7 +95,7 @@ impl ControlSession {
             return Err(Error::InvalidInput);
         }
         self.begin_operation().map_err(|_| Error::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 43)
+        let tx = application_transaction(&mut self.client, 45)
             .await
             .map_err(|_| Error::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -240,6 +240,13 @@ const EXECUTION_PRIVILEGES: &str = "
         AND has_table_privilege(CURRENT_USER, 'control.jobs', 'UPDATE')
         AND has_table_privilege(CURRENT_USER, 'control.acquisition_quanta', 'INSERT, UPDATE')
         AND has_function_privilege(CURRENT_USER, 'control.quantum_retained_charge(bytea,numeric)', 'EXECUTE')
+        AND has_table_privilege(CURRENT_USER, 'control.acquisition_continuations', 'INSERT, UPDATE')
+        AND has_function_privilege(CURRENT_USER, 'control.acquisition_adopted_claim(bytea,numeric)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER, 'control.require_acquisition_continuation_authority(bytea,bytea)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER, 'control.require_acquisition_workflow_capacity(bytea,numeric)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER, 'control.acquisition_continuation_covers(bytea,bytea,numeric)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER, 'control.require_acquisition_continuation(control.acquisition_continuations)', 'EXECUTE')
+        AND has_function_privilege(CURRENT_USER, 'control.acquisition_quantum_historical_context(bytea,numeric,bytea,numeric,bytea,bytea,numeric,bytea,bytea,numeric,bytea)', 'EXECUTE')
         AND has_function_privilege(CURRENT_USER,
             'control.require_acquisition_job_authority(bytea,bytea)', 'EXECUTE')
         AND has_function_privilege(CURRENT_USER,
@@ -258,6 +265,7 @@ const EXECUTION_PRIVILEGES: &str = "
         ('control.owner_epochs', false),
         ('control.acquisition_jobs', false),
         ('control.acquisition_quanta', false),
+        ('control.acquisition_continuations', false),
         ('control.job_admissions', false),
         ('control.acquisition_scopes', false),
         ('control.acquisition_selectors', false),
@@ -287,7 +295,19 @@ async fn queue(
     if old.checkpoint_revision != 0 {
         return Err(Error::Conflict);
     }
-    if old.state == JobState::Queued && old.revision == 2 && old.owner == Some(mine) {
+    let adopted = if old.revision > 2 && old.state == JobState::Queued && old.owner == Some(mine) {
+        tx.query_one(
+            "SELECT control.acquisition_adopted_claim($1,$2::text::numeric)",
+            &[&&job.as_bytes()[..], &old.revision.to_string()],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(metadata)?
+    } else {
+        false
+    };
+    if old.state == JobState::Queued && (old.revision == 2 || adopted) && old.owner == Some(mine) {
         return Ok((old, false));
     }
     if old.state != JobState::Accepted || old.revision != 1 || old.owner.is_some() {

@@ -291,6 +291,32 @@ async fn own(
         owner: startup.owner.take().expect("same activating Control"),
     };
     drop(startup);
+    if selected_sync {
+        phase(&progress, duration(&root, "renewal_timeout"))?;
+        let grant = recovery::continuation_grant(&budget)?;
+        let source = custody
+            .store
+            .as_mut()
+            .expect("activated writer")
+            .quantum_source(RuntimeContext::Live)?;
+        bounded(duration(&root, "renewal_timeout"), &cancellation, async {
+            custody
+                .owner
+                .adopt_linear_continuations(
+                    source,
+                    InitialHistoryRequest {
+                        ingest_root: Path::new(required(&root, "storage.ingest_root")?),
+                        policy_ttl: duration(&root, "authorization_ttl"),
+                        cancelled: &cancellation.requested,
+                    },
+                    grant,
+                    |d, h| super::super::accepted_policy(&root, d, h).map(|_| ()),
+                )
+                .await
+                .map_err(error)
+        })
+        .await?;
+    }
     commands::maintain_successor(
         &mut custody,
         &root,

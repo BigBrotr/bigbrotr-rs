@@ -514,6 +514,14 @@ static MIGRATIONS: [Migration; 60] = [
         reader_max: 1,
         writer_floor: 1,
     },
+    Migration {
+        version: 45,
+        name: "0045_acquisition_continuations.sql",
+        sql: include_str!("../../../../../migrations/postgres/0045_acquisition_continuations.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
 ];
 
 pub fn catalog() -> &'static [Migration] {

@@ -29,6 +29,7 @@ impl QuantumGrant {
             Filter, MAX_FILTERS, MAX_PREIMAGE_BYTES, MAX_TOTAL_VALUES,
         };
         ProgressGrant::REQUIRED_DATA_BYTES
+            + bigbrotr_protocol::EventLimits::default().parse_bytes as u64
             + bigbrotr_protocol::EventLimits::default().wire_bytes as u64
             // Application terminal decode uses the same bounded wire parser.
             // Driver chunk/backing retention belongs to the held Control grant,

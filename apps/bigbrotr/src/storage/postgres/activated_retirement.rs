@@ -291,13 +291,13 @@ impl ControlSession {
         let resource = &id.owner_resource_id.as_bytes().as_slice();
         let role = &closed.0.metadata.target_role().as_slice();
         let digest = source.digest();
-        let requests = tx.query(
-            "SELECT left(r.request_sequence::text,21), r.acquisition_job_id IS NOT NULL
-                AND EXISTS (SELECT 1 FROM control.acquisition_gaps g WHERE g.job_id=r.acquisition_job_id
-                    AND g.producer_slot_id=r.producer_slot_id AND g.producer_epoch=2)
+        let continuation = acquisition_continuation::workflow_clause(&tx).await?;
+        let query=format!("SELECT left(r.request_sequence::text,21), r.acquisition_job_id IS NOT NULL
+                AND (EXISTS (SELECT 1 FROM control.acquisition_gaps g WHERE g.job_id=r.acquisition_job_id
+                    AND g.producer_slot_id=r.producer_slot_id AND g.producer_epoch=2){continuation})
              FROM control.producer_requests r WHERE r.producer_slot_id=$1::bytea AND r.producer_epoch=2
-             ORDER BY r.request_sequence LIMIT 65", &[slot],
-        ).await.map_err(backend)?;
+             ORDER BY r.request_sequence LIMIT 65");
+        let requests = tx.query(&query, &[slot]).await.map_err(backend)?;
         if requests.len() as u64 != source.resolved_requests() {
             return Err(OwnerError::InvalidMetadata.into());
         }

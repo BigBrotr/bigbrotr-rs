@@ -177,6 +177,17 @@ pub(super) async fn resolve(
         report["recovery_basis"] = json!("closed-producer-floor-v3");
         report["compacted_requests"] = json!(compacted_requests.to_string());
     }
+    if mode == Mode::SealAcquisition {
+        phase(progress, timeout)?;
+        let sealed=bounded(timeout,cancellation,async {
+            owner.seal_acquisition_continuations(
+                bigbrotr::storage::postgres::control_owner::AcquisitionContinuationSource::Activated(&source),
+                request(),continuation_grant(budget)?,validate).await.map_err(|e|(4,e.to_string()))
+        }).await?;
+        report["state"] = json!("activated-acquisition-sealed");
+        report["acquisition_continuation"] =
+            json!({"sealed_jobs":sealed.to_string(),"execution":"not-authorized"});
+    }
     if mode == Mode::AbandonAcquisition {
         phase(progress, timeout)?;
         bounded(timeout, cancellation, async {

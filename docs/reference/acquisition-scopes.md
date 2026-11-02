@@ -472,8 +472,11 @@ Additive0023 preserves the applied catalog and all existing rows. Its preflight
 refuses advanced or inconsistent qualified acquisition history with an explicit
 recovery diagnostic; it never adopts a previously owned job. Once populated,
 the acquisition owner tuple is immutable across every state, including paused.
-Future successor support must provide native custody exclusion before explicitly
-extending this protocol. A fresh Control epoch alone cannot establish that fact.
+Migration0045 extends this protocol only through explicit settled-segment seals
+and adoption by the actual newly activated native writer. The
+[continuation contract](producer-request-inputs.md#explicit-settled-finite-job-continuation-0045-source-under-qualification)
+owns the two transactions and current qualification gate. A fresh Control epoch
+alone cannot establish native custody exclusion.
 
 The claim locks Control, dataset, account, exact roles.control grant, enrollment
 and job in that order. It requires a current active account and grant, enabled
@@ -527,7 +530,9 @@ is operational memory, not durable coverage or a new queue. It advances through
 the nominated ordinal only; a batch without a candidate may still have more
 admissions before the cut. New admissions enter a later pass. Exact accepted
 revision1/unowned/checkpoint0 and queued revision2/checkpoint0 under the same
-Control tuple may be nominated. Actual claim remains authoritative for policy,
+Control tuple may be nominated. Under0045 an exact finalized adopted revision
+under that same current tuple may also be nominated; no broad revision>=2 rule
+or ordinary foreign takeover is allowed. Actual claim remains authoritative for policy,
 source, original duration and current actor permission. Known claim refusals
 advance the cursor; uncertain COMMIT or poisoned custody stops execution.
 The [0b64181 nomination supplement](../implementation/evidence/p03-acquisition-scope-read-native-20260928.json)

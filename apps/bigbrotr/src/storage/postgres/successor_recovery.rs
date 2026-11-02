@@ -181,6 +181,9 @@ impl ActivatedSuccessorResolution<'_> {
     }
 }
 impl ResolvedActivatedSuccessor<'_> {
+    pub(super) fn continuation_recovery(&self) -> &IngestRecovery {
+        self.recovery
+    }
     pub fn recovery_acknowledgement(
         &self,
         cancelled: &AtomicBool,

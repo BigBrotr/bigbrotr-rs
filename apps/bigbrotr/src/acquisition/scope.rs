@@ -95,15 +95,24 @@ pub struct StoredAcquisitionScope {
     identity: AcquisitionScopeId,
     scope: AcquisitionScope,
     selector: CollectionSelector,
-    permit: OwnedPermit,
+    permit: std::sync::Arc<OwnedPermit>,
 }
 
 impl StoredAcquisitionScope {
+    #[cfg(test)]
     pub(crate) fn new(
         identity: AcquisitionScopeId,
         scope: AcquisitionScope,
         selector: CollectionSelector,
         permit: OwnedPermit,
+    ) -> Self {
+        Self::with_shared_permit(identity, scope, selector, std::sync::Arc::new(permit))
+    }
+    pub(crate) fn with_shared_permit(
+        identity: AcquisitionScopeId,
+        scope: AcquisitionScope,
+        selector: CollectionSelector,
+        permit: std::sync::Arc<OwnedPermit>,
     ) -> Self {
         Self {
             identity,

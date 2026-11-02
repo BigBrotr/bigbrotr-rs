@@ -25,6 +25,7 @@ pub(super) enum Mode {
     Resolve,
     CloseSource,
     AbandonAcquisition,
+    SealAcquisition,
     Retire,
     RetireEmpty,
 }
@@ -111,7 +112,11 @@ async fn own(
     };
     let compacted_replay = matches!(
         mode,
-        Mode::Resolve | Mode::CloseSource | Mode::AbandonAcquisition | Mode::Retire
+        Mode::Resolve
+            | Mode::CloseSource
+            | Mode::AbandonAcquisition
+            | Mode::SealAcquisition
+            | Mode::Retire
     ) && custody
         .native
         .as_ref()
@@ -141,6 +146,9 @@ async fn own(
         .then(|| compacted_grant(&budget))
         .transpose()?;
     drop(replay_grants(&budget)?);
+    if mode == Mode::SealAcquisition {
+        drop(continuation_grant(&budget)?);
+    }
     drop(effect_grant(&budget)?);
     if mode == Mode::RetireEmpty {
         drop(compacted_grant(&budget)?);
@@ -227,7 +235,7 @@ async fn own(
             work.resolve(&mut custody, metadata, closing, compacted_replay)
                 .await?
         }
-        Mode::CloseSource | Mode::AbandonAcquisition => {
+        Mode::CloseSource | Mode::AbandonAcquisition | Mode::SealAcquisition => {
             work.source(&mut custody, metadata, closing, mode, compacted_replay)
                 .await?
         }
@@ -445,6 +453,7 @@ impl Completed {
             Mode::Resolve => "successor-positive-outcomes-resolved",
             Mode::CloseSource => "successor-source-closed",
             Mode::AbandonAcquisition => "successor-acquisition-abandoned",
+            Mode::SealAcquisition => "successor-acquisition-sealed",
             Mode::Retire => "successor-retired",
             Mode::RetireEmpty => unreachable!("separate empty-successor report"),
         };

@@ -136,6 +136,20 @@ impl Work<'_> {
                 ))
                 .await?
             })
+        } else if mode == Mode::SealAcquisition {
+            // Source closure consumes the positive proof, so seal against an
+            // already closed source in this explicit fresh recovery pass.
+            if !recovered.source_closed() {
+                return Err((
+                    4,
+                    "continuation requires an already closed successor source".into(),
+                ));
+            }
+            let count=self.operation(owner.seal_acquisition_continuations(
+                bigbrotr::storage::postgres::control_owner::AcquisitionContinuationSource::Successor(&proof),
+                self.request(),continuation_grant(self.budget)?,|d,h|self.validate(d,h))).await?;
+            drop(proof);
+            Some(count)
         } else {
             self.operation(owner.close_activated_successor_source(
                 proof,
@@ -162,7 +176,9 @@ impl Work<'_> {
             report["recovery_basis"] = json!("closed-producer-floor-v3");
             report["compacted_requests"] = json!(compacted_requests.to_string());
         }
-        if let Some(jobs) = jobs {
+        if mode == Mode::SealAcquisition {
+            report["acquisition_continuation"] = json!({"sealed_jobs":jobs.expect("sealed count").to_string(),"execution":"not-authorized"});
+        } else if let Some(jobs) = jobs {
             report["acquisition_abandonment"] = json!({"jobs":jobs.to_string(),
                 "reason":"ingest_successor_abandoned","coverage":"unknown"});
         }

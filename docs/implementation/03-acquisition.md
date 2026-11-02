@@ -213,8 +213,11 @@ gap/continuation settlement in the maintained finite Sync path, migration0043
 and actor-owned status. It implements only the first interval foundation of
 T05 Steps1/2 and the corresponding T01 Steps3/4 and T02 Steps4/5 persistence
 boundary. See the [owning quantum contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
-Full traversal, current CLI coverage, same-job adoption, age bands and live/NEG
-remain later work. The [Sync report](evidence/p03-initial-sync-native-20261002.json)
+Full traversal, current CLI coverage, age bands and live/NEG remain later work.
+Same-job settled-boundary adoption now has the separate migration0045 source
+implementation under T01 Step3/T05 Steps2/4/7, with compiled and installed
+qualification still required. It uses explicit seals and actual native succession;
+it does not resume a departed native incarnation. The [Sync report](evidence/p03-initial-sync-native-20261002.json)
 records actual finite and two-scope execution and seven selected PG fault profiles
 on 78c8e313. Revision 96d6c868 additionally passes eleven stages covering 128 source rounds,
 Index, reclamation, grouped Archive recovery, scientific data, two exports and

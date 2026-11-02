@@ -96,6 +96,9 @@ mod ingest_lease;
 #[path = "initial_ingest_basis.rs"]
 mod initial_ingest_basis;
 pub use initial_ingest_basis::{InitialIngestBasis, InitialSuccessorBasis};
+#[path = "acquisition_continuation.rs"]
+mod acquisition_continuation;
+pub use acquisition_continuation::AcquisitionContinuationSource;
 #[path = "acquisition_abandonment.rs"]
 mod acquisition_abandonment;
 #[path = "activated_retirement.rs"]

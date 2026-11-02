@@ -182,22 +182,39 @@ pub(in crate::storage::postgres::control_owner) async fn next_window(
         &control.epoch.get().to_string(),
         &&control.process_incarnation.as_bytes()[..],
     ];
-    let stream=tx.query_raw("SELECT substring(quantum_id FROM 1 FOR 17) AS quantum_id,
+    let continuation: bool = tx
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM control.schema_versions WHERE migration=45)",
+            &[],
+        )
+        .await
+        .map_err(failure)?
+        .try_get(0)
+        .map_err(failure)?;
+    let historical = if continuation {
+        " OR control.acquisition_quantum_historical_context(job_id,quantum_number,$6,$7::text::numeric,$8,producer_slot_id,producer_epoch,manifest_sha256,issuer_resource,issuer_epoch,issuer_incarnation)"
+    } else {
+        ""
+    };
+    let query = format!("SELECT substring(quantum_id FROM 1 FOR 17) AS quantum_id,
         quantum_number::text AS number, interval_lower::text AS lower,interval_upper::text AS upper,
         horizon::text AS horizon, window_end::text AS window_end,window_width::text AS width,
         query_budget,query_number,entry_kind,disposition,gap_lower::text AS gap_lower,gap_upper::text AS gap_upper,
         quantum_profile=2 AND dataset_id=$2 AND scope_id=$3 AND enrollment_generation=$4::text::numeric
-        AND route_id=$5 AND producer_slot_id=$6 AND producer_epoch=$7::text::numeric AND manifest_sha256=$8
-        AND issuer_resource=$9 AND issuer_epoch=$10::text::numeric AND issuer_role='control'
-        AND issuer_incarnation=$11 AS identity_valid,
+        AND route_id=$5 AND issuer_role='control' AND ((producer_slot_id=$6 AND producer_epoch=$7::text::numeric AND manifest_sha256=$8
+        AND issuer_resource=$9 AND issuer_epoch=$10::text::numeric
+        AND issuer_incarnation=$11){historical}) AS identity_valid,
         left(terminal_kind,13) AS terminal_kind,substring(terminal_frame FROM 1 FOR 2097153) AS frame,
         substring(request_id FROM 1 FOR 49) AS request,terminal_sequence::text AS sequence,
         substring(request_predicate FROM 1 FOR 2097153) AS predicate,substring(predicate_sha256 FROM 1 FOR 33) AS predicate_digest,
         teardown_complete,retained_events,classified_prefix,substring(effect_records FROM 1 FOR 280) AS effects,
         substring(dependencies FROM 1 FOR 55297) AS dependencies,result_class,gap_reason,
         continuation_upper::text AS continuation,checkpoint_before<=checkpoint_after AS checkpoint_valid
-        FROM control.acquisition_quanta WHERE job_id=$1 ORDER BY quantum_number LIMIT 386",
-        params.iter().copied()).await.map_err(failure)?;
+        FROM control.acquisition_quanta WHERE job_id=$1 ORDER BY quantum_number LIMIT 386");
+    let stream = tx
+        .query_raw(&query, params.iter().copied())
+        .await
+        .map_err(failure)?;
     futures_util::pin_mut!(stream);
     while let Some(row) = stream.try_next().await.map_err(failure)? {
         authority().map_err(QuantumError::Native)?;

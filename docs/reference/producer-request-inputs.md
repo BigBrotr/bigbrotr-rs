@@ -821,8 +821,9 @@ REQ predicate (fixed zero nonce, limit3), source generation/route, issuer,
 manifest, finite quantum profile2, checkpoint position and random quantum identity. Per-job quantum
 numbers serialize under the existing job lock. An unconfirmed plan COMMIT
 forbids dialing; an unfinished plan remains pending after restart and cannot be
-adopted by a fresh Control epoch. Ordinary fenced recovery and job abandonment
-remain required. Expiry alone does not refund its metadata reservation.
+adopted by a fresh Control epoch. Migration0045 adds only the explicit settled
+segment continuation below; unresolved plans still require fenced recovery or
+job abandonment. Expiry alone does not refund its metadata reservation.
 
 The current profile2 implements the following P03-T05 Steps1/4 and P03-T01 Step3
 contract. Its exact-source installed qualification and remaining gates are in the
@@ -835,7 +836,8 @@ Freeze three pass values at its first history entry: exclusive horizon
 `H=floor(job.created_at_us/1_000_000)` intersected with the selector's inclusive
 upper bounds using checked AfterMax conversion; accepted fixed width `W`; and
 query budget `B=sync.partition_budget`. This finite profile supports `1..=128`
-request plans for one same-owner job, including retries across all windows.
+request plans for one finite job, including retries across all windows and
+explicitly adopted settled segments. A fresh owner never resets this budget.
 Larger accepted settings refuse this unsupported profile rather than being
 clipped. Nomination, an interruption or another window never resets spent budget.
 A pending plan consumes its slot; expiry or an unobserved result never refunds it.
@@ -922,8 +924,9 @@ settled entry with no terminal frame is not a pending request. Superseded profil
 execution/checksum inputs are rejected. Immutable8f artifacts and their
 source-specific historical evidence remain retained; no compatibility scaffold
 or rewritten Git history is required. Full500-event pages, partitions, sparse
-growth, fresh-owner adoption, horizon extensions and general slice scheduling remain explicit
-P03-T05/T01/T07 responsibilities, not qualifications of this bounded increment.
+growth, horizon extensions and general slice scheduling remain explicit
+P03-T05/T01/T07 responsibilities. Settled-segment adoption has its separate0045
+source implementation and qualification gate below.
 
 After the source adapter has destroyed the socket and rolled back its source
 transaction, ordered native classifications retain a sealed quantum collector.
@@ -985,6 +988,87 @@ continuation, with `coverage=pending`. It exposes neither predicates, remote tex
 nor native proofs and grants no execution authority. Compilation, actual socket/
 SQL/native fault schedules and installed qualification of this increment remain
 separate required gates; source and pure controls cannot close them.
+
+### Explicit settled finite-job continuation (0045, source under qualification)
+
+The explicit recovery commands `ingest recover --seal-acquisition`,
+`--seal-activated-acquisition` and `--seal-successor-acquisition` retain an
+unfinished queued job across the existing native succession boundary. They
+require the original owner stopped, actual exclusive native recovery, a positively
+closed source, all original requests/outcomes and a complete typed checkpoint.
+The later-successor command requires source closure in a separate earlier pass.
+These commands grant no execution authority and perform no implicit retirement.
+The original job ID, principal, accepted time/deadline, scope and revisions remain
+immutable. Expiry, actor/grant withdrawal, a changed policy or changed source
+generation/route refuses fresh sealing or adoption; it never extends the job.
+
+One transaction inserts an immutable `acquisition_continuations` seal without
+changing job state, owner or revision. It records the exact previous job revision
+and Control tuple; optional previous continuation; scope/source generation/route;
+producer slot/epoch/manifest/shard; closed source sequence/digest; checkpoint
+revision/complete/digest; last global quantum number; and sealer/time. The complete
+ordered job history is replayed under the excluded native view. Every page's
+cursor ID/time must authenticate against that page's own retained dependency
+union. Every original job-bound mutation request must occur in a completed
+quantum's effect records. A row for the JobId alone does not cover its requests.
+Pending/unknown plans, incomplete teardown, interrupted dispositions, missing
+proofs or unclassified suffixes refuse this first profile. Settled overlap,
+saturated-second and closed-window dispositions retain their original meaning;
+selector exclusions remain local evidence. Zero-request claims are included.
+
+Retirement accepts either its existing exact abandonment proof or the exact
+sealed continuation for each original workflow obligation. All prior native,
+source, input/outcome, incarnation, allocation-domain and Control exclusion checks
+remain. An unrelated job cannot hide behind another job's seal. Normal
+abandonment still cancels the whole intent and remains a distinct operation.
+
+After explicit retirement, ordinary `serve --activate-initial-successor` or
+`serve --activate-successor` with `--roles control,ingest,sync` creates a new local
+candidate through the existing prepare/activate protocol. Its actual live writer
+revalidates pending seals against the checked native handoff/lineage, retained
+facts and current authority before any nomination or wire action. One transaction
+CASes the same queued job from its exact old owner/revision to queued under the
+current Control/revision+1, and fills the seal's write-once adoption section:
+target epoch/manifest, handoff digest, adopting Control, resulting job revision,
+transaction and time. Neither half can commit alone. Ordinary foreign claims
+still refuse; same-owner claims above revision2 require the exact finalized
+adoption record. No old quantum issuer, source proof or receipt is rewritten.
+
+History replay admits historical rows only through exact segment membership in
+that finalized predecessor chain, including native manifest and original issuer.
+Current rows still require current producer/Control authority. H/W/B, global
+quantum/query numbers, boundary-ID reconstruction and unresolved gaps continue
+across segments. Current producer checkpoints/classifications stay producer-local;
+fresh producer request numbering and the absolute64 lifetime cap are unchanged.
+There is no OPEN65 or full500-page capability here.
+
+Each seal costs1024 logical bytes. The existing32MiB retained-capacity helper
+charges the entire ancestor chain to its old/current target producer and rechecks
+both sides at adoption. The existing epoch1..255 ceiling bounds each job to254
+seals; the boundary refuses rather than inventing epoch256. At most64 claims are
+sealed/adopted per pass. SQL also preserves the applicable closed producer's
+64 distinct workflow JobIds across its original-owner acquisition claims, retained
+abandonment gaps and pending/finalized continuation seals. A JobId counts once
+across those forms; adoption cannot erase its old-source obligation. Checks run
+under existing dataset/producer custody before sealing, at deferred completion,
+on the adopted target after owner CAS, and through initial/activated/later
+retirement. Each category contributes at most65 IDs before bounded deduplication.
+This is a per-producer closed-workflow bound, not a global dataset job limit.
+Replay uses one prefunded selector/geometry/native decode
+grant, with no process-envelope increase or second cursor ledger. A later handoff
+with zero new quanta still seals its adopted claim and retains the exact previous
+continuation/cut; zero native requests do not erase a workflow obligation.
+
+An absent seal after an uncertain COMMIT is not evidence of no earlier execution:
+fresh recovery must establish the same settled cut before inserting. An existing
+exact seal preserves its original attribution/time/xmin. Until confirmed adoption
+the excluded old job remains ineligible. Unknown adoption COMMIT stops the owner
+and authorizes no wire. A lost activated candidate is never reconstructed as a
+writer; existing recovery/retirement and another newly minted successor remain
+necessary. A later real writer can follow a pending ancestor seal through the
+checked lineage. The source implementation, independent transcript/oracle controls,
+compilation and installed SQL/native fault qualification are distinct gates.
+No installed success or production fitness is claimed by this source section.
 
 ### Native ACK and returned credit (partial qualification)
 

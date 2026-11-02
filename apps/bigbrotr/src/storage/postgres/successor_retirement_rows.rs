@@ -268,11 +268,16 @@ pub(super) async fn require_event_jobs(
 ) -> Result<u64, ProducerResolveError> {
     let slot = context.head.slot;
     let epoch = context.head.epoch().to_string();
-    let requests = tx.query("SELECT left(r.request_sequence::text,21),r.acquisition_job_id IS NOT NULL
-        AND EXISTS(SELECT 1 FROM control.acquisition_gaps g WHERE g.job_id=r.acquisition_job_id
-            AND g.dataset_id=r.dataset_id AND g.producer_slot_id=r.producer_slot_id AND g.producer_epoch=r.producer_epoch)
+    let continuation = super::super::acquisition_continuation::workflow_clause(tx).await?;
+    let query=format!("SELECT left(r.request_sequence::text,21),r.acquisition_job_id IS NOT NULL
+        AND (EXISTS(SELECT 1 FROM control.acquisition_gaps g WHERE g.job_id=r.acquisition_job_id
+            AND g.dataset_id=r.dataset_id AND g.producer_slot_id=r.producer_slot_id AND g.producer_epoch=r.producer_epoch){continuation})
         FROM control.producer_requests r WHERE r.producer_slot_id=$1::bytea AND r.producer_epoch=$2::text::numeric
-        ORDER BY r.request_sequence LIMIT 65", &[&&slot.as_bytes()[..], &epoch]).await.map_err(backend)?;
+        ORDER BY r.request_sequence LIMIT 65");
+    let requests = tx
+        .query(&query, &[&&slot.as_bytes()[..], &epoch])
+        .await
+        .map_err(backend)?;
     require_request_count(summary, requests.len())?;
     for (offset, row) in requests.iter().enumerate() {
         require_event_binding(

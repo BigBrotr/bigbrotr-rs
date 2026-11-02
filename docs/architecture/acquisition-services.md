@@ -443,7 +443,7 @@ The installed initial-owner integration is under qualification. Explicit
 consumer; `control,ingest` retains acceptance-only behavior. It requires the
 configured numeric DNS root, accepted Sync enablement, at least four outstanding
 producer slots, and an admitted-event limit no larger than256KiB. Before startup
-publication, migration0043 and its complete checksum-verified catalog prefix,
+publication, migration0045 and its complete checksum-verified catalog prefix,
 execution functions, SELECT and actual row-lock privileges are required even
 without administration. Startup reports `acquisition=finite-initial, ready=false`.
 
@@ -485,7 +485,9 @@ hard deadline and independent native-owner watchdog remain effective. Failed or
 ambiguous native/SQL operations do not become graceful-release claims. This
 initial consumer retains durable request plans and terminal/gap/continuation
 observations through the [single-interval quantum contract](../reference/producer-request-inputs.md#durable-single-interval-linear-quanta).
-It does not declare complete EOSE coverage or resume a prior native owner. Full scheduling, progress, recovery and
+It does not declare complete EOSE coverage or resume a prior native owner. Explicit
+0045 settled-job continuation uses a newly activated successor and retains its
+separate qualification gate. Full scheduling, progress, recovery and
 the installed archive/read/export/restart journey remain required.
 
 ### Progress and evidence

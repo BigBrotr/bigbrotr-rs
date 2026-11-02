@@ -31,6 +31,9 @@ pub(in crate::interfaces::serve) enum Action {
     Resolve,
     CloseSource,
     AbandonAcquisition,
+    SealAcquisition,
+    SealActivatedAcquisition,
+    SealSuccessorAcquisition,
     RetireInitial,
     ReclaimInitial,
     RetireEmptyAttempt,
@@ -185,6 +188,12 @@ pub(in crate::interfaces::serve) fn run(
         Action::CompleteInitialPreparation => {
             return prepared_initial::run(root, output);
         }
+        Action::SealActivatedAcquisition => {
+            return activated::run(root, activated::Mode::SealAcquisition, output);
+        }
+        Action::SealSuccessorAcquisition => {
+            return successor_family::run(root, successor_family::Mode::SealAcquisition, output);
+        }
         Action::Successor => {
             return successor_family::run(root, successor_family::Mode::Resolve, output);
         }
@@ -265,6 +274,10 @@ async fn own(
         &budget,
         !matches!(action, Action::RetireInitial | Action::ReclaimInitial),
     )?;
+    if action == Action::SealAcquisition {
+        let _closed = history_grant(&budget, 4096, 4096)?;
+        drop(continuation_grant(&budget)?);
+    }
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)
@@ -538,6 +551,19 @@ async fn connected(
             })
             .await?;
         }
+        if action == Action::SealAcquisition {
+            phase(progress, timeout)?;
+            let grant = continuation_grant(budget)?;
+            let sealed = bounded(timeout, cancellation, async {
+                owner.seal_acquisition_continuations(
+                    bigbrotr::storage::postgres::control_owner::AcquisitionContinuationSource::Initial(&source),
+                    bigbrotr::storage::postgres::control_owner::InitialHistoryRequest {
+                        ingest_root:path, policy_ttl:duration(root,"authorization_ttl"),cancelled:&cancellation.requested,
+                    }, grant, validate).await.map_err(|e|(4,e.to_string()))
+            }).await?;
+            report["acquisition_continuation"] =
+                json!({"sealed_jobs":sealed.to_string(),"execution":"not-authorized"});
+        }
         if action == Action::AbandonAcquisition {
             phase(progress, timeout)?;
             bounded(timeout, cancellation, async {
@@ -566,10 +592,13 @@ async fn connected(
             Action::ReclaimInitial =>
                 unreachable!("reclamation returns after its own confirmed boundary"),
             Action::AbandonAcquisition => "acquisition-abandoned",
+            Action::SealAcquisition => "acquisition-sealed",
             Action::CloseSource | Action::Resolve => "source-closed",
             Action::RetireEmptyAttempt
             | Action::CompleteInitialPreparation
             | Action::ActivatedSuccessor
+            | Action::SealActivatedAcquisition
+            | Action::SealSuccessorAcquisition
             | Action::CloseActivatedSource
             | Action::AbandonActivatedAcquisition
             | Action::RetireActivatedInitial
@@ -646,4 +675,14 @@ mod checkpoint_capacity_tests {
             assert_eq!(budget.snapshot().active_permits(), 0);
         }
     }
+}
+
+/// The complete selector/replay/native decode grant is reserved before sealing;
+/// no accepted process or producer limit is enlarged by continuation.
+pub(super) fn continuation_grant(
+    budget: &ResourceBudget,
+) -> Result<bigbrotr::storage::postgres::control_owner::QuantumGrant> {
+    use bigbrotr::storage::postgres::control_owner::QuantumGrant;
+    QuantumGrant::new(grant(budget, QuantumGrant::required_data_bytes(), 0)?)
+        .map_err(|e| (4, e.to_string()))
 }

@@ -119,6 +119,12 @@ impl ActivatedSuccessorSourceResolution<'_> {
     }
 }
 impl ResolvedActivatedSuccessorSource<'_> {
+    pub(super) fn continuation_recovery(&self) -> &IngestRecovery {
+        self.inner.continuation_recovery()
+    }
+    pub(super) fn continuation_slot(&self) -> ProducerSlotId {
+        self.owner.producer_slot_id()
+    }
     pub fn recovery_acknowledgement(
         &self,
         cancelled: &AtomicBool,

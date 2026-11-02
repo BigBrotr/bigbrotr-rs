@@ -2055,5 +2055,64 @@
       },
       "remaining": "Integrate this coherent source-reviewed/local-engine-qualified increment and complete actual hosted CI. Full500, partitions, sparse growth, adoption/slices/revisits/live/NEG/fleet/import, all-excluded installed coverage and remaining P02 capacity stay with existing owners; finite windows do not complete M2/P03-T05."
     }
+  },
+  "settled_job_continuation_20261102": {
+    "status": "SOURCE_IMPLEMENTED_CRITICAL_REVIEW_COMPLETE_RUNTIME_NOT_RUN",
+    "tasks": [
+      "P03-T01 Step3",
+      "P03-T05 Steps2/4/7"
+    ],
+    "base": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
+    "source_worktree": "/home/tux/bigbrotr-rs/.research/m2-finite-job-adoption-20261102",
+    "branch": "work/m2-finite-job-adoption-20261102",
+    "contract": "docs/reference/producer-request-inputs.md#explicit-settled-finite-job-continuation-0045-source-under-qualification",
+    "operation_guide": "docs/operations/acquisition-continuation.md",
+    "implementation": {
+      "migration": 45,
+      "relations": [
+        "acquisition_continuations"
+      ],
+      "protocol": "Immutable settled-source seal under exclusive positive recovery; existing retirement/activation; coupled write-once adoption and same queued-job owner/revision CAS under actual newly activated writer. No departed-incarnation resume, cancellation/new JobId, historical issuer rewrite, moved horizon or query-budget reset.",
+      "retention": "1024 logical bytes per seal; full predecessor chain charged to old/current target producer under existing32MiB; epoch1..255 bounds254 seals/job. SQL bounds per-producer DISTINCT original-owner acquisition claims/gaps/pending or finalized seals to64; each branch bounded65 before deduplication.",
+      "later_handoff": "Initial/activated/later retirement alternatives retain old obligations. Zero-new-quantum adopted segments keep previous continuation and unchanged global cut; lost candidates remain non-writers and use existing recovery/retirement/new candidates.",
+      "sql_sha256": "1cb6e8dcf47baf403b0b008107b228913935455cded4aa83d01bba055ffdb958"
+    },
+    "critical_ai_review": {
+      "reviewer": "/root/monitor_connected_refusal_design",
+      "scope": "Concrete persistence/authority/native custody, exact historical segments, all three effective retirement bodies, zero-query/lost-adoption handoff and retained charges/cardinality.",
+      "findings_fixed": [
+        "Exact integral accepted microsecond conversion and canonical bounded nonnegative global-cut parser; positive identity parser unchanged.",
+        "Full original requestID/ordinal/wire/inputSHA/job/scope and native outcome attribution required for per-request retirement coverage.",
+        "Root clarified existing closed-producer DISTINCT workflow64 invariant; checked at seal/deferred completion, adopted target after CAS and all retirement variants."
+      ],
+      "result": "No further bounded source architecture blocker; no compilation/engine/process qualification supplied."
+    },
+    "executed_source_checks": [
+      {
+        "command": "rustfmt --edition 2024 --config skip_children=true on changed Rust files",
+        "result": "PASS parser/formatting only"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest test_policy_versions.PolicySchemaControls test_socket_setup",
+        "working_directory": "tests/acceptance",
+        "result": "14 PASS; schema controls and mocked setup only"
+      },
+      {
+        "command": "Focused changed-document links/fences/whitespace, exact manifest/catalog and Python syntax checks",
+        "result": "PASS;61 migrations, target45,86 tables,62 source inputs. Initial ad hoc regex included Rust test vectors and failed65vs61; corrected catalog-only comparison PASS, no product defect."
+      },
+      {
+        "command": "git diff --check",
+        "result": "PASS"
+      }
+    ],
+    "required_qualification_not_run": [
+      "Rust compilation/strict Clippy/Rustdoc/tests, including two new pure parser tests.",
+      "PostgreSQL migration/invoker roles and actual raw64/65 workflow refusal with independent controls.",
+      "Installed literal five-query same-job restart through actual native succession: original rows/xmins/inputs, authenticated boundaries/gaps and older signed event.",
+      "Actual pending/unknown plan, missing/corrupt proof, proof/gap/adoption COMMIT ambiguity, changed source/policy, original expiry and live-old-custody refusal.",
+      "Later lost-activation and zero-new-quantum process/native handoffs."
+    ],
+    "limits": "Settled three-event finite profile, original deadline and lifetime64. No OPEN65, full500 pages, partitions, sparse growth, general scheduling, fleet qualification or whole M2/P03 closure."
   }
 }

@@ -407,6 +407,32 @@ async fn own(
     })
     .await?;
     custody.store = Some(NativeOwner::Live(Box::new(writer)));
+    if selected_sync {
+        phase(&progress, timeout)?;
+        let grant = recovery::continuation_grant(&budget)?;
+        let source = custody
+            .store
+            .as_mut()
+            .expect("activated writer")
+            .quantum_source(RuntimeContext::Live)?;
+        bounded(timeout, &cancellation, async {
+            custody
+                .owner
+                .adopt_linear_continuations(
+                    source,
+                    InitialHistoryRequest {
+                        ingest_root: path,
+                        policy_ttl: ttl,
+                        cancelled: &cancellation.requested,
+                    },
+                    grant,
+                    validate,
+                )
+                .await
+                .map_err(|e| (4, e.to_string()))
+        })
+        .await?;
+    }
     let NativeOwner::Live(writer) = custody.store.as_ref().expect("activated writer") else {
         unreachable!()
     };

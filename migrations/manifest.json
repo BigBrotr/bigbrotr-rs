@@ -241,6 +241,10 @@
     {
       "version": 44,
       "name": "0044_measurement_dispatches.sql"
+    },
+    {
+      "version": 45,
+      "name": "0045_acquisition_continuations.sql"
     }
   ],
   "reserved": [

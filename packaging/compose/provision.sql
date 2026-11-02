@@ -178,7 +178,7 @@ GRANT DELETE ON control.browser_sessions,control.reauthentication_proofs
 -- No EXECUTE ON ALL FUNCTIONS and no explicit trigger-function grants.
 -- Trigger functions run from the already-created migration-owned triggers;
 -- their invoker SQL still requires the table/helper grants supplied here.
-GRANT INSERT, UPDATE ON control.acquisition_quanta TO bigbrotr_control;
+GRANT INSERT, UPDATE ON control.acquisition_quanta, control.acquisition_continuations TO bigbrotr_control;
 
 GRANT EXECUTE ON FUNCTION
     control.acquisition_command_digest(control.acquisition_jobs,control.management_commands),
@@ -236,6 +236,12 @@ GRANT EXECUTE ON FUNCTION
     control.require_prepared_initial_successor(bytea),
     control.require_producer_progress_capacity(bytea,numeric,bigint,integer,integer),
     control.quantum_retained_charge(bytea,numeric),
+    control.require_acquisition_continuation_authority(bytea,bytea),
+    control.require_acquisition_workflow_capacity(bytea,numeric),
+    control.require_acquisition_continuation(control.acquisition_continuations),
+    control.acquisition_continuation_covers(bytea,bytea,numeric),
+    control.acquisition_adopted_claim(bytea,numeric),
+    control.acquisition_quantum_historical_context(bytea,numeric,bytea,numeric,bytea,bytea,numeric,bytea,bytea,numeric,bytea),
     control.require_relay_source(bytea,bytea,bytea,numeric,bytea),
     control.require_retained_producer_progress(bytea,numeric),
     control.retain_control_lock(),

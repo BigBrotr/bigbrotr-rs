@@ -165,7 +165,14 @@ impl ControlSession {
             .await
             .map_err(backend)?;
         let result = row
-            .map(|row| decode_row(row, self.request.dataset, identity, permit))
+            .map(|row| {
+                decode_row(
+                    row,
+                    self.request.dataset,
+                    identity,
+                    std::sync::Arc::new(permit),
+                )
+            })
             .transpose()?;
         tx.rollback().await.map_err(backend)?;
         if self.client.is_closed() {
@@ -180,7 +187,7 @@ fn decode_row(
     row: Row,
     dataset: DatasetId,
     identity: AcquisitionScopeId,
-    permit: OwnedPermit,
+    permit: std::sync::Arc<OwnedPermit>,
 ) -> Result<StoredAcquisitionScope, ScopeReadError> {
     let invalid = |_| ScopeReadError::InvalidMetadata;
     let id = |index| fixed::<16>(&row, index).map_err(invalid);
@@ -231,7 +238,26 @@ fn decode_row(
         DecodeError::Bounds(_) => ScopeReadError::Capacity,
         _ => ScopeReadError::InvalidMetadata,
     })?;
-    Ok(StoredAcquisitionScope::new(
+    Ok(StoredAcquisitionScope::with_shared_permit(
         identity, scope, selector, permit,
     ))
+}
+
+/// Loaded under the continuation transaction; its prefunded grant includes the
+/// complete selector beside the bounded replay state and native Fact decoder.
+pub(super) async fn load_shared(
+    tx: &tokio_postgres::Transaction<'_>,
+    dataset: DatasetId,
+    identity: AcquisitionScopeId,
+    permit: std::sync::Arc<OwnedPermit>,
+) -> Result<StoredAcquisitionScope, ScopeReadError> {
+    let row = tx
+        .query_opt(
+            READ_SCOPE,
+            &[&&dataset.as_bytes()[..], &&identity.as_bytes()[..]],
+        )
+        .await
+        .map_err(backend)?
+        .ok_or(ScopeReadError::InvalidMetadata)?;
+    decode_row(row, dataset, identity, permit)
 }
