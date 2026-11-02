@@ -41,7 +41,13 @@ pub use identity::{
     PrincipalId, ProcessIncarnation, ProducerSlotId, ProjectionGenerationId, PublicKey,
     ReauthenticationId, RecoveryGenerationId, RouteId, SelectorId, Signature,
 };
-pub use measurement::Measurement;
+pub use measurement::{
+    ConnectCallResult, ConnectDestination, ConnectErrorClass, FirstValidEvent, Measurement,
+    MeasurementContext, MeasurementCounters, MeasurementFailure, MeasurementLimit,
+    MeasurementMoment, MeasurementPhase, MeasurementState, MeasurementSubject,
+    MeasurementTermination, ObservedAttempt, ObservedExecution, OpenObservation,
+    PassiveReadProfile, ReadObservation, TeardownObservation, TerminalMeasurement,
+};
 pub use measurement_intent::MeasurementEvidenceIntent;
 pub use scalar::{
     CompleteThrough, DurationUs, ObservedTime, Ordinal, OwnerEpoch, PolicyEpoch, ProducerEpoch,
