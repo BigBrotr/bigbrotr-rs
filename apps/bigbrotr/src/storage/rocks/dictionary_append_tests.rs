@@ -1501,7 +1501,8 @@ fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts()
     let prepared = preparation.finish().unwrap();
     assert_eq!(prepared.intent().dictionaries().len(), 4);
     assert_eq!(rows(&store), before);
-    let original_intent = prepared.intent().clone();
+    let original_intent = evidence(public, prepared.intent().dictionaries().to_vec());
+    assert_eq!(&original_intent, prepared.intent());
     let appended = append(&mut store, &b, 2, &original_intent).unwrap();
     assert_eq!(appended.receipt().batch().unwrap().records().len(), 4);
     let original_receipt = appended.receipt().encode_persistent(8192).unwrap();
@@ -1518,7 +1519,8 @@ fn passive_route_and_method_mappings_intern_append_reopen_and_refuse_conflicts()
     }
     let prepared = preparation.finish().unwrap();
     assert_eq!(rows(&store), before);
-    let reused_intent = prepared.intent().clone();
+    let reused_intent = evidence(public, prepared.intent().dictionaries().to_vec());
+    assert_eq!(&reused_intent, prepared.intent());
     let reused = append(&mut store, &b, 3, &reused_intent).unwrap();
     assert!(reused.receipt().batch().is_none());
     let reused_receipt = reused.receipt().encode_persistent(8192).unwrap();
