@@ -94,9 +94,10 @@ def fixture(root):
     skeleton,_=quantum_fixture();template=skeleton['acquisition_quanta'][0]
     ds=before['datasets'][0]['dataset_id'];slot='\\x'+report['producer_slot_id']
     before['datasets'][0].update(config_revision=1,policy_revision=1,topology_generation=0)
-    before['owner_epochs'][0].update(dataset_id=ds,epoch=1,state='active',exclusion_method=None)
-    owner=dict(skeleton['owner_epochs'][0],dataset_id=ds,acquired_at_us=1000,lease_expires_at_us=300_000_000_000,xmin='1')
+    before['owner_epochs'][0].update(dataset_id=ds,epoch=1,state='active',exclusion_method=None,role_instance_id='\\x'+'a0'*16,xmin='1')
+    owner=dict(skeleton['owner_epochs'][0],dataset_id=ds,acquired_at_us=1000,lease_expires_at_us=300_000_000_000,role_instance_id='\\x'+'a1'*16,xmin='1')
     before['owner_epochs'].append(owner)
+    before['role_instances']=[dict(dataset_id=ds,role=row['role'],role_instance_id=row['role_instance_id'],created_at_us=1000,retired_at_us=None,xmin='1') for row in before['owner_epochs']]
     for row in before['allocation_domains']:row.update(owner_epoch=1,state='active',xmin='1')
     job=dict(skeleton['jobs'][0],dataset_id=ds,request_key='\\x'+'b1'*16,created_at_us=ACCEPTED,
         config_revision=1,policy_revision=1,principal_id='\\x'+'10'*16,xmin='2')
@@ -150,9 +151,11 @@ def fixture(root):
     projection(before,first,events,wires,1)
     before['acquisition_quanta'][0]['checkpoint_sha256']=before['producer_checkpoints'][0]['checkpoint_digest']
     sealed=copy.deepcopy(before)
-    old_control=source.only(sealed['owner_epochs'],role='control');old_control.update(state='released',exclusion_method='storage_fenced')
-    sealing=dict(old_control,epoch=2,process_incarnation='\\x'+'77'*16)
+    old_control=source.only(sealed['owner_epochs'],role='control');old_control.update(state='released',exclusion_method='storage_fenced',released_at_us=200_001_001_440,xmin='9')
+    source.only(sealed['role_instances'],role='control').update(retired_at_us=200_001_001_440,xmin='9')
+    sealing=dict(old_control,epoch=2,process_incarnation='\\x'+'77'*16,role_instance_id='\\x'+'a2'*16)
     sealed['owner_epochs'].append(sealing)
+    sealed['role_instances'].append(dict(dataset_id=ds,role='control',role_instance_id=sealing['role_instance_id'],created_at_us=200_001_001_441,retired_at_us=200_001_001_451,xmin='10'))
     closure='\\x'+source.closure(first['manifest'],slot,1,inputs,receipts,17)
     sealed['source_streams'][0].update(state='closed',last_complete_sequence=17,closure_digest=closure,xmin='10')
     seal=dict(continuation_id='\\x'+'88'*16,dataset_id=ds,job_id=job['job_id'],previous_job_revision=2,previous_continuation=None,
@@ -166,10 +169,12 @@ def fixture(root):
     sealed['producer_epochs'][0]['state']='closing'
     retired=copy.deepcopy(sealed);retired['producer_epochs'][0].update(state='retired',closure_digest=closure,retired_at_us=200_001_001_470,xmin='11')
     retired['owner_epochs'][0].update(state='released',exclusion_method='storage_fenced',exclusion_digest=closure,released_at_us=200_001_001_470,xmin='11')
+    source.only(retired['role_instances'],role='ingest').update(retired_at_us=200_001_001_470,xmin='11')
     for row in retired['allocation_domains']:row.update(state='closed',closure_digest=closure,closed_at_us=200_001_001_470,xmin='11')
     after=copy.deepcopy(retired);after['datasets'][0]['topology_generation']=1
-    new_control=dict(sealing,epoch=4,process_incarnation='\\x'+'99'*16)
+    new_control=dict(sealing,epoch=4,process_incarnation='\\x'+'99'*16,role_instance_id='\\x'+'a4'*16)
     after['owner_epochs'].append(new_control)
+    after['role_instances'].append(dict(dataset_id=ds,role='control',role_instance_id=new_control['role_instance_id'],created_at_us=200_001_001_480,retired_at_us=None,xmin='12'))
     domains=[bytes([120+k])*16 for k in range(1,10)];incarnation=bytes.fromhex('cc'*16)
     manifest=successor_manifest(first['manifest'],incarnation,domains)
     handoff=b'\x01\x0a'+source.raw(slot)+source.be(1)+source.be(5)+source.be(17)+source.raw(closure)+source.be(266,2)+first['manifest']+source.be(266,2)+manifest
@@ -181,6 +186,7 @@ def fixture(root):
     after['initial_ingest_successions']=[intent]
     after['owner_epochs'].append(dict(before['owner_epochs'][0],epoch=2,process_incarnation=intent['target_incarnation'],
         role_instance_id=intent['target_role_instance_id']))
+    after['role_instances'].append(dict(dataset_id=ds,role='ingest',role_instance_id=intent['target_role_instance_id'],created_at_us=200_001_001_500,retired_at_us=None,xmin='12'))
     after['source_streams'].append(dict(dataset_id=ds,shard_id=0,owner_epoch=2,state='open',last_complete_sequence=None,closure_digest=None))
     after['initial_ingest_activations']=[dict(dataset_id=ds,producer_slot_id=slot,target_epoch=2,target_manifest_sha256=intent['target_manifest_sha256'],
         handoff_sha256=intent['handoff_sha256'],activated_by_resource=new_control['resource_id'],activated_by_epoch=4,
@@ -411,7 +417,8 @@ class CappedAdoptionControls(unittest.TestCase):
                     with self.subTest(table=table,stage=stage),self.assertRaises(AssertionError):
                         check.adoption_transition(before,*snapshots,first)
             for name in ('sealed-open','unreleased-ingest','wrong-ingest-digest','unclosed-domain','wrong-domain-digest','missing-domain',
-                    'closed-source-xmin','retired-producer-xmin','retired-ingest-xmin','retired-domain-time','old-control-xmin'):
+                    'closed-source-xmin','retired-producer-xmin','retired-ingest-xmin','retired-domain-time','old-control-xmin',
+                    'ingest-role-time','control-role-xmin','domain-retirement-time','retirement-role-xmin'):
                 snapshots=[copy.deepcopy(value) for value in (sealed,retired,after)];s,r,a=snapshots
                 if name=='sealed-open':s['producer_epochs'][0]['state']='open'
                 elif name=='unreleased-ingest':a['owner_epochs'][0]['state']='active'
@@ -423,6 +430,12 @@ class CappedAdoptionControls(unittest.TestCase):
                 elif name=='retired-producer-xmin':a['producer_epochs'][0]['xmin']='999'
                 elif name=='retired-ingest-xmin':a['owner_epochs'][0]['xmin']='999'
                 elif name=='retired-domain-time':a['allocation_domains'][0]['closed_at_us']+=1
+                elif name=='ingest-role-time':source.only(a['role_instances'],role_instance_id=a['owner_epochs'][0]['role_instance_id'])['retired_at_us']+=1
+                elif name=='control-role-xmin':source.only(a['role_instances'],role_instance_id=before['owner_epochs'][1]['role_instance_id'])['xmin']='999'
+                elif name=='domain-retirement-time':
+                    r['allocation_domains'][0]['closed_at_us']+=1;a['allocation_domains'][0]['closed_at_us']+=1
+                elif name=='retirement-role-xmin':
+                    for value in (r,a):source.only(value['role_instances'],role_instance_id=value['owner_epochs'][0]['role_instance_id'])['xmin']='12'
                 else:source.only(a['owner_epochs'],role='control',epoch=1)['xmin']='999'
                 with self.subTest(name=name),self.assertRaises((AssertionError,ValueError)):
                     check.adoption_transition(before,s,r,a,first)

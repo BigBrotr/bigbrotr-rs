@@ -389,10 +389,12 @@ def adoption_transition(before,sealed,retired,after,first):
                 new=source.only(snapshot[table],**{key:old[key] for key in keys})
                 assert {k:v for k,v in old.items() if k not in mutable}=={k:v for k,v in new.items() if k not in mutable}, \
                     'undeclared old lifecycle rewrite: '+table
+                if table=='owner_epochs' and old['state']=='released':assert new==old,'already released owner was rewritten'
         for old in before.get('role_instances',[]):
             new=source.only(snapshot['role_instances'],role_instance_id=old['role_instance_id'])
             assert {k:v for k,v in old.items() if k not in ('retired_at_us','xmin')}=={
                 k:v for k,v in new.items() if k not in ('retired_at_us','xmin')},'old role identity changed'
+            if old['retired_at_us'] is not None:assert new==old,'already retired role was rewritten'
     original,=before['jobs'];job,=after['jobs']
     assert sealed['jobs']==retired['jobs']==before['jobs'],'sealing/retirement changed the job owner or state'
     assert original['state']==job['state']=='queued' and original['job_revision']==2 and job['job_revision']==3
@@ -430,9 +432,13 @@ def adoption_transition(before,sealed,retired,after,first):
                 process_incarnation=producer['owner_incarnation'])
             assert ingest['state']=='released' and ingest['exclusion_method']=='storage_fenced' and ingest['exclusion_digest']==digest
             assert ingest['released_at_us']==producer['retired_at_us']
+            role=source.only(snapshot['role_instances'],role_instance_id=ingest['role_instance_id'])
+            assert role['dataset_id']==producer['dataset_id'] and role['role']=='ingest'
+            assert role['retired_at_us']==producer['retired_at_us']
             domains=[row for row in snapshot['allocation_domains'] if row['owner_epoch']==1]
             assert len(domains)==9 and {row['dictionary_kind'] for row in domains}==set(range(1,10))
-            assert all(row['state']=='closed' and row['closure_digest']==digest for row in domains)
+            assert all(row['state']=='closed' and row['closure_digest']==digest and row['closed_at_us']==producer['retired_at_us'] for row in domains)
+            assert all(row['xmin']==producer['xmin'] for row in (ingest,role,*domains)),'retirement lifecycle did not commit atomically'
         assert not snapshot['acquisition_gaps'],'continuation became whole-job abandonment'
     assert source.only(sealed['source_streams'],owner_epoch=1)==source.only(retired['source_streams'],owner_epoch=1)==source.only(after['source_streams'],owner_epoch=1), \
         'completed source closure was rewritten'
@@ -442,11 +448,17 @@ def adoption_transition(before,sealed,retired,after,first):
     retired_ingest=source.only(retired['producer_epochs'],producer_epoch=1)
     fields=dict(role='ingest',resource_id=retired_ingest['owner_resource_id'],epoch=retired_ingest['owner_epoch'])
     assert source.only(retired['owner_epochs'],**fields)==source.only(after['owner_epochs'],**fields),'retired old Ingest owner was rewritten'
+    retired_role=source.only(retired['role_instances'],role_instance_id=source.only(retired['owner_epochs'],**fields)['role_instance_id'])
+    assert retired_role==source.only(after['role_instances'],role_instance_id=retired_role['role_instance_id']),'retired old Ingest role was rewritten'
     fields=dict(role='control',resource_id=original['owner_resource_id'],epoch=original['owner_epoch'])
     old_control=source.only(sealed['owner_epochs'],**fields)
     assert old_control['state']=='released' and old_control['exclusion_method']=='storage_fenced'
     assert old_control==source.only(retired['owner_epochs'],**fields)==source.only(after['owner_epochs'],**fields), \
         'excluded original Control owner was rewritten'
+    old_role=source.only(sealed['role_instances'],role_instance_id=old_control['role_instance_id'])
+    assert old_role['retired_at_us'] is not None and old_role['retired_at_us']<=seal['sealed_at_us']
+    assert old_role==source.only(retired['role_instances'],role_instance_id=old_role['role_instance_id'])==source.only(after['role_instances'],role_instance_id=old_role['role_instance_id']), \
+        'excluded original Control role was rewritten'
     quantum.continuation_owner(after,before['acquisition_quanta'][0],job)
 
 
