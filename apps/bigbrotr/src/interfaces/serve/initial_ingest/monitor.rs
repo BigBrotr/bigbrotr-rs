@@ -657,14 +657,14 @@ fn declarations(
         }))
         .map_err(error)?;
     let observer = prepared
-        .intern(DictionaryDescriptor::Observer(observer(
+        .intern(DictionaryDescriptor::Observer(observer_descriptor(
             method,
             None,
             Some(route_class),
         )))
         .map_err(error)?;
     let clock = prepared
-        .intern(DictionaryDescriptor::Observer(observer(
+        .intern(DictionaryDescriptor::Observer(observer_descriptor(
             method,
             Some(ClockSource::SystemUtc),
             None,
@@ -683,7 +683,7 @@ fn declarations(
         clock,
     ))
 }
-fn observer(
+fn observer_descriptor(
     method: QualifiedRef,
     clock: Option<ClockSource>,
     route_class: Option<RouteClass>,
@@ -703,7 +703,7 @@ fn recorded() -> Result<bigbrotr_model::ObservedTime> {
         .duration_since(UNIX_EPOCH)
         .map_err(error)?
         .as_micros();
-    Ok(bigbrotr_model::ObservedTime(
+    Ok(bigbrotr_model::ObservedTime::new(
         i64::try_from(micros).map_err(error)?,
     ))
 }
@@ -857,8 +857,8 @@ mod tests {
             allocation_domain: [2; 16].try_into().unwrap(),
             ordinal: bigbrotr_model::Ordinal::new(1).unwrap(),
         };
-        let observer = observer(method, None, Some(RouteClass::Private));
-        let clock = super::observer(method, Some(ClockSource::SystemUtc), None);
+        let observer = observer_descriptor(method, None, Some(RouteClass::Private));
+        let clock = super::observer_descriptor(method, Some(ClockSource::SystemUtc), None);
         assert_ne!(observer, clock);
         assert_eq!(observer.method_id, Some(method));
         assert_eq!(clock.method_id, Some(method));
