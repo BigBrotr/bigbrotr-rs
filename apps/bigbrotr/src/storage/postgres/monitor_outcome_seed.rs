@@ -52,6 +52,8 @@ struct Input {
     manifest_hex: String,
     policies: Policies,
     expected_receipt_hex: String,
+    #[serde(default)]
+    phase: Option<String>,
 }
 
 fn bytes<const N: usize>(text: &str) -> [u8; N] {
@@ -153,9 +155,80 @@ fn limits() -> ProducerRecoveryLimits {
     }
 }
 
-async fn seed(input: &Input, budget: &ResourceBudget) {
+async fn runtime_role(client: &tokio_postgres::Client) -> i32 {
+    let role = client
+        .query_one(
+            "SELECT current_user='bigbrotr_control' AND session_user='bigbrotr_control'
+        AND NOT (SELECT rolsuper FROM pg_roles WHERE rolname=current_user)
+        AND NOT EXISTS(SELECT 1 FROM pg_class WHERE relowner=current_user::regrole)
+        AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=current_user::regrole)
+        AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=current_user::regrole)
+        AND NOT EXISTS(SELECT 1 FROM pg_proc WHERE proowner=current_user::regrole)
+        AND current_setting('session_replication_role')='origin', pg_backend_pid()",
+            &[],
+        )
+        .await
+        .unwrap_or_else(|_| panic!("seed runtime role observation failed"));
     assert!(
-        input.format == "bigbrotr-monitor-outcome-seed/1",
+        role.get::<_, bool>(0),
+        "seed requires ordinary invoker authority"
+    );
+    role.get(1)
+}
+
+#[allow(
+    clippy::too_many_arguments,
+    reason = "private connected fixture retains distinct authority and resource owners"
+)]
+async fn resolve(
+    owner: &mut ControlSession,
+    recovery: &IngestRecovery,
+    spec: &ingest_registry::InitialRegistration,
+    id: ProducerRequestId,
+    input: &Input,
+    budget: &ResourceBudget,
+    progress: &ProgressGrant,
+    cancelled: &AtomicBool,
+) -> Result<crate::storage::rocks::store::ResolvedProducerRequest, ProducerResolveError> {
+    let limits = limits();
+    owner
+        .resolve_initial_producer_request(
+            recovery,
+            ProducerResolveRequest {
+                ingest_root: Path::new("/var/lib/bigbrotr/ingest"),
+                registration: spec,
+                request: id,
+                limits,
+                policy_ttl: Duration::from_secs(5),
+                cancelled,
+            },
+            grant(
+                budget,
+                RetainedRequestInput::required_data_bytes(limits.input)
+                    .expect("input charge")
+                    .max(historical_progress_data_bytes(0).expect("history charge")),
+                0,
+            ),
+            grant(
+                budget,
+                limits.required_data_bytes().expect("outcome charge"),
+                0,
+            ),
+            progress,
+            |body, digest| validate_either(&input.policies, body, digest),
+        )
+        .await
+}
+
+async fn seed(input: &Input, budget: &ResourceBudget) -> Value {
+    let phase = input.phase.as_deref();
+    let guard = matches!(
+        phase,
+        Some("close" | "borrowed-backend" | "invalid-context" | "resolve")
+    );
+    assert!(
+        (phase.is_none() && input.format == "bigbrotr-monitor-outcome-seed/1")
+            || (guard && input.format == "bigbrotr-monitor-connected-guards/1"),
         "seed format"
     );
     let deployment =
@@ -215,6 +288,8 @@ async fn seed(input: &Input, budget: &ResourceBudget) {
         .user("bigbrotr_control")
         .password(password.as_bytes())
         .connect_timeout(Duration::from_secs(5));
+    // Retain each SQL transport allocation through positive driver join.
+    let _control_transport = grant(budget, 8 * MIB, 0);
     let (mut client, driver) = config
         .connect(NoTls)
         .await
@@ -265,50 +340,197 @@ async fn seed(input: &Input, budget: &ResourceBudget) {
             && policy.policy_digest == bytes::<32>(&input.policies.policy.sha256),
         "seed current policy identity differs"
     );
-    let role = owner
-        .client
-        .query_one(
-            "SELECT current_user='bigbrotr_control' AND session_user='bigbrotr_control'
-        AND NOT (SELECT rolsuper FROM pg_roles WHERE rolname=current_user)
-        AND NOT EXISTS(SELECT 1 FROM pg_class WHERE relowner=current_user::regrole)
-        AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=current_user::regrole)
-        AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=current_user::regrole)
-        AND NOT EXISTS(SELECT 1 FROM pg_proc WHERE proowner=current_user::regrole)
-        AND current_setting('session_replication_role')='origin'",
-            &[],
-        )
-        .await
-        .unwrap_or_else(|_| panic!("seed runtime role observation failed"));
-    assert!(
-        role.get::<_, bool>(0),
-        "seed requires ordinary invoker authority"
-    );
+    let owner_backend = runtime_role(&owner.client).await;
     let cancelled = AtomicBool::new(false);
-    let closed = owner
-        .close_initial_producer(
-            &mut recovery,
-            ProducerCloseRequest {
-                ingest_root: path,
-                registration: &spec,
-                policy_ttl: Duration::from_secs(5),
-                cancelled: &cancelled,
-            },
-            grant(
+    if phase.is_none() || phase == Some("close") {
+        let closed = owner
+            .close_initial_producer(
+                &mut recovery,
+                ProducerCloseRequest {
+                    ingest_root: path,
+                    registration: &spec,
+                    policy_ttl: Duration::from_secs(5),
+                    cancelled: &cancelled,
+                },
+                grant(
+                    budget,
+                    historical_progress_data_bytes(4096).expect("closing charge"),
+                    4096,
+                ),
+                |body, digest| validate_either(&input.policies, body, digest),
+            )
+            .await
+            .unwrap_or_else(|_| panic!("seed native/PG closing refused"));
+        assert!(
+            closed.issued_through() == 4
+                && closed.acknowledged_through() == 3
+                && closed.reserved_through() == 4,
+            "seed prefix differs"
+        );
+        drop(closed);
+    }
+    if guard {
+        let id = ProducerRequestId {
+            producer_slot_id: slot,
+            producer_epoch: ProducerEpoch::new(1).expect("epoch"),
+            request_sequence: RequestSequence::new(4).expect("request"),
+        };
+        let prefix = owner.client.query_one(
+            "SELECT checkpoint_revision=3 AND complete_through_request=3
+                AND dependency_count=9 AND progress_format=1 AND prefix_profile
+                AND prefix_active_bytes IS NULL AND prefix_prepared_bytes IS NULL
+                AND (SELECT count(*) FROM control.producer_outcomes)=3
+                AND NOT EXISTS(SELECT 1 FROM control.producer_outcomes WHERE request_sequence=4)
+                AND (SELECT monitor_attempt_id IS NOT NULL AND NOT monitor_resolution
+                    FROM control.producer_requests WHERE request_sequence=4)
+                AND (SELECT state='closing' AND reserved_through_request=4 FROM control.producer_epochs)
+                FROM control.producer_checkpoints", &[]).await.expect("guard selected C3 read");
+        assert!(
+            prefix.get::<_, bool>(0),
+            "guard requires selected typed C3 and absent outcome4"
+        );
+        if phase == Some("close") {
+            drop(recovery);
+            owner.release().await.expect("guard closing owner release");
+            driver
+                .await
+                .expect("closing driver join")
+                .expect("closing driver result");
+            return guard_evidence(owner_backend, None);
+        }
+        let progress = ProgressGrant::new(grant(
+            budget,
+            ProgressGrant::REQUIRED_DATA_BYTES,
+            ProgressGrant::REQUIRED_NATIVE_BYTES,
+        ))
+        .expect("guard progress charge");
+        let mut borrowed_backend = None;
+        if phase == Some("borrowed-backend") {
+            let _borrowed_transport = grant(budget, 8 * MIB, 0);
+            let (client, borrowed_driver) = config
+                .connect(NoTls)
+                .await
+                .expect("guard borrowed runtime login");
+            let borrowed_driver = tokio::spawn(borrowed_driver);
+            let b = runtime_role(&client).await;
+            assert_ne!(owner_backend, b, "guard requires two actual backends");
+            borrowed_backend = Some(b);
+            // Deliberately lend attribution alone. A retains its authentic claim,
+            // lock and driver; B neither acquires nor forges an owner epoch.
+            let mut borrowed = ControlSession {
+                client,
+                request: ClaimRequest {
+                    dataset: owner.request.dataset,
+                    instance: owner.request.instance,
+                    authority_mode: owner.request.authority_mode.clone(),
+                    role_instance_id: owner.request.role_instance_id,
+                    incarnation: owner.request.incarnation,
+                    lease_ttl: owner.request.lease_ttl,
+                },
+                identity: owner.identity,
+                available: true,
+                validated_policy: owner.validated_policy,
+                enrolled_cursor_keys: None,
+            };
+            let result = resolve(
+                &mut borrowed,
+                &recovery,
+                &spec,
+                id,
+                input,
                 budget,
-                historical_progress_data_bytes(4096).expect("closing charge"),
-                4096,
-            ),
-            |body, digest| validate_either(&input.policies, body, digest),
-        )
-        .await
-        .unwrap_or_else(|_| panic!("seed native/PG closing refused"));
-    assert!(
-        closed.issued_through() == 4
-            && closed.acknowledged_through() == 3
-            && closed.reserved_through() == 4,
-        "seed prefix differs"
-    );
-    drop(closed);
+                &progress,
+                &cancelled,
+            )
+            .await;
+            assert!(
+                matches!(
+                    result,
+                    Err(ProducerResolveError::Control(OwnerError::Backend))
+                ),
+                "borrowed backend must fail the actual resolver authority preflight"
+            );
+            assert!(
+                !borrowed.available,
+                "failed borrowed session must remain poisoned"
+            );
+            assert!(
+                !borrowed.client.is_closed(),
+                "borrowed refusal lost its SQL transport"
+            );
+            let same: i32 = borrowed
+                .client
+                .query_one("SELECT pg_backend_pid()", &[])
+                .await
+                .expect("borrowed transport remains live")
+                .get(0);
+            assert_eq!(same, b, "borrowed refusal changed backend");
+            drop(borrowed);
+            borrowed_driver
+                .await
+                .expect("borrowed driver join")
+                .expect("borrowed driver result");
+            let tx = owner
+                .client
+                .transaction()
+                .await
+                .expect("owner authority transaction");
+            require(&tx, owner.request.dataset, owner.identity)
+                .await
+                .expect("genuine owner remains authorized");
+            tx.rollback().await.expect("owner authority rollback");
+        } else {
+            let result = resolve(
+                &mut owner, &recovery, &spec, id, input, budget, &progress, &cancelled,
+            )
+            .await;
+            if phase == Some("invalid-context") {
+                assert!(
+                    matches!(
+                        result,
+                        Err(ProducerResolveError::Progress(
+                            ProducerProgressError::InvalidContext
+                        ))
+                    ),
+                    "selected invalid binding must fail prepare_measurement_recovery without copy-only fallback"
+                );
+                assert!(
+                    !owner.available,
+                    "failed resolver session must remain poisoned"
+                );
+                // No availability reset and no attempted release on this session.
+                // The next genuine claim must exclude it after driver join.
+                drop(recovery);
+                drop(owner);
+                driver
+                    .await
+                    .expect("invalid-context driver join")
+                    .expect("invalid-context driver result");
+                return guard_evidence(owner_backend, None);
+            }
+            let resolved = result.expect("guard actual resolver positive completion");
+            let AdmissionOutcome::Durable(receipt) = resolved.outcome() else {
+                panic!("guard requires original durable receipt")
+            };
+            assert!(
+                receipt.encode_persistent(65536).expect("receipt bound")
+                    == encoded(&input.expected_receipt_hex, 65536),
+                "guard receipt differs from independent original"
+            );
+            drop(resolved);
+        }
+        assert!(
+            !recovery.native_unavailable(),
+            "guard native delivery unknown"
+        );
+        drop(recovery);
+        owner.release().await.expect("guard genuine owner release");
+        driver
+            .await
+            .expect("guard driver join")
+            .expect("guard driver result");
+        return guard_evidence(owner_backend, borrowed_backend);
+    }
     let recorder = owner.identity;
     let (tx, mut lease, epoch) = owner
         .begin_producer_recovery::<crate::storage::rocks::store::ProducerRecoveryError>(
@@ -445,11 +667,29 @@ async fn seed(input: &Input, budget: &ResourceBudget) {
         .await
         .unwrap_or_else(|_| panic!("seed driver panicked"))
         .unwrap_or_else(|_| panic!("seed driver failed"));
+    Value::Null
+}
+
+fn guard_evidence(owner_backend: i32, borrowed_backend: Option<i32>) -> Value {
+    serde_json::json!({"runtime_user":"bigbrotr_control", "session_user":"bigbrotr_control",
+        "superuser":false, "owns_objects":false, "replication_role":"origin",
+        "owner_backend":owner_backend, "borrowed_backend":borrowed_backend,
+        "control_data_bytes":8*MIB, "borrowed_data_bytes":if borrowed_backend.is_some() {8*MIB} else {0}})
 }
 
 #[test]
 #[ignore = "requires the explicit installed Monitor seed request, runtime PostgreSQL login and exclusive original native store"]
 fn seed_exact_existing_outcome() {
+    execute_test(false);
+}
+
+#[test]
+#[ignore = "requires explicit isolated connected guards, actual Control login and exclusive original native store"]
+fn resolve_connected_guards() {
+    execute_test(true);
+}
+
+fn execute_test(guard: bool) {
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
             4 * 1024 * MIB,
@@ -472,7 +712,11 @@ fn seed_exact_existing_outcome() {
         .unwrap_or_else(|_| panic!("seed request refused"));
     let input: Input = serde_json::from_slice(raw.as_bytes())
         .unwrap_or_else(|_| panic!("seed request shape refused"));
-    tokio::runtime::Builder::new_current_thread()
+    assert!(
+        guard == input.phase.is_some(),
+        "explicit fixture test and phase differ"
+    );
+    let evidence = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .expect("fixture runtime")
@@ -485,11 +729,25 @@ fn seed_exact_existing_outcome() {
     options.write(true).create_new(true);
     use std::os::unix::fs::OpenOptionsExt;
     options.mode(0o600);
-    let mut output = options
-        .open("/var/lib/bigbrotr/monitor-outcome-seed-result.json")
-        .expect("fresh protected result");
-    output.write_all(b"{\"format\":\"bigbrotr-monitor-outcome-seed-result/1\",\"status\":\"PASS\",\"checkpoint\":3,\"outcome\":4,\"acknowledged\":3}\n")
-        .and_then(|()| output.sync_all()).expect("seed result write");
+    let result_path = if guard {
+        format!(
+            "/var/lib/bigbrotr/monitor-connected-guards-{}-result.json",
+            input.phase.as_deref().expect("guard phase")
+        )
+    } else {
+        "/var/lib/bigbrotr/monitor-outcome-seed-result.json".to_owned()
+    };
+    let mut output = options.open(result_path).expect("fresh protected result");
+    let result = if guard {
+        serde_json::json!({"format":"bigbrotr-monitor-connected-guards-result/1", "status":"PASS", "phase":input.phase, "evidence":evidence})
+    } else {
+        serde_json::json!({"format":"bigbrotr-monitor-outcome-seed-result/1", "status":"PASS", "checkpoint":3, "outcome":4, "acknowledged":3})
+    };
+    serde_json::to_writer(&mut output, &result).expect("fixture result encode");
+    output
+        .write_all(b"\n")
+        .and_then(|()| output.sync_all())
+        .expect("fixture result write");
 }
 
 #[test]

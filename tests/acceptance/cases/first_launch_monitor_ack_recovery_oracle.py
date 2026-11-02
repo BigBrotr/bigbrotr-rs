@@ -408,3 +408,87 @@ def completion(records, initialized):
         dataset_id=initialized['dataset_id'],owner_resource_id=initialized['owner_resource_id'],
         producer_slot_id=initialized['producer_slot_id'],producer_epoch='1',issued_through='4',
         reserved_through='4',resolved_requests='4',native='closed',owner_release='committed',ready=False)]
+
+
+def guard_setup(before, after, context):
+    """Only the explicitly injected dispatch context and its xmin may change."""
+    inventory.control_inventory(before);inventory.control_inventory(after)
+    for table in inventory.CONTROL_TABLES-{'measurement_dispatches'}:
+        assert after[table]==before[table], 'isolated setup changed '+table
+    old=passive.only(before['measurement_dispatches']);new=passive.only(after['measurement_dispatches'])
+    assert passive.raw(new['context_bytes'],294)==context and new['xmin']!=old['xmin']
+    assert {k:v for k,v in new.items() if k not in ('context_bytes','xmin')}=={
+        k:v for k,v in old.items() if k not in ('context_bytes','xmin')}
+
+
+def guard_refused(before, after, initialized, receipts, *, phase):
+    assert phase in ('close','borrowed-backend','invalid-context')
+    _recovery_tables(before,after,pg_changed=False)
+    _recovered_owners(before,after,initial_open=phase=='close',completed=phase!='invalid-context')
+    for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+        assert after[table]==before[table], 'guard refusal changed '+table
+    passive.checkpoint_before_terminal(before,initialized,receipts[:3])
+    passive.checkpoint_before_terminal(after,initialized,receipts[:3])
+    assert [row['request_sequence'] for row in after['producer_outcomes']]==[1,2,3]
+
+
+def guard_resolved(before, after, initialized, receipts, cbor):
+    _recovery_tables(before,after,pg_changed=True)
+    _recovered_owners(before,after,initial_open=False,completed=True)
+    _repaired_sql(before,after,initialized,receipts,cbor,retry=False,completed=True)
+
+
+def guard_sql_results(rows, observations, digest, retained_bytes, backend):
+    """Literal SQLSTATE pairs plus the exact deferred owning refusal, not any failure."""
+    groups=(
+        ('valid-before foreign-context wrong-kind zero-domain missing-byte profile ceiling owner expired pending-other-id closed-permits-new refusal-immutable immutable-owner immutable-context delete-intent valid-after',
+            {'valid-before':'ZX001','valid-after':'ZX001','expired':'BB001','pending-other-id':'BB001','closed-permits-new':'ZX001'}),
+        ('evidence-before missing-dispatch unknown-dispatch mixed-acquisition changed-generation changed-route missing-resolution closed-evidence-refused evidence-noio-exclusion evidence-after',
+            {'evidence-before':'ZX001','evidence-after':'ZX001'}),
+        ('closing-valid-before closing-dataset closing-slot closing-epoch closing-zero-source closing-zero-sequence closing-valid-after',
+            {'closing-valid-before':'ZX001','closing-valid-after':'ZX001','closing-slot':'P0002','closing-epoch':'P0002'}),
+        ('capacity-deps-16384 capacity-deps-16385 capacity-bytes-exact capacity-bytes-plus-one',
+            {'capacity-deps-16384':'ZX001','capacity-bytes-exact':'ZX001'}),
+        ('deferred-historical deferred-current',{'deferred-current':'ZX001'}))
+    expected={name:overrides.get(name,'23514') for names,overrides in groups for name in names.split()}
+    assert rows==expected, 'missing, extra or wrong SQL guard result'
+    assert set(observations)=={'catalog','closing','deferred-historical','deferred-current'}
+    catalog=observations['catalog']
+    assert catalog and all(row['enabled']=='O' and row['security_definer'] is False for row in catalog)
+    before=[row['trigger'] for row in catalog if row['table']=='producer_checkpoints' and row['type'] & 1 and row['type'] & 2 and row['type'] & 16]
+    assert before and sorted(before)[-1]=='zzzz_monitor_late_issuer'
+    deferred=passive.only(catalog,trigger='zzz_producer_checkpoint_dependencies_complete')
+    assert deferred['deferrable'] is deferred['initially_deferred'] is True
+    closing=observations['closing']
+    assert closing==dict(runtime_user='bigbrotr_control',session_user='bigbrotr_control',backend_pid=backend,
+        retained_bytes=retained_bytes,jobs=0,dependencies=9,c4_digest=digest)
+    for name in ('deferred-historical','deferred-current'):
+        row=observations[name]
+        assert set(row)=={'updated','late_hook_invocations','stored_complete_c4','retained_validated',
+            'sqlstate','message','exception_context','runtime_user','session_user','backend_pid'}
+        assert type(row['updated']) is type(row['late_hook_invocations']) is int
+        assert row['updated']==row['late_hook_invocations']==1
+        assert row['stored_complete_c4'] is row['retained_validated'] is True
+        assert row['runtime_user']==row['session_user']=='bigbrotr_control' and row['backend_pid']==backend
+        assert row['sqlstate']==expected[name]
+        if name=='deferred-historical':
+            assert row['message']=='Control owner belongs to another backend or is inactive'
+            context=row['exception_context']
+            assert 0<=context.find('require_control_owner')<context.find('require_producer_progress_children')
+        else:assert row['message']=='positive fixture rollback'
+
+
+def guard_fixture_result(result, phase):
+    assert set(result)=={'format','status','phase','evidence'}
+    assert result['format']=='bigbrotr-monitor-connected-guards-result/1' and result['status']=='PASS' and result['phase']==phase
+    value=result['evidence']
+    assert set(value)=={'runtime_user','session_user','superuser','owns_objects','replication_role',
+        'owner_backend','borrowed_backend','control_data_bytes','borrowed_data_bytes'}
+    assert value['runtime_user']==value['session_user']=='bigbrotr_control'
+    assert value['superuser'] is value['owns_objects'] is False and value['replication_role']=='origin'
+    assert type(value['owner_backend']) is int and value['owner_backend']>0
+    assert type(value['control_data_bytes']) is int and value['control_data_bytes']==8388608
+    if phase=='borrowed-backend':
+        assert type(value['borrowed_backend']) is int and value['borrowed_backend']>0 and value['borrowed_backend']!=value['owner_backend']
+        assert type(value['borrowed_data_bytes']) is int and value['borrowed_data_bytes']==8388608
+    else:assert value['borrowed_backend'] is None and type(value['borrowed_data_bytes']) is int and value['borrowed_data_bytes']==0

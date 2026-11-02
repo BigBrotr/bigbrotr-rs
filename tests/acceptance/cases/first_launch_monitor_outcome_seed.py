@@ -8,6 +8,8 @@ from pathlib import Path
 from cases.first_launch import digest, load, require
 from cases import first_launch_passive_oracle as passive
 
+GUARD_TEST = 'storage::postgres::control_owner::monitor_outcome_seed::resolve_connected_guards'
+GUARD_PHASES = ('close','borrowed-backend','invalid-context','resolve')
 TEST = 'storage::postgres::control_owner::monitor_outcome_seed::seed_exact_existing_outcome'
 HOOK = '\n#[cfg(test)]\n#[path = "monitor_outcome_seed.rs"]\nmod monitor_outcome_seed;\n'
 OWNER = 'apps/bigbrotr/src/storage/postgres/control_owner.rs'
@@ -95,24 +97,29 @@ def mounts(info, entry):
     actual={row['Destination']:row for row in info['Mounts']}
     expected={'/fixture/seed':Path(paths['binary']),'/fixture/request.json':Path(paths['request'])}
     require(all(actual.get(target,{}).get('RW') is False for target in expected), 'seed input mount writable')
+    test=GUARD_TEST if 'monitor_guard_phase' in entry else TEST
+    require('monitor_guard_phase' not in entry or entry['monitor_guard_phase'] in GUARD_PHASES, 'unknown connected guard phase')
     require(info['Config']['Entrypoint']==['/fixture/seed'] and info['Config']['Cmd']==[
-        TEST,'--ignored','--exact','--nocapture','--test-threads=1'], 'unexpected test fixture command')
+        test,'--ignored','--exact','--nocapture','--test-threads=1'], 'unexpected test fixture command')
     require([value for value in info['Config']['Env'] if value.startswith('BIGBROTR_MONITOR_OUTCOME_SEED=')]
         ==['BIGBROTR_MONITOR_OUTCOME_SEED=/fixture/request.json'], 'seed request environment differs')
     return expected
 
 
-def launch(runtime, request):
+def launch(runtime, request, *, phase=None):
     require(all(digest(path)==runtime.seed_hashes[name] for name,path in runtime.seed_paths.items()), 'seed fixture inputs changed')
-    entry=dict(name=runtime.project+'-monitor-outcome-seed',service='app',id=None,status='creating',
+    require(phase is None or phase in GUARD_PHASES, 'unknown connected guard phase')
+    test=GUARD_TEST if phase is not None else TEST
+    entry=dict(name=runtime.project+('-monitor-guard-'+phase if phase is not None else '-monitor-outcome-seed'),service='app',id=None,status='creating',
         monitor_outcome_seed=dict(binary=str(runtime.seed_paths['binary']),request=str(request)))
+    if phase is not None:entry['monitor_guard_phase']=phase
     require(runtime.docker('inspect',entry['name'],check=False).returncode!=0, 'seed container name already exists')
     runtime.resources['containers'].append(entry);runtime.record_resources()
     result=runtime.command([*runtime.compose,'run','-d','--no-deps','--pull','never','--name',entry['name'],
         '--volume',str(runtime.seed_paths['binary'])+':/fixture/seed:ro',
         '--volume',str(request)+':/fixture/request.json:ro',
         '--env','BIGBROTR_MONITOR_OUTCOME_SEED=/fixture/request.json','--entrypoint','/fixture/seed','app',
-        TEST,'--ignored','--exact','--nocapture','--test-threads=1'])
+        test,'--ignored','--exact','--nocapture','--test-threads=1'])
     import re
     require(re.fullmatch('[0-9a-f]{64}',result.stdout.strip()), 'seed container ID missing')
     entry['id']=result.stdout.strip();runtime.inspect(entry)
@@ -134,7 +141,7 @@ def parent_sources(manifest, parent, source):
     # are outside the unchanged product/build-input comparison.
     harness=lambda name:name.startswith(('docs/','tests/acceptance/')) or name in (
         'experiments/ingest-succession/native.py','experiments/archive-engine/native_commit_proxy.py',
-        'experiments/archive-engine/native_commit_proxy_tests.py')
+        'experiments/archive-engine/native_commit_proxy_tests.py','experiments/relay-source/monitor_guards.sql')
     changed={name for name in set(current)|set(baseline) if name not in (OWNER,FIXTURE)
         and not harness(name) and current.get(name)!=baseline.get(name)}
     require(not changed, 'seed changes production or build inputs')

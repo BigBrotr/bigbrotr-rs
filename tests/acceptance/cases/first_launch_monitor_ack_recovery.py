@@ -16,6 +16,8 @@ NATIVE_OUTCOME_STAGES=STAGES[:4]+('passive_native_outcome_loss','monitor_outcome
 REPAIR_FAULT_STAGES=NATIVE_OUTCOME_STAGES[:5]+('monitor_outcome_rollback','monitor_outcome_commit_loss')+NATIVE_OUTCOME_STAGES[5:]
 EXISTING_OUTCOME_STAGES=NATIVE_OUTCOME_STAGES[:5]+('monitor_existing_outcome_seed',
     'monitor_existing_outcome_recovery','monitor_existing_outcome_retry','cleanup')
+CONNECTED_GUARD_STAGES=NATIVE_OUTCOME_STAGES[:5]+('monitor_guard_close','monitor_guard_borrowed_backend',
+    'monitor_guard_invalid_context','monitor_guard_resolve','monitor_guard_ack','monitor_guard_retry','cleanup')
 LIMITS=[
     'One passive socket operation; lose only the actual generic revision4/C4 COMMIT reply after PostgreSQL completed it. Independent joined-store census must first prove I4/A3/R0 with the exact ten facts/four headers/four receipts.',
     'Installed default ingest recover uses fresh Control and exclusive historical native custody, closes the original producer and confirms ACK4 without new source I/O, Monitor token, Sync/acquisition progress or retirement. Exact retry adds no native write.',
@@ -33,16 +35,23 @@ EXISTING_OUTCOME_LIMITS=[NATIVE_OUTCOME_LIMITS[0],
     'A separately attributed ignored cfg(test) Control-owner fixture uses genuine runtime login/claim/closing custody to replay original request4 and compare its receipt with the independent Python expectation. It commits only actual outcome4, retaining C3 and charging the one Native closing write to this explicit seed phase. It is not a production copy qualification.',
     'Ordinary installed recovery must preserve the seeded outcome bytes, recorder, timestamp and xmin while fresh Control atomically advances only C4 and dependency10. Native ACK adds one write; exact retry changes neither store. Complete policy documents and deployment/manifest bindings are frozen before measurement admission. The120s peer and all prior bounds remain unchanged; Separate Rust fixture qualification is required before connected execution. Other connected refusal gates remain open.']
 
+CONNECTED_GUARD_LIMITS=[NATIVE_OUTCOME_LIMITS[0],
+    'Explicit isolated dispatch-clock corruption only: close once and independently capture the baseline; retain genuine Control A while actual-login backend B borrows only its identity and must fail the actual resolver authority preflight. A fresh genuine resolver must return Progress(InvalidContext) for a selected Monitor binding after native/C3 authentication, with no outcome copy or fallback. Failed sessions are dropped and their drivers joined; later genuine claims exclude them.',
+    'Actual runtime-invoker SQL hooks prove immediate closing dependency acceptance/refusals and independent SQL count/retained-byte capacity pairs. Complete nested C4 candidates test the deferred current-owner guard after explicitly injected post-immediate historical issuer corruption, paired with current issuer acceptance. Both trials roll back. These are SQL boundary proofs, not installed resolver exhaustion or valid stale-owner workflows.',
+    'After restoring the immutable dispatch under explicitly recorded isolated setup, the actual connected library resolver commits original outcome4/C4/dependency10. Ordinary installed recovery performs ACK4 and retries without Native or PG rewrites; complete independent scientific/original-input oracles and the existing one-peer120s bound remain. Prepared/active-prefix, noncontiguous-tail and retirement workflows remain with their existing owners.']
+
 
 class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
     native_outcome=False
     repair_faults=False
     existing_outcome=False
+    connected_guards=False
 
     def __init__(self, args, inputs):
+        self.connected_guards=args.case=='p04-monitor-connected-guards'
         self.repair_faults=args.case=='p04-monitor-native-outcome-faults'
         self.existing_outcome=args.case=='p04-monitor-existing-outcome-recovery'
-        self.native_outcome=self.existing_outcome or self.repair_faults or args.case=='p04-monitor-native-outcome-recovery'
+        self.native_outcome=self.connected_guards or self.existing_outcome or self.repair_faults or args.case=='p04-monitor-native-outcome-recovery'
         super().__init__(args,inputs)
 
     @property
@@ -50,16 +59,17 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         return 'before-forward' if self.native_outcome else 'after-complete'
 
     def recovery_label(self, *, retry):
+        if self.connected_guards:return 'monitor-guard-'+('retry' if retry else 'ack')
         if self.existing_outcome:return 'monitor-existing-outcome-'+('retry' if retry else 'recovery')
         return ('monitor-outcome-' if self.native_outcome else 'monitor-ack-')+('retry' if retry else 'recovery')
 
     def preflight(self):
-        if self.existing_outcome:
+        if self.existing_outcome or self.connected_guards:
             compiled=getattr(self.args,'monitor_outcome_seed_build',None)
             if compiled is None or not all((compiled/name).is_file() for name in (
                     'build/source-manifest.json','build/parent-product-source-manifest.json',
                     'artifacts/test-tool-artifact.json','artifacts/bigbrotr-library-tests')):
-                raise MissingPrerequisite('existing-outcome case requires the separately declared test-only seed build')
+                raise MissingPrerequisite('connected Monitor fixture requires the separately declared test-only build')
         super().preflight()
 
     def start_checkpoint_proxy(self, output, mode):
@@ -123,7 +133,7 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         super().candidate()
         relative='experiments/archive-engine/native_commit_proxy.py'
         self.inputs['acceptance_files_sha256'][relative]=digest(self.source/relative)
-        if self.existing_outcome:
+        if self.existing_outcome or self.connected_guards:
             from cases import first_launch_monitor_outcome_seed as seed
             relative='tests/acceptance/cases/first_launch_monitor_outcome_seed.py'
             require(digest(Path(seed.__file__))==digest(self.source/relative), 'Monitor outcome seed source mismatch')
@@ -131,20 +141,30 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
             self.seed_paths,self.seed_identity=seed.artifact(self.args.monitor_outcome_seed_build,self.manifest,self.source)
             self.seed_hashes={name:digest(path) for name,path in self.seed_paths.items()}
             self.inputs['monitor_outcome_seed']=self.seed_identity
+            if self.connected_guards:
+                self.seed_identity['test']=seed.GUARD_TEST
+                relative='experiments/relay-source/monitor_guards.sql'
+                self.inputs['acceptance_files_sha256'][relative]=digest(self.source/relative)
             for name in (seed.OWNER,seed.FIXTURE,'tests/fixtures/configuration/policy-v3.json'):
                 self.inputs['acceptance_files_sha256'][name]=digest(self.source/name)
 
     def bootstrap(self):
         super().bootstrap()
-        if self.existing_outcome:
+        if self.existing_outcome or self.connected_guards:
             from cases import first_launch_monitor_outcome_seed as seed
             report=self.finite('seed-policy-candidate','config','show','--file','/etc/bigbrotr/instance.toml')
             self.seed_policies=seed.policy(self.source,report,digest(self.config))
             save(self.root/'bootstrap/seed-policy-frozen.json',self.seed_policies)
+        if self.connected_guards:
+            relative='experiments/relay-source/monitor_guards.sql'
+            self.source_unchanged()
+            self.sql('bigbrotr_control',(self.source/relative).read_text())
+            save(self.root/'bootstrap/monitor-guards-install.json',dict(source=relative,
+                sha256=digest(self.source/relative),scope='explicit isolated fixture setup',execution='runtime invoker hooks only'))
 
     def passive_begin(self, output):
         entry=super().passive_begin(output)
-        if self.existing_outcome:
+        if self.existing_outcome or self.connected_guards:
             from cases import first_launch_monitor_outcome_seed as seed
             self.seed_binding=seed.registration(load(output/'prepared-control.json'),self.initialized,self.ids)
             save(output/'seed-registration-frozen.json',self.seed_binding)
@@ -343,6 +363,120 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
             outcome=4,native_issued=4,native_acknowledged=3,native_retired=0,native_writes=1,new_probe=False))
         self.source_unchanged()
 
+    def guard_setup(self, output, *, restore):
+        """Explicit isolated corruption setup; the measured resolver sees enabled guards."""
+        require(self.connected_guards and self.args.monitor_guard_corruption=='dispatch-clock', 'explicit guard corruption setup missing')
+        dispatch=passive.only(self.before_recovery['measurement_dispatches'])
+        if not restore:
+            self.guard_original_dispatch=dispatch.copy()
+            original=passive.raw(dispatch['context_bytes'],294)
+            altered=bytearray(original);altered[228]^=128
+            self.guard_corrupt_context=bytes(altered)
+        context=passive.raw(self.guard_original_dispatch['context_bytes'],294) if restore else self.guard_corrupt_context
+        # The authenticated immutable API cannot create this mismatch. Only the
+        # isolated setup login briefly disables this one immutability trigger;
+        # all product guards are restored before COMMIT and resolver launch.
+        statement=("BEGIN; SET LOCAL statement_timeout='3s'; SET LOCAL lock_timeout='1s'; "
+            "ALTER TABLE control.measurement_dispatches DISABLE TRIGGER measurement_dispatch_guard; "
+            "UPDATE control.measurement_dispatches SET context_bytes=decode('"+context.hex()+"','hex') "
+            "WHERE dataset_id=decode('"+self.ids['dataset']+"','hex') AND attempt_id=decode('"+
+            passive.raw(dispatch['attempt_id'],16).hex()+"','hex'); "
+            "ALTER TABLE control.measurement_dispatches ENABLE TRIGGER measurement_dispatch_guard; COMMIT; "
+            "SELECT json_build_object('setup_user',current_user,'enabled',(SELECT tgenabled='O' FROM pg_trigger "
+            "WHERE tgrelid='control.measurement_dispatches'::regclass AND tgname='measurement_dispatch_guard'),"
+            "'valid_context',(SELECT control.measurement_context_valid(context_bytes,dataset_id) FROM control.measurement_dispatches),"
+            "'context_hex',(SELECT encode(context_bytes,'hex') FROM control.measurement_dispatches));")
+        observation=json.loads(self.sql('bigbrotr_control',statement))
+        require(observation==dict(setup_user='postgres',enabled=True,valid_context=True,context_hex=context.hex()), 'isolated dispatch setup incomplete')
+        save(output/('restored-setup.json' if restore else 'corruption-setup.json'),observation)
+        baseline,catalog=self.capture(output,'restored-baseline' if restore else 'injected-baseline')
+        oracle.guard_setup(self.before_recovery,baseline,context)
+        require(catalog==self.catalog, 'isolated setup changed scientific catalog')
+        self.before_recovery=baseline
+
+    def guard_phase(self, phase):
+        from cases import first_launch_monitor_outcome_seed as seed
+        import re
+        self.source_unchanged()
+        label='monitor-guard-'+phase
+        output=self.root/label;output.mkdir(mode=0o700)
+        require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'peer lost before connected guard')
+        self.backend_absence(output)
+        if phase=='invalid-context':self.guard_setup(output,restore=False)
+        if phase=='resolve':
+            self.guard_setup(output,restore=True)
+            # Independent canonical version1 encoding, including all ten source
+            # references reconstructed from original science, never a SQL digest.
+            import hashlib
+            be=lambda n:n.to_bytes(8,'big')
+            references=[item for receipt in self.receipts for item in receipt[4]]
+            body=b'bigbrotr/producer-progress/1\0'+bytes.fromhex(self.ids['dataset']+self.initialized['producer_slot_id'])+be(1)
+            body+=passive.raw(self.before_recovery['producer_requests'][0]['manifest_sha256'],32)
+            body+=b''.join(be(n) for n in (4,4,0,10))
+            body+=b''.join(source[0]+b''.join(be(n) for n in source[1:])+sha for source,sha in references)
+            self.guard_c4_digest=hashlib.sha256(body).hexdigest()
+            require(len(references)==10 and not self.before_recovery['acquisition_quanta'], 'guard capacity/digest profile differs')
+            self.guard_retained_bytes=sum(len(raw)+65536 for raw in self.original_inputs)
+            self.sql('bigbrotr_control',"INSERT INTO monitor_fixture.expected VALUES(true,decode('"+
+                self.ids['dataset']+"','hex'),decode('"+self.initialized['producer_slot_id']+"','hex'),decode('"+
+                self.guard_c4_digest+"','hex'),"+str(self.guard_retained_bytes)+")")
+        before=self.before_recovery;old_dump=self.before_dump
+        manifest=passive.native_rows(old_dump)[('default',b'\x01\x01')]
+        require(manifest.hex()==self.seed_binding['manifest_hex'], 'guard manifest differs from frozen registration')
+        request=output/'request.json'
+        save(request,dict(format='bigbrotr-monitor-connected-guards/1',phase=phase,**self.seed_binding,
+            policies=self.seed_policies,expected_receipt_hex=(b'bigbrotr/receipt/1\0'+self.cbor(self.receipts[3])).hex()))
+        require(request.stat().st_size<=512*1024, 'guard request exceeds bound')
+        result_path=self.state/('data/monitor-connected-guards-'+phase+'-result.json')
+        require(not result_path.exists(), 'guard result must be fresh')
+        entry=seed.launch(self,request,phase=phase)
+        ended=self.docker('wait',entry['id'],timeout=30,label=label+'-join')
+        info=self.inspect(entry);logged=self.docker('logs',entry['id'])
+        (output/'fixture.stdout').write_text(logged.stdout);(output/'fixture.stderr').write_text(logged.stderr)
+        save(output/'terminal-container.json',dict(id=info['Id'],state=info['State']))
+        require(ended.stdout.strip()=='0' and info['State']['ExitCode']==0 and info['State']['Pid']==0
+            and not info['State']['Running'] and not info['State']['OOMKilled'] and not logged.stderr
+            and seed.GUARD_TEST in logged.stdout and re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored;',logged.stdout),
+            'actual connected guard fixture did not positively join')
+        result=load(result_path)
+        oracle.guard_fixture_result(result,phase)
+        save(output/'fixture-result.json',result)
+        exclusion=output/'fixture-owner-exclusion';exclusion.mkdir(mode=0o700);self.backend_absence(exclusion)
+        after,catalog=self.capture(output,'after')
+        current=max((row for row in after['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])
+        require(result['evidence']['owner_backend']==current['control_backend_pid'], 'fixture result used another Control backend')
+        require(catalog==self.catalog, 'connected guard changed scientific catalog')
+        if phase=='resolve':
+            oracle.guard_resolved(before,after,self.initialized,self.receipts,self.cbor)
+            oracle.repaired_terminal(after,self.initialized,self.selection,self.original_inputs,self.receipts,self.cbor,self.decode)
+            rows=json.loads(self.sql('bigbrotr_control',"SELECT jsonb_object_agg(name,sqlstate) FROM monitor_fixture.results"))
+            observations=json.loads(self.sql('bigbrotr_control',"SELECT jsonb_object_agg(name,document) FROM monitor_fixture.observations"))
+            oracle.guard_sql_results(rows,observations,self.guard_c4_digest,self.guard_retained_bytes,
+                max((row for row in after['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])['control_backend_pid'])
+            save(output/'sql-results.json',dict(results=rows,observations=observations))
+        else:oracle.guard_refused(before,after,self.initialized,self.receipts,phase=phase)
+        require(self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4)==self.original_inputs
+            and self.files(self.state/'data/ingest/producer-inputs-v1')==self.original_files, 'connected guard changed original inputs')
+        dump=native.census(self,output,writer_terminal=output/'terminal-container.json')
+        passive.native_physical(dump,self.initialized,self.receipts,self.cbor,
+            passive.raw(after['producer_requests'][0]['manifest_sha256'],32),phase='closing-unacknowledged')
+        oracle.native_repair_fault(old_dump,dump,self.initialized,committed=phase!='close')
+        save(output/'native-census.json',dump)
+        save(output/'independent-verdict.json',dict(status='PASS',phase=phase,
+            checkpoint=4 if phase=='resolve' else 3,native_writes=1 if phase=='close' else 0,
+            control_claims=len(after['owner_epochs'])-len(before['owner_epochs']),
+            current_control_releases=0 if phase=='invalid-context' else 1,
+            prior_control_exclusions=sum(row['role']=='control' and row['state']!='released' for row in before['owner_epochs']),
+            borrowed_backend_claims=0,new_probe=False))
+        self.before_recovery,self.before_dump=after,dump
+        require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'guard issued new peer work')
+        self.source_unchanged()
+
+    def guard_close(self):self.guard_phase('close')
+    def guard_borrowed_backend(self):self.guard_phase('borrowed-backend')
+    def guard_invalid_context(self):self.guard_phase('invalid-context')
+    def guard_resolve(self):self.guard_phase('resolve')
+
     def recovery(self, *, retry):
         self.source_unchanged()
         label=self.recovery_label(retry=retry)
@@ -357,7 +491,8 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         save(output/'terminal-container.json',dict(id=info['Id'],state=info['State']))
         after,catalog=self.capture(output,'recovered')
         require(catalog==self.catalog, 'ACK recovery changed scientific catalog')
-        if self.existing_outcome:oracle.repaired_existing(before,after,self.initialized,self.receipts,retry=retry)
+        if self.connected_guards:oracle.repair_ack(before,after,self.initialized,self.receipts,self.cbor)
+        elif self.existing_outcome:oracle.repaired_existing(before,after,self.initialized,self.receipts,retry=retry)
         elif self.repair_faults:oracle.repair_ack(before,after,self.initialized,self.receipts,self.cbor)
         elif self.native_outcome:oracle.repaired(before,after,self.initialized,self.receipts,self.cbor,retry=retry)
         else:oracle.recovered(before,after,retry=retry)
@@ -371,7 +506,7 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         require(receipts==self.receipts, 'recovery changed exact receipts')
         dump=native.census(self,output,writer_terminal=output/'terminal-container.json')
         passive.native_ack(dump,after,self.initialized,receipts,self.cbor,phase='recovered')
-        if (self.repair_faults or self.existing_outcome) and not retry:oracle.native_repair_ack(old_dump,dump,self.initialized)
+        if (self.connected_guards or self.repair_faults or self.existing_outcome) and not retry:oracle.native_repair_ack(old_dump,dump,self.initialized)
         else:oracle.native_transition(old_dump,dump,self.initialized,retry=retry)
         save(output/'native-census.json',dump)
         self.after_recovery,self.after_dump=after,dump

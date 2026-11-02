@@ -1350,7 +1350,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
-    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery','p04-monitor-native-outcome-faults','p04-monitor-existing-outcome-recovery')
+    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery','p04-monitor-native-outcome-faults','p04-monitor-existing-outcome-recovery','p04-monitor-connected-guards')
     passive_monitor = monitor_recovery or getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index')
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
@@ -1385,6 +1385,8 @@ def first_launch(args, checks, inputs):
                 from cases.first_launch_monitor_ack_recovery import REPAIR_FAULT_STAGES as PASSIVE_STAGES, REPAIR_FAULT_LIMITS as PASSIVE_LIMITS
             if args.case=='p04-monitor-existing-outcome-recovery':
                 from cases.first_launch_monitor_ack_recovery import EXISTING_OUTCOME_STAGES as PASSIVE_STAGES, EXISTING_OUTCOME_LIMITS as PASSIVE_LIMITS
+            if args.case=='p04-monitor-connected-guards':
+                from cases.first_launch_monitor_ack_recovery import CONNECTED_GUARD_STAGES as PASSIVE_STAGES, CONNECTED_GUARD_LIMITS as PASSIVE_LIMITS
         runtime_type = PassiveMonitorRuntime
         args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
@@ -1438,6 +1440,9 @@ def first_launch(args, checks, inputs):
                     ('monitor_outcome_commit_loss',runtime.lose_repair_commit)]
             if args.case=='p04-monitor-existing-outcome-recovery':
                 operations += [('monitor_existing_outcome_seed',runtime.seed_existing_outcome)]
+            if args.case=='p04-monitor-connected-guards':
+                operations += [('monitor_guard_close',runtime.guard_close),('monitor_guard_borrowed_backend',runtime.guard_borrowed_backend),
+                    ('monitor_guard_invalid_context',runtime.guard_invalid_context),('monitor_guard_resolve',runtime.guard_resolve)]
             operations += [(PASSIVE_STAGES[-3],runtime.recover_ack),(PASSIVE_STAGES[-2],runtime.retry_ack)]
         for current, operation in operations:
             operation()

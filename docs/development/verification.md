@@ -792,7 +792,8 @@ with that exact suffix; its fixture presence must agree with the hook form.
 Only the associated private test file may then differ. All other runtime/build
 inputs remain equal, including Cargo configuration and external Rust examples.
 Separately attributed documentation/acceptance sources, this declared builder,
-and only `experiments/archive-engine/native_commit_proxy.py` and
+and the explicit `experiments/relay-source/monitor_guards.sql`,
+`experiments/archive-engine/native_commit_proxy.py` and
 `native_commit_proxy_tests.py` are outside that product comparison; their source
 and execution checks retain their own bindings. This permits same-source builds
 and reuse of an unchanged qualified product/observer while attributing the seed
@@ -824,6 +825,93 @@ ACK adds one write, and exact retry rewrites neither store. Missing-outcome and
 old C4/A3 cases retain their stricter original bindings. The peer stays within
 the same120s envelope with one connection and no replacement probe or Sync work.
 Other connected refusal guards remain required under P04-T07 Steps2/6 and P02.
+
+### Exercise connected Monitor recovery refusals
+
+`p04-monitor-connected-guards` is a source-only extension awaiting separate Rust
+fixture compilation/Clippy and real connected qualification (**NOT_RUN**).
+It reuses the preceding private library-test builder, qualified product/observer,
+shared Monitor recovery runtime, independent science/receipt oracle and original
+120s peer/proxy limits. It adds no production API or fault switch. Select it only
+for a fresh disposable qualification database and original Native store:
+
+```sh
+python3 -B tests/acceptance/run.py p04-monitor-connected-guards \
+  --source-root /absolute/clean-fixture-and-acceptance-source \
+  --candidate-manifest /absolute/qualified-product/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --monitor-outcome-seed-build /absolute/separate-test-compilation \
+  --monitor-guard-corruption dispatch-clock \
+  --evidence /absolute/fresh-private-evidence
+```
+
+The explicit corruption option acknowledges the isolated setup boundary. The
+immutable dispatch API cannot produce a mismatched clock reference. Setup
+records that one row's original context, disables only its immutability trigger
+inside an isolated transaction, changes one clock-domain byte, restores the
+trigger before COMMIT, and captures the injected baseline. The actual measured
+resolver runs with every product guard enabled. Exact restoration is separately
+recorded before positive resolution. Never use this case on retained user data.
+
+The ignored test
+`storage::postgres::control_owner::monitor_outcome_seed::resolve_connected_guards`
+accepts four closed phases through the existing protected request/mount protocol:
+
+| Phase | Required observable result |
+| --- | --- |
+| `close` | Genuine current Control closes the original producer once; separate census proves I4/A3/C3 and accounts for its one Native write. |
+| `borrowed-backend` | Genuine A keeps its claim, backend and driver. Actual packaged-login B borrows only A's identity and fails the actual resolver authority preflight. B remains poisoned and is dropped/joined; A still authenticates and releases normally. |
+| `invalid-context` | A fresh genuine claim reaches the selected typed Monitor recovery path and returns exactly `Progress(InvalidContext)`; outcome4 remains absent and no copy-only fallback runs. The failed session is dropped/joined without resetting availability. |
+| `resolve` | After explicit restoration and fresh claim/exclusion, the actual library resolver commits the independent original receipt, C4 and dependency10. It performs no Native ACK. |
+
+Each actual SQL transport retains a separate8MiB data reservation until driver
+join; both logins prove ordinary `bigbrotr_control` invoker authority, origin
+replication mode and no object ownership. Claim/release/exclusion effects are
+reported separately from unchanged original inputs/outcomes/head/dependencies and
+Native sequence. The final ordinary installed recovery adds ACK4; exact retry
+rewrites neither store. These are distinct library-operation and installed-routing
+proofs, neither inferred from the other.
+
+The case installs the attributed
+[`monitor_guards.sql`](../../experiments/relay-source/monitor_guards.sql) hooks
+before the original real dispatch/reservation. Recursion skips fixture hooks
+alone. Existing dispatch/reservation refusals retain their positive rollback
+pairs. The genuine closing dependency10 insertion additionally exercises immediate
+acceptance/refusals, without forcing deferred constraints against C3 plus ten
+children. Direct SQL capacity calls pair16384/16385 dependencies with byte
+headroom, and exactly32MiB/one byte over with fixed jobs/dependencies. The baseline
+is independently calculated from original input lengths plus65536 completion
+reserve per request and the actual zero-quantum profile; SQL rechecks its charge.
+These prove SQL boundaries, not installed resolver capacity exhaustion. The fixed
+request4/max8-dependency/64KiB installed operation cannot exhaust those ceilings;
+even63 prior256-dependency requests plus8 remain16136<16384. Wider library and
+mixed-history capacity remain with P02.
+
+A complete nested C4 candidate then pairs current issuer acceptance with explicit
+post-immediate issuer corruption to an authentic excluded historical Control.
+The late fixture hook is catalog-checked after every product BEFORE UPDATE row
+trigger and alters only issuer resource/epoch/incarnation. Before deferred checks,
+UPDATE1, exact independent C4 digest/outcome4/ten children, current authority and
+retained validation must all succeed. The historical case must then fail with
+SQLSTATE23514, the exact inactive/foreign-backend owner message and an exception
+context naming `require_producer_progress_children` and `require_control_owner`.
+The current pair must pass deferred checks before the intentionalZX001 rollback.
+Both preserve all retained rows/xmins and restore deferred mode; only fixture
+results remain. The untouched actual resolver subsequently commits normally.
+This is a deferred current-owner guard proof under late-row fault injection,
+not a valid stale-owner workflow.
+
+Prepared C3/reserved4 cannot be produced through the genuine prepare API, which
+requires reserved==complete. Completed-C4 prepared state has its separate existing
+workflow gate; active-prefix/retirement/noncontiguous-tail scenarios are not
+fabricated by this case. No ordinary test suite or portable control run executes
+these Rust/SQL operations. Their connected results remain **NOT_RUN** until the
+exact artifacts, roles, catalog observations, receipts and cleanup are recorded.
+The focused portable controls are:
+
+```sh
+python3 -B -m unittest discover -s tests/acceptance -p 'test_monitor_connected_guards.py'
+```
 
 ### Same-store installed Index restart with backlog
 
