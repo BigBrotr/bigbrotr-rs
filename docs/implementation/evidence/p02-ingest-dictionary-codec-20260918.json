@@ -272,7 +272,7 @@
           }
         },
         "initial_measurement_c3_repair": {
-          "status": "COMBINED_SOURCE_CRITICALLY_APPROVED_RUNTIME_QUALIFICATION_NOT_RUN",
+          "status": "APPROVED_EB384_SOURCE_STRICT_PREFLIGHT_PASS_OPTIMIZED_BUILD_RUNNING",
           "tasks": "P04-T07 Steps2/6; P02 producer-progress/recovery",
           "original": "f12db3545764bf8beee477281eb6649741969a02",
           "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/measurement-c3-repair-source-controls/source-controls.json",
@@ -300,7 +300,41 @@
             "source_receipt_sha256": "d20a2ae7a0d6d44f56ac3533920d6f3e04eb1ebc56b0bef66f3e025a2685bf62",
             "review": "IndependentAstra complete13filedelta/affectedowners approved: exactbefore-forwardC4UPDATE1same-sessionCOMMIT; positivewriter/backendexclusion; independentPGC3/nine-dependency andnativeI4/A3/R0 closure. Onlyboundedexact-inti64recorded_atobservedfromFact10, independentfixturewindow; entirefact/referencehash/receipt4/batchclosure reconstructedindependently, no actualnativedigest/receipt/depschooseexpected andno syntheticPGoutcomerow. Oldnative_ackstillbindsallfourPGoutcomes.",
             "checks": "Reviewerindependent18recovery+42proxy+fourNodevectorsPASS,sourcehashes/AST/diffPASS. Actualretainedcc8r4replayonlyoldC4/A3regression. Newproduct/plainC3journeyALLNOT_RUN.",
-            "limits": "Missing-outcome4/C3repair+healthyretryonly; entireSQLguard/resolvernotqualifiedbypositivejourney. Connectedrefusals, rollback, lostrepairCOMMIT/noACK andexact-existingoutcome4/C3remainexistingP04-T07Steps2/6/P02gates. No preciseUTCsamplinginstant orcapacityclaim."
+            "limits": "Missing-outcome4/C3repair+healthyretryonly; entireSQLguard/resolvernotqualifiedbypositivejourney. Connectedrefusals, rollback, lostrepairCOMMIT/noACK andexact-existingoutcome4/C3remainexistingP04-T07Steps2/6/P02gates. No preciseUTCsamplinginstant orcapacityclaim.",
+            "repair_fault_followthrough": {
+              "original": "dd9b01f3b6acf7fd932d2747b34974c6b728790c",
+              "integrated": "5911bc3e",
+              "status": "CRITICAL_SOURCE_APPROVED_INSTALLED_NOT_RUN",
+              "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-native-outcome-20261102/.research/repair-fault-controls/source-only-receipt.json",
+              "receipt_sha256": "b8deb52063ed3dbb44905d5464d96311438c636af69b2ab52030d46722691413",
+              "review": "Astraapprovedactual9filedelta; independent27recoverycontrols/hash/AST/diffPASS, reusedcodec/proxy/Nodeproofs. Closed10stagevariant: repairCOMMITwithheldkeepsPGC3/NativeclosingA3(+1write), lostcommittedreplyPGC4/NativeA3(+0), freshdirectACK(+1), retry(+0). FailedfreshControlactive/unreleasedandnextfreshclaimexcludesit; oldhealthyreleasedwrappersstrict. Shared30scommanddeadline/120speer+proxyunchanged. No newproductAPI/oracleweakening.",
+              "scope": "Requiredrepairrollback/lostrepairCOMMIT/noimmediateACK followthroughusingSAMEeb384binary afterqualification. Exact-existingoutcome4/C3 andotherconnectedrefusalgates remainexistingP04/P02owners, notclaimedPASS."
+            }
+          },
+          "mechanical_lint_fix": {
+            "original": "d79f2fd2ea7339241247161b34fa00e14bdfcfae",
+            "integrated": "c8ae3c6d",
+            "scope": "ExactlythreeNoDrop witness dropsremoved; NLLlastusesretained, no API/schema/algorithm/budget/refusal/ownedpermitdropchange. Rootordinarydelta+sourcebyteauthentication,2fileRustfmt/diffPASS,14tutorialcontrolsPASS. OriginalstrictFAIL preserved."
+          },
+          "qualification": {
+            "source": "eb384d20d723337bcc6ae9c9605951fc8fa16b4c",
+            "tree": "f5f43dad1f3e78c7026c623413db6e98cf0e93ad",
+            "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/eb384d20",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-eb384d20",
+            "source_files": 4274,
+            "strict": "ActualalltargetPASS7.377s/ClippyPASS20.404s/RustdocPASS3.672s; optimizedworker-parentbuildRUNNING. Rustassertions/PG/installedNOT_RUN.",
+            "builder": {
+              "tool": 76832,
+              "container": "959c33fb74e092115eb9a5fcfc3c6baaf05b21e2d882b76e19158399488e4698",
+              "launcher_pid": 1968542,
+              "cache": "heldexclusively",
+              "scope": "2CPU/6GiB/512PIDs/noNetwork/readOnlyroot, existingqualifiednativeassets, original4ELFfullstat/O_NOATIMEguards. Maintainednative-source-reference readonlycc8 verifiesidenticalvendor/compiler/target/assetsbeforetimestampreuse; no workspaceRust/sourcecheckskip."
+            },
+            "original_failures": {
+              "inventory": "7e8r1Rootprepincorrectlyinventoriedcheckout.git; maintainedbuilderrefusedbeforeCargo. CorrectexpectedinventoryderivedfromactualGitarchivemembers, allsourcehashesmatchmaintainedexport; originalFAIL/logsretained.",
+              "clippy": "7e8r2alltargetPASS281.806s thenstrictClippyFAIL12.237s on3NoDropdrops; Rustdoc/release/testsNOT_RUN. Container5ed3d0stopped/PID0/noOOM/cache released,original4guardsPASS; preservedclippy-failure-receipt.json."
+            },
+            "timing_scope": "Consecutivealreadyrequiredlocalchecks7e8r2/eb384:281.806s vs7.377s alltarget withwarmverifiedcache/native timestampreuse. Sourcesdiffer3no-opdrops+Pythonharness/pin; observedbuildtimings, no productperformanceclaim."
           }
         }
       }

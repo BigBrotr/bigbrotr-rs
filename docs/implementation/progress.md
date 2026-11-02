@@ -7,7 +7,8 @@ One existing plan, coherent capability increments, Root sole integrator.
 ## Revision and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed HEAD **f4ad5fda** is integrated/pushed as clean canonical main/origin.
+`work/m2-finite-history-20261101`. Public main/origin remain **f4ad5fda**; local observed HEAD **eb384d20** contains
+the reviewed C3 product/harness and mechanical witness cleanup.
 Only current P01/inventory/checkpoint records follow locally while its hosted run
 executes; do not publish microscopic updates that cancel its ref concurrency.
 
@@ -98,6 +99,13 @@ commands and11 Native controls are NOT_RUN; no billing/product/fixture execution
 or user cancellation established. P01 binds receipt c0784c2f. Preserve running
 Linux jobs; consider only a same-source targeted Mac retry after terminal sealing.
 
+Attempt1 is now sealed:27 foundation PASS/9 Mac NOT_RUN; both Linux source,
+compiler/worker bindings and required tests passed, no product/tooling failure.
+Root requested only the missing Mac retry. Actual attempt2 job125474252470 has
+an assigned runner and is RUNNING, samef4ad. Root watcher **59722**, driver1967679/
+GH1967680, start ticks verified,60s/7500s. Original Linux/scope IDs/digests/times
+are reused; new Mac execution remains pending. Do not supersede this run.
+
 ## Active work, resources and next action
 
 The combined C3 product source f12/286/a01 is locally integrated as
@@ -108,7 +116,17 @@ reconciled before build. Fixture overlap is90MiB+8192/seven permits within uncha
 96MiB/eight-permit limits; new grant/example controls remain NOT_RUN. Root matched
 integrated runtime/migration blobs to approved source, authenticated unchanged
 selected Sync entrypoints/dependencies/configuration, and passed14 tutorial controls.
-Compilation/Rust/native/PG/installed qualification has not started.
+Frozen new product **eb384d20**, treef5f43dad, has4274 exported files. Actual
+all-target check7.377s, strictClippy20.404s and Rustdoc3.672s PASS. Optimized
+worker/parent build **76832**, container959c33fb, launcher1968542, remains active;
+cache is held exclusively. Capsule `.research/m2-monitor-core-qualification-20261102/eb384d20`,
+runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-eb384d20`.
+Rust assertions/PG/installed remain NOT_RUN. Original7e8 inventory-prep FAIL and
+strictClippy FAIL are retained; the latter compiled all targets before rejecting
+three redundant non-Drop witness drops. Source fixc8ae removes only those drops.
+The existing native timestamp tool verifies identical vendor/compiler/assets
+against readonly cc8 before optional reuse; required all-target timings changed
+281.806→7.377s in these consecutive runs, without a product performance claim.
 
 The new oracle independently constructs Fact10 and receipt4 using original
 measurement plus only a bounded observed timestamp scalar; no native digest,
@@ -118,12 +136,13 @@ This permits only plain missing-outcome4/C3 qualification and healthy retry; ful
 SQL-guard/resolver refusal, rollback, lost-repair-COMMIT and existing-outcome4/C3
 gates remain in P04-T07Steps2/6/P02.
 
-Sol measurement_clickhouse_prep prepares a closed10-stage repair-fault variant in
+Sol measurement_clickhouse_prep completed a closed10-stage repair-fault variant in
 `.research/m2-monitor-native-outcome-20261102` while Root builds: rollback before
 repair COMMIT, lost completed repair reply with A still3, then direct ACK/retry.
-It reuses the approved selector/product API and needs critical delta review before
-execution. Plain approved cases remain unchanged. Sol current_control_inventory
-has finished the clean a01 source; no active implementation assignment.
+Actualdd9/591delta is critically approved:27 independent recovery controls PASS;
+plain cases/budgets stay strict. Real variant NOT_RUN. Sol current_control_inventory
+prepares only ignored Rust lib/bin/control_schema/example and exact-parent observer
+capsules from existing tools; no launch or cache access before Root parent audit.
 
 The remaining assignment is source/cheap-controls only: no engines/build/cache/
 protected ELF/remote/push. Root owns integration and the upcoming qualification.
@@ -132,7 +151,8 @@ idle; its one bounded read-only watcher remains active under Root custody.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns custody.
-All local compiler/installed processes are terminal and cache custody is released;
+The eb384 compiler is active with exclusive cache custody; all earlier installed
+and failed-build processes are terminal. After build, recheck/release custody;
 protected four ELF guards remain source-scoped valid. Original data, failures,
 .research/worktrees and borrowed bridge are retained; no cleanup. Recovery
 3r1/15r2/15r3/20r4 containers are stopped. Only bounded source/control work and the one read-only hosted watcher are active.
@@ -144,10 +164,9 @@ keep the dormant attribution veto and originals. Fleet/catalog/methods, capacity
 operations and Q40 admission-cost/ClickHouse/coordinator work retain their owners.
 No selected later work is removed or claimed complete.
 
-**Next Root action:** freeze the approved combined source and start the isolated
-worker-bound build with all-target/strict preflight, then affected Rust/native/
-example and fresh-ledger installed proofs. Observe existing f4ad CI without
-superseding it; after Linux is terminal and sealed, consider only its missing Mac
-retry. Qualify the separately reviewed repair-fault variant with the same binary.
-Keep this local checkpoint unpublished until a coherent boundary. Goal ACTIVE
-and incomplete; all selected requirements remain.
+**Next Root action:** finish and audit the owned eb384 worker/parent build, then
+run the affected unfiltered Rust targets and exact-parent observer with guarded
+cache custody. Qualify plainC3, oldC4 regression and approved repair-fault journey
+on fresh matching ledgers. Keep connected refusal/existing-outcome gates explicit.
+Observe actual f4ad Mac attempt2 without superseding it; on terminal wake the CI
+agent for independent acquisition/public audit. Goal ACTIVE and incomplete.

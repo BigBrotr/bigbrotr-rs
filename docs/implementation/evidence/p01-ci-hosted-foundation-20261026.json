@@ -2613,7 +2613,7 @@
         "start_ticks": "36772045",
         "interval_seconds": 60,
         "bound_seconds": 7500,
-        "state": "ROOT_OWNED_READ_ONLY_RUNNING",
+        "state": "REAPED_EXIT1_2026_11_02_18_30_01Z",
         "custody": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation/setup-custody.json"
       },
       "declarations": "4272 exactsourcefiles;36foundationcommands16/11/9,scope20,acceptance636including17shimcases,export13,faultproxy41,mandatoryNative11. Exactnewsource/attempt1; no crossmixingold33checks/oldfailures.",
@@ -2633,6 +2633,34 @@
         "receipt_sha256": "c0784c2fbe1a56d4eb1f519f850902f94ecca98db534ed6e0ac6cfd0cbfe1503",
         "scope": "902seconds/zerosteps/noassignedrunner; fourcompleteannotations identifyacquisitionfailure+threemacOSarm64capacitynotices. All9Maccommands/11mandatoryNativeNOT_RUN. No observedbilling/product/fixture/usercancellation. Linuxjobsremainactive; no remotereexecution requested.",
         "next": "PreserveLinuxruns; afterterminalsealedoutputs consideronlytargetedmissingMacretryatidenticalsource/platform/coverage. No immediatewhole-run restart/settingschange."
+      },
+      "terminal_attempt_1": {
+        "status": "INCOMPLETE_MACOS_PROVIDER_ADMISSION",
+        "foundation": "27PASS/0FAIL/9NOT_RUN; bothLinuxactual1573RustPASS/zeroFiltered,636acceptance+41faultproxy+13exportPASS/zeroSKIP,mandatoryNative11PASS;scope20PASS. Exact4272-file/compiler/native/worker/contextbindingsverified. Fullgateincomplete, workflowFAILURE solelyMacproviderpresteps.",
+        "audit_sha256": "3fe87c077bf6d753ddbe860bda7189b98aceae3a36df626e74424081d1fdced1",
+        "public_receipt_sha256": "25eb85f663ebe154da3ab203e28bdd3b2d1841f3942608e6423bac5154596024",
+        "public_scope": "3actualartifacts/507members/24logs;54knownnonsecretmatches/5fingerprints,zero newunclassified/provideralerts. Asynchronouslimits retained. Originalscope-logpackagingverifierfailure andobserverloss preserved; correcteduniqueactualaggregatescopefile retainedsamecommand/20case/noerror criteria."
+      },
+      "macos_targeted_retry": {
+        "status": "ACTUAL_ATTEMPT2_MAC_ADMITTED_RUNNING",
+        "attempt": 2,
+        "job": 125474252470,
+        "run": 41491599696,
+        "source": "f4ad5fda635eed725ccba65e3d0f2d3e1421e76f",
+        "request_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/macos-targeted-retry/request-receipt.json",
+        "request_receipt_sha256": "6c2f490bd5bc9d46f25bb815624ee9c9a54896f9ffdb656292e250e9003bc89c",
+        "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/macos-targeted-retry/attempt-2-observation",
+        "watcher": {
+          "tool": 59722,
+          "agent": "/root",
+          "driver_pid": 1967679,
+          "driver_start_ticks": "37183490",
+          "pid": 1967680,
+          "start_ticks": "37183492",
+          "interval_seconds": 60,
+          "bound_seconds": 7500
+        },
+        "scope": "OnlymissingMacretried aftersealedLinux, same source/platform/coverage. Newassignedrunner since18:40:23Z; Linux/scopeAPIaliasesareoldsuccessfulattempt1evidencewithoriginalIDs/digests/times. No MacPASS untilactualterminal/artifactaudit. No newmainpushuntilterminal."
       }
     }
   }
