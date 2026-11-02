@@ -1,4 +1,7 @@
-use super::TransportError;
+use super::{
+    TransportError,
+    observation::{ObservedStop, TransportTrace},
+};
 use crate::runtime::policy_authority::ActionWindow;
 use std::{
     future::Future,
@@ -37,6 +40,7 @@ pub(super) struct Gate<'owner> {
     state: Arc<Mutex<State>>,
     stopped: watch::Receiver<()>,
     owner_live: Option<&'owner (dyn Fn() -> bool + Sync)>,
+    observation: Option<TransportTrace>,
 }
 impl Gate<'static> {
     pub fn new(window: ActionWindow, deadline: Instant) -> (Self, CancelAttempt) {
@@ -51,6 +55,7 @@ impl Gate<'static> {
                 state: state.clone(),
                 stopped,
                 owner_live: None,
+                observation: None,
             },
             CancelAttempt {
                 state,
@@ -71,18 +76,48 @@ impl Gate<'static> {
             state: self.state,
             stopped: self.stopped,
             owner_live: Some(owner_live),
+            observation: self.observation,
         }
     }
 }
 
 impl Gate<'_> {
+    pub(super) fn with_observation(mut self, observation: TransportTrace) -> Self {
+        self.observation = Some(observation);
+        self
+    }
+    pub(super) fn observation(&self) -> Option<&TransportTrace> {
+        self.observation.as_ref()
+    }
     pub fn check(&self) -> Result<(), TransportError> {
         let mut state = self.state.lock().map_err(|_| TransportError::Authority)?;
         if let Some(error) = state.failed {
+            if let Some(trace) = &self.observation {
+                match error {
+                    TransportError::Authority => trace.stop(ObservedStop::Authority),
+                    TransportError::Cancelled => trace.stop(ObservedStop::Cancelled),
+                    _ => {}
+                }
+            }
             return Err(error);
         }
         let result = if self.owner_live.is_some_and(|live| !live()) {
             Err(TransportError::Authority)
+        } else if let Some(trace) = &self.observation {
+            // The fixed suspend-aware policy window is never renewed. Sample
+            // it first: authority expiry cannot become a remote/open timeout.
+            state
+                .window
+                .check()
+                .map_err(|_| TransportError::Authority)
+                .and_then(|()| trace.check_deadline())
+                .and_then(|()| {
+                    if Instant::now() >= state.deadline {
+                        Err(TransportError::Deadline)
+                    } else {
+                        Ok(())
+                    }
+                })
         } else if Instant::now() >= state.deadline {
             Err(TransportError::Deadline)
         } else {
@@ -90,6 +125,13 @@ impl Gate<'_> {
         };
         if let Err(error) = result {
             state.failed = Some(error);
+            if let Some(trace) = &self.observation {
+                match error {
+                    TransportError::Authority => trace.stop(ObservedStop::Authority),
+                    TransportError::Cancelled => trace.stop(ObservedStop::Cancelled),
+                    _ => {}
+                }
+            }
         }
         result
     }

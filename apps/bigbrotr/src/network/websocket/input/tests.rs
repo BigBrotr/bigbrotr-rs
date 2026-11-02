@@ -58,8 +58,10 @@ async fn streams() -> (DirectStream<'static>, TcpStream, CancelAttempt) {
             socket: Wire::Plain(Guarded {
                 socket: socket.unwrap(),
                 gate: gate.clone(),
+                capture_tls_io: false,
             }),
             gate,
+            capture_tls_io: false,
         },
         endpoint: Endpoint::parse(&format!("ws://{address}/")).unwrap(),
         peer: address,
@@ -137,4 +139,165 @@ async fn fully_buffered_empty_fragments_yield_before_completion_and_observe_canc
         }
         drop(retained_cancel);
     }
+}
+
+#[tokio::test]
+async fn observed_physical_frame_cap_counts_fragments_before_codec_forwarding() {
+    use crate::network::{ObservedSessionLimit, ObservedStop, TransportTrace};
+    for count in [64usize, 65] {
+        let (mut stream, mut peer, _cancel) = streams().await;
+        let mut frames = vec![0x01, 0];
+        frames.extend([0, 0].repeat(count - 2));
+        frames.extend([0x80, 0]);
+        peer.write_all(&[RESPONSE, &frames].concat()).await.unwrap();
+        let trace = TransportTrace::new();
+        trace
+            .begin(Instant::now() + Duration::from_secs(5))
+            .unwrap();
+        let mut input = Input::with_observation(&mut stream, 2 * 1024 * 1024, Some(trace.clone()));
+        input
+            .read_exact(&mut vec![0; RESPONSE.len()])
+            .await
+            .unwrap();
+        input.enable();
+        let mut socket = WebSocketStream::from_raw_socket(input, Role::Client, None).await;
+        let result = poll_fn(|cx| Pin::new(&mut socket).poll_next(cx))
+            .await
+            .unwrap();
+        let captured = trace.snapshot();
+        assert_eq!(captured.websocket.rx_physical_frames_started, count as u64);
+        assert_eq!(captured.websocket.rx_complete_headers, 64);
+        assert_eq!(captured.websocket.rx_ws_framed_bytes_forwarded, 128);
+        assert!(
+            captured.websocket.rx_ws_framed_bytes_read
+                >= captured.websocket.rx_ws_framed_bytes_consumed
+        );
+        assert!(captured.websocket.rx_ws_framed_bytes_read <= frames.len() as u64);
+        if count == 64 {
+            assert!(matches!(result.unwrap(),Message::Text(text) if text.is_empty()));
+            assert_eq!(captured.websocket.rx_ws_framed_bytes_consumed, 128);
+            assert!(captured.stop.is_none());
+        } else {
+            assert!(result.is_err());
+            assert_eq!(captured.websocket.rx_ws_framed_bytes_consumed, 129);
+            assert_eq!(
+                captured.stop,
+                Some(ObservedStop::Session(
+                    ObservedSessionLimit::RxPhysicalFrames
+                ))
+            );
+        }
+        drop(socket);
+        drop(stream);
+        let closed = tokio::time::timeout(Duration::from_secs(1), peer.read(&mut [0; 1]))
+            .await
+            .unwrap();
+        assert!(
+            matches!(closed, Ok(0))
+                || matches!(closed,Err(error) if error.kind()==io::ErrorKind::ConnectionReset)
+        );
+    }
+}
+
+#[tokio::test]
+async fn observed_huge_claim_and_rejected_control_never_become_received_payload() {
+    use crate::network::{ObservedSessionLimit, ObservedStop, TransportTrace};
+    let huge = 1u64 << 40;
+    let mut claim = vec![0x82, 127];
+    claim.extend(huge.to_be_bytes());
+    for (frames, declared) in [
+        (claim, huge + 10),
+        (vec![0xc9, 0], 2),
+        (vec![0x8b, 0], 2),
+        (vec![0x88, 2, 3, 237], 4),
+    ] {
+        let (mut stream, mut peer, _cancel) = streams().await;
+        peer.write_all(&[RESPONSE, &frames].concat()).await.unwrap();
+        let trace = TransportTrace::new();
+        trace
+            .begin(Instant::now() + Duration::from_secs(5))
+            .unwrap();
+        let mut input = Input::with_observation(&mut stream, 2 * 1024 * 1024, Some(trace.clone()));
+        input
+            .read_exact(&mut vec![0; RESPONSE.len()])
+            .await
+            .unwrap();
+        input.enable();
+        let mut socket = WebSocketStream::from_raw_socket(input, Role::Client, None).await;
+        assert!(
+            poll_fn(|cx| Pin::new(&mut socket).poll_next(cx))
+                .await
+                .unwrap()
+                .is_err()
+        );
+        let captured = trace.snapshot();
+        assert_eq!(captured.websocket.rx_physical_frames_started, 1);
+        assert_eq!(captured.websocket.rx_complete_headers, 1);
+        assert_eq!(
+            captured.websocket.rx_declared_ws_framed_bytes,
+            Some(declared)
+        );
+        assert_eq!(
+            captured.websocket.rx_ws_framed_bytes_read,
+            frames.len() as u64
+        );
+        assert_eq!(
+            captured.websocket.rx_ws_framed_bytes_consumed,
+            frames.len() as u64
+        );
+        assert_eq!(captured.websocket.rx_ws_framed_bytes_forwarded, 0);
+        assert_eq!(captured.websocket.tx_ws_framed_bytes_written, 0);
+        if declared > 4 * 1024 * 1024 {
+            assert_eq!(
+                captured.websocket.rx_last_declared_payload_bytes,
+                Some(huge)
+            );
+            assert_eq!(
+                captured.stop,
+                Some(ObservedStop::Session(ObservedSessionLimit::RxWsFramedBytes))
+            );
+        }
+    }
+}
+
+#[tokio::test]
+async fn observed_tx_counter_counts_only_writes_and_preserves_the_exact_cap() {
+    use crate::network::{ObservedSessionLimit, ObservedStop, TransportTrace};
+    let (mut stream, mut peer, _cancel) = streams().await;
+    peer.write_all(RESPONSE).await.unwrap();
+    let trace = TransportTrace::new();
+    trace
+        .begin(Instant::now() + Duration::from_secs(5))
+        .unwrap();
+    let mut input = Input::with_observation(&mut stream, 2 * 1024 * 1024, Some(trace.clone()));
+    input
+        .read_exact(&mut vec![0; RESPONSE.len()])
+        .await
+        .unwrap();
+    input.enable();
+    // Literal masked client Binary:8-byte header +65528-byte payload =64KiB.
+    let frame = [vec![0x82, 0xfe, 0xff, 0xf8, 0, 0, 0, 0], vec![b'x'; 65528]].concat();
+    let consumer = async {
+        input.write_all(&frame).await.unwrap();
+        assert!(input.write_all(&[0x89, 0x80, 0, 0, 0, 0]).await.is_err());
+        drop(input);
+        drop(stream);
+    };
+    let peer_read = async {
+        let mut actual = vec![0; 65536];
+        peer.read_exact(&mut actual).await.unwrap();
+        assert_eq!(actual, frame);
+        assert_eq!(peer.read(&mut [0; 1]).await.unwrap(), 0);
+    };
+    tokio::time::timeout(Duration::from_secs(2), async {
+        tokio::join!(consumer, peer_read)
+    })
+    .await
+    .unwrap();
+    let captured = trace.snapshot();
+    assert_eq!(captured.websocket.tx_ws_framed_bytes_written, 65536);
+    assert_eq!(
+        captured.stop,
+        Some(ObservedStop::Session(ObservedSessionLimit::TxWsFramedBytes))
+    );
 }

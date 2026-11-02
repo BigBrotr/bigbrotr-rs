@@ -2,6 +2,8 @@
 mod lifetime;
 #[path = "network_websocket/nostr.rs"]
 mod nostr;
+#[path = "network_websocket/observed.rs"]
+mod observed;
 #[path = "network_websocket/support.rs"]
 mod support;
 #[path = "network_websocket/tls.rs"]

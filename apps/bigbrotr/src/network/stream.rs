@@ -35,6 +35,9 @@ pub(super) enum Wire<'owner> {
 pub(super) struct Guarded<'owner, S> {
     pub socket: S,
     pub gate: Gate<'owner>,
+    // Only the lower TcpStream wrapper can report TLS wire I/O. Upper TLS
+    // acceptance of plaintext into its queue is never such proof.
+    pub capture_tls_io: bool,
 }
 impl<S: AsyncRead + Unpin> AsyncRead for Guarded<'_, S> {
     fn poll_read(
@@ -44,7 +47,15 @@ impl<S: AsyncRead + Unpin> AsyncRead for Guarded<'_, S> {
     ) -> Poll<io::Result<()>> {
         let this = self.get_mut();
         this.gate.check_io()?;
-        Pin::new(&mut this.socket).poll_read(cx, buf)
+        let before = buf.filled().len();
+        let result = Pin::new(&mut this.socket).poll_read(cx, buf);
+        if this.capture_tls_io
+            && matches!(&result, Poll::Ready(Ok(())))
+            && let Some(trace) = this.gate.observation()
+        {
+            trace.tls_io(false, buf.filled().len() - before);
+        }
+        result
     }
 }
 impl<S: AsyncWrite + Unpin> AsyncWrite for Guarded<'_, S> {
@@ -55,7 +66,14 @@ impl<S: AsyncWrite + Unpin> AsyncWrite for Guarded<'_, S> {
     ) -> Poll<io::Result<usize>> {
         let this = self.get_mut();
         this.gate.check_io()?;
-        Pin::new(&mut this.socket).poll_write(cx, buf)
+        let result = Pin::new(&mut this.socket).poll_write(cx, buf);
+        if this.capture_tls_io
+            && let Poll::Ready(Ok(bytes)) = &result
+            && let Some(trace) = this.gate.observation()
+        {
+            trace.tls_io(true, *bytes);
+        }
+        result
     }
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         let this = self.get_mut();

@@ -3,7 +3,9 @@
 
 mod response;
 
-use super::{Target, address, policy::direct_hostname};
+use super::{
+    Target, address, connect, lifetime::Gate, observation::FirstIoTarget, policy::direct_hostname,
+};
 use crate::runtime::{ResourceBudget, ResourceRequest};
 use hickory_proto::{
     op::{Message, MessageType, OpCode, Query},
@@ -17,7 +19,6 @@ use std::{
 };
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
-    net::TcpStream,
     sync::Semaphore,
     time::{Instant, timeout, timeout_at},
 };
@@ -121,6 +122,24 @@ impl DnsResolver {
         target: &Target,
         deadline: Instant,
     ) -> Result<DnsResolution, DnsError> {
+        self.resolve_inner(target, deadline, None).await
+    }
+
+    pub(super) async fn resolve_guarded(
+        &self,
+        target: &Target,
+        deadline: Instant,
+        gate: &Gate<'_>,
+    ) -> Result<DnsResolution, DnsError> {
+        self.resolve_inner(target, deadline, Some(gate)).await
+    }
+
+    async fn resolve_inner(
+        &self,
+        target: &Target,
+        deadline: Instant,
+        gate: Option<&Gate<'_>>,
+    ) -> Result<DnsResolution, DnsError> {
         if Instant::now() >= deadline {
             return Err(DnsError::Deadline);
         }
@@ -141,12 +160,12 @@ impl DnsResolver {
                 ipv6: DnsFamilyOutcome::Literal,
             });
         }
-        timeout_at(deadline, self.lookup(target.host()))
+        timeout_at(deadline, self.lookup(target.host(), gate))
             .await
             .map_err(|_| DnsError::Deadline)?
     }
 
-    async fn lookup(&self, host: &str) -> Result<DnsResolution, DnsError> {
+    async fn lookup(&self, host: &str, gate: Option<&Gate<'_>>) -> Result<DnsResolution, DnsError> {
         let name = Name::from_ascii(format!("{host}.")).map_err(|_| DnsError::NamePolicy)?;
         response::check_name(&name)?;
         let mut addresses = Vec::new();
@@ -155,7 +174,7 @@ impl DnsResolver {
         // family (original name plus eight aliases), under the outer deadline.
         // Fatal policy/encoding/limit failures cannot hide behind family success.
         for (index, kind) in [RecordType::A, RecordType::AAAA].into_iter().enumerate() {
-            match self.lookup_family(name.clone(), kind).await {
+            match self.lookup_family(name.clone(), kind, gate).await {
                 Ok(found) if !found.is_empty() => {
                     if addresses.len() + found.len() > 64 {
                         return Err(DnsError::ResponseLimit);
@@ -182,7 +201,12 @@ impl DnsResolver {
         })
     }
 
-    async fn lookup_family(&self, name: Name, kind: RecordType) -> Result<Vec<IpAddr>, DnsError> {
+    async fn lookup_family(
+        &self,
+        name: Name,
+        kind: RecordType,
+        gate: Option<&Gate<'_>>,
+    ) -> Result<Vec<IpAddr>, DnsError> {
         let mut chain = response::Chain::new(name);
         loop {
             let mut id = [0; 2];
@@ -193,7 +217,7 @@ impl DnsResolver {
             request
                 .queries
                 .push(Query::query(chain.terminal().clone(), kind));
-            let message = timeout(Duration::from_secs(2), self.exchange(&request))
+            let message = timeout(Duration::from_secs(2), self.exchange(&request, gate))
                 .await
                 .map_err(|_| DnsError::Unavailable)??;
             match chain.accept(&message, kind)? {
@@ -204,9 +228,13 @@ impl DnsResolver {
         }
     }
 
-    async fn exchange(&self, request: &Message) -> Result<Message, DnsError> {
+    async fn exchange(
+        &self,
+        request: &Message,
+        gate: Option<&Gate<'_>>,
+    ) -> Result<Message, DnsError> {
         let bytes = request.to_vec().map_err(|_| DnsError::InvalidResponse)?;
-        let mut socket = TcpStream::connect(self.server)
+        let mut socket = connect::connect(self.server, gate, FirstIoTarget::ResolverConnect)
             .await
             .map_err(|_| DnsError::Unavailable)?;
         socket

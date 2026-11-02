@@ -200,6 +200,146 @@ fn connector(dns: &TcpListener, resources: ResourceBudget) -> DirectConnector {
     )
 }
 
+#[tokio::test]
+async fn observed_hostname_first_io_is_the_original_resolver_connect() {
+    use bigbrotr::network::{FirstIoTarget, TransportTrace};
+    let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let endpoint = Endpoint::parse(&format!(
+        "ws://relay.example:{}/events",
+        listener.local_addr().unwrap().port()
+    ))
+    .unwrap();
+    let target = Target::new(endpoint).unwrap();
+    let resources = budget(16 * 1024 * 1024, 2);
+    let connector = connector(&dns, resources.clone());
+    let (attempt, _cancel) = DirectAttempt::new(
+        target.clone(),
+        private(&target),
+        window(Duration::from_secs(2)),
+        Instant::now() + Duration::from_secs(2),
+    );
+    let trace = TransportTrace::new();
+    let answers = [addresses(&["127.0.0.1"])];
+    let dns_peer = dns_answers(dns, "relay.example", &answers);
+    let relay_peer = async {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        closed(&mut stream).await;
+    };
+    let consumer = connector.run_observed(attempt, &trace, async |_stream| Ok(()));
+    let (result, (), ()) = timeout(Duration::from_secs(3), async {
+        tokio::join!(consumer, dns_peer, relay_peer)
+    })
+    .await
+    .unwrap();
+    result.unwrap();
+    let captured = trace.snapshot();
+    assert_eq!(
+        captured.first_io.unwrap().target,
+        FirstIoTarget::ResolverConnect
+    );
+    assert_eq!(
+        (
+            captured.resolver_connect_calls,
+            captured.relay_connect_calls
+        ),
+        (2, 1)
+    );
+    assert!(captured.relay_connected.is_some());
+    assert!(captured.websocket_upgrade_validated.is_none());
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn observed_budget_and_literal_route_refusal_have_no_first_io_proof() {
+    use bigbrotr::network::TransportTrace;
+    for insufficient_budget in [true, false] {
+        let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let target = target(listener.local_addr().unwrap().port(), false);
+        let resources = budget(
+            if insufficient_budget {
+                3 * 1024 * 1024
+            } else {
+                16 * 1024 * 1024
+            },
+            2,
+        );
+        let connector = connector(&dns, resources.clone());
+        let policy = if insufficient_budget {
+            private(&target)
+        } else {
+            DirectPolicy::public()
+        };
+        let (attempt, _cancel) = DirectAttempt::new(
+            target,
+            policy,
+            window(Duration::from_secs(2)),
+            Instant::now() + Duration::from_secs(2),
+        );
+        let trace = TransportTrace::new();
+        let result = connector
+            .run_observed(attempt, &trace, async |_stream| Ok(()))
+            .await;
+        if insufficient_budget {
+            assert!(matches!(result, Err(TransportError::Budget)));
+        } else {
+            assert!(matches!(result, Err(TransportError::Policy(_))));
+        }
+        assert!(trace.snapshot().first_io.is_none());
+        assert_eq!(
+            (
+                trace.snapshot().resolver_connect_calls,
+                trace.snapshot().relay_connect_calls
+            ),
+            (0, 0)
+        );
+        assert!(
+            timeout(Duration::from_millis(20), dns.accept())
+                .await
+                .is_err()
+        );
+        assert!(
+            timeout(Duration::from_millis(20), listener.accept())
+                .await
+                .is_err()
+        );
+        assert_eq!(resources.snapshot().active_permits(), 0);
+    }
+}
+
+#[tokio::test]
+async fn observed_earlier_policy_expiry_stays_authority_interruption() {
+    use bigbrotr::network::{ObservedStop, TransportTrace};
+    let dns = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let target = target(listener.local_addr().unwrap().port(), false);
+    let resources = budget(16 * 1024 * 1024, 2);
+    let connector = connector(&dns, resources.clone());
+    let (attempt, _cancel) = DirectAttempt::new(
+        target.clone(),
+        private(&target),
+        window(Duration::from_millis(100)),
+        Instant::now() + Duration::from_millis(150),
+    );
+    let trace = TransportTrace::new();
+    let peer = async {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        closed(&mut stream).await;
+    };
+    let consumer = connector.run_observed(attempt, &trace, async |_stream| {
+        std::future::pending::<io::Result<()>>().await
+    });
+    let (result, ()) = timeout(Duration::from_secs(2), async {
+        tokio::join!(consumer, peer)
+    })
+    .await
+    .unwrap();
+    assert!(matches!(result, Err(TransportError::Authority)));
+    assert_eq!(trace.snapshot().stop, Some(ObservedStop::Authority));
+    assert_eq!(resources.snapshot().active_permits(), 0);
+}
+
 async fn closed(socket: &mut tokio::net::TcpStream) {
     let mut byte = [0];
     assert_eq!(

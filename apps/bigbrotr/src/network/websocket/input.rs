@@ -5,6 +5,7 @@ mod tests;
 
 use super::WebSocketError;
 use crate::network::DirectStream;
+use crate::network::observation::TransportTrace;
 use std::{
     io,
     io::Cursor,
@@ -38,6 +39,7 @@ pub(super) struct Input<'borrow, 'owner> {
     frame: Frame,
     message_bytes: Option<u64>,
     limit: u64,
+    observation: Option<TransportTrace>,
 }
 
 enum Http {
@@ -65,6 +67,14 @@ enum Frame {
 
 impl<'borrow, 'owner> Input<'borrow, 'owner> {
     pub(super) fn new(stream: &'borrow mut DirectStream<'owner>, limit: usize) -> Self {
+        Self::with_observation(stream, limit, None)
+    }
+
+    pub(super) fn with_observation(
+        stream: &'borrow mut DirectStream<'owner>,
+        limit: usize,
+        observation: Option<TransportTrace>,
+    ) -> Self {
         Self {
             stream,
             bytes: Vec::with_capacity(HTTP_BYTES + READ_BYTES),
@@ -79,11 +89,15 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
             frame: Frame::Header,
             message_bytes: None,
             limit: limit as u64,
+            observation,
         }
     }
 
     pub(super) fn enable(&mut self) {
         self.enabled = true;
+        if let Some(trace) = &self.observation {
+            trace.rx_read(self.bytes.len() - self.position);
+        }
     }
 
     pub(super) fn start_close(&mut self) {
@@ -111,7 +125,22 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
         ready!(self.turn(cx));
         self.check()?;
         let mut chunk = [0; READ_BYTES];
-        let mut output = ReadBuf::new(&mut chunk);
+        let available = if handshake {
+            READ_BYTES
+        } else {
+            self.observation
+                .as_ref()
+                .map_or(READ_BYTES, |trace| trace.rx_remaining().min(READ_BYTES))
+        };
+        if available == 0 {
+            return Poll::Ready(Err(self
+                .observation
+                .as_ref()
+                .expect("observed limit")
+                .rx_exhausted()
+                .into()));
+        }
+        let mut output = ReadBuf::new(&mut chunk[..available]);
         ready!(Pin::new(&mut *self.stream).poll_read(cx, &mut output))?;
         let input = output.filled();
         if input.is_empty() {
@@ -128,6 +157,9 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                 return Poll::Ready(Err(WebSocketError::Handshake.into()));
             }
         } else {
+            if let Some(trace) = &self.observation {
+                trace.rx_read(input.len());
+            }
             debug_assert_eq!(self.position, self.bytes.len());
             self.bytes.clear();
             self.position = 0;
@@ -274,8 +306,39 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                         self.header[self.header_len] = self.bytes[self.position];
                         self.header_len += 1;
                         self.position += 1;
+                        if let Some(trace) = &self.observation {
+                            trace.rx_consumed(1);
+                        }
                     }
                     Frame::Header => {
+                        if let Some(trace) = &self.observation
+                            && self.header_len >= 2
+                        {
+                            // Budget the complete physical header even when its
+                            // opcode/flags will be rejected by the real parser.
+                            // This fixed peek extracts lengths only; protocol
+                            // acceptance still belongs to FrameHeader::parse.
+                            let tag = self.header[1] & 127;
+                            let extra = match tag {
+                                126 => 2,
+                                127 => 8,
+                                _ => 0,
+                            };
+                            let size = 2 + extra + if self.header[1] & 128 != 0 { 4 } else { 0 };
+                            if self.header_len == size {
+                                let payload = match tag {
+                                    126 => u64::from(u16::from_be_bytes([
+                                        self.header[2],
+                                        self.header[3],
+                                    ])),
+                                    127 => u64::from_be_bytes(
+                                        self.header[2..10].try_into().expect("fixed header arena"),
+                                    ),
+                                    _ => u64::from(tag),
+                                };
+                                trace.declared_frame(payload, size)?;
+                            }
+                        }
                         let mut cursor = Cursor::new(&self.header[..self.header_len]);
                         if let Some((header, payload)) =
                             FrameHeader::parse(&mut cursor).map_err(|_| WebSocketError::Protocol)?
@@ -300,6 +363,12 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                         self.header[self.header_len] = self.bytes[self.position];
                         self.header_len += 1;
                         self.position += 1;
+                        if let Some(trace) = &self.observation {
+                            trace.rx_consumed(1);
+                            if self.header_len == 1 {
+                                trace.start_frame()?;
+                            }
+                        }
                     }
                     Frame::ForwardHeader {
                         position,
@@ -308,6 +377,9 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                     } => {
                         let count = (self.header_len - position).min(output.remaining());
                         output.put_slice(&self.header[position..position + count]);
+                        if let Some(trace) = &self.observation {
+                            trace.rx_forwarded(count);
+                        }
                         self.frame = if position + count == self.header_len {
                             Frame::Payload {
                                 remaining: payload,
@@ -339,6 +411,10 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                             .min(remaining as usize);
                         output.put_slice(&self.bytes[self.position..self.position + count]);
                         self.position += count;
+                        if let Some(trace) = &self.observation {
+                            trace.rx_consumed(count);
+                            trace.rx_forwarded(count);
+                        }
                         self.frame = Frame::Payload {
                             remaining: remaining - count as u64,
                             final_data,
@@ -366,7 +442,18 @@ impl AsyncWrite for Input<'_, '_> {
         cx: &mut Context<'_>,
         bytes: &[u8],
     ) -> Poll<io::Result<usize>> {
-        Pin::new(&mut *self.get_mut().stream).poll_write(cx, bytes)
+        let this = self.get_mut();
+        let trace = this.observation.as_ref().filter(|_| this.enabled);
+        if let Some(trace) = trace {
+            trace.tx_allow(bytes.len())?;
+        }
+        let result = Pin::new(&mut *this.stream).poll_write(cx, bytes);
+        if let Poll::Ready(Ok(written)) = &result
+            && let Some(trace) = trace
+        {
+            trace.tx_written(*written);
+        }
+        result
     }
     fn poll_flush(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<()>> {
         Pin::new(&mut *self.get_mut().stream).poll_flush(cx)

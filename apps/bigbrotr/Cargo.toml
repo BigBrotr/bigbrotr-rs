@@ -38,6 +38,7 @@ minicbor.workspace = true
 rocksdb.workspace = true
 rustix = { workspace = true, features = ["time"] }
 rustls.workspace = true
+socket2.workspace = true
 serde.workspace = true
 serde_json = { workspace = true, features = ["raw_value"] }
 sha2.workspace = true

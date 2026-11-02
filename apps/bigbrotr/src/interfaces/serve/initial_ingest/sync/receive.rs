@@ -35,7 +35,7 @@ fn interruption(error: SessionError) -> std::result::Result<TerminalKind, Receiv
     use bigbrotr_protocol::wire::WireError;
     match error {
         SessionError::Envelope(WireError::Bounds(EventError::InvalidLimits))
-        | SessionError::WebSocket(WebSocketError::Budget)
+        | SessionError::WebSocket(WebSocketError::Budget | WebSocketError::SessionLimit)
         | SessionError::Budget
         | SessionError::Capacity
         | SessionError::Exhausted
@@ -205,6 +205,7 @@ mod tests {
             SessionError::Unavailable,
             SessionError::InvalidLimits,
             SessionError::WebSocket(WebSocketError::Budget),
+            SessionError::WebSocket(WebSocketError::SessionLimit),
         ] {
             assert!(interruption(error).is_err());
         }

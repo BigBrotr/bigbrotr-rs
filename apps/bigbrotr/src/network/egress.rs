@@ -1,14 +1,15 @@
 use super::{
     CancelAttempt, DirectPolicy, DirectStream, DnsError, DnsResolver, PolicyError, Target,
-    TlsPolicy,
+    TlsPolicy, connect,
     lifetime::Gate,
+    observation::{FirstIoTarget, TransportTrace},
     stream::{Guarded, Wire},
 };
 use crate::runtime::{
     ReservedBudget, ResourceBudget, ResourceRequest, policy_authority::ActionWindow,
 };
 use std::{fmt, io, net::SocketAddr};
-use tokio::{net::TcpStream, time::Instant};
+use tokio::time::Instant;
 
 const CONNECTION_BYTES: u64 = 4 * 1024 * 1024;
 
@@ -114,6 +115,21 @@ impl DirectConnector {
         }
     }
 
+    /// Observational variant for one already-authorized passive consumer. This
+    /// adds no grant or renewal to DirectAttempt. Keep trace outside this future
+    /// so cancellation retains observations; use the observed WS entry to end
+    /// the 10s OPEN scope at validated upgrade. The nominal check cap is 15s.
+    pub async fn run_observed<'owner, T>(
+        &self,
+        mut attempt: DirectAttempt<'owner>,
+        trace: &TransportTrace,
+        operation: impl for<'a> AsyncFnOnce(&'a mut DirectStream<'owner>) -> io::Result<T>,
+    ) -> Result<T, TransportError> {
+        trace.begin(attempt.deadline)?;
+        attempt.gate = attempt.gate.with_observation(trace.clone());
+        self.run(attempt, operation).await
+    }
+
     /// The async callback borrows, rather than owns, the stream. Its protocol
     /// buffers/CPU must have their own finite bounds; it must cooperate with the
     /// runtime. Cancellation cannot interrupt arbitrary synchronous user code.
@@ -135,7 +151,7 @@ impl DirectConnector {
             .supervise(async {
                 let resolution = self
                     .dns
-                    .resolve(&attempt.target, attempt.deadline)
+                    .resolve_guarded(&attempt.target, attempt.deadline, &attempt.gate)
                     .await
                     .map_err(TransportError::Dns)?;
                 let filtered = attempt
@@ -144,23 +160,23 @@ impl DirectConnector {
                     .map_err(TransportError::Policy)?;
                 let selected = SocketAddr::new(filtered.addresses()[0], attempt.target.port());
                 attempt.gate.check()?;
-                let socket = TcpStream::connect(selected)
-                    .await
-                    .map_err(|_| TransportError::Connect)?;
-                if socket.peer_addr().map_err(|_| TransportError::Connect)? != selected {
-                    return Err(TransportError::Connect);
+                let socket =
+                    connect::connect(selected, Some(&attempt.gate), FirstIoTarget::RelayConnect)
+                        .await
+                        .map_err(|_| TransportError::Connect)?;
+                if let Some(trace) = attempt.gate.observation() {
+                    trace.relay_connected();
                 }
-                socket
-                    .set_nodelay(true)
-                    .map_err(|_| TransportError::Connect)?;
                 let socket = Guarded {
                     socket,
                     gate: attempt.gate.clone(),
+                    capture_tls_io: true,
                 };
                 let wire = if attempt.target.endpoint().as_str().starts_with("wss://") {
                     let name =
                         rustls::pki_types::ServerName::try_from(attempt.target.host().to_owned())
                             .map_err(|_| TransportError::TlsConfiguration)?;
+                    let phase = attempt.gate.observation().map(TransportTrace::tls_phase);
                     let tls = self
                         .tls
                         .connector
@@ -169,6 +185,10 @@ impl DirectConnector {
                         })
                         .await
                         .map_err(|_| TransportError::Tls)?;
+                    if let Some(trace) = attempt.gate.observation() {
+                        trace.tls_completed();
+                    }
+                    drop(phase);
                     Wire::Tls(Box::new(tls))
                 } else {
                     Wire::Plain(socket)
@@ -177,6 +197,7 @@ impl DirectConnector {
                     inner: Guarded {
                         socket: wire,
                         gate: attempt.gate.clone(),
+                        capture_tls_io: false,
                     },
                     endpoint: attempt.target.endpoint().clone(),
                     peer: selected,

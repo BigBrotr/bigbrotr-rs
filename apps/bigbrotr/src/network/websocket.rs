@@ -2,6 +2,7 @@
 mod input;
 
 use super::DirectStream;
+use super::observation::{OBSERVED_MAX_MESSAGE_FRAMED_BYTES, TransportTrace};
 use crate::runtime::{OwnedPermit, ResourceBudget, ResourceRequest};
 use futures_util::{Sink, Stream};
 use input::Input;
@@ -15,6 +16,7 @@ use tokio_tungstenite::{
 pub enum WebSocketError {
     Budget,
     MessageLimit,
+    SessionLimit,
     Handshake,
     Protocol,
     Unavailable,
@@ -24,6 +26,7 @@ impl fmt::Display for WebSocketError {
         f.write_str(match self {
             Self::Budget => "WebSocket resources unavailable",
             Self::MessageLimit => "WebSocket framed message exceeds its limit",
+            Self::SessionLimit => "observed WebSocket session exceeds its finite allowance",
             Self::Handshake => "WebSocket handshake refused",
             Self::Protocol => "WebSocket protocol refused",
             Self::Unavailable => "WebSocket connection unavailable",
@@ -65,6 +68,7 @@ pub struct RelayWebSocket<'borrow, 'owner> {
     received: Option<Message>,
     failed: bool,
     limit: usize,
+    observation: Option<TransportTrace>,
     // Drop all protocol storage above before releasing its reservation.
     _permit: OwnedPermit,
 }
@@ -73,6 +77,42 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
         stream: &'borrow mut DirectStream<'owner>,
         resources: &ResourceBudget,
         max_message_bytes: usize,
+    ) -> Result<Self, WebSocketError> {
+        if stream.inner.gate.observation().is_some() {
+            return Err(WebSocketError::Protocol);
+        }
+        Self::connect_inner(stream, resources, max_message_bytes, None).await
+    }
+
+    /// Explicit fixed passive-session caps. The stream must come from the
+    /// observed connector entry; this adds no action or endpoint authority.
+    pub async fn connect_observed(
+        stream: &'borrow mut DirectStream<'owner>,
+        resources: &ResourceBudget,
+    ) -> Result<Self, WebSocketError> {
+        let trace = stream
+            .inner
+            .gate
+            .observation()
+            .cloned()
+            .ok_or(WebSocketError::Protocol)?;
+        if trace.snapshot().websocket_upgrade_validated.is_some() {
+            return Err(WebSocketError::Protocol);
+        }
+        Self::connect_inner(
+            stream,
+            resources,
+            OBSERVED_MAX_MESSAGE_FRAMED_BYTES,
+            Some(trace),
+        )
+        .await
+    }
+
+    async fn connect_inner(
+        stream: &'borrow mut DirectStream<'owner>,
+        resources: &ResourceBudget,
+        max_message_bytes: usize,
+        observation: Option<TransportTrace>,
     ) -> Result<Self, WebSocketError> {
         // Covers growing upstream frame/message/output buffers and handshake
         // copies. This conservative reservation is not a measured RSS bound.
@@ -98,13 +138,14 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
             )
             .max_message_size(Some(max_message_bytes))
             .max_frame_size(Some(max_message_bytes));
-        let (mut socket, response) = tokio_tungstenite::client_async_with_config(
-            request,
-            Input::new(stream, max_message_bytes),
-            Some(config),
-        )
-        .await
-        .map_err(|_| WebSocketError::Handshake)?;
+        let input = match &observation {
+            Some(trace) => Input::with_observation(stream, max_message_bytes, Some(trace.clone())),
+            None => Input::new(stream, max_message_bytes),
+        };
+        let (mut socket, response) =
+            tokio_tungstenite::client_async_with_config(request, input, Some(config))
+                .await
+                .map_err(|_| WebSocketError::Handshake)?;
         let headers = response.headers();
         if headers.contains_key("sec-websocket-extensions")
             || headers.contains_key("sec-websocket-protocol")
@@ -118,12 +159,18 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
             .get_ref()
             .check()
             .map_err(|_| WebSocketError::Unavailable)?;
+        if let Some(trace) = &observation {
+            trace
+                .upgrade_validated()
+                .map_err(|_| WebSocketError::Unavailable)?;
+        }
         socket.get_mut().enable();
         Ok(Self {
             socket,
             received: None,
             failed: false,
             limit: max_message_bytes,
+            observation,
             _permit: permit,
         })
     }
@@ -145,6 +192,9 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
         {
             return Err(WebSocketError::MessageLimit);
         }
+        if let Some(trace) = &self.observation {
+            trace.tx_allow(text.len() + header)?;
+        }
         poll_fn(|cx| {
             self.socket
                 .get_ref()
@@ -164,6 +214,9 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
             Pin::new(&mut self.socket).poll_flush(cx).map_err(classify)
         })
         .await?;
+        if let Some(trace) = &self.observation {
+            trace.text_flushed();
+        }
         self.failed = false;
         Ok(())
     }
@@ -176,6 +229,9 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
         }
         if self.limit < 6 {
             return Err(WebSocketError::MessageLimit);
+        }
+        if let Some(trace) = &self.observation {
+            trace.tx_allow(6)?;
         }
         self.socket.get_mut().start_close();
         poll_fn(|cx| {
@@ -196,6 +252,9 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
         }
         // A cancelled read cannot be resumed as an unrelated protocol operation.
         self.failed = true;
+        if let Some(trace) = &self.observation {
+            trace.before_message()?;
+        }
         self.received = None;
         let next = poll_fn(|cx| {
             self.socket
@@ -207,6 +266,11 @@ impl<'borrow, 'owner> RelayWebSocket<'borrow, 'owner> {
                 .map(|item| item.transpose().map_err(classify))
         })
         .await?;
+        if next.is_some()
+            && let Some(trace) = &self.observation
+        {
+            trace.message_delivered();
+        }
         if matches!(next, Some(Message::Ping(_) | Message::Close(_))) {
             // Automatic replies otherwise wait for a later read. Application
             // backpressure must not leave the peer waiting for Pong or Close.
