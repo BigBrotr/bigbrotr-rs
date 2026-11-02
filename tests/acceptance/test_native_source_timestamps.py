@@ -36,7 +36,9 @@ def export(root, output, mtime):
     output.mkdir(); source = output/'source'; source.mkdir()
     git(root, 'archive', '--format=tar', '--output', str(output/'source.tar'), 'HEAD')
     with tarfile.open(output/'source.tar') as archive:
-        archive.extractall(source, filter='fully_trusted')
+        # This is the fixture's own Git archive, never supplied input. Omit the
+        # newer filter keyword to support the declared Python3.11 minimum.
+        archive.extractall(source)
     for path in [source/'vendor', *(source/'vendor').rglob('*')]:
         os.utime(path, ns=(mtime, mtime))
     manifest = {'format': 'bigbrotr-source/1', 'revision': git(root, 'rev-parse', 'HEAD'),
