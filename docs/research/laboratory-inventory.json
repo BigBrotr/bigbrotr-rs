@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "b1e688cc50b540a6409a9f6ae9d37d75e2bfde39",
+      "observed_source": "dfc7e343",
       "state": "Local source integration only, not pushed; independent Native/Control/driver/Archive boundary reviews approved. All new application/native/real-engine and installed controls NOT_RUN. Root is sole integrator.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79064,10 +79064,24 @@
       ],
       "active_assignments": {
         "history_scratch_build_prep_sol": ".research/m2-monitor-operator-20261102: bounded explicit initial-owner once-only source and producer admission",
-        "quota_r2_diagnosis_sol": "work/m2-measurement-inspect-20261102: bounded installed measurement inspection under actual pin/capture/custody"
+        "quota_r2_diagnosis_sol": "Independent maintained p04-passive-monitor installed acceptance in separate worktree; source only, no engines/builds"
       },
-      "resources": "Targeted Docker observation: only four unrelated existing services running, no owned local compiler or engine. No new cleanup or engine run. Earlier model/native/CI custody and protected original ELF observations remain linked in owning evidence; source agents continue.",
-      "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102"
+      "resources": "Both owned compiler containers terminal; no owned compiler/engine remains running at recording. Original protected ELF bytes/full-stat guards passed and cache released. Source agents continue; no cleanup.",
+      "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
+      "core_qualification": {
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
+        "attempts": [
+          "feab0650",
+          "5e05a5c6"
+        ],
+        "state": "Both compiler attempts stopped-retained/PID0/noOOM, tools reaped1; exclusive cache115 released and original4ELF full-stat guards passed. Product API/fixture compilation failures preserved and corrected in source; no new assertion ran. Prepared046d7a0c source was superseded by oracle/readiness corrections before launch and remains NOT_RUN.",
+        "frozen_source_worktrees": [
+          ".research/m2-monitor-core-product-feab0650",
+          ".research/m2-monitor-core-product-5e05a5c6",
+          ".research/m2-monitor-core-product-046d7a0c"
+        ],
+        "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102.core_compilation"
+      }
     }
   }
 }

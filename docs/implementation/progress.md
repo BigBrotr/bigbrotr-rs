@@ -7,10 +7,12 @@ The capability-first direction is reconciled in Q38/the execution guide; one pla
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source HEAD **b1e688cc**; checkpoint,
+`work/m2-finite-history-20261101`. Observed source HEAD **dfc7e343**; checkpoint,
 P02 evidence, guide and inventory updates are pending this recording commit.
 Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
-local, incomplete and not pushed; it has not yet been built or engine-qualified.
+local, incomplete and not pushed. Two real compilation attempts failed before
+assertions; their original logs are preserved. The corrected candidate remains
+unqualified by build, engines or installation.
 
 **Quota/history recovery is qualified.** Installed53802a46 passed restart on/off
 12/12 each and finite128 retained boundary7/7. The
@@ -50,12 +52,23 @@ The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
   Metadata reader646ab78f required correctionb1e688cc: preparation now uses
   the enrollment-only helper; dispatch still requires exact visibility.
   Independent Astra approved the correction before execution.
+- Compilation failures are classified in the P02 report: feab0650 lacked Model
+  type exports (fixed5e05a5c6); all-target5e05a5c6 found two stale family arrays and
+  a test stream borrow (fixedb448660a). No test assertion ran and no environment
+  failure was inferred. Release/strict/native qualification remains open.
 - Archive sixth family / Index eleventh target integratede5e316ee; related current
   counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
   selects the actual old/current snapshot without changing expectations. Bounded
   source/oracle review approved; Rust/Arrow/Parquet/ClickHouse **NOT_RUN**. Author's
   portable320PASS/1ERROR is a preserved stale tutorial-review-pin failure; update
   only after exact candidate review and rerun the affected control.
+- Installed inspection integrated86bbf93b, corrections046d7a0c/26c7e47f/dfc7e343:
+  actual pin/capture/custody through joined scientific output, using an independent
+  nonblocking Linux pipe and the actual policy/pin gate per write. Regular/device/
+  socket sinks refuse; documented pipefail+cat supports terminal/file output.
+  Critical source/oracle review approved; actual full-pipe and installed tests
+  **NOT_RUN**. Initial blocking-output and assisting-expiry-oracle defects remain
+  recorded, corrected before any affected assertion execution.
 
 The five-second policy authority bound remains enforced; nominal15s checks are
 not15s renewable grants. Durable-start/renewal remain P04-T07/P04-T02 work.
@@ -73,22 +86,28 @@ One integrating owner; separate writable worktrees, all partial source retained:
 - Sol `history_scratch_build_prep_sol`: `.research/m2-monitor-operator-20261102`,
   explicit `serve --initialize-ingest --monitor-once` for one exact enrolled source;
   actual Native/socket custody and original producer admission. Source in progress.
-- Sol `quota_r2_diagnosis_sol`: `work/m2-measurement-inspect-20261102`, actual installed
-  typed measurement inspection using existing expectation/pin/capture/supervisor
-  lifecycle; bounded scientific output under current authority. Source in progress.
+- Sol `quota_r2_diagnosis_sol`: author maintained `p04-passive-monitor` installed
+  acceptance using existing first-launch setup, literal peer and independent
+  scientific oracle; source only. Original inspection17d is saved in its clean
+  worktree and integrated with Root output corrections above.
 - Astra `a05_model_boundary_review_astra`: PG correction and narrow metadata
-  reader correction approved. Archive reviewer approved eb97f50e plusf287375d correction.
+  reader correction approved. Archive reviewer approved eb97f50e plusf287375d and
+  the installed inspection/output corrections throughdfc7e343.
   Native/model/transport source authors and previous CI watchers have finished.
 
 [Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
 capsules. Targeted Docker observation now shows only four unrelated services;
-no owned local compiler/engine or hosted watcher is running. Source agents above
+both compiler tools are reaped1 with exited/PID0/noOOM containers and released
+exclusive cache; no owned local compiler/engine or hosted watcher is running.
+All4 protected ELF bytes and complete recorded stat fields passed both guards.
+Source agents above
 continue. No cleanup performed; protected original ELF files were not opened this
-increment. Earlier guarded identity observations remain in their owning receipts.
+by ordinary reads; guarded observations remain in their owning receipts.
 Preserve original failures, .research, databases, worktrees and the borrowed bridge.
 
-**Next Root action:** finish/review the real once-only Source→admission and
-installed pinned inspection, then freeze the exact coherent candidate. Check
+**Next Root action:** freeze and compile the corrected core with all-target
+checking before the maintained release build; finish/review the once-only
+Source→admission and independent installed acceptance in parallel. Check
 changed schema, packaged roles, budgets, source completion and fault reachability
 before affected build/native/PG/Archive/Index and installed qualification. Reuse
 unchanged model/hosted evidence; do not relabel source approval as runtime PASS.

@@ -121,7 +121,7 @@
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
     },
-    "next": "Finish the existing first once-only operator source/admission and supervised installed measurement inspection. Reconcile actual schema44 packaged roles, source completion, budgets and exact pinned inputs before affected build/native/PG/Archive/Index and installed qualification. No whole-P02 prerequisite or full Monitor/M2 claim.",
+    "next": "Compile the corrected exact core, finish once-only source/operator integration and its independent installed acceptance, then qualify the actual Source\u2192Native\u2192Archive/Index\u2192restart inspection under packaged roles. Critical source/oracle reviews are closed for current storage/inspection changes; all real-pipe and newly authored Rust/native/installed assertions still NOT_RUN.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
@@ -180,6 +180,47 @@
       "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUST_NATIVE_CLICKHOUSE_NOT_RUN",
       "scope": "Sixth scientific family and typed full-digest/strong-prior read under caller-held real pin/capture/current scope and custody; eleventh Index target. Related family6/count/schema2/frontier2 consumers and fixtures reconciled. Restart fixture now selects actual old/current snapshots via production read-only options; original expected outcomes unchanged.",
       "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim."
+    },
+    "installed_inspection": {
+      "original": "17d07c008d34c0c21e83389892daa6987c69e48d",
+      "integrated": "86bbf93b",
+      "output_corrections": [
+        "046d7a0c",
+        "26c7e47f",
+        "dfc7e343"
+      ],
+      "status": "SOURCE_ORACLE_REVIEW_APPROVED_RUNTIME_NOT_RUN",
+      "scope": "Actual current published selection, retained-input binding, native snapshot capture and durable pin under existing Control supervisor. Full typed digest/prior verification and joined bounded scientific output retain custody; local operator only. Initial Linux output supports a separately reopened nonblocking pipe/FIFO and bound actual pin/policy gate, not regular/device/socket sinks. Documented pipefail+cat preserves redirection. Kernel acceptance is not downstream consumption/persistence.",
+      "review": "Independent Astra caught blocking stdout across expiry; Root nonblocking correction approved. The expiry oracle was also corrected to leave the shared gate untouched by the test supervisor, and refused pin binding preserves ordinary readiness cleanup. All original source/failures retained. Three real-pipe/regular-sink controls authored, not executed."
+    },
+    "core_compilation": {
+      "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
+      "attempts": [
+        {
+          "source": "feab0650ed17dcbc716609b88497e671e2b09dd5",
+          "status": "FAIL",
+          "classification": "PRODUCT_SOURCE_COMPILE",
+          "detail": "Worker build refused E0432: Archive consumers needed public measurement types reexported by5e05a5c6; no assertion executed.",
+          "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/feab0650/resource.json",
+          "resource_sha256": "cf1a4838d691d7107cdbaf0ad052004e60dc30d051dc1a38405af85cb56b8615",
+          "terminal": "Tool reaped1, container exited1/PID0/noOOM; exclusive cache released; all4 original ELF bytes and complete recorded stat fields verified unchanged. Original command/compiler logs and inputs retained."
+        },
+        {
+          "source": "5e05a5c6fb6c0edcc0604d874374430aef76cef6",
+          "status": "FAIL",
+          "classification": "FIXTURE_SOURCE_COMPILE",
+          "detail": "All-target cargo check found two stale five-family arrays and an observed-stream test borrow; b448660a preserves cases with explicit zero Measurement counts and constructs the borrow inside its owning future. No assertion executed; maintained release build was not reached.",
+          "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5e05a5c6/resource.json",
+          "resource_sha256": "f86940015b8cc3f249fe260a4f2bce499cdb258a910646c74b84c8433d8947b5",
+          "terminal": "Tool reaped1, container exited1/PID0/noOOM; exclusive cache released; all4 original ELF bytes and complete recorded stat fields verified unchanged. Original command/compiler logs and inputs retained."
+        }
+      ],
+      "source_corrections": [
+        "5e05a5c6",
+        "b448660a"
+      ],
+      "runtime_tests": "NOT_RUN",
+      "release_build": "NOT_QUALIFIED"
     }
   }
 }
