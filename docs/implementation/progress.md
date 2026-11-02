@@ -7,10 +7,10 @@ The capability-first direction is reconciled in Q38/the execution guide; one pla
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source HEAD **dfc7e343**; checkpoint,
+`work/m2-finite-history-20261101`. Observed source HEAD **0d282062**; checkpoint,
 P02 evidence, guide and inventory updates are pending this recording commit.
 Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
-local, incomplete and not pushed. Two real compilation attempts failed before
+local, incomplete and not pushed. Three real compilation attempts failed before
 assertions; their original logs are preserved. The corrected candidate remains
 unqualified by build, engines or installation.
 
@@ -52,10 +52,15 @@ The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
   Metadata reader646ab78f required correctionb1e688cc: preparation now uses
   the enrollment-only helper; dispatch still requires exact visibility.
   Independent Astra approved the correction before execution.
+- Once-only operator source f82bf8cd corrected0d282062: actual protected selection,
+  enrollment/dictionary/source/admission path, Native/socket custody and parked
+  uncertainty. Astra closed field, nested-reservation and underfunding defects;
+  eight+two combined Rust controls **NOT_RUN**. Full lost-RAM recovery stays open.
 - Compilation failures are classified in the P02 report: feab0650 lacked Model
   type exports (fixed5e05a5c6); all-target5e05a5c6 found two stale family arrays and
-  a test stream borrow (fixedb448660a). No test assertion ran and no environment
-  failure was inferred. Release/strict/native qualification remains open.
+  a test stream borrow (fixedb448660a); d1ae816a found six native probe callers of
+  a removed static Sync helper (restoredfb0fafff for those actual consumers).
+  No test assertion ran and no environment failure was inferred. Release/strict/native qualification remains open.
 - Archive sixth family / Index eleventh target integratede5e316ee; related current
   counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
   selects the actual old/current snapshot without changing expectations. Bounded
@@ -85,7 +90,8 @@ One integrating owner; separate writable worktrees, all partial source retained:
 
 - Sol `history_scratch_build_prep_sol`: `.research/m2-monitor-operator-20261102`,
   explicit `serve --initialize-ingest --monitor-once` for one exact enrolled source;
-  actual Native/socket custody and original producer admission. Source in progress.
+  actual Native/socket custody and original producer admission saved70d3/16b8,
+  integratedf82/0d and independently source/oracle approved. Author finished.
 - Sol `quota_r2_diagnosis_sol`: author maintained `p04-passive-monitor` installed
   acceptance using existing first-launch setup, literal peer and independent
   scientific oracle; source only. Original inspection17d is saved in its clean
@@ -96,18 +102,18 @@ One integrating owner; separate writable worktrees, all partial source retained:
   Native/model/transport source authors and previous CI watchers have finished.
 
 [Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
-capsules. Targeted Docker observation now shows only four unrelated services;
-both compiler tools are reaped1 with exited/PID0/noOOM containers and released
+capsules. At recording, three compiler tools are reaped1 with exited/PID0/noOOM
+containers and released
 exclusive cache; no owned local compiler/engine or hosted watcher is running.
-All4 protected ELF bytes and complete recorded stat fields passed both guards.
-Source agents above
-continue. No cleanup performed; protected original ELF files were not opened this
-by ordinary reads; guarded observations remain in their owning receipts.
+All4 protected ELF bytes and complete recorded stat fields passed every guard.
+Only the acceptance source agent above continues. No cleanup performed; protected
+original ELFs were accessed only through required no-atime guards, whose
+observations remain in their owning receipts.
 Preserve original failures, .research, databases, worktrees and the borrowed bridge.
 
-**Next Root action:** freeze and compile the corrected core with all-target
-checking before the maintained release build; finish/review the once-only
-Source→admission and independent installed acceptance in parallel. Check
+**Next Root action:** finish/review the independent maintained installed
+acceptance, freeze the corrected exact candidate and compile all targets before
+the maintained worker/parent build and affected real product qualification. Check
 changed schema, packaged roles, budgets, source completion and fault reachability
 before affected build/native/PG/Archive/Index and installed qualification. Reuse
 unchanged model/hosted evidence; do not relabel source approval as runtime PASS.

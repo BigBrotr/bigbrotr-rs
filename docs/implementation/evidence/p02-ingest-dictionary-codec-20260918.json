@@ -121,7 +121,7 @@
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
     },
-    "next": "Compile the corrected exact core, finish once-only source/operator integration and its independent installed acceptance, then qualify the actual Source\u2192Native\u2192Archive/Index\u2192restart inspection under packaged roles. Critical source/oracle reviews are closed for current storage/inspection changes; all real-pipe and newly authored Rust/native/installed assertions still NOT_RUN.",
+    "next": "Finish and critically review the maintained p04-passive-monitor installed acceptance, freeze corrected exact candidate, compile all targets and installed worker/parent, then run affected Rust/native/PG/Archive/Index and installed Source\u2192Archive\u2192restart inspection. All new Rust/real-pipe/installed assertions remain NOT_RUN; no production/fleet/recovery completion claim.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
@@ -213,14 +213,38 @@
           "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/5e05a5c6/resource.json",
           "resource_sha256": "f86940015b8cc3f249fe260a4f2bce499cdb258a910646c74b84c8433d8947b5",
           "terminal": "Tool reaped1, container exited1/PID0/noOOM; exclusive cache released; all4 original ELF bytes and complete recorded stat fields verified unchanged. Original command/compiler logs and inputs retained."
+        },
+        {
+          "source": "d1ae816a0c1137f6442fd06c043bad7d58566384",
+          "status": "FAIL",
+          "classification": "FIXTURE_API_COMPILE",
+          "detail": "All-target check found six maintained native transport/lease probe calls to removed authorize_sync_source. fb0fafff restores the shared static Sync policy projection for these actual consumers without bypassing product collection/arrival checks. No assertion executed; release build not reached.",
+          "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/d1ae816a/resource.json",
+          "resource_sha256": "7bf8e337a9874ec41f689a15b07a25530b3a5c0335325c377a3bc8eb1f9683a6",
+          "terminal": "Tool97807 reaped1; container7704b49f exited1/PID0/noOOM; cache115 released and full4ELF byte/stat guards passed."
         }
       ],
       "source_corrections": [
         "5e05a5c6",
-        "b448660a"
+        "b448660a",
+        "fb0fafff"
       ],
       "runtime_tests": "NOT_RUN",
       "release_build": "NOT_QUALIFIED"
+    },
+    "operator_source": {
+      "originals": [
+        "70d3e8c1900b093cd99dc7611b39ea2528a1c6c3",
+        "16b8be2e2476844b50b1545c712f8ae7304fca75"
+      ],
+      "integrated": [
+        "f82bf8cd",
+        "0d282062"
+      ],
+      "status": "SOURCE_ORACLE_REVIEW_APPROVED_BUILD_RUNTIME_NOT_RUN",
+      "scope": "Protected one-use local source selection after actual initialized visibility/enrollment; exact descriptors, original-budget funded driver and full evidence-kernel permit before fresh dispatch COMMIT/IO. Dedicated req4 compact measurement admission, no Sync job/event. Native/socket stack custody, both-policy checks, private no-I/O proof and parked uncertain observations/intent retained.",
+      "findings": "Astra caught event_candidates field mismatch, prohibited nested reservation and insufficient evidence permit in70d. Corrected16b approved before execution; two combined production funding/driver/drop controls added. Original eight+two new Rust controls remain NOT_RUN.",
+      "limits": "Ordinary scheduler/fleet/extra Monitor checks and full lost-RAM/input-before-PG recovery remain P04-T07/P04-T02/P02 owners; first positive path does not complete them."
     }
   }
 }
