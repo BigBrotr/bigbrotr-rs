@@ -602,7 +602,9 @@ fn scientific(fact: &Fact) -> serde_json::Value {
         FactPayload::Provenance(v) => {
             json!({"kind":"provenance/1","event_id":v.event_id.to_string(),"visibility_scope":scope,"endpoint":binding_name(v.endpoint_id),"observer":binding_name(v.observer_id),"access_scope":binding_name(v.access_scope_id),"received_at_us":v.received_at.get(),"clock_quality":"fixture-clock","verification_method":binding_name(v.verification_method_id),"corrects":v.corrects.map(|_|"prior_selected:provenance/1")})
         }
-        FactPayload::Dictionary(_) => panic!("not a scientific event fact"),
+        FactPayload::Dictionary(_) | FactPayload::Measurement(_) => {
+            panic!("not a scientific event fact")
+        }
     }
 }
 fn assert_inventory(store: &IngestStore, expected: &serde_json::Value) {
@@ -617,6 +619,9 @@ fn assert_inventory(store: &IngestStore, expected: &serde_json::Value) {
     let mut witnesses = vec![];
     for fact in &all {
         match fact.payload() {
+            FactPayload::Measurement(_) => {
+                panic!("event fixture unexpectedly contains a measurement")
+            }
             FactPayload::Dictionary(v) => {
                 if let DictionaryDescriptor::Event(id) = v.descriptor() {
                     mappings.push(json!(id.to_string()));

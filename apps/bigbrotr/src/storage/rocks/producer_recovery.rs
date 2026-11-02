@@ -320,6 +320,24 @@ impl IngestStore {
             return Err(AdmissionError::InsufficientReservation.into());
         }
         let (outcome, copy) = match intent {
+            MutationIntent::Measurement(ref intent) => {
+                let receipt = self
+                    .replay_measurement_append_in(
+                        request,
+                        intent,
+                        limits.event,
+                        context,
+                        match profile {
+                            RecoveryContext::Lineage { lineage, .. } => Some(*lineage),
+                            RecoveryContext::Successor { owner, .. } => Some(owner.lineage()),
+                            _ => None,
+                        },
+                    )?
+                    .ok_or(ProducerRecoveryError::Unresolved)?;
+                let copy = NativeOutcomeCopy::receipt(&receipt, context.manifest)
+                    .map_err(AdmissionError::from)?;
+                (AdmissionOutcome::Durable(receipt), copy)
+            }
             MutationIntent::Evidence(ref intent) => {
                 let receipt = if request.producer_epoch.get() == 1
                     && context.manifest.identity().owner_epoch.get() == 1

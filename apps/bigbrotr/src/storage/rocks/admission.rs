@@ -25,6 +25,7 @@ pub enum AdmissionError {
     EngineRead,
     StateMismatch,
     RequestConflict,
+    EvidenceConflict,
     RequestGap,
     WindowFull,
     RetiredRequest,

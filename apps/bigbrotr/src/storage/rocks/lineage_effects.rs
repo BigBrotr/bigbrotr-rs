@@ -199,7 +199,9 @@ impl Census<'_> {
                 | IngestKey::EventPayload { .. }
                 | IngestKey::EventEligibility { .. }
                 | IngestKey::EventReceive { .. }
-                | IngestKey::Provenance { .. } => {
+                | IngestKey::Provenance { .. }
+                | IngestKey::MeasurementAttempt { .. }
+                | IngestKey::MeasurementResolution { .. } => {
                     let fact = store
                         .indexed_fact(key, limits, &mut reads)?
                         .ok_or(AdmissionError::StateMismatch)?;
@@ -240,6 +242,29 @@ impl Census<'_> {
                 limits,
             )?;
             self.require_verified_fact(&fact, through)?;
+            if let FactPayload::Measurement(value) = fact.payload()
+                && let Some(reference) = value.prior_unknown()
+            {
+                let mut reads = ReadBudget::dictionaries(limits);
+                let prior = store.admission_fact(reference, limits, &mut reads)?;
+                self.require_verified_fact(&prior, through)?;
+                fact.validate_measurement_resolution(&prior)
+                    .map_err(|_| AdmissionError::StateMismatch)?;
+                let source = fact.source_record_id();
+                let predecessor = prior.source_record_id();
+                if predecessor.shard_id != source.shard_id
+                    || (predecessor.owner_epoch, predecessor.sequence)
+                        >= (source.owner_epoch, source.sequence)
+                {
+                    return Err(AdmissionError::StateMismatch);
+                }
+                let selected = store
+                    .indexed_fact(fact_index(&prior), limits, &mut reads)?
+                    .ok_or(AdmissionError::StateMismatch)?;
+                if selected.fact_ref() != reference {
+                    return Err(AdmissionError::StateMismatch);
+                }
+            }
             let index = fact_index(&fact);
             let reference = fact.fact_ref();
             let time = minimum(&fact);
@@ -427,6 +452,9 @@ fn fact_index(fact: &Fact) -> IngestKey {
             access_scope_id: value.access_scope_id,
             visibility_scope_id: visibility_scope,
         },
+        FactPayload::Measurement(value) => {
+            super::measurement_append::measurement_index(dataset_id, value)
+        }
     }
 }
 fn minimum(fact: &Fact) -> Option<ObservedTime> {

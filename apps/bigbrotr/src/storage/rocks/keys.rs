@@ -1,8 +1,8 @@
 //! Closed version-1 keys for the ingest owner's three RocksDB column families.
 use bigbrotr_model::{
-    AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, Ordinal, OwnerEpoch,
-    OwnerResourceId, ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef,
-    RequestSequence, Sequence, SourceRecordId,
+    AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, MeasurementAttemptId,
+    Ordinal, OwnerEpoch, OwnerResourceId, ProducerEpoch, ProducerRequestId, ProducerSlotId,
+    QualifiedRef, RequestSequence, Sequence, SourceRecordId,
 };
 use std::fmt;
 
@@ -40,6 +40,8 @@ pub enum KeyDomain {
     Provenance = 0x09,
     OwnerHandoff = 0x0a,
     PendingAccounting = 0x0b,
+    MeasurementAttempt = 0x0c,
+    MeasurementResolution = 0x0d,
     Fact = 0x20,
     PendingBatch = 0x21,
     Request = 0x30,
@@ -63,7 +65,9 @@ impl KeyDomain {
             | Self::EventReceive
             | Self::Provenance
             | Self::OwnerHandoff
-            | Self::PendingAccounting => ColumnFamily::Default,
+            | Self::PendingAccounting
+            | Self::MeasurementAttempt
+            | Self::MeasurementResolution => ColumnFamily::Default,
             Self::Fact | Self::PendingBatch => ColumnFamily::Facts,
             Self::Request | Self::ProducerState => ColumnFamily::Receipts,
         }
@@ -80,6 +84,7 @@ impl KeyDomain {
             Self::EventEligibility | Self::EventReceive => 2 + 16 + 32 + 42,
             Self::Provenance => 2 + 16 + 32 + 4 * 42,
             Self::OwnerHandoff => 2 + 16 + 16 + 8,
+            Self::MeasurementAttempt | Self::MeasurementResolution => 2 + 16 + 16,
             Self::Fact | Self::PendingBatch => 2 + 16 + 4 + 8 + 8,
             Self::Request => 2 + 16 + 8 + 8,
             Self::ProducerState => 2 + 16 + 8,
@@ -99,6 +104,8 @@ impl KeyDomain {
             0x09 => Ok(Self::Provenance),
             0x0a => Ok(Self::OwnerHandoff),
             0x0b => Ok(Self::PendingAccounting),
+            0x0c => Ok(Self::MeasurementAttempt),
+            0x0d => Ok(Self::MeasurementResolution),
             0x20 => Ok(Self::Fact),
             0x21 => Ok(Self::PendingBatch),
             0x30 => Ok(Self::Request),
@@ -112,6 +119,16 @@ impl KeyDomain {
 pub enum IngestKey {
     Manifest,
     PendingAccounting,
+    /// Immutable initial A05 fact; an unknown is retained after resolution.
+    MeasurementAttempt {
+        dataset_id: DatasetId,
+        attempt_id: MeasurementAttemptId,
+    },
+    /// Immutable terminal resolution, indexed separately from its named unknown.
+    MeasurementResolution {
+        dataset_id: DatasetId,
+        attempt_id: MeasurementAttemptId,
+    },
     OwnerHandoff {
         dataset_id: DatasetId,
         owner_resource_id: OwnerResourceId,
@@ -178,6 +195,8 @@ impl IngestKey {
         match self {
             Self::Manifest => KeyDomain::Manifest,
             Self::PendingAccounting => KeyDomain::PendingAccounting,
+            Self::MeasurementAttempt { .. } => KeyDomain::MeasurementAttempt,
+            Self::MeasurementResolution { .. } => KeyDomain::MeasurementResolution,
             Self::OwnerHandoff { .. } => KeyDomain::OwnerHandoff,
             Self::SourceStream { .. } => KeyDomain::SourceStream,
             Self::AllocationStream { .. } => KeyDomain::AllocationStream,
@@ -201,6 +220,17 @@ impl IngestKey {
         writer.bytes(&domain.prefix());
         match *self {
             Self::Manifest | Self::PendingAccounting => {}
+            Self::MeasurementAttempt {
+                dataset_id,
+                attempt_id,
+            }
+            | Self::MeasurementResolution {
+                dataset_id,
+                attempt_id,
+            } => {
+                writer.bytes(dataset_id.as_bytes());
+                writer.bytes(attempt_id.as_bytes());
+            }
             Self::OwnerHandoff {
                 dataset_id,
                 owner_resource_id,
@@ -421,6 +451,16 @@ pub fn decode_key(column_family: ColumnFamily, bytes: &[u8]) -> Result<IngestKey
     let key = match domain {
         KeyDomain::Manifest => IngestKey::Manifest,
         KeyDomain::PendingAccounting => IngestKey::PendingAccounting,
+        KeyDomain::MeasurementAttempt => IngestKey::MeasurementAttempt {
+            dataset_id: reader.dataset()?,
+            attempt_id: MeasurementAttemptId::try_from(reader.fixed()?)
+                .map_err(|_| KeyError::ZeroIdentity)?,
+        },
+        KeyDomain::MeasurementResolution => IngestKey::MeasurementResolution {
+            dataset_id: reader.dataset()?,
+            attempt_id: MeasurementAttemptId::try_from(reader.fixed()?)
+                .map_err(|_| KeyError::ZeroIdentity)?,
+        },
         KeyDomain::OwnerHandoff => IngestKey::OwnerHandoff {
             dataset_id: reader.dataset()?,
             owner_resource_id: OwnerResourceId::try_from(reader.fixed()?)

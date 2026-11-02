@@ -1,4 +1,5 @@
 //! Fixed-reference dictionary admission after bootstrap. Preparation is not a write.
+use super::evidence_append::{EvidenceHead, EvidenceInput};
 use super::producer_recovery::ReplayContext;
 use super::{
     AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
@@ -50,22 +51,13 @@ impl IngestStore {
         limits: AdmissionLimits,
         permit: &OwnedPermit,
     ) -> Result<super::PendingReservationRequest, AdmissionError> {
-        require_permit(permit, limits)?;
-        let (writes, _) =
-            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
-        let required_growth = if let Some(mut writes) = writes {
-            self.seal_pending_accounting(&mut writes)?;
-            self.prepared_pending_delta(&writes)?
-        } else {
-            0
-        };
-        self.pending_input_reservation(
+        self.evidence_pending_reservation(
             request,
-            intent.request_digest(request),
-            limits.max_batch_bytes as u64,
-            required_growth,
+            EvidenceInput::Dictionaries(intent),
+            recorded_at,
+            limits,
+            permit,
         )
-        .map_err(Into::into)
     }
     pub(in crate::storage) fn stage_dictionary_append(
         &mut self,
@@ -112,19 +104,14 @@ impl IngestStore {
         permit: &OwnedPermit,
         cancelled: Option<&AtomicBool>,
     ) -> Result<super::StagedProducerRequest, AdmissionError> {
-        self.require_successor_operation(cancelled)?;
-        require_permit(permit, limits)?;
-        self.require_request_capacity(request, limits.max_outstanding_requests)?;
-        // Validate all allocation and closure choices before the immutable PG
-        // reservation, including the actual timestamp's variable-width encoding.
-        // This read-only preview emits no fact. The caller retains this exclusive
-        // owner and the same recorded_at through both PG phases.
-        let reservation =
-            self.dictionary_pending_reservation(request, intent, recorded_at, limits, permit)?;
-        self.reserve_pending_requests(&[reservation])
-            .map_err(AdmissionError::PendingQuota)?;
-        let bytes = encode_input(request, intent, limits)?;
-        self.stage_admission_input(request, intent.request_digest(request), &bytes, cancelled)
+        self.stage_evidence_append_in(
+            request,
+            EvidenceInput::Dictionaries(intent),
+            recorded_at,
+            limits,
+            permit,
+            cancelled,
+        )
     }
 
     /// The connected owner fixes all references before reserving this request.
@@ -188,88 +175,35 @@ impl IngestStore {
         limits: AdmissionLimits,
         permit: OwnedPermit,
         cancelled: Option<&AtomicBool>,
-        mut authority: impl FnMut() -> Result<(), AdmissionError>,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredReceipt, AdmissionError> {
-        self.require_successor_operation(cancelled)?;
-        require_permit(&permit, limits)?;
-        authority()?;
-        let (writes, receipt) =
-            self.prepare_dictionary_operation(request, intent, recorded_at, limits)?;
-        let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
-        authority()?;
-        if let Some(writes) = writes {
-            let delta = self.prepared_pending_delta(&writes)?;
-            let reservation = self.pending_input_reservation(
-                request,
-                intent.request_digest(request),
-                limits.max_batch_bytes as u64,
-                delta,
-            )?;
-            self.reserve_pending_requests(&[reservation])
-                .map_err(AdmissionError::PendingQuota)?;
-            let input = encode_input(request, intent, limits)?;
-            self.retain_admission_input(request, &input, cancelled)?;
-            drop(input);
-            self.commit_admission(
-                writes,
-                request,
-                receipt.batch().map(|batch| batch.last().sequence.get()),
-                cancelled,
-                || authority().map_err(|_| BootstrapError::AuthorityUnavailable),
-            )?;
-        } else {
-            self.settle_pending_replay(request, intent.request_digest(request))
-                .map_err(AdmissionError::PendingQuota)?;
-        }
-        if self.native_unavailable() {
-            return Err(AdmissionError::CommitUnknown);
-        }
-        Ok(StoredReceipt::new(receipt, copy, permit))
+        self.append_evidence_in(
+            request,
+            EvidenceInput::Dictionaries(intent),
+            recorded_at,
+            limits,
+            permit,
+            cancelled,
+            authority,
+        )
     }
 
-    fn prepare_dictionary_operation(
+    pub(super) fn prepare_dictionary_operation(
         &self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
         recorded_at: ObservedTime,
         limits: AdmissionLimits,
     ) -> Result<(Option<Prepared>, Receipt), AdmissionError> {
-        self.require_admission_owner(Some(request))?;
-        self.require_unretired_request(request, &self.manifest)?;
-        self.validate_dictionary_append(request, intent, limits, &self.manifest)?;
-        let state = self
-            .producer_state(request.producer_slot_id, request.producer_epoch)?
-            .ok_or(AdmissionError::StateMismatch)?;
-        if state.closing {
-            return Err(AdmissionError::ProducerClosing);
-        }
+        let state = match self.prepare_evidence_head(
+            request,
+            EvidenceInput::Dictionaries(intent),
+            limits,
+        )? {
+            EvidenceHead::Replayed(receipt) => return Ok((None, receipt)),
+            EvidenceHead::Fresh(state) => state,
+        };
         let sequence = request.request_sequence.get();
-        self.require_retained_state(request.producer_slot_id, request.producer_epoch, state)?;
-        if sequence > super::RETAINED_PRODUCER_REQUEST_LIMIT
-            || sequence
-                .checked_sub(state.retired)
-                .is_none_or(|tail| tail > super::RETAINED_PRODUCER_REQUEST_LIMIT)
-        {
-            return Err(AdmissionError::Limit);
-        }
-        if sequence <= state.retired {
-            return Err(AdmissionError::RetiredRequest);
-        }
-        if let Some(receipt) = self.replay_dictionary_append(request, intent, limits)? {
-            if sequence > state.issued {
-                return Err(AdmissionError::StateMismatch);
-            }
-            return Ok((None, receipt));
-        }
-        if sequence <= state.issued {
-            return Err(AdmissionError::StateMismatch);
-        }
-        if state.issued.checked_add(1) != Some(sequence) {
-            return Err(AdmissionError::RequestGap);
-        }
-        if state.issued - state.acknowledged >= limits.max_outstanding_requests {
-            return Err(AdmissionError::WindowFull);
-        }
         let mut reads = ReadBudget::dictionaries(limits);
         let mut writes = Prepared::new(BootstrapLimits {
             max_mappings: limits.max_dependencies,
@@ -570,17 +504,7 @@ impl IngestStore {
         Ok(Some(receipt))
     }
 
-    fn validate_dictionary_append(
-        &self,
-        request: ProducerRequestId,
-        intent: &EvidenceIntent,
-        limits: AdmissionLimits,
-        manifest: &IngestManifest,
-    ) -> Result<(), AdmissionError> {
-        self.validate_dictionary_append_context(request, intent, limits, manifest, None)
-    }
-
-    fn validate_dictionary_append_context(
+    pub(super) fn validate_dictionary_append_context(
         &self,
         request: ProducerRequestId,
         intent: &EvidenceIntent,
@@ -588,35 +512,14 @@ impl IngestStore {
         manifest: &IngestManifest,
         lineage: Option<&super::RetainedLineage>,
     ) -> Result<(), AdmissionError> {
-        limits.required_dictionary_data_bytes()?;
-        if self.native_unavailable() {
-            return Err(AdmissionError::CommitUnknown);
-        }
-        let identity = manifest.identity();
-        let supported = match identity.owner_epoch.get() {
-            1 => request.producer_epoch.get() == 1 && request.request_sequence.get() > 1,
-            2 => manifest.key_schema() == 2 && request.producer_epoch.get() == 2,
-            epoch => {
-                manifest.key_schema() == 3
-                    && request.producer_epoch.get() == epoch
-                    && (lineage.is_some_and(|lineage| {
-                        lineage.native_head().manifest() == &self.manifest
-                            && lineage
-                                .entry(epoch)
-                                .is_some_and(|entry| entry.manifest() == manifest)
-                    }) || (manifest == &self.manifest
-                        && self
-                            .live_successor
-                            .as_ref()
-                            .is_some_and(|frontier| frontier.manifest() == manifest)))
-            }
-        };
-        if !supported
-            || intent.admission_policy_version() != 1
-            || intent.visibility_scope_id().dataset_id != identity.dataset_id
-        {
-            return Err(AdmissionError::InvalidInput);
-        }
+        self.validate_evidence_context(
+            request,
+            intent.admission_policy_version(),
+            intent.visibility_scope_id(),
+            limits,
+            manifest,
+            lineage,
+        )?;
         if intent.dictionaries().len() > limits.max_dependencies
             || intent.encoded_intent_bytes() > limits.max_batch_bytes
         {
@@ -693,15 +596,6 @@ impl IngestStore {
     }
 }
 
-fn require_permit(permit: &OwnedPermit, limits: AdmissionLimits) -> Result<(), AdmissionError> {
-    if permit.request().units().data_bytes() < limits.required_dictionary_data_bytes()?
-        || permit.request().units().native_bytes() < limits.required_native_bytes()?
-        || permit.request().units().items() == 0
-    {
-        return Err(AdmissionError::InsufficientReservation);
-    }
-    Ok(())
-}
 fn fact_refs(limits: AdmissionLimits) -> Result<Vec<FactRef>, AdmissionError> {
     let mut result = Vec::new();
     result
@@ -746,19 +640,6 @@ fn require_mapping(
     }
     Ok(())
 }
-fn encode_input(
-    request: ProducerRequestId,
-    intent: &EvidenceIntent,
-    limits: AdmissionLimits,
-) -> Result<Vec<u8>, AdmissionError> {
-    intent
-        .encode_request_preimage(request, limits.max_batch_bytes)
-        .map_err(|error| match error {
-            EvidenceIntentError::AllocationFailed => AdmissionError::Allocation,
-            _ => AdmissionError::Limit,
-        })
-}
-
 fn dictionary_source_key(manifest: &IngestManifest) -> IngestKey {
     let identity = manifest.identity();
     IngestKey::SourceStream {

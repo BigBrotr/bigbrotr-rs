@@ -262,6 +262,7 @@ impl IngestStore {
         let dataset = match &intent {
             MutationIntent::Event(v) => v.visibility_scope_id().dataset_id,
             MutationIntent::Evidence(v) => v.visibility_scope_id().dataset_id,
+            MutationIntent::Measurement(v) => v.visibility_scope_id().dataset_id,
         };
         if found != request || dataset != self.manifest.identity().dataset_id {
             return Err(RequestInputError::Identity);

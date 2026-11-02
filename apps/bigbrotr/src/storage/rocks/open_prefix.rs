@@ -386,6 +386,14 @@ impl NativePrefixRead<'_> {
             current_manifest: &self.store.manifest,
         };
         let (outcome, copy) = match intent {
+            MutationIntent::Measurement(intent) => {
+                let receipt = self
+                    .store
+                    .replay_measurement_append_in(request, &intent, limits.event, context, None)?
+                    .ok_or(AdmissionError::StateMismatch)?;
+                let copy = NativeOutcomeCopy::receipt(&receipt, &self.store.manifest)?;
+                (AdmissionOutcome::Durable(receipt), copy)
+            }
             MutationIntent::Evidence(intent) => {
                 let receipt = if request.request_sequence.get() == 1 {
                     self.store

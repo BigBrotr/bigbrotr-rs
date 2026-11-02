@@ -101,6 +101,7 @@ impl IngestStore {
                     }) && fact.visibility_scope_id() == input.scope
                         && v.event_id == input.event.id;
                 }
+                FactPayload::Measurement(_) => return Err(AdmissionError::StateMismatch),
             }
         }
         if payload.is_none()

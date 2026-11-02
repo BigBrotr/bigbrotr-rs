@@ -2,9 +2,9 @@ use bigbrotr::storage::rocks::keys::{
     ColumnFamily, IngestKey, KeyDomain, KeyError, MAX_INGEST_KEY_BYTES, decode_key,
 };
 use bigbrotr_model::{
-    AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, Ordinal, OwnerEpoch,
-    ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef, RequestSequence, Sequence,
-    SourceRecordId,
+    AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, MeasurementAttemptId,
+    Ordinal, OwnerEpoch, ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef,
+    RequestSequence, Sequence, SourceRecordId,
 };
 
 fn literal_bytes(hex: &str) -> Vec<u8> {
@@ -61,6 +61,32 @@ fn every_domain_matches_independent_literal_bytes_and_round_trips() {
     };
 
     let cases = [
+        (
+            IngestKey::MeasurementAttempt {
+                dataset_id,
+                attempt_id: MeasurementAttemptId::try_from([0x66; 16]).unwrap(),
+            },
+            ColumnFamily::Default,
+            KeyDomain::MeasurementAttempt,
+            concat!(
+                "010c",
+                "11111111111111111111111111111111",
+                "66666666666666666666666666666666"
+            ),
+        ),
+        (
+            IngestKey::MeasurementResolution {
+                dataset_id,
+                attempt_id: MeasurementAttemptId::try_from([0x66; 16]).unwrap(),
+            },
+            ColumnFamily::Default,
+            KeyDomain::MeasurementResolution,
+            concat!(
+                "010d",
+                "11111111111111111111111111111111",
+                "66666666666666666666666666666666"
+            ),
+        ),
         (
             IngestKey::PendingAccounting,
             ColumnFamily::Default,
@@ -276,6 +302,34 @@ fn every_domain_matches_independent_literal_bytes_and_round_trips() {
 
 #[test]
 fn malformed_or_cross_namespace_keys_fail_closed() {
+    for tag in [0x0c, 0x0d] {
+        let mut key = vec![1, tag];
+        key.extend([0x11; 16]);
+        key.extend([0x66; 16]);
+        for column_family in [ColumnFamily::Facts, ColumnFamily::Receipts] {
+            assert_eq!(
+                decode_key(column_family, &key),
+                Err(KeyError::WrongColumnFamily)
+            );
+        }
+        let mut zero_attempt = key.clone();
+        zero_attempt[18..34].fill(0);
+        assert_eq!(
+            decode_key(ColumnFamily::Default, &zero_attempt),
+            Err(KeyError::ZeroIdentity)
+        );
+        let mut zero_dataset = key.clone();
+        zero_dataset[2..18].fill(0);
+        assert_eq!(
+            decode_key(ColumnFamily::Default, &zero_dataset),
+            Err(KeyError::ZeroIdentity)
+        );
+        key.pop();
+        assert_eq!(
+            decode_key(ColumnFamily::Default, &key),
+            Err(KeyError::WrongLength)
+        );
+    }
     assert_eq!(
         decode_key(ColumnFamily::Default, &[]),
         Err(KeyError::WrongLength)

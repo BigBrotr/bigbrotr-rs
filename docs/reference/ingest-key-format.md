@@ -1,6 +1,6 @@
 # Ingest RocksDB key format
 
-Status: product key format version 1 for the first event-admission slice. This
+Status: product key format version 1 for native ingestion. This
 document fixes key bytes only. Value codecs, RocksDB options, authority, atomic
 write composition, receipts and recovery remain owned by P02-T02's later steps.
 
@@ -38,7 +38,8 @@ SourceRecordId = dataset_id:16 || shard_id:4 || owner_epoch:8 || sequence:8
 ProducerRequestId = producer_slot_id:16 || producer_epoch:8 || request_sequence:8
 ```
 
-`DatasetId`, `AllocationDomainId` and `ProducerSlotId` reject all-zero bytes.
+`DatasetId`, `AllocationDomainId`, `ProducerSlotId` and `MeasurementAttemptId`
+reject all-zero bytes.
 Dictionary ordinals, owner epochs, source sequences, producer epochs and request
 sequences reject zero. Shards allow zero and the full `u32` range; nonzero
 counters allow `u64::MAX`. Dictionary kinds accept only the assigned model values
@@ -62,6 +63,8 @@ Lengths include the two-byte version/domain prefix.
 | `default` | `0x09` | provenance minimum | 218 | dataset16, event ID32, full endpoint, observer, access-scope and visibility `QualifiedRef`s |
 | `default` | `0x0a` | immutable owner handoff (manifest key schema 2) | 42 | dataset16, owner-resource16, predecessor owner epoch BE64 |
 | `default` | `0x0b` | mandatory pending accounting (manifest value schema 2) | 2 | none; exact bound50-byte value is specified with the manifest |
+| `default` | `0x0c` | immutable initial measurement inventory | 34 | dataset16, measurement-attempt16 |
+| `default` | `0x0d` | immutable measurement resolution inventory | 34 | dataset16, measurement-attempt16 |
 | `facts` | `0x20` | immutable fact | 38 | full `SourceRecordId` |
 | `facts` | `0x21` | pending admission batch | 38 | full first `SourceRecordId` |
 | `receipts` | `0x30` | request detail | 34 | full `ProducerRequestId` |
@@ -95,6 +98,14 @@ fact key's big-endian source suffix orders records by dataset, shard, epoch and
 sequence. Request detail and producer state remain operational identities, not
 scientific fact identities.
 
+The measurement indexes each retain one strong fact reference through the same
+70-byte inventory value used by the other scientific indexes. `0x0c` names the
+initial unknown or terminal; `0x0d` names its optional terminal resolution. Neither
+overwrites the other. A resolution must retain and validate the exact initial
+unknown, including context and known observations; it is not a second sample.
+Original request identity, conflicts and durable outcomes remain in the shared
+producer request ledger. These indexes add no independent request authority.
+
 The pending batch marker preserves its complete range and semantic digest even
 after producer receipt-detail GC. Its [value format and bounded native reader](ingest-pending-format.md)
 are independent of the request ledger. It is retained with pending source facts
@@ -109,6 +120,14 @@ historical source/data; no automatic converter follows. Never
 reinterpret an existing tag, silently accept trailing extension bytes, or open a
 directory whose manifest declares another key format. Unknown future versions and
 domains fail closed in this decoder.
+
+Measurement facts and their inventory keys must be committed atomically. Existing
+store open performs the mandatory pending-accounting census over every key in all
+three column families before returning an owner. Earlier readers without tags
+`0x0c`/`0x0d` therefore refuse a measurement-bearing store as an unknown domain;
+they cannot silently ignore these indexes. Exclusive native ownership prevents an
+already-open earlier writer from coexisting with the new writer. No new manifest
+schema or automatic conversion is needed solely for this domain fence.
 
 The additive `0x0a` domain belongs to manifest key schema 2. Its
 [handoff value and atomic migration](ingest-manifest-format.md#initial-owner-handoff-receipt)

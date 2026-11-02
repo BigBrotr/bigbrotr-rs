@@ -166,7 +166,9 @@ impl Census<'_> {
                             return Err(BootstrapError::StateMismatch);
                         }
                     }
-                    IngestKey::EventPayload { dataset_id, .. } => {
+                    IngestKey::EventPayload { dataset_id, .. }
+                    | IngestKey::MeasurementAttempt { dataset_id, .. }
+                    | IngestKey::MeasurementResolution { dataset_id, .. } => {
                         if dataset_id != head.dataset_id {
                             return Err(BootstrapError::StateMismatch);
                         }
