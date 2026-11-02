@@ -60,5 +60,35 @@
   "not_run": [
     "Native dictionary allocation/admission, atomic request ledger, authority, ACK/GC, crash/restart and archive/export.",
     "Linux execution of these dictionary additions, fuzz engine, process memory envelope or release qualification."
-  ]
+  ],
+  "passive_monitor_descriptors_20261102": {
+    "status": "PASS_MODEL_SCOPE_NATIVE_ARCHIVE_INDEX_NOT_RUN",
+    "tasks": [
+      "P04-T07 first passive path",
+      "P02-T02/P02-T03 descriptor admission and closure"
+    ],
+    "source": "b8380f849eb564da50e02f28d96205e4cc5368ad",
+    "integrated_local": "9828889730a9df0b7967107f9a29aaf2021f99d7",
+    "boundary": "Closed direct-route/1 public/private+safe stable label and passive-ws-read/1 fixed distinct method. Canonical codecs/fingerprints, heap charges, native value interning/equality guards, Archive cut/typed rows and lossless Index mapping reconciled without new physical columns. No Measurement family/dispatch/scheduler/readiness claim.",
+    "source_review": "Astra immutable16file boundary review: no blocker; generic replay guards source-reviewed, not new lost-response execution.",
+    "independent_vectors": "26dictionary/fact vectors match independent Python/OpenSSL/Node CBOR/crypto; original20 unchanged.",
+    "model_tests": {
+      "result": "PASS",
+      "tool": 51327,
+      "passed": 70,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 0,
+      "source_mode": "Frozen committed source read-only; pinned compiler image, networknone, fresh isolated model target, exclusive borrowed Cargo-home only; no shared target/native assets mounted.",
+      "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-descriptors-qualification-20261102/model-receipt.json",
+      "receipt_sha256": "dc7a16e81f8f3c0cda2bef3fa2a9823c8651083f53ad476f7ca31479cc314671",
+      "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-descriptors-b8380f84"
+    },
+    "other_checks": "Rustfmt/diff/artifact verifier PASS; expanded17record Archive corpus split16+1 under unchangedcap.",
+    "remaining": [
+      "Compile and execute authored native interning/reopen/conflict, Archive row/publication/complete-cut and Index controls in the coherent Monitor source qualification.",
+      "Actual A05/model/admission/Archive family, bounded guarded execution, crash uncertainty and installed first passive journey remain unimplemented."
+    ],
+    "custody": "Tool51327 reaped0; owned container stopped/PID0/noOOM; Cargo-home lock released; original4ELF bytes/full metadata guarded unchanged."
+  }
 }

@@ -10,11 +10,12 @@ no second plan or whole-phase barrier.
 P03-T05 Steps1/4 and P03-T01 Step3: finite fixed-width history, shared query budget,
 same-second IDs/local exclusions, orderly stop and historical recovery funding.
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **e7a7f752** before this checkpoint
-commit. Main/origin was **a71b6ea3** before integration; no current increment push
-yet. Ready coherent local work: historical scratch26232a54 integrated53802a46,
-client-profile49500f65 integratedd6a74562, source pinfed87a8e, and this linked
-evidence/inventory/verification-guide update. No partial implementation remains.
+`work/m2-finite-history-20261101`, HEAD **98288897** (new descriptor source only local). Canonical main/origin remain
+clean at pushed **a37f7829**. Local checkpoint updates remain uncommitted.
+Mac fixture21842fe8 is integrated as a37f7829: direct nonblocking accept after final
+source EOF replaces unsupported listener introspection; original timeouts, exact
+extra-request refusals and owned shutdown remain. Astra source review approved;
+48 affected Linux controls PASS. Real Mac qualification is still pending.
 
 [The P03 report](evidence/p03-initial-sync-native-20261002.json),
 `linear_quantum_20261101.finite_history_windows_20261101`, owns exact identities,
@@ -40,7 +41,7 @@ Old01fc's seven connected window/cap/corruption/COMMIT cases and dee's installed
 stop7/7 remain valid for unchanged responsibilities. Portable538 ran586 cases,
 585PASS plus one stale tutorial-pin ERROR; original run stays FAIL. Pin correction
 then passed14 affected controls; export-profile13 and retained57 PASS separately.
-No unchanged full suite was repeated. Current full hosted CI is **NOT_RUN**.
+No unchanged full suite was repeated. Current full hosted CI is **IN_PROGRESS**, with the macOS failure below still unclassified.
 
 ## Resources and next action
 
@@ -50,22 +51,43 @@ runtime `/home/tux/bigbrotr-implementation-20260917/runs/m2-window-succession-53
 Frozen acceptance `.research/m2-window-acceptance-fed87a8e`. All tools reaped;
 compiler/cache115/observer and all case containers stopped/PID0, cleanupPASS.
 Original4ELF bytes/full metadata, raw failures/data/worktrees/.research and borrowed
-bridge retained. Agents finished; no autonomous development writes. No cleanup.
+bridge retained. Source/review agents finished; one Sol CI observer is active as described below. No autonomous development writes or local engine/compiler. No cleanup.
 
-**Next:** finish coherent checkpoint commit, verify final publication delta,
-fast-forward main/push and qualify actual hosted foundation CI. Audit its terminal
-checks/artifacts/logs; earlier A71 hosted PASS qualifies A71 only. Source scan through
-e7a7f752 found99objects/24.1MB,12 occurrences of4 already public/triaged fingerprints,
-zero unclassified/sensitive/archive/LFS; later doc delta/output still needs its scope.
-Do not cancel required full CI with microscopic follow-up pushes.
+**Hosted gate:** new [run41366972298](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298),
+exact pushed a37f7829, is IN_PROGRESS. Required full matrix remains open.
+Previous [run41365283319](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41365283319)
+for70d5912c is CANCELLED by the existing supersession policy after the coherent
+fixture-fix push. Mac captured two missing completion-marker assertions; the
+unsupported Darwin SO_ACCEPTCONN source path explains the defect, but its original
+relay exception was not retained. Both Linux jobs were interrupted; partial
+release/Clippy states and later NOT_RUN checks must retain that classification.
+The prior A71 full PASS does not qualify current product changes.
+Sol `history_scratch_build_prep_sol` owns terminal70 audit under
+`.research/ci-publication-20261026/terminal-70d5912c-20261102`; its sole watcher11460
+is reaped. Four artifacts/23members and38 workflow logs scanned without candidates;
+33checks finalized:13PASS/1FAIL/2INTERRUPTED/17NOT_RUN, scope20PASS; Rust tests NOT_RUN on every platform. Old watcher11460 is fully reaped. Sole new watcher68260 owns a37 under `.research/ci-publication-20261026/terminal-a37f7829-20261102`; no duplicate observer or manual retry.
+**Next:** observe exact newa37 run, classify failures
+and audit its required terminal checks/public logs/artifacts. Final source audits
+through70 and a37 PASS (a37:5objects/zero candidates); later source/output needs its
+scope. Actual maintained documentation checks11831 PASS.
 
-Then first passive **P04-T07/P02 A05**: explicit operator-enrolled endpoint → bounded
+In parallel, next passive **P04-T07/P02 A05**: explicit operator-enrolled endpoint → bounded
 read → typed evidence/admission → Archive → standalone inspection after restart.
 Bounded architecture review proposes four evidence variants (execution unknown,
 completion unknown, terminal, immutable resolution), stable route/method/clock
 references, typed open/read children, cut-before-resolution/count-once and trusted
 transport phase attribution. Aggregate profile caps still require an explicit
 choice in the owning contracts before coding independent oracles. No implementation
-yet. Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import,
+of the Measurement family yet. Sol now owns the unintegrated descriptor prerequisite
+under `.research/m2-monitor-descriptors-20261102`, branch
+`work/m2-monitor-descriptors-20261102`, basea37, clean original **b8380f84**, locally integrated **98288897**: direct-route/public-private with a
+stable safe label and a distinct passive-ws-read method. Model/codec/native/Archive/
+Index callers and26independent vectors are reconciled; original20 unchanged. Source
+review approved. Actual isolated model package51327 passed70/0FAIL/0ignored; compiler
+and cache custody verified, tool/container stopped. Native/Archive/Index authored
+controls remain NOT_RUN. [Descriptor evidence](evidence/p02-ingest-dictionary-codec-20260918.json)
+owns exact source/scope/receipts. Root owns remaining measurement/dispatch/installed acceptance. Next bounded work:
+freeze the A05 evidence/profile contract, reconcile its reference/receipt/Archive
+consumers and implement the first guarded passive path. Full500/partitions/sparse growth/adoption/slices/revisits/live/NEG/fleet/import,
 all-excluded installed coverage and remaining P02 producer/compacted/reclamation
 capacity retain existing task owners/gates. This slice does not complete M2/T05.

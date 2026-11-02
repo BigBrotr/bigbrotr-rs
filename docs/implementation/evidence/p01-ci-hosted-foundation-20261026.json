@@ -2346,5 +2346,47 @@
       "failure_classification": "No billing/admission, workflow, cancellation or product failure. Watcher46117/acquisition53934 reaped0; owned observerPIDs absent. Existing evidence hashes/external pins checked.",
       "historical_scopes": "Other source-scoped fields and previous_verified_hosted_executions retain their original execution scope."
     }
-  ]
+  ],
+  "finite_history_hosted_followup_20261102": {
+    "status": "REQUIRED_CURRENT_A37_RUN_IN_PROGRESS",
+    "preceding_attempt": {
+      "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41365283319",
+      "revision": "70d5912c89a34ed873b2b15384e6509863d48d2a",
+      "provider_conclusion": "CANCELLED",
+      "cause": "Mac portable peer completion marker assertions failed; current fixture directly queried SO_ACCEPTCONN, unsupported on Darwin. Exact relay exception was not retained, so unsupported-option error is source-supported rather than captured. Coherent correction push superseded this already-failed run through the existing workflow policy.",
+      "foundation_checks": {
+        "pass": 13,
+        "fail": 1,
+        "interrupted_by_provider_cancellation": 2,
+        "not_run": 17,
+        "total": 33
+      },
+      "scope_controls_pass": 20,
+      "rust_test_execution": "NOT_RUN on every platform",
+      "partial_scope": "Both Linux acceptance586/export13 suites PASS; AMD64 release/source/native/worker binding verified, Clippy interrupted; ARM release interrupted with source manifest but no build result. No full Linux/product test qualification.",
+      "capsule": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-70d5912c-20261102",
+      "terminal_audit_sha256": "ab823f13df11952ff4d283c90e4df8f175d1b796f95d8199bb252401a811967f",
+      "actual_accounting_sha256": "bd1c8997a34189538a3b67be9f05570a159df3baff8bb8f8a231179b7a3dcf34",
+      "public_output_scope": "4ZIPs/23members and38workflow logs; zero candidate occurrences/unclassified in retained scanner scope. Provider timing/asynchronous alert limits remain.",
+      "public_output_receipt_sha256": "65133647092f1cb624a9a71198853a4b4efc516e5e134688cc3eb7562e3c7fef",
+      "watcher": "11460 reaped; old PID identities absent, no old observer active"
+    },
+    "correction": {
+      "original_commit": "21842fe86c2c3aa9d81c6322cff3a3711b4f5a9f",
+      "integrated_main": "a37f78290c37d27ef8d608ca45652ada9614b7e0",
+      "source_review": "Astra approved actual4file diff; direct nonblocking kernel accept after full6/8page EOF, strict EAGAIN/EWOULDBLOCK/openfd/unfinished owner, restored timeout. Wrong errno/timeout/closedfd/refusal and real wire/body/EOSE/close/join controls retained.",
+      "local_controls": "48 affected Linux controls PASS; no product rebuild for fixture-only changes.",
+      "source_delta_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/m2-window-source-a37f7829-20261102/source-triage.json",
+      "source_delta_audit_sha256": "300e28a937ce5b67955eedb3b897701ef903335db13c9dbcea4fbeaa2efcf52b"
+    },
+    "current_attempt": {
+      "run_url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41366972298",
+      "revision": "a37f78290c37d27ef8d608ca45652ada9614b7e0",
+      "status": "IN_PROGRESS",
+      "required_scope": "Full native foundation on Linuxamd64/Linuxarm64/macOS; no current complete PASS claim.",
+      "capsule": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/terminal-a37f7829-20261102",
+      "sole_observer_tool": 68260
+    },
+    "latest_fully_verified_source": "A71 remains the latest complete hosted PASS until current required checks finish; local538 installed evidence is independently source-scoped in P03 report."
+  }
 }

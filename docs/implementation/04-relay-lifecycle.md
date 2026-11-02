@@ -252,6 +252,18 @@ Paths: `apps/bigbrotr/src/acquisition/monitor/scheduler.rs`,
 `contracts/archive/v1/measurement.json`, `apps/bigbrotr/tests/monitor_attempts.rs`,
 `tests/fixtures/relay-lifecycle/monitor_crashes.json`, `docs/operations/monitor.md`.
 
+The first bounded implementation is one explicitly operator-enrolled direct
+endpoint: passive read → typed A05 admission → Archive → standalone inspection
+after restart. It consumes closed direct-route/passive-method dictionaries and
+trusted transport-phase evidence. A05 includes execution-unknown,
+completion-unknown, terminal and immutable unknown-to-terminal resolution in one
+family; apply the selected cut before resolution and count the attempt once.
+Neither unknown state votes as success/failure. Fixed typed open/read children
+preserve partial observations independently of terminal reason. Freeze finite
+per-attempt profile bounds in the owning contract before independent oracles.
+This slice does not complete fleet scheduling, catalog checks or later selected
+Monitor tasks; their steps below remain open.
+
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.
 - [ ] **3. Schedule liveness and catalog independently.** Defaults are 5m and 6h, claim 100, concurrency 32, host concurrency 1, host start budget 32/min and 0.1 jitter. Use 15s check timeout/45s overlay; retries=1 total attempt. Failure due decay factor 2 caps at 7d; achieved coverage/backlog is reported rather than promised cadence. A retry_initial of 1s is inactive until attempts exceed one.
