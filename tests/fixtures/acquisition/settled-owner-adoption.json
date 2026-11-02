@@ -1,0 +1,25 @@
+{
+  "format": "bigbrotr-settled-owner-adoption-expectation/1",
+  "qualification": "NOT_RUN: source fixture; installed product execution is required",
+  "signed_inputs": [
+    {"path": "selector-events.json", "name": "outside-request-window", "created_at": 24, "id": "dddc1fd9c72975cf5b5768daf466d01bb6949c1d8acc07cf0f3c88b2c638aba8"},
+    {"path": "selector-events.json", "name": "included", "created_at": 23, "id": "32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791"},
+    {"path": "../ingest/import-event.jsonl", "created_at": 1, "id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"}
+  ],
+  "selector": {"version": 1, "filters": [{"kinds": [1], "until": 86399}], "history_since": 0, "ephemeral": "retain"},
+  "window_width": 86400,
+  "horizon": 86400,
+  "query_budget": 128,
+  "requested_limit": 3,
+  "relay_limit": 2,
+  "old_cut": {"last_quantum_number": 1, "next_plan_commit": "before-forward", "next_quantum_absent": true, "producer_epoch": 1},
+  "requests": [
+    {"number": 1, "producer_epoch": 1, "interval": [0, 86400], "events": [24, 23], "disposition": "overlap", "continuation_upper": 24, "gap": null},
+    {"number": 2, "producer_epoch": 2, "interval": [0, 24], "events": [23], "disposition": "saturated_second", "continuation_upper": 23, "gap": [23, 24]},
+    {"number": 3, "producer_epoch": 2, "interval": [0, 23], "events": [1], "disposition": "overlap", "continuation_upper": 2, "gap": null},
+    {"number": 4, "producer_epoch": 2, "interval": [0, 2], "events": [1], "disposition": "saturated_second", "continuation_upper": 1, "gap": [1, 2]},
+    {"number": 5, "producer_epoch": 2, "interval": [0, 1], "events": [], "disposition": "window_closed", "continuation_upper": 86400, "gap": null}
+  ],
+  "final": {"same_job": true, "job_revision": 3, "queries_spent": 5, "attempted_prefix": 86400, "gap_count": 2, "pending_work": "settled", "pending_interval": null, "coverage": "pending", "unique_bodies": [24, 23, 1], "event_observations": 5, "sixth_wire_forbidden": true},
+  "limits": "One initial-to-successor transition; each producer remains below64. No full500-event walker, OPEN65, partitions, sparse growth, repeated successor loss or fleet qualification. EOSE completes the scripted bounded response and retains both unresolved same-second gaps; it does not certify interval coverage."
+}

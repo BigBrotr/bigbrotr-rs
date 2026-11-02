@@ -66,6 +66,9 @@ def run(directory):
     if directory.name == 'passive-monitor':
         from installed_passive_monitor_client import run as passive_monitor
         return passive_monitor(directory, request, cli, logged_in, session, saved, auth)
+    if (directory/'linear-capped-adoption-profile.json').exists():
+        from linear_capped_client import run_adoption
+        return run_adoption(directory,request,cli,logged_in,session,saved,auth)
     observations, statuses, errors = [], [], []
     diagnostics = (directory / 'diagnostics.json').exists()
     diagnostic_errors = []

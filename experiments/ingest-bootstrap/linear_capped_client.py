@@ -3,6 +3,23 @@ from installed_sync_client import publish
 from linear_capped_transport import SELECTORS
 
 
+def adoption_status(observed,scope,receipt):
+    from installed_sync_client import COMMON_SELECTOR,quantum_status
+    assert {key:value for key,value in observed.items() if key!='linear_quantum'}==dict(
+        format='bigbrotr-job-status/1',job_id=receipt['job_id'],kind='acquisition',state='queued',job_revision='3',
+        checkpoint_revision='0',created_at_us=receipt['accepted_at_us'],completed_at_us=None,
+        observed_at_us=observed['observed_at_us'],reason_code=None,authority='observation-only')
+    entries=dict(enumerate((('request',0,86400,86400),('request',0,24,86400),('request',0,23,86400),
+        ('request',0,2,86400),('request',0,1,86400)),1))
+    value=quantum_status(observed,scope['scope_id'],receipt['accepted_at_us'],known_plan=True,
+        selector=COMMON_SELECTOR,expected_entries=entries)
+    assert value==dict(format='bigbrotr-linear-quantum-status/2',quantum_number='5',scope_id=scope['scope_id'],entry_kind='request',
+        disposition='window_closed',lower='0',upper='1',window_end='86400',horizon='86400',window_width='86400',query_budget=128,
+        queries_spent=5,attempted_prefix='86400',gap_count=2,pending_work='settled',pending_interval=None,result='linear_observed',
+        terminal='eose',gap=None,continuation_upper='86400',retained_events=0,classified_prefix=0,coverage='pending')
+    return value
+
+
 def continue_after_prepopulation(directory,call,barrier,status,endpoint,enrollment,visibility,revisions):
     # Host independently observes A's delivered SQL/input progress before this
     # client accepts B. No socket, counter or elapsed sleep releases this gate.
@@ -14,3 +31,61 @@ def continue_after_prepopulation(directory,call,barrier,status,endpoint,enrollme
     receipt=call('jobs',dict(kind='acquisition',scope_id=scope['scope_id'],deadline_us='120000000',**revisions),'b2'*16)
     assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
     return scope,receipt
+
+
+def run_adoption(directory,request,cli,logged_in,session,saved,auth):
+    """One real accepted job, one listener, and two actual Serve lifetimes.
+
+    The host releases the second gate only after the successor's five terminals
+    settle. This client sends no replacement job or source-registration command.
+    NOT_RUN here: installed lifecycle qualification belongs to the host runner.
+    """
+    import json
+    import threading
+    import time
+    from installed_sync_client import COMMON_SELECTOR,relay_listener
+    from linear_capped_transport import relay
+    observations=[];errors=[]
+    def call(path,value,key):
+        code,answer=request('POST','/management/v1/'+path,value,{**auth,'Idempotency-Key':key})
+        observations.append(dict(path=path,input=value,key=key,status=code,body=answer))
+        assert code==202 and answer['created'] is True and answer['command_key']==key
+        return answer
+    def barrier(name,seconds):
+        publish(directory,name+'.json',observations)
+        deadline=time.monotonic()+seconds
+        while not (directory/(name+'.continue')).exists():
+            assert not errors and time.monotonic()<deadline,name
+            time.sleep(.01)
+    visibility=json.loads((directory/'visibility.json').read_text())
+    assert visibility['ordinal']=='3'
+    revisions=dict(expected_config_revision='1',expected_policy_revision='1')
+    endpoint=call('relay-endpoints',dict(url='WS://127.0.0.1:7447/a/../installed-fixture',**revisions),'91'*16)
+    enrollment=call('relay-enrollments',dict(endpoint_id=endpoint['endpoint_id'],visibility=visibility,
+        route={'class':'private','cidr':'127.0.0.1/32'},enabled=True,expected_generation=None,**revisions),'92'*16)
+    assert enrollment['generation']=='1' and enrollment['enabled'] is True
+    scope=call('acquisition-scopes',dict(endpoint_id=endpoint['endpoint_id'],access_scope_id=enrollment['access_scope_id'],
+        visibility=visibility,selector=COMMON_SELECTOR,**revisions),'a1'*16)
+    listener=relay_listener();finished=threading.Event()
+    worker=threading.Thread(target=relay,args=(directory,listener,finished,errors),kwargs=dict(adoption=True))
+    worker.start()
+    try:
+        barrier('prepared',15)
+        receipt=call('jobs',dict(kind='acquisition',scope_id=scope['scope_id'],deadline_us='120000000',**revisions),'b1'*16)
+        assert receipt['execution']=='unobserved' and receipt['authority']=='acceptance-only'
+        # No HTTP poll while the original process is deliberately lost. The
+        # same authenticated session later observes the same accepted JobId.
+        barrier('adoption-old-cut',110)
+        code,observed=request('GET','/management/v1/jobs/'+receipt['job_id'],headers=auth)
+        assert code==200
+        adoption_status(observed,scope,receipt)
+        publish(directory,'linear-status-observations.json',[observed])
+        logged_out=cli('logout','--session-ref','file:'+str(session))
+        assert json.loads(session.read_text())==saved
+        assert request('GET','/management/v1/me',headers=auth)[0]==401
+        barrier('commands-finished',15)
+    finally:
+        finished.set();worker.join(4)
+        assert not worker.is_alive(),'adoption relay did not join'
+    assert not errors
+    return dict(login=logged_in,logout=logged_out,observations=observations,job_status=observed)

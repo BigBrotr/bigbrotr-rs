@@ -75,20 +75,19 @@ def expected(state, report, event, dictionary_time, received=None, recorded=None
     assert type(preparation_hole) is bool and (not preparation_hole or acknowledge)
     assert type(retained_boundary) is bool
     assert not retained_boundary or (acknowledge and provenance and not preparation_hole)
-    # The four-body capped fixture has no preparation hole. Select its exact
+    # The two/four-body capped fixtures have no preparation hole. Select their exact
     # finite population independently rather than borrowing another scenario's
     # permission or weakening the existing three/61-body profile bounds.
-    assert finite_event_count is None or (type(finite_event_count) is int and finite_event_count==4
+    assert finite_event_count is None or (type(finite_event_count) is int and finite_event_count in (2,4)
         and acknowledge and provenance and not retained_boundary and not preparation_hole)
     population=61 if retained_boundary else 4 if preparation_hole else finite_event_count or 3
-    # Two additional distinct events, or three for the explicit preparation
-    # hole, each with independent clocks/digests. No ACK is inferred.
+    # Each finite distinct event has independent clocks/digests. No ACK is inferred.
     if additional_events:
         assert isinstance(additional_events,(tuple,list)) and len(additional_events)==population-1
         assert received is not None
         assert len({event['id'],*(item[0]['id'] for item in additional_events)})==population
     assert not retained_boundary or len(additional_events) == 60
-    assert finite_event_count is None or len(additional_events)==3
+    assert finite_event_count is None or len(additional_events)==finite_event_count-1
     dataset = bytes.fromhex(state['datasets'][0]['dataset_id'][2:])
     owner, = [r for r in state['owner_epochs'] if r['role'] == 'ingest']
     domains = {r['dictionary_kind']: bytes.fromhex(r['allocation_domain'][2:])

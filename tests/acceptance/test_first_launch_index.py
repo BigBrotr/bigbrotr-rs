@@ -388,9 +388,9 @@ class InitialIndexControls(unittest.TestCase):
             changed=copy.deepcopy(state);changed[table][0][field]=value
             with self.subTest(table=table),self.assertRaises(AssertionError):check.ordinary_unchanged(state,changed)
 
-    def test_current_ordinary_inventory_matches0044_and_refuses_extra_missing_or_substituted_tables(self):
+    def test_current_ordinary_inventory_matches0045_and_refuses_extra_missing_or_substituted_tables(self):
         self.assertEqual(check.CONTROL_TABLES,base.expected_tables(ROOT,{}))
-        self.assertEqual(len(check.CONTROL_TABLES),85)
+        self.assertEqual(len(check.CONTROL_TABLES),86)
         state,_=ordinary_fixture()
         for change in (lambda s:s.pop('measurement_dispatches'),
                 lambda s:s.update(untracked_control_relation=[]),

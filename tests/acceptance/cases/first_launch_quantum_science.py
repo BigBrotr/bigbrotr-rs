@@ -14,7 +14,7 @@ def initial_science(state, report, events, wires, dump, inputs, completed, *,
     """
     from installed_sync_oracle import expected, decode
     from bootstrap_oracle import cbor
-    assert len(mutations) in (1, 3, 4)
+    assert len(mutations) in (1, 2, 3, 4)
     assert [item[1] for item in mutations] == list(range(4, 4 + len(mutations)))
     assert len(inputs) == 3 + len(mutations)
     assert type(native_sequence) is int and native_sequence > 0
@@ -38,7 +38,7 @@ def initial_science(state, report, events, wires, dump, inputs, completed, *,
     rows, wanted_inputs, receipts = expected(state, report, first[0], dictionary,
         first[1], first[2], first[3], expected_body_digest=first[4],
         additional_events=parameters[1:], acknowledge=True,
-        finite_event_count=4 if len(mutations)==4 else None)
+        finite_event_count=len(mutations) if len(mutations) in (2,4) else None)
     assert actual == rows, 'complete independently encoded native rows'
     assert inputs == wanted_inputs, 'all independently encoded original inputs'
     return dict(native=rows, inputs=wanted_inputs, receipts=receipts,

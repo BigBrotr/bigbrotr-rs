@@ -28,6 +28,89 @@ def effects(value):
     return result
 
 
+def continuation_owner(state,row,job):
+    """Authenticate a historical issuer through complete finalized segments.
+
+    A seal alone is insufficient. Each segment needs the closed old source,
+    actual committed succession/activation and one exact job-owner CAS. Native
+    page authentication remains the separate complete native-census oracle.
+    """
+    from cases.first_launch_restart import only
+    seals=sorted((value for value in state.get('acquisition_continuations',[]) if value['job_id']==job['job_id'] and value['adopted_at_us'] is not None),
+        key=lambda value:value['previous_job_revision'])
+    assert seals and len({value['continuation_id'] for value in seals})==len(seals)
+    owner=lambda value,prefix:(value[prefix+'resource'],value[prefix+'epoch'],value[prefix+'incarnation'])
+    prior=None;covered=False
+    for seal in seals:
+        assert seal['dataset_id']==job['dataset_id']==row['dataset_id'] and seal['scope_id']==row['scope_id']
+        assert seal['previous_continuation']==(None if prior is None else prior['continuation_id'])
+        assert seal['previous_job_revision']==(2 if prior is None else prior['adopted_job_revision'])
+        if prior is not None:
+            assert owner(seal,'previous_owner_')==owner(prior,'adopting_')
+            assert seal['producer_epoch']==prior['target_epoch'] and seal['manifest_sha256']==prior['target_manifest_sha256']
+            assert seal['last_quantum_number']>=prior['last_quantum_number']
+        assert seal['adopted_job_revision']==seal['previous_job_revision']+1
+        assert seal['target_epoch']==seal['producer_epoch']+1
+        assert seal['sealed_at_us']<=seal['adopted_at_us']<only(state['acquisition_jobs'],job_id=job['job_id'])['deadline_at_us']
+        assert all(seal[key] is not None for key in ('target_manifest_sha256','activation_sha256','adoption_transaction'))
+        previous=only(state['owner_epochs'],dataset_id=job['dataset_id'],role='control',
+            resource_id=seal['previous_owner_resource'],epoch=seal['previous_owner_epoch'],process_incarnation=seal['previous_owner_incarnation'])
+        assert previous['state']=='released' and previous['exclusion_method']=='storage_fenced'
+        current=only(state['owner_epochs'],dataset_id=job['dataset_id'],role='control',
+            resource_id=seal['adopting_resource'],epoch=seal['adopting_epoch'],process_incarnation=seal['adopting_incarnation'])
+        assert current['epoch']>previous['epoch'] and current['resource_id']==previous['resource_id']
+        producer=only(state['producer_epochs'],dataset_id=job['dataset_id'],producer_slot_id=seal['producer_slot_id'],producer_epoch=seal['producer_epoch'])
+        stream=only(state['source_streams'],dataset_id=job['dataset_id'],shard_id=seal['shard_id'],owner_epoch=seal['producer_epoch'])
+        assert producer['state']=='retired' and stream['state']=='closed'
+        assert producer['reserved_through_request']==seal['complete_through_request']<=64
+        assert stream['last_complete_sequence']==seal['source_sequence']
+        assert producer['closure_digest']==stream['closure_digest']==seal['source_digest']
+        heads=[value for value in state['producer_checkpoints'] if (value['producer_slot_id'],value['producer_epoch'])==(
+            seal['producer_slot_id'],seal['producer_epoch'])]
+        if seal['checkpoint_revision']==0:
+            assert not heads and seal['complete_through_request']==0 and seal['checkpoint_sha256'] is None
+        else:
+            head,=heads
+            assert (head['checkpoint_revision'],head['complete_through_request'],head['checkpoint_digest'])==(
+                seal['checkpoint_revision'],seal['complete_through_request'],seal['checkpoint_sha256'])
+        initial=seal['target_epoch']==2
+        intent=only(state['initial_ingest_successions'] if initial else state['ingest_successions'],
+            producer_slot_id=seal['producer_slot_id'],target_epoch=seal['target_epoch'])
+        activation=only(state['initial_ingest_activations'] if initial else state['ingest_activations'],
+            producer_slot_id=seal['producer_slot_id'],target_epoch=seal['target_epoch'])
+        assert intent['dataset_id']==activation['dataset_id']==seal['dataset_id']
+        assert intent['previous_manifest_sha256']==seal['manifest_sha256']
+        assert intent['target_manifest_sha256']==activation['target_manifest_sha256']==seal['target_manifest_sha256']
+        assert intent['handoff_sha256']==activation['handoff_sha256']==seal['activation_sha256']
+        assert raw(seal['manifest_sha256'])==hashlib.sha256(raw(intent['previous_manifest'])).digest()
+        assert raw(seal['target_manifest_sha256'])==hashlib.sha256(raw(intent['target_manifest'])).digest()
+        assert raw(seal['activation_sha256'])==hashlib.sha256(raw(intent['handoff'])).digest()
+        assert (intent['issued_through'],intent['last_complete_sequence'],intent['closure_digest'])==(
+            seal['complete_through_request'],seal['source_sequence'],seal['source_digest'])
+        assert (intent['config_revision'],intent['policy_revision'])==(job['config_revision'],job['policy_revision'])
+        assert (activation['activated_by_resource'],activation['activated_by_epoch'],activation['activated_by_incarnation'])==owner(seal,'adopting_')
+        assert activation['activated_at_us']<=seal['adopted_at_us']
+        target=only(state['producer_epochs'],dataset_id=job['dataset_id'],producer_slot_id=seal['producer_slot_id'],producer_epoch=seal['target_epoch'])
+        assert (target['owner_resource_id'],target['owner_epoch'],target['owner_incarnation'])==(
+            intent['owner_resource_id'],intent['target_epoch'],intent['target_incarnation'])
+        lower=0 if prior is None else prior['last_quantum_number']
+        segment=[value for value in state['acquisition_quanta'] if value['job_id']==job['job_id']
+            and (value['producer_slot_id'],value['producer_epoch'])==(seal['producer_slot_id'],seal['producer_epoch'])]
+        assert all(lower<value['quantum_number']<=seal['last_quantum_number'] and value['disposition'] is not None
+            and value['completed_at_us'] is not None and (value['entry_kind']!='request' or value['terminal_kind'] is not None)
+            for value in segment),'a pending/unknown quantum cannot be sealed'
+        assert max((value['quantum_number'] for value in segment),default=lower)==seal['last_quantum_number']
+        if (row['producer_slot_id'],row['producer_epoch'])==(seal['producer_slot_id'],seal['producer_epoch']):
+            assert lower<row['quantum_number']<=seal['last_quantum_number']
+            assert (row['issuer_resource'],row['issuer_epoch'],row['issuer_incarnation'])==owner(seal,'previous_owner_')
+            covered=True
+        prior=seal
+    assert covered,'historical issuer has no finalized segment'
+    assert (job['owner_resource_id'],job['owner_epoch'],job['owner_incarnation'])==owner(prior,'adopting_')
+    assert job['job_revision']==prior['adopted_job_revision'] and job['state']=='queued'
+    assert int(job['xmin'])==int(prior['adoption_transaction'])%(2**32),'adoption and owner CAS were not atomic'
+
+
 def shape(state):
     """Bound every retained record and independently recompute its logical charge."""
     rows=state['acquisition_quanta'];totals={};jobs={}
@@ -68,8 +151,8 @@ def shape(state):
             assert job['checkpoint_revision']==0 and job['result_manifest_digest'] is None
             assert job['reason_code']==gap['reason']==reason
             assert job['completed_at_us']==gap['abandoned_at_us']>=job['created_at_us']
-        else:
-            assert issuer==current
+        elif issuer!=current:
+            continuation_owner(state,row,job)
         integer_fields=('quantum_number','producer_epoch','issuer_epoch','interval_lower','interval_upper',
             'window_end','horizon','window_width','query_budget','query_number','maximum_dependencies',
             'checkpoint_before','classified_before','charged_bytes')
@@ -197,7 +280,8 @@ def journey(state,wires,epoch,expected,*,selector=None,entries=None,width=86400,
     from installed_sync_client import COMMON_SELECTOR,frozen_horizon
     selector=selector or COMMON_SELECTOR
     shape(state)
-    rows=sorted((row for row in state['acquisition_quanta'] if row['producer_epoch']==epoch),key=lambda row:row['quantum_number'])
+    assert epoch is None or type(epoch) is int
+    rows=sorted((row for row in state['acquisition_quanta'] if epoch is None or row['producer_epoch']==epoch),key=lambda row:row['quantum_number'])
     assert rows
     job=next(job for job in state['jobs'] if job['job_id']==rows[0]['job_id'])
     horizon=frozen_horizon(selector,job['created_at_us']);origin=selector['history_since']

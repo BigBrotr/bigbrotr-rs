@@ -13,6 +13,8 @@ from installed_sync_client import exact,read_frame,send_frame,publish,REFUSAL_SH
 IMPORT_SHA256='c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae'
 WINDOW_SHA256='b6ae647fbaa641c8bb2c4ae7dbcf12987a8b3bd01cd14eecbf15476c344111cc'
 PROFILE=dict(format='bigbrotr-linear-capped-fixture/2',requests=6,scopes=2,requested_limit=3,relay_limit=2)
+ADOPTION_PROFILE=dict(format='bigbrotr-linear-capped-adoption-fixture/1',requests=5,scopes=1,
+    requested_limit=3,relay_limit=2)
 SELECTORS=(dict(version=1,filters=[dict(kinds=[1],since=23,until=86399)],history_since=0,ephemeral='retain'),
     dict(version=1,filters=[dict(kinds=[1],until=86399)],history_since=0,ephemeral='retain'))
 ENTRIES=((('request',0,86400,86400),('request',0,24,86400),
@@ -107,13 +109,26 @@ def accept_nowait(listener):
         listener.settimeout(timeout)
 
 
-def relay(directory,listener,finished,errors):
+def relay(directory,listener,finished,errors,*,adoption=False):
+    """The adoption recipe keeps this same listener across the owner change.
+
+    The source-only controls exercise transport, never authorize a continuation.
+    Only the installed host's SQL/process/native observations can qualify that.
+    """
+    assert type(adoption) is bool
+    profile=ADOPTION_PROFILE if adoption else PROFILE
+    profile_name='linear-capped-adoption-profile.json' if adoption else 'linear-capped-profile.json'
+    prefix='capped-adoption-peer' if adoption else 'capped-peer'
+    count=profile['requests']
+    pages=((0,1),(1,),(2,),(2,),()) if adoption else PAGES
+    uppers=(86400,24,23,2,1) if adoption else tuple(UPPERS[scope][TURN_SCOPES[:n+1].count(scope)-1]
+        for n,scope in enumerate(TURN_SCOPES))
     number=0;nonces=set();completed=False
     try:
-        assert json.loads((directory/'linear-capped-profile.json').read_text())==PROFILE
+        assert json.loads((directory/profile_name).read_text())==profile
         events=corpus(directory)
         while not finished.is_set():
-            probe=number==6 and not completed
+            probe=number==count and not completed
             try:connection,remote=accept_nowait(listener) if probe else listener.accept()
             except BlockingIOError as error:
                 if not probe or error.errno not in (errno.EAGAIN,errno.EWOULDBLOCK):raise
@@ -123,7 +138,7 @@ def relay(directory,listener,finished,errors):
                 # SO_ACCEPTCONN getsockopt is unsupported on Darwin.
                 listening=listener.fileno()>=0
                 assert listening,'capped listener closed before completion'
-                publish(directory,'capped-peer-complete.json',dict(format=PROFILE['format'],requests=6,
+                publish(directory,prefix+'-complete.json',dict(format=profile['format'],requests=count,
                     listener_closed=False,listening=listening,completed_at_us=time.time_ns()//1000))
                 completed=True
                 continue
@@ -132,18 +147,19 @@ def relay(directory,listener,finished,errors):
                 continue
             number+=1
             with connection:
-                assert number<=6,'bounded continuation opened a seventh socket'
+                assert number<=count,'bounded continuation opened an extra socket'
                 assert remote[0]=='127.0.0.1'
-                scope=TURN_SCOPES[number-1];turn=TURN_SCOPES[:number].count(scope)
-                upper=UPPERS[scope][turn-1]
-                values=[events[index] for index in PAGES[number-1]]
-                assert bool(values)==(number<6),'only the declared older remainder is empty'
+                scope=0 if adoption else TURN_SCOPES[number-1]
+                turn=number if adoption else TURN_SCOPES[:number].count(scope)
+                upper=uppers[number-1]
+                values=[events[index] for index in pages[number-1]]
+                assert bool(values)==(number<count),'only the declared older remainder is empty'
                 exchange_page(directory,connection,number,
-                    dict(kinds=[1],since=23 if scope==0 else 0,until=upper-1,limit=3),
+                    dict(kinds=[1],since=23 if not adoption and scope==0 else 0,until=upper-1,limit=3),
                     values,nonces,scope_number=scope,scope_turn=turn)
     except BaseException as error:
         errors.append(type(error).__name__+': '+str(error));publish(directory,'relay-error.json',dict(error=errors[-1]))
     finally:
         listener.close()
-        publish(directory,'capped-peer-joined.json',dict(format=PROFILE['format'],requests=number,
+        publish(directory,prefix+'-joined.json',dict(format=profile['format'],requests=number,
             listener_closed=True,joined_at_us=time.time_ns()//1000,errors=len(errors)))

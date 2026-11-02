@@ -145,12 +145,12 @@ def local_docker_endpoint(environment, context):
 
 def expected_tables(source, inputs=None):
     manifest = load(source / 'migrations/manifest.json')
-    require(manifest['application_order'][-1]['version'] == 44, 'first-launch schema profile changed')
+    require(manifest['application_order'][-1]['version'] == 45, 'first-launch schema profile changed')
     tables = {'schema_versions'}
     for entry in manifest['application_order']:
         tables.update(re.findall(r'CREATE TABLE control\.(\w+)',
                                  (source / 'migrations/postgres' / entry['name']).read_text()))
-    require(len(tables) == 85, 'first-launch Control table profile changed')
+    require(len(tables) == 86 and 'acquisition_continuations' in tables, 'first-launch Control table profile changed')
     if inputs is not None:
         names = ['migrations/manifest.json'] + ['migrations/postgres/' + entry['name']
                                                 for entry in manifest['application_order']]
@@ -161,10 +161,10 @@ def expected_tables(source, inputs=None):
 def expected_ledger(source):
     manifest = load(source / 'migrations/manifest.json')
     entries = manifest['application_order']
-    require(manifest['engine'] == 'postgres-control' and len(entries) == 60
-            and entries[-1]['version'] == 44 and len({e['version'] for e in entries}) == 60,
+    require(manifest['engine'] == 'postgres-control' and len(entries) == 61
+            and entries[-1]['version'] == 45 and len({e['version'] for e in entries}) == 61,
             'first-launch current migration profile changed')
-    # Application order includes reserved 8xx/9xx IDs; target44 is not1..44.
+    # Application order includes reserved 8xx/9xx IDs; target45 is not1..45.
     return sorted((dict(engine='postgres-control', migration=e['version'], name=e['name'],
         checksum=digest(source / 'migrations/postgres' / e['name']),
         reader_min=1, reader_max=1, writer_floor=1) for e in entries), key=lambda e:e['migration'])
@@ -694,12 +694,12 @@ class Runtime:
         provision('bootstrap')
         for action in ('plan', 'apply'):
             self.finite('migration-' + action, 'migrate', action, *config, '--user', 'bigbrotr_migrator',
-                        '--password-ref', 'file:/run/operator/migrator', '--target', '44', service='initialize')
+                        '--password-ref', 'file:/run/operator/migrator', '--target', '45', service='initialize')
         ledger = json.loads(self.sql('bigbrotr_control', """
             SELECT coalesce(json_agg(row_to_json(v) ORDER BY migration),'[]') FROM (
                 SELECT engine,migration,name,encode(checksum,'hex') AS checksum,
                     reader_min,reader_max,writer_floor
-                FROM control.schema_versions ORDER BY migration LIMIT 60
+                FROM control.schema_versions ORDER BY migration LIMIT 61
             ) v"""))
         save(self.root / 'bootstrap/applied-control-ledger.json', ledger)
         validate_current_ledger(self.source, ledger)
@@ -832,7 +832,7 @@ class Runtime:
                 'unexpected Archive snapshot')
         require(len(control['producer_requests']) == len(control['producer_outcomes']) == 4, 'unexpected producer request count')
         validate_initial_prefix_profile(control, self.initialized)
-        save(output / 'current-schema-profile.json', dict(target_version=44,
+        save(output / 'current-schema-profile.json', dict(target_version=45,
             prefix_profile=True, progress_format=1, complete_through_request=4,
             active_base=None, prepared_base=None))
 
@@ -942,7 +942,7 @@ class Runtime:
         save(output / 'after-archive-files.json', files_after)
         require(catalog_after == catalog_before and files_after == files_before, 'ordinary read/export mutated Archive')
         self.export_result = self.export_validate(before, after, self.home, self.initialized, self.ids['catalog'],
-            expected_principal=self.enrolled['principal_id'], expected_table_count=85, expected_tables=self.tables,
+            expected_principal=self.enrolled['principal_id'], expected_table_count=86, expected_tables=self.tables,
             destination_root=self.state / 'data/export', initial_cut=self.initial_cut)
         save(output / 'export-verdict.json', self.export_result)
         self.backend_absence(output)
@@ -1369,6 +1369,8 @@ def first_launch(args, checks, inputs):
         from cases.first_launch_linear_quantum import LinearQuantumRuntime,STAGES as QUANTUM_STAGES,LIMITS as QUANTUM_LIMITS
         if getattr(args,'linear_quantum_scenario',None)=='capped-continuation':
             from cases.first_launch_capped_quantum import CappedQuantumRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
+        if getattr(args,'linear_quantum_scenario',None)=='settled-owner-adoption':
+            from cases.first_launch_capped_quantum import CappedAdoptionRuntime as LinearQuantumRuntime,ADOPTION_LIMITS as QUANTUM_LIMITS
         if getattr(args,'linear_quantum_scenario',None)=='window-succession':
             from cases.first_launch_window_succession import WindowSuccessionRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         runtime_type=LinearQuantumRuntime

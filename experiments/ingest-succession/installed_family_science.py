@@ -51,7 +51,7 @@ def decode(data):
 
 class NetworkScience(FactEncoding):
     def __init__(self, model, plan, *, acknowledge=False, new_event=None, endpoint=ENDPOINT,
-                 initial_provenance=True):
+                 initial_provenance=True, previous_event=None, previous_coordinates=None):
         assert type(acknowledge) is bool
         assert type(initial_provenance) is bool
         self.acknowledge = acknowledge
@@ -72,6 +72,15 @@ class NetworkScience(FactEncoding):
         self.refs, self.inputs, self.receipts = {}, {}, {}
         self.writes = 0
         self.previous_coordinates = (3, 4, 8, 9, 10, 11) if initial_provenance else (3, 4, 5, 6, 7, 8)
+        self.previous_event=OLD_EVENT if previous_event is None else previous_event
+        assert (previous_event is None)==(previous_coordinates is None)
+        if previous_coordinates is not None:
+            # Bounded adoption corpus: known23 is the second original body.
+            # This is a literal encoding input, never selected from SQL effects.
+            assert initial_provenance and previous_event is not None
+            assert previous_event['created_at']==23 and previous_event['id']=='32be96c6ec271705225aad466eebc4f8352c65960e619164be86eae0d442a791'
+            assert tuple(previous_coordinates)==(3,4,13,14,15,16)
+            self.previous_coordinates=tuple(previous_coordinates)
         for n in self.previous_coordinates:
             raw = bytes.fromhex(self.values['facts', (b'\x01\x20' + self.source(1, n)).hex()])
             assert raw[:2] == b'\x01\x20' and sha(raw[34:]) == raw[2:34].hex()
@@ -112,9 +121,12 @@ class NetworkScience(FactEncoding):
         return [received, self.ref(2), quality, witness]
 
     def network(self, provenance, dictionary_at, received, recorded, resolution, historical=None,
-                *, additional_events=()):
+                *, additional_events=(), historical_first=False):
         # Optional finite encoder seam only. Callers must independently bind
         # all event literals and clocks; no ACK or complete-run result is inferred.
+        assert type(historical_first) is bool
+        assert not historical_first or (provenance and historical is not None and not additional_events
+            and self.previous_event['created_at']==23 and self.new_event['created_at']==1)
         if additional_events:
             assert isinstance(additional_events, (tuple,list)) and len(additional_events)==2
             assert historical is None
@@ -134,6 +146,18 @@ class NetworkScience(FactEncoding):
         original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 1], 'admit-evidence', 1,
             [1, self.scope, entries]])
         self.commit(1, original, list(range(1, n + 1)), [(1, 3)] + [(self.epoch, k) for k in range(1, n + 1)])
+        dictionary_count=n
+        if historical_first:
+            old_received,old_recorded,old_resolution=historical
+            eid=bytes.fromhex(self.previous_event['id'])
+            observation=self.observation(old_received,old_resolution,True)
+            self.provenance(n+1,eid,old_received,observation[2],old_recorded)
+            original=b'bigbrotr/producer-request/1\0'+cbor([[self.slot,self.epoch,2],'admit',1,
+                [1,self.scope,[*body(self.previous_event),bytes.fromhex(self.previous_event['sig'])],
+                    'network',None,observation]])
+            dependencies=[(1,k) for k in self.previous_coordinates]+[(self.epoch,k) for k in range(1,n+2)]
+            self.commit(2,original,[n+1],dependencies)
+            n+=1
         event, eid = self.new_event, bytes.fromhex(self.new_event['id'])
         self.dictionary(n + 1, 8, 'event', dict(event_id=eid), recorded)
         self.fact(n + 2, 'event-payload', [*body(event), self.ref(8)], recorded)
@@ -149,15 +173,16 @@ class NetworkScience(FactEncoding):
         if provenance:
             last += 1
             self.provenance(last, eid, received, quality, recorded)
-        original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 2], 'admit', 1,
+        original = b'bigbrotr/producer-request/1\0' + cbor([[self.slot, self.epoch, 3 if historical_first else 2], 'admit', 1,
             [1, self.scope, [*body(event), bytes.fromhex(event['sig'])], 'network', None, observation]])
-        self.commit(2, original, list(range(n + 1, last + 1)), [(1, 3)] + [(self.epoch, k) for k in range(1, last + 1)])
+        self.commit(3 if historical_first else 2, original, list(range(n + 1, last + 1)),
+            [(1,3)]+[(self.epoch,k) for k in range(1,dictionary_count+1)]+[(self.epoch,k) for k in range(n+1,last+1)])
         if additional_events:
             for ordinal,(event,at,committed,quality) in enumerate(additional_events,2):
                 first=last+1
                 last=self.append_network_event(event,ordinal,first,ordinal+1,
                     at,committed,quality,provenance,n)
-        elif provenance:
+        elif provenance and not historical_first:
             old_received, old_recorded = historical
             eid = bytes.fromhex(OLD_EVENT['id'])
             observation = self.observation(old_received, resolution, True)
@@ -169,7 +194,7 @@ class NetworkScience(FactEncoding):
             deps = [(1, k) for k in self.previous_coordinates] + [(self.epoch, k) for k in (1, 2, 3, 4, last + 1)]
             self.commit(3, original, [last + 1], deps)
         else:
-            assert historical is None
+            assert historical_first or historical is None
 
     def append_network_event(self, event, ordinal, first, request, received, recorded,
                              resolution, provenance, dictionary_count):

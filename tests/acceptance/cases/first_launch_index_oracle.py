@@ -24,11 +24,11 @@ PLAN_COUNTS = ((2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                (1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0))
 INDEX_TABLES = ('projection_generations', 'index_owner_sessions', 'projection_plans',
                 'projection_plan_chunks', 'projection_chunks', 'projection_chunk_bounds', 'index_frontier_plans', 'index_frontier_handoffs')
-# Closed current Control inventory through0044. Compared with the migration
+# Closed current Control inventory through0045. Compared with the migration
 # inventory by fixture controls; equal counts cannot hide a replaced relation.
-#0043 owns acquisition_quanta;0044 adds the two measurement dispatch relations.
+#0045 adds the explicit acquisition continuation ledger.
 CONTROL_TABLES = frozenset('''
-    acquisition_gaps acquisition_jobs acquisition_progress acquisition_quanta
+    acquisition_continuations acquisition_gaps acquisition_jobs acquisition_progress acquisition_quanta
     acquisition_scope_commands acquisition_scopes acquisition_selectors allocation_domains
     archive_attempts archive_coordinators archive_frontier_batches archive_frontier_snapshots
     archive_owner_sessions archive_persistence archive_pin_recoveries archive_snapshot_pins
@@ -51,7 +51,7 @@ CONTROL_TABLES = frozenset('''
 
 
 def control_inventory(state):
-    """Reject missing, extra or substituted current0044 Control relations."""
+    """Reject missing, extra or substituted current0045 Control relations."""
     assert set(state) == CONTROL_TABLES
 
 
