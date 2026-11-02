@@ -79054,8 +79054,8 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "4da3b0b9911a56e1b363c60153a9c41dbd26c73d",
-      "state": "Main0d unchanged. cc8build/strict/library701/bin233 and bcdportable627+13PASS. InstalledACKr1FAIL oracle FactsCF-domain assumption;17ownedcontainers stopped/PID0/noOOM, data retained. Sol correction/Astrareview pending; no local engine/compiler active.",
+      "observed_source": "8ae83c47",
+      "state": "Known initial measurement ACK capability locally qualified: cc8build/strict/lib701/bin233PASS, portable627+13+affected28controlsPASS, corrected8ae installedr2 all7stagesPASS. Originalr1verifierFAIL retained. Main0d remains current pending coherent push/new actual hosted gate.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
         ".research/m2-monitor-control-20261102",
@@ -79064,14 +79064,16 @@
         ".research/p01-native-source-timestamps-20261102",
         ".research/m2-passive-index-acceptance-20261102",
         ".research/m2-current-control-inventory-20261102",
-        ".research/m2-measurement-ack-20261102"
+        ".research/m2-measurement-ack-20261102",
+        ".research/m2-monitor-ack-harness-bcd07e7d",
+        ".research/m2-monitor-ack-harness-8ae83c47"
       ],
       "active_assignments": {
-        "native_timestamp_review": "Astra/xhigh bounded correction review pending exact Sol commit; independent domain/header diagnosis agrees verifier defect. No engine/build/edit assignment.",
-        "current_control_inventory": "Sol/xhigh bounded existing oracle/fixture correction for Fact0120/PendingBatch0121 contract, source-only in original ACK WT; capture replay/cheap controls permitted, no engine/build/cache/ELF.",
-        "measurement_clickhouse_prep": "Sol/xhigh exact0d hosted terminal audit complete; watcher reaped, no active assignment."
+        "current_control_inventory": "Sol/xhigh bounded source/oracle/preparation work complete, idle; all actual Root execution ended.",
+        "native_timestamp_review": "Astra/xhigh original ACK and oracle correction approved; no active source/build/engine assignment.",
+        "measurement_clickhouse_prep": "Sol/xhigh next hosted watcher/acquisition prepared at8ae, waiting exact final pushedSHA/run/source pins; no watcher/API/process launched."
       },
-      "resources": "All owned local builds/tests/installed processes terminal, cache released. Newcc8 parent4e2dbca0/liba669e198/probe29437a7c stopped; installedr1 all17containers stopped/PID0/noOOM. Candidate assembly complete. Old19Index+18passive containers/data and all failed/successful artifacts/worktrees retained, borrowedbridge1699209a unchanged. Source-only oracle correction/review agents active; no cleanup.",
+      "resources": "All owned local compiler/test/installed processes terminal, cache released. cc8parent/lib/probe and r1all17+r2all20 containers/data retained, old19Index+18passive retained; borrowedbridge1699209a unchanged. Originalfailures/captures/worktrees preserved. CI followup preparation idle awaiting finalRootpush; no active runtime, no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79168,7 +79170,7 @@
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",
         "branch": "work/m2-measurement-ack-20261102",
         "source": "adc80fc9",
-        "state": "Build/strict/portable qualified for scope; new Native assertions, bin retained-grant test and installed physicalC4/A4 still pending. Defensive dormant retirement veto remains NOT_RUN under reclamation wiring.",
+        "state": "Known fresh initial C4/A4 path qualified; full recovery/renewal/repeated scheduling/monitor-aware reclamation remain open existing tasks. No fullM2 claim.",
         "integrated": "ca6d3e10",
         "qualification": {
           "product_source": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
@@ -79177,8 +79179,9 @@
           "build_receipt_sha256": "9dccefd3e43456772e99dd7ee8b32e3af04e7e9534c7de322eaeaca76517cf21",
           "library_tool": 96964,
           "library_container": "a669e198f19666a2b146f0d60a86c01453399819bcf7e26d6bc65a2e729c0afd",
-          "state": "Parent/lib/bin/probe tools67953/96964/42807 reaped0, allcontainers stopped/PID0/noOOM and cache released; original4ELF bytes/fullstat guards complete. Actual library701/bin233PASS. Installedr1tool12434reaped1:5PASS/1FAIL/1NOT_RUN;17containers stopped, unique state/captures retained. Fresh corrected installed proof still required.",
-          "installed_failure_receipt_sha256": "3de84c4e175b06a8005da3eec2956b7cb4ed310a923522993ee34c5864dbe941"
+          "state": "All product/lib/bin/probe/installed tools reaped and containers stopped/PID0/noOOM, cache released and original4ELF fullstat guards completed. Installedr1tool12434FAIL/17containers preserved; correctedr2tool54033PASS7/7/20containers and listenerjoined. Borrowedbridge preserved; no cleanup.",
+          "installed_failure_receipt_sha256": "3de84c4e175b06a8005da3eec2956b7cb4ed310a923522993ee34c5864dbe941",
+          "installed_success_receipt_sha256": "af54e56812dc43962935938fbcc56fec5178c3062146b9fd566100fc1bf3918f"
         }
       }
     }

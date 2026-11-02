@@ -7,10 +7,10 @@ One existing plan, capability-first execution, Root sole integrator.
 ## Source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **4da3b0b9**. Local tutorial pin
-and this evidence/checkpoint update follow; main/origin remain pushed **0d010f22**.
-Actual new product is frozen **cc8bdcf8**, tree **10949ae4**; accepted harness
-**bcd07e7d** changes only qualification/evidence after that product. Later CLI
+`work/m2-finite-history-20261101`, observed HEAD **8ae83c47**. Only this evidence/checkpoint recording follows;
+main/origin remain pushed **0d010f22**.
+Actual new product is frozen **cc8bdcf8**, tree **10949ae4**; corrected harness
+**8ae83c47** changes only qualification/evidence after that product. Later CLI
 fixture correction changes no runtime source. Preserve all source identities.
 
 First passive Archive/Index capability remains qualified: installed **f474b5a0**
@@ -52,8 +52,12 @@ I4/A4/R0 checks, then the verifier incorrectly counted every FactsCF row as a
 Fact. The owning contract places ten Fact0120 and four PendingBatch0121 rows in
 that family. Original FAIL/capture preserved; later fact/receipt loop and restart
 inspectionNOT_RUN. All17owned containers independently stopped/PID0/noOOM,
-cleanupPASS and borrowed bridge preserved. Correct the exact domain/header oracle
-from its contract, review and replay the capture before a fresh full case.
+cleanupPASS and borrowed bridge preserved. The exact domain/header oracle correction was reviewed and replayed before r2.
+**r2 PASS:7/7 stages, zeroFAIL/SKIP/NOT_RUN.** It independently requires C4 and
+physical I4/A4/R0, ten exact Facts/four batch headers/four receipts, unchanged
+inputs/science/ClickHouse, same-data PG restart and installed typed inspection.
+All20owned containers stopped/PID0/noOOM; listenerjoined/closed/queueempty and
+bridge preserved. P02 owns receipt af54e56812dc43962935938fbcc56fec5178c3062146b9fd566100fc1bf3918f.
 
 Declared compiler image/minimum Python passes **627 acceptance+13 export-profile
 controls/0SKIP** at bcd. Original cc8 run626PASS/1ERROR was the stale tutorial
@@ -105,14 +109,16 @@ cost/transport/coordinator follow-through retain their existing task owners.
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns exact
 resources. All compiler/test/installed processes are terminal and the cache is released.
-Old19Index/18passive plus new17r1 containers/data, failures/worktrees/.research and
-borrowed bridge1699209a are retained; no cleanup. Sol owns a bounded source-only
-oracle/fixture correction in its existing ACK WT; Astra reviews its exact commit.
+Old19Index/18passive plus new17r1/20r2 containers/data, failures/worktrees/.research
+and borrowed bridge1699209a are retained; no cleanup. Source/review agents are
+finished. Sol prepared the next hosted observer but has not launched it.
 
-**Next Root action:** integrate the critically reviewed oracle correction,
-replay retained r1 data and relevant negative controls, then run a fresh complete
-C4/physical A4/R0 case with its frozen corrected harness. Reuse the actual cc8
-product/observer after test-only changes. Preserve original FAIL/NOT_RUN. Record
-scope, scan new public inputs, integrate/push coherently and qualify the actual
-new hosted matrix; do not supersede it with immediate microscopic pushes.
+**Next Root action:** admit final public source, fast-forward/push one coherent
+main increment and observe the actual selected GitHub matrix/public outputs,
+retaining old FAIL/NOT_RUN. Then continue P04-T07 Steps2/6/P02 with interrupted
+Monitor attempt reconciliation against retained Native originals/outcome before
+unknown classification or replacement I/O; start with the exact already-durable
+terminal case and existing recovery authority. Full lost-RAM/durable-start,
+renewal, repeated scheduling and retirement retain their separate gates. Do not
+supersede the new hosted run with immediate microscopic pushes.
 Goal ACTIVE and incomplete; no selected later work is removed.

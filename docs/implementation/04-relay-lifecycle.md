@@ -305,12 +305,13 @@ case completes neither the scheduling/recovery steps below nor M2.
 
 The first passive Archive/Index slice is now qualified by the
 [P02 evidence](evidence/p02-ingest-dictionary-codec-20260918.json),
-`passive_measurement_20261102.installed_acceptance.index_actual`. The next source
-increment connects known initial measurement outcomes to the existing generic
-checkpoint and confirmed native ACK path (`InternalEvidence`, no acquisition
-progress), retaining its already funded progress grant through completion. Its
-C4/A4 Rust, SQL/native and installed qualification is NOT_RUN until separately
-recorded. ACK alone does not retire detail: current dispatch settlement depends
+`passive_measurement_20261102.installed_acceptance.index_actual`. The known
+initial measurement increment now also qualifies generic checkpoint C4 and
+physical Native I4/A4/R0 (`InternalEvidence`, no acquisition progress), retaining
+its funded grant through completion. Product `cc8bdcf8` with acceptance source `8ae83c47` passed
+all seven real installed stages, original-data checks and restarted typed
+inspection; see `control_dispatch.producer_ack_followthrough` in that report.
+ACK alone does not retire detail: current dispatch settlement depends
 on monitor-attributed request/outcome rows that prefix finalization can delete.
 The open-prefix coordinator therefore refuses Monitor-attributed producer
 retirement before native planning, retirement or unlink and keeps all detail and

@@ -122,7 +122,7 @@
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet.",
       "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN."
     },
-    "next": "First passive Archive/Index capability is onmain0d010f22; hosted Linux gates still running and Mac builder mode correctionde034ad3 locally reviewed. Qualify the source-reviewed known measurement generic checkpoint/confirmed nativeACK increment next. Full lost-RAM/staged-before-PG recovery, monitor-aware retirement and later selected capabilities retain existing task owners.",
+    "next": "Integrate one coherent known-ACK capability plus classified CI corrections and qualify actual GitHub matrix. Next P04-T07 Steps2/6/P02 increment: reconcile an interrupted Monitor attempt against current retained Native originals/outcome and generic completion before emitting unknown or issuing a replacement probe. Preserve old identity/authority; full lost-RAM/durable-start/renewal/repeated scheduling/retirement and later selected tasks remain open.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "PASS_8_ACTUAL_NATIVE_CONTROLS_AT_F474_WITH_WHOLE_LIBRARY_FAILURE_RETAINED",
@@ -160,7 +160,7 @@
       },
       "installed_positive": "PASS exact5c85bb4c maintained p04-passive-monitor normal packaged-role path; dedicated assertions/negative/recovery controls remain NOT_RUN.",
       "producer_ack_followthrough": {
-        "status": "BUILD_STRICT_LIB_BIN_PORTABLE_PASS_INSTALLED_FAIL_ORACLE_CORRECTION_PENDING",
+        "status": "PASS_BOUNDED_KNOWN_INITIAL_MEASUREMENT_C4_NATIVE_A4_RESTARTED_INSPECTION",
         "tasks": "P04-T07 Steps2/5/6;P02 producer-progress/reclamation tasks",
         "scope": "Initial-only opt-in reuses InternalEvidence record(None), actual measurement append/replay current-root stamp and retained ProgressGrant. Capacity prepared before staging, head rechecked after reservationCOMMIT; outcome and checkpoint atomic; only confirmed COMMIT authorizes NativeACK. Historical Monitor attribution remains; Sync source/job/event bindings absent.",
         "acceptance": "Installed request4 must yield PG C4/nativeA4 with exact original input/receipt/science and dependencies throughsource10; no acquisition jobs/progress/quanta or second probe. Replay idempotent; wrongroot/digest/owner/stale/gap/cancel/unknown and insufficient capacity refuse without credit.",
@@ -195,7 +195,28 @@
             "cause": "native_ack line362 counts every FactsCF row as Fact. Persisted key contract includes Fact0120 and PendingBatch0121 there; current10Fact+4batch headers are not a product defect. C4/I4/A4/R0 checks before that assertion completed; later exact fact/receipt loop and restarted inspectionNOT_RUN.",
             "next": "Require exact10Fact+four contract-derived batch headers/ranges/digests, retain negative controls/originalFAIL, critical review and capture replay before a fresh complete real run. Reuse unchangedcc8product."
           },
-          "assembly_manifest_sha256": "02f592ad1d2091a088c28c308350c8cdb1a53cb6db7d4ef491a1a655b8ecbac0"
+          "assembly_manifest_sha256": "02f592ad1d2091a088c28c308350c8cdb1a53cb6db7d4ef491a1a655b8ecbac0",
+          "installed_r2": {
+            "status": "PASS_7_OF_7_STAGES_ZERO_FAIL_SKIP_NOT_RUN",
+            "product_source": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+            "assembly_source": "8ae83c47",
+            "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-cc8bdcf8/acceptance-passive-index-ack-r2",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/installed-ack-index-r2-receipt.json",
+            "receipt_sha256": "af54e56812dc43962935938fbcc56fec5178c3062146b9fd566100fc1bf3918f",
+            "scope": "One fresh installed passive attempt through actual PG/Native/Archive/ClickHouse, generic revision4/C4/exactten-dependency closure and physical I4/A4/R0. Four exact original receipts, ten committedfacts and four pendingheaders; unchanged inputs/science/Index through real same-data PG restart and installed typed inspection. OneTCP, no AUTHresponse/publication/Sync job/progress/quanta/eventfact. All20ownedcontainers independently stopped/PID0/noOOM, listenerjoined/closed/finalqueueempty, borrowedbridgeunchanged.",
+            "canonical_measurement_sha256": "629736616e43d8d9e7c9e6be19a49cdff4536c48be29063830ac1cc9fdce6705"
+          },
+          "oracle_correction": {
+            "original": "5eace1aac896f12feb19fa3178e35f94e703c0f5",
+            "integrated": "8ae83c47",
+            "review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/pending-oracle-review.json",
+            "review_sha256": "64ab00e5fde4359a6d788b7ff13b49e75c7b95d2caf5a2182539c895e36463d6",
+            "scope": "Require exact ten Fact0120 and four PendingBatch0121 keys at contract ranges1..2/3/4..9/10; complete42byteheaders with independent admission-batch digests and raw canonical receipt binding. No observed-count fitting or weakened input/science/identity/restart checks.",
+            "checks": "28focusedPythonPASS; originalr1 replayPASS,12author corruptcopies refused; Root authenticated capture/source/originalfailure hashes. Astra independently reviewed full codec/value layouts and reported60refusals plus separate Nodebatch/receipt comparison; scopes are not summed. Fresh actualr2 passes all7stages.",
+            "replay_receipt": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102/.research/measurement-ack-pending-controls/retained-replay.json",
+            "replay_receipt_sha256": "e34aa064056088aab7fa0dc55745e00970243e28ea105d67c1a6fb6167279809",
+            "reuse": "cc8 product/observer unchanged; only corrected Python assembly and relevant controls/replay repeated before fresh real run. Originalr1FAIL remains intact."
+          }
         }
       }
     },

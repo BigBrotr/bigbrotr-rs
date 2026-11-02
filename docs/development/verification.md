@@ -516,9 +516,11 @@ UUIDs, all185 columns and complete raw rows must remain unchanged through that
 restart and inspection. Index/ClickHouse restart, physical readiness, corruption,
 outage/unknown recovery, complete secondary-index native census, repeated
 scheduling, fleet and measured capacity remain separate gates. The case has no
-fault injection or new product interface. The new C4/A4 implementation and
-observer gate remain NOT_RUN until their exact-source build and installed
-execution receipts exist; portable controls alone do not qualify them.
+fault injection or new product interface. The C4/A4 observer path is now
+qualified for one fresh installed attempt at product `cc8bdcf8` with acceptance source `8ae83c47`, with all seven
+stages passing; see P02 `control_dispatch.producer_ack_followthrough`. The original
+Facts-CF verifier failure remains retained. Portable controls alone do not qualify
+this path or the separate recovery/reclamation gates.
 
 Portable fixture and refusal controls:
 

@@ -2445,7 +2445,7 @@
   },
   "pending_monitor_publication_20261102": {
     "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
-    "status": "PUSHED_FIRST_PASSIVE_CAPABILITY_HOSTED_FAILED_BUILD_TOOL_AND_STALE_CLI_TEST",
+    "status": "KNOWN_ACK_LOCAL_QUALIFIED_COHERENT_PUBLICATION_AND_NEW_HOSTED_GATE_PENDING",
     "public_source_audit": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
       "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
@@ -2454,7 +2454,7 @@
     "provider_open_alerts": 0,
     "remote_baseline": "main/origin0d010f223fd0ff31e1ea217f2bf50fdf502ecf52, push independently verified. Latest full hosted PASS remains a37/run41366972298; current run41451793817 is incomplete. No billing/settings/publication-policy change.",
     "portable": "Declared compilerimage/Python3.11.2,624 acceptance+13 export-profilePASS/0SKIP; exact inputs/logs in runtime.",
-    "next": "Qualify the bounded ACK product locally, then publish both CI corrections with the coherent capability and verify the actual selected hosted matrix. Preserve old runFAIL/NOT_RUN and separate source-scoped local proofs; no release/deployment.",
+    "next": "Public-source admission then coherent main push of qualified known-ACK capability and two classified CI corrections. Observe all selected actual hosted commands and public outputs. Old0dFAIL/NOT_RUN remain unchanged; latest full hosted PASS is stilla37. No release/package/deployment.",
     "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/push-receipt.json",
     "hosted_current": {
       "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41451793817",
@@ -2479,7 +2479,8 @@
       "original": "Forced data default reproduces exact1FAIL+1ERROR; original logs preserved.",
       "correction": "Explicit fully_trusted only after unchanged all-member validation of the builder-generated selected Git archive. Older Python without filters remains supported; archive modes/hash/identity/CWD guards unchanged.",
       "checks": "11 timestamp+10workspace host controlsPASS, no product/native rebuild. Astra critical source/evidence review approved.",
-      "limits": "New actual hosted Mac/Linux gates remain required; this correction does not imply full hostedPASS."
+      "limits": "New actual hosted Mac/Linux gates remain required; this correction does not imply full hostedPASS.",
+      "local_followthrough": "Currentcc8 release build/strictPASS; bcd compilerimage minimumPython627acceptance+13exportPASS; host forceddata default controls11+workspace10PASS. Actual new hostedMac remains a required gate."
     },
     "role_refusal_correction": {
       "status": "SOURCE_CORRECTED_RELEASE_BINARY_SCENARIOS_PASS_HOSTED_TARGET_PENDING",

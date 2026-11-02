@@ -971,8 +971,10 @@ delivery. Monitor preserves its historical source/attempt attribution while
 keeping Sync source/job/event bindings absent; it creates no Sync progress,
 acquisition job or quantum. The selected fresh four-request journey
 requires revision4/C4 and physical I4/A4/R0 with the exact source1..10 closure.
-Its new source and installed observer gates remain NOT_RUN until exact-source
-qualification is recorded.
+This bounded source and installed observer path passes at product `cc8bdcf8` with acceptance source `8ae83c47`:
+all seven stages, C4 and physical I4/A4/R0 with retained originals and restarted
+typed inspection. P02 `control_dispatch.producer_ack_followthrough` owns the exact
+receipt and original verifier failure; this is not recovery or reclamation proof.
 
 ACK does not retire Monitor detail. Dispatch settlement and one-request-per-attempt
 uniqueness currently depend on retained monitor-attributed request/outcome rows.
