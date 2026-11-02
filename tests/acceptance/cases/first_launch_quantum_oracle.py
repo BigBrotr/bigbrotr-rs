@@ -104,6 +104,8 @@ def continuation_owner(state,row,job):
         if (row['producer_slot_id'],row['producer_epoch'])==(seal['producer_slot_id'],seal['producer_epoch']):
             assert lower<row['quantum_number']<=seal['last_quantum_number']
             assert (row['issuer_resource'],row['issuer_epoch'],row['issuer_incarnation'])==owner(seal,'previous_owner_')
+            assert (row['manifest_sha256'],row['enrollment_generation'],row['route_id'])==(
+                seal['manifest_sha256'],seal['enrollment_generation'],seal['route_id'])
             covered=True
         prior=seal
     assert covered,'historical issuer has no finalized segment'

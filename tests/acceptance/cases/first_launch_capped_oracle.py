@@ -300,6 +300,20 @@ def adoption_history(state,wires,events,first,second=None):
     rows=sorted(state['acquisition_quanta'],key=lambda row:row['quantum_number'])
     assert len(rows)==(1 if old_cut else 5)
     assert [row['producer_epoch'] for row in rows]==([1] if old_cut else [1,2,2,2,2])
+    from installed_sync_oracle import decode
+    slot='\\x'+decode(first['inputs'][0].split(b'\0',1)[1])[0][0].hex()
+    for row in rows:
+        manifest=first['manifest'] if row['producer_epoch']==1 else second['manifest']
+        assert (row['producer_slot_id'],row['manifest_sha256'],row['enrollment_generation'],row['route_id'])==(
+            slot,'\\x'+source.sha(manifest),1,state['relay_enrollments'][0]['route_id'])
+        wire=wires[row['quantum_number']-1]
+        assert state['jobs'][0]['created_at_us']<=row['created_at_us']<=wire['connected_at_us']
+        assert wire['sent_at_us']<=row['terminal_received_at_us']<=wire['closed_at_us']
+        assert row['terminal_received_at_us']<=row['completed_at_us']<state['acquisition_jobs'][0]['deadline_at_us']
+        if row['producer_epoch']==2:
+            seal,=state['acquisition_continuations']
+            assert seal['adopted_at_us']<=row['created_at_us']<=wire['connected_at_us']
+            assert wire['closed_at_us']<state['acquisition_jobs'][0]['deadline_at_us']
     assert [row['classified_before'] for row in rows]==([0] if old_cut else [0,0,1,2,3])
     assert [(row['checkpoint_before'],row['checkpoint_after']) for row in rows]==([(3,5)] if old_cut else [(3,5),(1,2),(2,3),(3,4),(4,4)])
     result=quantum.journey(state,wires,None,expected,selector=ADOPTION_SELECTOR,
@@ -307,7 +321,44 @@ def adoption_history(state,wires,events,first,second=None):
     assert result==dict(queries_spent=1 if old_cut else 5,attempted_prefix=0 if old_cut else 86400,
         gap_count=0 if old_cut else 2,pending_work='query_ready' if old_cut else 'settled',
         pending_interval=['0','24'] if old_cut else None)
+    adoption_page_checkpoints(state,wires,events,first,second)
     return result
+
+
+def adoption_page_checkpoints(state,wires,events,first,second=None):
+    """Rebuild the declared intermediate C2/C3, and bind old C5/new C4.
+
+    These digests use complete independently encoded inputs/receipts/native
+    references. Retained SQL counters or effect bytes never choose the snapshot.
+    """
+    import installed_progress_replay as typed
+    from installed_sync_oracle import decode
+    old=source.only(state['acquisition_quanta'],quantum_number=1)
+    assert old['checkpoint_sha256']==source.only(state['producer_checkpoints'],producer_epoch=1)['checkpoint_digest']
+    if second is None:return
+    job=state['jobs'][0];detail=state['acquisition_jobs'][0]
+    values={(cf,key.hex()):value.hex() for cf,key,value in second['native']}
+    common=dict(dataset_id=job['dataset_id'],producer_slot_id=old['producer_slot_id'],producer_epoch=2)
+    for number,event in ((2,events[1]),(3,events[2])):
+        row=source.only(state['acquisition_quanta'],quantum_number=number);wire=wires[number-1]
+        original=second['inputs'][number-1]
+        received=decode(original.split(b'\0',1)[1])[3][5][0]
+        progress=dict(common,job_id=job['job_id'],scope_id=detail['scope_id'],progress_revision=number-1,
+            request_id='\\x'+wire['request'][1].encode().hex(),event_ordinal=1,wire_sequence=1,
+            input_sha256='\\x'+source.sha(quantum.wire_json(event)),intent_digest='\\x'+source.sha(original),
+            classification=2,mutation_request=number,classified_events=number-1,successful_events=number-1,rejected_events=0,
+            observed_at_us=received,clock_resolution_us=wire['clock_resolution_us'],clock_anomaly_flags=4 if wire['clock_resolution_us']>1 else 0,
+            xmin='1')
+        references={tuple(reference):digest for receipt in second['receipts'][:number] for reference,digest in quantum.receipt_refs(receipt)}
+        dependencies=[dict(common,source_shard=reference[1],source_epoch=reference[2],source_sequence=reference[3],payload_digest='\\x'+digest.hex(),xmin='1')
+            for reference,digest in sorted(references.items())]
+        head=dict(common,progress_format=1,manifest_sha256='\\x'+source.sha(second['manifest']),checkpoint_revision=number,
+            complete_through_request=number,progress_jobs=1,dependency_count=len(dependencies),issuer_resource=row['issuer_resource'],
+            issuer_epoch=row['issuer_epoch'],issuer_incarnation=row['issuer_incarnation'],committed_at_us=0,xmin='1',checkpoint_digest='\\x'+'00'*32)
+        wanted='\\x'+typed.head_digest(head,[progress],dependencies,lambda dependency:typed.native_reference(dependency,values)).hex()
+        assert row['checkpoint_sha256']==wanted,'retained intermediate page checkpoint differs'
+    current=source.only(state['producer_checkpoints'],producer_epoch=2)['checkpoint_digest']
+    assert all(source.only(state['acquisition_quanta'],quantum_number=n)['checkpoint_sha256']==current for n in (4,5))
 
 
 def adoption_transition(before,sealed,retired,after,first):
@@ -316,9 +367,16 @@ def adoption_transition(before,sealed,retired,after,first):
         'acquisition_progress','acquisition_quanta','acquisition_jobs','job_admissions','relay_endpoints','network_routes',
         'relay_enrollments','acquisition_scopes','acquisition_selectors','acquisition_scope_commands',
         'config_revisions','policy_revisions')
+    producer_tables=set(frozen[:6])
+    canonical=lambda rows:sorted(quantum.wire_json(dict(sorted(row.items()))) for row in rows)
+    slot=before['producer_checkpoints'][0]['producer_slot_id']
     for snapshot in (sealed,retired,after):
         for table in frozen:
-            assert all(row in snapshot[table] for row in before[table]),'old row or xmin changed: '+table
+            if table in producer_tables:
+                old=lambda state:[row for row in state[table] if (row['producer_slot_id'],row['producer_epoch'])==(slot,1)]
+                assert canonical(old(snapshot))==canonical(old(before)),'old producer projection changed: '+table
+                if snapshot is not after:assert canonical(snapshot[table])==canonical(before[table]),'unexpected pre-successor row: '+table
+            else:assert canonical(snapshot[table])==canonical(before[table]),'source/acceptance table changed: '+table
         for table in ('principals','principal_grants','local_accounts','local_credentials','management_commands','management_audit'):
             assert all(row in snapshot[table] for row in before.get(table,[])),'old authority/acceptance row changed: '+table
         lifecycle=(('owner_epochs',('resource_id','epoch'),{'state','released_at_us','exclusion_method','exclusion_digest','xmin'}),
@@ -357,16 +415,38 @@ def adoption_transition(before,sealed,retired,after,first):
         slot,1,'\\x'+source.sha(first['manifest']),0,17,digest)
     assert (seal['last_quantum_number'],seal['checkpoint_revision'],seal['complete_through_request'],seal['checkpoint_sha256'])==(
         1,5,5,head['checkpoint_digest'])
+    assert before['acquisition_quanta'][0]['completed_at_us']<=seal['sealed_at_us']
     assert (seal['enrollment_generation'],seal['route_id'])==(1,before['relay_enrollments'][0]['route_id'])
     issuer=source.only(sealed['owner_epochs'],role='control',resource_id=seal['sealing_resource'],epoch=seal['sealing_epoch'],process_incarnation=seal['sealing_incarnation'])
     assert issuer['epoch']>original['owner_epoch'] and issuer['state']=='released'
-    for snapshot,producer_state in ((sealed,'open'),(retired,'retired'),(after,'retired')):
+    for snapshot,producer_state in ((sealed,'closing'),(retired,'retired'),(after,'retired')):
         producer=source.only(snapshot['producer_epochs'],producer_epoch=1)
         stream=source.only(snapshot['source_streams'],owner_epoch=1)
         assert producer['state']==producer_state and stream['state']=='closed'
         assert stream['last_complete_sequence']==17 and stream['closure_digest']==digest
-        if producer_state=='retired':assert producer['closure_digest']==digest
+        if producer_state=='retired':
+            assert producer['closure_digest']==digest
+            ingest=source.only(snapshot['owner_epochs'],role='ingest',resource_id=producer['owner_resource_id'],epoch=producer['owner_epoch'],
+                process_incarnation=producer['owner_incarnation'])
+            assert ingest['state']=='released' and ingest['exclusion_method']=='storage_fenced' and ingest['exclusion_digest']==digest
+            assert ingest['released_at_us']==producer['retired_at_us']
+            domains=[row for row in snapshot['allocation_domains'] if row['owner_epoch']==1]
+            assert len(domains)==9 and {row['dictionary_kind'] for row in domains}==set(range(1,10))
+            assert all(row['state']=='closed' and row['closure_digest']==digest for row in domains)
         assert not snapshot['acquisition_gaps'],'continuation became whole-job abandonment'
+    assert source.only(sealed['source_streams'],owner_epoch=1)==source.only(retired['source_streams'],owner_epoch=1)==source.only(after['source_streams'],owner_epoch=1), \
+        'completed source closure was rewritten'
+    for table,key in (('producer_epochs','producer_epoch'),('allocation_domains','owner_epoch')):
+        assert canonical(row for row in retired[table] if row[key]==1)==canonical(row for row in after[table] if row[key]==1), \
+            'completed retirement was rewritten: '+table
+    retired_ingest=source.only(retired['producer_epochs'],producer_epoch=1)
+    fields=dict(role='ingest',resource_id=retired_ingest['owner_resource_id'],epoch=retired_ingest['owner_epoch'])
+    assert source.only(retired['owner_epochs'],**fields)==source.only(after['owner_epochs'],**fields),'retired old Ingest owner was rewritten'
+    fields=dict(role='control',resource_id=original['owner_resource_id'],epoch=original['owner_epoch'])
+    old_control=source.only(sealed['owner_epochs'],**fields)
+    assert old_control['state']=='released' and old_control['exclusion_method']=='storage_fenced'
+    assert old_control==source.only(retired['owner_epochs'],**fields)==source.only(after['owner_epochs'],**fields), \
+        'excluded original Control owner was rewritten'
     quantum.continuation_owner(after,before['acquisition_quanta'][0],job)
 
 
@@ -450,6 +530,12 @@ def adoption_progress(state,report,events,wires,science,completed,*,epoch):
     common=dict(dataset_id=job['dataset_id'],producer_slot_id=slot,producer_epoch=epoch)
     actual=source.only(state['acquisition_progress'],producer_epoch=epoch)
     head=source.only(state['producer_checkpoints'],producer_epoch=epoch)
+    assert head['xmin']==actual['xmin'],'progress and checkpoint did not commit atomically'
+    if epoch==1:
+        assert head['xmin']==source.only(state['producer_outcomes'],producer_epoch=1,request_sequence=5)['xmin']
+    else:
+        assert int(typed.xid(head['xmin']))>max(int(typed.xid(row['xmin'])) for row in state['producer_outcomes'] if row['producer_epoch']==2), \
+            'final proof checkpoint must follow all successor mutation outcomes'
     wire=wires[0] if epoch==1 else wires[3];event=events[1] if epoch==1 else events[2]
     received=(decode(science['inputs'][4].split(b'\0',1)[1])[3][5][0] if epoch==1 else actual['observed_at_us'])
     source.clock(received,wire['sent_at_us'],wire['closed_at_us'])

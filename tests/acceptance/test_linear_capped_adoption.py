@@ -133,6 +133,7 @@ def fixture(root):
         refs=quantum.reference_bytes(references);predicate=quantum.wire_json(['REQ','0'*48,wire['request'][2]])
         terminal=quantum.wire_json(['EOSE',wire['request'][1]])
         return dict(template,dataset_id=ds,job_id=job['job_id'],scope_id=detail['scope_id'],producer_slot_id=slot,producer_epoch=epoch,
+            manifest_sha256='\\x'+source.sha(first['manifest'] if epoch==1 else manifest),enrollment_generation=1,route_id='\\x'+'73'*16,
             issuer_resource=issuer['resource_id'],issuer_epoch=issuer['epoch'],issuer_incarnation=issuer['process_incarnation'],
             quantum_id='\\x'+f'{number:032x}',quantum_number=number,query_number=number,interval_upper=UPPERS[number-1],
             disposition=('overlap','saturated_second','overlap','saturated_second','window_closed')[number-1],
@@ -141,11 +142,13 @@ def fixture(root):
             classified_before=(0,0,1,2,3)[number-1],checkpoint_before=(3,1,2,3,4)[number-1],checkpoint_after=(5,2,3,4,4)[number-1],
             request_predicate='\\x'+predicate.hex(),predicate_sha256='\\x'+source.sha(predicate),terminal_frame='\\x'+terminal.hex(),
             request_id='\\x'+wire['request'][1].encode().hex(),retained_events=len(effects),classified_prefix=len(effects),
+            created_at_us=wire['connected_at_us']-1,terminal_received_at_us=wire['sent_at_us']+200,completed_at_us=wire['closed_at_us']+10,
             terminal_sequence=len(effects)+1,effect_records='\\x'+records.hex(),dependencies='\\x'+refs.hex(),
             charged_bytes=1024+len(predicate)+len(terminal)+len(records)+256*(len(refs)//72))
     refs=lambda n:quantum.receipt_refs(receipts[n-1])
     before['acquisition_quanta']=[quantum_row(1,1,[(events[0],2,4,refs(4)),(events[1],2,5,refs(5))],owner)]
     projection(before,first,events,wires,1)
+    before['acquisition_quanta'][0]['checkpoint_sha256']=before['producer_checkpoints'][0]['checkpoint_digest']
     sealed=copy.deepcopy(before)
     old_control=source.only(sealed['owner_epochs'],role='control');old_control.update(state='released',exclusion_method='storage_fenced')
     sealing=dict(old_control,epoch=2,process_incarnation='\\x'+'77'*16)
@@ -160,7 +163,10 @@ def fixture(root):
         sealing_resource=sealing['resource_id'],sealing_epoch=sealing['epoch'],sealing_incarnation=sealing['process_incarnation'],sealed_at_us=200_001_001_450,
         **dict.fromkeys(check.ADOPTION_FIELDS),xmin='10')
     sealed['acquisition_continuations']=[seal]
-    retired=copy.deepcopy(sealed);retired['producer_epochs'][0].update(state='retired',closure_digest=closure,xmin='11')
+    sealed['producer_epochs'][0]['state']='closing'
+    retired=copy.deepcopy(sealed);retired['producer_epochs'][0].update(state='retired',closure_digest=closure,retired_at_us=200_001_001_470,xmin='11')
+    retired['owner_epochs'][0].update(state='released',exclusion_method='storage_fenced',exclusion_digest=closure,released_at_us=200_001_001_470,xmin='11')
+    for row in retired['allocation_domains']:row.update(state='closed',closure_digest=closure,closed_at_us=200_001_001_470,xmin='11')
     after=copy.deepcopy(retired);after['datasets'][0]['topology_generation']=1
     new_control=dict(sealing,epoch=4,process_incarnation='\\x'+'99'*16)
     after['owner_epochs'].append(new_control)
@@ -201,6 +207,22 @@ def fixture(root):
     effects=([(events[1],2,2,refs(2))],[(events[2],2,3,refs(3))],[(events[2],5,0,refs(3))],[])
     after['acquisition_quanta'] += [quantum_row(n,2,values,new_control) for n,values in enumerate(effects,2)]
     projection(after,second,events,wires,2)
+    final_head=source.only(after['producer_checkpoints'],producer_epoch=2)
+    final_progress=source.only(after['acquisition_progress'],producer_epoch=2)
+    for number in (2,3):
+        wire=wires[number-1];original=second['inputs'][number-1];event=events[1 if number==2 else 2]
+        progress=dict(final_progress,progress_revision=number-1,classified_events=number-1,successful_events=number-1,
+            request_id='\\x'+wire['request'][1].encode().hex(),input_sha256='\\x'+source.sha(quantum.wire_json(event)),
+            intent_digest='\\x'+source.sha(original),classification=2,mutation_request=number,
+            observed_at_us=decode(original.split(b'\0',1)[1])[3][5][0])
+        references={tuple(ref):value for receipt in second['receipts'][:number] for ref,value in quantum.receipt_refs(receipt)}
+        dependencies=[dict(dataset_id=ds,producer_slot_id=slot,producer_epoch=2,source_shard=ref[1],source_epoch=ref[2],source_sequence=ref[3],
+            payload_digest='\\x'+value.hex(),xmin='1') for ref,value in sorted(references.items())]
+        head={key:value for key,value in final_head.items() if not key.startswith('prefix_')}
+        head.update(checkpoint_revision=number,complete_through_request=number,dependency_count=len(dependencies))
+        digest='\\x'+head_digest(head,[progress],dependencies,lambda row:native_reference(row,science.values)).hex()
+        after['acquisition_quanta'][number-1]['checkpoint_sha256']=digest
+    for number in (4,5):after['acquisition_quanta'][number-1]['checkpoint_sha256']=final_head['checkpoint_digest']
     started=dict(producer_epoch='2',process_incarnation=incarnation.hex(),activated_at_us='200001001500',
         owner_resource_id=intent['owner_resource_id'][2:],producer_slot_id=slot[2:],dataset_id=ds[2:])
     return before,sealed,retired,after,report,events,wires,first,second,first_dump,model.native,started
@@ -375,6 +397,66 @@ class CappedAdoptionControls(unittest.TestCase):
                 else:intermediate['acquisition_continuations'][0]['sealed_at_us']-=1
                 with self.subTest(name=name),self.assertRaises((AssertionError,ValueError,TypeError)):
                     check.adoption_transition(before,intermediate,retired,state,first)
+
+    def test_exact_old_prefix_and_completed_lifecycle_boundaries_refuse_additions_or_rewrites(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            before,sealed,retired,after,_,_,_,first,*_=fixture(Path(temporary))
+            for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies','acquisition_progress','acquisition_quanta'):
+                for stage in ('sealed','retired','final'):
+                    snapshots=[copy.deepcopy(value) for value in (sealed,retired,after)]
+                    selected=snapshots[('sealed','retired','final').index(stage)]
+                    extra=copy.deepcopy(selected[table][0])
+                    if table in ('producer_requests','producer_outcomes'):extra['request_sequence']=6
+                    selected[table].append(extra)
+                    with self.subTest(table=table,stage=stage),self.assertRaises(AssertionError):
+                        check.adoption_transition(before,*snapshots,first)
+            for name in ('sealed-open','unreleased-ingest','wrong-ingest-digest','unclosed-domain','wrong-domain-digest','missing-domain',
+                    'closed-source-xmin','retired-producer-xmin','retired-ingest-xmin','retired-domain-time','old-control-xmin'):
+                snapshots=[copy.deepcopy(value) for value in (sealed,retired,after)];s,r,a=snapshots
+                if name=='sealed-open':s['producer_epochs'][0]['state']='open'
+                elif name=='unreleased-ingest':a['owner_epochs'][0]['state']='active'
+                elif name=='wrong-ingest-digest':a['owner_epochs'][0]['exclusion_digest']='\\x'+'ff'*32
+                elif name=='unclosed-domain':a['allocation_domains'][0]['state']='active'
+                elif name=='wrong-domain-digest':a['allocation_domains'][0]['closure_digest']='\\x'+'ff'*32
+                elif name=='missing-domain':a['allocation_domains'].pop(0)
+                elif name=='closed-source-xmin':a['source_streams'][0]['xmin']='999'
+                elif name=='retired-producer-xmin':a['producer_epochs'][0]['xmin']='999'
+                elif name=='retired-ingest-xmin':a['owner_epochs'][0]['xmin']='999'
+                elif name=='retired-domain-time':a['allocation_domains'][0]['closed_at_us']+=1
+                else:source.only(a['owner_epochs'],role='control',epoch=1)['xmin']='999'
+                with self.subTest(name=name),self.assertRaises((AssertionError,ValueError)):
+                    check.adoption_transition(before,s,r,a,first)
+
+    def test_each_literal_page_binds_source_manifest_checkpoint_and_adoption_time(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            _,_,_,after,_,events,wires,first,second,*_=fixture(Path(temporary))
+            for number in range(1,6):
+                for field,value in (('manifest_sha256','\\x'+'ff'*32),('route_id','\\x'+'ff'*16),('enrollment_generation',2),
+                        ('checkpoint_sha256','\\x'+'ff'*32)):
+                    changed=copy.deepcopy(after);changed['acquisition_quanta'][number-1][field]=value
+                    with self.subTest(page=number,field=field),self.assertRaises(AssertionError):
+                        check.adoption_history(changed,wires,events,first,second)
+            for name in ('plan-before-adoption','wire-before-plan','past-original-deadline'):
+                changed=copy.deepcopy(after);transcript=copy.deepcopy(wires)
+                adopted=changed['acquisition_continuations'][0]['adopted_at_us']
+                if name=='plan-before-adoption':changed['acquisition_quanta'][1]['created_at_us']=adopted-1
+                elif name=='wire-before-plan':transcript[1]['connected_at_us']=adopted-1
+                else:changed['acquisition_quanta'][-1]['completed_at_us']=changed['acquisition_jobs'][0]['deadline_at_us']
+                with self.subTest(name=name),self.assertRaises(AssertionError):check.adoption_history(changed,transcript,events,first,second)
+
+    def test_progress_and_head_transactions_bind_original_outcome_and_later_proof(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            before,_,_,after,report,events,wires,first,second,*_=fixture(Path(temporary))
+            for epoch,baseline,science in ((1,before,first),(2,after,second)):
+                for name in ('head-only','progress-only','both-wrong-boundary'):
+                    changed=copy.deepcopy(baseline)
+                    head=source.only(changed['producer_checkpoints'],producer_epoch=epoch)
+                    progress=source.only(changed['acquisition_progress'],producer_epoch=epoch)
+                    if name=='head-only':head['xmin']='999'
+                    elif name=='progress-only':progress['xmin']='999'
+                    else:head['xmin']=progress['xmin']='106' if epoch==1 else '203'
+                    with self.subTest(epoch=epoch,name=name),self.assertRaises(AssertionError):
+                        check.adoption_progress(changed,report,events,wires,science,COMPLETED,epoch=epoch)
 
     def test_native_page_reference_full_fact_receipt_and_original_input_corruption_refuse(self):
         with tempfile.TemporaryDirectory() as temporary:
