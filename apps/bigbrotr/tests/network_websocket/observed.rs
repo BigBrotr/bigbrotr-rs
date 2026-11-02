@@ -114,6 +114,7 @@ async fn observed_literals_keep_decoder_anchors_and_all_control_teardown_bytes()
         (5, 5, 4)
     );
     assert_eq!(ws.rx_declared_ws_framed_bytes, Some(14));
+    assert_eq!(ws.rx_ws_payload_bytes_consumed, 4);
     assert_eq!(
         (
             ws.rx_ws_framed_bytes_read,
@@ -178,6 +179,7 @@ async fn observed_logical_cap_includes_unsolicited_controls_before_parse() {
     assert_eq!(captured.websocket.rx_logical_messages_delivered, 32);
     assert_eq!(captured.websocket.rx_physical_frames_started, 32);
     assert_eq!(captured.websocket.rx_ws_framed_bytes_forwarded, 64);
+    assert_eq!(captured.websocket.rx_ws_payload_bytes_consumed, 0);
     assert!(captured.websocket.rx_ws_framed_bytes_read <= 66);
     assert_eq!(
         captured.stop,
@@ -253,6 +255,7 @@ async fn observed_rx_cap_does_not_read_a_later_header_as_received_budget() {
         captured.websocket.rx_declared_ws_framed_bytes,
         Some(4194304)
     );
+    assert_eq!(captured.websocket.rx_ws_payload_bytes_consumed, 4194284);
     assert_eq!(
         (
             captured.websocket.rx_ws_framed_bytes_read,

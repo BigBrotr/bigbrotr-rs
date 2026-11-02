@@ -308,6 +308,7 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                         self.position += 1;
                         if let Some(trace) = &self.observation {
                             trace.rx_consumed(1);
+                            trace.rx_payload_consumed(1);
                         }
                     }
                     Frame::Header => {
@@ -413,6 +414,7 @@ impl<'borrow, 'owner> Input<'borrow, 'owner> {
                         self.position += count;
                         if let Some(trace) = &self.observation {
                             trace.rx_consumed(count);
+                            trace.rx_payload_consumed(count);
                             trace.rx_forwarded(count);
                         }
                         self.frame = Frame::Payload {

@@ -2,8 +2,9 @@
 //! no dispatch, measurement, clock-quality or scientific evidence authority.
 use super::{TransportError, WebSocketError};
 use std::{
+    alloc::Layout,
     io,
-    sync::{Arc, Mutex},
+    sync::{Arc, Mutex, atomic::AtomicUsize},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 use tokio::time::Instant;
@@ -28,14 +29,19 @@ pub struct TransportInstant {
 impl TransportInstant {
     pub(super) fn now() -> Self {
         let monotonic = Instant::now();
-        let unix_us = match SystemTime::now().duration_since(UNIX_EPOCH) {
-            Ok(value) => i64::try_from(value.as_micros()).ok(),
-            Err(error) => i64::try_from(error.duration().as_micros())
-                .ok()
-                .and_then(i64::checked_neg),
-        };
+        let unix_us = signed_unix_us(SystemTime::now());
         Self { monotonic, unix_us }
     }
+}
+fn signed_unix_us(value: SystemTime) -> Option<i64> {
+    let nanos = match value.duration_since(UNIX_EPOCH) {
+        Ok(duration) => i128::try_from(duration.as_nanos()).ok()?,
+        Err(error) => i128::try_from(error.duration().as_nanos())
+            .ok()?
+            .checked_neg()?,
+    };
+    // Match ReceiveClock: floor signed time, so epoch - 1ns is -1us.
+    i64::try_from(nanos.div_euclid(1000)).ok()
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -132,6 +138,10 @@ pub struct WebSocketCounters {
     /// Actual bytes consumed by the physical-frame guard, including rejected
     /// headers/close codes. Can be smaller than read bytes when input is buffered.
     pub rx_ws_framed_bytes_consumed: u64,
+    /// Actual payload octets consumed by the guard, excluding every physical
+    /// header. Includes fragments, controls and partial/rejected Close codes or
+    /// payloads; buffered unread payload and declared potential lengths add none.
+    pub rx_ws_payload_bytes_consumed: u64,
     /// Actual bytes forwarded to the WS codec after the guard's checks. Can be
     /// smaller than consumed bytes when a header/close code is refused.
     pub rx_ws_framed_bytes_forwarded: u64,
@@ -154,6 +164,7 @@ impl Default for WebSocketCounters {
             rx_declared_ws_framed_bytes: Some(0),
             rx_ws_framed_bytes_read: 0,
             rx_ws_framed_bytes_consumed: 0,
+            rx_ws_payload_bytes_consumed: 0,
             rx_ws_framed_bytes_forwarded: 0,
             rx_logical_messages_delivered: 0,
             tx_ws_framed_bytes_written: 0,
@@ -202,9 +213,14 @@ impl TransportTrace {
     pub fn new() -> Self {
         Self::default()
     }
-    /// Fixed logical retained allocation, excluding allocator overhead.
+    /// Arc allocation layout: its two atomic reference counts followed by the
+    /// full Mutex<State>, including the mutex/poison state and alignment padding.
+    /// Excludes allocator bookkeeping and this handle's inline pointer.
     pub const fn retained_bytes() -> usize {
-        std::mem::size_of::<State>() + 2 * std::mem::size_of::<usize>()
+        match Layout::new::<[AtomicUsize; 2]>().extend(Layout::new::<Mutex<State>>()) {
+            Ok((layout, _)) => layout.pad_to_align().size(),
+            Err(_) => panic!("fixed transport trace allocation layout"),
+        }
     }
     fn update<T>(&self, apply: impl FnOnce(&mut State) -> T) -> T {
         // Diagnostics do not revive authority. Preserve observations even if a
@@ -408,6 +424,9 @@ impl TransportTrace {
     pub(super) fn rx_consumed(&self, bytes: usize) {
         self.update(|state| state.snapshot.websocket.rx_ws_framed_bytes_consumed += bytes as u64);
     }
+    pub(super) fn rx_payload_consumed(&self, bytes: usize) {
+        self.update(|state| state.snapshot.websocket.rx_ws_payload_bytes_consumed += bytes as u64);
+    }
     pub(super) fn rx_forwarded(&self, bytes: usize) {
         self.update(|state| state.snapshot.websocket.rx_ws_framed_bytes_forwarded += bytes as u64);
     }
@@ -459,6 +478,33 @@ impl Drop for TlsPhase {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn signed_utc_microseconds_floor_both_sides_of_epoch() {
+        for (nanos, expected) in [(0, 0), (1, 0), (999, 0), (1000, 1), (1001, 1)] {
+            assert_eq!(
+                signed_unix_us(UNIX_EPOCH + Duration::from_nanos(nanos)),
+                Some(expected)
+            );
+        }
+        for (nanos, expected) in [(1, -1), (999, -1), (1000, -1), (1001, -2)] {
+            assert_eq!(
+                signed_unix_us(UNIX_EPOCH - Duration::from_nanos(nanos)),
+                Some(expected)
+            );
+        }
+    }
+
+    #[test]
+    fn retained_charge_includes_the_whole_mutex_and_arc_counts() {
+        let charged = TransportTrace::retained_bytes();
+        assert!(
+            charged >= std::mem::size_of::<Mutex<State>>() + 2 * std::mem::size_of::<AtomicUsize>()
+        );
+        assert_eq!(charged % std::mem::align_of::<Mutex<State>>(), 0);
+        assert_eq!(charged % std::mem::align_of::<AtomicUsize>(), 0);
+    }
+
     #[test]
     fn open_bound_starts_at_entry_and_only_validated_upgrade_disarms_it() {
         let trace = TransportTrace::new();
@@ -548,5 +594,6 @@ mod tests {
         assert_eq!(captured.rx_last_declared_payload_bytes, Some(u64::MAX));
         assert_eq!(captured.rx_declared_ws_framed_bytes, None);
         assert_eq!(captured.rx_ws_framed_bytes_read, 0);
+        assert_eq!(captured.rx_ws_payload_bytes_consumed, 0);
     }
 }
