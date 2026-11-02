@@ -129,7 +129,7 @@ def control_commands():
             ('export-profile-controls', [sys.executable, 'tools/ci.py', '--control-suite', 'export-profile'])]
 
 
-def commands(output, system, architecture, jobs):
+def commands(output, system, architecture, jobs, native_source_reference=None):
     python = sys.executable
     build = output / 'build'
     checks = [('toolchain', ['rustup', 'show']),
@@ -145,6 +145,8 @@ def commands(output, system, architecture, jobs):
     checks += control_commands()
     checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
                                       '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
+    if native_source_reference is not None:
+        checks[-1][1].extend(['--native-source-reference', str(native_source_reference)])
     checks += [(name, [python, 'tools/ci.py', '--workspace-check', name, '--from-build', str(build)])
                for name in WORKSPACE_COMMANDS]
     if system == 'Linux' and architecture == 'x86_64':
@@ -195,7 +197,7 @@ def workspace_context(build):
             or manifest['revision'] != git(ROOT, 'rev-parse', 'HEAD')
             or manifest['tree'] != git(ROOT, 'rev-parse', 'HEAD^{tree}')):
         raise ValueError('build source does not match this checkout')
-    for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py',
+    for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py', 'tools/native_source_timestamps.py',
                  'contracts/release/archive-engine.json']:
         if regular_file_hash(ROOT / name) != manifest['files_sha256'][name]:
             raise ValueError('executing helper or native registry differs from selected source')
@@ -258,6 +260,9 @@ def main():
                         help='run portable controls and documentation; no product build or qualification')
     parser.add_argument('--download-cache', type=Path,
                         help='optional native asset download cache; every asset is size/hash checked')
+    parser.add_argument('--native-source-reference', type=Path,
+                        help='optional trusted prior build for verified vendor timestamp preparation; '
+                             'restores no compiled cache and gives fresh-target hosted CI no speedup')
     parser.add_argument('--workspace-check', choices=WORKSPACE_COMMANDS,
                         help='run a default-profile workspace check from this revision\'s clean build')
     parser.add_argument('--from-build', type=Path, help='preceding trusted exact-source build directory')
@@ -266,11 +271,11 @@ def main():
     args = parser.parse_args()
     if args.control_suite:
         if (args.output or args.documentation_only or args.controls_only or
-                args.download_cache or args.workspace_check or args.from_build):
+                args.download_cache or args.native_source_reference or args.workspace_check or args.from_build):
             parser.error('--control-suite is a separate operation')
         return control_suite(args.control_suite)
     if args.workspace_check or args.from_build:
-        if args.output or args.documentation_only or args.controls_only or args.download_cache:
+        if args.output or args.documentation_only or args.controls_only or args.download_cache or args.native_source_reference:
             parser.error('--workspace-check/--from-build and --output are separate operations')
         if not args.workspace_check or not args.from_build:
             parser.error('--workspace-check and --from-build are required together')
@@ -285,8 +290,8 @@ def main():
     if output.exists():
         raise ValueError('CI requires a new output directory')
     if args.documentation_only or args.controls_only:
-        if args.download_cache:
-            parser.error('--download-cache is only used by native foundation checks')
+        if args.download_cache or args.native_source_reference:
+            parser.error('--download-cache/--native-source-reference are only used by native foundation checks')
         identity = {'source': {'revision': git(ROOT, 'rev-parse', 'HEAD'),
                                'tree': git(ROOT, 'rev-parse', 'HEAD^{tree}'), 'dirty': False},
                     'helper_sha256': file_hash(Path(__file__)),
@@ -322,7 +327,7 @@ def main():
                 'archive_bundle': archive,
                 'deadline_seconds': 7200,
                 'scope': 'Foundation CI commands only; not a release, engine matrix or other native target qualification'}
-    report = execute(commands(output, system, architecture, args.jobs), output, ROOT, env, identity, 7200)
+    report = execute(commands(output, system, architecture, args.jobs, args.native_source_reference), output, ROOT, env, identity, 7200)
     if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
         report.update(status='FAIL', failure='source-changed-during-CI')
         write_report(output, report)

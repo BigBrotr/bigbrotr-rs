@@ -33,7 +33,7 @@ def fixture():
         target = ci.native_target()
         assets = {'library': {'name': 'library', 'bytes': 3, 'sha256': sha(b'lib')},
                   'header': {'name': 'header', 'bytes': 3, 'sha256': sha(b'hdr')}, 'extensions': []}
-        for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py', '.cargo/config.toml']:
+        for name in ['tools/ci.py', 'tools/build.py', 'tools/archive_bundle.py', 'tools/native_source_timestamps.py', '.cargo/config.toml']:
             path = checkout/name; path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT/name, path)
         for name in ['Cargo.lock', 'rust-toolchain.toml', 'contracts/release/dependencies.json',
@@ -169,6 +169,8 @@ class WorkspaceReuseControls(unittest.TestCase):
                      ['--control-suite', 'acceptance', '--documentation-only'],
                      ['--control-suite', 'acceptance', '--controls-only'],
                      ['--control-suite', 'acceptance', '--download-cache', '/unused'],
+                     ['--control-suite', 'acceptance', '--native-source-reference', '/unused'],
+                     ['--workspace-check', 'clippy', '--from-build', '/absent', '--native-source-reference', '/unused'],
                      ['--control-suite', 'acceptance', '--workspace-check', 'clippy', '--from-build', '/absent'],
                      ['--workspace-check', 'unknown', '--from-build', '/absent']]:
             with self.subTest(args=args):
@@ -209,7 +211,7 @@ class WorkspaceReuseControls(unittest.TestCase):
 
     def test_changed_inputs_are_refused_before_the_child_can_run(self):
         for name in ['bigbrotr', 'archive-worker/bigbrotr-archive-worker', 'source/product.rs',
-                     'source/Cargo.lock', 'source/tools/ci.py', 'source/extra.rs', 'source.tar',
+                     'source/Cargo.lock', 'source/tools/ci.py', 'source/tools/native_source_timestamps.py', 'source/extra.rs', 'source.tar',
                      'archive-worker/lib/library', 'cargo-home/config.toml', 'cargo-home/credentials.toml']:
             with self.subTest(path=name), fixture() as (root, build, _, _, _):
                 (build/name).write_bytes(b'changed')

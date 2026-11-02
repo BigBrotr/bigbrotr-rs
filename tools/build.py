@@ -227,7 +227,8 @@ def build(args):
     helper_hash = file_hash(Path(__file__).resolve())
     if file_hash(source / "tools/build.py") != helper_hash:
         raise ValueError("selected revision has a different build helper; execute that revision in its own checkout")
-    for helper in ['tools/archive_bundle.py', 'contracts/release/archive-engine.json']:
+    for helper in ['tools/archive_bundle.py', 'tools/native_source_timestamps.py',
+                   'contracts/release/archive-engine.json']:
         if file_hash(root/helper) != file_hash(source/helper):
             raise ValueError('selected revision has different archive build inputs; execute that revision in its own checkout')
     members = source_inventory(source)
@@ -254,10 +255,26 @@ def build(args):
     archive_environment = build_environment(archive_root)
     env.update(archive_environment)
     env.update(cargo_environment(output, manifest, manifest_hash, 'release'))
+    timestamps = {'status': 'not-selected'}
+    timestamp_rustc = None
+    if args.native_source_reference:
+        # Optional preparation only. The output/target stays fresh; an external
+        # trusted cache owner still needs its own lock and artifact validation.
+        from tools.native_source_timestamps import preserve_native_timestamps
+        timestamp_rustc = command_output(['rustc', '-vV'], env)
+        timestamps = preserve_native_timestamps(source, archive, manifest, native,
+                                                timestamp_rustc,
+                                                target, archive_assets, args.native_source_reference,
+                                                profile='release')
     worker_identity = build_binaries(source, env)
     verify_cargo_configuration(source, root, members, output / 'cargo-home')
     verify_bundle(archive_root, target)
     verify_native_toolchain(native)
+    if timestamp_rustc is not None:
+        from tools.native_source_timestamps import inventory
+        inventory(source, archive, manifest)
+        if command_output(['rustc', '-vV'], env) != timestamp_rustc:
+            raise ValueError('Rust compiler changed after native timestamp preparation')
     after = source_inventory(source)
     if members != after:
         raise ValueError("build changed its declared source inputs")
@@ -285,6 +302,7 @@ def build(args):
         "format": "bigbrotr-build-result/1", "binary_sha256": file_hash(binary),
         "source_manifest_sha256": manifest_hash, "helper_sha256": helper_hash, "build_info": info,
         "native_toolchain": native,
+        "native_source_timestamps": timestamps,
         "archive_worker": {"path": str(worker), **worker_identity,
                            "registry_sha256": members['contracts/release/archive-engine.json'],
                            "assets": archive_assets, "build_environment": archive_environment},
@@ -300,6 +318,9 @@ def main():
                         help="positive Cargo/native compilation job limit (default: 2)")
     parser.add_argument('--archive-bundle', type=Path,
                         help='explicit existing pinned archive bundle; otherwise prepare it over HTTPS at build time')
+    parser.add_argument('--native-source-reference', type=Path,
+                        help='optional trusted prior build: preserve only verified-identical vendor timestamps; '
+                             'mismatch refuses reuse. Restores no target/cache; fresh targets gain no speedup')
     args = parser.parse_args()
     try:
         build(args)
