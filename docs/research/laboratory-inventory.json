@@ -79054,7 +79054,7 @@
     "runtime_integration": {
       "worktree": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101",
       "branch": "work/m2-finite-history-20261101",
-      "observed_source": "a3e51472ad7a5832bedc2a00173d91b373d8bdde before current documentation/source-pin update",
+      "observed_source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca pushed main/origin, before current publication journal",
       "state": "Main/origin16ad remains current; actual Mac proxy verifier FAIL is retained while Linux runs. Root has a critically approved source-only proxy accounting/admission correction and43 controls PASS, not pushed. Separate seed fixture source work remains partial.",
       "retained_source_worktrees": [
         ".research/m2-monitor-native-tests-20261102",
@@ -79077,10 +79077,10 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator; current installed case and both compiler attempts are reaped. Documentation and publication admission next.",
-        "source_work": "Original seed worktree work/m2-monitor-c3-guards-20261102 clean at8129ef53; changes integrated locally into Root, not yet main/pushed.",
-        "review": "Independent bounded Astra reviews approved seed Rust/authority/native/full-document custody, Python oracles/source fence and redaction correction. No active review assignment.",
-        "hosted": "16ad terminal/public audit sealed. Root watcher15724 reaped1 without expiry, PIDs absent; no active hosted observer or new run yet."
+        "integrator": "Root sole integrator; all local engines/compiler/tests terminal. Current publication journal is local; no second push to supersede active551 CI.",
+        "source_work": "Original seed worktree clean at8129ef53 and preserved; source integrated and pushed on551 main.",
+        "review": "Bounded Astra read-only design of remaining connected refusal gates; Sol prepares source-bound CI acquisition/verification. No new engine/build/test campaign.",
+        "hosted": "One Root watcher61745,60s interval/7500s bound; remote run41529949800 source551/push/attempt1 has scopePASS and three foundation jobs running."
       },
       "resources": "b05 builder79279, Rust65458, observer13418 and portable92240 all reaped0; containers stopped/PID0/no OOM. Compiler cache released/reacquired; protected four ELF bytes/fullstat unchanged. Three installed cases64800/13174/63559 all reaped0; respectively20/20/24 owned containers stopped and5/5/9 recorded processes absent. Peer owners joined; borrowed bridge1699209a preserved. No cleanup; original data, failures, .research and source worktrees retained. New source16ad watcher15724/driver2031539/GH2031542 is active; no local engine or compiler activity.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
@@ -79170,18 +79170,14 @@
         }
       },
       "hosted_observer": {
-        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation",
-        "tool": 15724,
-        "driver_pid": 2031539,
-        "driver_start_ticks": "37534335",
-        "pid": 2031542,
-        "start_ticks": "37534337",
-        "run": 41512656056,
-        "source": "16adbee0fbc5a9f5cbf9ab99cbac03d194c62a9d",
-        "state": "REAPED_EXIT1_WITHOUT_EXPIRY_TERMINAL_FAILURE_SEALED",
-        "terminal_audit": {
-          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-reconciliation-main-16adbee0-20261102/ci-observation/terminal-audit.json",
-          "sha256": "22b21edc8db6e0ffb623f4e0027548cdaa7af5e0567e8b1aeeed1799723edbb6"
+        "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation",
+        "tool": 61745,
+        "run": 41529949800,
+        "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
+        "state": "ROOT_OWNED_READ_ONLY_RUNNING",
+        "identity": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
+          "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
         }
       },
       "next_ack_source": {
@@ -79240,7 +79236,7 @@
         "base": "b05b0a26",
         "owner": "Sol measurement_clickhouse_prep",
         "last_observed_local_changes": [],
-        "state": "Source committed and integrated locally; strict build/Clippy, pure validator and nine-stage installed case PASS; not yet pushed to main. Original469 lint failure andr1 bootstrap verifier failure retained.",
+        "state": "Source integrated and pushed on551 main; strict fixture build/Clippy, pure validator and nine-stage installed case PASS; actual new full hosted execution pending.",
         "source": "8129ef53feda52593942d367416ba866c44ff39d",
         "evidence_owner": "P02 initial_measurement_c3_repair.existing_outcome_qualification",
         "qualified_capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/existing-seed-8129ef53",

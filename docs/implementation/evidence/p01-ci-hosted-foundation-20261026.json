@@ -2827,6 +2827,40 @@
         "classification": "Executed proxy verifier callback/admission race; no billing refusal, provider admission cancellation or observed Linux product defect.",
         "public_audit": "Four artifacts/513 members and26 logs;54 known contexts/5 false positives, zero new/unclassified credential candidates or provider alerts within bounded pattern/asynchronous-provider limits."
       }
+    },
+    "existing_outcome_publication": {
+      "source": "551cb56ff5b45bc678b9ef299d8bce9d179c99ca",
+      "status": "PUSHED_NEW_FULL_FOUNDATION_RUNNING_NOT_QUALIFIED",
+      "source_admission": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-source-551cb56f-20261102/publication-admission.json",
+        "sha256": "278da622fd6f93d9501ba143c8ab2eaa4f2957515669da1a26a450d0d952153e"
+      },
+      "push": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/push-receipt.json",
+        "sha256": "9d95408474f2b4b803c376312281aa8d578e7c47fe8802c3e853701f7b753548"
+      },
+      "documentation": {
+        "path": "/home/tux/bigbrotr-rs/.research/m2-linear-continuation-20261101/.research/ci-doc-existing-outcome-final/result.json",
+        "sha256": "9a0939616ab148480b909be8c345bba18e892c4ff2e55316bda361dbaa6fd561"
+      },
+      "run": 41529949800,
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41529949800",
+      "attempt": 1,
+      "event": "push",
+      "initial_observation": {
+        "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/initial-observation.json",
+        "sha256": "05305a69f164200c2d3759a1b9b63d28878c73cb6510cc6e2617b44bb7820dce"
+      },
+      "watcher": {
+        "tool": 61745,
+        "identity": {
+          "path": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-existing-outcome-main-551cb56f-20261102/ci-observation/watch-identity.json",
+          "sha256": "636ef8990dc53b8d95dc609f9105be24660211a9a7a543ce369400f3e52538cb"
+        },
+        "state": "ROOT_OWNED_READ_ONLY_RUNNING"
+      },
+      "qualification": "Required36 foundation commands and12 mandatory Native controls per platform remain pending actual terminal/public audit. Source-declared671 acceptance/43 proxy/13 export; new cfg(test) seed ignored by default, actual connected execution recorded separately in P02. Alternate nonselected workflow jobs SKIP are not required executions or PASS.",
+      "next": "Preserve this run; Root reaps watcher, acquire exact-source artifacts/logs and verify actual three-platform gates/public outputs using the prepared retained observer. f4ad remains latest full hosted PASS until success."
     }
   }
 }

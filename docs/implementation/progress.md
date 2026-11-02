@@ -8,10 +8,11 @@ Public development does not authorize official releases, packages or deployment.
 ## Revision and demonstrated capability
 
 Root `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **a3e51472** before this coherent
-record/source-pin update. Canonical main/origin remain **16adbee0**. Root's local
-commits include the verified proxy correction, private Control-owned seed, maintained
-builder/controls and reviewed diagnostic fix; they are not yet pushed.
+`work/m2-finite-history-20261101`, observed HEAD **551cb56f** before this publication journal. Canonical main/origin
+and actual remote main are independently verified **551cb56f** after the authorized
+fast-forward/push. The verified proxy correction, private Control-owned seed,
+maintained builder/controls, reviewed diagnostic fix and qualification are published.
+Current journal changes are local; do not push them alone and supersede active CI.
 
 Qualified product **b05b0a26**, tree **a9dc791d**, now passes four real installed
 Monitor recovery journeys with matching0044 ledger and exact-source observer:
@@ -61,11 +62,18 @@ verifier failure, not billing or cancellation. Original packet/terminal event
 was not captured. Terminal audit **22b21edc**, public audit **85b9e08b** retain
 actual artifacts/logs and bounded credential/provider findings.
 
-Root watcher15724 reaped1 without expiry; recorded PIDs are absent. The reviewed
-local proxy fix has43 controls PASS. A corrected full three-platform hosted run,
-particularly actual Mac build/Rust/Native execution, remains required; a
-control-only green run cannot replace it. Publish the coherent seed/proxy delta
-once final controls/docs and public source/object admission pass.
+Prior Root watcher15724 reaped1 without expiry; its recorded PIDs are absent.
+Source551 passed exact documentation3/3 and bounded source/object/public admission
+**278da622**, then push **9d954084** verified main/origin/actual remote. Actual
+[new run41529949800](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41529949800)
+is exact551/push/attempt1: scope125567245031PASS; foundation jobs arm125567427612,
+Mac125567427669 and amd64125567427763 are RUNNING at initial observation.
+Root watcher **61745** is the sole observer: driver2075466/GH2075469, verified
+start ticks38210396/38210398,60s interval/7500s bound. Preserve its run.
+Required36 commands and12 Native per platform remain pending actual qualification;
+nonselected alternate workflow SKIP jobs are not required executions or PASS.
+The corrected full three-platform execution, especially Mac build/Rust/Native,
+remains necessary; a control-only green run cannot replace it.
 
 ## Open gates, custody and next action
 
@@ -79,16 +87,14 @@ tasks; no whole-P02 prerequisite or reduced scope.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
-Original seed worktree is clean at8129ef53 and preserved; its commits are locally
-integrated. All current compiler/test/installed tools are reaped, containers
+Original seed worktree is clean at8129ef53 and preserved; its commits are integrated and pushed on main. All current compiler/test/installed tools are reaped, containers
 stopped, cache115 released/reacquired and original four protected ELF bytes/fullstat
-unchanged at qualification. No engine, compiler or hosted observer is active.
+unchanged at qualification. No local engine/compiler is active; the single read-only hosted observer above is active.
 Preserve original failures, data, .research, worktrees and borrowed bridge.
 October31 space recovery is reconciled; no cleanup was started.
 
-**Next Root action:** finish this coherent record/source-pin control check, commit,
-perform public source/object admission and publish verified work to main. Observe
-and qualify the actual new full foundation run without cancelling it. In parallel,
+**Next Root action:** save this publication journal locally, then observe/qualify
+the actual new full foundation run without cancelling it. In parallel,
 close the three bounded connected refusal responsibilities above, then choose the
 next useful M2 increment by actual dependencies. Finite same-job continuation,
 funded reopen beyond64, admission cost, ClickHouse decoding/transport, coordinator
