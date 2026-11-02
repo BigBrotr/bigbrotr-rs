@@ -1,112 +1,117 @@
 # Current execution checkpoint
 
 2026-11-02, Tux. **Goal ACTIVE:** complete selected P00–P10/M1–M5.
-Q37/Q38/Q40/Q41/Q42 apply; public development, no official release/deployment.
-One existing plan, capability-first increments, Root sole integrator.
+Q37/Q38/Q40/Q41/Q42 apply. Public development; no official release or deployment.
+One existing plan, coherent capability increments, Root sole integrator.
 
-## Revision and qualified capability
+## Revision and demonstrated capability
 
-Root: `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **ffc57174** plus the current
-coherent evidence/checkpoint updates. Canonical main/origin remain **d32b6527**.
-Do not push while the exact-d32 Mac retry executes: ref concurrency would cancel it.
-Local recovery harness/fixes are dd7081e0,054dcd64,214e2d27,ffc57174. Actual product
-**cc8bdcf8**, tree **10949ae4**, and its qualified observer are unchanged; no rebuild
-was needed. P02 owns exact identities and strict/build/lib/bin evidence
-(701library+233binary PASS, dedicated ignores explicit), retained original failures
-and four protected ELF byte/full-stat guards. Cache custody is released.
+Root owns `.research/m2-linear-continuation-20261101`, branch
+`work/m2-finite-history-20261101`. Observed HEAD **da68f902** plus current coherent
+P01/inventory/checkpoint and tutorial-pin updates. Canonical main/origin remain
+**d32b6527**. Its hosted run is terminal FAIL; no hosted execution is active.
 
-Existing valid capabilities remain source-scoped:
-
-- First passive Archive/Index: installedf474/assembly62ae,7/7PASS through PG/Native,
-  all11 ClickHouse targets and restarted installed typed inspection.
-- Known measurement ACK: installedcc8/assembly8ae,7/7PASS, C4/I4/A4/R0 with original
-  inputs/receipts/science and same-data PostgreSQL restart.
-- Quota/history: installed538 restart12/12 and finite128 boundary7/7, owned by
-  [P03 evidence](evidence/p03-initial-sync-native-20261002.json).
-
-**New capability: `p04-monitor-ack-recovery`, realr4 PASS8/8, zeroFAIL/SKIP/NOT_RUN.**
-Actual selected generic C4 UPDATE1/same-session completed-COMMIT reply loss leaves
-PGC4/nativeI4/A3/R0. Installed default recovery under fresh Control closes the
-original producer and confirms ACK4; exact retry adds no native write. Sequence
-63→65→65, four original inputs/receipts, tenFacts/fourPendingBatchheaders, science,
-head/dependency xmins and85table closure retained; no Sync or replacement probe.
-One peer joined/closed/queueempty. Root independently checked all20 containers,
-including all three observers, stopped/PID0/noOOM and five processes absent.
-Borrowed bridge1699209a unchanged. Receipt
+The unchanged product **cc8bdcf8**, tree **10949ae4**, and exact-source observer
+qualified the new **`p04-monitor-ack-recovery`: 8/8 stages PASS**, zero FAIL/SKIP/
+NOT_RUN. Assembly **ffc57174** loses only the selected generic C4 UPDATE1 transaction's
+completed COMMIT reply. After positive writer/backend exclusion: PG C4, Native
+I4/A3/R0. Installed default recovery under fresh Control closes the original
+producer and confirms ACK4; exact retry adds no native write. Native sequence
+63→65→65, four original inputs/receipts, ten facts/four batch headers, science,
+checkpoint/dependency xmins and the 85-table closure are retained. No Sync work or
+replacement probe. Root checked all 20 containers, including three observers,
+stopped/PID0/noOOM; five processes absent; one peer joined/closed/queue empty;
+borrowed bridge1699209a unchanged. Receipt SHA
 `2cf1477ede246a199cc8ec537a3391ced2f571da0d221b70e326c4f6551caee1`.
+
 [P02 evidence](evidence/p02-ingest-dictionary-codec-20260918.json),
-`passive_measurement_20261102.control_dispatch.producer_ack_followthrough.ack_recovery`,
-owns source/review/commands/artifacts and all original outcomes.
+`passive_measurement_20261102.control_dispatch.producer_ack_followthrough`, owns
+commands, identities, critical reviews, strict/build/lib/bin results and failures.
+Original recovery r1 FAIL was invalid static Archive composition; r2 remains
+UNKNOWN because forced proxy cleanup lost terminal diagnostics. Diagnostic r3
+proved the fixture's 20,001st-frame refusal before the selected transaction.
+These original outcomes remain unchanged. Astra approved the actual correction to
+reuse the existing bounded retained-catch-up profile; author 41 proxy +52 harness
+controls passed. Real r4 used 20,305 frames/one connection with no unexpected
+proxy error. This establishes bounded recovery, not performance or full M2.
 
-Original recoveryr1FAIL: fixture removed mandatory static Archive declaration;
-product correctly refused. r2FAIL remains UNKNOWN, as forced proxy stop omitted
-terminal diagnostics. Diagnosticr3 reproduced FAIL at the fixture's20,001stframe,
-before selectedUPDATE/COMMIT (1,350,195bytes); all15 containers stopped, diagnostic
-nonzero correctly left cleanupFAIL. None became PASS retrospectively.
-Astra approved the actual bounded existing-profile correctiond0f91ec4/ffc57174:
-retained-catch-up131072frames/64lifetimeconnections/64MiB/120s, actual ready envelope
-verified, exact selector/Bind/oracles/product budgets/timeouts/defaults unchanged.
-Author41proxy+52harness controlsPASS; review authenticated rather than reran them.
-Realr4 used20305frames/oneconnection and no unexpected proxy failure. This is a
-recovery proof, not product capacity or performance qualification.
+Earlier valid, source-scoped capabilities remain: passive Archive/Index
+f474/62ae (7/7); known C4/Native A4 with restarted inspection cc8/8ae (7/7);
+quota/history538 restart12/12 and finite128 boundary7/7 in
+[P03 evidence](evidence/p03-initial-sync-native-20261002.json). Reuse their valid
+proofs; P02 owns exact scope rather than duplicating it here.
 
-## Hosted CI and public output
+## Hosted CI and current correction
 
 [P01 evidence](evidence/p01-ci-hosted-foundation-20261026.json),
-`pending_monitor_publication_20261102.new_publication`, owns exact receipts/audits.
-Earlier0d/run41451793817FAIL was fixture extraction modes on Mac and an obsolete
-optional-role diagnostic expectation on Linux; source corrections are integrated.
-No billing refusal was observed. New actual Linux execution qualifies those fixes.
-
+`pending_monitor_publication_20261102`, owns all actual source/output audits.
 [Exact d32 run41468529978](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978)
-attempt1 is **FAILURE / INCOMPLETE_PROVIDER_ADMISSION**: both Linux foundation
-jobs fullPASS (amd6415/15,arm6410/10; each1573Rust assertions/all11Native/628+13
-portable/practical40+65), scope20PASS. Mac125355892462 never acquired a runner:
-zero steps/artifact,8checks/11NativeNOT_RUN; provider capacity, not product,
-fixture, billing or user cancellation. Original outcome remains sealed.
-Bounded public source/artifact/log scans have zero new/unclassified credential
-candidates; known nonsecret contexts and asynchronous-scan limits remain explicit.
+attempt1: both Linux jobs full PASS (15/15 and10/10; each1573 Rust assertions,
+all11 Native controls,628+13 portable and40+65 practical), scope20 PASS. Mac never
+acquired a runner, leaving its eight checks NOT_RUN; provider capacity, not billing.
 
-Only missing Mac was retried at identical source/platform/coverage.
-[Attempt2 Mac125393619701](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978/job/125393619701)
-is **ADMITTED/RUNNING**, shared native checks active at17:01:57Z; no MaccheckPASS
-claimed. Watcher **tool65527/PID1902888**, driver1902885,60s/7500s bound, separate
-attempt2 observation folder. Linux/scope API aliases reuse original successful
-attempt1 IDs/digests/times; they are not new executions. Fully qualified hosted
-baseline remainsa37/run41366972298 until this gate actually completes.
+The targeted identical-source [Mac attempt2](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978/job/125393619701)
+executed and **FAILED**: first seven checks passed, then Rust925 PASS/3 FAIL/
+1 ignored/0 filtered; later workspace targets NOT_RUN. All11 Native controls
+passed. Three Monitor selection tests passed noncanonical temporary paths to the
+correct strict parent guard. Root reproduced those failures with an owned TMPDIR
+alias on the retained ELF; canonical TMPDIR passed all four selection controls.
+Fixture-only **da68f902** shares canonical owned0700 temporary roots; production
+selection bytes are unchanged. Rustfmt and14 tutorial controls PASS; source pin
+reconciled. New Rust helper compilation and corrected actual Mac run are NOT_RUN.
 
-## Active work, open limits and next action
+Attempt2 audit SHAa43f8a76 and public receipt dfe17266 bind four artifacts/516
+members/nine logs: zero new or unclassified credential candidates. Known nonsecret
+contexts and asynchronous scanning limits remain explicit. Linux/scope results
+are reused from attempt1, never relabeled new execution. Watcher65527/PID1902888
+reaped exit1 at17:05:24Z. The combined gate is32 PASS/1 FAIL; audit PASS is separate.
+The last fully qualified hosted baseline remainsa37/run41366972298.
 
-Sol in `.research/m2-monitor-ack-recovery-20261102`, afterd0f91ec4, independently
-finishes bounded P01-T08 shared nonempty fault-proxy suite and exact Python-helper/
-Monitor-prose CI routing. Partial tooling work is not integrated. Changed tools/
-selector themselves still select full foundation; no platform coverage reduction.
-No engine/build/cache/protected ELF/push assignment. Root reviews/integrates.
+CI tooling **f9fb5e8e/eb09cb52** is locally integrated and critically approved:
+required nonempty fault-proxy suite shared by full/controls tracks; four exact
+Python helpers and Monitor prose may select controls. Unknown/product/build/
+configuration/dependency/workflow/selector inputs still select full foundation;
+all three platforms remain. Author20 CI+41 proxy controls PASS; Astra independently
+20 CI controls PASS and reviewed selection/failure semantics. This tooling change
+itself requires the new actual 36-command foundation matrix, currently NOT_RUN.
 
-Astra maps the next bounded **NativeI4/PGC3 generic-checkpoint repair** under
-P04-T07 Steps2/6 and P02: existing default resolver copies outcome4 but leaves C3;
-head guard permits closing, dependency guard still requires open. Design only,
-no implementation yet: preserve actual exclusive native custody/original receipts,
-fresh Control, live-admission refusals, final complete-prefix ACK and no new I/O.
-Q40 permits bounded preproduction consolidation after actual consumer analysis.
+## Active work, resources and next action
 
-Full staged-before-PG/lost-RAM/durable-start/renewal/repeated scheduling and
-Monitor-aware reclamation remain existing P02/P04 gates. ACK is not retirement:
-the dormant prefix veto refuses Monitor attribution before planning/deletion;
-its runtime qualification belongs to reclamation wiring. Fleet/catalog/cadence,
-other selected methods, capacity/operations and Q40 admission-cost/ClickHouse/
-coordinator follow-through keep their existing owners; no all-P02 barrier.
+Two independent, partial M2 source assignments remain unintegrated:
+
+- Sol current_control_inventory: Rust/native/PG/funding/tests for initial
+  NativeI4/PGC3 checkpoint repair in `.research/m2-monitor-ack-recovery-20261102`,
+  afterf9. Astra approved the bounded historical-binding/custody design; actual
+  implementation still needs critical review and real qualification.
+- Sol measurement_clickhouse_prep: shared Python fault journey/oracle in
+  `.research/m2-monitor-native-outcome-20261102`, branch
+  `work/m2-monitor-native-outcome-20261102`, basedeb09. Reuse the exact C4 selector
+  before COMMIT forwarding; independently prove durable C3/nine dependencies,
+  NativeI4/A3 and original receipt4, then repair and exact retry. No synthetic PG
+  outcome. Observed fact timestamp needs an independent fixture window and complete
+  reference reconstruction; Astra approved that design, not unseen code.
+
+Both assignments are source/cheap-controls only: no engines/build/cache/protected
+ELF/remote/push. Root owns integration and the current Mac fixture correction.
+Sol ci_recovery_publication_sol prepares bounded source admission and the next
+read-only hosted observer from existing tools, waiting for the exact candidate.
 
 [Inventory](../research/laboratory-inventory.json),
-`implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
-All local compiler/installed processes are terminal; old/fresh data, failures,
-.research/worktrees and borrowed bridge are retained. New recovery3r1/15r2/15r3/
-20r4 containers are stopped, cache released; no cleanup. Only read-only hosted
-watching and bounded source/controls/design assignments remain active.
+`implementation_monitor_descriptors_20261102.runtime_integration`, owns custody.
+All local compiler/installed processes are terminal and cache custody is released;
+protected four ELF guards remain source-scoped valid. Original data, failures,
+.research/worktrees and borrowed bridge are retained; no cleanup. Recovery
+3r1/15r2/15r3/20r4 containers are stopped. Only bounded source/control work is active.
 
-**Next Root action:** commit this coherent qualified recovery evidence; use the
-bounded Astra design to implement original NativeI4/PGC3 completion with relevant
-critical review and real fault/recovery proof. Review/integrate the independent
-CI tooling result, observe actual Mac terminal outputs, and publish coherent work
-without superseding that run. Goal ACTIVE and incomplete; full selected scope remains.
+NativeI4/PGC3 is the next bounded P04-T07 Steps2/6/P02 capability, not an all-P02
+barrier. Full staged-before-PG/lost-RAM/durable-start/renewal/repeated scheduling
+and Monitor-aware reclamation remain their existing gates. ACK is not retirement;
+keep the dormant attribution veto and originals. Fleet/catalog/methods, capacity,
+operations and Q40 admission-cost/ClickHouse/coordinator work retain their owners.
+No selected later work is removed or claimed complete.
+
+**Next Root action:** commit this coherent recovery/CI/Mac-fixture increment, run
+the shared portable checks, obtain source publication admission, push main, and
+observe the actual new CI without superseding it. Then integrate/critically review
+the independent C3 product/oracle work and qualify the changed product through its
+relevant native and installed paths. Goal ACTIVE and incomplete.

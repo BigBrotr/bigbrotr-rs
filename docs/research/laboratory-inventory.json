@@ -79071,14 +79071,15 @@
         ".research/m2-monitor-ack-recovery-harness-dd7081e0",
         ".research/m2-monitor-ack-recovery-harness-054dcd64",
         ".research/m2-monitor-ack-recovery-harness-214e2d27",
-        ".research/m2-monitor-ack-recovery-harness-ffc57174"
+        ".research/m2-monitor-ack-recovery-harness-ffc57174",
+        ".research/m2-monitor-native-outcome-20261102"
       ],
       "active_assignments": {
-        "current_control_inventory": "Sol/xhigh boundedP01-T08 sharedfault-proxycontrols andexacthelper/prose CIrouting, in existingrecoveryWT aftercleand0; source/cheapcontrols only, noengine/build/cache/ELF/push. PartialCIwork notintegrated.",
-        "native_timestamp_review": "Astra/xhigh profiledelta approved; next boundedsource-only NativeI4/PGC3 genericcheckpointrepair authority/custody design underP04-T07Steps2/6/P02. Noimplementation/engine/build/cache/ELF/write/push.",
-        "measurement_clickhouse_prep": "Sol/xhigh read-only exactd32/run41468529978 Mac attempt2 watcher65527/PID1902888(driver1902885),60s/7500sbound; Linux attempt1 sealed successful. No rerun/settings/cancel/push."
+        "current_control_inventory": "Sol/xhigh Rust/native/PG/current0044initialMonitorC3checkpointrepair+funding/tests, sourceonly inexistingrecoveryWT afterf9. Noengines/build/cache/protectedELF/remote/push; actualcriticalreviewrequired.",
+        "native_timestamp_review": "Astra/xhigh boundedC3repairdesign/historicaljoin/datasetlock clarification andsameC4selectorbefore-forwardfaultapproach approved; no currentimplementation/engine/build/cache/ELF/write/push assignment.",
+        "measurement_clickhouse_prep": "Sol/xhigh nowPythonNativeI4/PGC3faultcase/oracle implementation in .research/m2-monitor-native-outcome-20261102 branchwork/m2-monitor-native-outcome-20261102 basedeb09. Noengine/build/cache/protectedELF/remote/push; Rootintegrates."
       },
-      "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers/r2 fifteencontainers/r3 fifteencontainers/r4twentycontainers inclall3observers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Only hostedobserver65527/PID1902888 active; no cleanup.",
+      "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers/r2 fifteencontainers/r3 fifteencontainers/r4twentycontainers inclall3observers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Hostedobserver65527/PID1902888 reapedexit1; no activehostedwatcher; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79171,7 +79172,7 @@
         "driver_pid": 1902885,
         "tool": 65527,
         "run": 41468529978,
-        "state": "READ_ONLY_RUNNING exactd32 attempt2; Mac125393619701 admitted/sharednativechecksactive. BothLinux fullPASS from sealedattempt1, originalMac providerfailure preserved. No freshMac checkPASS yet."
+        "state": "TERMINAL_REAPED_EXIT1 at17:05:24Z, exactd32attempt2Macrust-testsFAIL fixturecanonicaltemp; P01ownsaudit/publicscan, no activewatcher. BothLinuxattempt1PASSreused."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",

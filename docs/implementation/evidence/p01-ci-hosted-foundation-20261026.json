@@ -2527,7 +2527,7 @@
         "public_receipt_sha256": "2f4c4474c2fd86a101873ee90e34a7b6bfdc7a65240b2214ce14fa049bd897b3"
       },
       "macos_targeted_retry": {
-        "status": "ADMITTED_RUNNING_NO_CHECK_PASS_YET",
+        "status": "FAIL_FIXTURE_NONCANONICAL_TEMP_PARENT",
         "attempt": 2,
         "source": "d32b6527114bfe587bae839b1d4d6527bab7bf96",
         "job": 125393619701,
@@ -2540,10 +2540,36 @@
           "pid": 1902888,
           "driver_pid": 1902885,
           "interval_seconds": 60,
-          "bound_seconds": 7500
+          "bound_seconds": 7500,
+          "state": "REAPED_EXIT1_2026_11_02_17_05_24Z"
         },
-        "scope": "Only missingMac job rerun at exactd32; setup/checkout/verifieddownloads complete, sharednativechecks active. API job aliases for Linux/scope reuse original successful attempt1 evidence; not fresh executions. No push until terminal to preserve ref concurrency. First invalid local gh syntax refused before sending, preserved separately; correct job-only request accepted."
+        "scope": "Actuald32/33commands remainsFAIL; auditPASS is evidenceaudit, neverproductgatePASS. Correctedsource/newGitHubmatrixNOT_RUN. No rerun/settings/billing mutation.",
+        "conclusion": "failure",
+        "terminal_audit": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/macos-targeted-retry/attempt-2-observation/terminal-audit.json",
+        "terminal_audit_sha256": "a43f8a7617fcf1a558069602090fde6525c240a7e98fe08f51e84c2f749143ca",
+        "public_receipt_sha256": "dfe17266b9b799dad77565924c14bc54331fe243ee47b9c4f7cfc2e9e5a9b4dd",
+        "counts": "Combined32foundationPASS/1FAIL. Macfirst7checksPASS (inclactualrelease/Clippy/Rustdoc), rust-tests925PASS/3FAIL/1ignored/0filtered acrosslibrary+binary; laterworkspaceNOT_RUN. All11NativecontrolsPASS. Portable615PASS/13platformSKIP;export13PASS. Linux/scope successes reusedattempt1.",
+        "classification": "Rootfullselection.rs review andactualunchangedELF TMPDIRalias reproduction1PASS/3FAIL establish testfixturepremise. tempfile path onMac includes /var alias; strict canonicalparent runtimeguard correctlyrefuses. CanonicalTMPDIR sameoldELF4PASS/0FAIL, includingguardnegatives. No productionguard change.",
+        "public_scan": "Fourartifacts/516members/nineattempt2logs;54knownnonsecretoccurrences/fivefingerprints,zero new/unclassified candidates/provideralerts; asynchronouslimits retained."
       }
+    },
+    "macos_selection_fixture_correction": {
+      "source": "da68f902",
+      "status": "SOURCE_CORRECTED_RUNTIME_UNCHANGED_NEW_HOSTED_EXECUTION_NOT_RUN",
+      "receipt": "/home/tux/bigbrotr-rs/.research/macos-monitor-selection-20261102/fixture-correction.json",
+      "receipt_sha256": "94b6214058d91aa53f8469908020476a3d3ae0afe49aedce5d30fda01482b8cf",
+      "checks": "Rootfullowningfile/ordinarytest-fixturedelta review; sharedcanonical0700TempDir helper preservesallnegativecases andbyteidenticalproductionprefix. Unchangedretainedbinary: ownedalias1PASS/3FAIL reproducesMac, canonicalroot4PASS; RustfmtPASS. NewRusttesthelpercompilation/actualmacOStargetNOT_RUN. Tutorialpin reconciledwithsamefixture-onlyappsdelta;14tutorialcontrolsPASS.",
+      "scope": "Originald32MacFAIL/logs preserved; full newactualthree-platformCI remainsrequired. No localproductbuild forunchangedruntime."
+    },
+    "fault_proxy_ci_followthrough": {
+      "original": "f9fb5e8e8c9aefde08a6c107cf97b5c068c70ce5",
+      "integrated": "eb09cb52",
+      "status": "CRITICAL_REVIEW_APPROVED_HOSTED_NOT_RUN",
+      "scope": "Sharedrequirednonemptyfault-proxysuite onfull+controls tracks; exactfourPythonhelpers plusMonitoroperationsprose controlallowlist, unknown/product/build/config/dependency/workflow/selector paths fullnative. Toolingpublicationitself foundationtrue/controlsfalse; sameallthreeplatforms.",
+      "review": "IndependentAstra ci_proxy_scope_review readcomplete5filedelta/selector/runner/tests/workflow/newhelpers/proxycontrols/affecteddocs; nofalsePASS/routingblocker. Independent20CIcontrolsPASS/0FAILERROR2.179s,AST/diff/receipthashes/mixedrouting/currentandpublicationselectionsPASS. Authoractualfault-proxysharedentrypoint41PASS reused ratherthanrerun; engines/builds/remoteNONE.",
+      "source_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/ci-proxy-controls/source-controls.json",
+      "source_controls_sha256": "b45c3a7de50c0d7da0e5f0a0005dba0b0dc08e5c80b38b9596614478cb82581c",
+      "limit": "Newresultingrevision actualhosted36foundationcommands stillNOT_RUN; no coverage/source/suitecrossmixing."
     }
   }
 }
