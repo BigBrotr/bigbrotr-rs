@@ -264,6 +264,32 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
         limits: EventLimits,
         max_requests: NonZeroU16,
     ) -> Result<Self, SessionError> {
+        Self::connect_inner(stream, resources, limits, max_requests, false).await
+    }
+
+    /// The fixed passive profile on an already observed, authorized stream.
+    /// Default sessions retain their existing limits and constructor behavior.
+    pub async fn connect_observed(
+        stream: &'borrow mut DirectStream<'owner>,
+        resources: &ResourceBudget,
+    ) -> Result<Self, SessionError> {
+        Self::connect_inner(
+            stream,
+            resources,
+            EventLimits::default(),
+            NonZeroU16::new(1).expect("one passive request"),
+            true,
+        )
+        .await
+    }
+
+    async fn connect_inner(
+        stream: &'borrow mut DirectStream<'owner>,
+        resources: &ResourceBudget,
+        limits: EventLimits,
+        max_requests: NonZeroU16,
+        observed: bool,
+    ) -> Result<Self, SessionError> {
         limits.validate().map_err(|_| SessionError::InvalidLimits)?;
         let count = usize::from(max_requests.get());
         let bytes = limits
@@ -285,9 +311,12 @@ impl<'borrow, 'owner, 'request> RelaySession<'borrow, 'owner, 'request> {
         let mut nonce = [0; 16];
         getrandom::fill(&mut nonce).map_err(|_| SessionError::Unavailable)?;
         let clock = ReceiveClock::new().map_err(|_| SessionError::Clock)?;
-        let socket = RelayWebSocket::connect(stream, resources, limits.wire_bytes)
-            .await
-            .map_err(SessionError::WebSocket)?;
+        let socket = if observed {
+            RelayWebSocket::connect_observed(stream, resources).await
+        } else {
+            RelayWebSocket::connect(stream, resources, limits.wire_bytes).await
+        }
+        .map_err(SessionError::WebSocket)?;
         Ok(Self {
             socket,
             requests,

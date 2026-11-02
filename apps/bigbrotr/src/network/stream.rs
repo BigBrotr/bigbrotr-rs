@@ -20,6 +20,12 @@ pub struct DirectStream<'owner> {
     pub(super) peer: SocketAddr,
 }
 impl DirectStream<'_> {
+    pub(crate) fn observed_by(&self, trace: &super::TransportTrace) -> bool {
+        self.inner
+            .gate
+            .observation()
+            .is_some_and(|attached| attached.same_capture(trace))
+    }
     pub fn endpoint(&self) -> &Endpoint {
         &self.endpoint
     }

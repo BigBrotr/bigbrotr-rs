@@ -27,7 +27,7 @@ pub struct TransportInstant {
     pub unix_us: Option<i64>,
 }
 impl TransportInstant {
-    pub(super) fn now() -> Self {
+    pub(crate) fn now() -> Self {
         let monotonic = Instant::now();
         let unix_us = signed_unix_us(SystemTime::now());
         Self { monotonic, unix_us }
@@ -212,6 +212,9 @@ pub struct TransportTrace(Arc<Mutex<State>>);
 impl TransportTrace {
     pub fn new() -> Self {
         Self::default()
+    }
+    pub(crate) fn same_capture(&self, other: &Self) -> bool {
+        Arc::ptr_eq(&self.0, &other.0)
     }
     /// Arc allocation layout: its two atomic reference counts followed by the
     /// full Mutex<State>, including the mutex/poison state and alignment padding.

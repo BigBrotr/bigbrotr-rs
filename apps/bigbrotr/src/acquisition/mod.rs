@@ -1,6 +1,7 @@
 //! Bounded acquisition inputs. Destination authority remains a separate boundary.
 pub mod import;
 pub mod job;
+pub mod monitor;
 pub mod observation;
 pub mod preparation;
 pub mod quantum;
