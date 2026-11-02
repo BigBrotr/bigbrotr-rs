@@ -100,6 +100,10 @@ struct Observation {
     _metadata: OwnedPermit,
     _inputs: Vec<RetainedInputs>,
 }
+#[allow(
+    clippy::large_enum_variant,
+    reason = "keep ordinary cut custody inline; the larger compound measurement has its own charged box"
+)]
 enum NativeObservation {
     Cut(ObservedCut),
     Measurement(Box<ArchivedMeasurement>),
