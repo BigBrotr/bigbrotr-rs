@@ -132,6 +132,11 @@ def relay(directory, listener, finished, errors):
 
 def run(directory, request, cli, logged_in, session, saved, auth):
     observations, errors = [], []
+    recovery_profile = directory/'monitor-ack-recovery.json'
+    recovery = recovery_profile.exists()
+    if recovery:
+        assert json.loads(recovery_profile.read_text()) == dict(format='bigbrotr-monitor-ack-recovery-peer/1',
+            boundary='checkpoint-after-complete',observed_seconds=120)
     visibility = json.loads((directory / 'visibility.json').read_text())
     revisions = dict(expected_config_revision='1', expected_policy_revision='1')
     finished = threading.Event()
@@ -167,14 +172,19 @@ def run(directory, request, cli, logged_in, session, saved, auth):
             for key in ('endpoint_id','access_scope_id','route_id'))
         publish(directory, 'source-selection.json', selection)
         barrier('prepared', 15)
-        barrier('observed', 65)
+        barrier('observed', 120 if recovery else 65)
         assert (directory/'relay-complete.json').exists() and not errors
-        logged_out = cli('logout', '--session-ref', 'file:'+str(session))
-        assert json.loads(session.read_text()) == saved
-        assert request('GET', '/management/v1/me', headers=auth)[0] == 401
-        # The owner has the existing30s graceful stop plus finite receipt/driver
-        # observation. Keep this actual listener until the host confirms its join.
-        barrier('commands-finished', 45)
+        if recovery:
+            # The original HTTP owner has joined. Keep the same live peer
+            # through both recovery invocations; no replacement login or probe.
+            logged_out = None
+        else:
+            logged_out = cli('logout', '--session-ref', 'file:'+str(session))
+            assert json.loads(session.read_text()) == saved
+            assert request('GET', '/management/v1/me', headers=auth)[0] == 401
+            # The owner has the existing30s graceful stop plus finite receipt/driver
+            # observation. Keep this actual listener until the host confirms its join.
+            barrier('commands-finished', 45)
     finally:
         finished.set()
         worker.join(4)

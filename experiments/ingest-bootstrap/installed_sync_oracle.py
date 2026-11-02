@@ -31,6 +31,8 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
         tag = data[offset]; offset += 1
         if tag == 246:
             return None
+        if tag in (244,245):
+            return tag == 245
         major, size = tag >> 5, tag & 31
         if size >= 24:
             assert size in (24, 25, 26, 27)
@@ -39,6 +41,9 @@ def decode(data, maximum=65536, *, collection_items=1024, max_nodes=None):
             size = int.from_bytes(data[offset:offset+width], 'big'); offset += width
         if major == 0:
             return size
+        if major == 1:
+            assert size < 2**63, 'fixture CBOR signed i64 bound'
+            return -1-size
         if major in (2, 3):
             assert offset + size <= len(data)
             value = data[offset:offset+size]; offset += size

@@ -7,6 +7,7 @@ from contextlib import redirect_stdout
 import io
 import hashlib
 import json
+import re
 from pathlib import Path
 import struct
 import subprocess
@@ -14,7 +15,7 @@ import sys
 import unittest
 
 from native_commit_proxy import (MAX_WIRE, OPAQUE_CHUNK, PIN_RELEASE_QUERY, INDEX_PUBLICATION_QUERY,
-                                IndexPublicationObserver, SessionCommandObserver, Proxy, control_target_query, gap_write_refusal)
+                                IndexPublicationObserver, MeasurementCheckpointObserver, MEASUREMENT_CHECKPOINT_QUERY, SessionCommandObserver, Proxy, control_target_query, gap_write_refusal)
 
 
 def gap_error(**changes):
@@ -60,6 +61,56 @@ class TrafficAdmission(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):Proxy('before-forward',target='control-index-publication')
         proxy=Proxy('before-forward',target='control-index-publication',defer_arm=True,
                     index_consumer='aa'*16,hold_index_publication=True)
+        self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds),(20000,16,120))
+
+    def test_measurement_checkpoint_selects_exact_initial_C4_bind_and_successful_execute(self):
+        identity=[bytes.fromhex('aa'*16),bytes.fromhex('bb'*16)]
+        values=[*identity,b'1',b'4',b'4',b'h'*32,b'm'*32,bytes(4),(10).to_bytes(4,'big'),
+            b'o'*16,b'1',b'i'*16,b'\x00\x01',b'p'*32,b'0',None]
+        def bind(items,formats=1):
+            return b'\0checkpoint\0'+struct.pack('!H',formats)+struct.pack('!H',1)*formats+struct.pack('!H',16)+b''.join(
+                struct.pack('!i',-1) if item is None else struct.pack('!i',len(item))+item for item in items)+struct.pack('!HH',1,1)
+        def observer(items,complete=b'UPDATE 1\0',*,eligible=True):
+            result=MeasurementCheckpointObserver(identity)
+            result.frontend(b'P',b'checkpoint\0'+MEASUREMENT_CHECKPOINT_QUERY+b'\0\0\0')
+            result.frontend(b'B',bind(items))
+            result.frontend(b'E',b'\0'*5,eligible=eligible)
+            return result.backend(b'C',complete)
+        source=(Path(__file__).resolve().parents[2]/'apps/bigbrotr/src/storage/postgres/producer_progress_commit.rs').read_text()
+        statement=re.search(r'format!\("(UPDATE control.producer_checkpoints SET.*?)",\s*if snapshot.prefix_enabled \{\s*"(AND prefix_profile.*?)"',source,re.S)
+        self.assertIsNotNone(statement)
+        actual=statement[1].replace('{}',statement[2]).encode()
+        self.assertTrue(control_target_query('control-measurement-checkpoint',actual))
+        self.assertTrue(control_target_query('control-measurement-checkpoint',MEASUREMENT_CHECKPOINT_QUERY))
+        self.assertFalse(control_target_query('control-measurement-checkpoint',MEASUREMENT_CHECKPOINT_QUERY+b'; SELECT 1'))
+        self.assertTrue(observer(values))
+        for index,value in ((0,b'x'*16),(1,b'x'*16),(2,b'2'),(3,b'3'),(4,b'3'),
+                (7,(1).to_bytes(4,'big')),(8,(9).to_bytes(4,'big')),(12,b'\x00\x02'),(14,b'1'),(15,b'x'*32)):
+            altered=list(values);altered[index]=value
+            with self.subTest(index=index):self.assertFalse(observer(altered))
+        self.assertFalse(observer(values,b'UPDATE 0\0'))
+        self.assertFalse(observer(values,eligible=False))
+        for body in (bind(values)[:-1],bind(values)+b'x',bind([None]+values[1:]),bind(values,0)):
+            obj=MeasurementCheckpointObserver(identity)
+            obj.frontend(b'P',b'checkpoint\0'+MEASUREMENT_CHECKPOINT_QUERY+b'\0\0\0')
+            with self.assertRaises((ValueError,AssertionError)):obj.frontend(b'B',body)
+        # Preserve the old Index four-parameter, binary, non-null profile.
+        old=IndexPublicationObserver('aa'*16)
+        old.frontend(b'P',b'publish\0'+INDEX_PUBLICATION_QUERY+b'\0\0\0')
+        with self.assertRaises(ValueError):old.frontend(b'B',bind(values).replace(b'checkpoint',b'publish',1))
+
+    def test_measurement_identity_is_selected_once_before_arm_without_payload_logging(self):
+        for options in (dict(),dict(defer_arm=True,mode='before-forward'),dict(defer_arm=True,profile='retained-catch-up'),dict(defer_arm=True,lifetime_seconds=180)):
+            options=dict(dict(mode='after-complete',target='control-measurement-checkpoint'),**options)
+            with self.assertRaises(ValueError):Proxy(**options)
+        proxy=Proxy('after-complete',target='control-measurement-checkpoint',defer_arm=True)
+        with self.assertRaises(ValueError):proxy.command(b'arm\n')
+        with redirect_stdout(io.StringIO()) as output:
+            self.assertTrue(proxy.command(b'select-measurement '+b'aa'*16+b' '+b'bb'*16+b'\n'))
+            proxy.command(b'arm\n')
+        self.assertNotIn('aa'*16,output.getvalue());self.assertNotIn('bb'*16,output.getvalue())
+        self.assertEqual(proxy.report['measurement_identity_sha256'],hashlib.sha256(bytes.fromhex('aa'*16+'bb'*16)).hexdigest())
+        with self.assertRaises(ValueError):proxy.command(b'select-measurement '+b'aa'*16+b' '+b'bb'*16+b'\n')
         self.assertEqual((proxy.frame_limit,proxy.connection_limit,proxy.lifetime_seconds),(20000,16,120))
 
     def test_release_hold_is_explicit_and_only_valid_for_armed_release_target(self):
@@ -821,6 +872,38 @@ class ProtocolSockets(unittest.IsolatedAsyncioTestCase):
                                  [1,1,int(mode=='after-complete'),0,1])
                 self.assertEqual(await asyncio.wait_for(connection[0].read(),3),b'')
                 self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
+
+    async def test_measurement_checkpoint_reply_loss_is_bound_to_UPDATE1_and_the_same_commit(self):
+        async with SocketProxy(self,'after-complete',target='control-measurement-checkpoint') as proxy:
+            connection=await proxy.connect('bigbrotr_control','bigbrotr_control')
+            await proxy.command('select-measurement '+'aa'*16+' '+'bb'*16,'measurement-selected')
+            await proxy.command('arm','armed')
+            begin=[(b'C',b'BEGIN\0'),(b'Z',b'T')];commit=[(b'C',b'COMMIT\0'),(b'Z',b'I')]
+            values=[bytes.fromhex('aa'*16),bytes.fromhex('bb'*16),b'1',b'4',b'4',b'h'*32,b'm'*32,bytes(4),
+                (10).to_bytes(4,'big'),b'o'*16,b'1',b'i'*16,b'\x00\x01',b'p'*32,b'0',None]
+            bind=b'\0checkpoint\0'+struct.pack('!HHH',1,1,16)+b''.join(
+                struct.pack('!i',-1) if v is None else struct.pack('!i',len(v))+v for v in values)+struct.pack('!HH',1,1)
+            await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+            await self.exchange(connection,b'P',b'checkpoint\0'+MEASUREMENT_CHECKPOINT_QUERY+b'\0\0\0',[(b'1',b'')])
+            await self.exchange(connection,b'Q',b'COMMIT\0',commit)  # Parse alone cannot select.
+            await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+            await self.exchange(connection,b'B',bind,[(b'2',b'')])
+            await self.exchange(connection,b'E',b'\0'*5,[(b'C',b'UPDATE 0\0')])
+            await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+            await self.exchange(connection,b'Q',b'COMMIT\0',commit)
+            await self.exchange(connection,b'Q',b'BEGIN\0',begin)
+            await self.exchange(connection,b'B',bind,[(b'2',b'')])
+            await self.exchange(connection,b'E',b'\0'*5,[(b'C',b'UPDATE 1\0')])
+            selected=await proxy.event('measurement-checkpoint-update-complete')
+            self.assertEqual(selected['measurement_updates_complete'],1)
+            await self.exchange(connection,b'S',b'',[(b'Z',b'T')])
+            connection[1].write(message(b'Q',b'COMMIT\0'));await connection[1].drain()
+            self.assertEqual(await read_message(connection[2]),(b'Q',b'COMMIT\0'))
+            connection[3].write(message(b'C',b'COMMIT\0')+message(b'Z',b'I'));await connection[3].drain()
+            fault=await proxy.event('fault')
+            self.assertEqual([fault[k] for k in ('data_queries','data_commits','server_complete','client_complete','faults')],[1,1,1,0,1])
+            self.assertEqual(await asyncio.wait_for(connection[0].read(),3),b'')
+            self.assertEqual(await asyncio.wait_for(connection[2].read(),3),b'')
 
     async def test_release_update_hold_precedes_commit_and_stop_does_not_invent_fault(self):
         for action in ('release', 'stop'):

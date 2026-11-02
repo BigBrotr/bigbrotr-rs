@@ -530,6 +530,42 @@ python3 -B -m unittest discover -s tests/acceptance -p 'test_passive_monitor.py'
 python3 -B -m unittest discover -s tests/acceptance -p 'test_first_launch_index.py'
 ```
 
+### Recover a known Monitor checkpoint after reply loss
+
+`p04-monitor-ack-recovery` uses the passive case's candidate, exact-product native
+observer and fresh protected evidence prerequisites:
+
+```sh
+python3 -B tests/acceptance/run.py p04-monitor-ack-recovery \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --evidence /absolute/fresh-evidence
+```
+
+The existing bounded loopback proxy selects the exact dataset/producer slot,
+epoch1, generic revision4/C4 Bind and successful UPDATE1, then loses only that
+session's COMMIT reply after actual server completion. No transaction ordinal or
+observation timer chooses the fault. Before recovery the oracle requires genuine
+PG C4/outcome4 and physical Native I4/A3/R0, with ten Facts, four PendingBatch
+headers and four original receipts. A parked/CommitUnknown result is required;
+it cannot pass as a completed Monitor report.
+
+The old process/native worker and PG backend must be positively excluded. The
+original Ingest owner must remain active/draining with an unretired role. Installed
+default `ingest recover` then closes the original producer and completes ACK4
+under fresh Control; a second exact invocation adds no native write. Both retain
+all inputs, attempt/request/outcome identities, science and checkpoint/dependency
+xmins, with no Sync job, acquisition progress or new probe. The same one-connection
+peer stays alive through both invocations under an explicit120s recovery-only
+bound. No consumer publication is claimed by this case.
+
+This new journey is NOT_RUN until its actual installed receipts exist. It covers
+C4 persisted/A3 only. Native I4/C3 advancement, staged-before-PG, absent-original,
+lost-RAM/durable-start recovery, renewal, scheduling and retirement remain the
+existing P04-T07 Steps2/6 and P02 gates. SQL/file absence proves neither nonexecution
+nor permission for replacement I/O.
+
 ### Same-store installed Index restart with backlog
 
 `p01-first-launch-index-restart` selects a separate fresh variant with the same

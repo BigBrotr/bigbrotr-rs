@@ -23,7 +23,20 @@ SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\
 PIN_RELEASE_QUERY = b"UPDATE control.snapshot_leases SET state='released',lease_revision=lease_revision+1,updated_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='reader_joined' WHERE lease_id=$1::bytea AND lease_revision=$2::text::numeric AND state='active'"
 INDEX_PUBLICATION_QUERY = b"UPDATE control.consumers SET current_revision=$2::text::numeric,current_topology_generation=$3::text::numeric\n        WHERE consumer_id=$1::bytea AND current_revision IS NOT DISTINCT FROM $4::text::numeric"
 
+MEASUREMENT_CHECKPOINT_QUERY = b"""UPDATE control.producer_checkpoints SET
+            checkpoint_revision=$4::text::numeric,complete_through_request=$5::text::numeric,
+            checkpoint_digest=$6::bytea,committed_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,
+            manifest_sha256=$7::bytea,progress_jobs=$8::integer,dependency_count=$9::integer,
+            issuer_resource=$10::bytea,issuer_epoch=$11::text::numeric,issuer_incarnation=$12::bytea
+            WHERE dataset_id=$1::bytea AND producer_slot_id=$2::bytea AND producer_epoch=$3::text::numeric
+                AND checkpoint_revision=$4::text::numeric-1
+                AND progress_format=$13::smallint AND checkpoint_digest=$14::bytea AND prefix_profile AND prefix_prepared_bytes IS NULL
+                    AND coalesce(prefix_active_generation,0)=$15::text::numeric
+                    AND prefix_active_sha256 IS NOT DISTINCT FROM $16::bytea"""
+
+
 CONTROL_TARGETS = {
+    'control-measurement-checkpoint': MEASUREMENT_CHECKPOINT_QUERY,
     'control-coordinator': b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS(',
     'control-frontier': b'INSERT INTO CONTROL.ARCHIVE_FRONTIER_SNAPSHOTS(',
     'control-pin': b'INSERT INTO CONTROL.ARCHIVE_SNAPSHOT_PINS(',
@@ -51,6 +64,8 @@ CONTROL_TARGETS = {
 
 
 def control_target_query(target, query):
+    if target == 'control-measurement-checkpoint':
+        return b' '.join(query.upper().split()) == b' '.join(MEASUREMENT_CHECKPOINT_QUERY.upper().split())
     if target in ('control-closed-reclamation','control-quantum-source-rollback'):
         return b' '.join(query.upper().split()) == CONTROL_TARGETS[target]
     if target in ('control-pin-release','control-index-publication'):
@@ -209,6 +224,37 @@ class SessionCommandObserver:
         return False
 
 
+def bind_parameters(body, expected_count, *, nullable=()):
+    """Existing binary unnamed-portal profile; bounds stay local to each caller."""
+    portal,statement,tail = body.split(b'\0',2)
+    if portal or len(statement) > 64:
+        raise ValueError('bind-name')
+    offset = 0
+    def take(size):
+        nonlocal offset
+        if size < 0 or offset+size > len(tail):
+            raise ValueError('bind-length')
+        value = tail[offset:offset+size]; offset += size
+        return value
+    def count(): return struct.unpack('!H',take(2))[0]
+    formats = count()
+    if formats not in (1,expected_count) or any(count()!=1 for _ in range(formats)) or count()!=expected_count:
+        raise ValueError('bind-formats')
+    values = []
+    for index in range(expected_count):
+        size, = struct.unpack('!i',take(4))
+        if size == -1 and index in nullable:
+            values.append(None)
+        elif 0 <= size <= 64:
+            values.append(take(size))
+        else:
+            raise ValueError('bind-value')
+    results = count()
+    if results not in (0,1) or any(count()!=1 for _ in range(results)) or offset!=len(tail):
+        raise ValueError('bind-results')
+    return values
+
+
 class IndexPublicationObserver(SessionCommandObserver):
     """Closed plan3 Bind identity; never log credentials or arbitrary parameters."""
     def __init__(self, consumer):
@@ -218,30 +264,26 @@ class IndexPublicationObserver(SessionCommandObserver):
     def frontend(self, tag, body, *, eligible=True):
         super().frontend(tag,body,eligible=eligible)
         if tag == b'B' and self.bound:
-            portal,statement,tail = body.split(b'\0',2)
-            if portal or len(statement) > 64:
-                raise ValueError('index-bind-name')
-            offset = 0
-            def take(size):
-                nonlocal offset
-                if size < 0 or offset+size > len(tail):
-                    raise ValueError('index-bind-length')
-                value = tail[offset:offset+size]; offset += size
-                return value
-            def count(): return struct.unpack('!H',take(2))[0]
-            formats = count()
-            if formats not in (1,4) or any(count() != 1 for _ in range(formats)) or count() != 4:
-                raise ValueError('index-bind-formats')
-            values = []
-            for _ in range(4):
-                size, = struct.unpack('!i',take(4))
-                if not 0 <= size <= 64:
-                    raise ValueError('index-bind-value')
-                values.append(take(size))
-            results = count()
-            if results not in (0,1) or any(count() != 1 for _ in range(results)) or offset != len(tail):
-                raise ValueError('index-bind-results')
-            self.bound = tuple(values) == self.expected
+            self.bound = tuple(bind_parameters(body,4)) == self.expected
+
+
+class MeasurementCheckpointObserver(SessionCommandObserver):
+    """One initial generic C4 UPDATE, bound to the host-selected actual identity."""
+    def __init__(self, identity):
+        super().__init__('control-measurement-checkpoint')
+        self.identity = identity  # Two fixed slots, filled once before arm.
+
+    def frontend(self, tag, body, *, eligible=True):
+        super().frontend(tag,body,eligible=eligible)
+        if tag == b'B' and self.bound:
+            values = bind_parameters(body,16,nullable=(15,))
+            self.bound = (all(type(v) is bytes and len(v)==16 for v in self.identity)
+                and values[:5] == [*self.identity,b'1',b'4',b'4']
+                and all(type(values[i]) is bytes and len(values[i])==32 for i in (5,6,13))
+                and values[7:9] == [bytes(4),(10).to_bytes(4,'big')]
+                and all(type(values[i]) is bytes and len(values[i])==16 for i in (9,11))
+                and re.fullmatch(rb'[1-9][0-9]{0,19}',values[10]) is not None
+                and values[12] == b'\x00\x01' and values[14:] == [b'0',None])
 
 
 class ResumeAuthorityObserver:
@@ -306,9 +348,12 @@ class Proxy:
         if target == 'control-pin-release' and mode not in ('before-forward', 'after-complete'):
             raise ValueError('pin-release-mode')
         if defer_arm and not (mode in ('hold-reader-query', 'hold-capture-verify', 'hold-capture-rollback')
-                              or target in ('control-pin-release','control-index-publication')):
+                              or target in ('control-pin-release','control-index-publication','control-measurement-checkpoint')):
             raise ValueError('defer-arm-mode')
         self.defer_arm = defer_arm
+        if target == 'control-measurement-checkpoint' and (mode!='after-complete' or not defer_arm or profile!='default' or lifetime_seconds!=120):
+            raise ValueError('measurement-checkpoint-profile')
+        self.measurement_identity = [None,None]
         if type(hold_pin_release) is not bool or (hold_pin_release and not (
                 target == 'control-pin-release' and defer_arm)):
             raise ValueError('hold-pin-release-profile')
@@ -352,6 +397,8 @@ class Proxy:
                            data_commits=0, server_complete=0, client_complete=0, faults=0,
                            owner_requests=0, owner_forwarded=0, owner_complete=0,
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
+        if target == 'control-measurement-checkpoint':
+            self.report.update(measurement_updates_complete=0,measurement_identity_sha256=None)
         self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
         self.report.update(pin_claim_injections=0, pin_rejections=[])
         self.report.update(session_mutations_complete=0, reader_queries=0, capture_verify_requests=0, resume_authority_requests=0)
@@ -400,11 +447,23 @@ class Proxy:
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
 
     def command(self, action):
+        if action.startswith(b'select-measurement '):
+            match = re.fullmatch(rb'select-measurement ([0-9a-f]{32}) ([0-9a-f]{32})\n',action)
+            if (self.target!='control-measurement-checkpoint' or self.armed or self.held
+                    or self.measurement_identity!=[None,None] or match is None
+                    or any(value==b'0'*32 for value in match.groups())):
+                raise ValueError('measurement-identity-state')
+            self.measurement_identity[:] = [bytes.fromhex(value.decode('ascii')) for value in match.groups()]
+            self.report['measurement_identity_sha256'] = hashlib.sha256(b''.join(self.measurement_identity)).hexdigest()
+            self.emit('measurement-selected')
+            return True
         if action == b'stop\n':
             return False
         if action == b'arm\n':
             if not self.defer_arm or self.armed or self.held:
                 raise ValueError('arm-state')
+            if self.target=='control-measurement-checkpoint' and None in self.measurement_identity:
+                raise ValueError('measurement-identity-missing')
             self.armed = True
             # Baseline reader traffic cannot identify a later capture rollback.
             self.reader_database = None
@@ -557,6 +616,7 @@ class Proxy:
         progress_target = self.target == 'control-producer-progress'
         release_target = self.target == 'control-pin-release'
         index_target = self.target == 'control-index-publication'
+        measurement_target = self.target == 'control-measurement-checkpoint'
         progress_session = object() if progress_target else None
         progress_transaction = False
         session_commands = SessionCommandObserver(self.target) if self.target in (
@@ -573,6 +633,10 @@ class Proxy:
             if parameters.get(b'user') != b'bigbrotr_control' or database != b'bigbrotr_control':
                 raise ValueError('index-publication-backend')
             session_commands = IndexPublicationObserver(self.index_consumer)
+        if measurement_target:
+            if parameters.get(b'user')!=b'bigbrotr_control' or database!=b'bigbrotr_control':
+                raise ValueError('measurement-checkpoint-backend')
+            session_commands = MeasurementCheckpointObserver(self.measurement_identity)
         resume_authority = ResumeAuthorityObserver() if self.mode == 'hold-resume-authority' else None
         manager_committed = asyncio.Event()
 
@@ -631,10 +695,17 @@ class Proxy:
                         return
                 if session_commands is not None:
                     if frontend:
-                        session_commands.frontend(tag, body, eligible=(not (release_target or index_target or source_target) or
+                        session_commands.frontend(tag, body, eligible=(not (release_target or index_target or measurement_target or source_target) or
                             (self.armed and not self.target_selected)))
                     elif session_commands.backend(tag, body):
-                        if release_target or index_target:
+                        if measurement_target:
+                            if not progress_transaction or state['backend_pid'] is None or self.target_selected:
+                                raise ValueError('measurement-checkpoint-transaction')
+                            self.target_selected=True;state['data']=True
+                            self.report['measurement_updates_complete']+=1
+                            self.report['data_queries']+=1
+                            self.emit('measurement-checkpoint-update-complete',backend_pid=state['backend_pid'])
+                        elif release_target or index_target:
                             if not self.target_selected:
                                 if not progress_transaction or state['backend_pid'] is None:
                                     raise ValueError('pin-release-transaction')
@@ -725,7 +796,7 @@ class Proxy:
                         self.report['capture_verify_requests'] += 1
                         if not await self.hold('capture-verify', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or source_target or self.quantum_commit_target):
+                if frontend and tag == b'P' and self.target in CONTROL_TARGETS and not (progress_target or release_target or index_target or measurement_target or source_target or self.quantum_commit_target):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
@@ -837,7 +908,7 @@ class Proxy:
                     if ordinary_target:
                         self.emit('reader-selected', backend_pid=state['backend_pid'],
                                   connection_number=connection_number, admitted_after_arm=True)
-                if not frontend and (progress_target or release_target or index_target or source_target or self.quantum_commit_target):
+                if not frontend and (progress_target or release_target or index_target or measurement_target or source_target or self.quantum_commit_target):
                     if tag == b'E':
                         state['data'] = state['commit'] = False
                         state['commit_selected'] = False
@@ -970,7 +1041,7 @@ class Proxy:
         server = await asyncio.start_server(accept, '127.0.0.1', 0, backlog=8)
         self.emit('ready', port=server.sockets[0].getsockname()[1],
                   source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
-        control = asyncio.StreamReader(limit=32)
+        control = asyncio.StreamReader(limit=128 if self.target=='control-measurement-checkpoint' else 32)
         transport, _ = await asyncio.get_running_loop().connect_read_pipe(
             lambda: asyncio.StreamReaderProtocol(control), sys.stdin.buffer)
         try:

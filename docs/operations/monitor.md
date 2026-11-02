@@ -118,3 +118,15 @@ separate gates.
 `--monitor-once` means one source operation, not a process lifetime: serve keeps
 running for management, publication and supervised shutdown. Stop it normally
 after required Archive publication; no writer is reopened on restart.
+
+A lost completion reply after the generic checkpoint committed is a narrower
+recovery case than absent/staged evidence. After positively stopping the original
+writer/native worker and excluding its PG backend, the existing default
+`bigbrotr ingest recover --file instance.toml` can authenticate all four originals
+and the retained C4 checkpoint, close the producer and complete Native ACK4 under
+fresh Control. It starts no Monitor source and returns no writer. The original
+Ingest owner must still be active/draining with an unretired role; a released
+owner cannot be resurrected. Preserve inputs, receipts and dispatch history.
+The maintained `p04-monitor-ack-recovery` journey for this C4/A3 boundary remains
+under qualification. Native I4/C3 or staged-before-PG input needs its separate
+reconciliation path; never retry the probe from missing SQL or file observations.

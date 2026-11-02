@@ -131,9 +131,9 @@ class PassiveMonitorRuntime(Runtime):
         self.selection_path = self.state/'data/monitor-once.json'
         require(not self.selection_path.exists(), 'Monitor selection must initially be absent')
 
-    def passive_measurement(self):
+    def passive_begin(self, output):
+        """Shared fresh owner, real enrollment and still-unpublished selection."""
         self.source_unchanged()
-        output = self.root/'passive-measurement'; output.mkdir(mode=0o700)
         before, _ = self.capture(output,'before')
         require(not before['producer_requests'] and not before['measurement_dispatches'], 'Monitor setup not fresh')
         self.before_us = time.time_ns()//1000
@@ -157,6 +157,11 @@ class PassiveMonitorRuntime(Runtime):
         require(load(self.home/'source-selection.json') == self.selection, 'client source selection differs from actual enrollment')
         require((self.home/'listener-started.json').exists() and not (self.home/'relay-exchange.json').exists()
             and not (self.home/'relay-error.json').exists() and not self.selection_path.exists(), 'work began before one-shot selection')
+        return entry
+
+    def passive_measurement(self):
+        output = self.root/'passive-measurement'; output.mkdir(mode=0o700)
+        entry = self.passive_begin(output)
         deadline = time.monotonic()+65
         def remaining(maximum):
             left = deadline-time.monotonic()

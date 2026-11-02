@@ -157,7 +157,7 @@ def native_fixture():
     dataset=bytes.fromhex('01'*16);slot=bytes.fromhex('44'*16)
     be=lambda n:n.to_bytes(8,'big')
     manifest=b'independent synthetic manifest bytes'
-    for row in state['producer_requests']:
+    for row in state['producer_requests']+state['producer_outcomes']:
         row['manifest_sha256']='\\x'+hashlib.sha256(manifest).hexdigest()
     values=[('default',b'\x01\x01',manifest),
         ('default',b'\x01\x02'+dataset+bytes(4)+be(1),b'\x01\x02'+be(10)),

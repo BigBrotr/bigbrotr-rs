@@ -1347,7 +1347,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
-    passive_monitor = getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index')
+    passive_monitor = getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index','p04-monitor-ack-recovery')
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1373,6 +1373,8 @@ def first_launch(args, checks, inputs):
         from cases.first_launch_passive_monitor import PassiveMonitorRuntime, STAGES as PASSIVE_STAGES, LIMITS as PASSIVE_LIMITS
         if args.case == 'p04-passive-monitor-index':
             from cases.first_launch_passive_index import PassiveIndexRuntime as PassiveMonitorRuntime, LIMITS as PASSIVE_LIMITS
+        if args.case == 'p04-monitor-ack-recovery':
+            from cases.first_launch_monitor_ack_recovery import MonitorAckRecoveryRuntime as PassiveMonitorRuntime, STAGES as PASSIVE_STAGES, LIMITS as PASSIVE_LIMITS
         runtime_type = PassiveMonitorRuntime
         args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
@@ -1419,6 +1421,9 @@ def first_launch(args, checks, inputs):
         if passive_monitor:
             operations = operations[:4] + [('passive_measurement',runtime.passive_measurement),
                 ('restarted_measurement_inspection',runtime.restarted_measurement_inspection)]
+        if getattr(args,'case',None)=='p04-monitor-ack-recovery':
+            operations=operations[:4]+[('passive_checkpoint_reply_loss',runtime.checkpoint_reply_loss),
+                ('monitor_ack_recovery',runtime.recover_ack),('monitor_ack_retry',runtime.retry_ack)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

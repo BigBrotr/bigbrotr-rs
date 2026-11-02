@@ -336,7 +336,7 @@ def checkpoint(state, initialized, receipts):
         checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
 
 
-def native_ack(dump, state, initialized, receipts, cbor):
+def native_ack(dump, state, initialized, receipts, cbor, *, phase='admitted'):
     """Read physical producer ACK and retained science/receipts after writer join."""
     assert set(dump) == {'event','rows','sequence'} and dump['event'] == 'dump-state'
     assert type(dump['sequence']) is int and dump['sequence'] > 0
@@ -354,7 +354,10 @@ def native_ack(dump, state, initialized, receipts, cbor):
     dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
     slot = bytes.fromhex(initialized['producer_slot_id'])
     be = lambda n:n.to_bytes(8,'big')
-    assert values[('receipts',b'\x01\x31'+slot+be(1))] == b'\x01\x31'+be(4)+be(4)+be(0)
+    assert phase in ('admitted','reply-lost','recovered')
+    acknowledged = 3 if phase=='reply-lost' else 4
+    head = bytes([2 if phase=='recovered' else 1,0x31])+be(4)+be(acknowledged)+be(0)
+    assert values[('receipts',b'\x01\x31'+slot+be(1))] == head+(b'\x01' if phase=='recovered' else b'')
     assert len([key for cf,key in values if cf=='receipts']) == 5
     assert values[('default',b'\x01\x02'+dataset+bytes(4)+be(1))] == b'\x01\x02'+be(10)
     manifest = values[('default',b'\x01\x01')]
@@ -379,4 +382,4 @@ def native_ack(dump, state, initialized, receipts, cbor):
             fact = values[('facts',b'\x01\x20'+dataset+bytes(4)+be(1)+be(source[3]))]
             assert fact[:34] == b'\x01\x20'+digest
             assert hashlib.sha256(fact[34:]).digest() == digest
-    return dict(native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_pending_batches=4,native_receipts=4)
+    return dict(native_acknowledged=acknowledged,native_issued=4,native_retired=0,native_facts=10,native_pending_batches=4,native_receipts=4)
