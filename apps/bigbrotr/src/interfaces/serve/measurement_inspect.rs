@@ -510,7 +510,8 @@ mod tests {
                 let filled = fill(&mut output);
                 let observed = Arc::new(AtomicBool::new(false));
                 let cancel = Arc::new(AtomicBool::new(false));
-                let window = gate(Duration::from_secs(2));
+                let ttl = Duration::from_secs(2);
+                let window = gate(ttl);
                 let worker_window = window.clone();
                 let worker_cancel = cancel.clone();
                 let mut output = ObservedPipe(output, observed.clone());
@@ -534,11 +535,12 @@ mod tests {
                     "full pipe must be reached before expiry"
                 );
                 if expiry {
-                    while window.check().is_ok() {
-                        assert!(Instant::now() < deadline);
-                        thread::sleep(Duration::from_millis(2));
-                    }
-                    assert!(!cancel.load(Ordering::Acquire)); // no supervisor is helping
+                    // Do not poll this shared gate: check() would close it and
+                    // help the worker. Only the worker may observe expiry.
+                    let waiting = Instant::now();
+                    thread::sleep(ttl);
+                    assert!(waiting.elapsed() >= ttl);
+                    assert!(!cancel.load(Ordering::Acquire));
                 } else {
                     cancel.store(true, Ordering::Release);
                     assert!(window.check().is_ok());
@@ -554,6 +556,9 @@ mod tests {
                 let ended = ended.expect("nonblocking output worker did not join");
                 worker.join().unwrap();
                 assert!(ended.is_err());
+                if expiry {
+                    assert!(window.check().is_err());
+                }
                 // Include anything accepted after the first drain and before
                 // the joined refusal; a late write must not become a false PASS.
                 bytes.extend(drain(&reader));
