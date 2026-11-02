@@ -1347,6 +1347,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
+    passive_monitor = getattr(args,'case',None)=='p04-passive-monitor'
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
         from cases.first_launch_tutorial import TutorialRuntime, LIMITS as TUTORIAL_LIMITS
@@ -1368,8 +1369,12 @@ def first_launch(args, checks, inputs):
             from cases.first_launch_window_succession import WindowSuccessionRuntime as LinearQuantumRuntime,LIMITS as QUANTUM_LIMITS
         runtime_type=LinearQuantumRuntime
         args.case_limits=QUANTUM_LIMITS
+    if passive_monitor:
+        from cases.first_launch_passive_monitor import PassiveMonitorRuntime, STAGES as PASSIVE_STAGES, LIMITS as PASSIVE_LIMITS
+        runtime_type = PassiveMonitorRuntime
+        args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
-    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (QUANTUM_STAGES if linear_quantum else STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
+    stage_checks = {name: dict(name='first_launch_' + name, result='NOT_RUN') for name in (PASSIVE_STAGES if passive_monitor else QUANTUM_STAGES if linear_quantum else STOP_STAGES if renewal_stop else INDEX_STAGES if index_case else RESTART_STAGES if restart else STAGES)}
     checks.extend(stage_checks.values())
     previous_mask = os.umask(0o077)
     runtime = None
@@ -1409,6 +1414,9 @@ def first_launch(args, checks, inputs):
             operations += [('linear_quantum',runtime.verify_linear_quantum)]
         if renewal_stop:
             operations = operations[:4] + [('renewal_stop', runtime.renewal_stop)]
+        if passive_monitor:
+            operations = operations[:4] + [('passive_measurement',runtime.passive_measurement),
+                ('restarted_measurement_inspection',runtime.restarted_measurement_inspection)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

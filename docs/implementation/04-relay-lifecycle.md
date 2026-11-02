@@ -264,6 +264,40 @@ per-attempt profile bounds in the owning contract before independent oracles.
 This slice does not complete fleet scheduling, catalog checks or later selected
 Monitor tasks; their steps below remain open.
 
+The maintained first installed case is `p04-passive-monitor`:
+
+```sh
+python3 -B tests/acceptance/run.py p04-passive-monitor \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --evidence /absolute/fresh-private-evidence
+```
+
+It reuses the first-launch Linux amd64, nonroot Docker/Compose, pinned local image,
+PostgreSQL16.15 and completion-space prerequisites. Current schema0044 and narrow
+runtime privileges are provisioned from the candidate's ordinary packaging. It
+selects only Monitor open/read with Sync disabled, enrolls the actual initialized
+private scope through the real access CLI/private HTTP interface, and atomically
+publishes one protected local source selection. One owned literal peer serves
+one `kinds:[1],limit:1` request with a known signed EVENT and EOSE, verifies own
+CLOSE/WS-close/EOF, and rejects AUTH, publication or another connection through
+owner shutdown. The event is verification input, never an admitted event body.
+
+The independent Python oracle checks the original PG dispatch, four original
+producer inputs/outcomes, source10 and Archive counts `[9,0,0,0,0,1]`. After orderly
+owner stop and a same-data PostgreSQL restart, it enables the explicit Archive
+reader deployment root without changing persisted policy, then invokes installed
+`archive measurement-inspect` for the original fact coordinates/digest. It checks
+typed context/profile, physical/logical/byte counters including teardown, signed
+UTC and monotonic samples, independently encoded canonical digest, exact snapshot5/
+frontier4 and the positively released real reader pin. Normal dictionary producer
+progress is distinct from absent Sync/acquisition progress. Science output and
+cleanup completion are separate; partial/refused/no-I/O results cannot pass.
+Portable controls run with `python3 -B -m unittest discover -s tests/acceptance -p test_passive_monitor.py`.
+Their success does not qualify the installed case;
+actual builds/engines/restart and slow-output gates remain required. This finite
+case completes neither the scheduling/recovery steps below nor M2.
+
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.
 - [ ] **3. Schedule liveness and catalog independently.** Defaults are 5m and 6h, claim 100, concurrency 32, host concurrency 1, host start budget 32/min and 0.1 jitter. Use 15s check timeout/45s overlay; retries=1 total attempt. Failure due decay factor 2 caps at 7d; achieved coverage/backlog is reported rather than promised cadence. A retry_initial of 1s is inactive until attempts exceed one.
@@ -275,7 +309,7 @@ Monitor tasks; their steps below remain open.
 - [ ] **4. Measure the real read phases.** Record websocket open, request-to-EOSE and request-to-first-valid-event durations separately; empty prompt EOSE is readable and has no event RTT. Preserve actual request profile, address family, phase failure and source clock quality. Reuse ordered frame ownership and verification barriers; never admit a fake zero event for EOSE.
 - [ ] **5. Persist useful facts through common admission.** Validate store_checks as a subset of computed checks; explicitly disabled or discarded children remain unmeasured/unavailable in views. Group typed child checks under the executed compound attempt; use `AdmitEvidence`, stable fact identities and complete batch receipt boundaries. Include failed executed work and preserve unexecuted child status as context, not an independent attempt. Default permanent retention does not entail copying unchanged documents or storing queue deferrals in the archive.
 - [ ] **6. Exercise crash boundaries and partial catalogs.** Stop before intent, after intent before socket, after observed start, after terminal admit before PG acknowledgement and during a liveness-only pass over older TLS data. For the observed-start stop, separately cover start evidence synced versus RAM-only: expect completion-unknown versus execution-unknown. Other stops yield no attempt/fabrication, execution-unknown, idempotent terminal facts and unchanged TLS age. A stale owner returning after a new claim cannot promote status or issue another probe. This catches intent-as-execution and latest-row freshness laundering.
-- [ ] **7. Run future p04-t07 with real CLI, relay and stores.** Use `bigbrotr run monitor --once` and scheduled `serve --roles monitor,ingest,archive`; an independent socket observer and archive reader compare measured/unknown attempt sets and denominators. Retain source IDs/ranges/receipts and backlog/resource evidence. Document crash uncertainty, permanent default costs and distinction between configured and achieved cadence.
+- [ ] **7. Run p04-t07 with real CLI, relay and stores.** Execute the bounded `p04-passive-monitor` case above through fresh `serve --initialize-ingest --monitor-once` and installed standalone inspection. The broader `bigbrotr run monitor --once` and scheduled `serve --roles monitor,ingest,archive` workflows remain selected work. An independent socket observer and archive reader compare measured/unknown attempt sets and denominators. Retain source IDs/ranges/receipts and backlog/resource evidence. Document crash uncertainty, permanent default costs and distinction between configured and achieved cadence.
 
 ## P04-T08 — Capture scoped DNS, TLS, HTTP and NIP-11 catalog evidence
 
