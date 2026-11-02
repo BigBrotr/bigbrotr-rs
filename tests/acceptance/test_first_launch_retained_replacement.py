@@ -200,7 +200,7 @@ def compacted_history_fixture(science):
 
 
 def second_export_fixture(root,science):
-    """Literal second-job SQL/files over the existing independent full83 fixture."""
+    """Literal second-job SQL/files over the existing independent complete current Control fixture."""
     before,after,startup=compacted_history_fixture(science)
     scope=dict(dataset_id='22'*16,dictionary_kind=4,allocation_domain='68'*16,ordinal='3')
     initialized=dict(private_scope=scope);catalog='55'*16;bx='\\x'
@@ -311,7 +311,7 @@ def second_export_fixture(root,science):
 
 class UnboundReplacementControls(unittest.TestCase):
     def test_first_export_rejects_all_unselected_inventory_default_and_retained(self):
-        # Reuse the literal original353-byte artifact and full83-table fixture.
+        # Reuse the literal original353-byte artifact and complete current Control fixture.
         # This control isolates the first-job whole-inventory boundary; it does
         # not claim another installed execution or full SQL lifecycle proof.
         for retained_profile in (False,True):
@@ -344,11 +344,22 @@ class UnboundReplacementControls(unittest.TestCase):
                 digest='\\x'+hashlib.sha256(raw).hexdigest()
                 after['artifacts'][0].update(manifest_bytes=len(raw),total_bytes=len(raw)+353,manifest_sha256=digest)
                 after['jobs'][-1]['result_manifest_digest']=digest
-                def verify(state):
-                    return exports.validate(before,state,homes[0],initialized,catalog,expected_principal='ee'*16,
-                        expected_table_count=83,expected_tables=before,destination_root=destination,
+                def verify(state,prior=before):
+                    return exports.validate(prior,state,homes[0],initialized,catalog,expected_principal='ee'*16,
+                        expected_table_count=len(index.CONTROL_TABLES),expected_tables=index.CONTROL_TABLES,destination_root=destination,
                         initial_cut=312 if retained_profile else 12,retained_compacted_epoch2=retained_profile)
                 self.assertEqual(verify(after)['jsonl_bytes'],353)
+                for inventory in ('previous-schema','missing','extra','substituted'):
+                    prior,state=copy.deepcopy((before,after))
+                    for capture in (prior,state):
+                        if inventory in ('previous-schema','missing','substituted'):
+                            capture.pop('measurement_dispatches')
+                        if inventory=='previous-schema':capture.pop('measurement_dispatch_refusals')
+                        if inventory in ('extra','substituted'):capture['untracked_control_relation']=[]
+                    # Equal before/after keys cannot define the expected schema;
+                    # in particular a same-count substitution must still refuse.
+                    with self.subTest(inventory=inventory),self.assertRaises(AssertionError):
+                        verify(state,prior)
                 for table in ('export_jobs','export_execution_units','artifacts','artifact_files','job_input_bounds'):
                     changed=copy.deepcopy(after);extra=dict(changed[table][0])
                     extra['artifact_id' if table=='artifact_files' else 'job_id']='\\x'+'fe'*16
@@ -362,7 +373,7 @@ class UnboundReplacementControls(unittest.TestCase):
             before,after,startup,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
             def verify(state):
                 verdict=exports.validate(before,state,homes[1],initialized,catalog,expected_principal='ee'*16,
-                    expected_table_count=83,expected_tables=before,destination_root=destination,initial_cut=312,
+                    expected_table_count=len(index.CONTROL_TABLES),expected_tables=index.CONTROL_TABLES,destination_root=destination,initial_cut=312,
                     retained_compacted_epoch2=True,retained_second_export=True,second_startup=startup)
                 view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict,startup=startup)
                 check.compacted_history_control(before,view,startup)
@@ -416,7 +427,7 @@ class UnboundReplacementControls(unittest.TestCase):
             before,after,startup,homes,initialized,catalog,destination,verdicts=second_export_fixture(root,science)
             def verify(state,setup):
                 verdict=exports.validate(before,state,homes[1],initialized,catalog,expected_principal='ee'*16,
-                    expected_table_count=83,expected_tables=before,destination_root=destination,initial_cut=312,
+                    expected_table_count=len(index.CONTROL_TABLES),expected_tables=index.CONTROL_TABLES,destination_root=destination,initial_cut=312,
                     retained_compacted_epoch2=True,retained_second_export=True,second_startup=setup)
                 view=exports.second_job_rows(before,state,homes[1],initialized,catalog,verdict,startup=setup)
                 check.compacted_history_control(before,view,setup)
@@ -463,7 +474,7 @@ class UnboundReplacementControls(unittest.TestCase):
                         if boundary=='idle':row['idle_window_us']=expires-row['last_seen_at_us']
                         else:row['expires_at_us']=expires
                         row['idle_expires_at_us']=min(row['expires_at_us'],row['last_seen_at_us']+row['idle_window_us'])
-                    # Other full83/session relationships remain valid. The
+                    # Other complete Control/session relationships remain valid. The
                     # authenticated terminal200 specifically needs this strict
                     # observation-before-expiry bound, without refreshing it.
                     check.compacted_history_control(before,dict(view,browser_sessions=changed['browser_sessions']),setup)

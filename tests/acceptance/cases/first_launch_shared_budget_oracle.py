@@ -137,7 +137,8 @@ def pending(prefix, state, record, job_id):
     denial(record, prefix)
     from cases.first_launch_quantum_oracle import transition
     transition(prefix,state)
-    assert set(state) == set(prefix) and len(state) == 83
+    index.control_inventory(prefix)
+    index.control_inventory(state)
     for table in set(prefix) - APPEND - MUTABLE:
         index.exact(state[table], prefix[table])
     for table in APPEND:
@@ -224,7 +225,8 @@ def preserved(denied, final):
     """The final science oracle independently validates all added rows/bytes."""
     from cases.first_launch_quantum_oracle import transition
     transition(denied,final)
-    assert set(denied) == set(final) and len(final) == 83
+    index.control_inventory(denied)
+    index.control_inventory(final)
     for table in set(denied) - APPEND - MUTABLE:
         index.exact(denied[table], final[table])
     for table in APPEND - {'jobs', 'projection_chunks', 'acquisition_progress'}:

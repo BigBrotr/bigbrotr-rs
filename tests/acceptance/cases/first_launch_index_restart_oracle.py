@@ -1,7 +1,7 @@
 """Closed installed backlog/rebind controls over the maintained Index oracle.
 
 The original initial science and eleven-family encoders remain the owners of bytes.
-Every phase compares all83 Control tables, with explicit permitted transitions.
+Every phase checks the exact current Control inventory and permitted transitions.
 """
 from cases import first_launch_index_oracle as index
 from cases.first_launch_restart import closure
@@ -37,8 +37,8 @@ def backlog(state, root, *, prefix=False):
 
 
 def unchanged_except(before, after, mutable):
-    index.exact(sorted(before),sorted(after))
-    assert len(before) == 83
+    index.control_inventory(before)
+    index.control_inventory(after)
     for table in before.keys() - mutable:
         index.exact(before[table],after[table])
 

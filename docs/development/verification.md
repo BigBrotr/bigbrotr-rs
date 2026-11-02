@@ -196,7 +196,7 @@ provisioning/migration/activation/enrollment commands, then runs the existing
 independent signed relay and authenticated clients. It checks the initial
 Archive frontier and snapshot, orderly owner shutdown, ordinary Control restart,
 explicit scope authorization, exact signed history and JSONL export. The existing
-export oracle compares the full manifest, file bytes and all 83 Control tables;
+export oracle compares the full manifest, file bytes and the exact current Control inventory;
 catalog/Archive files must remain unchanged during ordinary read/export, and
 application database backends must be absent after each lifetime.
 
@@ -703,7 +703,7 @@ oracle compares all830 native rows,64 original receipts and inputs, producer
 issued=ACK64/retired0, and native sequence1147. The separately gated proof adds
 no native write. Offered overflow leaves no65th reservation, input, fact or ACK;
 the case does not invent an internal refusal token from absent rows. Original
-Archive data/attempts and all83 Control tables retain their exact permitted
+Archive data/attempts and the exact current Control inventory retain their exact permitted
 transitions. Dynamic pending bytes, hysteresis, GC, general capacity and recovery
 remain separate requirements; existing ACK/commit-loss evidence is reused.
 

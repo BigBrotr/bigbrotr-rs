@@ -32,7 +32,7 @@ def application_payload():
 
 LIMITS = [
     'One actual pre-effect Sync or Archive application-budget refusal must retain an identified Index operation; both original deferred/admitted records and the same Control/wait identity are required.',
-    'The existing signed prefix15s, client65s, Index query5s and operation30s bounds remain. Only the positively owned ClickHouse is paused; one full83-table capture precedes immediate unpause. Capture overhead can fail the case.',
+    'The existing signed prefix15s, client65s, Index query5s and operation30s bounds remain. Only the positively owned ClickHouse is paused; one exact current-schema Control capture precedes immediate unpause. Capture overhead can fail the case.',
     'Admission must follow positive local join/result consumption of the denied Index operation. This is not remote exclusion, readiness, an atomic failing-budget snapshot or proof that Index was the only charged owner.',
     'After resumption all four original source batches, six classified events, forty Index outcomes/ten families and independent Archive C API science must match; same-owner orderly shutdown precedes original353-byte history/export with40s/12s bounds.',
     'No fixed denied role or intermediate source cut is assumed. Accepted1 and already-claimed queued2 jobs are separately checked; permanent insufficiency, unknown outcomes and missing/incomplete diagnostics cannot pass.',
@@ -161,7 +161,7 @@ class SharedBudgetRuntime(RestartIndexRuntime):
         info = self.inspect(self.ch_entry)
         require(info['State']['Running'] and info['State']['Paused'], 'held engine unexpectedly resumed')
         save(output/'capacity-pending-verdict.json', dict(status='PASS', **self.capacity_shape,
-            capture_started_ns=started,capture_finished_ns=time.monotonic_ns(),control_tables=83))
+            capture_started_ns=started,capture_finished_ns=time.monotonic_ns(),control_tables=len(index.CONTROL_TABLES)))
         self.unpause_clickhouse()
         def resumed():
             current = self.capacity_records(entry, output)
@@ -198,7 +198,7 @@ class SharedBudgetRuntime(RestartIndexRuntime):
         verdict = dict(format='bigbrotr-installed-shared-budget/1',status='PASS',
             wait_id=self.capacity_denial['wait_id'],**self.capacity_shape,
             final_source_through=12,final_archive_revision=4,final_index_revision=4,
-            control_tables=83,local_index_join='positively_consumed',remote_exclusion='NOT_RUN',
+            control_tables=len(index.CONTROL_TABLES),local_index_join='positively_consumed',remote_exclusion='NOT_RUN',
             generic_capacity='NOT_RUN',readiness='positive_initial_publication',
             application_payload=application_payload())
         save(self.root/'index/shared-budget-verdict.json', verdict)

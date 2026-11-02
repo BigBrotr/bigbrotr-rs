@@ -161,7 +161,8 @@ class SocketFixtureControls(unittest.TestCase):
                     else:
                         returned=SOCKET.prepare(lab,root,root/'build',ROOT,'a'*40)
                         self.assertEqual(returned[0],pg_root)
-                        self.assertEqual(returned[2]['target'],43)
+                        #0044 freezes the passive Monitor dispatch authority.
+                        self.assertEqual(returned[2]['target'],44)
                         self.assertEqual(lab.cli.call_args_list[0].args[1:],
                             ('config','initialize','--file','/lab/bb_source_template.toml'))
                         self.assertEqual(lab.cli.call_args_list[1].args[1:],

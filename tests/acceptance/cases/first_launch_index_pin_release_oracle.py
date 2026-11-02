@@ -48,7 +48,8 @@ def selected_pin(sample, owner):
 
 def setup(before, after, principal, clock_before, clock_after):
     """One new ordinary owner/login and exactly its first active readiness pin."""
-    require(set(before) == set(after) and len(before) == 83, 'complete setup inventory')
+    index.control_inventory(before)
+    index.control_inventory(after)
     changed = {'owner_epochs','role_instances','browser_sessions','login_buckets','management_audit',*PIN_TABLES}
     for table in before.keys()-changed:
         index.exact(after[table],before[table])

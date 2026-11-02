@@ -108,7 +108,8 @@ def retained_age(prefix, parked, first, last, *, capability='archive_publication
 def prefix_preservation(before, after, *, retained_boundary=False, index_unavailable=False):
     assert type(retained_boundary) is type(index_unavailable) is bool
     assert not (retained_boundary and index_unavailable)
-    assert set(before) == set(after) and len(before) == 83
+    index.control_inventory(before)
+    index.control_inventory(after)
     additions = dict(acquisition_selectors=1, acquisition_scopes=1, acquisition_scope_commands=1,
         jobs=1, acquisition_jobs=1, job_admissions=1, management_commands=2, management_audit=2,
         producer_requests=2, producer_outcomes=2, producer_checkpoint_dependencies=9,
@@ -171,7 +172,8 @@ def prefix_preservation(before, after, *, retained_boundary=False, index_unavail
 def terminal_preservation(live, after, observed_at_us, *, archive_renewal=False):
     assert type(archive_renewal) is bool
     renewing = ('ingest', 'index', 'archive') if archive_renewal else ('ingest', 'index')
-    assert set(live) == set(after) and len(live) == 83
+    index.control_inventory(live)
+    index.control_inventory(after)
     mutable = {'owner_epochs', 'role_instances', 'browser_sessions', 'management_audit'}
     for table in set(live) - mutable:
         index.exact(live[table], after[table])

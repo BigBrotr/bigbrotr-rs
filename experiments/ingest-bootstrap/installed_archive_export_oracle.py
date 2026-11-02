@@ -127,7 +127,7 @@ def second_job_rows(before,after,home,initialized,catalog_id,verdict,*,startup):
     """Validate every extra export row before projecting the existing history checks.
 
     Only this closed second job is removed. Its two released operation readers
-    remain, so the maintained full83-table history/session oracle still checks
+    remain, so the maintained complete Control history/session oracle still checks
     startup, authentication, all prior rows and the ordinary Control release.
     """
     bx='\\x';scope=initialized['private_scope'];dataset=bx+scope['dataset_id']
