@@ -203,9 +203,12 @@ pub struct MeasurementCounters {
     pub rx_physical_frames: u64,
     pub rx_messages: u64,
     pub event_candidates: u64,
-    /// Actually consumed WS framing and payload, excluding HTTP/TLS overhead.
+    /// Actual plaintext WS input read, including buffered/coalesced/rejected
+    /// traffic after validated upgrade. Excludes HTTP/TLS overhead and bytes
+    /// remaining only in lower TLS or kernel buffers.
     pub rx_ws_bytes: u64,
-    /// Actually consumed WS payload octets, excluding frame headers.
+    /// Actually consumed WS payload octets, excluding frame headers and unread
+    /// buffered payload. This is a subset of the actual input read above.
     pub rx_payload_bytes: u64,
     pub tx_ws_bytes: u64,
 }

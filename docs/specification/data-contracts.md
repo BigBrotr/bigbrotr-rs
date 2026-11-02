@@ -285,7 +285,12 @@ signed-event limit (raw event JSON can be larger), 64 received physical frames,
 64KiB transmitted WS bytes. Controls, unrelated/rejected input and teardown count.
 Actual counters are never synthesized from declared payload lengths or clipped to
 limits; an offending header/read can cross a cap before refusal. Consumed WS
-payload bytes are a subset of consumed framing-plus-payload bytes. Each known
+payload bytes are a subset of framing-plus-payload bytes actually read into the
+guarded WS input. The total includes buffered/unclassified/rejected input and
+the coalesced WS tail after validated upgrade, excluding HTTP/TLS overhead or
+bytes still in lower TLS/kernel buffers. Declared potential lengths add no actual
+bytes; an aggregate-budget refusal may precede receiving the declared body and
+need not imply that the actual counter reached its cap. Each known
 distinct EVENT/EOSE/AUTH/CLOSED observation requires at least one logical message,
 physical frame and payload byte; first verified EVENT also requires an event
 candidate, and a completed REQ flush requires transmitted WS bytes. These minima
