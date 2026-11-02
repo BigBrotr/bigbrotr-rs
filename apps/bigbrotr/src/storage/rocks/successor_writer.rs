@@ -227,6 +227,17 @@ impl ActiveSuccessorWriter {
         self.store
             .dictionary_pending_reservation(request, intent, recorded_at, limits, permit)
     }
+    pub(in crate::storage) fn measurement_pending_reservation(
+        &self,
+        request: ProducerRequestId,
+        intent: &MeasurementEvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::PendingReservationRequest, AdmissionError> {
+        self.store
+            .measurement_pending_reservation(request, intent, recorded_at, limits, permit)
+    }
     pub(in crate::storage) fn pending_event_reservation(
         &self,
         event: &PreparedEvent,
@@ -493,6 +504,56 @@ impl ActiveSuccessorWriter {
             limits,
             permit,
             cancelled,
+            authority,
+        );
+        let validation = self.validate(cancelled);
+        let result = result?;
+        validation?;
+        Ok(result)
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "exact staged measurement and successor cancellation"
+    )]
+    pub(in crate::storage) fn stage_measurement_append(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &MeasurementEvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+        cancelled: &AtomicBool,
+    ) -> Result<StagedProducerRequest, AdmissionError> {
+        self.store.stage_measurement_append(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            Some(cancelled),
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "measurement operation grant, cancellation and SQL authority"
+    )]
+    pub(in crate::storage) fn append_measurement(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &MeasurementEvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        cancelled: &AtomicBool,
+        authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredReceipt, AdmissionError> {
+        let result = self.store.append_measurement(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            Some(cancelled),
             authority,
         );
         let validation = self.validate(cancelled);
