@@ -125,6 +125,9 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         self.inputs['acceptance_files_sha256'][relative]=digest(self.source/relative)
         if self.existing_outcome:
             from cases import first_launch_monitor_outcome_seed as seed
+            relative='tests/acceptance/cases/first_launch_monitor_outcome_seed.py'
+            require(digest(Path(seed.__file__))==digest(self.source/relative), 'Monitor outcome seed source mismatch')
+            self.inputs['acceptance_files_sha256'][relative]=digest(self.source/relative)
             self.seed_paths,self.seed_identity=seed.artifact(self.args.monitor_outcome_seed_build,self.manifest,self.source)
             self.seed_hashes={name:digest(path) for name,path in self.seed_paths.items()}
             self.inputs['monitor_outcome_seed']=self.seed_identity

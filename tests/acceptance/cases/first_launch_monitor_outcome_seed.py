@@ -116,16 +116,22 @@ def launch(runtime, request):
 def parent_sources(manifest, parent, source):
     """Bind the private test suffix to unchanged independently built product inputs."""
     current=manifest['files_sha256'];baseline=parent['files_sha256']
+    for name in (OWNER,FIXTURE):require(digest(source/name)==current[name], 'compiled seed owner differs from acceptance source')
+    owner=(source/OWNER).read_bytes();suffix=HOOK.encode()
+    require(owner.endswith(suffix), 'seed owner change is not the exact test-only hook')
+    runtime_hash=hashlib.sha256(owner[:-len(suffix)]).hexdigest()
+    owner_hash=hashlib.sha256(owner).hexdigest()
+    require(baseline[OWNER] in (runtime_hash,owner_hash), 'seed changes the runtime owner')
+    require((FIXTURE in baseline)==(baseline[OWNER]==owner_hash), 'parent seed fixture and test hook disagree')
     # Keep Cargo ancestry/configuration, external example paths and fixtures in
     # the equality fence too. Only these separately attributed harness owners
     # are outside the unchanged product/build-input comparison.
-    harness=lambda name:name.startswith(('docs/','tests/acceptance/')) or name=='experiments/ingest-succession/native.py'
-    changed={name for name in set(current)|set(baseline) if not harness(name) and current.get(name)!=baseline.get(name)}
-    require(changed=={OWNER,FIXTURE} and FIXTURE not in baseline, 'seed changes production or build inputs')
-    for name in (OWNER,FIXTURE):require(digest(source/name)==current[name], 'compiled seed owner differs from acceptance source')
-    owner=(source/OWNER).read_bytes();suffix=HOOK.encode()
-    require(owner.endswith(suffix) and hashlib.sha256(owner[:-len(suffix)]).hexdigest()==baseline[OWNER],
-        'seed owner change is not the exact test-only hook')
+    harness=lambda name:name.startswith(('docs/','tests/acceptance/')) or name in (
+        'experiments/ingest-succession/native.py','experiments/archive-engine/native_commit_proxy.py',
+        'experiments/archive-engine/native_commit_proxy_tests.py')
+    changed={name for name in set(current)|set(baseline) if name not in (OWNER,FIXTURE)
+        and not harness(name) and current.get(name)!=baseline.get(name)}
+    require(not changed, 'seed changes production or build inputs')
 
 
 def artifact(compiled, candidate, source):

@@ -225,6 +225,69 @@ class ExistingOutcomeControls(unittest.TestCase):
                     self.assertEqual(paths['binary'],binary);self.assertEqual(identity['source'],manifest['revision'])
                     self.assertEqual(identity['parent_product'],candidate['artifact']['source'])
 
+    def test_parent_sources_normalizes_only_the_associated_test_hook_and_fixture(self):
+        allowed=('prior-no-hook','same-source','changed-test-fixture','proxy-helpers')
+        refused=('runtime-prefix','unconditional-hook','altered-hook','parent-hook-without-fixture',
+            'parent-fixture-without-hook','rust','cargo','cargo-config','config','external-example','other-experiment')
+        for change in allowed+refused:
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as directory:
+                source=Path(directory);(source/seed.OWNER).parent.mkdir(parents=True)
+                prefix=b'original runtime owner\n';owner=prefix+seed.HOOK.encode();body=b'current private test\n'
+                digest=lambda value:hashlib.sha256(value).hexdigest()
+                baseline={seed.OWNER:digest(prefix),'Cargo.lock':'11'*32,'.cargo/config.toml':'22'*32,
+                    'config/server.toml':'33'*32,'apps/bigbrotr/src/runtime.rs':'44'*32,
+                    'experiments/export-files/probe.rs':'55'*32,'experiments/archive-engine/another.py':'66'*32,
+                    'experiments/archive-engine/native_commit_proxy.py':'77'*32,
+                    'experiments/archive-engine/native_commit_proxy_tests.py':'88'*32}
+                if change in ('same-source','changed-test-fixture','parent-hook-without-fixture'):
+                    baseline[seed.OWNER]=digest(owner)
+                    if change!='parent-hook-without-fixture':baseline[seed.FIXTURE]=digest(body if change=='same-source' else b'prior private test\n')
+                if change=='parent-fixture-without-hook':baseline[seed.FIXTURE]=digest(body)
+                current=dict(baseline)
+                if change=='runtime-prefix':owner=b'changed runtime owner\n'+seed.HOOK.encode()
+                elif change=='unconditional-hook':owner=prefix+seed.HOOK.replace('#[cfg(test)]\n','').encode()
+                elif change=='altered-hook':owner=prefix+seed.HOOK.replace('#[cfg(test)]','#[cfg(not(test))]').encode()
+                changed={'rust':'apps/bigbrotr/src/runtime.rs','cargo':'Cargo.lock','cargo-config':'.cargo/config.toml',
+                    'config':'config/server.toml','external-example':'experiments/export-files/probe.rs',
+                    'other-experiment':'experiments/archive-engine/another.py'}
+                if change in changed:current[changed[change]]='99'*32
+                if change=='proxy-helpers':
+                    for name in ('experiments/archive-engine/native_commit_proxy.py','experiments/archive-engine/native_commit_proxy_tests.py'):
+                        current[name]='99'*32
+                (source/seed.OWNER).write_bytes(owner);(source/seed.FIXTURE).write_bytes(body)
+                current.update({seed.OWNER:digest(owner),seed.FIXTURE:digest(body)})
+                if change in allowed:seed.parent_sources(dict(files_sha256=current),dict(files_sha256=baseline),source)
+                else:
+                    with self.assertRaises(ValueError):seed.parent_sources(dict(files_sha256=current),dict(files_sha256=baseline),source)
+
+    def test_late_imported_seed_owner_is_bound_before_admission_and_retained(self):
+        root=Path(__file__).resolve().parents[2];relative='tests/acceptance/cases/first_launch_monitor_outcome_seed.py'
+        for wrong_owner in (False,True):
+            with self.subTest(wrong_owner=wrong_owner),tempfile.TemporaryDirectory() as directory:
+                source=Path(directory)/'source'
+                for name in ('tests/acceptance/cases/first_launch_monitor_ack_recovery.py',
+                        'tests/acceptance/cases/first_launch_monitor_ack_recovery_oracle.py',relative,seed.OWNER,seed.FIXTURE,
+                        'tests/fixtures/configuration/policy-v3.json','experiments/archive-engine/native_commit_proxy.py'):
+                    (source/name).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/name,source/name)
+                fake=Path(directory)/'unrelated.py';fake.write_text('unrelated import owner\n')
+                compiled=Path(directory)/'synthetic-artifact';compiled.write_text('never executed')
+                home=Path(directory)/'peer';home.mkdir();(home/'event.jsonl').write_text('signed fixture unchanged\n')
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.existing_outcome=True
+                runtime.source=source;runtime.args=SimpleNamespace(monitor_outcome_seed_build=Path(directory))
+                runtime.inputs=dict(acceptance_files_sha256={},signed_fixture_sha256=seed.digest(home/'event.jsonl'))
+                runtime.manifest={};runtime.home=home;runtime.restart_case=False
+                with patch.object(case.PassiveMonitorRuntime,'candidate'),patch.object(seed,'artifact',return_value=(dict(binary=compiled),{})) as admitted,\
+                        patch.object(seed,'__file__',str(fake) if wrong_owner else str(root/relative)):
+                    if wrong_owner:
+                        with self.assertRaisesRegex(ValueError,'Monitor outcome seed source mismatch'):runtime.candidate()
+                        admitted.assert_not_called()
+                    else:
+                        runtime.candidate();admitted.assert_called_once()
+                        self.assertEqual(runtime.inputs['acceptance_files_sha256'][relative],seed.digest(source/relative))
+                        runtime.source_unchanged()
+                        (source/relative).write_text('changed helper after admission\n')
+                        with self.assertRaisesRegex(ValueError,'acceptance source changed'):runtime.source_unchanged()
+
     def test_registration_freezes_full_manifest_before_measurement_using_existing_independent_codec(self):
         from bootstrap_oracle import expected
         dataset='01'*16;owner='3d'*16;slot='42'*16;incarnation='3f'*16;generation='43'*16

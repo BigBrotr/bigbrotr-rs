@@ -716,9 +716,11 @@ Ordinary suite success does not execute or qualify it. In the existing isolated
 Linux x86_64 Rust1.98.1/native-toolchain runner, mount a fresh output at `/out`,
 an exact committed fixture export at `/out/build/source`, its ordinary
 `bigbrotr-source/1` manifest at `/out/build/source-manifest.json`, and the qualified
-parent's maintained `tools/build.py` source manifest read-only at
-`/inputs/parent-product-source-manifest.json`. The latter is declared product
-identity input; no private qualification capsule is required. Prepare the fixture
+product's maintained `tools/build.py` source manifest read-only at
+`/inputs/parent-product-source-manifest.json`. That product may come from this
+same clean checkout or an explicitly attributed prior checkout with identical
+runtime/build inputs. The manifest is declared product identity input; no private
+qualification capsule or historical source revision is required. Prepare the fixture
 export from its clean checkout with `git archive` and the maintained inventory
 functions (this procedure runs no compiler or engine):
 
@@ -774,11 +776,20 @@ gate. It retains the existing `bigbrotr-test-tool-artifact/1` library-target
 receipt and ELF under `artifacts/`, the fixture source manifest under `build/`,
 and an exact copy of the parent product manifest as
 `build/parent-product-source-manifest.json`. The admission checks source/tree,
-compiler/native tools, Cargo test-target metadata and ELF bytes. Product inputs
-may differ only by the exact `cfg(test)` owner-module suffix and its new private
-fixture file. This permits reuse of the unchanged qualified product and its
-observer while attributing the seed compilation separately. No product API or
-release capability is added.
+compiler/native tools, Cargo test-target metadata and ELF bytes. It binds the
+actual imported seed helper to the declared source before artifact admission and
+retains that helper in the ongoing source hash census. The current owner must
+end with the exact private `cfg(test)` suffix and bind its fixture file. The
+product owner's hash must match the verified runtime prefix either without or
+with that exact suffix; its fixture presence must agree with the hook form.
+Only the associated private test file may then differ. All other runtime/build
+inputs remain equal, including Cargo configuration and external Rust examples.
+Separately attributed documentation/acceptance sources, this declared builder,
+and only `experiments/archive-engine/native_commit_proxy.py` and
+`native_commit_proxy_tests.py` are outside that product comparison; their source
+and execution checks retain their own bindings. This permits same-source builds
+and reuse of an unchanged qualified product/observer while attributing the seed
+compilation separately. No product API or release capability is added.
 
 Before source work, the maintained v3 policy literal plus enumerated
 acceptance/Monitor overrides must equal every normalized `config show` setting
