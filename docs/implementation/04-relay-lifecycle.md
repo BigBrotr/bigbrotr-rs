@@ -320,15 +320,17 @@ before enabling Monitor retirement or repeated scheduling/reclamation. Full
 lost-RAM, staged-before-PG, durable-start and authority-renewal recovery remain
 separate explicit obligations.
 
-The next bounded Step6 recovery case is `p04-monitor-ack-recovery`, documented in
+The bounded Step6 recovery case is `p04-monitor-ack-recovery`, documented in
 [verification](../development/verification.md#recover-a-known-monitor-checkpoint-after-reply-loss).
 It loses the exact known terminal checkpoint COMMIT reply after server completion,
 requires C4/native A3 before recovery, positively excludes the original writer and
 backend, then invokes installed default `ingest recover` under fresh Control.
 Recovery and exact retry must preserve the original attempt/input/receipt/science,
 C4 and dependency xmins while reaching closing Native I4/A4/R0 with no new socket
-or Sync progress. This case remains NOT_RUN until installed qualification. Native
-I4/C3 progress repair, staged-before-PG and lost-RAM/durable-start recovery remain
+or Sync progress. Product `cc8bdcf8` with acceptance `ffc57174` passed all eight
+real installed stages, including exact retry and positive resource exclusion;
+see `producer_ack_followthrough.ack_recovery` in P02. Native I4/C3 progress repair,
+staged-before-PG and lost-RAM/durable-start recovery remain
 separate obligations in Steps2/6 and P02; their absence is not relabeled unknown or
 excluded without positive evidence.
 

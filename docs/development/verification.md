@@ -574,8 +574,11 @@ xmins, with no Sync job, acquisition progress or new probe. The same one-connect
 peer stays alive through both invocations under an explicit120s recovery-only
 bound. No consumer publication is claimed by this case.
 
-This new journey is NOT_RUN until its actual installed receipts exist. It covers
-C4 persisted/A3 only. Native I4/C3 advancement, staged-before-PG, absent-original,
+Product `cc8bdcf8` with acceptance `ffc57174` passed all eight installed stages;
+[P02 evidence](../implementation/evidence/p02-ingest-dictionary-codec-20260918.json),
+`producer_ack_followthrough.ack_recovery`, binds the actual receipt and preserved
+fixture failures. This covers C4 persisted/A3 only. Native I4/C3 advancement,
+staged-before-PG, absent-original,
 lost-RAM/durable-start recovery, renewal, scheduling and retirement remain the
 existing P04-T07 Steps2/6 and P02 gates. SQL/file absence proves neither nonexecution
 nor permission for replacement I/O.

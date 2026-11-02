@@ -127,6 +127,8 @@ and the retained C4 checkpoint, close the producer and complete Native ACK4 unde
 fresh Control. It starts no Monitor source and returns no writer. The original
 Ingest owner must still be active/draining with an unretired role; a released
 owner cannot be resurrected. Preserve inputs, receipts and dispatch history.
-The maintained `p04-monitor-ack-recovery` journey for this C4/A3 boundary remains
-under qualification. Native I4/C3 or staged-before-PG input needs its separate
+The maintained `p04-monitor-ack-recovery` journey qualifies this C4/A3 boundary,
+including exact installed retry with no additional native write. See the
+[verification guide](../development/verification.md#recover-a-known-monitor-checkpoint-after-reply-loss)
+for prerequisites and the reproducible command. Native I4/C3 or staged-before-PG input needs its separate
 reconciliation path; never retry the probe from missing SQL or file observations.

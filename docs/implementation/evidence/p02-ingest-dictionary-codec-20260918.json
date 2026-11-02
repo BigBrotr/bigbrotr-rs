@@ -219,7 +219,7 @@
           }
         },
         "ack_recovery": {
-          "status": "SOURCE_REVIEWED_INSTALLED_R2_FAIL_CAUSE_UNKNOWN_RECOVERY_RETRY_NOT_RUN",
+          "status": "PASS_BOUNDED_C4_PERSISTED_NATIVE_A3_INSTALLED_RECOVERY_EXACT_RETRY",
           "tasks": "P04-T07 Steps2/6;P02 producer-progress/recovery",
           "product": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
           "source": "b67111dc03b2a04695d105188319674c9938085e",
@@ -242,8 +242,34 @@
             "receipt_sha256": "da7cf1666ac17dffd5e247ab0ac4a53da95b3cbd68a57d48860c7569b088bc91",
             "scope": "4preparatory stages+cleanupPASS, checkpoint reply-lossFAIL before selected event, recovery/retryNOT_RUN. Writer Registry(Backend), peer one source completed; forced proxy stop omitted terminal counters/task diagnostics.15containers independently stopped/PID0/noOOM, bridge preserved."
           },
-          "next": "Obtain bounded graceful proxy failure diagnostics, classify concrete cause, fix pertinent setup/product boundary without changing required oracle/limits; reuse unchanged product/observer for fresh installed journey.",
-          "remaining": "NativeI4/C3 advancement is distinct and still lacks generic completion in default resolver; staged-before-PG/lostRAM/durablestart/renewal/repeated scheduling/reclamation and full M2 remain existing task gates."
+          "next": "Next bounded M2/P04-T07Steps2/6+P02 slice: nativeI4/PGC3 originalreceipt recovery with authenticatedgenericcheckpoint advancement. Astra source-only authority/custody design before implementation; knownC4/A3 slice closed, broader lostRAM/stagedbeforePG/durablestart/renewal/scheduling/reclamation remain existing owners.",
+          "remaining": "NativeI4/C3 advancement is distinct and still lacks generic completion in default resolver; staged-before-PG/lostRAM/durablestart/renewal/repeated scheduling/reclamation and full M2 remain existing task gates.",
+          "r3": {
+            "status": "FAIL_CLASSIFIED_FIXTURE_PROXY_FRAME_BUDGET",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/installed-r3-receipt.json",
+            "receipt_sha256": "2285e48babc4ec5cb647a05e61dcb0ff7295c81bafc7bea34ea6bba8287018f4",
+            "scope": "Before selectedUPDATE/COMMIT, proxyrefused20,001stframe:1,350,195bytes/1064queries/oneconnection,unexpectedtraffic-budget1. SameRegistryBackend; recovery/retryNOT_RUN. CleanupFAIL correctlyretains proxyunexpected; all15containers stopped/PID0/noOOM,proxy/clientabsent,borrowedbridge preserved. Originalr2UNKNOWN preserved; r3 is corroborating reproduction."
+          },
+          "fixture_corrections": {
+            "diagnostic_source": "f6ba686e08c74e5c39087ff53f912057776166c4",
+            "diagnostic_integrated": "214e2d27",
+            "diagnostic_scope": "Root full5filedelta ordinaryreview,40proxy+51harnessPASS; bounded gracefuljoin retains finalcounters/fixedfailurelabels and original exception, no selector/oracle/bound change.",
+            "profile_source": "d0f91ec42e7f20ee398631314bbec2eecee3d7e9",
+            "profile_integrated": "ffc57174",
+            "profile_scope": "Astra actualfull5filedelta approved after authenticating diff/5filehashes/authorlogs;41proxy+52harness controlsPASS (reviewed, not rerun). Existingretained131072frames/64lifetimeconnections/64MiB/120s, exactactualready envelope, selector/Bind/oracles/productbudgets/timeouts/defaults unchanged. Source-only review makes no performance claim.",
+            "profile_controls": "/home/tux/bigbrotr-rs/.research/m2-monitor-ack-recovery-20261102/.research/ack-recovery-profile-controls/source-controls.json",
+            "profile_controls_sha256": "124883b17de34b5232bfd61c89e87b877be99219a8001ca9f13c464adff5f814",
+            "profile_review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/profile-review.json",
+            "profile_review_sha256": "b88c12eccddc34cc3e1d6387d48a5c137acbf6688e9b51d11330eefdad1a0798"
+          },
+          "r4": {
+            "status": "PASS_8_OF_8_ZERO_FAIL_SKIP_NOT_RUN",
+            "product": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+            "assembly": "ffc571740e2238a2417518f201764b1014ebd2d7",
+            "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/ack-recovery/installed-r4-receipt.json",
+            "receipt_sha256": "2cf1477ede246a199cc8ec537a3391ced2f571da0d221b70e326c4f6551caee1",
+            "scope": "Actual oneControlconnection/20305frames/1362047bytes, exactselectedUPDATE1/same-sessioncompletedCOMMITreplyloss. PGC4/outcome4/nativeI4/A3/R0; installedfreshControl defaultrecovery closingI4/A4/R0 andexactretry native63->65->65. Allfouroriginalrequests/inputs/receipts,tenFacts/fourPendingBatchheaders/science/head+dependencyxmins retained; noSync/newprobe.85tableclosure checked,20ownedcontainers inclall3nativeobservers stopped/PID0/noOOM,5processesabsent,listenerjoined/closed/queueempty,borrowedbridge unchanged; cleanupPASS. Originalr1/r2/r3FAIL remain preserved."
+          }
         }
       }
     },
