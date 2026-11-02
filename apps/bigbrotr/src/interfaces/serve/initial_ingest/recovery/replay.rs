@@ -53,6 +53,9 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
         })
         .await?;
         let (input, outcome) = replay_grants(budget)?;
+        let checkpoint = matches!(mode, Mode::Resolve)
+            .then(|| checkpoint_grant(budget))
+            .transpose()?;
         phase(progress, timeout)?;
         let result = bounded(timeout, cancellation, async {
             let request = ProducerResolveRequest {
@@ -97,6 +100,7 @@ pub(in crate::interfaces::serve::initial_ingest) async fn originals(
                             request,
                             input,
                             outcome,
+                            checkpoint.as_ref().expect("resolve checkpoint grant"),
                             &mut validate,
                         )
                         .await

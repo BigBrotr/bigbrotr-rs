@@ -79,19 +79,7 @@ impl MonitorIntent {
     /// Operational protocol1: seven full refs, each dataset16/kind2/domain16/u64be8.
     /// This fixed SQL attribution is separate from the scientific CBOR codec.
     pub(in crate::storage::postgres) fn context_bytes(self) -> [u8; 294] {
-        let mut bytes = [0; 294];
-        for (slot, reference) in bytes
-            .as_chunks_mut::<42>()
-            .0
-            .iter_mut()
-            .zip(self.references())
-        {
-            slot[..16].copy_from_slice(reference.dataset_id.as_bytes());
-            slot[16..18].copy_from_slice(&(reference.dictionary_kind as u16).to_be_bytes());
-            slot[18..34].copy_from_slice(reference.allocation_domain.as_bytes());
-            slot[34..].copy_from_slice(&reference.ordinal.get().to_be_bytes());
-        }
-        bytes
+        context_bytes(self.references())
     }
     pub(super) fn decode(
         attempt: MeasurementAttemptId,
@@ -146,6 +134,16 @@ impl MonitorIntent {
                 .map_err(|_| OwnerError::InvalidMetadata)?,
         )
     }
+}
+pub(super) fn context_bytes(references: [QualifiedRef; 7]) -> [u8; 294] {
+    let mut bytes = [0; 294];
+    for (slot, reference) in bytes.as_chunks_mut::<42>().0.iter_mut().zip(references) {
+        slot[..16].copy_from_slice(reference.dataset_id.as_bytes());
+        slot[16..18].copy_from_slice(&(reference.dictionary_kind as u16).to_be_bytes());
+        slot[18..34].copy_from_slice(reference.allocation_domain.as_bytes());
+        slot[34..].copy_from_slice(&reference.ordinal.get().to_be_bytes());
+    }
+    bytes
 }
 const KINDS: [DictionaryKind; 7] = [
     DictionaryKind::Endpoint,

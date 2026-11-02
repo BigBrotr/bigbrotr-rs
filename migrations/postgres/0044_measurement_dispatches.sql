@@ -209,6 +209,67 @@ END $$;
 CREATE CONSTRAINT TRIGGER zzz_producer_monitor_complete AFTER INSERT ON control.producer_requests
     DEFERRABLE INITIALLY DEFERRED FOR EACH ROW WHEN(NEW.monitor_attempt_id IS NOT NULL)
     EXECUTE FUNCTION control.guard_producer_acquisition_job();
+
+-- A positively replayed original Monitor tail may complete its generic closure
+-- after exclusive recovery closed the producer. Acquisition progress retains
+-- its OPEN-only guard. This replaces only migration0039's dependency INSERT
+-- guard; earlier ledgers keep that original rule. Changed0044 bytes require the
+-- current complete ledger and never silently adopt a previously applied0044.
+CREATE OR REPLACE FUNCTION control.guard_producer_checkpoint_dependency() RETURNS trigger
+LANGUAGE plpgsql SET search_path=pg_catalog AS $$
+DECLARE producer control.producer_epochs%ROWTYPE; head control.producer_checkpoints%ROWTYPE;
+        current_owner control.owner_epochs%ROWTYPE; jobs integer; dependencies integer;
+BEGIN
+    SELECT * INTO STRICT producer FROM control.producer_epochs
+        WHERE producer_slot_id=NEW.producer_slot_id AND producer_epoch=NEW.producer_epoch FOR UPDATE;
+    IF producer.dataset_id<>NEW.dataset_id OR producer.state NOT IN('open','closing') THEN
+        RAISE EXCEPTION 'checkpoint dependency requires its open or supported closing producer' USING ERRCODE='23514';
+    END IF;
+    IF producer.state<>'open' THEN
+        SELECT * INTO STRICT head FROM control.producer_checkpoints
+            WHERE producer_slot_id=producer.producer_slot_id AND producer_epoch=producer.producer_epoch;
+        IF producer.state<>'closing' OR producer.producer_epoch<>1 OR producer.owner_epoch<>1
+            OR producer.producer_role<>'ingest' OR producer.owner_role<>'ingest'
+            OR head.dataset_id<>NEW.dataset_id OR head.progress_format IS DISTINCT FROM 1
+            OR NOT head.prefix_profile OR head.prefix_active_bytes IS NOT NULL OR head.prefix_prepared_bytes IS NOT NULL
+            OR head.complete_through_request+1<>producer.reserved_through_request
+            OR NOT EXISTS(SELECT 1 FROM control.owner_epochs o JOIN control.role_instances role USING(role_instance_id)
+                WHERE o.dataset_id=producer.dataset_id AND o.resource_id=producer.owner_resource_id
+                    AND o.epoch=1 AND o.role='ingest' AND o.process_incarnation=producer.owner_incarnation
+                    AND o.state IN('active','draining') AND role.retired_at_us IS NULL)
+            OR NOT EXISTS(SELECT 1 FROM control.producer_requests r JOIN control.producer_outcomes o
+                USING(dataset_id,producer_slot_id,producer_epoch,request_sequence)
+                JOIN control.measurement_dispatches d ON d.dataset_id=r.dataset_id AND d.attempt_id=r.monitor_attempt_id
+                WHERE r.dataset_id=producer.dataset_id AND r.producer_slot_id=producer.producer_slot_id
+                    AND r.producer_epoch=1 AND r.request_sequence=producer.reserved_through_request
+                    AND NOT r.monitor_resolution AND r.acquisition_job_id IS NULL AND r.acquisition_scope_id IS NULL
+                    AND num_nonnulls(r.progress_request_id,r.progress_event_ordinal,r.progress_wire_sequence,r.progress_input_sha256)=0
+                    AND r.input_profile=1 AND r.input_bytes>0 AND r.manifest_sha256=head.manifest_sha256
+                    AND o.manifest_sha256=r.manifest_sha256 AND o.request_digest=r.request_digest
+                    AND o.outcome_kind IN(1,2) AND o.outcome_sha256=sha256(o.outcome_bytes)
+                    AND (r.relay_endpoint_id,r.relay_access_scope_id,r.relay_enrollment_generation,r.relay_route_id)
+                        =(d.endpoint_id,d.access_scope_id,d.enrollment_generation,d.route_id)
+                    AND (r.issuer_resource,r.issuer_epoch,r.issuer_incarnation)
+                        =(d.issuer_resource,d.issuer_epoch,d.issuer_incarnation)
+                    AND d.profile_version=1 AND control.measurement_context_valid(d.context_bytes,d.dataset_id)
+                    AND NOT EXISTS(SELECT 1 FROM control.measurement_dispatch_refusals f
+                        WHERE f.dataset_id=d.dataset_id AND f.attempt_id=d.attempt_id))
+        THEN RAISE EXCEPTION 'closing checkpoint growth requires its exact retained Monitor tail' USING ERRCODE='23514'; END IF;
+        -- The final head carries this same fresh backend's attribution. The
+        -- existing deferred closure/current-owner/capacity triggers still run.
+        SELECT * INTO STRICT current_owner FROM control.owner_epochs
+            WHERE dataset_id=NEW.dataset_id AND role='control' AND state='active'
+                AND control_backend_pid=pg_backend_pid();
+        PERFORM control.require_control_owner(NEW.dataset_id,current_owner.resource_id,
+            current_owner.epoch,current_owner.process_incarnation);
+    END IF;
+    SELECT count(*) INTO jobs FROM (SELECT 1 FROM control.acquisition_progress
+        WHERE producer_slot_id=NEW.producer_slot_id AND producer_epoch=NEW.producer_epoch LIMIT 65) b;
+    SELECT count(*) INTO dependencies FROM (SELECT 1 FROM control.producer_checkpoint_dependencies
+        WHERE producer_slot_id=NEW.producer_slot_id AND producer_epoch=NEW.producer_epoch LIMIT 16385) b;
+    PERFORM control.require_producer_progress_capacity(NEW.producer_slot_id,NEW.producer_epoch,0,jobs,dependencies+1);
+    RETURN NEW;
+END $$;
 REVOKE ALL ON control.measurement_dispatches,control.measurement_dispatch_refusals FROM PUBLIC;
 REVOKE ALL ON FUNCTION control.measurement_context_valid(bytea,bytea),control.guard_measurement_dispatch(),
     control.require_measurement_evidence(bytea,bytea,bytea,bytea,numeric,bytea),control.guard_measurement_refusal() FROM PUBLIC;

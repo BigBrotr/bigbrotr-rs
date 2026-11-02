@@ -4,7 +4,7 @@ use bigbrotr::storage::{
     postgres::{
         control_owner::{
             InitialHistoryRequest, ProducerAcknowledgementReceipt, ProducerCloseRequest,
-            ProducerResolveRequest,
+            ProducerResolveRequest, ProgressGrant,
         },
         ingest_registry,
     },
@@ -80,6 +80,26 @@ pub(super) fn replay_grants(budget: &ResourceBudget) -> Result<(OwnedPermit, Own
         .required_data_bytes()
         .map_err(|e| (3, e.to_string()))?;
     Ok((grant(budget, input, 0)?, grant(budget, outcome, 0)?))
+}
+
+pub(super) fn checkpoint_grant(budget: &ResourceBudget) -> Result<ProgressGrant> {
+    ProgressGrant::new(grant(
+        budget,
+        ProgressGrant::REQUIRED_DATA_BYTES,
+        ProgressGrant::REQUIRED_NATIVE_BYTES,
+    )?)
+    .map_err(|error| (3, error.to_string()))
+}
+
+fn preflight_replay(budget: &ResourceBudget, checkpoint: bool) -> Result<()> {
+    let closing = history_grant(budget, 4096, 4096)?;
+    let replay = replay_grants(budget)?;
+    if checkpoint {
+        drop(checkpoint_grant(budget)?);
+    }
+    drop(replay);
+    drop(closing);
+    Ok(())
 }
 
 /// Finish an opaque replay after releasing its native proof borrow. A compacted
@@ -241,11 +261,10 @@ async fn own(
     // Check overlapping worst-case replay grants before a claim or barrier.
     // There is only this worker, so later per-request acquisition cannot race
     // another consumer. Never retain a vector of requests or decoded outcomes.
-    {
-        let closing = history_grant(&budget, 4096, 4096)?;
-        drop(replay_grants(&budget)?);
-        drop(closing);
-    }
+    preflight_replay(
+        &budget,
+        !matches!(action, Action::RetireInitial | Action::ReclaimInitial),
+    )?;
     phase(&progress, timeout)?;
     let (client, connection) = bounded(timeout, &cancellation, async {
         transport::connect(prepared)
@@ -587,4 +606,44 @@ async fn connected(
         }
     }
     Ok((owner, report))
+}
+
+#[cfg(test)]
+mod checkpoint_capacity_tests {
+    use super::*;
+
+    #[test]
+    fn recovery_funds_checkpoint_beside_original_and_outcome_before_claim_or_barrier() {
+        let limits = limits();
+        let original = RetainedRequestInput::required_data_bytes(limits.input).unwrap();
+        let outcome = limits.required_data_bytes().unwrap();
+        let closing =
+            bigbrotr::storage::postgres::control_owner::historical_progress_data_bytes(4096)
+                .unwrap();
+        let complete = ResourceLimits::new(
+            original + outcome + closing + ProgressGrant::REQUIRED_DATA_BYTES,
+            4,
+            4096 + ProgressGrant::REQUIRED_NATIVE_BYTES,
+            0,
+        );
+        for (data, items, native, expected) in [
+            (complete.data_bytes(), 4, complete.native_bytes(), true),
+            (complete.data_bytes() - 1, 4, complete.native_bytes(), false),
+            (complete.data_bytes(), 3, complete.native_bytes(), false),
+            (complete.data_bytes(), 4, complete.native_bytes() - 1, false),
+        ] {
+            let budget = ResourceBudget::new(
+                ProcessEnvelope::new(
+                    data + native,
+                    0,
+                    ResourceLimits::new(data, items, native, 0),
+                    WaiterLimits::new(0, 0),
+                )
+                .unwrap(),
+            );
+            assert_eq!(preflight_replay(&budget, true).is_ok(), expected);
+            assert_eq!(budget.snapshot().used(), ResourceLimits::default());
+            assert_eq!(budget.snapshot().active_permits(), 0);
+        }
+    }
 }

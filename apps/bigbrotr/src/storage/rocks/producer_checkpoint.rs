@@ -3,8 +3,8 @@
 //! native authority. This module does not write ACK or reclaim request detail.
 use super::{
     AdmissionError, AdmissionLimits, AdmissionOutcome, BootstrapError, BootstrapLimits,
-    CertificationOutcome, IngestStore, NativeOutcomeCopy, NativeOutcomeKind, PreparedEvent,
-    StoredCertification, StoredOutcome, StoredReceipt,
+    CertificationOutcome, IngestRecovery, IngestStore, NativeOutcomeCopy, NativeOutcomeKind,
+    PreparedEvent, ResolvedProducerRequest, StoredCertification, StoredOutcome, StoredReceipt,
 };
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::keys::IngestKey;
@@ -113,6 +113,90 @@ impl NativeCheckpointBasis<'_> {
         &self,
     ) -> Option<crate::acquisition::preparation::CapturedBinding> {
         self.captured
+    }
+}
+
+/// Historical checkpoint evidence borrows both exclusive recovery custody and
+/// the actual original replay. No live admission stamp or intermediate ACK is
+/// issued; the complete replay prefix still owns final ACK confirmation.
+pub(in crate::storage) struct HistoricalMeasurementCheckpoint<'a> {
+    recovery: &'a IngestRecovery,
+    resolved: &'a ResolvedProducerRequest,
+    basis: NativeCheckpointBasis<'a>,
+}
+impl HistoricalMeasurementCheckpoint<'_> {
+    pub(in crate::storage) fn require(&self) -> Result<(), AdmissionError> {
+        self.resolved
+            .require_native_context(self.recovery)
+            .map_err(AdmissionError::from)?;
+        let manifest: [u8; 32] =
+            Sha256::digest(self.recovery.manifest().encode().as_bytes()).into();
+        if manifest != self.basis.stamp.manifest
+            || self.recovery.store.handoff_root_identity()? != self.basis.stamp.root
+            || self.recovery.store.db.latest_sequence_number() != self.basis.stamp.sequence
+        {
+            return Err(AdmissionError::StateMismatch);
+        }
+        Ok(())
+    }
+    pub(in crate::storage) fn basis(&self) -> &NativeCheckpointBasis<'_> {
+        &self.basis
+    }
+    pub(in crate::storage) fn original(&self) -> &ResolvedProducerRequest {
+        self.resolved
+    }
+}
+impl IngestRecovery {
+    pub(in crate::storage) fn measurement_checkpoint<'a>(
+        &'a self,
+        resolved: &'a ResolvedProducerRequest,
+    ) -> Result<HistoricalMeasurementCheckpoint<'a>, AdmissionError> {
+        resolved
+            .require_native_context(self)
+            .map_err(AdmissionError::from)?;
+        let copy = resolved.native_outcome();
+        let request = copy.request();
+        let manifest: [u8; 32] = Sha256::digest(self.manifest().encode().as_bytes()).into();
+        if resolved.measurement().is_none()
+            || self.manifest().key_schema() != 1
+            || self.manifest().identity().owner_epoch.get() != 1
+            || request.producer_epoch.get() != 1
+            || copy.manifest_sha256() != manifest
+            || copy.dataset() != self.manifest().identity().dataset_id
+            || resolved.input_bytes() == 0
+        {
+            return Err(AdmissionError::InvalidInput);
+        }
+        self.store
+            .require_unretired_request(request, self.manifest())?;
+        let state = self
+            .store
+            .producer_state(request.producer_slot_id, request.producer_epoch)?
+            .ok_or(AdmissionError::StateMismatch)?;
+        if !state.closing || state.retired != 0 || request.request_sequence.get() > state.issued {
+            return Err(AdmissionError::StateMismatch);
+        }
+        let AdmissionOutcome::Durable(receipt) = resolved.outcome() else {
+            return Err(AdmissionError::InvalidInput);
+        };
+        let value = HistoricalMeasurementCheckpoint {
+            recovery: self,
+            resolved,
+            basis: NativeCheckpointBasis {
+                stamp: CheckpointStamp {
+                    root: self.store.handoff_root_identity()?,
+                    sequence: self.store.db.latest_sequence_number(),
+                    manifest,
+                },
+                kind: CheckpointKind::InternalEvidence,
+                intent: copy.digest(),
+                request: Some(copy),
+                dependencies: receipt.dependencies().records(),
+                captured: None,
+            },
+        };
+        value.require()?;
+        Ok(value)
     }
 }
 

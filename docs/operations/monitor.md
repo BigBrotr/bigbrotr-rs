@@ -130,5 +130,24 @@ owner cannot be resurrected. Preserve inputs, receipts and dispatch history.
 The maintained `p04-monitor-ack-recovery` journey qualifies this C4/A3 boundary,
 including exact installed retry with no additional native write. See the
 [verification guide](../development/verification.md#recover-a-known-monitor-checkpoint-after-reply-loss)
-for prerequisites and the reproducible command. Native I4/C3 or staged-before-PG input needs its separate
-reconciliation path; never retry the probe from missing SQL or file observations.
+for prerequisites and the reproducible command. Native I4/C3 recovery is described
+below; staged-before-PG input remains separate. Never retry the probe from
+missing SQL or file observations.
+
+The next bounded recovery extension is implemented but not yet qualified: when
+the exact original Native Measurement receipt is durable and its Monitor request
+is already reserved, default recovery can repair the next generic checkpoint.
+It replays the original under exclusive Native custody and checks its frozen
+dispatch, input digest/length, manifest and full dependencies. A missing PG
+outcome and the checkpoint commit together under fresh Control. An already exact
+outcome retains its original recorder and row identity; only the new checkpoint
+uses fresh authority. Exact completed-checkpoint replay preserves its rows.
+Native ACK still requires the separate final full-prefix confirmation; a lost
+repair COMMIT response cannot immediately ACK or authorize another probe.
+
+This extension consolidates the dependency guard in the current pre-release
+0044 migration. A previously applied 0044 with different bytes is refused by the
+complete checksum ledger, including older reader floors. It is not silently
+upgraded. Preserve such stores and their matching build; this change does not
+provide an in-place migration procedure. Staged-before-PG, lost RAM, durable
+start, successors and retirement keep their existing recovery gates.

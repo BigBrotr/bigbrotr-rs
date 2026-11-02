@@ -1,4 +1,5 @@
-//! Copy a positive original native outcome under a fresh Control identity.
+//! Copy a positive original under fresh Control; complete only the next retained
+//! Monitor checkpoint. Native ACK remains the separate full-prefix operation.
 use super::super::{producer_outcomes, producer_requests};
 use super::*;
 use crate::{
@@ -33,12 +34,15 @@ impl ControlSession {
     /// bounded native owner worker and the connection driver retained and joined.
     /// Failures after begin leave this session unavailable; reconnect/reclaim
     /// current Control and resolve the same request, never a replacement ID.
+    /// The borrowed progress grant is separate from retained input/outcome
+    /// grants. Historical completion writes no native ACK or acquisition state.
     pub async fn resolve_initial_producer_request(
         &mut self,
         recovery: &IngestRecovery,
         input: ProducerResolveRequest<'_>,
         input_permit: OwnedPermit,
         outcome_permit: OwnedPermit,
+        progress: &ProgressGrant,
         validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ResolvedProducerRequest, ProducerResolveError> {
         if input.cancelled.load(Ordering::Relaxed) {
@@ -112,9 +116,34 @@ impl ControlSession {
                 },
             )
             .map_err(ProducerResolveError::Native)?;
+        let witness = resolved
+            .measurement()
+            .map(|_| recovery.measurement_checkpoint(&resolved))
+            .transpose()
+            .map_err(|error| ProducerResolveError::Native(error.into()))?;
+        let context = producer_progress::Context {
+            dataset: input.registration.dataset_id,
+            slot: input.request.producer_slot_id,
+            epoch: 1,
+            shard: input.registration.shard_id,
+            manifest,
+        };
+        let mut progress_state = match &witness {
+            Some(witness) => Some(
+                producer_progress::prepare_measurement_recovery(&tx, context, witness, progress)
+                    .await?,
+            ),
+            None => None,
+        };
         producer_outcomes::record_recovered(&tx, &reservation, &resolved, recorder)
             .await
             .map_err(ProducerResolveError::Outcome)?;
+        if let (Some(witness), Some(state)) = (&witness, &mut progress_state) {
+            producer_progress::record(&tx, context, state, None, witness.basis(), recorder).await?;
+            witness
+                .require()
+                .map_err(|error| ProducerResolveError::Native(error.into()))?;
+        }
         if input.cancelled.load(Ordering::Relaxed)
             || recovery.native_unavailable()
             || lease.check_delivery(epoch).is_err()
@@ -127,11 +156,15 @@ impl ControlSession {
         if input.cancelled.load(Ordering::Relaxed)
             || recovery.native_unavailable()
             || self.client.is_closed()
+            || witness
+                .as_ref()
+                .is_some_and(|witness| witness.require().is_err())
             || lease.check_delivery(epoch).is_err()
         {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
+        drop(witness);
         Ok(resolved)
     }
 }

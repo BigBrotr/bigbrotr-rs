@@ -7,8 +7,9 @@ use super::{
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::manifest::IngestManifest;
 use bigbrotr_model::{
-    Digest256, ProducerRequestId,
+    Digest256, MeasurementAttemptId, ProducerRequestId, QualifiedRef,
     codec::request::{MutationIntent, RequestDecodeLimits},
+    measurement::{MeasurementContext, PassiveReadProfile},
 };
 
 #[derive(Debug, Clone, Copy)]
@@ -21,10 +22,13 @@ impl ProducerRecoveryLimits {
     /// Shared replay validators retain only one branch at a time. Input decoding
     /// owns a separate grant; native pins stay under the exclusive store grant.
     pub fn required_data_bytes(self) -> Result<u64, AdmissionError> {
-        Ok(self
-            .bootstrap
+        self.bootstrap
             .required_data_bytes()?
-            .max(self.event.required_dictionary_replay_data_bytes()?))
+            .max(self.event.required_dictionary_replay_data_bytes()?)
+            // Fixed historical context survives beside the decoded outcome;
+            // it does not borrow an input grant that returns after decoding.
+            .checked_add(std::mem::size_of::<Option<ReplayedMeasurement>>() as u64)
+            .ok_or(AdmissionError::Limit)
     }
 }
 
@@ -53,10 +57,29 @@ impl std::error::Error for ProducerRecoveryError {}
 pub struct ResolvedProducerRequest {
     outcome: StoredOutcome,
     input_bytes: u32,
-    event: bool,
+    mutation: ReplayedMutation,
+    measurement: Option<ReplayedMeasurement>,
     native_root: (u64, u64),
     native_sequence: u64,
     lineage_inputs: Option<[u8; 32]>,
+}
+
+/// Fixed attribution copied only from the decoded, positively replayed original.
+/// It neither reconstructs a dispatch token nor retains another decoded input.
+#[derive(Clone, Copy)]
+pub(in crate::storage) struct ReplayedMeasurement {
+    pub attempt: MeasurementAttemptId,
+    pub context: MeasurementContext,
+    pub clock: QualifiedRef,
+    pub visibility: QualifiedRef,
+    pub profile: PassiveReadProfile,
+    pub resolution: bool,
+}
+#[derive(Clone, Copy)]
+enum ReplayedMutation {
+    Dictionaries,
+    Event,
+    Measurement,
 }
 
 /// Read interpretation is explicit and cannot replace the owner's singleton or
@@ -94,7 +117,13 @@ impl ResolvedProducerRequest {
         self.input_bytes
     }
     pub(in crate::storage) fn is_event(&self) -> bool {
-        self.event
+        matches!(self.mutation, ReplayedMutation::Event)
+    }
+    pub(in crate::storage) fn measurement(&self) -> Option<ReplayedMeasurement> {
+        match self.mutation {
+            ReplayedMutation::Measurement => self.measurement,
+            _ => None,
+        }
     }
     pub(super) fn require_lineage(
         &self,
@@ -266,7 +295,24 @@ impl IngestRecovery {
             .map_err(ProducerRecoveryError::Input)?;
         let input_bytes = retained.encoded_bytes();
         let (_, intent, _input_permit) = retained.into_parts();
-        let event = matches!(&intent, MutationIntent::Event(_));
+        let (mutation, measurement) = match &intent {
+            MutationIntent::Event(_) => (ReplayedMutation::Event, None),
+            MutationIntent::Evidence(_) => (ReplayedMutation::Dictionaries, None),
+            MutationIntent::Measurement(intent) => {
+                let value = intent.measurement();
+                (
+                    ReplayedMutation::Measurement,
+                    Some(ReplayedMeasurement {
+                        attempt: value.attempt_id(),
+                        context: value.context(),
+                        clock: value.clock_quality().clock_id(),
+                        visibility: intent.visibility_scope_id(),
+                        profile: value.profile(),
+                        resolution: value.prior_unknown().is_some(),
+                    }),
+                )
+            }
+        };
         authority()?;
         let (outcome, copy) = self.store.replay_original_intent(
             request,
@@ -281,7 +327,8 @@ impl IngestRecovery {
         let resolved = ResolvedProducerRequest {
             outcome: StoredOutcome::new(outcome, copy, outcome_permit),
             input_bytes,
-            event,
+            mutation,
+            measurement,
             native_root,
             native_sequence,
             lineage_inputs: match &profile {

@@ -115,7 +115,9 @@ pub use certification::{
 
 #[path = "producer_checkpoint.rs"]
 mod producer_checkpoint;
-pub(in crate::storage) use producer_checkpoint::{CheckpointKind, NativeCheckpointBasis};
+pub(in crate::storage) use producer_checkpoint::{
+    CheckpointKind, HistoricalMeasurementCheckpoint, NativeCheckpointBasis,
+};
 
 #[path = "producer_ack.rs"]
 mod producer_ack;

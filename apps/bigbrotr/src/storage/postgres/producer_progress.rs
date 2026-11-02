@@ -7,6 +7,9 @@ use sha2::{Digest, Sha256};
 
 #[path = "producer_progress_commit.rs"]
 mod commit;
+#[path = "producer_progress_measurement_recovery.rs"]
+mod measurement_recovery;
+pub(super) use measurement_recovery::prepare_measurement_recovery;
 #[path = "producer_prefix.rs"]
 pub(super) mod prefix;
 #[path = "linear_quantum.rs"]

@@ -1498,6 +1498,21 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
             "Measurement cannot authorize event checkpoint advancement"
         );
         assert_eq!(result.input_bytes() as usize, encoded.len());
+        let witness = recovery.measurement_checkpoint(&result).unwrap();
+        let basis = witness.basis();
+        assert_eq!(
+            basis.kind(),
+            super::producer_checkpoint::CheckpointKind::InternalEvidence
+        );
+        assert_eq!(basis.request(), Some(receipt.request_id()));
+        assert_eq!(basis.intent_digest(), receipt.request_digest());
+        assert_eq!(basis.dependencies(), receipt.dependencies().records());
+        witness.require().unwrap();
+        assert!(
+            recovery.store.require_checkpoint_basis(basis).is_err(),
+            "historical recovery evidence cannot enter the live checkpoint/ACK authority path"
+        );
+        assert_eq!(snapshot(&recovery.store, &path), before);
         let AdmissionOutcome::Durable(actual) = result.outcome() else {
             panic!("not durable")
         };
@@ -1506,6 +1521,7 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
             actual.encode_persistent(65536).unwrap(),
             receipt.encode_persistent(65536).unwrap()
         );
+        drop(witness);
         drop(result);
         assert_eq!(snapshot(&recovery.store, &path), before);
     }
@@ -1571,6 +1587,95 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
     );
     drop(result);
     assert_eq!(snapshot(&recovery.store, &path), after_restore);
+}
+
+#[test]
+fn historical_measurement_checkpoint_refuses_dictionary_foreign_root_and_stale_replay() {
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let other_budget = budget();
+    let value = measurement(literal("empty-eose-auth-utc-rollback"));
+    let mut recoveries = Vec::new();
+    let mut receipts = Vec::new();
+    for (name, budget) in [("first", &b), ("other", &other_budget)] {
+        let path = root.path().join(name);
+        let mut store = initialize(&path, budget, DictionaryDescriptor::PassiveWsRead);
+        receipts.push(append(&mut store, budget, 3, &value, 30).unwrap());
+        drop(store);
+        let mut recovery = IngestRecovery::open(
+            &path,
+            installed_manifest(),
+            native(),
+            grant(budget, 0, 128 * MIB),
+        )
+        .unwrap();
+        drop(
+            recovery
+                .close_producer(
+                    request().producer_slot_id,
+                    request().producer_epoch,
+                    grant(budget, 4096, 4096),
+                    || Ok(()),
+                )
+                .unwrap(),
+        );
+        recoveries.push(recovery);
+    }
+    assert_eq!(receipts[0], receipts[1]);
+    let first = resolve(&recoveries[0], &b, &receipts[0]).unwrap();
+    let foreign = resolve(&recoveries[1], &other_budget, &receipts[1]).unwrap();
+    assert!(matches!(
+        recoveries[0].measurement_checkpoint(&foreign),
+        Err(AdmissionError::StateMismatch)
+    ));
+    let before = snapshot(&recoveries[0].store, &root.path().join("first"));
+    let witness = recoveries[0].measurement_checkpoint(&first).unwrap();
+    assert_eq!(
+        recoveries[0]
+            .store
+            .producer_state(request().producer_slot_id, request().producer_epoch)
+            .unwrap()
+            .unwrap()
+            .acknowledged,
+        0
+    );
+    assert_eq!(
+        snapshot(&recoveries[0].store, &root.path().join("first")),
+        before
+    );
+    let key = IngestKey::Request {
+        request_id: receipts[0].request_id(),
+    };
+    let original = raw(&recoveries[0].store, key).unwrap();
+    put_raw(&recoveries[0].store, key, Some(&original));
+    assert_eq!(witness.require(), Err(AdmissionError::StateMismatch));
+    assert!(matches!(
+        recoveries[0].measurement_checkpoint(&first),
+        Err(AdmissionError::StateMismatch)
+    ));
+    drop(witness);
+    drop(first);
+    drop(foreign);
+    let dictionary = recoveries[0]
+        .resolve_original_request(
+            request(),
+            intent("public").request_digest(request()),
+            recovery_limits(),
+            grant(
+                &b,
+                RetainedRequestInput::required_data_bytes(recovery_limits().input).unwrap(),
+                0,
+            ),
+            grant(&b, recovery_limits().required_data_bytes().unwrap(), 0),
+            || Ok(()),
+        )
+        .unwrap();
+    assert!(!dictionary.is_event());
+    assert!(dictionary.measurement().is_none());
+    assert!(matches!(
+        recoveries[0].measurement_checkpoint(&dictionary),
+        Err(AdmissionError::InvalidInput)
+    ));
 }
 
 #[test]

@@ -939,3 +939,44 @@ fn producer_progress_and_ack_preserve_old_floors_but_never_ignore_changed_protoc
         );
     }
 }
+
+#[test]
+fn historical_monitor_repair_refuses_the_pre_repair_0044_ledger_even_for_old_readers() {
+    let mut applied: Vec<_> = plan(&[], 44)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert!(migrations::require_applied(&applied, 44).is_ok());
+    // Independently frozen checksum of the already qualified cc8 protocol. Its
+    // old OPEN-only dependency guard cannot be silently upgraded by a new reader.
+    let old: bigbrotr_model::Digest256 =
+        "6b5305b0d0cbcc356cb59ab3a65b84ba96cb59d4e468a440ebfc71d2f0a06ea6"
+            .parse()
+            .unwrap();
+    applied
+        .iter_mut()
+        .find(|m| m.version == 44)
+        .unwrap()
+        .checksum = *old.as_bytes();
+    for floor in [14, 39, 40, 43, 44] {
+        assert_eq!(
+            migrations::require_applied(&applied, floor),
+            Err(MigrationError::ChecksumMismatch(44))
+        );
+    }
+    assert_eq!(
+        plan(&applied, 44).err(),
+        Some(MigrationError::ChecksumMismatch(44))
+    );
+    applied.pop();
+    assert!(migrations::require_applied(&applied, 43).is_ok());
+}
