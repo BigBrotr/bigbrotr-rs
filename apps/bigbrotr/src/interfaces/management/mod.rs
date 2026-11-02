@@ -2,6 +2,7 @@
 mod assets;
 mod boundary;
 mod delivery;
+pub(super) use delivery::ActionGate;
 mod history;
 mod roles;
 pub(super) use history::{HistoryBody, HistoryWork};

@@ -120,6 +120,10 @@ local Archive custody and explicit `archive.reader.enabled`. Its source operands
 bind the configured dataset and original digest. It selects the real current
 complete publication, binds retained inputs and holds an actual native catalog
 capture/Archive pin through full typed read and bounded scientific output join.
+The first Linux output profile uses a separately reopened nonblocking pipe/FIFO;
+every kernel write checks the bound pin/policy window, and inherited flags stay
+unchanged. Regular/device/socket sinks refuse; pipeline consumers own subsequent
+reading or persistence. This does not promise downstream receipt time.
 It can expose private measurements to the local operator and grants no public or
 management-session read authority. Missing/refused is never a successful Absent
 observation. The [operator contract](../user/archive-receipts.md#inspect-one-original-compound-measurement-after-restart)

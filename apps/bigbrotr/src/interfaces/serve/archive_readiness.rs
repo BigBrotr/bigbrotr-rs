@@ -6,7 +6,7 @@ use super::{
 };
 use crate::{
     config::Resolved,
-    interfaces::{archive_preflight as preflight, postgres_command},
+    interfaces::{archive_preflight as preflight, management::ActionGate, postgres_command},
 };
 use bigbrotr::{
     management::sessions::SessionError,
@@ -33,7 +33,7 @@ use bigbrotr_protocol::{
     archive_measurement::MeasurementRead,
 };
 use std::{
-    cell::{Cell, RefCell},
+    cell::Cell,
     sync::{Arc, atomic::AtomicBool},
     time::Duration,
 };
@@ -421,8 +421,12 @@ async fn execute_inner(
             .and_then(|n| u64::try_from(n).ok()).filter(|n| *n > 0)
             .map(Duration::from_micros)
             .ok_or_else(|| (4, "invalid Archive readiness pin lifetime; retain obligation".into()))?;
-        let window = RefCell::new(pending.complete(lifetime).ok());
-        let permitted = || window.borrow_mut().as_mut().is_some_and(|window| window.check().is_ok());
+        let window = ActionGate::new();
+        // Bind before either consumer sees the gate. The actual pin window
+        // already includes the original policy lease and cannot be renewed.
+        window.bind(pending.complete(lifetime).map_err(|e| (4, e.to_string()))?)
+            .map_err(|_| (4, "Archive pin delivery window refused".into()))?;
+        let permitted = || window.check().is_ok();
         let delivery_budget = budget.clone();
         let native = Native {
             config, budget, reader: prepared.reader, route,
@@ -455,11 +459,12 @@ async fn execute_inner(
                             let observed = if fact.is_some() {
                                 let budget = delivery_budget;
                                 let policy = authority.snapshot.policy_revision;
+                                let output_window = window.clone();
                                 match authority.blocking_while(deadline, &permitted, move |cancel| {
                                     let NativeObservation::Measurement(measurement) = &observed.observed else {
                                         return Err(unavailable(()));
                                     };
-                                    super::measurement_inspect::deliver(&observed.selection, measurement, policy, &budget, cancel)?;
+                                    super::measurement_inspect::deliver(&observed.selection, measurement, policy, &budget, cancel, &output_window)?;
                                     Ok(observed)
                                 }).await? {
                                     Ok(observed) => observed,
@@ -486,7 +491,7 @@ async fn execute_inner(
         if !matches!(authority.external(cleanup, capture.finish(), OnShutdown::Finish).await?, Some(Ok(()))) {
             return Err((4, "Archive readiness catalog rollback unresolved".into()));
         }
-        completion_window = window.into_inner();
+        completion_window = Some(window);
         Ok(candidate)
     }.await;
     if outcome.is_err() {

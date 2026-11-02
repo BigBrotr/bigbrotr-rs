@@ -116,9 +116,11 @@ The command restores the current accepted configuration and supervises its polic
 revision throughout work; it starts no listener or network measurement.
 
 ```sh
+set -o pipefail
 bigbrotr archive measurement-inspect --file /etc/bigbrotr/instance.toml \
   --shard-id 0 --owner-epoch 1 --sequence 9 \
-  --payload-digest 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  --payload-digest 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
+  | cat > observation.jsonl
 ```
 
 Use the actual immutable measurement source and original digest from admission.
@@ -142,7 +144,13 @@ One newline-delimited `bigbrotr-archive-measurement/1` document carries the comp
 typed fact, its source/digest, and verified snapshot/frontier/topology/policy and
 cut-digest/count metadata. It preserves null versus zero, signed UTC samples and
 the original compound attempt. Inline observations are not separate votes. The
-scientific document is at most20KiB. Its output worker, retained inputs and real
+scientific document is at most20KiB. This first Linux profile requires pipe/FIFO
+stdout, reopened as a separate nonblocking description without changing inherited
+flags. Direct regular-file/device/socket output refuses before reading; use the
+pipeline above (or `| cat` for a terminal). Each at-most4096-byte write checks the
+actual nonrenewed pin/policy window and cancellation, including after a full-pipe
+wait. Delivery means acceptance into that kernel pipe, not when a downstream
+reader consumes or persists already accepted bytes. Its output worker, retained inputs and real
 ReaderCustody stay inside current Control and the actual pin/barrier lifetime.
 After output, pin release, barrier rollback and the catalog driver join, the
 command releases Control and emits a separate

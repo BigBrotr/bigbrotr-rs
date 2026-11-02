@@ -264,6 +264,7 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
         }
         if matches!(operation, Operation::InspectMeasurement) {
             let fact = measurement_inspect::parse(&root, args)?;
+            measurement_inspect::validate_output()?;
             return run(root, &mut output, operation, None, Some(fact));
         }
         let requested: Vec<&str> = args

@@ -1,5 +1,5 @@
 //! Trusted-host exact A05 inspection. Structural operands confer no read grant.
-use crate::config::Resolved;
+use crate::{config::Resolved, interfaces::management::ActionGate};
 use bigbrotr::{
     runtime::{ResourceBudget, ResourceRequest},
     storage::{archive::ArchivedMeasurement, postgres::control_owner::ArchiveReadSelection},
@@ -10,11 +10,13 @@ use clap::{Arg, ArgMatches, Command};
 use serde::Serialize;
 use std::{
     io::{self, Write},
+    os::fd::{AsFd, OwnedFd},
     sync::atomic::{AtomicBool, Ordering},
 };
 
 type Result<T> = std::result::Result<T, (u8, String)>;
 const OUTPUT_BYTES: usize = MAX_ROW_BYTES + 4096;
+const PIPE_WRITE_BYTES: usize = 4096;
 
 pub(super) fn command() -> Command {
     Command::new("measurement-inspect")
@@ -28,7 +30,7 @@ pub(super) fn command() -> Command {
             .value_parser(clap::value_parser!(u64).range(1..)))
         .arg(Arg::new("payload-digest").long("payload-digest").required(true)
             .value_name("HEX64").value_parser(clap::value_parser!(Digest256)))
-        .after_help("Stop the local coordinator first. Requires local Control/Archive, accepted archive.reader.enabled, complete retained publication inputs, actual catalog/pin custody, a separate SELECT-only catalog reader and the matching installed worker. Dataset comes from the deployment root; no caller-supplied snapshot or fallback to latest. Trusted local operators can inspect this dataset, including private measurements; this is not a public or management-session read grant. Recomputes the exact scientific digest and strong prior-cut closure. Missing, conflicting, out-of-cut or unreadable facts refuse; no successful Absent state. One bounded scientific JSON document is delivered while Control and the actual pin remain held, followed by a cleanup status only after joined work and owner release. At most128 catalog receipts,30 seconds overall and20KiB scientific output; accepted process budgets remain binding. Exit:0 delivered and released,1 local/output failure,2 usage,3 preflight/policy,4 refused/cancelled/unresolved. Preserve obligations on an unknown join or COMMIT.")
+        .after_help("Stop the local coordinator first. Requires local Control/Archive, explicit archive.reader.enabled, complete retained publication inputs, actual catalog/pin custody, a separate SELECT-only catalog reader and the matching installed worker. Dataset comes from the deployment root; no caller-supplied snapshot or fallback to latest. Trusted local operators can inspect this dataset, including private measurements; this is not a public or management-session read grant. Recomputes the exact scientific digest and strong prior-cut closure. Missing, conflicting, out-of-cut or unreadable facts refuse; no successful Absent state. One bounded scientific JSON document is delivered while Control and the actual pin remain held, followed by a cleanup status only after joined work and owner release. Linux pipe/FIFO stdout only: pipe through cat for terminal/file output. At most128 catalog receipts,30 seconds overall and20KiB scientific output; accepted process budgets remain binding. Exit:0 delivered and released,1 local/output failure,2 usage,3 preflight/policy,4 refused/cancelled/unresolved. Preserve obligations on an unknown join or COMMIT.")
 }
 
 pub(super) fn parse(config: &Resolved, args: &ArgMatches) -> Result<FactRef> {
@@ -68,6 +70,62 @@ pub(super) fn authorize(config: &Resolved) -> Result<()> {
         return Err((3, "measurement inspection requires accepted archive.reader.enabled and local Control/Archive".into()));
     }
     Ok(())
+}
+
+/// Reopen an independently owned nonblocking FIFO description. Setting flags
+/// on a dup would also change the inherited stdout and its diagnostic writer.
+struct OutputPipe(OwnedFd);
+impl OutputPipe {
+    #[cfg(target_os = "linux")]
+    fn open(output: impl AsFd) -> io::Result<Self> {
+        use rustix::fs::{FileType, Mode, OFlags, fcntl_getfl, fstat, open};
+        use std::os::fd::AsRawFd;
+        let retained = rustix::io::fcntl_dupfd_cloexec(output, 0)?;
+        let before = fstat(&retained)?;
+        if FileType::from_raw_mode(before.st_mode) != FileType::Fifo {
+            return Err(io::Error::new(
+                io::ErrorKind::Unsupported,
+                "measurement output requires a pipe; use | cat for a terminal or file",
+            ));
+        }
+        let inherited = fcntl_getfl(&retained)?;
+        let pipe = open(
+            format!("/proc/self/fd/{}", retained.as_raw_fd()),
+            OFlags::WRONLY | OFlags::CLOEXEC | OFlags::NONBLOCK | OFlags::NOCTTY,
+            Mode::empty(),
+        )?;
+        let after = fstat(&pipe)?;
+        if (before.st_dev, before.st_ino, before.st_mode)
+            != (after.st_dev, after.st_ino, after.st_mode)
+            || !fcntl_getfl(&pipe)?.contains(OFlags::NONBLOCK)
+            || fcntl_getfl(&retained)? != inherited
+        {
+            return Err(io::Error::other("measurement output pipe identity changed"));
+        }
+        Ok(Self(pipe))
+    }
+
+    #[cfg(not(target_os = "linux"))]
+    fn open(_: impl AsFd) -> io::Result<Self> {
+        Err(io::Error::new(
+            io::ErrorKind::Unsupported,
+            "pinned measurement output requires Linux nonblocking pipes",
+        ))
+    }
+}
+impl Write for OutputPipe {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        rustix::io::write(&self.0, bytes).map_err(Into::into)
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+
+pub(super) fn validate_output() -> Result<()> {
+    OutputPipe::open(std::io::stdout())
+        .map(|_| ())
+        .map_err(|error| (3, error.to_string()))
 }
 
 struct Buffer(Vec<u8>);
@@ -131,6 +189,7 @@ pub(super) fn deliver(
     policy_revision: u64,
     budget: &ResourceBudget,
     cancelled: &AtomicBool,
+    window: &ActionGate,
 ) -> std::result::Result<(), super::native_grants::WorkerError> {
     use super::native_grants::{WorkerError, unavailable};
     let _output = budget
@@ -138,9 +197,8 @@ pub(super) fn deliver(
         .map_err(unavailable)?;
     let bytes = encode(selection, observed.cut(), observed.fact(), policy_revision)
         .map_err(|_| WorkerError::OutputFailure)?;
-    let stdout = rustix::io::fcntl_dupfd_cloexec(std::io::stdout(), 0)
-        .map_err(|_| WorkerError::OutputFailure)?;
-    write_document(&mut std::fs::File::from(stdout), &bytes.0, cancelled)
+    let mut stdout = OutputPipe::open(std::io::stdout()).map_err(|_| WorkerError::OutputFailure)?;
+    write_document(&mut stdout, &bytes.0, cancelled, || window.check().is_ok())
         .map_err(|_| WorkerError::OutputFailure)
 }
 
@@ -148,19 +206,23 @@ fn write_document(
     output: &mut impl Write,
     mut bytes: &[u8],
     cancel: &AtomicBool,
+    permitted: impl Fn() -> bool,
 ) -> io::Result<()> {
     while !bytes.is_empty() {
-        if cancel.load(Ordering::Acquire) {
+        if cancel.load(Ordering::Acquire) || !permitted() {
             return Err(io::Error::other("measurement output cancelled"));
         }
-        match output.write(bytes) {
+        match output.write(&bytes[..bytes.len().min(PIPE_WRITE_BYTES)]) {
             Ok(0) => return Err(io::ErrorKind::WriteZero.into()),
             Ok(n) => bytes = &bytes[n..],
             Err(error) if error.kind() == io::ErrorKind::Interrupted => {}
+            Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
+                std::thread::sleep(std::time::Duration::from_millis(2));
+            }
             Err(error) => return Err(error),
         }
     }
-    if cancel.load(Ordering::Acquire) {
+    if cancel.load(Ordering::Acquire) || !permitted() {
         return Err(io::Error::other("measurement output cancelled"));
     }
     Ok(())
@@ -319,7 +381,7 @@ mod tests {
         assert_eq!(buffer.0.len(), OUTPUT_BYTES);
         let cancelled = AtomicBool::new(true);
         let mut output = Vec::new();
-        assert!(write_document(&mut output, b"private", &cancelled).is_err());
+        assert!(write_document(&mut output, b"private", &cancelled, || true).is_err());
         assert!(output.is_empty());
         struct Partial<'a>(&'a AtomicBool, Vec<u8>);
         impl Write for Partial<'_> {
@@ -334,15 +396,207 @@ mod tests {
         }
         cancelled.store(false, Ordering::Release);
         let mut output = Partial(&cancelled, Vec::new());
-        assert!(write_document(&mut output, b"private", &cancelled).is_err());
+        assert!(write_document(&mut output, b"private", &cancelled, || true).is_err());
         assert_eq!(output.1, b"p");
         cancelled.store(false, Ordering::Release);
         let mut final_byte = Partial(&cancelled, Vec::new());
-        assert!(write_document(&mut final_byte, b"p", &cancelled).is_err());
+        assert!(write_document(&mut final_byte, b"p", &cancelled, || true).is_err());
         assert_eq!(final_byte.1, b"p");
         cancelled.store(false, Ordering::Release);
         let mut output = Vec::new();
-        write_document(&mut output, b"complete\n", &cancelled).unwrap();
+        write_document(&mut output, b"complete\n", &cancelled, || true).unwrap();
         assert_eq!(output, b"complete\n");
+    }
+
+    #[cfg(target_os = "linux")]
+    mod pipe_tests {
+        use super::*;
+        use bigbrotr::runtime::policy_authority::{
+            LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl,
+        };
+        use rustix::fs::{OFlags, fcntl_getfl, fcntl_setfl};
+        use std::{
+            os::fd::OwnedFd,
+            sync::{Arc, mpsc},
+            thread,
+            time::{Duration, Instant},
+        };
+
+        fn gate(ttl: Duration) -> ActionGate {
+            let dataset = [11; 16].try_into().unwrap();
+            let incarnation = [12; 16].try_into().unwrap();
+            let epoch = bigbrotr_model::PolicyEpoch::new(1);
+            let mut lease = PolicyLeaseTracker::new(
+                dataset,
+                incarnation,
+                epoch,
+                PolicyLeaseTtl::new(Duration::from_secs(5)).unwrap(),
+            )
+            .unwrap();
+            let ticket = lease.begin_refresh().unwrap();
+            lease
+                .complete_refresh(
+                    &ticket,
+                    LeaseResponse {
+                        dataset,
+                        process_incarnation: incarnation,
+                        policy_epoch: epoch,
+                        ttl,
+                    },
+                )
+                .unwrap();
+            let window = lease.begin_action(epoch).unwrap().complete(ttl).unwrap();
+            let gate = ActionGate::new();
+            gate.bind(window).unwrap();
+            gate
+        }
+
+        fn fill(pipe: &mut OutputPipe) -> usize {
+            let mut count = 0;
+            loop {
+                match pipe.write(&[b'x'; PIPE_WRITE_BYTES]) {
+                    Ok(n) => {
+                        assert_eq!(n, PIPE_WRITE_BYTES);
+                        count += n;
+                    }
+                    Err(error) if error.kind() == io::ErrorKind::WouldBlock => break,
+                    other => panic!("unexpected fill result: {other:?}"),
+                }
+                assert!(count <= 1024 * 1024);
+            }
+            assert!(count > 0);
+            count
+        }
+
+        fn drain(reader: &OwnedFd) -> Vec<u8> {
+            fcntl_setfl(reader, fcntl_getfl(reader).unwrap() | OFlags::NONBLOCK).unwrap();
+            let mut bytes = Vec::new();
+            loop {
+                let mut buffer = [0; PIPE_WRITE_BYTES];
+                match rustix::io::read(reader, &mut buffer) {
+                    Ok(0) => break,
+                    Ok(n) => bytes.extend_from_slice(&buffer[..n]),
+                    Err(rustix::io::Errno::AGAIN) => break,
+                    other => panic!("unexpected drain result: {other:?}"),
+                }
+                assert!(bytes.len() <= 1024 * 1024 + OUTPUT_BYTES);
+            }
+            bytes
+        }
+
+        struct ObservedPipe(OutputPipe, Arc<AtomicBool>);
+        impl Write for ObservedPipe {
+            fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+                let result = self.0.write(bytes);
+                if result
+                    .as_ref()
+                    .is_err_and(|e| e.kind() == io::ErrorKind::WouldBlock)
+                {
+                    self.1.store(true, Ordering::Release);
+                }
+                result
+            }
+            fn flush(&mut self) -> io::Result<()> {
+                Ok(())
+            }
+        }
+
+        #[test]
+        fn full_pipe_cannot_publish_after_actual_window_expiry_or_cancellation() {
+            for expiry in [true, false] {
+                let (reader, writer) = rustix::pipe::pipe().unwrap();
+                let original_flags = fcntl_getfl(&writer).unwrap();
+                let mut output = OutputPipe::open(&writer).unwrap();
+                let filled = fill(&mut output);
+                let observed = Arc::new(AtomicBool::new(false));
+                let cancel = Arc::new(AtomicBool::new(false));
+                let window = gate(Duration::from_secs(2));
+                let worker_window = window.clone();
+                let worker_cancel = cancel.clone();
+                let mut output = ObservedPipe(output, observed.clone());
+                let (done, result) = mpsc::sync_channel(1);
+                let worker = thread::spawn(move || {
+                    let value = write_document(&mut output, b"private\n", &worker_cancel, || {
+                        worker_window.check().is_ok()
+                    });
+                    done.send(value).unwrap();
+                });
+                let deadline = Instant::now() + Duration::from_secs(3);
+                while !observed.load(Ordering::Acquire) {
+                    assert!(
+                        Instant::now() < deadline,
+                        "worker never encountered the full pipe"
+                    );
+                    thread::sleep(Duration::from_millis(1));
+                }
+                assert!(
+                    window.check().is_ok(),
+                    "full pipe must be reached before expiry"
+                );
+                if expiry {
+                    while window.check().is_ok() {
+                        assert!(Instant::now() < deadline);
+                        thread::sleep(Duration::from_millis(2));
+                    }
+                    assert!(!cancel.load(Ordering::Acquire)); // no supervisor is helping
+                } else {
+                    cancel.store(true, Ordering::Release);
+                    assert!(window.check().is_ok());
+                }
+                // Draining after expiry/withdrawal must not revive blocked work.
+                let mut bytes = drain(&reader);
+                let ended = result.recv_timeout(Duration::from_secs(1));
+                if ended.is_err() {
+                    drop(reader);
+                    cancel.store(true, Ordering::Release);
+                    panic!("nonblocking output worker did not join");
+                }
+                let ended = ended.expect("nonblocking output worker did not join");
+                worker.join().unwrap();
+                assert!(ended.is_err());
+                // Include anything accepted after the first drain and before
+                // the joined refusal; a late write must not become a false PASS.
+                bytes.extend(drain(&reader));
+                assert_eq!(bytes, vec![b'x'; filled]);
+                assert_eq!(fcntl_getfl(&writer).unwrap(), original_flags);
+            }
+        }
+
+        #[test]
+        fn draining_pipe_delivers_exact_document_without_mutating_inherited_flags() {
+            let (reader, writer) = rustix::pipe::pipe().unwrap();
+            let original_flags = fcntl_getfl(&writer).unwrap();
+            let mut output = OutputPipe::open(&writer).unwrap();
+            let filled = fill(&mut output);
+            let expected = [vec![b'p'; OUTPUT_BYTES - 1], vec![b'\n']].concat();
+            let document = expected.clone();
+            let window = gate(Duration::from_secs(2));
+            let cancel = AtomicBool::new(false);
+            let worker = thread::spawn(move || {
+                write_document(&mut output, &document, &cancel, || window.check().is_ok())
+            });
+            let deadline = Instant::now() + Duration::from_secs(3);
+            let mut actual = Vec::new();
+            while actual.len() < filled + expected.len() {
+                assert!(
+                    Instant::now() < deadline,
+                    "positive output did not complete"
+                );
+                actual.extend(drain(&reader));
+                thread::sleep(Duration::from_millis(1));
+            }
+            worker.join().unwrap().unwrap();
+            assert_eq!(actual, [vec![b'x'; filled], expected].concat());
+            assert_eq!(fcntl_getfl(&writer).unwrap(), original_flags);
+        }
+
+        #[test]
+        fn regular_output_is_refused_without_writing_or_changing_flags() {
+            let output = tempfile::tempfile().unwrap();
+            let before = fcntl_getfl(&output).unwrap();
+            assert!(OutputPipe::open(&output).is_err());
+            assert_eq!(output.metadata().unwrap().len(), 0);
+            assert_eq!(fcntl_getfl(&output).unwrap(), before);
+        }
     }
 }
