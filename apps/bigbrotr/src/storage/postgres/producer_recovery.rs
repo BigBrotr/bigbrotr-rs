@@ -169,7 +169,6 @@ impl ControlSession {
             return Err(ProducerResolveError::DeliveryUnknown);
         }
         self.available = true;
-        drop(witness);
         Ok(resolved)
     }
 }

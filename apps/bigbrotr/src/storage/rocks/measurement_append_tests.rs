@@ -1521,7 +1521,6 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
             actual.encode_persistent(65536).unwrap(),
             receipt.encode_persistent(65536).unwrap()
         );
-        drop(witness);
         drop(result);
         assert_eq!(snapshot(&recovery.store, &path), before);
     }
@@ -1653,7 +1652,6 @@ fn historical_measurement_checkpoint_refuses_dictionary_foreign_root_and_stale_r
         recoveries[0].measurement_checkpoint(&first),
         Err(AdmissionError::StateMismatch)
     ));
-    drop(witness);
     drop(first);
     drop(foreign);
     let dictionary = recoveries[0]
