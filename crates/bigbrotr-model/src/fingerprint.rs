@@ -506,6 +506,12 @@ impl EventIntent {
         hash(|encoder| request(None, self, encoder))
     }
 }
+impl AdmissionBatch {
+    /// Semantic membership fingerprint, not proof of an engine commit.
+    pub fn digest(&self) -> Digest256 {
+        hash(|encoder| admission(self, encoder))
+    }
+}
 
 fn archive<W: Write>(
     batch: &ArchiveBatch<'_>,
