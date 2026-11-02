@@ -13,6 +13,7 @@ from cases import first_launch_monitor_ack_recovery_oracle as oracle
 STAGES=('prerequisites','candidate','runtime_image','fresh_bootstrap',
     'passive_checkpoint_reply_loss','monitor_ack_recovery','monitor_ack_retry','cleanup')
 NATIVE_OUTCOME_STAGES=STAGES[:4]+('passive_native_outcome_loss','monitor_outcome_recovery','monitor_outcome_retry','cleanup')
+REPAIR_FAULT_STAGES=NATIVE_OUTCOME_STAGES[:5]+('monitor_outcome_rollback','monitor_outcome_commit_loss')+NATIVE_OUTCOME_STAGES[5:]
 LIMITS=[
     'One passive socket operation; lose only the actual generic revision4/C4 COMMIT reply after PostgreSQL completed it. Independent joined-store census must first prove I4/A3/R0 with the exact ten facts/four headers/four receipts.',
     'Installed default ingest recover uses fresh Control and exclusive historical native custody, closes the original producer and confirms ACK4 without new source I/O, Monitor token, Sync/acquisition progress or retirement. Exact retry adds no native write.',
@@ -23,13 +24,18 @@ NATIVE_OUTCOME_LIMITS=[
     'Installed default fresh-Control recovery must atomically copy the independently reconstructed original outcome4 with C4 and dependency10, close Native I4/A4/R0, and preserve every original input/scientific value and prior dependency/outcome xmin. Exact retry rewrites neither Native nor PG checkpoint. No new socket or Sync work.',
     'Fact10 recorded_at is an observed signed scalar bounded by the independent fixture window; the complete Fact/receipt/dependency expectation is rebuilt from original measurement and fixed identities, never from a fabricated PG outcome. The peer profile remains120s. This case is NOT_RUN until the repaired product is independently qualified; old C4/A3 runs are not C3 repair proof. Full PG rollback, lost repair COMMIT and existing-outcome/C3 gates remain separate.',
 ]
+REPAIR_FAULT_LIMITS=NATIVE_OUTCOME_LIMITS[:2]+[
+    'The same one-peer120s journey additionally withholds repair COMMIT before forwarding, then loses a fresh repair COMMIT reply after completion. Both installed commands must exit CommitUnknown without ACK4. The first adds only the closing native write and retains exact PG C3; the second commits original outcome4/C4/dependency10 atomically and adds no Native write. Fresh direct completion adds only ACK4; exact retry adds none and neither rewrites the committed PG rows. Real execution is NOT_RUN; other PG refusal and exact-existing-outcome/C3 gates remain separate.',
+]
 
 
 class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
     native_outcome=False
+    repair_faults=False
 
     def __init__(self, args, inputs):
-        self.native_outcome=args.case=='p04-monitor-native-outcome-recovery'
+        self.repair_faults=args.case=='p04-monitor-native-outcome-faults'
+        self.native_outcome=self.repair_faults or args.case=='p04-monitor-native-outcome-recovery'
         super().__init__(args,inputs)
 
     @property
@@ -38,6 +44,54 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
 
     def recovery_label(self, *, retry):
         return ('monitor-outcome-' if self.native_outcome else 'monitor-ack-')+('retry' if retry else 'recovery')
+
+    def start_checkpoint_proxy(self, output, mode):
+        self.direct_recipe=self.config.read_text()
+        path=self.source/'experiments/archive-engine/native_commit_proxy.py'
+        args=[sys.executable,'-B',str(path),'--upstream-port','15432','--mode',mode,
+            '--target','control-measurement-checkpoint','--profile','retained-catch-up','--defer-arm']
+        self.fault_proxy=self.proxy_process(args,input_pipe=True)
+        ready=self.proxy_event(self.fault_proxy,'ready',5)
+        save(output/'proxy-ready.json',ready)
+        save(output/'proxy-process.json',dict(argv=args,pid=self.fault_proxy.process.pid,source_sha256=digest(path)))
+        require(ready['source_sha256']==digest(path) and ready['armed'] is False
+            and ready['upstream_host']=='127.0.0.1' and ready['upstream_port']==15432
+            and ready['mode']==mode and ready['target']=='control-measurement-checkpoint'
+            and tuple(ready[k] for k in ('profile','frame_limit','connection_limit','connection_limit_scope',
+                'wire_limit','lifetime_seconds'))==('retained-catch-up',131072,64,'lifetime',64*1024*1024,120),
+            'wrong deferred checkpoint proxy')
+        self.config.write_text(self.set_value(self.direct_recipe,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+
+    def select_checkpoint(self):
+        self.proxy_send(self.fault_proxy,'select-measurement '+self.initialized['dataset_id']+' '+self.initialized['producer_slot_id']+'\n')
+        selected=self.proxy_event(self.fault_proxy,'measurement-selected',1)
+        self.proxy_send(self.fault_proxy,'arm\n');self.proxy_event(self.fault_proxy,'armed',1)
+        return selected
+
+    def checkpoint_fault(self, output, selected, mode, *, deadline=None):
+        def remaining(maximum):
+            if deadline is None:return maximum
+            left=deadline-time.monotonic()
+            require(left>0, 'repair command fixture deadline')
+            return min(maximum,left)
+        update=self.proxy_event(self.fault_proxy,'measurement-checkpoint-update-complete',remaining(20))
+        fault=self.proxy_event(self.fault_proxy,'fault',remaining(5))
+        check=oracle.fault_before_forward if mode=='before-forward' else oracle.fault
+        check(fault,self.initialized['dataset_id'],self.initialized['producer_slot_id'])
+        require(selected['measurement_identity_sha256']==update['measurement_identity_sha256']==fault['measurement_identity_sha256']
+            and update['backend_pid']==fault['backend_pid'], 'fault changed its selected identity/backend')
+        save(output/'proxy-fault.json',fault)
+        return fault
+
+    def joined_unknown(self, entry, output, *, timeout=20):
+        ended=self.docker('wait',entry['id'],timeout=timeout,label='monitor-fault-owner-join')
+        info=self.inspect(entry);logged=self.docker('logs',entry['id'])
+        (output/'serve.stdout').write_text(logged.stdout);(output/'serve.stderr').write_text(logged.stderr)
+        save(output/'terminal-container.json',dict(id=info['Id'],state=info['State']))
+        require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
+            and not info['State']['Running'] and not info['State']['OOMKilled'] and 'CommitUnknown' in logged.stderr,
+            'checkpoint reply loss did not join as explicit uncertainty')
+        return [json.loads(line) for line in logged.stdout.splitlines()]
 
     def load_helpers(self):
         super().load_helpers()
@@ -94,44 +148,15 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
 
     def checkpoint_reply_loss(self):
         output=self.root/('passive-native-outcome-loss' if self.native_outcome else 'passive-checkpoint-reply-loss');output.mkdir(mode=0o700)
-        self.direct_recipe=self.config.read_text()
-        path=self.source/'experiments/archive-engine/native_commit_proxy.py'
-        args=[sys.executable,'-B',str(path),'--upstream-port','15432','--mode',self.fault_mode,
-            '--target','control-measurement-checkpoint','--profile','retained-catch-up','--defer-arm']
-        self.fault_proxy=self.proxy_process(args,input_pipe=True)
         try:
-            ready=self.proxy_event(self.fault_proxy,'ready',5)
-            save(output/'proxy-ready.json',ready)
-            save(output/'proxy-process.json',dict(argv=args,pid=self.fault_proxy.process.pid,source_sha256=digest(path)))
-            require(ready['source_sha256']==digest(path) and ready['armed'] is False
-                and ready['upstream_host']=='127.0.0.1' and ready['upstream_port']==15432
-                and ready['mode']==self.fault_mode and ready['target']=='control-measurement-checkpoint'
-                and tuple(ready[k] for k in ('profile','frame_limit','connection_limit','connection_limit_scope',
-                    'wire_limit','lifetime_seconds'))==('retained-catch-up',131072,64,'lifetime',64*1024*1024,120),
-                'wrong deferred checkpoint proxy')
-            self.config.write_text(self.set_value(self.direct_recipe,'postgres.control','endpoint',f"127.0.0.1:{ready['port']}"))
+            self.start_checkpoint_proxy(output,self.fault_mode)
             entry=self.passive_begin(output)
             self.writer=entry
-            self.proxy_send(self.fault_proxy,'select-measurement '+self.initialized['dataset_id']+' '+self.initialized['producer_slot_id']+'\n')
-            selected=self.proxy_event(self.fault_proxy,'measurement-selected',1)
-            self.proxy_send(self.fault_proxy,'arm\n');self.proxy_event(self.fault_proxy,'armed',1)
+            selected=self.select_checkpoint()
             publish_selection(self.selection_path,self.selection)
             (self.home/'prepared.continue').write_text('real source checked; exact C4 selector armed\n')
-            update=self.proxy_event(self.fault_proxy,'measurement-checkpoint-update-complete',20)
-            fault=self.proxy_event(self.fault_proxy,'fault',5)
-            check=oracle.fault_before_forward if self.native_outcome else oracle.fault
-            check(fault,self.initialized['dataset_id'],self.initialized['producer_slot_id'])
-            require(selected['measurement_identity_sha256']==update['measurement_identity_sha256']==fault['measurement_identity_sha256']
-                and update['backend_pid']==fault['backend_pid'], 'fault changed its selected identity/backend')
-            save(output/'proxy-fault.json',fault)
-            ended=self.docker('wait',entry['id'],timeout=20,label='monitor-fault-owner-join')
-            info=self.inspect(entry);logged=self.docker('logs',entry['id'])
-            (output/'serve.stdout').write_text(logged.stdout);(output/'serve.stderr').write_text(logged.stderr)
-            save(output/'terminal-container.json',dict(id=info['Id'],state=info['State']))
-            require(ended.stdout.strip()=='4' and info['State']['ExitCode']==4 and info['State']['Pid']==0
-                and not info['State']['Running'] and not info['State']['OOMKilled'] and 'CommitUnknown' in logged.stderr,
-                'checkpoint reply loss did not join as explicit uncertainty')
-            notices=[json.loads(line) for line in logged.stdout.splitlines()]
+            fault=self.checkpoint_fault(output,selected,self.fault_mode)
+            notices=self.joined_unknown(entry,output)
             monitor=[row for row in notices if row.get('format')=='bigbrotr-monitor-once/1']
             require(monitor and monitor[-1]['state']=='parked'
                 and all(row['state'] in ('selected','parked') for row in monitor), 'lost reply reported completion or repeated work')
@@ -140,7 +165,7 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         finally:
             failed=sys.exception() is not None
             self.config.write_text(self.direct_recipe)
-            self.finish_fault_proxy(output,failed=failed)
+            if getattr(self,'fault_proxy',None) is not None:self.finish_fault_proxy(output,failed=failed)
         exclusion=output/'old-owner-exclusion';exclusion.mkdir(mode=0o700)
         self.backend_absence(exclusion)
         self.before_recovery,self.catalog=self.capture(output,'uncommitted' if self.native_outcome else 'committed')
@@ -170,12 +195,72 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
             original_writer='joined',original_pg_backends='absent',new_probe=False))
         self.source_unchanged()
 
+    def repair_fault(self, *, committed):
+        self.source_unchanged()
+        label='monitor-outcome-commit-loss' if committed else 'monitor-outcome-rollback'
+        mode='after-complete' if committed else 'before-forward'
+        output=self.root/label;output.mkdir(mode=0o700)
+        before=self.after_recovery if committed else self.before_recovery
+        old_dump=self.after_dump if committed else self.before_dump
+        require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'peer observer lost before repair fault')
+        self.backend_absence(output)
+        try:
+            self.start_checkpoint_proxy(output,mode)
+            selected=self.select_checkpoint()
+            deadline=time.monotonic()+30
+            entry=self.launch(label,'app','ingest','recover','--file','/etc/bigbrotr/instance.toml')
+            fault=self.checkpoint_fault(output,selected,mode,deadline=deadline)
+            left=deadline-time.monotonic()
+            require(left>0, 'repair command fixture deadline')
+            notices=self.joined_unknown(entry,output,timeout=min(20,left))
+            require(time.monotonic()<deadline, 'repair command fixture deadline')
+            require(not any(row.get('format') in ('bigbrotr-ingest-recovery/1','bigbrotr-monitor-once/1') for row in notices),
+                'uncertain repair reported completion or ran Monitor')
+        finally:
+            failed=sys.exception() is not None
+            self.config.write_text(self.direct_recipe)
+            if getattr(self,'fault_proxy',None) is not None:self.finish_fault_proxy(output,failed=failed)
+        exclusion=output/'fault-owner-exclusion';exclusion.mkdir(mode=0o700)
+        self.backend_absence(exclusion)
+        after,catalog=self.capture(output,'committed' if committed else 'rolled-back')
+        require(catalog==self.catalog, 'repair fault changed scientific catalog')
+        if committed:oracle.repair_commit_loss(before,after,self.initialized,self.receipts,self.cbor)
+        else:oracle.repair_rollback(before,after,self.initialized,self.receipts)
+        control=max((row for row in after['owner_epochs'] if row['role']=='control'),key=lambda row:row['epoch'])
+        require(control['control_backend_pid']==fault['backend_pid'], 'fault was not the fresh recovery Control backend')
+        require(self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4)==self.original_inputs
+            and self.files(self.state/'data/ingest/producer-inputs-v1')==self.original_files, 'repair fault changed original inputs')
+        if committed:
+            oracle.repaired_terminal(after,self.initialized,self.selection,self.original_inputs,self.receipts,self.cbor,self.decode)
+        else:
+            oracle.before_terminal(after,self.initialized,self.selection,self.original_inputs,self.receipts,self.cbor,self.decode)
+        dump=native.census(self,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
+        if committed:
+            passive.native_ack(dump,after,self.initialized,self.receipts,self.cbor,phase='closing-unacknowledged')
+        else:
+            passive.native_physical(dump,self.initialized,self.receipts,self.cbor,
+                passive.raw(after['producer_requests'][0]['manifest_sha256'],32),phase='closing-unacknowledged')
+        oracle.native_repair_fault(old_dump,dump,self.initialized,committed=committed)
+        save(output/'native-census.json',dump)
+        self.after_recovery,self.after_dump=after,dump
+        require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'repair fault issued another peer connection')
+        save(output/'independent-verdict.json',dict(status='PASS',product_result='CommitUnknown',
+            checkpoint=4 if committed else 3,native_issued=4,native_acknowledged=3,native_retired=0,
+            native_writes=0 if committed else 1,producer='closing',new_probe=False,sync_jobs=0,acquisition_progress=0))
+        self.source_unchanged()
+
+    def rollback_repair(self):
+        self.repair_fault(committed=False)
+
+    def lose_repair_commit(self):
+        self.repair_fault(committed=True)
+
     def recovery(self, *, retry):
         self.source_unchanged()
         label=self.recovery_label(retry=retry)
         output=self.root/label;output.mkdir(mode=0o700)
-        before=self.after_recovery if retry else self.before_recovery
-        old_dump=self.after_dump if retry else self.before_dump
+        before=self.after_recovery if retry or self.repair_faults else self.before_recovery
+        old_dump=self.after_dump if retry or self.repair_faults else self.before_dump
         require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'peer observer lost before recovery')
         self.backend_absence(output)
         report=self.finite(label,'ingest','recover','--file','/etc/bigbrotr/instance.toml',timeout=30)
@@ -184,7 +269,8 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         save(output/'terminal-container.json',dict(id=info['Id'],state=info['State']))
         after,catalog=self.capture(output,'recovered')
         require(catalog==self.catalog, 'ACK recovery changed scientific catalog')
-        if self.native_outcome:oracle.repaired(before,after,self.initialized,self.receipts,self.cbor,retry=retry)
+        if self.repair_faults:oracle.repair_ack(before,after,self.initialized,self.receipts,self.cbor)
+        elif self.native_outcome:oracle.repaired(before,after,self.initialized,self.receipts,self.cbor,retry=retry)
         else:oracle.recovered(before,after,retry=retry)
         require(self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4)==self.original_inputs
             and self.files(self.state/'data/ingest/producer-inputs-v1')==self.original_files, 'recovery changed original inputs')
@@ -194,7 +280,8 @@ class MonitorAckRecoveryRuntime(PassiveMonitorRuntime):
         require(receipts==self.receipts, 'recovery changed exact receipts')
         dump=native.census(self,output,writer_terminal=output/'terminal-container.json')
         passive.native_ack(dump,after,self.initialized,receipts,self.cbor,phase='recovered')
-        oracle.native_transition(old_dump,dump,self.initialized,retry=retry)
+        if self.repair_faults and not retry:oracle.native_repair_ack(old_dump,dump,self.initialized)
+        else:oracle.native_transition(old_dump,dump,self.initialized,retry=retry)
         save(output/'native-census.json',dump)
         self.after_recovery,self.after_dump=after,dump
         require(self.client.poll() is None and not (self.home/'relay-error.json').exists(), 'recovery issued another peer connection')

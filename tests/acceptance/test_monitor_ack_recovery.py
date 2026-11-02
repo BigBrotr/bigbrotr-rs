@@ -58,17 +58,27 @@ def recovered_fixture(before, *, retry=False):
     after=copy.deepcopy(before)
     if not retry:after['producer_epochs'][0].update(state='closing',xmin='405')
     previous=max((r for r in after['owner_epochs'] if r['role']=='control'),key=lambda r:r['epoch'])
+    # Independent synthetic clock schedule, including prior faulted Controls.
+    # A repeated fault must not put exclusion before that owner's acquisition
+    # or before its already-committed repair timestamps.
+    observed=[499]
+    for table,fields in (('owner_epochs',('acquired_at_us','released_at_us')),
+            ('role_instances',('created_at_us','retired_at_us')),
+            ('producer_outcomes',('recorded_at_us',)),('producer_checkpoints',('committed_at_us',))):
+        observed.extend(row[field] for row in after[table] for field in fields if type(row.get(field)) is int)
+    now=max(observed)+1
     if previous['state']!='released':
-        previous.update(state='released',released_at_us=499,exclusion_method='storage_fenced',exclusion_digest='\\x'+'ab'*32,xmin='499')
+        previous.update(state='released',released_at_us=now,exclusion_method='storage_fenced',exclusion_digest='\\x'+'ab'*32,xmin='499')
         role=passive.only(after['role_instances'],role_instance_id=previous['role_instance_id'])
-        role.update(retired_at_us=499,xmin='499')
+        role.update(retired_at_us=now,xmin='499')
     epoch=previous['epoch']+1
+    acquired=max(500+epoch,now+1);released=acquired+50
     current=dict(previous,epoch=epoch,process_incarnation='\\x'+f'{epoch+160:02x}'*16,
-        role_instance_id='\\x'+f'{epoch+176:02x}'*16,acquired_at_us=500+epoch,
-        lease_expires_at_us=1000+epoch,released_at_us=550+epoch,control_backend_pid=7331+epoch,xmin=str(550+epoch))
+        role_instance_id='\\x'+f'{epoch+176:02x}'*16,acquired_at_us=acquired,
+        lease_expires_at_us=acquired+500,released_at_us=released,control_backend_pid=7331+epoch,xmin=str(550+epoch))
     after['owner_epochs'].append(current)
     after['role_instances'].append(dict(role='control',role_instance_id=current['role_instance_id'],dataset_id=current['dataset_id'],
-        retired_at_us=550+epoch,created_at_us=500+epoch,xmin=str(550+epoch)))
+        retired_at_us=released,created_at_us=acquired,xmin=str(550+epoch)))
     return after
 
 
@@ -89,11 +99,11 @@ def repaired_fixture(before):
     control=after['owner_epochs'][-1]
     original=fixture()[0]['producer_outcomes'][-1]
     outcome=dict(original,recorder_resource=control['resource_id'],recorder_epoch=control['epoch'],
-        recorder_incarnation=control['process_incarnation'],recorded_at_us=530,xmin='610')
+        recorder_incarnation=control['process_incarnation'],recorded_at_us=control['acquired_at_us']+28,xmin='610')
     after['producer_outcomes'].append(outcome)
     after['producer_checkpoints'][0].update(checkpoint_revision=4,complete_through_request=4,
         dependency_count=10,checkpoint_digest='\\xac79a894d24aaccec13adf1dbc5f317557a35f6ee2b746d200ffb37fe753fbe9',
-        committed_at_us=531,issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],
+        committed_at_us=control['acquired_at_us']+29,issuer_resource=control['resource_id'],issuer_epoch=control['epoch'],
         issuer_incarnation=control['process_incarnation'],xmin='610')
     receipt=decode(passive.raw(outcome['outcome_bytes']).split(b'\0',1)[1])
     after['producer_checkpoint_dependencies'].append(dict(after['producer_checkpoint_dependencies'][-1],
@@ -114,6 +124,219 @@ def rewrite_native_fact(dump, receipts, change):
     batch=hashlib.sha256(b'bigbrotr/admission-batch/1\0'+wire_cbor([bytes.fromhex('01'*16),0,1,10,10,receipt[4]])).digest()
     pending['value']=(b'\x01\x21'+(10).to_bytes(8,'big')+batch).hex()
     return receipt
+
+
+def uncertain_repair_fixture(before, *, committed):
+    after=repaired_fixture(before) if committed else recovered_fixture(before)
+    control=after['owner_epochs'][-1]
+    control.update(state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None)
+    passive.only(after['role_instances'],role_instance_id=control['role_instance_id'])['retired_at_us']=None
+    return after
+
+
+def closing_native_fixture(dump, *, acknowledged=3, writes=1):
+    after=copy.deepcopy(dump)
+    head=next(row for row in after['rows'] if row['cf']=='receipts' and row['key'].startswith('0131'))
+    head['value']='0231'+''.join(n.to_bytes(8,'big').hex() for n in (4,acknowledged,0))+'01'
+    after['sequence']+=writes
+    return after
+
+
+class RepairFaultControls(unittest.TestCase):
+    def test_two_uncertain_repairs_then_direct_ack_and_retry_preserve_each_literal_boundary(self):
+        initial,dump,initialized,receipts,originals,selection=native_outcome_fixture()
+        rollback=uncertain_repair_fixture(initial,committed=False)
+        committed=uncertain_repair_fixture(rollback,committed=True)
+        direct=recovered_fixture(committed,retry=True);retry=recovered_fixture(direct,retry=True)
+        oracle.repair_rollback(initial,rollback,initialized,receipts)
+        oracle.before_terminal(rollback,initialized,selection,originals,receipts,encoder.cbor,decode)
+        oracle.repair_commit_loss(rollback,committed,initialized,receipts,encoder.cbor)
+        self.assertEqual(oracle.repaired_terminal(committed,initialized,selection,originals,receipts,encoder.cbor,decode),receipts)
+        oracle.repair_ack(committed,direct,initialized,receipts,encoder.cbor)
+        oracle.repair_ack(direct,retry,initialized,receipts,encoder.cbor)
+        closed=closing_native_fixture(dump);confirmed=closing_native_fixture(closed,acknowledged=4)
+        manifest=passive.raw(initial['producer_requests'][0]['manifest_sha256'],32)
+        passive.native_physical(closed,initialized,receipts,encoder.cbor,manifest,phase='closing-unacknowledged')
+        passive.native_ack(closed,committed,initialized,receipts,encoder.cbor,phase='closing-unacknowledged')
+        oracle.native_repair_fault(dump,closed,initialized,committed=False)
+        oracle.native_repair_fault(closed,copy.deepcopy(closed),initialized,committed=True)
+        passive.native_ack(confirmed,direct,initialized,receipts,encoder.cbor,phase='recovered')
+        oracle.native_repair_ack(closed,confirmed,initialized)
+        oracle.native_transition(confirmed,copy.deepcopy(confirmed),initialized,retry=True)
+        self.assertEqual([len(s['owner_epochs']) for s in (initial,rollback,committed,direct,retry)],[2,3,4,5,6])
+        for table in ('producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+            self.assertEqual(committed[table],direct[table]);self.assertEqual(direct[table],retry[table])
+
+    def test_rollback_refuses_partial_PG_effects_and_invented_release_or_replaced_custody(self):
+        initial,_,initialized,receipts,*_=native_outcome_fixture();rollback=uncertain_repair_fixture(initial,committed=False)
+        for change in ('head','dependency','outcome','producer-reopen','ingest','released-control','retired-role'):
+            altered=copy.deepcopy(rollback)
+            if change=='head':altered['producer_checkpoints'][0]['xmin']='999'
+            elif change=='dependency':altered['producer_checkpoint_dependencies'][0]['xmin']='999'
+            elif change=='outcome':altered['producer_outcomes'].append(fixture()[0]['producer_outcomes'][-1])
+            elif change=='producer-reopen':altered['producer_epochs'][0]['state']='open'
+            elif change=='ingest':passive.only(altered['owner_epochs'],role='ingest')['xmin']='999'
+            elif change=='released-control':altered['owner_epochs'][-1]['state']='released'
+            else:altered['role_instances'][-1]['retired_at_us']=550
+            with self.subTest(change=change),self.assertRaises(AssertionError):oracle.repair_rollback(initial,altered,initialized,receipts)
+        # The approved successful plain repair keeps its stricter released-owner contract.
+        with self.assertRaises(AssertionError):oracle.repaired(initial,repaired_fixture(initial)|{'owner_epochs':rollback['owner_epochs']},initialized,receipts,encoder.cbor)
+
+    def test_lost_committed_reply_requires_atomic_fresh_repair_without_laundering_previous_outcomes(self):
+        initial,_,initialized,receipts,*_=native_outcome_fixture();rollback=uncertain_repair_fixture(initial,committed=False)
+        committed=uncertain_repair_fixture(rollback,committed=True)
+        for change in ('head-xmin','outcome4-xmin','dependency10-xmin','prior-outcome','prior-dependency',
+                'old-recorder','released-control','producer-xmin'):
+            altered=copy.deepcopy(committed)
+            if change=='head-xmin':altered['producer_checkpoints'][0]['xmin']='999'
+            elif change=='outcome4-xmin':altered['producer_outcomes'][3]['xmin']='999'
+            elif change=='dependency10-xmin':altered['producer_checkpoint_dependencies'][9]['xmin']='999'
+            elif change=='prior-outcome':altered['producer_outcomes'][0]['xmin']='999'
+            elif change=='prior-dependency':altered['producer_checkpoint_dependencies'][0]['xmin']='999'
+            elif change=='old-recorder':altered['producer_outcomes'][3]['recorder_epoch']=2
+            elif change=='released-control':altered['owner_epochs'][-1]['state']='released'
+            else:altered['producer_epochs'][0]['xmin']='999'
+            with self.subTest(change=change),self.assertRaises(AssertionError):oracle.repair_commit_loss(rollback,altered,initialized,receipts,encoder.cbor)
+        direct=recovered_fixture(committed,retry=True)
+        for table in ('producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+            altered=copy.deepcopy(direct);altered[table][-1]['xmin']='999'
+            with self.subTest(table=table),self.assertRaises(AssertionError):oracle.repair_ack(committed,altered,initialized,receipts,encoder.cbor)
+
+    def test_unknown_repair_never_grants_ACK_and_fixed_native_write_deltas_are_discriminating(self):
+        initial,dump,initialized,receipts,*_=native_outcome_fixture();closed=closing_native_fixture(dump)
+        manifest=passive.raw(initial['producer_requests'][0]['manifest_sha256'],32)
+        for altered in (dump,closing_native_fixture(dump,acknowledged=4)):
+            with self.assertRaises(AssertionError):passive.native_physical(altered,initialized,receipts,encoder.cbor,manifest,phase='closing-unacknowledged')
+        for extra in (-1,1):
+            wrong=copy.deepcopy(closed);wrong['sequence']+=extra
+            with self.assertRaises(AssertionError):oracle.native_repair_fault(dump,wrong,initialized,committed=False)
+        for change in ('write','head','receipt','fact'):
+            wrong=copy.deepcopy(closed)
+            if change=='write':wrong['sequence']+=1
+            else:
+                prefix={'head':'0131','receipt':'0130','fact':'0120'}[change]
+                next(row for row in wrong['rows'] if row['key'].startswith(prefix))['value']+='00'
+            with self.subTest(change=change),self.assertRaises(AssertionError):oracle.native_repair_fault(closed,wrong,initialized,committed=True)
+        acknowledged=closing_native_fixture(closed,acknowledged=4)
+        with self.assertRaises(AssertionError):oracle.native_transition(closed,acknowledged,initialized)  # Plain case requires close+ACK, two writes.
+        with self.assertRaises(AssertionError):oracle.native_repair_ack(closed,closed,initialized)
+
+    def test_fault_variant_keeps_closed_stage_order_and_failure_stops_later_recoveries(self):
+        root=Path(__file__).resolve().parents[2]
+        expected=['first_launch_'+name for name in case.REPAIR_FAULT_STAGES]
+        with tempfile.TemporaryDirectory() as directory:
+            import subprocess,sys
+            directory=Path(directory)
+            result=subprocess.run([sys.executable,'-B',str(root/'tests/acceptance/run.py'),'p04-monitor-native-outcome-faults',
+                '--source-root',str(root),'--candidate-manifest',str(directory/'absent'),'--evidence',str(directory/'evidence')],capture_output=True,timeout=5)
+            report=json.loads((directory/'evidence/result.json').read_text())
+            self.assertEqual((result.returncode,report['result']),(2,'NOT_RUN'))
+            self.assertEqual([r['name'] for r in report['checks']],expected)
+            self.assertFalse(list((directory/'evidence/commands').iterdir()))
+        for failure in (None,'rollback_repair','lose_repair_commit'):
+            with self.subTest(failure=failure),tempfile.TemporaryDirectory() as directory:
+                args=SimpleNamespace(case='p04-monitor-native-outcome-faults',evidence=Path(directory),source_root=root);checks=[]
+                with patch.object(case,'MonitorAckRecoveryRuntime') as runtime:
+                    if failure:getattr(runtime.return_value,failure).side_effect=ValueError('unproven repair boundary')
+                    first_launch(args,checks,{})
+                    called=[call[0] for call in runtime.return_value.method_calls]
+                    if failure:
+                        runtime.return_value.recover_ack.assert_not_called();runtime.return_value.retry_ack.assert_not_called()
+                        failed=5 if failure=='rollback_repair' else 6
+                        self.assertEqual([r['result'] for r in checks],['PASS']*failed+['FAIL']+['NOT_RUN']*(8-failed)+['PASS'])
+                    else:
+                        self.assertEqual([r['result'] for r in checks],['PASS']*10)
+                        self.assertEqual([name for name in called if name in ('checkpoint_reply_loss','rollback_repair','lose_repair_commit','recover_ack','retry_ack')],
+                            ['checkpoint_reply_loss','rollback_repair','lose_repair_commit','recover_ack','retry_ack'])
+
+    def test_faulted_installed_recovery_uses_same_selector_and_positive_custody_before_census(self):
+        for committed in (False,True):
+            initial,dump,initialized,receipts,originals,selection=native_outcome_fixture()
+            rollback=uncertain_repair_fixture(initial,committed=False)
+            before=rollback if committed else initial
+            after=uncertain_repair_fixture(before,committed=committed)
+            closed=closing_native_fixture(dump)
+            old_dump=closed if committed else dump
+            with self.subTest(committed=committed),tempfile.TemporaryDirectory() as directory:
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.repair_faults=runtime.native_outcome=True
+                runtime.root=Path(directory);runtime.home=runtime.root/'peer';runtime.home.mkdir()
+                runtime.state=runtime.root/'instance';runtime.config=runtime.root/'instance.toml';runtime.config.write_text('original')
+                runtime.direct_recipe='original';runtime.source_unchanged=Mock();runtime.backend_absence=Mock()
+                runtime.client=Mock();runtime.client.poll.return_value=None
+                runtime.before_recovery=initial;runtime.before_dump=dump;runtime.after_recovery=before;runtime.after_dump=old_dump
+                runtime.initialized=initialized;runtime.receipts=receipts;runtime.original_inputs=originals;runtime.selection=selection
+                runtime.original_files={};runtime.originals=Mock(return_value=originals);runtime.files=Mock(return_value={})
+                runtime.catalog=[];runtime.capture=Mock(return_value=(after,[]));runtime.cbor=encoder.cbor;runtime.decode=decode
+                runtime.start_checkpoint_proxy=Mock();runtime.select_checkpoint=Mock(return_value='selected')
+                runtime.checkpoint_fault=Mock(return_value=dict(backend_pid=after['owner_epochs'][-1]['control_backend_pid']))
+                runtime.joined_unknown=Mock(return_value=[]);runtime.launch=Mock(return_value=dict(id='fresh'))
+                runtime.fault_proxy=Mock();runtime.finish_fault_proxy=Mock()
+                calls=Mock()
+                for name in ('backend_absence','start_checkpoint_proxy','select_checkpoint','launch','checkpoint_fault','joined_unknown','finish_fault_proxy','capture'):
+                    calls.attach_mock(getattr(runtime,name),name)
+                with patch.object(case.native,'census',return_value=closed) as census:
+                    calls.attach_mock(census,'census');runtime.repair_fault(committed=committed)
+                    label='monitor-outcome-commit-loss' if committed else 'monitor-outcome-rollback';output=runtime.root/label
+                    runtime.launch.assert_called_once_with(label,'app','ingest','recover','--file','/etc/bigbrotr/instance.toml')
+                    runtime.start_checkpoint_proxy.assert_called_once_with(output,'after-complete' if committed else 'before-forward')
+                    self.assertLessEqual(runtime.joined_unknown.call_args.kwargs['timeout'],20)
+                    self.assertIn('deadline',runtime.checkpoint_fault.call_args.kwargs)
+                    census.assert_called_once_with(runtime,output,expected_writer_exit=4,writer_terminal=output/'terminal-container.json')
+                    runtime.finish_fault_proxy.assert_called_once_with(output,failed=False)
+                    names=[call[0] for call in calls.method_calls]
+                    self.assertEqual(names[:7],['backend_absence','start_checkpoint_proxy','select_checkpoint','launch','checkpoint_fault','joined_unknown','finish_fault_proxy'])
+                    self.assertLess(names.index('backend_absence',1),names.index('capture'));self.assertLess(names.index('capture'),names.index('census'))
+                    self.assertEqual(runtime.config.read_text(),'original')
+                    verdict=json.loads((output/'independent-verdict.json').read_text())
+                    self.assertEqual((verdict['product_result'],verdict['checkpoint'],verdict['native_acknowledged'],verdict['native_writes']),
+                        ('CommitUnknown',4 if committed else 3,3,0 if committed else 1))
+
+    def test_direct_followthrough_and_exact_retry_preserve_the_committed_repair(self):
+        initial,dump,initialized,receipts,originals,selection=native_outcome_fixture()
+        rollback=uncertain_repair_fixture(initial,committed=False);committed=uncertain_repair_fixture(rollback,committed=True)
+        closed=closing_native_fixture(dump);acknowledged=closing_native_fixture(closed,acknowledged=4)
+        with tempfile.TemporaryDirectory() as directory:
+            runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.repair_faults=runtime.native_outcome=True
+            runtime.root=Path(directory);runtime.home=runtime.root/'peer';runtime.home.mkdir();runtime.state=runtime.root/'instance'
+            runtime.source_unchanged=Mock();runtime.backend_absence=Mock();runtime.client=Mock();runtime.client.poll.return_value=None
+            runtime.after_recovery=committed;runtime.after_dump=closed;runtime.initialized=initialized;runtime.receipts=receipts
+            runtime.original_inputs=originals;runtime.selection=selection;runtime.original_files={};runtime.cbor=encoder.cbor;runtime.decode=decode
+            runtime.originals=Mock(return_value=originals);runtime.files=Mock(return_value={});runtime.catalog=[]
+            runtime.resources=dict(containers=[dict(id='fresh')]);runtime.inspect=Mock(return_value=dict(Id='fresh',State=dict(Pid=0)))
+            report=dict(format='bigbrotr-ingest-recovery/1',state='positive-outcomes-resolved',dataset_id=initialized['dataset_id'],
+                owner_resource_id=initialized['owner_resource_id'],producer_slot_id=initialized['producer_slot_id'],producer_epoch='1',
+                issued_through='4',reserved_through='4',resolved_requests='4',native='closed',owner_release='committed',ready=False)
+            runtime.finite=Mock(return_value=report)
+            for retry in (False,True):
+                after=recovered_fixture(runtime.after_recovery,retry=True);runtime.capture=Mock(return_value=(after,[]))
+                with patch.object(case.native,'census',return_value=copy.deepcopy(acknowledged)):
+                    runtime.recovery(retry=retry)
+                label='monitor-outcome-retry' if retry else 'monitor-outcome-recovery'
+                runtime.finite.assert_called_with(label,'ingest','recover','--file','/etc/bigbrotr/instance.toml',timeout=30)
+                self.assertEqual(runtime.after_recovery,after)
+                for table in ('producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+                    self.assertEqual(committed[table],after[table])
+
+    def test_fault_owner_join_requires_honest_CommitUnknown_and_positive_process_exit(self):
+        for change in (None,'wait-zero','exit-zero','still-running','oom','delivery-only'):
+            with self.subTest(change=change),tempfile.TemporaryDirectory() as directory:
+                runtime=object.__new__(case.MonitorAckRecoveryRuntime)
+                state=dict(ExitCode=4,Pid=0,Running=False,OOMKilled=False)
+                if change=='exit-zero':state['ExitCode']=0
+                if change=='still-running':state.update(Running=True,Pid=123)
+                if change=='oom':state['OOMKilled']=True
+                runtime.inspect=Mock(return_value=dict(Id='fresh',State=state))
+                runtime.docker=Mock(side_effect=[SimpleNamespace(stdout='0' if change=='wait-zero' else '4'),
+                    SimpleNamespace(stdout='',stderr='DeliveryUnknown' if change=='delivery-only' else 'producer operation unavailable: CommitUnknown')])
+                if change:
+                    with self.assertRaisesRegex(ValueError,'explicit uncertainty'):runtime.joined_unknown(dict(id='fresh'),Path(directory))
+                else:self.assertEqual(runtime.joined_unknown(dict(id='fresh'),Path(directory)),[])
+
+    def test_repair_selector_waits_share_one_fixed_command_deadline(self):
+        runtime=object.__new__(case.MonitorAckRecoveryRuntime);runtime.fault_proxy=Mock();runtime.proxy_event=Mock()
+        with self.assertRaisesRegex(ValueError,'repair command fixture deadline'):
+            runtime.checkpoint_fault(Path('/unused'),'selected','before-forward',deadline=0)
+        runtime.proxy_event.assert_not_called()
 
 
 class NativeOutcomeRecoveryControls(unittest.TestCase):

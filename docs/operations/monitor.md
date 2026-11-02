@@ -152,6 +152,10 @@ original Native science must authenticate the original outcome before SQL repair
 must commit the exact outcome and complete checkpoint together, and retry must
 preserve both stores without a new probe. Its actual installed execution remains
 NOT_RUN; the earlier C4/A3 proof does not establish this capability.
+The source-only [repair-fault variant](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
+also requires withheld/committed-but-unobserved repair transactions to retain
+honest uncertainty and Native A3 until a fresh direct recovery confirms ACK4.
+Its installed execution remains NOT_RUN.
 
 This extension consolidates the dependency guard in the current pre-release
 0044 migration. A previously applied 0044 with different bytes is refused by the

@@ -1347,7 +1347,7 @@ def first_launch(args, checks, inputs):
     tutorial = getattr(args, 'case', None) == 'p01-first-launch-tutorial'
     renewal_stop = getattr(args, 'case', None) == 'p01-first-launch-initial-renewal-stop'
     linear_quantum = getattr(args,'case',None)=='p03-linear-quantum'
-    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery')
+    monitor_recovery = getattr(args,'case',None) in ('p04-monitor-ack-recovery','p04-monitor-native-outcome-recovery','p04-monitor-native-outcome-faults')
     passive_monitor = monitor_recovery or getattr(args,'case',None) in ('p04-passive-monitor','p04-passive-monitor-index')
     runtime_type = IndexRuntime if index_case else Runtime
     if tutorial:
@@ -1378,6 +1378,8 @@ def first_launch(args, checks, inputs):
             from cases.first_launch_monitor_ack_recovery import MonitorAckRecoveryRuntime as PassiveMonitorRuntime, STAGES as PASSIVE_STAGES, LIMITS as PASSIVE_LIMITS
             if args.case=='p04-monitor-native-outcome-recovery':
                 from cases.first_launch_monitor_ack_recovery import NATIVE_OUTCOME_STAGES as PASSIVE_STAGES, NATIVE_OUTCOME_LIMITS as PASSIVE_LIMITS
+            if args.case=='p04-monitor-native-outcome-faults':
+                from cases.first_launch_monitor_ack_recovery import REPAIR_FAULT_STAGES as PASSIVE_STAGES, REPAIR_FAULT_LIMITS as PASSIVE_LIMITS
         runtime_type = PassiveMonitorRuntime
         args.case_limits = PASSIVE_LIMITS
     args.case_cleanup = 'Owned process groups joined and verified containers stopped; protected data, logs, images and networks retained. Borrowed networks never removed.'
@@ -1425,8 +1427,11 @@ def first_launch(args, checks, inputs):
             operations = operations[:4] + [('passive_measurement',runtime.passive_measurement),
                 ('restarted_measurement_inspection',runtime.restarted_measurement_inspection)]
         if monitor_recovery:
-            operations=operations[:4]+[(PASSIVE_STAGES[4],runtime.checkpoint_reply_loss),
-                (PASSIVE_STAGES[5],runtime.recover_ack),(PASSIVE_STAGES[6],runtime.retry_ack)]
+            operations=operations[:4]+[(PASSIVE_STAGES[4],runtime.checkpoint_reply_loss)]
+            if args.case=='p04-monitor-native-outcome-faults':
+                operations += [('monitor_outcome_rollback',runtime.rollback_repair),
+                    ('monitor_outcome_commit_loss',runtime.lose_repair_commit)]
+            operations += [(PASSIVE_STAGES[-3],runtime.recover_ack),(PASSIVE_STAGES[-2],runtime.retry_ack)]
         for current, operation in operations:
             operation()
             stage_checks[current]['result'] = 'PASS'

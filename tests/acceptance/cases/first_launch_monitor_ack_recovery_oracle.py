@@ -164,13 +164,21 @@ def repaired_terminal(state, initialized, selection, originals, receipts, cbor, 
 
 
 def repaired(before, after, initialized, receipts, cbor, *, retry=False):
+    _recovery_tables(before,after,pg_changed=True)
+    recovered_owners(before,after,retry=retry)
+    _repaired_sql(before,after,initialized,receipts,cbor,retry=retry,completed=True)
+
+
+def _recovery_tables(before, after, *, pg_changed):
     inventory.control_inventory(before);inventory.control_inventory(after)
-    changed={'owner_epochs','role_instances','producer_epochs','producer_outcomes',
-        'producer_checkpoints','producer_checkpoint_dependencies'}
+    changed={'owner_epochs','role_instances','producer_epochs'}
+    if pg_changed:changed.update(('producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'))
     assert all(not after[name] for name in passive.EMPTY_TABLES)
     for table in inventory.CONTROL_TABLES-changed:
         assert after[table]==before[table], 'repair changed retained '+table
-    recovered_owners(before,after,retry=retry)
+
+
+def _repaired_sql(before, after, initialized, receipts, cbor, *, retry, completed):
     if retry:
         passive.checkpoint(before,initialized,receipts)
         passive.checkpoint(after,initialized,receipts)
@@ -192,7 +200,8 @@ def repaired(before, after, initialized, receipts, cbor, *, retry=False):
     for key,column in (('resource','resource_id'),('epoch','epoch'),('incarnation','process_incarnation')):
         assert head['issuer_'+key]==new[3]['recorder_'+key]==control[column]
     for row,field in ((head,'committed_at_us'),(new[3],'recorded_at_us')):
-        assert type(row[field]) is int and control['acquired_at_us']<=row[field]<=control['released_at_us']
+        upper=control['released_at_us'] if completed else control['lease_expires_at_us']
+        assert type(row[field]) is int and control['acquired_at_us']<=row[field]<=upper
     encoded=b'bigbrotr/receipt/1\0'+cbor(receipts[3])
     expected=dict(old[2])
     expected.update(request_sequence=4,request_digest='\\x'+receipts[3][2].hex(),
@@ -205,6 +214,35 @@ def repaired(before, after, initialized, receipts, cbor, *, retry=False):
     assert dependencies[:9]==old_dependencies and len(dependencies)==10
     expected=dict(old_dependencies[-1],source_sequence=10,payload_digest='\\x'+receipts[3][4][0][1].hex(),xmin=head['xmin'])
     assert dependencies[-1]==expected
+
+
+def repair_rollback(before, after, initialized, receipts):
+    """Withheld repair COMMIT keeps the original C3 bytes/xmins, but closes custody."""
+    _recovery_tables(before,after,pg_changed=False)
+    _recovered_owners(before,after,initial_open=True,completed=False)
+    passive.checkpoint_before_terminal(before,initialized,receipts[:3])
+    passive.checkpoint_before_terminal(after,initialized,receipts[:3])
+
+
+def repair_commit_loss(before, after, initialized, receipts, cbor):
+    """Actual repair committed under fresh unreleased Control; ACK has not run."""
+    _recovery_tables(before,after,pg_changed=True)
+    _recovered_owners(before,after,initial_open=False,completed=False)
+    _repaired_sql(before,after,initialized,receipts,cbor,retry=False,completed=False)
+
+
+def repair_ack(before, after, initialized, receipts, cbor):
+    """Fresh direct completion after uncertainty retains the committed C4 rows."""
+    _recovery_tables(before,after,pg_changed=False)
+    _recovered_owners(before,after,initial_open=False,completed=True)
+    _repaired_sql(before,after,initialized,receipts,cbor,retry=True,completed=True)
+
+
+def before_terminal(state, initialized, selection, originals, receipts, cbor, decode):
+    refs,measurement=original_measurement(state,initialized,selection,originals,decode)
+    actual=passive.retained_before_terminal(state,initialized,refs,measurement,originals,cbor,decode)
+    assert actual==receipts[:3]
+    passive.checkpoint_before_terminal(state,initialized,actual)
 
 
 def eligible(state):
@@ -226,14 +264,18 @@ def recovered(before, after, *, retry=False):
 
 def recovered_owners(before, after, *, retry=False):
     """Shared historical exclusion, fresh Control and producer-close observations."""
+    _recovered_owners(before,after,initial_open=not retry,completed=True)
+
+
+def _recovered_owners(before, after, *, initial_open, completed):
     ingest=passive.only(before['owner_epochs'],role='ingest')
     assert passive.only(after['owner_epochs'],role='ingest')==ingest
     producer=passive.only(before['producer_epochs']);actual=passive.only(after['producer_epochs'])
     assert actual['state']=='closing'
     assert {k:v for k,v in actual.items() if k not in ('state','xmin')}=={
         k:v for k,v in producer.items() if k not in ('state','xmin')}
-    if retry:assert actual==producer
-    else:assert producer['state']=='open' and actual['xmin']!=producer['xmin']
+    if initial_open:assert producer['state']=='open' and actual['xmin']!=producer['xmin']
+    else:assert producer['state']=='closing' and actual==producer
     old=sorted([r for r in before['owner_epochs'] if r['role']=='control'],key=lambda r:r['epoch'])
     controls=sorted([r for r in after['owner_epochs'] if r['role']=='control'],key=lambda r:r['epoch'])
     assert len(controls)==len(old)+1
@@ -250,10 +292,16 @@ def recovered_owners(before, after, *, retry=False):
     assert newest['dataset_id']==ingest['dataset_id']
     assert newest['process_incarnation'] not in {r['process_incarnation'] for r in old}
     assert newest['role_instance_id'] not in {r['role_instance_id'] for r in before['role_instances']}
-    assert newest['state']=='released' and newest['control_fence_version']==1
+    assert newest['control_fence_version']==1
     assert newest['control_backend_pid']>0 and newest['control_backend_start'] is not None
-    assert newest['exclusion_method']=='storage_fenced' and len(passive.raw(newest['exclusion_digest'],32))==32
-    assert newest['acquired_at_us']<=newest['released_at_us']<newest['lease_expires_at_us']
+    if completed:
+        assert newest['state']=='released'
+        assert newest['exclusion_method']=='storage_fenced' and len(passive.raw(newest['exclusion_digest'],32))==32
+        assert newest['acquired_at_us']<=newest['released_at_us']<newest['lease_expires_at_us']
+    else:
+        assert newest['state']=='active' and newest['released_at_us'] is None
+        assert newest['exclusion_method'] is newest['exclusion_digest'] is None
+        assert newest['acquired_at_us']<newest['lease_expires_at_us']
     assert len(after['role_instances'])==len(before['role_instances'])+1
     for prior in before['role_instances']:
         current=passive.only(after['role_instances'],role_instance_id=prior['role_instance_id'])
@@ -264,10 +312,26 @@ def recovered_owners(before, after, *, retry=False):
                 k:v for k,v in prior.items() if k not in ('retired_at_us','xmin')}
     role=passive.only(after['role_instances'],role_instance_id=newest['role_instance_id'])
     assert role['role']=='control' and role['dataset_id']==newest['dataset_id']
-    assert role['created_at_us']<=newest['acquired_at_us']<=newest['released_at_us']<=role['retired_at_us']
+    assert role['created_at_us']<=newest['acquired_at_us']
+    if completed:assert newest['released_at_us']<=role['retired_at_us']
+    else:assert role['retired_at_us'] is None
 
 
 def native_transition(before, after, initialized, *, retry=False):
+    _native_transition(before,after,initialized,writes=0 if retry else 2,unchanged=retry)
+
+
+def native_repair_fault(before, after, initialized, *, committed):
+    # close_producer_marker writes only on open->closing. Both failed replay
+    # transactions return before acknowledgement; closing->closing is read-only.
+    _native_transition(before,after,initialized,writes=0 if committed else 1,unchanged=committed)
+
+
+def native_repair_ack(before, after, initialized):
+    _native_transition(before,after,initialized,writes=1,unchanged=False)
+
+
+def _native_transition(before, after, initialized, *, writes, unchanged):
     key='0131'+initialized['producer_slot_id']+'0000000000000001'
     select=lambda dump:{(r['cf'],r['key']):r['value'] for r in dump['rows']}
     old=select(before);new=select(after)
@@ -275,8 +339,8 @@ def native_transition(before, after, initialized, *, retry=False):
     assert old.keys()==new.keys()
     assert {(cf,k):v for (cf,k),v in old.items() if (cf,k)!=('receipts',key)}=={
         (cf,k):v for (cf,k),v in new.items() if (cf,k)!=('receipts',key)}
-    assert after['sequence']==before['sequence']+(0 if retry else 2)
-    if retry:assert old==new
+    assert after['sequence']==before['sequence']+writes
+    if unchanged:assert old==new
 
 
 def completion(records, initialized):

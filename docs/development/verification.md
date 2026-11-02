@@ -647,6 +647,47 @@ python3 -B -m unittest discover -s experiments/archive-engine -p native_commit_p
 node experiments/identity-contract/reference.mjs tests/fixtures/model/passive-monitor-recovery.json
 ```
 
+### Preserve uncertainty across Monitor checkpoint repair faults
+
+`p04-monitor-native-outcome-faults` is a closed ten-stage variant of the same
+runtime and initial independently authenticated PG C3/Native I4 boundary. Its
+installed execution is **NOT_RUN**, pending critical review and matching qualified
+product/ledger/observer. It adds no product recovery action or fixture budget:
+the one peer still has its original120s lifetime, and each selected proxy keeps
+the same 131,072-frame/64-lifetime-connection/64MiB/120s envelope. Each new faulted
+recovery shares one30s command deadline across selector wait and positive join.
+
+```sh
+python3 -B tests/acceptance/run.py p04-monitor-native-outcome-faults \
+  --source-root /absolute/clean-source \
+  --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
+  --evidence /absolute/fresh-private-evidence
+```
+
+Every invocation uses ordinary installed default `ingest recover`. The exact
+C4 UPDATE1/Bind identity and same-session COMMIT selector first withholds the
+repair COMMIT before forwarding, then loses a fresh repair COMMIT reply after
+server completion. Both commands must positively join with honest `CommitUnknown`,
+without a completion report or immediate Native ACK. The fresh failed Control
+remains active/unreleased; its joined process and absent PG backend are separately
+proved before census, and the next fresh Control must exclude that incarnation.
+
+| Recovery boundary | PostgreSQL | Native | Native writes |
+| --- | --- | --- | --- |
+| Repair COMMIT withheld | Original C3/outcomes1..3/nine dependencies, exact bytes/xmins | Closing I4/A3/R0 | 1 closing marker |
+| Repair COMMIT completed, reply lost | Original outcome4+C4+dependency10 atomically under this fresh Control | Closing I4/A3/R0 | 0 |
+| Fresh direct completion | Exact prior C4/outcomes/dependencies/xmins | Closing I4/A4/R0 | 1 ACK |
+| Exact retry | Exact prior C4/outcomes/dependencies/xmins | Exact prior state | 0 |
+
+These write counts follow the native closing/ACK owners: closing writes once,
+repeated closing is read-only, and replay errors return before ACK. Original
+science, input files, receipts, earlier dependencies/outcomes and their attribution
+remain fixed throughout. The same peer must observe one connection and no new
+probe or Sync work. Synthetic controls do not qualify these real transaction
+boundaries; exact-existing-outcome4/C3 and other connected refusal guards remain
+separate required gates.
+
 ### Same-store installed Index restart with backlog
 
 `p01-first-launch-index-restart` selects a separate fresh variant with the same

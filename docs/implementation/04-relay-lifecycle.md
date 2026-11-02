@@ -357,6 +357,12 @@ records its independent observed-timestamp/Fact/receipt construction, unchanged
 fixture limits and new product/ledger prerequisites. Real execution is NOT_RUN;
 neither synthetic controls nor retained C4/A3 capture replay closes Steps2/6 or
 the separate PG negative/rollback/lost-repair-COMMIT/existing-outcome gates.
+Its closed `p04-monitor-native-outcome-faults` variant additionally specifies
+rollback and lost-repair-COMMIT followthrough, preserving honest uncertainty and
+withholding Native ACK until fresh direct completion; its real execution also
+remains NOT_RUN. [Fault verification](../development/verification.md#preserve-uncertainty-across-monitor-checkpoint-repair-faults)
+fixes the independent state, custody and write-count expectations without widening
+the same peer/proxy limits.
 
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.

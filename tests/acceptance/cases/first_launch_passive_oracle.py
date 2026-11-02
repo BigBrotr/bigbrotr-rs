@@ -405,10 +405,11 @@ def native_physical(dump, initialized, receipts, cbor, manifest_digest, *, phase
     assert [reference[0] for receipt in receipts for reference in receipt[4]] == [[dataset,0,1,n] for n in range(1,11)]
     slot = bytes.fromhex(initialized['producer_slot_id'])
     be = lambda n:n.to_bytes(8,'big')
-    assert phase in ('admitted','reply-lost','recovered')
-    acknowledged = 3 if phase=='reply-lost' else 4
-    head = bytes([2 if phase=='recovered' else 1,0x31])+be(4)+be(acknowledged)+be(0)
-    assert values[('receipts',b'\x01\x31'+slot+be(1))] == head+(b'\x01' if phase=='recovered' else b'')
+    assert phase in ('admitted','reply-lost','closing-unacknowledged','recovered')
+    acknowledged = 3 if phase in ('reply-lost','closing-unacknowledged') else 4
+    closing = phase in ('closing-unacknowledged','recovered')
+    head = bytes([2 if closing else 1,0x31])+be(4)+be(acknowledged)+be(0)
+    assert values[('receipts',b'\x01\x31'+slot+be(1))] == head+(b'\x01' if closing else b'')
     assert len([key for cf,key in values if cf=='receipts']) == 5
     assert values[('default',b'\x01\x02'+dataset+bytes(4)+be(1))] == b'\x01\x02'+be(10)
     manifest = values[('default',b'\x01\x01')]
