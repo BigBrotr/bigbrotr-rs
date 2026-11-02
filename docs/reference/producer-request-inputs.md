@@ -958,6 +958,29 @@ separate required gates; source and pure controls cannot close them.
 
 ### Native ACK and returned credit (partial qualification)
 
+The initial one-shot Monitor path can opt into the same generic completion with
+a retained `ProgressGrant`. Its actual measurement append or exact-original
+replay mints an `InternalEvidence` checkpoint witness bound to the current root,
+Native sequence, manifest and receipt. Ordinary receipt reads, PG outcome copies
+and supplied digests or watermarks grant no ACK authority. The bridge prepares
+capacity before staging, rechecks the prior head after reservation COMMIT, and
+commits the exact outcome and dependency closure together. Only the private
+confirmed result of that checkpoint COMMIT can authorize Native ACK; current
+owner, policy, Native availability and cancellation are checked through final
+delivery. Monitor keeps source/job/event attribution absent and creates no Sync
+progress, acquisition job or quantum. The selected fresh four-request journey
+requires revision4/C4 and physical I4/A4/R0 with the exact source1..10 closure.
+Its new source and installed observer gates remain NOT_RUN until exact-source
+qualification is recorded.
+
+ACK does not retire Monitor detail. Dispatch settlement and one-request-per-attempt
+uniqueness currently depend on retained monitor-attributed request/outcome rows.
+The open-prefix coordinator refuses such a producer before native retirement
+planning or unlink, preserving original input/receipt/history and existing
+producer/dispatch ceilings. Full monitor-aware closure preservation, restart
+recovery and repeated scheduling remain the P04-T07/P02 gates; this opt-in cannot
+adopt unknown work, recover lost RAM or authorize another probe.
+
 This P02-T02 increment connects confirmed mutation checkpoints to the existing
 native acknowledged watermark. Product `fcad4c9` passes 258 selected component
 tests and both Clippy selections. Actual initial, activated epoch2 and successor

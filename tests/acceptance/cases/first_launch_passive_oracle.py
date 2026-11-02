@@ -297,3 +297,74 @@ def inspection_pin(before, after, catalog_id):
     assert lease['updated_at_us'] == lease['released_at_us'] and lease['xmin'] == claim['xmin']
     assert (claim['dataset_id'],claim['topology_generation'],claim['shard_id'],claim['owner_epoch'],claim['first_sequence'],claim['last_sequence']) == (
         owner['dataset_id'],0,0,1,1,10)
+
+
+def checkpoint(state, initialized, receipts):
+    """Literal generic C4 and exact ten-reference closure, with no Sync heads."""
+    dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
+    slot = bytes.fromhex(initialized['producer_slot_id'])
+    assert len(receipts) == 4 and all(not state[name] for name in EMPTY_TABLES)
+    expected = [reference for receipt in receipts for reference in receipt[4]]
+    assert [r[0] for r in expected] == [[dataset,0,1,n] for n in range(1,11)]
+    head = only(state['producer_checkpoints'])
+    assert all(type(head[field]) is int for field in ('checkpoint_revision','complete_through_request',
+        'progress_format','progress_jobs','dependency_count'))
+    assert (head['checkpoint_revision'],head['complete_through_request'],head['progress_format'],
+        head['progress_jobs'],head['dependency_count']) == (4,4,1,0,10)
+    assert head['dataset_id'] == '\\x'+dataset.hex() and head['producer_slot_id'] == '\\x'+slot.hex()
+    assert head['producer_epoch'] == 1
+    manifest = raw(state['producer_requests'][0]['manifest_sha256'],32)
+    assert raw(head['manifest_sha256'],32) == manifest
+    rows = sorted(state['producer_checkpoint_dependencies'],key=lambda r:r['source_sequence'])
+    assert len(rows) == 10
+    for row, (source, digest) in zip(rows,expected):
+        assert (row['dataset_id'],row['producer_slot_id'],row['producer_epoch']) == ('\\x'+dataset.hex(),'\\x'+slot.hex(),1)
+        assert (row['source_shard'],row['source_epoch'],row['source_sequence']) == tuple(source[1:])
+        assert raw(row['payload_digest'],32) == digest
+    # Version1 producer-progress bytes: fixed identity/head, zero jobs, sorted
+    # full references. No product reducer, supplied digest or observed C chooses it.
+    body = b'bigbrotr/producer-progress/1\0'+dataset+slot+(1).to_bytes(8,'big')+manifest
+    body += b''.join(n.to_bytes(8,'big') for n in (4,4,0,10))
+    for source, digest in expected:
+        body += source[0]+b''.join(n.to_bytes(8,'big') for n in source[1:])+digest
+    assert raw(head['checkpoint_digest'],32) == hashlib.sha256(body).digest()
+    outcome = only(state['producer_outcomes'],request_sequence=4)
+    assert head['xmin'] == outcome['xmin'] == rows[-1]['xmin'], 'outcome and checkpoint must commit together'
+    for field in ('resource','epoch','incarnation'):
+        assert head['issuer_'+field] == outcome['recorder_'+field]
+    return dict(generic_checkpoint=4,checkpoint_revision=4,checkpoint_dependencies=10,
+        checkpoint_sha256=hashlib.sha256(body).hexdigest(),acquisition_progress=0)
+
+
+def native_ack(dump, state, initialized, receipts):
+    """Read physical producer ACK and retained science/receipts after writer join."""
+    assert set(dump) == {'event','rows','sequence'} and dump['event'] == 'dump-state'
+    assert type(dump['sequence']) is int and dump['sequence'] > 0
+    assert len(receipts) == 4
+    outcomes = sorted(state['producer_outcomes'],key=lambda r:r['request_sequence'])
+    assert [row['request_sequence'] for row in outcomes] == [1,2,3,4]
+    dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
+    assert [reference[0] for receipt in receipts for reference in receipt[4]] == [[dataset,0,1,n] for n in range(1,11)]
+    values = {}
+    for row in dump['rows']:
+        assert set(row) == {'cf','key','value'} and row['cf'] in ('default','facts','receipts')
+        key = (row['cf'],bytes.fromhex(row['key']))
+        assert key not in values
+        values[key] = bytes.fromhex(row['value'])
+    dataset = bytes.fromhex(initialized['private_scope']['dataset_id'])
+    slot = bytes.fromhex(initialized['producer_slot_id'])
+    be = lambda n:n.to_bytes(8,'big')
+    assert values[('receipts',b'\x01\x31'+slot+be(1))] == b'\x01\x31'+be(4)+be(4)+be(0)
+    assert len([key for cf,key in values if cf=='receipts']) == 5
+    assert values[('default',b'\x01\x02'+dataset+bytes(4)+be(1))] == b'\x01\x02'+be(10)
+    manifest = values[('default',b'\x01\x01')]
+    assert hashlib.sha256(manifest).digest() == raw(state['producer_requests'][0]['manifest_sha256'],32)
+    assert len([key for cf,key in values if cf=='facts']) == 10
+    for number,(outcome,receipt) in enumerate(zip(outcomes,receipts),1):
+        assert values[('receipts',b'\x01\x30'+slot+be(1)+be(number))] == raw(outcome['outcome_bytes'])
+        for source,digest in receipt[4]:
+            assert source[:3] == [dataset,0,1]
+            fact = values[('facts',b'\x01\x20'+dataset+bytes(4)+be(1)+be(source[3]))]
+            assert fact[:34] == b'\x01\x20'+digest
+            assert hashlib.sha256(fact[34:]).digest() == digest
+    return dict(native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_receipts=4)

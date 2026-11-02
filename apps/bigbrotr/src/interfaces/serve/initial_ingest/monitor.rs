@@ -387,7 +387,6 @@ impl Monitor {
         })
         .await?;
         drop(prepared);
-        drop(checkpoint);
         // Prepare the exact capture and ALL subsequent admission scratch before
         // creating the only runnable token. No grant is acquired during IO except
         // the existing driver's dedicated child allocations.
@@ -549,7 +548,7 @@ impl Monitor {
         let receipt = bounded(maximum, commands.cancellation, async {
             commands
                 .owner
-                .append_initial_measurement(
+                .append_initial_measurement_with_progress(
                     native.initial_mut()?,
                     InitialMeasurementRequest {
                         registration,
@@ -565,6 +564,7 @@ impl Monitor {
                         },
                     },
                     admission,
+                    &checkpoint,
                     |d, h| validate(root, d, h),
                 )
                 .await
@@ -817,6 +817,63 @@ mod tests {
         assert!(fund_attempt(&parent, &endpoint, invalid, limits).is_err());
         assert_eq!(parent.snapshot().used(), ResourceLimits::default());
         assert_eq!(parent.snapshot().active_permits(), 0);
+    }
+
+    #[test]
+    fn checkpoint_capacity_is_retained_beside_the_capture_and_admission_grants() {
+        let limits = limits(2);
+        let evidence = limits.required_dictionary_data_bytes().unwrap();
+        let native = limits.required_native_bytes().unwrap();
+        let bytes = PreparedPassiveRead::REQUIRED_DATA_BYTES
+            + evidence
+            + ProgressGrant::REQUIRED_DATA_BYTES;
+        let items = PreparedPassiveRead::REQUIRED_ITEMS + 2;
+        let endpoint = Endpoint::parse("wss://relay.example/").unwrap();
+        for short in [false, true] {
+            let parent = attempt_budget(
+                bytes - u64::from(short),
+                items,
+                native + ProgressGrant::REQUIRED_NATIVE_BYTES,
+            );
+            let checkpoint = ProgressGrant::new(
+                grant(
+                    &parent,
+                    ProgressGrant::REQUIRED_DATA_BYTES,
+                    ProgressGrant::REQUIRED_NATIVE_BYTES,
+                )
+                .unwrap(),
+            )
+            .unwrap();
+            let attempt = fund_attempt(&parent, &endpoint, attempt_spec(), limits);
+            if short {
+                assert!(attempt.is_err());
+            } else {
+                let (capture, admission) = attempt.unwrap();
+                assert_eq!(
+                    parent.snapshot().used(),
+                    ResourceLimits::new(
+                        bytes,
+                        items,
+                        native + ProgressGrant::REQUIRED_NATIVE_BYTES,
+                        0
+                    )
+                );
+                assert!(capture.transport_trace().snapshot().first_io.is_none());
+                assert!(capture.finish_unclassified().unwrap().is_none());
+                drop(admission);
+            }
+            assert_eq!(
+                parent.snapshot().used(),
+                ResourceLimits::new(
+                    ProgressGrant::REQUIRED_DATA_BYTES,
+                    1,
+                    ProgressGrant::REQUIRED_NATIVE_BYTES,
+                    0
+                )
+            );
+            drop(checkpoint);
+            assert_eq!(parent.snapshot().used(), ResourceLimits::default());
+        }
     }
 
     #[test]

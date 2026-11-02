@@ -75,7 +75,14 @@ does not extend that authority. All socket, verifier, capture and admission
 capacity is reserved before the probe. The existing Native owner remains held
 through the borrowed socket operation and actual socket teardown. Once the source
 has returned, fresh current Control/Native authority admits only the compact
-MeasurementEvidenceIntent through the ordinary producer protocol.
+MeasurementEvidenceIntent through the ordinary producer protocol. The known
+initial measurement completes the generic producer checkpoint and confirmed
+Native ACK before reporting completion. Outcome and checkpoint commit together;
+only a positively confirmed checkpoint COMMIT permits the Native ACK. The
+checkpoint carries the exact dictionary and measurement dependency union and
+creates no acquisition progress. Cancellation, uncertain COMMIT or failed Native
+ACK leaves the result parked with its evidence retained; a PG outcome alone is
+not completion authority.
 
 JSON diagnostics use `bigbrotr-monitor-once/1`. The initial Ingest report contains
 `monitor_once.state="armed"`. Later lines report `selected`, `completed`, `no-io`
@@ -101,6 +108,13 @@ catalog/coordinator/worker prerequisites. Simultaneous Sync is refused by this
 finite producer sequence. The fresh path uses the two original dictionary
 requests, then one six-descriptor request and one Measurement request. It creates
 no acquisition job/scope, event fact, receive/provenance record or Sync progress.
+The four requests reach generic checkpoint C4 and Native I4/A4 with source cut10.
+All original inputs, outcomes and facts remain retained. ACK returns request
+window credit, without removing the producer-detail or dispatch ceilings. Open
+prefix retirement refuses a producer with Monitor-attributed requests before
+native retirement or unlink: dispatch settlement and attempt uniqueness still
+need those rows. Full monitor-aware closure preservation and retirement remain
+separate gates.
 `--monitor-once` means one source operation, not a process lifetime: serve keeps
 running for management, publication and supervised shutdown. Stop it normally
 after required Archive publication; no writer is reopened on restart.

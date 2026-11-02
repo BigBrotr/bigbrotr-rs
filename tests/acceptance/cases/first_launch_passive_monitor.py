@@ -9,15 +9,16 @@ import sys
 import time
 import tomllib
 
-from cases.first_launch import Runtime, digest, load, require, save, stop_process
+from cases.first_launch import MissingPrerequisite, Runtime, digest, load, require, save, stop_process
 from cases import first_launch_passive_oracle as oracle
+from cases import first_launch_retained_native as native
 
 STAGES = ('prerequisites','candidate','runtime_image','fresh_bootstrap',
           'passive_measurement','restarted_measurement_inspection','cleanup')
 LIMITS = [
     'One operator-enrolled direct private endpoint, one literal passive kind1/limit1 request and one compound terminal A05 fact, persisted through Archive and read by the installed exact typed inspector after process/PostgreSQL restart.',
     'No Sync scope/job or event-body admission; peer EVENT is verification input only. No fleet cadence, authority renewal, crash/unknown recovery, availability reducer, public observatory, full P04-T07 or M2 qualification.',
-    'Independent Python wire/CBOR/PG expectations; no native RocksDB/C-API census. Configured budgets are not measured capacity. Private credentials, sessions and scientific captures remain protected.',
+    'Independent Python wire/CBOR/PG expectations and a declared exact-source read-only native observer require generic checkpoint C4 and physical native ACK4 with retained inputs/receipts/facts. Configured budgets are not measured capacity. Private credentials, sessions and scientific captures remain protected.',
 ]
 ENDPOINT = 'ws://127.0.0.1:7447/installed-fixture'
 
@@ -66,6 +67,20 @@ def inspection_records(stdout, stderr, code):
 
 
 class PassiveMonitorRuntime(Runtime):
+    def preflight(self):
+        super().preflight()
+        build = getattr(self.args,'native_observer_build',None)
+        if build is None or not all((build/name).is_file() for name in (
+                'source-manifest.json','build-result.json','ingest-bootstrap-probe-build.json','ingest_bootstrap_probe')):
+            raise MissingPrerequisite('passive measurement ACK requires a separately declared exact-source native observer build')
+
+    def cleanup(self):
+        try:
+            native.stop(self)
+        except Exception as error:
+            self.resources['cleanup_errors'].append(dict(resource='native-observer',error=type(error).__name__))
+        super().cleanup()
+
     def passive_launch(self):
         return self.launch('passive-monitor','app','serve','--file','/etc/bigbrotr/instance.toml',
             '--roles','control,ingest,monitor,archive','--initialize-ingest','--monitor-once','/var/lib/bigbrotr/monitor-once.json')
@@ -81,6 +96,8 @@ class PassiveMonitorRuntime(Runtime):
 
     def load_helpers(self):
         super().load_helpers()
+        from fault_cases import Process
+        self.proxy_process = Process
         import installed_passive_monitor_client
         from installed_sync_oracle import decode
         from installed_archive_catch_up_oracle import cut_digest
@@ -97,7 +114,12 @@ class PassiveMonitorRuntime(Runtime):
             'passive Monitor driver source mismatch')
         require(digest(Path(oracle.__file__)) == digest(self.source/'tests/acceptance/cases/first_launch_passive_oracle.py'),
             'passive Monitor oracle source mismatch')
+        require(digest(Path(native.__file__)) == digest(self.source/'tests/acceptance/cases/first_launch_retained_native.py'),
+            'passive native observer helper source mismatch')
         super().candidate()
+        self.native_paths, self.native_hashes = native.artifact(self.args.native_observer_build,self.manifest)
+        self.inputs['native_observer'] = dict(artifact_sha256=self.native_hashes,
+            source=load(self.native_paths['source-manifest.json'])['revision'],product_unchanged=True)
 
     def prepare_state(self):
         super().prepare_state()
@@ -164,6 +186,7 @@ class PassiveMonitorRuntime(Runtime):
         require(load(self.home/'relay-complete.json')['connections'] == 1, 'unexpected peer connection count')
         self.receipts = [self.decode(oracle.raw(row['outcome_bytes']).split(b'\0',1)[1])
             for row in sorted(self.published['producer_outcomes'],key=lambda row:row['request_sequence'])]
+        self.checkpoint = oracle.checkpoint(self.published,self.initialized,self.receipts)
         self.cut = oracle.publication(self.published,self.initialized,self.ids['catalog'],self.receipts,self.cbor,self.cut_digest)
         self.passive_publication(entry,output,remaining)
         remaining(1)  # SQL/capture/oracle time belongs to the same finite gate.
@@ -185,12 +208,20 @@ class PassiveMonitorRuntime(Runtime):
         self.stopped, stopped_catalog = self.capture(output,'stopped')
         self.refs = oracle.completed(self.report,self.stopped,self.initialized,self.selection)
         require(self.catalog == stopped_catalog, 'orderly stop changed scientific catalog')
+        require(oracle.checkpoint(self.stopped,self.initialized,self.receipts) == self.checkpoint,
+            'stop changed the exact measurement checkpoint')
+        for table in ('producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
+            require(self.published[table] == self.stopped[table], 'stop changed original '+table)
         dispatch = oracle.only(self.stopped['measurement_dispatches'])
         owner = oracle.only(self.stopped['owner_epochs'],role='control',resource_id=dispatch['issuer_resource'],epoch=dispatch['issuer_epoch'])
         require(owner['state'] == 'released', 'Control release not retained')
         self.after_us = time.time_ns()//1000
         require(self.before_us <= self.after_us, 'host UTC regressed across fixture bracket')
         self.original_inputs = self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4)
+        self.native_dump = native.census(self,output,writer_terminal=output/'terminal-container.json')
+        self.native_ack = oracle.native_ack(self.native_dump,self.stopped,self.initialized,self.receipts)
+        save(output/'native-census.json',self.native_dump)
+        save(output/'checkpoint-ack-verdict.json',dict(status='PASS',**self.checkpoint,**self.native_ack))
         self.archive_files = self.files(self.state/'data/archive')
         save(output/'archive-files.json',self.archive_files)
         self.backend_absence(output)
@@ -205,7 +236,8 @@ class PassiveMonitorRuntime(Runtime):
         self.wait(lambda:self.docker('exec',self.pg['id'],'pg_isready','-h','127.0.0.1','-U','postgres','-d','postgres',check=False).returncode == 0,
             'same-data PostgreSQL restart',60)
         before, catalog = self.capture(output,'restarted')
-        for table in ('measurement_dispatches','producer_requests','producer_outcomes','archive_frontier_snapshots','archive_frontier_batches','consumer_frontiers'):
+        for table in ('measurement_dispatches','producer_requests','producer_outcomes','producer_checkpoints',
+                'producer_checkpoint_dependencies','archive_frontier_snapshots','archive_frontier_batches','consumer_frontiers'):
             require(before[table] == self.stopped[table], 'restart changed retained '+table)
         require(catalog == self.catalog, 'restart changed scientific catalog')
         original = self.finite('measurement-reader-disabled','config','show','--file','/etc/bigbrotr/instance.toml')
@@ -234,7 +266,7 @@ class PassiveMonitorRuntime(Runtime):
             'typed inspection mutated persisted scientific data')
         require(self.originals(self.state/'data/ingest',self.initialized['producer_slot_id'],1,4) == self.original_inputs,
             'typed inspection changed original producer inputs')
-        for table in ('measurement_dispatches','producer_requests','producer_outcomes'):
+        for table in ('measurement_dispatches','producer_requests','producer_outcomes','producer_checkpoints','producer_checkpoint_dependencies'):
             require(after[table] == before[table], 'typed inspection changed retained '+table)
         oracle.inspection_pin(before,after,self.ids['catalog'])
         self.passive_inspected(document,measurement,encoded,output,after)
@@ -244,4 +276,5 @@ class PassiveMonitorRuntime(Runtime):
             measurement=self.report['measurement'],canonical_fact_sha256=hashlib.sha256(encoded).hexdigest(),
             family_counts=oracle.COUNTS,source_cut=10,producer_requests=4,snapshot_id=5,frontier_revision=4,
             real_peer_connections=1,auth_responses=0,publishes=0,sync_jobs=0,event_family_facts=0,
-            native_census='NOT_RUN',qualification_scope='one-passive-attempt-and-restarted-typed-inspection'))
+            generic_checkpoint=4,native_acknowledged=4,retired_requests=0,
+            native_census='physical-ACK-and-retained-facts-receipts',qualification_scope='one-passive-attempt-known-ACK-and-restarted-typed-inspection'))

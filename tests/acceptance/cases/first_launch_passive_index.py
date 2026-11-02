@@ -12,7 +12,7 @@ from cases import first_launch_passive_index_oracle as oracle
 LIMITS = [
     'One fresh operator-enrolled passive attempt, four indivisible source batches, Archive cut10 and all eleven schema2 Index outcomes, including one complete typed compound measurement row.',
     'The original passive peer, admission, Archive, same-data PostgreSQL restart and standalone typed inspection checks remain; exact ClickHouse fields and all44 target commitments use separate independent passive expectations.',
-    'No Index/ClickHouse restart, readiness/corruption/outage, unknown dispatch recovery, native census, repeated scheduling, fleet or capacity qualification. The configured six-row ceiling admits the unchanged six-dictionary source batch; it is not a measured capacity claim.',
+    'No Index/ClickHouse restart, readiness/corruption/outage, unknown dispatch recovery, repeated scheduling, fleet or capacity qualification. The configured six-row ceiling admits the unchanged six-dictionary source batch; it is not a measured capacity claim.',
 ]
 
 

@@ -187,7 +187,55 @@ def retained_fixture():
     return state,initialized,report,refs,selection,expected[5],originals,receipts
 
 
+def checkpoint_fixture():
+    state,initialized,report,refs,selection,measurement,originals,receipts = retained_fixture()
+    slot='\\x'+'44'*16;dataset='\\x'+'01'*16
+    # Frozen independent progress/1 vector: revision4, C4, zero jobs, ten full
+    # source references. The final reference is the literal A05 commitment.
+    state['producer_checkpoints']=[dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=1,
+        checkpoint_revision=4,complete_through_request=4,progress_format=1,progress_jobs=0,dependency_count=10,
+        manifest_sha256='\\x'+'46'*32,checkpoint_digest='\\xf12dbfbe336c2c2e6533a14cfaf3be5bea3541915f39dbdb1145e1e2ca5398e3',
+        issuer_resource='\\x'+'51'*16,issuer_epoch=1,issuer_incarnation='\\x'+'52'*16,xmin='404')]
+    state['producer_checkpoint_dependencies']=[dict(dataset_id=dataset,producer_slot_id=slot,producer_epoch=1,
+        source_shard=0,source_epoch=1,source_sequence=n,payload_digest='\\x'+(
+            bytes([n])*32 if n<10 else bytes.fromhex(report['measurement']['payload_digest'])).hex(),
+        xmin='404' if n==10 else '403') for n in range(1,11)]
+    state['producer_outcomes'][-1]['xmin']='404'
+    return state,initialized,receipts
+
+
 class PassiveMonitorControls(unittest.TestCase):
+    def test_checkpoint_requires_exact_generic_C4_closure_and_atomic_outcome(self):
+        state,initialized,receipts=checkpoint_fixture()
+        self.assertEqual(oracle.checkpoint(state,initialized,receipts)['generic_checkpoint'],4)
+        for table,field,value in [('producer_checkpoints','complete_through_request',3),
+                ('producer_checkpoints','checkpoint_revision',5),('producer_checkpoints','progress_format',True),
+                ('producer_checkpoints','progress_jobs',1),('producer_checkpoints','dependency_count',9),
+                ('producer_checkpoints','checkpoint_digest','\\x'+'00'*32),
+                ('producer_checkpoints','manifest_sha256','\\x'+'00'*32),
+                ('producer_checkpoints','producer_slot_id','\\x'+'00'*16),
+                ('producer_checkpoints','issuer_epoch',2),('producer_outcomes','xmin','405'),
+                ('producer_checkpoint_dependencies','source_sequence',11),
+                ('producer_checkpoint_dependencies','payload_digest','\\x'+'00'*32),
+                ('producer_checkpoint_dependencies','xmin','405')]:
+            changed=copy.deepcopy(state);changed[table][-1][field]=value
+            with self.subTest(table=table,field=field),self.assertRaises((AssertionError,ValueError)):
+                oracle.checkpoint(changed,initialized,receipts)
+        for table in ('producer_checkpoints','producer_checkpoint_dependencies'):
+            changed=copy.deepcopy(state);changed[table].pop()
+            with self.subTest(missing=table),self.assertRaises((AssertionError,ValueError)):
+                oracle.checkpoint(changed,initialized,receipts)
+        for table in oracle.EMPTY_TABLES:
+            changed=copy.deepcopy(state);changed[table].append(dict(unexpected='progress'))
+            with self.subTest(extra=table),self.assertRaises(AssertionError):
+                oracle.checkpoint(changed,initialized,receipts)
+
+    def test_physical_ACK_observer_is_a_declared_prerequisite_before_candidate_or_engines(self):
+        runtime=object.__new__(case.PassiveMonitorRuntime)
+        runtime.args=SimpleNamespace(native_observer_build=None)
+        with patch.object(base.Runtime,'preflight'), self.assertRaisesRegex(base.MissingPrerequisite,'exact-source native observer'):
+            runtime.preflight()
+
     def test_missing_candidate_preserves_monitor_stage_names_and_not_run(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

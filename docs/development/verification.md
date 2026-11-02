@@ -468,6 +468,7 @@ owned ClickHouse setup and least-privilege accounts as the initial Index case:
 ```sh
 python3 -B tests/acceptance/run.py p04-passive-monitor-index \
   --candidate-manifest /absolute/new-candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
   --source-root "$PWD" --evidence .research/passive-monitor-index
 ```
 
@@ -496,12 +497,28 @@ expectations. Only bounded unpredictable clock scalars parameterize those
 expectations, and every complete fact preimage must match an original producer
 receipt. The event cut12 expectations remain separate.
 
+Both passive cases require a separately declared exact-source native observer:
+`experiments/ingest-registry/build_probe.py --build BUILD --example ingest_bootstrap_probe`
+over the candidate's controlled parent release build. Its source manifest,
+parent build/toolchain receipt and executable hashes must match the candidate.
+Missing observer artifacts refuse during prerequisites, before candidate or
+engine work. After the original writer joins, the existing read-only, networkless
+observer independently checks physical I4/A4/R0, all four original receipts and
+ten committed facts. A product log or PG checkpoint cannot substitute for this
+observation. The SQL oracle requires generic revision4/C4, the exact ten-reference
+closure through source10, atomic outcome/checkpoint provenance and zero
+acquisition jobs/progress/quanta. Inputs and science remain retained; no Monitor
+retirement or recovery qualification follows from ACK.
+
 The original passive publication deadline, same-data PostgreSQL restart and
 installed standalone measurement inspector still apply. Index metadata, table
 UUIDs, all185 columns and complete raw rows must remain unchanged through that
 restart and inspection. Index/ClickHouse restart, physical readiness, corruption,
-outage/unknown recovery, native census, repeated scheduling, fleet and capacity
-remain separate gates. The case has no fault injection or new product interface.
+outage/unknown recovery, complete secondary-index native census, repeated
+scheduling, fleet and measured capacity remain separate gates. The case has no
+fault injection or new product interface. The new C4/A4 implementation and
+observer gate remain NOT_RUN until their exact-source build and installed
+execution receipts exist; portable controls alone do not qualify them.
 
 Portable fixture and refusal controls:
 

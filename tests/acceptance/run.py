@@ -211,7 +211,7 @@ def main():
     parser.add_argument("--candidate-manifest", type=Path,
                         help="p01-first-launch: detached candidate manifest beside its bundle")
     parser.add_argument("--native-observer-build", type=Path,
-                        help="finite64 or Index outage: separately declared exact-source native observer build")
+                        help="finite64, Index outage, linear quantum or passive Monitor: declared exact-source native observer build")
     parser.add_argument("--compose-network",
                         help="p01-first-launch: borrow an existing local bridge; never remove it")
     parser.add_argument("--evidence", required=True, type=Path)
@@ -240,8 +240,8 @@ def main():
         parser.error("--retained-archive-schedule is only for p01-first-launch-closed-reclamation")
     if (args.case == "p01-first-launch-initial-renewal-stop") != (args.renewal_stop_outcome is not None):
         parser.error("--renewal-stop-outcome is required only for p01-first-launch-initial-renewal-stop")
-    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage", "p03-linear-quantum"):
-        parser.error("--native-observer-build is only for finite64, Index outage or linear quantum")
+    if args.native_observer_build is not None and args.case not in ("p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-index-outage", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index"):
+        parser.error("--native-observer-build is only for finite64, Index outage, linear quantum or passive Monitor")
     installed = args.case in ("p01-first-launch", "p01-first-launch-tutorial", "p01-first-launch-restart", "p01-first-launch-restart-provenance-off", "p01-first-launch-index", "p01-first-launch-index-short-pin", "p01-first-launch-index-restart", "p01-first-launch-index-pin-release-before", "p01-first-launch-index-pin-release-after", "p01-first-launch-index-commit-before", "p01-first-launch-index-commit-after", "p01-first-launch-index-topology", "p01-first-launch-index-live-topology", "p01-first-launch-archive-outage", "p01-first-launch-index-outage", "p01-first-launch-shared-budget", "p01-first-launch-retained-boundary", "p01-first-launch-closed-reclamation", "p01-first-launch-initial-renewal-stop", "p03-linear-quantum", "p04-passive-monitor", "p04-passive-monitor-index")
     if not installed and args.binary is None:
         parser.error("--binary is required for offline cases")

@@ -1572,3 +1572,270 @@ fn closed_producer_resolves_typed_measurement_originals_without_event_authority(
     drop(result);
     assert_eq!(snapshot(&recovery.store, &path), after_restore);
 }
+
+#[test]
+fn measurement_checkpoint_witness_acknowledges_exact_result_without_reclaiming_detail() {
+    // Native mechanics only: test_acknowledge_target does not fabricate a PG
+    // confirmation. The installed oracle separately requires the actual C/ACK.
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let mut store = initialize(&path, &b, DictionaryDescriptor::PassiveWsRead);
+    let value = measurement(literal("empty-eose-auth-utc-rollback"));
+    let result = store
+        .append_checkpoint_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(30),
+            limits(),
+            operation_permit(&b),
+            || Ok(()),
+        )
+        .unwrap();
+    let bytes = result.receipt().encode_persistent(65536).unwrap();
+    let basis = store.checkpoint_evidence(&result).unwrap();
+    assert_eq!(
+        basis.kind(),
+        super::producer_checkpoint::CheckpointKind::InternalEvidence
+    );
+    assert_eq!(basis.request(), Some(next_request(3)));
+    assert_eq!(basis.intent_digest(), value.request_digest(next_request(3)));
+    assert_eq!(basis.dependencies().len(), 8);
+    assert_eq!(
+        basis.dependencies().last().unwrap().source_record_id,
+        source(8)
+    );
+    assert!(matches!(
+        basis.acknowledgement_target(request().producer_slot_id, request().producer_epoch, 2),
+        Err(AdmissionError::InvalidInput)
+    ));
+    let target = basis
+        .acknowledgement_target(request().producer_slot_id, request().producer_epoch, 3)
+        .unwrap();
+    let before = snapshot(&store, &path);
+    store
+        .test_acknowledge_target(target, &grant(&b, 4096, 4096), || Ok(()))
+        .unwrap();
+    let credit = store.producer_credit(request().producer_slot_id).unwrap();
+    assert_eq!(
+        (
+            credit.issued_through(),
+            credit.acknowledged_through(),
+            credit.retired_through()
+        ),
+        (3, 3, 0)
+    );
+    let after = snapshot(&store, &path);
+    assert_eq!(after.inputs, before.inputs);
+    assert_eq!(after.accounting, before.accounting);
+    let key = IngestKey::ProducerState {
+        producer_slot_id: request().producer_slot_id,
+        producer_epoch: request().producer_epoch,
+    }
+    .encode()
+    .unwrap();
+    let without_head = |mut rows: Rows| {
+        rows.remove(&("receipts", key.as_bytes().to_vec()));
+        rows
+    };
+    assert_eq!(without_head(after.rows), without_head(before.rows));
+    drop(result);
+    let before = snapshot(&store, &path);
+    let replay = store
+        .append_checkpoint_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(999),
+            limits(),
+            operation_permit(&b),
+            || Ok(()),
+        )
+        .unwrap();
+    assert_eq!(replay.receipt().encode_persistent(65536).unwrap(), bytes);
+    let basis = store.checkpoint_evidence(&replay).unwrap();
+    let target = basis
+        .acknowledgement_target(request().producer_slot_id, request().producer_epoch, 3)
+        .unwrap();
+    store
+        .test_acknowledge_target(target, &grant(&b, 4096, 4096), || Ok(()))
+        .unwrap();
+    assert_eq!(snapshot(&store, &path), before);
+}
+
+#[test]
+fn measurement_checkpoint_rejects_ordinary_receipts_other_roots_and_stale_native_heads() {
+    let root = tempfile::tempdir().unwrap();
+    let path = root.path().join("db");
+    let b = budget();
+    let mut store = initialize(&path, &b, DictionaryDescriptor::PassiveWsRead);
+    let value = measurement(literal("empty-eose-auth-utc-rollback"));
+    let ordinary = store
+        .append_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(30),
+            limits(),
+            operation_permit(&b),
+            None,
+            || Ok(()),
+        )
+        .unwrap();
+    assert!(matches!(
+        store.checkpoint_evidence(&ordinary),
+        Err(AdmissionError::InvalidInput)
+    ));
+    drop(ordinary);
+    let before = snapshot(&store, &path);
+    let changed = measurement(literal("event-before-timeout"));
+    for (request, intent, expected) in [
+        (next_request(3), &changed, AdmissionError::RequestConflict),
+        (next_request(5), &value, AdmissionError::RequestGap),
+        (
+            ProducerRequestId {
+                producer_epoch: ProducerEpoch::new(2).unwrap(),
+                ..next_request(3)
+            },
+            &value,
+            AdmissionError::InvalidInput,
+        ),
+    ] {
+        assert_eq!(
+            store
+                .append_checkpoint_measurement(
+                    request,
+                    intent,
+                    ObservedTime::new(999),
+                    limits(),
+                    operation_permit(&b),
+                    || Ok(())
+                )
+                .err(),
+            Some(expected)
+        );
+        assert_eq!(snapshot(&store, &path), before);
+    }
+    let result = store
+        .append_checkpoint_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(30),
+            limits(),
+            operation_permit(&b),
+            || Ok(()),
+        )
+        .unwrap();
+    let other_root = tempfile::tempdir().unwrap();
+    let other_b = budget();
+    let mut other = initialize(
+        &other_root.path().join("db"),
+        &other_b,
+        DictionaryDescriptor::PassiveWsRead,
+    );
+    let other_result = other
+        .append_checkpoint_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(30),
+            limits(),
+            operation_permit(&other_b),
+            || Ok(()),
+        )
+        .unwrap();
+    assert_eq!(
+        result.receipt().encode_persistent(65536).unwrap(),
+        other_result.receipt().encode_persistent(65536).unwrap()
+    );
+    assert!(matches!(
+        store.checkpoint_evidence(&other_result),
+        Err(AdmissionError::StateMismatch)
+    ));
+    let basis = store.checkpoint_evidence(&result).unwrap();
+    for (slot, epoch) in [
+        ([99; 16].try_into().unwrap(), request().producer_epoch),
+        (request().producer_slot_id, ProducerEpoch::new(2).unwrap()),
+    ] {
+        assert!(matches!(
+            basis.acknowledgement_target(slot, epoch, 3),
+            Err(AdmissionError::InvalidInput)
+        ));
+    }
+    let target = basis
+        .acknowledgement_target(request().producer_slot_id, request().producer_epoch, 4)
+        .unwrap();
+    let before = snapshot(&store, &path);
+    assert_eq!(
+        store.test_acknowledge_target(target, &grant(&b, 4096, 4096), || Ok(())),
+        Err(AdmissionError::StateMismatch)
+    );
+    assert_eq!(snapshot(&store, &path), before);
+    // A later genuine request changes the native stamp even without new science.
+    drop(append(&mut store, &b, 4, &value, 40).unwrap());
+    assert_eq!(
+        store.require_checkpoint_basis(&basis),
+        Err(AdmissionError::StateMismatch)
+    );
+    assert!(matches!(
+        store.checkpoint_evidence(&result),
+        Err(AdmissionError::StateMismatch)
+    ));
+}
+
+#[test]
+fn measurement_checkpoint_refuses_lost_authority_native_uncertainty_and_short_capacity() {
+    for latch in [false, true] {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("db");
+        let b = budget();
+        let mut store = initialize(&path, &b, DictionaryDescriptor::PassiveWsRead);
+        let value = measurement(literal("empty-eose-auth-utc-rollback"));
+        let before = snapshot(&store, &path);
+        assert_eq!(
+            store
+                .append_checkpoint_measurement(
+                    next_request(3),
+                    &value,
+                    ObservedTime::new(30),
+                    limits(),
+                    grant(&b, 1, 1),
+                    || Ok(())
+                )
+                .err(),
+            Some(AdmissionError::InsufficientReservation)
+        );
+        assert_eq!(snapshot(&store, &path), before);
+        drop(append(&mut store, &b, 3, &value, 30).unwrap());
+        let before = snapshot(&store, &path);
+        let failure = store.test_background_failure();
+        let mut checks = 0;
+        let result = store.append_checkpoint_measurement(
+            next_request(3),
+            &value,
+            ObservedTime::new(999),
+            limits(),
+            operation_permit(&b),
+            || {
+                checks += 1;
+                if checks == 3 {
+                    if latch {
+                        failure.latch();
+                    } else {
+                        return Err(AdmissionError::AuthorityUnavailable);
+                    }
+                }
+                Ok(())
+            },
+        );
+        assert_eq!(checks, 3);
+        assert_eq!(
+            result.err(),
+            Some(if latch {
+                AdmissionError::CommitUnknown
+            } else {
+                AdmissionError::AuthorityUnavailable
+            })
+        );
+        assert_eq!(rows(&store), before.rows);
+        assert_eq!(inputs(&path), before.inputs);
+        assert_eq!(store.db.latest_sequence_number(), before.native_sequence);
+    }
+}

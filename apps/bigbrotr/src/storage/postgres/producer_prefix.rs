@@ -87,6 +87,24 @@ pub(in crate::storage::postgres::control_owner) async fn prepare(
     if retained < u64::from(retention) {
         return Ok(None);
     }
+    // Monitor settlement and one-request-per-attempt uniqueness still depend
+    // on the retained request/outcome rows. ACK does not authorize their loss.
+    // Older prefix schemas have no Monitor attribution; JSON lookup preserves
+    // that supported boundary without referring to a nonexistent column.
+    let monitor: bool = tx
+        .query_one(
+            "SELECT EXISTS(SELECT 1 FROM control.producer_requests r
+            WHERE r.producer_slot_id=$1::bytea AND r.producer_epoch=1
+                AND to_jsonb(r)->>'monitor_attempt_id' IS NOT NULL)",
+            &[&context.slot.as_bytes().as_slice()],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(backend)?;
+    if monitor {
+        return Err(ProducerProgressError::InvalidContext);
+    }
     let mut native = store
         .prefix_read(
             PrefixReadRequest {

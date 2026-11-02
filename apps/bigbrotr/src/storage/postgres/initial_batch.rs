@@ -131,7 +131,7 @@ struct InitialIngestContext<'a> {
     policy_ttl: Duration,
     request: Option<(ProducerRequestId, RequestPhase)>,
     source: Option<CurrentSourceCheck<'a>>,
-    monitor: Option<(MonitorEvidenceBinding, bool)>,
+    monitor: Option<monitor_admission::MonitorOperation>,
     network_event: bool,
     job: Option<ImportJobBinding>,
     progress: bool,
@@ -2008,11 +2008,12 @@ impl ControlSession {
             // check below samples authority again after every intervening wait.
             binding.require(&tx).await?;
         }
-        if let Some((binding, resolution)) = input.monitor {
+        if let Some(monitor) = input.monitor {
+            let (binding, resolution) = monitor.evidence();
             if input.source.is_some()
                 || input.network_event
                 || input.job.is_some()
-                || input.progress
+                || input.progress != monitor.checkpoint()
             {
                 return Err(OwnerError::InvalidInput.into());
             }

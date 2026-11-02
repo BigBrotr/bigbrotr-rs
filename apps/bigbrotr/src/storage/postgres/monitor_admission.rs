@@ -19,6 +19,26 @@ pub struct LiveMeasurementRequest<'a> {
     pub policy_ttl: Duration,
     pub cancelled: &'a AtomicBool,
 }
+/// Private separation from source-bound acquisition progress. This tag only
+/// selects the generic checkpoint reducer; it never authorizes network work.
+#[derive(Clone, Copy)]
+pub(super) enum MonitorOperation {
+    Evidence(MonitorEvidenceBinding, bool),
+    Checkpoint(MonitorEvidenceBinding, bool),
+}
+impl MonitorOperation {
+    pub(super) fn evidence(self) -> (MonitorEvidenceBinding, bool) {
+        match self {
+            Self::Evidence(binding, resolution) | Self::Checkpoint(binding, resolution) => {
+                (binding, resolution)
+            }
+        }
+    }
+    pub(super) fn checkpoint(self) -> bool {
+        matches!(self, Self::Checkpoint(..))
+    }
+}
+
 impl ControlSession {
     /// Dedicated native owner worker only. Caller retains original intent and
     /// policy buffers plus the transferred operation grant. Cancellation/drop
@@ -35,6 +55,27 @@ impl ControlSession {
             NativeAuthority::Initial(input.registration),
             input.evidence,
             permit,
+            None,
+            validate,
+        )
+        .await
+    }
+    /// Generic producer completion only: no Sync position, job or acquisition
+    /// progress. The borrowed grant funds the complete SQL checkpoint and ACK.
+    pub async fn append_initial_measurement_with_progress(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialMeasurementRequest<'_>,
+        permit: OwnedPermit,
+        progress: &ProgressGrant,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<StoredReceipt, InitialEventError> {
+        self.append_native_measurement(
+            NativeOwner::Store(store),
+            NativeAuthority::Initial(input.registration),
+            input.evidence,
+            permit,
+            Some(progress),
             validate,
         )
         .await
@@ -51,6 +92,7 @@ impl ControlSession {
             NativeAuthority::Live(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -67,6 +109,7 @@ impl ControlSession {
             NativeAuthority::Successor(&writer.binding),
             input,
             permit,
+            None,
             validate,
         )
         .await
@@ -77,8 +120,15 @@ impl ControlSession {
         authority: NativeAuthority<'_>,
         input: LiveMeasurementRequest<'_>,
         permit: OwnedPermit,
+        progress: Option<&ProgressGrant>,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<StoredReceipt, InitialEventError> {
+        // Only the initial Monitor owner opts into generic ACK.
+        // Later live generations keep their existing evidence-only contract.
+        if progress.is_some() && !matches!(authority, NativeAuthority::Initial(_)) {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        let progress_context = progress.map(|_| authority.progress_context(store.manifest()));
         let control = authority.control();
         let identity = *store.manifest().identity();
         if !input.binding.matches(input.intent)
@@ -108,13 +158,17 @@ impl ControlSession {
         let resolution = input.intent.measurement().prior_unknown().is_some();
         let context = |phase| InitialIngestContext {
             cancelled: input.cancelled,
-            progress: false,
+            progress: progress.is_some(),
             ingest_root: input.ingest_root,
             authority,
             policy_ttl: input.policy_ttl,
             request: Some((request, phase)),
             source: None,
-            monitor: Some((input.binding, resolution)),
+            monitor: Some(if progress.is_some() {
+                MonitorOperation::Checkpoint(input.binding, resolution)
+            } else {
+                MonitorOperation::Evidence(input.binding, resolution)
+            }),
             network_event: false,
             job: None,
         };
@@ -125,6 +179,36 @@ impl ControlSession {
                 &mut validate,
             )
             .await?;
+        // Capacity and the exact prior head are checked before any original
+        // file or PG reservation. A complete outcome cannot hide a progress gap.
+        let mut progress_state = if progress.is_some() {
+            let bytes = input
+                .intent
+                .request_preimage_len(request, input.limits.max_batch_bytes)
+                .map_err(|_| InitialEventError::Progress(ProducerProgressError::Limit))?
+                as u64;
+            Some(
+                producer_progress::prepare(
+                    &reservation_tx,
+                    progress_context.expect("measurement progress context"),
+                    None,
+                    Some((request.request_sequence.get(), bytes)),
+                    input.limits.max_dependencies,
+                )
+                .await
+                .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
+        if let Some(state) = &progress_state {
+            store
+                .require_progress_base(
+                    state,
+                    progress_context.expect("measurement progress context"),
+                )
+                .map_err(InitialEventError::Progress)?;
+        }
         let staged = store
             .stage_measurement(request, &input, &permit)
             .map_err(InitialEventError::Native)?;
@@ -158,7 +242,16 @@ impl ControlSession {
         let (tx, mut lease) = self
             .begin_initial_native_operation(&store, context(RequestPhase::Dispatch), &mut validate)
             .await?;
-        let result = store.append_measurement(request, &input, permit, || {
+        if let Some(state) = &progress_state {
+            producer_progress::recheck(
+                &tx,
+                progress_context.expect("measurement progress context"),
+                state,
+            )
+            .await
+            .map_err(InitialEventError::Progress)?;
+        }
+        let result = store.append_measurement(request, &input, permit, progress.is_some(), || {
             if input.cancelled.load(Ordering::Relaxed) {
                 return Err(AdmissionError::AuthorityUnavailable);
             }
@@ -187,9 +280,70 @@ impl ControlSession {
         .await
         .map_err(InitialEventError::Outcome)?;
         store.validate_measurement_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
-        tx.commit()
+        let pending_ack = if let Some(state) = &mut progress_state {
+            let basis = store
+                .checkpoint_evidence(&receipt)
+                .map_err(InitialEventError::Native)?;
+            producer_progress::record(
+                &tx,
+                progress_context.expect("measurement progress context"),
+                state,
+                None,
+                &basis,
+                control,
+            )
             .await
-            .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+            .map_err(InitialEventError::Progress)?;
+            store
+                .require_checkpoint_basis(&basis)
+                .map_err(InitialEventError::Native)?;
+            Some(
+                state
+                    .pending_acknowledgement(
+                        progress_context.expect("measurement progress context"),
+                        &basis,
+                    )
+                    .map_err(InitialEventError::Progress)?,
+            )
+        } else {
+            None
+        };
+        store.validate_measurement_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
+        let confirmed = match pending_ack {
+            Some(pending) => Some(
+                pending
+                    .commit(tx)
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?,
+            ),
+            None => {
+                tx.commit()
+                    .await
+                    .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
+                None
+            }
+        };
+        store.validate_measurement_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
+        if self.client.is_closed() {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        if let Some(confirmed) = confirmed {
+            store
+                .acknowledge_checkpoint(
+                    confirmed,
+                    progress.expect("measurement ACK grant").permit(),
+                    input.cancelled,
+                    || {
+                        if input.cancelled.load(Ordering::Relaxed) {
+                            return Err(AdmissionError::AuthorityUnavailable);
+                        }
+                        lease
+                            .check_delivery(identity.policy_epoch)
+                            .map_err(|_| AdmissionError::AuthorityUnavailable)
+                    },
+                )
+                .map_err(InitialEventError::Native)?;
+        }
         store.validate_measurement_delivery(input.cancelled, &mut lease, identity.policy_epoch)?;
         if self.client.is_closed() {
             return Err(InitialEventError::DeliveryUnknown);
@@ -267,9 +421,19 @@ impl NativeOwner<'_> {
         request: ProducerRequestId,
         input: &LiveMeasurementRequest<'_>,
         permit: OwnedPermit,
+        checkpoint: bool,
         authority: impl FnMut() -> Result<(), AdmissionError>,
     ) -> Result<StoredReceipt, AdmissionError> {
         match self {
+            Self::Store(s) if checkpoint => s.append_checkpoint_measurement(
+                request,
+                input.intent,
+                input.recorded_at,
+                input.limits,
+                permit,
+                authority,
+            ),
+            Self::Successor(_) if checkpoint => Err(AdmissionError::InvalidInput),
             Self::Store(s) => s.append_measurement(
                 request,
                 input.intent,

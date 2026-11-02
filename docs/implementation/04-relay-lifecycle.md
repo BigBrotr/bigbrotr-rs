@@ -270,6 +270,7 @@ The maintained first installed case is `p04-passive-monitor`:
 python3 -B tests/acceptance/run.py p04-passive-monitor \
   --source-root /absolute/clean-source \
   --candidate-manifest /absolute/candidate/candidate-manifest.json \
+  --native-observer-build /absolute/exact-product-observer-build \
   --evidence /absolute/fresh-private-evidence
 ```
 
@@ -291,8 +292,12 @@ reader deployment root without changing persisted policy, then invokes installed
 typed context/profile, physical/logical/byte counters including teardown, signed
 UTC and monotonic samples, independently encoded canonical digest, exact snapshot5/
 frontier4 and the positively released real reader pin. Normal dictionary producer
-progress is distinct from absent Sync/acquisition progress. Science output and
-cleanup completion are separate; partial/refused/no-I/O results cannot pass.
+progress is distinct from absent Sync/acquisition progress. The generic head must
+be revision4/C4 with all ten exact dependencies, committed with outcome4. The
+separately declared exact-source read-only observer checks physical Native
+I4/A4/R0 and all retained original receipts/facts after the writer joins. Science
+output and cleanup completion are separate; partial/refused/no-I/O results cannot
+pass.
 Portable controls run with `python3 -B -m unittest discover -s tests/acceptance -p test_passive_monitor.py`.
 Their success does not qualify the installed case;
 actual builds/engines/restart and slow-output gates remain required. This finite
@@ -300,15 +305,19 @@ case completes neither the scheduling/recovery steps below nor M2.
 
 The first passive Archive/Index slice is now qualified by the
 [P02 evidence](evidence/p02-ingest-dictionary-codec-20260918.json),
-`passive_measurement_20261102.installed_acceptance.index_actual`. Next within
-Steps2/5/6, complete known measurement outcomes through the existing generic
+`passive_measurement_20261102.installed_acceptance.index_actual`. The next source
+increment connects known initial measurement outcomes to the existing generic
 checkpoint and confirmed native ACK path (`InternalEvidence`, no acquisition
-progress). Require exact C4/A4, unchanged inputs/receipts/science and zero Sync
-jobs/progress. ACK alone does not retire detail: current dispatch settlement
-depends on monitor-attributed request/outcome rows that prefix finalization can
-delete. Preserve authenticated attempt/outcome closure or refuse Monitor
-retirement intact before repeated scheduling/reclamation. Full lost-RAM,
-staged-before-PG and durable-start recovery remain separate explicit obligations.
+progress), retaining its already funded progress grant through completion. Its
+C4/A4 Rust, SQL/native and installed qualification is NOT_RUN until separately
+recorded. ACK alone does not retire detail: current dispatch settlement depends
+on monitor-attributed request/outcome rows that prefix finalization can delete.
+The open-prefix coordinator therefore refuses Monitor-attributed producer
+retirement before native planning, retirement or unlink and keeps all detail and
+ceilings intact. Complete authenticated attempt/outcome closure preservation
+before enabling Monitor retirement or repeated scheduling/reclamation. Full
+lost-RAM, staged-before-PG, durable-start and authority-renewal recovery remain
+separate explicit obligations.
 
 - [ ] **1. Separate schedule and measurement identity.** Maintain due/claim/deferral records in bounded operations state; acquire budget before external work. A stable attempt ID and method/profile bind actual endpoint/route/observer/access context. Persist a bounded dispatch intent before action to make ambiguity recoverable, without treating that intent as proof the action began.
 - [ ] **2. Implement honest crash recovery.** Record actual start/end and monotonic duration when observed, plus terminal evidence receipt. After a crash with only intent, retain execution-unknown and nullable actual start; with durably recoverable proof of start but missing completion, retain completion-unknown. Neither becomes a fabricated timeout or success/failure vote. A local start timestamp observed only in lost RAM is not recovered proof of start. Retry is a new attempt; retrying an evidence write resolves the original receipt. Preserve unresolved dispatch intent through the correctness horizon until terminal/unknown recovery is durably linked; operational display TTL cannot delete that obligation.

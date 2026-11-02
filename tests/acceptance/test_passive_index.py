@@ -150,7 +150,64 @@ def publication_fixture(root):
     return state,science,rows,actual
 
 
+def native_fixture():
+    args,_,_=source_fixture()
+    state,initialized=args[:2];receipts=args[4]
+    science,_=oracle.expected(*args)
+    dataset=bytes.fromhex('01'*16);slot=bytes.fromhex('44'*16)
+    be=lambda n:n.to_bytes(8,'big')
+    manifest=b'independent synthetic manifest bytes'
+    for row in state['producer_requests']:
+        row['manifest_sha256']='\\x'+hashlib.sha256(manifest).hexdigest()
+    values=[('default',b'\x01\x01',manifest),
+        ('default',b'\x01\x02'+dataset+bytes(4)+be(1),b'\x01\x02'+be(10)),
+        ('receipts',b'\x01\x31'+slot+be(1),b'\x01\x31'+be(4)+be(4)+be(0))]
+    for n,outcome in enumerate(state['producer_outcomes'],1):
+        values.append(('receipts',b'\x01\x30'+slot+be(1)+be(n),passive.raw(outcome['outcome_bytes'])))
+    for n,fact in enumerate((fact for batch in science['batches'] for fact in batch['facts']),1):
+        preimage=bytes.fromhex(fact['preimage_hex'])
+        values.append(('facts',b'\x01\x20'+dataset+bytes(4)+be(1)+be(n),
+            b'\x01\x20'+hashlib.sha256(preimage).digest()+preimage))
+    dump=dict(event='dump-state',sequence=100,rows=[dict(cf=cf,key=key.hex(),value=value.hex()) for cf,key,value in values])
+    return dump,state,initialized,receipts
+
+
 class PassiveIndexControls(unittest.TestCase):
+    def test_physical_ACK_requires_exact_producer_bytes_original_receipts_and_fact_commitments(self):
+        dump,state,initialized,receipts=native_fixture()
+        self.assertEqual(passive.native_ack(dump,state,initialized,receipts),dict(
+            native_acknowledged=4,native_issued=4,native_retired=0,native_facts=10,native_receipts=4))
+        for missing in ('receipt','outcome','batch-reference'):
+            altered_state=copy.deepcopy(state);altered_receipts=copy.deepcopy(receipts)
+            if missing=='receipt':altered_receipts.pop()
+            elif missing=='outcome':altered_state['producer_outcomes'].pop()
+            else:altered_receipts[-1][4]=[]
+            with self.subTest(missing=missing),self.assertRaises(AssertionError):
+                passive.native_ack(dump,altered_state,initialized,altered_receipts)
+        for change in ('ack3','issued5','retired4','missing-state','missing-receipt','changed-receipt',
+                'extra-receipt','duplicate-key','wrong-manifest','wrong-cut','missing-fact','changed-fact'):
+            altered=copy.deepcopy(dump)
+            selected=lambda cf,prefix:next(row for row in altered['rows'] if row['cf']==cf and row['key'].startswith(prefix))
+            head=selected('receipts','0131')
+            if change in ('ack3','issued5','retired4'):
+                values=dict(ack3=(4,3,0),issued5=(5,4,0),retired4=(4,4,4))[change]
+                head['value']='0131'+''.join(n.to_bytes(8,'big').hex() for n in values)
+            elif change=='missing-state':altered['rows'].remove(head)
+            elif change=='duplicate-key':altered['rows'].append(copy.deepcopy(head))
+            elif change in ('missing-receipt','changed-receipt','extra-receipt'):
+                row=selected('receipts','0130')
+                if change=='missing-receipt':altered['rows'].remove(row)
+                elif change=='changed-receipt':row['value']+='00'
+                else:altered['rows'].append(dict(row,key=row['key'][:-16]+'0000000000000005'))
+            elif change=='wrong-manifest':selected('default','0101')['value']+='00'
+            elif change=='wrong-cut':selected('default','0102')['value']='01020000000000000009'
+            else:
+                row=selected('facts','0120')
+                if change=='missing-fact':altered['rows'].remove(row)
+                else:row['value']+='00'
+            with self.subTest(change=change),self.assertRaises((AssertionError,KeyError,ValueError)):
+                passive.native_ack(altered,state,initialized,receipts)
+
     def test_recipe_and_launch_use_real_index_initializer_and_six_row_policy(self):
         with tempfile.TemporaryDirectory() as temporary:
             runtime=object.__new__(case.PassiveIndexRuntime)

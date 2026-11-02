@@ -8,7 +8,9 @@ use super::{
 };
 use crate::runtime::OwnedPermit;
 use crate::storage::rocks::keys::IngestKey;
-use bigbrotr_model::{Digest256, EvidenceIntent, FactRef, ObservedTime, ProducerRequestId};
+use bigbrotr_model::{
+    Digest256, EvidenceIntent, FactRef, MeasurementEvidenceIntent, ObservedTime, ProducerRequestId,
+};
 use sha2::{Digest, Sha256};
 use std::sync::atomic::AtomicBool;
 
@@ -193,6 +195,38 @@ impl IngestStore {
                 &mut authority,
             ),
         }?;
+        let stamp = CheckpointStamp::capture(self)?;
+        authority()?;
+        if self.native_unavailable() {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        Ok(result.bind_checkpoint(stamp))
+    }
+
+    /// Only the actual serialized measurement append/replay can mint this
+    /// current-root checkpoint witness. Ordinary receipt reads cannot ACK.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "exact measurement input, retained operation grant and authority"
+    )]
+    pub(in crate::storage) fn append_checkpoint_measurement(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &MeasurementEvidenceIntent,
+        recorded_at: ObservedTime,
+        limits: AdmissionLimits,
+        permit: OwnedPermit,
+        mut authority: impl FnMut() -> Result<(), AdmissionError>,
+    ) -> Result<StoredReceipt, AdmissionError> {
+        let result = self.append_measurement(
+            request,
+            intent,
+            recorded_at,
+            limits,
+            permit,
+            None,
+            &mut authority,
+        )?;
         let stamp = CheckpointStamp::capture(self)?;
         authority()?;
         if self.native_unavailable() {
