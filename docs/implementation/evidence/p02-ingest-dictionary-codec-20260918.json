@@ -187,7 +187,8 @@
       "review_pin_maintenance": {
         "reviewed_source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
         "scope": "Independent Astra reviewed changed tutorial selected Sync dispatch/lifecycle, shared session/transport and callers: no reachable signer or outbound Nostr text beyond REQ/CLOSE; explicit Monitor once-only selection is separate. Ordinary Monitor startup negative without initialization remains unchanged. Whole-code object pins updated; stale blanket Monitor wording corrected. No general egress or Monitor/storage reapproval inferred.",
-        "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run."
+        "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run.",
+        "documentation_only_followthrough": "65accd30 only wraps Mutex<State> in Rustdoc code markup after actualf474 Rustdoc unclosed-HTML FAIL. Root inspected the exact one-comment delta and reused unchanged f474 signer/egress review; no product rebuild or fresh runtime claim."
       }
     },
     "installed_inspection": {
