@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
 from types import SimpleNamespace
@@ -106,7 +107,49 @@ def times(source):
             for p in [source/'vendor', *(source/'vendor').rglob('*')]}
 
 
+def full_stat(path):
+    metadata=path.lstat()
+    return {name:getattr(metadata,name) for name in dir(metadata)
+            if name.startswith('st_') and isinstance(getattr(metadata,name),(int,float))}
+
+
 class NativeTimestampControls(unittest.TestCase):
+    def test_after_inventory_substitution_never_mutates_external_inode_or_escaping_tree(self):
+        for change in ['hardlink','intermediate-symlink','root-symlink']:
+            with self.subTest(change=change), fixture() as f:
+                source=f.current/'source'
+                external=f.base/'external'; external.mkdir()
+                if change=='root-symlink':
+                    shutil.copytree(source,external/'source')
+                    external_paths=[external/'source',*(external/'source').rglob('*')]
+                else:
+                    (external/'value.cpp').write_bytes(b'external inode must remain untouched')
+                    os.utime(external/'value.cpp',ns=(7_000_000_999,7_000_000_999))
+                    external_paths=[external,external/'value.cpp']
+                original=timestamps.inventory; injected=False; protected=None
+                def substitute(path,*args,**kwargs):
+                    nonlocal injected,protected
+                    verified=original(path,*args,**kwargs)
+                    if path==source and not injected:
+                        injected=True
+                        if change=='hardlink':
+                            (source/'vendor/native/src/value.cpp').unlink()
+                            os.link(external/'value.cpp',source/'vendor/native/src/value.cpp')
+                        elif change=='intermediate-symlink':
+                            (source/'vendor/native/src').rename(f.base/'retained-original-src')
+                            (source/'vendor/native/src').symlink_to(external,target_is_directory=True)
+                        else:
+                            source.rename(f.base/'retained-original-source')
+                            source.symlink_to(external/'source',target_is_directory=True)
+                        # Linking itself changes nlink/ctime. Freeze ALL available
+                        # stat fields after injection; the helper may change none.
+                        protected={path:full_stat(path) for path in external_paths}
+                    return verified
+                with patch.object(timestamps,'inventory',side_effect=substitute):
+                    with self.assertRaises((ValueError,OSError)): prepare(f)
+                self.assertTrue(injected)
+                self.assertEqual({path:full_stat(path) for path in external_paths},protected)
+
     def test_identical_native_files_and_directories_reuse_exact_timestamps_without_target_ownership(self):
         with fixture() as f:
             source=f.current/'source'; before=build.source_inventory(source)
@@ -253,6 +296,54 @@ class NativeTimestampControls(unittest.TestCase):
         self.assertEqual([name for name,_ in fresh],[name for name,_ in reuse])
         for (name,before),(_,after) in zip(fresh,reuse):
             self.assertEqual(after,before+(['--native-source-reference',str(reference)] if name=='exact-source-build' else []))
+
+    def test_absolute_builder_from_foreign_override_probes_the_cargo_source_cwd_twice(self):
+        class AfterChecks(Exception): pass
+        with fixture() as f:
+            foreign=f.base/'foreign-caller'; foreign.mkdir()
+            (foreign/'rust-toolchain.toml').write_text('different caller Rustup override')
+            executables=f.base/'bin'; executables.mkdir()
+            calls=f.base/'rustc-calls.jsonl'
+            rustc=executables/'rustc'
+            rustc.write_text('#!'+sys.executable+'\n'+
+                'import json\nfrom pathlib import Path\n'+
+                'cwd=Path.cwd()\n'+
+                'with Path('+repr(str(calls))+').open("a") as log: log.write(json.dumps(str(cwd))+"\\n")\n'+
+                'selected=(cwd/"rust-toolchain.toml").read_text()\n'+
+                'print("independent Rust compiler fixture" if selected=="pinned fixture" else "foreign override compiler")\n')
+            rustc.chmod(0o700)
+            previous_cwd=Path.cwd()
+            argv=[str(f.checkout/'tools/build.py'),'--output',str(f.base/'absolute-build'),
+                  '--native-source-reference',str(f.previous)]
+            compiled=[]
+            def finite_compile_boundary(source,env):
+                compiled.append(source)
+                # No compiler/product/worker is launched or materialized. Return
+                # only to exercise the second real rustc probe, then stop before
+                # any product copy/receipt can pretend this was a native build.
+                return {'bytes':1,'sha256':'0'*64}
+            try:
+                os.chdir(foreign)
+                with patch.dict(os.environ,{'PATH':str(executables)+os.pathsep+os.environ['PATH']}):
+                    self.assertEqual(build.command_output(['rustc','-vV'],build.clean_environment(),cwd=foreign),
+                                     'foreign override compiler')
+                    with patch.object(sys,'argv',argv), \
+                         patch.object(build,'__file__',argv[0]), \
+                         patch.object(build,'native_toolchain',return_value=({},f.native)), \
+                         patch.object(build,'native_target',return_value='fixture-target'), \
+                         patch.object(build,'prepare_bundle'),patch.object(build,'verify_bundle',return_value=f.assets), \
+                         patch.object(build,'build_environment',return_value={}), \
+                         patch.object(build,'build_binaries',side_effect=finite_compile_boundary), \
+                         patch.object(build.shutil,'copy2',side_effect=AfterChecks):
+                        with self.assertRaises(AfterChecks): build.main()
+            finally:
+                os.chdir(previous_cwd)
+            source=f.base/'absolute-build/source'
+            self.assertEqual(compiled,[source])
+            self.assertEqual([json.loads(line) for line in calls.read_text().splitlines()],
+                             [str(foreign),str(source),str(source)])
+            self.assertFalse((f.base/'absolute-build/build-result.json').exists())
+            self.assertFalse((f.base/'absolute-build/target').exists())
 
 
 if __name__ == '__main__':

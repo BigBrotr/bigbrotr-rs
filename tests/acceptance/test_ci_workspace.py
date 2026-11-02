@@ -186,7 +186,7 @@ class WorkspaceReuseControls(unittest.TestCase):
             'rust-doc': ['doc', '--locked', '--workspace', '--no-deps'],
             'rust-tests': ['test', '--locked', '--workspace'],
         }
-        with fixture() as (root, build, _, _, _), patch.dict(os.environ, {
+        with fixture() as (root, build, _, _, rustc), patch.dict(os.environ, {
                 'RUSTFLAGS': 'untrusted', 'CARGO_ENCODED_RUSTFLAGS': 'untrusted',
                 'RUSTC_WRAPPER': '/untrusted', 'RUSTC_WORKSPACE_WRAPPER': '/untrusted',
                 'CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS': 'false', 'CARGO_BUILD_BUILD_DIR': '/untrusted',
@@ -194,6 +194,9 @@ class WorkspaceReuseControls(unittest.TestCase):
                 'BIGBROTR_SOURCE_REVISION': 'untrusted', 'BIGBROTR_ARCHIVE_WORKER_SHA256': 'untrusted'}):
             for name, args in expected.items():
                 self.assertEqual(ci.workspace_check(build, name), 0)
+                self.assertEqual(len(rustc.call_args_list[-2:]), 2)
+                for probe in rustc.call_args_list[-2:]:
+                    self.assertEqual(probe.kwargs['cwd'], build/'source')
                 call = json.loads((root/'called.json').read_text())
                 self.assertEqual(call['args'], args)
                 self.assertEqual(call['cwd'], str(build/'source'))

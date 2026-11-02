@@ -231,7 +231,7 @@ def workspace_context(build):
                     BIGBROTR_ARCHIVE_TEST_INSTALLATION=str(worker.parent),
                     BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(identity['bytes']), BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=identity['sha256'])
     env.update(declared)
-    if command_output(['rustc', '-vV'], env) != info['rustc']:
+    if command_output(['rustc', '-vV'], env, cwd=build/'source') != info['rustc']:
         raise ValueError('selected Rust compiler differs from the build')
     return build, manifest, receipt, anchors, env, declared
 
@@ -245,7 +245,7 @@ def workspace_check(build, name):
         return subprocess.run(command, cwd=build/'source', env=env).returncode
     finally:
         verify_workspace_inputs(build, manifest, receipt, anchors)
-        if command_output(['rustc', '-vV'], env) != receipt['build_info']['rustc']:
+        if command_output(['rustc', '-vV'], env, cwd=build/'source') != receipt['build_info']['rustc']:
             raise ValueError('selected Rust compiler changed during the check')
         print('Post-build source, native inputs and copied artifacts unchanged', flush=True)
 

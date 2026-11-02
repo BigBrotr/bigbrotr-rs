@@ -116,8 +116,8 @@ def positive_jobs(value):
     return jobs
 
 
-def command_output(command, env):
-    return subprocess.check_output(command, env=env, text=True,
+def command_output(command, env, *, cwd=None):
+    return subprocess.check_output(command, env=env, cwd=cwd, text=True,
                                    stderr=subprocess.STDOUT, timeout=30).strip()
 
 
@@ -261,7 +261,7 @@ def build(args):
         # Optional preparation only. The output/target stays fresh; an external
         # trusted cache owner still needs its own lock and artifact validation.
         from tools.native_source_timestamps import preserve_native_timestamps
-        timestamp_rustc = command_output(['rustc', '-vV'], env)
+        timestamp_rustc = command_output(['rustc', '-vV'], env, cwd=source)
         timestamps = preserve_native_timestamps(source, archive, manifest, native,
                                                 timestamp_rustc,
                                                 target, archive_assets, args.native_source_reference,
@@ -273,7 +273,7 @@ def build(args):
     if timestamp_rustc is not None:
         from tools.native_source_timestamps import inventory
         inventory(source, archive, manifest)
-        if command_output(['rustc', '-vV'], env) != timestamp_rustc:
+        if command_output(['rustc', '-vV'], env, cwd=source) != timestamp_rustc:
             raise ValueError('Rust compiler changed after native timestamp preparation')
     after = source_inventory(source)
     if members != after:
