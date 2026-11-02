@@ -21,20 +21,45 @@ pub(crate) fn enrollment_roots(root: &Resolved) -> Result<Option<DirectPolicy>, 
         .map_err(|_| OwnerError::InvalidPolicy)
 }
 
-/// Called for each complete accepted document while Control holds the policy
-/// and enrollment locks. This computes static restrictions, not a socket grant.
-#[allow(
-    dead_code,
-    reason = "actual native probe consumes this owner; installed Sync integration remains pending"
-)]
-pub(crate) fn authorize_sync_source(
+#[derive(Clone, Copy)]
+enum SourceWorker {
+    Sync,
+    Monitor,
+}
+impl SourceWorker {
+    fn keys(self) -> (&'static str, &'static str, &'static str, &'static str) {
+        match self {
+            Self::Sync => (
+                "sync",
+                "sync.enabled",
+                "sync.endpoints.mode",
+                "sync.endpoints.urls",
+            ),
+            Self::Monitor => (
+                "monitor",
+                "monitor.enabled",
+                "monitor.endpoints.mode",
+                "monitor.endpoints.urls",
+            ),
+        }
+    }
+}
+
+/// Monitor has its own accepted service and endpoint selection. This static
+/// policy projection grants neither dispatch nor evidence-write authority.
+pub(crate) fn authorize_monitor_source(
     root: &Resolved,
     document: &str,
     digest: [u8; 32],
     endpoint: &Endpoint,
     route: RouteSelection,
 ) -> Result<DirectPolicy, OwnerError> {
-    source_policy(&restore_sync(root, document, digest)?, endpoint, route)
+    source_policy(
+        &restore_source(root, document, digest, SourceWorker::Monitor)?,
+        SourceWorker::Monitor,
+        endpoint,
+        route,
+    )
 }
 
 /// The finite request owner applies the registered intent before any wire work,
@@ -48,9 +73,9 @@ pub(crate) fn authorize_sync_collection(
     route: RouteSelection,
     selector: &CollectionSelector,
 ) -> Result<DirectPolicy, OwnerError> {
-    let accepted = restore_sync(root, document, digest)?;
+    let accepted = restore_source(root, document, digest, SourceWorker::Sync)?;
     require_collection(&accepted, selector)?;
-    source_policy(&accepted, endpoint, route)
+    source_policy(&accepted, SourceWorker::Sync, endpoint, route)
 }
 
 fn require_collection(
@@ -68,10 +93,16 @@ fn require_collection(
     Ok(())
 }
 
-fn restore_sync(root: &Resolved, document: &str, digest: [u8; 32]) -> Result<Resolved, OwnerError> {
+fn restore_source(
+    root: &Resolved,
+    document: &str,
+    digest: [u8; 32],
+    worker: SourceWorker,
+) -> Result<Resolved, OwnerError> {
     let accepted = PolicySeed::restore(document, digest, root.clone())
         .map_err(|_| OwnerError::InvalidPolicy)?;
-    if !accepted.local("sync") || !accepted.flag("sync.enabled") {
+    let (role, enabled, _, _) = worker.keys();
+    if !accepted.local(role) || !accepted.flag(enabled) {
         return Err(OwnerError::InvalidPolicy);
     }
     Ok(accepted)
@@ -79,12 +110,14 @@ fn restore_sync(root: &Resolved, document: &str, digest: [u8; 32]) -> Result<Res
 
 fn source_policy(
     accepted: &Resolved,
+    worker: SourceWorker,
     endpoint: &Endpoint,
     route: RouteSelection,
 ) -> Result<DirectPolicy, OwnerError> {
-    if accepted.text("sync.endpoints.mode") == Some("fixed")
+    let (_, _, mode, urls) = worker.keys();
+    if accepted.text(mode) == Some("fixed")
         && !accepted
-            .value("sync.endpoints.urls")
+            .value(urls)
             .as_array()
             .expect("validated list")
             .iter()
@@ -160,8 +193,8 @@ impl SyncArrivalPolicy<'_> {
     }
 
     fn collection(&self, document: &str, digest: [u8; 32]) -> Result<Resolved, OwnerError> {
-        let accepted = restore_sync(self.root, document, digest)?;
-        source_policy(&accepted, self.endpoint, self.route)?;
+        let accepted = restore_source(self.root, document, digest, SourceWorker::Sync)?;
+        source_policy(&accepted, SourceWorker::Sync, self.endpoint, self.route)?;
         require_collection(&accepted, self.selector)?;
         Ok(accepted)
     }
@@ -209,6 +242,16 @@ mod tests {
     }
 
     fn check(root: &Resolved, accepted: &Resolved, url: &str, route: RouteSelection) -> bool {
+        check_for(SourceWorker::Sync, root, accepted, url, route)
+    }
+
+    fn check_for(
+        worker: SourceWorker,
+        root: &Resolved,
+        accepted: &Resolved,
+        url: &str,
+        route: RouteSelection,
+    ) -> bool {
         let seed = PolicySeed::from_resolved(accepted).unwrap();
         let endpoint = Endpoint::parse(url).unwrap();
         let target = bigbrotr::network::Target::new(endpoint.clone()).unwrap();
@@ -220,8 +263,106 @@ mod tests {
         }
         .parse()
         .unwrap();
-        authorize_sync_source(root, seed.document(), seed.digest(), &endpoint, route)
-            .is_ok_and(|policy| policy.filter(&target, &[address]).is_ok())
+        let policy = match worker {
+            SourceWorker::Sync => restore_source(root, seed.document(), seed.digest(), worker)
+                .and_then(|accepted| source_policy(&accepted, worker, &endpoint, route)),
+            SourceWorker::Monitor => {
+                authorize_monitor_source(root, seed.document(), seed.digest(), &endpoint, route)
+            }
+        };
+        policy.is_ok_and(|policy| policy.filter(&target, &[address]).is_ok())
+    }
+
+    #[test]
+    fn monitor_source_uses_its_own_selected_service_and_fixed_membership() {
+        let root =
+            resolve::parse(include_str!("../../../../config/recipes/monitor-only.toml")).unwrap();
+        let route = RouteSelection::Public {};
+        let url = "wss://relay.example/";
+        let check = |root: &Resolved, accepted: &Resolved| {
+            check_for(SourceWorker::Monitor, root, accepted, url, route)
+        };
+        assert!(check(&root, &root));
+        assert!(!check_for(SourceWorker::Sync, &root, &root, url, route));
+        let mut accepted = root.clone();
+        accepted.values.insert("sync.enabled".into(), json!(false));
+        accepted
+            .values
+            .insert("sync.endpoints.mode".into(), json!("fixed"));
+        accepted.values.insert(
+            "sync.endpoints.urls".into(),
+            json!(["wss://other.example/"]),
+        );
+        assert!(check(&root, &accepted));
+        accepted
+            .values
+            .insert("monitor.enabled".into(), json!(false));
+        assert!(!check(&root, &accepted));
+        accepted = root.clone();
+        accepted.values.insert(
+            "monitor.endpoints.urls".into(),
+            json!(["wss://other.example/"]),
+        );
+        assert!(!check(&root, &accepted));
+        let mut unselected = root.clone();
+        unselected.local_roles.remove("monitor");
+        assert!(!check(&unselected, &root));
+        let seed = PolicySeed::from_resolved(&root).unwrap();
+        assert!(
+            authorize_monitor_source(
+                &root,
+                seed.document(),
+                [0; 32],
+                &Endpoint::parse(url).unwrap(),
+                route
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn monitor_bans_public_enablement_and_private_roots_remain_independent_constraints() {
+        let mut root =
+            resolve::parse(include_str!("../../../../config/recipes/monitor-only.toml")).unwrap();
+        let public = RouteSelection::Public {};
+        let url = "wss://relay.example/";
+        for (key, value) in [
+            ("network.public.enabled", json!(false)),
+            ("relay_policy.banned", json!([{"host":"relay.example"}])),
+        ] {
+            let mut accepted = root.clone();
+            accepted.values.insert(key.into(), value);
+            assert!(!check_for(
+                SourceWorker::Monitor,
+                &root,
+                &accepted,
+                url,
+                public
+            ));
+        }
+        let url = "ws://127.0.0.1:7447/private";
+        root.values
+            .insert("monitor.endpoints.urls".into(), json!([url]));
+        root.values.insert(
+            "network.private.rules".into(),
+            json!([
+                {"endpoint":url,"cidr":"127.0.0.1/32","port":7447}
+            ]),
+        );
+        let private = RouteSelection::Private {
+            cidr: "127.0.0.1/32".parse().unwrap(),
+        };
+        assert!(check_for(SourceWorker::Monitor, &root, &root, url, private));
+        let accepted = root.clone();
+        root.values
+            .insert("network.private.rules".into(), json!([]));
+        assert!(!check_for(
+            SourceWorker::Monitor,
+            &root,
+            &accepted,
+            url,
+            private
+        ));
     }
 
     #[test]
