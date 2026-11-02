@@ -7,10 +7,10 @@ The capability-first direction is reconciled in Q38/the execution guide; one pla
 ## Current source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`. Observed source HEAD **0d282062**; checkpoint,
+`work/m2-finite-history-20261101`. Observed source HEAD **dee6b6f9**; checkpoint,
 P02 evidence, guide and inventory updates are pending this recording commit.
 Canonical main/origin remain clean at pushed **a37f7829**. New Monitor source is
-local, incomplete and not pushed. Three real compilation attempts failed before
+local, incomplete and not pushed. Four real compilation attempts failed before
 assertions; their original logs are preserved. The corrected candidate remains
 unqualified by build, engines or installation.
 
@@ -60,7 +60,9 @@ The [P02 report](evidence/p02-ingest-dictionary-codec-20260918.json),
   type exports (fixed5e05a5c6); all-target5e05a5c6 found two stale family arrays and
   a test stream borrow (fixedb448660a); d1ae816a found six native probe callers of
   a removed static Sync helper (restoredfb0fafff for those actual consumers).
-  No test assertion ran and no environment failure was inferred. Release/strict/native qualification remains open.
+  3fde120f found a shadowed descriptor helper/private time constructor in the
+  frontend (mechanically fixed7b8411b2). No product test assertion ran and no
+  environment failure was inferred. Release/strict/native qualification remains open.
 - Archive sixth family / Index eleventh target integratede5e316ee; related current
   counts, formats and fixtures reconciled. Snapshot fixture correction6737d8b0
   selects the actual old/current snapshot without changing expectations. Bounded
@@ -84,6 +86,13 @@ no prior terminal input or old-worker exclusion. Closing an unissued request sti
 returns Unresolved in the authored negative control; no functional settlement is
 claimed. Existing P04-T07 Steps2/6 and P02 recovery tasks retain these obligations.
 
+The maintained installed case `p04-passive-monitor` is integrated3fde120f/dee6b6f9.
+Its independent oracle/peer review is approved. Author14 targeted fixture controls
+PASS and the prior28 lifecycle controls remain valid; the queued-second-at-finish
+negative reproduces an expected failure on originalfb9 and passes corrected64d.
+These socket tests exercise the fixture; actual BigBrotr installed execution stays
+**NOT_RUN**. Source identities, frozen digest and limits are in the P02 report.
+
 ## Agents, resources and next action
 
 One integrating owner; separate writable worktrees, all partial source retained:
@@ -93,27 +102,27 @@ One integrating owner; separate writable worktrees, all partial source retained:
   actual Native/socket custody and original producer admission saved70d3/16b8,
   integratedf82/0d and independently source/oracle approved. Author finished.
 - Sol `quota_r2_diagnosis_sol`: author maintained `p04-passive-monitor` installed
-  acceptance using existing first-launch setup, literal peer and independent
-  scientific oracle; source only. Original inspection17d is saved in its clean
-  worktree and integrated with Root output corrections above.
+  acceptance savedfb9/64d in `.research/m2-passive-monitor-acceptance-20261102`,
+  integrated3fde/dee6 and source/oracle approved. Author finished. Original
+  inspection17d remains preserved with Root output corrections above.
 - Astra `a05_model_boundary_review_astra`: PG correction and narrow metadata
   reader correction approved. Archive reviewer approved eb97f50e plusf287375d and
   the installed inspection/output corrections throughdfc7e343.
   Native/model/transport source authors and previous CI watchers have finished.
 
 [Inventory](../research/laboratory-inventory.json) owns custody and model/native/CI
-capsules. At recording, three compiler tools are reaped1 with exited/PID0/noOOM
+capsules. At recording, four compiler tools are reaped1 with exited/PID0/noOOM
 containers and released
 exclusive cache; no owned local compiler/engine or hosted watcher is running.
 All4 protected ELF bytes and complete recorded stat fields passed every guard.
-Only the acceptance source agent above continues. No cleanup performed; protected
+All assigned source/review agents have finished. No cleanup performed; protected
 original ELFs were accessed only through required no-atime guards, whose
 observations remain in their owning receipts.
 Preserve original failures, .research, databases, worktrees and the borrowed bridge.
 
-**Next Root action:** finish/review the independent maintained installed
-acceptance, freeze the corrected exact candidate and compile all targets before
-the maintained worker/parent build and affected real product qualification. Check
+**Next Root action:** freeze the corrected complete candidate and compile all
+targets before the maintained worker/parent build and affected Rust/native plus
+actual installed `p04-passive-monitor` qualification. Check
 changed schema, packaged roles, budgets, source completion and fault reachability
 before affected build/native/PG/Archive/Index and installed qualification. Reuse
 unchanged model/hosted evidence; do not relabel source approval as runtime PASS.

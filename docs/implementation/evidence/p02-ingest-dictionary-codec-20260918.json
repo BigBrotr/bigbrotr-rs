@@ -121,7 +121,7 @@
       "status": "SOURCE_REVIEW_APPROVED_RUST_NOT_RUN",
       "review": "Independent Astra closed consumed-payload accounting, exact Arc/Mutex charge and signed UTC flooring findings. Actual connect-return witness, authority-first checks and fixed external trace reviewed; no runtime attribution or whole-app qualification yet."
     },
-    "next": "Finish and critically review the maintained p04-passive-monitor installed acceptance, freeze corrected exact candidate, compile all targets and installed worker/parent, then run affected Rust/native/PG/Archive/Index and installed Source\u2192Archive\u2192restart inspection. All new Rust/real-pipe/installed assertions remain NOT_RUN; no production/fleet/recovery completion claim.",
+    "next": "Freeze the corrected complete candidate and compile all targets before the maintained installed worker/parent build. Then run affected Rust/native/PG/Archive/Index and installed p04-passive-monitor. Current source/oracle reviews are closed; all new product assertions and actual installed campaign remain NOT_RUN.",
     "native_admission": {
       "source": "6d473c3ec74ef3d40bf1e6f5215dc0bc8aaf05e7",
       "status": "SOURCE_REVIEW_APPROVED_NATIVE_TESTS_NOT_RUN",
@@ -222,12 +222,22 @@
           "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/d1ae816a/resource.json",
           "resource_sha256": "7bf8e337a9874ec41f689a15b07a25530b3a5c0335325c377a3bc8eb1f9683a6",
           "terminal": "Tool97807 reaped1; container7704b49f exited1/PID0/noOOM; cache115 released and full4ELF byte/stat guards passed."
+        },
+        {
+          "source": "3fde120f201ad793bab3c8757ec299197b42e814",
+          "status": "FAIL",
+          "classification": "PRODUCT_SOURCE_COMPILE",
+          "detail": "All-target compilation found a shadowed observer descriptor helper and direct construction of private ObservedTime in the new frontend. Mechanical7b8411b2 uses an unshadowed helper and public scalar constructor, preserving descriptor/time values. No assertion executed; release build not reached.",
+          "resource": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/3fde120f/resource.json",
+          "resource_sha256": "e7d9a870f81913c9286bd6fad2989d08cae609bac6412a73a3f8263f6ed867ff",
+          "terminal": "Tool34813 reaped1; containerd8357828 exited1/PID0/noOOM; cache released and full4ELF byte/stat guards passed."
         }
       ],
       "source_corrections": [
         "5e05a5c6",
         "b448660a",
-        "fb0fafff"
+        "fb0fafff",
+        "7b8411b2"
       ],
       "runtime_tests": "NOT_RUN",
       "release_build": "NOT_QUALIFIED"
@@ -244,7 +254,24 @@
       "status": "SOURCE_ORACLE_REVIEW_APPROVED_BUILD_RUNTIME_NOT_RUN",
       "scope": "Protected one-use local source selection after actual initialized visibility/enrollment; exact descriptors, original-budget funded driver and full evidence-kernel permit before fresh dispatch COMMIT/IO. Dedicated req4 compact measurement admission, no Sync job/event. Native/socket stack custody, both-policy checks, private no-I/O proof and parked uncertain observations/intent retained.",
       "findings": "Astra caught event_candidates field mismatch, prohibited nested reservation and insufficient evidence permit in70d. Corrected16b approved before execution; two combined production funding/driver/drop controls added. Original eight+two new Rust controls remain NOT_RUN.",
-      "limits": "Ordinary scheduler/fleet/extra Monitor checks and full lost-RAM/input-before-PG recovery remain P04-T07/P04-T02/P02 owners; first positive path does not complete them."
+      "limits": "Ordinary scheduler/fleet/extra Monitor checks and full lost-RAM/input-before-PG recovery remain P04-T07/P04-T02/P02 owners; first positive path does not complete them.",
+      "compile_correction": "7b8411b2"
+    },
+    "installed_acceptance": {
+      "originals": [
+        "fb9c89b5106cb75de9237ce7eb2537eaa3feeb7b",
+        "64d82d78e0f8e1ad01ae112546b88600ed9a152e"
+      ],
+      "integrated": [
+        "3fde120f",
+        "dee6b6f9"
+      ],
+      "case": "p04-passive-monitor",
+      "status": "SOURCE_ORACLE_REVIEW_APPROVED_INSTALLED_NOT_RUN",
+      "scope": "Maintained first-launch schema44 packaged role/actual enrollment; protected one-shot selection, literal one-connection signed EVENT/EOSE peer, original PG/Native request/scientific expectation, actual Archive cut, same-data PostgreSQL restart, exact installed typed inspection and joined pin release. Independent canonical A05/request CBOR and frozen digest; no product-derived expected result.",
+      "cheap_checks": "Author14/14 targeted Python controls PASS at64d82, prior28/28 lifecycle controls reused; existing Node reference independently matched frozen positive4522a214e60794e362dd633d59223278667ad98c90905346c889dea69694b334. AST/diff PASS. Real sockets here exercise the fixture, not the BigBrotr application.",
+      "original_failure": "The deterministic second-connection-queued-at-owner-finish regression fails against originalfb9 (one expected failure, no errors). Its prior13PASS scope remains original. Correction requires final actual nonblocking accept on the same live listener; only EAGAIN/EWOULDBLOCK proves empty queue, any extra closes/refuses. Astra targeted review approved.",
+      "limits": "Actual installed run, slow-output integration, crash recovery and fleet/additional checks NOT_RUN; no M2 or full P04-T07 completion claim."
     }
   }
 }
