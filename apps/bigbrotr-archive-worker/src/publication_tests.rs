@@ -139,6 +139,9 @@ fn passive_method_and_direct_routes_survive_publication_and_complete_cut() {
     );
 }
 fn open(temp: &Path, catalog: &Path, data: &Path) -> Engine {
+    open_at_snapshot(temp, catalog, data, None)
+}
+fn open_at_snapshot(temp: &Path, catalog: &Path, data: &Path, snapshot: Option<u64>) -> Engine {
     // Ordinary attachment requires the operator's existing canonical data root.
     fs::create_dir_all(data).unwrap();
     let engine = Engine::open(
@@ -155,12 +158,17 @@ fn open(temp: &Path, catalog: &Path, data: &Path) -> Engine {
             &std::env::var_os("BIGBROTR_ARCHIVE_TEST_BUNDLE").unwrap(),
         ))
         .unwrap();
+    let options = match snapshot {
+        Some(_) => {
+            crate::receipt::readonly_archive_options(data.to_str().unwrap(), snapshot).unwrap()
+        }
+        None => format!("DATA_PATH '{}', DATA_INLINING_ROW_LIMIT 0", data.display()),
+    };
     engine
         .connection
         .execute_batch(&format!(
-            "ATTACH 'ducklake:{}' AS archive (DATA_PATH '{}', DATA_INLINING_ROW_LIMIT 0)",
+            "ATTACH 'ducklake:{}' AS archive ({options})",
             catalog.display(),
-            data.display()
         ))
         .unwrap();
     engine
@@ -1402,7 +1410,9 @@ fn compound_measurements_remain_original_at_pinned_cuts_after_restart() {
     current.receipts.push(rest);
     current.snapshot_id = Some(4);
     for (read, expected) in [(&old, [7, 0, 0, 0, 0, 1]), (&current, [7, 0, 0, 0, 0, 14])] {
-        let engine = open(temp.path(), &catalog, &data);
+        // Select the pinned native snapshot at ATTACH, just as the production
+        // reader does; a source-cut view on the latest snapshot is insufficient.
+        let engine = open_at_snapshot(temp.path(), &catalog, &data, read.snapshot_id);
         let observed =
             crate::cut::inspect_attached(&engine.connection, read, &data, 4, 21).unwrap();
         assert_eq!(observed.family_counts, expected);
