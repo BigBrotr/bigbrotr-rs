@@ -79078,9 +79078,9 @@
         "current_control_inventory": "Sol/xhigh Rust/native/PG/current0044initialMonitorC3checkpointrepair+funding/tests, sourceonly inexistingrecoveryWT afterf9. Noengines/build/cache/protectedELF/remote/push; actualcriticalreviewrequired.",
         "native_timestamp_review": "Astra/xhigh boundedC3repairdesign/historicaljoin/datasetlock clarification andsameC4selectorbefore-forwardfaultapproach approved; no currentimplementation/engine/build/cache/ELF/write/push assignment.",
         "measurement_clickhouse_prep": "Sol/xhigh nowPythonNativeI4/PGC3faultcase/oracle implementation in .research/m2-monitor-native-outcome-20261102 branchwork/m2-monitor-native-outcome-20261102 basedeb09. Noengine/build/cache/protectedELF/remote/push; Rootintegrates.",
-        "ci_recovery_publication_sol": "Sol/xhigh setup/admission complete, agentidle. Readonlywatcher80126 continuesbounded; Rootretainscustody andwakesagent foractualterminalacquisition/audit. No remote/source mutation."
+        "ci_recovery_publication_sol": "Sol/xhigh idleaftersetup; Rootownsreplacementwatcher1678. Wakeagentatterminalforactualacquisition/audit; agentcannotresumeRoottool. Originalunreceiptedwatcher preserved, no remote/source mutation."
       },
-      "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers/r2 fifteencontainers/r3 fifteencontainers/r4twentycontainers inclall3observers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Oldhostedobserver65527/PID1902888 reapedexit1; newreadonlywatcher80126/PID1946468(driver1946407) active; no cleanup.",
+      "resources": "All local compiler/test/installed processes terminal; cache released. cc8knownACKr1/r2 data retained; new ACKrecoveryr1 threecontainers/r2 fifteencontainers/r3 fifteencontainers/r4twentycontainers inclall3observers stopped/PID0/noOOM; private source/captures/logs/failures retained. Borrowed bridge1699209a unchanged. Oldhostedobserver65527/PID1902888 reapedexit1; original80126observerlost/unreceipted and preserved; replacementRootreadonlywatcher1678/PID1948046(driver1948045) active; no cleanup.",
       "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json#passive_measurement_20261102",
       "core_qualification": {
         "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102",
@@ -79169,11 +79169,11 @@
       },
       "hosted_observer": {
         "root": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation",
-        "tool": 80126,
-        "driver_pid": 1946407,
-        "pid": 1946468,
+        "tool": 1678,
+        "driver_pid": 1948045,
+        "pid": 1948046,
         "run": 41491599696,
-        "state": "READ_ONLY_RUNNING exactf4ad attempt1; initialscopePASS/Linuxrunning/Macqueued, full36pending. Agentfinishedsetupturn, Rootownsprocesscustody/wakesagent atnaturalterminalboundary;7500sbound."
+        "state": "ROOT_OWNED_READ_ONLY_RUNNING exactf4ad/run41491599696/attempt1. Original80126observerlostwithoutterminalreceipt, bothPIDsabsent, filespreservedlost-observer-1. SameunchangedwatchscriptrestartedonceunderRootsession; no remoteCIchange.7500sbound."
       },
       "next_ack_source": {
         "worktree": "/home/tux/bigbrotr-rs/.research/m2-measurement-ack-20261102",

@@ -2605,17 +2605,27 @@
       },
       "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation",
       "watcher": {
-        "tool": 80126,
-        "driver_pid": 1946407,
-        "driver_start_ticks": "36720694",
-        "pid": 1946468,
-        "start_ticks": "36720827",
+        "tool": 1678,
+        "agent": "/root",
+        "driver_pid": 1948045,
+        "driver_start_ticks": "36772043",
+        "pid": 1948046,
+        "start_ticks": "36772045",
         "interval_seconds": 60,
         "bound_seconds": 7500,
-        "state": "READ_ONLY_RUNNING_AGENT_IDLE_ROOT_CUSTODY"
+        "state": "ROOT_OWNED_READ_ONLY_RUNNING",
+        "custody": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation/setup-custody.json"
       },
       "declarations": "4272 exactsourcefiles;36foundationcommands16/11/9,scope20,acceptance636including17shimcases,export13,faultproxy41,mandatoryNative11. Exactnewsource/attempt1; no crossmixingold33checks/oldfailures.",
-      "next": "Observe existing watcher without superseding push; onterminal wake ci_recovery_publication_sol for acquisition, exactmanifest/compiler/native/worker/checklist/requiredtest/publicoutput audit. No newfoundationPASS inferred."
+      "next": "Root polls its own tool1678 atnaturalcheckpoints; wake ci_recovery_publication_sol atterminal for acquisition/audit. Sameexactf4ad/run/attempt, no remoteCIrestart orsettingschanges.",
+      "original_observer_loss": {
+        "tool": 80126,
+        "driver_pid": 1946407,
+        "pid": 1946468,
+        "status": "LOST_UNRECEIPTED_BOTH_PROCESSES_ABSENT",
+        "preserved": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-recovery-main-f4ad5fda-20261102/ci-observation/lost-observer-1",
+        "scope": "Observed after agent setup turn ended; exact exitcause unknown, no terminalreceipt. Agent-scoped tools unavailable toRoot; no remoteCIcancellation/rerun. Original identity/log/custody retained withhashes."
+      }
     }
   }
 }

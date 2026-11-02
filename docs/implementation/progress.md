@@ -84,10 +84,13 @@ separate. No product rebuild was needed for runtime-unchanged fixtures/tooling.
 is **PENDING**, exactf4ad/push/attempt1: scope125435742878PASS, Linux jobs
 125435969476/125435969506RUNNING, Mac125435969590QUEUED at initial observation.
 Required foundation36 (16/11/9), source4272, Native11 and new fault-proxy41 controls
-are pinned to this source; no old-run evidence is relabeled. Watcher **80126**, gh
-PID1946468/start36720827, driver1946407/start36720694,60s/7500s bound. Agent setup
-is complete/idle; Root owns process custody and can wake it at a natural terminal
-boundary. P01 `recovery_followthrough_publication` owns receipts and declarations.
+are pinned to this source; no old-run evidence is relabeled. Original watcher80126
+was lost without a terminal receipt; both processes are absent and identity/log/
+custody are preserved under `lost-observer-1`. No remote CI operation was stopped.
+The same unchanged observer now runs in Root tool **1678**, driver1948045 and
+GH1948046, start ticks verified,60s/7500s bound. Root can poll its own session;
+agent tools are scoped to their owner. Wake the idle CI agent for terminal audit.
+P01 `recovery_followthrough_publication` owns receipts and declarations.
 
 ## Active work, resources and next action
 
