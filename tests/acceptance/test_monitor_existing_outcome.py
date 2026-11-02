@@ -178,9 +178,11 @@ class ExistingOutcomeControls(unittest.TestCase):
             with self.subTest(change=change),self.assertRaises(ValueError):seed.mounts(altered,target)
 
     def test_separate_fixture_artifact_rejects_changed_product_inputs_or_unbound_source(self):
-        for change in (None,'acceptance-helper','product','cargo-config','external-example','owner-hook','fixture-source','policy-source','parent','binary','test-target','compiler','unqualified-build'):
+        for change in (None,'acceptance-helper','compiled-root-alias','product','cargo-config','external-example','owner-hook','fixture-source','policy-source','parent','binary','test-target','compiler','unqualified-build'):
             with self.subTest(change=change),tempfile.TemporaryDirectory() as directory:
-                root=Path(directory);source=root/'source';compiled=root/'compiled'
+                # Artifact admission returns canonical paths. Normalize the
+                # owned fixture root too (Darwin /var aliases /private/var).
+                root=Path(directory).resolve();source=root/'source';compiled=root/'compiled'
                 (source/seed.OWNER).parent.mkdir(parents=True);(compiled/'build').mkdir(parents=True);(compiled/'artifacts').mkdir()
                 original=b'original production owner\n';owner=original+seed.HOOK.encode();fixture_body=b'private cfg(test) fixture\n'
                 (source/seed.OWNER).write_bytes(owner);(source/seed.FIXTURE).write_bytes(fixture_body)
@@ -224,10 +226,13 @@ class ExistingOutcomeControls(unittest.TestCase):
                 elif change=='compiler':receipt['compilation']['rustc']='different compiler'
                 elif change=='unqualified-build':receipt['compilation']['status']='PASS_ANOTHER_PROFILE'
                 (compiled/'artifacts/test-tool-artifact.json').write_text(json.dumps(receipt))
-                if change not in (None,'acceptance-helper'):
+                supplied=compiled
+                if change=='compiled-root-alias':
+                    supplied=root/'compiled-alias';supplied.symlink_to(compiled,target_is_directory=True)
+                if change not in (None,'acceptance-helper','compiled-root-alias'):
                     with self.assertRaises(ValueError):seed.artifact(compiled,candidate,source)
                 else:
-                    paths,identity=seed.artifact(compiled,candidate,source)
+                    paths,identity=seed.artifact(supplied,candidate,source)
                     self.assertEqual(paths['binary'],binary);self.assertEqual(identity['source'],manifest['revision'])
                     self.assertEqual(identity['parent_product'],candidate['artifact']['source'])
 
