@@ -348,7 +348,7 @@ class CappedAdoptionControls(unittest.TestCase):
             before,sealed,retired,after,_,_,_,first,*_=fixture(Path(temporary))
             for name in ('missing-seal','unadopted','wrong-owner','wrong-target','wrong-handoff','wrong-source','wrong-cut','pending-old',
                     'wrong-checkpoint','unretired-old','live-old-control','expired-original-deadline','wrong-activation','different-cas',
-                    'changed-principal','new-deadline','old-xmin','original-request-digest','original-request-sequence','old-lease-rewritten','seal-rewritten'):
+                    'changed-principal','new-deadline','old-xmin','continuation-xmin','original-request-digest','original-request-sequence','old-lease-rewritten','seal-rewritten'):
                 state=copy.deepcopy(after);intermediate=copy.deepcopy(sealed)
                 seal=state['acquisition_continuations'][0]
                 if name=='missing-seal':state['acquisition_continuations']=[]
@@ -368,6 +368,7 @@ class CappedAdoptionControls(unittest.TestCase):
                 elif name=='changed-principal':state['jobs'][0]['principal_id']='\\x'+'ff'*16
                 elif name=='new-deadline':state['acquisition_jobs'][0]['deadline_at_us']+=1
                 elif name=='old-xmin':state['producer_outcomes'][0]['xmin']='999'
+                elif name=='continuation-xmin':seal['xmin']='13'
                 elif name=='original-request-digest':state['producer_requests'][3]['request_digest']='\\x'+'ff'*32
                 elif name=='original-request-sequence':state['producer_requests'][3]['progress_wire_sequence']=2
                 elif name=='old-lease-rewritten':source.only(state['owner_epochs'],role='control',epoch=1)['lease_expires_at_us']+=1

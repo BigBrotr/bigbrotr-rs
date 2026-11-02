@@ -53,6 +53,7 @@ def continuation_owner(state,row,job):
         assert seal['target_epoch']==seal['producer_epoch']+1
         assert seal['sealed_at_us']<=seal['adopted_at_us']<only(state['acquisition_jobs'],job_id=job['job_id'])['deadline_at_us']
         assert all(seal[key] is not None for key in ('target_manifest_sha256','activation_sha256','adoption_transaction'))
+        assert int(seal['xmin'])==int(seal['adoption_transaction'])%(2**32),'finalized seal and adoption were not atomic'
         previous=only(state['owner_epochs'],dataset_id=job['dataset_id'],role='control',
             resource_id=seal['previous_owner_resource'],epoch=seal['previous_owner_epoch'],process_incarnation=seal['previous_owner_incarnation'])
         assert previous['state']=='released' and previous['exclusion_method']=='storage_fenced'
