@@ -11,7 +11,9 @@ Root owns `.research/m2-linear-continuation-20261101`, branch
 only evidence/checkpoint/task documentation changes follow in this recording.
 Canonical main/origin are clean at pushed **0d010f22**, independently verified.
 The first passive capability is integrated; its actual hosted gate is running.
-Root has a reviewed two-file builder/test correction plus this evidence update.
+Local commits **de034ad3** (reviewed builder correction) and **ca6d3e10**
+(initial measurement checkpoint/confirmed ACK) follow main; runtime qualification
+of the new ACK behavior is required before integration.
 
 **First real passive Archive/Index capability PASS:** installed **f474b5a0** with
 separately frozen assembly/acceptance source **62ae5dbc** passed the maintained
@@ -98,14 +100,19 @@ active; see inventory for its exact scope. Source-only ACK commit **adc80fc9** i
 retained in `.research/m2-measurement-ack-20261102`: initial generic checkpoint,
 confirmed native ACK and early Monitor retirement refusal, plus maintained physical
 C4/A4 oracle.94 Python controls and six Rustfmt checksPASS; Rust/PG/installed and
-retirement refusal runtimeNOT_RUN. Astra critical source/oracle review is pending.
+retirement refusal runtimeNOT_RUN. Astra critical source/oracle review approved with no blocker; Root reconciled
+reference wording to distinguish absent Sync bindings from retained Monitor
+source attribution. The dormant veto has no runtime caller; its execution and
+older-schema compatibility remain NOT_RUN until existing P02/P04 reclamation
+wiring. The current installed journey must prove R0 and intact originals.
 Original failures, worktrees and .research persist.
 
 **Next Root action:** finish current hosted observation without cancellation,
 then coherently publish the reviewed common builder correction and verify its
-actual selected matrix/public outputs. In parallel finish critical review of
-the bounded known measurement → generic checkpoint → confirmed native ACK source;
-reconcile findings before compilation/installed qualification. Use
+actual selected matrix/public outputs. The bounded
+known measurement → generic checkpoint → confirmed native ACK source is critically
+approved: run exact-source compilation/strict checks, native assertions and
+installed C4/physical A4 qualification with the declared observer. Use
 existing InternalEvidence with no Sync progress; require PG C4/native A4 and
 unchanged science/input/receipt. ACK is not retirement: preserve settlement/unique
 attribution through prefix deletion or refuse Monitor retirement intact. Follow

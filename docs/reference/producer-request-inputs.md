@@ -967,8 +967,9 @@ capacity before staging, rechecks the prior head after reservation COMMIT, and
 commits the exact outcome and dependency closure together. Only the private
 confirmed result of that checkpoint COMMIT can authorize Native ACK; current
 owner, policy, Native availability and cancellation are checked through final
-delivery. Monitor keeps source/job/event attribution absent and creates no Sync
-progress, acquisition job or quantum. The selected fresh four-request journey
+delivery. Monitor preserves its historical source/attempt attribution while
+keeping Sync source/job/event bindings absent; it creates no Sync progress,
+acquisition job or quantum. The selected fresh four-request journey
 requires revision4/C4 and physical I4/A4/R0 with the exact source1..10 closure.
 Its new source and installed observer gates remain NOT_RUN until exact-source
 qualification is recorded.
