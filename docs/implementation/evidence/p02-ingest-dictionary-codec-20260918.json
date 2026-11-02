@@ -183,7 +183,12 @@
       ],
       "status": "PASS_INSTALLED_ARCHIVE_POSITIVE_5C85BB4C_RUST_AND_REAL_CLICKHOUSE_NOT_RUN",
       "scope": "Sixth scientific family and typed full-digest/strong-prior read under caller-held real pin/capture/current scope and custody; eleventh Index target. Related family6/count/schema2/frontier2 consumers and fixtures reconciled. Restart fixture now selects actual old/current snapshots via production read-only options; original expected outcomes unchanged.",
-      "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim. Actual installed typed Archive read and same-data PG restart PASS at5c85bb4c; real ClickHouse new target and Rust assertions NOT_RUN."
+      "cheap_checks": "Author fmt/diff/layout oracle/generator reproducibility PASS; portable321 had320PASS/1ERROR from an older tutorial source-review pin, preserved as FAIL pending final exact-source review/pin check. No real Arrow/Parquet or installed authority claim. Actual installed typed Archive read and same-data PG restart PASS at5c85bb4c; real ClickHouse new target and Rust assertions NOT_RUN.",
+      "review_pin_maintenance": {
+        "reviewed_source": "f474b5a0e2979f4f50ab93b7a990c7055daeea98",
+        "scope": "Independent Astra reviewed changed tutorial selected Sync dispatch/lifecycle, shared session/transport and callers: no reachable signer or outbound Nostr text beyond REQ/CLOSE; explicit Monitor once-only selection is separate. Ordinary Monitor startup negative without initialization remains unchanged. Whole-code object pins updated; stale blanket Monitor wording corrected. No general egress or Monitor/storage reapproval inferred.",
+        "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run."
+      }
     },
     "installed_inspection": {
       "original": "17d07c008d34c0c21e83389892daa6987c69e48d",

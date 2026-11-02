@@ -20,31 +20,22 @@ from cases.first_launch_index_pin import ShortPinRuntime
 # Absence of a reachable Nostr signer is a reviewed source claim, not a runtime
 # counter. A different product needs a fresh reachable-path review before this
 # closed tutorial qualification can advertise that absence.
-REVIEWED_PRODUCT = '53802a461c89d5f36dabf941a705f012f2492f77'
-# Git objects bind all product code/dependencies/configuration, allowing a
-# documentation/acceptance-only commit without pretending a new signer was reviewed.
-# The reviewed finite-history delta changes bounded window/query succession,
-# retained geometry and native ID/time reads. Capture handoffs retain their
-# existing verifier; readback creates no signing or publication capability.
-# The subsequent local scope-identity binding only extends a query borrow.
-# Equivalent bounded comparisons and a paired interval preserve those checks.
-# Local exclusion SQL only adds the same bytea wire casts used by request plans.
-# Immutable visibility/observation lookups now drain an admitted read before
-# orderly stop discards its result; mutation and certification paths are unchanged.
-# Historical recovery now explicitly funds full Fact decode beside the existing
-# operation scratch; grants, matching caller checks and resource assertions change.
-# All nine Nostr paths and the other
-# declared code, dependency and configuration objects remain unchanged from the
-# previous reviewed product. No signer or outbound-publication API was added.
-# Bind vendor code and provenance strictly; only its nonexecutable guide may vary.
-# Source review does not establish installed runtime behavior.
+REVIEWED_PRODUCT = 'f474b5a0e2979f4f50ab93b7a990c7055daeea98'
+# Git objects bind product code/dependencies/configuration while permitting
+# documentation/acceptance-only changes. Independent review covered the changed
+# dispatch, Sync ownership, shared session/transport and relevant caller paths.
+# The selected initial Sync profile cannot construct or arm the separate explicit
+# once-only Monitor profile. Its only Nostr text sends remain REQ/CLOSE, including
+# when receiving AUTH; no signer or event-publication path is reachable.
+# Bind vendor code/provenance strictly; only its nonexecutable guide may vary.
+# This exclusion does not qualify general egress, Monitor internals or runtime.
 REVIEWED_CODE = {
-    'apps': 'f6fc6630bf2317fc4dde9cd14ae71a4a5e375664',
-    'crates': '80acabc650a601d0f8b37462039158d791d7ae8d',
-    'Cargo.toml': 'ebaf694cebdd6b0eda55a8849ee0261b6aa18790',
-    'Cargo.lock': '33bb87c694d94a6e329ff2b426cb89d296bdb6d0',
+    'apps': '16b696224c41a7c170c4a2e1db6a12f59b852ce0',
+    'crates': '410f3dfbbd137be2f2809949520db0de0345a3ed',
+    'Cargo.toml': '56ae310a952923810287d83b2c88349e3485f33b',
+    'Cargo.lock': '133ff51c1c8bf71000fe7e99066bb08d4a48f31c',
     'rust-toolchain.toml': 'c3f67b6771b777215340531caf051bc25cef066c',
-    'contracts': '305e113ff5e5cefe4c741d5d0605a7597a3d6ece',
+    'contracts': '39ee6f0d51330d678a606b9fd1b26670885adf34',
     'config': '1e22ccc281bc6bdda677b3db238584fa01e6cdd1',
 }
 REVIEWED_VENDOR_ENTRIES = 1919
@@ -60,8 +51,8 @@ LIMITS = [
     'The declared clean checkout supplies maintained clients/fixtures; candidate bundle, runtime cwd and fresh state/evidence are outside every working checkout. This is not source-free execution.',
     'The original signed acquisition, Archive publication and40s history/12s export journey run unchanged. The ordinary startup observation uses the existing bounded full-probe completion helper inside that40s window.',
     'TCP listener snapshots cover the exact owned application/client PIDs. PostgreSQL evidence covers its actual published loopback binding and reachability, not uninspected process descriptors.',
-    'Zero Nostr signing is a reachable-path claim bound to reviewed product53802a46; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
-    'Unwired Monitor startup and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
+    'Zero Nostr signing is a reachable-path claim bound to reviewed productf474b5a0; zero outbound Nostr publication is checked by the actual nonempty peer transcript through EOF and process join. HMAC/TLS and Archive SQL publication are distinct operations.',
+    'Ordinary Monitor startup without explicit initial --monitor-once and active-write enablement must return their exact exit3 diagnostics without Ready output or changed state. Missing or incomplete peer/listener/source observations cannot pass.',
     'NOT_RUN: general egress exclusion, public serving, live Index succession, arbitrary signing-enabled profiles, broad capacity and the complete P00–P10 product.',
 ]
 

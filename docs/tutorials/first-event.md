@@ -129,7 +129,8 @@ The real peer checks every accepted connection through its protocol close and
 TCP EOF, including quiet cancellation, while the signed acquisition and 353-byte
 export make the observation nonempty. Any peer error, incomplete shutdown or
 unmatched accepted connection fails this claim. The case also tries an assigned,
-enabled but unwired Monitor role and active-write enablement; both must produce
+enabled Monitor role without the separate explicit initial `--monitor-once`
+profile, and active-write enablement; both must produce
 their exact exit 3 refusals without startup or Ready output. The claim concerns
 Nostr signing and outbound Nostr event publication. Session HMAC, TLS mechanisms
 and the required Archive SQL publication have different meanings.
