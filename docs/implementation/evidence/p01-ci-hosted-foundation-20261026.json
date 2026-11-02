@@ -2445,15 +2445,34 @@
   },
   "pending_monitor_publication_20261102": {
     "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
-    "status": "LOCAL_COHERENT_FIRST_PASSIVE_CAPABILITY_QUALIFIED_HOSTED_PENDING",
+    "status": "PUSHED_FIRST_PASSIVE_CAPABILITY_HOSTED_MAC_BUILD_TOOL_FAILURE_LINUX_RUNNING",
     "public_source_audit": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
       "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
       "scope": "428 newly reachable source/commit objects aftera37, zero sensitive/raw-store/LFS paths or unclassified operational credential candidates. Known fixture/shell/diagnostic contexts triaged without emitting values; bounded scanner limits remain."
     },
     "provider_open_alerts": 0,
-    "remote_baseline": "a37f7829 current; latest41366972298 completedSUCCESS,70d precedingCANCELLED preserved. No billing/settings/publication-policy change.",
+    "remote_baseline": "main/origin0d010f223fd0ff31e1ea217f2bf50fdf502ecf52, push independently verified. Latest full hosted PASS remains a37/run41366972298; current run41451793817 is incomplete. No billing/settings/publication-policy change.",
     "portable": "Declared compilerimage/Python3.11.2,624 acceptance+13 export-profilePASS/0SKIP; exact inputs/logs in runtime.",
-    "next": "One coherent main push, then actual selected hosted matrix/log/artifact qualification; no release/package/deployment authorization."
+    "next": "Let the existing Linux jobs finish without superseding their concurrency group; publish the reviewed common export correction coherently, then qualify the actual new hosted matrix. No release/package/deployment authorization.",
+    "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/push-receipt.json",
+    "hosted_current": {
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41451793817",
+      "source": "0d010f223fd0ff31e1ea217f2bf50fdf502ecf52",
+      "attempt": 1,
+      "observed_at": "2026-11-02T13:55:18Z",
+      "scope": "20 scope controlsPASS;33 selected foundation commands declared; Linuxamd64/arm64RUNNING. Mac609PASS/1FAIL/1ERROR/13 platformskips out of624; remaining5 Mac commandsNOT_RUN. Three other jobs unselectedSKIP, not required selected work.",
+      "classification": "BUILD_TOOL_PORTABILITY: Python3.15 data extraction default rewrites modes, rejected by the unchanged native source mode inventory. Not a Rust/runtime defect, billing refusal or cancellation.",
+      "observation": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/ci-observation",
+      "partial_macos_receipt_sha256": "e113d2c275f7096f1d036207f4759cbe320d4ac4f333ad83cf69e592cc350e61"
+    },
+    "archive_extraction_correction": {
+      "status": "SOURCE_REVIEWED_HOST_CONTROLS_PASS_HOSTED_PENDING",
+      "reproduction": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/tar-policy-reproduction",
+      "original": "Forced data default reproduces exact1FAIL+1ERROR; original logs preserved.",
+      "correction": "Explicit fully_trusted only after unchanged all-member validation of the builder-generated selected Git archive. Older Python without filters remains supported; archive modes/hash/identity/CWD guards unchanged.",
+      "checks": "11 timestamp+10workspace host controlsPASS, no product/native rebuild. Astra critical source/evidence review approved.",
+      "limits": "New actual hosted Mac/Linux gates remain required; this correction does not imply full hostedPASS."
+    }
   }
 }

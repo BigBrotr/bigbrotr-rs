@@ -9,8 +9,9 @@ One existing plan, capability-first execution, one integrating owner.
 Root owns `.research/m2-linear-continuation-20261101`, branch
 `work/m2-finite-history-20261101`. Qualified current source **fae99008**;
 only evidence/checkpoint/task documentation changes follow in this recording.
-Canonical main/origin are clean at pushed **a37f7829**, rechecked before integration.
-The coherent first passive capability is ready for main and its actual hosted gate.
+Canonical main/origin are clean at pushed **0d010f22**, independently verified.
+The first passive capability is integrated; its actual hosted gate is running.
+Root has a reviewed two-file builder/test correction plus this evidence update.
 
 **First real passive Archive/Index capability PASS:** installed **f474b5a0** with
 separately frozen assembly/acceptance source **62ae5dbc** passed the maintained
@@ -65,7 +66,14 @@ passed all33 selected commands plus20 scope controls at a37. The
 public-output audit. New fae source scan covered428 new objects, no sensitive/raw-store/LFS paths or
 unclassified operational credential candidates; three new fixture/shell/diagnostic
 contexts were reviewed without exposing values. GitHub open secret alerts=0.
-Only documentation changes follow; actual new hosted qualification remains open. The optional native timestamp preparer is integrated and reviewed
+Actual [run41451793817](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41451793817)
+is incomplete: scopePASS, Linuxamd64/arm64RUNNING at13:55Z; Mac failed early
+on the builder extraction policy under Python3.15, not Rust/runtime, billing or
+cancellation. Retained reproduction matches1FAIL/1ERROR; the correction explicitly
+preserves modes of the already validated own Git archive. Host11 timestamp+10
+workspace controlsPASS and Astra review approved; new hosted execution is required.
+Do not push until the existing Linux jobs finish, to preserve their CI work.
+The optional native timestamp preparer is integrated and reviewed
 with21 controlsPASS; no compiled-cache hit or measured speedup is claimed.
 
 ## Open requirements, custody and next action
@@ -85,12 +93,19 @@ its existing tasks; no selected later requirement is removed.
 All owned local builds/tests/installed processes are terminal; cache locks released,
 protected4ELF bytes/fullstat unchanged. All19 Index and earlier18 passive containers,
 private data/logs and borrowed bridge1699209a are retained; no cleanup performed.
-Root is the only integrator. Critical reviews/design are complete; no source agent
-has further edit authorization. Original failures, worktrees and .research persist.
+Root is the only integrator. A read-only CI watcher (PID1799544/tool32258) remains
+active; see inventory for its exact scope. Source-only ACK commit **adc80fc9** is
+retained in `.research/m2-measurement-ack-20261102`: initial generic checkpoint,
+confirmed native ACK and early Monitor retirement refusal, plus maintained physical
+C4/A4 oracle.94 Python controls and six Rustfmt checksPASS; Rust/PG/installed and
+retirement refusal runtimeNOT_RUN. Astra critical source/oracle review is pending.
+Original failures, worktrees and .research persist.
 
-**Next Root action:** fast-forward/push one coherent main increment, verify its
-actual selected GitHub matrix and public outputs, then implement the bounded
-known measurement → generic checkpoint → confirmed native ACK increment. Use
+**Next Root action:** finish current hosted observation without cancellation,
+then coherently publish the reviewed common builder correction and verify its
+actual selected matrix/public outputs. In parallel finish critical review of
+the bounded known measurement → generic checkpoint → confirmed native ACK source;
+reconcile findings before compilation/installed qualification. Use
 existing InternalEvidence with no Sync progress; require PG C4/native A4 and
 unchanged science/input/receipt. ACK is not retirement: preserve settlement/unique
 attribution through prefix deletion or refuse Monitor retirement intact. Follow

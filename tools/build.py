@@ -223,7 +223,10 @@ def build(args):
             path = Path(entry.name)
             if path.is_absolute() or ".." in path.parts or not (entry.isdir() or entry.isfile()):
                 raise ValueError("source archive contains an unsupported path or file type")
-        bundle.extractall(source)
+        # This validated archive was generated from the selected Git tree above.
+        # Keep its declared modes: newer data filters deliberately rewrite them.
+        extraction_options = {'filter': 'fully_trusted'} if hasattr(tarfile, 'fully_trusted_filter') else {}
+        bundle.extractall(source, **extraction_options)
     helper_hash = file_hash(Path(__file__).resolve())
     if file_hash(source / "tools/build.py") != helper_hash:
         raise ValueError("selected revision has a different build helper; execute that revision in its own checkout")

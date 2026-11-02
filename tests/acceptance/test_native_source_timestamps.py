@@ -1,5 +1,5 @@
 """Real Git/archive/file controls for optional native timestamps; no build/cache."""
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 import copy
 import json
 import os
@@ -18,6 +18,12 @@ from tools import build, ci, native_source_timestamps as timestamps
 ROOT = Path(__file__).resolve().parents[2]
 OLD = 1_000_000_111
 FRESH = 2_000_000_333
+
+
+def data_default():
+    if not hasattr(tarfile, 'data_filter'):
+        return nullcontext()
+    return patch.object(tarfile.TarFile, 'extraction_filter', staticmethod(tarfile.data_filter))
 
 
 def git(root, *args):
@@ -277,9 +283,14 @@ class NativeTimestampControls(unittest.TestCase):
                     self.assertEqual(source,args.output/'source')
                     self.assertEqual(env['CARGO_TARGET_DIR'],str(args.output/'target'))
                     self.assertFalse((args.output/'target').exists())
+                    with tarfile.open(args.output/'source.tar') as archive:
+                        for name in ('vendor/native', 'vendor/native/src/value.cpp'):
+                            self.assertEqual((source/name).stat().st_mode & 0o7777,
+                                             archive.getmember(name).mode)
                     if selected: self.assertEqual(times(source),times(f.previous/'source'))
                     raise CompileBoundary()
-                with patch.object(build,'__file__',str(f.checkout/'tools/build.py')), \
+                with data_default(), \
+                     patch.object(build,'__file__',str(f.checkout/'tools/build.py')), \
                      patch.object(build,'native_toolchain',return_value=({},f.native)), \
                      patch.object(build,'native_target',return_value='fixture-target'), \
                      patch.object(build,'command_output',return_value='independent Rust compiler fixture'), \
@@ -330,7 +341,8 @@ class NativeTimestampControls(unittest.TestCase):
                 with patch.dict(os.environ,{'PATH':str(executables)+os.pathsep+os.environ['PATH']}):
                     self.assertEqual(build.command_output(['rustc','-vV'],build.clean_environment(),cwd=foreign),
                                      'foreign override compiler')
-                    with patch.object(sys,'argv',argv), \
+                    with data_default(), \
+                         patch.object(sys,'argv',argv), \
                          patch.object(build,'__file__',argv[0]), \
                          patch.object(build,'native_toolchain',return_value=({},f.native)), \
                          patch.object(build,'native_target',return_value='fixture-target'), \
