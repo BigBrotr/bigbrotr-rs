@@ -2445,7 +2445,7 @@
   },
   "pending_monitor_publication_20261102": {
     "source": "fae990086350223d57df9a19a0e6e3d0b53832c5",
-    "status": "KNOWN_ACK_LOCAL_QUALIFIED_COHERENT_PUBLICATION_AND_NEW_HOSTED_GATE_PENDING",
+    "status": "PUSHED_KNOWN_ACK_LOCAL_QUALIFIED_NEW_HOSTED_MATRIX_RUNNING",
     "public_source_audit": {
       "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-source-fae99008-20261102/source-triage.json",
       "sha256": "030c9f6b7398073fc73cfe4ab55224fe8338237bb24b7a5b6cc46b003de4019e",
@@ -2454,7 +2454,7 @@
     "provider_open_alerts": 0,
     "remote_baseline": "main/origin0d010f223fd0ff31e1ea217f2bf50fdf502ecf52, push independently verified. Latest full hosted PASS remains a37/run41366972298; current run41451793817 is incomplete. No billing/settings/publication-policy change.",
     "portable": "Declared compilerimage/Python3.11.2,624 acceptance+13 export-profilePASS/0SKIP; exact inputs/logs in runtime.",
-    "next": "Public-source admission then coherent main push of qualified known-ACK capability and two classified CI corrections. Observe all selected actual hosted commands and public outputs. Old0dFAIL/NOT_RUN remain unchanged; latest full hosted PASS is stilla37. No release/package/deployment.",
+    "next": "Observe actuald32 selected matrix/publicoutputs without superseding it with small pushes; preserve old0dFAIL and latest fulla37hostedPASS scope. Continue independent P04/P02 recovery seam work; no release/package/deployment.",
     "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-main-0d010f22-20261102/push-receipt.json",
     "hosted_current": {
       "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41451793817",
@@ -2489,6 +2489,33 @@
       "observed": "Five original bad-role cases passed against verifiedcc8 releaseELF with env cleared; no configuration mutation or password-boundary diagnostic. Changed Cargo target execution remains for actual next hosted run.",
       "receipt": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/role-refusal-reproduction-r2/receipt.json",
       "setup_failure": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/role-refusal-reproduction/setup-failure.json"
+    },
+    "new_publication": {
+      "source": "d32b6527114bfe587bae839b1d4d6527bab7bf96",
+      "push_receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/push-receipt.json",
+      "source_admission_sha256": "2c21c004897d44c2aeca5a65b72ee51dae759def3e8723d1108c945a1f674f74",
+      "scope": "52newobjects/18.4MB,4exactunchanged knownfalsepositive contexts;0new unclassified credential candidates/sensitive/raw-store/LFS paths. Bounded scanner limits retained. Main/origin verifiedclean at actualpush15:07:43Z.",
+      "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978",
+      "attempt": 1,
+      "initial_observation": "Scope125355681713PASS; Linuxamd64125355892480/arm125355892582RUNNING, Mac125355892462QUEUED,threeotherjobsunselectedSKIP. Actual33foundation commands declared,20scope and11Native names pinned from finald32source. No new hosted PASS inferred.",
+      "evidence": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/ci-observation",
+      "expected_source_manifest_sha256": "0c0bd8c8b7882817ab507aab543f0dc862d42ea939acf39455e4854331b8b445",
+      "watcher": {
+        "tool": 39437,
+        "pid": 1886253,
+        "driver_pid": 1886247,
+        "state": "READ_ONLY_RUNNING",
+        "interval_seconds": 60,
+        "bound_seconds": 7500
+      },
+      "macos_provider_admission": {
+        "status": "CANCELLED_BEFORE_EXECUTION_NOT_PRODUCT_FAILURE",
+        "job": 125355892462,
+        "receipt": "/home/tux/bigbrotr-rs/.research/ci-publication-20261026/monitor-ack-main-d32b6527-20261102/ci-observation/provider-admission.json",
+        "receipt_sha256": "37cbd27560986a58c123f4df268c0c6d4000b6be1a47870dde2ef84b81f6ca95",
+        "scope": "Zero steps, empty runner/group, no macOS artifact; provider annotations identify macOSarm64 acquisition capacity after multiple attempts. All8selectedMac checks/build/Rust/11Native controlsNOT_RUN. Not billing, fixture/product failure or user cancellation. Linux remains active.",
+        "next": "Preserve current Linux runs; once terminal, consider targeted rerun of missing Macjob only, same source/platform/coverage. No settings/billing changes or platform substitution."
+      }
     }
   }
 }

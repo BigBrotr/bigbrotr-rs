@@ -7,8 +7,9 @@ One existing plan, capability-first execution, Root sole integrator.
 ## Source and demonstrated capability
 
 Root owns `.research/m2-linear-continuation-20261101`, branch
-`work/m2-finite-history-20261101`, observed HEAD **8ae83c47**. Only this evidence/checkpoint recording follows;
-main/origin remain pushed **0d010f22**.
+`work/m2-finite-history-20261101`, HEAD **d32b6527**, now integrated/pushed as clean canonical main/origin.
+Only local CI/checkpoint records follow while the hosted run executes; keep these
+unpublished until a coherent boundary so they do not cancel its concurrency group.
 Actual new product is frozen **cc8bdcf8**, tree **10949ae4**; corrected harness
 **8ae83c47** changes only qualification/evidence after that product. Later CLI
 fixture correction changes no runtime source. Preserve all source identities.
@@ -91,8 +92,18 @@ Cargo integration target still requires actual hosted execution.
 `pending_monitor_publication_20261102`, owns terminal audit/public scans and next
 gate. Four artifacts/31logs: zero bounded credential candidates/provider alerts;
 asynchronous scanning limits remain. Old fully verified hosted baseline remains
-a37/run41366972298. No watcher remains active. Publish one coherent qualified
-increment after local ACK proof, then verify the actual new selected matrix.
+a37/run41366972298. The coherent increment is now pushed as **d32b6527** and
+[new run41468529978](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/41468529978)
+is active. ScopePASS; Linuxamd64/arm64RUNNING and MacQUEUED at the initial
+observation. Actual33 foundation commands/11 Native controls are pinned to final
+d32. Mac subsequently became CANCELLED before any step: provider arm64 runner
+acquisition capacity, empty runner, no artifact; all8Mac checks/11Native controls
+NOT_RUN. Linux continues. P01 binds the provider admission receipt; after Linux
+is terminal consider only a targeted same-source/platform Mac retry, not a whole
+run restart or coverage substitution. Watcher **tool39437/PID1886253** (driver1886247,60s/7500s bound) observes
+and scans actual outputs. Do not claim hostedPASS before completion. Source
+admission52objects has zero new unclassified candidates; exact known contexts
+were reused. P01 owns source/push receipts and scanner limits.
 
 ## Open requirements, custody and next action
 
@@ -111,14 +122,18 @@ cost/transport/coordinator follow-through retain their existing task owners.
 resources. All compiler/test/installed processes are terminal and the cache is released.
 Old19Index/18passive plus new17r1/20r2 containers/data, failures/worktrees/.research
 and borrowed bridge1699209a are retained; no cleanup. Source/review agents are
-finished. Sol prepared the next hosted observer but has not launched it.
+finished. Sol observes the new hosted run; Sol implements the bounded C4persisted/nativeA3 recovery fault journey and
+selector/oracle in `.research/m2-monitor-ack-recovery-20261102` (branch same name
+under `work/`, basedd32). Source-only: no product API expansion or engines/cache;
+Root integrates, Astra reviews critical oracle/selector before real runs.
 
-**Next Root action:** admit final public source, fast-forward/push one coherent
-main increment and observe the actual selected GitHub matrix/public outputs,
-retaining old FAIL/NOT_RUN. Then continue P04-T07 Steps2/6/P02 with interrupted
-Monitor attempt reconciliation against retained Native originals/outcome before
-unknown classification or replacement I/O; start with the exact already-durable
-terminal case and existing recovery authority. Full lost-RAM/durable-start,
+**Next Root action:** observe the actual selected d32 GitHub matrix/public
+outputs without superseding it, retaining old FAIL/NOT_RUN. In parallel finish and critically review
+the bounded P04-T07 Steps2/6/P02 journey for the existing default `ingest recover`
+C4-persisted/nativeA3 terminal case: fresh Control/positive old-writer exclusion,
+exact original outcome and no new socket. Read-only mapping distinguishes it from
+NativeI4/C3, which still lacks generic completion advancement; do not call that
+case closed. Review any new authority/oracle design before costly execution. Full lost-RAM/durable-start,
 renewal, repeated scheduling and retirement retain their separate gates. Do not
 supersede the new hosted run with immediate microscopic pushes.
 Goal ACTIVE and incomplete; no selected later work is removed.
