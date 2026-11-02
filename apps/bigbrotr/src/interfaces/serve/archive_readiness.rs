@@ -422,11 +422,12 @@ async fn execute_inner(
             .map(Duration::from_micros)
             .ok_or_else(|| (4, "invalid Archive readiness pin lifetime; retain obligation".into()))?;
         let window = ActionGate::new();
-        // Bind before either consumer sees the gate. The actual pin window
-        // already includes the original policy lease and cannot be renewed.
-        window.bind(pending.complete(lifetime).map_err(|e| (4, e.to_string()))?)
-            .map_err(|_| (4, "Archive pin delivery window refused".into()))?;
-        let permitted = || window.check().is_ok();
+        // Only a successfully bound gate can reach either consumer. Preserve
+        // ordinary readiness's known-no-worker cleanup on a refused window;
+        // ActionGate's HTTP Unbound state must never grant this operation.
+        let bound = pending.complete(lifetime).ok()
+            .is_some_and(|value| window.bind(value).is_ok());
+        let permitted = || bound && window.check().is_ok();
         let delivery_budget = budget.clone();
         let native = Native {
             config, budget, reader: prepared.reader, route,
@@ -491,7 +492,7 @@ async fn execute_inner(
         if !matches!(authority.external(cleanup, capture.finish(), OnShutdown::Finish).await?, Some(Ok(()))) {
             return Err((4, "Archive readiness catalog rollback unresolved".into()));
         }
-        completion_window = Some(window);
+        completion_window = bound.then_some(window);
         Ok(candidate)
     }.await;
     if outcome.is_err() {
