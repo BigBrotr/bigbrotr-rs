@@ -79077,7 +79077,7 @@
         ".research/m2-monitor-core-product-eb384d20"
       ],
       "active_assignments": {
-        "integrator": "Root sole integrator; local77394acf portable fixture correction16controlsPASS, unpublished. Existing checkpoint journal update pending. No engine/compiler active.",
+        "integrator": "Root11316 compiler and pure validator reaped0, all associated containers stopped/PID0/noOOM; cache115 released/reacquired and four ELF guards unchanged. New installed connected guard case not started. Root61745 remains the sole hosted observer pending actual terminal; later source/oracle agents have no engine/compiler access.",
         "source_work": "Connected guard sourcea2dc2177 committed/clean in its worktree and integrated locally454f4de0;53 controls/rustfmt and independent Astra source review PASS. Compile/Clippy/new connected execution NOT_RUN. Separate Sol implements same-job continuation in work/m2-finite-job-adoption-20261102; independent Sol owns its fixture/oracle worktree. Both remain partial/unintegrated.",
         "review": "Astra approved current guard source, bounded deferred-hook injection and explicit settled-job succession architecture. New acquisition continuation production/oracle code will need critical review before build/engine qualification.",
         "hosted": "One Root watcher61745,60s interval/7500s bound; remote run41529949800 source551/push/attempt1 has scopePASS and three foundation jobs running."
@@ -79247,6 +79247,26 @@
         "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-existing-seed-8129ef53",
         "installed_runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-core-b05b0a26/acceptance-existing-outcome-r2",
         "terminal_custody": "Root tools22663/19552 reaped0.23 installed containers stopped/PID0/noOOM,6 recorded children absent, peer joined and original borrowed bridge preserved; r1 all15 stopped. Compilation containers stopped; shared cache115 released/reacquired and original four ELF bytes/fullstat unchanged at qualification. No engine/compiler/CI observer active. Preserve all original data/failures/worktrees."
+      },
+      "connected_guard_build": {
+        "observed_at_utc": "2026-11-02T22:26:16.563667+00:00",
+        "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59",
+        "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-connected-guards-b1258b59",
+        "root_tool": 11316,
+        "launcher_pid": 2086205,
+        "container": "18c90774859e5e72850d0fc217a47e482a44a1d18df10a70f37d372d6cbb0777",
+        "source": "b1258b592be5a3a4a27c36a2fc64658de27037cf",
+        "state": "REAPED_ROOT11316_EXIT0_COMPILER_STOPPED_PID0_NO_OOM",
+        "cache_lock": "RELEASED_AND_ROOT_REACQUIRED_NO_LIVE_CACHE_MOUNTS",
+        "guard_scope": "Reused launcher freshly verified free-space floor65GiB, actual cache isolation/exclusive115 flock and all four original ELF fullstat/O_NOATIME bytes before Docker creation. Postterminal checks pending until launcher completes. No new installed engine run.",
+        "qualification": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59/qualification-receipt.json",
+          "sha256": "d5899b353b2c8380d8428a47d5dbe4d4602ea85bfe2586dd859a46e1716d6632"
+        },
+        "pure_validator": {
+          "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59/validator-unit/terminal.json",
+          "sha256": "e4c430e9c09f9f718fe3b0ffc70f6e4598a622a08cedc1936cbb4ec63b547a3e"
+        }
       }
     }
   }

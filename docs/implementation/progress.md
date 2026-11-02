@@ -99,19 +99,33 @@ tasks; no whole-P02 prerequisite or reduced scope.
 
 [Inventory](../research/laboratory-inventory.json),
 `implementation_monitor_descriptors_20261102.runtime_integration`, owns resources.
-Original seed worktree is clean at8129ef53 and preserved; its commits are integrated and pushed on main. All current compiler/test/installed tools are reaped, containers
-stopped, cache115 released/reacquired and original four protected ELF bytes/fullstat
-unchanged at qualification. No local engine/compiler is active; the single read-only hosted observer above is active.
+Original seed worktree is clean at8129ef53 and preserved; its commits are integrated and pushed on main. Prior qualified compiler/test/installed tools are reaped and their containers
+stopped; original four ELF guards remain preserved. The new compile-only tool11316 and pure validator are reaped0, their containers
+stopped/PID0/noOOM; cache115 was released/reacquired, four protected ELF bytes and
+fullstat independently unchanged. Hosted watcher61745 remains the sole active
+observer; no installed product/engine proof is running yet.
 Preserve original failures, data, .research, worktrees and borrowed bridge.
 October31 space recovery is reconciled; no cleanup was started.
 
 **Next Root action:** preserve/seal the actual551 full run without cancelling it.
 The source-only connected guard extension original**a2dc2177** is integrated at
 **454f4de0**, with53 focused Python controls/rustfmt PASS and independent Astra
-critical source approval. Rust compilation/Clippy and the connected case remain
-NOT_RUN. Prepare its separately attributed test-only artifact using the maintained
-builder, preserving unchanged b05 product/observer and the four protected ELF pins;
-then qualify the real PG/Native case. retain the local773 portable correction in the
+critical source approval. Separate fixture source **b1258b59** is now compiling in Root tool**11316**,
+launcher2086205/container18c90774, capsule
+`.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59`,
+runtime `runs/m2-monitor-connected-guards-b1258b59` under the retained implementation
+lab. **Strict all-target Clippy PASS315.495s; library-test compilation PASS64.182s**.
+Root11316 reaped0; actual compiler stopped/PID0/noOOM, launcher absent, cache115
+released/reacquired/no live cache mounts, all four original ELF bytes/fullstat
+independently unchanged. Artifact **faf30d0c** (34,385,864B), qualification
+**d5899b35**. Pure full-policy validator1PASS/707filtered; connected test NOT_RUN.
+The original final audit assertion confused generic result PASS with the separate
+artifact profile label; corrected only the schema expectation, with original
+audit note retained. No build/test rerun was needed.
+Preserve unchanged b05 product/observer; next assemble current maintained source
+and execute the explicit twelve-stage p04-monitor-connected-guards with declared
+`--monitor-guard-corruption dispatch-clock` and this test-only artifact. All product
+guards must be restored before measured resolver operations; preserve failures. retain the local773 portable correction in the
 next coherent publication. Close the reachable connected refusal responsibilities
 above, then choose the
 next useful M2 increment by actual dependencies. Finite same-job continuation,

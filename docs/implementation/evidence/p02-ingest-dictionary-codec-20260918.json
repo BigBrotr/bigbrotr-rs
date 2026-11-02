@@ -569,7 +569,7 @@
             "limits": "This qualifies only exact-existing-outcome/C3 preservation and retry, not selected-invalid-binding, authority, paired capacity, fleet scheduling, renewal, retirement or full M2. Default Rust suites still ignore the connected seed. Maintained builder/input procedure is documented; private retained caches are optional accelerators."
           },
           "connected_guard_qualification": {
-            "status": "SOURCE_REVIEW_APPROVED_COMPILE_AND_CONNECTED_NOT_RUN",
+            "status": "PASS_TEST_ARTIFACT_AND_PURE_VALIDATOR_CONNECTED_NOT_RUN",
             "source": "a2dc217712eaecd51ca8de585a6f617f551a18ab",
             "integrated": "454f4de03c63384368a9f9beab861006741e8d61",
             "worktree": "/home/tux/bigbrotr-rs/.research/m2-monitor-connected-guards-20261102",
@@ -584,10 +584,56 @@
             },
             "scope": "Actual connected library resolver refusals with genuine owner/borrowed actual-login backend and explicit isolated binding corruption; ordinary installed ACK/retry positive. SQL hook immediate/deferred/capacity pairs remain distinct from valid stale-owner workflow or installed resolver exhaustion. Production runtime unchanged; separately rebuilt test-only artifact required.",
             "not_run": [
-              "Rust compilation/strict Clippy for new private fixture",
               "p04-monitor-connected-guards real PG/Native case"
             ],
-            "later_owners": "Genuine prepared/active-prefix, noncontiguous-tail, retirement workflow and wider evidence-only/mixed-history capacity remain existing P04/P02 owners; no fabricated completed scope."
+            "later_owners": "Genuine prepared/active-prefix, noncontiguous-tail, retirement workflow and wider evidence-only/mixed-history capacity remain existing P04/P02 owners; no fabricated completed scope.",
+            "build_observation": {
+              "observed_at_utc": "2026-11-02T22:26:16.563667+00:00",
+              "source": "b1258b592be5a3a4a27c36a2fc64658de27037cf",
+              "capsule": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59",
+              "runtime": "/home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-connected-guards-b1258b59",
+              "root_tool": 11316,
+              "launcher_pid": 2086205,
+              "container": "18c90774859e5e72850d0fc217a47e482a44a1d18df10a70f37d372d6cbb0777",
+              "checks": [
+                {
+                  "name": "clippy",
+                  "status": "PASS",
+                  "exit_code": 0
+                },
+                {
+                  "name": "compile",
+                  "status": "PASS",
+                  "exit_code": 0
+                }
+              ],
+              "parent_product": "b05b0a267d362cdef1b4f396076b980620509178",
+              "scope": "Compile-only and strict all-target Clippy PASS; Root11316 reaped0, compiler stopped/PID0/noOOM, launcher absent, sharedcache released/reacquired/no live mounts and original four ELF bytes/fullstat independently unchanged. New connected PG/Native case NOT_RUN."
+            },
+            "build_qualification": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59/qualification-receipt.json",
+              "sha256": "d5899b353b2c8380d8428a47d5dbe4d4602ea85bfe2586dd859a46e1716d6632"
+            },
+            "pure_validator": {
+              "path": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/connected-guards-b1258b59/validator-unit/terminal.json",
+              "sha256": "e4c430e9c09f9f718fe3b0ffc70f6e4598a622a08cedc1936cbb4ec63b547a3e"
+            },
+            "artifact": {
+              "bytes": 34385864,
+              "sha256": "faf30d0c8052eee5dfece8d6f5ed330853607d604e49981513d6da12480845be",
+              "source": "b1258b592be5a3a4a27c36a2fc64658de27037cf"
+            },
+            "checks": {
+              "clippy": {
+                "status": "PASS",
+                "seconds": 315.4953809410217
+              },
+              "compile": {
+                "status": "PASS",
+                "seconds": 64.18206563801505
+              },
+              "pure_validator": "1PASS/0FAIL/0ignored/707filtered; no ignored connected test or whole-library claim"
+            }
           }
         }
       }
