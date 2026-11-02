@@ -203,7 +203,15 @@
         "checks": "Affected tutorial controls14PASS/0FAIL/0SKIP. Original author portable320PASS/1ERROR remains preserved; this closes its stale review-pin cause without claiming a fresh whole portable run.",
         "documentation_only_followthrough": "65accd30 only wraps Mutex<State> in Rustdoc code markup after actualf474 Rustdoc unclosed-HTML FAIL. Root inspected the exact one-comment delta and reused unchanged f474 signer/egress review; no product rebuild or fresh runtime claim.",
         "fixture_only_followthrough": "d20a84d7 only changes cfg(test) descriptor-fixture lifetime and exact replay/conflict assertions, independently reviewed. Root checked the only other app delta is Rustdoc markup; all f474 production Nostr behavior remains unchanged. Pin now namesd20 source.",
-        "ownership_followthrough": "0e9b7912 only constructs owned fixture intents via existing checked builder and verifies equality; original d20 semantic review retained. No production Nostr path changed."
+        "ownership_followthrough": "0e9b7912 only constructs owned fixture intents via existing checked builder and verifies equality; original d20 semantic review retained. No production Nostr path changed.",
+        "ack_delta_followthrough": {
+          "reviewed_source": "cc8bdcf8feae54c276e398202f8ea1224fbcdd8a",
+          "apps_git_object": "0398c348d0c6608e0ca9c01b3e177c0e79862f08",
+          "review": "/home/tux/bigbrotr-rs/.research/m2-monitor-core-qualification-20261102/cc8bdcf8/tutorial-review.json",
+          "review_sha256": "8e2ba63524a71b9b0f82da307d880ed41c4fb5bad3871fb70a8b97ca873283b2",
+          "scope": "Independent Astra approved selected tutorial Sync exclusion for ACK delta, with all other pinned trees unchanged. Source/oracle pin only; cc8 installed product build remains reusable.",
+          "original_portable": "cc8 exact compilerimage627collected/626PASS/1ERROR stale exclusion pin,0assertionFAIL/0SKIP. Export-profileNOT_RUN. Original runtime/logs preserved at /home/tux/bigbrotr-implementation-20260917/runs/m2-monitor-portable-cc8bdcf8. Correction requires portable rerun, no product rebuild."
+        }
       },
       "clickhouse_preflight": {
         "source": "f11024b87fdf917518a6512a92ceeaa9a0787b8d",
